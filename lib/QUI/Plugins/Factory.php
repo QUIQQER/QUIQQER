@@ -25,9 +25,11 @@ class Factory extends QUI\QDOM
      * (optional)
      *
      * @param QUI\Controls\Toolbar\Bar $Tabbar - Tabbar / Toolbar Objekt
-     * @param QUI\Projects\Site $Site          - Aktuelle Seite
+     * @param QUI\Projects\Site $Site - Aktuelle Seite
      */
-    public function setTabs(QUI\Controls\Toolbar\Bar $Tabbar, QUI\Projects\Site $Site) {}
+    public function setTabs(QUI\Controls\Toolbar\Bar $Tabbar, QUI\Projects\Site $Site)
+    {
+    }
 
     /**
      * Methode welche aufgerufen wird wenn eine Seite gespeichert wird
@@ -36,7 +38,9 @@ class Factory extends QUI\QDOM
      * @param QUI\Projects\Site $Site
      * @param QUI\Projects\Project $Project
      */
-    public function onSave(QUI\Projects\Site $Site, QUI\Projects\Project $Project) {}
+    public function onSave(QUI\Projects\Site $Site, QUI\Projects\Project $Project)
+    {
+    }
 
     /**
      * Methode welche aufgerufen wird wenn eine Seite initialisiert wird
@@ -45,16 +49,20 @@ class Factory extends QUI\QDOM
      * @param QUI\Projects\Site $Site
      * @param QUI\Projects\Project $Project
      */
-    public function onLoad(QUI\Projects\Site $Site, QUI\Projects\Project $Project) {}
+    public function onLoad(QUI\Projects\Site $Site, QUI\Projects\Project $Project)
+    {
+    }
 
     /**
      * Methode welche aufgerufen wird, wenn eine Seite zerstört wird
      * (optional)
      *
-     * @param QUI\Projects\Site $Site       - Seite die zerstört wird
+     * @param QUI\Projects\Site $Site - Seite die zerstört wird
      * @param QUI\Projects\Project $Project - Project in welchem die Seite liegt
      */
-    public function onDestroy(QUI\Projects\Site $Site, QUI\Projects\Project $Project) {}
+    public function onDestroy(QUI\Projects\Site $Site, QUI\Projects\Project $Project)
+    {
+    }
 
     /**
      * Methode die aufgerufen wird beim Setup des Plugins
@@ -63,13 +71,17 @@ class Factory extends QUI\QDOM
      *
      * @param QUI\Projects\Project $Project
      */
-    public function setup(QUI\Projects\Project $Project) {}
+    public function setup(QUI\Projects\Project $Project)
+    {
+    }
 
     /**
      * Methode die aufgerufen wird beim Deinstallieren des Plugins
      * (optional)
      */
-    public function onUninstall() {}
+    public function onUninstall()
+    {
+    }
 
     /**
      * Crons registrieren welche das Plugin zur Verfügung stellt
@@ -77,5 +89,7 @@ class Factory extends QUI\QDOM
      *
      * @param QUI\Cron\Manager $CronManager
      */
-    public function registerCrons(QUI\Cron\Manager $CronManager) {}
+    public function registerCrons(QUI\Cron\Manager $CronManager)
+    {
+    }
 }

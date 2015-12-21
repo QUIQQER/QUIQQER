@@ -19,7 +19,6 @@ use QUI;
  * @errorcodes 8XX = Project Errors
  * @deprecated
  */
-
 class Manager extends QUI\QDOM
 {
     /**
@@ -54,7 +53,7 @@ class Manager extends QUI\QDOM
      */
     public function __construct()
     {
-        $this->_Config = \QUI::getConfig( 'etc/plugins.ini' );
+        $this->_Config = \QUI::getConfig('etc/plugins.ini');
     }
 
     /**
@@ -66,8 +65,8 @@ class Manager extends QUI\QDOM
     {
         $plugins = $this->get();
 
-        foreach ( $plugins as $Plugin ) {
-            $Plugin->install( $Project );
+        foreach ($plugins as $Plugin) {
+            $Plugin->install($Project);
         }
     }
 
@@ -81,7 +80,7 @@ class Manager extends QUI\QDOM
         $Plugin->install();
 
         $Config = $this->_Config;
-        $Config->set( $Plugin->getAttribute('name'), null, 1 );
+        $Config->set($Plugin->getAttribute('name'), null, 1);
         $Config->save();
 
         $this->clearCache();
@@ -97,9 +96,10 @@ class Manager extends QUI\QDOM
      */
     public function deactivate(Plugin $Plugin)
     {
-        $Config = $this->_Config; /* @var $Config Config */
+        $Config = $this->_Config;
+        /* @var $Config Config */
 
-        $Config->del( $Plugin->getAttribute( 'name' ) );
+        $Config->del($Plugin->getAttribute('name'));
         $Config->save();
 
         $this->clearCache();
@@ -108,51 +108,45 @@ class Manager extends QUI\QDOM
     /**
      * Gibt alle Plugins zurück die verfügbar sind
      *
-     * @param boolean $order		- Sortiert bekommen (optional)
-     * @param boolean $onlynames	- Nur Namen, keine Objekte (optional)
+     * @param boolean $order - Sortiert bekommen (optional)
+     * @param boolean $onlynames - Nur Namen, keine Objekte (optional)
      *
      * @return array
      * @deprecated use package manager
      */
-    public function getAvailablePlugins($order=false, $onlynames=false)
+    public function getAvailablePlugins($order = false, $onlynames = false)
     {
-        $list   = \QUI\Utils\System\File::readDir( OPT_DIR );
+        $list   = \QUI\Utils\System\File::readDir(OPT_DIR);
         $result = array();
 
-        foreach ( $list as $dir )
-        {
-            if ( !is_dir( OPT_DIR . $dir ) || strpos( $dir, '.' ) === 0 ) {
+        foreach ($list as $dir) {
+            if (!is_dir(OPT_DIR . $dir) || strpos($dir, '.') === 0) {
                 continue;
             }
 
-            if ( $onlynames )
-            {
+            if ($onlynames) {
                 $result[] = $dir;
                 continue;
             }
 
-            $result[] = $this->get( $dir );
+            $result[] = $this->get($dir);
         }
 
-        if ( $order )
-        {
-            if ( $onlynames )
-            {
-                sort( $result );
-            } else
-            {
+        if ($order) {
+            if ($onlynames) {
+                sort($result);
+            } else {
                 $_result = array();
 
-                foreach ( $result as $Plugin )
-                {
-                    $c = $Plugin->getAttribute( 'config' );
-                    $_result[ $c['name'] ] = $Plugin;
+                foreach ($result as $Plugin) {
+                    $c                   = $Plugin->getAttribute('config');
+                    $_result[$c['name']] = $Plugin;
                 }
 
-                ksort( $_result );
+                ksort($_result);
                 $result = array();
 
-                foreach ( $_result as $Plugin ) {
+                foreach ($_result as $Plugin) {
                     $result[] = $Plugin;
                 }
             }
@@ -167,16 +161,16 @@ class Manager extends QUI\QDOM
      * @param boolean $order - get the list ordered
      * @return array
      */
-    public function getInactivePlugins($order=false)
+    public function getInactivePlugins($order = false)
     {
-        $Config = $this->_Config; /* @var $Config \QUI\Config */
-        $list   = $this->getAvailablePlugins( $order );
+        $Config = $this->_Config;
+        /* @var $Config \QUI\Config */
+        $list = $this->getAvailablePlugins($order);
 
         $result = array();
 
-        foreach ( $list as $Plugin )
-        {
-            if ( $Config->getSection( $Plugin->getAttribute('name') ) === false ) {
+        foreach ($list as $Plugin) {
+            if ($Config->getSection($Plugin->getAttribute('name')) === false) {
                 $result[] = $Plugin;
             }
         }
@@ -190,45 +184,43 @@ class Manager extends QUI\QDOM
      * @param \QUI\Projects\Project $Project - optional
      * @return array
      */
-    public function getAvailableTypes($Project=false)
+    public function getAvailableTypes($Project = false)
     {
         $types     = array();
         $installed = \QUI::getPackageManager()->getInstalled();
 
-        foreach ( $installed as $package )
-        {
+        foreach ($installed as $package) {
             $name    = $package['name'];
-            $siteXml = OPT_DIR . $name .'/site.xml';
+            $siteXml = OPT_DIR . $name . '/site.xml';
 
-            if ( !file_exists( $siteXml ) ) {
+            if (!file_exists($siteXml)) {
                 continue;
             }
 
-            $typeList = \QUI\Utils\XML::getTypesFromXml( $siteXml );
+            $typeList = \QUI\Utils\XML::getTypesFromXml($siteXml);
 
-            foreach ( $typeList as $Type )
-            {
-                $types[ $name ][] = array(
-                    'type' => $name .':'. $Type->getAttribute('type'),
+            foreach ($typeList as $Type) {
+                $types[$name][] = array(
+                    'type' => $name . ':' . $Type->getAttribute('type'),
                     'icon' => $Type->getAttribute('icon'),
                     'text' => $this->getTypeName(
-                        $name .':'. $Type->getAttribute('type')
+                        $name . ':' . $Type->getAttribute('type')
                     )
                 );
             }
         }
 
-        ksort( $types );
+        ksort($types);
 
         // standard to top
-        $types = array_reverse( $types, true );
+        $types = array_reverse($types, true);
 
         $types['standard'] = array(
             'type' => 'standard',
             'icon' => 'fa fa-file-o icon-file-alt'
         );
 
-        $types = array_reverse( $types, true );
+        $types = array_reverse($types, true);
 
         return $types;
     }
@@ -236,7 +228,7 @@ class Manager extends QUI\QDOM
     /**
      * Löscht den Plugin Cache plus den Projekt Cache
      */
-    static function clearCache()
+    public static function clearCache()
     {
         \QUI\Cache\Manager::clearAll();
     }
@@ -250,11 +242,11 @@ class Manager extends QUI\QDOM
     protected function _createCache($class, $Plugin)
     {
         // Kein Cache für Standard Plugins
-        if ( $class == 'QUI\\Plugins\\Plugin' ) {
+        if ($class == 'QUI\\Plugins\\Plugin') {
             return false;
         }
 
-        \QUI\Cache\Manager::set( 'plugin-'. $class, $Plugin->getAttributes() );
+        \QUI\Cache\Manager::set('plugin-' . $class, $Plugin->getAttributes());
     }
 
     /**
@@ -267,32 +259,30 @@ class Manager extends QUI\QDOM
      */
     protected function _getCache($class)
     {
-        try
-        {
-            $attributes = \QUI\Cache\Manager::get( 'plugin-'. $class );
+        try {
+            $attributes = \QUI\Cache\Manager::get('plugin-' . $class);
 
-            if ( empty( $attributes ) ) {
+            if (empty($attributes)) {
                 return false;
             }
 
-        } catch ( \QUI\Cache\Exception $Exception )
-        {
+        } catch (\QUI\Cache\Exception $Exception) {
             return false;
         }
 
-        if ( isset($attributes['_file_']) &&
-             !class_exists($class) &&
-             file_exists($attributes['_file_']) )
-        {
+        if (isset($attributes['_file_']) &&
+            !class_exists($class) &&
+            file_exists($attributes['_file_'])
+        ) {
             require_once $attributes['_file_'];
         }
 
-        if ( !class_exists( $class ) ) {
-            throw new \QUI\Exception('Konnte Plugin '. $class .' nicht laden');
+        if (!class_exists($class)) {
+            throw new \QUI\Exception('Konnte Plugin ' . $class . ' nicht laden');
         }
 
         $Plugin = new $class();
-        $Plugin->setAttributes( $attributes );
+        $Plugin->setAttributes($attributes);
 
         return $Plugin;
     }
@@ -307,69 +297,68 @@ class Manager extends QUI\QDOM
      * @todo Unbedingt ändern, get gibt nur aktiv Plugins zurück -> überarbeiten
      * @todo überdenken -> wird das noch gebraucht?
      */
-    public function get($name=false, $type=false)
+    public function get($name = false, $type = false)
     {
-        if ( $name === false ) {
+        if ($name === false) {
             return $this->_getAll();
         }
 
-        $class = 'Plugin_'. $name;
+        $class = 'Plugin_' . $name;
 
         // Falls das Plugin schon mal gehohlt wurde, dann gleich zurück geben
-        if ( isset( $this->_plugins[ $class ] ) ) {
-            return $this->_plugins[ $class ];
+        if (isset($this->_plugins[$class])) {
+            return $this->_plugins[$class];
         }
 
         // Falls Plugin schon im Cache steckt
-        $Plugin = $this->_getCache( $class );
+        $Plugin = $this->_getCache($class);
 
-        if ( $Plugin )
-        {
-            $this->_plugins[ $class ] = $Plugin;
+        if ($Plugin) {
+            $this->_plugins[$class] = $Plugin;
             return $Plugin;
         }
 
-        $dir = str_replace( 'Plugin_', '', $name );
-        $dir = explode( '_', $dir );
+        $dir = str_replace('Plugin_', '', $name);
+        $dir = explode('_', $dir);
 
-        $last = end( $dir );
-        $dir  = implode( $dir, '/' );
+        $last = end($dir);
+        $dir  = implode($dir, '/');
 
         // Pluginfile laden falls noch nicht getan
-        $f_plg = OPT_DIR . $dir .'/'. ucfirst( $last ) .'.php';
+        $f_plg = OPT_DIR . $dir . '/' . ucfirst($last) . '.php';
 
-        if ( !class_exists( $class ) && file_exists( $f_plg ) ) {
+        if (!class_exists($class) && file_exists($f_plg)) {
             require_once $f_plg;
         }
 
-        if ( !class_exists( $class ) &&
-             file_exists( OPT_DIR . $name .'/'. ucfirst( $name ) .'.php' ) )
-        {
-            $f_plg = OPT_DIR . $name .'/'. ucfirst($name).'.php';
+        if (!class_exists($class) &&
+            file_exists(OPT_DIR . $name . '/' . ucfirst($name) . '.php')
+        ) {
+            $f_plg = OPT_DIR . $name . '/' . ucfirst($name) . '.php';
             require_once $f_plg;
         }
 
-        if ( !class_exists( $class ) ) {
+        if (!class_exists($class)) {
             $class = '\\QUI\\Plugins\\Plugin';
         }
 
         $Plugin = new $class();
-        $Plugin->setAttribute( 'name', $name );
-        $Plugin->setAttribute( '_file_', $f_plg );
-        $Plugin->setAttribute( '_folder_', OPT_DIR . $dir .'/' );
+        $Plugin->setAttribute('name', $name);
+        $Plugin->setAttribute('_file_', $f_plg);
+        $Plugin->setAttribute('_folder_', OPT_DIR . $dir . '/');
 
         $config = $this->_Config->toArray();
 
-        if ( isset($config[$name]) && $config[$name] == 1 ) {
-            $Plugin->setAttribute( 'active', 1 );
+        if (isset($config[$name]) && $config[$name] == 1) {
+            $Plugin->setAttribute('active', 1);
         }
 
         // $Plugin->load();
 
-        $this->_plugins[ $class ] = $Plugin;
+        $this->_plugins[$class] = $Plugin;
 
         // Cache fürs Plugin erzeugen
-        $this->_createCache( $class, $Plugin );
+        $this->_createCache($class, $Plugin);
 
         return $Plugin;
     }
@@ -382,11 +371,11 @@ class Manager extends QUI\QDOM
      */
     public function existPlugin($plugin)
     {
-        if ( is_dir( OPT_DIR . $plugin ) ) {
+        if (is_dir(OPT_DIR . $plugin)) {
             return true;
         }
 
-        throw new \QUI\Exception( 'Plugin nicht gefunden', 404 );
+        throw new \QUI\Exception('Plugin nicht gefunden', 404);
     }
 
     /**
@@ -399,13 +388,13 @@ class Manager extends QUI\QDOM
      */
     public function getPlugin($plugin)
     {
-        $Plugin = $this->get( $plugin );
+        $Plugin = $this->get($plugin);
 
-        if ( $Plugin->getAttribute('active') ) {
+        if ($Plugin->getAttribute('active')) {
             return $Plugin;
         }
 
-        throw new \QUI\Exception( 'Plugin nicht verfügbar', 403 );
+        throw new \QUI\Exception('Plugin nicht verfügbar', 403);
     }
 
     /**
@@ -418,7 +407,7 @@ class Manager extends QUI\QDOM
     {
         $config = $this->_Config->toArray();
 
-        if ( isset( $config[ $plugin ] ) && $config[ $plugin ] == 1 ) {
+        if (isset($config[$plugin]) && $config[$plugin] == 1) {
             return true;
         }
 
@@ -434,8 +423,8 @@ class Manager extends QUI\QDOM
     public function getPluginByType($type)
     {
         return $this->get(
-           str_replace( '/', '_', $type ),
-           $type
+            str_replace('/', '_', $type),
+            $type
         );
     }
 
@@ -447,29 +436,28 @@ class Manager extends QUI\QDOM
      */
     public function getTypeName($type)
     {
-        if ( $type == 'standard' || empty( $type ) ) {
+        if ($type == 'standard' || empty($type)) {
             return 'Standard';
         }
 
         // \QUI\System\Log::write( $type );
-        $data = $this->_getSiteXMLDataByType( $type );
+        $data = $this->_getSiteXMLDataByType($type);
 
-        if ( isset( $data['locale'] ) )
-        {
+        if (isset($data['locale'])) {
             return \QUI::getLocale()->get(
                 $data['locale']['group'],
                 $data['locale']['var']
             );
         }
 
-        if ( !isset( $data['value'] ) || empty( $data['value'] ) ) {
+        if (!isset($data['value']) || empty($data['value'])) {
             return $type;
         }
 
-        $value = explode( ' ', $data['value'] );
+        $value = explode(' ', $data['value']);
 
-        if ( \QUI::getLocale()->exists( $value[ 0 ], $value[ 1 ] ) ) {
-            return \QUI::getLocale()->get( $value[ 0 ], $value[ 1 ] );
+        if (\QUI::getLocale()->exists($value[0], $value[1])) {
+            return \QUI::getLocale()->get($value[0], $value[1]);
         }
 
         return $type;
@@ -483,9 +471,9 @@ class Manager extends QUI\QDOM
      */
     public function getIconByType($type)
     {
-        $data = $this->_getSiteXMLDataByType( $type );
+        $data = $this->_getSiteXMLDataByType($type);
 
-        if ( isset( $data['icon'] ) ) {
+        if (isset($data['icon'])) {
             return $data['icon'];
         }
 
@@ -501,63 +489,60 @@ class Manager extends QUI\QDOM
      */
     protected function _getSiteXMLDataByType($type)
     {
-        $cache = 'pluginManager/data/'. $type;
+        $cache = 'pluginManager/data/' . $type;
 
-        try
-        {
-            return \QUI\Cache\Manager::get( $cache );
+        try {
+            return \QUI\Cache\Manager::get($cache);
 
-        } catch ( \QUI\Cache\Exception $Exception )
-        {
+        } catch (\QUI\Cache\Exception $Exception) {
 
         }
 
-        if ( strpos( $type, ':' ) === false ) {
+        if (strpos($type, ':') === false) {
             return false;
         }
 
-        $explode = explode( ':', $type );
-        $package = $explode[ 0 ];
-        $type    = $explode[ 1 ];
+        $explode = explode(':', $type);
+        $package = $explode[0];
+        $type    = $explode[1];
 
-        $siteXml = OPT_DIR . $package .'/site.xml';
+        $siteXml = OPT_DIR . $package . '/site.xml';
 
-        if ( !file_exists( $siteXml ) ) {
+        if (!file_exists($siteXml)) {
             return false;
         }
 
-        $Dom   = \QUI\Utils\XML::getDomFromXml( $siteXml );
-        $XPath = new \DOMXPath( $Dom );
-        $Types = $XPath->query( '//type[@type="'. $type .'"]' );
+        $Dom   = \QUI\Utils\XML::getDomFromXml($siteXml);
+        $XPath = new \DOMXPath($Dom);
+        $Types = $XPath->query('//type[@type="' . $type . '"]');
 
-        if ( !$Types->length ) {
+        if (!$Types->length) {
             return false;
         }
 
-        $Type = $Types->item( 0 );
+        $Type = $Types->item(0);
         $data = array();
 
-        if ( $Type->getAttribute( 'icon' ) ) {
-            $data['icon'] = $Type->getAttribute( 'icon' );
+        if ($Type->getAttribute('icon')) {
+            $data['icon'] = $Type->getAttribute('icon');
         }
 
-        if ( $Type->getAttribute( 'extend' ) ) {
-            $data['extend'] = $Type->getAttribute( 'extend' );
+        if ($Type->getAttribute('extend')) {
+            $data['extend'] = $Type->getAttribute('extend');
         }
 
-        $loc = $Type->getElementsByTagName( 'locale' );
+        $loc = $Type->getElementsByTagName('locale');
 
-        if ( $loc->length )
-        {
+        if ($loc->length) {
             $data['locale'] = array(
-                 'group' => $loc->item( 0 )->getAttribute( 'group' ),
-                 'var'   => $loc->item( 0 )->getAttribute( 'var' )
+                'group' => $loc->item(0)->getAttribute('group'),
+                'var' => $loc->item(0)->getAttribute('var')
             );
         }
 
-        $data['value'] = trim( $Type->nodeValue );
+        $data['value'] = trim($Type->nodeValue);
 
-        \QUI\Cache\Manager::set( $cache, $data );
+        \QUI\Cache\Manager::set($cache, $data);
 
         return $data;
     }
@@ -569,14 +554,14 @@ class Manager extends QUI\QDOM
      */
     public function _getAll()
     {
-        if ( $this->_loaded ) {
+        if ($this->_loaded) {
             return $this->_plugins;
         }
 
         $config = $this->_Config->toArray();
 
-        foreach ( $config as $key => $value ) {
-            $this->get( $key );
+        foreach ($config as $key => $value) {
+            $this->get($key);
         }
 
         $this->_loaded = true;
@@ -594,7 +579,7 @@ class Manager extends QUI\QDOM
         return array();
 
 
-        if ( $this->_groupplugins ) {
+        if ($this->_groupplugins) {
             return $this->_groupplugins;
         }
 
@@ -602,17 +587,16 @@ class Manager extends QUI\QDOM
 
         $config = $this->_Config->toArray();
 
-        foreach ( $config as $entry => $value )
-        {
-            if ( !file_exists( OPT_DIR . $entry .'/Groups.php' ) ) {
+        foreach ($config as $entry => $value) {
+            if (!file_exists(OPT_DIR . $entry . '/Groups.php')) {
                 continue;
             }
 
-            require_once OPT_DIR . $entry .'/Groups.php';
+            require_once OPT_DIR . $entry . '/Groups.php';
 
-            $class = 'Plugin'. ucfirst($entry) .'GroupExtend';
+            $class = 'Plugin' . ucfirst($entry) . 'GroupExtend';
 
-            if ( !class_exists( $class ) ) {
+            if (!class_exists($class)) {
                 continue;
             }
 

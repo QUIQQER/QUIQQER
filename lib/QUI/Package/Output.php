@@ -19,20 +19,19 @@ use Symfony\Component\Console\Formatter\OutputFormatterInterface;
  *
  * @event onOutput [ string $message ]
  */
-
 class Output extends \Symfony\Component\Console\Output\Output
 {
     /**
      * List of messages
      * @var array
      */
-    protected $_messages = array();
+    protected $messages = array();
 
     /**
      * current message string
      * @var string
      */
-    protected $_message  = '';
+    protected $message = '';
 
     /**
      * Event Manager
@@ -47,9 +46,12 @@ class Output extends \Symfony\Component\Console\Output\Output
      * @param string|boolean $decorated
      * @param OutputFormatterInterface $formatter
      */
-    public function __construct($verbosity=self::VERBOSITY_NORMAL, $decorated=false, OutputFormatterInterface $formatter=null)
-    {
-        parent::__construct( $verbosity, $decorated, $formatter );
+    public function __construct(
+        $verbosity = self::VERBOSITY_NORMAL,
+        $decorated = false,
+        OutputFormatterInterface $formatter = null
+    ) {
+        parent::__construct($verbosity, $decorated, $formatter);
 
         $this->Events = new QUI\Events\Manager();
     }
@@ -57,21 +59,21 @@ class Output extends \Symfony\Component\Console\Output\Output
     /**
      * Writes a message to the output.
      *
-     * @param string  $message A message to write to the output
+     * @param string $message A message to write to the output
      * @param boolean $newline Whether to add a newline or not
      */
     public function doWrite($message, $newline)
     {
-        $this->_message .= $message;
+        $this->message .= $message;
 
-        $this->Events->fireEvent( 'output', array( $message, $newline ) );
+        $this->Events->fireEvent('output', array($message, $newline));
 
-        if ( !$newline ) {
+        if (!$newline) {
             return;
         }
 
-        $this->_messages[] = $this->_message;
-        $this->_message    = '';
+        $this->messages[] = $this->message;
+        $this->message    = '';
     }
 
     /**
@@ -80,9 +82,9 @@ class Output extends \Symfony\Component\Console\Output\Output
      * @param bool|false $newline
      * @param int $type
      */
-    public function write($messages, $newline=false, $type=self::OUTPUT_RAW)
+    public function write($messages, $newline = false, $type = self::OUTPUT_RAW)
     {
-        parent::write( $messages, $newline, $type );
+        parent::write($messages, $newline, $type);
     }
 
     /**
@@ -90,7 +92,7 @@ class Output extends \Symfony\Component\Console\Output\Output
      * @param array|string $messages
      * @param int $type
      */
-    public function writeln($messages, $type=self::OUTPUT_RAW)
+    public function writeln($messages, $type = self::OUTPUT_RAW)
     {
         $this->write($messages, true, $type);
     }
@@ -101,7 +103,7 @@ class Output extends \Symfony\Component\Console\Output\Output
      */
     public function getMessages()
     {
-        return $this->_messages;
+        return $this->messages;
     }
 
     /**
@@ -109,6 +111,6 @@ class Output extends \Symfony\Component\Console\Output\Output
      */
     public function clearMessages()
     {
-        $this->_messages = array();
+        $this->messages = array();
     }
 }

@@ -24,7 +24,7 @@ class Handler extends QUI\QDOM
      *
      * @var array
      */
-    protected $_shutdowncallbacks = array();
+    protected $shutdowncallbacks = array();
 
     /**
      * constructor
@@ -99,7 +99,7 @@ class Handler extends QUI\QDOM
             );
         }
 
-        $this->_shutdowncallbacks[] = $callback;
+        $this->shutdowncallbacks[] = $callback;
 
         return true;
     }
@@ -109,7 +109,7 @@ class Handler extends QUI\QDOM
      */
     public function callShutdown()
     {
-        $callbacks = $this->_shutdowncallbacks;
+        $callbacks = $this->shutdowncallbacks;
 
         foreach ($callbacks as $arguments) {
             $callback = array_shift($arguments);

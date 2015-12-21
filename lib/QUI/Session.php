@@ -58,19 +58,21 @@ class Session
      */
     public function __construct()
     {
-        $this->table = QUI_DB_PRFX.'sessions';
+        $this->table = QUI_DB_PRFX . 'sessions';
 
         // symfony files
         $classNativeSessionStorage
             = '\Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage';
 
-        $fileNativeSessionStorage = OPT_DIR
-            .'symfony/http-foundation/Symfony/Component/HttpFoundation/Session/Storage/NativeSessionStorage.php';
+        $fileNativeSessionStorage = OPT_DIR .
+                                    'symfony/http-foundation/Symfony/Component/' .
+                                    'HttpFoundation/Session/Storage/NativeSessionStorage.php';
 
         $classSession = '\Symfony\Component\HttpFoundation\Session\Session';
 
-        $fileSession = OPT_DIR
-            .'symfony/http-foundation/Symfony/Component/HttpFoundation/Session/Session.php';
+        $fileSession = OPT_DIR .
+                       'symfony/http-foundation/Symfony/Component/' .
+                       'HttpFoundation/Session/Session.php';
 
 
         // options
@@ -79,7 +81,7 @@ class Session
         }
 
         $storageOptions = array(
-            'cookie_lifetime'  => $this->lifetime
+            'cookie_lifetime' => $this->lifetime
         );
 
         if (!class_exists('NativeSessionStorage')) {
@@ -88,7 +90,7 @@ class Session
 
             } else {
                 throw new \Exception(
-                    'Session File not found '.$fileNativeSessionStorage
+                    'Session File not found ' . $fileNativeSessionStorage
                 );
             }
 
@@ -112,7 +114,7 @@ class Session
 
             } else {
                 throw new \Exception('Session File not found '
-                    .$fileSession);
+                                     . $fileSession);
             }
 
             if (class_exists($classSession)) {
@@ -141,7 +143,7 @@ class Session
                 break;
 
             default:
-                return new NativeFileSessionHandler(VAR_DIR.'sessions');
+                return new NativeFileSessionHandler(VAR_DIR . 'sessions');
         }
 
 
@@ -156,7 +158,7 @@ class Session
                 $serverData = explode(':', $serverData);
 
                 $server = $serverData[0];
-                $port = 11211;
+                $port   = 11211;
 
                 if (isset($serverData[1])) {
                     $port = $serverData[1];
@@ -183,7 +185,7 @@ class Session
                 $serverData = explode(':', $serverData);
 
                 $server = $serverData[0];
-                $port = 11211;
+                $port   = 11211;
 
                 if (isset($serverData[1])) {
                     $port = $serverData[1];
@@ -205,15 +207,15 @@ class Session
             $PDO->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
             return new PdoSessionHandler($PDO, array(
-                'db_table'        => $this->table,
-                'db_id_col'       => 'session_id',
-                'db_data_col'     => 'session_value',
-                'db_time_col'     => 'session_time',
+                'db_table' => $this->table,
+                'db_id_col' => 'session_id',
+                'db_data_col' => 'session_value',
+                'db_time_col' => 'session_time',
                 'db_lifetime_col' => 'session_lifetime'
             ));
         }
 
-        return new NativeFileSessionHandler(VAR_DIR.'sessions');
+        return new NativeFileSessionHandler(VAR_DIR . 'sessions');
     }
 
     /**
@@ -236,11 +238,11 @@ class Session
         // pdo mysql options db
         // more at http://symfony.com/doc/current/cookbook/configuration/pdo_session_storage.html
         $DBTable->appendFields($this->table, array(
-            'session_id'       => 'varchar(255) NOT NULL',
-            'session_value'    => 'text NOT NULL',
-            'session_time'     => 'int(11) NOT NULL',
+            'session_id' => 'varchar(255) NOT NULL',
+            'session_value' => 'text NOT NULL',
+            'session_time' => 'int(11) NOT NULL',
             'session_lifetime' => 'int(12) NOT NULL',
-            'uid'              => 'int(11) NOT NULL'
+            'uid' => 'int(11) NOT NULL'
         ));
 
         $DBTable->setPrimaryKey($this->table, 'session_id');
@@ -249,7 +251,7 @@ class Session
     /**
      * Set a variable to the session
      *
-     * @param string $name  - Name og the variable
+     * @param string $name - Name og the variable
      * @param string $value - value of the variable
      */
     public function set($name, $value)
@@ -356,7 +358,7 @@ class Session
     public function getLastRefreshFrom($sid)
     {
         $result = QUI::getDataBase()->fetch(array(
-            'from'  => $this->table,
+            'from' => $this->table,
             'where' => array(
                 'session_id' => $sid
             ),
@@ -380,7 +382,7 @@ class Session
     public function isUserOnline($uid)
     {
         $result = QUI::getDataBase()->fetch(array(
-            'from'  => $this->table,
+            'from' => $this->table,
             'where' => array(
                 'uid' => (int)$uid
             ),

@@ -22,19 +22,19 @@ class Manager
     /**
      * @var QUI\Projects\Project (active internal project)
      */
-    private $_Project = false;
+    private $Project = false;
 
     /**
      * @var array - list of users (cache)
      */
-    private $_users = array();
+    private $users = array();
 
     /**
      * Return the db table
      *
      * @return string
      */
-    public static function Table()
+    public static function table()
     {
         return QUI_DB_PRFX . 'users';
     }
@@ -44,7 +44,7 @@ class Manager
      *
      * @return string
      */
-    public static function TableAddress()
+    public static function tableAddress()
     {
         return QUI_DB_PRFX . 'users_address';
     }
@@ -56,7 +56,7 @@ class Manager
     {
         $DataBase = QUI::getDataBase();
 
-        $DataBase->Table()->appendFields(self::Table(), array(
+        $DataBase->Table()->appendFields(self::table(), array(
             'id' => 'int(11)',
             'username' => 'varchar(50)',
             'password' => 'varchar(50)',
@@ -84,12 +84,12 @@ class Manager
 
         // Patch
         $DataBase->getPDO()->exec(
-            'ALTER TABLE `' . self::Table()
+            'ALTER TABLE `' . self::table()
             . '` CHANGE `birthday` `birthday` DATE NULL DEFAULT NULL'
         );
 
         // Addresses
-        $DataBase->Table()->appendFields(self::TableAddress(), array(
+        $DataBase->Table()->appendFields(self::tableAddress(), array(
             'id' => 'int(11)',
             'uid' => 'int(11)',
             'salutation' => 'varchar(10)',
@@ -105,10 +105,10 @@ class Manager
             'country' => 'text'
         ));
 
-        $DataBase->Table()->setIndex(self::TableAddress(), 'id');
+        $DataBase->Table()->setIndex(self::tableAddress(), 'id');
 
         $DataBase->getPDO()->exec(
-            'ALTER TABLE `' . self::TableAddress()
+            'ALTER TABLE `' . self::tableAddress()
             . '` CHANGE `id` `id` INT( 11 ) NOT NULL AUTO_INCREMENT'
         );
     }
@@ -193,7 +193,7 @@ class Manager
      */
     public function setProject(QUI\Projects\Project $Project)
     {
-        $this->_Project = $Project;
+        $this->Project = $Project;
     }
 
     /**
@@ -206,7 +206,7 @@ class Manager
      */
     public function getProject()
     {
-        return $this->_Project;
+        return $this->Project;
     }
 
     /**
@@ -249,7 +249,7 @@ class Manager
         // Nur erlaubte Zeichen zu lassen
         //$newname
         QUI::getDataBase()->insert(
-            self::Table(),
+            self::table(),
             array(
                 'id' => $newid,
                 'username' => $newname,
@@ -385,7 +385,7 @@ class Manager
             $regparams['referal'] = $Session->get('ref');
         }
 
-        QUI::getDataBase()->insert(self::Table(), $regparams);
+        QUI::getDataBase()->insert(self::table(), $regparams);
 
         $lastId = QUI::getDataBase()->getPDO()->lastInsertId('id');
 
@@ -401,7 +401,7 @@ class Manager
     {
         $result = QUI::getDataBase()->fetch(array(
             'count' => 'count',
-            'from' => self::Table()
+            'from' => self::table()
         ));
 
         if (isset($result[0]) && isset($result[0]['count'])) {
@@ -422,7 +422,7 @@ class Manager
     {
         if ($objects == false) {
             return QUI::getDataBase()->fetch(array(
-                'from' => self::Table(),
+                'from' => self::table(),
                 'order' => 'username'
             ));
         }
@@ -451,7 +451,7 @@ class Manager
     {
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'id',
-            'from' => self::Table(),
+            'from' => self::table(),
             'order' => 'username'
         ));
 
@@ -497,7 +497,7 @@ class Manager
     public function getUserIds($params = array())
     {
         $params['select'] = 'id';
-        $params['from']   = self::Table();
+        $params['from']   = self::table();
 
         return QUI::getDataBase()->fetch($params);
     }
@@ -590,7 +590,7 @@ class Manager
         // check user data
         $userData = QUI::getDataBase()->fetch(array(
             'select' => array('id', 'expire', 'secHash', 'active'),
-            'from' => self::Table(),
+            'from' => self::table(),
             'where' => array(
                 'id' => $userId
             ),
@@ -654,7 +654,7 @@ class Manager
         }
 
         QUI::getDataBase()->update(
-            self::Table(),
+            self::table(),
             array(
                 'lastvisit' => time(),
                 'user_agent' => $useragent,
@@ -664,7 +664,7 @@ class Manager
         );
 
         $User->refresh();
-        $this->_users[$userId] = $User;
+        $this->users[$userId] = $User;
 
         QUI::getEvents()->fireEvent('userLogin', array($User));
 
@@ -823,12 +823,12 @@ class Manager
             return new SystemUser();
         }
 
-        if (isset($this->_users[$id])) {
-            return $this->_users[$id];
+        if (isset($this->users[$id])) {
+            return $this->users[$id];
         }
 
         $User              = new User($id, $this);
-        $this->_users[$id] = $User;
+        $this->users[$id] = $User;
 
         return $User;
     }
@@ -845,7 +845,7 @@ class Manager
     {
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'id',
-            'from' => self::Table(),
+            'from' => self::table(),
             'where' => array(
                 'username' => $username
             ),
@@ -877,7 +877,7 @@ class Manager
     {
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'id',
-            'from' => self::Table(),
+            'from' => self::table(),
             'where' => array(
                 'email' => $email
             ),
@@ -923,7 +923,7 @@ class Manager
 
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'username',
-            'from' => self::Table(),
+            'from' => self::table(),
             'where' => array(
                 'username' => $username
             ),
@@ -966,7 +966,7 @@ class Manager
     {
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'email',
-            'from' => self::Table(),
+            'from' => self::table(),
             'where' => array(
                 'email' => $email
             ),
@@ -1015,7 +1015,7 @@ class Manager
      */
     public function search($params)
     {
-        return $this->_search($params);
+        return $this->execSearch($params);
     }
 
     /**
@@ -1032,7 +1032,7 @@ class Manager
         unset($params['limit']);
         unset($params['start']);
 
-        return $this->_search($params);
+        return $this->execSearch($params);
     }
 
     /**
@@ -1045,7 +1045,7 @@ class Manager
      * @return array
      * @throws QUI\Database\Exception
      */
-    protected function _search($params)
+    protected function execSearch($params)
     {
         $PDO    = QUI::getDataBase()->getPDO();
         $params = Orthos::clearArray($params);
@@ -1069,11 +1069,11 @@ class Manager
         /**
          * SELECT
          */
-        $query = 'SELECT * FROM ' . self::Table();
+        $query = 'SELECT * FROM ' . self::table();
         $binds = array();
 
         if (isset($params['count'])) {
-            $query = 'SELECT COUNT( id ) AS count FROM ' . self::Table();
+            $query = 'SELECT COUNT( id ) AS count FROM ' . self::table();
         }
 
         /**
@@ -1279,7 +1279,7 @@ class Manager
             $newid = rand(100, 1000000000);
 
             $result = QUI::getDataBase()->fetch(array(
-                'from' => self::Table(),
+                'from' => self::table(),
                 'where' => array(
                     'id' => $newid
                 )

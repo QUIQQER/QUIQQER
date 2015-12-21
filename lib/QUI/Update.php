@@ -13,10 +13,11 @@ use QUI\Utils\System\File as QUIFile;
 use QUI\System\Log;
 use QUI\Utils\XML;
 
-
 if (!function_exists('glob_recursive')) {
-    // Does not support flag GLOB_BRACE
-
+    /**
+     * polyfill for glob_recursive
+     * Does not support flag GLOB_BRACE
+     */
     function glob_recursive($pattern, $flags = 0)
     {
         $files = glob($pattern, $flags);

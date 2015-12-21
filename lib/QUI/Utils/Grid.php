@@ -89,7 +89,7 @@ class Grid extends QUI\QDOM
      *
      * @return array
      */
-    static function getResult($data, $page, $limit)
+    public static function getResult($data, $page, $limit)
     {
         $count = count($data);
         $end   = $page * $limit;

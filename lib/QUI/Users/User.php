@@ -1426,7 +1426,7 @@ class User implements QUI\Interfaces\Users\User
         $_params['uid'] = $this->getId();
 
         QUI::getDataBase()->insert(
-            Manager::TableAddress(),
+            Manager::tableAddress(),
             $_params
         );
 
@@ -1443,7 +1443,7 @@ class User implements QUI\Interfaces\Users\User
     public function getAddressList()
     {
         $result = QUI::getDataBase()->fetch(array(
-            'from' => Manager::TableAddress(),
+            'from' => Manager::tableAddress(),
             'select' => 'id',
             'where' => array(
                 'uid' => $this->getId()

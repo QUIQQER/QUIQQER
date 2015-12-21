@@ -27,35 +27,35 @@ class Package extends QUI\QDOM
      *
      * @var string
      */
-    protected $_name = '';
+    protected $name = '';
 
     /**
      * Directory of the package
      *
      * @var string
      */
-    protected $_packageDir = '';
+    protected $packageDir = '';
 
     /**
      * Package composer data from the composer file
      *
      * @var bool|array
      */
-    protected $_composerData = false;
+    protected $composerData = false;
 
     /**
      * Path to the Config
      *
      * @var string
      */
-    protected $_configPath = '';
+    protected $configPath = '';
 
     /**
      * Package Config
      *
      * @var QUI\Config
      */
-    protected $_Config = null;
+    protected $Config = null;
 
     /**
      * constructor
@@ -72,30 +72,30 @@ class Package extends QUI\QDOM
             throw new QUI\Exception('Package not exists', 404);
         }
 
-        $this->_packageDir = $packageDir;
-        $this->_name = $package;
+        $this->packageDir = $packageDir;
+        $this->name = $package;
 
         // no composer.json, no real package
         if (!file_exists($packageDir.'composer.json')) {
             return;
         }
 
-        $this->_composerData = json_decode(
+        $this->composerData = json_decode(
             file_get_contents($packageDir.'composer.json'),
             true
         );
 
-        if (!isset($this->_composerData['type'])) {
+        if (!isset($this->composerData['type'])) {
             return;
         }
 
-        if (strpos($this->_composerData['type'], 'quiqqer-') === false) {
+        if (strpos($this->composerData['type'], 'quiqqer-') === false) {
             return;
         }
 
-        $this->_configPath = CMS_DIR.'etc/plugins/'.$this->getName().'.ini.php';
+        $this->configPath = CMS_DIR.'etc/plugins/'.$this->getName().'.ini.php';
 
-        QUI\Utils\System\File::mkfile($this->_configPath);
+        QUI\Utils\System\File::mkfile($this->configPath);
     }
 
     /**
@@ -105,7 +105,7 @@ class Package extends QUI\QDOM
      */
     public function getDir()
     {
-        return $this->_packageDir;
+        return $this->packageDir;
     }
 
     /**
@@ -130,7 +130,7 @@ class Package extends QUI\QDOM
      */
     public function getName()
     {
-        return $this->_name;
+        return $this->name;
     }
 
     /**
@@ -140,15 +140,15 @@ class Package extends QUI\QDOM
      */
     public function getConfig()
     {
-        if (empty($this->_configPath)) {
+        if (empty($this->configPath)) {
             return false;
         }
 
-        if (!$this->_Config) {
-            $this->_Config = new QUI\Config($this->_configPath);
+        if (!$this->Config) {
+            $this->Config = new QUI\Config($this->configPath);
         }
 
-        return $this->_Config;
+        return $this->Config;
     }
 
     /**
@@ -159,8 +159,8 @@ class Package extends QUI\QDOM
      */
     public function getComposerData()
     {
-        if ($this->_composerData) {
-            return $this->_composerData;
+        if ($this->composerData) {
+            return $this->composerData;
         }
 
         $composer = QUI::getPackageManager()->show($this->getName());
@@ -169,7 +169,7 @@ class Package extends QUI\QDOM
             $composer['name'] = $this->getName();
         }
 
-        $this->_composerData = $composer;
+        $this->composerData = $composer;
 
         return $composer;
     }
