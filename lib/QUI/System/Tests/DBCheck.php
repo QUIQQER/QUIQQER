@@ -24,17 +24,17 @@ class DBCheck extends QUI\System\Test
     /**
      * @var \QUI\Database\Tables
      */
-    protected $_Tables = null;
+    protected $Tables = null;
 
     /**
      * @var bool
      */
-    protected $_error = false;
+    protected $error = false;
 
     /**
      * @var array
      */
-    protected $_errors = array();
+    protected $errors = array();
 
     /**
      * Constructor
@@ -67,7 +67,7 @@ class DBCheck extends QUI\System\Test
 
         $packages = SystemFile::readDir($packages_dir);
 
-        $this->_Tables = QUI::getDataBase()->Table();
+        $this->Tables = QUI::getDataBase()->Table();
 
         // first we need all databases
         foreach ($packages as $package) {
@@ -90,8 +90,8 @@ class DBCheck extends QUI\System\Test
                 }
 
                 try {
-                    $this->_checkIntegrity($databaseXml);
-                    $this->_outputError($databaseXml);
+                    $this->checkIntegrity($databaseXml);
+                    $this->outputError($databaseXml);
                 } catch (\Exception $Exception) {
                     QUI\System\Log::addWarning($databaseXml);
                     QUI\System\Log::addWarning($Exception->getMessage());
@@ -100,7 +100,7 @@ class DBCheck extends QUI\System\Test
             }
         }
 
-        if ($this->_error) {
+        if ($this->error) {
             return self::STATUS_ERROR;
         }
 
@@ -112,7 +112,7 @@ class DBCheck extends QUI\System\Test
      *
      * @param $xmlFile
      */
-    protected function _checkIntegrity($xmlFile)
+    protected function checkIntegrity($xmlFile)
     {
         $content = XML::getDataBaseFromXml($xmlFile);
 
@@ -124,7 +124,7 @@ class DBCheck extends QUI\System\Test
             $noLangTables = array(); // language independant tables
 
             foreach ($content['projects'] as $info) {
-                $checkData = $this->_extractTableData($info);
+                $checkData = $this->extractTableData($info);
 
                 if (!empty($info['no-project-lang'])) {
                     $noLangTables[] = $checkData;
@@ -143,7 +143,7 @@ class DBCheck extends QUI\System\Test
                             false
                         );
 
-                        $this->_checkTableIntegrity(
+                        $this->checkTableIntegrity(
                             $projectTable,
                             $tblData
                         );
@@ -165,7 +165,7 @@ class DBCheck extends QUI\System\Test
                                 $lang
                             );
 
-                            $this->_checkTableIntegrity(
+                            $this->checkTableIntegrity(
                                 $projectTable,
                                 $tblData
                             );
@@ -179,12 +179,12 @@ class DBCheck extends QUI\System\Test
             $globalTables = array();
 
             foreach ($content['globals'] as $info) {
-                $globalTables[] = $this->_extractTableData($info, true);
+                $globalTables[] = $this->extractTableData($info, true);
             }
 
             foreach ($globalTables as $tblData) {
                 $table = QUI::getDBTableName($tblData['table']);
-                $this->_checkTableIntegrity($table, $tblData);
+                $this->checkTableIntegrity($table, $tblData);
             }
         }
     }
@@ -197,7 +197,7 @@ class DBCheck extends QUI\System\Test
      *
      * @return array
      */
-    protected function _extractTableData($info, $isGlobal = false)
+    protected function extractTableData($info, $isGlobal = false)
     {
         $primaryKeys = array();
         $checkData   = array(
@@ -246,7 +246,7 @@ class DBCheck extends QUI\System\Test
                 if (!(count($primaryKeys) === 1
                       && in_array('id', $primaryKeys))
                 ) {
-                    $this->_addError(
+                    $this->addError(
                         $checkData['table'],
                         "---",
                         "Primary Key error -> " .
@@ -279,7 +279,7 @@ class DBCheck extends QUI\System\Test
      * @param string $table - name of the table in the database
      * @param array $tblData - the data extracted form the database.xml
      */
-    protected function _checkTableIntegrity($table, $tblData)
+    protected function checkTableIntegrity($table, $tblData)
     {
         // xml data
         $tbl         = $tblData['table'];
@@ -287,8 +287,8 @@ class DBCheck extends QUI\System\Test
         $autoInc     = $tblData['auto_inc'];
         $fields      = $tblData['fields'];
 
-        if (!$this->_Tables->exist($table)) {
-            $this->_addError(
+        if (!$this->Tables->exist($table)) {
+            $this->addError(
                 $tbl,
                 $table,
                 "Missing table -> " .
@@ -300,7 +300,7 @@ class DBCheck extends QUI\System\Test
         }
 
         // get table info from database
-        $dbKeys = $this->_Tables->getKeys($table);
+        $dbKeys = $this->Tables->getKeys($table);
 
         // get all primary keys
         foreach ($dbKeys as $k => $columnInfo) {
@@ -312,7 +312,7 @@ class DBCheck extends QUI\System\Test
             $dbKeys[$k] = $columnInfo['Column_name'];
         }
 
-        $_dbFields = $this->_Tables->getFieldsInfos($table);
+        $_dbFields = $this->Tables->getFieldsInfos($table);
         $dbFields  = array();
 
         foreach ($_dbFields as $_entry) {
@@ -329,7 +329,7 @@ class DBCheck extends QUI\System\Test
             $_prKeys = empty($primaryKeys) ? '(none)'
                 : implode(',', $primaryKeys);
 
-            $this->_addError(
+            $this->addError(
                 $tbl,
                 $table,
                 "Primary Key mismatch -> " .
@@ -346,7 +346,7 @@ class DBCheck extends QUI\System\Test
         );
 
         if (!empty($xmlFieldsDiff)) {
-            $this->_addError(
+            $this->addError(
                 $tbl,
                 $table,
                 "Missing table fields -> " .
@@ -357,7 +357,7 @@ class DBCheck extends QUI\System\Test
         }
 
         // collect detailled column information from database
-        $dbFieldsData = $this->_Tables->getFieldsInfos($table);
+        $dbFieldsData = $this->Tables->getFieldsInfos($table);
 
         foreach ($dbFieldsData as $field) {
             $fieldName = $field['Field'];
@@ -387,7 +387,7 @@ class DBCheck extends QUI\System\Test
                 $should = $nullable ? "NULL" : "NOT NULL";
                 $is     = $isNullable ? "NULL" : "NOT NULL";
 
-                $this->_addError(
+                $this->addError(
                     $tbl,
                     $table,
                     "Field structure mismatch -> " .
@@ -415,7 +415,7 @@ class DBCheck extends QUI\System\Test
                 $is     = $isAutoIncrement ? "AUTO_INCREMENT"
                     : "not AUTO_INCREMENT";
 
-                $this->_addError(
+                $this->addError(
                     $tbl,
                     $table,
                     "Field structure mismatch -> " .
@@ -445,7 +445,7 @@ class DBCheck extends QUI\System\Test
             $fieldData = preg_replace('#\(\D*(\d+)\D*\)#i', '($1)', $fieldData);
 
             if (mb_strpos($fieldData, $isDatatype) === false) {
-                $this->_addError(
+                $this->addError(
                     $tbl,
                     $table,
                     "Field structure mismatch -> " .
@@ -462,29 +462,29 @@ class DBCheck extends QUI\System\Test
      * @param string $dbTable
      * @param string $error
      */
-    protected function _addError($table, $dbTable, $error)
+    protected function addError($table, $dbTable, $error)
     {
-        $this->_errors[] = array(
+        $this->errors[] = array(
             'table' => $table,
             'dbTable' => $dbTable,
             'error' => $error
         );
 
-        $this->_error = true;
+        $this->error = true;
     }
 
     /**
      * @param string $xmlFile
      */
-    protected function _outputError($xmlFile)
+    protected function outputError($xmlFile)
     {
-        if (empty($this->_errors)) {
+        if (empty($this->errors)) {
             return;
         }
 
         $msg = "\n-> Database Check Errors in: $xmlFile <-";
 
-        foreach ($this->_errors as $k => $err) {
+        foreach ($this->errors as $k => $err) {
             $msg .= "\n";
             $msg .= "\n Error #" . ($k + 1) . ":";
             $msg .= "\n -------------------------";
@@ -494,6 +494,6 @@ class DBCheck extends QUI\System\Test
         }
 
         QUI\System\Log::addWarning($msg);
-        $this->_errors = array();
+        $this->errors = array();
     }
 }
