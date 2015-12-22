@@ -48,7 +48,14 @@ use QUI\Utils\Security\Orthos;
  */
 class Edit extends Site
 {
+    /**
+     *
+     */
     const ESAVE = 3;
+
+    /**
+     *
+     */
     const EACCES = 4;
 
     /**
@@ -57,6 +64,12 @@ class Edit extends Site
      * @var array
      */
     public $conf = array();
+
+    /**
+     * lock file path
+     * @var array|string
+     */
+    protected $lockfile = array();
 
     /**
      * Konstruktor
@@ -72,9 +85,9 @@ class Edit extends Site
 
         $id = $this->getId();
 
-        $this->_lockfile = VAR_DIR . 'lock/' .
-                           $Project->getAttribute('name') . '_' .
-                           $id . '_' . $Project->getAttribute('lang');
+        $this->lockfile = VAR_DIR . 'lock/' .
+                          $Project->getAttribute('name') . '_' .
+                          $id . '_' . $Project->getAttribute('lang');
 
         // Temp Dir abfragen ob existiert
         QUI\Utils\System\File::mkdir(VAR_DIR . 'admin/');
@@ -93,7 +106,7 @@ class Edit extends Site
     public function refresh()
     {
         $result = QUI::getDataBase()->fetch(array(
-            'from' => $this->_TABLE,
+            'from' => $this->TABLE,
             'where' => array(
                 'id' => $this->getId()
             ),
@@ -103,7 +116,7 @@ class Edit extends Site
         // Verknüpfung hohlen
         if ($this->getId() != 1) {
             $relresult = QUI::getDataBase()->fetch(array(
-                'from' => $this->_RELTABLE,
+                'from' => $this->RELTABLE,
                 'where' => array(
                     'child' => $this->getId()
                 )
@@ -115,7 +128,7 @@ class Edit extends Site
                         continue;
                     }
 
-                    $this->_LINKED_PARENT = $entry['oparent'];
+                    $this->LINKED_PARENT = $entry['oparent'];
                 }
             }
         }
@@ -227,7 +240,7 @@ class Edit extends Site
         }
 
         // save
-        QUI::getDataBase()->update($this->_TABLE, array(
+        QUI::getDataBase()->update($this->TABLE, array(
             'active' => 1,
             'release_from' => $releaseFrom
         ), array(
@@ -269,7 +282,7 @@ class Edit extends Site
 
         // deactivate
         QUI::getDataBase()->exec(array(
-            'update' => $this->_TABLE,
+            'update' => $this->TABLE,
             'set' => array(
                 'active' => 0
             ),
@@ -335,17 +348,17 @@ class Edit extends Site
          */
 
         // Daten löschen
-        QUI::getDataBase()->delete($this->_TABLE, array(
+        QUI::getDataBase()->delete($this->TABLE, array(
             'id' => $this->getId()
         ));
 
         // sich als Kind löschen
-        QUI::getDataBase()->delete($this->_RELTABLE, array(
+        QUI::getDataBase()->delete($this->RELTABLE, array(
             'child' => $this->getId()
         ));
 
         // sich als parent löschen
-        QUI::getDataBase()->delete($this->_RELTABLE, array(
+        QUI::getDataBase()->delete($this->RELTABLE, array(
             'parent' => $this->getId()
         ));
 
@@ -556,7 +569,7 @@ class Edit extends Site
 
         // save main data
         $update = QUI::getDataBase()->update(
-            $this->_TABLE,
+            $this->TABLE,
             array(
                 'name' => trim($this->getAttribute('name')),
                 'title' => trim($this->getAttribute('title')),
@@ -691,9 +704,9 @@ class Edit extends Site
     public function getChildrenIdsFromParentId($pid, $params = array())
     {
         $where_1 = array(
-            $this->_RELTABLE . '.parent' => (int)$pid,
-            $this->_TABLE . '.deleted' => 0,
-            $this->_RELTABLE . '.child' => '`' . $this->_TABLE . '.id`'
+            $this->RELTABLE . '.parent' => (int)$pid,
+            $this->TABLE . '.deleted' => 0,
+            $this->RELTABLE . '.child' => '`' . $this->TABLE . '.id`'
         );
 
         if (isset($params['where']) && is_array($params['where'])) {
@@ -707,22 +720,22 @@ class Edit extends Site
             $where = $where_1;
         }
 
-        $order = $this->_TABLE . '.order_field';
+        $order = $this->TABLE . '.order_field';
 
         if (isset($params['order'])) {
             if (strpos($params['order'], '.') !== false) {
-                $order = $this->_TABLE . '.' . $params['order'];
+                $order = $this->TABLE . '.' . $params['order'];
             } else {
                 $order = $params['order'];
             }
         }
 
         $result = QUI::getDataBase()->fetch(array(
-            'select' => $this->_TABLE . '.id',
+            'select' => $this->TABLE . '.id',
             'count' => isset($params['count']) ? 'count' : false,
             'from' => array(
-                $this->_RELTABLE,
-                $this->_TABLE
+                $this->RELTABLE,
+                $this->TABLE
             ),
             'order' => $order,
             'limit' => isset($params['limit']) ? $params['limit'] : false,
@@ -743,12 +756,12 @@ class Edit extends Site
     {
         $query
             = "
-            SELECT COUNT({$this->_TABLE}.id) AS count
-            FROM `{$this->_RELTABLE}`,`{$this->_TABLE}`
-            WHERE `{$this->_RELTABLE}`.`parent` = {$this->getId()} AND
-                  `{$this->_RELTABLE}`.`child` = `{$this->_TABLE}`.`id` AND
-                  `{$this->_TABLE}`.`name` = :name AND
-                  `{$this->_TABLE}`.`deleted` = 0
+            SELECT COUNT({$this->TABLE}.id) AS count
+            FROM `{$this->RELTABLE}`,`{$this->TABLE}`
+            WHERE `{$this->RELTABLE}`.`parent` = {$this->getId()} AND
+                  `{$this->RELTABLE}`.`child` = `{$this->TABLE}`.`id` AND
+                  `{$this->TABLE}`.`name` = :name AND
+                  `{$this->TABLE}`.`deleted` = 0
         ";
 
         $PDO   = QUI::getDataBase()->getPDO();
@@ -846,7 +859,7 @@ class Edit extends Site
         $id = (int)$id;
 
         $result = QUI::getDataBase()->fetch(array(
-            'from' => $this->_RELLANGTABLE,
+            'from' => $this->RELLANGTABLE,
             'where' => array(
                 $p_lang => $this->getId()
             ),
@@ -855,7 +868,7 @@ class Edit extends Site
 
         if (isset($result[0])) {
             return QUI::getDataBase()->exec(array(
-                'update' => $this->_RELLANGTABLE,
+                'update' => $this->RELLANGTABLE,
                 'set' => array(
                     $lang => $id
                 ),
@@ -866,7 +879,7 @@ class Edit extends Site
         }
 
         return QUI::getDataBase()->exec(array(
-            'insert' => $this->_RELLANGTABLE,
+            'insert' => $this->RELLANGTABLE,
             'set' => array(
                 $p_lang => $this->getId(),
                 $lang => $id
@@ -888,7 +901,7 @@ class Edit extends Site
         $Project = $this->getProject();
 
         return QUI::getDataBase()->exec(array(
-            'update' => $this->_RELLANGTABLE,
+            'update' => $this->RELLANGTABLE,
             'set' => array(
                 $lang => 0
             ),
@@ -970,11 +983,11 @@ class Edit extends Site
         }
 
         $DataBase = QUI::getDataBase();
-        $DataBase->insert($this->_TABLE, $_params);
+        $DataBase->insert($this->TABLE, $_params);
 
         $newId = $DataBase->getPDO()->lastInsertId();
 
-        $DataBase->insert($this->_RELTABLE, array(
+        $DataBase->insert($this->RELTABLE, array(
             'parent' => $this->getId(),
             'child' => $newId
         ));
@@ -1038,7 +1051,7 @@ class Edit extends Site
 
         if (!in_array($pid, $children) && $pid != $this->getId()) {
             QUI::getDataBase()->update(
-                $this->_RELTABLE,
+                $this->RELTABLE,
                 array('parent' => $Parent->getId()),
                 'child = ' . $this->getId() . ' AND oparent IS NULL'
             );
@@ -1047,8 +1060,8 @@ class Edit extends Site
             $this->deleteCache();
 
             // remove internal parent ids
-            $this->_parents_id = false;
-            $this->_parent_id  = false;
+            $this->parents_id = false;
+            $this->parent_id  = false;
 
 
             $this->Events->fireEvent('move', array($this, $pid));
@@ -1280,11 +1293,12 @@ class Edit extends Site
         // Link Cache
         $Project = $this->getProject();
 
-        $link_cache_dir
-            = VAR_DIR . 'cache/links/' . $Project->getAttribute('name') . '/';
-        $link_cache_file
-            = $link_cache_dir . $this->getId() . '_' . $Project->getAttribute('name')
-              . '_' . $Project->getAttribute('lang');
+        $link_cache_dir = VAR_DIR . 'cache/links/' .
+                          $Project->getAttribute('name') . '/';
+
+        $link_cache_file = $link_cache_dir . $this->getId() . '_' .
+                           $Project->getAttribute('name') . '_' .
+                           $Project->getAttribute('lang');
 
         QUI\Utils\System\File::mkdir($link_cache_dir);
 
@@ -1310,7 +1324,7 @@ class Edit extends Site
             return false;
         }
 
-        $time          = time() - filemtime($this->_lockfile);
+        $time          = time() - filemtime($this->lockfile);
         $max_life_time = QUI::conf('session', 'max_life_time');
 
         if ($time > $max_life_time) {
@@ -1331,11 +1345,11 @@ class Edit extends Site
      */
     public function isLocked()
     {
-        if (!file_exists($this->_lockfile)) {
+        if (!file_exists($this->lockfile)) {
             return false;
         }
 
-        return file_get_contents($this->_lockfile);
+        return file_get_contents($this->lockfile);
     }
 
     /**
@@ -1363,7 +1377,7 @@ class Edit extends Site
             return false;
         }
 
-        file_put_contents($this->_lockfile, QUI::getUserBySession()->getId());
+        file_put_contents($this->lockfile, QUI::getUserBySession()->getId());
 
         return true;
     }
@@ -1373,8 +1387,8 @@ class Edit extends Site
      */
     protected function unlock()
     {
-        if (file_exists($this->_lockfile)) {
-            unlink($this->_lockfile);
+        if (file_exists($this->lockfile)) {
+            unlink($this->lockfile);
         }
     }
 
@@ -1392,16 +1406,16 @@ class Edit extends Site
         }
 
         if (QUI::getUserBySession()->isSU()) {
-            if (file_exists($this->_lockfile)) {
-                unlink($this->_lockfile);
+            if (file_exists($this->lockfile)) {
+                unlink($this->lockfile);
             }
 
             return;
         }
 
         if ($lock === QUI::getUserBySession()->getId()) {
-            if (file_exists($this->_lockfile)) {
-                unlink($this->_lockfile);
+            if (file_exists($this->lockfile)) {
+                unlink($this->lockfile);
             }
         }
     }
