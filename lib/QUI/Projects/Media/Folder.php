@@ -28,7 +28,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Upload file flag - overwrite the file, dont delete the old file
      */
-    const FILE_OVERWRITE_FILE = 1;
+    const FILE_OVERWRITE_TRUE = 1;
 
     /**
      * Upload file flag - overwrite the file and delete the old file
@@ -1125,7 +1125,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         // overwrite the file
         if (file_exists($new_file)) {
             if ($options != self::FILE_OVERWRITE_DESTROY
-                && $options != self::FILE_OVERWRITE_FILE
+                && $options != self::FILE_OVERWRITE_TRUE
             ) {
                 // #locale
                 throw new QUI\Exception($filename . ' existiert bereits', 705);
