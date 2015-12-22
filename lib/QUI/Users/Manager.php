@@ -827,7 +827,7 @@ class Manager
             return $this->users[$id];
         }
 
-        $User              = new User($id, $this);
+        $User             = new User($id, $this);
         $this->users[$id] = $User;
 
         return $User;
