@@ -1227,7 +1227,7 @@ class Edit extends Site
         $table = $Project->getAttribute('name') . '_' .
                  $Project->getAttribute('lang') . '_sites_relations';
 
-        if (QUI\Utils\Bool::JSBool($all)) {
+        if (QUI\Utils\BoolHelper::JSBool($all)) {
             // Seite löschen
             $this->delete();
 

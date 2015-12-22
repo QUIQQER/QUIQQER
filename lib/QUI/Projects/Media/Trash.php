@@ -44,9 +44,8 @@ class Trash implements QUI\Interfaces\Projects\Trash
      */
     public function getPath()
     {
-        return
-            VAR_DIR . 'media/' . $this->Media->getProject()->getAttribute('name')
-            . '/';
+        return VAR_DIR . 'media/' .
+               $this->Media->getProject()->getAttribute('name') . '/';
     }
 
     /**
@@ -171,6 +170,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
         ));
 
         if (!isset($data[0])) {
+            // #locale
             throw new QUI\Exception(
                 'No data for the file found. Can\'t restore the file'
             );
