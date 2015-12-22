@@ -7,10 +7,6 @@
  * window -> onLogin
  */
 
-//monitorEvents(document.body,'click');
-//monitorEvents(document.body,'mousedown');
-//monitorEvents(document.body,'dblclick');
-
 // extend mootools with desktop drag drop
 Object.append(Element.NativeEvents, {
     dragenter: 2,
@@ -124,243 +120,253 @@ require(requireList, function () {
         );
     });
 
-    // load the default workspace
-    var doc_size  = document.body.getSize(),
-        Container = document.getElement('.qui-workspace-container'),
-        Menu      = document.getElement('.qui-menu-container');
 
-    var menuY = Menu.getComputedSize().height;
+    Ajax.get('ajax_isAuth', function (userId) {
 
-    Container.setStyles({
-        overflow: 'hidden',
-        height  : doc_size.y - menuY,
-        width   : '100%'
-    });
+        if (!userId) {
+            window.location.reload();
+            return;
+        }
 
-    document.id('wrapper').setStyles({
-        height  : '100%',
-        overflow: 'hidden',
-        width   : '100%'
-    });
+        // load the default workspace
+        var doc_size  = document.body.getSize(),
+            Container = document.getElement('.qui-workspace-container'),
+            Menu      = document.getElement('.qui-menu-container');
 
-    /**
-     * Workspace
-     */
-    var Workspace = new WSManager({
-        autoResize: false,
-        events    : {
-            onLoadWorkspace: function (WS) {
-                WS.load();
-            },
+        var menuY = Menu.getComputedSize().height;
 
-            onWorkspaceLoaded: function (WS) {
-                var createMenu = function (Menu) {
-                    var list = WS.getList(),
-                        Bar  = Menu.getChildren();
+        Container.setStyles({
+            overflow: 'hidden',
+            height  : doc_size.y - menuY,
+            width   : '100%'
+        });
 
-                    // logo
-                    if (Bar.getChildren('quiqqer')) {
-                        var Quiqqer = Bar.getChildren('quiqqer');
+        document.id('wrapper').setStyles({
+            height  : '100%',
+            overflow: 'hidden',
+            width   : '100%'
+        });
 
-                        if (Quiqqer) {
-                            var Img = Quiqqer.getElm().getElement('img');
+        /**
+         * Workspace
+         */
+        var Workspace = new WSManager({
+            autoResize: false,
+            events    : {
+                onLoadWorkspace: function (WS) {
+                    WS.load();
+                },
 
-                            Img.setStyles({
-                                height  : 22,
-                                position: 'relative',
-                                top     : 6
-                            });
+                onWorkspaceLoaded: function (WS) {
+                    var createMenu = function (Menu) {
+                        var list = WS.getList(),
+                            Bar  = Menu.getChildren();
+
+                        // logo
+                        if (Bar.getChildren('quiqqer')) {
+                            var Quiqqer = Bar.getChildren('quiqqer');
+
+                            if (Quiqqer) {
+                                var Img = Quiqqer.getElm().getElement('img');
+
+                                Img.setStyles({
+                                    height  : 22,
+                                    position: 'relative',
+                                    top     : 6
+                                });
+                            }
                         }
-                    }
 
-                    WS.Loader.hide();
+                        WS.Loader.hide();
 
-                    // search
-                    new MenuSearch().inject(
-                        document.getElement('.qui-contextmenu-bar'), 'after'
-                    );
+                        // search
+                        new MenuSearch().inject(
+                            document.getElement('.qui-contextmenu-bar'), 'after'
+                        );
 
-                    if (!Bar.getChildren('profile')) {
-                        return;
-                    }
-
-                    if (!Bar.getChildren('profile').getChildren('workspaces')) {
-                        return;
-                    }
-
-                    var Workspaces = Bar.getChildren('profile')
-                        .getChildren('workspaces');
-
-                    Workspaces.clear();
-
-                    Object.each(list, function (Entry) {
-                        var standard = false;
-
-                        if ("standard" in Entry && Entry.standard && (Entry.standard).toInt()) {
-                            standard = true;
+                        if (!Bar.getChildren('profile')) {
+                            return;
                         }
+
+                        if (!Bar.getChildren('profile').getChildren('workspaces')) {
+                            return;
+                        }
+
+                        var Workspaces = Bar.getChildren('profile')
+                            .getChildren('workspaces');
+
+                        Workspaces.clear();
+
+                        Object.each(list, function (Entry) {
+                            var standard = false;
+
+                            if ("standard" in Entry && Entry.standard &&
+                                (Entry.standard).toInt()) {
+                                standard = true;
+                            }
+
+                            Workspaces.appendChild(
+                                new QUIContextmenuItem({
+                                    text  : Entry.title,
+                                    wid   : Entry.id,
+                                    icon  : standard ? 'icon-laptop' : false,
+                                    events: {
+                                        onClick: function (Item) {
+                                            WS.loadWorkspace(Item.getAttribute('wid'));
+                                        }
+                                    }
+                                })
+                            );
+                        });
+
+
+                        Workspaces.appendChild(
+                            new QUIContextmenuSeperator({})
+                        );
 
                         Workspaces.appendChild(
                             new QUIContextmenuItem({
-                                text  : Entry.title,
-                                wid   : Entry.id,
-                                icon  : standard ? 'icon-laptop' : false,
+                                text  : 'Arbeitsbereiche bearbeiten',
+                                icon  : 'icon-edit',
                                 events: {
-                                    onClick: function (Item) {
-                                        WS.loadWorkspace(Item.getAttribute('wid'));
+                                    onClick: function () {
+                                        WS.openWorkspaceEdit();
                                     }
                                 }
                             })
                         );
+
+                        Workspaces.appendChild(
+                            new QUIContextmenuItem({
+                                text  : 'Arbeitsbereich erstellen',
+                                icon  : 'icon-plus',
+                                events: {
+                                    onClick: function () {
+                                        WS.openCreateWindow();
+                                    }
+                                }
+                            })
+                        );
+                    };
+
+                    require(['Menu'], function (Menu) {
+                        if (!Menu.isLoaded()) {
+                            Menu.addEvent('onMenuLoaded', function () {
+                                createMenu(Menu);
+                            });
+
+                            return;
+                        }
+
+                        createMenu(Menu);
                     });
-
-
-                    Workspaces.appendChild(
-                        new QUIContextmenuSeperator({})
-                    );
-
-                    Workspaces.appendChild(
-                        new QUIContextmenuItem({
-                            text  : 'Arbeitsbereiche bearbeiten',
-                            icon  : 'icon-edit',
-                            events: {
-                                onClick: function () {
-                                    WS.openWorkspaceEdit();
-                                }
-                            }
-                        })
-                    );
-
-                    Workspaces.appendChild(
-                        new QUIContextmenuItem({
-                            text  : 'Arbeitsbereich erstellen',
-                            icon  : 'icon-plus',
-                            events: {
-                                onClick: function () {
-                                    WS.openCreateWindow();
-                                }
-                            }
-                        })
-                    );
-                };
-
-                require(['Menu'], function (Menu) {
-                    if (!Menu.isLoaded()) {
-                        Menu.addEvent('onMenuLoaded', function () {
-                            createMenu(Menu);
-                        });
-
-                        return;
-                    }
-
-                    createMenu(Menu);
-                });
-            }
-        }
-    }).inject(Container);
-
-    // resizing
-    QUI.addEvent('resize', function () {
-
-        Container.setStyles({
-            height: QUI.getWindowSize().y - menuY,
-            width : QUI.getWindowSize().x
-        });
-
-        Workspace.resize();
-    });
-
-    /**
-     * Menu
-     */
-    require(['Menu'], function () {
-        // workspace edit
-        new Element('div', {
-            'class': 'qui-contextmenu-baritem smooth ',
-            html   : '<span class="qui-contextmenu-baritem-text">' +
-                     '<span class="icon-stack">' +
-                     '<i class="icon-laptop icon-stack-base"></i>' +
-                     '<i class="icon-pencil" style="font-size: 0.8em; margin: -3px 0 0 1px;"></i>' +
-                     '</span>' +
-                     '</span>',
-            title  : 'Arbeitsbereich ist festgesetzt',
-            styles : {
-                'borderLeft': '1px solid #d1d4da',
-                'float'     : 'right',
-                'marginLeft': 5
-            },
-            events : {
-                click: function () {
-                    if (this.hasClass('qui-contextmenu-baritem-active')) {
-                        this.removeClass('qui-contextmenu-baritem-active');
-
-                        Workspace.fix();
-                        this.set('title', 'Arbeitsbereich ist festgesetzt');
-
-                        return;
-                    }
-
-                    this.addClass('qui-contextmenu-baritem-active');
-
-                    Workspace.unfix();
-                    this.set('title', 'Arbeitsbereich ist flexibel');
                 }
             }
-        }).inject(Menu);
+        }).inject(Container);
 
-        // logout
-        new Element('div', {
-            'class': 'qui-contextmenu-baritem smooth ',
-            html   : '<span class="qui-contextmenu-baritem-text">Abmelden</span>',
-            title  : 'Angemeldet als: ' + USER.name,
-            styles : {
-                'float': 'right'
-            },
-            events : {
-                click: window.logout
-            }
-        }).inject(Menu);
-    });
+        // resizing
+        QUI.addEvent('resize', function () {
 
-    /**
-     * If files were droped to quiqqer
-     * dont show it
-     */
-    document.id(document.body).addEvents({
-        drop: function (event) {
-            event.preventDefault();
-        },
-
-        dragend: function (event) {
-            event.preventDefault();
-        },
-
-        dragover: function (event) {
-            event.preventDefault();
-        }
-    });
-
-
-    window.onbeforeunload = function () {
-        Workspace.save();
-
-        return "Bitte melden Sie sich vor dem schließen der Administration ab." +
-               "Ansonsten können bestehende Daten verloren gehen." +
-               "Möchten Sie trotzdem weiter fortfahren?"; // #locale
-    };
-
-    // logout function
-    window.logout = function () {
-        Workspace.Loader.show();
-
-        // save workspace
-        Workspace.save(true, function () {
-            // logout
-            Ajax.post('ajax_user_logout', function () {
-                window.onbeforeunload = null;
-                window.location       = URL_DIR + 'admin/';
+            Container.setStyles({
+                height: QUI.getWindowSize().y - menuY,
+                width : QUI.getWindowSize().x
             });
-        });
-    };
 
+            Workspace.resize();
+        });
+
+        /**
+         * Menu
+         */
+        require(['Menu'], function () {
+            // workspace edit
+            new Element('div', {
+                'class': 'qui-contextmenu-baritem smooth ',
+                html   : '<span class="qui-contextmenu-baritem-text">' +
+                         '<span class="icon-stack">' +
+                         '<i class="icon-laptop icon-stack-base"></i>' +
+                         '<i class="icon-pencil" style="font-size: 0.8em; margin: -3px 0 0 1px;"></i>' +
+                         '</span>' +
+                         '</span>',
+                title  : 'Arbeitsbereich ist festgesetzt',
+                styles : {
+                    'borderLeft': '1px solid #d1d4da',
+                    'float'     : 'right',
+                    'marginLeft': 5
+                },
+                events : {
+                    click: function () {
+                        if (this.hasClass('qui-contextmenu-baritem-active')) {
+                            this.removeClass('qui-contextmenu-baritem-active');
+
+                            Workspace.fix();
+                            this.set('title', 'Arbeitsbereich ist festgesetzt');
+
+                            return;
+                        }
+
+                        this.addClass('qui-contextmenu-baritem-active');
+
+                        Workspace.unfix();
+                        this.set('title', 'Arbeitsbereich ist flexibel');
+                    }
+                }
+            }).inject(Menu);
+
+            // logout
+            new Element('div', {
+                'class': 'qui-contextmenu-baritem smooth ',
+                html   : '<span class="qui-contextmenu-baritem-text">Abmelden</span>',
+                title  : 'Angemeldet als: ' + USER.name,
+                styles : {
+                    'float': 'right'
+                },
+                events : {
+                    click: window.logout
+                }
+            }).inject(Menu);
+        });
+
+        /**
+         * If files were droped to quiqqer
+         * dont show it
+         */
+        document.id(document.body).addEvents({
+            drop: function (event) {
+                event.preventDefault();
+            },
+
+            dragend: function (event) {
+                event.preventDefault();
+            },
+
+            dragover: function (event) {
+                event.preventDefault();
+            }
+        });
+
+
+        window.onbeforeunload = function () {
+            Workspace.save();
+
+            return "Bitte melden Sie sich vor dem schließen der Administration ab." +
+                   "Ansonsten können bestehende Daten verloren gehen." +
+                   "Möchten Sie trotzdem weiter fortfahren?"; // #locale
+        };
+
+        // logout function
+        window.logout = function () {
+            Workspace.Loader.show();
+
+            // save workspace
+            Workspace.save(true, function () {
+                // logout
+                Ajax.post('ajax_user_logout', function () {
+                    window.onbeforeunload = null;
+                    window.location       = URL_DIR + 'admin/';
+                });
+            });
+        };
+
+    });
 });
