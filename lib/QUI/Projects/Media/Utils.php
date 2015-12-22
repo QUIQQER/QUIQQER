@@ -655,14 +655,23 @@ class Utils
     /**
      * Returns a media item by an url
      *
-     * @param string $url
+     * @param string $url - cache url, or real path of the file
      *
      * @return \QUI\Projects\Media\Item
      * @throws QUI\Exception
      */
     public static function getElement($url)
     {
-        $parts = explode('media/cache/', $url);
+        if (strpos($url, 'media/cache/') !== false) {
+            $parts = explode('media/cache/', $url);
+
+        } elseif (strpos($url, 'media/sites/') !== false) {
+            $parts = explode('media/sites/', $url);
+
+        } else {
+            throw new QUI\Exception('File not found', 404);
+        }
+
 
         if (!isset($parts[1])) {
             throw new QUI\Exception('File not found', 404);
@@ -671,7 +680,7 @@ class Utils
         $parts   = explode('/', $parts[1]);
         $project = array_shift($parts);
 
-        $Project = \QUI::getProject($project);
+        $Project = QUI::getProject($project);
         $Media   = $Project->getMedia();
 
         // if the element (image) is resized resize
@@ -706,7 +715,7 @@ class Utils
     ) {
         $fileid = (int)$fileid;
 
-        $result = \QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch(array(
             'from' => $Media->getTable(),
             'where' => array(
                 'id' => $fileid

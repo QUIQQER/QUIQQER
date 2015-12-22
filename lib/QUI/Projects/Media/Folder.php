@@ -21,6 +21,21 @@ use QUI\Utils\StringHelper as StringUtils;
 class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 {
     /**
+     * Upload file flag - dont overwrite the file
+     */
+    const FILE_OVERWRITE_NONE = 0;
+
+    /**
+     * Upload file flag - overwrite the file, dont delete the old file
+     */
+    const FILE_OVERWRITE_FILE = 1;
+
+    /**
+     * Upload file flag - overwrite the file and delete the old file
+     */
+    const FILE_OVERWRITE_DESTROY = 2;
+
+    /**
      * direct children of the folder
      *
      * @var array
@@ -1076,13 +1091,18 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * Uploads a file to the Folder
      *
      * @param string $file - Path to the File
+     * @param integer $options - Overwrite flags,
+     *                           self::FILE_OVERWRITE_NONE
+     *                           self::FILE_OVERWRITE_FILE
+     *                           self::FILE_OVERWRITE_DESTROY
      *
      * @return QUI\Projects\Media\Item
      * @throws QUI\Exception
      */
-    public function uploadFile($file)
+    public function uploadFile($file, $options = self::FILE_OVERWRITE_NONE)
     {
         if (!file_exists($file)) {
+            // #locale
             throw new QUI\Exception('Datei existiert nicht.', 404);
         }
 
@@ -1102,8 +1122,38 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         $new_file = $this->getFullPath() . '/' . $filename;
 
+        // overwrite the file
         if (file_exists($new_file)) {
-            throw new QUI\Exception($filename . ' existiert bereits', 705);
+            if ($options != self::FILE_OVERWRITE_DESTROY
+                && $options != self::FILE_OVERWRITE_FILE
+            ) {
+                // #locale
+                throw new QUI\Exception($filename . ' existiert bereits', 705);
+            }
+
+            // overwrite file
+            try {
+                $Item = MediaUtils::getElement($new_file);
+
+                if (MediaUtils::isImage($Item)) {
+                    /* @var $Item QUI\Projects\Media\Image */
+                    $Item->deleteCache();
+                }
+
+                $Item->deactivate();
+                $Item->delete();
+
+                if (self::FILE_OVERWRITE_DESTROY) {
+                    $Item->destroy();
+                }
+
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addDebug($Exception->getMessage(), array(
+                    'file' => $new_file
+                ));
+
+                unlink($new_file);
+            }
         }
 
         // copy the file to the media

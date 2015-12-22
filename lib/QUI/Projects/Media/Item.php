@@ -238,9 +238,9 @@ abstract class Item extends QUI\QDOM
         $First = $Media->firstChild();
 
         // Move file to the temp folder
-        $original = $this->getFullPath();
-        $var_folder
-                  = VAR_DIR . 'media/' . $Media->getProject()->getAttribute('name') . '/';
+        $original   = $this->getFullPath();
+        $var_folder = VAR_DIR . 'media/' .
+                      $Media->getProject()->getAttribute('name') . '/';
 
         if (!is_file($original)) {
             throw new QUI\Exception('Original File is not a File', 400); // #locale
@@ -265,7 +265,7 @@ abstract class Item extends QUI\QDOM
             QUIFile::unlink($var_folder . $this->getId());
 
         } catch (QUI\Exception $Exception) {
-            \QUI::getMessagesHandler()->addAttention(
+            QUI::getMessagesHandler()->addAttention(
                 $Exception->getMessage()
             );
         }
@@ -275,7 +275,7 @@ abstract class Item extends QUI\QDOM
             QUIFile::move($original, $var_folder . $this->getId());
 
         } catch (QUI\Exception $Exception) {
-            \QUI::getMessagesHandler()->addAttention(
+            QUI::getMessagesHandler()->addAttention(
                 $Exception->getMessage()
             );
         }
