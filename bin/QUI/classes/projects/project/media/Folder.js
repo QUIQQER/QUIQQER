@@ -1,4 +1,3 @@
-
 /**
  * A media file
  *
@@ -26,8 +25,8 @@ define('classes/projects/project/media/Folder', [
      */
     return new Class({
 
-        Extends : MediaItem,
-        Type    : 'classes/projects/project/media/Folder',
+        Extends: MediaItem,
+        Type   : 'classes/projects/project/media/Folder',
 
         /**
          * create a sub folder
@@ -37,27 +36,25 @@ define('classes/projects/project/media/Folder', [
          * @param {String} newfolder    - New folder name
          * @param {Function} oncomplete - callback( new_folder_id ) function
          */
-        createFolder : function (newfolder, oncomplete) {
-            var self = this;
-
+        createFolder: function (newfolder, oncomplete) {
             return new Promise(function (resolve, reject) {
 
                 Ajax.post('ajax_media_folder_create', function (result) {
-                    var items = self.getMedia().$parseResultToItem(result);
+                    var items = this.getMedia().$parseResultToItem(result);
 
                     if (typeof oncomplete === 'function') {
                         oncomplete(items);
                     }
 
                     resolve(items);
-                }, {
-                    project   : self.getMedia().getProject().getName(),
-                    parentid  : self.getId(),
-                    newfolder : newfolder,
-                    onError   : reject
+                }.bind(this), {
+                    project  : this.getMedia().getProject().getName(),
+                    parentid : this.getId(),
+                    newfolder: newfolder,
+                    onError  : reject
                 });
 
-            });
+            }.bind(this));
         },
 
         /**
@@ -70,7 +67,7 @@ define('classes/projects/project/media/Folder', [
          *
          * @return Promise
          */
-        getChildren : function (oncomplete, params) {
+        getChildren: function (oncomplete, params) {
             return new Promise(function (resolve, reject) {
 
                 params = params || {};
@@ -83,10 +80,10 @@ define('classes/projects/project/media/Folder', [
                     resolve(result);
 
                 }, {
-                    project  : this.getMedia().getProject().getName(),
-                    folderid : this.getId(),
-                    params   : JSON.encode(params),
-                    onError  : reject
+                    project : this.getMedia().getProject().getName(),
+                    folderid: this.getId(),
+                    params  : JSON.encode(params),
+                    onError : reject
                 });
 
             }.bind(this));
@@ -102,12 +99,13 @@ define('classes/projects/project/media/Folder', [
          *
          * @return Promise
          */
-        uploadFiles : function (files, onfinish) {
+        uploadFiles: function (files, onfinish) {
             return new Promise(function (resolve) {
+
                 UploadManager.uploadFiles(files, 'ajax_media_upload', {
-                    project  : this.getMedia().getProject().getName(),
-                    parentid : this.getId(),
-                    events   : {
+                    project : this.getMedia().getProject().getName(),
+                    parentid: this.getId(),
+                    events  : {
                         onComplete: function () {
 
                             if (typeof onfinish === 'function') {
@@ -128,7 +126,7 @@ define('classes/projects/project/media/Folder', [
          *
          * @method classes/projects/project/media/Folder#replace
          */
-        replace : function () {
+        replace: function () {
             // nothing, you cannot replace a folder
         }
     });

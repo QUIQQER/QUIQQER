@@ -9,6 +9,7 @@ namespace QUI\Projects\Media;
 use QUI;
 use QUI\System\Log;
 use QUI\Utils\StringHelper as StringUtils;
+use QUI\Utils\StringHelper;
 
 /**
  * Helper for the Media Center Manager
@@ -495,14 +496,8 @@ class Utils
      */
     public static function stripFolderName($str)
     {
+        $str = QUI\Utils\Convert::convertRoman($str);
         $str = preg_replace('/[^0-9a-zA-Z\-]/', '_', $str);
-
-        // Umlaute
-        $str = str_replace(
-            array('ä', 'ö', 'ü'),
-            array('ar', 'oe', 'ue'),
-            $str
-        );
 
         // clean double _
         $str = preg_replace('/[_]{2,}/', "_", $str);

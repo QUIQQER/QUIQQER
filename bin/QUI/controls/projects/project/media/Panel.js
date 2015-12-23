@@ -501,7 +501,7 @@ define('controls/projects/project/media/Panel', [
                 }, {
                     order: self.getAttribute('field') + ' ' + self.getAttribute('order')
                 });
-            }).catch(function() {
+            }).catch(function () {
                 this.openID(1);
             }.bind(this));
         },
@@ -1415,14 +1415,82 @@ define('controls/projects/project/media/Panel', [
                     titleicon  : 'fa fa-folder-open-o icon-folder-open-alt',
                     information: Locale.get(lg, 'projects.project.site.folder.create.information'),
                     icon       : 'fa fa-folder-open-o icon-folder-open-alt',
-                    maxHeight  : 280,
-                    maxWidth   : 500,
+                    maxHeight  : 400,
+                    maxWidth   : 600,
+                    autoclose  : false,
                     events     : {
-                        onSubmit: function (value) {
-                            self.$File.createFolder(value, function (Folder) {
+                        onSubmit: function (value, Win) {
+                            Win.Loader.show();
+
+                            self.$File.createFolder(value).then(function (Folder) {
+                                if (typeOf(Folder) == 'classes/projects/project/media/Folder') {
+                                    self.openID(Folder.getId());
+                                    Win.close();
+                                }
+                            }).catch(function (Exception) {
+                                // nicht erlaubte zeichen
+                                if (Exception.getCode() == 702) {
+                                    Win.close();
+                                    self.createFolderReplaceName(value);
+                                }
+                            });
+                        }
+                    }
+                }).open();
+            });
+        },
+
+        /**
+         *
+         *
+         * @method controls/projects/project/media/Panel#createFolderReplaceName
+         * @param {String} name
+         */
+        createFolderReplaceName: function (name) {
+            var self = this;
+
+            require(['qui/controls/windows/Confirm'], function (Confirm) {
+                new Confirm({
+                    title    : Locale.get(lg, 'projects.project.site.folder.createNewName.title'),
+                    text     : Locale.get(lg, 'projects.project.site.folder.createNewName.text'),
+                    icon     : 'fa fa-folder-open-o icon-folder-open-alt',
+                    texticon : 'fa fa-folder-open-o icon-folder-open-alt',
+                    maxHeight: 400,
+                    maxWidth : 600,
+                    autoclose: false,
+                    events   : {
+                        onOpen  : function (Win) {
+                            Win.Loader.show();
+
+                            Ajax.get('ajax_media_folder_stripName', function (newName) {
+
+                                Win.setAttribute('newName', newName);
+
+                                Win.setAttribute(
+                                    'information',
+                                    Locale.get(lg, 'projects.project.site.folder.createNewName.information', {
+                                        newName: newName
+                                    })
+                                );
+
+                                Win.Loader.hide();
+                            }, {
+                                name: name
+                            });
+                        },
+                        onSubmit: function (Win) {
+                            Win.Loader.show();
+
+                            var value = Win.getAttribute('newName');
+
+                            self.$File.createFolder(value).then(function (Folder) {
                                 if (typeOf(Folder) == 'classes/projects/project/media/Folder') {
                                     self.openID(Folder.getId());
                                 }
+
+                                Win.close();
+                            }).catch(function () {
+                                Win.close();
                             });
                         }
                     }
