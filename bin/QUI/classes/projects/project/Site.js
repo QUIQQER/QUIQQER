@@ -227,28 +227,52 @@ define('classes/projects/project/Site', [
          * Get the children
          *
          * @method classes/projects/project/Site#getChildren
-         * @param {Function} [onfinish] - (optional), callback function
          * @param {Object} [params] - (optional)
+         * @param {Function} [callback] - (optional), callback function
          * @returns {Object} this (classes/projects/project/Site)
          */
-        getChildren: function (onfinish, params) {
-            var data = this.ajaxParams(),
-                Site = this;
+        getChildren: function (params, callback) {
+            return new Promise(function (resolve, reject) {
 
-            data.params = JSON.encode(params || {});
+                var data = this.ajaxParams(),
+                    Site = this;
 
-            Ajax.get('ajax_site_getchildren', function (result) {
-                var children = result.children;
+                data.params  = JSON.encode(params || {});
+                data.onError = reject;
 
-                if (typeof onfinish === 'function') {
-                    onfinish(children);
-                }
+                Ajax.get('ajax_site_getchildren', function (result) {
+                    var i, len, Child;
+                    var children = result.children,
+                        Project  = Site.getProject();
 
-                Site.fireEvent('getChildren', [Site, children]);
+                    for (i = 0, len = children.length; i < len; i++) {
+                        Child = Project.get(children[i].id);
+                        Child.setAttributes(children[i]);
 
-            }, data);
+                        if ("has_children" in children[i]) {
+                            Child.$has_children = (children[i].has_children).toInt();
+                        }
 
-            return this;
+                        if ("parentid" in children[i]) {
+                            Child.$parentid = children[i].parentid;
+                        }
+
+                        if ("url" in children[i]) {
+                            Child.$url = children[i].url;
+                        }
+                    }
+
+                    if (typeof callback === 'function') {
+                        callback(children, result);
+                    }
+
+                    Site.fireEvent('getChildren', [Site, children, result]);
+
+                    resolve(result);
+
+                }, data);
+
+            }.bind(this));
         },
 
         /**
