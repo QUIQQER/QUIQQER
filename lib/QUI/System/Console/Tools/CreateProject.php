@@ -10,7 +10,7 @@ use QUI;
 /**
  * Create a new Project in the quiqqer console
  *
- * @author  www.namerobot.com (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
  */
 class CreateProject extends QUI\System\Console\Tool

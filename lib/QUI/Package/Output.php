@@ -14,7 +14,7 @@ use Symfony\Component\Console\Formatter\OutputFormatterInterface;
  * Output class for the Package-Manager
  * so he can use composer as symfony application
  *
- * @author www.namerobot.com (Henning Leutz)
+ * @author www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
  *
  * @event onOutput [ string $message ]
