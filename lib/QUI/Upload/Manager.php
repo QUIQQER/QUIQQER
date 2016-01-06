@@ -163,7 +163,7 @@ class Manager
         }
 
         if (isset($_REQUEST['extract'])) {
-            $_REQUEST['extract'] = QUI\Utils\Bool::JSBool($_REQUEST['extract']);
+            $_REQUEST['extract'] = QUI\Utils\BoolHelper::JSBool($_REQUEST['extract']);
         }
 
         /**
@@ -255,7 +255,7 @@ class Manager
             // delete the real file
             QUIFile::unlink($tmp_name);
 
-            echo $result;
+            echo $result['result'];
         }
     }
 
@@ -290,18 +290,11 @@ class Manager
                 require_once $_rf_file;
             }
 
-            if (!function_exists($function)) {
-                throw new QUI\Exception(
-                    'Function ' . $function . ' not found',
-                    404
-                );
-            }
-
             $_REQUEST = array_merge($_REQUEST, $params, array(
                 '_rf' => '["' . $function . '"]'
             ));
 
-            return QUI::$Ajax->call();
+            return QUI::getAjax()->callRequestFunction($function, $_REQUEST);
         }
 
         if (strpos($function, 'package_') === 0) {
@@ -319,7 +312,7 @@ class Manager
                 '_rf' => '["' . $function . '"]'
             ));
 
-            return QUI::$Ajax->call();
+            return QUI::getAjax()->callRequestFunction($function, $_REQUEST);
         }
 
         throw new QUI\Exception(
