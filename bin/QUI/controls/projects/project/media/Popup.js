@@ -60,7 +60,9 @@ define('controls/projects/project/media/Popup', [
                 onCreate: this.$onCreate,
                 onOpen  : this.$onOpen,
                 onClose : function () {
-                    this.$Panel.destroy();
+                    if (this.$Panel) {
+                        this.$Panel.destroy();
+                    }
                 }.bind(this)
             });
         },
