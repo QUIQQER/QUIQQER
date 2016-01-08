@@ -58,12 +58,16 @@ abstract class Factory
         $childData  = array();
 
         foreach ($attributes as $attribute) {
+            if ($attribute == 'id') {
+                continue;
+            }
+
             if (isset($data[$attribute])) {
                 $childData[$attribute] = $data[$attribute];
             }
         }
 
-        QUI::getDataBase()->insert($this->getTable(), $childData);
+        QUI::getDataBase()->insert($this->getDataBaseTableName(), $childData);
 
         $Child = $this->getChild(
             QUI::getDataBase()->getPDO()->lastInsertId()
@@ -86,7 +90,7 @@ abstract class Factory
         $childClass = $this->getChildClass();
 
         $result = QUI::getDataBase()->fetch(array(
-            'from' => $this->getTable(),
+            'from' => $this->getDataBaseTableName(),
             'where' => array(
                 'id' => $id
             )
@@ -147,7 +151,7 @@ abstract class Factory
     public function getChildrenData($queryParams = array())
     {
         $query = array(
-            'from' => $this->getTable()
+            'from' => $this->getDataBaseTableName()
         );
 
         if (!is_array($queryParams)) {
