@@ -12,13 +12,29 @@ use QUI;
  * Abstration factory for create-read-update-delete
  *
  * @package QUI\CRUD
+ *
+ * @event onCreateBegin
+ * @event onCreateEnd
  */
 abstract class Factory
 {
     /**
+     * @var QUI\Events\Event
+     */
+    protected $Events;
+
+    /**
+     * Factory constructor.
+     */
+    public function __construct()
+    {
+        $this->Events = new QUI\Events\Event();
+    }
+
+    /**
      * @return string
      */
-    abstract public function getTable();
+    abstract public function getDataBaseTableName();
 
     /**
      * @return string
@@ -36,6 +52,8 @@ abstract class Factory
      */
     public function createChild($data)
     {
+        $this->Events->fireEvent('createBegin');
+
         $attributes = $this->getChildAttributes();
         $childData  = array();
 
@@ -47,9 +65,13 @@ abstract class Factory
 
         QUI::getDataBase()->insert($this->getTable(), $childData);
 
-        return $this->getChild(
+        $Child = $this->getChild(
             QUI::getDataBase()->getPDO()->lastInsertId()
         );
+
+        $this->Events->fireEvent('createEnd', array($Child));
+
+        return $Child;
     }
 
     /**
@@ -127,6 +149,10 @@ abstract class Factory
         $query = array(
             'from' => $this->getTable()
         );
+
+        if (!is_array($queryParams)) {
+            $queryParams = array();
+        }
 
         if (isset($queryParams['select'])) {
             $query['select'] = $queryParams['select'];

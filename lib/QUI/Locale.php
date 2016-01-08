@@ -469,4 +469,40 @@ class Locale
     {
         return VAR_DIR . 'locale/';
     }
+
+    /**
+     * Verified the string if the string is a locale string
+     * a locale strings looks like: [group] var.var.var
+     *
+     * @param string $str
+     * @return bool
+     */
+    public function isLocaleString($str)
+    {
+        if (strpos($str, ' ') === false
+            || strpos($str, '[') === false
+            || strpos($str, ']') === false
+        ) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Return the parts of a locale string
+     * a locale strings looks like: [group] var.var.var
+     *
+     * @param string $str
+     * @return array -  [0=>group, 1=>var]
+     */
+    public function getPartsOfLocaleString($str)
+    {
+        $str = explode(' ', $str);
+
+        $group = str_replace(array('[', ']'), '', $str);
+        $var   = trim($str[1]);
+
+        return array($group, $var);
+    }
 }
