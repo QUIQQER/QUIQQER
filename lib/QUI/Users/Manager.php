@@ -32,7 +32,7 @@ class Manager
     /**
      * @var null|Nobody
      */
-    private $Nobody = null,
+    private $Nobody = null;
 
     /**
      * @var null|SystemUser
