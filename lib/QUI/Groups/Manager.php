@@ -105,14 +105,14 @@ class Manager extends QUI\QDOM
         $id = (int)$id;
 
         if ($id === 1) {
-            if (is_null($this->Everyone)) {
+            if ($this->Everyone === null) {
                 $this->Everyone = new Everyone();
             }
             return $this->Everyone;
         }
 
         if ($id === 0) {
-            if (is_null($this->Guest)) {
+            if ($this->Guest === null) {
                 $this->Guest = new Guest();
             }
             return new Guest();
