@@ -47,10 +47,12 @@ abstract class Factory
     abstract public function getChildAttributes();
 
     /**
+     * Create a new child
+     *
      * @param array $data
      * @return QUI\CRUD\Child
      */
-    public function createChild($data)
+    public function createChild($data = array())
     {
         $this->Events->fireEvent('createBegin');
 
@@ -64,6 +66,8 @@ abstract class Factory
 
             if (isset($data[$attribute])) {
                 $childData[$attribute] = $data[$attribute];
+            } else {
+                $childData[$attribute] = '';
             }
         }
 
