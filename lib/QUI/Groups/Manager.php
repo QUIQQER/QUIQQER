@@ -24,6 +24,16 @@ class Manager extends QUI\QDOM
     const TYPE_VARCHAR = 4;
 
     /**
+     * @var Everyone
+     */
+    protected $Everyone = null;
+
+    /**
+     * @var Guest
+     */
+    protected $Guest = null;
+
+    /**
      * internal group cache
      *
      * @var array
@@ -95,10 +105,16 @@ class Manager extends QUI\QDOM
         $id = (int)$id;
 
         if ($id === 1) {
-            return new Everyone();
+            if (!is_null($this->Everyone)) {
+                $this->Everyone = new Everyone();
+            }
+            return $this->Everyone;
         }
 
         if ($id === 0) {
+            if (!is_null($this->Guest)) {
+                $this->Guest = new Guest();
+            }
             return new Guest();
         }
 

@@ -30,6 +30,16 @@ class Manager
     private $users = array();
 
     /**
+     * @var null|Nobody
+     */
+    private $Nobody = null,
+
+    /**
+     * @var null|SystemUser
+     */
+    private $SystemUser = null;
+
+    /**
      * Return the db table
      *
      * @return string
@@ -791,7 +801,11 @@ class Manager
      */
     public function getNobody()
     {
-        return new Nobody();
+        if (!is_null($this->Nobody)) {
+            $this->Nobody = new Nobody();
+        }
+
+        return $this->Nobody;
     }
 
     /**
@@ -801,7 +815,11 @@ class Manager
      */
     public function getSystemUser()
     {
-        return new SystemUser();
+        if (!is_null($this->SystemUser)) {
+            $this->SystemUser = new SystemUser();
+        }
+
+        return $this->SystemUser;
     }
 
     /**
