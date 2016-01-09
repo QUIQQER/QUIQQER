@@ -500,6 +500,10 @@ class Locale
     {
         $str = explode(' ', $str);
 
+        if (!isset($str[1])) {
+            return $str;
+        }
+
         $group = str_replace(array('[', ']'), '', $str[0]);
         $var   = trim($str[1]);
 
