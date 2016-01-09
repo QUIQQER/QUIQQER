@@ -801,7 +801,7 @@ class Manager
      */
     public function getNobody()
     {
-        if (!is_null($this->Nobody)) {
+        if (is_null($this->Nobody)) {
             $this->Nobody = new Nobody();
         }
 
@@ -815,7 +815,7 @@ class Manager
      */
     public function getSystemUser()
     {
-        if (!is_null($this->SystemUser)) {
+        if (is_null($this->SystemUser)) {
             $this->SystemUser = new SystemUser();
         }
 
