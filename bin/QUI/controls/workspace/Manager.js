@@ -274,7 +274,7 @@ define('controls/workspace/Manager', [
                     self.$spaces[list[i].id] = list[i];
 
                     if (list[i].standard &&
-                        ( list[i].standard ).toInt() === 1) {
+                        (list[i].standard).toInt() === 1) {
                         Standard = list[i];
                     }
                 }
@@ -1087,7 +1087,7 @@ define('controls/workspace/Manager', [
                         // create workspace for serialize
                         var Workspace = new QUIWorkspace(),
                             Parent    = self.$Elm.clone(),
-                            columns   = ( Columns.value ).toInt();
+                            columns   = (Columns.value).toInt();
 
                         Workspace.inject(Parent);
 
@@ -1095,7 +1095,7 @@ define('controls/workspace/Manager', [
                             Workspace.appendChild(
                                 new QUIColumn({
                                     height: size.y,
-                                    width : ( size.x / columns ).ceil()
+                                    width : (size.x / columns).ceil()
                                 })
                             );
                         }

@@ -22,31 +22,41 @@ class Manager
     /**
      * @var QUI\Projects\Project (active internal project)
      */
-    private $_Project = false;
+    private $Project = false;
 
     /**
      * @var array - list of users (cache)
      */
-    private $_users = array();
+    private $users = array();
+
+    /**
+     * @var null|Nobody
+     */
+    private $Nobody = null;
+
+    /**
+     * @var null|SystemUser
+     */
+    private $SystemUser = null;
 
     /**
      * Return the db table
      *
-     * @return String
+     * @return string
      */
-    static function Table()
+    public static function table()
     {
-        return QUI_DB_PRFX.'users';
+        return QUI_DB_PRFX . 'users';
     }
 
     /**
      * Return the db table for the addresses
      *
-     * @return String
+     * @return string
      */
-    static function TableAddress()
+    public static function tableAddress()
     {
-        return QUI_DB_PRFX.'users_address';
+        return QUI_DB_PRFX . 'users_address';
     }
 
     /**
@@ -56,69 +66,71 @@ class Manager
     {
         $DataBase = QUI::getDataBase();
 
-        $DataBase->Table()->appendFields(self::Table(), array(
-            'id'         => 'int(11)',
-            'username'   => 'varchar(50)',
-            'password'   => 'varchar(50)',
-            'usergroup'  => 'text',
-            'firstname'  => 'varchar(40)',
-            'lastname'   => 'varchar(40)',
-            'usertitle'  => 'varchar(40)',
-            'birthday'   => 'varchar(12)',
-            'email'      => 'varchar(50)',
-            'active'     => 'int(1)',
-            'regdate'    => 'int(11)',
-            'lastvisit'  => 'int(11)',
-            'su'         => 'tinyint(1)',
-            'avatar'     => 'text',
-            'extra'      => 'text NULL',
-            'lang'       => 'varchar(2) NULL',
-            'expire'     => 'TIMESTAMP NULL',
-            'lastedit'   => 'TIMESTAMP NOT NULL',
-            'shortcuts'  => 'varchar(5) NULL',
+        $DataBase->Table()->appendFields(self::table(), array(
+            'id' => 'int(11)',
+            'username' => 'varchar(50)',
+            'password' => 'varchar(50)',
+            'usergroup' => 'text',
+            'firstname' => 'varchar(40)',
+            'lastname' => 'varchar(40)',
+            'usertitle' => 'varchar(40)',
+            'birthday' => 'varchar(12)',
+            'email' => 'varchar(50)',
+            'active' => 'int(1)',
+            'regdate' => 'int(11)',
+            'lastvisit' => 'int(11)',
+            'su' => 'tinyint(1)',
+            'avatar' => 'text',
+            'extra' => 'text NULL',
+            'lang' => 'varchar(2) NULL',
+            'expire' => 'TIMESTAMP NULL',
+            'lastedit' => 'TIMESTAMP NOT NULL',
+            'shortcuts' => 'varchar(5) NULL',
             'activation' => 'varchar(20) NULL',
-            'referal'    => 'varchar(200) NULL',
+            'referal' => 'varchar(200) NULL',
             'user_agent' => 'text',
-            'address'    => 'int(11)'
+            'address' => 'int(11)'
         ));
 
         // Patch
         $DataBase->getPDO()->exec(
-            'ALTER TABLE `'.self::Table()
-            .'` CHANGE `birthday` `birthday` DATE NULL DEFAULT NULL'
+            'ALTER TABLE `' . self::table()
+            . '` CHANGE `birthday` `birthday` DATE NULL DEFAULT NULL'
         );
 
         // Addresses
-        $DataBase->Table()->appendFields(self::TableAddress(), array(
-            'id'         => 'int(11)',
-            'uid'        => 'int(11)',
+        $DataBase->Table()->appendFields(self::tableAddress(), array(
+            'id' => 'int(11)',
+            'uid' => 'int(11)',
             'salutation' => 'varchar(10)',
-            'firstname'  => 'varchar(40)',
-            'lastname'   => 'varchar(40)',
-            'phone'      => 'text',
-            'mail'       => 'text',
-            'company'    => 'varchar(100)',
-            'delivery'   => 'text',
-            'street_no'  => 'text',
-            'zip'        => 'text',
-            'city'       => 'text',
-            'country'    => 'text'
+            'firstname' => 'varchar(40)',
+            'lastname' => 'varchar(40)',
+            'phone' => 'text',
+            'mail' => 'text',
+            'company' => 'varchar(100)',
+            'delivery' => 'text',
+            'street_no' => 'text',
+            'zip' => 'text',
+            'city' => 'text',
+            'country' => 'text'
         ));
 
-        $DataBase->Table()->setIndex(self::TableAddress(), 'id');
+        $DataBase->Table()->setIndex(self::tableAddress(), 'id');
 
         $DataBase->getPDO()->exec(
-            'ALTER TABLE `'.self::TableAddress()
-            .'` CHANGE `id` `id` INT( 11 ) NOT NULL AUTO_INCREMENT'
+            'ALTER TABLE `' . self::tableAddress()
+            . '` CHANGE `id` `id` INT( 11 ) NOT NULL AUTO_INCREMENT'
         );
     }
 
     /**
      * Is the user authenticated
      *
+     * @todo muss noch fremde nutzer prüfen
+     *
      * @param QUI\Users\User|QUI\Users\Nobody $User
      *
-     * @return Bool
+     * @return boolean
      */
     public function isAuth($User)
     {
@@ -145,7 +157,7 @@ class Manager
      *
      * @param mixed $User
      *
-     * @return Bool
+     * @return boolean
      */
     public function isUser($User)
     {
@@ -165,7 +177,7 @@ class Manager
      *
      * @param mixed $User
      *
-     * @return Bool
+     * @return boolean
      */
     public function isSystemUser($User)
     {
@@ -191,7 +203,7 @@ class Manager
      */
     public function setProject(QUI\Projects\Project $Project)
     {
-        $this->_Project = $Project;
+        $this->Project = $Project;
     }
 
     /**
@@ -204,20 +216,20 @@ class Manager
      */
     public function getProject()
     {
-        return $this->_Project;
+        return $this->Project;
     }
 
     /**
      * Create a new User
      *
-     * @param String|bool $username - (optional), new username
+     * @param string|boolean $username - (optional), new username
      *
      * @return QUI\Users\User
      * @throws QUI\Exception
      */
     public function createChild($username = false)
     {
-        $newid = $this->_newId();
+        $newid = $this->newId();
 
         if ($username) {
             if ($this->usernameExists($username)) {
@@ -233,10 +245,10 @@ class Manager
 
         } else {
             $newname = 'Neuer Benutzer';
-            $i = 0;
+            $i       = 0;
 
             while ($this->usernameExists($newname)) {
-                $newname = 'Neuer Benutzer ('.$i.')';
+                $newname = 'Neuer Benutzer (' . $i . ')';
                 $i++;
             }
         }
@@ -247,11 +259,11 @@ class Manager
         // Nur erlaubte Zeichen zu lassen
         //$newname
         QUI::getDataBase()->insert(
-            self::Table(),
+            self::table(),
             array(
-                'id'       => $newid,
+                'id' => $newid,
                 'username' => $newname,
-                'regdate'  => time()
+                'regdate' => time()
             )
         );
 
@@ -322,7 +334,7 @@ class Manager
         }
 
         $regparams = array();
-        $optional = array(
+        $optional  = array(
             'firstname',
             'lastname',
             'usertitle',
@@ -345,7 +357,7 @@ class Manager
             // Benutzergruppen gesondert behandeln - darf nicht in die Root Gruppe
             if ($key == 'usergroup') {
                 $_gids = explode(',', $value);
-                $gids = array();
+                $gids  = array();
 
                 foreach ($_gids as $gid) {
                     if (!empty($gid) && $gid != $rootid) {
@@ -353,7 +365,7 @@ class Manager
                     }
                 }
 
-                $regparams['usergroup'] = ','.implode(',', $gids).',';
+                $regparams['usergroup'] = ',' . implode(',', $gids) . ',';
                 continue;
             }
 
@@ -369,21 +381,21 @@ class Manager
 
         $Session = QUI::getSession();
 
-        $regparams['id'] = $this->_newId();
-        $regparams['su'] = 0;
-        $regparams['username'] = $username;
-        $regparams['password'] = $password;
-        $regparams['active'] = 0;
+        $regparams['id']         = $this->newId();
+        $regparams['su']         = 0;
+        $regparams['username']   = $username;
+        $regparams['password']   = $password;
+        $regparams['active']     = 0;
         $regparams['activation'] = Orthos::getPassword(20);
-        $regparams['regdate'] = time();
-        $regparams['lastedit'] = date('Y-m-d H:i:s');
+        $regparams['regdate']    = time();
+        $regparams['lastedit']   = date('Y-m-d H:i:s');
         $regparams['user_agent'] = $useragent;
 
         if ($Session->get('ref')) {
             $regparams['referal'] = $Session->get('ref');
         }
 
-        QUI::getDataBase()->insert(self::Table(), $regparams);
+        QUI::getDataBase()->insert(self::table(), $regparams);
 
         $lastId = QUI::getDataBase()->getPDO()->lastInsertId('id');
 
@@ -393,13 +405,13 @@ class Manager
     /**
      * Returns the number of users in the system
      *
-     * @return Integer
+     * @return integer
      */
     public function countAllUsers()
     {
         $result = QUI::getDataBase()->fetch(array(
             'count' => 'count',
-            'from'  => self::Table()
+            'from' => self::table()
         ));
 
         if (isset($result[0]) && isset($result[0]['count'])) {
@@ -412,7 +424,7 @@ class Manager
     /**
      * Get all users
      *
-     * @param Bool $objects - as objects=true, as array=false
+     * @param boolean $objects - as objects=true, as array=false
      *
      * @return array
      */
@@ -420,13 +432,13 @@ class Manager
     {
         if ($objects == false) {
             return QUI::getDataBase()->fetch(array(
-                'from'  => self::Table(),
+                'from' => self::table(),
                 'order' => 'username'
             ));
         }
 
         $result = array();
-        $ids = $this->getAllUserIds();
+        $ids    = $this->getAllUserIds();
 
         foreach ($ids as $id) {
             try {
@@ -449,8 +461,8 @@ class Manager
     {
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'id',
-            'from'   => self::Table(),
-            'order'  => 'username'
+            'from' => self::table(),
+            'order' => 'username'
         ));
 
         return $result;
@@ -459,9 +471,9 @@ class Manager
     /**
      * Get specific users
      *
-     * @param Array $params -> SQL Array
+     * @param array $params -> SQL Array
      *
-     * @return Array
+     * @return array
      */
     public function getUsers($params = array())
     {
@@ -488,14 +500,14 @@ class Manager
     /**
      * Get specific users ids
      *
-     * @param Array $params -> SQL Array
+     * @param array $params -> SQL Array
      *
-     * @return Array
+     * @return array
      */
     public function getUserIds($params = array())
     {
         $params['select'] = 'id';
-        $params['from'] = self::Table();
+        $params['from']   = self::table();
 
         return QUI::getDataBase()->fetch($params);
     }
@@ -503,41 +515,46 @@ class Manager
     /**
      * Loged in a user
      *
-     * @param String $username - username
-     * @param String $pass     - password
+     * @param string $username - username
+     * @param string $pass - password
      *
      * @return QUI\Users\User
      * @throws QUI\Exception
      */
     public function login($username, $pass)
     {
-        if (!is_string($username)) {
+        if (!is_string($username) || empty($username)) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/system', 'exception.login.fail'),
+                array('quiqqer/system', 'exception.login.fail.wrong.username.input'),
                 401
             );
         }
 
-        if (!is_string($pass)) {
+        if (!is_string($pass) || empty($pass)) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/system', 'exception.login.fail'),
+                array('quiqqer/system', 'exception.login.fail.wrong.password.input'),
                 401
             );
         }
 
         $username = Orthos::clear($username);
 
-        if (!get_magic_quotes_gpc()) {
+        if (function_exists('get_magic_quotes_gpc')
+            && !get_magic_quotes_gpc()
+        ) {
             $username = addslashes($username);
-            $pass = addslashes($pass);
+            $pass     = addslashes($pass);
         }
 
         if (empty($pass)) {
-            throw new QUI\Exception('No Password given', 401);
+            throw new QUI\Exception(
+                array('quiqqer/system', 'exception.login.fail.no.password'),
+                401
+            );
         }
 
         // Authentifizierung
-        $authType = QUI::conf('auth', 'type');
+        $authType  = QUI::conf('auth', 'type');
         $authClass = $authType;
 
         if ($authType == 'standard') {
@@ -545,28 +562,26 @@ class Manager
         }
 
         if (!class_exists($authClass)) {
-
             QUI\System\Log::addError(
                 'Authentication Type not found. Please check your config settings'
             );
 
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/system', 'exception.login.fail'),
+                array('quiqqer/system', 'exception.login.fail'),
                 401
             );
         }
 
-        $Auth = new $authClass($username);
+        $Auth       = new $authClass($username);
         $implements = class_implements($Auth);
 
         if (!isset($implements['QUI\Interfaces\Users\Auth'])) {
-
             QUI\System\Log::addError(
                 'Authentication Type is not from Interface QUI\Interfaces\Users\Auth'
             );
 
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/system', 'exception.login.fail'),
+                array('quiqqer/system', 'exception.login.fail'),
                 401
             );
         }
@@ -574,7 +589,7 @@ class Manager
         /* @var $Auth QUI\Interfaces\Users\Auth */
         if ($Auth->auth($pass) === false) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/system', 'exception.login.fail'),
+                array('quiqqer/system', 'exception.login.fail'),
                 401
             );
         }
@@ -584,21 +599,25 @@ class Manager
 
         // check user data
         $userData = QUI::getDataBase()->fetch(array(
-            'select' => array('id', 'expire', 'secHash'),
-            'from'   => self::Table(),
-            'where'  => array(
+            'select' => array('id', 'expire', 'secHash', 'active'),
+            'from' => self::table(),
+            'where' => array(
                 'id' => $userId
             ),
-            'limit'  => 1
+            'limit' => 1
         ));
 
         if (!isset($userData[0])) {
             throw new QUI\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/system',
-                    'exception.lib.user.user.not.found'
-                ),
+                array('quiqqer/system', 'exception.login.fail.user.not.found'),
                 404
+            );
+        }
+
+        if ($userData[0]['active'] == 0) {
+            throw new QUI\Exception(
+                array('quiqqer/system', 'exception.login.fail.user.not.found'),
+                401
             );
         }
 
@@ -608,15 +627,15 @@ class Manager
         ) {
             throw new QUI\Exception(
                 QUI::getLocale()
-                   ->get('quiqqer/system', 'exception.login.expire', array(
-                       'expire' => $userData[0]['expire']
-                   ))
+                    ->get('quiqqer/system', 'exception.login.expire', array(
+                        'expire' => $userData[0]['expire']
+                    ))
             );
         }
 
 
-        $User = $this->get($userId);
-        $Groups = $User->Group;
+        $User        = $this->get($userId);
+        $Groups      = $User->Group;
         $groupActive = false;
 
         foreach ($Groups as $Group) {
@@ -628,7 +647,7 @@ class Manager
 
         if ($groupActive === false) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/system', 'exception.login.fail'),
+                array('quiqqer/system', 'exception.login.fail'),
                 401
             );
         }
@@ -645,17 +664,17 @@ class Manager
         }
 
         QUI::getDataBase()->update(
-            self::Table(),
+            self::table(),
             array(
-                'lastvisit'  => time(),
+                'lastvisit' => time(),
                 'user_agent' => $useragent,
-                'secHash'    => $this->getSecHash()
+                'secHash' => $this->getSecHash()
             ),
             array('id' => $userId)
         );
 
         $User->refresh();
-        $this->_users[$userId] = $User;
+        $this->users[$userId] = $User;
 
         QUI::getEvents()->fireEvent('userLogin', array($User));
 
@@ -665,13 +684,13 @@ class Manager
     /**
      * Generate a user-dependent security hash
      * There are different data use such as IP, User-Agent and the System-Salt
-     * @todo noch eine eindeutige möglichkeit der Identifizierung des Browser  finden
+     * @todo noch eine eindeutige möglichkeit der Identifizierung des Browser finden
      * @return string
      */
     public function getSecHash()
     {
         $secHashData = array();
-        $useragent = '';
+        $useragent   = '';
 
         // chromeframe nicht mitaufnehmen -> bug
         if (isset($_SERVER['HTTP_USER_AGENT'])
@@ -699,36 +718,80 @@ class Manager
         }
 
         // max_life_time check
-        if (!QUI::getSession()->check()) {
+        try {
+            $this->checkUserSession();
+
+            return $this->get(QUI::getSession()->get('uid'));
+
+        } catch (QUI\Exception $Exception) {
             return $this->getNobody();
+        }
+    }
+
+    /**
+     * Checks, if the session is ok
+     *
+     * @throws QUI\Exception
+     */
+    public function checkUserSession()
+    {
+        // max_life_time check
+        if (!QUI::getSession()->check()) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.permission.session.expired'
+                ),
+                401
+            );
         }
 
         if (!QUI::getSession()->get('uid')) {
-            return $this->getNobody();
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.permission.session.expired'
+                ),
+                401
+            );
         }
 
-        try {
+        $User = $this->get(QUI::getSession()->get('uid'));
 
-            $User = $this->get(QUI::getSession()->get('uid'));
+        if (!$User->isActive()) {
+            QUI::getSession()->destroy();
 
-            // Mehrfachanmeldungen? Dann keine Prüfung
-            if (QUI::conf('session', 'multible')) {
-                return $User;
-            }
-
-            $sessionSecHash = QUI::getSession()->get('secHash');
-            $secHash = $this->getSecHash();
-            $userSecHash = $User->getAttribute('secHash');
-
-            if ($sessionSecHash == $secHash && $userSecHash == $secHash) {
-                return $User;
-            }
-
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::addDebug($Exception->getMessage());
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.user.inactive'
+                ),
+                401
+            );
         }
 
-        return $this->getNobody();
+        // Mehrfachanmeldungen? Dann keine Prüfung
+        if (QUI::conf('session', 'multible')) {
+            return;
+        }
+
+        $sessionSecHash = QUI::getSession()->get('secHash');
+        $secHash        = $this->getSecHash();
+        $userSecHash    = $User->getAttribute('secHash');
+
+        if ($sessionSecHash == $secHash && $userSecHash == $secHash) {
+            return;
+        }
+
+        //QUI::getSession()->destroy();
+
+        throw new QUI\Exception(
+            QUI::getLocale()->get(
+                'quiqqer/system',
+                'exception.session.expired.from.other'
+            ),
+            401
+        );
     }
 
     /**
@@ -738,7 +801,11 @@ class Manager
      */
     public function getNobody()
     {
-        return new Nobody();
+        if ($this->Nobody === null) {
+            $this->Nobody = new Nobody();
+        }
+
+        return $this->Nobody;
     }
 
     /**
@@ -748,13 +815,17 @@ class Manager
      */
     public function getSystemUser()
     {
-        return new SystemUser();
+        if ($this->SystemUser === null) {
+            $this->SystemUser = new SystemUser();
+        }
+
+        return $this->SystemUser;
     }
 
     /**
      * Get the user by id
      *
-     * @param Integer $id
+     * @param integer $id
      *
      * @return QUI\Users\User|false
      */
@@ -770,12 +841,12 @@ class Manager
             return new SystemUser();
         }
 
-        if (isset($this->_users[$id])) {
-            return $this->_users[$id];
+        if (isset($this->users[$id])) {
+            return $this->users[$id];
         }
 
-        $User = new User($id, $this);
-        $this->_users[$id] = $User;
+        $User             = new User($id, $this);
+        $this->users[$id] = $User;
 
         return $User;
     }
@@ -783,7 +854,7 @@ class Manager
     /**
      * get the user by username
      *
-     * @param String $username - Username
+     * @param string $username - Username
      *
      * @throws QUI\Exception
      * @return QUI\Users\User
@@ -792,11 +863,11 @@ class Manager
     {
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'id',
-            'from'   => self::Table(),
-            'where'  => array(
+            'from' => self::table(),
+            'where' => array(
                 'username' => $username
             ),
-            'limit'  => 1
+            'limit' => 1
         ));
 
         if (!isset($result[0])) {
@@ -815,7 +886,7 @@ class Manager
     /**
      * Get the user by email
      *
-     * @param String $email - User E-Mail
+     * @param string $email - User E-Mail
      *
      * @return QUI\Users\User
      * @throws QUI\Exception
@@ -824,11 +895,11 @@ class Manager
     {
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'id',
-            'from'   => self::Table(),
-            'where'  => array(
+            'from' => self::table(),
+            'where' => array(
                 'email' => $email
             ),
-            'limit'  => 1
+            'limit' => 1
         ));
 
         if (!isset($result[0])) {
@@ -858,9 +929,9 @@ class Manager
     /**
      * Checks if the username already exists
      *
-     * @param String $username
+     * @param string $username
      *
-     * @return Bool
+     * @return boolean
      */
     public function usernameExists($username)
     {
@@ -870,11 +941,11 @@ class Manager
 
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'username',
-            'from'   => self::Table(),
-            'where'  => array(
+            'from' => self::table(),
+            'where' => array(
                 'username' => $username
             ),
-            'limit'  => 1
+            'limit' => 1
         ));
 
         return isset($result[0]) ? true : false;
@@ -905,19 +976,19 @@ class Manager
     /**
      * Checks the e-mail if this is already on the system
      *
-     * @param String $email
+     * @param string $email
      *
-     * @return Bool
+     * @return boolean
      */
     public function emailExists($email)
     {
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'email',
-            'from'   => self::Table(),
-            'where'  => array(
+            'from' => self::table(),
+            'where' => array(
                 'email' => $email
             ),
-            'limit'  => 1
+            'limit' => 1
         ));
 
         return isset($result[0]) ? true : false;
@@ -926,27 +997,27 @@ class Manager
     /**
      * Generates a hash of a password
      *
-     * @param String $pass
-     * @param String $salt (optional) - use specific salt for password generation [default: randomly generated]
+     * @param string $pass
+     * @param string $salt (optional) - use specific salt for password generation [default: randomly generated]
      *
-     * @return String
+     * @return string
      */
-    static function genHash($pass, $salt = null)
+    public static function genHash($pass, $salt = null)
     {
-        if (is_null($salt)) {
+        if ($salt === null) {
             $randomBytes = openssl_random_pseudo_bytes(SALT_LENGTH);
-            $salt = mb_substr(bin2hex($randomBytes), 0, SALT_LENGTH);
+            $salt        = mb_substr(bin2hex($randomBytes), 0, SALT_LENGTH);
         }
 
-        return $salt.md5($salt.$pass);
+        return $salt . md5($salt . $pass);
     }
 
     /**
      * Delete the user
      *
-     * @param Integer $id
+     * @param integer $id
      *
-     * @return Bool
+     * @return boolean
      */
     public function deleteUser($id)
     {
@@ -956,21 +1027,21 @@ class Manager
     /**
      * Search all users
      *
-     * @param Array $params
+     * @param array $params
      *
-     * @return Array
+     * @return array
      */
     public function search($params)
     {
-        return $this->_search($params);
+        return $this->execSearch($params);
     }
 
     /**
      * Anzahl der Rechnungen
      *
-     * @param Array $params - Search parameter
+     * @param array $params - Search parameter
      *
-     * @return Array
+     * @return array
      */
     public function count($params)
     {
@@ -979,7 +1050,7 @@ class Manager
         unset($params['limit']);
         unset($params['start']);
 
-        return $this->_search($params);
+        return $this->execSearch($params);
     }
 
     /**
@@ -987,40 +1058,40 @@ class Manager
      *
      * @todo where params
      *
-     * @param Array $params
+     * @param array $params
      *
-     * @return Array
+     * @return array
      * @throws QUI\Database\Exception
      */
-    protected function _search($params)
+    protected function execSearch($params)
     {
-        $PDO = QUI::getDataBase()->getPDO();
+        $PDO    = QUI::getDataBase()->getPDO();
         $params = Orthos::clearArray($params);
 
         $allowOrderFields = array(
-            'id'        => true,
-            'email'     => true,
-            'username'  => true,
+            'id' => true,
+            'email' => true,
+            'username' => true,
             'usergroup' => true,
             'firstname' => true,
-            'lastname'  => true,
-            'birthday'  => true,
-            'active'    => true,
-            'regdate'   => true,
-            'su'        => true
+            'lastname' => true,
+            'birthday' => true,
+            'active' => true,
+            'regdate' => true,
+            'su' => true
         );
 
-        $max = 10;
+        $max   = 10;
         $start = 0;
 
         /**
          * SELECT
          */
-        $query = 'SELECT * FROM '.self::Table();
+        $query = 'SELECT * FROM ' . self::table();
         $binds = array();
 
         if (isset($params['count'])) {
-            $query = 'SELECT COUNT( id ) AS count FROM '.self::Table();
+            $query = 'SELECT COUNT( id ) AS count FROM ' . self::table();
         }
 
         /**
@@ -1052,10 +1123,10 @@ class Manager
             $filter = $params['searchSettings']['filter'];
             $fields = $params['searchSettings']['fields'];
 
-            $filter_status = false;
-            $filter_group = false;
+            $filter_status        = false;
+            $filter_group         = false;
             $filter_regdate_first = false;
-            $filter_regdate_last = false;
+            $filter_regdate_last  = false;
 
             // set the filters
             if (isset($filter['filter_status'])
@@ -1085,7 +1156,7 @@ class Manager
 
             // create the search
             $query .= ' WHERE (';
-            $binds[':search'] = '%'.$search.'%';
+            $binds[':search'] = '%' . $search . '%';
 
             if (empty($search)) {
                 $binds[':search'] = '%';
@@ -1100,7 +1171,7 @@ class Manager
                     continue;
                 }
 
-                $query .= ' '.$field.' LIKE :search OR ';
+                $query .= ' ' . $field . ' LIKE :search OR ';
             }
 
             if (substr($query, -3) == 'OR ') {
@@ -1126,8 +1197,8 @@ class Manager
 
                 foreach ($groups as $groupId) {
                     if ((int)$groupId > 0) {
-                        $query .= ' AND usergroup LIKE "%:'.$groupId.'%" ';
-                        $binds[':'.$groupId] = (int)$groupId;
+                        $query .= ' AND usergroup LIKE "%:' . $groupId . '%" ';
+                        $binds[':' . $groupId] = (int)$groupId;
                     }
                 }
             }
@@ -1136,7 +1207,7 @@ class Manager
             if ($filter_regdate_first) {
                 $query .= ' AND regdate >= :firstreg ';
                 $binds[':firstreg'] = QUI\Utils\Convert::convertMySqlDatetime(
-                    $filter['filter_regdate_first'].' 00:00:00'
+                    $filter['filter_regdate_first'] . ' 00:00:00'
                 );
             }
 
@@ -1144,7 +1215,7 @@ class Manager
             if ($filter_regdate_last) {
                 $query .= " AND regdate <= :lastreg ";
                 $binds[':lastreg'] = QUI\Utils\Convert::convertMySqlDatetime(
-                    $filter['filter_regdate_last'].' 00:00:00'
+                    $filter['filter_regdate_last'] . ' 00:00:00'
                 );
             }
         }
@@ -1158,7 +1229,7 @@ class Manager
             && $params['field']
             && isset($allowOrderFields[$params['field']])
         ) {
-            $query .= ' ORDER BY '.$params['field'].' '.$params['order'];
+            $query .= ' ORDER BY ' . $params['field'] . ' ' . $params['order'];
         }
 
         /**
@@ -1173,7 +1244,7 @@ class Manager
                 $start = (int)$params['start'];
             }
 
-            $query .= ' LIMIT '.$start.', '.$max;
+            $query .= ' LIMIT ' . $start . ', ' . $max;
         }
 
         $Statement = $PDO->prepare($query);
@@ -1213,20 +1284,20 @@ class Manager
     /**
      * Gibt eine neue Benutzer Id zwischen 100 und 1000000000 zurück
      *
-     * @return Integer
+     * @return integer
      * @throws QUI\Exception
      */
-    protected function _newId()
+    protected function newId()
     {
         $create = true;
-        $newid = false;
+        $newid  = false;
 
         while ($create) {
             srand(microtime() * 1000000);
             $newid = rand(100, 1000000000);
 
             $result = QUI::getDataBase()->fetch(array(
-                'from'  => self::Table(),
+                'from' => self::table(),
                 'where' => array(
                     'id' => $newid
                 )
@@ -1250,11 +1321,11 @@ class Manager
     /**
      * Delete illegal characters from the name
      *
-     * @param String $username
+     * @param string $username
      *
-     * @return Bool
+     * @return boolean
      */
-    static function clearUsername($username)
+    public static function clearUsername($username)
     {
         return preg_replace('/[^a-zA-Z0-9-_äöüß@\.]/', '', $username);
     }
@@ -1262,17 +1333,17 @@ class Manager
     /**
      * Checks name for illegal characters
      *
-     * @param String $username
+     * @param string $username
      *
-     * @return Bool
+     * @return boolean
      * @throws QUI\Exception
      */
-    static function checkUsernameSigns($username)
+    public static function checkUsernameSigns($username)
     {
         if ($username != self::clearUsername($username)) {
             throw new QUI\Exception(
                 QUI::getLocale()
-                   ->get('quiqqer/system', 'exception.lib.user.illegal.signs')
+                    ->get('quiqqer/system', 'exception.lib.user.illegal.signs')
             );
         }
 

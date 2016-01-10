@@ -22,12 +22,14 @@ class ModRewrite extends QUI\System\Test
      */
     public function __construct()
     {
+        parent::__construct();
+
         $this->setAttributes(array(
             'title'       => 'Apache mod_rewrite installed',
             'description' => ''
         ));
 
-        $this->_isRequired = self::TEST_IS_REQUIRED;
+        $this->isRequired = self::TEST_IS_REQUIRED;
     }
 
     /**
@@ -63,7 +65,7 @@ class ModRewrite extends QUI\System\Test
             return self::STATUS_OK;
         }
 
-        return $this->_checkViaHTTP();
+        return $this->checkViaHTTP();
     }
 
     /**
@@ -71,7 +73,7 @@ class ModRewrite extends QUI\System\Test
      *
      * @return self::STATUS_OK|self::STATUS_ERROR
      */
-    protected function _checkViaHTTP()
+    protected function checkViaHTTP()
     {
         try {
             $Project = QUI::getProjectManager()->getStandard();

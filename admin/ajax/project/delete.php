@@ -3,18 +3,16 @@
 /**
  * Delete a project
  *
- * @param String $project - Project data, JSON Array
+ * @param string $project - Project data, JSON Array
  * @throws QUI\Exception
  */
-function ajax_project_delete($project)
-{
-    \QUI::getProjectManager()->deleteProject(
-        \QUI::getProjectManager()->decode( $project )
-    );
-}
-
-\QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_project_delete',
-    array( 'project' ),
+    function ($project) {
+        QUI::getProjectManager()->deleteProject(
+            QUI::getProjectManager()->decode($project)
+        );
+    },
+    array('project'),
     'Permission::checkSU'
 );

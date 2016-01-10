@@ -11,8 +11,7 @@ define('controls/projects/project/settings/CustomCSS', [
     'qui/controls/Control',
     'Ajax'
 
-], function(QUI, QUIControl, QUIAjax)
-{
+], function (QUI, QUIControl, QUIAjax) {
     "use strict";
 
     return new Class({
@@ -28,12 +27,11 @@ define('controls/projects/project/settings/CustomCSS', [
             css : false
         },
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize : function (options) {
+            this.parent(options);
 
             this.$Textarea = null;
-            this.$Project  = this.getAttribute( 'Project' );
+            this.$Project  = this.getAttribute('Project');
 
             this.addEvents({
                 onInject : this.$onInject
@@ -45,8 +43,7 @@ define('controls/projects/project/settings/CustomCSS', [
          *
          * @return {HTMLElement}
          */
-        create : function()
-        {
+        create : function () {
             this.$Elm = this.parent();
 
             this.$Elm.set({
@@ -59,7 +56,7 @@ define('controls/projects/project/settings/CustomCSS', [
                 }
             });
 
-            this.$Textarea = this.$Elm.getElement( 'textarea' );
+            this.$Textarea = this.$Elm.getElement('textarea');
 
             this.$Textarea.set({
                 name   : 'project-custom-css',
@@ -76,21 +73,18 @@ define('controls/projects/project/settings/CustomCSS', [
         /**
          * event : on inject
          */
-        $onInject : function()
-        {
+        $onInject : function () {
             var self = this;
 
-            if ( this.getAttribute( 'css' ) )
-            {
-                this.$Textarea.value = this.getAttribute( 'css' );
-                this.fireEvent( 'load' );
+            if (this.getAttribute('css')) {
+                this.$Textarea.value = this.getAttribute('css');
+                this.fireEvent('load');
                 return;
             }
 
-            QUIAjax.get('ajax_project_get_customCSS', function(css)
-            {
+            QUIAjax.get('ajax_project_get_customCSS', function (css) {
                 self.$Textarea.value = css;
-                self.fireEvent( 'load' );
+                self.fireEvent('load');
             }, {
                 project : this.$Project.encode()
             });
@@ -101,8 +95,7 @@ define('controls/projects/project/settings/CustomCSS', [
          *
          * @param {Object} Project - classes/projects/Project
          */
-        setProject : function(Project)
-        {
+        setProject : function (Project) {
             this.$Project = Project;
         }
     });

@@ -239,15 +239,15 @@ define('controls/menu/Search', [
                         })
                     ).then(function (Panel) {
 
-                               Panel.setAttributes({
+                        Panel.setAttributes({
                                    value: value
                                });
 
-                               Panel.search();
+                        Panel.search();
 
-                               resolve();
+                        resolve();
 
-                           }).catch(reject);
+                    }).catch(reject);
 
                 }, reject);
             });

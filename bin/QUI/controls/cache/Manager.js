@@ -17,8 +17,7 @@ define('controls/cache/Manager', [
 
     'css!controls/cache/Manager.css'
 
-], function(QUI, QUIPanel, Ajax)
-{
+], function (QUI, QUIPanel, Ajax) {
     "use strict";
 
     /**
@@ -33,17 +32,16 @@ define('controls/cache/Manager', [
             '$onCreate'
         ],
 
-        initialize : function(options)
-        {
+        initialize : function (options) {
             this.$Clear = null;
             this.$Purge = null;
-//
-//            this.$caches = [
-//                [ 'plugins', 'Plugin Cache leeren' ],
-//                [ 'compile', 'Template Compile Cache leeren' ]
-//            ];
+            //
+            //            this.$caches = [
+            //                [ 'plugins', 'Plugin Cache leeren' ],
+            //                [ 'compile', 'Template Compile Cache leeren' ]
+            //            ];
 
-            this.parent( options );
+            this.parent(options);
 
             this.addEvents({
                 onCreate : this.$onCreate
@@ -55,8 +53,7 @@ define('controls/cache/Manager', [
          *
          * @method controls/cache/Manager#load
          */
-        $onCreate : function()
-        {
+        $onCreate : function () {
             this.Loader.show();
 
             var i, n, len;
@@ -71,19 +68,18 @@ define('controls/cache/Manager', [
                          '</thead>' +
                          '<tbody>';
 
-            for ( i = 0, len = caches.length; i < len; i++ )
-            {
-                n = 'cache'+ this.getId() +'-'+ caches[ i ][ 0 ];
+            for (i = 0, len = caches.length; i < len; i++) {
+                n = 'cache' + this.getId() + '-' + caches[ i ][ 0 ];
 
                 table = table +
-                    '<tr class="'+ (i % 2 ? 'event' : 'odd') +'">' +
+                    '<tr class="' + (i % 2 ? 'event' : 'odd') + '">' +
                         '<td class="cache-item">' +
                             '<input type="checkbox" ' +
-                                'id="'+ n +'" ' +
-                                'name="'+ n +'" ' +
-                                'value="'+ caches[ i ][ 0 ] +'" ' +
+                                'id="' + n + '" ' +
+                                'name="' + n + '" ' +
+                                'value="' + caches[ i ][ 0 ] + '" ' +
                             '/>' +
-                            '<label for="'+ n +'">'+ caches[ i ][ 1 ] +'</label>' +
+                            '<label for="' + n + '">' + caches[ i ][ 1 ] + '</label>' +
                         '</td>' +
                     '</tr>';
             }
@@ -92,11 +88,11 @@ define('controls/cache/Manager', [
             table = table + '</tbody></table>';
             table = table + '<div class="clear-cache-btn"></div>';
 
-            Body.set( 'html', table );
+            Body.set('html', table);
 
             this.addButton({
                 text      : 'Cache leeren ausführen',
-                textimage : URL_BIN_DIR +'16x16/cache.png',
+                textimage : URL_BIN_DIR + '16x16/cache.png',
                 events    : {
                     onClick : this.clear
                 }
@@ -104,47 +100,47 @@ define('controls/cache/Manager', [
 
             this.addButton({
                 text      : 'Cache säubern',
-                textimage : URL_BIN_DIR +'16x16/cache.png',
+                textimage : URL_BIN_DIR + '16x16/cache.png',
                 events    : {
                     onClick : this.purge
                 }
             });
-//
-//            this.$Clear = new QUI.controls.buttons.Button({
-//                text      : 'Cache leeren ausführen',
-//                textimage : URL_BIN_DIR +'16x16/cache.png',
-//                events    :
-//                {
-//                    onClick : function()
-//                    {
-//                        this.clear();
-//                    }.bind( this )
-//                }
-//            }).inject( this.$Body.getElement('.clear-cache-btn'));
-//
-//            this.$Clear.disable();
+            //
+            //            this.$Clear = new QUI.controls.buttons.Button({
+            //                text      : 'Cache leeren ausführen',
+            //                textimage : URL_BIN_DIR +'16x16/cache.png',
+            //                events    :
+            //                {
+            //                    onClick : function()
+            //                    {
+            //                        this.clear();
+            //                    }.bind( this )
+            //                }
+            //            }).inject( this.$Body.getElement('.clear-cache-btn'));
+            //
+            //            this.$Clear.disable();
 
-//            this.$Purge = new QUI.controls.buttons.Button({
-//                text      : 'Cache säubern',
-//                textimage : URL_BIN_DIR +'16x16/cache.png',
-//                events    :
-//                {
-//                    onClick : function()
-//                    {
-//                        this.purge();
-//                    }.bind( this )
-//                }
-//            }).inject( this.$Body.getElement('.clear-cache-btn'));
+            //            this.$Purge = new QUI.controls.buttons.Button({
+            //                text      : 'Cache säubern',
+            //                textimage : URL_BIN_DIR +'16x16/cache.png',
+            //                events    :
+            //                {
+            //                    onClick : function()
+            //                    {
+            //                        this.purge();
+            //                    }.bind( this )
+            //                }
+            //            }).inject( this.$Body.getElement('.clear-cache-btn'));
 
             // this.$Purge.disable();
 
 
             // events
-//            var checkboxs = this.$Body.getElements('input[type="checkbox"]');
-//
-//            for ( i = 0, len = checkboxs.length; i < len; i++ ) {
-//                checkboxs[ i ].addEvent('change', this.$onChange.bind( this ));
-//            }
+            //            var checkboxs = this.$Body.getElements('input[type="checkbox"]');
+            //
+            //            for ( i = 0, len = checkboxs.length; i < len; i++ ) {
+            //                checkboxs[ i ].addEvent('change', this.$onChange.bind( this ));
+            //            }
 
             this.Loader.hide();
         },
@@ -157,12 +153,10 @@ define('controls/cache/Manager', [
          *
          * @param {function} [oncomplete]
          */
-        purge : function(oncomplete)
-        {
-            Ajax.post('ajax_system_cache_purge', function(result, Request)
-            {
-                if ( typeof oncomplete !== 'undefined' ) {
-                    oncomplete( result, Request );
+        purge : function (oncomplete) {
+            Ajax.post('ajax_system_cache_purge', function (result, Request) {
+                if (typeof oncomplete !== 'undefined') {
+                    oncomplete(result, Request);
                 }
             });
         },
@@ -173,36 +167,31 @@ define('controls/cache/Manager', [
          * @param {object} params
          * @param {function} [oncomplete]
          */
-        clear : function(params, oncomplete)
-        {
-            Ajax.post('ajax_system_cache_clear', function(result, Request)
-            {
-                if ( typeof oncomplete !== 'undefined' ) {
-                    oncomplete( result, Request );
+        clear : function (params, oncomplete) {
+            Ajax.post('ajax_system_cache_clear', function (result, Request) {
+                if (typeof oncomplete !== 'undefined') {
+                    oncomplete(result, Request);
                 }
             }, {
-                params : JSON.encode( params )
+                params : JSON.encode(params)
             });
         },
 
         /**
          * Execute the cache clearing
          */
-        execClear : function()
-        {
+        execClear : function () {
             var i, n, len, Elm;
 
             var params = {},
                 caches = this.$caches,
                 Body   = this.$Body;
 
-            for ( i = 0, len = caches.length; i < len; i++ )
-            {
+            for (i = 0, len = caches.length; i < len; i++) {
                 n   = caches[ i ][ 0 ];
-                Elm = Body.getElement('input[value="'+ n +'"]');
+                Elm = Body.getElement('input[value="' + n + '"]');
 
-                if ( Elm && Elm.checked )
-                {
+                if (Elm && Elm.checked) {
                     params[ n ] = true;
                     continue;
                 }
@@ -211,37 +200,32 @@ define('controls/cache/Manager', [
             }
 
 
-            this.$Clear.setAttribute('textimage', URL_BIN_DIR +'images/loader.gif');
+            this.$Clear.setAttribute('textimage', URL_BIN_DIR + 'images/loader.gif');
 
-            this.$Control.clear(params, function()
-            {
-                this.$Clear.setAttribute('textimage', URL_BIN_DIR +'16x16/cache.png');
+            this.$Control.clear(params, function () {
+                this.$Clear.setAttribute('textimage', URL_BIN_DIR + '16x16/cache.png');
 
-                QUI.getMessageHandler(function(MH)
-                {
+                QUI.getMessageHandler(function (MH) {
                     MH.addInformation(
                         'Der Cache wurde erfolgreich geleert'
                     );
                 });
 
-            }.bind( this ));
+            }.bind(this));
         },
 
         /**
          * Exceute the cache purging
          */
-        execPurge : function()
-        {
+        execPurge : function () {
             var self = this;
 
-            this.$Purge.setAttribute('textimage', URL_BIN_DIR +'images/loader.gif');
+            this.$Purge.setAttribute('textimage', URL_BIN_DIR + 'images/loader.gif');
 
-            this.$Control.purge(function()
-            {
-                self.$Purge.setAttribute('textimage', URL_BIN_DIR +'16x16/cache.png');
+            this.$Control.purge(function () {
+                self.$Purge.setAttribute('textimage', URL_BIN_DIR + '16x16/cache.png');
 
-                QUI.getMessageHandler(function(MH)
-                {
+                QUI.getMessageHandler(function (MH) {
                     MH.addInformation(
                         'Der Cache wurde erfolgreich gesäubert'
                     );
@@ -252,14 +236,11 @@ define('controls/cache/Manager', [
         /**
          * Checkbox change event, if no checkbox is selected, the clear button is disable
          */
-        $onChange : function()
-        {
-            var checkboxs = this.$Body.getElements( 'input[type="checkbox"]' );
+        $onChange : function () {
+            var checkboxs = this.$Body.getElements('input[type="checkbox"]');
 
-            for ( var i = 0, len = checkboxs.length; i < len; i++ )
-            {
-                if ( checkboxs[ i ].checked )
-                {
+            for (var i = 0, len = checkboxs.length; i < len; i++) {
+                if (checkboxs[ i ].checked) {
                     this.$Clear.enable();
                     this.$Purge.disable();
                     return;

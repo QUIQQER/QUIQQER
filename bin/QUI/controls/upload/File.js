@@ -41,8 +41,7 @@ define('controls/upload/File', [
     'Ajax',
     'Locale'
 
-], function()
-{
+], function () {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -94,18 +93,15 @@ define('controls/upload/File', [
          * @param {File} File      - a html5 file object
          * @param {Object} options - request options
          */
-        initialize : function(File, options)
-        {
+        initialize : function (File, options) {
             this.$File = File;
 
-            if ( !this.$File.size || !this.getFilename() )
-            {
+            if (!this.$File.size || !this.getFilename()) {
                 this.$File = false;
 
-                QUI.getMessageHandler(function(MessageHandler)
-                {
+                QUI.getMessageHandler(function (MessageHandler) {
                     MessageHandler.addError(
-                        Locale.get( lg, 'file.message.corrupt.file' )
+                        Locale.get(lg, 'file.message.corrupt.file')
                     );
                 });
 
@@ -116,7 +112,7 @@ define('controls/upload/File', [
 
             this.$is_paused    = false;
             this.$file_size    = this.$File.size;
-            this.$chunk_size   = ( 1024 * 100 );
+            this.$chunk_size   = (1024 * 100);
             this.$range_start  = 0;
             this.$range_end    = this.$chunk_size;
             this.$upload_time  = null;
@@ -127,39 +123,34 @@ define('controls/upload/File', [
 
             this.$slice_method = 'slice';
 
-            if ( 'mozSlice' in this.$File )
-            {
+            if ('mozSlice' in this.$File) {
                 this.$slice_method = 'mozSlice';
-            } else if ( 'webkitSlice' in this.$File )
-            {
+            } else if ('webkitSlice' in this.$File) {
                 this.$slice_method = 'webkitSlice';
             }
 
             this.$Request = new XMLHttpRequest();
-            this.$Request.onload = function() {
+            this.$Request.onload = function () {
                 self.upload();
             };
 
             // check server answer
-            this.$Request.onreadystatechange = function()
-            {
-                if ( self.$Request.readyState == 4 ) {
-                    self.$parseResult( self.$Request.responseText );
+            this.$Request.onreadystatechange = function () {
+                if (self.$Request.readyState == 4) {
+                    self.$parseResult(self.$Request.responseText);
                 }
             };
 
-            this.parent( options );
+            this.parent(options);
 
             // if something has already been uploaded
             // eg: the file is from the upload manager
-            if ( 'uploaded' in this.$File )
-            {
+            if ('uploaded' in this.$File) {
                 this.$is_paused   = true;
                 this.$range_start = this.$File.uploaded;
                 this.$range_end   = this.$range_start + this.$chunk_size;
 
-                if ( this.$Progress )
-                {
+                if (this.$Progress) {
                     this.$Progress.set(
                         MathUtils.percent(
                             this.$range_start,
@@ -176,12 +167,11 @@ define('controls/upload/File', [
          * @method controls/upload/File#create
          * @return {HTMLElement}
          */
-        create : function()
-        {
+        create : function () {
             var self = this;
 
             this.$Elm = new Element('div', {
-                html : '<div class="file-name">'+ this.getFilename() +'</div>' +
+                html : '<div class="file-name">' + this.getFilename() + '</div>' +
                        '<div class="upload-time"></div>' +
                        '<div class="progress"></div>' +
                        '<div class="buttons"></div>',
@@ -189,11 +179,10 @@ define('controls/upload/File', [
             });
 
             this.$Elm.addEvents({
-                click : function() {
-                    self.fireEvent( 'click', [ self ] );
+                click : function () {
+                    self.fireEvent('click', [self]);
                 },
-                contextmenu : function(event)
-                {
+                contextmenu : function (event) {
                     event.stop();
 
                     self.$ContextMenu.setPosition(
@@ -207,7 +196,7 @@ define('controls/upload/File', [
             });
 
             this.$Progress = new QUIProgressbar();
-            this.$Progress.inject( this.$Elm.getElement( '.progress' ) );
+            this.$Progress.inject(this.$Elm.getElement('.progress'));
 
 
             var Buttons = this.$Elm.getElement('.buttons');
@@ -226,12 +215,11 @@ define('controls/upload/File', [
             Buttons.getElement('input[type="file"]').set({
                 events :
                 {
-                    change : function(event)
-                    {
+                    change : function (event) {
                         var Target = event.target,
                             files  = Target.files;
 
-                        if ( !files[0] ) {
+                        if (!files[0]) {
                             return;
                         }
 
@@ -254,26 +242,25 @@ define('controls/upload/File', [
                 Control : this,
                 events  :
                 {
-                    onClick : function()
-                    {
+                    onClick : function () {
                         self.pause();
 
                         new QUIConfirm({
                             name  : 'cancel-upload-window',
-                            title : Locale.get( lg, 'file.upload.cancel.title' ),
-                            text  : Locale.get( lg, 'file.upload.cancel.title' ),
-                            information : Locale.get( lg, 'file.upload.cancel.information', {
+                            title : Locale.get(lg, 'file.upload.cancel.title'),
+                            text  : Locale.get(lg, 'file.upload.cancel.title'),
+                            information : Locale.get(lg, 'file.upload.cancel.information', {
                                 file : self.getFilename()
                             }),
                             maxWidth  : 640,
                             maxheight : 360,
                             events :
                             {
-                                onSubmit : function() {
+                                onSubmit : function () {
                                     self.cancel();
                                 },
 
-                                onCancel : function() {
+                                onCancel : function () {
                                     //Win.getAttribute('Control').resume();
                                 }
                             }
@@ -284,38 +271,36 @@ define('controls/upload/File', [
 
             this.$PauseResume = new QUIButton({
                 name    : 'continue-upload',
-                text    : Locale.get( lg, 'pause' ),
+                text    : Locale.get(lg, 'pause'),
                 Control : this,
                 events  :
                 {
-                    onClick : function()
-                    {
-                        if ( self.$is_paused )
-                        {
+                    onClick : function () {
+                        if (self.$is_paused) {
                             self.resume();
                             return;
                         }
 
-                        if ( !self.$is_paused ) {
+                        if (!self.$is_paused) {
                             self.pause();
                         }
                     }
                 }
             });
 
-            if ( this.$is_paused ) {
-                this.$PauseResume.setAttribute( 'text', Locale.get( lg, 'resume' ) );
+            if (this.$is_paused) {
+                this.$PauseResume.setAttribute('text', Locale.get(lg, 'resume'));
             }
 
-            this.$Cancel.inject( Buttons );
-            this.$PauseResume.inject( Buttons );
+            this.$Cancel.inject(Buttons);
+            this.$PauseResume.inject(Buttons);
 
             // context menu
             this.$ContextMenu = new QUIContextMenu({
                 title  : this.getFilename(),
                 events :
                 {
-                    blur : function(Menu) {
+                    blur : function (Menu) {
                         Menu.hide();
                     }
                 }
@@ -323,34 +308,33 @@ define('controls/upload/File', [
 
             this.$ContextMenu.appendChild(
                 new QUIContextmenuItem({
-                    text   : Locale.get( lg, 'file.upload.remove' ),
+                    text   : Locale.get(lg, 'file.upload.remove'),
                     File   : this,
                     events :
                     {
-                        onClick : function(Item) {
-                            Item.getAttribute( 'File' ).getElm().destroy();
+                        onClick : function (Item) {
+                            Item.getAttribute('File').getElm().destroy();
                         }
                     }
                 })
             );
 
-            this.$ContextMenu.inject( document.body );
+            this.$ContextMenu.inject(document.body);
 
             // onerror, display it
-            this.addEvent('onError', function(Exception, File)
-            {
+            this.addEvent('onError', function (Exception, File) {
                 var Elm = File.getElm();
 
-                if ( !Elm ) {
+                if (!Elm) {
                     return;
                 }
 
-                if ( Elm.getElement( '.progress' ) ) {
-                    Elm.getElement( '.progress' ).destroy();
+                if (Elm.getElement('.progress')) {
+                    Elm.getElement('.progress').destroy();
                 }
 
-                if ( Elm.getElement( '.buttons' ) ) {
-                    Elm.getElement( '.buttons' ).destroy();
+                if (Elm.getElement('.buttons')) {
+                    Elm.getElement('.buttons').destroy();
                 }
 
                 new Element('div', {
@@ -361,9 +345,9 @@ define('controls/upload/File', [
                         'float' : 'left',
                         width   : '100%',
                         padding    : '10px 0 0 20px',
-                        background : 'url('+ URL_BIN_DIR +'16x16/error.png) no-repeat left center'
+                        background : 'url(' + URL_BIN_DIR + '16x16/error.png) no-repeat left center'
                     }
-                }).inject( Elm );
+                }).inject(Elm);
             });
 
             return this.$Elm;
@@ -374,17 +358,16 @@ define('controls/upload/File', [
          *
          * @method controls/upload/File#refresh
          */
-        refresh : function()
-        {
-            var percent = MathUtils.percent( this.$range_start, this.$file_size );
+        refresh : function () {
+            var percent = MathUtils.percent(this.$range_start, this.$file_size);
 
-            this.fireEvent( 'refresh', [ this, percent ] );
+            this.fireEvent('refresh', [this, percent]);
 
-            if ( !this.$Progress ) {
+            if (!this.$Progress) {
                 return;
             }
 
-            this.$Progress.set( percent );
+            this.$Progress.set(percent);
         },
 
         /**
@@ -392,76 +375,68 @@ define('controls/upload/File', [
          *
          * @method controls/upload/File#upload
          */
-        upload : function()
-        {
-            if ( !this.$File ) {
+        upload : function () {
+            if (!this.$File) {
                 return;
             }
 
-            if ( this.$File.type === '' || !this.$File.type )
-            {
-                QUI.getMessageHandler(function(MessageHandler)
-                {
+            if (this.$File.type === '' || !this.$File.type) {
+                QUI.getMessageHandler(function (MessageHandler) {
                     MessageHandler.addError(
-                        Locale.get( lg, 'file.upload.unknown.filetype' )
+                        Locale.get(lg, 'file.upload.unknown.filetype')
                     );
                 });
 
                 return;
             }
 
-            if ( this.$is_paused ) {
+            if (this.$is_paused) {
                 return;
             }
 
             // set upload start time
-            if ( !this.$upload_time )
-            {
+            if (!this.$upload_time) {
                 var Now = new Date();
 
-                this.$upload_time = Now.getHours() +':'+ Now.getMinutes();
+                this.$upload_time = Now.getHours() + ':' + Now.getMinutes();
 
-                if ( this.$Elm )
-                {
+                if (this.$Elm) {
                     this.$Elm
                         .getElement('.upload-time')
                         .set('html', this.$upload_time);
                 }
             }
 
-            if ( this.$range_start >= this.$file_size ) {
+            if (this.$range_start >= this.$file_size) {
                 this.$execute = false;
             }
 
-            if ( this.$execute === false )
-            {
-                MathUtils.percent( 100 );
+            if (this.$execute === false) {
+                MathUtils.percent(100);
 
-                if ( this.$Cancel )
-                {
+                if (this.$Cancel) {
                     this.$Cancel.destroy();
                     this.$Cancel = null;
                 }
 
-                if ( this.$PauseResume )
-                {
+                if (this.$PauseResume) {
                     this.$PauseResume.destroy();
                     this.$PauseResume = null;
                 }
 
-                if ( this.getElm().getElement('.buttons') ) {
+                if (this.getElm().getElement('.buttons')) {
                     this.getElm().getElement('.buttons').destroy();
                 }
 
-                if ( this.$error === false ) {
-                    this.fireEvent( 'complete', [ this, this.$result ] );
+                if (this.$error === false) {
+                    this.fireEvent('complete', [this, this.$result]);
                 }
 
                 return;
             }
 
-            if ( this.$execute ) {
-                this.$upload.delay( 25, this );
+            if (this.$execute) {
+                this.$upload.delay(25, this);
             }
         },
 
@@ -470,11 +445,10 @@ define('controls/upload/File', [
          *
          * @method controls/upload/File#pause
          */
-        pause : function()
-        {
+        pause : function () {
             this.$is_paused = true;
 
-            if ( this.$PauseResume ) {
+            if (this.$PauseResume) {
                 this.$PauseResume.setAttribute('text', 'fortführen');
             }
         },
@@ -484,20 +458,18 @@ define('controls/upload/File', [
          *
          * @method controls/upload/File#resume
          */
-        resume : function()
-        {
-            if ( this.$File instanceof File === false )
-            {
+        resume : function () {
+            if (this.$File instanceof File === false) {
                 var Upload = this.getElm().getElement('input[type="file"]');
 
-                if ( Upload ) {
+                if (Upload) {
                     Upload.click();
                 }
 
                 return;
             }
 
-            if ( this.$PauseResume ) {
+            if (this.$PauseResume) {
                 this.$PauseResume.setAttribute('text', 'pause');
             }
 
@@ -510,8 +482,7 @@ define('controls/upload/File', [
          *
          * @method controls/upload/File#cancel
          */
-        cancel : function()
-        {
+        cancel : function () {
             this.fireEvent('cancel', [this]);
         },
 
@@ -521,8 +492,7 @@ define('controls/upload/File', [
          * @method controls/upload/File#upload
          * @return {File|Boolean}
          */
-        getFile : function()
-        {
+        getFile : function () {
             return this.$File;
         },
 
@@ -532,9 +502,8 @@ define('controls/upload/File', [
          * @method controls/upload/File#getFilename
          * @return {String}
          */
-        getFilename : function()
-        {
-            if ( !this.$File ) {
+        getFilename : function () {
+            if (!this.$File) {
                 return '';
             }
 
@@ -548,8 +517,7 @@ define('controls/upload/File', [
          * @method controls/upload/File#isFinished
          * @return {Boolean}
          */
-        isFinished : function()
-        {
+        isFinished : function () {
             return this.$range_end === this.$file_size;
         },
 
@@ -559,14 +527,12 @@ define('controls/upload/File', [
          * @method controls/upload/File#$upload
          * @ignore
          */
-        $upload : function()
-        {
-            if ( this.$execute === false ) {
+        $upload : function () {
+            if (this.$execute === false) {
                 return;
             }
 
-            if ( this.$range_end > this.$file_size )
-            {
+            if (this.$range_end > this.$file_size) {
                 this.$range_end = this.$file_size;
                 this.$execute   = false;
             }
@@ -578,7 +544,7 @@ define('controls/upload/File', [
                 ),
 
                 // extra params for ajax function
-                params = ObjectUtils.combine( (this.getAttribute('params') || {}), {
+                params = ObjectUtils.combine((this.getAttribute('params') || {}), {
                     file : JSON.encode({
                         uploadstart : this.$upload_time,
                         chunksize   : this.$chunk_size,
@@ -591,40 +557,39 @@ define('controls/upload/File', [
                     filetype : this.$File.type
                 });
 
-            if ( typeof params.lang === 'undefined' ) {
+            if (typeof params.lang === 'undefined') {
                 params.lang = Locale.getCurrent();
             }
 
             // $project, $parentid, $file, $data
-            var url = URL_LIB_DIR +'QUI/Upload/bin/upload.php?';
-                url = url + Object.toQueryString( params );
+            var url = URL_LIB_DIR + 'QUI/Upload/bin/upload.php?';
+            url = url + Object.toQueryString(params);
 
-            this.$Request.open( 'PUT', url, true );
+            this.$Request.open('PUT', url, true);
 
             if (!!this.$Request.overrideMimeType) {
                 this.$Request.overrideMimeType('application/octet-stream');
             }
 
-            if ( this.$range_start !== 0 )
-            {
+            if (this.$range_start !== 0) {
                 this.$Request.setRequestHeader(
                     'Content-Range',
-                    'bytes ' + this.$range_start +'-'+ this.$range_end +'/'+ this.$file_size
+                    'bytes ' + this.$range_start + '-' + this.$range_end + '/' + this.$file_size
                 );
             }
 
-            this.$Request.send( data );
+            this.$Request.send(data);
 
 
             // Update our ranges
             this.$range_start = this.$range_end;
             this.$range_end   = this.$range_start + this.$chunk_size;
 
-            if ( this.$range_end > this.$file_size ) {
+            if (this.$range_end > this.$file_size) {
                 this.$range_end = this.$file_size;
             }
 
-            if ( this.$range_start > this.$file_size ) {
+            if (this.$range_start > this.$file_size) {
                 this.$range_start = this.$file_size;
             }
 
@@ -640,19 +605,17 @@ define('controls/upload/File', [
          *
          * @todo better to use the direct classes.request.Ajax.$parseResult method
          */
-        $parseResult : function(responseText)
-        {
+        $parseResult : function (responseText) {
             var str   = responseText || '',
                 len   = str.length,
                 start = 9,
-                end   = len-10;
+                end   = len - 10;
 
-            if ( !len ) {
+            if (!len) {
                 return;
             }
 
-            if ( !str.match('<quiqqer>') || !str.match('</quiqqer>') )
-            {
+            if (!str.match('<quiqqer>') || !str.match('</quiqqer>')) {
                 this.$error = true;
 
                 return this.fireEvent('error', [
@@ -664,9 +627,8 @@ define('controls/upload/File', [
                 ]);
             }
 
-            if ( str.substring(0, start) != '<quiqqer>' ||
-                 str.substring(end, len) != '</quiqqer>' )
-            {
+            if (str.substring(0, start) != '<quiqqer>' ||
+                 str.substring(end, len) != '</quiqqer>') {
                 this.$error = true;
 
                 return this.fireEvent('error', [
@@ -680,28 +642,24 @@ define('controls/upload/File', [
 
             // callback
             var res;
-            var result = eval( '('+ str.substring( start, end ) +')' );
+            var result = eval('(' + str.substring(start, end) + ')');
 
             // exist messages?
-            if ( result.message_handler &&
-                 result.message_handler.length )
-            {
+            if (result.message_handler &&
+                 result.message_handler.length) {
                 var messages = result.message_handler;
 
-                QUI.getMessageHandler(function(MH)
-                {
-                    for ( var i = 0, len = messages.length; i < len; i++ )
-                    {
-                        MH.parse( messages[ i ], function(Message) {
-                            MH.add( Message );
+                QUI.getMessageHandler(function (MH) {
+                    for (var i = 0, len = messages.length; i < len; i++) {
+                        MH.parse(messages[ i ], function (Message) {
+                            MH.add(Message);
                         });
                     }
                 });
             }
 
             // exist a main exception?
-            if ( result.Exception )
-            {
+            if (result.Exception) {
                 this.$error = true;
 
                 return this.fireEvent('error', [
@@ -717,12 +675,11 @@ define('controls/upload/File', [
             // result parsing
             res = result[ this.getAttribute('phpfunc') ];
 
-            if ( !res ) {
+            if (!res) {
                 return;
             }
 
-            if ( res.Exception )
-            {
+            if (res.Exception) {
                 this.$error = true;
 
                 this.fireEvent('error', [
@@ -735,7 +692,7 @@ define('controls/upload/File', [
                 ]);
             }
 
-            if ( res.result ) {
+            if (res.result) {
                 this.$result = res.result;
             }
         }

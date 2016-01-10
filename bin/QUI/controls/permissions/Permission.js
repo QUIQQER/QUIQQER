@@ -35,8 +35,7 @@ define('controls/permissions/Permission', [
 
     'css!controls/permissions/Permission.css'
 
-], function(QUI, QUIControl, QUIButton, QUIConfirm, QUIObjectUtils, PermissionMap, ControlUtils, PermissionUtils, QUILocale)
-{
+], function (QUI, QUIControl, QUIButton, QUIConfirm, QUIObjectUtils, PermissionMap, ControlUtils, PermissionUtils, QUILocale) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -55,8 +54,7 @@ define('controls/permissions/Permission', [
             'save'
         ],
 
-        initialize: function(Bind, options)
-        {
+        initialize: function (Bind, options) {
             this.$Bind = null;
 
             this.parent(options);
@@ -76,14 +74,13 @@ define('controls/permissions/Permission', [
          *
          * @return {HTMLDivElement}
          */
-        create : function()
-        {
+        create : function () {
             this.$Elm = new Element('div', {
                 'class' : 'controls-permissions-permission',
-                html : '<div class="controls-permissions-permission-buttons"></div>'+
-                       '<div class="controls-permissions-permission-map"></div>'+
-                       '<div class="controls-permissions-permission-content">'+
-                           '<div class="controls-permissions-permission-content-sheet"></div>'+
+                html : '<div class="controls-permissions-permission-buttons"></div>' +
+                       '<div class="controls-permissions-permission-map"></div>' +
+                       '<div class="controls-permissions-permission-content">' +
+                           '<div class="controls-permissions-permission-content-sheet"></div>' +
                        '</div>'
             });
 
@@ -106,12 +103,11 @@ define('controls/permissions/Permission', [
         /**
          * Saves the permissions
          *
-         * @return Promise
+         * @return {Promise}
          */
-        save : function()
-        {
+        save : function () {
             if (!this.$Bind) {
-                return new Promise(function(resolve) {
+                return new Promise(function (resolve) {
                     resolve();
                 });
             }
@@ -124,11 +120,10 @@ define('controls/permissions/Permission', [
          *
          * @returns {Promise}
          */
-        close : function()
-        {
+        close : function () {
             var self = this;
 
-            return new Promise(function(response) {
+            return new Promise(function (response) {
 
                 var duration = 250;
                 var SelectSheet = self.$Elm.getElement('.controls-permissions-select');
@@ -143,8 +138,7 @@ define('controls/permissions/Permission', [
                     opacity : 1
                 }, {
                     duration : duration,
-                    callback : function()
-                    {
+                    callback : function () {
                         self.$Buttons.set('html', '');
 
                         moofx(self.$ContentContainer).style({
@@ -154,15 +148,14 @@ define('controls/permissions/Permission', [
                         }, {
                             duration : duration,
                             equation : 'cubic-bezier(.42,.4,.46,1.29)',
-                            callback : function()
-                            {
+                            callback : function () {
                                 moofx(self.$MapContainer).animate({
                                     opacity : 0,
                                     left : '-100%'
                                 }, {
                                     duration : duration,
                                     equation : 'cubic-bezier(.42,.4,.46,1.29)',
-                                    callback : function() {
+                                    callback : function () {
 
                                         if (!SelectSheet) {
                                             response();
@@ -175,7 +168,7 @@ define('controls/permissions/Permission', [
                                         }, {
                                             duration : 250,
                                             equation : 'ease-in-out',
-                                            callback : function() {
+                                            callback : function () {
                                                 SelectSheet.destroy();
                                                 response();
                                             }
@@ -196,18 +189,17 @@ define('controls/permissions/Permission', [
          *
          * @returns {Promise}
          */
-        open : function()
-        {
+        open : function () {
             var self = this;
 
-            return new Promise(function(response, reject) {
+            return new Promise(function (response, reject) {
 
                 if (!self.$Bind) {
 
-                    self.$openBindSelect().then(function() {
+                    self.$openBindSelect().then(function () {
                         return self.open();
 
-                    }.bind(self)).catch(function() {
+                    }.bind(self)).catch(function () {
                         reject();
                     });
 
@@ -239,15 +231,14 @@ define('controls/permissions/Permission', [
                 }, {
                     duration : 250,
                     equation : 'cubic-bezier(.42,.4,.46,1.29)',
-                    callback : function()
-                    {
+                    callback : function () {
                         moofx(self.$ContentContainer).animate({
                             left    : 0,
                             opacity : 1
                         }, {
                             duration : 250,
                             equation : 'cubic-bezier(.42,.4,.46,1.29)',
-                            callback : function() {
+                            callback : function () {
 
                                 moofx(self.$Buttons).animate({
                                     opacity : 1
@@ -271,21 +262,19 @@ define('controls/permissions/Permission', [
         /**
          * can be overwritten
          */
-        $openBindSelect : function()
-        {
+        $openBindSelect : function () {
 
         },
 
         /**
          * event : on inject
          */
-        $onInject : function()
-        {
+        $onInject : function () {
             var self = this;
 
-            self.open().then(function() {
+            self.open().then(function () {
                 self.fireEvent('load');
-            }).catch(function() {
+            }).catch(function () {
                 self.fireEvent('loadError');
             });
         },
@@ -295,14 +284,13 @@ define('controls/permissions/Permission', [
          *
          * @param {Object} Item - qui/controls/sitemap/Item
          */
-        $onSitemapItemClick : function(Item)
-        {
+        $onSitemapItemClick : function (Item) {
             moofx(this.$ContentSheet).animate({
                 left : '-100%'
             }, {
                 duration : 250,
                 equation : 'cubic-bezier(.42,.4,.46,1.29)',
-                callback : function() {
+                callback : function () {
 
                     if (Item.getAttribute('value') === '') {
                         return;
@@ -313,14 +301,14 @@ define('controls/permissions/Permission', [
                     Promise.all([
                         Permissions.getPermissionsByObject(this.$Bind),
                         Permissions.getList()
-                    ]).then(function(result) {
+                    ]).then(function (result) {
 
                         var permissions    = result[0];
                         var permissionData = result[1];
 
                         var i, len, perm, list, header, right, title, Elm;
 
-                        var val = Item.getAttribute('value')+'.';
+                        var val = Item.getAttribute('value') + '.';
 
                         this.$tableCache = [];
                         this.$ContentSheet.set('html', '');
@@ -357,13 +345,13 @@ define('controls/permissions/Permission', [
 
                             permHeaders.push({
                                 permission  : header,
-                                translation : QUILocale.get(title[0], 'permission.'+header+'._header')
+                                translation : QUILocale.get(title[0], 'permission.' + header + '._header')
                             });
                         }
 
                         var itemValue = Item.getAttribute('value');
 
-                        permHeaders.sort(function(a, b) {
+                        permHeaders.sort(function (a, b) {
 
                             if (a.permission == itemValue) {
                                 return -1;
@@ -385,7 +373,7 @@ define('controls/permissions/Permission', [
                             this.$tableCache[perm.permission] = new Element('table', {
                                 'class' : 'data-table',
                                 html    : '<thead>' +
-                                          '<tr><th>'+ perm.translation +'</th></tr>' +
+                                          '<tr><th>' + perm.translation + '</th></tr>' +
                                           '</thead>' +
                                           '<tbody></tbody>'
                             }).inject(this.$ContentSheet);
@@ -394,8 +382,7 @@ define('controls/permissions/Permission', [
 
 
                         // create permissions
-                        for (right in permissions)
-                        {
+                        for (right in permissions) {
                             if (!permissions.hasOwnProperty(right)) {
                                 continue;
                             }
@@ -461,12 +448,10 @@ define('controls/permissions/Permission', [
 
 
                         // parse controls
-                        if (this.$Bind && typeOf(this.$Bind) !== 'qui/classes/DOM')
-                        {
+                        if (this.$Bind && typeOf(this.$Bind) !== 'qui/classes/DOM') {
                             ControlUtils.parse(this.$ContentSheet);
 
-                        } else
-                        {
+                        } else {
                             // if no bind exist, we would only edit the permissions
                             this.$ContentSheet.getElements('input,textarea').setStyles({
                                 display : 'none'
@@ -481,7 +466,7 @@ define('controls/permissions/Permission', [
                             equation : 'cubic-bezier(.42,.4,.46,1.29)'
                         });
 
-                    }.bind(this)).catch(function(Err) {
+                    }.bind(this)).catch(function (Err) {
                         console.error(Err);
                     });
 
@@ -494,8 +479,7 @@ define('controls/permissions/Permission', [
          *
          * @param {String} right - right name
          */
-        $createPermissionRow : function(right)
-        {
+        $createPermissionRow : function (right) {
             // table
             var tableRightId = right.name.split('.');
 
@@ -505,11 +489,11 @@ define('controls/permissions/Permission', [
             if (!(tableRightId in this.$tableCache)) {
 
                 var title = right.title.split(' '),
-                    header = QUILocale.get(title[0], 'permission.'+tableRightId+'._header');
+                    header = QUILocale.get(title[0], 'permission.' + tableRightId + '._header');
 
                 this.$tableCache[tableRightId] = new Element('table', {
                     'class' : 'data-table',
-                    html    : '<thead><tr><th>'+ header +'</th></tr></thead>' +
+                    html    : '<thead><tr><th>' + header + '</th></tr></thead>' +
                               '<tbody></tbody>'
                 }).inject(this.$ContentSheet);
             }
@@ -532,8 +516,7 @@ define('controls/permissions/Permission', [
             }
 
             // than, we enable only for the binded area
-            if (this.$Bind)
-            {
+            if (this.$Bind) {
                 switch (this.$Bind.getType())
                 {
                     case 'classes/projects/project/Site':
@@ -551,11 +534,9 @@ define('controls/permissions/Permission', [
             }
 
             // edit modus
-            if (!this.$Bind || typeOf(this.$Bind) == 'qui/classes/DOM')
-            {
+            if (!this.$Bind || typeOf(this.$Bind) == 'qui/classes/DOM') {
                 // only user rights can be deleted
-                if (right.src == 'user')
-                {
+                if (right.src == 'user') {
                     new QUIButton({
                         icon  : 'icon-remove',
                         title : Locale.get(lg, 'permissions.panel.btn.delete.right.alt', {
@@ -579,15 +560,14 @@ define('controls/permissions/Permission', [
         /**
          * event : delete permission
          */
-        $clickPermissionDeletion : function(Button)
-        {
+        $clickPermissionDeletion : function (Button) {
             var self = this,
                 permission = Button.getAttribute('value');
 
             new QUIConfirm({
                 maxWidth  : 450,
                 maxHeight : 300,
-                title : QUILocale.get('quiqqer/system', 'permissions.panel.window.delete.title' ),
+                title : QUILocale.get('quiqqer/system', 'permissions.panel.window.delete.title'),
                 text  : QUILocale.get('quiqqer/system', 'permissions.panel.window.delete.text', {
                     right : permission
                 }),
@@ -596,21 +576,21 @@ define('controls/permissions/Permission', [
                 }),
                 autoclose : false,
                 events : {
-                    onSubmit : function(Win) {
+                    onSubmit : function (Win) {
 
                         Win.Loader.show();
 
                         PermissionUtils.Permissions
                            .deletePermission(permission)
-                           .then(function() {
+                           .then(function () {
 
-                                Win.close();
+                               Win.close();
 
-                                self.close().then(function() {
+                               self.close().then(function () {
                                     self.open();
                                 });
 
-                            });
+                           });
                     }
                 }
             }).open();
@@ -619,12 +599,10 @@ define('controls/permissions/Permission', [
         /**
          * event : form element change
          */
-        $onFormElementChange : function(event)
-        {
+        $onFormElementChange : function (event) {
             var Target = event.target;
 
-            if (Target.type == 'checkbox')
-            {
+            if (Target.type == 'checkbox') {
                 PermissionUtils.Permissions.setPermission(
                     this.$Bind,
                     Target.name,

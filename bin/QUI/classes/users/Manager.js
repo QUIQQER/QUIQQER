@@ -1,4 +1,3 @@
-
 /**
  * User Manager - class
  *
@@ -17,7 +16,6 @@
  * @event onRefresh [this, User]
  * @event onSave [this, User]
  */
-
 define('classes/users/Manager', [
 
     'qui/classes/DOM',
@@ -27,8 +25,7 @@ define('classes/users/Manager', [
     'Ajax',
     'qui/utils/Object'
 
-], function(DOM, User, Nobody, SystemUser, Ajax, ObjectUtils)
-{
+], function (DOM, User, Nobody, SystemUser, Ajax, ObjectUtils) {
     "use strict";
 
     /**
@@ -39,10 +36,9 @@ define('classes/users/Manager', [
      */
     return new Class({
 
-        Extends : DOM,                   // @member classes/users/Manager
-        Type    : 'classes/users/Users', // @member classes/users/Manager
-
-        $users : {},				     // @member classes/users/Manager
+        Extends: DOM,                   // @member classes/users/Manager
+        Type   : 'classes/users/Users', // @member classes/users/Manager
+        $users : {},                    // @member classes/users/Manager
 
         /**
          * Return a user
@@ -51,23 +47,22 @@ define('classes/users/Manager', [
          * @param {Number} uid - Id of the User
          * @return {Object} User - controls/users/User
          */
-        get : function(uid)
-        {
-            uid = parseInt( uid );
+        get: function (uid) {
+            uid = parseInt(uid);
 
-            if ( uid === 0 ) {
+            if (uid === 0) {
                 return new Nobody();
             }
 
-            if ( uid === 5 ) {
+            if (uid === 5) {
                 return new SystemUser();
             }
 
-            if ( typeof this.$users[ uid ] === 'undefined' ) {
-                this.$users[ uid ] = new User( uid );
+            if (typeof this.$users[uid] === 'undefined') {
+                this.$users[uid] = new User(uid);
             }
 
-            return this.$users[ uid ];
+            return this.$users[uid];
         },
 
         /**
@@ -76,13 +71,12 @@ define('classes/users/Manager', [
          * @method classes/users/Manager#getUserBySession
          * @return {Object} User - controls/users/User
          */
-        getUserBySession : function()
-        {
-            if ( typeof this.$users[ USER.id ] === 'undefined' ) {
-                this.$users[ USER.id ] = new User( USER.id );
+        getUserBySession: function () {
+            if (typeof this.$users[USER.id] === 'undefined') {
+                this.$users[USER.id] = new User(USER.id);
             }
 
-            return this.$users[ USER.id ];
+            return this.$users[USER.id];
         },
 
         /**
@@ -93,16 +87,14 @@ define('classes/users/Manager', [
          * @param {Function} [onfinish] - (optional), callback function
          * @param {Object} [params]     - (optional), extra params
          */
-        getList : function(search, onfinish, params)
-        {
+        getList: function (search, onfinish, params) {
             params = ObjectUtils.combine(params, {
-                params : JSON.encode( search )
+                params: JSON.encode(search)
             });
 
-            Ajax.get('ajax_users_search', function(result, Request)
-            {
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( result, Request );
+            Ajax.get('ajax_users_search', function (result, Request) {
+                if (typeof onfinish !== 'undefined') {
+                    onfinish(result, Request);
                 }
             }, params);
         },
@@ -115,25 +107,23 @@ define('classes/users/Manager', [
          * @param {Function} [onfinish] - (optional), callback function
          * @param {Object} [params]     - (optional), extra params
          */
-        switchStatus : function(uid, onfinish, params)
-        {
+        switchStatus: function (uid, onfinish, params) {
             var self = this;
 
             params = ObjectUtils.combine(params, {
-                uid : JSON.encode( uid )
+                uid: JSON.encode(uid)
             });
 
-            Ajax.post('ajax_users_switchstatus', function(result, Request)
-            {
-                if ( uid in result && uid in self.$users ) {
-                    self.$users[ uid ].setAttribute( 'active', result[ uid ] );
+            Ajax.post('ajax_users_switchstatus', function (result, Request) {
+                if (uid in result && uid in self.$users) {
+                    self.$users[uid].setAttribute('active', result[uid]);
                 }
 
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( result, Request );
+                if (typeof onfinish !== 'undefined') {
+                    onfinish(result, Request);
                 }
 
-                self.fireEvent( 'switchStatus', [ self, result, Request ] );
+                self.fireEvent('switchStatus', [self, result, Request]);
 
             }, params);
         },
@@ -146,26 +136,24 @@ define('classes/users/Manager', [
          * @param {Function} [onfinish] - (optional), callback function
          * @param {Object} [params]     - (optional), extra params
          */
-        activate : function(uid, onfinish, params)
-        {
+        activate: function (uid, onfinish, params) {
             var self = this;
 
             params = ObjectUtils.combine(params, {
-                uid : JSON.encode( uid )
+                uid: JSON.encode(uid)
             });
 
-            Ajax.post('ajax_users_activate', function(result, Request)
-            {
-                if ( uid in result && uid in self.$users ) {
-                    self.$users[ uid ].setAttribute( 'active', result[ uid ] );
+            Ajax.post('ajax_users_activate', function (result, Request) {
+                if (uid in result && uid in self.$users) {
+                    self.$users[uid].setAttribute('active', result[uid]);
                 }
 
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( result, Request );
+                if (typeof onfinish !== 'undefined') {
+                    onfinish(result, Request);
                 }
 
-                self.fireEvent( 'activate', [ self, result, Request ] );
-                self.fireEvent( 'switchStatus', [ self, result, Request ] );
+                self.fireEvent('activate', [self, result, Request]);
+                self.fireEvent('switchStatus', [self, result, Request]);
 
             }, params);
         },
@@ -178,26 +166,24 @@ define('classes/users/Manager', [
          * @param {Function} [onfinish] - (optional), callback function
          * @param {Object} [params]     - (optional), extra params
          */
-        deactivate : function(uid, onfinish, params)
-        {
+        deactivate: function (uid, onfinish, params) {
             var self = this;
 
             params = ObjectUtils.combine(params, {
-                uid : JSON.encode( uid )
+                uid: JSON.encode(uid)
             });
 
-            Ajax.post('ajax_users_deactivate', function(result, Request)
-            {
-                if ( uid in result && uid in self.$users ) {
-                    self.$users[ uid ].setAttribute( 'active', result[ uid ] );
+            Ajax.post('ajax_users_deactivate', function (result, Request) {
+                if (uid in result && uid in self.$users) {
+                    self.$users[uid].setAttribute('active', result[uid]);
                 }
 
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( result, Request );
+                if (typeof onfinish !== 'undefined') {
+                    onfinish(result, Request);
                 }
 
-                self.fireEvent( 'deactivate', [ self, result, Request ] );
-                self.fireEvent( 'switchStatus', [ self, result, Request ] );
+                self.fireEvent('deactivate', [self, result, Request]);
+                self.fireEvent('switchStatus', [self, result, Request]);
 
             }, params);
         },
@@ -210,15 +196,13 @@ define('classes/users/Manager', [
          * @param {Function} onfinish - callback function
          * @param {Object} [params]   - (optional), extra params
          */
-        existsUsername : function(username, onfinish, params)
-        {
+        existsUsername: function (username, onfinish, params) {
             params = ObjectUtils.combine(params, {
-                username : username
+                username: username
             });
 
-            Ajax.get('ajax_users_exists', function(result, Request)
-            {
-                onfinish( result, Request );
+            Ajax.get('ajax_users_exists', function (result, Request) {
+                onfinish(result, Request);
             }, params);
         },
 
@@ -230,16 +214,14 @@ define('classes/users/Manager', [
          * @param {Function} [onfinish] - (optional), callback function
          * @param {Object} [params]     - (optional), extra params
          */
-        createUser : function(username, onfinish, params)
-        {
+        createUser: function (username, onfinish, params) {
             params = ObjectUtils.combine(params, {
-                username : username
+                username: username
             });
 
-            Ajax.post('ajax_users_create', function(result, Request)
-            {
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( result, Request );
+            Ajax.post('ajax_users_create', function (result, Request) {
+                if (typeof onfinish !== 'undefined') {
+                    onfinish(result, Request);
                 }
             }, params);
         },
@@ -252,27 +234,24 @@ define('classes/users/Manager', [
          * @param {Function} [onfinish] - (optional), callback function
          * @param {Object} [params]     - (optional), extra params
          */
-        deleteUsers : function(uids, onfinish, params)
-        {
+        deleteUsers: function (uids, onfinish, params) {
             var self = this;
 
             params = ObjectUtils.combine(params, {
-                uid : JSON.encode( uids )
+                uid: JSON.encode(uids)
             });
 
-            Ajax.post('ajax_users_delete', function(result, Request)
-            {
-                for ( var i = 0, len = uids.length; i < len; i++ )
-                {
-                    if ( typeof self.$users[ uids[ i ] ] !== 'undefined' ) {
-                        delete self.$users[ uids[ i ] ];
+            Ajax.post('ajax_users_delete', function (result, Request) {
+                for (var i = 0, len = uids.length; i < len; i++) {
+                    if (typeof self.$users[uids[i]] !== 'undefined') {
+                        delete self.$users[uids[i]];
                     }
                 }
 
-                self.fireEvent( 'delete', [ self, uids ] );
+                self.fireEvent('delete', [self, uids]);
 
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( result, Request );
+                if (typeof onfinish !== 'undefined') {
+                    onfinish(result, Request);
                 }
 
             }, params);
@@ -284,9 +263,8 @@ define('classes/users/Manager', [
          * @method classes/users/Manager#onRefreshUser
          * @param {Object} User - controls/users/User
          */
-        onRefreshUser : function(User)
-        {
-            this.fireEvent( 'refresh', [ this, User ] );
+        onRefreshUser: function (User) {
+            this.fireEvent('refresh', [this, User]);
         },
 
         /**
@@ -297,39 +275,36 @@ define('classes/users/Manager', [
          * @param {Function} [onfinish] - (optional), callback
          * @param {Object} [params]     - (optional), extra params
          */
-        saveUser : function(User, onfinish, params)
-        {
+        saveUser: function (User, onfinish, params) {
             var self       = this,
                 attributes = User.getAttributes();
 
-            for ( var i in attributes )
-            {
-                if ( !attributes.hasOwnProperty( i ) ) {
+            for (var i in attributes) {
+                if (!attributes.hasOwnProperty(i)) {
                     continue;
                 }
 
-                if ( typeof attributes[ i ] === 'object' ) {
-                    delete attributes[ i ];
+                if (typeof attributes[i] === 'object') {
+                    delete attributes[i];
                 }
             }
 
             // attributes.extra = User.getExtras();
 
             params = ObjectUtils.combine(params, {
-                uid        : User.getId(),
-                attributes : JSON.encode( attributes )
+                uid       : User.getId(),
+                attributes: JSON.encode(attributes)
             });
 
-            Ajax.post('ajax_users_save', function(result, Request)
-            {
-                self.get( User.getId() );
-                self.fireEvent( 'save', [ self, User ] );
+            Ajax.post('ajax_users_save', function (result, Request) {
+                self.get(User.getId());
+                self.fireEvent('save', [self, User]);
 
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( User, Request );
+                if (typeof onfinish !== 'undefined') {
+                    onfinish(User, Request);
                 }
 
-            }, params );
+            }, params);
         }
     });
 });

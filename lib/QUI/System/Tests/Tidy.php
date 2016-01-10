@@ -22,12 +22,14 @@ class Tidy extends QUI\System\Test
      */
     public function __construct()
     {
+        parent::__construct();
+
         $this->setAttributes(array(
             'title'       => 'Tidy',
             'description' => ''
         ));
 
-        $this->_isRequired = self::TEST_IS_OPTIONAL;
+        $this->isRequired = self::TEST_IS_OPTIONAL;
     }
 
     /**

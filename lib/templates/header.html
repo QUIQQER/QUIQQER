@@ -32,6 +32,15 @@
     <meta name="revisit-after" content="{$Site->getAttribute('meta.revisit')}" />
     <!-- [end] meta -->
 
+    {if $Project->getConfig('favicon')}
+    <link rel="shortcut icon" href="{$Project->getConfig('favicon')}" type="image/png" />
+    <link rel="icon" href="{$Project->getConfig('favicon')}" type="image/png" />
+    {/if}
+
+    <!--
+    <link rel="manifest" href="/manifest.json" />
+    -->
+
     <script type="text/javascript">
         var URL_DIR          = '{$URL_DIR}';
             URL_OPT_DIR      = '{$URL_OPT_DIR}',
@@ -68,10 +77,15 @@
             QUIQQER_LOCALE         = {$localeFiles|json_encode:true};
 
         {if "LOGIN_FAILED"|defined}
-        var QUIQQER_LOGIN_FAILED = "{locale group="quiqqer/system" value="exception.login.fail"}";
+            {if LOGIN_FAILED|is_string}
+            var QUIQQER_LOGIN_FAILED = "{$smarty.const.LOGIN_FAILED}";
+            {else}
+            var QUIQQER_LOGIN_FAILED = "{locale group="quiqqer/system" value="exception.login.fail"}";
+            {/if}
         {/if}
 
     </script>
+    <script async src="{$URL_BIN_DIR}QUI/polyfills/picturefill.min.js?lu={$lastUpdate}"></script>
     <!-- quiqqer-js-defined -->
 
     {if $Template->getAttribute('mootools')}

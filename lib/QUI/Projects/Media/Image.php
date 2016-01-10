@@ -6,11 +6,9 @@
 
 namespace QUI\Projects\Media;
 
-use BirknerAlex\XMPPHP\Log;
 use QUI;
 use QUI\Utils\System\File as QUIFile;
-use QUI\Utils\String as QUIString;
-use QUI\Utils\Image as QUIImage;
+use QUI\Utils\StringHelper as QUIString;
 use QUI\Utils\System\File;
 
 /**
@@ -25,7 +23,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the real with of the image
      *
-     * @return Integer | false
+     * @return integer | false
      */
     public function getWidth()
     {
@@ -33,8 +31,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             return $this->getAttribute('image_width');
         }
 
-        $data = QUIFile::getInfo($this->getFullPath(),
-            array('imagesize' => true));
+        $data = QUIFile::getInfo(
+            $this->getFullPath(),
+            array('imagesize' => true)
+        );
 
         if (isset($data['width'])) {
             return $data['width'];
@@ -46,7 +46,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the real height of the image
      *
-     * @return Integer | false
+     * @return integer | false
      */
     public function getHeight()
     {
@@ -54,8 +54,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             return $this->getAttribute('image_height');
         }
 
-        $data = QUIFile::getInfo($this->getFullPath(),
-            array('imagesize' => true));
+        $data = QUIFile::getInfo(
+            $this->getFullPath(),
+            array('imagesize' => true)
+        );
 
         if (isset($data['height'])) {
             return $data['height'];
@@ -77,14 +79,14 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the image path
      *
-     * @param string|bool $maxwidth - (optional)
-     * @param string|bool $maxheight - (optional)
+     * @param string|boolean $maxwidth - (optional)
+     * @param string|boolean $maxheight - (optional)
      *
      * @return string
      */
     public function getSizeCachePath($maxwidth = false, $maxheight = false)
     {
-        $Media = $this->_Media;
+        $Media = $this->Media;
         /* @var $Media QUI\Projects\Media */
         $cdir = CMS_DIR . $Media->getCacheDir();
         $file = $this->getAttribute('file');
@@ -142,8 +144,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the image url
      *
-     * @param string|bool $maxwidth - (optional) width
-     * @param string|bool $maxheight - (optional) height
+     * @param string|boolean $maxwidth - (optional) width
+     * @param string|boolean $maxheight - (optional) height
      *
      * @return string
      */
@@ -159,10 +161,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * Creates a cache file and takes into account the maximum sizes
      * return the media url
      *
-     * @param Integer|Bool $maxwidth
-     * @param Integer|Bool $maxheight
+     * @param integer|boolean $maxwidth
+     * @param integer|boolean $maxheight
      *
-     * @return String - Path to the file
+     * @return string - Path to the file
      */
     public function createSizeCacheUrl($maxwidth = false, $maxheight = false)
     {
@@ -181,10 +183,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Creates a cache file and takes into account the maximum sizes
      *
-     * @param Integer|Bool $maxwidth
-     * @param Integer|Bool $maxheight
+     * @param integer|boolean $maxwidth
+     * @param integer|boolean $maxheight
      *
-     * @return String - Path to the file
+     * @return string - Path to the file
      */
     public function createResizeCache($maxwidth = false, $maxheight = false)
     {
@@ -199,8 +201,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the Image specific max resize params
      *
-     * @param Bool|Integer $maxwidth - (optional)
-     * @param Bool|Integer $maxheight - (optional)
+     * @param boolean|integer $maxwidth - (optional)
+     * @param boolean|integer $maxheight - (optional)
      *
      * @return array - array('width' => 100, 'height' => 100)
      */
@@ -257,7 +259,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         return array(
-            'width'  => $newwidth,
+            'width' => $newwidth,
             'height' => $newheight
         );
     }
@@ -265,8 +267,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Create a cache file with the new width and height
      *
-     * @param integer|bool $width - (optional)
-     * @param integer|bool $height - (optional)
+     * @param integer|boolean $width - (optional)
+     * @param integer|boolean $height - (optional)
      *
      * @return string - URL to the cachefile
      *
@@ -278,7 +280,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             return false;
         }
 
-        $Media     = $this->_Media;
+        $Media     = $this->Media;
         $original  = $this->getFullPath();
         $cachefile = $this->getSizeCachePath($width, $height);
 
@@ -301,7 +303,6 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $Image = $Media->getImageManager()->make($original);
 
         if ($width || $height) {
-
             if (!$width) {
                 $width = null;
             }
@@ -358,48 +359,55 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         // watermark
         $Watermark = $this->getWatermark();
 
-        if ($Watermark) {
+        try {
+            if ($Watermark) {
+                $pos   = $this->getWatermarkPosition();
+                $ratio = $this->getWatermarkRatio();
 
-            $pos   = $this->getWatermarkPosition();
-            $ratio = $this->getWatermarkRatio();
+                $WatermarkImage = $Media->getImageManager()->make(
+                    $Watermark->getFullPath()
+                );
 
-            $WatermarkImage = $Media->getImageManager()->make(
-                $Watermark->getFullPath()
-            );
+                switch ($pos) {
+                    case "top-left":
+                    case "top":
+                    case "top-right":
+                    case "left":
+                    case "center":
+                    case "right":
+                    case "bottom-left":
+                    case "bottom":
+                    case "bottom-right":
+                        $watermarkPosition = $pos;
+                        break;
 
-            switch ($pos) {
-                case "top-left":
-                case "top":
-                case "top-right":
-                case "left":
-                case "center":
-                case "right":
-                case "bottom-left":
-                case "bottom":
-                case "bottom-right":
-                    $watermarkPosition = $pos;
-                    break;
+                    default:
+                        $watermarkPosition = 'bottom-right';
+                        break;
+                }
 
-                default:
-                    $watermarkPosition = 'bottom-right';
-                    break;
+                // ratio calc
+                if ($ratio) {
+                    $imageHeight = $Image->getHeight();
+                    $imageWidth  = $Image->getWidth();
+
+                    $imageHeight = $imageHeight * ($ratio / 100);
+                    $imageWidth  = $imageWidth * ($ratio / 100);
+
+                    $WatermarkImage->resize($imageWidth, $imageHeight, function ($Constraint) {
+                        $Constraint->aspectRatio();
+                        $Constraint->upsize();
+                    });
+                }
+
+                $Image->insert($WatermarkImage, $watermarkPosition);
             }
-
-            // ratio calc
-            if ($ratio) {
-                $imageHeight = $Image->getHeight();
-                $imageWidth  = $Image->getWidth();
-
-                $imageHeight = $imageHeight * ($ratio / 100);
-                $imageWidth  = $imageWidth * ($ratio / 100);
-
-                $WatermarkImage->resize($imageWidth, $imageHeight, function ($Constraint) {
-                    $Constraint->aspectRatio();
-                    $Constraint->upsize();
-                });
-            }
-            QUI\System\Log::writeRecursive($watermarkPosition);
-            $Image->insert($WatermarkImage, $watermarkPosition);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addInfo($Exception->getMessage(), array(
+                'file' => $this->getFullPath(),
+                'fileId' => $this->getId(),
+                'info' => 'watermark creation'
+            ));
         }
 
         // create folders
@@ -421,7 +429,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function deleteCache()
     {
-        $Media   = $this->_Media;
+        $Media   = $this->Media;
         $Project = $Media->getProject();
 
         $cdir = CMS_DIR . $Media->getCacheDir();
@@ -468,7 +476,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function deleteAdminCache()
     {
-        $Media   = $this->_Media;
+        $Media   = $this->Media;
         $Project = $Media->getProject();
 
         $cacheDir = VAR_DIR . 'cache/admin/media/' . $Project->getName() . '/'
@@ -488,16 +496,16 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Resize the image and aspect the ratio
      *
-     * @param Integer $newWidth
-     * @param Integer $newHeight
+     * @param integer $newWidth
+     * @param integer $newHeight
      *
-     * @return String - Path to the new Image
+     * @return string - Path to the new Image
      *
      * @throws QUI\Exception
      */
     public function resize($newWidth = 0, $newHeight = 0)
     {
-        $dir      = CMS_DIR . $this->_Media->getPath();
+        $dir      = CMS_DIR . $this->Media->getPath();
         $original = $dir . $this->getAttribute('file');
 
         try {
@@ -530,7 +538,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the Watermark image file
      *
-     * @return Image|Boolean
+     * @return Image|boolean
      * @throws QUI\Exception
      */
     public function getWatermark()
@@ -538,36 +546,32 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         // own watermark?
         $imageEffects = $this->getEffects();
 
-        if (!$imageEffects
-            || !isset($imageEffects['watermark'])
-            || $imageEffects['watermark'] === ''
-        ) {
+        if (is_array($imageEffects) && !isset($imageEffects['watermark'])) {
+            $imageEffects['watermark'] = 'default';
+        }
+
+
+        if (!$imageEffects || $imageEffects['watermark'] === '') {
             return false;
         }
 
         if ($imageEffects['watermark'] == 'default') {
-
             try {
-
                 $Project = $this->getProject();
 
                 return Utils::getImageByUrl($Project->getConfig('media_watermark'));
 
             } catch (QUI\Exception $Exception) {
-
             }
 
             return false;
         }
 
-
         try {
             return Utils::getImageByUrl($imageEffects['watermark']);
 
         } catch (QUI\Exception $Exception) {
-
         }
-
 
         return false;
     }
@@ -575,7 +579,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the Watermark image file
      *
-     * @return Image|Boolean
+     * @return Image|boolean
      * @throws QUI\Exception
      */
     public function getWatermarkPosition()
@@ -600,7 +604,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
-     * @return Array|bool|false|String
+     * @return array|bool|false|string
      */
     public function getWatermarkRatio()
     {
@@ -647,7 +651,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $this->setAttribute('md5hash', $md5);
 
         QUI::getDataBase()->update(
-            $this->_Media->getTable(),
+            $this->Media->getTable(),
             array('md5hash' => $md5),
             array('id' => $this->getId())
         );
@@ -673,7 +677,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $this->setAttribute('sha1hash', $sha1);
 
         QUI::getDataBase()->update(
-            $this->_Media->getTable(),
+            $this->Media->getTable(),
             array('sha1hash' => $sha1),
             array('id' => $this->getId())
         );

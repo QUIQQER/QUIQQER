@@ -59,7 +59,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
             'psd'
         );
 
-        $Media = $this->_Media;
+        $Media = $this->Media;
         /* @var $Media \QUI\Projects\Media */
 
         $mdir = CMS_DIR.$Media->getPath();
@@ -69,7 +69,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
         $original = $mdir.$file;
         $cachefile = $cdir.$file;
 
-        $extension = QUI\Utils\String::pathinfo($original, PATHINFO_EXTENSION);
+        $extension = QUI\Utils\StringHelper::pathinfo($original, PATHINFO_EXTENSION);
 
         if (!in_array($extension, $WHITE_LIST_EXTENSION)) {
             QUIFile::unlink($cachefile);
@@ -102,7 +102,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function deleteCache()
     {
-        $Media = $this->_Media;
+        $Media = $this->Media;
 
         $cdir = CMS_DIR.$Media->getCacheDir();
         $file = $this->getAttribute('file');
@@ -130,7 +130,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
         $this->setAttribute('md5hash', $md5);
 
         QUI::getDataBase()->update(
-            $this->_Media->getTable(),
+            $this->Media->getTable(),
             array('md5hash' => $md5),
             array('id' => $this->getId())
         );
@@ -156,7 +156,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
         $this->setAttribute('sha1hash', $sha1);
 
         \QUI::getDataBase()->update(
-            $this->_Media->getTable(),
+            $this->Media->getTable(),
             array('sha1hash' => $sha1),
             array('id' => $this->getId())
         );

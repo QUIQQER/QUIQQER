@@ -5,19 +5,20 @@
  *
  * @return array
  */
-function ajax_system_plugins_list()
-{
-    $Plugins = \QUI::getPlugins();
-    $list    = $Plugins->getAvailablePlugins( true );
+QUI::$Ajax->registerFunction(
+    'ajax_system_plugins_list',
+    function () {
+        $Plugins = QUI::getPlugins();
+        $list    = $Plugins->getAvailablePlugins(true);
 
-    $plugins = array();
+        $plugins = array();
 
-    foreach ( $list as $Plugin ) {
-        $plugins[] = $Plugin->getAttributes();
-    }
+        foreach ($list as $Plugin) {
+            $plugins[] = $Plugin->getAttributes();
+        }
 
-    return $plugins;
-}
-QUI::$Ajax->register('ajax_system_plugins_list', false, 'Permission::checkSU');
-
-?>
+        return $plugins;
+    },
+    false,
+    'Permission::checkSU'
+);

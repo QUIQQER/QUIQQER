@@ -19,20 +19,20 @@ class Auth implements QUI\Interfaces\Users\Auth
      * User object
      * @var false|QUI\Users\User
      */
-    protected $_User;
+    protected $User;
 
     /**
      * Name of the user
      * @var string
      */
-    protected $_username;
+    protected $username;
 
     /**
      * @param string $username
      */
     public function __construct($username = '')
     {
-        $this->_username = $username;
+        $this->username = $username;
     }
 
     /**
@@ -45,22 +45,23 @@ class Auth implements QUI\Interfaces\Users\Auth
     {
         $userData = QUI::getDataBase()->fetch(array(
             'select' => array('password'),
-            'from'   => QUI::getUsers()->Table(),
-            'where'  => array(
-                'id'       => $this->getUserId()
+            'from' => QUI::getUsers()->Table(),
+            'where' => array(
+                'id' => $this->getUserId()
             ),
-            'limit'  => 1
+            'limit' => 1
         ));
 
         if (empty($userData)
             || !isset($userData[0]['password'])
-            || empty($userData[0]['password'])) {
+            || empty($userData[0]['password'])
+        ) {
             return false;
         }
 
         // retrieve salt from saved password
         $savedPassword = $userData[0]['password'];
-        $salt = mb_substr($savedPassword, 0, SALT_LENGTH);
+        $salt          = mb_substr($savedPassword, 0, SALT_LENGTH);
 
         // generate password with given password and salt
         $password = Manager::genHash($password, $salt);
@@ -75,12 +76,12 @@ class Auth implements QUI\Interfaces\Users\Auth
      */
     public function getUserId()
     {
-        if ($this->_User) {
-            return $this->_User->getId();
+        if ($this->User) {
+            return $this->User->getId();
         }
 
-        $username = $this->_username;
-        $User = false;
+        $username = $this->username;
+        $User     = false;
 
         /**
          * Standard Authentifizierung
@@ -91,7 +92,6 @@ class Auth implements QUI\Interfaces\Users\Auth
             try {
                 $User = QUI::getUsers()->getUserByMail($username);
             } catch (QUI\Exception $Exception) {
-
             }
         }
 
@@ -103,7 +103,7 @@ class Auth implements QUI\Interfaces\Users\Auth
             }
         }
 
-        $this->_User = $User;
+        $this->User = $User;
 
         return $User->getId();
     }

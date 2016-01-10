@@ -21,7 +21,7 @@ class Canonical
      *
      * @var \QUI\Projects\Site
      */
-    protected $_Site;
+    protected $Site;
 
     /**
      * construct
@@ -30,17 +30,17 @@ class Canonical
      */
     public function __construct($Site)
     {
-        $this->_Site = $Site;
+        $this->Site = $Site;
     }
 
     /**
      * Return the meta tag, if it is allowed
      *
-     * @return String
+     * @return string
      */
     public function output()
     {
-        $Site    = $this->_Site;
+        $Site    = $this->Site;
         $Project = $Site->getProject();
 
         // host check
@@ -50,12 +50,12 @@ class Canonical
             $httpsHost            = $Project->getVHost(true, true);
 
             if ($requestHost != $hostWithoutProtocoll) {
-                return $this->_getLinkRel($httpsHost . $this->_Site->getCanonical());
+                return $this->getLinkRel($httpsHost . $this->Site->getCanonical());
             }
         }
 
 
-        if ($this->_Site->getId() === 1) {
+        if ($this->Site->getId() === 1) {
             $httpsHost       = $Project->getVHost(true, true);
             $httpsHostExists = false;
 
@@ -66,7 +66,7 @@ class Canonical
             if ($httpsHostExists
                 && QUI\Utils\System::isProtocolSecure() === false
             ) {
-                return $this->_getLinkRel($httpsHost . $this->_Site->getCanonical());
+                return $this->getLinkRel($httpsHost . $this->Site->getCanonical());
             }
 
             return '';
@@ -82,7 +82,7 @@ class Canonical
             return '';
         }
 
-        $canonical = ltrim($this->_Site->getCanonical(), '/');
+        $canonical = ltrim($this->Site->getCanonical(), '/');
         $httpsHost = $Project->getVHost(true, true);
 
         $httpsHostExists = false;
@@ -97,7 +97,7 @@ class Canonical
             if ($httpsHostExists
                 && QUI\Utils\System::isProtocolSecure() === false
             ) {
-                return $this->_getLinkRel($httpsHost . URL_DIR . $requestUrl);
+                return $this->getLinkRel($httpsHost . URL_DIR . $requestUrl);
             }
 
             return '';
@@ -108,17 +108,17 @@ class Canonical
             return '';
         }
 
-        return $this->_getLinkRel($httpsHost . URL_DIR . $canonical);
+        return $this->getLinkRel($httpsHost . URL_DIR . $canonical);
     }
 
     /**
      * Return <link rel="canonical"> tag
      *
-     * @param String $url - href link
+     * @param string $url - href link
      *
      * @return string
      */
-    protected function _getLinkRel($url)
+    protected function getLinkRel($url)
     {
         return '<link rel="canonical" href="' . $url . '" />';
     }

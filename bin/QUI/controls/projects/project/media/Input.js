@@ -50,8 +50,10 @@ define('controls/projects/project/media/Input', [
             name  : '',
             styles: false,
 
-            selectable_types    : false,   // you can specified which types are selectable
-            selectable_mimetypes: false  	// you can specified which mime types are selectable
+            fileid              : false,
+            breadcrumb          : true,     // you can specified if the breadcrumb is shown or not
+            selectable_types    : false,    // you can specified which types are selectable
+            selectable_mimetypes: false     // you can specified which mime types are selectable
         },
 
         initialize: function (options, Input) {
@@ -158,9 +160,14 @@ define('controls/projects/project/media/Input', [
                             }
                         }
 
+                        if (!fileid) {
+                            fileid = this.getAttribute('fileid');
+                        }
+
                         new MediaPopup({
                             project             : project,
                             fileid              : fileid,
+                            breadcrumb          : self.getAttribute('breadcrumb'),
                             selectable_types    : self.getAttribute('selectable_types'),
                             selectable_mimetypes: self.getAttribute('selectable_mimetypes'),
                             events              : {

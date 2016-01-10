@@ -3,18 +3,16 @@
 /**
  * Add a new vhost and return the clean vhost
  *
- * @param String / Integer $uid
+ * @param string $vhost
  * @return string
  */
-function ajax_vhosts_add($vhost)
-{
-    $VhostManager = new \QUI\System\VhostManager();
-
-    return $VhostManager->addVhost( $vhost, array() );
-}
-
-\QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_vhosts_add',
-    array( 'vhost' ),
+    function ($vhost) {
+        $VhostManager = new QUI\System\VhostManager();
+
+        return $VhostManager->addVhost($vhost);
+    },
+    array('vhost'),
     'Permission::checkSU'
 );

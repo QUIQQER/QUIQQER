@@ -20,14 +20,14 @@ class Event implements QUI\Interfaces\Events
     /**
      * Registered events
      *
-     * @var Array
+     * @var array
      */
-    protected $_events = array();
+    protected $events = array();
 
     /**
      * @var array
      */
-    protected $_currentRunning = array();
+    protected $currentRunning = array();
 
     /**
      * (non-PHPdoc)
@@ -36,7 +36,7 @@ class Event implements QUI\Interfaces\Events
      */
     public function getList()
     {
-        return $this->_events;
+        return $this->events;
     }
 
     /**
@@ -44,12 +44,12 @@ class Event implements QUI\Interfaces\Events
      *
      * @see \QUI\Interfaces\Events::addEvent()
      *
-     * @param String   $event - The type of event (e.g. 'complete').
+     * @param string   $event - The type of event (e.g. 'complete').
      * @param callback $fn    - The function to execute.
      */
     public function addEvent($event, $fn)
     {
-        $this->_events[$event][] = $fn;
+        $this->events[$event][] = $fn;
     }
 
     /**
@@ -71,24 +71,24 @@ class Event implements QUI\Interfaces\Events
      *
      * @see \QUI\Interfaces\Events::removeEvent()
      *
-     * @param String        $event - The type of event (e.g. 'complete').
-     * @param callback|Bool $fn    - (optional) The function to remove.
+     * @param string        $event - The type of event (e.g. 'complete').
+     * @param callback|boolean $fn    - (optional) The function to remove.
      */
     public function removeEvent($event, $fn = false)
     {
-        if (!isset($this->_events[$event])) {
+        if (!isset($this->events[$event])) {
             return;
         }
 
         if (!$fn) {
-            unset($this->_events[$event]);
+            unset($this->events[$event]);
 
             return;
         }
 
-        foreach ($this->_events[$event] as $k => $_fn) {
+        foreach ($this->events[$event] as $k => $_fn) {
             if ($_fn == $fn) {
-                unset($this->_events[$event][$k]);
+                unset($this->events[$event][$k]);
             }
         }
     }
@@ -98,7 +98,7 @@ class Event implements QUI\Interfaces\Events
      *
      * @see \QUI\Interfaces\Events::removeEvents()
      *
-     * @param Array $events - (optional) If not passed removes all events of all types.
+     * @param array $events - (optional) If not passed removes all events of all types.
      */
     public function removeEvents(array $events)
     {
@@ -112,12 +112,12 @@ class Event implements QUI\Interfaces\Events
      *
      * @see \QUI\Interfaces\Events::fireEvent()
      *
-     * @param String     $event   - The type of event (e.g. 'onComplete').
-     * @param Array|Bool $args    - (optional) the argument(s) to pass to the function.
+     * @param string     $event   - The type of event (e.g. 'onComplete').
+     * @param array|boolean $args    - (optional) the argument(s) to pass to the function.
      *                            The arguments must be in an array.
-     * @param Bool       $force   - (optional) no recursion check, optional, default = false
+     * @param boolean       $force   - (optional) no recursion check, optional, default = false
      *
-     * @return Array - Event results, assoziative array
+     * @return array - Event results, assoziative array
      *
      * @throws QUI\ExceptionStack
      */
@@ -131,24 +131,23 @@ class Event implements QUI\Interfaces\Events
 
 
         // recursion check
-        if (isset($this->_currentRunning[$event])
-            && $this->_currentRunning[$event]
+        if (isset($this->currentRunning[$event])
+            && $this->currentRunning[$event]
             && $force === false
         ) {
             return $results;
         }
 
-        if (!isset($this->_events[$event])) {
+        if (!isset($this->events[$event])) {
             return $results;
         }
 
-        $this->_currentRunning[$event] = true;
+        $this->currentRunning[$event] = true;
 
         $Stack = new QUI\ExceptionStack();
 
         // execute events
-        foreach ($this->_events[$event] as $fn) {
-
+        foreach ($this->events[$event] as $fn) {
             try {
                 if (!is_string($fn)) {
                     if ($args === false) {
@@ -170,7 +169,6 @@ class Event implements QUI\Interfaces\Events
                 $results[$fn] = call_user_func_array($fn, $args);
 
             } catch (QUI\Exception $Exception) {
-
                 $message = $Exception->getMessage();
 
                 if (is_string($fn)) {
@@ -180,14 +178,29 @@ class Event implements QUI\Interfaces\Events
                 $Clone = new QUI\Exception(
                     $message,
                     $Exception->getCode(),
-                    $Exception->getType()
+                    array('trace' => $Exception->getTraceAsString())
+                );
+
+                $Stack->addException($Clone);
+
+            } catch (\Exception $Exception) {
+                $message = $Exception->getMessage();
+
+                if (is_string($fn)) {
+                    $message .= ' :: '. $fn;
+                }
+
+                $Clone = new QUI\Exception(
+                    $message,
+                    $Exception->getCode(),
+                    array('trace' => $Exception->getTraceAsString())
                 );
 
                 $Stack->addException($Clone);
             }
         }
 
-        $this->_currentRunning[$event] = false;
+        $this->currentRunning[$event] = false;
 
         if (!$Stack->isEmpty()) {
             throw $Stack;

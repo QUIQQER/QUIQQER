@@ -3,9 +3,6 @@
 /**
  * User logout
  */
-function ajax_user_logout()
-{
-    \QUI::getUserBySession()->logout();
-}
-
-\QUI::$Ajax->register( 'ajax_user_logout' );
+QUI::$Ajax->registerFunction('ajax_user_logout', function () {
+    QUI::getUserBySession()->logout();
+});

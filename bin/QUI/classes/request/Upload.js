@@ -23,8 +23,7 @@ define('classes/request/Upload', [
     'qui/QUI',
     'qui/classes/DOM'
 
-], function(QUI, QDOM)
-{
+], function (QUI, QDOM) {
     "use strict";
 
     /**
@@ -54,64 +53,61 @@ define('classes/request/Upload', [
 
         },
 
-        initialize : function(elements, events)
-        {
+        initialize : function (elements, events) {
             var self = this;
 
-            this.addEvents( events );
+            this.addEvents(events);
             this.$elms = elements;
 
             var add_events =
             {
-                dragenter : function(event) {
-                    self.fireEvent( 'dragenter', [ event, event.target, self ] );
+                dragenter : function (event) {
+                    self.fireEvent('dragenter', [event, event.target, self]);
                 },
 
-                dragleave : function(event) {
-                    self.fireEvent( 'dragleave', [ event, event.target, self ] );
+                dragleave : function (event) {
+                    self.fireEvent('dragleave', [event, event.target, self]);
                 },
 
-                dragover : function(event) {
+                dragover : function (event) {
                     event.preventDefault();
                 },
 
-                drop : function(event)
-                {
-                    if ( QUI.$droped == Slick.uidOf( event.target ) ) {
+                drop : function (event) {
+                    if (QUI.$droped == Slick.uidOf(event.target)) {
                         return;
                     }
 
                     // no double dropping
-                    QUI.$droped = Slick.uidOf( event.target );
+                    QUI.$droped = Slick.uidOf(event.target);
 
-                    (function() {
+                    (function () {
                         QUI.$droped = false;
-                    }).delay( 200 );
+                    }).delay(200);
 
                     self.fireEvent('drop', [
                         event,
-                        self.$getFilesByEvent( event ),
+                        self.$getFilesByEvent(event),
                         event.target,
                         self
                     ]);
 
-                    self.fireEvent( 'dragend', [ event, event.target, self ] );
+                    self.fireEvent('dragend', [event, event.target, self]);
 
                     event.preventDefault();
                     event.stop();
                 },
 
-                dragend : function(event)
-                {
+                dragend : function (event) {
                     event.preventDefault();
                     event.stop();
 
-                    self.fireEvent( 'dragend', [ event, event.target, self ] );
+                    self.fireEvent('dragend', [event, event.target, self]);
                 }
             };
 
-            for ( var i = 0, len = this.$elms.length; i < len; i++ ) {
-                this.$elms[ i ].addEvents( add_events );
+            for (var i = 0, len = this.$elms.length; i < len; i++) {
+                this.$elms[ i ].addEvents(add_events);
             }
         },
 
@@ -122,22 +118,20 @@ define('classes/request/Upload', [
          * @param {Event} event - event triggerd from onDrop
          * @return {FileList|Array} FileList or an Array
          */
-        $getFilesByEvent : function(event)
-        {
+        $getFilesByEvent : function (event) {
             var transfer = event.event.dataTransfer,
                 files    = transfer.files || false;
 
-            if ( typeof FileReader === 'undefined' ||
-                 typeof FileList === 'undefined' )
-            {
-                QUI.getMessageHandler(function() {
-                    MH.addError( "Your Browser doesn't support Drag & Drop uploads" );
+            if (typeof FileReader === 'undefined' ||
+                 typeof FileList === 'undefined') {
+                QUI.getMessageHandler(function () {
+                    MH.addError("Your Browser doesn't support Drag & Drop uploads");
                 });
 
                 return [];
             }
 
-            if ( !files || !files.length ) {
+            if (!files || !files.length) {
                 return [];
             }
 

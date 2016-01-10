@@ -6,16 +6,14 @@
  * @param string|integer $gid
  * @return array
  */
-function ajax_groups_panel_categories($gid)
-{
-    $Groups = \QUI::getGroups();
-    $Group  = $Groups->get( (int)$gid );
-
-    return \QUI\Groups\Utils::getGroupToolbar( $Group )->toArray();
-}
-
-\QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_groups_panel_categories',
+    function ($gid) {
+        $Groups = QUI::getGroups();
+        $Group  = $Groups->get((int)$gid);
+
+        return QUI\Groups\Utils::getGroupToolbar($Group)->toArray();
+    },
     array('gid'),
     'Permission::checkSU'
 );

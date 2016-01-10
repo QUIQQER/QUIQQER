@@ -9,7 +9,7 @@ namespace QUI\Projects\Site;
 use QUI;
 use QUI\Projects;
 use QUI\Projects\Project;
-use QUI\Utils\String as StringUtils;
+use QUI\Utils\StringHelper as StringUtils;
 use QUI\Utils\XML;
 use QUI\Utils\DOM;
 use QUI\Utils\Security\Orthos;
@@ -25,13 +25,15 @@ class Utils
     /**
      * Prüft ob der Name erlaubt ist
      *
-     * @param String $name
+     * @param string $name
      *
      * @throws QUI\Exception
-     * @return Bool
+     * @return boolean
      */
-    static function checkName($name)
+    public static function checkName($name)
     {
+        // @todo multilingual
+
         if (!isset($name)) {
             throw new QUI\Exception(
                 'Bitte gebe einen Titel ein'
@@ -60,7 +62,7 @@ class Utils
         }
 
         // Prüfung des Namens - Sonderzeichen
-        if (preg_match($signs, $name)) {
+        if (preg_match($signs, $name)) { // #locale
             throw new QUI\Exception(
                 'In der URL "' . $name
                 . '" dürfen folgende Zeichen nicht verwendet werden: _-.,:;#@`!§$%&/?<>=\'"[]+',
@@ -74,12 +76,12 @@ class Utils
     /**
      * Säubert eine URL macht sie schön
      *
-     * @param String $url
+     * @param string $url
      * @param QUI\Projects\Project $Project - Project clear extension
      *
-     * @return String
+     * @return string
      */
-    static function clearUrl($url, QUI\Projects\Project $Project)
+    public static function clearUrl($url, QUI\Projects\Project $Project)
     {
         // space seperator
         $url = str_replace(QUI\Rewrite::URL_SPACE_CHARACTER, ' ', $url);
@@ -144,9 +146,9 @@ class Utils
      *
      * @param QUI\Projects\Site $Site
      *
-     * @return Array
+     * @return array
      */
-    static function getDataBaseXMLListForSite($Site)
+    public static function getDataBaseXMLListForSite($Site)
     {
         $Project  = $Site->getProject();
         $name     = $Project->getName();
@@ -158,7 +160,6 @@ class Utils
             return QUI\Cache\Manager::get($cache);
 
         } catch (QUI\Exception $Exception) {
-
         }
 
         $dbXmlList = QUI::getPackageManager()->getPackageDatabaseXmlList();
@@ -227,9 +228,9 @@ class Utils
      *
      * @param QUI\Projects\Site $Site
      *
-     * @return Array
+     * @return array
      */
-    static function getDataListForSite($Site)
+    public static function getDataListForSite($Site)
     {
         $dbXmlList = self::getDataBaseXMLListForSite($Site);
 
@@ -243,7 +244,6 @@ class Utils
             return QUI\Cache\Manager::get($cache);
 
         } catch (QUI\Exception $Exception) {
-
         }
 
         $result = array();
@@ -323,9 +323,9 @@ class Utils
      *
      * @param QUI\Projects\Site $Site
      *
-     * @return Array
+     * @return array
      */
-    static function getExtraAttributeListForSite($Site)
+    public static function getExtraAttributeListForSite($Site)
     {
         $Project  = $Site->getProject();
         $name     = $Project->getName();
@@ -339,7 +339,6 @@ class Utils
             return QUI\Cache\Manager::get($cache);
 
         } catch (QUI\Exception $Exception) {
-
         }
 
 
@@ -404,9 +403,9 @@ class Utils
      *
      * @param QUI\Projects\Site $Site
      *
-     * @return String
+     * @return string
      */
-    static function getExtraSettingsForSite($Site)
+    public static function getExtraSettingsForSite($Site)
     {
         $Project  = $Site->getProject();
         $name     = $Project->getName();
@@ -419,7 +418,6 @@ class Utils
             return QUI\Cache\Manager::get($cache);
 
         } catch (QUI\Exception $Exception) {
-
         }
 
 
@@ -473,9 +471,9 @@ class Utils
      *
      * @param QUI\Projects\Site $Site
      *
-     * @return Array|Bool
+     * @return array|boolean
      */
-    static function getAdminSiteModulesFromSite($Site)
+    public static function getAdminSiteModulesFromSite($Site)
     {
         $Project  = $Site->getProject();
         $name     = $Project->getName();
@@ -489,7 +487,6 @@ class Utils
             return QUI\Cache\Manager::get($cache);
 
         } catch (QUI\Exception $Exception) {
-
         }
 
         // site type extra xml
@@ -528,7 +525,7 @@ class Utils
      *
      * @return boolean
      */
-    static function isSiteObject($Site)
+    public static function isSiteObject($Site)
     {
         switch (get_class($Site)) {
             case 'QUI\\Projects\\Site':
@@ -551,7 +548,7 @@ class Utils
      *
      * @return boolean
      */
-    static function isSiteLink($link)
+    public static function isSiteLink($link)
     {
         if (strpos($link, 'index.php') === false) {
             return false;
@@ -581,7 +578,7 @@ class Utils
      * @return Projects\Site
      * @throws QUI\Exception
      */
-    static function getSiteByLink($link)
+    public static function getSiteByLink($link)
     {
         if (!self::isSiteLink($link)) {
             throw new QUI\Exception(
@@ -625,7 +622,7 @@ class Utils
      *
      * @return array
      */
-    static function getSitesByInputList(
+    public static function getSitesByInputList(
         Project $Project,
         $list,
         $params = array()
@@ -659,7 +656,6 @@ class Utils
         $where   = array();
 
         foreach ($sitetypes as $sitetypeEntry) {
-
             if (is_numeric($sitetypeEntry)) {
                 $ids[] = (int)$sitetypeEntry;
                 continue;
@@ -705,7 +701,6 @@ class Utils
                     $ids = array_merge($ids, $children);
 
                 } catch (QUI\Exception $Exception) {
-
                 }
             }
 
@@ -740,7 +735,7 @@ class Utils
      *
      * @throws \QUI\Exception
      */
-    static function rewriteSiteLink($link)
+    public static function rewriteSiteLink($link)
     {
         if (!self::isSiteLink($link)) {
             throw new QUI\Exception(

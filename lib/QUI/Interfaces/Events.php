@@ -43,7 +43,7 @@ interface Events
      * @param string $event - The type of event (e.g. 'complete').
      * @param callback $fn - (optional) The function to remove.
      */
-    public function removeEvent($event, $fn=false);
+    public function removeEvent($event, $fn = false);
 
     /**
      * Removes all events of the given type from the stack of events of a Class instance.
@@ -60,5 +60,5 @@ interface Events
      * @param array|bool $args   - (optional) the argument(s) to pass to the function.
      *                        The arguments must be in an array.
      */
-    public function fireEvent($event, $args=false);
+    public function fireEvent($event, $args = false);
 }

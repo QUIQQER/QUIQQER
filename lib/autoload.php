@@ -7,16 +7,16 @@
 /**
  * Autoloader for the QUIQQER CMS
  *
- * @param String $classname
+ * @param string $classname
  *
- * @return Bool
+ * @return boolean
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
  * @package quiqqer/quiqqer
  */
 
-require dirname(__FILE__).'/Autoloader.php';
+require dirname(__FILE__) . '/Autoloader.php';
 
 if (function_exists('spl_autoload_register')) {
     if (function_exists('__autoload')) {
@@ -30,20 +30,22 @@ if (function_exists('spl_autoload_register')) {
      * PHP Autoloader
      * Call the QUIQQER Autoloader function
      *
-     * @param String $classname
+     * @param string $classname - Name of the wanted class
+     *
+     * @return boolean
      */
     function __autoload($classname)
     {
-        __quiqqer_autoload($classname);
+        return __quiqqer_autoload($classname);
     }
 }
 
 /**
  * Main QUIQQER Autoload function
  *
- * @param String $classname
+ * @param string $classname - Name of the wanted class
  *
- * @return bool
+ * @return boolean
  */
 function __quiqqer_autoload($classname)
 {
@@ -55,12 +57,12 @@ function __quiqqer_autoload($classname)
  *
  * @author www.pcsg.de (Henning Leutz)
  *
- * @param Integer $errno
- * @param String  $errstr
- * @param String  $errfile
- * @param String  $errline
+ * @param integer $errno
+ * @param string $errstr
+ * @param string $errfile
+ * @param string $errline
  *
- * @return bool
+ * @return boolean
  * @throws ErrorException
  */
 function exception_error_handler($errno, $errstr, $errfile, $errline)
@@ -107,7 +109,7 @@ function exception_error_handler($errno, $errstr, $errfile, $errline)
         }
 
         $exception = new \ErrorException(
-            $type.': '.$errstr,
+            $type . ': ' . $errstr,
             0,
             $errno,
             $errfile,
@@ -142,7 +144,7 @@ function exception_handler($Exception)
 
     if (DEVELOPMENT) {
         print(
-            $Exception->getMessage()."\n".$Exception->getTraceAsString()."\n"
+            $Exception->getMessage() . "\n" . $Exception->getTraceAsString() . "\n"
         );
     }
 }

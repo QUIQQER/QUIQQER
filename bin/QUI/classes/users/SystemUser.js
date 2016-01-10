@@ -19,8 +19,7 @@ define('classes/users/SystemUser', [
     'classes/users/Nobody',
     'classes/users/SystemUser'
 
-], function(QUI, DOM, Nobody)
-{
+], function (QUI, DOM, Nobody) {
     "use strict";
 
     /**
@@ -36,8 +35,7 @@ define('classes/users/SystemUser', [
 
         attributes : {}, // user attributes
 
-        initialize : function()
-        {
+        initialize : function () {
             this.$uid    = 5;
             this.$extras = {};
             this.$loaded = true;
@@ -49,8 +47,7 @@ define('classes/users/SystemUser', [
          * @method classes/users/Nobody#getId
          * @return {Number} User-ID
          */
-        getId : function()
-        {
+        getId : function () {
             return 5;
         },
 
@@ -60,8 +57,7 @@ define('classes/users/SystemUser', [
          * @method classes/users/Nobody#getName
          * @return {String} Username
          */
-        getName : function()
-        {
+        getName : function () {
             return 'System-User';
         }
     });

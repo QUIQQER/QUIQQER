@@ -3,14 +3,12 @@
 /**
  * Update a package or the entire system
  */
-function ajax_system_update($package)
-{
-    \QUI::getPackageManager()->update( $package );
-}
-
-\QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_system_update',
-    array( 'package' ),
+    function ($package) {
+        QUI::getPackageManager()->update($package);
+    },
+    array('package'),
     array(
         'Permission::checkAdminUser',
         'quiqqer.system.update'

@@ -24,7 +24,7 @@ class Utils
      *
      * @return array
      */
-    static function parseUsersGroupsString($str)
+    public static function parseUsersGroupsString($str)
     {
         $result = array(
             'users'  => array(),
@@ -42,7 +42,6 @@ class Utils
         }
 
         foreach ($ugs as $ug) {
-
             if (strpos($ug, 'g') !== false) {
                 $result['groups'][] = (int)substr($ug, 1);
                 continue;

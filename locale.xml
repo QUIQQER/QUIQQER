@@ -168,6 +168,14 @@
             <de><![CDATA[Platzhalterbild]]></de>
             <en><![CDATA[Placeholder image]]></en>
         </locale>
+        <locale name="projects.project.settings.panel.favicon">
+            <de><![CDATA[Favicon]]></de>
+            <en><![CDATA[Favicon]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.createCacheOnSave">
+            <de><![CDATA[Bildercache on the Fly erstellen.]]></de>
+            <en><![CDATA[Create image cache on the fly.]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/system" datatype="js,php">
@@ -319,6 +327,10 @@
             <de><![CDATA[Abbrechen]]></de>
             <en><![CDATA[Cancel]]></en>
         </locale>
+        <locale name="close">
+            <de><![CDATA[Schließen]]></de>
+            <en><![CDATA[Close]]></en>
+        </locale>
         <locale name="ok">
             <de><![CDATA[Ok]]></de>
             <en><![CDATA[Ok]]></en>
@@ -467,6 +479,14 @@
             <de><![CDATA[Handy / Mobil]]></de>
             <en><![CDATA[Mobile]]></en>
         </locale>
+        <locale name="profile">
+            <de><![CDATA[Profil]]></de>
+            <en><![CDATA[Profile]]></en>
+        </locale>
+        <locale name="add">
+            <de><![CDATA[Hinzufügen]]></de>
+            <en><![CDATA[Add]]></en>
+        </locale>
         <locale name="address.salutation.male">
             <de><![CDATA[Herr]]></de>
             <en><![CDATA[Mr]]></en>
@@ -496,7 +516,8 @@
             <en><![CDATA[Logout]]></en>
         </locale>
         <locale name="message.contact.successful" html="true">
-            <de><![CDATA[<p>Vielen Dank f&uuml;r Ihre E-Mail. Wir werden uns schnellstm&ouml;glich bei Ihnen melden.</p>]]></de>
+            <de>
+                <![CDATA[<p>Vielen Dank f&uuml;r Ihre E-Mail. Wir werden uns schnellstm&ouml;glich bei Ihnen melden.</p>]]></de>
             <en><![CDATA[Thank you for your email. We will contact you as soon as possible.]]></en>
         </locale>
         <locale name="message.setup.successfull">
@@ -655,11 +676,13 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Really want to delete the project?]]></en>
         </locale>
         <locale name="projects.project.project.delete.window.information">
-            <de><![CDATA[Das Projekt wird unwiderruflich gelöscht. Eine Wiederherstellung ist nicht mehr möglich.]]></de>
+            <de>
+                <![CDATA[Das Projekt wird unwiderruflich gelöscht. Eine Wiederherstellung ist nicht mehr möglich.]]></de>
             <en><![CDATA[The project can not be restored and the deletion is irrevocable.]]></en>
         </locale>
         <locale name="projects.project.project.delete.window.text.2">
-            <de><![CDATA[Sind Sie sicher, dass Sie das Projekt löschen möchten? Eine Wiederherstellung ist nicht möglich.]]></de>
+            <de>
+                <![CDATA[Sind Sie sicher, dass Sie das Projekt löschen möchten? Eine Wiederherstellung ist nicht möglich.]]></de>
             <en><![CDATA[Are you sure you want to delete this project?]]></en>
         </locale>
         <locale name="projects.project.windowselect.text">
@@ -679,23 +702,52 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Trash]]></en>
         </locale>
         <locale name="trash.panel.btn.delete">
+            <de><![CDATA[Einträge löschen]]></de>
+            <en><![CDATA[Delete entries]]></en>
+        </locale>
+        <locale name="trash.panel.btn.delete.title">
             <de><![CDATA[Markierte Einträge löschen]]></de>
             <en><![CDATA[Delete marked entries]]></en>
         </locale>
         <locale name="trash.panel.btn.restore">
+            <de><![CDATA[Wiederherstellen]]></de>
+            <en><![CDATA[Restore]]></en>
+        </locale>
+        <locale name="trash.panel.btn.restore.title">
             <de><![CDATA[Markierte Einträge wiederherstellen]]></de>
             <en><![CDATA[Restore marked entries]]></en>
         </locale>
         <locale name="trash.panel.window.delete.title">
-            <de><![CDATA[Markierte Einträge Löschen?]]></de>
+            <de><![CDATA[Markierte Einträge löschen?]]></de>
             <en><![CDATA[Delete marked entries?]]></en>
         </locale>
         <locale name="trash.panel.window.delete.text">
             <de><![CDATA[Möchten Sie folgende Einträge unwiderruflich löschen?]]></de>
             <en><![CDATA[Do you want to delete the following entries permanently?]]></en>
         </locale>
+        <locale name="trash.panel.btn.delete.all">
+            <de><![CDATA[Leeren]]></de>
+            <en><![CDATA[Clear]]></en>
+        </locale>
+        <locale name="trash.panel.btn.delete.all.title">
+            <de><![CDATA[Alle Einträge löschen]]></de>
+            <en><![CDATA[Delete all entries]]></en>
+        </locale>
+        <locale name="trash.panel.window.delete.all.title">
+            <de><![CDATA[Alle Einträge löschen?]]></de>
+            <en><![CDATA[Delete all entries?]]></en>
+        </locale>
+        <locale name="trash.panel.window.delete.all.text">
+            <de><![CDATA[Möchten Sie alle Einträge unwiderruflich löschen?]]></de>
+            <en><![CDATA[Do you want to delete all entries permanently?]]></en>
+        </locale>
+        <locale name="trash.panel.window.delete.all.information">
+            <de><![CDATA[Diese Einträge können nicht wieder hergestellt werden]]></de>
+            <en><![CDATA[These entries can not be restored]]></en>
+        </locale>
         <locale name="trash.panel.window.restore.site.question">
-            <de><![CDATA[Bitte wählen Sie die Elternseite aus, unter welcher die Seite(n) eingefügt werden soll(en)]]></de>
+            <de>
+                <![CDATA[Bitte wählen Sie die Elternseite aus, unter welcher die Seite(n) eingefügt werden soll(en)]]></de>
             <en><![CDATA[Please select the parent page under which the page(s) should be insert.]]></en>
         </locale>
         <locale name="system.vhost.table.hostdata">
@@ -711,7 +763,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[You must select a project so that you can make language assignments.]]></en>
         </locale>
         <locale name="system.vhost.table.language.description">
-            <de><![CDATA[Wenn Sie mehrere Sprachen im Projekt haben, können Sie hier die Hosts der weiteren Sprache bestimmen.]]></de>
+            <de>
+                <![CDATA[Wenn Sie mehrere Sprachen im Projekt haben, können Sie hier die Hosts der weiteren Sprache bestimmen.]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="system.vhost.label.domain">
@@ -769,7 +822,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Are you sure you really want to delete the host [vhost]?]]></en>
         </locale>
         <locale name="system.vhosts.del.window.information">
-            <de><![CDATA[Achtung! Der Host-Eintrag wird unwiderruflich gelöscht! Eine Wiederherstellung ist nicht mehr möglich!]]></de>
+            <de>
+                <![CDATA[Achtung! Der Host-Eintrag wird unwiderruflich gelöscht! Eine Wiederherstellung ist nicht mehr möglich!]]></de>
             <en><![CDATA[Note the host entry is not recoverable and is deleted irrevocably]]></en>
         </locale>
         <locale name="system.vhosts.edit.sheet.title">
@@ -809,9 +863,32 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Save project permissions]]></en>
         </locale>
         <locale name="permission.control.btn.site.save">
+            <de><![CDATA[Speichern]]></de>
+            <en><![CDATA[Save]]></en>
+        </locale>
+        <locale name="permission.control.btn.site.save.title">
             <de><![CDATA[Seitenrechte speichern]]></de>
             <en><![CDATA[Save page permissions]]></en>
         </locale>
+
+        <locale name="permission.control.btn.site.save.recursive">
+            <de><![CDATA[Seitenrechte rekursiv anwenden]]></de>
+            <en><![CDATA[Apply page permissions recursively]]></en>
+        </locale>
+        <locale name="permission.control.site.recursive.win.title">
+            <de><![CDATA[Rechte rekursiv anwenden]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+        <locale name="permission.control.site.recursive.win.text">
+            <de><![CDATA[Rechte rekursiv anwenden]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+        <locale name="permission.control.site.recursive.win.information" html="true">
+            <de>
+                <![CDATA[Die aktuellen Rechte werden auf alle Unterseiten und auf die ausgewählte Seite angewendet.]]></de>
+            <en><![CDATA[]]></en>
+        </locale>
+
 
         <locale name="permissions.panel.btn.sitemap.alt">
             <de><![CDATA[Zugriffsrechte anzeigen]]></de>
@@ -888,7 +965,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Add a permission. For example: my.custom.right]]></en>
         </locale>
         <locale name="permissions.panel.window.add.information">
-            <de><![CDATA[Fügen Sie ein Zugriffsrecht für Gruppen, Benutzer, Projekte, Medien-Dateien oder Seiten hinzu]]></de>
+            <de>
+                <![CDATA[Fügen Sie ein Zugriffsrecht für Gruppen, Benutzer, Projekte, Medien-Dateien oder Seiten hinzu]]></de>
             <en><![CDATA[Add a permission for groups, users, projects, media-files or sites]]></en>
         </locale>
         <locale name="permissions.panel.window.add.select.user">
@@ -1083,6 +1161,15 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Wähle einen Seitentypen aus]]></de>
             <en><![CDATA[Choose a site type]]></en>
         </locale>
+        <locale name="projects.typewindow.btn.sitemapView">
+            <de><![CDATA[Sitemap-Anzeige]]></de>
+            <en><![CDATA[Sitemap view]]></en>
+        </locale>
+        <locale name="projects.typewindow.btn.detailView">
+            <de><![CDATA[Detail-Anzeige]]></de>
+            <en><![CDATA[Detail view]]></en>
+        </locale>
+
         <locale name="projects.project.panel.settings.btn.save">
             <de><![CDATA[Speichern]]></de>
             <en><![CDATA[Save]]></en>
@@ -1279,6 +1366,25 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Bitte geben Sie den neuen Ordnernamen ein]]></de>
             <en><![CDATA[Please enter the new folder name.]]></en>
         </locale>
+
+        <locale name="projects.project.site.folder.createNewName.title">
+            <de><![CDATA[Unerlaubte Zeichen wurden gefunden]]></de>
+            <en><![CDATA[Illegal characters were found]]></en>
+        </locale>
+        <locale name="projects.project.site.folder.createNewName.text">
+            <de><![CDATA[Unerlaubte Zeichen wurden gefunden]]></de>
+            <en><![CDATA[Illegal characters were found]]></en>
+        </locale>
+        <locale name="projects.project.site.folder.createNewName.information" html="true">
+            <de><![CDATA[
+                Möchten Sie die Zeichen ersetzen lassen?
+                <br /><br />
+                Folgender Ordnername wird verwendet:<br />
+                <b>[newName]</b>
+            ]]></de>
+            <en><![CDATA[Illegal characters were found]]></en>
+        </locale>
+
         <locale name="projects.project.site.childrensort.order_field">
             <de><![CDATA[Sortierungsfeld]]></de>
             <en><![CDATA[Sort field]]></en>
@@ -1353,6 +1459,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="projects.project.site.panel.window.create.title">
             <de><![CDATA[Wie soll die neue Seite heißen?]]></de>
             <en><![CDATA[How be called the new page?]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.window.create.button.submit">
+            <de><![CDATA[Anlegen]]></de>
+            <en><![CDATA[Create]]></en>
         </locale>
         <locale name="projects.project.site.panel.window.create.text">
             <de><![CDATA[Bitte geben Sie ein Namen für die neue Seite an]]></de>
@@ -1480,7 +1590,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Do you really want to delete the group [group]?]]></en>
         </locale>
         <locale name="groups.group.delete.information">
-            <de><![CDATA[Die Gruppe wird komplett aus dem System entfernt und kann nicht wieder hergestellt werden]]></de>
+            <de>
+                <![CDATA[Die Gruppe wird komplett aus dem System entfernt und kann nicht wieder hergestellt werden]]></de>
             <en><![CDATA[The group will be completely removed from the system and can not be restored]]></en>
         </locale>
         <locale name="groups.group.btn.save">
@@ -1566,7 +1677,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[You want to delete the following groups:]]></en>
         </locale>
         <locale name="groups.panel.delete.window.information">
-            <de><![CDATA[Die Gruppen werden komplett aus dem System entfernt und können nicht wieder hergestellt werden]]></de>
+            <de>
+                <![CDATA[Die Gruppen werden komplett aus dem System entfernt und können nicht wieder hergestellt werden]]></de>
             <en><![CDATA[The groups are completely removed from the system and can not be restored]]></en>
         </locale>
         <locale name="groups.entry.btn.remove">
@@ -1780,8 +1892,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Add a new update-server]]></en>
         </locale>
         <locale name="packages.server.win.add.text">
-            <de><![CDATA[Fügen Sie einen neuen Update-Server hinzu. Geben Sie Host, IP oder die Serveradresse vom Update-Server ein.]]></de>
-            <en><![CDATA[Add a new update-server. Enter the host, or the server IP address from the update server.]]></en>
+            <de>
+                <![CDATA[Fügen Sie einen neuen Update-Server hinzu. Geben Sie Host, IP oder die Serveradresse vom Update-Server ein.]]></de>
+            <en>
+                <![CDATA[Add a new update-server. Enter the host, or the server IP address from the update server.]]></en>
         </locale>
         <locale name="packages.systemhealth.text">
             <de><![CDATA[<h1>Haben sich Dateien verändert?</h1>
@@ -1932,7 +2046,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Delete user]]></en>
         </locale>
         <locale name="users.user.window.delete.information">
-            <de><![CDATA[Der Benutzer wird unwiderruflich aus dem System entfernt und kann nicht wiederhergestellt werden.]]></de>
+            <de>
+                <![CDATA[Der Benutzer wird unwiderruflich aus dem System entfernt und kann nicht wiederhergestellt werden.]]></de>
             <en><![CDATA[The user is completely removed from the system and can not be restored]]></en>
         </locale>
         <locale name="users.user.window.delete.text">
@@ -2128,7 +2243,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[You want to delete the following users:<br /><br />[userids]]]></en>
         </locale>
         <locale name="users.panel.delete.window.information">
-            <de><![CDATA[Die Benutzer werden komplett aus dem System entfernt und können nicht wieder hergestellt werden.]]></de>
+            <de>
+                <![CDATA[Die Benutzer werden komplett aus dem System entfernt und können nicht wieder hergestellt werden.]]></de>
             <en><![CDATA[Users are completely removed from the system and can not be restored.]]></en>
         </locale>
         <locale name="users.entry.user.remove">
@@ -3111,7 +3227,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
 
         <locale name="projects.project.site.media.popup.window.activate.information" html="true">
-            <de><![CDATA[Inaktive Dateien können nicht eingefügt werden. Möchten Sie diese Datei daher aktivieren?]]></de>
+            <de>
+                <![CDATA[Inaktive Dateien können nicht eingefügt werden. Möchten Sie diese Datei daher aktivieren?]]></de>
             <en><![CDATA[Inactive files can not be inserted. Would you activate this file?]]></en>
         </locale>
         <locale name="users.user.btn.password.generate">
@@ -3610,8 +3727,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Memcached server]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.memcached.text">
-            <de><![CDATA[Geben Sie hier einen Memcached-Server an damit die Sitzungsdaten über einen Memcached-Server verwaltet werden]]></de>
-            <en><![CDATA[Enter a memcached server to ensure that the session data is managed via a memcached server]]></en>
+            <de>
+                <![CDATA[Geben Sie hier einen Memcached-Server an damit die Sitzungsdaten über einen Memcached-Server verwaltet werden]]></de>
+            <en>
+                <![CDATA[Enter a memcached server to ensure that the session data is managed via a memcached server]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.memcached.host">
             <de><![CDATA[Host]]></de>
@@ -3626,8 +3745,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Memcache server]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.memcache.text">
-            <de><![CDATA[Geben Sie hier einen Memcache-Server an damit die Sitzungsdaten über einen Memcache-Server verwaltet werden]]></de>
-            <en><![CDATA[Enter a memcache server to ensure that the session data is managed via a memcache server]]></en>
+            <de>
+                <![CDATA[Geben Sie hier einen Memcache-Server an damit die Sitzungsdaten über einen Memcache-Server verwaltet werden]]></de>
+            <en>
+                <![CDATA[Enter a memcache server to ensure that the session data is managed via a memcache server]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.memcache.host">
             <de><![CDATA[Host]]></de>
@@ -3726,8 +3847,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Path to the cache]]></en>
         </locale>
         <locale name="quiqqer.settings.filesystem.path.description">
-            <de><![CDATA[Falls kein Pfad angegeben wurde, wird im standard VAR Ordner ein cache/stack/ Verzeichnis angelegt]]></de>
-            <en><![CDATA[If no path is specified, a cache/stack/ directory will be created in the standard VAR folder]]></en>
+            <de>
+                <![CDATA[Falls kein Pfad angegeben wurde, wird im standard VAR Ordner ein cache/stack/ Verzeichnis angelegt]]></de>
+            <en>
+                <![CDATA[If no path is specified, a cache/stack/ directory will be created in the standard VAR folder]]></en>
         </locale>
 
         <locale name="quiqqer.settings.gui">
@@ -3813,7 +3936,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Template not found.]]></en>
         </locale>
         <locale name="exception.system.health.not.writable">
-            <de><![CDATA[Bitte überprüfen Sie Ihre Dateirechte. Einige Dateien und oder Ordner sind nicht beschreibbar.]]></de>
+            <de>
+                <![CDATA[Bitte überprüfen Sie Ihre Dateirechte. Einige Dateien und oder Ordner sind nicht beschreibbar.]]></de>
             <en><![CDATA[Please check your file permissions. Some Folders or Files are not writable.]]></en>
         </locale>
         <locale name="exception.contact.params.empty">
@@ -3859,13 +3983,18 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Der gewünschte Benutzer wurde im System nicht gefunden]]></de>
             <en><![CDATA[]]></en>
         </locale>
+        <locale name="exception.user.inactive">
+            <de><![CDATA[Ihr Benutzer ist inaktiv.]]></de>
+            <en><![CDATA[Your Account is inactive.]]></en>
+        </locale>
         <locale name="exception.lib.user.illegal.signs">
             <de><![CDATA[Der Benutzername enthält unerlaubte Zeichen.
                 Bitte verwenden Sie nur Buchstaben, Zahlen und folgende Zeichen _ ä ö ü ß]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="exception.lib.user.nobody.add.address">
-            <de><![CDATA[Dieser Benutzer existiert nicht, daher kann keine Adresse hinterlegt werden. Bitte legen Sie einen Benutzer an.]]></de>
+            <de>
+                <![CDATA[Dieser Benutzer existiert nicht, daher kann keine Adresse hinterlegt werden. Bitte legen Sie einen Benutzer an.]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="exception.lib.user.nobody.get.address">
@@ -3889,8 +4018,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[The code for the activation is not correct.]]></en>
         </locale>
         <locale name="exception.lib.user.activasion.no.groups">
-            <de><![CDATA[Der Benutzer ist noch keiner Gruppe zugeordnet. Ein Benutzer muss mindestens einer Gruppe zugeordnet sein.]]></de>
-            <en><![CDATA[The is no group assigned to the user. A user must have at least one group assigned to him.]]></en>
+            <de>
+                <![CDATA[Der Benutzer ist noch keiner Gruppe zugeordnet. Ein Benutzer muss mindestens einer Gruppe zugeordnet sein.]]></de>
+            <en>
+                <![CDATA[The is no group assigned to the user. A user must have at least one group assigned to him.]]></en>
         </locale>
         <locale name="exception.lib.user.activasion.no.password">
             <de><![CDATA[Dem Benutzer wurde noch kein Passwort gesetzt.
@@ -3920,7 +4051,23 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
         <locale name="exception.login.fail">
             <de><![CDATA[Login fehlgeschlagen. Bitte überprüfen Sie Benutzername und Passwort.]]></de>
-            <en><![CDATA[Login failed. Please check the username.]]></en>
+            <en><![CDATA[Login failed. Please check the username and password.]]></en>
+        </locale>
+        <locale name="exception.login.fail.no.password">
+            <de><![CDATA[Login fehlgeschlagen. Bitte geben Sie ein Passwort an.]]></de>
+            <en><![CDATA[Login failed. Please check the password.]]></en>
+        </locale>
+        <locale name="exception.login.fail.wrong.password.input">
+            <de><![CDATA[Login fehlgeschlagen. Bitte geben Sie ein korrektes Passwort an.]]></de>
+            <en><![CDATA[Login failed. Please insert a correct password.]]></en>
+        </locale>
+        <locale name="exception.login.fail.wrong.username.input">
+            <de><![CDATA[Login fehlgeschlagen. Bitte geben Sie ein korrekten Benutzernamen an.]]></de>
+            <en><![CDATA[Login failed. Please insert a correct username.]]></en>
+        </locale>
+        <locale name="exception.login.fail.user.not.found">
+            <de><![CDATA[Login fehlgeschlagen. Benutzer wurde nicht gefunden.]]></de>
+            <en><![CDATA[Login failed. User not found.]]></en>
         </locale>
         <locale name="message.site.save.success">
             <de><![CDATA[Die Seite [id] [title] wurde erfolgreich gespeichert]]></de>
@@ -3962,6 +4109,16 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Ihre Sitzung ist abgelaufen, bitte loggen Sie sich ein]]></de>
             <en><![CDATA[Your session has expired, please login.]]></en>
         </locale>
+        <locale name="exception.session.expired.from.other">
+            <de><![CDATA[
+            Jemand hat sich auf einem anderen PC mit Ihrem Benutzernamen angemeldet,
+            Aus diesem Grund wurde Ihre Sitzung beendet. Bitte loggen Sie sich erneut ein.
+            ]]></de>
+            <en><![CDATA[
+            Someone is logged in from another PC with your username.
+            For that reason, your session has ended. Please log in again.
+            ]]></en>
+        </locale>
         <locale name="exception.no.permission">
             <de><![CDATA[Sie haben nicht die nötigen Rechte um diese Aktion durchzuführen]]></de>
             <en><![CDATA[You have not the necessary rights to perform this action.]]></en>
@@ -3975,7 +4132,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[The Permission could not be found.]]></en>
         </locale>
         <locale name="exception.permissions.delete.only.user.permissions">
-            <de><![CDATA[Dieses Zugriffsrecht kann nicht gelöscht werden. Sie können nur Benutzer angelegt Zugriffsrechte löschen]]></de>
+            <de>
+                <![CDATA[Dieses Zugriffsrecht kann nicht gelöscht werden. Sie können nur Benutzer angelegt Zugriffsrechte löschen]]></de>
             <en><![CDATA[This permission can not be deleted. You can only delete user created permissions.]]></en>
         </locale>
         <locale name="template.project.create.header">
@@ -4061,15 +4219,18 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Delete]]></en>
         </locale>
         <locale name="projects.project.site.btn.delete.help">
-            <de><![CDATA[Löschen Sie die Seite. Die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden]]></de>
+            <de>
+                <![CDATA[Löschen Sie die Seite. Die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden]]></de>
             <en><![CDATA[Delete the page, the page is placed in the trash and can be restored]]></en>
         </locale>
         <locale name="projects.project.site.btn.delete.alt">
-            <de><![CDATA[Löschen Sie die Seite. Die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden]]></de>
+            <de>
+                <![CDATA[Löschen Sie die Seite. Die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden]]></de>
             <en><![CDATA[Delete the page, the page is placed in the trash and can be restored]]></en>
         </locale>
         <locale name="projects.project.site.btn.delete.new">
-            <de><![CDATA[Löschen Sie die Seite. Die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden]]></de>
+            <de>
+                <![CDATA[Löschen Sie die Seite. Die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden]]></de>
             <en><![CDATA[Delete the page, the page is placed in the trash and can be restored]]></en>
         </locale>
         <locale name="menu.file.search.text">
@@ -4133,7 +4294,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Could not found composer.]]></en>
         </locale>
         <locale name="exception.packages.update.version.not.found">
-            <de><![CDATA[Das Update konnte nicht durchgeführt werden. Es wurde keine aktuellere Version gefunden.]]></de>
+            <de>
+                <![CDATA[Das Update konnte nicht durchgeführt werden. Es wurde keine aktuellere Version gefunden.]]></de>
             <en><![CDATA[The Update could not be executed. A newer Version could not be found.]]></en>
         </locale>
         <locale name="exception.lib.qui.editor.manager.toolbar.exist">
@@ -4455,11 +4617,13 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Fields that will be searched]]></en>
         </locale>
         <locale name="exception.site.release.from.inFuture">
-            <de><![CDATA[Die Seite kann nicht aktiviert werden, da das Datum "Veröffentlichen von" in der Zukunft liegt.]]></de>
+            <de>
+                <![CDATA[Die Seite kann nicht aktiviert werden, da das Datum "Veröffentlichen von" in der Zukunft liegt.]]></de>
             <en><![CDATA[The page can not be activated because the date "release from" is in the future.]]></en>
         </locale>
         <locale name="exception.release.to.inPast">
-            <de><![CDATA[Die Seite kann nicht aktiviert werden, da das Datum "Veröffentlichen bis" in der Vergangenheit liegt.]]></de>
+            <de>
+                <![CDATA[Die Seite kann nicht aktiviert werden, da das Datum "Veröffentlichen bis" in der Vergangenheit liegt.]]></de>
             <en><![CDATA[The page can not be activated because the date "release until" is in the past.]]></en>
         </locale>
         <locale name="templates.mail.header.title">
@@ -4475,8 +4639,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[&nbsp;]]></en>
         </locale>
         <locale name="projects.project.site.messages.lock">
-            <de><![CDATA[Diese Seite wird gerade bearbeitet von: [username]. Letzter Login von [username] war am [lastlogin]]]></de>
-            <en><![CDATA[This page is currently being edited by: [username]. Tha last login from [username] was at [lastlogin]]]></en>
+            <de>
+                <![CDATA[Diese Seite wird gerade bearbeitet von: [username]. Letzter Login von [username] war am [lastlogin]]]></de>
+            <en>
+                <![CDATA[This page is currently being edited by: [username]. Tha last login from [username] was at [lastlogin]]]></en>
         </locale>
         <locale name="control.breadcrumb.text">
             <de><![CDATA[Sie befinden sich hier:]]></de>
@@ -4533,7 +4699,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="projects.project.site.btn.delete.title">
-            <de><![CDATA[Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden]]></de>
+            <de>
+                <![CDATA[Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden]]></de>
             <en><![CDATA[Delete the page, the page is placed in the trash and can be restored]]></en>
         </locale>
         <locale name="menu.apps.text">
@@ -4609,7 +4776,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="quiqqer.settings.email.queue.desc">
-            <de><![CDATA[E-Mails werden so lange in einer Warteschlange gespeichert, bis es sicher ist, dass sie versendet wurden.]]></de>
+            <de>
+                <![CDATA[E-Mails werden so lange in einer Warteschlange gespeichert, bis es sicher ist, dass sie versendet wurden.]]></de>
             <en><![CDATA[]]></en>
         </locale>
         <locale name="quiqqer.settings.email.queue">

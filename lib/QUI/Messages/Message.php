@@ -37,7 +37,7 @@ class Message extends QUI\QDOM
     /**
      * Return a the message text
      *
-     * @return String
+     * @return string
      */
     public function getMessage()
     {
@@ -47,7 +47,7 @@ class Message extends QUI\QDOM
     /**
      * Return a the message code
      *
-     * @return String
+     * @return string
      */
     public function getCode()
     {

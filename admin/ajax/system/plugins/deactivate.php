@@ -3,16 +3,17 @@
 /**
  * Plugin deaktivieren
  *
- * @param unknown_type $plugin
+ * @param string $plugin
  */
-function ajax_system_plugins_deactivate($plugin)
-{
-    $Plugins = \QUI::getPlugins();
+QUI::$Ajax->registerFunction(
+    'ajax_system_plugins_deactivate',
+    function ($plugin) {
+        $Plugins = QUI::getPlugins();
 
-    $Plugins->deactivate(
-        $Plugins->get($plugin)
-    );
-}
-QUI::$Ajax->register('ajax_system_plugins_deactivate', array('plugin'), 'Permission::checkSU');
-
-?>
+        $Plugins->deactivate(
+            $Plugins->get($plugin)
+        );
+    },
+    array('plugin'),
+    'Permission::checkSU'
+);

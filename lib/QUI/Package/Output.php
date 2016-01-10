@@ -6,6 +6,7 @@
 
 namespace QUI\Package;
 
+use QUI;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 
@@ -13,25 +14,24 @@ use Symfony\Component\Console\Formatter\OutputFormatterInterface;
  * Output class for the Package-Manager
  * so he can use composer as symfony application
  *
- * @author www.namerobot.com (Henning Leutz)
+ * @author www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
  *
- * @event onOutput [ String $message ]
+ * @event onOutput [ string $message ]
  */
-
 class Output extends \Symfony\Component\Console\Output\Output
 {
     /**
      * List of messages
-     * @var Array
+     * @var array
      */
-    protected $_messages = array();
+    protected $messages = array();
 
     /**
      * current message string
-     * @var String
+     * @var string
      */
-    protected $_message  = '';
+    protected $message = '';
 
     /**
      * Event Manager
@@ -42,62 +42,68 @@ class Output extends \Symfony\Component\Console\Output\Output
     /**
      * Konstruktor
      *
-     * @param Integer $verbosity
-     * @param string|bool $decorated
+     * @param integer $verbosity
+     * @param string|boolean $decorated
      * @param OutputFormatterInterface $formatter
      */
-    public function __construct($verbosity=self::VERBOSITY_NORMAL, $decorated=false, OutputFormatterInterface $formatter=null)
-    {
-        parent::__construct( $verbosity, $decorated, $formatter );
+    public function __construct(
+        $verbosity = self::VERBOSITY_NORMAL,
+        $decorated = false,
+        OutputFormatterInterface $formatter = null
+    ) {
+        parent::__construct($verbosity, $decorated, $formatter);
 
-        $this->Events = new \QUI\Events\Manager();
+        $this->Events = new QUI\Events\Manager();
     }
 
     /**
      * Writes a message to the output.
      *
-     * @param string  $message A message to write to the output
-     * @param Boolean $newline Whether to add a newline or not
+     * @param string $message A message to write to the output
+     * @param boolean $newline Whether to add a newline or not
      */
     public function doWrite($message, $newline)
     {
-        $this->_message .= $message;
+        $this->message .= $message;
 
-        $this->Events->fireEvent( 'output', array( $message, $newline ) );
+        $this->Events->fireEvent('output', array($message, $newline));
 
-        if ( !$newline ) {
+        if (!$newline) {
             return;
         }
 
-        $this->_messages[] = $this->_message;
-        $this->_message    = '';
+        $this->messages[] = $this->message;
+        $this->message    = '';
     }
 
     /**
-     * (non-PHPdoc)
-     * @see \Symfony\Component\Console\Output\Output::write()
+     * @inheritdoc
+     * @param array|string $messages
+     * @param bool|false $newline
+     * @param int $type
      */
-    public function write($messages, $newline=false, $type=self::OUTPUT_RAW)
+    public function write($messages, $newline = false, $type = self::OUTPUT_RAW)
     {
-        parent::write( $messages, $newline, $type );
+        parent::write($messages, $newline, $type);
     }
 
     /**
-     * (non-PHPdoc)
-     * @see \Symfony\Component\Console\Output\Output::writeln()
+     * @inheritdoc
+     * @param array|string $messages
+     * @param int $type
      */
-    public function writeln($messages, $type=self::OUTPUT_RAW)
+    public function writeln($messages, $type = self::OUTPUT_RAW)
     {
         $this->write($messages, true, $type);
     }
 
     /**
      * Return all messages
-     * @return Array
+     * @return array
      */
     public function getMessages()
     {
-        return $this->_messages;
+        return $this->messages;
     }
 
     /**
@@ -105,6 +111,6 @@ class Output extends \Symfony\Component\Console\Output\Output
      */
     public function clearMessages()
     {
-        $this->_messages = array();
+        $this->messages = array();
     }
 }

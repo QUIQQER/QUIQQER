@@ -3,18 +3,15 @@
 /**
  * Verfügbare Templates bekommen
  *
- * @return Array
+ * @return array
  */
-function ajax_template_getlist()
-{
-    return \QUI::getPackageManager()->getInstalled(array(
-        'type' => "quiqqer-template"
-    ));
-}
-
-\QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_template_getlist',
+    function () {
+        return QUI::getPackageManager()->getInstalled(array(
+            'type' => "quiqqer-template"
+        ));
+    },
     false,
     'Permission::checkAdminUser'
 );
-

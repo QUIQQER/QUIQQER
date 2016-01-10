@@ -23,8 +23,7 @@ define('controls/lang/Popup', [
 
     'css!controls/lang/Popup.css'
 
-], function(QUIConfirm, QUIButton, Locale, Grid)
-{
+], function (QUIConfirm, QUIButton, Locale, Grid) {
     "use strict";
 
     /**
@@ -42,17 +41,16 @@ define('controls/lang/Popup', [
         ],
 
         options : {
-            title     : Locale.get( 'quiqqer/system', 'lang.popup.title' ),
+            title     : Locale.get('quiqqer/system', 'lang.popup.title'),
             maxHeight : 600,
             maxWidth  : 500,
             autoclose : false
         },
 
-        initialize : function(options)
-        {
+        initialize : function (options) {
             this.$Active = null;
 
-            this.parent( options );
+            this.parent(options);
 
             this.addEvents({
                 onCreate : this.$onCreate,
@@ -64,33 +62,31 @@ define('controls/lang/Popup', [
          * Submit the window, close the window if a language is selected
          * and trigger the onSubmit event
          */
-        submit : function()
-        {
-            if ( !this.$Grid ) {
+        submit : function () {
+            if (!this.$Grid) {
                 return;
             }
 
             var selected = this.$Grid.getSelectedData();
 
-            if ( !selected.length ) {
+            if (!selected.length) {
                 return;
             }
 
             var result = [];
 
-            for ( var i = 0, len = selected.length; i < len; i++ ) {
-                result.push( selected[ i ].lang );
+            for (var i = 0, len = selected.length; i < len; i++) {
+                result.push(selected[ i ].lang);
             }
 
-            this.fireEvent( 'submit', [ result, this ] );
+            this.fireEvent('submit', [result, this]);
             this.close();
         },
 
         /**
          * event : onCreate
          */
-        $onCreate : function()
-        {
+        $onCreate : function () {
             var Content = this.getContent(),
                 langs   = this.getLanguages();
 
@@ -98,7 +94,7 @@ define('controls/lang/Popup', [
                 styles : {
                     width : '100%'
                 }
-            }).inject( Content );
+            }).inject(Content);
 
             this.$Grid = new Grid(GridContainer, {
                 columnModel : [{
@@ -112,7 +108,7 @@ define('controls/lang/Popup', [
                     dataType  : 'string',
                     width     : 50
                 }, {
-                    header    : Locale.get( 'quiqqer/system', 'language' ),
+                    header    : Locale.get('quiqqer/system', 'language'),
                     dataIndex : 'text',
                     dataType  : 'string',
                     width     : 250
@@ -125,11 +121,10 @@ define('controls/lang/Popup', [
 
             var data = [];
 
-            for ( var i = 0, len = langs.length; i < len; i++ )
-            {
+            for (var i = 0, len = langs.length; i < len; i++) {
                 data.push({
-                    image : URL_BIN_DIR +'16x16/flags/'+ langs[ i ] +'.png',
-                    text : Locale.get( 'quiqqer/system', 'lang.'+ langs[ i ] ),
+                    image : URL_BIN_DIR + '16x16/flags/' + langs[ i ] + '.png',
+                    text : Locale.get('quiqqer/system', 'lang.' + langs[ i ]),
                     lang : langs[ i ]
                 });
             }
@@ -142,16 +137,15 @@ define('controls/lang/Popup', [
         /**
          * event : resize window
          */
-        $onResize : function()
-        {
+        $onResize : function () {
             var Content = this.getContent();
 
-            if ( Content.getElement( '.submit-body' ) ) {
-                Content.getElement( '.submit-body' ).destroy();
+            if (Content.getElement('.submit-body')) {
+                Content.getElement('.submit-body').destroy();
             }
 
-            if ( this.$Grid ) {
-                this.$Grid.setHeight( Content.getSize().y - 40 );
+            if (this.$Grid) {
+                this.$Grid.setHeight(Content.getSize().y - 40);
             }
         },
 
@@ -160,8 +154,7 @@ define('controls/lang/Popup', [
          *
          * @return {Array}
          */
-        getLanguages : function()
-        {
+        getLanguages : function () {
             return [
                 'ad', 'bi', 'cn', 'gr', 'jo', 'lv', 'mz', 'pr', 'sm',
                 'tz', 'ae', 'bj', 'co', 'es', 'gs', 'jp', 'ly', 'na',

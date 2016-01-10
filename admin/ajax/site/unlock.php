@@ -3,20 +3,18 @@
 /**
  * Lock a site
  *
- * @param String $project - Project data; JSON Array
- * @param String $id - Site ID
- * @return Array
+ * @param string $project - Project data; JSON Array
+ * @param string $id - Site ID
+ * @return array
  */
-function ajax_site_unlock($project, $id)
-{
-    $Project = \QUI::getProjectManager()->decode( $project );
-    $Site    = new \QUI\Projects\Site\Edit( $Project, $id );
-
-    $Site->unlockWithRights();
-}
-
-\QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_site_unlock',
-    array( 'project', 'id' ),
+    function ($project, $id) {
+        $Project = QUI::getProjectManager()->decode($project);
+        $Site    = new QUI\Projects\Site\Edit($Project, $id);
+
+        $Site->unlockWithRights();
+    },
+    array('project', 'id'),
     'Permission::checkAdminUser'
 );

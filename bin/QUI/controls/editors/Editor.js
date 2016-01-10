@@ -24,8 +24,7 @@ define('controls/editors/Editor', [
     'classes/editor/Manager',
     'Ajax'
 
-], function(QUIControl, QUILoader, EditorManager, QUIAjax)
-{
+], function (QUIControl, QUILoader, EditorManager, QUIAjax) {
     "use strict";
 
     /**
@@ -64,18 +63,17 @@ define('controls/editors/Editor', [
             showLoader : true
         },
 
-        initialize : function(Manager, options)
-        {
+        initialize : function (Manager, options) {
             this.$Manager = Manager;
             this.$Elm     = null;
             this.$Input   = null;
             this.$Project = null;
 
-            if ( typeof this.$Manager === 'undefined' ) {
+            if (typeof this.$Manager === 'undefined') {
                 this.$Manager = new EditorManager();
             }
 
-            this.parent( options );
+            this.parent(options);
 
             this.Loader = null;
 
@@ -89,7 +87,7 @@ define('controls/editors/Editor', [
                 onInject : this.$onInject
             });
 
-            this.fireEvent( 'init', [ this ] );
+            this.fireEvent('init', [this]);
         },
 
         /**
@@ -98,19 +96,18 @@ define('controls/editors/Editor', [
          * @method controls/editors/Editor#create
          * @return {HTMLElement} DOMNode Element
          */
-        create : function()
-        {
+        create : function () {
             this.$Elm = new Element('div', {
                 html : '<div class="control-editor-container"></div>',
                 'class' : 'control-editor'
             });
 
-            this.Loader = new QUILoader().inject( this.$Elm );
+            this.Loader = new QUILoader().inject(this.$Elm);
 
-            this.$Elm.addClass( 'media-drop' );
-            this.$Elm.set( 'data-quiid', this.getId() );
+            this.$Elm.addClass('media-drop');
+            this.$Elm.set('data-quiid', this.getId());
 
-            this.$Container = this.$Elm.getElement( '.control-editor-container' );
+            this.$Container = this.$Elm.getElement('.control-editor-container');
 
             return this.$Elm;
         },
@@ -121,12 +118,11 @@ define('controls/editors/Editor', [
          * @method controls/editors/Editor#destroy
          * @fires onDestroy [this]
          */
-        destroy : function()
-        {
-            this.fireEvent( 'destroy', [ this ] );
+        destroy : function () {
+            this.fireEvent('destroy', [this]);
             this.removeEvents();
 
-            this.getManager().destroyEditor( this );
+            this.getManager().destroyEditor(this);
         },
 
         /**
@@ -134,38 +130,35 @@ define('controls/editors/Editor', [
          *
          * @param {Function} [callback] - callback function
          */
-        load : function(callback)
-        {
+        load : function (callback) {
             var self = this;
 
-            this.getSettings(function(data)
-            {
-                self.setAttribute( 'bodyId', data.bodyId );
-                self.setAttribute( 'bodyClass', data.bodyClass );
+            this.getSettings(function (data) {
+                self.setAttribute('bodyId', data.bodyId);
+                self.setAttribute('bodyClass', data.bodyClass);
 
-                if ( typeof callback === 'function' ) {
-                    callback( data );
+                if (typeof callback === 'function') {
+                    callback(data);
                 }
 
-                self.fireEvent( 'load', [ data ] );
+                self.fireEvent('load', [data]);
             });
         },
 
         /**
          * event : on loaded
          */
-        $onLoaded : function()
-        {
-            if ( this.getAttribute( 'bodyId' ) ) {
-                this.getDocument().body.id = this.getAttribute( 'bodyId' );
+        $onLoaded : function () {
+            if (this.getAttribute('bodyId')) {
+                this.getDocument().body.id = this.getAttribute('bodyId');
             }
 
-            if ( this.getAttribute( 'bodyClass' ) ) {
-                this.getDocument().body.className = this.getAttribute( 'bodyClass' );
+            if (this.getAttribute('bodyClass')) {
+                this.getDocument().body.className = this.getAttribute('bodyClass');
             }
 
-            if ( this.getAttribute( 'content' ) ) {
-                this.setContent( this.getAttribute( 'content' ) );
+            if (this.getAttribute('content')) {
+                this.setContent(this.getAttribute('content'));
             }
 
             this.Loader.hide();
@@ -174,9 +167,8 @@ define('controls/editors/Editor', [
         /**
          * on inject
          */
-        $onInject : function()
-        {
-            if ( this.getAttribute('showLoader') ) {
+        $onInject : function () {
+            if (this.getAttribute('showLoader')) {
                 this.Loader.show();
             }
 
@@ -187,34 +179,30 @@ define('controls/editors/Editor', [
          * event : on import
          * thats not optimal, because we must generate a new editor instance with the editor manager
          */
-        $onImport : function()
-        {
+        $onImport : function () {
             var self     = this,
                 nodeName = this.$Elm.nodeName;
 
-            if ( nodeName === 'INPUT' || nodeName === 'TEXTAREA' )
-            {
+            if (nodeName === 'INPUT' || nodeName === 'TEXTAREA') {
                 this.$Input = this.$Elm;
                 this.$Elm   = this.create();
 
-                this.$Input.set( 'type', 'hidden' );
-                this.$Elm.wraps( this.$Input );
+                this.$Input.set('type', 'hidden');
+                this.$Elm.wraps(this.$Input);
             }
 
-            this.getManager().getEditor(null, function(Editor)
-            {
-                Editor.inject( self.$Elm );
-                Editor.setHeight( self.$Elm.getSize().y );
-                Editor.setWidth( self.$Elm.getSize().x );
+            this.getManager().getEditor(null, function (Editor) {
+                Editor.inject(self.$Elm);
+                Editor.setHeight(self.$Elm.getSize().y);
+                Editor.setWidth(self.$Elm.getSize().x);
 
-                if ( self.$Input ) {
-                    Editor.setContent( self.$Input.value );
+                if (self.$Input) {
+                    Editor.setContent(self.$Input.value);
                 }
 
-                self.addEvent('onGetContent', function()
-                {
-                    self.setAttribute( 'content', Editor.getContent() );
-                    self.$Input.value = self.getAttribute( 'content' );
+                self.addEvent('onGetContent', function () {
+                    self.setAttribute('content', Editor.getContent());
+                    self.$Input.value = self.getAttribute('content');
                 });
             });
         },
@@ -224,8 +212,7 @@ define('controls/editors/Editor', [
          *
          * @param {Object} Project - (classes/projects/Project)
          */
-        setProject : function(Project)
-        {
+        setProject : function (Project) {
             this.$Project = Project;
         },
 
@@ -234,8 +221,7 @@ define('controls/editors/Editor', [
          *
          * @return {Boolean}
          */
-        isLoaded : function()
-        {
+        isLoaded : function () {
             return this.$loaded;
         },
 
@@ -245,8 +231,7 @@ define('controls/editors/Editor', [
          * @method controls/editors/Editor#getManager
          * @return {Object} Editor Manager (controls/editors/Manager)
          */
-        getManager : function()
-        {
+        getManager : function () {
             return this.$Manager;
         },
 
@@ -256,8 +241,7 @@ define('controls/editors/Editor', [
          * @method controls/editors/Editor#getContainer
          * @return {HTMLElement|null} Container
          */
-        getContainer : function()
-        {
+        getContainer : function () {
             return this.$Container;
         },
 
@@ -268,10 +252,9 @@ define('controls/editors/Editor', [
          * @fires onSetContent [content, this]
          * @param {String} content - HTML String
          */
-        setContent : function(content)
-        {
-            this.setAttribute( 'content', content );
-            this.fireEvent( 'setContent', [ content, this ] );
+        setContent : function (content) {
+            this.setAttribute('content', content);
+            this.fireEvent('setContent', [content, this]);
         },
 
         /**
@@ -280,31 +263,27 @@ define('controls/editors/Editor', [
          * @method controls/editors/Editor#getContent
          * @return {String} content
          */
-        getContent : function()
-        {
-            this.fireEvent( 'getContent', [ this ] );
+        getContent : function () {
+            this.fireEvent('getContent', [this]);
 
-            return this.getAttribute( 'content' );
+            return this.getAttribute('content');
         },
 
         /**
          * Return the buttons
          */
-        getButtons : function(callback)
-        {
-            if ( this.getAttribute( 'buttons' ) )
-            {
-                callback( this.getAttribute( 'buttons' ) );
+        getButtons : function (callback) {
+            if (this.getAttribute('buttons')) {
+                callback(this.getAttribute('buttons'));
                 return;
             }
 
             var self = this;
 
-            this.getManager().getToolbar(function(buttons)
-            {
-                self.setAttribute( 'buttons', buttons );
+            this.getManager().getToolbar(function (buttons) {
+                self.setAttribute('buttons', buttons);
 
-                callback( buttons );
+                callback(buttons);
             });
         },
 
@@ -312,8 +291,7 @@ define('controls/editors/Editor', [
          * Switch to source
          * can be overwritten
          */
-        switchToSource : function()
-        {
+        switchToSource : function () {
 
         },
 
@@ -321,8 +299,7 @@ define('controls/editors/Editor', [
          * Switch to WYSIWYG
          * can be overwritten
          */
-        switchToWYSIWYG : function()
-        {
+        switchToWYSIWYG : function () {
 
         },
 
@@ -330,8 +307,7 @@ define('controls/editors/Editor', [
          * Hide toolbar
          * can be overwritten
          */
-        hideToolbar : function()
-        {
+        hideToolbar : function () {
 
         },
 
@@ -339,8 +315,7 @@ define('controls/editors/Editor', [
          * Show toolbar
          * can be overwritten
          */
-        showToolbar : function()
-        {
+        showToolbar : function () {
 
         },
 
@@ -350,9 +325,8 @@ define('controls/editors/Editor', [
          *
          * @param {Number} height
          */
-        setHeight : function(height)
-        {
-            this.setAttribute( 'height', height );
+        setHeight : function (height) {
+            this.setAttribute('height', height);
         },
 
         /**
@@ -361,9 +335,8 @@ define('controls/editors/Editor', [
          *
          * @param {Number} width
          */
-        setWidth : function(width)
-        {
-            this.setAttribute( 'width', width );
+        setWidth : function (width) {
+            this.setAttribute('width', width);
         },
 
         /**
@@ -372,8 +345,7 @@ define('controls/editors/Editor', [
          * @method controls/editors/Editor#setInstance
          * @param {Object} Instance - Editor Instance
          */
-        setInstance : function(Instance)
-        {
+        setInstance : function (Instance) {
             this.$Instance = Instance;
         },
 
@@ -384,8 +356,7 @@ define('controls/editors/Editor', [
          * @method controls/editors/Editor#getInstance
          * @return {Object} Instance - Editor Instance
          */
-        getInstance : function()
-        {
+        getInstance : function () {
             return this.$Instance;
         },
 
@@ -394,9 +365,8 @@ define('controls/editors/Editor', [
          *
          * @return {HTMLElement} document
          */
-        getDocument : function()
-        {
-            return this.$Elm.getElement( 'iframe' ).contentWindow.document;
+        getDocument : function () {
+            return this.$Elm.getElement('iframe').contentWindow.document;
         },
 
         /**
@@ -404,30 +374,26 @@ define('controls/editors/Editor', [
          *
          * @param {Function} [callback] - callback function
          */
-        getSettings : function(callback)
-        {
+        getSettings : function (callback) {
             var Project = this.$Project,
                 buttons = this.getAttribute('buttons');
 
-            if ( !Project )
-            {
+            if (!Project) {
                 QUIAjax.get([
                     'ajax_editor_get_toolbar'
-                ], function(toolbarData)
-                {
+                ], function (toolbarData) {
                     var data = {
                         toolbar : toolbarData
                     };
 
                     if (buttons && "lines" in buttons) {
                         data.toolbar.lines = buttons.lines;
-                    } else if(buttons)
-                    {
+                    } else if (buttons) {
                         data.toolbar.lines = buttons;
                     }
 
-                    if ( typeof callback === 'function' ) {
-                        callback( data );
+                    if (typeof callback === 'function') {
+                        callback(data);
                     }
                 });
 
@@ -438,19 +404,17 @@ define('controls/editors/Editor', [
             QUIAjax.get([
                 'ajax_editor_get_projectFiles',
                 'ajax_editor_get_toolbar'
-            ], function(projectData, toolbarData)
-            {
+            ], function (projectData, toolbarData) {
                 projectData.toolbar = toolbarData;
 
                 if (buttons && "lines" in buttons) {
                     data.toolbar.lines = buttons.lines;
-                } else if (buttons)
-                {
+                } else if (buttons) {
                     data.toolbar.lines = buttons;
                 }
 
-                if ( typeof callback === 'function' ) {
-                    callback( projectData );
+                if (typeof callback === 'function') {
+                    callback(projectData);
                 }
             }, {
                 project : Project.getName()
@@ -460,31 +424,28 @@ define('controls/editors/Editor', [
         /**
          * Add an CSS file to the Instance
          */
-        addCSS : function(file)
-        {
-            if ( typeof file === 'undefined' || !file ) {
+        addCSS : function (file) {
+            if (typeof file === 'undefined' || !file) {
                 return;
             }
 
-            if ( file.indexOf( "//" ) === 0 ||
-                 file.indexOf( "https://" ) === 0 ||
-                 file.indexOf( "http://" ) === 0 )
-            {
-                this.fireEvent( 'addCSS', [ file, this ] );
+            if (file.indexOf("//") === 0 ||
+                 file.indexOf("https://") === 0 ||
+                 file.indexOf("http://") === 0) {
+                this.fireEvent('addCSS', [file, this]);
                 return;
             }
 
-            if ( !file.indexOf( '?' ) )
-            {
-                this.fireEvent( 'addCSS', [ file, this ] );
+            if (!file.indexOf('?')) {
+                this.fireEvent('addCSS', [file, this]);
                 return;
             }
 
-            if ( "QUIQQER" in window && 'lu' in QUIQQER ) {
-                file = file +'?lu='+ QUIQQER.lu;
+            if ("QUIQQER" in window && 'lu' in QUIQQER) {
+                file = file + '?lu=' + QUIQQER.lu;
             }
 
-            this.fireEvent( 'addCSS', [ file, this ] );
+            this.fireEvent('addCSS', [file, this]);
         },
 
         /**
@@ -492,15 +453,13 @@ define('controls/editors/Editor', [
          *
          * @param {Object} options - controls/projects/project/media/Popup options
          */
-        openMedia : function(options)
-        {
-            if ( this.$Project ) {
+        openMedia : function (options) {
+            if (this.$Project) {
                 options.project = this.$Project.getName();
             }
 
-            require(['controls/projects/project/media/Popup'], function(Popup)
-            {
-                new Popup( options ).open();
+            require(['controls/projects/project/media/Popup'], function (Popup) {
+                new Popup(options).open();
             });
         },
 
@@ -509,16 +468,14 @@ define('controls/editors/Editor', [
          *
          * @param {Object} options - controls/projects/project/project/Popup options
          */
-        openProject : function(options)
-        {
-            if ( this.$Project )
-            {
+        openProject : function (options) {
+            if (this.$Project) {
                 options.project = this.$Project.getName();
                 options.lang = this.$Project.getLang();
             }
 
-            require(['controls/projects/Popup'], function(Popup) {
-                new Popup( options ).open();
+            require(['controls/projects/Popup'], function (Popup) {
+                new Popup(options).open();
             });
         }
     });

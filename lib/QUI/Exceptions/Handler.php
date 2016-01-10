@@ -24,7 +24,7 @@ class Handler extends QUI\QDOM
      *
      * @var array
      */
-    protected $_shutdowncallbacks = array();
+    protected $shutdowncallbacks = array();
 
     /**
      * constructor
@@ -71,7 +71,7 @@ class Handler extends QUI\QDOM
      * QUI\ExceptionHandler->registerShutdown('class::staticMethod');
      *
      * @throws QUI\Exception
-     * @return Bool
+     * @return boolean
      */
     public function registerShutdown()
     {
@@ -99,7 +99,7 @@ class Handler extends QUI\QDOM
             );
         }
 
-        $this->_shutdowncallbacks[] = $callback;
+        $this->shutdowncallbacks[] = $callback;
 
         return true;
     }
@@ -109,7 +109,7 @@ class Handler extends QUI\QDOM
      */
     public function callShutdown()
     {
-        $callbacks = $this->_shutdowncallbacks;
+        $callbacks = $this->shutdowncallbacks;
 
         foreach ($callbacks as $arguments) {
             $callback = array_shift($arguments);
@@ -120,10 +120,10 @@ class Handler extends QUI\QDOM
     /**
      * Writes the error to the log
      *
-     * @param Integer        $errno   - Fehlercode
-     * @param String         $errstr  - Fehler
-     * @param String         $errfile - (optional) Datei in welcher der Fehler auftaucht
-     * @param Integer|String $errline - (optional) Zeile in welcher der Fehler auftaucht
+     * @param integer        $errno   - Fehlercode
+     * @param string         $errstr  - Fehler
+     * @param string         $errfile - (optional) Datei in welcher der Fehler auftaucht
+     * @param integer|string $errline - (optional) Zeile in welcher der Fehler auftaucht
      */
     public function writeErrorToLog(
         $errno,

@@ -15,6 +15,10 @@
  * it includes the header file
  */
 
+if (!defined('QUIQQER_SYSTEM')) {
+    exit;
+}
+
 if (!defined('ETC_DIR')) {
     require_once 'quiqqer.php';
     exit;

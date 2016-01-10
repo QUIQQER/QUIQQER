@@ -5,22 +5,23 @@
  *
  * @param string $project - project data
  *
- * @return Array
+ * @return array
  */
-function ajax_editor_get_projectFiles($project)
-{
-    try {
-        $Project = QUI::getProject($project);
+QUI::$Ajax->registerFunction(
+    'ajax_editor_get_projectFiles',
+    function ($project) {
+        try {
+            $Project = QUI::getProject($project);
 
-    } catch (QUI\Exception $Exception) {
-        return array(
-            'cssFiles'  => '',
-            'bodyId'    => '',
-            'bodyClass' => ''
-        );
-    }
+        } catch (QUI\Exception $Exception) {
+            return array(
+                'cssFiles' => '',
+                'bodyId' => '',
+                'bodyClass' => ''
+            );
+        }
 
-    return QUI\Editor\Manager::getSettings($Project);
-}
-
-QUI::$Ajax->register('ajax_editor_get_projectFiles', array('project'));
+        return QUI\Editor\Manager::getSettings($Project);
+    },
+    array('project')
+);

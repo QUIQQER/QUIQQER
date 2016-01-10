@@ -14,16 +14,15 @@ define('controls/editors/Settings', [
     'Ajax',
     'Locale'
 
-], function(QUI, QUIPanel, QUIConfirm, QUIPrompt, Grid, Ajax, Locale)
-{
+], function (QUI, QUIPanel, QUIConfirm, QUIPrompt, Grid, Ajax, Locale) {
     "use strict";
 
     return new Class({
 
-        Extends : QUIPanel,
-        Type    : 'controls/editors/Settings',
+        Extends: QUIPanel,
+        Type   : 'controls/editors/Settings',
 
-        Binds : [
+        Binds: [
             '$onCreate',
             '$onResize',
             '$onRefresh',
@@ -31,79 +30,76 @@ define('controls/editors/Settings', [
             '$gridClick',
             '$gridDblClick',
 
+            'editToolbar',
             'openAddToolbarWindow',
             'openDeleteToolbarWindow'
         ],
 
-        options : {
-            title : Locale.get( 'quiqqer/system', 'editors.settings.title' ),
-            icon  : 'icon-font'
+        options: {
+            title: Locale.get('quiqqer/system', 'editors.settings.title'),
+            icon : 'icon-font'
         },
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize: function (options) {
+            this.parent(options);
 
             this.$Grid = null;
 
             this.addEvents({
-                onCreate  : this.$onCreate,
-                onResize  : this.$onResize,
-                onRefresh : this.$onRefresh
+                onCreate : this.$onCreate,
+                onResize : this.$onResize,
+                onRefresh: this.$onRefresh
             });
         },
 
         /**
          * event : on create
          */
-        $onCreate : function()
-        {
+        $onCreate: function () {
             var self = this;
 
             this.addButton({
-                name : 'toolbarAdd',
-                text : Locale.get(
+                name     : 'toolbarAdd',
+                text     : Locale.get(
                     'quiqqer/system',
                     'editors.settings.btn.add.toolbar'
                 ),
-                textimage : 'icon-plus',
-                events : {
-                    onClick : this.openAddToolbarWindow
+                textimage: 'icon-plus',
+                events   : {
+                    onClick: this.openAddToolbarWindow
                 }
             });
 
             this.addButton({
-                type : 'seperator'
+                type: 'seperator'
             });
 
             this.addButton({
-                name : 'toolbarEdit',
-                text : Locale.get(
+                name     : 'toolbarEdit',
+                text     : Locale.get(
                     'quiqqer/system',
                     'editors.settings.btn.edit.toolbar'
                 ),
-                textimage : 'icon-edit',
+                textimage: 'icon-edit',
                 disabled : true,
-                events : {
-                    onClick : this.editToolbar
+                events   : {
+                    onClick: this.editToolbar
                 }
             });
 
             this.addButton({
-                name : 'toolbarDelete',
-                text : Locale.get(
+                name     : 'toolbarDelete',
+                text     : Locale.get(
                     'quiqqer/system',
                     'editors.settings.btn.delete.toolbar'
                 ),
-                textimage : 'fa fa-trash-o icon-trash',
+                textimage: 'fa fa-trash-o icon-trash',
                 disabled : true,
-                events :
-                {
-                    onClick : function()
-                    {
+                events   : {
+                    onClick: function () {
                         var sel = self.getGrid().getSelectedData();
 
-                        self.openDeleteToolbarWindow( sel[ 0 ].toolbar );
+                        self.openDeleteToolbarWindow(sel[0].toolbar);
                     }
                 }
             });
@@ -112,24 +108,24 @@ define('controls/editors/Settings', [
                 this.getContent()
             );
 
-            this.$Grid = new Grid( Container, {
-                columnModel : [{
-                    header : Locale.get(
+            this.$Grid = new Grid(Container, {
+                columnModel: [{
+                    header   : Locale.get(
                         'quiqqer/system',
                         'editors.settings.table.toolbar.name'
                     ),
-                    dataIndex : 'toolbar',
+                    dataIndex: 'toolbar',
                     dataType : 'string',
-                    width : 200
+                    width    : 200
                 }],
-                onrefresh : function() {
+                onrefresh  : function () {
                     self.loadToolbars();
                 }
             });
 
             this.$Grid.addEvents({
-                onClick    : this.$gridClick,
-                onDblClick : this.$gridDblClick
+                onClick   : this.$gridClick,
+                onDblClick: this.$gridDblClick
             });
 
             this.refresh();
@@ -138,31 +134,29 @@ define('controls/editors/Settings', [
         /**
          * event : on refresh
          */
-        $onRefresh : function()
-        {
+        $onRefresh: function () {
             this.getGrid().refresh();
         },
 
         /**
          * event : on resize
          */
-        $onResize : function()
-        {
-            if ( !this.$Grid ) {
+        $onResize: function () {
+            if (!this.$Grid) {
                 return;
             }
 
             var Body = this.getContent();
 
-            if ( !Body ) {
+            if (!Body) {
                 return;
             }
 
 
             var size = Body.getSize();
 
-            this.$Grid.setHeight( size.y - 40 );
-            this.$Grid.setWidth( size.x - 40 );
+            this.$Grid.setHeight(size.y - 40);
+            this.$Grid.setWidth(size.x - 40);
         },
 
         /**
@@ -170,11 +164,9 @@ define('controls/editors/Settings', [
          *
          * @param {Function} callback - callback( list )
          */
-        getToolbars : function(callback)
-        {
-            Ajax.get('ajax_editor_get_toolbars', function(list)
-            {
-                callback( list );
+        getToolbars: function (callback) {
+            Ajax.get('ajax_editor_get_toolbars', function (list) {
+                callback(list);
             });
         },
 
@@ -184,13 +176,11 @@ define('controls/editors/Settings', [
          * @param {String} toolbar - name of the toolbar
          * @param {Function} callback
          */
-        deleteToolbar : function(toolbar, callback)
-        {
-            Ajax.get('ajax_editor_toolbar_delete', function(list)
-            {
-                callback( list );
+        deleteToolbar: function (toolbar, callback) {
+            Ajax.get('ajax_editor_toolbar_delete', function (list) {
+                callback(list);
             }, {
-                toolbar : toolbar
+                toolbar: toolbar
             });
         },
 
@@ -200,13 +190,11 @@ define('controls/editors/Settings', [
          * @param {String} toolbar - name of the toolbar (myNewToolbar)
          * @param {Function} callback
          */
-        addToolbar : function(toolbar, callback)
-        {
-            Ajax.get('ajax_editor_toolbar_add', function()
-            {
+        addToolbar: function (toolbar, callback) {
+            Ajax.get('ajax_editor_toolbar_add', function () {
                 callback();
             }, {
-                toolbar : toolbar
+                toolbar: toolbar
             });
         },
 
@@ -215,44 +203,39 @@ define('controls/editors/Settings', [
          *
          * @param {String} toolbar
          */
-        editToolbar : function(toolbar)
-        {
+        editToolbar: function (toolbar) {
             this.createSheet({
-                title  : Locale.get(
+                title : Locale.get(
                     'quiqqer/system',
                     'editors.settings.editsheet.title',
-                    { toolbar : toolbar }
+                    {toolbar: toolbar}
                 ),
-                icon   : 'icon-edit',
-                events :
-                {
-                    onOpen : function(Sheet)
-                    {
+                icon  : 'icon-edit',
+                events: {
+                    onOpen: function (Sheet) {
                         var Content = Sheet.getContent();
 
                         require([
                             'controls/editors/ToolbarConfigurator'
-                        ], function(Configurator)
-                        {
+                        ], function (Configurator) {
                             var C = new Configurator({
-                                toolbar : toolbar
+                                toolbar: toolbar
                             });
 
                             Sheet.addButton({
-                                text : Locale.get(
+                                text     : Locale.get(
                                     'quiqqer/system',
                                     'editors.settings.editsheet.btn.save'
                                 ),
-                                textimage : 'icon-save',
-                                events :
-                                {
-                                    onClick : function() {
+                                textimage: 'icon-save',
+                                events   : {
+                                    onClick: function () {
                                         C.save();
                                     }
                                 }
                             });
 
-                            C.inject( Content );
+                            C.inject(Content);
                         });
                     }
                 }
@@ -262,16 +245,13 @@ define('controls/editors/Settings', [
         /**
          * load the toolbars into the grid
          */
-        loadToolbars : function()
-        {
+        loadToolbars: function () {
             var self = this;
 
             this.Loader.show();
 
-            this.getToolbars(function(list)
-            {
-                if ( !list )
-                {
+            this.getToolbars(function (list) {
+                if (!list) {
                     self.Loader.hide();
                     return;
                 }
@@ -279,15 +259,14 @@ define('controls/editors/Settings', [
                 var i, len;
                 var data = [];
 
-                for ( i = 0, len = list.length; i < len; i++ )
-                {
+                for (i = 0, len = list.length; i < len; i++) {
                     data.push({
-                        toolbar : list[ i ]
+                        toolbar: list[i]
                     });
                 }
 
                 self.getGrid().setData({
-                    data : data
+                    data: data
                 });
 
                 self.Loader.hide();
@@ -304,27 +283,25 @@ define('controls/editors/Settings', [
          *
          * @param {String} toolbar - Name of the toolbar
          */
-        openDeleteToolbarWindow : function(toolbar)
-        {
+        openDeleteToolbarWindow: function (toolbar) {
             var self = this;
 
             new QUIConfirm({
-                title  : Locale.get(
+                title    : Locale.get(
                     'quiqqer/system',
                     'editors.settings.delete.window.title'
                 ),
-                icon : 'fa fa-trash-o icon-trash',
-                text : Locale.get(
+                text     : Locale.get(
                     'quiqqer/system',
                     'editors.settings.delete.window.text',
                     {toolbar: toolbar}
                 ),
-                events :
-                {
-                    onSubmit : function(Win)
-                    {
-                        self.deleteToolbar(toolbar, function()
-                        {
+                icon     : 'fa fa-trash-o icon-trash',
+                maxHeight: 300,
+                maxWidth : 450,
+                events   : {
+                    onSubmit: function (Win) {
+                        self.deleteToolbar(toolbar, function () {
                             Win.close();
                             self.refresh();
                         });
@@ -337,32 +314,28 @@ define('controls/editors/Settings', [
         /**
          * Opens the dialog for add a toolbar
          */
-        openAddToolbarWindow : function()
-        {
+        openAddToolbarWindow: function () {
             var self = this;
 
             new QUIPrompt({
-                maxWidth : 460,
-                maxHeight : 280,
-                icon : 'icon-plus',
-                titleicon : 'icon-plus',
-                title : Locale.get(
+                maxHeight  : 300,
+                maxWidth   : 450,
+                icon       : 'icon-plus',
+                titleicon  : 'icon-plus',
+                title      : Locale.get(
                     'quiqqer/system',
                     'editors.settings.add.window.title'
                 ),
-                information : Locale.get(
+                information: Locale.get(
                     'quiqqer/system',
                     'editors.settings.add.window.text'
                 ),
-                events :
-                {
-                    onSubmit : function(toolbar)
-                    {
-                        self.addToolbar(toolbar, function()
-                        {
+                events     : {
+                    onSubmit: function (toolbar) {
+                        self.addToolbar(toolbar, function () {
                             self.refresh();
                             self.editToolbar(
-                                toolbar.replace('\.xml', '') +'.xml.php'
+                                toolbar.replace('\.xml', '') + '.xml.php'
                             );
                         });
                     }
@@ -380,8 +353,7 @@ define('controls/editors/Settings', [
          *
          * @return {controls/grid/Grid}
          */
-        getGrid : function()
-        {
+        getGrid: function () {
             return this.$Grid;
         },
 
@@ -390,14 +362,12 @@ define('controls/editors/Settings', [
          *
          * @param {option} data - grid data
          */
-        $gridClick : function(data)
-        {
+        $gridClick: function (data) {
             var len    = data.target.selected.length,
-                Edit   = this.getButtons( 'toolbarEdit' ),
-                Delete = this.getButtons( 'toolbarDelete' );
+                Edit   = this.getButtons('toolbarEdit'),
+                Delete = this.getButtons('toolbarDelete');
 
-            if ( len === 0 )
-            {
+            if (len === 0) {
                 Edit.disable();
                 Delete.disable();
 
@@ -415,10 +385,9 @@ define('controls/editors/Settings', [
          *
          * @param {option} data - grid data
          */
-        $gridDblClick : function(data)
-        {
+        $gridDblClick: function (data) {
             this.editToolbar(
-                data.target.getDataByRow( data.row ).toolbar
+                data.target.getDataByRow(data.row).toolbar
             );
         }
     });

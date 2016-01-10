@@ -112,7 +112,7 @@ define('controls/users/Input', [
                     'margin'     : '3px 0',
                     'paddingLeft': 20,
                     'background' : 'url(' + URL_BIN_DIR + '10x10/search.png) no-repeat 4px center',
-                    width        : 165,
+                    width        : '100%',
                     cursor       : 'pointer',
                     display      : 'none'
                 },
@@ -288,7 +288,6 @@ define('controls/users/Input', [
 
             if (!list.length) {
                 this.$Bind.set('value', '');
-
                 this.fireEvent('change', [this]);
                 this.enable();
                 return;
@@ -385,7 +384,7 @@ define('controls/users/Input', [
 
             var self = this;
 
-            uid = ( uid ).toInt();
+            uid = (uid).toInt();
 
             var User = new UserEntry(uid, {
                 events: {

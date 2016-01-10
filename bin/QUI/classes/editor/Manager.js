@@ -17,8 +17,7 @@ define('classes/editor/Manager', [
     'qui/classes/DOM',
     'Ajax'
 
-], function(QUI, QDOM, Ajax)
-{
+], function (QUI, QDOM, Ajax) {
     "use strict";
 
     /**
@@ -36,8 +35,7 @@ define('classes/editor/Manager', [
 
         },
 
-        initialize : function()
-        {
+        initialize : function () {
             this.$config    = null;
             this.$editors   = {};
             this.$instances = {};
@@ -63,8 +61,7 @@ Manager.register('package/ckeditor4', {
          * @param {String} name
          * @param {Object} onload_params - Editor parameters, see example
          */
-        register : function(name, onload_params)
-        {
+        register : function (name, onload_params) {
             this.$editors[ name ] = onload_params;
         },
 
@@ -76,8 +73,7 @@ Manager.register('package/ckeditor4', {
          *
          * @ignore
          */
-        $registerEditor : function(Instance)
-        {
+        $registerEditor : function (Instance) {
             this.$instances[ Instance.getId() ] = Instance;
         },
 
@@ -90,17 +86,14 @@ Manager.register('package/ckeditor4', {
          * @param {Function} func    - Callback function, if editor is loaded,
          *                             the Parameter of the function is an {controls/editors/Editor} Instance
          */
-        getEditor : function(name, func)
-        {
+        getEditor : function (name, func) {
             var self = this;
 
             name = name || null;
 
             // use the standard editor
-            if ( name === null )
-            {
-                this.getConfig(function()
-                {
+            if (name === null) {
+                this.getConfig(function () {
                     self.getEditor(
                         self.$config.settings.standard,
                         func
@@ -110,23 +103,20 @@ Manager.register('package/ckeditor4', {
                 return;
             }
 
-            if ( typeof this.$editors[ name ] !== 'undefined' )
-            {
-                var Editor = new this.$editors[ name ]( this );
+            if (typeof this.$editors[ name ] !== 'undefined') {
+                var Editor = new this.$editors[ name ](this);
 
-                this.$registerEditor( Editor );
+                this.$registerEditor(Editor);
 
-                func( Editor );
+                func(Editor);
 
                 return;
             }
 
-            this.getConfig(function()
-            {
-                require([ self.$config.editors[ name ] ], function(Editor)
-                {
+            this.getConfig(function () {
+                require([self.$config.editors[ name ]], function (Editor) {
                     self.$editors[ name ] = Editor;
-                    self.getEditor( name, func );
+                    self.getEditor(name, func);
                 });
             });
         },
@@ -137,15 +127,14 @@ Manager.register('package/ckeditor4', {
          * @method classes/editor/Manager#destroyEditor
          * @param {Object} Editor (controls/editors/Editor)
          */
-        destroyEditor : function(Editor)
-        {
+        destroyEditor : function (Editor) {
             var id = Editor.getId();
 
-            if ( typeof this.$instances[ id ] !== 'undefined' ) {
+            if (typeof this.$instances[ id ] !== 'undefined') {
                 delete this.$instances[ id ];
             }
 
-            QUI.Controls.destroy( Editor );
+            QUI.Controls.destroy(Editor);
         },
 
         /**
@@ -154,20 +143,18 @@ Manager.register('package/ckeditor4', {
          * @method classes/editor/Manager#getConfig
          * @param {Function} callback - Callback function
          */
-        getConfig : function(callback)
-        {
-            if ( this.$config ) {
-                return callback( this.$config );
+        getConfig : function (callback) {
+            if (this.$config) {
+                return callback(this.$config);
             }
 
             var self = this;
 
-            Ajax.get( 'ajax_editor_get_config', function(result)
-            {
+            Ajax.get('ajax_editor_get_config', function (result) {
                 self.$config = result;
 
-                if ( typeof callback === 'function' ) {
-                    callback( result );
+                if (typeof callback === 'function') {
+                    callback(result);
                 }
             });
         },
@@ -178,9 +165,8 @@ Manager.register('package/ckeditor4', {
          * @method classes/editor/Manager#getToolbars
          * @param {Function} callback - Callback function
          */
-        getToolbar : function(callback)
-        {
-            Ajax.get( 'ajax_editor_get_toolbar', callback );
+        getToolbar : function (callback) {
+            Ajax.get('ajax_editor_get_toolbar', callback);
         },
 
         /**
@@ -189,9 +175,8 @@ Manager.register('package/ckeditor4', {
          * @method classes/editor/Manager#getToolbars
          * @param {Function} callback - Callback function
          */
-        getToolbars : function(callback)
-        {
-            Ajax.get( 'ajax_editor_get_toolbars', callback );
+        getToolbars : function (callback) {
+            Ajax.get('ajax_editor_get_toolbars', callback);
         }
     });
 });

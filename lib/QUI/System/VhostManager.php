@@ -25,22 +25,22 @@ class VhostManager
      *
      * @var \QUI\Config
      */
-    protected $_Config = null;
+    protected $Config = null;
 
     /**
      * Return the config
      *
      * @return \QUI\Config
      */
-    protected function _getConfig()
+    protected function getConfig()
     {
-        if (!file_exists(ETC_DIR.'vhosts.ini.php')) {
-            file_put_contents(ETC_DIR.'vhosts.ini.php', '');
+        if (!file_exists(ETC_DIR . 'vhosts.ini.php')) {
+            file_put_contents(ETC_DIR . 'vhosts.ini.php', '');
         }
 
-        $this->_Config = new Config(ETC_DIR.'vhosts.ini.php');
+        $this->Config = new Config(ETC_DIR . 'vhosts.ini.php');
 
-        return $this->_Config;
+        return $this->Config;
     }
 
     /**
@@ -49,12 +49,11 @@ class VhostManager
      */
     public function repair()
     {
-        $Config = $this->_getConfig();
-        $list = $this->getList();
+        $Config = $this->getConfig();
+        $list   = $this->getList();
 
         // check lang entries
         foreach ($list as $host => $data) {
-
             if (!isset($data['project'])) {
                 continue;
             }
@@ -69,7 +68,7 @@ class VhostManager
 
             try {
                 $Project = \QUI::getProject($data['project']);
-                $langs = $Project->getAttribute('langs');
+                $langs   = $Project->getAttribute('langs');
 
             } catch (QUI\Exception $Exception) {
                 QUI::getMessagesHandler()->addError($Exception->getMessage());
@@ -77,7 +76,6 @@ class VhostManager
             }
 
             foreach ($langs as $lang) {
-
                 if (isset($data[$lang]) && !empty($data[$lang])) {
                     continue;
                 }
@@ -103,7 +101,7 @@ class VhostManager
      */
     public function getList()
     {
-        return $this->_getConfig()->toArray();
+        return $this->getConfig()->toArray();
     }
 
     /**
@@ -121,8 +119,8 @@ class VhostManager
             $vhost = $parts[1];
         }
 
-        $vhost = trim($vhost, '/');
-        $Config = $this->_getConfig();
+        $vhost  = trim($vhost, '/');
+        $Config = $this->getConfig();
 
         if ($Config->existValue($vhost)) {
             throw new QUI\Exception(
@@ -144,14 +142,14 @@ class VhostManager
     /**
      * Add or edit a vhost entry
      *
-     * @param String $vhost - host name (eq: www.something.com)
-     * @param Array  $data  - data of the host
+     * @param string $vhost - host name (eq: www.something.com)
+     * @param array $data - data of the host
      *
      * @throws \QUI\Exception
      */
     public function editVhost($vhost, array $data)
     {
-        $Config = $this->_getConfig();
+        $Config = $this->getConfig();
 
         if (!$Config->existValue($vhost)) {
             throw new QUI\Exception(
@@ -172,9 +170,9 @@ class VhostManager
         }
 
         // lang hosts
-        $Project = QUI::getProject($result['project']);
+        $Project      = QUI::getProject($result['project']);
         $projectLangs = $Project->getAttribute('langs');
-        $lang = $result['lang'];
+        $lang         = $result['lang'];
 
         foreach ($projectLangs as $projectLang) {
             if (!isset($result[$projectLang])) {
@@ -204,13 +202,13 @@ class VhostManager
     /**
      * Remove a vhost entry
      *
-     * @param String $vhost
+     * @param string $vhost
      *
      * @throws \QUI\Exception
      */
     public function removeVhost($vhost)
     {
-        $Config = $this->_getConfig();
+        $Config = $this->getConfig();
 
         if (!$Config->existValue($vhost)) {
             throw new QUI\Exception(
@@ -231,29 +229,28 @@ class VhostManager
     /**
      * Return the vhost data
      *
-     * @param String $vhost
+     * @param string $vhost
      *
-     * @return Array|false
+     * @return array|false
      */
     public function getVhost($vhost)
     {
-        return $this->_getConfig()->getSection($vhost);
+        return $this->getConfig()->getSection($vhost);
     }
 
     /**
      * Return the host, is a host is set for a project
      *
-     * @param String $projectName - Name of the project
-     * @param String $projectLang - Language of the project (de, en, etc...)
+     * @param string $projectName - Name of the project
+     * @param string $projectLang - Language of the project (de, en, etc...)
      *
-     * @return String
+     * @return string
      */
     public function getHostByProject($projectName, $projectLang)
     {
         $config = $this->getList();
 
         foreach ($config as $host => $data) {
-
             if (!isset($data['project'])) {
                 continue;
             }
@@ -279,17 +276,16 @@ class VhostManager
     /**
      * Return all hosts from the project
      *
-     * @param String $projectName - Name of the project
+     * @param string $projectName - Name of the project
      *
-     * @return Array
+     * @return array
      */
     public function getHostsByProject($projectName)
     {
         $config = $this->getList();
-        $list = array();
+        $list   = array();
 
         foreach ($config as $host => $data) {
-
             if (!isset($data['project'])) {
                 continue;
             }

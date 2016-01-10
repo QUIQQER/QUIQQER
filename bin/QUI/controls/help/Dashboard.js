@@ -22,8 +22,7 @@ define('controls/help/Dashboard', [
 
     'css!controls/help/Dashboard.css'
 
-], function(QUI, QUIPanel, ProjectManager, PanelUtils, QUIAjax)
-{
+], function (QUI, QUIPanel, ProjectManager, PanelUtils, QUIAjax) {
     "use strict";
 
     /**
@@ -44,14 +43,13 @@ define('controls/help/Dashboard', [
         ],
 
         options : {
-            icon  : URL_BIN_DIR +'16x16/quiqqer.png',
+            icon  : URL_BIN_DIR + '16x16/quiqqer.png',
             title : 'QUIQQER Dashboard',
             displayNoTaskText : true
         },
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize : function (options) {
+            this.parent(options);
 
             this.addEvents({
                 onCreate : this.$onCreate
@@ -61,10 +59,8 @@ define('controls/help/Dashboard', [
         /**
          * Create the project panel body
          */
-        $onCreate : function()
-        {
-            require(['text!controls/help/Dashboard.html'], function(result)
-            {
+        $onCreate : function () {
+            require(['text!controls/help/Dashboard.html'], function (result) {
                 var self = this;
 
                 this.getContent().set('html', result);
@@ -72,7 +68,7 @@ define('controls/help/Dashboard', [
                 this.refreshLastEditedSites();
                 this.refreshLastMessages();
 
-                QUI.getMessageHandler().then(function(MH) {
+                QUI.getMessageHandler().then(function (MH) {
 
                     MH.addEvents({
                         onClear : self.refreshLastMessages,
@@ -89,12 +85,11 @@ define('controls/help/Dashboard', [
         /**
          * Refresh the last messages
          */
-        refreshLastMessages : function()
-        {
+        refreshLastMessages : function () {
             var Content = this.getContent();
 
             // 10 messages
-            QUI.getMessageHandler().then(function(MH) {
+            QUI.getMessageHandler().then(function (MH) {
 
                 var start, end;
 
@@ -135,14 +130,13 @@ define('controls/help/Dashboard', [
         /**
          * Refresh the last edited sites
          */
-        refreshLastEditedSites : function()
-        {
+        refreshLastEditedSites : function () {
             var self = this,
                 Content = this.getContent();
 
             QUIAjax.get([
                 'ajax_search_lastEditSites'
-            ], function(lastEdited) {
+            ], function (lastEdited) {
 
                 var i, len, text, Entry;
 
@@ -160,8 +154,8 @@ define('controls/help/Dashboard', [
 
                     Entry = lastEdited[i];
 
-                    text = Entry.name +' ('+ Entry.project +','+ Entry.lang +')'+
-                        ' - '+ Entry.e_date
+                    text = Entry.name + ' (' + Entry.project + ',' + Entry.lang + ')' +
+                        ' - ' + Entry.e_date
 
                     new Element('div', {
                         'class' : 'quiqqer-dashboard-last-edit-result-entry smooth',
@@ -171,7 +165,7 @@ define('controls/help/Dashboard', [
                         events : {
                             click : self.$openSitePanel
                         },
-                        html : '<span class="fa fa-file-o icon-file-alt"></span>'+ text,
+                        html : '<span class="fa fa-file-o icon-file-alt"></span>' + text,
                         title : text
                     }).inject(Container);
                 }
@@ -183,8 +177,7 @@ define('controls/help/Dashboard', [
          * Open Site Panel
          * @param {DOMEvent} event
          */
-        $openSitePanel : function(event)
-        {
+        $openSitePanel : function (event) {
             if (typeOf(event) == 'domevent') {
                 event.stop();
             }

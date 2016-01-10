@@ -23,14 +23,21 @@ class Ajax extends QUI\QDOM
      *
      * @var array
      */
-    static $_functions = array();
+    protected static $functions = array();
+
+    /**
+     * Available ajax lambda functions
+     *
+     * @var array
+     */
+    protected static $callables = array();
 
     /**
      * registered permissions from available ajax functions
      *
      * @var array
      */
-    static $_permissions = array();
+    protected static $permissions = array();
 
     /**
      * constructor
@@ -47,15 +54,15 @@ class Ajax extends QUI\QDOM
     }
 
     /**
-     * Registered functions which are available via Ajax
+     * Registered a function which is available via ajax
      *
-     * @param string $reg_function - Function which exists in Ajax
-     * @param array|bool $reg_vars - Variables which has the function of
+     * @param string $reg_function - Function which is callable via ajax
+     * @param array|boolean $reg_vars - Variables of the function
      * @param bool|string $user_perm - rights, optional
      *
      * @return bool
      */
-    static function register(
+    public static function register(
         $reg_function,
         $reg_vars = array(),
         $user_perm = false
@@ -68,10 +75,50 @@ class Ajax extends QUI\QDOM
             $reg_vars = array();
         }
 
-        self::$_functions[$reg_function] = $reg_vars;
+        self::$functions[$reg_function] = $reg_vars;
 
         if ($user_perm) {
-            self::$_permissions[$reg_function] = $user_perm;
+            self::$permissions[$reg_function] = $user_perm;
+        }
+
+        return true;
+    }
+
+    /**
+     * Registered a lambda function which is available via ajax
+     *
+     * @param string $name - Name of the function
+     * @param callable $function - Function
+     * @param array $reg_vars - Variables of the function
+     * @param bool|false $user_perm - (optional) permissions / rights
+     *
+     * @return bool
+     */
+    public static function registerFunction(
+        $name,
+        $function,
+        $reg_vars = array(),
+        $user_perm = false
+    ) {
+        if (!is_callable($function)) {
+            return false;
+        }
+
+        if (!is_string($name)) {
+            return false;
+        }
+
+        if (!is_array($reg_vars)) {
+            $reg_vars = array();
+        }
+
+        self::$callables[$name] = array(
+            'callable' => $function,
+            'params' => $reg_vars
+        );
+
+        if ($user_perm) {
+            self::$permissions[$name] = $user_perm;
         }
 
         return true;
@@ -80,20 +127,19 @@ class Ajax extends QUI\QDOM
     /**
      * Checks the rights if a function has a checkPermissions routine
      *
-     * @param String|callback $reg_function
+     * @param string|callback $reg_function
      *
      * @throws \QUI\Exception
      */
-    static function checkPermissions($reg_function)
+    public static function checkPermissions($reg_function)
     {
-        if (!isset(self::$_permissions[$reg_function])) {
+        if (!isset(self::$permissions[$reg_function])) {
             return;
         }
 
-        $function = self::$_permissions[$reg_function];
+        $function = self::$permissions[$reg_function];
 
         if (is_object($function) && get_class($function) === 'Closure') {
-
             $function();
             return;
         }
@@ -126,7 +172,7 @@ class Ajax extends QUI\QDOM
     /**
      * ajax processing
      *
-     * @return String - quiqqer XML
+     * @return string - quiqqer XML
      * @throws QUI\Exception
      */
     public function call()
@@ -147,13 +193,13 @@ class Ajax extends QUI\QDOM
         }
 
         foreach ($_rfs as $_rf) {
-            $result[$_rf] = $this->_call_rf($_rf);
+            $result[$_rf] = $this->callRequestFunction($_rf);
         }
 
         QUI::getSession()->getSymfonySession()->save();
 
         if (QUI::getMessagesHandler()) {
-            $result['message_handler'] = \QUI::getMessagesHandler()
+            $result['message_handler'] = QUI::getMessagesHandler()
                 ->getMessagesAsArray(
                     QUI::getUserBySession()
                 );
@@ -168,13 +214,16 @@ class Ajax extends QUI\QDOM
     /**
      * Internal call of an ajax function
      *
-     * @param String $_rf
+     * @param string $_rf
+     * @param array|boolean|mixed $values
      *
-     * @return Array - the result
+     * @return array - the result
      */
-    protected function _call_rf($_rf)
+    public function callRequestFunction($_rf, $values = false)
     {
-        if (!isset(self::$_functions[$_rf])) {
+        if (!isset(self::$functions[$_rf])
+            && !isset(self::$callables[$_rf])
+        ) {
             if (defined('DEVELOPMENT') && DEVELOPMENT) {
                 System\Log::addDebug('Funktion ' . $_rf . ' nicht gefunden');
             }
@@ -198,35 +247,50 @@ class Ajax extends QUI\QDOM
             $_SERVER['REQUEST_URI'] = $_REQUEST['pcsg_uri'];
         }
 
+        // Params
         $params = array();
 
-        // Params
-        foreach (self::$_functions[$_rf] as $var) {
-            if (!isset($_REQUEST[$var])) {
+        if (isset(self::$callables[$_rf])) {
+            $functionParams = self::$callables[$_rf]['params'];
+
+        } else {
+            $functionParams = self::$functions[$_rf];
+        }
+
+        foreach ($functionParams as $var) {
+            if (!isset($_REQUEST[$var]) && !$values) {
                 $params[$var] = '';
                 continue;
             }
 
-            $value = $_REQUEST[$var];
+            if ($values && isset($values[$var])) {
+                $value = $values[$var];
+            } else {
+                $value = $_REQUEST[$var];
+            }
 
             if (is_object($value)) {
                 $params[$var] = $value;
                 continue;
             }
 
-            $value = urldecode($value);
-
-            if (get_magic_quotes_gpc()) {
-                $params[$var] = stripslashes($value);
-            } else {
-                $params[$var] = $value;
-            }
+            $value        = urldecode($value);
+            $params[$var] = $value;
         }
 
         try {
-            $return = array(
-                'result' => call_user_func_array($_rf, $params)
-            );
+            if (isset(self::$callables[$_rf])) {
+                $return = array(
+                    'result' => call_user_func_array(
+                        self::$callables[$_rf]['callable'],
+                        $params
+                    )
+                );
+            } else {
+                $return = array(
+                    'result' => call_user_func_array($_rf, $params)
+                );
+            }
 
         } catch (QUI\Exception $Exception) {
             return $this->writeException($Exception);
@@ -238,8 +302,8 @@ class Ajax extends QUI\QDOM
 
         QUI::getEvents()->fireEvent('ajaxCall', array(
             'function' => $_rf,
-            'result'   => $return,
-            'params'   => $params
+            'result' => $return,
+            'params' => $params
         ));
 
 
@@ -273,13 +337,14 @@ class Ajax extends QUI\QDOM
      *
      * @param \QUI\Exception|\PDOException $Exception
      *
-     * @return Array
+     * @return array
      */
     public function writeException($Exception)
     {
         $return = array();
+        $class  = get_class($Exception);
 
-        switch (get_class($Exception)) {
+        switch ($class) {
             case 'PDOException':
             case 'QUI\\Database\\Exception':
                 // DB Fehler immer loggen
@@ -294,7 +359,7 @@ class Ajax extends QUI\QDOM
                     $return['Exception']['code']    = 500;
                 }
 
-                if (DEVELOPMENT || DEBUG_MODE) {
+                if ((DEVELOPMENT || DEBUG_MODE) && $class != 'PDOException') {
                     $return['Exception']['context'] = $Exception->getContext();
                 }
 
@@ -348,11 +413,11 @@ class Ajax extends QUI\QDOM
     {
         switch (connection_status()) {
             case 2: // timeout
-
                 $return = array(
                     'Exception' => array(
-                        'message' => 'Zeitüberschreitung der Anfrage. Bitte versuchen Sie es erneut oder zu einem späteren Zeitpunkt.',
-                        'code'    => 504
+                        'message' => 'Zeitüberschreitung der Anfrage.' .
+                                     'Bitte versuchen Sie es erneut oder zu einem späteren Zeitpunkt.',
+                        'code' => 504
                     )
                 );
 

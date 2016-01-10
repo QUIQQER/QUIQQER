@@ -3,22 +3,20 @@
 /**
  * Move a site under another site
  *
- * @param String $project - project data
- * @param Integer $id - site ID
- * @param Integer $newParentId - new parent ID
+ * @param string $project - project data
+ * @param integer $id - site ID
+ * @param integer $newParentId - new parent ID
  *
- * @return Array
+ * @return array
  */
-function ajax_site_move($project, $id, $newParentId)
-{
-    $Project = QUI::getProjectManager()->decode($project);
-    $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
-
-    $Site->move((int)$newParentId);
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_site_move',
+    function ($project, $id, $newParentId) {
+        $Project = QUI::getProjectManager()->decode($project);
+        $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
+
+        $Site->move((int)$newParentId);
+    },
     array('project', 'id', 'newParentId'),
     'Permission::checkAdminUser'
 );

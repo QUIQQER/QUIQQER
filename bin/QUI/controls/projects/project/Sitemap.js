@@ -292,7 +292,7 @@ define('controls/projects/project/Sitemap', [
                         Map = self.getMap();
 
                     for (i = 0, len = ids.length; i < len; i++) {
-                        id    = ( ids[i] ).toInt();
+                        id    = (ids[i]).toInt();
                         items = Map.getChildrenByValue(id);
 
                         if (!items.length) {
@@ -434,14 +434,19 @@ define('controls/projects/project/Sitemap', [
                     limitStart = -1;
                 }
 
-                start = ( limitStart + 1 ) * projectLimit;
+                start = (limitStart + 1) * projectLimit;
 
-                // request
-                Ajax.get('ajax_site_getchildren', function (result) {
-                    var count    = ( result.count ).toInt(),
-                        children = result.children,
+                var Site = self.$Project.get(Item.getAttribute('value'));
+
+                Site.getChildren({
+                    attributes: 'id,name,title,has_children,nav_hide,linked,active,icon',
+                    limit     : start + ',' + projectLimit
+                }).then(function (result) {
+
+                    var count    = (result.count).toInt(),
                         end      = start + projectLimit,
-                        sheets   = ( count / projectLimit ).ceil();
+                        sheets   = (count / projectLimit).ceil(),
+                        children = result.children;
 
                     Item.setAttribute('hasChildren', count);
                     Item.clearChildren();
@@ -485,7 +490,7 @@ define('controls/projects/project/Sitemap', [
                             new QUISitemapItem({
                                 icon       : 'icon-level-down',
                                 text       : '...',
-                                title      : 'Vor - Rechtsklick für weitere Optionen',
+                                title      : 'Vor - Rechtsklick für weitere Optionen', // #locale
                                 contextmenu: false,
                                 sheets     : sheets,
                                 Item       : Item,
@@ -512,14 +517,6 @@ define('controls/projects/project/Sitemap', [
                     if (typeof callback === 'function') {
                         callback(Item);
                     }
-
-                }, {
-                    project: self.$Project.encode(),
-                    id     : Item.getAttribute('value'),
-                    params : JSON.encode({
-                        attributes: 'id,name,title,has_children,nav_hide,linked,active,icon',
-                        limit     : start + ',' + projectLimit
-                    })
                 });
             });
         },
@@ -551,7 +548,7 @@ define('controls/projects/project/Sitemap', [
             }
 
             var attributes = {
-                hasChildren: ( result.has_children ).toInt(),
+                hasChildren: (result.has_children).toInt(),
                 dragable   : true
             };
 
@@ -617,41 +614,41 @@ define('controls/projects/project/Sitemap', [
 
             ContextMenu.clearChildren()
                 .appendChild(
-                new QUIContextmenuItem({
-                    name  : 'create-new-site',
-                    text  : Locale.get('quiqqer/system', 'projects.project.site.btn.new.text'),
-                    icon  : 'icon-file-text fa fa-file-text',
-                    events: {
-                        onClick: function () {
-                            self.$createChild({
-                                project: self.getAttribute('project'),
-                                lang   : self.getAttribute('lang'),
-                                id     : Itm.getAttribute('value')
-                            });
+                    new QUIContextmenuItem({
+                        name  : 'create-new-site',
+                        text  : Locale.get('quiqqer/system', 'projects.project.site.btn.new.text'),
+                        icon  : 'icon-file-text fa fa-file-text',
+                        events: {
+                            onClick: function () {
+                                self.$createChild({
+                                    project: self.getAttribute('project'),
+                                    lang   : self.getAttribute('lang'),
+                                    id     : Itm.getAttribute('value')
+                                });
+                            }
                         }
-                    }
-                })
-            ).appendChild(
+                    })
+                ).appendChild(
                 new QUIContextmenuSeperator()
-            )
+                )
                 .appendChild(
-                new QUIContextmenuItem({
-                    name  : 'copy',
-                    text  : Locale.get('quiqqer/system', 'copy'),
-                    icon  : 'icon-copy',
-                    events: {
-                        onClick: function () {
-                            Clipboard.set({
-                                project : self.getAttribute('project'),
-                                lang    : self.getAttribute('lang'),
-                                id      : Itm.getAttribute('value'),
-                                Item    : Itm,
-                                copyType: 'copy'
-                            });
+                    new QUIContextmenuItem({
+                        name  : 'copy',
+                        text  : Locale.get('quiqqer/system', 'copy'),
+                        icon  : 'icon-copy',
+                        events: {
+                            onClick: function () {
+                                Clipboard.set({
+                                    project : self.getAttribute('project'),
+                                    lang    : self.getAttribute('lang'),
+                                    id      : Itm.getAttribute('value'),
+                                    Item    : Itm,
+                                    copyType: 'copy'
+                                });
+                            }
                         }
-                    }
-                })
-            ).appendChild(
+                    })
+                ).appendChild(
                 new QUIContextmenuItem({
                     name  : 'cut',
                     text  : Locale.get('quiqqer/system', 'cut'),
@@ -811,19 +808,19 @@ define('controls/projects/project/Sitemap', [
             }
 
             var self     = this,
-                sheets   = ( Item.getAttribute('sheets') ).toInt(),
+                sheets   = (Item.getAttribute('sheets')).toInt(),
                 Select   = new Element('select'),
                 SiteItem = Item.getAttribute('Item');
 
             for (var i = 0, len = sheets; i < len; i++) {
                 new Element('option', {
-                    html : 'Blatt ' + ( i + 1 ),
+                    html : 'Blatt ' + (i + 1),
                     value: i
                 }).inject(Select);
             }
 
             if (SiteItem.getAttribute('limitStart') !== false) {
-                Select.value = ( SiteItem.getAttribute('limitStart') ).toInt() + 1;
+                Select.value = (SiteItem.getAttribute('limitStart')).toInt() + 1;
             }
 
 
@@ -845,7 +842,7 @@ define('controls/projects/project/Sitemap', [
 
                     onSubmit: function (Win) {
                         var Select = Win.getContent().getElement('select'),
-                            sheet  = ( Select.value ).toInt();
+                            sheet  = (Select.value).toInt();
 
                         SiteItem.setAttribute('limitStart', sheet - 1);
                         self.$loadChildren(SiteItem);

@@ -25,8 +25,7 @@ define('controls/projects/TypeSitemap', [
     'Ajax',
     'Locale'
 
-], function(QUIControl, QUISitemap, QUISitemapItem, Ajax, Locale)
-{
+], function (QUIControl, QUISitemap, QUISitemapItem, Ajax, Locale) {
     "use strict";
 
     /**
@@ -60,13 +59,12 @@ define('controls/projects/TypeSitemap', [
             'open'
         ],
 
-        initialize : function(options)
-        {
+        initialize : function (options) {
             this.$Map       = null;
             this.$Container = null;
             this.$load      = false;
 
-            this.parent( options );
+            this.parent(options);
         },
 
         /**
@@ -74,8 +72,7 @@ define('controls/projects/TypeSitemap', [
          *
          * @return {HTMLElement}
          */
-        create : function()
-        {
+        create : function () {
             this.$Map = new QUISitemap({
                 name     : 'Type-Sitemap',
                 multible : this.getAttribute('multible')
@@ -86,13 +83,13 @@ define('controls/projects/TypeSitemap', [
                 name  : 1,
                 index : 1,
                 value : 1,
-                text  : Locale.get( 'quiqqer/system', 'projects.typesitemap.firstChild' ),
-                alt   : Locale.get( 'quiqqer/system', 'projects.typesitemap.firstChild' ),
+                text  : Locale.get('quiqqer/system', 'projects.typesitemap.firstChild'),
+                alt   : Locale.get('quiqqer/system', 'projects.typesitemap.firstChild'),
                 icon  : 'icon-magic',
                 hasChildren : false
             });
 
-            this.$Map.appendChild( First );
+            this.$Map.appendChild(First);
             this.open();
 
             return this.$Map.create();
@@ -104,9 +101,8 @@ define('controls/projects/TypeSitemap', [
          *
          * @method controls/projects/TypeSitemap#open
          */
-        open : function()
-        {
-            if ( this.$load ) {
+        open : function () {
+            if (this.$load) {
                 return;
             }
 
@@ -115,57 +111,51 @@ define('controls/projects/TypeSitemap', [
             var self  = this,
                 First = self.$Map.firstChild();
 
-            First.removeIcon( 'icon-magic' );
-            First.addIcon( 'icon-spin icon-refresh' );
+            First.removeIcon('icon-magic');
+            First.addIcon('icon-spin icon-refresh');
 
-            Ajax.get('ajax_project_types_get_list', function(result)
-            {
+            Ajax.get('ajax_project_types_get_list', function (result) {
                 First = self.$Map.firstChild();
                 First.clearChildren();
                 First.disable();
 
-                First.removeIcon( 'icon-spin' );
-                First.addIcon( 'icon-magic' );
+                First.removeIcon('icon-spin');
+                First.addIcon('icon-magic');
 
                 // empty result
-                if ( typeOf( result ) == 'array' )
-                {
+                if (typeOf(result) == 'array') {
                     First.setAttribute(
                         'text',
-                        Locale.get( 'quiqqer/system', 'projects.typesitemap.message.no.types' )
+                        Locale.get('quiqqer/system', 'projects.typesitemap.message.no.types')
                     );
 
-                    self.fireEvent( 'load', [ self ] );
+                    self.fireEvent('load', [self]);
                     return;
                 }
 
                 var c, i, len, data, icon, Plugin;
 
-                var func_itm_click = function(Itm)
-                {
+                var func_itm_click = function (Itm) {
                     Itm.open();
 
-                    if ( self.getAttribute( 'pluginsSelectable' ) ) {
+                    if (self.getAttribute('pluginsSelectable')) {
                         return;
                     }
 
-                    if ( Itm.firstChild() )
-                    {
-                        (function() {
+                    if (Itm.firstChild()) {
+                        (function () {
                             Itm.firstChild().click();
-                        }).delay( 100 );
+                        }).delay(100);
                     }
                 };
 
                 // create the map
-                for ( i in result )
-                {
-                    if ( !result.hasOwnProperty( i ) ) {
+                for (i in result) {
+                    if (!result.hasOwnProperty(i)) {
                         continue;
                     }
 
-                    if ( i == 'standard' )
-                    {
+                    if (i == 'standard') {
                         new QUISitemapItem({
                             name  : i,
                             value : i,
@@ -173,7 +163,7 @@ define('controls/projects/TypeSitemap', [
                             alt   : i,
                             icon  : result[ i ].icon,
                             hasChildren : false
-                        }).inject( First );
+                        }).inject(First);
 
                         continue;
                     }
@@ -181,7 +171,7 @@ define('controls/projects/TypeSitemap', [
                     Plugin = new QUISitemapItem({
                         name  : i,
                         value : i,
-                        text  : Locale.get( i, 'package.title' ),
+                        text  : Locale.get(i, 'package.title'),
                         alt   : i,
                         icon  : 'icon-puzzle-piece',
                         hasChildren : true,
@@ -191,15 +181,14 @@ define('controls/projects/TypeSitemap', [
                         }
                     });
 
-                    First.appendChild( Plugin );
+                    First.appendChild(Plugin);
 
 
-                    for ( c = 0, len = result[ i ].length; c < len; c++ )
-                    {
+                    for (c = 0, len = result[ i ].length; c < len; c++) {
                         icon = 'icon-magic';
                         data = result[ i ][ c ];
 
-                        if ( data.icon ) {
+                        if (data.icon) {
                             icon = data.icon;
                         }
 
@@ -209,16 +198,16 @@ define('controls/projects/TypeSitemap', [
                             text  : data.text || data.type.split(':')[1],
                             alt   : data.type,
                             icon  : icon
-                        }).inject( Plugin );
+                        }).inject(Plugin);
                     }
                 }
 
-                self.fireEvent( 'load', [ self ] );
+                self.fireEvent('load', [self]);
                 First.open();
 
             }, {
                 project : JSON.encode({
-                    name : this.getAttribute( 'project' )
+                    name : this.getAttribute('project')
                 })
             });
         },
@@ -229,17 +218,15 @@ define('controls/projects/TypeSitemap', [
          * @method controls/projects/TypeSitemap#getValues
          * @return {Array} Array of the selected values
          */
-        getValues : function()
-        {
+        getValues : function () {
             var i, len;
 
             var actives = this.$Map.getSelectedChildren(),
                 result  = [];
 
-            for ( i = 0, len = actives.length; i < len; i++ )
-            {
+            for (i = 0, len = actives.length; i < len; i++) {
                 result.push(
-                    actives[ i ].getAttribute( 'value' )
+                    actives[ i ].getAttribute('value')
                 );
             }
 

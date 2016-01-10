@@ -93,7 +93,8 @@ define('controls/projects/project/Settings', [
                 this.getAttribute('project')
             );
 
-            this.$config = {};
+            this.$config   = {};
+            this.$defaults = {};
 
             this.addEvents({
                 onCreate       : this.$onCreate,
@@ -187,17 +188,6 @@ define('controls/projects/project/Settings', [
             }, {
                 project: this.getProject().encode()
             });
-
-
-//            this.addCategory({
-//                name   : 'watersign',
-//                text   : 'Wasserzeichen',
-//                icon   : 'fa fa-picture-o',
-//                events : {
-//                    onClick : this.openWatersign
-//                }
-//            });
-
         },
 
         /**
@@ -209,7 +199,11 @@ define('controls/projects/project/Settings', [
 
             var self = this;
 
-            this.getProject().getConfig(function (result) {
+            Promise.all([
+                this.getProject().getConfig(),
+                this.getProject().getDefaults()
+            ]).then(function (result) {
+
                 self.setAttributes({
                     name : 'projects-panel',
                     icon : 'icon-home',
@@ -217,7 +211,9 @@ define('controls/projects/project/Settings', [
                 });
 
                 self.$Title.set('html', self.getAttribute('title'));
-                self.$config = result;
+
+                self.$config   = result[0];
+                self.$defaults = result[1];
 
                 self.getCategoryBar().firstChild().click();
                 self.Loader.hide();
@@ -560,6 +556,13 @@ define('controls/projects/project/Settings', [
 
                 // set data to the form
                 QUIFormUtils.setDataToForm(self.$config, Form);
+
+                Form.getElements('input').each(function (Input) {
+                    var name = Input.get('name');
+                    if (name in self.$defaults) {
+                        Input.set('data-qui-options-defaultcolor', self.$defaults[name]);
+                    }
+                });
 
                 ControlUtils.parse(Body).then(function () {
                     var i, len, Control;

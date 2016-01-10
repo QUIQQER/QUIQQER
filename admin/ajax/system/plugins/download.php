@@ -3,28 +3,26 @@
 /**
  * Downloads a update file
  *
- * @param String $file
+ * @param string $file
  */
+QUI::$Ajax->registerFunction(
+    'ajax_system_plugins_download',
+    function ($file) {
+        $Update = new \QUI\Update();
 
-function ajax_system_plugins_download($file)
-{
-    $Update = new \QUI\Update();
-
-    global $oldpercent;
-    $oldpercent = 0;
-
-    $Update->download($file, function($percent, $file)
-    {
         global $oldpercent;
+        $oldpercent = 0;
 
-        // nur bei veränderung ausgeben, performanter
-        if ( $oldpercent != (int)$percent )
-        {
-            $oldpercent = (int)$percent;
-            Update::flushMessage($percent, 'message', $file);
-        }
-    });
-}
-QUI::$Ajax->register('ajax_system_plugins_download', array('file'), 'Permission::checkSU');
+        $Update->download($file, function ($percent, $file) {
+            global $oldpercent;
 
-?>
+            // nur bei veränderung ausgeben, performanter
+            if ($oldpercent != (int)$percent) {
+                $oldpercent = (int)$percent;
+                \QUI\Update::flushMessage($percent, 'message', $file);
+            }
+        });
+    },
+    array('file'),
+    'Permission::checkSU'
+);

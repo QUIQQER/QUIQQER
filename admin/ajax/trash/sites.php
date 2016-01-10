@@ -3,23 +3,21 @@
 /**
  * Return the sites in the trash
  *
- * @param String $project - Project data, JSON Array
- * @param String $params  - JSON Array
+ * @param string $project - Project data, JSON Array
+ * @param string $params - JSON Array
  *
- * @return Array
+ * @return array
  */
-function ajax_trash_sites($project, $params)
-{
-    $Project = QUI::getProjectManager()->decode($project);
-    $Trash = $Project->getTrash();
-
-    return $Trash->getList(
-        json_decode($params, true)
-    );
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_trash_sites',
-    array('project', 'lang', 'params'),
+    function ($project, $params) {
+        $Project = QUI::getProjectManager()->decode($project);
+        $Trash   = $Project->getTrash();
+
+        return $Trash->getList(
+            json_decode($params, true)
+        );
+    },
+    array('project', 'params'),
     'Permission::checkAdminUser'
 );

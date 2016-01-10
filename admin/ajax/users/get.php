@@ -3,23 +3,20 @@
 /**
  * Return the user data
  *
- * @param String / Integer $uid
+ * @param string / Integer $uid
  *
- * @return Array
+ * @return array
  */
-
-function ajax_users_get($uid)
-{
-    try {
-        return QUI::getUsers()->get((int)$uid)->getAttributes();
-
-    } catch (QUI\Exception $Exception) {
-        return QUI::getUsers()->getNobody()->getAttributes();
-    }
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_users_get',
+    function ($uid) {
+        try {
+            return QUI::getUsers()->get((int)$uid)->getAttributes();
+
+        } catch (QUI\Exception $Exception) {
+            return QUI::getUsers()->getNobody()->getAttributes();
+        }
+    },
     array('uid'),
     'Permission::checkUser'
 );

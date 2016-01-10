@@ -244,7 +244,7 @@ define('controls/packages/Panel', [
                     return;
                 }
 
-                height = ( Title.getSize().y + Information.getSize().y );
+                height = (Title.getSize().y + Information.getSize().y);
                 height = Body.getSize().y - height - 110;
 
                 this.$UpdateGrid.setHeight(height);
@@ -414,7 +414,7 @@ define('controls/packages/Panel', [
                         Btn.setAttribute('icon', 'fa fa-hdd-o icon-hdd');
                     }
 
-                }, function(Error) {
+                }, function (Error) {
                     // error
                     Loading.finish(Error.getMessage(), 'error');
 
@@ -1252,7 +1252,7 @@ define('controls/packages/Panel', [
                             var html = '<p>' + result.description + '</p>' +
                                        '<p>&nbsp;</p>' +
                                        '<p>Version: ' + result.versions + '</p>' +
-                                       '<p>Require: ' + ( req || '---' ) + '</p>';
+                                       '<p>Require: ' + (req || '---') + '</p>';
 
                             Win.setAttribute('information', html);
                             Win.Loader.hide();

@@ -4,6 +4,10 @@
     width: 100%;
 }
 
+.controls-upload-form-disabled {
+    opacity: 0.5;
+}
+
 .controls-upload-form form {
     border: 3px dashed #dedede;
     height: calc(100% - 30px);

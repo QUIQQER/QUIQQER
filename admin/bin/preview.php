@@ -8,41 +8,40 @@
 
 require_once '../header.php';
 
-if ( !\QUI::getUserBySession()->isAdmin() )
-{
-    header( "HTTP/1.1 404 Not Found" );
+if (!QUI::getUserBySession()->canUseBackend()) {
+    header("HTTP/1.1 404 Not Found");
     exit;
 }
 
-if ( !isset( $_POST['project'] ) ||
-     !isset( $_POST['lang'] ) &&
-     !isset( $_POST['id'] ) )
-{
-    header( "HTTP/1.1 404 Not Found" );
+if (!isset($_POST['project']) ||
+    !isset($_POST['lang']) &&
+    !isset($_POST['id'])
+) {
+    header("HTTP/1.1 404 Not Found");
     echo "Site not found";
     exit;
 }
 
-$Project = \QUI::getProject( $_POST['project'], $_POST['lang'] );
-$Site    = new \QUI\Projects\Site\Edit( $Project, $_POST['id'] );
+$Project = \QUI::getProject($_POST['project'], $_POST['lang']);
+$Site    = new \QUI\Projects\Site\Edit($Project, $_POST['id']);
 
-if ( isset( $_POST['siteData']['type'] ) ) {
-    $Site->setAttribute( 'type', $_POST['siteData']['type'] );
+if (isset($_POST['siteData']['type'])) {
+    $Site->setAttribute('type', $_POST['siteData']['type']);
 }
 
 $Site->load();
 
 // site data
-foreach ( $_POST['siteData'] as $key => $value ) {
-    $Site->setAttribute( $key, $value );
+foreach ($_POST['siteData'] as $key => $value) {
+    $Site->setAttribute($key, $value);
 }
 
-foreach ( $_POST['siteDataJSON'] as $key => $value ) {
-    $Site->setAttribute( $key, json_decode($value, true) );
+foreach ($_POST['siteDataJSON'] as $key => $value) {
+    $Site->setAttribute($key, json_decode($value, true));
 }
 
-$Template = \QUI::getTemplateManager();
-$content  = $Template->fetchTemplate( $Site );
+$Template = QUI::getTemplateManager();
+$content  = $Template->fetchTemplate($Site);
 
 echo $content;
 

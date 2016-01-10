@@ -5,13 +5,10 @@
  *
  * @return String
  */
-function ajax_login_template()
-{
-    $Engine = \QUI::getTemplateManager()->getEngine( true );
+QUI::$Ajax->registerFunction('ajax_login_template', function () {
+    $Engine = QUI::getTemplateManager()->getEngine(true);
 
     return $Engine->fetch(
-        CMS_DIR .'admin/template/login/login.html'
+        CMS_DIR . 'admin/template/login/login.html'
     );
-}
-
-\QUI::$Ajax->register( 'ajax_login_template' );
+});

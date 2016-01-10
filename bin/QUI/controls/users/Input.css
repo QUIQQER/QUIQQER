@@ -12,12 +12,12 @@
 }
 
 .users-input-dropdown {
-    position : absolute;
-    z-index  : 10;
-    width    : 200px;
-    padding  : 5px;
-    border   : 1px solid #dedede;
-    background : #fff;
+    position: absolute;
+    z-index: 10;
+    width: 200px;
+    padding: 5px;
+    border: 1px solid #dedede;
+    background: #fff;
 }
 
 .users-input-dropdown .hover {

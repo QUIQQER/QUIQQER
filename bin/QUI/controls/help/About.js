@@ -1,56 +1,59 @@
 /**
  * Help Window
  *
+ * @module controls/help/About
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/controls/windows/Popup
  */
 
 define('controls/help/About', [
 
-    'qui/controls/windows/Popup'
+    'qui/controls/windows/Popup',
+    'Locale'
 
-], function(Popup)
-{
+], function (QUIPopup, QUILocale) {
     "use strict";
 
     return new Class({
 
-        Extends : Popup,
-        Type    : 'controls/help/About',
+        Extends: QUIPopup,
+        Type   : 'controls/help/About',
 
-        Binds : [
+        Binds: [
             '$onOpen'
         ],
 
-        options : {
-            maxHeight : 350,
-            title     : 'About'
+        options: {
+            maxHeight: 300,
+            maxWidth : 450,
+            title    : 'About',
+            closeButtonText : QUILocale.get('quiqqer/system', 'close')
         },
 
-        initialize : function(options)
-        {
-            this.parent( options );
-            this.addEvent( 'onOpen', this.$onOpen );
+        initialize: function (options) {
+            this.parent(options);
+            this.addEvent('onOpen', this.$onOpen);
         },
 
-        $onOpen : function()
-        {
+        $onOpen: function () {
             // #locale
             this.getContent().set(
                 'html',
 
-                '<div style="text-align: center; margin-top: 30px;">' +
-                    '<h2>QUIQQER Management System</h2>' +
-                    '<p><a href="http://www.quiqqer.com" target="_blank">www.quiqqer.com</a></p>' +
-                    '<br />' +
-                    'Version: ' + QUIQQER_VERSION +
-                    '<br />' +
-                    '<p>' +
-                        'Copyright ' +
-                        '<a href="http://www.pcsg.de" target="_blank">' +
-                            'http://www.pcsg.de' +
-                        '</a>' +
-                    '</p>' +
-                    '<p>Author: Henning Leutz & Moritz Scholz</p>' +
+                '<div style="text-align: center;">' +
+                '<h2>QUIQQER Management System</h2>' +
+                '<p><a href="http://www.quiqqer.com" target="_blank">www.quiqqer.com</a></p>' +
+                '<br />' +
+                'Version: ' + QUIQQER_VERSION +
+                '<br />' +
+                '<p>' +
+                'Copyright ' +
+                '<a href="http://www.pcsg.de" target="_blank">' +
+                'http://www.pcsg.de' +
+                '</a>' +
+                '</p>' +
+                '<p>Author: Henning Leutz & Moritz Scholz</p>' +
                 '</div>'
             );
         }

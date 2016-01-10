@@ -22,7 +22,7 @@ class Htaccess extends QUI\System\Console\Tool
     public function __construct()
     {
         $this->setName('quiqqer:htaccess')
-             ->setDescription('Generate the htaccess File.');
+            ->setDescription('Generate the htaccess File.');
     }
 
     /**
@@ -34,14 +34,13 @@ class Htaccess extends QUI\System\Console\Tool
     {
         $this->writeLn('Generating HTACCESS ...');
 
-        $htaccessBackupFile = VAR_DIR.'backup/htaccess_'.date('Y-m-d__H_i_s');
-        $htaccessFile = CMS_DIR.'.htaccess';
+        $htaccessBackupFile = VAR_DIR . 'backup/htaccess_' . date('Y-m-d__H_i_s');
+        $htaccessFile       = CMS_DIR . '.htaccess';
 
         //
         // generate backup
         //
         if (file_exists($htaccessFile)) {
-
             file_put_contents(
                 $htaccessBackupFile,
                 file_get_contents($htaccessFile)
@@ -51,8 +50,10 @@ class Htaccess extends QUI\System\Console\Tool
             $this->writeLn($htaccessBackupFile);
 
         } else {
-            $this->writeLn('No .htaccess File found. Could not create a backup.',
-                'red');
+            $this->writeLn(
+                'No .htaccess File found. Could not create a backup.',
+                'red'
+            );
         }
 
         $this->resetColor();
@@ -73,13 +74,23 @@ class Htaccess extends QUI\System\Console\Tool
 # (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
 #
 # Generated HTACCESS File via QUIQQER
-# Date: '.date('Y-m-d H:i:s').'
+# Date: ' . date('Y-m-d H:i:s') . '
 #
 # Command to create new htaccess:
 # php quiqqer.php --username="" --password="" --tool=quiqqer:htaccess
+#
+# How do I customize the .htaccess file:
+# https://dev.quiqqer.com/quiqqer/quiqqer/wikis/htaccess
 #';
 
-        $htaccessContent .= $this->_template();
+        // custom htaccess
+        if (file_exists(ETC_DIR . 'htaccess.custom.php')) {
+            $htaccessContent .= "\n\n# custom htaccess\n";
+            $htaccessContent .= file_get_contents(ETC_DIR . 'htaccess.custom.php');
+            $htaccessContent .= "\n\n";
+        }
+
+        $htaccessContent .= $this->template();
 
         file_put_contents($htaccessFile, $htaccessContent);
 
@@ -92,16 +103,15 @@ class Htaccess extends QUI\System\Console\Tool
      *
      * @return string
      */
-    protected function _template()
+    protected function template()
     {
-        $URL_DIR = URL_DIR;
+        $URL_DIR     = URL_DIR;
         $URL_LIB_DIR = URL_LIB_DIR;
         $URL_BIN_DIR = URL_BIN_DIR;
         $URL_SYS_DIR = URL_SYS_DIR;
         $URL_VAR_DIR = URL_VAR_DIR;
-        
-        if ($URL_DIR != '/')
-        {
+
+        if ($URL_DIR != '/') {
             $URL_LIB_DIR = str_replace($URL_DIR, '', URL_LIB_DIR);
             $URL_BIN_DIR = str_replace($URL_DIR, '', URL_BIN_DIR);
             $URL_SYS_DIR = str_replace($URL_DIR, '', URL_SYS_DIR);
@@ -113,14 +123,14 @@ class Htaccess extends QUI\System\Console\Tool
         $URL_SYS_DIR = ltrim($URL_SYS_DIR, '/');
         $URL_VAR_DIR = ltrim($URL_VAR_DIR, '/');
 
-        $quiqqerLib = URL_OPT_DIR.'quiqqer/quiqqer/lib';
-        $quiqqerBin = URL_OPT_DIR.'quiqqer/quiqqer/bin';
-        $quiqqerSys = URL_OPT_DIR.'quiqqer/quiqqer/admin';
+        $quiqqerLib = URL_OPT_DIR . 'quiqqer/quiqqer/lib';
+        $quiqqerBin = URL_OPT_DIR . 'quiqqer/quiqqer/bin';
+        $quiqqerSys = URL_OPT_DIR . 'quiqqer/quiqqer/admin';
 
         $URL_SYS_ADMIN_DIR = trim($URL_SYS_DIR, '/');
 
         return "
-
+# quiqqer rewrite
 <IfModule mod_rewrite.c>
 
     SetEnv HTTP_MOD_REWRITE On
@@ -130,9 +140,25 @@ class Htaccess extends QUI\System\Console\Tool
 
     RewriteRule ^{$URL_SYS_ADMIN_DIR}$ /{$URL_SYS_DIR} [R=301,L]
 
-    RewriteRule ^{$URL_BIN_DIR}(.*)$ {$quiqqerBin}/$1 [L]
-    RewriteRule ^{$URL_LIB_DIR}(.*)$ {$quiqqerLib}/$1 [L]
-    RewriteRule ^{$URL_SYS_DIR}(.*)$ {$quiqqerSys}/$1 [L]
+    ## bin dir
+    RewriteRule \"^bin/(.*)$\" \"{$quiqqerBin}/$1\" [L]
+
+    ## lib dir
+    RewriteCond \"%{REQUEST_URI}\" \"^.*bin/\"
+    RewriteRule \"^{$URL_LIB_DIR}(.*)$\" \"{$quiqqerLib}/$1\" [L]
+
+    ## admin
+    RewriteCond \"%{REQUEST_URI}\" \"^/{$URL_SYS_DIR}\" [or]
+    RewriteCond \"%{REQUEST_URI}\" \"^/{$URL_SYS_DIR}index.php\" [or]
+    RewriteCond \"%{REQUEST_URI}\" \"^/{$URL_SYS_DIR}image.php\" [or]
+    RewriteCond \"%{REQUEST_URI}\" \"^/{$URL_SYS_DIR}ajax.php\"
+    RewriteRule \"^{$URL_SYS_DIR}(.*)$\" \"{$quiqqerSys}/$1\" [L]
+
+    # quiqqer API allowed requests
+
+    #RewriteRule ^{$URL_BIN_DIR}(.*)$ {$quiqqerBin}/$1 [L]
+    #RewriteRule ^{$URL_LIB_DIR}(.*)$ {$quiqqerLib}/$1 [L]
+    #RewriteRule ^{$URL_SYS_DIR}(.*)$ {$quiqqerSys}/$1 [L]
 
     RewriteCond %{REQUEST_FILENAME} !^.*bin/
     RewriteRule ^.*{$URL_VAR_DIR}|^.*media/sites/ {$URL_DIR} [L]

@@ -32,12 +32,4 @@ interface Engine
      * @param mixed        $value - optional
      */
     public function assign($var, $value = false);
-
-    /**
-     * Extend the html header
-     *
-     * @param String  $str
-     * @param Integer $prio
-     */
-    public function extendHeader($str, $prio = 3);
 }

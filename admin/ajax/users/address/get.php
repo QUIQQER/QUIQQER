@@ -3,21 +3,19 @@
 /**
  * Return an address from an user
  *
- * @param Integer|String $uid - id of the user
- * @param Integer|String $aid - id of the address
+ * @param integer|string $uid - id of the user
+ * @param integer|string $aid - id of the address
  *
- * @return Array
+ * @return array
  */
-function ajax_users_address_get($uid, $aid)
-{
-    $User = QUI::getUsers()->get((int)$uid);
-    $Address = $User->getAddress((int)$aid);
-
-    return $Address->getAttributes();
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_users_address_get',
+    function ($uid, $aid) {
+        $User    = QUI::getUsers()->get((int)$uid);
+        $Address = $User->getAddress((int)$aid);
+
+        return $Address->getAttributes();
+    },
     array('uid', 'aid'),
     'Permission::checkSU'
 );

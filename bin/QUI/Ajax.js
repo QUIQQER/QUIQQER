@@ -58,8 +58,8 @@ define('Ajax', [
                 };
 
             params = Utils.combine(params, {
-                _rf      : call,
-                _FRONTEND: window.QUIQQER_FRONTEND || 0
+                '_rf'      : call,
+                '_FRONTEND': window.QUIQQER_FRONTEND || 0
             });
 
             if (typeof params.lang === 'undefined') {
@@ -70,9 +70,9 @@ define('Ajax', [
                 // combine all params, so, they are available in the Request Object
                 Utils.combine(params, {
                     callback : callback,
-                    method   : method,
-                    url      : this.$url,
-                    async    : true,
+                    method  : method,
+                    url     : this.$url,
+                    async   : true,
                     showError: typeof params.showError !== 'undefined' ? params.showError : true,
                     events   : {
                         onSuccess: function () {
@@ -180,15 +180,15 @@ define('Ajax', [
             method = method || 'post'; // is post, put, get or delete
 
             params = Utils.combine(params, {
-                _rf: call
+                '_rf': call
             });
 
             this.$onprogress[id] = new QUIAjax(
                 // combine all params, so, they are available in the Request Object
                 Utils.combine(params, {
                     method : method,
-                    url    : this.$url,
-                    async  : false,
+                    url   : this.$url,
+                    async : false,
                     timeout: 5000,
                     events : {
                         onCancel: function (Request) {
@@ -265,7 +265,7 @@ define('Ajax', [
          */
         parseParams: function (call, params) {
             params = Utils.combine(params, {
-                _rf: call
+                '_rf': call
             });
 
             if (typeof this.$AjaxHelper === 'undefined') {

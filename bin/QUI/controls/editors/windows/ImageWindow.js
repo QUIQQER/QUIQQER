@@ -12,8 +12,7 @@ define('controls/editors/windows/ImageWindow', [
 
       'css!controls/editors/windows/ImageWindow.css'
 
-], function(QUIPopup)
-{
+], function (QUIPopup) {
     "use strict";
 
     return new Class({
@@ -29,16 +28,14 @@ define('controls/editors/windows/ImageWindow', [
             Node : false
         },
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize : function (options) {
+            this.parent(options);
         },
 
         /**
          * Open the window
          */
-        open : function()
-        {
+        open : function () {
             this.parent();
 
             var self    = this,
@@ -46,28 +43,28 @@ define('controls/editors/windows/ImageWindow', [
                 html    = '';
 
             html = '<div class="qui-editor-window-image">' +
-                        '<label for="qui-editor-window-image-url">'+
+                        '<label for="qui-editor-window-image-url">' +
                             'Bild-Adresse / Bild-URL' +
                         '</label>' +
                         '<input type="text" name="" id="qui-editor-window-image-url" />' +
-                        '<div class="qui-editor-window-image-media-button"></div>'+
+                        '<div class="qui-editor-window-image-media-button"></div>' +
 
-                        '<label for="qui-editor-window-image-alt">'+
+                        '<label for="qui-editor-window-image-alt">' +
                             'Alternativ Text' +
                         '</label>' +
                         '<input type="text" name="" id="qui-editor-window-image-alt" />' +
 
-                        '<label for="qui-editor-window-image-width">'+
+                        '<label for="qui-editor-window-image-width">' +
                             'Breite' +
                         '</label>' +
                         '<input type="text" name="" id="qui-editor-window-image-width" />' +
 
-                        '<label for="qui-editor-window-image-height">'+
+                        '<label for="qui-editor-window-image-height">' +
                             'Höhe' +
                         '</label>' +
                         '<input type="text" name="" id="qui-editor-window-image-height" />' +
 
-                        '<label for="qui-editor-window-image-select">'+
+                        '<label for="qui-editor-window-image-select">' +
                             'Styles' +
                         '</label>' +
                         '<select name="" id="qui-editor-window-image-select">' +
@@ -75,7 +72,7 @@ define('controls/editors/windows/ImageWindow', [
                         '</select>' +
                     '</div>';
 
-            Content.set( 'html', html );
+            Content.set('html', html);
 
 
             new Element('button', {
@@ -83,12 +80,12 @@ define('controls/editors/windows/ImageWindow', [
                 html : '<span class="fa fa-picture-o icon-picture"></span>',
                 events :
                 {
-                    click : function() {
+                    click : function () {
                         self.openMedia();
                     }
                 }
             }).inject(
-                Content.getElement( '.qui-editor-window-image-media-button' )
+                Content.getElement('.qui-editor-window-image-media-button')
             );
         },
 
@@ -97,26 +94,22 @@ define('controls/editors/windows/ImageWindow', [
          *
          * @method qui/controls/windows/Confirm#submit
          */
-        submit : function()
-        {
-            this.fireEvent( 'submit', [ this, this.$getParams() ] );
+        submit : function () {
+            this.fireEvent('submit', [this, this.$getParams()]);
             this.close();
         },
 
         /**
          * Open the Meda Popup for Image insertion
          */
-        openMedia : function()
-        {
+        openMedia : function () {
             var self = this;
 
-            require(['controls/projects/project/media/Popup'], function(Popup)
-            {
+            require(['controls/projects/project/media/Popup'], function (Popup) {
                 new Popup({
                     events :
                     {
-                        onSubmit : function(Popup, imageData)
-                        {
+                        onSubmit : function (Popup, imageData) {
                             document.id(
                                 'qui-editor-window-image-url'
                             ).value = imageData.url;
@@ -130,13 +123,12 @@ define('controls/editors/windows/ImageWindow', [
         /**
          * Returns the image params
          */
-        $getParams : function()
-        {
+        $getParams : function () {
             return {
-                url : document.id( 'qui-editor-window-image-url' ).value,
-                alt : document.id( 'qui-editor-window-image-alt' ).value,
-                height : document.id( 'qui-editor-window-image-height' ).value,
-                width : document.id( 'qui-editor-window-image-width' ).value
+                url : document.id('qui-editor-window-image-url').value,
+                alt : document.id('qui-editor-window-image-alt').value,
+                height : document.id('qui-editor-window-image-height').value,
+                width : document.id('qui-editor-window-image-width').value
             };
         }
     });

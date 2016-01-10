@@ -3,23 +3,21 @@
 /**
  * Get the elements in the media trash
  *
- * @param String $project - Project data, JSON Array
- * @param String $params
- * @return Array
+ * @param string $project - Project data, JSON Array
+ * @param string $params
+ * @return array
  */
-function ajax_trash_media($project, $params)
-{
-    $Project = \QUI::getProjectManager()->decode( $project );
-    $Media   = $Project->getMedia();
-    $Trash   = $Media->getTrash();
-
-    return $Trash->getList(
-        json_decode( $params, true )
-    );
-}
-
-\QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_trash_media',
+    function ($project, $params) {
+        $Project = QUI::getProjectManager()->decode($project);
+        $Media   = $Project->getMedia();
+        $Trash   = $Media->getTrash();
+
+        return $Trash->getList(
+            json_decode($params, true)
+        );
+    },
     array('project', 'params'),
     'Permission::checkAdminUser'
 );

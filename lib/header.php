@@ -22,7 +22,7 @@ ini_set("log_errors", "on");
 QUI::load();
 QUI\Utils\System\Debug::marker('header start');
 
-ini_set("error_log", VAR_DIR.'log/error'.date('-Y-m-d').'.log');
+ini_set("error_log", VAR_DIR . 'log/error' . date('-Y-m-d') . '.log');
 
 set_error_handler("exception_error_handler");
 
@@ -39,9 +39,9 @@ define('URL_LIB_DIR', QUI::conf('globals', 'url_lib_dir'));
 define('URL_BIN_DIR', QUI::conf('globals', 'url_bin_dir'));
 define('URL_SYS_DIR', QUI::conf('globals', 'url_sys_dir'));
 
-define('URL_USR_DIR', URL_DIR.str_replace(CMS_DIR, '', USR_DIR));
-define('URL_OPT_DIR', URL_DIR.str_replace(CMS_DIR, '', OPT_DIR));
-define('URL_VAR_DIR', URL_DIR.str_replace(CMS_DIR, '', VAR_DIR));
+define('URL_USR_DIR', URL_DIR . str_replace(CMS_DIR, '', USR_DIR));
+define('URL_OPT_DIR', URL_DIR . str_replace(CMS_DIR, '', OPT_DIR));
+define('URL_VAR_DIR', URL_DIR . str_replace(CMS_DIR, '', VAR_DIR));
 
 define('HOST', QUI::conf('globals', 'host'));
 define('CACHE', QUI::conf('globals', 'cache'));
@@ -79,12 +79,11 @@ try {
     QUI::getDataBase();
 
 } catch (\Exception $Exception) {
-
     header('HTTP/1.1 503 Service Temporarily Unavailable');
     header('Status: 503 Service Temporarily Unavailable');
 
     $Template = QUI::getTemplateManager()->getEngine();
-    $file = LIB_DIR.'templates/db_error.html';
+    $file     = LIB_DIR . 'templates/db_error.html';
 
     if (QUI::conf('db', 'error_html')
         && file_exists(QUI::conf('db', 'error_html'))
@@ -96,7 +95,7 @@ try {
         echo $Template->fetch($file);
 
     } catch (QUI\Exception $Exception) {
-        echo $Template->fetch(LIB_DIR.'templates/db_error.html');
+        echo $Template->fetch(LIB_DIR . 'templates/db_error.html');
     }
 
     QUI\System\Log::writeException($Exception);
@@ -129,8 +128,9 @@ if (isset($_POST['username'])
     }
 
 } elseif (QUI::getSession()->get('uid')) {
-
     try {
+        QUI::getUsers()->checkUserSession();
+
         $User = QUI::getUserBySession();
 
     } catch (QUI\Exception $Exception) {
@@ -140,15 +140,13 @@ if (isset($_POST['username'])
 
 // Logout
 if (isset($_GET['logout'])) {
-
     $User->logout();
     $User = QUI::getUsers()->getNobody();
 
     if (isset($_SERVER['REQUEST_URI'])
         && strpos($_SERVER['REQUEST_URI'], 'logout=1') !== false
     ) {
-        header('Location: '.str_replace('logout=1', '',
-                $_SERVER['REQUEST_URI']));
+        header('Location: ' . str_replace('logout=1', '', $_SERVER['REQUEST_URI']));
         exit;
     }
 }

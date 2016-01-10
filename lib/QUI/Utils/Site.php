@@ -14,16 +14,15 @@ namespace QUI\Utils;
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
  */
-
 class Site
 {
     /**
      * Set a attribute recursive from its parents if the attribute is not set
      *
      * @param \QUI\Projects\Site $Site
-     * @param String             $attribute
+     * @param string $attribute
      */
-    static function setRecursivAttribute(\QUI\Projects\Site $Site, $attribute)
+    public static function setRecursivAttribute(\QUI\Projects\Site $Site, $attribute)
     {
         $value = $Site->getAttribute($attribute);
 
@@ -48,5 +47,4 @@ class Site
             $Parent = $Parent->getParent();
         }
     }
-
 }

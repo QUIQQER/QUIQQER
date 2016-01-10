@@ -17,8 +17,7 @@ define('controls/projects/project/media/Sitemap', [
     'qui/controls/sitemap/Item',
     'Ajax'
 
-], function(QUIControl, QUISitemap, QUISitemapItem, Ajax)
-{
+], function (QUIControl, QUISitemap, QUISitemapItem, Ajax) {
     "use strict";
 
     /**
@@ -46,9 +45,8 @@ define('controls/projects/project/media/Sitemap', [
             id        : false
         },
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize : function (options) {
+            this.parent(options);
 
             this.$Elm = null;
             this.$Map = new QUISitemap();
@@ -61,8 +59,7 @@ define('controls/projects/project/media/Sitemap', [
          *
          * @return {Object} qui/controls/sitemap/Map
          */
-        getMap : function()
-        {
+        getMap : function () {
             return this.$Map;
         },
 
@@ -73,8 +70,7 @@ define('controls/projects/project/media/Sitemap', [
          *
          * @return {HTMLElement}
          */
-        create : function()
-        {
+        create : function () {
             this.$Elm = this.$Map.create();
 
             return this.$Elm;
@@ -85,9 +81,8 @@ define('controls/projects/project/media/Sitemap', [
          *
          * @method controls/projects/project/media/Sitemap#open
          */
-        open : function()
-        {
-            if ( !this.$Elm ) {
+        open : function () {
+            if (!this.$Elm) {
                 return;
             }
 
@@ -97,13 +92,12 @@ define('controls/projects/project/media/Sitemap', [
 
             this.$getItem(
                 this.getAttribute('id') || 1,
-                function(result)
-                {
+                function (result) {
                     self.$Map.clearChildren();
 
                     self.$addSitemapItem(
                         self.$Map,
-                        self.$parseArrayToSitemapitem( result )
+                        self.$parseArrayToSitemapitem(result)
                     );
 
                     self.$Map.firstChild().open();
@@ -119,17 +113,14 @@ define('controls/projects/project/media/Sitemap', [
          * @method controls/projects/project/media/Sitemap#selectChildrenByValue
          * @param {Number} fileid
          */
-        selectFolder : function(fileid)
-        {
-            var list = this.getChildrenByValue( fileid );
+        selectFolder : function (fileid) {
+            var list = this.getChildrenByValue(fileid);
 
-            if ( list.length )
-            {
-                list.each(function(Itm)
-                {
+            if (list.length) {
+                list.each(function (Itm) {
                     Itm.select();
 
-                    if ( !Itm.isOpen() ) {
+                    if (!Itm.isOpen()) {
                         Itm.open();
                     }
                 });
@@ -141,11 +132,10 @@ define('controls/projects/project/media/Sitemap', [
          *
          * @method controls/projects/project/media/Sitemap#selectChildrenByValue
          */
-        selectChildrenByValue : function(value)
-        {
-            var items = this.$Map.getChildrenByValue( value );
+        selectChildrenByValue : function (value) {
+            var items = this.$Map.getChildrenByValue(value);
 
-            for ( var i = 0, len = items.length; i < len; i++ ) {
+            for (var i = 0, len = items.length; i < len; i++) {
                 items[ i ].select();
             }
         },
@@ -158,9 +148,8 @@ define('controls/projects/project/media/Sitemap', [
          * @param {String|Number} value
          * @return {Array}
          */
-        getChildrenByValue : function(value)
-        {
-            return this.$Map.getChildrenByValue( value );
+        getChildrenByValue : function (value) {
+            return this.$Map.getChildrenByValue(value);
         },
 
         /**
@@ -169,8 +158,7 @@ define('controls/projects/project/media/Sitemap', [
          * @method controls/projects/project/media/Sitemap#getSelectedChildren
          * @return {Array}
          */
-        getSelectedChildren : function()
-        {
+        getSelectedChildren : function () {
             return this.$Map.getSelectedChildren();
         },
 
@@ -185,8 +173,7 @@ define('controls/projects/project/media/Sitemap', [
          * @private
          * @ignore
          */
-        $getItem : function(id, callback)
-        {
+        $getItem : function (id, callback) {
             Ajax.get('ajax_media_get', callback, {
                 project : this.getAttribute('project'),
                 lang    : this.getAttribute('lang'),
@@ -205,8 +192,7 @@ define('controls/projects/project/media/Sitemap', [
          * @private
          * @ignore
          */
-        $parseArrayToSitemapitem : function(result)
-        {
+        $parseArrayToSitemapitem : function (result) {
             var Itm;
             var file = result.file || result;
 
@@ -222,12 +208,11 @@ define('controls/projects/project/media/Sitemap', [
 
                 events :
                 {
-                    onOpen : function(Item)
-                    {
+                    onOpen : function (Item) {
                         var Control  = Item.getAttribute('Control'),
                             children = Item.getAttribute('children');
 
-                        Control.fireEvent( 'openBegin', [ Item, Control ] );
+                        Control.fireEvent('openBegin', [Item, Control]);
 
                         Item.clearChildren();
 
@@ -249,18 +234,16 @@ define('controls/projects/project/media/Sitemap', [
                         */
 
                         // if children are false
-                        Ajax.get('ajax_media_getsubfolders', function(result, Request)
-                        {
+                        Ajax.get('ajax_media_getsubfolders', function (result, Request) {
                             var i, len;
 
                             var Control = Request.getAttribute('Control'),
                                 Parent  = Request.getAttribute('Item');
 
-                            for (i = 0, len = result.length; i < len; i++)
-                            {
+                            for (i = 0, len = result.length; i < len; i++) {
                                 Control.$addSitemapItem(
                                     Parent,
-                                    Control.$parseArrayToSitemapitem( result[i] )
+                                    Control.$parseArrayToSitemapitem(result[i])
                                 );
                             }
 
@@ -275,8 +258,7 @@ define('controls/projects/project/media/Sitemap', [
                         });
                     },
 
-                    onClick : function(Itm)
-                    {
+                    onClick : function (Itm) {
                         Itm.getAttribute('Control').fireEvent('itemClick', [
                             Itm,
                             Itm.getAttribute('Control')
@@ -285,7 +267,7 @@ define('controls/projects/project/media/Sitemap', [
                 }
             });
 
-            if ( file.active === false ) {
+            if (file.active === false) {
                 Itm.deactivate();
             }
 
@@ -304,14 +286,13 @@ define('controls/projects/project/media/Sitemap', [
          * @private
          * @ignore
          */
-        $addSitemapItem : function(Parent, Child)
-        {
-            if ( Child.getAttribute('type') !== 'folder' ) {
+        $addSitemapItem : function (Parent, Child) {
+            if (Child.getAttribute('type') !== 'folder') {
                 return;
             }
 
             Child.setAttribute('Control', this);
-            Parent.appendChild( Child );
+            Parent.appendChild(Child);
         }
     });
 });

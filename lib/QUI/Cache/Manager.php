@@ -23,42 +23,42 @@ class Manager
      *
      * @var \QUI\Config
      */
-    static $Config = null;
+    public static $Config = null;
 
     /**
      * Stash Object
      *
      * @var Stash\Pool
      */
-    static $Stash = null;
+    public static $Stash = null;
 
     /**
      * the stash multihandler
      *
      * @var Stash\Interfaces\DriverInterface
      */
-    static $Handler = null;
+    public static $Handler = null;
 
     /**
      * all stash cache objects
      *
      * @var array
      */
-    static $handlers = null;
+    public static $handlers = null;
 
     /**
      * Cache Settings
      *
      * @return QUI\Config
      */
-    static function getConfig()
+    public static function getConfig()
     {
         if (!self::$Config) {
             try {
                 self::$Config = QUI::getConfig('etc/cache.ini.php');
 
             } catch (QUI\Exception $Exception) {
-                file_put_contents(CMS_DIR.'etc/cache.ini.php', '');
+                file_put_contents(CMS_DIR . 'etc/cache.ini.php', '');
 
                 self::$Config = QUI::getConfig('etc/cache.ini.php');
             }
@@ -70,34 +70,34 @@ class Manager
     /**
      * Create the Stash Cache Handler
      *
-     * @param String $key - (optional) cache name, cache key
+     * @param string $key - (optional) cache name, cache key
      *
      * @return Stash\Item
      * @throw
      */
-    static function getStash($key = '')
+    public static function getStash($key = '')
     {
         // pfad erstellen falls nicht erstellt ist
-        if (!is_dir(VAR_DIR.'cache/stack/')) {
-            QUI\Utils\System\File::mkdir(VAR_DIR.'cache/stack/');
+        if (!is_dir(VAR_DIR . 'cache/stack/')) {
+            QUI\Utils\System\File::mkdir(VAR_DIR . 'cache/stack/');
         }
 
         if (!empty($key)) {
-            $key = md5(__FILE__).'/qui/'.$key;
+            $key = md5(__FILE__) . '/qui/' . $key;
         }
 
         if (empty($key)) {
-            $key = md5(__FILE__).'/qui/';
+            $key = md5(__FILE__) . '/qui/';
         }
 
-        if (!is_null(self::$Stash)) {
+        if (self::$Stash !== null) {
             return self::$Stash->getItem($key);
         }
 
 
         $Config = self::getConfig();
 
-        $handlers = array();
+        $handlers     = array();
         $confhandlers = $Config->get('handlers');
 
         if (empty($confhandlers)) {
@@ -113,7 +113,7 @@ class Manager
 
             switch ($confhandler) {
                 case 'apc':
-                    $conf = $Config->get('apc');
+                    $conf   = $Config->get('apc');
                     $params = array(
                         'namespace' => 'pcsg'
                     );
@@ -129,15 +129,14 @@ class Manager
                     try {
                         array_unshift($handlers, new Stash\Driver\Apc($params));
                     } catch (Stash\Exception\RuntimeException $Exception) {
-
                     }
 
                     break;
 
                 case 'filesystem':
-                    $conf = $Config->get('filesystem');
+                    $conf   = $Config->get('filesystem');
                     $params = array(
-                        'path' => VAR_DIR.'cache/stack/'
+                        'path' => VAR_DIR . 'cache/stack/'
                     );
 
                     if (!empty($conf['path']) && is_dir($conf['path'])) {
@@ -147,14 +146,14 @@ class Manager
                     try {
                         $handlers[] = new Stash\Driver\FileSystem($params);
                     } catch (Stash\Exception\RuntimeException $Exception) {
-
                     }
+
                     break;
 
                 case 'sqlite':
-                    $conf = $Config->get('sqlite');
+                    $conf   = $Config->get('sqlite');
                     $params = array(
-                        'path' => VAR_DIR.'cache/stack/'
+                        'path' => VAR_DIR . 'cache/stack/'
                     );
 
                     if (!empty($conf['path']) && is_dir($conf['path'])) {
@@ -164,25 +163,25 @@ class Manager
                     try {
                         $handlers[] = new Stash\Driver\Sqlite($params);
                     } catch (Stash\Exception\RuntimeException $Exception) {
-
                     }
+
                     break;
 
                 case 'memcache':
                     // defaults
                     $options = array(
-                        'prefix_key'           => 'pcsg',
+                        'prefix_key' => 'pcsg',
                         'libketama_compatible' => true,
-                        'cache_lookups'        => true,
-                        'serializer'           => 'json'
+                        'cache_lookups' => true,
+                        'serializer' => 'json'
                     );
 
                     // servers
-                    $scount = $Config->get('memcache', 'servers');
+                    $scount  = $Config->get('memcache', 'servers');
                     $servers = array();
 
                     for ($i = 1; $i <= $scount; $i++) {
-                        $section = 'memcache'.$i;
+                        $section = 'memcache' . $i;
 
                         $servers[] = array(
                             $Config->get($section, 'host'),
@@ -221,19 +220,21 @@ class Manager
                     }
 
                     try {
-                        array_unshift($handlers,
-                            new Stash\Driver\Memcache($params));
+                        array_unshift(
+                            $handlers,
+                            new Stash\Driver\Memcache($params)
+                        );
                     } catch (Stash\Exception\RuntimeException $Exception) {
-
                     }
+
                     break;
             }
         }
 
         // all handlers false, so we use filesystem
         if (empty($handlers)) {
-            $conf = $Config->get('filesystem');
-            $params = array('path' => VAR_DIR.'cache/stack/');
+            $conf   = $Config->get('filesystem');
+            $params = array('path' => VAR_DIR . 'cache/stack/');
 
             if (!empty($conf['path']) && is_dir($conf['path'])) {
                 $params['path'] = $conf['path'];
@@ -249,7 +250,7 @@ class Manager
         $Stash = new Stash\Pool($Handler);
 
 
-        self::$Stash = $Stash;
+        self::$Stash    = $Stash;
         self::$handlers = $handlers;
 
         return self::$Stash->getItem($key);
@@ -258,11 +259,11 @@ class Manager
     /**
      * Gibt den Stash\Driver\Composite oder den Stash\Driver zurück
      *
-     * @param String|Bool $type = optional: bestimmten Cache Handler bekommen
+     * @param string|boolean $type = optional: bestimmten Cache Handler bekommen
      *
-     * @return Stash\Interfaces\DriverInterface|Bool
+     * @return Stash\Interfaces\DriverInterface|boolean
      */
-    static function getHandler($type = false)
+    public static function getHandler($type = false)
     {
         if ($type != false) {
             $handlers = self::$handlers;
@@ -276,8 +277,8 @@ class Manager
             return false;
         }
 
-        if (!is_null(self::$Handler)) {
-            return self::$Handler;
+        if (self::$Handler === null) {
+            return false;
         }
 
         return self::$Handler;
@@ -286,13 +287,13 @@ class Manager
     /**
      * Daten in den Cache setzen
      *
-     * @param String             $name
-     * @param String             $data
+     * @param string $name
+     * @param string $data
      * @param int|\DateTime|null $time -> sekunden oder datetime
      *
-     * @return Bool
+     * @return boolean
      */
-    static function set($name, $data, $time = null)
+    public static function set($name, $data, $time = null)
     {
         return self::getStash($name)->set($data, $time);
     }
@@ -300,13 +301,13 @@ class Manager
     /**
      * Daten aus dem Cache bekommen
      *
-     * @param String $name
+     * @param string $name
      *
-     * @return String|Array|Object|Bool
+     * @return string|array|object|boolean
      *
      * @throws QUI\Cache\Exception
      */
-    static function get($name)
+    public static function get($name)
     {
         if (self::getConfig()->get('general', 'nocache')) {
             throw new QUI\Cache\Exception(
@@ -320,14 +321,12 @@ class Manager
 
 
         try {
-
             $Item = self::getStash($name);
             $data = $Item->get();
 
             $isMiss = $Item->isMiss();
 
         } catch (\Exception $Exception) {
-
             throw new QUI\Cache\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
@@ -353,9 +352,9 @@ class Manager
     /**
      * Cache leeren
      *
-     * @param String|Bool $key - optional, falls kein Key übergeben wird, wird komplett geleert
+     * @param string|boolean $key - optional, falls kein Key übergeben wird, wird komplett geleert
      */
-    static function clear($key = false)
+    public static function clear($key = false)
     {
         self::getStash($key)->clear();
     }
@@ -365,7 +364,7 @@ class Manager
      * Depending on the size of the cache and the specific drivers in use this can take some time,
      * so it is best called as part of a separate maintenance task or as part of a cron job.
      */
-    static function purge()
+    public static function purge()
     {
         self::$Stash->purge();
     }
@@ -373,9 +372,9 @@ class Manager
     /**
      * Löscht den kompletten CMS Cache
      */
-    static function clearAll()
+    public static function clearAll()
     {
-        QUI\Utils\System\File::unlink(VAR_DIR.'cache/');
+        QUI\Utils\System\File::unlink(VAR_DIR . 'cache/');
 
         self::getStash('')->clear();
     }

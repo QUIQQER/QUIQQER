@@ -49,9 +49,9 @@ define('controls/projects/Popup', [
             maxWidth            : 400,
             maxHeight           : 600,
             autoclose           : true,
-            multible            : false, 				// select multible items
-            disableProjectSelect: false,	// Can the user change the projects?
-            information         : false 			// information text
+            multible            : false,  // select multible items
+            disableProjectSelect: false,  // Can the user change the projects?
+            information         : false   // information text
         },
 
         initialize: function (options) {

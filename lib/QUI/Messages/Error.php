@@ -7,6 +7,7 @@
 namespace QUI\Messages;
 
 use QUI;
+
 /**
  * An error
  *

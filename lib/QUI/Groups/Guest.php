@@ -27,7 +27,7 @@ class Guest extends QUI\Groups\Group
     /**
      * Deletes the group and sub-groups
      *
-     * @return Bool
+     * @return boolean
      * @throws \QUI\Exception
      */
     public function delete()
@@ -44,10 +44,10 @@ class Guest extends QUI\Groups\Group
      * set a group attribute
      * ID cannot be set
      *
-     * @param String $key - Attribute name
-     * @param String|Bool|Integer|array $value - value
+     * @param string $key - Attribute name
+     * @param string|boolean|integer|array $value - value
      *
-     * @return Bool
+     * @return boolean
      */
     public function setAttribute($key, $value)
     {
@@ -61,7 +61,7 @@ class Guest extends QUI\Groups\Group
     /**
      * Returns the Group-ID
      *
-     * @return Integer
+     * @return integer
      */
     public function getId()
     {
@@ -74,7 +74,7 @@ class Guest extends QUI\Groups\Group
      */
     public function save()
     {
-        $this->_rights = QUI::getPermissionManager()
+        $this->rights = QUI::getPermissionManager()
             ->getRightParamsFromGroup($this);
 
         // Felder bekommen
@@ -84,13 +84,13 @@ class Guest extends QUI\Groups\Group
                 'name'    => 'Guest',
                 'toolbar' => $this->getAttribute('toolbar'),
                 'admin'   => 0,
-                'rights'  => json_encode($this->_rights),
+                'rights'  => json_encode($this->rights),
                 'active'  => 1
             ),
             array('id' => $this->getId())
         );
 
-        $this->_createCache();
+        $this->createCache();
     }
 
     /**
@@ -117,7 +117,7 @@ class Guest extends QUI\Groups\Group
     /**
      * Is the group active?
      *
-     * @return Bool
+     * @return boolean
      */
     public function isActive()
     {
@@ -127,10 +127,10 @@ class Guest extends QUI\Groups\Group
     /**
      * Checks if the ID is from a parent group
      *
-     * @param Integer $id - ID from parent
-     * @param Bool $recursiv - checks recursive or not
+     * @param integer $id - ID from parent
+     * @param boolean $recursiv - checks recursive or not
      *
-     * @return Bool
+     * @return boolean
      */
     public function isParent($id, $recursiv = false)
     {
@@ -140,9 +140,9 @@ class Guest extends QUI\Groups\Group
     /**
      * return the parent group
      *
-     * @param Bool $obj - Parent Objekt (true) oder Parent-ID (false) -> (optional = true)
+     * @param boolean $obj - Parent Objekt (true) oder Parent-ID (false) -> (optional = true)
      *
-     * @return Object|Integer|false
+     * @return object|integer|false
      * @throws \QUI\Exception
      */
     public function getParent($obj = true)
@@ -163,7 +163,7 @@ class Guest extends QUI\Groups\Group
     /**
      * Have the group subgroups?
      *
-     * @return Integer
+     * @return integer
      */
     public function hasChildren()
     {
@@ -173,9 +173,9 @@ class Guest extends QUI\Groups\Group
     /**
      * Returns the sub groups
      *
-     * @param Array $params - Where Parameter
+     * @param array $params - Where Parameter
      *
-     * @return Array
+     * @return array
      */
     public function getChildren($params = array())
     {
@@ -185,10 +185,10 @@ class Guest extends QUI\Groups\Group
     /**
      * return the subgroup ids
      *
-     * @param Bool $recursiv - recursiv true / false
+     * @param boolean $recursiv - recursiv true / false
      * @param      $params - SQL Params (limit, order)
      *
-     * @return Array
+     * @return array
      */
     public function getChildrenIds($recursiv = false, $params = array())
     {
@@ -198,7 +198,7 @@ class Guest extends QUI\Groups\Group
     /**
      * Create a subgroup
      *
-     * @param String $name - name of the subgroup
+     * @param string $name - name of the subgroup
      *
      * @return \QUI\Groups\Manager
      * @throws QUI\Exception

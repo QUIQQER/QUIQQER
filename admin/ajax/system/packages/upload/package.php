@@ -3,18 +3,17 @@
 /**
  * Install / update an uploaded package
  *
- * @param String $File - Name of the Package
+ * @param \QUI\QDOM $File - Name of the Package
  */
-function ajax_system_packages_upload_package($File)
-{
-    \QUI::getPackageManager()->uploadPackage(
-        $File->getAttribute( 'filepath' )
-    );
-}
-
-\QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_system_packages_upload_package',
-    array( 'File' ),
+    function ($File) {
+        /* @var $File \QUI\QDOM */
+        QUI::getPackageManager()->uploadPackage(
+            $File->getAttribute('filepath')
+        );
+    },
+    array('File'),
     array(
         'Permission::checkAdminUser',
         'quiqqer.system.update'

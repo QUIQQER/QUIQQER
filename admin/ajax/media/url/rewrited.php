@@ -3,35 +3,32 @@
 /**
  * Return the rewrited url from an image.php url
  *
- * @param String $fileurl - image.php string
+ * @param string $fileurl - image.php string
  *
- * @return String
+ * @return string
  */
-function ajax_media_url_rewrited($fileurl)
-{
-    if (QUI\Projects\Media\Utils::isMediaUrl($fileurl) === false) {
-        return $fileurl;
-    }
-
-    try {
-        $File = QUI\Projects\Media\Utils::getImageByUrl($fileurl);
-        $url = $File->getUrl(true);
-
-        if (empty($url)) {
-            return $File->getUrl();
+QUI::$Ajax->registerFunction(
+    'ajax_media_url_rewrited',
+    function ($fileurl) {
+        if (QUI\Projects\Media\Utils::isMediaUrl($fileurl) === false) {
+            return $fileurl;
         }
 
-        return $url;
+        try {
+            $File = QUI\Projects\Media\Utils::getImageByUrl($fileurl);
+            $url  = $File->getUrl(true);
 
-    } catch (QUI\Exception $Exception) {
+            if (empty($url)) {
+                return $File->getUrl();
+            }
 
-    }
+            return $url;
 
-    return $fileurl;
-}
+        } catch (QUI\Exception $Exception) {
+        }
 
-QUI::$Ajax->register(
-    'ajax_media_url_rewrited',
+        return $fileurl;
+    },
     array('fileurl'),
     'Permission::checkAdminUser'
 );

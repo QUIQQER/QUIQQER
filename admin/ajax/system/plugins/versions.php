@@ -3,15 +3,16 @@
 /**
  * Versionen anfragen, welche zur Verfügung stehen
  *
- * @param String $plugin - optional
- * @return Array
+ * @param string $plugin - optional
+ * @return array
  */
-function ajax_system_plugins_versions($plugin)
-{
-    $Update = new \QUI\Update();
+QUI::$Ajax->registerFunction(
+    'ajax_system_plugins_versions',
+    function ($plugin) {
+        $Update = new \QUI\Update();
 
-    return $Update->getVersions( $plugin );
-}
-QUI::$Ajax->register('ajax_system_plugins_versions', array('plugin'), 'Permission::checkSU');
-
-?>
+        return $Update->getVersions($plugin);
+    },
+    array('plugin'),
+    'Permission::checkSU'
+);

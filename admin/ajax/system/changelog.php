@@ -5,15 +5,13 @@
  *
  * @return String
  */
-function ajax_system_changelog()
-{
-    return \QUI\Utils\Request\Url::get(
-        'http://update.quiqqer.com/CHANGELOG'
-    );
-}
-
-\QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_system_changelog',
+    function () {
+        return QUI\Utils\Request\Url::get(
+            'http://update.quiqqer.com/CHANGELOG'
+        );
+    },
     false,
     'Permission::checkUser'
 );

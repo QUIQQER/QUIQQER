@@ -22,19 +22,19 @@ abstract class Tool extends QUI\QDOM
      *
      * @var array
      */
-    protected $_paramsList = array();
+    protected $paramsList = array();
 
     /**
      * Console parameter, values of the parameter / arguments
      *
      * @var array
      */
-    protected $_params;
+    protected $params;
 
     /**
      * Set the name of the Tool
      *
-     * @param String $name
+     * @param string $name
      *
      * @return Tool this
      */
@@ -48,7 +48,7 @@ abstract class Tool extends QUI\QDOM
     /**
      * Set the description of the Tool
      *
-     * @param String $description
+     * @param string $description
      *
      * @return Tool this
      */
@@ -62,7 +62,7 @@ abstract class Tool extends QUI\QDOM
     /**
      * Set the help of the Tool
      *
-     * @param String $help
+     * @param string $help
      *
      * @return Tool this
      * @deprecated use addArgument for argument desriptions
@@ -80,10 +80,10 @@ abstract class Tool extends QUI\QDOM
      * Not allowed arguments / Parameter are:
      * help, tool, listtools, u, p, username, password
      *
-     * @param String      $name        - Name of the argument
-     * @param             $description - Description of the argument
-     * @param String|Bool $short       - optional, shortcut
-     * @param Bool        $optional    - optional, Argument is optional
+     * @param string $name - Name of the argument
+     * @param string $description - Description of the argument
+     * @param string|boolean $short - optional, shortcut
+     * @param boolean $optional - optional, Argument is optional
      *
      * @return Tool this
      */
@@ -93,11 +93,11 @@ abstract class Tool extends QUI\QDOM
         $short = false,
         $optional = false
     ) {
-        $this->_paramsList[$name] = array(
-            'param'       => $name,
+        $this->paramsList[$name] = array(
+            'param' => $name,
             'description' => $description,
-            'short'       => $short,
-            'optional'    => (bool)$optional
+            'short' => $short,
+            'optional' => (bool)$optional
         );
 
         return $this;
@@ -106,14 +106,14 @@ abstract class Tool extends QUI\QDOM
     /**
      * Set value of an argument
      *
-     * @param String      $name
-     * @param String|Bool $value
+     * @param string $name
+     * @param string|boolean $value
      *
      * @return Tool this
      */
     public function setArgument($name, $value)
     {
-        $this->_params[$name] = $value;
+        $this->params[$name] = $value;
 
         return $this;
     }
@@ -121,7 +121,7 @@ abstract class Tool extends QUI\QDOM
     /**
      * Return the name of the Tool
      *
-     * @return String|Bool
+     * @return string|boolean
      */
     public function getName()
     {
@@ -131,7 +131,7 @@ abstract class Tool extends QUI\QDOM
     /**
      * Return the name of the Tool
      *
-     * @return String|Bool
+     * @return string|boolean
      */
     public function getDescription()
     {
@@ -158,13 +158,12 @@ abstract class Tool extends QUI\QDOM
         // space calc
         $maxLen = 0;
 
-        foreach ($this->_paramsList as $param) {
-
-            $command = '--'.ltrim($param['param'], '-');
-            $short = '';
+        foreach ($this->paramsList as $param) {
+            $command = '--' . ltrim($param['param'], '-');
+            $short   = '';
 
             if (isset($param['short']) && !empty($param['short'])) {
-                $short = ' (-'.ltrim($param['short'], '-').')';
+                $short = ' (-' . ltrim($param['short'], '-') . ')';
             }
 
             $strlen = strlen("{$command}{$short}");
@@ -175,13 +174,12 @@ abstract class Tool extends QUI\QDOM
         }
 
         // output
-        foreach ($this->_paramsList as $param) {
-
-            $command = '--'.ltrim($param['param'], '-');
-            $short = '';
+        foreach ($this->paramsList as $param) {
+            $command = '--' . ltrim($param['param'], '-');
+            $short   = '';
 
             if (isset($param['short']) && !empty($param['short'])) {
-                $short = ' (-'.ltrim($param['short'], '-').')';
+                $short = ' (-' . ltrim($param['short'], '-') . ')';
             }
 
             $this->write($command, 'green');
@@ -217,56 +215,55 @@ abstract class Tool extends QUI\QDOM
      *
      * An argument can looks like: --argument, argument, -shortArgument
      *
-     * @param String
+     * @param string
      *
      * @return string|bool
      */
     public function getArgument($name)
     {
-        if (isset($this->_params[$name])) {
-            return $this->_params[$name];
+        if (isset($this->params[$name])) {
+            return $this->params[$name];
         }
 
         $name = ltrim($name, '-');
 
-        if (isset($this->_params[$name])) {
-            return $this->_params[$name];
+        if (isset($this->params[$name])) {
+            return $this->params[$name];
         }
 
-        if (isset($this->_params['--'.$name])) {
-            return $this->_params['--'.$name];
+        if (isset($this->params['--' . $name])) {
+            return $this->params['--' . $name];
         }
 
         // short argument?
-        foreach ($this->_paramsList as $entry) {
+        foreach ($this->paramsList as $entry) {
             if ($entry['short'] == $name
-                && isset($this->_params[$entry['param']])
+                && isset($this->params[$entry['param']])
             ) {
-                return $this->_params[$entry['param']];
+                return $this->params[$entry['param']];
             }
         }
 
         $paramData = array();
 
-        if (isset($this->_paramsList[$name])) {
-            $paramData = $this->_paramsList[$name];
+        if (isset($this->paramsList[$name])) {
+            $paramData = $this->paramsList[$name];
         }
 
         // if cli, read user input
         if (php_sapi_name() == 'cli'
             && (isset($paramData['optional']) && !$paramData['optional'])
         ) {
-
             $this->writeLn('');
             $this->writeLn('Missing Argument', 'brown');
 
             $this->writeLn('');
-            $this->write('--'.$name.': ', 'green');
+            $this->write('--' . $name . ': ', 'green');
 
             $this->resetColor();
 
-            if (isset($this->_paramsList[$name])) {
-                $paramData = $this->_paramsList[$name];
+            if (isset($this->paramsList[$name])) {
+                $paramData = $this->paramsList[$name];
 
                 $this->write($paramData['description']);
                 $this->writeLn();
@@ -292,9 +289,9 @@ abstract class Tool extends QUI\QDOM
     /**
      * Output a line to the parent
      *
-     * @param String      $msg   - (optional) Message
-     * @param String|bool $color - (optional) Text color
-     * @param String|bool $bg    - (optional) Background color
+     * @param string $msg - (optional) Message
+     * @param string|boolean $color - (optional) Text color
+     * @param string|boolean $bg - (optional) Background color
      */
     public function writeLn($msg = '', $color = false, $bg = false)
     {
@@ -306,9 +303,9 @@ abstract class Tool extends QUI\QDOM
     /**
      * Alternative to ->message()
      *
-     * @param String      $msg   - Message
-     * @param String|bool $color - optional, Text color
-     * @param String|bool $bg    - optional, Background color
+     * @param string $msg - Message
+     * @param string|boolean $color - optional, Text color
+     * @param string|boolean $bg - optional, Background color
      */
     public function write($msg, $color = false, $bg = false)
     {
@@ -318,9 +315,9 @@ abstract class Tool extends QUI\QDOM
     /**
      * Print a message
      *
-     * @param String      $msg   - Message
-     * @param String|bool $color - optional, Text color
-     * @param String|bool $bg    - optional, Background color
+     * @param string $msg - Message
+     * @param string|boolean $color - optional, Text color
+     * @param string|boolean $bg - optional, Background color
      */
     public function message($msg, $color = false, $bg = false)
     {
@@ -332,7 +329,7 @@ abstract class Tool extends QUI\QDOM
     /**
      * Read the input from the user
      *
-     * @return String
+     * @return string
      */
     public function readInput()
     {

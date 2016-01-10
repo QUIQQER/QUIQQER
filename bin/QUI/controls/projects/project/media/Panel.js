@@ -23,7 +23,6 @@
  * @event onDragDropComplete [this, event]
  * @event childClick [ this, imageData ]
  */
-
 define('controls/projects/project/media/Panel', [
 
     'qui/QUI',
@@ -100,10 +99,10 @@ define('controls/projects/project/media/Panel', [
             limit: 20,
             page : 1,
 
-            selectable          : false, 	// is the media in the selectable mode (for popup or image inserts)
-            selectable_types    : false, 	// {Array} you can specified which types are selectable (folder, image, file, *)
-            selectable_mimetypes: false,  	// {Array} you can specified which mime types are selectable
-            selectable_multible : false 	// multibel selection active? press ctrl / strg
+            selectable          : false,    // is the media in the selectable mode (for popup or image inserts)
+            selectable_types    : false,    // {Array} you can specified which types are selectable (folder, image, file, *)
+            selectable_mimetypes: false,    // {Array} you can specified which mime types are selectable
+            selectable_multible : false     // multibel selection active? press ctrl / strg
         },
 
         initialize: function (Media, options) {
@@ -385,9 +384,17 @@ define('controls/projects/project/media/Panel', [
 
                 self.addButton(Upload);
 
-
                 if (self.getAttribute('startid')) {
                     self.openID(self.getAttribute('startid'));
+                    return;
+                }
+
+                // cached id?
+                var Project    = this.$Media.getProject();
+                var cacheMedia = Project.getName() + '-' + Project.getLang() + '-id';
+
+                if (QUI.Storage.get(cacheMedia)) {
+                    self.openID(QUI.Storage.get(cacheMedia));
                     return;
                 }
 
@@ -432,7 +439,14 @@ define('controls/projects/project/media/Panel', [
                 title: ' Media (' + Project.getName() + ')'
             });
 
-            // this.refresh();
+
+            // set cache
+            QUI.Storage.set(
+                Project.getName() + '-' + Project.getLang() + '-id',
+                fileid
+            );
+
+            this.setAttribute('startid', fileid);
 
             // get the file object
             this.getMedia().get(fileid).then(function (MediaFile) {
@@ -447,6 +461,7 @@ define('controls/projects/project/media/Panel', [
 
                 // if the MediaFile is no Folder
                 if (MediaFile.getType() !== 'classes/projects/project/media/Folder') {
+
                     require([
                         'controls/projects/project/media/FilePanel'
                     ], function (FilePanel) {
@@ -455,6 +470,11 @@ define('controls/projects/project/media/Panel', [
                         );
 
                         self.Loader.hide();
+                    });
+
+                    // open parent-id
+                    MediaFile.getParentId().then(function (parentId) {
+                        self.openID(parentId);
                     });
 
                     return;
@@ -481,7 +501,9 @@ define('controls/projects/project/media/Panel', [
                 }, {
                     order: self.getAttribute('field') + ' ' + self.getAttribute('order')
                 });
-            });
+            }).catch(function () {
+                this.openID(1);
+            }.bind(this));
         },
 
         /**
@@ -805,6 +827,10 @@ define('controls/projects/project/media/Panel', [
          */
         $createBreadCrumb: function (items) {
             var i, len, Item;
+
+            if (this.getAttribute('breadcrumb') === false) {
+                return;
+            }
 
             var self       = this,
                 Breadcrumb = this.getBreadcrumb(),
@@ -1389,14 +1415,82 @@ define('controls/projects/project/media/Panel', [
                     titleicon  : 'fa fa-folder-open-o icon-folder-open-alt',
                     information: Locale.get(lg, 'projects.project.site.folder.create.information'),
                     icon       : 'fa fa-folder-open-o icon-folder-open-alt',
-                    maxHeight  : 280,
-                    maxWidth   : 500,
+                    maxHeight  : 400,
+                    maxWidth   : 600,
+                    autoclose  : false,
                     events     : {
-                        onSubmit: function (value) {
-                            self.$File.createFolder(value, function (Folder) {
+                        onSubmit: function (value, Win) {
+                            Win.Loader.show();
+
+                            self.$File.createFolder(value).then(function (Folder) {
+                                if (typeOf(Folder) == 'classes/projects/project/media/Folder') {
+                                    self.openID(Folder.getId());
+                                    Win.close();
+                                }
+                            }).catch(function (Exception) {
+                                // nicht erlaubte zeichen
+                                if (Exception.getCode() == 702) {
+                                    Win.close();
+                                    self.createFolderReplaceName(value);
+                                }
+                            });
+                        }
+                    }
+                }).open();
+            });
+        },
+
+        /**
+         *
+         *
+         * @method controls/projects/project/media/Panel#createFolderReplaceName
+         * @param {String} name
+         */
+        createFolderReplaceName: function (name) {
+            var self = this;
+
+            require(['qui/controls/windows/Confirm'], function (Confirm) {
+                new Confirm({
+                    title    : Locale.get(lg, 'projects.project.site.folder.createNewName.title'),
+                    text     : Locale.get(lg, 'projects.project.site.folder.createNewName.text'),
+                    icon     : 'fa fa-folder-open-o icon-folder-open-alt',
+                    texticon : 'fa fa-folder-open-o icon-folder-open-alt',
+                    maxHeight: 400,
+                    maxWidth : 600,
+                    autoclose: false,
+                    events   : {
+                        onOpen  : function (Win) {
+                            Win.Loader.show();
+
+                            Ajax.get('ajax_media_folder_stripName', function (newName) {
+
+                                Win.setAttribute('newName', newName);
+
+                                Win.setAttribute(
+                                    'information',
+                                    Locale.get(lg, 'projects.project.site.folder.createNewName.information', {
+                                        newName: newName
+                                    })
+                                );
+
+                                Win.Loader.hide();
+                            }, {
+                                name: name
+                            });
+                        },
+                        onSubmit: function (Win) {
+                            Win.Loader.show();
+
+                            var value = Win.getAttribute('newName');
+
+                            self.$File.createFolder(value).then(function (Folder) {
                                 if (typeOf(Folder) == 'classes/projects/project/media/Folder') {
                                     self.openID(Folder.getId());
                                 }
+
+                                Win.close();
+                            }).catch(function () {
+                                Win.close();
                             });
                         }
                     }
@@ -1580,7 +1674,7 @@ define('controls/projects/project/media/Panel', [
                 return true;
             }
 
-            return ( typeFound && mimeTypeFound );
+            return (typeFound && mimeTypeFound);
         },
 
         /**
@@ -1735,11 +1829,11 @@ define('controls/projects/project/media/Panel', [
                 }
 
             }).start({
-                    page: {
-                        x: mx,
-                        y: my
-                    }
-                });
+                page: {
+                    x: mx,
+                    y: my
+                }
+            });
         },
 
         /**

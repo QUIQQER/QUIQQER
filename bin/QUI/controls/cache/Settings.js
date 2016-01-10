@@ -15,8 +15,7 @@ define([
     'Ajax',
     'Locale'
 
-], function(QUI, QUIControl, QUIButton, Ajax, Locale)
-{
+], function (QUI, QUIControl, QUIButton, Ajax, Locale) {
     "use strict";
 
 
@@ -29,8 +28,7 @@ define([
             '$onImport'
         ],
 
-        initialize : function(Settings)
-        {
+        initialize : function (Settings) {
             this.$Settings = Settings;
 
             this.addEvents({
@@ -41,8 +39,7 @@ define([
         /**
          * event : on inject
          */
-        $onImport : function()
-        {
+        $onImport : function () {
             var self        = this,
                 ClearButton = this.$Elm.getElement('[name="clearCache"]'),
                 PurgeButton = this.$Elm.getElement('[name="purgeCache"]');
@@ -52,32 +49,30 @@ define([
                 textimage : 'fa fa-trash-o icon-trash',
                 events    :
                 {
-                    onClick : function(Btn)
-                    {
-                        Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
+                    onClick : function (Btn) {
+                        Btn.setAttribute('textimage', 'icon-refresh icon-spin');
 
-                        self.clear(function() {
-                            Btn.setAttribute( 'textimage', 'fa fa-trash-o icon-trash' );
+                        self.clear(function () {
+                            Btn.setAttribute('textimage', 'fa fa-trash-o icon-trash');
                         });
                     }
                 }
-            }).replaces( ClearButton );
+            }).replaces(ClearButton);
 
             new QUIButton({
                 text      : 'Cache säubern',
                 textimage : 'fa fa-paint-brush',
                 events    :
                 {
-                    onClick : function(Btn)
-                    {
-                        Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
+                    onClick : function (Btn) {
+                        Btn.setAttribute('textimage', 'icon-refresh icon-spin');
 
-                        self.purge(function() {
-                            Btn.setAttribute( 'textimage', 'fa fa-paint-brush' );
+                        self.purge(function () {
+                            Btn.setAttribute('textimage', 'fa fa-paint-brush');
                         });
                     }
                 }
-            }).replaces( PurgeButton );
+            }).replaces(PurgeButton);
         },
 
         /**
@@ -85,35 +80,31 @@ define([
          *
          * @param {Function} [callback] - (optional), callback function
          */
-        clear : function(callback)
-        {
+        clear : function (callback) {
             var params = {
                 plugins  : true,
                 compile  : true,
                 complete : true
             };
 
-            if ( this.$Elm )
-            {
-                params.compile  = this.$Elm.getElement( '[name="compile"]' ).checked;
-                params.plugins  = this.$Elm.getElement( '[name="plugins"]' ).checked;
-                params.complete	= this.$Elm.getElement( '[name="complete"]' ).checked;
+            if (this.$Elm) {
+                params.compile  = this.$Elm.getElement('[name="compile"]').checked;
+                params.plugins  = this.$Elm.getElement('[name="plugins"]').checked;
+                params.complete	= this.$Elm.getElement('[name="complete"]').checked;
             }
 
-            Ajax.get('ajax_system_cache_clear', function()
-            {
-                if ( typeof callback !== 'undefined' ) {
+            Ajax.get('ajax_system_cache_clear', function () {
+                if (typeof callback !== 'undefined') {
                     callback();
                 }
 
-                QUI.getMessageHandler(function(QUI)
-                {
+                QUI.getMessageHandler(function (QUI) {
                     QUI.addSuccess(
-                        Locale.get( 'quiqqer/system', 'message.clear.cache.successful' )
+                        Locale.get('quiqqer/system', 'message.clear.cache.successful')
                     );
                 });
             }, {
-                params : JSON.encode( params )
+                params : JSON.encode(params)
             });
         },
 
@@ -122,18 +113,15 @@ define([
          *
          * @param {Function} [callback] - (optional), callback function
          */
-        purge : function(callback)
-        {
-            Ajax.get('ajax_system_cache_purge', function()
-            {
-                if ( typeof callback !== 'undefined' ) {
+        purge : function (callback) {
+            Ajax.get('ajax_system_cache_purge', function () {
+                if (typeof callback !== 'undefined') {
                     callback();
                 }
 
-                QUI.getMessageHandler(function(QUI)
-                {
+                QUI.getMessageHandler(function (QUI) {
                     QUI.addSuccess(
-                        Locale.get( 'quiqqer/system', 'message.clear.cache.successful' )
+                        Locale.get('quiqqer/system', 'message.clear.cache.successful')
                     );
                 });
             });

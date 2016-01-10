@@ -1,4 +1,3 @@
-
 /**
  * QUI file download manager
  * For downloading files via the ajax API
@@ -12,9 +11,9 @@
  *
  * @example
  * require(['DownloadManager'], function(DownloadManager)
-   {
-        DownloadManager.download( 'ajax_downloadTest' );
-   })
+ {
+      DownloadManager.download( 'ajax_downloadTest' );
+ })
  */
 
 define('classes/request/Downloads', [
@@ -22,8 +21,7 @@ define('classes/request/Downloads', [
     'qui/classes/DOM',
     'Ajax'
 
-], function(DOM, Ajax)
-{
+], function (DOM, Ajax) {
     "use strict";
 
     /**
@@ -39,19 +37,16 @@ define('classes/request/Downloads', [
      */
     return new Class({
 
-        Extends : DOM,
-        Type    : 'classes/request/Downloads',
+        Extends: DOM,
+        Type   : 'classes/request/Downloads',
 
-        $Request : null,
-        $result  : null,
+        $Request: null,
+        $result : null,
 
-        options : {
+        options: {},
 
-        },
-
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize: function (options) {
+            this.parent(options);
             this.$frames = {};
         },
 
@@ -63,38 +58,36 @@ define('classes/request/Downloads', [
          * @params {String} request  - Request (Ajax) Function
          * @params {Object} [params] - extra GET params
          */
-        download : function(request, params)
-        {
+        download: function (request, params) {
             var self    = this,
                 frameId = String.uniqueID();
 
             params = params || {};
+
             params._frameId = frameId;
 
-            var url = Ajax.$url +'?'+ Ajax.parseParams(request, params );
+            var url = Ajax.$url + '?' + Ajax.parseParams(request, params);
 
-            this.$frames[ frameId ] = new Element('iframe', {
-                src    : url,
-                id     : frameId,
-                styles : {
-                    position : 'absolute',
-                    top      : -200,
-                    left     : -200,
-                    width    : 50,
-                    height   : 50
+            this.$frames[frameId] = new Element('iframe', {
+                src   : url,
+                id    : frameId,
+                styles: {
+                    position: 'absolute',
+                    top     : -200,
+                    left    : -200,
+                    width   : 50,
+                    height  : 50
                 },
-                events :
-                {
-                    load : function()
-                    {
-                        (function() {
-                            self.updateStatus( this.id );
-                        }).delay( 500, this );
+                events: {
+                    load: function () {
+                        (function () {
+                            self.updateStatus(this.id);
+                        }).delay(500, this);
                     }
                 }
             });
 
-            this.$frames[ frameId ].inject( document.body );
+            this.$frames[frameId].inject(document.body);
         },
 
         /**
@@ -102,13 +95,11 @@ define('classes/request/Downloads', [
          *
          * @method classes/request/Downloads#updateStatus
          */
-        updateStatus : function(frameId)
-        {
-            if ( frameId in this.$frames )
-            {
+        updateStatus: function (frameId) {
+            if (frameId in this.$frames) {
                 // dl fertig
-                this.$frames[ frameId ].destroy();
-                this.fireEvent( 'complete', [ this ] );
+                this.$frames[frameId].destroy();
+                this.fireEvent('complete', [this]);
             }
         }
     });

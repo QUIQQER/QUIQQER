@@ -25,8 +25,7 @@ define('controls/groups/Sitemap', [
     'Ajax',
     'Groups'
 
-], function(QUI, QUIControl, QUISitemap, QUISitemapItem, QUILocale, Ajax, Groups)
-{
+], function (QUI, QUIControl, QUISitemap, QUISitemapItem, QUILocale, Ajax, Groups) {
     "use strict";
 
     /**
@@ -54,13 +53,12 @@ define('controls/groups/Sitemap', [
         $Map       : null,
         $Container : null,
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize : function (options) {
+            this.parent(options);
 
             this.$Map = null;
 
-            this.addEvent( 'onDrawEnd', this.$onDrawEnd );
+            this.addEvent('onDrawEnd', this.$onDrawEnd);
         },
 
         /**
@@ -68,15 +66,14 @@ define('controls/groups/Sitemap', [
          *
          * @return {HTMLElement}
          */
-        create : function()
-        {
+        create : function () {
             var self = this;
 
-            this.$Elm = new Element( 'div.qui-group-sitemap' );
+            this.$Elm = new Element('div.qui-group-sitemap');
 
             this.$Map = new QUISitemap({
                 name     : 'Group-Sitemap',
-                multible : this.getAttribute( 'multible' )
+                multible : this.getAttribute('multible')
             });
 
             // Firstchild
@@ -97,12 +94,12 @@ define('controls/groups/Sitemap', [
                 })
             );
 
-            this.$Map.inject( this.$Elm );
+            this.$Map.inject(this.$Elm);
 
 
-            (function() {
+            (function () {
                 self.$onDrawEnd();
-            }).delay( 200 );
+            }).delay(200);
 
             return this.$Elm;
         },
@@ -110,16 +107,14 @@ define('controls/groups/Sitemap', [
         /**
          * the DOMNode is injected, then call the root group
          */
-        $onDrawEnd : function()
-        {
+        $onDrawEnd : function () {
             var First = this.$Map.firstChild();
 
             // load first child
-            Ajax.get('ajax_groups_root', function(result)
-            {
+            Ajax.get('ajax_groups_root', function (result) {
                 if (!result) {
 
-                    QUI.getMessageHandler().then(function(MH) {
+                    QUI.getMessageHandler().then(function (MH) {
                         MH.addAttention(
                             QUILocale.get('quiqqer/system', 'message.unknown.root.group')
                         );
@@ -148,22 +143,19 @@ define('controls/groups/Sitemap', [
          *
          * @param {Object} Parent - qui/controls/sitemap/Item
          */
-        getChildren : function(Parent)
-        {
-            Parent.removeIcon( 'icon-group' );
-            Parent.addIcon( 'icon-refresh icon-spin' );
+        getChildren : function (Parent) {
+            Parent.removeIcon('icon-group');
+            Parent.addIcon('icon-refresh icon-spin');
 
             var self  = this,
-                Group = Groups.get( Parent.getAttribute('value') );
+                Group = Groups.get(Parent.getAttribute('value'));
 
-            Group.getChildren(function(result)
-            {
+            Group.getChildren(function (result) {
                 var i, len, entry;
 
                 Parent.clearChildren();
 
-                for ( i = 0, len = result.length; i < len; i++ )
-                {
+                for (i = 0, len = result.length; i < len; i++) {
                     entry = result[i];
 
                     Parent.appendChild(
@@ -185,8 +177,8 @@ define('controls/groups/Sitemap', [
                     );
                 }
 
-                Parent.removeIcon( 'icon-refresh' );
-                Parent.addIcon( 'icon-group' );
+                Parent.removeIcon('icon-refresh');
+                Parent.addIcon('icon-group');
             });
         },
 
@@ -195,17 +187,15 @@ define('controls/groups/Sitemap', [
          *
          * @return {Array}
          */
-        getValues : function()
-        {
+        getValues : function () {
             var i, len;
 
             var sels   = this.$Map.getSelectedChildren(),
                 result = [];
 
-            for ( i = 0, len = sels.length; i < len; i++ )
-            {
+            for (i = 0, len = sels.length; i < len; i++) {
                 result.push(
-                    sels[ i ].getAttribute( 'value' )
+                    sels[ i ].getAttribute('value')
                 );
             }
 
@@ -217,9 +207,8 @@ define('controls/groups/Sitemap', [
          *
          * @param {Object} Item - qui/controls/sitemap/Item
          */
-        $onItemClick : function(Item)
-        {
-            this.fireEvent( 'onItemClick', [ this, Item ] );
+        $onItemClick : function (Item) {
+            this.fireEvent('onItemClick', [this, Item]);
         },
 
         /**
@@ -227,9 +216,8 @@ define('controls/groups/Sitemap', [
          *
          * @param {Object} Item - qui/controls/sitemap/Item
          */
-        $onItemDblClick : function(Item)
-        {
-            this.fireEvent( 'onItemDblClick', [ this, Item ] );
+        $onItemDblClick : function (Item) {
+            this.fireEvent('onItemDblClick', [this, Item]);
         }
     });
 });

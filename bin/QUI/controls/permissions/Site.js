@@ -6,15 +6,17 @@
  *
  * @require controls/permissions/Permission
  * @require qui/controls/buttons/Button
+ * @require qui/controls/windows/Confirm
  * @require Locale
  */
 define('controls/permissions/Site', [
 
     'controls/permissions/Permission',
     'qui/controls/buttons/Button',
+    'qui/controls/windows/Confirm',
     'Locale'
 
-], function (Permission, QUIButton, QUILocale) {
+], function (Permission, QUIButton, QUIConfirm, QUILocale) {
     "use strict";
 
     return new Class({
@@ -88,9 +90,23 @@ define('controls/permissions/Site', [
          * event on open
          */
         $onOpen: function () {
+
+            new QUIButton({
+                title    : QUILocale.get('quiqqer/system', 'permission.control.btn.site.save.recursive'),
+                textimage: 'icon-reply-all fa fa-reply-all',
+                styles   : {
+                    'float': 'right'
+                },
+                events   : {
+                    onClick: function () {
+                        this.openSetRecursiveDialog();
+                    }.bind(this)
+                }
+            }).inject(this.$Buttons);
+
             new QUIButton({
                 text     : QUILocale.get('quiqqer/system', 'permission.control.btn.site.save'),
-                title    : QUILocale.get('quiqqer/system', 'permission.control.btn.site.save'),
+                title    : QUILocale.get('quiqqer/system', 'permission.control.btn.site.save.text'),
                 textimage: 'icon-save',
                 styles   : {
                     'float': 'right'
@@ -146,6 +162,83 @@ define('controls/permissions/Site', [
                     );
                 });
             }
+        },
+
+        /**
+         * Opens the set recursive dialog
+         */
+        openSetRecursiveDialog: function () {
+            var self = this;
+
+            new QUIConfirm({
+                title      : QUILocale.get('quiqqer/system', 'permission.control.site.recursive.win.title'),
+                icon       : 'icon-reply-all fa fa-reply-all',
+                maxHeight  : 300,
+                maxWidth   : 450,
+                texticon   : false,
+                text       : QUILocale.get('quiqqer/system', 'permission.control.site.recursive.win.text'),
+                information: QUILocale.get('quiqqer/system', 'permission.control.site.recursive.win.information'),
+
+                cancel_button: {
+                    text     : QUILocale.get('quiqqer/system', 'cancel'),
+                    textimage: 'icon-remove fa fa-remove'
+                },
+                ok_button    : {
+                    text     : QUILocale.get('quiqqer/system', 'accept'),
+                    textimage: 'icon-ok fa fa-check'
+                },
+
+                events: {
+                    onSubmit: function (Win) {
+                        Win.Loader.show();
+
+                        self.setRecursive().then(function () {
+                            Win.close();
+                        });
+                    }
+                }
+            }).open();
+        },
+
+        /**
+         *
+         * @returns {Promise}
+         */
+        setRecursive: function () {
+            var self = this;
+
+            return new Promise(function (resolve, reject) {
+
+                require([
+                    'Ajax',
+                    'utils/permissions/Utils'
+                ], function (Ajax, PermUtils) {
+
+                    var Site    = self.$Bind,
+                        Project = Site.getProject();
+
+                    self.save().then(function () {
+
+                        PermUtils.Permissions.getSitePermissionList(Site).then(function (data) {
+
+                            Ajax.post('ajax_permissions_recursive', function () {
+                                resolve();
+                            }, {
+                                params     : JSON.encode({
+                                    project: Project.getName(),
+                                    lang   : Project.getLang(),
+                                    id     : Site.getId()
+                                }),
+                                btype      : Site.getType(),
+                                permissions: JSON.encode(data),
+                                onError    : reject
+                            });
+                        });
+
+                    }).catch(reject);
+
+                }, reject);
+            });
         }
     });
 });

@@ -15,8 +15,7 @@ define('controls/permissions/Panel', [
     'qui/controls/desktop/Panel',
     'Locale'
 
-], function(QUI, QUIPanel, QUILocale)
-{
+], function (QUI, QUIPanel, QUILocale) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -40,8 +39,7 @@ define('controls/permissions/Panel', [
             Object : false
         },
 
-        initialize : function(options)
-        {
+        initialize : function (options) {
             this.setAttribute(
                 'title',
                 QUILocale.get(lg, 'permissions.panel.title')
@@ -54,7 +52,7 @@ define('controls/permissions/Panel', [
 
             this.addEvents({
                 onCreate : this.$onCreate,
-                onDestroy : function() {
+                onDestroy : function () {
                     if (this.$PermissionControl) {
                         this.$PermissionControl.destroy();
                     }
@@ -65,8 +63,7 @@ define('controls/permissions/Panel', [
         /**
          * event : on create
          */
-        $onCreate : function()
-        {
+        $onCreate : function () {
             this.addCategory({
                 name   : 'user',
                 text   : QUILocale.get(lg, 'permissions.panel.btn.select.user'),
@@ -145,14 +142,11 @@ define('controls/permissions/Panel', [
          *
          * @returns {Promise}
          */
-        openWelcomeMessage : function()
-        {
+        openWelcomeMessage : function () {
             var self = this;
 
-            return new Promise(function(resolve)
-            {
-                self.$closeLastPermissionControl().then(function ()
-                {
+            return new Promise(function (resolve) {
+                self.$closeLastPermissionControl().then(function () {
                     var Container = new Element('div', {
                         'class' : 'controls-prmissions-panel-welcome',
                         html : QUILocale.get(lg, 'permissions.panel.welcome.message'),
@@ -171,13 +165,13 @@ define('controls/permissions/Panel', [
                     }, {
                         duration : 250,
                         equation : 'ease-in-out',
-                        callback : function() {
+                        callback : function () {
 
                             self.getCategoryBar()
                                 .getChildren()
-                                .each(function(Category) {
+                                .each(function (Category) {
                                     Category.setNormal();
-                            });
+                                });
 
                             resolve();
                         }
@@ -191,8 +185,7 @@ define('controls/permissions/Panel', [
          *
          * @param {Object} [User] - classes/users/User
          */
-        openUserPermissions : function(User)
-        {
+        openUserPermissions : function (User) {
             this.$openPermissionControl(User, 'user');
         },
 
@@ -201,8 +194,7 @@ define('controls/permissions/Panel', [
          *
          * @param {Object} [Group] - classes/groups/Group
          */
-        openGroupPermissions : function(Group)
-        {
+        openGroupPermissions : function (Group) {
             this.$openPermissionControl(Group, 'group');
         },
 
@@ -211,8 +203,7 @@ define('controls/permissions/Panel', [
          *
          * @param {Object} [Site] - classes/projects/project/Site
          */
-        openSitePermissions : function(Site)
-        {
+        openSitePermissions : function (Site) {
             this.$openPermissionControl(Site, 'site');
         },
 
@@ -221,16 +212,14 @@ define('controls/permissions/Panel', [
          *
          * @param {Object} [Project] - classes/projects/Project
          */
-        openProjectPermissions : function(Project)
-        {
+        openProjectPermissions : function (Project) {
             this.$openPermissionControl(Project, 'project');
         },
 
         /**
          * Permission edit
          */
-        openEditPermissions : function()
-        {
+        openEditPermissions : function () {
             this.$openPermissionControl(null, 'edit');
         },
 
@@ -240,8 +229,7 @@ define('controls/permissions/Panel', [
          * @param {Object} Bind - Bind object eq: classes/projects/Project, classes/projects/project/Site ...
          * @param {String} type
          */
-        $openPermissionControl : function(Bind, type)
-        {
+        $openPermissionControl : function (Bind, type) {
             if (typeof Bind === 'undefined') {
                 Bind = this.getAttribute('Bind');
             }
@@ -249,9 +237,8 @@ define('controls/permissions/Panel', [
             var self = this,
                 Bar  = this.getCategoryBar();
 
-            self.$closeLastPermissionControl().then(function()
-            {
-                return new Promise(function(resolve, reject) {
+            self.$closeLastPermissionControl().then(function () {
+                return new Promise(function (resolve, reject) {
 
                     self.Loader.show();
 
@@ -293,9 +280,9 @@ define('controls/permissions/Panel', [
                         Button.setActive();
                     }
 
-                    require([needle], function(Permission) {
+                    require([needle], function (Permission) {
 
-                        self.minimizeCategory().then(function() {
+                        self.minimizeCategory().then(function () {
 
                             self.$PermissionControl = new Permission(Bind, {
                                 events : {
@@ -309,8 +296,7 @@ define('controls/permissions/Panel', [
                     });
                 });
 
-            }).catch(function()
-            {
+            }).catch(function () {
                 self.openWelcomeMessage();
             });
         },
@@ -320,15 +306,14 @@ define('controls/permissions/Panel', [
          *
          * @returns {Promise}
          */
-        $closeLastPermissionControl : function()
-        {
+        $closeLastPermissionControl : function () {
             var Welcome = this.getContent().getElement(
                 '.controls-prmissions-panel-welcome'
             );
 
             if (Welcome) {
 
-                return new Promise(function(resolved) {
+                return new Promise(function (resolved) {
 
                     moofx(Welcome).animate({
                         left : '-100%',
@@ -336,7 +321,7 @@ define('controls/permissions/Panel', [
                     }, {
                         duration : 250,
                         equation : 'ease-in-out',
-                        callback : function() {
+                        callback : function () {
 
                             Welcome.destroy();
 
@@ -353,14 +338,14 @@ define('controls/permissions/Panel', [
 
             if (this.$PermissionControl) {
 
-                return this.$PermissionControl.close().then(function() {
+                return this.$PermissionControl.close().then(function () {
                     this.$PermissionControl = null;
                     this.getContent().set('html');
                 }.bind(this));
 
             }
 
-            return new Promise(function(resolved) {
+            return new Promise(function (resolved) {
 
                 this.$PermissionControl = null;
                 this.getContent().set('html');

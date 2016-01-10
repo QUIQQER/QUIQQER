@@ -23,19 +23,19 @@ class Manager
      *
      * @return string
      */
-    static function Table()
+    public static function TABLE()
     {
-        return QUI_DB_PRFX.'users_workspaces';
+        return QUI_DB_PRFX . 'users_workspaces';
     }
 
     /**
      * Setup for the user workespaces
      */
-    static function setup()
+    public static function setup()
     {
         $Table = QUI::getDataBase()->Table();
 
-        $Table->appendFields(self::Table(), array(
+        $Table->appendFields(self::TABLE(), array(
             'id'        => 'int(11) NOT NULL',
             'uid'       => 'int(11) NOT NULL',
             'title'     => 'text',
@@ -45,28 +45,28 @@ class Manager
             'standard'  => 'int(1)'
         ));
 
-        $Table->setAutoIncrement(self::Table(), 'id');
-        $Table->setPrimaryKey(self::Table(), 'id');
+        $Table->setAutoIncrement(self::TABLE(), 'id');
+        $Table->setPrimaryKey(self::TABLE(), 'id');
     }
 
     /**
      * Add a workspace
      *
      * @param \QUI\USers\User $User
-     * @param String          $title     - title of the workspace
-     * @param String          $data      - Workspace profile
-     * @param Integer         $minHeight - minimum height of the workspace
-     * @param Integer         $minWidth  - minimum width of the workspace
+     * @param string $title - title of the workspace
+     * @param string $data - Workspace profile
+     * @param integer $minHeight - minimum height of the workspace
+     * @param integer $minWidth - minimum width of the workspace
      *
-     * @return Integer - new Workspace ID
+     * @return integer - new Workspace ID
      */
-    static function addWorkspace($User, $title, $data, $minHeight, $minWidth)
+    public static function addWorkspace($User, $title, $data, $minHeight, $minWidth)
     {
-        $title = Orthos::clear($title);
+        $title     = Orthos::clear($title);
         $minHeight = (int)$minHeight;
-        $minWidth = (int)$minWidth;
+        $minWidth  = (int)$minWidth;
 
-        QUI::getDataBase()->insert(self::Table(), array(
+        QUI::getDataBase()->insert(self::TABLE(), array(
             'uid'       => $User->getId(),
             'title'     => $title,
             'data'      => $data,
@@ -80,12 +80,12 @@ class Manager
     /**
      * Delete a workspace
      *
-     * @param Integer         $id   - Workspace ID
+     * @param integer $id - Workspace ID
      * @param \QUI\Users\User $User - User of the Workspace
      */
-    static function deleteWorkspace($id, $User)
+    public static function deleteWorkspace($id, $User)
     {
-        QUI::getDataBase()->delete(self::Table(), array(
+        QUI::getDataBase()->delete(self::TABLE(), array(
             'uid' => $User->getId(),
             'id'  => (int)$id
         ));
@@ -96,12 +96,12 @@ class Manager
      *
      * @param \QUI\Users\User $User
      *
-     * @return Array
+     * @return array
      */
-    static function getWorkspacesByUser(QUI\Users\User $User)
+    public static function getWorkspacesByUser(QUI\Users\User $User)
     {
         $result = QUI::getDataBase()->fetch(array(
-            'from'  => self::Table(),
+            'from'  => self::TABLE(),
             'where' => array(
                 'uid' => $User->getId()
             )
@@ -115,15 +115,15 @@ class Manager
      *
      * @throws \QUI\Exception
      *
-     * @param Integer         $id - id of the workspace
+     * @param integer $id - id of the workspace
      * @param \QUI\Users\User $User
      *
-     * @return Array
+     * @return array
      */
-    static function getWorkspaceById($id, $User)
+    public static function getWorkspaceById($id, $User)
     {
         $result = QUI::getDataBase()->fetch(array(
-            'from'  => self::Table(),
+            'from'  => self::TABLE(),
             'where' => array(
                 'id'  => $id,
                 'uid' => $User->getId()
@@ -149,12 +149,12 @@ class Manager
      *
      * @param \QUI\Users\User $User
      *
-     * @return Array
+     * @return array
      */
-    static function getWorkspacesTitlesByUser(QUI\Users\User $User)
+    public static function getWorkspacesTitlesByUser(QUI\Users\User $User)
     {
         $workspaces = self::getWorkspacesByUser($User);
-        $result = array();
+        $result     = array();
 
         foreach ($workspaces as $entry) {
             $result[] = $entry['title'];
@@ -167,10 +167,10 @@ class Manager
      * Saves a workspace
      *
      * @param \QUI\Users\User $User
-     * @param Integer         $id
-     * @param Array           $data
+     * @param integer $id
+     * @param array $data
      */
-    static function saveWorkspace(QUI\Users\User $User, $id, $data = array())
+    public static function saveWorkspace(QUI\Users\User $User, $id, $data = array())
     {
         $workspace = self::getWorkspaceById($id, $User);
 
@@ -187,7 +187,7 @@ class Manager
         }
 
         if (isset($data['data'])) {
-            $data['data'] = json_decode($data['data'], true);
+            $data['data']      = json_decode($data['data'], true);
             $workspace['data'] = json_encode($data['data']);
         }
 
@@ -210,20 +210,20 @@ class Manager
      * Set the workspace to the standard workspace
      *
      * @param \QUI\Users\User $User
-     * @param Integer         $id
+     * @param integer $id
      */
-    static function setStandardWorkspace(QUI\Users\User $User, $id)
+    public static function setStandardWorkspace(QUI\Users\User $User, $id)
     {
         // all to no standard
         QUI::getDataBase()->update(
-            self::Table(),
+            self::TABLE(),
             array('standard' => 0),
             array('uid' => $User->getId())
         );
 
         // standard
         QUI::getDataBase()->update(
-            self::Table(),
+            self::TABLE(),
             array('standard' => 1),
             array(
                 'id'  => $id,
@@ -235,9 +235,9 @@ class Manager
     /**
      * Return the available panels
      *
-     * @return Array
+     * @return array
      */
-    static function getAvailablePanels()
+    public static function getAvailablePanels()
     {
         $cache = 'quiqqer/panels/list';
 
@@ -245,11 +245,10 @@ class Manager
             return QUI\Cache\Manager::get($cache);
 
         } catch (QUI\Exception $Exception) {
-
         }
 
-        $panels = array();
-        $xmlFiles = array(SYS_DIR.'panels.xml');
+        $panels   = array();
+        $xmlFiles = array(SYS_DIR . 'panels.xml');
 
         foreach ($xmlFiles as $file) {
             $panels = array_merge(

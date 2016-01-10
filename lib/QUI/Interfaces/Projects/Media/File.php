@@ -22,7 +22,7 @@ interface File
     /**
      * Return the file media ID
      *
-     * @return Integer
+     * @return integer
      */
     public function getId();
 
@@ -36,7 +36,7 @@ interface File
     /**
      * Return the parent id
      *
-     * @return Integer
+     * @return integer
      */
     public function getParentId();
 
@@ -50,21 +50,21 @@ interface File
     /**
      * Return the path from the file
      *
-     * @return String
+     * @return string
      */
     public function getPath();
 
     /**
      * Return what type is the file
      *
-     * @return String - \QUI\Projects\Media\Image | \QUI\Projects\Media\Folder | \QUI\Projects\Media\File
+     * @return string - \QUI\Projects\Media\Image | \QUI\Projects\Media\Folder | \QUI\Projects\Media\File
      */
     public function getType();
 
     /**
      * Return the URL of the File, relative to the host
      *
-     * @return String
+     * @return string
      */
     public function getUrl();
 
@@ -99,7 +99,7 @@ interface File
     /**
      * Renames the file
      *
-     * @param String $newname - new name of the file
+     * @param string $newname - new name of the file
      *
      * @throws \QUI\Exception
      */

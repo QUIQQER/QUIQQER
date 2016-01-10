@@ -15,8 +15,7 @@ define('controls/desktop/panels/Help', [
     'qui/controls/desktop/Panel',
     'qui/controls/buttons/Button'
 
-], function(QUI, QUIPanel, QUIButton)
-{
+], function (QUI, QUIPanel, QUIButton) {
     "use strict";
 
     return new Class({
@@ -29,14 +28,13 @@ define('controls/desktop/panels/Help', [
             '$onResize'
         ],
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize : function (options) {
+            this.parent(options);
 
             this.$Frame = null;
 
-            this.setAttribute( 'title', 'QUIQQER-Hilfe' ); // #locale
-            this.setAttribute( 'icon', 'fa fa-h-square icon-h-sign' );
+            this.setAttribute('title', 'QUIQQER-Hilfe'); // #locale
+            this.setAttribute('icon', 'fa fa-h-square icon-h-sign');
 
             this.addEvents({
                 onCreate : this.$onCreate,
@@ -47,8 +45,7 @@ define('controls/desktop/panels/Help', [
         /**
          * event : on create
          */
-        $onCreate : function()
-        {
+        $onCreate : function () {
             var self    = this,
                 Content = this.getContent();
 
@@ -68,19 +65,18 @@ define('controls/desktop/panels/Help', [
                 },
                 events :
                 {
-                    onClick : function() {
+                    onClick : function () {
                         self.load();
                     }
                 }
-            }).inject( Content );
+            }).inject(Content);
         },
 
         /**
          * event : on resize
          */
-        $onResize : function()
-        {
-            if ( !this.$Frame ) {
+        $onResize : function () {
+            if (!this.$Frame) {
                 return;
             }
 
@@ -89,19 +85,18 @@ define('controls/desktop/panels/Help', [
 
             this.$Frame.setStyles({
                 height : size.y - 4,
-                width  : '100%',
+                width  : '100%'
             });
         },
 
         /**
          * load the help
          */
-        load : function()
-        {
+        load : function () {
             var self    = this,
                 Content = this.getContent();
 
-            Content.set( 'html', '' );
+            Content.set('html', '');
 
             this.Loader.show();
 
@@ -112,29 +107,25 @@ define('controls/desktop/panels/Help', [
                 },
                 frameborder : 0,
                 border: 0
-            }).inject( Content );
+            }).inject(Content);
 
             // check if frame is loaded
-            var inter = window.setInterval(function()
-            {
-                try
-                {
-                    if ( self.$Frame.contentWindow.document.readyState === "complete" )
-                    {
-                        window.clearInterval( inter );
+            var inter = window.setInterval(function () {
+                try {
+                    if (self.$Frame.contentWindow.document.readyState === "complete") {
+                        window.clearInterval(inter);
                         self.Loader.hide();
                     }
-                } catch ( e )
-                {
-                    window.clearInterval( inter );
+                } catch (e) {
+                    window.clearInterval(inter);
                     self.Loader.hide();
                 }
             }, 100);
 
             // fallback
-            (function() {
+            (function () {
                 self.Loader.hide();
-            }).delay( 10000 );
+            }).delay(10000);
 
             this.resize();
         }

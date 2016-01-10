@@ -33,107 +33,107 @@ class Project
     /**
      * The project site table
      *
-     * @var String
+     * @var string
      */
-    private $_TABLE;
+    private $TABLE;
 
     /**
      * The project site relation table
      *
-     * @var String
+     * @var string
      */
-    private $_RELTABLE;
+    private $RELTABLE;
 
     /**
      * The project site relation language table
      *
-     * @var String
+     * @var string
      */
-    private $_RELLANGTABLE;
+    private $RELLANGTABLE;
 
     /**
      * configuration
      *
      * @var array
      */
-    private $_config;
+    private $config;
 
     /**
      * project name
      *
-     * @var String
+     * @var string
      */
-    private $_name;
+    private $name;
 
     /**
      * Project language
      *
-     * @var String
+     * @var string
      */
-    private $_lang;
+    private $lang;
 
     /**
      * default language
      *
-     * @var String
+     * @var string
      */
-    private $_default_lang;
+    private $default_lang;
 
     /**
      * All languages of the project
      *
      * @var array
      */
-    private $_langs;
+    private $langs;
 
     /**
      * template of the project
      *
      * @var array
      */
-    private $_template;
+    private $template;
 
     /**
      * layout of the project
      *
      * @var array
      */
-    private $_layout = '';
+    private $layout = '';
 
     /**
      * loaded sites
      *
      * @var array
      */
-    private $_children = array();
+    private $children = array();
 
     /**
      * loaded edit_sites
      *
      * @var array
      */
-    private $_children_tmp = array();
+    private $children_tmp = array();
 
     /**
      * first child
      *
      * @var \QUI\Projects\Site
      */
-    private $_firstchild = null;
+    private $firstchild = null;
 
     /**
      * caching files
      *
      * @var array
      */
-    protected $_cache_files = array();
+    protected $cache_files = array();
 
     /**
      * Konstruktor eines Projektes
      *
-     * @param String $name - Name of the Project
-     * @param string|bool $lang - (optional) Language of the Project - optional
-     * @param string|bool $template - (optional) Template of the Project
+     * @param string $name - Name of the Project
+     * @param string|boolean $lang - (optional) Language of the Project - optional
+     * @param string|boolean $template - (optional) Template of the Project
      *
      * @throws QUI\Exception
      */
@@ -154,11 +154,11 @@ class Project
             );
         }
 
-        $this->_config = $config[$name];
-        $this->_name   = $name;
+        $this->config = $config[$name];
+        $this->name   = $name;
 
         // Langs
-        if (!isset($this->_config['langs'])) {
+        if (!isset($this->config['langs'])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
@@ -168,10 +168,10 @@ class Project
             );
         }
 
-        $this->_langs = explode(',', $this->_config['langs']);
+        $this->langs = explode(',', $this->config['langs']);
 
         // Default Lang
-        if (!isset($this->_config['default_lang'])) {
+        if (!isset($this->config['default_lang'])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
@@ -181,15 +181,15 @@ class Project
             );
         }
 
-        $this->_default_lang = $this->_config['default_lang'];
+        $this->default_lang = $this->config['default_lang'];
 
-        if (isset($this->_config['layout'])) {
-            $this->_layout = $this->_config['layout'];
+        if (isset($this->config['layout'])) {
+            $this->layout = $this->config['layout'];
         }
 
         // Sprache
         if ($lang != false) {
-            if (!in_array($lang, $this->_langs)) {
+            if (!in_array($lang, $this->langs)) {
                 throw new QUI\Exception(
                     QUI::getLocale()->get(
                         'quiqqer/system',
@@ -202,11 +202,11 @@ class Project
                 );
             }
 
-            $this->_lang = $lang;
+            $this->lang = $lang;
 
         } else {
             // Falls keine Sprache angegeben wurde wird die Standardsprache verwendet
-            if (!isset($this->_config['default_lang'])) {
+            if (!isset($this->config['default_lang'])) {
                 throw new QUI\Exception(
                     QUI::getLocale()->get(
                         'quiqqer/system',
@@ -216,14 +216,14 @@ class Project
                 );
             }
 
-            $this->_lang = $this->_config['default_lang'];
+            $this->lang = $this->config['default_lang'];
         }
 
         // Template
         if ($template === false) {
-            $this->_template = $config[$name]['template'];
+            $this->template = $config[$name]['template'];
         } else {
-            $this->_template = $template;
+            $this->template = $template;
         }
 
         // vhosts
@@ -244,26 +244,26 @@ class Project
                 continue;
             }
 
-            if ($vhost['lang'] == $this->_lang
-                && $vhost['project'] == $this->_name
+            if ($vhost['lang'] == $this->lang
+                && $vhost['project'] == $this->name
             ) {
-                $this->_config['vhost'] = $host;
+                $this->config['vhost'] = $host;
 
                 if (isset($vhost['layout'])) {
-                    $this->_layout = $vhost['layout'];
+                    $this->layout = $vhost['layout'];
                 }
             }
         }
 
         // tabellen setzen
-        $this->_TABLE        = QUI_DB_PRFX . $this->_name . '_' . $this->_lang . '_sites';
-        $this->_RELTABLE     = QUI_DB_PRFX . $this->_TABLE . '_relations';
-        $this->_RELLANGTABLE = QUI_DB_PRFX . $this->_name . '_multilingual';
+        $this->TABLE        = QUI_DB_PRFX . $this->name . '_' . $this->lang . '_sites';
+        $this->RELTABLE     = QUI_DB_PRFX . $this->TABLE . '_relations';
+        $this->RELLANGTABLE = QUI_DB_PRFX . $this->name . '_multilingual';
 
 
         // cache files
-        $this->_cache_files = array(
-            'types'  => 'projects.' . $this->getAttribute('name') . '.types',
+        $this->cache_files = array(
+            'types' => 'projects.' . $this->getAttribute('name') . '.types',
             'gtypes' => 'projects.' . $this->getAttribute('name') . '.globaltypes'
         );
     }
@@ -273,18 +273,18 @@ class Project
      */
     public function __destruct()
     {
-        unset($this->_config);
-        unset($this->_children_tmp);
+        unset($this->config);
+        unset($this->children_tmp);
     }
 
     /**
-     * ToString
+     * Tostring
      *
-     * @return String
+     * @return string
      */
     public function __toString()
     {
-        return 'Object ' . get_class($this) . '(' . $this->_name . ',' . $this->_lang . ')';
+        return 'Object ' . get_class($this) . '(' . $this->name . ',' . $this->lang . ')';
     }
 
     /**
@@ -313,28 +313,28 @@ class Project
     /**
      * Return the project name
      *
-     * @return String
+     * @return string
      */
     public function getName()
     {
-        return $this->_name;
+        return $this->name;
     }
 
     /**
      * Return the project lang
      *
-     * @return String
+     * @return string
      */
     public function getLang()
     {
-        return $this->_lang;
+        return $this->lang;
     }
 
     /**
      * Return the project title
      * Locale->get('project/NAME', 'title') or getName()
      *
-     * @return String
+     * @return string
      */
     public function getTitle()
     {
@@ -351,7 +351,8 @@ class Project
      * Durchsucht das Projekt nach Seiten
      *
      * @param string $search - Suchwort
-     * @param array|bool $select - (optional) in welchen Feldern gesucht werden soll array('name', 'title', 'short', 'content')
+     * @param array|boolean $select - (optional) in welchen Feldern gesucht werden soll
+     *                                array('name', 'title', 'short', 'content')
      *
      * @return array
      */
@@ -401,58 +402,12 @@ class Project
     }
 
     /**
-     * Rechteprüfung
-     *
-     * @return Bool
-     * @deprecated
-     */
-    protected function _checkRights()
-    {
-        if (!defined('ADMIN')) {
-            return true;
-        }
-
-        // Falls keine Rechte gesetzt sind
-        if (!$this->getConfig('rights')) {
-            return true;
-        }
-
-        $User = QUI::getUsers()->getUserBySession();
-
-        if (!$User->getId()) {
-            return false;
-        }
-
-        $Groups   = $User->getGroups();
-        $children = array();
-
-        foreach ($Groups as $Group) {
-            /* @var $Group QUI\Groups\Group */
-            $childids   = $Group->getChildrenIds(true);
-            $childids[] = $Group->getId();
-
-            $children = array_merge($children, $childids);
-        }
-
-        $rights = explode(',', trim($this->getConfig('rights'), ','));
-
-        foreach ($children as $child) {
-            if (in_array($child, $rights)) {
-                return true;
-                break;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * VHost zurück geben
      *
-     * @param Bool $with_protocol - Mit oder ohne http -> standard = ohne
-     * @param Bool $ssl - mit oder ohne ssl
+     * @param boolean $with_protocol - Mit oder ohne http -> standard = ohne
+     * @param boolean $ssl - mit oder ohne ssl
      *
-     * @return Bool | String
+     * @return boolean | string
      */
     public function getVHost($with_protocol = false, $ssl = false)
     {
@@ -487,52 +442,52 @@ class Project
     /**
      * Namen des Projektes
      *
-     * @param String $att -
+     * @param string $att -
      *                    name = Name des Projectes
      *                    lang = Aktuelle Sprache
      *                    db_table = Standard Datebanktabelle
      *
-     * @return String|false
+     * @return string|false
      */
     public function getAttribute($att)
     {
         switch ($att) {
             case "name":
-                return $this->_name;
+                return $this->name;
                 break;
 
             case "config":
-                return $this->_config;
+                return $this->config;
                 break;
 
             case "lang":
-                return $this->_lang;
+                return $this->lang;
                 break;
 
             case "default_lang":
-                return $this->_default_lang;
+                return $this->default_lang;
                 break;
 
             case "langs":
-                return $this->_langs;
+                return $this->langs;
                 break;
 
             case "template":
-                return $this->_template;
+                return $this->template;
                 break;
 
             case "layout":
-                return $this->_layout;
+                return $this->layout;
                 break;
 
             case "db_table":
                 # Anzeigen demo_de_sites
-                return $this->_name . '_' . $this->_lang . '_sites';
+                return $this->name . '_' . $this->lang . '_sites';
                 break;
 
             case "media_table":
                 # Anzeigen demo_de_sites
-                return $this->_name . '_de_media';
+                return $this->name . '_de_media';
                 break;
 
             case "e_date":
@@ -548,18 +503,18 @@ class Project
     /**
      * Gibt die gesuchte Einstellung vom Projekt zurück
      *
-     * @param string|bool $name - name of the config, default = false, returns complete configs
+     * @param string|boolean $name - name of the config, default = false, returns complete configs
      *
-     * @return false|String|Array
+     * @return false|string|array
      */
     public function getConfig($name = false)
     {
         if (!$name) {
-            return $this->_config;
+            return $this->config;
         }
 
-        if (isset($this->_config[$name])) {
-            return $this->_config[$name];
+        if (isset($this->config[$name])) {
+            return $this->config[$name];
         }
 
         // default Werte
@@ -579,16 +534,16 @@ class Project
     /**
      * Gibt den allgemein gültigen Host vom Projekt zurück
      *
-     * @return String
+     * @return string
      */
     public function getHost()
     {
-        if (isset($this->_config['vhost'])) {
-            return $this->_config['vhost'];
+        if (isset($this->config['vhost'])) {
+            return $this->config['vhost'];
         }
 
-        if (isset($this->_config['host'])) {
-            return $this->_config['host'];
+        if (isset($this->config['host'])) {
+            return $this->config['host'];
         }
 
         $host = QUI::conf('globals', 'host');
@@ -613,16 +568,16 @@ class Project
     /**
      * Gibt alle Attribute vom Projekt zurück
      *
-     * @return Array
+     * @return array
      */
     public function getAllAttributes()
     {
         return array(
-            'config'  => $this->_config,
-            'lang'    => $this->_lang,
-            'langs'   => $this->_langs,
-            'name'    => $this->_name,
-            'sheets'  => $this->getConfig('sheets'),
+            'config' => $this->config,
+            'lang' => $this->lang,
+            'langs' => $this->langs,
+            'name' => $this->name,
+            'sheets' => $this->getConfig('sheets'),
             'archive' => $this->getConfig('archive')
         );
     }
@@ -630,24 +585,24 @@ class Project
     /**
      * Erste Seite des Projektes
      *
-     * @$pluginload Bool
+     * @$pluginload boolean
      *
      * @return Site
      */
     public function firstChild()
     {
-        if (is_null($this->_firstchild)) {
-            $this->_firstchild = $this->get(1);
+        if ($this->firstchild === null) {
+            $this->firstchild = $this->get(1);
         }
 
-        return $this->_firstchild;
+        return $this->firstchild;
     }
 
     /**
      * Leert den Cache des Objektes
      *
-     * @param Bool $link - Link Cache löschen
-     * @param Bool $site - Site Cache löschen
+     * @param boolean $link - Link Cache löschen
+     * @param boolean $site - Site Cache löschen
      *
      * @todo muss überarbeitet werden
      */
@@ -671,7 +626,7 @@ class Project
             }
         }
 
-        foreach ($this->_cache_files as $cache) {
+        foreach ($this->cache_files as $cache) {
             QUI\Cache\Manager::clear($cache);
         }
     }
@@ -679,7 +634,7 @@ class Project
     /**
      * Eine Seite bekommen
      *
-     * @param Integer $id - ID der Seite
+     * @param integer $id - ID der Seite
      *
      * @return Site|Site\Edit
      */
@@ -689,12 +644,12 @@ class Project
             return new Site\Edit($this, (int)$id);
         }
 
-        if (isset($this->_children[$id])) {
-            return $this->_children[$id];
+        if (isset($this->children[$id])) {
+            return $this->children[$id];
         }
 
         $Site                 = new Site($this, (int)$id);
-        $this->_children[$id] = $Site;
+        $this->children[$id] = $Site;
 
         return $Site;
     }
@@ -702,20 +657,20 @@ class Project
     /**
      * Name einer bestimmten ID bekommen
      *
-     * @param Integer $id
+     * @param integer $id
      *
-     * @return String
+     * @return string
      * @deprecated
      */
     public function getNameById($id)
     {
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'name',
-            'from'   => $this->_TABLE,
-            'where'  => array(
+            'from' => $this->TABLE,
+            'where' => array(
                 'id' => $id
             ),
-            'limit'  => '1'
+            'limit' => '1'
         ));
 
         if (isset($result[0]) && is_array($result)) {
@@ -734,9 +689,9 @@ class Project
     {
         $maxid = QUI::getDataBase()->fetch(array(
             'select' => 'id',
-            'from'   => $this->getAttribute('db_table'),
-            'limit'  => '0,1',
-            'order'  => array(
+            'from' => $this->getAttribute('db_table'),
+            'limit' => '0,1',
+            'order' => array(
                 'id' => 'DESC'
             )
         ));
@@ -783,13 +738,14 @@ class Project
             $layouts = QUI\Utils\XML::getLayoutsFromXml($siteXML);
 
             foreach ($layouts as $Layout) {
+                /* @var $Layout \DOMElement */
                 if (isset($_resTemp[$Layout->getAttribute('type')])) {
                     continue;
                 }
 
                 $data = array(
-                    'type'        => $Layout->getAttribute('type'),
-                    'title'       => '',
+                    'type' => $Layout->getAttribute('type'),
+                    'title' => '',
                     'description' => ''
                 );
 
@@ -820,31 +776,31 @@ class Project
     /**
      * Gibt die Namen der eingebundenen Plugins zurück
      *
-     * @return Array
+     * @return array
      */
 //     public function getPlugins()
 //     {
-//         if ( !is_null( $this->_plugins ) ) {
-//             return $this->_plugins;
+//         if ( !is_null( $this->plugins ) ) {
+//             return $this->plugins;
 //         }
 
 //         $Plugins = QUI::getPlugins();
 
-//         if ( !isset( $this->_config['plugins'] ) )
+//         if ( !isset( $this->config['plugins'] ) )
 //         {
 //               // Falls für das Projekt keine Plugins freigeschaltet wurden dann alle
-//             $this->_plugins = $Plugins->get();
-//             return $this->_plugins;
+//             $this->plugins = $Plugins->get();
+//             return $this->plugins;
 //         }
 
 //         // Plugins einlesen falls dies noch nicht getan wurde
-//         $_plugins = explode( ',', trim( $this->_config['plugins'], ',' ) );
+//         $_plugins = explode( ',', trim( $this->config['plugins'], ',' ) );
 
 //         for ( $i = 0, $len = count($_plugins); $i < $len; $i++ )
 //         {
 //             try
 //             {
-//                 $this->_plugins[ $_plugins[$i] ] = $Plugins->get( $_plugins[$i] );
+//                 $this->plugins[ $_plugins[$i] ] = $Plugins->get( $_plugins[$i] );
 
 //             } catch ( QUI\Exception $Exception )
 //             {
@@ -852,31 +808,31 @@ class Project
 //             }
 //         }
 
-//         return $this->_plugins;
+//         return $this->plugins;
 //     }
 
     /**
      * Return the children ids from a site
      *
-     * @param Integer $parentid - The parent site ID
-     * @param Array $params - extra db statemens, like order, where, count, limit
+     * @param integer $parentid - The parent site ID
+     * @param array $params - extra db statemens, like order, where, count, limit
      *
      * @return array
      */
     public function getChildrenIdsFrom($parentid, $params = array())
     {
         $where_1 = array(
-            $this->_RELTABLE . '.parent' => $parentid,
-            $this->_TABLE . '.deleted'   => 0,
-            $this->_TABLE . '.active'    => 1,
-            $this->_RELTABLE . '.child'  => '`' . $this->_TABLE . '.id`'
+            $this->RELTABLE . '.parent' => $parentid,
+            $this->TABLE . '.deleted' => 0,
+            $this->TABLE . '.active' => 1,
+            $this->RELTABLE . '.child' => '`' . $this->TABLE . '.id`'
         );
 
         if (isset($params['active']) && $params['active'] === '0&1') {
             $where_1 = array(
-                $this->_RELTABLE . '.parent' => $parentid,
-                $this->_TABLE . '.deleted'   => 0,
-                $this->_RELTABLE . '.child'  => '`' . $this->_TABLE . '.id`'
+                $this->RELTABLE . '.parent' => $parentid,
+                $this->TABLE . '.deleted' => 0,
+                $this->RELTABLE . '.child' => '`' . $this->TABLE . '.id`'
             );
         }
 
@@ -884,7 +840,7 @@ class Project
             $where = array_merge($where_1, $params['where']);
 
         } elseif (isset($params['where']) && is_string($params['where'])) {
-            // @todo where als param String
+            // @todo where als param string
             QUI\System\Log::addDebug(
                 'Project->getChildrenIdsFrom WIRD NICHT verwendet' . $params['where']
             );
@@ -894,26 +850,26 @@ class Project
             $where = $where_1;
         }
 
-        $order = $this->_TABLE . '.order_field';
+        $order = $this->TABLE . '.order_field';
 
         if (isset($params['order'])) {
             if (strpos($params['order'], '.') !== false) {
-                $order = $this->_TABLE . '.' . $params['order'];
+                $order = $this->TABLE . '.' . $params['order'];
             } else {
                 $order = $params['order'];
             }
         }
 
         $result = QUI::getDataBase()->fetch(array(
-            'select' => $this->_TABLE . '.id',
-            'count'  => isset($params['count']) ? 'count' : false,
-            'from'   => array(
-                $this->_RELTABLE,
-                $this->_TABLE
+            'select' => $this->TABLE . '.id',
+            'count' => isset($params['count']) ? 'count' : false,
+            'from' => array(
+                $this->RELTABLE,
+                $this->TABLE
             ),
-            'order'  => $order,
-            'limit'  => isset($params['limit']) ? $params['limit'] : false,
-            'where'  => $where
+            'order' => $order,
+            'limit' => isset($params['limit']) ? $params['limit'] : false,
+            'where' => $where
         ));
 
         if (isset($params['count'])) {
@@ -934,9 +890,9 @@ class Project
     /**
      * Returns the parent id from a site
      *
-     * @param Integer $id
+     * @param integer $id
      *
-     * @return Integer
+     * @return integer
      * @deprecated
      */
     public function getParentId($id)
@@ -947,9 +903,9 @@ class Project
     /**
      * Returns the parent id from a site
      *
-     * @param Integer $id - Child id
+     * @param integer $id - Child id
      *
-     * @return Integer Id of the Parent
+     * @return integer Id of the Parent
      */
     public function getParentIdFrom($id)
     {
@@ -959,12 +915,12 @@ class Project
 
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'parent',
-            'from'   => $this->_RELTABLE,
-            'where'  => array(
+            'from' => $this->RELTABLE,
+            'where' => array(
                 'child' => (int)$id
             ),
-            'order'  => 'oparent ASC',
-            'limit'  => '1'
+            'order' => 'oparent ASC',
+            'limit' => '1'
         ));
 
         if (isset($result[0]) && $result[0]['parent']) {
@@ -977,10 +933,10 @@ class Project
     /**
      * Gibt alle Parent IDs zurück
      *
-     * @param Integer $id - child id
-     * @param Bool $reverse - revers the result
+     * @param integer $id - child id
+     * @param boolean $reverse - revers the result
      *
-     * @return Array
+     * @return array
      */
     public function getParentIds($id, $reverse = false)
     {
@@ -1002,25 +958,25 @@ class Project
     /**
      * Ids von bestimmten Seiten bekommen
      *
-     * @param Array $params
+     * @param array $params
      *
      * @todo Muss mal echt überarbeitet werden, bad code
-     * @return Array
+     * @return array
      */
-    function getSitesIds($params = array())
+    public function getSitesIds($params = array())
     {
         if (empty($params) || !is_array($params)) {
             // Falls kein Query dann alle Seiten hohlen
             // @notice - Kann performancefressend sein
             return QUI::getDataBase()->fetch(array(
                 'select' => 'id',
-                'from'   => $this->getAttribute('db_table')
+                'from' => $this->getAttribute('db_table')
             ));
         }
 
         $sql = array(
             'select' => 'id',
-            'from'   => $this->getAttribute('db_table')
+            'from' => $this->getAttribute('db_table')
         );
 
         if (isset($params['where'])) {
@@ -1064,7 +1020,7 @@ class Project
         if (isset($params['count'])) {
             $sql['count'] = array(
                 'select' => 'id',
-                'as'     => 'count'
+                'as' => 'count'
             );
 
             unset($sql['select']);
@@ -1099,7 +1055,7 @@ class Project
     /**
      * Alle Seiten bekommen
      *
-     * @param array|bool $params
+     * @param array|boolean $params
      *
      * @return array|integer - if count is given, return is an integer, otherwise an array
      */
@@ -1141,39 +1097,39 @@ class Project
         $User     = QUI::getUserBySession();
 
         // multi lingual table
-        $multiLingualTable = QUI_DB_PRFX . $this->_name . '_multilingual';
+        $multiLingualTable = QUI_DB_PRFX . $this->name . '_multilingual';
 
         $Table->appendFields($multiLingualTable, array(
             'id' => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY'
         ));
 
 
-        foreach ($this->_langs as $lang) {
-            $table = QUI_DB_PRFX . $this->_name . '_' . $lang . '_sites';
+        foreach ($this->langs as $lang) {
+            $table = QUI_DB_PRFX . $this->name . '_' . $lang . '_sites';
 
             $Table->appendFields($table, array(
-                'id'            => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
-                'name'          => 'varchar(255) NOT NULL',
-                'title'         => 'tinytext',
-                'short'         => 'text',
-                'content'       => 'longtext',
-                'type'          => 'varchar(255) default NULL',
-                'layout'        => 'varchar(255) default NULL',
-                'active'        => 'tinyint(1) NOT NULL',
-                'deleted'       => 'tinyint(1) NOT NULL',
-                'c_date'        => 'timestamp NULL default NULL',
-                'e_date'        => 'timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP',
-                'c_user'        => 'int(11) default NULL',
-                'e_user'        => 'int(11) default NULL',
-                'nav_hide'      => 'tinyint(1) NOT NULL',
-                'order_type'    => 'varchar(255) default NULL',
-                'order_field'   => 'bigint(20) default NULL',
-                'extra'         => 'text NULL',
-                'c_user_ip'     => 'varchar(40)',
+                'id' => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
+                'name' => 'varchar(255) NOT NULL',
+                'title' => 'tinytext',
+                'short' => 'text',
+                'content' => 'longtext',
+                'type' => 'varchar(255) default NULL',
+                'layout' => 'varchar(255) default NULL',
+                'active' => 'tinyint(1) NOT NULL',
+                'deleted' => 'tinyint(1) NOT NULL',
+                'c_date' => 'timestamp NULL default NULL',
+                'e_date' => 'timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP',
+                'c_user' => 'int(11) default NULL',
+                'e_user' => 'int(11) default NULL',
+                'nav_hide' => 'tinyint(1) NOT NULL',
+                'order_type' => 'varchar(255) default NULL',
+                'order_field' => 'bigint(20) default NULL',
+                'extra' => 'text NULL',
+                'c_user_ip' => 'varchar(40)',
                 'image_emotion' => 'text',
-                'image_site'    => 'text',
-                'release_from'  => 'timestamp NULL default NULL',
-                'release_to'    => 'timestamp NULL default NULL'
+                'image_site' => 'text',
+                'release_from' => 'timestamp NULL default NULL',
+                'release_to' => 'timestamp NULL default NULL'
             ));
 
             // fix for old tables
@@ -1207,7 +1163,7 @@ class Project
 
             // create first site -> id 1 if not exist
             $firstChildResult = $DataBase->fetch(array(
-                'from'  => $table,
+                'from' => $table,
                 'where' => array(
                     'id' => 1
                 ),
@@ -1216,22 +1172,22 @@ class Project
 
             if (!isset($firstChildResult[0])) {
                 $DataBase->insert($table, array(
-                    'id'        => 1,
-                    'name'      => 'start',
-                    'title'     => 'Start',
-                    'type'      => 'standard',
-                    'c_date'    => date('Y-m-d H:i:s'),
-                    'c_user'    => $User->getId(),
+                    'id' => 1,
+                    'name' => 'start',
+                    'title' => 'Start',
+                    'type' => 'standard',
+                    'c_date' => date('Y-m-d H:i:s'),
+                    'c_user' => $User->getId(),
                     'c_user_ip' => QUI\Utils\System::getClientIP()
                 ));
             }
 
             // Beziehungen
-            $table = QUI_DB_PRFX . $this->_name . '_' . $lang . '_sites_relations';
+            $table = QUI_DB_PRFX . $this->name . '_' . $lang . '_sites_relations';
 
             $Table->appendFields($table, array(
-                'parent'  => 'bigint(20)',
-                'child'   => 'bigint(20)',
+                'parent' => 'bigint(20)',
+                'child' => 'bigint(20)',
                 'oparent' => 'bigint(20)'
             ));
 
@@ -1253,15 +1209,17 @@ class Project
 
 
         // read xml files
-        $dir = USR_DIR . $this->_name . '/';
+        $dir = USR_DIR . $this->name . '/';
 
         // @todo only for project
         QUI\Update::importDatabase($dir . 'database.xml');
         QUI\Update::importTemplateEngines($dir . 'engines.xml');
         QUI\Update::importEditors($dir . 'wysiwyg.xml');
         QUI\Update::importMenu($dir . 'menu.xml');
-        QUI\Update::importPermissions($dir . 'permissions.xml',
-            'project/' . $this->_name);
+        QUI\Update::importPermissions(
+            $dir . 'permissions.xml',
+            'project/' . $this->name
+        );
         QUI\Update::importEvents($dir . 'events.xml');
         QUI\Update::importMenu($dir . 'menu.xml');
 
@@ -1281,7 +1239,7 @@ class Project
     /**
      * Set the last edit date in the project
      *
-     * @param Integer $date
+     * @param integer $date
      */
     public function setEditDate($date)
     {
@@ -1294,7 +1252,7 @@ class Project
     /**
      * Set custom CSS for the project -> set it to the custom.css file
      *
-     * @param String $css - CSS Data
+     * @param string $css - CSS Data
      */
     public function setCustomCSS($css)
     {
@@ -1330,7 +1288,7 @@ class Project
     /**
      * Return the last edit date in the project
      *
-     * @return Integer
+     * @return integer
      */
     public function getLastEditDate()
     {
@@ -1340,7 +1298,6 @@ class Project
             );
 
         } catch (QUI\Exception $Exception) {
-
         }
 
         return 0;
@@ -1353,7 +1310,7 @@ class Project
     /**
      * Add an user to the project permission
      *
-     * @param String $permission - name of the permission
+     * @param string $permission - name of the permission
      * @param User $User - User Object
      */
     public function addUserToPermission(User $User, $permission)
@@ -1364,7 +1321,7 @@ class Project
     /**
      * Add an group to the project permission
      *
-     * @param String $permission - name of the permission
+     * @param string $permission - name of the permission
      * @param Group $Group - Group Object
      */
     public function addGroupToPermission(Group $Group, $permission)
@@ -1375,7 +1332,7 @@ class Project
     /**
      * Remove the user from the project permission
      *
-     * @param String $permission - name of the permission
+     * @param string $permission - name of the permission
      * @param User $User - User Object
      */
     public function removeUserFromPermission(User $User, $permission)

@@ -31,8 +31,7 @@ define('controls/upload/Manager', [
 
     'css!controls/upload/Manager.css'
 
-], function(QUI, QUIPanel, QUIProgressbar, QUIAlert, MathUtils,  UploadFile, Ajax, Locale)
-{
+], function (QUI, QUIPanel, QUIProgressbar, QUIAlert, MathUtils,  UploadFile, Ajax, Locale) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -59,9 +58,8 @@ define('controls/upload/Manager', [
             icon  : 'icon-upload'
         },
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize : function (options) {
+            this.parent(options);
 
             this.$files      = [];
             this.$container  = null;
@@ -80,15 +78,14 @@ define('controls/upload/Manager', [
         /**
          * event : onCreate
          */
-        $onCreate : function()
-        {
-            if ( !this.getAttribute( 'title' ) ) {
-                this.setAttribute( 'title', Locale.get( lg, 'upload.manager.title' ) );
+        $onCreate : function () {
+            if (!this.getAttribute('title')) {
+                this.setAttribute('title', Locale.get(lg, 'upload.manager.title'));
             }
 
             this.$Container = new Element('div', {
                 'class' : 'upload-manager'
-            }).inject( this.getContent() );
+            }).inject(this.getContent());
         },
 
         /**
@@ -96,12 +93,10 @@ define('controls/upload/Manager', [
          *
          * @param {Array} message -
          */
-        sendMessage : function(message)
-        {
-            QUI.getMessageHandler(function(MH)
-            {
+        sendMessage : function (message) {
+            QUI.getMessageHandler(function (MH) {
                 MH.add(
-                    MH.parse( message )
+                    MH.parse(message)
                 );
             });
         },
@@ -111,10 +106,9 @@ define('controls/upload/Manager', [
          *
          * @param {Number|String} uploadid
          */
-        isFinish : function(uploadid)
-        {
+        isFinish : function (uploadid) {
             // uploadid
-            if ( this.$uploads[ uploadid ] ) {
+            if (this.$uploads[ uploadid ]) {
                 this.$uploads[ uploadid ].finish();
             }
         },
@@ -128,42 +122,36 @@ define('controls/upload/Manager', [
          * @param {String} rf - php request function
          * @param {object} params - the params what would be send, too
          */
-        uploadFiles : function(files, rf, params)
-        {
-            if ( typeof files === 'undefined' ) {
+        uploadFiles : function (files, rf, params) {
+            if (typeof files === 'undefined') {
                 return;
             }
 
-            if ( !files.length ) {
+            if (!files.length) {
                 return;
             }
 
             var Container;
 
             // is an upload panel existent and open?
-            if ( this.isOpen() === false )
-            {
-                if ( this.$Content )
-                {
+            if (this.isOpen() === false) {
+                if (this.$Content) {
                     this.open();
 
-                } else
-                {
+                } else {
                     Container = document.getElement(
                         '.qui-panel-content .upload-manager'
                     );
 
-                    if ( Container )
-                    {
+                    if (Container) {
                         var Content = Container.getParent();
 
-                        if ( Content && Content.getStyle( 'display' ) == 'none' )
-                        {
+                        if (Content && Content.getStyle('display') == 'none') {
                             var Panel = QUI.Controls.getById(
-                                Content.getParent( '.qui-panel' ).get( 'data-quiid' )
+                                Content.getParent('.qui-panel').get('data-quiid')
                             );
 
-                            if ( Panel ) {
+                            if (Panel) {
                                 Panel.open();
                             }
                         }
@@ -181,68 +169,61 @@ define('controls/upload/Manager', [
 
             params = params || {};
 
-            if ( typeof params.extract !== 'undefined' ) {
+            if (typeof params.extract !== 'undefined') {
                 extract = params.extract;
             }
 
             // check for archive files (like zip or tar)
             // if undefined, ask for it
-            if ( typeof params.extract === 'undefined' )
-            {
-                for ( i = 0, len = files.length; i < len; i++ )
-                {
-                    if ( files[i].type === 'application/zip' )
-                    {
-                        archiveFiles.push( files[i] );
+            if (typeof params.extract === 'undefined') {
+                for (i = 0, len = files.length; i < len; i++) {
+                    if (files[i].type === 'application/zip') {
+                        archiveFiles.push(files[i]);
                         foundPackageFiles = true;
                     }
                 }
             }
 
-            if ( foundPackageFiles )
-            {
+            if (foundPackageFiles) {
                 var list = '';
 
-                for ( i = 0, len = archiveFiles.length; i < len; i++ )
-                {
-                    list = list +'<div>' +
-                            '<input id="upload-file-'+ i +'" type="checkbox" value="'+ archiveFiles[i].name +'" />' +
-                            '<label for="upload-file-'+ i +'" style="line-height: 20px; margin-left: 10px;">'+
-                                Locale.get( lg, 'upload.manager.message.archivfile.label', {
+                for (i = 0, len = archiveFiles.length; i < len; i++) {
+                    list = list + '<div>' +
+                            '<input id="upload-file-' + i + '" type="checkbox" value="' + archiveFiles[i].name + '" />' +
+                            '<label for="upload-file-' + i + '" style="line-height: 20px; margin-left: 10px;">' +
+                                Locale.get(lg, 'upload.manager.message.archivfile.label', {
                                     file: archiveFiles[i].name
                                 }) +
-                            '</label>'+
+                            '</label>' +
                         '</div>';
                 }
 
 
                 // ask for extraction
                 new QUIAlert({
-                    title   : Locale.get( lg, 'upload.manager.message.archivfile.title' ),
-                    content : Locale.get( lg, 'upload.manager.message.archivfile.text' ) +'<br />'+ list,
-                    closeButtonText : Locale.get( lg, 'upload.manager.message.archivfile.btn.start' ),
+                    title   : Locale.get(lg, 'upload.manager.message.archivfile.title'),
+                    content : Locale.get(lg, 'upload.manager.message.archivfile.text') + '<br />' + list,
+                    closeButtonText : Locale.get(lg, 'upload.manager.message.archivfile.btn.start'),
                     events      :
                     {
-                        onClose : function(Win)
-                        {
+                        onClose : function (Win) {
                             var i, len;
 
                             var Body      = Win.getContent(),
-                                checkboxs = Body.getElements( 'input[type="checkbox"]' ),
+                                checkboxs = Body.getElements('input[type="checkbox"]'),
                                 extract   = {};
 
 
                             // collect all which must be extract
-                            for ( i = 0, len = checkboxs.length; i < len; i++ )
-                            {
-                                if ( checkboxs[ i ].checked ) {
-                                    extract[ checkboxs[ i ].get( 'value' ) ] = true;
+                            for (i = 0, len = checkboxs.length; i < len; i++) {
+                                if (checkboxs[ i ].checked) {
+                                    extract[ checkboxs[ i ].get('value') ] = true;
                                 }
                             }
 
                             params.extract = extract;
 
-                            self.uploadFiles( files, rf, params );
+                            self.uploadFiles(files, rf, params);
                         }
                     }
                 }).open();
@@ -256,68 +237,61 @@ define('controls/upload/Manager', [
 
             this.$maxPercent = files.length * 100;
 
-            for ( i = 0, len = files.length; i < len; i++ )
-            {
-                file_params = Object.clone( params );
+            for (i = 0, len = files.length; i < len; i++) {
+                file_params = Object.clone(params);
                 file_params.extract = false;
 
-                if (  extract && extract[ files[ i ].name ] ) {
+                if (extract && extract[ files[ i ].name ]) {
                     file_params.extract = true;
                 }
 
-                if ( typeof file_params.events !== 'undefined' )
-                {
+                if (typeof file_params.events !== 'undefined') {
                     events = file_params.events;
 
                     delete file_params.events;
                 }
 
-                var QUIFile = new UploadFile( files[ i ], {
+                var QUIFile = new UploadFile(files[ i ], {
                     phpfunc : rf,
                     params  : file_params,
                     events  : events
                 });
 
                 QUIFile.addEvents({
-                    onComplete : function(File) {
-                        self.fireEvent( 'fileComplete', [ self, File ] );
+                    onComplete : function (File) {
+                        self.fireEvent('fileComplete', [self, File]);
                     },
-                    onRefresh : function(File, percent)
-                    {
+                    onRefresh : function (File, percent) {
                         self.$uploadPerCents[ File.getId() ] = percent;
                         self.$onFileUploadRefresh();
                     },
-                    onError : function(Exception)
-                    {
-                        if ( 'error' in self.$events )
-                        {
-                            self.fireEvent( 'error', [ Exception ] );
+                    onError : function (Exception) {
+                        if ('error' in self.$events) {
+                            self.fireEvent('error', [Exception]);
                             return;
                         }
 
-                        QUI.getMessageHandler(function(MessageHandler) {
-                            MessageHandler.add( Exception );
+                        QUI.getMessageHandler(function (MessageHandler) {
+                            MessageHandler.add(Exception);
                         });
                     }
                 });
 
-                if ( file_params.phponstart ) {
-                    QUIFile.setAttribute( 'phponstart', file_params.phponstart );
+                if (file_params.phponstart) {
+                    QUIFile.setAttribute('phponstart', file_params.phponstart);
                 }
 
-                this.$files.push( QUIFile );
+                this.$files.push(QUIFile);
 
-                if ( this.$Container )
-                {
-                    QUIFile.inject( this.$Container, 'top');
+                if (this.$Container) {
+                    QUIFile.inject(this.$Container, 'top');
 
-                } else
-                {
+                } else {
                     // exist upload container? ... not nice but functional
-                    Container = document.getElement( '.qui-panel-content .upload-manager' );
+                    Container = document.getElement('.qui-panel-content .upload-manager');
 
-                    if ( Container ) {
-                        QUIFile.inject( Container, 'top');
+                    if (Container) {
+                        QUIFile.inject(Container, 'top');
                     }
                 }
 
@@ -332,10 +306,9 @@ define('controls/upload/Manager', [
          *
          * @param {controls/upload/Form} Form - Upload form object
          */
-        injectForm : function(Form)
-        {
-            if ( this.$Container ) {
-                Form.createInfo().inject( this.$Container, 'top');
+        injectForm : function (Form) {
+            if (this.$Container) {
+                Form.createInfo().inject(this.$Container, 'top');
             }
 
             this.$uploads[ Form.getId() ] = Form;
@@ -346,54 +319,48 @@ define('controls/upload/Manager', [
          *
          * @method controls/upload/Manager#getUnfinishedUploads
          */
-        getUnfinishedUploads : function()
-        {
-            Ajax.get('ajax_uploads_unfinished', function(files)
-            {
-                if ( !files.length ) {
+        getUnfinishedUploads : function () {
+            Ajax.get('ajax_uploads_unfinished', function (files) {
+                if (!files.length) {
                     return;
                 }
 
                 var i, len, QUIFile, params,
                     func_oncancel, func_oncomplete;
 
-                QUI.getMessageHandler(function(MH)
-                {
+                QUI.getMessageHandler(function (MH) {
                     MH.addInformation(
-                        Locale.get( lg, 'upload.manager.message.not.finish' )
+                        Locale.get(lg, 'upload.manager.message.not.finish')
                     );
                 });
 
                 // events
-                func_oncancel = function(File)
-                {
-                    Ajax.post('ajax_uploads_cancel', function()
-                    {
+                func_oncancel = function (File) {
+                    Ajax.post('ajax_uploads_cancel', function () {
                         File.destroy();
                     }, {
                         file : File.getFilename()
                     });
                 };
 
-                func_oncomplete = function() {
+                func_oncomplete = function () {
 
                 };
 
                 // create
-                for ( i = 0, len = files.length; i < len; i++ )
-                {
-                    if ( !files[i].params ) {
+                for (i = 0, len = files.length; i < len; i++) {
+                    if (!files[i].params) {
                         continue;
                     }
 
                     params = files[i].params;
 
-                    if ( !params.phpfunc ) {
+                    if (!params.phpfunc) {
                         // @todo trigger error
                         continue;
                     }
 
-                    if ( !params.file ) {
+                    if (!params.file) {
                         // @todo trigger error
                         continue;
                     }
@@ -408,8 +375,8 @@ define('controls/upload/Manager', [
                         }
                     });
 
-                    if ( this.$Container ) {
-                        QUIFile.inject( this.$Container, 'top');
+                    if (this.$Container) {
+                        QUIFile.inject(this.$Container, 'top');
                     }
 
                     QUIFile.refresh();
@@ -421,14 +388,13 @@ define('controls/upload/Manager', [
          * event : on file upload refresh
          * display the percent of the upload
          */
-        $onFileUploadRefresh : function()
-        {
+        $onFileUploadRefresh : function () {
             var percent = MathUtils.percent(
-                Object.values( this.$uploadPerCents ).sum(),
+                Object.values(this.$uploadPerCents).sum(),
                 this.$maxPercent
             );
 
-            this.fireEvent( 'fileUploadRefresh', [ this, percent ] );
+            this.fireEvent('fileUploadRefresh', [this, percent]);
         }
     });
 });

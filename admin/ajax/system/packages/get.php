@@ -4,18 +4,14 @@
  * Return the composer data of the package
  *
  * @param string $package - Name of the package
- * @return Array
+ * @return array
  */
-function ajax_system_packages_get($package)
-{
-    return \QUI::getPackageManager()->
-                 getInstalledPackage( $package )->
-                 getComposerData();
-}
-
-\QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_system_packages_get',
-    array( 'package' ),
+    function ($package) {
+        return QUI::getPackageManager()->getInstalledPackage($package)->getComposerData();
+    },
+    array('package'),
     array(
         'Permission::checkAdminUser',
         'quiqqer.system.update'

@@ -8,8 +8,7 @@
  * @require qui/classes/DOM
  */
 
-define(['qui/classes/DOM'], function(DOM)
-{
+define(['qui/classes/DOM'], function (DOM) {
     "use strict";
 
     /**
@@ -26,15 +25,12 @@ define(['qui/classes/DOM'], function(DOM)
          * @param {DOMNode} Node
          * @todo prism as quiqqer control
          */
-        highlight : function(Node)
-        {
-            require(['plugin/prism/Prism'], function()
-            {
-                if ( typeof Prism !== 'undefined' ) {
-                    Prism.highlightElement( Node );
+        highlight : function (Node) {
+            require(['plugin/prism/Prism'], function () {
+                if (typeof Prism !== 'undefined') {
+                    Prism.highlightElement(Node);
                 }
-            }, function()
-            {
+            }, function () {
                 // ignore if prism not exist
             });
         }

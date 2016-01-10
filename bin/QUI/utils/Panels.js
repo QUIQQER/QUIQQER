@@ -102,8 +102,11 @@ define('utils/Panels', function () {
                     'controls/projects/project/media/Panel',
                     'Projects'
                 ], function (QUI, QUIPanel, MediaPanel, Projects) {
-                    var i, len, Panel;
-                    var panels = QUI.Controls.get('projects-media-panel');
+                    var i, len, Panel, Project, cacheMedia;
+
+                    var panels = QUI.Controls.getByType(
+                        'controls/projects/project/media/Panel'
+                    );
 
                     if (panels.length) {
                         for (i = 0, len = panels.length; i < len; i++) {
@@ -115,7 +118,17 @@ define('utils/Panels', function () {
 
                             if (folderId) {
                                 Panel.openID(parseInt(folderId));
+                                self.execPanelOpen(Panel);
+                                return;
                             }
+
+                            Project    = Panel.getProject();
+                            cacheMedia = Project.getName() + '-' + Project.getLang() + '-id';
+
+                            if (QUI.Storage.get(cacheMedia)) {
+                                Panel.openID(parseInt(QUI.Storage.get(cacheMedia)));
+                            }
+
 
                             self.execPanelOpen(Panel);
                             resolve(Panel);
@@ -131,8 +144,16 @@ define('utils/Panels', function () {
                         return;
                     }
 
+                    Project    = Projects.get(project);
+                    cacheMedia = Project.getName() + '-' + Project.getLang() + '-id';
+
+                    if (!folderId && QUI.Storage.get(cacheMedia)) {
+                        folderId = QUI.Storage.get(cacheMedia);
+                    }
+
+
                     Panel = new MediaPanel(
-                        Projects.get(project).getMedia(), {
+                        Project.getMedia(), {
                             startid: folderId || 1
                         }
                     );
@@ -297,7 +318,7 @@ define('utils/Panels', function () {
 
             var self = this;
 
-            return new Promise(function(resolve, reject) {
+            return new Promise(function (resolve, reject) {
 
                 require(['qui/QUI'], function (QUI) {
 

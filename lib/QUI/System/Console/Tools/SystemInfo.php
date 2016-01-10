@@ -21,7 +21,7 @@ class SystemInfo extends QUI\System\Console\Tool
     public function __construct()
     {
         $this->setName('quiqqer:info')
-             ->setDescription('Prints system info');
+            ->setDescription('Prints system info');
     }
 
     /**
@@ -31,9 +31,8 @@ class SystemInfo extends QUI\System\Console\Tool
      */
     public function execute()
     {
-        $Package = QUI::getPackageManager()
-                      ->getInstalledPackage('quiqqer/quiqqer');
-        $data = $Package->getComposerData();
+        $Package = QUI::getPackageManager()->getInstalledPackage('quiqqer/quiqqer');
+        $data    = $Package->getComposerData();
 
         $this->writeLn('QUIQQER Info');
         $this->writeLn('');
@@ -58,7 +57,7 @@ class SystemInfo extends QUI\System\Console\Tool
             if (!is_array($value)) {
                 $this->write(sprintf("%-10s", $key), 'green');
                 $this->resetColor();
-                $this->write("\t\t".$value);
+                $this->write("\t\t" . $value);
                 $this->writeLn('');
 
                 continue;
@@ -71,7 +70,7 @@ class SystemInfo extends QUI\System\Console\Tool
             if ($key == 'authors') {
                 foreach ($value as $arr) {
                     foreach ($arr as $_key => $_value) {
-                        $this->_printArrayEntry($_key, $_value, "%-15s");
+                        $this->printArrayEntry($_key, $_value, "%-15s");
                     }
 
                     $this->writeLn('');
@@ -81,7 +80,7 @@ class SystemInfo extends QUI\System\Console\Tool
             }
 
             foreach ($value as $_key => $_value) {
-                $this->_printArrayEntry($_key, $_value);
+                $this->printArrayEntry($_key, $_value);
             }
         }
 
@@ -93,10 +92,10 @@ class SystemInfo extends QUI\System\Console\Tool
         $this->resetColor();
 
         foreach ($serverList as $server => $data) {
-            $str = '- '.$server;
+            $str = '- ' . $server;
 
             if (isset($data['type'])) {
-                $str .= ' ('.$data['type'].')';
+                $str .= ' (' . $data['type'] . ')';
             }
 
             if ($data['active'] == 1) {
@@ -118,8 +117,8 @@ class SystemInfo extends QUI\System\Console\Tool
         $packages = QUI::getPackageManager()->getInstalled();
 
         foreach ($packages as $package) {
-            $str = '- '.$package['name'];
-            $str .= ' ( '.$package['version'].' )';
+            $str = '- ' . $package['name'];
+            $str .= ' ( ' . $package['version'] . ' )';
 
             $this->writeLn($str);
         }
@@ -135,11 +134,11 @@ class SystemInfo extends QUI\System\Console\Tool
      * @param string $value
      * @param string $format - http://php.net/manual/de/function.sprintf.php
      */
-    protected function _printArrayEntry($key, $value, $format = "%-25s")
+    protected function printArrayEntry($key, $value, $format = "%-25s")
     {
         $this->write(sprintf($format, $key), 'purple');
         $this->resetColor();
-        $this->write("\t\t".$value);
+        $this->write("\t\t" . $value);
         $this->writeLn('');
     }
 }

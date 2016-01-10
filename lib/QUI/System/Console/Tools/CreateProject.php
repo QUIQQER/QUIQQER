@@ -10,7 +10,7 @@ use QUI;
 /**
  * Create a new Project in the quiqqer console
  *
- * @author  www.namerobot.com (Henning Leutz)
+ * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
  */
 class CreateProject extends QUI\System\Console\Tool
@@ -21,12 +21,19 @@ class CreateProject extends QUI\System\Console\Tool
     public function __construct()
     {
         $this->setName('quiqqer:create-project')
-             ->setDescription('Create a new project')
-             ->addArgument('projectname', 'Name of the project', 'p')
-             ->addArgument('projectlangs',
-                 'Langs of the project (comma separated)', 'l')
-             ->addArgument('template', 'Standard template of the project',
-                 false, true);
+            ->setDescription('Create a new project')
+            ->addArgument('projectname', 'Name of the project', 'p')
+            ->addArgument(
+                'projectlangs',
+                'Langs of the project (comma separated)',
+                'l'
+            )
+            ->addArgument(
+                'template',
+                'Standard template of the project',
+                false,
+                true
+            );
     }
 
     /**
@@ -78,17 +85,17 @@ class CreateProject extends QUI\System\Console\Tool
 
         } catch (QUI\Exception $Exception) {
             $this->writeLn('Could not create project: '
-                .$Exception->getMessage());
+                           . $Exception->getMessage());
 
             return;
         }
 
         QUI::getProjectManager()->setConfigForProject($projectname, array(
             'template' => $template,
-            'langs'    => implode(',', $projectlangs)
+            'langs' => implode(',', $projectlangs)
         ));
 
-        $this->writeLn('Project '.$projectname.' successfuly created.');
+        $this->writeLn('Project ' . $projectname . ' successfuly created.');
         $this->writeLn('');
     }
 }

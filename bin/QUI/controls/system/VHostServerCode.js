@@ -35,7 +35,7 @@ define('controls/system/VHostServerCode', [
 
     'css!controls/system/VHostServerCode.css'
 
-], function(
+], function (
     QUI, QUIControl, QUILoader, QUIButton, FormUtils,
     ProjectPopup, ControlUtils, StringUtils, Ajax, Locale
 ) {
@@ -57,9 +57,8 @@ define('controls/system/VHostServerCode', [
             data : {}
         },
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize : function (options) {
+            this.parent(options);
 
             this.$Elm = null;
 
@@ -75,13 +74,12 @@ define('controls/system/VHostServerCode', [
          *
          * @return {HTMLElement}
          */
-        create : function()
-        {
+        create : function () {
             this.$Elm = new Element('div', {
                 'class' : 'control-system-vhostServerCode box'
             });
 
-            this.Loader.inject( this.$Elm );
+            this.Loader.inject(this.$Elm);
 
             this.$InputProject = null;
             this.$InputLang    = null;
@@ -93,15 +91,13 @@ define('controls/system/VHostServerCode', [
         /**
          * event : on inject
          */
-        $onInject : function()
-        {
+        $onInject : function () {
             var self = this;
 
             this.Loader.show();
 
-            Ajax.get(['ajax_vhosts_get'], function(vhostData)
-            {
-                vhostData.host = self.getAttribute( 'host' );
+            Ajax.get(['ajax_vhosts_get'], function (vhostData) {
+                vhostData.host = self.getAttribute('host');
 
 
                 self.$Elm.set(
@@ -112,7 +108,7 @@ define('controls/system/VHostServerCode', [
                     '<thead>' +
                         '<tr>' +
                             '<th colspan="2">' +
-                                Locale.get( lg, 'system.vhost.table.hostdata' ) +
+                                Locale.get(lg, 'system.vhost.table.hostdata') +
                             '</th>' +
                         '</th>' +
                     '</thead>' +
@@ -120,7 +116,7 @@ define('controls/system/VHostServerCode', [
                         '<tr class="odd">' +
                             '<td style="width: 150px;">' +
                                 '<label for="">' +
-                                    Locale.get( lg, 'system.vhost.label.domain' ) +
+                                    Locale.get(lg, 'system.vhost.label.domain') +
                                 '</label>' +
                             '</td>' +
                             '<td>' +
@@ -131,7 +127,7 @@ define('controls/system/VHostServerCode', [
                         '<tr class="even">' +
                             '<td style="width: 150px;">' +
                                 '<label for="">' +
-                                    Locale.get( lg, 'project' ) +
+                                    Locale.get(lg, 'project') +
                                 '</label>' +
                             '</td>' +
                             '<td>' +
@@ -141,8 +137,8 @@ define('controls/system/VHostServerCode', [
 
                         '<tr class="odd">' +
                             '<td style="width: 150px;">' +
-                                '<label for="">'+
-                                    Locale.get( lg, 'language' ) +
+                                '<label for="">' +
+                                    Locale.get(lg, 'language') +
                                 '</label>' +
                             '</td>' +
                             '<td>' +
@@ -153,7 +149,7 @@ define('controls/system/VHostServerCode', [
                         '<tr class="even">' +
                             '<td style="width: 150px;">' +
                                 '<label for="">' +
-                                    Locale.get( lg, 'site_id' ) +
+                                    Locale.get(lg, 'site_id') +
                                 '</label>' +
                             '</td>' +
                             '<td>' +
@@ -171,16 +167,16 @@ define('controls/system/VHostServerCode', [
                     '</form>'
                 );
 
-                self.$InputProject = self.$Elm.getElement( '[name="project"]' );
-                self.$InputLang    = self.$Elm.getElement( '[name="lang"]' );
-                self.$InputId      = self.$Elm.getElement( '[name="id"]' );
+                self.$InputProject = self.$Elm.getElement('[name="project"]');
+                self.$InputLang    = self.$Elm.getElement('[name="lang"]');
+                self.$InputId      = self.$Elm.getElement('[name="id"]');
 
                 // create controls
-                ControlUtils.parse( self.$Elm );
+                ControlUtils.parse(self.$Elm);
 
                 FormUtils.setDataToForm(
                     vhostData,
-                    self.$Elm.getElement( 'form' )
+                    self.$Elm.getElement('form')
                 );
 
                 // site button
@@ -189,13 +185,11 @@ define('controls/system/VHostServerCode', [
                     text : 'Seite auswählen',
                     events :
                     {
-                        onClick : function()
-                        {
+                        onClick : function () {
                             new ProjectPopup({
                                 events :
                                 {
-                                    onSubmit : function(Popup, params)
-                                    {
+                                    onSubmit : function (Popup, params) {
                                         self.$InputProject.value = params.project;
                                         self.$InputLang.value    = params.lang;
                                         self.$InputId.value      = params.ids[ 0 ];
@@ -205,18 +199,18 @@ define('controls/system/VHostServerCode', [
                         }
                     }
                 }).inject(
-                    self.$Elm.getElement( '.control-system-vhostServerCode-siteBtn' )
+                    self.$Elm.getElement('.control-system-vhostServerCode-siteBtn')
                 );
 
-                self.$InputProject.addEvent('focus', function() {
+                self.$InputProject.addEvent('focus', function () {
                     SiteButton.click();
                 });
 
-                self.$InputLang.addEvent('focus', function() {
+                self.$InputLang.addEvent('focus', function () {
                     SiteButton.click();
                 });
 
-                self.$InputId.addEvent('focus', function() {
+                self.$InputId.addEvent('focus', function () {
                     SiteButton.click();
                 });
 
@@ -224,7 +218,7 @@ define('controls/system/VHostServerCode', [
                 self.Loader.show();
 
             }, {
-                vhost : this.getAttribute( 'host' )
+                vhost : this.getAttribute('host')
             });
         },
 
@@ -233,19 +227,17 @@ define('controls/system/VHostServerCode', [
          *
          * @param {Function} [callback] - (optional), callback function after saving
          */
-        save : function(callback)
-        {
+        save : function (callback) {
             var self = this;
 
             this.Loader.show();
 
-            Ajax.post('ajax_vhosts_save', function()
-            {
-                if ( typeof callback !== 'undefined' ) {
+            Ajax.post('ajax_vhosts_save', function () {
+                if (typeof callback !== 'undefined') {
                     callback();
                 }
             }, {
-                vhost : this.getAttribute( 'host' ),
+                vhost : this.getAttribute('host'),
                 data  : JSON.encode({
                     project : self.$InputProject.value,
                     lang    : self.$InputLang.value,

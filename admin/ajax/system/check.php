@@ -5,14 +5,16 @@
  *
  * @return String
  */
-function ajax_system_check()
-{
-    $Engine = \QUI::getTemplateManager()->getEngine();
-    $Engine->assign(array(
-        'checks' => \QUI\System\Checks\Manager::standard()
-    ));
+QUI::$Ajax->registerFunction(
+    'ajax_system_check',
+    function () {
+        $Engine = QUI::getTemplateManager()->getEngine();
+        $Engine->assign(array(
+            'checks' => QUI\System\Checks\Manager::standard()
+        ));
 
-    return $Engine->fetch( SYS_DIR .'ajax/system/check.html' );
-}
-
-\QUI::$Ajax->register('ajax_system_check', false, 'Permission::checkSU');
+        return $Engine->fetch(SYS_DIR . 'ajax/system/check.html');
+    },
+    false,
+    'Permission::checkSU'
+);

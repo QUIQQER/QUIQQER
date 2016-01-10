@@ -18,8 +18,7 @@ define('controls/system/AvailableLanguages', [
 
     'css!controls/system/AvailableLanguages.css'
 
-], function(QUI, QUIControl, QUILoader, QUIAjax, QUILocale)
-{
+], function (QUI, QUIControl, QUILoader, QUIAjax, QUILocale) {
     "use strict";
 
     return new Class({
@@ -36,9 +35,8 @@ define('controls/system/AvailableLanguages', [
             values : false
         },
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize : function (options) {
+            this.parent(options);
 
             this.$Input  = null;
             this.$loaded = false;
@@ -56,18 +54,16 @@ define('controls/system/AvailableLanguages', [
          *
          * @return {HTMLElement}
          */
-        create : function()
-        {
-            if ( !this.$Elm )
-            {
+        create : function () {
+            if (!this.$Elm) {
                 this.$Elm = this.parent();
 
                 this.$Input = new Element('input', {
                     type : 'hidden'
-                }).inject( this.$Elm );
+                }).inject(this.$Elm);
             }
 
-            this.Loader.inject( this.$Elm );
+            this.Loader.inject(this.$Elm);
 
             return this.$Elm;
         },
@@ -77,76 +73,70 @@ define('controls/system/AvailableLanguages', [
          *
          * @param {Object} values - list of the lang values
          */
-        setValue : function(values)
-        {
-            if ( typeOf( values ) !== 'object' ) {
+        setValue : function (values) {
+            if (typeOf(values) !== 'object') {
                 return;
             }
 
-            if ( this.$loaded === false || !this.$Input )
-            {
-                this.setAttribute( 'values', values );
+            if (this.$loaded === false || !this.$Input) {
+                this.setAttribute('values', values);
                 return;
             }
 
             var lang, name, Input;
-            var parentName = this.$Input.get( 'name' );
+            var parentName = this.$Input.get('name');
 
-            for ( lang in values )
-            {
-                if ( !values.hasOwnProperty( lang ) ) {
+            for (lang in values) {
+                if (!values.hasOwnProperty(lang)) {
                     continue;
                 }
 
-                name  = parentName +'.'+ lang;
-                Input = this.$Elm.getElement( '[name="'+ name +'"]' );
+                name  = parentName + '.' + lang;
+                Input = this.$Elm.getElement('[name="' + name + '"]');
 
-                if ( Input ) {
+                if (Input) {
                     Input.value = values[ lang ];
                 }
             }
 
-            this.setAttribute( 'values', values );
+            this.setAttribute('values', values);
         },
 
         /**
          * event on inject
          */
-        $onInject : function()
-        {
+        $onInject : function () {
             var self = this;
 
             this.Loader.show();
 
-            this.getAvailableLanguages(function(list)
-            {
+            this.getAvailableLanguages(function (list) {
                 var i, len, flag, name, langtext;
 
-                var parentName = self.$Input.get( 'name' );
+                var parentName = self.$Input.get('name');
 
-                for ( i = 0, len = list.length; i < len; i++ )
-                {
+                for (i = 0, len = list.length; i < len; i++) {
                     flag = '<span class="quiqqer-available-flag">' +
-                               '<img src="'+ URL_BIN_DIR +'16x16/flags/'+ list[ i ] +'.png" />' +
+                               '<img src="' + URL_BIN_DIR + '16x16/flags/' + list[ i ] + '.png" />' +
                            '</span>';
 
-                    langtext = QUILocale.get( 'quiqqer/system', 'lang.'+list[ i ] );
-                    name     = parentName +'.'+ list[ i ];
+                    langtext = QUILocale.get('quiqqer/system', 'lang.' + list[ i ]);
+                    name     = parentName + '.' + list[ i ];
 
                     new Element('label', {
                         'class'     : 'quiqqer-available-languages-entry',
                         'data-lang' : list[ i ],
-                        html        : '<input type="text" name="'+ name +'" placeholder="%D" />'+
-                                      '<span class="quiqqer-available-languages-entry-text">'+
+                        html        : '<input type="text" name="' + name + '" placeholder="%D" />' +
+                                      '<span class="quiqqer-available-languages-entry-text">' +
                                           flag + langtext +
                                       '</span>'
-                    }).inject( self.getElm() );
+                    }).inject(self.getElm());
                 }
 
                 self.$loaded = true;
 
-                if ( self.getAttribute( 'values' ) ) {
-                    self.setValue( self.getAttribute( 'values' ) );
+                if (self.getAttribute('values')) {
+                    self.setValue(self.getAttribute('values'));
                 }
 
                 self.Loader.hide();
@@ -156,20 +146,18 @@ define('controls/system/AvailableLanguages', [
         /**
          * event on import
          */
-        $onImport : function()
-        {
-            if ( this.$Elm.nodeName === 'INPUT' )
-            {
-                this.$Elm.set( 'type', 'hidden' );
+        $onImport : function () {
+            if (this.$Elm.nodeName === 'INPUT') {
+                this.$Elm.set('type', 'hidden');
 
                 var Elm = new Element('div', {
                     'class' : 'quiqqer-availableLanguages'
                 });
 
-                Elm.wraps( this.$Elm );
+                Elm.wraps(this.$Elm);
 
                 this.$Elm = Elm;
-                this.$Input = this.$Elm.getElement( 'input' );
+                this.$Input = this.$Elm.getElement('input');
             }
 
             this.create();
@@ -180,9 +168,8 @@ define('controls/system/AvailableLanguages', [
          * Return the available languages
          * @param {Function} callback
          */
-        getAvailableLanguages : function(callback)
-        {
-            QUIAjax.get( 'ajax_system_getAvailableLanguages', callback );
+        getAvailableLanguages : function (callback) {
+            QUIAjax.get('ajax_system_getAvailableLanguages', callback);
         }
     });
 });
