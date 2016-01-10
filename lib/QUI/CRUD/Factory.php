@@ -59,6 +59,10 @@ abstract class Factory
         $attributes = $this->getChildAttributes();
         $childData  = array();
 
+        if (!is_array($data)) {
+            $data = array();
+        }
+
         foreach ($attributes as $attribute) {
             if ($attribute == 'id') {
                 continue;
