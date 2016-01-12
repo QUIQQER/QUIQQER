@@ -36,7 +36,7 @@
         "symfony/http-foundation" : "2.6.4",
         "symfony/console":  "2.5",
         "html2text/html2text" : "1.0.1",
-        "intervention/image" : "2.2.*",
+        "intervention/image" : "2.3.*",
         "t7systems/blowfish" : "1.0.0",
         "fxp/composer-asset-plugin": "~1.0",
         "quiqqer/qui" : "dev-dev",
