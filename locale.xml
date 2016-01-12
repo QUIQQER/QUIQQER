@@ -343,6 +343,10 @@
             <de><![CDATA[Löschen]]></de>
             <en><![CDATA[Delete]]></en>
         </locale>
+        <locale name="edit">
+            <de><![CDATA[Bearbeiten]]></de>
+            <en><![CDATA[Edit]]></en>
+        </locale>
         <locale name="save">
             <de><![CDATA[Speichern]]></de>
             <en><![CDATA[Save]]></en>
