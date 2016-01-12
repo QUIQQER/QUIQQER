@@ -62,6 +62,11 @@ try {
           type="text/css"
     />
 
+    <link href="<?php echo URL_OPT_DIR; ?>bin/font-awesome/css/font-awesome.min.css"
+          rel="stylesheet"
+          type="text/css"
+    />
+
     <!--[if (lt IE 9) & (!IEMobile)]>
     <link href="<?php echo $qui_extend; ?>unsemantic/ie.css"
           rel="stylesheet"
