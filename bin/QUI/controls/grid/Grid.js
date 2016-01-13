@@ -2029,8 +2029,6 @@ define('controls/grid/Grid', [
                 if (str === '') {
                     div.set('html', '&nbsp;');
                 } else {
-                    console.log(str);
-
                     div.set('html', str);
                 }
 
