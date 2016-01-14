@@ -98,6 +98,7 @@ abstract class Child extends QUI\QDOM
     public function update()
     {
         $this->Events->fireEvent('saveBegin');
+        $this->Events->fireEvent('updateBegin');
 
         $needles   = $this->Factory->getChildAttributes();
         $savedData = array();
@@ -117,5 +118,6 @@ abstract class Child extends QUI\QDOM
         );
 
         $this->Events->fireEvent('saveEnd');
+        $this->Events->fireEvent('updateEnd');
     }
 }

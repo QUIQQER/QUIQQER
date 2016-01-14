@@ -138,7 +138,7 @@ abstract class Factory
         $childClass = $this->getChildClass();
 
         foreach ($data as $entry) {
-            $Child = new $childClass($result[0]['id'], $this);
+            $Child = new $childClass($entry['id'], $this);
 
             if ($Child instanceof QUI\CRUD\Child) {
                 $Child->setAttributes($entry);
