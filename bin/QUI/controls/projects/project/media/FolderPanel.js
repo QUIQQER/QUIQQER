@@ -275,6 +275,7 @@ define('controls/projects/project/media/FolderPanel', [
                 var Effects           = Folder.getEffects(),
                     Greyscale         = Body.getElement('[name="effect-greyscale"]'),
                     WatermarkPosition = Body.getElement('[name="effect-watermark_position"]'),
+                    WatermarkRatio    = Body.getElement('[name="effect-watermark_ratio"]'),
                     Watermark         = Body.getElement('.effect-watermark'),
                     WatermarkCell     = Body.getElement('.effect-watermark-cell'),
                     WatermarkRow      = Body.getElement('.effect-watermark-row');
@@ -299,6 +300,10 @@ define('controls/projects/project/media/FolderPanel', [
 
                 if (!("watermark_position" in Effects)) {
                     Effects.watermark_position = false;
+                }
+
+                if (!("watermark_ratio" in Effects)) {
+                    Effects.watermark_ratio = false;
                 }
 
                 self.$EffectBlur = new QUIRange({
@@ -337,6 +342,9 @@ define('controls/projects/project/media/FolderPanel', [
 
                 WatermarkPosition.value = Effects.watermark_position || '';
                 WatermarkPosition.addEvent('change', self.$refreshImageEffectFrame);
+
+                WatermarkRatio.value = Effects.watermark_ratio || '';
+                WatermarkRatio.addEvent('change', self.$refreshImageEffectFrame);
 
 
                 new QUIButton({
@@ -529,8 +537,8 @@ define('controls/projects/project/media/FolderPanel', [
             ).addButton(
                 new QUIButton({
                     alt   : Locale.get(lg, 'projects.project.site.media.filePanel.btn.delete.text'),
-                    title: Locale.get(lg, 'projects.project.site.media.filePanel.btn.delete.text'),
-                    icon : 'fa fa-trash-o icon-trash',
+                    title : Locale.get(lg, 'projects.project.site.media.filePanel.btn.delete.text'),
+                    icon  : 'fa fa-trash-o icon-trash',
                     events: {
                         onClick: function () {
                             self.del();
@@ -605,7 +613,8 @@ define('controls/projects/project/media/FolderPanel', [
             var fileId            = this.$previewImageData.id,
                 project           = this.$Media.getProject().getName(),
                 Content           = this.getContent(),
-                WatermarkPosition = Content.getElement('[name="effect-watermark_position"]');
+                WatermarkPosition = Content.getElement('[name="effect-watermark_position"]'),
+                WatermarkRatio    = Content.getElement('[name="effect-watermark_ratio"]');
 
             var Greyscale = Content.getElement('[name="effect-greyscale"]');
             var url       = URL_LIB_DIR + 'QUI/Projects/Media/bin/effectPreview.php?';
@@ -619,6 +628,7 @@ define('controls/projects/project/media/FolderPanel', [
                     greyscale         : Greyscale.checked ? 1 : 0,
                     watermark         : this.$EffectWatermark.value,
                     watermark_position: WatermarkPosition.value,
+                    watermark_ratio   : WatermarkRatio.value,
                     '__nocache'       : String.uniqueID()
                 });
 

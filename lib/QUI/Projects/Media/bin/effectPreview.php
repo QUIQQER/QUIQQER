@@ -53,9 +53,18 @@ if (isset($_REQUEST['watermark'])) {
     try {
         $MediaImage = \QUI\Projects\Media\Utils::getImageByUrl($watermark);
         $pos        = '';
+        $ratio      = false;
+
+        $WatermarkImage = $Media->getImageManager()->make(
+            $MediaImage->getFullPath()
+        );
 
         if (isset($_REQUEST['watermark_position'])) {
             $pos = $_REQUEST['watermark_position'];
+        }
+
+        if (isset($_REQUEST['watermark_ratio'])) {
+            $ratio = (int)$_REQUEST['watermark_ratio'];
         }
 
         switch ($pos) {
@@ -76,7 +85,21 @@ if (isset($_REQUEST['watermark'])) {
                 break;
         }
 
-        $Image->insert($MediaImage->getFullPath(), $watermarkPosition);
+        // ratio calc
+        if ($ratio) {
+            $imageHeight = $Image->getHeight();
+            $imageWidth  = $Image->getWidth();
+
+            $imageHeight = $imageHeight * ($ratio / 100);
+            $imageWidth  = $imageWidth * ($ratio / 100);
+
+            $WatermarkImage->resize($imageWidth, $imageHeight, function ($Constraint) {
+                $Constraint->aspectRatio();
+                $Constraint->upsize();
+            });
+        }
+
+        $Image->insert($WatermarkImage, $watermarkPosition);
 
     } catch (QUI\Exception $Exception) {
     }
