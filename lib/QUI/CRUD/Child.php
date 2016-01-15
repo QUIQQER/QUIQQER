@@ -9,7 +9,7 @@ use QUI;
 
 /**
  * Class Element
- * Abstration element for create-read-update-delete
+ * Abstraction element for create-read-update-delete
  *
  * @package QUI\CRUD
  *
@@ -75,7 +75,7 @@ abstract class Child extends QUI\QDOM
     }
 
     /**
-     * Delete the child
+     * Delete the CRUD child
      *
      * @throws QUI\ExceptionStack|QUI\Exception
      */
@@ -84,7 +84,7 @@ abstract class Child extends QUI\QDOM
         $this->Events->fireEvent('deleteBegin');
 
         QUI::getDataBase()->delete(
-            $this->Factory->getTable(),
+            $this->Factory->getDataBaseTableName(),
             array('id' => $this->getId())
         );
 
@@ -93,11 +93,14 @@ abstract class Child extends QUI\QDOM
     }
 
     /**
+     * Update the CRUD child
+     *
      * @throws QUI\ExceptionStack|QUI\Exception
      */
     public function update()
     {
         $this->Events->fireEvent('saveBegin');
+        $this->Events->fireEvent('updateBegin');
 
         $needles   = $this->Factory->getChildAttributes();
         $savedData = array();
@@ -111,11 +114,12 @@ abstract class Child extends QUI\QDOM
         }
 
         QUI::getDataBase()->update(
-            $this->Factory->getTable(),
+            $this->Factory->getDataBaseTableName(),
             $savedData,
             array('id' => $this->getId())
         );
 
         $this->Events->fireEvent('saveEnd');
+        $this->Events->fireEvent('updateEnd');
     }
 }

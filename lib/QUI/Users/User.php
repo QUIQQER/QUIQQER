@@ -543,7 +543,7 @@ class User implements QUI\Interfaces\Users\User
 
         $Groups = QUI::getGroups();
 
-        $this->Group   = array();
+        $this->Group  = array();
         $this->groups = false;
 
         if (is_array($groups)) {
@@ -588,7 +588,7 @@ class User implements QUI\Interfaces\Users\User
         if (is_string($groups)) {
             try {
                 $this->Group[] = $Groups->get($groups);
-                $this->groups = ',' . $groups . ',';
+                $this->groups  = ',' . $groups . ',';
 
             } catch (QUI\Exception $Exception) {
             }
@@ -904,7 +904,7 @@ class User implements QUI\Interfaces\Users\User
         QUI::getEvents()->fireEvent('userSetPassword', array($this));
 
 
-        $newpass         = Manager::genHash($new);
+        $newpass        = Manager::genHash($new);
         $this->password = $newpass;
 
         QUI::getDataBase()->update(

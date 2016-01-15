@@ -504,9 +504,31 @@ class Locale
     {
         $str = explode(' ', $str);
 
-        $group = str_replace(array('[', ']'), '', $str);
+        if (!isset($str[1])) {
+            return $str;
+        }
+
+        $group = str_replace(array('[', ']'), '', $str[0]);
         $var   = trim($str[1]);
 
         return array($group, $var);
+    }
+
+    /**
+     * Parse a locale string and translate it
+     * a locale strings looks like: [group] var.var.var
+     *
+     * @param $title
+     * @return string
+     */
+    public function parseLocaleString($title)
+    {
+        if (!$this->isLocaleString($title)) {
+            return $title;
+        }
+
+        $parts = $this->getPartsOfLocaleString($title);
+
+        return $this->get($parts[0], $parts[1]);
     }
 }

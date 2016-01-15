@@ -92,7 +92,9 @@ require(requireList, function () {
 
     QUI.setAttributes({
         'control-loader-type' : 'line-scale',
-        'control-loader-color': '#2f8fc8'
+        'control-loader-color': '#2f8fc8',
+
+        'control-desktop-panel-sheet-closetext': Locale.get('quiqqer/system', 'close')
     });
 
     QUI.addEvent('onError', function (err, url, line) {

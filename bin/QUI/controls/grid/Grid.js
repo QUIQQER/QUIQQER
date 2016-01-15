@@ -1,4 +1,3 @@
-
 /**
  * OmniGrid Table Object
  *
@@ -59,71 +58,71 @@ define('controls/grid/Grid', [
      */
     return new Class({
 
-        Extends : QUIControl,
-        Type    : 'controls/grid/Grid',
+        Extends: QUIControl,
+        Type   : 'controls/grid/Grid',
 
-        options : {
-            name          : false,
-            alternaterows : true,
-            showHeader    : true,
-            sortHeader    : true,
-            resizeColumns : true,
-            selectable    : true,
-            serverSort    : false,
-            sortOn        : null,
-            sortBy        : 'ASC',
-            filterHide    : true,
-            filterHideCls : 'hide',
+        options: {
+            name         : false,
+            alternaterows: true,
+            showHeader   : true,
+            sortHeader   : true,
+            resizeColumns: true,
+            selectable   : true,
+            serverSort   : false,
+            sortOn       : null,
+            sortBy       : 'ASC',
+            filterHide   : true,
+            filterHideCls: 'hide',
 
-            filterSelectedCls : 'filter',
-            multipleSelection : false,
-            editable          : false,   // Grid.addEvent('editcomplete', function(data) // selectable muss "true" sein!
-            editondblclick    : false,
-            editType          : 'input', // textarea | input
-            resizeHeaderOnly  : false,
+            filterSelectedCls: 'filter',
+            multipleSelection: false,
+            editable         : false,   // Grid.addEvent('editcomplete', function(data) // selectable muss "true" sein!
+            editondblclick   : false,
+            editType         : 'input', // textarea | input
+            resizeHeaderOnly : false,
 
             // accordion
-            accordion               : false,
-            openAccordionOnClick    : true,
-            accordionRenderer       : null,
-            accordionLiveRenderer   : null,
-            autoSectionToggle       : true, // if true just one section can be open/visible
-            showtoggleicon          : true,
-            toggleiconTitle         : 'Details',
-            openAccordionOnDblClick : false,
+            accordion              : false,
+            openAccordionOnClick   : true,
+            accordionRenderer      : null,
+            accordionLiveRenderer  : null,
+            autoSectionToggle      : true, // if true just one section can be open/visible
+            showtoggleicon         : true,
+            toggleiconTitle        : 'Details',
+            openAccordionOnDblClick: false,
 
             // pagination
-            url            : null,
-            pagination     : false,
-            page           : 1,
-            perPageOptions : [5,10, 20, 50, 75, 100, 150, 200, 250, 500, 750, 1000, 2500, 5000],
-            perPage        : 20,
-            filterInput    : true,
+            url           : null,
+            pagination    : false,
+            page          : 1,
+            perPageOptions: [5, 10, 20, 50, 75, 100, 150, 200, 250, 500, 750, 1000, 2500, 5000],
+            perPage       : 20,
+            filterInput   : true,
             // dataProvider
-            dataProvider   : null,
+            dataProvider  : null,
 
             //export
-            exportData     : false,
-            exportTypes    : {
-                pdf  : 'PDF',
-                csv  : 'CSV',
-                json : 'JSON'
+            exportData    : false,
+            exportTypes   : {
+                pdf : 'PDF',
+                csv : 'CSV',
+                json: 'JSON'
             }, // {print : 'Drucken', pdf : 'PDF', csv : 'CSV', json : 'JSON'},
-            exportRenderer : null, // function(data){data.type data.data data.Grid}
-            exportBinUrl   : URL_BIN_DIR + 'js/extern/omnigrid1.2.3/omnigrid/',
+            exportRenderer: null, // function(data){data.type data.data data.Grid}
+            exportBinUrl  : URL_BIN_DIR + 'js/extern/omnigrid1.2.3/omnigrid/',
 
             // drag & Drop
-            dragdrop          : false,
-            droppables        : [],
-            dragDropDataIndex : '',
-            dragDropClass     : false
+            dragdrop         : false,
+            droppables       : [],
+            dragDropDataIndex: '',
+            dragDropClass    : false
         },
 
-        $data           : false,
-        $columnModel    : false,
-        $refreshDelayID : null,
+        $data          : false,
+        $columnModel   : false,
+        $refreshDelayID: null,
 
-        initialize : function (container, options) {
+        initialize: function (container, options) {
             // column model
             if (typeof options.columnModel !== 'undefined') {
                 this.$columnModel = options.columnModel;
@@ -153,18 +152,18 @@ define('controls/grid/Grid', [
             }
 
             this.container.set({
-                'tabindex' : '-1',
-                styles : {
-                    'MozOutline' : 'none',
-                    'outline'    : 0
+                'tabindex'  : '-1',
+                styles      : {
+                    'MozOutline': 'none',
+                    'outline'   : 0
                 },
-                events : {
-                    'focus'     : this.focus.bind(this),
-                    'blur'      : this.blur.bind(this),
-                    'mousedown' : this.mousedown.bind(this),
-                    'mouseup'   : this.mouseup.bind(this)
+                events      : {
+                    'focus'    : this.focus.bind(this),
+                    'blur'     : this.blur.bind(this),
+                    'mousedown': this.mousedown.bind(this),
+                    'mouseup'  : this.mouseup.bind(this)
                 },
-                'data-quiid' : this.getId()
+                'data-quiid': this.getId()
             });
 
             this.draw();
@@ -173,20 +172,20 @@ define('controls/grid/Grid', [
             this.loadData();
         },
 
-        destroy : function () {
+        destroy: function () {
             this.removeAll();
 
             this.container.empty();
             this.container.setStyles({
-                width  : '',
-                height : ''
+                width : '',
+                height: ''
             });
 
             this.container.removeClass('omnigrid');
         },
 
         // API
-        reset : function () {
+        reset: function () {
             var t = this;
 
             t.renderData();
@@ -214,7 +213,7 @@ define('controls/grid/Grid', [
                 }
 
                 el.getdate = function (str) {
-                    function fixYear(yr) {
+                    function fixYear (yr) {
                         yr = +yr;
 
                         if (yr < 50) {
@@ -263,7 +262,7 @@ define('controls/grid/Grid', [
                         function (x, p1, p2, p3) {
                             return p1 + p3;
                         }
-                                            );
+                    );
 
                     return tmp.replace(/<\/?[^>]+>/gi, '');
                 };
@@ -292,11 +291,11 @@ define('controls/grid/Grid', [
                             return 0;
                         }
 
-                        if (el.sortBy == 'ASC' && var1 < var2) {
-                            return -1;
+                        if (el.sortBy == 'ASC') {
+                            return (var1 < var2);
                         }
 
-                        return 1;
+                        return (var1 > var2);
                     }
 
                     if (dataType == 'date') {
@@ -330,7 +329,7 @@ define('controls/grid/Grid', [
         /**
          * Resize the grid
          */
-        resize : function () {
+        resize: function () {
             var Container = this.container,
                 width     = Container.getSize().x,
                 buttons   = Container.getElements('.tDiv button'),
@@ -371,10 +370,10 @@ define('controls/grid/Grid', [
          *
          * @return {Object}
          */
-        getPaginationData : function () {
+        getPaginationData: function () {
             return {
-                perPage : this.getAttribute('perPage'),
-                page    : this.getAttribute('page')
+                perPage: this.getAttribute('perPage'),
+                page   : this.getAttribute('page')
             };
         },
 
@@ -395,7 +394,7 @@ define('controls/grid/Grid', [
             if (options.li) {
                 li = options.li;
             } else {
-                li = t.elements[ sels[0] ];
+                li = t.elements[sels[0]];
             }
 
             t.finishEditing();
@@ -429,22 +428,22 @@ define('controls/grid/Grid', [
             }
 
             var td       = li.getElements('div.td')[c],
-                data     = this.$data[ sels[0] ],
+                data     = this.$data[sels[0]],
                 width    = td.getStyle('width').toInt() - 5,
-                html     = data[ colmod.dataIndex ],
+                html     = data[colmod.dataIndex],
                 editType = colmod.editType ? colmod.editType : this.getAttribute('editType');
 
             td.innerHTML = '';
 
             var input = new Element(editType, {
-                'class' : 'inline',
-                style   : "width: " + width + "px; height: auto;",
-                value   : html,
-                title   : 'Doppelklick oder Enter um die änderungen zu übernehmen',
+                'class': 'inline',
+                style  : "width: " + width + "px; height: auto;",
+                value  : html,
+                title  : 'Doppelklick oder Enter um die änderungen zu übernehmen',
                 events : {
-                    keyup    : t.finishEditing.bind(this),
-                    blur     : t.finishEditing.bind(this),
-                    dblclick : t.finishEditing.bind(this)
+                    keyup   : t.finishEditing.bind(this),
+                    blur    : t.finishEditing.bind(this),
+                    dblclick: t.finishEditing.bind(this)
                 }
             });
 
@@ -456,11 +455,11 @@ define('controls/grid/Grid', [
             input.focus();
 
             t.inlineEditSafe = {
-                row         : sels[0],
-                columnModel : colmod,
-                td          : td,
-                input       : input,
-                oldvalue    : html
+                row        : sels[0],
+                columnModel: colmod,
+                td         : td,
+                input      : input,
+                oldvalue   : html
             };
 
             t.inlineeditmode = true;
@@ -484,7 +483,7 @@ define('controls/grid/Grid', [
             }
 
             var row      = t.inlineEditSafe.row,
-                data     = this.$data[ row ],
+                data     = this.$data[row],
                 colmod   = t.inlineEditSafe.columnModel,
                 td       = t.inlineEditSafe.td,
                 editType = colmod.editType ? colmod.editType : this.getAttribute('editType');
@@ -500,22 +499,22 @@ define('controls/grid/Grid', [
 
             if (editType == 'input') {
                 if ((evt && ((evt.type == 'keyup' && evt.key == 'enter') || (evt.type == 'dblclick')))) {
-                    data[ colmod.dataIndex ] = t.inlineEditSafe.input.value;
+                    data[colmod.dataIndex] = t.inlineEditSafe.input.value;
                 } else {
-                    data[ colmod.dataIndex ] = t.inlineEditSafe.oldvalue;
+                    data[colmod.dataIndex] = t.inlineEditSafe.oldvalue;
                 }
             }
 
             if (editType == 'textarea') {
                 if (evt && evt.type == 'dblclick') {
-                    data[ colmod.dataIndex ] = t.inlineEditSafe.input.value;
+                    data[colmod.dataIndex] = t.inlineEditSafe.input.value;
                 } else {
-                    data[ colmod.dataIndex ] = t.inlineEditSafe.oldvalue;
+                    data[colmod.dataIndex] = t.inlineEditSafe.oldvalue;
                 }
             }
 
-            if (typeof data[ colmod.dataIndex ] === 'undefined' || !data[ colmod.dataIndex ]) {
-                data[ colmod.dataIndex ] = '';
+            if (typeof data[colmod.dataIndex] === 'undefined' || !data[colmod.dataIndex]) {
+                data[colmod.dataIndex] = '';
             }
 
 
@@ -542,7 +541,7 @@ define('controls/grid/Grid', [
             t.inlineEditSafe = null;
         },
 
-        toggle : function (el) {
+        toggle: function (el) {
             if (typeof el.style === 'undefined') {
                 return;
             }
@@ -556,12 +555,12 @@ define('controls/grid/Grid', [
         },
 
         // API
-        getSection : function (row) {
+        getSection: function (row) {
             return this.ulBody.getElement('.section-' + row);
         },
 
         // API
-        removeSections : function () {
+        removeSections: function () {
             var i, len;
             var sections = this.ulBody.getElements('.section');
 
@@ -602,23 +601,23 @@ define('controls/grid/Grid', [
             }
         },
 
-        focus : function () {
+        focus: function () {
             this.fireEvent('focus');
         },
 
-        blur : function () {
+        blur: function () {
             this.fireEvent('blur', [this]);
         },
 
-        mousedown : function () {
+        mousedown: function () {
             this.fireEvent('mouseDown', [this]);
         },
 
-        mouseup : function () {
+        mouseup: function () {
             this.fireEvent('mouseUp', [this]);
         },
 
-        onRowMouseOver : function (evt) {
+        onRowMouseOver: function (evt) {
             var li = this.getLiParent(evt.target);
 
             if (!li) {
@@ -634,13 +633,13 @@ define('controls/grid/Grid', [
             }
 
             this.fireEvent("mouseOver", {
-                target  : this,
-                row     : li.retrieve('row'),
-                element : li
+                target : this,
+                row    : li.retrieve('row'),
+                element: li
             });
         },
 
-        onRowMouseOut : function (evt) {
+        onRowMouseOut: function (evt) {
             var li = this.getLiParent(evt.target);
 
             if (!li) {
@@ -656,13 +655,13 @@ define('controls/grid/Grid', [
             }
 
             this.fireEvent("mouseOut", {
-                target  : this,
-                row     : li.retrieve('row'),
-                element : li
+                target : this,
+                row    : li.retrieve('row'),
+                element: li
             });
         },
 
-        onRowMouseDown : function (event) {
+        onRowMouseDown: function (event) {
             if (this._mousedown) {
                 return;
             }
@@ -671,7 +670,7 @@ define('controls/grid/Grid', [
             this._dragtimer = this.startDrag.delay(200, this, event);
         },
 
-        onRowMouseUp : function (event) {
+        onRowMouseUp: function (event) {
             // stop drag an drop
             if (!this.getAttribute('dragdrop')) {
                 return false;
@@ -691,11 +690,11 @@ define('controls/grid/Grid', [
             this._stopdrag  = true;
         },
 
-        onRowClick : function (evt) {
+        onRowClick: function (evt) {
             var i, len, row;
 
-            var t  = this,
-                li = this.getLiParent(evt.target),
+            var t       = this,
+                li      = this.getLiParent(evt.target),
                 onclick = false;
 
             if (!li) {
@@ -709,11 +708,10 @@ define('controls/grid/Grid', [
             row = li.retrieve('row');
 
             if (t.getAttribute('selectable')) {
-                var selectedNum  = t.selected.length,
-                    dontselect   = false;
+                var selectedNum = t.selected.length,
+                    dontselect  = false;
 
-                if ((!evt.control && !evt.shift && !evt.meta) ||
-                    !t.getAttribute('multipleSelection')) {
+                if ((!evt.control && !evt.shift && !evt.meta) || !t.getAttribute('multipleSelection')) {
                     for (i = 0, len = t.elements.length; i < len; i++) {
                         t.elements[i].removeClass('selected');
                     }
@@ -724,7 +722,7 @@ define('controls/grid/Grid', [
                 if (evt.control || evt.meta) {
                     for (i = 0; i < selectedNum; i++) {
                         if (row == t.selected[i]) {
-                            t.elements[ row ].removeClass('selected');
+                            t.elements[row].removeClass('selected');
                             t.selected.splice(i, 1);
 
                             dontselect = true;
@@ -759,32 +757,31 @@ define('controls/grid/Grid', [
             }
 
             if (t.getAttribute('accordion') &&
-                t.getAttribute('openAccordionOnClick') &&
-                !t.getAttribute('openAccordionOnDblClick')) {
+                t.getAttribute('openAccordionOnClick') && !t.getAttribute('openAccordionOnDblClick')) {
                 t.accordianOpen(li);
             }
 
-            if ((onclick = t.$data[ row ].onclick)) {
+            if ((onclick = t.$data[row].onclick)) {
                 if (typeof onclick === 'string') {
                     if (!eval(onclick + '(li, data, evt);')) {
                         return;
                     }
                 } else {
-                    onclick(li, t.$data[ row ], evt);
+                    onclick(li, t.$data[row], evt);
                 }
             }
 
             t.fireEvent("click", [{
-                                      indices : t.selected,
-                                      target  : t,
-                                      row     : row,
-                                      element : li,
-                                      cell    : t.getTdParent(evt.target),
-                                      evt     : evt
-                                  }, this]);
+                indices: t.selected,
+                target : t,
+                row    : row,
+                element: li,
+                cell   : t.getTdParent(evt.target),
+                evt    : evt
+            }, this]);
         },
 
-        onRowDblClick : function (evt) {
+        onRowDblClick: function (evt) {
             var li = this.getLiParent(evt.target);
 
             if (!li) {
@@ -811,8 +808,8 @@ define('controls/grid/Grid', [
                 }
 
                 var obj = this.edit({
-                    columnIndex : i,
-                    li : li
+                    columnIndex: i,
+                    li         : li
                 });
 
                 if (obj) {
@@ -827,27 +824,27 @@ define('controls/grid/Grid', [
                 this.accordianOpen(li);
             }
 
-            if ((ondblclick = this.$data[ row ].ondblclick)) {
+            if ((ondblclick = this.$data[row].ondblclick)) {
                 if (typeof ondblclick === 'string') {
                     if (!eval(ondblclick + '(li, t.$data[ row ]);')) {
                         return;
                     }
                 } else {
-                    ondblclick(li, this.$data[ row ]);
+                    ondblclick(li, this.$data[row]);
                 }
             }
 
             var eventparams = {
-                row     : row,
-                target  : this,
-                element : li,
-                cell    : this.getTdParent(evt.target)
+                row    : row,
+                target : this,
+                element: li,
+                cell   : this.getTdParent(evt.target)
             };
 
             this.fireEvent("dblClick", eventparams);
         },
 
-        onRowContext : function (event) {
+        onRowContext: function (event) {
             var li = this.getLiParent(event.target);
 
             if (!li) {
@@ -857,11 +854,11 @@ define('controls/grid/Grid', [
             event.stop();
 
             this.fireEvent('contextMenu', {
-                row     : li.retrieve('row'),
-                target  : this,
-                event   : event,
-                element : li,
-                cell    : this.getTdParent(event.target)
+                row    : li.retrieve('row'),
+                target : this,
+                event  : event,
+                element: li,
+                cell   : this.getTdParent(event.target)
             });
         },
 
@@ -884,8 +881,8 @@ define('controls/grid/Grid', [
             if (this.getAttribute('accordion') &&
                 (typeof section === 'undefined' || !section)) {
                 var li2 = new Element('li.section', {
-                    styles : {
-                        width : this.sumWidth + 2 * this.visibleColumns
+                    styles: {
+                        width: this.sumWidth + 2 * this.visibleColumns
                     }
                 });
 
@@ -917,8 +914,7 @@ define('controls/grid/Grid', [
                     }
                 }
 
-                if (!this.getAttribute('accordionRenderer') &&
-                    !this.getAttribute('accordionLiveRenderer')) {
+                if (!this.getAttribute('accordionRenderer') && !this.getAttribute('accordionLiveRenderer')) {
                     section.setStyle('display', 'block');
                 }
             }
@@ -933,10 +929,10 @@ define('controls/grid/Grid', [
                 this.showLoader();
 
                 this.getAttribute('accordionLiveRenderer')({
-                    parent : section,
-                    row    : li.retrieve('row'),
-                    grid   : this,
-                    event  : event
+                    parent: section,
+                    row   : li.retrieve('row'),
+                    grid  : this,
+                    event : event
                 });
 
                 this.hideLoader();
@@ -945,29 +941,30 @@ define('controls/grid/Grid', [
             if (this.getAttribute('showtoggleicon') && li.getElement('.toggleicon')) {
                 li.getElement('.toggleicon')
                     .setStyle(
-                    'background-position',
-                    section.getStyle('display') == 'block' ? '-16px 0' : '0 0'
-                );
+                        'background-position',
+                        section.getStyle('display') == 'block' ? '-16px 0' : '0 0'
+                    );
             }
 
             this.lastsection = section;
         },
 
-        onLoadData : function (data) {
+        onLoadData: function (data) {
             this.setData(data);
 
             // API
             this.fireEvent("loadData", {
-                target : this
+                target: this
             });
         },
 
-        unique: function (a, asNumber) {
-            function om_sort_number(a, b) {
+        unique  : function (a, asNumber) {
+            function om_sort_number (a, b) {
                 return a - b;
             }
 
-            var sf =  asNumber ? om_sort_number : function () {};
+            var sf = asNumber ? om_sort_number : function () {
+            };
 
             a.sort(sf);
             a = a.unique();
@@ -975,7 +972,7 @@ define('controls/grid/Grid', [
             return a;
         },
         // API
-        loadData : function (url) {
+        loadData: function (url) {
             var options   = this.getAttributes(),
                 container = this.container;
 
@@ -988,8 +985,8 @@ define('controls/grid/Grid', [
             // pagination
             if (this.getAttribute('pagination')) {
                 data = {
-                    page    : this.getAttribute('page'),
-                    perpage : this.getAttribute('perPage')
+                    page   : this.getAttribute('page'),
+                    perpage: this.getAttribute('perPage')
                 };
             }
 
@@ -1015,8 +1012,8 @@ define('controls/grid/Grid', [
             }
 
             var request = new Request.JSON({
-                url  : (url !== null) ? url : options.url,
-                data : data
+                url : (url !== null) ? url : options.url,
+                data: data
             });
 
             request.addEvent("complete", this.onLoadData.bind(this));
@@ -1024,7 +1021,7 @@ define('controls/grid/Grid', [
         },
 
         // API
-        refresh : function () {
+        refresh: function () {
             this.resetButtons();
 
             if (this.getAttribute('onrefresh')) {
@@ -1036,7 +1033,7 @@ define('controls/grid/Grid', [
             this.loadData();
         },
 
-        resetButtons : function () {
+        resetButtons: function () {
             var btns = this.getAttribute('buttons');
 
             if (!btns || !btns.length) {
@@ -1046,11 +1043,11 @@ define('controls/grid/Grid', [
             var i, len, Btn;
 
             for (i = 0, len = btns.length; i < len; i++) {
-                if (!btns[ btns[i].name ]) {
+                if (!btns[btns[i].name]) {
                     continue;
                 }
 
-                Btn = btns[ btns[i].name ];
+                Btn = btns[btns[i].name];
 
                 if (btns[i].disabled) {
                     Btn.setDisable();
@@ -1066,7 +1063,7 @@ define('controls/grid/Grid', [
          *
          * @return {Array}
          */
-        getButtons : function () {
+        getButtons: function () {
             var buttons = [];
 
             var btns = this.getAttribute('buttons');
@@ -1078,30 +1075,30 @@ define('controls/grid/Grid', [
             var i, len;
 
             for (i = 0, len = btns.length; i < len; i++) {
-                if (!btns[ btns[i].name ]) {
+                if (!btns[btns[i].name]) {
                     continue;
                 }
 
-                buttons.push(btns[ btns[i].name ]);
+                buttons.push(btns[btns[i].name]);
             }
 
             return buttons;
         },
 
-        dataLoader : function () {
+        dataLoader: function () {
             this.setAttribute('page', 1);
             this.onLoadData({
-                data    : {},
-                total   : 0,
-                page    : 1,
-                perPage : 0
+                data   : {},
+                total  : 0,
+                page   : 1,
+                perPage: 0
             });
 
             this.loadData();
         },
 
         // API
-        setData : function (data, cm) {
+        setData: function (data, cm) {
             var options   = this.getAttributes(),
                 container = this.container;
 
@@ -1137,10 +1134,10 @@ define('controls/grid/Grid', [
                     page = ((data.page - 1) * options.perPage + 1);
 
                 var stats = '<span>' + page + '</span>' +
-                    '<span>..</span>' +
-                    '<span>' + to + '</span>' +
-                    '<span> / </span>' +
-                    '<span>' + data.total + '</span>';
+                            '<span>..</span>' +
+                            '<span>' + to + '</span>' +
+                            '<span> / </span>' +
+                            '<span>' + data.total + '</span>';
 
                 container.getElements('div.pDiv .pPageStat').set('html', stats);
 
@@ -1157,7 +1154,7 @@ define('controls/grid/Grid', [
         },
 
         // API
-        getData : function () {
+        getData: function () {
             if (!this.$data.length) {
                 this.$data = [];
             }
@@ -1166,7 +1163,7 @@ define('controls/grid/Grid', [
         },
 
         // API
-        getDataByRow : function (row) {
+        getDataByRow: function (row) {
             if (row < 0) {
                 return false;
             }
@@ -1177,16 +1174,16 @@ define('controls/grid/Grid', [
         },
 
         // API
-        getRowElement : function (row) {
-            if (typeof this.elements[ row ] !== 'undefined') {
-                return this.elements[ row ];
+        getRowElement: function (row) {
+            if (typeof this.elements[row] !== 'undefined') {
+                return this.elements[row];
             }
 
             return false;
         },
 
         // API
-        setDataByRow : function (row, data) {
+        setDataByRow: function (row, data) {
             if (row < 0) {
                 return false;
             }
@@ -1197,13 +1194,13 @@ define('controls/grid/Grid', [
 
             this.$data[row] = data;
 
-            var Row = this.container.getElement('[data-row="' + row + '"]');
+            var Row    = this.container.getElement('[data-row="' + row + '"]');
             var newRow = this.renderRow(row, this.$data[row]);
 
             newRow.inject(Row, 'after');
             Row.destroy();
 
-            this.elements[ row ] = newRow;
+            this.elements[row] = newRow;
         },
 
         setScroll: function (x, y) {
@@ -1229,7 +1226,7 @@ define('controls/grid/Grid', [
         },
 
         // API
-        deleteRow : function (row) {
+        deleteRow: function (row) {
             if (row >= 0 && row < this.$data.length) {
                 this.$data.splice(row, 1);
                 this.reset();
@@ -1241,16 +1238,16 @@ define('controls/grid/Grid', [
          *
          * @param {Array} rowIds - list of the row ids
          */
-        deleteRows : function (rowIds) {
+        deleteRows: function (rowIds) {
             for (var i = 0, len = rowIds.length; i < len; i++) {
-                delete this.$data[ rowIds[ i ] ];
+                delete this.$data[rowIds[i]];
             }
 
             this.$data = this.$data.clean();
             this.reset();
         },
 
-        isHidden : function (i) {
+        isHidden: function (i) {
             return this.elements[i].hasClass(
                 this.getAttribute('filterHideCls')
             );
@@ -1278,14 +1275,14 @@ define('controls/grid/Grid', [
             }
 
             gBlock = new Element('div.gBlock', {
-                styles : {
-                    position : 'absolute',
-                    top      : 0,
-                    left     : 0,
-                    zIndex   : 999,
-                    opacity  : 0.5,
-                    filter   : 'alpha(opacity=50)',
-                    background: 'white none repeat scroll 0% 0%;',
+                styles: {
+                    position                       : 'absolute',
+                    top                            : 0,
+                    left                           : 0,
+                    zIndex                         : 999,
+                    opacity                        : 0.5,
+                    filter                         : 'alpha(opacity=50)',
+                    background                     : 'white none repeat scroll 0% 0%;',
                     '-moz-background-clip'         : '-moz-initial',
                     '-moz-background-origin'       : '-moz-initial',
                     '-moz-background-inline-policy': '-moz-initial'
@@ -1293,9 +1290,9 @@ define('controls/grid/Grid', [
             });
 
             gBlock.setStyles({
-                width  : this.getAttribute('width'),
-                height : this.getAttribute('height') - 1,
-                top    : 0
+                width : this.getAttribute('width'),
+                height: this.getAttribute('height') - 1,
+                top   : 0
             });
 
             container.appendChild(gBlock);
@@ -1305,7 +1302,7 @@ define('controls/grid/Grid', [
             }
         },
 
-        showLoader : function () {
+        showLoader: function () {
             if (this.loader) {
                 return;
             }
@@ -1313,16 +1310,16 @@ define('controls/grid/Grid', [
             this.showWhiteOverflow();
 
             this.loader = new Element('div.elementloader', {
-                styles : {
-                    top  : this.options.height / 2 - 16,
-                    left : this.options.width / 2
+                styles: {
+                    top : this.options.height / 2 - 16,
+                    left: this.options.width / 2
                 }
             });
 
             this.loader.inject(this.container);
         },
 
-        hideLoader : function () {
+        hideLoader: function () {
             if (!this.loader) {
                 return;
             }
@@ -1333,7 +1330,7 @@ define('controls/grid/Grid', [
         },
 
         // API
-        selectAll : function () {
+        selectAll: function () {
             var i, len, el;
 
             for (i = 0, len = this.elements.length; i < len; i++) {
@@ -1345,12 +1342,12 @@ define('controls/grid/Grid', [
 
             //this.resetButtons();
             this.fireEvent("click", {
-                indices : this.selected,
-                target  : this
+                indices: this.selected,
+                target : this
             });
         },
 
-        selectRow : function (Row, event) {
+        selectRow: function (Row, event) {
             if (typeof event !== 'undefined' &&
                 (event.shift || event.control || event.meta) &&
                 this.options.multipleSelection) {
@@ -1372,7 +1369,7 @@ define('controls/grid/Grid', [
             Row.addClass('selected');
         },
 
-        unSelectRow : function (Row) {
+        unSelectRow: function (Row) {
             Row.removeClass('selected');
 
             var i, len;
@@ -1390,9 +1387,9 @@ define('controls/grid/Grid', [
         },
 
         // API
-        unselectAll : function () {
+        unselectAll: function () {
             for (var i = 0, len = this.elements.length; i < len; i++) {
-                this.elements[ i ].removeClass('selected');
+                this.elements[i].removeClass('selected');
             }
 
             this.selected = [];
@@ -1400,11 +1397,11 @@ define('controls/grid/Grid', [
         },
 
         // API
-        getSelectedIndices : function () {
+        getSelectedIndices: function () {
             return this.selected;
         },
 
-        getSelectedData : function () {
+        getSelectedData: function () {
             var i, len;
             var data = [];
 
@@ -1416,7 +1413,7 @@ define('controls/grid/Grid', [
         },
 
         // API
-        setSelectedIndices : function (arr) {
+        setSelectedIndices: function (arr) {
             var i, alen, li;
 
             this.selected = arr;
@@ -1431,7 +1428,7 @@ define('controls/grid/Grid', [
         },
 
         // mislim da je visak
-        onMouseOver : function (obj) {
+        onMouseOver: function (obj) {
             obj.columnModel.onMouseOver(obj.element, obj.data);
         },
 
@@ -1446,7 +1443,7 @@ define('controls/grid/Grid', [
         },
 
         // API
-        removeAll : function () {
+        removeAll: function () {
             for (var i = 0, len = this.elements; i < len; i++) {
                 this.elements[i].destroy();
             }
@@ -1459,7 +1456,7 @@ define('controls/grid/Grid', [
         },
 
         // API
-        setColumnModel : function (cmu) {
+        setColumnModel    : function (cmu) {
             if (!cmu) {
                 return;
             }
@@ -1468,7 +1465,7 @@ define('controls/grid/Grid', [
             this.draw();
         },
         // API
-        setColumnProperty: function (columnName, property, value) {
+        setColumnProperty : function (columnName, property, value) {
             var i, len;
             var cmu = this.$columnModel;
 
@@ -1500,22 +1497,22 @@ define('controls/grid/Grid', [
                 var dataType = typeof (this.$data[0][cn]) == "number" ? "number" : "string";
 
                 this.$columnModel.push({
-                    header    : cn,
-                    dataIndex : cn,
-                    dataType  : dataType,
-                    editable  : true
+                    header   : cn,
+                    dataIndex: cn,
+                    dataType : dataType,
+                    editable : true
                 });
             }
 
             this.fireEvent("autoColumModel", {
-                target      : this,
-                columnModel : this.$columnModel
+                target     : this,
+                columnModel: this.$columnModel
             });
 
             this.draw();
         },
         // API
-        setSize: function (w, h) {
+        setSize           : function (w, h) {
             var container = this.container,
                 gBlock    = container.getElement('.gBlock'),
                 hDiv      = container.getElement('.hDiv'),
@@ -1547,13 +1544,13 @@ define('controls/grid/Grid', [
 
             if (gBlock) {
                 gBlock.setStyles({
-                    width  : this.getAttribute('width'),
-                    height : bodyEl.getSize().y
+                    width : this.getAttribute('width'),
+                    height: bodyEl.getSize().y
                 });
             }
         },
 
-        onBodyScroll : function () {
+        onBodyScroll: function () {
             var hbox = this.container.getElement('.hDivBox'),
                 bbox = this.container.getElement('.bDiv'),
                 xs   = bbox.getScroll().x;
@@ -1562,21 +1559,21 @@ define('controls/grid/Grid', [
             this.rePosDrag();
         },
 
-        onBodyClick : function () {
+        onBodyClick: function () {
 
         },
 
-        onBodyMouseOver : function () {
+        onBodyMouseOver: function () {
 
         },
 
-        onBodyMouseOut : function () {
+        onBodyMouseOut: function () {
 
         },
 
         // Drag columns events
-        rePosDrag : function () {
-            var t = this;
+        rePosDrag: function () {
+            var t       = this;
             var options = t.getAttributes();
 
             if (!options.resizeColumns) {
@@ -1588,12 +1585,12 @@ define('controls/grid/Grid', [
             var dragTempWidth = 0,
                 container     = t.container,
 
-                cDrags  = container.getElements('.cDrag div'),
-                scrollX = container.getElement('div.bDiv').getScroll().x,
+                cDrags        = container.getElements('.cDrag div'),
+                scrollX       = container.getElement('div.bDiv').getScroll().x,
 
-                cModel  = this.$columnModel,
-                browser = false, //Browser.Engine.trident,
-                cWidth  = 0;
+                cModel        = this.$columnModel,
+                browser       = false, //Browser.Engine.trident,
+                cWidth        = 0;
 
             if (typeof browser == 'undefined') {
                 browser = false;
@@ -1616,20 +1613,20 @@ define('controls/grid/Grid', [
             }
         },
 
-        onColumnDragComplete : function (target) {
+        onColumnDragComplete: function (target) {
             var t = this;
             var c, len, columnModel;
 
             t.dragging = false;
 
-            var colindex = target.retrieve('column'),
-                cDrag    = t.container.getElement('div.cDrag'),
-                scrollX  = t.container.getElement('div.bDiv').getScroll().x,
-                dragSt   = cDrag.getElements('div')[colindex],
-                browser  = false, //Browser.Engine.trident,
-                cModel   = this.$columnModel,
+            var colindex       = target.retrieve('column'),
+                cDrag          = t.container.getElement('div.cDrag'),
+                scrollX        = t.container.getElement('div.bDiv').getScroll().x,
+                dragSt         = cDrag.getElements('div')[colindex],
+                browser        = false, //Browser.Engine.trident,
+                cModel         = this.$columnModel,
 
-                pos = 0,
+                pos            = 0,
 
                 visibleColumns = t.visibleColumns,
                 elements       = t.ulBody.getElements('li.tr');
@@ -1654,7 +1651,7 @@ define('controls/grid/Grid', [
                 pos = 30;
             }
 
-            cModel[ colindex ].width = pos - 2; // -2 fix by mor
+            cModel[colindex].width = pos - 2; // -2 fix by mor
             t.sumWidth += pos;
 
             t.ulBody.setStyle('width', t.sumWidth + visibleColumns * (browser ? 1 : 1));
@@ -1683,31 +1680,31 @@ define('controls/grid/Grid', [
             t.rePosDrag();
         },
 
-        onColumnDragStart : function () {
+        onColumnDragStart: function () {
             this.dragging = true;
         },
 
-        onColumnDragging : function (target) {
+        onColumnDragging: function (target) {
             target.setStyle('top', -1);
         },
 
-        overDragColumn : function (evt) {
+        overDragColumn: function (evt) {
             evt.target.addClass('dragging');
         },
 
-        outDragColumn : function (evt) {
+        outDragColumn: function (evt) {
             evt.target.removeClass('dragging');
         },
 
         // Header events
-        clickHeaderColumn : function (evt) {
+        clickHeaderColumn: function (evt) {
             if (this.dragging) {
                 return;
             }
 
             var Target      = evt.target,
                 colindex    = Target.getAttribute('column'),
-                columnModel = this.$columnModel[ colindex ] || {},
+                columnModel = this.$columnModel[colindex] || {},
                 colSort     = this.getAttribute('sortBy');
 
             if (!colSort) {
@@ -1727,7 +1724,7 @@ define('controls/grid/Grid', [
             this.sort(colindex, colSort);
         },
 
-        overHeaderColumn : function (evt) {
+        overHeaderColumn: function (evt) {
             if (this.dragging) {
                 return;
             }
@@ -1742,7 +1739,7 @@ define('controls/grid/Grid', [
             evt.target.addClass(columnModel.sort);
         },
 
-        outHeaderColumn : function (evt) {
+        outHeaderColumn: function (evt) {
             if (this.dragging) {
                 return;
             }
@@ -1799,7 +1796,7 @@ define('controls/grid/Grid', [
             }
         },
 
-        renderData : function () {
+        renderData: function () {
             this.ulBody.empty();
             this.inlineEditSafe = null;
 
@@ -1820,8 +1817,7 @@ define('controls/grid/Grid', [
                 }
 
                 if (this.getAttribute('accordion') &&
-                    this.getAttribute('accordionRenderer') &&
-                    !this.getAttribute('accordionLiveRenderer')) {
+                    this.getAttribute('accordionRenderer') && !this.getAttribute('accordionLiveRenderer')) {
                     var li2 = new Element('li.section');
                     li2.addClass('section-' + r);
                     li2.setStyle('width', this.sumWidth + 2 * this.visibleColumns);
@@ -1830,9 +1826,9 @@ define('controls/grid/Grid', [
 
                     if (this.getAttribute('accordionRenderer')) {
                         this.getAttribute('accordionRenderer')({
-                            parent : li2,
-                            row    : r,
-                            grid   : this
+                            parent: li2,
+                            row   : r,
+                            grid  : this
                         });
                     }
                 }
@@ -1849,19 +1845,19 @@ define('controls/grid/Grid', [
          *
          * @return {HTMLElement} li
          */
-        renderRow : function (row, data) {
+        renderRow: function (row, data) {
             var c;
 
-            var t = this,
-                o = t.getAttributes(),
-                r = row,
+            var t           = this,
+                o           = t.getAttributes(),
+                r           = row,
 
                 columnCount = this.$columnModel.length,
                 rowdata     = data;
 
             var li = new Element('li.tr', {
-                styles : {
-                    width : t.sumWidth + 2 * t.visibleColumns
+                styles: {
+                    width: t.sumWidth + 2 * t.visibleColumns
                 }
             });
 
@@ -1878,17 +1874,17 @@ define('controls/grid/Grid', [
             var func_input_click = function (data) {
                 var index = data.columnModel.dataIndex;
 
-                data.list.$data[ data.row ][ index ] = data.input.checked ? 1 : 0;
+                data.list.$data[data.row][index] = data.input.checked ? 1 : 0;
             };
 
             for (c = 0; c < columnCount; c++) {
                 columnModel     = this.$columnModel[c];
                 columnDataIndex = columnModel.dataIndex;
-                columnData      = this.$data[ r ][ columnDataIndex ] || false;
+                columnData      = this.$data[r][columnDataIndex] || false;
 
                 div = new Element('div.td', {
-                    styles : {
-                        width : (columnModel.width - 6).abs()
+                    styles: {
+                        width: (columnModel.width - 6).abs()
                     }
                 });
 
@@ -1902,9 +1898,9 @@ define('controls/grid/Grid', [
 
                 if (columnModel.onMouseOver) {
                     div.onmouseover = t.onMouseOver.bind(t, {
-                        element     : div,
-                        columnModel : columnModel,
-                        data        : this.$data[r]
+                        element    : div,
+                        columnModel: columnModel,
+                        data       : this.$data[r]
                     });
                 }
 
@@ -1913,8 +1909,8 @@ define('controls/grid/Grid', [
                 }
 
                 if (columnModel.dataType == 'button' && columnData) {
-                    var _btn  = this.$data[ r ][ columnDataIndex ];
-                    _btn.data = this.$data[ r ];
+                    var _btn  = this.$data[r][columnDataIndex];
+                    _btn.data = this.$data[r];
 
                     _btn.data.row  = r;
                     _btn.data.List = t;
@@ -1940,7 +1936,7 @@ define('controls/grid/Grid', [
                 }
 
                 if (columnModel.dataType == 'code' && columnData) {
-                    val = rowdata[ columnDataIndex ];
+                    val = rowdata[columnDataIndex];
 
                     div.set('text', val);
 
@@ -1951,15 +1947,15 @@ define('controls/grid/Grid', [
                     var input = new Element('input', {type: "checkbox"});
 
                     input.onclick = func_input_click.bind(this, {
-                        columnModel : columnModel,
-                        row         : r,
-                        list        : t,
-                        input       : input
+                        columnModel: columnModel,
+                        row        : r,
+                        list       : t,
+                        input      : input
                     });
 
                     div.appendChild(input);
 
-                    val = rowdata[ columnDataIndex ];
+                    val = rowdata[columnDataIndex];
 
                     if (val == 1 || val == 't') {
                         input.set('checked', true);
@@ -1969,9 +1965,9 @@ define('controls/grid/Grid', [
                 }
 
                 if (columnModel.dataType == "image") {
-                    if (ControlUtils.isFontAwesomeClass(rowdata[ columnDataIndex ])) {
+                    if (ControlUtils.isFontAwesomeClass(rowdata[columnDataIndex])) {
                         new Element('span', {
-                            'class' : rowdata[ columnDataIndex ]
+                            'class': rowdata[columnDataIndex]
                         }).inject(div);
 
                         continue;
@@ -1979,7 +1975,7 @@ define('controls/grid/Grid', [
 
                     div.appendChild(
                         new Element('img', {
-                            src : rowdata[ columnDataIndex ]
+                            src: rowdata[columnDataIndex]
                         })
                     );
 
@@ -1991,10 +1987,10 @@ define('controls/grid/Grid', [
                 }
 
                 if (columnModel.dataType == "node") {
-                    if (typeof rowdata[ columnDataIndex ] != 'undefined' &&
-                        rowdata[ columnDataIndex ].nodeName) {
+                    if (typeof rowdata[columnDataIndex] != 'undefined' &&
+                        rowdata[columnDataIndex].nodeName) {
                         div.appendChild(
-                            rowdata[ columnDataIndex ]
+                            rowdata[columnDataIndex]
                         );
                     }
 
@@ -2007,15 +2003,20 @@ define('controls/grid/Grid', [
                 }
 
                 if (columnModel.dataType == "style") {
-                    if (rowdata[ columnDataIndex ]) {
-                        div.setStyles(rowdata[ columnDataIndex ]);
+                    if (rowdata[columnDataIndex]) {
+                        div.setStyles(rowdata[columnDataIndex]);
                     }
 
                     div.innerHTML = '&nbsp;';
                     continue;
                 }
 
-                var str = rowdata[ columnDataIndex ] || "";
+
+                var str = rowdata[columnDataIndex];
+
+                if (typeof rowdata[columnDataIndex] !== 'undefined') {
+                    str = rowdata[columnDataIndex];
+                }
 
                 if (str === null ||
                     str == 'null' ||
@@ -2035,10 +2036,9 @@ define('controls/grid/Grid', [
 
                 if (firstvisible == c && o.accordion && o.showtoggleicon) {
                     Toggle = new Element('div.toggleicon', {
-                        title  : o.toggleiconTitle,
-                        events :
-                        {
-                            click : function (event) {
+                        title : o.toggleiconTitle,
+                        events: {
+                            click: function (event) {
                                 t.toggleIconClick(event);
                             }
                         }
@@ -2051,7 +2051,7 @@ define('controls/grid/Grid', [
             return li;
         },
 
-        setEventsToRow : function (el) {
+        setEventsToRow: function (el) {
             el.removeEvents([
                 'mouseover',
                 'mouseout',
@@ -2062,18 +2062,18 @@ define('controls/grid/Grid', [
             ]);
 
             el.addEvents({
-                'mouseover'   : this.onRowMouseOver.bind(this),
-                'mouseout'    : this.onRowMouseOut.bind(this),
-                'mousedown'   : this.onRowMouseDown.bind(this),
-                'mouseup'     : this.onRowMouseUp.bind(this),
-                'click'       : this.onRowClick.bind(this),
-                'dblclick'    : this.onRowDblClick.bind(this),
-                'contextmenu' : this.onRowContext.bind(this)
+                'mouseover'  : this.onRowMouseOver.bind(this),
+                'mouseout'   : this.onRowMouseOut.bind(this),
+                'mousedown'  : this.onRowMouseDown.bind(this),
+                'mouseup'    : this.onRowMouseUp.bind(this),
+                'click'      : this.onRowClick.bind(this),
+                'dblclick'   : this.onRowDblClick.bind(this),
+                'contextmenu': this.onRowContext.bind(this)
             });
         },
 
         // Main draw function
-        draw : function () {
+        draw: function () {
             var i, len, columnModel;
             var t = this;
 
@@ -2083,7 +2083,7 @@ define('controls/grid/Grid', [
                 width       = options.width - (browser ? 2 : 2), //-2 radi bordera
                 columnCount = this.$columnModel ? this.$columnModel.length : 0,
 
-                tDiv = null;
+                tDiv        = null;
 
             t.removeAll();        // reset variables and only empty ulBody
             container.empty(); // empty all
@@ -2102,9 +2102,9 @@ define('controls/grid/Grid', [
             // Toolbar
             if (this.getAttribute('buttons')) {
                 tDiv = new Element('div.tDiv', {
-                    styles : {
-                        width  : width,
-                        height : 40
+                    styles: {
+                        width : width,
+                        height: 40
                     }
                 });
 
@@ -2112,9 +2112,9 @@ define('controls/grid/Grid', [
 
                 // button drop down
                 this.$Menu = new QUIButton({
-                    textimage    : 'fa fa-navicon icon-reorder',
-                    text         : 'Menü',
-                    dropDownIcon : false
+                    textimage   : 'fa fa-navicon icon-reorder',
+                    text        : 'Menü',
+                    dropDownIcon: false
                 }).inject(tDiv);
 
                 var bt = this.getAttribute('buttons');
@@ -2143,7 +2143,7 @@ define('controls/grid/Grid', [
 
                     Btn = new QUIButton(bt[i]);
 
-                    bt[ bt[i].name ] = Btn;
+                    bt[bt[i].name] = Btn;
 
                     node = Btn.create();
                     node.removeProperty('tabindex'); // focus eigenschaft nehmen
@@ -2151,30 +2151,29 @@ define('controls/grid/Grid', [
                     node.inject(tDiv);
 
                     var Item = new QUIContextItem({
-                        text    : Btn.getAttribute('text'),
-                        icon    : Btn.getAttribute('image') || Btn.getAttribute('textimage'),
-                        events  :
-                        {
-                            onClick : function () {
+                        text  : Btn.getAttribute('text'),
+                        icon  : Btn.getAttribute('image') || Btn.getAttribute('textimage'),
+                        events: {
+                            onClick: function () {
                                 this.click();
                             }.bind(Btn)
                         }
                     });
 
                     Btn.addEvents({
-                        onDisable : function () {
+                        onDisable: function () {
                             this.disable();
                         }.bind(Item),
 
-                        onNormal : function () {
+                        onNormal: function () {
                             this.enable();
                         }.bind(Item),
 
-                        onEnable : function () {
+                        onEnable: function () {
                             this.enable();
                         }.bind(Item),
 
-                        onSetAttribute : function (key, value) {
+                        onSetAttribute: function (key, value) {
                             if (key === 'text') {
                                 this.setAttribute(key, value);
                                 return;
@@ -2198,15 +2197,15 @@ define('controls/grid/Grid', [
 
             // Header
             var hDiv = new Element('div.hDiv', {
-                styles : {
-                    'width' : width
+                styles: {
+                    'width': width
                 }
             });
 
             container.appendChild(hDiv);
 
             var hDivBox = new Element('div.hDivBox', {
-                id : this.getAttribute('name') + '_hDivBox'
+                id: this.getAttribute('name') + '_hDivBox'
             });
 
             hDiv.appendChild(hDivBox);
@@ -2220,7 +2219,7 @@ define('controls/grid/Grid', [
                 columnModel = this.$columnModel[i] || {};
 
                 var div = new Element('div.th', {
-                    'column' : i
+                    'column': i
                 });
 
                 // default postavke columnModela
@@ -2237,9 +2236,9 @@ define('controls/grid/Grid', [
                 // Header events
                 if (this.getAttribute('sortHeader')) {
                     div.addEvents({
-                        click     : t.clickHeaderColumn.bind(this),
-                        mouseout  : t.outHeaderColumn.bind(this),
-                        mouseover : t.overHeaderColumn.bind(this)
+                        click    : t.clickHeaderColumn.bind(this),
+                        mouseout : t.outHeaderColumn.bind(this),
+                        mouseover: t.overHeaderColumn.bind(this)
                     });
                 }
 
@@ -2282,7 +2281,7 @@ define('controls/grid/Grid', [
 
             /* omni grid version + cWidth = -2; by mor*/
             if (this.getAttribute('resizeColumns')) {
-                var cDrag = new Element('div.cDrag');
+                var cDrag         = new Element('div.cDrag');
                 var toolbarHeight = 0;
 
                 if (tDiv) {
@@ -2305,10 +2304,10 @@ define('controls/grid/Grid', [
                     }
 
                     dragSt.setStyles({
-                        top     : 1,
-                        left    : dragTempWidth + cWidth + columnModel.width,
-                        height  : headerHeight,
-                        display : 'block'
+                        top    : 1,
+                        left   : dragTempWidth + cWidth + columnModel.width,
+                        height : headerHeight,
+                        display: 'block'
                     });
 
                     dragSt.store('column', i);
@@ -2336,9 +2335,9 @@ define('controls/grid/Grid', [
 
             // Body
             var bDiv = new Element('div.bDiv', {
-                id     : this.getAttribute('name') + '_bDiv',
-                styles : {
-                    'height' : this.getBodyHeight() - 3
+                id    : this.getAttribute('name') + '_bDiv',
+                styles: {
+                    'height': this.getBodyHeight() - 3
                 }
             });
 
@@ -2353,19 +2352,18 @@ define('controls/grid/Grid', [
             bDiv.addEvent('scroll', t.onBodyScrollBind);
 
             t.ulBody = new Element('ul', {
-                styles : {
-                    'width' : t.sumWidth + t.visibleColumns * (browser ? 1 : 1)
+                styles: {
+                    'width': t.sumWidth + t.visibleColumns * (browser ? 1 : 1)
                 }
             });
 
             bDiv.appendChild(t.ulBody);
 
-            if ((this.getAttribute('pagination') || this.getAttribute('filterInput')) &&
-                !container.getElement('div.pDiv')) {
+            if ((this.getAttribute('pagination') || this.getAttribute('filterInput')) && !container.getElement('div.pDiv')) {
                 var pDiv = new Element('div.pDiv', {
-                    styles : {
-                        width  : width,
-                        height : 30
+                    styles: {
+                        width : width,
+                        height: 30
                     }
                 });
 
@@ -2388,7 +2386,7 @@ define('controls/grid/Grid', [
                             h = h + '<option value="' + options.perPageOptions[optIdx] + '">' + options.perPageOptions[optIdx] + '</option>';
                         } else {
                             setDefaultPerPage = true;
-                            h = h + '<option selected="selected" value="' + options.perPageOptions[optIdx] + '">' + options.perPageOptions[optIdx] + '</option>' ;
+                            h                 = h + '<option selected="selected" value="' + options.perPageOptions[optIdx] + '">' + options.perPageOptions[optIdx] + '</option>';
                         }
                     }
 
@@ -2396,12 +2394,12 @@ define('controls/grid/Grid', [
 
                     h = h + '<div class="btnseparator"></div><div class="pGroup"><div class="pFirst pButton"></div><div class="pPrev pButton"></div></div>';
                     h = h + '<div class="btnseparator"></div><div class="pGroup">' +
-                    '<span class="pcontrol">' +
-                    '<input class="cpage" type="text" value="1" size="4" style="text-align:center" /> ' +
-                    '<span>/</span> ' +
-                    '<span class="cpageMax"></span>' +
-                    '</span>' +
-                    '</div>';
+                        '<span class="pcontrol">' +
+                        '<input class="cpage" type="text" value="1" size="4" style="text-align:center" /> ' +
+                        '<span>/</span> ' +
+                        '<span class="cpageMax"></span>' +
+                        '</span>' +
+                        '</div>';
                     h = h + '<div class="btnseparator"></div><div class="pGroup"><div class="pNext pButton"></div><div class="pLast pButton"></div></div>';
                     h = h + '<div class="btnseparator"></div><div class="pGroup"><div class="pReload pButton"></div></div>';
                     h = h + '<div class="btnseparator"></div><div class="pGroup"><span class="pPageStat"></span></div>';
@@ -2409,10 +2407,10 @@ define('controls/grid/Grid', [
 
                 if (options.multipleSelection) {
                     h = h + '<div class="btnseparator"></div>' +
-                    '<div class="pGroup">' +
-                    '<div class="pSelectAll" title="Alle auswählen"></div>' +
-                    '<div class="pUnselectAll" title="Auswahl aufheben"></div>' +
-                    '</div>';
+                        '<div class="pGroup">' +
+                        '<div class="pSelectAll" title="Alle auswählen"></div>' +
+                        '<div class="pUnselectAll" title="Auswahl aufheben"></div>' +
+                        '</div>';
                 }
 
                 if (options.filterInput) {
@@ -2465,8 +2463,8 @@ define('controls/grid/Grid', [
 
                 if ((o = pDiv2.getElement('input.cpage'))) {
                     pDiv2.getElement('input').addEvents({
-                        keydown   : this.pageChange.bind(this),
-                        mousedown : function () {
+                        keydown  : this.pageChange.bind(this),
+                        mousedown: function () {
                             this.focus();
                         }
                     });
@@ -2475,8 +2473,8 @@ define('controls/grid/Grid', [
                 if (this.getAttribute('filterInput')) {
                     if ((o = pDiv2.getElement('input.cfilter'))) {
                         pDiv2.getElement('input.cfilter').addEvents({
-                            keyup     : this.filerData.bind(this), // goto 1 & refresh
-                            mousedown : function () {
+                            keyup    : this.filerData.bind(this), // goto 1 & refresh
+                            mousedown: function () {
                                 this.focus();
                             }
                         });
@@ -2499,19 +2497,19 @@ define('controls/grid/Grid', [
             }
         },
 
-        firstPage : function () {
+        firstPage: function () {
             this.setAttribute('page', 1);
             this.refresh();
         },
 
-        prevPage : function () {
+        prevPage: function () {
             if (this.getAttribute('page') > 1) {
                 this.setAttribute('page', this.getAttribute('page') - 1);
                 this.refresh();
             }
         },
 
-        nextPage : function () {
+        nextPage: function () {
             if ((this.getAttribute('page') + 1) > this.getAttribute('maxpage')) {
                 return;
             }
@@ -2520,18 +2518,18 @@ define('controls/grid/Grid', [
             this.refresh();
         },
 
-        lastPage : function () {
+        lastPage: function () {
             this.setAttribute('page', this.getAttribute('maxpage'));
             this.refresh();
         },
 
-        perPageChange : function () {
+        perPageChange: function () {
             this.setAttribute('page', 1);
             this.setAttribute('perPage', this.container.getElement('.rp').value);
             this.refresh();
         },
 
-        pageChange : function () {
+        pageChange: function () {
             var np = this.container.getElement('div.pDiv2 input').value;
 
             if (np > 0 && np <= this.getAttribute('maxpage')) {
@@ -2545,14 +2543,14 @@ define('controls/grid/Grid', [
         },
 
         // API
-        gotoPage : function (p) {
+        gotoPage: function (p) {
             if (p > 0 && p <= this.getAttribute('maxpage')) {
                 this.getAttribute('page', p);
                 this.refresh();
             }
         },
 
-        setPerPage : function (p) {
+        setPerPage: function (p) {
             if (p > 0) {
                 this.setAttribute('perPage', p);
                 this.refresh();
@@ -2560,7 +2558,7 @@ define('controls/grid/Grid', [
         },
 
         // API
-        sort : function (index, by) {
+        sort: function (index, by) {
             if (index < 0 || index >= this.$columnModel.length) {
                 return;
             }
@@ -2574,7 +2572,7 @@ define('controls/grid/Grid', [
             }
 
             var header = this.container.getElements('.th'),
-                el     = header[ index ];
+                el     = header[index];
 
             if (typeof by !== 'undefined') {
                 el.addClass(by.toLowerCase());
@@ -2587,11 +2585,7 @@ define('controls/grid/Grid', [
             }
 
             if (this.getAttribute('serverSort')) {
-                this.setAttribute('sortOn', this.$columnModel[index].dataIndex);
-                this.setAttribute('sortBy', el.sortBy);
-
                 this.refresh();
-
                 return;
             }
 
@@ -2601,8 +2595,8 @@ define('controls/grid/Grid', [
             this.selected = [];
 
             for (var i = 0, len = this.elements.length; i < len; i++) {
-                if (this.elements[ i ].hasClass('selected')) {
-                    this.selected.push(this.elements[ i ].retrieve('row'));
+                if (this.elements[i].hasClass('selected')) {
+                    this.selected.push(this.elements[i].retrieve('row'));
                 }
             }
 
@@ -2615,7 +2609,7 @@ define('controls/grid/Grid', [
             this.altRow();
         },
 
-        moveup : function () {
+        moveup: function () {
             if (typeof this.selected[0] === 'undefined') {
                 return;
             }
@@ -2643,13 +2637,13 @@ define('controls/grid/Grid', [
             }
 
             this.setData({
-                data : _data
+                data: _data
             });
 
             this.setSelectedIndices([index - 1]);
         },
 
-        movedown : function () {
+        movedown: function () {
             if (typeof this.selected[0] === 'undefined') {
                 return;
             }
@@ -2673,46 +2667,46 @@ define('controls/grid/Grid', [
                 _data.push(data[i]);
 
                 if (i == index + 1) {
-                    _data.push(data[ index ]);
+                    _data.push(data[index]);
                 }
             }
 
             this.setData({
-                data : _data
+                data: _data
             });
 
             this.setSelectedIndices([index + 1]);
         },
 
-        altRow : function () {
+        altRow: function () {
             var i, len;
             var elements = this.elements;
 
             for (i = 0, len = elements.length; i < len; i++) {
                 if (i % 2) {
-                    elements[ i ].removeClass('erow');
+                    elements[i].removeClass('erow');
                     continue;
                 }
 
-                elements[ i ].addClass('erow');
+                elements[i].addClass('erow');
             }
         },
 
-        filteredAltRow : function () {
+        filteredAltRow: function () {
             var i, len;
             var elements = this.ulBody.getElements('.' + this.getAttribute('filterSelectedCls'));
 
             for (i = 0, len = elements.length; i < len; i++) {
                 if (i % 2) {
-                    elements[ i ].removeClass('erow');
+                    elements[i].removeClass('erow');
                     continue;
                 }
 
-                elements[ i ].addClass('erow');
+                elements[i].addClass('erow');
             }
         },
 
-        filerData : function () {
+        filerData: function () {
             if (this.getAttribute('filterInput')) {
                 var cfilter = this.container.getElement('input.cfilter');
 
@@ -2723,7 +2717,7 @@ define('controls/grid/Grid', [
         },
 
         // API
-        filter : function (key) {
+        filter: function (key) {
             var filterHide    = this.getAttribute('filterHide'),
                 filterHideCls = this.getAttribute('filterHideCls');
 
@@ -2753,16 +2747,16 @@ define('controls/grid/Grid', [
                 dat = data[i];
 
                 for (c = 0; c < clen; c++) {
-                    cml = columnModel[ c ];
+                    cml = columnModel[c];
 
                     if (cml.type == "checkbox") {
                         continue;
                     }
 
-                    if (typeof dat[ cml.dataIndex ] !== 'undefined' &&
-                        typeOf(dat[ cml.dataIndex ]) !== 'function' &&
-                        dat[ cml.dataIndex ] !== null &&
-                        dat[ cml.dataIndex ].toString().toLowerCase().indexOf(key) > -1) {
+                    if (typeof dat[cml.dataIndex] !== 'undefined' &&
+                        typeOf(dat[cml.dataIndex]) !== 'function' &&
+                        dat[cml.dataIndex] !== null &&
+                        dat[cml.dataIndex].toString().toLowerCase().indexOf(key) > -1) {
                         el.removeClass(filterHideCls);
                         break;
                     }
@@ -2773,7 +2767,7 @@ define('controls/grid/Grid', [
         },
 
         // API
-        clearFilter : function () {
+        clearFilter: function () {
             var el;
 
             for (var i = 0, len = this.elements.length; i < len; i++) {
@@ -2791,7 +2785,7 @@ define('controls/grid/Grid', [
             }
         },
 
-        getExportSelect : function () {
+        getExportSelect: function () {
             var c, len, columnModel, header, dataIndex;
 
             var t       = this;
@@ -2801,7 +2795,7 @@ define('controls/grid/Grid', [
                 exportBarDiv  = new Element('div.exportSelectBtnDiv'),
                 exportDataDiv = new Element('div.exportItemsDiv'),
                 exportTextDiv = new Element('div.exportTextsDiv', {
-                    html : 'Bitte wählen sie die Felder aus die exportiert werden sollen'
+                    html: 'Bitte wählen sie die Felder aus die exportiert werden sollen'
                 });
 
             t.container.appendChild(selectWindow);
@@ -2815,7 +2809,7 @@ define('controls/grid/Grid', [
                 dataIndex   = columnModel.dataIndex;
 
                 if (columnModel.hidden ||
-                    columnModel.dataType == 'button'  ||
+                    columnModel.dataType == 'button' ||
                     columnModel.dataType == 'checkbox') {
                     continue;
                 }
@@ -2823,15 +2817,15 @@ define('controls/grid/Grid', [
                 var div   = new Element('div.exportItemDiv'),
 
                     span  = new Element('span', {
-                        html : header
+                        html: header
                     }),
 
                     input = new Element('input', {
-                        type    : 'checkbox',
-                        checked : 'checked',
-                        value   : dataIndex,
-                        id      : 'export_' + dataIndex,
-                        name    : dataIndex
+                        type   : 'checkbox',
+                        checked: 'checked',
+                        value  : dataIndex,
+                        id     : 'export_' + dataIndex,
+                        name   : dataIndex
                     });
 
                 div.appendChild(input);
@@ -2848,38 +2842,37 @@ define('controls/grid/Grid', [
 
             for (var exportType in options.exportTypes) {
                 new QUIButton({
-                    name   : exportType,
-                    text   : options.exportTypes[exportType],
-                    events : {
-                        click : func_export_btn_click
+                    name      : exportType,
+                    text      : options.exportTypes[exportType],
+                    events    : {
+                        click: func_export_btn_click
                     },
-                    textimage  : options.exportBinUrl + exportType + '.png',
-                    Grid       : this,
-                    exportType : exportType
+                    textimage : options.exportBinUrl + exportType + '.png',
+                    Grid      : this,
+                    exportType: exportType
                 }).inject(exportBarDiv);
             }
 
             new QUIButton({
-                name   : 'cancel',
-                text   : 'Abbrechen',
-                events :
-                {
-                    click : function () {
+                name     : 'cancel',
+                text     : 'Abbrechen',
+                events   : {
+                    click: function () {
                         document.getElement('.exportSelectDiv').destroy();
                     }
                 },
-                textimage : 'icon-remove'
+                textimage: 'icon-remove'
             }).create().inject(exportBarDiv);
 
             return false;
         },
 
-        setExportData : function () {
+        setExportData: function () {
             var c, i, len, columnModel, header, dataIndex;
 
-            var data     = {
-                header : {},
-                data   : []
+            var data = {
+                header: {},
+                data  : []
             };
 
             for (c = 0, len = this.$columnModel.length; c < len; c++) {
@@ -2897,9 +2890,9 @@ define('controls/grid/Grid', [
                     continue;
                 }
 
-                data.header[ dataIndex ] = {
-                    header    : header,
-                    dataIndex : dataIndex
+                data.header[dataIndex] = {
+                    header   : header,
+                    dataIndex: dataIndex
                 };
             }
 
@@ -2912,7 +2905,7 @@ define('controls/grid/Grid', [
                     data.data[i] = {};
 
                     for (var h in data.header) {
-                        data.data[i][ data.header[h].dataIndex ] = dat[data.header[h].dataIndex];
+                        data.data[i][data.header[h].dataIndex] = dat[data.header[h].dataIndex];
                     }
                 }
             }
@@ -2923,39 +2916,39 @@ define('controls/grid/Grid', [
             return data;
         },
 
-        exportGrid : function (type) {
+        exportGrid: function (type) {
             var data      = this.getAttribute('exportData'),
                 exportUrl = this.getAttribute('exportBinUrl') + 'export.php';
 
             if (this.getAttribute('exportRenderer')) {
                 this.getAttribute('exportRenderer')({
-                    Grid : this,
-                    data : data,
-                    type : type
+                    Grid: this,
+                    data: data,
+                    type: type
                 });
 
                 return;
             }
 
             var tempData = {
-                data : data,
-                type : type
+                data: data,
+                type: type
             };
 
             if (type != 'print') {
                 new Element('input#exportDataField', {
-                    name   : 'data',
-                    value  : JSON.encode(tempData),
-                    styles : {
+                    name  : 'data',
+                    value : JSON.encode(tempData),
+                    styles: {
                         display: 'none'
                     }
                 }).inject(this.container);
 
-                new Element('iframe.exportFrame',{
-                    src         : exportUrl,
-                    id          : 'gridExportFrame',
-                    frameborder : '0',
-                    scrolling   : 'auto'
+                new Element('iframe.exportFrame', {
+                    src        : exportUrl,
+                    id         : 'gridExportFrame',
+                    frameborder: '0',
+                    scrolling  : 'auto'
                 }).inject(this.container);
 
                 setTimeout('document.id(\'exportDataField\').destroy(); document.id(\'gridExportFrame\').destroy();', 10000);
@@ -2971,7 +2964,7 @@ define('controls/grid/Grid', [
          *
          * @param {DOMEvent} event
          */
-        startDrag : function (event) {
+        startDrag: function (event) {
             if (!this.getAttribute('dragdrop')) {
                 return;
             }
@@ -2999,25 +2992,25 @@ define('controls/grid/Grid', [
                 html = '';
 
             if (this.getAttribute('dragDropDataIndex') &&
-                data[ this.getAttribute('dragDropDataIndex') ]) {
-                html = '<span>' + data[ this.getAttribute('dragDropDataIndex') ] + '</span>';
+                data[this.getAttribute('dragDropDataIndex')]) {
+                html = '<span>' + data[this.getAttribute('dragDropDataIndex')] + '</span>';
             }
 
             this.selectRow(li);
 
             this.Drag = new Element('div.class', {
-                'class'    : this.getAttribute('dragDropClass') || 'omni-drag-drop',
-                'data-row' : row.toString(),
-                html       :  html,
-                styles : {
-                    position : 'absolute',
-                    top      : (my - 15),
-                    left     : (mx - 40),
-                    zIndex   : 1000,
-                    'MozOutline' : 'none',
-                    outline   : 0
+                'class'   : this.getAttribute('dragDropClass') || 'omni-drag-drop',
+                'data-row': row.toString(),
+                html      : html,
+                styles    : {
+                    position    : 'absolute',
+                    top         : (my - 15),
+                    left        : (mx - 40),
+                    zIndex      : 1000,
+                    'MozOutline': 'none',
+                    outline     : 0
                 },
-                tabindex : '-1'
+                tabindex  : '-1'
             }).inject(document.body);
 
             this.Drag.addEvent('mouseup', function () {
@@ -3029,15 +3022,15 @@ define('controls/grid/Grid', [
 
                 droppables: this.getAttribute('droppables'),
 
-                onBeforeStart : function (element) {
+                onBeforeStart: function (element) {
                     this.Drag.focus();
                 }.bind(this),
 
-                onStart : function (element, droppable) {
+                onStart: function (element, droppable) {
                     this.fireEvent('dragDropStart', [element, droppable]);
                 }.bind(this),
 
-                onComplete : function () {
+                onComplete: function () {
                     this.fireEvent('dragDropComplete');
                 }.bind(this),
 
@@ -3064,16 +3057,16 @@ define('controls/grid/Grid', [
                 }.bind(this)
 
             }).start({
-                    page: {
-                        x : mx,
-                        y : my
-                    }
-                });
+                page: {
+                    x: mx,
+                    y: my
+                }
+            });
 
             return false;
         },
 
-        stopDrag : function () {
+        stopDrag: function () {
             if (!this.getAttribute('dragdrop')) {
                 return;
             }

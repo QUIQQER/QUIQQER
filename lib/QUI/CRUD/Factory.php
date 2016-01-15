@@ -47,23 +47,35 @@ abstract class Factory
     abstract public function getChildAttributes();
 
     /**
+     * Create a new child
+     *
      * @param array $data
      * @return QUI\CRUD\Child
      */
-    public function createChild($data)
+    public function createChild($data = array())
     {
         $this->Events->fireEvent('createBegin');
 
         $attributes = $this->getChildAttributes();
         $childData  = array();
 
+        if (!is_array($data)) {
+            $data = array();
+        }
+
         foreach ($attributes as $attribute) {
+            if ($attribute == 'id') {
+                continue;
+            }
+
             if (isset($data[$attribute])) {
                 $childData[$attribute] = $data[$attribute];
+            } else {
+                $childData[$attribute] = '';
             }
         }
 
-        QUI::getDataBase()->insert($this->getTable(), $childData);
+        QUI::getDataBase()->insert($this->getDataBaseTableName(), $childData);
 
         $Child = $this->getChild(
             QUI::getDataBase()->getPDO()->lastInsertId()
@@ -86,7 +98,7 @@ abstract class Factory
         $childClass = $this->getChildClass();
 
         $result = QUI::getDataBase()->fetch(array(
-            'from' => $this->getTable(),
+            'from' => $this->getDataBaseTableName(),
             'where' => array(
                 'id' => $id
             )
@@ -126,7 +138,7 @@ abstract class Factory
         $childClass = $this->getChildClass();
 
         foreach ($data as $entry) {
-            $Child = new $childClass($result[0]['id'], $this);
+            $Child = new $childClass($entry['id'], $this);
 
             if ($Child instanceof QUI\CRUD\Child) {
                 $Child->setAttributes($entry);
@@ -147,7 +159,7 @@ abstract class Factory
     public function getChildrenData($queryParams = array())
     {
         $query = array(
-            'from' => $this->getTable()
+            'from' => $this->getDataBaseTableName()
         );
 
         if (!is_array($queryParams)) {

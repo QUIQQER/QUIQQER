@@ -44,8 +44,8 @@ class Event implements QUI\Interfaces\Events
      *
      * @see \QUI\Interfaces\Events::addEvent()
      *
-     * @param string   $event - The type of event (e.g. 'complete').
-     * @param callback $fn    - The function to execute.
+     * @param string $event - The type of event (e.g. 'complete').
+     * @param callback $fn - The function to execute.
      */
     public function addEvent($event, $fn)
     {
@@ -71,8 +71,8 @@ class Event implements QUI\Interfaces\Events
      *
      * @see \QUI\Interfaces\Events::removeEvent()
      *
-     * @param string        $event - The type of event (e.g. 'complete').
-     * @param callback|boolean $fn    - (optional) The function to remove.
+     * @param string $event - The type of event (e.g. 'complete').
+     * @param callback|boolean $fn - (optional) The function to remove.
      */
     public function removeEvent($event, $fn = false)
     {
@@ -112,10 +112,10 @@ class Event implements QUI\Interfaces\Events
      *
      * @see \QUI\Interfaces\Events::fireEvent()
      *
-     * @param string     $event   - The type of event (e.g. 'onComplete').
-     * @param array|boolean $args    - (optional) the argument(s) to pass to the function.
+     * @param string $event - The type of event (e.g. 'onComplete').
+     * @param array|boolean $args - (optional) the argument(s) to pass to the function.
      *                            The arguments must be in an array.
-     * @param boolean       $force   - (optional) no recursion check, optional, default = false
+     * @param boolean $force - (optional) no recursion check, optional, default = false
      *
      * @return array - Event results, assoziative array
      *
@@ -126,7 +126,7 @@ class Event implements QUI\Interfaces\Events
         $results = array();
 
         if (strpos($event, 'on') !== 0) {
-            $event = 'on'.ucfirst($event);
+            $event = 'on' . ucfirst($event);
         }
 
 
@@ -172,7 +172,7 @@ class Event implements QUI\Interfaces\Events
                 $message = $Exception->getMessage();
 
                 if (is_string($fn)) {
-                    $message .= ' :: '. $fn;
+                    $message .= ' :: ' . $fn;
                 }
 
                 $Clone = new QUI\Exception(
@@ -187,7 +187,7 @@ class Event implements QUI\Interfaces\Events
                 $message = $Exception->getMessage();
 
                 if (is_string($fn)) {
-                    $message .= ' :: '. $fn;
+                    $message .= ' :: ' . $fn;
                 }
 
                 $Clone = new QUI\Exception(

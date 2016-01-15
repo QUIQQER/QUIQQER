@@ -1145,9 +1145,9 @@ define('controls/projects/project/media/Panel', [
 
                     QUI.getMessageHandler(function (MH) {
                         MH.addError(
-                            'File is broken #' + Child.id + ' ' + Child.name
+                            'File is broken #' + this.id + ' ' + this.name
                         );
-                    });
+                    }.bind(Child));
                 }
 
                 if (Child.type === 'image' && !Child.error) {

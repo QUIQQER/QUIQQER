@@ -593,7 +593,7 @@ div.pGroup {
     border-right: 2px solid #CCCFD5;
     float: left;
     height : 30px;
-    margin-top: 3px;
+    margin: 5px 5px 0 5px;
 }
 
 /** QUI Elements

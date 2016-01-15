@@ -255,7 +255,9 @@ class Manager
             // delete the real file
             QUIFile::unlink($tmp_name);
 
-            echo $result['result'];
+            if (isset($result['result'])) {
+                echo $result['result'];
+            }
         }
     }
 

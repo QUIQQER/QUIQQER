@@ -288,7 +288,7 @@ class Manager
      * Daten in den Cache setzen
      *
      * @param string $name
-     * @param string $data
+     * @param mixed $data
      * @param int|\DateTime|null $time -> sekunden oder datetime
      *
      * @return boolean
