@@ -291,11 +291,11 @@ define('controls/grid/Grid', [
                             return 0;
                         }
 
-                        if (el.sortBy == 'ASC' && var1 < var2) {
-                            return -1;
+                        if (el.sortBy == 'ASC') {
+                            return (var1 < var2);
                         }
 
-                        return 1;
+                        return (var1 > var2);
                     }
 
                     if (dataType == 'date') {
@@ -2585,11 +2585,7 @@ define('controls/grid/Grid', [
             }
 
             if (this.getAttribute('serverSort')) {
-                this.setAttribute('sortOn', this.$columnModel[index].dataIndex);
-                this.setAttribute('sortBy', el.sortBy);
-
                 this.refresh();
-
                 return;
             }
 
