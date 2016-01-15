@@ -9,7 +9,7 @@ use QUI;
 
 /**
  * Class Element
- * Abstration element for create-read-update-delete
+ * Abstraction element for create-read-update-delete
  *
  * @package QUI\CRUD
  *
@@ -75,7 +75,7 @@ abstract class Child extends QUI\QDOM
     }
 
     /**
-     * Delete the child
+     * Delete the CRUD child
      *
      * @throws QUI\ExceptionStack|QUI\Exception
      */
@@ -93,6 +93,8 @@ abstract class Child extends QUI\QDOM
     }
 
     /**
+     * Update the CRUD child
+     *
      * @throws QUI\ExceptionStack|QUI\Exception
      */
     public function update()
