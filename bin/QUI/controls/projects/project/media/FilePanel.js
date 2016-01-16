@@ -28,6 +28,7 @@ define('controls/projects/project/media/FilePanel', [
     'qui/controls/input/Range',
     'utils/Template',
     'qui/utils/Form',
+    'qui/utils/String',
     'utils/Controls',
     'utils/Media',
     'controls/projects/project/media/Input',
@@ -51,11 +52,12 @@ define('controls/projects/project/media/FilePanel', [
         QUIRange           = arguments[7],
         Template           = arguments[8],
         FormUtils          = arguments[9],
-        ControlUtils       = arguments[10],
-        MediaUtils         = arguments[11],
-        MediaInput         = arguments[12],
-        Locale             = arguments[13],
-        Projects           = arguments[14];
+        StringUtils        = arguments[10],
+        ControlUtils       = arguments[11],
+        MediaUtils         = arguments[12],
+        MediaInput         = arguments[13],
+        Locale             = arguments[14],
+        Projects           = arguments[15];
 
     /**
      * A Media-Panel, opens the Media in an Desktop Panel
@@ -246,6 +248,7 @@ define('controls/projects/project/media/FilePanel', [
                 title: File.getAttribute('file')
             });
 
+
             if (typeof callback === 'function') {
                 callback();
             }
@@ -272,6 +275,7 @@ define('controls/projects/project/media/FilePanel', [
 
             return this.$File.refresh().then(function () {
                 this.load();
+                this.parent();
             }.bind(this));
         },
 
@@ -438,7 +442,7 @@ define('controls/projects/project/media/FilePanel', [
                 this.addButton(
                     new QUIButton({
                         name     : 'status',
-                        text: Locale.get(lg, 'projects.project.site.media.filePanel.btn.deactivate.text'),
+                        text     : Locale.get(lg, 'projects.project.site.media.filePanel.btn.deactivate.text'),
                         textimage: 'icon-remove',
                         events   : {
                             onClick: this.toggleStatus
@@ -450,7 +454,7 @@ define('controls/projects/project/media/FilePanel', [
                 this.addButton(
                     new QUIButton({
                         name     : 'status',
-                        text: Locale.get(lg, 'projects.project.site.media.filePanel.btn.activate.text'),
+                        text     : Locale.get(lg, 'projects.project.site.media.filePanel.btn.activate.text'),
                         textimage: 'icon-ok',
                         events   : {
                             onClick: this.toggleStatus
@@ -462,8 +466,8 @@ define('controls/projects/project/media/FilePanel', [
             this.addButton(
                 new QUIButton({
                     alt   : Locale.get(lg, 'projects.project.site.media.filePanel.btn.delete.text'),
-                    title: Locale.get(lg, 'projects.project.site.media.filePanel.btn.delete.text'),
-                    icon : 'fa fa-trash-o icon-trash',
+                    title : Locale.get(lg, 'projects.project.site.media.filePanel.btn.delete.text'),
+                    icon  : 'fa fa-trash-o icon-trash',
                     events: {
                         onClick: function () {
                             self.del();
@@ -620,19 +624,21 @@ define('controls/projects/project/media/FilePanel', [
                     // set data to form
                     FormUtils.setDataToForm({
                             file_id       : File.getId(),
-                            file_name: File.getAttribute('name'),
-                            file_title: File.getAttribute('title'),
-                            file_alt  : File.getAttribute('alt'),
-                            file_short: File.getAttribute('short'),
-                            file_file : File.getAttribute('file'),
-                            file_path : File.getAttribute('path'),
-                            file_type : File.getAttribute('type'),
-                            file_edate: File.getAttribute('e_date'),
-                            file_url  : File.getAttribute('cache_url'),
+                            file_name     : File.getAttribute('name'),
+                            file_title    : File.getAttribute('title'),
+                            file_alt      : File.getAttribute('alt'),
+                            file_short    : File.getAttribute('short'),
+                            file_file     : File.getAttribute('file'),
+                            file_path     : File.getAttribute('path'),
+                            file_type     : File.getAttribute('type'),
+                            file_edate    : File.getAttribute('e_date'),
+                            file_url      : File.getAttribute('cache_url'),
                             file_dimension: dimension,
                             file_md5      : File.getAttribute('md5hash'),
                             file_sha1     : File.getAttribute('sha1hash'),
-                            file_size     : File.getAttribute('filesize'),
+                            file_size     : StringUtils.formatBytes(
+                                File.getAttribute('filesize')
+                            ),
                             file_priority : File.getAttribute('priority')
                         },
                         Body.getElement('form')
