@@ -180,6 +180,19 @@ class Mailer extends QUI\QDOM
             return true;
         }
 
+        // @todo mail settings
+        
+//        $PHPMailer->SMTPSecure  = "tls";
+//        $PHPMailer->SMTPDebug = 1;
+//        $PHPMailer->SMTPOptions = array(
+//            'ssl' => array(
+//                'verify_peer' => false,
+//                'verify_peer_name' => false,
+//                'allow_self_signed' => true
+//            )
+//        );
+
+//        $PHPMailer->SMTPSecure = "tls";
 
         // no mail queue
         if ($PHPMailer->Send()) {
