@@ -349,7 +349,7 @@ class Console
         }
 
         // look at console tools at plugins
-        $PackageManager = \QUI::getPackageManager();
+        $PackageManager = QUI::getPackageManager();
         $plugins        = $PackageManager->getInstalled();
 
         $tools = array();
@@ -368,7 +368,7 @@ class Console
         }
 
         // look at console tools at projects
-        $ProjectManager = \QUI::getProjectManager();
+        $ProjectManager = QUI::getProjectManager();
         $projects       = $ProjectManager->getProjects();
 
         foreach ($projects as $project) {
