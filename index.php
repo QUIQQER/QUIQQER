@@ -80,6 +80,13 @@ try {
         $Locale = QUI::getLocale();
     }
 
+    if (defined('LOGIN_FAILED')
+        || isset($_POST['login'])
+        || isset($_GET['logout'])
+    ) {
+        $Site->setAttribute('nocache', true);
+    }
+
     /**
      * Referal System
      */
