@@ -793,7 +793,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             case 'priority':
             case 'priority ASC':
             case 'priority DESC':
-                $order = $params['order'];
                 break;
 
             default:
