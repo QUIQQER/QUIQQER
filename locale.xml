@@ -3434,6 +3434,11 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             ]]></en>
         </locale>
 
+        <locale name="grid.is.empty">
+            <de><![CDATA[Die Tabelle enthält keine Daten]]></de>
+            <en><![CDATA[The table contains no data]]></en>
+        </locale>
+
     </groups>
     <groups name="quiqqer/system" datatype="php">
         <locale name="menu.quiqqer.text" html="true">

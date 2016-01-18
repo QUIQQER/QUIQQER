@@ -45,10 +45,12 @@ define('controls/grid/Grid', [
     'qui/controls/contextmenu/Menu',
     'qui/controls/contextmenu/Item',
     'qui/utils/Controls',
+    'Locale',
 
     'css!controls/grid/Grid.css'
 
-], function (QUIControl, QUIButton, QUISeperator, QUIContextMenu, QUIContextItem, ControlUtils) {
+], function (QUIControl, QUIButton, QUISeperator, QUIContextMenu,
+             QUIContextItem, ControlUtils, QUILocale) {
     "use strict";
 
     /**
@@ -1804,7 +1806,23 @@ define('controls/grid/Grid', [
                 return;
             }
 
-            var rowCount = this.$data.length;
+            var rowCount  = this.$data.length,
+                DataEmpty = this.container.getElement('.data-empty');
+
+            if (!rowCount) {
+                if (!DataEmpty) {
+                    new Element('div', {
+                        'class': 'data-empty',
+                        html   : '<div class="data-empty-cell">' +
+                                 QUILocale.get('quiqqer/system', 'grid.is.empty') +
+                                 '</div>'
+                    }).inject(this.container.getElement('.bDiv'));
+                }
+            } else {
+                if (DataEmpty) {
+                    DataEmpty.destroy();
+                }
+            }
 
             for (var r = 0; r < rowCount; r++) {
                 var rowdata = this.$data[r],
@@ -2082,7 +2100,6 @@ define('controls/grid/Grid', [
                 options     = t.getAttributes(),
                 width       = options.width - (browser ? 2 : 2), //-2 radi bordera
                 columnCount = this.$columnModel ? this.$columnModel.length : 0,
-
                 tDiv        = null;
 
             t.removeAll();        // reset variables and only empty ulBody

@@ -1,5 +1,3 @@
-
-
 /* ******************************************************* */
 
 .omnigrid {
@@ -7,14 +5,14 @@
     font-size: 11px;
     position: relative;
     border: 0 solid #eee;
-    overflow:hidden;
+    overflow: hidden;
     color: #000;
     clear: both;
 }
 
 .omnigrid div.hDivBox {
-    position:relative;
-    overflow:hidden;
+    position: relative;
+    overflow: hidden;
 }
 
 .omnigrid div.hDiv {
@@ -34,41 +32,41 @@
 }
 
 .omnigrid div.hDiv .th,
-.omnigrid  div.bDiv .td {
+.omnigrid div.bDiv .td {
     text-align: left;
     border-right: 1px solid #ddd;
     border-left: 1px solid #fff;
     vertical-align: top !important;
 
-    display:inline-block;
-    float:left;
+    display: inline-block;
+    float: left;
 
-    white-space:nowrap;
-    overflow:hidden;
+    white-space: nowrap;
+    overflow: hidden;
 
-    padding-left:5px;
-    -moz-user-select:text;
-    cursor:pointer;
+    padding-left: 5px;
+    -moz-user-select: text;
+    cursor: pointer;
 
     box-sizing: content-box;
 }
 
-.omnigrid  div.bDiv .td [class^="icon-"],
-.omnigrid  div.bDiv .td [class*=" icon-"] {
+.omnigrid div.bDiv .td [class^="icon-"],
+.omnigrid div.bDiv .td [class*=" icon-"] {
     font-size: 16px;
 }
 
 .omnigrid .selection {
-    background-color:transparent;
+    background-color: transparent;
 }
 
 .omnigrid div.hDiv div.th {
-    line-height:24px;
+    line-height: 24px;
     border-bottom: 1px solid #CCC;
 }
 
 .omnigrid div.bDiv .td {
-    line-height:27px;
+    line-height: 27px;
     /*background-color:red;*/
 }
 
@@ -79,10 +77,10 @@
 }
 
 .omnigrid div.bDiv ul {
-    margin:0;
-    padding:0;
-    border-bottom:1px solid #DDDDDD;
-    overflow:hidden;
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid #DDDDDD;
+    overflow: hidden;
     position: absolute;
     top: 0;
     left: 0;
@@ -91,23 +89,22 @@
 }
 
 .omnigrid div.bDiv ul li {
-    margin:0;
-    padding:0;
-    list-style:none;
-    overflow:hidden;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow: hidden;
     border-bottom: 1px solid #fff;
 
     min-width: 100%;
 }
 
-.omnigrid li.erow
-{
+.omnigrid li.erow {
     background-color: #f7f7f7;
     border-bottom: 1px solid #f7f7f7;
 }
 
 .omnigrid li.selected {
-    background-color: #d9e6f4  !important;
+    background-color: #d9e6f4 !important;
     /*color: #fff;*/
 }
 
@@ -116,6 +113,21 @@
     /*color: #fff;*/
 }
 
+.omnigrid .data-empty {
+    color: #999;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.omnigrid .data-empty-cell {
+    position: absolute;
+    text-align: center;
+    top: 45%;
+    width: 100%;
+}
 
 /* ************************************** */
 /* ************** Accordian ************** */
@@ -123,15 +135,15 @@
 
 .omnigrid div.bDiv .toggleicon {
     background-image: url(omnigrid/plusminus.gif);
-    background-repeat:no-repeat;
-    width:16px;
-    height:16px;
-    float:left;
-    margin:4px 3px 0 0;
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+    float: left;
+    margin: 4px 3px 0 0;
 }
 
 .omnigrid div.bDiv ul li.section {
-    display:none;
+    display: none;
     border-right: 1px solid #ddd;
     border-bottom: 1px solid #eeeeee;
     border-top: 1px solid #eeeeee;
@@ -147,17 +159,16 @@
     border-bottom: 0;
     overflow: hidden;
 
-    height:25px;
+    height: 25px;
 }
 
 .omnigrid div.fbutton {
-    margin-top:1px;
+    margin-top: 1px;
     float: left;
     display: block;
     cursor: pointer;
     padding: 1px;
 }
-
 
 .omnigrid div.fbutton div {
     float: left;
@@ -249,11 +260,10 @@
     border-bottom: 1px solid orange !important;
 }
 
-.omnigrid div.hDiv  div.ASC {
+.omnigrid div.hDiv div.ASC {
     background: url(omnigrid/up.png) no-repeat center top;
     border-bottom: 1px solid orange !important;
 }
-
 
 /* ************************************** */
 /* ************** Pagination ************ */
@@ -283,24 +293,23 @@ div.pGroup {
 }
 
 .omnigrid div.pDiv .pPageStat,
-.omnigrid div.pDiv .pcontrol
-{
+.omnigrid div.pDiv .pcontrol {
     position: relative;
     top: 0;
     overflow: visible;
-    font-size:10px;
-    color:#777777;
+    font-size: 10px;
+    color: #777777;
 }
 
 .omnigrid div.pDiv select {
-    font-size:10px;
+    font-size: 10px;
     line-height: 14px;
-    margin-top:2px;
+    margin-top: 2px;
     padding: 2px 5px;
 }
 
 .omnigrid div.pDiv input {
-    font-size:10px;
+    font-size: 10px;
     float: left;
     line-height: 14px;
     padding: 2px 5px;
@@ -315,29 +324,29 @@ div.pGroup {
     padding: 0 2px;
 }
 
-.omnigrid div.pDiv .btnseparator{
-    height:19px;
+.omnigrid div.pDiv .btnseparator {
+    height: 19px;
 }
 
 .omnigrid div.pDiv div.pButton {
     float: left;
-    width:16px;
-    height:16px;
+    width: 16px;
+    height: 16px;
     border: 0;
     cursor: pointer;
     overflow: hidden;
-    margin-top:4px;
+    margin-top: 4px;
 }
 
 .omnigrid div.pDiv div.pButton:hover,
 .omnigrid div.pDiv div.pButton.pBtnOver {
-    background-position:-16px 0;
+    background-position: -16px 0;
 }
 
 .omnigrid2 div.pDiv div.pButton:hover,
 .omnigrid2 div.pDiv div.pButton.pBtnOver {
-    width:14px;
-    height:14px;
+    width: 14px;
+    height: 14px;
     border: 1px solid #ccc;
     cursor: pointer;
 }
@@ -347,7 +356,7 @@ div.pGroup {
 }
 
 .omnigrid .pFirst {
-    background: url(omnigrid/first.gif) no-repeat ;
+    background: url(omnigrid/first.gif) no-repeat;
 }
 
 .omnigrid .pPrev {
@@ -372,7 +381,7 @@ div.pGroup {
 
 .omnigrid .pReload.loading {
     background: url(omnigrid/load.gif) no-repeat;
-    background-position:0 0 !important;
+    background-position: 0 0 !important;
 }
 
 .omnigrid .pSelectAll {
@@ -380,8 +389,8 @@ div.pGroup {
     margin-right: 2px;
     margin-top: 3px;
 
-    width:16px;
-    height:16px;
+    width: 16px;
+    height: 16px;
     border: 1px solid #ccc;
     cursor: pointer;
     float: left;
@@ -390,8 +399,8 @@ div.pGroup {
 .omnigrid .pUnselectAll {
     background: url(omnigrid/selNone.png) no-repeat;
 
-    width:16px;
-    height:16px;
+    width: 16px;
+    height: 16px;
     border: 1px solid #ccc;
     cursor: pointer;
     float: left;
@@ -411,10 +420,10 @@ div.pGroup {
 }
 
 .omnigrid .elementloader {
-    width:16px;
-    height:16px;
+    width: 16px;
+    height: 16px;
     background: url(omnigrid/load.gif) no-repeat;
-    position:absolute;
+    position: absolute;
 }
 
 /* *************************************** */
@@ -422,51 +431,52 @@ div.pGroup {
 /* *************************************** */
 
 .omnigrid input.inline {
-    padding:1px 2px 1px 2px;
+    padding: 1px 2px 1px 2px;
 }
 
 .omnigrid textarea.inline {
-    padding:1px 2px 1px 2px;
+    padding: 1px 2px 1px 2px;
 }
 
 /* **** Section Table **** */
 
 .section table {
-  border-collapse: collapse;
-  border: 0 solid;
-  font: normal 11px verdana, arial, helvetica, sans-serif;
-  color: #363636;
-  background: #f6f6f6;
-  text-align:left;
-  width: 100%;
+    border-collapse: collapse;
+    border: 0 solid;
+    font: normal 11px verdana, arial, helvetica, sans-serif;
+    color: #363636;
+    background: #f6f6f6;
+    text-align: left;
+    width: 100%;
 }
 
-.section  caption {
+.section caption {
     text-align: center;
     font: bold 16px arial, helvetica, sans-serif;
     background: transparent;
-    padding:6px 4px 8px 0;
+    padding: 6px 4px 8px 0;
     color: #CC00FF;
     text-transform: uppercase;
 }
 
 .section thead, .section tfoot {
-    background:url(omnigrid/fhbg.gif) repeat-x;
-    text-align:left;
-    height:24px;
+    background: url(omnigrid/fhbg.gif) repeat-x;
+    text-align: left;
+    height: 24px;
 }
 
 .section tfoot th {
-    padding:5px;
+    padding: 5px;
 }
-.section thead th{
-    padding:5px;
+
+.section thead th {
+    padding: 5px;
     border-right: 1px solid #DDDDDD;
 }
 
 .section table a {
     color: #333333;
-    text-decoration:none;
+    text-decoration: none;
 }
 
 .section tbody tr:hover {
@@ -482,11 +492,11 @@ div.pGroup {
 }
 
 .section td .sums {
-    margin-right:80px;
+    margin-right: 80px;
 }
 
 .section tbody td {
-    padding:3px 10px;
+    padding: 3px 10px;
     border-right: 1px solid #DDDDDD;
 }
 
@@ -494,21 +504,21 @@ div.pGroup {
     font-size: 80%;
 }
 
-.section tbody th{
-    padding:5px;
+.section tbody th {
+    padding: 5px;
 }
 
 /* export */
 .exportSelectDiv {
     width: 420px;
-    height:250px;
+    height: 250px;
     position: absolute;
     left: 35%;
-    top:10%;
-    z-index:10000;
+    top: 10%;
+    z-index: 10000;
     border: 3px solid #DDDDDD;
     background: #fff;
-    padding:5px;
+    padding: 5px;
 }
 
 .exportItemsDiv {
@@ -518,14 +528,14 @@ div.pGroup {
     position: relative;
     top: 0;
     width: 100%;
-    height:190px;
+    height: 190px;
     overflow: auto;
 }
 
 .exportSelectBtnDiv {
     width: 95%;
     position: absolute;
-    bottom:0;
+    bottom: 0;
     border-top: 1px solid #DDDDDD;
     padding: 3px 0 3px 3px;
 }
@@ -535,7 +545,7 @@ div.pGroup {
     float: left;
     margin: 3px;
     padding: 4px;
-    width:180px;
+    width: 180px;
 }
 
 .exportItemDiv input {
@@ -544,7 +554,7 @@ div.pGroup {
 }
 
 .exportItemDiv span {
-    float:left;
+    float: left;
 }
 
 .exportTextsDiv {
@@ -555,13 +565,13 @@ div.pGroup {
 }
 
 .exportFrame {
-   border-bottom: 2px solid #ff0000;
-   padding : 5px 3px 3px 10px;
-   width   : 500px;
-   height  : 500px;
-   position: absolute;
-   left    : 0;
-   top     : 0;
+    border-bottom: 2px solid #ff0000;
+    padding: 5px 3px 3px 10px;
+    width: 500px;
+    height: 500px;
+    position: absolute;
+    left: 0;
+    top: 0;
 }
 
 /** Drag and Drop Element
@@ -584,6 +594,7 @@ div.pGroup {
     white-space: nowrap;
     margin: 5px;
 }
+
 /*
 .omnigrid .bDiv button span {
     padding: 0;
@@ -592,7 +603,7 @@ div.pGroup {
 .omnigrid .qui-buttons-seperator {
     border-right: 2px solid #CCCFD5;
     float: left;
-    height : 30px;
+    height: 30px;
     margin: 5px 5px 0 5px;
 }
 
