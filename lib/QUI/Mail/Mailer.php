@@ -180,28 +180,17 @@ class Mailer extends QUI\QDOM
             return true;
         }
 
-        // @todo mail settings
-        
-//        $PHPMailer->SMTPSecure  = "tls";
-//        $PHPMailer->SMTPDebug = 1;
-//        $PHPMailer->SMTPOptions = array(
-//            'ssl' => array(
-//                'verify_peer' => false,
-//                'verify_peer_name' => false,
-//                'allow_self_signed' => true
-//            )
-//        );
-
-//        $PHPMailer->SMTPSecure = "tls";
-
         // no mail queue
-        if ($PHPMailer->Send()) {
-            return true;
-        }
+        try {
+            $PHPMailer->Send();
 
-        throw new QUI\Exception(
-            'Mail Error: ' . $PHPMailer->ErrorInfo
-        );
+            return true;
+
+        } catch (\Exception $Exception) {
+            throw new QUI\Exception(
+                'Mail Error: ' . $Exception->getMessage()
+            );
+        }
     }
 
     /**

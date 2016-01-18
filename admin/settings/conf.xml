@@ -124,6 +124,9 @@
                 <conf name="SMTPServer">
                     <type><![CDATA[string]]></type>
                 </conf>
+                <conf name="SMTPPort">
+                    <type><![CDATA[number]]></type>
+                </conf>
                 <conf name="SMTPAuth">
                     <type><![CDATA[bool]]></type>
                 </conf>
@@ -131,6 +134,9 @@
                     <type><![CDATA[string]]></type>
                 </conf>
                 <conf name="SMTPPass">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="SMTPSecure">
                     <type><![CDATA[string]]></type>
                 </conf>
                 <conf name="MAILFrom">
@@ -225,7 +231,7 @@
 
         <window menu-parent="/settings/quiqqer/">
             <title>
-                <locale group="quiqqer/system" var="quiqqer.settings.title" />
+                <locale group="quiqqer/system" var="quiqqer.settings.title"/>
             </title>
             <params>
                 <icon>URL_BIN_DIR/16x16/quiqqer.png</icon>
@@ -234,7 +240,7 @@
             <categories>
                 <category name="settings" require="controls/system/settings/Config" index="1">
                     <text>
-                        <locale group="quiqqer/system" var="quiqqer.settings.general.title" />
+                        <locale group="quiqqer/system" var="quiqqer.settings.general.title"/>
                     </text>
                     <icon>URL_BIN_DIR/22x22/quiqqer.png</icon>
                     <settings title="globals" name="globals">
@@ -245,66 +251,68 @@
                         </title>
                         <input conf="globals.htmlSuffix" type="checkbox">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.general.globals.htmlSuffix" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.general.globals.htmlSuffix"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/system" var="quiqqer.settings.general.globals.htmlSuffix.description" />
+                                <locale group="quiqqer/system"
+                                        var="quiqqer.settings.general.globals.htmlSuffix.description"/>
                             </description>
                         </input>
                         <input conf="globals.mailprotection" type="checkbox">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.general.globals.mailprotection" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.general.globals.mailprotection"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/system" var="quiqqer.settings.general.globals.mailprotection.description" />
+                                <locale group="quiqqer/system"
+                                        var="quiqqer.settings.general.globals.mailprotection.description"/>
                             </description>
                         </input>
                     </settings>
 
                     <settings title="templateengine" name="templateengine">
                         <title>
-                            <locale group="quiqqer/system" var="quiqqer.settings.general.template.title" />
+                            <locale group="quiqqer/system" var="quiqqer.settings.general.template.title"/>
                         </title>
                         <input conf="template.engine" type="text">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.general.template.use" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.general.template.use"/>
                             </text>
                         </input>
                         <input conf="smarty.compile_check" type="checkbox">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.general.template.compilecheck" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.general.template.compilecheck"/>
                             </text>
                         </input>
                     </settings>
 
                     <settings title="globals" name="globals">
                         <title>
-                            <locale group="quiqqer/system" var="quiqqer.settings.general.dev.title" />
+                            <locale group="quiqqer/system" var="quiqqer.settings.general.dev.title"/>
                         </title>
                         <input conf="globals.maintenance" type="checkbox">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.general.dev.maintenance" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.general.dev.maintenance"/>
                             </text>
                         </input>
                         <input conf="globals.debug_mode" type="checkbox">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.general.dev.debug" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.general.dev.debug"/>
                             </text>
                         </input>
                         <input conf="globals.development" type="checkbox">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.general.dev.development" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.general.dev.development"/>
                             </text>
                         </input>
                     </settings>
 
-                     <settings title="globals" name="globals">
+                    <settings title="globals" name="globals">
                         <title>
-                            <locale group="quiqqer/system" var="quiqqer.settings.general.updates.title" />
+                            <locale group="quiqqer/system" var="quiqqer.settings.general.updates.title"/>
                         </title>
                         <select conf="globals.quiqqer_version">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.general.version.title" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.general.version.title"/>
                             </text>
                         </select>
                     </settings>
@@ -350,153 +358,170 @@
                 </category>
                 -->
 
-                <category name="mail">
+                <category name="mail" require="controls/system/settings/Mail" index="2">
                     <text>
-                        <locale group="quiqqer/system" var="email" />
+                        <locale group="quiqqer/system" var="email"/>
                     </text>
                     <icon>fa fa-envelope-o icon-envelope-alt</icon>
 
                     <settings title="mail" name="mail">
                         <title>
-                            <locale group="quiqqer/system" var="quiqqer.settings.email.title" />
+                            <locale group="quiqqer/system" var="quiqqer.settings.email.title"/>
                         </title>
                         <input conf="mail.admin_mail" type="text">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.email.admin" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.admin"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/system" var="quiqqer.settings.email.admin.desc" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.admin.desc"/>
                             </description>
-                        </input>
-                        <input conf="mail.queue" type="checkbox">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.email.queue" />
-                            </text>
-                            <description>
-                                <locale group="quiqqer/system" var="quiqqer.settings.email.queue.desc" />
-                            </description>
-                        </input>
-                    </settings>
-
-                    <settings title="smtp" name="smtp">
-                        <title>
-                            <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.title" />
-                        </title>
-                        <input conf="mail.SMTP" type="checkbox">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.activasion" />
-                            </text>
-                        </input>
-                        <input conf="mail.SMTPServer" type="text">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.server" />
-                            </text>
-                        </input>
-                    </settings>
-
-                    <settings title="smtp" name="smtp">
-                        <title>
-                            <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.title" />
-                        </title>
-                        <input conf="mail.SMTPAuth" type="checkbox">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.activasion" />
-                            </text>
-                        </input>
-                        <input conf="mail.SMTPUser" type="text">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.user" />
-                            </text>
-                        </input>
-                        <input conf="mail.SMTPPass" type="password">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.password" />
-                            </text>
                         </input>
                         <input conf="mail.MAILFrom" type="text">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.MAILFrom" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.MAILFrom"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.MAILFrom.description" />
+                                <locale group="quiqqer/system"
+                                        var="quiqqer.settings.email.smtp.auth.MAILFrom.description"/>
                             </description>
                         </input>
                         <input conf="mail.MAILFromText" type="text">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.MAILFromText" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.MAILFromText"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.MAILFromText.description" />
+                                <locale group="quiqqer/system"
+                                        var="quiqqer.settings.email.smtp.auth.MAILFromText.description"/>
                             </description>
                         </input>
                         <input conf="mail.MAILReplyTo" type="text">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.MAILReplyTo" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.MAILReplyTo"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.MAILReplyTo.description" />
+                                <locale group="quiqqer/system"
+                                        var="quiqqer.settings.email.smtp.auth.MAILReplyTo.description"/>
                             </description>
+                        </input>
+                        <input conf="mail.queue" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.queue"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.queue.desc"/>
+                            </description>
+                        </input>
+                    </settings>
+
+                    <settings title="smtp" name="smtp">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.title"/>
+                        </title>
+                        <input conf="mail.SMTP" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.activasion"/>
+                            </text>
+                        </input>
+                        <input conf="mail.SMTPServer" type="text">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.server"/>
+                            </text>
+                        </input>
+                        <input conf="mail.SMTPPort" type="number">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.port"/>
+                            </text>
+                        </input>
+
+                        <select conf="mail.SMTPSecure">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.secure"/>
+                            </text>
+                            <option value="">---</option>
+                            <option value="ssl">SSL</option>
+                            <option value="tls">TLS</option>
+                        </select>
+                    </settings>
+
+                    <settings title="smtp" name="smtp">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.title"/>
+                        </title>
+                        <input conf="mail.SMTPAuth" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.activasion"/>
+                            </text>
+                        </input>
+                        <input conf="mail.SMTPUser" type="text">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.user"/>
+                            </text>
+                        </input>
+                        <input conf="mail.SMTPPass" type="password">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.password"/>
+                            </text>
                         </input>
                     </settings>
                 </category>
 
-                <category name="auth" require="controls/system/settings/Auth">
+                <category name="auth" require="controls/system/settings/Auth" index="3">
                     <text>
-                        <locale group="quiqqer/system" var="quiqqer.settings.auth" />
+                        <locale group="quiqqer/system" var="quiqqer.settings.auth"/>
                     </text>
                     <icon>icon-user</icon>
 
                     <settings title="auth" name="auth">
                         <title>
-                            <locale group="quiqqer/system" var="quiqqer.settings.auth" />
+                            <locale group="quiqqer/system" var="quiqqer.settings.auth"/>
                         </title>
 
                         <input conf="globals.emaillogin" type="checkbox">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.auth.emaillogin" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.emaillogin"/>
                             </text>
                         </input>
                         <select conf="auth.type" type="text">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.auth.type" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.type"/>
                             </text>
 
                             <option value="standard">
-                                <locale group="quiqqer/system" var="quiqqer.settings.auth.standard" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.standard"/>
                             </option>
                         </select>
                     </settings>
 
                     <settings title="auth-session" name="auth-session">
                         <title>
-                            <locale group="quiqqer/system" var="quiqqer.settings.auth.session" />
+                            <locale group="quiqqer/system" var="quiqqer.settings.auth.session"/>
                         </title>
 
                         <input conf="session.multible" type="checkbox">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.auth.session.multible" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.session.multible"/>
                             </text>
                         </input>
 
                         <input conf="session.max_life_time">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.auth.session.maxlife" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.session.maxlife"/>
                             </text>
                         </input>
 
                         <select conf="session.type" type="text">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.auth.session.type" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.session.type"/>
                             </text>
 
                             <option value="filesystem">
-                                <locale group="quiqqer/system" var="quiqqer.settings.auth.sessionType.filesystem" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.sessionType.filesystem"/>
                             </option>
                             <option value="database">
-                                <locale group="quiqqer/system" var="quiqqer.settings.auth.sessionType.database" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.sessionType.database"/>
                             </option>
                             <option value="memcached">
-                                <locale group="quiqqer/system" var="quiqqer.settings.auth.sessionType.memcached" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.sessionType.memcached"/>
                             </option>
                             <!--<option value="mongodb">
                                 <locale group="quiqqer/system" var="quiqqer.settings.auth.sessionType.mongodb" />
@@ -504,64 +529,66 @@
                         </select>
 
 
-                        <input conf="session.memcached_data" type="hidden" />
+                        <input conf="session.memcached_data" type="hidden"/>
                     </settings>
 
                 </category>
 
-                <category name="date_formats">
+                <category name="date_formats" index="4">
                     <text>
-                        <locale group="quiqqer/system" var="quiqqer.settings.date_formats" />
+                        <locale group="quiqqer/system" var="quiqqer.settings.date_formats"/>
                     </text>
                     <icon>icon-calendar</icon>
 
 
                     <settings title="date_timezone" name="date_timezone">
                         <title>
-                            <locale group="quiqqer/system" var="quiqqer.settings.timezone.title" />
+                            <locale group="quiqqer/system" var="quiqqer.settings.timezone.title"/>
                         </title>
                         <input conf="globals.timezone" type="string">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.general.globals.timezone" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.general.globals.timezone"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/system" var="quiqqer.settings.general.globals.timezone.description" />
+                                <locale group="quiqqer/system"
+                                        var="quiqqer.settings.general.globals.timezone.description"/>
                             </description>
                         </input>
                     </settings>
 
                     <settings title="date_formats" name="date_formats">
                         <title>
-                            <locale group="quiqqer/system" var="quiqqer.settings.date_formats.title" />
+                            <locale group="quiqqer/system" var="quiqqer.settings.date_formats.title"/>
                         </title>
 
                         <input conf="date_formats"
                                data-qui="controls/system/AvailableLanguages"
                         >
                             <description>
-                                <locale group="quiqqer/system" var="quiqqer.settings.date_formats.description" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.date_formats.description"/>
                             </description>
                         </input>
                     </settings>
                 </category>
 
-                <category name="gui">
+                <category name="gui" index="5">
                     <text>
-                        <locale group="quiqqer/system" var="quiqqer.settings.gui" />
+                        <locale group="quiqqer/system" var="quiqqer.settings.gui"/>
                     </text>
                     <icon>icon-user</icon>
 
                     <settings title="gui" name="gui">
                         <title>
-                            <locale group="quiqqer/system" var="quiqqer.settings.gui.title" />
+                            <locale group="quiqqer/system" var="quiqqer.settings.gui.title"/>
                         </title>
 
                         <input conf="gui.displayTimeMessages" type="number">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.gui.displayTimeMessages.text" />
+                                <locale group="quiqqer/system" var="quiqqer.settings.gui.displayTimeMessages.text"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/system" var="quiqqer.settings.gui.displayTimeMessages.description" />
+                                <locale group="quiqqer/system"
+                                        var="quiqqer.settings.gui.displayTimeMessages.description"/>
                             </description>
                         </input>
                     </settings>

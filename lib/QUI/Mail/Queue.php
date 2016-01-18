@@ -35,17 +35,17 @@ class Queue
         $Table = QUI::getDataBase()->Table();
 
         $Table->appendFields(self::TABLE(), array(
-            'id'           => 'int(11) NOT NULL',
-            'subject'      => 'varchar(1000)',
-            'body'         => 'text',
-            'text'         => 'text',
-            'from'         => 'text',
-            'fromName'     => 'text',
-            'ishtml'       => 'int(1)',
-            'mailto'       => 'text',
-            'replyto'      => 'text',
-            'cc'           => 'text',
-            'bcc'          => 'text',
+            'id' => 'int(11) NOT NULL',
+            'subject' => 'varchar(1000)',
+            'body' => 'text',
+            'text' => 'text',
+            'from' => 'text',
+            'fromName' => 'text',
+            'ishtml' => 'int(1)',
+            'mailto' => 'text',
+            'replyto' => 'text',
+            'cc' => 'text',
+            'bcc' => 'text',
             'attachements' => 'text'
         ));
 
@@ -121,7 +121,7 @@ class Queue
     public function send()
     {
         $params = QUI::getDataBase()->fetch(array(
-            'from'  => self::TABLE(),
+            'from' => self::TABLE(),
             'limit' => 1
         ));
 
@@ -163,7 +163,7 @@ class Queue
     public function sendById($id)
     {
         $params = QUI::getDataBase()->fetch(array(
-            'from'  => self::TABLE(),
+            'from' => self::TABLE(),
             'where' => array(
                 'id' => (int)$id
             ),
@@ -207,111 +207,112 @@ class Queue
     /**
      * Send the mail
      *
-     * @throws \QUI\Exception
-     *
      * @param array $params - mail data
-     *
      * @return boolean
-     * @todo attachments
+     *
+     * @throws \QUI\Exception
      */
     protected function sendMail($params)
     {
-        $PhpMailer = QUI::getMailManager()->getPHPMailer();
+        try {
+            $PhpMailer = QUI::getMailManager()->getPHPMailer();
 
-        $mailto  = json_decode($params['mailto'], true);
-        $replyto = json_decode($params['replyto'], true);
-        $cc      = json_decode($params['cc'], true);
-        $bcc     = json_decode($params['bcc'], true);
+            $mailto  = json_decode($params['mailto'], true);
+            $replyto = json_decode($params['replyto'], true);
+            $cc      = json_decode($params['cc'], true);
+            $bcc     = json_decode($params['bcc'], true);
 
-        // mailto
-        foreach ($mailto as $address) {
-            if (is_array($address)) {
-                $PhpMailer->addAddress($address[0], $address[1]);
-                continue;
-            }
-            $PhpMailer->addAddress($address);
-        }
-
-        // reply
-        foreach ($replyto as $entry) {
-            if (is_array($entry)) {
-                $PhpMailer->addAddress($entry[0], $entry[1]);
-                continue;
-            }
-            $PhpMailer->addReplyTo($entry);
-        }
-
-        // cc
-        foreach ($cc as $entry) {
-            if (is_array($entry)) {
-                $PhpMailer->addAddress($entry[0], $entry[1]);
-                continue;
-            }
-            $PhpMailer->addCC($entry);
-        }
-
-        // bcc
-        foreach ($bcc as $entry) {
-            if (is_array($entry)) {
-                $PhpMailer->addAddress($entry[0], $entry[1]);
-                continue;
-            }
-            $PhpMailer->addBCC($entry);
-        }
-
-        // exist attachements?
-        $mailQueueDir = self::getAttachmentDir($params['id']);
-
-        if (is_dir($mailQueueDir)) {
-            $files = File::readDir($mailQueueDir);
-
-            foreach ($files as $file) {
-                $file = $mailQueueDir . $file;
-
-                if (!file_exists($file)) {
+            // mailto
+            foreach ($mailto as $address) {
+                if (is_array($address)) {
+                    $PhpMailer->addAddress($address[0], $address[1]);
                     continue;
                 }
-
-                $infos = File::getInfo($file);
-
-                if (!isset($infos['mime_type'])) {
-                    $infos['mime_type'] = 'application/octet-stream';
-                }
-
-                $PhpMailer->addAttachment(
-                    $file,
-                    $infos['basename'],
-                    'base64',
-                    $infos['mime_type']
-                );
+                $PhpMailer->addAddress($address);
             }
-        }
+
+            // reply
+            foreach ($replyto as $entry) {
+                if (is_array($entry)) {
+                    $PhpMailer->addAddress($entry[0], $entry[1]);
+                    continue;
+                }
+                $PhpMailer->addReplyTo($entry);
+            }
+
+            // cc
+            foreach ($cc as $entry) {
+                if (is_array($entry)) {
+                    $PhpMailer->addAddress($entry[0], $entry[1]);
+                    continue;
+                }
+                $PhpMailer->addCC($entry);
+            }
+
+            // bcc
+            foreach ($bcc as $entry) {
+                if (is_array($entry)) {
+                    $PhpMailer->addAddress($entry[0], $entry[1]);
+                    continue;
+                }
+                $PhpMailer->addBCC($entry);
+            }
+
+            // exist attachements?
+            $mailQueueDir = self::getAttachmentDir($params['id']);
+
+            if (is_dir($mailQueueDir)) {
+                $files = File::readDir($mailQueueDir);
+
+                foreach ($files as $file) {
+                    $file = $mailQueueDir . $file;
+
+                    if (!file_exists($file)) {
+                        continue;
+                    }
+
+                    $infos = File::getInfo($file);
+
+                    if (!isset($infos['mime_type'])) {
+                        $infos['mime_type'] = 'application/octet-stream';
+                    }
+
+                    $PhpMailer->addAttachment(
+                        $file,
+                        $infos['basename'],
+                        'base64',
+                        $infos['mime_type']
+                    );
+                }
+            }
 
 
-        // html mail ?
-        if ($params['ishtml']) {
-            $PhpMailer->IsHTML(true);
-            $PhpMailer->AltBody = $params['text'];
-        }
+            // html mail ?
+            if ($params['ishtml']) {
+                $PhpMailer->IsHTML(true);
+                $PhpMailer->AltBody = $params['text'];
+            }
 
-        $PhpMailer->From     = $params['from'];
-        $PhpMailer->FromName = $params['fromName'];
-        $PhpMailer->Subject  = $params['subject'];
-        $PhpMailer->Body     = $params['body'];
+            $PhpMailer->From     = $params['from'];
+            $PhpMailer->FromName = $params['fromName'];
+            $PhpMailer->Subject  = $params['subject'];
+            $PhpMailer->Body     = $params['body'];
 
 
-        if ($PhpMailer->send()) {
+            $PhpMailer->send();
+
             if (is_dir($mailQueueDir)) {
                 File::deleteDir($mailQueueDir);
             }
 
             return true;
-        }
 
-        throw new QUI\Exception(
-            'Mail Error: ' . $PhpMailer->ErrorInfo,
-            500
-        );
+        } catch (\Exception $Exception) {
+            throw new QUI\Exception(
+                'Mail Error: ' . $Exception->getMessage(),
+                500
+            );
+        }
     }
 
     /**
@@ -322,10 +323,10 @@ class Queue
     public function count()
     {
         $result = QUI::getDataBase()->fetch(array(
-            'from'  => self::TABLE(),
+            'from' => self::TABLE(),
             'count' => array(
                 'select' => 'id',
-                'as'     => 'count'
+                'as' => 'count'
             )
         ));
 

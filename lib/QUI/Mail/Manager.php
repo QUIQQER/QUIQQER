@@ -6,7 +6,7 @@
 
 namespace QUI\Mail;
 
-use QUI\System\Log;
+use QUI;
 
 /**
  * Mail Manager
@@ -78,18 +78,49 @@ class Manager
      */
     public function getPHPMailer()
     {
-        $config = \QUI::conf('mail');
-        $Mail   = new \PHPMailer();
+        $config = QUI::conf('mail');
+        $Mail   = new \PHPMailer(true);
 
         if ($config['SMTP'] == true) {
-            //$this->_mail->IsSMTP();
             $Mail->Mailer   = 'smtp';
             $Mail->Host     = $config['SMTPServer'];
             $Mail->SMTPAuth = $config['SMTPAuth'];
             $Mail->Username = $config['SMTPUser'];
             $Mail->Password = $config['SMTPPass'];
 
-            Log::addNotice('Missing SMTP E-Mail Server');
+            if (isset($config['SMTPPort'])
+                && !empty($config['SMTPPort'])
+            ) {
+                $Mail->Port = (int)$config['SMTPPort'];
+            }
+
+            if (isset($config['SMTPDebug'])
+                && !empty($config['SMTPDebug'])
+            ) {
+                $Mail->SMTPDebug = 2;
+            }
+
+            if (isset($config['SMTPSecure'])) {
+                switch ($config['SMTPSecure']) {
+                    case "ssl":
+                    case "tls":
+                        $Mail->SMTPSecure = $config['SMTPSecure'];
+                        break;
+                }
+            }
+
+//        $PHPMailer->SMTPSecure  = "tls";
+//        $PHPMailer->SMTPOptions = array(
+//            'ssl' => array(
+//                'verify_peer' => false,
+//                'verify_peer_name' => false,
+//                'allow_self_signed' => true
+//            )
+//        );
+
+//        $PHPMailer->SMTPSecure = "tls";
+
+//            Log::addNotice('Missing SMTP E-Mail Server');
         }
 
         $Mail->From     = $config['MAILFrom'];
