@@ -229,10 +229,12 @@ define('controls/desktop/panels/XML', [
                 }
 
                 // parse controls
-                QUI.parse(Body).then(function () {
-                    console.log(Body.get('html'));
-                    return ControlUtils.parse(Body);
-                }).then(function () {
+                Promise.all([
+
+                    QUI.parse(Body),
+                    ControlUtils.parse(Body)
+
+                ]).then(function () {
 
                     var i, len, Node, Control, nodeName;
                     var quiElements = Body.getElements('[data-quiid]');
