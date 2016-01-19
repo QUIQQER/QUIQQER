@@ -178,12 +178,16 @@
         </locale>
 
         <locale name="text.mail.subject">
-            <de><![CDATA[QUIQQER Test Mail]]></de>
-            <en><![CDATA[QUIQQER Test Mail]]></en>
+            <de><![CDATA[QUIQQER Test E-Mail]]></de>
+            <en><![CDATA[QUIQQER Test Email]]></en>
         </locale>
         <locale name="text.mail.body" html="true">
-            <de><![CDATA[Dies ist eine Test Mail]]></de>
-            <en><![CDATA[This is a test mail]]></en>
+            <de><![CDATA[Dies ist eine Test E-Mail]]></de>
+            <en><![CDATA[This is a test email]]></en>
+        </locale>
+        <locale name="test.mail.button">
+            <de><![CDATA[E-Mail Einstellungen testen]]></de>
+            <en><![CDATA[test email settings]]></en>
         </locale>
 
         <locale name="message.testmail.success" html="true">

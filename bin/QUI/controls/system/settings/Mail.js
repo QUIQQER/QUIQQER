@@ -13,9 +13,10 @@ define('controls/system/settings/Mail', [
     'qui/QUI',
     'qui/controls/Control',
     'qui/controls/buttons/Button',
-    'Ajax'
+    'Ajax',
+    'Locale'
 
-], function (QUI, QUIControl, QUIButton, Ajax) {
+], function (QUI, QUIControl, QUIButton, QUIAjax, QUILocale) {
     "use strict";
 
     return new Class({
@@ -46,7 +47,7 @@ define('controls/system/settings/Mail', [
             var Table = Content.getElement('table:last-child');
 
             new QUIButton({
-                text     : 'Mail Einstellungen testen',
+                text     : QUILocale.get('quiqqer/quiqqer', 'test.mail.button'),
                 textimage: 'fa fa-envelope-o icon-envelope-alt',
                 events   : {
                     onClick: this.testMailSettings
@@ -79,7 +80,7 @@ define('controls/system/settings/Mail', [
                 'icon-spinner icon-spin fa fa-spinner fa-spin'
             );
 
-            Ajax.get('ajax_system_mailTest', function () {
+            QUIAjax.get('ajax_system_mailTest', function () {
                 Button.setAttribute(
                     'textimage',
                     'fa fa-envelope-o icon-envelope-alt'
@@ -88,8 +89,10 @@ define('controls/system/settings/Mail', [
                 params : JSON.encode(params),
                 onError: function (Error) {
 
-                    QUI.getMessageHandler().then(function(MH) {
-                        MH.addError();
+                    QUI.getMessageHandler().then(function (MH) {
+                        MH.addError(
+                            Error.getMessage()
+                        );
                     });
 
                     Button.setAttribute(
