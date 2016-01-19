@@ -312,7 +312,7 @@ class Locale
         $str = $this->getHelper($group, $value);
 
         foreach ($replace as $key => $value) {
-            if (!is_string($value)) {
+            if (is_array($value) || is_object($value)) {
                 continue;
             }
 
