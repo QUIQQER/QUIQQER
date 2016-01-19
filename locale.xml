@@ -186,6 +186,17 @@
             <en><![CDATA[This is a test mail]]></en>
         </locale>
 
+        <locale name="message.testmail.success" html="true">
+            <de><![CDATA[
+                Test E-Mail erfolgreich versendet.<br />
+                Eine ausführliche LOG finden sie in der mailtest.log oder der debug.log
+            ]]></de>
+            <en><![CDATA[
+                Test Email successfuly send.
+                You can find a detailed Log in mailtest.log or debug.log.
+            ]]></en>
+        </locale>
+
     </groups>
 
     <groups name="quiqqer/system" datatype="js,php">
@@ -3722,7 +3733,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[E-Mail-Adresse, an welche die Antwort gesendet werden soll.]]></de>
             <en><![CDATA[For example: Thomas Meier]]></en>
         </locale>
-
 
 
         <locale name="quiqqer.settings.auth">
