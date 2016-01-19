@@ -190,6 +190,19 @@
             <en><![CDATA[test email settings]]></en>
         </locale>
 
+        <locale name="mail.settings.verify_peer">
+            <de><![CDATA[Verifizierung des verwendeten SSL-Zertifikats voraussetzen.]]></de>
+            <en><![CDATA[Requires verification of the SSL certificates.]]></en>
+        </locale>
+        <locale name="mail.settings.verify_peer_name">
+            <de><![CDATA[Erfordere die Verfikation des Peernamens.]]></de>
+            <en><![CDATA[Requires verification of the peer name.]]></en>
+        </locale>
+        <locale name="mail.settings.allow_self_signed">
+            <de><![CDATA[Selbst signierte Zerifikate erlauben.]]></de>
+            <en><![CDATA[Allow self signed certificates.]]></en>
+        </locale>
+
         <locale name="message.testmail.success" html="true">
             <de><![CDATA[
                 Test E-Mail erfolgreich versendet.<br />

@@ -103,24 +103,21 @@ class Manager
             if (isset($config['SMTPSecure'])) {
                 switch ($config['SMTPSecure']) {
                     case "ssl":
+                        $Mail->SMTPSecure = $config['SMTPSecure'];
+QUI\System\Log::writeRecursive($config);
+                        $Mail->SMTPOptions = array(
+                            'ssl' => array(
+                                'verify_peer' => (int)$config['SMTPSecureSSL_verify_peer'],
+                                'verify_peer_name' => (int)$config['SMTPSecureSSL_verify_peer_name'],
+                                'allow_self_signed' => (int)$config['SMTPSecureSSL_allow_self_signed']
+                            )
+                        );
+                        break;
                     case "tls":
                         $Mail->SMTPSecure = $config['SMTPSecure'];
                         break;
                 }
             }
-
-//        $PHPMailer->SMTPSecure  = "tls";
-//        $PHPMailer->SMTPOptions = array(
-//            'ssl' => array(
-//                'verify_peer' => false,
-//                'verify_peer_name' => false,
-//                'allow_self_signed' => true
-//            )
-//        );
-
-//        $PHPMailer->SMTPSecure = "tls";
-
-//            Log::addNotice('Missing SMTP E-Mail Server');
         }
 
         $Mail->From     = $config['MAILFrom'];

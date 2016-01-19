@@ -139,6 +139,16 @@
                 <conf name="SMTPSecure">
                     <type><![CDATA[string]]></type>
                 </conf>
+                <conf name="SMTPSecureSSL_verify_peer">
+                    <type><![CDATA[bool]]></type>
+                </conf>
+                <conf name="SMTPSecureSSL_verify_peer_name">
+                    <type><![CDATA[bool]]></type>
+                </conf>
+                <conf name="SMTPSecureSSL_allow_self_signed">
+                    <type><![CDATA[bool]]></type>
+                </conf>
+
                 <conf name="MAILFrom">
                     <type><![CDATA[string]]></type>
                 </conf>

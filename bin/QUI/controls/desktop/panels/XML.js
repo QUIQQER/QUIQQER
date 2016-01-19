@@ -288,7 +288,6 @@ define('controls/desktop/panels/XML', [
                             } else {
                                 self.$Control.imports(Form);
                             }
-
                         }
 
                         self.Loader.hide();
