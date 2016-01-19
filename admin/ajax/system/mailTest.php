@@ -6,6 +6,7 @@
 QUI::$Ajax->registerFunction(
     'ajax_system_mailTest',
     function ($params) {
+
         $params = json_decode($params, true);
         $Mail   = QUI::getMailManager()->getPHPMailer();
 
@@ -36,8 +37,6 @@ QUI::$Ajax->registerFunction(
         }
 
         // debug output
-        QUI\System\Log::writeRecursive($params);
-
         try {
             $Mail->addAddress(QUI::conf('mail', 'admin_mail'));
 
@@ -51,16 +50,21 @@ QUI::$Ajax->registerFunction(
                 'text.mail.body'
             );
 
-            ob_start();
+            $DebugOutput        = new stdClass();
+            $DebugOutput->debug = "\n";
 
-            $Mail->SMTPDebug = 2;
+            $Mail->SMTPDebug   = 2;
+            $Mail->Debugoutput = function ($str, $level) use ($DebugOutput) {
+                $DebugOutput->debug .= rtrim($str) . "\n";
+            };
+
             $Mail->send();
 
-            $debugOutput = ob_get_contents();
-            ob_end_clean();
-
-            // debug output
-            QUI\System\Log::writeRecursive($debugOutput);
+            QUI\System\Log::addInfo(
+                $DebugOutput->debug,
+                $params,
+                'mailtest'
+            );
 
         } catch (\Exception $Exception) {
             throw new QUI\Exception(
@@ -70,7 +74,10 @@ QUI::$Ajax->registerFunction(
         }
 
         QUI::getMessagesHandler()->addSuccess(
-            'Mail wurde erfolgreich versendet'
+            QUI::getLocale()->get(
+                'quiqqer/quiqqer',
+                'message.testmail.success'
+            )
         );
     },
     array('params'),

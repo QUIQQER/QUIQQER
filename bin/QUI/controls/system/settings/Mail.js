@@ -85,7 +85,18 @@ define('controls/system/settings/Mail', [
                     'fa fa-envelope-o icon-envelope-alt'
                 );
             }, {
-                params: JSON.encode(params)
+                params : JSON.encode(params),
+                onError: function (Error) {
+
+                    QUI.getMessageHandler().then(function(MH) {
+                        MH.addError();
+                    });
+
+                    Button.setAttribute(
+                        'textimage',
+                        'fa fa-envelope-o icon-envelope-alt'
+                    );
+                }
             });
         }
     });
