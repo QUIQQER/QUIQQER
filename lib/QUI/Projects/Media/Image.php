@@ -7,8 +7,7 @@
 namespace QUI\Projects\Media;
 
 use QUI;
-use QUI\Utils\System\File as QUIFile;
-use QUI\Utils\StringHelper as QUIString;
+use QUI\Utils\StringHelper;
 use QUI\Utils\System\File;
 
 /**
@@ -31,7 +30,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             return $this->getAttribute('image_width');
         }
 
-        $data = QUIFile::getInfo(
+        $data = File::getInfo(
             $this->getFullPath(),
             array('imagesize' => true)
         );
@@ -54,7 +53,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             return $this->getAttribute('image_height');
         }
 
-        $data = QUIFile::getInfo(
+        $data = File::getInfo(
             $this->getFullPath(),
             array('imagesize' => true)
         );
@@ -118,11 +117,11 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         if ($width || $height) {
             $part      = explode('.', $file);
             $cachefile = $cdir . $part[0] . '__' . $width . 'x' . $height . $extra . '.'
-                         . QUIString::toLower(end($part));
+                         . StringHelper::toLower(end($part));
 
             if (empty($height)) {
                 $cachefile = $cdir . $part[0] . '__' . $width . $extra . '.'
-                             . QUIString::toLower(end($part));
+                             . StringHelper::toLower(end($part));
             }
 
             if ($this->getAttribute('reflection')) {
@@ -212,7 +211,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $height = $this->getAttribute('image_height');
 
         if (!$width || !$height) {
-            $info = QUIFile::getInfo($this->getFullPath(), array(
+            $info = File::getInfo($this->getFullPath(), array(
                 'imagesize' => true
             ));
 
@@ -438,19 +437,19 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $cachefile = $cdir . $file;
         $cacheData = pathinfo($cachefile);
 
-        $fileData = QUIFile::getInfo($this->getFullPath());
-        $files    = QUIFile::readDir($cacheData['dirname'], true);
+        $fileData = File::getInfo($this->getFullPath());
+        $files    = File::readDir($cacheData['dirname'], true);
         $filename = $fileData['filename'];
 
         foreach ($files as $file) {
             $len = strlen($filename);
 
             if (substr($file, 0, $len + 2) == $filename . '__') {
-                QUIFile::unlink($cacheData['dirname'] . '/' . $file);
+                File::unlink($cacheData['dirname'] . '/' . $file);
             }
         }
 
-        QUIFile::unlink($cachefile);
+        File::unlink($cachefile);
 
         // delete admin cache
         $cache_folder
@@ -466,7 +465,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
         foreach ($list as $file) {
             if (strpos($file, $cache) !== false) {
-                QUIFile::unlink($cache_folder . $file);
+                File::unlink($cache_folder . $file);
             }
         }
     }

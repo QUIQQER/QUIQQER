@@ -200,7 +200,10 @@ define('controls/desktop/panels/XML', [
                     result = '';
                 }
 
-                Body.set('html', '<form class="qui-xml-panel">' + result + '</form>');
+                Body.set(
+                    'html',
+                    '<form class="qui-xml-panel">' + result + '</form>'
+                );
 
                 // set the form
                 var i, len, Elm, value;
@@ -226,12 +229,10 @@ define('controls/desktop/panels/XML', [
                 }
 
                 // parse controls
-                Promise.all([
-
-                    QUI.parse(Body),
-                    ControlUtils.parse(Body)
-
-                ]).then(function () {
+                QUI.parse(Body).then(function () {
+                    console.log(Body.get('html'));
+                    return ControlUtils.parse(Body);
+                }).then(function () {
 
                     var i, len, Node, Control, nodeName;
                     var quiElements = Body.getElements('[data-quiid]');

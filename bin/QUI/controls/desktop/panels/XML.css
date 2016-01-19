@@ -14,12 +14,8 @@
 }
 
 /*.qui-xml-panel select {*/
-    /*width: 150px;*/
+/*width: 150px;*/
 /*}*/
-
-.qui-xml-panel p {
-    width: 100%;
-}
 
 .qui-xml-panel label {
     cursor: pointer;
@@ -30,9 +26,20 @@
     width: 90%;
 }
 
-.qui-xml-panel .description {
-    clear: both;
+.qui-xml-panel-row {
+    width: 100%;
+}
+
+.qui-xml-panel-row td {
+    width: 100%;
+}
+
+.qui-xml-panel-row-item {
     float: left;
-    font-style: italic;
-    margin: 10px 0 0 0;
+    width: 70%
+}
+
+.qui-xml-panel-row-item.description {
+    clear: none;
+    width: 30%
 }
