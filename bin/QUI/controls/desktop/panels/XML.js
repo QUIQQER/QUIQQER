@@ -200,7 +200,10 @@ define('controls/desktop/panels/XML', [
                     result = '';
                 }
 
-                Body.set('html', '<form class="qui-xml-panel">' + result + '</form>');
+                Body.set(
+                    'html',
+                    '<form class="qui-xml-panel">' + result + '</form>'
+                );
 
                 // set the form
                 var i, len, Elm, value;
@@ -285,7 +288,6 @@ define('controls/desktop/panels/XML', [
                             } else {
                                 self.$Control.imports(Form);
                             }
-
                         }
 
                         self.Loader.hide();

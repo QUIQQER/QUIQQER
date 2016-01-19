@@ -1037,12 +1037,11 @@ class DOM
                         continue;
                     }
 
-                    $result .= '<tr class="' . ($row % 2 ? $even : $odd) . '"><td>';
+                    $result .= '<tr class="' . ($row % 2 ? $even : $odd) . ' qui-xml-panel-row"><td>';
 
                     switch ($Set->nodeName) {
                         case 'text':
-                            $result .= '<div>' . self::getTextFromNode($Set)
-                                       . '</div>';
+                            $result .= '<div>' . self::getTextFromNode($Set) . '</div>';
                             break;
 
                         case 'input':
@@ -1085,7 +1084,6 @@ class DOM
                 }
 
                 $result .= '</tbody></table>';
-
                 continue;
             }
 
@@ -1188,7 +1186,7 @@ class DOM
 
         $id = $Input->getAttribute('conf') . '-' . time();
 
-        $string = '<p>';
+        $string = '<div class="qui-xml-panel-row-item">';
         $text   = $Input->getElementsByTagName('text');
         $input  = '<input type="' . $type . '"
                            name="' . $Input->getAttribute('conf') . '"
@@ -1220,13 +1218,13 @@ class DOM
 
         $desc = $Input->getElementsByTagName('description');
 
+        $string .= '</div>';
+
         if ($desc->length) {
-            $string .= '<div class="description">' .
+            $string .= '<div class="description qui-xml-panel-row-item">' .
                        self::getTextFromNode($desc->item(0)) .
                        '</div>';
         }
-
-        $string .= '</p>';
 
         return $string;
     }
@@ -1352,7 +1350,7 @@ class DOM
             $value
         );
 
-        $value = String::replaceDblSlashes($value);
+        $value = StringHelper::replaceDblSlashes($value);
 
         return $value;
     }
