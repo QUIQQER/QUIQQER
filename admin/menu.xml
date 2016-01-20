@@ -81,13 +81,13 @@
         >
             <locale group="quiqqer/system" var="menu.extras.rights.text" />
         </item>
-            <!-- Zugriffsrechte bearbeiten -->
+            <!-- Benutzer -->
             <item parent="/extras/rights/"
-                  name="permissions"
-                  icon="icon-shield fa fa-shield"
-                  require="controls/permissions/Panel"
+                  name="users"
+                  icon="icon-user"
+                  require="controls/users/Panel"
             >
-                <locale group="quiqqer/system" var="menu.extras.permissions.text" />
+                <locale group="quiqqer/system" var="menu.extras.users.text" />
             </item>
             <!-- Gruppen -->
             <item parent="/extras/rights/"
@@ -97,14 +97,15 @@
             >
                 <locale group="quiqqer/system" var="menu.extras.groups.text" />
             </item>
-            <!-- Benutzer -->
+            <!-- Zugriffsrechte bearbeiten -->
             <item parent="/extras/rights/"
-                  name="users"
-                  icon="icon-user"
-                  require="controls/users/Panel"
+                  name="permissions"
+                  icon="icon-shield fa fa-shield"
+                  require="controls/permissions/Panel"
             >
-                <locale group="quiqqer/system" var="menu.extras.users.text" />
+                <locale group="quiqqer/system" var="menu.extras.permissions.text" />
             </item>
+
 
         <!-- Papierkorb -->
         <item parent="/extras/"
@@ -145,7 +146,7 @@
         >
             <locale group="quiqqer/system" var="menu.settings.projects.text" />
         </item>
-        
+
     <!-- Profil -->
         <item parent="/profile/"
               name="userProfile"

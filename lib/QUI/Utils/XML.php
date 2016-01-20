@@ -65,7 +65,10 @@ class XML
             }
 
             // check, if item already exist
-            if ($Parent->getElementByName($Item->getAttribute('name'))) {
+            if (!$Item->getAttribute('name')
+                || !$Parent
+                || $Parent->getElementByName($Item->getAttribute('name'))
+            ) {
                 continue;
             }
 

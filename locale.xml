@@ -258,8 +258,8 @@
             <en><![CDATA[Default layout]]></en>
         </locale>
         <locale name="projects.project.settings.panel.settings.suffixprefix.title">
-            <de><![CDATA[Prefix / Suffix Title Einstellungen]]></de>
-            <en><![CDATA[Prefix / Suffix title settings]]></en>
+            <de><![CDATA[Seitentitle]]></de>
+            <en><![CDATA[Site title]]></en>
         </locale>
         <locale name="projects.project.settings.panel.prefix">
             <de><![CDATA[Prefix]]></de>
