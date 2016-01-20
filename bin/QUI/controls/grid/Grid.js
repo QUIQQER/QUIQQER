@@ -1774,28 +1774,92 @@ define('controls/grid/Grid', [
             return (height - 2);
         },
 
+        /**
+         * Set the height of the grid
+         *
+         * @param {number} height
+         * @returns {Promise}
+         */
         setHeight: function (height) {
-            this.setAttribute('height', height);
 
-            this.container.setStyle('height', height);
+            return new Promise(function (resolve) {
 
-            if (this.container.getElement('.bDiv')) {
-                this.container
-                    .getElement('.bDiv')
-                    .setStyle('height', this.getBodyHeight());
-            }
+                if (height <= 0) {
+                    resolve();
+                    return;
+                }
+
+                this.setAttribute('height', height);
+
+                moofx(this.container).animate({
+                    height: height
+                }, {
+                    duration: 100,
+                    callback: function () {
+                        var bDiv = this.container.getElement('.bDiv');
+
+                        if (bDiv) {
+                            moofx(bDiv).animate({
+                                height: this.getBodyHeight()
+                            }, {
+                                duration: 200,
+                                callback: function () {
+                                    resolve();
+                                }
+                            });
+
+                            return;
+                        }
+
+                        resolve();
+
+                    }.bind(this)
+                });
+            }.bind(this));
         },
 
+        /**
+         * Set the height of the grid
+         *
+         * @param {number} width
+         * @returns {Promise}
+         */
         setWidth: function (width) {
-            this.setAttribute('width', width);
 
-            this.container.setStyle('width', width);
+            return new Promise(function (resolve) {
 
-            if (this.container.getElement('.bDiv')) {
-                this.container
-                    .getElement('.bDiv')
-                    .setStyle('width', width);
-            }
+                if (width <= 0) {
+                    resolve();
+                    return;
+                }
+
+                this.setAttribute('width', width);
+
+                moofx(this.container).animate({
+                    width: width
+                }, {
+                    duration: 100,
+                    callback: function () {
+                        var bDiv = this.container.getElement('.bDiv');
+
+                        if (bDiv) {
+                            moofx(bDiv).animate({
+                                width: width
+                            }, {
+                                duration: 200,
+                                callback: function () {
+                                    resolve();
+                                }
+                            });
+
+                            return;
+                        }
+
+                        resolve();
+
+                    }.bind(this)
+                });
+            }.bind(this));
         },
 
         renderData: function () {
