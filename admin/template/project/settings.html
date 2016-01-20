@@ -5,7 +5,7 @@
         <thead>
             <tr>
                 <th colspan="2">
-                    {t}quiqqer/system projects.project.settings.panel.settings.title{/t}
+                    {t}quiqqer/quiqqer projects.project.settings.panel.settings.title{/t}
                 </th>
             </tr>
         </thead>
@@ -14,7 +14,7 @@
             <tr class="{cycle values="odd,even"}">
                 <td class="first">
                     <label for="default_lang">
-                        {t}quiqqer/system projects.project.settings.panel.language.default{/t}
+                        {t}quiqqer/quiqqer projects.project.settings.panel.language.default{/t}
                     </label>
                 </td>
                 <td>
@@ -24,7 +24,7 @@
             <tr class="{cycle values="odd,even"}">
                 <td class="first">
                     <label for="langs">
-                        {t}quiqqer/system projects.project.settings.panel.language.available{/t}
+                        {t}quiqqer/quiqqer projects.project.settings.panel.language.available{/t}
                     </label>
                 </td>
                 <td>
@@ -34,7 +34,7 @@
             <tr class="{cycle values="odd,even"}">
                 <td class="first">
                     <label for="templates">
-                        {t}quiqqer/system projects.project.settings.panel.admin.email{/t}
+                        {t}quiqqer/quiqqer projects.project.settings.panel.admin.email{/t}
                     </label>
                 </td>
                 <td>
@@ -45,7 +45,7 @@
             <tr class="{cycle values="odd,even"}">
                 <td class="first">
                     <label for="templates">
-                        {t}quiqqer/system projects.project.settings.panel.set.standard{/t}
+                        {t}quiqqer/quiqqer projects.project.settings.panel.set.standard{/t}
                     </label>
                 </td>
                 <td>
@@ -61,7 +61,7 @@
         <thead>
             <tr>
                 <th colspan="2">
-                    {t}quiqqer/system projects.project.settings.panel.settings.template.title{/t}
+                    {t}quiqqer/quiqqer projects.project.settings.panel.settings.template.title{/t}
                 </th>
             </tr>
         </thead>
@@ -70,13 +70,13 @@
         <tr class="{cycle values="odd,even"}">
             <td class="first">
                 <label for="template">
-                    {t}quiqqer/system projects.project.settings.panel.templates.default{/t}
+                    {t}quiqqer/quiqqer projects.project.settings.panel.templates.default{/t}
                 </label>
             </td>
             <td>
                 <select name="template" id="template">
                     <option value="">
-                        {t}quiqqer/system projects.project.settings.panel.templates.no.template{/t}
+                        {t}quiqqer/quiqqer projects.project.settings.panel.templates.no.template{/t}
                     </option>
 
                     {assign var=PM value=$QUI->getPackageManager()}
@@ -93,7 +93,7 @@
         <tr class="{cycle values="odd,even"}">
             <td class="first">
                 <label for="templates">
-                    {t}quiqqer/system projects.project.settings.panel.templates.available{/t}
+                    {t}quiqqer/quiqqer projects.project.settings.panel.templates.available{/t}
                 </label>
             </td>
             <td>
@@ -113,7 +113,7 @@
         <tr class="{cycle values="odd,even"}">
             <td class="first">
                 <label for="layout">
-                    {t}quiqqer/system projects.project.settings.panel.layout{/t}
+                    {t}quiqqer/quiqqer projects.project.settings.panel.layout{/t}
                 </label>
             </td>
             <td>
@@ -149,7 +149,36 @@
                 <input name="favicon" id="favicon" class="media-image" />
             </td>
         </tr>
+        </tbody>
+    </table>
 
+
+    <table class="data-table">
+        <thead>
+        <tr>
+            <th colspan="2">
+                {t}quiqqer/quiqqer projects.project.settings.panel.settings.suffixprefix.title{/t}
+            </th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr class="{cycle values="odd,even" reset=1}">
+        <td class="first">
+            <label for="prefix">
+                {t}quiqqer/quiqqer projects.project.settings.panel.prefix{/t}
+            </label>
+        </td>
+        <td class="prefix-settings-container"></td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td class="first">
+                <label for="suffix">
+                    {t}quiqqer/quiqqer projects.project.settings.panel.suffix{/t}
+                </label>
+            </td>
+            <td class="suffix-settings-container"></td>
+        </tr>
         </tbody>
     </table>
 

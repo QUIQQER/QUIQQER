@@ -216,6 +216,61 @@
 
     </groups>
 
+    <groups name="quiqqer/quiqqer" datatype="php">
+        <locale name="projects.project.settings.panel.settings.title">
+            <de><![CDATA[Projekteinstellungen]]></de>
+            <en><![CDATA[Projects settings]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.language.default">
+            <de><![CDATA[Standard Sprache]]></de>
+            <en><![CDATA[Default language]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.language.available">
+            <de><![CDATA[Verfügbare Sprachen]]></de>
+            <en><![CDATA[Available languages]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.admin.email">
+            <de><![CDATA[Administrations E-Mail]]></de>
+            <en><![CDATA[Administration E-mail]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.set.standard">
+            <de><![CDATA[Als standard Projekt setzen]]></de>
+            <en><![CDATA[Set as default project]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.settings.template.title">
+            <de><![CDATA[Template-Einstellungen]]></de>
+            <en><![CDATA[Template settings]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.templates.default">
+            <de><![CDATA[Standard Template]]></de>
+            <en><![CDATA[Default template]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.templates.no.template">
+            <de><![CDATA[Kein Template verwenden]]></de>
+            <en><![CDATA[Do not use a template]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.templates.available">
+            <de><![CDATA[Verfügbare Templates für dieses Projekt]]></de>
+            <en><![CDATA[Available templates for this project]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.layout">
+            <de><![CDATA[Standard Layout]]></de>
+            <en><![CDATA[Default layout]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.settings.suffixprefix.title">
+            <de><![CDATA[Prefix / Suffix Title Einstellungen]]></de>
+            <en><![CDATA[Prefix / Suffix title settings]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.prefix">
+            <de><![CDATA[Prefix]]></de>
+            <en><![CDATA[Prefix]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.suffix">
+            <de><![CDATA[Suffix]]></de>
+            <en><![CDATA[Suffix]]></en>
+        </locale>
+    </groups>
+
     <groups name="quiqqer/system" datatype="js,php">
         <locale name="yes">
             <de><![CDATA[Ja]]></de>
@@ -4610,38 +4665,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Inhalte der Seite und aus untergeordneten Seiten besuchen und indizieren]]></de>
             <en><![CDATA[Visit the contents page and from child pages and index]]></en>
         </locale>
-        <locale name="projects.project.settings.panel.settings.title">
-            <de><![CDATA[Projekteinstellungen]]></de>
-            <en><![CDATA[Projects settings]]></en>
-        </locale>
-        <locale name="projects.project.settings.panel.language.default">
-            <de><![CDATA[Standard Sprache]]></de>
-            <en><![CDATA[Default language]]></en>
-        </locale>
-        <locale name="projects.project.settings.panel.language.available">
-            <de><![CDATA[Verfügbare Sprachen]]></de>
-            <en><![CDATA[Available languages]]></en>
-        </locale>
-        <locale name="projects.project.settings.panel.templates.default">
-            <de><![CDATA[Standard Template]]></de>
-            <en><![CDATA[Default template]]></en>
-        </locale>
-        <locale name="projects.project.settings.panel.templates.no.template">
-            <de><![CDATA[Kein Template verwenden]]></de>
-            <en><![CDATA[Do not use a template]]></en>
-        </locale>
-        <locale name="projects.project.settings.panel.templates.available">
-            <de><![CDATA[Verfügbare Templates für dieses Projekt]]></de>
-            <en><![CDATA[Available templates for this project]]></en>
-        </locale>
-        <locale name="projects.project.settings.panel.admin.email">
-            <de><![CDATA[Administrations E-Mail]]></de>
-            <en><![CDATA[Administration E-mail]]></en>
-        </locale>
-        <locale name="projects.project.settings.panel.set.standard">
-            <de><![CDATA[Als standard Projekt setzen]]></de>
-            <en><![CDATA[Set as default project]]></en>
-        </locale>
         <locale name="template.project.media.file.header">
             <de><![CDATA[Datei Informationen]]></de>
             <en><![CDATA[File information]]></en>
@@ -4781,15 +4804,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Eine Datei mit dem Namen [filename] existiert bereits.]]></de>
             <en><![CDATA[A file with the name [filename] already exist.]]></en>
         </locale>
-        <locale name="projects.project.settings.panel.settings.template.title">
-            <de><![CDATA[Template-Einstellungen]]></de>
-            <en><![CDATA[Template settings]]></en>
-        </locale>
-        <locale name="projects.project.settings.panel.layout">
-            <de><![CDATA[Standard Layout]]></de>
-            <en><![CDATA[Default layout]]></en>
-        </locale>
-
         <locale name="quiqqer.settings.auth.session.type">
             <de><![CDATA[Speicherung Sitzungsdaten]]></de>
             <en><![CDATA[Session data storage]]></en>

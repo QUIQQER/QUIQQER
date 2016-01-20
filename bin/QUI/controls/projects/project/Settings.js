@@ -29,6 +29,7 @@ define('controls/projects/project/Settings', [
     'Ajax',
     'Locale',
     'utils/Controls',
+    'package/quiqqer/translator/bin/controls/VariableTranslation',
 
     'css!controls/projects/project/Settings.css'
 
@@ -42,7 +43,8 @@ define('controls/projects/project/Settings', [
              Projects,
              Ajax,
              Locale,
-             ControlUtils) {
+             ControlUtils,
+             Translation) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -322,6 +324,23 @@ define('controls/projects/project/Settings', [
                         value: langs[i]
                     }).inject(Langs);
                 }
+
+                // prefix
+                new Translation({
+                    'group': 'project/' + self.$Project.getName(),
+                    'var'  : 'template.prefix'
+
+                }).inject(
+                    Body.getElement('.prefix-settings-container')
+                );
+
+                // suffix
+                new Translation({
+                    'group': 'project/' + self.$Project.getName(),
+                    'var'  : 'template.suffix'
+                }).inject(
+                    Body.getElement('.suffix-settings-container')
+                );
 
                 new QUIButton({
                     text     : Locale.get(lg, 'projects.project.panel.btn.addlanguage'),

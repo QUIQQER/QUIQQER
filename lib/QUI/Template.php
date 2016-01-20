@@ -296,13 +296,6 @@ class Template extends QUI\QDOM
 
         $User = $Users->getUserBySession();
 
-        // header
-        $header = $this->header;
-
-        foreach ($header as $key => $str) {
-            $Engine->extendHeader($str, $key);
-        }
-
         $this->setAttribute('Project', $Project);
         $this->setAttribute('Site', $Site);
         $this->setAttribute('Engine', $Engine);
@@ -468,6 +461,7 @@ class Template extends QUI\QDOM
      */
     public function getHeader()
     {
+        /* @var $Project QUI\Projects\Project */
         $Project = $this->getAttribute('Project');
         $Site    = $this->getAttribute('Site');
         $Engine  = $this->getAttribute('Engine');
@@ -548,6 +542,35 @@ class Template extends QUI\QDOM
             $headerExtend .= '<script src="' . URL_USR_DIR . $customJS
                              . '"></script>';
         }
+
+        // prefix / suffix
+        $projectName  = $Project->getName();
+        $localeGroup  = 'project/' . $projectName;
+        $localePrefix = 'template.prefix';
+        $localeSuffix = 'template.suffix';
+
+        if (QUI::getLocale()->exists($localeGroup, $localePrefix)) {
+            $prefix = QUI::getLocale()->get($localeGroup, $localePrefix);
+
+            if (!empty($prefix)) {
+                $this->setAttribute(
+                    'site_title_prefix',
+                    htmlspecialchars($prefix)
+                );
+            }
+        }
+
+        if (QUI::getLocale()->exists($localeGroup, $localeSuffix)) {
+            $suffix = QUI::getLocale()->get($localeGroup, $localeSuffix);
+
+            if (!empty($prefix)) {
+                $this->setAttribute(
+                    'site_title_suffix',
+                    htmlspecialchars($suffix)
+                );
+            }
+        }
+
 
         // assign
         $Engine->assign(array(
@@ -710,38 +733,4 @@ class Template extends QUI\QDOM
 
         return $Engine->fetch($template);
     }
-
-    /**
-     * Template für den Seitentyp
-     *
-     * @param array $types
-     * @param string $type
-     * @param string $template
-     *
-     * @return string
-     */
-//    protected function _getTypeTemplate($types, $type, $template)
-//    {
-//        if (isset($types['template'])) {
-//            // Falls im Projekt ein Template existiert
-//            $tpl = USR_DIR . 'lib/' . $template . '/' . $type . '/' . $types['template'];
-//
-//            if (file_exists($tpl)) {
-//                return $tpl;
-//            }
-//
-//            // Falls im Plugin ein Template existiert
-//            $tpl = OPT_DIR . $type . '/' . $types['template'];
-//
-//            if (file_exists($tpl)) {
-//                return $tpl;
-//            }
-//        }
-//
-//        if (file_exists(USR_DIR . 'lib/' . $template . '/standard/body.html')) {
-//            return USR_DIR . 'lib/' . $template . '/standard/body.html';
-//        }
-//
-//        return LIB_DIR . 'templates/standard.html';
-//    }
 }
