@@ -307,8 +307,8 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                     'qui/utils/Elements'
 
                 ], function (DatePicker, QUIButton, ElementUtils) {
-                    var i, len, elements, datetime,
-                        Child, Parent, Picker;
+                    var i, len, elements, datetime, fieldcontainer,
+                        Child, Cancel, Parent, Picker;
 
                     elements = Elm.getElements(
                         'input[type="date"],input[type="datetime"]'
@@ -316,12 +316,19 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     // Date Buttons
                     for (i = 0, len = elements.length; i < len; i++) {
-                        Child  = elements[i];
-                        Parent = new Element('div', {
-                            styles: {
-                                'float': 'left'
-                            }
-                        }).wraps(Child);
+                        Child          = elements[i];
+                        fieldcontainer = false;
+
+                        if (Child.getParent().hasClass('field-container')) {
+                            fieldcontainer = true;
+                            Parent         = Child;
+                        } else {
+                            Parent = new Element('div', {
+                                styles: {
+                                    'float': 'left'
+                                }
+                            }).wraps(Child);
+                        }
 
                         datetime = Parent.getElement(
                             'input[type="datetime"]'
@@ -342,7 +349,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                         Child.setStyles({
                             float : 'left',
                             cursor: 'pointer',
-                            width : datetime ? 155 : 95
+                            width : datetime ? 180 : 105
                         });
 
                         Picker = new DatePicker(Child, {
@@ -379,7 +386,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                             zIndex: ElementUtils.getComputedZIndex(Child)
                         });
 
-                        new QUIButton({
+                        Cancel = new QUIButton({
                             image : 'icon-remove',
                             alt   : 'Datum leeren', // #locale
                             title : 'Datum leeren', // #locale
@@ -393,6 +400,16 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                                 top: 1
                             }
                         }).inject(Child.getParent());
+
+                        if (fieldcontainer) {
+                            Cancel.getElm()
+                                .addClass('field-container-item')
+                                .setStyles({
+                                    border   : '1px solid rgba(147, 128, 108, 0.25)',
+                                    boxShadow: 'none',
+                                    top      : 0
+                                });
+                        }
                     }
 
                     resolve();

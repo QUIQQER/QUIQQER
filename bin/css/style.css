@@ -1,8 +1,8 @@
 
 * {
--webkit-box-sizing: border-box;
-   -moz-box-sizing: border-box;
-        box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 html, body {
@@ -103,4 +103,55 @@ address .icon {
     background: #F2F2F2;
     float: left;
     width: 100%;
+}
+
+/** input fields
+ * ====================================================== */
+
+.field-container {
+    display: flex;
+    width: 100%;
+}
+
+.field-container-field {
+    flex: 1;
+}
+
+label.field-container-field {
+    cursor: pointer;
+}
+
+.field-container-field:not(:first-child) {
+    border-left: 0;
+}
+
+.field-container-field:not(:last-child) {
+    border-right: 0;
+}
+
+.field-container-item {
+    background-color: rgba(147, 128, 108, 0.1);
+    color: #666666;
+    font: inherit;
+    font-weight: normal;
+}
+
+.field-container-field,
+.field-container-item {
+    border: 1px solid rgba(147, 128, 108, 0.25);
+    padding: 0.5em 0.75em;
+}
+
+.field-container-item[type="number"] {
+    padding: 0.5em 0 0.5em 0.75em;
+}
+
+.field-container-field:first-child,
+.field-container-item:first-child {
+    border-radius: 2px 0 0 2px;
+}
+
+.field-container-field:last-child,
+.field-container-item:last-child {
+    border-radius: 0 2px 2px 0;
 }
