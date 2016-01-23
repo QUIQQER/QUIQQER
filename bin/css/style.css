@@ -142,7 +142,7 @@ label.field-container-field {
     padding: 0.5em 0.75em;
 }
 
-.field-container-item[type="number"] {
+.field-container-field[type="number"] {
     padding: 0.5em 0 0.5em 0.75em;
 }
 
