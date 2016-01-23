@@ -307,7 +307,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                     'qui/utils/Elements'
 
                 ], function (DatePicker, QUIButton, ElementUtils) {
-                    var i, len, elements, datetime, fieldcontainer,
+                    var i, len, htmlStr, elements, datetime, fieldcontainer,
                         Child, Cancel, Parent, Picker;
 
                     elements = Elm.getElements(
@@ -330,9 +330,11 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                             }).wraps(Child);
                         }
 
-                        datetime = Parent.getElement(
-                            'input[type="datetime"]'
-                        ) ? true : false;
+                        htmlStr = new Element('div').adopt(
+                            Child.cloneNode(true)
+                        ).innerHTML;
+
+                        datetime = htmlStr.indexOf('datetime');
 
                         if (datetime) {
                             Child.placeholder = 'YYYY-MM-DD HH:MM:SS';
