@@ -555,7 +555,7 @@ class Template extends QUI\QDOM
             if (!empty($prefix)) {
                 $this->setAttribute(
                     'site_title_prefix',
-                    htmlspecialchars($prefix)
+                    htmlspecialchars($prefix) . ' '
                 );
             }
         }
@@ -566,7 +566,7 @@ class Template extends QUI\QDOM
             if (!empty($suffix)) {
                 $this->setAttribute(
                     'site_title_suffix',
-                    htmlspecialchars($suffix)
+                    ' ' . htmlspecialchars($suffix)
                 );
             }
         }
