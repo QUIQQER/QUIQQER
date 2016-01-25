@@ -563,7 +563,7 @@ class Template extends QUI\QDOM
         if (QUI::getLocale()->exists($localeGroup, $localeSuffix)) {
             $suffix = QUI::getLocale()->get($localeGroup, $localeSuffix);
 
-            if (!empty($prefix)) {
+            if (!empty($suffix)) {
                 $this->setAttribute(
                     'site_title_suffix',
                     htmlspecialchars($suffix)
