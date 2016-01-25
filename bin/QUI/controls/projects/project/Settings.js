@@ -329,8 +329,7 @@ define('controls/projects/project/Settings', [
                 new Translation({
                     'group': 'project/' + self.$Project.getName(),
                     'var'  : 'template.prefix',
-                    'type' : 'php,js',
-                    'html' : 1
+                    'type' : 'php,js'
                 }).inject(
                     Body.getElement('.prefix-settings-container')
                 );
@@ -339,8 +338,7 @@ define('controls/projects/project/Settings', [
                 new Translation({
                     'group': 'project/' + self.$Project.getName(),
                     'var'  : 'template.suffix',
-                    'type' : 'php,js',
-                    'html' : 1
+                    'type' : 'php,js'
                 }).inject(
                     Body.getElement('.suffix-settings-container')
                 );
