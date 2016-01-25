@@ -1,4 +1,3 @@
-
 /**
  * Makes an input field to a user selection field
  *
@@ -39,27 +38,28 @@ define('controls/usersAndGroups/Input', [
      */
     return new Class({
 
-        Extends : QUIControl,
-        Type    : 'controls/usersAndGroups/Input',
+        Extends: QUIControl,
+        Type   : 'controls/usersAndGroups/Input',
 
-        Binds : [
+        Binds: [
             'close',
             'fireSearch',
             'update',
 
             '$onGroupUserDestroy',
-            '$onInputFocus'
+            '$onInputFocus',
+            '$onInject'
         ],
 
-        options : {
-            max      : false, // max entries
-            multible : true,  // select more than one entry?
-            name     : '',    // string
-            styles   : false, // object
-            label    : false  // text string or a <label> DOMNode Element
+        options: {
+            max     : false, // max entries
+            multible: true,  // select more than one entry?
+            name    : '',    // string
+            styles  : false, // object
+            label   : false  // text string or a <label> DOMNode Element
         },
 
-        initialize : function (options, Input) {
+        initialize: function (options, Input) {
             this.parent(options);
 
             this.$Input    = Input || null;
@@ -70,6 +70,10 @@ define('controls/usersAndGroups/Input', [
 
             this.$search = false;
             this.$values = [];
+
+            this.addEvents({
+                onInject: this.$onInject
+            });
         },
 
         /**
@@ -78,19 +82,19 @@ define('controls/usersAndGroups/Input', [
          * @method controls/usersAndGroups/Input#create
          * @return {HTMLElement} The main DOM-Node Element
          */
-        create : function () {
+        create: function () {
             if (this.$Elm) {
                 return this.$Elm;
             }
 
             this.$Elm = new Element('div', {
-                'class' : 'qui-users-and-groups',
-                'data-quiid' : this.getId()
+                'class'     : 'qui-users-and-groups',
+                'data-quiid': this.getId()
             });
 
             if (!this.$Input) {
                 this.$Input = new Element('input', {
-                    name : this.getAttribute('name')
+                    name: this.getAttribute('name')
                 }).inject(this.$Elm);
             } else {
                 this.$Elm.wraps(this.$Input);
@@ -101,30 +105,29 @@ define('controls/usersAndGroups/Input', [
             }
 
             this.$Input.set({
-                styles : {
-                    opacity  : 0,
-                    position : 'absolute',
-                    zIndex   : 1,
-                    left     : 5,
-                    top      : 5,
-                    cursor   : 'pointer'
+                styles: {
+                    opacity : 0,
+                    position: 'absolute',
+                    zIndex  : 1,
+                    left    : 5,
+                    top     : 5,
+                    cursor  : 'pointer'
                 },
-                events : {
-                    focus : this.$onInputFocus
+                events: {
+                    focus: this.$onInputFocus
                 }
             });
 
 
             this.$List = new Element('div', {
-                'class' : 'qui-users-and-groups-list'
+                'class': 'qui-users-and-groups-list'
             }).inject(this.$Elm);
 
             this.$Search = new Element('input', {
-                'class'     : 'qui-users-and-groups-search',
-                placeholder : Locale.get('quiqqer/system', 'usersAndGroups.input.search.placeholder'),
-                events :
-                {
-                    keyup : function (event) {
+                'class'    : 'qui-users-and-groups-search',
+                placeholder: Locale.get('quiqqer/system', 'usersAndGroups.input.search.placeholder'),
+                events     : {
+                    keyup: function (event) {
                         if (event.key === 'down') {
                             this.down();
                             return;
@@ -143,17 +146,17 @@ define('controls/usersAndGroups/Input', [
                         this.fireSearch();
                     }.bind(this),
 
-                    blur  : this.close,
-                    focus : this.fireSearch
+                    blur : this.close,
+                    focus: this.fireSearch
                 }
             }).inject(this.$Elm);
 
             this.$DropDown = new Element('div', {
-                'class' : 'qui-users-and-groups-dropdown',
-                styles  : {
-                    display : 'none',
-                    top  : this.$Search.getPosition().y + this.$Search.getSize().y,
-                    left : this.$Search.getPosition().x
+                'class': 'qui-users-and-groups-dropdown',
+                styles : {
+                    display: 'none',
+                    top    : this.$Search.getPosition().y + this.$Search.getSize().y,
+                    left   : this.$Search.getPosition().x
                 }
             }).inject(document.body);
 
@@ -162,7 +165,7 @@ define('controls/usersAndGroups/Input', [
 
                 if (typeof this.getAttribute('label').nodeName === 'undefined') {
                     Label = new Element('label', {
-                        html : this.getAttribute('label')
+                        html: this.getAttribute('label')
                     });
                 }
 
@@ -170,9 +173,9 @@ define('controls/usersAndGroups/Input', [
 
                 if (Label.get('data-desc') && Label.get('data-desc') != '&nbsp;') {
                     new Element('div', {
-                        'class' : 'description',
-                        html    : Label.get('data-desc'),
-                        styles  : {
+                        'class': 'description',
+                        html   : Label.get('data-desc'),
+                        styles : {
                             marginBottom: 10
                         }
                     }).inject(Label, 'after');
@@ -185,14 +188,13 @@ define('controls/usersAndGroups/Input', [
                 var val = this.$Input.value.split(',');
 
                 for (var i = 0, len = val.length; i < len; i++) {
-                    switch (val[ i ].substr(0, 1))
-                    {
+                    switch (val[i].substr(0, 1)) {
                         case 'u':
-                            this.addUser(val[ i ].substr(1));
+                            this.addUser(val[i].substr(1));
                             break;
 
                         case 'g':
-                            this.addGroup(val[ i ].substr(1));
+                            this.addGroup(val[i].substr(1));
                             break;
                     }
                 }
@@ -202,19 +204,36 @@ define('controls/usersAndGroups/Input', [
         },
 
         /**
+         * event: on inject
+         */
+        $onInject: function () {
+            var Elm = this.getElm();
+
+            if (Elm.nodeName === 'INPUT') {
+                this.$Input = Elm;
+            }
+
+            this.create();
+        },
+
+        /**
          * fire the search
          *
          * @method controls/usersAndGroups/Input#fireSearch
          */
-        fireSearch : function () {
+        fireSearch: function () {
+            if (this.$Search.value === '') {
+                return this.close();
+            }
+
             this.cancelSearch();
 
             this.$DropDown.set({
-                html   : '<img src="' + URL_BIN_DIR + 'images/loader.gif" />',
-                styles : {
-                    display : '',
-                    top     : this.$Search.getPosition().y + this.$Search.getSize().y,
-                    left    : this.$Search.getPosition().x
+                html  : '<img src="' + URL_BIN_DIR + 'images/loader.gif" />',
+                styles: {
+                    display: '',
+                    top    : this.$Search.getPosition().y + this.$Search.getSize().y,
+                    left   : this.$Search.getPosition().x
                 }
             });
 
@@ -226,7 +245,7 @@ define('controls/usersAndGroups/Input', [
          *
          * @method controls/usersAndGroups/Input#cancelSearch
          */
-        cancelSearch : function () {
+        cancelSearch: function () {
             if (this.$search) {
                 clearTimeout(this.$search);
             }
@@ -237,7 +256,7 @@ define('controls/usersAndGroups/Input', [
          *
          * @method controls/usersAndGroups/Input#close
          */
-        close : function () {
+        close: function () {
             this.cancelSearch();
             this.$DropDown.setStyle('display', 'none');
             this.$Search.value = '';
@@ -248,7 +267,7 @@ define('controls/usersAndGroups/Input', [
          *
          * @method controls/usersAndGroups/Input#search
          */
-        search : function () {
+        search: function () {
             Ajax.get('ajax_usersgroups_search', function (result, Request) {
                 var i, len, nam, type, Entry,
                     func_mousedown, func_mouseover,
@@ -263,12 +282,12 @@ define('controls/usersAndGroups/Input', [
 
                 if (!data.length) {
                     new Element('div', {
-                        html   : Locale.get('quiqqer/system', 'usersAndGroups.no.results'),
-                        styles : {
-                            'float' : 'left',
-                            'clear' : 'both',
-                            padding : 5,
-                            margin  : 5
+                        html  : Locale.get('quiqqer/system', 'usersAndGroups.no.results'),
+                        styles: {
+                            'float': 'left',
+                            'clear': 'both',
+                            padding: 5,
+                            margin : 5
                         }
                     }).inject(DropDown);
 
@@ -302,7 +321,7 @@ define('controls/usersAndGroups/Input', [
 
                 // create
                 for (i = 0, len = data.length; i < len; i++) {
-                    nam = data[ i ].username || data[ i ].name;
+                    nam = data[i].username || data[i].name;
 
                     if (value) {
                         nam = nam.toString().replace(
@@ -314,50 +333,49 @@ define('controls/usersAndGroups/Input', [
 
                     type = 'group';
 
-                    if (data[ i ].username) {
+                    if (data[i].username) {
                         type = 'user';
                     }
 
                     Entry = new Element('div', {
-                        html        : '<span>' + nam + ' (' + data[ i ].id + ')</span>',
-                        'class'     : 'box-sizing qui-users-and-groups-dropdown-entry',
-                        'data-id'   : data[ i ].id,
-                        'data-name' : data[ i ].username || data[ i ].name,
-                        'data-type' : type,
-                        events :
-                        {
-                            mousedown  : func_mousedown,
-                            mouseenter : func_mouseover
+                        html       : '<span>' + nam + ' (' + data[i].id + ')</span>',
+                        'class'    : 'box-sizing qui-users-and-groups-dropdown-entry',
+                        'data-id'  : data[i].id,
+                        'data-name': data[i].username || data[i].name,
+                        'data-type': type,
+                        events     : {
+                            mousedown : func_mousedown,
+                            mouseenter: func_mouseover
                         }
                     }).inject(DropDown);
 
                     if (type == 'group') {
                         new Element('span', {
-                            'class' : 'icon-group',
+                            'class': 'icon-group',
                             styles : {
-                                marginRight : 5
+                                marginRight: 5
                             }
                         }).inject(Entry, 'top');
                     } else {
                         new Element('span', {
-                            'class' : 'icon-user',
+                            'class': 'icon-user',
                             styles : {
-                                marginRight : 5
+                                marginRight: 5
                             }
                         }).inject(Entry, 'top');
                     }
 
                 }
             }, {
-                Elm    : this,
-                value  : this.$Search.value,
-                params : JSON.encode({
-                    order  : 'ASC',
-                    limit  : 5,
-                    page   : 1,
-                    search : true,
-                    searchSettings : {
-                        userSearchString : this.$Search.value
+                Elm   : this,
+                value : this.$Search.value,
+                params: JSON.encode({
+                    order         : 'ASC',
+                    limit         : 5,
+                    page          : 1,
+                    search        : true,
+                    searchSettings: {
+                        userSearchString: this.$Search.value
                     }
                 })
             });
@@ -372,7 +390,7 @@ define('controls/usersAndGroups/Input', [
          *
          * @return {Object} this (controls/usersAndGroups/Input)
          */
-        add : function (id, type) {
+        add: function (id, type) {
             if (type == 'user') {
                 return this.addUser(id);
             }
@@ -387,10 +405,10 @@ define('controls/usersAndGroups/Input', [
          * @param {Number|String} id - id of the group
          * @return {Object} this (controls/usersAndGroups/Input)
          */
-        addGroup : function (id) {
+        addGroup: function (id) {
             new GroupsEntry(id, {
-                events : {
-                    onDestroy : this.$onGroupUserDestroy
+                events: {
+                    onDestroy: this.$onGroupUserDestroy
                 }
             }).inject(
                 this.$List
@@ -411,10 +429,10 @@ define('controls/usersAndGroups/Input', [
          * @param {Number|String} id - id of the user
          * @return {Object} this (controls/usersAndGroups/Input)
          */
-        addUser : function (id) {
+        addUser: function (id) {
             new UsersEntry(id, {
-                events : {
-                    onDestroy : this.$onGroupUserDestroy
+                events: {
+                    onDestroy: this.$onGroupUserDestroy
                 }
             }).inject(this.$List);
 
@@ -432,7 +450,7 @@ define('controls/usersAndGroups/Input', [
          *
          * @return {Object} this (controls/usersAndGroups/Input)
          */
-        appendChild : function () {
+        appendChild: function () {
             return this;
         },
 
@@ -442,7 +460,7 @@ define('controls/usersAndGroups/Input', [
          * @method controls/usersAndGroups/Input#up
          * @return {Object} this (controls/usersAndGroups/Input)
          */
-        up : function () {
+        up: function () {
             if (!this.$DropDown) {
                 return this;
             }
@@ -480,7 +498,7 @@ define('controls/usersAndGroups/Input', [
          * @method controls/usersAndGroups/Input#down
          * @return {Object} this (controls/usersAndGroups/Input)
          */
-        down : function () {
+        down: function () {
             if (!this.$DropDown) {
                 return this;
             }
@@ -519,7 +537,7 @@ define('controls/usersAndGroups/Input', [
          *
          * @method controls/usersAndGroups/Input#submit
          */
-        submit : function () {
+        submit: function () {
             if (!this.$DropDown) {
                 return;
             }
@@ -542,7 +560,7 @@ define('controls/usersAndGroups/Input', [
          * @method controls/usersAndGroups/Input#focus
          * @return {Object} this (controls/usersAndGroups/Input)
          */
-        focus : function () {
+        focus: function () {
             if (this.$Search) {
                 this.$Search.focus();
             }
@@ -555,10 +573,10 @@ define('controls/usersAndGroups/Input', [
          *
          * @method controls/usersAndGroups/Input#$refreshValues
          */
-        $refreshValues : function () {
+        $refreshValues: function () {
             this.$Input.value = this.$values.join(',');
             this.$Input.fireEvent('change', [{
-                target : this.$Input
+                target: this.$Input
             }]);
         },
 
@@ -568,11 +586,10 @@ define('controls/usersAndGroups/Input', [
          * @method controls/usersAndGroups/Input#$onGroupUserDestroy
          * @param {Object} Item - controls/groups/Entry|controls/users/Entry
          */
-        $onGroupUserDestroy : function (Item) {
+        $onGroupUserDestroy: function (Item) {
             var id = false;
 
-            switch (Item.getType())
-            {
+            switch (Item.getType()) {
                 case 'controls/groups/Entry':
                     id = 'g' + Item.getGroup().getId();
                     break;
@@ -594,7 +611,7 @@ define('controls/usersAndGroups/Input', [
          *
          * @param {DOMEvent} event
          */
-        $onInputFocus : function (event) {
+        $onInputFocus: function (event) {
             if (typeof event !== 'undefined') {
                 event.stop();
             }
