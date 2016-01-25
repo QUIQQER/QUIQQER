@@ -155,3 +155,7 @@ label.field-container-field {
 .field-container-item:last-child {
     border-radius: 0 2px 2px 0;
 }
+
+.field-container-field-no-padding {
+    padding: 0;
+}
