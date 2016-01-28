@@ -174,6 +174,10 @@ abstract class Factory
             $query['where'] = $queryParams['where'];
         }
 
+        if (isset($queryParams['where_or'])) {
+            $query['where_or'] = $queryParams['where_or'];
+        }
+
         if (isset($queryParams['order'])) {
             $query['order'] = $queryParams['order'];
         }
