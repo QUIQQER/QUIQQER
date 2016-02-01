@@ -720,9 +720,6 @@ class User implements QUI\Interfaces\Users\User
                 if (QUI::getUsers()->existsSession()
                     && QUI::getUsers()->getUserBySession()->isSU()
                 ) {
-                    echo 1;
-                    exit;
-
                     $this->su = (int)$value;
                 }
                 break;
