@@ -40,6 +40,11 @@ class Manager
     private $SystemUser = null;
 
     /**
+     * @var null|User
+     */
+    private $Session = null;
+
+    /**
      * Return the db table
      *
      * @return string
@@ -717,15 +722,30 @@ class Manager
             return $this->getSystemUser();
         }
 
+        if (!is_null($this->Session)) {
+            return $this->Session;
+        }
+
         // max_life_time check
         try {
             $this->checkUserSession();
-
-            return $this->get(QUI::getSession()->get('uid'));
+            $this->Session = $this->get(QUI::getSession()->get('uid'));
 
         } catch (QUI\Exception $Exception) {
-            return $this->getNobody();
+            $this->Session = $this->getNobody();
         }
+
+        return $this->Session;
+    }
+
+    /**
+     * Session initialize?
+     *
+     * @return boolean
+     */
+    public function existsSession()
+    {
+        return !is_null($this->Session);
     }
 
     /**
