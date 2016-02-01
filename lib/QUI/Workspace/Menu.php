@@ -48,9 +48,9 @@ class Menu
         );
 
         $Menu = new Bar(array(
-            'name'   => 'menu',
+            'name' => 'menu',
             'parent' => 'menubar',
-            'id'     => 'menu'
+            'id' => 'menu'
         ));
 
         XML::addXMLFileToMenu($Menu, SYS_DIR . 'menu.xml');
@@ -67,14 +67,14 @@ class Menu
 
             $Projects->appendChild(
                 new Menuitem(array(
-                    'text'    => $project,
-                    'icon'    => 'icon-home',
+                    'text' => $project,
+                    'icon' => 'icon-home',
                     'onclick' => '',
                     'require' => 'controls/projects/project/Settings',
                     'onClick' => 'QUI.Menu.menuClick',
                     'project' => $project,
-                    'name'    => $project,
-                    '#id'     => 'settings-' . $project
+                    'name' => $project,
+                    '#id' => 'settings-' . $project
                 ))
             );
         }
@@ -191,9 +191,40 @@ class Menu
             XML::addXMLFileToMenu($Menu, $dir . $file);
         }
 
-        QUI\Cache\Manager::set($this->getCacheName(), $Menu->toArray());
+        $menu = $Menu->toArray();
 
-        return $Menu->toArray();
+        // @todo rechte für settings und extras und quiqqer
+        foreach ($menu as $key => $entry) {
+            if ($entry['name'] == 'quiqqer') {
+                if (!QUI\Rights\Permission::hasPermission('quiqqer.menu.quiqqer')) {
+                    unset($menu[$key]['items']);
+                }
+            }
+
+            if ($entry['name'] == 'settings') {
+                if (!QUI\Rights\Permission::hasPermission('quiqqer.menu.settings')) {
+                    unset($menu[$key]);
+                }
+            }
+
+            if ($entry['name'] == 'extras') {
+                if (!QUI\Rights\Permission::hasPermission('quiqqer.menu.extras')) {
+                    unset($menu[$key]);
+                }
+            }
+
+            if ($entry['name'] == 'apps') {
+                if (!QUI\Rights\Permission::hasPermission('quiqqer.menu.apps')) {
+                    unset($menu[$key]);
+                }
+            }
+        }
+
+        $menu = array_values($menu);
+
+        QUI\Cache\Manager::set($this->getCacheName(), $menu);
+
+        return $menu;
     }
 
     /**

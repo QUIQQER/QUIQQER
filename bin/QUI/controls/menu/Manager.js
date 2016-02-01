@@ -55,6 +55,9 @@ define('controls/menu/Manager', [
             this.$Bar.setParent(this);
 
             Ajax.get('ajax_menu', function (result) {
+
+                console.log(result);
+
                 self.$Bar.insert(result);
 
                 self.$isLoaded = true;
