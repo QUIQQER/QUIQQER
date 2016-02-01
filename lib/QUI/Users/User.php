@@ -716,7 +716,10 @@ class User implements QUI\Interfaces\Users\User
 
         switch ($key) {
             case "su":
-                $this->su = (int)$value;
+                // only a super user can set a superuser
+                if (QUI::getUserBySession()->isSU()) {
+                    $this->su = (int)$value;
+                }
                 break;
 
             case "username":
