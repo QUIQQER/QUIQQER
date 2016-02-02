@@ -65,11 +65,11 @@ class Permission
             return true;
         }
 
-        try {
-            return self::checkPermission('quiqqer.su', $User);
-
-        } catch (QUI\Exception $Exception) {
-        }
+//        try {
+//            return self::checkPermission('quiqqer.su', $User);
+//
+//        } catch (QUI\Exception $Exception) {
+//        }
 
         return false;
     }

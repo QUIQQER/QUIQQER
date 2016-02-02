@@ -15,7 +15,7 @@
     <permission name="quiqqer.admin" type="bool"/>
 
     <!-- Ist Super-User -->
-    <permission name="quiqqer.su" type="bool"/>
+    <!--<permission name="quiqqer.su" type="bool"/>-->
 
     <!-- Darf Updates durchführen -->
     <permission name="quiqqer.system.update" type="bool"/>
