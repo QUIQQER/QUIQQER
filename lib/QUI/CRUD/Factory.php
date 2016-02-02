@@ -47,6 +47,43 @@ abstract class Factory
     abstract public function getChildAttributes();
 
     /**
+     * Return the number of the children
+     *
+     * @param array $queryParams
+     * @return int
+     */
+    public function countChildren($queryParams = array())
+    {
+        $query = array(
+            'from' => $this->getDataBaseTableName(),
+            'count' => array(
+                'select' => 'id',
+                'as' => 'id'
+            )
+        );
+
+        if (!is_array($queryParams)) {
+            $queryParams = array();
+        }
+
+        if (isset($queryParams['where'])) {
+            $query['where'] = $queryParams['where'];
+        }
+
+        if (isset($queryParams['where_or'])) {
+            $query['where_or'] = $queryParams['where_or'];
+        }
+
+        $count = QUI::getDataBase()->fetch($query);
+
+        if (isset($count[0]) && isset($count[0]['id'])) {
+            return (int)$count[0]['id'];
+        }
+
+        return 0;
+    }
+
+    /**
      * Create a new child
      *
      * @param array $data
@@ -172,6 +209,10 @@ abstract class Factory
 
         if (isset($queryParams['where'])) {
             $query['where'] = $queryParams['where'];
+        }
+
+        if (isset($queryParams['where_or'])) {
+            $query['where_or'] = $queryParams['where_or'];
         }
 
         if (isset($queryParams['order'])) {

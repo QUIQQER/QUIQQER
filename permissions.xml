@@ -15,7 +15,7 @@
     <permission name="quiqqer.admin" type="bool"/>
 
     <!-- Ist Super-User -->
-    <permission name="quiqqer.su" type="bool"/>
+    <!--<permission name="quiqqer.su" type="bool"/>-->
 
     <!-- Darf Updates durchführen -->
     <permission name="quiqqer.system.update" type="bool"/>
@@ -40,6 +40,23 @@
 
     <!-- Darf Benutzer editieren -->
     <permission name="quiqqer.admin.users.edit" type="bool"/>
+
+    <!-- Menurechte -->
+    <permission name="quiqqer.menu.quiqqer" type="bool">
+        <defaultvalue>1</defaultvalue>
+    </permission>
+
+    <permission name="quiqqer.menu.apps" type="bool">
+        <defaultvalue>1</defaultvalue>
+    </permission>
+
+    <permission name="quiqqer.menu.extras" type="bool">
+        <defaultvalue>1</defaultvalue>
+    </permission>
+
+    <permission name="quiqqer.menu.settings" type="bool">
+        <defaultvalue>1</defaultvalue>
+    </permission>
 
     <!-- Project User / group permissions  -->
 

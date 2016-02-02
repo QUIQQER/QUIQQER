@@ -2,7 +2,6 @@
 
 .qui-users-and-groups {
     float: left;
-    max-width: 400px;
     padding: 2px;
     position: relative;
     width: 100%;
@@ -15,18 +14,19 @@
 
 .qui-users-and-groups-list .group-entry,
 .qui-users-and-groups-list .users-entry {
-    border-radius: 0px;
+    border-radius: 0;
     clear: both;
     cursor: default;
     float: left;
-    margin: 0px;
+    margin: 0;
+    max-width: none;
     padding: 5px;
     width: 100%;
 }
 
 .qui-users-and-groups-list .group-entry .text,
 .qui-users-and-groups-list .users-entry .text {
-    margin:0px;
+    margin: 0;
     width: 80%;
 }
 
@@ -38,7 +38,7 @@
 
 .qui-users-and-groups-list {
     background: #fff;
-    border: 1px solid #AAAAAA;
+    border: 1px solid #dedede;
     border-radius: 3px;
     float: left;
     height: 100px;
@@ -53,16 +53,30 @@
     width: 100%;
 }
 
+.field-container-field > .qui-users-and-groups {
+    max-width: none;
+    padding: 0;
+}
+
+.field-container-field > .qui-users-and-groups .qui-users-and-groups-list {
+    border-radius: 0;
+    border-width: 0 0 1px 0;
+}
+
+.field-container-field > .qui-users-and-groups .qui-users-and-groups-search {
+    border: none;
+}
+
 /** DropDown
  ======================================================= */
 
 .qui-users-and-groups-dropdown {
-    background : #fff;
-    border   : 1px solid #dedede;
-    padding  : 5px;
-    position : absolute;
-    width    : 200px;
-    z-index  : 10;
+    background: #fff;
+    border: 1px solid #dedede;
+    padding: 5px;
+    position: absolute;
+    width: 200px;
+    z-index: 10;
 }
 
 .qui-users-and-groups-dropdown .mark {

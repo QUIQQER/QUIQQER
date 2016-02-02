@@ -455,6 +455,11 @@ class Manager
         $_list = $this->getPermissionList($area);
 
         foreach ($_list as $permission => $params) {
+            if (isset($params['defaultvalue'])) {
+                $permissions[$permission] = $params['defaultvalue'];
+                continue;
+            }
+
             $permissions[$permission] = false;
         }
 

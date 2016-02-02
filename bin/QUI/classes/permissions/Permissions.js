@@ -111,6 +111,9 @@ define('classes/permissions/Permissions', [
                 }
 
                 QUIAjax.get('ajax_permissions_get', function (permissions) {
+
+                    console.log(permissions);
+
                     self.$cache.users[User.getId()] = permissions;
 
                     resolve(permissions);

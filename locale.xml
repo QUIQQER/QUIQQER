@@ -47,6 +47,28 @@
             <en><![CDATA[Sites]]></en>
         </locale>
 
+        <locale name="permission.quiqqer.menu._header">
+            <de><![CDATA[Menu]]></de>
+            <en><![CDATA[Menu]]></en>
+        </locale>
+        <locale name="permission.quiqqer.menu.quiqqer">
+            <de><![CDATA[Kann das QUIQQER-Menü sehen]]></de>
+            <en><![CDATA[Can see the QUIQQER menu]]></en>
+        </locale>
+        <locale name="permission.quiqqer.menu.apps">
+            <de><![CDATA[Kann das App-Menü sehen]]></de>
+            <en><![CDATA[Can see the App menu]]></en>
+        </locale>
+        <locale name="permission.quiqqer.menu.extras">
+            <de><![CDATA[Kann das Verwaltungs-Menü sehen]]></de>
+            <en><![CDATA[Can see the extras menu]]></en>
+        </locale>
+        <locale name="permission.quiqqer.menu.settings">
+            <de><![CDATA[Kann das Einstellungs-Menü sehen]]></de>
+            <en><![CDATA[Can see the settings menu]]></en>
+        </locale>
+
+
         <locale name="permission.quiqqer.admin">
             <de><![CDATA[Darf sich in das Backend (Administration) einloggen.]]></de>
             <en><![CDATA[]]></en>
@@ -258,8 +280,8 @@
             <en><![CDATA[Default layout]]></en>
         </locale>
         <locale name="projects.project.settings.panel.settings.suffixprefix.title">
-            <de><![CDATA[Prefix / Suffix Title Einstellungen]]></de>
-            <en><![CDATA[Prefix / Suffix title settings]]></en>
+            <de><![CDATA[Seitentitle]]></de>
+            <en><![CDATA[Site title]]></en>
         </locale>
         <locale name="projects.project.settings.panel.prefix">
             <de><![CDATA[Prefix]]></de>

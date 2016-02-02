@@ -555,7 +555,7 @@ class Template extends QUI\QDOM
             if (!empty($prefix)) {
                 $this->setAttribute(
                     'site_title_prefix',
-                    htmlspecialchars($prefix)
+                    htmlspecialchars($prefix) . ' '
                 );
             }
         }
@@ -563,10 +563,10 @@ class Template extends QUI\QDOM
         if (QUI::getLocale()->exists($localeGroup, $localeSuffix)) {
             $suffix = QUI::getLocale()->get($localeGroup, $localeSuffix);
 
-            if (!empty($prefix)) {
+            if (!empty($suffix)) {
                 $this->setAttribute(
                     'site_title_suffix',
-                    htmlspecialchars($suffix)
+                    ' ' . htmlspecialchars($suffix)
                 );
             }
         }

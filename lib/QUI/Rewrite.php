@@ -189,7 +189,7 @@ class Rewrite
 
         //wenn seite existiert, dann muss nichts mehr gemacht werden
         if (isset($this->site) && $this->site) {
-            \QUI::getEvents()
+            QUI::getEvents()
                 ->fireEvent('request', array($this, $_REQUEST['_url']));
 
             return;
@@ -209,7 +209,7 @@ class Rewrite
             $url  = $_REQUEST['_url'];
             $host = $vhosts['301'][$_SERVER['HTTP_HOST']];
 
-            \QUI::getEvents()
+            QUI::getEvents()
                 ->fireEvent('request', array($this, $_REQUEST['_url']));
 
             $this->showErrorHeader(301, $host . '/' . $url);
@@ -223,7 +223,7 @@ class Rewrite
         ) {
             $_REQUEST['_url'] = substr($_REQUEST['_url'], 0, -1) . $defaultSuffix;
 
-            \QUI::getEvents()
+            QUI::getEvents()
                 ->fireEvent('request', array($this, $_REQUEST['_url']));
 
             // 301 weiterleiten
@@ -322,7 +322,7 @@ class Rewrite
                     $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
                     $url = 'http://' . $this->project_prefix . $url;
 
-                    \QUI::getEvents()
+                    QUI::getEvents()
                         ->fireEvent('request', array($this, $_REQUEST['_url']));
 
                     $this->showErrorHeader(301, $url);
@@ -340,7 +340,7 @@ class Rewrite
         if (isset($_REQUEST['_url'])
             && strpos($_REQUEST['_url'], 'media/cache') !== false
         ) {
-            \QUI::getEvents()
+            QUI::getEvents()
                 ->fireEvent('request', array($this, $_REQUEST['_url']));
 
             $imageNotError = false;
@@ -381,7 +381,12 @@ class Rewrite
             }
 
             if ($Item === false || $imageNotError) {
-                $this->showErrorHeader(404);
+                $Redirect = new RedirectResponse(
+                    $this->getErrorSite()->getUrlRewritten()
+                );
+
+                $Redirect->setStatusCode(Response::HTTP_NOT_FOUND);
+                $Redirect->send();
                 exit;
             }
 
@@ -402,7 +407,12 @@ class Rewrite
             }
 
             if (!file_exists($file)) {
-                QUI\System\Log::addError('File not exist: ' . $file);
+                $Redirect = new RedirectResponse(
+                    $this->getErrorSite()->getUrlRewritten()
+                );
+
+                $Redirect->setStatusCode(Response::HTTP_NOT_FOUND);
+                $Redirect->send();
                 exit;
             }
 
@@ -427,7 +437,7 @@ class Rewrite
             $_REQUEST['_url'] = '';
         }
 
-        \QUI::getEvents()
+        QUI::getEvents()
             ->fireEvent('request', array($this, $_REQUEST['_url']));
 
         // Falls kein suffix dann 301 weiterleiten auf .html
@@ -1622,7 +1632,7 @@ class Rewrite
         } else {
             // Wenn nicht erstellen
             try {
-                $Project = \QUI::getProject($project, $lang);
+                $Project = QUI::getProject($project, $lang);
                 /* @var $Project \QUI\Projects\Project */
                 $Site = $Project->get((int)$id);
                 /* @var $s \QUI\Projects\Site */

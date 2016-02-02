@@ -370,19 +370,21 @@ class Ajax extends QUI\QDOM
                 $list = $Exception->getExceptionList();
 
                 if (isset($list[0])) {
+                    /* @var $FirstException \QUI\Exception */
+                    $FirstException = $list[0];
                     // method nicht mit ausgeben
-                    $message = $list[0]->getMessage();
+                    $message = $FirstException->getMessage();
                     $message = mb_substr($message, 0, mb_strripos($message, ' :: '));
 
                     $return['Exception']['message'] = $message;
-                    $return['Exception']['code']    = $list[0]->getCode();
-                    $return['Exception']['type']    = $list[0]->getType();
+                    $return['Exception']['code']    = $FirstException->getCode();
+                    $return['Exception']['type']    = $FirstException->getType();
 
                     if (DEVELOPMENT || DEBUG_MODE) {
-                        $return['Exception']['context'] = $Exception->getContext();
+                        $return['Exception']['context'] = $FirstException->getContext();
                     }
-
                 }
+
                 break;
 
             case 'QUI\\Exception':

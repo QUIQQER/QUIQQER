@@ -1,4 +1,3 @@
-
 /* Daten Tabelle
  ======================================================= */
 
@@ -15,8 +14,8 @@
     text-align: left;
 
     -webkit-box-sizing: border-box;
-       -moz-box-sizing: border-box;
-            box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .data-table {
@@ -95,6 +94,10 @@
     width: 150px;
 }
 
+.data-table td label.field-container {
+    width: 100%;
+}
+
 .data-table .qui-users-and-groups label,
 .data-table td label.hasCheckbox {
     width: 100% !important;
@@ -112,4 +115,15 @@
 
 .data-table-closed .qui-button {
     display: none;
+}
+
+/** flexbox tables */
+.data-table-flexbox thead,
+.data-table-flexbox th {
+    background-color: #dedede;
+    color: #666;
+}
+
+.data-table-flexbox .odd {
+    background: none;
 }
