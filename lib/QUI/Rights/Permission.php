@@ -174,6 +174,10 @@ class Permission
             return true;
         }
 
+        if (QUI::getUsers()->isSystemUser($User)) {
+            return true;
+        }
+
 //        self::checkUser($User);
 
         $Manager     = QUI::getPermissionManager();
