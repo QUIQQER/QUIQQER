@@ -26,6 +26,35 @@ use QUI\Groups\Group;
 class Permission
 {
     /**
+     * @var null|User
+     */
+    protected static $User = null;
+
+    /**
+     * @return User
+     */
+    protected static function getUser()
+    {
+        if (!is_null(self::$User)) {
+            return self::$User;
+        }
+
+        return QUI::getUserBySession();
+    }
+
+    /**
+     * Set the global user for the permissions
+     * You can set the default user for the permission checks,
+     * default is the session user
+     *
+     * @param User $User
+     */
+    public static function setUser(User $User)
+    {
+        self::$User = $User;
+    }
+
+    /**
      * Checks, if the user is an admin user
      *
      * @param \QUI\Users\User|boolean $User - optional
@@ -35,7 +64,7 @@ class Permission
     public static function isAdmin($User = false)
     {
         if ($User === false) {
-            $User = QUI::getUserBySession();
+            $User = self::getUser();
         }
 
         try {
@@ -57,7 +86,7 @@ class Permission
     public static function isSU($User = false)
     {
         if ($User === false) {
-            $User = QUI::getUserBySession();
+            $User = self::getUser();
         }
 
         // old
@@ -105,7 +134,7 @@ class Permission
         $UserToCheck = false;
 
         if ($User === false) {
-            $UserToCheck = QUI::getUserBySession();
+            $UserToCheck = self::getUser();
         }
 
         if ($User === false) {
@@ -138,7 +167,7 @@ class Permission
     public static function checkPermission($perm, $User = false)
     {
         if ($User === false) {
-            $User = QUI::getUserBySession();
+            $User = self::getUser();
         }
 
         if ($User->isSU()) {
@@ -212,7 +241,7 @@ class Permission
         $check = false;
 
         if ($User === false) {
-            $User = QUI::getUserBySession();
+            $User = self::getUser();
         }
 
         switch ($perm_data['type']) {
@@ -327,7 +356,7 @@ class Permission
         $UserToCheck = false;
 
         if ($User === false) {
-            $UserToCheck = QUI::getUserBySession();
+            $UserToCheck = self::getUser();
         }
 
         if ($UserToCheck) {
@@ -359,7 +388,7 @@ class Permission
         $UserToCheck = $User;
 
         if ($User === false) {
-            $UserToCheck = QUI::getUserBySession();
+            $UserToCheck = self::getUser();
         }
 
         if (get_class($UserToCheck) !== 'QUI\\Users\\User') {
@@ -389,7 +418,7 @@ class Permission
     public static function existsPermission($perm, $User = false)
     {
         if ($User === false) {
-            $User = QUI::getUserBySession();
+            $User = self::getUser();
         }
 
         $Manager     = QUI::getPermissionManager();
@@ -534,7 +563,7 @@ class Permission
     public static function checkSitePermission($perm, $Site, $User = false)
     {
         if ($User === false) {
-            $User = QUI::getUserBySession();
+            $User = self::getUser();
         }
 
         if ($User->isSU()) {
@@ -901,7 +930,7 @@ class Permission
         $User = false
     ) {
         if ($User === false) {
-            $User = QUI::getUserBySession();
+            $User = self::getUser();
         }
 
         if ($User->isSU()) {
