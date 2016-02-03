@@ -56,7 +56,7 @@
     "quiqqer/lockclient": "dev-master",
     "quiqqer/messages": "*@dev",
     "quiqqer/meta": "*@dev",
-    "npm-asset/mustache.js": "2.*"
+    "npm-asset/mustache": "2.*"
   },
   "require-dev": {
     "mikey179/vfsStream": "1.*"
