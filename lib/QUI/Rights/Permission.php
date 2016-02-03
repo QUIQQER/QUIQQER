@@ -47,9 +47,9 @@ class Permission
      * You can set the default user for the permission checks,
      * default is the session user
      *
-     * @param User $User
+     * @param QUI\Interfaces\Users\User $User
      */
-    public static function setUser(User $User)
+    public static function setUser(QUI\Interfaces\Users\User $User)
     {
         self::$User = $User;
     }
