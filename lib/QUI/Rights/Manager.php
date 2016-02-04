@@ -1144,8 +1144,7 @@ class Manager
             if (is_string($ruleset)
                 && method_exists('QUI\Rights\PermissionOrder', $ruleset)
             ) {
-                $result = QUI\Rights\PermissionOrder::$ruleset($permission,
-                    $groups);
+                $result = QUI\Rights\PermissionOrder::$ruleset($permission, $groups);
 
             } else {
                 if (is_callable($ruleset)) {
@@ -1155,13 +1154,34 @@ class Manager
             }
 
         } else {
-            $result = QUI\Rights\PermissionOrder::permission(
-                $permission,
-                $groups
-            );
+            $result = QUI\Rights\PermissionOrder::permission($permission, $groups);
         }
 
         return $result;
+    }
+
+    /**
+     * @param $User
+     * @return array
+     */
+    public function getUserPermissionData($User)
+    {
+        $userPermissions = $this->getData($User);
+
+        if (isset($userPermissions[0])
+            && isset($userPermissions[0]['permissions'])
+        ) {
+            $userPermissions = json_decode(
+                $userPermissions[0]['permissions'],
+                true
+            );
+
+            if (is_array($userPermissions)) {
+                return $userPermissions;
+            }
+        }
+
+        return array();
     }
 
     /**

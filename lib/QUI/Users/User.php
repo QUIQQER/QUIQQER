@@ -268,6 +268,20 @@ class User implements QUI\Interfaces\Users\User
     }
 
     /**
+     * Exists the permission in the user permissions
+     *
+     * @param string $permission
+     *
+     * @return boolean|string
+     */
+    public function hasPermission($permission)
+    {
+        $list = QUI::getPermissionManager()->getUserPermissionData($this);
+
+        return isset($list[$permission]) ? $list[$permission] : false;
+    }
+
+    /**
      * (non-PHPdoc)
      *
      * @see QUI\Interfaces\Users\User::getPermission()
@@ -281,8 +295,7 @@ class User implements QUI\Interfaces\Users\User
     {
         //@todo Benutzer muss erster prüfen ob bei ihm das recht seperat gesetzt ist
 
-        return QUI::getPermissionManager()
-            ->getUserPermission($this, $right, $ruleset);
+        return QUI::getPermissionManager()->getUserPermission($this, $right, $ruleset);
     }
 
     /**

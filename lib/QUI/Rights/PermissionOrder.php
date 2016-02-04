@@ -8,6 +8,7 @@ namespace QUI\Rights;
 
 use QUI;
 use QUI\Groups\Group;
+use QUI\Users\User;
 
 /**
  * Allgemeine Permission Sotierungs Handling Methoden
@@ -24,24 +25,29 @@ class PermissionOrder
      * Gibt den Maximalen integer Rechte Wert zurück
      *
      * @param string $permission - permission name
-     * @param array $groups - List of groups
+     * @param array $list - List of groups or users
      *
      * @return integer
      */
-    public static function maxInteger($permission, $groups)
+    public static function maxInteger($permission, $list)
     {
         $result = null;
 
-        /* @var $Group Group */
-        foreach ($groups as $Group) {
-            if ($Group->hasPermission($permission) === false) {
+        foreach ($list as $Object) {
+            if (QUI::getGroups()->isGroup($Object)) {
+                /* @var $Object Group */
+                $hasPermissionResult = $Object->hasPermission($permission);
+            } else {
+                /* @var $Object User */
+                $hasPermissionResult = $Object->hasPermission($permission);
+            }
+
+            if ($hasPermissionResult === false) {
                 continue;
             }
 
-            if ($result === null
-                || (int)$Group->hasPermission($permission) > $result
-            ) {
-                $result = (int)$Group->hasPermission($permission);
+            if ($result === null || (int)$hasPermissionResult > $result) {
+                $result = (int)$hasPermissionResult;
             }
         }
 
@@ -63,32 +69,38 @@ class PermissionOrder
     /**
      * @deprecated
      */
-    public static function max_integer($permission, $groups)
+    public static function max_integer($permission, $list)
     {
-        self::maxInteger($permission, $groups);
+        self::maxInteger($permission, $list);
     }
 
     /**
      * Gibt den Minimalen integer Rechte Wert zurück
      *
      * @param string $permission - permission name
-     * @param array $groups - List of groups
+     * @param array $list - List of groups or users
      *
      * @return integer
      */
-    public static function minInteger($permission, $groups)
+    public static function minInteger($permission, $list)
     {
         $result = null;
 
         /* @var $Group Group */
-        foreach ($groups as $Group) {
-            if ($Group->hasPermission($permission) === false) {
+        foreach ($list as $Object) {
+            if (QUI::getGroups()->isGroup($Object)) {
+                /* @var $Object Group */
+                $hasPermissionResult = $Object->hasPermission($permission);
+            } else {
+                /* @var $Object User */
+                $hasPermissionResult = $Object->hasPermission($permission);
+            }
+
+            if ($hasPermissionResult === false) {
                 continue;
             }
 
-            if ($result === null
-                || (int)$Group->hasPermission($permission) < $result
-            ) {
+            if ($result === null || (int)$hasPermissionResult < $result) {
                 $result = (int)$Group->hasPermission($permission);
             }
         }
@@ -111,9 +123,9 @@ class PermissionOrder
     /**
      * @deprecated
      */
-    public static function min_integer($permission, $groups)
+    public static function min_integer($permission, $list)
     {
-        return self::minInteger($permission, $groups);
+        return self::minInteger($permission, $list);
     }
 
     /**
