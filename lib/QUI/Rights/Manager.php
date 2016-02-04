@@ -1110,7 +1110,7 @@ class Manager
      * });
      *
      * @example
-     * $right = $User->getPermission($perm, 'max_integer');
+     * $right = $User->getPermission($perm, 'maxInteger');
      */
     public function getUserPermission($User, $permission, $ruleset = false)
     {

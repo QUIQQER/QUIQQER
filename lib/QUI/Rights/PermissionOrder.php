@@ -71,7 +71,7 @@ class PermissionOrder
      */
     public static function max_integer($permission, $list)
     {
-        self::maxInteger($permission, $list);
+        return self::maxInteger($permission, $list);
     }
 
     /**
