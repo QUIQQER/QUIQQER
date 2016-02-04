@@ -132,39 +132,45 @@ class PermissionOrder
      * Prüft die Rechte und gibt das Recht welches Geltung hat zurück
      *
      * @param string $permission - permission name
-     * @param array $groups - List of groups
+     * @param array $list - List of groups or users
      *
      * @return boolean
      */
-    public static function permission($permission, $groups)
+    public static function permission($permission, $list)
     {
         $result = false;
 
         /* @var $Group Group */
-        foreach ($groups as $Group) {
-            $right = $Group->hasPermission($permission);
+        foreach ($list as $Object) {
+            if (QUI::getGroups()->isGroup($Object)) {
+                /* @var $Object Group */
+                $hasPermissionResult = $Object->hasPermission($permission);
+            } else {
+                /* @var $Object User */
+                $hasPermissionResult = $Object->hasPermission($permission);
+            }
 
             // falls wert boolean ist
-            if ($right === true) {
+            if ($hasPermissionResult === true) {
                 return true;
             }
 
             // falls integer ist
-            if (is_int($right)) {
+            if (is_int($hasPermissionResult)) {
                 if (is_bool($result)) {
                     $result = 0;
                 }
 
-                if ($right > $result) {
-                    $result = $right;
+                if ($hasPermissionResult > $result) {
+                    $result = $hasPermissionResult;
                 }
 
                 continue;
             }
 
             // falls wert string ist
-            if ($right) {
-                return $right;
+            if ($hasPermissionResult) {
+                return $hasPermissionResult;
             }
         }
 

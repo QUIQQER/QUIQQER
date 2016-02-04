@@ -1123,18 +1123,22 @@ class Manager
         }
 
         // user permission check
-        $userPermissions = $this->getData($User);
+        if ($ruleset) {
+            $groups[] = $User;
+        } else {
+            $userPermissions = $this->getData($User);
 
-        if (isset($userPermissions[0])
-            && isset($userPermissions[0]['permissions'])
-        ) {
-            $userPermissions = json_decode(
-                $userPermissions[0]['permissions'],
-                true
-            );
+            if (isset($userPermissions[0])
+                && isset($userPermissions[0]['permissions'])
+            ) {
+                $userPermissions = json_decode(
+                    $userPermissions[0]['permissions'],
+                    true
+                );
 
-            if (isset($userPermissions[$permission])) {
-                return $userPermissions[$permission];
+                if (isset($userPermissions[$permission])) {
+                    return $userPermissions[$permission];
+                }
             }
         }
 
