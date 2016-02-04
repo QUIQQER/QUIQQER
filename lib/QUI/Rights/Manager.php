@@ -1115,8 +1115,8 @@ class Manager
     public function getUserPermission($User, $permission, $ruleset = false)
     {
         /* @var $User User */
-        $groups = $User->getGroups();
-        $result = false;
+        $usersAndGroups = $User->getGroups();
+        $result         = false;
 
         if (!$User->getId()) {
             return false;
@@ -1124,7 +1124,7 @@ class Manager
 
         // user permission check
         if ($ruleset) {
-            $groups[] = $User;
+            $usersAndGroups[] = $User;
         } else {
             $userPermissions = $this->getData($User);
 
@@ -1148,7 +1148,7 @@ class Manager
             if (is_string($ruleset)
                 && method_exists('QUI\Rights\PermissionOrder', $ruleset)
             ) {
-                $result = QUI\Rights\PermissionOrder::$ruleset($permission, $groups);
+                $result = QUI\Rights\PermissionOrder::$ruleset($permission, $usersAndGroups);
 
             } else {
                 if (is_callable($ruleset)) {
@@ -1158,7 +1158,7 @@ class Manager
             }
 
         } else {
-            $result = QUI\Rights\PermissionOrder::permission($permission, $groups);
+            $result = QUI\Rights\PermissionOrder::permission($permission, $usersAndGroups);
         }
 
         return $result;
