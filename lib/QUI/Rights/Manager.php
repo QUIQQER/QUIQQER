@@ -1123,6 +1123,53 @@ class Manager
         }
 
         // user permission check
+        if ($ruleset) {
+            $groups[] = $User;
+        } else {
+            $userPermissions = $this->getData($User);
+
+            if (isset($userPermissions[0])
+                && isset($userPermissions[0]['permissions'])
+            ) {
+                $userPermissions = json_decode(
+                    $userPermissions[0]['permissions'],
+                    true
+                );
+
+                if (isset($userPermissions[$permission])) {
+                    return $userPermissions[$permission];
+                }
+            }
+        }
+
+
+        // group permissions
+        if ($ruleset) {
+            if (is_string($ruleset)
+                && method_exists('QUI\Rights\PermissionOrder', $ruleset)
+            ) {
+                $result = QUI\Rights\PermissionOrder::$ruleset($permission, $groups);
+
+            } else {
+                if (is_callable($ruleset)) {
+                } else {
+                    throw new QUI\Exception('Unknown ruleset [getUserPermission]');
+                }
+            }
+
+        } else {
+            $result = QUI\Rights\PermissionOrder::permission($permission, $groups);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param $User
+     * @return array
+     */
+    public function getUserPermissionData($User)
+    {
         $userPermissions = $this->getData($User);
 
         if (isset($userPermissions[0])
@@ -1133,35 +1180,12 @@ class Manager
                 true
             );
 
-            if (isset($userPermissions[$permission])) {
-                return $userPermissions[$permission];
+            if (is_array($userPermissions)) {
+                return $userPermissions;
             }
         }
 
-
-        // group permissions
-        if ($ruleset) {
-            if (is_string($ruleset)
-                && method_exists('QUI\Rights\PermissionOrder', $ruleset)
-            ) {
-                $result = QUI\Rights\PermissionOrder::$ruleset($permission,
-                    $groups);
-
-            } else {
-                if (is_callable($ruleset)) {
-                } else {
-                    throw new QUI\Exception('Unknown ruleset [getUserPermission]');
-                }
-            }
-
-        } else {
-            $result = QUI\Rights\PermissionOrder::permission(
-                $permission,
-                $groups
-            );
-        }
-
-        return $result;
+        return array();
     }
 
     /**

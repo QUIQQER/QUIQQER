@@ -1171,7 +1171,7 @@ class Rewrite
     }
 
     /**
-     * @param QUI\Projects\Site $Site
+     * @param QUI\Projects\Site|QUI\Projects\Site\Virtual $Site
      */
     public function addSiteToPath($Site)
     {
