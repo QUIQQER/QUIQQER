@@ -39,7 +39,8 @@ require.config({
         "qui"        : URL_OPT_DIR + 'bin/qui/qui',
         "locale"     : URL_VAR_DIR + 'locale/bin',
         "URL_OPT_DIR": URL_OPT_DIR,
-        "URL_BIN_DIR": URL_BIN_DIR
+        "URL_BIN_DIR": URL_BIN_DIR,
+        "Mustache"   : URL_OPT_DIR + 'bin/mustache/mustache.min'
     },
 
     waitSeconds: 0,
@@ -121,7 +122,6 @@ require(requireList, function () {
             QUIQQER_CONFIG.gui.displayTimeMessages
         );
     });
-
 
     Ajax.get('ajax_isAuth', function (userId) {
 
