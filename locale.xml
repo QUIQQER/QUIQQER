@@ -236,6 +236,23 @@
             ]]></en>
         </locale>
 
+        <locale name="menu.search.title">
+            <de><![CDATA[Suche]]></de>
+            <en><![CDATA[Search]]></en>
+        </locale>
+        <locale name="menu.search.sites.title">
+            <de><![CDATA[Seite suchen]]></de>
+            <en><![CDATA[Search sites]]></en>
+        </locale>
+        <locale name="menu.search.users.title">
+            <de><![CDATA[Benutzer suche]]></de>
+            <en><![CDATA[Search users]]></en>
+        </locale>
+        <locale name="menu.search.groups.title">
+            <de><![CDATA[Gruppe suchen]]></de>
+            <en><![CDATA[Search groups]]></en>
+        </locale>
+
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">

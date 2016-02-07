@@ -14,10 +14,11 @@ define('controls/menu/Search', [
     'qui/QUI',
     'qui/controls/Control',
     'qui/controls/buttons/Button',
+    'Locale',
 
     'css!controls/menu/Search.css'
 
-], function (QUI, QUIControl, QUIButton) {
+], function (QUI, QUIControl, QUIButton, QUILocale) {
     "use strict";
 
     return new Class({
@@ -69,7 +70,7 @@ define('controls/menu/Search', [
 
             this.$SearchType = new QUIButton({
                 textimage: 'icon-search',
-                text     : 'Suche', // #locale
+                text     : QUILocale.get('quiqqer/quiqqer', 'menu.search.title'),
                 styles   : {
                     lineHeight: 38
                 }
@@ -77,7 +78,7 @@ define('controls/menu/Search', [
 
             this.$SearchType.appendChild({
                 icon  : 'fa fa-file-o icon-file-alt',
-                text  : 'Seite suchen',  // #locale
+                text  : QUILocale.get('quiqqer/quiqqer', 'menu.search.sites.title'),
                 search: 'site',
                 events: {
                     onClick: this.$onChange
@@ -86,7 +87,7 @@ define('controls/menu/Search', [
 
             this.$SearchType.appendChild({
                 icon  : 'icon-user',
-                text  : 'Benutzer suchen',  // #locale
+                text  : QUILocale.get('quiqqer/quiqqer', 'menu.search.users.title'),
                 search: 'user',
                 events: {
                     onClick: this.$onChange
@@ -95,7 +96,7 @@ define('controls/menu/Search', [
 
             this.$SearchType.appendChild({
                 icon  : 'icon-group',
-                text  : 'Gruppe suchen',  // #locale
+                text  : QUILocale.get('quiqqer/quiqqer', 'menu.search.groups.title'),
                 search: 'group',
                 events: {
                     onClick: this.$onChange
@@ -240,8 +241,8 @@ define('controls/menu/Search', [
                     ).then(function (Panel) {
 
                         Panel.setAttributes({
-                                   value: value
-                               });
+                            value: value
+                        });
 
                         Panel.search();
 
@@ -307,7 +308,5 @@ define('controls/menu/Search', [
                 }, reject);
             });
         }
-
     });
-
 });
