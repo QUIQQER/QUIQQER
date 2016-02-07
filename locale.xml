@@ -735,22 +735,36 @@
             <de><![CDATA[<p>Es wurden unerlaubte Zeichen im Namen gefunden.<br />
 Punkte d&uuml;rfen nicht verwendet werden.<br />
 &nbsp;</p>]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[<p>Invalid characters were found in the name.<br />
+            Points may not be used.<br />
+            &nbsp;</p>
+            ]]></en>
         </locale>
         <locale name="exception.media.check.name.underline" html="true">
-            <de><![CDATA[<p>Es wurden unerlaubte Zeichen im Namen gefunden.<br />
-Doppelte Unterstriche d&uuml;rfen nicht verwendet werden.</p>]]></de>
-            <en><![CDATA[Positionof the watermark]]></en>
+            <de><![CDATA[
+                <p>Es wurden unerlaubte Zeichen im Namen gefunden.<br />
+                Doppelte Unterstriche d&uuml;rfen nicht verwendet werden.</p>
+                ]]></de>
+            <en><![CDATA[
+                <p>Invalid characters were found in the name.<br />
+                Double underscores may not be used.</p>
+            ]]></en>
         </locale>
         <locale name="exception.media.check.name.allowed.signs" html="true">
             <de><![CDATA[<p>Es wurden unerlaubte Zeichen im Namen &quot;[filename]&quot; gefunden.<br />
-Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
-            <en><![CDATA[]]></en>
+            Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
+            <en><![CDATA[
+            <p>Invalid characters were found in the name &quot;[filename]&quot;.<br />
+            The following characters are allowed: 0-9 a-z A-Z _ -</p>
+            ]]></en>
         </locale>
         <locale name="exception.media.check.foldername.allowed.signs" html="true">
             <de><![CDATA[<p>Es wurden unerlaubte Zeichen im Namen &quot;[foldername]&quot; gefunden.<br />
 Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[
+            <p>Invalid characters were found in the name &quot;[filename]&quot;.<br />
+            The following characters are allowed: 0-9 a-z A-Z _ -</p>
+            ]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js">
@@ -1175,7 +1189,7 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
         <locale name="logs.panel.btn.delete.marked">
             <de><![CDATA[Markierte Log-Dateien löschen]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Delete selected log files]]></en>
         </locale>
         <locale name="logs.panel.btn.open.log">
             <de><![CDATA[Log vom [date] öffnen]]></de>
