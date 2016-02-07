@@ -159,7 +159,9 @@ class Console
 
         QUI::getSession()->set('uid', $User->getId());
 
-        if (!QUI\Rights\Permission::hasPermission('quiqqer.system.console', $User)) {
+        QUI\Rights\Permission::setUser($User);
+
+        if (!QUI\Rights\Permission::hasPermission('quiqqer.system.console')) {
             $this->writeLn("Missing rights to use the console\n\n", 'red');
             $this->clearMsg();
             exit;
