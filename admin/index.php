@@ -31,7 +31,7 @@ try {
 <head>
 
     <link
-        href="//fonts.googleapis.com/css?family=Open+Sans:400,700,400italic|Bitter"
+        href="//fonts.googleapis.com/css?family=Open+Sans:400,700,400italic"
         rel="stylesheet"
         type="text/css"
     />
@@ -62,7 +62,7 @@ try {
           type="text/css"
     />
 
-    <link href="<?php echo URL_OPT_DIR; ?>bin/font-awesome/css/font-awesome.min.css"
+    <link href="<?php echo URL_BIN_DIR; ?>css/fonts/font-awesome.min.css"
           rel="stylesheet"
           type="text/css"
     />
