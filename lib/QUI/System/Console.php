@@ -147,6 +147,8 @@ class Console
                 $params['--password']
             );
 
+            QUI::getSession()->set('uid', $User->getId());
+            
         } catch (QUI\Exception $Exception) {
             $this->writeLn($Exception->getMessage() . "\n\n", 'red');
             exit;
