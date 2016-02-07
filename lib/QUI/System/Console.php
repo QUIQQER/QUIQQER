@@ -268,6 +268,11 @@ class Console
                 $Exec->execute();
 
             } catch (QUI\Exception $Exception) {
+                Log::addAlert($Exception->getMessage(), array(
+                    'type' => 'cron',
+                    'tool' => $tool
+                ));
+
                 $this->writeLn($Exception->getMessage(), 'red');
                 $this->writeLn();
 
