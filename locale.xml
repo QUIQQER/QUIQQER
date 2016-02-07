@@ -3598,7 +3598,7 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
         <locale name="menu.goto.text">
             <de><![CDATA[Verwaltung]]></de>
-            <en><![CDATA[Verwaltung]]></en>
+            <en><![CDATA[Administration]]></en>
         </locale>
         <locale name="menu.settings.text">
             <de><![CDATA[Einstellungen]]></de>
@@ -3618,7 +3618,7 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
         <locale name="menu.settings.vhosts.text">
             <de><![CDATA[Virtual Hosts]]></de>
-            <en><![CDATA[Virtual Hosts]]></en>
+            <en><![CDATA[Virtual hosts]]></en>
         </locale>
         <locale name="menu.extras.rights.text">
             <de><![CDATA[Benutzerverwaltung]]></de>
