@@ -68,7 +68,6 @@
             <en><![CDATA[Can see the settings menu]]></en>
         </locale>
 
-
         <locale name="permission.quiqqer.admin">
             <de><![CDATA[Darf sich in das Backend (Administration) einloggen.]]></de>
             <en><![CDATA[Is allowed to loged in to the backend (Administration)]]></en>
@@ -253,6 +252,34 @@
             <en><![CDATA[Search groups]]></en>
         </locale>
 
+        <locale name="menu.loged.in">
+            <de><![CDATA[Angemeldet als: [username]]]></de>
+            <en><![CDATA[Loged in as: [username]]]></en>
+        </locale>
+        <locale name="menu.log.out">
+            <de><![CDATA[Abmelden]]></de>
+            <en><![CDATA[Log out]]></en>
+        </locale>
+        <locale name="log.out.message">
+            <de><![CDATA[
+            Bitte melden Sie sich vor dem schließen der Administration ab.
+            Ansonsten können bestehende Daten verloren gehen.
+            Möchten Sie trotzdem weiter fortfahren?
+            ]]></de>
+            <en><![CDATA[
+            Please sign out before you close the administration.
+            Otherwise, existing data will be lost.
+            Would you still continue to proceed?
+            ]]></en>
+        </locale>
+        <locale name="workspace.fixed">
+            <de><![CDATA[Arbeitsbereich ist festgesetzt]]></de>
+            <en><![CDATA[Workspace is fixed]]></en>
+        </locale>
+        <locale name="workspace.flexible">
+            <de><![CDATA[Arbeitsbereich ist flexibel]]></de>
+            <en><![CDATA[Workspace is flexible]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">

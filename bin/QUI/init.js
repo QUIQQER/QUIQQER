@@ -290,7 +290,7 @@ require(requireList, function () {
                          '<i class="icon-pencil" style="font-size: 0.8em; margin: -3px 0 0 1px;"></i>' +
                          '</span>' +
                          '</span>',
-                title  : 'Arbeitsbereich ist festgesetzt',
+                title  : Locale.get('quiqqer/quiqqer', 'workspace.fixed'),
                 styles : {
                     'borderLeft': '1px solid #d1d4da',
                     'float'     : 'right',
@@ -302,7 +302,7 @@ require(requireList, function () {
                             this.removeClass('qui-contextmenu-baritem-active');
 
                             Workspace.fix();
-                            this.set('title', 'Arbeitsbereich ist festgesetzt');
+                            this.set('title', Locale.get('quiqqer/quiqqer', 'workspace.fixed'));
 
                             return;
                         }
@@ -310,7 +310,7 @@ require(requireList, function () {
                         this.addClass('qui-contextmenu-baritem-active');
 
                         Workspace.unfix();
-                        this.set('title', 'Arbeitsbereich ist flexibel');
+                        this.set('title', Locale.get('quiqqer/quiqqer', 'workspace.flexible'));
                     }
                 }
             }).inject(Menu);
@@ -318,8 +318,12 @@ require(requireList, function () {
             // logout
             new Element('div', {
                 'class': 'qui-contextmenu-baritem smooth ',
-                html   : '<span class="qui-contextmenu-baritem-text">Abmelden</span>',
-                title  : 'Angemeldet als: ' + USER.name,
+                html   : '<span class="qui-contextmenu-baritem-text">' +
+                         Locale.get('quiqqer/quiqqer', 'menu.log.out') +
+                         '</span>',
+                title  : Locale.get('quiqqer/quiqqer', 'menu.loged.in', {
+                    username: USER.name
+                }),
                 styles : {
                     'float': 'right'
                 },
@@ -351,9 +355,7 @@ require(requireList, function () {
         window.onbeforeunload = function () {
             Workspace.save();
 
-            return "Bitte melden Sie sich vor dem schließen der Administration ab." +
-                   "Ansonsten können bestehende Daten verloren gehen." +
-                   "Möchten Sie trotzdem weiter fortfahren?"; // #locale
+            return Locale.get('quiqqer/quiqqer', 'log.out.message');
         };
 
         // logout function
