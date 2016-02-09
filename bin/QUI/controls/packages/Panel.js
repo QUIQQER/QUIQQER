@@ -105,7 +105,7 @@ define('controls/packages/Panel', [
 
             // defaults
             this.setAttribute('title',
-                              Locale.get(lg, 'packages.panel.title')
+                Locale.get(lg, 'packages.panel.title')
             );
 
             this.setAttribute('icon', URL_BIN_DIR + '16x16/quiqqer.png');
@@ -399,6 +399,14 @@ define('controls/packages/Panel', [
 
             }).then(function (Loading) {
                 return self.$Manager.setup(pkg).then(function () {
+
+                    // refresh translations
+                    require([
+                        'package/quiqqer/translator/bin/classes/Translator'
+                    ], function (Translator) {
+                        new Translator().refreshLocale();
+                    });
+
                     // success
                     Loading.finish(Locale.get(lg, 'message.setup.successfull'));
 
@@ -414,7 +422,7 @@ define('controls/packages/Panel', [
                         Btn.setAttribute('icon', 'fa fa-hdd-o icon-hdd');
                     }
 
-                }, function (Error) {
+                }).catch(function (Error) {
                     // error
                     Loading.finish(Error.getMessage(), 'error');
 
