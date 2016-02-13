@@ -411,8 +411,9 @@ class Locale
         $dir    = $Gettext->getAttribute('dir');
         $domain = $Gettext->getAttribute('domain');
 
-        System\Log::addError(
-            'Übersetzungsdatei für ' . $group . ' ' . $dir . 'de_DE/LC_MESSAGES/'
+        // #locale
+        System\Log::addWarning(
+            'Übersetzungsdatei für ' . $group . ' ' . $dir . $current . '/LC_MESSAGES/'
             . $domain . '.mo nicht gefunden.'
         );
 
