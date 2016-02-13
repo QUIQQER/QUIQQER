@@ -3,9 +3,16 @@
  *
  * @module Groups
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
  * @require classes/groups/Manager
  */
-define(['classes/groups/Manager'], function (Groups) {
+define('Groups', [
+
+    'qui/QUI',
+    'classes/groups/Manager'
+
+], function (QUI, Groups) {
     "use strict";
 
     if (typeof QUI.Groups !== 'undefined') {
