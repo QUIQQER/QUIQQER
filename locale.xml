@@ -1517,17 +1517,17 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Upload an archiv and extract it]]></en>
         </locale>
         <locale name="projects.project.site.media.panel.upload.extract.text">
-            <de><![CDATA[<h2><span class="icon-upload"></span>Archiv Upload</h2>
+            <de><![CDATA[<h2><span class="fa fa-upload"></span>Archiv Upload</h2>
                 <p>Laden Sie Archiv Dateien in den Media Ordner hoch.</p>
                 <p>Diese Archivdateien werden direkt entpackt.</p>]]></de>
-            <en><![CDATA[<h2><span class="icon-upload"></span>Upload archivefile</h2>
+            <en><![CDATA[<h2><span class="fa fa-upload"></span>Upload archivefile</h2>
                 <p>Upload archive files to the media folder.</p>
                 <p>These archive files are unpacked directly.</p>]]></en>
         </locale>
         <locale name="projects.project.site.media.panel.upload.text">
-            <de><![CDATA[<h2><span class="icon-upload"></span>Datei Upload</h2>
+            <de><![CDATA[<h2><span class="fa fa-upload"></span>Datei Upload</h2>
                 <p>Laden Sie Dateien in den Media Ordner hoch.</p>]]></de>
-            <en><![CDATA[<h2><span class="icon-upload"></span>Upload file</h2>
+            <en><![CDATA[<h2><span class="fa fa-upload"></span>Upload file</h2>
                 <p>Upload files to the media folder.</p>]]></en>
         </locale>
 
