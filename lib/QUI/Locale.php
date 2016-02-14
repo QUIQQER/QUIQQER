@@ -408,13 +408,15 @@ class Locale
             return $Gettext;
         }
 
+        $locale = $Gettext->getAttribute('locale');
         $dir    = $Gettext->getAttribute('dir');
         $domain = $Gettext->getAttribute('domain');
 
+        $file = $dir . $locale . '/LC_MESSAGES/' . $domain . '.mo';
+
         // #locale
         System\Log::addWarning(
-            'Übersetzungsdatei für ' . $group . ' ' . $dir . $current . '/LC_MESSAGES/'
-            . $domain . '.mo nicht gefunden.'
+            'Übersetzungsdatei für ' . $file . '.mo nicht gefunden.'
         );
 
         $this->gettext[$current][$group] = false;
