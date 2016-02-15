@@ -219,7 +219,7 @@ class Manager extends QUI\QDOM
 
         $types['standard'] = array(
             'type' => 'standard',
-            'icon' => 'fa fa-file-o icon-file-alt'
+            'icon' => 'fa fa-file-o'
         );
 
         $types = array_reverse($types, true);

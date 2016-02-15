@@ -46,14 +46,14 @@ define([
 
             new QUIButton({
                 text      : 'Cache leeren',
-                textimage : 'fa fa-trash-o icon-trash',
+                textimage : 'fa fa-trash-o',
                 events    :
                 {
                     onClick : function (Btn) {
                         Btn.setAttribute('textimage', 'icon-refresh icon-spin');
 
                         self.clear(function () {
-                            Btn.setAttribute('textimage', 'fa fa-trash-o icon-trash');
+                            Btn.setAttribute('textimage', 'fa fa-trash-o');
                         });
                     }
                 }

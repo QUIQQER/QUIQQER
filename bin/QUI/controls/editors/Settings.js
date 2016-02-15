@@ -93,7 +93,7 @@ define('controls/editors/Settings', [
                     'quiqqer/system',
                     'editors.settings.btn.delete.toolbar'
                 ),
-                textimage: 'fa fa-trash-o icon-trash',
+                textimage: 'fa fa-trash-o',
                 disabled : true,
                 events   : {
                     onClick: function () {
@@ -296,7 +296,7 @@ define('controls/editors/Settings', [
                     'editors.settings.delete.window.text',
                     {toolbar: toolbar}
                 ),
-                icon     : 'fa fa-trash-o icon-trash',
+                icon     : 'fa fa-trash-o',
                 maxHeight: 300,
                 maxWidth : 450,
                 events   : {

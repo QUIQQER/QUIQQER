@@ -24,7 +24,7 @@ define('controls/editors/windows/ImageWindow', [
             maxWidth : 600,
             maxHeight : 400,
             title : 'Bild einfügen',
-            icon : 'fa fa-picture-o icon-picture',
+            icon : 'fa fa-picture-o',
             Node : false
         },
 
@@ -77,7 +77,7 @@ define('controls/editors/windows/ImageWindow', [
 
             new Element('button', {
                 'class' : 'qui-button',
-                html : '<span class="fa fa-picture-o icon-picture"></span>',
+                html : '<span class="fa fa-picture-o"></span>',
                 events :
                 {
                     click : function () {

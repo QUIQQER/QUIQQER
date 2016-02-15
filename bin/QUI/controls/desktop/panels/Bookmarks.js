@@ -141,7 +141,7 @@ define('controls/desktop/panels/Bookmarks', [
             List.each(function (Child) {
                 new Element('div', {
                     'class' : 'qui-bookmark-placeholder',
-                    html    : '<span class="fa fa-arrows icon-move"></span>' +
+                    html    : '<span class="fa fa-arrows"></span>' +
                     Child.getElement('.qui-bookmark-text').get('text')
                 }).inject(Child);
             });

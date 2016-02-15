@@ -211,7 +211,7 @@ require(requireList, function () {
                                 new QUIContextmenuItem({
                                     text  : Entry.title,
                                     wid   : Entry.id,
-                                    icon  : standard ? 'icon-laptop' : false,
+                                    icon  : standard ? 'fa fa-laptop' : false,
                                     events: {
                                         onClick: function (Item) {
                                             WS.loadWorkspace(Item.getAttribute('wid'));
@@ -228,8 +228,8 @@ require(requireList, function () {
 
                         Workspaces.appendChild(
                             new QUIContextmenuItem({
-                                text  : 'Arbeitsbereiche bearbeiten',
-                                icon  : 'icon-edit',
+                                text  : 'Arbeitsbereiche bearbeiten', // #locale
+                                icon  : 'fa fa-edit',
                                 events: {
                                     onClick: function () {
                                         WS.openWorkspaceEdit();
@@ -240,8 +240,8 @@ require(requireList, function () {
 
                         Workspaces.appendChild(
                             new QUIContextmenuItem({
-                                text  : 'Arbeitsbereich erstellen',
-                                icon  : 'icon-plus',
+                                text  : 'Arbeitsbereich erstellen', // #locale
+                                icon  : 'fa fa-plus',
                                 events: {
                                     onClick: function () {
                                         WS.openCreateWindow();
@@ -285,9 +285,9 @@ require(requireList, function () {
             new Element('div', {
                 'class': 'qui-contextmenu-baritem smooth ',
                 html   : '<span class="qui-contextmenu-baritem-text">' +
-                         '<span class="icon-stack">' +
-                         '<i class="icon-laptop icon-stack-base"></i>' +
-                         '<i class="icon-pencil" style="font-size: 0.8em; margin: -3px 0 0 1px;"></i>' +
+                         '<span class="fa-stack">' +
+                         '<i class="fa fa-laptop fa-stack-base"></i>' +
+                         '<i class="fa fa-pencil" style="font-size: 0.8em; margin: -3px 0 0 1px;"></i>' +
                          '</span>' +
                          '</span>',
                 title  : Locale.get('quiqqer/quiqqer', 'workspace.fixed'),

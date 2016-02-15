@@ -2193,7 +2193,7 @@ define('controls/grid/Grid', [
 
                 // button drop down
                 this.$Menu = new QUIButton({
-                    textimage   : 'fa fa-navicon icon-reorder',
+                    textimage   : 'fa fa-navicon',
                     text        : 'Menü',
                     dropDownIcon: false
                 }).inject(tDiv);

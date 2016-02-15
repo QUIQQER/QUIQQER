@@ -33,7 +33,7 @@ class Utils
         if ($Item->getId() === 1) {
             /* @var $Item \QUI\Projects\Media\Folder */
             return array(
-                'icon' => 'fa fa-home icon-home',
+                'icon' => 'fa fa-home',
                 'icon80x80' => URL_BIN_DIR . '80x80/media.png',
                 'id' => $Item->getId(),
                 'name' => $Item->getAttribute('name'),
@@ -51,7 +51,7 @@ class Utils
         if ($Item->getType() == 'QUI\\Projects\\Media\\Folder') {
             /* @var $Item \QUI\Projects\Media\Folder */
             return array(
-                'icon' => 'fa fa-folder-o icon-folder-close-alt',
+                'icon' => 'fa fa-folder-o',
                 'icon80x80' => URL_BIN_DIR . '80x80/extensions/folder.png',
                 'id' => $Item->getId(),
                 'name' => $Item->getAttribute('name'),
