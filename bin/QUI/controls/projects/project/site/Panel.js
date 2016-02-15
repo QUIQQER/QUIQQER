@@ -804,7 +804,7 @@ define('controls/projects/project/site/Panel', [
 
                                     // seite in sprache kopieren und sprach verknüpfung anlegen
                                     new QUIButton({
-                                        icon  : 'fa fa-copy icon-copy',
+                                        icon  : 'fa fa-copy',
                                         alt   : Locale.get(lg, 'copy.site.in.lang'),
                                         title : Locale.get(lg, 'copy.site.in.lang'),
                                         lang  : Row.get('data-lang'),
@@ -824,7 +824,7 @@ define('controls/projects/project/site/Panel', [
                                 }
 
                                 new QUIButton({
-                                    icon  : 'fa fa-file-o icon-file-alt',
+                                    icon  : 'fa fa-file-o',
                                     alt   : Locale.get(lg, 'open.site'),
                                     title : Locale.get(lg, 'open.site'),
                                     lang  : Row.get('data-lang'),
@@ -844,7 +844,7 @@ define('controls/projects/project/site/Panel', [
                                 }).inject(LastCell);
 
                                 new QUIButton({
-                                    icon  : 'icon-remove',
+                                    icon  : 'fa fa-remove',
                                     alt   : Locale.get(lg, 'projects.project.site.panel.linked.btn.delete'),
                                     title : Locale.get(lg, 'projects.project.site.panel.linked.btn.delete'),
                                     lang  : Row.get('data-lang'),
@@ -1366,7 +1366,9 @@ define('controls/projects/project/site/Panel', [
             Body.set('html', '');
 
             require(['Editors'], function (Editors) {
-                Editors.getEditor(null, function (Editor) {
+                Editors.getEditor().then(function (EditorCls) {
+                    var Editor = new EditorCls();
+
                     var Site    = self.getSite(),
                         Project = Site.getProject();
 
