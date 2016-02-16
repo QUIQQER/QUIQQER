@@ -127,7 +127,7 @@ define('classes/editor/Manager', [
                     require([self.$config.editors[name]], function (Editor) {
                         self.$editors[name] = Editor;
 
-                        self.getEditor(name).then(function () {
+                        self.getEditor(name).then(function (Editor) {
                             if (typeof callback === 'function') {
                                 callback(Editor);
                             }
