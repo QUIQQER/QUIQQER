@@ -172,7 +172,7 @@ define('controls/projects/project/media/FolderViewer', [
          */
         refresh: function () {
             if (!this.getAttribute('project')) {
-                return;
+                return this.showCreateFolder();
             }
 
             this.Loader.show();
@@ -470,6 +470,72 @@ define('controls/projects/project/media/FolderViewer', [
                 opacity: 1,
                 top    : top
             });
+        },
+
+        /**
+         * Show the create folder dialog
+         */
+        showCreateFolder: function () {
+
+            return new Promise(function (resolve, reject) {
+                require([
+                    'controls/projects/project/media/CreateFolder'
+                ], function (CreateFolder) {
+
+                    this.$Buttons.setStyle('display', 'none');
+                    this.$Container.setStyle('display', 'none');
+
+                    var Container = new Element('div', {
+                        html  : '<p>Das Produkt besitzt noch keinen Mediaordner</p>' +
+                                '<p>Möchten Sie ein neuen Ordner anlegen?</p>' +
+                                '<br />',
+                        styles: {
+                            background: '#fff',
+                            fontSize  : 14,
+                            fontStyle : 'italic',
+                            height    : '100%',
+                            padding   : 20,
+                            position  : 'absolute',
+                            textAlign : 'center',
+                            width     : '100%'
+                        }
+                    }).inject(this.getElm());
+
+                    new QUIButton({
+                        text  : 'Neuen Mediaordner anlegen',
+                        styles: {
+                            'float'  : 'none',
+                            marginTop: 10
+                        },
+                        events: {
+                            onClick: function () {
+                                moofx(Container).animate({
+                                    opacity: 0,
+                                    top    : -20
+                                }, {
+                                    duration: 200,
+                                    callback: function () {
+
+                                        Container.set('html', '');
+
+                                        new CreateFolder().inject(Container);
+
+                                        moofx(Container).animate({
+                                            opacity: 1,
+                                            top    : 0
+                                        }, {
+                                            duration: 200
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    }).inject(Container);
+
+                    resolve();
+
+                }.bind(this), reject);
+            }.bind(this));
         }
     });
 });
