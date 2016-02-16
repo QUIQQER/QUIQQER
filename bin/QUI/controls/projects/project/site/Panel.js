@@ -1366,9 +1366,7 @@ define('controls/projects/project/site/Panel', [
             Body.set('html', '');
 
             require(['Editors'], function (Editors) {
-                Editors.getEditor().then(function (EditorCls) {
-                    var Editor = new EditorCls();
-
+                Editors.getEditor().then(function (Editor) {
                     var Site    = self.getSite(),
                         Project = Site.getProject();
 
