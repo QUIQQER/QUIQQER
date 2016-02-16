@@ -115,7 +115,7 @@ define('controls/workspace/Manager', [
             this.$ParentNode = null;
 
             this.$availablePanels = null; // cache
-            this.$resizeDelay = null;
+            this.$resizeDelay     = null;
 
             this.$resizeQuestionWindow = false; // if resize quesion window open?
 
@@ -457,9 +457,9 @@ define('controls/workspace/Manager', [
                 events   : {
                     onOpen: function (Win) {
                         var Body   = Win.getContent().set(
-                                'html',
+                            'html',
 
-                                // #locale
+                            // #locale
                                 '<p>Bitte wählen Sie einen Arbeitsbereich aus welchen Sie nutzen möchten</p>' +
                                 '<select></select>'
                             ),
@@ -1342,8 +1342,11 @@ define('controls/workspace/Manager', [
 
         /**
          * Opens the question window, if the workspace is to big for the window
+         *
+         * @todo muss konzeptioniert werden, Verhalten ist etwas merkwürdig
          */
         openResizQuestionWindow: function () {
+            return;
             if (this.$resizeQuestionWindow) {
                 return;
             }
