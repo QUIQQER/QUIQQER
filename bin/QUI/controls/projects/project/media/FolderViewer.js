@@ -57,8 +57,8 @@ define('controls/projects/project/media/FolderViewer', [
         ],
 
         options: {
-            project : '', // name of the project
-            folderId: 1,
+            project : false, // name of the project
+            folderId: false,
             filetype: ['image'] // types : image, file, folder
         },
 
@@ -157,7 +157,6 @@ define('controls/projects/project/media/FolderViewer', [
                 onDrop: this.$onDrop
             });
 
-
             return this.$Elm;
         },
 
@@ -172,6 +171,10 @@ define('controls/projects/project/media/FolderViewer', [
          * refresh the folder viewer
          */
         refresh: function () {
+            if (!this.getAttribute('project')) {
+                return;
+            }
+
             this.Loader.show();
 
             var self    = this,
