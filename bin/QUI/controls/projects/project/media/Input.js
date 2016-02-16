@@ -161,7 +161,7 @@ define('controls/projects/project/media/Input', [
                         }
 
                         if (!fileid) {
-                            fileid = this.getAttribute('fileid');
+                            fileid = self.getAttribute('fileid');
                         }
 
                         new MediaPopup({
