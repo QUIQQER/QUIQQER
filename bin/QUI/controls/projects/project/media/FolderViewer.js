@@ -5,6 +5,8 @@
  * @module controls/projects/project/media/FolderViewer
  * @author www.pcsg.de (Henning Leutz)
  *
+ * @event onFolderCreated [self, newFolder]
+ *
  * @require qui/QUI
  * @require qui/controls/Control
  * @require qui/controls/loader/Loader
@@ -22,6 +24,7 @@ define('controls/projects/project/media/FolderViewer', [
     'qui/controls/loader/Loader',
     'qui/controls/buttons/Button',
     'qui/controls/buttons/Seperator',
+    'qui/utils/String',
     'classes/request/Upload',
     'controls/upload/Form',
     'Projects',
@@ -34,6 +37,7 @@ define('controls/projects/project/media/FolderViewer', [
              QUILoader,
              QUIButton,
              QUISeperator,
+             QUIStringUtils,
              RequestUpload,
              UploadForm,
              Projects,
@@ -57,9 +61,10 @@ define('controls/projects/project/media/FolderViewer', [
         ],
 
         options: {
-            project : false, // name of the project
-            folderId: false,
-            filetype: ['image'] // types : image, file, folder
+            project  : false, // name of the project
+            folderId : false,
+            folderUrl: false,
+            filetype : ['image'] // types : image, file, folder
         },
 
         initialize: function (options) {
@@ -171,10 +176,24 @@ define('controls/projects/project/media/FolderViewer', [
          * refresh the folder viewer
          */
         refresh: function () {
+            if (!this.getAttribute('project') && this.getAttribute('folderUrl')) {
+                var folderUrl = this.getAttribute('folderUrl'),
+                    params    = QUIStringUtils.getUrlParams(folderUrl);
+
+                if ("project" in params) {
+                    this.setAttribute('project', params.project);
+                }
+
+                if ("id" in params) {
+                    this.setAttribute('folderId', params.id);
+                }
+            }
+
             if (!this.getAttribute('project')) {
                 return this.showCreateFolder();
             }
 
+            this.hideCreateFolder();
             this.Loader.show();
 
             var self    = this,
@@ -476,20 +495,22 @@ define('controls/projects/project/media/FolderViewer', [
          * Show the create folder dialog
          */
         showCreateFolder: function () {
+            var self = this;
 
             return new Promise(function (resolve, reject) {
                 require([
                     'controls/projects/project/media/CreateFolder'
                 ], function (CreateFolder) {
 
-                    this.$Buttons.setStyle('display', 'none');
-                    this.$Container.setStyle('display', 'none');
+                    self.$Buttons.setStyle('display', 'none');
+                    self.$Container.setStyle('display', 'none');
 
                     var Container = new Element('div', {
-                        html  : '<p>Das Produkt besitzt noch keinen Mediaordner</p>' +
-                                '<p>Möchten Sie ein neuen Ordner anlegen?</p>' +
-                                '<br />',
-                        styles: {
+                        'class': 'create-folder-container',
+                        html   : '<p>Das Produkt besitzt noch keinen Mediaordner</p>' +
+                                 '<p>Möchten Sie ein neuen Ordner anlegen?</p>' +
+                                 '<br />',
+                        styles : {
                             background: '#fff',
                             fontSize  : 14,
                             fontStyle : 'italic',
@@ -499,7 +520,7 @@ define('controls/projects/project/media/FolderViewer', [
                             textAlign : 'center',
                             width     : '100%'
                         }
-                    }).inject(this.getElm());
+                    }).inject(self.getElm());
 
                     new QUIButton({
                         text  : 'Neuen Mediaordner anlegen',
@@ -509,33 +530,30 @@ define('controls/projects/project/media/FolderViewer', [
                         },
                         events: {
                             onClick: function () {
-                                moofx(Container).animate({
-                                    opacity: 0,
-                                    top    : -20
-                                }, {
-                                    duration: 200,
-                                    callback: function () {
-
-                                        Container.set('html', '');
-
-                                        new CreateFolder().inject(Container);
-
-                                        moofx(Container).animate({
-                                            opacity: 1,
-                                            top    : 0
-                                        }, {
-                                            duration: 200
-                                        });
+                                new CreateFolder({
+                                    events: {
+                                        onSubmit: function (CF, Item) {
+                                            self.fireEvent('folderCreated', [self, Item]);
+                                        }
                                     }
-                                });
+                                }).open();
                             }
                         }
                     }).inject(Container);
 
                     resolve();
 
-                }.bind(this), reject);
-            }.bind(this));
+                }, reject);
+            });
+        },
+
+        /**
+         * Hide the create folder dialog
+         */
+        hideCreateFolder: function () {
+            this.getElm().getElements('.create-folder-container').destroy();
+            this.$Buttons.setStyle('display', null);
+            this.$Container.setStyle('display', null);
         }
     });
 });

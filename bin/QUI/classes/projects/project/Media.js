@@ -1,4 +1,3 @@
-
 /**
  * Media for a Project
  *
@@ -21,7 +20,6 @@
  * @event onItemDeactivate [ self, Item ]
  * @event onItemRename [ self, Item ]
  */
-
 define('classes/projects/project/Media', [
 
     'qui/classes/DOM',
@@ -45,10 +43,10 @@ define('classes/projects/project/Media', [
      */
     return new Class({
 
-        Extends : DOM,
-        Type    : 'classes/projects/project/Media',
+        Extends: DOM,
+        Type   : 'classes/projects/project/Media',
 
-        initialize : function (Project) {
+        initialize: function (Project) {
             this.$Project = Project;
             this.$Panel   = null;
             this.$items   = {};
@@ -60,7 +58,7 @@ define('classes/projects/project/Media', [
          * @method classes/projects/project/Media#getProject
          * @return {Object} classes/projects/Project
          */
-        getProject : function () {
+        getProject: function () {
             return this.$Project;
         },
 
@@ -70,7 +68,7 @@ define('classes/projects/project/Media', [
          * @method classes/projects/project/Media#getTrash
          * @return {Object} classes/projects/project/media/Trash
          */
-        getTrash : function () {
+        getTrash: function () {
             return new MediaTrash(this);
         },
 
@@ -84,7 +82,7 @@ define('classes/projects/project/Media', [
          *
          * @return {Promise}
          */
-        get : function (id, params) {
+        get: function (id, params) {
             var self = this;
 
             return new Promise(function (resolve, reject) {
@@ -145,9 +143,9 @@ define('classes/projects/project/Media', [
                     resolve(children);
 
                 }, {
-                    fileid  : JSON.encode(id),
-                    project : self.getProject().getName(),
-                    onError : function (Exception) {
+                    fileid : JSON.encode(id),
+                    project: self.getProject().getName(),
+                    onError: function (Exception) {
                         reject(Exception);
                     }
                 });
@@ -164,7 +162,7 @@ define('classes/projects/project/Media', [
          *
          * @return {Promise}
          */
-        getData : function (id, onfinish) {
+        getData: function (id, onfinish) {
             var self = this;
 
             return new Promise(function (resolve, reject) {
@@ -175,9 +173,9 @@ define('classes/projects/project/Media', [
 
                     resolve(result);
                 }, {
-                    fileid  : JSON.encode(id),
-                    project : self.getProject().getName(),
-                    onError : function (Exception) {
+                    fileid : JSON.encode(id),
+                    project: self.getProject().getName(),
+                    onError: function (Exception) {
                         reject(Exception);
                     }
                 });
@@ -190,7 +188,7 @@ define('classes/projects/project/Media', [
          * @method classes/projects/project/Media#get
          * @return {Promise}
          */
-        firstChild : function (callback) {
+        firstChild: function (callback) {
             return this.get(1, callback);
         },
 
@@ -206,16 +204,16 @@ define('classes/projects/project/Media', [
          *
          * @return {Promise}
          */
-        replace : function (childid, File, onfinish) {
+        replace: function (childid, File, onfinish) {
             return new Promise(function (resolve, reject) {
                 // upload file
                 require(['UploadManager'], function (UploadManager) {
                     UploadManager.uploadFiles([File], 'ajax_media_replace', {
-                        project    : this.getProject().getName(),
-                        fileid     : childid,
-                        phponstart : 'ajax_media_checkreplace',
-                        events     : {
-                            onComplete : function () {
+                        project   : this.getProject().getName(),
+                        fileid    : childid,
+                        phponstart: 'ajax_media_checkreplace',
+                        events    : {
+                            onComplete: function () {
                                 if (typeof onfinish === 'function') {
                                     onfinish();
                                 }
@@ -239,12 +237,12 @@ define('classes/projects/project/Media', [
          *
          * @return {Promise}
          */
-        activate : function (id, oncomplete, params) {
+        activate: function (id, oncomplete, params) {
             return new Promise(function (resolve, reject) {
                 params = ObjectUtils.combine(params, {
-                    project : this.getProject().getName(),
-                    fileid  : JSON.encode(id),
-                    onError : reject
+                    project: this.getProject().getName(),
+                    fileid : JSON.encode(id),
+                    onError: reject
                 });
 
                 Ajax.post('ajax_media_activate', function (result) {
@@ -281,12 +279,12 @@ define('classes/projects/project/Media', [
          *
          * @return {Promise}
          */
-        deactivate : function (id, oncomplete, params) {
+        deactivate: function (id, oncomplete, params) {
             return new Promise(function (resolve, reject) {
                 params = ObjectUtils.combine(params, {
-                    project : this.getProject().getName(),
-                    fileid  : JSON.encode(id),
-                    onError : reject
+                    project: this.getProject().getName(),
+                    fileid : JSON.encode(id),
+                    onError: reject
                 });
 
                 Ajax.post('ajax_media_deactivate', function (result) {
@@ -324,7 +322,7 @@ define('classes/projects/project/Media', [
          *
          * @return {Promise}
          */
-        del : function (id, oncomplete, params) {
+        del: function (id, oncomplete, params) {
             return new Promise(function (resolve, reject) {
                 if (!id.length) {
                     if (typeof oncomplete === 'function') {
@@ -337,7 +335,7 @@ define('classes/projects/project/Media', [
 
                 params = ObjectUtils.combine(params, {
                     project: this.getProject().getName(),
-                    fileid: JSON.encode(id),
+                    fileid : JSON.encode(id),
                     onError: reject
                 });
 
@@ -357,7 +355,7 @@ define('classes/projects/project/Media', [
          *
          * @return {Object|Array} classes/projects/project/media/Item
          */
-        $parseResultToItem : function (result) {
+        $parseResultToItem: function (result) {
             if (!result) {
                 return [];
             }
@@ -381,8 +379,7 @@ define('classes/projects/project/Media', [
             var Item;
             var self = this;
 
-            switch (result.type)
-            {
+            switch (result.type) {
                 case "image":
                     Item = new MediaImage(result, this);
                     break;
@@ -397,22 +394,22 @@ define('classes/projects/project/Media', [
             }
 
             Item.addEvents({
-                onRename : function (Item) {
+                onRename    : function (Item) {
                     self.fireEvent('itemRename', [self, Item]);
                 },
-                onActivate : function (Item) {
+                onActivate  : function (Item) {
                     self.fireEvent('itemActivate', [self, Item]);
                 },
-                onDeactivate : function (Item) {
+                onDeactivate: function (Item) {
                     self.fireEvent('itemDeactivate', [self, Item]);
                 },
-                onRefresh : function (Item) {
+                onRefresh   : function (Item) {
                     self.fireEvent('itemRefresh', [self, Item]);
                 },
-                onSave : function (Item) {
+                onSave      : function (Item) {
                     self.fireEvent('itemSave', [self, Item]);
                 },
-                onDelete : function (Item) {
+                onDelete    : function (Item) {
                     self.fireEvent('itemDelete', [self, Item]);
                 }
             });

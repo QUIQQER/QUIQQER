@@ -9,67 +9,102 @@
 define('controls/projects/project/media/CreateFolder', [
 
     'qui/QUI',
-    'qui/controls/Control',
-    'qui/controls/loader/Loader',
+    'qui/controls/windows/Popup',
+    'qui/controls/buttons/Button',
     'controls/projects/Select',
-    'controls/projects/project/media/Sitemap'
+    'controls/projects/project/media/Sitemap',
+    'Projects'
 
-], function (QUI, QUIControl, QUILoader, ProjectSelect, MediaSitemap) {
+], function (QUI, QUIPopup, QUIButton, ProjectSelect, MediaSitemap, Projects) {
     "use strict";
 
     return new Class({
-        Extends: QUIControl,
+        Extends: QUIPopup,
         Type   : 'controls/projects/project/media/CreateFolder',
 
         Binds: [
-            '$onInject'
+            '$onOpen',
+            'prev',
+            'next'
         ],
 
         options: {
-            project: false
+            project  : false,
+            parentId : false,
+            maxHeight: 400,
+            maxWidth : 600
         },
 
         initialize: function (options) {
             this.parent(options);
 
+            this.setAttributes({
+                title  : 'Neuen Mediaordner anlegen',
+                icon   : 'fa fa-plus',
+                buttons: true
+            });
+
+            this.$Input    = null;
+            this.$MediaMap = null;
+            this.$step     = '';
+
             this.addEvents({
-                onInject: this.$onInject
+                onOpen: this.$onOpen
             });
         },
 
         /**
-         * Create the DOMNode Element
-         *
-         * @returns {HTMLDivElement}
+         * event : on open
          */
-        create: function () {
-            this.$Elm = this.parent();
+        $onOpen: function () {
+            this.$Buttons.set('html', '');
 
-            this.$Elm.set({
-                html  : '<div class="container-sheet"></div>',
-                styles: {
-                    height  : '100%',
-                    position: 'relative',
-                    wiidth  : '100%'
+            this.$Prev = new QUIButton({
+                text    : 'Zurück',
+                disabled: true,
+                events  : {
+                    click: this.prev
                 }
             });
 
-            this.$Container = this.$Elm.getElement('.container-sheet');
+            this.$Next = new QUIButton({
+                text    : 'Weiter',
+                disabled: true,
+                events  : {
+                    click: this.next
+                }
+            });
 
+            this.addButton(this.$Next);
+            this.addButton(this.$Prev);
 
-            return this.$Elm;
-        },
+            this.showButtons();
 
-        /**
-         * event: on inject
-         */
-        $onInject: function () {
+            // content
+            var Content = this.getContent();
+
+            Content.set({
+                html  : '<div class="container-sheet"></div>',
+                styles: {
+                    position: 'relative'
+                }
+            });
+
+            this.$Container = Content.getElement('.container-sheet');
+
+            this.$Container.setStyles({
+                left    : 0,
+                padding : 20,
+                position: 'absolute',
+                width   : '100%'
+            });
+
             if (this.getAttribute('project') === false) {
                 this.showProjectList();
                 return;
             }
 
-            this.showNameInput();
+            this.showMediaSiteMap();
         },
 
         /**
@@ -80,6 +115,8 @@ define('controls/projects/project/media/CreateFolder', [
         showProjectList: function () {
             return this.hideContainer().then(function () {
                 var self = this;
+
+                this.$step = 'projectList';
 
                 this.$Container.set(
                     'html',
@@ -106,7 +143,7 @@ define('controls/projects/project/media/CreateFolder', [
                     }
                 }).inject(this.$Container);
 
-                return this.showContaner();
+                return this.showContainer();
             }.bind(this));
         },
 
@@ -117,16 +154,34 @@ define('controls/projects/project/media/CreateFolder', [
          */
         showMediaSiteMap: function () {
             return this.hideContainer().then(function () {
+                var self = this;
+
+                this.$step = 'mediaSitemap';
+
                 this.$Container.set(
                     'html',
                     '<p>Bitte wählen Sie den Elternordner aus.</p>'
                 );
 
-                var Map = new MediaSitemap({
+                this.$Next.disable();
+                this.$Prev.enable();
+
+                this.$MediaMap = new MediaSitemap({
                     project: this.getAttribute('project')
                 }).inject(this.$Container);
 
-                return this.showContaner();
+                this.$MediaMap.getMap().addEvent('onChildClick', function () {
+                    var selected = self.$MediaMap.getSelectedChildren();
+
+                    if (selected.length) {
+                        self.setAttribute('parentId', selected[0].getAttribute('value'));
+                        self.$Next.enable();
+                    } else {
+                        self.$Next.disable();
+                    }
+                });
+
+                return this.showContainer();
             }.bind(this));
         },
 
@@ -136,7 +191,36 @@ define('controls/projects/project/media/CreateFolder', [
          * @return {Promise}
          */
         showNameInput: function () {
+            return this.hideContainer().then(function () {
 
+                this.$step = 'nameInput';
+
+                if (this.getAttribute('parentId') === false) {
+                    return this.showMediaSiteMap();
+                }
+
+                this.$Container.set(
+                    'html',
+                    '<p>Bitte geben Sie ein neuen Namen für den Ordner an.</p>'
+                );
+
+                this.$Container.setStyles({
+                    textAlign: 'center'
+                });
+
+                this.$Input = new Element('input', {
+                    type  : 'text',
+                    styles: {
+                        marginTop: 10,
+                        width    : 200
+                    }
+                }).inject(this.$Container);
+
+
+                return this.showContainer().then(function () {
+                    this.$Input.focus();
+                }.bind(this));
+            }.bind(this));
         },
 
         /**
@@ -161,7 +245,7 @@ define('controls/projects/project/media/CreateFolder', [
          *
          * @returns {Promise}
          */
-        showContaner: function () {
+        showContainer: function () {
             return new Promise(function (resolve) {
                 moofx(this.$Container).animate({
                     opacity: 1,
@@ -171,6 +255,96 @@ define('controls/projects/project/media/CreateFolder', [
                     callback: resolve
                 });
             }.bind(this));
+        },
+
+        /**
+         * submit the data
+         *
+         * @return {Promise}
+         */
+        submit: function () {
+            var self     = this,
+                newTitle = this.$Input.value;
+
+            this.Loader.show();
+
+            return new Promise(function (resolve, reject) {
+                if (self.getAttribute('parentId') === false ||
+                    self.getAttribute('project') === false) {
+
+                    self.Loader.hide();
+
+                    return self.showMediaSiteMap().then(function () {
+                        reject();
+                    });
+                }
+
+                var parentId = self.getAttribute('parentId'),
+                    Project  = Projects.get(self.getAttribute('project')),
+                    Media    = Project.getMedia();
+
+                Media.get(parentId).then(function (Folder) {
+                    if (Folder.getType() !== 'classes/projects/project/media/Folder') {
+                        self.Loader.hide();
+
+                        return reject('File is not a Folder');
+                    }
+
+                    Folder.createFolder(newTitle).then(function (result) {
+
+                        self.close().then(function () {
+                            self.fireEvent('submit', [self, result]);
+                            resolve(result);
+                        });
+
+                    }).catch(function (err) {
+                        self.Loader.hide();
+                        return reject(err);
+                    });
+                });
+
+            }.bind(this));
+        },
+
+        /**
+         * Show next step
+         *
+         * @return {Promise}
+         */
+        next: function () {
+            switch (this.$step) {
+                case 'projectList':
+                    return Promise.resolve();
+
+                case 'mediaSitemap':
+                    return this.showNameInput();
+
+                case 'nameInput':
+                    return this.submit();
+            }
+
+            return Promise.resolve();
+        },
+
+        /**
+         * Show previous step
+         *
+         * @return {Promise}
+         */
+        prev: function () {
+            switch (this.$step) {
+                case 'projectList':
+                    return Promise.resolve();
+
+                case 'mediaSitemap':
+                    this.setAttribute('parentId', false);
+                    return this.showProjectList();
+
+                case 'nameInput':
+                    return this.showMediaSiteMap();
+            }
+
+            return Promise.resolve();
         }
     });
 });
