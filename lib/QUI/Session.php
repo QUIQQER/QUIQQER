@@ -126,6 +126,8 @@ class Session
             $this->Session
                 = new \Symfony\Component\HttpFoundation\Session\Session($this->Storage);
         }
+
+        $this->start();
     }
 
     /**
