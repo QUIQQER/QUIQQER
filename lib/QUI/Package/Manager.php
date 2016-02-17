@@ -277,8 +277,9 @@ class Manager extends QUI\QDOM
     protected function createComposerJSON()
     {
         if (file_exists($this->composer_json)) {
-            $composerJson
-                = json_decode(file_get_contents($this->composer_json));
+            $composerJson = json_decode(
+                file_get_contents($this->composer_json)
+            );
         } else {
             $template = file_get_contents(
                 dirname(__FILE__) . '/composer.tpl'
