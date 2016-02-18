@@ -183,7 +183,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                         TBody  = Table.getElement('tbody'),
                         Toggle = Table.getElement('.data-table-toggle');
 
-                    Toggle.set('html', '<span class="icon-minus"></span>');
+                    Toggle.set('html', '<span class="fa fa-minus"></span>');
 
                     moofx(Table).animate({
                         height: Table.getScrollSize().y
@@ -214,7 +214,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                         TBody  = Table.getElement('tbody'),
                         Toggle = Table.getElement('.data-table-toggle');
 
-                    Toggle.set('html', '<span class="icon-plus"></span>');
+                    Toggle.set('html', '<span class="fa fa-plus"></span>');
                     Table.addClass('data-table-closed');
 
                     moofx(TBody).animate({
@@ -245,7 +245,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                     var Table  = this.getParent('table'),
                         Toggle = Table.getElement('.data-table-toggle');
 
-                    if (Toggle.getElement('.icon-minus')) {
+                    if (Toggle.getElement('.fa-minus')) {
                         dataTableClose.call(this);
                     } else {
                         dataTableOpen.call(this);
@@ -267,7 +267,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     new Element('div', {
                         'class': 'data-table-toggle',
-                        html   : '<span class="icon-minus"></span>',
+                        html   : '<span class="fa fa-minus"></span>',
                         styles : {}
                     }).inject(Header, 'top');
 
@@ -389,7 +389,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                         });
 
                         Cancel = new QUIButton({
-                            image : 'icon-remove',
+                            image : 'fa fa-remove',
                             alt   : 'Datum leeren', // #locale
                             title : 'Datum leeren', // #locale
                             Input : Child,

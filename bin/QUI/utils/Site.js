@@ -102,19 +102,19 @@ define('utils/Site', [
                 new Prompt({
                     title        : Locale.get(lg, 'projects.project.site.panel.window.create.title'),
                     text         : Locale.get(lg, 'projects.project.site.panel.window.create.text'),
-                    titleicon    : 'icon-file fa fa-file',
-                    icon         : 'icon-file fa fa-file',
+                    titleicon    : 'fa fa-file',
+                    icon         : 'fa fa-file',
                     information  : Locale.get(lg, 'projects.project.site.panel.window.create.information', {
                         name: Site.getAttribute('name'),
                         id  : Site.getId()
                     }),
                     cancel_button: {
                         text     : Locale.get(lg, 'cancel'),
-                        textimage: 'icon-remove fa fa-remove'
+                        textimage: 'fa fa-remove'
                     },
                     ok_button    : {
                         text     : Locale.get(lg, 'projects.project.site.panel.window.create.button.submit'),
-                        textimage: 'icon-file fa fa-file'
+                        textimage: 'fa fa-file'
                     },
                     maxWidth     : 450,
                     maxHeight    : 300,
@@ -148,11 +148,10 @@ define('utils/Site', [
                                         Win.close();
 
                                         require(['qui/controls/windows/Confirm'], function (QUIConfirm) {
-                                            // #locale
                                             new QUIConfirm({
                                                 title      : Locale.get(lg, 'projects.project.site.panel.window.create.clear.title'),
                                                 text       : Locale.get(lg, 'projects.project.site.panel.window.create.clear.text'),
-                                                icon       : 'fa fa-warning icon-warning-sign',
+                                                icon       : 'fa fa-warning',
                                                 maxWidth   : 600,
                                                 maxHeight  : 400,
                                                 autoclose  : false,
