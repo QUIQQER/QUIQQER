@@ -155,7 +155,7 @@ define('controls/projects/project/media/Popup', [
             this.addButton(
                 new QUIButton({
                     text     : QUILocale.get('quiqqer/system', 'accept'),
-                    textimage: 'fa fa-check icon-ok',
+                    textimage: 'fa fa-check',
                     events   : {
                         onClick: function () {
                             self.$getDetails(self.$folderData, function (data) {

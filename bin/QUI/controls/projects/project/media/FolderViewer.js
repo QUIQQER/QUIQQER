@@ -108,7 +108,7 @@ define('controls/projects/project/media/FolderViewer', [
             this.$ButtonsDiashow = new QUIButton({
                 text     : Locale.get(lg, 'projects.project.media.folderviewer.btn.diashow'),
                 title    : Locale.get(lg, 'projects.project.media.folderviewer.btn.diashow'),
-                textimage: 'icon-play',
+                textimage: 'fa fa-play',
                 events   : {
                     onClick: this.diashow
                 },
@@ -120,7 +120,7 @@ define('controls/projects/project/media/FolderViewer', [
             this.$ButtonsUpload = new QUIButton({
                 text     : 'Dateien hochladen',
                 title    : 'Dateien hochladen',
-                textimage: 'icon-upload',
+                textimage: 'fa fa-upload',
                 events   : {
                     click: this.openUpload
                 },

@@ -118,7 +118,7 @@ define('controls/projects/project/media/Panel', [
                 this.setAttribute('title', Media.getProject().getName());
             }
 
-            this.setAttribute('icon', 'fa fa-picture-o icon-picture');
+            this.setAttribute('icon', 'fa fa-picture-o');
             this.parent(options);
 
             this.$Map      = null;
@@ -230,7 +230,7 @@ define('controls/projects/project/media/Panel', [
                 self.addButton(
                     new QUIButton({
                         name  : 'left-sitemap-media-button',
-                        image : 'icon-sitemap',
+                        image : 'fa fa-sitemap',
                         alt   : Locale.get(lg, 'projects.project.site.media.panel.btn.sitemap.show'),
                         title : Locale.get(lg, 'projects.project.site.media.panel.btn.sitemap.show'),
                         events: {
@@ -254,7 +254,7 @@ define('controls/projects/project/media/Panel', [
 
                 // views
                 var View = new QUIButton({
-                    textimage: 'icon-th',
+                    textimage: 'fa fa-th',
                     text     : '',
                     methods  : {
                         change: function (Item) {
@@ -282,7 +282,7 @@ define('controls/projects/project/media/Panel', [
                     new ContextmenuItem({
                         name  : 'symbols',
                         text  : Locale.get(lg, 'projects.project.site.media.panel.btn.view.symbols'),
-                        icon  : 'icon-th',
+                        icon  : 'fa fa-th',
                         events: {
                             onMouseDown: function (Item) {
                                 View.change(Item);
@@ -293,7 +293,7 @@ define('controls/projects/project/media/Panel', [
                     new ContextmenuItem({
                         name  : 'details',
                         text  : Locale.get(lg, 'projects.project.site.media.panel.btn.view.details'),
-                        icon  : 'icon-list-alt',
+                        icon  : 'fa fa-list-alt',
                         events: {
                             onMouseDown: function (Item) {
                                 View.change(Item);
@@ -304,7 +304,7 @@ define('controls/projects/project/media/Panel', [
                     new ContextmenuItem({
                         name  : 'preview',
                         text  : Locale.get(lg, 'projects.project.site.media.panel.btn.view.preview'),
-                        icon  : 'fa fa-eye icon-eye-open',
+                        icon  : 'fa fa-eye',
                         events: {
                             onMouseDown: function (Item) {
                                 View.change(Item);
@@ -343,7 +343,7 @@ define('controls/projects/project/media/Panel', [
                     new QUIButton({
                         name     : 'create_folder',
                         text     : Locale.get(lg, 'projects.project.site.media.panel.btn.create'),
-                        textimage: 'fa fa-folder-open-o icon-folder-open-alt',
+                        textimage: 'fa fa-folder-open-o',
                         events   : {
                             onClick: function () {
                                 self.createFolder();
@@ -354,7 +354,7 @@ define('controls/projects/project/media/Panel', [
 
                 // Upload
                 var Upload = new QUIButton({
-                    textimage: 'icon-upload',
+                    textimage: 'fa fa-upload',
                     text     : Locale.get(lg, 'projects.project.site.media.panel.btn.upload')
                 });
 
@@ -362,7 +362,7 @@ define('controls/projects/project/media/Panel', [
                     new ContextmenuItem({
                         name  : 'upload_files',
                         text  : Locale.get(lg, 'projects.project.site.media.panel.btn.upload.files'),
-                        icon  : 'icon-file',
+                        icon  : 'fa fa-file',
                         events: {
                             onMouseDown: function () {
                                 self.uploadFiles();
@@ -373,7 +373,7 @@ define('controls/projects/project/media/Panel', [
                     new ContextmenuItem({
                         name  : 'upload_archive',
                         text  : Locale.get(lg, 'projects.project.site.media.panel.btn.upload.archive'),
-                        icon  : 'icon-archive',
+                        icon  : 'fa fa-archive',
                         events: {
                             onMouseDown: function () {
                                 self.uploadArchive();
@@ -435,7 +435,7 @@ define('controls/projects/project/media/Panel', [
 
             // set loader image
             this.setOptions({
-                icon : 'icon-spinner icon-spin',
+                icon : 'fa fa-spinner fa-spin',
                 title: ' Media (' + Project.getName() + ')'
             });
 
@@ -452,7 +452,7 @@ define('controls/projects/project/media/Panel', [
             this.getMedia().get(fileid).then(function (MediaFile) {
                 // set media image to the panel
                 self.setOptions({
-                    icon : 'fa fa-picture-o icon-picture',
+                    icon : 'fa fa-picture-o',
                     title: ' Media (' + Project.getName() + ')'
                 });
 
@@ -1384,7 +1384,7 @@ define('controls/projects/project/media/Panel', [
                     children.reverse();
 
                     children.push({
-                        icon : 'icon-level-up',
+                        icon : 'fa fa-level-up',
                         id   : BeforeLast.getAttribute('id'),
                         name : '..',
                         title: BeforeLast.getAttribute('text')
@@ -1412,9 +1412,9 @@ define('controls/projects/project/media/Panel', [
             require(['qui/controls/windows/Prompt'], function (Prompt) {
                 new Prompt({
                     title      : Locale.get(lg, 'projects.project.site.folder.create.title'),
-                    titleicon  : 'fa fa-folder-open-o icon-folder-open-alt',
+                    titleicon  : 'fa fa-folder-open-o',
                     information: Locale.get(lg, 'projects.project.site.folder.create.information'),
-                    icon       : 'fa fa-folder-open-o icon-folder-open-alt',
+                    icon       : 'fa fa-folder-open-o',
                     maxHeight  : 400,
                     maxWidth   : 600,
                     autoclose  : false,
@@ -1453,8 +1453,8 @@ define('controls/projects/project/media/Panel', [
                 new Confirm({
                     title    : Locale.get(lg, 'projects.project.site.folder.createNewName.title'),
                     text     : Locale.get(lg, 'projects.project.site.folder.createNewName.text'),
-                    icon     : 'fa fa-folder-open-o icon-folder-open-alt',
-                    texticon : 'fa fa-folder-open-o icon-folder-open-alt',
+                    icon     : 'fa fa-folder-open-o',
+                    texticon : 'fa fa-folder-open-o',
                     maxHeight: 400,
                     maxWidth : 600,
                     autoclose: false,

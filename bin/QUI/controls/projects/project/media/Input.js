@@ -127,7 +127,7 @@ define('controls/projects/project/media/Input', [
             }).inject(this.$Elm);
 
             this.$MediaButton = new QUIButton({
-                icon  : 'fa fa-picture-o icon-picture',
+                icon  : 'fa fa-picture-o',
                 alt   : Locale.get('quiqqer/system', 'projects.project.site.media.input.select.alt'),
                 title : Locale.get('quiqqer/system', 'projects.project.site.media.input.select.title'),
                 events: {
@@ -183,7 +183,7 @@ define('controls/projects/project/media/Input', [
             }).inject(this.$Elm);
 
             new QUIButton({
-                icon  : 'icon-remove',
+                icon  : 'fa fa-remove',
                 alt   : Locale.get('quiqqer/system', 'projects.project.site.media.input.clear.alt'),
                 title : Locale.get('quiqqer/system', 'projects.project.site.media.input.clear.alt'),
                 events: {
@@ -250,12 +250,12 @@ define('controls/projects/project/media/Input', [
                 return;
             }
 
-            this.$Preview.getElements('.icon-refresh').destroy();
-            this.$Preview.getElements('.icon-warning-sign').destroy();
+            this.$Preview.getElements('.fa-spinner').destroy();
+            this.$Preview.getElements('.fa-warning').destroy();
 
             // loader image
             var MiniLoader = new Element('div', {
-                'class': 'icon-refresh icon-spin',
+                'class': 'fa fa-spinner fa-spin',
                 styles : {
                     fontSize : 18,
                     height   : 20,
@@ -285,10 +285,10 @@ define('controls/projects/project/media/Input', [
 
             }, function () {
                 self.$Preview
-                    .getElements('.icon-refresh')
-                    .removeClass('icon-refresh')
-                    .removeClass('icon-spin')
-                    .addClass('icon-warning-sign');
+                    .getElements('.fa-spinner')
+                    .removeClass('fa-spin')
+                    .removeClass('fa-spinner')
+                    .addClass('fa-warning');
             });
 
             //Asset.image(previewUrl, {
