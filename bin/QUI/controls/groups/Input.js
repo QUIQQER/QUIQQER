@@ -1,4 +1,3 @@
-
 /**
  * Makes an input field to a group selection field
  *
@@ -37,23 +36,23 @@ define('controls/groups/Input', [
      */
     return new Class({
 
-        Extends : QUIControl,
-        Type    : 'controls/groups/Input',
+        Extends: QUIControl,
+        Type   : 'controls/groups/Input',
 
-        Binds : [
+        Binds: [
             'close',
             'fireSearch',
             'update'
         ],
 
-        options : {
-            max      : false,
-            multible : true,
-            name     : '',
-            styles   : false
+        options: {
+            max     : false,
+            multible: true,
+            name    : '',
+            styles  : false
         },
 
-        initialize : function (options, Input) {
+        initialize: function (options, Input) {
             this.parent(options);
 
             this.$search = false;
@@ -67,7 +66,7 @@ define('controls/groups/Input', [
             this.$Parent = Input || null;
 
             this.addEvents({
-                onDestroy : function () {
+                onDestroy: function () {
                     if (this.$DropDown) {
                         this.$DropDown.destroy();
                     }
@@ -81,14 +80,14 @@ define('controls/groups/Input', [
          * @method controls/groups/Input#create
          * @return {HTMLElement} DOM-Element
          */
-        create : function () {
+        create: function () {
             var self = this;
 
             this.$Elm = new Element('div.group-input');
 
             if (!this.$Parent) {
                 this.$Parent = new Element('input', {
-                    name : this.getAttribute('name')
+                    name: this.getAttribute('name')
                 }).inject(this.$Elm);
             } else {
                 this.$Elm.wraps(this.$Parent);
@@ -103,19 +102,17 @@ define('controls/groups/Input', [
 
             // sitemap button
             new QUIButton({
-                name   : 'groupSitemapBtn',
-                image  : 'icon-plus',
-                styles : {
-                    marginTop : 4
+                name  : 'groupSitemapBtn',
+                image : 'fa fa-plus',
+                styles: {
+                    marginTop: 4
                 },
-                events  :
-                {
-                    onClick : function () {
+                events: {
+                    onClick: function () {
                         new GroupSitemapWindow({
-                            multible : self.getAttribute('multible'),
-                            events   :
-                            {
-                                onSubmit : function (Window, values) {
+                            multible: self.getAttribute('multible'),
+                            events  : {
+                                onSubmit: function (Window, values) {
                                     for (var i = 0, len = values.length; i < len; i++) {
                                         self.addGroup(values[i]);
                                     }
@@ -127,19 +124,18 @@ define('controls/groups/Input', [
             }).inject(this.$Parent, 'before');
 
             this.$Input = new Element('input', {
-                type   : 'text',
-                name   : this.$Parent.get('name') + '-search',
-                styles : {
-                    'float'       : 'left',
-                    'margin'      : '3px 0',
-                    'paddingLeft' : 20,
-                    'background'  : 'url(' + URL_BIN_DIR + '10x10/search.png) no-repeat 4px center',
-                    width         : 165,
-                    cursor        : 'pointer'
+                type  : 'text',
+                name  : this.$Parent.get('name') + '-search',
+                styles: {
+                    'float'      : 'left',
+                    'margin'     : '3px 0',
+                    'paddingLeft': 20,
+                    'background' : 'url(' + URL_BIN_DIR + '10x10/search.png) no-repeat 4px center',
+                    width        : 165,
+                    cursor       : 'pointer'
                 },
-                events :
-                {
-                    keyup : function (event) {
+                events: {
+                    keyup: function (event) {
                         if (event.key === 'down') {
                             this.down();
                             return;
@@ -158,25 +154,25 @@ define('controls/groups/Input', [
                         this.fireSearch();
                     }.bind(this),
 
-                    blur  : this.close,
-                    focus : this.fireSearch
+                    blur : this.close,
+                    focus: this.fireSearch
                 }
             }).inject(this.$Parent, 'before');
 
 
             this.$DropDown = new Element('div.group-input-dropdown', {
-                styles : {
-                    display : 'none',
-                    top  : this.$Input.getPosition().y + this.$Input.getSize().y,
-                    left : this.$Input.getPosition().x
+                styles: {
+                    display: 'none',
+                    top    : this.$Input.getPosition().y + this.$Input.getSize().y,
+                    left   : this.$Input.getPosition().x
                 }
             }).inject(document.body);
 
             this.$Container = new Element('div', {
-                styles : {
-                    'float' : 'left',
-                    margin  : '0 0 0 10px',
-                    width   : '100%'
+                styles: {
+                    'float': 'left',
+                    margin : '0 0 0 10px',
+                    width  : '100%'
                 }
             }).inject(this.$Input, 'after');
 
@@ -205,7 +201,7 @@ define('controls/groups/Input', [
          * @method controls/groups/Input#update
          * @return {self} this
          */
-        update : function () {
+        update: function () {
             if (!this.$Container) {
                 return this;
             }
@@ -235,15 +231,15 @@ define('controls/groups/Input', [
          * @method controls/groups/Input#fireSearch
          * @return {Object} this (controls/groups/Input)
          */
-        fireSearch : function () {
+        fireSearch: function () {
             this.cancelSearch();
 
             this.$DropDown.set({
-                html   : '<img src="' + URL_BIN_DIR + 'images/loader.gif" />',
-                styles : {
-                    display : '',
-                    top     : this.$Input.getPosition().y + this.$Input.getSize().y,
-                    left    : this.$Input.getPosition().x
+                html  : '<img src="' + URL_BIN_DIR + 'images/loader.gif" />',
+                styles: {
+                    display: '',
+                    top    : this.$Input.getPosition().y + this.$Input.getSize().y,
+                    left   : this.$Input.getPosition().x
                 }
             });
 
@@ -258,7 +254,7 @@ define('controls/groups/Input', [
          * @method controls/groups/Input#cancelSearch
          * @return {Object} this (controls/groups/Input)
          */
-        cancelSearch : function () {
+        cancelSearch: function () {
             if (this.$search) {
                 clearTimeout(this.$search);
             }
@@ -272,7 +268,7 @@ define('controls/groups/Input', [
          * @method controls/groups/Input#close
          * @return {Object} this (controls/groups/Input)
          */
-        close : function () {
+        close: function () {
             this.cancelSearch();
             this.$DropDown.setStyle('display', 'none');
             this.$Input.value = '';
@@ -287,7 +283,7 @@ define('controls/groups/Input', [
          * @param {Number|String} gid - Group-ID
          * @return {Object} this (controls/groups/Input)
          */
-        addGroup : function (gid) {
+        addGroup: function (gid) {
             if (!gid || gid === '') {
                 return this;
             }
@@ -299,14 +295,13 @@ define('controls/groups/Input', [
             var entries = this.$Container.getElements('.group-entry');
 
             if (this.getAttribute('max') &&
-                 this.getAttribute('max') <= entries.length) {
+                this.getAttribute('max') <= entries.length) {
                 return this;
             }
 
             new GroupEntry(gid, {
-                events :
-                {
-                    onDestroy : function () {
+                events: {
+                    onDestroy: function () {
                         // because the node still exists, trigger after 100 miliseconds
                         this.update.delay(100);
                     }.bind(this)
@@ -324,7 +319,7 @@ define('controls/groups/Input', [
          *
          * @method controls/groups/Input#search
          */
-        search : function () {
+        search: function () {
             Ajax.get('ajax_groups_search', function (result, Ajax) {
                 var i, len, nam, func_mousedown, func_mouseover;
 
@@ -337,12 +332,12 @@ define('controls/groups/Input', [
 
                 if (!data.length) {
                     new Element('div', {
-                        html   : Locale.get('quiqqer/system', 'groups.input.no.results'),
-                        styles : {
-                            'float' : 'left',
-                            'clear' : 'both',
-                            padding : 5,
-                            margin  : 5
+                        html  : Locale.get('quiqqer/system', 'groups.input.no.results'),
+                        styles: {
+                            'float': 'left',
+                            'clear': 'both',
+                            padding: 5,
+                            margin : 5
                         }
                     }).inject(DropDown);
 
@@ -370,33 +365,32 @@ define('controls/groups/Input', [
                     );
 
                     new Element('div', {
-                        html   : nam + ' (' + data[ i ].id + ')',
-                        'class'     : 'box-sizing radius5',
-                        'data-id'   : data[ i ].id,
-                        'data-name' : data[ i ].name,
-                        styles : {
-                            'float' : 'left',
-                            'clear' : 'both',
-                            padding : 5,
-                            cursor  : 'pointer',
-                            width   : '100%'
+                        html       : nam + ' (' + data[i].id + ')',
+                        'class'    : 'box-sizing radius5',
+                        'data-id'  : data[i].id,
+                        'data-name': data[i].name,
+                        styles     : {
+                            'float': 'left',
+                            'clear': 'both',
+                            padding: 5,
+                            cursor : 'pointer',
+                            width  : '100%'
                         },
-                        events :
-                        {
-                            mousedown : func_mousedown,
-                            mouseover : func_mouseover
+                        events     : {
+                            mousedown: func_mousedown,
+                            mouseover: func_mouseover
                         }
                     }).inject(DropDown);
                 }
             }, {
-                Elm    : this,
-                value  : this.$Input.value,
-                params : JSON.encode({
-                    field  : 'name',
-                    order  : 'ASC',
-                    limit  : 5,
-                    page   : 1,
-                    search : this.$Input.value
+                Elm   : this,
+                value : this.$Input.value,
+                params: JSON.encode({
+                    field : 'name',
+                    order : 'ASC',
+                    limit : 5,
+                    page  : 1,
+                    search: this.$Input.value
                 })
             });
         },
@@ -407,7 +401,7 @@ define('controls/groups/Input', [
          * @method controls/groups/Input#up
          * @return {Object} this (controls/groups/Input)
          */
-        up : function () {
+        up: function () {
             if (!this.$DropDown) {
                 return this;
             }
@@ -436,7 +430,7 @@ define('controls/groups/Input', [
          * @method controls/groups/Input#down
          * @return {Object} this (controls/groups/Input)
          */
-        down : function () {
+        down: function () {
             if (!this.$DropDown) {
                 return this;
             }
@@ -467,7 +461,7 @@ define('controls/groups/Input', [
          * @method controls/groups/Input#submit
          * @return {Object} this (controls/groups/Input)
          */
-        submit : function () {
+        submit: function () {
             if (!this.$DropDown) {
                 return this;
             }
@@ -490,7 +484,7 @@ define('controls/groups/Input', [
          * @method controls/groups/Input#focus
          * @return {Object} this (controls/groups/Input)
          */
-        focus : function () {
+        focus: function () {
             if (this.$Input) {
                 this.$Input.focus();
             }

@@ -144,8 +144,8 @@ define('controls/groups/Group', [
                 new Confirm({
                     name       : 'DeleteUser' + self.getGroup().getId(),
                     title      : Locale.get(lg, 'groups.group.delete.title'),
-                    icon       : 'fa fa-trash-o icon-trash',
-                    texticon   : 'fa fa-trash-o icon-trash',
+                    icon       : 'fa fa-trash-o',
+                    texticon   : 'fa fa-trash-o',
                     text       : Locale.get(lg, 'groups.group.delete.text', {
                         group: self.getGroup().getAttribute('name')
                     }),
@@ -200,7 +200,7 @@ define('controls/groups/Group', [
                     'onDelete'      : self.$onGroupDelete
                 });
 
-                self.setAttribute('icon', 'icon-group');
+                self.setAttribute('icon', 'fa fa-group');
 
                 if (Group.getAttribute('title') === false) {
                     Group.load();
@@ -314,7 +314,7 @@ define('controls/groups/Group', [
             this.addButton({
                 name     : 'groupSave',
                 text     : Locale.get(lg, 'groups.group.btn.save'),
-                textimage: 'icon-save',
+                textimage: 'fa fa-save',
                 events   : {
                     onClick: this.save
                 }
@@ -323,7 +323,7 @@ define('controls/groups/Group', [
             this.addButton({
                 name     : 'groupDelete',
                 text     : Locale.get(lg, 'groups.group.btn.delete'),
-                textimage: 'fa fa-trash-o icon-trash',
+                textimage: 'fa fa-trash-o',
                 events   : {
                     onClick: this.del
                 }
@@ -331,7 +331,7 @@ define('controls/groups/Group', [
 
             // permissions
             new QUIButton({
-                image : 'icon-gears',
+                image : 'fa fa-gears',
                 alt   : Locale.get(lg, 'groups.group.btn.permissions.alt'),
                 title : Locale.get(lg, 'groups.group.btn.permissions.title'),
                 styles: {
@@ -602,7 +602,7 @@ define('controls/groups/Group', [
             for (var i = 0, len = result.data.length; i < len; i++) {
                 if (result.data[i].active) {
                     result.data[i].status = new Element('div', {
-                        'class': 'fa fa-check icon-ok',
+                        'class': 'fa fa-check',
                         styles : {
                             margin: '5px 0 5px 12px'
                         }
@@ -610,7 +610,7 @@ define('controls/groups/Group', [
 
                 } else {
                     result.data[i].status = new Element('div', {
-                        'class': 'icon-remove',
+                        'class': 'fa fa-remove',
                         styles : {
                             margin: '5px 0 5px 12px'
                         }

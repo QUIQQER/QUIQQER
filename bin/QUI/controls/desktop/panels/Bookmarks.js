@@ -42,7 +42,7 @@ define('controls/desktop/panels/Bookmarks', [
             this.addButton({
                 name      : 'sort',
                 text      : 'Sortierung',
-                textimage : 'icon-sort',
+                textimage : 'fa fa-sort',
                 events :
                 {
                     onClick : function (Btn) {
@@ -69,7 +69,7 @@ define('controls/desktop/panels/Bookmarks', [
             this.addButton({
                 name      : 'edit',
                 text      : 'Editieren',
-                textimage : 'icon-edit',
+                textimage : 'fa fa-edit',
                 events :
                 {
                     onClick : function (Btn) {

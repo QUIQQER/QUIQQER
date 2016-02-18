@@ -50,7 +50,7 @@ define([
                 events    :
                 {
                     onClick : function (Btn) {
-                        Btn.setAttribute('textimage', 'icon-refresh icon-spin');
+                        Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
                         self.clear(function () {
                             Btn.setAttribute('textimage', 'fa fa-trash-o');
@@ -65,7 +65,7 @@ define([
                 events    :
                 {
                     onClick : function (Btn) {
-                        Btn.setAttribute('textimage', 'icon-refresh icon-spin');
+                        Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
                         self.purge(function () {
                             Btn.setAttribute('textimage', 'fa fa-paint-brush');

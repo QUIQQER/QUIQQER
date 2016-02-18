@@ -2942,7 +2942,7 @@ define('controls/grid/Grid', [
                         document.getElement('.exportSelectDiv').destroy();
                     }
                 },
-                textimage: 'icon-remove'
+                textimage: 'fa fa-remove'
             }).create().inject(exportBarDiv);
 
             return false;

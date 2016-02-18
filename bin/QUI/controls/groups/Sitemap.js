@@ -130,7 +130,7 @@ define('controls/groups/Sitemap', [
                     value   : result.id,
                     text    : result.name,
                     alt     : result.name,
-                    icon    : 'icon-group',
+                    icon    : 'fa fa-group',
                     hasChildren : result.hasChildren
                 });
 
@@ -144,8 +144,8 @@ define('controls/groups/Sitemap', [
          * @param {Object} Parent - qui/controls/sitemap/Item
          */
         getChildren : function (Parent) {
-            Parent.removeIcon('icon-group');
-            Parent.addIcon('icon-refresh icon-spin');
+            Parent.removeIcon('fa-group');
+            Parent.addIcon('fa fa-spinner fa-spin');
 
             var self  = this,
                 Group = Groups.get(Parent.getAttribute('value'));
@@ -165,7 +165,7 @@ define('controls/groups/Sitemap', [
                             value : entry.id,
                             text  : entry.name,
                             alt   : entry.name,
-                            icon  : 'icon-group',
+                            icon  : 'fa fa-group',
                             hasChildren : entry.hasChildren,
                             events :
                             {
@@ -177,8 +177,8 @@ define('controls/groups/Sitemap', [
                     );
                 }
 
-                Parent.removeIcon('icon-refresh');
-                Parent.addIcon('icon-group');
+                Parent.removeIcon('fa-spinner');
+                Parent.addIcon('fa fa-group');
             });
         },
 

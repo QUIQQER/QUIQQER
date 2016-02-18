@@ -1,4 +1,3 @@
-
 /**
  * Groups manager panel
  *
@@ -42,19 +41,19 @@ define('controls/groups/Panel', [
 
     var lg = 'quiqqer/system';
 
-    var QUI                = arguments[ 0 ],
-        Panel              = arguments[ 1 ],
-        Groups             = arguments[ 2 ],
-        Locale             = arguments[ 3 ],
-        Grid               = arguments[ 4 ],
-        ControlUtils       = arguments[ 5 ],
-        GroupSitemapWindow = arguments[ 6 ],
-        Template           = arguments[ 7 ],
-        Attention          = arguments[ 8 ],
-        QUIPrompt          = arguments[ 9 ],
-        QUIConfirm         = arguments[ 10 ],
-        QUIButton          = arguments[ 11 ],
-        QUISwitch          = arguments[ 12 ];
+    var QUI                = arguments[0],
+        Panel              = arguments[1],
+        Groups             = arguments[2],
+        Locale             = arguments[3],
+        Grid               = arguments[4],
+        ControlUtils       = arguments[5],
+        GroupSitemapWindow = arguments[6],
+        Template           = arguments[7],
+        Attention          = arguments[8],
+        QUIPrompt          = arguments[9],
+        QUIConfirm         = arguments[10],
+        QUIButton          = arguments[11],
+        QUISwitch          = arguments[12];
 
     /**
      * @class qui/controls/groups/Panel
@@ -63,42 +62,42 @@ define('controls/groups/Panel', [
      */
     return new Class({
 
-        Extends : Panel,
-        Type    : 'controls/groups/Panel',
+        Extends: Panel,
+        Type   : 'controls/groups/Panel',
 
-        Binds : [
-             '$onCreate',
-             '$onResize',
-             '$onSwitchStatus',
-             '$onDeleteGroup',
-             '$onRefreshGroup',
-             '$onButtonEditClick',
-             '$onButtonDelClick',
+        Binds: [
+            '$onCreate',
+            '$onResize',
+            '$onSwitchStatus',
+            '$onDeleteGroup',
+            '$onRefreshGroup',
+            '$onButtonEditClick',
+            '$onButtonDelClick',
 
-             '$gridClick',
-             '$gridDblClick',
-             '$gridBlur',
+            '$gridClick',
+            '$gridDblClick',
+            '$gridBlur',
 
-             'search',
-             'createGroup',
-             'openPermissions'
+            'search',
+            'createGroup',
+            'openPermissions'
         ],
 
-        options : {
-            active_text   : '', // (optional)
-            deactive_text : '', // (optional)
+        options: {
+            active_text  : '', // (optional)
+            deactive_text: '', // (optional)
 
-            field : 'name',
-            order : 'ASC',
-            limit : 20,
-            page  : 1,
-            view  : 'table',
+            field: 'name',
+            order: 'ASC',
+            limit: 20,
+            page : 1,
+            view : 'table',
 
-            search       : false,
-            searchfields : ['id', 'name']
+            search      : false,
+            searchfields: ['id', 'name']
         },
 
-        initialize : function (options) {
+        initialize: function (options) {
             this.$uid = String.uniqueID();
 
             this.parent(options);
@@ -110,14 +109,14 @@ define('controls/groups/Panel', [
             this.addEvent('onResize', this.$onResize);
 
             Groups.addEvents({
-                onSwitchStatus : this.$onSwitchStatus,
-                onDelete       : this.$onDeleteGroup,
-                onRefresh      : this.$onRefreshGroup
+                onSwitchStatus: this.$onSwitchStatus,
+                onDelete      : this.$onDeleteGroup,
+                onRefresh     : this.$onRefreshGroup
             });
 
             this.setAttributes({
-                active_text   : Locale.get(lg, 'groups.panel.group.is.active'),
-                deactive_text : Locale.get(lg, 'groups.panel.group.is.deactive')
+                active_text  : Locale.get(lg, 'groups.panel.group.is.active'),
+                deactive_text: Locale.get(lg, 'groups.panel.group.is.deactive')
             });
 
             var self = this;
@@ -132,59 +131,58 @@ define('controls/groups/Panel', [
          *
          * @return {controls/grid/Grid|null}
          */
-        getGrid : function () {
+        getGrid: function () {
             return this.$Grid;
         },
 
         /**
          * create the group panel
          */
-        $onCreate : function () {
+        $onCreate: function () {
             var self = this;
 
             this.addButton({
-                name   : 'groupSearch',
-                events :
-                {
-                    onMousedown : function () {
+                name  : 'groupSearch',
+                events: {
+                    onMousedown: function () {
                         self.search();
                     }
                 },
                 alt   : Locale.get(lg, 'groups.panel.btn.search'),
                 title : Locale.get(lg, 'groups.panel.btn.search'),
-                image : 'icon-search'
+                image : 'fa fa-search'
             });
 
             this.addButton({
-                type : 'seperator'
+                type: 'seperator'
             });
 
             this.addButton({
-                name   : 'groupNew',
-                events : {
-                    onMousedown : this.createGroup
+                name  : 'groupNew',
+                events: {
+                    onMousedown: this.createGroup
                 },
-                text : Locale.get(lg, 'groups.panel.btn.create')
+                text  : Locale.get(lg, 'groups.panel.btn.create')
             });
 
             this.addButton({
-                name   : 'groupEdit',
-                events : {
-                    onMousedown : this.$onButtonEditClick
+                name     : 'groupEdit',
+                events   : {
+                    onMousedown: this.$onButtonEditClick
                 },
-                text      : Locale.get(lg, 'groups.panel.btn.edit'),
-                disabled  : true,
-                textimage : 'icon-pencil'
+                text     : Locale.get(lg, 'groups.panel.btn.edit'),
+                disabled : true,
+                textimage: 'fa fa-edit'
             });
 
             this.addButton({
-                name   : 'groupDel',
-                events : {
-                    onMousedown : this.$onButtonDelClick
+                name     : 'groupDel',
+                events   : {
+                    onMousedown: this.$onButtonDelClick
                 },
-                text      : Locale.get(lg, 'groups.panel.btn.delete'),
-                disabled  : true,
-                textimage : 'fa fa-trash-o icon-trash'
+                text     : Locale.get(lg, 'groups.panel.btn.delete'),
+                disabled : true,
+                textimage: 'fa fa-trash-o'
             });
 
 
@@ -196,26 +194,26 @@ define('controls/groups/Panel', [
 
 
             this.$Grid = new Grid(this.$GridContainer, {
-                columnModel : [{
-                    header    : Locale.get(lg, 'status'),
-                    dataIndex : 'status',
-                    dataType  : 'QUI',
-                    width     : 60
+                columnModel: [{
+                    header   : Locale.get(lg, 'status'),
+                    dataIndex: 'status',
+                    dataType : 'QUI',
+                    width    : 60
                 }, {
-                    header    : Locale.get(lg, 'group_id'),
-                    dataIndex : 'id',
-                    dataType  : 'integer',
-                    width     : 150
+                    header   : Locale.get(lg, 'group_id'),
+                    dataIndex: 'id',
+                    dataType : 'integer',
+                    width    : 150
                 }, {
-                    header    : Locale.get(lg, 'groupname'),
-                    dataIndex : 'name',
-                    dataType  : 'integer',
-                    width     : 150
+                    header   : Locale.get(lg, 'groupname'),
+                    dataIndex: 'name',
+                    dataType : 'integer',
+                    width    : 150
                 }, {
-                    header    : Locale.get(lg, 'groups.panel.grid.admin'),
-                    dataIndex : 'admin',
-                    dataType  : 'string',
-                    width     : 150
+                    header   : Locale.get(lg, 'groups.panel.grid.admin'),
+                    dataIndex: 'admin',
+                    dataType : 'string',
+                    width    : 150
                 }],
                 pagination : true,
                 filterInput: true,
@@ -238,18 +236,18 @@ define('controls/groups/Panel', [
                     self.load();
                 },
 
-                alternaterows     : true,
-                resizeColumns     : true,
-                selectable        : true,
-                multipleSelection : true,
-                resizeHeaderOnly  : true
+                alternaterows    : true,
+                resizeColumns    : true,
+                selectable       : true,
+                multipleSelection: true,
+                resizeHeaderOnly : true
             });
 
             // Events
             this.$Grid.addEvents({
-                onClick    : this.$gridClick,
-                onDblClick : this.$gridDblClick,
-                onBlur     : this.$gridBlur
+                onClick   : this.$gridClick,
+                onDblClick: this.$gridDblClick,
+                onBlur    : this.$gridBlur
             });
 
             // toolbar resize after insert
@@ -265,7 +263,7 @@ define('controls/groups/Panel', [
         /**
          * Load the groups with the settings
          */
-        load : function () {
+        load: function () {
             this.Loader.show();
             this.$loadGroups();
         },
@@ -276,7 +274,7 @@ define('controls/groups/Panel', [
          * @param {Number} gid - Group-ID
          * @return {Object} this (controls/groups/Panel)
          */
-        openGroup : function (gid) {
+        openGroup: function (gid) {
             require(['controls/groups/Group'], function (Group) {
                 this.getParent().appendChild(
                     new Group(gid)
@@ -290,12 +288,12 @@ define('controls/groups/Panel', [
         /**
          * Opens the groups search settings
          */
-        search : function () {
+        search: function () {
             this.Loader.show();
 
             var self  = this,
                 Sheet = this.createSheet({
-                    title : Locale.get(lg, 'groups.panel.search.title')
+                    title: Locale.get(lg, 'groups.panel.search.title')
                 });
 
             Sheet.addEvent('onOpen', function (Sheet) {
@@ -328,8 +326,7 @@ define('controls/groups/Panel', [
                     Frm.elements.name.checked = false;
 
                     for (i = 0, len = fields.length; i < len; i++) {
-                        switch (fields[i])
-                        {
+                        switch (fields[i]) {
                             case 'id':
                                 Frm.elements.gid.checked = true;
                                 break;
@@ -347,11 +344,10 @@ define('controls/groups/Panel', [
 
                     // search button
                     new QUIButton({
-                        textimage : 'icon-search',
-                        text      : Locale.get(lg, 'groups.panel.search.btn.search'),
-                        events    :
-                        {
-                            onClick : function () {
+                        textimage: 'fa fa-search',
+                        text     : Locale.get(lg, 'groups.panel.search.btn.search'),
+                        events   : {
+                            onClick: function () {
                                 self.execSearch(Sheet);
                             }
                         }
@@ -369,14 +365,13 @@ define('controls/groups/Panel', [
          *
          * @param {Object} Sheet - qui/desktop/panels/Sheet
          */
-        execSearch : function (Sheet) {
+        execSearch: function (Sheet) {
             var fields = [],
                 Frm    = Sheet.getBody().getElement('form');
 
 
             // check if one checkbox is active
-            if (!Frm.elements.gid.checked &&
-                 !Frm.elements.name.checked) {
+            if (!Frm.elements.gid.checked && !Frm.elements.name.checked) {
                 Frm.elements.gid.checked  = true;
                 Frm.elements.name.checked = true;
             }
@@ -401,34 +396,32 @@ define('controls/groups/Panel', [
         /**
          * Open the group create dialog
          */
-        createGroup : function () {
+        createGroup: function () {
             var self = this;
 
             new GroupSitemapWindow({
-                title  : Locale.get(lg, 'groups.panel.create.window.title'),
-                text   : Locale.get(lg, 'groups.panel.create.window.sitemap.text'),
-                events :
-                {
+                title : Locale.get(lg, 'groups.panel.create.window.title'),
+                text  : Locale.get(lg, 'groups.panel.create.window.sitemap.text'),
+                events: {
                     // now we need a groupname
-                    onSubmit : function (Win, result) {
+                    onSubmit: function (Win, result) {
                         if (!result.length) {
                             return;
                         }
 
                         new QUIPrompt({
-                            title  : Locale.get(lg, 'groups.panel.create.window.new.group.title'),
-                            icon   : 'icon-group',
-                            height : 220,
-                            width  : 450,
-                            text   : Locale.get(lg, 'groups.panel.create.window.new.group.text'),
-                            pid    : result[ 0 ],
-                            events :
-                            {
-                                onDrawEnd : function (Win) {
+                            title : Locale.get(lg, 'groups.panel.create.window.new.group.title'),
+                            icon  : 'fa fa-group',
+                            height: 220,
+                            width : 450,
+                            text  : Locale.get(lg, 'groups.panel.create.window.new.group.text'),
+                            pid   : result[0],
+                            events: {
+                                onDrawEnd: function (Win) {
                                     Win.getBody().getElement('input').focus();
                                 },
 
-                                onSubmit : function (result, Win) {
+                                onSubmit: function (result, Win) {
                                     Win.Loader.show();
 
                                     Groups.createGroup(
@@ -455,13 +448,13 @@ define('controls/groups/Panel', [
          * @param {Object} Group - controls/groups/Group
          * @return {Object}
          */
-        groupToData : function (Group) {
+        groupToData: function (Group) {
             // defaults
             var data = {
-                status  : false,
-                id      : Group.getId(),
-                name    : Group.getAttribute('name'),
-                admin   : Locale.get(lg, 'no')
+                status: false,
+                id    : Group.getId(),
+                name  : Group.getAttribute('name'),
+                admin : Locale.get(lg, 'no')
             };
 
             if (Group.getAttribute('admin')) {
@@ -486,12 +479,12 @@ define('controls/groups/Panel', [
             //};
 
             data.status = new QUISwitch({
-                status : Group.isActive(),
-                value  : Group.getId(),
-                gid    : Group.getId(),
-                title  : Group.isActive() ? this.getAttribute('active_text') : this.getAttribute('deactive_text'),
-                events : {
-                    onChange : this.$btnSwitchStatus
+                status: Group.isActive(),
+                value : Group.getId(),
+                gid   : Group.getId(),
+                title : Group.isActive() ? this.getAttribute('active_text') : this.getAttribute('deactive_text'),
+                events: {
+                    onChange: this.$btnSwitchStatus
                 }
             });
 
@@ -503,7 +496,7 @@ define('controls/groups/Panel', [
          *
          * @param {DOMEvent} data
          */
-        $gridClick : function (data) {
+        $gridClick: function (data) {
             var len    = data.target.selected.length,
                 Edit   = this.getButtons('groupEdit'),
                 Delete = this.getButtons('groupDel');
@@ -528,7 +521,7 @@ define('controls/groups/Panel', [
          *
          * @param {Object} data - grid selected data
          */
-        $gridDblClick : function (data) {
+        $gridDblClick: function (data) {
             this.openGroup(
                 data.target.getDataByRow(data.row).id
             );
@@ -537,7 +530,7 @@ define('controls/groups/Panel', [
         /**
          * onblur on the grid
          */
-        $gridBlur : function () {
+        $gridBlur: function () {
             this.getGrid().unselectAll();
             this.getGrid().removeSections();
 
@@ -548,7 +541,7 @@ define('controls/groups/Panel', [
         /**
          * Resize the groups panel
          */
-        $onResize : function () {
+        $onResize: function () {
             var Body = this.getBody();
 
             if (!Body) {
@@ -578,7 +571,7 @@ define('controls/groups/Panel', [
             var switches = Body.getElements('.qui-switch');
 
             for (i = 0, len = switches.length; i < len; i++) {
-                Control = QUI.Controls.getById(switches[ i ].get('data-quiid'));
+                Control = QUI.Controls.getById(switches[i].get('data-quiid'));
 
                 if (Control) {
                     Control.resize();
@@ -589,22 +582,20 @@ define('controls/groups/Panel', [
         /**
          * Load the groups to the grid
          */
-        $loadGroups : function () {
+        $loadGroups: function () {
             var self = this;
 
             this.Loader.show();
 
             this.setAttribute('title', Locale.get(lg, 'groups.panel.title'));
-            this.setAttribute('icon', 'icon-refresh icon-spin');
+            this.setAttribute('icon', 'fa fa-spinner fa-spin');
             this.refresh();
 
-            if (this.getAttribute('search') &&
-                 !this.getBody().getElement('.messages-message')) {
+            if (this.getAttribute('search') && !this.getBody().getElement('.messages-message')) {
                 new Attention({
-                    message : Locale.get(lg, 'groups.panel.search.active.message'),
-                    events  :
-                    {
-                        onClick : function (Message) {
+                    message: Locale.get(lg, 'groups.panel.search.active.message'),
+                    events : {
+                        onClick: function (Message) {
                             self.setAttribute('search', false);
                             self.setAttribute('searchSettings', {});
 
@@ -612,10 +603,10 @@ define('controls/groups/Panel', [
                             self.load();
                         }
                     },
-                    styles  : {
-                        margin : '0 0 20px',
-                        'border-width' : 1,
-                        cursor : 'pointer'
+                    styles : {
+                        margin        : '0 0 20px',
+                        'border-width': 1,
+                        cursor        : 'pointer'
                     }
                 }).inject(this.getContent(), 'top');
             }
@@ -624,12 +615,12 @@ define('controls/groups/Panel', [
 
             // search
             Groups.getList({
-                field  : this.getAttribute('field'),
-                order  : this.getAttribute('order'),
-                limit  : this.getAttribute('limit'),
-                page   : this.getAttribute('page'),
-                search : this.getAttribute('search'),
-                searchSettings : this.getAttribute('searchfields')
+                field         : this.getAttribute('field'),
+                order         : this.getAttribute('order'),
+                limit         : this.getAttribute('limit'),
+                page          : this.getAttribute('page'),
+                search        : this.getAttribute('search'),
+                searchSettings: this.getAttribute('searchfields')
             }, function (result) {
                 var i, len, data, admin;
 
@@ -643,13 +634,13 @@ define('controls/groups/Panel', [
                 data = result.data;
 
                 for (i = 0, len = data.length; i < len; i++) {
-                    admin = (data[ i ].admin).toInt();
+                    admin = (data[i].admin).toInt();
 
-                    data[ i ].active = (data[i].active).toInt();
-                    data[ i ].admin  = Locale.get(lg, 'no');
+                    data[i].active = (data[i].active).toInt();
+                    data[i].admin  = Locale.get(lg, 'no');
 
                     if (admin) {
-                        data[ i ].admin = Locale.get(lg, 'yes');
+                        data[i].admin = Locale.get(lg, 'yes');
                     }
 
                     //data[i].status = {
@@ -669,15 +660,15 @@ define('controls/groups/Panel', [
                     //    }
                     //};
 
-                    data[ i ].status = new QUISwitch({
-                        status : data[ i ].active,
-                        value  : data[ i ].id,
-                        gid    : data[ i ].id,
-                        title  : data[ i ].active ?
+                    data[i].status = new QUISwitch({
+                        status: data[i].active,
+                        value : data[i].id,
+                        gid   : data[i].id,
+                        title : data[i].active ?
                             self.getAttribute('active_text') :
                             self.getAttribute('deactive_text'),
-                        events : {
-                            onChange : self.$btnSwitchStatus
+                        events: {
+                            onChange: self.$btnSwitchStatus
                         }
                     });
                 }
@@ -685,7 +676,7 @@ define('controls/groups/Panel', [
                 Grid.setData(result);
 
                 self.setAttribute('title', Locale.get(lg, 'groups.panel.title'));
-                self.setAttribute('icon', 'icon-group');
+                self.setAttribute('icon', 'fa fa-group');
                 self.refresh();
 
                 self.Loader.hide();
@@ -697,7 +688,7 @@ define('controls/groups/Panel', [
          *
          * @param {Object} Switch - qui/controls/buttons/Switch
          */
-        $btnSwitchStatus : function (Switch) {
+        $btnSwitchStatus: function (Switch) {
             Groups.switchStatus(Switch.getAttribute('gid'));
         },
 
@@ -708,20 +699,20 @@ define('controls/groups/Panel', [
          * @param {Object} Groups - classes/groups/Manager
          * @param {Object} ids - Group-IDs with status
          */
-        $onSwitchStatus : function (Groups, ids) {
+        $onSwitchStatus: function (Groups, ids) {
             var i, len, Status, entry, status;
 
             var Grid = this.getGrid(),
                 data = Grid.getData();
 
             for (i = 0, len = data.length; i < len; i++) {
-                if (typeof ids[ data[ i ].id ] === 'undefined') {
+                if (typeof ids[data[i].id] === 'undefined') {
                     continue;
                 }
 
-                entry = data[ i ];
+                entry = data[i];
 
-                status = (ids[ data[ i ].id ]).toInt();
+                status = (ids[data[i].id]).toInt();
                 Status = entry.status;
 
                 // group is active
@@ -742,7 +733,7 @@ define('controls/groups/Panel', [
          * @param {Object} Groups - classes/groups/Manager
          * @param {Object} Group - classes/groups/Group
          */
-        $onRefreshGroup : function (Groups, Group) {
+        $onRefreshGroup: function (Groups, Group) {
             var i, len;
 
             var Grid = this.getGrid(),
@@ -750,7 +741,7 @@ define('controls/groups/Panel', [
                 id   = Group.getId();
 
             for (i = 0, len = data.length; i < len; i++) {
-                if (data[ i ].id != id) {
+                if (data[i].id != id) {
                     continue;
                 }
 
@@ -765,7 +756,7 @@ define('controls/groups/Panel', [
          * @param {classes/groups/Manager} Groups
          * @param {Array} ids - Delete Group-IDs
          */
-        $onDeleteGroup : function (Groups, ids) {
+        $onDeleteGroup: function (Groups, ids) {
             var i, id, len;
 
             var Grid = this.getGrid(),
@@ -773,13 +764,13 @@ define('controls/groups/Panel', [
                 _tmp = {};
 
             for (i = 0, len = ids.length; i < len; i++) {
-                _tmp[ ids[ i ] ] = true;
+                _tmp[ids[i]] = true;
             }
 
             for (i = 0, len = data.length; i < len; i++) {
-                id = data[ i ].id;
+                id = data[i].id;
 
-                if (_tmp[ id ]) {
+                if (_tmp[id]) {
                     this.load();
                     break;
                 }
@@ -789,7 +780,7 @@ define('controls/groups/Panel', [
         /**
          * Open all marked groups
          */
-        $onButtonEditClick : function () {
+        $onButtonEditClick: function () {
             var Parent  = this.getParent(),
                 Grid    = this.getGrid(),
                 seldata = Grid.getSelectedData();
@@ -799,7 +790,7 @@ define('controls/groups/Panel', [
             }
 
             if (seldata.length == 1) {
-                this.openGroup(seldata[ 0 ].id);
+                this.openGroup(seldata[0].id);
                 return;
             }
 
@@ -816,7 +807,7 @@ define('controls/groups/Panel', [
                     Parent.appendTask(TaskGroup);
 
                     for (i = 0, len = seldata.length; i < len; i++) {
-                        Group = new GroupControl(seldata[ i ].id);
+                        Group = new GroupControl(seldata[i].id);
                         Task  = Parent.instanceToTask(Group);
 
                         TaskGroup.appendChild(Task);
@@ -830,21 +821,21 @@ define('controls/groups/Panel', [
             }
 
             for (i = 0, len = seldata.length; i < len; i++) {
-                this.openGroup(seldata[ i ].id);
+                this.openGroup(seldata[i].id);
             }
         },
 
         /**
          * Open deletion popup
          */
-        $onButtonDelClick : function () {
+        $onButtonDelClick: function () {
             var i, len;
 
             var gids = [],
                 data = this.getGrid().getSelectedData();
 
             for (i = 0, len = data.length; i < len; i++) {
-                gids.push(data[ i ].id);
+                gids.push(data[i].id);
             }
 
             if (!gids.length) {
@@ -852,19 +843,18 @@ define('controls/groups/Panel', [
             }
 
             new QUIConfirm({
-                name        : 'DeleteGroups',
-                icon        : URL_BIN_DIR + '16x16/trashcan_full.png',
-                texticon    : URL_BIN_DIR + '32x32/trashcan_full.png',
-                title       : Locale.get(lg, 'groups.panel.delete.window.title'),
-                text        : Locale.get(lg, 'groups.panel.delete.window.text') + '<br /><br />' + gids.join(', '),
-                information : Locale.get(lg, 'groups.panel.delete.window.information'),
+                name       : 'DeleteGroups',
+                icon       : URL_BIN_DIR + '16x16/trashcan_full.png',
+                texticon   : URL_BIN_DIR + '32x32/trashcan_full.png',
+                title      : Locale.get(lg, 'groups.panel.delete.window.title'),
+                text       : Locale.get(lg, 'groups.panel.delete.window.text') + '<br /><br />' + gids.join(', '),
+                information: Locale.get(lg, 'groups.panel.delete.window.information'),
 
-                maxWidth  : 450,
-                maxHeight : 300,
-                gids   : gids,
-                events :
-                {
-                    onSubmit : function (Win) {
+                maxWidth : 450,
+                maxHeight: 300,
+                gids     : gids,
+                events   : {
+                    onSubmit: function (Win) {
                         Groups.deleteGroups(
                             Win.getAttribute('gids')
                         );
