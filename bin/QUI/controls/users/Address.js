@@ -1,4 +1,3 @@
-
 /**
  * Address control
  * Edit and saves an user address
@@ -38,19 +37,19 @@ define([
 
     return new Class({
 
-        Extends : QUIControl,
-        Type    : 'controls/users/Address',
+        Extends: QUIControl,
+        Type   : 'controls/users/Address',
 
-        Binds : [
+        Binds: [
             '$onInject'
         ],
 
-        options : {
-            uid       : false,
-            addressId : false
+        options: {
+            uid      : false,
+            addressId: false
         },
 
-        initialize : function (options) {
+        initialize: function (options) {
             this.parent(options);
 
             this.Loader = new QUILoader();
@@ -68,7 +67,7 @@ define([
             this.$Country    = null;
 
             this.addEvents({
-                onInject : this.$onInject
+                onInject: this.$onInject
             });
         },
 
@@ -77,9 +76,9 @@ define([
          *
          * @return {HTMLElement}
          */
-        create : function () {
+        create: function () {
             this.$Elm = new Element('div', {
-                'class' : 'control-users-address box'
+                'class': 'control-users-address box'
             });
 
             this.Loader.inject(this.$Elm);
@@ -90,7 +89,7 @@ define([
         /**
          * event : on inject
          */
-        $onInject : function () {
+        $onInject: function () {
             var self = this;
 
             this.Loader.show();
@@ -123,62 +122,59 @@ define([
                 self.$Country.value    = data.country;
 
                 // tel fax handy grid
-                self.$PhoneGrid  = new Grid(Elm.getElement('.user-address-edit-tel'), {
-                    columnModel : [{
-                        header    : Locale.get(lg, 'number'),
-                        dataIndex : 'no',
-                        dataType  : 'string',
-                        width     : 200
+                self.$PhoneGrid = new Grid(Elm.getElement('.user-address-edit-tel'), {
+                    columnModel: [{
+                        header   : Locale.get(lg, 'number'),
+                        dataIndex: 'no',
+                        dataType : 'string',
+                        width    : 200
                     }, {
-                        header    : Locale.get(lg, 'type'),
-                        dataIndex : 'type',
-                        dataType  : 'string',
-                        width     : 200
+                        header   : Locale.get(lg, 'type'),
+                        dataIndex: 'type',
+                        dataType : 'string',
+                        width    : 200
                     }],
-                    buttons : [{
-                        name      : 'add',
-                        text      : Locale.get(lg, 'users.address.btn.add'),
-                        textimage : 'icon-plus',
-                        events    :
-                        {
-                            onClick : function () {
+                    buttons    : [{
+                        name     : 'add',
+                        text     : Locale.get(lg, 'users.address.btn.add'),
+                        textimage: 'fa fa-plus',
+                        events   : {
+                            onClick: function () {
                                 self.openPhoneWindow();
                             }
                         }
                     }, {
-                        type : 'seperator'
+                        type: 'seperator'
                     }, {
-                        name      : 'edit',
-                        text      : Locale.get(lg, 'users.address.btn.edit'),
-                        textimage : 'icon-edit',
-                        disabled  : true,
-                        events    :
-                        {
-                            onClick : function () {
+                        name     : 'edit',
+                        text     : Locale.get(lg, 'users.address.btn.edit'),
+                        textimage: 'fa fa-edit',
+                        disabled : true,
+                        events   : {
+                            onClick: function () {
                                 self.openPhoneWindow(
-                                    self.$PhoneGrid.getSelectedIndices()[ 0 ]
+                                    self.$PhoneGrid.getSelectedIndices()[0]
                                 );
                             }
                         }
                     }, {
-                        name      : 'delete',
-                        text      : Locale.get(lg, 'users.address.btn.delete'),
-                        textimage : 'icon-remove',
-                        disabled  : true,
-                        events    :
-                        {
-                            onClick : function () {
+                        name     : 'delete',
+                        text     : Locale.get(lg, 'users.address.btn.delete'),
+                        textimage: 'fa fa-remove',
+                        disabled : true,
+                        events   : {
+                            onClick: function () {
                                 self.openPhoneDeleteWindow(
-                                    self.$PhoneGrid.getSelectedIndices()[ 0 ]
+                                    self.$PhoneGrid.getSelectedIndices()[0]
                                 );
                             }
                         }
                     }],
-                    height: 200
+                    height     : 200
                 });
 
                 self.$PhoneGrid.addEvents({
-                    onClick : function () {
+                    onClick   : function () {
                         var buttons = self.$PhoneGrid.getButtons(),
                             sels    = self.$PhoneGrid.getSelectedIndices();
 
@@ -196,9 +192,9 @@ define([
                             Btn.enable();
                         });
                     },
-                    onDblClick : function () {
+                    onDblClick: function () {
                         self.openPhoneWindow(
-                            self.$PhoneGrid.getSelectedIndices()[ 0 ]
+                            self.$PhoneGrid.getSelectedIndices()[0]
                         );
                     }
                 });
@@ -206,56 +202,53 @@ define([
 
                 // email grid
                 self.$MailGrid = new Grid(Elm.getElement('.user-address-edit-mail'), {
-                    columnModel : [{
-                        header    : Locale.get(lg, 'email'),
-                        dataIndex : 'email',
-                        dataType  : 'string',
-                        width     : 200
+                    columnModel: [{
+                        header   : Locale.get(lg, 'email'),
+                        dataIndex: 'email',
+                        dataType : 'string',
+                        width    : 200
                     }],
-                    buttons : [{
-                        name      : 'add',
-                        text      : Locale.get(lg, 'users.address.mail.btn.add'),
-                        textimage : 'icon-plus',
-                        events    :
-                        {
-                            onClick : function () {
+                    buttons    : [{
+                        name     : 'add',
+                        text     : Locale.get(lg, 'users.address.mail.btn.add'),
+                        textimage: 'fa fa-plus',
+                        events   : {
+                            onClick: function () {
                                 self.openEmailWindow();
                             }
                         }
                     }, {
-                        type : 'seperator'
+                        type: 'seperator'
                     }, {
-                        name      : 'edit',
-                        text      : Locale.get(lg, 'users.address.mail.btn.edit'),
-                        textimage : 'icon-edit',
-                        disabled  : true,
-                        events    :
-                        {
-                            onClick : function () {
+                        name     : 'edit',
+                        text     : Locale.get(lg, 'users.address.mail.btn.edit'),
+                        textimage: 'fa fa-edit',
+                        disabled : true,
+                        events   : {
+                            onClick: function () {
                                 self.openEmailWindow(
-                                    self.$MailGrid.getSelectedIndices()[ 0 ]
+                                    self.$MailGrid.getSelectedIndices()[0]
                                 );
                             }
                         }
                     }, {
-                        name      : 'delete',
-                        text      : Locale.get(lg, 'users.address.mail.btn.delete'),
-                        textimage : 'icon-remove',
-                        disabled  : true,
-                        events    :
-                        {
-                            onClick : function () {
+                        name     : 'delete',
+                        text     : Locale.get(lg, 'users.address.mail.btn.delete'),
+                        textimage: 'fa fa-remove',
+                        disabled : true,
+                        events   : {
+                            onClick: function () {
                                 self.openEmailDeleteWindow(
-                                    self.$MailGrid.getSelectedIndices()[ 0 ]
+                                    self.$MailGrid.getSelectedIndices()[0]
                                 );
                             }
                         }
                     }],
-                    height: 200
+                    height     : 200
                 });
 
                 self.$MailGrid.addEvents({
-                    onClick : function () {
+                    onClick   : function () {
                         var buttons = self.$MailGrid.getButtons(),
                             sels    = self.$MailGrid.getSelectedIndices();
 
@@ -273,9 +266,9 @@ define([
                             Btn.enable();
                         });
                     },
-                    onDblClick : function () {
+                    onDblClick: function () {
                         self.openEmailWindow(
-                            self.$MailGrid.getSelectedIndices()[ 0 ]
+                            self.$MailGrid.getSelectedIndices()[0]
                         );
                     }
                 });
@@ -289,29 +282,29 @@ define([
 
                 for (var i = 0, len = mail.length; i < len; i++) {
                     mailData.push({
-                        email : mail[ i ]
+                        email: mail[i]
                     });
                 }
 
                 self.$MailGrid.setData({
-                    data : mailData
+                    data: mailData
                 });
 
                 self.$PhoneGrid.setData({
-                    data : phone
+                    data: phone
                 });
 
                 self.Loader.hide();
             }, {
-                uid : this.getAttribute('uid'),
-                aid : this.getAttribute('addressId')
+                uid: this.getAttribute('uid'),
+                aid: this.getAttribute('addressId')
             });
         },
 
         /**
          * Saves the address
          */
-        save : function () {
+        save: function () {
             var self = this;
 
             var emails = this.$MailGrid.getData().map(function (data) {
@@ -319,24 +312,24 @@ define([
             });
 
             var data = {
-                salutation : this.$Salutation.value,
-                firstname  : this.$Firstname.value,
-                lastname   : this.$Lastname.value,
-                company    : this.$Company.value,
-                street_no  : this.$StreetNo.value,
-                zip        : this.$Zip.value,
-                city       : this.$City.value,
-                country    : this.$Country.value,
-                mails      : emails,
-                phone      : this.$PhoneGrid.getData()
+                salutation: this.$Salutation.value,
+                firstname : this.$Firstname.value,
+                lastname  : this.$Lastname.value,
+                company   : this.$Company.value,
+                street_no : this.$StreetNo.value,
+                zip       : this.$Zip.value,
+                city      : this.$City.value,
+                country   : this.$Country.value,
+                mails     : emails,
+                phone     : this.$PhoneGrid.getData()
             };
 
             Ajax.post('ajax_users_address_save', function () {
                 self.fireEvent('saved', [self]);
             }, {
-                uid  : this.getAttribute('uid'),
-                aid  : this.getAttribute('addressId'),
-                data : JSON.encode(data)
+                uid : this.getAttribute('uid'),
+                aid : this.getAttribute('addressId'),
+                data: JSON.encode(data)
             });
         },
 
@@ -346,10 +339,10 @@ define([
          * @param {String} no - tel, fax, mobile number
          * @param {String} type - type of the number, can be tel, fax, mobile -> standard = tel
          */
-        addPhone : function (no, type) {
+        addPhone: function (no, type) {
             this.$PhoneGrid.addRow({
-                no   : no,
-                type : type
+                no  : no,
+                type: type
             });
         },
 
@@ -360,10 +353,10 @@ define([
          * @param {String} no - tel, fax, mobile number
          * @param {String} type - type of the number, can be tel, fax, mobile -> standard = tel
          */
-        editPhone : function (index, no, type) {
+        editPhone: function (index, no, type) {
             this.$PhoneGrid.setDataByRow(index, {
-                no   : no,
-                type : type
+                no  : no,
+                type: type
             });
         },
 
@@ -372,7 +365,7 @@ define([
          *
          * @param {String|Number} index - grid index
          */
-        deletePhone : function (index) {
+        deletePhone: function (index) {
             this.$PhoneGrid.deleteRow(index);
         },
 
@@ -381,9 +374,9 @@ define([
          *
          * @param {String} email - E-Mail address
          */
-        addMail : function (email) {
+        addMail: function (email) {
             this.$MailGrid.addRow({
-                email : email
+                email: email
             });
         },
 
@@ -393,9 +386,9 @@ define([
          * @param {Number} index - grid index
          * @param {String} email - E-Mail address
          */
-        editMail : function (index, email) {
+        editMail: function (index, email) {
             this.$MailGrid.setDataByRow(index, {
-                email : email
+                email: email
             });
         },
 
@@ -404,7 +397,7 @@ define([
          *
          * @param {String|Number} index - grid index
          */
-        deleteMail : function (index) {
+        deleteMail: function (index) {
             this.$MailGrid.deleteRow(index);
         },
 
@@ -417,25 +410,24 @@ define([
          *
          * @param {String} [phoneId] - (optional), Grid index
          */
-        openPhoneWindow : function (phoneId) {
+        openPhoneWindow: function (phoneId) {
             var self = this;
 
             new QUIConfirm({
-                title : Locale.get(lg, 'users.address.phone.window.title'),
-                icon  : 'fa fa-phone icon-tel',
-                text  : Locale.get(lg, 'users.address.phone.window.text'),
-                information : '<form style="text-align: center; width: 100%">' +
-                                  '<input type="text" name="number" value="" placeholder="" />' +
-                                  '<select name="type">' +
-                                      '<option value="tel">' + Locale.get(lg, 'tel') + '</option>' +
-                                      '<option value="fax">' + Locale.get(lg, 'fax') + '</option>' +
-                                      '<option value="mobile">' + Locale.get(lg, 'mobile') + '</option>' +
-                                  '</select>' +
-                              '</form>',
-                maxWidth : 600,
-                events   :
-                {
-                    onOpen : function (Win) {
+                title      : Locale.get(lg, 'users.address.phone.window.title'),
+                icon       : 'fa fa-phone',
+                text       : Locale.get(lg, 'users.address.phone.window.text'),
+                information: '<form style="text-align: center; width: 100%">' +
+                             '<input type="text" name="number" value="" placeholder="" />' +
+                             '<select name="type">' +
+                             '<option value="tel">' + Locale.get(lg, 'tel') + '</option>' +
+                             '<option value="fax">' + Locale.get(lg, 'fax') + '</option>' +
+                             '<option value="mobile">' + Locale.get(lg, 'mobile') + '</option>' +
+                             '</select>' +
+                             '</form>',
+                maxWidth   : 600,
+                events     : {
+                    onOpen: function (Win) {
                         var Content     = Win.getContent(),
                             InputNumber = Content.getElement('[name="number"]'),
                             InputType   = Content.getElement('[name="type"]'),
@@ -462,14 +454,14 @@ define([
                         }
 
                         Form.addEvents({
-                            submit : function (event) {
+                            submit: function (event) {
                                 event.stop();
                                 Win.submit();
                             }
                         });
                     },
 
-                    onSubmit : function (Win) {
+                    onSubmit: function (Win) {
                         var Content     = Win.getContent(),
                             InputNumber = Content.getElement('[name="number"]'),
                             InputType   = Content.getElement('[name="type"]');
@@ -498,17 +490,16 @@ define([
          *
          * @param {String|Number} phoneId - index of the grid
          */
-        openPhoneDeleteWindow : function (phoneId) {
+        openPhoneDeleteWindow: function (phoneId) {
             var self = this;
 
             new QUIConfirm({
-                title : Locale.get(lg, 'users.address.phone.delete.window.title'),
-                icon  : 'icon-remove',
-                text  : Locale.get(lg, 'users.address.phone.delete.window.text'),
-                information : Locale.get(lg, 'users.address.phone.delete.window.information'),
-                events :
-                {
-                    onSubmit : function () {
+                title      : Locale.get(lg, 'users.address.phone.delete.window.title'),
+                icon       : 'fa fa-remove',
+                text       : Locale.get(lg, 'users.address.phone.delete.window.text'),
+                information: Locale.get(lg, 'users.address.phone.delete.window.information'),
+                events     : {
+                    onSubmit: function () {
                         self.deletePhone(phoneId);
                     }
                 }
@@ -520,23 +511,22 @@ define([
          *
          * @param {String} [emailId] - (optional), Grid index
          */
-        openEmailWindow : function (emailId) {
+        openEmailWindow: function (emailId) {
             var self = this;
 
             new QUIConfirm({
-                title  : Locale.get(lg, 'users.address.email.window.title'),
-                icon   : 'icon-email',
-                text   : Locale.get(lg, 'users.address.email.window.text'),
-                information : '<form style="text-align: center; width: 100%">' +
-                                  '<input type="text" name="email" value="" placeholder="" />' +
-                              '</form>',
-                maxWidth : 600,
-                events   :
-                {
-                    onOpen : function (Win) {
-                        var Content     = Win.getContent(),
-                            InputEmail  = Content.getElement('[name="email"]'),
-                            Form        = Content.getElement('form');
+                title      : Locale.get(lg, 'users.address.email.window.title'),
+                icon       : 'fa fa-envelope-o',
+                text       : Locale.get(lg, 'users.address.email.window.text'),
+                information: '<form style="text-align: center; width: 100%">' +
+                             '<input type="text" name="email" value="" placeholder="" />' +
+                             '</form>',
+                maxWidth   : 600,
+                events     : {
+                    onOpen: function (Win) {
+                        var Content    = Win.getContent(),
+                            InputEmail = Content.getElement('[name="email"]'),
+                            Form       = Content.getElement('form');
 
                         InputEmail.set(
                             'placeholder',
@@ -558,14 +548,14 @@ define([
                         }
 
                         Form.addEvents({
-                            submit : function (event) {
+                            submit: function (event) {
                                 event.stop();
                                 Win.submit();
                             }
                         });
                     },
 
-                    onSubmit : function (Win) {
+                    onSubmit: function (Win) {
                         var Content    = Win.getContent(),
                             InputEmail = Content.getElement('[name="email"]');
 
@@ -585,17 +575,16 @@ define([
          *
          * @param {String|Number} emailId - index of the grid
          */
-        openEmailDeleteWindow : function (emailId) {
+        openEmailDeleteWindow: function (emailId) {
             var self = this;
 
             new QUIConfirm({
-                title  : Locale.get(lg, 'users.address.email.delete.window.title'),
-                icon   : 'icon-remove',
-                text   : Locale.get(lg, 'users.address.email.delete.window.text'),
-                information : Locale.get(lg, 'users.address.email.delete.window.information'),
-                events :
-                {
-                    onSubmit : function () {
+                title      : Locale.get(lg, 'users.address.email.delete.window.title'),
+                icon       : 'fa fa-remove',
+                text       : Locale.get(lg, 'users.address.email.delete.window.text'),
+                information: Locale.get(lg, 'users.address.email.delete.window.information'),
+                events     : {
+                    onSubmit: function () {
                         self.deleteMail(emailId);
                     }
                 }

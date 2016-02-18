@@ -1,4 +1,3 @@
-
 /**
  * quiqqer authentication configuration
  *
@@ -29,15 +28,15 @@ define('controls/system/settings/Auth', [
 
     return new Class({
 
-        Extends : QUIControl,
-        Type    : 'controls/system/settings/Auth',
+        Extends: QUIControl,
+        Type   : 'controls/system/settings/Auth',
 
-        Binds : [
+        Binds: [
             '$onImport',
             '$updateMemcachedData'
         ],
 
-        initialize : function (Panel) {
+        initialize: function (Panel) {
             this.$Panel = Panel;
 
             this.$TypeSelect     = null;
@@ -46,14 +45,14 @@ define('controls/system/settings/Auth', [
             this.$MemcachedTest  = null;
 
             this.addEvents({
-                onImport : this.$onImport
+                onImport: this.$onImport
             });
         },
 
         /**
          * event : on import
          */
-        $onImport : function () {
+        $onImport: function () {
             var self    = this,
                 Panel   = this.$Panel,
                 Content = Panel.getContent();
@@ -62,7 +61,7 @@ define('controls/system/settings/Auth', [
             this.$TypeSelect = Content.getElement('[name="session.type"]');
 
             this.$TypeSelect.addEvents({
-                change : function () {
+                change: function () {
 
                     self.resetDisplay();
 
@@ -82,7 +81,7 @@ define('controls/system/settings/Auth', [
          * Reset the auth displays
          * destroy .auth-settings-container container and clear the specific objects
          */
-        resetDisplay : function () {
+        resetDisplay: function () {
             this.$Panel.getContent().getElements('.auth-settings-container').destroy();
             this.$MemcachedTable = null;
             this.$MemcachedTbody = null;
@@ -91,13 +90,13 @@ define('controls/system/settings/Auth', [
         /**
          * Show the memcached server list
          */
-        showMemcached : function () {
+        showMemcached: function () {
             this.$Panel.Loader.show();
 
-            var self = this,
-                Content = this.$Panel.getContent(),
+            var self      = this,
+                Content   = this.$Panel.getContent(),
                 Container = new Element('div', {
-                    'class' : 'auth-settings-container'
+                    'class': 'auth-settings-container'
                 }).inject(Content);
 
 
@@ -105,8 +104,8 @@ define('controls/system/settings/Auth', [
 
                 Container.set('html', html);
 
-                var Table = Container.getElement('.auth-memcached-table'),
-                    TBody = Table.getElement('tbody'),
+                var Table  = Container.getElement('.auth-memcached-table'),
+                    TBody  = Table.getElement('tbody'),
                     config = self.$Panel.$config;
 
 
@@ -129,31 +128,31 @@ define('controls/system/settings/Auth', [
                 for (i = 0, len = data.length; i < len; i++) {
 
                     server = data[i].split(':');
-                    Row = self.$addMemcachedServer(server[0], server[1]);
+                    Row    = self.$addMemcachedServer(server[0], server[1]);
 
                     Row.addClass(i % 2 ? 'even' : 'odd');
                 }
 
                 new QUIButton({
-                    text : QUILocale.get('quiqqer/system', 'quiqqer.settings.auth.memcached.addServer'),
-                    textimage : 'icon-plus',
-                    events : {
-                        onClick : function () {
+                    text     : QUILocale.get('quiqqer/system', 'quiqqer.settings.auth.memcached.addServer'),
+                    textimage: 'fa fa-plus',
+                    events   : {
+                        onClick: function () {
                             self.$addMemcachedServer();
                             self.$refreshMemcachedList();
                             self.$MemcachedTbody.getElement('tr:last-child input').focus();
                         }
                     },
-                    styles : {
-                        'float' : 'right'
+                    styles   : {
+                        'float': 'right'
                     }
                 }).inject(self.$MemcachedTable.getElement('tfoot td'));
 
                 self.$MemcachedTest = new QUIButton({
-                    text : QUILocale.get('quiqqer/system', 'quiqqer.settings.auth.memcached.testServer'),
-                    textimage : 'icon-bolt',
-                    events : {
-                        onClick : function () {
+                    text     : QUILocale.get('quiqqer/system', 'quiqqer.settings.auth.memcached.testServer'),
+                    textimage: 'fa fa-bolt',
+                    events   : {
+                        onClick: function () {
                             self.$testMemcachedServers();
                         }
                     }
@@ -171,7 +170,7 @@ define('controls/system/settings/Auth', [
          *
          * @return {HTMLTableRowElement|Boolean}
          */
-        $addMemcachedServer : function (server, port) {
+        $addMemcachedServer: function (server, port) {
             if (this.$TypeSelect.value != 'memcached') {
                 return false;
             }
@@ -181,25 +180,25 @@ define('controls/system/settings/Auth', [
             }
 
             var self = this;
-            var Row = new Element('tr', {
-                html : '<td><input type="text" name="server" /></td>' +
-                       '<td><input type="text" name="port" /></td>' +
-                       '<td></td>'
+            var Row  = new Element('tr', {
+                html: '<td><input type="text" name="server" /></td>' +
+                      '<td><input type="text" name="port" /></td>' +
+                      '<td></td>'
             });
 
             var Server = Row.getElement('[name="server"]');
-            var Port = Row.getElement('[name="port"]');
+            var Port   = Row.getElement('[name="port"]');
 
             Server.value = server || '';
-            Port.value = port || '';
+            Port.value   = port || '';
 
             Server.addEvent('change', this.$updateMemcachedData);
             Port.addEvent('change', this.$updateMemcachedData);
 
             new QUIButton({
-                icon : 'icon-remove',
-                events : {
-                    onClick : function () {
+                icon  : 'fa fa-remove',
+                events: {
+                    onClick: function () {
                         Row.destroy();
                         self.$refreshMemcachedList();
                         self.$updateMemcachedData();
@@ -215,7 +214,7 @@ define('controls/system/settings/Auth', [
         /**
          * refresh memcache server list display, set the row odd even classes
          */
-        $refreshMemcachedList : function () {
+        $refreshMemcachedList: function () {
             if (!this.$MemcachedTbody) {
                 return;
             }
@@ -232,10 +231,10 @@ define('controls/system/settings/Auth', [
         /**
          * Test the memcached settings
          */
-        $testMemcachedServers : function () {
+        $testMemcachedServers: function () {
             this.$MemcachedTest.setAttribute(
                 'textimage',
-                'icon-spinner icon-spin fa fa-spinner fa-spin'
+                'fa fa-spinner fa-spin'
             );
 
             var self = this,
@@ -244,22 +243,22 @@ define('controls/system/settings/Auth', [
 
             for (var i = 0, len = rows.length; i < len; i++) {
                 data.push({
-                    server : rows[i].getElement('[name="server"]').value,
-                    port : rows[i].getElement('[name="port"]').value
+                    server: rows[i].getElement('[name="server"]').value,
+                    port  : rows[i].getElement('[name="port"]').value
                 });
             }
 
             Ajax.get('ajax_settings_memcachedTest', function () {
-                self.$MemcachedTest.setAttribute('textimage', 'icon-bolt');
+                self.$MemcachedTest.setAttribute('textimage', 'fa fa-bolt');
             }, {
-                data : JSON.encode(data)
+                data: JSON.encode(data)
             });
         },
 
         /**
          * update the memcached data to the panel input field
          */
-        $updateMemcachedData : function () {
+        $updateMemcachedData: function () {
             var i, len, server, port;
 
             var data = [],
@@ -268,12 +267,10 @@ define('controls/system/settings/Auth', [
             for (i = 0, len = rows.length; i < len; i++) {
 
                 server = rows[i].getElement('[name="server"]').value;
-                port = rows[i].getElement('[name="port"]').value;
+                port   = rows[i].getElement('[name="port"]').value;
 
                 data.push(server + ':' + port);
             }
-
-            console.log(data);
 
             this.$Panel.getContent().getElements('[name="session.memcached_data"]').set(
                 'value', data.join(';')

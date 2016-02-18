@@ -38,12 +38,12 @@ define('controls/system/Profile', [
         ],
 
         options: {
-            title       : Locale.get('quiqqer/system', 'profile'),
-            icon        : 'icon-user',
-            maxHeight   : 500,
-            maxWidth    : 750,
-            autoclose   : false,
-            ok_button   : {
+            title        : Locale.get('quiqqer/system', 'profile'),
+            icon         : 'fa fa-user',
+            maxHeight    : 500,
+            maxWidth     : 750,
+            autoclose    : false,
+            ok_button    : {
                 text: Locale.get('quiqqer/system', 'save')
             },
             cancel_button: {

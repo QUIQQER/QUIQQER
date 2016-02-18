@@ -263,7 +263,7 @@ define('controls/upload/Form', [
             }
 
             this.$Add = new QUIButton({
-                textimage: 'icon-hand-up',
+                textimage: 'fa fa-hand-o-up',
                 text     : Locale.get(lg, 'upload.form.btn.add.text'),
                 events   : {
                     onClick: function () {
@@ -282,7 +282,7 @@ define('controls/upload/Form', [
 
             if (this.getAttribute('sendbutton')) {
                 new QUIButton({
-                    textimage: 'icon-upload',
+                    textimage: 'fa fa-upload',
                     text     : Locale.get(lg, 'upload.form.btn.send.text'),
                     alt      : Locale.get(lg, 'upload.form.btn.send.alt'),
                     title    : Locale.get(lg, 'upload.form.btn.send.title'),
@@ -299,7 +299,7 @@ define('controls/upload/Form', [
 
             if (this.getAttribute('cancelbutton')) {
                 new QUIButton({
-                    textimage: 'icon-cancel',
+                    textimage: 'fa fa-remove',
                     text     : Locale.get(lg, 'upload.form.btn.cancel.text'),
                     alt      : Locale.get(lg, 'upload.form.btn.cancel.alt'),
                     title    : Locale.get(lg, 'upload.form.btn.cancel.title'),
@@ -429,7 +429,7 @@ define('controls/upload/Form', [
 
 
             new QUIButton({
-                image : 'icon-remove',
+                image : 'fa fa-remove',
                 events: {
                     onClick: function () {
                         var fid = Slick.uidOf(Input);

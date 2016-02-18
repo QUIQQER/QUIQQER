@@ -145,7 +145,7 @@ define('controls/users/User', [
                     onClick: this.$onClickSave
                 },
                 text     : Locale.get(lg, 'users.user.btn.save'),
-                textimage: 'icon-save'
+                textimage: 'fa fa-save'
             });
 
             this.addButton({
@@ -154,12 +154,12 @@ define('controls/users/User', [
                     onClick: this.$onClickDel
                 },
                 text     : Locale.get(lg, 'users.user.btn.delete'),
-                textimage: 'fa fa-trash-o icon-trash'
+                textimage: 'fa fa-trash-o'
             });
 
             // permissions
             new QUIButton({
-                image : 'icon-gears',
+                image : 'fa fa-gears',
                 alt   : Locale.get(lg, 'users.user.btn.permissions.alt'),
                 title : Locale.get(lg, 'users.user.btn.permissions.title'),
                 styles: {
@@ -187,7 +187,7 @@ define('controls/users/User', [
                     self.addCategory(result[i]);
                 }
 
-                self.setAttribute('icon', 'icon-user');
+                self.setAttribute('icon', 'fa fa-user');
 
 
                 if (User.getAttribute('title') === false) {
@@ -259,7 +259,7 @@ define('controls/users/User', [
                     PasswordField.setStyle('float', 'left');
 
                     new QUIButton({
-                        textimage: 'icon-lock',
+                        textimage: 'fa fa-lock',
                         text     : Locale.get(lg, 'users.user.btn.password.generate'),
                         events   : {
                             onClick: self.generatePassword
@@ -385,7 +385,7 @@ define('controls/users/User', [
                 username: this.getUser().getAttribute('username')
             }));
 
-            this.setAttribute('icon', 'icon-user');
+            this.setAttribute('icon', 'fa fa-user');
 
             this.refresh();
 
@@ -456,12 +456,12 @@ define('controls/users/User', [
             new QUIConfirm({
                 name       : 'DeleteUser',
                 title      : Locale.get(lg, 'users.user.window.delete.title'),
-                icon       : 'fa fa-trash-o icon-trash',
+                icon       : 'fa fa-trash-o',
                 text       : Locale.get(lg, 'users.user.window.delete.text', {
                     userid  : this.getUser().getId(),
                     username: this.getUser().getName()
                 }),
-                texticon   : 'fa fa-trash-o icon-trash',
+                texticon   : 'fa fa-trash-o',
                 information: Locale.get(lg, 'users.user.window.delete.information'),
 
                 width : 500,
@@ -613,7 +613,7 @@ define('controls/users/User', [
                 buttons: [{
                     name     : 'add',
                     text     : Locale.get(lg, 'users.user.address.table.btn.add'),
-                    textimage: 'icon-plus',
+                    textimage: 'fa fa-plus',
                     events   : {
                         onClick: function () {
                             self.createAddress();
@@ -624,7 +624,7 @@ define('controls/users/User', [
                 }, {
                     name     : 'edit',
                     text     : Locale.get(lg, 'users.user.address.table.btn.edit'),
-                    textimage: 'icon-edit',
+                    textimage: 'fa fa-edit',
                     disabled : true,
                     events   : {
                         onClick: function () {
@@ -636,7 +636,7 @@ define('controls/users/User', [
                 }, {
                     name     : 'delete',
                     text     : Locale.get(lg, 'users.user.address.table.btn.delete'),
-                    textimage: 'icon-remove',
+                    textimage: 'fa fa-remove',
                     disabled : true,
                     events   : {
                         onClick: function () {
@@ -728,7 +728,7 @@ define('controls/users/User', [
             var self  = this,
                 Sheet = this.createSheet({
                     title: Locale.get(lg, 'users.user.address.edit'),
-                    icon : 'icon-edit'
+                    icon : 'fa fa-edit'
                 });
 
             Sheet.addEvents({
@@ -746,7 +746,7 @@ define('controls/users/User', [
                         }).inject(Sheet.getContent());
 
                         Sheet.addButton({
-                            textimage: 'icon-save',
+                            textimage: 'fa fa-save',
                             text     : Locale.get(lg, 'save'),
                             events   : {
                                 onClick: function () {
