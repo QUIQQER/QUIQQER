@@ -1,5 +1,4 @@
 
-
 .qui-bookmark-list {
     float: left;
     padding: 0;
@@ -10,7 +9,6 @@
 .qui-bookmark {
     position: relative;
 }
-
 
 .qui-bookmark-placeholder {
     background: #fff;
@@ -28,7 +26,7 @@
     color: #999;
 }
 
-.qui-bookmark-placeholder .icon-move {
+.qui-bookmark-placeholder .fa-move {
     float: left;
     line-height: 40px;
     text-align: center;

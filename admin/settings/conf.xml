@@ -333,7 +333,7 @@
                     <text>
                         <locale group="quiqqer/system" var="quiqqer.settings.database" />
                     </text>
-                    <icon>icon-briefcase</icon>
+                    <icon>fa fa-briefcase</icon>
 
                     <settings title="database" name="database">
                         <title>

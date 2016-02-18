@@ -155,7 +155,7 @@ define('controls/desktop/panels/XML', [
                 self.addButton({
                     name     : 'reload',
                     text     : Locale.get('quiqqer/system', 'desktop.panels.xml.btn.cancel'),
-                    textimage: 'icon-ban-circle',
+                    textimage: 'fa fa-ban',
                     events   : {
                         onClick: self.$onCreate
                     }

@@ -1,4 +1,3 @@
-
 /**
  * QUIQQER Contact Controle
  *
@@ -15,20 +14,18 @@ define('Controls/Contact', [
     'Ajax',
     'Locale'
 
-], function(QUI, QUIControl, QUIButton, QUILoader, Ajax, Locale)
-{
+], function (QUI, QUIControl, QUIButton, QUILoader, Ajax, Locale) {
     "use strict";
 
     return new Class({
 
-        Extends : QUIControl,
-        Type    : 'Controls/Contact',
+        Extends: QUIControl,
+        Type   : 'Controls/Contact',
 
-        Binds : ['$onImport'],
+        Binds: ['$onImport'],
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize: function (options) {
+            this.parent(options);
 
             this.Loader = new QUILoader();
 
@@ -37,23 +34,22 @@ define('Controls/Contact', [
             this.$Name  = null;
 
             this.addEvents({
-                onImport : this.$onImport
+                onImport: this.$onImport
             });
         },
 
         /**
          * event : on import
          */
-        $onImport : function()
-        {
+        $onImport: function () {
             var self = this;
 
-            this.Loader.inject( this.$Elm );
+            this.Loader.inject(this.$Elm);
             this.Loader.show();
-/*
-            var Send = new QUIButton({
+            /**
+             var Send = new QUIButton({
                 text   : 'senden',
-                textimage : 'fa fa-envelope-o icon-envelope-alt',
+                textimage : 'fa fa-envelope-o',
                 events :
                 {
                     onClick : function() {
@@ -61,38 +57,36 @@ define('Controls/Contact', [
                     }
                 }
             }).inject( this.$Elm );
-*/
+             */
             new Element('button', {
-                html : 'senden',
-                'class' : 'button qui-button',
+                html   : 'senden',
+                'class': 'button qui-button',
                 events : {
-                    click : function() {
+                    click: function () {
                         self.$Elm.getElement('form').fireEvent('submit');
                     }
                 }
             }).inject(this.$Elm);
 
 
-            this.$Elm.getElement('form').addEvent('submit', function(event)
-            {
+            this.$Elm.getElement('form').addEvent('submit', function (event) {
                 var sendViaAjax = self.getElm().get('data-ajax').toInt();
 
-                if ( sendViaAjax === 0 )
-                {
+                if (sendViaAjax === 0) {
                     self.getElm().getElement('form').submit();
                     return;
                 }
 
-                if ( typeof event !== 'undefined' ) {
+                if (typeof event !== 'undefined') {
                     event.stop();
                 }
 
                 self.send();
             });
 
-            this.$Text  = this.$Elm.getElement( '[name="message"]' );
-            this.$Email = this.$Elm.getElement( '[name="email"]' );
-            this.$Name  = this.$Elm.getElement( '[name="name"]' );
+            this.$Text  = this.$Elm.getElement('[name="message"]');
+            this.$Email = this.$Elm.getElement('[name="email"]');
+            this.$Name  = this.$Elm.getElement('[name="name"]');
 
             this.Loader.hide();
         },
@@ -100,22 +94,18 @@ define('Controls/Contact', [
         /**
          * Send contact message
          */
-        send : function()
-        {
-            if ( this.$Text.value === '' )
-            {
+        send: function () {
+            if (this.$Text.value === '') {
                 this.$Text.focus();
                 return;
             }
 
-            if ( this.$Email.value === '' )
-            {
+            if (this.$Email.value === '') {
                 this.$Email.focus();
                 return;
             }
 
-            if ( this.$Name.value === '' )
-            {
+            if (this.$Name.value === '') {
                 this.$Name.focus();
                 return;
             }
@@ -125,25 +115,23 @@ define('Controls/Contact', [
             this.Loader.show();
 
 
-            Ajax.post('ajax_contact', function(result)
-            {
-                if ( result ) {
-                    self.$Elm.set( 'html', Locale.get( 'quiqqer/system', 'message.contact.successful' ) );
+            Ajax.post('ajax_contact', function (result) {
+                if (result) {
+                    self.$Elm.set('html', Locale.get('quiqqer/system', 'message.contact.successful'));
                 }
 
                 self.Loader.hide();
 
             }, {
-                message   : this.$Text.value,
-                email     : this.$Email.value,
-                name      : this.$Name.value,
-                showError : false,
-                onError   : function(Exception)
-                {
+                message  : this.$Text.value,
+                email    : this.$Email.value,
+                name     : this.$Name.value,
+                showError: false,
+                onError  : function (Exception) {
                     self.Loader.hide();
 
-                    QUI.getMessageHandler(function(MH) {
-                        MH.addError( Exception.getMessage(), self.$Elm );
+                    QUI.getMessageHandler(function (MH) {
+                        MH.addError(Exception.getMessage(), self.$Elm);
                     });
                 }
             });

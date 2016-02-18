@@ -290,19 +290,6 @@ define('controls/projects/project/media/Input', [
                     .removeClass('fa-spinner')
                     .addClass('fa-warning');
             });
-
-            //Asset.image(previewUrl, {
-            //    onLoad : function () {
-            //        MiniLoader.destroy();
-            //        self.$Preview.setStyle('background', 'url(' + previewUrl + ') no-repeat center center');
-            //    },
-            //    onError: function () {
-            //        self.$Preview.getElements('.icon-refresh')
-            //            .removeClass('icon-refresh')
-            //            .removeClass('icon-spin')
-            //            .addClass('icon-warning-sign');
-            //    }
-            //});
         }
     });
 });
