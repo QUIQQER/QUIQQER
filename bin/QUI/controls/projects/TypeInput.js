@@ -120,7 +120,7 @@ define('controls/projects/TypeInput', [
             var self = this;
 
             this.$Text.set({
-                html  : '<span class="icon-spinner icon-spin"></span>',
+                html  : '<span class="fa fa-spinner fa-spin"></span>',
                 title : '...'
             });
 

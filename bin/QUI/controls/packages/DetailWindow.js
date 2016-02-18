@@ -29,7 +29,7 @@ define([
         options : {
             'package' : false,
             title     : 'Paket Details',
-            icon      : 'icon-briefcase',
+            icon      : 'fa fa-briefcase',
             maxWidth  : 400,
             maxHeight : 500
         },

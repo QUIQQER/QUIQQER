@@ -93,7 +93,7 @@ define('controls/permissions/Site', [
 
             new QUIButton({
                 title    : QUILocale.get('quiqqer/system', 'permission.control.btn.site.save.recursive'),
-                textimage: 'icon-reply-all fa fa-reply-all',
+                textimage: 'fa fa-reply-all',
                 styles   : {
                     'float': 'right'
                 },
@@ -107,7 +107,7 @@ define('controls/permissions/Site', [
             new QUIButton({
                 text     : QUILocale.get('quiqqer/system', 'permission.control.btn.site.save'),
                 title    : QUILocale.get('quiqqer/system', 'permission.control.btn.site.save.text'),
-                textimage: 'icon-save',
+                textimage: 'fa fa-save',
                 styles   : {
                     'float': 'right'
                 },
@@ -116,11 +116,11 @@ define('controls/permissions/Site', [
 
                         Btn.setAttribute(
                             'textimage',
-                            'icon-spinner icon-spin fa fa-spinner fa-spin'
+                            'fa fa-spinner fa-spin'
                         );
 
                         this.save().then(function () {
-                            Btn.setAttribute('textimage', 'icon-save');
+                            Btn.setAttribute('textimage', 'fa fa-save');
                         });
 
                     }.bind(this)
@@ -145,7 +145,7 @@ define('controls/permissions/Site', [
                 self.$Status.set(
                     'html',
                     QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
-                        name: '<span class="fa fa-file-o icon-file-alt"></span>' +
+                        name: '<span class="fa fa-file-o"></span>' +
                               self.$Bind.getAttribute('name') + '.html'
                     })
                 );
@@ -156,7 +156,7 @@ define('controls/permissions/Site', [
                     self.$Status.set(
                         'html',
                         QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
-                            name: '<span class="fa fa-file-o icon-file-alt"></span>' +
+                            name: '<span class="fa fa-file-o"></span>' +
                                   self.$Bind.getAttribute('name') + '.html'
                         })
                     );
@@ -172,7 +172,7 @@ define('controls/permissions/Site', [
 
             new QUIConfirm({
                 title      : QUILocale.get('quiqqer/system', 'permission.control.site.recursive.win.title'),
-                icon       : 'icon-reply-all fa fa-reply-all',
+                icon       : 'fa fa-reply-all',
                 maxHeight  : 300,
                 maxWidth   : 450,
                 texticon   : false,
@@ -181,11 +181,11 @@ define('controls/permissions/Site', [
 
                 cancel_button: {
                     text     : QUILocale.get('quiqqer/system', 'cancel'),
-                    textimage: 'icon-remove fa fa-remove'
+                    textimage: 'fa fa-remove'
                 },
                 ok_button    : {
                     text     : QUILocale.get('quiqqer/system', 'accept'),
-                    textimage: 'icon-ok fa fa-check'
+                    textimage: 'fa fa-check'
                 },
 
                 events: {

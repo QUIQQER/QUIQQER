@@ -80,7 +80,7 @@ define('controls/permissions/Sitemap', [
             this.$Map.appendChild(
                 new QUISitemapItem({
                     text  : 'Rechte',
-                    icon  : 'icon-gears',
+                    icon  : 'fa fa-gears',
                     value : '',
                     events: {
                         onClick: this.$onItemClick
@@ -214,7 +214,7 @@ define('controls/permissions/Sitemap', [
 
             for (i = 0, len = list.length; i < len; i++) {
                 Item = new QUISitemapItem({
-                    icon  : 'icon-gears',
+                    icon  : 'fa fa-gears',
                     value : list[i].permission,
                     text  : list[i].translation,
                     events: {

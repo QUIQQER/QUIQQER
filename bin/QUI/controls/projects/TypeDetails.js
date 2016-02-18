@@ -1,4 +1,3 @@
-
 /**
  * Type details
  * Shows details of the types
@@ -22,21 +21,21 @@ define('controls/projects/TypeDetails', [
 
     return new Class({
 
-        Extends : QUIControl,
-        Type    : 'controls/projects/TypeDetails',
+        Extends: QUIControl,
+        Type   : 'controls/projects/TypeDetails',
 
-        Binds : [
+        Binds: [
             '$showPlugins',
             '$toggleItem'
         ],
 
-        options : {
-            multible : false,
-            project  : false,
-            pluginsSelectable : false
+        options: {
+            multible         : false,
+            project          : false,
+            pluginsSelectable: false
         },
 
-        initialize : function (options) {
+        initialize: function (options) {
             this.parent(options);
 
             this.$list      = false;
@@ -50,16 +49,16 @@ define('controls/projects/TypeDetails', [
          *
          * @return {HTMLElement}
          */
-        create : function () {
+        create: function () {
             this.$Elm = new Element('div', {
-                'class' : 'qui-type-details'
+                'class': 'qui-type-details'
             });
 
             this.$Container = new Element('div', {
-                'class' : 'qui-type-details-container',
-                styles  : {
-                    left    : '110%',
-                    opacity : 0
+                'class': 'qui-type-details-container',
+                styles : {
+                    left   : '110%',
+                    opacity: 0
                 }
             }).inject(this.$Elm);
 
@@ -69,7 +68,7 @@ define('controls/projects/TypeDetails', [
         /**
          * open the list
          */
-        open : function () {
+        open: function () {
             var self = this;
 
             this.$showPlugins(function () {
@@ -82,7 +81,7 @@ define('controls/projects/TypeDetails', [
          *
          * @return {Array}
          */
-        getValues : function () {
+        getValues: function () {
             var result = [];
 
             for (var key in this.$selected) {
@@ -99,7 +98,7 @@ define('controls/projects/TypeDetails', [
          *
          * @param {Function} callback
          */
-        $getList : function (callback) {
+        $getList: function (callback) {
             if (this.$list) {
                 callback(this.$list);
                 return;
@@ -112,8 +111,8 @@ define('controls/projects/TypeDetails', [
 
                 callback(result);
             }, {
-                project : JSON.encode({
-                    name : this.getAttribute('project')
+                project: JSON.encode({
+                    name: this.getAttribute('project')
                 })
             });
         },
@@ -124,16 +123,16 @@ define('controls/projects/TypeDetails', [
          * @param {Object} data - data of the entry
          * @return {HTMLElement}
          */
-        $createEntry : function (data) {
+        $createEntry: function (data) {
             var Entry = new Element('div', {
-                'class' : 'qui-type-details-entry smooth',
-                html : '<div class="qui-type-details-entry-icon">' +
-                           '<span class="icon-puzzle-piece"></span>' +
-                       '</div>' +
-                       '<div class="qui-type-details-entry-text">' +
-                           '<div class="qui-type-details-entry-title">' + data.title + '</div>' +
-                           '<div class="qui-type-details-entry-description">' + data.description + '</div>' +
-                       '</div>'
+                'class': 'qui-type-details-entry smooth',
+                html   : '<div class="qui-type-details-entry-icon">' +
+                         '<span class="fa fa-puzzle-piece"></span>' +
+                         '</div>' +
+                         '<div class="qui-type-details-entry-text">' +
+                         '<div class="qui-type-details-entry-title">' + data.title + '</div>' +
+                         '<div class="qui-type-details-entry-description">' + data.description + '</div>' +
+                         '</div>'
             });
 
             var Icon = Entry.getElement('.qui-type-details-entry-icon');
@@ -141,7 +140,7 @@ define('controls/projects/TypeDetails', [
             if ("icon" in data) {
                 Icon.set('html', '<span class="' + data.icon + '"></span>');
             } else {
-                Icon.set('html', '<span class="icon-puzzle-piece"></span>');
+                Icon.set('html', '<span class="fa fa-puzzle-piece"></span>');
             }
 
 
@@ -162,9 +161,9 @@ define('controls/projects/TypeDetails', [
                 });
 
                 new Element('div', {
-                    'class' : 'qui-type-details-entry-opentypes',
-                    html    : '<span class="icon-chevron-right"></span>',
-                    'data-plugin' : data.plugin
+                    'class'      : 'qui-type-details-entry-opentypes',
+                    html         : '<span class="fa fa-chevron-right"></span>',
+                    'data-plugin': data.plugin
                 }).inject(Entry);
             }
 
@@ -176,16 +175,16 @@ define('controls/projects/TypeDetails', [
          *
          * @param {Function} callback
          */
-        $showPlugins : function (callback) {
+        $showPlugins: function (callback) {
             var self = this;
 
             this.$getList(function (result) {
                 var Child;
                 var Container = new Element('div', {
-                    'class' : 'qui-type-details-container',
-                    styles  : {
-                        left    : '110%',
-                        opacity : 0
+                    'class': 'qui-type-details-container',
+                    styles : {
+                        left   : '110%',
+                        opacity: 0
                     }
                 });
 
@@ -200,9 +199,9 @@ define('controls/projects/TypeDetails', [
 
                     if (i == 'standard') {
                         Child = self.$createEntry({
-                            title       : QUILocale.get('quiqqer/system', 'standard.title'),
-                            description : QUILocale.get('quiqqer/system', 'standard.description'),
-                            sitetype    : i
+                            title      : QUILocale.get('quiqqer/system', 'standard.title'),
+                            description: QUILocale.get('quiqqer/system', 'standard.description'),
+                            sitetype   : i
                         });
 
                         Child.set('data-type', 'standard');
@@ -214,9 +213,9 @@ define('controls/projects/TypeDetails', [
                     }
 
                     Child = self.$createEntry({
-                        title       : QUILocale.get(i, 'package.title'),
-                        description : QUILocale.get(i, 'package.description'),
-                        plugin      : i
+                        title      : QUILocale.get(i, 'package.title'),
+                        description: QUILocale.get(i, 'package.description'),
+                        plugin     : i
                     });
 
                     Child.inject(Container);
@@ -228,16 +227,16 @@ define('controls/projects/TypeDetails', [
 
 
                 moofx(self.$Container).animate({
-                    left    : '-100%',
-                    opacity : 0
+                    left   : '-100%',
+                    opacity: 0
                 }, {
-                    callback : function () {
+                    callback: function () {
                         self.$Container.destroy();
                         self.$Container = Container;
 
                         moofx(Container).animate({
-                            left    : 0,
-                            opacity : 1
+                            left   : 0,
+                            opacity: 1
                         });
                     }
                 });
@@ -249,7 +248,7 @@ define('controls/projects/TypeDetails', [
          *
          * @param {String} plugin
          */
-        $showSiteTypes : function (plugin) {
+        $showSiteTypes: function (plugin) {
             var self = this;
 
             this.$getList(function (list) {
@@ -259,12 +258,12 @@ define('controls/projects/TypeDetails', [
 
                 var i, len, type, Child;
 
-                var types     = list[ plugin ],
+                var types     = list[plugin],
                     Container = new Element('div', {
-                        'class' : 'qui-type-details-container',
-                        styles  : {
-                            left    : '110%',
-                            opacity : 0
+                        'class': 'qui-type-details-container',
+                        styles : {
+                            left   : '110%',
+                            opacity: 0
                         }
                     });
 
@@ -272,44 +271,44 @@ define('controls/projects/TypeDetails', [
 
 
                 new Element('div', {
-                    'class' : 'qui-type-details-container-levelUp',
-                    html    : '<span class="icon-level-up"></span>' +
-                              '<span class="qui-type-details-container-levelUp-text">' +
-                                  'Plugins' +
-                              '</span>',
-                    events  : {
-                        click : self.$showPlugins
+                    'class': 'qui-type-details-container-levelUp',
+                    html   : '<span class="fa fa-level-up"></span>' +
+                             '<span class="qui-type-details-container-levelUp-text">' +
+                             'Plugins' +
+                             '</span>',
+                    events : {
+                        click: self.$showPlugins
                     }
                 }).inject(Container);
 
 
                 for (i = 0, len = types.length; i < len; i++) {
-                    type = types[ i ].type;
+                    type = types[i].type;
 
                     Child = self.$createEntry({
-                        icon        : types[ i ].icon,
-                        title       : QUILocale.get(plugin, type + '.title'),
-                        description : QUILocale.get(plugin, type + '.description'),
-                        plugin      : plugin,
-                        sitetype    : types[ i ].type
+                        icon       : types[i].icon,
+                        title      : QUILocale.get(plugin, type + '.title'),
+                        description: QUILocale.get(plugin, type + '.description'),
+                        plugin     : plugin,
+                        sitetype   : types[i].type
                     });
 
-                    Child.set('data-type', types[ i ].type);
+                    Child.set('data-type', types[i].type);
                     Child.addEvent('click', self.$toggleItem);
                     Child.inject(Container);
                 }
 
                 moofx(self.$Container).animate({
-                    left    : '-100%',
-                    opacity : 0
+                    left   : '-100%',
+                    opacity: 0
                 }, {
-                    callback : function () {
+                    callback: function () {
                         self.$Container.destroy();
                         self.$Container = Container;
 
                         moofx(Container).animate({
-                            left    : 0,
-                            opacity : 1
+                            left   : 0,
+                            opacity: 1
                         });
                     }
                 });
@@ -321,7 +320,7 @@ define('controls/projects/TypeDetails', [
          *
          * @param {DOMEvent} event
          */
-        $toggleItem : function (event) {
+        $toggleItem: function (event) {
             var Target = event.target;
 
             if (!Target.hasClass('qui-type-details-entry')) {
@@ -338,7 +337,7 @@ define('controls/projects/TypeDetails', [
                 Target.removeClass('qui-type-details-entry-active');
 
                 if (type in this.$selected) {
-                    delete this.$selected[ type ];
+                    delete this.$selected[type];
                 }
 
                 return;
@@ -354,7 +353,7 @@ define('controls/projects/TypeDetails', [
             }
 
             Target.addClass('qui-type-details-entry-active');
-            this.$selected[ type ] = true;
+            this.$selected[type] = true;
         }
     });
 });

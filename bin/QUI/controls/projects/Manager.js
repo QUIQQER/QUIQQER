@@ -56,7 +56,7 @@ define('controls/projects/Manager', [
             this.setAttributes({
                 name : 'projects-manager',
                 title: Locale.get(lg, 'projects.project.manager.title'),
-                icon : 'icon-home'
+                icon : 'fa fa-home'
             });
 
             this.addEvents({
@@ -80,7 +80,7 @@ define('controls/projects/Manager', [
             this.addCategory({
                 name  : 'edit_projects',
                 text  : Locale.get(lg, 'projects.project.manager.projects.edit'),
-                icon  : 'icon-list',
+                icon  : 'fa fa-list',
                 events: {
                     onClick: this.openList
                 }
@@ -89,7 +89,7 @@ define('controls/projects/Manager', [
             this.addCategory({
                 name  : 'add_project',
                 text  : Locale.get(lg, 'projects.project.manager.project.create'),
-                icon  : 'icon-plus',
+                icon  : 'fa fa-plus',
                 events: {
                     onClick: this.openAddProject
                 }
@@ -182,7 +182,7 @@ define('controls/projects/Manager', [
                         langs  : result[project].langs,
 
                         settingsbtn: {
-                            icon   : 'icon-gear',
+                            icon   : 'fa fa-gear',
                             title  : Locale.get(lg, 'projects.project.manager.open.settings'),
                             alt    : Locale.get(lg, 'projects.project.manager.open.settings'),
                             project: project,

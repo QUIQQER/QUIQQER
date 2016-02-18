@@ -61,7 +61,7 @@ define('controls/permissions/Project', [
                                 self.$Bind = Projects.get(data.project, data.lang);
 
                                 var text = QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
-                                    name: '<span class="fa icon-home"></span>' + self.$Bind.getName()
+                                    name: '<span class="fa fa-home"></span>' + self.$Bind.getName()
                                 });
 
                                 self.$Status.set({
@@ -91,7 +91,7 @@ define('controls/permissions/Project', [
             new QUIButton({
                 text     : QUILocale.get('quiqqer/system', 'permission.control.btn.project.save'),
                 title    : QUILocale.get('quiqqer/system', 'permission.control.btn.project.save'),
-                textimage: 'icon-save',
+                textimage: 'fa fa-save',
                 styles   : {
                     'float': 'right'
                 },
@@ -100,11 +100,11 @@ define('controls/permissions/Project', [
 
                         Btn.setAttribute(
                             'textimage',
-                            'icon-spinner icon-spin fa fa-spinner fa-spin'
+                            'fa fa-spinner fa-spin'
                         );
 
                         this.save().then(function () {
-                            Btn.setAttribute('textimage', 'icon-save');
+                            Btn.setAttribute('textimage', 'fa fa-save');
                         });
 
                     }.bind(this)

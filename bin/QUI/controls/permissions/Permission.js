@@ -1,4 +1,3 @@
-
 /**
  * Permissions control - parent class
  *
@@ -44,7 +43,7 @@ define('controls/permissions/Permission', [
     return new Class({
 
         Extends: QUIControl,
-        Type: 'controls/permissions/Permission',
+        Type   : 'controls/permissions/Permission',
 
         Binds: [
             '$onInject',
@@ -59,13 +58,13 @@ define('controls/permissions/Permission', [
 
             this.parent(options);
 
-            this.$Map = null;
-            this.$MapContainer = null;
+            this.$Map              = null;
+            this.$MapContainer     = null;
             this.$ContentContainer = null;
-            this.$tableCache = {};
+            this.$tableCache       = {};
 
             this.addEvents({
-                onInject : this.$onInject
+                onInject: this.$onInject
             });
         },
 
@@ -74,14 +73,14 @@ define('controls/permissions/Permission', [
          *
          * @return {HTMLDivElement}
          */
-        create : function () {
+        create: function () {
             this.$Elm = new Element('div', {
-                'class' : 'controls-permissions-permission',
-                html : '<div class="controls-permissions-permission-buttons"></div>' +
-                       '<div class="controls-permissions-permission-map"></div>' +
-                       '<div class="controls-permissions-permission-content">' +
-                           '<div class="controls-permissions-permission-content-sheet"></div>' +
-                       '</div>'
+                'class': 'controls-permissions-permission',
+                html   : '<div class="controls-permissions-permission-buttons"></div>' +
+                         '<div class="controls-permissions-permission-map"></div>' +
+                         '<div class="controls-permissions-permission-content">' +
+                         '<div class="controls-permissions-permission-content-sheet"></div>' +
+                         '</div>'
             });
 
             this.$MapContainer     = this.$Elm.getElement('.controls-permissions-permission-map');
@@ -92,7 +91,7 @@ define('controls/permissions/Permission', [
             this.$Buttons.setStyle('opacity', 0);
 
             this.$Status = new Element('div', {
-                'class' : 'controls-permissions-permission-buttons-status'
+                'class': 'controls-permissions-permission-buttons-status'
             }).inject(this.$Buttons);
 
             this.fireEvent('create');
@@ -105,7 +104,7 @@ define('controls/permissions/Permission', [
          *
          * @return {Promise}
          */
-        save : function () {
+        save: function () {
             if (!this.$Bind) {
                 return new Promise(function (resolve) {
                     resolve();
@@ -120,12 +119,12 @@ define('controls/permissions/Permission', [
          *
          * @returns {Promise}
          */
-        close : function () {
+        close: function () {
             var self = this;
 
             return new Promise(function (response) {
 
-                var duration = 250;
+                var duration    = 250;
                 var SelectSheet = self.$Elm.getElement('.controls-permissions-select');
 
                 if (SelectSheet) {
@@ -135,27 +134,27 @@ define('controls/permissions/Permission', [
                 self.fireEvent('close');
 
                 moofx(self.$Buttons).animate({
-                    opacity : 1
+                    opacity: 1
                 }, {
-                    duration : duration,
-                    callback : function () {
+                    duration: duration,
+                    callback: function () {
                         self.$Buttons.set('html', '');
 
                         moofx(self.$ContentContainer).style({
-                            overflow : 'hidden'
+                            overflow: 'hidden'
                         }).animate({
-                            opacity : 0
+                            opacity: 0
                         }, {
-                            duration : duration,
-                            equation : 'cubic-bezier(.42,.4,.46,1.29)',
-                            callback : function () {
+                            duration: duration,
+                            equation: 'cubic-bezier(.42,.4,.46,1.29)',
+                            callback: function () {
                                 moofx(self.$MapContainer).animate({
-                                    opacity : 0,
-                                    left : '-100%'
+                                    opacity: 0,
+                                    left   : '-100%'
                                 }, {
-                                    duration : duration,
-                                    equation : 'cubic-bezier(.42,.4,.46,1.29)',
-                                    callback : function () {
+                                    duration: duration,
+                                    equation: 'cubic-bezier(.42,.4,.46,1.29)',
+                                    callback: function () {
 
                                         if (!SelectSheet) {
                                             response();
@@ -163,12 +162,12 @@ define('controls/permissions/Permission', [
                                         }
 
                                         moofx(SelectSheet).animate({
-                                            opacity : 0,
-                                            left    : '-100%'
+                                            opacity: 0,
+                                            left   : '-100%'
                                         }, {
-                                            duration : 250,
-                                            equation : 'ease-in-out',
-                                            callback : function () {
+                                            duration: 250,
+                                            equation: 'ease-in-out',
+                                            callback: function () {
                                                 SelectSheet.destroy();
                                                 response();
                                             }
@@ -189,7 +188,7 @@ define('controls/permissions/Permission', [
          *
          * @returns {Promise}
          */
-        open : function () {
+        open: function () {
             var self = this;
 
             return new Promise(function (response, reject) {
@@ -220,30 +219,30 @@ define('controls/permissions/Permission', [
                 }
 
                 self.$MapContainer.setStyles({
-                    opacity : 0,
-                    width   : 0
+                    opacity: 0,
+                    width  : 0
                 });
 
                 moofx(self.$MapContainer).animate({
-                    left    : 0,
-                    opacity : 1,
-                    width   : 240
+                    left   : 0,
+                    opacity: 1,
+                    width  : 240
                 }, {
-                    duration : 250,
-                    equation : 'cubic-bezier(.42,.4,.46,1.29)',
-                    callback : function () {
+                    duration: 250,
+                    equation: 'cubic-bezier(.42,.4,.46,1.29)',
+                    callback: function () {
                         moofx(self.$ContentContainer).animate({
-                            left    : 0,
-                            opacity : 1
+                            left   : 0,
+                            opacity: 1
                         }, {
-                            duration : 250,
-                            equation : 'cubic-bezier(.42,.4,.46,1.29)',
-                            callback : function () {
+                            duration: 250,
+                            equation: 'cubic-bezier(.42,.4,.46,1.29)',
+                            callback: function () {
 
                                 moofx(self.$Buttons).animate({
-                                    opacity : 1
+                                    opacity: 1
                                 }, {
-                                    duration : 250
+                                    duration: 250
                                 });
 
                                 self.fireEvent('open');
@@ -262,14 +261,14 @@ define('controls/permissions/Permission', [
         /**
          * can be overwritten
          */
-        $openBindSelect : function () {
+        $openBindSelect: function () {
 
         },
 
         /**
          * event : on inject
          */
-        $onInject : function () {
+        $onInject: function () {
             var self = this;
 
             self.open().then(function () {
@@ -284,13 +283,13 @@ define('controls/permissions/Permission', [
          *
          * @param {Object} Item - qui/controls/sitemap/Item
          */
-        $onSitemapItemClick : function (Item) {
+        $onSitemapItemClick: function (Item) {
             moofx(this.$ContentSheet).animate({
-                left : '-100%'
+                left: '-100%'
             }, {
-                duration : 250,
-                equation : 'cubic-bezier(.42,.4,.46,1.29)',
-                callback : function () {
+                duration: 250,
+                equation: 'cubic-bezier(.42,.4,.46,1.29)',
+                callback: function () {
 
                     if (Item.getAttribute('value') === '') {
                         return;
@@ -314,7 +313,7 @@ define('controls/permissions/Permission', [
                         this.$ContentSheet.set('html', '');
 
                         // sort permissions
-                        var  permHeaders = [];
+                        var permHeaders  = [];
                         var _permHeaders = {};
 
                         for (var permission in permissions) {
@@ -340,12 +339,12 @@ define('controls/permissions/Permission', [
                                 continue;
                             }
 
-                            title = permissionData[permission].title.split(' ');
+                            title                = permissionData[permission].title.split(' ');
                             _permHeaders[header] = true;
 
                             permHeaders.push({
-                                permission  : header,
-                                translation : QUILocale.get(title[0], 'permission.' + header + '._header')
+                                permission : header,
+                                translation: QUILocale.get(title[0], 'permission.' + header + '._header')
                             });
                         }
 
@@ -371,11 +370,11 @@ define('controls/permissions/Permission', [
                             perm = permHeaders[i];
 
                             this.$tableCache[perm.permission] = new Element('table', {
-                                'class' : 'data-table',
-                                html    : '<thead>' +
-                                          '<tr><th>' + perm.translation + '</th></tr>' +
-                                          '</thead>' +
-                                          '<tbody></tbody>'
+                                'class': 'data-table',
+                                html   : '<thead>' +
+                                         '<tr><th>' + perm.translation + '</th></tr>' +
+                                         '</thead>' +
+                                         '<tbody></tbody>'
                             }).inject(this.$ContentSheet);
 
                         }
@@ -454,16 +453,16 @@ define('controls/permissions/Permission', [
                         } else {
                             // if no bind exist, we would only edit the permissions
                             this.$ContentSheet.getElements('input,textarea').setStyles({
-                                display : 'none'
+                                display: 'none'
                             });
                         }
 
 
                         moofx(this.$ContentSheet).animate({
-                            left : 0
+                            left: 0
                         }, {
-                            duration : 250,
-                            equation : 'cubic-bezier(.42,.4,.46,1.29)'
+                            duration: 250,
+                            equation: 'cubic-bezier(.42,.4,.46,1.29)'
                         });
 
                     }.bind(this)).catch(function (Err) {
@@ -479,7 +478,7 @@ define('controls/permissions/Permission', [
          *
          * @param {String} right - right name
          */
-        $createPermissionRow : function (right) {
+        $createPermissionRow: function (right) {
             // table
             var tableRightId = right.name.split('.');
 
@@ -488,13 +487,13 @@ define('controls/permissions/Permission', [
 
             if (!(tableRightId in this.$tableCache)) {
 
-                var title = right.title.split(' '),
+                var title  = right.title.split(' '),
                     header = QUILocale.get(title[0], 'permission.' + tableRightId + '._header');
 
                 this.$tableCache[tableRightId] = new Element('table', {
-                    'class' : 'data-table',
-                    html    : '<thead><tr><th>' + header + '</th></tr></thead>' +
-                              '<tbody></tbody>'
+                    'class': 'data-table',
+                    html   : '<thead><tr><th>' + header + '</th></tr></thead>' +
+                             '<tbody></tbody>'
                 }).inject(this.$ContentSheet);
             }
 
@@ -504,8 +503,8 @@ define('controls/permissions/Permission', [
             var Node, Row;
 
             Row = new Element('tr', {
-                'class' : Table.rows.length % 2 ? 'odd' : 'even',
-                html    : '<td></td>'
+                'class': Table.rows.length % 2 ? 'odd' : 'even',
+                html   : '<td></td>'
             });
 
             Node = PermissionUtils.parse(right);
@@ -517,8 +516,7 @@ define('controls/permissions/Permission', [
 
             // than, we enable only for the binded area
             if (this.$Bind) {
-                switch (this.$Bind.getType())
-                {
+                switch (this.$Bind.getType()) {
                     case 'classes/projects/project/Site':
                         Node.getElements('input[data-area="site"]')
                             .getParent()
@@ -538,16 +536,16 @@ define('controls/permissions/Permission', [
                 // only user rights can be deleted
                 if (right.src == 'user') {
                     new QUIButton({
-                        icon  : 'icon-remove',
+                        icon  : 'fa fa-remove',
                         title : Locale.get(lg, 'permissions.panel.btn.delete.right.alt', {
-                            right : right.name
+                            right: right.name
                         }),
-                        alt : Locale.get(lg, 'permissions.panel.btn.delete.right.title', {
-                            right : right.name
+                        alt   : Locale.get(lg, 'permissions.panel.btn.delete.right.title', {
+                            right: right.name
                         }),
-                        value  : right.name,
-                        events : {
-                            onClick : this.$clickPermissionDeletion
+                        value : right.name,
+                        events: {
+                            onClick: this.$clickPermissionDeletion
                         }
                     }).inject(Node, 'top');
                 }
@@ -560,37 +558,37 @@ define('controls/permissions/Permission', [
         /**
          * event : delete permission
          */
-        $clickPermissionDeletion : function (Button) {
-            var self = this,
+        $clickPermissionDeletion: function (Button) {
+            var self       = this,
                 permission = Button.getAttribute('value');
 
             new QUIConfirm({
-                maxWidth  : 450,
-                maxHeight : 300,
-                title : QUILocale.get('quiqqer/system', 'permissions.panel.window.delete.title'),
-                text  : QUILocale.get('quiqqer/system', 'permissions.panel.window.delete.text', {
-                    right : permission
+                maxWidth   : 450,
+                maxHeight  : 300,
+                title      : QUILocale.get('quiqqer/system', 'permissions.panel.window.delete.title'),
+                text       : QUILocale.get('quiqqer/system', 'permissions.panel.window.delete.text', {
+                    right: permission
                 }),
-                information : QUILocale.get('quiqqer/system', 'permissions.panel.window.delete.information', {
-                    right : permission
+                information: QUILocale.get('quiqqer/system', 'permissions.panel.window.delete.information', {
+                    right: permission
                 }),
-                autoclose : false,
-                events : {
-                    onSubmit : function (Win) {
+                autoclose  : false,
+                events     : {
+                    onSubmit: function (Win) {
 
                         Win.Loader.show();
 
                         PermissionUtils.Permissions
-                           .deletePermission(permission)
-                           .then(function () {
+                            .deletePermission(permission)
+                            .then(function () {
 
-                               Win.close();
+                                Win.close();
 
-                               self.close().then(function () {
+                                self.close().then(function () {
                                     self.open();
                                 });
 
-                           });
+                            });
                     }
                 }
             }).open();
@@ -599,7 +597,7 @@ define('controls/permissions/Permission', [
         /**
          * event : form element change
          */
-        $onFormElementChange : function (event) {
+        $onFormElementChange: function (event) {
             var Target = event.target;
 
             if (Target.type == 'checkbox') {

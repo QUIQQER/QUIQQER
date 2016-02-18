@@ -69,7 +69,7 @@ define('controls/menu/Search', [
 
 
             this.$SearchType = new QUIButton({
-                textimage: 'icon-search',
+                textimage: 'fa fa-search',
                 text     : QUILocale.get('quiqqer/quiqqer', 'menu.search.title'),
                 styles   : {
                     lineHeight: 38
@@ -77,7 +77,7 @@ define('controls/menu/Search', [
             }).inject(this.$Elm, 'top');
 
             this.$SearchType.appendChild({
-                icon  : 'fa fa-file-o icon-file-alt',
+                icon  : 'fa fa-file-o',
                 text  : QUILocale.get('quiqqer/quiqqer', 'menu.search.sites.title'),
                 search: 'site',
                 events: {
@@ -86,7 +86,7 @@ define('controls/menu/Search', [
             });
 
             this.$SearchType.appendChild({
-                icon  : 'icon-user',
+                icon  : 'fa fa-user',
                 text  : QUILocale.get('quiqqer/quiqqer', 'menu.search.users.title'),
                 search: 'user',
                 events: {
@@ -95,7 +95,7 @@ define('controls/menu/Search', [
             });
 
             this.$SearchType.appendChild({
-                icon  : 'icon-group',
+                icon  : 'fa fa-group',
                 text  : QUILocale.get('quiqqer/quiqqer', 'menu.search.groups.title'),
                 search: 'group',
                 events: {
@@ -159,7 +159,7 @@ define('controls/menu/Search', [
                     this.$Input.setStyle('display', 'none');
 
                     this.$SearchType.setAttribute('text', 'Suche');
-                    this.$SearchType.setAttribute('textimage', 'icon-search');
+                    this.$SearchType.setAttribute('textimage', 'fa fa-search');
 
                     this.$SearchType
                         .getElm()
@@ -187,7 +187,7 @@ define('controls/menu/Search', [
 
             this.$SearchType.setAttribute(
                 'textimage',
-                'icon-refresh icon-spin'
+                'fa fa-spinner fa-spin'
             );
 
             var Prom  = false,
