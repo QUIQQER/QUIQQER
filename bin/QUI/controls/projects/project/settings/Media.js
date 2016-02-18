@@ -85,13 +85,13 @@ define('controls/projects/project/settings/Media', [
                 new QUIButton({
                     text     : QUILocale.get(lg, 'projects.project.site.media.manager.calcmd5.start.text'),
                     alt      : QUILocale.get(lg, 'projects.project.site.media.manager.calcmd5.start.alt'),
-                    textimage: 'fa fa-picture-o icon-picture',
+                    textimage: 'fa fa-picture-o',
                     events   : {
                         onClick: function (Btn) {
-                            Btn.setAttribute('textimage', 'icon-refresh icon-spin');
+                            Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
                             self.calcMD5(function () {
-                                Btn.setAttribute('textimage', 'fa fa-picture-o icon-picture');
+                                Btn.setAttribute('textimage', 'fa fa-picture-o');
                             });
                         }
                     }
@@ -100,13 +100,13 @@ define('controls/projects/project/settings/Media', [
                 new QUIButton({
                     text     : QUILocale.get(lg, 'projects.project.site.media.manager.calcsha1.start.text'),
                     alt      : QUILocale.get(lg, 'projects.project.site.media.manager.calcsha1.start.alt'),
-                    textimage: 'fa fa-picture-o icon-picture',
+                    textimage: 'fa fa-picture-o',
                     events   : {
                         onClick: function (Btn) {
-                            Btn.setAttribute('textimage', 'icon-refresh icon-spin');
+                            Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
                             self.calcSHA1(function () {
-                                Btn.setAttribute('textimage', 'fa fa-picture-o icon-picture');
+                                Btn.setAttribute('textimage', 'fa fa-picture-o');
                             });
                         }
                     }
