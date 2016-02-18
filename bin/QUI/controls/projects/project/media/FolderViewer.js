@@ -325,10 +325,10 @@ define('controls/projects/project/media/FolderViewer', [
                     },
                     events      : {
                         onCancel  : function () {
-                            Sheet.hide();
+                            Sheet.fireEvent('close');
                         },
                         onComplete: function () {
-                            Sheet.hide();
+                            Sheet.fireEvent('close');
                             this.refresh();
                         }.bind(this)
                     }
@@ -339,7 +339,19 @@ define('controls/projects/project/media/FolderViewer', [
                 Upload.setParam('parentid', this.getAttribute('folderId'));
                 Upload.setParam('extract', 0);
 
+                Upload.getElm().setStyles({
+                    opacity: 0,
+                    left   : -20
+                });
+
                 Upload.inject(Content);
+
+                moofx(Upload.getElm()).animate({
+                    left   : 0,
+                    opacity: 1
+                }, {
+                    duration: 200
+                });
 
             }.bind(this), {
                 buttons: false

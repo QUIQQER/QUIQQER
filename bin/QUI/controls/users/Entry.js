@@ -68,7 +68,7 @@ define('controls/users/Entry', [
                 'data-id'   : this.$User.getId(),
                 'data-quiid': this.getId(),
                 title       : this.$User.getName() + ' - ' + this.$User.getId(),
-                html        : '<div class="users-entry-icon"></div>' +
+                html        : '<div class="users-entry-icon fa"></div>' +
                               '<div class="users-entry-text"></div>' +
                               '<div class="users-entry-close fa fa-remove"></div>'
             });
