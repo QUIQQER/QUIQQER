@@ -209,7 +209,7 @@ define('controls/projects/project/Sitemap', [
                                     'projects.project.sitemap.media'
                                 ),
                                 value   : 'media',
-                                icon    : 'fa fa-picture-o icon-picture',
+                                icon    : 'fa fa-picture-o',
                                 dragable: true,
                                 events  : {
                                     onClick: function () {
@@ -414,7 +414,7 @@ define('controls/projects/project/Sitemap', [
             var self = this;
 
             Item.setAttribute('oicon', Item.getAttribute('icon'));
-            Item.addIcon('icon-refresh icon-spin');
+            Item.addIcon('fa fa-spinner fa-spin');
             Item.removeIcon(Item.getAttribute('icon'));
 
             Item.clearChildren();
@@ -454,7 +454,7 @@ define('controls/projects/project/Sitemap', [
                     if (start > 0) {
                         Item.appendChild(
                             new QUISitemapItem({
-                                icon       : 'icon-level-up',
+                                icon       : 'fa fa-level-up',
                                 text       : '...',
                                 title      : 'Zurück - Rechtsklick für weitere Optionen',
                                 contextmenu: false,
@@ -488,7 +488,7 @@ define('controls/projects/project/Sitemap', [
                     if (end < count) {
                         Item.appendChild(
                             new QUISitemapItem({
-                                icon       : 'icon-level-down',
+                                icon       : 'fa fa-level-down',
                                 text       : '...',
                                 title      : 'Vor - Rechtsklick für weitere Optionen', // #locale
                                 contextmenu: false,
@@ -511,7 +511,7 @@ define('controls/projects/project/Sitemap', [
                     }
 
                     Item.addIcon(Item.getAttribute('oicon'));
-                    Item.removeIcon('icon-refresh');
+                    Item.removeIcon('fa-spinner');
 
 
                     if (typeof callback === 'function') {
@@ -567,10 +567,10 @@ define('controls/projects/project/Sitemap', [
                 attributes.title = result.title;
             }
 
-            attributes.icon = 'fa fa-file-o icon-file-alt';
+            attributes.icon = 'fa fa-file-o';
 
             if ("icon" in result) {
-                attributes.icon = result.icon || 'fa fa-file-o icon-file-alt';
+                attributes.icon = result.icon || 'fa fa-file-o';
             }
 
             Itm.setAttributes(attributes);
@@ -617,7 +617,7 @@ define('controls/projects/project/Sitemap', [
                     new QUIContextmenuItem({
                         name  : 'create-new-site',
                         text  : Locale.get('quiqqer/system', 'projects.project.site.btn.new.text'),
-                        icon  : 'icon-file-text fa fa-file-text',
+                        icon  : 'fa fa-file-text',
                         events: {
                             onClick: function () {
                                 self.$createChild({
@@ -635,7 +635,7 @@ define('controls/projects/project/Sitemap', [
                     new QUIContextmenuItem({
                         name  : 'copy',
                         text  : Locale.get('quiqqer/system', 'copy'),
-                        icon  : 'icon-copy',
+                        icon  : 'fa fa-copy',
                         events: {
                             onClick: function () {
                                 Clipboard.set({
@@ -652,7 +652,7 @@ define('controls/projects/project/Sitemap', [
                 new QUIContextmenuItem({
                     name  : 'cut',
                     text  : Locale.get('quiqqer/system', 'cut'),
-                    icon  : 'icon-cut',
+                    icon  : 'fa fa-cut',
                     events: {
                         onClick: function () {
                             Clipboard.set({
@@ -672,7 +672,7 @@ define('controls/projects/project/Sitemap', [
                     disabled: true,
                     name    : 'paste',
                     text    : Locale.get('quiqqer/system', 'paste'),
-                    icon    : 'icon-paste',
+                    icon    : 'fa fa-paste',
                     events  : {
                         onClick: function () {
                             self.$pasteSite(Itm);
@@ -684,7 +684,7 @@ define('controls/projects/project/Sitemap', [
                     disabled: true,
                     name    : 'linked-paste',
                     text    : Locale.get('quiqqer/system', 'linked.paste'),
-                    icon    : 'icon-paste',
+                    icon    : 'fa fa-paste',
                     events  : {
                         onClick: function () {
                             self.$linkSite(Itm);
@@ -699,7 +699,7 @@ define('controls/projects/project/Sitemap', [
                     text  : active ?
                         Locale.get('quiqqer/system', 'projects.project.site.btn.deactivate.text') :
                         Locale.get('quiqqer/system', 'projects.project.site.btn.activate.text'),
-                    icon  : active ? 'icon-remove fa fa-remove' : 'icon-ok fa fa-ok',
+                    icon  : active ? 'fa fa-remove' : 'fa fa-ok',
                     events: {
                         onClick: function () {
                             if (active) {

@@ -129,7 +129,7 @@ define('controls/projects/project/Settings', [
 
             this.addButton({
                 text     : Locale.get(lg, 'projects.project.panel.settings.btn.save'),
-                textimage: 'icon-save',
+                textimage: 'fa fa-save',
                 events   : {
                     onClick: this.save
                 }
@@ -137,7 +137,7 @@ define('controls/projects/project/Settings', [
 
             this.addButton({
                 text     : Locale.get(lg, 'projects.project.panel.settings.btn.remove'),
-                textimage: 'icon-remove',
+                textimage: 'fa fa-remove',
                 events   : {
                     onClick: this.del
                 }
@@ -146,7 +146,7 @@ define('controls/projects/project/Settings', [
             this.addCategory({
                 name  : 'settings',
                 text  : Locale.get(lg, 'projects.project.panel.settings.btn.settings'),
-                icon  : 'icon-gear',
+                icon  : 'fa fa-gear',
                 events: {
                     onClick: this.openSettings
                 }
@@ -155,7 +155,7 @@ define('controls/projects/project/Settings', [
             this.addCategory({
                 name  : 'adminSettings',
                 text  : Locale.get(lg, 'projects.project.panel.settings.btn.adminSettings'),
-                icon  : 'icon-gear',
+                icon  : 'fa fa-gear',
                 events: {
                     onClick: this.openAdminSettings
                 }
@@ -164,7 +164,7 @@ define('controls/projects/project/Settings', [
             this.addCategory({
                 name  : 'mediaSettings',
                 text  : Locale.get(lg, 'projects.project.panel.settings.btn.media'),
-                icon  : 'icon-picture',
+                icon  : 'fa fa-picture-o',
                 events: {
                     onClick: this.openMediaSettings
                 }
@@ -173,7 +173,7 @@ define('controls/projects/project/Settings', [
             this.addCategory({
                 name  : 'customCSS',
                 text  : Locale.get(lg, 'projects.project.panel.settings.btn.customCSS'),
-                icon  : 'icon-css3',
+                icon  : 'fa fa-css3',
                 events: {
                     onClick: this.openCustomCSS
                 }
@@ -208,7 +208,7 @@ define('controls/projects/project/Settings', [
 
                 self.setAttributes({
                     name : 'projects-panel',
-                    icon : 'icon-home',
+                    icon : 'fa fa-home',
                     title: self.getProject().getName()
                 });
 
@@ -262,20 +262,20 @@ define('controls/projects/project/Settings', [
             var self = this;
 
             new QUIConfirm({
-                icon       : 'fa fa-exclamation-circle icon-exclamation-sign',
+                icon       : 'fa fa-exclamation-circle',
                 title      : Locale.get(lg, 'projects.project.project.delete.window.title'),
                 text       : Locale.get(lg, 'projects.project.project.delete.window.text'),
-                texticon   : 'fa fa-exclamation-circle icon-exclamation-sign',
+                texticon   : 'fa fa-exclamation-circle',
                 information: Locale.get(lg, 'projects.project.project.delete.window.information'),
                 maxWidth   : 450,
                 maxHeight  : 300,
                 events     : {
                     onSubmit: function () {
                         new QUIConfirm({
-                            icon     : 'fa fa-exclamation-circle icon-exclamation-sign',
+                            icon     : 'fa fa-exclamation-circle',
                             title    : Locale.get(lg, 'projects.project.project.delete.window.title'),
                             text     : Locale.get(lg, 'projects.project.project.delete.window.text.2'),
-                            texticon : 'fa fa-exclamation-circle icon-exclamation-sign',
+                            texticon : 'fa fa-exclamation-circle',
                             maxWidth : 450,
                             maxHeight: 300,
                             events   : {
@@ -345,7 +345,7 @@ define('controls/projects/project/Settings', [
 
                 new QUIButton({
                     text     : Locale.get(lg, 'projects.project.panel.btn.addlanguage'),
-                    textimage: 'icon-plus',
+                    textimage: 'fa fa-plus',
                     styles   : {
                         width: 200,
                         clear: 'both'
