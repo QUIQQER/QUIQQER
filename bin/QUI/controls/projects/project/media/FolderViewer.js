@@ -41,7 +41,7 @@ define('controls/projects/project/media/FolderViewer', [
              RequestUpload,
              UploadForm,
              Projects,
-             Locale) {
+             QUILocale) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -61,10 +61,11 @@ define('controls/projects/project/media/FolderViewer', [
         ],
 
         options: {
-            project  : false, // name of the project
-            folderId : false,
-            folderUrl: false,
-            filetype : ['image'] // types : image, file, folder
+            project      : false, // name of the project
+            folderId     : false,
+            folderUrl    : false,
+            filetype     : ['image'], // types : image, file, folder
+            createMessage: QUILocale.get('quiqqer/quiqqer', 'folderviewer.create.folder')
         },
 
         initialize: function (options) {
@@ -106,8 +107,8 @@ define('controls/projects/project/media/FolderViewer', [
             this.$Container = this.$Elm.getElement('.qui-project-media-folderViewer-container');
 
             this.$ButtonsDiashow = new QUIButton({
-                text     : Locale.get(lg, 'projects.project.media.folderviewer.btn.diashow'),
-                title    : Locale.get(lg, 'projects.project.media.folderviewer.btn.diashow'),
+                text     : QUILocale.get(lg, 'projects.project.media.folderviewer.btn.diashow'),
+                title    : QUILocale.get(lg, 'projects.project.media.folderviewer.btn.diashow'),
                 textimage: 'fa fa-play',
                 events   : {
                     onClick: this.diashow
@@ -118,8 +119,8 @@ define('controls/projects/project/media/FolderViewer', [
             this.$ButtonsSeperator = new QUISeperator().inject(this.$Buttons);
 
             this.$ButtonsUpload = new QUIButton({
-                text     : 'Dateien hochladen',
-                title    : 'Dateien hochladen',
+                text     : QUILocale.get(lg, 'projects.project.site.media.panel.btn.upload'),
+                title    : QUILocale.get(lg, 'projects.project.site.media.panel.btn.upload'),
                 textimage: 'fa fa-upload',
                 events   : {
                     click: this.openUpload
@@ -206,7 +207,7 @@ define('controls/projects/project/media/FolderViewer', [
                 if (typeOf(Item) != 'classes/projects/project/media/Folder') {
                     self.$Container.set(
                         'html',
-                        Locale.get(lg, 'projects.project.media.folderviewer.no.folder')
+                        QUILocale.get(lg, 'projects.project.media.folderviewer.no.folder')
                     );
 
                     self.$ButtonsDiashow.disable();
@@ -226,17 +227,7 @@ define('controls/projects/project/media/FolderViewer', [
                 Item.getChildren(function (items) {
                     self.$Container.set('html', '');
 
-                    var images = 0;
-
-                    if (items.length === 0) {
-
-                        new Element('div', {
-                            html  : Locale.get(lg, 'projects.project.media.folderviewer.empty'),
-                            styles: {
-                                padding: 10
-                            }
-                        }).inject(self.$Container);
-                    }
+                    var files = 0;
 
                     for (var i = 0, len = items.length; i < len; i++) {
                         if (!allowedTypes.contains(items[i].type)) {
@@ -244,10 +235,10 @@ define('controls/projects/project/media/FolderViewer', [
                         }
 
                         self.$createImageItem(items[i]).inject(self.$Container);
-                        images++;
+                        files++;
                     }
 
-                    if (images >= 2) {
+                    if (files >= 2) {
                         self.$ButtonsDiashow.show();
                         self.$ButtonsSeperator.show();
 
@@ -255,6 +246,27 @@ define('controls/projects/project/media/FolderViewer', [
                     } else {
                         self.$ButtonsDiashow.hide();
                         self.$ButtonsSeperator.hide();
+                    }
+
+                    if (files === 0) {
+                        var message = QUILocale.get(
+                            lg,
+                            'projects.project.media.folderviewer.empty'
+                        );
+
+                        if (!allowedTypes.contains('image')) {
+                            message = QUILocale.get(
+                                lg,
+                                'projects.project.media.fileviewer.empty'
+                            );
+                        }
+
+                        new Element('div', {
+                            html  : message,
+                            styles: {
+                                padding: 10
+                            }
+                        }).inject(self.$Container);
                     }
 
                     self.Loader.hide();
@@ -429,7 +441,7 @@ define('controls/projects/project/media/FolderViewer', [
 
             var Message = new Element('div', {
                 'class': 'qui-project-media-folderViewer-upload-message',
-                html   : Locale.get(lg, 'projects.project.media.folderviewer.upload.message'),
+                html   : QUILocale.get(lg, 'projects.project.media.folderviewer.upload.message'),
                 styles : {
                     opacity: 0
                 }
@@ -463,7 +475,7 @@ define('controls/projects/project/media/FolderViewer', [
             });
 
             new QUIButton({
-                text  : Locale.get(lg, 'projects.project.media.folderviewer.upload.btn.start'),
+                text  : QUILocale.get(lg, 'projects.project.media.folderviewer.upload.btn.start'),
                 styles: {
                     clear : 'both',
                     margin: '20px 0 0'
@@ -482,7 +494,7 @@ define('controls/projects/project/media/FolderViewer', [
             }).inject(Message);
 
             new QUIButton({
-                text  : Locale.get(lg, 'projects.project.media.folderviewer.upload.btn.cancel'),
+                text  : QUILocale.get(lg, 'projects.project.media.folderviewer.upload.btn.cancel'),
                 styles: {
                     'float': 'right',
                     margin : '20px 0 0'
@@ -519,9 +531,7 @@ define('controls/projects/project/media/FolderViewer', [
 
                     var Container = new Element('div', {
                         'class': 'create-folder-container',
-                        html   : '<p>Das Produkt besitzt noch keinen Mediaordner</p>' +
-                                 '<p>Möchten Sie ein neuen Ordner anlegen?</p>' +
-                                 '<br />',
+                        html   : self.getAttribute('createMessage'),
                         styles : {
                             background: '#fff',
                             fontSize  : 14,

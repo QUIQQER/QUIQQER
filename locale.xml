@@ -337,6 +337,22 @@
         </locale>
     </groups>
 
+    <groups name="quiqqer/quiqqer" datatype="js">
+        <locale name="folderviewer.create.folder" html="true">
+            <de><![CDATA[
+                <p>Es wurde kein Ordner zugewiesen.</p>
+                <p>Möchten Sie ein neuen Ordner anlegen?</p>
+                <br />
+            ]]></de>
+            <en><![CDATA[
+                <p>No folder was assigned.</p>
+                <p>Would you like to create a new folder?</p>
+                <br />
+            ]]></en>
+        </locale>
+
+    </groups>
+
     <groups name="quiqqer/system" datatype="js,php">
         <locale name="yes">
             <de><![CDATA[Ja]]></de>
@@ -3466,6 +3482,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="projects.project.media.folderviewer.empty">
             <de><![CDATA[Es befinden sich keine Bilder in diesem Ordner.]]></de>
             <en><![CDATA[There are no images in this folder.]]></en>
+        </locale>
+        <locale name="projects.project.media.fileviewer.empty">
+            <de><![CDATA[Es befinden sich keine Dateien in diesem Ordner.]]></de>
+            <en><![CDATA[There are no files in this folder.]]></en>
         </locale>
         <locale name="projects.project.site.media.folderPanel.btn.effectsRecursive">
             <de><![CDATA[Effekte rekursiv anwenden]]></de>
