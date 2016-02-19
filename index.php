@@ -120,7 +120,7 @@ try {
             'TPL_DIR' => OPT_DIR . $Project->getName() . '/',
         ));
 
-        $file  = SYS_DIR . 'template/maintenance.html';
+        $file  = LIB_DIR . 'template/maintenance.html';
         $pfile = USR_DIR . $Project->getName() . '/lib/maintenance.html';
 
         if (file_exists($pfile)) {
