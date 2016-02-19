@@ -390,16 +390,16 @@ define('controls/projects/project/media/FolderViewer', [
                 cursor   = 'default';
             }
 
-            return new Element('div', {
+            var Container = new Element('div', {
                 'class'     : 'qui-project-media-folderViewer-item',
-                html        : '<span class="qui-project-media-folderViewer-item-title">' +
+                html        : '<div class="qui-project-media-folderViewer-item-image"></div>' +
+                              '<span class="qui-project-media-folderViewer-item-title">' +
                               imageData.name +
                               '</span>',
                 alt         : imageData.name,
                 title       : imageData.name,
                 styles      : {
-                    backgroundImage: 'url(' + imageSrc + ')',
-                    cursor         : cursor
+                    cursor: cursor
                 },
                 'data-src'  : dataSrc,
                 'data-short': imageData.short,
@@ -415,6 +415,34 @@ define('controls/projects/project/media/FolderViewer', [
                     }
                 }
             });
+
+            var IC = Container.getElement(
+                '.qui-project-media-folderViewer-item-image'
+            );
+
+            IC.setStyle('opacity', 0);
+            IC.setStyle('display', 'inline');
+
+            require([
+                'image!' + imageSrc
+            ], function (Image) {
+                var IC = this.getElement(
+                    '.qui-project-media-folderViewer-item-image'
+                );
+
+                IC.setStyle('backgroundImage', 'url(' + Image.src + ')');
+
+                moofx(IC).animate({
+                    opacity: 1
+                }, {
+                    duration: 200
+                });
+
+            }.bind(Container), function (err) {
+                console.error(err);
+            }.bind(Container));
+
+            return Container;
         },
 
         /**

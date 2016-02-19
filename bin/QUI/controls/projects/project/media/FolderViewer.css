@@ -65,14 +65,12 @@
 
 .qui-project-media-folderViewer-container {
     float: left;
-    height: calc( 100% - 50px );
+    height: calc(100% - 50px);
     overflow: auto;
     width: 100%;
 }
 
 .qui-project-media-folderViewer-item {
-    background-position: center 10px;
-    background-repeat: no-repeat;
     border: 1px solid #dedede;
     cursor: zoom-in;
     float: left;
@@ -90,7 +88,7 @@
 
 .qui-project-media-folderViewer-item-title {
     background: #000;
-    background: rgba(0,0,0, 0.5);
+    background: rgba(0, 0, 0, 0.5);
     bottom: 0;
     color: #fff;
     height: 30px;
@@ -102,6 +100,19 @@
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 100%;
+    z-index: 3;
+}
+
+.qui-project-media-folderViewer-item-image {
+    background-position: center 10px;
+    background-repeat: no-repeat;
+    display: none;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 2;
 }
 
 .qui-project-media-folderViewer-upload-message {
