@@ -1,4 +1,3 @@
-
 /**
  * Editor Main Class
  *
@@ -16,7 +15,6 @@
  * @event onSetContent [ {String} content, {self} ]
  * @event onAddCSS [ {String} file, {self} ]
  */
-
 define('controls/editors/Editor', [
 
     'qui/controls/Control',
@@ -46,24 +44,25 @@ define('controls/editors/Editor', [
      */
     return new Class({
 
-        Extends : QUIControl,
-        Type    : 'controls/editors/Editor',
+        Extends: QUIControl,
+        Type   : 'controls/editors/Editor',
 
-        Binds : [
+        Binds: [
             '$onDrop',
             '$onImport',
             '$onInject',
             '$onLoaded'
         ],
 
-        options : {
-            content    : '',
-            bodyId     : false,  // wysiwyg DOMNode body id
-            bodyClass  : false,   // wysiwyg DOMNode body css class
-            showLoader : true
+        options: {
+            content   : '',
+            bodyId    : false,  // wysiwyg DOMNode body id
+            bodyClass : false,   // wysiwyg DOMNode body css class
+            showLoader: true
         },
 
-        initialize : function (Manager, options) {
+        initialize: function (Manager, options) {
+
             this.$Manager = Manager;
             this.$Elm     = null;
             this.$Input   = null;
@@ -82,9 +81,9 @@ define('controls/editors/Editor', [
             this.$loaded    = false;
 
             this.addEvents({
-                onLoaded : this.$onLoaded,
-                onImport : this.$onImport,
-                onInject : this.$onInject
+                onLoaded: this.$onLoaded,
+                onImport: this.$onImport,
+                onInject: this.$onInject
             });
 
             this.fireEvent('init', [this]);
@@ -96,10 +95,10 @@ define('controls/editors/Editor', [
          * @method controls/editors/Editor#create
          * @return {HTMLElement} DOMNode Element
          */
-        create : function () {
+        create: function () {
             this.$Elm = new Element('div', {
-                html : '<div class="control-editor-container"></div>',
-                'class' : 'control-editor'
+                html   : '<div class="control-editor-container"></div>',
+                'class': 'control-editor'
             });
 
             this.Loader = new QUILoader().inject(this.$Elm);
@@ -118,7 +117,7 @@ define('controls/editors/Editor', [
          * @method controls/editors/Editor#destroy
          * @fires onDestroy [this]
          */
-        destroy : function () {
+        destroy: function () {
             this.fireEvent('destroy', [this]);
             this.removeEvents();
 
@@ -130,7 +129,7 @@ define('controls/editors/Editor', [
          *
          * @param {Function} [callback] - callback function
          */
-        load : function (callback) {
+        load: function (callback) {
             var self = this;
 
             this.getSettings(function (data) {
@@ -148,7 +147,7 @@ define('controls/editors/Editor', [
         /**
          * event : on loaded
          */
-        $onLoaded : function () {
+        $onLoaded: function () {
             if (this.getAttribute('bodyId')) {
                 this.getDocument().body.id = this.getAttribute('bodyId');
             }
@@ -167,7 +166,7 @@ define('controls/editors/Editor', [
         /**
          * on inject
          */
-        $onInject : function () {
+        $onInject: function () {
             if (this.getAttribute('showLoader')) {
                 this.Loader.show();
             }
@@ -179,7 +178,7 @@ define('controls/editors/Editor', [
          * event : on import
          * thats not optimal, because we must generate a new editor instance with the editor manager
          */
-        $onImport : function () {
+        $onImport: function () {
             var self     = this,
                 nodeName = this.$Elm.nodeName;
 
@@ -212,7 +211,7 @@ define('controls/editors/Editor', [
          *
          * @param {Object} Project - (classes/projects/Project)
          */
-        setProject : function (Project) {
+        setProject: function (Project) {
             this.$Project = Project;
         },
 
@@ -221,7 +220,7 @@ define('controls/editors/Editor', [
          *
          * @return {Boolean}
          */
-        isLoaded : function () {
+        isLoaded: function () {
             return this.$loaded;
         },
 
@@ -231,7 +230,7 @@ define('controls/editors/Editor', [
          * @method controls/editors/Editor#getManager
          * @return {Object} Editor Manager (controls/editors/Manager)
          */
-        getManager : function () {
+        getManager: function () {
             return this.$Manager;
         },
 
@@ -241,7 +240,7 @@ define('controls/editors/Editor', [
          * @method controls/editors/Editor#getContainer
          * @return {HTMLElement|null} Container
          */
-        getContainer : function () {
+        getContainer: function () {
             return this.$Container;
         },
 
@@ -252,7 +251,7 @@ define('controls/editors/Editor', [
          * @fires onSetContent [content, this]
          * @param {String} content - HTML String
          */
-        setContent : function (content) {
+        setContent: function (content) {
             this.setAttribute('content', content);
             this.fireEvent('setContent', [content, this]);
         },
@@ -263,7 +262,7 @@ define('controls/editors/Editor', [
          * @method controls/editors/Editor#getContent
          * @return {String} content
          */
-        getContent : function () {
+        getContent: function () {
             this.fireEvent('getContent', [this]);
 
             return this.getAttribute('content');
@@ -272,7 +271,7 @@ define('controls/editors/Editor', [
         /**
          * Return the buttons
          */
-        getButtons : function (callback) {
+        getButtons: function (callback) {
             if (this.getAttribute('buttons')) {
                 callback(this.getAttribute('buttons'));
                 return;
@@ -291,7 +290,7 @@ define('controls/editors/Editor', [
          * Switch to source
          * can be overwritten
          */
-        switchToSource : function () {
+        switchToSource: function () {
 
         },
 
@@ -299,7 +298,7 @@ define('controls/editors/Editor', [
          * Switch to WYSIWYG
          * can be overwritten
          */
-        switchToWYSIWYG : function () {
+        switchToWYSIWYG: function () {
 
         },
 
@@ -307,7 +306,7 @@ define('controls/editors/Editor', [
          * Hide toolbar
          * can be overwritten
          */
-        hideToolbar : function () {
+        hideToolbar: function () {
 
         },
 
@@ -315,7 +314,7 @@ define('controls/editors/Editor', [
          * Show toolbar
          * can be overwritten
          */
-        showToolbar : function () {
+        showToolbar: function () {
 
         },
 
@@ -325,7 +324,7 @@ define('controls/editors/Editor', [
          *
          * @param {Number} height
          */
-        setHeight : function (height) {
+        setHeight: function (height) {
             this.setAttribute('height', height);
         },
 
@@ -335,7 +334,7 @@ define('controls/editors/Editor', [
          *
          * @param {Number} width
          */
-        setWidth : function (width) {
+        setWidth: function (width) {
             this.setAttribute('width', width);
         },
 
@@ -345,7 +344,7 @@ define('controls/editors/Editor', [
          * @method controls/editors/Editor#setInstance
          * @param {Object} Instance - Editor Instance
          */
-        setInstance : function (Instance) {
+        setInstance: function (Instance) {
             this.$Instance = Instance;
         },
 
@@ -356,7 +355,7 @@ define('controls/editors/Editor', [
          * @method controls/editors/Editor#getInstance
          * @return {Object} Instance - Editor Instance
          */
-        getInstance : function () {
+        getInstance: function () {
             return this.$Instance;
         },
 
@@ -365,7 +364,7 @@ define('controls/editors/Editor', [
          *
          * @return {HTMLElement} document
          */
-        getDocument : function () {
+        getDocument: function () {
             return this.$Elm.getElement('iframe').contentWindow.document;
         },
 
@@ -374,7 +373,7 @@ define('controls/editors/Editor', [
          *
          * @param {Function} [callback] - callback function
          */
-        getSettings : function (callback) {
+        getSettings: function (callback) {
             var Project = this.$Project,
                 buttons = this.getAttribute('buttons');
 
@@ -383,7 +382,7 @@ define('controls/editors/Editor', [
                     'ajax_editor_get_toolbar'
                 ], function (toolbarData) {
                     var data = {
-                        toolbar : toolbarData
+                        toolbar: toolbarData
                     };
 
                     if (buttons && "lines" in buttons) {
@@ -408,30 +407,30 @@ define('controls/editors/Editor', [
                 projectData.toolbar = toolbarData;
 
                 if (buttons && "lines" in buttons) {
-                    data.toolbar.lines = buttons.lines;
+                    projectData.toolbar.lines = buttons.lines;
                 } else if (buttons) {
-                    data.toolbar.lines = buttons;
+                    projectData.toolbar.lines = buttons;
                 }
 
                 if (typeof callback === 'function') {
                     callback(projectData);
                 }
             }, {
-                project : Project.getName()
+                project: Project.getName()
             });
         },
 
         /**
          * Add an CSS file to the Instance
          */
-        addCSS : function (file) {
+        addCSS: function (file) {
             if (typeof file === 'undefined' || !file) {
                 return;
             }
 
             if (file.indexOf("//") === 0 ||
-                 file.indexOf("https://") === 0 ||
-                 file.indexOf("http://") === 0) {
+                file.indexOf("https://") === 0 ||
+                file.indexOf("http://") === 0) {
                 this.fireEvent('addCSS', [file, this]);
                 return;
             }
@@ -453,7 +452,7 @@ define('controls/editors/Editor', [
          *
          * @param {Object} options - controls/projects/project/media/Popup options
          */
-        openMedia : function (options) {
+        openMedia: function (options) {
             if (this.$Project) {
                 options.project = this.$Project.getName();
             }
@@ -468,10 +467,10 @@ define('controls/editors/Editor', [
          *
          * @param {Object} options - controls/projects/project/project/Popup options
          */
-        openProject : function (options) {
+        openProject: function (options) {
             if (this.$Project) {
                 options.project = this.$Project.getName();
-                options.lang = this.$Project.getLang();
+                options.lang    = this.$Project.getLang();
             }
 
             require(['controls/projects/Popup'], function (Popup) {
