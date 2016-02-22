@@ -755,13 +755,11 @@ class Project
                 $desc  = $Layout->getElementsByTagName('description');
 
                 if ($title->length) {
-                    $data['title']
-                        = QUI\Utils\DOM::getTextFromNode($title->item(0));
+                    $data['title'] = QUI\Utils\DOM::getTextFromNode($title->item(0));
                 }
 
                 if ($desc->length) {
-                    $data['description']
-                        = QUI\Utils\DOM::getTextFromNode($desc->item(0));
+                    $data['description'] = QUI\Utils\DOM::getTextFromNode($desc->item(0));
                 }
 
                 $result[] = $data;
