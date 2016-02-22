@@ -13,6 +13,7 @@
  * @require qui/controls/windows/Confirm
  * @require qui/controls/windows/Popup
  * @require qui/controls/buttons/Button
+ * @require Favico
  * @require css!controls/packages/Panel.css
  */
 define('controls/packages/Panel', [
@@ -28,6 +29,7 @@ define('controls/packages/Panel', [
     'qui/controls/windows/Popup',
     'qui/controls/buttons/Button',
     'qui/controls/elements/List',
+    'utils/Favicon',
 
     'css!controls/packages/Panel.css'
 
@@ -41,7 +43,8 @@ define('controls/packages/Panel', [
              QUIConfirm,
              QUIWindow,
              QUIButton,
-             QUIList) {
+             QUIList,
+             FaviconUtils) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -384,6 +387,8 @@ define('controls/packages/Panel', [
         setup: function (pkg, Btn) {
             var self = this;
 
+            FaviconUtils.loading();
+
             if (typeof Btn !== 'undefined') {
                 if (Btn.getAttribute('textimage')) {
                     Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
@@ -422,6 +427,8 @@ define('controls/packages/Panel', [
                         Btn.setAttribute('icon', 'fa fa-hdd-o');
                     }
 
+                    FaviconUtils.setDefault();
+
                 }).catch(function (Error) {
                     // error
                     Loading.finish(Error.getMessage(), 'error');
@@ -437,6 +444,8 @@ define('controls/packages/Panel', [
                     if (Btn.getAttribute('icon')) {
                         Btn.setAttribute('icon', 'fa fa-hdd-o');
                     }
+
+                    FaviconUtils.setDefault();
                 });
             });
         },

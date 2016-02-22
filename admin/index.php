@@ -47,8 +47,7 @@ try {
 
     <title>QUIQQER - <?php echo HOST ?></title>
 
-    <link href="<?php echo URL_DIR; ?>favicon.ico" rel="shortcut icon"
-          type="image/vnd.microsoft.icon"/>
+    <link href="<?php echo URL_BIN_DIR; ?>images/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
 
     <!-- [begin] css combine -->
 
