@@ -406,33 +406,12 @@ class XML
      */
     public static function getLayoutsFromXml($file)
     {
-        $Dom   = self::getDomFromXml($file);
-        $sites = $Dom->getElementsByTagName('site');
+        $Path    = new \DOMXPath(self::getDomFromXml($file));
+        $layouts = $Path->query("//site/layouts/layout");
+        $result  = array();
 
-        if (!$sites->length) {
-            return array();
-        }
-
-        /* @var $Sites \DOMElement */
-        $Sites   = $sites->item(0);
-        $layouts = $Sites->getElementsByTagName('layouts');
-
-        if (!$layouts->length) {
-            return array();
-        }
-
-        /* @var $Layouts \DOMElement */
-        $Layouts    = $layouts->item(0);
-        $layoutList = $Layouts->getElementsByTagName('layout');
-
-        $result = array();
-
-        for ($c = 0; $c < $layoutList->length; $c++) {
-            $Layout = $layoutList->item($c);
-            if ($Layout->nodeName == '#text') {
-                continue;
-            }
-
+        /* @var $Layout \DOMElement */
+        foreach ($layouts as $Layout) {
             $result[] = $Layout;
         }
 
