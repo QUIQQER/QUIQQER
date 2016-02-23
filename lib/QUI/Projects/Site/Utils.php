@@ -210,7 +210,7 @@ class Utils
 
                 // table is ok
                 $result[] = array(
-                    'file'    => $file,
+                    'file' => $file,
                     'package' => $package
                 );
             }
@@ -303,10 +303,10 @@ class Utils
                 }
 
                 $result[] = array(
-                    'table'   => $table,
-                    'data'    => $data,
+                    'table' => $table,
+                    'data' => $data,
                     'package' => $package,
-                    'suffix'  => $suffix
+                    'suffix' => $suffix
                 );
             }
         }
@@ -363,7 +363,7 @@ class Utils
             foreach ($attributes as $Attribute) {
                 $result[] = array(
                     'attribute' => trim($Attribute->nodeValue),
-                    'default'   => $Attribute->getAttribute('default')
+                    'default' => $Attribute->getAttribute('default')
                 );
             }
         }
@@ -388,7 +388,7 @@ class Utils
             foreach ($attributes as $Attribute) {
                 $result[] = array(
                     'attribute' => trim($Attribute->nodeValue),
-                    'default'   => $Attribute->getAttribute('default')
+                    'default' => $Attribute->getAttribute('default')
                 );
             }
         }
@@ -631,7 +631,7 @@ class Utils
         $order = 'release_from ASC';
 
         if (isset($params['limit'])) {
-            $limit = (int)$params['limit'];
+            $limit = $params['limit'];
         }
 
         if (isset($params['order'])) {
@@ -675,14 +675,14 @@ class Utils
         // query params
         if (!empty($ids)) {
             $where['id'] = array(
-                'type'  => 'IN',
+                'type' => 'IN',
                 'value' => $ids
             );
         }
 
         if (!empty($types)) {
             $where['type'] = array(
-                'type'  => 'IN',
+                'type' => 'IN',
                 'value' => $types
             );
         }
@@ -694,7 +694,6 @@ class Utils
                     $Parent = $Project->get((int)$parentId);
 
                     $children = $Parent->getChildrenIds(array(
-                        'limit' => $limit,
                         'order' => $order
                     ));
 
@@ -705,7 +704,7 @@ class Utils
             }
 
             $where['id'] = array(
-                'type'  => 'IN',
+                'type' => 'IN',
                 'value' => $ids
             );
 
@@ -720,8 +719,8 @@ class Utils
         // by no parents, we use WHERE OR
         return $Project->getSites(array(
             'where_or' => $where,
-            'limit'    => $limit,
-            'order'    => $order
+            'limit' => $limit,
+            'order' => $order
         ));
     }
 
