@@ -11,17 +11,17 @@ define('utils/Favicon', [
 
 ], function (Favico) {
     "use strict";
-
-    var Favicon     = document.getElement('[rel="shortcut icon"]'),
-        defaultIcon = Favicon.get('href'),
-        defaultType = Favicon.get('type');
-
-    var LoadingAnimation = new Element('img', {
-        src   : URL_BIN_DIR + 'images/loader.gif',
-        styles: {
-            display: 'none'
-        }
-    }).inject(document.body);
+    //
+    //var Favicon     = document.getElement('[rel="shortcut icon"]'),
+    //    defaultIcon = Favicon.get('href'),
+    //    defaultType = Favicon.get('type');
+    //
+    //var LoadingAnimation = new Element('img', {
+    //    src   : URL_BIN_DIR + 'images/loader.gif',
+    //    styles: {
+    //        display: 'none'
+    //    }
+    //}).inject(document.body);
 
     return {
 
