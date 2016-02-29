@@ -12,6 +12,7 @@
     "Promise",
     "File",
     "FileList",
+    "Fx",
     "USER",
     "QUIQQER_VERSION",
     "QUIQQER_CONFIG",

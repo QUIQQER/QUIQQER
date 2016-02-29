@@ -25,7 +25,7 @@
   "repositories": [
     {
       "type": "composer",
-      "url": "http://update.quiqqer.com"
+      "url": "https://update.quiqqer.com"
     }
   ],
   "require": {
