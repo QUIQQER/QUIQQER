@@ -360,8 +360,14 @@
             <en><![CDATA[The page has changes]]></en>
         </locale>
         <locale name="site.window.siteChangesExists.information" html="true">
-            <de><![CDATA[Möchten Sie diese Änderungen auch speichern?]]></de>
-            <en><![CDATA[Do you want to save these changes, too?]]></en>
+            <de><![CDATA[
+            Möchten Sie diese Änderungen auch speichern?<br />
+            Die Seite wird aktiviert und die Änderungen werden gleichzeitig übernommen.
+            ]]></de>
+            <en><![CDATA[
+            Do you want to save these changes, too?
+            The site will be activated and the changes are applied.
+            ]]></en>
         </locale>
         <locale name="site.window.siteChangesExists.button.ok">
             <de><![CDATA[Änderungen auch speichern]]></de>
