@@ -351,6 +351,23 @@
             ]]></en>
         </locale>
 
+        <locale name="site.window.siteChangesExists.title">
+            <de><![CDATA[Die Seite besitzt Änderungen]]></de>
+            <en><![CDATA[The page has changes]]></en>
+        </locale>
+        <locale name="site.window.siteChangesExists.content" html="true">
+            <de><![CDATA[Die Seite besitzt Änderungen.<br />Möchten Sie diese Änderungen auch speichern?]]></de>
+            <en><![CDATA[The page has changes. Do you want to save these changes, too?]]></en>
+        </locale>
+        <locale name="site.window.siteChangesExists.button.ok">
+            <de><![CDATA[Änderungen auch speichern]]></de>
+            <en><![CDATA[Also save changes]]></en>
+        </locale>
+        <locale name="site.window.siteChangesExists.button.cancel">
+            <de><![CDATA[Nur Status ändern]]></de>
+            <en><![CDATA[Only change status]]></en>
+        </locale>
+
     </groups>
 
     <groups name="quiqqer/system" datatype="js,php">

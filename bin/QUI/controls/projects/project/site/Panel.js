@@ -1121,17 +1121,17 @@ define('controls/projects/project/site/Panel', [
                         return;
                     }
 
-                    // #locale
                     new QUIConfirm({
-                        title        : 'Die Seite besitzt Änderungen', // #locale
-                        content      : 'Die Seite besitzt Änderungen.<br />Möchten Sie diese Änderungen auch speichern?', // #locale
-                        maxHeight    : 200,
-                        maxWidth     : 500,
+                        title        : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.title'),
+                        content      : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.content'),
+                        maxHeight    : 300,
+                        maxWidth     : 450,
+                        texticon     : false,
                         ok_button    : {
-                            text: 'Änderungen auch speichern' // #locale
+                            text: Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.button.ok')
                         },
                         cancel_button: {
-                            text: 'Status nur ändern' // #locale
+                            text: Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.button.cancel')
                         },
                         events       : {
                             onSubmit: function () {
