@@ -66,7 +66,7 @@ interface Site
      * Prüft ob es die Seite auch in einer anderen Sprache gibt
      *
      * @param string $lang
-     * @param boolean   $check_only_active - check only active pages
+     * @param boolean $check_only_active - check only active pages
      *
      * @return boolean
      */
@@ -95,7 +95,7 @@ interface Site
      * @param array $params - Parameter für die Childrenausgabe
      *                      $params['where']
      *                      $params['limit']
-     * @param boolean  $load   - Legt fest ob die Kinder die Plugins laden sollen
+     * @param boolean $load - Legt fest ob die Kinder die Plugins laden sollen
      *
      * @return array;
      */
@@ -227,8 +227,15 @@ interface Site
      * @param array $params - Parameter welche an die URL angehängt werden
      *
      * @return string
+     * @deprecated
      */
-    public function getUrlRewrited($params = array());
+//    public function getUrlRewrited($params = array());
+
+    /**
+     * @param array $params
+     * @return mixed
+     */
+    public function getUrlRewritten($params = array());
 
     /**
      * Return the Parent id from the site object
@@ -305,8 +312,8 @@ interface Site
     /**
      * Shortcut for QUI\Rights\Permission::hasSitePermission
      *
-     * @param string              $permission - name of the permission
-     * @param QUI\Users\User|boolean $User       - optional
+     * @param string $permission - name of the permission
+     * @param QUI\Users\User|boolean $User - optional
      *
      * @return boolean|integer
      */
@@ -315,8 +322,8 @@ interface Site
     /**
      * Shortcut for QUI\Rights\Permission::checkSitePermission
      *
-     * @param string              $permission - name of the permission
-     * @param QUI\Users\User|boolean $User       - optional
+     * @param string $permission - name of the permission
+     * @param QUI\Users\User|boolean $User - optional
      *
      * @throws QUI\Exception
      */
