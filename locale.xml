@@ -355,9 +355,13 @@
             <de><![CDATA[Die Seite besitzt Änderungen]]></de>
             <en><![CDATA[The page has changes]]></en>
         </locale>
-        <locale name="site.window.siteChangesExists.content" html="true">
-            <de><![CDATA[Die Seite besitzt Änderungen.<br />Möchten Sie diese Änderungen auch speichern?]]></de>
-            <en><![CDATA[The page has changes. Do you want to save these changes, too?]]></en>
+        <locale name="site.window.siteChangesExists.text">
+            <de><![CDATA[Die Seite besitzt Änderungen]]></de>
+            <en><![CDATA[The page has changes]]></en>
+        </locale>
+        <locale name="site.window.siteChangesExists.information" html="true">
+            <de><![CDATA[Möchten Sie diese Änderungen auch speichern?]]></de>
+            <en><![CDATA[Do you want to save these changes, too?]]></en>
         </locale>
         <locale name="site.window.siteChangesExists.button.ok">
             <de><![CDATA[Änderungen auch speichern]]></de>

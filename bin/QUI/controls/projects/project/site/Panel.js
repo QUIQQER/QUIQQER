@@ -1123,10 +1123,12 @@ define('controls/projects/project/site/Panel', [
 
                     new QUIConfirm({
                         title        : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.title'),
-                        content      : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.content'),
-                        maxHeight    : 300,
-                        maxWidth     : 450,
-                        texticon     : false,
+                        text         : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.text'),
+                        information  : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.information'),
+                        maxHeight    : 400,
+                        maxWidth     : 600,
+                        texticon     : 'fa fa-edit',
+                        icon         : 'fa fa-edit',
                         ok_button    : {
                             text: Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.button.ok')
                         },
