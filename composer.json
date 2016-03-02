@@ -30,7 +30,7 @@
   ],
   "require": {
     "php": ">=5.3",
-    "composer/composer": "1.0.0-alpha10",
+    "composer/composer": "1.0.0-alpha11",
     "tedivm/stash": "0.11.6",
     "robloach/component-installer": "0.0.12",
     "phpmailer/phpmailer": "v5.2.9",
