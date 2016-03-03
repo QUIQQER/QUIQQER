@@ -61,11 +61,14 @@ define('controls/projects/project/media/FolderViewer', [
         ],
 
         options: {
-            project      : false, // name of the project
-            folderId     : false,
+            project      : false, // name of the project, // {string} parent project if the folder not exists
+            folderId     : false, // id of the folder
+            Parent       : false, // {Object} parent folder if the folder not exists
             folderUrl    : false,
+            parentId     : false, // {number} parent id if the folder not exists
             filetype     : ['image'], // types : image, file, folder
-            createMessage: QUILocale.get('quiqqer/quiqqer', 'folderviewer.create.folder')
+            createMessage: QUILocale.get('quiqqer/quiqqer', 'folderviewer.create.folder'),
+            newFolderName: false
         },
 
         initialize: function (options) {
@@ -581,7 +584,9 @@ define('controls/projects/project/media/FolderViewer', [
                         events: {
                             onClick: function () {
                                 new CreateFolder({
-                                    events: {
+                                    newFolderName: self.getAttribute('newFolderName'),
+                                    Parent       : self.getAttribute('Parent'),
+                                    events       : {
                                         onSubmit: function (CF, Item) {
                                             self.fireEvent('folderCreated', [self, Item]);
                                         }

@@ -29,10 +29,12 @@ define('controls/projects/project/media/CreateFolder', [
         ],
 
         options: {
-            project  : false,
-            parentId : false,
-            maxHeight: 400,
-            maxWidth : 600
+            project      : false,
+            parentId     : false,
+            Parent       : false,
+            newFolderName: false,
+            maxHeight    : 400,
+            maxWidth     : 600
         },
 
         initialize: function (options) {
@@ -60,7 +62,7 @@ define('controls/projects/project/media/CreateFolder', [
             this.$Buttons.set('html', '');
 
             this.$Prev = new QUIButton({
-                text    : 'Zurück',
+                text    : 'Zurück', // #locale
                 disabled: true,
                 events  : {
                     click: this.prev
@@ -68,7 +70,7 @@ define('controls/projects/project/media/CreateFolder', [
             });
 
             this.$Next = new QUIButton({
-                text    : 'Weiter',
+                text    : 'Weiter', // #locale
                 disabled: true,
                 events  : {
                     click: this.next
@@ -98,6 +100,21 @@ define('controls/projects/project/media/CreateFolder', [
                 position: 'absolute',
                 width   : '100%'
             });
+
+            if (this.getAttribute('Parent')) {
+                var Parent = this.getAttribute('Parent');
+
+                this.setAttribute('parentId', Parent.getId());
+                this.setAttribute('project', Parent.getMedia().getProject().getName());
+
+                if (this.getAttribute('newFolderName')) {
+                    this.submit();
+                    return;
+                }
+
+                this.showNameInput();
+                return;
+            }
 
             if (this.getAttribute('project') === false) {
                 this.showProjectList();
@@ -264,14 +281,25 @@ define('controls/projects/project/media/CreateFolder', [
          */
         submit: function () {
             var self     = this,
-                newTitle = this.$Input.value;
+                newTitle = false;
 
             this.Loader.show();
 
-            return new Promise(function (resolve, reject) {
-                if (self.getAttribute('parentId') === false ||
-                    self.getAttribute('project') === false) {
+            var parentId = this.getAttribute('parentId'),
+                project  = this.getAttribute('project');
 
+            if (this.getAttribute('newFolderName')) {
+                newTitle = this.getAttribute('newFolderName');
+            } else {
+                newTitle = this.$Input.value;
+            }
+
+            if (newTitle === '' || !newTitle) {
+                return this.showNameInput();
+            }
+
+            return new Promise(function (resolve, reject) {
+                if (parentId === false || project === false) {
                     self.Loader.hide();
 
                     return self.showMediaSiteMap().then(function () {
@@ -279,9 +307,8 @@ define('controls/projects/project/media/CreateFolder', [
                     });
                 }
 
-                var parentId = self.getAttribute('parentId'),
-                    Project  = Projects.get(self.getAttribute('project')),
-                    Media    = Project.getMedia();
+                var Project = Projects.get(project),
+                    Media   = Project.getMedia();
 
                 Media.get(parentId).then(function (Folder) {
                     if (Folder.getType() !== 'classes/projects/project/media/Folder') {
