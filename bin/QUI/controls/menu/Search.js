@@ -7,6 +7,7 @@
  * @require qui/QUI
  * @require qui/controls/Control
  * @require qui/controls/buttons/Button
+ * @require Locale
  * @require css!controls/menu/Search.css
  */
 define('controls/menu/Search', [

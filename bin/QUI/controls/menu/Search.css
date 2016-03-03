@@ -4,7 +4,7 @@
     float: left;
     height: 40px;
     padding: 0 10px;
-    z-index: 10;
+    z-index: 3;
 }
 
 .control-menu-search button {
