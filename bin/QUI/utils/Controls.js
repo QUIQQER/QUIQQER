@@ -98,7 +98,11 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
             }
 
             return new Promise(function (resolve, reject) {
-                Promise.all(needles).done(function () {
+                if (!needles.length) {
+                    return Promise.resolve();
+                }
+
+                Promise.all(needles).then(function () {
                     if (typeof callback === 'function') {
                         callback();
                     }
