@@ -65,7 +65,7 @@ class Manager extends QUI\QDOM
         $DataBase = QUI::getDataBase();
         $Table    = $DataBase->Table();
 
-        $Table->appendFields(self::TABLE(), array(
+        $Table->addColumn(self::TABLE(), array(
             'id' => 'int(11) NOT NULL',
             'name' => 'varchar(50) NOT NULL',
             'admin' => 'tinyint(2) NOT NULL',
@@ -77,6 +77,67 @@ class Manager extends QUI\QDOM
 
         $Table->setPrimaryKey(self::TABLE(), 'id');
         $Table->setIndex(self::TABLE(), 'parent');
+
+
+        // Guest
+        $result = QUI::getDataBase()->fetch(array(
+            'from' => $this->TABLE(),
+            'where' => array(
+                'id' => 0
+            )
+        ));
+
+        if (!isset($result[0])) {
+            QUI\System\Log::addNotice('Guest Group does not exist.');
+
+            QUI::getDataBase()->insert($this->TABLE(), array(
+                'id' => 0,
+                'name' => 'Guest'
+            ));
+
+            QUI\System\Log::addNotice('Guest Group was created.');
+
+        } else {
+            QUI::getDataBase()->update($this->TABLE(), array(
+                'name' => 'Guest'
+            ), array(
+                'id' => 0
+            ));
+
+            QUI\System\Log::addNotice('Guest exists only updated');
+        }
+
+
+        // Everyone
+        $result = QUI::getDataBase()->fetch(array(
+            'from' => $this->TABLE(),
+            'where' => array(
+                'id' => 1
+            )
+        ));
+
+        if (!isset($result[0])) {
+            QUI\System\Log::addNotice('Everyone Group does not exist...');
+
+            QUI::getDataBase()->insert($this->TABLE(), array(
+                'id' => 1,
+                'name' => 'Everyone'
+            ));
+
+            QUI\System\Log::addNotice('Everyone Group was created.');
+
+        } else {
+            QUI::getDataBase()->update($this->TABLE(), array(
+                'name' => 'Everyone'
+            ), array(
+                'id' => 1
+            ));
+
+            QUI\System\Log::addNotice('Everyone exists');
+        }
+
+        $this->get(0)->save();
+        $this->get(1)->save();
     }
 
     /**
@@ -86,9 +147,7 @@ class Manager extends QUI\QDOM
      */
     public function firstChild()
     {
-        return $this->get(
-            QUI::conf('globals', 'root')
-        );
+        return $this->get(QUI::conf('globals', 'root'));
     }
 
     /**

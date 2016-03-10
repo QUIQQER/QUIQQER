@@ -33,54 +33,7 @@ class Defaults extends QUI\System\Console\Tool
     public function execute()
     {
         $Groups = QUI::getGroups();
-
-        // Guest
-        $result = QUI::getDataBase()->fetch(array(
-            'from'  => $Groups->Table(),
-            'where' => array(
-                'id' => 0
-            )
-        ));
-
-        if (!isset($result[0])) {
-            $this->write('Guest Group does not exist.', 'red');
-
-            QUI::getDataBase()->insert($Groups->Table(), array(
-                'id' => 0
-            ));
-
-            $this->write(' Guest Group was created.', 'green');
-            $this->writeLn();
-
-        } else {
-            $this->writeLn('- Guest exists', 'green');
-        }
-
-
-        // Nobody
-        $result = QUI::getDataBase()->fetch(array(
-            'from'  => $Groups->Table(),
-            'where' => array(
-                'id' => 1
-            )
-        ));
-
-        if (!isset($result[0])) {
-            $this->write('Nobody Group does not exist...', 'red');
-
-            QUI::getDataBase()->insert($Groups->Table(), array(
-                'id' => 1
-            ));
-
-            $this->write(' Nobody Group was created.', 'green');
-            $this->writeLn();
-        } else {
-            $this->writeLn('- Nobody exists', 'green');
-        }
-
-        $Groups->get(0)->save();
-        $Groups->get(1)->save();
-
+        $Groups->setup();
 
         // set all users to everyone
         $users = QUI::getUsers()->getAllUsers();
@@ -98,36 +51,36 @@ class Defaults extends QUI\System\Console\Tool
         $Root = $Groups->firstChild();
 
         QUI::getPermissionManager()->setPermissions($Root, array(
-            "quiqqer.admin.groups.edit"              => true,
-            "quiqqer.admin.groups.view"              => true,
-            "quiqqer.cron.execute"                   => true,
-            "quiqqer.cron.add"                       => true,
-            "quiqqer.projects.site.set_permissions"  => true,
-            "quiqqer.projects.edit"                  => true,
-            "quiqqer.projects.destroy"               => true,
-            "quiqqer.projects.setconfig"             => true,
-            "quiqqer.projects.editCustomCSS"         => true,
-            "quiqqer.cron.activate"                  => true,
-            "quiqqer.admin.users.view"               => true,
-            "quiqqer.admin.users.edit"               => true,
-            "quiqqer.cron.delete"                    => true,
-            "quiqqer.cron.edit"                      => true,
-            "quiqqer.system.cache"                   => true,
-            "quiqqer.system.permissions"             => true,
-            "quiqqer.system.update"                  => true,
-            "quiqqer.admin"                          => true,
-            "quiqqer.su"                             => true,
-            "quiqqer.cron.deactivate"                => true,
-            "quiqqer.editors.toolbar.delete"         => true,
-            "quiqqer.projects.create"                => true,
-            "quiqqer.system.console"                 => true,
-            "quiqqer.watcher.readlog"                => true,
-            "quiqqer.watcher.clearlog"               => true,
+            "quiqqer.admin.groups.edit" => true,
+            "quiqqer.admin.groups.view" => true,
+            "quiqqer.cron.execute" => true,
+            "quiqqer.cron.add" => true,
+            "quiqqer.projects.site.set_permissions" => true,
+            "quiqqer.projects.edit" => true,
+            "quiqqer.projects.destroy" => true,
+            "quiqqer.projects.setconfig" => true,
+            "quiqqer.projects.editCustomCSS" => true,
+            "quiqqer.cron.activate" => true,
+            "quiqqer.admin.users.view" => true,
+            "quiqqer.admin.users.edit" => true,
+            "quiqqer.cron.delete" => true,
+            "quiqqer.cron.edit" => true,
+            "quiqqer.system.cache" => true,
+            "quiqqer.system.permissions" => true,
+            "quiqqer.system.update" => true,
+            "quiqqer.admin" => true,
+            "quiqqer.su" => true,
+            "quiqqer.cron.deactivate" => true,
+            "quiqqer.editors.toolbar.delete" => true,
+            "quiqqer.projects.create" => true,
+            "quiqqer.system.console" => true,
+            "quiqqer.watcher.readlog" => true,
+            "quiqqer.watcher.clearlog" => true,
             "quiqqer.projects.sites.set_permissions" => true,
-            "quiqqer.projects.sites.view"            => true,
-            "quiqqer.projects.sites.edit"            => true,
-            "quiqqer.projects.sites.del"             => true,
-            "quiqqer.projects.sites.new"             => true
+            "quiqqer.projects.sites.view" => true,
+            "quiqqer.projects.sites.edit" => true,
+            "quiqqer.projects.sites.del" => true,
+            "quiqqer.projects.sites.new" => true
         ));
 
 

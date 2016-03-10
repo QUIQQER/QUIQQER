@@ -28,7 +28,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      */
     public function __construct()
     {
-        $this->setAttribute('username', 'nobody');
+        // nothing
     }
 
     /**
@@ -228,7 +228,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      */
     public function getName()
     {
-        return $this->getUsername();
+        return QUI::getLocale()->get('quiqqer/quiqqer', 'nobody.name');
     }
 
     /**
@@ -240,7 +240,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      */
     public function getUsername()
     {
-        return $this->getAttribute('username');
+        return QUI::getLocale()->get('quiqqer/quiqqer', 'nobody.username');
     }
 
     /**

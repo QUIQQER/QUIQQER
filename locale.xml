@@ -280,6 +280,14 @@
             <de><![CDATA[Arbeitsbereich ist flexibel]]></de>
             <en><![CDATA[Workspace is flexible]]></en>
         </locale>
+        <locale name="nobody.name">
+            <de><![CDATA[Niemand]]></de>
+            <en><![CDATA[Nobody]]></en>
+        </locale>
+        <locale name="nobody.username">
+            <de><![CDATA[nobody]]></de>
+            <en><![CDATA[nobody]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
