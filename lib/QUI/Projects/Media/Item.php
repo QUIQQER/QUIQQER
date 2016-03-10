@@ -238,25 +238,48 @@ abstract class Item extends QUI\QDOM
         $First = $Media->firstChild();
 
         // Move file to the temp folder
-        $original   = $this->getFullPath();
+        $original = $this->getFullPath();
+        $notFound = false;
+
         $var_folder = VAR_DIR . 'media/' .
                       $Media->getProject()->getAttribute('name') . '/';
 
         if (!is_file($original)) {
-            throw new QUI\Exception('Original File is not a File', 400); // #locale
+            QUI::getMessagesHandler()->addAttention(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'exception.delete.originalfile.notfound'
+                )
+            );
+
+            $notFound = true;
         }
 
         if ($First->getFullPath() == $original) {
-            throw new QUI\Exception('You cannot delete the root file', 400); // #locale
+            throw new QUI\Exception(
+                array(
+                    'quiqqer/quiqqer',
+                    'exception.delete.root.file'
+                ),
+                400
+            );
         }
 
         // first, delete the cache
         if (method_exists($this, 'deleteCache')) {
-            $this->deleteCache();
+            try {
+                $this->deleteCache();
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addWarning($Exception->getMessage());
+            }
         }
 
         if (method_exists($this, 'deleteAdminCache')) {
-            $this->deleteAdminCache();
+            try {
+                $this->deleteAdminCache();
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addWarning($Exception->getMessage());
+            }
         }
 
 
@@ -265,9 +288,7 @@ abstract class Item extends QUI\QDOM
             QUIFile::unlink($var_folder . $this->getId());
 
         } catch (QUI\Exception $Exception) {
-            QUI::getMessagesHandler()->addAttention(
-                $Exception->getMessage()
-            );
+            QUI\System\Log::addWarning($Exception->getMessage());
         }
 
         try {
@@ -275,9 +296,7 @@ abstract class Item extends QUI\QDOM
             QUIFile::move($original, $var_folder . $this->getId());
 
         } catch (QUI\Exception $Exception) {
-            QUI::getMessagesHandler()->addAttention(
-                $Exception->getMessage()
-            );
+            QUI\System\Log::addWarning($Exception->getMessage());
         }
 
         // change db entries
@@ -299,10 +318,18 @@ abstract class Item extends QUI\QDOM
         );
 
         $this->parent_id = false;
-
         $this->setAttribute('deleted', 1);
+        $this->setAttribute('active', 0);
 
-        QUI::getEvents()->fireEvent('mediaDelete', array($this));
+        try {
+            QUI::getEvents()->fireEvent('mediaDelete', array($this));
+        } catch (QUI\ExceptionStack $Exception) {
+            QUI\System\Log::addWarning($Exception->getMessage());
+        }
+
+        if ($notFound) {
+            $this->destroy();
+        }
     }
 
     /**
@@ -323,12 +350,14 @@ abstract class Item extends QUI\QDOM
         $Media = $this->Media;
 
         // get the trash file and destroy it
-        $var_folder
-            = VAR_DIR . 'media/' . $Media->getProject()->getAttribute('name') . '/';
+        $var_folder = VAR_DIR . 'media/' . $Media->getProject()->getAttribute('name') . '/';
+        $var_file   = $var_folder . $this->getId();
 
-        $var_file = $var_folder . $this->getId();
-
-        QUIFile::unlink($var_file);
+        try {
+            QUIFile::unlink($var_file);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addWarning($Exception->getMessage());
+        }
 
         QUI::getDataBase()->delete($this->Media->getTable(), array(
             'id' => $this->getId()

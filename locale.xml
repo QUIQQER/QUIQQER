@@ -335,6 +335,21 @@
             <de><![CDATA[Suffix]]></de>
             <en><![CDATA[Suffix]]></en>
         </locale>
+
+        <locale name="exception.delete.originalfile.notfound">
+            <de><![CDATA[
+                Die Datei wurde auf dem Filesystem nicht gefunden.
+                Daher wird die Datei aus diesem Grund komplett gelöscht.
+                ]]></de>
+            <en><![CDATA[
+                The File could not be found.
+                The file is completely deleted for this reason.
+            ]]></en>
+        </locale>
+        <locale name="exception.delete.root.file">
+            <de><![CDATA[Sie können den Hauptordner nicht löschen.]]></de>
+            <en><![CDATA[You cannot delete the root file.]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="js">

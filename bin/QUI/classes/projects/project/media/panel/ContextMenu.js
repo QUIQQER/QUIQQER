@@ -132,7 +132,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
             if (!sels.length || sels.length == 1) {
                 Trash = new QUIContextmenuItem({
                     name  : 'delete',
-                    text  : 'In den Mülleimer werfen',
+                    text  : 'In den Papierkorb verschieben',
                     icon  : 'fa fa-trash-o',
                     events: {
                         onMouseDown: function () {
@@ -147,7 +147,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
             } else {
                 Trash = new QUIContextmenuItem({
                     name: 'delete',
-                    text: 'In den Mülleimer werfen',
+                    text: 'In den Papierkorb verschieben',
                     icon: 'fa fa-trash-o'
                 });
 
@@ -430,7 +430,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
             ).appendChild(
                 new QUIContextmenuItem({
                     name  : 'delete',
-                    text  : 'In den Mülleimer werfen',
+                    text  : 'In den verschieben verschieben',
                     icon  : 'fa fa-trash-o',
                     events: {
                         onMouseDown: function () {
