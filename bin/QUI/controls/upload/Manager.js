@@ -17,7 +17,6 @@
  * @event onFileComplete [ {self}, {File} ]
  * @event onFileUploadRefresh [ {self}, {Number} percent ]
  */
-
 define('controls/upload/Manager', [
 
     'qui/QUI',
@@ -259,6 +258,19 @@ define('controls/upload/Manager', [
                 QUIFile.addEvents({
                     onComplete: function (File) {
                         self.fireEvent('fileComplete', [self, File]);
+
+                        if (File.getElm().getParent() == document.body) {
+                            (function () {
+                                moofx(File.getElm()).animate({
+                                    opacity: 0
+                                }, {
+                                    duration: 200,
+                                    callback: function () {
+                                        File.getElm().destroy();
+                                    }
+                                });
+                            }).delay(1000);
+                        }
                     },
                     onRefresh : function (File, percent) {
                         self.$uploadPerCents[File.getId()] = percent;
@@ -291,6 +303,22 @@ define('controls/upload/Manager', [
 
                     if (Container) {
                         QUIFile.inject(Container, 'top');
+                    } else {
+                        // @todo multible anzeige umsetzen
+                        var Node = QUIFile.create();
+
+                        Node.setStyles({
+                            background: '#fff',
+                            border    : '1px solid #f1f1f1',
+                            bottom    : 10,
+                            boxShadow : '0 0 10px rgba(0, 0, 0, 0.3)',
+                            position  : 'absolute',
+                            right     : 10,
+                            width     : 300,
+                            zIndex    : 1000
+                        });
+
+                        Node.inject(document.body);
                     }
                 }
 

@@ -1,4 +1,3 @@
-
 /**
  * QUI upload class for multible files
  *
@@ -17,7 +16,6 @@
  * @event onDrop [{DOMEvent}, {Array file list}, {DOMNode Target}, {self}]
  * @event onDragend [{DOMEvent}, {DOMNode Target}, {self}]
  */
-
 define('classes/request/Upload', [
 
     'qui/QUI',
@@ -43,37 +41,34 @@ define('classes/request/Upload', [
      */
     return new Class({
 
-        Extends : QDOM,
-        Type    : 'classes/request/Upload',
+        Extends: QDOM,
+        Type   : 'classes/request/Upload',
 
-        $Request : null,
-        $result  : null,
+        $Request: null,
+        $result : null,
 
-        options : {
+        options: {},
 
-        },
-
-        initialize : function (elements, events) {
+        initialize: function (elements, events) {
             var self = this;
 
             this.addEvents(events);
             this.$elms = elements;
 
-            var add_events =
-            {
-                dragenter : function (event) {
+            var add_events = {
+                dragenter: function (event) {
                     self.fireEvent('dragenter', [event, event.target, self]);
                 },
 
-                dragleave : function (event) {
+                dragleave: function (event) {
                     self.fireEvent('dragleave', [event, event.target, self]);
                 },
 
-                dragover : function (event) {
+                dragover: function (event) {
                     event.preventDefault();
                 },
 
-                drop : function (event) {
+                drop: function (event) {
                     if (QUI.$droped == Slick.uidOf(event.target)) {
                         return;
                     }
@@ -98,7 +93,7 @@ define('classes/request/Upload', [
                     event.stop();
                 },
 
-                dragend : function (event) {
+                dragend: function (event) {
                     event.preventDefault();
                     event.stop();
 
@@ -107,7 +102,7 @@ define('classes/request/Upload', [
             };
 
             for (var i = 0, len = this.$elms.length; i < len; i++) {
-                this.$elms[ i ].addEvents(add_events);
+                this.$elms[i].addEvents(add_events);
             }
         },
 
@@ -118,13 +113,13 @@ define('classes/request/Upload', [
          * @param {Event} event - event triggerd from onDrop
          * @return {FileList|Array} FileList or an Array
          */
-        $getFilesByEvent : function (event) {
+        $getFilesByEvent: function (event) {
             var transfer = event.event.dataTransfer,
                 files    = transfer.files || false;
 
             if (typeof FileReader === 'undefined' ||
-                 typeof FileList === 'undefined') {
-                QUI.getMessageHandler(function () {
+                typeof FileList === 'undefined') {
+                QUI.getMessageHandler(function (MH) {
                     MH.addError("Your Browser doesn't support Drag & Drop uploads");
                 });
 

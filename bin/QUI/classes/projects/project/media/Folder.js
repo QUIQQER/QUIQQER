@@ -106,7 +106,6 @@ define('classes/projects/project/media/Folder', [
                     parentid: this.getId(),
                     events  : {
                         onComplete: function () {
-
                             if (typeof onfinish === 'function') {
                                 onfinish();
                             }
