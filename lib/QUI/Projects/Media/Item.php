@@ -115,11 +115,19 @@ abstract class Item extends QUI\QDOM
 
 
         if (method_exists($this, 'deleteCache')) {
-            $this->deleteCache();
+            try {
+                $this->deleteCache();
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addNotice($Exception->getMessage());
+            }
         }
 
         if (method_exists($this, 'createCache')) {
-            $this->createCache();
+            try {
+                $this->createCache();
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addNotice($Exception->getMessage());
+            }
         }
 
         QUI::getEvents()->fireEvent('mediaActivate', array($this));
