@@ -97,11 +97,11 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                 needles.push(this.parseDataTables(Elm));
             }
 
-            return new Promise(function (resolve, reject) {
-                if (!needles.length) {
-                    return Promise.resolve();
-                }
+            if (!needles.length) {
+                return Promise.resolve();
+            }
 
+            return new Promise(function (resolve, reject) {
                 Promise.all(needles).then(function () {
                     if (typeof callback === 'function') {
                         callback();
