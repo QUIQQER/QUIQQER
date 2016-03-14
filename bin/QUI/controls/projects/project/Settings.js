@@ -240,10 +240,11 @@ define('controls/projects/project/Settings', [
          * Save the project settings
          */
         save: function () {
-            var self = this;
+            var self   = this,
+                Active = this.getCategoryBar().getActive();
 
             this.Loader.show();
-            this.$onCategoryLeave();
+            this.$onCategoryLeave(false);
 
             var Project = this.getProject();
 
@@ -262,11 +263,11 @@ define('controls/projects/project/Settings', [
                 }
             }
 
-            Project.setConfig(this.$config).then(function () {
+            var callback = function () {
                 self.Loader.hide();
-            }).catch(function () {
-                self.Loader.hide();
-            });
+            };
+
+            Project.setConfig(this.$config).then(callback).catch(callback);
         },
 
         /**
@@ -525,15 +526,18 @@ define('controls/projects/project/Settings', [
         /**
          * unload the category and set the values into the config
          *
+         * @param {Boolean} [noHide] - hide effect, default = true
          * @return {Promise}
          */
-        $onCategoryLeave: function () {
+        $onCategoryLeave: function (noHide) {
             var Content = this.getContent(),
                 Form    = Content.getElement('form');
 
             if (!Form) {
-                return Promise.resolve(1);
+                return Promise.resolve();
             }
+
+            noHide = noHide || true;
 
             var data = QUIFormUtils.getFormData(Form);
 
@@ -551,6 +555,10 @@ define('controls/projects/project/Settings', [
                     });
 
                 this.$config.langs = langs.join(',');
+            }
+
+            if (noHide === true) {
+                return Promise.resolve();
             }
 
             return this.$hideBody();
