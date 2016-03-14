@@ -155,7 +155,10 @@ define('classes/projects/Project', [
                     self.$config = result;
 
                     if (param) {
-                        callback(self.$config[param]);
+                        if (typeof callback === 'function') {
+                            callback(self.$config[param]);
+                        }
+
                         resolve(self.$config[param]);
                         return;
                     }
