@@ -1,4 +1,3 @@
-
 /**
  * A group field / display
  * the display updates itself
@@ -6,7 +5,7 @@
  * @module controls/groups/Entry
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require controls/Control
+ * @require qui/controls/Control
  * @require Groups
  * @require Locale
  */
@@ -32,15 +31,15 @@ define('controls/groups/Entry', [
      */
     return new Class({
 
-        Extends : QUIControl,
-        Type    : 'controls/groups/Entry',
+        Extends: QUIControl,
+        Type   : 'controls/groups/Entry',
 
-        Binds : [
+        Binds: [
             '$onGroupUpdate',
             'destroy'
         ],
 
-        initialize : function (gid, options) {
+        initialize: function (gid, options) {
             this.$Group = Groups.get(gid);
             this.parent(options);
 
@@ -52,7 +51,7 @@ define('controls/groups/Entry', [
          *
          * @return {Object} classes/groups/Group
          */
-        getGroup : function () {
+        getGroup: function () {
             return this.$Group;
         },
 
@@ -62,22 +61,22 @@ define('controls/groups/Entry', [
          * @method controls/groups/Entry#create
          * @return {HTMLElement}
          */
-        create : function () {
+        create: function () {
             this.$Elm = new Element('div', {
-                'class'   : 'group-entry',
-                'data-id' : this.$Group.getId(),
+                'class'  : 'group-entry',
+                'data-id': this.$Group.getId(),
 
-                html : '<span class="group-entry-icon icon-group"></span>' +
-                       '<span class="group-entry-text"></span>' +
-                       '<span class="group-entry-close icon-remove"></span>'
+                html: '<span class="group-entry-icon fa fa-group"></span>' +
+                      '<span class="group-entry-text"></span>' +
+                      '<span class="group-entry-close fa fa-remove"></span>'
             });
 
             var Close = this.$Elm.getElement('.group-entry-close');
 
             Close.addEvent('click', this.destroy);
             Close.set({
-                alt   : Locale.get('quiqqer/system', 'groups.entry.btn.remove'),
-                title : Locale.get('quiqqer/system', 'groups.entry.btn.remove')
+                alt  : Locale.get('quiqqer/system', 'groups.entry.btn.remove'),
+                title: Locale.get('quiqqer/system', 'groups.entry.btn.remove')
             });
 
             this.$Group.addEvent('onRefresh', this.$onGroupUpdate);
@@ -91,7 +90,7 @@ define('controls/groups/Entry', [
          *
          * @method controls/groups/Entry#$onDestroy
          */
-        $onDestroy : function () {
+        $onDestroy: function () {
             this.$Group.removeEvent('refresh', this.$onGroupUpdate);
         },
 
@@ -101,12 +100,12 @@ define('controls/groups/Entry', [
          * @method controls/groups/Entry#refresh
          * @return {Object} this (controls/groups/Entry)
          */
-        refresh : function () {
+        refresh: function () {
             var GroupIcon = this.$Elm.getElement('.group-entry-icon');
 
-            GroupIcon.removeClass('icon-group');
-            GroupIcon.addClass('icon-refresh');
-            GroupIcon.addClass('icon-spin');
+            GroupIcon.removeClass('fa-group');
+            GroupIcon.addClass('fa-refresh');
+            GroupIcon.addClass('fa-spin');
 
             if (this.$Group.getAttribute('name')) {
                 this.$onGroupUpdate(this.$Group);
@@ -125,19 +124,19 @@ define('controls/groups/Entry', [
          * @param {Object} Group - classes/groups/Group
          * @return {Object} this (controls/groups/Entry)
          */
-        $onGroupUpdate : function (Group) {
+        $onGroupUpdate: function (Group) {
             if (!this.$Elm) {
                 return this;
             }
 
             var GroupIcon = this.$Elm.getElement('.group-entry-icon');
 
-            GroupIcon.addClass('icon-group');
-            GroupIcon.removeClass('icon-refresh');
-            GroupIcon.removeClass('icon-spin');
+            GroupIcon.addClass('fa-group');
+            GroupIcon.removeClass('fa-refresh');
+            GroupIcon.removeClass('fa-spin');
 
             this.$Elm.getElement('.group-entry-text')
-                     .set('html', Group.getAttribute('name'));
+                .set('html', Group.getAttribute('name'));
 
             return this;
         }

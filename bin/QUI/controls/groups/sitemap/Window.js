@@ -1,4 +1,3 @@
-
 /**
  * Groups Sitemapwindow
  *
@@ -28,26 +27,26 @@ define('controls/groups/sitemap/Window', [
      */
     return new Class({
 
-        Extends : QUIConfirm,
-        Type    : 'controls/groups/sitemap/Window',
+        Extends: QUIConfirm,
+        Type   : 'controls/groups/sitemap/Window',
 
-        Binds : [
+        Binds: [
             '$onWindowCreate',
             '$onSubmit'
         ],
 
-        options : {
+        options: {
             multible : false,
             message  : false,
             title    : Locale.get('quiqqer/system', 'groups.sitemap.window.title'),
             text     : Locale.get('quiqqer/system', 'groups.sitemap.window.text'),
             texticon : false,
-            icon     : 'icon-group',
-            maxHeight   : 300,
-            maxWidth    : 450
+            icon     : 'fa fa-group',
+            maxHeight: 300,
+            maxWidth : 450
         },
 
-        initialize : function (options) {
+        initialize: function (options) {
             this.$Win = null;
             this.$Map = null;
 
@@ -57,25 +56,25 @@ define('controls/groups/sitemap/Window', [
         /**
          * event : onCreate
          */
-        open : function () {
+        open: function () {
             this.parent();
 
             var Content = this.getContent();
 
             var SitemapBody = new Element('div', {
-                'class' : 'group-sitemap'
+                'class': 'group-sitemap'
             }).inject(Content);
 
             Content.getElements('.information').destroy();
 
             if (this.getAttribute('message')) {
                 new Element('div', {
-                    html : this.getAttribute('message')
+                    html: this.getAttribute('message')
                 }).inject(Content, 'top');
             }
 
             this.$Map = new GroupSitemap({
-                multible : this.getAttribute('multible')
+                multible: this.getAttribute('multible')
             }).inject(SitemapBody);
         },
 
@@ -84,7 +83,7 @@ define('controls/groups/sitemap/Window', [
          *
          * @method qui/controls/windows/Confirm#submit
          */
-        submit : function () {
+        submit: function () {
             this.fireEvent('submit', [this, this.$Map.getValues()]);
 
             if (this.getAttribute('autoclose')) {

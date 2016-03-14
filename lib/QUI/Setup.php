@@ -69,18 +69,18 @@ class Setup
         /**
          * header dateien
          */
-        $str = "<?php require_once '".CMS_DIR."bootstrap.php'; ?>";
+        $str = "<?php require_once '" . CMS_DIR . "bootstrap.php'; ?>";
 
-        if (file_exists(USR_DIR.'header.php')) {
-            unlink(USR_DIR.'header.php');
+        if (file_exists(USR_DIR . 'header.php')) {
+            unlink(USR_DIR . 'header.php');
         }
 
-        if (file_exists(OPT_DIR.'header.php')) {
-            unlink(OPT_DIR.'header.php');
+        if (file_exists(OPT_DIR . 'header.php')) {
+            unlink(OPT_DIR . 'header.php');
         }
 
-        file_put_contents(USR_DIR.'header.php', $str);
-        file_put_contents(OPT_DIR.'header.php', $str);
+        file_put_contents(USR_DIR . 'header.php', $str);
+        file_put_contents(OPT_DIR . 'header.php', $str);
 
         /**
          * Project Setup
@@ -102,7 +102,9 @@ class Setup
          * composer setup
          */
         $PackageManager = QUI::getPackageManager();
-        $packages = SystemFile::readDir(OPT_DIR);
+        $packages       = SystemFile::readDir(OPT_DIR);
+
+        $PackageManager->refreshServerList();
 
         // first we need all databases
         foreach ($packages as $package) {
@@ -114,15 +116,15 @@ class Setup
                 continue;
             }
 
-            if (!is_dir(OPT_DIR.'/'.$package)) {
+            if (!is_dir(OPT_DIR . '/' . $package)) {
                 continue;
             }
 
-            $package_dir = OPT_DIR.'/'.$package;
-            $list = SystemFile::readDir($package_dir);
+            $package_dir = OPT_DIR . '/' . $package;
+            $list        = SystemFile::readDir($package_dir);
 
             foreach ($list as $sub) {
-                $PackageManager->setup($package.'/'.$sub);
+                $PackageManager->setup($package . '/' . $sub);
             }
         }
 
@@ -174,7 +176,7 @@ class Setup
   * (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
   *
   * Generated File via QUIQQER
-  * Date: '.date('Y-m-d H:i:s').'
+  * Date: ' . date('Y-m-d H:i:s') . '
   *
   */
 
@@ -182,13 +184,13 @@ class Setup
 
         $OPT_DIR = OPT_DIR;
 
-        $image = CMS_DIR.'image.php';
-        $index = CMS_DIR.'index.php';
-        $quiqqer = CMS_DIR.'quiqqer.php';
-        $bootstrap = CMS_DIR.'bootstrap.php';
+        $image     = CMS_DIR . 'image.php';
+        $index     = CMS_DIR . 'index.php';
+        $quiqqer   = CMS_DIR . 'quiqqer.php';
+        $bootstrap = CMS_DIR . 'bootstrap.php';
 
         // bootstrap
-        $bootstrapContent = $fileHeader."
+        $bootstrapContent = $fileHeader . "
 \$etc_dir = dirname(__FILE__).'/etc/';
 
 if (!file_exists(\$etc_dir.'conf.ini.php')) {
@@ -212,19 +214,19 @@ if (file_exists(\$boot)) {
         // rest
         file_put_contents(
             $image,
-            $fileHeader.
+            $fileHeader .
             "require '{$OPT_DIR}quiqqer/quiqqer/image.php';\n"
         );
 
         file_put_contents(
             $index,
-            $fileHeader.
+            $fileHeader .
             "require '{$OPT_DIR}quiqqer/quiqqer/index.php';\n"
         );
 
         file_put_contents(
             $quiqqer,
-            $fileHeader.
+            $fileHeader .
             "require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';\n"
         );
     }

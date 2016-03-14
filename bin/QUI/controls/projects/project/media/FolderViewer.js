@@ -5,6 +5,8 @@
  * @module controls/projects/project/media/FolderViewer
  * @author www.pcsg.de (Henning Leutz)
  *
+ * @event onFolderCreated [self, newFolder]
+ *
  * @require qui/QUI
  * @require qui/controls/Control
  * @require qui/controls/loader/Loader
@@ -22,6 +24,7 @@ define('controls/projects/project/media/FolderViewer', [
     'qui/controls/loader/Loader',
     'qui/controls/buttons/Button',
     'qui/controls/buttons/Seperator',
+    'qui/utils/String',
     'classes/request/Upload',
     'controls/upload/Form',
     'Projects',
@@ -34,10 +37,11 @@ define('controls/projects/project/media/FolderViewer', [
              QUILoader,
              QUIButton,
              QUISeperator,
+             QUIStringUtils,
              RequestUpload,
              UploadForm,
              Projects,
-             Locale) {
+             QUILocale) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -57,9 +61,14 @@ define('controls/projects/project/media/FolderViewer', [
         ],
 
         options: {
-            project : '', // name of the project
-            folderId: 1,
-            filetype: ['image'] // types : image, file, folder
+            project      : false, // name of the project, // {string} parent project if the folder not exists
+            folderId     : false, // id of the folder
+            Parent       : false, // {Object} parent folder if the folder not exists
+            folderUrl    : false,
+            parentId     : false, // {number} parent id if the folder not exists
+            filetype     : ['image'], // types : image, file, folder
+            createMessage: QUILocale.get('quiqqer/quiqqer', 'folderviewer.create.folder'),
+            newFolderName: false
         },
 
         initialize: function (options) {
@@ -101,9 +110,9 @@ define('controls/projects/project/media/FolderViewer', [
             this.$Container = this.$Elm.getElement('.qui-project-media-folderViewer-container');
 
             this.$ButtonsDiashow = new QUIButton({
-                text     : Locale.get(lg, 'projects.project.media.folderviewer.btn.diashow'),
-                title    : Locale.get(lg, 'projects.project.media.folderviewer.btn.diashow'),
-                textimage: 'icon-play',
+                text     : QUILocale.get(lg, 'projects.project.media.folderviewer.btn.diashow'),
+                title    : QUILocale.get(lg, 'projects.project.media.folderviewer.btn.diashow'),
+                textimage: 'fa fa-play',
                 events   : {
                     onClick: this.diashow
                 },
@@ -113,9 +122,9 @@ define('controls/projects/project/media/FolderViewer', [
             this.$ButtonsSeperator = new QUISeperator().inject(this.$Buttons);
 
             this.$ButtonsUpload = new QUIButton({
-                text     : 'Dateien hochladen',
-                title    : 'Dateien hochladen',
-                textimage: 'icon-upload',
+                text     : QUILocale.get(lg, 'projects.project.site.media.panel.btn.upload'),
+                title    : QUILocale.get(lg, 'projects.project.site.media.panel.btn.upload'),
+                textimage: 'fa fa-upload',
                 events   : {
                     click: this.openUpload
                 },
@@ -157,7 +166,6 @@ define('controls/projects/project/media/FolderViewer', [
                 onDrop: this.$onDrop
             });
 
-
             return this.$Elm;
         },
 
@@ -172,6 +180,24 @@ define('controls/projects/project/media/FolderViewer', [
          * refresh the folder viewer
          */
         refresh: function () {
+            if (!this.getAttribute('project') && this.getAttribute('folderUrl')) {
+                var folderUrl = this.getAttribute('folderUrl'),
+                    params    = QUIStringUtils.getUrlParams(folderUrl);
+
+                if ("project" in params) {
+                    this.setAttribute('project', params.project);
+                }
+
+                if ("id" in params) {
+                    this.setAttribute('folderId', params.id);
+                }
+            }
+
+            if (!this.getAttribute('project')) {
+                return this.showCreateFolder();
+            }
+
+            this.hideCreateFolder();
             this.Loader.show();
 
             var self    = this,
@@ -184,7 +210,7 @@ define('controls/projects/project/media/FolderViewer', [
                 if (typeOf(Item) != 'classes/projects/project/media/Folder') {
                     self.$Container.set(
                         'html',
-                        Locale.get(lg, 'projects.project.media.folderviewer.no.folder')
+                        QUILocale.get(lg, 'projects.project.media.folderviewer.no.folder')
                     );
 
                     self.$ButtonsDiashow.disable();
@@ -204,17 +230,7 @@ define('controls/projects/project/media/FolderViewer', [
                 Item.getChildren(function (items) {
                     self.$Container.set('html', '');
 
-                    var images = 0;
-
-                    if (items.length === 0) {
-
-                        new Element('div', {
-                            html  : Locale.get(lg, 'projects.project.media.folderviewer.empty'),
-                            styles: {
-                                padding: 10
-                            }
-                        }).inject(self.$Container);
-                    }
+                    var files = 0;
 
                     for (var i = 0, len = items.length; i < len; i++) {
                         if (!allowedTypes.contains(items[i].type)) {
@@ -222,10 +238,10 @@ define('controls/projects/project/media/FolderViewer', [
                         }
 
                         self.$createImageItem(items[i]).inject(self.$Container);
-                        images++;
+                        files++;
                     }
 
-                    if (images >= 2) {
+                    if (files >= 2) {
                         self.$ButtonsDiashow.show();
                         self.$ButtonsSeperator.show();
 
@@ -233,6 +249,27 @@ define('controls/projects/project/media/FolderViewer', [
                     } else {
                         self.$ButtonsDiashow.hide();
                         self.$ButtonsSeperator.hide();
+                    }
+
+                    if (files === 0) {
+                        var message = QUILocale.get(
+                            lg,
+                            'projects.project.media.folderviewer.empty'
+                        );
+
+                        if (!allowedTypes.contains('image')) {
+                            message = QUILocale.get(
+                                lg,
+                                'projects.project.media.fileviewer.empty'
+                            );
+                        }
+
+                        new Element('div', {
+                            html  : message,
+                            styles: {
+                                padding: 10
+                            }
+                        }).inject(self.$Container);
                     }
 
                     self.Loader.hide();
@@ -303,10 +340,10 @@ define('controls/projects/project/media/FolderViewer', [
                     },
                     events      : {
                         onCancel  : function () {
-                            Sheet.hide();
+                            Sheet.fireEvent('close');
                         },
                         onComplete: function () {
-                            Sheet.hide();
+                            Sheet.fireEvent('close');
                             this.refresh();
                         }.bind(this)
                     }
@@ -317,7 +354,19 @@ define('controls/projects/project/media/FolderViewer', [
                 Upload.setParam('parentid', this.getAttribute('folderId'));
                 Upload.setParam('extract', 0);
 
+                Upload.getElm().setStyles({
+                    opacity: 0,
+                    left   : -20
+                });
+
                 Upload.inject(Content);
+
+                moofx(Upload.getElm()).animate({
+                    left   : 0,
+                    opacity: 1
+                }, {
+                    duration: 200
+                });
 
             }.bind(this), {
                 buttons: false
@@ -344,16 +393,16 @@ define('controls/projects/project/media/FolderViewer', [
                 cursor   = 'default';
             }
 
-            return new Element('div', {
+            var Container = new Element('div', {
                 'class'     : 'qui-project-media-folderViewer-item',
-                html        : '<span class="qui-project-media-folderViewer-item-title">' +
+                html        : '<div class="qui-project-media-folderViewer-item-image"></div>' +
+                              '<span class="qui-project-media-folderViewer-item-title">' +
                               imageData.name +
                               '</span>',
                 alt         : imageData.name,
                 title       : imageData.name,
                 styles      : {
-                    backgroundImage: 'url(' + imageSrc + ')',
-                    cursor         : cursor
+                    cursor: cursor
                 },
                 'data-src'  : dataSrc,
                 'data-short': imageData.short,
@@ -369,6 +418,34 @@ define('controls/projects/project/media/FolderViewer', [
                     }
                 }
             });
+
+            var IC = Container.getElement(
+                '.qui-project-media-folderViewer-item-image'
+            );
+
+            IC.setStyle('opacity', 0);
+            IC.setStyle('display', 'inline');
+
+            require([
+                'image!' + imageSrc
+            ], function (Image) {
+                var IC = this.getElement(
+                    '.qui-project-media-folderViewer-item-image'
+                );
+
+                IC.setStyle('backgroundImage', 'url(' + Image.src + ')');
+
+                moofx(IC).animate({
+                    opacity: 1
+                }, {
+                    duration: 200
+                });
+
+            }.bind(Container), function (err) {
+                console.error(err);
+            }.bind(Container));
+
+            return Container;
         },
 
         /**
@@ -395,7 +472,7 @@ define('controls/projects/project/media/FolderViewer', [
 
             var Message = new Element('div', {
                 'class': 'qui-project-media-folderViewer-upload-message',
-                html   : Locale.get(lg, 'projects.project.media.folderviewer.upload.message'),
+                html   : QUILocale.get(lg, 'projects.project.media.folderviewer.upload.message'),
                 styles : {
                     opacity: 0
                 }
@@ -429,7 +506,7 @@ define('controls/projects/project/media/FolderViewer', [
             });
 
             new QUIButton({
-                text  : Locale.get(lg, 'projects.project.media.folderviewer.upload.btn.start'),
+                text  : QUILocale.get(lg, 'projects.project.media.folderviewer.upload.btn.start'),
                 styles: {
                     clear : 'both',
                     margin: '20px 0 0'
@@ -448,7 +525,7 @@ define('controls/projects/project/media/FolderViewer', [
             }).inject(Message);
 
             new QUIButton({
-                text  : Locale.get(lg, 'projects.project.media.folderviewer.upload.btn.cancel'),
+                text  : QUILocale.get(lg, 'projects.project.media.folderviewer.upload.btn.cancel'),
                 styles: {
                     'float': 'right',
                     margin : '20px 0 0'
@@ -467,6 +544,71 @@ define('controls/projects/project/media/FolderViewer', [
                 opacity: 1,
                 top    : top
             });
+        },
+
+        /**
+         * Show the create folder dialog
+         */
+        showCreateFolder: function () {
+            var self = this;
+
+            return new Promise(function (resolve, reject) {
+                require([
+                    'controls/projects/project/media/CreateFolder'
+                ], function (CreateFolder) {
+
+                    self.$Buttons.setStyle('display', 'none');
+                    self.$Container.setStyle('display', 'none');
+
+                    var Container = new Element('div', {
+                        'class': 'create-folder-container',
+                        html   : self.getAttribute('createMessage'),
+                        styles : {
+                            background: '#fff',
+                            fontSize  : 14,
+                            fontStyle : 'italic',
+                            height    : '100%',
+                            padding   : 20,
+                            position  : 'absolute',
+                            textAlign : 'center',
+                            width     : '100%'
+                        }
+                    }).inject(self.getElm());
+
+                    new QUIButton({
+                        text  : 'Neuen Mediaordner anlegen',
+                        styles: {
+                            'float'  : 'none',
+                            marginTop: 10
+                        },
+                        events: {
+                            onClick: function () {
+                                new CreateFolder({
+                                    newFolderName: self.getAttribute('newFolderName'),
+                                    Parent       : self.getAttribute('Parent'),
+                                    events       : {
+                                        onSubmit: function (CF, Item) {
+                                            self.fireEvent('folderCreated', [self, Item]);
+                                        }
+                                    }
+                                }).open();
+                            }
+                        }
+                    }).inject(Container);
+
+                    resolve();
+
+                }, reject);
+            });
+        },
+
+        /**
+         * Hide the create folder dialog
+         */
+        hideCreateFolder: function () {
+            this.getElm().getElements('.create-folder-container').destroy();
+            this.$Buttons.setStyle('display', null);
+            this.$Container.setStyle('display', null);
         }
     });
 });

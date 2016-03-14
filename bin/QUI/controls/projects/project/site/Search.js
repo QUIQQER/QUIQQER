@@ -45,7 +45,7 @@ define('controls/projects/project/site/Search', [
         ],
 
         options: {
-            icon : 'icon-search',
+            icon : 'fa fa-search',
             title: Locale.get(lg, 'projects.project.site.search.title'),
             value: ''
         },
@@ -85,18 +85,18 @@ define('controls/projects/project/site/Search', [
                 'html',
 
                 '<div class="control-site-search-label box">' +
-                    '<label for="">' + Locale.get(lg, 'projects.project.site.search.label') + '</label>' +
+                '<label for="">' + Locale.get(lg, 'projects.project.site.search.label') + '</label>' +
 
-                    '<select name="field">' +
-                        '<option value="">' + Locale.get(lg, 'projects.project.site.search.all_attributes') + '</option>' +
-                        '<option value="id">' + Locale.get(lg, 'id') + '</option>' +
-                        '<option value="name">' + Locale.get(lg, 'name') + '</option>' +
-                        '<option value="title">' + Locale.get(lg, 'title') + '</option>' +
-                    '</select>' +
-                    '<select name="project">' +
-                        '<option value="">' + Locale.get(lg, 'projects.project.site.search.all_projects') + '</option>' +
-                    '</select>' +
-                    '<input type="text" name="search" />' +
+                '<select name="field">' +
+                '<option value="">' + Locale.get(lg, 'projects.project.site.search.all_attributes') + '</option>' +
+                '<option value="id">' + Locale.get(lg, 'id') + '</option>' +
+                '<option value="name">' + Locale.get(lg, 'name') + '</option>' +
+                '<option value="title">' + Locale.get(lg, 'title') + '</option>' +
+                '</select>' +
+                '<select name="project">' +
+                '<option value="">' + Locale.get(lg, 'projects.project.site.search.all_projects') + '</option>' +
+                '</select>' +
+                '<input type="text" name="search" />' +
                 '</div>' +
                 '<label>' + Locale.get(lg, 'projects.project.site.results.label') + '</label>'
             );
@@ -113,7 +113,7 @@ define('controls/projects/project/site/Search', [
 
             new QUIButton({
                 text     : Locale.get(lg, 'projects.project.site.btn.start'),
-                textimage: 'icon-search',
+                textimage: 'fa fa-search',
                 events   : {
                     onClick: function () {
                         self.search();
@@ -211,6 +211,10 @@ define('controls/projects/project/site/Search', [
                 );
 
                 for (var project in list) {
+                    if (!list.hasOwnProperty(project)) {
+                        continue;
+                    }
+
                     new Element('option', {
                         html : project,
                         value: project
@@ -261,7 +265,7 @@ define('controls/projects/project/site/Search', [
 
                 for (var i = 0, len = data.length; i < len; i++) {
                     result.data[i].open = {
-                        icon       : 'fa fa-file-o icon-file-alt',
+                        icon       : 'fa fa-file-o',
                         siteid     : data[i].id,
                         siteproject: data[i].project,
                         title      : Locale.get(lg, 'open.site'),

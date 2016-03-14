@@ -7,6 +7,7 @@
  * @require qui/QUI
  * @require qui/controls/Control
  * @require qui/controls/buttons/Button
+ * @require Locale
  * @require css!controls/menu/Search.css
  */
 define('controls/menu/Search', [
@@ -14,10 +15,11 @@ define('controls/menu/Search', [
     'qui/QUI',
     'qui/controls/Control',
     'qui/controls/buttons/Button',
+    'Locale',
 
     'css!controls/menu/Search.css'
 
-], function (QUI, QUIControl, QUIButton) {
+], function (QUI, QUIControl, QUIButton, QUILocale) {
     "use strict";
 
     return new Class({
@@ -68,16 +70,16 @@ define('controls/menu/Search', [
 
 
             this.$SearchType = new QUIButton({
-                textimage: 'icon-search',
-                text     : 'Suche', // #locale
+                textimage: 'fa fa-search',
+                text     : QUILocale.get('quiqqer/quiqqer', 'menu.search.title'),
                 styles   : {
                     lineHeight: 38
                 }
             }).inject(this.$Elm, 'top');
 
             this.$SearchType.appendChild({
-                icon  : 'fa fa-file-o icon-file-alt',
-                text  : 'Seite suchen',  // #locale
+                icon  : 'fa fa-file-o',
+                text  : QUILocale.get('quiqqer/quiqqer', 'menu.search.sites.title'),
                 search: 'site',
                 events: {
                     onClick: this.$onChange
@@ -85,8 +87,8 @@ define('controls/menu/Search', [
             });
 
             this.$SearchType.appendChild({
-                icon  : 'icon-user',
-                text  : 'Benutzer suchen',  // #locale
+                icon  : 'fa fa-user',
+                text  : QUILocale.get('quiqqer/quiqqer', 'menu.search.users.title'),
                 search: 'user',
                 events: {
                     onClick: this.$onChange
@@ -94,8 +96,8 @@ define('controls/menu/Search', [
             });
 
             this.$SearchType.appendChild({
-                icon  : 'icon-group',
-                text  : 'Gruppe suchen',  // #locale
+                icon  : 'fa fa-group',
+                text  : QUILocale.get('quiqqer/quiqqer', 'menu.search.groups.title'),
                 search: 'group',
                 events: {
                     onClick: this.$onChange
@@ -158,7 +160,7 @@ define('controls/menu/Search', [
                     this.$Input.setStyle('display', 'none');
 
                     this.$SearchType.setAttribute('text', 'Suche');
-                    this.$SearchType.setAttribute('textimage', 'icon-search');
+                    this.$SearchType.setAttribute('textimage', 'fa fa-search');
 
                     this.$SearchType
                         .getElm()
@@ -186,7 +188,7 @@ define('controls/menu/Search', [
 
             this.$SearchType.setAttribute(
                 'textimage',
-                'icon-refresh icon-spin'
+                'fa fa-spinner fa-spin'
             );
 
             var Prom  = false,
@@ -240,8 +242,8 @@ define('controls/menu/Search', [
                     ).then(function (Panel) {
 
                         Panel.setAttributes({
-                                   value: value
-                               });
+                            value: value
+                        });
 
                         Panel.search();
 
@@ -307,7 +309,5 @@ define('controls/menu/Search', [
                 }, reject);
             });
         }
-
     });
-
 });

@@ -648,7 +648,7 @@ class Project
             return $this->children[$id];
         }
 
-        $Site                 = new Site($this, (int)$id);
+        $Site                = new Site($this, (int)$id);
         $this->children[$id] = $Site;
 
         return $Site;
@@ -755,13 +755,11 @@ class Project
                 $desc  = $Layout->getElementsByTagName('description');
 
                 if ($title->length) {
-                    $data['title']
-                        = QUI\Utils\DOM::getTextFromNode($title->item(0));
+                    $data['title'] = QUI\Utils\DOM::getTextFromNode($title->item(0));
                 }
 
                 if ($desc->length) {
-                    $data['description']
-                        = QUI\Utils\DOM::getTextFromNode($desc->item(0));
+                    $data['description'] = QUI\Utils\DOM::getTextFromNode($desc->item(0));
                 }
 
                 $result[] = $data;
@@ -1099,7 +1097,7 @@ class Project
         // multi lingual table
         $multiLingualTable = QUI_DB_PRFX . $this->name . '_multilingual';
 
-        $Table->appendFields($multiLingualTable, array(
+        $Table->addColumn($multiLingualTable, array(
             'id' => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY'
         ));
 
@@ -1107,7 +1105,7 @@ class Project
         foreach ($this->langs as $lang) {
             $table = QUI_DB_PRFX . $this->name . '_' . $lang . '_sites';
 
-            $Table->appendFields($table, array(
+            $Table->addColumn($table, array(
                 'id' => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
                 'name' => 'varchar(255) NOT NULL',
                 'title' => 'tinytext',
@@ -1185,7 +1183,7 @@ class Project
             // Beziehungen
             $table = QUI_DB_PRFX . $this->name . '_' . $lang . '_sites_relations';
 
-            $Table->appendFields($table, array(
+            $Table->addColumn($table, array(
                 'parent' => 'bigint(20)',
                 'child' => 'bigint(20)',
                 'oparent' => 'bigint(20)'
@@ -1195,7 +1193,7 @@ class Project
             $Table->setIndex($table, 'child');
 
             // multilingual field
-            $Table->appendFields(
+            $Table->addColumn(
                 $multiLingualTable,
                 array($lang => 'bigint(20)')
             );
@@ -1206,7 +1204,6 @@ class Project
 
         // Media Setup
         $this->getMedia()->setup();
-
 
         // read xml files
         $dir = USR_DIR . $this->name . '/';
@@ -1222,6 +1219,16 @@ class Project
         );
         QUI\Update::importEvents($dir . 'events.xml');
         QUI\Update::importMenu($dir . 'menu.xml');
+
+        // translations project names etc.
+        $translationGroup = 'project/' . $this->getName();
+        $translationVar   = 'title';
+
+        $translation = QUI\Translator::get($translationGroup, $translationVar);
+
+        if (!isset($translation[0])) {
+            QUI\Translator::add($translationGroup, $translationVar);
+        }
 
         // settings
         if (!file_exists($dir . 'settings.xml')) {

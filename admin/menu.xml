@@ -59,7 +59,7 @@
     <!-- Apps -->
         <item parent="/apps/"
               name="search"
-              icon="icon-search"
+              icon="fa fa-search"
               require="controls/projects/project/site/Search"
         >
             <locale  group="quiqqer/system" var="menu.file.search.text" />
@@ -69,7 +69,7 @@
         <!-- Projekt Verwaltung -->
         <item parent="/extras/"
               name="projects"
-              icon="icon-home"
+              icon="fa fa-home"
               require="controls/projects/Manager"
         >
             <locale group="quiqqer/system" var="menu.extras.projects.text" />
@@ -77,14 +77,14 @@
         <!-- Zugriffsrechte bearbeiten -->
         <item parent="/extras/"
               name="rights"
-              icon="icon-unlock-alt"
+              icon="fa fa-unlock-alt"
         >
             <locale group="quiqqer/system" var="menu.extras.rights.text" />
         </item>
             <!-- Benutzer -->
             <item parent="/extras/rights/"
                   name="users"
-                  icon="icon-user"
+                  icon="fa fa-user"
                   require="controls/users/Panel"
             >
                 <locale group="quiqqer/system" var="menu.extras.users.text" />
@@ -92,7 +92,7 @@
             <!-- Gruppen -->
             <item parent="/extras/rights/"
                   name="groups"
-                  icon="icon-group"
+                  icon="fa fa-group"
                   require="controls/groups/Panel"
             >
                 <locale group="quiqqer/system" var="menu.extras.groups.text" />
@@ -100,7 +100,7 @@
             <!-- Zugriffsrechte bearbeiten -->
             <item parent="/extras/rights/"
                   name="permissions"
-                  icon="icon-shield fa fa-shield"
+                  icon="fa fa-shield"
                   require="controls/permissions/Panel"
             >
                 <locale group="quiqqer/system" var="menu.extras.permissions.text" />
@@ -110,7 +110,7 @@
         <!-- Papierkorb -->
         <item parent="/extras/"
               name="trash"
-              icon="fa fa-trash-o icon-trash"
+              icon="fa fa-trash-o"
               require="controls/trash/Panel"
         >
             <locale group="quiqqer/system" var="menu.extras.trash.text" />
@@ -125,7 +125,7 @@
         </item>
             <item parent="/settings/quiqqer/"
                   name="media"
-                  icon="icon-font"
+                  icon="fa fa-font"
                   require="controls/editors/Settings"
             >
                 <locale group="quiqqer/system" var="menu.settings.editor.text" />
@@ -133,7 +133,7 @@
 
             <item parent="/settings/quiqqer/"
                   name="vhosts"
-                  icon="icon-external-link"
+                  icon="fa fa-external-link"
                   require="controls/system/VHosts"
             >
                 <locale group="quiqqer/system" var="menu.settings.vhosts.text" />
@@ -142,7 +142,7 @@
 
         <item parent="/settings/"
               name="projects"
-              icon="icon-home"
+              icon="fa fa-home"
         >
             <locale group="quiqqer/system" var="menu.settings.projects.text" />
         </item>
@@ -150,7 +150,7 @@
     <!-- Profil -->
         <item parent="/profile/"
               name="userProfile"
-              icon="icon-user"
+              icon="fa fa-user"
               require="controls/system/Profile"
         >
             <locale group="quiqqer/system" var="menu.profile.userProfile.text" />
@@ -160,7 +160,7 @@
     <!-- profile -->
         <item parent="/profile/"
               name="workspaces"
-              icon="icon-laptop"
+              icon="fa fa-laptop"
         >
             <locale group="quiqqer/system" var="menu.profile.workspace.text" />
         </item>

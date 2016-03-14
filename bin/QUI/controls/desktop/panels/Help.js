@@ -1,4 +1,3 @@
-
 /**
  * Help panel
  *
@@ -20,52 +19,51 @@ define('controls/desktop/panels/Help', [
 
     return new Class({
 
-        Extends : QUIPanel,
-        Type    : 'controls/desktop/panels/Help',
+        Extends: QUIPanel,
+        Type   : 'controls/desktop/panels/Help',
 
-        Binds : [
+        Binds: [
             '$onCreate',
             '$onResize'
         ],
 
-        initialize : function (options) {
+        initialize: function (options) {
             this.parent(options);
 
             this.$Frame = null;
 
             this.setAttribute('title', 'QUIQQER-Hilfe'); // #locale
-            this.setAttribute('icon', 'fa fa-h-square icon-h-sign');
+            this.setAttribute('icon', 'fa fa-h-square');
 
             this.addEvents({
-                onCreate : this.$onCreate,
-                onResize : this.$onResize
+                onCreate: this.$onCreate,
+                onResize: this.$onResize
             });
         },
 
         /**
          * event : on create
          */
-        $onCreate : function () {
+        $onCreate: function () {
             var self    = this,
                 Content = this.getContent();
 
             Content.setStyles({
-                padding : 0
+                padding: 0
             });
 
             new QUIButton({
-                text : 'Hilfe laden', // #locale
-                icon : 'icon-refresh',
-                styles : {
-                    fontSize : 18,
-                    width: 200,
-                    margin: '20px auto',
+                text  : 'Hilfe laden', // #locale
+                icon  : 'fa fa-refresh',
+                styles: {
+                    fontSize: 18,
+                    width   : 200,
+                    margin  : '20px auto',
                     'float' : 'none',
-                    display: 'block'
+                    display : 'block'
                 },
-                events :
-                {
-                    onClick : function () {
+                events: {
+                    onClick: function () {
                         self.load();
                     }
                 }
@@ -75,7 +73,7 @@ define('controls/desktop/panels/Help', [
         /**
          * event : on resize
          */
-        $onResize : function () {
+        $onResize: function () {
             if (!this.$Frame) {
                 return;
             }
@@ -84,15 +82,15 @@ define('controls/desktop/panels/Help', [
                 size    = Content.getSize();
 
             this.$Frame.setStyles({
-                height : size.y - 4,
-                width  : '100%'
+                height: size.y - 4,
+                width : '100%'
             });
         },
 
         /**
          * load the help
          */
-        load : function () {
+        load: function () {
             var self    = this,
                 Content = this.getContent();
 
@@ -101,12 +99,12 @@ define('controls/desktop/panels/Help', [
             this.Loader.show();
 
             this.$Frame = new Element('iframe', {
-                src : '//doc.quiqqer.com/',
-                styles : {
-                    border : 0
+                src        : '//doc.quiqqer.com/',
+                styles     : {
+                    border: 0
                 },
-                frameborder : 0,
-                border: 0
+                frameborder: 0,
+                border     : 0
             }).inject(Content);
 
             // check if frame is loaded

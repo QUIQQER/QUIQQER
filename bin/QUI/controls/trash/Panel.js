@@ -60,7 +60,7 @@ define('controls/trash/Panel', [
         ],
 
         options: {
-            icon : 'fa fa-trash-o icon-trash',
+            icon : 'fa fa-trash-o',
             title: Locale.get(lg, 'trash.panel.title')
         },
 
@@ -101,7 +101,7 @@ define('controls/trash/Panel', [
                 name     : 'removeAll',
                 text     : Locale.get(lg, 'trash.panel.btn.delete.all'),
                 title    : Locale.get(lg, 'trash.panel.btn.delete.all.title'),
-                textimage: 'icon-remove',
+                textimage: 'fa fa-remove',
                 events   : {
                     onClick: this.openClearWindow
                 }
@@ -111,7 +111,7 @@ define('controls/trash/Panel', [
                 name     : 'remove',
                 text     : Locale.get(lg, 'trash.panel.btn.delete'),
                 title    : Locale.get(lg, 'trash.panel.btn.delete.title'),
-                textimage: 'icon-remove',
+                textimage: 'fa fa-remove',
                 disabled : true,
                 events   : {
                     onClick: this.openDestroyWindow
@@ -122,7 +122,7 @@ define('controls/trash/Panel', [
                 name     : 'restore',
                 text     : Locale.get(lg, 'trash.panel.btn.restore'),
                 title    : Locale.get(lg, 'trash.panel.btn.restore.title'),
-                textimage: 'icon-reply-all',
+                textimage: 'fa fa-reply-all',
                 disabled : true,
                 events   : {
                     onClick: this.openRestoreWindow
@@ -143,14 +143,14 @@ define('controls/trash/Panel', [
                         self.$Select.appendChild(
                             project + ' ( ' + langs[i] + ' )',
                             project + ',' + langs[i],
-                            'icon-home'
+                            'fa fa-home'
                         );
                     }
 
                     self.$Select.appendChild(
                         project + ' ( Media )',
                         project + ',media',
-                        'fa fa-picture-o icon-picture'
+                        'fa fa-picture-o'
                     );
                 }
 
@@ -230,7 +230,7 @@ define('controls/trash/Panel', [
 
             new QUIConfirm({
                 title      : Locale.get(lg, 'trash.panel.window.delete.all.title'),
-                icon       : 'icon-remove',
+                icon       : 'fa fa-remove',
                 text       : Locale.get(lg, 'trash.panel.window.delete.all.text'),
                 information: Locale.get(lg, 'trash.panel.window.delete.all.information'),
                 maxHeight  : 300,
@@ -302,7 +302,7 @@ define('controls/trash/Panel', [
 
             new QUIConfirm({
                 title      : Locale.get(lg, 'trash.panel.window.delete.title'),
-                icon       : 'icon-remove',
+                icon       : 'fa fa-remove',
                 text       : Locale.get(lg, 'trash.panel.window.delete.text'),
                 information: information,
                 maxHeight  : 300,

@@ -10,12 +10,13 @@
  * @require Locale
  * @require css!controls/users/Entry.css
  */
-
 define('controls/users/Entry', [
+
     'qui/controls/Control',
     'Users',
     'Locale',
     'css!controls/users/Entry.css'
+
 ], function (QUIControl, Users, Locale) {
     "use strict";
 
@@ -67,9 +68,9 @@ define('controls/users/Entry', [
                 'data-id'   : this.$User.getId(),
                 'data-quiid': this.getId(),
                 title       : this.$User.getName() + ' - ' + this.$User.getId(),
-                html        : '<div class="users-entry-icon"></div>' +
+                html        : '<div class="users-entry-icon fa"></div>' +
                               '<div class="users-entry-text"></div>' +
-                              '<div class="users-entry-close icon-remove"></div>'
+                              '<div class="users-entry-close fa fa-remove"></div>'
             });
 
             var Close = this.$Elm.getElement('.users-entry-close');
@@ -110,9 +111,9 @@ define('controls/users/Entry', [
                 return this;
             }
 
-            UserIcon.removeClass('icon-user');
-            UserIcon.addClass('icon-refresh');
-            UserIcon.addClass('icon-spin');
+            UserIcon.removeClass('fa-user');
+            UserIcon.addClass('fa-spinner');
+            UserIcon.addClass('fa-spin');
 
             if (this.$User.getAttribute('name')) {
                 this.$onUserUpdate(this.$User);
@@ -141,9 +142,9 @@ define('controls/users/Entry', [
                 return this;
             }
 
-            UserIcon.addClass('icon-user');
-            UserIcon.removeClass('icon-refresh');
-            UserIcon.removeClass('icon-spin');
+            UserIcon.addClass('fa-user');
+            UserIcon.removeClass('fa-spinner');
+            UserIcon.removeClass('fa-spin');
 
             this.$Elm.getElement('.users-entry-text')
                 .set('html', User.getName() + ' (' + User.getId() + ')');

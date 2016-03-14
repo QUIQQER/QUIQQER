@@ -64,7 +64,7 @@
 
     {foreach from=$maillist item=mail}
     <div class="mail">
-        <span class="icon icon-envelope"></span>
+        <span class="fa fa-envelope"></span>
         {$mail}
     </div>
     {/foreach}
@@ -76,7 +76,7 @@
                 {assign var="cssclass" value="mobile-phone"}
             {/if}
 
-            <span class="icon icon-{$cssclass}"></span>
+            <span class="fa fa-{$cssclass}"></span>
             {$phone.no}
         </p>
     {/foreach}

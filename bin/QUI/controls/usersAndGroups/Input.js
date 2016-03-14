@@ -351,14 +351,14 @@ define('controls/usersAndGroups/Input', [
 
                     if (type == 'group') {
                         new Element('span', {
-                            'class': 'icon-group',
+                            'class': 'fa fa-group',
                             styles : {
                                 marginRight: 5
                             }
                         }).inject(Entry, 'top');
                     } else {
                         new Element('span', {
-                            'class': 'icon-user',
+                            'class': 'fa fa-user',
                             styles : {
                                 marginRight: 5
                             }

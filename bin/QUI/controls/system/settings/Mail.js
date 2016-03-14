@@ -65,7 +65,7 @@ define('controls/system/settings/Mail', [
 
             new QUIButton({
                 text     : QUILocale.get('quiqqer/quiqqer', 'test.mail.button'),
-                textimage: 'fa fa-envelope-o icon-envelope-alt',
+                textimage: 'fa fa-envelope-o',
                 events   : {
                     onClick: this.testMailSettings
                 },
@@ -230,13 +230,13 @@ define('controls/system/settings/Mail', [
 
             Button.setAttribute(
                 'textimage',
-                'icon-spinner icon-spin fa fa-spinner fa-spin'
+                'fa fa-spinner fa-spin'
             );
 
             QUIAjax.get('ajax_system_mailTest', function () {
                 Button.setAttribute(
                     'textimage',
-                    'fa fa-envelope-o icon-envelope-alt'
+                    'fa fa-envelope-o'
                 );
             }, {
                 params : JSON.encode(params),
@@ -250,7 +250,7 @@ define('controls/system/settings/Mail', [
 
                     Button.setAttribute(
                         'textimage',
-                        'fa fa-envelope-o icon-envelope-alt'
+                        'fa fa-envelope-o'
                     );
                 }
             });

@@ -157,6 +157,10 @@ class Console
             exit;
         }
 
+        QUI::getSession()->set('uid', $User->getId());
+
+        QUI\Rights\Permission::setUser($User);
+
         if (!QUI\Rights\Permission::hasPermission('quiqqer.system.console')) {
             $this->writeLn("Missing rights to use the console\n\n", 'red');
             $this->clearMsg();
@@ -264,6 +268,11 @@ class Console
                 $Exec->execute();
 
             } catch (QUI\Exception $Exception) {
+                Log::addAlert($Exception->getMessage(), array(
+                    'type' => 'cron',
+                    'tool' => $tool
+                ));
+
                 $this->writeLn($Exception->getMessage(), 'red');
                 $this->writeLn();
 

@@ -333,7 +333,7 @@
                     <text>
                         <locale group="quiqqer/system" var="quiqqer.settings.database" />
                     </text>
-                    <icon>icon-briefcase</icon>
+                    <icon>fa fa-briefcase</icon>
 
                     <settings title="database" name="database">
                         <title>
@@ -372,7 +372,7 @@
                     <text>
                         <locale group="quiqqer/system" var="email"/>
                     </text>
-                    <icon>fa fa-envelope-o icon-envelope-alt</icon>
+                    <icon>fa fa-envelope-o</icon>
 
                     <settings title="mail" name="mail">
                         <title>
@@ -479,7 +479,7 @@
                     <text>
                         <locale group="quiqqer/system" var="quiqqer.settings.auth"/>
                     </text>
-                    <icon>icon-user</icon>
+                    <icon>fa fa-user</icon>
 
                     <settings title="auth" name="auth">
                         <title>
@@ -548,7 +548,7 @@
                     <text>
                         <locale group="quiqqer/system" var="quiqqer.settings.date_formats"/>
                     </text>
-                    <icon>icon-calendar</icon>
+                    <icon>fa fa-calendar</icon>
 
 
                     <settings title="date_timezone" name="date_timezone">
@@ -585,7 +585,7 @@
                     <text>
                         <locale group="quiqqer/system" var="quiqqer.settings.gui"/>
                     </text>
-                    <icon>icon-user</icon>
+                    <icon>fa fa-user</icon>
 
                     <settings title="gui" name="gui">
                         <title>

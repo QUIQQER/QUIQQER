@@ -126,14 +126,14 @@ define('controls/projects/project/site/SiteChildrenSort', [
                 }],
                 buttons    : [{
                     name     : 'sortSave',
-                    textimage: 'icon-save',
+                    textimage: 'fa fa-save',
                     text     : Locale.get(lg, 'projects.project.site.childrensort.save'),
                     events   : {
                         onClick: function (Btn) {
-                            Btn.setAttribute('textimage', 'icon-refresh icon-spin');
+                            Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
                             self.save(function () {
-                                Btn.setAttribute('textimage', 'icon-save');
+                                Btn.setAttribute('textimage', 'fa fa-save');
                             });
                         }
                     }
@@ -141,7 +141,7 @@ define('controls/projects/project/site/SiteChildrenSort', [
                     type: 'seperator'
                 }, {
                     name     : 'up',
-                    textimage: 'icon-angle-up',
+                    textimage: 'fa fa-angle-up',
                     text     : Locale.get(lg, 'up'),
                     disabled : true,
                     events   : {
@@ -151,7 +151,7 @@ define('controls/projects/project/site/SiteChildrenSort', [
                     }
                 }, {
                     name     : 'down',
-                    textimage: 'icon-angle-down',
+                    textimage: 'fa fa-angle-down',
                     text     : Locale.get(lg, 'down'),
                     disabled : true,
                     events   : {
@@ -357,5 +357,4 @@ define('controls/projects/project/site/SiteChildrenSort', [
             this.$GridTable.resize();
         }
     });
-
 });

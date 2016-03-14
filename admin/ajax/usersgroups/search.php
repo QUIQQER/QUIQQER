@@ -27,7 +27,8 @@ QUI::$Ajax->registerFunction(
         if (isset($params['searchSettings'])
             && isset($params['searchSettings']['userSearchString'])
         ) {
-            $params['search'] = $params['searchSettings']['userSearchString'];
+            $params['search']         = $params['searchSettings']['userSearchString'];
+            $params['searchSettings'] = array('id', 'name');
         }
 
         $groups = QUI::$Ajax->callRequestFunction('ajax_groups_search', array(
@@ -36,7 +37,7 @@ QUI::$Ajax->registerFunction(
 
         $groups = $groups['result'];
 
-        
+
         // combine results
         $result = array(
             'page' => $users['page'],

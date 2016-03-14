@@ -76,12 +76,13 @@ class Session
 
 
         // options
-        if ($sess = QUI::conf('session', 'max_life_time')) {
-            $this->lifetime = $sess;
+        if (QUI::conf('session', 'max_life_time')) {
+            $this->lifetime = QUI::conf('session', 'max_life_time');
         }
 
         $storageOptions = array(
-            'cookie_lifetime' => $this->lifetime
+            'cookie_lifetime' => $this->lifetime,
+            'gc_maxlifetime' => $this->lifetime
         );
 
         if (!class_exists('NativeSessionStorage')) {
@@ -125,6 +126,8 @@ class Session
             $this->Session
                 = new \Symfony\Component\HttpFoundation\Session\Session($this->Storage);
         }
+
+        $this->start();
     }
 
     /**

@@ -113,6 +113,18 @@ define('classes/projects/project/media/Item', [
         },
 
         /**
+         * Return the image.php path
+         *
+         * @return {String}
+         */
+        getUrl: function () {
+            var project = this.getMedia().getProject().getName(),
+                id      = this.getId();
+
+            return 'image.php?project=' + project + '&id=' + id;
+        },
+
+        /**
          * Return the ID of the Parent
          *
          * @method classes/projects/project/media/Item#getParentId

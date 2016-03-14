@@ -66,7 +66,7 @@ define('controls/projects/Select', [
             this.Loader.show();
 
             // empty value
-            self.$Select.appendChild('', '', 'icon-home');
+            self.$Select.appendChild('', '', 'fa fa-home');
 
             Projects.getList(function (result) {
                 var i, len, langs, project;
@@ -80,7 +80,7 @@ define('controls/projects/Select', [
                         self.$Select.appendChild(
                             project,
                             project,
-                            'icon-home'
+                            'fa fa-home'
                         );
 
                         continue;
@@ -92,7 +92,7 @@ define('controls/projects/Select', [
                         self.$Select.appendChild(
                             project + ' ( ' + langs[i] + ' )',
                             project + ',' + langs[i],
-                            'icon-home'
+                            'fa fa-home'
                         );
                     }
                 }

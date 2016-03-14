@@ -70,7 +70,7 @@ if (!empty($error_mail)) {
 
 // GET clearing
 foreach ($_GET as $key => $value) {
-    $_GET[$key] = \QUI\Utils\Security\Orthos::clearFormRequest($value);
+    $_GET[$key] = QUI\Utils\Security\Orthos::clearFormRequest($value);
 }
 
 

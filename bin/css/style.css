@@ -47,6 +47,26 @@ address .icon {
     width: 20px;
 }
 
+h1 {
+    font-size: 26px;
+    margin: 0 0 20px;
+}
+
+h2 {
+    font-size: 24px;
+    margin: 0 0 18px;
+}
+
+h3 {
+    font-size: 22px;
+    margin: 0 0 16px;
+}
+
+h4 {
+    font-size: 20px;
+    margin: 0 0 14px;
+}
+
 .description {
     clear: both;
     font-style: italic;

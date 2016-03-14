@@ -265,7 +265,7 @@ define('controls/projects/project/site/Panel', [
 
             // permissions
             new QUIButton({
-                image : 'icon-shield fa fa-shield',
+                image : 'fa fa-shield',
                 alt   : Locale.get(lg, 'projects.project.site.panel.btn.permissions'),
                 title : Locale.get(lg, 'projects.project.site.panel.btn.permissions'),
                 styles: {
@@ -280,7 +280,7 @@ define('controls/projects/project/site/Panel', [
             }).inject(this.getHeader());
 
             new QUIButton({
-                image : 'fa fa-picture-o icon-picture',
+                image : 'fa fa-picture-o',
                 alt   : Locale.get(lg, 'projects.project.site.panel.btn.media'),
                 title : Locale.get(lg, 'projects.project.site.panel.btn.media'),
                 styles: {
@@ -294,7 +294,7 @@ define('controls/projects/project/site/Panel', [
             }).inject(this.getHeader());
 
             new QUIButton({
-                image : 'icon-sort',
+                image : 'fa fa-sort',
                 alt   : Locale.get(lg, 'projects.project.site.panel.btn.sort'),
                 title : Locale.get(lg, 'projects.project.site.panel.btn.sort'),
                 styles: {
@@ -571,7 +571,7 @@ define('controls/projects/project/site/Panel', [
 
             Sheets.addButton({
                 name     : 'sortSave',
-                textimage: 'icon-save',
+                textimage: 'fa fa-save',
                 text     : Locale.get(lg, 'projects.project.site.childrensort.save'),
                 events   : {
                     onClick: function (Btn) {
@@ -579,10 +579,10 @@ define('controls/projects/project/site/Panel', [
                             return;
                         }
 
-                        Btn.setAttribute('textimage', 'icon-refresh icon-spin');
+                        Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
                         Sort.save(function () {
-                            Btn.setAttribute('textimage', 'icon-save');
+                            Btn.setAttribute('textimage', 'fa fa-save');
 
                             Sheets.hide(function () {
                                 Sheets.destroy();
@@ -631,14 +631,14 @@ define('controls/projects/project/site/Panel', [
                     title      : Locale.get(lg, 'projects.project.site.panel.window.delete.title', {
                         id: Site.getId()
                     }),
-                    icon       : 'fa fa-trash-o icon-trash',
+                    icon       : 'fa fa-trash-o',
                     text       : Locale.get(lg, 'projects.project.site.panel.window.delete.text', {
                         id   : Site.getId(),
                         url  : Site.getAttribute('name') + QUIQQER.Rewrite.SUFFIX,
                         name : Site.getAttribute('name'),
                         title: Site.getAttribute('title')
                     }),
-                    texticon   : 'fa fa-trash-o icon-trash',
+                    texticon   : 'fa fa-trash-o',
                     information: Locale.get(lg, 'projects.project.site.panel.window.delete.information', {
                         id   : Site.getId(),
                         url  : Site.getAttribute('name') + QUIQQER.Rewrite.SUFFIX,
@@ -650,11 +650,11 @@ define('controls/projects/project/site/Panel', [
 
                     cancel_button: {
                         text     : Locale.get(lg, 'cancel'),
-                        textimage: 'icon-remove fa fa-remove'
+                        textimage: 'fa fa-remove'
                     },
                     ok_button    : {
                         text     : Locale.get(lg, 'projects.project.site.panel.window.delete.button'),
-                        textimage: 'fa fa-trash-o icon-trash'
+                        textimage: 'fa fa-trash-o'
                     },
 
                     events: {
@@ -804,7 +804,7 @@ define('controls/projects/project/site/Panel', [
 
                                     // seite in sprache kopieren und sprach verknüpfung anlegen
                                     new QUIButton({
-                                        icon  : 'fa fa-copy icon-copy',
+                                        icon  : 'fa fa-copy',
                                         alt   : Locale.get(lg, 'copy.site.in.lang'),
                                         title : Locale.get(lg, 'copy.site.in.lang'),
                                         lang  : Row.get('data-lang'),
@@ -824,7 +824,7 @@ define('controls/projects/project/site/Panel', [
                                 }
 
                                 new QUIButton({
-                                    icon  : 'fa fa-file-o icon-file-alt',
+                                    icon  : 'fa fa-file-o',
                                     alt   : Locale.get(lg, 'open.site'),
                                     title : Locale.get(lg, 'open.site'),
                                     lang  : Row.get('data-lang'),
@@ -844,7 +844,7 @@ define('controls/projects/project/site/Panel', [
                                 }).inject(LastCell);
 
                                 new QUIButton({
-                                    icon  : 'icon-remove',
+                                    icon  : 'fa fa-remove',
                                     alt   : Locale.get(lg, 'projects.project.site.panel.linked.btn.delete'),
                                     title : Locale.get(lg, 'projects.project.site.panel.linked.btn.delete'),
                                     lang  : Row.get('data-lang'),
@@ -1121,17 +1121,19 @@ define('controls/projects/project/site/Panel', [
                         return;
                     }
 
-                    // #locale
                     new QUIConfirm({
-                        title        : 'Die Seite besitzt Änderungen', // #locale
-                        content      : 'Die Seite besitzt Änderungen.<br />Möchten Sie diese Änderungen auch speichern?', // #locale
-                        maxHeight    : 200,
-                        maxWidth     : 500,
+                        title        : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.title'),
+                        text         : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.text'),
+                        information  : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.information'),
+                        maxHeight    : 400,
+                        maxWidth     : 600,
+                        texticon     : 'fa fa-edit',
+                        icon         : 'fa fa-edit',
                         ok_button    : {
-                            text: 'Änderungen auch speichern' // #locale
+                            text: Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.button.ok')
                         },
                         cancel_button: {
-                            text: 'Status nur ändern' // #locale
+                            text: Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.button.cancel')
                         },
                         events       : {
                             onSubmit: function () {
@@ -1366,7 +1368,7 @@ define('controls/projects/project/site/Panel', [
             Body.set('html', '');
 
             require(['Editors'], function (Editors) {
-                Editors.getEditor(null, function (Editor) {
+                Editors.getEditor().then(function (Editor) {
                     var Site    = self.getSite(),
                         Project = Site.getProject();
 
@@ -1519,7 +1521,7 @@ define('controls/projects/project/site/Panel', [
 
             new QUIConfirm({
                 title    : Locale.get(lg, 'projects.project.site.panel.linked.window.delete.title'),
-                icon     : 'icon-remove',
+                icon     : 'fa fa-remove',
                 text     : Locale.get(lg, 'projects.project.site.panel.linked.window.delete.text'),
                 maxHeight: 300,
                 maxWidth : 450,
@@ -1569,8 +1571,8 @@ define('controls/projects/project/site/Panel', [
                 information  : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.information', {
                     lang: lang
                 }),
-                icon         : 'fa fa-copy icon-copy',
-                texticon     : 'fa fa-copy icon-copy',
+                icon         : 'fa fa-copy',
+                texticon     : 'fa fa-copy',
                 autoclose    : false,
                 maxHeight    : 400,
                 maxWidth     : 600,
@@ -1622,11 +1624,11 @@ define('controls/projects/project/site/Panel', [
                 },
                 cancel_button: {
                     text     : Locale.get(lg, 'cancel'),
-                    textimage: 'icon-remove fa fa-remove'
+                    textimage: 'fa fa-remove'
                 },
                 ok_button    : {
                     text     : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.submit'),
-                    textimage: 'icon-ok  fa fa-check'
+                    textimage: 'fa fa-check'
                 }
             }).open();
 

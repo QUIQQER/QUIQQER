@@ -333,51 +333,53 @@ $languages = QUI::availableLanguages();
             }
         });
 
-        document.id(window).addEvent('load', function () {
-            require([
-                'qui/controls/buttons/Select'
-            ], function (QUISelect) {
-                var Logo = document.getElement('.logo'),
-                    Linp = document.getElement('.logininput');
+        var languages = <?php echo json_encode($languages); ?>
 
-                Logo.addClass('animated');
-                Logo.addClass('swing');
+            document.id(window).addEvent('load', function () {
+                require([
+                    'qui/controls/buttons/Select'
+                ], function (QUISelect) {
+                    var Logo = document.getElement('.logo'),
+                        Linp = document.getElement('.logininput');
 
-                document.id('username').focus();
+                    Logo.addClass('animated');
+                    Logo.addClass('swing');
 
-                window.LangSelect = new QUISelect({
-                    maxDropDownHeight: 300,
-                    styles           : {
-                        marginLeft: 10,
-                        width     : 130
-                    },
-                    events           : {
-                        onChange: function (val) {
-                            setLanguage(val);
+                    document.id('username').focus();
+
+                    window.LangSelect = new QUISelect({
+                        maxDropDownHeight: 300,
+                        styles           : {
+                            marginLeft: 10,
+                            width     : 130
+                        },
+                        events           : {
+                            onChange: function (val) {
+                                setLanguage(val);
+                            }
                         }
-                    }
-                }).inject(Linp);
+                    }).inject(Linp);
 
-                <?php
+                    <?php
 
-                $url_bin_dir = URL_BIN_DIR;
+                    $url_bin_dir = URL_BIN_DIR;
 
-                foreach ($languages as $lang) {
-                    $langText = '';
+                    foreach ($languages as $lang) {
+                        $langText = '';
 
-                    switch ($lang) {
-                        case 'de':
-                            $langText = 'Deutsch';
-                            break;
-                        case 'en':
-                            $langText = 'English';
-                            break;
+                        switch ($lang) {
+                            case 'de':
+                                $langText = 'Deutsch';
+                                break;
+                            case 'en':
+                                $langText = 'English';
+                                break;
 
-                        default:
-                            continue 2;
-                    }
+                            default:
+                                continue 2;
+                        }
 
-                    echo "
+                        echo "
 
                             window.LangSelect.appendChild(
                                 '{$langText}',
@@ -386,44 +388,44 @@ $languages = QUI::availableLanguages();
                             );
 
                         ";
-                }
+                    }
 
-                ?>
+                    ?>
 
-                // browser language
-                var lang = 'en';
+                    // browser language
+                    var lang = 'en';
 
-                if ("language" in navigator) {
-                    lang = navigator.language;
+                    if ("language" in navigator) {
+                        lang = navigator.language;
 
-                } else if ("browserLanguage" in navigator) {
-                    lang = navigator.browserLanguage;
+                    } else if ("browserLanguage" in navigator) {
+                        lang = navigator.browserLanguage;
 
-                } else if ("systemLanguage" in navigator) {
-                    lang = navigator.systemLanguage;
+                    } else if ("systemLanguage" in navigator) {
+                        lang = navigator.systemLanguage;
 
-                } else if ("userLanguage" in navigator) {
-                    lang = navigator.userLanguage;
-                }
+                    } else if ("userLanguage" in navigator) {
+                        lang = navigator.userLanguage;
+                    }
 
-                lang = lang.substr(0, 2);
+                    lang = lang.substr(0, 2);
 
-                switch (lang) {
-                    case 'de':
-                    case 'en':
-                        break;
+                    switch (lang) {
+                        case 'de':
+                        case 'en':
+                            break;
 
-                    default:
-                        lang = 'en';
-                        break;
-                }
+                        default:
+                            lang = 'en';
+                            break;
+                    }
 
-                window.setLanguage(lang);
+                    window.setLanguage(lang);
 
 
-                document.id('username').focus();
+                    document.id('username').focus();
+                });
             });
-        });
 
         var setLanguage = function (lang) {
             switch (lang) {
@@ -434,6 +436,13 @@ $languages = QUI::availableLanguages();
                 default:
                     lang = 'en';
                     break;
+            }
+
+            if (!languages.contains(lang)) {
+                window.LangSelect.setValue(
+                    window.LangSelect.firstChild().getAttribute('value')
+                );
+                return;
             }
 
             if (window.LangSelect.getValue() != lang) {

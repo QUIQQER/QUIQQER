@@ -3,9 +3,16 @@
  *
  * @module Menu
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
  * @require controls/menu/Manager
  */
-define(['controls/menu/Manager'], function (Menu) {
+define('Menu', [
+
+    'qui/QUI',
+    'controls/menu/Manager'
+
+], function (QUI, Menu) {
     "use strict";
 
     if (typeof QUI.Menu !== 'undefined') {

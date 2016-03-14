@@ -68,7 +68,7 @@ class Menu
             $Projects->appendChild(
                 new Menuitem(array(
                     'text' => $project,
-                    'icon' => 'icon-home',
+                    'icon' => 'fa fa-home',
                     'onclick' => '',
                     'require' => 'controls/projects/project/Settings',
                     'onClick' => 'QUI.Menu.menuClick',

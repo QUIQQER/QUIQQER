@@ -408,12 +408,11 @@ class Locale
             return $Gettext;
         }
 
-        $dir    = $Gettext->getAttribute('dir');
-        $domain = $Gettext->getAttribute('domain');
+        $file = $Gettext->getFile();
 
-        System\Log::addError(
-            'Übersetzungsdatei für ' . $group . ' ' . $dir . 'de_DE/LC_MESSAGES/'
-            . $domain . '.mo nicht gefunden.'
+        // #locale
+        System\Log::addWarning(
+            'Übersetzungsdatei für ' . $file . ' nicht gefunden.'
         );
 
         $this->gettext[$current][$group] = false;
@@ -459,7 +458,8 @@ class Locale
     {
         $locale = QUI\Utils\StringHelper::toLower($lang) . '_'
                   . QUI\Utils\StringHelper::toUpper($lang);
-        $group  = str_replace('/', '_', $group);
+
+        $group = str_replace('/', '_', $group);
 
         return $this->dir() . '/' . $locale . '/LC_MESSAGES/' . $group . '.ini.php';
     }

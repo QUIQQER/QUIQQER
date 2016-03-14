@@ -42,7 +42,7 @@ define('controls/desktop/panels/Bookmarks', [
             this.addButton({
                 name      : 'sort',
                 text      : 'Sortierung',
-                textimage : 'icon-sort',
+                textimage : 'fa fa-sort',
                 events :
                 {
                     onClick : function (Btn) {
@@ -69,7 +69,7 @@ define('controls/desktop/panels/Bookmarks', [
             this.addButton({
                 name      : 'edit',
                 text      : 'Editieren',
-                textimage : 'icon-edit',
+                textimage : 'fa fa-edit',
                 events :
                 {
                     onClick : function (Btn) {
@@ -141,7 +141,7 @@ define('controls/desktop/panels/Bookmarks', [
             List.each(function (Child) {
                 new Element('div', {
                     'class' : 'qui-bookmark-placeholder',
-                    html    : '<span class="fa fa-arrows icon-move"></span>' +
+                    html    : '<span class="fa fa-arrows"></span>' +
                     Child.getElement('.qui-bookmark-text').get('text')
                 }).inject(Child);
             });

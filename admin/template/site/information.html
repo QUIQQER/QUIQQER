@@ -155,7 +155,7 @@
             {assign var=Parent value=$Project->get($pid)}
             {assign var=parents value=$Parent->getParents()}
             <td>
-                <span class="icon-home"></span>
+                <span class="fa fa-home"></span>
                 / {foreach from=$parents item=PS} {$PS->getAttribute('name')}
                 / {/foreach} {$Parent->getAttribute('name')}
                 / {$Site->getAttribute('name')}

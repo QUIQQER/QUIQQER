@@ -680,6 +680,7 @@ class Manager
 
         $User->refresh();
         $this->users[$userId] = $User;
+        $this->Session        = $User;
 
         QUI::getEvents()->fireEvent('userLogin', array($User));
 

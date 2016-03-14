@@ -41,10 +41,10 @@ define('Ajax', [
          *
          * @method Ajax#request
          *
-         * @param {String} call       - PHP function
-         * @param {String} method     - Send Method -> post or get
-         * @param {Function} callback - Callback function if the request is finish
-         * @param {Object} params     - PHP parameter (optional)
+         * @param {String} call         - PHP function
+         * @param {String} method       - Send Method -> post or get
+         * @param {Function} [callback] - Callback function if the request is finish
+         * @param {Object} [params]     - PHP parameter (optional)
          *
          * @return {Ajax}
          */
@@ -53,7 +53,7 @@ define('Ajax', [
             var self = this,
                 id   = String.uniqueID();
 
-            method = method || 'post'; // is post, put, get or delete
+            method   = method || 'post'; // is post, put, get or delete
             callback = callback || function () {
                 };
 
@@ -70,9 +70,9 @@ define('Ajax', [
                 // combine all params, so, they are available in the Request Object
                 Utils.combine(params, {
                     callback : callback,
-                    method  : method,
-                    url     : this.$url,
-                    async   : true,
+                    method   : method,
+                    url      : this.$url,
+                    async    : true,
                     showError: typeof params.showError !== 'undefined' ? params.showError : true,
                     events   : {
                         onSuccess: function () {
@@ -168,9 +168,9 @@ define('Ajax', [
          *
          * @method Ajax#syncRequest
          *
-         * @param {String} call        - PHP function
-         * @param {String} method      - Send Method -> post or get
-         * @param {Object} params      - PHP parameter (optional)
+         * @param {String} call     - PHP function
+         * @param {String} method   - Send Method -> post or get
+         * @param {Object} [params] - PHP parameter (optional)
          *
          * @return {Ajax}
          */
@@ -187,8 +187,8 @@ define('Ajax', [
                 // combine all params, so, they are available in the Request Object
                 Utils.combine(params, {
                     method : method,
-                    url   : this.$url,
-                    async : false,
+                    url    : this.$url,
+                    async  : false,
                     timeout: 5000,
                     events : {
                         onCancel: function (Request) {
@@ -225,7 +225,7 @@ define('Ajax', [
          *
          * @param {String|Array} call - PHP function
          * @param {Function} callback - Callback function if the Request is finish
-         * @param {Object} params     - PHP parameter (optional)
+         * @param {Object} [params]   - PHP parameter (optional)
          *
          * @return {Ajax}
          */
@@ -240,7 +240,7 @@ define('Ajax', [
          *
          * @param {String|Array} call - PHP function
          * @param {Function} callback - Callback function if the Request is finish
-         * @param {Object} params     - PHP parameter (optional)
+         * @param {Object} [params]   - PHP parameter (optional)
          *
          * @return {Ajax}
          */

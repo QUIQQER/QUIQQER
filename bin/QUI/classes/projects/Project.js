@@ -131,7 +131,11 @@ define('classes/projects/Project', [
 
                 if (this.$config) {
                     if (param) {
-                        callback(this.$config[param]);
+
+                        if (typeof callback === 'function') {
+                            callback(this.$config[param]);
+                        }
+
                         resolve(this.$config[param]);
                         return;
                     }

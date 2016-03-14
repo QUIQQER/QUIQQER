@@ -1,14 +1,14 @@
 /**
  * The type button opens a type window for the project
  *
+ * @module controls/projects/TypeButton
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires controls/Control
- * @requires controls/projects/TypeWindow
- *
- * @module controls/projects/TypeButton
+ * @require qui/controls/Control
+ * @require controls/projects/TypeWindow
+ * @require qui/controls/buttons/Button
+ * @require Locale
  */
-
 define('controls/projects/TypeButton', [
 
     'qui/controls/Control',
@@ -31,14 +31,14 @@ define('controls/projects/TypeButton', [
      */
     return new Class({
 
-        Extends : QUIControl,
-        Type    : 'controls/projects/TypeButton',
+        Extends: QUIControl,
+        Type   : 'controls/projects/TypeButton',
 
-        options : {
-            project : false
+        options: {
+            project: false
         },
 
-        initialize : function (options) {
+        initialize: function (options) {
             this.parent(options);
 
             this.$Button = null;
@@ -51,28 +51,26 @@ define('controls/projects/TypeButton', [
          * @method controls/projects/TypeButton#create
          * @return {HTMLElement}
          */
-        create : function () {
+        create: function () {
             var self = this;
 
             this.$Button = new QUIButton({
-                name   : 'project-types',
-                image  : 'icon-magic',
-                alt    : Locale.get('quiqqer/system', 'projects.typebutton.title'),
-                title  : Locale.get('quiqqer/system', 'projects.typebutton.title'),
-                events :
-                {
-                    click : function () {
+                name  : 'project-types',
+                image : 'fa fa-magic',
+                alt   : Locale.get('quiqqer/system', 'projects.typebutton.title'),
+                title : Locale.get('quiqqer/system', 'projects.typebutton.title'),
+                events: {
+                    click: function () {
                         new TypeWindow({
-                            project : self.getAttribute('project'),
-                            events  :
-                            {
-                                onSubmit : function (Win, result) {
+                            project: self.getAttribute('project'),
+                            events : {
+                                onSubmit: function (Win, result) {
                                     if (result[0]) {
                                         self.fireEvent('submit', [self, result[0]]);
                                     }
                                 },
 
-                                onCancel : function () {
+                                onCancel: function () {
                                     self.fireEvent('cancel');
                                 }
                             }

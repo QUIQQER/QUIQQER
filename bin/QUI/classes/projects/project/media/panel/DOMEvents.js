@@ -98,8 +98,8 @@ define('classes/projects/project/media/panel/DOMEvents', [
             new QUIConfirm({
                 name     : 'delete_item',
                 title    : 'Ordner / Datei(en) löschen',
-                icon     : 'fa fa-trash-o icon-trash',
-                texticon : 'fa fa-trash-o icon-trash',
+                icon     : 'fa fa-trash-o',
+                texticon : 'fa fa-trash-o',
                 text     : 'Möchten Sie folgende(n) Ordner / Datei(en) wirklich löschen?',
                 information : '<div class="qui-media-file-delete"></div>',
                 events :
@@ -247,13 +247,13 @@ define('classes/projects/project/media/panel/DOMEvents', [
             // #locale
             new QUIConfirm({
                 title   : 'Datei ersetzen ...',
-                icon    : 'icon-retweet',
+                icon    : 'fa fa-retweet',
                 name    : 'replace-media-id-' + DOMNode.get('data-id'),
                 maxHeight : 400,
                 maxWidth  : 600,
 
                 text     : 'Datei ersetzen',
-                texticon : 'icon-retweet',
+                texticon : 'fa fa-retweet',
 
                 information : 'Wählen Sie eine Datei aus oder ziehen Sie eine Datei in das Fenster.',
                 autoclose   : false,

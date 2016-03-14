@@ -115,7 +115,7 @@ define('controls/workspace/Manager', [
             this.$ParentNode = null;
 
             this.$availablePanels = null; // cache
-            this.$resizeDelay = null;
+            this.$resizeDelay     = null;
 
             this.$resizeQuestionWindow = false; // if resize quesion window open?
 
@@ -457,9 +457,9 @@ define('controls/workspace/Manager', [
                 events   : {
                     onOpen: function (Win) {
                         var Body   = Win.getContent().set(
-                                'html',
+                            'html',
 
-                                // #locale
+                            // #locale
                                 '<p>Bitte wählen Sie einen Arbeitsbereich aus welchen Sie nutzen möchten</p>' +
                                 '<select></select>'
                             ),
@@ -731,7 +731,7 @@ define('controls/workspace/Manager', [
         $getDefaultPanels: function () {
             var Bookmarks = new BookmarkPanel({
                 title : 'Bookmarks',
-                icon  : 'icon-bookmark',
+                icon  : 'fa fa-bookmark',
                 name  : 'qui-bookmarks',
                 events: {
                     onInject: function (Panel) {
@@ -788,7 +788,7 @@ define('controls/workspace/Manager', [
             // task panel
             var Tasks = new QUITasks({
                 title: 'My Panel 1',
-                icon : 'icon-heart',
+                icon : 'fa fa-heart',
                 name : 'tasks'
             });
 
@@ -837,7 +837,7 @@ define('controls/workspace/Manager', [
             Menu.appendChild(
                 new QUIContextmenuItem({
                     text  : 'Panels hinzufügen',
-                    icon  : 'icon-plus',
+                    icon  : 'fa fa-plus',
                     name  : 'addPanelsToColumn',
                     events: {
                         onClick: function () {
@@ -854,7 +854,7 @@ define('controls/workspace/Manager', [
                 var RemovePanels = new QUIContextmenuItem({
                     text: 'Panel löschen',
                     name: 'removePanelOfColumn',
-                    icon: 'fa fa-trash-o icon-trash'
+                    icon: 'fa fa-trash-o'
                 });
 
                 Menu.appendChild(RemovePanels);
@@ -882,14 +882,14 @@ define('controls/workspace/Manager', [
             var AddColumn = new QUIContextmenuItem({
                 text: 'Spalte hinzufügen',
                 name: 'add_columns',
-                icon: 'icon-plus'
+                icon: 'fa fa-plus'
             });
 
             AddColumn.appendChild(
                 new QUIContextmenuItem({
                     text  : 'Spalte davor einfügen',
                     name  : 'addColumnBefore',
-                    icon  : 'icon-long-arrow-left',
+                    icon  : 'fa fa-long-arrow-left',
                     events: {
                         onClick: function () {
                             self.Workspace.appendChild(
@@ -907,7 +907,7 @@ define('controls/workspace/Manager', [
                 new QUIContextmenuItem({
                     text  : 'Spalte danach einfügen',
                     name  : 'addColumnAfter',
-                    icon  : 'icon-long-arrow-right',
+                    icon  : 'fa fa-long-arrow-right',
                     events: {
                         onClick: function () {
                             self.Workspace.appendChild(
@@ -930,7 +930,7 @@ define('controls/workspace/Manager', [
             Menu.appendChild(
                 new QUIContextmenuItem({
                     text  : 'Spalte löschen',
-                    icon  : 'fa fa-trash-o icon-trash',
+                    icon  : 'fa fa-trash-o',
                     name  : 'removeColumn',
                     events: {
                         onClick: function () {
@@ -999,17 +999,17 @@ define('controls/workspace/Manager', [
 
             new QUIConfirm({
                 title        : 'Neuen Arbeitsbereich erstellen',
-                icon         : 'icon-rocket',
+                icon         : 'fa fa-rocket',
                 maxWidth     : 400,
                 maxHeight    : 500,
                 autoclose    : false,
                 ok_button    : {
                     text     : 'Erstellen',
-                    textimage: 'fa fa-check icon-ok'
+                    textimage: 'fa fa-check'
                 },
                 cancel_button: {
                     text     : 'Abbrechen',
-                    textimage: 'icon-remove'
+                    textimage: 'fa fa-remove'
                 },
                 events       : {
                     onOpen: function (Win) {
@@ -1241,7 +1241,7 @@ define('controls/workspace/Manager', [
                             }],
                             buttons          : [{
                                 text     : 'Markierte Arbeitsbereiche löschen',
-                                textimage: 'fa fa-trash-o icon-trash',
+                                textimage: 'fa fa-trash-o',
                                 disabled : true,
                                 events   : {
                                     onClick: function (Btn) {
@@ -1257,7 +1257,7 @@ define('controls/workspace/Manager', [
                                         Win.close();
 
                                         new QUIConfirm({
-                                            icon       : 'fa fa-trash-o icon-trash',
+                                            icon       : 'fa fa-trash-o',
                                             title      : 'Arbeitsbereiche löschen?',
                                             text       : 'Möchten Sie folgende Arbeitsbereiche wirklich löschen?',
                                             information: ids.join(','),
@@ -1342,8 +1342,11 @@ define('controls/workspace/Manager', [
 
         /**
          * Opens the question window, if the workspace is to big for the window
+         *
+         * @todo muss konzeptioniert werden, Verhalten ist etwas merkwürdig
          */
         openResizQuestionWindow: function () {
+            return;
             if (this.$resizeQuestionWindow) {
                 return;
             }
@@ -1366,11 +1369,11 @@ define('controls/workspace/Manager', [
                 texticon     : false,
                 cancel_button: {
                     text     : Locale.get('quiqqer/system', 'cancel'),
-                    textimage: 'icon-remove fa fa-remove'
+                    textimage: 'fa fa-remove'
                 },
                 ok_button    : {
                     text     : Locale.get('quiqqer/system', 'ok'),
-                    textimage: 'icon-ok  fa fa-check'
+                    textimage: 'fa fa-check'
                 },
                 events       : {
                     onOpen: function (Win) {

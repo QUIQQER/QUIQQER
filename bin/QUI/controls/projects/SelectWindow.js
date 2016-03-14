@@ -53,7 +53,7 @@ define('controls/projects/SelectWindow', [
         $onOpen: function () {
             this.setAttributes({
                 title: QUILocale.get('quiqqer/system', 'projects.project.windowselect.title'),
-                icon : 'icon-home'
+                icon : 'fa fa-home'
             });
 
             this.refresh();

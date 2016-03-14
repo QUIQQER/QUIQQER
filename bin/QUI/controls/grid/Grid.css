@@ -51,6 +51,8 @@
     box-sizing: content-box;
 }
 
+.omnigrid div.bDiv .td [class^="fa-"],
+.omnigrid div.bDiv .td [class*=" fa-"],
 .omnigrid div.bDiv .td [class^="icon-"],
 .omnigrid div.bDiv .td [class*=" icon-"] {
     font-size: 16px;

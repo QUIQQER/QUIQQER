@@ -68,123 +68,122 @@
             <en><![CDATA[Can see the settings menu]]></en>
         </locale>
 
-
         <locale name="permission.quiqqer.admin">
             <de><![CDATA[Darf sich in das Backend (Administration) einloggen.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is allowed to loged in to the backend (Administration)]]></en>
         </locale>
         <locale name="permission.quiqqer.su">
             <de><![CDATA[Ist Super-User.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is Superuser]]></en>
         </locale>
         <locale name="permission.quiqqer.system.update">
             <de><![CDATA[Darf Updates durchführen.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is allowed to update the system.]]></en>
         </locale>
         <locale name="permission.quiqqer.system.permissions">
             <de><![CDATA[Darf Zugrifssrechte verwalten.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is allowed to edit permissions]]></en>
         </locale>
         <locale name="permission.quiqqer.system.cache">
             <de><![CDATA[Darf den Cache löschen.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is allowed to delete the cache.]]></en>
         </locale>
         <locale name="permission.quiqqer.system.console">
             <de><![CDATA[Darf sich in die QUIQQER Konsole einloggen.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is allowed to loged in to the QUIQQER console]]></en>
         </locale>
         <locale name="permission.quiqqer.admin.groups.view">
             <de><![CDATA[Darf die Gruppenverwaltung sehen.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Can see the group management.]]></en>
         </locale>
         <locale name="permission.quiqqer.admin.groups.edit">
             <de><![CDATA[Darf Gruppen editieren.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is allowed to edit groups.]]></en>
         </locale>
         <locale name="permission.quiqqer.admin.users.view">
             <de><![CDATA[Darf die Benutzerverwaltung sehen.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Can see the user management]]></en>
         </locale>
         <locale name="permission.quiqqer.admin.users.edit">
             <de><![CDATA[Darf Benutzer editieren.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is allowed to edit users.]]></en>
         </locale>
         <locale name="permission.quiqqer.projects.create">
             <de><![CDATA[Darf Projekte anlegen.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is allowed to create projects.]]></en>
         </locale>
         <locale name="permission.quiqqer.projects.edit">
             <de><![CDATA[Darf Projekte editieren.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is allowed to edit projects.]]></en>
         </locale>
         <locale name="permission.quiqqer.projects.destroy">
             <de><![CDATA[Darf Projekte löschen.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is allowed to delete projects.]]></en>
         </locale>
         <locale name="permission.quiqqer.projects.setconfig">
             <de><![CDATA[Darf Projekt-Einstellungen ändern.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is allowed to edit project settings.]]></en>
         </locale>
         <locale name="permission.quiqqer.projects.editCustomCSS">
             <de><![CDATA[Darf Custom-CSS von Projekte ändern.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is allowed to edit Custom-CSS from a project.]]></en>
         </locale>
         <locale name="permission.quiqqer.project.edit">
             <de><![CDATA[Darf Projekt editieren.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is allowed to edit projects.]]></en>
         </locale>
         <locale name="permission.quiqqer.project.destroy">
             <de><![CDATA[Darf Projekt löschen.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is allowed to delete projects.]]></en>
         </locale>
         <locale name="permission.quiqqer.project.setconfig">
             <de><![CDATA[Darf Projekt-Einstellungen ändern.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is allowed to edit project settings.]]></en>
         </locale>
         <locale name="permission.quiqqer.project.editCustomCSS">
             <de><![CDATA[Darf Custom-CSS ändern.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is allowed to edit Custom-CSS]]></en>
         </locale>
         <locale name="permission.quiqqer.projects.site.view">
             <de><![CDATA[Darf die Seite besuchen.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Can view the site.]]></en>
         </locale>
         <locale name="permission.quiqqer.projects.site.edit">
             <de><![CDATA[Darf die Seite bearbeiten.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is allowed to edit the site.]]></en>
         </locale>
         <locale name="permission.quiqqer.projects.site.del">
             <de><![CDATA[Darf die Seite löschen.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is allowed to delete the site.]]></en>
         </locale>
         <locale name="permission.quiqqer.projects.site.new">
-            <de><![CDATA[Darf neue Unterseite anlegen.]]></de>
-            <en><![CDATA[]]></en>
+            <de><![CDATA[Darf neue Unterseiten anlegen.]]></de>
+            <en><![CDATA[Is allowed to create children sites.]]></en>
         </locale>
         <locale name="permission.quiqqer.projects.sites.set_permissions">
             <de><![CDATA[Darf Zugriffsrechte auf Seiten setzen und bearbeiten.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is allowed to set and edit permissions to sites.]]></en>
         </locale>
         <locale name="permission.quiqqer.projects.sites.view">
             <de><![CDATA[Darf Seiten besuchen.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is allowed to view sites]]></en>
         </locale>
         <locale name="permission.quiqqer.projects.sites.edit">
             <de><![CDATA[Darf Seiten bearbeiten.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is allowed to edit sites.]]></en>
         </locale>
         <locale name="permission.quiqqer.projects.sites.del">
             <de><![CDATA[Darf Seiten löschen.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is allowed to delete sites.]]></en>
         </locale>
         <locale name="permission.quiqqer.projects.sites.new">
             <de><![CDATA[Darf neue Unterseiten anlegen.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is allowed to create children sites.]]></en>
         </locale>
 
         <locale name="permission.quiqqer.editors.toolbar.delete">
             <de><![CDATA[Darf Editor Toolbars löschen]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Is allowed to delete editor toolbars.]]></en>
         </locale>
         <locale name="projects.project.settings.panel.placeholder">
             <de><![CDATA[Platzhalterbild]]></de>
@@ -236,6 +235,59 @@
             ]]></en>
         </locale>
 
+        <locale name="menu.search.title">
+            <de><![CDATA[Suche]]></de>
+            <en><![CDATA[Search]]></en>
+        </locale>
+        <locale name="menu.search.sites.title">
+            <de><![CDATA[Seite suchen]]></de>
+            <en><![CDATA[Search sites]]></en>
+        </locale>
+        <locale name="menu.search.users.title">
+            <de><![CDATA[Benutzer suche]]></de>
+            <en><![CDATA[Search users]]></en>
+        </locale>
+        <locale name="menu.search.groups.title">
+            <de><![CDATA[Gruppe suchen]]></de>
+            <en><![CDATA[Search groups]]></en>
+        </locale>
+
+        <locale name="menu.loged.in">
+            <de><![CDATA[Angemeldet als: [username]]]></de>
+            <en><![CDATA[Loged in as: [username]]]></en>
+        </locale>
+        <locale name="menu.log.out">
+            <de><![CDATA[Abmelden]]></de>
+            <en><![CDATA[Log out]]></en>
+        </locale>
+        <locale name="log.out.message">
+            <de><![CDATA[
+            Bitte melden Sie sich vor dem schließen der Administration ab.
+            Ansonsten können bestehende Daten verloren gehen.
+            Möchten Sie trotzdem weiter fortfahren?
+            ]]></de>
+            <en><![CDATA[
+            Please sign out before you close the administration.
+            Otherwise, existing data will be lost.
+            Would you still continue to proceed?
+            ]]></en>
+        </locale>
+        <locale name="workspace.fixed">
+            <de><![CDATA[Arbeitsbereich ist festgesetzt]]></de>
+            <en><![CDATA[Workspace is fixed]]></en>
+        </locale>
+        <locale name="workspace.flexible">
+            <de><![CDATA[Arbeitsbereich ist flexibel]]></de>
+            <en><![CDATA[Workspace is flexible]]></en>
+        </locale>
+        <locale name="nobody.name">
+            <de><![CDATA[Niemand]]></de>
+            <en><![CDATA[Nobody]]></en>
+        </locale>
+        <locale name="nobody.username">
+            <de><![CDATA[nobody]]></de>
+            <en><![CDATA[nobody]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -291,6 +343,64 @@
             <de><![CDATA[Suffix]]></de>
             <en><![CDATA[Suffix]]></en>
         </locale>
+
+        <locale name="exception.delete.originalfile.notfound">
+            <de><![CDATA[
+                Die Datei wurde auf dem Filesystem nicht gefunden.
+                Daher wird die Datei aus diesem Grund komplett gelöscht.
+                ]]></de>
+            <en><![CDATA[
+                The File could not be found.
+                The file is completely deleted for this reason.
+            ]]></en>
+        </locale>
+        <locale name="exception.delete.root.file">
+            <de><![CDATA[Sie können den Hauptordner nicht löschen.]]></de>
+            <en><![CDATA[You cannot delete the root file.]]></en>
+        </locale>
+    </groups>
+
+    <groups name="quiqqer/quiqqer" datatype="js">
+        <locale name="folderviewer.create.folder" html="true">
+            <de><![CDATA[
+                <p>Es wurde kein Ordner zugewiesen.</p>
+                <p>Möchten Sie ein neuen Ordner anlegen?</p>
+                <br />
+            ]]></de>
+            <en><![CDATA[
+                <p>No folder was assigned.</p>
+                <p>Would you like to create a new folder?</p>
+                <br />
+            ]]></en>
+        </locale>
+
+        <locale name="site.window.siteChangesExists.title">
+            <de><![CDATA[Die Seite besitzt Änderungen]]></de>
+            <en><![CDATA[The page has changes]]></en>
+        </locale>
+        <locale name="site.window.siteChangesExists.text">
+            <de><![CDATA[Die Seite besitzt Änderungen]]></de>
+            <en><![CDATA[The page has changes]]></en>
+        </locale>
+        <locale name="site.window.siteChangesExists.information" html="true">
+            <de><![CDATA[
+            Möchten Sie diese Änderungen auch speichern?<br />
+            Die Seite wird aktiviert und die Änderungen werden gleichzeitig übernommen.
+            ]]></de>
+            <en><![CDATA[
+            Do you want to save these changes, too?
+            The site will be activated and the changes are applied.
+            ]]></en>
+        </locale>
+        <locale name="site.window.siteChangesExists.button.ok">
+            <de><![CDATA[Änderungen auch speichern]]></de>
+            <en><![CDATA[Also save changes]]></en>
+        </locale>
+        <locale name="site.window.siteChangesExists.button.cancel">
+            <de><![CDATA[Nur Status ändern]]></de>
+            <en><![CDATA[Only change status]]></en>
+        </locale>
+
     </groups>
 
     <groups name="quiqqer/system" datatype="js,php">
@@ -735,22 +845,36 @@
             <de><![CDATA[<p>Es wurden unerlaubte Zeichen im Namen gefunden.<br />
 Punkte d&uuml;rfen nicht verwendet werden.<br />
 &nbsp;</p>]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[<p>Invalid characters were found in the name.<br />
+            Points may not be used.<br />
+            &nbsp;</p>
+            ]]></en>
         </locale>
         <locale name="exception.media.check.name.underline" html="true">
-            <de><![CDATA[<p>Es wurden unerlaubte Zeichen im Namen gefunden.<br />
-Doppelte Unterstriche d&uuml;rfen nicht verwendet werden.</p>]]></de>
-            <en><![CDATA[Positionof the watermark]]></en>
+            <de><![CDATA[
+                <p>Es wurden unerlaubte Zeichen im Namen gefunden.<br />
+                Doppelte Unterstriche d&uuml;rfen nicht verwendet werden.</p>
+                ]]></de>
+            <en><![CDATA[
+                <p>Invalid characters were found in the name.<br />
+                Double underscores may not be used.</p>
+            ]]></en>
         </locale>
         <locale name="exception.media.check.name.allowed.signs" html="true">
             <de><![CDATA[<p>Es wurden unerlaubte Zeichen im Namen &quot;[filename]&quot; gefunden.<br />
-Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
-            <en><![CDATA[]]></en>
+            Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
+            <en><![CDATA[
+            <p>Invalid characters were found in the name &quot;[filename]&quot;.<br />
+            The following characters are allowed: 0-9 a-z A-Z _ -</p>
+            ]]></en>
         </locale>
         <locale name="exception.media.check.foldername.allowed.signs" html="true">
             <de><![CDATA[<p>Es wurden unerlaubte Zeichen im Namen &quot;[foldername]&quot; gefunden.<br />
 Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[
+            <p>Invalid characters were found in the name &quot;[filename]&quot;.<br />
+            The following characters are allowed: 0-9 a-z A-Z _ -</p>
+            ]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js">
@@ -888,7 +1012,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="system.vhost.table.language.description">
             <de>
                 <![CDATA[Wenn Sie mehrere Sprachen im Projekt haben, können Sie hier die Hosts der weiteren Sprache bestimmen.]]></de>
-            <en><![CDATA[]]></en>
+            <en>
+                <![CDATA[If you have multiple languages in the project, you can determine the hosts of another language here.]]></en>
         </locale>
         <locale name="system.vhost.label.domain">
             <de><![CDATA[Domain]]></de>
@@ -1000,16 +1125,16 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
         <locale name="permission.control.site.recursive.win.title">
             <de><![CDATA[Rechte rekursiv anwenden]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Apply permissions recursively]]></en>
         </locale>
         <locale name="permission.control.site.recursive.win.text">
             <de><![CDATA[Rechte rekursiv anwenden]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Apply permissions recursively]]></en>
         </locale>
         <locale name="permission.control.site.recursive.win.information" html="true">
             <de>
                 <![CDATA[Die aktuellen Rechte werden auf alle Unterseiten und auf die ausgewählte Seite angewendet.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[The current permissions are applied to all pages and on the selected page.]]></en>
         </locale>
 
 
@@ -1158,47 +1283,47 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
         <locale name="logs.panel.title">
             <de><![CDATA[Log-Manager]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Log manager]]></en>
         </locale>
         <locale name="logs.panel.log.file">
             <de><![CDATA[Log-Datei]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Log file]]></en>
         </locale>
         <locale name="logs.panel.log.title">
             <de><![CDATA[Logs: [file]]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Logs: [file]]]></en>
         </locale>
         <locale name="logs.panel.btn.refresh">
             <de><![CDATA[Log-Datei aktualisieren]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Update log file]]></en>
         </locale>
         <locale name="logs.panel.btn.delete.marked">
             <de><![CDATA[Markierte Log-Dateien löschen]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Delete selected log files]]></en>
         </locale>
         <locale name="logs.panel.btn.open.log">
             <de><![CDATA[Log vom [date] öffnen]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Delete selected log files]]></en>
         </locale>
         <locale name="logs.panel.delete.window.title">
             <de><![CDATA[Log löschen: [file]]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Delete log [file]]]></en>
         </locale>
         <locale name="logs.panel.delete.window.text">
             <de><![CDATA[Möchten Sie die Log-Datei wirklich löschen?]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Do you really want to delete the log file?]]></en>
         </locale>
         <locale name="logs.panel.search.placeholder">
             <de><![CDATA[Suche nach...]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Search for...]]></en>
         </locale>
         <locale name="logs.panel.search.btn.start.alt">
             <de><![CDATA[Suche starten]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Start search]]></en>
         </locale>
         <locale name="logs.panel.search.btn.start.title">
             <de><![CDATA[Suche starten]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Start search]]></en>
         </locale>
         <locale name="editors.settings.title">
             <de><![CDATA[WYSIWYG-Editor Einstellungen]]></de>
@@ -1458,17 +1583,17 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Upload an archiv and extract it]]></en>
         </locale>
         <locale name="projects.project.site.media.panel.upload.extract.text">
-            <de><![CDATA[<h2><span class="icon-upload"></span>Archiv Upload</h2>
+            <de><![CDATA[<h2><span class="fa fa-upload"></span>Archiv Upload</h2>
                 <p>Laden Sie Archiv Dateien in den Media Ordner hoch.</p>
                 <p>Diese Archivdateien werden direkt entpackt.</p>]]></de>
-            <en><![CDATA[<h2><span class="icon-upload"></span>Upload archivefile</h2>
+            <en><![CDATA[<h2><span class="fa fa-upload"></span>Upload archivefile</h2>
                 <p>Upload archive files to the media folder.</p>
                 <p>These archive files are unpacked directly.</p>]]></en>
         </locale>
         <locale name="projects.project.site.media.panel.upload.text">
-            <de><![CDATA[<h2><span class="icon-upload"></span>Datei Upload</h2>
+            <de><![CDATA[<h2><span class="fa fa-upload"></span>Datei Upload</h2>
                 <p>Laden Sie Dateien in den Media Ordner hoch.</p>]]></de>
-            <en><![CDATA[<h2><span class="icon-upload"></span>Upload file</h2>
+            <en><![CDATA[<h2><span class="fa fa-upload"></span>Upload file</h2>
                 <p>Upload files to the media folder.</p>]]></en>
         </locale>
 
@@ -3408,6 +3533,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Es befinden sich keine Bilder in diesem Ordner.]]></de>
             <en><![CDATA[There are no images in this folder.]]></en>
         </locale>
+        <locale name="projects.project.media.fileviewer.empty">
+            <de><![CDATA[Es befinden sich keine Dateien in diesem Ordner.]]></de>
+            <en><![CDATA[There are no files in this folder.]]></en>
+        </locale>
         <locale name="projects.project.site.media.folderPanel.btn.effectsRecursive">
             <de><![CDATA[Effekte rekursiv anwenden]]></de>
             <en><![CDATA[Apply effects recursively]]></en>
@@ -3430,12 +3559,17 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
         <locale name="media.folderPanel.window.effect.recursive.text">
             <de><![CDATA[Möchten Sie die Ordnereffekte rekursiv anwenden?]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Do you want to apply the folders effects recursively?]]></en>
         </locale>
         <locale name="media.folderPanel.window.effect.recursive.information" html="true">
-            <de><![CDATA[Alle Änderungen des Ordneres werden gespeichert.
-                Die Effekte des Ordners werden rekusriv auf alle <u>Bilder</u> und <u>Ordner</u> angewendet.]]></de>
-            <en><![CDATA[]]></en>
+            <de><![CDATA[
+                Alle Änderungen des Ordneres werden gespeichert.
+                Die Effekte des Ordners werden rekusriv auf alle <u>Bilder</u> und <u>Ordner</u> angewendet.
+            ]]></de>
+            <en><![CDATA[
+                All changes of the folder will be stored.
+                The folder effects are applied rekusriv on all <u>images</u> and <u>folders</u>.
+            ]]></en>
         </locale>
         <locale name="projects.project.site.media.folderPanel.message.save.success">
             <de><![CDATA[Der Ordner wurde erfolgreich gespeichert]]></de>
@@ -3451,7 +3585,7 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
         <locale name="projects.project.site.media.folderPanel.window.delete.information">
             <de><![CDATA[Alle Bilder und Unterordner werden in den Papierkorb gelegt.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[All images and subfolders are put in the trash.]]></en>
         </locale>
         <locale name="projects.project.site.media.filePanel.image.effects.text">
             <de><![CDATA[Bildeffekte]]></de>
@@ -3578,7 +3712,7 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
         <locale name="menu.goto.text">
             <de><![CDATA[Verwaltung]]></de>
-            <en><![CDATA[Verwaltung]]></en>
+            <en><![CDATA[Administration]]></en>
         </locale>
         <locale name="menu.settings.text">
             <de><![CDATA[Einstellungen]]></de>
@@ -3598,7 +3732,7 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
         <locale name="menu.settings.vhosts.text">
             <de><![CDATA[Virtual Hosts]]></de>
-            <en><![CDATA[Virtual Hosts]]></en>
+            <en><![CDATA[Virtual hosts]]></en>
         </locale>
         <locale name="menu.extras.rights.text">
             <de><![CDATA[Benutzerverwaltung]]></de>
@@ -4104,15 +4238,15 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
         <locale name="exception.lib.user.exist">
             <de><![CDATA[Dieser Benutzername existiert schon]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[This username already exists]]></en>
         </locale>
         <locale name="exception.lib.user.specify.username">
             <de><![CDATA[Bitte geben Sie einen Benutzernamen an]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Please enter a username]]></en>
         </locale>
         <locale name="exception.lib.user.register.specify.password">
             <de><![CDATA[Dieser Benutzername existiert bereits, bitte verwenden Sie einen anderen Benutzernamen]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[This username already exists, please use a different username]]></en>
         </locale>
         <locale name="exception.user.register.email.exists">
             <de><![CDATA[Diese E-Mail-Adresse existiert bereits, bitte verwenden Sie eine andere E-Mail-Adresse]]></de>
@@ -4120,33 +4254,43 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
         <locale name="exception.lib.user.not.found">
             <de><![CDATA[Der gewünschte Benutzer wurde im System nicht gefunden]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[The requested user was not found in the system]]></en>
         </locale>
         <locale name="exception.user.inactive">
             <de><![CDATA[Ihr Benutzer ist inaktiv.]]></de>
             <en><![CDATA[Your Account is inactive.]]></en>
         </locale>
         <locale name="exception.lib.user.illegal.signs">
-            <de><![CDATA[Der Benutzername enthält unerlaubte Zeichen.
-                Bitte verwenden Sie nur Buchstaben, Zahlen und folgende Zeichen _ ä ö ü ß]]></de>
-            <en><![CDATA[]]></en>
+            <de><![CDATA[
+                Der Benutzername enthält unerlaubte Zeichen.
+                Bitte verwenden Sie nur Buchstaben, Zahlen und folgende Zeichen _ ä ö ü ß
+                ]]></de>
+            <en><![CDATA[
+                The user name contains invalid characters.
+                Please use only letters, numbers and special characters _ ä ö ü ß
+            ]]></en>
         </locale>
         <locale name="exception.lib.user.nobody.add.address">
-            <de>
-                <![CDATA[Dieser Benutzer existiert nicht, daher kann keine Adresse hinterlegt werden. Bitte legen Sie einen Benutzer an.]]></de>
-            <en><![CDATA[]]></en>
+            <de><![CDATA[
+                Dieser Benutzer existiert nicht, daher kann keine Adresse hinterlegt werden.
+                Bitte legen Sie einen Benutzer an.
+                ]]></de>
+            <en><![CDATA[
+                This user does not exist, therefore no address can be deposited.
+                Please create a user.
+            ]]></en>
         </locale>
         <locale name="exception.lib.user.nobody.get.address">
             <de><![CDATA[Dieser Benutzer hat keine Adresse hinterlegt]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[This user has not any address]]></en>
         </locale>
         <locale name="exception.lib.user.wrong.uid">
             <de><![CDATA[Es wurde keine oder eine falsche Benutzer-ID übergeben]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[It was passed no or an incorrect user ID]]></en>
         </locale>
         <locale name="exception.lib.user.empty.password">
             <de><![CDATA[Das Passwort darf nicht leer sein. Bitte geben Sie ein korrektes Passwort ein]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[The password can not be empty. Please enter a correct password]]></en>
         </locale>
         <locale name="exception.lib.user.wrong.passwords">
             <de><![CDATA[Die Passwörter stimmen nicht überein. Bitte geben Sie korrekte Passwörter ein]]></de>
@@ -4170,19 +4314,19 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
         <locale name="exception.lib.user.no.edit.rights">
             <de><![CDATA[Sie haben keine Berechtigung diesen Benutzer zu editieren]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[You have no permission to edit this user]]></en>
         </locale>
         <locale name="exception.lib.user.address.not.found">
             <de><![CDATA[Adresse wurde nicht gefunden]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Address not found]]></en>
         </locale>
         <locale name="exception.lib.user.address.mail.wrong.syntax">
             <de><![CDATA[E-Mail Syntax ist nicht korrekt]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[EMail syntax is incorrect]]></en>
         </locale>
         <locale name="exception.lib.user.address.no.country">
             <de><![CDATA[Der Adresse wurde kein Land zugewiesen]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[The address wasn't assigned a country]]></en>
         </locale>
         <locale name="exception.login.expire">
             <de><![CDATA[Login fehlgeschlagen. Ihr Benutzerkonto ist abgelaufen. [expire]]]></de>
@@ -4311,7 +4455,7 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
         <locale name="projects.project.site.messages.marcate">
             <de><![CDATA[Diese Seite wird gerade bearbeitet von: [username]]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[This page is edited by: [username]]]></en>
         </locale>
         <locale name="projects.project.site.information">
             <de><![CDATA[Information]]></de>
@@ -4803,7 +4947,7 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
         <locale name="projects.project.site.btn.save.title">
             <de><![CDATA[Aktuelle Seite speichern]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Save the current page]]></en>
         </locale>
         <locale name="projects.project.site.btn.delete.title">
             <de>
@@ -4867,20 +5011,23 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
 
         <locale name="quiqqer.settings.email.smtp.auth.MAILFromText.description">
             <de><![CDATA[Beim Empfänger angezeigter Name des Absenders.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[The receiver name displayed at the sender.]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.auth.MAILFromText">
             <de><![CDATA[Angezeigter Absendername]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Displayed sender name]]></en>
         </locale>
         <locale name="quiqqer.settings.email.queue.desc">
-            <de>
-                <![CDATA[E-Mails werden so lange in einer Warteschlange gespeichert, bis es sicher ist, dass sie versendet wurden.]]></de>
-            <en><![CDATA[]]></en>
+            <de><![CDATA[
+                E-Mails werden so lange in einer Warteschlange gespeichert, bis es sicher ist, dass sie versendet wurden.
+                ]]></de>
+            <en><![CDATA[
+                E-mails are saved in a queue until it is certain that they were sent.
+            ]]></en>
         </locale>
         <locale name="quiqqer.settings.email.queue">
             <de><![CDATA[Mail-Queue aktivieren]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Enable Mail Queue]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="php,js">
@@ -4958,7 +5105,7 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
         <locale name="projects.project.settings.panel.mediaSettings.watermark.description">
             <de><![CDATA[Hinweis: Änderungen am Wasserzeichen löschen den kompletten Mediacache.]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Note: Changes to the watermark delete the entire media cache.]]></en>
         </locale>
         <locale name="projects.project.settings.panel.mediaSettings.title">
             <de><![CDATA[Media-Einstellungen]]></de>
@@ -5002,23 +5149,33 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
         <locale name="projects.project.site.select.btn.addSite">
             <de><![CDATA[Eine Seite hinzufügen]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Add a site]]></en>
         </locale>
         <locale name="projects.project.site.select.btn.addParent">
             <de><![CDATA[Unterseiten hinzufügen]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Add children sites]]></en>
         </locale>
         <locale name="projects.project.site.select.description" html="true">
-            <de><![CDATA[<p><em>Seitentyp hinzuf&uuml;gen</em> f&uuml;gt alle Seiten des ausgew&auml;hlten Seitentyps hinzu.<br />
-<em>Seite hinzuf&uuml;gen</em> f&uuml;gt eine einzelne Seite hinzu.<br />
-<em>Unterseiten hinzuf&uuml;gen</em> f&uuml;gt alle Unterseiten der ausgew&auml;hlten Seite hinzu, es seid denn es ist ein Seitentyp gesetzt. Dann dient der Seitentyp als Filter und es werden nur alle Unterseiten des ausgew&auml;hlten Seitentyps angezeigt.</p>]]></de>
-            <en><![CDATA[]]></en>
+            <de><![CDATA[
+                <p>
+                <em>Seitentyp hinzuf&uuml;gen</em> f&uuml;gt alle Seiten des ausgew&auml;hlten Seitentyps hinzu.<br />
+                <em>Seite hinzuf&uuml;gen</em> f&uuml;gt eine einzelne Seite hinzu.<br />
+                <em>Unterseiten hinzuf&uuml;gen</em> f&uuml;gt alle Unterseiten der ausgew&auml;hlten Seite hinzu, es seid denn es ist ein Seitentyp gesetzt. Dann dient der Seitentyp als Filter und es werden nur alle Unterseiten des ausgew&auml;hlten Seitentyps angezeigt.
+                </p>
+            ]]></de>
+            <en><![CDATA[
+                <p>
+                <em>Add sitetype</em> adds all pages of the selected sitetypes.<br />
+                <em>Add site</em> adds a single site.<br />
+                <em>Add children sites</em> adds all children sites of the selected site. Unles it is a sitetype set. The the sitetype is used as a filter, it will only see all children sites of the selected sitetype.
+                </p>
+            ]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php ">
         <locale name="projects.project.site.select.btn.addTypes">
             <de><![CDATA[Seitentyp hinzufügen ]]></de>
-            <en><![CDATA[]]></en>
+            <en><![CDATA[Add a site type]]></en>
         </locale>
     </groups>
 </locales>

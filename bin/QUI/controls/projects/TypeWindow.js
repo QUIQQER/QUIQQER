@@ -54,18 +54,18 @@ define('controls/projects/TypeWindow', [
             pluginsSelectable: false,
 
             title    : QUILocale.get('quiqqer/system', 'projects.typewindow.title'),
-            icon     : 'icon-magic',
+            icon     : 'fa fa-magic',
             maxHeight: 500,
             maxWidth : 400,
             message  : false,
 
             cancel_button: {
                 text     : QUILocale.get('quiqqer/system', 'cancel'),
-                textimage: 'icon-remove fa fa-remove'
+                textimage: 'fa fa-remove'
             },
             ok_button    : {
                 text     : QUILocale.get('quiqqer/system', 'ok'),
-                textimage: 'icon-ok  fa fa-check'
+                textimage: 'fa fa-check'
             }
         },
 
@@ -117,7 +117,7 @@ define('controls/projects/TypeWindow', [
             });
 
             this.$ShowSitemap = new QUIButton({
-                textimage: 'icon-sitemap',
+                textimage: 'fa fa-sitemap',
                 text     : QUILocale.get('quiqqer/system', 'projects.typewindow.btn.sitemapView'),
                 events   : {
                     click: this.sitemapView
@@ -125,7 +125,7 @@ define('controls/projects/TypeWindow', [
             }).inject(this.$HeaderButtons);
 
             this.$ShowDetails = new QUIButton({
-                textimage: 'icon-file-text',
+                textimage: 'fa fa-file-text',
                 text     : QUILocale.get('quiqqer/system', 'projects.typewindow.btn.detailView'),
                 events   : {
                     click: this.detailsView

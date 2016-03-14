@@ -79,7 +79,7 @@ define('controls/projects/project/Panel', [
                 name   : 'projects-panel',
                 project: false,
                 lang   : false,
-                icon   : 'icon-home'
+                icon   : 'fa fa-home'
             });
 
             this.parent(options);
@@ -207,7 +207,7 @@ define('controls/projects/project/Panel', [
 
             // site search
             new QUIButton({
-                icon  : 'icon-search',
+                icon  : 'fa fa-search',
                 title : Locale.get('quiqqer/system', 'projects.project.panel.open.search'),
                 alt   : Locale.get('quiqqer/system', 'projects.project.panel.open.search'),
                 styles: {
@@ -253,7 +253,7 @@ define('controls/projects/project/Panel', [
             // title button
             this.$Button = new QUIButton({
                 name  : 'projects',
-                image : 'fa fa-arrow-circle-left icon-circle-arrow-left',
+                image : 'fa fa-arrow-circle-left',
                 events: {
                     onClick: function (Btn, event) {
                         if (typeof event !== 'undefined') {
@@ -330,7 +330,7 @@ define('controls/projects/project/Panel', [
                     Body.set('html', '<p>Leider existieren noch keine Projekte</p>'); // #locale
 
                     new QUIButton({
-                        textimage: 'icon-home',
+                        textimage: 'fa fa-home',
                         text     : 'Projekt erstellen', // #locale
                         events   : {
                             onClick: function () {
@@ -462,7 +462,7 @@ define('controls/projects/project/Panel', [
 
                     Project = new QUISitemapItem({
                         text   : Projects.get(i).getTitle(),
-                        icon   : 'icon-home',
+                        icon   : 'fa fa-home',
                         project: i,
                         lang   : result[i].default_lang,
                         events : {
@@ -492,7 +492,7 @@ define('controls/projects/project/Panel', [
                     Project.appendChild(
                         new QUISitemapItem({
                             text   : Locale.get('quiqqer/system', 'projects.project.panel.media'),
-                            icon   : 'fa fa-picture-o icon-picture',
+                            icon   : 'fa fa-picture-o',
                             project: i,
                             events : {
                                 onClick: func_media_click
@@ -504,7 +504,7 @@ define('controls/projects/project/Panel', [
                     Project.appendChild(
                         new QUISitemapItem({
                             text   : Locale.get('quiqqer/system', 'projects.project.panel.tash'),
-                            icon   : 'fa fa-trash-o icon-trash',
+                            icon   : 'fa fa-trash-o',
                             project: i,
                             events : {
                                 onClick: func_trash_click
@@ -598,9 +598,9 @@ define('controls/projects/project/Panel', [
                     MapItem.getContextMenu()
                         .setTitle(title)
                         .setPosition(
-                        event.page.x,
-                        event.page.y
-                    )
+                            event.page.x,
+                            event.page.y
+                        )
                         .show();
 
                     event.stop();

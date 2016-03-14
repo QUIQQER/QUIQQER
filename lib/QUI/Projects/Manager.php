@@ -436,6 +436,41 @@ class Manager
     }
 
     /**
+     * Return all projects as objects
+     *
+     * @return array
+     */
+    public static function getProjectList()
+    {
+        $config = self::getConfig()->toArray();
+        $result = array();
+
+        foreach ($config as $project => $conf) {
+            $langs = explode(',', trim($conf['langs']));
+
+            foreach ($langs as $lang) {
+                if (isset(self::$projects[$project])
+                    && isset(self::$projects[$project][$lang])
+                ) {
+                    $result[] = self::$projects[$project][$lang];
+                    continue;
+                }
+
+                try {
+                    $result[] = self::getProject(
+                        $project,
+                        $lang,
+                        $conf['template']
+                    );
+                } catch (QUI\Exception $Exception) {
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Standard Projekt bekommen
      *
      * @return \QUI\Projects\Project

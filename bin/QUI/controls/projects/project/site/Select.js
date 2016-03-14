@@ -437,7 +437,7 @@ define('controls/projects/project/site/Select', [
             var Elm = this.createEntry(siteId).inject(this.$Container);
 
             new Element('span', {
-                'class': 'fa fa-file-o icon-file-alt'
+                'class': 'fa fa-file-o'
             }).inject(Elm.getElement('.control-site-select-entry-text'));
 
             Elm.inject(this.$Container);
@@ -466,7 +466,7 @@ define('controls/projects/project/site/Select', [
                 Elm   = this.createEntry(value).inject(this.$Container);
 
             new Element('span', {
-                'class': 'icon-file'
+                'class': 'fa fa-file'
             }).inject(Elm.getElement('.control-site-select-entry-text'));
 
             Elm.inject(this.$Container);
@@ -497,7 +497,7 @@ define('controls/projects/project/site/Select', [
             var Elm = this.createEntry(type);
 
             new Element('span', {
-                'class': 'icon-magic'
+                'class': 'fa fa-magic'
             }).inject(Elm.getElement('.control-site-select-entry-text'));
 
             Elm.inject(this.$Container);
@@ -519,13 +519,13 @@ define('controls/projects/project/site/Select', [
                 'class'     : 'control-site-select-entry',
                 html        : '<div class="control-site-select-entry-text">' + value + '</div>' +
                               '<div class="control-site-select-entry-delete">' +
-                              '<span class="icon-remove"></span>' +
+                              '<span class="fa fa-remove"></span>' +
                               '</div>',
                 "data-value": value
             });
 
 
-            Item.getElement('.icon-remove').addEvent('click', function () {
+            Item.getElement('.fa-remove').addEvent('click', function () {
                 this.getParent('.control-site-select-entry').destroy();
 
                 self.refreshValues();

@@ -8,7 +8,6 @@
  * @require Ajax
  * @require UploadManager
  */
-
 define('classes/projects/project/media/Folder', [
 
     'classes/projects/project/media/Item',
@@ -107,7 +106,6 @@ define('classes/projects/project/media/Folder', [
                     parentid: this.getId(),
                     events  : {
                         onComplete: function () {
-
                             if (typeof onfinish === 'function') {
                                 onfinish();
                             }

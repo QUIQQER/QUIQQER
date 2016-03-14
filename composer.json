@@ -2,7 +2,7 @@
   "name": "quiqqer/quiqqer",
   "type": "quiqqer-system",
   "description": "A modular based management system written in JavaScript and PHP",
-  "version": "dev-master",
+  "version": "dev-dev",
   "license": "GPL-3.0+",
   "authors": [
     {
@@ -25,12 +25,12 @@
   "repositories": [
     {
       "type": "composer",
-      "url": "http://update.quiqqer.com"
+      "url": "https://update.quiqqer.com"
     }
   ],
   "require": {
     "php": ">=5.3",
-    "composer/composer": "1.0.0-alpha10",
+    "composer/composer": "1.0.0-beta1",
     "tedivm/stash": "0.11.6",
     "robloach/component-installer": "0.0.12",
     "phpmailer/phpmailer": "v5.2.9",
@@ -39,7 +39,7 @@
     "html2text/html2text": "1.0.1",
     "intervention/image": "2.2.*",
     "t7systems/blowfish": "1.0.0",
-    "fxp/composer-asset-plugin": "~1.0",
+    "fxp/composer-asset-plugin": "^1.1",
     "quiqqer/qui": "*@dev",
     "quiqqer/qui-php": "*@dev",
     "quiqqer/smarty": "3.*",
@@ -55,8 +55,7 @@
     "quiqqer/diashow": "*@dev",
     "quiqqer/lockclient": "dev-master",
     "quiqqer/messages": "*@dev",
-    "quiqqer/meta": "*@dev",
-    "npm-asset/mustache": "2.*"
+    "quiqqer/meta": "*@dev"
   },
   "require-dev": {
     "mikey179/vfsStream": "1.*"

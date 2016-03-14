@@ -122,7 +122,7 @@ define('controls/projects/project/media/FolderPanel', [
                 var title = Project.getName() + '://' + Folder.getAttribute('file');
 
                 self.setAttributes({
-                    icon : 'fa fa-folder-open-o icon-folder-open-alt',
+                    icon : 'fa fa-folder-open-o',
                     title: title,
                     name : 'projects-media-file-panel-' + Folder.getId(),
                     id   : 'projects-media-file-panel-' + Folder.getId()
@@ -175,8 +175,8 @@ define('controls/projects/project/media/FolderPanel', [
             var self = this;
 
             new QUIConfirm({
-                icon     : 'fa fa-trash-o icon-trash',
-                texticon : 'fa fa-trash-o icon-trash',
+                icon     : 'fa fa-trash-o',
+                texticon : 'fa fa-trash-o',
                 maxWidth : 533,
                 maxHeight: 300,
                 title    : Locale.get('quiqqer/system', 'projects.project.site.media.folderPanel.window.delete.title', {
@@ -236,7 +236,7 @@ define('controls/projects/project/media/FolderPanel', [
                 new QUIButton({
                     alt   : Locale.get(lg, 'projects.project.site.panel.btn.priority'),
                     title : Locale.get(lg, 'projects.project.site.panel.btn.priority'),
-                    icon  : 'icon-sort-by-attributes-alt',
+                    icon  : 'fa fa-sort-amount-asc',
                     events: {
                         onClick: self.openPriorityOrder
                     },
@@ -389,19 +389,19 @@ define('controls/projects/project/media/FolderPanel', [
                 Select.appendChild(
                     Locale.get(lg, 'projects.project.site.media.folderPanel.no.watermark'),
                     '',
-                    'fa fa-remove icon-remove'
+                    'fa fa-remove'
                 );
 
                 Select.appendChild(
                     Locale.get(lg, 'projects.project.site.media.folderPanel.project.watermark'),
                     'default',
-                    'fa fa-home icon-home'
+                    'fa fa-home'
                 );
 
                 Select.appendChild(
                     Locale.get(lg, 'projects.project.site.media.folderPanel.own.watermark'),
                     'own',
-                    'fa fa-picture-o icon-picture'
+                    'fa fa-picture-o'
                 );
 
                 WatermarkInput = new MediaInput({
@@ -454,11 +454,11 @@ define('controls/projects/project/media/FolderPanel', [
             var self = this;
 
             this.createSheet({
-                icon       : 'icon-sort-by-attributes-alt',
-                title      : '<span class="icon-sort-by-attributes-alt"></span> ' +
+                icon       : 'fa fa-sort-amount-asc',
+                title      : '<span class="fa fa-sort-amount-asc"></span> ' +
                              Locale.get('quiqqer/system', 'projects.project.site.media.priority.sheet.title'),
                 closeButton: {
-                    textimage: 'icon-remove fa fa-remove',
+                    textimage: 'fa fa-remove',
                     text     : Locale.get('quiqqer/system', 'cancel')
                 },
                 events     : {
@@ -527,7 +527,7 @@ define('controls/projects/project/media/FolderPanel', [
             this.addButton(
                 new QUIButton({
                     text     : Locale.get(lg, 'projects.project.site.media.filePanel.btn.save.text'),
-                    textimage: 'icon-save',
+                    textimage: 'fa fa-save',
                     events   : {
                         onClick: function () {
                             self.save();
@@ -538,7 +538,7 @@ define('controls/projects/project/media/FolderPanel', [
                 new QUIButton({
                     alt   : Locale.get(lg, 'projects.project.site.media.filePanel.btn.delete.text'),
                     title : Locale.get(lg, 'projects.project.site.media.filePanel.btn.delete.text'),
-                    icon  : 'fa fa-trash-o icon-trash',
+                    icon  : 'fa fa-trash-o',
                     events: {
                         onClick: function () {
                             self.del();
@@ -560,7 +560,7 @@ define('controls/projects/project/media/FolderPanel', [
             this.addCategory({
                 text  : Locale.get(lg, 'projects.project.site.media.filePanel.details.text'),
                 name  : 'details',
-                icon  : 'fa fa-folder-open-o icon-folder-open-alt',
+                icon  : 'fa fa-folder-open-o',
                 events: {
                     onActive: this.openDetails
                 }
@@ -569,7 +569,7 @@ define('controls/projects/project/media/FolderPanel', [
             this.addCategory({
                 text  : Locale.get(lg, 'projects.project.site.media.filePanel.image.effects.text'),
                 name  : 'effects',
-                icon  : 'fa fa-magic icon-magic',
+                icon  : 'fa fa-magic',
                 events: {
                     onActive: this.openEffects
                 }

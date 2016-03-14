@@ -1,4 +1,3 @@
-
 /**
  * Media ContextMenu for a Media Panel
  *
@@ -27,14 +26,14 @@ define('classes/projects/project/media/panel/ContextMenu', [
      */
     return new Class({
 
-        Type : 'classes/projects/project/media/panel/ContextMenu',
+        Type: 'classes/projects/project/media/panel/ContextMenu',
 
         /**
          * @constructor
          *
          * @param {Object} MediaPanel - controls/projects/project/media/Panel
          */
-        initialize : function (MediaPanel) {
+        initialize: function (MediaPanel) {
             this.$MediaPanel = MediaPanel;
         },
 
@@ -43,7 +42,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
          *
          * @return {Object} controls/projects/project/media/Panel
          */
-        getPanel : function () {
+        getPanel: function () {
             return this.$MediaPanel;
         },
 
@@ -52,7 +51,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
          *
          * @param {DOMEvent} event - oncontextmenu DOMEvent
          */
-        show : function (event) {
+        show: function (event) {
             event.stop();
 
             var Menu;
@@ -83,18 +82,17 @@ define('classes/projects/project/media/panel/ContextMenu', [
          * @method classes/projects/project/media/panel/ContextMenu#createPanelMenu
          * @param {Object} Menu - qui/controls/contextmenu/Menu
          */
-        createPanelMenu : function (Menu) {
+        createPanelMenu: function (Menu) {
             Menu.clearChildren()
                 .setTitle(this.getPanel().$File.getAttribute('name'))
                 .appendChild(
                     new QUIContextmenuItem({
-                        name    : 'create_folder',
-                        text    : 'Neuen Ordner erstellen',
-                        icon    : 'icon-folder',
-                        Control : this,
-                        events  :
-                        {
-                            onMouseDown : function (Item) {
+                        name   : 'create_folder',
+                        text   : 'Neuen Ordner erstellen', // #locale
+                        icon   : 'fa fa-folder',
+                        Control: this,
+                        events : {
+                            onMouseDown: function (Item) {
                                 Item.getAttribute('Control')
                                     .getPanel()
                                     .createFolder();
@@ -110,7 +108,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
          * @param {HTMLElement} DOMNode - DOM media item element
          * @return {qui/controls/contextmenu/Menu}
          */
-        getFileMenu : function (DOMNode) {
+        getFileMenu: function (DOMNode) {
             var self = this,
                 Menu = this.getPanel().getContextMenu();
 
@@ -133,12 +131,11 @@ define('classes/projects/project/media/panel/ContextMenu', [
 
             if (!sels.length || sels.length == 1) {
                 Trash = new QUIContextmenuItem({
-                    name   : 'delete',
-                    text   : 'In den Mülleimer werfen',
-                    icon   : 'fa fa-trash-o icon-trash',
-                    events :
-                    {
-                        onMouseDown : function () {
+                    name  : 'delete',
+                    text  : 'In den Papierkorb verschieben',
+                    icon  : 'fa fa-trash-o',
+                    events: {
+                        onMouseDown: function () {
                             if (!DOMNode) {
                                 return;
                             }
@@ -149,18 +146,17 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 });
             } else {
                 Trash = new QUIContextmenuItem({
-                    name : 'delete',
-                    text : 'In den Mülleimer werfen',
-                    icon : 'fa fa-trash-o icon-trash'
+                    name: 'delete',
+                    text: 'In den Papierkorb verschieben',
+                    icon: 'fa fa-trash-o'
                 });
 
                 Trash.appendChild(
                     new QUIContextmenuItem({
-                        name   : 'delete',
-                        text   : DOMNode.get('title'),
-                        events :
-                        {
-                            onMouseDown : function () {
+                        name  : 'delete',
+                        text  : DOMNode.get('title'),
+                        events: {
+                            onMouseDown: function () {
                                 if (!DOMNode) {
                                     return;
                                 }
@@ -171,13 +167,12 @@ define('classes/projects/project/media/panel/ContextMenu', [
                     })
                 ).appendChild(
                     new QUIContextmenuItem({
-                        name   : 'delete',
-                        text   : 'Alle markierte Elemente',
-                        events :
-                        {
-                            onMouseDown : function () {
-                                var Panel   = self.getPanel(),
-                                    sels    = Panel.getSelectedItems();
+                        name  : 'delete',
+                        text  : 'Alle markierte Elemente',
+                        events: {
+                            onMouseDown: function () {
+                                var Panel = self.getPanel(),
+                                    sels  = Panel.getSelectedItems();
 
                                 self.getPanel().deleteItems(sels);
                             }
@@ -197,12 +192,11 @@ define('classes/projects/project/media/panel/ContextMenu', [
 
             Menu.appendChild(
                 new QUIContextmenuItem({
-                    name   : 'replace',
-                    text   : 'Datei ersetzen ...',
-                    icon   : 'icon-retweet',
-                    events :
-                    {
-                        onMouseDown : function () {
+                    name  : 'replace',
+                    text  : 'Datei ersetzen ...',
+                    icon  : 'fa fa-retweet',
+                    events: {
+                        onMouseDown: function () {
                             if (!DOMNode) {
                                 return;
                             }
@@ -217,12 +211,11 @@ define('classes/projects/project/media/panel/ContextMenu', [
             if (!DOMNode.get('data-error').toInt()) {
                 Menu.appendChild(
                     new QUIContextmenuItem({
-                        name   : 'download',
-                        text   : 'Datei herunterladen',
-                        icon   : 'icon-download',
-                        events :
-                        {
-                            onMouseDown : function () {
+                        name  : 'download',
+                        text  : 'Datei herunterladen',
+                        icon  : 'fa fa-download',
+                        events: {
+                            onMouseDown: function () {
                                 if (!DOMNode) {
                                     return;
                                 }
@@ -246,7 +239,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
          * @param {HTMLElement} Droppable - drop box element (folder)
          * @param {DOMEvent} event
          */
-        showDragDropMenu : function (Element, Droppable, event) {
+        showDragDropMenu: function (Element, Droppable, event) {
             if (!Droppable) {
                 return;
             }
@@ -255,9 +248,9 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 Menu  = this.getPanel().getContextMenu(),
                 title = Droppable.get('title'),
 
-                pos   =  {
-                    x : event.page.x,
-                    y : event.page.y
+                pos   = {
+                    x: event.page.x,
+                    y: event.page.y
                 };
 
 
@@ -276,12 +269,11 @@ define('classes/projects/project/media/panel/ContextMenu', [
             if (Droppable.get('data-type') != 'folder') {
                 Menu.appendChild(
                     new QUIContextmenuItem({
-                        name : 'copy-files',
-                        text : 'Datei ersetzen mit ' + Element.name,
-                        icon : 'icon-retweet',
-                        events :
-                        {
-                            onMouseDown : function (Item, event) {
+                        name  : 'copy-files',
+                        text  : 'Datei ersetzen mit ' + Element.name,
+                        icon  : 'fa fa-retweet',
+                        events: {
+                            onMouseDown: function (Item, event) {
                                 event.stop();
 
                                 var Panel = self.getPanel();
@@ -296,14 +288,13 @@ define('classes/projects/project/media/panel/ContextMenu', [
                             }
                         }
                     })
-
                 ).appendChild(
                     new QUIContextmenuSeperator()
                 ).appendChild(
                     new QUIContextmenuItem({
-                        name : 'cancel',
-                        text : 'Abbrechen',
-                        icon : 'icon-remove'
+                        name: 'cancel',
+                        text: 'Abbrechen',
+                        icon: 'fa fa-remove'
                         // do nothing ^^
                     })
                 );
@@ -314,16 +305,15 @@ define('classes/projects/project/media/panel/ContextMenu', [
             }
 
             if (instanceOf(Element, File) ||
-                 instanceOf(Element, FileList) ||
-                 instanceOf(Element, Array)) {
+                instanceOf(Element, FileList) ||
+                instanceOf(Element, Array)) {
                 Menu.appendChild(
                     new QUIContextmenuItem({
-                        name : 'upload-files',
-                        text : 'An diese Stelle hochladen',
-                        icon : 'icon-upload',
-                        events :
-                        {
-                            onMouseDown : function (Item, event) {
+                        name  : 'upload-files',
+                        text  : 'An diese Stelle hochladen',
+                        icon  : 'fa fa-upload',
+                        events: {
+                            onMouseDown: function (Item, event) {
                                 event.stop();
 
                                 var Media = self.getPanel().getMedia();
@@ -340,9 +330,9 @@ define('classes/projects/project/media/panel/ContextMenu', [
                     new QUIContextmenuSeperator()
                 ).appendChild(
                     new QUIContextmenuItem({
-                        name : 'cancel',
-                        text : 'Abbrechen',
-                        icon : 'icon-remove'
+                        name: 'cancel',
+                        text: 'Abbrechen',
+                        icon: 'fa fa-remove'
                         // do nothing ^^
                     })
                 );
@@ -359,12 +349,11 @@ define('classes/projects/project/media/panel/ContextMenu', [
             // show choices
             Menu.appendChild(
                 new QUIContextmenuItem({
-                    name : 'copy-files',
-                    text : 'An diese Stelle kopieren',
-                    icon : 'icon-copy',
-                    events :
-                    {
-                        onMouseDown : function (Item, event) {
+                    name  : 'copy-files',
+                    text  : 'An diese Stelle kopieren',
+                    icon  : 'fa fa-copy',
+                    events: {
+                        onMouseDown: function (Item, event) {
                             event.stop();
 
                             self.getPanel().copyTo(id, ids);
@@ -373,12 +362,11 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 })
             ).appendChild(
                 new QUIContextmenuItem({
-                    name : 'cut-files',
-                    text : 'An diese Stelle verschieben',
-                    icon : 'icon-cut',
-                    events :
-                    {
-                        onMouseDown : function (Item, event) {
+                    name  : 'cut-files',
+                    text  : 'An diese Stelle verschieben',
+                    icon  : 'fa fa-cut',
+                    events: {
+                        onMouseDown: function (Item, event) {
                             event.stop();
 
                             self.getPanel().moveTo(id, ids);
@@ -389,9 +377,9 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 new QUIContextmenuSeperator()
             ).appendChild(
                 new QUIContextmenuItem({
-                    name : 'cancel',
-                    text : 'Abbrechen',
-                    icon : 'icon-remove'
+                    name: 'cancel',
+                    text: 'Abbrechen',
+                    icon: 'fa fa-remove'
                     // do nothing ^^
                 })
             );
@@ -405,7 +393,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
          * @param {HTMLElement} DOMNode - DOM media item element
          * @return {Object} qui/controls/contextmenu/Menu
          */
-        getFolderMenu : function (DOMNode) {
+        getFolderMenu: function (DOMNode) {
             var self = this,
                 Menu = this.getPanel().getContextMenu();
 
@@ -426,12 +414,11 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 new QUIContextmenuSeperator()
             ).appendChild(
                 new QUIContextmenuItem({
-                    name   : 'rename',
-                    text   : 'Umbenennen',
-                    icon   : 'icon-font',
-                    events :
-                    {
-                        onMouseDown : function () {
+                    name  : 'rename',
+                    text  : 'Umbenennen',
+                    icon  : 'fa fa-font',
+                    events: {
+                        onMouseDown: function () {
                             if (!DOMNode) {
                                 return;
                             }
@@ -442,12 +429,11 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 })
             ).appendChild(
                 new QUIContextmenuItem({
-                    name   : 'delete',
-                    text   : 'In den Mülleimer werfen',
-                    icon   : 'fa fa-trash-o icon-trash',
-                    events :
-                    {
-                        onMouseDown : function () {
+                    name  : 'delete',
+                    text  : 'In den verschieben verschieben',
+                    icon  : 'fa fa-trash-o',
+                    events: {
+                        onMouseDown: function () {
                             if (!DOMNode) {
                                 return;
                             }
@@ -460,20 +446,19 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 new QUIContextmenuSeperator()
             ).appendChild(
                 new QUIContextmenuItem({
-                    name   : 'properties',
-                    text   : 'Eigenschaften',
-                    icon   : 'fa fa-folder-open-o icon-folder-open-alt',
-                    events :
-                    {
-                        onMouseDown : function () {
+                    name  : 'properties',
+                    text  : 'Eigenschaften',
+                    icon  : 'fa fa-folder-open-o',
+                    events: {
+                        onMouseDown: function () {
                             if (!DOMNode) {
                                 return;
                             }
 
                             var Parent = self.getPanel().getParent();
 
-                            var type = DOMNode.get('data-type'),
-                                id = DOMNode.get('data-id'),
+                            var type    = DOMNode.get('data-type'),
+                                id      = DOMNode.get('data-id'),
                                 project = DOMNode.get('data-project');
 
                             if (type != 'folder') {
@@ -484,7 +469,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                                 'controls/projects/project/media/FolderPanel'
                             ], function (FolderPanel) {
                                 new FolderPanel({
-                                    folderId : id,
+                                    folderId: id,
                                     project : project
                                 }).inject(Parent);
                             });
@@ -502,18 +487,17 @@ define('classes/projects/project/media/panel/ContextMenu', [
          * @param {HTMLElement} DOMNode - DOM media item element
          * @return {Object} qui/controls/contextmenu/Item
          */
-        getActivateItem : function (DOMNode) {
+        getActivateItem: function (DOMNode) {
             var self = this,
                 sels = this.getPanel().getSelectedItems();
 
             if (!sels.length || sels.length == 1) {
                 return new QUIContextmenuItem({
-                    name   : 'activate',
-                    text   : 'Aktivieren',
-                    icon   : 'fa fa-check icon-ok',
-                    events :
-                    {
-                        onMouseDown : function () {
+                    name  : 'activate',
+                    text  : 'Aktivieren',
+                    icon  : 'fa fa-check',
+                    events: {
+                        onMouseDown: function () {
                             if (!DOMNode) {
                                 return;
                             }
@@ -525,18 +509,17 @@ define('classes/projects/project/media/panel/ContextMenu', [
             }
 
             var Activate = new QUIContextmenuItem({
-                name    : 'activate',
-                text    : 'Aktivieren',
-                icon    : 'fa fa-check icon-ok'
+                name: 'activate',
+                text: 'Aktivieren',
+                icon: 'fa fa-check'
             });
 
             Activate.appendChild(
                 new QUIContextmenuItem({
-                    name   : 'activate',
-                    text   : DOMNode.get('title'),
-                    events :
-                    {
-                        onMouseDown : function () {
+                    name  : 'activate',
+                    text  : DOMNode.get('title'),
+                    events: {
+                        onMouseDown: function () {
                             if (!DOMNode) {
                                 return;
                             }
@@ -547,11 +530,10 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 })
             ).appendChild(
                 new QUIContextmenuItem({
-                    name   : 'activate',
-                    text   : 'Alle markierte Elemente',
-                    events :
-                    {
-                        onMouseDown : function () {
+                    name  : 'activate',
+                    text  : 'Alle markierte Elemente',
+                    events: {
+                        onMouseDown: function () {
                             var Panel = self.getPanel(),
                                 sels  = Panel.getSelectedItems();
 
@@ -570,18 +552,17 @@ define('classes/projects/project/media/panel/ContextMenu', [
          * @param {HTMLElement} DOMNode - DOM media item element
          * @return {Object} qui/controls/contextmenu/Item
          */
-        getDeActivateItem : function (DOMNode) {
+        getDeActivateItem: function (DOMNode) {
             var self = this,
                 sels = this.getPanel().getSelectedItems();
 
             if (!sels.length || sels.length == 1) {
                 return new QUIContextmenuItem({
-                    name    : 'deactivate',
-                    text    : 'Deaktivieren',
-                    icon    : 'icon-remove',
-                    events  :
-                    {
-                        onMouseDown : function () {
+                    name  : 'deactivate',
+                    text  : 'Deaktivieren',
+                    icon  : 'fa fa-remove',
+                    events: {
+                        onMouseDown: function () {
                             if (!DOMNode) {
                                 return;
                             }
@@ -593,18 +574,17 @@ define('classes/projects/project/media/panel/ContextMenu', [
             }
 
             var Deactivate = new QUIContextmenuItem({
-                name    : 'deactivate',
-                text    : 'Deaktivieren',
-                icon    : 'icon-remove'
+                name: 'deactivate',
+                text: 'Deaktivieren',
+                icon: 'fa fa-remove'
             });
 
             Deactivate.appendChild(
                 new QUIContextmenuItem({
-                    name   : 'deactivate',
-                    text   : DOMNode.get('title'),
-                    events :
-                    {
-                        onMouseDown : function () {
+                    name  : 'deactivate',
+                    text  : DOMNode.get('title'),
+                    events: {
+                        onMouseDown: function () {
                             if (!DOMNode) {
                                 return;
                             }
@@ -615,13 +595,12 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 })
             ).appendChild(
                 new QUIContextmenuItem({
-                    name   : 'deactivate',
-                    text   : 'Alle markierte Elemente',
-                    events :
-                    {
-                        onMouseDown : function () {
-                            var Panel   = self.getPanel(),
-                                sels    = Panel.getSelectedItems();
+                    name  : 'deactivate',
+                    text  : 'Alle markierte Elemente',
+                    events: {
+                        onMouseDown: function () {
+                            var Panel = self.getPanel(),
+                                sels  = Panel.getSelectedItems();
 
                             self.getPanel().deactivateItems(sels);
                         }

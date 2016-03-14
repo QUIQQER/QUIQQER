@@ -1,4 +1,3 @@
-
 /**
  * The Quiqqer Dashboard
  *
@@ -33,33 +32,33 @@ define('controls/help/Dashboard', [
      */
     return new Class({
 
-        Extends : QUIPanel,
-        Type    : 'controls/help/Dashboard',
+        Extends: QUIPanel,
+        Type   : 'controls/help/Dashboard',
 
-        Binds : [
+        Binds: [
             '$onCreate',
             '$openSitePanel',
             'refreshLastMessages'
         ],
 
-        options : {
-            icon  : URL_BIN_DIR + '16x16/quiqqer.png',
-            title : 'QUIQQER Dashboard',
-            displayNoTaskText : true
+        options: {
+            icon             : URL_BIN_DIR + '16x16/quiqqer.png',
+            title            : 'QUIQQER Dashboard',
+            displayNoTaskText: true
         },
 
-        initialize : function (options) {
+        initialize: function (options) {
             this.parent(options);
 
             this.addEvents({
-                onCreate : this.$onCreate
+                onCreate: this.$onCreate
             });
         },
 
         /**
          * Create the project panel body
          */
-        $onCreate : function () {
+        $onCreate: function () {
             require(['text!controls/help/Dashboard.html'], function (result) {
                 var self = this;
 
@@ -71,10 +70,10 @@ define('controls/help/Dashboard', [
                 QUI.getMessageHandler().then(function (MH) {
 
                     MH.addEvents({
-                        onClear : self.refreshLastMessages,
-                        onClearNewMessages : self.refreshLastMessages,
-                        onAdd : self.refreshLastMessages,
-                        onMessageDestroy : self.refreshLastMessages
+                        onClear           : self.refreshLastMessages,
+                        onClearNewMessages: self.refreshLastMessages,
+                        onAdd             : self.refreshLastMessages,
+                        onMessageDestroy  : self.refreshLastMessages
                     });
 
                 });
@@ -85,7 +84,7 @@ define('controls/help/Dashboard', [
         /**
          * Refresh the last messages
          */
-        refreshLastMessages : function () {
+        refreshLastMessages: function () {
             var Content = this.getContent();
 
             // 10 messages
@@ -93,7 +92,7 @@ define('controls/help/Dashboard', [
 
                 var start, end;
 
-                var messages = MH.getMessages(),
+                var messages  = MH.getMessages(),
                     Container = Content.getElement(
                         '.quiqqer-dashboard-last-messages-result'
                     );
@@ -104,13 +103,14 @@ define('controls/help/Dashboard', [
 
                 Container.set('html', '');
 
+                // #locale
                 if (!messages.length) {
                     Container.set('html', '<p>Keine Nachrichten vorhanden</p>');
                     return;
                 }
 
                 start = messages.length - 1;
-                end = start - 9;
+                end   = start - 9;
 
                 if (end < 0) {
                     end = 0;
@@ -130,8 +130,8 @@ define('controls/help/Dashboard', [
         /**
          * Refresh the last edited sites
          */
-        refreshLastEditedSites : function () {
-            var self = this,
+        refreshLastEditedSites: function () {
+            var self    = this,
                 Content = this.getContent();
 
             QUIAjax.get([
@@ -155,18 +155,18 @@ define('controls/help/Dashboard', [
                     Entry = lastEdited[i];
 
                     text = Entry.name + ' (' + Entry.project + ',' + Entry.lang + ')' +
-                        ' - ' + Entry.e_date
+                           ' - ' + Entry.e_date;
 
                     new Element('div', {
-                        'class' : 'quiqqer-dashboard-last-edit-result-entry smooth',
-                        'data-project' : Entry.project,
-                        'data-lang' : Entry.lang,
-                        'data-id' : Entry.id,
-                        events : {
-                            click : self.$openSitePanel
+                        'class'       : 'quiqqer-dashboard-last-edit-result-entry smooth',
+                        'data-project': Entry.project,
+                        'data-lang'   : Entry.lang,
+                        'data-id'     : Entry.id,
+                        events        : {
+                            click: self.$openSitePanel
                         },
-                        html : '<span class="fa fa-file-o icon-file-alt"></span>' + text,
-                        title : text
+                        html          : '<span class="fa fa-file-o"></span>' + text,
+                        title         : text
                     }).inject(Container);
                 }
 
@@ -177,7 +177,7 @@ define('controls/help/Dashboard', [
          * Open Site Panel
          * @param {DOMEvent} event
          */
-        $openSitePanel : function (event) {
+        $openSitePanel: function (event) {
             if (typeOf(event) == 'domevent') {
                 event.stop();
             }
@@ -189,8 +189,8 @@ define('controls/help/Dashboard', [
             }
 
             var project = Target.get('data-project');
-            var lang = Target.get('data-lang');
-            var id = Target.get('data-id');
+            var lang    = Target.get('data-lang');
+            var id      = Target.get('data-id');
 
             PanelUtils.openSitePanel(project, lang, id);
         }

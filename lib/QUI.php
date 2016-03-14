@@ -378,7 +378,6 @@ class QUI
             define('QUI_DB_PRFX', $prfx);
         }
 
-
         // create the temp folder
         // @todo better do at the setup
         $folders = array(
@@ -791,6 +790,10 @@ class QUI
     {
         if (self::$Locale === null) {
             self::$Locale = new \QUI\Locale();
+
+            if (isset($_REQUEST['lang']) && strlen($_REQUEST['lang']) === 2) {
+                self::$Locale->setCurrent($_REQUEST['lang']);
+            }
         }
 
         return self::$Locale;

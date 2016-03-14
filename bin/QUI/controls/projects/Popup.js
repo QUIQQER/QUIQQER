@@ -44,7 +44,7 @@ define('controls/projects/Popup', [
             project             : false,
             lang                : false,
             langs               : false,
-            icon                : 'icon-home',
+            icon                : 'fa fa-home',
             title               : Locale.get('quiqqer/system', 'projects'),
             maxWidth            : 400,
             maxHeight           : 600,
@@ -155,7 +155,7 @@ define('controls/projects/Popup', [
                         Select.appendChild(
                             project + ' (' + langs[i] + ')',
                             project + ',' + langs[i],
-                            'icon-home'
+                            'fa fa-home'
                         );
                     }
                 }

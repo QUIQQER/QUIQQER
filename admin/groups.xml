@@ -4,7 +4,7 @@
     <window>
         <tab name="settings">
             <text>Einstellungen</text>
-            <image>icon-gears</image>
+            <image>fa fa-gears</image>
 
             <template>SYS_DIR/template/groups/settings.html</template>
             <onload>_pcsg.lib.Groups.tabOnLoadGroup</onload>
@@ -13,7 +13,7 @@
 
         <tab name="users">
             <text>Benutzer in der Gruppe</text>
-            <image>icon-user</image>
+            <image>fa fa-user</image>
 
             <onload>Group.showUsers</onload>
             <onunload>_pcsg.lib.Groups.tabOnUnLoadGroup</onunload>

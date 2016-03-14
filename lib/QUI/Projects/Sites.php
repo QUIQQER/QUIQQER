@@ -38,7 +38,7 @@ class Sites
         $Toolbar->appendChild(
             new Button(array(
                 'name' => '_Save',
-                'textimage' => 'icon-save',
+                'textimage' => 'fa fa-save',
                 'text' => QUI::getLocale()->get($gl, 'projects.project.site.btn.save.text'),
                 'onclick' => 'Panel.save',
                 'help' => QUI::getLocale()->get($gl, 'projects.project.site.btn.save.help'),
@@ -66,24 +66,24 @@ class Sites
 
             $Status = new Button(array(
                 'name' => 'status',
-                'aimage' => 'fa fa-check icon-ok',
+                'aimage' => 'fa fa-check',
                 'atext' => QUI::getLocale()->get($gl, 'projects.project.site.btn.activate.text'),
                 'aonclick' => 'Panel.getSite().activate',
-                'dimage' => 'icon-remove',
+                'dimage' => 'fa fa-remove',
                 'dtext' => QUI::getLocale()->get($gl, 'projects.project.site.btn.deactivate.text'),
                 'donclick' => 'Panel.getSite().activate'
             ));
 
             if ($Site->getAttribute('active')) {
                 $Status->setAttributes(array(
-                    'textimage' => 'icon-remove',
+                    'textimage' => 'fa fa-remove',
                     'text' => QUI::getLocale()->get($gl, 'projects.project.site.btn.deactivate.text'),
                     'onclick' => 'Panel.getSite().deactivate'
                 ));
 
             } else {
                 $Status->setAttributes(array(
-                    'textimage' => 'fa fa-check icon-ok',
+                    'textimage' => 'fa fa-check',
                     'text' => QUI::getLocale()->get($gl, 'projects.project.site.btn.activate.text'),
                     'onclick' => 'Panel.getSite().activate'
                 ));
@@ -102,7 +102,7 @@ class Sites
         $Toolbar->appendChild(
             new Button(array(
                 'name' => '_Preview',
-                'textimage' => 'fa fa-eye icon-eye-open',
+                'textimage' => 'fa fa-eye',
                 'text' => QUI::getLocale()->get($gl, 'projects.project.site.btn.preview.text'),
                 'onclick' => 'Panel.openPreview'
             ))
@@ -112,7 +112,7 @@ class Sites
         $Toolbar->appendChild(
             new Button(array(
                 'name' => '_Del',
-                'icon' => 'fa fa-trash-o icon-trash',
+                'icon' => 'fa fa-trash-o',
                 //'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.delete.text' ),
                 'onclick' => 'Panel.del',
                 'help' => QUI::getLocale()->get($gl, 'projects.project.site.btn.delete.help'),
@@ -133,7 +133,7 @@ class Sites
         $Toolbar->appendChild(
             new Button(array(
                 'name' => '_New',
-                'icon' => 'fa fa-file-o icon-file-alt',
+                'icon' => 'fa fa-file-o',
                 //'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.new.text' ),
                 'onclick' => 'Panel.createNewChild',
                 'help' => QUI::getLocale()->get($gl, 'projects.project.site.btn.new.help'),
@@ -207,7 +207,7 @@ class Sites
                         'projects.project.site.information'
                     ),
                     'template' => SYS_DIR . 'template/site/information.html',
-                    'icon' => 'fa fa-file-o icon-file-alt'
+                    'icon' => 'fa fa-file-o'
                 ))
             );
 
@@ -221,7 +221,7 @@ class Sites
                         'projects.project.site.information'
                     ),
                     'template' => SYS_DIR . 'template/site/noview.html',
-                    'icon' => 'fa fa-file-o icon-file-alt'
+                    'icon' => 'fa fa-file-o'
                 ))
             );
 
@@ -238,7 +238,7 @@ class Sites
                     ),
                     'template' => SYS_DIR
                                   . 'template/site/information_norights.html',
-                    'icon' => 'fa fa-file-o icon-file-alt'
+                    'icon' => 'fa fa-file-o'
                 ))
             );
 
@@ -253,7 +253,7 @@ class Sites
                     'quiqqer/system',
                     'projects.project.site.content'
                 ),
-                'icon' => 'fa fa-file-text-o icon-file-alt'
+                'icon' => 'fa fa-file-text-o'
             ))
         );
 
@@ -265,7 +265,7 @@ class Sites
                     'quiqqer/system',
                     'projects.project.site.settings'
                 ),
-                'icon' => 'icon-cog',
+                'icon' => 'fa fa-cog',
                 'template' => SYS_DIR . 'template/site/settings.html'
             ))
         );

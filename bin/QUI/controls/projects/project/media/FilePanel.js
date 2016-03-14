@@ -237,7 +237,7 @@ define('controls/projects/project/media/FilePanel', [
             }
 
             var File = this.$File,
-                icon = 'fa fa-picture-o icon-picture';
+                icon = 'fa fa-picture-o';
 
             if (File.getAttribute('type') == 'image') {
                 icon = URL_BIN_DIR + '16x16/extensions/image.png';
@@ -321,8 +321,8 @@ define('controls/projects/project/media/FilePanel', [
             var self = this;
 
             new QUIConfirm({
-                icon    : 'fa fa-trash-o icon-trash',
-                texticon: 'fa fa-trash-o icon-trash',
+                icon    : 'fa fa-trash-o',
+                texticon: 'fa fa-trash-o',
 
                 title: Locale.get('quiqqer/system', 'projects.project.site.media.filePanel.window.delete.title', {
                     file: this.$File.getAttribute('file')
@@ -375,7 +375,7 @@ define('controls/projects/project/media/FilePanel', [
         activate: function () {
             this.getButtonBar()
                 .getElement('status')
-                .setAttribute('textimage', 'icon-spinner icon-spin');
+                .setAttribute('textimage', 'fa fa-spinner fa-spin');
 
             this.$File.activate();
         },
@@ -388,7 +388,7 @@ define('controls/projects/project/media/FilePanel', [
         deactivate: function () {
             this.getButtonBar()
                 .getElement('status')
-                .setAttribute('textimage', 'icon-spinner icon-spin');
+                .setAttribute('textimage', 'fa fa-spinner fa-spin');
 
             this.$File.deactivate();
         },
@@ -416,7 +416,7 @@ define('controls/projects/project/media/FilePanel', [
             this.addButton(
                 new QUIButton({
                     text     : Locale.get(lg, 'projects.project.site.media.filePanel.btn.save.text'),
-                    textimage: 'icon-save',
+                    textimage: 'fa fa-save',
                     events   : {
                         onClick: function () {
                             self.save();
@@ -426,7 +426,7 @@ define('controls/projects/project/media/FilePanel', [
             ).addButton(
                 new QUIButton({
                     text     : Locale.get(lg, 'projects.project.site.media.filePanel.btn.replace.text'),
-                    textimage: 'icon-upload',
+                    textimage: 'fa fa-upload',
                     events   : {
                         onClick: function () {
                             self.replace();
@@ -443,7 +443,7 @@ define('controls/projects/project/media/FilePanel', [
                     new QUIButton({
                         name     : 'status',
                         text     : Locale.get(lg, 'projects.project.site.media.filePanel.btn.deactivate.text'),
-                        textimage: 'icon-remove',
+                        textimage: 'fa fa-remove',
                         events   : {
                             onClick: this.toggleStatus
                         }
@@ -455,7 +455,7 @@ define('controls/projects/project/media/FilePanel', [
                     new QUIButton({
                         name     : 'status',
                         text     : Locale.get(lg, 'projects.project.site.media.filePanel.btn.activate.text'),
-                        textimage: 'icon-ok',
+                        textimage: 'fa fa-ok',
                         events   : {
                             onClick: this.toggleStatus
                         }
@@ -467,7 +467,7 @@ define('controls/projects/project/media/FilePanel', [
                 new QUIButton({
                     alt   : Locale.get(lg, 'projects.project.site.media.filePanel.btn.delete.text'),
                     title : Locale.get(lg, 'projects.project.site.media.filePanel.btn.delete.text'),
-                    icon  : 'fa fa-trash-o icon-trash',
+                    icon  : 'fa fa-trash-o',
                     events: {
                         onClick: function () {
                             self.del();
@@ -492,7 +492,7 @@ define('controls/projects/project/media/FilePanel', [
             this.$ButtonDetails = new QUIButton({
                 text  : Locale.get(lg, 'projects.project.site.media.filePanel.details.text'),
                 name  : 'details',
-                icon  : 'fa fa-file-o icon-file-alt',
+                icon  : 'fa fa-file-o',
                 events: {
                     onClick: this.openDetails
                 }
@@ -508,7 +508,7 @@ define('controls/projects/project/media/FilePanel', [
             this.$ButtonEffects = new QUIButton({
                 text  : Locale.get(lg, 'projects.project.site.media.filePanel.image.effects.text'),
                 name  : 'imageEffects',
-                icon  : 'fa fa-magic icon-magic',
+                icon  : 'fa fa-magic',
                 events: {
                     onClick: this.openImageEffects
                 }
@@ -517,7 +517,7 @@ define('controls/projects/project/media/FilePanel', [
             this.$ButtonPreview = new QUIButton({
                 text  : Locale.get(lg, 'projects.project.site.media.filePanel.preview.text'),
                 name  : 'preview',
-                icon  : 'fa fa-eye icon-eye-open',
+                icon  : 'fa fa-eye',
                 events: {
                     onClick: this.openPreview
                 }
@@ -650,7 +650,7 @@ define('controls/projects/project/media/FilePanel', [
 
                     new QUIButton({
                         name  : 'download_file',
-                        image : 'icon-download',
+                        image : 'fa fa-download',
                         title : Locale.get(lg, 'projects.project.site.media.filePanel.btn.downloadFile.title'),
                         alt   : Locale.get(lg, 'projects.project.site.media.filePanel.btn.downloadFile.alt'),
                         events: {
@@ -833,19 +833,19 @@ define('controls/projects/project/media/FilePanel', [
                 Select.appendChild(
                     Locale.get(lg, 'projects.project.site.media.folderPanel.no.watermark'),
                     '',
-                    'fa fa-remove icon-remove'
+                    'fa fa-remove'
                 );
 
                 Select.appendChild(
                     Locale.get(lg, 'projects.project.site.media.folderPanel.project.watermark'),
                     'default',
-                    'fa fa-home icon-home'
+                    'fa fa-home'
                 );
 
                 Select.appendChild(
                     Locale.get(lg, 'projects.project.site.media.folderPanel.own.watermark'),
                     'own',
-                    'fa fa-picture-o icon-picture'
+                    'fa fa-picture-o'
                 );
 
                 WatermarkInput = new MediaInput({
@@ -918,7 +918,7 @@ define('controls/projects/project/media/FilePanel', [
         $onFileActivate: function () {
             var Button = this.getButtonBar().getElement('status');
 
-            Button.setAttribute('textimage', 'icon-remove');
+            Button.setAttribute('textimage', 'fa fa-remove');
             Button.setAttribute(
                 'text',
                 Locale.get(lg, 'projects.project.site.media.filePanel.btn.deactivate.text')
@@ -931,7 +931,7 @@ define('controls/projects/project/media/FilePanel', [
         $onFileDeactivate: function () {
             var Button = this.getButtonBar().getElement('status');
 
-            Button.setAttribute('textimage', 'icon-ok');
+            Button.setAttribute('textimage', 'fa fa-ok');
             Button.setAttribute(
                 'text',
                 Locale.get(lg, 'projects.project.site.media.filePanel.btn.activate.text')

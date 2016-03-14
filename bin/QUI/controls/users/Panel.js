@@ -118,10 +118,10 @@ define('controls/users/Panel', [
             }.bind(this));
 
 
-            this.active_image = 'fa fa-check icon-ok';
+            this.active_image = 'fa fa-check';
             this.active_text  = Locale.get(lg, 'users.panel.user.is.active');
 
-            this.deactive_image = 'icon-remove';
+            this.deactive_image = 'fa fa-remove';
             this.deactive_text  = Locale.get(lg, 'users.panel.user.is.deactive');
         },
 
@@ -143,7 +143,7 @@ define('controls/users/Panel', [
                 Users : this,
                 alt   : Locale.get(lg, 'users.panel.btn.search.alt'),
                 title : Locale.get(lg, 'users.panel.btn.search.title'),
-                image : 'icon-search',
+                image : 'fa fa-search',
                 events: {
                     onClick: this.search
                 }
@@ -168,7 +168,7 @@ define('controls/users/Panel', [
                 Users    : this,
                 text     : Locale.get(lg, 'users.panel.btn.edit'),
                 disabled : true,
-                textimage: 'icon-pencil',
+                textimage: 'fa fa-edit',
                 events   : {
                     onMousedown: this.$onButtonEditClick
                 }
@@ -179,7 +179,7 @@ define('controls/users/Panel', [
                 Users    : this,
                 text     : Locale.get(lg, 'users.panel.btn.delete'),
                 disabled : true,
-                textimage: 'fa fa-trash-o icon-trash',
+                textimage: 'fa fa-trash-o',
                 events   : {
                     onMousedown: this.$onButtonDelClick
                 }
@@ -314,7 +314,7 @@ define('controls/users/Panel', [
             var self  = this,
                 Sheet = this.createSheet({
                     title      : Locale.get(lg, 'users.panel.search.title'),
-                    icon : 'icon-search',
+                    icon       : 'fa fa-search',
                     closeButton: {
                         text: 'schließen'
                     }
@@ -387,7 +387,7 @@ define('controls/users/Panel', [
 
                     // search button
                     new QUIButton({
-                        textimage: 'icon-search',
+                        textimage: 'fa fa-search',
                         text     : Locale.get(lg, 'users.panel.search.btn.start'),
                         events   : {
                             onClick: function () {
@@ -397,7 +397,7 @@ define('controls/users/Panel', [
                     }).inject(Search, 'after');
 
                     Sheet.addButton({
-                        textimage: 'icon-search',
+                        textimage: 'fa fa-search',
                         text     : Locale.get(lg, 'users.panel.search.btn.start'),
                         events   : {
                             onClick: function () {
@@ -461,7 +461,7 @@ define('controls/users/Panel', [
             new QUIPrompt({
                 name       : 'CreateUser',
                 title      : Locale.get(lg, 'users.panel.create.window.title'),
-                icon       : 'icon-user',
+                icon       : 'fa fa-user',
                 text       : Locale.get(lg, 'users.panel.create.window.text'),
                 information: Locale.get(lg, 'users.panel.create.window.information'),
 
@@ -601,7 +601,7 @@ define('controls/users/Panel', [
             this.Loader.show();
 
             this.setAttribute('title', Locale.get(lg, 'users.panel.title'));
-            this.setAttribute('icon', 'icon-refresh icon-spin');
+            this.setAttribute('icon', 'fa fa-spinner fa-spin');
             this.refresh();
 
             if (this.getAttribute('search') && !this.getBody().getElement('.messages-message')) {
@@ -649,7 +649,7 @@ define('controls/users/Panel', [
                 Grid.setData(result);
 
                 self.setAttribute('title', Locale.get(lg, 'users.panel.title'));
-                self.setAttribute('icon', 'icon-user');
+                self.setAttribute('icon', 'fa fa-user');
                 self.refresh();
 
                 if (typeof callback === 'function') {
@@ -869,11 +869,11 @@ define('controls/users/Panel', [
             new QUIConfirm({
                 name       : 'DeleteUsers',
                 title      : Locale.get(lg, 'users.panel.delete.window.title'),
-                icon       : 'fa fa-trash-o icon-trash',
+                icon       : 'fa fa-trash-o',
                 text       : Locale.get(lg, 'users.panel.delete.window.text', {
                     userids: uids.join(', ')
                 }),
-                texticon   : 'fa fa-trash-o icon-trash',
+                texticon   : 'fa fa-trash-o',
                 information: Locale.get(lg, 'users.panel.delete.window.information'),
 
                 width : 500,

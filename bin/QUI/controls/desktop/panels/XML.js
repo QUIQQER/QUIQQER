@@ -146,7 +146,7 @@ define('controls/desktop/panels/XML', [
                 self.addButton({
                     name     : 'save',
                     text     : Locale.get('quiqqer/system', 'desktop.panels.xml.btn.save'),
-                    textimage: 'icon-save',
+                    textimage: 'fa fa-save',
                     events   : {
                         onClick: self.save
                     }
@@ -155,7 +155,7 @@ define('controls/desktop/panels/XML', [
                 self.addButton({
                     name     : 'reload',
                     text     : Locale.get('quiqqer/system', 'desktop.panels.xml.btn.cancel'),
-                    textimage: 'icon-ban-circle',
+                    textimage: 'fa fa-ban',
                     events   : {
                         onClick: self.$onCreate
                     }
@@ -391,10 +391,10 @@ define('controls/desktop/panels/XML', [
 
             var Save = this.getButtonBar().getElement('save');
 
-            Save.setAttribute('textimage', 'fa fa-refresh fa-spin icon-refresh icon-rotate');
+            Save.setAttribute('textimage', 'fa fa-refresh fa-spin');
 
             Ajax.post('ajax_settings_save', function () {
-                Save.setAttribute('textimage', 'icon-save');
+                Save.setAttribute('textimage', 'fa fa-save');
             }, {
                 file  : JSON.encode(this.$file),
                 params: JSON.encode(this.$config)

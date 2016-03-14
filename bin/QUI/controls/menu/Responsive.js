@@ -17,18 +17,18 @@ define('controls/menu/Responsive', [
 
     return new Class({
 
-        Extends : QUIControl,
-        Type    : 'controls/menu/Responsive',
+        Extends: QUIControl,
+        Type   : 'controls/menu/Responsive',
 
-        options : {
-            project : false,
-            lang    : false,
-            id      : false,
+        options: {
+            project: false,
+            lang   : false,
+            id     : false,
 
-            searchButton : false
+            searchButton: false
         },
 
-        initialize : function (options) {
+        initialize: function (options) {
             var self = this;
 
             this.parent(options);
@@ -36,9 +36,8 @@ define('controls/menu/Responsive', [
             this.$Loader = new QUILoader();
 
             this.$Background = new QUIBackground({
-                events :
-                {
-                    onClick : function () {
+                events: {
+                    onClick: function () {
                         self.hide();
                     }
                 }
@@ -58,24 +57,25 @@ define('controls/menu/Responsive', [
          *
          * @return {HTMLElement}
          */
-        create : function () {
+        create: function () {
             var self = this;
 
+            // #locale
             this.$Elm = new Element('div', {
-                'class' : 'qui-controls-menu-responsive',
-                html    : '<div class="qcm-responsive-title">' +
-                              '<div class="qcm-responsive-title-home">' +
-                                  '<span class="icon-home"></span>' +
-                                  '<span>Menü</span>' +
-                              '</div>' +
-                              '<div class="qcm-responsive-title-close icon-remove"></div>' +
-                          '</div>' +
-                          '<div class="qcm-responsive-buttons"></div>' +
-                          '<div class="qcm-responsive-content"></div>',
+                'class': 'qui-controls-menu-responsive',
+                html   : '<div class="qcm-responsive-title">' +
+                         '<div class="qcm-responsive-title-home">' +
+                         '<span class="fa fa-home"></span>' +
+                         '<span>Menü</span>' +
+                         '</div>' +
+                         '<div class="qcm-responsive-title-close fa fa-remove"></div>' +
+                         '</div>' +
+                         '<div class="qcm-responsive-buttons"></div>' +
+                         '<div class="qcm-responsive-content"></div>',
                 styles : {
-                    left : -500,
-                    position : 'fixed',
-                    width : 400
+                    left    : -500,
+                    position: 'fixed',
+                    width   : 400
                 }
             });
 
@@ -85,18 +85,17 @@ define('controls/menu/Responsive', [
 
             // home button
             this.$Elm.getElement('.qcm-responsive-title-home').addEvents({
-                click : function () {
+                click: function () {
                     self.showChildren(1);
                 }
             });
 
 
             this.$Back = new QUIButton({
-                text : 'Zurück',
-                textimage : 'fa fa-angle-double-left icon-double-angle-left',
-                events :
-                {
-                    onClick : function () {
+                text     : 'Zurück',
+                textimage: 'fa fa-angle-double-left',
+                events   : {
+                    onClick: function () {
                         self.back();
                     }
                 }
@@ -104,13 +103,13 @@ define('controls/menu/Responsive', [
 
             if (this.getAttribute('searchButton')) {
                 new QUIButton({
-                    text : 'Suche',
-                    textimage : 'icon-search'
+                    text     : 'Suche',
+                    textimage: 'fa fa-search'
                 }).inject(this.$Buttons);
             }
 
             this.$Close.addEvents({
-                click : function () {
+                click: function () {
                     self.hide();
                 }
             });
@@ -125,7 +124,7 @@ define('controls/menu/Responsive', [
         /**
          * toggle the menu
          */
-        toggle : function () {
+        toggle: function () {
             if (this.$show) {
                 this.hide();
                 return this;
@@ -138,7 +137,7 @@ define('controls/menu/Responsive', [
         /**
          * Show the menu
          */
-        show : function () {
+        show: function () {
             this.$show = true;
 
             var self  = this,
@@ -164,19 +163,19 @@ define('controls/menu/Responsive', [
             }
 
             this.$Elm.setStyles({
-                width : width
+                width: width
             });
 
             this.$Content.setStyles({
-                height : size.y - 100
+                height: size.y - 100
             });
 
             this.$Loader.show();
 
             this.$FX.animate({
-                left : 0
+                left: 0
             }, {
-                callback : function () {
+                callback: function () {
                     self.showChildren(self.getAttribute('id'));
                 }
             });
@@ -185,12 +184,12 @@ define('controls/menu/Responsive', [
         /**
          * hide the menu
          */
-        hide : function () {
+        hide: function () {
             this.$show = false;
             this.$Background.hide();
 
             this.$FX.animate({
-                left : -500
+                left: -500
             });
         },
 
@@ -199,7 +198,7 @@ define('controls/menu/Responsive', [
          *
          * @param {Number} siteid - ID of the parent site
          */
-        showChildren : function (siteid) {
+        showChildren: function (siteid) {
             var self = this;
 
             this.$Loader.show();
@@ -222,7 +221,7 @@ define('controls/menu/Responsive', [
                 self.$Content.set('html', '');
 
                 var Sheet = new Element('div', {
-                    styles : {
+                    styles: {
                         left    : '-100%',
                         position: 'absolute',
                         top     : 0
@@ -249,22 +248,22 @@ define('controls/menu/Responsive', [
 
 
                 for (i = 0, len = result.length; i < len; i++) {
-                    entry = result[ i ];
+                    entry = result[i];
 
                     Container = new Element('div', {
-                        'class'    : 'qcm-responsive-content-entry',
-                        'data-id'  : entry.id,
-                        'data-url' : entry.url
+                        'class'   : 'qcm-responsive-content-entry',
+                        'data-id' : entry.id,
+                        'data-url': entry.url
                     }).inject(Sheet);
 
                     Text = new Element('div', {
-                        'class' : 'qcm-responsive-content-entry-text smooth box',
-                        html    : entry.title,
-                        styles  : {
-                            width : size.x - 60
+                        'class': 'qcm-responsive-content-entry-text smooth box',
+                        html   : entry.title,
+                        styles : {
+                            width: size.x - 60
                         },
                         events : {
-                            click : click
+                            click: click
                         }
                     }).inject(Container);
 
@@ -274,33 +273,33 @@ define('controls/menu/Responsive', [
                     }
 
                     new Element('div', {
-                        'class' : 'qcm-responsive-content-entry-children smooth box',
-                        html    : '<span class="icon-caret-right"></span>',
-                        events  : {
-                            click : clickOpenChildren
+                        'class': 'qcm-responsive-content-entry-children smooth box',
+                        html   : '<span class="fa fa-caret-right"></span>',
+                        events : {
+                            click: clickOpenChildren
                         }
                     }).inject(Container);
                 }
 
                 moofx(Sheet).animate({
-                    left : 0
+                    left: 0
                 });
 
                 self.$Loader.hide();
 
             }, {
-                project : JSON.encode({
-                    name : self.getAttribute('project'),
-                    lang : self.getAttribute('lang')
+                project: JSON.encode({
+                    name: self.getAttribute('project'),
+                    lang: self.getAttribute('lang')
                 }),
-                id : siteid
+                id     : siteid
             });
         },
 
         /**
          * opens the parent site
          */
-        back : function () {
+        back: function () {
             this.showChildren(this.$parentId);
         }
     });

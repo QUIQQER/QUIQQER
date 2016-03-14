@@ -48,7 +48,7 @@ class Manager
      */
     public function setup()
     {
-        QUI::getDataBase()->Table()->appendFields(
+        QUI::getDataBase()->Table()->addColumn(
             $this->table,
             array(
                 'file' => 'varchar(255)',

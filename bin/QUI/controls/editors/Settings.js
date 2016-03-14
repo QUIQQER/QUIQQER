@@ -37,7 +37,7 @@ define('controls/editors/Settings', [
 
         options: {
             title: Locale.get('quiqqer/system', 'editors.settings.title'),
-            icon : 'icon-font'
+            icon : 'fa fa-font'
         },
 
         initialize: function (options) {
@@ -64,7 +64,7 @@ define('controls/editors/Settings', [
                     'quiqqer/system',
                     'editors.settings.btn.add.toolbar'
                 ),
-                textimage: 'icon-plus',
+                textimage: 'fa fa-plus',
                 events   : {
                     onClick: this.openAddToolbarWindow
                 }
@@ -80,7 +80,7 @@ define('controls/editors/Settings', [
                     'quiqqer/system',
                     'editors.settings.btn.edit.toolbar'
                 ),
-                textimage: 'icon-edit',
+                textimage: 'fa fa-edit',
                 disabled : true,
                 events   : {
                     onClick: this.editToolbar
@@ -93,7 +93,7 @@ define('controls/editors/Settings', [
                     'quiqqer/system',
                     'editors.settings.btn.delete.toolbar'
                 ),
-                textimage: 'fa fa-trash-o icon-trash',
+                textimage: 'fa fa-trash-o',
                 disabled : true,
                 events   : {
                     onClick: function () {
@@ -210,7 +210,7 @@ define('controls/editors/Settings', [
                     'editors.settings.editsheet.title',
                     {toolbar: toolbar}
                 ),
-                icon  : 'icon-edit',
+                icon  : 'fa fa-edit',
                 events: {
                     onOpen: function (Sheet) {
                         var Content = Sheet.getContent();
@@ -227,7 +227,7 @@ define('controls/editors/Settings', [
                                     'quiqqer/system',
                                     'editors.settings.editsheet.btn.save'
                                 ),
-                                textimage: 'icon-save',
+                                textimage: 'fa fa-save',
                                 events   : {
                                     onClick: function () {
                                         C.save();
@@ -296,7 +296,7 @@ define('controls/editors/Settings', [
                     'editors.settings.delete.window.text',
                     {toolbar: toolbar}
                 ),
-                icon     : 'fa fa-trash-o icon-trash',
+                icon     : 'fa fa-trash-o',
                 maxHeight: 300,
                 maxWidth : 450,
                 events   : {
@@ -320,8 +320,8 @@ define('controls/editors/Settings', [
             new QUIPrompt({
                 maxHeight  : 300,
                 maxWidth   : 450,
-                icon       : 'icon-plus',
-                titleicon  : 'icon-plus',
+                icon       : 'fa fa-plus',
+                titleicon  : 'fa fa-plus',
                 title      : Locale.get(
                     'quiqqer/system',
                     'editors.settings.add.window.title'

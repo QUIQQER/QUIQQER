@@ -95,9 +95,16 @@ define('controls/menu/Manager', [
                 exec        = Item.getAttribute('exec'),
                 xmlFile     = Item.getAttribute('qui-xml-file');
 
+            Item.setAttribute('originalIcon', Item.getAttribute('icon'));
+            Item.setAttribute('icon', 'fa fa-spinner fa-spin');
+
             // js require
             if (menuRequire) {
-                this.$menuRequire(Item);
+                this.$menuRequire(Item).then(function () {
+                    Item.setAttribute('icon', Item.getAttribute('originalIcon'));
+                });
+
+                return;
             }
 
             // xml setting file
@@ -112,10 +119,12 @@ define('controls/menu/Manager', [
 
                         if (Task && Task.getType() == 'qui/controls/taskbar/Task') {
                             list[i].getAttribute('Task').click();
+                            Item.setAttribute('icon', Item.getAttribute('originalIcon'));
                             return;
                         }
 
                         list[i].open();
+                        Item.setAttribute('icon', Item.getAttribute('originalIcon'));
                         return;
                     }
                 }
@@ -124,6 +133,8 @@ define('controls/menu/Manager', [
                     self.openPanelInTasks(
                         new XMLPanel(xmlFile)
                     );
+
+                    Item.setAttribute('icon', Item.getAttribute('originalIcon'));
                 });
 
                 return;
@@ -144,6 +155,7 @@ define('controls/menu/Manager', [
          * It method has a require option
          *
          * @param {Object} Item - (qui/controls/contextmenu/Item)
+         * @return {Promise}
          */
         $menuRequire: function (Item) {
             var i, len, list;
@@ -157,30 +169,39 @@ define('controls/menu/Manager', [
                 Item.getAttributes()
             );
 
-            if (list.length) {
-                if (menuRequire == 'controls/projects/project/Settings') {
-                    for (i = 0, len = list.length; i < len; i++) {
-                        if (list[i].getAttribute('project') == attributes.project) {
-                            PanelUtils.execPanelOpen(list[0]);
-                            return;
+            if (Item.getAttribute('originalIcon')) {
+                attributes.icon = Item.getAttribute('originalIcon');
+            }
+
+            return new Promise(function (resolve) {
+
+                if (list.length) {
+                    if (menuRequire == 'controls/projects/project/Settings') {
+                        for (i = 0, len = list.length; i < len; i++) {
+                            if (list[i].getAttribute('project') == attributes.project) {
+                                PanelUtils.execPanelOpen(list[0]);
+                                return;
+                            }
                         }
+
+                        this.$createControl(menuRequire, attributes).then(resolve);
+                        return;
                     }
 
-                    this.$createControl(menuRequire, attributes);
+                    if (instanceOf(list[0], Panel)) {
+                        PanelUtils.execPanelOpen(list[0]);
+
+                    } else {
+                        list[0].open();
+                    }
+
+                    resolve();
                     return;
                 }
 
-                if (instanceOf(list[0], Panel)) {
-                    PanelUtils.execPanelOpen(list[0]);
+                this.$createControl(menuRequire, attributes).then(resolve);
 
-                } else {
-                    list[0].open();
-                }
-
-                return;
-            }
-
-            this.$createControl(menuRequire, attributes);
+            }.bind(this));
         },
 
         /**
@@ -188,19 +209,23 @@ define('controls/menu/Manager', [
          *
          * @param {String} controlName - require of the control -> eq: controls/projects/project/Settings
          * @param {Object} attributes - attributes of the control
+         * @return {Promise}
          */
         $createControl: function (controlName, attributes) {
             var self = this;
+            return new Promise(function (resolve, reject) {
+                require([controlName], function (Control) {
+                    var Ctrl = new Control(attributes);
 
-            require([controlName], function (Control) {
-                var Ctrl = new Control(attributes);
+                    if (instanceOf(Ctrl, Panel)) {
+                        self.openPanelInTasks(Ctrl);
+                        resolve();
+                        return;
+                    }
 
-                if (instanceOf(Ctrl, Panel)) {
-                    self.openPanelInTasks(Ctrl);
-                    return;
-                }
-
-                Ctrl.open();
+                    Ctrl.open();
+                    resolve();
+                }, reject);
             });
         },
 

@@ -33,20 +33,20 @@ define('controls/projects/project/Entry', [
      */
     return new Class({
 
-        Extends : QUIControl,
-        Type    : 'controls/projects/project/Entry',
+        Extends: QUIControl,
+        Type   : 'controls/projects/project/Entry',
 
-        Binds : [
+        Binds: [
             '$onProjectUpdate',
             '$onInject',
             '$onDestroy'
         ],
 
-        options : {
-            styles : false
+        options: {
+            styles: false
         },
 
-        initialize : function (project, lang, options) {
+        initialize: function (project, lang, options) {
             this.parent(options);
 
             this.$Project = Projects.get(project, lang);
@@ -58,8 +58,8 @@ define('controls/projects/project/Entry', [
             this.$IconSpan = null;
 
             this.addEvents({
-                onDestroy : this.$onDestroy,
-                onInject  : this.$onInject
+                onDestroy: this.$onDestroy,
+                onInject : this.$onInject
             });
         },
 
@@ -69,7 +69,7 @@ define('controls/projects/project/Entry', [
          * @method controls/projects/project/Entry#getProject
          * @return {Object} Binded Project - classes/projects/Project
          */
-        getProject : function () {
+        getProject: function () {
             return this.$Project;
         },
 
@@ -79,24 +79,23 @@ define('controls/projects/project/Entry', [
          * @method controls/projects/project/Entry#create
          * @return {HTMLElement} Main DOM-Node Element
          */
-        create : function () {
+        create: function () {
             var self = this;
 
             this.$Elm = new Element('div', {
-                'class'        : 'project-entry',
-                'data-project' : this.getProject().getName(),
-                'data-lang'    : this.getProject().getLang(),
+                'class'       : 'project-entry',
+                'data-project': this.getProject().getName(),
+                'data-lang'   : this.getProject().getLang(),
 
-                html : '<div class="project-entry-icon">' +
-                           '<span class="icon-home"></span>' +
-                       '</div>' +
-                       '<div class="project-entry-text"></div>' +
-                       '<div class="project-entry-close">' +
-                           '<span class="icon-remove"></span>' +
-                       '</div>',
-                events :
-                {
-                    mouseover : function () {
+                html  : '<div class="project-entry-icon">' +
+                        '<span class="fa fa-home"></span>' +
+                        '</div>' +
+                        '<div class="project-entry-text"></div>' +
+                        '<div class="project-entry-close">' +
+                        '<span class="fa fa-remove"></span>' +
+                        '</div>',
+                events: {
+                    mouseover: function () {
                         this.addClass('hover');
                     },
                     mouseout : function () {
@@ -120,11 +119,11 @@ define('controls/projects/project/Entry', [
             });
 
             this.$Close.set({
-                alt : Locale.get(
+                alt  : Locale.get(
                     'quiqqer/system',
                     'projects.project.panel.entry.delete.project'
                 ),
-                title : Locale.get(
+                title: Locale.get(
                     'quiqqer/system',
                     'projects.project.panel.entry.delete.project'
                 )
@@ -139,7 +138,7 @@ define('controls/projects/project/Entry', [
         /**
          * event : on inject
          */
-        $onInject : function () {
+        $onInject: function () {
             if (this.getAttribute('styles') && this.getAttribute('styles').width) {
                 return;
             }
@@ -150,9 +149,9 @@ define('controls/projects/project/Entry', [
 
 
             this.$Elm.setStyles({
-                width : (iconWidth).toInt() +
-                        (textWidth).toInt() +
-                        (closeWidth).toInt()
+                width: (iconWidth).toInt() +
+                       (textWidth).toInt() +
+                       (closeWidth).toInt()
             });
         },
 
@@ -161,7 +160,7 @@ define('controls/projects/project/Entry', [
          *
          * @method controls/projects/project/Entry#$onDestroy
          */
-        $onDestroy : function () {
+        $onDestroy: function () {
             this.getProject().removeEvent('refresh', this.$onProjectUpdate);
         },
 
@@ -171,9 +170,9 @@ define('controls/projects/project/Entry', [
          * @method controls/projects/project/Entry#refresh
          * @return {Object} this (controls/projects/project/Entry)
          */
-        refresh : function () {
-            this.$IconSpan.removeClass('icon-home');
-            this.$IconSpan.addClass('icon-spinner icon-spin');
+        refresh: function () {
+            this.$IconSpan.removeClass('fa-home');
+            this.$IconSpan.addClass('fa fa-spinner fa-spin');
 
             if (this.getProject().getName()) {
                 this.$onProjectUpdate(this.getProject());
@@ -193,7 +192,7 @@ define('controls/projects/project/Entry', [
          * @param {classes/projects/Project} Project
          * @return {Object} this (controls/projects/project/Entry)
          */
-        $onProjectUpdate : function (Project) {
+        $onProjectUpdate: function (Project) {
             if (!this.$Elm) {
                 return this;
             }
@@ -203,9 +202,9 @@ define('controls/projects/project/Entry', [
                 Project.getName() + ' (' + Project.getLang() + ')'
             );
 
-            this.$IconSpan.addClass('icon-home');
-            this.$IconSpan.removeClass('icon-spinner');
-            this.$IconSpan.removeClass('icon-spin');
+            this.$IconSpan.addClass('fa-home');
+            this.$IconSpan.removeClass('fa-spinner');
+            this.$IconSpan.removeClass('fa-spin');
 
             this.$onInject();
 

@@ -13,6 +13,7 @@
  * @require qui/controls/windows/Confirm
  * @require qui/controls/windows/Popup
  * @require qui/controls/buttons/Button
+ * @require Favico
  * @require css!controls/packages/Panel.css
  */
 define('controls/packages/Panel', [
@@ -28,6 +29,7 @@ define('controls/packages/Panel', [
     'qui/controls/windows/Popup',
     'qui/controls/buttons/Button',
     'qui/controls/elements/List',
+    'utils/Favicon',
 
     'css!controls/packages/Panel.css'
 
@@ -41,7 +43,8 @@ define('controls/packages/Panel', [
              QUIConfirm,
              QUIWindow,
              QUIButton,
-             QUIList) {
+             QUIList,
+             FaviconUtils) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -105,7 +108,7 @@ define('controls/packages/Panel', [
 
             // defaults
             this.setAttribute('title',
-                              Locale.get(lg, 'packages.panel.title')
+                Locale.get(lg, 'packages.panel.title')
             );
 
             this.setAttribute('icon', URL_BIN_DIR + '16x16/quiqqer.png');
@@ -134,7 +137,7 @@ define('controls/packages/Panel', [
             this.addCategory({
                 name  : 'updates',
                 text  : Locale.get(lg, 'packages.category.updates'),
-                image : 'icon-refresh',
+                image : 'fa fa-refresh',
                 events: {
                     onActive: this.loadUpdates,
                     onNormal: this.unloadUpdates
@@ -144,7 +147,7 @@ define('controls/packages/Panel', [
             this.addCategory({
                 name  : 'modules',
                 text  : Locale.get(lg, 'packages.category.modules'),
-                image : 'icon-puzzle-piece',
+                image : 'fa fa-puzzle-piece',
                 events: {
                     onActive: function () {
                         this.setAttribute('page', 1);
@@ -161,7 +164,7 @@ define('controls/packages/Panel', [
             this.addCategory({
                 name  : 'packages',
                 text  : Locale.get(lg, 'packages.category.packages'),
-                image : 'icon-puzzle-piece',
+                image : 'fa fa-puzzle-piece',
                 events: {
                     onActive: function () {
                         this.setAttribute('page', 1);
@@ -177,7 +180,7 @@ define('controls/packages/Panel', [
             this.addCategory({
                 name  : 'server',
                 text  : Locale.get(lg, 'packages.category.server'),
-                image : 'icon-building',
+                image : 'fa fa-building',
                 events: {
                     onActive: this.loadServers,
                     onNormal: this.unloadServer
@@ -187,7 +190,7 @@ define('controls/packages/Panel', [
             this.addCategory({
                 name  : 'search',
                 text  : Locale.get(lg, 'packages.category.search'),
-                image : 'icon-search',
+                image : 'fa fa-search',
                 events: {
                     onActive: this.loadSearch,
                     onNormal: this.unloadSearch
@@ -197,7 +200,7 @@ define('controls/packages/Panel', [
             this.addCategory({
                 name  : 'health',
                 text  : Locale.get(lg, 'packages.category.system.health'),
-                image : 'icon-medkit',
+                image : 'fa fa-medkit',
                 events: {
                     onActive: this.loadHealth,
                     onNormal: this.unloadHealth
@@ -207,7 +210,7 @@ define('controls/packages/Panel', [
             this.addCategory({
                 name  : 'phpInfo',
                 text  : Locale.get(lg, 'packages.category.system.phpInfo'),
-                image : 'fa fa-info-circle icon-info-sign',
+                image : 'fa fa-info-circle',
                 events: {
                     onActive: this.loadPHPInfo
                 }
@@ -329,13 +332,13 @@ define('controls/packages/Panel', [
 
                 buttons: [{
                     text     : Locale.get(lg, 'packages.grid.update.btn.execute'),
-                    textimage: 'fa fa-angle-double-down icon-double-angle-down',
+                    textimage: 'fa fa-angle-double-down',
                     events   : {
                         onClick: this.executeCompleteUpdate
                     }
                 }, {
                     text     : Locale.get(lg, 'packages.grid.update.btn.start'),
-                    textimage: 'icon-refresh',
+                    textimage: 'fa fa-refresh',
                     events   : {
                         onClick: this.checkUpdates
                     }
@@ -343,13 +346,13 @@ define('controls/packages/Panel', [
                     type: 'seperator'
                 }, {
                     text     : Locale.get(lg, 'packages.grid.update.btn.upload'),
-                    textimage: 'icon-upload',
+                    textimage: 'fa fa-upload',
                     events   : {
                         onClick: this.uploadUpdates
                     }
                 }, {
                     text     : Locale.get(lg, 'packages.grid.update.btn.setup'),
-                    textimage: 'fa fa-hdd-o icon-hdd',
+                    textimage: 'fa fa-hdd-o',
                     events   : {
                         onClick: function (Btn) {
                             self.setup(false, Btn);
@@ -384,13 +387,15 @@ define('controls/packages/Panel', [
         setup: function (pkg, Btn) {
             var self = this;
 
+            FaviconUtils.loading();
+
             if (typeof Btn !== 'undefined') {
                 if (Btn.getAttribute('textimage')) {
-                    Btn.setAttribute('textimage', 'icon-refresh icon-spin');
+                    Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
                 }
 
                 if (Btn.getAttribute('icon')) {
-                    Btn.setAttribute('icon', 'icon-refresh icon-spin');
+                    Btn.setAttribute('icon', 'fa fa-spinner fa-spin');
                 }
             }
 
@@ -399,6 +404,14 @@ define('controls/packages/Panel', [
 
             }).then(function (Loading) {
                 return self.$Manager.setup(pkg).then(function () {
+
+                    // refresh translations
+                    require([
+                        'package/quiqqer/translator/bin/classes/Translator'
+                    ], function (Translator) {
+                        new Translator().refreshLocale();
+                    });
+
                     // success
                     Loading.finish(Locale.get(lg, 'message.setup.successfull'));
 
@@ -407,14 +420,16 @@ define('controls/packages/Panel', [
                     }
 
                     if (Btn.getAttribute('textimage')) {
-                        Btn.setAttribute('textimage', 'fa fa-hdd-o icon-hdd');
+                        Btn.setAttribute('textimage', 'fa fa-hdd-o');
                     }
 
                     if (Btn.getAttribute('icon')) {
-                        Btn.setAttribute('icon', 'fa fa-hdd-o icon-hdd');
+                        Btn.setAttribute('icon', 'fa fa-hdd-o');
                     }
 
-                }, function (Error) {
+                    FaviconUtils.setDefault();
+
+                }).catch(function (Error) {
                     // error
                     Loading.finish(Error.getMessage(), 'error');
 
@@ -423,12 +438,14 @@ define('controls/packages/Panel', [
                     }
 
                     if (Btn.getAttribute('textimage')) {
-                        Btn.setAttribute('textimage', 'fa fa-hdd-o icon-hdd');
+                        Btn.setAttribute('textimage', 'fa fa-hdd-o');
                     }
 
                     if (Btn.getAttribute('icon')) {
-                        Btn.setAttribute('icon', 'fa fa-hdd-o icon-hdd');
+                        Btn.setAttribute('icon', 'fa fa-hdd-o');
                     }
+
+                    FaviconUtils.setDefault();
                 });
             });
         },
@@ -445,14 +462,14 @@ define('controls/packages/Panel', [
                 title    : Locale.get(lg, 'packages.update.window.title'),
                 maxWidth : 640,
                 maxheight: 360,
-                texticon : 'fa fa-angle-double-down icon-double-angle-down',
+                texticon : 'fa fa-angle-double-down',
                 text     : Locale.get(lg, 'packages.update.window.text'),
                 events   : {
                     onSubmit: function () {
-                        Btn.setAttribute('textimage', 'icon-refresh icon-spin');
+                        Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
                         self.$Manager.update(function () {
-                            Btn.setAttribute('textimage', 'fa fa-angle-double-down icon-double-angle-down');
+                            Btn.setAttribute('textimage', 'fa fa-angle-double-down');
                         });
                     }
                 }
@@ -465,7 +482,7 @@ define('controls/packages/Panel', [
          * @param {Object} Btn - qui/controls/buttons/Button
          */
         checkUpdates: function (Btn) {
-            Btn.setAttribute('textimage', 'icon-refresh icon-spin');
+            Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
             var self = this;
 
@@ -474,7 +491,7 @@ define('controls/packages/Panel', [
 
             }).then(function (Loading) {
                 return self.$Manager.checkUpdate().then(function (result) {
-                    Btn.setAttribute('textimage', 'icon-refresh');
+                    Btn.setAttribute('textimage', 'fa fa-refresh');
 
                     if (!result || !result.length) {
                         Loading.finish(
@@ -492,12 +509,12 @@ define('controls/packages/Panel', [
                         entry = result[i];
 
                         data.push({
-                            'package': entry['package'],
+                            'package': entry.package,
                             'from'   : entry.from,
                             'to'     : entry.to,
                             'update' : {
-                                'package': entry['package'],
-                                image    : 'icon-retweet',
+                                'package': entry.package,
+                                image    : 'fa fa-retweet',
                                 events   : {
                                     onClick: self.$clickUpdateBtn
                                 }
@@ -515,7 +532,7 @@ define('controls/packages/Panel', [
                 });
 
             }, function (Exception) {
-                Btn.setAttribute('textimage', 'icon-refresh');
+                Btn.setAttribute('textimage', 'fa fa-refresh');
 
                 QUI.getMessageHandler(function (MH) {
                     MH.addError(Exception.getMessage());
@@ -532,18 +549,18 @@ define('controls/packages/Panel', [
             var self = this;
 
             new QUIConfirm({
-                icon         : 'icon-upload-alt fa fa-upload',
+                icon         : 'fa fa-upload',
                 title        : Locale.get(lg, 'packages.grid.update.btn.upload'),
                 maxWidth     : 640,
                 maxheight    : 360,
                 autoclose    : false,
                 cancel_button: {
                     text     : Locale.get(lg, 'upload.form.btn.cancel.text'),
-                    textimage: 'icon-remove fa fa-remove'
+                    textimage: 'fa fa-remove'
                 },
                 ok_button    : {
                     text     : Locale.get(lg, 'upload.form.btn.send.text'),
-                    textimage: 'icon-upload-alt fa fa-upload'
+                    textimage: 'fa fa-upload'
                 },
                 events       : {
                     onOpen: function (Win) {
@@ -662,18 +679,18 @@ define('controls/packages/Panel', [
 
                     // #locale
                     new QUIConfirm({
-                        icon         : 'fa fa-hdd-o icon-hdd',
+                        icon         : 'fa fa-hdd-o',
                         title        : 'Es wurden neue Pakete gefunden',
                         autoclose    : false,
                         maxWidth     : 640,
                         maxheight    : 360,
                         cancel_button: {
                             text     : 'Installation abbrechen',
-                            textimage: 'icon-remove fa fa-remove'
+                            textimage: 'fa fa-remove'
                         },
                         ok_button    : {
                             text     : 'Installation starten',
-                            textimage: 'fa fa-hdd-o icon-hdd'
+                            textimage: 'fa fa-hdd-o'
                         },
                         events       : {
                             onOpen: function (Win) {
@@ -768,10 +785,10 @@ define('controls/packages/Panel', [
          * @param {Object} Btn - qui/controls/buttons/Button
          */
         $clickUpdateBtn: function (Btn) {
-            Btn.setAttribute('image', 'icon-refresh icon-spin');
+            Btn.setAttribute('image', 'fa fa-spinner fa-spin');
 
             this.update(Btn.getAttribute('package')).then(function () {
-                Btn.setAttribute('image', 'fa fa-check icon-ok');
+                Btn.setAttribute('image', 'fa fa-check');
             });
         },
 
@@ -990,7 +1007,7 @@ define('controls/packages/Panel', [
                     });
 
                     result.data[i].setup = {
-                        icon  : 'fa fa-hdd-o icon-hdd',
+                        icon  : 'fa fa-hdd-o',
                         pkg   : pkg,
                         alt   : alt,
                         title : alt,
@@ -1153,7 +1170,7 @@ define('controls/packages/Panel', [
 
                         result.data[i].install = {
                             'package': result.data[i]['package'],
-                            image    : 'icon-download',
+                            image    : 'fa fa-download',
                             title    : Locale.get(lg, 'packages.search.grid.setup.btn.title', {
                                 'package': result.data[i]['package']
                             }),
@@ -1221,17 +1238,17 @@ define('controls/packages/Panel', [
 
             new QUIConfirm({
                 title     : Locale.get(lg, 'packages.server.win.install.package.title'),
-                icon      : 'icon-download',
+                icon      : 'fa fa-download',
                 text      : Locale.get(lg, 'packages.server.win.install.package.text', {
                     'package': pkg
                 }),
-                texticon  : 'icon-download',
+                texticon  : 'fa fa-download',
                 maxTimeout: 120000, // wait max. 2 minutes
                 autoclose : false,
                 maxWidth  : 640,
                 maxheight : 360,
                 ok_button : {
-                    textimage: 'icon-download',
+                    textimage: 'fa fa-download',
                     text     : Locale.get(lg, 'packages.server.win.install.submit.btn')
                 },
                 events    : {
@@ -1319,14 +1336,14 @@ define('controls/packages/Panel', [
                 }],
                 buttons         : [{
                     text     : Locale.get(lg, 'packages.btn.add.server'),
-                    textimage: 'icon-plus',
+                    textimage: 'fa fa-plus',
                     events   : {
                         onClick: this.dialogAddServer
                     }
                 }, {
                     text     : Locale.get(lg, 'packages.btn.del.server'),
                     name     : 'delServers',
-                    textimage: 'fa fa-trash-o icon-trash',
+                    textimage: 'fa fa-trash-o',
                     disabled : true,
                     events   : {
                         onClick: function () {
@@ -1359,7 +1376,7 @@ define('controls/packages/Panel', [
                                 return;
                             }
 
-                            Btn.setAttribute('icon', 'icon-refresh icon-spin');
+                            Btn.setAttribute('icon', 'fa fa-spinner fa-spin');
 
                             if (Btn.getAttribute('status')) {
                                 self.deactivateServer(server);
@@ -1373,10 +1390,10 @@ define('controls/packages/Panel', [
                             alt   = Locale.get(lg, 'packages.server.grid.btn.activate.title');
                             title = Locale.get(lg, 'packages.server.grid.btn.activate.title');
 
-                            icon = 'fa fa-check icon-ok';
+                            icon = 'fa fa-check';
 
                             if (result[i].active === 0) {
-                                icon = 'icon-remove';
+                                icon = 'fa fa-remove';
 
                                 alt   = Locale.get(lg, 'packages.server.grid.btn.deactivate.title');
                                 title = Locale.get(lg, 'packages.server.grid.btn.deactivate.title');
@@ -1433,7 +1450,7 @@ define('controls/packages/Panel', [
 
             new QUIConfirm({
                 title      : Locale.get(lg, 'packages.server.win.add.title'),
-                icon       : 'icon-building',
+                icon       : 'fa fa-building',
                 text       : Locale.get(lg, 'packages.server.win.add.text'),
                 information: '<form class="qui-packages-panel-addserver">' +
                              '<input type="text" name="server" value="" placeholder="Server" />' +
@@ -1495,9 +1512,9 @@ define('controls/packages/Panel', [
 
             new QUIConfirm({
                 title      : Locale.get(lg, 'packages.server.win.remove.title'),
-                icon       : 'fa fa-trash-o icon-trash',
+                icon       : 'fa fa-trash-o',
                 text       : Locale.get(lg, 'packages.server.win.remove.text'),
-                texticon   : 'fa fa-trash-o icon-trash',
+                texticon   : 'fa fa-trash-o',
                 information: list.join('<br />') +
                              '<p>&nbsp;</p>' +
                              '<p>' +
@@ -1648,7 +1665,7 @@ define('controls/packages/Panel', [
 
                 buttons: [{
                     text     : Locale.get(lg, 'packages.grid.healthcheck.systemcheck'),
-                    textimage: 'icon-play',
+                    textimage: 'fa fa-play',
                     events   : {
                         click: function () {
                             self.systemHealthCheck();
@@ -1677,7 +1694,7 @@ define('controls/packages/Panel', [
                     });
 
                     result.data[i].health = {
-                        icon  : 'icon-play',
+                        icon  : 'fa fa-play',
                         pkg   : pkg,
                         alt   : alt,
                         title : alt,
@@ -1755,7 +1772,7 @@ define('controls/packages/Panel', [
         $openHealthCheckSheet: function (result) {
             this.createSheet({
                 title : 'Healthcheck Ergebnis',
-                icon  : 'icon-medkit',
+                icon  : 'fa fa-medkit',
                 events: {
                     onOpen: function (Sheet) {
                         var i, icon, html;
@@ -1766,9 +1783,9 @@ define('controls/packages/Panel', [
                             sumNotFo = 0,
                             Content  = Sheet.getContent();
 
-                        var iconOK       = '<span class="fa fa-check icon-ok"></span>',
-                            iconError    = '<span class="icon-exclamation"></span>',
-                            iconNotFound = '<span class="icon-question"></span>';
+                        var iconOK       = '<span class="fa fa-check"></span>',
+                            iconError    = '<span class="fa fa-exclamation"></span>',
+                            iconNotFound = '<span class="fa fa-question"></span>';
 
                         Content.setStyles({
                             overflow: 'auto',

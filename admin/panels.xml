@@ -5,67 +5,67 @@
 
         <!-- quiqqer projects panel -->
         <panel require="controls/projects/project/Panel">
-            <image>icon-home</image>
+            <image>fa fa-home</image>
             <title>
-                <locale group="quiqqer/system" var="panels.project.title" />
+                <locale group="quiqqer/system" var="panels.project.title"/>
             </title>
             <text>
-                <locale group="quiqqer/system" var="panels.project.text" />
+                <locale group="quiqqer/system" var="panels.project.text"/>
             </text>
         </panel>
 
         <!-- quiqqer Help panel -->
         <panel require="controls/desktop/panels/Help">
-            <image>fa fa-h-square icon-h-sign</image>
+            <image>fa fa-h-square</image>
             <title>
-                <locale group="quiqqer/system" var="panels.help.title" />
+                <locale group="quiqqer/system" var="panels.help.title"/>
             </title>
             <text>
-                <locale group="quiqqer/system" var="panels.help.text" />
+                <locale group="quiqqer/system" var="panels.help.text"/>
             </text>
         </panel>
 
         <!-- quiqqer Bookmarks -->
         <panel require="controls/desktop/panels/Bookmarks">
-            <image>icon-bookmark</image>
+            <image>fa fa-bookmark</image>
             <title>
-                <locale group="quiqqer/system" var="panels.bookmarks.title" />
+                <locale group="quiqqer/system" var="panels.bookmarks.title"/>
             </title>
             <text>
-                <locale group="quiqqer/system" var="panels.bookmarks.text" />
+                <locale group="quiqqer/system" var="panels.bookmarks.text"/>
             </text>
         </panel>
 
         <!-- quiqqer Uploads -->
         <panel require="UploadManager">
-            <image>icon-upload</image>
+            <image>fa fa-upload</image>
             <title>
-                <locale group="quiqqer/system" var="panels.upload.title" />
+                <locale group="quiqqer/system" var="panels.upload.title"/>
             </title>
             <text>
-                <locale group="quiqqer/system" var="panels.upload.text" />
+                <locale group="quiqqer/system" var="panels.upload.text"/>
             </text>
         </panel>
 
         <!-- qui message handler -->
         <panel require="qui/controls/messages/Panel">
-            <image>icon-bullhorn</image>
+            <image>fa fa-bullhorn</image>
             <title>
-                <locale group="quiqqer/system" var="panels.messages.title" />
+                <locale group="quiqqer/system" var="panels.messages.title"/>
             </title>
             <text>
-                <locale group="quiqqer/system" var="panels.messages.text" />
+                <locale group="quiqqer/system" var="panels.messages.text"/>
             </text>
         </panel>
 
         <!-- qui task panel -->
         <panel require="qui/controls/desktop/Tasks">
-            <image>icon-tasks</image>
+            <image>fa fa-tasks</image>
             <title>
-                <locale group="quiqqer/system" var="panels.tasks.title" />
+                <locale group="quiqqer/system" var="panels.tasks.title"/>
             </title>
             <text>
-                <locale group="quiqqer/system" var="panels.tasks.text" />
+                <locale group="quiqqer/system" var="panels.tasks.text"/>
             </text>
         </panel>
 

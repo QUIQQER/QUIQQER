@@ -4,9 +4,16 @@
  *
  * @module Editors
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
  * @require classes/editor/Manager
  */
-define(['classes/editor/Manager'], function (Editors) {
+define('Editors', [
+
+    'qui/QUI',
+    'classes/editor/Manager'
+
+], function (QUI, Editors) {
     "use strict";
 
     if (typeof QUI.Editors !== 'undefined') {
