@@ -1,0 +1,25 @@
+
+1.0.10
+
+    Benutzer
+
+    - Sitzungsdauer Fehler -> gc_maxlifetime wird richtig gesetzt
+    - Anmeldung eines Benutzers an der Bash Konsole sieht den Nutzer nun auch als Sitzungsnutzer an.
+    - Übersetzungsdatei erweitert
+    - Administrationslogin - Sprachauswahl nun auch nur bei einer Sprache möglich
+    - Umstellung auf Font Awesome 4.5
+    - Beim Setup wurde im Favicon eine Ladeanimation integriert
+    - Upload einer Datei wird nun auch angezeigt wenn kein Uploadmanager im Desktop integriert ist
+    - Benutzer und Gruppen Auswahlcontrol: Es werden nun auch die Gruppen richtig durchsucht und gelistet
+    - Projekt Einstellungen: Beim Speichern wird keine weiße Seite mehr angezeigt
+
+    Entwickler
+
+    - Das Editorobjekt wurde auf Promises umgestellt
+    - Die Nutzung von gettext wurde übersichtlicher gestaltet
+    - Integration von Mustache
+    - Update auf Composer Dev 1
+    - Das Folderviewer Objekt kann nun auch Ordner anzeigen und wurde mit besseren Fehlermeldungen ausgestattet
+    - fxp/composer-asset-plugin fix Update, wegen Composer Update nötig
+    - Beim Speichern eines Bildes werden Fehler im createCache abgefangen. Manchmal wirft das Filesystem Fehler.
+    - Projekt Einstellungen: QUI parse und Controls parse integriert. Controls werden nun interpretiert und Promises werden eingesetzt
