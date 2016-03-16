@@ -804,15 +804,17 @@ class Manager
             return;
         }
 
-        //QUI::getSession()->destroy();
 
-        throw new QUI\Exception(
-            QUI::getLocale()->get(
-                'quiqqer/system',
-                'exception.session.expired.from.other'
-            ),
-            401
+        $message = $User->getLocale()->get(
+            'quiqqer/system',
+            'exception.session.expired.from.other'
         );
+
+        QUI::getSession()->set('uid', 0);
+        QUI::getSession()->getSymfonySession()->clear();
+        QUI::getSession()->refresh();
+
+        throw new QUI\Exception($message, 401);
     }
 
     /**
