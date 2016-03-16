@@ -114,8 +114,7 @@ class Session
                 require_once $fileSession;
 
             } else {
-                throw new \Exception('Session File not found '
-                                     . $fileSession);
+                throw new \Exception('Session File not found ' . $fileSession);
             }
 
             if (class_exists($classSession)) {
@@ -123,8 +122,9 @@ class Session
             }
 
         } else {
-            $this->Session
-                = new \Symfony\Component\HttpFoundation\Session\Session($this->Storage);
+            $this->Session = new \Symfony\Component\HttpFoundation\Session\Session(
+                $this->Storage
+            );
         }
 
         $this->start();
@@ -226,9 +226,16 @@ class Session
      */
     public function start()
     {
-        if ($this->Session) {
-            $this->Session->start();
+        if (!$this->Session) {
+            return;
         }
+
+        if ($this->Session->isStarted()) {
+            $this->Session->getMetadataBag()->stampNew($this->lifetime);
+            return;
+        }
+
+        $this->Session->start();
     }
 
     /**
@@ -240,7 +247,7 @@ class Session
 
         // pdo mysql options db
         // more at http://symfony.com/doc/current/cookbook/configuration/pdo_session_storage.html
-        $DBTable->appendFields($this->table, array(
+        $DBTable->addColumn($this->table, array(
             'session_id' => 'varchar(255) NOT NULL',
             'session_value' => 'text NOT NULL',
             'session_time' => 'int(11) NOT NULL',
