@@ -343,6 +343,15 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     }
 
     /**
+     * @param array $params
+     * @return mixed
+     */
+    public function getUrlRewritten($params = array())
+    {
+        return $this->getAttribute('url');
+    }
+
+    /**
      * Return the Parent id from the site object
      *
      * @return integer
