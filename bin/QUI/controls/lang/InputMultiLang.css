@@ -1,0 +1,38 @@
+
+.quiqqer-inputmultilang-entry {
+    border-bottom: 1px solid #ddd;
+}
+
+.quiqqer-inputmultilang-entry:last-child {
+    border-bottom: 0;
+}
+
+.quiqqer-inputmultilang-entry img {
+    padding-right: 10px;
+}
+
+.quiqqer-inputmultilang-entry input,
+.quiqqer-inputmultilang-entry input:hover,
+.quiqqer-inputmultilang-entry input:focus {
+    border: none;
+    padding-left: 30px;
+    width: 100%;
+}
+
+.quiqqer-inputmultilang-entry input {
+    background-position: 5px center;
+    background-repeat: no-repeat;
+}
+
+.quiqqer-inputmultilang-entry input:focus {
+    background-color: rgba(0, 0, 0, 0.075);
+    box-shadow: none;
+}
+
+.quiqqer-inputmultilang__minimize .quiqqer-inputmultilang-entry {
+    border-bottom: 0;
+}
+
+.quiqqer-inputmultilang-button .fa {
+    margin-top: 8px;
+}
