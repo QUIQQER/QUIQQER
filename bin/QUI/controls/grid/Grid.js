@@ -354,6 +354,7 @@ define('controls/grid/Grid', [
                 buttons.setStyle('display', 'none');
 
                 if (this.$Menu) {
+                    this.$Menu.enable();
                     this.$Menu.show();
                 }
 
@@ -362,6 +363,7 @@ define('controls/grid/Grid', [
                 buttons.setStyle('display', null);
 
                 if (this.$Menu) {
+                    this.$Menu.disable();
                     this.$Menu.hide();
                 }
             }
