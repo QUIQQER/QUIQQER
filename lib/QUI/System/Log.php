@@ -76,6 +76,13 @@ class Log
     ) {
         $Logger = QUI\Log\Logger::getLogger();
         $User   = QUI::getUserBySession();
+        $levels = QUI\Log\Logger::$logLevels;
+
+        $loglevelName = self::levelToLogName($loglevel);
+
+        if (isset($levels[$loglevelName]) && (int)$levels[$loglevelName] == 0) {
+            return;
+        }
 
         if (isset($_SERVER['REQUEST_URI'])
             && !empty($_SERVER['REQUEST_URI'])
@@ -87,8 +94,7 @@ class Log
         $context['userId']        = $User->getId();
         $context['username']      = $User->getUsername();
 
-
-        switch (self::levelToLogName($loglevel)) {
+        switch ($loglevelName) {
             case 'debug':
                 $Logger->addDebug($message, $context);
                 break;
