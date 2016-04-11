@@ -161,7 +161,7 @@ class Log
         $filename = false
     ) {
         $message = $Exception->getCode() . " :: \n\n";
-        $message .= $Exception->getMessage();
+        $message .= $Exception->getMessage() ."\n";
         $message .= $Exception->getTraceAsString();
 
         self::write($message, $loglevel, $context, $filename);
