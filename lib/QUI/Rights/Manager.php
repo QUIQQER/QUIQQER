@@ -270,7 +270,7 @@ class Manager
             }
         }
 
-        if (empty($params['name'])) {
+        if (empty($params) || empty($params['name'])) {
             return;
         }
 
