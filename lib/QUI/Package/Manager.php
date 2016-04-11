@@ -951,7 +951,7 @@ class Manager extends QUI\QDOM
             $Package->setup();
 
         } catch (QUI\Exception $Exception) {
-            QUI\System\Log::addWarning($Exception->getMessage());
+            QUI\System\Log::writeException($Exception, QUI\System\Log::LEVEL_WARNING);
         }
     }
 
