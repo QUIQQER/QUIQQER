@@ -125,7 +125,7 @@ h4 {
     width: 100%;
 }
 
-/** input fields
+/** field container
  * ====================================================== */
 
 .field-container {
@@ -178,4 +178,16 @@ label.field-container-field {
 
 .field-container-field-no-padding {
     padding: 0;
+}
+
+/** form elements
+ * ====================================================== */
+
+input[type="checkbox"]:disabled {
+    cursor: not-allowed;
+}
+
+select:disabled {
+    border: 1px solid #ddd;
+    cursor: not-allowed;
 }
