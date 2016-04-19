@@ -245,4 +245,11 @@ interface User
      * @return mixed
      */
     public function isCompany();
+
+    /**
+     * Set the company status, whether the user is a company or not
+     *
+     * @param boolean $status - true or false
+     */
+    public function setCompanyStatus($status);
 }

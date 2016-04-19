@@ -1165,6 +1165,18 @@ class User implements QUI\Interfaces\Users\User
     }
 
     /**
+     * Set the company status, whether the use is a company or not
+     *
+     * @param bool $status - true ot false
+     */
+    public function setCompanyStatus($status = false)
+    {
+        if (is_bool($status)) {
+            $this->company = $status;
+        }
+    }
+
+    /**
      * @return boolean
      */
     public function canUseBackend()
