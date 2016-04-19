@@ -8,6 +8,7 @@ namespace QUI\Users;
 
 use QUI;
 use QUI\Utils\Security\Orthos as Orthos;
+use QUI\ERP\Currency\Handler as Currencies;
 
 /**
  * A user
@@ -94,6 +95,13 @@ class User implements QUI\Interfaces\Users\User
      * @var boolean
      */
     protected $admin = null;
+
+    /**
+     * is the user a compyn
+     *
+     * @var false
+     */
+    protected $company = false;
 
     /**
      * Settings
@@ -237,31 +245,36 @@ class User implements QUI\Interfaces\Users\User
             $this->setAttribute($key, $value);
         }
 
+        if (isset($data[0]['company'])) {
+            $this->company = (bool)$data[0]['company'];
+        }
+
         if ($this->getAttribute('expire') == '0000-00-00 00:00:00') {
             $this->setAttribute('expire', false);
         }
 
 
-        // Extras
-        if (isset($data[0]['extra'])) {
-            $extraList = $this->getListOfExtraAttributes();
-            $extras    = array();
-            $extraData = json_decode($data[0]['extra'], true);
+        // Extras are deprected - we need an api
 
-            if (!is_array($extraData)) {
-                $extraData = array();
-            }
-
-            foreach ($extraList as $attribute) {
-                $extras[$attribute] = true;
-            }
-
-            foreach ($extraData as $attribute => $value) {
-                if (isset($extras[$attribute])) {
-                    $this->setAttribute($attribute, $extraData[$attribute]);
-                }
-            }
-        }
+//        if (isset($data[0]['extra'])) {
+//            $extraList = $this->getListOfExtraAttributes();
+//            $extras    = array();
+//            $extraData = json_decode($data[0]['extra'], true);
+//
+//            if (!is_array($extraData)) {
+//                $extraData = array();
+//            }
+//
+//            foreach ($extraList as $attribute) {
+//                $extras[$attribute] = true;
+//            }
+//
+//            foreach ($extraData as $attribute => $value) {
+//                if (isset($extras[$attribute])) {
+//                    $this->setAttribute($attribute, $extraData[$attribute]);
+//                }
+//            }
+//        }
 
         // Event
         QUI::getEvents()->fireEvent('userLoad', array($this));
@@ -306,71 +319,6 @@ class User implements QUI\Interfaces\Users\User
     public function getType()
     {
         return get_class($this);
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
-     * @see        QUI\Interfaces\Users\User::getExtra()
-     *
-     * @param string $field
-     *
-     * @return string|integer|array
-     * @deprecated use getAttribute
-     */
-    public function getExtra($field)
-    {
-        return $this->getAttribute($field);
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
-     * @see        QUI\Interfaces\Users\User::setExtra()
-     *
-     * @param string $field
-     * @param string|integer|array $value
-     *
-     * @deprecated use user.xml and setAttribute
-     */
-    public function setExtra($field, $value)
-    {
-        $this->setAttribute($field, $value);
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
-     * @see        QUI\Interfaces\Users\User::loadExtra()
-     *
-     * @param QUI\Projects\Project $Project
-     *
-     * @todo       für projekte wieder realiseren, vorerst ausgeschaltet
-     * @deprecated use user.xml
-     * @return false
-     */
-    public function loadExtra(QUI\Projects\Project $Project)
-    {
-        return false;
-
-        if (!file_exists(
-            USR_DIR . 'lib/' . $Project->getAttribute('name') . '/User.php'
-        )
-        ) {
-            return false;
-        }
-
-        if (!class_exists('UserExtend')) {
-            require USR_DIR . 'lib/' . $Project->getAttribute('name') . '/User.php';
-        }
-
-        if (class_exists('UserExtend')) {
-            $this->Extend = new UserExtend($this, $Project);
-
-            return $this->Extend;
-        }
-
-        return false;
     }
 
     /**
@@ -490,7 +438,7 @@ class User implements QUI\Interfaces\Users\User
     public function getCurrency()
     {
         if ($this->getAttribute('currency')) {
-            if (QUI\Currency::existCurrency($this->getAttribute('currency'))) {
+            if (Currencies::existCurrency($this->getAttribute('currency'))) {
                 return $this->getAttribute('currency');
             }
         }
@@ -500,12 +448,12 @@ class User implements QUI\Interfaces\Users\User
         if ($Country) {
             $currency = $Country->getCurrencyCode();
 
-            if (QUI\Currency::existCurrency($currency)) {
+            if (Currencies::existCurrency($currency)) {
                 return $currency;
             }
         }
 
-        return QUI\Currency::getDefaultCurrency();
+        return Currencies::getDefaultCurrency();
     }
 
     /**
@@ -1177,7 +1125,8 @@ class User implements QUI\Interfaces\Users\User
                 'lastedit' => date("Y-m-d H:i:s"),
                 'expire' => $expire,
                 'shortcuts' => $this->getAttribute('shortcuts'),
-                'address' => (int)$this->getAttribute('address')
+                'address' => (int)$this->getAttribute('address'),
+                'company' => $this->isCompany() ? 1 : 0
             ),
             array('id' => $this->getId())
         );
@@ -1203,6 +1152,16 @@ class User implements QUI\Interfaces\Users\User
     public function isAdmin()
     {
         return $this->canUseBackend();
+    }
+
+    /**
+     * Is the user a company?
+     *
+     * @return false
+     */
+    public function isCompany()
+    {
+        return $this->company;
     }
 
     /**

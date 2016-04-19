@@ -238,4 +238,11 @@ interface User
      * @return boolean
      */
     public function isOnline();
+
+    /**
+     * Is the user a compny?
+     *
+     * @return mixed
+     */
+    public function isCompany();
 }

@@ -50,6 +50,15 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     }
 
     /**
+     * Nobody is no company
+     * @return false
+     */
+    public function isCompany()
+    {
+        return false;
+    }
+
+    /**
      * @return bool
      */
     public function canUseBackend()
