@@ -65,7 +65,8 @@ define('controls/lang/InputMultiLang', [
                 'quiqqer-inputmultilang__minimize'
             );
 
-            this.$Input = Elm;
+            this.$Input      = Elm;
+            this.$Input.type = 'hidden';
 
             QUIAjax.get('ajax_system_getAvailableLanguages', function (languages) {
 
