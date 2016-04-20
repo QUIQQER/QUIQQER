@@ -1,15 +1,16 @@
 
 .users-entry {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     clear: both;
     cursor: default;
     float: left;
     font-size: 14px;
     line-height: 20px;
-    margin: 5px 0;
-    max-width: 400px;
-    padding: 5px 0;
+    padding: 10px 0;
     width: 100%;
+}
+
+.users-entry + .users-entry {
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .users-entry:hover {
