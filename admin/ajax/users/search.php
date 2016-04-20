@@ -69,11 +69,10 @@ QUI::$Ajax->registerFunction(
             $result[] = $user;
         }
 
-        return array(
-            'total' => $Users->count($params),
-            'page' => $page,
-            'data' => $result
-        );
+        $Grid = new QUI\Utils\Grid();
+        $Grid->setAttribute('page', $page);
+
+        return $Grid->parseResult($result, $Users->count($params));
     },
     array('params'),
     'Permission::checkAdminUser'

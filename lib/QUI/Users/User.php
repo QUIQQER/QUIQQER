@@ -561,15 +561,19 @@ class User implements QUI\Interfaces\Users\User
      *
      * @see QUI\Interfaces\Users\User::getGroups()
      *
-     * @param boolean $array - returns the groups as objects (true) or as an array (false)
+     * @param boolean $asObjects - returns the groups as objects (true) or as an array (false)
      *
-     * @return array
+     * @return array|bool
      */
-    public function getGroups($array = true)
+    public function getGroups($asObjects = true)
     {
         if ($this->Group && is_array($this->Group)) {
-            if ($array == true) {
+            if ($asObjects == true) {
                 return $this->Group;
+            }
+
+            if (is_string($this->groups)) {
+                return explode(',', trim($this->groups, ','));
             }
 
             return $this->groups;

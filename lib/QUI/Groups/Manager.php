@@ -331,6 +331,10 @@ class Manager extends QUI\QDOM
             $_fields['where'] = $params['where'];
         }
 
+        if (isset($params['where_or'])) {
+            $_fields['where_or'] = $params['where_or'];
+        }
+
         if (isset($params['search']) && !isset($params['searchSettings'])) {
             $_fields['where'] = array(
                 'name' => array(

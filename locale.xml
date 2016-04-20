@@ -401,6 +401,11 @@
             <en><![CDATA[Only change status]]></en>
         </locale>
 
+        <locale name="control.groups.select.search.field.placeholder">
+            <de><![CDATA[Suche nach einer Gruppe ...]]></de>
+            <en><![CDATA[Search for a group ...]]></en>
+        </locale>
+
     </groups>
 
     <groups name="quiqqer/system" datatype="js,php">

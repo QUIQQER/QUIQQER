@@ -37,13 +37,14 @@ define('controls/groups/sitemap/Window', [
 
         options: {
             multible : false,
+            multiple : false,
             message  : false,
             title    : Locale.get('quiqqer/system', 'groups.sitemap.window.title'),
             text     : Locale.get('quiqqer/system', 'groups.sitemap.window.text'),
             texticon : false,
             icon     : 'fa fa-group',
-            maxHeight: 300,
-            maxWidth : 450
+            maxHeight: 600,
+            maxWidth : 400
         },
 
         initialize: function (options) {
@@ -73,8 +74,13 @@ define('controls/groups/sitemap/Window', [
                 }).inject(Content, 'top');
             }
 
+            // bugfix
+            if (this.getAttribute('multible')) {
+                this.setAttribute('multiple', this.getAttribute('multible'));
+            }
+
             this.$Map = new GroupSitemap({
-                multible: this.getAttribute('multible')
+                multible: this.getAttribute('multiple')
             }).inject(SitemapBody);
         },
 

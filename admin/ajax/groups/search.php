@@ -8,31 +8,33 @@
  */
 QUI::$Ajax->registerFunction(
     'ajax_groups_search',
-    function ($params) {
+    function ($fields, $params) {
         $Groups = QUI::getGroups();
         $params = json_decode($params, true);
-        $page   = 1;
-        $limit  = 10;
+        $fields = json_decode($fields, true);
+        $query  = array();
 
-        $params['start'] = 0;
+        if (!is_array($fields)) {
+            $fields = array();
+        }
+
+        if (isset($params['order'])) {
+            $query['order'] = $params['order'];
+        }
 
         if (isset($params['limit'])) {
-            $limit = $params['limit'];
+            $query['limit'] = $params['limit'];
         }
 
-        if (isset($params['page'])) {
-            $page            = (int)$params['page'];
-            $params['start'] = ($page - 1) * $limit;
+        foreach ($fields as $field => $value) {
+            $query['where_or'][$field] = array(
+                'type' => '%LIKE%',
+                'value' => $value
+            );
         }
 
-        $search = $Groups->search($params);
-
-        return array(
-            'total' => $Groups->count($params),
-            'page' => $page,
-            'data' => $search
-        );
+        return $Groups->search($query);
     },
-    array('params'),
+    array('fields', 'params'),
     'Permission::checkAdminUser'
 );

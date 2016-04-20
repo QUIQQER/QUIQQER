@@ -635,8 +635,7 @@ define('controls/users/Panel', [
                 page          : this.getAttribute('page'),
                 search        : this.getAttribute('search'),
                 searchSettings: this.getAttribute('searchSettings')
-
-            }, function (result) {
+            }).then(function (result) {
                 var Grid = self.getGrid();
 
                 if (!Grid) {
@@ -914,7 +913,7 @@ define('controls/users/Panel', [
                 }
 
                 data[i].status = new QUISwitch({
-                    status: entry.active == 1 ? true : false,
+                    status: entry.active == 1,
                     uid   : entry.id,
                     title : entry.active ? this.active_text : this.deactive_text,
                     events: {
