@@ -5,7 +5,6 @@
  * @module utils/Panels
  * @author www.pcsg.de (Henning Leutz)
  */
-
 define('utils/Panels', function () {
     "use strict";
 
