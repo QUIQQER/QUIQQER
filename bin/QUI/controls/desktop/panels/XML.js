@@ -314,9 +314,15 @@ define('controls/desktop/panels/XML', [
 
         /**
          * Unload the Category and set all settings
+         *
+         * @param {Boolean} [clear] - Clear the html, default = true
          */
-        unloadCategory: function () {
+        unloadCategory: function (clear) {
             var i, len, Elm, name, tok, namespace;
+
+            if (typeof clear === 'undefined') {
+                clear = true;
+            }
 
             var Body   = this.getBody(),
                 Form   = Body.getElement('form'),
@@ -367,7 +373,7 @@ define('controls/desktop/panels/XML', [
                 }
             }
 
-            if (this.$Control) {
+            if (this.$Control && clear) {
                 this.$Control.destroy();
                 this.$Control = null;
             }
@@ -387,7 +393,7 @@ define('controls/desktop/panels/XML', [
          * Send the configuration to the server
          */
         save: function () {
-            this.unloadCategory(this.getActiveCategory());
+            this.unloadCategory(false);
 
             var Save = this.getButtonBar().getElement('save');
 
