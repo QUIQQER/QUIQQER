@@ -72,7 +72,14 @@ define('controls/lang/InputMultiLang', [
 
                 var i, len, flag, lang, LangContainer, InputField;
                 var current = QUILocale.getCurrent(),
-                    data    = JSON.decode(Elm.value);
+                    data    = [];
+
+                try {
+                    data = JSON.decode(Elm.value);
+                } catch (e) {
+                    console.error(Elm.value);
+                    console.error(e);
+                }
 
                 // php <-> js -> array / object conversion fix
                 if (typeOf(data) === 'array') {
