@@ -66,22 +66,22 @@ class Package extends QUI\QDOM
      */
     public function __construct($package)
     {
-        $packageDir = OPT_DIR.$package.'/';
+        $packageDir = OPT_DIR . $package . '/';
 
         if (!is_dir($packageDir)) {
             throw new QUI\Exception('Package not exists', 404);
         }
 
         $this->packageDir = $packageDir;
-        $this->name = $package;
+        $this->name       = $package;
 
         // no composer.json, no real package
-        if (!file_exists($packageDir.'composer.json')) {
+        if (!file_exists($packageDir . 'composer.json')) {
             return;
         }
 
         $this->composerData = json_decode(
-            file_get_contents($packageDir.'composer.json'),
+            file_get_contents($packageDir . 'composer.json'),
             true
         );
 
@@ -93,7 +93,7 @@ class Package extends QUI\QDOM
             return;
         }
 
-        $this->configPath = CMS_DIR.'etc/plugins/'.$this->getName().'.ini.php';
+        $this->configPath = CMS_DIR . 'etc/plugins/' . $this->getName() . '.ini.php';
 
         QUI\Utils\System\File::mkfile($this->configPath);
     }
@@ -116,7 +116,7 @@ class Package extends QUI\QDOM
      */
     public function getVarDir()
     {
-        $varDir = VAR_DIR.'package/'.$this->getName().'/';
+        $varDir = VAR_DIR . 'package/' . $this->getName() . '/';
 
         QUI\Utils\System\File::mkdir($varDir);
 
@@ -197,28 +197,28 @@ class Package extends QUI\QDOM
     {
         $dir = $this->getDir();
 
-        Update::importDatabase($dir.'database.xml');
-        Update::importTemplateEngines($dir.'engines.xml');
-        Update::importEditors($dir.'wysiwyg.xml');
-        Update::importMenu($dir.'menu.xml');
-        Update::importPermissions($dir.'permissions.xml', $this->getName());
-        Update::importMenu($dir.'menu.xml');
+        Update::importDatabase($dir . 'database.xml');
+        Update::importTemplateEngines($dir . 'engines.xml');
+        Update::importEditors($dir . 'wysiwyg.xml');
+        Update::importMenu($dir . 'menu.xml');
+        Update::importPermissions($dir . 'permissions.xml', $this->getName());
+        Update::importMenu($dir . 'menu.xml');
 
         // events
-        Update::importEvents($dir.'events.xml');
-        Update::importSiteEvents($dir.'site.xml');
+        Update::importEvents($dir . 'events.xml');
+        Update::importSiteEvents($dir . 'site.xml');
 
-        Update::importLocale($dir.'locale.xml');
+        Update::importLocale($dir . 'locale.xml');
 
         // settings
-        if (!file_exists($dir.'settings.xml')) {
+        if (!file_exists($dir . 'settings.xml')) {
             QUI::getEvents()->fireEvent('packageSetup', array($this));
 
             return;
         }
 
         // $defaults = XML::getConfigParamsFromXml( $dir .'settings.xml' );
-        $Config = XML::getConfigFromXml($dir.'settings.xml');
+        $Config = XML::getConfigFromXml($dir . 'settings.xml');
 
         if ($Config) {
             $Config->save();
@@ -247,7 +247,7 @@ class Package extends QUI\QDOM
 
 
         QUI::getEvents()
-           ->fireEvent('packageUninstall', array($this->getName()));
+            ->fireEvent('packageUninstall', array($this->getName()));
     }
 
     /**
@@ -258,6 +258,6 @@ class Package extends QUI\QDOM
     {
 
         QUI::getEvents()
-           ->fireEvent('packageUninstall', array($this->getName()));
+            ->fireEvent('packageUninstall', array($this->getName()));
     }
 }
