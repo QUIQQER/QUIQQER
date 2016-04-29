@@ -150,7 +150,7 @@ class Manager
         $table2media    = $table . '2media';
 
         // Haupttabelle anlegen
-        $DBTable->appendFields($table, array(
+        $DBTable->addColumn($table, array(
             'name' => 'varchar(100) NOT NULL',
             'type' => 'varchar(20)  NOT NULL',
             'area' => 'varchar(20)  NOT NULL',
@@ -163,17 +163,17 @@ class Manager
         $DBTable->setIndex($table, 'name');
 
 
-        $DBTable->appendFields($table2users, array(
+        $DBTable->addColumn($table2users, array(
             'user_id' => 'int(11) NOT NULL',
             'permissions' => 'text'
         ));
 
-        $DBTable->appendFields($table2groups, array(
+        $DBTable->addColumn($table2groups, array(
             'group_id' => 'int(11) NOT NULL',
             'permissions' => 'text'
         ));
 
-        $DBTable->appendFields($table2sites, array(
+        $DBTable->addColumn($table2sites, array(
             'project' => 'varchar(200) NOT NULL',
             'lang' => 'varchar(2) NOT NULL',
             'id' => 'bigint(20)',
@@ -181,14 +181,14 @@ class Manager
             'value' => 'text'
         ));
 
-        $DBTable->appendFields($table2projects, array(
+        $DBTable->addColumn($table2projects, array(
             'project' => 'varchar(200) NOT NULL',
             'lang' => 'varchar(2) NOT NULL',
             'permission' => 'text',
             'value' => 'text'
         ));
 
-        $DBTable->appendFields($table2media, array(
+        $DBTable->addColumn($table2media, array(
             'project' => 'varchar(200) NOT NULL',
             'lang' => 'varchar(2)',
             'id' => 'bigint(20)',
