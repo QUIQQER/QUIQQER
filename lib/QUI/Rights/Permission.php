@@ -63,7 +63,7 @@ class Permission
      */
     public static function isAdmin($User = false)
     {
-        if ($User === false) {
+        if (!$User) {
             $User = self::getUser();
         }
 
@@ -85,7 +85,7 @@ class Permission
      */
     public static function isSU($User = false)
     {
-        if ($User === false) {
+        if (!$User) {
             $User = self::getUser();
         }
 
@@ -133,11 +133,11 @@ class Permission
     {
         $UserToCheck = false;
 
-        if ($User === false) {
+        if (!$User) {
             $UserToCheck = self::getUser();
         }
 
-        if ($User === false) {
+        if (!$User) {
             self::checkUser();
         } else {
             self::checkUser($UserToCheck);
@@ -158,7 +158,7 @@ class Permission
      * Prüft ob der Benutzer das Recht besitzt
      *
      * @param string $perm
-     * @param \QUI\Users\User|boolean $User - optional
+     * @param \QUI\Users\User|boolean|null $User - optional
      *
      * @return false|string|permission
      *
@@ -166,7 +166,7 @@ class Permission
      */
     public static function checkPermission($perm, $User = false)
     {
-        if ($User === false) {
+        if (!$User) {
             $User = self::getUser();
         }
 
@@ -244,7 +244,7 @@ class Permission
 
         $check = false;
 
-        if ($User === false) {
+        if (!$User) {
             $User = self::getUser();
         }
 
@@ -359,7 +359,7 @@ class Permission
     {
         $UserToCheck = false;
 
-        if ($User === false) {
+        if (!$User) {
             $UserToCheck = self::getUser();
         }
 
@@ -391,12 +391,12 @@ class Permission
     {
         $UserToCheck = $User;
 
-        if ($User === false) {
+        if (!$User) {
             $UserToCheck = self::getUser();
         }
 
         if (get_class($UserToCheck) !== 'QUI\\Users\\User') {
-            if ($User === false) {
+            if (!$User) {
                 QUI::getUsers()->checkUserSession();
             }
 
@@ -421,7 +421,7 @@ class Permission
      */
     public static function existsPermission($perm, $User = false)
     {
-        if ($User === false) {
+        if (!$User) {
             $User = self::getUser();
         }
 
@@ -462,7 +462,7 @@ class Permission
      */
     public static function addUserToSitePermission(User $User, $Site, $permission, $EditUser = false)
     {
-        if (QUI\Projects\Site\Utils::isSiteObject($Site) === false) {
+        if (!QUI\Projects\Site\Utils::isSiteObject($Site)) {
             return false;
         }
 
@@ -513,7 +513,7 @@ class Permission
      */
     public static function addGroupToSitePermission(Group $Group, $Site, $permission, $EditUser)
     {
-        if (QUI\Projects\Site\Utils::isSiteObject($Site) === false) {
+        if (!QUI\Projects\Site\Utils::isSiteObject($Site)) {
             return false;
         }
 
@@ -566,7 +566,7 @@ class Permission
      */
     public static function checkSitePermission($perm, $Site, $User = false)
     {
-        if ($User === false) {
+        if (!$User) {
             $User = self::getUser();
         }
 
@@ -719,7 +719,7 @@ class Permission
         $permission,
         $EditUser = false
     ) {
-        if (QUI\Projects\Site\Utils::isSiteObject($Site) === false) {
+        if (!QUI\Projects\Site\Utils::isSiteObject($Site)) {
             return false;
         }
 
@@ -771,7 +771,7 @@ class Permission
      */
     public static function removeUserFromSitePermission(User $User, $Site, $permission, $EditUser = false)
     {
-        if (QUI\Projects\Site\Utils::isSiteObject($Site) === false) {
+        if (!QUI\Projects\Site\Utils::isSiteObject($Site)) {
             return false;
         }
 
@@ -933,7 +933,7 @@ class Permission
         Project $Project,
         $User = false
     ) {
-        if ($User === false) {
+        if (!$User) {
             $User = self::getUser();
         }
 
