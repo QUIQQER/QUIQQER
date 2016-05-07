@@ -71,7 +71,7 @@ class Manager
     {
         $DataBase = QUI::getDataBase();
 
-        $DataBase->Table()->appendFields(self::table(), array(
+        $DataBase->table()->addColumn(self::table(), array(
             'id' => 'int(11)',
             'username' => 'varchar(50)',
             'password' => 'varchar(50)',
@@ -104,7 +104,7 @@ class Manager
         );
 
         // Addresses
-        $DataBase->Table()->appendFields(self::tableAddress(), array(
+        $DataBase->table()->addColumn(self::tableAddress(), array(
             'id' => 'int(11)',
             'uid' => 'int(11)',
             'salutation' => 'varchar(10)',
@@ -120,7 +120,7 @@ class Manager
             'country' => 'text'
         ));
 
-        $DataBase->Table()->setIndex(self::tableAddress(), 'id');
+        $DataBase->table()->setIndex(self::tableAddress(), 'id');
 
         $DataBase->getPDO()->exec(
             'ALTER TABLE `' . self::tableAddress()

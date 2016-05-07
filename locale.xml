@@ -288,6 +288,15 @@
             <de><![CDATA[nobody]]></de>
             <en><![CDATA[nobody]]></en>
         </locale>
+
+        <locale name="activate">
+            <de><![CDATA[Aktivieren]]></de>
+            <en><![CDATA[Activate]]></en>
+        </locale>
+        <locale name="deactivate">
+            <de><![CDATA[Deaktivieren]]></de>
+            <en><![CDATA[Deactivate]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -448,6 +457,10 @@
         <locale name="properties">
             <de><![CDATA[Eigenschaften]]></de>
             <en><![CDATA[Properties]]></en>
+        </locale>
+        <locale name="search">
+            <de><![CDATA[Suchen]]></de>
+            <en><![CDATA[Search]]></en>
         </locale>
         <locale name="size">
             <de><![CDATA[Größe]]></de>

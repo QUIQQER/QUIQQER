@@ -97,7 +97,7 @@ class User implements QUI\Interfaces\Users\User
     protected $admin = null;
 
     /**
-     * is the user a compyn
+     * is the user a company
      *
      * @var false
      */
@@ -1166,6 +1166,15 @@ class User implements QUI\Interfaces\Users\User
     public function isCompany()
     {
         return $this->company;
+    }
+
+    /**
+     * @param $groupId
+     * @return boolean
+     */
+    public function isInGroup($groupId)
+    {
+        return in_array($groupId, $this->getGroups(false));
     }
 
     /**

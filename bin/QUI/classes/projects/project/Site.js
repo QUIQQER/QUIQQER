@@ -74,6 +74,22 @@ define('classes/projects/project/Site', [
         },
 
         /**
+         * Decode the site
+         * eq for ajax request
+         *
+         * @return {Object}
+         */
+        encode: function () {
+            var Project = this.getProject(),
+                encode  = Project.encode();
+
+            encode    = JSON.decode(encode);
+            encode.id = this.getId();
+
+            return JSON.encode(encode);
+        },
+
+        /**
          * Load the site
          * Get all attributes from the DB
          *

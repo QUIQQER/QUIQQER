@@ -52,7 +52,7 @@ class Manager extends QUI\QDOM
      *
      * @return string
      */
-    public static function TABLE()
+    public static function table()
     {
         return QUI_DB_PRFX . 'groups';
     }
@@ -63,9 +63,9 @@ class Manager extends QUI\QDOM
     public function setup()
     {
         $DataBase = QUI::getDataBase();
-        $Table    = $DataBase->Table();
+        $Table    = $DataBase->table();
 
-        $Table->addColumn(self::TABLE(), array(
+        $Table->addColumn(self::table(), array(
             'id' => 'int(11) NOT NULL',
             'name' => 'varchar(50) NOT NULL',
             'admin' => 'tinyint(2) NOT NULL',
@@ -75,13 +75,13 @@ class Manager extends QUI\QDOM
             'rights' => 'text'
         ));
 
-        $Table->setPrimaryKey(self::TABLE(), 'id');
-        $Table->setIndex(self::TABLE(), 'parent');
+        $Table->setPrimaryKey(self::table(), 'id');
+        $Table->setIndex(self::table(), 'parent');
 
 
         // Guest
         $result = QUI::getDataBase()->fetch(array(
-            'from' => $this->TABLE(),
+            'from' => $this->table(),
             'where' => array(
                 'id' => 0
             )
@@ -90,7 +90,7 @@ class Manager extends QUI\QDOM
         if (!isset($result[0])) {
             QUI\System\Log::addNotice('Guest Group does not exist.');
 
-            QUI::getDataBase()->insert($this->TABLE(), array(
+            QUI::getDataBase()->insert($this->table(), array(
                 'id' => 0,
                 'name' => 'Guest'
             ));
@@ -98,7 +98,7 @@ class Manager extends QUI\QDOM
             QUI\System\Log::addNotice('Guest Group was created.');
 
         } else {
-            QUI::getDataBase()->update($this->TABLE(), array(
+            QUI::getDataBase()->update($this->table(), array(
                 'name' => 'Guest'
             ), array(
                 'id' => 0
@@ -110,7 +110,7 @@ class Manager extends QUI\QDOM
 
         // Everyone
         $result = QUI::getDataBase()->fetch(array(
-            'from' => $this->TABLE(),
+            'from' => $this->table(),
             'where' => array(
                 'id' => 1
             )
@@ -119,7 +119,7 @@ class Manager extends QUI\QDOM
         if (!isset($result[0])) {
             QUI\System\Log::addNotice('Everyone Group does not exist...');
 
-            QUI::getDataBase()->insert($this->TABLE(), array(
+            QUI::getDataBase()->insert($this->table(), array(
                 'id' => 1,
                 'name' => 'Everyone'
             ));
@@ -127,7 +127,7 @@ class Manager extends QUI\QDOM
             QUI\System\Log::addNotice('Everyone Group was created.');
 
         } else {
-            QUI::getDataBase()->update($this->TABLE(), array(
+            QUI::getDataBase()->update($this->table(), array(
                 'name' => 'Everyone'
             ), array(
                 'id' => 1
@@ -295,7 +295,7 @@ class Manager extends QUI\QDOM
         $start = 0;
 
         $_fields = array(
-            'from' => self::TABLE()
+            'from' => self::table()
         );
 
         if (isset($params['count'])) {
