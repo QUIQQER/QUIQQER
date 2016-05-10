@@ -43,6 +43,15 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     }
 
     /**
+     * @param int $groupId
+     * @return mixed
+     */
+    public function isInGroup($groupId)
+    {
+        return in_array($groupId, $this->getGroups(false));
+    }
+
+    /**
      * @deprecated
      */
     public function isAdmin()
@@ -404,7 +413,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @param boolean $array - returns the groups as objects (true) or as an array (false)
      *
-     * @return boolean
+     * @return array
      */
     public function getGroups($array = true)
     {

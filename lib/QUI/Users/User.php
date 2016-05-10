@@ -312,6 +312,15 @@ class User implements QUI\Interfaces\Users\User
     }
 
     /**
+     * @param $permission
+     * @throws QUI\Exception
+     */
+    public function checkPermission($permission)
+    {
+        QUI\Rights\Permission::checkPermission($permission, $this);
+    }
+
+    /**
      * (non-PHPdoc)
      *
      * @see QUI\Interfaces\Users\User::getType()
@@ -1169,7 +1178,7 @@ class User implements QUI\Interfaces\Users\User
     }
 
     /**
-     * @param $groupId
+     * @param integer $groupId
      * @return boolean
      */
     public function isInGroup($groupId)
