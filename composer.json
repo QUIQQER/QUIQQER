@@ -55,8 +55,7 @@
     "quiqqer/diashow": "*@dev",
     "quiqqer/lockclient": "dev-master",
     "quiqqer/messages": "*@dev",
-    "quiqqer/meta": "*@dev",
-    "quiqqer/currency": "*@dev"
+    "quiqqer/meta": "*@dev"
   },
   "require-dev": {
     "mikey179/vfsStream": "1.*"

@@ -446,6 +446,14 @@ class User implements QUI\Interfaces\Users\User
      */
     public function getCurrency()
     {
+        try {
+            QUI::getPackage('quiqqer/currency');
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeException($Exception, QUI\System\Log::LEVEL_ALERT);
+            return 'EUR';
+        }
+
+
         if ($this->getAttribute('currency')) {
             if (Currencies::existCurrency($this->getAttribute('currency'))) {
                 return $this->getAttribute('currency');
