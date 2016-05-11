@@ -200,7 +200,7 @@ class Utils
                     $types = explode(',', $types);
                 }
 
-                if (!empty($types)) {
+                if (!empty($types) && is_array($types)) {
                     foreach ($types as $allowedType) {
                         if (!StringUtils::match($allowedType, $siteType)) {
                             continue 2;
@@ -275,7 +275,7 @@ class Utils
                     $types = explode(',', $types);
                 }
 
-                if (!empty($types)) {
+                if (!empty($types) && is_array($types)) {
                     foreach ($types as $allowedType) {
                         if (!StringUtils::match($allowedType, $siteType)) {
                             continue 2;
@@ -586,7 +586,12 @@ class Utils
                     'quiqqer/system',
                     'exception.site.not.found'
                 ),
-                705
+                705,
+                array(
+                    'method' => 'getSiteByLink',
+                    'class' => 'QUI/projects/Site/Utils',
+                    'link' => $link
+                )
             );
         }
 
@@ -598,7 +603,12 @@ class Utils
                     'quiqqer/system',
                     'exception.site.not.found'
                 ),
-                705
+                705,
+                array(
+                    'method' => 'getSiteByLink',
+                    'class' => 'QUI/projects/Site/Utils',
+                    'link' => $link
+                )
             );
         }
 
@@ -742,7 +752,12 @@ class Utils
                     'quiqqer/system',
                     'exception.site.not.found'
                 ),
-                705
+                705,
+                array(
+                    'method' => 'rewriteSiteLink',
+                    'class' => 'QUI/projects/Site/Utils',
+                    'link' => $link
+                )
             );
         }
 
@@ -754,7 +769,12 @@ class Utils
                     'quiqqer/system',
                     'exception.site.not.found'
                 ),
-                705
+                705,
+                array(
+                    'method' => 'rewriteSiteLink',
+                    'class' => 'QUI/projects/Site/Utils',
+                    'link' => $link
+                )
             );
         }
 

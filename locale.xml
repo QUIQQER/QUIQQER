@@ -4376,11 +4376,11 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
         <locale name="exception.site.not.found">
             <de><![CDATA[Diese Seite konnte nicht gefunden werden.]]></de>
-            <en><![CDATA[This Site could not be found.]]]></en>
+            <en><![CDATA[This Site could not be found.]]></en>
         </locale>
         <locale name="exception.permissions.edit">
             <de><![CDATA[Sie haben keine Rechte um diese Seite zu bearbeiten]]></de>
-            <en><![CDATA[You have no rights to edit this page.]]]></en>
+            <en><![CDATA[You have no rights to edit this page.]]></en>
         </locale>
         <locale name="exception.site.is.being.edited.user">
             <de><![CDATA[Die Seite wird gerade von [username] bearbeitet!]]></de>
