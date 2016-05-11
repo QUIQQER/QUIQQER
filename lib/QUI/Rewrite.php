@@ -189,9 +189,7 @@ class Rewrite
 
         //wenn seite existiert, dann muss nichts mehr gemacht werden
         if (isset($this->site) && $this->site) {
-            QUI::getEvents()
-                ->fireEvent('request', array($this, $_REQUEST['_url']));
-
+            QUI::getEvents()->fireEvent('request', array($this, $_REQUEST['_url']));
             return;
         }
 
@@ -216,15 +214,27 @@ class Rewrite
             exit;
         }
 
+        // wenn sprach ohne /
+        // dann / dran
+        // sprach ist ein ordner keine seite
+        if (!empty($_REQUEST['_url']) && strlen($_REQUEST['_url']) == 2) {
+            QUI::getEvents()->fireEvent('request', array($this, $_REQUEST['_url'] . '/'));
+
+            // 301 weiterleiten
+            $this->showErrorHeader(301, URL_DIR . $_REQUEST['_url'] . '/');
+        }
+
+
         // Kategorien aufruf
         // Aus url/kat/ wird url/kat.html
-        if (!empty($_REQUEST['_url']) && substr($_REQUEST['_url'], -1) == '/'
+        if (!empty($_REQUEST['_url'])
+            && substr($_REQUEST['_url'], -1) == '/'
+            && strlen($_REQUEST['_url']) != 3
             && strpos($_REQUEST['_url'], 'media/cache') === false
         ) {
             $_REQUEST['_url'] = substr($_REQUEST['_url'], 0, -1) . $defaultSuffix;
 
-            QUI::getEvents()
-                ->fireEvent('request', array($this, $_REQUEST['_url']));
+            QUI::getEvents()->fireEvent('request', array($this, $_REQUEST['_url']));
 
             // 301 weiterleiten
             $this->showErrorHeader(301, URL_DIR . $_REQUEST['_url']);
@@ -332,6 +342,7 @@ class Rewrite
                 unset($_REQUEST['_url']);
             }
         }
+
 
         // Media Center Datei, falls nicht im Cache ist
         if (isset($_REQUEST['_url'])
