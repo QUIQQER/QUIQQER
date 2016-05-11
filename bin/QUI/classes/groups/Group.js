@@ -12,8 +12,7 @@
  * @event onActivate [ {classes/groups/Group} ]
  * @event onDeactivate [ {classes/groups/Group} ]
  */
-
-define([
+define('classes/groups/Group', [
 
     'qui/classes/DOM',
     'Ajax',

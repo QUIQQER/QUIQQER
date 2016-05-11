@@ -288,6 +288,15 @@
             <de><![CDATA[nobody]]></de>
             <en><![CDATA[nobody]]></en>
         </locale>
+
+        <locale name="activate">
+            <de><![CDATA[Aktivieren]]></de>
+            <en><![CDATA[Activate]]></en>
+        </locale>
+        <locale name="deactivate">
+            <de><![CDATA[Deaktivieren]]></de>
+            <en><![CDATA[Deactivate]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -401,6 +410,11 @@
             <en><![CDATA[Only change status]]></en>
         </locale>
 
+        <locale name="control.groups.select.search.field.placeholder">
+            <de><![CDATA[Suche nach einer Gruppe ...]]></de>
+            <en><![CDATA[Search for a group ...]]></en>
+        </locale>
+
     </groups>
 
     <groups name="quiqqer/system" datatype="js,php">
@@ -443,6 +457,10 @@
         <locale name="properties">
             <de><![CDATA[Eigenschaften]]></de>
             <en><![CDATA[Properties]]></en>
+        </locale>
+        <locale name="search">
+            <de><![CDATA[Suchen]]></de>
+            <en><![CDATA[Search]]></en>
         </locale>
         <locale name="size">
             <de><![CDATA[Größe]]></de>
@@ -4358,11 +4376,11 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
         <locale name="exception.site.not.found">
             <de><![CDATA[Diese Seite konnte nicht gefunden werden.]]></de>
-            <en><![CDATA[This Site could not be found.]]]></en>
+            <en><![CDATA[This Site could not be found.]]></en>
         </locale>
         <locale name="exception.permissions.edit">
             <de><![CDATA[Sie haben keine Rechte um diese Seite zu bearbeiten]]></de>
-            <en><![CDATA[You have no rights to edit this page.]]]></en>
+            <en><![CDATA[You have no rights to edit this page.]]></en>
         </locale>
         <locale name="exception.site.is.being.edited.user">
             <de><![CDATA[Die Seite wird gerade von [username] bearbeitet!]]></de>

@@ -19,6 +19,7 @@
             <field type="VARCHAR(40) DEFAULT NULL">firstname</field>
             <field type="VARCHAR(40) DEFAULT NULL">lastname</field>
             <field type="VARCHAR(40) DEFAULT NULL">usertitle</field>
+            <field type="INT(1) NOT NULL DEFAULT '0'">company</field>
             <field type="VARCHAR(12) DEFAULT NULL">birthday</field>
             <field type="TEXT DEFAULT NULL">avatar</field>
             <field type="TEXT DEFAULT NULL">extra</field>

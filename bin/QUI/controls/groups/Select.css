@@ -1,0 +1,75 @@
+@CHARSET "UTF-8";
+
+.quiqer-group-select {
+    float: left;
+    padding: 2px;
+    position: relative;
+    width: 100%;
+}
+
+.field-container > .quiqer-group-select {
+    max-width: none;
+    padding: 0;
+}
+
+.quiqer-group-select-list {
+    background: #fff;
+    border: 1px solid #dedede;
+    border-radius: 3px;
+    float: left;
+    height: calc(100% - 30px);
+    overflow: auto;
+    position: relative;
+    width: 100%;
+    z-index: 2;
+}
+
+.quiqer-group-select-search {
+    clear: both;
+    float: left;
+    width: calc(100% - 50px);
+}
+
+.field-container-field > .quiqer-group-select {
+    max-width: none;
+    padding: 0;
+}
+
+.field-container-field > .quiqer-group-select .quiqer-group-select-list {
+    border-radius: 0;
+    border-width: 0 0 1px 0;
+}
+
+.field-container-field > .quiqer-group-select .quiqer-group-select-search {
+    border: none;
+}
+
+/** DropDown
+ ======================================================= */
+
+.quiqer-group-select-dropdown {
+    background: #fff;
+    border: 1px solid #dedede;
+    padding: 5px;
+    position: absolute;
+    width: 200px;
+    z-index: 10;
+}
+
+.quiqer-group-select-dropdown .mark {
+    color: red;
+    font-weight: bold;
+}
+
+.quiqer-group-select-dropdown-entry {
+    clear: both;
+    cursor: pointer;
+    float: left;
+    padding: 5px;
+    width: 100%;
+}
+
+.quiqer-group-select-dropdown-entry-hover {
+    background: #2F8FC6;
+    color: #FFFFFF;
+}

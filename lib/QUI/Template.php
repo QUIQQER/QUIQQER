@@ -323,8 +323,8 @@ class Template extends QUI\QDOM
          */
 
         $default_tpl   = LIB_DIR . 'templates/index.html';
-        $project_tpl   = USR_DIR . $Project->getAttribute('name') . '/lib/index.html';
-        $project_index = USR_DIR . $Project->getAttribute('name') . '/lib/index.php';
+        $project_tpl   = USR_DIR . $Project->getName() . '/lib/index.html';
+        $project_index = USR_DIR . $Project->getName() . '/lib/index.php';
 
 //        $template_tpl   = false;
 //        $template_index = false;
@@ -371,7 +371,6 @@ class Template extends QUI\QDOM
                 'TPL_DIR' => USR_DIR . $Project->getAttribute('name') . '/',
             ));
         }
-
 
         // @todo suffix template prüfen
         /*
@@ -449,6 +448,7 @@ class Template extends QUI\QDOM
         }
 
         $result = str_replace('</body>', $footerExtend . '</body>', $result);
+
 
         return $result;
     }
@@ -570,7 +570,6 @@ class Template extends QUI\QDOM
                 );
             }
         }
-
 
         // assign
         $Engine->assign(array(
@@ -695,9 +694,7 @@ class Template extends QUI\QDOM
             }
 
             // project template
-            $projectTemplate
-                = USR_DIR . $Project->getName() . '/lib/' . $type
-                  . '.html';
+            $projectTemplate = USR_DIR . $Project->getName() . '/lib/' . $type . '.html';
 
             if (file_exists($projectTemplate)) {
                 $template = $projectTemplate;
@@ -706,18 +703,13 @@ class Template extends QUI\QDOM
 
         if ($siteType[0] == 'standard') {
             // site template
-            $siteTemplate
-                = OPT_DIR . $Project->getAttribute('template') . '/standard.html';
-
-            $siteStyle
-                = OPT_DIR . $Project->getAttribute('template')
-                  . '/bin/standard.css';
+            $siteTemplate = OPT_DIR . $Project->getAttribute('template') . '/standard.html';
+            $siteStyle    = OPT_DIR . $Project->getAttribute('template') . '/bin/standard.css';
 
             if (file_exists($siteStyle)) {
                 $Engine->assign(
                     'siteStyle',
-                    URL_OPT_DIR . $Project->getAttribute('template')
-                    . '/standard.css'
+                    URL_OPT_DIR . $Project->getAttribute('template') . '/standard.css'
                 );
             }
 
@@ -725,7 +717,6 @@ class Template extends QUI\QDOM
                 $template = $siteTemplate;
             }
         }
-
 
         if (!file_exists($template)) {
             $template = LIB_DIR . 'templates/standard.html';

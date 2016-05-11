@@ -16,8 +16,7 @@
  * @require Locale
  * @require css!controls/users/Address.css
  */
-
-define([
+define('controls/users/Address', [
 
     'qui/QUI',
     'qui/controls/Control',

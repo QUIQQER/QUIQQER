@@ -24,7 +24,7 @@ QUI::$Ajax->registerFunction(
             $Config = QUI\Utils\XML::getConfigFromXml($file);
 
             if ($Config) {
-                $config = array_merge($config, $Config->toArray());
+                $config = array_merge_recursive($config, $Config->toArray());
             }
         }
 

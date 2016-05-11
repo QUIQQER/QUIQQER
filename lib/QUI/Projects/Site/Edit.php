@@ -135,9 +135,13 @@ class Edit extends Site
 
         if (!isset($result[0])) {
             throw new QUI\Exception(
-                QUI::getLocale()
-                    ->get('quiqqer/system', 'exception.site.not.found'),
-                705
+                QUI::getLocale()->get('quiqqer/system', 'exception.site.not.found'),
+                705,
+                array(
+                    'siteId' => $this->getId(),
+                    'project' => $this->getProject()->getName(),
+                    'lang' => $this->getProject()->getLang()
+                )
             );
         }
 

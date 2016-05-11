@@ -14,79 +14,22 @@ use QUI;
  * @package quiqqer/quiqqer
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
+ * @deprecated use QUI\Bricks\Controls\LangSwitch
  */
-class LangSwitch extends QUI\Control
+class LangSwitch extends QUI\Bricks\Controls\LanguageSwitches\DropDown
 {
     /**
-     * constructor
+     * LangSwitch constructor.
      *
      * @param array $attributes
      */
-    public function __construct($attributes = array())
+    public function __construct(array $attributes)
     {
-        // defaults values
-        $this->setAttributes(array(
-            'Site' => false,
-            'showFlags' => true,
-            'showText' => true,
-            'DropDown' => false
-        ));
-
         parent::__construct($attributes);
 
-        $this->addCSSFile(
-            dirname(__FILE__) . '/LangSwitch.css'
+        QUI\System\Log::addNotice(
+            '\QUI\Controls\LangSwitch is deprecated. ' .
+            'Please use QUI\Bricks\Controls\LanguageSwitches\DropDown'
         );
-
-        $this->setAttribute('class', 'quiqqer-langSwitch grid-100 grid-parent');
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
-     * @see \QUI\Control::create()
-     */
-    public function getBody()
-    {
-        $Engine = QUI::getTemplateManager()->getEngine();
-        $Site   = $this->getSite();
-
-        if (!$Site) {
-            return '';
-        }
-
-        $Project = $Site->getProject();
-
-        if (count($Project->getAttribute('langs')) < 2) {
-            QUI\System\Log::addNotice(
-                'The Project "' . $Project->getName() . '" has only one Language.' .
-                'The Control (\QUI\Controls\LangSwitch) makes here no sense.'
-            );
-
-            return '';
-        }
-
-        $Engine->assign(array(
-            'Site' => $Site,
-            'Project' => $Project,
-            'langs' => $Project->getAttribute('langs'),
-            'this' => $this
-        ));
-
-        return $Engine->fetch(dirname(__FILE__) . '/LangSwitch.html');
-    }
-
-    /**
-     * Return the Project
-     *
-     * @return QUI\Projects\Site
-     */
-    protected function getSite()
-    {
-        if ($this->getAttribute('Site')) {
-            return $this->getAttribute('Site');
-        }
-
-        return \QUI::getRewrite()->getSite();
     }
 }

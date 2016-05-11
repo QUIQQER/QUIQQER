@@ -331,6 +331,22 @@ class Project
     }
 
     /**
+     * Return all languages in the project
+     *
+     * @return array
+     */
+    public function getLanguages()
+    {
+        $langs = $this->getAttribute('langs');
+
+        if (is_string($langs)) {
+            $langs = explode(',', $langs);
+        }
+
+        return $langs;
+    }
+
+    /**
      * Return the project title
      * Locale->get('project/NAME', 'title') or getName()
      *

@@ -323,22 +323,54 @@ class Locale
     }
 
     /**
+     * Get the translation from a specific language
+     *
+     * @param string $lang
+     * @param string $group
+     * @param string|boolean $value
+     * @param array|boolean $replace
+     *
+     * @return string|array
+     */
+    public function getByLang($lang, $group, $value = false, $replace = false)
+    {
+        if ($replace === false || empty($replace)) {
+            return $this->getHelper($group, $value, $lang);
+        }
+
+        $str = $this->getHelper($group, $value, $lang);
+
+        foreach ($replace as $key => $value) {
+            if (is_array($value) || is_object($value)) {
+                continue;
+            }
+
+            $str = str_replace('[' . $key . ']', $value, $str);
+        };
+
+        return $str;
+    }
+
+    /**
      * Translation helper method
      *
      * @param string $group
      * @param string|boolean $value - (optional)
+     * @param string|boolean $current - (optional) wanted language
      *
      * @return string|array
      * @see ->get()
      * @ignore
      */
-    protected function getHelper($group, $value = false)
+    protected function getHelper($group, $value = false, $current = false)
     {
         if ($this->no_translation) {
             return '[' . $group . '] ' . $value;
         }
 
-        $current = $this->current;
+        if (!$current) {
+            $current = $this->current;
+        }
 
         // auf gettext wenn vorhanden
         $GetText = $this->initGetText($group);

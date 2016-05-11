@@ -65,13 +65,21 @@ define('controls/lang/InputMultiLang', [
                 'quiqqer-inputmultilang__minimize'
             );
 
-            this.$Input = Elm;
+            this.$Input      = Elm;
+            this.$Input.type = 'hidden';
 
             QUIAjax.get('ajax_system_getAvailableLanguages', function (languages) {
 
                 var i, len, flag, lang, LangContainer, InputField;
                 var current = QUILocale.getCurrent(),
-                    data    = JSON.decode(Elm.value);
+                    data    = [];
+
+                try {
+                    data = JSON.decode(Elm.value);
+                } catch (e) {
+                    console.error(Elm.value);
+                    console.error(e);
+                }
 
                 // php <-> js -> array / object conversion fix
                 if (typeOf(data) === 'array') {

@@ -24,6 +24,12 @@ interface User
     public function isSU();
 
     /**
+     * @param integer $groupId
+     * @return boolean
+     */
+    public function isInGroup($groupId);
+
+    /**
      * the user can use the backend?
      *
      * @return boolean
@@ -54,7 +60,6 @@ interface User
      * @param \QUI\Users\User|boolean $ParentUser
      */
     public function disable($ParentUser = false);
-
 
     /**
      * Save all attributes of the user
@@ -238,4 +243,18 @@ interface User
      * @return boolean
      */
     public function isOnline();
+
+    /**
+     * Is the user a compny?
+     *
+     * @return mixed
+     */
+    public function isCompany();
+
+    /**
+     * Set the company status, whether the user is a company or not
+     *
+     * @param boolean $status - true or false
+     */
+    public function setCompanyStatus($status);
 }

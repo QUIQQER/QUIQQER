@@ -299,7 +299,7 @@ class Manager
             $project = json_decode($project, true);
         }
 
-        if (!isset($project['name'])) {
+        if (!isset($project['name']) || !$project['name']) {
             throw new QUI\Exception(
                 'Could not decode project data'
             );
@@ -383,8 +383,7 @@ class Manager
 
 
         if ($lang === false) {
-            self::$projects[$project]['_standard']
-                = new QUI\Projects\Project($project);
+            self::$projects[$project]['_standard'] = new QUI\Projects\Project($project);
 
             return self::$projects[$project]['_standard'];
         }

@@ -85,9 +85,13 @@ if (isset($_REQUEST['project'])) {
         $Project = QUI::getProjectManager()->decode($_REQUEST['project']);
 
     } catch (QUI\Exception $Exception) {
-        $Project = QUI::getProjectManager()->getProject(
-            $_REQUEST['project']
-        );
+        try {
+            $Project = QUI::getProjectManager()->getProject(
+                $_REQUEST['project']
+            );
+        } catch (QUI\Exception $Exception) {
+            $Project = QUI::getProjectManager()->getStandard();
+        }
     }
 
     $projectDir = USR_DIR . $Project->getName();

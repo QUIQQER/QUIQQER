@@ -190,7 +190,7 @@ try {
         }
 
         if (Debug::$run) {
-            Log(Debug::output());
+            Log::writeRecursive(Debug::output());
         }
 
         QUI::getSession()->set(
@@ -206,7 +206,7 @@ try {
         }
 
 
-        Log::addError($Exception->getMessage());
+        Log::writeException($Exception, Log::LEVEL_ERROR);
 
         $Template = new QUI\Template();
 

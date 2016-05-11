@@ -84,19 +84,19 @@ define('classes/users/Manager', [
          *
          * @method classes/users/Manager#getList
          * @param {Object} search     - search options
-         * @param {Function} [onfinish] - (optional), callback function
          * @param {Object} [params]     - (optional), extra params
+         * @return {Promise}
          */
-        getList: function (search, onfinish, params) {
-            params = ObjectUtils.combine(params, {
-                params: JSON.encode(search)
-            });
+        getList: function (search, params) {
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_users_search', function (result) {
+                    resolve(result);
 
-            Ajax.get('ajax_users_search', function (result, Request) {
-                if (typeof onfinish !== 'undefined') {
-                    onfinish(result, Request);
-                }
-            }, params);
+                }, ObjectUtils.combine(params, {
+                    params : JSON.encode(search),
+                    onError: reject
+                }));
+            });
         },
 
         /**

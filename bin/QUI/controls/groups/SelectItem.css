@@ -1,23 +1,26 @@
-
-.users-entry {
+.quiqer-group-selectItem {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     clear: both;
     cursor: default;
     float: left;
     font-size: 14px;
     line-height: 20px;
-    padding: 10px 0;
+    padding: 5px;
     width: 100%;
 }
 
-.users-entry + .users-entry {
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.users-entry:hover {
+.quiqer-group-selectItem:hover {
     background: rgba(0, 0, 0, 0.1);
 }
 
-.users-entry-text {
+.quiqer-group-selectItem-icon {
+    float: left;
+    line-height: 20px;
+    text-align: center;
+    width: 30px;
+}
+
+.quiqer-group-selectItem-text {
     float: left;
     line-height: 20px;
     overflow: hidden;
@@ -27,14 +30,7 @@
     width: calc(100% - 50px);
 }
 
-.users-entry-icon {
-    float: left;
-    line-height: 20px;
-    text-align: center;
-    width: 30px;
-}
-
-.users-entry-close {
+.quiqer-group-selectItem-destroy {
     cursor: pointer;
     float: left;
     line-height: 20px;
@@ -43,11 +39,11 @@
     width: 20px;
 }
 
-.users-entry-enabled:hover .users-entry-close {
+.quiqer-group-selectItem:hover .quiqer-group-selectItem-destroy {
     visibility: visible;
 }
 
-.users-entry-close:hover {
+.quiqer-group-selectItem-destroy:hover {
     background: #2F8FC6;
     color: #FFFFFF;
 }

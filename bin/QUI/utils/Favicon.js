@@ -47,6 +47,7 @@ define('utils/Favicon', [
 
             this.Favicon.badge('*');
             this.$timer = (function () {
+                this.Favicon.reset();
                 this.Favicon.badge('*');
             }.bind(this)).periodical(1000);
         },

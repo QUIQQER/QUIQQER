@@ -118,7 +118,7 @@ abstract class Factory
             QUI::getDataBase()->getPDO()->lastInsertId()
         );
 
-        $this->Events->fireEvent('createEnd', array($Child));
+        $this->Events->fireEvent('createEnd', array($Child, $data));
 
         return $Child;
     }

@@ -86,7 +86,7 @@ class Group extends QUI\QDOM
         }
 
         $result = QUI::getDataBase()->fetch(array(
-            'from' => Manager::Table(),
+            'from' => Manager::table(),
             'where' => array(
                 'id' => $this->getId()
             ),
@@ -141,7 +141,7 @@ class Group extends QUI\QDOM
         foreach ($children as $child) {
             QUI::getDataBase()->exec(array(
                 'delete' => true,
-                'from' => Manager::Table(),
+                'from' => Manager::table(),
                 'where' => array(
                     'id' => $child
                 )
@@ -151,7 +151,7 @@ class Group extends QUI\QDOM
         // Sich selbst löschen
         QUI::getDataBase()->exec(array(
             'delete' => true,
-            'from' => Manager::Table(),
+            'from' => Manager::table(),
             'where' => array(
                 'id' => $this->getId()
             )
@@ -199,7 +199,7 @@ class Group extends QUI\QDOM
 
         // Felder bekommen
         QUI::getDataBase()->update(
-            Manager::Table(),
+            Manager::table(),
             array(
                 'name' => $this->getAttribute('name'),
                 'toolbar' => $this->getAttribute('toolbar'),
@@ -219,7 +219,7 @@ class Group extends QUI\QDOM
     public function activate()
     {
         QUI::getDataBase()->update(
-            Manager::Table(),
+            Manager::table(),
             array('active' => 1),
             array('id' => $this->getId())
         );
@@ -234,7 +234,7 @@ class Group extends QUI\QDOM
     public function deactivate()
     {
         QUI::getDataBase()->update(
-            Manager::Table(),
+            Manager::table(),
             array('active' => 0),
             array('id' => $this->getId())
         );
@@ -346,7 +346,7 @@ class Group extends QUI\QDOM
     {
         $id = $this->getId();
 
-        $params['from']  = QUI\Users\Manager::Table();
+        $params['from']  = QUI\Users\Manager::table();
         $params['where'] = "usergroup LIKE '%,{$id},%' OR usergroup = {$id}";
 
         return QUI::getDataBase()->fetch($params);
@@ -365,7 +365,7 @@ class Group extends QUI\QDOM
     {
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'id',
-            'from' => QUI\Users\Manager::Table(),
+            'from' => QUI\Users\Manager::table(),
             'where' => 'username = \'' . Orthos::clearMySQL($username)
                        . '\' AND usergroup LIKE \'%,' . $this->getId() . ',%\'',
             'limit' => '1'
@@ -398,7 +398,7 @@ class Group extends QUI\QDOM
                 'select' => 'id',
                 'as' => 'count'
             ),
-            'from' => QUI\Users\Manager::Table(),
+            'from' => QUI\Users\Manager::table(),
             'where' => array(
                 'usergroup' => array(
                     'type' => 'LIKE',
@@ -489,7 +489,7 @@ class Group extends QUI\QDOM
 
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'id, parent',
-            'from' => Manager::Table(),
+            'from' => Manager::table(),
             'where' => array(
                 'id' => $this->getId()
             ),
@@ -516,7 +516,7 @@ class Group extends QUI\QDOM
     {
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'id, parent',
-            'from' => Manager::Table(),
+            'from' => Manager::table(),
             'where' => array(
                 'id' => (int)$id
             ),
@@ -594,7 +594,7 @@ class Group extends QUI\QDOM
 
         $_params = array(
             'select' => 'id',
-            'from' => Manager::Table(),
+            'from' => Manager::table(),
             'where' => array(
                 'parent' => $this->getId()
             )
@@ -636,7 +636,7 @@ class Group extends QUI\QDOM
     {
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'id',
-            'from' => Manager::Table(),
+            'from' => Manager::table(),
             'where' => array(
                 'parent' => $id
             )
@@ -670,7 +670,7 @@ class Group extends QUI\QDOM
 
             $result = QUI::getDataBase()->fetch(array(
                 'select' => 'id',
-                'from' => Manager::Table(),
+                'from' => Manager::table(),
                 'where' => array(
                     'id' => $newid
                 )
@@ -686,7 +686,7 @@ class Group extends QUI\QDOM
         }
 
         QUI::getDataBase()->insert(
-            Manager::Table(),
+            Manager::table(),
             array(
                 'id' => $newid,
                 'name' => $name,

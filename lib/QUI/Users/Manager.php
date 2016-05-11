@@ -71,7 +71,7 @@ class Manager
     {
         $DataBase = QUI::getDataBase();
 
-        $DataBase->Table()->appendFields(self::table(), array(
+        $DataBase->table()->addColumn(self::table(), array(
             'id' => 'int(11)',
             'username' => 'varchar(50)',
             'password' => 'varchar(50)',
@@ -104,7 +104,7 @@ class Manager
         );
 
         // Addresses
-        $DataBase->Table()->appendFields(self::tableAddress(), array(
+        $DataBase->table()->addColumn(self::tableAddress(), array(
             'id' => 'int(11)',
             'uid' => 'int(11)',
             'salutation' => 'varchar(10)',
@@ -120,7 +120,7 @@ class Manager
             'country' => 'text'
         ));
 
-        $DataBase->Table()->setIndex(self::tableAddress(), 'id');
+        $DataBase->table()->setIndex(self::tableAddress(), 'id');
 
         $DataBase->getPDO()->exec(
             'ALTER TABLE `' . self::tableAddress()
@@ -1060,18 +1060,23 @@ class Manager
     }
 
     /**
-     * Anzahl der Rechnungen
+     * Anzahl der Benutzer
      *
      * @param array $params - Search parameter
      *
-     * @return array
+     * @return integer
      */
-    public function count($params)
+    public function count($params = array())
     {
         $params['count'] = true;
 
-        unset($params['limit']);
-        unset($params['start']);
+        if (isset($params['limit'])) {
+            unset($params['limit']);
+        }
+
+        if (isset($params['start'])) {
+            unset($params['start']);
+        }
 
         return $this->execSearch($params);
     }
@@ -1082,8 +1087,8 @@ class Manager
      * @todo where params
      *
      * @param array $params
+     * @return array|integer
      *
-     * @return array
      * @throws QUI\Database\Exception
      */
     protected function execSearch($params)
@@ -1142,6 +1147,10 @@ class Manager
                 $params['searchSettings']['fields'] = $allowOrderFields;
             }
 
+            if (!isset($params['searchSettings']['userSearchString'])) {
+                $params['searchSettings']['userSearchString'] = '';
+            }
+
             $search = $params['searchSettings']['userSearchString'];
             $filter = $params['searchSettings']['filter'];
             $fields = $params['searchSettings']['fields'];
@@ -1178,30 +1187,35 @@ class Manager
 
 
             // create the search
-            $query .= ' WHERE (';
-            $binds[':search'] = '%' . $search . '%';
-
             if (empty($search)) {
-                $binds[':search'] = '%';
-            }
+                $query .= ' WHERE 1=1 ';
+            } else {
+                $query .= ' WHERE (';
+                $binds[':search'] = '%' . $search . '%';
 
-            foreach ($fields as $field => $value) {
-                if (!isset($allowOrderFields[$field])) {
-                    continue;
+                if (empty($search)) {
+                    $binds[':search'] = '%';
                 }
 
-                if (empty($value)) {
-                    continue;
+                foreach ($fields as $field => $value) {
+                    if (!isset($allowOrderFields[$field])) {
+                        continue;
+                    }
+
+                    if (empty($value)) {
+                        continue;
+                    }
+
+                    $query .= ' ' . $field . ' LIKE :search OR ';
                 }
 
-                $query .= ' ' . $field . ' LIKE :search OR ';
+                if (substr($query, -3) == 'OR ') {
+                    $query = substr($query, 0, -3);
+                }
+
+                $query .= ') ';
             }
 
-            if (substr($query, -3) == 'OR ') {
-                $query = substr($query, 0, -3);
-            }
-
-            $query .= ') ';
 
             // empty where, no search possible
             if (strpos($query, 'WHERE ()') !== false) {
@@ -1220,8 +1234,8 @@ class Manager
 
                 foreach ($groups as $groupId) {
                     if ((int)$groupId > 0) {
-                        $query .= ' AND usergroup LIKE "%:' . $groupId . '%" ';
-                        $binds[':' . $groupId] = (int)$groupId;
+                        $query .= ' AND usergroup LIKE :' . $groupId . ' ';
+                        $binds[':' . $groupId] = '%' . (int)$groupId . '%';
                     }
                 }
             }
@@ -1276,7 +1290,6 @@ class Manager
         foreach ($binds as $key => $value) {
             if ($key == ':active' || $key == ':su') {
                 $Statement->bindValue($key, $value, \PDO::PARAM_INT);
-
             } else {
                 $Statement->bindValue($key, $value, \PDO::PARAM_STR);
             }
@@ -1296,6 +1309,7 @@ class Manager
         }
 
         $result = $Statement->fetchAll(\PDO::FETCH_ASSOC);
+
 
         if (isset($params['count'])) {
             return (int)$result[0]['count'];

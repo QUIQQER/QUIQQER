@@ -189,9 +189,7 @@ class Rewrite
 
         //wenn seite existiert, dann muss nichts mehr gemacht werden
         if (isset($this->site) && $this->site) {
-            QUI::getEvents()
-                ->fireEvent('request', array($this, $_REQUEST['_url']));
-
+            QUI::getEvents()->fireEvent('request', array($this, $_REQUEST['_url']));
             return;
         }
 
@@ -216,15 +214,27 @@ class Rewrite
             exit;
         }
 
+        // wenn sprach ohne /
+        // dann / dran
+        // sprach ist ein ordner keine seite
+        if (!empty($_REQUEST['_url']) && strlen($_REQUEST['_url']) == 2) {
+            QUI::getEvents()->fireEvent('request', array($this, $_REQUEST['_url'] . '/'));
+
+            // 301 weiterleiten
+            $this->showErrorHeader(301, URL_DIR . $_REQUEST['_url'] . '/');
+        }
+
+
         // Kategorien aufruf
         // Aus url/kat/ wird url/kat.html
-        if (!empty($_REQUEST['_url']) && substr($_REQUEST['_url'], -1) == '/'
+        if (!empty($_REQUEST['_url'])
+            && substr($_REQUEST['_url'], -1) == '/'
+            && strlen($_REQUEST['_url']) != 3
             && strpos($_REQUEST['_url'], 'media/cache') === false
         ) {
             $_REQUEST['_url'] = substr($_REQUEST['_url'], 0, -1) . $defaultSuffix;
 
-            QUI::getEvents()
-                ->fireEvent('request', array($this, $_REQUEST['_url']));
+            QUI::getEvents()->fireEvent('request', array($this, $_REQUEST['_url']));
 
             // 301 weiterleiten
             $this->showErrorHeader(301, URL_DIR . $_REQUEST['_url']);
@@ -263,8 +273,7 @@ class Rewrite
                     $this->template_str = $_project_split[1];
                 }
 
-                $this->project_prefix
-                    = self::URL_PROJECT_CHARACTER . $this->project_str . '/';
+                $this->project_prefix = self::URL_PROJECT_CHARACTER . $this->project_str . '/';
 
                 if ($this->template_str) {
                     $this->project_prefix = self::URL_PROJECT_CHARACTER .
@@ -317,13 +326,11 @@ class Rewrite
                        'https://' . $_SERVER['HTTP_HOST']
                 ) {
                     $url = implode('/', $_url);
-                    $url = $vhosts[$_SERVER['HTTP_HOST']][$this->lang] . URL_DIR
-                           . $url;
+                    $url = $vhosts[$_SERVER['HTTP_HOST']][$this->lang] . URL_DIR . $url;
                     $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
                     $url = 'http://' . $this->project_prefix . $url;
 
-                    QUI::getEvents()
-                        ->fireEvent('request', array($this, $_REQUEST['_url']));
+                    QUI::getEvents()->fireEvent('request', array($this, $_REQUEST['_url']));
 
                     $this->showErrorHeader(301, $url);
                 }
@@ -335,6 +342,7 @@ class Rewrite
                 unset($_REQUEST['_url']);
             }
         }
+
 
         // Media Center Datei, falls nicht im Cache ist
         if (isset($_REQUEST['_url'])
@@ -437,8 +445,7 @@ class Rewrite
             $_REQUEST['_url'] = '';
         }
 
-        QUI::getEvents()
-            ->fireEvent('request', array($this, $_REQUEST['_url']));
+        QUI::getEvents()->fireEvent('request', array($this, $_REQUEST['_url']));
 
         // Falls kein suffix dann 301 weiterleiten auf .html
         if (!empty($_REQUEST['_url']) && substr($_REQUEST['_url'], -1) != '/') {
@@ -576,8 +583,7 @@ class Rewrite
             'site' => $this->site
         ));
 
-        $request_url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI']
-            : '';
+        $request_url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
 
         $pos = strpos($request_url, self::URL_PARAM_SEPERATOR);
         $end = strpos($request_url, '.');

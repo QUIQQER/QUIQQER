@@ -7,6 +7,7 @@
 namespace QUI\Users;
 
 use QUI;
+use QUI\ERP\Currency\Handler as Currencies;
 
 /**
  * The standard user
@@ -42,11 +43,29 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     }
 
     /**
+     * @param int $groupId
+     * @return mixed
+     */
+    public function isInGroup($groupId)
+    {
+        return in_array($groupId, $this->getGroups(false));
+    }
+
+    /**
      * @deprecated
      */
     public function isAdmin()
     {
         return $this->canUseBackend();
+    }
+
+    /**
+     * Nobody is no company
+     * @return false
+     */
+    public function isCompany()
+    {
+        return false;
     }
 
     /**
@@ -332,7 +351,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
         if (QUI::getSession()->get('currency')) {
             $currency = QUI::getSession()->get('currency');
 
-            if (QUI\Currency::existCurrency($currency)) {
+            if (Currencies::existCurrency($currency)) {
                 return $currency;
             }
         }
@@ -342,12 +361,12 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
         if ($Country) {
             $currency = $Country->getCurrencyCode();
 
-            if (QUI\Currency::existCurrency($currency)) {
+            if (Currencies::existCurrency($currency)) {
                 return $currency;
             }
         }
 
-        return QUI\Currency::getDefaultCurrency();
+        return Currencies::getDefaultCurrency();
     }
 
     /**
@@ -394,7 +413,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @param boolean $array - returns the groups as objects (true) or as an array (false)
      *
-     * @return boolean
+     * @return array
      */
     public function getGroups($array = true)
     {
@@ -440,32 +459,13 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     }
 
     /**
-     * (non-PHPdoc)
+     * not usable, nobody is always a company
      *
-     * @see \QUI\Interfaces\Users\User::setExtra()
-     *
-     * @param string $field
-     * @param string|integer|array $value
-     *
-     * @return bool
+     * @param bool $status
      */
-    public function setExtra($field, $value)
+    public function setCompanyStatus($status = false)
     {
-        return false;
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
-     * @see \QUI\Interfaces\Users\User::loadExtra()
-     *
-     * @param \QUI\Projects\Project $Project
-     *
-     * @return boolean
-     */
-    public function loadExtra(QUI\Projects\Project $Project)
-    {
-        return false;
+        return;
     }
 
     /**

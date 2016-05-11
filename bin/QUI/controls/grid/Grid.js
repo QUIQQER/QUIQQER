@@ -2341,10 +2341,15 @@ define('controls/grid/Grid', [
                     t.visibleColumns++;
                 }
 
-                var header = columnModel.header;
+                var header = columnModel.header,
+                    title  = columnModel.title;
 
                 if (header) {
                     div.innerHTML = header;
+                }
+
+                if (title) {
+                    div.set('title', title);
                 }
 
                 if (columnModel.image) {
