@@ -11,7 +11,6 @@
  *
  * @event onRefresh [ {classes/users/User} ]
  */
-
 define('classes/users/User', [
 
     'qui/QUI',
@@ -164,20 +163,32 @@ define('classes/users/User', [
          * Save the user attributes to the database
          *
          * @method classes/users/User#save
-         * @param {Function} [callback] - (optional),
          * @param {Object} [params]     - (optional), extra ajax params
+         * @param {Function} [callback] - (optional),
+         * @return {Promise}
          */
-        save: function (callback, params) {
-            if (!this.$uid) {
-                callback();
-                return;
-            }
+        save: function (params, callback) {
+            return new Promise(function (resolve) {
+                if (!this.$uid) {
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+                    resolve();
+                    return;
+                }
 
-            var self = this;
+                var self = this;
 
-            require(['Users'], function (Users) {
-                Users.saveUser(self, callback, params);
-            });
+                require(['Users'], function (Users) {
+                    Users.saveUser(self, params).then(function () {
+                        if (typeof callback === 'function') {
+                            callback();
+                        }
+
+                        resolve();
+                    });
+                });
+            }.bind(this));
         },
 
         /**
