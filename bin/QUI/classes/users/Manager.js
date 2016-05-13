@@ -272,39 +272,43 @@ define('classes/users/Manager', [
          *
          * @method classes/users/Manager#saveUser
          * @param {Object} User         - controls/users/User
-         * @param {Function} [onfinish] - (optional), callback
          * @param {Object} [params]     - (optional), extra params
+         * @param {Function} [onfinish] - (optional), callback
+         * @return {Promise}
          */
-        saveUser: function (User, onfinish, params) {
-            var self       = this,
-                attributes = User.getAttributes();
+        saveUser: function (User, params, onfinish) {
+            return new Promise(function (resolve) {
+                var self       = this,
+                    attributes = User.getAttributes();
 
-            for (var i in attributes) {
-                if (!attributes.hasOwnProperty(i)) {
-                    continue;
+                for (var i in attributes) {
+                    if (!attributes.hasOwnProperty(i)) {
+                        continue;
+                    }
+
+                    if (typeof attributes[i] === 'object') {
+                        delete attributes[i];
+                    }
                 }
 
-                if (typeof attributes[i] === 'object') {
-                    delete attributes[i];
-                }
-            }
+                // attributes.extra = User.getExtras();
+                params = ObjectUtils.combine(params, {
+                    uid       : User.getId(),
+                    attributes: JSON.encode(attributes)
+                });
 
-            // attributes.extra = User.getExtras();
+                Ajax.post('ajax_users_save', function (result, Request) {
+                    self.get(User.getId());
+                    self.fireEvent('save', [self, User]);
 
-            params = ObjectUtils.combine(params, {
-                uid       : User.getId(),
-                attributes: JSON.encode(attributes)
-            });
+                    if (typeof onfinish !== 'undefined') {
+                        onfinish(User, Request);
+                    }
 
-            Ajax.post('ajax_users_save', function (result, Request) {
-                self.get(User.getId());
-                self.fireEvent('save', [self, User]);
+                    resolve();
 
-                if (typeof onfinish !== 'undefined') {
-                    onfinish(User, Request);
-                }
-
-            }, params);
+                }, params);
+            }.bind(this));
         }
     });
 });

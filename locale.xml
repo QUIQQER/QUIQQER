@@ -502,6 +502,10 @@
             <de><![CDATA[Daten]]></de>
             <en><![CDATA[Data]]></en>
         </locale>
+        <locale name="image">
+            <de><![CDATA[Bild]]></de>
+            <en><![CDATA[Image]]></en>
+        </locale>
         <locale name="email">
             <de><![CDATA[E-Mail]]></de>
             <en><![CDATA[E-mail]]></en>

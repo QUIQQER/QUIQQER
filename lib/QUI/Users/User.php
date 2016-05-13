@@ -181,7 +181,7 @@ class User implements QUI\Interfaces\Users\User
     public function refresh()
     {
         $data = QUI::getDataBase()->fetch(array(
-            'from' => Manager::Table(),
+            'from' => Manager::table(),
             'where' => array(
                 'id' => $this->id
             ),
@@ -895,7 +895,7 @@ class User implements QUI\Interfaces\Users\User
         $this->password = $newpass;
 
         QUI::getDataBase()->update(
-            Manager::Table(),
+            Manager::table(),
             array('password' => $newpass),
             array('id' => $this->getId())
         );
@@ -985,7 +985,7 @@ class User implements QUI\Interfaces\Users\User
         }
 
         QUI::getDataBase()->update(
-            Manager::Table(),
+            Manager::table(),
             array('active' => 1),
             array('id' => $this->getId())
         );
@@ -1018,7 +1018,7 @@ class User implements QUI\Interfaces\Users\User
         QUI::getEvents()->fireEvent('userDeactivate', array($this));
 
         QUI::getDataBase()->update(
-            Manager::Table(),
+            Manager::table(),
             array('active' => 0),
             array('id' => $this->getId())
         );
@@ -1047,7 +1047,7 @@ class User implements QUI\Interfaces\Users\User
         QUI::getEvents()->fireEvent('userDisable', array($this));
 
         QUI::getDataBase()->update(
-            Manager::Table(),
+            Manager::table(),
             array(
                 'username' => '',
                 'active' => -1,
@@ -1124,16 +1124,15 @@ class User implements QUI\Interfaces\Users\User
         QUI::getEvents()->fireEvent('userSave', array($this));
 
 
-        // add to everone
+        // add to everyone
         $Everyone = new QUI\Groups\Everyone();
         $this->addToGroup($Everyone->getId());
 
-
         return QUI::getDataBase()->update(
-            Manager::Table(),
+            Manager::table(),
             array(
                 'username' => $this->getUsername(),
-                'usergroup' => $this->getGroups(false),
+                'usergroup' => ',' . implode(',', $this->getGroups(false)) . ',',
                 'firstname' => $this->getAttribute('firstname'),
                 'lastname' => $this->getAttribute('lastname'),
                 'usertitle' => $this->getAttribute('usertitle'),
@@ -1263,7 +1262,7 @@ class User implements QUI\Interfaces\Users\User
         QUI::getEvents()->fireEvent('userDelete', array($this));
 
         QUI::getDataBase()->delete(
-            Manager::Table(),
+            Manager::table(),
             array('id' => $this->getId())
         );
 

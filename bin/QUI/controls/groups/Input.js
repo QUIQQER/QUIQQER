@@ -11,7 +11,6 @@
  *
  * @event onAdd [this, groupid]
  */
-
 define('controls/groups/Input', [
 
     'qui/controls/Control',
@@ -323,14 +322,14 @@ define('controls/groups/Input', [
             Ajax.get('ajax_groups_search', function (result, Ajax) {
                 var i, len, nam, func_mousedown, func_mouseover;
 
-                var data     = result.data,
+                var data     = result,
                     value    = Ajax.getAttribute('value'),
                     Elm      = Ajax.getAttribute('Elm'),
                     DropDown = Elm.$DropDown;
 
                 DropDown.set('html', '');
 
-                if (!data.length) {
+                if (!data || !data.length) {
                     new Element('div', {
                         html  : Locale.get('quiqqer/system', 'groups.input.no.results'),
                         styles: {
