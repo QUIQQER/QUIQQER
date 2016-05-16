@@ -111,6 +111,10 @@ define('controls/projects/project/media/Input', [
                 display: 'none'
             });
 
+            this.$Input.addEvent('change', function () {
+                self.setValue(this.value);
+            });
+
             if (this.$Input.value !== '') {
 
                 var urlParams = QUIStringUtils.getUrlParams(this.$Input.value);

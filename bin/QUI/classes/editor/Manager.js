@@ -80,9 +80,9 @@ define('classes/editor/Manager', [
          *
          * @method classes/editor/Manager#getEditor
          *
-         * @param {String|null} name - Editor parameters name, like ckeditor3, if null,
+         * @param {String|null} [name]   - Editor parameters name, like ckeditor3, if null,
          * @param {Function} [callback]  - Callback function, if editor is loaded,
-         *                                the Parameter of the function is an {controls/editors/Editor} Instance
+         *                                 the Parameter of the function is an {controls/editors/Editor} Instance
          * @return {Promise}
          */
         getEditor: function (name, callback) {

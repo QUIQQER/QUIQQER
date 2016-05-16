@@ -20,9 +20,10 @@ define('controls/editors/Editor', [
     'qui/controls/Control',
     'qui/controls/loader/Loader',
     'classes/editor/Manager',
-    'Ajax'
+    'Ajax',
+    'Projects'
 
-], function (QUIControl, QUILoader, EditorManager, QUIAjax) {
+], function (QUIControl, QUILoader, EditorManager, QUIAjax, Projects) {
     "use strict";
 
     /**
@@ -212,6 +213,11 @@ define('controls/editors/Editor', [
          * @param {Object} Project - (classes/projects/Project)
          */
         setProject: function (Project) {
+            if (typeOf(Project) == 'string') {
+                this.$Project = Projects.get(Project)
+                return;
+            }
+
             this.$Project = Project;
         },
 
@@ -378,9 +384,7 @@ define('controls/editors/Editor', [
                 buttons = this.getAttribute('buttons');
 
             if (!Project) {
-                QUIAjax.get([
-                    'ajax_editor_get_toolbar'
-                ], function (toolbarData) {
+                QUIAjax.get(['ajax_editor_get_toolbar'], function (toolbarData) {
                     var data = {
                         toolbar: toolbarData
                     };
