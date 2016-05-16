@@ -383,44 +383,53 @@ define('controls/editors/Editor', [
             var Project = this.$Project,
                 buttons = this.getAttribute('buttons');
 
-            if (!Project) {
-                QUIAjax.get(['ajax_editor_get_toolbar'], function (toolbarData) {
-                    var data = {
-                        toolbar: toolbarData
-                    };
+            return new Promise(function (resolve, reject) {
+                if (!Project) {
+                    QUIAjax.get(['ajax_editor_get_toolbar'], function (toolbarData) {
+                        var data = {
+                            toolbar: toolbarData
+                        };
+
+                        if (buttons && "lines" in buttons) {
+                            data.toolbar.lines = buttons.lines;
+                        } else if (buttons) {
+                            data.toolbar.lines = buttons;
+                        }
+
+                        if (typeof callback === 'function') {
+                            callback(data);
+                        }
+
+                        resolve(data);
+                    }, {
+                        onError: reject
+                    });
+
+                    return;
+                }
+
+                // load css files
+                QUIAjax.get([
+                    'ajax_editor_get_projectFiles',
+                    'ajax_editor_get_toolbar'
+                ], function (projectData, toolbarData) {
+                    projectData.toolbar = toolbarData;
 
                     if (buttons && "lines" in buttons) {
-                        data.toolbar.lines = buttons.lines;
+                        projectData.toolbar.lines = buttons.lines;
                     } else if (buttons) {
-                        data.toolbar.lines = buttons;
+                        projectData.toolbar.lines = buttons;
                     }
 
                     if (typeof callback === 'function') {
-                        callback(data);
+                        callback(projectData);
                     }
+
+                    resolve(projectData);
+                }, {
+                    project: Project.getName(),
+                    onError: reject
                 });
-
-                return;
-            }
-
-            // load css files
-            QUIAjax.get([
-                'ajax_editor_get_projectFiles',
-                'ajax_editor_get_toolbar'
-            ], function (projectData, toolbarData) {
-                projectData.toolbar = toolbarData;
-
-                if (buttons && "lines" in buttons) {
-                    projectData.toolbar.lines = buttons.lines;
-                } else if (buttons) {
-                    projectData.toolbar.lines = buttons;
-                }
-
-                if (typeof callback === 'function') {
-                    callback(projectData);
-                }
-            }, {
-                project: Project.getName()
             });
         },
 

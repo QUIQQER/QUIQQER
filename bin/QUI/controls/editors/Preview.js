@@ -54,6 +54,7 @@ define('controls/editors/Preview', [
                 src    : URL_BIN_DIR + 'QUI/controls/editors/Preview.php?cid=' + this.getId(),
                 styles : {
                     border: 'none',
+                    height: '100%',
                     width : '100%'
                 }
             });
@@ -64,7 +65,7 @@ define('controls/editors/Preview', [
 
             return this.$Elm;
         },
-
+        
         /**
          * event : on load
          */
@@ -84,8 +85,17 @@ define('controls/editors/Preview', [
             this.$Elm.contentWindow.document.body.set('html', value);
         },
 
+        /**
+         * Add a css file to the content
+         *
+         * @param {String} file
+         */
         addCSSFile: function (file) {
-
+            new Element('link', {
+                href: file,
+                rel : "stylesheet",
+                type: "text/css"
+            }).inject(this.$Elm.contentWindow.document.head);
         }
     });
 });

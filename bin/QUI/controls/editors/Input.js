@@ -69,10 +69,11 @@ define('controls/editors/Input', [
                 },
                 styles: {
                     position: 'relative',
-                    zIndex  : 1,
+                    zIndex  : 1
                 }
             }).inject(this.$Elm);
 
+            console.log(this.$Elm.getSize());
 
             this.$Click = new Element('div', {
                 'class': 'control-editor-input-click',
@@ -80,6 +81,19 @@ define('controls/editors/Input', [
                     click: this.open
                 }
             }).inject(this.$Elm);
+
+            this.resize();
+        },
+
+        /**
+         * resize
+         */
+        resize: function () {
+            var computed = this.$Elm.getComputedSize();
+            
+            this.$Preview.setStyles({
+                height: computed.height - computed.computedTop - computed.computedBottom
+            });
         },
 
         /**
@@ -88,12 +102,6 @@ define('controls/editors/Input', [
          * @param {Object}  Project
          */
         setProject: function (Project) {
-            this.$Project = Project;
-
-            if (!this.$Editor) {
-                return;
-            }
-
             if (typeOf(Project) == 'string') {
                 require(['Projects'], function (Projects) {
                     this.setProject(Projects.get(Project));
@@ -101,7 +109,8 @@ define('controls/editors/Input', [
                 return;
             }
 
-            this.$Editor.setProject(Project);
+            this.$Project = Project;
+            this.$setProjectToEditor();
         },
 
         /**
@@ -128,7 +137,7 @@ define('controls/editors/Input', [
                             Editors.getEditor().then(function (Editor) {
                                 self.$Editor = Editor;
 
-                                Editor.setProject(self.$Project);
+                                self.$setProjectToEditor();
                                 Editor.setContent(self.$Input.value);
                                 Editor.inject(Content);
                             });
@@ -145,6 +154,25 @@ define('controls/editors/Input', [
                     }
                 }
             }).open();
+        },
+
+        /**
+         * event : on set project to editor
+         */
+        $setProjectToEditor: function () {
+            if (this.$Editor) {
+                this.$Editor.setProject(this.$Project);
+            }
+
+            require(['Editors'], function (Editors) {
+                Editors.getProjectFiles(this.$Project).then(function (files) {
+
+                    files.cssFiles.each(function (file) {
+                        this.$Preview.addCSSFile(file);
+                    }.bind(this));
+
+                }.bind(this))
+            }.bind(this));
         }
     });
 });

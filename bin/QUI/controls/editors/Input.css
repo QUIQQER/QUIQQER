@@ -3,6 +3,11 @@
     position: relative;
 }
 
+.control-editor-preview {
+    height: 100%;
+    width: 100%;
+}
+
 .control-editor-input-click {
     cursor: pointer;
     height: 100%;

@@ -226,6 +226,21 @@ define('classes/editor/Manager', [
                     onError: reject
                 });
             });
+        },
+
+        /**
+         * Get the project editor files
+         *
+         * @param {Object} Project - Project object
+         * @return {Promise}
+         */
+        getProjectFiles: function (Project) {
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_editor_get_projectFiles', resolve, {
+                    project: Project.getName(),
+                    onError: reject
+                });
+            });
         }
     });
 });
