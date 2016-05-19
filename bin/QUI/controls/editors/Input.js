@@ -3,6 +3,12 @@
  *
  * @package controls/editors/Input
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
+ * @require qui/controls/Control
+ * @require qui/controls/windows/Confirm
+ * @require controls/editors/Preview
+ * @require css!controls/editors/Input.css
  */
 define('controls/editors/Input', [
 
@@ -73,8 +79,6 @@ define('controls/editors/Input', [
                 }
             }).inject(this.$Elm);
 
-            console.log(this.$Elm.getSize());
-
             this.$Click = new Element('div', {
                 'class': 'control-editor-input-click',
                 events : {
@@ -90,7 +94,7 @@ define('controls/editors/Input', [
          */
         resize: function () {
             var computed = this.$Elm.getComputedSize();
-            
+
             this.$Preview.setStyles({
                 height: computed.height - computed.computedTop - computed.computedBottom
             });
@@ -171,7 +175,7 @@ define('controls/editors/Input', [
                         this.$Preview.addCSSFile(file);
                     }.bind(this));
 
-                }.bind(this))
+                }.bind(this));
             }.bind(this));
         }
     });
