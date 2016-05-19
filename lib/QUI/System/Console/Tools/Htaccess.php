@@ -138,7 +138,7 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteEngine On
     RewriteBase {$URL_DIR}
 
-    RewriteRule ^{$URL_SYS_ADMIN_DIR}$ /{$URL_SYS_DIR} [R=301,L]
+    RewriteRule ^{$URL_SYS_ADMIN_DIR}$ {$URL_DIR}{$URL_SYS_DIR} [R=301,L]
 
     ## bin dir
     RewriteRule \"^bin/(.*)$\" \"{$quiqqerBin}/$1\" [L]
@@ -148,10 +148,10 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteRule \"^{$URL_LIB_DIR}(.*)$\" \"{$quiqqerLib}/$1\" [L]
 
     ## admin
-    RewriteCond \"%{REQUEST_URI}\" \"^/{$URL_SYS_DIR}\" [or]
-    RewriteCond \"%{REQUEST_URI}\" \"^/{$URL_SYS_DIR}index.php\" [or]
-    RewriteCond \"%{REQUEST_URI}\" \"^/{$URL_SYS_DIR}image.php\" [or]
-    RewriteCond \"%{REQUEST_URI}\" \"^/{$URL_SYS_DIR}ajax.php\"
+    RewriteCond \"%{REQUEST_URI}\" \"^{$URL_DIR}{$URL_SYS_DIR}\" [or]
+    RewriteCond \"%{REQUEST_URI}\" \"^{$URL_DIR}{$URL_SYS_DIR}index.php\" [or]
+    RewriteCond \"%{REQUEST_URI}\" \"^{$URL_DIR}{$URL_SYS_DIR}image.php\" [or]
+    RewriteCond \"%{REQUEST_URI}\" \"^{$URL_DIR}{$URL_SYS_DIR}ajax.php\"
     RewriteRule \"^{$URL_SYS_DIR}(.*)$\" \"{$quiqqerSys}/$1\" [L]
 
     # quiqqer API allowed requests

@@ -429,6 +429,15 @@ define('controls/packages/Panel', [
 
                     FaviconUtils.setDefault();
 
+
+                    QUI.getMessageHandler().then(function (Handler) {
+                        Handler.pushSuccess(
+                            'Setup ausgeführt',
+                            Locale.get(lg, 'message.setup.successfull'),
+                            false
+                        );
+                    });
+
                 }).catch(function (Error) {
                     // error
                     Loading.finish(Error.getMessage(), 'error');
@@ -446,6 +455,14 @@ define('controls/packages/Panel', [
                     }
 
                     FaviconUtils.setDefault();
+
+                    QUI.getMessageHandler().then(function (Handler) {
+                        Handler.pushError(
+                            'Fehler beim Setup',
+                            Error.getMessage(),
+                            false
+                        );
+                    });
                 });
             });
         },
@@ -1169,13 +1186,13 @@ define('controls/packages/Panel', [
                         }
 
                         result.data[i].install = {
-                            'package': result.data[i]['package'],
+                            'package': result.data[i].package,
                             image    : 'fa fa-download',
                             title    : Locale.get(lg, 'packages.search.grid.setup.btn.title', {
-                                'package': result.data[i]['package']
+                                'package': result.data[i].package
                             }),
                             alt      : Locale.get(lg, 'packages.search.grid.setup.btn.alt', {
-                                'package': result.data[i]['package']
+                                'package': result.data[i].package
                             }),
                             events   : {
                                 onClick: self.dialogInstall
