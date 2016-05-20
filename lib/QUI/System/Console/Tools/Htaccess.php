@@ -126,6 +126,7 @@ class Htaccess extends QUI\System\Console\Tool
         $quiqqerLib = URL_OPT_DIR . 'quiqqer/quiqqer/lib';
         $quiqqerBin = URL_OPT_DIR . 'quiqqer/quiqqer/bin';
         $quiqqerSys = URL_OPT_DIR . 'quiqqer/quiqqer/admin';
+        $quiqqerDir = URL_OPT_DIR . 'quiqqer/quiqqer';
 
         $URL_SYS_ADMIN_DIR = trim($URL_SYS_DIR, '/');
 
@@ -148,6 +149,9 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteRule \"^{$URL_LIB_DIR}(.*)$\" \"{$quiqqerLib}/$1\" [L]
 
     ## admin
+    RewriteCond \"%{REQUEST_URI}\" \"^{$URL_DIR}{$URL_SYS_DIR}image.php\"
+    RewriteRule \"^{$URL_DIR}(.*)$\" \"{$quiqqerDir}/$1\" [L]
+    
     RewriteCond \"%{REQUEST_URI}\" \"^{$URL_DIR}{$URL_SYS_DIR}\" [or]
     RewriteCond \"%{REQUEST_URI}\" \"^{$URL_DIR}{$URL_SYS_DIR}index.php\" [or]
     RewriteCond \"%{REQUEST_URI}\" \"^{$URL_DIR}{$URL_SYS_DIR}image.php\" [or]

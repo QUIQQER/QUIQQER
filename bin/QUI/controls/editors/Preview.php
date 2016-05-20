@@ -9,6 +9,8 @@ require $path . '/header.php';
 ?>
 <html>
 <head>
+    <base href="<?php echo URL_DIR; ?>" target="_blank">
+
     <script src="<?php echo URL_OPT_DIR; ?>bin/require.js"></script>
     <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-core.js"></script>
     <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-more.js"></script>
