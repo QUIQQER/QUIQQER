@@ -357,6 +357,8 @@ class Manager
     public static function clear($key = false)
     {
         self::getStash($key)->clear();
+
+        QUI::getEvents()->fireEvent('cacheClear', array($key));
     }
 
     /**
@@ -367,6 +369,8 @@ class Manager
     public static function purge()
     {
         self::$Stash->purge();
+
+        QUI::getEvents()->fireEvent('cachePurge');
     }
 
     /**
@@ -377,5 +381,7 @@ class Manager
         QUI\Utils\System\File::unlink(VAR_DIR . 'cache/');
 
         self::getStash('')->clear();
+
+        QUI::getEvents()->fireEvent('cacheClearAll');
     }
 }
