@@ -161,7 +161,7 @@ class QUI
     /**
      * QUI Rights Object, use \QUI::getRights();
      *
-     * @var \QUI\Rights\Manager
+     * @var \QUI\Permissions\Manager
      */
     public static $Rights = null;
 
@@ -657,11 +657,11 @@ class QUI
     {
         if (self::$DataBase2 === null) {
             self::$DataBase2 = new \QUI\Database\DB(array(
-                'driver' => self::conf('db', 'driver'),
-                'host' => self::conf('db', 'host'),
-                'user' => self::conf('db', 'user'),
+                'driver'   => self::conf('db', 'driver'),
+                'host'     => self::conf('db', 'host'),
+                'user'     => self::conf('db', 'user'),
                 'password' => self::conf('db', 'password'),
-                'dbname' => self::conf('db', 'database')
+                'dbname'   => self::conf('db', 'database')
             ));
         }
 
@@ -892,7 +892,7 @@ class QUI
     /**
      * Return the rights object
      *
-     * @return \QUI\Rights\Manager
+     * @return \QUI\Permissions\Manager
      *
      * @deprecated use ::getPermissionManager
      */
@@ -904,12 +904,12 @@ class QUI
     /**
      * Return the rights object
      *
-     * @return \QUI\Rights\Manager
+     * @return \QUI\Permissions\Manager
      */
     public static function getPermissionManager()
     {
         if (self::$Rights === null) {
-            self::$Rights = new \QUI\Rights\Manager();
+            self::$Rights = new \QUI\Permissions\Manager();
         }
 
         return self::$Rights;

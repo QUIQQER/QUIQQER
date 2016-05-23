@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file contains the \QUI\Rights\PermissionOrder
+ * This file contains the \QUI\Permissions\PermissionOrder
  */
 
 namespace QUI\Rights;
@@ -18,6 +18,7 @@ use QUI\Users\User;
  *
  * @example $User->getPermission($perm, 'max_integer');
  * @example $User->getPermission($perm, 'min_integer');
+ * @deprecated use QUI\Permissions\PermissionOrder
  */
 class PermissionOrder extends QUI\Permissions\PermissionOrder
 {

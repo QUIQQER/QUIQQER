@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file contains the \QUI\Rights\Manager
+ * This file contains the \QUI\Permissions\Manager
  */
 
 namespace QUI\Rights;

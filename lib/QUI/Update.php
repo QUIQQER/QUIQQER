@@ -111,7 +111,7 @@ class Update
         QUI::getSession()->setup();
 
         // rights setup, so we have all importend tables
-        QUI\Rights\Manager::setup();
+        QUI\Permissions\Manager::setup();
 
         // WYSIWYG Setup
         QUI\Editor\Manager::setup();
@@ -501,7 +501,7 @@ class Update
 
         // clear system permissions
         QUI::getDataBase()->delete(
-            QUI::getDBTableName(QUI\Rights\Manager::TABLE),
+            QUI::getDBTableName(QUI\Permissions\Manager::TABLE),
             array(
                 'src' => array(
                     'type' => 'NOT',

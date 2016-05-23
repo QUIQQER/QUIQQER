@@ -7,7 +7,7 @@
 namespace QUI\Projects;
 
 use QUI;
-use QUI\Rights\Permission;
+use QUI\Permissions\Permission;
 use QUI\Users\User;
 use QUI\Groups\Group;
 
@@ -263,7 +263,7 @@ class Project
 
         // cache files
         $this->cache_files = array(
-            'types' => 'projects.' . $this->getAttribute('name') . '.types',
+            'types'  => 'projects.' . $this->getAttribute('name') . '.types',
             'gtypes' => 'projects.' . $this->getAttribute('name') . '.globaltypes'
         );
     }
@@ -589,11 +589,11 @@ class Project
     public function getAllAttributes()
     {
         return array(
-            'config' => $this->config,
-            'lang' => $this->lang,
-            'langs' => $this->langs,
-            'name' => $this->name,
-            'sheets' => $this->getConfig('sheets'),
+            'config'  => $this->config,
+            'lang'    => $this->lang,
+            'langs'   => $this->langs,
+            'name'    => $this->name,
+            'sheets'  => $this->getConfig('sheets'),
             'archive' => $this->getConfig('archive')
         );
     }
@@ -682,11 +682,11 @@ class Project
     {
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'name',
-            'from' => $this->TABLE,
-            'where' => array(
+            'from'   => $this->TABLE,
+            'where'  => array(
                 'id' => $id
             ),
-            'limit' => '1'
+            'limit'  => '1'
         ));
 
         if (isset($result[0]) && is_array($result)) {
@@ -705,9 +705,9 @@ class Project
     {
         $maxid = QUI::getDataBase()->fetch(array(
             'select' => 'id',
-            'from' => $this->getAttribute('db_table'),
-            'limit' => '0,1',
-            'order' => array(
+            'from'   => $this->getAttribute('db_table'),
+            'limit'  => '0,1',
+            'order'  => array(
                 'id' => 'DESC'
             )
         ));
@@ -760,8 +760,8 @@ class Project
                 }
 
                 $data = array(
-                    'type' => $Layout->getAttribute('type'),
-                    'title' => '',
+                    'type'        => $Layout->getAttribute('type'),
+                    'title'       => '',
                     'description' => ''
                 );
 
@@ -837,16 +837,16 @@ class Project
     {
         $where_1 = array(
             $this->RELTABLE . '.parent' => $parentid,
-            $this->TABLE . '.deleted' => 0,
-            $this->TABLE . '.active' => 1,
-            $this->RELTABLE . '.child' => '`' . $this->TABLE . '.id`'
+            $this->TABLE . '.deleted'   => 0,
+            $this->TABLE . '.active'    => 1,
+            $this->RELTABLE . '.child'  => '`' . $this->TABLE . '.id`'
         );
 
         if (isset($params['active']) && $params['active'] === '0&1') {
             $where_1 = array(
                 $this->RELTABLE . '.parent' => $parentid,
-                $this->TABLE . '.deleted' => 0,
-                $this->RELTABLE . '.child' => '`' . $this->TABLE . '.id`'
+                $this->TABLE . '.deleted'   => 0,
+                $this->RELTABLE . '.child'  => '`' . $this->TABLE . '.id`'
             );
         }
 
@@ -876,14 +876,14 @@ class Project
 
         $result = QUI::getDataBase()->fetch(array(
             'select' => $this->TABLE . '.id',
-            'count' => isset($params['count']) ? 'count' : false,
-            'from' => array(
+            'count'  => isset($params['count']) ? 'count' : false,
+            'from'   => array(
                 $this->RELTABLE,
                 $this->TABLE
             ),
-            'order' => $order,
-            'limit' => isset($params['limit']) ? $params['limit'] : false,
-            'where' => $where
+            'order'  => $order,
+            'limit'  => isset($params['limit']) ? $params['limit'] : false,
+            'where'  => $where
         ));
 
         if (isset($params['count'])) {
@@ -929,12 +929,12 @@ class Project
 
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'parent',
-            'from' => $this->RELTABLE,
-            'where' => array(
+            'from'   => $this->RELTABLE,
+            'where'  => array(
                 'child' => (int)$id
             ),
-            'order' => 'oparent ASC',
-            'limit' => '1'
+            'order'  => 'oparent ASC',
+            'limit'  => '1'
         ));
 
         if (isset($result[0]) && $result[0]['parent']) {
@@ -984,13 +984,13 @@ class Project
             // @notice - Kann performancefressend sein
             return QUI::getDataBase()->fetch(array(
                 'select' => 'id',
-                'from' => $this->getAttribute('db_table')
+                'from'   => $this->getAttribute('db_table')
             ));
         }
 
         $sql = array(
             'select' => 'id',
-            'from' => $this->getAttribute('db_table')
+            'from'   => $this->getAttribute('db_table')
         );
 
         if (isset($params['where'])) {
@@ -1034,7 +1034,7 @@ class Project
         if (isset($params['count'])) {
             $sql['count'] = array(
                 'select' => 'id',
-                'as' => 'count'
+                'as'     => 'count'
             );
 
             unset($sql['select']);
@@ -1107,7 +1107,7 @@ class Project
     public function setup()
     {
         $DataBase = QUI::getDataBase();
-        $Table    = $DataBase->Table();
+        $Table    = $DataBase->table();
         $User     = QUI::getUserBySession();
 
         // multi lingual table
@@ -1122,28 +1122,28 @@ class Project
             $table = QUI_DB_PRFX . $this->name . '_' . $lang . '_sites';
 
             $Table->addColumn($table, array(
-                'id' => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
-                'name' => 'varchar(255) NOT NULL',
-                'title' => 'tinytext',
-                'short' => 'text',
-                'content' => 'longtext',
-                'type' => 'varchar(255) default NULL',
-                'layout' => 'varchar(255) default NULL',
-                'active' => 'tinyint(1) NOT NULL',
-                'deleted' => 'tinyint(1) NOT NULL',
-                'c_date' => 'timestamp NULL default NULL',
-                'e_date' => 'timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP',
-                'c_user' => 'int(11) default NULL',
-                'e_user' => 'int(11) default NULL',
-                'nav_hide' => 'tinyint(1) NOT NULL',
-                'order_type' => 'varchar(255) default NULL',
-                'order_field' => 'bigint(20) default NULL',
-                'extra' => 'text NULL',
-                'c_user_ip' => 'varchar(40)',
+                'id'            => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
+                'name'          => 'varchar(255) NOT NULL',
+                'title'         => 'tinytext',
+                'short'         => 'text',
+                'content'       => 'longtext',
+                'type'          => 'varchar(255) default NULL',
+                'layout'        => 'varchar(255) default NULL',
+                'active'        => 'tinyint(1) NOT NULL',
+                'deleted'       => 'tinyint(1) NOT NULL',
+                'c_date'        => 'timestamp NULL default NULL',
+                'e_date'        => 'timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP',
+                'c_user'        => 'int(11) default NULL',
+                'e_user'        => 'int(11) default NULL',
+                'nav_hide'      => 'tinyint(1) NOT NULL',
+                'order_type'    => 'varchar(255) default NULL',
+                'order_field'   => 'bigint(20) default NULL',
+                'extra'         => 'text NULL',
+                'c_user_ip'     => 'varchar(40)',
                 'image_emotion' => 'text',
-                'image_site' => 'text',
-                'release_from' => 'timestamp NULL default NULL',
-                'release_to' => 'timestamp NULL default NULL'
+                'image_site'    => 'text',
+                'release_from'  => 'timestamp NULL default NULL',
+                'release_to'    => 'timestamp NULL default NULL'
             ));
 
             // fix for old tables
@@ -1177,7 +1177,7 @@ class Project
 
             // create first site -> id 1 if not exist
             $firstChildResult = $DataBase->fetch(array(
-                'from' => $table,
+                'from'  => $table,
                 'where' => array(
                     'id' => 1
                 ),
@@ -1186,12 +1186,12 @@ class Project
 
             if (!isset($firstChildResult[0])) {
                 $DataBase->insert($table, array(
-                    'id' => 1,
-                    'name' => 'start',
-                    'title' => 'Start',
-                    'type' => 'standard',
-                    'c_date' => date('Y-m-d H:i:s'),
-                    'c_user' => $User->getId(),
+                    'id'        => 1,
+                    'name'      => 'start',
+                    'title'     => 'Start',
+                    'type'      => 'standard',
+                    'c_date'    => date('Y-m-d H:i:s'),
+                    'c_user'    => $User->getId(),
                     'c_user_ip' => QUI\Utils\System::getClientIP()
                 ));
             }
@@ -1200,8 +1200,8 @@ class Project
             $table = QUI_DB_PRFX . $this->name . '_' . $lang . '_sites_relations';
 
             $Table->addColumn($table, array(
-                'parent' => 'bigint(20)',
-                'child' => 'bigint(20)',
+                'parent'  => 'bigint(20)',
+                'child'   => 'bigint(20)',
                 'oparent' => 'bigint(20)'
             ));
 

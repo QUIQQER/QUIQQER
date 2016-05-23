@@ -7,7 +7,7 @@
 namespace QUI\Projects;
 
 use QUI;
-use QUI\Rights\Permission;
+use QUI\Permissions\Permission;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\DOM;
 
@@ -215,22 +215,22 @@ class Manager
         }
 
         $config = array(
-            "default_lang" => "de",
-            "langs" => "de",
-            "admin_mail" => "support@pcsg.de",
-            "template" => "",
-            "layout" => "",
-            "image_text" => "0",
-            "standard" => "1",
-            "adminSitemapMax" => 20,
-            "media_watermark" => "",
+            "default_lang"             => "de",
+            "langs"                    => "de",
+            "admin_mail"               => "support@pcsg.de",
+            "template"                 => "",
+            "layout"                   => "",
+            "image_text"               => "0",
+            "standard"                 => "1",
+            "adminSitemapMax"          => 20,
+            "media_watermark"          => "",
             "media_watermark_position" => "",
-            "media_watermark_ratio" => "",
-            "media_image_library" => "",
-            "media_maxUploadSize" => "",
-            "media_createCacheOnSave" => "1",
-            "placeholder" => "",
-            "favicon" => ""
+            "media_watermark_ratio"    => "",
+            "media_image_library"      => "",
+            "media_maxUploadSize"      => "",
+            "media_createCacheOnSave"  => "1",
+            "placeholder"              => "",
+            "favicon"                  => ""
         );
 
         // settings.xml
@@ -612,46 +612,46 @@ class Manager
         $table_site_rel = QUI_DB_PRFX . $name . '_' . $lang . '_sites_relations';
 
         $Table->appendFields($table_site, array(
-            "id" => "bigint(20) NOT NULL",
-            "name" => "varchar(200) NOT NULL",
-            "title" => "tinytext",
-            "short" => "text",
-            "content" => "longtext",
-            "type" => "varchar(32) default NULL",
-            "active" => "tinyint(1) NOT NULL",
-            "deleted" => "tinyint(1) NOT NULL",
-            "c_date" => "timestamp NULL default NULL",
-            "e_date" => "timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP",
-            "c_user" => "int(11) default NULL",
-            "e_user" => "int(11) default NULL",
-            "nav_hide" => "tinyint(1) NOT NULL",
-            "order_type" => "varchar(100) default NULL",
+            "id"          => "bigint(20) NOT NULL",
+            "name"        => "varchar(200) NOT NULL",
+            "title"       => "tinytext",
+            "short"       => "text",
+            "content"     => "longtext",
+            "type"        => "varchar(32) default NULL",
+            "active"      => "tinyint(1) NOT NULL",
+            "deleted"     => "tinyint(1) NOT NULL",
+            "c_date"      => "timestamp NULL default NULL",
+            "e_date"      => "timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP",
+            "c_user"      => "int(11) default NULL",
+            "e_user"      => "int(11) default NULL",
+            "nav_hide"    => "tinyint(1) NOT NULL",
+            "order_type"  => "varchar(100) default NULL",
             "order_field" => "bigint(20) default NULL",
-            "extra" => "text default NULL",
+            "extra"       => "text default NULL",
         ));
 
         $Table->appendFields($table_site_rel, array(
             "parent" => "bigint(20) NOT NULL",
-            "child" => "bigint(20) NOT NULL"
+            "child"  => "bigint(20) NOT NULL"
         ));
 
         $Table->setAutoIncrement($table_site, 'id');
 
         // first site
         $DataBase->insert($table_site, array(
-            "id" => 1,
-            "name" => 'Start',
-            "title" => 'start',
-            "short" => 'Shorttext',
-            "content" => "<p>Welcome to my project</p>",
-            "type" => 'standard',
-            "active" => 1,
-            "deleted" => 0,
-            "c_date" => date('Y-m-d H:i:s'),
-            "c_user" => QUI::getUserBySession()->getId(),
-            "e_user" => QUI::getUserBySession()->getId(),
-            "nav_hide" => '',
-            "order_type" => "",
+            "id"          => 1,
+            "name"        => 'Start',
+            "title"       => 'start',
+            "short"       => 'Shorttext',
+            "content"     => "<p>Welcome to my project</p>",
+            "type"        => 'standard',
+            "active"      => 1,
+            "deleted"     => 0,
+            "c_date"      => date('Y-m-d H:i:s'),
+            "c_user"      => QUI::getUserBySession()->getId(),
+            "e_user"      => QUI::getUserBySession()->getId(),
+            "nav_hide"    => '',
+            "order_type"  => "",
             "order_field" => ""
         ));
 
@@ -663,42 +663,42 @@ class Manager
         $table_media_rel = QUI_DB_PRFX . $name . '_media_relations';
 
         $Table->appendFields($table_media, array(
-            "id" => "bigint(20) NOT NULL",
-            "name" => "varchar(200) NOT NULL",
-            "title" => "tinytext",
-            "short" => "text",
-            "type" => "varchar(32) default NULL",
-            "active" => "tinyint(1) NOT NULL",
-            "deleted" => "tinyint(1) NOT NULL",
-            "c_date" => "timestamp NULL default NULL",
-            "e_date" => "timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP",
-            "c_user" => "int(11) default NULL",
-            "e_user" => "int(11) default NULL",
-            "file" => "text",
-            "alt" => "text",
-            "mime_type" => "text",
+            "id"           => "bigint(20) NOT NULL",
+            "name"         => "varchar(200) NOT NULL",
+            "title"        => "tinytext",
+            "short"        => "text",
+            "type"         => "varchar(32) default NULL",
+            "active"       => "tinyint(1) NOT NULL",
+            "deleted"      => "tinyint(1) NOT NULL",
+            "c_date"       => "timestamp NULL default NULL",
+            "e_date"       => "timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP",
+            "c_user"       => "int(11) default NULL",
+            "e_user"       => "int(11) default NULL",
+            "file"         => "text",
+            "alt"          => "text",
+            "mime_type"    => "text",
             "image_height" => "int(6) default NULL",
-            "image_width" => "int(6) default NULL"
+            "image_width"  => "int(6) default NULL"
         ));
 
         $Table->appendFields($table_media_rel, array(
             "parent" => "bigint(20) NOT NULL",
-            "child" => "bigint(20) NOT NULL"
+            "child"  => "bigint(20) NOT NULL"
         ));
 
         // first folder
         $DataBase->insert($table_media, array(
-            "id" => 1,
-            "name" => 'Start',
-            "title" => 'start',
-            "short" => 'Shorttext',
-            "type" => 'folder',
-            "file" => '',
-            "active" => 1,
+            "id"      => 1,
+            "name"    => 'Start',
+            "title"   => 'start',
+            "short"   => 'Shorttext',
+            "type"    => 'folder',
+            "file"    => '',
+            "active"  => 1,
             "deleted" => 0,
-            "c_date" => date('Y-m-d H:i:s'),
-            "c_user" => QUI::getUserBySession()->getId(),
-            "e_user" => QUI::getUserBySession()->getId()
+            "c_date"  => date('Y-m-d H:i:s'),
+            "c_user"  => QUI::getUserBySession()->getId(),
+            "e_user"  => QUI::getUserBySession()->getId()
         ));
 
 
@@ -720,17 +720,17 @@ class Manager
 
         $Config->setSection($name, array(
             'default_lang' => $lang,
-            'langs' => $lang,
-            'admin_mail' => 'support@pcsg.de',
-            'template' => $name,
-            'image_text' => '0',
-            'keywords' => '',
-            'description' => '',
-            'robots' => 'index',
-            'author' => '',
-            'publisher' => '',
-            'copyright' => '',
-            'standard' => '0'
+            'langs'        => $lang,
+            'admin_mail'   => 'support@pcsg.de',
+            'template'     => $name,
+            'image_text'   => '0',
+            'keywords'     => '',
+            'description'  => '',
+            'robots'       => 'index',
+            'author'       => '',
+            'publisher'    => '',
+            'copyright'    => '',
+            'standard'     => '0'
         ));
 
         if (count($Config->toArray()) <= 1) {
@@ -822,14 +822,14 @@ class Manager
 
         // delete projects permissions
         QUI::getDataBase()->delete(
-            QUI::getDBTableName(QUI\Rights\Manager::TABLE) . '2projects',
+            QUI::getDBTableName(QUI\Permissions\Manager::TABLE) . '2projects',
             array(
                 'project' => $project
             )
         );
 
         QUI::getDataBase()->delete(
-            QUI::getDBTableName(QUI\Rights\Manager::TABLE) . '2sites',
+            QUI::getDBTableName(QUI\Permissions\Manager::TABLE) . '2sites',
             array(
                 'project' => $project
             )
@@ -994,7 +994,7 @@ class Manager
             foreach ($langs as $lang) {
                 $result[] = array(
                     'project' => $project,
-                    'lang' => $lang
+                    'lang'    => $lang
                 );
             }
         }

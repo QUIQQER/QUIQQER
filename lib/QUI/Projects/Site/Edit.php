@@ -10,7 +10,7 @@ use QUI;
 
 use QUI\Projects\Site;
 use QUI\Projects\Project;
-use QUI\Rights\Permission;
+use QUI\Permissions\Permission;
 use QUI\Users\User;
 use QUI\Groups\Group;
 use QUI\Utils\Security\Orthos;
@@ -106,7 +106,7 @@ class Edit extends Site
     public function refresh()
     {
         $result = QUI::getDataBase()->fetch(array(
-            'from' => $this->TABLE,
+            'from'  => $this->TABLE,
             'where' => array(
                 'id' => $this->getId()
             ),
@@ -116,7 +116,7 @@ class Edit extends Site
         // Verknüpfung hohlen
         if ($this->getId() != 1) {
             $relresult = QUI::getDataBase()->fetch(array(
-                'from' => $this->RELTABLE,
+                'from'  => $this->RELTABLE,
                 'where' => array(
                     'child' => $this->getId()
                 )
@@ -138,9 +138,9 @@ class Edit extends Site
                 QUI::getLocale()->get('quiqqer/system', 'exception.site.not.found'),
                 705,
                 array(
-                    'siteId' => $this->getId(),
+                    'siteId'  => $this->getId(),
                     'project' => $this->getProject()->getName(),
-                    'lang' => $this->getProject()->getLang()
+                    'lang'    => $this->getProject()->getLang()
                 )
             );
         }
@@ -245,7 +245,7 @@ class Edit extends Site
 
         // save
         QUI::getDataBase()->update($this->TABLE, array(
-            'active' => 1,
+            'active'       => 1,
             'release_from' => $releaseFrom
         ), array(
             'id' => $this->getId()
@@ -287,10 +287,10 @@ class Edit extends Site
         // deactivate
         QUI::getDataBase()->exec(array(
             'update' => $this->TABLE,
-            'set' => array(
+            'set'    => array(
                 'active' => 0
             ),
-            'where' => array(
+            'where'  => array(
                 'id' => $this->getId()
             )
         ));
@@ -451,7 +451,7 @@ class Edit extends Site
                             'quiqqer/system',
                             'exception.site.same.name',
                             array(
-                                'id' => $pid,
+                                'id'   => $pid,
                                 'name' => $name
                             )
                         ),
@@ -575,25 +575,25 @@ class Edit extends Site
         $update = QUI::getDataBase()->update(
             $this->TABLE,
             array(
-                'name' => trim($this->getAttribute('name')),
-                'title' => trim($this->getAttribute('title')),
-                'short' => $this->getAttribute('short'),
-                'content' => $this->getAttribute('content'),
-                'type' => $this->getAttribute('type'),
-                'layout' => $this->getAttribute('layout'),
-                'nav_hide' => $this->getAttribute('nav_hide') ? 1 : 0,
-                'e_user' => QUI::getUserBySession()->getId(),
+                'name'          => trim($this->getAttribute('name')),
+                'title'         => trim($this->getAttribute('title')),
+                'short'         => $this->getAttribute('short'),
+                'content'       => $this->getAttribute('content'),
+                'type'          => $this->getAttribute('type'),
+                'layout'        => $this->getAttribute('layout'),
+                'nav_hide'      => $this->getAttribute('nav_hide') ? 1 : 0,
+                'e_user'        => QUI::getUserBySession()->getId(),
                 // ORDER
-                'order_type' => $order_type,
-                'order_field' => $this->getAttribute('order_field'),
+                'order_type'    => $order_type,
+                'order_field'   => $this->getAttribute('order_field'),
                 // images
                 'image_emotion' => $this->getAttribute('image_emotion'),
-                'image_site' => $this->getAttribute('image_site'),
+                'image_site'    => $this->getAttribute('image_site'),
                 // release
-                'release_from' => $release_from,
-                'release_to' => $release_to,
+                'release_from'  => $release_from,
+                'release_to'    => $release_to,
                 // Extra-Feld
-                'extra' => json_encode($siteExtra)
+                'extra'         => json_encode($siteExtra)
             ),
             array(
                 'id' => $this->getId()
@@ -621,7 +621,7 @@ class Edit extends Site
             }
 
             $result = QUI::getDataBase()->fetch(array(
-                'from' => $table,
+                'from'  => $table,
                 'where' => array(
                     'id' => $this->getId()
                 ),
@@ -676,9 +676,9 @@ class Edit extends Site
                     'quiqqer/system',
                     'message.site.save.success',
                     array(
-                        'id' => $this->getId(),
+                        'id'    => $this->getId(),
                         'title' => $this->getAttribute('title'),
-                        'name' => $this->getAttribute('name')
+                        'name'  => $this->getAttribute('name')
                     )
                 )
             );
@@ -709,8 +709,8 @@ class Edit extends Site
     {
         $where_1 = array(
             $this->RELTABLE . '.parent' => (int)$pid,
-            $this->TABLE . '.deleted' => 0,
-            $this->RELTABLE . '.child' => '`' . $this->TABLE . '.id`'
+            $this->TABLE . '.deleted'   => 0,
+            $this->RELTABLE . '.child'  => '`' . $this->TABLE . '.id`'
         );
 
         if (isset($params['where']) && is_array($params['where'])) {
@@ -736,14 +736,14 @@ class Edit extends Site
 
         $result = QUI::getDataBase()->fetch(array(
             'select' => $this->TABLE . '.id',
-            'count' => isset($params['count']) ? 'count' : false,
-            'from' => array(
+            'count'  => isset($params['count']) ? 'count' : false,
+            'from'   => array(
                 $this->RELTABLE,
                 $this->TABLE
             ),
-            'order' => $order,
-            'limit' => isset($params['limit']) ? $params['limit'] : false,
-            'where' => $where
+            'order'  => $order,
+            'limit'  => isset($params['limit']) ? $params['limit'] : false,
+            'where'  => $where
         ));
 
         return $result;
@@ -863,7 +863,7 @@ class Edit extends Site
         $id = (int)$id;
 
         $result = QUI::getDataBase()->fetch(array(
-            'from' => $this->RELLANGTABLE,
+            'from'  => $this->RELLANGTABLE,
             'where' => array(
                 $p_lang => $this->getId()
             ),
@@ -873,10 +873,10 @@ class Edit extends Site
         if (isset($result[0])) {
             return QUI::getDataBase()->exec(array(
                 'update' => $this->RELLANGTABLE,
-                'set' => array(
+                'set'    => array(
                     $lang => $id
                 ),
-                'where' => array(
+                'where'  => array(
                     $p_lang => $this->getId()
                 )
             ));
@@ -884,9 +884,9 @@ class Edit extends Site
 
         return QUI::getDataBase()->exec(array(
             'insert' => $this->RELLANGTABLE,
-            'set' => array(
+            'set'    => array(
                 $p_lang => $this->getId(),
-                $lang => $id
+                $lang   => $id
             )
         ));
     }
@@ -906,10 +906,10 @@ class Edit extends Site
 
         return QUI::getDataBase()->exec(array(
             'update' => $this->RELLANGTABLE,
-            'set' => array(
+            'set'    => array(
                 $lang => 0
             ),
-            'where' => array(
+            'where'  => array(
                 $Project->getAttribute('lang') => $this->getId()
             )
         ));
@@ -965,12 +965,12 @@ class Edit extends Site
         $childCount = $this->hasChildren(true);
 
         $_params = array(
-            'name' => $new_name,
-            'title' => $new_name,
-            'c_date' => date('Y-m-d H:i:s'),
-            'e_user' => $User->getId(),
-            'c_user' => $User->getId(),
-            'c_user_ip' => QUI\Utils\System::getClientIP(),
+            'name'        => $new_name,
+            'title'       => $new_name,
+            'c_date'      => date('Y-m-d H:i:s'),
+            'e_user'      => $User->getId(),
+            'c_user'      => $User->getId(),
+            'c_user_ip'   => QUI\Utils\System::getClientIP(),
             'order_field' => $childCount + 1
         );
 
@@ -993,7 +993,7 @@ class Edit extends Site
 
         $DataBase->insert($this->RELTABLE, array(
             'parent' => $this->getId(),
-            'child' => $newId
+            'child'  => $newId
         ));
 
         // copy permissions to the child
@@ -1186,7 +1186,7 @@ class Edit extends Site
         }
 
         $links = QUI::getDataBase()->fetch(array(
-            'from' => $table,
+            'from'  => $table,
             'where' => array(
                 'child' => $this->getId()
             )
@@ -1203,8 +1203,8 @@ class Edit extends Site
         }
 
         return QUI::getDataBase()->insert($table, array(
-            'parent' => $pid,
-            'child' => $this->getId(),
+            'parent'  => $pid,
+            'child'   => $this->getId(),
             'oparent' => $Parent->getId()
         ));
     }
@@ -1246,14 +1246,14 @@ class Edit extends Site
         // Einzelne Verknüpfung löschen
         if ($pid && $orig == false) {
             return $DataBase->delete($table, array(
-                'child' => $this->getId(),
+                'child'  => $this->getId(),
                 'parent' => (int)$pid
             ));
         }
 
         return $DataBase->delete($table, array(
-            'child' => $this->getId(),
-            'parent' => (int)$pid,
+            'child'   => $this->getId(),
+            'parent'  => (int)$pid,
             'oparent' => (int)$orig
         ));
     }

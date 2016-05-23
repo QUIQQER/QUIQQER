@@ -151,12 +151,12 @@ class Manager
 
         // Haupttabelle anlegen
         $DBTable->addColumn($table, array(
-            'name' => 'varchar(100) NOT NULL',
-            'type' => 'varchar(20)  NOT NULL',
-            'area' => 'varchar(20)  NOT NULL',
-            'title' => 'varchar(255) NULL',
-            'desc' => 'text NULL',
-            'src' => 'varchar(200) NULL',
+            'name'         => 'varchar(100) NOT NULL',
+            'type'         => 'varchar(20)  NOT NULL',
+            'area'         => 'varchar(20)  NOT NULL',
+            'title'        => 'varchar(255) NULL',
+            'desc'         => 'text NULL',
+            'src'          => 'varchar(200) NULL',
             'defaultvalue' => 'text NULL'
         ));
 
@@ -164,36 +164,36 @@ class Manager
 
 
         $DBTable->addColumn($table2users, array(
-            'user_id' => 'int(11) NOT NULL',
+            'user_id'     => 'int(11) NOT NULL',
             'permissions' => 'text'
         ));
 
         $DBTable->addColumn($table2groups, array(
-            'group_id' => 'int(11) NOT NULL',
+            'group_id'    => 'int(11) NOT NULL',
             'permissions' => 'text'
         ));
 
         $DBTable->addColumn($table2sites, array(
-            'project' => 'varchar(200) NOT NULL',
-            'lang' => 'varchar(2) NOT NULL',
-            'id' => 'bigint(20)',
+            'project'    => 'varchar(200) NOT NULL',
+            'lang'       => 'varchar(2) NOT NULL',
+            'id'         => 'bigint(20)',
             'permission' => 'text',
-            'value' => 'text'
+            'value'      => 'text'
         ));
 
         $DBTable->addColumn($table2projects, array(
-            'project' => 'varchar(200) NOT NULL',
-            'lang' => 'varchar(2) NOT NULL',
+            'project'    => 'varchar(200) NOT NULL',
+            'lang'       => 'varchar(2) NOT NULL',
             'permission' => 'text',
-            'value' => 'text'
+            'value'      => 'text'
         ));
 
         $DBTable->addColumn($table2media, array(
-            'project' => 'varchar(200) NOT NULL',
-            'lang' => 'varchar(2)',
-            'id' => 'bigint(20)',
+            'project'    => 'varchar(200) NOT NULL',
+            'lang'       => 'varchar(2)',
+            'id'         => 'bigint(20)',
             'permission' => 'text',
-            'value' => 'text'
+            'value'      => 'text'
         ));
     }
 
@@ -213,7 +213,7 @@ class Manager
 
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::addError(
-                    '\QUI\Rights\Manager::importPermissionsForGroups() -> ' .
+                    '\QUI\Permissions\Manager::importPermissionsForGroups() -> ' .
                     $Exception->getMessage()
                 );
             }
@@ -279,11 +279,11 @@ class Manager
             $DataBase->update(
                 QUI::getDBTableName(self::TABLE),
                 array(
-                    'title' => trim($params['title']),
-                    'desc' => trim($params['desc']),
-                    'type' => self::parseType($params['type']),
-                    'area' => self::parseArea($params['area']),
-                    'src' => $params['src'],
+                    'title'        => trim($params['title']),
+                    'desc'         => trim($params['desc']),
+                    'type'         => self::parseType($params['type']),
+                    'area'         => self::parseArea($params['area']),
+                    'src'          => $params['src'],
                     'defaultvalue' => $params['defaultvalue']
                 ),
                 array(
@@ -298,12 +298,12 @@ class Manager
         $DataBase->insert(
             QUI::getDBTableName(self::TABLE),
             array(
-                'name' => $params['name'],
-                'title' => trim($params['title']),
-                'desc' => trim($params['desc']),
-                'type' => self::parseType($params['type']),
-                'area' => self::parseArea($params['area']),
-                'src' => $params['src'],
+                'name'         => $params['name'],
+                'title'        => trim($params['title']),
+                'desc'         => trim($params['desc']),
+                'type'         => self::parseType($params['type']),
+                'area'         => self::parseArea($params['area']),
+                'src'          => $params['src'],
                 'defaultvalue' => $params['defaultvalue']
             )
         );
@@ -346,7 +346,7 @@ class Manager
             QUI::getDBTableName(self::TABLE),
             array(
                 'name' => $permission,
-                'src' => 'user'
+                'src'  => 'user'
             )
         );
     }
@@ -587,7 +587,7 @@ class Manager
                 break;
         }
 
-        QUI\Rights\Permission::checkPermission(
+        QUI\Permissions\Permission::checkPermission(
             'quiqqer.system.permissions',
             $EditUser
         );
@@ -673,8 +673,8 @@ class Manager
                         $table2media,
                         array(
                             'project' => $Project->getName(),
-                            'lang' => $Project->getLang(),
-                            'id' => $Obj->getId()
+                            'lang'    => $Project->getLang(),
+                            'id'      => $Obj->getId()
                         )
                     );
 
@@ -686,8 +686,8 @@ class Manager
                     array('permissions' => json_encode($data)),
                     array(
                         'project' => $Project->getName(),
-                        'lang' => $Project->getLang(),
-                        'id' => $Obj->getId()
+                        'lang'    => $Project->getLang(),
+                        'id'      => $Obj->getId()
                     )
                 );
                 break;
@@ -790,9 +790,9 @@ class Manager
             $table . '2sites',
             array('value' => $value),
             array(
-                'project' => $Project->getName(),
-                'lang' => $Project->getLang(),
-                'id' => $Site->getId(),
+                'project'    => $Project->getName(),
+                'lang'       => $Project->getLang(),
+                'id'         => $Site->getId(),
                 'permission' => $permission
             )
         );
@@ -813,11 +813,11 @@ class Manager
         QUI::getDataBase()->insert(
             $table . '2sites',
             array(
-                'project' => $Project->getName(),
-                'lang' => $Project->getLang(),
-                'id' => $Site->getId(),
+                'project'    => $Project->getName(),
+                'lang'       => $Project->getLang(),
+                'id'         => $Site->getId(),
                 'permission' => $permission,
-                'value' => $value
+                'value'      => $value
             )
         );
     }
@@ -840,8 +840,8 @@ class Manager
             $table . '2sites',
             array(
                 'project' => $Project->getName(),
-                'lang' => $Project->getLang(),
-                'id' => $Site->getId()
+                'lang'    => $Project->getLang(),
+                'id'      => $Site->getId()
             )
         );
     }
@@ -862,7 +862,7 @@ class Manager
         $_data = $this->getData($Project);
         $list  = $this->getPermissionList('project');
 
-        QUI\Rights\Permission::checkPermission(
+        QUI\Permissions\Permission::checkPermission(
             'quiqqer.system.permissions',
             $EditUser
         );
@@ -909,8 +909,8 @@ class Manager
             $table . '2projects',
             array('value' => $value),
             array(
-                'project' => $Project->getName(),
-                'lang' => $Project->getLang(),
+                'project'    => $Project->getName(),
+                'lang'       => $Project->getLang(),
                 'permission' => $permission
             )
         );
@@ -933,10 +933,10 @@ class Manager
         QUI::getDataBase()->insert(
             $table . '2projects',
             array(
-                'project' => $Project->getName(),
-                'lang' => $Project->getLang(),
+                'project'    => $Project->getName(),
+                'lang'       => $Project->getLang(),
                 'permission' => $permission,
-                'value' => $value
+                'value'      => $value
             )
         );
     }
@@ -959,7 +959,7 @@ class Manager
         if ($area === 'user') {
             /* @var $Obj User */
             return $DataBase->fetch(array(
-                'from' => $table . '2users',
+                'from'  => $table . '2users',
                 'where' => array(
                     'user_id' => $Obj->getId()
                 ),
@@ -970,7 +970,7 @@ class Manager
         if ($area === 'groups') {
             /* @var $Obj Group */
             return $DataBase->fetch(array(
-                'from' => $table . '2groups',
+                'from'  => $table . '2groups',
                 'where' => array(
                     'group_id' => $Obj->getId()
                 ),
@@ -981,10 +981,10 @@ class Manager
         if ($area === 'project') {
             /* @var $Obj QUI\Projects\Project */
             $data = $DataBase->fetch(array(
-                'from' => $table . '2projects',
+                'from'  => $table . '2projects',
                 'where' => array(
                     'project' => $Obj->getName(),
-                    'lang' => $Obj->getLang()
+                    'lang'    => $Obj->getLang()
                 )
             ));
 
@@ -1003,11 +1003,11 @@ class Manager
             $Project = $Obj->getProject();
 
             $data = $DataBase->fetch(array(
-                'from' => $table . '2sites',
+                'from'  => $table . '2sites',
                 'where' => array(
                     'project' => $Project->getName(),
-                    'lang' => $Project->getLang(),
-                    'id' => $Obj->getId()
+                    'lang'    => $Project->getLang(),
+                    'id'      => $Obj->getId()
                 )
             ));
 
@@ -1026,11 +1026,11 @@ class Manager
             $Project = $Obj->getProject();
 
             return $DataBase->fetch(array(
-                'from' => $table . '2media',
+                'from'  => $table . '2media',
                 'where' => array(
                     'project' => $Project->getName(),
-                    'lang' => $Project->getLang(),
-                    'id' => $Obj->getId()
+                    'lang'    => $Project->getLang(),
+                    'id'      => $Obj->getId()
                 )
             ));
         }
@@ -1146,9 +1146,9 @@ class Manager
         // group permissions
         if ($ruleset) {
             if (is_string($ruleset)
-                && method_exists('QUI\Rights\PermissionOrder', $ruleset)
+                && method_exists('QUI\Permissions\PermissionOrder', $ruleset)
             ) {
-                $result = QUI\Rights\PermissionOrder::$ruleset($permission, $usersAndGroups);
+                $result = QUI\Permissions\PermissionOrder::$ruleset($permission, $usersAndGroups);
 
             } else {
                 if (is_callable($ruleset)) {
@@ -1158,7 +1158,7 @@ class Manager
             }
 
         } else {
-            $result = QUI\Rights\PermissionOrder::permission($permission, $usersAndGroups);
+            $result = QUI\Permissions\PermissionOrder::permission($permission, $usersAndGroups);
         }
 
         return $result;
@@ -1203,7 +1203,7 @@ class Manager
         $result = array();
         $rights = QUI::getDataBase()->fetch(array(
             'select' => 'name,type',
-            'from' => self::TABLE
+            'from'   => self::TABLE
         ));
 
         foreach ($rights as $right) {

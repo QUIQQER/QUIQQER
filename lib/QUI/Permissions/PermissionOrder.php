@@ -18,7 +18,6 @@ use QUI\Users\User;
  *
  * @example $User->getPermission($perm, 'max_integer');
  * @example $User->getPermission($perm, 'min_integer');
- * @deprecated QUI\Permissions\PermissionOrder
  */
 class PermissionOrder
 {

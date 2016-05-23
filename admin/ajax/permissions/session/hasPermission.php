@@ -9,7 +9,7 @@
 QUI::$Ajax->registerFunction(
     'ajax_permissions_session_hasPermission',
     function ($permission) {
-        return \QUI\Rights\Permission::hasPermission($permission);
+        return QUI\Permissions\Permission::hasPermission($permission);
     },
     array('permission')
 );

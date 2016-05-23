@@ -310,7 +310,7 @@ interface Site
     public function createCache();
 
     /**
-     * Shortcut for QUI\Rights\Permission::hasSitePermission
+     * Shortcut for QUI\Permissions\Permission::hasSitePermission
      *
      * @param string $permission - name of the permission
      * @param QUI\Users\User|boolean $User - optional
@@ -320,7 +320,7 @@ interface Site
     public function hasPermission($permission, $User = false);
 
     /**
-     * Shortcut for QUI\Rights\Permission::checkSitePermission
+     * Shortcut for QUI\Permissions\Permission::checkSitePermission
      *
      * @param string $permission - name of the permission
      * @param QUI\Users\User|boolean $User - optional

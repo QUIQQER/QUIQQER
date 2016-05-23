@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file contains \QUI\Rights\Permission
+ * This file contains \QUI\Permissions\Permission
  */
 
 namespace QUI\Rights;

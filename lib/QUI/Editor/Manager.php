@@ -324,10 +324,10 @@ class Manager
 
 
         $result = array(
-            'cssFiles' => $css,
-            'bodyId' => $bodyId,
+            'cssFiles'  => $css,
+            'bodyId'    => $bodyId,
             'bodyClass' => $bodyClass,
-            'styles' => $styles
+            'styles'    => $styles
         );
 
 
@@ -361,7 +361,7 @@ class Manager
      */
     public static function deleteToolbar($toolbar)
     {
-        QUI\Rights\Permission::hasPermission(
+        QUI\Permissions\Permission::hasPermission(
             'quiqqer.editors.toolbar.delete'
         );
 
@@ -384,7 +384,7 @@ class Manager
      */
     public static function addToolbar($toolbar)
     {
-        QUI\Rights\Permission::hasPermission(
+        QUI\Permissions\Permission::hasPermission(
             'quiqqer.editors.toolbar.add'
         );
 
@@ -415,7 +415,7 @@ class Manager
      */
     public static function saveToolbar($toolbar, $xml)
     {
-        QUI\Rights\Permission::hasPermission(
+        QUI\Permissions\Permission::hasPermission(
             'quiqqer.editors.toolbar.save'
         );
 
@@ -625,7 +625,7 @@ class Manager
 
             if ($Param->nodeName == 'button') {
                 $result[] = array(
-                    'type' => 'button',
+                    'type'   => 'button',
                     'button' => trim($Param->nodeValue)
                 );
             }
@@ -662,11 +662,11 @@ class Manager
             $Tidy = new \Tidy();
 
             $config = array(
-                "char-encoding" => "utf8",
-                'output-xhtml' => true,
-                'indent-attributes' => false,
-                'wrap' => 0,
-                'word-2000' => 1,
+                "char-encoding"       => "utf8",
+                'output-xhtml'        => true,
+                'indent-attributes'   => false,
+                'wrap'                => 0,
+                'word-2000'           => 1,
                 // html 5 Tags registrieren
                 'new-blocklevel-tags' => 'header, footer, article, section, hgroup, nav, figure'
             );

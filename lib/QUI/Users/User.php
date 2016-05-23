@@ -317,7 +317,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function checkPermission($permission)
     {
-        QUI\Rights\Permission::checkPermission($permission, $this);
+        QUI\Permissions\Permission::checkPermission($permission, $this);
     }
 
     /**
@@ -1214,7 +1214,7 @@ class User implements QUI\Interfaces\Users\User
             return $this->admin;
         }
 
-        $this->admin = QUI\Rights\Permission::isAdmin();
+        $this->admin = QUI\Permissions\Permission::isAdmin();
 
         return $this->admin;
     }
