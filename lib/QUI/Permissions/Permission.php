@@ -162,7 +162,7 @@ class Permission
      *
      * @return false|string|permission
      *
-     * @throws \QUI\Exception
+     * @throws \QUI\Permissions\Exception
      */
     public static function checkPermission($perm, $User = false)
     {

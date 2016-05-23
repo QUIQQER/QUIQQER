@@ -70,10 +70,10 @@ class DOM
             }
 
             $ToolbarTab = new Toolbar\Tab(array(
-                'name' => $Tab->getAttribute('name'),
-                'text' => $text,
-                'image' => $image,
-                'plugin' => $plugin,
+                'name'    => $Tab->getAttribute('name'),
+                'text'    => $text,
+                'image'   => $image,
+                'plugin'  => $plugin,
                 'wysiwyg' => $type == 'wysiwyg' ? true : false
             ));
 
@@ -172,12 +172,12 @@ class DOM
     public static function dbTableDomToArray(\DOMNode $Table)
     {
         $result = array(
-            'suffix' => $Table->getAttribute('name'),
-            'engine' => $Table->getAttribute('engine'),
+            'suffix'            => $Table->getAttribute('name'),
+            'engine'            => $Table->getAttribute('engine'),
             'no-site-reference' => false,
-            'no-project-lang' => false,
-            'no-auto-update' => false,
-            'site-types' => false
+            'no-project-lang'   => false,
+            'no-auto-update'    => false,
+            'site-types'        => false
         );
 
         if ((int)$Table->getAttribute('no-site-reference') === 1) {
@@ -457,10 +457,10 @@ class DOM
                                 ->getEngine(true);
 
                             $Engine->assign(array(
-                                'Site' => $Object,
+                                'Site'    => $Object,
                                 'Project' => $Object->getProject(),
                                 'Plugins' => QUI::getPluginManager(),
-                                'QUI' => new QUI()
+                                'QUI'     => new QUI()
                             ));
 
                             return $Engine->fetch($file) . $extra;
@@ -648,8 +648,8 @@ class DOM
             }
 
             $result[] = array(
-                'text' => self::getTextFromNode($Style, $translate),
-                'element' => $Style->getAttribute('element'),
+                'text'       => self::getTextFromNode($Style, $translate),
+                'element'    => $Style->getAttribute('element'),
                 'attributes' => $attributeList
             );
         }
@@ -887,9 +887,9 @@ class DOM
         }
 
         return array(
-            'image' => $image,
-            'title' => $title,
-            'text' => $text,
+            'image'   => $image,
+            'title'   => $title,
+            'text'    => $text,
             'require' => $require
         );
     }
@@ -916,13 +916,13 @@ class DOM
             $default = $Default->item(0)->nodeValue;
         }
 
-        $type = QUI\Rights\Manager::parseType($Node->getAttribute('type'));
-        $area = QUI\Rights\Manager::parseArea($Node->getAttribute('area'));
+        $type = QUI\Permissions\Manager::parseType($Node->getAttribute('type'));
+        $area = QUI\Permissions\Manager::parseArea($Node->getAttribute('area'));
 
         return array(
-            'name' => $perm,
-            'area' => $area,
-            'type' => $type,
+            'name'    => $perm,
+            'area'    => $area,
+            'type'    => $type,
             'default' => $default
         );
     }
@@ -990,9 +990,9 @@ class DOM
 
                 if (file_exists($file)) {
                     $Engine->assign(array(
-                        'Plugin' => $Plugin,
+                        'Plugin'  => $Plugin,
                         'Plugins' => QUI::getPluginManager(),
-                        'QUI' => new QUI()
+                        'QUI'     => new QUI()
                     ));
 
                     $result .= $Engine->fetch($file);
@@ -1069,9 +1069,9 @@ class DOM
 
                             if (file_exists($file)) {
                                 $Engine->assign(array(
-                                    'Plugin' => $Plugin,
+                                    'Plugin'  => $Plugin,
                                     'Plugins' => QUI::getPluginManager(),
-                                    'QUI' => new QUI()
+                                    'QUI'     => new QUI()
                                 ));
 
                                 $result .= $Engine->fetch($file);
@@ -1146,26 +1146,11 @@ class DOM
 
         foreach ($attributes as $Attribute) {
             /* @var $Attribute \DOMAttr */
-            $name  = Orthos::clear($Attribute->name);
-            $value = Orthos::clear($Attribute->value);
+            $name  = htmlspecialchars($Attribute->name);
+            $value = htmlspecialchars($Attribute->value);
 
             if (strpos($name, 'data-') !== false) {
                 $data .= " {$name}=\"{$value}\"";
-            }
-        }
-
-        if ($Input->getAttribute('data-qui')) {
-            $dataQui = ' data-qui="' . $Input->getAttribute('data-qui') . '"';
-
-            // qui options -> duplicated? -> deprecated
-            foreach ($attributes as $Attribute) {
-                /* @var $Attribute \DOMAttr */
-                $name  = $Attribute->name;
-                $value = $Attribute->value;
-
-                if (strpos($name, 'data-qui-options-') !== false) {
-                    $dataQui .= " {$name}=\"{$value}\"";
-                }
             }
         }
 
@@ -1305,7 +1290,7 @@ class DOM
             }
 
             $result[$Conf->getAttribute('name')] = array(
-                'type' => $type,
+                'type'    => $type,
                 'default' => $default
             );
         }
