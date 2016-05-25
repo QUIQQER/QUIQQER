@@ -105,7 +105,7 @@ class Setup
         $packages       = SystemFile::readDir(OPT_DIR);
 
         $PackageManager->refreshServerList();
-        $Pool = new QUI\Threads\Pool(3, QUI\Threads\Worker::class);
+//        $Pool = new QUI\Threads\Pool(3, QUI\Threads\Worker::class);
 
         // first we need all databases
         foreach ($packages as $package) {
@@ -126,19 +126,17 @@ class Setup
 
             foreach ($list as $key => $sub) {
                 $packageName = $package . '/' . $sub;
-
-                $Pool->submit(
-                    new QUI\Threads\Worker($key, function () use ($PackageManager, $packageName) {
-                        $PackageManager->setup($packageName);
-                    })
-                );
+                $PackageManager->setup($packageName);
+//                $Pool->submit(
+//                    new QUI\Threads\Worker($key, function () use ($PackageManager, $packageName) {
+//                        $PackageManager->setup($packageName);
+//                    })
+//                );
             }
         }
 
-        QUI\System\Log::writeRecursive($Pool->count());
-
-        //$Pool->shutdown();
-
+//        $Pool->process();
+//        QUI\System\Log::writeRecursive($Pool->count());
 
         // generate translations
         Update::importAllLocaleXMLs();
