@@ -29,7 +29,7 @@ class Setup
                 && strpos($_SERVER['argv'][0], 'phpunit') === false)
         ) {
             // nur Super User darf dies
-            Rights\Permission::checkSU();
+            Permissions\Permission::checkSU();
         }
 
         QUI::getSession()->setup();
@@ -91,8 +91,8 @@ class Setup
             /* @var $Project \QUI\Projects\Project */
             $Project->setup();
 
-            // Plugin Setup
-            QUI::getPlugins()->setup($Project);
+            // Plugin Setup @deprecated
+            QUI::getPluginManager()->setup();
 
             // Media Setup
             // $Project->getMedia()->setup();
@@ -105,6 +105,7 @@ class Setup
         $packages       = SystemFile::readDir(OPT_DIR);
 
         $PackageManager->refreshServerList();
+        $Pool = new QUI\Threads\Pool(3, QUI\Threads\Thread::class);
 
         // first we need all databases
         foreach ($packages as $package) {
@@ -123,10 +124,21 @@ class Setup
             $package_dir = OPT_DIR . '/' . $package;
             $list        = SystemFile::readDir($package_dir);
 
-            foreach ($list as $sub) {
-                $PackageManager->setup($package . '/' . $sub);
+            foreach ($list as $key => $sub) {
+                $packageName = $package . '/' . $sub;
+
+                $Pool->submit(
+                    new QUI\Threads\Thread($key, function () use ($PackageManager, $packageName) {
+                        $PackageManager->setup($packageName);
+                    })
+                );
             }
         }
+
+        QUI\System\Log::writeRecursive($Pool->count());
+
+        //$Pool->shutdown();
+
 
         // generate translations
         Update::importAllLocaleXMLs();
