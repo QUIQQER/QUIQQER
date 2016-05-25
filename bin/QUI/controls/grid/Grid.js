@@ -174,6 +174,10 @@ define('controls/grid/Grid', [
             this.loadData();
         },
 
+        getElm: function () {
+            return this.container;
+        },
+
         destroy: function () {
             this.removeAll();
 
