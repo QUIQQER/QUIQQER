@@ -91,8 +91,8 @@ define('controls/lang/InputMultiLang', [
 
                     data = newData;
                 }
-
-                if (!data) {
+                
+                if (typeOf(data) != 'object') {
                     data = {};
                 }
 
@@ -135,7 +135,9 @@ define('controls/lang/InputMultiLang', [
                     }
 
                     if (lang in data) {
-                        InputField.value = data[lang];
+                        if (data.hasOwnProperty(lang)) {
+                            InputField.value = data[lang];
+                        }
                     }
 
                     InputField.addEvent('change', onChange);
