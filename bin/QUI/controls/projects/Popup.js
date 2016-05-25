@@ -61,6 +61,7 @@ define('controls/projects/Popup', [
             this.$Body        = null;
             this.$Map         = null;
             this.$Information = null;
+            this.$Select      = null;
 
             this.addEvents({
                 onOpen: this.$onOpen
@@ -101,7 +102,7 @@ define('controls/projects/Popup', [
                 this.$Information.inject(Content, 'top');
             }
 
-            var Select = new QUISelect({
+            this.$Select = new QUISelect({
                 styles: {
                     margin  : 8,
                     position: 'relative'
@@ -119,7 +120,7 @@ define('controls/projects/Popup', [
             }).inject(this.$Header);
 
             if (this.getAttribute('disableProjectSelect')) {
-                Select.disable();
+                this.$Select.disable();
             }
 
             // load the projects
@@ -152,7 +153,7 @@ define('controls/projects/Popup', [
                             continue;
                         }
 
-                        Select.appendChild(
+                        this.$Select.appendChild(
                             project + ' (' + langs[i] + ')',
                             project + ',' + langs[i],
                             'fa fa-home'
@@ -161,21 +162,20 @@ define('controls/projects/Popup', [
                 }
 
                 if (self.getAttribute('lang') && self.getAttribute('project')) {
-
-                    Select.setValue(
+                    this.$Select.setValue(
                         self.getAttribute('project') + ',' +
                         self.getAttribute('lang')
                     );
 
-                } else if (Select.firstChild()) {
-                    Select.setValue(
-                        Select.firstChild().getAttribute('value')
+                } else if (this.$Select.firstChild()) {
+                    this.$Select.setValue(
+                        this.$Select.firstChild().getAttribute('value')
                     );
                 }
 
 
                 self.Loader.hide();
-            });
+            }.bind(this));
         },
 
         /**
@@ -221,10 +221,13 @@ define('controls/projects/Popup', [
             }
 
             var ids, urls;
-            var children = this.$Map.getSelectedChildren();
 
-            var projectString = 'project=' + this.getAttribute('project') + '&' +
-                                'lang=' + this.getAttribute('lang');
+            var value   = this.$Select.getValue().split(','),
+                project = value[0],
+                lang    = value[1];
+
+            var children      = this.$Map.getSelectedChildren();
+            var projectString = 'project=' + project + '&' + 'lang=' + lang;
 
             ids = children.map(function (o) {
                 return o.getAttribute('value');
@@ -235,8 +238,8 @@ define('controls/projects/Popup', [
             });
 
             var result = {
-                project: this.getAttribute('project'),
-                lang   : this.getAttribute('lang'),
+                project: project,
+                lang   : lang,
                 ids    : ids,
                 urls   : urls
             };
