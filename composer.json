@@ -40,7 +40,6 @@
     "intervention/image": "2.2.*",
     "t7systems/blowfish": "1.0.0",
     "fxp/composer-asset-plugin": "^1.1",
-    "krakjoe/pthreads-polyfill": "1.*",
     "quiqqer/qui": "*@dev",
     "quiqqer/qui-php": "*@dev",
     "quiqqer/smarty": "3.*",

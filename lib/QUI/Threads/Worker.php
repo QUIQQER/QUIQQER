@@ -2,11 +2,13 @@
 
 namespace QUI\Threads;
 
+require_once 'polyfill.php';
+
 /**
- * Class Thread
+ * Class Worker
  * @package QUI\Threads
  */
-class Thread extends \Thread
+class Worker extends \Threaded
 {
     /**
      * @var callable
@@ -19,13 +21,11 @@ class Thread extends \Thread
     protected $complete = false;
 
     /**
-     * Thread constructor.
-     * @param int $threadId
+     * Threaded constructor.
      * @param callable $executable
      */
-    public function __construct($threadId, $executable)
+    public function __construct($executable)
     {
-        $this->threadId   = $threadId;
         $this->executabel = $executable;
     }
 
@@ -46,7 +46,7 @@ class Thread extends \Thread
      *
      * @return boolean
      */
-    public function isDone()
+    public function isGarbage()
     {
         return $this->complete;
     }

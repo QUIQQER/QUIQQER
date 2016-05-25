@@ -2,34 +2,51 @@
 
 namespace QUI\Threads;
 
+require_once 'polyfill.php';
+
 /**
  * Class Pool
  */
-class Pool extends \Pool
+class Pool
 {
     /**
      * @var array
      */
-    public $finished = array();
+    protected $tasks = array();
 
     /**
+     * Return all finished jobs
+     *
      * @return array
      */
     public function process()
     {
-        while (count($this->work)) {
-            $this->collect(function (Thread $Task) {
-                if ($Task->isDone()) {
-                    $this->finished[] = $Task;
-                }
-
-                return $Task->isDone();
-            });
+        while ($this->isRunning()) {
         }
 
         $this->shutdown();
 
-        return $this->finished;
+        return $this->tasks;
+    }
+
+    /**
+     * Submit a task to the pool
+     *
+     * @param \Threaded $Task
+     * @return void
+     */
+    public function submit(\Threaded $Task)
+    {
+        $this->tasks[] = $Task;
+        $Task->run();
+    }
+
+    /**
+     *
+     */
+    public function shutdown()
+    {
+        unset($this->tasks);
     }
 
     /**
@@ -37,14 +54,25 @@ class Pool extends \Pool
      */
     public function count()
     {
-        return count($this->workers);
+        return count($this->tasks);
     }
 
     /**
+     * Are some tasks still running?
      *
+     * @return boolean
      */
     public function isRunning()
     {
+        $running = array();
 
+        /* @var $Task \QUI\Threads\Worker */
+        foreach ($this->tasks as $Task) {
+            if (!$Task->isGarbage()) {
+                $running[] = $Task;
+            }
+        }
+
+        return count($running) ? true : false;
     }
 }
