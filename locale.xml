@@ -5937,6 +5937,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
                     </a>
                 </p>]]></en>
         </locale>
+        <locale name="quiqqer.settings.delimiter_formats.title">
+            <de><![CDATA[Trennzeichen]]></de>
+            <en><![CDATA[Delimiter]]></en>
+        </locale>
         <locale name="quiqqer.settings.general.globals.standardLanguage">
             <de><![CDATA[Standard Sprache]]></de>
             <en><![CDATA[Standard language]]></en>
@@ -5946,9 +5950,12 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Save the current page]]></en>
         </locale>
         <locale name="projects.project.site.btn.delete.title">
-            <de>
-                <![CDATA[Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden]]></de>
-            <en><![CDATA[Delete the page, the page is placed in the trash and can be restored]]></en>
+            <de><![CDATA[
+            Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden
+            ]]></de>
+            <en><![CDATA[
+            Delete the page, the page is placed in the trash and can be restored
+            ]]></en>
         </locale>
         <locale name="menu.apps.text">
             <de><![CDATA[Apps]]></de>

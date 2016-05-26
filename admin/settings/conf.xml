@@ -228,6 +228,12 @@
                 </conf>
             </section>
 
+            <section name="delimiter_formats">
+                <conf name="??">
+                    <type><![CDATA[string]]></type>
+                </conf>
+            </section>
+
             <section name="date_formats">
                 <conf name="??">
                     <type><![CDATA[string]]></type>
@@ -331,46 +337,6 @@
                         </select>
                     </settings>
                 </category>
-
-                <!--
-                <category name="database">
-                    <text>
-                        <locale group="quiqqer/system" var="quiqqer.settings.database" />
-                    </text>
-                    <icon>fa fa-briefcase</icon>
-
-                    <settings title="database" name="database">
-                        <title>
-                            <locale group="quiqqer/system" var="quiqqer.settings.database.title" />
-                        </title>
-                        <input conf="db.driver" type="text">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.database.type" />
-                            </text>
-                        </input>
-                        <input conf="db.host" type="text">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.database.host" />
-                            </text>
-                        </input>
-                        <input conf="db.database" type="text">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.database.name" />
-                            </text>
-                        </input>
-                        <input conf="db.user" type="text">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.database.user" />
-                            </text>
-                        </input>
-                        <input conf="db.password" type="password">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.database.password" />
-                            </text>
-                        </input>
-                    </settings>
-                </category>
-                -->
 
                 <category name="mail" require="controls/system/settings/Mail" index="2">
                     <text>
@@ -593,6 +559,21 @@
                             </description>
                         </input>
                     </settings>
+
+                    <settings title="delimiter_formats" name="delimiter_formats">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.delimiter_formats.title"/>
+                        </title>
+
+                        <input conf="delimiter_formats"
+                               data-qui="controls/system/AvailableLanguages"
+                               placeholder="test"
+                        >
+                            <!--<description>-->
+                                <!--<locale group="quiqqer/system" var="quiqqer.settings.delimiter_formats.description"/>-->
+                            <!--</description>-->
+                        </input>
+                    </settings>
                 </category>
 
                 <category name="gui" index="5">
@@ -616,7 +597,6 @@
                             </description>
                         </input>
                     </settings>
-
                 </category>
 
             </categories>

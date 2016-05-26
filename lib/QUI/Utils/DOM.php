@@ -948,29 +948,6 @@ class DOM
         }
 
         $Engine = QUI::getTemplateManager()->getEngine(true);
-//         $template = $Category->getElementsByTagName( 'template' );
-
-        // Falls ein Template angegeben wurde
-//         if ( $template && $template->length )
-//         {
-//             $Template = $template->item( 0 );
-//             $file     = self::parseVar( $Template->nodeValue );
-
-//             if ( file_exists( $file ) )
-//             {
-//                 $Engine->assign(array(
-//                     'Plugin'  => $Plugin,
-//                     'Plugins' => QUI::getPluginManager(),
-//                     'QUI'     => new QUI()
-//                 ));
-
-//                 return $Engine->fetch( $file );
-//             }
-
-//             return '';
-//         }
-
-
         $result = '';
         $odd    = 'odd';
         $even   = 'even';
@@ -1151,6 +1128,14 @@ class DOM
 
             if (strpos($name, 'data-') !== false) {
                 $data .= " {$name}=\"{$value}\"";
+                continue;
+            }
+
+            switch ($name) {
+                case 'title':
+                case 'placeholder':
+                    $data .= " {$name}=\"{$value}\"";
+                    break;
             }
         }
 
