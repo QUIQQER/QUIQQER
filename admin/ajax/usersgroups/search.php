@@ -32,6 +32,7 @@ QUI::$Ajax->registerFunction(
         }
 
         $groups = QUI::$Ajax->callRequestFunction('ajax_groups_search', array(
+            'fields' => json_encode(array()),
             'params' => json_encode($params)
         ));
 
@@ -40,12 +41,9 @@ QUI::$Ajax->registerFunction(
 
         // combine results
         $result = array(
-            'page' => $users['page'],
+            'page'  => $users['page'],
             'total' => $users['total'] + $groups['total'],
-            'data' => array_merge(
-                $users['data'],
-                $groups['data']
-            )
+            'data'  => array_merge($users['data'], $groups['data'])
         );
 
         return $result;
