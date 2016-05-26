@@ -3477,6 +3477,968 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Simbabwe]]></de>
             <en><![CDATA[Zimbabwe]]></en>
         </locale>
+
+        <locale name="language.af">
+            <de><![CDATA[Afghanisch]]></de>
+            <en><![CDATA[Afghan]]></en>
+        </locale>
+        <locale name="language.al">
+            <de><![CDATA[Albanisch]]></de>
+            <en><![CDATA[Albanian]]></en>
+        </locale>
+        <locale name="language.dz">
+            <de><![CDATA[Algerisch]]></de>
+            <en><![CDATA[Algerian]]></en>
+        </locale>
+        <locale name="language.as">
+            <de><![CDATA[Amerikanisch-Samoa]]></de>
+            <en><![CDATA[American Samoa]]></en>
+        </locale>
+        <locale name="language.ad">
+            <de><![CDATA[Andorranisch]]></de>
+            <en><![CDATA[Andorran]]></en>
+        </locale>
+        <locale name="language.ao">
+            <de><![CDATA[Angolanisch]]></de>
+            <en><![CDATA[Angolan]]></en>
+        </locale>
+        <locale name="language.ai">
+            <de><![CDATA[Anguilla]]></de>
+            <en><![CDATA[Anguilla]]></en>
+        </locale>
+        <locale name="language.aq">
+            <de><![CDATA[Antarktis]]></de>
+            <en><![CDATA[Antarctica]]></en>
+        </locale>
+        <locale name="language.ag">
+            <de><![CDATA[Antigua und Barbuda]]></de>
+            <en><![CDATA[Antigua and Barbuda]]></en>
+        </locale>
+        <locale name="language.ar">
+            <de><![CDATA[Argentinien]]></de>
+            <en><![CDATA[Argentina]]></en>
+        </locale>
+        <locale name="language.am">
+            <de><![CDATA[Armenisch]]></de>
+            <en><![CDATA[Armenian]]></en>
+        </locale>
+        <locale name="language.aw">
+            <de><![CDATA[Aruba]]></de>
+            <en><![CDATA[Aruba]]></en>
+        </locale>
+        <locale name="language.au">
+            <de><![CDATA[Australisch]]></de>
+            <en><![CDATA[australian]]></en>
+        </locale>
+        <locale name="language.at">
+            <de><![CDATA[Oesterreichisch]]></de>
+            <en><![CDATA[Austrian]]></en>
+        </locale>
+        <locale name="language.az">
+            <de><![CDATA[Aserbaidschan]]></de>
+            <en><![CDATA[Azerbaijan]]></en>
+        </locale>
+        <locale name="language.bs">
+            <de><![CDATA[Bahamas]]></de>
+            <en><![CDATA[Bahamas]]></en>
+        </locale>
+        <locale name="language.bh">
+            <de><![CDATA[Bahrain]]></de>
+            <en><![CDATA[Bahrain]]></en>
+        </locale>
+        <locale name="language.bd">
+            <de><![CDATA[Bangladesh]]></de>
+            <en><![CDATA[Bangladesh]]></en>
+        </locale>
+        <locale name="language.bb">
+            <de><![CDATA[Barbados]]></de>
+            <en><![CDATA[Barbados]]></en>
+        </locale>
+        <locale name="language.by">
+            <de><![CDATA[Belarus]]></de>
+            <en><![CDATA[Belarus]]></en>
+        </locale>
+        <locale name="language.be">
+            <de><![CDATA[Belgien]]></de>
+            <en><![CDATA[Belgium]]></en>
+        </locale>
+        <locale name="language.bz">
+            <de><![CDATA[Belize]]></de>
+            <en><![CDATA[Belize]]></en>
+        </locale>
+        <locale name="language.bj">
+            <de><![CDATA[Benin]]></de>
+            <en><![CDATA[Benin]]></en>
+        </locale>
+        <locale name="language.bm">
+            <de><![CDATA[Bermuda]]></de>
+            <en><![CDATA[Bermuda]]></en>
+        </locale>
+        <locale name="language.bt">
+            <de><![CDATA[Bhutan]]></de>
+            <en><![CDATA[Bhutan]]></en>
+        </locale>
+        <locale name="language.bo">
+            <de><![CDATA[Bolivien]]></de>
+            <en><![CDATA[Bolivia]]></en>
+        </locale>
+        <locale name="language.ba">
+            <de><![CDATA[Bosnien und Herzegowina]]></de>
+            <en><![CDATA[Bosnia and Herzegowina]]></en>
+        </locale>
+        <locale name="language.bw">
+            <de><![CDATA[Botswana]]></de>
+            <en><![CDATA[Botswana]]></en>
+        </locale>
+        <locale name="language.bv">
+            <de><![CDATA[Bouvet Island]]></de>
+            <en><![CDATA[Bouvet Island]]></en>
+        </locale>
+        <locale name="language.br">
+            <de><![CDATA[Brasilien]]></de>
+            <en><![CDATA[Brazil]]></en>
+        </locale>
+        <locale name="language.io">
+            <de><![CDATA[Britische Territorien im Indischen Ozean]]></de>
+            <en><![CDATA[British Indian Ocean Territory]]></en>
+        </locale>
+        <locale name="language.bn">
+            <de><![CDATA[Brunei Darussalam]]></de>
+            <en><![CDATA[Brunei Darussalam]]></en>
+        </locale>
+        <locale name="language.bg">
+            <de><![CDATA[Bulgarien]]></de>
+            <en><![CDATA[Bulgaria]]></en>
+        </locale>
+        <locale name="language.bf">
+            <de><![CDATA[Burkina Faso]]></de>
+            <en><![CDATA[Burkina Faso]]></en>
+        </locale>
+        <locale name="language.bi">
+            <de><![CDATA[Burundi]]></de>
+            <en><![CDATA[Burundi]]></en>
+        </locale>
+        <locale name="language.kh">
+            <de><![CDATA[Kambodscha]]></de>
+            <en><![CDATA[Cambodia]]></en>
+        </locale>
+        <locale name="language.cm">
+            <de><![CDATA[Kamerun]]></de>
+            <en><![CDATA[Cameroon]]></en>
+        </locale>
+        <locale name="language.ca">
+            <de><![CDATA[Kanada]]></de>
+            <en><![CDATA[Canada]]></en>
+        </locale>
+        <locale name="language.cv">
+            <de><![CDATA[Kapverden]]></de>
+            <en><![CDATA[Cape Verde]]></en>
+        </locale>
+        <locale name="language.ky">
+            <de><![CDATA[Cayman-Inseln]]></de>
+            <en><![CDATA[Cayman Islands]]></en>
+        </locale>
+        <locale name="language.cf">
+            <de><![CDATA[Zentralafrika]]></de>
+            <en><![CDATA[Central African Republic]]></en>
+        </locale>
+        <locale name="language.td">
+            <de><![CDATA[Tschad]]></de>
+            <en><![CDATA[Chad]]></en>
+        </locale>
+        <locale name="language.cl">
+            <de><![CDATA[Chile]]></de>
+            <en><![CDATA[Chile]]></en>
+        </locale>
+        <locale name="language.cn">
+            <de><![CDATA[China]]></de>
+            <en><![CDATA[China]]></en>
+        </locale>
+        <locale name="language.cx">
+            <de><![CDATA[Weihnachtsinseln]]></de>
+            <en><![CDATA[Christmas Island]]></en>
+        </locale>
+        <locale name="language.cc">
+            <de><![CDATA[Kokosinseln]]></de>
+            <en><![CDATA[Cocos (Keeling) Islands]]></en>
+        </locale>
+        <locale name="language.co">
+            <de><![CDATA[Kolumbien]]></de>
+            <en><![CDATA[Colombia]]></en>
+        </locale>
+        <locale name="language.km">
+            <de><![CDATA[Komoren]]></de>
+            <en><![CDATA[Comoros]]></en>
+        </locale>
+        <locale name="language.cg">
+            <de><![CDATA[Bantu (Kongo)]]></de>
+            <en><![CDATA[Bantu (Congo)]]></en>
+        </locale>
+        <locale name="language.ck">
+            <de><![CDATA[Cook-Inseln]]></de>
+            <en><![CDATA[Cook Islands]]></en>
+        </locale>
+        <locale name="language.cr">
+            <de><![CDATA[Kostarika]]></de>
+            <en><![CDATA[Costa Rica]]></en>
+        </locale>
+        <locale name="language.ci">
+            <de><![CDATA[Elfenbeinkueste]]></de>
+            <en><![CDATA[Cote D'Ivoire]]></en>
+        </locale>
+        <locale name="language.hr">
+            <de><![CDATA[Kroatisch]]></de>
+            <en><![CDATA[Croatian]]></en>
+        </locale>
+        <locale name="language.cu">
+            <de><![CDATA[Spanisch (Kuba)]]></de>
+            <en><![CDATA[Spain (Cuba)]]></en>
+        </locale>
+        <locale name="language.cy">
+            <de><![CDATA[Zypern]]></de>
+            <en><![CDATA[Cyprus]]></en>
+        </locale>
+        <locale name="language.cz">
+            <de><![CDATA[Tschechisch]]></de>
+            <en><![CDATA[Czech]]></en>
+        </locale>
+        <locale name="language.dk">
+            <de><![CDATA[Dänisch]]></de>
+            <en><![CDATA[Danish]]></en>
+        </locale>
+        <locale name="language.dj">
+            <de><![CDATA[Djibouti]]></de>
+            <en><![CDATA[Djibouti]]></en>
+        </locale>
+        <locale name="language.dm">
+            <de><![CDATA[Dominica]]></de>
+            <en><![CDATA[Dominica]]></en>
+        </locale>
+        <locale name="language.do">
+            <de><![CDATA[Dominikanische Republik]]></de>
+            <en><![CDATA[Dominican Republic]]></en>
+        </locale>
+        <locale name="language.tp">
+            <de><![CDATA[Ost-Timor]]></de>
+            <en><![CDATA[East Timor]]></en>
+        </locale>
+        <locale name="language.ec">
+            <de><![CDATA[Ecuador]]></de>
+            <en><![CDATA[Ecuador]]></en>
+        </locale>
+        <locale name="language.en">
+            <de><![CDATA[Englisch]]></de>
+            <en><![CDATA[English]]></en>
+        </locale>
+        <locale name="language.eg">
+            <de><![CDATA[Aegypten]]></de>
+            <en><![CDATA[Egypt]]></en>
+        </locale>
+        <locale name="language.sv">
+            <de><![CDATA[El Salvador]]></de>
+            <en><![CDATA[El Salvador]]></en>
+        </locale>
+        <locale name="language.gq">
+            <de><![CDATA[Aequatorial-Guinea]]></de>
+            <en><![CDATA[Equatorial Guinea]]></en>
+        </locale>
+        <locale name="language.er">
+            <de><![CDATA[Eritrea]]></de>
+            <en><![CDATA[Eritrea]]></en>
+        </locale>
+        <locale name="language.ee">
+            <de><![CDATA[Estnisch]]></de>
+            <en><![CDATA[Estonian]]></en>
+        </locale>
+        <locale name="language.et">
+            <de><![CDATA[Amharisch]]></de>
+            <en><![CDATA[Amharic]]></en>
+        </locale>
+        <locale name="language.fk">
+            <de><![CDATA[Falkland-Inseln (Malvinen)]]></de>
+            <en><![CDATA[Falkland Islands (Malvinas)]]></en>
+        </locale>
+        <locale name="language.fo">
+            <de><![CDATA[Faeroeer]]></de>
+            <en><![CDATA[Faroe Islands]]></en>
+        </locale>
+        <locale name="language.fj">
+            <de><![CDATA[Fidschi]]></de>
+            <en><![CDATA[Fiji]]></en>
+        </locale>
+        <locale name="language.fi">
+            <de><![CDATA[Finnisch]]></de>
+            <en><![CDATA[Finnish]]></en>
+        </locale>
+        <locale name="language.fr">
+            <de><![CDATA[Französisch]]></de>
+            <en><![CDATA[French]]></en>
+        </locale>
+        <locale name="language.fx">
+            <de><![CDATA[Französisch, Metropolitan]]></de>
+            <en><![CDATA[French, Metropolitan]]></en>
+        </locale>
+        <locale name="language.gf">
+            <de><![CDATA[Französisch-Guyana]]></de>
+            <en><![CDATA[French Guiana]]></en>
+        </locale>
+        <locale name="language.pf">
+            <de><![CDATA[Französisch-Polynesien]]></de>
+            <en><![CDATA[French Polynesia]]></en>
+        </locale>
+        <locale name="language.tf">
+            <de><![CDATA[Französisch Suedterritorien]]></de>
+            <en><![CDATA[French Southern Territories]]></en>
+        </locale>
+        <locale name="language.ga">
+            <de><![CDATA[Gabon]]></de>
+            <en><![CDATA[Gabon]]></en>
+        </locale>
+        <locale name="language.gm">
+            <de><![CDATA[Gambia]]></de>
+            <en><![CDATA[Gambia]]></en>
+        </locale>
+        <locale name="language.ge">
+            <de><![CDATA[Georgisch]]></de>
+            <en><![CDATA[Georgian]]></en>
+        </locale>
+        <locale name="language.de">
+            <de><![CDATA[Deutsch]]></de>
+            <en><![CDATA[German]]></en>
+        </locale>
+        <locale name="language.gh">
+            <de><![CDATA[Griechisch]]></de>
+            <en><![CDATA[Greek]]></en>
+        </locale>
+        <locale name="language.gi">
+            <de><![CDATA[Gibraltar]]></de>
+            <en><![CDATA[Gibraltar]]></en>
+        </locale>
+        <locale name="language.gr">
+            <de><![CDATA[Griechisch]]></de>
+            <en><![CDATA[Greek]]></en>
+        </locale>
+        <locale name="language.gl">
+            <de><![CDATA[Grönländisch]]></de>
+            <en><![CDATA[Greenlandic]]></en>
+        </locale>
+        <locale name="language.gd">
+            <de><![CDATA[Grenada]]></de>
+            <en><![CDATA[Grenada]]></en>
+        </locale>
+        <locale name="language.gp">
+            <de><![CDATA[Guadeloupe]]></de>
+            <en><![CDATA[Guadeloupe]]></en>
+        </locale>
+        <locale name="language.gu">
+            <de><![CDATA[Guam]]></de>
+            <en><![CDATA[Guam]]></en>
+        </locale>
+        <locale name="language.gt">
+            <de><![CDATA[Guatemala]]></de>
+            <en><![CDATA[Guatemala]]></en>
+        </locale>
+        <locale name="language.gn">
+            <de><![CDATA[Guinea]]></de>
+            <en><![CDATA[Guinea]]></en>
+        </locale>
+        <locale name="language.gw">
+            <de><![CDATA[Guinea-Bissau]]></de>
+            <en><![CDATA[Guinea-bissau]]></en>
+        </locale>
+        <locale name="language.gy">
+            <de><![CDATA[Guyana]]></de>
+            <en><![CDATA[Guyana]]></en>
+        </locale>
+        <locale name="language.ht">
+            <de><![CDATA[Haitianisch]]></de>
+            <en><![CDATA[Haitian]]></en>
+        </locale>
+        <locale name="language.hm">
+            <de><![CDATA[Heard and Mc Donald Islands]]></de>
+            <en><![CDATA[Heard and Mc Donald Islands]]></en>
+        </locale>
+        <locale name="language.hn">
+            <de><![CDATA[Honduras]]></de>
+            <en><![CDATA[Honduras]]></en>
+        </locale>
+        <locale name="language.hk">
+            <de><![CDATA[Hong Kong]]></de>
+            <en><![CDATA[Hong Kong]]></en>
+        </locale>
+        <locale name="language.hu">
+            <de><![CDATA[Ungarisch]]></de>
+            <en><![CDATA[Hungarian]]></en>
+        </locale>
+        <locale name="language.is">
+            <de><![CDATA[Isländisch]]></de>
+            <en><![CDATA[Icelandic]]></en>
+        </locale>
+        <locale name="language.in">
+            <de><![CDATA[Indisch]]></de>
+            <en><![CDATA[Indian]]></en>
+        </locale>
+        <locale name="language.id">
+            <de><![CDATA[Indonesisch]]></de>
+            <en><![CDATA[Indonesian]]></en>
+        </locale>
+        <locale name="language.ir">
+            <de><![CDATA[Iranisch]]></de>
+            <en><![CDATA[Iranian]]></en>
+        </locale>
+        <locale name="language.iq">
+            <de><![CDATA[Irakisch]]></de>
+            <en><![CDATA[Iraqi]]></en>
+        </locale>
+        <locale name="language.ie">
+            <de><![CDATA[Irisch]]></de>
+            <en><![CDATA[Irish]]></en>
+        </locale>
+        <locale name="language.il">
+            <de><![CDATA[Israeli]]></de>
+            <en><![CDATA[Israeli]]></en>
+        </locale>
+        <locale name="language.it">
+            <de><![CDATA[Italienisch]]></de>
+            <en><![CDATA[Italian]]></en>
+        </locale>
+        <locale name="language.jm">
+            <de><![CDATA[Jamaikanisch]]></de>
+            <en><![CDATA[Jamaican]]></en>
+        </locale>
+        <locale name="language.jp">
+            <de><![CDATA[Japanisch]]></de>
+            <en><![CDATA[Japanese]]></en>
+        </locale>
+        <locale name="language.jo">
+            <de><![CDATA[Jordanisch]]></de>
+            <en><![CDATA[Jordanian]]></en>
+        </locale>
+        <locale name="language.kz">
+            <de><![CDATA[Kasachstan]]></de>
+            <en><![CDATA[Kazakhstan]]></en>
+        </locale>
+        <locale name="language.ke">
+            <de><![CDATA[Kenia]]></de>
+            <en><![CDATA[Kenya]]></en>
+        </locale>
+        <locale name="language.ki">
+            <de><![CDATA[Kiribati]]></de>
+            <en><![CDATA[Kiribati]]></en>
+        </locale>
+        <locale name="language.kp">
+            <de><![CDATA[Korea, Demokratische Volksrepublik]]></de>
+            <en><![CDATA[Korea, Democratic People's Republic of]]></en>
+        </locale>
+        <locale name="language.kr">
+            <de><![CDATA[Korea, Republik]]></de>
+            <en><![CDATA[Korea, Republic of]]></en>
+        </locale>
+        <locale name="language.kw">
+            <de><![CDATA[Kuwait]]></de>
+            <en><![CDATA[Kuwait]]></en>
+        </locale>
+        <locale name="language.kg">
+            <de><![CDATA[Kirgisien]]></de>
+            <en><![CDATA[Kyrgyzstan]]></en>
+        </locale>
+        <locale name="language.la">
+            <de><![CDATA[Laotische Demokratische Volksrepublik]]></de>
+            <en><![CDATA[Lao People's Democratic Republic]]></en>
+        </locale>
+        <locale name="language.lv">
+            <de><![CDATA[Lettland]]></de>
+            <en><![CDATA[Latvia]]></en>
+        </locale>
+        <locale name="language.lb">
+            <de><![CDATA[Libanon]]></de>
+            <en><![CDATA[Lebanon]]></en>
+        </locale>
+        <locale name="language.ls">
+            <de><![CDATA[Lesotho]]></de>
+            <en><![CDATA[Lesotho]]></en>
+        </locale>
+        <locale name="language.lr">
+            <de><![CDATA[Liberia]]></de>
+            <en><![CDATA[Liberia]]></en>
+        </locale>
+        <locale name="language.ly">
+            <de><![CDATA[Libyen]]></de>
+            <en><![CDATA[Libyan Arab Jamahiriya]]></en>
+        </locale>
+        <locale name="language.li">
+            <de><![CDATA[Liechtenstein]]></de>
+            <en><![CDATA[Liechtenstein]]></en>
+        </locale>
+        <locale name="language.lt">
+            <de><![CDATA[Litauen]]></de>
+            <en><![CDATA[Lithuania]]></en>
+        </locale>
+        <locale name="language.lu">
+            <de><![CDATA[Luxemburg]]></de>
+            <en><![CDATA[Luxembourg]]></en>
+        </locale>
+        <locale name="language.mo">
+            <de><![CDATA[Macau]]></de>
+            <en><![CDATA[Macau]]></en>
+        </locale>
+        <locale name="language.mk">
+            <de><![CDATA[Mazedonien]]></de>
+            <en><![CDATA[Macedonia, The Former Yugoslav Republic of]]></en>
+        </locale>
+        <locale name="language.mg">
+            <de><![CDATA[Madagaskar]]></de>
+            <en><![CDATA[Madagascar]]></en>
+        </locale>
+        <locale name="language.mw">
+            <de><![CDATA[Malawi]]></de>
+            <en><![CDATA[Malawi]]></en>
+        </locale>
+        <locale name="language.my">
+            <de><![CDATA[Malaysia]]></de>
+            <en><![CDATA[Malaysia]]></en>
+        </locale>
+        <locale name="language.mv">
+            <de><![CDATA[Malediven]]></de>
+            <en><![CDATA[Maldives]]></en>
+        </locale>
+        <locale name="language.ml">
+            <de><![CDATA[Mali]]></de>
+            <en><![CDATA[Mali]]></en>
+        </locale>
+        <locale name="language.mt">
+            <de><![CDATA[Malta]]></de>
+            <en><![CDATA[Malta]]></en>
+        </locale>
+        <locale name="language.mh">
+            <de><![CDATA[Marshall-Inseln]]></de>
+            <en><![CDATA[Marshall Islands]]></en>
+        </locale>
+        <locale name="language.mq">
+            <de><![CDATA[Martinique]]></de>
+            <en><![CDATA[Martinique]]></en>
+        </locale>
+        <locale name="language.mr">
+            <de><![CDATA[Mauritanien]]></de>
+            <en><![CDATA[Mauritania]]></en>
+        </locale>
+        <locale name="language.mu">
+            <de><![CDATA[Mauritius]]></de>
+            <en><![CDATA[Mauritius]]></en>
+        </locale>
+        <locale name="language.yt">
+            <de><![CDATA[Mayotte]]></de>
+            <en><![CDATA[Mayotte]]></en>
+        </locale>
+        <locale name="language.mx">
+            <de><![CDATA[Mexikanisch]]></de>
+            <en><![CDATA[Mexican]]></en>
+        </locale>
+        <locale name="language.fm">
+            <de><![CDATA[Mikronesien]]></de>
+            <en><![CDATA[Micronesia, Federated States of]]></en>
+        </locale>
+        <locale name="language.md">
+            <de><![CDATA[Moldawien]]></de>
+            <en><![CDATA[Moldova, Republic of]]></en>
+        </locale>
+        <locale name="language.mc">
+            <de><![CDATA[Monaco]]></de>
+            <en><![CDATA[Monaco]]></en>
+        </locale>
+        <locale name="language.mn">
+            <de><![CDATA[Mongolei]]></de>
+            <en><![CDATA[Mongolia]]></en>
+        </locale>
+        <locale name="language.ms">
+            <de><![CDATA[Montserrat]]></de>
+            <en><![CDATA[Montserrat]]></en>
+        </locale>
+        <locale name="language.ma">
+            <de><![CDATA[Marokko]]></de>
+            <en><![CDATA[Morocco]]></en>
+        </locale>
+        <locale name="language.mz">
+            <de><![CDATA[Mosambik]]></de>
+            <en><![CDATA[Mozambique]]></en>
+        </locale>
+        <locale name="language.mm">
+            <de><![CDATA[Myanmar]]></de>
+            <en><![CDATA[Myanmar]]></en>
+        </locale>
+        <locale name="language.na">
+            <de><![CDATA[Namibia]]></de>
+            <en><![CDATA[Namibia]]></en>
+        </locale>
+        <locale name="language.nr">
+            <de><![CDATA[Nauru]]></de>
+            <en><![CDATA[Nauru]]></en>
+        </locale>
+        <locale name="language.np">
+            <de><![CDATA[Nepal]]></de>
+            <en><![CDATA[Nepal]]></en>
+        </locale>
+        <locale name="language.nl">
+            <de><![CDATA[Niederlandisch]]></de>
+            <en><![CDATA[Dutch]]></en>
+        </locale>
+        <locale name="language.an">
+            <de><![CDATA[Niederlaendische Antillen]]></de>
+            <en><![CDATA[Netherlands Antilles]]></en>
+        </locale>
+        <locale name="language.nc">
+            <de><![CDATA[Neu-Kaledonien]]></de>
+            <en><![CDATA[New Caledonia]]></en>
+        </locale>
+        <locale name="language.nz">
+            <de><![CDATA[Neuseeland]]></de>
+            <en><![CDATA[New Zealand]]></en>
+        </locale>
+        <locale name="language.ni">
+            <de><![CDATA[Nikaragua]]></de>
+            <en><![CDATA[Nicaragua]]></en>
+        </locale>
+        <locale name="language.ne">
+            <de><![CDATA[Niger]]></de>
+            <en><![CDATA[Niger]]></en>
+        </locale>
+        <locale name="language.ng">
+            <de><![CDATA[Nigeria]]></de>
+            <en><![CDATA[Nigeria]]></en>
+        </locale>
+        <locale name="language.nu">
+            <de><![CDATA[Niue]]></de>
+            <en><![CDATA[Niue]]></en>
+        </locale>
+        <locale name="language.nf">
+            <de><![CDATA[Norfolk-Inseln]]></de>
+            <en><![CDATA[Norfolk Island]]></en>
+        </locale>
+        <locale name="language.mp">
+            <de><![CDATA[Noerdliche Marianen]]></de>
+            <en><![CDATA[Northern Mariana Islands]]></en>
+        </locale>
+        <locale name="language.no">
+            <de><![CDATA[Norwegisch]]></de>
+            <en><![CDATA[Norwegian]]></en>
+        </locale>
+        <locale name="language.om">
+            <de><![CDATA[Oman]]></de>
+            <en><![CDATA[Oman]]></en>
+        </locale>
+        <locale name="language.pk">
+            <de><![CDATA[Pakistani]]></de>
+            <en><![CDATA[Pakistani]]></en>
+        </locale>
+        <locale name="language.pw">
+            <de><![CDATA[Palau]]></de>
+            <en><![CDATA[Palau]]></en>
+        </locale>
+        <locale name="language.pa">
+            <de><![CDATA[Panama]]></de>
+            <en><![CDATA[Panama]]></en>
+        </locale>
+        <locale name="language.pg">
+            <de><![CDATA[Papua-Neuguinea]]></de>
+            <en><![CDATA[Papua New Guinea]]></en>
+        </locale>
+        <locale name="language.py">
+            <de><![CDATA[Paraguay]]></de>
+            <en><![CDATA[Paraguay]]></en>
+        </locale>
+        <locale name="language.pe">
+            <de><![CDATA[Peru]]></de>
+            <en><![CDATA[Peru]]></en>
+        </locale>
+        <locale name="language.ph">
+            <de><![CDATA[Philippinen]]></de>
+            <en><![CDATA[Philippines]]></en>
+        </locale>
+        <locale name="language.pn">
+            <de><![CDATA[Pitcairn]]></de>
+            <en><![CDATA[Pitcairn]]></en>
+        </locale>
+        <locale name="language.pl">
+            <de><![CDATA[Polnisch]]></de>
+            <en><![CDATA[Polish]]></en>
+        </locale>
+        <locale name="language.pt">
+            <de><![CDATA[Portugiesisch]]></de>
+            <en><![CDATA[Portuguese]]></en>
+        </locale>
+        <locale name="language.pr">
+            <de><![CDATA[Puerto ricanisch]]></de>
+            <en><![CDATA[Puerto Rican]]></en>
+        </locale>
+        <locale name="language.qa">
+            <de><![CDATA[Qatar]]></de>
+            <en><![CDATA[Qatar]]></en>
+        </locale>
+        <locale name="language.re">
+            <de><![CDATA[Reunion]]></de>
+            <en><![CDATA[Reunion]]></en>
+        </locale>
+        <locale name="language.ro">
+            <de><![CDATA[Rumaenien]]></de>
+            <en><![CDATA[Romania]]></en>
+        </locale>
+        <locale name="language.ru">
+            <de><![CDATA[Russisch]]></de>
+            <en><![CDATA[Russian]]></en>
+        </locale>
+        <locale name="language.rw">
+            <de><![CDATA[Kinyarwanda (Rwanda)]]></de>
+            <en><![CDATA[Kinyarwanda (Rwanda)]]></en>
+        </locale>
+        <locale name="language.kn">
+            <de><![CDATA[Saint Kitts and Nevis]]></de>
+            <en><![CDATA[Saint Kitts and Nevis]]></en>
+        </locale>
+        <locale name="language.lc">
+            <de><![CDATA[Saint Lucia]]></de>
+            <en><![CDATA[Saint Lucia]]></en>
+        </locale>
+        <locale name="language.vc">
+            <de><![CDATA[Saint Vincent und die Grenadinen]]></de>
+            <en><![CDATA[Saint Vincent and the Grenadines]]></en>
+        </locale>
+        <locale name="language.ws">
+            <de><![CDATA[Samoa]]></de>
+            <en><![CDATA[Samoa]]></en>
+        </locale>
+        <locale name="language.sm">
+            <de><![CDATA[San Marino]]></de>
+            <en><![CDATA[San Marino]]></en>
+        </locale>
+        <locale name="language.st">
+            <de><![CDATA[Sao Tome and Principe]]></de>
+            <en><![CDATA[Sao Tome and Principe]]></en>
+        </locale>
+        <locale name="language.sa">
+            <de><![CDATA[Saudi-Arabisch]]></de>
+            <en><![CDATA[Saudi Arabic]]></en>
+        </locale>
+        <locale name="language.sn">
+            <de><![CDATA[Senegal]]></de>
+            <en><![CDATA[Senegal]]></en>
+        </locale>
+        <locale name="language.sc">
+            <de><![CDATA[Seychellen]]></de>
+            <en><![CDATA[Seychelles]]></en>
+        </locale>
+        <locale name="language.sl">
+            <de><![CDATA[Sierra Leone]]></de>
+            <en><![CDATA[Sierra Leone]]></en>
+        </locale>
+        <locale name="language.sg">
+            <de><![CDATA[Singapur]]></de>
+            <en><![CDATA[Singapore]]></en>
+        </locale>
+        <locale name="language.sk">
+            <de><![CDATA[Slowakei]]></de>
+            <en><![CDATA[Slovakia (Slovak Republic)]]></en>
+        </locale>
+        <locale name="language.si">
+            <de><![CDATA[Slowenien]]></de>
+            <en><![CDATA[Slovenia]]></en>
+        </locale>
+        <locale name="language.sb">
+            <de><![CDATA[Solomon-Inseln]]></de>
+            <en><![CDATA[Solomon Islands]]></en>
+        </locale>
+        <locale name="language.so">
+            <de><![CDATA[Somalia]]></de>
+            <en><![CDATA[Somalia]]></en>
+        </locale>
+        <locale name="language.za">
+            <de><![CDATA[Suedafrikanisch]]></de>
+            <en><![CDATA[South African]]></en>
+        </locale>
+        <locale name="language.gs">
+            <de><![CDATA[South Georgia und die Suedlichen Sandwich-Inseln]]></de>
+            <en><![CDATA[South Georgia and the South Sandwich Islands]]></en>
+        </locale>
+        <locale name="language.es">
+            <de><![CDATA[Spanisch]]></de>
+            <en><![CDATA[Spanish]]></en>
+        </locale>
+        <locale name="language.lk">
+            <de><![CDATA[Sri Lanka]]></de>
+            <en><![CDATA[Sri Lanka]]></en>
+        </locale>
+        <locale name="language.sh">
+            <de><![CDATA[St. Helena]]></de>
+            <en><![CDATA[St. Helena]]></en>
+        </locale>
+        <locale name="language.pm">
+            <de><![CDATA[St. Pierre and Miquelon]]></de>
+            <en><![CDATA[St. Pierre and Miquelon]]></en>
+        </locale>
+        <locale name="language.sd">
+            <de><![CDATA[Sudan]]></de>
+            <en><![CDATA[Sudan]]></en>
+        </locale>
+        <locale name="language.sr">
+            <de><![CDATA[Surinam]]></de>
+            <en><![CDATA[Suriname]]></en>
+        </locale>
+        <locale name="language.sj">
+            <de><![CDATA[Svalbard und Jan Mayen Inseln]]></de>
+            <en><![CDATA[Svalbard and Jan Mayen Islands]]></en>
+        </locale>
+        <locale name="language.sz">
+            <de><![CDATA[Swaziland]]></de>
+            <en><![CDATA[Swaziland]]></en>
+        </locale>
+        <locale name="language.se">
+            <de><![CDATA[Schweden]]></de>
+            <en><![CDATA[Sweden]]></en>
+        </locale>
+        <locale name="language.ch">
+            <de><![CDATA[Schweiz]]></de>
+            <en><![CDATA[Switzerland]]></en>
+        </locale>
+        <locale name="language.sy">
+            <de><![CDATA[Syrische Arabische Republik]]></de>
+            <en><![CDATA[Syrian Arab Republic]]></en>
+        </locale>
+        <locale name="language.tw">
+            <de><![CDATA[Taiwan]]></de>
+            <en><![CDATA[Taiwan]]></en>
+        </locale>
+        <locale name="language.tj">
+            <de><![CDATA[Tadschikistan]]></de>
+            <en><![CDATA[Tajikistan]]></en>
+        </locale>
+        <locale name="language.tz">
+            <de><![CDATA[Tansania]]></de>
+            <en><![CDATA[Tanzania, United Republic of]]></en>
+        </locale>
+        <locale name="language.th">
+            <de><![CDATA[Thailand]]></de>
+            <en><![CDATA[Thailand]]></en>
+        </locale>
+        <locale name="language.tg">
+            <de><![CDATA[Togo]]></de>
+            <en><![CDATA[Togo]]></en>
+        </locale>
+        <locale name="language.tk">
+            <de><![CDATA[Tokelau]]></de>
+            <en><![CDATA[Tokelau]]></en>
+        </locale>
+        <locale name="language.to">
+            <de><![CDATA[Tonga]]></de>
+            <en><![CDATA[Tonga]]></en>
+        </locale>
+        <locale name="language.tt">
+            <de><![CDATA[Trinidad und Tobago]]></de>
+            <en><![CDATA[Trinidad and Tobago]]></en>
+        </locale>
+        <locale name="language.tn">
+            <de><![CDATA[Tunesien]]></de>
+            <en><![CDATA[Tunisia]]></en>
+        </locale>
+        <locale name="language.tr">
+            <de><![CDATA[Türkisch]]></de>
+            <en><![CDATA[Turkish]]></en>
+        </locale>
+        <locale name="language.tm">
+            <de><![CDATA[Turkmenistan]]></de>
+            <en><![CDATA[Turkmenistan]]></en>
+        </locale>
+        <locale name="language.tc">
+            <de><![CDATA[Turks und Caicos Inseln]]></de>
+            <en><![CDATA[Turks and Caicos Islands]]></en>
+        </locale>
+        <locale name="language.tv">
+            <de><![CDATA[Tuvalu]]></de>
+            <en><![CDATA[Tuvalu]]></en>
+        </locale>
+        <locale name="language.ug">
+            <de><![CDATA[Uganda]]></de>
+            <en><![CDATA[Uganda]]></en>
+        </locale>
+        <locale name="language.ua">
+            <de><![CDATA[Ukraine]]></de>
+            <en><![CDATA[Ukraine]]></en>
+        </locale>
+        <locale name="language.ae">
+            <de><![CDATA[Vereinigte Arabische Emirate]]></de>
+            <en><![CDATA[United Arab Emirates]]></en>
+        </locale>
+        <locale name="language.gb">
+            <de><![CDATA[Grossbritannien (Vereinigtes Koenigreich)]]></de>
+            <en><![CDATA[United Kingdom]]></en>
+        </locale>
+        <locale name="language.us">
+            <de><![CDATA[Vereinigte Staaten (USA)]]></de>
+            <en><![CDATA[United States]]></en>
+        </locale>
+        <locale name="language.um">
+            <de><![CDATA[Ueberseeinseln der USA]]></de>
+            <en><![CDATA[United States Minor Outlying Islands]]></en>
+        </locale>
+        <locale name="language.uy">
+            <de><![CDATA[Uruguay]]></de>
+            <en><![CDATA[Uruguay]]></en>
+        </locale>
+        <locale name="language.uz">
+            <de><![CDATA[Usbekistan]]></de>
+            <en><![CDATA[Uzbekistan]]></en>
+        </locale>
+        <locale name="language.vu">
+            <de><![CDATA[Vanuatu]]></de>
+            <en><![CDATA[Vanuatu]]></en>
+        </locale>
+        <locale name="language.va">
+            <de><![CDATA[Vatikan]]></de>
+            <en><![CDATA[Vatican City State (Holy See)]]></en>
+        </locale>
+        <locale name="language.ve">
+            <de><![CDATA[Venezuela]]></de>
+            <en><![CDATA[Venezuela]]></en>
+        </locale>
+        <locale name="language.vn">
+            <de><![CDATA[Vietnam]]></de>
+            <en><![CDATA[Viet Nam]]></en>
+        </locale>
+        <locale name="language.vg">
+            <de><![CDATA[Jungferninseln (Britisch)]]></de>
+            <en><![CDATA[Virgin Islands (British)]]></en>
+        </locale>
+        <locale name="language.vi">
+            <de><![CDATA[Jungferninseln (USA)]]></de>
+            <en><![CDATA[Virgin Islands (U.S.)]]></en>
+        </locale>
+        <locale name="language.wf">
+            <de><![CDATA[Wallis und Futuna]]></de>
+            <en><![CDATA[Wallis and Futuna Islands]]></en>
+        </locale>
+        <locale name="language.eh">
+            <de><![CDATA[Westsahara]]></de>
+            <en><![CDATA[Western Sahara]]></en>
+        </locale>
+        <locale name="language.ye">
+            <de><![CDATA[Jemen]]></de>
+            <en><![CDATA[Yemen]]></en>
+        </locale>
+        <locale name="language.yu">
+            <de><![CDATA[Jugoslawien]]></de>
+            <en><![CDATA[Yugoslavia]]></en>
+        </locale>
+        <locale name="language.zr">
+            <de><![CDATA[Zaire]]></de>
+            <en><![CDATA[Zaire]]></en>
+        </locale>
+        <locale name="language.zm">
+            <de><![CDATA[Sambia]]></de>
+            <en><![CDATA[Zambia]]></en>
+        </locale>
+        <locale name="language.zw">
+            <de><![CDATA[Simbabwe]]></de>
+            <en><![CDATA[Zimbabwe]]></en>
+        </locale>
+
         <locale name="projects.project.site.media.popup.window.activate.title">
             <de><![CDATA[Einfügen einer inaktiven Datei / Ordners]]></de>
             <en><![CDATA[Insert an inactive file / folder]]></en>
@@ -4949,9 +5911,17 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Datumsformat]]></de>
             <en><![CDATA[Date format]]></en>
         </locale>
+        <locale name="quiqqer.settings.languages.title">
+            <de><![CDATA[Allgemeine Sprach-Einstellungen]]></de>
+            <en><![CDATA[General language settings]]></en>
+        </locale>
+        <locale name="quiqqer.settings.language_settings">
+            <de><![CDATA[Sprach-Einstellungen]]></de>
+            <en><![CDATA[Language settings]]></en>
+        </locale>
         <locale name="quiqqer.settings.date_formats.title">
-            <de><![CDATA[Globales Datumsformat Einstellungen]]></de>
-            <en><![CDATA[Global date format settings]]></en>
+            <de><![CDATA[Globales Datumsformat]]></de>
+            <en><![CDATA[Global date format]]></en>
         </locale>
         <locale name="quiqqer.settings.date_formats.description" html="true">
             <de><![CDATA[<p>Einstellungen und oder mögliche Datumsformate finden Sie unter:</p>
@@ -4966,6 +5936,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
                         http://php.net/manual/en/function.strftime.php#refsect1-function.strftime-parameters
                     </a>
                 </p>]]></en>
+        </locale>
+        <locale name="quiqqer.settings.general.globals.standardLanguage">
+            <de><![CDATA[Standard Sprache]]></de>
+            <en><![CDATA[Standard language]]></en>
         </locale>
         <locale name="projects.project.site.btn.save.title">
             <de><![CDATA[Aktuelle Seite speichern]]></de>

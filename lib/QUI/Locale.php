@@ -16,7 +16,7 @@ use QUI;
  * @licence For copyright and license information, please view the /README.md
  * @package com.pcsg.qui
  *
- * @use     gettext - if enable
+ * @use     gettext - if enabled
  * @todo    integrate http://php.net/intl
  */
 class Locale
