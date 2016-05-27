@@ -33,36 +33,36 @@ class Utils
         if ($Item->getId() === 1) {
             /* @var $Item \QUI\Projects\Media\Folder */
             return array(
-                'icon' => 'fa fa-home',
-                'icon80x80' => URL_BIN_DIR . '80x80/media.png',
-                'id' => $Item->getId(),
-                'name' => $Item->getAttribute('name'),
-                'title' => $Item->getAttribute('title'),
-                'short' => $Item->getAttribute('short'),
-                'type' => 'folder',
-                'hasChildren' => $Item->hasChildren(),
+                'icon'          => 'fa fa-home',
+                'icon80x80'     => URL_BIN_DIR . '80x80/media.png',
+                'id'            => $Item->getId(),
+                'name'          => $Item->getAttribute('name'),
+                'title'         => $Item->getAttribute('title'),
+                'short'         => $Item->getAttribute('short'),
+                'type'          => 'folder',
+                'hasChildren'   => $Item->hasChildren(),
                 'hasSubfolders' => $Item->hasSubFolders(),
-                'active' => true,
-                'e_date' => $Item->getAttribute('e_date'),
-                'priority' => $Item->getAttribute('priority')
+                'active'        => true,
+                'e_date'        => $Item->getAttribute('e_date'),
+                'priority'      => $Item->getAttribute('priority')
             );
         }
 
         if ($Item->getType() == 'QUI\\Projects\\Media\\Folder') {
             /* @var $Item \QUI\Projects\Media\Folder */
             return array(
-                'icon' => 'fa fa-folder-o',
-                'icon80x80' => URL_BIN_DIR . '80x80/extensions/folder.png',
-                'id' => $Item->getId(),
-                'name' => $Item->getAttribute('name'),
-                'title' => $Item->getAttribute('title'),
-                'short' => $Item->getAttribute('short'),
-                'type' => 'folder',
-                'hasChildren' => $Item->hasChildren(),
+                'icon'          => 'fa fa-folder-o',
+                'icon80x80'     => URL_BIN_DIR . '80x80/extensions/folder.png',
+                'id'            => $Item->getId(),
+                'name'          => $Item->getAttribute('name'),
+                'title'         => $Item->getAttribute('title'),
+                'short'         => $Item->getAttribute('short'),
+                'type'          => 'folder',
+                'hasChildren'   => $Item->hasChildren(),
                 'hasSubfolders' => $Item->hasSubfolders(),
-                'active' => $Item->isActive(),
-                'e_date' => $Item->getAttribute('e_date'),
-                'priority' => $Item->getAttribute('priority')
+                'active'        => $Item->isActive(),
+                'e_date'        => $Item->getAttribute('e_date'),
+                'priority'      => $Item->getAttribute('priority')
             );
         }
 
@@ -70,19 +70,19 @@ class Utils
         $extension = self::getExtension($Item->getAttribute('file'));
 
         $result = array(
-            'icon' => self::getIconByExtension($extension),
+            'icon'      => self::getIconByExtension($extension),
             'icon80x80' => self::getIconByExtension($extension, '80x80'),
-            'id' => $Item->getId(),
-            'name' => $Item->getAttribute('name'),
-            'title' => $Item->getAttribute('title'),
-            'short' => $Item->getAttribute('short'),
-            'type' => $Item->getType() === 'QUI\\Projects\\Media\\Image'
+            'id'        => $Item->getId(),
+            'name'      => $Item->getAttribute('name'),
+            'title'     => $Item->getAttribute('title'),
+            'short'     => $Item->getAttribute('short'),
+            'type'      => $Item->getType() === 'QUI\\Projects\\Media\\Image'
                 ? 'image' : 'file',
-            'url' => $Item->getUrl(),
-            'active' => $Item->isActive(),
-            'e_date' => $Item->getAttribute('e_date'),
-            'mimetype' => $Item->getAttribute('mime_type'),
-            'priority' => $Item->getAttribute('priority')
+            'url'       => $Item->getUrl(),
+            'active'    => $Item->isActive(),
+            'e_date'    => $Item->getAttribute('e_date'),
+            'mimetype'  => $Item->getAttribute('mime_type'),
+            'priority'  => $Item->getAttribute('priority')
         );
 
         return $result;
@@ -112,51 +112,51 @@ class Utils
 
         $extensions['16x16'] = array(
             'folder' => URL_BIN_DIR . '16x16/extensions/folder.png',
-            'pdf' => URL_BIN_DIR . '16x16/extensions/pdf.png',
+            'pdf'    => URL_BIN_DIR . '16x16/extensions/pdf.png',
             // Images
-            'jpg' => URL_BIN_DIR . '16x16/extensions/image.png',
-            'jpeg' => URL_BIN_DIR . '16x16/extensions/image.png',
-            'gif' => URL_BIN_DIR . '16x16/extensions/image.png',
-            'png' => URL_BIN_DIR . '16x16/extensions/image.png',
+            'jpg'    => URL_BIN_DIR . '16x16/extensions/image.png',
+            'jpeg'   => URL_BIN_DIR . '16x16/extensions/image.png',
+            'gif'    => URL_BIN_DIR . '16x16/extensions/image.png',
+            'png'    => URL_BIN_DIR . '16x16/extensions/image.png',
             // Movie
-            'avi' => URL_BIN_DIR . '16x16/extensions/film.png',
-            'mpeg' => URL_BIN_DIR . '16x16/extensions/film.png',
-            'mpg' => URL_BIN_DIR . '16x16/extensions/film.png',
+            'avi'    => URL_BIN_DIR . '16x16/extensions/film.png',
+            'mpeg'   => URL_BIN_DIR . '16x16/extensions/film.png',
+            'mpg'    => URL_BIN_DIR . '16x16/extensions/film.png',
             // Archiv
-            'tar' => URL_BIN_DIR . '16x16/extensions/archive.png',
-            'rar' => URL_BIN_DIR . '16x16/extensions/archive.png',
-            'zip' => URL_BIN_DIR . '16x16/extensions/archive.png',
-            'gz' => URL_BIN_DIR . '16x16/extensions/archive.png',
-            '7z' => URL_BIN_DIR . '16x16/extensions/archive.png',
+            'tar'    => URL_BIN_DIR . '16x16/extensions/archive.png',
+            'rar'    => URL_BIN_DIR . '16x16/extensions/archive.png',
+            'zip'    => URL_BIN_DIR . '16x16/extensions/archive.png',
+            'gz'     => URL_BIN_DIR . '16x16/extensions/archive.png',
+            '7z'     => URL_BIN_DIR . '16x16/extensions/archive.png',
             //Office
 
             // Music
-            'mp3' => URL_BIN_DIR . '16x16/extensions/sound.png',
-            'ogg' => URL_BIN_DIR . '16x16/extensions/sound.png',
+            'mp3'    => URL_BIN_DIR . '16x16/extensions/sound.png',
+            'ogg'    => URL_BIN_DIR . '16x16/extensions/sound.png',
         );
 
         $extensions['80x80'] = array(
             'folder' => URL_BIN_DIR . '80x80/extensions/folder.png',
-            'pdf' => URL_BIN_DIR . '80x80/extensions/pdf.png',
+            'pdf'    => URL_BIN_DIR . '80x80/extensions/pdf.png',
             // Images
-            'jpg' => URL_BIN_DIR . '80x80/extensions/image.png',
-            'jpeg' => URL_BIN_DIR . '80x80/extensions/image.png',
-            'gif' => URL_BIN_DIR . '80x80/extensions/image.png',
-            'png' => URL_BIN_DIR . '80x80/extensions/image.png',
+            'jpg'    => URL_BIN_DIR . '80x80/extensions/image.png',
+            'jpeg'   => URL_BIN_DIR . '80x80/extensions/image.png',
+            'gif'    => URL_BIN_DIR . '80x80/extensions/image.png',
+            'png'    => URL_BIN_DIR . '80x80/extensions/image.png',
             // Movie
-            'avi' => URL_BIN_DIR . '80x80/extensions/film.png',
-            'mpeg' => URL_BIN_DIR . '80x80/extensions/film.png',
-            'mpg' => URL_BIN_DIR . '80x80/extensions/film.png',
+            'avi'    => URL_BIN_DIR . '80x80/extensions/film.png',
+            'mpeg'   => URL_BIN_DIR . '80x80/extensions/film.png',
+            'mpg'    => URL_BIN_DIR . '80x80/extensions/film.png',
             // Archiv
-            'tar' => URL_BIN_DIR . '80x80/extensions/archive.png',
-            'rar' => URL_BIN_DIR . '80x80/extensions/archive.png',
-            'zip' => URL_BIN_DIR . '80x80/extensions/archive.png',
-            'gz' => URL_BIN_DIR . '80x80/extensions/archive.png',
-            '7z' => URL_BIN_DIR . '80x80/extensions/archive.png',
+            'tar'    => URL_BIN_DIR . '80x80/extensions/archive.png',
+            'rar'    => URL_BIN_DIR . '80x80/extensions/archive.png',
+            'zip'    => URL_BIN_DIR . '80x80/extensions/archive.png',
+            'gz'     => URL_BIN_DIR . '80x80/extensions/archive.png',
+            '7z'     => URL_BIN_DIR . '80x80/extensions/archive.png',
             //Office
 
             // Music
-            'mp3' => URL_BIN_DIR . '80x80/extensions/sound.png',
+            'mp3'    => URL_BIN_DIR . '80x80/extensions/sound.png',
         );
 
         if (isset($extensions[$size][$ext])) {
@@ -164,6 +164,26 @@ class Utils
         }
 
         return URL_BIN_DIR . $size . '/extensions/empty.png';
+    }
+
+    /**
+     * Return the fitting font awesome class
+     * @param \QUI\Projects\Media\Item $Item
+     * @return string
+     */
+    public static function getFronAwesomIconByItem($Item)
+    {
+        if (self::isImage($Item)) {
+            return 'fa-file-photo-o';
+        }
+
+        $extension = self::getExtension($Item->getAttribute('file'));
+
+        if ($extension == 'pdf') {
+            return 'fa-file-pdf-o';
+        }
+
+        return 'fa-file-o';
     }
 
     /**
@@ -391,7 +411,7 @@ class Utils
 
             } catch (QUI\Exception $Exception) {
                 Log::addDebug($Exception->getMessage(), array(
-                    'url' => $output,
+                    'url'   => $output,
                     'trace' => $Exception->getTrace()
                 ));
 
@@ -399,7 +419,7 @@ class Utils
 
             } catch (\Exception $Exception) {
                 Log::addDebug($Exception->getMessage(), array(
-                    'url' => $output,
+                    'url'   => $output,
                     'trace' => $Exception->getTrace()
                 ));
 
@@ -711,7 +731,7 @@ class Utils
         $fileid = (int)$fileid;
 
         $result = QUI::getDataBase()->fetch(array(
-            'from' => $Media->getTable(),
+            'from'  => $Media->getTable(),
             'where' => array(
                 'id' => $fileid
             ),

@@ -5,7 +5,7 @@
   "unused": true,
   "mootools": true,
   "browser": true,
-  "predef": [
+  "globals": [
     "define",
     "require",
     "moofx",
@@ -30,6 +30,7 @@
     "QUIQQER_ONLOAD_MODULES",
     "QUIQQER_SITE",
     "QUIQQER",
-    "JSON"
+    "JSON",
+    "Element"
   ]
 }
