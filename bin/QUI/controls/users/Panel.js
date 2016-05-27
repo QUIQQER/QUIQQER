@@ -638,6 +638,10 @@ define('controls/users/Panel', [
             }).then(function (result) {
                 var Grid = self.getGrid();
 
+                self.setAttribute('title', Locale.get(lg, 'users.panel.title'));
+                self.setAttribute('icon', 'fa fa-user');
+                self.refresh();
+
                 if (!Grid) {
                     self.Loader.hide();
                     return;
@@ -646,10 +650,6 @@ define('controls/users/Panel', [
                 self.$parseDataForGrid(result.data);
 
                 Grid.setData(result);
-
-                self.setAttribute('title', Locale.get(lg, 'users.panel.title'));
-                self.setAttribute('icon', 'fa fa-user');
-                self.refresh();
 
                 if (typeof callback === 'function') {
                     callback();
