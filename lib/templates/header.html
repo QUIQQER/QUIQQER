@@ -15,17 +15,19 @@
     <meta name="page-topic" content="{$Site->getAttribute('title')|escape:"html"}" />
 
     <meta name="date" content="{$Site->getAttribute('e_date')}" />
-    <meta name="lang" content="{$Project->getLang()}" />
     <meta name="copyright" content="{$Project->getConfig('meta.copyright')}" />
     <meta name="publisher" content="{$Project->getConfig('meta.publisher')}" />
     {/if}
 
     <meta name="description" content="{$Site->getAttribute('meta.description')|escape:"html"}" />
     <meta name="keywords" content="{$Site->getAttribute('meta.keywords')|escape:"html"}" />
+
     {if $Locale->no_translation}
     <meta name="robots" content="noindex" />
+    <meta name="googlebot" content="noindex"/>
     {else}
     <meta name="robots" content="{$Site->getAttribute('meta.robots')}" />
+    <meta name="googlebot" content="{$Site->getAttribute('meta.robots')}"/>
     {/if}
 
     <meta name="generator" content="{$smarty.const.GENERATOR}" />
@@ -34,8 +36,17 @@
     <!-- [end] meta -->
 
     {if $Project->getConfig('favicon')}
-    <link rel="shortcut icon" href="{$Project->getConfig('favicon')}" type="image/png" />
     <link rel="icon" href="{$Project->getConfig('favicon')}" type="image/png" />
+
+    <!-- For IE 11, Chrome, Firefox, Safari, Opera -->
+    <link rel="icon" href="{image src=$Project->getConfig('favicon') width=16 height=16 onlysrc=1}"
+          sizes="16x16" type="image/png"/>
+    <link rel="icon" href="{image src=$Project->getConfig('favicon') width=32 height=32 onlysrc=1}"
+          sizes="32x32" type="image/png"/>
+    <link rel="icon" href="{image src=$Project->getConfig('favicon') width=48 height=48 onlysrc=1}"
+          sizes="48x48" type="image/png"/>
+    <link rel="icon" href="{image src=$Project->getConfig('favicon') width=62 height=62 onlysrc=1}"
+          sizes="62x62" type="image/png"/>
     {/if}
 
     <!--
