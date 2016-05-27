@@ -2076,6 +2076,7 @@ define('controls/grid/Grid', [
 
                 if (columnModel.dataType == "node") {
                     if (typeof rowdata[columnDataIndex] != 'undefined' &&
+                        rowdata[columnDataIndex] &&
                         rowdata[columnDataIndex].nodeName) {
                         div.appendChild(
                             rowdata[columnDataIndex]
