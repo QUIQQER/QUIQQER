@@ -27,7 +27,6 @@
  * @require Locale
  * @require css!controls/upload/Form.css
  */
-
 define('controls/upload/Form', [
 
     'qui/QUI',

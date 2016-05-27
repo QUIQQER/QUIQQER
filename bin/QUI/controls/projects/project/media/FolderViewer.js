@@ -27,8 +27,10 @@ define('controls/projects/project/media/FolderViewer', [
     'qui/utils/String',
     'classes/request/Upload',
     'controls/upload/Form',
+    'utils/Panels',
     'Projects',
     'Locale',
+    'Ajax',
 
     'css!controls/projects/project/media/FolderViewer.css'
 
@@ -40,8 +42,10 @@ define('controls/projects/project/media/FolderViewer', [
              QUIStringUtils,
              RequestUpload,
              UploadForm,
+             PanelUtils,
              Projects,
-             QUILocale) {
+             QUILocale,
+             QUIAjax) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -55,6 +59,7 @@ define('controls/projects/project/media/FolderViewer', [
             'preview',
             'diashow',
             'openUpload',
+            'openInMedia',
             '$onCreate',
             '$onInject',
             '$onDrop'
@@ -68,7 +73,8 @@ define('controls/projects/project/media/FolderViewer', [
             parentId     : false, // {number} parent id if the folder not exists
             filetype     : ['image'], // types : image, file, folder
             createMessage: QUILocale.get('quiqqer/quiqqer', 'folderviewer.create.folder'),
-            newFolderName: false
+            newFolderName: false,
+            autoactivate : false // activate files after the upload
         },
 
         initialize: function (options) {
@@ -129,6 +135,16 @@ define('controls/projects/project/media/FolderViewer', [
                     click: this.openUpload
                 },
                 disabled : true
+            }).inject(this.$Buttons);
+
+            this.$MediaOpen = new QUIButton({
+                icon  : 'fa fa-picture-o',
+                styles: {
+                    'float': 'right'
+                },
+                events: {
+                    onClick: this.openInMedia
+                }
             }).inject(this.$Buttons);
 
 
@@ -342,7 +358,23 @@ define('controls/projects/project/media/FolderViewer', [
                         onCancel  : function () {
                             Sheet.fireEvent('close');
                         },
-                        onComplete: function () {
+                        onComplete: function (Form, File, result) {
+                            if (this.getAttribute('autoactivate') && result && "url" in result) {
+                                // activate the file
+                                var url    = result.url,
+                                    params = QUIStringUtils.getUrlParams(url);
+
+                                QUIAjax.post('ajax_media_activate', function () {
+                                    Sheet.fireEvent('close');
+                                    this.refresh();
+                                }.bind(this), {
+                                    project: params.project,
+                                    fileid : params.id
+                                });
+
+                                return;
+                            }
+
                             Sheet.fireEvent('close');
                             this.refresh();
                         }.bind(this)
@@ -609,6 +641,18 @@ define('controls/projects/project/media/FolderViewer', [
             this.getElm().getElements('.create-folder-container').destroy();
             this.$Buttons.setStyle('display', null);
             this.$Container.setStyle('display', null);
+        },
+
+        /**
+         * open the folder
+         */
+        openInMedia: function () {
+            var project  = this.getAttribute('project');
+            var folderId = this.getAttribute('folderId');
+
+            PanelUtils.openMediaPanel(project, {
+                fileid: folderId
+            });
         }
     });
 });

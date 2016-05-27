@@ -14,7 +14,23 @@ $QUM = new QUI\Upload\Manager();
 QUI::getAjax();
 
 try {
-    $QUM->init();
+    $uploadResult = $QUM->init();
+
+    if (!empty($uploadResult)) {
+        $result = array(
+            'result'      => $uploadResult,
+            'maintenance' => QUI::conf('globals', 'maintenance') ? 1 : 0
+        );
+
+        if (QUI::getMessagesHandler()) {
+            $result['message_handler'] = QUI::getMessagesHandler()->getMessagesAsArray(
+                QUI::getUserBySession()
+            );
+        }
+
+        // maintenance flag
+        echo '<quiqqer>' . json_encode($result) . '</quiqqer>';
+    }
 
 } catch (QUI\Exception $Exception) {
     QUI\System\Log::writeException($Exception);
