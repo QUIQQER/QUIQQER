@@ -599,6 +599,10 @@ define('controls/upload/Form', [
                 params.extract = extract;
             }
 
+            if (!files.length) {
+                return;
+            }
+
             require(['UploadManager'], function (UploadManager) {
                 self.fireEvent('begin', [self]);
 
