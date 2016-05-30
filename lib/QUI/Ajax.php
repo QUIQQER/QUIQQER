@@ -114,7 +114,7 @@ class Ajax extends QUI\QDOM
 
         self::$callables[$name] = array(
             'callable' => $function,
-            'params' => $reg_vars
+            'params'   => $reg_vars
         );
 
         if ($user_perm) {
@@ -199,10 +199,9 @@ class Ajax extends QUI\QDOM
         QUI::getSession()->getSymfonySession()->save();
 
         if (QUI::getMessagesHandler()) {
-            $result['message_handler'] = QUI::getMessagesHandler()
-                ->getMessagesAsArray(
-                    QUI::getUserBySession()
-                );
+            $result['message_handler'] = QUI::getMessagesHandler()->getMessagesAsArray(
+                QUI::getUserBySession()
+            );
         }
 
         // maintenance flag
@@ -302,8 +301,8 @@ class Ajax extends QUI\QDOM
 
         QUI::getEvents()->fireEvent('ajaxCall', array(
             'function' => $_rf,
-            'result' => $return,
-            'params' => $params
+            'result'   => $return,
+            'params'   => $params
         ));
 
 
@@ -419,7 +418,7 @@ class Ajax extends QUI\QDOM
                     'Exception' => array(
                         'message' => 'Zeitüberschreitung der Anfrage.' .
                                      'Bitte versuchen Sie es erneut oder zu einem späteren Zeitpunkt.',
-                        'code' => 504
+                        'code'    => 504
                     )
                 );
 
