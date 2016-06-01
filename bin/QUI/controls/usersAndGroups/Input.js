@@ -193,7 +193,7 @@ define('controls/usersAndGroups/Input', [
             if (value === '' && this.getAttribute('value')) {
                 value = this.getAttribute('value');
             }
-            
+
             if (value) {
                 var val = value.split(',');
 
