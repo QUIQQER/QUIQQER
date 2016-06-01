@@ -10,7 +10,7 @@ use QUI;
 
 /**
  * Helper for users group strings
- * ug-strings = u19939939,g9929299299,g999929929292,u882828282
+ * UG-Strings = u19939939,g9929299299,g999929929292,u882828282
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
@@ -53,6 +53,36 @@ class UserGroups
         }
 
         return $result;
+    }
+
+    /**
+     * @param array $array
+     * @return string
+     */
+    public static function parseUGArrayToString($array)
+    {
+        $result = '';
+
+        if (!isset($array['users'])) {
+            return $result;
+        }
+
+
+        if (!isset($array['groups'])) {
+            return $result;
+        }
+
+        $list = array();
+
+        foreach ($array['users'] as $uid) {
+            $list[] = 'u' . $uid;
+        }
+
+        foreach ($array['groups'] as $gid) {
+            $list[] = 'g' . $gid;
+        }
+
+        return implode(',', $list);
     }
 
     /**
@@ -109,5 +139,28 @@ class UserGroups
         }
 
         return false;
+    }
+
+    /**
+     * is the string an UG-String
+     *
+     * @param string $ugString
+     * @return bool
+     */
+    public static function isUserGroupString($ugString)
+    {
+        if (!is_string($ugString)) {
+            return false;
+        }
+
+        $ugString = explode(',', $ugString);
+
+        foreach ($ugString as $entry) {
+            if (strpos($entry, 'g') === false && strpos($entry, 'u') === false) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
