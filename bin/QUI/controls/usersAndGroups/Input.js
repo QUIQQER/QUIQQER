@@ -55,7 +55,8 @@ define('controls/usersAndGroups/Input', [
             multible: true,  // select more than one entry?
             name    : '',    // string
             styles  : false, // object
-            label   : false  // text string or a <label> DOMNode Element
+            label   : false,  // text string or a <label> DOMNode Element
+            value   : false
         },
 
         initialize: function (options, Input) {
@@ -183,8 +184,18 @@ define('controls/usersAndGroups/Input', [
 
 
             // load values
+            var value = '';
+
             if (!this.$Input.value || this.$Input.value !== '') {
-                var val = this.$Input.value.split(',');
+                value = this.$Input.value;
+            }
+
+            if (value === '' && this.getAttribute('value')) {
+                value = this.getAttribute('value');
+            }
+            
+            if (value) {
+                var val = value.split(',');
 
                 for (var i = 0, len = val.length; i < len; i++) {
                     switch (val[i].substr(0, 1)) {
@@ -213,6 +224,14 @@ define('controls/usersAndGroups/Input', [
             }
 
             this.create();
+        },
+
+        /**
+         * Return the value, the UG-String
+         * @returns {String}
+         */
+        getValue: function () {
+            return this.$Input.value;
         },
 
         /**
