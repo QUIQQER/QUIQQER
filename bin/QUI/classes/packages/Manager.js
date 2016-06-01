@@ -265,6 +265,21 @@ define('classes/packages/Manager', [
                     }
                 });
             });
+        },
+
+        /**
+         * Return the package config
+         *
+         * @param {String} pkg
+         * @returns {*}
+         */
+        getConfig: function (pkg) {
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_system_packages_getConfig', resolve, {
+                    'package': pkg,
+                    onError  : reject
+                });
+            });
         }
     });
 });
