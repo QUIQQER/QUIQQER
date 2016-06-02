@@ -797,7 +797,7 @@ define('controls/projects/project/media/Panel', [
             this.$Map = new MediaSitemap({
                 project: Project.getName(),
                 lang   : Project.getLang(),
-                id     : this.getAttribute('startid'),
+                id     : 1,
                 events : {
                     onItemClick: function (Item) {
                         self.openID(

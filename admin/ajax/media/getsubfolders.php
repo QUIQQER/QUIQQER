@@ -11,28 +11,39 @@
  */
 QUI::$Ajax->registerFunction(
     'ajax_media_getsubfolders',
-    function ($project, $fileid) {
+    function ($project, $fileid, $params) {
         $Project = QUI\Projects\Manager::getProject($project);
         $Media   = $Project->getMedia();
         $File    = $Media->get($fileid);
+        $params  = json_decode($params, true);
 
         if (!QUI\Projects\Media\Utils::isFolder($File)) {
-            throw new QUI\Exception(
-                'Bitte wählen Sie ein Ordner aus um die Dateie zu verschieben.'
-            );
+            throw new QUI\Exception(array(
+                'quiqqer/system',
+                'exception.media.not.a.folder'
+            ));
         }
 
         /* @var $File \QUI\Projects\Media\Folder */
-        $children  = array();
-        $_children = $File->getFolders();
+        $children = array();
+        $folders  = $File->getFolders($params);
+
+        // count
+        $params['count'] = true;
+        unset($params['limit']);
+
+        $count = $File->getFolders($params);
 
         // create children data
-        foreach ($_children as $Child) {
+        foreach ($folders as $Child) {
             $children[] = QUI\Projects\Media\Utils::parseForMediaCenter($Child);
         }
 
-        return $children;
+        return array(
+            'children' => $children,
+            'count'    => $count
+        );
     },
-    array('project', 'fileid'),
+    array('project', 'fileid', 'params'),
     'Permission::checkAdminUser'
 );

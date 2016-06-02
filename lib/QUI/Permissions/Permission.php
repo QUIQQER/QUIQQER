@@ -227,6 +227,10 @@ class Permission
             return true;
         }
 
+        if (!$User) {
+            $User = self::getUser();
+        }
+
         if (empty($permissions[$perm])) {
             throw new QUI\Permissions\Exception(
                 QUI::getLocale()->get(
@@ -235,7 +239,7 @@ class Permission
                 ),
                 403,
                 array(
-                    'userid' => $User->getId(),
+                    'userid'   => $User->getId(),
                     'username' => $User->getName()
                 )
             );
@@ -247,10 +251,6 @@ class Permission
         $perm_value = $permissions[$perm];
 
         $check = false;
-
-        if (!$User) {
-            $User = self::getUser();
-        }
 
         switch ($perm_data['type']) {
             case 'bool':
