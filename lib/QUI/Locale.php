@@ -83,7 +83,7 @@ class Locale
     /**
      * Set the current language
      *
-     * @param string $lang
+     * @param string $lang - en, en_EN, de, de_DE, de_AT
      */
     public function setCurrent($lang)
     {
@@ -98,6 +98,20 @@ class Locale
     public function getCurrent()
     {
         return $this->current;
+    }
+
+    /**
+     * @param $number
+     */
+    public function formatNumber($number)
+    {
+        $Formater = new \NumberFormatter();
+
+
+//  "numbering_system": "latn",
+//	"decimal_pattern": "#,##0.###",
+//	"percent_pattern": "#,##0%",
+
     }
 
     /**

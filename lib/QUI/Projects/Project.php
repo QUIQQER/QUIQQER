@@ -469,15 +469,19 @@ class Project
     {
         switch ($att) {
             case "name":
-                return $this->name;
+                return $this->getName();
+                break;
+
+            case "lang":
+                return $this->getLang();
+                break;
+
+            case "e_date":
+                return $this->getLastEditDate();
                 break;
 
             case "config":
                 return $this->config;
-                break;
-
-            case "lang":
-                return $this->lang;
                 break;
 
             case "default_lang":
@@ -504,10 +508,6 @@ class Project
             case "media_table":
                 # Anzeigen demo_de_sites
                 return $this->name . '_de_media';
-                break;
-
-            case "e_date":
-                return $this->getLastEditDate();
                 break;
 
             default:

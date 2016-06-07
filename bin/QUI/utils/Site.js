@@ -13,7 +13,6 @@
  * @event onOpenCreateChild [ Win, ParentSite ]
  * @event onOpenCreateChildSubmit [ value, Win, ParentSite ]
  */
-
 define('utils/Site', [
 
     'qui/QUI',
