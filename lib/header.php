@@ -23,6 +23,7 @@ QUI::load();
 QUI\Utils\System\Debug::marker('header start');
 
 ini_set("error_log", VAR_DIR . 'log/error' . date('-Y-m-d') . '.log');
+ini_set('session.save_path', VAR_DIR . 'sessions');
 
 set_error_handler("exception_error_handler");
 
