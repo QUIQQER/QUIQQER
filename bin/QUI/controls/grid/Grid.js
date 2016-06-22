@@ -282,7 +282,10 @@ define('controls/grid/Grid', [
                     var var1 = a.getChildren()[i].innerHTML.trim(),
                         var2 = b.getChildren()[i].innerHTML.trim();
 
-                    if (dataType == 'number' || dataType == 'integer' || dataType == 'int') {
+                    if (dataType == 'number' ||
+                        dataType == 'integer' ||
+                        dataType == 'int') {
+
                         var1 = parseFloat(el.stripHTML(var1));
                         var2 = parseFloat(el.stripHTML(var2));
 
@@ -293,7 +296,7 @@ define('controls/grid/Grid', [
                         return var2 - var1;
                     }
 
-                    if (dataType == 'string') {
+                    if (dataType == 'string' || dataType == 'text') {
                         var1 = var1.toUpperCase();
                         var2 = var2.toUpperCase();
 
@@ -302,10 +305,10 @@ define('controls/grid/Grid', [
                         }
 
                         if (el.sortBy == 'ASC') {
-                            return (var1 < var2);
+                            return var1 < var2 ? 1 : -1;
                         }
 
-                        return (var1 > var2);
+                        return var1 > var2 ? 1 : -1;
                     }
 
                     if (dataType == 'date') {
