@@ -98,7 +98,7 @@ define('controls/grid/Grid', [
             pagination    : false,
             page          : 1,
             perPageOptions: [5, 10, 20, 50, 75, 100, 150, 200, 250, 500, 750, 1000, 2500, 5000],
-            perPage       : 20,
+            perPage       : 100,
             filterInput   : true,
             // dataProvider
             dataProvider  : null,
@@ -169,9 +169,13 @@ define('controls/grid/Grid', [
             });
 
             this.draw();
-            this.resize();
             this.reset();
+            this.resize();
             this.loadData();
+
+            (function () {
+                this.resize();
+            }).delay(500, this);
         },
 
         getElm: function () {
