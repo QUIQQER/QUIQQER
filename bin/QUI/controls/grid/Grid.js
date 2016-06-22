@@ -1090,6 +1090,11 @@ define('controls/grid/Grid', [
             var i, len;
 
             for (i = 0, len = btns.length; i < len; i++) {
+                if (QUI.Controls.isControl(btns[i])) {
+                    buttons.push(btns[i]);
+                    continue;
+                }
+                
                 if (!btns[btns[i].name]) {
                     continue;
                 }
@@ -2216,34 +2221,28 @@ define('controls/grid/Grid', [
 
                 var node, Btn;
 
-                //var cBt, fBt, spanBt;
-                //var func_fbOver = function() {
-                //    this.addClass('fbOver');
-                //};
-                //
-                //var func_fbOut = function() {
-                //    this.removeClass('fbOver');
-                //};
-
                 for (i = 0, len = bt.length; i < len; i++) {
                     if (bt[i].type == 'seperator') {
                         new QUISeperator().inject(tDiv);
-
-                        // new Element('div.btnseparator').inject( tDiv );
                         continue;
                     }
 
                     bt[i].List = this;
                     bt[i].Grid = this;
 
-                    Btn = new QUIButton(bt[i]);
+                    if (QUI.Controls.isControl(bt[i])) {
+                        Btn = bt[i];
+                    } else {
+                        Btn = new QUIButton(bt[i]);
+                    }
 
-                    bt[bt[i].name] = Btn;
+                    bt[Btn.getAttribute('name')] = Btn;
 
-                    node = Btn.create();
+                    Btn.inject(tDiv);
+
+                    node = Btn.getElm();
                     node.removeProperty('tabindex'); // focus eigenschaft nehmen
                     node.addClass('btn-silver');
-                    node.inject(tDiv);
 
                     var Item = new QUIContextItem({
                         text  : Btn.getAttribute('text'),
