@@ -26,6 +26,10 @@ html, body {
     background: rgba(0, 0, 0, .26);
 }
 
+.qui-contextmenu-container::-webkit-scrollbar-thumb {
+    background: #2F8FC6;
+}
+
 th {
     text-align: left;
 }

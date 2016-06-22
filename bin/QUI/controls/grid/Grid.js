@@ -98,7 +98,7 @@ define('controls/grid/Grid', [
             pagination    : false,
             page          : 1,
             perPageOptions: [5, 10, 20, 50, 75, 100, 150, 200, 250, 500, 750, 1000, 2500, 5000],
-            perPage       : 20,
+            perPage       : 100,
             filterInput   : true,
             // dataProvider
             dataProvider  : null,
@@ -169,9 +169,13 @@ define('controls/grid/Grid', [
             });
 
             this.draw();
-            this.resize();
             this.reset();
+            this.resize();
             this.loadData();
+
+            (function () {
+                this.resize();
+            }).delay(500, this);
         },
 
         getElm: function () {
@@ -278,7 +282,10 @@ define('controls/grid/Grid', [
                     var var1 = a.getChildren()[i].innerHTML.trim(),
                         var2 = b.getChildren()[i].innerHTML.trim();
 
-                    if (dataType == 'number' || dataType == 'integer' || dataType == 'int') {
+                    if (dataType == 'number' ||
+                        dataType == 'integer' ||
+                        dataType == 'int') {
+
                         var1 = parseFloat(el.stripHTML(var1));
                         var2 = parseFloat(el.stripHTML(var2));
 
@@ -289,7 +296,7 @@ define('controls/grid/Grid', [
                         return var2 - var1;
                     }
 
-                    if (dataType == 'string') {
+                    if (dataType == 'string' || dataType == 'text') {
                         var1 = var1.toUpperCase();
                         var2 = var2.toUpperCase();
 
@@ -298,10 +305,10 @@ define('controls/grid/Grid', [
                         }
 
                         if (el.sortBy == 'ASC') {
-                            return (var1 < var2);
+                            return var1 < var2 ? 1 : -1;
                         }
 
-                        return (var1 > var2);
+                        return var1 > var2 ? 1 : -1;
                     }
 
                     if (dataType == 'date') {
