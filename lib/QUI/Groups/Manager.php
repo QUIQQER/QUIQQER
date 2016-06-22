@@ -18,9 +18,9 @@ use QUI\Utils\Security\Orthos;
  */
 class Manager extends QUI\QDOM
 {
-    const TYPE_BOOL = 1;
-    const TYPE_TEXT = 2;
-    const TYPE_INT = 3;
+    const TYPE_BOOL    = 1;
+    const TYPE_TEXT    = 2;
+    const TYPE_INT     = 3;
     const TYPE_VARCHAR = 4;
 
     /**
@@ -66,13 +66,13 @@ class Manager extends QUI\QDOM
         $Table    = $DataBase->table();
 
         $Table->addColumn(self::table(), array(
-            'id' => 'int(11) NOT NULL',
-            'name' => 'varchar(50) NOT NULL',
-            'admin' => 'tinyint(2) NOT NULL',
-            'parent' => 'int(11) NOT NULL',
-            'active' => 'tinyint(1) NOT NULL',
+            'id'      => 'int(11) NOT NULL',
+            'name'    => 'varchar(50) NOT NULL',
+            'admin'   => 'tinyint(2) NOT NULL',
+            'parent'  => 'int(11) NOT NULL',
+            'active'  => 'tinyint(1) NOT NULL',
             'toolbar' => 'varchar(128) NULL',
-            'rights' => 'text'
+            'rights'  => 'text'
         ));
 
         $Table->setPrimaryKey(self::table(), 'id');
@@ -81,7 +81,7 @@ class Manager extends QUI\QDOM
 
         // Guest
         $result = QUI::getDataBase()->fetch(array(
-            'from' => $this->table(),
+            'from'  => $this->table(),
             'where' => array(
                 'id' => 0
             )
@@ -91,7 +91,7 @@ class Manager extends QUI\QDOM
             QUI\System\Log::addNotice('Guest Group does not exist.');
 
             QUI::getDataBase()->insert($this->table(), array(
-                'id' => 0,
+                'id'   => 0,
                 'name' => 'Guest'
             ));
 
@@ -110,7 +110,7 @@ class Manager extends QUI\QDOM
 
         // Everyone
         $result = QUI::getDataBase()->fetch(array(
-            'from' => $this->table(),
+            'from'  => $this->table(),
             'where' => array(
                 'id' => 1
             )
@@ -120,7 +120,7 @@ class Manager extends QUI\QDOM
             QUI\System\Log::addNotice('Everyone Group does not exist...');
 
             QUI::getDataBase()->insert($this->table(), array(
-                'id' => 1,
+                'id'   => 1,
                 'name' => 'Everyone'
             ));
 
@@ -208,6 +208,53 @@ class Manager extends QUI\QDOM
     }
 
     /**
+     * Get all groups
+     *
+     * @param boolean $objects - as objects=true, as array=false
+     *
+     * @return array
+     */
+    public function getAllGroups($objects = false)
+    {
+        if ($objects == false) {
+            return QUI::getDataBase()->fetch(array(
+                'from'  => self::table(),
+                'order' => 'name'
+            ));
+        }
+
+        $result = array();
+        $ids    = $this->getAllGroupIds();
+
+        foreach ($ids as $id) {
+            try {
+                $result[] = $this->get((int)$id['id']);
+
+            } catch (QUI\Exception $Exception) {
+                // nothing
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Returns all group ids
+     *
+     * @return array
+     */
+    public function getAllGroupIds()
+    {
+        $result = QUI::getDataBase()->fetch(array(
+            'select' => 'id',
+            'from'   => self::table(),
+            'order'  => 'name'
+        ));
+
+        return $result;
+    }
+
+    /**
      * Search / Scanns the groups
      *
      * @param array $params - QUI\Database\DB params
@@ -284,9 +331,9 @@ class Manager extends QUI\QDOM
         );
 
         $allowSearchFields = array(
-            'id' => true,
-            'name' => true,
-            'admin' => true,
+            'id'     => true,
+            'name'   => true,
+            'admin'  => true,
             'parent' => true,
             'active' => true
         );
@@ -301,7 +348,7 @@ class Manager extends QUI\QDOM
         if (isset($params['count'])) {
             $_fields['count'] = array(
                 'select' => 'id',
-                'as' => 'count'
+                'as'     => 'count'
             );
         }
 
@@ -338,7 +385,7 @@ class Manager extends QUI\QDOM
         if (isset($params['search']) && !isset($params['searchSettings'])) {
             $_fields['where'] = array(
                 'name' => array(
-                    'type' => '%LIKE%',
+                    'type'  => '%LIKE%',
                     'value' => $params['search']
                 )
             );
@@ -353,7 +400,7 @@ class Manager extends QUI\QDOM
                 }
 
                 $_fields['where_or'][$field] = array(
-                    'type' => '%LIKE%',
+                    'type'  => '%LIKE%',
                     'value' => $params['search']
                 );
             }

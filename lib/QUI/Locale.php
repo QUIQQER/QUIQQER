@@ -260,7 +260,7 @@ class Locale
     public function set($lang, $group, $key, $value = false)
     {
         if (!isset($this->langs[$lang])) {
-            $this->langs[$lang] = $lang;
+            $this->langs[$lang] = array();
         }
 
         if (!isset($this->langs[$lang][$group])) {
