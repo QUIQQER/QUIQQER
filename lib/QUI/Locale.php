@@ -101,17 +101,29 @@ class Locale
     }
 
     /**
-     * @param $number
+     * Format a number
+     *
+     * @param float|integer $number
+     * @param int $format
+     * @return string
      */
-    public function formatNumber($number)
+    public function formatNumber($number, $format = \NumberFormatter::DECIMAL)
     {
-        $Formater = new \NumberFormatter();
+        $localeCode = QUI::getLocale()->getLocalesByLang(
+            QUI::getLocale()->getCurrent()
+        );
 
+        $Formatter = new \NumberFormatter($localeCode[0], $format);
 
-//  "numbering_system": "latn",
-//	"decimal_pattern": "#,##0.###",
-//	"percent_pattern": "#,##0%",
+        if (is_string($number)) {
+            $number = floatval($number);
+        }
 
+        //  "numbering_system": "latn",
+        //	"decimal_pattern": "#,##0.###",
+        //	"percent_pattern": "#,##0%",
+
+        return $Formatter->format($number);
     }
 
     /**
