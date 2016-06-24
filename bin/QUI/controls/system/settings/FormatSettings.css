@@ -1,0 +1,17 @@
+.quiqqer-formatsettings {
+    clear: both;
+    float: left;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.quiqqer-formatsettings-setting {
+    float: left;
+    clear: both;
+    margin-bottom: 5px;
+    width: 100% !important;
+}
+
+.quiqqer-formatsettings-setting-text {
+    line-height:30px;
+}

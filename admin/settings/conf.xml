@@ -228,12 +228,6 @@
                 </conf>
             </section>
 
-            <section name="delimiter_formats">
-                <conf name="??">
-                    <type><![CDATA[string]]></type>
-                </conf>
-            </section>
-
             <section name="date_formats">
                 <conf name="??">
                     <type><![CDATA[string]]></type>
@@ -565,14 +559,7 @@
                             <locale group="quiqqer/system" var="quiqqer.settings.delimiter_formats.title"/>
                         </title>
 
-                        <input conf="delimiter_formats"
-                               data-qui="controls/system/AvailableLanguages"
-                               placeholder="test"
-                        >
-                            <!--<description>-->
-                                <!--<locale group="quiqqer/system" var="quiqqer.settings.delimiter_formats.description"/>-->
-                            <!--</description>-->
-                        </input>
+                        <input data-qui="controls/system/settings/FormatSettings" />
                     </settings>
                 </category>
 

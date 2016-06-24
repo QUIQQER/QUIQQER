@@ -75,6 +75,10 @@ var requireList = [
     'qui/controls/contextmenu/Seperator'
 ].append(QUIQQER_LOCALE || []);
 
+if (typeof window.Intl === "undefined") {
+    console.error("Intl is not supported");
+}
+
 require(requireList, function () {
     "use strict";
 

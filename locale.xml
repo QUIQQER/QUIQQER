@@ -2,6 +2,35 @@
 <locales>
 
     <groups name="quiqqer/quiqqer" datatype="js,php">
+        <locale name="numberFormat.numbering_system">
+            <de><![CDATA[latn]]></de>
+            <en><![CDATA[latn]]></en>
+        </locale>
+        <locale name="numberFormat.decimal_pattern">
+            <de><![CDATA[#,##0.###]]></de>
+            <en><![CDATA[#,##0.###]]></en>
+        </locale>
+        <locale name="numberFormat.percent_pattern">
+            <de><![CDATA[#,##0 %]]></de>
+            <en><![CDATA[#,##0%]]></en>
+        </locale>
+        <locale name="numberFormat.currency_pattern">
+            <de><![CDATA[#,##0.00 ¤]]></de>
+            <en><![CDATA[¤#,##0.00]]></en>
+        </locale>
+        <locale name="numberFormat.accounting_currency_pattern">
+            <de><![CDATA[#,##0.00 ¤]]></de>
+            <en><![CDATA[¤#,##0.00;(¤#,##0.00)]]></en>
+        </locale>
+        <locale name="numberFormat.decimal_separator">
+            <de><![CDATA[,]]></de>
+            <en><![CDATA[.]]></en>
+        </locale>
+        <locale name="numberFormat.grouping_separator">
+            <de><![CDATA[.]]></de>
+            <en><![CDATA[,]]></en>
+        </locale>
+
         <locale name="permission.quiqqer._header">
             <de><![CDATA[QUIQQER]]></de>
             <en><![CDATA[QUIQQER]]></en>

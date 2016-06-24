@@ -101,6 +101,54 @@ class Locale
     }
 
     /**
+     * @return string
+     */
+    public function getDecimalSeperator()
+    {
+        return $this->get('quiqqer/quiqqer', 'numberFormat.decimal_separator');
+    }
+
+    /**
+     * @return string
+     */
+    public function getGroupingSeperator()
+    {
+        return $this->get('quiqqer/quiqqer', 'numberFormat.grouping_separator');
+    }
+
+    /**
+     * @return array|string
+     */
+    public function getDecimalPattern()
+    {
+        return $this->get('quiqqer/quiqqer', 'numberFormat.decimal_pattern');
+    }
+
+    /**
+     * @return array|string
+     */
+    public function getPercentPattern()
+    {
+        return $this->get('quiqqer/quiqqer', 'numberFormat.percent_pattern');
+    }
+
+    /**
+     * @return array|string
+     */
+    public function getCurrencyPattern()
+    {
+        return $this->get('quiqqer/quiqqer', 'numberFormat.currency_pattern');
+    }
+
+    /**
+     * @return array|string
+     */
+    public function getAccountingCurrencyPattern()
+    {
+        return $this->get('quiqqer/quiqqer', 'numberFormat.accounting_currency_pattern');
+    }
+
+    /**
      * Format a number
      *
      * @param float|integer $number
@@ -118,6 +166,15 @@ class Locale
         if (is_string($number)) {
             $number = floatval($number);
         }
+
+        //  numberFormat.decimal_separator
+        //  numberFormat.grouping_separator
+        //  numberFormat.numbering_system
+
+        //  numberFormat.decimal_pattern
+        //  numberFormat.percent_pattern
+        //  numberFormat.currency_pattern
+        //  numberFormat.accounting_currency_pattern
 
         //  "numbering_system": "latn",
         //	"decimal_pattern": "#,##0.###",
