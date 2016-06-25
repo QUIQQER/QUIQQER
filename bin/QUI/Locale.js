@@ -5,14 +5,14 @@
  * @author www.pcsg.de (Henning Leutz)
  * @require qui/Locale
  */
-define(['qui/Locale'], function (Locale) {
+define('Locale', ['classes/Locale'], function (QUILocale) {
     "use strict";
 
     if (window.location.search.match('lang=false')) {
-        Locale.no_translation = true;
+        QUILocale.no_translation = true;
     } else if (window.location.toString().match('_lang_false')) {
-        Locale.no_translation = true;
+        QUILocale.no_translation = true;
     }
 
-    return Locale;
+    return new QUILocale();
 });
