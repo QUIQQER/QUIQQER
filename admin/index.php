@@ -148,7 +148,16 @@ try {
                 SUFFIX               : "<?php echo \QUI\Rewrite::getDefaultSuffix(); ?>"
             },
             inAdministration: true,
-            lu              : "<?php echo QUI::getPackageManager()->getLastUpdateDate(); ?>"
+            lu              : "<?php echo QUI::getPackageManager()->getLastUpdateDate(); ?>",
+
+            numberFormat: {
+                decimal_separator          : "<?php echo $User->getLocale()->getDecimalSeperator(); ?>",
+                grouping_separator         : "<?php echo $User->getLocale()->getGroupingSeperator(); ?>",
+                decimal_pattern            : "<?php echo $User->getLocale()->getDecimalPattern(); ?>",
+                percent_pattern            : "<?php echo $User->getLocale()->getPercentPattern(); ?>",
+                currency_pattern           : "<?php echo $User->getLocale()->getCurrencyPattern(); ?>",
+                accounting_currency_pattern: "<?php echo $User->getLocale()->getAccountingCurrencyPattern(); ?>"
+            }
         };
 
         /* ]]> */
