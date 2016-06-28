@@ -76,20 +76,27 @@ define('Ajax', [
                     showError: typeof params.showError !== 'undefined' ? params.showError : true,
                     events   : {
                         onSuccess: function () {
-                            if (this.getAttribute('logout')) {
+                            var args    = arguments;
+                            var Request = args[args.length - 1];
+
+                            if (Request.getAttribute('logout')) {
+                                return;
+                            }
+
+                            if (Request.getAttribute('hasError')) {
                                 return;
                             }
 
                             // maintenance?
-                            if (id in self.$onprogress &&
-                                "$result" in self.$onprogress[id] &&
-                                "maintenance" in self.$onprogress[id].$result &&
-                                self.$onprogress[id].$result.maintenance) {
+                            if (this in self.$onprogress &&
+                                "$result" in self.$onprogress[this] &&
+                                "maintenance" in self.$onprogress[this].$result &&
+                                self.$onprogress[this].$result.maintenance) {
                                 self.showMaintennceMessage();
                             }
 
                             callback.apply(this, arguments);
-                        },
+                        }.bind(id),
 
                         onCancel: function (Request) {
                             if (Request.getAttribute('onCancel')) {
@@ -98,14 +105,16 @@ define('Ajax', [
                         },
 
                         onError: function (Exception, Request) {
+
                             // maintenance?
-                            if (id in self.$onprogress &&
-                                "$result" in self.$onprogress[id] &&
-                                "maintenance" in self.$onprogress[id].$result &&
-                                self.$onprogress[id].$result.maintenance) {
+                            if (this in self.$onprogress &&
+                                "$result" in self.$onprogress[this] &&
+                                "maintenance" in self.$onprogress[this].$result &&
+                                self.$onprogress[this].$result.maintenance) {
                                 self.showMaintennceMessage();
                             }
 
+                            Request.setAttribute('hasError', true);
 
                             if (Request.getAttribute('showError')) {
                                 QUI.getMessageHandler(function (MessageHandler) {
@@ -113,7 +122,9 @@ define('Ajax', [
                                 });
                             }
 
-                            if (Exception.getCode() === 401) {
+                            if (Exception.getCode() === 401 &&
+                                Exception.getAttribute('type') == 'QUI\\Users\\Exception'
+                            ) {
                                 Request.setAttribute('logout', true);
 
                                 require(['controls/system/Login'], function (Login) {
@@ -155,7 +166,7 @@ define('Ajax', [
                             }
 
                             QUI.triggerError(Exception, Request);
-                        }
+                        }.bind(id)
                     }
                 })
             );

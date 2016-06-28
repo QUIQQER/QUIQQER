@@ -152,7 +152,7 @@ class Ajax extends QUI\QDOM
         foreach ($function as $func) {
             // if it is a real permission
             if (strpos($func, '::') === false) {
-                Rights\Permission::checkPermission($func);
+                Permissions\Permission::checkPermission($func);
 
                 return;
             }
@@ -352,10 +352,12 @@ class Ajax extends QUI\QDOM
                 if ($this->getAttribute('db_errors')) {
                     $return['ExceptionDBError']['message'] = $Exception->getMessage();
                     $return['ExceptionDBError']['code']    = $Exception->getCode();
+                    $return['ExceptionDBError']['type']    = $Exception->getType();
                 } else {
                     // Standardfehler rausbringen
                     $return['Exception']['message'] = 'Internal Server Error';
                     $return['Exception']['code']    = 500;
+                    $return['Exception']['type']    = $Exception->getType();
                 }
 
                 if ((DEVELOPMENT || DEBUG_MODE) && $class != 'PDOException') {
