@@ -72,29 +72,29 @@ class Manager
         $DataBase = QUI::getDataBase();
 
         $DataBase->table()->addColumn(self::table(), array(
-            'id' => 'int(11)',
-            'username' => 'varchar(50)',
-            'password' => 'varchar(50)',
-            'usergroup' => 'text',
-            'firstname' => 'varchar(40)',
-            'lastname' => 'varchar(40)',
-            'usertitle' => 'varchar(40)',
-            'birthday' => 'varchar(12)',
-            'email' => 'varchar(50)',
-            'active' => 'int(1)',
-            'regdate' => 'int(11)',
-            'lastvisit' => 'int(11)',
-            'su' => 'tinyint(1)',
-            'avatar' => 'text',
-            'extra' => 'text NULL',
-            'lang' => 'varchar(2) NULL',
-            'expire' => 'TIMESTAMP NULL',
-            'lastedit' => 'TIMESTAMP NOT NULL',
-            'shortcuts' => 'varchar(5) NULL',
+            'id'         => 'int(11)',
+            'username'   => 'varchar(50)',
+            'password'   => 'varchar(50)',
+            'usergroup'  => 'text',
+            'firstname'  => 'varchar(40)',
+            'lastname'   => 'varchar(40)',
+            'usertitle'  => 'varchar(40)',
+            'birthday'   => 'varchar(12)',
+            'email'      => 'varchar(50)',
+            'active'     => 'int(1)',
+            'regdate'    => 'int(11)',
+            'lastvisit'  => 'int(11)',
+            'su'         => 'tinyint(1)',
+            'avatar'     => 'text',
+            'extra'      => 'text NULL',
+            'lang'       => 'varchar(2) NULL',
+            'expire'     => 'TIMESTAMP NULL',
+            'lastedit'   => 'TIMESTAMP NOT NULL',
+            'shortcuts'  => 'varchar(5) NULL',
             'activation' => 'varchar(20) NULL',
-            'referal' => 'varchar(200) NULL',
+            'referal'    => 'varchar(200) NULL',
             'user_agent' => 'text',
-            'address' => 'int(11)'
+            'address'    => 'int(11)'
         ));
 
         // Patch
@@ -105,19 +105,19 @@ class Manager
 
         // Addresses
         $DataBase->table()->addColumn(self::tableAddress(), array(
-            'id' => 'int(11)',
-            'uid' => 'int(11)',
+            'id'         => 'int(11)',
+            'uid'        => 'int(11)',
             'salutation' => 'varchar(10)',
-            'firstname' => 'varchar(40)',
-            'lastname' => 'varchar(40)',
-            'phone' => 'text',
-            'mail' => 'text',
-            'company' => 'varchar(100)',
-            'delivery' => 'text',
-            'street_no' => 'text',
-            'zip' => 'text',
-            'city' => 'text',
-            'country' => 'text'
+            'firstname'  => 'varchar(40)',
+            'lastname'   => 'varchar(40)',
+            'phone'      => 'text',
+            'mail'       => 'text',
+            'company'    => 'varchar(100)',
+            'delivery'   => 'text',
+            'street_no'  => 'text',
+            'zip'        => 'text',
+            'city'       => 'text',
+            'country'    => 'text'
         ));
 
         $DataBase->table()->setIndex(self::tableAddress(), 'id');
@@ -230,7 +230,7 @@ class Manager
      * @param string|boolean $username - (optional), new username
      *
      * @return QUI\Users\User
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      */
     public function createChild($username = false)
     {
@@ -238,7 +238,7 @@ class Manager
 
         if ($username) {
             if ($this->usernameExists($username)) {
-                throw new QUI\Exception(
+                throw new QUI\Users\Exception(
                     QUI::getLocale()->get(
                         'quiqqer/system',
                         'exception.lib.user.exist'
@@ -266,9 +266,9 @@ class Manager
         QUI::getDataBase()->insert(
             self::table(),
             array(
-                'id' => $newid,
+                'id'       => $newid,
                 'username' => $newname,
-                'regdate' => time()
+                'regdate'  => time()
             )
         );
 
@@ -281,7 +281,7 @@ class Manager
      * @param array $params
      *
      * @return User
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      *
      * @needle
      * <ul>
@@ -306,7 +306,7 @@ class Manager
     public function register($params)
     {
         if (!isset($params['username'])) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.user.register.specify.username'
@@ -315,7 +315,7 @@ class Manager
         }
 
         if (!isset($params['password'])) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     ''
@@ -330,7 +330,7 @@ class Manager
         self::checkUsernameSigns($username);
 
         if ($this->usernameExists($username)) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.user.register.specify.password'
@@ -416,7 +416,7 @@ class Manager
     {
         $result = QUI::getDataBase()->fetch(array(
             'count' => 'count',
-            'from' => self::table()
+            'from'  => self::table()
         ));
 
         if (isset($result[0]) && isset($result[0]['count'])) {
@@ -437,7 +437,7 @@ class Manager
     {
         if ($objects == false) {
             return QUI::getDataBase()->fetch(array(
-                'from' => self::table(),
+                'from'  => self::table(),
                 'order' => 'username'
             ));
         }
@@ -466,8 +466,8 @@ class Manager
     {
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'id',
-            'from' => self::table(),
-            'order' => 'username'
+            'from'   => self::table(),
+            'order'  => 'username'
         ));
 
         return $result;
@@ -524,19 +524,19 @@ class Manager
      * @param string $pass - password
      *
      * @return QUI\Users\User
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      */
     public function login($username, $pass)
     {
         if (!is_string($username) || empty($username)) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail.wrong.username.input'),
                 401
             );
         }
 
         if (!is_string($pass) || empty($pass)) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail.wrong.password.input'),
                 401
             );
@@ -544,15 +544,13 @@ class Manager
 
         $username = Orthos::clear($username);
 
-        if (function_exists('get_magic_quotes_gpc')
-            && !get_magic_quotes_gpc()
-        ) {
+        if (function_exists('get_magic_quotes_gpc') && !get_magic_quotes_gpc()) {
             $username = addslashes($username);
             $pass     = addslashes($pass);
         }
 
         if (empty($pass)) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail.no.password'),
                 401
             );
@@ -571,7 +569,7 @@ class Manager
                 'Authentication Type not found. Please check your config settings'
             );
 
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail'),
                 401
             );
@@ -585,7 +583,7 @@ class Manager
                 'Authentication Type is not from Interface QUI\Interfaces\Users\Auth'
             );
 
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail'),
                 401
             );
@@ -593,7 +591,7 @@ class Manager
 
         /* @var $Auth QUI\Interfaces\Users\Auth */
         if ($Auth->auth($pass) === false) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail'),
                 401
             );
@@ -605,22 +603,22 @@ class Manager
         // check user data
         $userData = QUI::getDataBase()->fetch(array(
             'select' => array('id', 'expire', 'secHash', 'active'),
-            'from' => self::table(),
-            'where' => array(
+            'from'   => self::table(),
+            'where'  => array(
                 'id' => $userId
             ),
-            'limit' => 1
+            'limit'  => 1
         ));
 
         if (!isset($userData[0])) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail.user.not.found'),
                 404
             );
         }
 
         if ($userData[0]['active'] == 0) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail.user.not.found'),
                 401
             );
@@ -630,7 +628,7 @@ class Manager
             && $userData[0]['expire'] != '0000-00-00 00:00:00'
             && strtotime($userData[0]['expire']) < time()
         ) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()
                     ->get('quiqqer/system', 'exception.login.expire', array(
                         'expire' => $userData[0]['expire']
@@ -651,7 +649,7 @@ class Manager
         }
 
         if ($groupActive === false) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail'),
                 401
             );
@@ -671,9 +669,9 @@ class Manager
         QUI::getDataBase()->update(
             self::table(),
             array(
-                'lastvisit' => time(),
+                'lastvisit'  => time(),
                 'user_agent' => $useragent,
-                'secHash' => $this->getSecHash()
+                'secHash'    => $this->getSecHash()
             ),
             array('id' => $userId)
         );
@@ -752,13 +750,13 @@ class Manager
     /**
      * Checks, if the session is ok
      *
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      */
     public function checkUserSession()
     {
         // max_life_time check
         if (!QUI::getSession()->check()) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.permission.session.expired'
@@ -768,7 +766,7 @@ class Manager
         }
 
         if (!QUI::getSession()->get('uid')) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.permission.session.expired'
@@ -782,7 +780,7 @@ class Manager
         if (!$User->isActive()) {
             QUI::getSession()->destroy();
 
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.user.inactive'
@@ -814,7 +812,7 @@ class Manager
         QUI::getSession()->getSymfonySession()->clear();
         QUI::getSession()->refresh();
 
-        throw new QUI\Exception($message, 401);
+        throw new QUI\Users\Exception($message, 401);
     }
 
     /**
@@ -879,22 +877,22 @@ class Manager
      *
      * @param string $username - Username
      *
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      * @return QUI\Users\User
      */
     public function getUserByName($username)
     {
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'id',
-            'from' => self::table(),
-            'where' => array(
+            'from'   => self::table(),
+            'where'  => array(
                 'username' => $username
             ),
-            'limit' => 1
+            'limit'  => 1
         ));
 
         if (!isset($result[0])) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.user.user.not.found'
@@ -912,21 +910,21 @@ class Manager
      * @param string $email - User E-Mail
      *
      * @return QUI\Users\User
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      */
     public function getUserByMail($email)
     {
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'id',
-            'from' => self::table(),
-            'where' => array(
+            'from'   => self::table(),
+            'where'  => array(
                 'email' => $email
             ),
-            'limit' => 1
+            'limit'  => 1
         ));
 
         if (!isset($result[0])) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.user.user.not.found'
@@ -964,11 +962,11 @@ class Manager
 
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'username',
-            'from' => self::table(),
-            'where' => array(
+            'from'   => self::table(),
+            'where'  => array(
                 'username' => $username
             ),
-            'limit' => 1
+            'limit'  => 1
         ));
 
         return isset($result[0]) ? true : false;
@@ -1007,11 +1005,11 @@ class Manager
     {
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'email',
-            'from' => self::table(),
-            'where' => array(
+            'from'   => self::table(),
+            'where'  => array(
                 'email' => $email
             ),
-            'limit' => 1
+            'limit'  => 1
         ));
 
         return isset($result[0]) ? true : false;
@@ -1097,16 +1095,16 @@ class Manager
         $params = Orthos::clearArray($params);
 
         $allowOrderFields = array(
-            'id' => true,
-            'email' => true,
-            'username' => true,
+            'id'        => true,
+            'email'     => true,
+            'username'  => true,
             'usergroup' => true,
             'firstname' => true,
-            'lastname' => true,
-            'birthday' => true,
-            'active' => true,
-            'regdate' => true,
-            'su' => true
+            'lastname'  => true,
+            'birthday'  => true,
+            'active'    => true,
+            'regdate'   => true,
+            'su'        => true
         );
 
         $max   = 10;
@@ -1322,7 +1320,7 @@ class Manager
      * Gibt eine neue Benutzer Id zwischen 100 und 1000000000 zurück
      *
      * @return integer
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      */
     protected function newId()
     {
@@ -1334,7 +1332,7 @@ class Manager
             $newid = rand(100, 1000000000);
 
             $result = QUI::getDataBase()->fetch(array(
-                'from' => self::table(),
+                'from'  => self::table(),
                 'where' => array(
                     'id' => $newid
                 )
@@ -1349,7 +1347,7 @@ class Manager
         }
 
         if (!$newid) {
-            throw new QUI\Exception('Could not create new User-ID');
+            throw new QUI\Users\Exception('Could not create new User-ID');
         }
 
         return $newid;
@@ -1373,14 +1371,13 @@ class Manager
      * @param string $username
      *
      * @return boolean
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      */
     public static function checkUsernameSigns($username)
     {
         if ($username != self::clearUsername($username)) {
-            throw new QUI\Exception(
-                QUI::getLocale()
-                    ->get('quiqqer/system', 'exception.lib.user.illegal.signs')
+            throw new QUI\Users\Exception(
+                QUI::getLocale()->get('quiqqer/system', 'exception.lib.user.illegal.signs')
             );
         }
 

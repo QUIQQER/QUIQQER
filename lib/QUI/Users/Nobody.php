@@ -187,12 +187,12 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @param array $params
      *
-     * @throws \QUI\Exception
+     * @throws \QUI\Users\Exception
      * @ignore
      */
     public function addAddress($params)
     {
-        throw new QUI\Exception(
+        throw new QUI\Users\Exception(
             QUI::getLocale()->get(
                 'system',
                 'exception.lib.user.nobody.add.address'
@@ -311,12 +311,12 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @param integer $id
      * @return void
      *
-     * @throws \QUI\Exception
+     * @throws \QUI\Users\Exception
      * @ignore
      */
     public function getAddress($id)
     {
-        throw new QUI\Exception(
+        throw new QUI\Users\Exception(
             QUI::getLocale()->get('system', 'exception.lib.user.nobody.get.address')
         );
     }

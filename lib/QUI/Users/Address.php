@@ -37,7 +37,7 @@ class Address extends QUI\QDOM
      * @param QUI\Users\User $User - User
      * @param integer $id - Address id
      *
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      */
     public function __construct(User $User, $id)
     {
@@ -54,7 +54,7 @@ class Address extends QUI\QDOM
         $this->id   = (int)$id;
 
         if (!isset($result[0])) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'system',
                     'exception.lib.user.address.not.found'
@@ -186,12 +186,12 @@ class Address extends QUI\QDOM
      *
      * @param string $mail - new mail address
      *
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      */
     public function addMail($mail)
     {
         if (Orthos::checkMailSyntax($mail) == false) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'system',
                     'exception.lib.user.address.mail.wrong.syntax'
@@ -224,12 +224,12 @@ class Address extends QUI\QDOM
      * @param integer $index - index of the mail
      * @param string $mail - E-Mail (eq: my@mail.com)
      *
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      */
     public function editMail($index, $mail)
     {
         if (Orthos::checkMailSyntax($mail) == false) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'system',
                     'exception.lib.user.address.mail.wrong.syntax'
@@ -265,12 +265,12 @@ class Address extends QUI\QDOM
      * Länder bekommen
      *
      * @return QUI\Countries\Country
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      */
     public function getCountry()
     {
         if ($this->getAttribute('country') === false) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'system',
                     'exception.lib.user.address.no.country'
@@ -286,7 +286,7 @@ class Address extends QUI\QDOM
         } catch (QUI\Exception $Exception) {
         }
 
-        throw new QUI\Exception(
+        throw new QUI\Users\Exception(
             QUI::getLocale()->get(
                 'system',
                 'exception.lib.user.address.no.country'
