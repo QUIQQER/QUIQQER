@@ -117,8 +117,16 @@ define('Ajax', [
                                 Request.setAttribute('logout', true);
 
                                 require(['controls/system/Login'], function (Login) {
-                                    new Login().open();
+                                    new Login({
+                                        events: {
+                                            onLogin: function () {
+                                                self.request(call, method, callback, params);
+                                            }
+                                        }
+                                    }).open();
                                 });
+
+                                return;
                             }
 
                             if ("QUIQQER" in window &&
@@ -129,8 +137,16 @@ define('Ajax', [
                                 Request.setAttribute('logout', true);
 
                                 require(['controls/system/Login'], function (Login) {
-                                    new Login().open();
+                                    new Login({
+                                        events: {
+                                            onLogin: function () {
+                                                self.request(call, method, callback, params);
+                                            }
+                                        }
+                                    }).open();
                                 });
+
+                                return;
                             }
 
 
