@@ -253,7 +253,8 @@ class Console
         $tool = $this->readInput();
         $Exec = false;
 
-        if ($tool == 'exit') {
+        if ($tool == 'exit' || !$tool) {
+            $this->writeLn();
             return;
         }
 
@@ -278,6 +279,9 @@ class Console
 
                 return;
             }
+        } else {
+            $this->writeLn('Tool not found!', 'red');
+            $this->clearMsg();
         }
 
         $this->writeLn('Would you like any other steps to do?');
