@@ -98,11 +98,13 @@ define('classes/Locale', ['qui/classes/Locale'], function (QUILocale) {
                 return Intl.NumberFormat(locale);
             }
 
-            return Intl.NumberFormat(locale, {
-                //style                : 'currency',
-                //currency             : 'EUR',
-                minimumFractionDigits: 8
-            });
+            //return Intl.NumberFormat(locale, {
+            //    //style                : 'currency',
+            //    //currency             : 'EUR',
+            //    minimumFractionDigits: 8
+            //});
+
+            return Intl.NumberFormat(locale, options);
         }
     });
 });
