@@ -41,11 +41,11 @@ class XML
             }
 
             $params = array(
-                'text' => DOM::getTextFromNode($Item),
-                'name' => $Item->getAttribute('name'),
-                'icon' => DOM::parseVar($Item->getAttribute('icon')),
+                'text'    => DOM::getTextFromNode($Item),
+                'name'    => $Item->getAttribute('name'),
+                'icon'    => DOM::parseVar($Item->getAttribute('icon')),
                 'require' => $Item->getAttribute('require'),
-                'exec' => $Item->getAttribute('exec'),
+                'exec'    => $Item->getAttribute('exec'),
                 'onClick' => 'QUI.Menu.menuClick'
             );
 
@@ -386,7 +386,7 @@ class XML
             foreach ($events as $Event) {
                 /* @var $Event \DOMElement */
                 $result[] = array(
-                    'on' => $Event->getAttribute('on'),
+                    'on'   => $Event->getAttribute('on'),
                     'fire' => $Event->getAttribute('fire'),
                     'type' => $package . ':' . $Type->getAttribute('type')
                 );
@@ -482,8 +482,8 @@ class XML
             $localelist = $Group->getElementsByTagName('locale');
 
             $locales = array(
-                'group' => $Group->getAttribute('name'),
-                'locales' => array(),
+                'group'    => $Group->getAttribute('name'),
+                'locales'  => array(),
                 'datatype' => $Group->getAttribute('datatype')
             );
 
@@ -1035,14 +1035,15 @@ class XML
                     $default = $defaults[$section][$key];
                 }
 
-                if (empty($value) && $value !== 0) {
+                if (empty($value) && $value !== 0 && $value !== '0') {
                     $value = $default['default'];
                 }
 
                 // typ prüfen
                 switch ($default['type']) {
                     case 'bool':
-                        $value = QUI\Utils\Bool::JSBool($value);
+                    case 'boolean':
+                        $value = QUI\Utils\BoolHelper::JSBool($value);
 
                         if ($value) {
                             $value = 1;
@@ -1052,6 +1053,7 @@ class XML
                         break;
 
                     case 'int':
+                    case 'integer':
                         $value = (int)$value;
                         break;
 
