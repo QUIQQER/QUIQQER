@@ -470,6 +470,10 @@ class Manager
 
         $obj_permissions = json_decode($data[0]['permissions'], true);
 
+        if (!is_array($obj_permissions)) {
+            $obj_permissions = array();
+        }
+
         foreach ($obj_permissions as $obj_permission => $value) {
             // parse var type
             if (isset($permissions[$obj_permission])) {
