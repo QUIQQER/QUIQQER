@@ -117,7 +117,7 @@ define('classes/users/User', [
 
                         require(['Users'], function (Users) {
                             Users.onRefreshUser(self);
-                            resolve(self);
+                            reject(self);
                         });
 
                         return;

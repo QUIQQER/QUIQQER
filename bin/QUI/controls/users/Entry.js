@@ -9,6 +9,8 @@
  * @require Users
  * @require Locale
  * @require css!controls/users/Entry.css
+ *
+ * @event onLoad [self, User]
  */
 define('controls/users/Entry', [
 
@@ -120,7 +122,11 @@ define('controls/users/Entry', [
                 return this;
             }
 
-            this.$User.load();
+            this.$User.load().then(function () {
+                this.fireEvent('load', [this, this.$User]);
+            }.bind(this)).catch(function () {
+                this.destroy();
+            }.bind(this));
 
             return this;
         },

@@ -55,10 +55,10 @@ abstract class Factory
     public function countChildren($queryParams = array())
     {
         $query = array(
-            'from' => $this->getDataBaseTableName(),
+            'from'  => $this->getDataBaseTableName(),
             'count' => array(
                 'select' => 'id',
-                'as' => 'id'
+                'as'     => 'id'
             )
         );
 
@@ -135,7 +135,7 @@ abstract class Factory
         $childClass = $this->getChildClass();
 
         $result = QUI::getDataBase()->fetch(array(
-            'from' => $this->getDataBaseTableName(),
+            'from'  => $this->getDataBaseTableName(),
             'where' => array(
                 'id' => $id
             )
@@ -222,6 +222,8 @@ abstract class Factory
         if (isset($queryParams['limit'])) {
             $query['limit'] = $queryParams['limit'];
         }
+
+        // @todo filter where and where_or and select with getChildAttributes
 
         return QUI::getDataBase()->fetch($query);
     }

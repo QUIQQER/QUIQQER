@@ -198,6 +198,10 @@ define('controls/usersAndGroups/Input', [
                 var val = value.split(',');
 
                 for (var i = 0, len = val.length; i < len; i++) {
+                    if (val[i] === '' || val[i] === false) {
+                        continue;
+                    }
+
                     switch (val[i].substr(0, 1)) {
                         case 'u':
                             this.addUser(val[i].substr(1));
@@ -424,6 +428,10 @@ define('controls/usersAndGroups/Input', [
          * @return {Object} this (controls/usersAndGroups/Input)
          */
         addGroup: function (id) {
+            if (id === false || id === '') {
+                return this;
+            }
+
             new GroupsEntry(id, {
                 events: {
                     onDestroy: this.$onGroupUserDestroy
@@ -448,6 +456,10 @@ define('controls/usersAndGroups/Input', [
          * @return {Object} this (controls/usersAndGroups/Input)
          */
         addUser: function (id) {
+            if (id === false || id === '') {
+                return this;
+            }
+
             new UsersEntry(id, {
                 events: {
                     onDestroy: this.$onGroupUserDestroy
