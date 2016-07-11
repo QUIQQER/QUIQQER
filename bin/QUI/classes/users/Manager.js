@@ -100,6 +100,26 @@ define('classes/users/Manager', [
         },
 
         /**
+         * Is the mixed an user object?
+         *
+         * @param {unknown} User
+         * @return {boolean}
+         */
+        isUser: function (User) {
+            var type = typeOf(User);
+
+            if (type === 'classes/users/Nobody') {
+                return true;
+            }
+
+            if (type === 'classes/users/SystemUser') {
+                return true;
+            }
+
+            return type === 'classes/users/User';
+        },
+
+        /**
          * Switch the status to activate or deactivate from an user
          *
          * @method classes/users/Manager#switchStatus

@@ -239,119 +239,142 @@ define('controls/users/User', [
                 Body.set('html', '<form>' + result + '</form>');
 
                 // parse all the controls
-                ControlUtils.parse(Body);
+                QUI.parse(Body).then(function () {
+                    return ControlUtils.parse(Body);
+                }).then(function () {
 
-                // insert the values
-                var attributes = User.getAttributes();
+                    // insert the values
+                    var attributes = User.getAttributes();
+                    var extras     = JSON.decode(attributes.extra);
 
-                FormUtils.setDataToForm(
-                    attributes,
-                    Body.getElement('form')
-                );
+                    FormUtils.setDataToForm(attributes, Body.getElement('form'));
+                    FormUtils.setDataToForm(extras, Body.getElement('form'));
 
-                // password save
-                var PasswordField  = Body.getElement('input[name="password2"]'),
-                    PasswordExpire = Body.getElements('input[name="expire"]'),
-                    ShowPasswords  = Body.getElement('input[name="showPasswords"]'),
-                    AddressList    = Body.getElement('.address-list');
-
-                if (PasswordField) {
-                    PasswordField.setStyle('float', 'left');
-
-                    new QUIButton({
-                        textimage: 'fa fa-lock',
-                        text     : Locale.get(lg, 'users.user.btn.password.generate'),
-                        events   : {
-                            onClick: self.generatePassword
-                        }
-                    }).inject(PasswordField, 'after');
-
-                    ShowPasswords.addEvent('change', function () {
-                        var PasswordFields = Body.getElements(
-                            '[name="password2"],[name="password"]'
-                        );
-
-                        if (this.checked) {
-                            PasswordFields.set('type', 'text');
+                    QUI.Controls.getControlsInElement(Body).each(function (Control) {
+                        if (!('setValue' in Control)) {
                             return;
                         }
 
-                        PasswordFields.set('type', 'password');
+                        var name = Control.getAttribute('name');
+
+                        if (!name || name === '') {
+                            return;
+                        }
+
+                        if (name in attributes) {
+                            Control.setValue(attributes[name]);
+                        }
+
+                        if (name in extras) {
+                            Control.setValue(extras[name]);
+                        }
                     });
 
-                    if (ShowPasswords.checked) {
-                        ShowPasswords.checked = false;
-                    }
 
-                    // has a password?
-                    if (!self.getUser().getAttribute('hasPassword')) {
-                        new Element('tr', {
-                            html: '<td colspan="2">' +
-                                  '    <div class="content-message-error">' +
-                                  '        Der Benutzer besitzt noch kein Passwort' +
-                                  '    </div>' +
-                                  '</td>'
-                        }).inject(Body.getElement('tbody'));
-                    }
-                }
+                    // password save
+                    var PasswordField  = Body.getElement('input[name="password2"]'),
+                        PasswordExpire = Body.getElements('input[name="expire"]'),
+                        ShowPasswords  = Body.getElement('input[name="showPasswords"]'),
+                        AddressList    = Body.getElement('.address-list');
 
-                // password expire
-                if (PasswordExpire.length) {
-                    var expire = attributes.expire || false;
+                    if (PasswordField) {
+                        PasswordField.setStyle('float', 'left');
 
-                    if (!expire || expire == '0000-00-00 00:00:00') {
-                        PasswordExpire[0].checked = true;
+                        new QUIButton({
+                            textimage: 'fa fa-lock',
+                            text     : Locale.get(lg, 'users.user.btn.password.generate'),
+                            events   : {
+                                onClick: self.generatePassword
+                            }
+                        }).inject(PasswordField, 'after');
 
-                    } else {
-                        PasswordExpire[1].checked = true;
+                        ShowPasswords.addEvent('change', function () {
+                            var PasswordFields = Body.getElements(
+                                '[name="password2"],[name="password"]'
+                            );
 
-                        Body.getElement('input[name="expire_date"]').value = expire;
-                    }
-                }
-
-                if (AddressList) {
-                    self.$createAddressTable();
-                }
-
-
-                if (!Btn.getAttribute('onload_require') && !Btn.getAttribute('onload')) {
-                    self.Loader.hide();
-                    return;
-                }
-
-                // require onload
-                try {
-                    var exec = Btn.getAttribute('onload'),
-                        req  = Btn.getAttribute('onload_require');
-
-                    if (req) {
-                        require([req], function (result) {
-                            self.Loader.hide();
-
-                            if (typeOf(result) == 'class') {
-                                new result(self);
+                            if (this.checked) {
+                                PasswordFields.set('type', 'text');
+                                return;
                             }
 
-                            if (typeOf(result) == 'function') {
-                                result(self);
-                            }
-
-                            if (exec) {
-                                eval(exec + '( self )');
-                            }
+                            PasswordFields.set('type', 'password');
                         });
 
+                        if (ShowPasswords.checked) {
+                            ShowPasswords.checked = false;
+                        }
+
+                        // has a password?
+                        if (!self.getUser().getAttribute('hasPassword')) {
+                            new Element('tr', {
+                                html: '<td colspan="2">' +
+                                      '    <div class="content-message-error">' +
+                                      '        Der Benutzer besitzt noch kein Passwort' +
+                                      '    </div>' +
+                                      '</td>'
+                            }).inject(Body.getElement('tbody'));
+                        }
+                    }
+
+                    // password expire
+                    if (PasswordExpire.length) {
+                        var expire = attributes.expire || false;
+
+                        if (!expire || expire == '0000-00-00 00:00:00') {
+                            PasswordExpire[0].checked = true;
+
+                        } else {
+                            PasswordExpire[1].checked = true;
+
+                            Body.getElement('input[name="expire_date"]').value = expire;
+                        }
+                    }
+
+                    if (AddressList) {
+                        self.$createAddressTable();
+                    }
+
+
+                    if (!Btn.getAttribute('onload_require') && !Btn.getAttribute('onload')) {
+                        self.Loader.hide();
                         return;
                     }
 
-                    eval(exec + '( self )');
+                    // require onload
+                    try {
+                        var exec = Btn.getAttribute('onload'),
+                            req  = Btn.getAttribute('onload_require');
 
-                    self.Loader.hide();
+                        if (req) {
+                            require([req], function (result) {
+                                self.Loader.hide();
 
-                } catch (Exception) {
-                    console.error('some error occurred ' + Exception.getMessage());
-                    self.Loader.hide();
-                }
+                                if (typeOf(result) == 'class') {
+                                    new result(self);
+                                }
+
+                                if (typeOf(result) == 'function') {
+                                    result(self);
+                                }
+
+                                if (exec) {
+                                    eval(exec + '( self )');
+                                }
+                            });
+
+                            return;
+                        }
+
+                        eval(exec + '( self )');
+
+                        self.Loader.hide();
+
+                    } catch (Exception) {
+                        console.error('some error occurred ' + Exception.getMessage());
+                        self.Loader.hide();
+                    }
+                });
 
             }, {
                 Tab   : Btn,
