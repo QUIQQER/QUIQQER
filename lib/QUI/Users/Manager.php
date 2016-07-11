@@ -170,7 +170,7 @@ class Manager
             return false;
         }
 
-        if (get_class($User) === 'QUI\\Users\\User') {
+        if (get_class($User) === User::class) {
             return true;
         }
 
@@ -190,7 +190,7 @@ class Manager
             return false;
         }
 
-        if (get_class($User) === 'QUI\\Users\\SystemUser') {
+        if (get_class($User) === SystemUser::class) {
             return true;
         }
 
