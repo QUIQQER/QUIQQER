@@ -112,7 +112,7 @@ class Utils
             );
         }
 
-        // project extention
+        // ürpject
         if (strpos($plugin, 'project.') !== false) {
             $project = explode('project.', $plugin);
 
@@ -122,17 +122,19 @@ class Utils
             );
         }
 
-        // Plugin extention
-        $plugin  = str_replace('plugin.', '', $plugin);
-        $package = QUI::getPackageManager()->getPackage($plugin);
+        // plugin
+        try {
+            $plugin  = str_replace('plugin.', '', $plugin);
+            $Package = QUI::getPackage($plugin);
 
-        if (!$package || !isset($package['name'])) {
-            return '';
+            return DOM::getTabHTML(
+                $tab,
+                OPT_DIR . $Package->getName() . '/user.xml'
+            );
+
+        } catch (QUI\Exception $Exception) {
         }
 
-        return DOM::getTabHTML(
-            $tab,
-            OPT_DIR . $package['name'] . '/user.xml'
-        );
+        return '';
     }
 }
