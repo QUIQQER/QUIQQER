@@ -57,6 +57,7 @@
     "quiqqer/messages": "*@dev",
     "quiqqer/meta": "*@dev"
   },
+  "minimum-stability" : "dev",
   "require-dev": {
     "mikey179/vfsStream": "1.*"
   },
