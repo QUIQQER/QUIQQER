@@ -23,7 +23,13 @@ define('QUIQQER_SYSTEM', true);
 
 require dirname(dirname(__FILE__)) . '/bootstrap.php';
 
-
+/**
+ * @param mixed $message - optional
+ */
+function writePhpUnitMessage($message = '')
+{
+    fwrite(STDERR, print_r($message, true) . "\n");
+}
 
 
 //
