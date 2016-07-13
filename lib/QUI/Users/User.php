@@ -1187,7 +1187,13 @@ class User implements QUI\Interfaces\Users\User
      */
     public function isInGroup($groupId)
     {
-        return in_array($groupId, $this->getGroups(false));
+        $groups = $this->getGroups(false);
+
+        if (!is_array($groups)) {
+            return false;
+        }
+
+        return in_array($groupId, $groups);
     }
 
     /**
