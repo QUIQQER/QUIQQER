@@ -140,7 +140,7 @@ class Manager
      */
     public static function setup()
     {
-        $DBTable = QUI::getDataBase()->Table();
+        $DBTable = QUI::getDataBase()->table();
         $table   = QUI::getDBTableName(self::TABLE);
 
         $table2users    = $table . '2users';

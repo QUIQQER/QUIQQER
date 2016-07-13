@@ -174,6 +174,10 @@ class Manager
             return true;
         }
 
+        if ($User instanceof User) {
+            return true;
+        }
+
         return false;
     }
 
