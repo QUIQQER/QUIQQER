@@ -28,36 +28,41 @@ class Manager implements QUI\Interfaces\Events
     protected $siteEvents = array();
 
     /**
+     * @var Event
+     */
+    protected $Events;
+
+    /**
      * construct
      */
     public function __construct()
     {
-        $this->_Events = new Event();
+        $this->Events = new Event();
 
         try {
-            if (!QUI::getDataBase()->Table()->exist(self::TABLE())) {
+            if (!QUI::getDataBase()->table()->exist(self::table())) {
                 return;
             }
 
             $list = QUI::getDataBase()->fetch(array(
-                'from' => self::TABLE(),
+                'from'  => self::table(),
                 'where' => array(
                     'sitetype' => null
                 )
             ));
 
             foreach ($list as $params) {
-                $this->_Events->addEvent(
+                $this->Events->addEvent(
                     $params['event'],
                     $params['callback']
                 );
             }
 
             $list = QUI::getDataBase()->fetch(array(
-                'from' => self::TABLE(),
+                'from'  => self::table(),
                 'where' => array(
                     'sitetype' => array(
-                        'type' => 'NOT',
+                        'type'  => 'NOT',
                         'value' => null
                     )
                 )
@@ -74,7 +79,7 @@ class Manager implements QUI\Interfaces\Events
      *
      * @return string
      */
-    public static function TABLE()
+    public static function table()
     {
         return QUI_DB_PRFX . 'events';
     }
@@ -84,10 +89,10 @@ class Manager implements QUI\Interfaces\Events
      */
     public static function setup()
     {
-        $DBTable = QUI::getDataBase()->Table();
+        $DBTable = QUI::getDataBase()->table();
 
-        $DBTable->appendFields(self::TABLE(), array(
-            'event' => 'varchar(200)',
+        $DBTable->addColumn(self::table(), array(
+            'event'    => 'varchar(200)',
             'callback' => 'text',
             'sitetype' => 'text'
         ));
@@ -100,8 +105,8 @@ class Manager implements QUI\Interfaces\Events
      */
     public static function clear()
     {
-        QUI::getDataBase()->Table()->truncate(
-            self::TABLE()
+        QUI::getDataBase()->table()->truncate(
+            self::table()
         );
     }
 
@@ -112,7 +117,7 @@ class Manager implements QUI\Interfaces\Events
      */
     public function getList()
     {
-        return $this->_Events->getList();
+        return $this->Events->getList();
     }
 
     /**
@@ -149,13 +154,13 @@ class Manager implements QUI\Interfaces\Events
     {
         // add the event to the db
         if (is_string($fn)) {
-            QUI::getDataBase()->insert(self::TABLE(), array(
-                'event' => $event,
+            QUI::getDataBase()->insert(self::table(), array(
+                'event'    => $event,
                 'callback' => $fn
             ));
         }
 
-        $this->_Events->addEvent($event, $fn);
+        $this->Events->addEvent($event, $fn);
     }
 
     /**
@@ -173,8 +178,8 @@ class Manager implements QUI\Interfaces\Events
             return;
         }
 
-        QUI::getDataBase()->insert(self::TABLE(), array(
-            'event' => $event,
+        QUI::getDataBase()->insert(self::table(), array(
+            'event'    => $event,
             'callback' => $fn,
             'sitetype' => $sitetype
         ));
@@ -187,7 +192,7 @@ class Manager implements QUI\Interfaces\Events
      */
     public function addEvents(array $events)
     {
-        $this->_Events->addEvents($events);
+        $this->Events->addEvents($events);
     }
 
     /**
@@ -199,17 +204,17 @@ class Manager implements QUI\Interfaces\Events
      */
     public function removeEvent($event, $fn = false)
     {
-        $this->_Events->removeEvent($event, $fn);
+        $this->Events->removeEvent($event, $fn);
 
         if ($fn === false) {
-            QUI::getDataBase()->delete(self::TABLE(), array(
+            QUI::getDataBase()->delete(self::table(), array(
                 'event' => $event
             ));
         }
 
         if (is_string($fn)) {
-            QUI::getDataBase()->delete(self::TABLE(), array(
-                'event' => $event,
+            QUI::getDataBase()->delete(self::table(), array(
+                'event'    => $event,
                 'callback' => $fn
             ));
         }
@@ -224,7 +229,7 @@ class Manager implements QUI\Interfaces\Events
      */
     public function removeEvents(array $events)
     {
-        $this->_Events->removeEvents($events);
+        $this->Events->removeEvents($events);
     }
 
     /**
@@ -240,11 +245,12 @@ class Manager implements QUI\Interfaces\Events
     {
         // event onFireEvent
         $fireArgs = $args;
+
         if (!is_array($fireArgs)) {
             $fireArgs = array();
         }
 
-        $this->_Events->fireEvent('onFireEvent', array($event, $fireArgs));
-        $this->_Events->fireEvent($event, $args);
+        $this->Events->fireEvent('onFireEvent', array($event, $fireArgs));
+        $this->Events->fireEvent($event, $fireArgs);
     }
 }

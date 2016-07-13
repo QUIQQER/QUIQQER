@@ -96,6 +96,10 @@ class UserGroups
         $result = array();
         $groups = $User->getGroups();
 
+        if (!is_array($groups)) {
+            $groups = array();
+        }
+
         $result[] = 'u' . $User->getId();
 
         /* @var $Group QUI\Groups\Group */
