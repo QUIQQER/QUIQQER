@@ -44,9 +44,49 @@
             <index>parent</index>
         </table>
 
+        <table name="permissions">
+            <field type="varchar(100) NOT NULL">name</field>
+            <field type="varchar(20)  NOT NULL">type</field>
+            <field type="varchar(20)  NOT NULL">area</field>
+            <field type="varchar(255) NULL">title</field>
+            <field type="text NULL">desc</field>
+            <field type="varchar(200) NULL">src</field>
+            <field type="text NULL">defaultvalue</field>
+
+            <index>name</index>
+        </table>
+
+        <table name="permissions2users">
+            <field type="INT(11) NOT NULL">user_id</field>
+            <field type="TEXT">permissions</field>
+        </table>
+
         <table name="permissions2groups">
             <field type="INT(11) NOT NULL">group_id</field>
             <field type="TEXT">permissions</field>
+        </table>
+
+        <table name="permissions2sites">
+            <field type="varchar(200) NOT NULL">project</field>
+            <field type="varchar(2) NOT NULL">lang</field>
+            <field type="bigint(20)">id</field>
+            <field type="text">permission</field>
+            <field type="text">value</field>
+        </table>
+
+        <table name="permissions2projects">
+            <field type="varchar(200) NOT NULL">project</field>
+            <field type="varchar(2) NOT NULL">lang</field>
+            <field type="text">permission</field>
+            <field type="text">value</field>
+        </table>
+
+        <table name="permissions2media">
+            <field type="varchar(200) NOT NULL">project</field>
+            <field type="varchar(2)">lang</field>
+            <field type="bigint(20)">id</field>
+            <field type="text">permission</field>
+            <field type="text">value</field>
         </table>
 
         <table name="sessions">
