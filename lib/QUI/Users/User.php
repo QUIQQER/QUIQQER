@@ -1087,7 +1087,7 @@ class User implements QUI\Interfaces\Users\User
         $expire   = '0000-00-00 00:00:00';
         $birthday = '0000-00-00';
 
-        QUI::getEvents()->fireEvent('userSave', array($this));
+        QUI::getEvents()->fireEvent('userSaveBegin', array($this));
 
         if ($this->getAttribute('expire')) {
             // Datumsprüfung auf Syntax
@@ -1125,7 +1125,7 @@ class User implements QUI\Interfaces\Users\User
         $Everyone = new QUI\Groups\Everyone();
         $this->addToGroup($Everyone->getId());
 
-        return QUI::getDataBase()->update(
+        $result = QUI::getDataBase()->update(
             Manager::table(),
             array(
                 'username'  => $this->getUsername(),
@@ -1147,6 +1147,10 @@ class User implements QUI\Interfaces\Users\User
             ),
             array('id' => $this->getId())
         );
+
+        QUI::getEvents()->fireEvent('userSaveEnd', array($this));
+
+        return $result;
     }
 
     /**
