@@ -225,12 +225,16 @@ if (file_exists(\$boot)) {
         file_put_contents(
             $image,
             $fileHeader .
+            "define('QUIQQER_SYSTEM',true);".
+            "require dirname(__FILE__) .'/bootstrap.php';\n" .
             "require '{$OPT_DIR}quiqqer/quiqqer/image.php';\n"
         );
 
         file_put_contents(
             $index,
             $fileHeader .
+            "define('QUIQQER_SYSTEM',true);".
+            "require dirname(__FILE__) .'/bootstrap.php';\n" .
             "require '{$OPT_DIR}quiqqer/quiqqer/index.php';\n"
         );
 

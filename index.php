@@ -1,7 +1,9 @@
 <?php
 
 error_reporting(E_ALL);
-define('QUIQQER_SYSTEM', true);
+if(!defined('QUIQQER_SYSTEM')){
+    define('QUIQQER_SYSTEM', true);
+}
 
 /**
  * @author www.pcsg.com (Henning Leutz)

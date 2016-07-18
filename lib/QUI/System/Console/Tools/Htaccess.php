@@ -142,31 +142,35 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteRule ^{$URL_SYS_ADMIN_DIR}$ {$URL_DIR}{$URL_SYS_DIR} [R=301,L]
 
     ## bin dir
-    RewriteRule \"^bin/(.*)$\" \"{$quiqqerBin}/$1\" [L]
+    RewriteRule ^bin/(.*)$ {$quiqqerBin}/$1 [END]
 
     ## lib dir
-    RewriteCond \"%{REQUEST_URI}\" \"^.*bin/\"
-    RewriteRule \"^{$URL_LIB_DIR}(.*)$\" \"{$quiqqerLib}/$1\" [L]
+    RewriteCond %{REQUEST_URI} ^.*bin/
+    RewriteRule ^{$URL_LIB_DIR}(.*)$ {$quiqqerLib}/$1 [END]
 
     ## admin
-    RewriteCond \"%{REQUEST_URI}\" \"^{$URL_DIR}{$URL_SYS_DIR}image.php\"
-    RewriteRule \"^{$URL_DIR}(.*)$\" \"{$quiqqerDir}/$1\" [L]
-    
-    RewriteCond \"%{REQUEST_URI}\" \"^{$URL_DIR}{$URL_SYS_DIR}\" [or]
-    RewriteCond \"%{REQUEST_URI}\" \"^{$URL_DIR}{$URL_SYS_DIR}index.php\" [or]
-    RewriteCond \"%{REQUEST_URI}\" \"^{$URL_DIR}{$URL_SYS_DIR}image.php\" [or]
-    RewriteCond \"%{REQUEST_URI}\" \"^{$URL_DIR}{$URL_SYS_DIR}ajax.php\"
-    RewriteRule \"^{$URL_SYS_DIR}(.*)$\" \"{$quiqqerSys}/$1\" [L]
+    RewriteRule ^{$URL_SYS_DIR}$ {$quiqqerSys}/index.php [END]
+
+    RewriteCond %{REQUEST_URI} ^{$URL_DIR}{$URL_SYS_DIR}image.php$
+    RewriteRule ^(.*)$ {$URL_DIR}image.php?%{QUERY_STRING} [END]
+
+    RewriteCond %{REQUEST_URI} ^{$URL_DIR}{$URL_SYS_DIR}$ [OR]
+    RewriteCond %{REQUEST_URI} ^{$URL_DIR}{$URL_SYS_DIR}index.php$ [OR]
+    RewriteCond %{REQUEST_URI} ^{$URL_DIR}{$URL_SYS_DIR}image.php$ [OR]
+    RewriteCond %{REQUEST_URI} ^{$URL_DIR}{$URL_SYS_DIR}ajax.php$ [OR]
+    RewriteRule ^{$URL_SYS_DIR}(.*)$ {$quiqqerSys}/$1 [END]
 
     # quiqqer API allowed requests
-
-    #RewriteRule ^{$URL_BIN_DIR}(.*)$ {$quiqqerBin}/$1 [L]
-    #RewriteRule ^{$URL_LIB_DIR}(.*)$ {$quiqqerLib}/$1 [L]
-    #RewriteRule ^{$URL_SYS_DIR}(.*)$ {$quiqqerSys}/$1 [L]
-
-    RewriteCond %{REQUEST_FILENAME} !^.*bin/
-    RewriteRule ^.*{$URL_VAR_DIR}|^.*media/sites/ {$URL_DIR} [L]
-    RewriteRule ^/(.*)     /$
+    RewriteCond %{REQUEST_URI} !^(.*)bin(.*)$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}media/cache/$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}([a-zA-Z-\s0-9_+]*)\.html$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}([a-zA-Z-\s0-9_+]*)\.txt$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}favicon\.ico$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}robots\.txt$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}image.php$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}index\.php$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}$
+    RewriteRule ^(.*)$ {$URL_DIR}index.php?error=403 [R=301,END]
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
