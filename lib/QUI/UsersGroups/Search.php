@@ -571,6 +571,106 @@ class Search
      */
     public static function suggestSearch($searchTerm, $searchParams)
     {
+        $searchUsers  = false;
+        $searchGroups = false;
+        $searchResult = array();
 
+        // search in user table
+        if (isset($searchParams['searchUsers'])
+            && $searchParams['searchUsers']
+        ) {
+            $searchUsers = true;
+        }
+
+        // search in group table
+        if (isset($searchParams['searchGroups'])
+            && $searchParams['searchGroups']
+        ) {
+            $searchGroups = true;
+        }
+
+        if ($searchUsers === false
+            && $searchGroups === false
+        ) {
+            $searchUsers = true;
+        }
+
+        if ($searchUsers) {
+            if (!isset($searchParams['users'])
+                || empty($searchParams['users'])
+            ) {
+                throw new QUI\Exception(array(
+                    'quiqqer/quiqqer',
+                    'exception.usergroups.search.cannot.search.users.without.parameters'
+                ));
+            }
+
+            $resultUsers = self::searchUsers($searchTerm, $searchParams['users']);
+
+            if (!empty($resultUsers)) {
+                $selectFields = array(
+                    'id',
+                    'username'
+                );
+
+                $result = QUI::getDataBase()->fetch(array(
+                    'select' => $selectFields,
+                    'from'   => QUI\Users\Manager::table(),
+                    'where'  => array(
+                        'id' => array(
+                            'type'  => 'IN',
+                            'value' => $resultUsers
+                        )
+                    )
+                ));
+
+                foreach ($result as $row) {
+                    $searchResult[] = array(
+                        'id'   => 'u' . $row['id'],
+                        'name' => $row['username']
+                    );
+                }
+            }
+        }
+
+        if ($searchGroups) {
+            if (!isset($searchParams['groups'])
+                || empty($searchParams['groups'])
+            ) {
+                throw new QUI\Exception(array(
+                    'quiqqer/quiqqer',
+                    'exception.usergroups.search.cannot.search.groups.without.parameters'
+                ));
+            }
+
+            $resultGroups = self::searchGroups($searchTerm, $searchParams);
+
+            if (!empty($resultGroups)) {
+                $selectFields = array(
+                    'id',
+                    'name'
+                );
+
+                $result = QUI::getDataBase()->fetch(array(
+                    'select' => $selectFields,
+                    'from'   => QUI\Groups\Manager::table(),
+                    'where'  => array(
+                        'id' => array(
+                            'type'  => 'IN',
+                            'value' => $resultGroups
+                        )
+                    )
+                ));
+
+                foreach ($result as $row) {
+                    $searchResult[] = array(
+                        'id'   => 'g' . $row['id'],
+                        'name' => $row['name']
+                    );
+                }
+            }
+        }
+
+        return $searchResult;
     }
 }
