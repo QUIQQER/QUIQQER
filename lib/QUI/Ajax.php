@@ -352,12 +352,12 @@ class Ajax extends QUI\QDOM
                 if ($this->getAttribute('db_errors')) {
                     $return['ExceptionDBError']['message'] = $Exception->getMessage();
                     $return['ExceptionDBError']['code']    = $Exception->getCode();
-                    $return['ExceptionDBError']['type']    = $Exception->getType();
+                    $return['ExceptionDBError']['type']    = get_class($Exception); //$Exception->getType();
                 } else {
                     // Standardfehler rausbringen
                     $return['Exception']['message'] = 'Internal Server Error';
                     $return['Exception']['code']    = 500;
-                    $return['Exception']['type']    = $Exception->getType();
+                    $return['Exception']['type']    = get_class($Exception);
                 }
 
                 if ((DEVELOPMENT || DEBUG_MODE) && $class != 'PDOException') {
