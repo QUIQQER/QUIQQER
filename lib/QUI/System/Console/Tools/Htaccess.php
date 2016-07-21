@@ -141,6 +141,10 @@ class Htaccess extends QUI\System\Console\Tool
 
     RewriteRule ^{$URL_SYS_ADMIN_DIR}$ {$URL_DIR}{$URL_SYS_DIR} [R=301,L]
 
+    #Block .git directories
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^(.*/)?\.git – [END,R=403]
+
     ## bin dir
     RewriteRule ^bin/(.*)$ {$quiqqerBin}/$1 [END]
 
@@ -171,6 +175,8 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}index\.php$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}$
     RewriteRule ^(.*)$ {$URL_DIR}index.php?error=403 [R=301,END]
+
+  
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
