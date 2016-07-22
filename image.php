@@ -1,9 +1,9 @@
 <?php
 
-
-if(!defined('QUIQQER_SYSTEM')){
+if (!defined('QUIQQER_SYSTEM')) {
     define('QUIQQER_SYSTEM', true);
 }
+
 require_once 'bootstrap.php';
 
 if (!isset($_REQUEST['project']) || !isset($_REQUEST['id'])) {

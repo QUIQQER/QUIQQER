@@ -329,10 +329,33 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      */
     public function getCountry()
     {
+        if (QUI::getSession()->get('country')) {
+            try {
+                return QUI\Countries\Manager::get(
+                    QUI::getSession()->get('country')
+                );
+            } catch (QUI\Exception $Exception) {
+            }
+        }
+
         // apache
         if (isset($_SERVER["GEOIP_COUNTRY_CODE"])) {
             try {
+                QUI::getSession()->set('country', $_SERVER["GEOIP_COUNTRY_CODE"]);
+
                 return QUI\Countries\Manager::get($_SERVER["GEOIP_COUNTRY_CODE"]);
+
+            } catch (QUI\Exception $Exception) {
+            }
+        }
+
+        if (QUI::conf('globals', 'defaultCountry')) {
+            try {
+                QUI::getSession()->set('country', QUI::conf('globals', 'defaultCountry'));
+
+                return QUI\Countries\Manager::get(
+                    QUI::conf('globals', 'defaultCountry')
+                );
 
             } catch (QUI\Exception $Exception) {
             }

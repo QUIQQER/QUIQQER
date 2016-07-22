@@ -717,7 +717,7 @@ class Manager
     /**
      * Get the Session user
      *
-     * @return QUI\Users\User
+     * @return QUI\Interfaces\Users\User
      */
     public function getUserBySession()
     {
@@ -851,8 +851,9 @@ class Manager
      * Get the user by id
      *
      * @param integer $id
+     * @return QUI\Users\User|Nobody|SystemUser|false
      *
-     * @return QUI\Users\User|false
+     * @throws QUI\Users\Exception
      */
     public function get($id)
     {

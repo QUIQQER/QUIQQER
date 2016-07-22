@@ -352,7 +352,7 @@ class Ajax extends QUI\QDOM
                 if ($this->getAttribute('db_errors')) {
                     $return['ExceptionDBError']['message'] = $Exception->getMessage();
                     $return['ExceptionDBError']['code']    = $Exception->getCode();
-                    $return['ExceptionDBError']['type']    = get_class($Exception); //$Exception->getType();
+                    $return['ExceptionDBError']['type']    = get_class($Exception);
                 } else {
                     // Standardfehler rausbringen
                     $return['Exception']['message'] = 'Internal Server Error';
@@ -402,7 +402,7 @@ class Ajax extends QUI\QDOM
             default:
                 $return['Exception']['message'] = $Exception->getMessage();
                 $return['Exception']['code']    = $Exception->getCode();
-                $return['Exception']['type']    = $Exception->getType();
+                $return['Exception']['type']    = get_class($Exception);
                 break;
         }
 
@@ -415,7 +415,7 @@ class Ajax extends QUI\QDOM
     public function onShutdown()
     {
         switch (connection_status()) {
-            case 2: // timeout
+            case 2: // timeout #locale
                 $return = array(
                     'Exception' => array(
                         'message' => 'Zeitüberschreitung der Anfrage.' .

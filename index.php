@@ -1,7 +1,8 @@
 <?php
 
 error_reporting(E_ALL);
-if(!defined('QUIQQER_SYSTEM')){
+
+if (!defined('QUIQQER_SYSTEM')) {
     define('QUIQQER_SYSTEM', true);
 }
 
@@ -111,15 +112,15 @@ try {
         $Smarty = QUI::getTemplateManager()->getEngine();
 
         $Smarty->assign(array(
-            'Project' => $Project,
-            'URL_DIR' => URL_DIR,
+            'Project'     => $Project,
+            'URL_DIR'     => URL_DIR,
             'URL_BIN_DIR' => URL_BIN_DIR,
             'URL_LIB_DIR' => URL_LIB_DIR,
             'URL_VAR_DIR' => URL_VAR_DIR,
             'URL_OPT_DIR' => URL_OPT_DIR,
             'URL_USR_DIR' => URL_USR_DIR,
             'URL_TPL_DIR' => URL_USR_DIR . $Project->getName() . '/',
-            'TPL_DIR' => OPT_DIR . $Project->getName() . '/',
+            'TPL_DIR'     => OPT_DIR . $Project->getName() . '/',
         ));
 
         $file  = LIB_DIR . 'templates/maintenance.html';

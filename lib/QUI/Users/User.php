@@ -255,26 +255,25 @@ class User implements QUI\Interfaces\Users\User
 
 
         // Extras are deprected - we need an api
+        if (isset($data[0]['extra'])) {
+            $extraList = $this->getListOfExtraAttributes();
+            $extras    = array();
+            $extraData = json_decode($data[0]['extra'], true);
 
-//        if (isset($data[0]['extra'])) {
-//            $extraList = $this->getListOfExtraAttributes();
-//            $extras    = array();
-//            $extraData = json_decode($data[0]['extra'], true);
-//
-//            if (!is_array($extraData)) {
-//                $extraData = array();
-//            }
-//
-//            foreach ($extraList as $attribute) {
-//                $extras[$attribute] = true;
-//            }
-//
-//            foreach ($extraData as $attribute => $value) {
-//                if (isset($extras[$attribute])) {
-//                    $this->setAttribute($attribute, $extraData[$attribute]);
-//                }
-//            }
-//        }
+            if (!is_array($extraData)) {
+                $extraData = array();
+            }
+
+            foreach ($extraList as $attribute) {
+                $extras[$attribute] = true;
+            }
+
+            foreach ($extraData as $attribute => $value) {
+                if (isset($extras[$attribute])) {
+                    $this->setAttribute($attribute, $extraData[$attribute]);
+                }
+            }
+        }
 
         // Event
         QUI::getEvents()->fireEvent('userLoad', array($this));
