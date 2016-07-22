@@ -100,10 +100,12 @@ class Nginx extends QUI\System\Console\Tool
         $quiqqerBin = URL_OPT_DIR . 'quiqqer/quiqqer/bin';
         $quiqqerSys = URL_OPT_DIR . 'quiqqer/quiqqer/admin';
 
-        return "
+        return <<<NGINX
+
 # nginx configuration
 
-index index.php;
+root   {$quiqqerDir};
+index  index.php;
 
 location /bin/ {
     alias {$quiqqerBin};
@@ -125,16 +127,28 @@ location /admin/ {
 }
 
 location = / {
-    root   {$quiqqerDir};
-    index  index.php;
+    
 }
 
 location / {
 
     try_files \$uri \$uri/;
 
-    root   /var/www;
-    index  index.php index.html;
+    #Block Requests other than following exceptions
+    if( \$request_uri !~ ^(.*)bin(.*)$ &&
+        \$request_uri !~ ^/media/cache/$ &&
+        \$request_uri !~ ^/([a-zA-Z-\s0-9_+]*)\.html$ &&
+        \$request_uri !~ ^/([a-zA-Z-\s0-9_+]*)\.txt$ &&
+        \$request_uri !~ ^/favicon\.ico$ &&
+        \$request_uri !~ ^/robots\.txt  &&
+        \$request_uri !~ ^/image.php   &&
+        \$request_uri !~ ^/index\.php$ &&
+        \$request_uri !~ ^/$ 
+    ){
+        rewrite /index.php?error=403 permanent;
+    }
+        
+    
 
     if (!-e \$request_filename){
         rewrite  ^/(.*)$  /index.php?_url=$1&\$query_string  last;
@@ -142,20 +156,7 @@ location / {
     }
 }
 
-
-location ~ \\.php$ {
-    fastcgi_split_path_info ^(.+\\.php)(/.+)$;
-    fastcgi_pass   unix:/var/run/php5-fpm.sock;
-    include        fastcgi.conf;
-    fastcgi_index  index.php;
-
-    fastcgi_param  SCRIPT_FILENAME  {$quiqqerDir}\$fastcgi_script_name;
-    fastcgi_param  QUERY_STRING     \$query_string;
-    fastcgi_param  REQUEST_METHOD   \$request_method;
-    fastcgi_param  CONTENT_TYPE     \$content_type;
-    fastcgi_param  CONTENT_LENGTH   \$content_length;
-}
-";
+NGINX;
 
     }
 }
