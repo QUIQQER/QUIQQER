@@ -11,6 +11,7 @@
  * @require css!controls/users/Entry.css
  *
  * @event onLoad [self, User]
+ * @event onError [self, uid]
  */
 define('controls/users/Entry', [
 
@@ -122,9 +123,12 @@ define('controls/users/Entry', [
                 return this;
             }
 
+            var uid = this.$User.getId();
+
             this.$User.load().then(function () {
                 this.fireEvent('load', [this, this.$User]);
             }.bind(this)).catch(function () {
+                this.fireEvent('error', [this, uid]);
                 this.destroy();
             }.bind(this));
 

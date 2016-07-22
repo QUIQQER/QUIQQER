@@ -462,7 +462,11 @@ define('controls/usersAndGroups/Input', [
 
             new UsersEntry(id, {
                 events: {
-                    onDestroy: this.$onGroupUserDestroy
+                    onDestroy: this.$onGroupUserDestroy,
+                    onError  : function (UserEntry, uid) {
+                        this.$values = this.$values.erase('u' + uid);
+                        this.$refreshValues();
+                    }.bind(this)
                 }
             }).inject(this.$List);
 
