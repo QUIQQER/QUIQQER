@@ -141,9 +141,9 @@ class Htaccess extends QUI\System\Console\Tool
 
     RewriteRule ^{$URL_SYS_ADMIN_DIR}$ {$URL_DIR}{$URL_SYS_DIR} [R=301,L]
 
-    #Block .git directories
-    RewriteCond %{REQUEST_FILENAME} -d
-    RewriteRule ^(.*/)?\.git – [END,R=403]
+    #Block .git directories and their contents
+    RewriteCond %{REQUEST_URI} ^(.*\/)?.git(\/.*)?$
+    RewriteRule ^(.*)$ – [END,R=403]
 
     ## bin dir
     RewriteRule ^bin/(.*)$ {$quiqqerBin}/$1 [END]
@@ -163,6 +163,7 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteCond %{REQUEST_URI} ^{$URL_DIR}{$URL_SYS_DIR}image.php$ [OR]
     RewriteCond %{REQUEST_URI} ^{$URL_DIR}{$URL_SYS_DIR}ajax.php$ [OR]
     RewriteRule ^{$URL_SYS_DIR}(.*)$ {$quiqqerSys}/$1 [END]
+
 
     # quiqqer API allowed requests
     RewriteCond %{REQUEST_URI} !^(.*)bin(.*)$
