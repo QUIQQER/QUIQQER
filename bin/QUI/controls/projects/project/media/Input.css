@@ -7,7 +7,7 @@
 
 .qui-controls-project-media-input-preview {
     border: 1px solid #ddd;
-    border-radius: 3px;
+    border-radius: 3px 0 0 3px;
     float: left;
     height: 30px;
     margin: 0;
@@ -16,8 +16,10 @@
 }
 
 .qui-controls-project-media-input-path {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
     float: left;
-    line-height: 30px;
+    line-height: 28px;
     overflow: hidden;
     padding: 0 10px;
     text-overflow: ellipsis;
@@ -29,6 +31,11 @@
     border: 1px solid rgba(147, 128, 108, 0.25);
     flex: 1;
     width: 100%;
+}
+
+.field-container > .qui-controls-project-media-input .qui-controls-project-media-input-path {
+    border-top: none;
+    border-bottom: none;
 }
 
 .field-container > .qui-controls-project-media-input .qui-controls-project-media-input-preview {

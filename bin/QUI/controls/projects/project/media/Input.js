@@ -127,6 +127,7 @@ define('controls/projects/project/media/Input', [
 
             // preview
             this.$Preview = new Element('div', {
+                html   : '&nbsp;',
                 'class': 'qui-controls-project-media-input-preview'
             }).inject(this.$Elm);
 
@@ -244,6 +245,7 @@ define('controls/projects/project/media/Input', [
          */
         clear: function () {
             this.$Input.value = '';
+            this.$Path.set('html', '&nbsp;');
             this.fireEvent('change', [this, this.getValue()]);
             this.$refreshPreview();
         },
@@ -307,8 +309,8 @@ define('controls/projects/project/media/Input', [
             }, {
                 fileurl: value,
                 params : JSON.encode({
-                    height: 40,
-                    width : 40
+                    height: 30,
+                    width : 30
                 })
             });
         }
