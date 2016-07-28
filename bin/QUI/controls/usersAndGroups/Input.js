@@ -9,13 +9,15 @@
  * @require controls/users/Entry
  * @require controls/groups/Entry
  * @require Ajax
+ * @require Locale
  *
  * @event onAddUser [ this, id ]
  * @event onAddgroup [ this, id ]
  */
 define('controls/usersAndGroups/Input', [
 
-    'qui/controls/Control',
+    'qui/QUI',
+    'qui/controls/elements/Select',
     'qui/controls/buttons/Button',
     'controls/users/Entry',
     'controls/groups/Entry',
@@ -24,7 +26,7 @@ define('controls/usersAndGroups/Input', [
 
     'css!controls/usersAndGroups/Input.css'
 
-], function (QUIControl, QUIButton, UsersEntry, GroupsEntry, Ajax, Locale) {
+], function (QUI, QUIElementSelect, QUIButton, UsersEntry, GroupsEntry, Ajax, Locale) {
     "use strict";
 
     /**
@@ -37,7 +39,7 @@ define('controls/usersAndGroups/Input', [
      */
     return new Class({
 
-        Extends: QUIControl,
+        Extends: QUIElementSelect,
         Type   : 'controls/usersAndGroups/Input',
 
         Binds: [

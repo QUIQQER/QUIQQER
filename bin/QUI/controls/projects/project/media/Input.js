@@ -59,7 +59,9 @@ define('controls/projects/project/media/Input', [
         initialize: function (options, Input) {
             this.parent(options);
 
-            this.$Input   = Input || null;
+            this.$Input = Input || null;
+
+            this.$Path    = null;
             this.$Preview = null;
             this.$Project = null;
         },
@@ -116,7 +118,6 @@ define('controls/projects/project/media/Input', [
             });
 
             if (this.$Input.value !== '') {
-
                 var urlParams = QUIStringUtils.getUrlParams(this.$Input.value);
 
                 if ("project" in urlParams) {
@@ -124,10 +125,14 @@ define('controls/projects/project/media/Input', [
                 }
             }
 
-
             // preview
             this.$Preview = new Element('div', {
                 'class': 'qui-controls-project-media-input-preview'
+            }).inject(this.$Elm);
+
+            this.$Path = new Element('div', {
+                html   : '&nbsp;',
+                'class': 'qui-controls-project-media-input-path'
             }).inject(this.$Elm);
 
             this.$MediaButton = new QUIButton({
@@ -271,28 +276,40 @@ define('controls/projects/project/media/Input', [
                 }
             }).inject(this.$Preview);
 
-            var self       = this,
-                previewUrl = value;
+            var self = this;
 
-            if (value.substr(0, 10) == 'image.php?') {
-                previewUrl = URL_DIR + value + '&maxwidth=30&maxheight=30&quiadmin=1';
-            }
+            Ajax.get([
+                'ajax_media_url_rewrited',
+                'ajax_media_url_getPath'
+            ], function (result, path) {
+                var previewUrl = (URL_DIR + result).replace('//', '/');
 
-            // load the image
-            require([
-                'image!' + previewUrl
-            ], function () {
-                MiniLoader.destroy();
+                self.$Path.set('html', path);
+                self.$Path.set('title', path);
 
-                self.$Preview
-                    .setStyle('background', 'url(' + previewUrl + ') no-repeat center center');
+                // load the image
+                require(['image!' + previewUrl], function () {
+                    MiniLoader.destroy();
 
-            }, function () {
-                self.$Preview
-                    .getElements('.fa-spinner')
-                    .removeClass('fa-spin')
-                    .removeClass('fa-spinner')
-                    .addClass('fa-warning');
+                    self.$Preview.setStyle(
+                        'background',
+                        'url(' + previewUrl + ') no-repeat center center'
+                    );
+
+                }, function () {
+                    self.$Preview
+                        .getElements('.fa-spinner')
+                        .removeClass('fa-spin')
+                        .removeClass('fa-spinner')
+                        .addClass('fa-warning');
+                });
+
+            }, {
+                fileurl: value,
+                params : JSON.encode({
+                    height: 40,
+                    width : 40
+                })
             });
         }
     });

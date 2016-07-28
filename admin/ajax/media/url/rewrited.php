@@ -9,14 +9,37 @@
  */
 QUI::$Ajax->registerFunction(
     'ajax_media_url_rewrited',
-    function ($fileurl) {
+    function ($fileurl, $params) {
         if (QUI\Projects\Media\Utils::isMediaUrl($fileurl) === false) {
             return $fileurl;
         }
 
+        if (!isset($params)) {
+            $params = array();
+        } else {
+            $params = json_decode($params, true);
+        }
+
         try {
-            $File = QUI\Projects\Media\Utils::getImageByUrl($fileurl);
-            $url  = $File->getUrl(true);
+            $File   = QUI\Projects\Media\Utils::getImageByUrl($fileurl);
+            $width  = false;
+            $height = false;
+
+            if (isset($params['width'])) {
+                $width = $params['width'];
+            }
+
+            if (isset($params['height'])) {
+                $height = $params['height'];
+            }
+
+            $url = $File->getSizeCacheUrl($width, $height);
+
+            if (!empty($url)) {
+                return $url;
+            }
+
+            $url = $File->getUrl(true);
 
             if (empty($url)) {
                 return $File->getUrl();
@@ -29,6 +52,6 @@ QUI::$Ajax->registerFunction(
 
         return $fileurl;
     },
-    array('fileurl'),
+    array('fileurl', 'params'),
     'Permission::checkAdminUser'
 );
