@@ -158,7 +158,7 @@ server{
     
     
         if ( \$uri !~ ^{$quiqqerUrlDirEscaped}(index\.php|media\/cache|(.*)\.html|(.*)\.txt|favicon\.ico|robots\.txt|image\.php|(.*)\/?bin\/(.*)|(packages\/quiqqer\/quiqqer\/admin\/(image.php|index.php|ajax.php|login.php)?$)|(admin\/(image.php|index.php|ajax.php)?$))) {
-            rewrite ^ /index.php?_url=error=403 last;
+            rewrite ^ {$quiqqerUrlDir}index.php?_url=error=403 last;
         }
         
     }
