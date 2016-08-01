@@ -59,28 +59,8 @@ class Nginx extends QUI\System\Console\Tool
         $this->resetColor();
 
 
-        //
-        // Generate nginx file
-        //
-        $nginxContent
-            = '
-#  _______          _________ _______  _______  _______  _______
-# (  ___  )|\     /|\__   __/(  ___  )(  ___  )(  ____ \(  ____ )
-# | (   ) || )   ( |   ) (   | (   ) || (   ) || (    \/| (    )|
-# | |   | || |   | |   | |   | |   | || |   | || (__    | (____)|
-# | |   | || |   | |   | |   | |   | || |   | ||  __)   |     __)
-# | | /\| || |   | |   | |   | | /\| || | /\| || (      | (\ (
-# | (_\ \ || (___) |___) (___| (_\ \ || (_\ \ || (____/\| ) \ \__
-# (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
-#
-# Generated nginx.xonf File via QUIQQER
-# Date: ' . date('Y-m-d H:i:s') . '
-#
-# Command to create new nginx:
-# php quiqqer.php --username="" --password="" --tool=quiqqer:nginx
-#';
 
-        $nginxContent .= $this->template();
+        $nginxContent = $this->template();
 
         file_put_contents($nginxFile, $nginxContent);
 
@@ -96,63 +76,91 @@ class Nginx extends QUI\System\Console\Tool
     protected function template()
     {
         $quiqqerDir = CMS_DIR;
+        $quiqqerHost = HOST;
+        $quiqqerUrlDir = URL_DIR;
+        $quiqqerUrlDirEscaped = str_replace("/","\\/",URL_DIR);
         $quiqqerLib = URL_OPT_DIR . 'quiqqer/quiqqer/lib';
         $quiqqerBin = URL_OPT_DIR . 'quiqqer/quiqqer/bin';
         $quiqqerSys = URL_OPT_DIR . 'quiqqer/quiqqer/admin';
 
+
         return <<<NGINX
 
-# nginx configuration
+#  _______          _________ _______  _______  _______  _______
+# (  ___  )|\     /|\__   __/(  ___  )(  ___  )(  ____ \(  ____ )
+# | (   ) || )   ( |   ) (   | (   ) || (   ) || (    \/| (    )|
+# | |   | || |   | |   | |   | |   | || |   | || (__    | (____)|
+# | |   | || |   | |   | |   | |   | || |   | ||  __)   |     __)
+# | | /\| || |   | |   | |   | | /\| || | /\| || (      | (\ (
+# | (_\ \ || (___) |___) (___| (_\ \ || (_\ \ || (____/\| ) \ \__
+# (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
+#
+# Generated nginx.xonf File via QUIQQER
+# Date: ' . date('Y-m-d H:i:s') . '
+#
+# Command to create new nginx:
+# php quiqqer.php --username="" --password="" --tool=quiqqer:nginx
 
-root   {$quiqqerDir};
-index  index.php;
 
-location /bin/ {
-    alias {$quiqqerBin};
-}
+# Nginx configuration
 
-location /lib/ {
-    alias {$quiqqerLib};
-}
+server{
 
-location /admin/ {
-    alias {$quiqqerSys};
-
-    location ~ \\.php$ {
-        fastcgi_split_path_info ^(.+?\\.php)(/.*)?$;
-        fastcgi_pass unix:/var/run/php5-fpm.sock;
-        fastcgi_index index.php;
-        include fastcgi_params;
-    }
-}
-
-location = / {
+    listen 0.0.0.0:80;
+    server_name {$quiqqerHost};
     
-}
-
-location / {
-
-    try_files \$uri \$uri/;
-
-    #Block Requests other than following exceptions
-    if( \$request_uri !~ ^(.*)bin(.*)$ &&
-        \$request_uri !~ ^/media/cache/$ &&
-        \$request_uri !~ ^/([a-zA-Z-\s0-9_+]*)\.html$ &&
-        \$request_uri !~ ^/([a-zA-Z-\s0-9_+]*)\.txt$ &&
-        \$request_uri !~ ^/favicon\.ico$ &&
-        \$request_uri !~ ^/robots\.txt  &&
-        \$request_uri !~ ^/image.php   &&
-        \$request_uri !~ ^/index\.php$ &&
-        \$request_uri !~ ^/$ 
-    ){
-        rewrite /index.php?error=403 permanent;
+    
+    root   {$quiqqerDir};
+    index  index.php;
+    
+    # #########################
+    # Virtual Folders & SEO & UX
+    # #########################
+    
+    # Route /bin/ to its real location.
+    location ^~{$quiqqerUrlDir}bin/ {
+        rewrite ^{$quiqqerUrlDir}bin/(.*)$ {$quiqqerUrlDir}packages/quiqqer/quiqqer/bin/$1 break;
     }
+    
+    
+    # #######################################################
+    # Admin
+    # #######################################################
+    
+    location = {$quiqqerUrlDir}admin {
+        rewrite ^{$quiqqerUrlDir}admin$ {$quiqqerUrlDir}admin/ last;
+    }
+    
+    location ~^{$quiqqerUrlDir}admin/ {    
+        rewrite ^{$quiqqerUrlDir}admin/(.*)$ {$quiqqerUrlDir}packages/quiqqer/quiqqer/admin/$1 last;
         
+    }
     
-
-    if (!-e \$request_filename){
-        rewrite  ^/(.*)$  /index.php?_url=$1&\$query_string  last;
-        break;
+    # #######################################################
+    # General Rules
+    # #######################################################
+    
+    location ~*\.php$ {
+        if ( \$uri !~ ^{$quiqqerUrlDirEscaped}(index\.php|media\/cache|(.*)\.html|(.*)\.txt|favicon\.ico|robots\.txt|image\.php|(.*)\/?bin\/(.*)|(packages\/quiqqer\/quiqqer\/admin\/(image.php|index.php|ajax.php|login.php)?$)|(admin\/(image.php|index.php|ajax.php)?$))){ 
+            rewrite ^ {$quiqqerUrlDir}index.php?_url=error=403 last;
+        }
+        
+        
+        fastcgi_pass php;
+        include snippets/fastcgi-php.conf;
+        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+    }
+    
+    #Block Access to non-whitelisted Files
+    location ~{$quiqqerUrlDir} {
+    
+        try_files \$uri \$uri/ {$quiqqerUrlDir}index.php?_uri=\$uri&\$query_string;
+    
+    
+        if ( \$uri !~ ^{$quiqqerUrlDirEscaped}(index\.php|media\/cache|(.*)\.html|(.*)\.txt|favicon\.ico|robots\.txt|image\.php|(.*)\/?bin\/(.*)|(packages\/quiqqer\/quiqqer\/admin\/(image.php|index.php|ajax.php|login.php)?$)|(admin\/(image.php|index.php|ajax.php)?$))) {
+            rewrite ^ {$quiqqerUrlDir}index.php?_url=error=403 last;
+        }
+        
     }
 }
 

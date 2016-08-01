@@ -148,9 +148,6 @@ class Htaccess extends QUI\System\Console\Tool
     ## bin dir
     RewriteRule ^bin/(.*)$ {$quiqqerBin}/$1 [END]
 
-    ## lib dir
-    RewriteCond %{REQUEST_URI} ^.*bin/
-    RewriteRule ^{$URL_LIB_DIR}(.*)$ {$quiqqerLib}/$1 [END]
 
     ## admin
     RewriteRule ^{$URL_SYS_DIR}$ {$quiqqerSys}/index.php [END]
