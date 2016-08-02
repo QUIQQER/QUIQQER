@@ -133,7 +133,7 @@ class Manager
      *
      * @todo muss noch fremde nutzer prüfen
      *
-     * @param QUI\Users\User|QUI\Users\Nobody $User
+     * @param QUI\Interfaces\Users\User $User
      *
      * @return boolean
      */

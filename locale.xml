@@ -467,6 +467,10 @@
             <de><![CDATA[Titel]]></de>
             <en><![CDATA[Title]]></en>
         </locale>
+        <locale name="workingtitle">
+            <de><![CDATA[Arbeitstitel]]></de>
+            <en><![CDATA[Working title]]></en>
+        </locale>
         <locale name="short">
             <de><![CDATA[Kurzbeschreibung]]></de>
             <en><![CDATA[Short description]]></en>
@@ -6204,11 +6208,13 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             ]]></en>
         </locale>
         <locale name="exception.usergroups.search.cannot.search.users.without.parameters">
-            <de><![CDATA[Die Suche nach Benutzern kann ohne entsprechende Such-Parameter nicht durchgeführt werden.]]></de>
+            <de>
+                <![CDATA[Die Suche nach Benutzern kann ohne entsprechende Such-Parameter nicht durchgeführt werden.]]></de>
             <en><![CDATA[The user search cannot be executed without search parameters.]]></en>
         </locale>
         <locale name="exception.usergroups.search.cannot.search.groups.without.parameters">
-            <de><![CDATA[Die Suche nach Gruppen kann ohne entsprechende Such-Parameter nicht durchgeführt werden.]]></de>
+            <de>
+                <![CDATA[Die Suche nach Gruppen kann ohne entsprechende Such-Parameter nicht durchgeführt werden.]]></de>
             <en><![CDATA[The group search cannot be executed without search parameters.]]></en>
         </locale>
     </groups>
