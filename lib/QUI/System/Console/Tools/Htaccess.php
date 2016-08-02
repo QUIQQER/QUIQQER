@@ -38,14 +38,24 @@ class Htaccess extends QUI\System\Console\Tool
         $htaccessFile       = CMS_DIR . '.htaccess';
 
         $oldTemplate = false;
-        $this->writeLn("Please select your Apache Version.");
-        $this->writeLn("[1] Apache 2.3 and higher.");
-        $this->writeLn("[2] Apache 2.2 and lower.");
-        $this->writeLn("Please type a number [1]");
-        $input = $this->readInput();
-        if($input == "2"){
-            $oldTemplate = true;
+
+        $version = $this->getApacheVersion();
+        if($version != null && isset($version[1])){
+            $this->writeLn("Apache version detected : ". $version[0].".".$version[1]);
+            if($version[1] <= 2){
+                $oldTemplate = true;
+            }
+        }else{
+            $this->writeLn("Please select your Apache Version.");
+            $this->writeLn("[1] Apache 2.3 and higher.");
+            $this->writeLn("[2] Apache 2.2 and lower.");
+            $this->writeLn("Please type a number [1]");
+            $input = $this->readInput();
+            if($input == "2"){
+                $oldTemplate = true;
+            }
         }
+
         //
         // generate backup
         //
@@ -283,4 +293,32 @@ class Htaccess extends QUI\System\Console\Tool
         ";
     }
 
+    private function getApacheVersion(){
+
+        if(function_exists('apache_get_version')){
+            $version = apache_get_version();
+            $regex = "/Apache\\/([0-9\\.]*)/i";
+            $res = preg_match($regex, $version, $matches);
+
+            if($res && isset($matches[1])){
+                $version = $matches[1];
+                $verionParts = explode(".",$version);
+                return $verionParts;
+            }else{
+                return null;
+            }
+        }else{
+            $version = shell_exec('apache2 -v');
+            $regex = "/Apache\\/([0-9\\.]*)/i";
+            $res = preg_match($regex, $version, $matches);
+            if($res && isset($matches[1])){
+                $version = $matches[1];
+
+                $verionParts = explode(".",$version);
+                return $verionParts;
+            }else{
+                return null;
+            }
+        }
+    }
 }
