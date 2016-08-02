@@ -188,7 +188,7 @@ class Htaccess extends QUI\System\Console\Tool
 
     # quiqqer API allowed requests
     RewriteCond %{REQUEST_URI} !^(.*)bin(.*)$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}media/cache/$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}media/cache/(.*)$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}([a-zA-Z-\s0-9_+]*)\.html$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}([a-zA-Z-\s0-9_+]*)\.txt$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}favicon\.ico$
@@ -196,7 +196,7 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}image.php$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}index\.php$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}$
-    RewriteRule ^(.*)$ {$URL_DIR}index.php?error=403 [R=301,END]
+    RewriteRule ^(.*)$ {$URL_DIR}?error=403 [R=301,END]
 
   
 
@@ -273,7 +273,7 @@ class Htaccess extends QUI\System\Console\Tool
 
     # quiqqer API allowed requests
     RewriteCond %{REQUEST_URI} !^(.*)bin(.*)$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}media/cache/$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}media/cache/(.*)$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}([a-zA-Z-\s0-9_+]*)\.html$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}([a-zA-Z-\s0-9_+]*)\.txt$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}favicon\.ico$
@@ -281,7 +281,7 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}image.php$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}index\.php$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}$
-    RewriteRule ^(.*)$ {$URL_DIR}index.php?error=403 [R=301,L]
+    RewriteRule ^(.*)$ {$URL_DIR}?error=403 [R=301,L]
 
   
 
