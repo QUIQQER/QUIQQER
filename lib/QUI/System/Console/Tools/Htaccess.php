@@ -37,6 +37,15 @@ class Htaccess extends QUI\System\Console\Tool
         $htaccessBackupFile = VAR_DIR . 'backup/htaccess_' . date('Y-m-d__H_i_s');
         $htaccessFile       = CMS_DIR . '.htaccess';
 
+        $oldTemplate = false;
+        $this->writeLn("Please select your Apache Version.");
+        $this->writeLn("[1] Apache 2.3 and higher.");
+        $this->writeLn("[2] Apache 2.2 and lower.");
+        $this->writeLn("Please type a number [1]");
+        $input = $this->readInput();
+        if($input == "2"){
+            $oldTemplate = true;
+        }
         //
         // generate backup
         //
@@ -90,7 +99,12 @@ class Htaccess extends QUI\System\Console\Tool
             $htaccessContent .= "\n\n";
         }
 
-        $htaccessContent .= $this->template();
+        if($oldTemplate){
+            $htaccessContent .= $this->templateOld();
+        }else{
+            $htaccessContent .= $this->template();
+        }
+
 
         file_put_contents($htaccessFile, $htaccessContent);
 
@@ -183,4 +197,90 @@ class Htaccess extends QUI\System\Console\Tool
 </IfModule>
         ";
     }
+
+    protected function templateOld()
+    {
+        $URL_DIR     = URL_DIR;
+        $URL_LIB_DIR = URL_LIB_DIR;
+        $URL_BIN_DIR = URL_BIN_DIR;
+        $URL_SYS_DIR = URL_SYS_DIR;
+        $URL_VAR_DIR = URL_VAR_DIR;
+
+        if ($URL_DIR != '/') {
+            $URL_LIB_DIR = str_replace($URL_DIR, '', URL_LIB_DIR);
+            $URL_BIN_DIR = str_replace($URL_DIR, '', URL_BIN_DIR);
+            $URL_SYS_DIR = str_replace($URL_DIR, '', URL_SYS_DIR);
+            $URL_VAR_DIR = str_replace($URL_DIR, '', URL_VAR_DIR);
+        }
+
+        $URL_LIB_DIR = ltrim($URL_LIB_DIR, '/');
+        $URL_BIN_DIR = ltrim($URL_BIN_DIR, '/');
+        $URL_SYS_DIR = ltrim($URL_SYS_DIR, '/');
+        $URL_VAR_DIR = ltrim($URL_VAR_DIR, '/');
+
+        $quiqqerLib = URL_OPT_DIR . 'quiqqer/quiqqer/lib';
+        $quiqqerBin = URL_OPT_DIR . 'quiqqer/quiqqer/bin';
+        $quiqqerSys = URL_OPT_DIR . 'quiqqer/quiqqer/admin';
+        $quiqqerDir = URL_OPT_DIR . 'quiqqer/quiqqer';
+
+        $URL_SYS_ADMIN_DIR = trim($URL_SYS_DIR, '/');
+
+        return "
+# quiqqer rewrite
+<IfModule mod_rewrite.c>
+
+    SetEnv HTTP_MOD_REWRITE On
+
+    RewriteEngine On
+    RewriteBase {$URL_DIR}
+
+    RewriteRule ^{$URL_SYS_ADMIN_DIR}$ {$URL_DIR}{$URL_SYS_DIR} [R=301,L]
+
+    #Block .git directories and their contents
+    RewriteCond %{REQUEST_URI} ^(.*\/)?.git(\/.*)?$
+    RewriteRule ^(.*)$ – [L,R=403]
+
+    # pass-through if another rewrite rule has been applied already
+    RewriteCond %{ENV:REDIRECT_STATUS} 200
+    RewriteRule ^ - [L]
+
+    ## bin dir
+    RewriteRule ^bin/(.*)$ {$quiqqerBin}/$1 [L]
+
+
+    ## admin
+    RewriteRule ^{$URL_SYS_DIR}$ {$quiqqerSys}/index.php [L]
+
+    RewriteCond %{REQUEST_URI} ^{$URL_DIR}{$URL_SYS_DIR}image.php$
+    RewriteRule ^(.*)$ {$URL_DIR}image.php?%{QUERY_STRING} [L]
+
+    RewriteCond %{REQUEST_URI} ^{$URL_DIR}{$URL_SYS_DIR}$ [OR]
+    RewriteCond %{REQUEST_URI} ^{$URL_DIR}{$URL_SYS_DIR}index.php$ [OR]
+    RewriteCond %{REQUEST_URI} ^{$URL_DIR}{$URL_SYS_DIR}image.php$ [OR]
+    RewriteCond %{REQUEST_URI} ^{$URL_DIR}{$URL_SYS_DIR}ajax.php$ [OR]
+    RewriteRule ^{$URL_SYS_DIR}(.*)$ {$quiqqerSys}/$1 [L]
+
+
+    # quiqqer API allowed requests
+    RewriteCond %{REQUEST_URI} !^(.*)bin(.*)$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}media/cache/$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}([a-zA-Z-\s0-9_+]*)\.html$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}([a-zA-Z-\s0-9_+]*)\.txt$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}favicon\.ico$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}robots\.txt$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}image.php$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}index\.php$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}$
+    RewriteRule ^(.*)$ {$URL_DIR}index.php?error=403 [R=301,L]
+
+  
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    RewriteRule ^(.*)$ index.php?_url=$1&%{QUERY_STRING}
+</IfModule>
+        ";
+    }
+
 }
