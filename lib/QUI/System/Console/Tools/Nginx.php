@@ -59,7 +59,6 @@ class Nginx extends QUI\System\Console\Tool
         $this->resetColor();
 
 
-
         $nginxContent = $this->template();
 
         file_put_contents($nginxFile, $nginxContent);
@@ -75,13 +74,13 @@ class Nginx extends QUI\System\Console\Tool
      */
     protected function template()
     {
-        $quiqqerDir = CMS_DIR;
-        $quiqqerHost = HOST;
-        $quiqqerUrlDir = URL_DIR;
-        $quiqqerUrlDirEscaped = str_replace("/","\\/",URL_DIR);
-        $quiqqerLib = URL_OPT_DIR . 'quiqqer/quiqqer/lib';
-        $quiqqerBin = URL_OPT_DIR . 'quiqqer/quiqqer/bin';
-        $quiqqerSys = URL_OPT_DIR . 'quiqqer/quiqqer/admin';
+        $quiqqerDir           = CMS_DIR;
+        $quiqqerHost          = HOST;
+        $quiqqerUrlDir        = URL_DIR;
+        $quiqqerUrlDirEscaped = str_replace("/", "\\/", URL_DIR);
+        $quiqqerLib           = URL_OPT_DIR . 'quiqqer/quiqqer/lib';
+        $quiqqerBin           = URL_OPT_DIR . 'quiqqer/quiqqer/bin';
+        $quiqqerSys           = URL_OPT_DIR . 'quiqqer/quiqqer/admin';
 
 
         return <<<NGINX
