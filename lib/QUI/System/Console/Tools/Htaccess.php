@@ -67,7 +67,6 @@ class Htaccess extends QUI\System\Console\Tool
 
             $this->writeLn('You can find a .htaccess Backup File at:');
             $this->writeLn($htaccessBackupFile);
-
         } else {
             $this->writeLn(
                 'No .htaccess File found. Could not create a backup.',
