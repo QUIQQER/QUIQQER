@@ -560,7 +560,6 @@ class Manager
             );
         }
 
-
         $cls = get_class($Obj);
 
         switch ($cls) {
@@ -696,6 +695,8 @@ class Manager
                 );
                 break;
         }
+
+        QUI::getEvents()->fireEvent('permissionsSet', array($Obj, $permissions));
     }
 
     /**
