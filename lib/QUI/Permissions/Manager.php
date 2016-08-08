@@ -210,7 +210,6 @@ class Manager
                 self::importPermissionsForGroup(
                     $Groups->get($groupData['id'])
                 );
-
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::addError(
                     '\QUI\Permissions\Manager::importPermissionsForGroups() -> ' .
@@ -730,7 +729,6 @@ class Manager
 
             if (is_string($Perm)) {
                 $permissionValue = $Perm;
-
             } elseif (is_array($Perm)) {
                 $permissionValues = array();
 
@@ -752,15 +750,12 @@ class Manager
             } elseif (QUI::getUsers()->isUser($Perm)) {
                 /* @var $Perm QUI\Users\User */
                 $permissionValue = 'u' . $Perm->getId();
-
             } elseif (QUI::getGroups()->isGroup($Perm)) {
                 /* @var $Perm QUI\Groups\Group */
                 $permissionValue = 'g' . $Perm->getId();
-
             } else {
                 continue;
             }
-
 
             $data[$permission] = $this->cleanValue(
                 $params['type'],
@@ -1147,21 +1142,18 @@ class Manager
             }
         }
 
-
         // group permissions
         if ($ruleset) {
             if (is_string($ruleset)
                 && method_exists('QUI\Permissions\PermissionOrder', $ruleset)
             ) {
                 $result = QUI\Permissions\PermissionOrder::$ruleset($permission, $usersAndGroups);
-
             } else {
                 if (is_callable($ruleset)) {
                 } else {
                     throw new QUI\Exception('Unknown ruleset [getUserPermission]');
                 }
             }
-
         } else {
             $result = QUI\Permissions\PermissionOrder::permission($permission, $usersAndGroups);
         }
