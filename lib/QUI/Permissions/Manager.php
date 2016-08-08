@@ -746,7 +746,6 @@ class Manager
                 }
 
                 $permissionValue = implode(',', $permissionValues);
-
             } elseif (QUI::getUsers()->isUser($Perm)) {
                 /* @var $Perm QUI\Users\User */
                 $permissionValue = 'u' . $Perm->getId();
