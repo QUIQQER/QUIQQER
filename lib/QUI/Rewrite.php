@@ -482,7 +482,6 @@ class Rewrite
             // URL Parameter filtern
             try {
                 $this->site = $this->getSiteByUrl($_REQUEST['_url'], true);
-
             } catch (QUI\Exception $Exception) {
                 $Site = $this->existRegisterPath(
                     $_REQUEST['_url'],
@@ -493,7 +492,6 @@ class Rewrite
                     $Site->setAttribute('canonical', $_REQUEST['_url']);
 
                     $this->site = $Site;
-
                     return;
                 }
 
@@ -509,17 +507,17 @@ class Rewrite
             if (isset($_SERVER['HTTP_HOST'])
                 && isset($vhosts[$_SERVER['HTTP_HOST']])
                 && isset($vhosts[$_SERVER['HTTP_HOST']][$this->lang])
-                && $_SERVER['HTTP_HOST']
-                   != $vhosts[$_SERVER['HTTP_HOST']][$this->lang]
+                && $_SERVER['HTTP_HOST'] != $vhosts[$_SERVER['HTTP_HOST']][$this->lang]
                 && (int)$_SERVER['SERVER_PORT'] !== 443
-                && QUI::conf('globals', 'httpshost') !=
-                   'https://' . $_SERVER['HTTP_HOST']
+                && QUI::conf('globals', 'httpshost') != 'https://' . $_SERVER['HTTP_HOST']
             ) {
                 $url = $this->site->getUrlRewritten();
-                $url
-                     = $vhosts[$_SERVER['HTTP_HOST']][$this->lang] . URL_DIR . $url;
-                $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
-                $url = 'http://' . $this->project_prefix . $url;
+
+                if (strpos($url, 'http:') === false) {
+                    $url = $vhosts[$_SERVER['HTTP_HOST']][$this->lang] . URL_DIR . $url;
+                    $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
+                    $url = 'http://' . $this->project_prefix . $url;
+                }
 
                 $this->showErrorHeader(301, $url);
             }
@@ -544,8 +542,6 @@ class Rewrite
         } else {
             $vhosts = $this->getVHosts();
 
-            //$url = $this->first_child->getUrlRewrited();
-
             /**
              * Sprache behandeln
              * Falls für die Sprache ein Host Eintrag existiert
@@ -554,13 +550,7 @@ class Rewrite
                 && isset($vhosts[$_SERVER['HTTP_HOST']])
                 && isset($vhosts[$_SERVER['HTTP_HOST']][$this->lang])
             ) {
-//                $url = $vhosts[$_SERVER['HTTP_HOST']][$this->lang] . URL_DIR;
-//                $url = QUI\Utils\string::replaceDblSlashes($url);
-//                $url = 'http://' . $this->project_prefix . $url;
-
-                if (isset($_SERVER['REQUEST_URI'])
-                    && $_SERVER['REQUEST_URI'] != URL_DIR
-                ) {
+                if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] != URL_DIR) {
                     $message = "\n\n===================================\n\n";
                     $message .= 'Rewrite 301 bei der wir nicht wissen wann es kommt. Rewrite.php Zeile 391 ';
                     $message .= "\n";
@@ -1496,7 +1486,7 @@ class Rewrite
 
         foreach ($paths as $path) {
             QUI::getDataBase()->insert($table, array(
-                'id' => $Site->getId(),
+                'id'   => $Site->getId(),
                 'path' => $path
             ));
         }
@@ -1523,7 +1513,7 @@ class Rewrite
      * @param string $path
      * @param \QUI\Projects\Project $Project
      *
-     * @return \QUI\Projects\Site
+     * @return \QUI\Projects\Site|false
      */
     public function existRegisterPath($path, $Project)
     {
