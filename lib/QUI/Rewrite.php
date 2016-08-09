@@ -381,7 +381,6 @@ class Rewrite
                         $height = (int)$part_size[1];
                     }
                 }
-
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::addDebug($Exception->getMessage());
 
@@ -458,7 +457,6 @@ class Rewrite
                 // Falls keine Extension (.html) dann auf .html
                 // nur wenn $defaultSuffix == ''
                 $this->showErrorHeader(301, $url);
-
             } elseif ($defaultSuffix === ''
                       && isset($pathinfo['extension'])
                       && $pathinfo['extension'] == 'html'
@@ -538,7 +536,6 @@ class Rewrite
                     }
                 }
             }
-
         } else {
             $vhosts = $this->getVHosts();
 
@@ -812,7 +809,6 @@ class Rewrite
 
         try {
             $Project = QUI\Projects\Manager::get();
-
         } catch (QUI\Exception $Exception) {
             $Project = false;
         }
@@ -879,7 +875,6 @@ class Rewrite
                 $this->lang,
                 $template
             );
-
         } catch (QUI\Exception $Exception) {
             // nothing todo
             $Project = false;
@@ -996,7 +991,6 @@ class Rewrite
                     $this->site    = $ErrorSite;
 
                     return true;
-
                 } catch (QUI\Exception $Exception) {
                     QUI\System\Log::writeException($Exception);
                 }
@@ -1053,7 +1047,6 @@ class Rewrite
                 $Site    = $Project->get((int)$error[2]);
 
                 return $Site;
-
             } catch (QUI\Exception $Exception) {
                 // no error site found, dry it global
                 echo $Exception->getMessage();
@@ -1073,7 +1066,6 @@ class Rewrite
                 $Site = $Project->get($vhosts[404]['id']);
 
                 return $Site;
-
             } catch (QUI\Exception $Exception) {
             }
         }
@@ -1295,7 +1287,6 @@ class Rewrite
     {
         try {
             $url = MediaUtils::getRewritedUrl('image.php?' . $output[3]);
-
         } catch (QUI\Exception $Excxeption) {
             $url = '';
         }
@@ -1345,7 +1336,6 @@ class Rewrite
                     ? $Image->getAttribute('title') : '';
 
                 $att['data-src'] = $Image->getSizeCacheUrl();
-
             } catch (QUI\Exception $Exception) {
             }
         }
@@ -1409,7 +1399,6 @@ class Rewrite
             $this->url_cache[$components] = $url . $anchor;
 
             return $output[1] . '="' . $url . $anchor . '"';
-
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
@@ -1539,7 +1528,6 @@ class Rewrite
                 if ($Site->getAttribute('active')) {
                     return $Site;
                 }
-
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::addDebug($Exception->getMessage());
             }
@@ -1578,7 +1566,6 @@ class Rewrite
             $project = $Project->getName();
 
             unset($params['site']);
-
         } else {
             if (isset($params['id'])) {
                 $id = $params['id'];
@@ -1624,7 +1611,6 @@ class Rewrite
         if (file_exists($link_cache_file)) {
             $url = file_get_contents($link_cache_file);
             $url = $this->extendUrlWidthPrams($url, $params);
-
         } else {
             // Wenn nicht erstellen
             try {
@@ -1632,7 +1618,6 @@ class Rewrite
                 /* @var $Project \QUI\Projects\Project */
                 $Site = $Project->get((int)$id);
                 /* @var $s \QUI\Projects\Site */
-
             } catch (QUI\Exception $Exception) {
                 // Seite existiert nicht
                 return '';
@@ -1690,7 +1675,6 @@ class Rewrite
 
             $url = $this->project_prefix . $url;
             $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
-
         } elseif ($Project->getAttribute('default_lang') !== $lang) {
             // Falls kein Host Eintrag gibt
             // Und nicht die Standardsprache dann das Sprachenflag davor setzen
@@ -1734,7 +1718,6 @@ class Rewrite
         if (isset($params['_getParams']) && is_string($params['_getParams'])) {
             parse_str($params['_getParams'], $getParams);
             unset($params['_getParams']);
-
         } elseif (isset($params['_getParams']) && is_array($params['_getParams'])) {
             $getParams = $params['_getParams'];
             unset($params['_getParams']);
