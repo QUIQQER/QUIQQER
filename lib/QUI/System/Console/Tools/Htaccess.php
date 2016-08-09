@@ -40,18 +40,18 @@ class Htaccess extends QUI\System\Console\Tool
         $oldTemplate = false;
 
         $version = $this->getApacheVersion();
-        if($version != null && isset($version[1])){
-            $this->writeLn("Apache version detected : ". $version[0].".".$version[1]);
-            if($version[1] <= 2){
+        if ($version != null && isset($version[1])) {
+            $this->writeLn("Apache version detected : " . $version[0] . "." . $version[1]);
+            if ($version[1] <= 2) {
                 $oldTemplate = true;
             }
-        }else{
+        } else {
             $this->writeLn("Please select your Apache Version.");
             $this->writeLn("[1] Apache 2.3 and higher.");
             $this->writeLn("[2] Apache 2.2 and lower.");
             $this->writeLn("Please type a number [1]");
             $input = $this->readInput();
-            if($input == "2"){
+            if ($input == "2") {
                 $oldTemplate = true;
             }
         }
@@ -67,7 +67,6 @@ class Htaccess extends QUI\System\Console\Tool
 
             $this->writeLn('You can find a .htaccess Backup File at:');
             $this->writeLn($htaccessBackupFile);
-
         } else {
             $this->writeLn(
                 'No .htaccess File found. Could not create a backup.',
@@ -109,9 +108,9 @@ class Htaccess extends QUI\System\Console\Tool
             $htaccessContent .= "\n\n";
         }
 
-        if($oldTemplate){
+        if ($oldTemplate) {
             $htaccessContent .= $this->templateOld();
-        }else{
+        } else {
             $htaccessContent .= $this->template();
         }
 
@@ -185,6 +184,9 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteCond %{REQUEST_URI} ^{$URL_DIR}{$URL_SYS_DIR}ajax.php$ [OR]
     RewriteRule ^{$URL_SYS_DIR}(.*)$ {$quiqqerSys}/$1 [END]
 
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php?_url=$1&%{QUERY_STRING} [END]
 
     # quiqqer API allowed requests
     RewriteCond %{REQUEST_URI} !^(.*)bin(.*)$
@@ -197,13 +199,6 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}index\.php$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}$
     RewriteRule ^(.*)$ {$URL_DIR}?error=403 [R=301,END]
-
-  
-
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-
-    RewriteRule ^(.*)$ index.php?_url=$1&%{QUERY_STRING}
 </IfModule>
         ";
     }
@@ -270,6 +265,9 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteCond %{REQUEST_URI} ^{$URL_DIR}{$URL_SYS_DIR}ajax.php$ [OR]
     RewriteRule ^{$URL_SYS_DIR}(.*)$ {$quiqqerSys}/$1 [L]
 
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php?_url=$1&%{QUERY_STRING} [L]
 
     # quiqqer API allowed requests
     RewriteCond %{REQUEST_URI} !^(.*)bin(.*)$
@@ -282,41 +280,37 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}index\.php$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}$
     RewriteRule ^(.*)$ {$URL_DIR}?error=403 [R=301,L]
-
-  
-
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-
-    RewriteRule ^(.*)$ index.php?_url=$1&%{QUERY_STRING}
 </IfModule>
         ";
     }
 
-    private function getApacheVersion(){
+    private function getApacheVersion()
+    {
 
-        if(function_exists('apache_get_version')){
+        if (function_exists('apache_get_version')) {
             $version = apache_get_version();
-            $regex = "/Apache\\/([0-9\\.]*)/i";
-            $res = preg_match($regex, $version, $matches);
+            $regex   = "/Apache\\/([0-9\\.]*)/i";
+            $res     = preg_match($regex, $version, $matches);
 
-            if($res && isset($matches[1])){
-                $version = $matches[1];
-                $verionParts = explode(".",$version);
+            if ($res && isset($matches[1])) {
+                $version     = $matches[1];
+                $verionParts = explode(".", $version);
+
                 return $verionParts;
-            }else{
+            } else {
                 return null;
             }
-        }else{
+        } else {
             $version = shell_exec('apache2 -v');
-            $regex = "/Apache\\/([0-9\\.]*)/i";
-            $res = preg_match($regex, $version, $matches);
-            if($res && isset($matches[1])){
+            $regex   = "/Apache\\/([0-9\\.]*)/i";
+            $res     = preg_match($regex, $version, $matches);
+            if ($res && isset($matches[1])) {
                 $version = $matches[1];
 
-                $verionParts = explode(".",$version);
+                $verionParts = explode(".", $version);
+
                 return $verionParts;
-            }else{
+            } else {
                 return null;
             }
         }
