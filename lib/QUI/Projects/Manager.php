@@ -15,11 +15,11 @@ use QUI\Utils\DOM;
  * The Project Manager
  * The main object to get a project
  *
- * @author     www.pcsg.de (Henning Leutz)
- * @licence    For copyright and license information, please view the /README.md
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  *
- * @event      onProjectConfigSave [ string project, Array config ]
- * @event      onCreateProject [ string \QUI\Projects\Project ]
+ * @event onProjectConfigSave [ string project, Array config ]
+ * @event onCreateProject [ string \QUI\Projects\Project ]
  *
  * @errorcodes 8xx Project Errors -> Look at Project.php
  */
@@ -159,8 +159,7 @@ class Manager
 
             if (isset($config["media_watermark_position"])
                 && isset($old_config['media_watermark_position'])
-                && $config["media_watermark_position"]
-                   != $old_config['media_watermark_position']
+                && $config["media_watermark_position"] != $old_config['media_watermark_position']
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
@@ -169,8 +168,7 @@ class Manager
 
             if (isset($config["media_image_library"])
                 && isset($old_config['media_image_library'])
-                && $config["media_image_library"]
-                   != $old_config['media_image_library']
+                && $config["media_image_library"] != $old_config['media_image_library']
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
@@ -210,7 +208,6 @@ class Manager
 
         try {
             return QUI\Cache\Manager::get($cache);
-
         } catch (QUI\Exception $Exception) {
         }
 
@@ -230,6 +227,7 @@ class Manager
             "media_maxUploadSize"      => "",
             "media_createCacheOnSave"  => "1",
             "placeholder"              => "",
+            "logo"                     => "",
             "favicon"                  => ""
         );
 
@@ -426,7 +424,6 @@ class Manager
                 } else {
                     $list[] = $project;
                 }
-
             } catch (QUI\Exception $Exception) {
             }
         }
@@ -602,7 +599,7 @@ class Manager
         $name = QUI\Utils\Security\Orthos::clear($name);
 
         $DataBase = QUI::getDataBase();
-        $Table    = $DataBase->Table();
+        $Table    = $DataBase->table();
 
 
         /**
@@ -611,7 +608,7 @@ class Manager
         $table_site     = QUI_DB_PRFX . $name . '_' . $lang . '_sites';
         $table_site_rel = QUI_DB_PRFX . $name . '_' . $lang . '_sites_relations';
 
-        $Table->appendFields($table_site, array(
+        $Table->addColumn($table_site, array(
             "id"          => "bigint(20) NOT NULL",
             "name"        => "varchar(200) NOT NULL",
             "title"       => "tinytext",
@@ -630,7 +627,7 @@ class Manager
             "extra"       => "text default NULL",
         ));
 
-        $Table->appendFields($table_site_rel, array(
+        $Table->addColumn($table_site_rel, array(
             "parent" => "bigint(20) NOT NULL",
             "child"  => "bigint(20) NOT NULL"
         ));
@@ -662,7 +659,7 @@ class Manager
         $table_media     = QUI_DB_PRFX . $name . '_media';
         $table_media_rel = QUI_DB_PRFX . $name . '_media_relations';
 
-        $Table->appendFields($table_media, array(
+        $Table->addColumn($table_media, array(
             "id"           => "bigint(20) NOT NULL",
             "name"         => "varchar(200) NOT NULL",
             "title"        => "tinytext",
@@ -681,7 +678,7 @@ class Manager
             "image_width"  => "int(6) default NULL"
         ));
 
-        $Table->appendFields($table_media_rel, array(
+        $Table->addColumn($table_media_rel, array(
             "parent" => "bigint(20) NOT NULL",
             "child"  => "bigint(20) NOT NULL"
         ));
@@ -771,13 +768,15 @@ class Manager
         $langs   = $Project->getAttribute('langs');
 
         $DataBase = QUI::getDataBase();
-        $Table    = $DataBase->Table();
+        $Table    = $DataBase->table();
 
         // delete site tables for all languages
         foreach ($langs as $lang) {
             $table_site     = QUI::getDBTableName($project . '_' . $lang . '_sites');
-            $table_site_rel = QUI::getDBTableName($project . '_' . $lang
-                                                  . '_sites_relations');
+            $table_site_rel = QUI::getDBTableName(
+                $project . '_' . $lang
+                . '_sites_relations'
+            );
             $table_multi    = QUI::getDBTableName($project . '_multilingual');
 
             $table_media     = QUI::getDBTableName($project . '_media');
@@ -907,7 +906,6 @@ class Manager
 
         try {
             return QUI\Cache\Manager::get($cache);
-
         } catch (QUI\Exception $Exception) {
         }
 
