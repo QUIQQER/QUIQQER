@@ -55,9 +55,11 @@
     "quiqqer/diashow": "*@dev",
     "quiqqer/lockclient": "dev-master",
     "quiqqer/messages": "*@dev",
-    "quiqqer/meta": "*@dev"
+    "quiqqer/meta": "*@dev",
+    "bower-asset/intl": "1.*",
+    "bower-asset/nouislider": "8.*"
   },
-  "minimum-stability" : "dev",
+  "minimum-stability": "dev",
   "require-dev": {
     "mikey179/vfsStream": "1.*"
   },
