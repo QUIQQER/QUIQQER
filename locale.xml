@@ -5202,23 +5202,23 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Name]]></en>
         </locale>
         <locale name="control.contact.name.placeholder">
-            <de><![CDATA[Ihr vor- und Nachname...]]></de>
-            <en><![CDATA[Please enter Your First and Last Name here ...]]></en>
+            <de><![CDATA[Ihr vor- und Nachname]]></de>
+            <en><![CDATA[Please enter Your First and Last Name here]]></en>
         </locale>
         <locale name="control.contact.email">
             <de><![CDATA[E-Mail]]></de>
             <en><![CDATA[Email]]></en>
         </locale>
         <locale name="control.contact.email.placeholder">
-            <de><![CDATA[Ihre E-Mail-Adresse...]]></de>
-            <en><![CDATA[Please enter your email address here ...]]></en>
+            <de><![CDATA[Ihre E-Mail-Adresse]]></de>
+            <en><![CDATA[Please enter your email address here]]></en>
         </locale>
         <locale name="control.contact.message">
             <de><![CDATA[Nachricht]]></de>
             <en><![CDATA[Message]]></en>
         </locale>
         <locale name="control.contact.message.placeholder">
-            <de><![CDATA[Ihre Nachricht an uns...]]></de>
+            <de><![CDATA[Ihre Nachricht an uns]]></de>
             <en><![CDATA[Your message to us]]></en>
         </locale>
         <locale name="exception.media.not.a.folder">
