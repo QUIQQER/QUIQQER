@@ -15,7 +15,6 @@
  * @events onSiteActivate [this, {classes/projects/project/Site}]
  * @events onSiteDeactivate [this, {classes/projects/project/Site}]
  */
-
 define('classes/projects/Project', [
 
     'qui/classes/DOM',
@@ -124,9 +123,7 @@ define('classes/projects/Project', [
          * @return Promise
          */
         getConfig: function (callback, param) {
-
             return new Promise(function (resolve, reject) {
-
                 param = param || false;
 
                 if (this.$config) {
@@ -208,11 +205,8 @@ define('classes/projects/Project', [
          * @return Promise
          */
         setConfig: function (params, callback) {
-
             var self = this;
-
             return new Promise(function (resolve, reject) {
-
                 Ajax.post('ajax_project_set_config', function (result) {
                     self.$config = false;
 
@@ -228,7 +222,6 @@ define('classes/projects/Project', [
                     params : JSON.encode(params || false),
                     onError: reject
                 });
-
             });
         },
 

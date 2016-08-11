@@ -7,7 +7,37 @@
  *
  * @require qui/Locale
  */
-define('classes/Locale', ['qui/classes/Locale'], function (QUILocale) {
+var needle = ['qui/classes/Locale'];
+
+// intl polyfill
+if (typeof window.Intl === 'undefined' || false) {
+    define('qui/classes/intl', [
+        URL_OPT_DIR + 'bin/intl/dist/Intl'
+    ], function (Intl) {
+        window.Intl         = Intl;
+        window.IntlPolyfill = Intl;
+    });
+
+    needle.push('intl/en');
+    needle.push('intl/de');
+
+    require.config({
+        paths: {
+            'intl/en': URL_OPT_DIR + 'bin/intl/locale-data/jsonp/en',
+            'intl/de': URL_OPT_DIR + 'bin/intl/locale-data/jsonp/de'
+        },
+        shim : {
+            'intl/en': {
+                deps: ['qui/classes/intl']
+            },
+            'intl/de': {
+                deps: ['qui/classes/intl']
+            }
+        }
+    });
+}
+
+define('classes/Locale', needle, function (QUILocale) {
     "use strict";
 
     return new Class({
@@ -94,17 +124,15 @@ define('classes/Locale', ['qui/classes/Locale'], function (QUILocale) {
 
             locale = locale.replace('_', '-');
 
-            if (typeof options === 'undefined') {
-                return Intl.NumberFormat(locale);
+            try {
+                if (typeof options === 'undefined') {
+                    return window.Intl.NumberFormat(locale);
+                }
+
+                return window.Intl.NumberFormat(locale, options);
+            } catch (e) {
+                return window.Intl.NumberFormat(locale);
             }
-
-            //return Intl.NumberFormat(locale, {
-            //    //style                : 'currency',
-            //    //currency             : 'EUR',
-            //    minimumFractionDigits: 8
-            //});
-
-            return Intl.NumberFormat(locale, options);
         }
     });
 });

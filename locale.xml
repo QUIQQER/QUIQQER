@@ -218,6 +218,10 @@
             <de><![CDATA[Platzhalterbild]]></de>
             <en><![CDATA[Placeholder image]]></en>
         </locale>
+        <locale name="projects.project.settings.panel.logo">
+            <de><![CDATA[Projekt-Logo]]></de>
+            <en><![CDATA[Project logo]]></en>
+        </locale>
         <locale name="projects.project.settings.panel.favicon">
             <de><![CDATA[Favicon]]></de>
             <en><![CDATA[Favicon]]></en>
