@@ -81,7 +81,6 @@ class Group extends QUI\QDOM
             if (!empty($cache)) {
                 return;
             }
-
         } catch (QUI\Cache\Exception $Exception) {
         }
 
@@ -113,6 +112,8 @@ class Group extends QUI\QDOM
         }
 
         $this->createCache();
+
+        QUI::getEvents()->fireEvent('groupLoad', array($this));
     }
 
     /**
@@ -133,6 +134,8 @@ class Group extends QUI\QDOM
                 )
             );
         }
+
+        QUI::getEvents()->fireEvent('groupDelete', array($this));
 
         // Rekursiv die Kinder bekommen
         $children = $this->getChildrenIds(true);
@@ -197,6 +200,9 @@ class Group extends QUI\QDOM
         $this->rights = QUI::getPermissionManager()
             ->getRightParamsFromGroup($this);
 
+        QUI::getEvents()->fireEvent('groupSaveBegin', array($this));
+        QUI::getEvents()->fireEvent('groupSave', array($this));
+
         // Felder bekommen
         QUI::getDataBase()->update(
             Manager::table(),
@@ -211,6 +217,8 @@ class Group extends QUI\QDOM
         );
 
         $this->createCache();
+
+        QUI::getEvents()->fireEvent('groupSaveEnd', array($this));
     }
 
     /**
@@ -226,6 +234,8 @@ class Group extends QUI\QDOM
 
         $this->setAttribute('active', 1);
         $this->createCache();
+
+        QUI::getEvents()->fireEvent('groupActivate', array($this));
     }
 
     /**
@@ -241,6 +251,8 @@ class Group extends QUI\QDOM
 
         $this->setAttribute('active', 0);
         $this->createCache();
+
+        QUI::getEvents()->fireEvent('groupDeactivate', array($this));
     }
 
     /**
@@ -566,7 +578,6 @@ class Group extends QUI\QDOM
                     $Child->getAttributes(),
                     array('hasChildren' => $Child->hasChildren())
                 );
-
             } catch (QUI\Exception $Exception) {
                 // nothing
             }
