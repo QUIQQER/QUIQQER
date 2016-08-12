@@ -225,8 +225,6 @@ define('Ajax', [
                 return;
             }
 
-            console.log(response);
-
             if (!functionList.length) {
                 return;
             }
