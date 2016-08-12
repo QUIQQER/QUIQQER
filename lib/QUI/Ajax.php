@@ -341,10 +341,10 @@ class Ajax extends QUI\QDOM
      *
      * @param $javascriptFunctionName
      */
-    public function triggerGlobalJavaScriptCallback($javascriptFunctionName)
+    public function triggerGlobalJavaScriptCallback($javascriptFunctionName, $params=array())
     {
         if (is_string($javascriptFunctionName)) {
-            $this->jsCallbacks[] = $javascriptFunctionName;
+            $this->jsCallbacks[$javascriptFunctionName] = $params;
         }
     }
 
