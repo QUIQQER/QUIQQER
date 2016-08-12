@@ -212,7 +212,6 @@ class User implements QUI\Interfaces\Users\User
         if (isset($data[0]['usergroup'])) {
             try {
                 $this->setGroups($data[0]['usergroup']);
-
             } catch (QUI\Exception $Exception) {
                 // nohting
             }
@@ -485,7 +484,6 @@ class User implements QUI\Interfaces\Users\User
 
                 return $Country;
             }
-
         } catch (QUI\Exception $Exception) {
         }
 
@@ -495,12 +493,22 @@ class User implements QUI\Interfaces\Users\User
                 return QUI\Countries\Manager::get(
                     $_SERVER["GEOIP_COUNTRY_CODE"]
                 );
-
             } catch (QUI\Exception $Exception) {
             }
         }
 
         return false;
+    }
+
+    /**
+     * Clear all groups of user
+     *
+     * @return void
+     */
+    public function clearGroups()
+    {
+        $this->Group  = array();
+        $this->groups = false;
     }
 
     /**
@@ -522,7 +530,8 @@ class User implements QUI\Interfaces\Users\User
         $this->groups = false;
 
         if (is_array($groups)) {
-            $aTmp = array();
+            $aTmp        = array();
+            $this->Group = array();
 
             foreach ($groups as $group) {
                 $tg = $Groups->get($group);
@@ -549,7 +558,6 @@ class User implements QUI\Interfaces\Users\User
                 try {
                     $this->Group[] = $Groups->get($g);
                     $aTmp[]        = $g;
-
                 } catch (QUI\Exception $Exception) {
                     // nothing
                 }
@@ -564,7 +572,6 @@ class User implements QUI\Interfaces\Users\User
             try {
                 $this->Group[] = $Groups->get($groups);
                 $this->groups  = ',' . $groups . ',';
-
             } catch (QUI\Exception $Exception) {
             }
         }
@@ -636,7 +643,6 @@ class User implements QUI\Interfaces\Users\User
         try {
             $Groups = QUI::getGroups();
             $Group  = $Groups->get($groupId);
-
         } catch (QUI\Exception $Exception) {
             return;
         }
@@ -989,7 +995,6 @@ class User implements QUI\Interfaces\Users\User
 
         try {
             QUI::getEvents()->fireEvent('userActivate', array($this));
-
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage(), array(
                 'UserId'        => $this->getId(),
@@ -1076,7 +1081,7 @@ class User implements QUI\Interfaces\Users\User
      *
      * @param QUI\Interfaces\Users\User|boolean $ParentUser
      *
-     * @return boolean
+     * @return \PDOStatement
      * @throws QUI\Exception
      */
     public function save($ParentUser = false)
@@ -1321,7 +1326,6 @@ class User implements QUI\Interfaces\Users\User
     {
         try {
             return QUI\Cache\Manager::get('user/plugin-attribute-list');
-
         } catch (QUI\Exception $Exception) {
         }
 
