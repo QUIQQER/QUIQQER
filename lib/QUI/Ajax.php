@@ -33,6 +33,14 @@ class Ajax extends QUI\QDOM
     protected static $callables = array();
 
     /**
+     * javascript functions to be executed by after a request
+     * This functions are registered via Ajax.registerCallback('functionName', callable);
+     *
+     * @var array
+     */
+    protected $jsCallbacks = array();
+
+    /**
      * registered permissions from available ajax functions
      *
      * @var array
@@ -206,6 +214,7 @@ class Ajax extends QUI\QDOM
 
         // maintenance flag
         $result['maintenance'] = QUI::conf('globals', 'maintenance') ? 1 : 0;
+        $result['jsCallbacks'] = $this->jsCallbacks;
 
         return '<quiqqer>' . json_encode($result) . '</quiqqer>';
     }
@@ -235,7 +244,6 @@ class Ajax extends QUI\QDOM
         // Rechte prüfung
         try {
             $this->checkPermissions($_rf);
-
         } catch (QUI\Exception $Exception) {
             return $this->writeException($Exception);
         }
@@ -251,7 +259,6 @@ class Ajax extends QUI\QDOM
 
         if (isset(self::$callables[$_rf])) {
             $functionParams = self::$callables[$_rf]['params'];
-
         } else {
             $functionParams = self::$functions[$_rf];
         }
@@ -290,10 +297,8 @@ class Ajax extends QUI\QDOM
                     'result' => call_user_func_array($_rf, $params)
                 );
             }
-
         } catch (QUI\Exception $Exception) {
             return $this->writeException($Exception);
-
         } catch (\PDOException $Exception) {
             return $this->writeException($Exception);
         }
@@ -329,6 +334,18 @@ class Ajax extends QUI\QDOM
         }
 
         return $return;
+    }
+
+    /**
+     * Add a JavaScript callback function to the request
+     *
+     * @param $javascriptFunctionName
+     */
+    public function triggerGlobalJavaScriptCallback($javascriptFunctionName)
+    {
+        if (is_string($javascriptFunctionName)) {
+            $this->jsCallbacks[] = $javascriptFunctionName;
+        }
     }
 
     /**
