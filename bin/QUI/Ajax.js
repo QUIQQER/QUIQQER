@@ -33,6 +33,7 @@ define('Ajax', [
 
     return {
 
+        $globalJSF : {}, // global javascript callback functions
         $onprogress: {},
         $url       : typeof URL_DIR === 'undefined' ? '' : URL_DIR + 'admin/ajax.php',
 
@@ -79,6 +80,16 @@ define('Ajax', [
                             var args    = arguments;
                             var Request = args[args.length - 1];
 
+                            if (this in self.$onprogress &&
+                                "$result" in self.$onprogress[this] &&
+                                self.$onprogress[this].$result.jsCallbacks
+                            ) {
+                                self.$triggerGlobalJavaScriptCallback(
+                                    self.$onprogress[this].$result.jsCallbacks,
+                                    self.$onprogress[this].$result
+                                );
+                            }
+
                             if (Request.getAttribute('logout')) {
                                 return;
                             }
@@ -91,8 +102,9 @@ define('Ajax', [
                             if (this in self.$onprogress &&
                                 "$result" in self.$onprogress[this] &&
                                 "maintenance" in self.$onprogress[this].$result &&
-                                self.$onprogress[this].$result.maintenance) {
-                                self.showMaintennceMessage();
+                                self.$onprogress[this].$result.maintenance
+                            ) {
+                                self.showMaintenanceMessage();
                             }
 
                             callback.apply(this, arguments);
@@ -105,13 +117,24 @@ define('Ajax', [
                         },
 
                         onError: function (Exception, Request) {
-
                             // maintenance?
                             if (this in self.$onprogress &&
                                 "$result" in self.$onprogress[this] &&
                                 "maintenance" in self.$onprogress[this].$result &&
-                                self.$onprogress[this].$result.maintenance) {
-                                self.showMaintennceMessage();
+                                self.$onprogress[this].$result.maintenance
+                            ) {
+                                self.showMaintenanceMessage();
+                            }
+
+
+                            if (this in self.$onprogress &&
+                                "$result" in self.$onprogress[this] &&
+                                self.$onprogress[this].$result.jsCallbacks
+                            ) {
+                                self.$triggerGlobalJavaScriptCallback(
+                                    self.$onprogress[this].$result.jsCallbacks,
+                                    self.$onprogress[this].$result
+                                );
                             }
 
                             Request.setAttribute('hasError', true);
@@ -177,9 +200,46 @@ define('Ajax', [
         },
 
         /**
+         * Register a global callback javascript function
+         * This functions are to be executed after every request
+         * the execution is controlled via php
+         * Ajax->triggerGlobalJavaScriptCallback();
+         *
+         * @param {String} fn - Function name
+         * @param {Function} callback - Callback function
+         */
+        registerGlobalJavaScriptCallback: function (fn, callback) {
+            if (typeOf(callback) === 'function') {
+                this.$globalJSF[fn] = callback;
+            }
+        },
+
+        /**
+         * Excute globale functions
+         *
+         * @param {Array} functionList - list of functions
+         * @param response - Request response
+         */
+        $triggerGlobalJavaScriptCallback: function (functionList, response) {
+            if (typeOf(functionList) != 'array') {
+                return;
+            }
+
+            if (!functionList.length) {
+                return;
+            }
+
+            for (var i = 0, len = functionList.length; i < len; i++) {
+                if (functionList[i] in this.$globalJSF) {
+                    this.$globalJSF[functionList[i]](response);
+                }
+            }
+        },
+
+        /**
          * show a maintenance message
          */
-        showMaintennceMessage: function () {
+        showMaintenanceMessage: function () {
             // #locale
             QUI.getMessageHandler(function (MH) {
                 MH.addInformation(
