@@ -80,6 +80,14 @@ define('Ajax', [
                             var args    = arguments;
                             var Request = args[args.length - 1];
 
+                            if (Request.getAttribute('logout')) {
+                                return;
+                            }
+
+                            if (Request.getAttribute('hasError')) {
+                                return;
+                            }
+
                             if (this in self.$onprogress &&
                                 "$result" in self.$onprogress[this] &&
                                 self.$onprogress[this].$result.jsCallbacks
@@ -88,14 +96,6 @@ define('Ajax', [
                                     self.$onprogress[this].$result.jsCallbacks,
                                     self.$onprogress[this].$result
                                 );
-                            }
-
-                            if (Request.getAttribute('logout')) {
-                                return;
-                            }
-
-                            if (Request.getAttribute('hasError')) {
-                                return;
                             }
 
                             // maintenance?
@@ -224,6 +224,8 @@ define('Ajax', [
             if (typeOf(functionList) != 'array') {
                 return;
             }
+
+            console.log(response);
 
             if (!functionList.length) {
                 return;
