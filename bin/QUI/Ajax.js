@@ -221,17 +221,17 @@ define('Ajax', [
          * @param response - Request response
          */
         $triggerGlobalJavaScriptCallback: function (functionList, response) {
-            if (typeOf(functionList) != 'array') {
+            if (typeOf(functionList) != 'object') {
                 return;
             }
 
-            if (!functionList.length) {
+            if (!Object.getLength(functionList)) {
                 return;
             }
 
-            for (var i = 0, len = functionList.length; i < len; i++) {
-                if (functionList[i] in this.$globalJSF) {
-                    this.$globalJSF[functionList[i]](response);
+            for (var f in functionList) {
+                if (f in this.$globalJSF && this.$globalJSF.hasOwnProperty(f)) {
+                    this.$globalJSF[f](response, functionList[f]);
                 }
             }
         },

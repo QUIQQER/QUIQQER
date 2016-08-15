@@ -339,12 +339,13 @@ class Ajax extends QUI\QDOM
     /**
      * Add a JavaScript callback function to the request
      *
-     * @param $javascriptFunctionName
+     * @param string $javascriptFunctionName - name of the javascript callback function
+     * @param array $params - optional, params for the javascript callback function
      */
-    public function triggerGlobalJavaScriptCallback($javascriptFunctionName)
+    public function triggerGlobalJavaScriptCallback($javascriptFunctionName, $params = array())
     {
         if (is_string($javascriptFunctionName)) {
-            $this->jsCallbacks[] = $javascriptFunctionName;
+            $this->jsCallbacks[$javascriptFunctionName] = $params;
         }
     }
 
