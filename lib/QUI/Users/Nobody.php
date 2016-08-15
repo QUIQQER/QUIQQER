@@ -344,7 +344,6 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
                 QUI::getSession()->set('country', $_SERVER["GEOIP_COUNTRY_CODE"]);
 
                 return QUI\Countries\Manager::get($_SERVER["GEOIP_COUNTRY_CODE"]);
-
             } catch (QUI\Exception $Exception) {
             }
         }
@@ -356,7 +355,6 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
                 return QUI\Countries\Manager::get(
                     QUI::conf('globals', 'defaultCountry')
                 );
-
             } catch (QUI\Exception $Exception) {
             }
         }

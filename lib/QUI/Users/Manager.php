@@ -145,7 +145,6 @@ class Manager
 
         try {
             $_User = $this->getUserBySession();
-
         } catch (QUI\Exception $Exception) {
             return false;
         }
@@ -251,7 +250,6 @@ class Manager
             }
 
             $newname = $username;
-
         } else {
             $newname = 'Neuer Benutzer';
             $i       = 0;
@@ -452,7 +450,6 @@ class Manager
         foreach ($ids as $id) {
             try {
                 $result[] = $this->get((int)$id['id']);
-
             } catch (QUI\Exception $Exception) {
                 // nothing
             }
@@ -497,7 +494,6 @@ class Manager
         foreach ($result as $entry) {
             try {
                 $Users[] = $this->get((int)$entry['id']);
-
             } catch (QUI\Exception $Exception) {
                 // nothing
             }
@@ -733,7 +729,6 @@ class Manager
         try {
             $this->checkUserSession();
             $this->Session = $this->get(QUI::getSession()->get('uid'));
-
         } catch (QUI\Exception $Exception) {
             $this->Session = $this->getNobody();
         }
@@ -1300,7 +1295,6 @@ class Manager
 
         try {
             $Statement->execute();
-
         } catch (\PDOException $Exception) {
             $message = $Exception->getMessage();
             $message .= print_r($query, true);

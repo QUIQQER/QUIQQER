@@ -45,11 +45,11 @@ class Auth implements QUI\Interfaces\Users\Auth
     {
         $userData = QUI::getDataBase()->fetch(array(
             'select' => array('password'),
-            'from' => QUI::getUsers()->Table(),
-            'where' => array(
+            'from'   => QUI::getUsers()->table(),
+            'where'  => array(
                 'id' => $this->getUserId()
             ),
-            'limit' => 1
+            'limit'  => 1
         ));
 
         if (empty($userData)

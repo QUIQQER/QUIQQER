@@ -131,7 +131,6 @@ class Utils
                 $tab,
                 OPT_DIR . $Package->getName() . '/user.xml'
             );
-
         } catch (QUI\Exception $Exception) {
         }
 

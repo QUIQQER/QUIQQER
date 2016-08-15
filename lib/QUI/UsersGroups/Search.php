@@ -18,7 +18,7 @@ use QUI\Utils\Security\Orthos;
  */
 class Search
 {
-    const DEFAULT_LIMIT_USERS  = 20;
+    const DEFAULT_LIMIT_USERS = 20;
     const DEFAULT_LIMIT_GROUPS = 20;
 
     /**
@@ -52,22 +52,16 @@ class Search
         }
 
         // search in user table
-        if (isset($searchParams['searchUsers'])
-            && $searchParams['searchUsers']
-        ) {
+        if (isset($searchParams['searchUsers']) && $searchParams['searchUsers']) {
             $searchUsers = true;
         }
 
         // search in group table
-        if (isset($searchParams['searchGroups'])
-            && $searchParams['searchGroups']
-        ) {
+        if (isset($searchParams['searchGroups']) && $searchParams['searchGroups']) {
             $searchGroups = true;
         }
 
-        if ($searchUsers === false
-            && $searchGroups === false
-        ) {
+        if ($searchUsers === false && $searchGroups === false) {
             $searchUsers = true;
         }
 
@@ -112,9 +106,7 @@ class Search
                         && is_array($searchParams['users']['select'])
                     ) {
                         foreach ($searchParams['users']['select'] as $field => $select) {
-                            if (isset($selectFieldsAvailable[$field])
-                                && $select
-                            ) {
+                            if (isset($selectFieldsAvailable[$field]) && $select) {
                                 $selectFields[] = $field;
                             }
                         }
@@ -171,9 +163,7 @@ class Search
                         && is_array($searchParams['groups']['select'])
                     ) {
                         foreach ($searchParams['groups']['select'] as $field => $select) {
-                            if (isset($selectFieldsAvailable[$field])
-                                && $select
-                            ) {
+                            if (isset($selectFieldsAvailable[$field]) && $select) {
                                 $selectFields[] = $field;
                             }
                         }
@@ -242,9 +232,7 @@ class Search
             && is_array($searchParams['searchFields'])
         ) {
             foreach ($searchParams['searchFields'] as $field => $search) {
-                if (isset($searchFieldsAvailable[$field])
-                    && $search
-                ) {
+                if (isset($searchFieldsAvailable[$field]) && $search) {
                     $searchFields[] = $field;
                 }
             }
@@ -341,14 +329,10 @@ class Search
             $sql .= " WHERE " . implode(" AND ", $where);
         }
 
-        if (isset($searchParams['sortOn'])
-            && !empty($searchParams['sortOn'])
-        ) {
+        if (isset($searchParams['sortOn']) && !empty($searchParams['sortOn'])) {
             $order = "ORDER BY " . Orthos::clear($searchParams['sortOn']);
 
-            if (isset($searchParams['sortBy']) &&
-                !empty($searchParams['sortBy'])
-            ) {
+            if (isset($searchParams['sortBy']) && !empty($searchParams['sortBy'])) {
                 $order .= " " . Orthos::clear($searchParams['sortBy']);
             } else {
                 $order .= " ASC";
@@ -438,9 +422,7 @@ class Search
             && is_array($searchParams['searchFields'])
         ) {
             foreach ($searchParams['searchFields'] as $field => $search) {
-                if (isset($searchFieldsAvailable[$field])
-                    && $search
-                ) {
+                if (isset($searchFieldsAvailable[$field]) && $search) {
                     $searchFields[] = $field;
                 }
             }
@@ -498,14 +480,10 @@ class Search
             $sql .= " WHERE " . implode(" AND ", $where);
         }
 
-        if (isset($searchParams['sortOn'])
-            && !empty($searchParams['sortOn'])
-        ) {
+        if (isset($searchParams['sortOn']) && !empty($searchParams['sortOn'])) {
             $order = "ORDER BY " . Orthos::clear($searchParams['sortOn']);
 
-            if (isset($searchParams['sortBy']) &&
-                !empty($searchParams['sortBy'])
-            ) {
+            if (isset($searchParams['sortBy']) && !empty($searchParams['sortBy'])) {
                 $order .= " " . Orthos::clear($searchParams['sortBy']);
             } else {
                 $order .= " ASC";
@@ -568,6 +546,8 @@ class Search
      * @param array $searchParams - search parameters
      *
      * @return array
+     *
+     * @throws QUI\Exception
      */
     public static function suggestSearch($searchTerm, $searchParams)
     {
@@ -576,29 +556,21 @@ class Search
         $searchResult = array();
 
         // search in user table
-        if (isset($searchParams['searchUsers'])
-            && $searchParams['searchUsers']
-        ) {
+        if (isset($searchParams['searchUsers']) && $searchParams['searchUsers']) {
             $searchUsers = true;
         }
 
         // search in group table
-        if (isset($searchParams['searchGroups'])
-            && $searchParams['searchGroups']
-        ) {
+        if (isset($searchParams['searchGroups']) && $searchParams['searchGroups']) {
             $searchGroups = true;
         }
 
-        if ($searchUsers === false
-            && $searchGroups === false
-        ) {
+        if ($searchUsers === false && $searchGroups === false) {
             $searchUsers = true;
         }
 
         if ($searchUsers) {
-            if (!isset($searchParams['users'])
-                || empty($searchParams['users'])
-            ) {
+            if (!isset($searchParams['users']) || empty($searchParams['users'])) {
                 throw new QUI\Exception(array(
                     'quiqqer/quiqqer',
                     'exception.usergroups.search.cannot.search.users.without.parameters'
@@ -634,9 +606,7 @@ class Search
         }
 
         if ($searchGroups) {
-            if (!isset($searchParams['groups'])
-                || empty($searchParams['groups'])
-            ) {
+            if (!isset($searchParams['groups']) || empty($searchParams['groups'])) {
                 throw new QUI\Exception(array(
                     'quiqqer/quiqqer',
                     'exception.usergroups.search.cannot.search.groups.without.parameters'
