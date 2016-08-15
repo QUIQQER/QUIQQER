@@ -21,17 +21,17 @@ QUI::$Ajax->registerFunction(
         foreach ($gids as $gid) {
             try {
                 $Groups->get($gid)->delete();
-
                 $result[] = $gid;
-
             } catch (QUI\Exception $Exception) {
             }
         }
 
-        // #locale
-        QUI::getMessagesHandler()->addInformation(
-            'Die Gruppe(n) ' . implode(', ', $gids) . ' wurde(n) erfolgreich gelöscht'
-        );
+        if (!empty($result)) {
+            // #locale
+            QUI::getMessagesHandler()->addInformation(
+                'Die Gruppe(n) ' . implode(', ', $result) . ' wurde(n) erfolgreich gelöscht'
+            );
+        }
 
         return $result;
     },
