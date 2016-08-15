@@ -982,13 +982,15 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Really want to delete the project?]]></en>
         </locale>
         <locale name="projects.project.project.delete.window.information">
-            <de>
-                <![CDATA[Das Projekt wird unwiderruflich gelöscht. Eine Wiederherstellung ist nicht mehr möglich.]]></de>
+            <de><![CDATA[
+            Das Projekt wird unwiderruflich gelöscht. Eine Wiederherstellung ist nicht mehr möglich.
+            ]]></de>
             <en><![CDATA[The project can not be restored and the deletion is irrevocable.]]></en>
         </locale>
         <locale name="projects.project.project.delete.window.text.2">
-            <de>
-                <![CDATA[Sind Sie sicher, dass Sie das Projekt löschen möchten? Eine Wiederherstellung ist nicht möglich.]]></de>
+            <de><![CDATA[
+            Sind Sie sicher, dass Sie das Projekt löschen möchten? Eine Wiederherstellung ist nicht möglich.
+            ]]></de>
             <en><![CDATA[Are you sure you want to delete this project?]]></en>
         </locale>
         <locale name="projects.project.windowselect.text">
@@ -5394,8 +5396,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[The page is currently being edited by a other user]]></en>
         </locale>
         <locale name="exception.site.same.name">
-            <de><![CDATA[Eine Seite ([id]) mit dem Namen "[name]" existiert bereits in der gleichen Ebene]]></de>
-            <en><![CDATA[A page ([id]) with the name "[name]" already exists on the same level.]]></en>
+            <de><![CDATA[Eine Seite mit dem Namen "[name]" existiert bereits in der gleichen Ebene]]></de>
+            <en><![CDATA[A page with the name "[name]" already exists on the same level.]]></en>
         </locale>
         <locale name="exception.site.save.error">
             <de><![CDATA[Es sind Fehler beim Speichern der Seite aufgetreten]]></de>
@@ -5552,6 +5554,14 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="projects.project.site.media.manager.general.recalc.sha1">
             <de><![CDATA[SHA1 Hashes der Dateien neu berechnen:]]></de>
             <en><![CDATA[Recalculate SHA1 hashes of files:]]></en>
+        </locale>
+        <locale name="projects.project.site.copy.text.count">
+            <de><![CDATA[[name] (Kopie [count])]]></de>
+            <en><![CDATA[[name] (Copy [count])]]></en>
+        </locale>
+        <locale name="projects.project.site.copy.text">
+            <de><![CDATA[[name] (Kopie)]]></de>
+            <en><![CDATA[[name] (Copy)]]></en>
         </locale>
         <locale name="exception.lib.qui.exceptions.handler.nocallback">
             <de><![CDATA[Keine callback funktion definiert [function]]]></de>

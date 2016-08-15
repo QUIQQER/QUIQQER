@@ -16,7 +16,6 @@
  * @event createChild [ this ]
  * @event sortSave [ this ] --> triggerd by SiteChildren.js
  */
-
 define('classes/projects/project/Site', [
 
     'qui/QUI',
@@ -444,7 +443,6 @@ define('classes/projects/project/Site', [
          * @return Promise
          */
         move: function (newParentId, callback) {
-
             return new Promise(function (resolve, reject) {
 
                 var Site   = this,
@@ -468,7 +466,6 @@ define('classes/projects/project/Site', [
             }.bind(this));
         },
 
-
         /**
          * Copy the site to another parent site
          *
@@ -477,7 +474,6 @@ define('classes/projects/project/Site', [
          * @return Promise
          */
         copy: function (newParent, callback) {
-
             return new Promise(function (resolve, reject) {
 
                 var Site   = this,
@@ -487,7 +483,6 @@ define('classes/projects/project/Site', [
                 params.onError   = reject;
 
                 Ajax.post('ajax_site_copy', function (result) {
-
                     if (typeof callback === 'function') {
                         callback(result);
                     }
