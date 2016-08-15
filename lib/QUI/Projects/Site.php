@@ -254,7 +254,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Returns the Edit Site object from this Site
      *
-     * @return QUI\Projects\Site\Edit
+     * @return QUI\Projects\Site\Edit|Site
      */
     public function getEdit()
     {
@@ -795,7 +795,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *                      $params['limit']
      * @param boolean $load - Legt fest ob die Kinder die Plugins laden sollen
      *
-     * @return array;
+     * @return array|integer
      */
     public function getChildren($params = array(), $load = false)
     {
@@ -1548,7 +1548,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     public function getParentIds()
     {
         if ($this->getId() == 1) {
-            return 0;
+            return array();
         }
 
         if (is_array($this->parents_id)) {
@@ -1613,7 +1613,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Gibt das Parent Objekt zurück
      *
-     * @return Site
+     * @return Site|bool
      */
     public function getParent()
     {

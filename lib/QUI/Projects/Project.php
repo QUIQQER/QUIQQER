@@ -830,7 +830,7 @@ class Project
      * @param integer $parentid - The parent site ID
      * @param array $params - extra db statemens, like order, where, count, limit
      *
-     * @return array
+     * @return array|integer
      */
     public function getChildrenIdsFrom($parentid, $params = array())
     {

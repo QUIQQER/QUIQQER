@@ -9,7 +9,6 @@ namespace QUI\Projects\Media;
 use QUI;
 use QUI\System\Log;
 use QUI\Utils\StringHelper as StringUtils;
-use QUI\Utils\StringHelper;
 
 /**
  * Helper for the Media Center Manager
@@ -59,7 +58,7 @@ class Utils
                 'short'         => $Item->getAttribute('short'),
                 'type'          => 'folder',
                 'hasChildren'   => $Item->hasChildren(),
-                'hasSubfolders' => $Item->hasSubfolders(),
+                'hasSubfolders' => $Item->hasSubFolders(),
                 'active'        => $Item->isActive(),
                 'e_date'        => $Item->getAttribute('e_date'),
                 'priority'      => $Item->getAttribute('priority')

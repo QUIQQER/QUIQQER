@@ -120,9 +120,9 @@ class Handler extends QUI\QDOM
     /**
      * Writes the error to the log
      *
-     * @param integer        $errno   - Fehlercode
-     * @param string         $errstr  - Fehler
-     * @param string         $errfile - (optional) Datei in welcher der Fehler auftaucht
+     * @param integer $errno - Fehlercode
+     * @param string $errstr - Fehler
+     * @param string $errfile - (optional) Datei in welcher der Fehler auftaucht
      * @param integer|string $errline - (optional) Zeile in welcher der Fehler auftaucht
      */
     public function writeErrorToLog(
@@ -131,14 +131,14 @@ class Handler extends QUI\QDOM
         $errfile = '',
         $errline = ''
     ) {
-        if ($this->getAttribute('ERROR_'.$errno) == false) {
+        if ($this->getAttribute('ERROR_' . $errno) == false) {
             return;
         }
 
         $log = false;
 
         if ($this->getAttribute('logdir')) {
-            $log = $this->getAttribute('logdir').'error'.date('-Y-m-d').'.log';
+            $log = $this->getAttribute('logdir') . 'error' . date('-Y-m-d') . '.log';
 
             // Log Verzeichnis erstellen
             QUI\Utils\System\File::mkdir($this->getAttribute('logdir'));
@@ -148,29 +148,29 @@ class Handler extends QUI\QDOM
             file_put_contents($log, ' ');
         }
 
-        $err_msg = "\n\n==== Date: ".date('Y-m-d H:i:s')
-            ." ============================================\n";
+        $err_msg = "\n\n==== Date: " . date('Y-m-d H:i:s')
+                   . " ============================================\n";
 
         if ($this->getAttribute('show_request')) {
             if (isset($_SERVER['REQUEST_URI'])) {
-                $err_msg .= 'REQUEST URI: '.$_SERVER['REQUEST_URI']."\n";
+                $err_msg .= 'REQUEST URI: ' . $_SERVER['REQUEST_URI'] . "\n";
             }
 
             if (isset($_SERVER['HTTP_HOST'])) {
-                $err_msg .= 'HTTP_HOST: '.$_SERVER['HTTP_HOST']."\n";
+                $err_msg .= 'HTTP_HOST: ' . $_SERVER['HTTP_HOST'] . "\n";
             }
 
             if (isset($_SERVER['REMOTE_ADDR'])) {
-                $err_msg .= 'REMOTE_ADDR: '.$_SERVER['REMOTE_ADDR']."\n";
+                $err_msg .= 'REMOTE_ADDR: ' . $_SERVER['REMOTE_ADDR'] . "\n";
             }
 
             if (isset($_SERVER['HTTP_USER_AGENT'])) {
-                $err_msg .= 'HTTP_USER_AGENT: '.$_SERVER['HTTP_USER_AGENT']
-                    ."\n";
+                $err_msg .= 'HTTP_USER_AGENT: ' . $_SERVER['HTTP_USER_AGENT']
+                            . "\n";
             }
 
             if (isset($_REQUEST['_url'])) {
-                $err_msg .= '$_REQUEST[\'_url\']: '.$_REQUEST['_url']."\n";
+                $err_msg .= '$_REQUEST[\'_url\']: ' . $_REQUEST['_url'] . "\n";
             }
 
             unset($_REQUEST['REQUEST_URI']);
@@ -179,27 +179,27 @@ class Handler extends QUI\QDOM
             unset($_REQUEST['HTTP_USER_AGENT']);
             unset($_REQUEST['_url']);
 
-            $err_msg .= '$_REQUEST: '.print_r($_REQUEST, true)."\n\n";
+            $err_msg .= '$_REQUEST: ' . print_r($_REQUEST, true) . "\n\n";
         }
 
-        $err_msg .= "\nMessage:\n".$errstr."\n";
+        $err_msg .= "\nMessage:\n" . $errstr . "\n";
 
         if ($errno) {
-            $err_msg .= "Error No: ERROR_".$errno."\n";
+            $err_msg .= "Error No: ERROR_" . $errno . "\n";
         }
 
         if ($errfile) {
-            $err_msg .= "Error File:".$errfile."\n";
+            $err_msg .= "Error File:" . $errfile . "\n";
         }
 
         if ($errline) {
-            $err_msg .= "Error Line:".$errline."\n";
+            $err_msg .= "Error Line:" . $errline . "\n";
         }
 
         // Nutzerdaten
         if (isset($_SERVER['SERVER_ADDR'])) {
-            $err_msg .= "IP: ".$_SERVER['SERVER_ADDR']."\n";
-            $err_msg .= "Host: ".gethostbyaddr($_SERVER['SERVER_ADDR'])."\n";
+            $err_msg .= "IP: " . $_SERVER['SERVER_ADDR'] . "\n";
+            $err_msg .= "Host: " . gethostbyaddr($_SERVER['SERVER_ADDR']) . "\n";
         }
 
         // Backtrace
@@ -209,7 +209,7 @@ class Handler extends QUI\QDOM
             $buffer = ob_get_contents();
             ob_end_clean();
 
-            $err_msg .= "\n BACKTRACE\n\n".$buffer."\n";
+            $err_msg .= "\n BACKTRACE\n\n" . $buffer . "\n";
         }
 
 

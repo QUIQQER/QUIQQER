@@ -69,7 +69,6 @@ class Permission
 
         try {
             return self::checkPermission('quiqqer.admin', $User);
-
         } catch (QUI\Exception $Exception) {
         }
 
@@ -115,7 +114,6 @@ class Permission
     {
         try {
             return self::checkPermission($perm, $User);
-
         } catch (QUI\Exception $Exception) {
         }
 
@@ -627,7 +625,6 @@ class Permission
                         'quiqqer.projects.site.del',
                         $User
                     );
-
                 } catch (QUI\Permissions\Exception $Exception) {
                     return self::checkPermission(
                         'quiqqer.projects.sites.del',
@@ -643,7 +640,6 @@ class Permission
                         'quiqqer.projects.site.new',
                         $User
                     );
-
                 } catch (QUI\Permissions\Exception $Exception) {
                     return self::checkPermission(
                         'quiqqer.projects.sites.new',
@@ -700,7 +696,6 @@ class Permission
     {
         try {
             return self::checkSitePermission($perm, $Site, $User);
-
         } catch (QUI\Exception $Exception) {
         }
 

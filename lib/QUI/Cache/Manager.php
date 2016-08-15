@@ -56,7 +56,6 @@ class Manager
         if (!self::$Config) {
             try {
                 self::$Config = QUI::getConfig('etc/cache.ini.php');
-
             } catch (QUI\Exception $Exception) {
                 file_put_contents(CMS_DIR . 'etc/cache.ini.php', '');
 
@@ -170,10 +169,10 @@ class Manager
                 case 'memcache':
                     // defaults
                     $options = array(
-                        'prefix_key' => 'pcsg',
+                        'prefix_key'           => 'pcsg',
                         'libketama_compatible' => true,
-                        'cache_lookups' => true,
-                        'serializer' => 'json'
+                        'cache_lookups'        => true,
+                        'serializer'           => 'json'
                     );
 
                     // servers
@@ -321,11 +320,9 @@ class Manager
 
 
         try {
-            $Item = self::getStash($name);
-            $data = $Item->get();
-
+            $Item   = self::getStash($name);
+            $data   = $Item->get();
             $isMiss = $Item->isMiss();
-
         } catch (\Exception $Exception) {
             throw new QUI\Cache\Exception(
                 QUI::getLocale()->get(

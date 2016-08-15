@@ -169,7 +169,6 @@ class Manager
 
         try {
             return QUI\Cache\Manager::get($cacheName);
-
         } catch (QUI\Exception $Exception) {
         }
 
@@ -530,7 +529,6 @@ class Manager
 
         try {
             return QUI\Cache\Manager::get($cache);
-
         } catch (QUI\Exception $Exception) {
         }
 

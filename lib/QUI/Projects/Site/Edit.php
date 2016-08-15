@@ -831,7 +831,7 @@ class Edit extends Site
      * @param string $lang - Sprache zu welcher verknüpft werden soll
      * @param string $id - ID zu welcher verknüpft werden soll
      *
-     * @return boolean
+     * @return \PDOStatement
      */
     public function addLanguageLink($lang, $id)
     {
@@ -876,7 +876,7 @@ class Edit extends Site
      *
      * @param string $lang
      *
-     * @return boolean
+     * @return \PDOStatement
      */
     public function removeLanguageLink($lang)
     {

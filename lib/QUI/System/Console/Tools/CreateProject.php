@@ -82,17 +82,14 @@ class CreateProject extends QUI\System\Console\Tool
                 $projectname,
                 $projectlang
             );
-
         } catch (QUI\Exception $Exception) {
-            $this->writeLn('Could not create project: '
-                           . $Exception->getMessage());
-
+            $this->writeLn('Could not create project: ' . $Exception->getMessage());
             return;
         }
 
         QUI::getProjectManager()->setConfigForProject($projectname, array(
             'template' => $template,
-            'langs' => implode(',', $projectlangs)
+            'langs'    => implode(',', $projectlangs)
         ));
 
         $this->writeLn('Project ' . $projectname . ' successfuly created.');

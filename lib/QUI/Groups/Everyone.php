@@ -44,7 +44,7 @@ class Everyone extends QUI\Groups\Group
      * set a group attribute
      * ID cannot be set
      *
-     * @param string                    $key   - Attribute name
+     * @param string $key - Attribute name
      * @param string|boolean|integer|array $value - value
      *
      * @return boolean
@@ -74,12 +74,11 @@ class Everyone extends QUI\Groups\Group
      */
     public function save()
     {
-        $this->rights = QUI::getPermissionManager()
-                            ->getRightParamsFromGroup($this);
+        $this->rights = QUI::getPermissionManager()->getRightParamsFromGroup($this);
 
         // Felder bekommen
         QUI::getDataBase()->update(
-            QUI\Groups\Manager::Table(),
+            QUI\Groups\Manager::table(),
             array(
                 'name'    => 'Everyone',
                 'toolbar' => $this->getAttribute('toolbar'),
@@ -98,7 +97,6 @@ class Everyone extends QUI\Groups\Group
      */
     public function activate()
     {
-
     }
 
     /**
@@ -127,8 +125,8 @@ class Everyone extends QUI\Groups\Group
     /**
      * Checks if the ID is from a parent group
      *
-     * @param integer $id       - ID from parent
-     * @param boolean    $recursiv - checks recursive or not
+     * @param integer $id - ID from parent
+     * @param boolean $recursiv - checks recursive or not
      *
      * @return boolean
      */
@@ -147,7 +145,6 @@ class Everyone extends QUI\Groups\Group
      */
     public function getParent($obj = true)
     {
-
     }
 
     /**
@@ -157,7 +154,6 @@ class Everyone extends QUI\Groups\Group
      */
     public function getParentIds()
     {
-
     }
 
     /**
@@ -186,7 +182,7 @@ class Everyone extends QUI\Groups\Group
      * return the subgroup ids
      *
      * @param boolean $recursiv - recursiv true / false
-     * @param      $params   - SQL Params (limit, order)
+     * @param      $params - SQL Params (limit, order)
      *
      * @return array
      */

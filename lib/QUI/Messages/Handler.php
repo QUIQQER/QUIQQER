@@ -8,7 +8,6 @@ namespace QUI\Messages;
 
 use QUI;
 use QUI\Users\User;
-use QUI\Utils\Security\Orthos;
 
 /**
  * Message Handler for QUIQQER
@@ -23,9 +22,9 @@ class Handler
     /**
      * Return the message handler db table
      */
-    public static function TABLE()
+    public static function table()
     {
-        return QUI_DB_PRFX.'messages';
+        return QUI_DB_PRFX . 'messages';
     }
 
     /**
@@ -33,7 +32,7 @@ class Handler
      */
     public static function setup()
     {
-        QUI::getDataBase()->Table()->appendFields(self::TABLE(), array(
+        QUI::getDataBase()->table()->addColumn(self::table(), array(
             'uid'     => 'int(11)',
             'message' => 'text',
             'mtype'   => 'varchar(100)',
@@ -66,13 +65,13 @@ class Handler
         }
 
         $list = QUI::getDataBase()->fetch(array(
-            'from'  => self::TABLE(),
+            'from'  => self::table(),
             'where' => array(
                 'uid' => $User->getId()
             )
         ));
 
-        QUI::getDataBase()->delete(self::TABLE(), array(
+        QUI::getDataBase()->delete(self::table(), array(
             'uid' => $User->getId()
         ));
 
@@ -127,7 +126,7 @@ class Handler
      */
     public function getMessagesAsArray($User)
     {
-        $result = array();
+        $result   = array();
         $messages = $this->getNewMessages($User);
 
         /* @var $Message Message */
@@ -207,12 +206,12 @@ class Handler
     /**
      * Send a message to an user and save it to the database
      *
-     * @param User                  $User
+     * @param User $User
      * @param \QUI\Messages\Message $Message
      */
     public function sendMessage(User $User, Message $Message)
     {
-        QUI::getDataBase()->insert(self::TABLE(), array(
+        QUI::getDataBase()->insert(self::table(), array(
             'uid'     => $User->getId(),
             'message' => $Message->getMessage(),
             'mcode'   => (int)$Message->getCode(),
@@ -224,7 +223,7 @@ class Handler
     /**
      * Send an information to an user and save it to the database
      *
-     * @param User   $User
+     * @param User $User
      * @param string $str
      */
     public function sendAttention(User $User, $str)
@@ -240,7 +239,7 @@ class Handler
     /**
      * Send an error to an user and save it to the database
      *
-     * @param User   $User
+     * @param User $User
      * @param string $str
      */
     public function sendError(User $User, $str)
@@ -256,7 +255,7 @@ class Handler
     /**
      * Send a information to an user and save it to the database
      *
-     * @param User   $User
+     * @param User $User
      * @param string $str
      */
     public function sendInformation(User $User, $str)
@@ -272,7 +271,7 @@ class Handler
     /**
      * Send a success message to an user and save it to the database
      *
-     * @param User   $User
+     * @param User $User
      * @param string $str
      */
     public function sendSuccess(User $User, $str)

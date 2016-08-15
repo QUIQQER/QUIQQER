@@ -86,11 +86,11 @@ class AlphabetSorting extends QUI\Control
         }
 
         $Engine->assign(array(
-            'active' => $active,
+            'active'    => $active,
             'urlParams' => $params,
-            'anchor' => $anchor,
-            'Site' => $Site,
-            'Project' => $Project
+            'anchor'    => $anchor,
+            'Site'      => $Site,
+            'Project'   => $Project
         ));
 
         return $Engine->fetch(dirname(__FILE__) . '/AlphabetSorting.html');

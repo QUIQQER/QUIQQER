@@ -79,7 +79,7 @@ class Guest extends QUI\Groups\Group
 
         // Felder bekommen
         QUI::getDataBase()->update(
-            QUI\Groups\Manager::Table(),
+            QUI\Groups\Manager::table(),
             array(
                 'name'    => 'Guest',
                 'toolbar' => $this->getAttribute('toolbar'),
@@ -98,7 +98,6 @@ class Guest extends QUI\Groups\Group
      */
     public function activate()
     {
-
     }
 
     /**
@@ -147,7 +146,6 @@ class Guest extends QUI\Groups\Group
      */
     public function getParent($obj = true)
     {
-
     }
 
     /**
@@ -157,7 +155,6 @@ class Guest extends QUI\Groups\Group
      */
     public function getParentIds()
     {
-
     }
 
     /**

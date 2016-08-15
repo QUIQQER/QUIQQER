@@ -21,8 +21,7 @@ class Health extends QUI\System\Console\Tool
      */
     public function __construct()
     {
-        $this->setName('quiqqer:health')
-            ->setDescription('Checks the system health');
+        $this->setName('quiqqer:health')->setDescription('Checks the system health');
     }
 
     /**
@@ -38,7 +37,6 @@ class Health extends QUI\System\Console\Tool
             QUI\System\Checks\Health::checkWritable();
 
             $this->writeLn('System Health : OK', 'green');
-
         } catch (QUI\Exception $Exception) {
             $this->writeLn('System Health : ERROR', 'red');
             $this->writeLn($Exception->getMessage(), 'red');

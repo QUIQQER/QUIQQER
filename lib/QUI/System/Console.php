@@ -146,7 +146,6 @@ class Console
                 $params['--username'],
                 $params['--password']
             );
-
         } catch (QUI\Exception $Exception) {
             $this->writeLn($Exception->getMessage() . "\n\n", 'red');
             exit;
@@ -215,7 +214,6 @@ class Console
                 if (isset($var[0]) && isset($var[1])) {
                     $params[$var[0]] = $var[1];
                 }
-
             } else {
                 $params[$argv] = true;
             }
@@ -267,7 +265,6 @@ class Console
 
             try {
                 $Exec->execute();
-
             } catch (QUI\Exception $Exception) {
                 Log::addAlert($Exception->getMessage(), array(
                     'type' => 'cron',
@@ -294,7 +291,7 @@ class Console
      *
      * @param boolean|string $tool - boolean true = all Tools | string = specific tool
      *
-     * @return array|Console\Tool
+     * @return array|Console\Tool|bool
      */
     public function get($tool)
     {
@@ -331,7 +328,6 @@ class Console
                 }
 
                 $Tool->execute();
-
             } catch (QUI\Exception $Exception) {
                 $this->writeLn($Exception->getMessage(), 'red');
                 $this->writeLn();

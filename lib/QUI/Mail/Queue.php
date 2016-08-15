@@ -22,7 +22,7 @@ class Queue
      *
      * @return string
      */
-    public static function TABLE()
+    public static function table()
     {
         return QUI_DB_PRFX . 'mailqueue';
     }
@@ -32,25 +32,25 @@ class Queue
      */
     public static function setup()
     {
-        $Table = QUI::getDataBase()->Table();
+        $Table = QUI::getDataBase()->table();
 
-        $Table->appendFields(self::TABLE(), array(
-            'id' => 'int(11) NOT NULL',
-            'subject' => 'varchar(1000)',
-            'body' => 'text',
-            'text' => 'text',
-            'from' => 'text',
-            'fromName' => 'text',
-            'ishtml' => 'int(1)',
-            'mailto' => 'text',
-            'replyto' => 'text',
-            'cc' => 'text',
-            'bcc' => 'text',
+        $Table->addColumn(self::table(), array(
+            'id'           => 'int(11) NOT NULL',
+            'subject'      => 'varchar(1000)',
+            'body'         => 'text',
+            'text'         => 'text',
+            'from'         => 'text',
+            'fromName'     => 'text',
+            'ishtml'       => 'int(1)',
+            'mailto'       => 'text',
+            'replyto'      => 'text',
+            'cc'           => 'text',
+            'bcc'          => 'text',
             'attachements' => 'text'
         ));
 
-        $Table->setPrimaryKey(self::TABLE(), 'id');
-        $Table->setAutoIncrement(self::TABLE(), 'id');
+        $Table->setPrimaryKey(self::table(), 'id');
+        $Table->setAutoIncrement(self::table(), 'id');
     }
 
     /**
@@ -89,7 +89,7 @@ class Queue
         }
 
 
-        QUI::getDataBase()->insert(self::TABLE(), $params);
+        QUI::getDataBase()->insert(self::table(), $params);
 
         $newMailId = QUI::getDataBase()->getPDO()->lastInsertId('id');
 
@@ -121,7 +121,7 @@ class Queue
     public function send()
     {
         $params = QUI::getDataBase()->fetch(array(
-            'from' => self::TABLE(),
+            'from'  => self::table(),
             'limit' => 1
         ));
 
@@ -134,13 +134,12 @@ class Queue
 
             // successful send
             if ($send) {
-                QUI::getDataBase()->delete(self::TABLE(), array(
+                QUI::getDataBase()->delete(self::table(), array(
                     'id' => $params[0]['id']
                 ));
 
                 return true;
             }
-
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError(
                 $Exception->getMessage(),
@@ -163,7 +162,7 @@ class Queue
     public function sendById($id)
     {
         $params = QUI::getDataBase()->fetch(array(
-            'from' => self::TABLE(),
+            'from'  => self::table(),
             'where' => array(
                 'id' => (int)$id
             ),
@@ -186,13 +185,12 @@ class Queue
 
             // successful send
             if ($send) {
-                QUI::getDataBase()->delete(self::TABLE(), array(
+                QUI::getDataBase()->delete(self::table(), array(
                     'id' => $params[0]['id']
                 ));
 
                 return true;
             }
-
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError(
                 $Exception->getMessage(),
@@ -289,7 +287,7 @@ class Queue
 
             // html mail ?
             if ($params['ishtml']) {
-                $PhpMailer->IsHTML(true);
+                $PhpMailer->isHTML(true);
                 $PhpMailer->AltBody = $params['text'];
             }
 
@@ -306,7 +304,6 @@ class Queue
             }
 
             return true;
-
         } catch (\Exception $Exception) {
             throw new QUI\Exception(
                 'Mail Error: ' . $Exception->getMessage(),
@@ -323,10 +320,10 @@ class Queue
     public function count()
     {
         $result = QUI::getDataBase()->fetch(array(
-            'from' => self::TABLE(),
+            'from'  => self::table(),
             'count' => array(
                 'select' => 'id',
-                'as' => 'count'
+                'as'     => 'count'
             )
         ));
 
@@ -341,7 +338,7 @@ class Queue
     public function getList()
     {
         return QUI::getDataBase()->fetch(array(
-            'from' => self::TABLE()
+            'from' => self::table()
         ));
     }
 }

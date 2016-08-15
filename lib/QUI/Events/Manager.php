@@ -69,7 +69,6 @@ class Manager implements QUI\Interfaces\Events
             ));
 
             $this->siteEvents = $list;
-
         } catch (QUI\Database\Exception $Exception) {
         }
     }

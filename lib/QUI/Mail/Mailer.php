@@ -73,7 +73,7 @@ class Mailer extends QUI\QDOM
 
         // default
         $this->setAttributes(array(
-            'html' => true,
+            'html'    => true,
             'Project' => \QUI::getProjectManager()->get()
         ));
 
@@ -182,10 +182,8 @@ class Mailer extends QUI\QDOM
 
         // no mail queue
         try {
-            $PHPMailer->Send();
-
+            $PHPMailer->send();
             return true;
-
         } catch (\Exception $Exception) {
             throw new QUI\Exception(
                 'Mail Error: ' . $Exception->getMessage()
@@ -201,16 +199,16 @@ class Mailer extends QUI\QDOM
     public function toArray()
     {
         return array(
-            'subject' => $this->getAttribute('subject'),
-            'body' => $this->Template->getHTML(),
-            'text' => $this->Template->getText(),
-            'from' => $this->getAttribute('from'),
-            'fromName' => $this->getAttribute('fromName'),
-            'ishtml' => (bool)$this->getAttribute('html') ? 1 : 0,
-            'mailto' => $this->recipients,
-            'replyto' => $this->reply,
-            'cc' => $this->cc,
-            'bcc' => $this->bcc,
+            'subject'      => $this->getAttribute('subject'),
+            'body'         => $this->Template->getHTML(),
+            'text'         => $this->Template->getText(),
+            'from'         => $this->getAttribute('from'),
+            'fromName'     => $this->getAttribute('fromName'),
+            'ishtml'       => (bool)$this->getAttribute('html') ? 1 : 0,
+            'mailto'       => $this->recipients,
+            'replyto'      => $this->reply,
+            'cc'           => $this->cc,
+            'bcc'          => $this->bcc,
             'attachements' => $this->attachments
         );
     }

@@ -18,9 +18,9 @@ use QUI\Utils\Security\Orthos;
  */
 class Manager extends QUI\QDOM
 {
-    const TYPE_BOOL    = 1;
-    const TYPE_TEXT    = 2;
-    const TYPE_INT     = 3;
+    const TYPE_BOOL = 1;
+    const TYPE_TEXT = 2;
+    const TYPE_INT = 3;
     const TYPE_VARCHAR = 4;
 
     /**
@@ -96,7 +96,6 @@ class Manager extends QUI\QDOM
             ));
 
             QUI\System\Log::addNotice('Guest Group was created.');
-
         } else {
             QUI::getDataBase()->update($this->table(), array(
                 'name' => 'Guest'
@@ -125,7 +124,6 @@ class Manager extends QUI\QDOM
             ));
 
             QUI\System\Log::addNotice('Everyone Group was created.');
-
         } else {
             QUI::getDataBase()->update($this->table(), array(
                 'name' => 'Everyone'
@@ -229,7 +227,6 @@ class Manager extends QUI\QDOM
         foreach ($ids as $id) {
             try {
                 $result[] = $this->get((int)$id['id']);
-
             } catch (QUI\Exception $Exception) {
                 // nothing
             }
@@ -389,7 +386,6 @@ class Manager extends QUI\QDOM
                     'value' => $params['search']
                 )
             );
-
         } elseif (isset($params['search'])
                   && isset($params['searchSettings'])
                   && is_array($params['searchSettings'])

@@ -46,7 +46,6 @@ class Manager extends QUI\QDOM
      */
     protected $groupplugins = false;
 
-
     /**
      * Konstruktor
      * Ließt Plugin Config ein
@@ -271,7 +270,6 @@ class Manager extends QUI\QDOM
             if (empty($attributes)) {
                 return false;
             }
-
         } catch (QUI\Cache\Exception $Exception) {
             return false;
         }
@@ -502,7 +500,6 @@ class Manager extends QUI\QDOM
 
         try {
             return QUI\Cache\Manager::get($cache);
-
         } catch (QUI\Cache\Exception $Exception) {
         }
 
@@ -545,7 +542,7 @@ class Manager extends QUI\QDOM
         if ($loc->length) {
             $data['locale'] = array(
                 'group' => $loc->item(0)->getAttribute('group'),
-                'var' => $loc->item(0)->getAttribute('var')
+                'var'   => $loc->item(0)->getAttribute('var')
             );
         }
 

@@ -250,7 +250,6 @@ class Manager extends QUI\QDOM
 
         if (isset($data['require']['quiqqer/quiqqer'])) {
             $this->version = $data['require']['quiqqer/quiqqer'];
-
         } else {
             $this->version = $data['version'];
         }
@@ -290,15 +289,15 @@ class Manager extends QUI\QDOM
 
         // config
         $composerJson->config = array(
-            "vendor-dir" => OPT_DIR,
-            "cache-dir" => $this->vardir,
+            "vendor-dir"    => OPT_DIR,
+            "cache-dir"     => $this->vardir,
             "component-dir" => OPT_DIR . 'bin',
-            "quiqqer-dir" => CMS_DIR
+            "quiqqer-dir"   => CMS_DIR
         );
 
         $composerJson->extra = array(
             "asset-installer-paths" => array(
-                "npm-asset-library" => OPT_DIR . 'bin',
+                "npm-asset-library"   => OPT_DIR . 'bin',
                 "bower-asset-library" => OPT_DIR . 'bin'
             )
         );
@@ -319,7 +318,7 @@ class Manager extends QUI\QDOM
 
             $repositories[] = array(
                 'type' => $params['type'],
-                'url' => $server
+                'url'  => $server
             );
         }
 
@@ -447,9 +446,7 @@ class Manager extends QUI\QDOM
 
         try {
             $this->list = QUI\Cache\Manager::get(self::CACHE_NAME_TYPES);
-
             return $this->list;
-
         } catch (QUI\Exception $Exception) {
         }
 
@@ -653,9 +650,8 @@ class Manager extends QUI\QDOM
 
             $this->execComposer('install', array(
                 '--no-progress' => true,
-                '--no-ansi' => true
+                '--no-ansi'     => true
             ));
-
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addDebug('LOCK Server Error');
             QUI\System\Log::addDebug($Exception->getMessage());
@@ -689,7 +685,6 @@ class Manager extends QUI\QDOM
                     $package . ':' . $version
                 )
             ));
-
         } else {
             $this->execComposer('require', array(
                 'packages' => $package
@@ -715,9 +710,7 @@ class Manager extends QUI\QDOM
         );
 
         $this->useOnlyLocalRepository();
-
         $this->installWithoutLockClient($package, $version);
-
         $this->resetRepositories();
     }
 
@@ -744,7 +737,6 @@ class Manager extends QUI\QDOM
                     $quiqqer = true;
                 }
             }
-
         } else {
             $json['require'][$package] = $version;
 
@@ -757,7 +749,6 @@ class Manager extends QUI\QDOM
         // minimum-stability
         if ($quiqqer && $version == 'dev-dev') {
             $json['minimum-stability'] = 'dev';
-
         } else {
             if ($quiqqer) {
                 $json['minimum-stability'] = 'stable';
@@ -788,7 +779,6 @@ class Manager extends QUI\QDOM
 
         try {
             return QUI\Cache\Manager::get($cache);
-
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addDebug($Exception->getMessage());
         }
@@ -861,7 +851,6 @@ class Manager extends QUI\QDOM
 
         try {
             return QUI\Cache\Manager::get($cache);
-
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addDebug($Exception->getMessage());
         }
@@ -949,7 +938,6 @@ class Manager extends QUI\QDOM
         try {
             $Package = $this->getInstalledPackage($package);
             $Package->setup();
-
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::writeException($Exception, QUI\System\Log::LEVEL_WARNING);
         }
@@ -976,7 +964,6 @@ class Manager extends QUI\QDOM
     {
         try {
             return QUI::getConfig('etc/source.list.ini.php')->toArray();
-
         } catch (QUI\Exception $Exception) {
         }
 
@@ -1085,7 +1072,6 @@ class Manager extends QUI\QDOM
             $LockClient = $this->getLockClient();
 
             return $LockClient->dryUpdate();
-
         } catch (QUI\Exception $Exception) {
         }
 
@@ -1108,7 +1094,6 @@ class Manager extends QUI\QDOM
 
             if (strpos($line, 'Installing') !== false) {
                 preg_match('#Installing ([^ ]*) #i', $line, $package);
-
             } else {
                 preg_match('#Updating ([^ ]*) #i', $line, $package);
             }
@@ -1135,8 +1120,8 @@ class Manager extends QUI\QDOM
 
             $packages[] = array(
                 'package' => $package,
-                'from' => $from,
-                'to' => $to
+                'from'    => $from,
+                'to'      => $to
             );
         }
 
@@ -1179,24 +1164,22 @@ class Manager extends QUI\QDOM
 
             $output = $this->execComposer('install', array(
                 '--no-progress' => true,
-                '--no-ansi' => true
+                '--no-ansi'     => true
             ));
-
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addDebug('LOCK Server Error');
             QUI\System\Log::addDebug($Exception->getMessage());
 
             if ($package) {
                 $output = $this->execComposer('update', array(
-                    'packages' => array($package),
+                    'packages'      => array($package),
                     '--no-progress' => true,
-                    '--no-ansi' => true
+                    '--no-ansi'     => true
                 ));
-
             } else {
                 $output = $this->execComposer('update', array(
                     '--no-progress' => true,
-                    '--no-ansi' => true
+                    '--no-ansi'     => true
                 ));
             }
         }
@@ -1359,7 +1342,6 @@ class Manager extends QUI\QDOM
         // composer output, some warnings that composer/cache is not empty
         try {
             QUI::getTemp()->moveToTemp($this->vardir . 'cache');
-
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addInfo($Exception->getMessage());
         }
@@ -1439,7 +1421,6 @@ class Manager extends QUI\QDOM
     {
         try {
             return QUI\Cache\Manager::get('qui/packages/list/haveSiteXml');
-
         } catch (QUI\Exception $Exception) {
         }
 
@@ -1474,7 +1455,6 @@ class Manager extends QUI\QDOM
     {
         try {
             return QUI\Cache\Manager::get('qui/packages/list/haveDatabaseXml');
-
         } catch (QUI\Exception $Exception) {
         }
 
@@ -1530,9 +1510,9 @@ class Manager extends QUI\QDOM
         }
 
         $fileInfos = QUIFile::getInfo($file, array(
-            'filesize' => true,
+            'filesize'  => true,
             'mime_type' => true,
-            'pathinfo' => true
+            'pathinfo'  => true
         ));
 
         $tempFile = $dir . '/' . $fileInfos['basename'];
@@ -1567,7 +1547,6 @@ class Manager extends QUI\QDOM
                 $composerJson = file_get_contents(
                     "zip://{$package}#composer.json"
                 );
-
             } catch (\Exception $Exception) {
                 // maybe gitlab package?
                 try {
@@ -1575,7 +1554,6 @@ class Manager extends QUI\QDOM
                     $composerJson = file_get_contents(
                         "zip://{$package}#{$packageName['filename']}/composer.json"
                     );
-
                 } catch (\Exception $Exception) {
                     QUI\System\Log::addDebug($Exception->getMessage());
                     continue;
