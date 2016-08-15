@@ -17,6 +17,10 @@ if (!function_exists('glob_recursive')) {
     /**
      * polyfill for glob_recursive
      * Does not support flag GLOB_BRACE
+     *
+     * @param $pattern
+     * @param int $flags
+     * @return array
      */
     function glob_recursive($pattern, $flags = 0)
     {
@@ -39,7 +43,7 @@ if (!function_exists('glob_recursive')) {
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
  *
- * @todo    Backup vor dem Einspielen machen
+ * @todo Backup vor dem Einspielen machen
  */
 class Update
 {
@@ -73,8 +77,7 @@ class Update
         $Composer = $Event->getComposer();
 
         if (!defined('ETC_DIR')) {
-            define('ETC_DIR', $Composer->getConfig()->get('quiqqer-dir')
-                              . 'etc/');
+            define('ETC_DIR', $Composer->getConfig()->get('quiqqer-dir') . 'etc/');
         }
 
         // load quiqqer
@@ -228,7 +231,6 @@ class Update
         if (QUI::getUserBySession()->getId()) {
             QUI::setup();
             $IO->write('QUIQQER Setup finish');
-
         } else {
             QUI\Cache\Manager::clearAll();
             $IO->write('Maybe some Databases or Plugins need a setup. Please log in and execute the setup.');
@@ -239,7 +241,7 @@ class Update
      * Import / register the template engines in an xml file and register it
      *
      * @param string $xml_file - path to an engine.xml
-     * @param        $IO - Composer InputOutput
+     * @param $IO - Composer InputOutput
      */
     public static function importTemplateEngines($xml_file, $IO = null)
     {
@@ -270,7 +272,7 @@ class Update
      * Import / register the wysiwyg editors
      *
      * @param string $xml_file - path to an engine.xml
-     * @param        $IO - Composer InputOutput
+     * @param $IO - Composer InputOutput
      */
     public static function importEditors($xml_file, $IO = null)
     {
@@ -301,7 +303,7 @@ class Update
      * Import / register quiqqer events
      *
      * @param string $xml_file - path to an engine.xml
-     * @param        $IO - (optional) Composer InputOutput
+     * @param $IO - (optional) Composer InputOutput
      */
     public static function importEvents($xml_file, $IO = null)
     {
@@ -329,7 +331,7 @@ class Update
      * Import / register quiqqer site events
      *
      * @param string $xml_file - path to an engine.xml
-     * @param        $IO - (optional)  Composer InputOutput
+     * @param $IO - (optional)  Composer InputOutput
      */
     public static function importSiteEvents($xml_file, $IO = null)
     {
@@ -352,7 +354,7 @@ class Update
      * it create a cache file for the package
      *
      * @param string $xml_file - path to an engine.xml
-     * @param        $IO - Composer InputOutput
+     * @param $IO - Composer InputOutput
      */
     public static function importMenu($xml_file, $IO = null)
     {
@@ -391,7 +393,7 @@ class Update
      * Reads the database.xml and create the definit tables
      *
      * @param string $xml_file - path to an database.xml
-     * @param        $IO - Composer InputOutput
+     * @param $IO - Composer InputOutput
      */
     public static function importDatabase($xml_file, $IO = null)
     {
@@ -409,7 +411,7 @@ class Update
      * Reads the locale.xml and import it
      *
      * @param string $xml_file - path to an locale.xml
-     * @param        $IO - Composer InputOutput
+     * @param $IO - Composer InputOutput
      */
     public static function importLocale($xml_file, $IO = null)
     {
@@ -428,7 +430,7 @@ class Update
      *
      * @param string $xml_file - path to an locale.xml
      * @param string $src - Source for the permissions
-     * @param        $IO - Composer InputOutput
+     * @param $IO - Composer InputOutput
      */
     public static function importPermissions($xml_file, $src = '', $IO = null)
     {
@@ -504,7 +506,7 @@ class Update
             QUI::getDBTableName(QUI\Permissions\Manager::TABLE),
             array(
                 'src' => array(
-                    'type' => 'NOT',
+                    'type'  => 'NOT',
                     'value' => 'user'
                 )
             )

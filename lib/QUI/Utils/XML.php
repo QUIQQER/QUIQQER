@@ -132,7 +132,6 @@ class XML
                 QUI::getPackageManager()->getInstalledPackage($package);
 
                 $name = 'plugins/' . $package;
-
             } catch (QUI\Exception $Exception) {
                 return false;
             }
@@ -179,7 +178,7 @@ class XML
      *
      * @param string $file - path to xml file
      *
-     * @return \DOMElement|boolean - DOMElement | false
+     * @return \DOMElement|boolean|array - DOMElement | false
      */
     public static function getConfigParamsFromXml($file)
     {
@@ -210,7 +209,6 @@ class XML
         for ($i = 0; $i < $tools->length; $i++) {
             /* @var $Tool \DOMElement */
             $Tool = $tools->item($i);
-
             $exec = $Tool->getAttribute('exec');
             $file = $Tool->getAttribute('file');
 
@@ -219,7 +217,7 @@ class XML
                 $file = Orthos::clearPath(realpath($file));
 
                 if (file_exists($file)) {
-                    require_once $file;
+                    include_once $file;
                 }
             }
 
@@ -1078,7 +1076,6 @@ class XML
                 $Package = QUI::getPackage($_file[0] . '/' . $_file[1]);
 
                 QUI::getEvents()->fireEvent('packageConfigSave', array($Package));
-
             } catch (QUI\Exception $Exception) {
             }
         }
@@ -1095,7 +1092,7 @@ class XML
      */
     public static function importDataBase($dbfields)
     {
-        $Table    = QUI::getDataBase()->Table();
+        $Table    = QUI::getDataBase()->table();
         $projects = QUI\Projects\Manager::getConfig()->toArray();
 
         // globale tabellen erweitern / anlegen
@@ -1103,7 +1100,7 @@ class XML
             foreach ($dbfields['globals'] as $table) {
                 $tbl = QUI::getDBTableName($table['suffix']);
 
-                $Table->appendFields($tbl, $table['fields'], $table['engine']);
+                $Table->addColumn($tbl, $table['fields'], $table['engine']);
 
                 if (isset($table['primary'])) {
                     $Table->setPrimaryKey($tbl, $table['primary']);
@@ -1166,7 +1163,7 @@ class XML
                             $tbl = QUI::getDBTableName($name . '_' . $suffix);
                         }
 
-                        $Table->appendFields($tbl, $fields, $engine);
+                        $Table->addColumn($tbl, $fields, $engine);
 
                         if (isset($table['primary'])) {
                             $Table->setPrimaryKey($tbl, $table['primary']);
@@ -1232,7 +1229,6 @@ class XML
 
         try {
             self::importDataBase($dbfields);
-
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError(
                 "Error on XML database import ($xmlfile): "

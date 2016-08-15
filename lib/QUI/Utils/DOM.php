@@ -41,7 +41,7 @@ class DOM
      *
      * @param array|\DOMNodeList $tabs
      * @param QUI\Controls\Toolbar\Bar $Tabbar
-     * @param                          $plugin - optional
+     * @param $plugin - optional
      */
     public static function addTabsToToolbar($tabs, Toolbar\Bar $Tabbar, $plugin = '')
     {
@@ -69,13 +69,15 @@ class DOM
                 $type = $Tab->getAttribute('type');
             }
 
-            $ToolbarTab = new Toolbar\Tab(array(
-                'name'    => $Tab->getAttribute('name'),
-                'text'    => $text,
-                'image'   => $image,
-                'plugin'  => $plugin,
-                'wysiwyg' => $type == 'wysiwyg' ? true : false
-            ));
+            $ToolbarTab = new Toolbar\Tab(
+                array(
+                    'name'    => $Tab->getAttribute('name'),
+                    'text'    => $text,
+                    'image'   => $image,
+                    'plugin'  => $plugin,
+                    'wysiwyg' => $type == 'wysiwyg' ? true : false
+                )
+            );
 
             foreach ($Tab->attributes as $attr) {
                 $name = $attr->nodeName;
@@ -381,7 +383,7 @@ class DOM
     /**
      * Return the tabs
      *
-     * @param \DOMElement|\DOMNode $DOMNode
+     * @param  \DOMElement|\DOMNode $DOMNode
      * @return array
      */
     public static function getTabs(\DOMElement $DOMNode)
@@ -424,7 +426,6 @@ class DOM
             if (file_exists($Object)) {
                 $tabs = XML::getTabsFromXml($Object);
             }
-
         } else {
             if (get_class($Object) === 'QUI\\Projects\\Project') {
                 /* @var $Object QUI\Projects\Project */
@@ -432,7 +433,6 @@ class DOM
                 $tabs = XML::getTabsFromXml(
                     USR_DIR . 'lib/' . $Object->getAttribute('name') . '/user.xml'
                 );
-
             } else {
                 if (get_class($Object) === 'QUI\\Projects\\Site'
                     || get_class($Object) === 'QUI\\Projects\\Site\\Edit'
@@ -456,12 +456,14 @@ class DOM
                             $Engine = QUI::getTemplateManager()
                                 ->getEngine(true);
 
-                            $Engine->assign(array(
-                                'Site'    => $Object,
-                                'Project' => $Object->getProject(),
-                                'Plugins' => QUI::getPluginManager(),
-                                'QUI'     => new QUI()
-                            ));
+                            $Engine->assign(
+                                array(
+                                    'Site'    => $Object,
+                                    'Project' => $Object->getProject(),
+                                    'Plugins' => QUI::getPluginManager(),
+                                    'QUI'     => new QUI()
+                                )
+                            );
 
                             return $Engine->fetch($file) . $extra;
                         }
@@ -523,8 +525,8 @@ class DOM
             $Button->setAttribute('require', $Param->getAttribute('require'));
             $Button->setAttribute('index', $index);
 
-//            $onload   = $Param->getElementsByTagName( 'onload' );
-//            $onunload = $Param->getElementsByTagName( 'onunload' );
+            //            $onload   = $Param->getElementsByTagName( 'onload' );
+            //            $onunload = $Param->getElementsByTagName( 'onunload' );
 
             $btnParams = $Param->childNodes;
 
@@ -931,7 +933,7 @@ class DOM
      * Wandelt ein Kategorie DomNode in entsprechendes HTML um
      *
      * @param \DOMNode $Category
-     * @param          $Plugin - optional
+     * @param $Plugin - optional
      *
      * @return string
      */
@@ -966,11 +968,13 @@ class DOM
                 $file = self::parseVar($Entry->nodeValue);
 
                 if (file_exists($file)) {
-                    $Engine->assign(array(
-                        'Plugin'  => $Plugin,
-                        'Plugins' => QUI::getPluginManager(),
-                        'QUI'     => new QUI()
-                    ));
+                    $Engine->assign(
+                        array(
+                            'Plugin'  => $Plugin,
+                            'Plugins' => QUI::getPluginManager(),
+                            'QUI'     => new QUI()
+                        )
+                    );
 
                     $result .= $Engine->fetch($file);
                 }
@@ -1045,11 +1049,13 @@ class DOM
                             $file = self::parseVar($Set->nodeValue);
 
                             if (file_exists($file)) {
-                                $Engine->assign(array(
-                                    'Plugin'  => $Plugin,
-                                    'Plugins' => QUI::getPluginManager(),
-                                    'QUI'     => new QUI()
-                                ));
+                                $Engine->assign(
+                                    array(
+                                        'Plugin'  => $Plugin,
+                                        'Plugins' => QUI::getPluginManager(),
+                                        'QUI'     => new QUI()
+                                    )
+                                );
 
                                 $result .= $Engine->fetch($file);
                             }
@@ -1175,7 +1181,6 @@ class DOM
             } else {
                 $string .= $input;
             }
-
         } else {
             if ($text->length) {
                 $string .= '<label for="' . $id . '">' .
