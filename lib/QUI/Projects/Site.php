@@ -229,7 +229,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             $this->decode(
                 QUI\Cache\Manager::get($this->CACHENAME)
             );
-
         } catch (QUI\Exception $Exception) {
             // Daten aus der DB hohlen
             $this->refresh();
@@ -653,7 +652,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             $_Project->get($lang_id);
 
             return true;
-
         } catch (QUI\Exception $Exception) {
             // nothing
         }
@@ -690,7 +688,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
                 $result[$lang] = false;
             }
-
         } catch (QUI\Exception $Exception) {
         }
 
@@ -862,7 +859,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 $Child->setAttribute('parent', $this);
 
                 $children[] = $Child;
-
             } catch (QUI\Exception $Exception) {
                 if (DEBUG_MODE) {
                     QUI\System\Log::writeException($Exception);
@@ -1240,7 +1236,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                         $Edit->deleteLinked($pid);
                     }
                 }
-
             } catch (QUI\Exception $Exception) {
             }
         }
@@ -1607,7 +1602,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 if ($id == 0) {
                     $search = false;
                 }
-
             } catch (QUI\Exception $Exception) {
                 $search = false;
             }
@@ -1656,7 +1650,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 if ($id == 0) {
                     $search = false;
                 }
-
             } catch (QUI\Exception $e) {
                 $search = false;
             }

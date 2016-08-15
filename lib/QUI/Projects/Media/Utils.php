@@ -297,10 +297,8 @@ class Utils
             if (isset($style['height'])) {
                 $height = $style['height'];
             }
-
         } elseif (isset($attributes['width'])) {
             $width = $attributes['width'];
-
         } elseif (isset($attributes['height'])) {
             $height = $attributes['height'];
         }
@@ -319,7 +317,6 @@ class Utils
 
         try {
             $Image = self::getImageByUrl($src);
-
         } catch (QUI\Exception $Exception) {
             return '';
         }
@@ -396,7 +393,6 @@ class Utils
         // exist cache?
         try {
             $url = QUI\Cache\Manager::get($cache);
-
         } catch (QUI\Cache\Exception $Exception) {
         }
 
@@ -408,7 +404,6 @@ class Utils
                 if (!self::isImage($Obj)) {
                     return $url;
                 }
-
             } catch (QUI\Exception $Exception) {
                 Log::addDebug($Exception->getMessage(), array(
                     'url'   => $output,
@@ -416,7 +411,6 @@ class Utils
                 ));
 
                 return URL_DIR . $output;
-
             } catch (\Exception $Exception) {
                 Log::addDebug($Exception->getMessage(), array(
                     'url'   => $output,
@@ -463,7 +457,6 @@ class Utils
                 }
 
                 $Obj->createSizeCache($size['width'], $size['height']);
-
             } else {
                 $Obj->createCache();
             }
@@ -679,10 +672,8 @@ class Utils
     {
         if (strpos($url, 'media/cache/') !== false) {
             $parts = explode('media/cache/', $url);
-
         } elseif (strpos($url, 'media/sites/') !== false) {
             $parts = explode('media/sites/', $url);
-
         } else {
             throw new QUI\Exception('File not found', 404);
         }

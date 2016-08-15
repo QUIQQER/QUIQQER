@@ -486,6 +486,5 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function checkPermission($permission, $User = false)
     {
-
     }
 }

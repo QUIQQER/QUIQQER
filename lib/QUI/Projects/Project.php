@@ -203,7 +203,6 @@ class Project
             }
 
             $this->lang = $lang;
-
         } else {
             // Falls keine Sprache angegeben wurde wird die Standardsprache verwendet
             if (!isset($this->config['default_lang'])) {
@@ -852,7 +851,6 @@ class Project
 
         if (isset($params['where']) && is_array($params['where'])) {
             $where = array_merge($where_1, $params['where']);
-
         } elseif (isset($params['where']) && is_string($params['where'])) {
             // @todo where als param string
             QUI\System\Log::addDebug(
@@ -1319,7 +1317,6 @@ class Project
             return (int)QUI\Cache\Manager::get(
                 'projects/edate/' . md5($this->getName() . '_' . $this->getLang())
             );
-
         } catch (QUI\Exception $Exception) {
         }
 

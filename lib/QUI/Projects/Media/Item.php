@@ -100,7 +100,6 @@ abstract class Item extends QUI\QDOM
         try {
             // activate the parents, otherwise the file is not accessible
             $this->getParent()->activate();
-
         } catch (QUI\Exception $Exception) {
             // has no parent
         }
@@ -205,11 +204,11 @@ abstract class Item extends QUI\QDOM
         QUI::getDataBase()->update(
             $this->Media->getTable(),
             array(
-                'title' => $this->getAttribute('title'),
-                'alt' => $this->getAttribute('alt'),
-                'short' => $this->getAttribute('short'),
-                'order' => $order,
-                'priority' => (int)$this->getAttribute('priority'),
+                'title'         => $this->getAttribute('title'),
+                'alt'           => $this->getAttribute('alt'),
+                'short'         => $this->getAttribute('short'),
+                'order'         => $order,
+                'priority'      => (int)$this->getAttribute('priority'),
                 'image_effects' => json_encode($image_effects)
             ),
             array(
@@ -294,7 +293,6 @@ abstract class Item extends QUI\QDOM
         // second, move the file to the trash
         try {
             QUIFile::unlink($var_folder . $this->getId());
-
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addWarning($Exception->getMessage());
         }
@@ -302,7 +300,6 @@ abstract class Item extends QUI\QDOM
         try {
             QUIFile::mkdir($var_folder);
             QUIFile::move($original, $var_folder . $this->getId());
-
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addWarning($Exception->getMessage());
         }
@@ -312,8 +309,8 @@ abstract class Item extends QUI\QDOM
             $this->Media->getTable(),
             array(
                 'deleted' => 1,
-                'active' => 0,
-                'file' => ''
+                'active'  => 0,
+                'file'    => ''
             ),
             array(
                 'id' => $this->getId()
@@ -682,7 +679,7 @@ abstract class Item extends QUI\QDOM
             ),
             array(
                 'parent' => $Parent->getId(),
-                'child' => $this->getId()
+                'child'  => $this->getId()
             )
         );
 

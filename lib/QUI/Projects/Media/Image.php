@@ -132,7 +132,6 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                     $cachefile = $cdir . $part[0] . '__' . $width . $extra . '.png';
                 }
             }
-
         } else {
             $cachefile = $cdir . $file;
         }
@@ -258,7 +257,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         return array(
-            'width' => $newwidth,
+            'width'  => $newwidth,
             'height' => $newheight
         );
     }
@@ -403,9 +402,9 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             }
         } catch (\Exception $Exception) {
             QUI\System\Log::addInfo($Exception->getMessage(), array(
-                'file' => $this->getFullPath(),
+                'file'   => $this->getFullPath(),
                 'fileId' => $this->getId(),
-                'info' => 'watermark creation'
+                'info'   => 'watermark creation'
             ));
         }
 
@@ -523,7 +522,6 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             );
 
             $Image->save($original);
-
         } catch (\Exception $Exception) {
             throw new QUI\Exception(
                 $Exception->getMessage(),
@@ -559,7 +557,6 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                 $Project = $this->getProject();
 
                 return Utils::getImageByUrl($Project->getConfig('media_watermark'));
-
             } catch (QUI\Exception $Exception) {
             }
 
@@ -568,7 +565,6 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
         try {
             return Utils::getImageByUrl($imageEffects['watermark']);
-
         } catch (QUI\Exception $Exception) {
         }
 
