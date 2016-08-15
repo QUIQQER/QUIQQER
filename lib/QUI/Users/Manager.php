@@ -3,7 +3,6 @@
 /**
  * This file contains \QUI\Users\Manager
  */
-
 namespace QUI\Users;
 
 use QUI;
@@ -15,7 +14,7 @@ use QUI\Utils\Security\Orthos;
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
  *
- * @event   onUserLogin [ \QUI\Users\User ]
+ * @event onUserLogin [ \QUI\Users\User ]
  */
 class Manager
 {
@@ -219,7 +218,7 @@ class Manager
      *
      *    Für was???
      *
-     * @return QUI\Projects\Project
+     * @return     QUI\Projects\Project
      * @deprecated
      */
     public function getProject()
@@ -416,10 +415,12 @@ class Manager
      */
     public function countAllUsers()
     {
-        $result = QUI::getDataBase()->fetch(array(
-            'count' => 'count',
-            'from'  => self::table()
-        ));
+        $result = QUI::getDataBase()->fetch(
+            array(
+                'count' => 'count',
+                'from'  => self::table()
+            )
+        );
 
         if (isset($result[0]) && isset($result[0]['count'])) {
             return $result[0]['count'];
@@ -438,10 +439,12 @@ class Manager
     public function getAllUsers($objects = false)
     {
         if ($objects == false) {
-            return QUI::getDataBase()->fetch(array(
-                'from'  => self::table(),
-                'order' => 'username'
-            ));
+            return QUI::getDataBase()->fetch(
+                array(
+                    'from'  => self::table(),
+                    'order' => 'username'
+                )
+            );
         }
 
         $result = array();
@@ -465,11 +468,13 @@ class Manager
      */
     public function getAllUserIds()
     {
-        $result = QUI::getDataBase()->fetch(array(
-            'select' => 'id',
-            'from'   => self::table(),
-            'order'  => 'username'
-        ));
+        $result = QUI::getDataBase()->fetch(
+            array(
+                'select' => 'id',
+                'from'   => self::table(),
+                'order'  => 'username'
+            )
+        );
 
         return $result;
     }
@@ -601,14 +606,16 @@ class Manager
         $userId = $Auth->getUserId();
 
         // check user data
-        $userData = QUI::getDataBase()->fetch(array(
-            'select' => array('id', 'expire', 'secHash', 'active'),
-            'from'   => self::table(),
-            'where'  => array(
-                'id' => $userId
-            ),
-            'limit'  => 1
-        ));
+        $userData = QUI::getDataBase()->fetch(
+            array(
+                'select' => array('id', 'expire', 'secHash', 'active'),
+                'from'   => self::table(),
+                'where'  => array(
+                    'id' => $userId
+                ),
+                'limit'  => 1
+            )
+        );
 
         if (!isset($userData[0])) {
             throw new QUI\Users\Exception(
@@ -629,10 +636,9 @@ class Manager
             && strtotime($userData[0]['expire']) < time()
         ) {
             throw new QUI\Users\Exception(
-                QUI::getLocale()
-                    ->get('quiqqer/system', 'exception.login.expire', array(
-                        'expire' => $userData[0]['expire']
-                    ))
+                QUI::getLocale()->get('quiqqer/system', 'exception.login.expire', array(
+                    'expire' => $userData[0]['expire']
+                ))
             );
         }
 
@@ -688,7 +694,8 @@ class Manager
     /**
      * Generate a user-dependent security hash
      * There are different data use such as IP, User-Agent and the System-Salt
-     * @todo noch eine eindeutige möglichkeit der Identifizierung des Browser finden
+     *
+     * @todo   noch eine eindeutige möglichkeit der Identifizierung des Browser finden
      * @return string
      */
     public function getSecHash()
@@ -845,7 +852,7 @@ class Manager
     /**
      * Get the user by id
      *
-     * @param integer $id
+     * @param  integer $id
      * @return QUI\Users\User|Nobody|SystemUser|false
      *
      * @throws QUI\Users\Exception
@@ -882,14 +889,16 @@ class Manager
      */
     public function getUserByName($username)
     {
-        $result = QUI::getDataBase()->fetch(array(
-            'select' => 'id',
-            'from'   => self::table(),
-            'where'  => array(
-                'username' => $username
-            ),
-            'limit'  => 1
-        ));
+        $result = QUI::getDataBase()->fetch(
+            array(
+                'select' => 'id',
+                'from'   => self::table(),
+                'where'  => array(
+                    'username' => $username
+                ),
+                'limit'  => 1
+            )
+        );
 
         if (!isset($result[0])) {
             throw new QUI\Users\Exception(
@@ -914,14 +923,16 @@ class Manager
      */
     public function getUserByMail($email)
     {
-        $result = QUI::getDataBase()->fetch(array(
-            'select' => 'id',
-            'from'   => self::table(),
-            'where'  => array(
-                'email' => $email
-            ),
-            'limit'  => 1
-        ));
+        $result = QUI::getDataBase()->fetch(
+            array(
+                'select' => 'id',
+                'from'   => self::table(),
+                'where'  => array(
+                    'email' => $email
+                ),
+                'limit'  => 1
+            )
+        );
 
         if (!isset($result[0])) {
             throw new QUI\Users\Exception(
@@ -960,14 +971,16 @@ class Manager
             return false;
         }
 
-        $result = QUI::getDataBase()->fetch(array(
-            'select' => 'username',
-            'from'   => self::table(),
-            'where'  => array(
-                'username' => $username
-            ),
-            'limit'  => 1
-        ));
+        $result = QUI::getDataBase()->fetch(
+            array(
+                'select' => 'username',
+                'from'   => self::table(),
+                'where'  => array(
+                    'username' => $username
+                ),
+                'limit'  => 1
+            )
+        );
 
         return isset($result[0]) ? true : false;
     }
@@ -1003,14 +1016,16 @@ class Manager
      */
     public function emailExists($email)
     {
-        $result = QUI::getDataBase()->fetch(array(
-            'select' => 'email',
-            'from'   => self::table(),
-            'where'  => array(
-                'email' => $email
-            ),
-            'limit'  => 1
-        ));
+        $result = QUI::getDataBase()->fetch(
+            array(
+                'select' => 'email',
+                'from'   => self::table(),
+                'where'  => array(
+                    'email' => $email
+                ),
+                'limit'  => 1
+            )
+        );
 
         return isset($result[0]) ? true : false;
     }
@@ -1084,7 +1099,7 @@ class Manager
      *
      * @todo where params
      *
-     * @param array $params
+     * @param  array $params
      * @return array|integer
      *
      * @throws QUI\Database\Exception
@@ -1330,12 +1345,14 @@ class Manager
             srand(microtime() * 1000000);
             $newid = rand(100, 1000000000);
 
-            $result = QUI::getDataBase()->fetch(array(
-                'from'  => self::table(),
-                'where' => array(
-                    'id' => $newid
+            $result = QUI::getDataBase()->fetch(
+                array(
+                    'from'  => self::table(),
+                    'where' => array(
+                        'id' => $newid
+                    )
                 )
-            ));
+            );
 
             if (isset($result[0]) && $result[0]['id']) {
                 $create = true;
