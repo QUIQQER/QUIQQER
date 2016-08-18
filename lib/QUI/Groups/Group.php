@@ -137,6 +137,32 @@ class Group extends QUI\QDOM
 
         QUI::getEvents()->fireEvent('groupDelete', array($this));
 
+        /**
+         * Delete the group id in all users
+         *
+         * @param int $groupId
+         */
+        $deleteGidInUsers = function ($groupId) {
+            if (!is_int($groupId)) {
+                return;
+            }
+
+            $PDO   = QUI::getDataBase()->getPDO();
+            $table = QUI\Users\Manager::table();
+
+            $Statement = $PDO->prepare(
+                "UPDATE {$table}
+                SET usergroup = replace(usergroup, :search, :replace)
+                WHERE usergroup LIKE :where"
+            );
+
+            $Statement->bindValue('where', '%,' . $groupId . ',%');
+            $Statement->bindValue('search', ',' . $groupId . ',');
+            $Statement->bindValue('replace', ',');
+            $Statement->execute();
+        };
+
+
         // Rekursiv die Kinder bekommen
         $children = $this->getChildrenIds(true);
 
@@ -149,7 +175,11 @@ class Group extends QUI\QDOM
                     'id' => $child
                 )
             ));
+
+            $deleteGidInUsers($child);
         }
+
+        $deleteGidInUsers($this->getId());
 
         // Sich selbst löschen
         QUI::getDataBase()->exec(array(
