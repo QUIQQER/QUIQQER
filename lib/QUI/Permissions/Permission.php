@@ -31,7 +31,7 @@ class Permission
     protected static $User = null;
 
     /**
-     * @return User
+     * @return QUI\Interfaces\Users\User
      */
     protected static function getUser()
     {
@@ -175,8 +175,6 @@ class Permission
         if (QUI::getUsers()->isSystemUser($User)) {
             return true;
         }
-
-//        self::checkUser($User);
 
         $Manager     = QUI::getPermissionManager();
         $permissions = $Manager->getPermissions($User);

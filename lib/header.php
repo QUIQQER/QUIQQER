@@ -29,7 +29,6 @@ set_error_handler("exception_error_handler");
 
 if (DEVELOPMENT == 1) {
     error_reporting(E_ALL);
-
 } else {
     error_reporting(E_ALL ^ E_NOTICE);
 }
