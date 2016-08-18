@@ -2,6 +2,7 @@
 
 .quiqer-group-select {
     float: left;
+    min-height: 100px;
     padding: 2px;
     position: relative;
     width: 100%;

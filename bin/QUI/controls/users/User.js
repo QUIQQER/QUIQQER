@@ -238,17 +238,24 @@ define('controls/users/User', [
 
                 Body.set('html', '<form>' + result + '</form>');
 
+                // insert the values
+                var attributes = User.getAttributes();
+                var extras     = JSON.decode(attributes.extra);
+
+                FormUtils.setDataToForm(attributes, Body.getElement('form'));
+                FormUtils.setDataToForm(extras, Body.getElement('form'));
+
                 // parse all the controls
                 QUI.parse(Body).then(function () {
                     return ControlUtils.parse(Body);
                 }).then(function () {
 
                     // insert the values
-                    var attributes = User.getAttributes();
-                    var extras     = JSON.decode(attributes.extra);
-
-                    FormUtils.setDataToForm(attributes, Body.getElement('form'));
-                    FormUtils.setDataToForm(extras, Body.getElement('form'));
+                    // var attributes = User.getAttributes();
+                    // var extras     = JSON.decode(attributes.extra);
+                    //
+                    // FormUtils.setDataToForm(attributes, Body.getElement('form'));
+                    // FormUtils.setDataToForm(extras, Body.getElement('form'));
 
                     QUI.Controls.getControlsInElement(Body).each(function (Control) {
                         if (!('setValue' in Control)) {
