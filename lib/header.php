@@ -55,7 +55,6 @@ QUI\Cache\Manager::set('qui_cache_test', 1);
 
 try {
     define('CHECK_CACHE', QUI\Cache\Manager::get('qui_cache_test'));
-
 } catch (QUI\Cache\Exception $e) {
     define('CHECK_CACHE', false);
 }
@@ -77,7 +76,6 @@ foreach ($_GET as $key => $value) {
 // Datenbankverbindung aufbauen
 try {
     QUI::getDataBase();
-
 } catch (\Exception $Exception) {
     header('HTTP/1.1 503 Service Temporarily Unavailable');
     header('Status: 503 Service Temporarily Unavailable');
@@ -93,7 +91,6 @@ try {
 
     try {
         echo $Template->fetch($file);
-
     } catch (QUI\Exception $Exception) {
         echo $Template->fetch(LIB_DIR . 'templates/db_error.html');
     }
@@ -122,17 +119,14 @@ if (isset($_POST['username'])
             $_POST['username'],
             $_POST['password']
         );
-
     } catch (QUI\Exception $Exception) {
         define('LOGIN_FAILED', $Exception->getMessage());
     }
-
 } elseif (QUI::getSession()->get('uid')) {
     try {
         QUI::getUsers()->checkUserSession();
 
         $User = QUI::getUserBySession();
-
     } catch (QUI\Exception $Exception) {
         define('LOGIN_FAILED', $Exception->getMessage());
     }
