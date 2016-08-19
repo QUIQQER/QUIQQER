@@ -48,7 +48,6 @@ class Nginx extends QUI\System\Console\Tool
 
             $this->writeLn('You can find a .nginx Backup File at:');
             $this->writeLn($nginxBackupFile);
-
         } else {
             $this->writeLn(
                 'No .nginx File found. Could not create a backup.',
@@ -156,7 +155,7 @@ server{
         try_files \$uri \$uri/ {$quiqqerUrlDir}index.php?_uri=\$uri&\$query_string;
     
     
-        if ( \$uri !~ ^{$quiqqerUrlDirEscaped}(index\.php|media\/cache\/(.*)|([a-zA-Z-\s0-9_+]*)\.html|([a-zA-Z-\s0-9_+]*)\.txt|favicon\.ico|robots\.txt|image\.php|(.*)\/?bin\/(.*)|(packages\/quiqqer\/quiqqer\/admin\/(image.php|index.php|ajax.php|login.php)?$)|(admin\/(image.php|index.php|ajax.php)?$))) {
+        if ( \$uri !~ ^{$quiqqerUrlDirEscaped}(index\.php|media\/cache\/(.*)|([a-zA-Z-\s0-9_+]*)\.html|([a-zA-Z-\s0-9_+]*)\.txt|favicon\.ico|robots\.txt|image\.php|(.*)\/?bin\/(.*)|packages\/ckeditor\/(.*)|(packages\/quiqqer\/quiqqer\/admin\/(image.php|index.php|ajax.php|login.php)?$)|(admin\/(image.php|index.php|ajax.php)?$))) {
             rewrite ^ {$quiqqerUrlDir}index.php?_url=error=403 last;
         }
         
@@ -164,6 +163,5 @@ server{
 }
 
 NGINX;
-
     }
 }
