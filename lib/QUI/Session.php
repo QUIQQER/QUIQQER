@@ -54,6 +54,11 @@ class Session
     private $table;
 
     /**
+     * @var array
+     */
+    protected $vars = array();
+
+    /**
      * constructor
      */
     public function __construct()
@@ -64,14 +69,14 @@ class Session
         $classNativeSessionStorage = '\Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage';
 
         $fileNativeSessionStorage = OPT_DIR .
-                                    'symfony/http-foundation/Symfony/Component/' .
-                                    'HttpFoundation/Session/Storage/NativeSessionStorage.php';
+            'symfony/http-foundation/Symfony/Component/' .
+            'HttpFoundation/Session/Storage/NativeSessionStorage.php';
 
         $classSession = '\Symfony\Component\HttpFoundation\Session\Session';
 
         $fileSession = OPT_DIR .
-                       'symfony/http-foundation/Symfony/Component/' .
-                       'HttpFoundation/Session/Session.php';
+            'symfony/http-foundation/Symfony/Component/' .
+            'HttpFoundation/Session/Session.php';
 
 
         // options
@@ -122,9 +127,13 @@ class Session
             );
         }
 
-        if (!headers_sent()) {
-            $this->start();
+        if (headers_sent()) {
+            $this->Session = false;
+
+            return;
         }
+
+        $this->start();
     }
 
     /**
@@ -227,6 +236,7 @@ class Session
 
         if ($this->Session->isStarted()) {
             $this->Session->getMetadataBag()->stampNew($this->lifetime);
+
             return;
         }
 
@@ -263,6 +273,8 @@ class Session
     {
         if ($this->Session) {
             $this->Session->set($name, $value);
+        } else {
+            $this->vars[$name] = $value;
         }
     }
 
@@ -287,6 +299,10 @@ class Session
     {
         if ($this->Session) {
             return $this->Session->get($name, false);
+        }
+
+        if (isset($this->vars[$name])) {
+            return $this->vars[$name];
         }
 
         return false;
@@ -338,6 +354,10 @@ class Session
         if ($this->Session) {
             $this->Session->remove($var);
         }
+
+        if (isset($this->vars[$var])) {
+            unset($this->vars[$var]);
+        }
     }
 
     /**
@@ -346,6 +366,8 @@ class Session
     public function destroy()
     {
         if (!$this->Session) {
+            $this->vars = array();
+
             return;
         }
 
