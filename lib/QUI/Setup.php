@@ -29,7 +29,9 @@ class Setup
                 && strpos($_SERVER['argv'][0], 'phpunit') === false)
         ) {
             // nur Super User darf dies
-            Permissions\Permission::checkSU();
+            Permissions\Permission::checkSU(
+                QUI::getUserBySession()
+            );
         }
 
         QUI::getSession()->setup();
