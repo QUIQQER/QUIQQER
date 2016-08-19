@@ -9,6 +9,7 @@ namespace QUI;
 use QUI;
 use QUI\System\Log;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NullSessionHandler;
+use Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage;
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
@@ -129,7 +130,7 @@ class Session
         }
 
         if (headers_sent()) {
-            $this->Storage = new NullSessionHandler();
+            $this->Storage = new MockFileSessionStorage();
             $this->Session = new \Symfony\Component\HttpFoundation\Session\Session($this->Storage);
         }
 
