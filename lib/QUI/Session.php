@@ -130,6 +130,7 @@ class Session
 
         if (headers_sent()) {
             $this->Storage = new NullSessionHandler();
+            $this->Session = new \Symfony\Component\HttpFoundation\Session\Session($this->Storage);
         }
 
         $this->start();
