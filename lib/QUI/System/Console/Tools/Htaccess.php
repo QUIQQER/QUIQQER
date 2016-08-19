@@ -191,6 +191,7 @@ class Htaccess extends QUI\System\Console\Tool
     # quiqqer API allowed requests
     RewriteCond %{REQUEST_URI} !^(.*)bin(.*)$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}media/cache/(.*)$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}packages/ckeditor/(.*)$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}([a-zA-Z-\s0-9_+]*)\.html$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}([a-zA-Z-\s0-9_+]*)\.txt$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}favicon\.ico$
@@ -272,6 +273,7 @@ class Htaccess extends QUI\System\Console\Tool
     # quiqqer API allowed requests
     RewriteCond %{REQUEST_URI} !^(.*)bin(.*)$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}media/cache/(.*)$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}packages/ckeditor/(.*)$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}([a-zA-Z-\s0-9_+]*)\.html$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}([a-zA-Z-\s0-9_+]*)\.txt$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}favicon\.ico$
