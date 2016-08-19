@@ -122,7 +122,9 @@ class Session
             );
         }
 
-        $this->start();
+        if (!headers_sent()) {
+            $this->start();
+        }
     }
 
     /**
