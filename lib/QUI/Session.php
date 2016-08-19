@@ -129,7 +129,7 @@ class Session
         }
 
         if (headers_sent()) {
-            $this->Session = new NullSessionHandler();
+            $this->Storage = new NullSessionHandler();
         }
 
         $this->start();
