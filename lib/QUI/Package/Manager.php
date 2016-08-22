@@ -751,7 +751,6 @@ class Manager extends QUI\QDOM
         // minimum-stability
         if ($quiqqer && $version == 'dev-dev') {
             $json['minimum-stability'] = 'dev';
-            $json['prefer-stable']     = true;
         } else {
             if ($quiqqer) {
                 $json['minimum-stability'] = 'stable';
