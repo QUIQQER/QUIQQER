@@ -57,7 +57,8 @@
     "quiqqer/messages": "*@dev",
     "quiqqer/meta": "*@dev",
     "bower-asset/intl": "1.*",
-    "bower-asset/nouislider": "8.5.*"
+    "bower-asset/nouislider": "8.5.*",
+    "npm-asset/mustache": "2.*"
   },
   "require-dev": {
     "mikey179/vfsStream": "1.*"
