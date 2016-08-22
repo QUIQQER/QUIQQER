@@ -657,11 +657,9 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function firstImage()
     {
-        $result = $this->getImages(
-            array(
-                'limit' => 1
-            )
-        );
+        $result = $this->getImages(array(
+            'limit' => 1
+        ));
 
         if (isset($result[0])) {
             return $result[0];
@@ -799,7 +797,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         $dbQuery['order'] = $order;
-        
+
         // database
         $fetch  = QUI::getDataBase()->fetch($dbQuery);
         $result = array();
