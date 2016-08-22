@@ -57,7 +57,7 @@
     "quiqqer/messages": "*@dev",
     "quiqqer/meta": "*@dev",
     "bower-asset/intl": "1.*@dev",
-    "bower-asset/nouislider": "8.5.*@dev",
+    "bower-asset/nouislider": "^8.5.*",
     "npm-asset/mustache": "2.*@dev"
   },
   "require-dev": {
