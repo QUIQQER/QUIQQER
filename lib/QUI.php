@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file contains QUI\QUI
+ * This file contains QUI
  */
 
 use \Symfony\Component\HttpFoundation\Cookie;
@@ -260,6 +260,7 @@ class QUI
 
         if (file_exists($var_dir . 'last_update')) {
             self::$last_up_date = file_get_contents($var_dir . 'last_update');
+
         } else {
             self::$last_up_date = time();
         }
@@ -523,6 +524,7 @@ class QUI
         try {
             $vhosts       = self::getConfig('etc/vhosts.ini.php');
             self::$vhosts = $vhosts->toArray();
+
         } catch (\QUI\Exception $Exception) {
             self::$vhosts = array();
         }
@@ -998,7 +1000,7 @@ class QUI
     public static function getUsers()
     {
         if (self::$Users === null) {
-            self::$Users = new QUI\Users\Manager();
+            self::$Users = new \QUI\Users\Manager();
         }
 
         return self::$Users;
@@ -1007,7 +1009,7 @@ class QUI
     /**
      * Get current logged in user
      *
-     * @return \QUI\Interfaces\Users\User
+     * @return \QUI\Users\User
      * @uses \QUI\Users\Manager
      */
     public static function getUserBySession()
