@@ -289,10 +289,12 @@ class Manager extends QUI\QDOM
 
         // config
         $composerJson->config = array(
-            "vendor-dir"    => OPT_DIR,
-            "cache-dir"     => $this->vardir,
-            "component-dir" => OPT_DIR . 'bin',
-            "quiqqer-dir"   => CMS_DIR
+            "vendor-dir"        => OPT_DIR,
+            "cache-dir"         => $this->vardir,
+            "component-dir"     => OPT_DIR . 'bin',
+            "quiqqer-dir"       => CMS_DIR,
+            "minimum-stability" => 'dev',
+            "secure-http"       => false
         );
 
         $composerJson->extra = array(
