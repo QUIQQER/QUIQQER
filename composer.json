@@ -57,7 +57,7 @@
     "quiqqer/messages": "*@dev",
     "quiqqer/meta": "*@dev",
     "bower-asset/intl": "1.*",
-    "bower-asset/nouislider": "8.*"
+    "bower-asset/nouislider": "*"
   },
   "minimum-stability": "dev",
   "require-dev": {
