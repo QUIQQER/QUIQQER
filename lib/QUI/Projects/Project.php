@@ -225,6 +225,11 @@ class Project
             $this->template = $template;
         }
 
+        // defaults
+        if (!isset($this->config['adminSitemapMax']) || !$this->config['adminSitemapMax']) {
+            $this->config['adminSitemapMax'] = 20;
+        }
+
         // vhosts
         $vhosts = QUI::vhosts();
 
