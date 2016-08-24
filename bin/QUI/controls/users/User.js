@@ -277,7 +277,6 @@ define('controls/users/User', [
                         }
                     });
 
-
                     // password save
                     var PasswordField  = Body.getElement('input[name="password2"]'),
                         PasswordExpire = Body.getElements('input[name="expire"]'),

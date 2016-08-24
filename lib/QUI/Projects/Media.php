@@ -139,7 +139,7 @@ class Media extends QUI\QDOM
     /**
      * Return the Placeholder of the media
      *
-     * @return QUI\Projects\Media\Image|string
+     * @return QUI\Projects\Media\Image|false
      */
     public function getPlaceholderImage()
     {

@@ -783,10 +783,6 @@ class User implements QUI\Interfaces\Users\User
     public function getAttribute($var)
     {
         if (isset($this->settings[$var])) {
-            if ($var == 'avatar') {
-                return URL_DIR . 'media/users/' . $this->settings[$var];
-            }
-
             return $this->settings[$var];
         }
 
@@ -808,8 +804,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function getAttributes()
     {
-        $params = $this->settings;
-
+        $params            = $this->settings;
         $params['id']      = $this->getId();
         $params['active']  = $this->active;
         $params['deleted'] = $this->deleted;
@@ -821,6 +816,14 @@ class User implements QUI\Interfaces\Users\User
         $params['username']    = $this->getUsername();
         $params['extras']      = $this->extra;
         $params['hasPassword'] = empty($this->password) ? 0 : 1;
+        $params['avatar']      = '';
+
+        try {
+            $Image = QUI\Projects\Media\Utils::getImageByUrl($this->getAttribute('avatar'));
+
+            $params['avatar'] = $Image->getUrl();
+        } catch (QUI\Exception $Exception) {
+        }
 
         return $params;
     }
@@ -830,21 +833,28 @@ class User implements QUI\Interfaces\Users\User
      *
      * @see QUI\Interfaces\Users\User::getAvatar()
      *
-     * @param boolean $url - get the avatar with the complete url string
-     *
-     * @return string
+     * @return QUI\Projects\Media\Image|false
      */
-    public function getAvatar($url = false)
+    public function getAvatar()
     {
-        if (isset($this->settings["avatar"])) {
-            if ($url == true) {
-                return URL_DIR . 'media/users/' . $this->settings["avatar"];
-            }
+        $avatar = $this->getAttribute('avatar');
 
-            return $this->settings["avatar"];
+        if (!QUI\Projects\Media\Utils::isMediaUrl($avatar)) {
+            $Project = QUI::getProjectManager()->getStandard();
+            $Media   = $Project->getMedia();
+
+            return $Media->getPlaceholderImage();
         }
 
-        return false;
+        try {
+            return QUI\Projects\Media\Utils::getImageByUrl($avatar);
+        } catch (QUI\Exception $Exception) {
+        }
+
+        $Project = QUI::getProjectManager()->getStandard();
+        $Media   = $Project->getMedia();
+
+        return $Media->getPlaceholderImage();
     }
 
     /**
@@ -1115,6 +1125,14 @@ class User implements QUI\Interfaces\Users\User
             }
         }
 
+        $avatar = '';
+
+        if ($this->getAttribute('avatar')
+            && QUI\Projects\Media\Utils::isMediaUrl($this->getAttribute('avatar'))
+        ) {
+            $avatar = $this->getAttribute('avatar');
+        }
+
         // Pluginerweiterungen - onSave Event
         $extra      = array();
         $attributes = $this->getListOfExtraAttributes();
@@ -1139,7 +1157,7 @@ class User implements QUI\Interfaces\Users\User
                 'usertitle' => $this->getAttribute('usertitle'),
                 'birthday'  => $birthday,
                 'email'     => $this->getAttribute('email'),
-                'avatar'    => $this->getAvatar(),
+                'avatar'    => $avatar,
                 'su'        => $this->isSU(),
                 'extra'     => json_encode($extra),
                 'lang'      => $this->getAttribute('lang'),

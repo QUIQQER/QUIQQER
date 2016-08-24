@@ -339,6 +339,25 @@
             <de><![CDATA[Ist deaktiviert]]></de>
             <en><![CDATA[Is deactivate]]></en>
         </locale>
+
+        <locale name="user.panel.details">
+            <de><![CDATA[Details]]></de>
+            <en><![CDATA[Details]]></en>
+        </locale>
+        <locale name="user.panel.password">
+            <de><![CDATA[Passwort & Sicherheit]]></de>
+            <en><![CDATA[Password & Security]]></en>
+        </locale>
+        <locale name="user.panel.personalData">
+            <de><![CDATA[Persönliche Daten / Adressen]]></de>
+            <en><![CDATA[personal data / Adresses]]></en>
+        </locale>
+        <locale name="user.panel.avatar">
+            <de><![CDATA[Benutzerbild]]></de>
+            <en><![CDATA[User Avatar]]></en>
+        </locale>
+
+
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">

@@ -33,9 +33,9 @@ class Utils
         ));
 
         DOM::addTabsToToolbar(
-            XML::getTabsFromXml(LIB_DIR . 'xml/user.xml'),
+            XML::getTabsFromXml(OPT_DIR . 'quiqqer/quiqqer/user.xml'),
             $Tabbar,
-            'pcsg'
+            'quiqqer/quiqqer'
         );
 
         if (!$User->getId()) {
@@ -48,6 +48,10 @@ class Utils
         $list = QUI::getPackageManager()->getInstalled();
 
         foreach ($list as $entry) {
+            if ($entry['name'] == 'quiqqer/quiqqer') {
+                continue;
+            }
+
             $userXml = OPT_DIR . $entry['name'] . '/user.xml';
 
             if (!file_exists($userXml)) {
@@ -57,7 +61,7 @@ class Utils
             DOM::addTabsToToolbar(
                 XML::getTabsFromXml($userXml),
                 $Tabbar,
-                'plugin.' . $entry['name']
+                $entry['name']
             );
         }
 

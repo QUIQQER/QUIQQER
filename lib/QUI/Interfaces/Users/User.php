@@ -201,11 +201,9 @@ interface User
     /**
      * Returns the avatar of the user
      *
-     * @param boolean $url - get the avatar with the complete url string
-     *
-     * @return string
+     * @return \QUI\Projects\Media\Image|false
      */
-    public function getAvatar($url = false);
+    public function getAvatar();
 
     /**
      * Set the password of the user

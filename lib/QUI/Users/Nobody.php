@@ -453,13 +453,14 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::getAvatar()
      *
-     * @param boolean $url - get the avatar with the complete url string
-     *
-     * @return boolean
+     * @return \QUI\Projects\Media\Image|false
      */
-    public function getAvatar($url = false)
+    public function getAvatar()
     {
-        return false;
+        $Project = QUI::getProjectManager()->getStandard();
+        $Media   = $Project->getMedia();
+
+        return $Media->getPlaceholderImage();
     }
 
     /**
