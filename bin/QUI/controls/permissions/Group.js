@@ -70,21 +70,21 @@ define('controls/permissions/Group', [
                     equation: 'ease-in-out',
                     callback: function () {
 
-                        require(['controls/groups/Input'], function (Input) {
+                        require(['controls/groups/Select'], function (Select) {
                             Container.set(
                                 'html',
                                 '<h2>' + QUILocale.get(lg, 'permissions.panel.select.group.title') + '</h2>'
                             );
 
-                            self.$Input = new Input({
+                            self.$Input = new Select({
                                 max     : 1,
                                 multible: false,
                                 styles  : {
                                     margin: '0 auto',
-                                    width : 200
+                                    width : 300
                                 },
                                 events  : {
-                                    onAdd: function (GroupSearch, groupid) {
+                                    onAddItem: function (GroupSearch, groupid) {
                                         require(['Groups'], function (Groups) {
                                             self.$Bind = Groups.get(groupid);
 

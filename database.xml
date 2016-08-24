@@ -35,7 +35,6 @@
         <table name="groups">
             <field type="INT(11) NOT NULL">id</field>
             <field type="VARCHAR(50) NOT NULL">name</field>
-            <field type="TINYINT(2) NOT NULL">admin</field>
             <field type="INT(11) NOT NULL">parent</field>
             <field type="TINYINT(1) NOT NULL">active</field>
             <field type="VARCHAR(128)">toolbar</field>

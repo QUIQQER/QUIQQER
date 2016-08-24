@@ -172,7 +172,9 @@ define('controls/groups/Group', [
 
             require(['controls/permissions/Panel'], function (PermPanel) {
                 Parent.appendChild(
-                    new PermPanel(null, Group)
+                    new PermPanel({
+                        Object: Group
+                    })
                 );
             });
         },

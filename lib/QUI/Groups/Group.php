@@ -239,8 +239,6 @@ class Group extends QUI\QDOM
             array(
                 'name'    => $this->getAttribute('name'),
                 'toolbar' => $this->getAttribute('toolbar'),
-                'admin'   => $this->rootid == $this->getId() ? 1
-                    : (int)$this->getAttribute('admin'),
                 'rights'  => json_encode($this->rights)
             ),
             array('id' => $this->getId())
