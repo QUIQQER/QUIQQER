@@ -30,7 +30,7 @@ define('controls/permissions/Group', [
         initialize: function (Group, options) {
             this.parent(Group, options);
 
-            if (typeOf(Group) === 'classes/users/Group') {
+            if (typeOf(Group) === 'classes/groups/Group') {
                 this.$Bind = Group;
             }
 
