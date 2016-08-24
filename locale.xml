@@ -330,6 +330,15 @@
             <de><![CDATA[Deaktivieren]]></de>
             <en><![CDATA[Deactivate]]></en>
         </locale>
+
+        <locale name="isActivate">
+            <de><![CDATA[Ist aktiviert]]></de>
+            <en><![CDATA[Is activate]]></en>
+        </locale>
+        <locale name="isDeactivate">
+            <de><![CDATA[Ist deaktiviert]]></de>
+            <en><![CDATA[Is deactivate]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
