@@ -251,30 +251,32 @@ define('classes/users/Manager', [
          *
          * @method classes/users/Manager#deleteUsers
          * @param {Array} uids          - User-IDs
-         * @param {Function} [onfinish] - (optional), callback function
          * @param {Object} [params]     - (optional), extra params
+         * @param {Function} [onfinish] - (optional), callback function
          */
-        deleteUsers: function (uids, onfinish, params) {
-            var self = this;
+        deleteUsers: function (uids, params, onfinish) {
+            return new Promise(function (resolve) {
+                params = ObjectUtils.combine(params, {
+                    uid: JSON.encode(uids)
+                });
 
-            params = ObjectUtils.combine(params, {
-                uid: JSON.encode(uids)
-            });
-
-            Ajax.post('ajax_users_delete', function (result, Request) {
-                for (var i = 0, len = uids.length; i < len; i++) {
-                    if (typeof self.$users[uids[i]] !== 'undefined') {
-                        delete self.$users[uids[i]];
+                Ajax.post('ajax_users_delete', function (result) {
+                    for (var i = 0, len = uids.length; i < len; i++) {
+                        if (typeof this.$users[uids[i]] !== 'undefined') {
+                            delete this.$users[uids[i]];
+                        }
                     }
-                }
 
-                self.fireEvent('delete', [self, uids]);
+                    this.fireEvent('delete', [this, uids]);
 
-                if (typeof onfinish !== 'undefined') {
-                    onfinish(result, Request);
-                }
+                    if (typeof onfinish !== 'undefined') {
+                        onfinish(result);
+                    }
 
-            }, params);
+                    resolve(result);
+
+                }.bind(this), params);
+            }.bind(this));
         },
 
         /**

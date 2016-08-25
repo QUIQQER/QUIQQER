@@ -356,8 +356,26 @@
             <de><![CDATA[Benutzerbild]]></de>
             <en><![CDATA[User Avatar]]></en>
         </locale>
-
-
+        <locale name="user.panel.editorToolbar">
+            <de><![CDATA[Editor-Toolbar]]></de>
+            <en><![CDATA[Editor toolbar]]></en>
+        </locale>
+        <locale name="user.panel.userlanguage">
+            <de><![CDATA[Benutzersprache]]></de>
+            <en><![CDATA[User language]]></en>
+        </locale>
+        <locale name="user.panel.lastChanged">
+            <de><![CDATA[Zuletzte geändert am]]></de>
+            <en><![CDATA[Last changed at]]></en>
+        </locale>
+        <locale name="user.panel.lastLogin">
+            <de><![CDATA[Letzter Login]]></de>
+            <en><![CDATA[Last login]]></en>
+        </locale>
+        <locale name="user.panel.browser">
+            <de><![CDATA[Browser User-Agent]]></de>
+            <en><![CDATA[Browser User-Agent]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -474,6 +492,10 @@
         <locale name="control.groups.select.search.field.placeholder">
             <de><![CDATA[Suche nach einer Gruppe ...]]></de>
             <en><![CDATA[Search for a group ...]]></en>
+        </locale>
+        <locale name="message.user.has.no.password">
+            <de><![CDATA[Der Benutzer besitzt noch kein Passwort]]></de>
+            <en><![CDATA[The user has no password]]></en>
         </locale>
 
     </groups>
@@ -630,6 +652,10 @@
         <locale name="group">
             <de><![CDATA[Gruppe]]></de>
             <en><![CDATA[Group]]></en>
+        </locale>
+        <locale name="groups">
+            <de><![CDATA[Gruppen]]></de>
+            <en><![CDATA[Groups]]></en>
         </locale>
         <locale name="groupname">
             <de><![CDATA[Gruppenname]]></de>
@@ -2359,12 +2385,12 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[User: [username]]]></en>
         </locale>
         <locale name="users.user.btn.save">
-            <de><![CDATA[Änderungen speichern]]></de>
-            <en><![CDATA[Save changes]]></en>
+            <de><![CDATA[Speichern]]></de>
+            <en><![CDATA[Save]]></en>
         </locale>
         <locale name="users.user.btn.delete">
-            <de><![CDATA[Benutzer löschen]]></de>
-            <en><![CDATA[Delete user]]></en>
+            <de><![CDATA[Löschen]]></de>
+            <en><![CDATA[Delete]]></en>
         </locale>
         <locale name="users.user.btn.permissions.title">
             <de><![CDATA[Benutzer Zugriffsrechte einstellen]]></de>

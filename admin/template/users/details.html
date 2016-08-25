@@ -3,67 +3,44 @@
     <thead>
         <tr>
             <th colspan="2">
-                {title text="Status"}
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr class="{cycle values="odd,even"}">
-            <td style="width: 30px">
-               <input type="radio" name="active" value="1" class="noborder" />
-            </td>
-            <td>Aktiviert</td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td><input type="radio" name="active" value="0" class="noborder" /></td>
-            <td>Deaktiviert</td>
-        </tr>
-    </tbody>
-</table>
-
-
-<table class="data-table">
-    <thead>
-        <tr>
-            <th colspan="2">
-                {title text="Details"}
+                {locale group="quiqqer/quiqqer" var="user.panel.details"}
             </th>
         </tr>
     </thead>
 
     <tbody>
         <tr class="{cycle values="odd,even"}">
-            <td style="width: 150px">Benutzer-ID</td>
+            <td style="width: 150px">{locale group="quiqqer/system" var="user_id"}</td>
             <td><input type="text" name="id" value="" disabled="disabled" /></td>
         </tr>
         <tr class="{cycle values="odd,even"}">
-            <td>Super User</td>
+            <td>{locale group="quiqqer/quiqqer" var="permission.quiqqer.su"}</td>
             <td><input type="checkbox" name="su" class="noborder" /></td>
         </tr>
         <tr class="{cycle values="odd,even"}">
-            <td>Benutzername</td>
+            <td>{locale group="quiqqer/system" var="username"}</td>
             <td><input type="text" name="username" value="" /></td>
         </tr>
         <tr class="{cycle values="odd,even"}">
-            <td>E-Mail</td>
+            <td>{locale group="quiqqer/system" var="email"}</td>
             <td><input type="text" name="email" value="" /></td>
         </tr>
         <tr class="{cycle values="odd,even"}">
-            <td>Avatar</td>
+            <td>{locale group="quiqqer/quiqqer" var="user.panel.avatar"}</td>
             <td><input type="text" name="avatar" class="media-image" /></td>
         </tr>
         <tr class="{cycle values="odd,even"}">
-            <td>Gruppe</td>
+            <td>{locale group="quiqqer/system" var="groups"}</td>
             <td>
                 <input type="text" name="usergroup" value="" data-qui="controls/groups/Select" />
             </td>
         </tr>
         <tr class="{cycle values="odd,even"}">
-            <td>Editor Toolbar</td>
+            <td>{locale group="quiqqer/quiqqer" var="user.panel.editorToolbar"}</td>
             <td></td>
         </tr>
         <tr class="{cycle values="odd,even"}">
-            <td>Benutzer-Sprache</td>
+            <td>{locale group="quiqqer/quiqqer" var="user.panel.userlanguage"}</td>
             <td>
                 <select name="lang">
                 {assign var=langs value=$QUI->availableLanguages()}
@@ -80,21 +57,21 @@
     <thead>
         <tr>
             <th colspan="2">
-                {title text="Daten"}
+                {locale group="quiqqer/system" var="data"}
             </th>
         </tr>
     </thead>
     <tbody>
         <tr class="{cycle values="odd,even" reset="1"}">
-            <td>Zuletzte geändert am</td>
+            <td>{locale group="quiqqer/quiqqer" var="user.panel.lastChanged"}</td>
             <td><input type="text" name="lastedit" value="" disabled="disabled" /></td>
         </tr>
         <tr class="{cycle values="odd,even"}">
-            <td style="width: 150px">Letzter Login</td>
+            <td style="width: 150px">{locale group="quiqqer/quiqqer" var="user.panel.lastLogin"}</td>
             <td><input type="text" name="lastvisit" value="" disabled="disabled" /></td>
         </tr>
         <tr class="{cycle values="odd,even"}">
-            <td style="width: 150px">Browser User-Agent</td>
+            <td style="width: 150px">{locale group="quiqqer/quiqqer" var="user.panel.browser"}</td>
             <td><input type="text" name="user_agent" value="" disabled="disabled" /></td>
         </tr>
 

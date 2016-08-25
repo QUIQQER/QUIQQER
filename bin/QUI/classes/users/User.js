@@ -272,10 +272,7 @@ define('classes/users/User', [
             if (pass1 != pass2) {
                 QUI.getMessageHandler(function (MH) {
                     MH.addError(
-                        Locale.get(
-                            'quiqqer/system',
-                            'exception.user.wrong.passwords'
-                        )
+                        Locale.get('quiqqer/system', 'exception.user.wrong.passwords')
                     );
                 });
 
