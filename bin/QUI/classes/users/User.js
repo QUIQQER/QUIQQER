@@ -307,7 +307,7 @@ define('classes/users/User', [
                 return 0;
             }
 
-            return (this.getAttribute('active')).toInt();
+            return parseInt(this.getAttribute('active'));
         },
 
         /**
