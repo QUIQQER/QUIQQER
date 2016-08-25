@@ -120,6 +120,7 @@ define('Ajax', [
                             // maintenance?
                             if (this in self.$onprogress &&
                                 "$result" in self.$onprogress[this] &&
+                                self.$onprogress[this].$result &&
                                 "maintenance" in self.$onprogress[this].$result &&
                                 self.$onprogress[this].$result.maintenance
                             ) {
@@ -129,6 +130,7 @@ define('Ajax', [
 
                             if (this in self.$onprogress &&
                                 "$result" in self.$onprogress[this] &&
+                                self.$onprogress[this].$result &&
                                 self.$onprogress[this].$result.jsCallbacks
                             ) {
                                 self.$triggerGlobalJavaScriptCallback(

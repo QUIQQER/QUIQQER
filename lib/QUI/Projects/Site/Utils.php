@@ -709,11 +709,25 @@ class Utils
                 'value' => $ids
             );
 
+            if (isset($params['count']) && $params['count']) {
+                return $Project->getSitesIds(array(
+                    'count' => true,
+                    'where' => $where
+                ));
+            }
+
             // by with parents, we use WHERE AND
             return $Project->getSites(array(
                 'where' => $where,
                 'limit' => $limit,
                 'order' => $order
+            ));
+        }
+
+        if (isset($params['count']) && $params['count']) {
+            return $Project->getSitesIds(array(
+                'count' => true,
+                'where' => $where
             ));
         }
 
