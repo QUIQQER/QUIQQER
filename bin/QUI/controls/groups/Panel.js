@@ -110,6 +110,8 @@ define('controls/groups/Panel', [
 
             Groups.addEvents({
                 onSwitchStatus: this.$onSwitchStatus,
+                onActivate    : this.$onSwitchStatus,
+                onDeactivate  : this.$onSwitchStatus,
                 onDelete      : this.$onDeleteGroup,
                 onRefresh     : this.$onRefreshGroup
             });
@@ -400,9 +402,12 @@ define('controls/groups/Panel', [
             var self = this;
 
             new GroupSitemapWindow({
-                title : Locale.get(lg, 'groups.panel.create.window.title'),
-                text  : Locale.get(lg, 'groups.panel.create.window.sitemap.text'),
-                events: {
+                title      : Locale.get(lg, 'groups.panel.create.window.title'),
+                text       : Locale.get(lg, 'groups.panel.create.window.sitemap.text'),
+                information: Locale.get(lg, 'groups.panel.create.window.sitemap.information'),
+                maxWidth   : 400,
+                maxHeight  : 600,
+                events     : {
                     // now we need a groupname
                     onSubmit: function (Win, result) {
                         if (!result.length) {
@@ -410,13 +415,15 @@ define('controls/groups/Panel', [
                         }
 
                         new QUIPrompt({
-                            title : Locale.get(lg, 'groups.panel.create.window.new.group.title'),
-                            icon  : 'fa fa-group',
-                            height: 220,
-                            width : 450,
-                            text  : Locale.get(lg, 'groups.panel.create.window.new.group.text'),
-                            pid   : result[0],
-                            events: {
+                            title      : Locale.get(lg, 'groups.panel.create.window.new.group.title'),
+                            text       : Locale.get(lg, 'groups.panel.create.window.new.group.text'),
+                            information: Locale.get(lg, 'groups.panel.create.window.new.group.information'),
+                            icon       : 'fa fa-group',
+                            titleicon  : false,
+                            maxWidth   : 400,
+                            maxHeight  : 400,
+                            pid        : result[0],
+                            events     : {
                                 onDrawEnd: function (Win) {
                                     Win.getBody().getElement('input').focus();
                                 },
@@ -424,16 +431,11 @@ define('controls/groups/Panel', [
                                 onSubmit: function (result, Win) {
                                     Win.Loader.show();
 
-                                    Groups.createGroup(
-                                        result,
-                                        Win.getAttribute('pid'),
-                                        function (newgroupid) {
-                                            self.load();
-                                            self.openGroup(newgroupid);
-
-                                            Win.close();
-                                        }
-                                    );
+                                    Groups.createGroup(result, Win.getAttribute('pid')).then(function (newgroupid) {
+                                        self.load();
+                                        self.openGroup(newgroupid);
+                                        Win.close();
+                                    });
                                 }
                             }
                         }).open();
@@ -621,7 +623,7 @@ define('controls/groups/Panel', [
                 page          : this.getAttribute('page'),
                 search        : this.getAttribute('search'),
                 searchSettings: this.getAttribute('searchfields')
-            }, function (result) {
+            }).then(function (result) {
                 var i, len, data, admin;
 
                 var Grid = self.getGrid();
@@ -718,11 +720,13 @@ define('controls/groups/Panel', [
                 // group is active
                 if (status == 1) {
                     Status.setAttribute('title', this.getAttribute('active_text'));
+                    Status.setSilentOn();
                     continue;
                 }
 
                 // group is deactive
                 Status.setAttribute('title', this.getAttribute('deactive_text'));
+                Status.setSilentOff();
             }
         },
 
@@ -844,20 +848,24 @@ define('controls/groups/Panel', [
 
             new QUIConfirm({
                 name       : 'DeleteGroups',
-                icon       : URL_BIN_DIR + '16x16/trashcan_full.png',
-                texticon   : URL_BIN_DIR + '32x32/trashcan_full.png',
+                icon       : 'fa fa-trash-o',
+                texticon   : 'fa fa-trash-o',
                 title      : Locale.get(lg, 'groups.panel.delete.window.title'),
                 text       : Locale.get(lg, 'groups.panel.delete.window.text') + '<br /><br />' + gids.join(', '),
                 information: Locale.get(lg, 'groups.panel.delete.window.information'),
-
-                maxWidth : 450,
-                maxHeight: 300,
-                gids     : gids,
-                events   : {
+                ok_button  : {
+                    text     : Locale.get(lg, 'delete'),
+                    textimage: 'fa fa-trash'
+                },
+                maxWidth   : 600,
+                maxHeight  : 400,
+                autoclose  : false,
+                events     : {
                     onSubmit: function (Win) {
-                        Groups.deleteGroups(
-                            Win.getAttribute('gids')
-                        );
+                        Win.Loader.show();
+                        Groups.deleteGroups(gids).then(function () {
+                            Win.close();
+                        });
                     }
                 }
             }).open();

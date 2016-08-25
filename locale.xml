@@ -1958,8 +1958,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[The group will be completely removed from the system and can not be restored]]></en>
         </locale>
         <locale name="groups.group.btn.save">
-            <de><![CDATA[Änderungen speichern]]></de>
-            <en><![CDATA[Save changes]]></en>
+            <de><![CDATA[Speichern]]></de>
+            <en><![CDATA[Save]]></en>
         </locale>
         <locale name="groups.group.btn.delete">
             <de><![CDATA[Gruppe löschen]]></de>
@@ -2019,7 +2019,11 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Gruppe erstellen]]></de>
             <en><![CDATA[Create group]]></en>
         </locale>
-        <locale name="groups.panel.create.window.sitemap.text">
+        <locale name="groups.panel.create.window.text">
+            <de><![CDATA[Neue Gruppe erstellen]]></de>
+            <en><![CDATA[Create new group]]></en>
+        </locale>
+        <locale name="groups.panel.create.window.sitemap.information">
             <de><![CDATA[Unter welcher Gruppe soll die neue Gruppe angelegt werden?]]></de>
             <en><![CDATA[Under which group should the new group to be created?]]></en>
         </locale>
@@ -2028,6 +2032,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[New group name]]></en>
         </locale>
         <locale name="groups.panel.create.window.new.group.text">
+            <de><![CDATA[Neuer Gruppennamen]]></de>
+            <en><![CDATA[New group name]]></en>
+        </locale>
+        <locale name="groups.panel.create.window.new.group.information">
             <de><![CDATA[Bitte geben Sie den neuen Gruppennamen an]]></de>
             <en><![CDATA[Please enter the new group name in]]></en>
         </locale>
@@ -2052,7 +2060,11 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Gruppenauswahl]]></de>
             <en><![CDATA[Group selection]]></en>
         </locale>
-        <locale name="groups.sitemap.window.text">
+        <locale name="groups.sitemap.window.title">
+            <de><![CDATA[Gruppenauswahl]]></de>
+            <en><![CDATA[Group selection]]></en>
+        </locale>
+        <locale name="groups.sitemap.window.information">
             <de><![CDATA[Wählen Sie bitte eine Gruppe aus]]></de>
             <en><![CDATA[Please choose a group.]]></en>
         </locale>
