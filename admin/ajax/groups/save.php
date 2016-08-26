@@ -28,9 +28,11 @@ QUI::$Ajax->registerFunction(
             }
         }
 
-        // #locale
         QUI::getMessagesHandler()->addSuccess(
-            'Die Gruppe ' . $Group->getAttribute('name') . ' wurde erfolgreich gespeichert'
+            QUI::getLocale()->get('quiqqer/quiqqer', 'message.group.saved', array(
+                'groupname' => $Group->getName(),
+                'id'        => $Group->getId()
+            ))
         );
     },
     array('gid', 'attributes', 'rights'),

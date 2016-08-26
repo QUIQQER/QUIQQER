@@ -376,6 +376,14 @@
             <de><![CDATA[Browser User-Agent]]></de>
             <en><![CDATA[Browser User-Agent]]></en>
         </locale>
+        <locale name="message.user.saved" html="true">
+            <de><![CDATA[Der Benutzer <b>[username] #[id]</b> wurde erfolgreich gespeichert.]]></de>
+            <en><![CDATA[The user <b>[username] #[id]</b> successfully saved.]]></en>
+        </locale>
+        <locale name="message.group.saved" html="true">
+            <de><![CDATA[Die Gruppe <b>[groupname] #[id]</b> wurde erfolgreich gespeichert.]]></de>
+            <en><![CDATA[The group <b>[groupname] #[id]</b> successfully saved.]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -497,7 +505,6 @@
             <de><![CDATA[Der Benutzer besitzt noch kein Passwort]]></de>
             <en><![CDATA[The user has no password]]></en>
         </locale>
-
     </groups>
 
     <groups name="quiqqer/system" datatype="js,php">
@@ -5390,10 +5397,14 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[The code for the activation is not correct.]]></en>
         </locale>
         <locale name="exception.lib.user.activasion.no.groups">
-            <de>
-                <![CDATA[Der Benutzer ist noch keiner Gruppe zugeordnet. Ein Benutzer muss mindestens einer Gruppe zugeordnet sein.]]></de>
-            <en>
-                <![CDATA[The is no group assigned to the user. A user must have at least one group assigned to him.]]></en>
+            <de><![CDATA[
+            Der Benutzer ist noch keiner Gruppe zugeordnet.
+            Ein Benutzer muss mindestens einer Gruppe zugeordnet sein.
+            ]]></de>
+            <en><![CDATA[
+            The is no group assigned to the user.
+            A user must have at least one group assigned to him.
+            ]]></en>
         </locale>
         <locale name="exception.lib.user.activasion.no.password">
             <de><![CDATA[Dem Benutzer wurde noch kein Passwort gesetzt.

@@ -120,7 +120,6 @@ class Group extends QUI\QDOM
      * Deletes the group and sub-groups
      *
      * @todo alle Beziehungen in den Seiten müssen neu gesetzt werden
-     * @return boolean
      * @throws QUI\Exception
      */
     public function delete()
@@ -199,16 +198,15 @@ class Group extends QUI\QDOM
      *
      * @param string $key - Attribute name
      * @param string|boolean|integer|array $value - value
-     *
-     * @return boolean
+     * @return Group
      */
     public function setAttribute($key, $value)
     {
-        if ($key == 'id') {
-            return false;
+        if ($key != 'id') {
+            parent::setAttribute($key, $value);
         }
 
-        return parent::setAttribute($key, $value);
+        return $this;
     }
 
     /**
@@ -219,6 +217,16 @@ class Group extends QUI\QDOM
     public function getId()
     {
         return $this->getAttribute('id');
+    }
+
+    /**
+     * Return the group name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->getAttribute('name');
     }
 
     /**
