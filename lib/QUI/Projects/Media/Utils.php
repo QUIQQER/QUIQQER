@@ -47,7 +47,7 @@ class Utils
             );
         }
 
-        if ($Item->getType() == 'QUI\\Projects\\Media\\Folder') {
+        if ($Item->getType() == QUI\Projects\Media\Folder::class) {
             /* @var $Item \QUI\Projects\Media\Folder */
             return array(
                 'icon'          => 'fa fa-folder-o',
@@ -75,8 +75,7 @@ class Utils
             'name'      => $Item->getAttribute('name'),
             'title'     => $Item->getAttribute('title'),
             'short'     => $Item->getAttribute('short'),
-            'type'      => $Item->getType() === 'QUI\\Projects\\Media\\Image'
-                ? 'image' : 'file',
+            'type'      => $Item->getType() === QUI\Projects\Media\Image::class ? 'image' : 'file',
             'url'       => $Item->getUrl(),
             'active'    => $Item->isActive(),
             'e_date'    => $Item->getAttribute('e_date'),
@@ -241,6 +240,7 @@ class Utils
             throw new QUI\Exception('Its not an image');
         }
 
+        /* @var $Obj QUI\Projects\Media\Image */
         return $Obj;
     }
 
@@ -609,7 +609,7 @@ class Utils
             return false;
         }
 
-        if ($Unknown->getType() === 'QUI\\Projects\\Media\\Folder') {
+        if ($Unknown->getType() === QUI\Projects\Media\Folder::class) {
             return true;
         }
 
@@ -633,7 +633,7 @@ class Utils
             return false;
         }
 
-        if ($Unknown->getType() === 'QUI\\Projects\\Media\\Image') {
+        if ($Unknown->getType() === QUI\Projects\Media\Image::class) {
             return true;
         }
 
@@ -664,7 +664,7 @@ class Utils
      *
      * @param string $url - cache url, or real path of the file
      *
-     * @return \QUI\Projects\Media\Item
+     * @return \QUI\Interfaces\Projects\Media\File
      * @throws QUI\Exception
      */
     public static function getElement($url)
