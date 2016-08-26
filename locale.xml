@@ -384,6 +384,14 @@
             <de><![CDATA[Die Gruppe <b>[groupname] #[id]</b> wurde erfolgreich gespeichert.]]></de>
             <en><![CDATA[The group <b>[groupname] #[id]</b> successfully saved.]]></en>
         </locale>
+        <locale name="message.group.deleted" html="true">
+            <de><![CDATA[Die Gruppe <b>[groupname] #[id]</b> wurde erfolgreich gelöscht.]]></de>
+            <en><![CDATA[The group <b>[groupname] #[id]</b> successfully deleted.]]></en>
+        </locale>
+        <locale name="message.groups.deleted" html="true">
+            <de><![CDATA[Die Gruppen <b>[groups]</b> wurde erfolgreich gespeichert.]]></de>
+            <en><![CDATA[The groups <b>[groups]</b> successfully deleted.]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">

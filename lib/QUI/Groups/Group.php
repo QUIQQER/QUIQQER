@@ -94,7 +94,7 @@ class Group extends QUI\QDOM
 
         if (!isset($result[0])) {
             throw new QUI\Exception(
-                QUI::getLocale()->get(
+                array(
                     'quiqqer/system',
                     'exception.lib.qui.group.doesnt.exist'
                 ),
@@ -126,12 +126,10 @@ class Group extends QUI\QDOM
     {
         // Rootgruppe kann nicht gelöscht werden
         if ((int)QUI::conf('globals', 'root') === $this->getId()) {
-            throw new QUI\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/system',
-                    'exception.lib.qui.group.root.delete'
-                )
-            );
+            throw new QUI\Exception(array(
+                'quiqqer/system',
+                'exception.lib.qui.group.root.delete'
+            ));
         }
 
         QUI::getEvents()->fireEvent('groupDelete', array($this));
@@ -370,12 +368,10 @@ class Group extends QUI\QDOM
         $User = QUI::getUserBySession();
 
         if (!$User->isSU()) {
-            throw new QUI\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/system',
-                    'exception.lib.qui.group.no.edit.permissions'
-                )
-            );
+            throw new QUI\Exception(array(
+                'quiqqer/system',
+                'exception.lib.qui.group.no.edit.permissions'
+            ));
         }
 
         foreach ($rights as $k => $v) {
@@ -421,7 +417,7 @@ class Group extends QUI\QDOM
 
         if (!isset($result[0])) {
             throw new QUI\Exception(
-                QUI::getLocale()->get(
+                array(
                     'quiqqer/system',
                     'exception.lib.qui.group.user.not.found'
                 ),
@@ -465,9 +461,7 @@ class Group extends QUI\QDOM
 
         $result = QUI::getDataBase()->fetch($_params);
 
-        if (isset($result[0])
-            && isset($result[0]['count'])
-        ) {
+        if (isset($result[0]) && isset($result[0]['count'])) {
             return $result[0]['count'];
         }
 
@@ -728,6 +722,7 @@ class Group extends QUI\QDOM
             }
         }
 
+        // #locale
         if (!$newid) {
             throw new QUI\Exception('Could not create new group');
         }
