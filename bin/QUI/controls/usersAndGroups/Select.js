@@ -107,10 +107,12 @@ define('controls/usersAndGroups/Select', [
         },
 
         /**
+         * event : on search button click
          *
-         * @param {Object} Btn
+         * @param {Object} self - select object
+         * @param {Object} Btn - button object
          */
-        $onSearchButtonClick: function (Btn) {
+        $onSearchButtonClick: function (self, Btn) {
             Btn.setAttribute('icon', 'fa fa-spinner fa-spin');
 
             require([
