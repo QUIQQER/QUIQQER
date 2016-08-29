@@ -74,11 +74,6 @@ define('controls/usersAndGroups/SelectItem', [
             }
 
             return Prom.then(function () {
-                // everyone is not deletable
-                if (id == 1) {
-                    this.$Destroy.setStyle('display', 'none');
-                }
-
                 this.$Text.set({
                     html: User.getName()
                 });

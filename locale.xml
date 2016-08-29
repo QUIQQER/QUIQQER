@@ -1014,6 +1014,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             The following characters are allowed: 0-9 a-z A-Z _ -</p>
             ]]></en>
         </locale>
+        <locale name="no.results">
+            <de><![CDATA[Keine Ergebnisse gefunden]]></de>
+            <en><![CDATA[No results found]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js">
         <locale name="welcome.message">
