@@ -14,6 +14,8 @@
  *
  * @event onAdd [ {this}, {String} userid ]
  * @event onChange [ {this} ]
+ *
+ * @deprecated
  */
 define('controls/users/Input', [
 

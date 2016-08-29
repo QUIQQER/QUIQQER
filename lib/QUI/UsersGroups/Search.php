@@ -34,7 +34,7 @@ class Search
      *
      * @throws QUI\Exception
      */
-    public static function search($searchTerm, $searchParams, $count = false)
+    public static function search($searchTerm, $searchParams = array(), $count = false)
     {
         $searchUsers  = false;
         $searchGroups = false;
@@ -66,9 +66,7 @@ class Search
         }
 
         if ($searchUsers) {
-            if (!isset($searchParams['users'])
-                || empty($searchParams['users'])
-            ) {
+            if (!isset($searchParams['users']) || empty($searchParams['users'])) {
                 throw new QUI\Exception(array(
                     'quiqqer/quiqqer',
                     'exception.usergroups.search.cannot.search.users.without.parameters'
@@ -127,6 +125,8 @@ class Search
                     ));
 
                     foreach ($result as $row) {
+                        $row['type'] = 'user';
+
                         $searchResult['users'][] = $row;
                     }
                 }
@@ -134,9 +134,7 @@ class Search
         }
 
         if ($searchGroups) {
-            if (!isset($searchParams['groups'])
-                || empty($searchParams['groups'])
-            ) {
+            if (!isset($searchParams['groups']) || empty($searchParams['groups'])) {
                 throw new QUI\Exception(array(
                     'quiqqer/quiqqer',
                     'exception.usergroups.search.cannot.search.groups.without.parameters'
@@ -184,6 +182,8 @@ class Search
                     ));
 
                     foreach ($result as $row) {
+                        $row['type'] = 'group';
+
                         $searchResult['groups'][] = $row;
                     }
                 }

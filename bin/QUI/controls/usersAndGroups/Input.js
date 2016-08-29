@@ -13,6 +13,8 @@
  *
  * @event onAddUser [ this, id ]
  * @event onAddgroup [ this, id ]
+ *
+ * @deprecated
  */
 define('controls/usersAndGroups/Input', [
 

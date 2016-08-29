@@ -509,6 +509,16 @@
             <de><![CDATA[Suche nach einer Gruppe ...]]></de>
             <en><![CDATA[Search for a group ...]]></en>
         </locale>
+        <locale name="control.usersgroups.select.search.field.placeholder">
+            <de><![CDATA[Suche nach einer Gruppe oder einem Benutzer...]]></de>
+            <en><![CDATA[Search for a group or a user ...]]></en>
+        </locale>
+
+        <locale name="control.usersgroups.window.search.title">
+            <de><![CDATA[Benutzer- und Gruppensuche]]></de>
+            <en><![CDATA[User and group search]]></en>
+        </locale>
+
         <locale name="message.user.has.no.password">
             <de><![CDATA[Der Benutzer besitzt noch kein Passwort]]></de>
             <en><![CDATA[The user has no password]]></en>

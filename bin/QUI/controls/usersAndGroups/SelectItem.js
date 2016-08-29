@@ -1,93 +1,88 @@
 /**
- * @module package/quiqqer/products/bin/controls/products/SelectItem
+ * @module controls/usersAndGroups/SelectItem
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/controls/Control
- * @require package/quiqqer/products/bin/classes/Products
- * @require css!package/quiqqer/products/bin/controls/products/SelectItem.css
+ * @require qui/QUI
+ * @require qui/controls/elements/Select
+ * @require Ajax
+ * @require Groups
+ * @require Users
  */
 define('controls/usersAndGroups/SelectItem', [
 
-    'qui/controls/Control',
+    'qui/QUI',
+    'qui/controls/elements/SelectItem',
     'Ajax',
+    'Groups',
+    'Users'
 
-    'css!controls/usersAndGroups/SelectItem.css'
-
-], function (QUIControl, Handler) {
+], function (QUI, QUIElementSelectItem, QUIAjax, Groups, Users) {
     "use strict";
 
-    var Products = new Handler();
-
     return new Class({
-        Extends: QUIControl,
+
+        Extends: QUIElementSelectItem,
         Type   : 'controls/usersAndGroups/SelectItem',
 
         Binds: [
-            '$onInject'
+            'refresh'
         ],
-
-        options: {
-            id: false
-        },
 
         initialize: function (options) {
             this.parent(options);
-
-            this.$Icon    = null;
-            this.$Text    = null;
-            this.$Destroy = null;
-
-            this.addEvents({
-                onInject: this.$onInject
-            });
+            this.setAttribute('icon', 'fa fa-group');
         },
 
         /**
-         * Return the DOMNode Element
+         * Refresh the display
          *
-         * @returns {HTMLElement}
+         * @returns {Promise}
          */
-        create: function () {
-            var self = this,
-                Elm  = this.parent();
+        refresh: function () {
+            var id   = this.getAttribute('id'),
+                Prom = Promise.resolve();
 
-            Elm.set({
-                'class': 'quiqqer-usersAndGroups-selectItem smooth',
-                html   : '<span class="quiqqer-usersAndGroups-selectItem-icon fa fa-groups"></span>' +
-                         '<span class="quiqqer-usersAndGroups-selectItem-text">&nbsp;</span>' +
-                         '<span class="quiqqer-usersAndGroups-selectItem-destroy fa fa-remove"></span>'
-            });
+            // group
+            if (id.charAt(0) === 'g') {
+                this.setAttribute('icon', 'fa fa-group');
 
-            this.$Icon    = Elm.getElement('.quiqqer-usersAndGroups-selectItem-icon');
-            this.$Text    = Elm.getElement('.quiqqer-usersAndGroups-selectItem-text');
-            this.$Destroy = Elm.getElement('.quiqqer-usersAndGroups-selectItem-destroy');
+                var Group = Groups.get(parseInt(id.substring(1)));
 
-            this.$Destroy.addEvent('click', function () {
-                self.destroy();
-            });
+                if (!Group.isLoaded()) {
+                    Prom = Group.load();
+                }
 
-            return Elm;
-        },
+                return Prom.then(function () {
+                    // everyone is not deletable
+                    if (id == 1) {
+                        this.$Destroy.setStyle('display', 'none');
+                    }
 
-        /**
-         * event : on inject
-         */
-        $onInject: function () {
-            var self = this;
+                    this.$Text.set({
+                        html: Group.getName()
+                    });
+                }.bind(this));
+            }
 
-            this.$Text.set({
-                html: '<span class="fa fa-spinner fa-spin"></span>'
-            });
+            // user
+            this.setAttribute('icon', 'fa fa-user');
 
-            Products.getChild(
-                this.getAttribute('id')
-            ).then(function (data) {
-                self.$Text.set('html', data.title);
-            }).catch(function () {
-                self.$Icon.removeClass('fa-groups');
-                self.$Icon.addClass('fa-bolt');
-                self.$Text.set('html', '...');
-            });
+            var User = Users.get(parseInt(id.substring(1)));
+
+            if (!User.isLoaded()) {
+                Prom = User.load();
+            }
+
+            return Prom.then(function () {
+                // everyone is not deletable
+                if (id == 1) {
+                    this.$Destroy.setStyle('display', 'none');
+                }
+
+                this.$Text.set({
+                    html: User.getName()
+                });
+            }.bind(this));
         }
     });
 });
