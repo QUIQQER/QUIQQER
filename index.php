@@ -23,9 +23,7 @@ if (isset($_REQUEST['_url'])
     }
 }
 
-
 use \Symfony\Component\HttpFoundation\Response;
-use \Symfony\Component\HttpFoundation\Cookie;
 
 use QUI\Utils\System\Debug;
 use QUI\Utils\Security\Orthos;
