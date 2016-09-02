@@ -639,7 +639,7 @@ class Template extends QUI\QDOM
             return false;
         }
 
-        $Layout     = QUI\Utils\XML::getLayoutFromXml($siteXML, $layout);
+        $Layout     = QUI\Utils\Text\XML::getLayoutFromXml($siteXML, $layout);
         $layoutFile = $template . '/' . $layout . '.html';
 
         if (!$Layout || !file_exists($layoutFile)) {

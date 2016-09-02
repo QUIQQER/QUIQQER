@@ -9,6 +9,7 @@ namespace QUI\Editor;
 use QUI;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\System\File as QUIFile;
+use QUI\Utils\Text\XML;
 
 /**
  * Wysiwyg manager
@@ -182,14 +183,14 @@ class Manager
 
         // project files
         if (file_exists($file)) {
-            $files = QUI\Utils\XML::getWysiwygCSSFromXml($file);
+            $files = XML::getWysiwygCSSFromXml($file);
 
             foreach ($files as $cssfile) {
                 $css[] = URL_USR_DIR . $project . '/' . $cssfile;
             }
 
             // id and css class
-            $Dom  = QUI\Utils\XML::getDomFromXml($file);
+            $Dom  = XML::getDomFromXml($file);
             $Path = new \DOMXPath($Dom);
 
             $WYSIWYG = $Path->query("//wysiwyg");
@@ -245,7 +246,7 @@ class Manager
             }
 
             if (empty($css)) {
-                $cssFiles = QUI\Utils\XML::getWysiwygCSSFromXml($file);
+                $cssFiles = XML::getWysiwygCSSFromXml($file);
 
                 foreach ($cssFiles as $cssFile) {
                     // external file
@@ -263,7 +264,7 @@ class Manager
 
             // id and css class
             if (!$bodyId && !$bodyClass) {
-                $Dom  = QUI\Utils\XML::getDomFromXml($file);
+                $Dom  = XML::getDomFromXml($file);
                 $Path = new \DOMXPath($Dom);
 
                 $WYSIWYG = $Path->query("//wysiwyg");
@@ -296,7 +297,7 @@ class Manager
                 continue;
             }
 
-            $Dom = QUI\Utils\XML::getDomFromXml($settings);
+            $Dom = XML::getDomFromXml($settings);
 
             // styles
             $styles = array_merge(
@@ -305,7 +306,7 @@ class Manager
             );
 
             // css files
-            $cssFiles = QUI\Utils\XML::getWysiwygCSSFromXml($settings);
+            $cssFiles = XML::getWysiwygCSSFromXml($settings);
 
             foreach ($cssFiles as $cssFile) {
                 // external file
@@ -486,6 +487,7 @@ class Manager
         // @todo gruppen toolbar muss im admin auswählbar sein
         $groups = $User->getGroups();
 
+        /* @var $Group QUI\Groups\Group */
         foreach ($groups as $Group) {
             $toolbar = $Group->getAttribute('toolbar');
 
@@ -532,7 +534,7 @@ class Manager
         } catch (QUI\Exception $Exception) {
         }
 
-        $Dom     = QUI\Utils\XML::getDomFromXml($file);
+        $Dom     = XML::getDomFromXml($file);
         $toolbar = $Dom->getElementsByTagName('toolbar');
 
         if (!$toolbar->length) {

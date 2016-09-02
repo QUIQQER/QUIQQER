@@ -46,7 +46,6 @@ QUI::$Ajax->registerFunction(
             }
 
             return $url;
-
         } catch (QUI\Exception $Exception) {
         }
 

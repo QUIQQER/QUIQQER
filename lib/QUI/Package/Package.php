@@ -8,7 +8,7 @@ namespace QUI\Package;
 
 use QUI;
 use QUI\Update;
-use QUI\Utils\XML;
+use QUI\Utils\Text\XML;
 
 /**
  * An installed package

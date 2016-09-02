@@ -20,7 +20,7 @@ QUI::$Ajax->registerFunction(
         if (QUI\Projects\Media\Utils::isFolder($File) === false) {
             throw new QUI\Exception(
                 'Sie können nur in einem Ordner einen Ordner erstellen'
-            );
+            ); // #locale
         }
 
         /* @var $File \QUI\Projects\Media\Folder */

@@ -10,6 +10,7 @@ use QUI;
 use QUI\Permissions\Permission;
 use QUI\Users\User;
 use QUI\Groups\Group;
+use QUI\Utils\Text\XML;
 
 /**
  * A project
@@ -755,7 +756,7 @@ class Project
         $siteXMLs = array_unique($siteXMLs);
 
         foreach ($siteXMLs as $siteXML) {
-            $layouts = QUI\Utils\XML::getLayoutsFromXml($siteXML);
+            $layouts = XML::getLayoutsFromXml($siteXML);
 
             foreach ($layouts as $Layout) {
                 /* @var $Layout \DOMElement */
@@ -1254,8 +1255,8 @@ class Project
             return;
         }
 
-//         $defaults = QUI\Utils\XML::getConfigParamsFromXml( $dir .'settings.xml' );
-//         $Config   = QUI\Utils\XML::getConfigFromXml( $dir .'settings.xml' );
+//         $defaults = QUI\Utils\Text\XML::getConfigParamsFromXml( $dir .'settings.xml' );
+//         $Config   = QUI\Utils\Text\XML::getConfigFromXml( $dir .'settings.xml' );
 
 //         if ( $Config ) {
 //             $Config->save();

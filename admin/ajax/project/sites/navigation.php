@@ -19,14 +19,14 @@ QUI::$Ajax->registerFunction(
         foreach ($list as $Child) {
             /* @var $Child \QUI\Projects\Site */
             $result[] = array(
-                'id' => $Child->getAttribute('id'),
-                'name' => $Child->getAttribute('name'),
-                'title' => $Child->getAttribute('title'),
-                'type' => $Child->getAttribute('type'),
-                'url' => URL_DIR . $Child->getUrlRewritten(),
-                'image_site' => $Child->getAttribute('image_site'),
+                'id'            => $Child->getAttribute('id'),
+                'name'          => $Child->getAttribute('name'),
+                'title'         => $Child->getAttribute('title'),
+                'type'          => $Child->getAttribute('type'),
+                'url'           => URL_DIR . $Child->getUrlRewritten(),
+                'image_site'    => $Child->getAttribute('image_site'),
                 'image_emotion' => $Child->getAttribute('image_emotion'),
-                'hasChildren' => $Child->hasChildren()
+                'hasChildren'   => $Child->hasChildren()
             );
         }
 

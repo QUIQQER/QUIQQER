@@ -10,7 +10,7 @@ use QUI;
 use QUI\Projects;
 use QUI\Projects\Project;
 use QUI\Utils\StringHelper as StringUtils;
-use QUI\Utils\XML;
+use QUI\Utils\Text\XML;
 use QUI\Utils\DOM;
 use QUI\Utils\Security\Orthos;
 

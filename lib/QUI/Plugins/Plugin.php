@@ -7,6 +7,7 @@
 namespace QUI\Plugins;
 
 use QUI;
+use QUI\Utils\Text\XML;
 
 /**
  * Grundklasse eines Plugins
@@ -101,7 +102,7 @@ class Plugin extends QUI\QDOM
         }
 
         // Datenbank aufbauen
-        QUI\Utils\XML::importDataBaseFromXml(
+        XML::importDataBaseFromXml(
             OPT_DIR . $this->getAttribute('name') . '/database.xml'
         );
     }
@@ -132,7 +133,6 @@ class Plugin extends QUI\QDOM
                         //$Project->setup(); <<--- wird das echt benötigt?
 
                         $this->setup($Project);
-
                     } catch (QUI\Exception $e) {
                         $message = 'Project [' . $project . ', ' . $lang . '] ';
                         $message .= 'Plugin [' . $this->getType() . '] ';
@@ -594,7 +594,7 @@ class Plugin extends QUI\QDOM
      */
     public function getSettingsCategory($name)
     {
-        return QUI\Utils\XML::getSettingCategoriesFromXml(
+        return XML::getSettingCategoriesFromXml(
             OPT_DIR . $this->getAttribute('name') . '/settings.xml',
             $name
         );
@@ -610,7 +610,7 @@ class Plugin extends QUI\QDOM
      */
     public function getUserTabs()
     {
-        return QUI\Utils\XML::getTabsFromDom(
+        return XML::getTabsFromDom(
             $this->getUserXml()
         );
     }
@@ -895,7 +895,7 @@ class Plugin extends QUI\QDOM
         }
 
         return array(
-            'js' => $js,
+            'js'  => $js,
             'css' => $css
         );
     }
@@ -945,7 +945,7 @@ class Plugin extends QUI\QDOM
             return $this->SettingsDOM;
         }
 
-        $this->SettingsDOM = QUI\Utils\XML::getDomFromXml(
+        $this->SettingsDOM = XML::getDomFromXml(
             OPT_DIR . $this->getAttribute('name') . '/settings.xml'
         );
 
@@ -964,7 +964,7 @@ class Plugin extends QUI\QDOM
             return $this->UserDOM;
         }
 
-        $this->UserDOM = QUI\Utils\XML::getDomFromXml(
+        $this->UserDOM = XML::getDomFromXml(
             OPT_DIR . $this->getAttribute('name') . '/user.xml'
         );
 
@@ -983,7 +983,7 @@ class Plugin extends QUI\QDOM
             return $this->DbDOM;
         }
 
-        $this->DbDOM = QUI\Utils\XML::getDomFromXml(
+        $this->DbDOM = XML::getDomFromXml(
             OPT_DIR . $this->getAttribute('name') . '/database.xml'
         );
 
@@ -1079,7 +1079,7 @@ class Plugin extends QUI\QDOM
             }
 
             $result[$Conf->getAttribute('name')] = array(
-                'type' => $type,
+                'type'    => $type,
                 'default' => $default
             );
         }

@@ -19,7 +19,6 @@ QUI::$Ajax->registerFunction(
             foreach ($fileid as $id) {
                 try {
                     $Media->get($id)->delete();
-
                 } catch (QUI\Exception $Exception) {
                     QUI::getMessagesHandler()->addError($Exception->getMessage());
                 }

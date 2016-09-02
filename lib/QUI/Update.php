@@ -11,7 +11,7 @@ use Composer\Script\Event;
 use QUI;
 use QUI\Utils\System\File as QUIFile;
 use QUI\System\Log;
-use QUI\Utils\XML;
+use QUI\Utils\Text\XML;
 
 if (!function_exists('glob_recursive')) {
     /**

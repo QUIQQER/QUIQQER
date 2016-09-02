@@ -25,7 +25,6 @@ QUI::$Ajax->registerFunction(
                 $User->activate();
 
                 $result[$_uid] = $User->isActive() ? 1 : 0;
-
             } catch (QUI\Exception $Exception) {
                 $result[$_uid] = 0;
 

@@ -30,7 +30,7 @@ QUI::$Ajax->registerFunction(
                 continue;
             }
 
-            QUI\Utils\XML::setConfigFromXml(
+            QUI\Utils\Text\XML::setConfigFromXml(
                 $file,
                 json_decode($params, true)
             );

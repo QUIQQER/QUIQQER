@@ -10,6 +10,7 @@ use QUI;
 use QUI\Controls\Toolbar;
 use QUI\Controls\Buttons\Button;
 use QUI\Controls\Buttons\Seperator;
+use QUI\Utils\Text\XML;
 
 /**
  * Helper for the Site Object
@@ -273,7 +274,7 @@ class Sites
         $file = OPT_DIR . $types[0] . '/site.xml';
 
         if (file_exists($file)) {
-            $Dom  = QUI\Utils\XML::getDomFromXml($file);
+            $Dom  = XML::getDomFromXml($file);
             $Path = new \DOMXPath($Dom);
 
             QUI\Utils\DOM::addTabsToToolbar(
@@ -299,8 +300,8 @@ class Sites
             }
 
             QUI\Utils\DOM::addTabsToToolbar(
-                QUI\Utils\XML::getSiteTabsFromDom(
-                    QUI\Utils\XML::getDomFromXml($file)
+                XML::getSiteTabsFromDom(
+                    XML::getDomFromXml($file)
                 ),
                 $Tabbar
             );
@@ -326,8 +327,8 @@ class Sites
             }
 
             QUI\Utils\DOM::addTabsToToolbar(
-                QUI\Utils\XML::getSiteTabsFromDom(
-                    QUI\Utils\XML::getDomFromXml($file)
+                XML::getSiteTabsFromDom(
+                    XML::getDomFromXml($file)
                 ),
                 $Tabbar
             );

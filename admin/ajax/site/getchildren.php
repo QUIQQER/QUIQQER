@@ -28,7 +28,6 @@ QUI::$Ajax->registerFunction(
             $children = $Site->getChildren(array(
                 'limit' => $params['limit']
             ));
-
         } else {
             $children = $Site->getChildren();
         }
@@ -41,7 +40,6 @@ QUI::$Ajax->registerFunction(
 
             if (!$attributes) {
                 $childs[$i] = $Child->getAttributes();
-
             } else {
                 foreach ($attributes as $attribute) {
                     $childs[$i][$attribute] = $Child->getAttribute($attribute);
@@ -80,7 +78,7 @@ QUI::$Ajax->registerFunction(
         }
 
         return array(
-            'count' => $Site->hasChildren(true),
+            'count'    => $Site->hasChildren(true),
             'children' => $childs
         );
     },

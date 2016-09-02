@@ -14,7 +14,7 @@ QUI::$Ajax->registerFunction(
         $ids = $Media->getChildrenIds(array(
             'where' => array(
                 'type' => array(
-                    'type' => 'NOT',
+                    'type'  => 'NOT',
                     'value' => 'folder'
                 )
             )
@@ -24,7 +24,6 @@ QUI::$Ajax->registerFunction(
             try {
                 $Item = $Media->get($id);
                 $Item->generateSHA1();
-
             } catch (QUI\Exception $Exception) {
                 QUI::getMessagesHandler()->addError(
                     $Exception->getMessage()

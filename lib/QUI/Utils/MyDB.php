@@ -31,7 +31,7 @@ class MyDB
      */
     public function __construct()
     {
-        $this->DB = \QUI::getDataBase();
+        $this->DB = QUI::getDataBase();
     }
 
     /**
@@ -41,7 +41,7 @@ class MyDB
      */
     public function getPDO()
     {
-        return \QUI::getDataBase()->getPDO();
+        return QUI::getDataBase()->getPDO();
     }
 
     /**
@@ -51,7 +51,7 @@ class MyDB
      */
     public function getUtilsDB()
     {
-        return \QUI::getDataBase();
+        return QUI::getDataBase();
     }
 
     /**
@@ -90,7 +90,7 @@ class MyDB
      *
      * @param string $query
      *
-     * @return Resource
+     * @return array
      *
      * @throws \QUI\Exception
      *
@@ -124,7 +124,7 @@ class MyDB
      * @param string $type - BOTH, NUM, ASSOC, OBJ
      * @param string $type2 - ARRAY, ROW
      *
-     * @return Resource
+     * @return array
      */
     public function select(array $params, $type = "ARRAY", $type2 = 'ARRAY')
     {
@@ -136,7 +136,7 @@ class MyDB
      *
      * @param array $params
      *
-     * @return Resource
+     * @return \PDOStatement
      */
     public function queryNoEscape($params)
     {

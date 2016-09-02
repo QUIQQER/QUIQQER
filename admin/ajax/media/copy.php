@@ -21,7 +21,7 @@ QUI::$Ajax->registerFunction(
         if (!QUI\Projects\Media\Utils::isFolder($Folder)) {
             throw new QUI\Exception(
                 'Bitte wählen Sie ein Ordner aus um die Dateie zu kopieren.'
-            );
+            ); // #locale
         }
 
         /* @var $Folder \QUI\Projects\Media\Folder */
@@ -29,7 +29,6 @@ QUI::$Ajax->registerFunction(
             try {
                 $Item = $Media->get((int)$id);
                 $Item->copyTo($Folder);
-
             } catch (QUI\Exception $Exception) {
                 QUI::getMessagesHandler()->addError(
                     $Exception->getMessage()
