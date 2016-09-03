@@ -49,7 +49,7 @@
     "quiqqer/countries": "*@dev",
     "quiqqer/colorpicker": "*@dev",
     "quiqqer/translator": "*@dev",
-    "quiqqer/utils": ">1.4",
+    "quiqqer/utils": "<1.4",
     "quiqqer/cron": "*@dev",
     "quiqqer/log": "*@dev",
     "quiqqer/diashow": "*@dev",
