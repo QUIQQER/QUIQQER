@@ -348,6 +348,18 @@
             <de><![CDATA[Passwort & Sicherheit]]></de>
             <en><![CDATA[Password & Security]]></en>
         </locale>
+        <locale name="user.panel.password.new">
+            <de><![CDATA[Neues Passwort]]></de>
+            <en><![CDATA[New password]]></en>
+        </locale>
+        <locale name="user.panel.password.repeat">
+            <de><![CDATA[Passwort wiederhohlen]]></de>
+            <en><![CDATA[Repeat password]]></en>
+        </locale>
+        <locale name="user.panel.password.show">
+            <de><![CDATA[Passwörter anzeigen]]></de>
+            <en><![CDATA[how passwords]]></en>
+        </locale>
         <locale name="user.panel.personalData">
             <de><![CDATA[Persönliche Daten / Adressen]]></de>
             <en><![CDATA[personal data / Adresses]]></en>
@@ -4827,6 +4839,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="menu.profile.userProfile.text">
             <de><![CDATA[Profil]]></de>
             <en><![CDATA[Profile]]></en>
+        </locale>
+        <locale name="menu.profile.userPassword.text">
+            <de><![CDATA[Passwort ändern]]></de>
+            <en><![CDATA[Change password]]></en>
         </locale>
         <locale name="menu.goto.text">
             <de><![CDATA[Verwaltung]]></de>
