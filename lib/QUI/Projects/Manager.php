@@ -10,6 +10,7 @@ use QUI;
 use QUI\Permissions\Permission;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\DOM;
+use QUI\Utils\Text\XML;
 
 /**
  * The Project Manager
@@ -235,7 +236,7 @@ class Manager
         $settingsXml = self::getRelatedSettingsXML($Project);
 
         foreach ($settingsXml as $file) {
-            $Dom  = QUI\Utils\XML::getDomFromXml($file);
+            $Dom  = XML::getDomFromXml($file);
             $Path = new \DOMXPath($Dom);
 
             $settingsList = $Path->query("//project/settings");
@@ -801,7 +802,7 @@ class Manager
                 continue;
             }
 
-            $dbfields = QUI\Utils\XML::getDataBaseFromXml($databaseXml);
+            $dbfields = XML::getDataBaseFromXml($databaseXml);
 
             if (!isset($dbfields['projects'])) {
                 continue;
@@ -931,7 +932,7 @@ class Manager
                 continue;
             }
 
-            $Dom  = QUI\Utils\XML::getDomFromXml($file);
+            $Dom  = XML::getDomFromXml($file);
             $Path = new \DOMXPath($Dom);
 
             $Settings = $Path->query("//quiqqer/project/settings");
@@ -945,7 +946,7 @@ class Manager
         $projectSettings = USR_DIR . $Project->getName() . '/settings.xml';
 
         if (file_exists($projectSettings)) {
-            $Dom  = QUI\Utils\XML::getDomFromXml($projectSettings);
+            $Dom  = XML::getDomFromXml($projectSettings);
             $Path = new \DOMXPath($Dom);
 
             $Settings = $Path->query("//quiqqer/project/settings");

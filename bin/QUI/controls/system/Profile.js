@@ -26,7 +26,6 @@ define('controls/system/Profile', [
 ], function (QUI, QUIConfirm, FormUtils, ControlUtils, Ajax, Locale) {
     "use strict";
 
-
     return new Class({
 
         Extends: QUIConfirm,

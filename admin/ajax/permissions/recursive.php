@@ -44,7 +44,6 @@ QUI::$Ajax->registerFunction(
                     new \QUI\Projects\Site\Edit($Project, $siteId),
                     $permissions
                 );
-
             } catch (QUI\Exception $Exception) {
                 QUI::getMessagesHandler()->addAttention(
                     $Exception->getMessage()

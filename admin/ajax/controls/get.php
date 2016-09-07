@@ -19,7 +19,6 @@ QUI::$Ajax->registerFunction(
             if ($params) {
                 $Control->setAttributes($params);
             }
-
         } catch (QUI\Exception $Exception) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/system', 'control.not.found'),

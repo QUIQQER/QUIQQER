@@ -16,7 +16,6 @@ QUI::$Ajax->registerFunction(
 
         try {
             $File = $Media->get($fileid);
-
         } catch (QUI\Exception $Exception) {
             return $Media->firstChild()->getId();
         }
@@ -27,7 +26,6 @@ QUI::$Ajax->registerFunction(
 
         try {
             return $File->getParent()->getId();
-
         } catch (QUI\Exception $Exception) {
             return $Media->firstChild()->getId();
         }

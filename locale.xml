@@ -348,6 +348,18 @@
             <de><![CDATA[Passwort & Sicherheit]]></de>
             <en><![CDATA[Password & Security]]></en>
         </locale>
+        <locale name="user.panel.password.new">
+            <de><![CDATA[Neues Passwort]]></de>
+            <en><![CDATA[New password]]></en>
+        </locale>
+        <locale name="user.panel.password.repeat">
+            <de><![CDATA[Passwort wiederhohlen]]></de>
+            <en><![CDATA[Repeat password]]></en>
+        </locale>
+        <locale name="user.panel.password.show">
+            <de><![CDATA[Passwörter anzeigen]]></de>
+            <en><![CDATA[how passwords]]></en>
+        </locale>
         <locale name="user.panel.personalData">
             <de><![CDATA[Persönliche Daten / Adressen]]></de>
             <en><![CDATA[personal data / Adresses]]></en>
@@ -509,6 +521,16 @@
             <de><![CDATA[Suche nach einer Gruppe ...]]></de>
             <en><![CDATA[Search for a group ...]]></en>
         </locale>
+        <locale name="control.usersgroups.select.search.field.placeholder">
+            <de><![CDATA[Suche nach einer Gruppe oder einem Benutzer...]]></de>
+            <en><![CDATA[Search for a group or a user ...]]></en>
+        </locale>
+
+        <locale name="control.usersgroups.window.search.title">
+            <de><![CDATA[Benutzer- und Gruppensuche]]></de>
+            <en><![CDATA[User and group search]]></en>
+        </locale>
+
         <locale name="message.user.has.no.password">
             <de><![CDATA[Der Benutzer besitzt noch kein Passwort]]></de>
             <en><![CDATA[The user has no password]]></en>
@@ -1003,6 +1025,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <p>Invalid characters were found in the name &quot;[filename]&quot;.<br />
             The following characters are allowed: 0-9 a-z A-Z _ -</p>
             ]]></en>
+        </locale>
+        <locale name="no.results">
+            <de><![CDATA[Keine Ergebnisse gefunden]]></de>
+            <en><![CDATA[No results found]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js">
@@ -4813,6 +4839,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="menu.profile.userProfile.text">
             <de><![CDATA[Profil]]></de>
             <en><![CDATA[Profile]]></en>
+        </locale>
+        <locale name="menu.profile.userPassword.text">
+            <de><![CDATA[Passwort ändern]]></de>
+            <en><![CDATA[Change password]]></en>
         </locale>
         <locale name="menu.goto.text">
             <de><![CDATA[Verwaltung]]></de>

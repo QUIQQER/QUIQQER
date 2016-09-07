@@ -359,7 +359,7 @@ class Manager
      */
     public function importPermissionsFromXml($xmlfile, $src = '')
     {
-        $permissions = QUI\Utils\XML::getPermissionsFromXml($xmlfile);
+        $permissions = QUI\Utils\Text\XML::getPermissionsFromXml($xmlfile);
 
         if (!count($permissions)) {
             return;

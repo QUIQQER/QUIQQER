@@ -197,7 +197,7 @@ class Manager extends QUI\QDOM
                 continue;
             }
 
-            $typeList = QUI\Utils\XML::getTypesFromXml($siteXml);
+            $typeList = QUI\Utils\Text\XML::getTypesFromXml($siteXml);
 
             foreach ($typeList as $Type) {
                 /* @var $Type \DOMElement */
@@ -517,7 +517,7 @@ class Manager extends QUI\QDOM
             return false;
         }
 
-        $Dom   = QUI\Utils\XML::getDomFromXml($siteXml);
+        $Dom   = QUI\Utils\Text\XML::getDomFromXml($siteXml);
         $XPath = new \DOMXPath($Dom);
         $Types = $XPath->query('//type[@type="' . $type . '"]');
 

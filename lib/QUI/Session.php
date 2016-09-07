@@ -87,8 +87,11 @@ class Session
         }
 
         $storageOptions = array(
+            'cookie_httponly' => true,
+            'name'            => 'qsess',
             'cookie_lifetime' => $this->lifetime,
-            'gc_maxlifetime'  => $this->lifetime
+            'gc_maxlifetime'  => $this->lifetime,
+            'cookie_secure'   => QUI\Utils\System::isProtocolSecure()
         );
 
         if (!class_exists('NativeSessionStorage')) {

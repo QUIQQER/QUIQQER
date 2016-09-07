@@ -8,7 +8,7 @@ namespace QUI\Users;
 
 use QUI;
 use QUI\Utils\DOM;
-use QUI\Utils\XML;
+use QUI\Utils\Text\XML;
 
 /**
  * Helper for users

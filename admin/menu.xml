@@ -2,167 +2,174 @@
 <menu>
 
     <item parent="/" name="quiqqer">
-        <locale group="quiqqer/system" var="menu.quiqqer.text" />
+        <locale group="quiqqer/system" var="menu.quiqqer.text"/>
     </item>
     <item parent="/" name="apps">
-        <locale group="quiqqer/system" var="menu.apps.text" />
+        <locale group="quiqqer/system" var="menu.apps.text"/>
     </item>
     <item parent="/" name="extras">
-        <locale group="quiqqer/system" var="menu.goto.text" />
+        <locale group="quiqqer/system" var="menu.goto.text"/>
     </item>
     <item parent="/" name="settings">
-        <locale group="quiqqer/system" var="menu.settings.text" />
+        <locale group="quiqqer/system" var="menu.settings.text"/>
     </item>
     <item parent="/" name="profile">
-        <locale group="quiqqer/system" var="menu.profile.text" />
+        <locale group="quiqqer/system" var="menu.profile.text"/>
     </item>
 
     <!-- QUIQQER Menu -->
-        <item parent="/quiqqer/"
-              name="about"
-              icon="URL_BIN_DIR/16x16/quiqqer.png"
-              require="controls/help/About"
-                >
-            <locale group="quiqqer/system" var="menu.help.about.text" />
-        </item>
+    <item parent="/quiqqer/"
+          name="about"
+          icon="URL_BIN_DIR/16x16/quiqqer.png"
+          require="controls/help/About"
+    >
+        <locale group="quiqqer/system" var="menu.help.about.text"/>
+    </item>
 
-        <item parent="/quiqqer/"
-              name="dashboard"
-              icon="URL_BIN_DIR/16x16/quiqqer.png"
-              require="controls/help/Changelog"
-              group="quiqqer/system"
-              var="menu.help.changelog.text"
-                >
-            <locale group="quiqqer/system" var="menu.help.changelog.text" />
-        </item>
+    <item parent="/quiqqer/"
+          name="dashboard"
+          icon="URL_BIN_DIR/16x16/quiqqer.png"
+          require="controls/help/Changelog"
+          group="quiqqer/system"
+          var="menu.help.changelog.text"
+    >
+        <locale group="quiqqer/system" var="menu.help.changelog.text"/>
+    </item>
 
-        <item parent="/quiqqer/"
-              name="changelog"
-              icon="URL_BIN_DIR/16x16/quiqqer.png"
-              require="controls/help/Dashboard"
-              group="quiqqer/system"
-              var="menu.help.changelog.text"
-                >
-            <locale group="quiqqer/system" var="menu.help.dashboard.text" />
-        </item>
+    <item parent="/quiqqer/"
+          name="changelog"
+          icon="URL_BIN_DIR/16x16/quiqqer.png"
+          require="controls/help/Dashboard"
+          group="quiqqer/system"
+          var="menu.help.changelog.text"
+    >
+        <locale group="quiqqer/system" var="menu.help.dashboard.text"/>
+    </item>
 
-        <!-- Plugins und Packages -->
-        <item parent="/quiqqer/"
-              name="packages"
-              icon="URL_BIN_DIR/16x16/quiqqer.png"
-              require="controls/packages/Panel"
-                >
-            <locale group="quiqqer/system" var="menu.extras.packages.text" />
-        </item>
+    <!-- Plugins und Packages -->
+    <item parent="/quiqqer/"
+          name="packages"
+          icon="URL_BIN_DIR/16x16/quiqqer.png"
+          require="controls/packages/Panel"
+    >
+        <locale group="quiqqer/system" var="menu.extras.packages.text"/>
+    </item>
 
 
     <!-- Apps -->
-        <item parent="/apps/"
-              name="search"
-              icon="fa fa-search"
-              require="controls/projects/project/site/Search"
-        >
-            <locale  group="quiqqer/system" var="menu.file.search.text" />
-        </item>
+    <item parent="/apps/"
+          name="search"
+          icon="fa fa-search"
+          require="controls/projects/project/site/Search"
+    >
+        <locale group="quiqqer/system" var="menu.file.search.text"/>
+    </item>
 
     <!-- goto -->
-        <!-- Projekt Verwaltung -->
-        <item parent="/extras/"
-              name="projects"
-              icon="fa fa-home"
-              require="controls/projects/Manager"
-        >
-            <locale group="quiqqer/system" var="menu.extras.projects.text" />
-        </item>
-        <!-- Zugriffsrechte bearbeiten -->
-        <item parent="/extras/"
-              name="rights"
-              icon="fa fa-unlock-alt"
-        >
-            <locale group="quiqqer/system" var="menu.extras.rights.text" />
-        </item>
-            <!-- Benutzer -->
-            <item parent="/extras/rights/"
-                  name="users"
-                  icon="fa fa-user"
-                  require="controls/users/Panel"
-            >
-                <locale group="quiqqer/system" var="menu.extras.users.text" />
-            </item>
-            <!-- Gruppen -->
-            <item parent="/extras/rights/"
-                  name="groups"
-                  icon="fa fa-group"
-                  require="controls/groups/Panel"
-            >
-                <locale group="quiqqer/system" var="menu.extras.groups.text" />
-            </item>
-            <!-- Zugriffsrechte bearbeiten -->
-            <item parent="/extras/rights/"
-                  name="permissions"
-                  icon="fa fa-shield"
-                  require="controls/permissions/Panel"
-            >
-                <locale group="quiqqer/system" var="menu.extras.permissions.text" />
-            </item>
+    <!-- Projekt Verwaltung -->
+    <item parent="/extras/"
+          name="projects"
+          icon="fa fa-home"
+          require="controls/projects/Manager"
+    >
+        <locale group="quiqqer/system" var="menu.extras.projects.text"/>
+    </item>
+    <!-- Zugriffsrechte bearbeiten -->
+    <item parent="/extras/"
+          name="rights"
+          icon="fa fa-unlock-alt"
+    >
+        <locale group="quiqqer/system" var="menu.extras.rights.text"/>
+    </item>
+    <!-- Benutzer -->
+    <item parent="/extras/rights/"
+          name="users"
+          icon="fa fa-user"
+          require="controls/users/Panel"
+    >
+        <locale group="quiqqer/system" var="menu.extras.users.text"/>
+    </item>
+    <!-- Gruppen -->
+    <item parent="/extras/rights/"
+          name="groups"
+          icon="fa fa-group"
+          require="controls/groups/Panel"
+    >
+        <locale group="quiqqer/system" var="menu.extras.groups.text"/>
+    </item>
+    <!-- Zugriffsrechte bearbeiten -->
+    <item parent="/extras/rights/"
+          name="permissions"
+          icon="fa fa-shield"
+          require="controls/permissions/Panel"
+    >
+        <locale group="quiqqer/system" var="menu.extras.permissions.text"/>
+    </item>
 
 
-        <!-- Papierkorb -->
-        <item parent="/extras/"
-              name="trash"
-              icon="fa fa-trash-o"
-              require="controls/trash/Panel"
-        >
-            <locale group="quiqqer/system" var="menu.extras.trash.text" />
-        </item>
+    <!-- Papierkorb -->
+    <item parent="/extras/"
+          name="trash"
+          icon="fa fa-trash-o"
+          require="controls/trash/Panel"
+    >
+        <locale group="quiqqer/system" var="menu.extras.trash.text"/>
+    </item>
 
     <!-- Settings -->
-        <item parent="/settings/"
-              name="quiqqer"
-              icon="URL_BIN_DIR/16x16/quiqqer.png"
-        >
-            <locale group="quiqqer/system" var="menu.settings.quiqqer.text" />
-        </item>
-            <item parent="/settings/quiqqer/"
-                  name="media"
-                  icon="fa fa-font"
-                  require="controls/editors/Settings"
-            >
-                <locale group="quiqqer/system" var="menu.settings.editor.text" />
-            </item>
+    <item parent="/settings/"
+          name="quiqqer"
+          icon="URL_BIN_DIR/16x16/quiqqer.png"
+    >
+        <locale group="quiqqer/system" var="menu.settings.quiqqer.text"/>
+    </item>
+    <item parent="/settings/quiqqer/"
+          name="media"
+          icon="fa fa-font"
+          require="controls/editors/Settings"
+    >
+        <locale group="quiqqer/system" var="menu.settings.editor.text"/>
+    </item>
 
-            <item parent="/settings/quiqqer/"
-                  name="vhosts"
-                  icon="fa fa-external-link"
-                  require="controls/system/VHosts"
-            >
-                <locale group="quiqqer/system" var="menu.settings.vhosts.text" />
-            </item>
+    <item parent="/settings/quiqqer/"
+          name="vhosts"
+          icon="fa fa-external-link"
+          require="controls/system/VHosts"
+    >
+        <locale group="quiqqer/system" var="menu.settings.vhosts.text"/>
+    </item>
 
 
-        <item parent="/settings/"
-              name="projects"
-              icon="fa fa-home"
-        >
-            <locale group="quiqqer/system" var="menu.settings.projects.text" />
-        </item>
+    <item parent="/settings/"
+          name="projects"
+          icon="fa fa-home"
+    >
+        <locale group="quiqqer/system" var="menu.settings.projects.text"/>
+    </item>
 
     <!-- Profil -->
-        <item parent="/profile/"
-              name="userProfile"
-              icon="fa fa-user"
-              require="controls/system/Profile"
-        >
-            <locale group="quiqqer/system" var="menu.profile.userProfile.text" />
-        </item>
+    <item parent="/profile/"
+          name="userProfile"
+          icon="fa fa-user"
+          require="controls/system/Profile"
+    >
+        <locale group="quiqqer/system" var="menu.profile.userProfile.text"/>
+    </item>
+    <item parent="/profile/"
+          name="userPassword"
+          icon="fa fa-key"
+          require="controls/users/password/Window"
+    >
+        <locale group="quiqqer/system" var="menu.profile.userPassword.text"/>
+    </item>
 
 
     <!-- profile -->
-        <item parent="/profile/"
-              name="workspaces"
-              icon="fa fa-laptop"
-        >
-            <locale group="quiqqer/system" var="menu.profile.workspace.text" />
-        </item>
+    <item parent="/profile/"
+          name="workspaces"
+          icon="fa fa-laptop"
+    >
+        <locale group="quiqqer/system" var="menu.profile.workspace.text"/>
+    </item>
 
 </menu>

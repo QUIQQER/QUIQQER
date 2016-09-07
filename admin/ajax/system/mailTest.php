@@ -43,8 +43,8 @@ QUI::$Ajax->registerFunction(
 
                     $Mail->SMTPOptions = array(
                         'ssl' => array(
-                            'verify_peer' => (int)$config['SMTPSecureSSL_verify_peer'],
-                            'verify_peer_name' => (int)$config['SMTPSecureSSL_verify_peer_name'],
+                            'verify_peer'       => (int)$config['SMTPSecureSSL_verify_peer'],
+                            'verify_peer_name'  => (int)$config['SMTPSecureSSL_verify_peer_name'],
                             'allow_self_signed' => (int)$config['SMTPSecureSSL_allow_self_signed']
                         )
                     );
@@ -84,7 +84,6 @@ QUI::$Ajax->registerFunction(
                 $params,
                 'mailtest'
             );
-
         } catch (\Exception $Exception) {
             throw new QUI\Exception(
                 $Exception->getMessage(),

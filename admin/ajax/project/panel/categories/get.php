@@ -20,7 +20,7 @@ QUI::$Ajax->registerFunction(
                 continue;
             }
 
-            $windows = QUI\Utils\XML::getProjectSettingWindowsFromXml($file);
+            $windows = QUI\Utils\Text\XML::getProjectSettingWindowsFromXml($file);
 
             foreach ($windows as $Window) {
                 $buttons = QUI\Utils\DOM::getButtonsFromWindow($Window);

@@ -23,7 +23,6 @@ if (isset($_REQUEST['_url'])
     }
 }
 
-
 use \Symfony\Component\HttpFoundation\Response;
 
 use QUI\Utils\System\Debug;
@@ -35,6 +34,18 @@ try {
 
     $Response = QUI::getGlobalResponse();
     $Engine   = QUI::getTemplateManager()->getEngine();
+
+    $Response->headers->set('Strict-Transport-Security', 'max-age=31536000'); // @todo setting
+
+    // @todo setting mit erlaubten
+    $Response->headers->set(
+        "Content-Security-Policy",
+        "script-src 'self' 'unsafe-eval' 'unsafe-inline'; object-src 'self'"
+    );
+
+    $Response->headers->set("X-Content-Type-Options", "nosniff");
+    $Response->headers->set("X-XSS-Protection", "1; mode=block");
+    $Response->headers->set("X-Frame-Options", "SAMEORIGIN"); // @todo settings
 
     // UTF 8 Prüfung für umlaute in url
     if (isset($_REQUEST['_url'])) {
@@ -200,7 +211,6 @@ try {
             'CURRENT_LANG',
             QUI::getLocale()->getCurrent()
         );
-
     } catch (QUI\Exception $Exception) {
         if ($Exception->getCode() == 404) {
             $Response->setStatusCode(Response::HTTP_NOT_FOUND);
@@ -215,7 +225,6 @@ try {
 
         try {
             $content = $Template->fetchTemplate($Rewrite->getErrorSite());
-
         } catch (QUI\Exception $Exception) {
             $content = $Template->fetchTemplate($Project->firstChild());
         }
@@ -229,7 +238,6 @@ try {
     $Response->prepare(QUI::getRequest());
     $Response->send();
     exit;
-
 } catch (\Exception $Exception) {
     // error ??
     header('HTTP/1.1 503 Service Temporarily Unavailable');

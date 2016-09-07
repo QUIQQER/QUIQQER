@@ -26,7 +26,6 @@ QUI::$Ajax->registerFunction(
                     $File->activate();
 
                     $result[$File->getId()] = $File->isActive();
-
                 } catch (QUI\Exception $Exception) {
                     QUI::getMessagesHandler()->addError($Exception->getMessage());
                 }

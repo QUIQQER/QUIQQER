@@ -29,7 +29,6 @@ QUI::$Ajax->registerFunction(
             try {
                 $Item = $Media->get((int)$id);
                 $Item->moveTo($Folder);
-
             } catch (QUI\Exception $Exception) {
                 QUI::getMessagesHandler()->addError($Exception->getMessage());
             }

@@ -8,7 +8,7 @@ namespace QUI\Groups;
 
 use QUI;
 use QUI\Utils\DOM;
-use QUI\Utils\XML;
+use QUI\Utils\Text\XML;
 
 /**
  * Helper for groups

@@ -40,6 +40,5 @@ QUI::$Ajax->registerFunction(
 
         return true;
     },
-    array('uid', 'attributes'),
-    'Permission::checkSU'
+    array('uid', 'attributes')
 );

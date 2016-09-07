@@ -49,7 +49,6 @@ Message: {$message}
                 'Contact',
                 $body
             );
-
         } catch (QUI\Exception $Exception) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(

@@ -372,7 +372,7 @@ class Console
 
             $tools = array_merge(
                 $tools,
-                QUI\Utils\XML::getConsoleToolsFromXml($dir . '/console.xml')
+                QUI\Utils\Text\XML::getConsoleToolsFromXml($dir . '/console.xml')
             );
         }
 
@@ -389,7 +389,7 @@ class Console
 
             $tools = array_merge(
                 $tools,
-                QUI\Utils\XML::getConsoleToolsFromXml($dir . '/console.xml')
+                QUI\Utils\Text\XML::getConsoleToolsFromXml($dir . '/console.xml')
             );
         }
 

@@ -8,7 +8,7 @@ namespace QUI\Package;
 
 use QUI;
 use QUI\Update;
-use QUI\Utils\XML;
+use QUI\Utils\Text\XML;
 
 /**
  * An installed package
@@ -205,15 +205,16 @@ class Package extends QUI\QDOM
         Update::importMenu($dir . 'menu.xml');
 
         // events
-        Update::importEvents($dir . 'events.xml');
+        QUI\Events\Manager::clear($this->getName());
+        Update::importEvents($dir . 'events.xml', $this->getName());
         Update::importSiteEvents($dir . 'site.xml');
 
         Update::importLocale($dir . 'locale.xml');
+        QUI\Translator::publish($this->getName());
 
         // settings
         if (!file_exists($dir . 'settings.xml')) {
             QUI::getEvents()->fireEvent('packageSetup', array($this));
-
             return;
         }
 
@@ -241,11 +242,11 @@ class Package extends QUI\QDOM
     /**
      * Uninstall the package / plugin
      * it doesn't destroy the database data, its only uninstall the package
+     *
+     * @todo implementieren
      */
     public function uninstall()
     {
-
-
         QUI::getEvents()
             ->fireEvent('packageUninstall', array($this->getName()));
     }
@@ -253,10 +254,11 @@ class Package extends QUI\QDOM
     /**
      * Destroy the complete package / plugin
      * it destroy the database data, too
+     *
+     * @todo implementieren
      */
     public function destroy()
     {
-
         QUI::getEvents()
             ->fireEvent('packageUninstall', array($this->getName()));
     }

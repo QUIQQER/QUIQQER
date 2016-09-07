@@ -1313,7 +1313,7 @@ class User implements QUI\Interfaces\Users\User
         $Users       = QUI::getUsers();
         $SessionUser = $Users->getUserBySession();
 
-        if ($ParentUser && $ParentUser->getType() == 'QUI\\Users\\SystemUser') {
+        if ($ParentUser && $ParentUser->getType() == SystemUser::class) {
             return true;
         }
 
@@ -1384,7 +1384,7 @@ class User implements QUI\Interfaces\Users\User
      */
     protected function readAttributesFromUserXML($file)
     {
-        $Dom  = QUI\Utils\XML::getDomFromXml($file);
+        $Dom  = QUI\Utils\Text\XML::getDomFromXml($file);
         $Attr = $Dom->getElementsByTagName('attributes');
 
         if (!$Attr->length) {

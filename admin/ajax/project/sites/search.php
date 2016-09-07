@@ -20,9 +20,9 @@ QUI::$Ajax->registerFunction(
         foreach ($sites as $Site) {
             /* @var $Site \QUI\Projects\Site */
             $result[] = array(
-                'id' => $Site->getId(),
-                'name' => $Site->getAttribute('name'),
-                'title' => $Site->getAttribute('title'),
+                'id'     => $Site->getId(),
+                'name'   => $Site->getAttribute('name'),
+                'title'  => $Site->getAttribute('title'),
                 'c_date' => $Site->getAttribute('c_date'),
                 'c_user' => $Site->getAttribute('c_user'),
                 'e_date' => $Site->getAttribute('e_date'),

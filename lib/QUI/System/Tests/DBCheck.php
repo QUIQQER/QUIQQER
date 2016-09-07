@@ -8,7 +8,7 @@ namespace QUI\System\Tests;
 
 use QUI;
 use QUI\Utils\System\File as SystemFile;
-use QUI\Utils\XML as XML;
+use QUI\Utils\Text\XML;
 use QUI\Utils\StringHelper as StringHelper;
 
 /**
@@ -44,7 +44,7 @@ class DBCheck extends QUI\System\Test
         parent::__construct();
 
         $this->setAttributes(array(
-            'title' => 'QUIQQER - Database Check (on failure check error log!)',
+            'title'       => 'QUIQQER - Database Check (on failure check error log!)',
             'description' => 'Compares existing QUIQQER database tables ' .
                              'with database.xml files and detects discrepancies.'
         ));
@@ -55,7 +55,7 @@ class DBCheck extends QUI\System\Test
     /**
      * Database Check
      *
-     * @return self::STATUS_OK|self::STATUS_ERROR
+     * @return integer
      */
     public function execute()
     {
@@ -65,9 +65,8 @@ class DBCheck extends QUI\System\Test
             return self::STATUS_ERROR;
         }
 
-        $packages = SystemFile::readDir($packages_dir);
-
-        $this->Tables = QUI::getDataBase()->Table();
+        $packages     = SystemFile::readDir($packages_dir);
+        $this->Tables = QUI::getDataBase()->table();
 
         // first we need all databases
         foreach ($packages as $package) {
@@ -201,9 +200,9 @@ class DBCheck extends QUI\System\Test
     {
         $primaryKeys = array();
         $checkData   = array(
-            'table' => $info['suffix'],
-            'fields' => $info['fields'],
-            'indices' => false,
+            'table'    => $info['suffix'],
+            'fields'   => $info['fields'],
+            'indices'  => false,
             'auto_inc' => false
         );
 
@@ -257,8 +256,6 @@ class DBCheck extends QUI\System\Test
                         "-> no-site-reference=\"1\" <- attribute OR the " .
                         "-> no-project-lang=\"1\" <- attribute!"
                     );
-
-
                 }
             }
 
@@ -465,9 +462,9 @@ class DBCheck extends QUI\System\Test
     protected function addError($table, $dbTable, $error)
     {
         $this->errors[] = array(
-            'table' => $table,
+            'table'   => $table,
             'dbTable' => $dbTable,
-            'error' => $error
+            'error'   => $error
         );
 
         $this->error = true;

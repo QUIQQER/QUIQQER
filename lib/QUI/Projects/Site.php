@@ -328,7 +328,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         $siteXml = OPT_DIR . $package . '/site.xml';
 
-        $Dom   = QUI\Utils\XML::getDomFromXml($siteXml);
+        $Dom   = QUI\Utils\Text\XML::getDomFromXml($siteXml);
         $XPath = new \DOMXPath($Dom);
         $Types = $XPath->query('//type[@type="' . $type . '"]');
 
@@ -367,7 +367,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             return;
         }
 
-        $DataBaseXML = QUI\Utils\XML::getDomFromXml($databaseXml);
+        $DataBaseXML = QUI\Utils\Text\XML::getDomFromXml($databaseXml);
         $projects    = $DataBaseXML->getElementsByTagName('projects');
 
         if (!$projects || !$projects->length) {

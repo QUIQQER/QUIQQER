@@ -21,7 +21,6 @@ QUI::$Ajax->registerFunction(
 
         try {
             return QUI\Cache\Manager::get($cacheName);
-
         } catch (QUI\Exception $Exception) {
         }
 
@@ -34,7 +33,7 @@ QUI::$Ajax->registerFunction(
                 continue;
             }
 
-            $Category = QUI\Utils\XML::getSettingCategoriesFromXml(
+            $Category = QUI\Utils\Text\XML::getSettingCategoriesFromXml(
                 $file,
                 $category
             );

@@ -8,7 +8,7 @@ namespace QUI\Workspace;
 use QUI;
 use QUI\Controls\Contextmenu\Bar;
 use QUI\Controls\Contextmenu\Menuitem;
-use QUI\Utils\XML;
+use QUI\Utils\Text\XML;
 
 /**
  * Class Menu
@@ -26,7 +26,6 @@ class Menu
             return QUI\Cache\Manager::get(
                 $this->getCacheName()
             );
-
         } catch (QUI\Exception $Exception) {
         }
 

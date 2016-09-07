@@ -16,7 +16,6 @@ QUI::$Ajax->registerFunction(
             return $fileurl;
         }
 
-
         try {
             $File = QUI\Projects\Media\Utils::getMediaItemByUrl($fileurl);
 

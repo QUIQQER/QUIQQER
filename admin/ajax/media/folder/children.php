@@ -26,11 +26,10 @@ QUI::$Ajax->registerFunction(
             try {
                 $Child      = $Media->get($id);
                 $children[] = QUI\Projects\Media\Utils::parseForMediaCenter($Child);
-
             } catch (QUI\Exception $Exception) {
                 $params = array(
-                    'id' => $id,
-                    'name' => $Exception->getAttribute('name'),
+                    'id'    => $id,
+                    'name'  => $Exception->getAttribute('name'),
                     'title' => $Exception->getAttribute('title'),
                     'error' => true
                 );

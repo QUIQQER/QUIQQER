@@ -18,6 +18,7 @@ define('controls/projects/project/media/Input', [
 
     'qui/controls/Control',
     'qui/controls/buttons/Button',
+    'controls/icons/Confirm',
     'qui/utils/String',
     'controls/projects/project/media/Popup',
     'Projects',
@@ -26,7 +27,7 @@ define('controls/projects/project/media/Input', [
 
     'css!controls/projects/project/media/Input.css'
 
-], function (QUIControl, QUIButton, QUIStringUtils, MediaPopup, Projects, Ajax, Locale) {
+], function (QUIControl, QUIButton, IconConfirm, QUIStringUtils, MediaPopup, Projects, Ajax, Locale) {
     "use strict";
 
     /**
@@ -43,7 +44,8 @@ define('controls/projects/project/media/Input', [
         Type   : 'controls/projects/project/media/Input',
 
         Binds: [
-            '$onCreate'
+            '$onCreate',
+            '$openCSSClassDialog'
         ],
 
         options: {
@@ -53,7 +55,8 @@ define('controls/projects/project/media/Input', [
             fileid              : false,
             breadcrumb          : true,     // you can specified if the breadcrumb is shown or not
             selectable_types    : false,    // you can specified which types are selectable
-            selectable_mimetypes: false     // you can specified which mime types are selectable
+            selectable_mimetypes: false,    // you can specified which mime types are selectable
+            cssclasses          : false     // css classes can be selected
         },
 
         initialize: function (options, Input) {
@@ -64,6 +67,9 @@ define('controls/projects/project/media/Input', [
             this.$Path    = null;
             this.$Preview = null;
             this.$Project = null;
+
+            this.$CSSButton   = null;
+            this.$MediaButton = null;
         },
 
         /**
@@ -140,6 +146,9 @@ define('controls/projects/project/media/Input', [
                 icon  : 'fa fa-picture-o',
                 alt   : Locale.get('quiqqer/system', 'projects.project.site.media.input.select.alt'),
                 title : Locale.get('quiqqer/system', 'projects.project.site.media.input.select.title'),
+                styles: {
+                    width: 50
+                },
                 events: {
                     onClick: function () {
                         var value   = self.$Input.value,
@@ -192,10 +201,29 @@ define('controls/projects/project/media/Input', [
                 }
             }).inject(this.$Elm);
 
+            if (this.getAttribute('cssclasses')) {
+                this.$CSSButton = new QUIButton({
+                    icon  : 'fa fa-css3',
+                    alt   : Locale.get('quiqqer/system', 'projects.project.site.media.input.cssclass.alt'),
+                    title : Locale.get('quiqqer/system', 'projects.project.site.media.input.cssclass.title'),
+                    styles: {
+                        width: 50
+                    },
+                    events: {
+                        onClick: this.$openCSSClassDialog
+                    }
+                }).inject(this.$Elm);
+            } else {
+                this.$Path.setStyle('width', 'calc(100% - 130px)');
+            }
+
             new QUIButton({
                 icon  : 'fa fa-remove',
                 alt   : Locale.get('quiqqer/system', 'projects.project.site.media.input.clear.alt'),
                 title : Locale.get('quiqqer/system', 'projects.project.site.media.input.clear.alt'),
+                styles: {
+                    width: 50
+                },
                 events: {
                     onClick: function () {
                         self.clear();
@@ -232,10 +260,7 @@ define('controls/projects/project/media/Input', [
          * @param {String} str - image.php string
          */
         setValue: function (str) {
-            if (str.toString().match('image.php')) {
-                this.$Input.value = str.toString();
-            }
-
+            this.$Input.value = str.toString();
             this.fireEvent('change', [this, this.getValue()]);
             this.$refreshPreview();
         },
@@ -258,11 +283,22 @@ define('controls/projects/project/media/Input', [
 
             if (value === '' || value == '0') {
                 this.$Preview.setStyle('background', null);
+                this.$Preview.getElements('.qui-controls-project-media-input-preview-icon').destroy();
                 return;
             }
 
+            this.$Preview.getElements('.qui-controls-project-media-input-preview-icon').destroy();
             this.$Preview.getElements('.fa-spinner').destroy();
             this.$Preview.getElements('.fa-warning').destroy();
+
+            if (!value.match('image.php')) {
+                var Span = new Element('span', {
+                    'class': 'qui-controls-project-media-input-preview-icon'
+                }).inject(this.$Preview);
+
+                Span.addClass(value);
+                return;
+            }
 
             // loader image
             var MiniLoader = new Element('div', {
@@ -313,6 +349,19 @@ define('controls/projects/project/media/Input', [
                     width : 30
                 })
             });
+        },
+
+        /**
+         *
+         */
+        $openCSSClassDialog: function () {
+            new IconConfirm({
+                events: {
+                    onSubmit: function (Win, selected) {
+                        this.setValue(selected[0]);
+                    }.bind(this)
+                }
+            }).open();
         }
     });
 });
