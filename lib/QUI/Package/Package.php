@@ -209,6 +209,7 @@ class Package extends QUI\QDOM
         Update::importSiteEvents($dir . 'site.xml');
 
         Update::importLocale($dir . 'locale.xml');
+        QUI\Translator::publish($this->getName());
 
         // settings
         if (!file_exists($dir . 'settings.xml')) {
