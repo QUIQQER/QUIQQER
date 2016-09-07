@@ -24,7 +24,7 @@ QUI::$Ajax->registerFunction(
             if (!file_exists($file)) {
                 // #locale
                 QUI\Log\Logger::getLogger()->addError(
-                    "Could not save the data. the config file {$file} was not found"
+                    "Could not save the data. the config file {$file} was not found" // #locale
                 );
 
                 continue;
