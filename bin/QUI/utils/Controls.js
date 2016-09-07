@@ -478,13 +478,15 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     for (i = 0, len = mediaImages.length; i < len; i++) {
                         new ProjectMediaInput({
-                            selectable_types: ['image', 'file']
+                            selectable_types: ['image', 'file'],
+                            cssclasses      : mediaImages[i].get('data-qui-options-cssclasses')
                         }, mediaImages[i]).create();
                     }
 
                     for (i = 0, len = mediaFolder.length; i < len; i++) {
                         new ProjectMediaInput({
-                            selectable_types: ['folder']
+                            selectable_types: ['folder'],
+                            cssclasses      : mediaFolder[i].get('data-qui-options-cssclasses')
                         }, mediaFolder[i]).create();
                     }
 
