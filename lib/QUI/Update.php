@@ -210,7 +210,8 @@ class Update
                 // events
                 self::importEvents(
                     $package_dir . '/' . $sub . '/events.xml',
-                    $IO
+                    $IO,
+                    $package . '/' . $sub
                 );
             }
         }
@@ -303,9 +304,9 @@ class Update
      * Import / register quiqqer events
      *
      * @param string $xml_file - path to an engine.xml
-     * @param $IO - (optional) Composer InputOutput
+     * @param string $packageName - optional, Name of the package
      */
-    public static function importEvents($xml_file, $IO = null)
+    public static function importEvents($xml_file, $packageName = '')
     {
         if (!file_exists($xml_file)) {
             return;
@@ -321,7 +322,8 @@ class Update
             if ($Event->getAttribute('on') && $Event->getAttribute('fire')) {
                 $Events->addEvent(
                     $Event->getAttribute('on'),
-                    $Event->getAttribute('fire')
+                    $Event->getAttribute('fire'),
+                    $packageName
                 );
             }
         }
