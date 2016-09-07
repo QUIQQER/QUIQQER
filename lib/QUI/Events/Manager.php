@@ -115,9 +115,7 @@ class Manager implements QUI\Interfaces\Events
         }
 
         QUI::getDataBase()->delete(self::table(), array(
-            'where' => array(
-                'package' => $package
-            )
+            'package' => $package
         ));
     }
 
