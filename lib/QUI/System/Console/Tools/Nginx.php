@@ -121,6 +121,12 @@ server{
     }
     
     
+    # Route /lib/ to its real location.
+    location ^~{$quiqqerUrlDir}lib/ {
+        rewrite ^{$quiqqerUrlDir}lib/(.*)$ {$quiqqerUrlDir}packages/quiqqer/quiqqer/lib/$1 break;
+    }
+    
+    
     # #######################################################
     # Admin
     # #######################################################

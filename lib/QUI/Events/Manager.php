@@ -91,9 +91,10 @@ class Manager implements QUI\Interfaces\Events
         $DBTable = QUI::getDataBase()->table();
 
         $DBTable->addColumn(self::table(), array(
-            'event'    => 'varchar(200)',
+            'event'    => 'varchar(255)',
             'callback' => 'text',
-            'sitetype' => 'text'
+            'sitetype' => 'text',
+            'package'  => 'text'
         ));
 
         self::clear();
@@ -101,12 +102,21 @@ class Manager implements QUI\Interfaces\Events
 
     /**
      * clear all events
+     *
+     * @param string|bool $package - name of the package, default = false => complete clear
      */
-    public static function clear()
+    public static function clear($package = false)
     {
-        QUI::getDataBase()->table()->truncate(
-            self::table()
-        );
+        if (empty($package) || !is_string($package)) {
+            QUI::getDataBase()->table()->truncate(
+                self::table()
+            );
+            return;
+        }
+
+        QUI::getDataBase()->delete(self::table(), array(
+            'package' => $package
+        ));
     }
 
     /**
@@ -149,13 +159,18 @@ class Manager implements QUI\Interfaces\Events
      * @param string $event - The type of event (e.g. 'complete').
      * @param callback $fn - The function to execute.
      */
-    public function addEvent($event, $fn)
+    public function addEvent($event, $fn, $package = '')
     {
+        if (!is_string($package)) {
+            $package = '';
+        }
+
         // add the event to the db
         if (is_string($fn)) {
             QUI::getDataBase()->insert(self::table(), array(
                 'event'    => $event,
-                'callback' => $fn
+                'callback' => $fn,
+                'package'  => $package
             ));
         }
 

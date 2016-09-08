@@ -169,7 +169,11 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteRule ^(.*)$ – [END,R=403]
 
     ## bin dir
-    RewriteRule ^bin/(.*)$ {$quiqqerBin}/$1 [END]
+    RewriteRule ^bin/(.*)$ {$quiqqerBin}/$1 [END]" .
+
+        # This is a temporary workaround. needs to be removed when the media upload is relocated
+        "## lib dir
+    RewriteRule ^lib/(.*)$ {$quiqqerLib}/$1 [END]
 
 
     ## admin
@@ -251,7 +255,11 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteRule ^ - [L]
 
     ## bin dir
-    RewriteRule ^bin/(.*)$ {$quiqqerBin}/$1 [L]
+    RewriteRule ^bin/(.*)$ {$quiqqerBin}/$1 [L]" .
+
+        # This is a temporary workaround. needs to be removed when the media upload is relocated
+        "## lib dir
+    RewriteRule ^lib/(.*)$ {$quiqqerLib}/$1 [END]
 
 
     ## admin

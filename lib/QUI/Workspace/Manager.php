@@ -191,7 +191,7 @@ class Manager
             $workspace['data'] = json_encode($data['data']);
         }
 
-        \QUI::getDataBase()->update(
+        QUI::getDataBase()->update(
             self::table(),
             $workspace,
             array(
