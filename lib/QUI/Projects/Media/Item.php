@@ -590,17 +590,16 @@ abstract class Item extends QUI\QDOM
     /**
      * Returns the url from the file
      *
-     * @param boolean $rewrite - false = image.php, true = rewrited URL
+     * @param boolean $rewritten - false = image.php, true = rewrited URL
      *
      * @return string
      */
-    public function getUrl($rewrite = false)
+    public function getUrl($rewritten = false)
     {
-        if ($rewrite == false) {
+        if ($rewritten == false) {
             $Project = $this->Media->getProject();
 
-            $str = 'image.php?id=' . $this->getId() . '&project='
-                   . $Project->getAttribute('name');
+            $str = 'image.php?id=' . $this->getId() . '&project=' . $Project->getAttribute('name');
 
             if ($this->getAttribute('maxheight')) {
                 $str .= '&maxheight=' . $this->getAttribute('maxheight');
@@ -614,8 +613,7 @@ abstract class Item extends QUI\QDOM
         }
 
         if ($this->getAttribute('active') == 1) {
-            return URL_DIR . $this->Media->getCacheDir()
-                   . $this->getAttribute('file');
+            return URL_DIR . $this->Media->getCacheDir() . $this->getAttribute('file');
         }
 
         return '';
@@ -635,7 +633,7 @@ abstract class Item extends QUI\QDOM
             throw new QUI\Exception(
                 'File with a same Name exist in folder '
                 . $Folder->getAttribute('name')
-            );
+            ); // #locale
         }
 
         $Parent   = $this->getParent();

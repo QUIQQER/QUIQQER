@@ -594,7 +594,7 @@ class Plugin extends QUI\QDOM
      */
     public function getSettingsCategory($name)
     {
-        return XML::getSettingCategoriesFromXml(
+        return XML::getSettingCategoryFromXml(
             OPT_DIR . $this->getAttribute('name') . '/settings.xml',
             $name
         );

@@ -10,10 +10,10 @@ define('QUIQQER_SYSTEM', true);
 
 require_once $dir . 'header.php';
 
-$QUM = new QUI\Upload\Manager();
-QUI::getAjax();
-
 try {
+    $QUM = new QUI\Upload\Manager();
+    QUI::getAjax();
+
     $uploadResult = $QUM->init();
 
     if (!empty($uploadResult)) {
@@ -31,9 +31,9 @@ try {
         // maintenance flag
         echo '<quiqqer>' . json_encode($result) . '</quiqqer>';
     }
-
 } catch (QUI\Exception $Exception) {
     QUI\System\Log::writeException($Exception);
-
     $QUM->flushMessage($Exception->toArray());
+} catch (\Exception $Exception) {
+    QUI\System\Log::writeException($Exception);
 }

@@ -887,7 +887,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             }
         }
 
-        throw new QUI\Exception('Die Seite besitzt keine nächstfolgende Seite');
+        throw new QUI\Exception('Die Seite besitzt keine nächstfolgende Seite'); // #locale
     }
 
     /**
@@ -943,7 +943,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             }
         }
 
-        throw new QUI\Exception('Die Seite besitzt keine vorhergehenden Seite');
+        throw new QUI\Exception('Die Seite besitzt keine vorhergehenden Seite'); // #locale
     }
 
     /**

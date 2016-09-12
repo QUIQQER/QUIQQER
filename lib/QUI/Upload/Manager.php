@@ -174,7 +174,6 @@ class Manager
         if (!$filename) {
             try {
                 $this->formUpload($onfinish, $params);
-
             } catch (QUI\Exception $Exception) {
                 $this->flushMessage($Exception->toArray());
 
@@ -646,7 +645,6 @@ class Manager
                 }
 
                 $result[] = $attributes;
-
             } catch (QUI\Exception $Exception) {
                 if ($Exception->getCode() === 404) {
                     QUIFile::unlink($dir . $file);

@@ -33,18 +33,22 @@ QUI::$Ajax->registerFunction(
                 continue;
             }
 
-            $Category = QUI\Utils\Text\XML::getSettingCategoriesFromXml(
-                $file,
-                $category
-            );
+            $categories = array();
 
-            if (!$Category) {
-                continue;
+            if ($category) {
+                $Category = QUI\Utils\Text\XML::getSettingCategoryFromXml($file, $category);
+
+                if ($Category) {
+                    $categories[] = $Category;
+                }
+            } else {
+                $categories = QUI\Utils\Text\XML::getSettingCategoriesFromXml($file);
             }
 
-            $result .= QUI\Utils\DOM::parseCategorieToHTML($Category);
+            foreach ($categories as $Category) {
+                $result .= QUI\Utils\DOM::parseCategorieToHTML($Category);
+            }
         }
-
 
         QUI\Cache\Manager::set($cacheName, $result);
 

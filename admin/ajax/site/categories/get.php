@@ -15,11 +15,10 @@ QUI::$Ajax->registerFunction(
 
         $Tabbar   = QUI\Projects\Sites::getTabs($Site);
         $children = $Tabbar->getChildren();
+        $result   = array();
 
-        $result = array();
-
+        /* @var $Itm QUI\Controls\Toolbar\Tab */
         foreach ($children as $Itm) {
-            /* @var $Itm QUI\Controls\Toolbar\Tab */
             $result[] = $Itm->getAttributes();
         }
 

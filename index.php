@@ -114,7 +114,7 @@ try {
      */
     if (QUI::conf('globals', 'maintenance')
         && !(QUI::getUserBySession()->getId()
-             && QUI::getUserBySession()->isSu())
+             && QUI::getUserBySession()->isSU())
     ) {
         $Response->setStatusCode(Response::HTTP_SERVICE_UNAVAILABLE);
         $Response->headers->set('X-Powered-By', '');
