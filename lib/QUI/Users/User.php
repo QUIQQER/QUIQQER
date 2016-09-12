@@ -1566,6 +1566,11 @@ class User implements QUI\Interfaces\Users\User
      */
     protected function canBeDeleted()
     {
+        // wenn benutzer deaktiviert ist, fällt die prüfung weg, da er bereits deaktiviert ist
+        if (!$this->isActive()) {
+            return;
+        }
+
         if ($this->isSU()) {
             $suUsers = QUI::getUsers()->getUserIds(array(
                 'where' => array(
@@ -1577,7 +1582,7 @@ class User implements QUI\Interfaces\Users\User
             if (count($suUsers) <= 1) {
                 throw new QUI\Users\Exception(
                     'User cant be destroyed or deactivated. At least it must be one super user exist in the system.'
-                );
+                ); // #locale
             }
         }
 
