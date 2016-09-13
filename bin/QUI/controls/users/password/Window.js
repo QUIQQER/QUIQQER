@@ -12,7 +12,9 @@ define('controls/users/password/Window', [
     'qui/QUI',
     'qui/controls/windows/Confirm',
     'controls/users/password/Password',
-    'Locale'
+    'Locale',
+
+    'css!controls/users/password/Window.css'
 
 ], function (QUI, QUIConfirm, Password, QUILocale) {
     "use strict";
@@ -27,11 +29,12 @@ define('controls/users/password/Window', [
 
         options: {
             icon     : 'fa fa-icon',
-            title    : 'Passwort ändern',
+            title    : QUILocale.get('quiqqer/quiqqer', 'menu.profile.userPassword.text'),
             maxHeight: 400,
             maxWidth : 400,
             uid      : false,
-            autoclose: false
+            autoclose: false,
+            message  : false
         },
 
         initialize: function (options) {
@@ -52,7 +55,19 @@ define('controls/users/password/Window', [
          * event : on open
          */
         $onOpen: function (Win) {
+            Win.getContent().addClass('qui-controle-user-password-window');
             Win.getContent().set('html', '');
+
+            if (this.getAttribute('message')) {
+                var Message = new Element('div', {
+                    'class': 'qui-controle-user-password-window-message',
+                    html   : this.getAttribute('message')
+                }).inject(Win.getContent());
+
+                Win.getContent().setStyles({
+                    paddingTop: Message.getSize().y + 20
+                });
+            }
 
             this.$Password = new Password({
                 uid: this.getAttribute('uid')

@@ -5,6 +5,7 @@
  * @require qui/QUI
  * @require qui/controls/Control
  * @require Ajax
+ * @require Locale
  * @require css!controls/users/password/Password.css
  */
 define('controls/users/password/Password', [
@@ -49,6 +50,7 @@ define('controls/users/password/Password', [
         },
 
         /**
+         * Create the domnode element
          *
          * @returns {HTMLDivElement}
          */
@@ -113,7 +115,6 @@ define('controls/users/password/Password', [
             }
 
             return new Promise(function (resolve, reject) {
-
                 QUIAjax.post('ajax_users_set_password', function () {
                     resolve();
                     this.fireEvent('save', [this]);
