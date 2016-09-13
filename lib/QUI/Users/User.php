@@ -879,6 +879,44 @@ class User implements QUI\Interfaces\Users\User
     }
 
     /**
+     * This method can be used, for change the user password by himself
+     *
+     * @param string $newPassword
+     * @param string $oldPassword
+     * @param bool|QUI\Interfaces\Users\User $ParentUser
+     * @throws QUI\Users\Exception
+     */
+    public function changePassword($newPassword, $oldPassword, $ParentUser = false)
+    {
+        $this->checkRights($ParentUser);
+
+        if (empty($newPassword) || empty($oldPassword)) {
+            throw new QUI\Users\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.lib.user.empty.password'
+                )
+            );
+        }
+
+        if (!$this->checkPassword($oldPassword)) {
+            throw new QUI\Users\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'exception.user.oldPassword.is.wrong'
+                )
+            );
+        }
+
+        $this->setPassword($newPassword, $ParentUser);
+
+        QUI::getEvents()->fireEvent(
+            'userChangePassword',
+            array($this, $newPassword, $oldPassword)
+        );
+    }
+
+    /**
      * (non-PHPdoc)
      *
      * @see QUI\Interfaces\Users\User::setPassword()
@@ -933,13 +971,18 @@ class User implements QUI\Interfaces\Users\User
      */
     public function checkPassword($pass, $encrypted = false)
     {
-        if (!$encrypted) {
-            $_pw = $this->Users->genHash($pass);
-        } else {
-            $_pw = $pass;
+        if ($encrypted) {
+            return $pass == $this->password ? true : false;
         }
 
-        return $_pw == $this->password ? true : false;
+        try {
+            $Auth = QUI::getUsers()->getAuthenticator($this->getUsername());
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addWarning($Exception->getMessage());
+            return false;
+        }
+
+        return $Auth->auth($pass);
     }
 
     /**
@@ -1363,11 +1406,6 @@ class User implements QUI\Interfaces\Users\User
                 $this->readAttributesFromUserXML($userXml)
             );
         }
-
-        $attributes = array_merge(
-            $attributes,
-            $this->readAttributesFromUserXML(SYS_DIR . 'user.xml')
-        );
 
         QUI\Cache\Manager::set('user/plugin-attribute-list', $attributes);
 

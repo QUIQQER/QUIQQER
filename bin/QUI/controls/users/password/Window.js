@@ -28,13 +28,18 @@ define('controls/users/password/Window', [
         ],
 
         options: {
-            icon     : 'fa fa-icon',
-            title    : QUILocale.get('quiqqer/quiqqer', 'menu.profile.userPassword.text'),
-            maxHeight: 400,
-            maxWidth : 400,
-            uid      : false,
-            autoclose: false,
-            message  : false
+            icon      : 'fa fa-key',
+            title     : QUILocale.get('quiqqer/system', 'menu.profile.userPassword.text'),
+            maxHeight : 470,
+            maxWidth  : 340,
+            uid       : false,
+            autoclose : false,
+            message   : false,
+            mustChange: false,
+            ok_button : {
+                text     : QUILocale.get('quiqqer/system', 'accept'),
+                textimage: 'fa fa-check'
+            }
         },
 
         initialize: function (options) {
@@ -70,8 +75,26 @@ define('controls/users/password/Window', [
             }
 
             this.$Password = new Password({
-                uid: this.getAttribute('uid')
+                uid       : this.getAttribute('uid'),
+                mustChange: false,
+                events    : {
+                    onSaveBegin: function () {
+                        Win.Loader.show();
+                    },
+                    onSave     : function () {
+                        Win.Loader.hide();
+                    }
+                }
             }).inject(Win.getContent());
+
+            if (this.getAttribute('mustChange')) {
+                this.setAttribute('autoclose', false);
+                this.setAttribute('backgroundClosable', false);
+
+                this.Background.getElm().removeEvents('click');
+                this.$Title.getElements('.qui-window-popup-title-close').destroy();
+                this.getButton('cancel').destroy();
+            }
         },
 
         /**

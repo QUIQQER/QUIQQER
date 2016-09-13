@@ -26,7 +26,6 @@ Slick.definePseudo('display', function (value) {
 // IE Flickering Bug
 try {
     document.execCommand("BackgroundImageCache", false, true);
-
 } catch (err) {
     // Nothing to do
 }

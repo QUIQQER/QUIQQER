@@ -65,18 +65,8 @@ class Utils
             );
         }
 
-        /*
-        $Plugin  = \QUI::getPlugins();
-        $plugins = $Plugin->get();
-
-        // user.xml auslesen
-        foreach ( $plugins as $Plugin ) {
-            $Plugin->loadUserTabs( $Tabbar, $User );
-        }
-        */
-
         /**
-         * user extention from projects
+         * user extension from projects
          */
         $projects = QUI\Projects\Manager::getProjects();
 
@@ -99,6 +89,7 @@ class Utils
      * @param string $tab
      *
      * @return string
+     * @deprecated
      */
     public static function getTab($uid, $plugin, $tab)
     {
@@ -116,7 +107,7 @@ class Utils
             );
         }
 
-        // ürpject
+        // project
         if (strpos($plugin, 'project.') !== false) {
             $project = explode('project.', $plugin);
 

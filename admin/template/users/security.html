@@ -1,58 +1,114 @@
-
-<table class="data-table">
+<table class="data-table data-table-flexbox">
     <thead>
-        <tr>
-            <th colspan="2">
-                {title text="Benutzer Passwort"}
-            </th>
-        </tr>
+    <tr>
+        <th>
+            {locale group="quiqqer/quiqqer" var="user.panel.password"}
+        </th>
+    </tr>
     </thead>
     <tbody>
-        <tr class="odd">
-            <td style="width: 150px">Neues Passwort setzen</td>
-            <td><input type="password" name="password" value="" autocomplete="off" /></td>
-        </tr>
-        <tr class="even">
-            <td style="width: 150px">Passwort wiederhohlen</td>
-            <td><input type="password" name="password2" value="" autocomplete="off" /></td>
-        </tr>
-        <tr class="even">
-            <td style="width: 150px"></td>
-            <td>
-                <label>
-                    <input type="checkbox" name="showPasswords" /> Passwörter anzeigen
-                </label>
-            </td>
-        </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {locale group="quiqqer/quiqqer" var="user.panel.password.new"}
+                </span>
+                <input type="password" name="password"
+                       value=""
+                       autocomplete="off"
+                       class="field-container-field"
+                />
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {locale group="quiqqer/quiqqer" var="user.panel.password.repeat"}
+                </span>
+                <input type="password" name="password2"
+                       value=""
+                       autocomplete="off"
+                       class="field-container-field"
+                />
+            </label>
+        </td>
+    </tr>
+    <tr class="even">
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {locale group="quiqqer/quiqqer" var="user.panel.password.show"}
+                </span>
+                <span class="field-container-field">
+                    <input type="checkbox" name="showPasswords"/>
+                </span>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {locale group="quiqqer/quiqqer" var="user.settings.setNewPassword"}
+                </span>
+                <span class="field-container-field">
+                    <input type="checkbox"
+                           name="quiqqer.set.new.password"
+                    />
+                    {locale group="quiqqer/quiqqer" var="user.settings.setNewPassword.text"}
+                </span>
+            </label>
+        </td>
+    </tr>
     </tbody>
 </table>
 
-
-<table class="data-table">
+<table class="data-table data-table-flexbox">
     <thead>
-        <tr>
-            <th colspan="2">
-                {title text="Gültig bis"}
-            </th>
-        </tr>
+    <tr>
+        <th>
+            {title text="Gültig bis"}
+        </th>
+    </tr>
     </thead>
+
     <tbody>
-        <tr class="odd">
-            <td style="width: 20px;"><input type="radio" name="expire" value="never" class="noborder" /></td>
-            <td>Immer</td>
-        </tr>
-        <tr class="even">
-            <td><input type="radio" name="expire" value="date" class="noborder" /></td>
-            <td>Datum / Uhrzeit</td>
-        </tr>
-        <tr class="even">
-            <td></td>
-            <td>
-                <div class="expire-container">
-                    <input name="expire_date" value="" type="date" />
-                </div>
-            </td>
-        </tr>
-        <tr><td style="font-size: 5px">&nbsp;</td></tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    Immer
+                </span>
+                <span class="field-container-field">
+                    <input type="radio" name="expire" value="never" class="noborder"/>
+                </span>
+
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    Datum / Uhrzeit
+                </span>
+                <span class="field-container-field">
+                    <input type="radio"
+                           name="expire"
+                           value="date"
+                           class="noborder"
+                           style="float: left;"
+                    />
+
+                    <span class="expire-container" style="float: left;clear: both; margin-top: 20px;">
+                        <input name="expire_date" value="" type="date"/>
+                    </span>
+                </span>
+            </label>
+        </td>
+    </tr>
     </tbody>
 </table>
+

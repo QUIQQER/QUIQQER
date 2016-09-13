@@ -10,12 +10,12 @@
  * @throws QUI\Exception
  */
 QUI::$Ajax->registerFunction(
-    'ajax_users_set_password',
-    function ($uid, $pw1, $pw2) {
+    'ajax_users_set_passwordChange',
+    function ($uid, $newPassword, $passwordRepeat, $oldPassword) {
         $Users = QUI::getUsers();
         $User  = $Users->get((int)$uid);
 
-        if ($pw1 != $pw2) {
+        if ($newPassword != $passwordRepeat) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
@@ -24,8 +24,7 @@ QUI::$Ajax->registerFunction(
             );
         }
 
-        $User->setPassword($pw1);
+        $User->changePassword($newPassword, $oldPassword);
     },
-    array('uid', 'pw1', 'pw2', 'params'),
-    'Permission::checkSU'
+    array('uid', 'newPassword', 'passwordRepeat', 'oldPassword')
 );

@@ -19,13 +19,13 @@ class Auth implements QUI\Interfaces\Users\Auth
      * User object
      * @var false|QUI\Users\User
      */
-    protected $User;
+    protected $User = null;
 
     /**
      * Name of the user
      * @var string
      */
-    protected $username;
+    protected $username = null;
 
     /**
      * @param string $username
@@ -76,7 +76,7 @@ class Auth implements QUI\Interfaces\Users\Auth
      */
     public function getUserId()
     {
-        if ($this->User) {
+        if (!is_null($this->User)) {
             return $this->User->getId();
         }
 

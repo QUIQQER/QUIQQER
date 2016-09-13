@@ -1,0 +1,64 @@
+<?php
+
+/**
+ * This file contains \QUI\Intranet\EventHandler
+ */
+
+namespace QUI;
+
+use QUI;
+
+/**
+ * Intranet
+ *
+ * @author www.pcsg.de
+ */
+class EventHandler
+{
+    /**
+     * event on onAdminLoadFooter
+     */
+    public static function onAdminLoadFooter()
+    {
+        $User = QUI::getUserBySession();
+
+        if (!$User->getAttribute('quiqqer.set.new.password')) {
+            return;
+        }
+
+        echo "<script>
+            var openChangePasswordWindow = function() {
+                require([
+                    'controls/users/password/Window',
+                    'Locale'
+                ], function(Password, QUILocale) {
+                    new Password({
+                        mustChange: true,
+                        message: QUILocale.get('quiqqer/quiqqer', 'message.set.new.password')
+                    }).open();
+                });
+            }
+       
+            require(['Locale'], function(QUILocale) {
+                if (!QUILocale.exists('quiqqer/quiqqer', 'message.set.new.password')) {
+                    (function() {
+                        openChangePasswordWindow();
+                    }).delay(2000);
+                    return;
+                }
+                
+                openChangePasswordWindow();
+            });
+    
+        </script>";
+    }
+
+    /**
+     * @param QUI\Interfaces\Users\User $User
+     */
+    public static function onUserSetPassword(QUI\Interfaces\Users\User $User)
+    {
+        $User->setAttribute('quiqqer.set.new.password', 0);
+        $User->save(QUI::getUsers()->getSystemUser());
+    }
+}

@@ -282,8 +282,8 @@ define('controls/users/User', [
                 var attributes = User.getAttributes();
                 var extras     = JSON.decode(attributes.extra);
 
-                FormUtils.setDataToForm(attributes, Body.getElement('form'));
                 FormUtils.setDataToForm(extras, Body.getElement('form'));
+                FormUtils.setDataToForm(attributes, Body.getElement('form'));
 
                 // parse all the controls
                 QUI.parse(Body).then(function () {

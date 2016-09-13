@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<events>
+    <event on="onAdminLoadFooter" fire="\QUI\EventHandler::onAdminLoadFooter"/>
+    <event on="onUserSetPassword" fire="\QUI\EventHandler::onUserSetPassword"/>
+</events>

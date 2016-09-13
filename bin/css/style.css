@@ -168,6 +168,7 @@ label.field-container-field {
     color: #666666;
     font: inherit;
     font-weight: normal;
+    width: 200px;
 }
 
 .field-container-field,

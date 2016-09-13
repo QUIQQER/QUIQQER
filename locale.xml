@@ -358,7 +358,11 @@
         </locale>
         <locale name="user.panel.password.show">
             <de><![CDATA[Passwörter anzeigen]]></de>
-            <en><![CDATA[how passwords]]></en>
+            <en><![CDATA[Show passwords]]></en>
+        </locale>
+        <locale name="user.panel.password.old">
+            <de><![CDATA[Altes Password]]></de>
+            <en><![CDATA[Old password]]></en>
         </locale>
         <locale name="user.panel.personalData">
             <de><![CDATA[Persönliche Daten / Adressen]]></de>
@@ -403,6 +407,23 @@
         <locale name="message.groups.deleted" html="true">
             <de><![CDATA[Die Gruppen <b>[groups]</b> wurde erfolgreich gespeichert.]]></de>
             <en><![CDATA[The groups <b>[groups]</b> successfully deleted.]]></en>
+        </locale>
+
+        <locale name="message.set.new.password">
+            <de><![CDATA[Du musst dein Passwort ändern. Bitte gebe ein neues Passwort ein.]]></de>
+            <en><![CDATA[You must change your password. Please enter a new password.]]></en>
+        </locale>
+        <locale name="exception.user.oldPassword.is.wrong">
+            <de><![CDATA[Das alte Passwort ist nicht korrekt.]]></de>
+            <en><![CDATA[The old password is incorrect]]></en>
+        </locale>
+        <locale name="user.settings.setNewPassword">
+            <de><![CDATA[Passwort erneuern]]></de>
+            <en><![CDATA[Renew password]]></en>
+        </locale>
+        <locale name="user.settings.setNewPassword.text">
+            <de><![CDATA[Beim nächsten Login muss der Benutzer ein neues Passwort setzen.]]></de>
+            <en><![CDATA[At the next login, the user must set a new password.]]></en>
         </locale>
     </groups>
 
@@ -1029,6 +1050,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="no.results">
             <de><![CDATA[Keine Ergebnisse gefunden]]></de>
             <en><![CDATA[No results found]]></en>
+        </locale>
+        <locale name="menu.profile.userPassword.text">
+            <de><![CDATA[Passwort ändern]]></de>
+            <en><![CDATA[Change password]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js">
@@ -4839,10 +4864,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="menu.profile.userProfile.text">
             <de><![CDATA[Profil]]></de>
             <en><![CDATA[Profile]]></en>
-        </locale>
-        <locale name="menu.profile.userPassword.text">
-            <de><![CDATA[Passwort ändern]]></de>
-            <en><![CDATA[Change password]]></en>
         </locale>
         <locale name="menu.goto.text">
             <de><![CDATA[Verwaltung]]></de>

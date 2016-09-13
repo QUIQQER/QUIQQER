@@ -734,6 +734,52 @@ class Manager
     }
 
     /**
+     * Return the users authenticator
+     *
+     * @param string $username - username
+     * @return QUI\Interfaces\Users\Auth
+     *
+     * @throws Exception
+     */
+    public function getAuthenticator($username)
+    {
+        // Authentifizierung
+        $authType  = QUI::conf('auth', 'type');
+        $authClass = $authType;
+
+        if ($authType == 'standard') {
+            $authClass = Auth::class;
+        }
+
+        if (!class_exists($authClass)) {
+            QUI\System\Log::addError(
+                'Authentication Type not found. Please check your config settings'
+            );
+
+            throw new QUI\Users\Exception(
+                array('quiqqer/system', 'exception.login.fail'),
+                401
+            );
+        }
+
+        $Auth       = new $authClass($username);
+        $implements = class_implements($Auth);
+
+        if (!isset($implements['QUI\Interfaces\Users\Auth'])) {
+            QUI\System\Log::addError(
+                'Authentication Type is not from Interface QUI\Interfaces\Users\Auth'
+            );
+
+            throw new QUI\Users\Exception(
+                array('quiqqer/system', 'exception.login.fail'),
+                401
+            );
+        }
+
+        return $Auth;
+    }
+
+    /**
      * Returns all userids
      *
      * @return array
@@ -852,19 +898,7 @@ class Manager
             );
         }
 
-        $Auth       = new $authClass($username);
-        $implements = class_implements($Auth);
-
-        if (!isset($implements['QUI\Interfaces\Users\Auth'])) {
-            QUI\System\Log::addError(
-                'Authentication Type is not from Interface QUI\Interfaces\Users\Auth'
-            );
-
-            throw new QUI\Users\Exception(
-                array('quiqqer/system', 'exception.login.fail'),
-                401
-            );
-        }
+        $Auth = $this->getAuthenticator($username);
 
         /* @var $Auth QUI\Interfaces\Users\Auth */
         if ($Auth->auth($pass) === false) {
@@ -873,7 +907,6 @@ class Manager
                 401
             );
         }
-
 
         $userId = $Auth->getUserId();
 
