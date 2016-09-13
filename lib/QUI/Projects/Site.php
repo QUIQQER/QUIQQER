@@ -1006,6 +1006,36 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     }
 
     /**
+     * Return the last child
+     *
+     * @param array $params
+     * @return bool|Site|Site\Edit
+     */
+    public function lastChild($params = array())
+    {
+        if (!is_array($params)) {
+            $params = array();
+        }
+
+        $params['limit'] = false;
+
+        $result = $this->getChildrenIds($params);
+
+        if (!count($result)) {
+            return false;
+        }
+
+        $last = array_pop($result);
+
+        try {
+            return $this->getProject()->get($last);
+        } catch (QUI\Exception $Exception) {
+        }
+
+        return false;
+    }
+
+    /**
      * Gibt die Kinder zurück achtet aber auf "Nicht in Navigation anzeigen" und Rechte
      *
      * @param array $params
