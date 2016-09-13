@@ -229,9 +229,7 @@ class Ajax extends QUI\QDOM
      */
     public function callRequestFunction($_rf, $values = false)
     {
-        if (!isset(self::$functions[$_rf])
-            && !isset(self::$callables[$_rf])
-        ) {
+        if (!isset(self::$functions[$_rf]) && !isset(self::$callables[$_rf])) {
             if (defined('DEVELOPMENT') && DEVELOPMENT) {
                 System\Log::addDebug('Funktion ' . $_rf . ' nicht gefunden');
             }

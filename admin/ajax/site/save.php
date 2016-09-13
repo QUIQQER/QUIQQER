@@ -25,7 +25,7 @@ QUI::$Ajax->registerFunction(
 
         $result = QUI::$Ajax->callRequestFunction('ajax_site_get', array(
             'project' => json_encode($Project->toArray()),
-            'id' => $id
+            'id'      => $id
         ));
 
         return $result['result'];
