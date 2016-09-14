@@ -181,6 +181,13 @@ label.field-container-field {
     padding: 0.5em 0 0.5em 0.75em;
 }
 
+.field-container-field:disabled {
+    color: rgba(0, 0, 0, 0.3);
+    cursor: not-allowed;
+    border: 1px solid rgba(147, 128, 108, 0.25);
+    border-left: none;
+}
+
 .field-container-field:first-child,
 .field-container-item:first-child {
     border-radius: 2px 0 0 2px;

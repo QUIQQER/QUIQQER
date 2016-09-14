@@ -554,7 +554,8 @@ define('controls/groups/Group', [
                 Toolbar.set('html', '');
 
                 Sel = new Element('select', {
-                    name: 'toolbar'
+                    'class': 'field-container-field',
+                    name   : 'toolbar'
                 });
 
                 for (i = 0, len = toolbars.length; i < len; i++) {
@@ -564,7 +565,7 @@ define('controls/groups/Group', [
                     }).inject(Sel);
                 }
 
-                Sel.inject(Toolbar);
+                Sel.replaces(Toolbar);
                 Sel.value = this.getAttribute('toolbar');
 
             }.bind(this));

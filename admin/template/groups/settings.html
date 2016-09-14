@@ -1,26 +1,51 @@
-
-<table class="data-table">
-<thead>
+<table class="data-table data-table-flexbox">
+    <thead>
     <tr>
-        <th colspan="2">Information</th>
+        <th>
+            Information
+        </th>
     </tr>
-</thead>
-<tbody>
-    <tr class="{cycle values="odd,even"}">
-        <td style="width: 150px;">{t}Gruppen-ID{/t}</td>
+    </thead>
+
+    <tbody>
+    <tr>
         <td>
-            <input type="text" name="id" value="" disabled />
+            <label class="field-container">
+                <span class="field-container-item">
+                    Gruppen-ID
+                </span>
+                <input type="text"
+                       name="id"
+                       value=""
+                       disabled="disabled"
+                       class="field-container-field"
+                />
+            </label>
         </td>
     </tr>
-    <tr class="{cycle values="odd,even"}">
-        <td>{t}Name{/t}</td>
+    <tr>
         <td>
-            <input type="text" name="name" value="" />
+            <label class="field-container">
+                <span class="field-container-item">
+                    Name
+                </span>
+                <input type="text"
+                       name="name"
+                       value=""
+                       class="field-container-field"
+                />
+            </label>
         </td>
     </tr>
-    <tr class="{cycle values="odd,even"}">
-        <td>{t}Toolbar{/t}</td>
-        <td class="toolbar-listing"></td>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    Toolbar
+                </span>
+                <span class="toolbar-listing"></span>
+            </label>
+        </td>
     </tr>
-</tbody>
+    </tbody>
 </table>
