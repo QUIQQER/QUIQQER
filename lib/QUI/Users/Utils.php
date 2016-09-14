@@ -99,14 +99,6 @@ class Utils
         // assign user as global var
         QUI::getTemplateManager()->assignGlobalParam('User', $User);
 
-        // System
-        if ($plugin === 'pcsg') {
-            return DOM::getTabHTML(
-                $tab,
-                LIB_DIR . 'xml/user.xml'
-            );
-        }
-
         // project
         if (strpos($plugin, 'project.') !== false) {
             $project = explode('project.', $plugin);

@@ -7,7 +7,6 @@
 namespace QUI\Groups;
 
 use QUI;
-use QUI\Utils\Security\Orthos;
 
 /**
  * A group
@@ -111,6 +110,27 @@ class Group extends QUI\QDOM
             $this->rights = json_decode($this->getAttribute('rights'), true);
         }
 
+        // Extras are deprected - we need an api
+        if (isset($data[0]['extra'])) {
+            $extraList = $this->getListOfExtraAttributes();
+            $extras    = array();
+            $extraData = json_decode($data[0]['extra'], true);
+
+            if (!is_array($extraData)) {
+                $extraData = array();
+            }
+
+            foreach ($extraList as $attribute) {
+                $extras[$attribute] = true;
+            }
+
+            foreach ($extraData as $attribute => $value) {
+                if (isset($extras[$attribute])) {
+                    $this->setAttribute($attribute, $extraData[$attribute]);
+                }
+            }
+        }
+
         $this->createCache();
 
         QUI::getEvents()->fireEvent('groupLoad', array($this));
@@ -208,6 +228,85 @@ class Group extends QUI\QDOM
     }
 
     /**
+     * Return the list which extra attributes exist
+     * Plugins could extend the group attributes
+     *
+     * look at
+     * - https://dev.quiqqer.com/quiqqer/quiqqer/wikis/User-Xml
+     * - https://dev.quiqqer.com/quiqqer/quiqqer/wikis/Group-Xml
+     *
+     * @return array
+     */
+    protected function getListOfExtraAttributes()
+    {
+        try {
+            return QUI\Cache\Manager::get('group/plugin-attribute-list');
+        } catch (QUI\Exception $Exception) {
+        }
+
+        $list       = QUI::getPackageManager()->getInstalled();
+        $attributes = array();
+
+        foreach ($list as $entry) {
+            $plugin  = $entry['name'];
+            $userXml = OPT_DIR . $plugin . '/group.xml';
+
+            if (!file_exists($userXml)) {
+                continue;
+            }
+
+            $attributes = array_merge(
+                $attributes,
+                $this->readAttributesFromGroupXML($userXml)
+            );
+        }
+
+        QUI\Cache\Manager::set('group/plugin-attribute-list', $attributes);
+
+        return $attributes;
+    }
+
+    /**
+     * Read an user.xml and return the attributes,
+     * if some extra attributes defined
+     *
+     * @param string $file
+     *
+     * @return array
+     */
+    protected function readAttributesFromGroupXML($file)
+    {
+        $Dom  = QUI\Utils\Text\XML::getDomFromXml($file);
+        $Attr = $Dom->getElementsByTagName('attributes');
+
+        if (!$Attr->length) {
+            return array();
+        }
+
+        /* @var $Attributes \DOMElement */
+        $Attributes = $Attr->item(0);
+        $list       = $Attributes->getElementsByTagName('attribute');
+
+        if (!$list->length) {
+            return array();
+        }
+
+        $attributes = array();
+
+        for ($c = 0; $c < $list->length; $c++) {
+            $Attribute = $list->item($c);
+
+            if ($Attribute->nodeName == '#text') {
+                continue;
+            }
+
+            $attributes[] = trim($Attribute->nodeValue);
+        }
+
+        return $attributes;
+    }
+
+    /**
      * Returns the Group-ID
      *
      * @return integer
@@ -228,24 +327,69 @@ class Group extends QUI\QDOM
     }
 
     /**
+     * Return the group avatar
+     *
+     * @return QUI\Projects\Media\Image|false
+     */
+    public function getAvatar()
+    {
+        $avatar = $this->getAttribute('avatar');
+
+        if (!QUI\Projects\Media\Utils::isMediaUrl($avatar)) {
+            $Project = QUI::getProjectManager()->getStandard();
+            $Media   = $Project->getMedia();
+
+            return $Media->getPlaceholderImage();
+        }
+
+        try {
+            return QUI\Projects\Media\Utils::getImageByUrl($avatar);
+        } catch (QUI\Exception $Exception) {
+        }
+
+        $Project = QUI::getProjectManager()->getStandard();
+        $Media   = $Project->getMedia();
+
+        return $Media->getPlaceholderImage();
+    }
+
+    /**
      * saves the group
      * All attributes are set in the database
      */
     public function save()
     {
-        $this->rights = QUI::getPermissionManager()
-            ->getRightParamsFromGroup($this);
+        $this->rights = QUI::getPermissionManager()->getRightParamsFromGroup($this);
 
+        // Pluginerweiterungen
+        $extra      = array();
+        $attributes = $this->getListOfExtraAttributes();
+
+        foreach ($attributes as $attribute) {
+            $extra[$attribute] = $this->getAttribute($attribute);
+        }
+
+        // avatar
+        $avatar = '';
+
+        if ($this->getAttribute('avatar')
+            && QUI\Projects\Media\Utils::isMediaUrl($this->getAttribute('avatar'))
+        ) {
+            $avatar = $this->getAttribute('avatar');
+        }
+
+        // saving
         QUI::getEvents()->fireEvent('groupSaveBegin', array($this));
         QUI::getEvents()->fireEvent('groupSave', array($this));
 
-        // Felder bekommen
         QUI::getDataBase()->update(
             Manager::table(),
             array(
                 'name'    => $this->getAttribute('name'),
                 'toolbar' => $this->getAttribute('toolbar'),
-                'rights'  => json_encode($this->rights)
+                'rights'  => json_encode($this->rights),
+                'extra'   => json_encode($extra),
+                'avatar'  => $avatar
             ),
             array('id' => $this->getId())
         );
@@ -403,15 +547,19 @@ class Group extends QUI\QDOM
      *
      * @return QUI\Users\User
      * @throws QUI\Exception
-     * @todo rewrite -> where as array
      */
     public function getUserByName($username)
     {
         $result = QUI::getDataBase()->fetch(array(
             'select' => 'id',
             'from'   => QUI\Users\Manager::table(),
-            'where'  => 'username = \'' . Orthos::clearMySQL($username)
-                        . '\' AND usergroup LIKE \'%,' . $this->getId() . ',%\'',
+            'where'  => array(
+                'username'  => $username,
+                'usergroup' => array(
+                    'type'  => '%LIKE%',
+                    'value' => ',' . $this->getId() . ','
+                )
+            ),
             'limit'  => '1'
         ));
 

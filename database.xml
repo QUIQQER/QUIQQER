@@ -38,6 +38,8 @@
             <field type="INT(11) NOT NULL">parent</field>
             <field type="TINYINT(1) NOT NULL">active</field>
             <field type="VARCHAR(128)">toolbar</field>
+            <field type="TEXT DEFAULT NULL">avatar</field>
+            <field type="TEXT DEFAULT NULL">extra</field>
 
             <primary>id</primary>
             <index>parent</index>
