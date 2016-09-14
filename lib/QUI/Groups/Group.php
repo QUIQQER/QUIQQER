@@ -68,10 +68,15 @@ class Group extends QUI\QDOM
             // falls cache vorhanden ist
             $cache = QUI\Cache\Manager::get('qui/groups/group/' . $this->getId());
 
-            $this->parentids = $cache['parentids'];
-            $this->rights    = $cache['rights'];
+            if (isset($cache['parentids'])) {
+                $this->parentids = $cache['parentids'];
+            }
 
-            if (is_array($cache['attributes'])) {
+            if (isset($cache['rights'])) {
+                $this->rights = $cache['rights'];
+            }
+
+            if (isset($cache['attributes']) && is_array($cache['attributes'])) {
                 foreach ($cache['attributes'] as $key => $value) {
                     $this->setAttribute($key, $value);
                 }
