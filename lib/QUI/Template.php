@@ -73,11 +73,11 @@ class Template extends QUI\QDOM
         // defaults
         $this->setAttributes(
             array(
-            'mootools'       => true,
-            'requirejs'      => true,
-            'html5'          => true,
-            'content-header' => true,
-            'content-body'   => true
+                'mootools'       => true,
+                'requirejs'      => true,
+                'html5'          => true,
+                'content-header' => true,
+                'content-body'   => true
             )
         );
     }
@@ -95,7 +95,7 @@ class Template extends QUI\QDOM
      * This registered param would be assigned to the Template Engine at the getEngine() method
      *
      * @param string $param
-     * @param mixed  $value
+     * @param mixed $value
      */
     public function assignGlobalParam($param, $value)
     {
@@ -171,7 +171,7 @@ class Template extends QUI\QDOM
     /**
      * Extend the head <head>...</head>
      *
-     * @param string  $str
+     * @param string $str
      * @param integer $prio
      */
     public function extendHeader($str, $prio = 3)
@@ -191,7 +191,7 @@ class Template extends QUI\QDOM
     /**
      *
      * @param string $cssPath
-     * @param int    $prio
+     * @param int $prio
      */
     public function extendHeaderWithCSSFile($cssPath, $prio = 3)
     {
@@ -202,7 +202,7 @@ class Template extends QUI\QDOM
     }
 
     /**
-     * @param string  $jsPath
+     * @param string $jsPath
      * @param boolean $async
      * @param integer $prio
      */
@@ -226,7 +226,7 @@ class Template extends QUI\QDOM
     /**
      * Add Code to the bottom of the html
      *
-     * @param string  $str
+     * @param string $str
      * @param integer $prio
      */
     public function extendFooter($str, $prio = 3)
@@ -246,7 +246,7 @@ class Template extends QUI\QDOM
     /**
      * Add the JavaScript File to the bottom of the html
      *
-     * @param string  $jsPath
+     * @param string $jsPath
      * @param boolean $async
      * @param integer $prio
      */
@@ -305,20 +305,20 @@ class Template extends QUI\QDOM
         // Zuweisungen
         $Engine->assign(
             array(
-            'URL_DIR'     => URL_DIR,
-            'URL_BIN_DIR' => URL_BIN_DIR,
-            'URL_LIB_DIR' => URL_LIB_DIR,
-            'URL_VAR_DIR' => URL_VAR_DIR,
-            'URL_OPT_DIR' => URL_OPT_DIR,
-            'URL_USR_DIR' => URL_USR_DIR,
-            'User'        => $User,
-            'Locale'      => $Locale,
-            'L'           => $Locale,
-            'Template'    => $Template,
-            'Site'        => $Site,
-            'Project'     => $Project,
-            'Rewrite'     => $Rewrite,
-            'lastUpdate'  => QUI::getPackageManager()->getLastUpdateDate()
+                'URL_DIR'     => URL_DIR,
+                'URL_BIN_DIR' => URL_BIN_DIR,
+                'URL_LIB_DIR' => URL_LIB_DIR,
+                'URL_VAR_DIR' => URL_VAR_DIR,
+                'URL_OPT_DIR' => URL_OPT_DIR,
+                'URL_USR_DIR' => URL_USR_DIR,
+                'User'        => $User,
+                'Locale'      => $Locale,
+                'L'           => $Locale,
+                'Template'    => $Template,
+                'Site'        => $Site,
+                'Project'     => $Project,
+                'Rewrite'     => $Rewrite,
+                'lastUpdate'  => QUI::getPackageManager()->getLastUpdateDate()
             )
         );
 
@@ -361,23 +361,19 @@ class Template extends QUI\QDOM
         if ($template_tpl && file_exists($template_tpl)) {
             $tpl = $template_tpl;
 
-            $Engine->assign(
-                array(
+            $Engine->assign(array(
                 'URL_TPL_DIR' => URL_OPT_DIR . $projectTemplate . '/',
                 'TPL_DIR'     => OPT_DIR . $projectTemplate . '/',
-                )
-            );
+            ));
         }
 
         if (file_exists($project_tpl)) {
             $tpl = $project_tpl;
 
-            $Engine->assign(
-                array(
+            $Engine->assign(array(
                 'URL_TPL_DIR' => URL_USR_DIR . $Project->getAttribute('name') . '/',
                 'TPL_DIR'     => USR_DIR . $Project->getAttribute('name') . '/',
-                )
-            );
+            ));
         }
 
         // @todo suffix template prüfen
@@ -574,15 +570,15 @@ class Template extends QUI\QDOM
         // assign
         $Engine->assign(
             array(
-            'Project'         => $Project,
-            'Site'            => $Site,
-            'Engine'          => $Engine,
-            'localeFiles'     => $locales,
-            'loadModuleFiles' => $this->onLoadModules,
-            'headerExtend'    => $headerExtend,
-            'ControlManager'  => new QUI\Control\Manager(),
-            'Canonical'       => new QUI\Projects\Site\Canonical($Site),
-            'lastUpdate'      => QUI::getPackageManager()->getLastUpdateDate()
+                'Project'         => $Project,
+                'Site'            => $Site,
+                'Engine'          => $Engine,
+                'localeFiles'     => $locales,
+                'loadModuleFiles' => $this->onLoadModules,
+                'headerExtend'    => $headerExtend,
+                'ControlManager'  => new QUI\Control\Manager(),
+                'Canonical'       => new QUI\Projects\Site\Canonical($Site),
+                'lastUpdate'      => QUI::getPackageManager()->getLastUpdateDate()
             )
         );
 

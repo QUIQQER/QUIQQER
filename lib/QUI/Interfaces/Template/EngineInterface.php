@@ -13,8 +13,7 @@ namespace QUI\Interfaces\Template;
  * @package com.pcsg.qui.interface.template
  * @licence For copyright and license information, please view the /README.md
  */
-
-interface Engine
+interface EngineInterface
 {
     /**
      * Return the complete template
@@ -29,7 +28,15 @@ interface Engine
      * Assign a Variable to the engine
      *
      * @param array|string $var
-     * @param mixed        $value - optional
+     * @param mixed $value - optional
      */
     public function assign($var, $value = false);
+
+    /**
+     * Return the value of a template variabel
+     *
+     * @param string $variableName
+     * @return mixed
+     */
+    public function getTemplateVariable($variableName);
 }
