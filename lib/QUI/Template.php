@@ -123,7 +123,7 @@ class Template extends QUI\QDOM
      *
      * @param boolean $admin - (optionsl) is the template for the admin or frontend? <- param depricated
      *
-     * @return QUI\Interfaces\Template\Engine
+     * @return QUI\Interfaces\Template\EngineInterface
      * @throws QUI\Exception
      */
     public function getEngine($admin = false)
@@ -138,7 +138,7 @@ class Template extends QUI\QDOM
             throw new QUI\Exception('Template Engine not found!');
         }
 
-        /* @var $Engine QUI\Interfaces\Template\Engine */
+        /* @var $Engine QUI\Interfaces\Template\EngineInterface */
         $Engine     = new $this->engines[$engine]($admin);
         $implements = class_implements($Engine);
 
@@ -657,7 +657,7 @@ class Template extends QUI\QDOM
     {
         /* @var $Project QUI\Projects\Project */
         /* @var $Site QUI\Projects\Site */
-        /* @var $Engine QUI\Interfaces\Template\Engine */
+        /* @var $Engine QUI\Interfaces\Template\EngineInterface */
 
         if (is_array($params)) {
             $this->setAttributes($params);
