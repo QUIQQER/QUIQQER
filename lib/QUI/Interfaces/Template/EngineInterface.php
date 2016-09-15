@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file contains \QUI\Interfaces\Template\Engine
+ * This file contains \QUI\Interfaces\Template\EngineInterface
  */
 
 namespace QUI\Interfaces\Template;

@@ -142,9 +142,9 @@ class Template extends QUI\QDOM
         $Engine     = new $this->engines[$engine]($admin);
         $implements = class_implements($Engine);
 
-        if (!isset($implements['QUI\\Interfaces\\Template\\Engine'])) {
+        if (!isset($implements['QUI\Interfaces\Template\EngineInterface'])) {
             throw new QUI\Exception(
-                'The Template Engine implements not from QUI\Interfaces\Template\Engine'
+                'The Template Engine implements not from QUI\Interfaces\Template\EngineInterface'
             );
         }
 
@@ -159,7 +159,7 @@ class Template extends QUI\QDOM
      * Register a template engine
      *
      * @param string $name
-     * @param string $class - must a class that implements QUI\Interfaces\Template\Engine
+     * @param string $class - must a class that implements QUI\Interfaces\Template\EngineInterface
      */
     public static function registerEngine($name, $class)
     {
