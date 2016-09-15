@@ -43,7 +43,7 @@
     "quiqqer/qui": "*@dev",
     "quiqqer/qui-php": "*@dev",
     "quiqqer/smarty": "3.*",
-    "quiqqer/smarty3": "*@dev",
+    "quiqqer/smarty3": "dev-dev",
     "quiqqer/ckeditor4": "*@dev",
     "quiqqer/calendar": "*@dev",
     "quiqqer/countries": "*@dev",
