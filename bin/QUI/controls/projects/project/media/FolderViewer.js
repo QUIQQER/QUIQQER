@@ -360,18 +360,9 @@ define('controls/projects/project/media/FolderViewer', [
                         },
                         onComplete: function (Form, File, result) {
                             if (this.getAttribute('autoactivate') && result && "url" in result) {
-                                // activate the file
-                                var url    = result.url,
-                                    params = QUIStringUtils.getUrlParams(url);
-
-                                QUIAjax.post('ajax_media_activate', function () {
+                                this.$autoActivate(result.url).then(function () {
                                     Sheet.fireEvent('close');
-                                    this.refresh();
-                                }.bind(this), {
-                                    project: params.project,
-                                    fileid : params.id
                                 });
-
                                 return;
                             }
 
@@ -450,6 +441,12 @@ define('controls/projects/project/media/FolderViewer', [
                     }
                 }
             });
+
+            if (imageData.active) {
+                Container.addClass('qui-project-media-folderViewer-item-active');
+            } else {
+                Container.addClass('qui-project-media-folderViewer-item-inactive');
+            }
 
             var IC = Container.getElement(
                 '.qui-project-media-folderViewer-item-image'
@@ -549,8 +546,13 @@ define('controls/projects/project/media/FolderViewer', [
 
                         self.Loader.show();
 
-                        self.$Folder.uploadFiles(Files, function () {
-                            self.refresh();
+                        self.$Folder.uploadFiles(Files).then(function (Img) {
+                            if (!self.getAttribute('autoactivate')) {
+                                self.refresh();
+                                return;
+                            }
+
+                            self.$autoActivate(Img.url);
                         });
                     }
                 }
@@ -653,6 +655,27 @@ define('controls/projects/project/media/FolderViewer', [
             PanelUtils.openMediaPanel(project, {
                 fileid: folderId
             });
+        },
+
+        /**
+         * activate a image
+         *
+         * @param {String} url
+         * @returns {Promise}
+         */
+        $autoActivate: function (url) {
+            return new Promise(function (resolve) {
+                // activate the file
+                var params = QUIStringUtils.getUrlParams(url);
+
+                QUIAjax.post('ajax_media_activate', function () {
+                    this.refresh();
+                    resolve();
+                }.bind(this), {
+                    project: params.project,
+                    fileid : params.id
+                });
+            }.bind(this));
         }
     });
 });

@@ -59,7 +59,8 @@
     border-top: 4px solid #77AB13;
 }
 
-.qmi-deactive {
+.qmi-deactive,
+.qmi-inactive {
     border-top: 4px solid #AE432E;
 }
 
