@@ -326,11 +326,20 @@ define('controls/projects/project/media/FolderViewer', [
                     };
                 });
 
-                self.$Diashow = new Diashow({
-                    images: imageData,
-                    zIndex: ElementUtils.getComputedZIndex(self.$Elm)
-                });
-
+                if (!self.$Diashow) {
+                    self.$Diashow = new Diashow({
+                        images: imageData,
+                        zIndex: ElementUtils.getComputedZIndex(self.$Elm),
+                        events: {
+                            onClose: function () {
+                                // workaround close bug
+                                console.log('close');
+                                self.$Diashow.destroy();
+                                self.$Diashow = null;
+                            }
+                        }
+                    });
+                }
 
                 if (typeOf(image) === 'string') {
                     self.$Diashow.showImage(image);
