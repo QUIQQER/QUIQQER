@@ -42,7 +42,7 @@ QUI::$Ajax->registerFunction(
                     $categories[] = $Category;
                 }
             } else {
-                $categories = QUI\Utils\Text\XML::getSettingCategoryFromXml($file);
+                $categories = QUI\Utils\Text\XML::getSettingCategoriesFromXml($file);
             }
 
             foreach ($categories as $Category) {
