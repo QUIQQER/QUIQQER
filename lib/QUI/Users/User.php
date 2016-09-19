@@ -908,7 +908,7 @@ class User implements QUI\Interfaces\Users\User
             );
         }
 
-        $this->setPassword($newPassword, $ParentUser);
+        $this->updatePassword($newPassword);
 
         QUI::getEvents()->fireEvent(
             'userChangePassword',
@@ -941,21 +941,30 @@ class User implements QUI\Interfaces\Users\User
 
         QUI::getEvents()->fireEvent('userSetPassword', array($this));
 
-
-        $newpass        = Manager::genHash($new);
-        $this->password = $newpass;
-
-        QUI::getDataBase()->update(
-            Manager::table(),
-            array('password' => $newpass),
-            array('id' => $this->getId())
-        );
+        $this->updatePassword($new);
 
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(
                 'quiqqer/system',
                 'message.password.save.success'
             )
+        );
+    }
+
+    /**
+     * internal set password
+     *
+     * @param string $password
+     */
+    protected function updatePassword($password)
+    {
+        $newpass        = Manager::genHash($password);
+        $this->password = $newpass;
+
+        QUI::getDataBase()->update(
+            Manager::table(),
+            array('password' => $newpass),
+            array('id' => $this->getId())
         );
     }
 
