@@ -908,6 +908,11 @@ class User implements QUI\Interfaces\Users\User
             );
         }
 
+        QUI::getEvents()->fireEvent(
+            'userChangePasswordBefore',
+            array($this, $newPassword, $oldPassword)
+        );
+
         $this->updatePassword($newPassword);
 
         QUI::getEvents()->fireEvent(
