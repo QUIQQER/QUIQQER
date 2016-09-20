@@ -55,8 +55,10 @@ class EventHandler
 
     /**
      * @param QUI\Interfaces\Users\User $User
+     * @param string $newPass
+     * @param string $oldPass
      */
-    public static function onUserSetPassword(QUI\Interfaces\Users\User $User)
+    public static function onUserChangePassword(QUI\Interfaces\Users\User $User, $newPass, $oldPass)
     {
         $User->setAttribute('quiqqer.set.new.password', 0);
         $User->save(QUI::getUsers()->getSystemUser());
