@@ -786,9 +786,12 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             case 'e_date':
             case 'e_date ASC':
             case 'e_date DESC':
+                break;
+
             case 'priority':
             case 'priority ASC':
             case 'priority DESC':
+                // @todo priority, title
                 break;
 
             default:
