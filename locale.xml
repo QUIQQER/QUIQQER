@@ -425,6 +425,11 @@
             <de><![CDATA[Beim nächsten Login muss der Benutzer ein neues Passwort setzen.]]></de>
             <en><![CDATA[At the next login, the user must set a new password.]]></en>
         </locale>
+
+        <locale name="message.setup.is.currently.running">
+            <de><![CDATA[Das Setup wird gerade ausgeführt. Bitte warten Sie bis dieses zu ende ist.]]></de>
+            <en><![CDATA[The setup is running. Please wait until this is finish.]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
