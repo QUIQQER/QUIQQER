@@ -125,6 +125,12 @@ define('controls/users/Entry', [
 
             var uid = this.$User.getId();
 
+            if (uid === '') {
+                this.fireEvent('error', [this, uid]);
+                this.destroy();
+                return this;
+            }
+
             this.$User.load().then(function () {
                 this.fireEvent('load', [this, this.$User]);
             }.bind(this)).catch(function () {
