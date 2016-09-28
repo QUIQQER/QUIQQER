@@ -65,27 +65,27 @@ define('controls/users/password/Password', [
             this.$Elm = new Element('form', {
                 'class'     : 'qui-controle-user-password',
                 html        : '<label>' +
-                              '    <span class="qui-controle-user-password-title">' +
-                              QUILocale.get(lg, 'user.panel.password.new') +
-                              '    </span>' +
-                              '    <input type="password" name="password" required autocomplete="off" />' +
-                              '</label>' +
-                              '<label>' +
-                              '    <span class="qui-controle-user-password-title">' +
-                              QUILocale.get(lg, 'user.panel.password.repeat') +
-                              '    </span>' +
-                              '    <input type="password" name="password2" required autocomplete="off" />' +
-                              '</label>' +
-                              '<label>' +
-                              '    <span class="qui-controle-user-password-title">' +
-                              QUILocale.get(lg, 'user.panel.password.old') +
-                              '    </span>' +
-                              '    <input type="password" name="oldPassword" required autocomplete="off" />' +
-                              '</label>' +
-                              '<label>' +
-                              '    <input type="checkbox" name="show" />' +
-                              QUILocale.get(lg, 'user.panel.password.show') +
-                              '</label>',
+                '    <span class="qui-controle-user-password-title">' +
+                QUILocale.get(lg, 'user.panel.password.old') +
+                '    </span>' +
+                '    <input type="password" name="oldPassword" required autocomplete="off" />' +
+                '</label>' +
+                '<label>' +
+                '    <span class="qui-controle-user-password-title">' +
+                QUILocale.get(lg, 'user.panel.password.new') +
+                '    </span>' +
+                '    <input type="password" name="password" required autocomplete="off" />' +
+                '</label>' +
+                '<label>' +
+                '    <span class="qui-controle-user-password-title">' +
+                QUILocale.get(lg, 'user.panel.password.repeat') +
+                '    </span>' +
+                '    <input type="password" name="password2" required autocomplete="off" />' +
+                '</label>' +
+                '<label>' +
+                '    <input type="checkbox" name="show" />' +
+                QUILocale.get(lg, 'user.panel.password.show') +
+                '</label>',
                 autocomplete: "off"
             });
 
@@ -117,7 +117,7 @@ define('controls/users/password/Password', [
          * event : on inject
          */
         $onInject: function () {
-            this.$Password.focus();
+            this.$OldPassword.focus();
         },
 
         /**
