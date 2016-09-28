@@ -104,7 +104,6 @@ define('controls/projects/project/site/Panel', [
 
             if (typeOf(Site) === 'classes/projects/project/Site') {
                 var Project = Site.getProject(),
-
                     id      = 'panel-' +
                               Project.getName() + '-' +
                               Project.getLang() + '-' +
@@ -115,7 +114,6 @@ define('controls/projects/project/site/Panel', [
                 this.setAttribute('name', id);
 
                 this.$Site = Site;
-
             } else {
                 // serialize data
                 if (typeof Site.attributes !== 'undefined' &&
@@ -908,6 +906,8 @@ define('controls/projects/project/site/Panel', [
                             Control.setAttribute('Site', self.getSite());
                         }
                     });
+                }).catch(function(error) {
+                    console.error(error);
                 });
 
 

@@ -109,9 +109,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     resolve();
 
-                }, function () {
-                    reject();
-                });
+                }).catch(reject);
             });
         },
 
@@ -141,9 +139,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     resolve();
 
-                }, function () {
-                    reject();
-                });
+                }, reject);
             });
         },
 
@@ -165,9 +161,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     resolve();
 
-                }, function () {
-                    reject();
-                });
+                }, reject);
             });
         },
 
@@ -420,7 +414,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     resolve();
 
-                }, function () {
+                }, function (err) {
                     require(['qui/QUI'], function (QUI) {
                         QUI.getMessageHandler(function (MH) {
                             // #locale
@@ -431,7 +425,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                         });
                     });
 
-                    reject();
+                    reject(err);
                 });
             });
         },
@@ -455,9 +449,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     resolve();
 
-                }, function () {
-                    reject();
-                });
+                }, reject);
             });
         },
 
@@ -492,9 +484,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     resolve();
 
-                }, function () {
-                    reject();
-                });
+                }, reject);
             });
         },
 
@@ -519,9 +509,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     resolve();
 
-                }, function () {
-                    reject();
-                });
+                }, reject);
             });
         },
 
@@ -544,9 +532,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     resolve();
 
-                }, function () {
-                    reject();
-                });
+                }, reject);
             });
         },
 
@@ -569,9 +555,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     resolve();
 
-                }, function () {
-                    reject();
-                });
+                }, reject);
             });
         },
 
@@ -604,9 +588,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     resolve();
 
-                }, function () {
-                    reject();
-                });
+                }, reject);
             });
         },
 
@@ -641,9 +623,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     resolve();
 
-                }, function () {
-                    reject();
-                });
+                }, reject);
             });
         }
     };
