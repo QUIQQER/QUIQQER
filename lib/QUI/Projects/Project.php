@@ -1280,6 +1280,7 @@ class Project
      * Set custom CSS for the project -> set it to the custom.css file
      *
      * @param string $css - CSS Data
+     * @throws QUI\Exception
      */
     public function setCustomCSS($css)
     {
@@ -1288,13 +1289,19 @@ class Project
             $this
         );
 
-        QUI\Utils\System\File::mkfile(USR_DIR . $this->getName()
-                                      . '/bin/custom.css');
+        $file = USR_DIR . $this->getName() . '/bin/custom.css';
 
-        file_put_contents(
-            USR_DIR . $this->getName() . '/bin/custom.css',
-            $css
-        );
+        QUI\Utils\System\File::mkfile($file);
+
+        if (!is_writable($file)) {
+            throw new QUI\Exception(array(
+                'quiqqer/quiqqer',
+                'exception.custom.css.is.not.writeable',
+                array('file' => $file)
+            ));
+        }
+
+        file_put_contents($file, $css);
     }
 
     /**

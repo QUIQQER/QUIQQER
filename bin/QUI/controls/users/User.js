@@ -544,15 +544,15 @@ define('controls/users/User', [
                 this.$onButtonNormal(Active);
             }
 
-            if (this.getUser().getAttribute('password')) {
-                this.savePassword(function () {
-                    User.save();
-                });
+            var PassWordSave = Promise.resolve();
 
-                return;
+            if (Active.getAttribute('name') == 'security') {
+                PassWordSave = this.savePassword()
             }
 
-            User.save();
+            PassWordSave.then(function () {
+                User.save();
+            });
         },
 
         /**
@@ -592,33 +592,27 @@ define('controls/users/User', [
          * only triggerd if the password tab are open
          *
          * @method controls/users/User#savePassword
-         * @param {Function} callback -  callback function
+         * @return {Promise}
          */
-        savePassword: function (callback) {
-            var Control = this,
-                Body    = this.getBody(),
-                Form    = Body.getElement('form'),
-                Pass1   = Form.elements.password,
-                Pass2   = Form.elements.password2;
+        savePassword: function () {
+            return new Promise(function (resolve, reject) {
+                var Body  = this.getBody(),
+                    Form  = Body.getElement('form'),
+                    Pass1 = Form.elements.password,
+                    Pass2 = Form.elements.password2;
 
-            if (!Pass1 || !Pass2) {
-                return;
-            }
-
-            this.Loader.show();
-
-            this.getUser().savePassword(
-                Pass1.value,
-                Pass2.value,
-                {},
-                function () {
-                    Control.Loader.hide();
-
-                    if (typeof callback === 'function') {
-                        callback();
-                    }
+                if (!Pass1 || !Pass2) {
+                    return reject();
                 }
-            );
+
+                this.Loader.show();
+
+                this.getUser().savePassword(Pass1.value, Pass2.value).then(function () {
+                    this.Loader.hide();
+                    resolve();
+                }.bind(this));
+
+            }.bind(this));
         },
 
         /**
@@ -897,6 +891,5 @@ define('controls/users/User', [
                 }
             }).open();
         }
-
     });
 });

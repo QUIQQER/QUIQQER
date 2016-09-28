@@ -1,5 +1,5 @@
 /**
- * System  user profile
+ * System user profile
  *
  * @module controls/system/Profile
  * @author www.pcsg.de (Henning Leutz)
@@ -65,6 +65,8 @@ define('controls/system/Profile', [
         $onOpen: function () {
             var self    = this,
                 Content = this.getContent();
+
+            Content.set('html', '');
 
             this.Loader.show();
 

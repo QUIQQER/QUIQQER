@@ -122,6 +122,8 @@
 .data-table-flexbox th {
     background-color: #dedede;
     color: #666;
+    float: left;
+    width: 100%;
 }
 
 .data-table-flexbox .odd {

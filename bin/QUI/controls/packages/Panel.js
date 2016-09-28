@@ -49,6 +49,8 @@ define('controls/packages/Panel', [
 
     var lg = 'quiqqer/system';
 
+    var setupIsRunning = false;
+
     /**
      * @class controls/packages/Panel
      *
@@ -385,7 +387,20 @@ define('controls/packages/Panel', [
          * @return Promise
          */
         setup: function (pkg, Btn) {
+            if (setupIsRunning) {
+                QUI.getMessageHandler().then(function (Handler) {
+                    Handler.addAttention(
+                        Locale.get('quiqqer/quiqqer', 'message.setup.is.currently.running')
+                    );
+                });
+
+                return Promise.resolve();
+            }
+
+            setupIsRunning = true;
+
             var self = this;
+
 
             FaviconUtils.loading();
 
@@ -428,11 +443,12 @@ define('controls/packages/Panel', [
                     }
 
                     FaviconUtils.setDefault();
+                    setupIsRunning = false;
 
 
                     QUI.getMessageHandler().then(function (Handler) {
                         Handler.pushSuccess(
-                            'Setup ausgeführt',
+                            'Setup ausgeführt', // #locale
                             Locale.get(lg, 'message.setup.successfull'),
                             false
                         );
@@ -455,10 +471,11 @@ define('controls/packages/Panel', [
                     }
 
                     FaviconUtils.setDefault();
+                    setupIsRunning = false;
 
                     QUI.getMessageHandler().then(function (Handler) {
                         Handler.pushError(
-                            'Fehler beim Setup',
+                            'Fehler beim Setup', // #locale
                             Error.getMessage(),
                             false
                         );

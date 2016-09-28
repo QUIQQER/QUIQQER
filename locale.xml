@@ -425,6 +425,11 @@
             <de><![CDATA[Beim nächsten Login muss der Benutzer ein neues Passwort setzen.]]></de>
             <en><![CDATA[At the next login, the user must set a new password.]]></en>
         </locale>
+
+        <locale name="message.setup.is.currently.running">
+            <de><![CDATA[Das Setup wird gerade ausgeführt. Bitte warten Sie bis dieses zu ende ist.]]></de>
+            <en><![CDATA[The setup is running. Please wait until this is finish.]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -494,6 +499,10 @@
         <locale name="exception.delete.root.file">
             <de><![CDATA[Sie können den Hauptordner nicht löschen.]]></de>
             <en><![CDATA[You cannot delete the root file.]]></en>
+        </locale>
+        <locale name="exception.custom.css.is.not.writeable">
+            <de><![CDATA[Die Custom-CSS [file] ist nicht schreibbar. Bitte ändern Sie die Schreibrechte.]]></de>
+            <en><![CDATA[The Custom CSS [file] is not writable. Please change the write permission.]]></en>
         </locale>
     </groups>
 
@@ -674,6 +683,10 @@
         <locale name="user_ip_adress">
             <de><![CDATA[IP-Adresse des Benutzers]]></de>
             <en><![CDATA[The user's IP address]]></en>
+        </locale>
+        <locale name="birthday">
+            <de><![CDATA[Geburtstag]]></de>
+            <en><![CDATA[Birthday]]></en>
         </locale>
         <locale name="password">
             <de><![CDATA[Passwort]]></de>
@@ -6362,10 +6375,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
                 <![CDATA[Die Suche nach Benutzern kann ohne entsprechende Such-Parameter nicht durchgeführt werden.]]></de>
             <en><![CDATA[The user search cannot be executed without search parameters.]]></en>
         </locale>
-        <locale name="exception.usergroups.search.cannot.search.groups.without.parameters">
+        <locale name="message.project.config.save.success">
             <de>
-                <![CDATA[Die Suche nach Gruppen kann ohne entsprechende Such-Parameter nicht durchgeführt werden.]]></de>
-            <en><![CDATA[The group search cannot be executed without search parameters.]]></en>
+                <![CDATA[Die Projekt Einstellungen wurden erfolgreich gespeichert.]]></de>
+            <en><![CDATA[The project settings successfully saved]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php ">

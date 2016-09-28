@@ -116,10 +116,10 @@ class Group extends QUI\QDOM
         }
 
         // Extras are deprected - we need an api
-        if (isset($data[0]['extra'])) {
+        if (isset($result[0]['extra'])) {
             $extraList = $this->getListOfExtraAttributes();
             $extras    = array();
-            $extraData = json_decode($data[0]['extra'], true);
+            $extraData = json_decode($result[0]['extra'], true);
 
             if (!is_array($extraData)) {
                 $extraData = array();

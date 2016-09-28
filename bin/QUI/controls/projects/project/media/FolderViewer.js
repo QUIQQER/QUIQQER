@@ -60,6 +60,7 @@ define('controls/projects/project/media/FolderViewer', [
             'diashow',
             'openUpload',
             'openInMedia',
+            'openFolder',
             '$onCreate',
             '$onInject',
             '$onDrop'
@@ -137,8 +138,20 @@ define('controls/projects/project/media/FolderViewer', [
                 disabled : true
             }).inject(this.$Buttons);
 
+            this.$MediaFolder = new QUIButton({
+                icon  : 'fa fa-folder',
+                title : QUILocale.get(lg, 'properties'),
+                styles: {
+                    'float': 'right'
+                },
+                events: {
+                    onClick: this.openFolder
+                }
+            }).inject(this.$Buttons);
+
             this.$MediaOpen = new QUIButton({
                 icon  : 'fa fa-picture-o',
+                title : QUILocale.get(lg, 'projects.project.site.btn.preview.text'),
                 styles: {
                     'float': 'right'
                 },
@@ -146,7 +159,6 @@ define('controls/projects/project/media/FolderViewer', [
                     onClick: this.openInMedia
                 }
             }).inject(this.$Buttons);
-
 
             this.$ButtonsDiashow.hide();
             this.$ButtonsSeperator.hide();
@@ -664,6 +676,16 @@ define('controls/projects/project/media/FolderViewer', [
             PanelUtils.openMediaPanel(project, {
                 fileid: folderId
             });
+        },
+
+        /**
+         * open the folder details
+         */
+        openFolder: function () {
+            var project  = this.getAttribute('project');
+            var folderId = this.getAttribute('folderId');
+
+            PanelUtils.openMediaItemPanel(project, folderId);
         },
 
         /**
