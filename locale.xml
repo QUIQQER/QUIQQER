@@ -628,6 +628,18 @@
             <de><![CDATA[Erstellungsdatum]]></de>
             <en><![CDATA[Creation date]]></en>
         </locale>
+        <locale name="createuser">
+            <de><![CDATA[Ersteller]]></de>
+            <en><![CDATA[Creater]]></en>
+        </locale>
+        <locale name="editdate">
+            <de><![CDATA[Letztes Bearbeitungsdatum]]></de>
+            <en><![CDATA[Last edit date]]></en>
+        </locale>
+        <locale name="edituser">
+            <de><![CDATA[Bearbeiter]]></de>
+            <en><![CDATA[Editor]]></en>
+        </locale>
         <locale name="date">
             <de><![CDATA[Datum]]></de>
             <en><![CDATA[Date]]></en>
