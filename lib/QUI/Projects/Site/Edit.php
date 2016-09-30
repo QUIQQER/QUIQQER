@@ -1242,12 +1242,6 @@ class Edit extends Site
             // Seite löschen
             $this->delete();
 
-//            $qry = '
-//                DELETE FROM `' . $table . '`
-//                WHERE child =' . $this->getId() . ' AND parent != ' . $Parent->getId();
-
-//            $DataBase->fetchSQL($qry);
-
             // Alle Verknüpfungen
             $DataBase->delete($table, array(
                 'child'  => $this->getId(),
