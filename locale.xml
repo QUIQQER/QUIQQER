@@ -1910,6 +1910,23 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Delete page]]></en>
         </locale>
 
+        <locale name="projects.project.site.panel.window.deleteLinked.title">
+            <de><![CDATA[Verknüpfung #[id] löschen]]></de>
+            <en><![CDATA[Delete site shortcut #[id]]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.window.deleteLinked.text">
+            <de><![CDATA[Möchten Sie die Verknüpfung wirklich löschen?]]></de>
+            <en><![CDATA[Are you sure you want to delete the site shortcut [path]?]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.window.deleteLinked.information" html="1">
+            <de><![CDATA[Die Verknüpfung <b>[path]</b> wird unwiderruflich gelöscht und kann nicht wieder hergestellt werden.]]></de>
+            <en><![CDATA[The site shortcut <b>[path]</b> is irrevocably deleted and can not be restored]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.window.deleteLinked.button">
+            <de><![CDATA[Verknüpfung löschen]]></de>
+            <en><![CDATA[Delete site shortcut]]></en>
+        </locale>
+
         <locale name="projects.project.site.panel.window.create.title">
             <de><![CDATA[Wie soll die neue Seite heißen?]]></de>
             <en><![CDATA[How be called the new page?]]></en>

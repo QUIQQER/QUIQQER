@@ -47,7 +47,8 @@ define('classes/projects/Project', [
             '$onSiteCreate',
             '$onSiteActivate',
             '$onSiteDeactivate',
-            '$onSiteDelete'
+            '$onSiteDelete',
+            '$onSiteUnlink'
         ],
 
         options: {
@@ -107,7 +108,8 @@ define('classes/projects/Project', [
                 onDeactivate : this.$onSiteDeactivate,
                 onCreateChild: this.$onSiteCreate,
                 onSortSave   : this.$onSiteSortSave,
-                onLoad       : this.$onSiteLoad
+                onLoad       : this.$onSiteLoad,
+                onUnlink     : this.$onSiteUnlink
             });
 
             this.$ids[id] = Site;
@@ -391,6 +393,16 @@ define('classes/projects/Project', [
          */
         $onSiteSave: function (Site) {
             this.fireEvent('siteSave', [this, Site]);
+        },
+
+        /**
+         * event : on Site unlink
+         *
+         * @param {Object} Site - classes/projects/project/Site
+         * @fires siteUnlink
+         */
+        $onSiteUnlink: function (Site, parentId) {
+            this.fireEvent('siteUnlink', [this, Site, parentId]);
         },
 
         /**

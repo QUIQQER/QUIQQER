@@ -70,6 +70,7 @@ define('controls/projects/project/Sitemap', [
             'onSiteChange',
             'onSiteCreate',
             'onSiteDelete',
+            'onSiteUnlink',
 
             '$open',
             '$close'
@@ -113,6 +114,7 @@ define('controls/projects/project/Sitemap', [
                     onSiteActivate  : self.onSiteChange,
                     onSiteDeactivate: self.onSiteChange,
                     onSiteDelete    : self.onSiteDelete,
+                    onSiteUnlink    : self.onSiteUnlink,
                     onSiteSortSave  : self.onSiteChange,
                     onSiteLoad      : self.onSiteChange
                 });
@@ -125,6 +127,7 @@ define('controls/projects/project/Sitemap', [
                 onSiteActivate  : this.onSiteChange,
                 onSiteDeactivate: this.onSiteChange,
                 onSiteDelete    : this.onSiteDelete,
+                onSiteUnlink    : this.onSiteUnlink,
                 onSiteSortSave  : this.onSiteChange,
                 onSiteLoad      : this.onSiteChange
             });
@@ -630,7 +633,7 @@ define('controls/projects/project/Sitemap', [
                     })
                 ).appendChild(
                 new QUIContextmenuSeperator()
-                )
+            )
                 .appendChild(
                     new QUIContextmenuItem({
                         name  : 'copy',
@@ -1126,6 +1129,39 @@ define('controls/projects/project/Sitemap', [
 
                 children[i].destroy();
             }
+        },
+
+        /**
+         * event - on site unlink
+         *
+         * @param Project
+         * @param Site
+         * @param parentId
+         */
+        onSiteUnlink: function (Project, Site, parentId) {
+            if (!this.$Map) {
+                return;
+            }
+
+            var children = this.$Map.getChildrenByValue(Site.getId());
+
+            if (!children.length) {
+                return;
+            }
+
+            children.each(function (MapEntry) {
+                var Parent = MapEntry.getParent();
+
+                if (!Parent) {
+                    return;
+                }
+
+                if (Parent.getAttribute('value') == parentId) {
+                    MapEntry.destroy();
+                }
+
+                this.$Project.get(Parent.getAttribute('value')).load();
+            }.bind(this));
         }
     });
 });

@@ -72,6 +72,7 @@ define('controls/projects/project/site/Panel', [
             'openPermissions',
             'openMedia',
             'openSort',
+            'deleteLinked',
 
             '$onCreate',
             '$onDestroy',
@@ -665,6 +666,84 @@ define('controls/projects/project/site/Panel', [
         },
 
         /**
+         * Opens the delete Linked dialog
+         *
+         * @param {Number} parentId - Parent ID
+         * @return {Promise}
+         */
+        deleteLinked: function (parentId) {
+            var self = this,
+                Site = this.getSite();
+
+            return new Promise(function (resolve, reject) {
+
+                if (typeof parentId === 'undefined') {
+                    reject();
+                    return;
+                }
+
+                Site.getLinkedPath(parentId).then(function (path) {
+                    require(['qui/controls/windows/Confirm'], function (Confirm) {
+                        new Confirm({
+                            title      : Locale.get(lg, 'projects.project.site.panel.window.deleteLinked.title', {
+                                id      : Site.getId(),
+                                parentId: parentId,
+                                path    : path
+                            }),
+                            icon       : 'fa fa-trash-o',
+                            text       : Locale.get(lg, 'projects.project.site.panel.window.deleteLinked.text', {
+                                id      : Site.getId(),
+                                url     : Site.getAttribute('name') + QUIQQER.Rewrite.SUFFIX,
+                                name    : Site.getAttribute('name'),
+                                title   : Site.getAttribute('title'),
+                                parentId: parentId,
+                                path    : path
+                            }),
+                            texticon   : 'fa fa-trash-o',
+                            information: Locale.get(lg, 'projects.project.site.panel.window.deleteLinked.information', {
+                                id      : Site.getId(),
+                                url     : Site.getAttribute('name') + QUIQQER.Rewrite.SUFFIX,
+                                name    : Site.getAttribute('name'),
+                                title   : Site.getAttribute('title'),
+                                parentId: parentId,
+                                path    : path
+                            }),
+                            maxHeight  : 400,
+                            maxWidth   : 600,
+                            autoclose  : false,
+
+                            cancel_button: {
+                                text     : Locale.get(lg, 'cancel'),
+                                textimage: 'fa fa-remove'
+                            },
+                            ok_button    : {
+                                text     : Locale.get(lg, 'projects.project.site.panel.window.deleteLinked.button'),
+                                textimage: 'fa fa-trash-o'
+                            },
+
+                            events: {
+                                onSubmit: function (Win) {
+                                    Win.Loader.show();
+
+                                    Site.unlink(parentId, false).then(function () {
+                                        self.load();
+                                        Win.close();
+                                        resolve();
+                                    }).catch(function () {
+                                        Win.Loader.hide();
+                                        reject();
+                                    });
+                                },
+                                onCancel: resolve
+                            }
+                        }).open();
+                    });
+
+                });
+            });
+        },
+
+        /**
          * Create a child site
          *
          * @method controls/projects/project/site/Panel#createChild
@@ -771,8 +850,35 @@ define('controls/projects/project/site/Panel', [
                         // site linking
                         var i, len, Row, LastCell;
 
-                        var LinkinLangTable = Body.getElement('.site-langs'),
+                        var LinkinTable     = Body.getElement('.site-linking'),
+                            LinkinLangTable = Body.getElement('.site-langs'),
                             Locked          = Body.getElement('[data-locked]');
+
+                        if (LinkinTable) {
+                            var openDeleteLink = function (Btn) {
+                                Btn.setAttribute('icon', 'fa fa-spinner fa-spin');
+
+                                self.deleteLinked(
+                                    Btn.getElm().getParent().get('data-parentid')
+                                ).then(function () {
+                                    Btn.setAttribute('icon', 'fa fa-trash');
+                                }, function () {
+                                    Btn.setAttribute('icon', 'fa fa-trash');
+                                });
+                            };
+
+                            LinkinTable.getElements('.site-linking-entry-button').each(function (Node) {
+                                Node.set('html', '');
+
+                                new QUIButton({
+                                    icon  : 'fa fa-trash',
+                                    title : 'Verknüpfung löschen',
+                                    events: {
+                                        onClick: openDeleteLink
+                                    }
+                                }).inject(Node);
+                            });
+                        }
 
                         if (LinkinLangTable) {
                             var rowList = LinkinLangTable.getElements('tbody tr');
@@ -797,6 +903,8 @@ define('controls/projects/project/site/Panel', [
                             for (i = 0, len = rowList.length; i < len; i++) {
                                 Row      = rowList[i];
                                 LastCell = rowList[i].getLast();
+
+                                LastCell.set('html', '');
 
                                 if (!Row.get('data-id').toInt()) {
 
@@ -906,7 +1014,7 @@ define('controls/projects/project/site/Panel', [
                             Control.setAttribute('Site', self.getSite());
                         }
                     });
-                }).catch(function(error) {
+                }).catch(function (error) {
                     console.error(error);
                 });
 

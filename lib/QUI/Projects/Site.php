@@ -1651,9 +1651,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             return false;
         }
 
-        return $this->getProject()->get(
-            $this->getParentId()
-        );
+        return $this->getProject()->get($this->getParentId());
     }
 
     /**

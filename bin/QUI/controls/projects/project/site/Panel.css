@@ -44,6 +44,17 @@
     padding: 20px;
 }
 
+.site-linking-entry-icon,
+.site-linking-entry-button {
+    float: left;
+    width: 30px;
+}
+
+.site-linking-entry-text {
+    float: left;
+    width: calc(100% - 60px);
+}
+
 /** site settings
  * ====================================== */
 
@@ -62,11 +73,11 @@ form.qui-site-data {
 .qui-site-data .data-table input,
 .qui-site-data .data-table select,
 .qui-site-data .data-table textarea {
-    width: calc( 100% - 150px );
+    width: calc(100% - 150px);
 }
 
 .qui-site-data input[name="site-name"] {
-    width: calc( 100% - 200px );
+    width: calc(100% - 200px);
 }
 
 .qui-site-data .data-table input[type="checkbox"],
@@ -75,9 +86,8 @@ form.qui-site-data {
 }
 
 .qui-site-data input.project-site {
-    width: calc( 100% - 220px );
+    width: calc(100% - 220px);
 }
-
 
 .qui-site-data .data-table textarea {
     min-height: 100px;

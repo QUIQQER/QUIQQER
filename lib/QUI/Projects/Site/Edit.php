@@ -7,7 +7,6 @@
 namespace QUI\Projects\Site;
 
 use QUI;
-
 use QUI\Projects\Site;
 use QUI\Projects\Project;
 use QUI\Permissions\Permission;
@@ -34,7 +33,6 @@ use QUI\Utils\Security\Orthos;
  *
  * @todo       Sortierung als eigene Methoden
  * @todo       Rechte Prüfung
- * @todo       site plugin erweiterungen
  * @todo       translation der quelltext doku
  *
  * @qui-event  onSiteActivate [ \QUI\Projects\Site\Edit ]
@@ -1175,9 +1173,8 @@ class Edit extends Site
     /**
      * Erstellt eine Verknüpfung
      *
-     * @param Int $pid
+     * @param integer $pid
      *
-     * @return boolean
      * @throws QUI\Exception
      */
     public function linked($pid)
@@ -1189,6 +1186,7 @@ class Edit extends Site
                  $Project->getAttribute('lang') . '_sites_relations';
 
         // Prüfen ob die Seite schon in dem Parent ist
+        // #locale
         if ($Parent->getId() == $pid) {
             throw new QUI\Exception(
                 'Es kann keine Verknüpfung in dieser Ebene erstellt werden,
@@ -1204,6 +1202,7 @@ class Edit extends Site
             )
         ));
 
+        // #locale
         foreach ($links as $entry) {
             if ($entry['parent'] == $pid) {
                 throw new QUI\Exception(
@@ -1214,7 +1213,7 @@ class Edit extends Site
             }
         }
 
-        return QUI::getDataBase()->insert($table, array(
+        QUI::getDataBase()->insert($table, array(
             'parent'  => $pid,
             'child'   => $this->getId(),
             'oparent' => $Parent->getId()
@@ -1222,15 +1221,11 @@ class Edit extends Site
     }
 
     /**
-     * Löscht eine Verknüpfung
+     * Delete all linked sites
      *
      * @param integer $pid - Parent ID
-     * @param integer|boolean $all - (optional) Alle Verknüpfungen und Original Seite löschen
+     * @param integer|boolean $all - (optional) Delete all linked sites and the original site
      * @param boolean $orig - (optional) Delete the original site, too
-     *
-     * @return boolean
-     *
-     * @todo refactor -> use PDO
      */
     public function deleteLinked($pid, $all = false, $orig = false)
     {
@@ -1247,23 +1242,33 @@ class Edit extends Site
             // Seite löschen
             $this->delete();
 
-            $qry = '
-                DELETE FROM `' . $table . '`
-                WHERE child =' . $this->getId() . ' AND parent != ' . $Parent->getId();
+//            $qry = '
+//                DELETE FROM `' . $table . '`
+//                WHERE child =' . $this->getId() . ' AND parent != ' . $Parent->getId();
+
+//            $DataBase->fetchSQL($qry);
 
             // Alle Verknüpfungen
-            return $DataBase->fetchSQL($qry);
+            $DataBase->delete($table, array(
+                'child'  => $this->getId(),
+                'parent' => array(
+                    'value' => $Parent->getId(),
+                    'type'  => 'NOT'
+                )
+            ));
+            return;
         }
 
         // Einzelne Verknüpfung löschen
         if ($pid && $orig == false) {
-            return $DataBase->delete($table, array(
+            $DataBase->delete($table, array(
                 'child'  => $this->getId(),
                 'parent' => (int)$pid
             ));
+            return;
         }
 
-        return $DataBase->delete($table, array(
+        $DataBase->delete($table, array(
             'child'   => $this->getId(),
             'parent'  => (int)$pid,
             'oparent' => (int)$orig

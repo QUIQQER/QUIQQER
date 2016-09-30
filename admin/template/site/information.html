@@ -147,6 +147,8 @@
     {cycle values="even,odd" reset=true assign=_cycle}
 
     {assign var=pids value=$Site->getParentIds()}
+    {assign var=originalParentId value=$Site->getParentId()}
+
     {if count($pids) > 1}
         {assign var=mypid value=$Site->getParentId()}
 
@@ -155,10 +157,18 @@
             {assign var=Parent value=$Project->get($pid)}
             {assign var=parents value=$Parent->getParents()}
             <td>
-                <span class="fa fa-home"></span>
+                <div class="site-linking-entry-icon">
+                    <span class="fa fa-home"></span>
+                </div>
+                <div class="site-linking-entry-text">
                 / {foreach from=$parents item=PS} {$PS->getAttribute('name')}
                 / {/foreach} {$Parent->getAttribute('name')}
                 / {$Site->getAttribute('name')}
+                </div>
+                {if $originalParentId != $Parent->getId()}
+                <div class="site-linking-entry-button delete-linked-button"
+                     data-parentid="{$Parent->getId()}"></div>
+                {/if}
             </td>
         </tr>
         {/foreach}
