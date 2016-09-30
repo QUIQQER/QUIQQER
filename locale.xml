@@ -353,7 +353,7 @@
             <en><![CDATA[New password]]></en>
         </locale>
         <locale name="user.panel.password.repeat">
-            <de><![CDATA[Passwort wiederhohlen]]></de>
+            <de><![CDATA[Passwort wiederholen]]></de>
             <en><![CDATA[Repeat password]]></en>
         </locale>
         <locale name="user.panel.password.show">
@@ -1919,7 +1919,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Are you sure you want to delete the site shortcut [path]?]]></en>
         </locale>
         <locale name="projects.project.site.panel.window.deleteLinked.information" html="1">
-            <de><![CDATA[Die Verknüpfung <b>[path]</b> wird unwiderruflich gelöscht und kann nicht wieder hergestellt werden.]]></de>
+            <de>
+                <![CDATA[Die Verknüpfung <b>[path]</b> wird unwiderruflich gelöscht und kann nicht wieder hergestellt werden.]]></de>
             <en><![CDATA[The site shortcut <b>[path]</b> is irrevocably deleted and can not be restored]]></en>
         </locale>
         <locale name="projects.project.site.panel.window.deleteLinked.button">
