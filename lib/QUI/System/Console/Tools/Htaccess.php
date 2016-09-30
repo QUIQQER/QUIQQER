@@ -259,9 +259,9 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteRule ^bin/(.*)$ {$quiqqerBin}/$1 [L]" .
 
         # This is a temporary workaround. needs to be removed when the media upload is relocated
-        "## lib dir
-    RewriteRule ^lib/(.*)$ {$quiqqerLib}/$1 [END]
-
+        "
+    ## lib dir
+    RewriteRule ^lib/(.*)$ {$quiqqerLib}/$1 [L]
 
     ## admin
     RewriteRule ^{$URL_SYS_DIR}$ {$quiqqerSys}/index.php [L]
