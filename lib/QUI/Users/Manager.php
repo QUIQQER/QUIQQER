@@ -1480,6 +1480,7 @@ class Manager
 
             // set the filters
             if (isset($filter['filter_status'])
+                && !empty($filter['filter_status'])
                 && $filter['filter_status'] != 'all'
             ) {
                 $filter_status = true;

@@ -347,9 +347,10 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                         Child.autocomplete = 'off';
 
                         Child.setStyles({
-                            float : 'left',
-                            cursor: 'pointer',
-                            width : datetime ? 180 : 105
+                            float   : 'left',
+                            cursor  : 'pointer',
+                            maxWidth: 'calc(100% - 31px)',
+                            width   : datetime ? 180 : 105
                         });
 
                         Picker = new DatePicker(Child, {
@@ -407,7 +408,8 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                                 .setStyles({
                                     border   : '1px solid rgba(147, 128, 108, 0.25)',
                                     boxShadow: 'none',
-                                    top      : 0
+                                    top      : 0,
+                                    width    : 50
                                 });
                         }
                     }
@@ -419,7 +421,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                         QUI.getMessageHandler(function (MH) {
                             // #locale
                             MH.addAttention(
-                                'Das Kalender Packet konnte nicht gefunden werden.' +
+                                'Das Kalender Paket konnte nicht gefunden werden.' +
                                 'Bitte installieren Sie quiqqer/calendar'
                             );
                         });

@@ -382,9 +382,6 @@ define('controls/users/Panel', [
                     Search.value = settings.userSearchString || '';
                     Search.focus();
 
-
-                    ControlUtils.parse(Body);
-
                     // search button
                     new QUIButton({
                         textimage: 'fa fa-search',
@@ -406,7 +403,12 @@ define('controls/users/Panel', [
                         }
                     });
 
-                    self.Loader.hide();
+
+                    ControlUtils.parse(Body).then(function () {
+                        return QUI.parse(Body);
+                    }).then(function () {
+                        self.Loader.hide();
+                    });
                 });
             });
 
@@ -428,7 +430,6 @@ define('controls/users/Panel', [
                 Frm.elements.uid.checked      = true;
                 Frm.elements.username.checked = true;
             }
-
 
             this.setAttribute('searchSettings', {
                 userSearchString: Frm.elements.search.value,

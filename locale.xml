@@ -392,6 +392,27 @@
             <de><![CDATA[Browser User-Agent]]></de>
             <en><![CDATA[Browser User-Agent]]></en>
         </locale>
+        <locale name="user.panel.search.title">
+            <de><![CDATA[Suche nach:]]></de>
+            <en><![CDATA[Search:]]></en>
+        </locale>
+        <locale name="user.panel.search.in.title">
+            <de><![CDATA[Suche in:]]></de>
+            <en><![CDATA[Search in:]]></en>
+        </locale>
+        <locale name="user.panel.search.filter.title">
+            <de><![CDATA[Filter:]]></de>
+            <en><![CDATA[Filter:]]></en>
+        </locale>
+        <locale name="user.panel.search.filter.regdate.first">
+            <de><![CDATA[Erstellt ab]]></de>
+            <en><![CDATA[Created from:]]></en>
+        </locale>
+        <locale name="user.panel.search.filter.regdate.last">
+            <de><![CDATA[Erstellt bis]]></de>
+            <en><![CDATA[Created to:]]></en>
+        </locale>
+
         <locale name="message.user.saved" html="true">
             <de><![CDATA[Der Benutzer <b>[username] #[id]</b> wurde erfolgreich gespeichert.]]></de>
             <en><![CDATA[The user <b>[username] #[id]</b> successfully saved.]]></en>
