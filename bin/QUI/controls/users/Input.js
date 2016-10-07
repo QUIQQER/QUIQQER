@@ -42,17 +42,18 @@ define('controls/users/Input', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/users/Input',
+        Type: 'controls/users/Input',
 
         Binds: [
             'close',
             'fireSearch',
-            'update'
+            'update',
+            '$onImport'
         ],
 
         options: {
-            max   : false,
-            name  : '',
+            max: false,
+            name: '',
             styles: false
         },
 
@@ -61,16 +62,17 @@ define('controls/users/Input', [
 
             this.$search = false;
 
-            this.$Input     = null;
-            this.$Elm       = false;
+            this.$Input = null;
+            this.$Elm = false;
             this.$Container = null;
-            this.$search    = false;
-            this.$DropDown  = null;
-            this.$disabled  = false;
+            this.$search = false;
+            this.$DropDown = null;
+            this.$disabled = false;
 
             this.$Bind = Input || null;
 
             this.addEvents({
+                onImport: this.$onImport,
                 onDestroy: function () {
                     if (this.$DropDown) {
                         this.$DropDown.destroy();
@@ -107,16 +109,16 @@ define('controls/users/Input', [
             this.$Bind.set('data-quiid', this.getId());
 
             this.$Input = new Element('input', {
-                type  : 'text',
-                name  : this.$Bind.get('name') + '-search',
+                type: 'text',
+                name: this.$Bind.get('name') + '-search',
                 styles: {
-                    'float'      : 'left',
-                    'margin'     : '3px 0',
+                    'float': 'left',
+                    'margin': '3px 0',
                     'paddingLeft': 20,
-                    'background' : 'url(' + URL_BIN_DIR + '10x10/search.png) no-repeat 4px center',
-                    width        : '100%',
-                    cursor       : 'pointer',
-                    display      : 'none'
+                    'background': 'url(' + URL_BIN_DIR + '10x10/search.png) no-repeat 4px center',
+                    width: '100%',
+                    cursor: 'pointer',
+                    display: 'none'
                 },
                 events: {
                     keyup: function (event) {
@@ -138,7 +140,7 @@ define('controls/users/Input', [
                         this.fireSearch();
                     }.bind(this),
 
-                    blur : this.close,
+                    blur: this.close,
                     focus: this.fireSearch
                 }
             }).inject(this.$Bind, 'before');
@@ -147,14 +149,14 @@ define('controls/users/Input', [
             this.$DropDown = new Element('div.users-input-dropdown', {
                 styles: {
                     display: 'none',
-                    top    : this.$Input.getPosition().y + this.$Input.getSize().y,
-                    left   : this.$Input.getPosition().x
+                    top: this.$Input.getPosition().y + this.$Input.getSize().y,
+                    left: this.$Input.getPosition().x
                 }
             }).inject(document.body);
 
             this.$Container = new Element('div', {
                 styles: {
-                    clear  : 'both',
+                    clear: 'both',
                     'float': 'left'
                 }
             }).inject(this.$Input, 'after');
@@ -171,7 +173,7 @@ define('controls/users/Input', [
             var wasDisabled = this.isDisabled();
 
             this.$Bind.disabled = false;
-            this.$disabled      = false;
+            this.$disabled = false;
 
 
             var i, len;
@@ -185,7 +187,7 @@ define('controls/users/Input', [
 
             if (wasDisabled) {
                 this.$Bind.disabled = true;
-                this.$disabled      = true;
+                this.$disabled = true;
 
                 // disable children
                 var list = this.$getUserEntries();
@@ -196,6 +198,19 @@ define('controls/users/Input', [
             }
 
             return this.$Elm;
+        },
+
+        /**
+         * event: on import
+         */
+        $onImport: function () {
+            var Elm = this.getElm();
+
+            if (Elm.nodeName === 'INPUT') {
+                this.$Bind = Elm;
+            }
+
+            this.create();
         },
 
         /**
@@ -224,7 +239,7 @@ define('controls/users/Input', [
             var i, len;
 
             var list = this.$Container.getElements('.users-entry'),
-                ids  = [];
+                ids = [];
 
 
             // hide or display input field
@@ -237,8 +252,8 @@ define('controls/users/Input', [
                 //var computedSize = this.$Input.getComputedSize();
 
                 moofx(this.$Input).animate({
-                    height : 0,
-                    margin : 0,
+                    height: 0,
+                    margin: 0,
                     opacity: 0,
                     padding: 0
                 }, {
@@ -253,10 +268,10 @@ define('controls/users/Input', [
             } else if (this.$Input.getStyle('display') == 'none') {
 
                 this.$Input.setStyles({
-                    display : null,
-                    height  : null,
-                    margin  : null,
-                    padding : null,
+                    display: null,
+                    height: null,
+                    margin: null,
+                    padding: null,
                     position: 'absolute'
                 });
 
@@ -268,16 +283,16 @@ define('controls/users/Input', [
 
                 // show
                 this.$Input.setStyles({
-                    display : null,
-                    height  : 0,
+                    display: null,
+                    height: 0,
                     position: 'absolute'
                 });
 
                 moofx(this.$Input).animate({
-                    height       : computedSize.height,
-                    opacity      : 1,
+                    height: computedSize.height,
+                    opacity: 1,
                     paddingBottom: computedSize['padding-bottom'],
-                    paddingTop   : computedSize['padding-top']
+                    paddingTop: computedSize['padding-top']
                 }, {
                     duration: 250,
                     callback: function () {
@@ -325,11 +340,11 @@ define('controls/users/Input', [
             this.cancelSearch();
 
             this.$DropDown.set({
-                html  : '<img src="' + URL_BIN_DIR + 'images/loader.gif" />',
+                html: '<img src="' + URL_BIN_DIR + 'images/loader.gif" />',
                 styles: {
                     display: '',
-                    top    : this.$Input.getPosition().y + this.$Input.getSize().y,
-                    left   : this.$Input.getPosition().x
+                    top: this.$Input.getPosition().y + this.$Input.getSize().y,
+                    left: this.$Input.getPosition().x
                 }
             });
 
@@ -417,21 +432,21 @@ define('controls/users/Input', [
             Ajax.get('ajax_users_search', function (result, Request) {
                 var i, len, nam, func_mousedown, func_mouseover;
 
-                var data     = result.data,
-                    value    = Request.getAttribute('value'),
-                    Elm      = Request.getAttribute('Elm'),
+                var data = result.data,
+                    value = Request.getAttribute('value'),
+                    Elm = Request.getAttribute('Elm'),
                     DropDown = Elm.$DropDown;
 
                 DropDown.set('html', '');
 
                 if (!data.length) {
                     new Element('div', {
-                        html  : Locale.get('quiqqer/system', 'users.input.no.results'),
+                        html: Locale.get('quiqqer/system', 'users.input.no.results'),
                         styles: {
                             'float': 'left',
                             'clear': 'both',
                             padding: 5,
-                            margin : 5
+                            margin: 5
                         }
                     }).inject(DropDown);
 
@@ -459,31 +474,31 @@ define('controls/users/Input', [
                     );
 
                     new Element('div', {
-                        html       : nam + ' (' + data[i].id + ')',
-                        'class'    : 'box-sizing radius5',
-                        'data-id'  : data[i].id,
+                        html: nam + ' (' + data[i].id + ')',
+                        'class': 'box-sizing radius5',
+                        'data-id': data[i].id,
                         'data-name': data[i].username,
-                        styles     : {
+                        styles: {
                             'float': 'left',
                             'clear': 'both',
                             padding: 5,
-                            cursor : 'pointer',
-                            width  : '100%'
+                            cursor: 'pointer',
+                            width: '100%'
                         },
-                        events     : {
+                        events: {
                             mousedown: func_mousedown,
                             mouseover: func_mouseover
                         }
                     }).inject(DropDown);
                 }
             }, {
-                Elm   : this,
-                value : this.$Input.value,
+                Elm: this,
+                value: this.$Input.value,
                 params: JSON.encode({
-                    order         : 'ASC',
-                    limit         : 5,
-                    page          : 1,
-                    search        : true,
+                    order: 'ASC',
+                    limit: 5,
+                    page: 1,
+                    search: true,
                     searchSettings: {
                         userSearchString: this.$Input.value
                     }
@@ -662,7 +677,7 @@ define('controls/users/Input', [
          * @return {Array}
          */
         $getUserEntries: function () {
-            var list   = this.$Container.getElements('.users-entry'),
+            var list = this.$Container.getElements('.users-entry'),
                 result = [];
 
             for (var i = 0, len = list.length; i < len; i++) {
