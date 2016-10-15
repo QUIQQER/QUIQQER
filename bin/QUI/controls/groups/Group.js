@@ -499,7 +499,6 @@ define('controls/groups/Group', [
 
                 Form = Body.getElement('form');
 
-                ControlUtils.parse(Body);
                 FormUtils.setDataToForm(Group.getAttributes(), Form);
 
                 switch (Category.getAttribute('name')) {
@@ -515,7 +514,11 @@ define('controls/groups/Group', [
                         Category.fireEvent('onLoad', [Category, self]);
                 }
 
-                self.Loader.hide();
+                ControlUtils.parse(Body).then(function() {
+                    return QUI.parse(Body);
+                }).then(function() {
+                    self.Loader.hide();
+                });
 
             }, {
                 plugin  : Category.getAttribute('plugin'),
