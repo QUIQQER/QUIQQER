@@ -157,6 +157,7 @@ class Manager
 
     /**
      * Is the Object a User?
+     * It checks the user interface, for authentication please use ->isAuth()
      *
      * @param mixed $User
      *
@@ -172,7 +173,7 @@ class Manager
             return true;
         }
 
-        if ($User instanceof User) {
+        if ($User instanceof QUI\Interfaces\Users\User) {
             return true;
         }
 
