@@ -44,6 +44,13 @@ class Manager
     private $Session = null;
 
     /**
+     * internal prevention for multiple session user calling
+     *
+     * @var bool
+     */
+    protected $multipleCallPrevention = false;
+
+    /**
      * Return the db table
      *
      * @return string
@@ -1036,6 +1043,13 @@ class Manager
         if (!is_null($this->Session)) {
             return $this->Session;
         }
+
+        if ($this->multipleCallPrevention) {
+            return $this->getNobody();
+        }
+
+
+        $this->multipleCallPrevention = true;
 
         // max_life_time check
         try {

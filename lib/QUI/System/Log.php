@@ -75,7 +75,6 @@ class Log
         $filename = false
     ) {
         $Logger = QUI\Log\Logger::getLogger();
-        $User   = QUI::getUserBySession();
         $levels = QUI\Log\Logger::$logLevels;
 
         $loglevelName = self::levelToLogName($loglevel);
@@ -89,6 +88,8 @@ class Log
         ) {
             $context['request'] = HOST . $_SERVER['REQUEST_URI'];
         }
+
+        $User = QUI::getUserBySession();
 
         $context['errorFilename'] = $filename;
         $context['userId']        = $User->getId();

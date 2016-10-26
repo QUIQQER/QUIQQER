@@ -2,6 +2,15 @@
 <locales>
 
     <groups name="quiqqer/quiqqer" datatype="js,php">
+        <locale name="package.title">
+            <de><![CDATA[QUIQQER - Core]]></de>
+            <en><![CDATA[QUIQQER - Core]]></en>
+        </locale>
+        <locale name="package.description">
+            <de><![CDATA[QUIQQER - Start your Business]]></de>
+            <en><![CDATA[QUIQQER - Start your Business]]></en>
+        </locale>
+
         <locale name="numberFormat.numbering_system">
             <de><![CDATA[latn]]></de>
             <en><![CDATA[latn]]></en>
@@ -412,6 +421,10 @@
             <de><![CDATA[Erstellt bis]]></de>
             <en><![CDATA[Created to:]]></en>
         </locale>
+        <locale name="user.panel.search.placeholder">
+            <de><![CDATA[Bitte Suchbegriff eingeben.]]></de>
+            <en><![CDATA[Please enter search term.]]></en>
+        </locale>
 
         <locale name="message.user.saved" html="true">
             <de><![CDATA[Der Benutzer <b>[username] #[id]</b> wurde erfolgreich gespeichert.]]></de>
@@ -450,6 +463,19 @@
         <locale name="message.setup.is.currently.running">
             <de><![CDATA[Das Setup wird gerade ausgeführt. Bitte warten Sie bis dieses zu ende ist.]]></de>
             <en><![CDATA[The setup is running. Please wait until this is finish.]]></en>
+        </locale>
+
+        <locale name="message.packages.server.add.successfuly">
+            <de><![CDATA[Der Server [server] wurde erfolgreich hinzugefügt.]]></de>
+            <en><![CDATA[The Server [server] was successfuly added.]]></en>
+        </locale>
+        <locale name="message.packages.server.remove.successfuly">
+            <de><![CDATA[Die Server wurden erfolgreich entfernt.]]></de>
+            <en><![CDATA[The servers were successfully removed.]]></en>
+        </locale>
+        <locale name="message.packages.no.updates.available">
+            <de><![CDATA[Es wurden keine Updates gefunden. Ihr System ist auf dem aktuellsten Stand.]]></de>
+            <en><![CDATA[No updates were found. Your system is up to date.]]></en>
         </locale>
     </groups>
 
@@ -585,6 +611,102 @@
         <locale name="message.user.has.no.password">
             <de><![CDATA[Der Benutzer besitzt noch kein Passwort]]></de>
             <en><![CDATA[The user has no password]]></en>
+        </locale>
+
+        <locale name="packages.panel.server.win.add.title">
+            <de><![CDATA[Neuen Update-Server hinzufügen]]></de>
+            <en><![CDATA[Add a new update server]]></en>
+        </locale>
+        <locale name="packages.panel.server.win.delete.title">
+            <de><![CDATA[Update-Server entfernen]]></de>
+            <en><![CDATA[Remove update server]]></en>
+        </locale>
+
+        <locale name="packages.panel.server.win.edit.title">
+            <de><![CDATA[Update-Server bearbeiten]]></de>
+            <en><![CDATA[Edit the update server]]></en>
+        </locale>
+        <locale name="packages.panel.server.win.add.text" html="true">
+            <de><![CDATA[
+            Fügen Sie einen neuen Update-Server hinzu. Geben Sie Host, IP oder die Serveradresse vom Update-Server ein.
+            ]]></de>
+            <en><![CDATA[
+            Add a new update server. Enter the host, or the server IP address from the update server.
+            ]]></en>
+        </locale>
+        <locale name="message.packages.panel.server.emptyserver">
+            <de><![CDATA[
+            Bitte geben Sie einen Server an.
+            ]]></de>
+            <en><![CDATA[
+            Please specify a server.
+            ]]></en>
+        </locale>
+
+        <locale name="packages.panel.server.win.remove.text" html="true">
+            <de><![CDATA[
+            Möchten Sie den folgenden Update-Server wirklich entfernen?
+            ]]></de>
+            <en><![CDATA[
+            Do you realy want to delete the update server?
+            ]]></en>
+        </locale>
+
+        <locale name="packages.panel.menu">
+            <de><![CDATA[Menü / Navigation]]></de>
+            <en><![CDATA[Menu / Navigation]]></en>
+        </locale>
+        <locale name="packages.panel.category.installed">
+            <de><![CDATA[Installierte Plugins und Module]]></de>
+            <en><![CDATA[Installed plugins and modules]]></en>
+        </locale>
+        <locale name="packages.panel.category.search">
+            <de><![CDATA[Neue Plugins und Module suchen]]></de>
+            <en><![CDATA[Search new plugins and modules]]></en>
+        </locale>
+        <locale name="packages.panel.category.server">
+            <de><![CDATA[Serververwaltung]]></de>
+            <en><![CDATA[Server management]]></en>
+        </locale>
+        <locale name="packages.panel.category.update">
+            <de><![CDATA[Aktualisierung]]></de>
+            <en><![CDATA[Update]]></en>
+        </locale>
+
+        <locale name="packages.panel.btn.setup">
+            <de><![CDATA[System Setup ausführen]]></de>
+            <en><![CDATA[Execute the system setup]]></en>
+        </locale>
+        <locale name="packages.panel.btn.startUpdate">
+            <de><![CDATA[Auf Updates prüfen]]></de>
+            <en><![CDATA[Check for updates]]></en>
+        </locale>
+
+        <locale name="message.setup.successfull.title">
+            <de><![CDATA[Setup erfolgreich ausgeführt.]]></de>
+            <en><![CDATA[Setup was successfully.]]></en>
+        </locale>
+        <locale name="message.setup.successfull">
+            <de><![CDATA[Das Setup wurde erfolgreich ausgeführt.]]></de>
+            <en><![CDATA[The setup was successfully completed.]]></en>
+        </locale>
+
+        <locale name="message.update.not.available.title">
+            <de><![CDATA[Updates verfügbar]]></de>
+            <en><![CDATA[Updates available]]></en>
+        </locale>
+        <locale name="message.update.not.available.description">
+            <de><![CDATA[Es sind Updates verfügbar]]></de>
+            <en><![CDATA[Updates are available]]></en>
+        </locale>
+
+        <locale name="message.update.available.title">
+            <de><![CDATA[Keine Updates verfügbar]]></de>
+            <en><![CDATA[No Updates available]]></en>
+        </locale>
+        <locale name="message.update.available.description">
+            <de><![CDATA[Es sind keine Updates verfügbar]]></de>
+            <en><![CDATA[Updates keine are available]]></en>
         </locale>
     </groups>
 
@@ -970,9 +1092,10 @@
                 <![CDATA[<p>Vielen Dank f&uuml;r Ihre E-Mail. Wir werden uns schnellstm&ouml;glich bei Ihnen melden.</p>]]></de>
             <en><![CDATA[Thank you for your email. We will contact you as soon as possible.]]></en>
         </locale>
-        <locale name="message.setup.successfull">
-            <de><![CDATA[Das Setup wurde erfolgreich ausgeführt.]]></de>
-            <en><![CDATA[The setup was successfully completed.]]></en>
+
+        <locale name="message.setup.runs">
+            <de><![CDATA[Das Setup wird ausgeführt.]]></de>
+            <en><![CDATA[The setup is running.]]></en>
         </locale>
 
         <locale name="message.session.auth.memcached.notinstalled">
@@ -2222,14 +2345,7 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Pakete]]></de>
             <en><![CDATA[Packages]]></en>
         </locale>
-        <locale name="packages.category.server">
-            <de><![CDATA[Serververwaltung]]></de>
-            <en><![CDATA[Server management]]></en>
-        </locale>
-        <locale name="packages.category.search">
-            <de><![CDATA[Pakete / Plugins suchen und installieren]]></de>
-            <en><![CDATA[Packages / Plugin search and installation]]></en>
-        </locale>
+
         <locale name="packages.category.system.health">
             <de><![CDATA[Systemgesundheit]]></de>
             <en><![CDATA[Systemhealth]]></en>
@@ -2252,18 +2368,12 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Komplettes Update durchführen.]]></de>
             <en><![CDATA[Exceute a complete update.]]></en>
         </locale>
-        <locale name="packages.grid.update.btn.start">
-            <de><![CDATA[Auf Updates prüfen]]></de>
-            <en><![CDATA[Check for updates]]></en>
-        </locale>
+
         <locale name="packages.grid.update.btn.upload">
             <de><![CDATA[Update hochladen]]></de>
             <en><![CDATA[Upload an update]]></en>
         </locale>
-        <locale name="packages.grid.update.btn.setup">
-            <de><![CDATA[System Setup ausführen]]></de>
-            <en><![CDATA[Execute the system setup]]></en>
-        </locale>
+
         <locale name="packages.grid.update.title.updatebtn">
             <de><![CDATA[&nbsp;]]></de>
             <en><![CDATA[&nbsp;]]></en>
@@ -2389,18 +2499,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Do you want to delete the following server?]]></en>
         </locale>
         <locale name="packages.server.win.remove.information">
-            <de><![CDATA[Die Server werden unwiderruflich aus der Update-Server-Liste entfernt.]]></de>
+            <de><![CDATA[Die Server werden unwiderruflich aus der Updateserver-Liste entfernt.]]></de>
             <en><![CDATA[The servers will be permanently removed from the update server list.]]></en>
-        </locale>
-        <locale name="packages.server.win.add.title">
-            <de><![CDATA[Neuen Update-Server hinzufügen]]></de>
-            <en><![CDATA[Add a new update-server]]></en>
-        </locale>
-        <locale name="packages.server.win.add.text">
-            <de>
-                <![CDATA[Fügen Sie einen neuen Update-Server hinzu. Geben Sie Host, IP oder die Serveradresse vom Update-Server ein.]]></de>
-            <en>
-                <![CDATA[Add a new update-server. Enter the host, or the server IP address from the update server.]]></en>
         </locale>
         <locale name="packages.systemhealth.text">
             <de><![CDATA[<h1>Haben sich Dateien verändert?</h1>
@@ -2718,8 +2818,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Search user]]></en>
         </locale>
         <locale name="users.panel.search.btn.start">
-            <de><![CDATA[Suche starten ...]]></de>
-            <en><![CDATA[Search ...]]></en>
+            <de><![CDATA[Suchen]]></de>
+            <en><![CDATA[Search]]></en>
         </locale>
         <locale name="users.panel.create.window.title">
             <de><![CDATA[Neuen Benutzer anlegen]]></de>
@@ -5779,18 +5879,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Cache existiert nicht]]></de>
             <en><![CDATA[Cache doesn't exist]]></en>
         </locale>
-        <locale name="message.packages.server.add.successfuly">
-            <de><![CDATA[Der Server [server] wurde erfolgreich hinzugefügt.]]></de>
-            <en><![CDATA[The Server [server] was successfuly added.]]></en>
-        </locale>
-        <locale name="message.packages.server.remove.successfuly">
-            <de><![CDATA[Die Server wurden erfolgreich entfernt.]]></de>
-            <en><![CDATA[The servers were successfully removed.]]></en>
-        </locale>
-        <locale name="message.packages.no.updates.available">
-            <de><![CDATA[Es wurden keine Updates gefunden. Ihr System ist auf dem aktuellsten Stand.]]></de>
-            <en><![CDATA[No updates were found. Your system is up to date.]]></en>
-        </locale>
         <locale name="exception.packages.update.check">
             <de><![CDATA[Die Prüfung auf Updates konnte nicht durchgeführt werden.]]></de>
             <en><![CDATA[Could not check for updates.]]></en>
@@ -6306,7 +6394,7 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Deactivate]]></en>
         </locale>
         <locale name="packages.panel.title">
-            <de><![CDATA[System, Plugins und Paket Manager]]></de>
+            <de><![CDATA[System, Plugins und Paket-Manager]]></de>
             <en><![CDATA[System, Plugins and Package Manager]]></en>
         </locale>
         <locale name="month">

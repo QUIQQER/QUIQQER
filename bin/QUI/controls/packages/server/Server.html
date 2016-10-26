@@ -1,0 +1,33 @@
+<form class="qui-control-packages-server-detail">
+    <div class="qui-control-packages-server-image">
+        <span class="fa fa-server"></span>
+    </div>
+
+    <div class="qui-control-packages-server-description">
+        {{{description}}}
+    </div>
+
+    <label class="qui-control-packages-server-detail-server">
+        <span>Server</span>
+        <input type="text"
+               name="server"
+               value=""
+               placeholder="https://update.quiqqer.com/"
+               required="required"
+        />
+    </label>
+
+    <label class="qui-control-packages-server-detail-type">
+        <span>Art</span>
+        <select name="type" required="required">
+            <option value="vcs">vcs</option>
+            <option value="composer">composer</option>
+            <option value="pear">pear</option>
+            <option value="package">package</option>
+            <option value="artifact">artifact</option>
+            <option value="npm">npm</option>
+        </select>
+    </label>
+
+    <input type="submit" value="senden" style="display: none;"/>
+</form>

@@ -1009,8 +1009,7 @@ class QUI
     /**
      * Get current logged in user
      *
-     * @return \QUI\Users\User
-     * @uses \QUI\Users\Manager
+     * @return \QUI\Interfaces\Users\User
      */
     public static function getUserBySession()
     {

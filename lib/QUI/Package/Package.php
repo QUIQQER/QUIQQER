@@ -37,6 +37,11 @@ class Package extends QUI\QDOM
     protected $packageDir = '';
 
     /**
+     * @var null
+     */
+    protected $packageXML = null;
+
+    /**
      * Package composer data from the composer file
      *
      * @var bool|array
@@ -56,6 +61,11 @@ class Package extends QUI\QDOM
      * @var QUI\Config
      */
     protected $Config = null;
+
+    /**
+     * @var bool
+     */
+    protected $isQuiqqerPackage = false;
 
     /**
      * constructor
@@ -93,9 +103,39 @@ class Package extends QUI\QDOM
             return;
         }
 
-        $this->configPath = CMS_DIR . 'etc/plugins/' . $this->getName() . '.ini.php';
+        $this->isQuiqqerPackage = true;
+        $this->configPath       = CMS_DIR . 'etc/plugins/' . $this->getName() . '.ini.php';
 
         QUI\Utils\System\File::mkfile($this->configPath);
+    }
+
+    /**
+     * Read the package xml
+     *
+     * @return array
+     */
+    protected function getPackageXMLData()
+    {
+        if (!$this->isQuiqqerPackage()) {
+            return array();
+        }
+
+        if (!is_null($this->packageXML)) {
+            return $this->packageXML;
+        }
+
+        $packageXML = $this->packageDir . '/package.xml';
+
+        // package xml
+        if (!file_exists($packageXML)) {
+            $this->packageXML = array();
+
+            return $this->packageXML;
+        }
+
+        $this->packageXML = XML::getPackageFromXMLFile($packageXML);
+
+        return $this->packageXML;
     }
 
     /**
@@ -134,6 +174,93 @@ class Package extends QUI\QDOM
     }
 
     /**
+     * Return the package title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        $packageData = $this->getPackageXMLData();
+
+        if (isset($packageData['title'])) {
+            return $packageData['title'];
+        }
+
+        if ($this->isQuiqqerPackage()
+            && QUI::getLocale()->exists($this->name, 'package.title')
+        ) {
+            return QUI::getLocale()->get($this->name, 'package.title');
+        }
+
+        return $this->getName();
+    }
+
+    /**
+     * Return the package description
+     *
+     * @return String
+     */
+    public function getDescription()
+    {
+        $packageData = $this->getPackageXMLData();
+
+        if (isset($packageData['description'])) {
+            return $packageData['description'];
+        }
+
+        if ($this->isQuiqqerPackage()
+            && QUI::getLocale()->exists($this->name, 'package.description')
+        ) {
+            return QUI::getLocale()->get($this->name, 'package.description');
+        }
+
+        $composer = $this->getComposerData();
+
+        if (isset($composer['description'])) {
+            return $composer['description'];
+        }
+
+        return '';
+    }
+
+    /**
+     * Return the path to the package image / icon
+     *
+     * @return String
+     */
+    public function getImage()
+    {
+        $packageData = $this->getPackageXMLData();
+
+        if (isset($packageData['image'])) {
+            return $packageData['image'];
+        }
+
+        if (file_exists($this->packageDir . 'bin/package.png')) {
+            return str_replace(OPT_DIR, URL_OPT_DIR, $this->packageDir) . 'bin/package.png';
+        }
+
+        return '';
+    }
+
+    /**
+     * Return all preview images
+     * Not the main image
+     *
+     * @return array
+     */
+    public function getPreviewImages()
+    {
+        $packageData = $this->getPackageXMLData();
+
+        if (!isset($packageData['preview']) || !is_array($packageData['preview'])) {
+            return array();
+        }
+
+        return $packageData['preview'];
+    }
+
+    /**
      * Return the package config
      *
      * @return QUI\Config|boolean
@@ -163,15 +290,14 @@ class Package extends QUI\QDOM
             return $this->composerData;
         }
 
-        $composer = QUI::getPackageManager()->show($this->getName());
-
-        if (!isset($composer['name'])) {
-            $composer['name'] = $this->getName();
+        if (file_exists($this->packageDir . 'composer.json')) {
+            $this->composerData = json_decode(
+                file_get_contents($this->packageDir . 'composer.json'),
+                true
+            );
         }
 
-        $this->composerData = $composer;
-
-        return $composer;
+        return array();
     }
 
     /**
@@ -226,6 +352,16 @@ class Package extends QUI\QDOM
         }
 
         QUI::getEvents()->fireEvent('packageSetup', array($this));
+    }
+
+    /**
+     * Is the package a quiqqer package?
+     *
+     * @return bool
+     */
+    public function isQuiqqerPackage()
+    {
+        return $this->isQuiqqerPackage;
     }
 
     /**
