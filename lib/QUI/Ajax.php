@@ -278,7 +278,6 @@ class Ajax extends QUI\QDOM
                 continue;
             }
 
-            $value        = urldecode($value);
             $params[$var] = $value;
         }
 

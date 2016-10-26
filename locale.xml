@@ -911,6 +911,10 @@
             <de><![CDATA[Löschen]]></de>
             <en><![CDATA[Delete]]></en>
         </locale>
+        <locale name="remove">
+            <de><![CDATA[Entfernen]]></de>
+            <en><![CDATA[Remove]]></en>
+        </locale>
         <locale name="edit">
             <de><![CDATA[Bearbeiten]]></de>
             <en><![CDATA[Edit]]></en>

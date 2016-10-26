@@ -36,16 +36,17 @@ try {
     $Engine   = QUI::getTemplateManager()->getEngine();
 
     $Response->headers->set('Strict-Transport-Security', 'max-age=31536000'); // @todo setting
+    $Response->headers->set("X-Content-Type-Options", "nosniff");
+    $Response->headers->set("X-XSS-Protection", "1; mode=block");
+
+    // @todo settings
+    $Response->headers->set("X-Frame-Options", "SAMEORIGIN");
 
     // @todo setting mit erlaubten
     $Response->headers->set(
         "Content-Security-Policy",
         "script-src 'self' 'unsafe-eval' 'unsafe-inline'; object-src 'self'"
     );
-
-    $Response->headers->set("X-Content-Type-Options", "nosniff");
-    $Response->headers->set("X-XSS-Protection", "1; mode=block");
-    $Response->headers->set("X-Frame-Options", "SAMEORIGIN"); // @todo settings
 
     // UTF 8 Prüfung für umlaute in url
     if (isset($_REQUEST['_url'])) {
@@ -187,7 +188,7 @@ try {
         $content = QUI\Control\Manager::setCSSToHead($content);
         Debug::marker('output done');
 
-        QUI::getEvents()->fireEvent('requestOutput', array($content));
+        QUI::getEvents()->fireEvent('requestOutput', array(&$content));
 
         $Response->setContent($content);
         Debug::marker('content done');
