@@ -42,7 +42,7 @@ define('controls/packages/Panel', [
             'loadInstalled',
             'loadSearch',
             'loadServer',
-            'loadUpdate',
+            'loadSystem',
             'viewTile',
             'viewList',
             'checkUpdates',
@@ -116,16 +116,7 @@ define('controls/packages/Panel', [
             });
 
             this.addCategory({
-                name  : 'search',
-                text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.update'),
-                image : 'fa fa-check-circle-o',
-                events: {
-                    onActive: this.loadUpdate
-                }
-            });
-
-            this.addCategory({
-                name  : 'updates',
+                name  : 'installed',
                 text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.installed'),
                 image : 'fa fa-gift',
                 events: {
@@ -133,6 +124,14 @@ define('controls/packages/Panel', [
                 }
             });
 
+            this.addCategory({
+                name  : 'system',
+                text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.update'),
+                image : 'fa fa-check-circle-o',
+                events: {
+                    onActive: this.loadSystem
+                }
+            });
 
             this.addCategory({
                 name  : 'server',
@@ -195,10 +194,10 @@ define('controls/packages/Panel', [
         },
 
         /**
-         * Load the update
+         * Load the system information
          */
-        loadUpdate: function () {
-            this.$loadControl('controls/packages/Update');
+        loadSystem: function () {
+            this.$loadControl('controls/packages/System');
         },
 
         /**

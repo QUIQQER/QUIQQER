@@ -279,6 +279,16 @@ class Package extends QUI\QDOM
     }
 
     /**
+     * Return the package lock date
+     *
+     * @return array
+     */
+    public function getLock()
+    {
+        return QUI::getPackageManager()->getPackageLock($this);
+    }
+
+    /**
      * Return the composer data of the package
      *
      * @return array|bool|mixed

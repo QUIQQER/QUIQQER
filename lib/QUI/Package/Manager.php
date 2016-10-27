@@ -214,16 +214,43 @@ class Manager extends QUI\QDOM
             return '';
         }
 
-        $data = file_get_contents($this->composer_json);
+        $data = file_get_contents($this->composer_lock);
         $data = json_decode($data, true);
 
-        if (isset($data['require']['quiqqer/quiqqer'])) {
-            $this->version = $data['require']['quiqqer/quiqqer'];
-        } else {
-            $this->version = $data['version'];
-        }
+        $package = array_filter($data['packages'], function ($package) {
+            return $package['name'] === 'quiqqer/quiqqer';
+        });
+
+        $package       = current($package);
+        $this->version = $package['version'];
 
         return $this->version;
+    }
+
+    /**
+     * Return the lock data from the package
+     *
+     * @param Package $Package
+     * @return array
+     */
+    public function getPackageLock(Package $Package)
+    {
+        $data = file_get_contents($this->composer_lock);
+        $data = json_decode($data, true);
+
+        $packageName = $Package->getName();
+
+        $package = array_filter($data['packages'], function ($package) use ($packageName) {
+            return $package['name'] === $packageName;
+        });
+
+        if (empty($package)) {
+            return array();
+        }
+
+        $package = current($package);
+
+        return $package;
     }
 
     /**
@@ -505,17 +532,6 @@ class Manager extends QUI\QDOM
             if (!isset($data['version'])) {
                 continue;
             }
-
-            /*
-            $list[ $key ]['version'] = $data['version'];
-
-            // is that right?
-            $list[ $key ]["version_normalized"] = str_replace(
-                array('x', '*'),
-                9999999,
-                $data['version']
-            );
-            */
         }
 
         $this->list = array();
@@ -986,6 +1002,21 @@ class Manager extends QUI\QDOM
         $this->checkComposer();
 
         return $this->Composer->updatesAvailable(false);
+    }
+
+    /**
+     * Check for updates
+     *
+     * @throws \QUI\Exception
+     */
+    public function getOutdated()
+    {
+        $this->checkComposer();
+        $output = $this->Composer->outdated();
+
+        QUI\System\Log::writeRecursive($output);
+
+        return $output;
     }
 
     /**

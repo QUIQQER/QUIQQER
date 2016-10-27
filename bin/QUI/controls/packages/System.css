@@ -1,0 +1,34 @@
+.qui-control-packages-update-infos {
+    background: #f1f1f1;
+    float: left;
+    padding: 20px;
+    width: 100%;
+}
+
+.qui-control-packages-update-infos img {
+    float: left;
+}
+
+.qui-control-packages-update-infos-v {
+    float: left;
+    list-style-type: none;
+    margin: 0;
+    padding: 0 0 0 20px;
+}
+
+.qui-control-packages-update-infos-v li {
+    clear: both;
+}
+
+.qui-control-packages-update-buttons {
+    float: left;
+    padding: 20px;
+    width: 100%;
+}
+
+.qui-control-packages-update-result {
+    border-top: 1px solid #D0D3D3;
+    float: left;
+    padding: 20px;
+    width: 100%;
+}

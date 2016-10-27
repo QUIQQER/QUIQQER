@@ -1,5 +1,5 @@
 /**
- * @module controls/packages/Update
+ * @module controls/packages/System
  * @author www.pcsg.de (Henning Leutz)
  *
  * @requires qui/QUI
@@ -12,7 +12,7 @@
  *
  * @event onLoad
  */
-define('controls/packages/Update', [
+define('controls/packages/System', [
 
     'qui/QUI',
     'qui/controls/Control',
@@ -25,8 +25,8 @@ define('controls/packages/Update', [
     'utils/Favicon',
     'package/quiqqer/translator/bin/Translator',
 
-    'text!controls/packages/Update.html',
-    'css!controls/packages/Update.css'
+    'text!controls/packages/System.html',
+    'css!controls/packages/System.css'
 
 ], function (QUI, QUIControl, QUIButton, QUIConfirm, Packages, Mustache,
              QUIAjax, QUILocale, FaviconUtils, Translator, template) {
@@ -37,7 +37,7 @@ define('controls/packages/Update', [
     return new Class({
 
         Extends: QUIControl,
-        Type   : 'controls/packages/Update',
+        Type   : 'controls/packages/System',
 
         Binds: [
             '$onInject',
@@ -47,6 +47,9 @@ define('controls/packages/Update', [
 
         initialize: function (options) {
             this.parent(options);
+
+            this.$Buttons = null;
+            this.$Result  = null;
 
             this.addEvents({
                 onInject: this.$onInject
@@ -61,10 +64,18 @@ define('controls/packages/Update', [
         create: function () {
             this.$Elm = new Element('div', {
                 'class': 'qui-control-packages-update',
-                html   : Mustache.render(template)
+                html   : Mustache.render(template, {
+                    URL_BIN_DIR: URL_BIN_DIR
+                })
             });
 
-            var Buttons = this.$Elm.getElement('.qui-control-packages-update-buttons');
+            this.$Buttons = this.$Elm.getElement(
+                '.qui-control-packages-update-buttons'
+            );
+
+            this.$Result = this.$Elm.getElement(
+                '.qui-control-packages-update-result'
+            );
 
             this.$Update = new QUIButton({
                 name     : 'update',
@@ -73,7 +84,7 @@ define('controls/packages/Update', [
                 events   : {
                     onClick: this.checkUpdates
                 }
-            }).inject(Buttons);
+            }).inject(this.$Buttons);
 
             this.$Setup = new QUIButton({
                 name     : 'setup',
@@ -85,7 +96,7 @@ define('controls/packages/Update', [
                 styles   : {
                     margin: '0 0 0 20px'
                 }
-            }).inject(Buttons);
+            }).inject(this.$Buttons);
 
             return this.$Elm;
         },
@@ -94,7 +105,25 @@ define('controls/packages/Update', [
          * event : on inject
          */
         $onInject: function () {
-            this.fireEvent('load', [this]);
+            var self = this;
+
+            require(['QUIQQER'], function (QUIQQER) {
+                QUIQQER.getInformation().then(function (data) {
+                    self.$Elm.getElement(
+                        '.qui-control-packages-update-infos-version'
+                    ).set('html', data.version);
+
+                    self.$Elm.getElement(
+                        '.qui-control-packages-update-infos-ref'
+                    ).set('html', data.source.reference);
+
+                    self.$Elm.getElement(
+                        '.qui-control-packages-update-infos-time'
+                    ).set('html', data.time);
+
+                    self.fireEvent('load', [self]);
+                });
+            });
         },
 
         /**
@@ -155,12 +184,12 @@ define('controls/packages/Update', [
 
             Button.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
-            return Packages.checkUpdate().then(function (result) {
-
+            return Packages.getOutdated().then(function (result) {
+                console.log(result);
                 var title   = QUILocale.get(lg, 'message.update.not.available.title'),
                     message = QUILocale.get(lg, 'message.update.not.available.description');
 
-                if (result) {
+                if (result && result.length) {
                     title   = QUILocale.get(lg, 'message.update.available.title');
                     message = QUILocale.get(lg, 'message.update.available.description');
                 }
@@ -174,6 +203,19 @@ define('controls/packages/Update', [
 
                     Handler.pushInformation(title, message, false);
                     Handler.addInformation(message);
+                });
+
+                Button.setAttribute('textimage', 'fa fa-check-circle-o');
+            }).catch(function (Exception) {
+
+                QUI.getMessageHandler().then(function (Handler) {
+                    Handler.pushError(
+                        QUILocale.get(lg, 'message.update.error.title'),
+                        Exception.getMessage(),
+                        false
+                    );
+
+                    Handler.addError(Exception.getMessage());
                 });
 
                 Button.setAttribute('textimage', 'fa fa-check-circle-o');

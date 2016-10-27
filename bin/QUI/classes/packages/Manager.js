@@ -324,9 +324,23 @@ define('classes/packages/Manager', [
          *
          * @return {Promise}
          */
-        checkUpdate: function () {
+        checkUpdates: function () {
             return new Promise(function (resolve, reject) {
                 Ajax.get('ajax_system_update_check', resolve, {
+                    showError: false,
+                    onError  : reject
+                });
+            });
+        },
+
+        /**
+         * Returns the packages which are updatable
+         *
+         * @return {Promise}
+         */
+        getOutdated: function () {
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_system_update_getOutdated', resolve, {
                     showError: false,
                     onError  : reject
                 });
@@ -366,6 +380,22 @@ define('classes/packages/Manager', [
                     'package': pkg,
                     showError: false,
                     onError  : reject
+                });
+            });
+        },
+
+        /**
+         * Return the lock data of a package
+         *
+         * @param {String} pkg - Package name
+         * @returns {Promise}
+         */
+        getPackageLock: function (pkg) {
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_system_packages_getLock', resolve, {
+                    showError: false,
+                    onError  : reject,
+                    package  : pkg
                 });
             });
         },

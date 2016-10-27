@@ -657,20 +657,20 @@
             <en><![CDATA[Menu / Navigation]]></en>
         </locale>
         <locale name="packages.panel.category.installed">
-            <de><![CDATA[Installierte Plugins und Module]]></de>
-            <en><![CDATA[Installed plugins and modules]]></en>
+            <de><![CDATA[Installierte Erweiterungen]]></de>
+            <en><![CDATA[Installed extensions]]></en>
         </locale>
         <locale name="packages.panel.category.search">
-            <de><![CDATA[Neue Plugins und Module suchen]]></de>
-            <en><![CDATA[Search new plugins and modules]]></en>
+            <de><![CDATA[Erweiterungen installieren]]></de>
+            <en><![CDATA[Install extensions]]></en>
         </locale>
         <locale name="packages.panel.category.server">
-            <de><![CDATA[Serververwaltung]]></de>
-            <en><![CDATA[Server management]]></en>
+            <de><![CDATA[Update-Server]]></de>
+            <en><![CDATA[Update server]]></en>
         </locale>
         <locale name="packages.panel.category.update">
-            <de><![CDATA[Aktualisierung]]></de>
-            <en><![CDATA[Update]]></en>
+            <de><![CDATA[System]]></de>
+            <en><![CDATA[System]]></en>
         </locale>
 
         <locale name="packages.panel.btn.setup">
@@ -691,22 +691,27 @@
             <en><![CDATA[The setup was successfully completed.]]></en>
         </locale>
 
-        <locale name="message.update.not.available.title">
-            <de><![CDATA[Updates verfügbar]]></de>
-            <en><![CDATA[Updates available]]></en>
-        </locale>
-        <locale name="message.update.not.available.description">
-            <de><![CDATA[Es sind Updates verfügbar]]></de>
-            <en><![CDATA[Updates are available]]></en>
+        <locale name="message.update.error.title">
+            <de><![CDATA[Fehler bei der Update-Prüfung]]></de>
+            <en><![CDATA[Errors at the update checking]]></en>
         </locale>
 
-        <locale name="message.update.available.title">
+        <locale name="message.update.not.available.title">
             <de><![CDATA[Keine Updates verfügbar]]></de>
             <en><![CDATA[No Updates available]]></en>
         </locale>
-        <locale name="message.update.available.description">
+        <locale name="message.update.not.available.description">
             <de><![CDATA[Es sind keine Updates verfügbar]]></de>
             <en><![CDATA[Updates keine are available]]></en>
+        </locale>
+
+        <locale name="message.update.available.title">
+            <de><![CDATA[Updates verfügbar]]></de>
+            <en><![CDATA[Updates available]]></en>
+        </locale>
+        <locale name="message.update.available.description">
+            <de><![CDATA[Es sind Updates verfügbar]]></de>
+            <en><![CDATA[New Updates are available]]></en>
         </locale>
     </groups>
 
@@ -6374,8 +6379,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
     </groups>
     <groups name="quiqqer/system" datatype="php,js">
         <locale name="menu.extras.packages.text">
-            <de><![CDATA[System, Plugins und Paket-Manager]]></de>
-            <en><![CDATA[System, Plugins and Package Manager]]></en>
+            <de><![CDATA[System und Paket-Manager]]></de>
+            <en><![CDATA[System and Package Manager]]></en>
         </locale>
         <locale name="projects.project.site.btn.new.text">
             <de><![CDATA[Neue Unterseite]]></de>
@@ -6398,8 +6403,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Deactivate]]></en>
         </locale>
         <locale name="packages.panel.title">
-            <de><![CDATA[System, Plugins und Paket-Manager]]></de>
-            <en><![CDATA[System, Plugins and Package Manager]]></en>
+            <de><![CDATA[System und Paket-Manager]]></de>
+            <en><![CDATA[System and Package Manager]]></en>
         </locale>
         <locale name="month">
             <de><![CDATA[Monat]]></de>
