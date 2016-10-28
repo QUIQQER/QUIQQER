@@ -98,6 +98,16 @@
 
             <primary>session_id</primary>
         </table>
+
+        <table name="updateChecks">
+            <field type="INT(11) NOT NULL">id</field>
+            <field type="INT(11)">date</field>
+            <field type="text">result</field>
+            <field type="text">error</field>
+
+            <primary>id</primary>
+            <auto_increment>id</auto_increment>
+        </table>
     </global>
 
     <projects>

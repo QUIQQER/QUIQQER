@@ -20,6 +20,21 @@
     clear: both;
 }
 
+.qui-control-packages-update-infos-v li span:first-child {
+    float: left;
+    width: 80px;
+}
+
+.qui-control-packages-update-infos-lastCheck-cell {
+    padding-top: 10px;
+}
+
+.qui-control-packages-update-infos-lastCheck-cell span {
+    clear: both;
+    float: left;
+    white-space: nowrap;
+}
+
 .qui-control-packages-update-buttons {
     float: left;
     padding: 20px;

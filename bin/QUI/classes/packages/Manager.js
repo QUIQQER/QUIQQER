@@ -334,6 +334,24 @@ define('classes/packages/Manager', [
         },
 
         /**
+         * Return the date of the last update check
+         *
+         * @param {Boolean} [formatted] - Should the date be formatted
+         * @returns {Promise}
+         */
+        getLastUpdateCheck: function (formatted) {
+            formatted = formatted || false;
+
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_system_getLastUpdateCheck', resolve, {
+                    formatted: formatted ? 1 : 0,
+                    showError: false,
+                    onError  : reject
+                });
+            });
+        },
+
+        /**
          * Returns the packages which are updatable
          *
          * @return {Promise}

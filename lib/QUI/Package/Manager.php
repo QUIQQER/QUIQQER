@@ -188,6 +188,16 @@ class Manager extends QUI\QDOM
     }
 
     /**
+     * Return the last update date
+     *
+     * @return integer
+     */
+    public function getLastUpdateCheckDate()
+    {
+        return (int)$this->getUpdateConf()->get('quiqqer', 'lastUpdateCheck');
+    }
+
+    /**
      * Set the last update date to now
      *
      * @throws QUI\Exception
@@ -196,6 +206,18 @@ class Manager extends QUI\QDOM
     {
         $Last = $this->getUpdateConf();
         $Last->set('quiqqer', 'lastUpdate', time());
+        $Last->save();
+    }
+
+    /**
+     * Set the last update date to now
+     *
+     * @throws QUI\Exception
+     */
+    public function setLastUpdateCheckDate()
+    {
+        $Last = $this->getUpdateConf();
+        $Last->set('quiqqer', 'lastUpdateCheck', time());
         $Last->save();
     }
 
@@ -1007,14 +1029,52 @@ class Manager extends QUI\QDOM
     /**
      * Check for updates
      *
+     * @param bool $force - if force is true -> database / cache output from the last check wouldn't be checked
+     * @return array
+     *
      * @throws \QUI\Exception
      */
-    public function getOutdated()
+    public function getOutdated($force = false)
     {
         $this->checkComposer();
-        $output = $this->Composer->outdated();
+        $this->setLastUpdateCheckDate();
 
-        QUI\System\Log::writeRecursive($output);
+        if ($force === false) {
+            // get last database check
+            $result = QUI::getDataBase()->fetch(array(
+                'from'  => QUI::getDBTableName('updateChecks'),
+                'where' => array(
+//                    'error' => array(
+//                        'type'  => 'NOT',
+//                        'value' => ''
+//                    ),
+                    'result' => array(
+                        'type'  => '>=',
+                        'value' => $this->getLastUpdateDate()
+                    )
+                )
+            ));
+            QUI\System\Log::writeRecursive($result);
+            if (!empty($result)) {
+                return json_decode($result[0]['data'], true);
+            }
+        }
+
+        try {
+            $output = $this->Composer->outdated();
+
+            QUI::getDataBase()->insert(QUI::getDBTableName('updateChecks'), array(
+                'date'   => time(),
+                'result' => json_encode($output)
+            ));
+        } catch (QUI\Composer\Exception $Exception) {
+            QUI::getDataBase()->insert(QUI::getDBTableName('updateChecks'), array(
+                'date'  => time(),
+                'error' => json_encode($Exception->toArray())
+            ));
+
+            throw $Exception;
+        }
 
         return $output;
     }

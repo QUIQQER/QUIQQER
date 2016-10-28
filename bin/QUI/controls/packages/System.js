@@ -121,6 +121,18 @@ define('controls/packages/System', [
                         '.qui-control-packages-update-infos-time'
                     ).set('html', data.time);
 
+                }).then(function () {
+                    return Packages.getLastUpdateCheck(true);
+
+                }).then(function (lastUpdateCheck) {
+                    if (!lastUpdateCheck) {
+                        lastUpdateCheck = '---';
+                    }
+
+                    self.$Elm.getElement(
+                        '.qui-control-packages-update-infos-lastCheck'
+                    ).set('html', lastUpdateCheck);
+
                     self.fireEvent('load', [self]);
                 });
             });
@@ -180,18 +192,20 @@ define('controls/packages/System', [
          * @returns {Promise}
          */
         checkUpdates: function () {
-            var Button = this.$Update;
+            var self   = this,
+                Button = this.$Update;
 
             Button.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
             return Packages.getOutdated().then(function (result) {
-                console.log(result);
                 var title   = QUILocale.get(lg, 'message.update.not.available.title'),
                     message = QUILocale.get(lg, 'message.update.not.available.description');
 
                 if (result && result.length) {
                     title   = QUILocale.get(lg, 'message.update.available.title');
                     message = QUILocale.get(lg, 'message.update.available.description');
+
+                    self.$displayUpdateList(result);
                 }
 
                 QUI.getMessageHandler().then(function (Handler) {
@@ -220,6 +234,13 @@ define('controls/packages/System', [
 
                 Button.setAttribute('textimage', 'fa fa-check-circle-o');
             });
+        },
+
+        /**
+         *
+         */
+        $displayUpdateList: function () {
+
         }
     });
 });

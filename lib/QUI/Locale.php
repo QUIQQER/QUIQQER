@@ -152,7 +152,7 @@ class Locale
      * Format a number
      *
      * @param float|integer $number
-     * @param int $format
+     * @param integer $format
      * @return string
      */
     public function formatNumber($number, $format = \NumberFormatter::DECIMAL)

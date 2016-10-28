@@ -1,3 +1,8 @@
+/**
+ * QUIQQER
+ *
+ * @author www.pcsg.de (Henning Leutz)
+ */
 define('QUIQQER', ['Ajax', 'Packages'], function (QUIAjax, Packages) {
     "use strict";
 
