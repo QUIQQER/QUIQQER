@@ -682,6 +682,11 @@
             <en><![CDATA[Check for updates]]></en>
         </locale>
 
+        <locale name="packages.panel.system.packageUpdate.title">
+            <de><![CDATA[Paket [package] aktualisieren auf Version [version]]]></de>
+            <en><![CDATA[Update package [package] to version [version]]]></en>
+        </locale>
+
         <locale name="message.setup.successfull.title">
             <de><![CDATA[Setup erfolgreich ausgeführt.]]></de>
             <en><![CDATA[Setup was successfully.]]></en>

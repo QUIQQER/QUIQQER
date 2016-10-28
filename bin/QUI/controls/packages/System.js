@@ -42,7 +42,10 @@ define('controls/packages/System', [
         Binds: [
             '$onInject',
             'checkUpdates',
-            'executeCompleteSetup'
+            'executeCompleteSetup',
+            'viewTile',
+            'viewList',
+            '$onPackageUpdate'
         ],
 
         initialize: function (options) {
@@ -50,6 +53,8 @@ define('controls/packages/System', [
 
             this.$Buttons = null;
             this.$Result  = null;
+            this.$list    = [];
+            this.$view    = options && options.view || 'tile';
 
             this.addEvents({
                 onInject: this.$onInject
@@ -102,10 +107,31 @@ define('controls/packages/System', [
         },
 
         /**
+         * Refresh the display
+         */
+        refresh: function () {
+            switch (this.$view) {
+                case 'list':
+                    this.viewList();
+                    break;
+
+                default:
+                case 'tile':
+                    this.viewTile();
+                    break;
+            }
+        },
+
+        /**
          * event : on inject
          */
         $onInject: function () {
             var self = this;
+
+            this.$List = {
+                viewTile: this.viewTile,
+                viewList: this.viewList
+            };
 
             require(['QUIQQER'], function (QUIQQER) {
                 QUIQQER.getInformation().then(function (data) {
@@ -122,20 +148,28 @@ define('controls/packages/System', [
                     ).set('html', data.time);
 
                 }).then(function () {
-                    return Packages.getLastUpdateCheck(true);
-
-                }).then(function (lastUpdateCheck) {
-                    if (!lastUpdateCheck) {
-                        lastUpdateCheck = '---';
-                    }
-
-                    self.$Elm.getElement(
-                        '.qui-control-packages-update-infos-lastCheck'
-                    ).set('html', lastUpdateCheck);
-
+                    return self.refreshLastUpdateCheckDate();
+                }).then(function () {
                     self.fireEvent('load', [self]);
                 });
             });
+        },
+
+        /**
+         * Refrsh the last update date display
+         *
+         * @returns {Promise}
+         */
+        refreshLastUpdateCheckDate: function () {
+            return Packages.getLastUpdateCheck(true).then(function (lastUpdateCheck) {
+                if (!lastUpdateCheck) {
+                    lastUpdateCheck = '---';
+                }
+
+                this.$Elm.getElement(
+                    '.qui-control-packages-update-infos-lastCheck'
+                ).set('html', lastUpdateCheck);
+            }.bind(this));
         },
 
         /**
@@ -205,7 +239,7 @@ define('controls/packages/System', [
                     title   = QUILocale.get(lg, 'message.update.available.title');
                     message = QUILocale.get(lg, 'message.update.available.description');
 
-                    self.$displayUpdateList(result);
+                    self.$list = result;
                 }
 
                 QUI.getMessageHandler().then(function (Handler) {
@@ -220,6 +254,11 @@ define('controls/packages/System', [
                 });
 
                 Button.setAttribute('textimage', 'fa fa-check-circle-o');
+                self.refresh();
+
+            }).then(function () {
+                return self.refreshLastUpdateCheckDate();
+
             }).catch(function (Exception) {
 
                 QUI.getMessageHandler().then(function (Handler) {
@@ -237,9 +276,75 @@ define('controls/packages/System', [
         },
 
         /**
+         * Return the list
          *
+         * @returns {Object}
          */
-        $displayUpdateList: function () {
+        getList: function () {
+            return this.$List;
+        },
+
+        /**
+         * Tile view
+         */
+        viewTile: function () {
+            this.$view = 'tile';
+            this.$Result.set('html', '');
+
+            var i, len, pkg, Package;
+
+            var Update = new Element('span', {
+                'class': 'fa fa-play-circle-o button'
+            });
+
+            for (i = 0, len = this.$list.length; i < len; i++) {
+                pkg = this.$list[i];
+
+                Package = new Element('div', {
+                    'class': 'packages-package qui-control-packages-system-package-viewTile',
+                    'html' : '<div class="qui-control-packages-system-package-viewTile-text">' +
+                             '  <span class="package">' + pkg.package + '</span>' +
+                             '  <span class="version">' + pkg.version + '</span>' +
+                             '</div>' +
+                             '<div class="qui-control-packages-system-package-viewTile-buttons"></div>',
+                    title  : QUILocale.get(lg, 'packages.panel.system.packageUpdate.title', {
+                        package: pkg.package,
+                        version: pkg.version
+                    })
+                }).inject(this.$Result);
+
+                Update.clone().addEvent('click', this.$onPackageUpdate)
+                    .inject(Package.getElement('.qui-control-packages-system-package-viewTile-buttons'));
+            }
+        },
+
+        /**
+         * List view
+         */
+        viewList: function () {
+            this.$view = 'tile';
+            this.$Result.set('html', '');
+
+            var i, len, pkg, Package;
+
+            for (i = 0, len = this.$list.length; i < len; i++) {
+                pkg = this.$list[i];
+
+                Package = new Element('div', {
+                    'class': 'packages-package qui-control-packages-system-package-viewList',
+                    'html' : '<div class="qui-control-packages-system-package-viewList-text">' +
+                             pkg.name +
+                             '</div>' +
+                             '<div class="qui-control-packages-system-package-viewList-buttons"></div>',
+                    events : {
+                        click: this.$onPackageUpdate
+                    }
+                }).inject(this.$Result);
+            }
+            console.log(this.$list);
+        },
+
+        $onPackageUpdate: function () {
 
         }
     });

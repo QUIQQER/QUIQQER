@@ -41,7 +41,8 @@
     line-height: 160px;
 }
 
+.qui-control-packages-server-image svg,
 .qui-control-packages-server-image img {
     max-height: 150px;
-    max-width: 100%;
+    max-width: 150px;
 }

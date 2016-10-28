@@ -35,6 +35,8 @@ use QUI\Utils\System\File as QUIFile;
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
  * @event   onOutput [ string $message ]
+ *
+ * @todo php composer.phar config github-oauth.github.com KEY
  */
 class Manager extends QUI\QDOM
 {
@@ -326,6 +328,7 @@ class Manager extends QUI\QDOM
         // make the repository list
         $servers      = $this->getServerList();
         $repositories = array();
+        $npmServer    = array();
 
         foreach ($servers as $server => $params) {
             if ($server == 'packagist') {
@@ -336,15 +339,19 @@ class Manager extends QUI\QDOM
                 continue;
             }
 
+            if ($params['type'] === 'npm') {
+                $npmHostName             = parse_url($server, \PHP_URL_HOST);
+                $npmServer[$npmHostName] = $server;
+                continue;
+            }
+
             $repositories[] = array(
                 'type' => $params['type'],
                 'url'  => $server
             );
         }
 
-        if (isset($servers['packagist'])
-            && $servers['packagist']['active'] == 0
-        ) {
+        if (isset($servers['packagist']) && $servers['packagist']['active'] == 0) {
             $repositories[] = array(
                 'packagist' => false
             );
@@ -352,6 +359,10 @@ class Manager extends QUI\QDOM
 
         $composerJson->repositories = $repositories;
 
+        // add npm server
+        if (!empty($npmServer)) {
+            $composerJson->extra['asset-custom-npm-registries'] = $npmServer;
+        }
 
         // standard require
         if (empty($composerJson->require)) {
@@ -934,6 +945,7 @@ class Manager extends QUI\QDOM
                 case "pear":
                 case "package":
                 case "artifact":
+                case "npm":
                     $Config->setValue($server, 'type', $params['type']);
                     break;
             }
@@ -978,6 +990,7 @@ class Manager extends QUI\QDOM
                 case "pear":
                 case "package":
                 case "artifact":
+                case "npm":
                     $Config->setValue($server, 'type', $params['type']);
                     break;
             }
@@ -1044,19 +1057,19 @@ class Manager extends QUI\QDOM
             $result = QUI::getDataBase()->fetch(array(
                 'from'  => QUI::getDBTableName('updateChecks'),
                 'where' => array(
-//                    'error' => array(
-//                        'type'  => 'NOT',
-//                        'value' => ''
-//                    ),
                     'result' => array(
+                        'type'  => 'NOT',
+                        'value' => ''
+                    ),
+                    'date'   => array(
                         'type'  => '>=',
                         'value' => $this->getLastUpdateDate()
                     )
                 )
             ));
-            QUI\System\Log::writeRecursive($result);
+
             if (!empty($result)) {
-                return json_decode($result[0]['data'], true);
+                return json_decode($result[0]['result'], true);
             }
         }
 

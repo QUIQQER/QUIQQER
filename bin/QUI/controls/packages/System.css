@@ -47,3 +47,65 @@
     padding: 20px;
     width: 100%;
 }
+
+/** package update
+ ============================================== */
+
+.qui-control-packages-update-result {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+    position: relative;
+    width: 100%;
+}
+
+.qui-control-packages-system-package-viewTile {
+    border: 1px solid #D0D3D3;
+    cursor: default;
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+    width: 160px;
+}
+
+.qui-control-packages-system-package-viewTile:hover {
+    border: 1px solid #BBB;
+    box-shadow: 0 0 10px -4px rgba(0, 0, 0, 0.75);
+    -webkit-box-shadow: 0 0 10px -4px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0 0 10px -4px rgba(0, 0, 0, 0.75);
+}
+
+.qui-control-packages-system-package-viewTile-text {
+    flex-grow: 1;
+    padding: 10px;
+    text-align: center;
+}
+
+.qui-control-packages-system-package-viewTile-text .version {
+    clear: both;
+    display: block;
+    font-weight: bold;
+}
+
+.qui-control-packages-system-package-viewTile-buttons {
+    background: #f6f6f6;
+    border-top: 1px solid #D0D3D3;
+    clear: both;
+    float: left;
+    height: 31px;
+    width: 100%;
+}
+
+.qui-control-packages-system-package-viewTile-buttons .button {
+    background: #f6f6f6;
+    box-shadow: none;
+    font-size: 16px;
+    line-height: 30px;
+    text-align: center;
+    width: 100%;
+}
+
+.qui-control-packages-system-package-viewTile-buttons .button:hover {
+    background: #0069b4;
+    color: #fff;
+}
