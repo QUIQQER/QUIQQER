@@ -201,6 +201,22 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     }
 
     /**
+     * Nobody can't be added to the group
+     *
+     * @param int $groupId
+     * @throws Exception
+     */
+    public function addToGroup($groupId)
+    {
+        throw new QUI\Users\Exception(
+            QUI::getLocale()->get(
+                'system',
+                'exception.lib.user.nobody.add.to.group'
+            )
+        );
+    }
+
+    /**
      * (non-PHPdoc)
      *
      * @see \QUI\Interfaces\Users\User::getExtra()

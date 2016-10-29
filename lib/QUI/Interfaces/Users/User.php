@@ -255,4 +255,11 @@ interface User
      * @param boolean $status - true or false
      */
     public function setCompanyStatus($status);
+
+    /**
+     * Add the user to a group
+     *
+     * @param integer $groupId
+     */
+    public function addToGroup($groupId);
 }
