@@ -238,12 +238,19 @@ class Manager
      * Create a new User
      *
      * @param string|boolean $username - (optional), new username
+     * @param QUI\Interfaces\Users\User $ParentUser - (optional), Parent User, which create the user
      *
      * @return QUI\Users\User
      * @throws QUI\Users\Exception
      */
-    public function createChild($username = false)
+    public function createChild($username = false, $ParentUser = null)
     {
+        // check, is the user allowed to create new users
+        QUI\Permissions\Permission::checkPermission(
+            'quiqqer.admin.users.create',
+            $ParentUser
+        );
+
         $newid = $this->newId();
 
         if ($username) {

@@ -47,15 +47,16 @@ class Everyone extends QUI\Groups\Group
      * @param string $key - Attribute name
      * @param string|boolean|integer|array $value - value
      *
-     * @return boolean
+     * @return Everyone
      */
     public function setAttribute($key, $value)
     {
         if ($key == 'id') {
-            return false;
+            return $this;
         }
 
-        return parent::setAttribute($key, $value);
+        parent::setAttribute($key, $value);
+        return $this;
     }
 
     /**
@@ -145,6 +146,7 @@ class Everyone extends QUI\Groups\Group
      */
     public function getParent($obj = true)
     {
+        return false;
     }
 
     /**
@@ -154,6 +156,7 @@ class Everyone extends QUI\Groups\Group
      */
     public function getParentIds()
     {
+        return array();
     }
 
     /**
@@ -195,11 +198,12 @@ class Everyone extends QUI\Groups\Group
      * Create a subgroup
      *
      * @param string $name - name of the subgroup
+     * @param QUI\Interfaces\Users\User $ParentUser - (optional), Parent User, which create the user
      *
      * @return \QUI\Groups\Manager
      * @throws QUI\Exception
      */
-    public function createChild($name)
+    public function createChild($name, $ParentUser = null)
     {
         throw new QUI\Exception(
             QUI::getLocale()->get(

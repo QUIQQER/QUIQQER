@@ -849,12 +849,19 @@ class Group extends QUI\QDOM
      * Create a subgroup
      *
      * @param string $name - name of the subgroup
+     * @param QUI\Interfaces\Users\User $ParentUser - (optional), Parent User, which create the user
      *
      * @return QUI\Groups\Group
      * @throws QUI\Exception
      */
-    public function createChild($name)
+    public function createChild($name, $ParentUser = null)
     {
+        // check, is the user allowed to create new users
+        QUI\Permissions\Permission::checkPermission(
+            'quiqqer.admin.groups.create',
+            $ParentUser
+        );
+
         $create = true;
         $newid  = false;
 

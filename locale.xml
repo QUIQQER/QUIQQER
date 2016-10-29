@@ -138,6 +138,10 @@
             <de><![CDATA[Darf Gruppen editieren.]]></de>
             <en><![CDATA[Is allowed to edit groups.]]></en>
         </locale>
+        <locale name="permission.quiqqer.admin.groups.edit">
+            <de><![CDATA[Darf Gruppen anlegen.]]></de>
+            <en><![CDATA[Is allowed to create groups.]]></en>
+        </locale>
         <locale name="permission.quiqqer.admin.users.view">
             <de><![CDATA[Darf die Benutzerverwaltung sehen.]]></de>
             <en><![CDATA[Can see the user management]]></en>
@@ -145,6 +149,10 @@
         <locale name="permission.quiqqer.admin.users.edit">
             <de><![CDATA[Darf Benutzer editieren.]]></de>
             <en><![CDATA[Is allowed to edit users.]]></en>
+        </locale>
+        <locale name="permission.quiqqer.admin.users.create">
+            <de><![CDATA[Darf Benutzer anlegen.]]></de>
+            <en><![CDATA[Is allowed to create users.]]></en>
         </locale>
         <locale name="permission.quiqqer.projects.create">
             <de><![CDATA[Darf Projekte anlegen.]]></de>
