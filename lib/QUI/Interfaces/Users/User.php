@@ -262,4 +262,18 @@ interface User
      * @param integer $groupId
      */
     public function addToGroup($groupId);
+
+    /**
+     * Remove a group from the user
+     *
+     * @param \QUI\Groups\Group|integer $Group
+     */
+    public function removeGroup($Group);
+
+    /**
+     * refresh the data from the database
+     *
+     * @throws \QUI\Users\Exception
+     */
+    public function refresh();
 }

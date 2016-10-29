@@ -32,6 +32,11 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
         // nothing
     }
 
+    public function refresh()
+    {
+        // nothing to do
+    }
+
     /**
      * (non-PHPdoc)
      *
@@ -212,6 +217,22 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
             QUI::getLocale()->get(
                 'system',
                 'exception.lib.user.nobody.add.to.group'
+            )
+        );
+    }
+
+    /**
+     * Nobody can't be added to the group
+     *
+     * @param int $Group
+     * @throws Exception
+     */
+    public function removeGroup($Group)
+    {
+        throw new QUI\Users\Exception(
+            QUI::getLocale()->get(
+                'system',
+                'exception.lib.user.nobody.remove.group'
             )
         );
     }
