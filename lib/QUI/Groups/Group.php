@@ -901,7 +901,7 @@ class Group extends QUI\QDOM
         $Group = QUI::getGroups()->get($newid);
 
         // set standard permissions
-        QUI::getPermissionManager()->importPermissionsForGroup($Group);
+        QUI::getPermissionManager()->importPermissionsForGroup($Group, $ParentUser);
 
         return $Group;
     }

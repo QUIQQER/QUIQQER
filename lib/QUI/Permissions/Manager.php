@@ -223,15 +223,16 @@ class Manager
      * Set the default permissions for the group
      *
      * @param Group $Group
+     * @param QUI\Interfaces\Users\User $ParentUser - (optional), Parent User, which create the user
      *
      * @throws QUI\Exception
      */
-    public static function importPermissionsForGroup(Group $Group)
+    public static function importPermissionsForGroup(Group $Group, $ParentUser = null)
     {
         $Manager     = QUI::getPermissionManager();
         $permissions = $Manager->getPermissions($Group);
 
-        $Manager->setPermissions($Group, $permissions);
+        $Manager->setPermissions($Group, $permissions, $ParentUser);
     }
 
     /**
