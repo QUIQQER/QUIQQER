@@ -4,7 +4,13 @@
  *
  * @requires qui/QUI
  * @requires qui/controls/Control
- *
+ * @requires qui/controls/buttons/Button
+ * @requires Locale
+ * @requires Packages
+ * @requires Mustache
+ * @requires text!controls/packages/PackageList.ViewTile.html
+ * @requires text!controls/packages/PackageList.ViewList.html
+ * @requires css!controls/packages/PackageList.css
  */
 define('controls/packages/PackageList', [
 
@@ -41,6 +47,7 @@ define('controls/packages/PackageList', [
 
             this.$packages = [];
             this.$view     = options && options.view || 'tile';
+            this.$filter   = '';
 
             this.addEvents({
                 onInject: this.$onInject
@@ -81,6 +88,20 @@ define('controls/packages/PackageList', [
         },
 
         /**
+         * Filter the list
+         *
+         * @param {String|Boolean} filter
+         */
+        filter: function (filter) {
+            if (filter === '') {
+                filter = false;
+            }
+
+            this.$filter = filter;
+            this.refresh();
+        },
+
+        /**
          * refresh the display
          */
         refresh: function () {
@@ -117,6 +138,11 @@ define('controls/packages/PackageList', [
 
             for (i = 0, len = this.$packages.length; i < len; i++) {
                 entry = this.$packages[i];
+
+                if (this.$viewable(entry) === false) {
+                    continue;
+                }
+
                 image = '<span class="fa fa-gift"></span>';
 
                 if (typeof entry.image !== 'undefined' && entry.image !== '') {
@@ -160,6 +186,11 @@ define('controls/packages/PackageList', [
 
             for (i = 0, len = this.$packages.length; i < len; i++) {
                 entry = this.$packages[i];
+
+                if (this.$viewable(entry) === false) {
+                    continue;
+                }
+
                 image = '<span class="fa fa-gift"></span>';
 
                 if (typeof entry.image !== 'undefined' && entry.image !== '') {
@@ -251,6 +282,37 @@ define('controls/packages/PackageList', [
                     'package': Target.get('data-name')
                 }).open();
             });
+        },
+
+        /**
+         * internal filter method, for rendering a package
+         * returns the view status of a package
+         *
+         * @param {Object} packageData
+         * @returns {Boolean}
+         */
+        $viewable: function (packageData) {
+            if (!this.$filter || this.$filter === '') {
+                return true;
+            }
+
+            if (packageData.name.contains(this.$filter)) {
+                return true;
+            }
+
+            if ("title" in packageData && packageData.title.contains(this.$filter)) {
+                return true;
+            }
+
+            if ("type" in packageData && packageData.type.contains(this.$filter)) {
+                return true;
+            }
+
+            if ("description" in packageData) {
+                return packageData.description.contains(this.$filter);
+            }
+
+            return false;
         }
     });
 });
