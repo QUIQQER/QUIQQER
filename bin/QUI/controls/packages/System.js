@@ -241,7 +241,7 @@ define('controls/packages/System', [
 
                     self.$list = result;
                 }
-
+console.log(result);
                 QUI.getMessageHandler().then(function (Handler) {
                     if (result) {
                         Handler.pushAttention(title, message, false);
@@ -305,6 +305,7 @@ define('controls/packages/System', [
                     'html' : '<div class="qui-control-packages-system-package-viewTile-text">' +
                              '  <span class="package">' + pkg.package + '</span>' +
                              '  <span class="version">' + pkg.version + '</span>' +
+                             '  <span class="oldVersion">' + pkg.oldVersion + '</span>' +
                              '</div>' +
                              '<div class="qui-control-packages-system-package-viewTile-buttons"></div>',
                     title  : QUILocale.get(lg, 'packages.panel.system.packageUpdate.title', {

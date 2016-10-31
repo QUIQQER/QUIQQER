@@ -6,11 +6,6 @@
 
 namespace QUI\Package;
 
-// Use the Composer classes
-if (!defined('STDIN')) {
-    define('STDIN', fopen("php://stdin", "r"));
-}
-
 if (!defined('JSON_UNESCAPED_SLASHES')) {
     define('JSON_UNESCAPED_SLASHES', 64);
 }
@@ -1052,7 +1047,7 @@ class Manager extends QUI\QDOM
         $this->checkComposer();
         $this->setLastUpdateCheckDate();
 
-        if ($force === false) {
+        if (false && $force === false) {
             // get last database check
             $result = QUI::getDataBase()->fetch(array(
                 'from'  => QUI::getDBTableName('updateChecks'),
@@ -1074,7 +1069,7 @@ class Manager extends QUI\QDOM
         }
 
         try {
-            $output = $this->Composer->outdated();
+            $output = $this->Composer->getOutdatedPackages();
 
             QUI::getDataBase()->insert(QUI::getDBTableName('updateChecks'), array(
                 'date'   => time(),
