@@ -16,6 +16,8 @@
  * @requires css!controls/packages/Server.css
  *
  * @event onLoad
+ * @event onShowLoader
+ * @event onHideLoader
  */
 define('controls/packages/System', [
 
@@ -48,6 +50,7 @@ define('controls/packages/System', [
             '$onInject',
             'checkUpdates',
             'executeCompleteSetup',
+            'executeSystemUpdate',
             'viewTile',
             'viewList',
             '$onPackageUpdate'
@@ -304,12 +307,14 @@ define('controls/packages/System', [
          * @return {Promise}
          */
         executeSystemUpdate: function () {
-            this.Loader.show();
+            this.fireEvent('showLoader');
 
             return Packages.update().then(function () {
                 this.$Update.setAttribute('textimage', 'fa fa-check-circle-o');
                 this.$Update.setAttribute('checkUpdates', false);
-                this.checkUpdates();
+                this.checkUpdates().then(function () {
+                    this.fireEvent('hideLoader');
+                }.bind(this));
             }.bind(this));
         },
 

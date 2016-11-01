@@ -250,7 +250,13 @@ define('controls/packages/Panel', [
                     self.$Control = new Control({
                         view  : view,
                         events: {
-                            onLoad: function () {
+                            onLoad      : function () {
+                                self.Loader.hide();
+                            },
+                            onShowLoader: function () {
+                                self.Loader.show();
+                            },
+                            onHideLoader: function () {
                                 self.Loader.hide();
                             }
                         }
