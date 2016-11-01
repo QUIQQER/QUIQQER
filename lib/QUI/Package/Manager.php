@@ -1121,17 +1121,15 @@ class Manager extends QUI\QDOM
         }
 
         if (!empty($package)) {
-            $output = $this->Composer->update(array(
+            $this->Composer->update(array(
                 'packages' => array($package)
             ));
         } else {
-            $output = $this->Composer->update();
+            $this->Composer->update();
         }
 
-        QUI\System\Log::addDebug(implode("\n", $output));
-
         // composer optimize
-        $optimize = $this->Composer->dumpAutoload(array(
+        $this->Composer->dumpAutoload(array(
             'optimize' => true
         ));
 
@@ -1139,8 +1137,6 @@ class Manager extends QUI\QDOM
         $Last = $this->getUpdateConf();
         $Last->set('quiqqer', 'lastUpdate', time());
         $Last->save();
-
-        QUI\System\Log::addDebug(implode("\n", $optimize));
     }
 
     /**

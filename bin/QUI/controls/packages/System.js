@@ -349,17 +349,18 @@ define('controls/packages/System', [
                 pkg = this.$list[i];
 
                 Package = new Element('div', {
-                    'class': 'packages-package qui-control-packages-system-package-viewTile',
-                    'html' : '<div class="qui-control-packages-system-package-viewTile-text">' +
-                             '  <span class="package">' + pkg.package + '</span>' +
-                             '  <span class="version">' + pkg.version + '</span>' +
-                             '  <span class="oldVersion">' + pkg.oldVersion + '</span>' +
-                             '</div>' +
-                             '<div class="qui-control-packages-system-package-viewTile-buttons"></div>',
-                    title  : QUILocale.get(lg, 'packages.panel.system.packageUpdate.title', {
+                    'class'       : 'packages-package qui-control-packages-system-package-viewTile',
+                    'html'        : '<div class="qui-control-packages-system-package-viewTile-text">' +
+                                    '  <span class="package">' + pkg.package + '</span>' +
+                                    '  <span class="version">' + pkg.version + '</span>' +
+                                    '  <span class="oldVersion">' + pkg.oldVersion + '</span>' +
+                                    '</div>' +
+                                    '<div class="qui-control-packages-system-package-viewTile-buttons"></div>',
+                    title         : QUILocale.get(lg, 'packages.panel.system.packageUpdate.title', {
                         package: pkg.package,
                         version: pkg.version
-                    })
+                    }),
+                    'data-package': pkg.package
                 }).inject(this.$Result);
 
                 Update.clone().addEvent('click', this.$onPackageUpdate)
@@ -380,16 +381,17 @@ define('controls/packages/System', [
                 pkg = this.$list[i];
 
                 Package = new Element('div', {
-                    'class': 'packages-package qui-control-packages-system-package-viewList',
-                    'html' : '<div class="qui-control-packages-system-package-viewList-text">' +
-                             '  <span class="package">' + pkg.package + '</span>' +
-                             '  <span class="version">' + pkg.version + '</span>' +
-                             '  <span class="oldVersion">' + pkg.oldVersion + '</span>' +
-                             '</div>' +
-                             '<div class="qui-control-packages-system-package-viewList-buttons"></div>',
-                    events : {
+                    'class'       : 'packages-package qui-control-packages-system-package-viewList',
+                    'html'        : '<div class="qui-control-packages-system-package-viewList-text">' +
+                                    '  <span class="package">' + pkg.package + '</span>' +
+                                    '  <span class="version">' + pkg.version + '</span>' +
+                                    '  <span class="oldVersion">' + pkg.oldVersion + '</span>' +
+                                    '</div>' +
+                                    '<div class="qui-control-packages-system-package-viewList-buttons"></div>',
+                    events        : {
                         click: this.$onPackageUpdate
-                    }
+                    },
+                    'data-package': pkg.package
                 }).inject(this.$Result);
             }
         },
@@ -402,7 +404,7 @@ define('controls/packages/System', [
         $onPackageUpdate: function (event) {
             var Target  = event.target,
                 Package = Target.getParent('.packages-package'),
-                pkg     = Package.get('title');
+                pkg     = Package.get('data-package');
 
             var Loader = new Element('div', {
                 'class': 'packages-package-loader',
