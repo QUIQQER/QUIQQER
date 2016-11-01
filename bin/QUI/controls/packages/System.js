@@ -301,15 +301,26 @@ define('controls/packages/System', [
 
         /**
          * Execute a complete system update
+         * @return {Promise}
          */
         executeSystemUpdate: function () {
             this.Loader.show();
 
-            Packages.update().then(function () {
+            return Packages.update().then(function () {
                 this.$Update.setAttribute('textimage', 'fa fa-check-circle-o');
                 this.$Update.setAttribute('checkUpdates', false);
                 this.checkUpdates();
             }.bind(this));
+        },
+
+        /**
+         * Execute a package update
+         *
+         * @param {String} pkg - name of the package
+         * @return {Promise}
+         */
+        executePackageUpdate: function (pkg) {
+            return Packages.update(pkg);
         },
 
         /**
@@ -371,7 +382,9 @@ define('controls/packages/System', [
                 Package = new Element('div', {
                     'class': 'packages-package qui-control-packages-system-package-viewList',
                     'html' : '<div class="qui-control-packages-system-package-viewList-text">' +
-                             pkg.name +
+                             '  <span class="package">' + pkg.package + '</span>' +
+                             '  <span class="version">' + pkg.version + '</span>' +
+                             '  <span class="oldVersion">' + pkg.oldVersion + '</span>' +
                              '</div>' +
                              '<div class="qui-control-packages-system-package-viewList-buttons"></div>',
                     events : {
@@ -379,11 +392,52 @@ define('controls/packages/System', [
                     }
                 }).inject(this.$Result);
             }
-            console.log(this.$list);
         },
 
-        $onPackageUpdate: function () {
+        /**
+         * event : on package update click
+         *
+         * @param {Event} event
+         */
+        $onPackageUpdate: function (event) {
+            var Target  = event.target,
+                Package = Target.getParent('.packages-package'),
+                pkg     = Package.get('title');
 
+            var Loader = new Element('div', {
+                'class': 'packages-package-loader',
+                'html' : '<span class="fa fa-spinner fa-spin"></span>',
+                styles : {
+                    opacity: 0
+                }
+            }).inject(Package);
+
+            moofx(Loader).animate({
+                opacity: 1
+            }, {
+                duration: 250,
+                callback: function () {
+                    this.executePackageUpdate(pkg).then(function () {
+                        moofx(Loader).animate({
+                            opacity: 0
+                        }, {
+                            duration: 250,
+                            callback: function () {
+                                Loader.destroy();
+
+                                moofx(Package).animate({
+                                    opacity: 0,
+                                    width  : 0
+                                }, {
+                                    callback: function () {
+                                        Package.destroy();
+                                    }
+                                });
+                            }
+                        });
+                    });
+                }.bind(this)
+            });
         }
     });
 });

@@ -59,12 +59,27 @@
     width: 100%;
 }
 
+/** Tile view
+ ============================================== */
+
+.qui-control-packages-system-package-viewTile .packages-package-loader {
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-size: 30px;
+    height: 100%;
+    line-height: 110px;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+}
+
 .qui-control-packages-system-package-viewTile {
     border: 1px solid #D0D3D3;
     cursor: default;
     display: flex;
     flex-direction: column;
     margin: 10px;
+    position: relative;
     width: 160px;
 }
 
