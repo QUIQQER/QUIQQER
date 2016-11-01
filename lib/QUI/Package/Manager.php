@@ -1064,12 +1064,22 @@ class Manager extends QUI\QDOM
             ));
 
             if (!empty($result)) {
-                return json_decode($result[0]['result'], true);
+                $result = json_decode($result[0]['result'], true);
+
+                usort($result, function ($a, $b) {
+                    return strcmp($a["package"], $b["package"]);
+                });
+
+                return $result;
             }
         }
 
         try {
             $output = $this->Composer->getOutdatedPackages();
+
+            usort($output, function ($a, $b) {
+                return strcmp($a["package"], $b["package"]);
+            });
 
             QUI::getDataBase()->insert(QUI::getDBTableName('updateChecks'), array(
                 'date'   => time(),
