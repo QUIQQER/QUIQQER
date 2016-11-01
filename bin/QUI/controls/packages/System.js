@@ -88,11 +88,18 @@ define('controls/packages/System', [
             );
 
             this.$Update = new QUIButton({
-                name     : 'update',
-                text     : QUILocale.get(lg, 'packages.panel.btn.startUpdate'),
-                textimage: 'fa fa-check-circle-o',
-                events   : {
-                    onClick: this.checkUpdates
+                name        : 'update',
+                text        : QUILocale.get(lg, 'packages.panel.btn.startUpdate'),
+                textimage   : 'fa fa-check-circle-o',
+                checkUpdates: false,
+                events      : {
+                    onClick: function (Btn) {
+                        if (!Btn.getAttribute('checkUpdates')) {
+                            this.checkUpdates();
+                        } else {
+                            this.executeSystemUpdate();
+                        }
+                    }.bind(this)
                 }
             }).inject(this.$Buttons);
 
@@ -246,8 +253,8 @@ define('controls/packages/System', [
 
                     self.$list = result;
 
-                    self.$Update.setAttribute(
-                        'title',
+                    Button.setAttribute(
+                        'text',
                         QUILocale.get(lg, 'packages.panel.btn.executeUpdate')
                     );
                 }
@@ -263,7 +270,14 @@ define('controls/packages/System', [
                     Handler.addInformation(message);
                 });
 
-                Button.setAttribute('textimage', 'fa fa-check-circle-o');
+                if (result && result.length) {
+                    Button.setAttribute('textimage', 'fa fa-exclamation-triangle');
+                    Button.setAttribute('checkUpdates', true);
+                } else {
+                    Button.setAttribute('textimage', 'fa fa-check-circle-o');
+                    Button.setAttribute('checkUpdates', false);
+                }
+
                 self.refresh();
 
             }).then(function () {
@@ -283,6 +297,19 @@ define('controls/packages/System', [
 
                 Button.setAttribute('textimage', 'fa fa-check-circle-o');
             });
+        },
+
+        /**
+         * Execute a complete system update
+         */
+        executeSystemUpdate: function () {
+            this.Loader.show();
+
+            Packages.update().then(function () {
+                this.$Update.setAttribute('textimage', 'fa fa-check-circle-o');
+                this.$Update.setAttribute('checkUpdates', false);
+                this.checkUpdates();
+            }.bind(this));
         },
 
         /**

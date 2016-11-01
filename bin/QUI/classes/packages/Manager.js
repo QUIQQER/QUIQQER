@@ -104,18 +104,11 @@ define('classes/packages/Manager', [
          * Execute a system or plugin update
          *
          * @param {String} [pkg] - (optional), Package name, if no package name given, complete update are executed
-         * @param {Function} [callback] - (optional), callback function
          * @return {Promise}
          */
-        update: function (pkg, callback) {
+        update: function (pkg) {
             return new Promise(function (resolve, reject) {
-                Ajax.post('ajax_system_update', function (result) {
-                    if (typeOf(callback) === 'function') {
-                        callback(result);
-                    }
-
-                    resolve(result);
-                }, {
+                Ajax.post('ajax_system_update', resolve, {
                     'package': pkg || false,
                     showError: false,
                     onError  : reject
