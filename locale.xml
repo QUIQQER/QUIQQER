@@ -689,6 +689,10 @@
             <de><![CDATA[Auf Updates prüfen]]></de>
             <en><![CDATA[Check for updates]]></en>
         </locale>
+        <locale name="packages.panel.btn.executeUpdate">
+            <de><![CDATA[System Update ausführen]]></de>
+            <en><![CDATA[Run system update]]></en>
+        </locale>
 
         <locale name="packages.panel.system.packageUpdate.title">
             <de><![CDATA[Paket [package] aktualisieren auf Version [version]]]></de>

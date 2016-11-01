@@ -5,9 +5,14 @@
  * @requires qui/QUI
  * @requires qui/controls/Control
  * @requires qui/controls/buttons/Button
+ * @requires qui/controls/windows/Confirm
  * @requires Packages
  * @requires Mustache
  * @requires Ajax
+ * @requires Locale
+ * @requires utils/Favicon
+ * @requires package/quiqqer/translator/bin/Translator
+ * @requires text!controls/packages/System.html
  * @requires css!controls/packages/Server.css
  *
  * @event onLoad
@@ -240,8 +245,13 @@ define('controls/packages/System', [
                     message = QUILocale.get(lg, 'message.update.available.description');
 
                     self.$list = result;
+
+                    self.$Update.setAttribute(
+                        'title',
+                        QUILocale.get(lg, 'packages.panel.btn.executeUpdate')
+                    );
                 }
-console.log(result);
+
                 QUI.getMessageHandler().then(function (Handler) {
                     if (result) {
                         Handler.pushAttention(title, message, false);

@@ -31,10 +31,10 @@
   "require": {
     "php": ">=5.3",
     "composer/composer": "^1.1.0",
-    "tedivm/stash": "0.11.6",
+    "tedivm/stash": "0.14.*",
     "robloach/component-installer": "0.0.12",
-    "phpmailer/phpmailer": "v5.2.9",
-    "symfony/http-foundation": "2.6.4",
+    "phpmailer/phpmailer": "v5.2.*",
+    "symfony/http-foundation": "2.6.*",
     "symfony/console": "2.5",
     "html2text/html2text": "1.0.1",
     "intervention/image": "2.2.*",

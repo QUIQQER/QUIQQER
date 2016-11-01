@@ -32,6 +32,11 @@ class Update extends QUI\System\Console\Tool
                 'Set QUIQQER to the development version',
                 false,
                 true
+            )->addArgument(
+                'check',
+                'Checks for new updates',
+                false,
+                true
             );
     }
 
@@ -44,40 +49,10 @@ class Update extends QUI\System\Console\Tool
     {
         $this->writeLn('Start Update ...');
 
-        $self = $this;
-        $PM   = QUI::getPackageManager();
-
-        $PM->Events->addEvent('onOutput', function ($message) use ($self) {
-
-            if (strpos($message, '<info>') !== false) {
-                $message = str_replace(
-                    array('<info>', '</info>'),
-                    '',
-                    $message
-                );
-
-                $self->writeLn($message, 'purple');
-                $self->resetColor();
-                return;
-            }
-
-            if (strpos($message, '<error>') !== false) {
-                $message = str_replace(
-                    array('<error>', '</error>'),
-                    '',
-                    $message
-                );
-
-                $self->writeLn($message, 'purple');
-                $self->resetColor();
-                return;
-            }
-
-            $self->writeLn($message);
-        });
+        $Packages = QUI::getPackageManager();
 
         if ($this->getArgument('--clearCache')) {
-            $PM->clearComposerCache();
+            $Packages->clearComposerCache();
         }
 
         if ($this->getArgument('--setDevelopment')) {
@@ -97,17 +72,65 @@ class Update extends QUI\System\Console\Tool
             $packageList['quiqqer/utils']   = 'dev-dev';
 
             foreach ($packageList as $package => $version) {
-                QUI::getPackageManager()->setPackage($package, $version);
+//                $Packages->setPackage($package, $version);
             }
         }
 
+
+        if ($this->getArgument('--check')) {
+            $this->writeLn('Prüfe nach Aktualisierungen...');
+            $this->writeLn();
+            $this->writeLn();
+
+            $packages      = $Packages->getOutdated(true);
+            $nameLength    = 0;
+            $versionLength = 0;
+
+            // #locale
+            if (empty($packages)) {
+                $this->writeLn(
+                    'Ihr System ist aktuell. Es wurden keine Aktualisierungen gefunden',
+                    'green'
+                );
+
+                return;
+            }
+
+            foreach ($packages as $package) {
+                if (strlen($package['package']) > $nameLength) {
+                    $nameLength = strlen($package['package']);
+                }
+
+                if (strlen($package['oldVersion']) > $versionLength) {
+                    $versionLength = strlen($package['oldVersion']);
+                }
+            }
+
+            foreach ($packages as $package) {
+                $this->write(
+                    str_pad($package['package'], $nameLength + 2, ' '),
+                    'green'
+                );
+
+                $this->resetColor();
+                $this->write(
+                    str_pad($package['oldVersion'], $versionLength + 2, ' ') . ' -> '
+                );
+
+                $this->write($package['version'], 'cyan');
+
+                $this->writeLn();
+            }
+
+            return;
+        }
+
         try {
-            $PM->refreshServerList();
-            $PM->update();
+            $Packages->refreshServerList();
+            $Packages->update();
 
             $this->write(' [ok]');
             $this->writeLn('');
-
         } catch (\Exception $Exception) {
             $this->write(' [error]', 'red');
             $this->writeLn('');
