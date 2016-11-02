@@ -698,6 +698,10 @@
             <de><![CDATA[Paket [package] aktualisieren auf Version [version]]]></de>
             <en><![CDATA[Update package [package] to version [version]]]></en>
         </locale>
+        <locale name="packages.setup">
+            <de><![CDATA[[pkg] setup ausführen]]></de>
+            <en><![CDATA[Execute the [pkg] setup]]></en>
+        </locale>
 
         <locale name="message.setup.successfull.title">
             <de><![CDATA[Setup erfolgreich ausgeführt.]]></de>
@@ -2354,10 +2358,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="packages.btn.del.server">
             <de><![CDATA[Markierte Server löschen]]></de>
             <en><![CDATA[Delete marked servers]]></en>
-        </locale>
-        <locale name="packages.btn.execute.setup.alt">
-            <de><![CDATA[[pkg] setup ausführen]]></de>
-            <en><![CDATA[Execute the [pkg] setup]]></en>
         </locale>
         <locale name="packages.category.updates">
             <de><![CDATA[Updates]]></de>

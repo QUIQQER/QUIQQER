@@ -272,6 +272,22 @@ define('classes/packages/Manager', [
         },
 
         /**
+         * install a package
+         *
+         * @param {String|Array} packages - name of the package
+         * @returns {Promise}
+         */
+        install: function (packages) {
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_system_packages_install', resolve, {
+                    packages : JSON.encode(packages),
+                    showError: false,
+                    onError  : reject
+                });
+            });
+        },
+
+        /**
          * install a local package
          *
          * @param {String|Array} packages - name of the package

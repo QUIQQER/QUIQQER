@@ -1,6 +1,8 @@
-.qui-control-packages-search {
+.qui-control-packages-search-form {
     background: #f1f1f1;
+    float: left;
     padding: 20px;
+    width: 100%;
 }
 
 .qui-control-packages-search-form-searchtitle {

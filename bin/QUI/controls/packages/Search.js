@@ -30,7 +30,8 @@ define('controls/packages/Search', [
         Type   : 'controls/packages/Search',
 
         Binds: [
-            '$onInject'
+            '$onInject',
+            '$onClickInstall'
         ],
 
         initialize: function (options) {
@@ -64,7 +65,18 @@ define('controls/packages/Search', [
                 this.search();
             }.bind(this));
 
-            this.$List = new PackageList().inject(this.$Results);
+            this.$List = new PackageList({
+                buttons: [{
+                    icon  : 'fa fa-download',
+                    title : 'Paket herunterladen und installieren',
+                    styles: {
+                        width: '100%'
+                    },
+                    events: {
+                        onClick: this.$onClickInstall
+                    }
+                }]
+            }).inject(this.$Results);
 
             return this.$Elm;
         },
@@ -94,7 +106,7 @@ define('controls/packages/Search', [
         search: function () {
             this.fireEvent('searchBegin', [this]);
 
-            Packages.searchNotInstalledPackage(this.$Input.value).then(function (result) {
+            Packages.search(this.$Input.value).then(function (result) {
                 this.$List.clear();
 
                 for (var name in result) {
@@ -112,6 +124,24 @@ define('controls/packages/Search', [
                 this.$List.refresh();
 
                 this.fireEvent('searchEnd', [this]);
+            }.bind(this));
+        },
+
+        /**
+         * event: install button click
+         *
+         * @param {Object} Btn - qui/controls/buttons/Button
+         * @param {event} event
+         */
+        $onClickInstall: function (Btn, event) {
+            event.stop();
+
+            this.fireEvent('onShowLoader', [this]);
+
+            Packages.install([
+                Btn.getAttribute('package')
+            ]).then(function () {
+                this.fireEvent('onHideLoader', [this]);
             }.bind(this));
         }
     });

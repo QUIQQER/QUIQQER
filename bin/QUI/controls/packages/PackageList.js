@@ -29,7 +29,7 @@ define('controls/packages/PackageList', [
              templatePackageTile, templatePackageList) {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg = 'quiqqer/quiqqer';
 
     return new Class({
 
@@ -41,6 +41,10 @@ define('controls/packages/PackageList', [
             '$packageClick',
             '$packageClick'
         ],
+
+        options: {
+            buttons: []
+        },
 
         initialize: function (options) {
             this.parent(options);
@@ -132,7 +136,14 @@ define('controls/packages/PackageList', [
                 return;
             }
 
-            var i, len, image, entry, Package;
+            var i, len, image, entry, Package, ButtonContainer;
+
+            var extraButtons = this.getAttribute('buttons');
+
+            if (!extraButtons || typeOf(extraButtons) !== 'array') {
+                extraButtons = [];
+            }
+
 
             this.$Elm.set('html', '');
 
@@ -162,13 +173,27 @@ define('controls/packages/PackageList', [
                     }
                 }).inject(this.$Elm);
 
+                ButtonContainer = Package.getElement('.packages-package-tile-package-buttons')
+
+                if (extraButtons.length) {
+                    var c, clen, options;
+                    for (c = 0, clen = extraButtons.length; c < clen; c++) {
+                        options         = extraButtons[c];
+                        options.package = entry.name;
+
+                        new QUIButton(options).inject(ButtonContainer);
+                    }
+                }
+
                 if (typeof entry.type === 'undefined' || !entry.type.match('quiqqer-')) {
                     continue;
                 }
 
                 new QUIButton({
                     icon  : 'fa fa-hdd-o',
-                    title : 'Setup ausführen', // #locale
+                    title : QUILocale.get(lg, 'packages.setup', {
+                        pkg: entry.name
+                    }),
                     events: {
                         onClick: this.$setupClick
                     }
@@ -180,7 +205,14 @@ define('controls/packages/PackageList', [
          * Show the packages in the list view
          */
         viewList: function () {
-            var i, len, image, entry, Package;
+            var i, len, image, entry, Package, ButtonContainer;
+
+            var extraButtons = this.getAttribute('buttons');
+
+            if (!extraButtons || typeOf(extraButtons) !== 'array') {
+                extraButtons = [];
+            }
+
 
             this.$Elm.set('html', '');
 
@@ -210,17 +242,33 @@ define('controls/packages/PackageList', [
                     }
                 }).inject(this.$Elm);
 
+                ButtonContainer = Package.getElement(
+                    '.packages-package-list-package-buttons'
+                );
+
+                if (extraButtons.length) {
+                    var c, clen, options;
+                    for (c = 0, clen = extraButtons.length; c < clen; c++) {
+                        options         = extraButtons[c];
+                        options.package = entry.name;
+
+                        new QUIButton(options).inject(ButtonContainer);
+                    }
+                }
+
                 if (typeof entry.type === 'undefined' || !entry.type.match('quiqqer-')) {
                     continue;
                 }
 
                 new QUIButton({
                     icon  : 'fa fa-hdd-o',
-                    title : 'Setup ausführen', // #locale
+                    title : QUILocale.get(lg, 'packages.setup', {
+                        pkg: entry.name
+                    }),
                     events: {
                         onClick: this.$setupClick
                     }
-                }).inject(Package.getElement('.packages-package-list-package-buttons'));
+                }).inject(ButtonContainer);
             }
         },
 
