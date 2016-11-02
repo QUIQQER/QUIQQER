@@ -1047,6 +1047,8 @@ class Manager extends QUI\QDOM
         $this->checkComposer();
         $this->setLastUpdateCheckDate();
 
+        QUI\System\Log::writeRecursive(1);
+
         if ($force === false) {
             // get last database check
             $result = QUI::getDataBase()->fetch(array(
@@ -1066,11 +1068,13 @@ class Manager extends QUI\QDOM
             if (!empty($result)) {
                 $result = json_decode($result[0]['result'], true);
 
-                usort($result, function ($a, $b) {
-                    return strcmp($a["package"], $b["package"]);
-                });
+                if (!empty($result)) {
+                    usort($result, function ($a, $b) {
+                        return strcmp($a["package"], $b["package"]);
+                    });
 
-                return $result;
+                    return $result;
+                }
             }
         }
 
