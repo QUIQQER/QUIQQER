@@ -1047,8 +1047,6 @@ class Manager extends QUI\QDOM
         $this->checkComposer();
         $this->setLastUpdateCheckDate();
 
-        QUI\System\Log::writeRecursive(1);
-
         if ($force === false) {
             // get last database check
             $result = QUI::getDataBase()->fetch(array(
