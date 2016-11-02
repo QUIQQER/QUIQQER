@@ -255,7 +255,7 @@ define('controls/packages/System', [
                 Button = this.$Update;
 
             Button.setAttribute('textimage', 'fa fa-spinner fa-spin');
-console.log(force);
+
             return Packages.getOutdated(force || false).then(function (result) {
                 var title   = QUILocale.get(lg, 'message.update.not.available.title'),
                     message = QUILocale.get(lg, 'message.update.not.available.description');
@@ -309,11 +309,21 @@ console.log(force);
             this.fireEvent('showLoader');
 
             return Packages.update().then(function () {
+
                 this.$Update.setAttribute('textimage', 'fa fa-check-circle-o');
                 this.$Update.setAttribute('checkUpdates', false);
+
                 this.checkUpdates().then(function () {
                     this.fireEvent('hideLoader');
                 }.bind(this));
+
+            }.bind(this)).catch(function (Exception) {
+
+                QUI.getMessageHandler().then(function (MH) {
+                    MH.addError(Exception.getMessage());
+                });
+
+                this.fireEvent('hideLoader');
             }.bind(this));
         },
 

@@ -95,6 +95,7 @@
     flex-grow: 1;
     padding: 10px;
     text-align: center;
+    white-space: nowrap;
 }
 
 .qui-control-packages-system-package-viewTile-text .version {
