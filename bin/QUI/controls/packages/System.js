@@ -91,17 +91,13 @@ define('controls/packages/System', [
             );
 
             this.$Update = new QUIButton({
-                name        : 'update',
-                text        : QUILocale.get(lg, 'packages.panel.btn.startUpdate'),
-                textimage   : 'fa fa-check-circle-o',
-                checkUpdates: false,
-                events      : {
+                name      : 'update',
+                text      : QUILocale.get(lg, 'packages.panel.btn.startUpdate'),
+                textimage : 'fa fa-check-circle-o',
+                forcecheck: false,
+                events    : {
                     onClick: function (Btn) {
-                        if (!Btn.getAttribute('checkUpdates')) {
-                            this.checkUpdates();
-                        } else {
-                            this.executeSystemUpdate();
-                        }
+                        this.checkUpdates(Btn.getAttribute('forcecheck'));
                     }.bind(this)
                 }
             }).inject(this.$Buttons);
@@ -115,6 +111,20 @@ define('controls/packages/System', [
                 },
                 styles   : {
                     margin: '0 0 0 20px'
+                }
+            }).inject(this.$Buttons);
+
+            this.$ExecuteUpdate = new QUIButton({
+                name     : 'executeUpdate',
+                text     : QUILocale.get(lg, 'packages.panel.btn.executeUpdate'),
+                textimage: 'fa fa-exclamation-triangle',
+                events   : {
+                    onClick: function () {
+                        this.executeSystemUpdate();
+                    }.bind(this)
+                },
+                styles   : {
+                    'float': 'right'
                 }
             }).inject(this.$Buttons);
 
@@ -240,13 +250,13 @@ define('controls/packages/System', [
          *
          * @returns {Promise}
          */
-        checkUpdates: function () {
+        checkUpdates: function (force) {
             var self   = this,
                 Button = this.$Update;
 
             Button.setAttribute('textimage', 'fa fa-spinner fa-spin');
-
-            return Packages.getOutdated().then(function (result) {
+console.log(force);
+            return Packages.getOutdated(force || false).then(function (result) {
                 var title   = QUILocale.get(lg, 'message.update.not.available.title'),
                     message = QUILocale.get(lg, 'message.update.not.available.description');
 
@@ -255,11 +265,6 @@ define('controls/packages/System', [
                     message = QUILocale.get(lg, 'message.update.available.description');
 
                     self.$list = result;
-
-                    Button.setAttribute(
-                        'text',
-                        QUILocale.get(lg, 'packages.panel.btn.executeUpdate')
-                    );
                 }
 
                 QUI.getMessageHandler().then(function (Handler) {
@@ -273,14 +278,8 @@ define('controls/packages/System', [
                     Handler.addInformation(message);
                 });
 
-                if (result && result.length) {
-                    Button.setAttribute('textimage', 'fa fa-exclamation-triangle');
-                    Button.setAttribute('checkUpdates', true);
-                } else {
-                    Button.setAttribute('textimage', 'fa fa-check-circle-o');
-                    Button.setAttribute('checkUpdates', false);
-                }
-
+                Button.setAttribute('forcecheck', true);
+                Button.setAttribute('textimage', 'fa fa-check-circle-o');
                 self.refresh();
 
             }).then(function () {
