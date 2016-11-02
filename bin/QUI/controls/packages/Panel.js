@@ -291,6 +291,6 @@ define('controls/packages/Panel', [
                     resolve(self.$Control);
                 }.bind(this));
             });
-        },
+        }
     });
 });

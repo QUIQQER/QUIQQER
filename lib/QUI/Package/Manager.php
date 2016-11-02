@@ -1059,6 +1059,10 @@ class Manager extends QUI\QDOM
      */
     public function getOutdated($force = false)
     {
+        if (!is_bool($force)) {
+            $force = false;
+        }
+
         $this->checkComposer();
         $this->setLastUpdateCheckDate();
 
@@ -1127,7 +1131,7 @@ class Manager extends QUI\QDOM
     public function update($package = false)
     {
         $this->createComposerBackup();
-
+        $this->getComposer()->mute();
 
         if (is_string($package) && empty($package)) {
             $package = false;

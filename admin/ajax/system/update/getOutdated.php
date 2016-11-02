@@ -7,10 +7,19 @@
  */
 QUI::$Ajax->registerFunction(
     'ajax_system_update_getOutdated',
-    function () {
-        return QUI::getPackageManager()->getOutdated();
+    function ($force) {
+        if (!isset($force)) {
+            $force = false;
+        }
+
+        if (is_int($force) || is_string($force)) {
+            $force = (int)$force;
+            $force = $force ? true : false;
+        }
+
+        return QUI::getPackageManager()->getOutdated($force);
     },
-    false,
+    array('force'),
     array(
         'Permission::checkAdminUser',
         'quiqqer.system.update'

@@ -366,11 +366,18 @@ define('classes/packages/Manager', [
         /**
          * Returns the packages which are updatable
          *
+         * @param {Boolean|Number} [force] - default = false; if false and a cached outdated list exists,
+         *                                             this list would be used
          * @return {Promise}
          */
-        getOutdated: function () {
+        getOutdated: function (force) {
             return new Promise(function (resolve, reject) {
+                if (typeof force === 'undefined') {
+                    force = 0;
+                }
+
                 Ajax.get('ajax_system_update_getOutdated', resolve, {
+                    force    : force ? 1 : 0,
                     showError: false,
                     onError  : reject
                 });
