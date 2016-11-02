@@ -154,9 +154,24 @@ class Manager extends QUI\QDOM
         $this->composer_json = $this->vardir . 'composer.json';
         $this->composer_lock = $this->vardir . 'composer.lock';
 
-        $this->Composer = new QUI\Composer\Composer($this->vardir);
+        $this->Composer = null;
         $this->Events   = new QUI\Events\Manager();
         $this->setAttributes($attributes);
+    }
+
+    /**
+     * Return the internal composer object
+     *
+     * @return null|QUI\Composer\Composer
+     */
+    public function getComposer()
+    {
+        if (is_null($this->Composer)) {
+            $this->Composer = new QUI\Composer\Composer($this->vardir);
+            $this->Composer->unmute();
+        }
+
+        return $this->Composer;
     }
 
     /**
@@ -438,7 +453,7 @@ class Manager extends QUI\QDOM
         QUI::getTemp()->moveToTemp($this->vardir . 'repo/');
         QUI::getTemp()->moveToTemp($this->vardir . 'files/');
 
-        $this->Composer->clearCache();
+        $this->getComposer()->clearCache();
     }
 
     /**
@@ -649,7 +664,7 @@ class Manager extends QUI\QDOM
             'Install package ' . $package . ' -> install'
         );
 
-        $this->Composer->requirePackage($package, $version);
+        $this->getComposer()->requirePackage($package, $version);
 
         $this->setup($package);
     }
@@ -667,7 +682,7 @@ class Manager extends QUI\QDOM
         );
 
         $this->useOnlyLocalRepository();
-        $this->Composer->requirePackage($package, $version);
+        $this->getComposer()->requirePackage($package, $version);
         $this->resetRepositories();
 
         $this->setup($package);
@@ -767,7 +782,7 @@ class Manager extends QUI\QDOM
         $this->checkComposer();
 
         $result = array();
-        $show   = $this->Composer->show($package);
+        $show   = $this->getComposer()->show($package);
 
         foreach ($show as $k => $line) {
             if (strpos($line, '<info>') === false) {
@@ -814,7 +829,7 @@ class Manager extends QUI\QDOM
      */
     public function searchPackages($search)
     {
-        return $this->Composer->search(
+        return $this->getComposer()->search(
             QUI\Utils\Security\Orthos::clearShell($search)
         );
     }
@@ -1031,7 +1046,7 @@ class Manager extends QUI\QDOM
     {
         $this->checkComposer();
 
-        return $this->Composer->updatesAvailable(false);
+        return $this->getComposer()->updatesAvailable(false);
     }
 
     /**
@@ -1077,7 +1092,7 @@ class Manager extends QUI\QDOM
         }
 
         try {
-            $output = $this->Composer->getOutdatedPackages();
+            $output = $this->getComposer()->getOutdatedPackages();
 
             usort($output, function ($a, $b) {
                 return strcmp($a["package"], $b["package"]);
@@ -1123,15 +1138,15 @@ class Manager extends QUI\QDOM
         }
 
         if (!empty($package)) {
-            $this->Composer->update(array(
+            $this->getComposer()->update(array(
                 'packages' => array($package)
             ));
         } else {
-            $this->Composer->update();
+            $this->getComposer()->update();
         }
 
         // composer optimize
-        $this->Composer->dumpAutoload(array(
+        $this->getComposer()->dumpAutoload(array(
             'optimize' => true
         ));
 
