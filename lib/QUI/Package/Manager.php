@@ -328,12 +328,15 @@ class Manager extends QUI\QDOM
         );
 
         $composerJson->extra = array(
-            "asset-installer-paths" => array(
+            "asset-installer-paths"  => array(
                 "npm-asset-library"   => OPT_DIR . 'bin',
                 "bower-asset-library" => OPT_DIR . 'bin'
+            ),
+            "asset-registry-options" => array(
+                "npm-searchable"   => false,
+                "bower-searchable" => false
             )
         );
-
 
         // make the repository list
         $servers      = $this->getServerList();
@@ -342,6 +345,14 @@ class Manager extends QUI\QDOM
 
         foreach ($servers as $server => $params) {
             if ($server == 'packagist') {
+                continue;
+            }
+
+            if ($server == 'bower') {
+                continue;
+            }
+
+            if ($server == 'npm') {
                 continue;
             }
 
@@ -366,6 +377,15 @@ class Manager extends QUI\QDOM
                 'packagist' => false
             );
         }
+
+        if (isset($servers['npm']) && $servers['npm']['active'] == 1) {
+            $composerJson->extra["asset-registry-options"]["npm-searchable"] = true;
+        }
+
+        if (isset($servers['bower']) && $servers['bower']['active'] == 1) {
+            $composerJson->extra["asset-registry-options"]["bower-searchable"] = true;
+        }
+
 
         $composerJson->repositories = $repositories;
 
@@ -898,7 +918,22 @@ class Manager extends QUI\QDOM
     public function getServerList()
     {
         try {
-            return QUI::getConfig('etc/source.list.ini.php')->toArray();
+            $servers = QUI::getConfig('etc/source.list.ini.php')->toArray();
+
+            if (!isset($servers['npm'])) {
+                $servers['npm']['active'] = false;
+            }
+
+            if (!isset($servers['bower'])) {
+                $servers['bower']['active'] = false;
+            }
+
+            // default types
+            $servers['packagist']['type'] = 'composer';
+            $servers['bower']['type']     = 'bower';
+            $servers['npm']['type']       = 'npm';
+
+            return $servers;
         } catch (QUI\Exception $Exception) {
         }
 
@@ -956,6 +991,7 @@ class Manager extends QUI\QDOM
                 case "package":
                 case "artifact":
                 case "npm":
+                case "bower":
                     $Config->setValue($server, 'type', $params['type']);
                     break;
             }
@@ -1001,6 +1037,7 @@ class Manager extends QUI\QDOM
                 case "package":
                 case "artifact":
                 case "npm":
+                case "bower":
                     $Config->setValue($server, 'type', $params['type']);
                     break;
             }

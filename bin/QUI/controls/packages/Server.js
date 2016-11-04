@@ -20,12 +20,11 @@ define('controls/packages/Server', [
     'qui/controls/windows/Confirm',
     'Packages',
     'Mustache',
-    'Ajax',
     'Locale',
 
     'css!controls/packages/Server.css'
 
-], function (QUI, QUIControl, QUIButton, QUIConfirm, Packages, Mustache, QUIAjax, QUILocale) {
+], function (QUI, QUIControl, QUIButton, QUIConfirm, Packages, Mustache, QUILocale) {
     "use strict";
 
     var lg = 'quiqqer/quiqqer';
@@ -71,7 +70,7 @@ define('controls/packages/Server', [
             return [{
                 name     : 'addServer',
                 textimage: 'fa fa-plus',
-                text     : 'Neuen Server hinzufügen',
+                text     : 'Neuen Server hinzufügen', // #locale
                 events   : {
                     onClick: function () {
                         this.openAddServerDialog();
@@ -231,7 +230,10 @@ define('controls/packages/Server', [
                     }
                 }).inject(this.$Result);
 
-                if (server.server == 'packagist') {
+                if (server.server == 'packagist' &&
+                    server.server != 'npm' &&
+                    server.server != 'bower') {
+
                     Server.setStyle('cursor', 'default');
                 }
 
@@ -249,7 +251,10 @@ define('controls/packages/Server', [
                         .inject(Buttons);
                 }
 
-                if (server.server != 'packagist') {
+                if (server.server != 'packagist' &&
+                    server.server != 'npm' &&
+                    server.server != 'bower') {
+
                     Delete.clone()
                         .addEvent('click', this.$onDeleterClick)
                         .inject(Buttons);
@@ -302,7 +307,10 @@ define('controls/packages/Server', [
                     }
                 }).inject(this.$Result);
 
-                if (server.server == 'packagist') {
+                if (server.server == 'packagist' &&
+                    server.server != 'npm' &&
+                    server.server != 'bower') {
+
                     Server.setStyle('cursor', 'default');
                 }
 
@@ -320,7 +328,10 @@ define('controls/packages/Server', [
                         .inject(Buttons);
                 }
 
-                if (server.server != 'packagist') {
+                if (server.server != 'packagist' &&
+                    server.server != 'npm' &&
+                    server.server != 'bower') {
+
                     Delete.clone()
                         .addEvent('click', this.$onDeleterClick)
                         .inject(Buttons);
@@ -392,6 +403,14 @@ define('controls/packages/Server', [
             }
 
             if (Target.get('title') == 'packagist') {
+                return;
+            }
+
+            if (Target.get('title') == 'npm') {
+                return;
+            }
+
+            if (Target.get('title') == 'bower') {
                 return;
             }
 
