@@ -39,6 +39,7 @@
     "html2text/html2text": "1.0.1",
     "intervention/image": "2.2.*",
     "t7systems/blowfish": "1.0.0",
+    "pcsg\/composer-assets": "*",
     "quiqqer/composer": "dev-dev",
     "quiqqer/qui": ">=0.13|dev-dev",
     "quiqqer/qui-php": "*@dev",
