@@ -39,7 +39,6 @@
     "html2text/html2text": "1.0.1",
     "intervention/image": "2.2.*",
     "t7systems/blowfish": "1.0.0",
-    "fxp/composer-asset-plugin": "^1.2",
     "quiqqer/composer": "dev-dev",
     "quiqqer/qui": ">=0.13|dev-dev",
     "quiqqer/qui-php": "*@dev",
@@ -59,7 +58,8 @@
     "quiqqer/meta": "*@dev",
     "bower-asset/intl": "1.*",
     "bower-asset/nouislider": "*",
-    "bower-asset/mustache": "2.*"
+    "bower-asset/mustache": "2.*",
+    "bower-asset/uri.js": "1.*"
   },
   "require-dev": {
     "mikey179/vfsStream": "1.*"
