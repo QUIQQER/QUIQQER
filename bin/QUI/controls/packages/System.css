@@ -127,3 +127,100 @@
     background: #0069b4;
     color: #fff;
 }
+
+/** Tile view
+ ============================================== */
+
+.qui-control-packages-system-package-viewList .packages-package-loader {
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-size: 30px;
+    height: 100%;
+    line-height: 45px;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+}
+
+.qui-control-packages-system-package-viewList {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    clear: both;
+    cursor: default;
+    float: left;
+    padding: 0;
+    position: relative;
+    width: 100%;
+}
+
+.qui-control-packages-system-package-viewList:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.qui-control-packages-system-package-viewList-image {
+    float: left;
+    font-size: 30px;
+    line-height: 50px;
+    text-align: center;
+    width: 60px;
+}
+
+.qui-control-packages-system-package-viewList-image img {
+    max-height: 40px;
+    max-width: 40px;
+}
+
+.qui-control-packages-system-package-viewList-image .fa {
+    color: rgba(0, 0, 0, 0.05);
+}
+
+.qui-control-packages-system-package-viewList-text {
+    float: left;
+    line-height: 50px;
+    width: calc(100% - 50px);
+}
+
+.qui-control-packages-system-package-viewList-text .package {
+    float: left;
+    overflow: hidden;
+    padding-left: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: calc(100% - 300px);
+}
+
+.qui-control-packages-system-package-viewList-text .version,
+.qui-control-packages-system-package-viewList-text .oldVersion {
+    float: left;
+    overflow: hidden;
+    padding-right: 10px;
+    text-overflow: ellipsis;
+    text-align: right;
+    white-space: nowrap;
+    width: 150px;
+}
+
+.qui-control-packages-system-package-viewList-text .version {
+    font-weight: bold;
+}
+
+.qui-control-packages-system-package-viewList-buttons {
+    float: left;
+    padding-right: 10px;
+    text-align: right;
+    width: 50px;
+}
+
+.qui-control-packages-system-package-viewList-buttons .button {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    float: none;
+    font-size: 20px;
+    font-weight: normal;
+    padding: 15px;
+}
+
+.qui-control-packages-system-package-viewList-buttons .button:hover {
+    background: #0069b4;
+    color: #fff;
+}

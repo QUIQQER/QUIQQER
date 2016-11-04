@@ -391,6 +391,10 @@ define('controls/packages/System', [
 
             var i, len, pkg, Package;
 
+            var Update = new Element('span', {
+                'class': 'fa fa-play-circle-o button'
+            });
+
             for (i = 0, len = this.$list.length; i < len; i++) {
                 pkg = this.$list[i];
 
@@ -398,8 +402,8 @@ define('controls/packages/System', [
                     'class'       : 'packages-package qui-control-packages-system-package-viewList',
                     'html'        : '<div class="qui-control-packages-system-package-viewList-text">' +
                                     '  <span class="package">' + pkg.package + '</span>' +
-                                    '  <span class="version">' + pkg.version + '</span>' +
                                     '  <span class="oldVersion">' + pkg.oldVersion + '</span>' +
+                                    '  <span class="version">' + pkg.version + '</span>' +
                                     '</div>' +
                                     '<div class="qui-control-packages-system-package-viewList-buttons"></div>',
                     events        : {
@@ -407,6 +411,13 @@ define('controls/packages/System', [
                     },
                     'data-package': pkg.package
                 }).inject(this.$Result);
+
+                Package.getElement('.package').set('title', pkg.package);
+                Package.getElement('.version').set('title', pkg.version);
+                Package.getElement('.oldVersion').set('title', pkg.oldVersion);
+
+                Update.clone().addEvent('click', this.$onPackageUpdate)
+                    .inject(Package.getElement('.qui-control-packages-system-package-viewList-buttons'));
             }
         },
 
