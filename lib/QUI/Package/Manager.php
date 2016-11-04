@@ -333,6 +333,8 @@ class Manager extends QUI\QDOM
                 "bower-asset-library" => OPT_DIR . 'bin'
             ),
             "asset-registry-options" => array(
+                "npm"              => false,
+                "bower"            => false,
                 "npm-searchable"   => false,
                 "bower-searchable" => false
             )
@@ -379,10 +381,12 @@ class Manager extends QUI\QDOM
         }
 
         if (isset($servers['npm']) && $servers['npm']['active'] == 1) {
+            $composerJson->extra["asset-registry-options"]["npm"]            = true;
             $composerJson->extra["asset-registry-options"]["npm-searchable"] = true;
         }
 
         if (isset($servers['bower']) && $servers['bower']['active'] == 1) {
+            $composerJson->extra["asset-registry-options"]["bower"]            = true;
             $composerJson->extra["asset-registry-options"]["bower-searchable"] = true;
         }
 
