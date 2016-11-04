@@ -1003,14 +1003,15 @@ class User implements QUI\Interfaces\Users\User
      * @see QUI\Interfaces\Users\User::activate()
      *
      * @param string|boolean $code - activasion code [optional]
+     * @param null|QUI\Interfaces\Users\User $ParentUser - optional, execution user
      *
      * @return boolean
      * @throws \QUI\Users\Exception
      */
-    public function activate($code = false)
+    public function activate($code = false, $ParentUser = null)
     {
         if ($code == false) {
-            $this->checkRights();
+            $this->checkRights($ParentUser);
         }
 
         // benutzer ist schon aktiv, aktivierung kann nicht durchgeführt werden
