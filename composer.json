@@ -60,7 +60,7 @@
     "npm-asset/intl": "1.*",
     "npm-asset/nouislider": "*",
     "npm-asset/mustache": "2.*",
-    "npm-asset/uri.js": "1.*"
+    "npm-asset/urijs": "1.*"
   },
   "require-dev": {
     "mikey179/vfsStream": "1.*"
