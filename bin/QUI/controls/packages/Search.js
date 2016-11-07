@@ -124,6 +124,9 @@ define('controls/packages/Search', [
                 this.$List.refresh();
 
                 this.fireEvent('searchEnd', [this]);
+            }.bind(this)).catch(function () {
+                this.$List.clear();
+                this.fireEvent('searchEnd', [this]);
             }.bind(this));
         },
 

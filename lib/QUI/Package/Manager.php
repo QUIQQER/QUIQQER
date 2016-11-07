@@ -168,7 +168,7 @@ class Manager extends QUI\QDOM
     {
         if (is_null($this->Composer)) {
             $this->Composer = new QUI\Composer\Composer($this->vardir);
-            $this->Composer->unmute();
+            $this->Composer->setMode(QUI\Composer\Composer::MODE_WEB);
         }
 
         return $this->Composer;
@@ -1137,6 +1137,8 @@ class Manager extends QUI\QDOM
         }
 
         try {
+            QUI\System\Log::writeRecursive($this->getComposer()->getMode());
+
             $output = $this->getComposer()->getOutdatedPackages();
 
             usort($output, function ($a, $b) {
