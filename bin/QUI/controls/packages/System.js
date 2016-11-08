@@ -473,7 +473,9 @@ define('controls/packages/System', [
                             }
                         });
                     }).catch(function (Exception) {
-                        console.error(Exception);
+                        QUI.getMessageHandler().then(function (MH) {
+                            MH.addError(Exception.getMessage());
+                        });
 
                         moofx(Loader).animate({
                             opacity: 0
