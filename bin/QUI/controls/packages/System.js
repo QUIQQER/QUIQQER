@@ -472,6 +472,17 @@ define('controls/packages/System', [
                                 });
                             }
                         });
+                    }).catch(function (Exception) {
+                        console.error(Exception);
+
+                        moofx(Loader).animate({
+                            opacity: 0
+                        }, {
+                            duration: 250,
+                            callback: function () {
+                                Loader.destroy();
+                            }
+                        });
                     });
                 }.bind(this)
             });
