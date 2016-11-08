@@ -314,7 +314,7 @@ define('controls/packages/System', [
                 this.$Update.setAttribute('checkUpdates', false);
 
                 QUI.getMessageHandler().then(function (Handler) {
-                    Handler.pushsuccess(
+                    Handler.pushSuccess(
                         QUILocale.get(lg, 'message.update.success.title'),
                         QUILocale.get(lg, 'message.update.success.message'),
                         false
