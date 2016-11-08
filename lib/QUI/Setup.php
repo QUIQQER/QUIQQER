@@ -89,15 +89,9 @@ class Setup
          */
         $projects = Projects\Manager::getProjects(true);
 
+        /* @var $Project \QUI\Projects\Project */
         foreach ($projects as $Project) {
-            /* @var $Project \QUI\Projects\Project */
             $Project->setup();
-
-            // Plugin Setup @deprecated
-            QUI::getPluginManager()->setup();
-
-            // Media Setup
-            // $Project->getMedia()->setup();
         }
 
         /**
@@ -107,7 +101,6 @@ class Setup
         $packages       = SystemFile::readDir(OPT_DIR);
 
         $PackageManager->refreshServerList();
-//        $Pool = new QUI\Threads\Pool(3, QUI\Threads\Worker::class);
 
         // first we need all databases
         foreach ($packages as $package) {
@@ -123,34 +116,26 @@ class Setup
                 continue;
             }
 
-            $package_dir = OPT_DIR . '/' . $package;
-            $list        = SystemFile::readDir($package_dir);
+            $list = SystemFile::readDir(OPT_DIR . '/' . $package);
 
             foreach ($list as $key => $sub) {
                 $packageName = $package . '/' . $sub;
                 $PackageManager->setup($packageName);
-//                $Pool->submit(
-//                    new QUI\Threads\Worker($key, function () use ($PackageManager, $packageName) {
-//                        $PackageManager->setup($packageName);
-//                    })
-//                );
             }
         }
 
-//        $Pool->process();
-//        QUI\System\Log::writeRecursive($Pool->count());
 
         // generate translations
-        Update::importAllLocaleXMLs();
-        Translator::create();
+//        Update::importAllLocaleXMLs();
+//        Translator::create();
 
         // generate menu
-        Update::importAllMenuXMLs();
+//        Update::importAllMenuXMLs();
 
         // import permissions
-        Update::importAllPermissionsXMLs();
+//        Update::importAllPermissionsXMLs();
 
-        Rights\Manager::importPermissionsForGroups();
+        QUI\Permissions\Manager::importPermissionsForGroups();
 
 
         // setup set the last update date
@@ -227,7 +212,7 @@ if (file_exists(\$boot)) {
         file_put_contents(
             $image,
             $fileHeader .
-            "define('QUIQQER_SYSTEM',true);".
+            "define('QUIQQER_SYSTEM',true);" .
             "require dirname(__FILE__) .'/bootstrap.php';\n" .
             "require '{$OPT_DIR}quiqqer/quiqqer/image.php';\n"
         );
@@ -235,7 +220,7 @@ if (file_exists(\$boot)) {
         file_put_contents(
             $index,
             $fileHeader .
-            "define('QUIQQER_SYSTEM',true);".
+            "define('QUIQQER_SYSTEM',true);" .
             "require dirname(__FILE__) .'/bootstrap.php';\n" .
             "require '{$OPT_DIR}quiqqer/quiqqer/index.php';\n"
         );

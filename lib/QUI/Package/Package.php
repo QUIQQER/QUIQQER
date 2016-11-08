@@ -333,10 +333,14 @@ class Package extends QUI\QDOM
     {
         $dir = $this->getDir();
 
+        if (!$this->isQuiqqerPackage()) {
+            return;
+        }
+
         Update::importDatabase($dir . 'database.xml');
         Update::importTemplateEngines($dir . 'engines.xml');
         Update::importEditors($dir . 'wysiwyg.xml');
-        Update::importMenu($dir . 'menu.xml');
+
         Update::importPermissions($dir . 'permissions.xml', $this->getName());
         Update::importMenu($dir . 'menu.xml');
 
@@ -345,8 +349,30 @@ class Package extends QUI\QDOM
         Update::importEvents($dir . 'events.xml', $this->getName());
         Update::importSiteEvents($dir . 'site.xml');
 
+        // locale
         Update::importLocale($dir . 'locale.xml');
+
+        try {
+            $groups = XML::getLocaleGroupsFromDom(
+                XML::getDomFromXml($dir . 'locale.xml')
+            );
+
+            $groups = array_map(function ($data) {
+                return $data['group'];
+            }, $groups);
+
+            $groups = array_unique($groups);
+        } catch (QUI\Exception $Exception) {
+            $groups = array();
+            QUI\System\Log::addWarning($Exception->getMessage());
+        }
+
         QUI\Translator::publish($this->getName());
+
+        foreach ($groups as $group) {
+            QUI\Translator::publish($group);
+        }
+
 
         // settings
         if (!file_exists($dir . 'settings.xml')) {
