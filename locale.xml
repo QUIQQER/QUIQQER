@@ -712,6 +712,15 @@
             <en><![CDATA[The setup was successfully completed.]]></en>
         </locale>
 
+        <locale name="message.update.success.title">
+            <de><![CDATA[Aktualisierung erfolgreich]]></de>
+            <en><![CDATA[Update successfully]]></en>
+        </locale>
+        <locale name="message.update.success.message">
+            <de><![CDATA[Die Aktualisierung wurde erfolgreich durchgeführt. Ihr System ist nun aktuell.]]></de>
+            <en><![CDATA[The update has been successfully completed. Your system is now up to date.]]></en>
+        </locale>
+
         <locale name="message.update.error.title">
             <de><![CDATA[Fehler bei der Update-Prüfung]]></de>
             <en><![CDATA[Errors at the update checking]]></en>

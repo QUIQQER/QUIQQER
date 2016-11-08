@@ -313,9 +313,19 @@ define('controls/packages/System', [
                 this.$Update.setAttribute('textimage', 'fa fa-check-circle-o');
                 this.$Update.setAttribute('checkUpdates', false);
 
-                this.checkUpdates().then(function () {
-                    this.fireEvent('hideLoader');
-                }.bind(this));
+                QUI.getMessageHandler().then(function (Handler) {
+                    Handler.pushsuccess(
+                        QUILocale.get(lg, 'message.update.success.title'),
+                        QUILocale.get(lg, 'message.update.success.message'),
+                        false
+                    );
+
+                    Handler.addSuccess(
+                        QUILocale.get(lg, 'message.update.success.message')
+                    );
+                });
+
+                this.fireEvent('hideLoader');
 
             }.bind(this)).catch(function (Exception) {
 
