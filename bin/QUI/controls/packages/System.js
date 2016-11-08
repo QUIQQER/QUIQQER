@@ -325,6 +325,17 @@ define('controls/packages/System', [
                     );
                 });
 
+                var packages = this.$Result.getElements('.packages-package');
+
+                moofx(packages).animate({
+                    opacity: 0,
+                    width  : 0
+                }, {
+                    callback: function () {
+                        packages.destroy();
+                    }
+                });
+
                 this.fireEvent('hideLoader');
 
             }.bind(this)).catch(function (Exception) {
