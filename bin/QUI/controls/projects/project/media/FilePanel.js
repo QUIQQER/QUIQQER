@@ -771,6 +771,7 @@ define('controls/projects/project/media/FilePanel', [
                     value : Effects.blur,
                     min   : 0,
                     max   : 100,
+                    start : [0],
                     events: {
                         onChange: self.$refreshImageEffectFrame
                     }
@@ -781,6 +782,7 @@ define('controls/projects/project/media/FilePanel', [
                     value : Effects.brightness,
                     min   : -100,
                     max   : 100,
+                    start : [0],
                     events: {
                         onChange: self.$refreshImageEffectFrame
                     }
@@ -791,6 +793,7 @@ define('controls/projects/project/media/FilePanel', [
                     value : Effects.contrast,
                     min   : -100,
                     max   : 100,
+                    start : [0],
                     events: {
                         onChange: self.$refreshImageEffectFrame
                     }
@@ -897,12 +900,16 @@ define('controls/projects/project/media/FilePanel', [
             var Greyscale = Content.getElement('[name="effect-greyscale"]');
             var url       = URL_LIB_DIR + 'QUI/Projects/Media/bin/effectPreview.php?';
 
+            var effectBlur      = this.$EffectBlur.getValue();
+            var effectBrightnes = this.$EffectBrightness.getValue();
+            var effectContrast  = this.$EffectContrast.getValue();
+
             url = url + Object.toQueryString({
                     id                : fileId,
                     project           : project,
-                    blur              : this.$EffectBlur.getValue(),
-                    brightness        : this.$EffectBrightness.getValue(),
-                    contrast          : this.$EffectContrast.getValue(),
+                    blur              : effectBlur.from,
+                    brightness        : effectBrightnes.from,
+                    contrast          : effectContrast.from,
                     greyscale         : Greyscale.checked ? 1 : 0,
                     watermark         : this.$EffectWatermark.value,
                     watermark_position: WatermarkPosition.value,
