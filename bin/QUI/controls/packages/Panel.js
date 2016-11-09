@@ -43,12 +43,14 @@ define('controls/packages/Panel', [
             'loadSearch',
             'loadServer',
             'loadSystem',
+            'loadPHPInfo',
             'viewTile',
             'viewList',
             'checkUpdates',
             'executeCompleteSetup',
             '$onCreate',
-            '$onShow'
+            '$onShow',
+            '$loadControl'
         ],
 
         initialize: function (options) {
@@ -142,16 +144,35 @@ define('controls/packages/Panel', [
                 }
             });
 
+            this.addCategory({
+                name  : 'phpinfo',
+                text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.phpinfo'),
+                image : 'fa fa-info-circle',
+                events: {
+                    onActive: this.loadPHPInfo
+                }
+            });
+
 
             this.$Categories.addClass('packages-panel-categories');
 
             this.getContent().setStyles({
-                padding: 0
+                padding : 0,
+                position: 'relative'
             });
         },
 
+        /**
+         * Toggle the menu
+         */
         toggleMenu: function () {
-
+            if (this.$Categories.hasClass('qui-panel-categories-minimize')) {
+                this.maximizeCategory();
+                this.getButtons('menu').setAttribute('icon', 'fa fa-bars');
+            } else {
+                this.minimizeCategory();
+                this.getButtons('menu').setAttribute('icon', 'fa fa-ellipsis-v');
+            }
         },
 
         /**
@@ -208,6 +229,13 @@ define('controls/packages/Panel', [
         },
 
         /**
+         * Load the server list
+         */
+        loadPHPInfo: function () {
+            this.$loadControl('controls/packages/PHPInfo');
+        },
+
+        /**
          * Load the package search
          */
         loadSearch: function () {
@@ -241,55 +269,118 @@ define('controls/packages/Panel', [
 
             this.Loader.show();
 
-            if (self.$Control) {
-                self.$Control.destroy();
-            }
-
-            return new Promise(function (resolve) {
-                require([ctrl], function (Control) {
-                    self.$Control = new Control({
-                        view  : view,
-                        events: {
-                            onLoad      : function () {
-                                self.Loader.hide();
-                            },
-                            onShowLoader: function () {
-                                self.Loader.show();
-                            },
-                            onHideLoader: function () {
-                                self.Loader.hide();
+            return this.$hideControl(self.$Control).then(function () {
+                return new Promise(function (resolve) {
+                    require([ctrl], function (Control) {
+                        self.$Control = new Control({
+                            view  : view,
+                            events: {
+                                onLoad      : function () {
+                                    self.Loader.hide();
+                                    resolve();
+                                },
+                                onShowLoader: function () {
+                                    self.Loader.show();
+                                },
+                                onHideLoader: function () {
+                                    self.Loader.hide();
+                                }
                             }
-                        }
-                    }).inject(self.getContent());
+                        });
 
-                    // refresh buttons
-                    self.getButtons().each(function (Button) {
-                        switch (Button.getAttribute('name')) {
-                            case 'viewTile':
-                            case 'viewList':
-                            case 'menuSeperator':
-                            case 'menu':
-                                return;
-                        }
+                        self.$Control.getElm().setStyles({
+                            opacity : 0,
+                            position: 'relative',
+                            top     : -50
+                        });
 
-                        Button.destroy();
-                    });
+                        self.$Control.inject(self.getContent());
 
-
-                    // buttons
-                    if ("getButtons" in self.$Control) {
                         // refresh buttons
-                        self.addButton({
-                            type: 'seperator'
+                        self.getButtons().each(function (Button) {
+                            switch (Button.getAttribute('name')) {
+                                case 'viewTile':
+                                case 'viewList':
+                                case 'menuSeperator':
+                                case 'menu':
+                                    return;
+                            }
+
+                            Button.destroy();
                         });
 
-                        self.$Control.getButtons().each(function (btn) {
-                            self.addButton(btn);
-                        });
+                        // buttons
+                        if ("getButtons" in self.$Control) {
+                            // refresh buttons
+                            self.addButton({
+                                type: 'seperator'
+                            });
+
+                            self.$Control.getButtons().each(function (btn) {
+                                self.addButton(btn);
+                            });
+                        }
+                    });
+                }).then(function () {
+                    return self.$showControl(self.$Control);
+                }).then(function () {
+                    return self.$Control;
+                });
+            });
+
+        },
+
+        /**
+         * Hide the control
+         *
+         * @param {Object} [Control] - QUIControl
+         * @returns {Promise}
+         */
+        $hideControl: function (Control) {
+            return new Promise(function (resolve) {
+                if (typeof Control === 'undefined' || !Control) {
+                    return resolve();
+                }
+
+                moofx(Control.getElm()).animate({
+                    opacity: 0,
+                    top    : -50
+                }, {
+                    duration: 250,
+                    callback: function () {
+                        Control.destroy();
+                        resolve();
                     }
+                });
+            });
+        },
 
-                    resolve(self.$Control);
-                }.bind(this));
+        /**
+         * Show the control
+         *
+         * @param {Object} [Control] - QUIControl
+         * @returns {Promise}
+         */
+        $showControl: function (Control) {
+            return new Promise(function (resolve) {
+                if (typeof Control === 'undefined' || !Control) {
+                    return resolve();
+                }
+
+                var Elm = Control.getElm();
+
+                Elm.setStyles({
+                    opacity: 0,
+                    top    : -50
+                });
+
+                moofx(Elm).animate({
+                    opacity: 1,
+                    top    : 0
+                }, {
+                    duration: 250,
+                    callback: resolve
+                });
             });
         }
     });
