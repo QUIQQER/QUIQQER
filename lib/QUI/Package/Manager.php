@@ -1197,6 +1197,14 @@ class Manager extends QUI\QDOM
             'optimize' => true
         ));
 
+
+        if ($package) {
+            $Package = self::getInstalledPackage($package);
+            $Package->setup();
+        } else {
+            QUI\Setup::all();
+        }
+
         // set last update
         $Last = $this->getUpdateConf();
         $Last->set('quiqqer', 'lastUpdate', time());

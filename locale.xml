@@ -6409,8 +6409,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
     </groups>
     <groups name="quiqqer/system" datatype="php,js">
         <locale name="menu.extras.packages.text">
-            <de><![CDATA[System und Paket-Manager]]></de>
-            <en><![CDATA[System and Package Manager]]></en>
+            <de><![CDATA[Systemverwaltung]]></de>
+            <en><![CDATA[System administration]]></en>
         </locale>
         <locale name="projects.project.site.btn.new.text">
             <de><![CDATA[Neue Unterseite]]></de>
@@ -6433,8 +6433,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Deactivate]]></en>
         </locale>
         <locale name="packages.panel.title">
-            <de><![CDATA[System und Paket-Manager]]></de>
-            <en><![CDATA[System and Package Manager]]></en>
+            <de><![CDATA[Systemverwaltung]]></de>
+            <en><![CDATA[System administration]]></en>
         </locale>
         <locale name="month">
             <de><![CDATA[Monat]]></de>
