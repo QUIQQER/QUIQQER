@@ -162,8 +162,17 @@ define('controls/packages/Panel', [
             });
         },
 
+        /**
+         * Toggle the menu
+         */
         toggleMenu: function () {
-
+            if (this.$Categories.hasClass('qui-panel-categories-minimize')) {
+                this.maximizeCategory();
+                this.getButtons('menu').setAttribute('icon', 'fa fa-bars');
+            } else {
+                this.minimizeCategory();
+                this.getButtons('menu').setAttribute('icon', 'fa fa-ellipsis-v');
+            }
         },
 
         /**
