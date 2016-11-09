@@ -43,6 +43,7 @@ define('controls/packages/Panel', [
             'loadSearch',
             'loadServer',
             'loadSystem',
+            'loadPHPInfo',
             'viewTile',
             'viewList',
             'checkUpdates',
@@ -142,6 +143,15 @@ define('controls/packages/Panel', [
                 }
             });
 
+            this.addCategory({
+                name  : 'phpinfo',
+                text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.phpinfo'),
+                image : 'fa fa-info-circle',
+                events: {
+                    onActive: this.loadPHPInfo
+                }
+            });
+
 
             this.$Categories.addClass('packages-panel-categories');
 
@@ -205,6 +215,13 @@ define('controls/packages/Panel', [
          */
         loadServer: function () {
             this.$loadControl('controls/packages/Server');
+        },
+
+        /**
+         * Load the server list
+         */
+        loadPHPInfo: function () {
+            this.$loadControl('controls/packages/PHPInfo');
         },
 
         /**

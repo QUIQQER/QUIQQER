@@ -680,6 +680,10 @@
             <de><![CDATA[System]]></de>
             <en><![CDATA[System]]></en>
         </locale>
+        <locale name="packages.panel.category.phpinfo">
+            <de><![CDATA[PHP-Info]]></de>
+            <en><![CDATA[PHP Info]]></en>
+        </locale>
 
         <locale name="packages.panel.btn.setup">
             <de><![CDATA[System Setup ausführen]]></de>
