@@ -489,8 +489,8 @@
 
     <groups name="quiqqer/quiqqer" datatype="php">
         <locale name="projects.project.settings.panel.settings.title">
-            <de><![CDATA[Projekteinstellungen]]></de>
-            <en><![CDATA[Projects settings]]></en>
+            <de><![CDATA[Projekte]]></de>
+            <en><![CDATA[Projects]]></en>
         </locale>
         <locale name="projects.project.settings.panel.language.default">
             <de><![CDATA[Standard Sprache]]></de>
@@ -677,8 +677,8 @@
             <en><![CDATA[Update server]]></en>
         </locale>
         <locale name="packages.panel.category.update">
-            <de><![CDATA[System]]></de>
-            <en><![CDATA[System]]></en>
+            <de><![CDATA[Aktualisierung]]></de>
+            <en><![CDATA[Update]]></en>
         </locale>
         <locale name="packages.panel.category.phpinfo">
             <de><![CDATA[PHP-Info]]></de>
@@ -1719,8 +1719,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Start search]]></en>
         </locale>
         <locale name="editors.settings.title">
-            <de><![CDATA[WYSIWYG-Editor Einstellungen]]></de>
-            <en><![CDATA[WYSIWYG-Editor Settings]]></en>
+            <de><![CDATA[WYSIWYG-Editor]]></de>
+            <en><![CDATA[WYSIWYG-Editor]]></en>
         </locale>
         <locale name="editors.settings.btn.edit.toolbar">
             <de><![CDATA[Toolbar editieren]]></de>
@@ -5085,8 +5085,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Media settings]]></en>
         </locale>
         <locale name="menu.settings.editor.text">
-            <de><![CDATA[WYSIWYG-Editor Einstellungen]]></de>
-            <en><![CDATA[WYSIWYG-Editor settings]]></en>
+            <de><![CDATA[WYSIWYG-Editor]]></de>
+            <en><![CDATA[WYSIWYG-Editor]]></en>
         </locale>
         <locale name="menu.settings.vhosts.text">
             <de><![CDATA[Virtual Hosts]]></de>
@@ -5133,8 +5133,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[QUIQQER Changelog]]></en>
         </locale>
         <locale name="quiqqer.settings.title">
-            <de><![CDATA[QUIQQER-Einstellungen]]></de>
-            <en><![CDATA[QUIQQER Settings]]></en>
+            <de><![CDATA[System]]></de>
+            <en><![CDATA[System]]></en>
         </locale>
         <locale name="quiqqer.settings.general.title">
             <de><![CDATA[Allgemein]]></de>
@@ -5163,12 +5163,12 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
 
         <locale name="quiqqer.settings.cache.management.title">
-            <de><![CDATA[Cache Verwaltung]]></de>
-            <en><![CDATA[Cache management]]></en>
+            <de><![CDATA[Cache]]></de>
+            <en><![CDATA[Cache]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.management.text">
-            <de><![CDATA[Cache-Verwaltung]]></de>
-            <en><![CDATA[Cache management]]></en>
+            <de><![CDATA[Cache]]></de>
+            <en><![CDATA[Cache]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.clear.title">
             <de><![CDATA[Cache leeren]]></de>
@@ -5390,8 +5390,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Port]]></en>
         </locale>
         <locale name="quiqqer.settings.cache">
-            <de><![CDATA[Cache-Verwaltung]]></de>
-            <en><![CDATA[Cache management]]></en>
+            <de><![CDATA[Cache]]></de>
+            <en><![CDATA[Cache]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.title">
             <de><![CDATA[Welche Cache-Arten sollen genutzt werden?]]></de>

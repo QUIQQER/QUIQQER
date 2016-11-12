@@ -109,6 +109,15 @@ define('controls/packages/Panel', [
 
             // left categories
             this.addCategory({
+                name  : 'system',
+                text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.update'),
+                image : 'fa fa-check-circle-o',
+                events: {
+                    onActive: this.loadSystem
+                }
+            });
+
+            this.addCategory({
                 name  : 'search',
                 text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.search'),
                 image : 'fa fa-search',
@@ -123,15 +132,6 @@ define('controls/packages/Panel', [
                 image : 'fa fa-gift',
                 events: {
                     onActive: this.loadInstalled
-                }
-            });
-
-            this.addCategory({
-                name  : 'system',
-                text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.update'),
-                image : 'fa fa-check-circle-o',
-                events: {
-                    onActive: this.loadSystem
                 }
             });
 
@@ -204,7 +204,7 @@ define('controls/packages/Panel', [
          */
         $onShow: function () {
             this.getButtons('viewTile').setActive();
-            this.getCategory('search').click();
+            this.getCategory('system').click();
         },
 
         /**
