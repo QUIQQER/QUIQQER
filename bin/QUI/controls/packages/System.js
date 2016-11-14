@@ -102,18 +102,20 @@ define('controls/packages/System', [
                 }
             }).inject(this.$Buttons);
 
-            this.$Setup = new QUIButton({
-                name     : 'setup',
-                text     : QUILocale.get(lg, 'packages.panel.btn.setup'),
-                textimage: 'fa fa-hdd-o',
-                events   : {
-                    onClick: this.executeCompleteSetup
-                },
-                styles   : {
-                    margin: '0 0 0 20px'
-                }
-            }).inject(this.$Buttons);
-
+            if (parseInt(QUIQQER_CONFIG.globals.development)) {
+                this.$Setup = new QUIButton({
+                    name     : 'setup',
+                    text     : QUILocale.get(lg, 'packages.panel.btn.setup'),
+                    textimage: 'fa fa-hdd-o',
+                    events   : {
+                        onClick: this.executeCompleteSetup
+                    },
+                    styles   : {
+                        margin: '0 0 0 20px'
+                    }
+                }).inject(this.$Buttons);
+            }
+            
             this.$ExecuteUpdate = new QUIButton({
                 name     : 'executeUpdate',
                 text     : QUILocale.get(lg, 'packages.panel.btn.executeUpdate'),
