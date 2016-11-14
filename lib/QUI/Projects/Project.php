@@ -95,13 +95,6 @@ class Project
     private $template;
 
     /**
-     * layout of the project
-     *
-     * @var array
-     */
-    private $layout = '';
-
-    /**
      * loaded sites
      *
      * @var array
@@ -184,10 +177,6 @@ class Project
 
         $this->default_lang = $this->config['default_lang'];
 
-        if (isset($this->config['layout'])) {
-            $this->layout = $this->config['layout'];
-        }
-
         // Sprache
         if ($lang != false) {
             if (!in_array($lang, $this->langs)) {
@@ -249,14 +238,8 @@ class Project
                 continue;
             }
 
-            if ($vhost['lang'] == $this->lang
-                && $vhost['project'] == $this->name
-            ) {
+            if ($vhost['lang'] == $this->lang && $vhost['project'] == $this->name) {
                 $this->config['vhost'] = $host;
-
-                if (isset($vhost['layout'])) {
-                    $this->layout = $vhost['layout'];
-                }
             }
         }
 
@@ -501,10 +484,6 @@ class Project
                 return $this->template;
                 break;
 
-            case "layout":
-                return $this->layout;
-                break;
-
             case "db_table":
                 # Anzeigen demo_de_sites
                 return $this->name . '_' . $this->lang . '_sites';
@@ -731,7 +710,9 @@ class Project
     }
 
     /**
+     * Return all available layouts
      *
+     * @return array
      */
     public function getLayouts()
     {
@@ -790,45 +771,6 @@ class Project
 
         return $result;
     }
-
-
-    /**
-     * Gibt die Namen der eingebundenen Plugins zurück
-     *
-     * @return array
-     */
-//     public function getPlugins()
-//     {
-//         if ( !is_null( $this->plugins ) ) {
-//             return $this->plugins;
-//         }
-
-//         $Plugins = QUI::getPlugins();
-
-//         if ( !isset( $this->config['plugins'] ) )
-//         {
-//               // Falls für das Projekt keine Plugins freigeschaltet wurden dann alle
-//             $this->plugins = $Plugins->get();
-//             return $this->plugins;
-//         }
-
-//         // Plugins einlesen falls dies noch nicht getan wurde
-//         $_plugins = explode( ',', trim( $this->config['plugins'], ',' ) );
-
-//         for ( $i = 0, $len = count($_plugins); $i < $len; $i++ )
-//         {
-//             try
-//             {
-//                 $this->plugins[ $_plugins[$i] ] = $Plugins->get( $_plugins[$i] );
-
-//             } catch ( QUI\Exception $Exception )
-//             {
-//                 //nothing
-//             }
-//         }
-
-//         return $this->plugins;
-//     }
 
     /**
      * Return the children ids from a site

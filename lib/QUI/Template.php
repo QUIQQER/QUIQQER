@@ -71,15 +71,13 @@ class Template extends QUI\QDOM
         $this->setAttribute('html5', true);
 
         // defaults
-        $this->setAttributes(
-            array(
-                'mootools'       => true,
-                'requirejs'      => true,
-                'html5'          => true,
-                'content-header' => true,
-                'content-body'   => true
-            )
-        );
+        $this->setAttributes(array(
+            'mootools'       => true,
+            'requirejs'      => true,
+            'html5'          => true,
+            'content-header' => true,
+            'content-body'   => true
+        ));
     }
 
     /**
@@ -303,24 +301,22 @@ class Template extends QUI\QDOM
         $this->setAttribute('Engine', $Engine);
 
         // Zuweisungen
-        $Engine->assign(
-            array(
-                'URL_DIR'     => URL_DIR,
-                'URL_BIN_DIR' => URL_BIN_DIR,
-                'URL_LIB_DIR' => URL_LIB_DIR,
-                'URL_VAR_DIR' => URL_VAR_DIR,
-                'URL_OPT_DIR' => URL_OPT_DIR,
-                'URL_USR_DIR' => URL_USR_DIR,
-                'User'        => $User,
-                'Locale'      => $Locale,
-                'L'           => $Locale,
-                'Template'    => $Template,
-                'Site'        => $Site,
-                'Project'     => $Project,
-                'Rewrite'     => $Rewrite,
-                'lastUpdate'  => QUI::getPackageManager()->getLastUpdateDate()
-            )
-        );
+        $Engine->assign(array(
+            'URL_DIR'     => URL_DIR,
+            'URL_BIN_DIR' => URL_BIN_DIR,
+            'URL_LIB_DIR' => URL_LIB_DIR,
+            'URL_VAR_DIR' => URL_VAR_DIR,
+            'URL_OPT_DIR' => URL_OPT_DIR,
+            'URL_USR_DIR' => URL_USR_DIR,
+            'User'        => $User,
+            'Locale'      => $Locale,
+            'L'           => $Locale,
+            'Template'    => $Template,
+            'Site'        => $Site,
+            'Project'     => $Project,
+            'Rewrite'     => $Rewrite,
+            'lastUpdate'  => QUI::getPackageManager()->getLastUpdateDate()
+        ));
 
         /**
          * find the index.html
@@ -568,19 +564,17 @@ class Template extends QUI\QDOM
         }
 
         // assign
-        $Engine->assign(
-            array(
-                'Project'         => $Project,
-                'Site'            => $Site,
-                'Engine'          => $Engine,
-                'localeFiles'     => $locales,
-                'loadModuleFiles' => $this->onLoadModules,
-                'headerExtend'    => $headerExtend,
-                'ControlManager'  => new QUI\Control\Manager(),
-                'Canonical'       => new QUI\Projects\Site\Canonical($Site),
-                'lastUpdate'      => QUI::getPackageManager()->getLastUpdateDate()
-            )
-        );
+        $Engine->assign(array(
+            'Project'         => $Project,
+            'Site'            => $Site,
+            'Engine'          => $Engine,
+            'localeFiles'     => $locales,
+            'loadModuleFiles' => $this->onLoadModules,
+            'headerExtend'    => $headerExtend,
+            'ControlManager'  => new QUI\Control\Manager(),
+            'Canonical'       => new QUI\Projects\Site\Canonical($Site),
+            'lastUpdate'      => QUI::getPackageManager()->getLastUpdateDate()
+        ));
 
         return $Engine->fetch(LIB_DIR . 'templates/header.html');
     }
@@ -622,11 +616,10 @@ class Template extends QUI\QDOM
     {
         $Project = $this->getAttribute('Project');
         $Site    = $this->getAttribute('Site');
-        $layout  = $Site->getAttribute('layout');
 
-        if (!$layout) {
-            $layout = $Project->getAttribute('layout');
-        }
+        QUI\Utils\Site::setRecursivAttribute($Site, 'layout');
+
+        $layout = $Site->getAttribute('layout');
 
         $template = OPT_DIR . $Project->getAttribute('template');
         $siteXML  = $template . '/site.xml';
