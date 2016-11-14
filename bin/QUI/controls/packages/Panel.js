@@ -153,6 +153,24 @@ define('controls/packages/Panel', [
                 }
             });
 
+            this.addCategory({
+                name  : 'phpinfo',
+                text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.settings'),
+                image : 'fa fa-gears',
+                events: {
+                    onClick: function () {
+                        require(['Menu'], function (Menu) {
+                            var Item = Menu.getChildren()
+                                .getChildren('settings')
+                                .getChildren('quiqqer')
+                                .getChildren('/settings/quiqqer/quiqqer/');
+
+                            Menu.menuClick(Item);
+                        });
+                    }
+                }
+            });
+
 
             this.$Categories.addClass('packages-panel-categories');
 

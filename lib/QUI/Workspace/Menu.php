@@ -138,7 +138,7 @@ class Menu
 
                 $Item->setAttribute(
                     'name',
-                    '/settings/' . $Window->getAttribute('name') . '/'
+                    $menuParent . $Window->getAttribute('name') . '/'
                 );
 
                 $Item->setAttribute('onClick', 'QUI.Menu.menuClick');

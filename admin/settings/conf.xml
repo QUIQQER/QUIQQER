@@ -243,7 +243,7 @@
 
         </config>
 
-        <window menu-parent="/settings/quiqqer/">
+        <window menu-parent="/settings/quiqqer/" name="quiqqer">
             <title>
                 <locale group="quiqqer/system" var="quiqqer.settings.title"/>
             </title>
@@ -559,7 +559,7 @@
                             <locale group="quiqqer/system" var="quiqqer.settings.delimiter_formats.title"/>
                         </title>
 
-                        <input data-qui="controls/system/settings/FormatSettings" />
+                        <input data-qui="controls/system/settings/FormatSettings"/>
                     </settings>
                 </category>
 
