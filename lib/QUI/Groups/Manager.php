@@ -41,6 +41,11 @@ class Manager extends QUI\QDOM
     protected $groups;
 
     /**
+     * @var array
+     */
+    protected $data = array();
+
+    /**
      * Files that are to be loaded in the admin area
      *
      * @var array
@@ -191,6 +196,35 @@ class Manager extends QUI\QDOM
         $this->groups[$id] = new Group($id);
 
         return $this->groups[$id];
+    }
+
+    /**
+     * Return the db data of a group
+     *
+     * @param integer|string $groupId
+     * @return array
+     */
+    public function getGroupData($groupId)
+    {
+        if (isset($this->data[$groupId])) {
+            return $this->data[$groupId];
+        }
+
+        $groupId = (int)$groupId;
+
+        $result = QUI::getDataBase()->fetch(array(
+            'from'  => self::table(),
+            'where' => array(
+                'id' => $groupId
+            ),
+            'limit' => 1
+        ));
+
+        if ($groupId === 1 || $groupId === 0) {
+            $this->data[$groupId] = $result;
+        }
+
+        return $result;
     }
 
     /**

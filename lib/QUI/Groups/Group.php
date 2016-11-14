@@ -88,13 +88,7 @@ class Group extends QUI\QDOM
         } catch (QUI\Cache\Exception $Exception) {
         }
 
-        $result = QUI::getDataBase()->fetch(array(
-            'from'  => Manager::table(),
-            'where' => array(
-                'id' => $this->getId()
-            ),
-            'limit' => '1'
-        ));
+        $result = QUI::getGroups()->getGroupData($id);
 
         if (!isset($result[0])) {
             throw new QUI\Exception(

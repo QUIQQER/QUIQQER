@@ -30,6 +30,13 @@ class Manager
     protected $cache = array();
 
     /**
+     * Permissions2 data cache
+     *
+     * @var array
+     */
+    protected $dataCache = array();
+
+    /**
      * constructor
      * load the available rights
      */
@@ -80,30 +87,29 @@ class Manager
     public static function classToArea($cls)
     {
         switch ($cls) {
-            case 'QUI\\Users\\User':
+            case QUI\Users\User::class:
+            case QUI\Users\SystemUser::class:
+            case QUI\Users\Nobody::class:
                 return 'user';
-                break;
 
-            case 'QUI\\Groups\\Guest':
-            case 'QUI\\Groups\\Everyone':
-            case 'QUI\\Groups\\Group':
+            case QUI\Groups\Guest::class:
+            case QUI\Groups\Everyone::class:
+            case Group::class:
                 return 'groups';
-                break;
 
-            case 'QUI\\Projects\\Site':
-            case 'QUI\\Projects\\Site\\Edit':
-            case 'QUI\\Projects\\Site\\OnlyDB':
+            case QUI\Projects\Site::class:
+            case QUI\Projects\Site\Edit::class:
+            case QUI\Projects\Site\OnlyDB::class:
                 return 'site';
-                break;
 
-            case 'QUI\\Projects\\Project':
+            case QUI\Projects\Project::class:
                 return 'project';
-                break;
 
-            // @todo media file classes
-            case 'QUI\\Projects\\Media':
+            case QUI\Projects\Media::class:
+            case QUI\Projects\Media\File::class:
+            case QUI\Projects\Media\Folder::class:
+            case QUI\Projects\Media\Image::class:
                 return 'media';
-                break;
         }
 
         return '__null__';
@@ -571,17 +577,13 @@ class Manager
 
             case 'QUI\\Projects\\Project':
                 $this->setProjectPermissions($Obj, $permissions, $EditUser);
-
                 return;
-                break;
 
             case 'QUI\\Projects\\Site':
             case 'QUI\\Projects\\Site\\Edit':
             case 'QUI\\Projects\\Site\\OnlyDB':
                 $this->setSitePermissions($Obj, $permissions, $EditUser);
-
                 return;
-                break;
 
             default:
                 throw new QUI\Exception(
@@ -696,6 +698,8 @@ class Manager
                 break;
         }
 
+        unset($this->dataCache[$this->getDataCacheId($Obj)]);
+
         QUI::getEvents()->fireEvent('permissionsSet', array($Obj, $permissions));
     }
 
@@ -772,6 +776,8 @@ class Manager
 
             $this->setSitePermission($Site, $permission, $value);
         }
+
+        unset($this->dataCache[$this->getDataCacheId($Site)]);
     }
 
     /**
@@ -796,6 +802,8 @@ class Manager
                 'permission' => $permission
             )
         );
+
+        unset($this->dataCache[$this->getDataCacheId($Site)]);
     }
 
     /**
@@ -844,6 +852,8 @@ class Manager
                 'id'      => $Site->getId()
             )
         );
+
+        unset($this->dataCache[$this->getDataCacheId($Site)]);
     }
 
     /**
@@ -889,6 +899,8 @@ class Manager
 
             $this->setProjectPermission($Project, $permission, $value);
         }
+
+        unset($this->dataCache[$this->getDataCacheId($Project)]);
     }
 
     /**
@@ -914,6 +926,8 @@ class Manager
                 'permission' => $permission
             )
         );
+
+        unset($this->dataCache[$this->getDataCacheId($Project)]);
     }
 
     /**
@@ -954,28 +968,36 @@ class Manager
 
         $table = QUI::getDBTableName(self::TABLE);
         $area  = $this->classToArea(get_class($Obj));
+        $cache = $this->getDataCacheId($Obj);
 
+        if (isset($this->dataCache[$cache])) {
+            return $this->dataCache[$cache];
+        }
 
         if ($area === 'user') {
             /* @var $Obj User */
-            return $DataBase->fetch(array(
+            $this->dataCache[$cache] = $DataBase->fetch(array(
                 'from'  => $table . '2users',
                 'where' => array(
                     'user_id' => $Obj->getId()
                 ),
                 'limit' => 1
             ));
+
+            return $this->dataCache[$cache];
         }
 
         if ($area === 'groups') {
             /* @var $Obj Group */
-            return $DataBase->fetch(array(
+            $this->dataCache[$cache] = $DataBase->fetch(array(
                 'from'  => $table . '2groups',
                 'where' => array(
                     'group_id' => $Obj->getId()
                 ),
                 'limit' => 1
             ));
+
+            return $this->dataCache[$cache];
         }
 
         if ($area === 'project') {
@@ -994,7 +1016,9 @@ class Manager
                 $result[$entry['permission']] = $entry['value'];
             }
 
-            return $result;
+            $this->dataCache[$cache] = $result;
+
+            return $this->dataCache[$cache];
         }
 
         if ($area === 'site') {
@@ -1017,7 +1041,10 @@ class Manager
                 $result[$entry['permission']] = $entry['value'];
             }
 
-            return $result;
+
+            $this->dataCache[$cache] = $result;
+
+            return $this->dataCache[$cache];
         }
 
         if ($area === 'media') {
@@ -1025,7 +1052,7 @@ class Manager
             /* @var $Project QUI\Projects\Project */
             $Project = $Obj->getProject();
 
-            return $DataBase->fetch(array(
+            $result = $DataBase->fetch(array(
                 'from'  => $table . '2media',
                 'where' => array(
                     'project' => $Project->getName(),
@@ -1033,9 +1060,62 @@ class Manager
                     'id'      => $Obj->getId()
                 )
             ));
+
+            $this->dataCache[$cache] = $result;
+
+            return $this->dataCache[$cache];
         }
 
         return array();
+    }
+
+    /**
+     * Return the internal permission cache id
+     *
+     * @param mixed $Obj
+     *
+     * @return string
+     *
+     * @throws Exception
+     */
+    protected function getDataCacheId($Obj)
+    {
+        $area = $this->classToArea(get_class($Obj));
+
+        switch ($area) {
+            case 'user':
+                /* @var $Obj User */
+                return 'permission2user_' . $Obj->getId();
+
+            case 'groups':
+                /* @var $Obj Group */
+                return 'permission2groups_' . $Obj->getId();
+
+            case 'project':
+                /* @var $Obj QUI\Projects\Project */
+                $id = $Obj->getName() . '_' . $Obj->getLang();
+                return 'permission2groups_' . $id;
+
+            case 'site':
+                /* @var $Obj QUI\Projects\Site */
+                /* @var $Project QUI\Projects\Project */
+                $Project = $Obj->getProject();
+                $id      = $Project->getName() . '_' . $Project->getLang() . '_' . $Obj->getId();
+                return 'permission2site_' . $id;
+
+            case 'media':
+                /* @var $Obj QUI\Interfaces\Projects\Media\File */
+                /* @var $Project QUI\Projects\Project */
+                $Project = $Obj->getProject();
+                $id      = $Project->getName() . '_' . $Project->getLang() . '_' . $Obj->getId();
+                return 'permission2media_' . $id;
+        }
+
+        QUI\System\Log::addInfo(
+            'Permission Area ' . get_class($Obj) . ' not found'
+        );
+
+        return '__NULL__';
     }
 
     /**
