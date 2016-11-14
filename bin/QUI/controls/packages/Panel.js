@@ -6,9 +6,8 @@
  *
  * @require qui/QUI
  * @require qui/controls/desktop/Panel
+ * @require qui/controls/buttons/Button
  * @require Locale
- * @require Ajax
- * @require classes/packages/Manager
  * @require css!controls/packages/Panel.css
  */
 define('controls/packages/Panel', [

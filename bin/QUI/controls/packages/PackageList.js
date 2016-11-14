@@ -173,7 +173,7 @@ define('controls/packages/PackageList', [
                     }
                 }).inject(this.$Elm);
 
-                ButtonContainer = Package.getElement('.packages-package-tile-package-buttons')
+                ButtonContainer = Package.getElement('.packages-package-tile-package-buttons');
 
                 if (extraButtons.length) {
                     var c, clen, options;

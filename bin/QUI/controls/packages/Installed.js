@@ -4,6 +4,12 @@
  *
  * @requires qui/QUI
  * @requires qui/controls/Control
+ * @requires qui/controls/buttons/Button
+ * @requires Packages
+ * @requires Mustache
+ * @requires controls/packages/PackageList
+ * @requires text!controls/packages/Installed.html
+ * @requires css!controls/packages/Installed.css
  *
  * @event onLoad
  */

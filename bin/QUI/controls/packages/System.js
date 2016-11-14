@@ -13,7 +13,7 @@
  * @requires utils/Favicon
  * @requires package/quiqqer/translator/bin/Translator
  * @requires text!controls/packages/System.html
- * @requires css!controls/packages/Server.css
+ * @requires css!controls/packages/System.css
  *
  * @event onLoad
  * @event onShowLoader
