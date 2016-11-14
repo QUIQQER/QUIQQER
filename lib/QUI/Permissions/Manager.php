@@ -569,19 +569,19 @@ class Manager
         $cls = get_class($Obj);
 
         switch ($cls) {
-            case 'QUI\\Users\\User':
-            case 'QUI\\Groups\\Group':
-            case 'QUI\\Groups\\Everyone':
-            case 'QUI\\Groups\\Guest':
+            case QUI\Users\User::class:
+            case QUI\Groups\Group::class:
+            case QUI\Groups\Everyone::class:
+            case QUI\Groups\Guest::class:
                 break;
 
-            case 'QUI\\Projects\\Project':
+            case QUI\Projects\Project::class:
                 $this->setProjectPermissions($Obj, $permissions, $EditUser);
                 return;
 
-            case 'QUI\\Projects\\Site':
-            case 'QUI\\Projects\\Site\\Edit':
-            case 'QUI\\Projects\\Site\\OnlyDB':
+            case QUI\Projects\Site::class:
+            case QUI\Projects\Site\Edit::class:
+            case QUI\Projects\Site\OnlyDB::class:
                 $this->setSitePermissions($Obj, $permissions, $EditUser);
                 return;
 
