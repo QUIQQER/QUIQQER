@@ -189,15 +189,18 @@ define('controls/packages/PackageList', [
                     continue;
                 }
 
-                new QUIButton({
-                    icon  : 'fa fa-hdd-o',
-                    title : QUILocale.get(lg, 'packages.setup', {
-                        pkg: entry.name
-                    }),
-                    events: {
-                        onClick: this.$setupClick
-                    }
-                }).inject(Package.getElement('.packages-package-tile-package-buttons'));
+                if (parseInt(QUIQQER_CONFIG.globals.development)) {
+                    new QUIButton({
+                        icon  : 'fa fa-hdd-o',
+                        title : QUILocale.get(lg, 'packages.setup', {
+                            pkg: entry.name
+                        }),
+                        events: {
+                            onClick: this.$setupClick
+                        }
+                    }).inject(Package.getElement('.packages-package-tile-package-buttons'));
+                }
+
             }
         },
 

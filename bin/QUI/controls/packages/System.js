@@ -115,7 +115,7 @@ define('controls/packages/System', [
                     }
                 }).inject(this.$Buttons);
             }
-            
+
             this.$ExecuteUpdate = new QUIButton({
                 name     : 'executeUpdate',
                 text     : QUILocale.get(lg, 'packages.panel.btn.executeUpdate'),

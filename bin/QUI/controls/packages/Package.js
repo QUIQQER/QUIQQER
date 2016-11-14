@@ -78,7 +78,7 @@ define('controls/packages/Package', [
                         version: data.require[key]
                     });
                 }
-console.log(data);
+
                 this.$Elm.set({
                     html: Mustache.render(template, {
                         data       : data,
