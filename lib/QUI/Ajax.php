@@ -281,6 +281,11 @@ class Ajax extends QUI\QDOM
             $params[$var] = $value;
         }
 
+        QUI::getEvents()->fireEvent('ajaxCallBefore', array(
+            'function' => $_rf,
+            'params'   => $params
+        ));
+
         try {
             if (isset(self::$callables[$_rf])) {
                 $return = array(
