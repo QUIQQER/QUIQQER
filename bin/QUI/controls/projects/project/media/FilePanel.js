@@ -755,7 +755,7 @@ define('controls/projects/project/media/FilePanel', [
 
                 var Form      = Content.getElement('form');
                 var Greyscale = Content.getElement('[name="effect-greyscale"]');
-                
+
                 if (!("blur" in Effects)) {
                     Effects.blur = 0;
                 }

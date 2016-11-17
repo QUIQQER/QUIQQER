@@ -78,59 +78,75 @@ class Manager
         $DataBase = QUI::getDataBase();
 
         $DataBase->table()->addColumn(self::table(), array(
-            'id'         => 'int(11)',
-            'username'   => 'varchar(50)',
-            'password'   => 'varchar(50)',
-            'usergroup'  => 'text',
-            'firstname'  => 'varchar(40)',
-            'lastname'   => 'varchar(40)',
-            'usertitle'  => 'varchar(40)',
-            'birthday'   => 'varchar(12)',
-            'email'      => 'varchar(50)',
-            'active'     => 'int(1)',
-            'regdate'    => 'int(11)',
-            'lastvisit'  => 'int(11)',
-            'su'         => 'tinyint(1)',
-            'avatar'     => 'text',
-            'extra'      => 'text NULL',
-            'lang'       => 'varchar(2) NULL',
-            'expire'     => 'TIMESTAMP NULL',
-            'lastedit'   => 'TIMESTAMP NOT NULL',
-            'shortcuts'  => 'varchar(5) NULL',
-            'activation' => 'varchar(20) NULL',
-            'referal'    => 'varchar(200) NULL',
-            'user_agent' => 'text',
-            'address'    => 'int(11)'
+            'id'         => 'INT(11)',
+            'username'   => 'VARCHAR(50) NOT NULL',
+            'password'   => 'VARCHAR(50)',
+            'usergroup'  => 'TEXT NULL',
+            'firstname'  => 'VARCHAR(40)',
+            'lastname'   => 'VARCHAR(40)',
+            'usertitle'  => 'VARCHAR(40)',
+            'birthday'   => "DATE NULL DEFAULT NULL",
+            'email'      => 'VARCHAR(50)',
+            'active'     => 'INT(1)',
+            'regdate'    => 'INT(11)',
+            'lastvisit'  => 'INT(11)',
+            'su'         => 'TINYINT(1)',
+            'avatar'     => 'TEXT NULL',
+            'extra'      => 'TEXT NULL',
+            'lang'       => 'VARCHAR(2) NULL',
+            'expire'     => "DATETIME NULL DEFAULT NULL",
+            'lastedit'   => "DATETIME NULL DEFAULT NULL",
+            'shortcuts'  => 'VARCHAR(5) NULL',
+            'activation' => 'VARCHAR(20) NULL',
+            'referal'    => 'VARCHAR(200) NULL',
+            'user_agent' => 'TEXT NULL',
+            'address'    => 'INT(11)'
         ));
+
+        $table = self::table();
 
         // Patch
         $DataBase->getPDO()->exec(
-            'ALTER TABLE `' . self::table()
-            . '` CHANGE `birthday` `birthday` DATE NULL DEFAULT NULL'
+            "ALTER TABLE `{$table}` 
+            CHANGE `lastedit` `lastedit` DATETIME NULL DEFAULT NULL,
+            CHANGE `expire` `expire` DATETIME NULL DEFAULT NULL,
+            CHANGE `birthday` `birthday` DATE NULL DEFAULT NULL;
+            "
         );
+
+        try {
+            $DataBase->getPDO()->exec("
+                UPDATE `{$table}` SET lastedit = NULL WHERE lastedit = '0000-00-00 00:00:00';
+                UPDATE `{$table}` SET expire = NULL WHERE expire = '0000-00-00 00:00:00';
+                UPDATE `{$table}` SET birthday = NULL WHERE birthday = '0000-00-00'
+            ");
+        } catch (\PDOException $Exception) {
+        }
+
 
         // Addresses
         $DataBase->table()->addColumn(self::tableAddress(), array(
-            'id'         => 'int(11)',
-            'uid'        => 'int(11)',
-            'salutation' => 'varchar(10)',
-            'firstname'  => 'varchar(40)',
-            'lastname'   => 'varchar(40)',
-            'phone'      => 'text',
-            'mail'       => 'text',
-            'company'    => 'varchar(100)',
-            'delivery'   => 'text',
-            'street_no'  => 'text',
-            'zip'        => 'text',
-            'city'       => 'text',
-            'country'    => 'text'
+            'id'         => 'INT(11)',
+            'uid'        => 'INT(11)',
+            'salutation' => 'VARCHAR(10)',
+            'firstname'  => 'VARCHAR(40)',
+            'lastname'   => 'VARCHAR(40)',
+            'phone'      => 'TEXT NULL',
+            'mail'       => 'TEXT NULL',
+            'company'    => 'VARCHAR(100)',
+            'delivery'   => 'TEXT NULL',
+            'street_no'  => 'TEXT NULL',
+            'zip'        => 'TEXT NULL',
+            'city'       => 'TEXT NULL',
+            'country'    => 'TEXT NULL'
         ));
 
         $DataBase->table()->setIndex(self::tableAddress(), 'id');
 
+        $tableAddress = self::tableAddress();
+
         $DataBase->getPDO()->exec(
-            'ALTER TABLE `' . self::tableAddress()
-            . '` CHANGE `id` `id` INT( 11 ) NOT NULL AUTO_INCREMENT'
+            "ALTER TABLE `{$tableAddress}` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT"
         );
     }
 
@@ -321,29 +337,29 @@ class Manager
                 "children": [
                     {
                         "attributes": {
-                            "name": "projects-panel",
-                            "icon": "fa fa-home",
+                            "name": "projects - panel",
+                            "icon": "fa fa - home",
                             "title": "Projects",
                             "collapsible": true,
                             "dragable": false,
                             "closeButton": false,
                             "height": 599
                         },
-                        "type": "controls/projects/project/Panel",
+                        "type": "controls / projects / project / Panel",
                         "isOpen": true
                     },
                     {
                         "attributes": {
                             "title": "Bookmarks",
-                            "icon": "fa fa-bookmark",
+                            "icon": "fa fa - bookmark",
                             "footer": false,
-                            "name": "qui-bookmarks",
+                            "name": "qui - bookmarks",
                             "height": 300,
                             "collapsible": true,
                             "dragable": false,
                             "closeButton": false
                         },
-                        "type": "controls/desktop/panels/Bookmarks",
+                        "type": "controls / desktop / panels / Bookmarks",
                         "bookmarks": [],
                         "isOpen": false
                     },
@@ -354,7 +370,7 @@ class Manager
                             "dragable": false,
                             "closeButton": false
                         },
-                        "type": "qui/controls/messages/Panel",
+                        "type": "qui / controls / messages / Panel",
                         "isOpen": false
                     },
                     {
@@ -365,19 +381,19 @@ class Manager
                             "closeButton": false,
                             "title": "Upload"
                         },
-                        "type": "controls/upload/Manager",
+                        "type": "controls / upload / Manager",
                         "isOpen": false
                     },
                     {
                         "attributes": {
-                            "title": "QUIQQER-Hilfe",
-                            "icon": "fa fa-h-square",
+                            "title": "QUIQQER - Hilfe",
+                            "icon": "fa fa - h - square",
                             "height": 100,
                             "collapsible": true,
                             "dragable": false,
                             "closeButton": false
                         },
-                        "type": "controls/desktop/panels/Help",
+                        "type": "controls / desktop / panels / Help",
                         "isOpen": false
                     }
                 ]
@@ -392,27 +408,27 @@ class Manager
                     {
                         "attributes": {
                             "title": "My Panel 1",
-                            "icon": "fa fa-heart",
+                            "icon": "fa fa - heart",
                             "name": "tasks"
                         },
-                        "type": "qui/controls/desktop/Tasks",
+                        "type": "qui / controls / desktop / Tasks",
                         "bar": {
                             "attributes": {
-                                "name": "qui-taskbar-issogpst",
+                                "name": "qui - taskbar - issogpst",
                                 "styles": {
                                     "bottom": 0,
                                     "left": 0,
                                     "position": "absolute"
                                 }
                             },
-                            "type": "qui/controls/taskbar/Bar",
+                            "type": "qui / controls / taskbar / Bar",
                             "tasks": [
                                 {
                                     "attributes": {
                                         "closeable": true,
                                         "dragable": true
                                     },
-                                    "type": "qui/controls/taskbar/Task",
+                                    "type": "qui / controls / taskbar / Task",
                                     "instance": {
                                         "attributes": {
                                             "closeButton": true,
@@ -420,7 +436,7 @@ class Manager
                                             "height": 745,
                                             "dragable": true
                                         },
-                                        "type": "controls/help/Dashboard"
+                                        "type": "controls / help / Dashboard"
                                     }
                                 }
                             ]
@@ -441,29 +457,29 @@ class Manager
                 "children": [
                     {
                         "attributes": {
-                            "name": "projects-panel",
-                            "icon": "fa fa-home",
+                            "name": "projects - panel",
+                            "icon": "fa fa - home",
                             "title": "Projects",
                             "collapsible": true,
                             "dragable": false,
                             "closeButton": false,
                             "height": 731
                         },
-                        "type": "controls/projects/project/Panel",
+                        "type": "controls / projects / project / Panel",
                         "isOpen": true
                     },
                     {
                         "attributes": {
                             "title": "Bookmarks",
-                            "icon": "fa fa-bookmark",
+                            "icon": "fa fa - bookmark",
                             "footer": false,
-                            "name": "qui-bookmarks",
+                            "name": "qui - bookmarks",
                             "height": 400,
                             "collapsible": true,
                             "dragable": false,
                             "closeButton": false
                         },
-                        "type": "controls/desktop/panels/Bookmarks",
+                        "type": "controls / desktop / panels / Bookmarks",
                         "bookmarks": [],
                         "isOpen": false
                     }
@@ -480,27 +496,27 @@ class Manager
                     {
                         "attributes": {
                             "title": "My Panel 1",
-                            "icon": "fa fa-heart",
+                            "icon": "fa fa - heart",
                             "name": "tasks"
                         },
-                        "type": "qui/controls/desktop/Tasks",
+                        "type": "qui / controls / desktop / Tasks",
                         "bar": {
                             "attributes": {
-                                "name": "qui-taskbar-issogpue",
+                                "name": "qui - taskbar - issogpue",
                                 "styles": {
                                     "bottom": 0,
                                     "left": 0,
                                     "position": "absolute"
                                 }
                             },
-                            "type": "qui/controls/taskbar/Bar",
+                            "type": "qui / controls / taskbar / Bar",
                             "tasks": [
                                 {
                                     "attributes": {
                                         "closeable": true,
                                         "dragable": true
                                     },
-                                    "type": "qui/controls/taskbar/Task",
+                                    "type": "qui / controls / taskbar / Task",
                                     "instance": {
                                         "attributes": {
                                             "closeButton": true,
@@ -508,7 +524,7 @@ class Manager
                                             "height": 745,
                                             "dragable": true
                                         },
-                                        "type": "controls/help/Dashboard"
+                                        "type": "controls / help / Dashboard"
                                     }
                                 }
                             ]
@@ -532,7 +548,7 @@ class Manager
                             "dragable": false,
                             "closeButton": false
                         },
-                        "type": "qui/controls/messages/Panel",
+                        "type": "qui / controls / messages / Panel",
                         "isOpen": true
                     },
                     {
@@ -543,19 +559,19 @@ class Manager
                             "closeButton": false,
                             "title": "Upload"
                         },
-                        "type": "controls/upload/Manager",
+                        "type": "controls / upload / Manager",
                         "isOpen": false
                     },
                     {
                         "attributes": {
-                            "title": "QUIQQER-Hilfe",
-                            "icon": "fa fa-h-square",
+                            "title": "QUIQQER - Hilfe",
+                            "icon": "fa fa - h - square",
                             "height": 400,
                             "collapsible": true,
                             "dragable": false,
                             "closeButton": false
                         },
-                        "type": "controls/desktop/panels/Help",
+                        "type": "controls / desktop / panels / Help",
                         "isOpen": false
                     }
                 ]

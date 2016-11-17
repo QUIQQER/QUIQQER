@@ -619,7 +619,7 @@ class Manager
             "active"      => "tinyint(1) NOT NULL",
             "deleted"     => "tinyint(1) NOT NULL",
             "c_date"      => "timestamp NULL default NULL",
-            "e_date"      => "timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP",
+            "e_date"      => "timestamp NOT NULL default NOW() on update NOW()",
             "c_user"      => "int(11) default NULL",
             "e_user"      => "int(11) default NULL",
             "nav_hide"    => "tinyint(1) NOT NULL",

@@ -7,22 +7,22 @@
             <field type="INT(11) NOT NULL">id</field>
             <field type="VARCHAR(50) NOT NULL DEFAULT ''">username</field>
             <field type="VARCHAR(255) NOT NULL DEFAULT ''">password</field>
-            <field type="TEXT NOT NULL DEFAULT ''">usergroup</field>
+            <field type="TEXT NULL">usergroup</field>
             <field type="VARCHAR(50) DEFAULT NULL">email</field>
             <field type="INT(1) NOT NULL DEFAULT '0'">active</field>
             <field type="INT(11) NOT NULL DEFAULT '0'">regdate</field>
             <field type="INT(11) NOT NULL DEFAULT '0'">lastvisit</field>
             <field type="TINYINT(1) NOT NULL">su</field>
-            <field type="TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00'">expire</field>
-            <field type="TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00'">lastedit</field>
-            <field type="TEXT NOT NULL">user_agent</field>
+            <field type="DATETIME NULL DEFAULT NULL">expire</field>
+            <field type="DATETIME NULL DEFAULT NULL">lastedit</field>
+            <field type="TEXT NULL">user_agent</field>
             <field type="VARCHAR(40) DEFAULT NULL">firstname</field>
             <field type="VARCHAR(40) DEFAULT NULL">lastname</field>
             <field type="VARCHAR(40) DEFAULT NULL">usertitle</field>
             <field type="INT(1) NOT NULL DEFAULT '0'">company</field>
-            <field type="VARCHAR(12) DEFAULT NULL">birthday</field>
-            <field type="TEXT DEFAULT NULL">avatar</field>
-            <field type="TEXT DEFAULT NULL">extra</field>
+            <field type="DATE NULL DEFAULT NULL">birthday</field>
+            <field type="TEXT NULL">avatar</field>
+            <field type="TEXT NULL">extra</field>
             <field type="VARCHAR(2) DEFAULT NULL">lang</field>
             <field type="INT(11) DEFAULT NULL">address</field>
             <field type="TEXT(32) DEFAULT NULL">secHash</field>
@@ -38,56 +38,56 @@
             <field type="INT(11) NOT NULL">parent</field>
             <field type="TINYINT(1) NOT NULL">active</field>
             <field type="VARCHAR(128)">toolbar</field>
-            <field type="TEXT DEFAULT NULL">avatar</field>
-            <field type="TEXT DEFAULT NULL">extra</field>
+            <field type="TEXT NULL">avatar</field>
+            <field type="TEXT NULL">extra</field>
 
             <primary>id</primary>
             <index>parent</index>
         </table>
 
         <table name="permissions">
-            <field type="varchar(100) NOT NULL">name</field>
-            <field type="varchar(20)  NOT NULL">type</field>
-            <field type="varchar(20)  NOT NULL">area</field>
-            <field type="varchar(255) NULL">title</field>
-            <field type="text NULL">desc</field>
-            <field type="varchar(200) NULL">src</field>
-            <field type="text NULL">defaultvalue</field>
+            <field type="VARCHAR(100) NOT NULL">name</field>
+            <field type="VARCHAR(20) NOT NULL">type</field>
+            <field type="VARCHAR(20) NOT NULL">area</field>
+            <field type="VARCHAR(255) NULL">title</field>
+            <field type="TEXT NULL">desc</field>
+            <field type="VARCHAR(200) NULL">src</field>
+            <field type="TEXT NULL">defaultvalue</field>
 
             <index>name</index>
         </table>
 
         <table name="permissions2users">
             <field type="INT(11) NOT NULL">user_id</field>
-            <field type="TEXT">permissions</field>
+            <field type="TEXT NULL">permissions</field>
         </table>
 
         <table name="permissions2groups">
             <field type="INT(11) NOT NULL">group_id</field>
-            <field type="TEXT">permissions</field>
+            <field type="TEXT NULL">permissions</field>
         </table>
 
         <table name="permissions2sites">
-            <field type="varchar(200) NOT NULL">project</field>
-            <field type="varchar(2) NOT NULL">lang</field>
-            <field type="bigint(20)">id</field>
-            <field type="text">permission</field>
-            <field type="text">value</field>
+            <field type="VARCHAR(200) NOT NULL">project</field>
+            <field type="VARCHAR(2) NOT NULL">lang</field>
+            <field type="BIGINT(20)">id</field>
+            <field type="TEXT NULL">permission</field>
+            <field type="TEXT NULL">value</field>
         </table>
 
         <table name="permissions2projects">
-            <field type="varchar(200) NOT NULL">project</field>
-            <field type="varchar(2) NOT NULL">lang</field>
-            <field type="text">permission</field>
-            <field type="text">value</field>
+            <field type="VARCHAR(200) NOT NULL">project</field>
+            <field type="VARCHAR(2) NOT NULL">lang</field>
+            <field type="TEXT NULL">permission</field>
+            <field type="TEXT NULL">value</field>
         </table>
 
         <table name="permissions2media">
-            <field type="varchar(200) NOT NULL">project</field>
-            <field type="varchar(2)">lang</field>
-            <field type="bigint(20)">id</field>
-            <field type="text">permission</field>
-            <field type="text">value</field>
+            <field type="VARCHAR(200) NOT NULL">project</field>
+            <field type="VARCHAR(2)">lang</field>
+            <field type="BIGINT(20)">id</field>
+            <field type="TEXT NULL">permission</field>
+            <field type="TEXT NULL">value</field>
         </table>
 
         <table name="sessions">
@@ -102,8 +102,8 @@
         <table name="updateChecks">
             <field type="INT(11) NOT NULL">id</field>
             <field type="INT(11)">date</field>
-            <field type="text">result</field>
-            <field type="text">error</field>
+            <field type="TEXT NULL">result</field>
+            <field type="TEXT NULL">error</field>
 
             <primary>id</primary>
             <auto_increment>id</auto_increment>
