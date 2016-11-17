@@ -906,7 +906,7 @@ define('controls/users/Panel', [
             for (i = 0, len = data.length; i < len; i++) {
                 entry = data[i];
 
-                data[i].active    = (entry.active).toInt();
+                data[i].active    = parseInt(entry.active);
                 data[i].usergroup = entry.usergroup || '';
 
                 if (entry.active == -1) {

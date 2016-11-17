@@ -40,7 +40,7 @@ define('controls/groups/sitemap/Window', [
             multiple   : false,
             message    : false,
             title      : Locale.get('quiqqer/system', 'groups.sitemap.window.title'),
-            text       : Locale.get('quiqqer/system', 'groups.sitemap.window.text'),
+            text       : Locale.get('quiqqer/system', 'groups.sitemap.window.title'),
             information: Locale.get('quiqqer/system', 'groups.sitemap.window.information'),
             texticon   : false,
             icon       : 'fa fa-group',
