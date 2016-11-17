@@ -7,7 +7,6 @@
 namespace QUI\Messages;
 
 use QUI;
-use QUI\Users\User;
 
 /**
  * Message Handler for QUIQQER
@@ -52,11 +51,11 @@ class Handler
     /**
      * Return all new messages for an user and delete it in the queue
      *
-     * @param \QUI\Users\User|\QUI\Users\Nobody $User
+     * @param QUI\Interfaces\Users\User $User
      *
      * @return array
      */
-    public function getNewMessages($User)
+    public function getNewMessages(QUI\Interfaces\Users\User $User)
     {
         $result = $this->messages;
 
@@ -120,11 +119,11 @@ class Handler
     /**
      * Return the messages list as pure array
      *
-     * @param \QUI\Users\User|\QUI\Users\Nobody $User
+     * @param QUI\Interfaces\Users\User $User
      *
      * @return array
      */
-    public function getMessagesAsArray($User)
+    public function getMessagesAsArray(QUI\Interfaces\Users\User $User)
     {
         $result   = array();
         $messages = $this->getNewMessages($User);
@@ -206,11 +205,17 @@ class Handler
     /**
      * Send a message to an user and save it to the database
      *
-     * @param User $User
+     * @param QUI\Interfaces\Users\User $User
      * @param \QUI\Messages\Message $Message
      */
-    public function sendMessage(User $User, Message $Message)
+    public function sendMessage(QUI\Interfaces\Users\User $User, Message $Message)
     {
+        if (QUI::getUsers()->isSystemUser($User) ||
+            QUI::getUsers()->isNobodyUser($User)
+        ) {
+            return;
+        }
+
         QUI::getDataBase()->insert(self::table(), array(
             'uid'     => $User->getId(),
             'message' => $Message->getMessage(),
@@ -223,10 +228,10 @@ class Handler
     /**
      * Send an information to an user and save it to the database
      *
-     * @param User $User
+     * @param QUI\Interfaces\Users\User $User
      * @param string $str
      */
-    public function sendAttention(User $User, $str)
+    public function sendAttention(QUI\Interfaces\Users\User $User, $str)
     {
         $this->sendMessage(
             $User,
@@ -239,10 +244,10 @@ class Handler
     /**
      * Send an error to an user and save it to the database
      *
-     * @param User $User
+     * @param QUI\Interfaces\Users\User $User
      * @param string $str
      */
-    public function sendError(User $User, $str)
+    public function sendError(QUI\Interfaces\Users\User $User, $str)
     {
         $this->sendMessage(
             $User,
@@ -255,10 +260,10 @@ class Handler
     /**
      * Send a information to an user and save it to the database
      *
-     * @param User $User
+     * @param QUI\Interfaces\Users\User $User
      * @param string $str
      */
-    public function sendInformation(User $User, $str)
+    public function sendInformation(QUI\Interfaces\Users\User $User, $str)
     {
         $this->sendMessage(
             $User,
@@ -271,10 +276,10 @@ class Handler
     /**
      * Send a success message to an user and save it to the database
      *
-     * @param User $User
+     * @param QUI\Interfaces\Users\User $User
      * @param string $str
      */
-    public function sendSuccess(User $User, $str)
+    public function sendSuccess(QUI\Interfaces\Users\User $User, $str)
     {
         $this->sendMessage(
             $User,

@@ -208,6 +208,26 @@ class Manager
     }
 
     /**
+     * Is the Object a systemuser?
+     *
+     * @param mixed $User
+     *
+     * @return boolean
+     */
+    public function isNobodyUser($User)
+    {
+        if (!is_object($User)) {
+            return false;
+        }
+
+        if (get_class($User) === Nobody::class) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Setzt das interne Projekt
      *
      * Für was???
