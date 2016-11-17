@@ -105,7 +105,7 @@ class Manager
 
         $table = self::table();
 
-        // Patch
+        // Patch strict
         $DataBase->getPDO()->exec(
             "ALTER TABLE `{$table}` 
             CHANGE `lastedit` `lastedit` DATETIME NULL DEFAULT NULL,
@@ -116,9 +116,23 @@ class Manager
 
         try {
             $DataBase->getPDO()->exec("
-                UPDATE `{$table}` SET lastedit = NULL WHERE lastedit = '0000-00-00 00:00:00';
-                UPDATE `{$table}` SET expire = NULL WHERE expire = '0000-00-00 00:00:00';
-                UPDATE `{$table}` SET birthday = NULL WHERE birthday = '0000-00-00'
+                UPDATE `{$table}` 
+                SET lastedit = NULL 
+                WHERE 
+                    lastedit = '0000-00-00 00:00:00' OR 
+                    lastedit = '';
+                    
+                UPDATE `{$table}` 
+                SET expire = NULL 
+                WHERE 
+                    expire = '0000-00-00 00:00:00' OR 
+                    expire = '';
+                    
+                UPDATE `{$table}` 
+                SET birthday = NULL 
+                WHERE 
+                    birthday = '0000-00-00' OR 
+                    birthday = '';
             ");
         } catch (\PDOException $Exception) {
         }

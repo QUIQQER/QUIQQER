@@ -1070,9 +1070,9 @@ class Project
             $Table->addColumn($table, array(
                 'id'            => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
                 'name'          => 'varchar(255) NOT NULL',
-                'title'         => 'tinytext',
-                'short'         => 'text',
-                'content'       => 'longtext',
+                'title'         => 'tinytext NULL',
+                'short'         => 'text NULL',
+                'content'       => 'longtext NULL',
                 'type'          => 'varchar(255) default NULL',
                 'layout'        => 'varchar(255) default NULL',
                 'active'        => 'tinyint(1) NOT NULL',
@@ -1085,28 +1085,41 @@ class Project
                 'order_type'    => 'varchar(255) default NULL',
                 'order_field'   => 'bigint(20) default NULL',
                 'extra'         => 'text NULL',
-                'c_user_ip'     => 'varchar(40)',
-                'image_emotion' => 'text',
-                'image_site'    => 'text',
-                'release_from'  => 'timestamp NULL default NULL',
-                'release_to'    => 'timestamp NULL default NULL'
+                'c_user_ip'     => 'varchar(40) NULL',
+                'image_emotion' => 'text NULL',
+                'image_site'    => 'text NULL',
+                'release_from'  => 'DATETIME NULL DEFAULT NULL',
+                'release_to'    => 'DATETIME NULL DEFAULT NULL'
             ));
 
             // fix for old tables
             $DataBase->getPDO()->exec(
-                'ALTER TABLE `' . $table
-                . '` CHANGE `name` `name` VARCHAR( 255 ) NOT NULL'
+                "ALTER TABLE `{$table}` 
+                CHANGE `name` `name` VARCHAR(255) NOT NULL,
+                CHANGE `order_type` `order_type` VARCHAR(255) NULL DEFAULT NULL,
+                CHANGE `release_from` `release_from` DATETIME NULL DEFAULT NULL,
+                CHANGE `release_to` `release_to` DATETIME NULL DEFAULT NULL,
+                CHANGE `type` `type` VARCHAR(255) NULL DEFAULT NULL;"
             );
 
-            $DataBase->getPDO()->exec(
-                'ALTER TABLE `' . $table
-                . '` CHANGE `order_type` `order_type` VARCHAR( 255 ) NULL DEFAULT NULL'
-            );
 
-            $DataBase->getPDO()->exec(
-                'ALTER TABLE `' . $table
-                . '` CHANGE `type` `type` VARCHAR( 255 ) NULL DEFAULT NULL'
-            );
+            // Patch mysql strict
+            try {
+                $DataBase->getPDO()->exec("
+                    UPDATE `{$table}` 
+                    SET release_from = null 
+                    WHERE 
+                        release_from = '0000-00-00 00:00:00' OR 
+                        release_from = '';
+                    
+                    UPDATE `{$table}` 
+                    SET release_to = null 
+                    WHERE 
+                        release_to = '0000-00-00 00:00:00' OR
+                        release_to = '';
+                ");
+            } catch (\PDOException $Exception) {
+            }
 
             if (!$Table->issetPrimaryKey($table, 'id')) {
                 $Table->setPrimaryKey($table, 'id');

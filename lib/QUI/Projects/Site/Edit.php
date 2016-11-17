@@ -508,6 +508,14 @@ class Edit extends Site
             }
         }
 
+        if (empty($release_from)) {
+            $release_from = null;
+        }
+
+        if (empty($release_to)) {
+            $release_to = null;
+        }
+
         $this->setAttribute('release_from', $release_from);
         $this->setAttribute('release_to', $release_to);
 
