@@ -133,12 +133,12 @@ class Console
             $params['--username'] = $this->readInput();
 
             $this->write("Password: ", 'green');
-            $params['--password'] = $this->readInput();
+            $params['--password'] = QUI\Utils\System\Console::readPassword();
         }
 
         if (!isset($params['--password'])) {
             $this->writeLn("Password:", 'green');
-            $params['--password'] = $this->readInput();
+            $params['--password'] = QUI\Utils\System\Console::readPassword();
         }
 
         try {
