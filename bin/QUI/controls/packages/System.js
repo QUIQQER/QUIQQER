@@ -212,7 +212,7 @@ define('controls/packages/System', [
             Button.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
             return QUI.getMessageHandler().then(function (MH) {
-                return MH.addLoading('message.setup.runs');
+                return MH.addLoading(QUILocale.get(lg, 'message.setup.runs'));
 
             }).then(function (Loading) {
 

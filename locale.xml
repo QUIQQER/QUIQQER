@@ -472,6 +472,10 @@
             <de><![CDATA[Das Setup wird gerade ausgeführt. Bitte warten Sie bis dieses zu ende ist.]]></de>
             <en><![CDATA[The setup is running. Please wait until this is finish.]]></en>
         </locale>
+        <locale name="message.setup.runs">
+            <de><![CDATA[Das Setup wird ausgeführt.]]></de>
+            <en><![CDATA[The setup is running.]]></en>
+        </locale>
 
         <locale name="message.packages.server.add.successfuly">
             <de><![CDATA[Der Server [server] wurde erfolgreich hinzugefügt.]]></de>
@@ -1138,11 +1142,6 @@
             <de>
                 <![CDATA[<p>Vielen Dank f&uuml;r Ihre E-Mail. Wir werden uns schnellstm&ouml;glich bei Ihnen melden.</p>]]></de>
             <en><![CDATA[Thank you for your email. We will contact you as soon as possible.]]></en>
-        </locale>
-
-        <locale name="message.setup.runs">
-            <de><![CDATA[Das Setup wird ausgeführt.]]></de>
-            <en><![CDATA[The setup is running.]]></en>
         </locale>
 
         <locale name="message.session.auth.memcached.notinstalled">
