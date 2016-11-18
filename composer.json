@@ -50,7 +50,7 @@
     "quiqqer/countries": "*@dev",
     "quiqqer/colorpicker": "*@dev",
     "quiqqer/translator": "*@dev",
-    "quiqqer/utils": ">=1.4|dev-master|dev-dev",
+    "quiqqer/utils": ">=1.9|dev-master|dev-dev",
     "quiqqer/cron": "*@dev",
     "quiqqer/log": "*@dev",
     "quiqqer/diashow": "*@dev",
