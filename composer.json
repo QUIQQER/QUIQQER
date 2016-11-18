@@ -46,7 +46,7 @@
     "quiqqer/smarty": "3.*",
     "quiqqer/smarty3": "dev-dev",
     "quiqqer/ckeditor4": "*@dev",
-    "quiqqer/calendar": "*@dev",
+    "quiqqer/calendar-controls": "*@dev",
     "quiqqer/countries": "*@dev",
     "quiqqer/colorpicker": "*@dev",
     "quiqqer/translator": "*@dev",

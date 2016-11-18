@@ -300,7 +300,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
             return new Promise(function (resolve, reject) {
                 require([
 
-                    'package/quiqqer/calendar/bin/Calendar',
+                    'package/quiqqer/calendar-controls/bin/Calendar',
                     'qui/controls/buttons/Button',
                     'qui/utils/Elements'
 
