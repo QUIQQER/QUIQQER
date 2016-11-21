@@ -489,6 +489,15 @@
             <de><![CDATA[Es wurden keine Updates gefunden. Ihr System ist auf dem aktuellsten Stand.]]></de>
             <en><![CDATA[No updates were found. Your system is up to date.]]></en>
         </locale>
+
+        <locale name="order_field_asc">
+            <de><![CDATA[Manuelle Seitensortierung absteigend]]></de>
+            <en><![CDATA[Site order descending]]></en>
+        </locale>
+        <locale name="order_field_desc">
+            <de><![CDATA[Manuelle Seitensortierung aufsteigend]]></de>
+            <en><![CDATA[Site order ascending]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">

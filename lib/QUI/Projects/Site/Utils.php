@@ -642,6 +642,10 @@ class Utils
             $order = $params['order'];
         }
 
+        if (empty($order)) {
+            // @todo eigener select, rückgabe dann wie in liste übergeben
+        }
+
         if (is_string($list)) {
             $sitetypes = explode(';', $list);
         } else {
