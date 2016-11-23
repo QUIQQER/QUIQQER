@@ -260,6 +260,8 @@ define('controls/projects/project/media/Input', [
          * @param {String} str - image.php string
          */
         setValue: function (str) {
+            str = str || '';
+
             this.$Input.value = str.toString();
             this.fireEvent('change', [this, this.getValue()]);
             this.$refreshPreview();
