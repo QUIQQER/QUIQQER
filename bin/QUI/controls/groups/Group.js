@@ -65,7 +65,8 @@ define('controls/groups/Group', [
             '$onGroupStatusChange',
             '$onStatusButtonChange',
             '$onGroupDelete',
-            '$onGroupGetUser'
+            '$onGroupGetUser',
+            '$onUsersAdd'
         ],
 
         options: {
@@ -514,9 +515,9 @@ define('controls/groups/Group', [
                         Category.fireEvent('onLoad', [Category, self]);
                 }
 
-                ControlUtils.parse(Body).then(function() {
+                ControlUtils.parse(Body).then(function () {
                     return QUI.parse(Body);
-                }).then(function() {
+                }).then(function () {
                     self.Loader.hide();
                 });
 
@@ -585,6 +586,14 @@ define('controls/groups/Group', [
             GridCon.inject(Content);
 
             this.$UserGrid = new Grid(GridCon, {
+                buttons    : [{
+                    name     : 'adduser',
+                    text     : QUILocale.get(lg, 'controls.group.table.btns.adduser'),
+                    textimage: 'fa fa-user-plus',
+                    events   : {
+                        onClick: this.$onUsersAdd
+                    }
+                }],
                 columnModel: [{
                     header   : QUILocale.get(lg, 'status'),
                     dataIndex: 'status',
@@ -723,6 +732,39 @@ define('controls/groups/Group', [
 
             this.$UserGrid.setData(result);
             this.Loader.hide();
+        },
+
+        /**
+         * Add one or more users to the groups
+         */
+        $onUsersAdd: function () {
+            var self = this;
+
+            require([
+                'controls/users/search/Window'
+            ], function (UserSearchWindow) {
+                new UserSearchWindow({
+                    search        : true,
+                    searchSettings: {
+                        filter: {
+                            filter_groups_exclude: [self.$Group.getId()]
+                        }
+                    },
+                    events: {
+                        onSubmit: function(Control, users) {
+                            var userIds = [];
+
+                            for (var i = 0, len = users.length; i < len; i++) {
+                                userIds.push(users[i].id);
+                            }
+
+                            Groups.addUsers(self.$Group.getId(), userIds).then(function(result) {
+                                self.refreshUser();
+                            });
+                        }
+                    }
+                }).open();
+            });
         }
     });
 });

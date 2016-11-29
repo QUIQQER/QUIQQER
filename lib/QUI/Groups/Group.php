@@ -523,6 +523,16 @@ class Group extends QUI\QDOM
     }
 
     /**
+     * Add a user to this group
+     *
+     * @param QUI\Users\User $User
+     */
+    public function addUser(QUI\Users\User $User)
+    {
+        $User->addToGroup($this->getId());
+    }
+
+    /**
      * return the users from the group
      *
      * @param array $params - SQL Params

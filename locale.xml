@@ -5062,6 +5062,11 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[The table contains no data]]></en>
         </locale>
 
+        <locale name="controls.group.table.btns.adduser">
+            <de><![CDATA[Benutzer hinzufügen]]></de>
+            <en><![CDATA[Add user(s)]]></en>
+        </locale>
+
     </groups>
     <groups name="quiqqer/system" datatype="php">
         <locale name="menu.quiqqer.text" html="true">
