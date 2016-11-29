@@ -533,6 +533,16 @@ class Group extends QUI\QDOM
     }
 
     /**
+     * Remove a user from this group
+     *
+     * @param QUI\Users\User $User
+     */
+    public function removeUser(QUI\Users\User $User)
+    {
+        $User->removeGroup($this);
+    }
+
+    /**
      * return the users from the group
      *
      * @param array $params - SQL Params

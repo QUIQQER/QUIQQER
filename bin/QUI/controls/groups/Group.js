@@ -66,7 +66,8 @@ define('controls/groups/Group', [
             '$onStatusButtonChange',
             '$onGroupDelete',
             '$onGroupGetUser',
-            '$onUsersAdd'
+            '$onUsersAdd',
+            '$onUsersRemove'
         ],
 
         options: {
@@ -580,7 +581,8 @@ define('controls/groups/Group', [
          */
         $onCategoryUsersLoad: function () {
             var Content = this.getBody(),
-                GridCon = new Element('div');
+                GridCon = new Element('div'),
+                self    = this;
 
             Content.set('html', '');
             GridCon.inject(Content);
@@ -592,6 +594,13 @@ define('controls/groups/Group', [
                     textimage: 'fa fa-user-plus',
                     events   : {
                         onClick: this.$onUsersAdd
+                    }
+                }, {
+                    name     : 'removeuser',
+                    text     : QUILocale.get(lg, 'controls.group.table.btns.removeuser'),
+                    textimage: 'fa fa-user-times',
+                    events   : {
+                        onClick: this.$onUsersRemove
                     }
                 }],
                 columnModel: [{
@@ -658,7 +667,21 @@ define('controls/groups/Group', [
                             )
                         );
                     }.bind(this));
-                }.bind(this)
+                }.bind(this),
+                onClick   : function () {
+                    var TableButtons = self.$UserGrid.getAttribute('buttons');
+
+                    if (TableButtons.removeuser) {
+                        TableButtons.removeuser.enable();
+                    }
+                },
+                onRefresh : function () {
+                    var TableButtons = self.$UserGrid.getAttribute('buttons');
+
+                    if (TableButtons.removeuser) {
+                        TableButtons.removeuser.disable();
+                    }
+                }
             });
 
             GridCon.setStyles({
@@ -750,20 +773,88 @@ define('controls/groups/Group', [
                             filter_groups_exclude: [self.$Group.getId()]
                         }
                     },
-                    events: {
-                        onSubmit: function(Control, users) {
+                    events        : {
+                        onSubmit: function (Control, users) {
                             var userIds = [];
 
                             for (var i = 0, len = users.length; i < len; i++) {
                                 userIds.push(users[i].id);
                             }
 
-                            Groups.addUsers(self.$Group.getId(), userIds).then(function(result) {
+                            Groups.addUsers(self.$Group.getId(), userIds).then(function (result) {
                                 self.refreshUser();
                             });
                         }
                     }
                 }).open();
+            });
+        },
+
+        /**
+         * Remove one or more users from this group
+         */
+        $onUsersRemove: function () {
+            var self     = this;
+            var userIds  = [];
+            var users    = [];
+            var selected = this.$UserGrid.getSelectedIndices();
+
+            if (!selected.length) {
+                return;
+            }
+
+            for (var i = 0, len = selected.length; i < len; i++) {
+                var User = this.$UserGrid.getDataByRow(selected[i]);
+
+                userIds.push(User.id);
+                users.push(User.username + ' (#' + User.id + ')');
+            }
+
+            this.Loader.show();
+
+            require([
+                'qui/controls/windows/Confirm'
+            ], function (QUIConfirm) {
+                new QUIConfirm({
+                    'autoclose': true,
+
+                    'information': QUILocale.get(
+                        'quiqqer/system',
+                        'controls.group.deleteusers.confirm.info', {
+                            groupId  : self.$Group.getId(),
+                            groupName: self.$Group.getName(),
+                            users    : users.join(', ')
+                        }
+                    ),
+                    'title'      : QUILocale.get(
+                        'quiqqer/system',
+                        'controls.group.deleteusers.confirm.title'
+                    ),
+                    'texticon'   : 'fa fa-user-times',
+                    'icon'       : 'fa fa-user-times',
+
+                    cancel_button: {
+                        text     : false,
+                        textimage: 'fa fa-remove'
+                    }
+                    ,
+                    ok_button    : {
+                        text     : false,
+                        textimage: 'fa fa-check'
+                    },
+                    events: {
+                        onSubmit: function(Confirm) {
+                            Confirm.Loader.show();
+
+                            Groups.removeUsers(self.$Group.getId(), userIds).then(function(result) {
+                                self.refreshUser();
+                                Confirm.Loader.hide();
+                            });
+                        }
+                    }
+                }).open();
+
+                self.Loader.hide();
             });
         }
     });
