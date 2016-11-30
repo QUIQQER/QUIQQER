@@ -612,8 +612,8 @@ class Group extends QUI\QDOM
             'from'  => QUI\Users\Manager::table(),
             'where' => array(
                 'usergroup' => array(
-                    'type'  => 'LIKE',
-                    'value' => ",'" . $this->getId() . "',"
+                    'type'  => '%LIKE%',
+                    'value' => "," . $this->getId() . ","
                 )
             )
         );
