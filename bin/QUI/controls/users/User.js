@@ -298,6 +298,8 @@ define('controls/users/User', [
                     // FormUtils.setDataToForm(extras, Body.getElement('form'));
 
                     QUI.Controls.getControlsInElement(Body).each(function (Control) {
+                        Control.setAttribute('Panel', self);
+
                         if (!('setValue' in Control)) {
                             return;
                         }
