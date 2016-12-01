@@ -1547,6 +1547,7 @@ class Manager
 
             $filter_status        = false;
             $filter_group         = false;
+            $filter_groups_exclude = false;
             $filter_regdate_first = false;
             $filter_regdate_last  = false;
 
@@ -1562,6 +1563,12 @@ class Manager
                 && !empty($filter['filter_group'])
             ) {
                 $filter_group = true;
+            }
+
+            if (isset($filter['filter_groups_exclude'])
+                && !empty($filter['filter_groups_exclude'])
+            ) {
+                $filter_groups_exclude = true;
             }
 
             if (isset($filter['filter_regdate_first'])
@@ -1631,6 +1638,14 @@ class Manager
                 }
             }
 
+            if ($filter_groups_exclude) {
+                foreach ($filter['filter_groups_exclude'] as $groupId) {
+                    if ((int)$groupId > 0) {
+                        $query .= ' AND usergroup NOT LIKE :' . $groupId . ' ';
+                        $binds[':' . $groupId] = '%,' . (int)$groupId . ',%';
+                    }
+                }
+            }
 
             if ($filter_regdate_first) {
                 $query .= ' AND regdate >= :firstreg ';

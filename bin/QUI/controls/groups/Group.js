@@ -65,7 +65,9 @@ define('controls/groups/Group', [
             '$onGroupStatusChange',
             '$onStatusButtonChange',
             '$onGroupDelete',
-            '$onGroupGetUser'
+            '$onGroupGetUser',
+            '$onUsersAdd',
+            '$onUsersRemove'
         ],
 
         options: {
@@ -514,9 +516,9 @@ define('controls/groups/Group', [
                         Category.fireEvent('onLoad', [Category, self]);
                 }
 
-                ControlUtils.parse(Body).then(function() {
+                ControlUtils.parse(Body).then(function () {
                     return QUI.parse(Body);
-                }).then(function() {
+                }).then(function () {
                     self.Loader.hide();
                 });
 
@@ -579,12 +581,28 @@ define('controls/groups/Group', [
          */
         $onCategoryUsersLoad: function () {
             var Content = this.getBody(),
-                GridCon = new Element('div');
+                GridCon = new Element('div'),
+                self    = this;
 
             Content.set('html', '');
             GridCon.inject(Content);
 
             this.$UserGrid = new Grid(GridCon, {
+                buttons    : [{
+                    name     : 'adduser',
+                    text     : QUILocale.get(lg, 'controls.group.table.btns.adduser'),
+                    textimage: 'fa fa-user-plus',
+                    events   : {
+                        onClick: this.$onUsersAdd
+                    }
+                }, {
+                    name     : 'removeuser',
+                    text     : QUILocale.get(lg, 'controls.group.table.btns.removeuser'),
+                    textimage: 'fa fa-user-times',
+                    events   : {
+                        onClick: this.$onUsersRemove
+                    }
+                }],
                 columnModel: [{
                     header   : QUILocale.get(lg, 'status'),
                     dataIndex: 'status',
@@ -649,7 +667,21 @@ define('controls/groups/Group', [
                             )
                         );
                     }.bind(this));
-                }.bind(this)
+                }.bind(this),
+                onClick   : function () {
+                    var TableButtons = self.$UserGrid.getAttribute('buttons');
+
+                    if (TableButtons.removeuser) {
+                        TableButtons.removeuser.enable();
+                    }
+                },
+                onRefresh : function () {
+                    var TableButtons = self.$UserGrid.getAttribute('buttons');
+
+                    if (TableButtons.removeuser) {
+                        TableButtons.removeuser.disable();
+                    }
+                }
             });
 
             GridCon.setStyles({
@@ -723,6 +755,107 @@ define('controls/groups/Group', [
 
             this.$UserGrid.setData(result);
             this.Loader.hide();
+        },
+
+        /**
+         * Add one or more users to the groups
+         */
+        $onUsersAdd: function () {
+            var self = this;
+
+            require([
+                'controls/users/search/Window'
+            ], function (UserSearchWindow) {
+                new UserSearchWindow({
+                    search        : true,
+                    searchSettings: {
+                        filter: {
+                            filter_groups_exclude: [self.$Group.getId()]
+                        }
+                    },
+                    events        : {
+                        onSubmit: function (Control, users) {
+                            var userIds = [];
+
+                            for (var i = 0, len = users.length; i < len; i++) {
+                                userIds.push(users[i].id);
+                            }
+
+                            Groups.addUsers(self.$Group.getId(), userIds).then(function (result) {
+                                self.refreshUser();
+                            });
+                        }
+                    }
+                }).open();
+            });
+        },
+
+        /**
+         * Remove one or more users from this group
+         */
+        $onUsersRemove: function () {
+            var self     = this;
+            var userIds  = [];
+            var users    = [];
+            var selected = this.$UserGrid.getSelectedIndices();
+
+            if (!selected.length) {
+                return;
+            }
+
+            for (var i = 0, len = selected.length; i < len; i++) {
+                var User = this.$UserGrid.getDataByRow(selected[i]);
+
+                userIds.push(User.id);
+                users.push(User.username + ' (#' + User.id + ')');
+            }
+
+            this.Loader.show();
+
+            require([
+                'qui/controls/windows/Confirm'
+            ], function (QUIConfirm) {
+                new QUIConfirm({
+                    'autoclose': true,
+
+                    'information': QUILocale.get(
+                        'quiqqer/system',
+                        'controls.group.deleteusers.confirm.info', {
+                            groupId  : self.$Group.getId(),
+                            groupName: self.$Group.getName(),
+                            users    : users.join(', ')
+                        }
+                    ),
+                    'title'      : QUILocale.get(
+                        'quiqqer/system',
+                        'controls.group.deleteusers.confirm.title'
+                    ),
+                    'texticon'   : 'fa fa-user-times',
+                    'icon'       : 'fa fa-user-times',
+
+                    cancel_button: {
+                        text     : false,
+                        textimage: 'fa fa-remove'
+                    }
+                    ,
+                    ok_button    : {
+                        text     : false,
+                        textimage: 'fa fa-check'
+                    },
+                    events: {
+                        onSubmit: function(Confirm) {
+                            Confirm.Loader.show();
+
+                            Groups.removeUsers(self.$Group.getId(), userIds).then(function(result) {
+                                self.refreshUser();
+                                Confirm.Loader.hide();
+                            });
+                        }
+                    }
+                }).open();
+
+                self.Loader.hide();
+            });
         }
     });
 });

@@ -523,6 +523,26 @@ class Group extends QUI\QDOM
     }
 
     /**
+     * Add a user to this group
+     *
+     * @param QUI\Users\User $User
+     */
+    public function addUser(QUI\Users\User $User)
+    {
+        $User->addToGroup($this->getId());
+    }
+
+    /**
+     * Remove a user from this group
+     *
+     * @param QUI\Users\User $User
+     */
+    public function removeUser(QUI\Users\User $User)
+    {
+        $User->removeGroup($this);
+    }
+
+    /**
      * return the users from the group
      *
      * @param array $params - SQL Params
@@ -592,8 +612,8 @@ class Group extends QUI\QDOM
             'from'  => QUI\Users\Manager::table(),
             'where' => array(
                 'usergroup' => array(
-                    'type'  => 'LIKE',
-                    'value' => ",'" . $this->getId() . "',"
+                    'type'  => '%LIKE%',
+                    'value' => "," . $this->getId() . ","
                 )
             )
         );

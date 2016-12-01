@@ -285,6 +285,38 @@ define('classes/groups/Manager', [
         },
 
         /**
+         * Add user(s) to a group
+         *
+         * @param {number} gid - Group ID
+         * @param {array} userIds - IDs of users that shall be added to the group
+         * @returns {Promise}
+         */
+        addUsers: function (gid, userIds) {
+            return new Promise(function (resolve) {
+                Ajax.post('ajax_groups_addUsers', resolve, {
+                    gid    : gid,
+                    userIds: JSON.encode(userIds)
+                });
+            });
+        },
+
+        /**
+         * Remove user(s) form a group
+         *
+         * @param {number} gid - Group ID
+         * @param {array} userIds - IDs of users that shall be removed from the group
+         * @returns {Promise}
+         */
+        removeUsers: function (gid, userIds) {
+            return new Promise(function (resolve) {
+                Ajax.post('ajax_groups_removeUsers', resolve, {
+                    gid    : gid,
+                    userIds: JSON.encode(userIds)
+                });
+            });
+        },
+
+        /**
          * Trigger the refresh event
          *
          * @method classes/groups/Manager#refreshGroup
