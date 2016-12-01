@@ -133,6 +133,24 @@ require(requireList, function () {
         );
     });
 
+    var menuLoaded             = false,
+        workspaceLoaded        = false,
+        quiqqerLoadedTriggered = false;
+
+    var quiqqerIsLoaded = function () {
+        if (quiqqerLoadedTriggered) {
+            return;
+        }
+
+        if (menuLoaded && workspaceLoaded) {
+            quiqqerLoadedTriggered = true;
+            QUI.fireEvent('quiqqerLoaded');
+            window.fireEvent('quiqqerLoaded');
+        }
+    };
+
+    window.addEvent('load', quiqqerIsLoaded);
+
     Ajax.get('ajax_isAuth', function (userId) {
 
         if (!userId) {
@@ -189,7 +207,9 @@ require(requireList, function () {
                             }
                         }
 
+                        workspaceLoaded = true;
                         WS.Loader.hide();
+                        quiqqerIsLoaded();
 
                         // search
                         new MenuSearch().inject(
@@ -264,14 +284,18 @@ require(requireList, function () {
                     require(['Menu'], function (Menu) {
                         if (!Menu.isLoaded()) {
                             Menu.addEvent('onMenuLoaded', function () {
+                                menuLoaded = true;
                                 createMenu(Menu);
                             });
 
                             return;
                         }
 
+                        menuLoaded = true;
                         createMenu(Menu);
                     });
+
+                    quiqqerIsLoaded();
                 }
             }
         }).inject(Container);
