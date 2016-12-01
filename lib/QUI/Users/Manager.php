@@ -351,29 +351,29 @@ class Manager
                 "children": [
                     {
                         "attributes": {
-                            "name": "projects - panel",
-                            "icon": "fa fa - home",
+                            "name": "projects-panel",
+                            "icon": "fa fa-home",
                             "title": "Projects",
                             "collapsible": true,
                             "dragable": false,
                             "closeButton": false,
                             "height": 599
                         },
-                        "type": "controls / projects / project / Panel",
+                        "type": "controls/projects/project/Panel",
                         "isOpen": true
                     },
                     {
                         "attributes": {
                             "title": "Bookmarks",
-                            "icon": "fa fa - bookmark",
+                            "icon": "fa fa-bookmark",
                             "footer": false,
-                            "name": "qui - bookmarks",
+                            "name": "qui-bookmarks",
                             "height": 300,
                             "collapsible": true,
                             "dragable": false,
                             "closeButton": false
                         },
-                        "type": "controls / desktop / panels / Bookmarks",
+                        "type": "controls/desktop/panels/Bookmarks",
                         "bookmarks": [],
                         "isOpen": false
                     },
@@ -384,7 +384,7 @@ class Manager
                             "dragable": false,
                             "closeButton": false
                         },
-                        "type": "qui / controls / messages / Panel",
+                        "type": "qui/controls/messages/Panel",
                         "isOpen": false
                     },
                     {
@@ -395,19 +395,19 @@ class Manager
                             "closeButton": false,
                             "title": "Upload"
                         },
-                        "type": "controls / upload / Manager",
+                        "type": "controls/upload/Manager",
                         "isOpen": false
                     },
                     {
                         "attributes": {
-                            "title": "QUIQQER - Hilfe",
-                            "icon": "fa fa - h - square",
+                            "title": "QUIQQER-Hilfe",
+                            "icon": "fa fa-h-square",
                             "height": 100,
                             "collapsible": true,
                             "dragable": false,
                             "closeButton": false
                         },
-                        "type": "controls / desktop / panels / Help",
+                        "type": "controls/desktop/panels/Help",
                         "isOpen": false
                     }
                 ]
@@ -422,27 +422,27 @@ class Manager
                     {
                         "attributes": {
                             "title": "My Panel 1",
-                            "icon": "fa fa - heart",
+                            "icon": "fa fa-heart",
                             "name": "tasks"
                         },
-                        "type": "qui / controls / desktop / Tasks",
+                        "type": "qui/controls/desktop/Tasks",
                         "bar": {
                             "attributes": {
-                                "name": "qui - taskbar - issogpst",
+                                "name": "qui-taskbar-issogpst",
                                 "styles": {
                                     "bottom": 0,
                                     "left": 0,
                                     "position": "absolute"
                                 }
                             },
-                            "type": "qui / controls / taskbar / Bar",
+                            "type": "qui/controls/taskbar/Bar",
                             "tasks": [
                                 {
                                     "attributes": {
                                         "closeable": true,
                                         "dragable": true
                                     },
-                                    "type": "qui / controls / taskbar / Task",
+                                    "type": "qui/controls/taskbar/Task",
                                     "instance": {
                                         "attributes": {
                                             "closeButton": true,
@@ -450,7 +450,7 @@ class Manager
                                             "height": 745,
                                             "dragable": true
                                         },
-                                        "type": "controls / help / Dashboard"
+                                        "type": "controls/help/Dashboard"
                                     }
                                 }
                             ]
@@ -460,7 +460,7 @@ class Manager
                 ]
             }
         ]';
-
+        
         $threeColumn = '[{
                 "attributes": {
                     "resizeLimit": [],
@@ -471,29 +471,29 @@ class Manager
                 "children": [
                     {
                         "attributes": {
-                            "name": "projects - panel",
-                            "icon": "fa fa - home",
+                            "name": "projects-panel",
+                            "icon": "fa fa-home",
                             "title": "Projects",
                             "collapsible": true,
                             "dragable": false,
                             "closeButton": false,
                             "height": 731
                         },
-                        "type": "controls / projects / project / Panel",
+                        "type": "controls/projects/project/Panel",
                         "isOpen": true
                     },
                     {
                         "attributes": {
                             "title": "Bookmarks",
-                            "icon": "fa fa - bookmark",
+                            "icon": "fa fa-bookmark",
                             "footer": false,
-                            "name": "qui - bookmarks",
+                            "name": "qui-bookmarks",
                             "height": 400,
                             "collapsible": true,
                             "dragable": false,
                             "closeButton": false
                         },
-                        "type": "controls / desktop / panels / Bookmarks",
+                        "type": "controls/desktop/panels/Bookmarks",
                         "bookmarks": [],
                         "isOpen": false
                     }
@@ -510,27 +510,27 @@ class Manager
                     {
                         "attributes": {
                             "title": "My Panel 1",
-                            "icon": "fa fa - heart",
+                            "icon": "fa fa-heart",
                             "name": "tasks"
                         },
-                        "type": "qui / controls / desktop / Tasks",
+                        "type": "qui/controls/desktop/Tasks",
                         "bar": {
                             "attributes": {
-                                "name": "qui - taskbar - issogpue",
+                                "name": "qui-taskbar-issogpue",
                                 "styles": {
                                     "bottom": 0,
                                     "left": 0,
                                     "position": "absolute"
                                 }
                             },
-                            "type": "qui / controls / taskbar / Bar",
+                            "type": "qui/controls/taskbar/Bar",
                             "tasks": [
                                 {
                                     "attributes": {
                                         "closeable": true,
                                         "dragable": true
                                     },
-                                    "type": "qui / controls / taskbar / Task",
+                                    "type": "qui/controls/taskbar/Task",
                                     "instance": {
                                         "attributes": {
                                             "closeButton": true,
@@ -538,7 +538,7 @@ class Manager
                                             "height": 745,
                                             "dragable": true
                                         },
-                                        "type": "controls / help / Dashboard"
+                                        "type": "controls/help/Dashboard"
                                     }
                                 }
                             ]
@@ -562,7 +562,7 @@ class Manager
                             "dragable": false,
                             "closeButton": false
                         },
-                        "type": "qui / controls / messages / Panel",
+                        "type": "qui/controls/messages/Panel",
                         "isOpen": true
                     },
                     {
@@ -573,19 +573,19 @@ class Manager
                             "closeButton": false,
                             "title": "Upload"
                         },
-                        "type": "controls / upload / Manager",
+                        "type": "controls/upload/Manager",
                         "isOpen": false
                     },
                     {
                         "attributes": {
-                            "title": "QUIQQER - Hilfe",
-                            "icon": "fa fa - h - square",
+                            "title": "QUIQQER-Hilfe",
+                            "icon": "fa fa-h-square",
                             "height": 400,
                             "collapsible": true,
                             "dragable": false,
                             "closeButton": false
                         },
-                        "type": "controls / desktop / panels / Help",
+                        "type": "controls/desktop/panels/Help",
                         "isOpen": false
                     }
                 ]
@@ -1545,11 +1545,11 @@ class Manager
             $filter = $params['searchSettings']['filter'];
             $fields = $params['searchSettings']['fields'];
 
-            $filter_status        = false;
-            $filter_group         = false;
+            $filter_status         = false;
+            $filter_group          = false;
             $filter_groups_exclude = false;
-            $filter_regdate_first = false;
-            $filter_regdate_last  = false;
+            $filter_regdate_first  = false;
+            $filter_regdate_last   = false;
 
             // set the filters
             if (isset($filter['filter_status'])
