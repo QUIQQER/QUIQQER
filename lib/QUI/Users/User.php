@@ -1379,7 +1379,7 @@ class User implements QUI\Interfaces\Users\User
             return true;
         }
 
-        if ($SessionUser->getId() == $ParentUser->getId()) {
+        if ($SessionUser->getId() == $this->getId()) {
             return true;
         }
 
