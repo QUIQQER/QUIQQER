@@ -169,8 +169,9 @@ try {
     ) {
         $cache_content = file_get_contents($site_cache_file);
         $content       = $Rewrite->outputFilter($cache_content);
+        $_content      = $content;
 
-        QUI::getEvents()->fireEvent('requestOutput', array(&$content));
+        QUI::getEvents()->fireEvent('requestOutput', array(&$_content));
 
         $Response->setContent($content);
         $Response->send();
