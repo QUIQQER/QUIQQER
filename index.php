@@ -168,9 +168,11 @@ try {
         && !QUI::getUsers()->isAuth(QUI::getUserBySession())
     ) {
         $cache_content = file_get_contents($site_cache_file);
-        $_content      = $Rewrite->outputFilter($cache_content);
+        $content       = $Rewrite->outputFilter($cache_content);
 
-        $Response->setContent($_content);
+        QUI::getEvents()->fireEvent('requestOutput', array(&$content));
+
+        $Response->setContent($content);
         $Response->send();
         exit;
     }
