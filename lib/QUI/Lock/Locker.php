@@ -21,13 +21,21 @@ class Locker
      *
      * @param Package $Package
      * @param string $key
+     * @param bool|integer $lifetime
      */
-    public static function lock(Package $Package, $key)
+    public static function lock(Package $Package, $key, $lifetime = false)
     {
-        file_put_contents(
-            self::getLockFilePath($Package, $key),
-            QUI::getUserBySession()->getId()
-        );
+        $name  = self::getLockKey($Package, $key);
+        $value = QUI::getUserBySession()->getId();
+
+        if (!$lifetime) {
+            $lifetime = QUI::conf('session', 'max_life_time');
+        }
+
+        $Item = self::getStash($name);
+        $Item->expiresAfter($lifetime);
+        $Item->set($value);
+        $Item->save();
     }
 
     /**
@@ -49,15 +57,12 @@ class Locker
             return;
         }
 
-        $file = self::getLockFilePath($Package, $key);
-
-        if ($User->isSU() || QUI::getUsers()->isSystemUser($User)) {
-            unlink($file);
-            return;
-        }
-
-        if ($locked === $User->getId()) {
-            unlink($file);
+        if ($User->isSU()
+            || QUI::getUsers()->isSystemUser($User)
+            || $locked === $User->getId()
+        ) {
+            $Item = self::getStash(self::getLockKey($Package, $key));
+            $Item->clear();
         }
     }
 
@@ -66,15 +71,27 @@ class Locker
      *
      * @param Package $Package
      * @param string $key
-     * @return bool|string
+     * @param null|QUI\Interfaces\Users\User $User
+     * @return false|mixed
      */
-    public static function isLocked(Package $Package, $key)
+    public static function isLocked(Package $Package, $key, $User = null)
     {
-        if (!file_exists(self::getLockFilePath($Package, $key))) {
-            return false;
+        if (is_null($User)) {
+            $User = QUI::getUserBySession();
         }
 
-        return file_get_contents(self::getLockFilePath($Package, $key));
+        try {
+            $uid = self::getStashData(self::getLockKey($Package, $key));
+
+            if ($User->getId() == $uid) {
+                return false;
+            }
+
+            return $uid;
+        } catch (QUI\Lock\Exception $Exception) {
+        }
+
+        return false;
     }
 
     /**
@@ -98,7 +115,14 @@ class Locker
      */
     public static function getLockTime(Package $Package, $key)
     {
-        return time() - filemtime(self::getLockFilePath($Package, $key));
+        $Item   = self::getStash(self::getLockKey($Package, $key));
+        $Expire = $Item->getExpiration();
+
+        if ($Expire === false) {
+            return 0;
+        }
+
+        return time() - $Expire->getTimestamp();
     }
 
     /**
@@ -108,16 +132,62 @@ class Locker
      * @param string $key
      * @return string
      *
-     * @throws QUI\Exception
+     * @throws QUI\Lock\Exception
      */
-    protected static function getLockFilePath(Package $Package, $key)
+    protected static function getLockKey(Package $Package, $key)
     {
         if (!is_string($key) || empty($key)) {
-            throw new QUI\Exception('Lock::lock() need a string as key');
+            throw new QUI\Lock\Exception('Lock::lock() need a string as key');
         }
 
-        $package = str_replace('/', '_', $Package->getName());
+        return 'lock/' . $Package->getName() . '_' . $key;
+    }
 
-        return VAR_DIR . 'lock/' . $package . '_' . $key;
+    /**
+     * Return the stash item
+     *
+     * @param string $name
+     * @return \Stash\Interfaces\ItemInterface
+     * @throws QUI\Lock\Exception
+     */
+    protected static function getStash($name)
+    {
+        try {
+            return QUI\Cache\Manager::getStash($name);
+        } catch (\Exception $Exception) {
+            throw new QUI\Lock\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.lib.cache.manager.not.exist'
+                ),
+                404
+            );
+        }
+    }
+
+    /**
+     * Return the data from the cache
+     *
+     * @param string $name
+     * @return mixed|null
+     * @throws QUI\Lock\Exception
+     */
+    protected static function getStashData($name)
+    {
+        $Item   = self::getStash($name);
+        $data   = $Item->get();
+        $isMiss = $Item->isMiss();
+
+        if ($isMiss) {
+            throw new QUI\Lock\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.lib.cache.manager.not.exist'
+                ),
+                404
+            );
+        }
+
+        return $data;
     }
 }
