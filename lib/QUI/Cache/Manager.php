@@ -71,7 +71,7 @@ class Manager
      *
      * @param string $key - (optional) cache name, cache key
      *
-     * @return Stash\Item
+     * @return Stash\Interfaces\ItemInterface
      * @throw
      */
     public static function getStash($key = '')
@@ -289,12 +289,10 @@ class Manager
      * @param string $name
      * @param mixed $data
      * @param int|\DateTime|null $time -> sekunden oder datetime
-     *
-     * @return boolean
      */
     public static function set($name, $data, $time = null)
     {
-        return self::getStash($name)->set($data, $time);
+        self::getStash($name)->set($data, $time);
     }
 
     /**
