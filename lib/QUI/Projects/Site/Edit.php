@@ -13,6 +13,7 @@ use QUI\Permissions\Permission;
 use QUI\Users\User;
 use QUI\Groups\Group;
 use QUI\Utils\Security\Orthos;
+use QUI\Lock\Locker;
 
 /**
  * Site Objekt für den Adminbereich
@@ -64,12 +65,6 @@ class Edit extends Site
     public $conf = array();
 
     /**
-     * lock file path
-     * @var array|string
-     */
-    protected $lockfile = array();
-
-    /**
      * Konstruktor
      *
      * @param QUI\Projects\Project $Project
@@ -80,12 +75,6 @@ class Edit extends Site
         parent::__construct($Project, $id);
 
         $this->refresh();
-
-        $id = $this->getId();
-
-        $this->lockfile = VAR_DIR . 'lock/' .
-                          $Project->getAttribute('name') . '_' .
-                          $id . '_' . $Project->getAttribute('lang');
 
         // Temp Dir abfragen ob existiert
         QUI\Utils\System\File::mkdir(VAR_DIR . 'admin/');
@@ -1329,8 +1318,6 @@ class Edit extends Site
     /**
      * is the page currently edited from another user than me?
      *
-     * @todo muss überarbeitet werden, file operationen?
-     *
      * @return bool|integer
      */
     public function isLockedFromOther()
@@ -1345,12 +1332,15 @@ class Edit extends Site
             return false;
         }
 
-        $time          = time() - filemtime($this->lockfile);
+        $time = Locker::getLockTime(
+            QUI::getPackage('quiqqer/quiqqer'),
+            $this->getLockKey()
+        );
+
         $max_life_time = QUI::conf('session', 'max_life_time');
 
         if ($time > $max_life_time) {
             $this->unlock();
-
             return false;
         }
 
@@ -1360,24 +1350,19 @@ class Edit extends Site
     /**
      * is the page currently edited
      *
-     * @todo muss überarbeitet werden, file operationen?
-     *
      * @return bool|string
      */
     public function isLocked()
     {
-        if (!file_exists($this->lockfile)) {
-            return false;
-        }
-
-        return file_get_contents($this->lockfile);
+        return Locker::isLocked(
+            QUI::getPackage('quiqqer/quiqqer'),
+            $this->getLockKey()
+        );
     }
 
     /**
      * Markiert die Seite -> die Seite wird gerade bearbeitet
      * Markiert nur wenn die Seite nicht markiert ist
-     *
-     * @todo muss überarbeitet werden, file operationen?
      *
      * @return boolean - true if it worked, false if it not worked
      */
@@ -1397,7 +1382,10 @@ class Edit extends Site
             return false;
         }
 
-        file_put_contents($this->lockfile, QUI::getUserBySession()->getId());
+        Locker::lock(
+            QUI::getPackage('quiqqer/quiqqer'),
+            $this->getLockKey()
+        );
 
         return true;
     }
@@ -1407,9 +1395,10 @@ class Edit extends Site
      */
     protected function unlock()
     {
-        if (file_exists($this->lockfile)) {
-            unlink($this->lockfile);
-        }
+        Locker::unlock(
+            QUI::getPackage('quiqqer/quiqqer'),
+            $this->getLockKey()
+        );
     }
 
     /**
@@ -1419,25 +1408,18 @@ class Edit extends Site
      */
     public function unlockWithRights()
     {
-        $lock = $this->isLocked();
+        $this->unlock();
+    }
 
-        if (!$lock) {
-            return;
-        }
-
-        if (QUI::getUserBySession()->isSU()) {
-            if (file_exists($this->lockfile)) {
-                unlink($this->lockfile);
-            }
-
-            return;
-        }
-
-        if ($lock === QUI::getUserBySession()->getId()) {
-            if (file_exists($this->lockfile)) {
-                unlink($this->lockfile);
-            }
-        }
+    /**
+     * Return the key for the lock file
+     * @return string
+     */
+    protected function getLockKey()
+    {
+        return $this->getProject()->getName() . '_' .
+               $this->getProject()->getLang() . '_' .
+               $this->getId();
     }
 
     /**
