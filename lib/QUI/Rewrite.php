@@ -668,7 +668,7 @@ class Rewrite
             return $this->first_child;
         }
 
-        $_url = explode('/', $url);
+        $_url = explode('/', trim($url, '/'));
 
         if (count($_url) <= 1) {
             // Erste Ebene
