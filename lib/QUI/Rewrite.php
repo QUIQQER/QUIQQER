@@ -187,6 +187,9 @@ class Rewrite
             $_REQUEST['_url'] = '';
         }
 
+        // nginx fix
+        $_REQUEST['_url'] = ltrim($_REQUEST['_url'], '/');
+
         //wenn seite existiert, dann muss nichts mehr gemacht werden
         if (isset($this->site) && $this->site) {
             QUI::getEvents()->fireEvent('request', array($this, $_REQUEST['_url']));
