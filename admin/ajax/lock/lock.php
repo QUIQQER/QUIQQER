@@ -9,7 +9,8 @@
 QUI::$Ajax->registerFunction(
     'ajax_lock_lock',
     function ($package, $key) {
-        QUI\Lock\Locker::lock($package, $key);
+        $Package = QUI::getPackage($package);
+        QUI\Lock\Locker::lock($Package, $key);
     },
     array('package', 'key'),
     'Permission::checkAdminUser'
