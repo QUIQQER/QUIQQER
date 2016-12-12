@@ -53,10 +53,6 @@ class Locker
 
         $locked = self::isLocked($Package, $key);
 
-        if ($locked === false) {
-            return;
-        }
-
         if ($User->isSU()
             || QUI::getUsers()->isSystemUser($User)
             || $locked === $User->getId()
