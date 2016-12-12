@@ -18,15 +18,20 @@ class Locker
 {
     /**
      * Lock a item or an object
+     * no permission check
      *
      * @param Package $Package
      * @param string $key
      * @param bool|integer $lifetime
      */
-    public static function lock(Package $Package, $key, $lifetime = false)
+    public static function lock(Package $Package, $key, $lifetime = false, $User = null)
     {
+        if (is_null($User)) {
+            $User = QUI::getUserBySession();
+        }
+
         $name  = self::getLockKey($Package, $key);
-        $value = QUI::getUserBySession()->getId();
+        $value = $User->getId();
 
         if (!$lifetime) {
             $lifetime = QUI::conf('session', 'max_life_time');
@@ -39,26 +44,74 @@ class Locker
     }
 
     /**
-     * Unlock a item or an object
+     * Lock a item or an object and checks the permissions
      *
      * @param Package $Package
-     * @param string $key
-     * @param null|QUI\Interfaces\Users\User $User
+     * @param $key
+     * @param string $permission - optional
+     * @param null $User
+     *
+     * @throws QUI\Permissions\Exception
      */
-    public static function unlock(Package $Package, $key, $User = null)
+    public static function lockWithPermissions(Package $Package, $key, $permission = '', $User = null)
     {
         if (is_null($User)) {
             $User = QUI::getUserBySession();
         }
 
-        $locked = self::isLocked($Package, $key);
+        self::checkLocked($Package, $key, $User);
+
+        if (!empty($permission)) {
+            QUI\Permissions\Permission::checkPermission($permission, $User);
+        }
+
+        self::lock($Package, $key, false, $User);
+    }
+
+    /**
+     * Unlock a item or an object
+     * no permission check
+     *
+     * @param Package $Package
+     * @param string $key
+     */
+    public static function unlock(Package $Package, $key)
+    {
+        $Item = self::getStash(self::getLockKey($Package, $key));
+        $Item->clear();
+    }
+
+    /**
+     * Unlock a item or an object and checks the permissions
+     *
+     * @param Package $Package
+     * @param $key
+     * @param string $permission - optional
+     * @param null $User
+     *
+     * @throws QUI\Permissions\Exception
+     */
+    public static function unlockWithPermissions(Package $Package, $key, $permission = '', $User = null)
+    {
+        if (is_null($User)) {
+            $User = QUI::getUserBySession();
+        }
+
+        $locked = self::isLocked($Package, $key, $User);
+
+        if ($locked === false) {
+            return;
+        }
+
+        if (!empty($permission)) {
+            QUI\Permissions\Permission::checkPermission($permission, $User);
+        }
 
         if ($User->isSU()
             || QUI::getUsers()->isSystemUser($User)
             || $locked === $User->getId()
         ) {
-            $Item = self::getStash(self::getLockKey($Package, $key));
-            $Item->clear();
+            self::unlock($Package, $key);
         }
     }
 
@@ -91,13 +144,17 @@ class Locker
     }
 
     /**
+     * Check, if the item is locked
+     *
      * @param Package $Package
      * @param String $key
+     * @param null|QUI\Interfaces\Users\User $User - default = session user
+     *
      * @throws QUI\Exception
      */
-    public static function checkLocked(Package $Package, $key)
+    public static function checkLocked(Package $Package, $key, $User = null)
     {
-        if (self::isLocked($Package, $key)) {
+        if (self::isLocked($Package, $key, $User)) {
             throw new QUI\Lock\Exception('Item is locked');
         }
     }
