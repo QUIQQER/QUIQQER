@@ -138,7 +138,11 @@ class Locker
                 return false;
             }
 
-            return $uid;
+            try {
+                return QUI::getUsers()->get($uid)->getAttributes();
+            } catch (QUI\Exception $Exception) {
+                return $uid;
+            }
         } catch (QUI\Lock\Exception $Exception) {
         }
 
