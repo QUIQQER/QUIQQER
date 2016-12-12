@@ -105,6 +105,8 @@ class Locker
 
         if (!empty($permission)) {
             QUI\Permissions\Permission::checkPermission($permission, $User);
+            self::unlock($Package, $key);
+            return;
         }
 
         if ($User->isSU()
