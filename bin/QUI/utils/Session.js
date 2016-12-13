@@ -16,7 +16,6 @@ define('utils/Session', ['Ajax'], function (QUIAjax) {
          * @returns {Promise}
          */
         set: function (key, value) {
-            console.info(key, value);
             return new Promise(function (resolve, reject) {
                 QUIAjax.post('ajax_session_set', resolve, {
                     key    : key,
