@@ -354,6 +354,16 @@ class Session
     }
 
     /**
+     * Alias for del()
+     *
+     * @param string $var
+     */
+    public function remove($var)
+    {
+        $this->del($var);
+    }
+
+    /**
      * Destroy the whole session
      */
     public function destroy()
