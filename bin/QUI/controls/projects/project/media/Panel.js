@@ -390,7 +390,7 @@ define('controls/projects/project/media/Panel', [
                 }
 
                 // cached id?
-                var Project    = this.$Media.getProject();
+                var Project    = self.$Media.getProject();
                 var cacheMedia = Project.getName() + '-' + Project.getLang() + '-id';
 
                 if (QUI.Storage.get(cacheMedia)) {
@@ -400,7 +400,6 @@ define('controls/projects/project/media/Panel', [
 
                 self.openID(1);
             });
-
         },
 
         unload: function () {
