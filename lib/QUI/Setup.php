@@ -180,6 +180,7 @@ class Setup
 ';
 
         $OPT_DIR = OPT_DIR;
+        $CMS_DIR = CMS_DIR;
 
         $image     = CMS_DIR . 'image.php';
         $index     = CMS_DIR . 'index.php';
@@ -208,27 +209,27 @@ if (file_exists(\$boot)) {
         file_put_contents($bootstrap, $bootstrapContent);
 
 
-        // rest
-        file_put_contents(
-            $image,
-            $fileHeader .
-            "define('QUIQQER_SYSTEM',true);" .
-            "require dirname(__FILE__) .'/bootstrap.php';\n" .
-            "require '{$OPT_DIR}quiqqer/quiqqer/image.php';\n"
-        );
+        // image.php
+        $content = $fileHeader .
+                   "define('QUIQQER_SYSTEM',true);" .
+                   "require dirname(__FILE__) .'/bootstrap.php';\n" .
+                   "require '{$OPT_DIR}quiqqer/quiqqer/image.php';\n";
 
-        file_put_contents(
-            $index,
-            $fileHeader .
-            "define('QUIQQER_SYSTEM',true);" .
-            "require dirname(__FILE__) .'/bootstrap.php';\n" .
-            "require '{$OPT_DIR}quiqqer/quiqqer/index.php';\n"
-        );
+        file_put_contents($image, $content);
 
-        file_put_contents(
-            $quiqqer,
-            $fileHeader .
-            "require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';\n"
-        );
+        // index.php
+        $content = $fileHeader .
+                   "define('QUIQQER_SYSTEM',true);" .
+                   "require dirname(__FILE__) .'/bootstrap.php';\n" .
+                   "require '{$OPT_DIR}quiqqer/quiqqer/index.php';\n";
+
+        file_put_contents($index, $content);
+
+        // quiqqer.php
+        $content = $fileHeader .
+                   "define('CMD_DIR', '{$CMS_DIR}');\n" .
+                   "require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';\n";
+
+        file_put_contents($quiqqer, $content);
     }
 }

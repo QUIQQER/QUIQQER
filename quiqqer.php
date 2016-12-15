@@ -3,8 +3,12 @@
 /**
  * This file contains the quiqqer access for the api, cron and console
  */
+if (!defined('CMD_DIR')) {
+    exit;
+}
+
 define('QUIQQER_SYSTEM', true);
-require 'bootstrap.php';
+require CMD_DIR . '/bootstrap.php';
 
 // no console
 if (php_sapi_name() != 'cli') {
