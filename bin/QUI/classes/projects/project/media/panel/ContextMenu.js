@@ -430,7 +430,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
             ).appendChild(
                 new QUIContextmenuItem({
                     name  : 'delete',
-                    text  : 'In den verschieben verschieben',
+                    text  : 'In den Papierkorb verschieben',
                     icon  : 'fa fa-trash-o',
                     events: {
                         onMouseDown: function () {
