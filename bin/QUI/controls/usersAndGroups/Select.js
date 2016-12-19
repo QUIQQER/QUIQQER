@@ -47,8 +47,8 @@ define('controls/usersAndGroups/Select', [
             'groupSearch'
         ],
 
-        initialize: function (options) {
-            this.parent(options);
+        initialize: function (options, Input) {
+            this.parent(options, Input);
 
             this.setAttribute('Search', this.usersGroupSearch);
             this.setAttribute('icon', 'fa fa-group');

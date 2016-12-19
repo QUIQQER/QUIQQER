@@ -569,7 +569,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
          */
         parseUserAndGroups: function (Elm) {
             return new Promise(function (resolve, reject) {
-                require(['controls/usersAndGroups/Input'], function (UserAndGroup) {
+                require(['controls/usersAndGroups/Select'], function (UserAndGroup) {
                     var elements, Label, Control;
 
                     elements = Elm.getElements('.users_and_groups');
