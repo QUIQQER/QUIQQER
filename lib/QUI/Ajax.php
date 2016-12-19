@@ -216,7 +216,50 @@ class Ajax extends QUI\QDOM
         $result['maintenance'] = QUI::conf('globals', 'maintenance') ? 1 : 0;
         $result['jsCallbacks'] = $this->jsCallbacks;
 
-        return '<quiqqer>' . json_encode($result) . '</quiqqer>';
+        $encoded = json_encode($result);
+
+        $utf8ize = function ($mixed) use (&$utf8ize) {
+            if (is_string($mixed)) {
+                return utf8_encode($mixed);
+            }
+
+            if (is_array($mixed)) {
+                foreach ($mixed as $key => $value) {
+                    $mixed[$key] = $utf8ize($value);
+                }
+            }
+
+            return $mixed;
+        };
+
+        // json errors bekommen
+        if (function_exists('json_last_error')) {
+            switch (json_last_error()) {
+                case JSON_ERROR_UTF8:
+                    $encoded = json_encode($utf8ize($result));
+            }
+
+            switch (json_last_error()) {
+                case JSON_ERROR_NONE:
+                    // alles ok
+                    break;
+
+                case JSON_ERROR_DEPTH:
+                case JSON_ERROR_STATE_MISMATCH:
+                case JSON_ERROR_CTRL_CHAR:
+                case JSON_ERROR_SYNTAX:
+                case JSON_ERROR_UTF8:
+                default:
+                    QUI\System\Log::addError(
+                        'JSON Error: ' .
+                        json_last_error() . ' :: ' .
+                        print_r($encoded, true)
+                    );
+                    break;
+            }
+        }
+
+        return '<quiqqer>' . $encoded . '</quiqqer>';
     }
 
     /**
@@ -314,26 +357,26 @@ class Ajax extends QUI\QDOM
 
 
         // json errors bekommen
-        if (function_exists('json_last_error')) {
-            switch (json_last_error()) {
-                case JSON_ERROR_NONE:
-                    // alles ok
-                    break;
-
-                case JSON_ERROR_DEPTH:
-                case JSON_ERROR_STATE_MISMATCH:
-                case JSON_ERROR_CTRL_CHAR:
-                case JSON_ERROR_SYNTAX:
-                case JSON_ERROR_UTF8:
-                default:
-                    QUI\System\Log::addError(
-                        'JSON Error: ' .
-                        json_last_error() . ' :: ' .
-                        print_r($return, true)
-                    );
-                    break;
-            }
-        }
+//        if (function_exists('json_last_error')) {
+//            switch (json_last_error()) {
+//                case JSON_ERROR_NONE:
+//                    // alles ok
+//                    break;
+//
+//                case JSON_ERROR_DEPTH:
+//                case JSON_ERROR_STATE_MISMATCH:
+//                case JSON_ERROR_CTRL_CHAR:
+//                case JSON_ERROR_SYNTAX:
+//                case JSON_ERROR_UTF8:
+//                default:
+//                    QUI\System\Log::addError(
+//                        'JSON Error: ' .
+//                        json_last_error() . ' :: ' .
+//                        print_r($return, true)
+//                    );
+//                    break;
+//            }
+//        }
 
         return $return;
     }
