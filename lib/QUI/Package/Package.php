@@ -78,6 +78,10 @@ class Package extends QUI\QDOM
     {
         $packageDir = OPT_DIR . $package . '/';
 
+        if (strpos($package, '-asset/') !== false) {
+            $packageDir = OPT_DIR . '/bin/' . explode('/', $package)[1] . '/';
+        }
+
         if (!is_dir($packageDir)) {
             throw new QUI\Exception('Package not exists', 404);
         }
@@ -182,7 +186,7 @@ class Package extends QUI\QDOM
     {
         $packageData = $this->getPackageXMLData();
 
-        if (isset($packageData['title'])) {
+        if (isset($packageData['title']) && !empty($packageData['title'])) {
             return $packageData['title'];
         }
 
@@ -303,6 +307,20 @@ class Package extends QUI\QDOM
         if (file_exists($this->packageDir . 'composer.json')) {
             $this->composerData = json_decode(
                 file_get_contents($this->packageDir . 'composer.json'),
+                true
+            );
+        }
+
+        if (file_exists($this->packageDir . 'package.json')) {
+            $this->composerData = json_decode(
+                file_get_contents($this->packageDir . 'package.json'),
+                true
+            );
+        }
+
+        if (file_exists($this->packageDir . 'bower.json')) {
+            $this->composerData = json_decode(
+                file_get_contents($this->packageDir . 'bower.json'),
                 true
             );
         }

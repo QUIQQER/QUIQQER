@@ -1137,8 +1137,6 @@ class Manager extends QUI\QDOM
         }
 
         try {
-            QUI\System\Log::writeRecursive($this->getComposer()->getMode());
-
             $output = $this->getComposer()->getOutdatedPackages();
 
             usort($output, function ($a, $b) {
