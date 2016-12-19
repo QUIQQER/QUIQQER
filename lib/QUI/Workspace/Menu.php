@@ -221,6 +221,28 @@ class Menu
 
         $menu = array_values($menu);
 
+        // sort
+        foreach ($menu as $key => $item) {
+            if ($item['name'] != 'settings'
+                && $item['name'] != 'extras'
+                && $item['name'] != 'apps'
+            ) {
+                continue;
+            }
+
+            usort($menu[$key]['items'], function ($a, $b) {
+                if ($a['name'] == 'quiqqer') {
+                    return -1;
+                }
+
+                if ($b['name'] == 'quiqqer') {
+                    return 1;
+                }
+
+                return strcmp($a["text"], $b["text"]);
+            });
+        }
+
         QUI\Cache\Manager::set($this->getCacheName(), $menu);
 
         return $menu;
