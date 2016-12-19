@@ -295,18 +295,18 @@ define('controls/usersAndGroups/Input', [
          */
         search: function () {
             Ajax.get('ajax_usersgroups_search', function (result, Request) {
+
+                var data = result.users.combine(result.groups).slice(0, 10);
+
                 var i, len, nam, type, Entry,
                     func_mousedown, func_mouseover,
-
-                    data     = result.data,
                     value    = Request.getAttribute('value'),
                     Elm      = Request.getAttribute('Elm'),
                     DropDown = Elm.$DropDown;
 
-
                 DropDown.set('html', '');
 
-                if (!data.length) {
+                if (!data || !data.length) {
                     new Element('div', {
                         html  : Locale.get('quiqqer/system', 'usersAndGroups.no.results'),
                         styles: {
@@ -394,7 +394,7 @@ define('controls/usersAndGroups/Input', [
                 }
             }, {
                 Elm   : this,
-                value : this.$Search.value,
+                search: this.$Search.value,
                 params: JSON.encode({
                     order         : 'ASC',
                     limit         : 5,
