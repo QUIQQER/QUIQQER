@@ -13,7 +13,7 @@ not rules, use your best judgment and feel free to propose changes to this docum
 Leitfaden: Wie unterstütze ich QUIQQER - Contribution Guide (german)
 ======
 
-:+1::tada: Als erstes, vielen danke das du dir die Zeit genommen hast um QUIQQER besser zu machen! :tada::+1:
+:+1::tada: Als erstes, vielen dank das du dir die Zeit genommen hast um QUIQQER besser zu machen! :tada::+1:
 
 Das Folgende sind Richtlinien welche wir aufgestellt haben damit kein Durcheinander zustande kommt. 
 Diese Richtlinien zum Beitragen zu QUIQQER gelten für QUIQQER und seine Pakete. Es sind Richtlinien 
