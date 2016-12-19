@@ -43,7 +43,6 @@
     "quiqqer/composer": "dev-dev",
     "quiqqer/qui": ">=0.13|dev-dev",
     "quiqqer/qui-php": "*@dev",
-    "quiqqer/smarty": "3.*",
     "quiqqer/smarty3": "dev-dev",
     "quiqqer/ckeditor4": "*@dev",
     "quiqqer/calendar-controls": "*@dev",
