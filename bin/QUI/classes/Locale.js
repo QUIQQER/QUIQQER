@@ -10,7 +10,7 @@
 var needle = ['qui/classes/Locale'];
 
 // intl polyfill
-if (typeof window.Intl === 'undefined' || true) {
+if (typeof window.Intl === 'undefined') {
     define('qui/classes/intl', [
         URL_OPT_DIR + 'bin/intl/dist/Intl.js'
     ], function (Intl) {
