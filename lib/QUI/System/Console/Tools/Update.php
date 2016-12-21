@@ -37,6 +37,11 @@ class Update extends QUI\System\Console\Tool
                 'Checks for new updates',
                 false,
                 true
+            )->addArgument(
+                'set-date',
+                'Updates only the quiqqer update-date',
+                false,
+                true
             );
     }
 
@@ -50,6 +55,11 @@ class Update extends QUI\System\Console\Tool
         $this->writeLn('Start Update ...');
 
         $Packages = QUI::getPackageManager();
+
+        if ($this->getArgument('--set-date')) {
+            QUI::getPackageManager()->setLastUpdateDate();
+            return;
+        }
 
         if ($this->getArgument('--clearCache')) {
             $Packages->clearComposerCache();
