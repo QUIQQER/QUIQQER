@@ -227,7 +227,7 @@ if (file_exists(\$boot)) {
 
         // quiqqer.php
         $content = $fileHeader .
-                   "define('CMD_DIR', '{$CMS_DIR}');\n" .
+                   "define('CMS_DIR', '{$CMS_DIR}');\n" .
                    "require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';\n";
 
         file_put_contents($quiqqer, $content);

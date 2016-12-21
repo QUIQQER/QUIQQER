@@ -146,7 +146,7 @@ class User implements QUI\Interfaces\Users\User
     protected $address_list = array();
 
     /**
-     * contructor
+     * constructor
      *
      * @param integer $id - ID of the user
      * @param \QUI\Users\Manager $Users - the user manager
