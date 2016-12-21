@@ -10,9 +10,9 @@
 var needle = ['qui/classes/Locale'];
 
 // intl polyfill
-if (typeof window.Intl === 'undefined' || false) {
+if (typeof window.Intl === 'undefined' || true) {
     define('qui/classes/intl', [
-        URL_OPT_DIR + 'bin/intl/dist/Intl'
+        URL_OPT_DIR + 'bin/intl/dist/Intl.js'
     ], function (Intl) {
         window.Intl         = Intl;
         window.IntlPolyfill = Intl;
@@ -36,7 +36,7 @@ if (typeof window.Intl === 'undefined' || false) {
         }
     });
 }
-
+console.log(needle);
 define('classes/Locale', needle, function (QUILocale) {
     "use strict";
 
