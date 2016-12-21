@@ -36,7 +36,7 @@ if (typeof window.Intl === 'undefined') {
         }
     });
 }
-console.log(needle);
+
 define('classes/Locale', needle, function (QUILocale) {
     "use strict";
 
