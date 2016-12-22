@@ -202,6 +202,8 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}packages/ckeditor/(.*)$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}([a-zA-Z-\s0-9_+]*)\.html$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}([a-zA-Z-\s0-9_+]*)\.txt$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}.*\.crt$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}.*\.pem$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}favicon\.ico$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}robots\.txt$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}image.php$
@@ -292,6 +294,8 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}robots\.txt$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}image.php$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}index\.php$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}.*\.crt$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}.*\.pem$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}$
     RewriteRule ^(.*)$ {$URL_DIR}?error=403 [R=301,L]
 </IfModule>
