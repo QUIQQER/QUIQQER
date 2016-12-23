@@ -181,14 +181,30 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 );
             }
 
+            var Move = new QUIContextmenuItem({
+                name  : 'move',
+                text  : 'In einen anderen Ordner verschieben',
+                icon  : 'fa fa-cut',
+                events: {
+                    onMouseDown: function () {
+                        if (!DOMNode) {
+                            return;
+                        }
 
-            Menu.appendChild(
-                new QUIContextmenuSeperator()
-            ).appendChild(
-                Trash
-            ).appendChild(
-                new QUIContextmenuSeperator()
-            );
+                        if (!sels.length) {
+                            sels = [DOMNode];
+                        }
+
+                        self.getPanel().moveItems(sels);
+                    }
+                }
+            });
+
+
+            Menu.appendChild(new QUIContextmenuSeperator())
+                .appendChild(Move)
+                .appendChild(Trash)
+                .appendChild(new QUIContextmenuSeperator());
 
             Menu.appendChild(
                 new QUIContextmenuItem({

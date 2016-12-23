@@ -1,4 +1,3 @@
-
 /**
  * Media DOM event handling for a media panel
  *
@@ -8,9 +7,9 @@
 
 define('classes/projects/project/media/panel/DOMEvents', [
 
-   'qui/QUI',
-   'qui/controls/windows/Prompt',
-   'qui/controls/windows/Confirm'
+    'qui/QUI',
+    'qui/controls/windows/Prompt',
+    'qui/controls/windows/Confirm'
 
 ], function (QUI, QUIPrompt, QUIConfirm) {
     "use strict";
@@ -23,9 +22,9 @@ define('classes/projects/project/media/panel/DOMEvents', [
      */
     return new Class({
 
-        Type : "classes/projects/project/media/panel/DOMEvents",
+        Type: "classes/projects/project/media/panel/DOMEvents",
 
-        initialize : function (MediaPanel) {
+        initialize: function (MediaPanel) {
             this.$Panel = MediaPanel;
         },
 
@@ -34,7 +33,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
          *
          * @method classes/projects/project/media/panel/DOMEvents#getMedia
          */
-        getMedia : function () {
+        getMedia: function () {
             return this.$Panel.getMedia();
         },
 
@@ -44,7 +43,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
          * @method classes/projects/project/media/panel/DOMEvents#activateItem
          * @param {Array} List (DOMNode)
          */
-        activate : function (List) {
+        activate: function (List) {
             var self = this;
 
             this.$createLoaderItem(List);
@@ -53,9 +52,9 @@ define('classes/projects/project/media/panel/DOMEvents', [
                 self.$destroyLoaderItem(List);
 
                 for (var i = 0, len = List.length; i < len; i++) {
-                    List[ i ].set('data-active', 1);
-                    List[ i ].removeClass('qmi-deactive');
-                    List[ i ].addClass('qmi-active');
+                    List[i].set('data-active', 1);
+                    List[i].removeClass('qmi-deactive');
+                    List[i].addClass('qmi-active');
                 }
             });
         },
@@ -66,7 +65,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
          * @method classes/projects/project/media/panel/DOMEvents#deactivateItem
          * @param {Array} List (DOMNode)
          */
-        deactivate : function (List) {
+        deactivate: function (List) {
             var self = this;
 
             this.$createLoaderItem(List);
@@ -75,9 +74,9 @@ define('classes/projects/project/media/panel/DOMEvents', [
                 self.$destroyLoaderItem(List);
 
                 for (var i = 0, len = List.length; i < len; i++) {
-                    List[ i ].set('data-active', 0);
-                    List[ i ].removeClass('qmi-active');
-                    List[ i ].addClass('qmi-deactive');
+                    List[i].set('data-active', 0);
+                    List[i].removeClass('qmi-active');
+                    List[i].addClass('qmi-deactive');
                 }
             });
         },
@@ -88,27 +87,26 @@ define('classes/projects/project/media/panel/DOMEvents', [
          * @method classes/projects/project/media/panel/DOMEvents#deactivateItem
          * @param {Array} List (DOMNode)
          */
-        del : function (List) {
-            var self    = this,
-                Media   = this.getMedia(),
-                items   = [],
-                list    = [];
+        del: function (List) {
+            var self  = this,
+                Media = this.getMedia(),
+                items = [],
+                list  = [];
 
             // #locale
             new QUIConfirm({
-                name     : 'delete_item',
-                title    : 'Ordner / Datei(en) löschen',
-                icon     : 'fa fa-trash-o',
-                texticon : 'fa fa-trash-o',
-                text     : 'Möchten Sie folgende(n) Ordner / Datei(en) wirklich löschen?',
-                information : '<div class="qui-media-file-delete"></div>',
-                events :
-                {
-                    onOpen : function (Win) {
+                name       : 'delete_item',
+                title      : 'Ordner / Datei(en) löschen',
+                icon       : 'fa fa-trash-o',
+                texticon   : 'fa fa-trash-o',
+                text       : 'Möchten Sie folgende(n) Ordner / Datei(en) wirklich löschen?',
+                information: '<div class="qui-media-file-delete"></div>',
+                events     : {
+                    onOpen: function (Win) {
                         Win.Loader.show();
 
                         for (var i = 0, len = List.length; i < len; i++) {
-                            list.push(List[ i ].get('data-id'));
+                            list.push(List[i].get('data-id'));
                         }
 
                         Media.get(list).done(function (result) {
@@ -119,10 +117,10 @@ define('classes/projects/project/media/panel/DOMEvents', [
 
                             for (i = 0, len = items.length; i < len; i++) {
                                 information = information +
-                                    '<li>' +
-                                        '#' + items[ i ].getAttribute('id') +
-                                        ' - ' + items[ i ].getAttribute('name') +
-                                    '</li>';
+                                              '<li>' +
+                                              '#' + items[i].getAttribute('id') +
+                                              ' - ' + items[i].getAttribute('name') +
+                                              '</li>';
                             }
 
                             information = information + '</ul>';
@@ -152,7 +150,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
                         });
                     },
 
-                    onSubmit : function () {
+                    onSubmit: function () {
                         if (!list.length) {
                             return;
                         }
@@ -173,27 +171,26 @@ define('classes/projects/project/media/panel/DOMEvents', [
          * @method classes/projects/project/media/panel/DOMEvents#renameItem
          * @param {HTMLElement} DOMNode
          */
-        rename : function (DOMNode) {
+        rename: function (DOMNode) {
             var self = this;
 
             new QUIPrompt({
-                name  : 'rename_item',
-                title : 'Ordner umbenennen', // #locale
-                icon  : URL_BIN_DIR + '16x16/folder.png',
-                maxHeight : 300,
-                maxWidth  : 450,
-                check : function (Win) {
+                name     : 'rename_item',
+                title    : 'Ordner umbenennen', // #locale
+                icon     : URL_BIN_DIR + '16x16/folder.png',
+                maxHeight: 300,
+                maxWidth : 450,
+                check    : function (Win) {
                     Win.fireEvent('submit', [Win.getValue(), Win]);
                     return false;
                 },
 
-                events :
-                {
-                    onCreate : function (Win) {
+                events: {
+                    onCreate: function (Win) {
                         Win.Loader.show();
                     },
 
-                    onOpen : function (Win) {
+                    onOpen: function (Win) {
                         var itemid = DOMNode.get('data-id');
 
                         self.getMedia().get(itemid, function (Item) {
@@ -202,7 +199,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
                         });
                     },
 
-                    onSubmit : function (result, Win) {
+                    onSubmit: function (result, Win) {
                         var itemid  = DOMNode.get('data-id'),
                             newName = result;
 
@@ -215,8 +212,8 @@ define('classes/projects/project/media/panel/DOMEvents', [
                                 }
 
                                 DOMNode.set({
-                                    alt   : result,
-                                    title : result
+                                    alt  : result,
+                                    title: result
                                 });
 
                                 DOMNode.getElement('span').set('html', result);
@@ -228,7 +225,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
                         });
                     },
 
-                    onCancel : function () {
+                    onCancel: function () {
                         self.$destroyLoaderItem(DOMNode);
                     }
                 }
@@ -241,50 +238,48 @@ define('classes/projects/project/media/panel/DOMEvents', [
          * @method classes/projects/project/media/panel/DOMEvents#replace
          * @param {HTMLElement} DOMNode
          */
-        replace : function (DOMNode) {
+        replace: function (DOMNode) {
             var self = this;
 
             // #locale
             new QUIConfirm({
-                title   : 'Datei ersetzen ...',
-                icon    : 'fa fa-retweet',
-                name    : 'replace-media-id-' + DOMNode.get('data-id'),
-                maxHeight : 400,
-                maxWidth  : 600,
+                title    : 'Datei ersetzen ...',
+                icon     : 'fa fa-retweet',
+                name     : 'replace-media-id-' + DOMNode.get('data-id'),
+                maxHeight: 400,
+                maxWidth : 600,
 
-                text     : 'Datei ersetzen',
-                texticon : 'fa fa-retweet',
+                text    : 'Datei ersetzen',
+                texticon: 'fa fa-retweet',
 
-                information : 'Wählen Sie eine Datei aus oder ziehen Sie eine Datei in das Fenster.',
-                autoclose   : false,
-                events :
-                {
-                    onCreate : function (Win) {
+                information: 'Wählen Sie eine Datei aus oder ziehen Sie eine Datei in das Fenster.',
+                autoclose  : false,
+                events     : {
+                    onCreate: function (Win) {
                         var Content = Win.getContent();
 
                         // upload formular
                         require(['controls/upload/Form'], function (UploadForm) {
                             var Form = new UploadForm({
-                                Drops  : [Content],
-                                styles : {
-                                    clear  : 'both',
-                                    float  : 'left',
-                                    margin : '20px 0 0 0'
+                                Drops : [Content],
+                                styles: {
+                                    clear : 'both',
+                                    float : 'left',
+                                    margin: '20px 0 0 0'
                                 },
-                                events :
-                                {
-                                    onBegin : function () {
+                                events: {
+                                    onBegin: function () {
                                         Win.close();
                                     },
 
-                                    onComplete : function () {
+                                    onComplete: function () {
                                         var i, len;
 
-                                        var panels = QUI.Controls.get(
-                                                'projects-media-panel'
+                                        var panels     = QUI.Controls.get(
+                                            'projects-media-panel'
                                             ),
 
-                                            windows = QUI.Controls.get(
+                                            windows    = QUI.Controls.get(
                                                 'replace-media-id-' + DOMNode.get('data-id')
                                             ),
 
@@ -314,7 +309,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
                                         event.stop();
                                     },
 
-                                    onDragend : function (event, Elm) {
+                                    onDragend: function (event, Elm) {
                                         if (Elm.hasClass('qui-media-drag')) {
                                             Elm.removeClass('qui-media-drag');
                                         }
@@ -333,7 +328,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
                         });
                     },
 
-                    onSubmit : function (Win) {
+                    onSubmit: function (Win) {
                         Win.Loader.show();
                         Win.getAttribute('Form').submit();
                     }
@@ -342,11 +337,57 @@ define('classes/projects/project/media/panel/DOMEvents', [
         },
 
         /**
+         * Move an item or items to another location
+         *
+         * @param {array|HTMLElement} DOMNode
+         */
+        move: function (DOMNode) {
+            var self = this,
+                List = DOMNode;
+
+            if (!List.length) {
+                List = [DOMNode];
+            }
+
+            require([
+                'controls/projects/project/media/Popup'
+            ], function (MediaPopup) {
+                new MediaPopup({
+                    selectable_types: 'folder',
+                    project         : self.getMedia().getProject().getName(),
+                    events          : {
+                        onSubmit: function (MediaPopup, result) {
+                            if (result.type != 'folder') {
+                                QUI.getMessageHandler().then(function (MH) {
+                                    MH.addAttention(
+                                        'Bitte wählen Sie einen Ordner aus'
+                                    );
+                                });
+
+                                self.move(DOMNode);
+                                return;
+                            }
+
+                            var ids = List.map(function (Node) {
+                                return parseInt(Node.get('data-id'));
+                            });
+
+                            self.$Panel.moveTo(
+                                parseInt(result.id),
+                                ids
+                            );
+                        }
+                    }
+                }).open();
+            });
+        },
+
+        /**
          * Create a loader item in a media item div container
          *
          * @param {HTMLElement|Array} DOMNode - Parent (Media Item) DOMNode
          */
-        $createLoaderItem : function (DOMNode) {
+        $createLoaderItem: function (DOMNode) {
             var List = DOMNode;
 
             if (!List.length) {
@@ -355,14 +396,14 @@ define('classes/projects/project/media/panel/DOMEvents', [
 
             for (var i = 0, len = List.length; i < len; i++) {
                 new Element('div.loader', {
-                    styles : {
-                        background : '#000000 url(' + URL_BIN_DIR + 'images/loader-big-black-white.gif) no-repeat center center',
-                        position   : 'absolute',
-                        top        : 0,
-                        left       : 0,
-                        height     : '100%',
-                        width      : '100%',
-                        opacity    : 0.5
+                    styles: {
+                        background: '#000000 url(' + URL_BIN_DIR + 'images/loader-big-black-white.gif) no-repeat center center',
+                        position  : 'absolute',
+                        top       : 0,
+                        left      : 0,
+                        height    : '100%',
+                        width     : '100%',
+                        opacity   : 0.5
                     }
                 }).inject(List[i]);
             }
@@ -373,7 +414,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
          *
          * @param {HTMLElement|Array} DOMNode - Parent (Media Item) DOMNode or DOMNode List
          */
-        $destroyLoaderItem : function (DOMNode) {
+        $destroyLoaderItem: function (DOMNode) {
             var i, len, Elm;
             var List = DOMNode;
 
@@ -396,7 +437,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
          * @param {Array} List - List of DOMNodes
          * @return {Array}
          */
-        $getIds : function (List) {
+        $getIds: function (List) {
             var list = [];
 
             for (var i = 0, len = List.length; i < len; i++) {
