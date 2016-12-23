@@ -1223,7 +1223,8 @@ class User implements QUI\Interfaces\Users\User
                 'expire'    => $expire,
                 'shortcuts' => $this->getAttribute('shortcuts'),
                 'address'   => (int)$this->getAttribute('address'),
-                'company'   => $this->isCompany() ? 1 : 0
+                'company'   => $this->isCompany() ? 1 : 0,
+                'toolbar'   => $this->getAttribute('toolbar')
             ),
             array('id' => $this->getId())
         );

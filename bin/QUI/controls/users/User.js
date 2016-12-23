@@ -323,6 +323,7 @@ define('controls/users/User', [
                     var PasswordField  = Body.getElement('input[name="password2"]'),
                         PasswordExpire = Body.getElements('input[name="expire"]'),
                         ShowPasswords  = Body.getElement('input[name="showPasswords"]'),
+                        Toolbar        = Body.getElement('[name="toolbar"]'),
                         AddressList    = Body.getElement('.address-list');
 
                     if (PasswordField) {
@@ -383,6 +384,23 @@ define('controls/users/User', [
                         self.$createAddressTable();
                     }
 
+                    if (Toolbar) {
+                        var toolbars = User.getAttribute('toolbars');
+
+                        new Element('option', {
+                            value: '',
+                            html : ''
+                        }).inject(Toolbar);
+
+                        for (var i = 0, len = toolbars.length; i < len; i++) {
+                            new Element('option', {
+                                value: toolbars[i],
+                                html : toolbars[i].replace('.xml', '')
+                            }).inject(Toolbar);
+                        }
+
+                        Toolbar.value = User.getAttribute('toolbar');
+                    }
 
                     if (!Btn.getAttribute('onload_require') && !Btn.getAttribute('onload')) {
                         self.Loader.hide();
