@@ -1,4 +1,3 @@
-
 /**
  * List all available languages
  *
@@ -13,7 +12,6 @@
  *
  * @event onSubmit [ {Array}, {this} ]
  */
-
 define('controls/lang/Popup', [
 
     'qui/controls/windows/Confirm',

@@ -56,7 +56,6 @@ class Manager
         if (!self::$Config) {
             try {
                 self::$Config = QUI::getConfig('etc/cache.ini.php');
-
             } catch (QUI\Exception $Exception) {
                 file_put_contents(CMS_DIR . 'etc/cache.ini.php', '');
 
@@ -72,7 +71,7 @@ class Manager
      *
      * @param string $key - (optional) cache name, cache key
      *
-     * @return Stash\Item
+     * @return Stash\Interfaces\ItemInterface
      * @throw
      */
     public static function getStash($key = '')
@@ -170,10 +169,10 @@ class Manager
                 case 'memcache':
                     // defaults
                     $options = array(
-                        'prefix_key' => 'pcsg',
+                        'prefix_key'           => 'pcsg',
                         'libketama_compatible' => true,
-                        'cache_lookups' => true,
-                        'serializer' => 'json'
+                        'cache_lookups'        => true,
+                        'serializer'           => 'json'
                     );
 
                     // servers
@@ -290,12 +289,10 @@ class Manager
      * @param string $name
      * @param mixed $data
      * @param int|\DateTime|null $time -> sekunden oder datetime
-     *
-     * @return boolean
      */
     public static function set($name, $data, $time = null)
     {
-        return self::getStash($name)->set($data, $time);
+        self::getStash($name)->set($data, $time);
     }
 
     /**
@@ -321,11 +318,9 @@ class Manager
 
 
         try {
-            $Item = self::getStash($name);
-            $data = $Item->get();
-
+            $Item   = self::getStash($name);
+            $data   = $Item->get();
             $isMiss = $Item->isMiss();
-
         } catch (\Exception $Exception) {
             throw new QUI\Cache\Exception(
                 QUI::getLocale()->get(
@@ -357,6 +352,8 @@ class Manager
     public static function clear($key = false)
     {
         self::getStash($key)->clear();
+
+        QUI::getEvents()->fireEvent('cacheClear', array($key));
     }
 
     /**
@@ -367,6 +364,8 @@ class Manager
     public static function purge()
     {
         self::$Stash->purge();
+
+        QUI::getEvents()->fireEvent('cachePurge');
     }
 
     /**
@@ -377,5 +376,7 @@ class Manager
         QUI\Utils\System\File::unlink(VAR_DIR . 'cache/');
 
         self::getStash('')->clear();
+
+        QUI::getEvents()->fireEvent('cacheClearAll');
     }
 }

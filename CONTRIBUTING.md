@@ -31,7 +31,7 @@ Ein Screenshot sagt oftmals mehr als 1000 Worte und auch Informationen wie Brows
 Zu wenige Informationen über einen Fehler gibt es nicht.
 
 Kleinere Verbesserungswünsche können auch über dev.quiqqer.com gesendet werden. 
-Für größere, wie neue Module oder Plugins, bitten wir dich das Forum zu verwenden (community.quiqqer.com).
+Für größere, wie neue Module oder Plugins, bitten wir dich die Community zu verwenden (community.quiqqer.com).
 
 Oft ist es notwendig nach zu haken, um einen Fehler besser verstehen zu können. 
 Wir bitten dich daher deine Anfrage häufig zu kontrollieren. In der Regel antworten wir spätestens nach ein oder zwei 
@@ -47,9 +47,11 @@ Diskussionen über die Entwicklung von QUIQQER
 
 Diskussionen über neue Features und die Entwicklung, sowie über Hilfestellung bei der Nutzung von QUIQQER werden 
 bitte in der Community besprochen. 
+
 Henning Leutz, Hauptmaintainer von QUIQQER, ist meistens zwischen 9 und 17 Uhr in der Community verfügbar. 
-Wer direkten Kontakt mit QUIQQER-Maintainers haben möchte, kann auch den IRC Chat verwenden; 
-zu finden unter #quiqqer auf freenode.
+
+Die Communitysoftware basiert auf Mattermost (https://www.mattermost.org/), 
+hierzu gibt es viele Clients für fast jedes Betriebssystem.
 
 
 Sicherheitslücken

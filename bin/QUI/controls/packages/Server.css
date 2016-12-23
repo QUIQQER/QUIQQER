@@ -1,0 +1,201 @@
+.qui-control-packages-server-search {
+    background: #f1f1f1;
+    padding: 20px;
+}
+
+.qui-control-packages-server-search fieldset {
+    border: none;
+
+    padding: 0;
+}
+
+.qui-control-packages-server-search label {
+    float: left;
+    width: calc(100% - 100px);
+}
+
+.qui-control-packages-server-search [type="search"] {
+    width: 100%;
+}
+
+.qui-control-packages-server-search [type="submit"] {
+    cursor: pointer;
+    width: 100px;
+}
+
+.qui-control-packages-server-result {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+    position: relative;
+    width: 100%;
+}
+
+/** image
+ ================================================== */
+
+.qui-control-packages-server-tile-entry {
+    border: 1px solid #D0D3D3;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+    width: 160px;
+}
+
+.qui-control-packages-server-tile-entry:hover {
+    border: 1px solid #BBB;
+    box-shadow: 0 0 10px -4px rgba(0, 0, 0, 0.75);
+    -webkit-box-shadow: 0 0 10px -4px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0 0 10px -4px rgba(0, 0, 0, 0.75);
+}
+
+/** image
+ ================================================== */
+
+.qui-control-packages-server-tile-entry-image {
+    height: 160px;
+    text-align: center;
+}
+
+.qui-control-packages-server-tile-entry-image .fa {
+    color: rgba(0, 0, 0, 0.05);
+    font-size: 50px;
+    line-height: 160px;
+}
+
+.qui-control-packages-server-tile-entry-image svg,
+.qui-control-packages-server-tile-entry-image img {
+    margin-top: 20px;
+    max-height: 120px;
+    max-width: 70%;
+}
+
+/** text
+ ================================================== */
+
+.qui-control-packages-server-tile-entry-text {
+    background: #f6f6f6;
+    clear: both;
+    float: left;
+    flex-grow: 1;
+    padding: 10px;
+    width: 100%;
+    word-wrap: break-word;
+}
+
+/** buttons
+ ================================================== */
+
+.qui-control-packages-server-tile-entry-buttons {
+    background: #f6f6f6;
+    border-top: 1px solid #D0D3D3;
+    clear: both;
+    float: left;
+    height: 31px;
+    text-align: right;
+    width: 100%;
+}
+
+.qui-control-packages-server-tile-entry-buttons .fa {
+    line-height: 30px;
+    text-align: center;
+    width: 30px;
+}
+
+.qui-control-packages-server-tile-entry-buttons .fa-check {
+    color: green;
+}
+
+.qui-control-packages-server-tile-entry-buttons .fa-remove {
+    color: red;
+}
+
+.qui-control-packages-server-tile-entry-buttons .fa-trash {
+    float: left !important;
+}
+
+.qui-control-packages-server-tile-entry-buttons .button {
+    background: #f6f6f6;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    float: none;
+}
+
+.qui-control-packages-server-tile-entry-buttons .button:hover {
+    background: #0069b4;
+    color: #fff;
+}
+
+.qui-control-packages-server-tile-entry-buttons .fa-spinner,
+.qui-control-packages-server-tile-entry-buttons .fa-spinner:hover {
+    background: transparent !important;
+    color: #212527;
+}
+
+/** list view
+ ================================================== */
+
+.qui-control-packages-server-list-entry {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    clear: both;
+    cursor: pointer;
+    float: left;
+    padding: 10px 0;
+    width: 100%;
+}
+
+.qui-control-packages-server-list-entry:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.qui-control-packages-server-list-entry-buttons,
+.qui-control-packages-server-list-entry-image {
+    float: left;
+    font-size: 30px;
+    line-height: 40px;
+    text-align: center;
+    width: 60px;
+}
+
+.qui-control-packages-server-list-entry-image svg,
+.qui-control-packages-server-list-entry-image img {
+    max-height: 40px;
+    max-width: 40px;
+}
+
+.qui-control-packages-server-list-entry-image .fa {
+    color: rgba(0, 0, 0, 0.05);
+}
+
+.qui-control-packages-server-list-entry-text {
+    float: left;
+    width: calc(100% - 130px);
+}
+
+.qui-control-packages-server-list-entry-buttons {
+    padding-right: 10px;
+    text-align: right;
+    width: 70px;
+}
+
+.qui-control-packages-server-list-entry-buttons .button {
+    box-shadow: none;
+    border-radius: 0;
+    float: none;
+    font-size: 16px;
+    line-height: 30px;
+    text-align: center;
+    width: 30px;
+}
+
+.qui-control-packages-server-list-entry-buttons .button:hover {
+    background: #0069b4;
+    color: #fff;
+}
+
+.qui-control-packages-server-list-entry-buttons .fa-spinner:hover {
+    background: transparent !important;
+    color: #212527;
+}

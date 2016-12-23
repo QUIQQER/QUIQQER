@@ -13,7 +13,6 @@ QUI::$Ajax->registerFunction(
 
         try {
             return QUI\Cache\Manager::get($cacheName);
-
         } catch (QUI\Exception $Exception) {
         }
 
@@ -40,7 +39,7 @@ QUI::$Ajax->registerFunction(
             }
 
             $Win = QUI\Utils\DOM::parseDomToWindow(
-                QUI\Utils\XML::getDomFromXml($file)
+                QUI\Utils\Text\XML::getDomFromXml($file)
             );
 
             if (!$Window) {

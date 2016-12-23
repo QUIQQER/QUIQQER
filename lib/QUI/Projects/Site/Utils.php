@@ -10,7 +10,7 @@ use QUI;
 use QUI\Projects;
 use QUI\Projects\Project;
 use QUI\Utils\StringHelper as StringUtils;
-use QUI\Utils\XML;
+use QUI\Utils\Text\XML;
 use QUI\Utils\DOM;
 use QUI\Utils\Security\Orthos;
 
@@ -158,7 +158,6 @@ class Utils
 
         try {
             return QUI\Cache\Manager::get($cache);
-
         } catch (QUI\Exception $Exception) {
         }
 
@@ -210,7 +209,7 @@ class Utils
 
                 // table is ok
                 $result[] = array(
-                    'file' => $file,
+                    'file'    => $file,
                     'package' => $package
                 );
             }
@@ -242,7 +241,6 @@ class Utils
 
         try {
             return QUI\Cache\Manager::get($cache);
-
         } catch (QUI\Exception $Exception) {
         }
 
@@ -303,10 +301,10 @@ class Utils
                 }
 
                 $result[] = array(
-                    'table' => $table,
-                    'data' => $data,
+                    'table'   => $table,
+                    'data'    => $data,
                     'package' => $package,
-                    'suffix' => $suffix
+                    'suffix'  => $suffix
                 );
             }
         }
@@ -337,7 +335,6 @@ class Utils
 
         try {
             return QUI\Cache\Manager::get($cache);
-
         } catch (QUI\Exception $Exception) {
         }
 
@@ -363,7 +360,7 @@ class Utils
             foreach ($attributes as $Attribute) {
                 $result[] = array(
                     'attribute' => trim($Attribute->nodeValue),
-                    'default' => $Attribute->getAttribute('default')
+                    'default'   => $Attribute->getAttribute('default')
                 );
             }
         }
@@ -388,7 +385,7 @@ class Utils
             foreach ($attributes as $Attribute) {
                 $result[] = array(
                     'attribute' => trim($Attribute->nodeValue),
-                    'default' => $Attribute->getAttribute('default')
+                    'default'   => $Attribute->getAttribute('default')
                 );
             }
         }
@@ -416,7 +413,6 @@ class Utils
 
         try {
             return QUI\Cache\Manager::get($cache);
-
         } catch (QUI\Exception $Exception) {
         }
 
@@ -480,12 +476,10 @@ class Utils
         $lang     = $Project->getLang();
         $siteType = $Site->getAttribute('type');
 
-        $cache
-            = "site/site-extra-settings/project/{$name}-{$lang}/adminModules/{$siteType}";
+        $cache = "site/site-extra-settings/project/{$name}-{$lang}/adminModules/{$siteType}";
 
         try {
             return QUI\Cache\Manager::get($cache);
-
         } catch (QUI\Exception $Exception) {
         }
 
@@ -589,8 +583,8 @@ class Utils
                 705,
                 array(
                     'method' => 'getSiteByLink',
-                    'class' => 'QUI/projects/Site/Utils',
-                    'link' => $link
+                    'class'  => 'QUI/projects/Site/Utils',
+                    'link'   => $link
                 )
             );
         }
@@ -606,8 +600,8 @@ class Utils
                 705,
                 array(
                     'method' => 'getSiteByLink',
-                    'class' => 'QUI/projects/Site/Utils',
-                    'link' => $link
+                    'class'  => 'QUI/projects/Site/Utils',
+                    'link'   => $link
                 )
             );
         }
@@ -648,13 +642,15 @@ class Utils
             $order = $params['order'];
         }
 
+        if (empty($order)) {
+            // @todo eigener select, rückgabe dann wie in liste übergeben
+        }
+
         if (is_string($list)) {
             $sitetypes = explode(';', $list);
-
         } else {
             if (is_array($list)) {
                 $sitetypes = $list;
-
             } else {
                 return array();
             }
@@ -685,14 +681,14 @@ class Utils
         // query params
         if (!empty($ids)) {
             $where['id'] = array(
-                'type' => 'IN',
+                'type'  => 'IN',
                 'value' => $ids
             );
         }
 
         if (!empty($types)) {
             $where['type'] = array(
-                'type' => 'IN',
+                'type'  => 'IN',
                 'value' => $types
             );
         }
@@ -708,15 +704,21 @@ class Utils
                     ));
 
                     $ids = array_merge($ids, $children);
-
                 } catch (QUI\Exception $Exception) {
                 }
             }
 
             $where['id'] = array(
-                'type' => 'IN',
+                'type'  => 'IN',
                 'value' => $ids
             );
+
+            if (isset($params['count']) && $params['count']) {
+                return $Project->getSitesIds(array(
+                    'count' => true,
+                    'where' => $where
+                ));
+            }
 
             // by with parents, we use WHERE AND
             return $Project->getSites(array(
@@ -726,11 +728,18 @@ class Utils
             ));
         }
 
+        if (isset($params['count']) && $params['count']) {
+            return $Project->getSitesIds(array(
+                'count' => true,
+                'where' => $where
+            ));
+        }
+
         // by no parents, we use WHERE OR
         return $Project->getSites(array(
             'where_or' => $where,
-            'limit' => $limit,
-            'order' => $order
+            'limit'    => $limit,
+            'order'    => $order
         ));
     }
 
@@ -755,8 +764,8 @@ class Utils
                 705,
                 array(
                     'method' => 'rewriteSiteLink',
-                    'class' => 'QUI/projects/Site/Utils',
-                    'link' => $link
+                    'class'  => 'QUI/projects/Site/Utils',
+                    'link'   => $link
                 )
             );
         }
@@ -772,8 +781,8 @@ class Utils
                 705,
                 array(
                     'method' => 'rewriteSiteLink',
-                    'class' => 'QUI/projects/Site/Utils',
-                    'link' => $link
+                    'class'  => 'QUI/projects/Site/Utils',
+                    'link'   => $link
                 )
             );
         }

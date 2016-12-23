@@ -32,6 +32,11 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
         // nothing
     }
 
+    public function refresh()
+    {
+        // nothing to do
+    }
+
     /**
      * (non-PHPdoc)
      *
@@ -187,15 +192,47 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @param array $params
      *
-     * @throws \QUI\Exception
+     * @throws \QUI\Users\Exception
      * @ignore
      */
     public function addAddress($params)
     {
-        throw new QUI\Exception(
+        throw new QUI\Users\Exception(
             QUI::getLocale()->get(
                 'system',
                 'exception.lib.user.nobody.add.address'
+            )
+        );
+    }
+
+    /**
+     * Nobody can't be added to the group
+     *
+     * @param int $groupId
+     * @throws Exception
+     */
+    public function addToGroup($groupId)
+    {
+        throw new QUI\Users\Exception(
+            QUI::getLocale()->get(
+                'system',
+                'exception.lib.user.nobody.add.to.group'
+            )
+        );
+    }
+
+    /**
+     * Nobody can't be added to the group
+     *
+     * @param int $Group
+     * @throws Exception
+     */
+    public function removeGroup($Group)
+    {
+        throw new QUI\Users\Exception(
+            QUI::getLocale()->get(
+                'system',
+                'exception.lib.user.nobody.remove.group'
             )
         );
     }
@@ -311,12 +348,12 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * @param integer $id
      * @return void
      *
-     * @throws \QUI\Exception
+     * @throws \QUI\Users\Exception
      * @ignore
      */
     public function getAddress($id)
     {
-        throw new QUI\Exception(
+        throw new QUI\Users\Exception(
             QUI::getLocale()->get('system', 'exception.lib.user.nobody.get.address')
         );
     }
@@ -329,11 +366,32 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      */
     public function getCountry()
     {
+        if (QUI::getSession()->get('country')) {
+            try {
+                return QUI\Countries\Manager::get(
+                    QUI::getSession()->get('country')
+                );
+            } catch (QUI\Exception $Exception) {
+            }
+        }
+
         // apache
         if (isset($_SERVER["GEOIP_COUNTRY_CODE"])) {
             try {
-                return QUI\Countries\Manager::get($_SERVER["GEOIP_COUNTRY_CODE"]);
+                QUI::getSession()->set('country', $_SERVER["GEOIP_COUNTRY_CODE"]);
 
+                return QUI\Countries\Manager::get($_SERVER["GEOIP_COUNTRY_CODE"]);
+            } catch (QUI\Exception $Exception) {
+            }
+        }
+
+        if (QUI::conf('globals', 'defaultCountry')) {
+            try {
+                QUI::getSession()->set('country', QUI::conf('globals', 'defaultCountry'));
+
+                return QUI\Countries\Manager::get(
+                    QUI::conf('globals', 'defaultCountry')
+                );
             } catch (QUI\Exception $Exception) {
             }
         }
@@ -432,13 +490,14 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::getAvatar()
      *
-     * @param boolean $url - get the avatar with the complete url string
-     *
-     * @return boolean
+     * @return \QUI\Projects\Media\Image|false
      */
-    public function getAvatar($url = false)
+    public function getAvatar()
     {
-        return false;
+        $Project = QUI::getProjectManager()->getStandard();
+        $Media   = $Project->getMedia();
+
+        return $Media->getPlaceholderImage();
     }
 
     /**

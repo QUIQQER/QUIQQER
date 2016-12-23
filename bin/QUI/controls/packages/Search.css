@@ -1,0 +1,45 @@
+.qui-control-packages-search-form {
+    background: #f1f1f1;
+    float: left;
+    padding: 20px;
+    width: 100%;
+}
+
+.qui-control-packages-search-form-searchtitle {
+    display: none;
+}
+
+.qui-control-packages-search-form-search label {
+    float: left;
+    padding-bottom: 10px;
+    width: calc(100% - 100px);
+}
+
+.qui-control-packages-search-form [type="search"] {
+    width: 100%;
+}
+
+.qui-control-packages-search-form [type="submit"] {
+    cursor: pointer;
+    width: 100px;
+}
+
+.qui-control-packages-search-form-search,
+.qui-control-packages-search-form-settings {
+    border: none;
+    clear: both;
+    float: left;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.qui-control-packages-search-form-settings label,
+.qui-control-packages-search-form-settings span,
+.qui-control-packages-search-form-settings input {
+    float: left;
+}
+
+.qui-control-packages-search-form-settings label {
+    padding-right: 20px;
+}

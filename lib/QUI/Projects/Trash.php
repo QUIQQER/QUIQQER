@@ -54,6 +54,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
         $_params = $Grid->parseDBParams($params);
 
         $_params['where'] = array(
+            'active'  => -1,
             'deleted' => 1
         );
 
@@ -78,11 +79,11 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
         if (isset($params['sort'])) {
             switch ($params['sort']) {
                 case 'ASC':
-                    $_params['order'] = $_params['order'].' ASC';
+                    $_params['order'] = $_params['order'] . ' ASC';
                     break;
 
                 default:
-                    $_params['order'] = $_params['order'].' DESC';
+                    $_params['order'] = $_params['order'] . ' DESC';
                     break;
             }
         }
@@ -91,12 +92,12 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
          * Creating result
          */
         $result = array();
-        $sites = $this->Project->getSites($_params);
+        $sites  = $this->Project->getSites($_params);
 
         foreach ($sites as $Site) {
             /* @var $Site Site */
             $result[] = array(
-                'icon'  => URL_BIN_DIR.'16x16/page.png',
+                'icon'  => URL_BIN_DIR . '16x16/page.png',
                 'name'  => $Site->getAttribute('name'),
                 'title' => $Site->getAttribute('title'),
                 'type'  => $Site->getAttribute('type'),
@@ -104,10 +105,9 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
             );
         }
 
-        //\QUI\System\Log::writeRecursive( $result );
-
         $total = $this->Project->getSites(array(
             'where' => array(
+                'active'  => -1,
                 'deleted' => 1
             ),
             'count' => true
@@ -119,7 +119,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
     /**
      * Zerstört die gewünschten Seiten im Trash
      *
-     * @param array                 $ids
+     * @param array $ids
      */
     public function destroy($ids = array())
     {
@@ -154,8 +154,8 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      * Stellt die gewünschten Seiten wieder her
      *
      * @param \QUI\Projects\Project $Project
-     * @param array                 $ids
-     * @param integer               $parentid
+     * @param array $ids
+     * @param integer $parentid
      */
     public function restore(Project $Project, $ids, $parentid)
     {

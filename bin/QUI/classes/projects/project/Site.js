@@ -13,10 +13,10 @@
  * @event onActivate [ this ]
  * @event onDeactivate [ this ]
  * @event onDelete [ this ]
+ * @event onUnlink [ this, parentId ]
  * @event createChild [ this ]
  * @event sortSave [ this ] --> triggerd by SiteChildren.js
  */
-
 define('classes/projects/project/Site', [
 
     'qui/QUI',
@@ -423,17 +423,25 @@ define('classes/projects/project/Site', [
          * @param {Function} [onfinish] - (optional), callback function
          */
         del: function (onfinish) {
-            var Site = this;
+            return new Promise(function (resolve, reject) {
+                var params = this.ajaxParams();
 
-            Ajax.post('ajax_site_delete', function (result) {
-                if (typeof onfinish === 'function') {
-                    onfinish(result);
-                }
+                params.onError = reject;
 
-                Site.clearWorkingStorage();
-                Site.fireEvent('delete', [Site]);
+                Ajax.post('ajax_site_delete', function (result) {
+                    if (typeof onfinish === 'function') {
+                        onfinish(result);
+                    }
 
-            }, this.ajaxParams());
+                    this.clearWorkingStorage();
+
+                    this.fireEvent('delete', [this]);
+
+                    resolve(result);
+
+                }.bind(this), this.ajaxParams());
+
+            }.bind(this));
         },
 
         /**
@@ -444,7 +452,6 @@ define('classes/projects/project/Site', [
          * @return Promise
          */
         move: function (newParentId, callback) {
-
             return new Promise(function (resolve, reject) {
 
                 var Site   = this,
@@ -454,7 +461,6 @@ define('classes/projects/project/Site', [
                 params.onError     = reject;
 
                 Ajax.post('ajax_site_move', function (result) {
-
                     if (typeof callback === 'function') {
                         callback(result);
                     }
@@ -468,7 +474,6 @@ define('classes/projects/project/Site', [
             }.bind(this));
         },
 
-
         /**
          * Copy the site to another parent site
          *
@@ -477,7 +482,6 @@ define('classes/projects/project/Site', [
          * @return Promise
          */
         copy: function (newParent, callback) {
-
             return new Promise(function (resolve, reject) {
 
                 var Site   = this,
@@ -487,7 +491,6 @@ define('classes/projects/project/Site', [
                 params.onError   = reject;
 
                 Ajax.post('ajax_site_copy', function (result) {
-
                     if (typeof callback === 'function') {
                         callback(result);
                     }
@@ -526,28 +529,45 @@ define('classes/projects/project/Site', [
         /**
          * lock the site
          *
-         * @param {function} callback
+         * @param {function} [callback]
+         * @return {Promise}
          */
         lock: function (callback) {
-            Ajax.post('ajax_site_lock', function () {
-                if (typeof callback === 'function') {
-                    callback();
-                }
-            }, this.ajaxParams());
+            return new Promise(function (resolve, reject) {
+                var params = this.ajaxParams();
+
+                params.onError = reject;
+
+                Ajax.post('ajax_site_lock', function () {
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+
+                    resolve();
+                }, params);
+            }.bind(this));
         },
 
         /**
          * unlock the site
          *
-         * @param {function} callback
+         * @param {function} [callback]
+         * @return {Promise}
          */
         unlock: function (callback) {
-            Ajax.post('ajax_site_unlock', function () {
-                if (typeof callback === 'function') {
-                    callback();
-                }
+            return new Promise(function (resolve, reject) {
+                var params = this.ajaxParams();
 
-            }, this.ajaxParams());
+                params.onError = reject;
+
+                Ajax.post('ajax_site_unlock', function () {
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+
+                    resolve();
+                }, params);
+            }.bind(this));
         },
 
         /**
@@ -607,6 +627,47 @@ define('classes/projects/project/Site', [
          */
         isActive: function () {
             return this.getAttribute('active');
+        },
+
+        /**
+         * Delete a link from a site
+         * Remove the linked site, not the original site
+         *
+         * @param {Number} parentId - ID of the parent
+         * @param {Boolean} all - delete all links
+         * @returns {Promise}
+         */
+        unlink: function (parentId, all) {
+            return new Promise(function (resolve, reject) {
+                var Site   = this,
+                    params = this.ajaxParams();
+
+                params.onError  = reject;
+                params.parentId = parentId;
+                params.all      = all || false;
+
+                Ajax.post('ajax_site_unlink', function () {
+                    resolve();
+                    Site.fireEvent('unlink', [Site, parentId]);
+                }, params);
+            }.bind(this));
+        },
+
+        /**
+         * Return the path from the site shortcut
+         *
+         * @param parentId
+         * @returns {Promise}
+         */
+        getLinkedPath: function (parentId) {
+            return new Promise(function (resolve, reject) {
+                var params = this.ajaxParams();
+
+                params.onError  = reject;
+                params.parentId = parentId;
+
+                Ajax.post('ajax_site_getLinkedPath', resolve, params);
+            }.bind(this));
         },
 
         /**

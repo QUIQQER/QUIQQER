@@ -98,7 +98,7 @@ define('controls/grid/Grid', [
             pagination    : false,
             page          : 1,
             perPageOptions: [5, 10, 20, 50, 75, 100, 150, 200, 250, 500, 750, 1000, 2500, 5000],
-            perPage       : 20,
+            perPage       : 100,
             filterInput   : true,
             // dataProvider
             dataProvider  : null,
@@ -169,9 +169,17 @@ define('controls/grid/Grid', [
             });
 
             this.draw();
-            this.resize();
             this.reset();
+            this.resize();
             this.loadData();
+
+            (function () {
+                this.resize();
+            }).delay(500, this);
+        },
+
+        getElm: function () {
+            return this.container;
         },
 
         destroy: function () {
@@ -274,7 +282,10 @@ define('controls/grid/Grid', [
                     var var1 = a.getChildren()[i].innerHTML.trim(),
                         var2 = b.getChildren()[i].innerHTML.trim();
 
-                    if (dataType == 'number' || dataType == 'integer' || dataType == 'int') {
+                    if (dataType == 'number' ||
+                        dataType == 'integer' ||
+                        dataType == 'int') {
+
                         var1 = parseFloat(el.stripHTML(var1));
                         var2 = parseFloat(el.stripHTML(var2));
 
@@ -285,7 +296,7 @@ define('controls/grid/Grid', [
                         return var2 - var1;
                     }
 
-                    if (dataType == 'string') {
+                    if (dataType == 'string' || dataType == 'text') {
                         var1 = var1.toUpperCase();
                         var2 = var2.toUpperCase();
 
@@ -294,10 +305,10 @@ define('controls/grid/Grid', [
                         }
 
                         if (el.sortBy == 'ASC') {
-                            return (var1 < var2);
+                            return var1 < var2 ? 1 : -1;
                         }
 
-                        return (var1 > var2);
+                        return var1 > var2 ? 1 : -1;
                     }
 
                     if (dataType == 'date') {
@@ -1079,6 +1090,11 @@ define('controls/grid/Grid', [
             var i, len;
 
             for (i = 0, len = btns.length; i < len; i++) {
+                if (QUI.Controls.isControl(btns[i])) {
+                    buttons.push(btns[i]);
+                    continue;
+                }
+                
                 if (!btns[btns[i].name]) {
                     continue;
                 }
@@ -2072,6 +2088,7 @@ define('controls/grid/Grid', [
 
                 if (columnModel.dataType == "node") {
                     if (typeof rowdata[columnDataIndex] != 'undefined' &&
+                        rowdata[columnDataIndex] &&
                         rowdata[columnDataIndex].nodeName) {
                         div.appendChild(
                             rowdata[columnDataIndex]
@@ -2204,34 +2221,28 @@ define('controls/grid/Grid', [
 
                 var node, Btn;
 
-                //var cBt, fBt, spanBt;
-                //var func_fbOver = function() {
-                //    this.addClass('fbOver');
-                //};
-                //
-                //var func_fbOut = function() {
-                //    this.removeClass('fbOver');
-                //};
-
                 for (i = 0, len = bt.length; i < len; i++) {
                     if (bt[i].type == 'seperator') {
                         new QUISeperator().inject(tDiv);
-
-                        // new Element('div.btnseparator').inject( tDiv );
                         continue;
                     }
 
                     bt[i].List = this;
                     bt[i].Grid = this;
 
-                    Btn = new QUIButton(bt[i]);
+                    if (QUI.Controls.isControl(bt[i])) {
+                        Btn = bt[i];
+                    } else {
+                        Btn = new QUIButton(bt[i]);
+                    }
 
-                    bt[bt[i].name] = Btn;
+                    bt[Btn.getAttribute('name')] = Btn;
 
-                    node = Btn.create();
+                    Btn.inject(tDiv);
+
+                    node = Btn.getElm();
                     node.removeProperty('tabindex'); // focus eigenschaft nehmen
                     node.addClass('btn-silver');
-                    node.inject(tDiv);
 
                     var Item = new QUIContextItem({
                         text  : Btn.getAttribute('text'),

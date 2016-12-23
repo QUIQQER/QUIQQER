@@ -15,7 +15,6 @@ $Project = null;
 
 try {
     $Project = QUI::getProjectManager()->getStandard();
-
 } catch (QUI\Exception $Exception) {
 }
 ?>
@@ -119,7 +118,7 @@ try {
             name: "<?php echo $User->getName(); ?>"
         };
 
-        var URL_DIR = "<?php echo URL_DIR; ?>",
+        var URL_DIR     = "<?php echo URL_DIR; ?>",
             URL_LIB_DIR = "<?php echo URL_LIB_DIR; ?>",
             URL_BIN_DIR = "<?php echo URL_BIN_DIR; ?>",
             URL_USR_DIR = "<?php echo URL_USR_DIR; ?>",
@@ -132,7 +131,7 @@ try {
         };
 
         var QUIQQER_VERSION = "<?php echo \QUI::version() ?>";
-        var QUIQQER_CONFIG = <?php echo json_encode($config); ?>;
+        var QUIQQER_CONFIG  = <?php echo json_encode($config); ?>;
 
         // standard project
         var QUIQQER_PROJECT = <?php echo json_encode(array(
@@ -163,7 +162,6 @@ try {
 
     try {
         $files = \QUI\Translator::getJSTranslationFiles($User->getLang());
-
     } catch (\QUI\Exception $Exception) {
     }
 
@@ -209,10 +207,8 @@ try {
 </noscript>
 
 <script src="<?php echo URL_OPT_DIR; ?>bin/require.js"></script>
-<script
-    src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-core.js"></script>
-<script
-    src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-more.js"></script>
+<script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-core.js"></script>
+<script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-more.js"></script>
 <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/moofx.js"></script>
 
 <!-- load the quiqqer admin -->

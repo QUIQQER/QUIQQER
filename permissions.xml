@@ -35,11 +35,17 @@
     <!-- Darf Gruppen editieren -->
     <permission name="quiqqer.admin.groups.edit" type="bool"/>
 
+    <!-- Darf Gruppen anlegen -->
+    <permission name="quiqqer.admin.groups.create" type="bool"/>
+
     <!-- Darf die Benutzerverwaltung sehen -->
     <permission name="quiqqer.admin.users.view" type="bool"/>
 
     <!-- Darf Benutzer editieren -->
     <permission name="quiqqer.admin.users.edit" type="bool"/>
+
+    <!-- Darf Benutzer anlegen -->
+    <permission name="quiqqer.admin.users.create" type="bool"/>
 
     <!-- Menurechte -->
     <permission name="quiqqer.menu.quiqqer" type="bool">

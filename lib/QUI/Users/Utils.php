@@ -8,7 +8,7 @@ namespace QUI\Users;
 
 use QUI;
 use QUI\Utils\DOM;
-use QUI\Utils\XML;
+use QUI\Utils\Text\XML;
 
 /**
  * Helper for users
@@ -33,9 +33,9 @@ class Utils
         ));
 
         DOM::addTabsToToolbar(
-            XML::getTabsFromXml(LIB_DIR . 'xml/user.xml'),
+            XML::getTabsFromXml(OPT_DIR . 'quiqqer/quiqqer/user.xml'),
             $Tabbar,
-            'pcsg'
+            'quiqqer/quiqqer'
         );
 
         if (!$User->getId()) {
@@ -48,6 +48,10 @@ class Utils
         $list = QUI::getPackageManager()->getInstalled();
 
         foreach ($list as $entry) {
+            if ($entry['name'] == 'quiqqer/quiqqer') {
+                continue;
+            }
+
             $userXml = OPT_DIR . $entry['name'] . '/user.xml';
 
             if (!file_exists($userXml)) {
@@ -57,22 +61,12 @@ class Utils
             DOM::addTabsToToolbar(
                 XML::getTabsFromXml($userXml),
                 $Tabbar,
-                'plugin.' . $entry['name']
+                $entry['name']
             );
         }
 
-        /*
-        $Plugin  = \QUI::getPlugins();
-        $plugins = $Plugin->get();
-
-        // user.xml auslesen
-        foreach ( $plugins as $Plugin ) {
-            $Plugin->loadUserTabs( $Tabbar, $User );
-        }
-        */
-
         /**
-         * user extention from projects
+         * user extension from projects
          */
         $projects = QUI\Projects\Manager::getProjects();
 
@@ -95,6 +89,7 @@ class Utils
      * @param string $tab
      *
      * @return string
+     * @deprecated
      */
     public static function getTab($uid, $plugin, $tab)
     {
@@ -104,15 +99,7 @@ class Utils
         // assign user as global var
         QUI::getTemplateManager()->assignGlobalParam('User', $User);
 
-        // System
-        if ($plugin === 'pcsg') {
-            return DOM::getTabHTML(
-                $tab,
-                LIB_DIR . 'xml/user.xml'
-            );
-        }
-
-        // project extention
+        // project
         if (strpos($plugin, 'project.') !== false) {
             $project = explode('project.', $plugin);
 
@@ -122,17 +109,18 @@ class Utils
             );
         }
 
-        // Plugin extention
-        $plugin  = str_replace('plugin.', '', $plugin);
-        $package = QUI::getPackageManager()->getPackage($plugin);
+        // plugin
+        try {
+            $plugin  = str_replace('plugin.', '', $plugin);
+            $Package = QUI::getPackage($plugin);
 
-        if (!$package || !isset($package['name'])) {
-            return '';
+            return DOM::getTabHTML(
+                $tab,
+                OPT_DIR . $Package->getName() . '/user.xml'
+            );
+        } catch (QUI\Exception $Exception) {
         }
 
-        return DOM::getTabHTML(
-            $tab,
-            OPT_DIR . $package['name'] . '/user.xml'
-        );
+        return '';
     }
 }

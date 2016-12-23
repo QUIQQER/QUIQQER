@@ -12,7 +12,6 @@ QUI::$Ajax->registerFunction(
     function ($params) {
         $params   = json_decode($params, true);
         $projects = QUI::getProjectManager()->getProjects(true);
-        $tables   = array();
 
         /* @var $Project QUI\Projects\Project */
 
@@ -41,9 +40,7 @@ QUI::$Ajax->registerFunction(
         $Statement = $PDO->prepare($query);
         $Statement->execute();
 
-        $result = $Statement->fetchAll(\PDO::FETCH_ASSOC);
-
-        return $result;
+        return $Statement->fetchAll(\PDO::FETCH_ASSOC);
     },
     array('params'),
     'Permission::checkAdminUser'

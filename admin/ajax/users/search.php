@@ -54,7 +54,6 @@ QUI::$Ajax->registerFunction(
 
                 try {
                     $groupnames .= $Groups->getGroupNameById($gid) . ',';
-
                 } catch (QUI\Exception $Exception) {
                     $groupnames .= $gid . ',';
                 }

@@ -25,10 +25,17 @@ QUI::$Ajax->registerFunction(
 
             $data[] = array(
                 'server' => $server,
-                'type' => $type,
+                'type'   => $type,
                 'active' => $active
             );
         }
+
+        usort($data, function ($a, $b) {
+            if ($a['server'] == $b['server']) {
+                return 0;
+            }
+            return $a['server'] < $b['server'] ? -1 : 1;
+        });
 
         return $data;
     },

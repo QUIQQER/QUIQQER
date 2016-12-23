@@ -16,7 +16,7 @@ use QUI;
  * @licence For copyright and license information, please view the /README.md
  * @package com.pcsg.qui
  *
- * @use     gettext - if enable
+ * @use     gettext - if enabled
  * @todo    integrate http://php.net/intl
  */
 class Locale
@@ -83,7 +83,7 @@ class Locale
     /**
      * Set the current language
      *
-     * @param string $lang
+     * @param string $lang - en, en_EN, de, de_DE, de_AT
      */
     public function setCurrent($lang)
     {
@@ -98,6 +98,89 @@ class Locale
     public function getCurrent()
     {
         return $this->current;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDecimalSeperator()
+    {
+        return $this->get('quiqqer/quiqqer', 'numberFormat.decimal_separator');
+    }
+
+    /**
+     * @return string
+     */
+    public function getGroupingSeperator()
+    {
+        return $this->get('quiqqer/quiqqer', 'numberFormat.grouping_separator');
+    }
+
+    /**
+     * @return array|string
+     */
+    public function getDecimalPattern()
+    {
+        return $this->get('quiqqer/quiqqer', 'numberFormat.decimal_pattern');
+    }
+
+    /**
+     * @return array|string
+     */
+    public function getPercentPattern()
+    {
+        return $this->get('quiqqer/quiqqer', 'numberFormat.percent_pattern');
+    }
+
+    /**
+     * @return array|string
+     */
+    public function getCurrencyPattern()
+    {
+        return $this->get('quiqqer/quiqqer', 'numberFormat.currency_pattern');
+    }
+
+    /**
+     * @return array|string
+     */
+    public function getAccountingCurrencyPattern()
+    {
+        return $this->get('quiqqer/quiqqer', 'numberFormat.accounting_currency_pattern');
+    }
+
+    /**
+     * Format a number
+     *
+     * @param float|integer $number
+     * @param integer $format
+     * @return string
+     */
+    public function formatNumber($number, $format = \NumberFormatter::DECIMAL)
+    {
+        $localeCode = QUI::getLocale()->getLocalesByLang(
+            QUI::getLocale()->getCurrent()
+        );
+
+        $Formatter = new \NumberFormatter($localeCode[0], $format);
+
+        if (is_string($number)) {
+            $number = floatval($number);
+        }
+
+        //  numberFormat.decimal_separator
+        //  numberFormat.grouping_separator
+        //  numberFormat.numbering_system
+
+        //  numberFormat.decimal_pattern
+        //  numberFormat.percent_pattern
+        //  numberFormat.currency_pattern
+        //  numberFormat.accounting_currency_pattern
+
+        //  "numbering_system": "latn",
+        //	"decimal_pattern": "#,##0.###",
+        //	"percent_pattern": "#,##0%",
+
+        return $Formatter->format($number);
     }
 
     /**
@@ -246,7 +329,7 @@ class Locale
     public function set($lang, $group, $key, $value = false)
     {
         if (!isset($this->langs[$lang])) {
-            $this->langs[$lang] = $lang;
+            $this->langs[$lang] = array();
         }
 
         if (!isset($this->langs[$lang][$group])) {

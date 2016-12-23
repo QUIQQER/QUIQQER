@@ -7,19 +7,20 @@
 namespace QUI\Projects;
 
 use QUI;
-use QUI\Rights\Permission;
+use QUI\Permissions\Permission;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\DOM;
+use QUI\Utils\Text\XML;
 
 /**
  * The Project Manager
  * The main object to get a project
  *
- * @author     www.pcsg.de (Henning Leutz)
- * @licence    For copyright and license information, please view the /README.md
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  *
- * @event      onProjectConfigSave [ string project, Array config ]
- * @event      onCreateProject [ string \QUI\Projects\Project ]
+ * @event onProjectConfigSave [ string project, Array config ]
+ * @event onCreateProject [ string \QUI\Projects\Project ]
  *
  * @errorcodes 8xx Project Errors -> Look at Project.php
  */
@@ -159,8 +160,7 @@ class Manager
 
             if (isset($config["media_watermark_position"])
                 && isset($old_config['media_watermark_position'])
-                && $config["media_watermark_position"]
-                   != $old_config['media_watermark_position']
+                && $config["media_watermark_position"] != $old_config['media_watermark_position']
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
@@ -169,8 +169,7 @@ class Manager
 
             if (isset($config["media_image_library"])
                 && isset($old_config['media_image_library'])
-                && $config["media_image_library"]
-                   != $old_config['media_image_library']
+                && $config["media_image_library"] != $old_config['media_image_library']
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
@@ -210,34 +209,34 @@ class Manager
 
         try {
             return QUI\Cache\Manager::get($cache);
-
         } catch (QUI\Exception $Exception) {
         }
 
         $config = array(
-            "default_lang" => "de",
-            "langs" => "de",
-            "admin_mail" => "support@pcsg.de",
-            "template" => "",
-            "layout" => "",
-            "image_text" => "0",
-            "standard" => "1",
-            "adminSitemapMax" => 20,
-            "media_watermark" => "",
+            "default_lang"             => "de",
+            "langs"                    => "de",
+            "admin_mail"               => "support@pcsg.de",
+            "template"                 => "",
+            "layout"                   => "",
+            "image_text"               => "0",
+            "standard"                 => "1",
+            "adminSitemapMax"          => 20,
+            "media_watermark"          => "",
             "media_watermark_position" => "",
-            "media_watermark_ratio" => "",
-            "media_image_library" => "",
-            "media_maxUploadSize" => "",
-            "media_createCacheOnSave" => "1",
-            "placeholder" => "",
-            "favicon" => ""
+            "media_watermark_ratio"    => "",
+            "media_image_library"      => "",
+            "media_maxUploadSize"      => "",
+            "media_createCacheOnSave"  => "1",
+            "placeholder"              => "",
+            "logo"                     => "",
+            "favicon"                  => ""
         );
 
         // settings.xml
         $settingsXml = self::getRelatedSettingsXML($Project);
 
         foreach ($settingsXml as $file) {
-            $Dom  = QUI\Utils\XML::getDomFromXml($file);
+            $Dom  = XML::getDomFromXml($file);
             $Path = new \DOMXPath($Dom);
 
             $settingsList = $Path->query("//project/settings");
@@ -426,7 +425,6 @@ class Manager
                 } else {
                     $list[] = $project;
                 }
-
             } catch (QUI\Exception $Exception) {
             }
         }
@@ -602,7 +600,7 @@ class Manager
         $name = QUI\Utils\Security\Orthos::clear($name);
 
         $DataBase = QUI::getDataBase();
-        $Table    = $DataBase->Table();
+        $Table    = $DataBase->table();
 
 
         /**
@@ -611,47 +609,47 @@ class Manager
         $table_site     = QUI_DB_PRFX . $name . '_' . $lang . '_sites';
         $table_site_rel = QUI_DB_PRFX . $name . '_' . $lang . '_sites_relations';
 
-        $Table->appendFields($table_site, array(
-            "id" => "bigint(20) NOT NULL",
-            "name" => "varchar(200) NOT NULL",
-            "title" => "tinytext",
-            "short" => "text",
-            "content" => "longtext",
-            "type" => "varchar(32) default NULL",
-            "active" => "tinyint(1) NOT NULL",
-            "deleted" => "tinyint(1) NOT NULL",
-            "c_date" => "timestamp NULL default NULL",
-            "e_date" => "timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP",
-            "c_user" => "int(11) default NULL",
-            "e_user" => "int(11) default NULL",
-            "nav_hide" => "tinyint(1) NOT NULL",
-            "order_type" => "varchar(100) default NULL",
+        $Table->addColumn($table_site, array(
+            "id"          => "bigint(20) NOT NULL",
+            "name"        => "varchar(200) NOT NULL",
+            "title"       => "tinytext",
+            "short"       => "text",
+            "content"     => "longtext",
+            "type"        => "varchar(32) default NULL",
+            "active"      => "tinyint(1) NOT NULL",
+            "deleted"     => "tinyint(1) NOT NULL",
+            "c_date"      => "timestamp NULL default NULL",
+            "e_date"      => "timestamp NOT NULL default NOW() on update NOW()",
+            "c_user"      => "int(11) default NULL",
+            "e_user"      => "int(11) default NULL",
+            "nav_hide"    => "tinyint(1) NOT NULL",
+            "order_type"  => "varchar(100) default NULL",
             "order_field" => "bigint(20) default NULL",
-            "extra" => "text default NULL",
+            "extra"       => "text default NULL",
         ));
 
-        $Table->appendFields($table_site_rel, array(
+        $Table->addColumn($table_site_rel, array(
             "parent" => "bigint(20) NOT NULL",
-            "child" => "bigint(20) NOT NULL"
+            "child"  => "bigint(20) NOT NULL"
         ));
 
         $Table->setAutoIncrement($table_site, 'id');
 
         // first site
         $DataBase->insert($table_site, array(
-            "id" => 1,
-            "name" => 'Start',
-            "title" => 'start',
-            "short" => 'Shorttext',
-            "content" => "<p>Welcome to my project</p>",
-            "type" => 'standard',
-            "active" => 1,
-            "deleted" => 0,
-            "c_date" => date('Y-m-d H:i:s'),
-            "c_user" => QUI::getUserBySession()->getId(),
-            "e_user" => QUI::getUserBySession()->getId(),
-            "nav_hide" => '',
-            "order_type" => "",
+            "id"          => 1,
+            "name"        => 'Start',
+            "title"       => 'start',
+            "short"       => 'Shorttext',
+            "content"     => "<p>Welcome to my project</p>",
+            "type"        => 'standard',
+            "active"      => 1,
+            "deleted"     => 0,
+            "c_date"      => date('Y-m-d H:i:s'),
+            "c_user"      => QUI::getUserBySession()->getId(),
+            "e_user"      => QUI::getUserBySession()->getId(),
+            "nav_hide"    => '',
+            "order_type"  => "",
             "order_field" => ""
         ));
 
@@ -662,43 +660,43 @@ class Manager
         $table_media     = QUI_DB_PRFX . $name . '_media';
         $table_media_rel = QUI_DB_PRFX . $name . '_media_relations';
 
-        $Table->appendFields($table_media, array(
-            "id" => "bigint(20) NOT NULL",
-            "name" => "varchar(200) NOT NULL",
-            "title" => "tinytext",
-            "short" => "text",
-            "type" => "varchar(32) default NULL",
-            "active" => "tinyint(1) NOT NULL",
-            "deleted" => "tinyint(1) NOT NULL",
-            "c_date" => "timestamp NULL default NULL",
-            "e_date" => "timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP",
-            "c_user" => "int(11) default NULL",
-            "e_user" => "int(11) default NULL",
-            "file" => "text",
-            "alt" => "text",
-            "mime_type" => "text",
+        $Table->addColumn($table_media, array(
+            "id"           => "bigint(20) NOT NULL",
+            "name"         => "varchar(200) NOT NULL",
+            "title"        => "tinytext",
+            "short"        => "text",
+            "type"         => "varchar(32) default NULL",
+            "active"       => "tinyint(1) NOT NULL",
+            "deleted"      => "tinyint(1) NOT NULL",
+            "c_date"       => "timestamp NULL default NULL",
+            "e_date"       => "timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP",
+            "c_user"       => "int(11) default NULL",
+            "e_user"       => "int(11) default NULL",
+            "file"         => "text",
+            "alt"          => "text",
+            "mime_type"    => "text",
             "image_height" => "int(6) default NULL",
-            "image_width" => "int(6) default NULL"
+            "image_width"  => "int(6) default NULL"
         ));
 
-        $Table->appendFields($table_media_rel, array(
+        $Table->addColumn($table_media_rel, array(
             "parent" => "bigint(20) NOT NULL",
-            "child" => "bigint(20) NOT NULL"
+            "child"  => "bigint(20) NOT NULL"
         ));
 
         // first folder
         $DataBase->insert($table_media, array(
-            "id" => 1,
-            "name" => 'Start',
-            "title" => 'start',
-            "short" => 'Shorttext',
-            "type" => 'folder',
-            "file" => '',
-            "active" => 1,
+            "id"      => 1,
+            "name"    => 'Start',
+            "title"   => 'start',
+            "short"   => 'Shorttext',
+            "type"    => 'folder',
+            "file"    => '',
+            "active"  => 1,
             "deleted" => 0,
-            "c_date" => date('Y-m-d H:i:s'),
-            "c_user" => QUI::getUserBySession()->getId(),
-            "e_user" => QUI::getUserBySession()->getId()
+            "c_date"  => date('Y-m-d H:i:s'),
+            "c_user"  => QUI::getUserBySession()->getId(),
+            "e_user"  => QUI::getUserBySession()->getId()
         ));
 
 
@@ -720,17 +718,17 @@ class Manager
 
         $Config->setSection($name, array(
             'default_lang' => $lang,
-            'langs' => $lang,
-            'admin_mail' => 'support@pcsg.de',
-            'template' => $name,
-            'image_text' => '0',
-            'keywords' => '',
-            'description' => '',
-            'robots' => 'index',
-            'author' => '',
-            'publisher' => '',
-            'copyright' => '',
-            'standard' => '0'
+            'langs'        => $lang,
+            'admin_mail'   => 'support@pcsg.de',
+            'template'     => $name,
+            'image_text'   => '0',
+            'keywords'     => '',
+            'description'  => '',
+            'robots'       => 'index',
+            'author'       => '',
+            'publisher'    => '',
+            'copyright'    => '',
+            'standard'     => '0'
         ));
 
         if (count($Config->toArray()) <= 1) {
@@ -771,13 +769,15 @@ class Manager
         $langs   = $Project->getAttribute('langs');
 
         $DataBase = QUI::getDataBase();
-        $Table    = $DataBase->Table();
+        $Table    = $DataBase->table();
 
         // delete site tables for all languages
         foreach ($langs as $lang) {
             $table_site     = QUI::getDBTableName($project . '_' . $lang . '_sites');
-            $table_site_rel = QUI::getDBTableName($project . '_' . $lang
-                                                  . '_sites_relations');
+            $table_site_rel = QUI::getDBTableName(
+                $project . '_' . $lang
+                . '_sites_relations'
+            );
             $table_multi    = QUI::getDBTableName($project . '_multilingual');
 
             $table_media     = QUI::getDBTableName($project . '_media');
@@ -802,7 +802,7 @@ class Manager
                 continue;
             }
 
-            $dbfields = QUI\Utils\XML::getDataBaseFromXml($databaseXml);
+            $dbfields = XML::getDataBaseFromXml($databaseXml);
 
             if (!isset($dbfields['projects'])) {
                 continue;
@@ -822,14 +822,14 @@ class Manager
 
         // delete projects permissions
         QUI::getDataBase()->delete(
-            QUI::getDBTableName(QUI\Rights\Manager::TABLE) . '2projects',
+            QUI::getDBTableName(QUI\Permissions\Manager::TABLE) . '2projects',
             array(
                 'project' => $project
             )
         );
 
         QUI::getDataBase()->delete(
-            QUI::getDBTableName(QUI\Rights\Manager::TABLE) . '2sites',
+            QUI::getDBTableName(QUI\Permissions\Manager::TABLE) . '2sites',
             array(
                 'project' => $project
             )
@@ -907,7 +907,6 @@ class Manager
 
         try {
             return QUI\Cache\Manager::get($cache);
-
         } catch (QUI\Exception $Exception) {
         }
 
@@ -933,7 +932,7 @@ class Manager
                 continue;
             }
 
-            $Dom  = QUI\Utils\XML::getDomFromXml($file);
+            $Dom  = XML::getDomFromXml($file);
             $Path = new \DOMXPath($Dom);
 
             $Settings = $Path->query("//quiqqer/project/settings");
@@ -947,7 +946,7 @@ class Manager
         $projectSettings = USR_DIR . $Project->getName() . '/settings.xml';
 
         if (file_exists($projectSettings)) {
-            $Dom  = QUI\Utils\XML::getDomFromXml($projectSettings);
+            $Dom  = XML::getDomFromXml($projectSettings);
             $Path = new \DOMXPath($Dom);
 
             $Settings = $Path->query("//quiqqer/project/settings");
@@ -994,7 +993,7 @@ class Manager
             foreach ($langs as $lang) {
                 $result[] = array(
                     'project' => $project,
-                    'lang' => $lang
+                    'lang'    => $lang
                 );
             }
         }

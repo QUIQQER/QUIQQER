@@ -105,12 +105,12 @@ define('classes/projects/project/media/Folder', [
                     project : this.getMedia().getProject().getName(),
                     parentid: this.getId(),
                     events  : {
-                        onComplete: function () {
+                        onComplete: function (Upload, Img) {
                             if (typeof onfinish === 'function') {
-                                onfinish();
+                                onfinish(Img);
                             }
 
-                            resolve();
+                            resolve(Img);
                         }
                     }
                 });

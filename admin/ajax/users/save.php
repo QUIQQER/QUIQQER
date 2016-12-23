@@ -24,7 +24,6 @@ QUI::$Ajax->registerFunction(
                 if (!$User->isActive()) {
                     $User->activate();
                 }
-
             } else {
                 $User->deactivate();
             }
@@ -32,13 +31,14 @@ QUI::$Ajax->registerFunction(
 
         $User->save();
 
-        QUI::getMessagesHandler()->addInformation(
-            'Der Benutzer ' . $User->getName() . ' (' . $User->getId()
-            . ') wurde erfolgreich gespeichert'
-        ); // #locale
+        QUI::getMessagesHandler()->addSuccess(
+            QUI::getLocale()->get('quiqqer/quiqqer', 'message.user.saved', array(
+                'username' => $User->getName(),
+                'id'       => $User->getId()
+            ))
+        );
 
         return true;
     },
-    array('uid', 'attributes'),
-    'Permission::checkSU'
+    array('uid', 'attributes')
 );

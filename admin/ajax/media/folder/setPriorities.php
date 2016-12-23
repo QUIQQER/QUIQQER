@@ -29,7 +29,6 @@ QUI::$Ajax->registerFunction(
                 $Item = $Media->get($priority['id']);
                 $Item->setAttribute('priority', (int)$priority['priority']);
                 $Item->save();
-
             } catch (QUI\Exception $Exception) {
             }
         }

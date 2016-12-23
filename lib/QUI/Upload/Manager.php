@@ -48,16 +48,16 @@ class Manager
      */
     public function setup()
     {
-        QUI::getDataBase()->Table()->addColumn(
+        QUI::getDataBase()->table()->addColumn(
             $this->table,
             array(
-                'file' => 'varchar(255)',
-                'user' => 'int(11)',
+                'file'   => 'varchar(255)',
+                'user'   => 'int(11)',
                 'params' => 'text'
             )
         );
 
-        QUI::getDataBase()->Table()->setIndex(
+        QUI::getDataBase()->table()->setIndex(
             $this->table,
             array('file', 'user')
         );
@@ -66,6 +66,7 @@ class Manager
     /**
      * Initialized the upload
      *
+     * @return string
      * @throws \QUI\Exception
      */
     public function init()
@@ -75,7 +76,7 @@ class Manager
             $this->callFunction($_REQUEST['onstart'], $_REQUEST);
         }
 
-        $this->upload();
+        return $this->upload();
     }
 
     /**
@@ -112,8 +113,7 @@ class Manager
      */
     public function flushAction($call)
     {
-        $message
-            = '<script type="text/javascript">
+        $message = '<script type="text/javascript">
             var UploadManager = false;
 
             if ( typeof window.parent !== "undefined" &&
@@ -136,6 +136,8 @@ class Manager
     /**
      * Upload the file data,
      * read the PUT data and write it to the filesystem or read the $_FILES
+     *
+     * @return string
      */
     public function upload()
     {
@@ -172,11 +174,10 @@ class Manager
         if (!$filename) {
             try {
                 $this->formUpload($onfinish, $params);
-
             } catch (QUI\Exception $Exception) {
                 $this->flushMessage($Exception->toArray());
 
-                return;
+                return '';
             }
 
             $uploadid = 0;
@@ -187,7 +188,7 @@ class Manager
 
             $this->flushAction('UploadManager.isFinish("' . $uploadid . '")');
 
-            return;
+            return '';
         }
 
         /**
@@ -256,9 +257,11 @@ class Manager
             QUIFile::unlink($tmp_name);
 
             if (isset($result['result'])) {
-                echo $result['result'];
+                return $result['result'];
             }
         }
+
+        return '';
     }
 
     /**
@@ -537,8 +540,8 @@ class Manager
         }
 
         QUI::getDataBase()->insert($this->table, array(
-            'file' => $filename,
-            'user' => QUI::getUserBySession()->getId(),
+            'file'   => $filename,
+            'user'   => QUI::getUserBySession()->getId(),
             'params' => json_encode($params)
         ));
     }
@@ -554,8 +557,8 @@ class Manager
     {
         QUI::getDataBase()->exec(array(
             'delete' => true,
-            'from' => $this->table,
-            'where' => array(
+            'from'   => $this->table,
+            'where'  => array(
                 'user' => QUI::getUserBySession()->getId(),
                 'file' => $filename
             )
@@ -577,7 +580,7 @@ class Manager
     protected function getFileData($filename)
     {
         $db_result = QUI::getDataBase()->fetch(array(
-            'from' => $this->table,
+            'from'  => $this->table,
             'where' => array(
                 'user' => QUI::getUserBySession()->getId(),
                 'file' => $filename
@@ -642,7 +645,6 @@ class Manager
                 }
 
                 $result[] = $attributes;
-
             } catch (QUI\Exception $Exception) {
                 if ($Exception->getCode() === 404) {
                     QUIFile::unlink($dir . $file);

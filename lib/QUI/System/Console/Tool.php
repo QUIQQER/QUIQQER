@@ -94,10 +94,10 @@ abstract class Tool extends QUI\QDOM
         $optional = false
     ) {
         $this->paramsList[$name] = array(
-            'param' => $name,
+            'param'       => $name,
             'description' => $description,
-            'short' => $short,
-            'optional' => (bool)$optional
+            'short'       => $short,
+            'optional'    => (bool)$optional
         );
 
         return $this;
@@ -283,7 +283,6 @@ abstract class Tool extends QUI\QDOM
      */
     public function execute()
     {
-
     }
 
     /**

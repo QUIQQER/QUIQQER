@@ -24,7 +24,6 @@ if (function_exists('spl_autoload_register')) {
     }
 
     spl_autoload_register('__quiqqer_autoload');
-
 } else {
     /**
      * PHP Autoloader
@@ -68,11 +67,9 @@ function __quiqqer_autoload($classname)
 function exception_error_handler($errno, $errstr, $errfile, $errline)
 {
     if ($errstr == 'json_encode(): Invalid UTF-8 sequence in argument') {
-        \QUI::getErrorHandler()->setAttribute('show_request', true);
-        \QUI::getErrorHandler()
-            ->writeErrorToLog($errno, $errstr, $errfile, $errline);
-        \QUI::getErrorHandler()->setAttribute('show_request', false);
-
+        QUI::getErrorHandler()->setAttribute('show_request', true);
+        QUI::getErrorHandler()->writeErrorToLog($errno, $errstr, $errfile, $errline);
+        QUI::getErrorHandler()->setAttribute('show_request', false);
         return true;
     }
 
@@ -119,10 +116,9 @@ function exception_error_handler($errno, $errstr, $errfile, $errline)
         if ($exit) {
             exception_handler($exception);
             exit();
-
-        } else {
-            throw $exception;
         }
+
+        throw $exception;
     }
 
     return false;
@@ -135,7 +131,7 @@ function exception_error_handler($errno, $errstr, $errfile, $errline)
  */
 function exception_handler($Exception)
 {
-    \QUI::getErrorHandler()->writeErrorToLog(
+    QUI::getErrorHandler()->writeErrorToLog(
         $Exception->getCode(),
         $Exception->getMessage(),
         $Exception->getFile(),

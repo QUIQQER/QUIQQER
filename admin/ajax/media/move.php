@@ -20,7 +20,7 @@ QUI::$Ajax->registerFunction(
 
         if (!QUI\Projects\Media\Utils::isFolder($Folder)) {
             throw new \QUI\Exception(
-                'Bitte wählen Sie ein Ordner aus um die Dateie zu verschieben.' // #locale
+                'Bitte wählen Sie ein Ordner aus um die Dateien zu verschieben.' // #locale
             );
         }
 
@@ -29,7 +29,6 @@ QUI::$Ajax->registerFunction(
             try {
                 $Item = $Media->get((int)$id);
                 $Item->moveTo($Folder);
-
             } catch (QUI\Exception $Exception) {
                 QUI::getMessagesHandler()->addError($Exception->getMessage());
             }

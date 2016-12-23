@@ -28,43 +28,47 @@ class Manager implements QUI\Interfaces\Events
     protected $siteEvents = array();
 
     /**
+     * @var Event
+     */
+    protected $Events;
+
+    /**
      * construct
      */
     public function __construct()
     {
-        $this->_Events = new Event();
+        $this->Events = new Event();
 
         try {
-            if (!QUI::getDataBase()->Table()->exist(self::TABLE())) {
+            if (!QUI::getDataBase()->table()->exist(self::table())) {
                 return;
             }
 
             $list = QUI::getDataBase()->fetch(array(
-                'from' => self::TABLE(),
+                'from'  => self::table(),
                 'where' => array(
                     'sitetype' => null
                 )
             ));
 
             foreach ($list as $params) {
-                $this->_Events->addEvent(
+                $this->Events->addEvent(
                     $params['event'],
                     $params['callback']
                 );
             }
 
             $list = QUI::getDataBase()->fetch(array(
-                'from' => self::TABLE(),
+                'from'  => self::table(),
                 'where' => array(
                     'sitetype' => array(
-                        'type' => 'NOT',
+                        'type'  => 'NOT',
                         'value' => null
                     )
                 )
             ));
 
             $this->siteEvents = $list;
-
         } catch (QUI\Database\Exception $Exception) {
         }
     }
@@ -74,7 +78,7 @@ class Manager implements QUI\Interfaces\Events
      *
      * @return string
      */
-    public static function TABLE()
+    public static function table()
     {
         return QUI_DB_PRFX . 'events';
     }
@@ -84,12 +88,13 @@ class Manager implements QUI\Interfaces\Events
      */
     public static function setup()
     {
-        $DBTable = QUI::getDataBase()->Table();
+        $DBTable = QUI::getDataBase()->table();
 
-        $DBTable->appendFields(self::TABLE(), array(
-            'event' => 'varchar(200)',
+        $DBTable->addColumn(self::table(), array(
+            'event'    => 'varchar(255)',
             'callback' => 'text',
-            'sitetype' => 'text'
+            'sitetype' => 'text',
+            'package'  => 'text'
         ));
 
         self::clear();
@@ -97,12 +102,21 @@ class Manager implements QUI\Interfaces\Events
 
     /**
      * clear all events
+     *
+     * @param string|bool $package - name of the package, default = false => complete clear
      */
-    public static function clear()
+    public static function clear($package = false)
     {
-        QUI::getDataBase()->Table()->truncate(
-            self::TABLE()
-        );
+        if (empty($package) || !is_string($package)) {
+            QUI::getDataBase()->table()->truncate(
+                self::table()
+            );
+            return;
+        }
+
+        QUI::getDataBase()->delete(self::table(), array(
+            'package' => $package
+        ));
     }
 
     /**
@@ -112,7 +126,7 @@ class Manager implements QUI\Interfaces\Events
      */
     public function getList()
     {
-        return $this->_Events->getList();
+        return $this->Events->getList();
     }
 
     /**
@@ -145,17 +159,22 @@ class Manager implements QUI\Interfaces\Events
      * @param string $event - The type of event (e.g. 'complete').
      * @param callback $fn - The function to execute.
      */
-    public function addEvent($event, $fn)
+    public function addEvent($event, $fn, $package = '')
     {
+        if (!is_string($package)) {
+            $package = '';
+        }
+
         // add the event to the db
         if (is_string($fn)) {
-            QUI::getDataBase()->insert(self::TABLE(), array(
-                'event' => $event,
-                'callback' => $fn
+            QUI::getDataBase()->insert(self::table(), array(
+                'event'    => $event,
+                'callback' => $fn,
+                'package'  => $package
             ));
         }
 
-        $this->_Events->addEvent($event, $fn);
+        $this->Events->addEvent($event, $fn);
     }
 
     /**
@@ -173,8 +192,8 @@ class Manager implements QUI\Interfaces\Events
             return;
         }
 
-        QUI::getDataBase()->insert(self::TABLE(), array(
-            'event' => $event,
+        QUI::getDataBase()->insert(self::table(), array(
+            'event'    => $event,
             'callback' => $fn,
             'sitetype' => $sitetype
         ));
@@ -187,7 +206,7 @@ class Manager implements QUI\Interfaces\Events
      */
     public function addEvents(array $events)
     {
-        $this->_Events->addEvents($events);
+        $this->Events->addEvents($events);
     }
 
     /**
@@ -199,17 +218,17 @@ class Manager implements QUI\Interfaces\Events
      */
     public function removeEvent($event, $fn = false)
     {
-        $this->_Events->removeEvent($event, $fn);
+        $this->Events->removeEvent($event, $fn);
 
         if ($fn === false) {
-            QUI::getDataBase()->delete(self::TABLE(), array(
+            QUI::getDataBase()->delete(self::table(), array(
                 'event' => $event
             ));
         }
 
         if (is_string($fn)) {
-            QUI::getDataBase()->delete(self::TABLE(), array(
-                'event' => $event,
+            QUI::getDataBase()->delete(self::table(), array(
+                'event'    => $event,
                 'callback' => $fn
             ));
         }
@@ -224,7 +243,7 @@ class Manager implements QUI\Interfaces\Events
      */
     public function removeEvents(array $events)
     {
-        $this->_Events->removeEvents($events);
+        $this->Events->removeEvents($events);
     }
 
     /**
@@ -240,11 +259,12 @@ class Manager implements QUI\Interfaces\Events
     {
         // event onFireEvent
         $fireArgs = $args;
+
         if (!is_array($fireArgs)) {
             $fireArgs = array();
         }
 
-        $this->_Events->fireEvent('onFireEvent', array($event, $fireArgs));
-        $this->_Events->fireEvent($event, $args);
+        $this->Events->fireEvent('onFireEvent', array($event, $fireArgs));
+        $this->Events->fireEvent($event, $fireArgs);
     }
 }

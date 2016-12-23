@@ -3,7 +3,6 @@
 /**
  * This file contains \QUI\Users\Manager
  */
-
 namespace QUI\Users;
 
 use QUI;
@@ -15,7 +14,7 @@ use QUI\Utils\Security\Orthos;
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
  *
- * @event   onUserLogin [ \QUI\Users\User ]
+ * @event onUserLogin [ \QUI\Users\User ]
  */
 class Manager
 {
@@ -45,6 +44,13 @@ class Manager
     private $Session = null;
 
     /**
+     * internal prevention for multiple session user calling
+     *
+     * @var bool
+     */
+    protected $multipleCallPrevention = false;
+
+    /**
      * Return the db table
      *
      * @return string
@@ -72,59 +78,89 @@ class Manager
         $DataBase = QUI::getDataBase();
 
         $DataBase->table()->addColumn(self::table(), array(
-            'id' => 'int(11)',
-            'username' => 'varchar(50)',
-            'password' => 'varchar(50)',
-            'usergroup' => 'text',
-            'firstname' => 'varchar(40)',
-            'lastname' => 'varchar(40)',
-            'usertitle' => 'varchar(40)',
-            'birthday' => 'varchar(12)',
-            'email' => 'varchar(50)',
-            'active' => 'int(1)',
-            'regdate' => 'int(11)',
-            'lastvisit' => 'int(11)',
-            'su' => 'tinyint(1)',
-            'avatar' => 'text',
-            'extra' => 'text NULL',
-            'lang' => 'varchar(2) NULL',
-            'expire' => 'TIMESTAMP NULL',
-            'lastedit' => 'TIMESTAMP NOT NULL',
-            'shortcuts' => 'varchar(5) NULL',
-            'activation' => 'varchar(20) NULL',
-            'referal' => 'varchar(200) NULL',
-            'user_agent' => 'text',
-            'address' => 'int(11)'
+            'id'         => 'INT(11)',
+            'username'   => 'VARCHAR(50) NOT NULL',
+            'password'   => 'VARCHAR(50)',
+            'usergroup'  => 'TEXT NULL',
+            'firstname'  => 'VARCHAR(40)',
+            'lastname'   => 'VARCHAR(40)',
+            'usertitle'  => 'VARCHAR(40)',
+            'birthday'   => "DATE NULL DEFAULT NULL",
+            'email'      => 'VARCHAR(50)',
+            'active'     => 'INT(1)',
+            'regdate'    => 'INT(11)',
+            'lastvisit'  => 'INT(11)',
+            'su'         => 'TINYINT(1)',
+            'avatar'     => 'TEXT NULL',
+            'extra'      => 'TEXT NULL',
+            'lang'       => 'VARCHAR(2) NULL',
+            'expire'     => "DATETIME NULL DEFAULT NULL",
+            'lastedit'   => "DATETIME NULL DEFAULT NULL",
+            'shortcuts'  => 'VARCHAR(5) NULL',
+            'activation' => 'VARCHAR(20) NULL',
+            'referal'    => 'VARCHAR(200) NULL',
+            'user_agent' => 'TEXT NULL',
+            'address'    => 'INT(11)'
         ));
 
-        // Patch
+        $table = self::table();
+
+        // Patch strict
         $DataBase->getPDO()->exec(
-            'ALTER TABLE `' . self::table()
-            . '` CHANGE `birthday` `birthday` DATE NULL DEFAULT NULL'
+            "ALTER TABLE `{$table}` 
+            CHANGE `lastedit` `lastedit` DATETIME NULL DEFAULT NULL,
+            CHANGE `expire` `expire` DATETIME NULL DEFAULT NULL,
+            CHANGE `birthday` `birthday` DATE NULL DEFAULT NULL;
+            "
         );
+
+        try {
+            $DataBase->getPDO()->exec("
+                UPDATE `{$table}` 
+                SET lastedit = NULL 
+                WHERE 
+                    lastedit = '0000-00-00 00:00:00' OR 
+                    lastedit = '';
+                    
+                UPDATE `{$table}` 
+                SET expire = NULL 
+                WHERE 
+                    expire = '0000-00-00 00:00:00' OR 
+                    expire = '';
+                    
+                UPDATE `{$table}` 
+                SET birthday = NULL 
+                WHERE 
+                    birthday = '0000-00-00' OR 
+                    birthday = '';
+            ");
+        } catch (\PDOException $Exception) {
+        }
+
 
         // Addresses
         $DataBase->table()->addColumn(self::tableAddress(), array(
-            'id' => 'int(11)',
-            'uid' => 'int(11)',
-            'salutation' => 'varchar(10)',
-            'firstname' => 'varchar(40)',
-            'lastname' => 'varchar(40)',
-            'phone' => 'text',
-            'mail' => 'text',
-            'company' => 'varchar(100)',
-            'delivery' => 'text',
-            'street_no' => 'text',
-            'zip' => 'text',
-            'city' => 'text',
-            'country' => 'text'
+            'id'         => 'INT(11)',
+            'uid'        => 'INT(11)',
+            'salutation' => 'VARCHAR(10)',
+            'firstname'  => 'VARCHAR(40)',
+            'lastname'   => 'VARCHAR(40)',
+            'phone'      => 'TEXT NULL',
+            'mail'       => 'TEXT NULL',
+            'company'    => 'VARCHAR(100)',
+            'delivery'   => 'TEXT NULL',
+            'street_no'  => 'TEXT NULL',
+            'zip'        => 'TEXT NULL',
+            'city'       => 'TEXT NULL',
+            'country'    => 'TEXT NULL'
         ));
 
         $DataBase->table()->setIndex(self::tableAddress(), 'id');
 
+        $tableAddress = self::tableAddress();
+
         $DataBase->getPDO()->exec(
-            'ALTER TABLE `' . self::tableAddress()
-            . '` CHANGE `id` `id` INT( 11 ) NOT NULL AUTO_INCREMENT'
+            "ALTER TABLE `{$tableAddress}` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT"
         );
     }
 
@@ -133,7 +169,7 @@ class Manager
      *
      * @todo muss noch fremde nutzer prüfen
      *
-     * @param QUI\Users\User|QUI\Users\Nobody $User
+     * @param QUI\Interfaces\Users\User $User
      *
      * @return boolean
      */
@@ -145,7 +181,6 @@ class Manager
 
         try {
             $_User = $this->getUserBySession();
-
         } catch (QUI\Exception $Exception) {
             return false;
         }
@@ -159,6 +194,7 @@ class Manager
 
     /**
      * Is the Object a User?
+     * It checks the user interface, for authentication please use ->isAuth()
      *
      * @param mixed $User
      *
@@ -170,7 +206,11 @@ class Manager
             return false;
         }
 
-        if (get_class($User) === 'QUI\\Users\\User') {
+        if (get_class($User) === User::class) {
+            return true;
+        }
+
+        if ($User instanceof QUI\Interfaces\Users\User) {
             return true;
         }
 
@@ -190,7 +230,27 @@ class Manager
             return false;
         }
 
-        if (get_class($User) === 'QUI\\Users\\SystemUser') {
+        if (get_class($User) === SystemUser::class) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Is the Object a systemuser?
+     *
+     * @param mixed $User
+     *
+     * @return boolean
+     */
+    public function isNobodyUser($User)
+    {
+        if (!is_object($User)) {
+            return false;
+        }
+
+        if (get_class($User) === Nobody::class) {
             return true;
         }
 
@@ -216,7 +276,7 @@ class Manager
      *
      *    Für was???
      *
-     * @return QUI\Projects\Project
+     * @return     QUI\Projects\Project
      * @deprecated
      */
     public function getProject()
@@ -228,17 +288,24 @@ class Manager
      * Create a new User
      *
      * @param string|boolean $username - (optional), new username
+     * @param QUI\Interfaces\Users\User $ParentUser - (optional), Parent User, which create the user
      *
      * @return QUI\Users\User
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      */
-    public function createChild($username = false)
+    public function createChild($username = false, $ParentUser = null)
     {
+        // check, is the user allowed to create new users
+        QUI\Permissions\Permission::checkPermission(
+            'quiqqer.admin.users.create',
+            $ParentUser
+        );
+
         $newid = $this->newId();
 
         if ($username) {
             if ($this->usernameExists($username)) {
-                throw new QUI\Exception(
+                throw new QUI\Users\Exception(
                     QUI::getLocale()->get(
                         'quiqqer/system',
                         'exception.lib.user.exist'
@@ -247,7 +314,6 @@ class Manager
             }
 
             $newname = $username;
-
         } else {
             $newname = 'Neuer Benutzer';
             $i       = 0;
@@ -266,13 +332,285 @@ class Manager
         QUI::getDataBase()->insert(
             self::table(),
             array(
-                'id' => $newid,
+                'id'       => $newid,
                 'username' => $newname,
-                'regdate' => time()
+                'regdate'  => time()
             )
         );
 
-        return $this->get($newid);
+        $User = $this->get($newid);
+
+        // workspace
+        $twoColumn = '[{
+                "attributes": {
+                    "resizeLimit": [],
+                    "height": 775,
+                    "width": 373,
+                    "setting_toggle": true
+                },
+                "children": [
+                    {
+                        "attributes": {
+                            "name": "projects-panel",
+                            "icon": "fa fa-home",
+                            "title": "Projects",
+                            "collapsible": true,
+                            "dragable": false,
+                            "closeButton": false,
+                            "height": 599
+                        },
+                        "type": "controls/projects/project/Panel",
+                        "isOpen": true
+                    },
+                    {
+                        "attributes": {
+                            "title": "Bookmarks",
+                            "icon": "fa fa-bookmark",
+                            "footer": false,
+                            "name": "qui-bookmarks",
+                            "height": 300,
+                            "collapsible": true,
+                            "dragable": false,
+                            "closeButton": false
+                        },
+                        "type": "controls/desktop/panels/Bookmarks",
+                        "bookmarks": [],
+                        "isOpen": false
+                    },
+                    {
+                        "attributes": {
+                            "height": 100,
+                            "collapsible": true,
+                            "dragable": false,
+                            "closeButton": false
+                        },
+                        "type": "qui/controls/messages/Panel",
+                        "isOpen": false
+                    },
+                    {
+                        "attributes": {
+                            "height": 100,
+                            "collapsible": true,
+                            "dragable": false,
+                            "closeButton": false,
+                            "title": "Upload"
+                        },
+                        "type": "controls/upload/Manager",
+                        "isOpen": false
+                    },
+                    {
+                        "attributes": {
+                            "title": "QUIQQER-Hilfe",
+                            "icon": "fa fa-h-square",
+                            "height": 100,
+                            "collapsible": true,
+                            "dragable": false,
+                            "closeButton": false
+                        },
+                        "type": "controls/desktop/panels/Help",
+                        "isOpen": false
+                    }
+                ]
+            },
+            {
+                "attributes": {
+                    "resizeLimit": [],
+                    "height": 775,
+                    "width": 1244
+                },
+                "children": [
+                    {
+                        "attributes": {
+                            "title": "My Panel 1",
+                            "icon": "fa fa-heart",
+                            "name": "tasks"
+                        },
+                        "type": "qui/controls/desktop/Tasks",
+                        "bar": {
+                            "attributes": {
+                                "name": "qui-taskbar-issogpst",
+                                "styles": {
+                                    "bottom": 0,
+                                    "left": 0,
+                                    "position": "absolute"
+                                }
+                            },
+                            "type": "qui/controls/taskbar/Bar",
+                            "tasks": [
+                                {
+                                    "attributes": {
+                                        "closeable": true,
+                                        "dragable": true
+                                    },
+                                    "type": "qui/controls/taskbar/Task",
+                                    "instance": {
+                                        "attributes": {
+                                            "closeButton": true,
+                                            "collapsible": false,
+                                            "height": 745,
+                                            "dragable": true
+                                        },
+                                        "type": "controls/help/Dashboard"
+                                    }
+                                }
+                            ]
+                        },
+                        "isOpen": true
+                    }
+                ]
+            }
+        ]';
+        
+        $threeColumn = '[{
+                "attributes": {
+                    "resizeLimit": [],
+                    "height": 775,
+                    "width": 329,
+                    "setting_toggle": true
+                },
+                "children": [
+                    {
+                        "attributes": {
+                            "name": "projects-panel",
+                            "icon": "fa fa-home",
+                            "title": "Projects",
+                            "collapsible": true,
+                            "dragable": false,
+                            "closeButton": false,
+                            "height": 731
+                        },
+                        "type": "controls/projects/project/Panel",
+                        "isOpen": true
+                    },
+                    {
+                        "attributes": {
+                            "title": "Bookmarks",
+                            "icon": "fa fa-bookmark",
+                            "footer": false,
+                            "name": "qui-bookmarks",
+                            "height": 400,
+                            "collapsible": true,
+                            "dragable": false,
+                            "closeButton": false
+                        },
+                        "type": "controls/desktop/panels/Bookmarks",
+                        "bookmarks": [],
+                        "isOpen": false
+                    }
+                ]
+            },
+            {
+                "attributes": {
+                    "resizeLimit": [],
+                    "height": 775,
+                    "width": 984,
+                    "setting_toggle": false
+                },
+                "children": [
+                    {
+                        "attributes": {
+                            "title": "My Panel 1",
+                            "icon": "fa fa-heart",
+                            "name": "tasks"
+                        },
+                        "type": "qui/controls/desktop/Tasks",
+                        "bar": {
+                            "attributes": {
+                                "name": "qui-taskbar-issogpue",
+                                "styles": {
+                                    "bottom": 0,
+                                    "left": 0,
+                                    "position": "absolute"
+                                }
+                            },
+                            "type": "qui/controls/taskbar/Bar",
+                            "tasks": [
+                                {
+                                    "attributes": {
+                                        "closeable": true,
+                                        "dragable": true
+                                    },
+                                    "type": "qui/controls/taskbar/Task",
+                                    "instance": {
+                                        "attributes": {
+                                            "closeButton": true,
+                                            "collapsible": false,
+                                            "height": 745,
+                                            "dragable": true
+                                        },
+                                        "type": "controls/help/Dashboard"
+                                    }
+                                }
+                            ]
+                        },
+                        "isOpen": true
+                    }
+                ]
+            },
+            {
+                "attributes": {
+                    "resizeLimit": [],
+                    "height": 775,
+                    "width": 283,
+                    "setting_toggle": true
+                },
+                "children": [
+                    {
+                        "attributes": {
+                            "height": 687,
+                            "collapsible": true,
+                            "dragable": false,
+                            "closeButton": false
+                        },
+                        "type": "qui/controls/messages/Panel",
+                        "isOpen": true
+                    },
+                    {
+                        "attributes": {
+                            "height": 300,
+                            "collapsible": true,
+                            "dragable": false,
+                            "closeButton": false,
+                            "title": "Upload"
+                        },
+                        "type": "controls/upload/Manager",
+                        "isOpen": false
+                    },
+                    {
+                        "attributes": {
+                            "title": "QUIQQER-Hilfe",
+                            "icon": "fa fa-h-square",
+                            "height": 400,
+                            "collapsible": true,
+                            "dragable": false,
+                            "closeButton": false
+                        },
+                        "type": "controls/desktop/panels/Help",
+                        "isOpen": false
+                    }
+                ]
+            }
+        ]';
+
+        $newWorkspaceId = QUI\Workspace\Manager::addWorkspace(
+            $User,
+            '2 Spalten', // #locale
+            $twoColumn,
+            500,
+            700
+        );
+
+        QUI\Workspace\Manager::addWorkspace(
+            $User,
+            '3 Spalten', // #locale
+            $threeColumn,
+            500,
+            700
+        );
+
+        QUI\Workspace\Manager::setStandardWorkspace($User, $newWorkspaceId);
+
+        return $User;
     }
 
     /**
@@ -281,7 +619,7 @@ class Manager
      * @param array $params
      *
      * @return User
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      *
      * @needle
      * <ul>
@@ -306,7 +644,7 @@ class Manager
     public function register($params)
     {
         if (!isset($params['username'])) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.user.register.specify.username'
@@ -315,7 +653,7 @@ class Manager
         }
 
         if (!isset($params['password'])) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     ''
@@ -330,7 +668,7 @@ class Manager
         self::checkUsernameSigns($username);
 
         if ($this->usernameExists($username)) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.user.register.specify.password'
@@ -414,10 +752,12 @@ class Manager
      */
     public function countAllUsers()
     {
-        $result = QUI::getDataBase()->fetch(array(
-            'count' => 'count',
-            'from' => self::table()
-        ));
+        $result = QUI::getDataBase()->fetch(
+            array(
+                'count' => 'count',
+                'from'  => self::table()
+            )
+        );
 
         if (isset($result[0]) && isset($result[0]['count'])) {
             return $result[0]['count'];
@@ -436,10 +776,12 @@ class Manager
     public function getAllUsers($objects = false)
     {
         if ($objects == false) {
-            return QUI::getDataBase()->fetch(array(
-                'from' => self::table(),
-                'order' => 'username'
-            ));
+            return QUI::getDataBase()->fetch(
+                array(
+                    'from'  => self::table(),
+                    'order' => 'username'
+                )
+            );
         }
 
         $result = array();
@@ -448,7 +790,6 @@ class Manager
         foreach ($ids as $id) {
             try {
                 $result[] = $this->get((int)$id['id']);
-
             } catch (QUI\Exception $Exception) {
                 // nothing
             }
@@ -458,17 +799,65 @@ class Manager
     }
 
     /**
+     * Return the users authenticator
+     *
+     * @param string $username - username
+     * @return QUI\Interfaces\Users\Auth
+     *
+     * @throws Exception
+     */
+    public function getAuthenticator($username)
+    {
+        // Authentifizierung
+        $authType  = QUI::conf('auth', 'type');
+        $authClass = $authType;
+
+        if ($authType == 'standard') {
+            $authClass = Auth::class;
+        }
+
+        if (!class_exists($authClass)) {
+            QUI\System\Log::addError(
+                'Authentication Type not found. Please check your config settings'
+            );
+
+            throw new QUI\Users\Exception(
+                array('quiqqer/system', 'exception.login.fail'),
+                401
+            );
+        }
+
+        $Auth       = new $authClass($username);
+        $implements = class_implements($Auth);
+
+        if (!isset($implements['QUI\Interfaces\Users\Auth'])) {
+            QUI\System\Log::addError(
+                'Authentication Type is not from Interface QUI\Interfaces\Users\Auth'
+            );
+
+            throw new QUI\Users\Exception(
+                array('quiqqer/system', 'exception.login.fail'),
+                401
+            );
+        }
+
+        return $Auth;
+    }
+
+    /**
      * Returns all userids
      *
      * @return array
      */
     public function getAllUserIds()
     {
-        $result = QUI::getDataBase()->fetch(array(
-            'select' => 'id',
-            'from' => self::table(),
-            'order' => 'username'
-        ));
+        $result = QUI::getDataBase()->fetch(
+            array(
+                'select' => 'id',
+                'from'   => self::table(),
+                'order'  => 'username'
+            )
+        );
 
         return $result;
     }
@@ -493,7 +882,6 @@ class Manager
         foreach ($result as $entry) {
             try {
                 $Users[] = $this->get((int)$entry['id']);
-
             } catch (QUI\Exception $Exception) {
                 // nothing
             }
@@ -524,19 +912,19 @@ class Manager
      * @param string $pass - password
      *
      * @return QUI\Users\User
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      */
     public function login($username, $pass)
     {
         if (!is_string($username) || empty($username)) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail.wrong.username.input'),
                 401
             );
         }
 
         if (!is_string($pass) || empty($pass)) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail.wrong.password.input'),
                 401
             );
@@ -544,15 +932,13 @@ class Manager
 
         $username = Orthos::clear($username);
 
-        if (function_exists('get_magic_quotes_gpc')
-            && !get_magic_quotes_gpc()
-        ) {
+        if (function_exists('get_magic_quotes_gpc') && !get_magic_quotes_gpc()) {
             $username = addslashes($username);
             $pass     = addslashes($pass);
         }
 
         if (empty($pass)) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail.no.password'),
                 401
             );
@@ -571,56 +957,45 @@ class Manager
                 'Authentication Type not found. Please check your config settings'
             );
 
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail'),
                 401
             );
         }
 
-        $Auth       = new $authClass($username);
-        $implements = class_implements($Auth);
-
-        if (!isset($implements['QUI\Interfaces\Users\Auth'])) {
-            QUI\System\Log::addError(
-                'Authentication Type is not from Interface QUI\Interfaces\Users\Auth'
-            );
-
-            throw new QUI\Exception(
-                array('quiqqer/system', 'exception.login.fail'),
-                401
-            );
-        }
+        $Auth = $this->getAuthenticator($username);
 
         /* @var $Auth QUI\Interfaces\Users\Auth */
         if ($Auth->auth($pass) === false) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail'),
                 401
             );
         }
-
 
         $userId = $Auth->getUserId();
 
         // check user data
-        $userData = QUI::getDataBase()->fetch(array(
-            'select' => array('id', 'expire', 'secHash', 'active'),
-            'from' => self::table(),
-            'where' => array(
-                'id' => $userId
-            ),
-            'limit' => 1
-        ));
+        $userData = QUI::getDataBase()->fetch(
+            array(
+                'select' => array('id', 'expire', 'secHash', 'active'),
+                'from'   => self::table(),
+                'where'  => array(
+                    'id' => $userId
+                ),
+                'limit'  => 1
+            )
+        );
 
         if (!isset($userData[0])) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail.user.not.found'),
                 404
             );
         }
 
         if ($userData[0]['active'] == 0) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail.user.not.found'),
                 401
             );
@@ -630,11 +1005,10 @@ class Manager
             && $userData[0]['expire'] != '0000-00-00 00:00:00'
             && strtotime($userData[0]['expire']) < time()
         ) {
-            throw new QUI\Exception(
-                QUI::getLocale()
-                    ->get('quiqqer/system', 'exception.login.expire', array(
-                        'expire' => $userData[0]['expire']
-                    ))
+            throw new QUI\Users\Exception(
+                QUI::getLocale()->get('quiqqer/system', 'exception.login.expire', array(
+                    'expire' => $userData[0]['expire']
+                ))
             );
         }
 
@@ -651,7 +1025,7 @@ class Manager
         }
 
         if ($groupActive === false) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail'),
                 401
             );
@@ -671,9 +1045,9 @@ class Manager
         QUI::getDataBase()->update(
             self::table(),
             array(
-                'lastvisit' => time(),
+                'lastvisit'  => time(),
                 'user_agent' => $useragent,
-                'secHash' => $this->getSecHash()
+                'secHash'    => $this->getSecHash()
             ),
             array('id' => $userId)
         );
@@ -690,7 +1064,8 @@ class Manager
     /**
      * Generate a user-dependent security hash
      * There are different data use such as IP, User-Agent and the System-Salt
-     * @todo noch eine eindeutige möglichkeit der Identifizierung des Browser finden
+     *
+     * @todo   noch eine eindeutige möglichkeit der Identifizierung des Browser finden
      * @return string
      */
     public function getSecHash()
@@ -715,7 +1090,7 @@ class Manager
     /**
      * Get the Session user
      *
-     * @return QUI\Users\User
+     * @return QUI\Interfaces\Users\User
      */
     public function getUserBySession()
     {
@@ -727,11 +1102,17 @@ class Manager
             return $this->Session;
         }
 
+        if ($this->multipleCallPrevention) {
+            return $this->getNobody();
+        }
+
+
+        $this->multipleCallPrevention = true;
+
         // max_life_time check
         try {
             $this->checkUserSession();
             $this->Session = $this->get(QUI::getSession()->get('uid'));
-
         } catch (QUI\Exception $Exception) {
             $this->Session = $this->getNobody();
         }
@@ -752,13 +1133,13 @@ class Manager
     /**
      * Checks, if the session is ok
      *
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      */
     public function checkUserSession()
     {
         // max_life_time check
         if (!QUI::getSession()->check()) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.permission.session.expired'
@@ -768,7 +1149,7 @@ class Manager
         }
 
         if (!QUI::getSession()->get('uid')) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.permission.session.expired'
@@ -782,7 +1163,7 @@ class Manager
         if (!$User->isActive()) {
             QUI::getSession()->destroy();
 
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.user.inactive'
@@ -814,7 +1195,7 @@ class Manager
         QUI::getSession()->getSymfonySession()->clear();
         QUI::getSession()->refresh();
 
-        throw new QUI\Exception($message, 401);
+        throw new QUI\Users\Exception($message, 401);
     }
 
     /**
@@ -848,9 +1229,10 @@ class Manager
     /**
      * Get the user by id
      *
-     * @param integer $id
+     * @param  integer $id
+     * @return QUI\Users\User|Nobody|SystemUser|false
      *
-     * @return QUI\Users\User|false
+     * @throws QUI\Users\Exception
      */
     public function get($id)
     {
@@ -879,22 +1261,24 @@ class Manager
      *
      * @param string $username - Username
      *
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      * @return QUI\Users\User
      */
     public function getUserByName($username)
     {
-        $result = QUI::getDataBase()->fetch(array(
-            'select' => 'id',
-            'from' => self::table(),
-            'where' => array(
-                'username' => $username
-            ),
-            'limit' => 1
-        ));
+        $result = QUI::getDataBase()->fetch(
+            array(
+                'select' => 'id',
+                'from'   => self::table(),
+                'where'  => array(
+                    'username' => $username
+                ),
+                'limit'  => 1
+            )
+        );
 
         if (!isset($result[0])) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.user.user.not.found'
@@ -912,21 +1296,23 @@ class Manager
      * @param string $email - User E-Mail
      *
      * @return QUI\Users\User
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      */
     public function getUserByMail($email)
     {
-        $result = QUI::getDataBase()->fetch(array(
-            'select' => 'id',
-            'from' => self::table(),
-            'where' => array(
-                'email' => $email
-            ),
-            'limit' => 1
-        ));
+        $result = QUI::getDataBase()->fetch(
+            array(
+                'select' => 'id',
+                'from'   => self::table(),
+                'where'  => array(
+                    'email' => $email
+                ),
+                'limit'  => 1
+            )
+        );
 
         if (!isset($result[0])) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.user.user.not.found'
@@ -962,14 +1348,16 @@ class Manager
             return false;
         }
 
-        $result = QUI::getDataBase()->fetch(array(
-            'select' => 'username',
-            'from' => self::table(),
-            'where' => array(
-                'username' => $username
-            ),
-            'limit' => 1
-        ));
+        $result = QUI::getDataBase()->fetch(
+            array(
+                'select' => 'username',
+                'from'   => self::table(),
+                'where'  => array(
+                    'username' => $username
+                ),
+                'limit'  => 1
+            )
+        );
 
         return isset($result[0]) ? true : false;
     }
@@ -1005,14 +1393,16 @@ class Manager
      */
     public function emailExists($email)
     {
-        $result = QUI::getDataBase()->fetch(array(
-            'select' => 'email',
-            'from' => self::table(),
-            'where' => array(
-                'email' => $email
-            ),
-            'limit' => 1
-        ));
+        $result = QUI::getDataBase()->fetch(
+            array(
+                'select' => 'email',
+                'from'   => self::table(),
+                'where'  => array(
+                    'email' => $email
+                ),
+                'limit'  => 1
+            )
+        );
 
         return isset($result[0]) ? true : false;
     }
@@ -1086,7 +1476,7 @@ class Manager
      *
      * @todo where params
      *
-     * @param array $params
+     * @param  array $params
      * @return array|integer
      *
      * @throws QUI\Database\Exception
@@ -1097,16 +1487,16 @@ class Manager
         $params = Orthos::clearArray($params);
 
         $allowOrderFields = array(
-            'id' => true,
-            'email' => true,
-            'username' => true,
+            'id'        => true,
+            'email'     => true,
+            'username'  => true,
             'usergroup' => true,
             'firstname' => true,
-            'lastname' => true,
-            'birthday' => true,
-            'active' => true,
-            'regdate' => true,
-            'su' => true
+            'lastname'  => true,
+            'birthday'  => true,
+            'active'    => true,
+            'regdate'   => true,
+            'su'        => true
         );
 
         $max   = 10;
@@ -1155,13 +1545,15 @@ class Manager
             $filter = $params['searchSettings']['filter'];
             $fields = $params['searchSettings']['fields'];
 
-            $filter_status        = false;
-            $filter_group         = false;
-            $filter_regdate_first = false;
-            $filter_regdate_last  = false;
+            $filter_status         = false;
+            $filter_group          = false;
+            $filter_groups_exclude = false;
+            $filter_regdate_first  = false;
+            $filter_regdate_last   = false;
 
             // set the filters
             if (isset($filter['filter_status'])
+                && !empty($filter['filter_status'])
                 && $filter['filter_status'] != 'all'
             ) {
                 $filter_status = true;
@@ -1171,6 +1563,12 @@ class Manager
                 && !empty($filter['filter_group'])
             ) {
                 $filter_group = true;
+            }
+
+            if (isset($filter['filter_groups_exclude'])
+                && !empty($filter['filter_groups_exclude'])
+            ) {
+                $filter_groups_exclude = true;
             }
 
             if (isset($filter['filter_regdate_first'])
@@ -1240,6 +1638,14 @@ class Manager
                 }
             }
 
+            if ($filter_groups_exclude) {
+                foreach ($filter['filter_groups_exclude'] as $groupId) {
+                    if ((int)$groupId > 0) {
+                        $query .= ' AND usergroup NOT LIKE :' . $groupId . ' ';
+                        $binds[':' . $groupId] = '%,' . (int)$groupId . ',%';
+                    }
+                }
+            }
 
             if ($filter_regdate_first) {
                 $query .= ' AND regdate >= :firstreg ';
@@ -1297,7 +1703,6 @@ class Manager
 
         try {
             $Statement->execute();
-
         } catch (\PDOException $Exception) {
             $message = $Exception->getMessage();
             $message .= print_r($query, true);
@@ -1322,7 +1727,7 @@ class Manager
      * Gibt eine neue Benutzer Id zwischen 100 und 1000000000 zurück
      *
      * @return integer
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      */
     protected function newId()
     {
@@ -1333,12 +1738,14 @@ class Manager
             srand(microtime() * 1000000);
             $newid = rand(100, 1000000000);
 
-            $result = QUI::getDataBase()->fetch(array(
-                'from' => self::table(),
-                'where' => array(
-                    'id' => $newid
+            $result = QUI::getDataBase()->fetch(
+                array(
+                    'from'  => self::table(),
+                    'where' => array(
+                        'id' => $newid
+                    )
                 )
-            ));
+            );
 
             if (isset($result[0]) && $result[0]['id']) {
                 $create = true;
@@ -1349,7 +1756,7 @@ class Manager
         }
 
         if (!$newid) {
-            throw new QUI\Exception('Could not create new User-ID');
+            throw new QUI\Users\Exception('Could not create new User-ID');
         }
 
         return $newid;
@@ -1373,14 +1780,13 @@ class Manager
      * @param string $username
      *
      * @return boolean
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      */
     public static function checkUsernameSigns($username)
     {
         if ($username != self::clearUsername($username)) {
-            throw new QUI\Exception(
-                QUI::getLocale()
-                    ->get('quiqqer/system', 'exception.lib.user.illegal.signs')
+            throw new QUI\Users\Exception(
+                QUI::getLocale()->get('quiqqer/system', 'exception.lib.user.illegal.signs')
             );
         }
 

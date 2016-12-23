@@ -464,7 +464,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     }
 
     /**
-     * Shortcut for QUI\Rights\Permission::hasSitePermission
+     * Shortcut for QUI\Permissions\Permission::hasSitePermission
      *
      * @param string $permission - name of the permission
      * @param QUI\Users\User|boolean $User - optional
@@ -477,7 +477,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     }
 
     /**
-     * Shortcut for QUI\Rights\Permission::checkSitePermission
+     * Shortcut for QUI\Permissions\Permission::checkSitePermission
      *
      * @param string $permission - name of the permission
      * @param QUI\Users\User|boolean $User - optional
@@ -486,6 +486,5 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function checkPermission($permission, $User = false)
     {
-
     }
 }

@@ -1,14 +1,60 @@
 
 .qui-controls-project-media-input {
-
+    float: left;
+    position: relative;
+    width: 100%;
 }
 
 .qui-controls-project-media-input-preview {
     border: 1px solid #ddd;
-    border-radius: 3px;
+    border-radius: 3px 0 0 3px;
     float: left;
     height: 30px;
-    margin: 0 5px 0 0;
+    margin: 0;
     position: relative;
     width: 30px;
+}
+
+.qui-controls-project-media-input-preview-icon {
+    font-size: 16px;
+    left: 0;
+    line-height: 30px;
+    height: 100%;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+}
+
+.qui-controls-project-media-input-path {
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    float: left;
+    line-height: 28px;
+    overflow: hidden;
+    padding: 0 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: calc(100% - 180px);
+}
+
+.field-container > .qui-controls-project-media-input {
+    border: 1px solid rgba(147, 128, 108, 0.25);
+    flex: 1;
+    width: 100%;
+}
+
+.field-container > .qui-controls-project-media-input .qui-controls-project-media-input-path {
+    border-top: none;
+    border-bottom: none;
+}
+
+.field-container > .qui-controls-project-media-input .qui-controls-project-media-input-preview {
+    border: none;
+    border-radius: 0;
+}
+
+.field-container > .qui-controls-project-media-input .qui-button {
+    border-radius: 0;
+    border-left: 1px solid rgba(147, 128, 108, 0.25);
+    box-shadow: none;
 }

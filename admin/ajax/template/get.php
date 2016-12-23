@@ -17,8 +17,7 @@ QUI::$Ajax->registerFunction(
         $Engine = QUI::getTemplateManager()->getEngine(true);
 
         if (isset($package) && !empty($package)) {
-            $template
-                = OPT_DIR . $package . '/' . str_replace('_', '/', $template) . '.html';
+            $template = OPT_DIR . $package . '/' . str_replace('_', '/', $template) . '.html';
         } else {
             $dir      = SYS_DIR . 'template/';
             $template = $dir . str_replace('_', '/', $template) . '.html';
@@ -38,7 +37,7 @@ QUI::$Ajax->registerFunction(
         }
 
         $Engine->assign(array(
-            'QUI' => new QUI(),
+            'QUI'    => new QUI(),
             'params' => $params
         ));
 

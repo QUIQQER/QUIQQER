@@ -8,7 +8,7 @@ namespace QUI\Groups;
 
 use QUI;
 use QUI\Utils\DOM;
-use QUI\Utils\XML;
+use QUI\Utils\Text\XML;
 
 /**
  * Helper for groups
@@ -23,7 +23,6 @@ class Utils
      * JavaScript Buttons / Tabs for a group
      *
      * @param \QUI\Groups\Group $Group
-     *
      * @return \QUI\Controls\Toolbar\Bar
      */
     public static function getGroupToolbar($Group)
@@ -33,35 +32,46 @@ class Utils
         ));
 
         DOM::addTabsToToolbar(
-            XML::getTabsFromXml(SYS_DIR . 'groups.xml'),
+            XML::getTabsFromXml(OPT_DIR . 'quiqqer/quiqqer/group.xml'),
             $Tabbar,
-            'pcsg'
+            'quiqqer/quiqqer'
         );
 
-        // @todo load plugin / project / package extensions
+        /**
+         * user extention from plugins
+         */
+        $list = QUI::getPackageManager()->getInstalled();
 
-
-        // Projekt Tabs
-        /*
-        $projects = \QUI\Projects\Manager::getProjects( true );
-
-        foreach ( $projects as $Project )
-        {
-            $rights = \QUI::getRights()->getProjectRights( $Project );
-
-            if ( empty( $rights ) ) {
+        foreach ($list as $entry) {
+            if ($entry['name'] == 'quiqqer/quiqqer') {
                 continue;
             }
 
-            $Tabbar->appendChild(
-                new Controls_Toolbar_Tab(array(
-                    'name'    => 'project_'. $Project->getAttribute('name'),
-                    'project' => $Project->getAttribute('name'),
-                    'text'    => $Project->getAttribute('name') .' Rechte'
-                ))
+            $userXml = OPT_DIR . $entry['name'] . '/group.xml';
+
+            if (!file_exists($userXml)) {
+                continue;
+            }
+
+            DOM::addTabsToToolbar(
+                XML::getTabsFromXml($userXml),
+                $Tabbar,
+                $entry['name']
             );
         }
-        */
+
+        /**
+         * user extension from projects
+         */
+        $projects = QUI\Projects\Manager::getProjects();
+
+        foreach ($projects as $project) {
+            DOM::addTabsToToolbar(
+                XML::getTabsFromXml(USR_DIR . 'lib/' . $project . '/group.xml'),
+                $Tabbar,
+                'project.' . $project
+            );
+        }
 
         return $Tabbar;
     }
@@ -79,36 +89,31 @@ class Utils
     {
         $Groups = QUI::getGroups();
         $Group  = $Groups->get($gid);
-        $Engine = QUI::getTemplateManager()->getEngine(true);
 
-        $Engine->assign(array(
-            'Group' => $Group
-        ));
+        // assign group as global var
+        QUI::getTemplateManager()->assignGlobalParam('Group', $Group);
 
-        // System
-        if ($plugin === 'pcsg') {
-            return DOM::getTabHTML($tab, SYS_DIR . 'groups.xml');
-        }
+        // project
+        if (strpos($plugin, 'project.') !== false) {
+            $project = explode('project.', $plugin);
 
-        /*
-        if ( strpos($tab, 'project_') !== false )
-        {
-            $tab     = explode( 'project_', $tab );
-            $Project = \QUI\Projects\Manager::getProject( $tab[1] );
-            $file    = USR_DIR .'lib/'. $Project->getAttribute('name') .'/rights.xml';
-
-            $Engine = \QUI::getTemplateManager()->getEngine( true );
-            $rights = QUI_Rights_Parser::getGroups(
-                QUI_Rights_Parser::parse( $file )
+            return DOM::getTabHTML(
+                $tab,
+                QUI::getProject($project[1])
             );
-
-            $Engine->assign(array(
-                'rights' => $rights
-            ));
-
-            return $Engine->fetch( SYS_DIR .'template/groups/extend.html' );
         }
-        */
+
+        // plugin
+        try {
+            $plugin  = str_replace('plugin.', '', $plugin);
+            $Package = QUI::getPackage($plugin);
+
+            return DOM::getTabHTML(
+                $tab,
+                OPT_DIR . $Package->getName() . '/group.xml'
+            );
+        } catch (QUI\Exception $Exception) {
+        }
 
         return '';
     }

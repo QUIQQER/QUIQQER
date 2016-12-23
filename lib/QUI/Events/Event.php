@@ -167,7 +167,6 @@ class Event implements QUI\Interfaces\Events
                 }
 
                 $results[$fn] = call_user_func_array($fn, $args);
-
             } catch (QUI\Exception $Exception) {
                 $message = $Exception->getMessage();
 
@@ -182,7 +181,6 @@ class Event implements QUI\Interfaces\Events
                 );
 
                 $Stack->addException($Clone);
-
             } catch (\Exception $Exception) {
                 $message = $Exception->getMessage();
 

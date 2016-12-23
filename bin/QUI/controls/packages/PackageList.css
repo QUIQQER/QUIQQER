@@ -1,0 +1,174 @@
+.qui-control-packages-packageList {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+    position: relative;
+    width: 100%;
+}
+
+/** view tile
+ ========================================= */
+
+.packages-package-tile-package {
+    border: 1px solid #D0D3D3;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+    width: 160px;
+}
+
+.packages-package-tile-package-image {
+    float: left;
+    height: 160px;
+    overflow: hidden;
+    position: relative;
+    text-align: center;
+    transition: .2s;
+    width: 100%;
+}
+
+.packages-package-tile-package:hover {
+    border: 1px solid #BBB;
+    box-shadow: 0 0 10px -4px rgba(0, 0, 0, 0.75);
+    -webkit-box-shadow: 0 0 10px -4px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0 0 10px -4px rgba(0, 0, 0, 0.75);
+}
+
+.packages-package-tile-package-image .fa {
+    color: rgba(0, 0, 0, 0.05);
+    font-size: 50px;
+    line-height: 160px;
+}
+
+.packages-package-tile-package-image img {
+    margin: 10px auto;
+    max-height: calc(100% - 20px);
+    max-width: calc(100% - 20px);
+    transition: .2s;
+}
+
+.packages-package-tile-package-data {
+    background: #f6f6f6;
+    clear: both;
+    float: left;
+    flex-grow: 1;
+    overflow: hidden;
+    padding: 10px;
+    width: 100%;
+}
+
+.packages-package-tile-package-data-title {
+    display: block;
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.packages-package-tile-package-data-description {
+    clear: both;
+    display: block;
+    font-size: 12px;
+    height: 50px;
+    overflow: hidden;
+    position: relative;
+}
+
+.packages-package-tile-package-description:after {
+    background: -moz-linear-gradient(top, rgba(246, 246, 246, 0) 0%, rgba(246, 246, 246, 1) 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, rgba(246, 246, 246, 0) 0%, rgba(246, 246, 246, 1) 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, rgba(246, 246, 246, 0) 0%, rgba(246, 246, 246, 1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00f6f6f6', endColorstr='#f6f6f6', GradientType=0); /* IE6-9 */
+
+    bottom: 0;
+    content: "";
+    height: 20px;
+    left: 0;
+    position: absolute;
+    width: 100%;
+}
+
+.packages-package-tile-package-buttons {
+    background: #f6f6f6;
+    border-top: 1px solid #D0D3D3;
+    clear: both;
+    float: left;
+    height: 31px;
+    width: 100%;
+}
+
+.packages-package-tile-package-buttons .qui-button {
+    background: #f6f6f6;
+}
+
+.packages-package-tile-package-buttons .qui-button-over,
+.packages-package-tile-package-buttons .qui-button-active {
+    background: #0069b4;
+}
+
+.packages-package-tile-package-buttons .qui-button,
+.packages-package-tile-package-buttons .qui-button-over {
+    border-radius: 0;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+}
+
+/** view list
+ ========================================= */
+
+.packages-package-list-package {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    clear: both;
+    cursor: pointer;
+    float: left;
+    padding: 10px 0;
+    width: 100%;
+}
+
+.packages-package-list-package:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.packages-package-list-package-buttons,
+.packages-package-list-package-image {
+    float: left;
+    font-size: 30px;
+    line-height: 40px;
+    text-align: center;
+    width: 60px;
+}
+
+.packages-package-list-package-image img {
+    max-height: 40px;
+    max-width: 40px;
+}
+
+.packages-package-list-package-image .fa {
+    color: rgba(0, 0, 0, 0.05);
+}
+
+.packages-package-list-package-data {
+    float: left;
+    width: calc(100% - 120px);
+}
+
+.packages-package-list-package-data-title {
+    font-weight: bold;
+}
+
+.packages-package-list-package-data-description {
+    clear: both;
+    display: block;
+}
+
+.packages-package-list-package-buttons {
+    padding-right: 10px;
+    text-align: right;
+}
+
+.packages-package-list-package-buttons button {
+    float: none;
+}

@@ -5,6 +5,8 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * @require controls/desktop/Panel
+ * @require qui/controls/buttons/ButtonSwitch
+ * @require qui/controls/buttons/Button
  * @require controls/grid/Grid
  * @require Groups
  * @require Ajax
@@ -18,18 +20,20 @@
 define('controls/groups/Group', [
 
     'qui/controls/desktop/Panel',
+    'qui/controls/buttons/ButtonSwitch',
+    'qui/controls/buttons/Button',
     'controls/grid/Grid',
     'Groups',
     'Ajax',
     'Editors',
     'Locale',
-    'qui/controls/buttons/Button',
     'qui/utils/Form',
     'utils/Controls',
 
     'css!controls/groups/Group.css'
 
-], function (Panel, Grid, Groups, Ajax, Editors, Locale, QUIButton, FormUtils, ControlUtils) {
+], function (QUIPanel, QUIButtonSwitch, QUIButton,
+             Grid, Groups, Ajax, Editors, QUILocale, FormUtils, ControlUtils) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -43,7 +47,7 @@ define('controls/groups/Group', [
      */
     return new Class({
 
-        Extends: Panel,
+        Extends: QUIPanel,
         Type   : 'controls/groups/Group',
 
         Binds: [
@@ -59,8 +63,11 @@ define('controls/groups/Group', [
             '$onCategoryUnload',
             '$onGroupRefresh',
             '$onGroupStatusChange',
+            '$onStatusButtonChange',
             '$onGroupDelete',
-            '$onGroupGetUser'
+            '$onGroupGetUser',
+            '$onUsersAdd',
+            '$onUsersRemove'
         ],
 
         options: {
@@ -81,7 +88,14 @@ define('controls/groups/Group', [
             this.addEvents({
                 onCreate : this.$onCreate,
                 onDestroy: this.$onDestroy,
-                onResize : this.$onResize
+                onResize : this.$onResize,
+                onShow   : function () {
+                    var Status = this.getButtons('status');
+
+                    if (Status) {
+                        Status.resize();
+                    }
+                }
             });
 
             this.parent();
@@ -143,20 +157,29 @@ define('controls/groups/Group', [
             require(['qui/controls/windows/Confirm'], function (Confirm) {
                 new Confirm({
                     name       : 'DeleteUser' + self.getGroup().getId(),
-                    title      : Locale.get(lg, 'groups.group.delete.title'),
                     icon       : 'fa fa-trash-o',
                     texticon   : 'fa fa-trash-o',
-                    text       : Locale.get(lg, 'groups.group.delete.text', {
+                    title      : QUILocale.get(lg, 'groups.group.delete.title'),
+                    information: QUILocale.get(lg, 'groups.group.delete.information'),
+                    text       : QUILocale.get(lg, 'groups.group.delete.text', {
                         group: self.getGroup().getAttribute('name')
                     }),
-                    information: Locale.get(lg, 'groups.group.delete.information'),
-                    maxWidth   : 450,
-                    maxHeight  : 300,
+                    ok_button  : {
+                        text     : QUILocale.get(lg, 'delete'),
+                        textimage: 'fa fa-trash'
+                    },
+                    maxWidth   : 600,
+                    maxHeight  : 400,
+                    autoclose  : false,
                     events     : {
-                        onSubmit: function () {
+                        onSubmit: function (Win) {
+                            Win.Loader.show();
+
                             Groups.deleteGroups([
                                 self.getGroup().getId()
-                            ]);
+                            ]).then(function () {
+                                Win.close();
+                            });
                         }
                     }
                 }).open();
@@ -172,7 +195,9 @@ define('controls/groups/Group', [
 
             require(['controls/permissions/Panel'], function (PermPanel) {
                 Parent.appendChild(
-                    new PermPanel(null, Group)
+                    new PermPanel({
+                        Object: Group
+                    })
                 );
             });
         },
@@ -186,7 +211,7 @@ define('controls/groups/Group', [
 
             this.$drawButtons();
 
-            this.$drawCategories(function () {
+            this.$drawCategories().then(function () {
                 var Group = self.getGroup();
 
                 Group.addEvents({
@@ -202,12 +227,16 @@ define('controls/groups/Group', [
 
                 self.setAttribute('icon', 'fa fa-group');
 
+                var Prom = Promise.resolve();
+
                 if (Group.getAttribute('title') === false) {
-                    Group.load();
-                    return;
+                    Prom = Group.load();
                 }
 
-                self.$onGroupRefresh();
+                Prom.then(function () {
+                    self.getButtons('status').enable();
+                    self.$onGroupRefresh();
+                });
             });
         },
 
@@ -243,14 +272,23 @@ define('controls/groups/Group', [
             this.setAttribute(
                 'title',
 
-                Locale.get(lg, 'groups.group.title', {
+                QUILocale.get(lg, 'groups.group.title', {
                     group: this.getGroup().getAttribute('name')
                 })
             );
 
             this.refresh();
 
-            var Bar = this.getCategoryBar();
+            var Bar    = this.getCategoryBar(),
+                Status = this.getButtons('status');
+
+            if (this.getGroup().isActive()) {
+                Status.on();
+                Status.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isActivate'));
+            } else {
+                Status.off();
+                Status.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isDeactivate'));
+            }
 
             if (Bar.getActive()) {
                 this.$onCategoryLoad(Bar.getActive());
@@ -260,10 +298,7 @@ define('controls/groups/Group', [
             Bar.firstChild().click();
 
             // button bar refresh
-            (function () {
-                this.getButtonBar().setAttribute('width', '98%');
-                this.getButtonBar().resize();
-            }).delay(200, this);
+            this.getButtonBar().resize();
         },
 
         /**
@@ -291,18 +326,62 @@ define('controls/groups/Group', [
          * @param {Object} groups - groups that change the status
          */
         $onGroupStatusChange: function (Groups, groups) {
-            var id = this.getGroup().getId();
+            var Group = this.getGroup(),
+                id    = Group.getId();
 
             for (var gid in groups) {
                 if (gid != id) {
                     continue;
                 }
 
-                if (this.getActiveCategory()) {
-                    this.$onCategoryLoad(this.getActiveCategory());
-                    return;
+                var Status = this.getButtons('status');
+
+                if (Group.isActive()) {
+                    Status.setSilentOn();
+                    Status.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isActivate'));
+                } else {
+                    Status.setSilentOff();
+                    Status.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isDeactivate'));
                 }
+
+                return;
             }
+        },
+
+        /**
+         * event :Status Button change
+         * @param {Object} Button
+         */
+        $onStatusButtonChange: function (Button) {
+            var buttonStatus = Button.getStatus(),
+                Group        = this.getGroup(),
+                groupStatus  = Group.isActive();
+
+            if (buttonStatus == groupStatus) {
+                return;
+            }
+
+            this.Loader.show();
+
+            var Prom;
+
+            if (buttonStatus) {
+                Prom = Group.activate();
+            } else {
+                Prom = Group.deactivate();
+            }
+
+            Prom.then(function () {
+                if (Group.isActive()) {
+                    Button.on();
+                    Button.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isActivate'));
+                } else {
+                    Button.off();
+                    Button.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isDeactivate'));
+                }
+
+                this.Loader.hide();
+            }.bind(this));
         },
 
         /**
@@ -313,7 +392,7 @@ define('controls/groups/Group', [
         $drawButtons: function () {
             this.addButton({
                 name     : 'groupSave',
-                text     : Locale.get(lg, 'groups.group.btn.save'),
+                text     : QUILocale.get(lg, 'groups.group.btn.save'),
                 textimage: 'fa fa-save',
                 events   : {
                     onClick: this.save
@@ -321,19 +400,37 @@ define('controls/groups/Group', [
             });
 
             this.addButton({
-                name     : 'groupDelete',
-                text     : Locale.get(lg, 'groups.group.btn.delete'),
-                textimage: 'fa fa-trash-o',
-                events   : {
+                type: 'seperator'
+            });
+
+            this.addButton(
+                new QUIButtonSwitch({
+                    name    : 'status',
+                    text    : QUILocale.get('quiqqer/quiqqer', 'isActivate'),
+                    disabled: true,
+                    events  : {
+                        onChange: this.$onStatusButtonChange
+                    }
+                })
+            );
+
+            this.addButton({
+                name  : 'groupDelete',
+                title : QUILocale.get(lg, 'groups.group.btn.delete'),
+                icon  : 'fa fa-trash-o',
+                events: {
                     onClick: this.del
+                },
+                styles: {
+                    'float': 'right'
                 }
             });
 
             // permissions
             new QUIButton({
                 image : 'fa fa-gears',
-                alt   : Locale.get(lg, 'groups.group.btn.permissions.alt'),
-                title : Locale.get(lg, 'groups.group.btn.permissions.title'),
+                alt   : QUILocale.get(lg, 'groups.group.btn.permissions.alt'),
+                title : QUILocale.get(lg, 'groups.group.btn.permissions.title'),
                 styles: {
                     'float': 'right'
                 },
@@ -348,32 +445,36 @@ define('controls/groups/Group', [
          *
          * @method controls/groups/Group#drawCategories
          *
-         * @param {Function} onfinish - Callback function
+         * @param {Function} [onfinish] - Callback function
+         * @return {Promise}
          * @ignore
          */
         $drawCategories: function (onfinish) {
-            var self = this;
-
             this.Loader.show();
 
-            Ajax.get('ajax_groups_panel_categories', function (result) {
+            return new Promise(function (resolve) {
 
-                for (var i = 0, len = result.length; i < len; i++) {
-                    result[i].events = {
-                        onActive: self.$onCategoryLoad,
-                        onNormal: self.$onCategoryUnload
-                    };
+                Ajax.get('ajax_groups_panel_categories', function (result) {
 
-                    self.addCategory(result[i]);
-                }
+                    for (var i = 0, len = result.length; i < len; i++) {
+                        result[i].events = {
+                            onActive: this.$onCategoryLoad,
+                            onNormal: this.$onCategoryUnload
+                        };
 
-                if (typeof onfinish === 'function') {
-                    onfinish(result);
-                }
+                        this.addCategory(result[i]);
+                    }
 
-            }, {
-                gid: this.getGroup().getId()
-            });
+                    if (typeof onfinish === 'function') {
+                        onfinish(result);
+                    }
+
+                    resolve();
+
+                }.bind(this), {
+                    gid: this.getGroup().getId()
+                });
+            }.bind(this));
         },
 
         /**
@@ -400,7 +501,6 @@ define('controls/groups/Group', [
 
                 Form = Body.getElement('form');
 
-                ControlUtils.parse(Body);
                 FormUtils.setDataToForm(Group.getAttributes(), Form);
 
                 switch (Category.getAttribute('name')) {
@@ -416,7 +516,11 @@ define('controls/groups/Group', [
                         Category.fireEvent('onLoad', [Category, self]);
                 }
 
-                self.Loader.hide();
+                ControlUtils.parse(Body).then(function () {
+                    return QUI.parse(Body);
+                }).then(function () {
+                    self.Loader.hide();
+                });
 
             }, {
                 plugin  : Category.getAttribute('plugin'),
@@ -455,7 +559,8 @@ define('controls/groups/Group', [
                 Toolbar.set('html', '');
 
                 Sel = new Element('select', {
-                    name: 'toolbar'
+                    'class': 'field-container-field',
+                    name   : 'toolbar'
                 });
 
                 for (i = 0, len = toolbars.length; i < len; i++) {
@@ -465,7 +570,7 @@ define('controls/groups/Group', [
                     }).inject(Sel);
                 }
 
-                Sel.inject(Toolbar);
+                Sel.replaces(Toolbar);
                 Sel.value = this.getAttribute('toolbar');
 
             }.bind(this));
@@ -476,44 +581,60 @@ define('controls/groups/Group', [
          */
         $onCategoryUsersLoad: function () {
             var Content = this.getBody(),
-                GridCon = new Element('div');
+                GridCon = new Element('div'),
+                self    = this;
 
             Content.set('html', '');
             GridCon.inject(Content);
 
             this.$UserGrid = new Grid(GridCon, {
+                buttons    : [{
+                    name     : 'adduser',
+                    text     : QUILocale.get(lg, 'controls.group.table.btns.adduser'),
+                    textimage: 'fa fa-user-plus',
+                    events   : {
+                        onClick: this.$onUsersAdd
+                    }
+                }, {
+                    name     : 'removeuser',
+                    text     : QUILocale.get(lg, 'controls.group.table.btns.removeuser'),
+                    textimage: 'fa fa-user-times',
+                    events   : {
+                        onClick: this.$onUsersRemove
+                    }
+                }],
                 columnModel: [{
-                    header   : Locale.get(lg, 'status'),
+                    header   : QUILocale.get(lg, 'status'),
                     dataIndex: 'status',
                     dataType : 'node',
                     width    : 50
                 }, {
-                    header   : Locale.get(lg, 'user_id'),
+                    header   : QUILocale.get(lg, 'user_id'),
                     dataIndex: 'id',
                     dataType : 'integer',
                     width    : 150
                 }, {
-                    header   : Locale.get(lg, 'username'),
+                    header   : QUILocale.get(lg, 'username'),
                     dataIndex: 'username',
                     dataType : 'integer',
                     width    : 150
                 }, {
-                    header   : Locale.get(lg, 'email'),
+                    header   : QUILocale.get(lg, 'email'),
                     dataIndex: 'email',
                     dataType : 'string',
                     width    : 150
                 }, {
-                    header   : Locale.get(lg, 'firstname'),
+                    header   : QUILocale.get(lg, 'firstname'),
                     dataIndex: 'firstname',
                     dataType : 'string',
                     width    : 150
                 }, {
-                    header   : Locale.get(lg, 'lastname'),
+                    header   : QUILocale.get(lg, 'lastname'),
                     dataIndex: 'lastname',
                     dataType : 'string',
                     width    : 150
                 }, {
-                    header   : Locale.get(lg, 'c_date'),
+                    header   : QUILocale.get(lg, 'c_date'),
                     dataIndex: 'regdate',
                     dataType : 'date',
                     width    : 150
@@ -546,7 +667,21 @@ define('controls/groups/Group', [
                             )
                         );
                     }.bind(this));
-                }.bind(this)
+                }.bind(this),
+                onClick   : function () {
+                    var TableButtons = self.$UserGrid.getAttribute('buttons');
+
+                    if (TableButtons.removeuser) {
+                        TableButtons.removeuser.enable();
+                    }
+                },
+                onRefresh : function () {
+                    var TableButtons = self.$UserGrid.getAttribute('buttons');
+
+                    if (TableButtons.removeuser) {
+                        TableButtons.removeuser.disable();
+                    }
+                }
             });
 
             GridCon.setStyles({
@@ -620,6 +755,107 @@ define('controls/groups/Group', [
 
             this.$UserGrid.setData(result);
             this.Loader.hide();
+        },
+
+        /**
+         * Add one or more users to the groups
+         */
+        $onUsersAdd: function () {
+            var self = this;
+
+            require([
+                'controls/users/search/Window'
+            ], function (UserSearchWindow) {
+                new UserSearchWindow({
+                    search        : true,
+                    searchSettings: {
+                        filter: {
+                            filter_groups_exclude: [self.$Group.getId()]
+                        }
+                    },
+                    events        : {
+                        onSubmit: function (Control, users) {
+                            var userIds = [];
+
+                            for (var i = 0, len = users.length; i < len; i++) {
+                                userIds.push(users[i].id);
+                            }
+
+                            Groups.addUsers(self.$Group.getId(), userIds).then(function (result) {
+                                self.refreshUser();
+                            });
+                        }
+                    }
+                }).open();
+            });
+        },
+
+        /**
+         * Remove one or more users from this group
+         */
+        $onUsersRemove: function () {
+            var self     = this;
+            var userIds  = [];
+            var users    = [];
+            var selected = this.$UserGrid.getSelectedIndices();
+
+            if (!selected.length) {
+                return;
+            }
+
+            for (var i = 0, len = selected.length; i < len; i++) {
+                var User = this.$UserGrid.getDataByRow(selected[i]);
+
+                userIds.push(User.id);
+                users.push(User.username + ' (#' + User.id + ')');
+            }
+
+            this.Loader.show();
+
+            require([
+                'qui/controls/windows/Confirm'
+            ], function (QUIConfirm) {
+                new QUIConfirm({
+                    'autoclose': true,
+
+                    'information': QUILocale.get(
+                        'quiqqer/system',
+                        'controls.group.deleteusers.confirm.info', {
+                            groupId  : self.$Group.getId(),
+                            groupName: self.$Group.getName(),
+                            users    : users.join(', ')
+                        }
+                    ),
+                    'title'      : QUILocale.get(
+                        'quiqqer/system',
+                        'controls.group.deleteusers.confirm.title'
+                    ),
+                    'texticon'   : 'fa fa-user-times',
+                    'icon'       : 'fa fa-user-times',
+
+                    cancel_button: {
+                        text     : false,
+                        textimage: 'fa fa-remove'
+                    }
+                    ,
+                    ok_button    : {
+                        text     : false,
+                        textimage: 'fa fa-check'
+                    },
+                    events: {
+                        onSubmit: function(Confirm) {
+                            Confirm.Loader.show();
+
+                            Groups.removeUsers(self.$Group.getId(), userIds).then(function(result) {
+                                self.refreshUser();
+                                Confirm.Loader.hide();
+                            });
+                        }
+                    }
+                }).open();
+
+                self.Loader.hide();
+            });
         }
     });
 });

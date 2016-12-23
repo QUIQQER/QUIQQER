@@ -32,7 +32,6 @@ QUI::$Ajax->registerFunction(
                             'message.user.deactivate'
                         )
                     );
-
                 } else {
                     $User->activate();
 
@@ -45,7 +44,6 @@ QUI::$Ajax->registerFunction(
                 }
 
                 $result[$_uid] = $User->isActive() ? 1 : 0;
-
             } catch (QUI\Exception $Exception) {
                 QUI::getMessagesHandler()->addAttention(
                     $Exception->getMessage()

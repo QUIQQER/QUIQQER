@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<user>
+
+    <attributes>
+        <attribute>quiqqer.set.new.password</attribute>
+        <attribute>qui-bookmarks</attribute>
+    </attributes>
+
+    <window>
+        <tab name="details">
+            <text>
+                <locale group="quiqqer/quiqqer" var="user.panel.details"/>
+            </text>
+            <image>fa fa-user</image>
+            <template>SYS_DIR/template/users/details.html</template>
+        </tab>
+
+        <tab name="security">
+            <text>
+                <locale group="quiqqer/quiqqer" var="user.panel.password"/>
+            </text>
+            <image>fa fa-key</image>
+            <template>SYS_DIR/template/users/security.html</template>
+        </tab>
+
+        <tab name="data">
+            <text>
+                <locale group="quiqqer/quiqqer" var="user.panel.personalData"/>
+            </text>
+            <image>fa fa-envelope</image>
+            <template>SYS_DIR/template/users/data.html</template>
+        </tab>
+
+    </window>
+
+</user>

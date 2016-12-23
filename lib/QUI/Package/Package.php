@@ -8,7 +8,7 @@ namespace QUI\Package;
 
 use QUI;
 use QUI\Update;
-use QUI\Utils\XML;
+use QUI\Utils\Text\XML;
 
 /**
  * An installed package
@@ -37,6 +37,11 @@ class Package extends QUI\QDOM
     protected $packageDir = '';
 
     /**
+     * @var null
+     */
+    protected $packageXML = null;
+
+    /**
      * Package composer data from the composer file
      *
      * @var bool|array
@@ -58,6 +63,11 @@ class Package extends QUI\QDOM
     protected $Config = null;
 
     /**
+     * @var bool
+     */
+    protected $isQuiqqerPackage = false;
+
+    /**
      * constructor
      *
      * @param string $package - Name of the Package
@@ -67,6 +77,10 @@ class Package extends QUI\QDOM
     public function __construct($package)
     {
         $packageDir = OPT_DIR . $package . '/';
+
+        if (strpos($package, '-asset/') !== false) {
+            $packageDir = OPT_DIR . '/bin/' . explode('/', $package)[1] . '/';
+        }
 
         if (!is_dir($packageDir)) {
             throw new QUI\Exception('Package not exists', 404);
@@ -93,9 +107,39 @@ class Package extends QUI\QDOM
             return;
         }
 
-        $this->configPath = CMS_DIR . 'etc/plugins/' . $this->getName() . '.ini.php';
+        $this->isQuiqqerPackage = true;
+        $this->configPath       = CMS_DIR . 'etc/plugins/' . $this->getName() . '.ini.php';
 
         QUI\Utils\System\File::mkfile($this->configPath);
+    }
+
+    /**
+     * Read the package xml
+     *
+     * @return array
+     */
+    protected function getPackageXMLData()
+    {
+        if (!$this->isQuiqqerPackage()) {
+            return array();
+        }
+
+        if (!is_null($this->packageXML)) {
+            return $this->packageXML;
+        }
+
+        $packageXML = $this->packageDir . '/package.xml';
+
+        // package xml
+        if (!file_exists($packageXML)) {
+            $this->packageXML = array();
+
+            return $this->packageXML;
+        }
+
+        $this->packageXML = XML::getPackageFromXMLFile($packageXML);
+
+        return $this->packageXML;
     }
 
     /**
@@ -134,6 +178,93 @@ class Package extends QUI\QDOM
     }
 
     /**
+     * Return the package title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        $packageData = $this->getPackageXMLData();
+
+        if (isset($packageData['title']) && !empty($packageData['title'])) {
+            return $packageData['title'];
+        }
+
+        if ($this->isQuiqqerPackage()
+            && QUI::getLocale()->exists($this->name, 'package.title')
+        ) {
+            return QUI::getLocale()->get($this->name, 'package.title');
+        }
+
+        return $this->getName();
+    }
+
+    /**
+     * Return the package description
+     *
+     * @return String
+     */
+    public function getDescription()
+    {
+        $packageData = $this->getPackageXMLData();
+
+        if (isset($packageData['description'])) {
+            return $packageData['description'];
+        }
+
+        if ($this->isQuiqqerPackage()
+            && QUI::getLocale()->exists($this->name, 'package.description')
+        ) {
+            return QUI::getLocale()->get($this->name, 'package.description');
+        }
+
+        $composer = $this->getComposerData();
+
+        if (isset($composer['description'])) {
+            return $composer['description'];
+        }
+
+        return '';
+    }
+
+    /**
+     * Return the path to the package image / icon
+     *
+     * @return String
+     */
+    public function getImage()
+    {
+        $packageData = $this->getPackageXMLData();
+
+        if (isset($packageData['image'])) {
+            return $packageData['image'];
+        }
+
+        if (file_exists($this->packageDir . 'bin/package.png')) {
+            return str_replace(OPT_DIR, URL_OPT_DIR, $this->packageDir) . 'bin/package.png';
+        }
+
+        return '';
+    }
+
+    /**
+     * Return all preview images
+     * Not the main image
+     *
+     * @return array
+     */
+    public function getPreviewImages()
+    {
+        $packageData = $this->getPackageXMLData();
+
+        if (!isset($packageData['preview']) || !is_array($packageData['preview'])) {
+            return array();
+        }
+
+        return $packageData['preview'];
+    }
+
+    /**
      * Return the package config
      *
      * @return QUI\Config|boolean
@@ -152,6 +283,16 @@ class Package extends QUI\QDOM
     }
 
     /**
+     * Return the package lock date
+     *
+     * @return array
+     */
+    public function getLock()
+    {
+        return QUI::getPackageManager()->getPackageLock($this);
+    }
+
+    /**
      * Return the composer data of the package
      *
      * @return array|bool|mixed
@@ -163,15 +304,28 @@ class Package extends QUI\QDOM
             return $this->composerData;
         }
 
-        $composer = QUI::getPackageManager()->show($this->getName());
-
-        if (!isset($composer['name'])) {
-            $composer['name'] = $this->getName();
+        if (file_exists($this->packageDir . 'composer.json')) {
+            $this->composerData = json_decode(
+                file_get_contents($this->packageDir . 'composer.json'),
+                true
+            );
         }
 
-        $this->composerData = $composer;
+        if (file_exists($this->packageDir . 'package.json')) {
+            $this->composerData = json_decode(
+                file_get_contents($this->packageDir . 'package.json'),
+                true
+            );
+        }
 
-        return $composer;
+        if (file_exists($this->packageDir . 'bower.json')) {
+            $this->composerData = json_decode(
+                file_get_contents($this->packageDir . 'bower.json'),
+                true
+            );
+        }
+
+        return array();
     }
 
     /**
@@ -197,23 +351,50 @@ class Package extends QUI\QDOM
     {
         $dir = $this->getDir();
 
+        if (!$this->isQuiqqerPackage()) {
+            return;
+        }
+
         Update::importDatabase($dir . 'database.xml');
         Update::importTemplateEngines($dir . 'engines.xml');
         Update::importEditors($dir . 'wysiwyg.xml');
-        Update::importMenu($dir . 'menu.xml');
+
         Update::importPermissions($dir . 'permissions.xml', $this->getName());
         Update::importMenu($dir . 'menu.xml');
 
         // events
-        Update::importEvents($dir . 'events.xml');
+        QUI\Events\Manager::clear($this->getName());
+        Update::importEvents($dir . 'events.xml', $this->getName());
         Update::importSiteEvents($dir . 'site.xml');
 
+        // locale
         Update::importLocale($dir . 'locale.xml');
+
+        try {
+            $groups = XML::getLocaleGroupsFromDom(
+                XML::getDomFromXml($dir . 'locale.xml')
+            );
+
+            $groups = array_map(function ($data) {
+                return $data['group'];
+            }, $groups);
+
+            $groups = array_unique($groups);
+        } catch (QUI\Exception $Exception) {
+            $groups = array();
+            QUI\System\Log::addWarning($Exception->getMessage());
+        }
+
+        QUI\Translator::publish($this->getName());
+
+        foreach ($groups as $group) {
+            QUI\Translator::publish($group);
+        }
+
 
         // settings
         if (!file_exists($dir . 'settings.xml')) {
             QUI::getEvents()->fireEvent('packageSetup', array($this));
-
             return;
         }
 
@@ -225,6 +406,16 @@ class Package extends QUI\QDOM
         }
 
         QUI::getEvents()->fireEvent('packageSetup', array($this));
+    }
+
+    /**
+     * Is the package a quiqqer package?
+     *
+     * @return bool
+     */
+    public function isQuiqqerPackage()
+    {
+        return $this->isQuiqqerPackage;
     }
 
     /**
@@ -241,11 +432,11 @@ class Package extends QUI\QDOM
     /**
      * Uninstall the package / plugin
      * it doesn't destroy the database data, its only uninstall the package
+     *
+     * @todo implementieren
      */
     public function uninstall()
     {
-
-
         QUI::getEvents()
             ->fireEvent('packageUninstall', array($this->getName()));
     }
@@ -253,10 +444,11 @@ class Package extends QUI\QDOM
     /**
      * Destroy the complete package / plugin
      * it destroy the database data, too
+     *
+     * @todo implementieren
      */
     public function destroy()
     {
-
         QUI::getEvents()
             ->fireEvent('packageUninstall', array($this->getName()));
     }

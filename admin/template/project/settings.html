@@ -112,23 +112,14 @@
 
         <tr class="{cycle values="odd,even"}">
             <td class="first">
-                <label for="layout">
-                    {t}quiqqer/quiqqer projects.project.settings.panel.layout{/t}
+                <label for="logo">
+                    {t}quiqqer/quiqqer projects.project.settings.panel.logo{/t}
                 </label>
             </td>
             <td>
-                {assign var=layouts value=$Project->getLayouts()}
-                <select name="layout" id="layout">
-                    <option value=""></option>
-                    {foreach from=$layouts item=layout}
-                    <option value="{$layout.type}">
-                        {$layout.title}
-                    </option>
-                    {/foreach}
-                </select>
+                <input name="logo" class="media-image" />
             </td>
         </tr>
-
         <tr class="{cycle values="odd,even"}">
             <td class="first">
                 <label for="placeholder">

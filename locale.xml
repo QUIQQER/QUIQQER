@@ -2,6 +2,44 @@
 <locales>
 
     <groups name="quiqqer/quiqqer" datatype="js,php">
+        <locale name="package.title">
+            <de><![CDATA[QUIQQER - Core]]></de>
+            <en><![CDATA[QUIQQER - Core]]></en>
+        </locale>
+        <locale name="package.description">
+            <de><![CDATA[QUIQQER - Start your Business]]></de>
+            <en><![CDATA[QUIQQER - Start your Business]]></en>
+        </locale>
+
+        <locale name="numberFormat.numbering_system">
+            <de><![CDATA[latn]]></de>
+            <en><![CDATA[latn]]></en>
+        </locale>
+        <locale name="numberFormat.decimal_pattern">
+            <de><![CDATA[#,##0.###]]></de>
+            <en><![CDATA[#,##0.###]]></en>
+        </locale>
+        <locale name="numberFormat.percent_pattern">
+            <de><![CDATA[#,##0 %]]></de>
+            <en><![CDATA[#,##0%]]></en>
+        </locale>
+        <locale name="numberFormat.currency_pattern">
+            <de><![CDATA[#,##0.00 ¤]]></de>
+            <en><![CDATA[¤#,##0.00]]></en>
+        </locale>
+        <locale name="numberFormat.accounting_currency_pattern">
+            <de><![CDATA[#,##0.00 ¤]]></de>
+            <en><![CDATA[¤#,##0.00;(¤#,##0.00)]]></en>
+        </locale>
+        <locale name="numberFormat.decimal_separator">
+            <de><![CDATA[,]]></de>
+            <en><![CDATA[.]]></en>
+        </locale>
+        <locale name="numberFormat.grouping_separator">
+            <de><![CDATA[.]]></de>
+            <en><![CDATA[,]]></en>
+        </locale>
+
         <locale name="permission.quiqqer._header">
             <de><![CDATA[QUIQQER]]></de>
             <en><![CDATA[QUIQQER]]></en>
@@ -100,6 +138,10 @@
             <de><![CDATA[Darf Gruppen editieren.]]></de>
             <en><![CDATA[Is allowed to edit groups.]]></en>
         </locale>
+        <locale name="permission.quiqqer.admin.groups.edit">
+            <de><![CDATA[Darf Gruppen anlegen.]]></de>
+            <en><![CDATA[Is allowed to create groups.]]></en>
+        </locale>
         <locale name="permission.quiqqer.admin.users.view">
             <de><![CDATA[Darf die Benutzerverwaltung sehen.]]></de>
             <en><![CDATA[Can see the user management]]></en>
@@ -107,6 +149,10 @@
         <locale name="permission.quiqqer.admin.users.edit">
             <de><![CDATA[Darf Benutzer editieren.]]></de>
             <en><![CDATA[Is allowed to edit users.]]></en>
+        </locale>
+        <locale name="permission.quiqqer.admin.users.create">
+            <de><![CDATA[Darf Benutzer anlegen.]]></de>
+            <en><![CDATA[Is allowed to create users.]]></en>
         </locale>
         <locale name="permission.quiqqer.projects.create">
             <de><![CDATA[Darf Projekte anlegen.]]></de>
@@ -188,6 +234,10 @@
         <locale name="projects.project.settings.panel.placeholder">
             <de><![CDATA[Platzhalterbild]]></de>
             <en><![CDATA[Placeholder image]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.logo">
+            <de><![CDATA[Projekt-Logo]]></de>
+            <en><![CDATA[Project logo]]></en>
         </locale>
         <locale name="projects.project.settings.panel.favicon">
             <de><![CDATA[Favicon]]></de>
@@ -297,12 +347,163 @@
             <de><![CDATA[Deaktivieren]]></de>
             <en><![CDATA[Deactivate]]></en>
         </locale>
+
+        <locale name="isActivate">
+            <de><![CDATA[Ist aktiviert]]></de>
+            <en><![CDATA[Is activate]]></en>
+        </locale>
+        <locale name="isDeactivate">
+            <de><![CDATA[Ist deaktiviert]]></de>
+            <en><![CDATA[Is deactivate]]></en>
+        </locale>
+
+        <locale name="user.panel.details">
+            <de><![CDATA[Details]]></de>
+            <en><![CDATA[Details]]></en>
+        </locale>
+        <locale name="user.panel.password">
+            <de><![CDATA[Passwort & Sicherheit]]></de>
+            <en><![CDATA[Password & Security]]></en>
+        </locale>
+        <locale name="user.panel.password.new">
+            <de><![CDATA[Neues Passwort]]></de>
+            <en><![CDATA[New password]]></en>
+        </locale>
+        <locale name="user.panel.password.repeat">
+            <de><![CDATA[Passwort wiederholen]]></de>
+            <en><![CDATA[Repeat password]]></en>
+        </locale>
+        <locale name="user.panel.password.show">
+            <de><![CDATA[Passwörter anzeigen]]></de>
+            <en><![CDATA[Show passwords]]></en>
+        </locale>
+        <locale name="user.panel.password.old">
+            <de><![CDATA[Altes Password]]></de>
+            <en><![CDATA[Old password]]></en>
+        </locale>
+        <locale name="user.panel.personalData">
+            <de><![CDATA[Persönliche Daten / Adressen]]></de>
+            <en><![CDATA[personal data / Adresses]]></en>
+        </locale>
+        <locale name="user.panel.avatar">
+            <de><![CDATA[Benutzerbild]]></de>
+            <en><![CDATA[User Avatar]]></en>
+        </locale>
+        <locale name="user.panel.editorToolbar">
+            <de><![CDATA[Editor-Toolbar]]></de>
+            <en><![CDATA[Editor toolbar]]></en>
+        </locale>
+        <locale name="user.panel.userlanguage">
+            <de><![CDATA[Benutzersprache]]></de>
+            <en><![CDATA[User language]]></en>
+        </locale>
+        <locale name="user.panel.lastChanged">
+            <de><![CDATA[Zuletzte geändert am]]></de>
+            <en><![CDATA[Last changed at]]></en>
+        </locale>
+        <locale name="user.panel.lastLogin">
+            <de><![CDATA[Letzter Login]]></de>
+            <en><![CDATA[Last login]]></en>
+        </locale>
+        <locale name="user.panel.browser">
+            <de><![CDATA[Browser User-Agent]]></de>
+            <en><![CDATA[Browser User-Agent]]></en>
+        </locale>
+        <locale name="user.panel.search.title">
+            <de><![CDATA[Suche nach:]]></de>
+            <en><![CDATA[Search:]]></en>
+        </locale>
+        <locale name="user.panel.search.in.title">
+            <de><![CDATA[Suche in:]]></de>
+            <en><![CDATA[Search in:]]></en>
+        </locale>
+        <locale name="user.panel.search.filter.title">
+            <de><![CDATA[Filter:]]></de>
+            <en><![CDATA[Filter:]]></en>
+        </locale>
+        <locale name="user.panel.search.filter.regdate.first">
+            <de><![CDATA[Erstellt ab]]></de>
+            <en><![CDATA[Created from:]]></en>
+        </locale>
+        <locale name="user.panel.search.filter.regdate.last">
+            <de><![CDATA[Erstellt bis]]></de>
+            <en><![CDATA[Created to:]]></en>
+        </locale>
+        <locale name="user.panel.search.placeholder">
+            <de><![CDATA[Bitte Suchbegriff eingeben.]]></de>
+            <en><![CDATA[Please enter search term.]]></en>
+        </locale>
+
+        <locale name="message.user.saved" html="true">
+            <de><![CDATA[Der Benutzer <b>[username] #[id]</b> wurde erfolgreich gespeichert.]]></de>
+            <en><![CDATA[The user <b>[username] #[id]</b> successfully saved.]]></en>
+        </locale>
+        <locale name="message.group.saved" html="true">
+            <de><![CDATA[Die Gruppe <b>[groupname] #[id]</b> wurde erfolgreich gespeichert.]]></de>
+            <en><![CDATA[The group <b>[groupname] #[id]</b> successfully saved.]]></en>
+        </locale>
+        <locale name="message.group.deleted" html="true">
+            <de><![CDATA[Die Gruppe <b>[groupname] #[id]</b> wurde erfolgreich gelöscht.]]></de>
+            <en><![CDATA[The group <b>[groupname] #[id]</b> successfully deleted.]]></en>
+        </locale>
+        <locale name="message.groups.deleted" html="true">
+            <de><![CDATA[Die Gruppen <b>[groups]</b> wurde erfolgreich gespeichert.]]></de>
+            <en><![CDATA[The groups <b>[groups]</b> successfully deleted.]]></en>
+        </locale>
+
+        <locale name="message.set.new.password">
+            <de><![CDATA[Du musst dein Passwort ändern. Bitte gebe ein neues Passwort ein.]]></de>
+            <en><![CDATA[You must change your password. Please enter a new password.]]></en>
+        </locale>
+        <locale name="exception.user.oldPassword.is.wrong">
+            <de><![CDATA[Das alte Passwort ist nicht korrekt.]]></de>
+            <en><![CDATA[The old password is incorrect]]></en>
+        </locale>
+        <locale name="user.settings.setNewPassword">
+            <de><![CDATA[Passwort erneuern]]></de>
+            <en><![CDATA[Renew password]]></en>
+        </locale>
+        <locale name="user.settings.setNewPassword.text">
+            <de><![CDATA[Beim nächsten Login muss der Benutzer ein neues Passwort setzen.]]></de>
+            <en><![CDATA[At the next login, the user must set a new password.]]></en>
+        </locale>
+
+        <locale name="message.setup.is.currently.running">
+            <de><![CDATA[Das Setup wird gerade ausgeführt. Bitte warten Sie bis dieses zu ende ist.]]></de>
+            <en><![CDATA[The setup is running. Please wait until this is finish.]]></en>
+        </locale>
+        <locale name="message.setup.runs">
+            <de><![CDATA[Das Setup wird ausgeführt.]]></de>
+            <en><![CDATA[The setup is running.]]></en>
+        </locale>
+
+        <locale name="message.packages.server.add.successfuly">
+            <de><![CDATA[Der Server [server] wurde erfolgreich hinzugefügt.]]></de>
+            <en><![CDATA[The Server [server] was successfuly added.]]></en>
+        </locale>
+        <locale name="message.packages.server.remove.successfuly">
+            <de><![CDATA[Die Server wurden erfolgreich entfernt.]]></de>
+            <en><![CDATA[The servers were successfully removed.]]></en>
+        </locale>
+        <locale name="message.packages.no.updates.available">
+            <de><![CDATA[Es wurden keine Updates gefunden. Ihr System ist auf dem aktuellsten Stand.]]></de>
+            <en><![CDATA[No updates were found. Your system is up to date.]]></en>
+        </locale>
+
+        <locale name="order_field_asc">
+            <de><![CDATA[Manuelle Seitensortierung absteigend]]></de>
+            <en><![CDATA[Site order descending]]></en>
+        </locale>
+        <locale name="order_field_desc">
+            <de><![CDATA[Manuelle Seitensortierung aufsteigend]]></de>
+            <en><![CDATA[Site order ascending]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
         <locale name="projects.project.settings.panel.settings.title">
-            <de><![CDATA[Projekteinstellungen]]></de>
-            <en><![CDATA[Projects settings]]></en>
+            <de><![CDATA[Projekte]]></de>
+            <en><![CDATA[Projects]]></en>
         </locale>
         <locale name="projects.project.settings.panel.language.default">
             <de><![CDATA[Standard Sprache]]></de>
@@ -367,6 +568,10 @@
             <de><![CDATA[Sie können den Hauptordner nicht löschen.]]></de>
             <en><![CDATA[You cannot delete the root file.]]></en>
         </locale>
+        <locale name="exception.custom.css.is.not.writeable">
+            <de><![CDATA[Die Custom-CSS [file] ist nicht schreibbar. Bitte ändern Sie die Schreibrechte.]]></de>
+            <en><![CDATA[The Custom CSS [file] is not writable. Please change the write permission.]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="js">
@@ -414,7 +619,151 @@
             <de><![CDATA[Suche nach einer Gruppe ...]]></de>
             <en><![CDATA[Search for a group ...]]></en>
         </locale>
+        <locale name="control.usersgroups.select.search.field.placeholder">
+            <de><![CDATA[Suche nach einer Gruppe oder einem Benutzer...]]></de>
+            <en><![CDATA[Search for a group or a user ...]]></en>
+        </locale>
 
+        <locale name="control.usersgroups.window.search.title">
+            <de><![CDATA[Benutzer- und Gruppensuche]]></de>
+            <en><![CDATA[User and group search]]></en>
+        </locale>
+
+        <locale name="message.user.has.no.password">
+            <de><![CDATA[Der Benutzer besitzt noch kein Passwort]]></de>
+            <en><![CDATA[The user has no password]]></en>
+        </locale>
+
+        <locale name="packages.panel.server.win.add.title">
+            <de><![CDATA[Neuen Update-Server hinzufügen]]></de>
+            <en><![CDATA[Add a new update server]]></en>
+        </locale>
+        <locale name="packages.panel.server.win.delete.title">
+            <de><![CDATA[Update-Server entfernen]]></de>
+            <en><![CDATA[Remove update server]]></en>
+        </locale>
+
+        <locale name="packages.panel.server.win.edit.title">
+            <de><![CDATA[Update-Server bearbeiten]]></de>
+            <en><![CDATA[Edit the update server]]></en>
+        </locale>
+        <locale name="packages.panel.server.win.add.text" html="true">
+            <de><![CDATA[
+            Fügen Sie einen neuen Update-Server hinzu. Geben Sie Host, IP oder die Serveradresse vom Update-Server ein.
+            ]]></de>
+            <en><![CDATA[
+            Add a new update server. Enter the host, or the server IP address from the update server.
+            ]]></en>
+        </locale>
+        <locale name="message.packages.panel.server.emptyserver">
+            <de><![CDATA[
+            Bitte geben Sie einen Server an.
+            ]]></de>
+            <en><![CDATA[
+            Please specify a server.
+            ]]></en>
+        </locale>
+
+        <locale name="packages.panel.server.win.remove.text" html="true">
+            <de><![CDATA[
+            Möchten Sie den folgenden Update-Server wirklich entfernen?
+            ]]></de>
+            <en><![CDATA[
+            Do you realy want to delete the update server?
+            ]]></en>
+        </locale>
+
+        <locale name="packages.panel.menu">
+            <de><![CDATA[Menü / Navigation]]></de>
+            <en><![CDATA[Menu / Navigation]]></en>
+        </locale>
+        <locale name="packages.panel.category.installed">
+            <de><![CDATA[Installierte Erweiterungen]]></de>
+            <en><![CDATA[Installed extensions]]></en>
+        </locale>
+        <locale name="packages.panel.category.search">
+            <de><![CDATA[Erweiterungen installieren]]></de>
+            <en><![CDATA[Install extensions]]></en>
+        </locale>
+        <locale name="packages.panel.category.server">
+            <de><![CDATA[Update-Server]]></de>
+            <en><![CDATA[Update server]]></en>
+        </locale>
+        <locale name="packages.panel.category.update">
+            <de><![CDATA[Aktualisierung]]></de>
+            <en><![CDATA[Update]]></en>
+        </locale>
+        <locale name="packages.panel.category.phpinfo">
+            <de><![CDATA[PHP-Info]]></de>
+            <en><![CDATA[PHP Info]]></en>
+        </locale>
+        <locale name="packages.panel.category.settings">
+            <de><![CDATA[Einstellungen]]></de>
+            <en><![CDATA[Settings]]></en>
+        </locale>
+
+        <locale name="packages.panel.btn.setup">
+            <de><![CDATA[System Setup ausführen]]></de>
+            <en><![CDATA[Execute the system setup]]></en>
+        </locale>
+        <locale name="packages.panel.btn.startUpdate">
+            <de><![CDATA[Auf Updates prüfen]]></de>
+            <en><![CDATA[Check for updates]]></en>
+        </locale>
+        <locale name="packages.panel.btn.executeUpdate">
+            <de><![CDATA[System Update ausführen]]></de>
+            <en><![CDATA[Run system update]]></en>
+        </locale>
+
+        <locale name="packages.panel.system.packageUpdate.title">
+            <de><![CDATA[Paket [package] aktualisieren auf Version [version]]]></de>
+            <en><![CDATA[Update package [package] to version [version]]]></en>
+        </locale>
+        <locale name="packages.setup">
+            <de><![CDATA[[pkg] setup ausführen]]></de>
+            <en><![CDATA[Execute the [pkg] setup]]></en>
+        </locale>
+
+        <locale name="message.setup.successfull.title">
+            <de><![CDATA[Setup erfolgreich ausgeführt.]]></de>
+            <en><![CDATA[Setup was successfully.]]></en>
+        </locale>
+        <locale name="message.setup.successfull">
+            <de><![CDATA[Das Setup wurde erfolgreich ausgeführt.]]></de>
+            <en><![CDATA[The setup was successfully completed.]]></en>
+        </locale>
+
+        <locale name="message.update.success.title">
+            <de><![CDATA[Aktualisierung erfolgreich]]></de>
+            <en><![CDATA[Update successfully]]></en>
+        </locale>
+        <locale name="message.update.success.message">
+            <de><![CDATA[Die Aktualisierung wurde erfolgreich durchgeführt. Ihr System ist nun aktuell.]]></de>
+            <en><![CDATA[The update has been successfully completed. Your system is now up to date.]]></en>
+        </locale>
+
+        <locale name="message.update.error.title">
+            <de><![CDATA[Fehler bei der Update-Prüfung]]></de>
+            <en><![CDATA[Errors at the update checking]]></en>
+        </locale>
+
+        <locale name="message.update.not.available.title">
+            <de><![CDATA[Keine Updates verfügbar]]></de>
+            <en><![CDATA[No Updates available]]></en>
+        </locale>
+        <locale name="message.update.not.available.description">
+            <de><![CDATA[Es sind keine Updates verfügbar]]></de>
+            <en><![CDATA[Updates keine are available]]></en>
+        </locale>
+
+        <locale name="message.update.available.title">
+            <de><![CDATA[Updates verfügbar]]></de>
+            <en><![CDATA[Updates available]]></en>
+        </locale>
+        <locale name="message.update.available.description">
+            <de><![CDATA[Es sind Updates verfügbar]]></de>
+            <en><![CDATA[New Updates are available]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/system" datatype="js,php">
@@ -437,6 +786,10 @@
         <locale name="title">
             <de><![CDATA[Titel]]></de>
             <en><![CDATA[Title]]></en>
+        </locale>
+        <locale name="workingtitle">
+            <de><![CDATA[Arbeitstitel]]></de>
+            <en><![CDATA[Working title]]></en>
         </locale>
         <locale name="short">
             <de><![CDATA[Kurzbeschreibung]]></de>
@@ -473,6 +826,18 @@
         <locale name="createdate">
             <de><![CDATA[Erstellungsdatum]]></de>
             <en><![CDATA[Creation date]]></en>
+        </locale>
+        <locale name="createuser">
+            <de><![CDATA[Ersteller]]></de>
+            <en><![CDATA[Creater]]></en>
+        </locale>
+        <locale name="editdate">
+            <de><![CDATA[Letztes Bearbeitungsdatum]]></de>
+            <en><![CDATA[Last edit date]]></en>
+        </locale>
+        <locale name="edituser">
+            <de><![CDATA[Bearbeiter]]></de>
+            <en><![CDATA[Editor]]></en>
         </locale>
         <locale name="date">
             <de><![CDATA[Datum]]></de>
@@ -530,6 +895,10 @@
             <de><![CDATA[IP-Adresse des Benutzers]]></de>
             <en><![CDATA[The user's IP address]]></en>
         </locale>
+        <locale name="birthday">
+            <de><![CDATA[Geburtstag]]></de>
+            <en><![CDATA[Birthday]]></en>
+        </locale>
         <locale name="password">
             <de><![CDATA[Passwort]]></de>
             <en><![CDATA[Password]]></en>
@@ -566,6 +935,10 @@
             <de><![CDATA[Gruppe]]></de>
             <en><![CDATA[Group]]></en>
         </locale>
+        <locale name="groups">
+            <de><![CDATA[Gruppen]]></de>
+            <en><![CDATA[Groups]]></en>
+        </locale>
         <locale name="groupname">
             <de><![CDATA[Gruppenname]]></de>
             <en><![CDATA[Group name]]></en>
@@ -593,6 +966,10 @@
         <locale name="delete">
             <de><![CDATA[Löschen]]></de>
             <en><![CDATA[Delete]]></en>
+        </locale>
+        <locale name="remove">
+            <de><![CDATA[Entfernen]]></de>
+            <en><![CDATA[Remove]]></en>
         </locale>
         <locale name="edit">
             <de><![CDATA[Bearbeiten]]></de>
@@ -775,10 +1152,6 @@
                 <![CDATA[<p>Vielen Dank f&uuml;r Ihre E-Mail. Wir werden uns schnellstm&ouml;glich bei Ihnen melden.</p>]]></de>
             <en><![CDATA[Thank you for your email. We will contact you as soon as possible.]]></en>
         </locale>
-        <locale name="message.setup.successfull">
-            <de><![CDATA[Das Setup wurde erfolgreich ausgeführt.]]></de>
-            <en><![CDATA[The setup was successfully completed.]]></en>
-        </locale>
 
         <locale name="message.session.auth.memcached.notinstalled">
             <de><![CDATA[Die Memcached Erweiterung ist nicht vorhanden auf diesem Server.]]></de>
@@ -898,6 +1271,14 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             The following characters are allowed: 0-9 a-z A-Z _ -</p>
             ]]></en>
         </locale>
+        <locale name="no.results">
+            <de><![CDATA[Keine Ergebnisse gefunden]]></de>
+            <en><![CDATA[No results found]]></en>
+        </locale>
+        <locale name="menu.profile.userPassword.text">
+            <de><![CDATA[Passwort ändern]]></de>
+            <en><![CDATA[Change password]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js">
         <locale name="welcome.message">
@@ -945,13 +1326,15 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Really want to delete the project?]]></en>
         </locale>
         <locale name="projects.project.project.delete.window.information">
-            <de>
-                <![CDATA[Das Projekt wird unwiderruflich gelöscht. Eine Wiederherstellung ist nicht mehr möglich.]]></de>
+            <de><![CDATA[
+            Das Projekt wird unwiderruflich gelöscht. Eine Wiederherstellung ist nicht mehr möglich.
+            ]]></de>
             <en><![CDATA[The project can not be restored and the deletion is irrevocable.]]></en>
         </locale>
         <locale name="projects.project.project.delete.window.text.2">
-            <de>
-                <![CDATA[Sind Sie sicher, dass Sie das Projekt löschen möchten? Eine Wiederherstellung ist nicht möglich.]]></de>
+            <de><![CDATA[
+            Sind Sie sicher, dass Sie das Projekt löschen möchten? Eine Wiederherstellung ist nicht möglich.
+            ]]></de>
             <en><![CDATA[Are you sure you want to delete this project?]]></en>
         </locale>
         <locale name="projects.project.windowselect.text">
@@ -1348,8 +1731,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Start search]]></en>
         </locale>
         <locale name="editors.settings.title">
-            <de><![CDATA[WYSIWYG-Editor Einstellungen]]></de>
-            <en><![CDATA[WYSIWYG-Editor Settings]]></en>
+            <de><![CDATA[WYSIWYG-Editor]]></de>
+            <en><![CDATA[WYSIWYG-Editor]]></en>
         </locale>
         <locale name="editors.settings.btn.edit.toolbar">
             <de><![CDATA[Toolbar editieren]]></de>
@@ -1726,6 +2109,24 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Delete page]]></en>
         </locale>
 
+        <locale name="projects.project.site.panel.window.deleteLinked.title">
+            <de><![CDATA[Verknüpfung #[id] löschen]]></de>
+            <en><![CDATA[Delete site shortcut #[id]]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.window.deleteLinked.text">
+            <de><![CDATA[Möchten Sie die Verknüpfung wirklich löschen?]]></de>
+            <en><![CDATA[Are you sure you want to delete the site shortcut [path]?]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.window.deleteLinked.information" html="1">
+            <de>
+                <![CDATA[Die Verknüpfung <b>[path]</b> wird unwiderruflich gelöscht und kann nicht wieder hergestellt werden.]]></de>
+            <en><![CDATA[The site shortcut <b>[path]</b> is irrevocably deleted and can not be restored]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.window.deleteLinked.button">
+            <de><![CDATA[Verknüpfung löschen]]></de>
+            <en><![CDATA[Delete site shortcut]]></en>
+        </locale>
+
         <locale name="projects.project.site.panel.window.create.title">
             <de><![CDATA[Wie soll die neue Seite heißen?]]></de>
             <en><![CDATA[How be called the new page?]]></en>
@@ -1865,8 +2266,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[The group will be completely removed from the system and can not be restored]]></en>
         </locale>
         <locale name="groups.group.btn.save">
-            <de><![CDATA[Änderungen speichern]]></de>
-            <en><![CDATA[Save changes]]></en>
+            <de><![CDATA[Speichern]]></de>
+            <en><![CDATA[Save]]></en>
         </locale>
         <locale name="groups.group.btn.delete">
             <de><![CDATA[Gruppe löschen]]></de>
@@ -1926,7 +2327,11 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Gruppe erstellen]]></de>
             <en><![CDATA[Create group]]></en>
         </locale>
-        <locale name="groups.panel.create.window.sitemap.text">
+        <locale name="groups.panel.create.window.text">
+            <de><![CDATA[Neue Gruppe erstellen]]></de>
+            <en><![CDATA[Create new group]]></en>
+        </locale>
+        <locale name="groups.panel.create.window.sitemap.information">
             <de><![CDATA[Unter welcher Gruppe soll die neue Gruppe angelegt werden?]]></de>
             <en><![CDATA[Under which group should the new group to be created?]]></en>
         </locale>
@@ -1935,6 +2340,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[New group name]]></en>
         </locale>
         <locale name="groups.panel.create.window.new.group.text">
+            <de><![CDATA[Neuer Gruppennamen]]></de>
+            <en><![CDATA[New group name]]></en>
+        </locale>
+        <locale name="groups.panel.create.window.new.group.information">
             <de><![CDATA[Bitte geben Sie den neuen Gruppennamen an]]></de>
             <en><![CDATA[Please enter the new group name in]]></en>
         </locale>
@@ -1959,7 +2368,11 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Gruppenauswahl]]></de>
             <en><![CDATA[Group selection]]></en>
         </locale>
-        <locale name="groups.sitemap.window.text">
+        <locale name="groups.sitemap.window.title">
+            <de><![CDATA[Gruppenauswahl]]></de>
+            <en><![CDATA[Group selection]]></en>
+        </locale>
+        <locale name="groups.sitemap.window.information">
             <de><![CDATA[Wählen Sie bitte eine Gruppe aus]]></de>
             <en><![CDATA[Please choose a group.]]></en>
         </locale>
@@ -1970,10 +2383,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="packages.btn.del.server">
             <de><![CDATA[Markierte Server löschen]]></de>
             <en><![CDATA[Delete marked servers]]></en>
-        </locale>
-        <locale name="packages.btn.execute.setup.alt">
-            <de><![CDATA[[pkg] setup ausführen]]></de>
-            <en><![CDATA[Execute the [pkg] setup]]></en>
         </locale>
         <locale name="packages.category.updates">
             <de><![CDATA[Updates]]></de>
@@ -1987,14 +2396,7 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Pakete]]></de>
             <en><![CDATA[Packages]]></en>
         </locale>
-        <locale name="packages.category.server">
-            <de><![CDATA[Serververwaltung]]></de>
-            <en><![CDATA[Server management]]></en>
-        </locale>
-        <locale name="packages.category.search">
-            <de><![CDATA[Pakete / Plugins suchen und installieren]]></de>
-            <en><![CDATA[Packages / Plugin search and installation]]></en>
-        </locale>
+
         <locale name="packages.category.system.health">
             <de><![CDATA[Systemgesundheit]]></de>
             <en><![CDATA[Systemhealth]]></en>
@@ -2017,18 +2419,12 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Komplettes Update durchführen.]]></de>
             <en><![CDATA[Exceute a complete update.]]></en>
         </locale>
-        <locale name="packages.grid.update.btn.start">
-            <de><![CDATA[Auf Updates prüfen]]></de>
-            <en><![CDATA[Check for updates]]></en>
-        </locale>
+
         <locale name="packages.grid.update.btn.upload">
             <de><![CDATA[Update hochladen]]></de>
             <en><![CDATA[Upload an update]]></en>
         </locale>
-        <locale name="packages.grid.update.btn.setup">
-            <de><![CDATA[System Setup ausführen]]></de>
-            <en><![CDATA[Execute the system setup]]></en>
-        </locale>
+
         <locale name="packages.grid.update.title.updatebtn">
             <de><![CDATA[&nbsp;]]></de>
             <en><![CDATA[&nbsp;]]></en>
@@ -2154,18 +2550,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Do you want to delete the following server?]]></en>
         </locale>
         <locale name="packages.server.win.remove.information">
-            <de><![CDATA[Die Server werden unwiderruflich aus der Update-Server-Liste entfernt.]]></de>
+            <de><![CDATA[Die Server werden unwiderruflich aus der Updateserver-Liste entfernt.]]></de>
             <en><![CDATA[The servers will be permanently removed from the update server list.]]></en>
-        </locale>
-        <locale name="packages.server.win.add.title">
-            <de><![CDATA[Neuen Update-Server hinzufügen]]></de>
-            <en><![CDATA[Add a new update-server]]></en>
-        </locale>
-        <locale name="packages.server.win.add.text">
-            <de>
-                <![CDATA[Fügen Sie einen neuen Update-Server hinzu. Geben Sie Host, IP oder die Serveradresse vom Update-Server ein.]]></de>
-            <en>
-                <![CDATA[Add a new update-server. Enter the host, or the server IP address from the update server.]]></en>
         </locale>
         <locale name="packages.systemhealth.text">
             <de><![CDATA[<h1>Haben sich Dateien verändert?</h1>
@@ -2292,12 +2678,12 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[User: [username]]]></en>
         </locale>
         <locale name="users.user.btn.save">
-            <de><![CDATA[Änderungen speichern]]></de>
-            <en><![CDATA[Save changes]]></en>
+            <de><![CDATA[Speichern]]></de>
+            <en><![CDATA[Save]]></en>
         </locale>
         <locale name="users.user.btn.delete">
-            <de><![CDATA[Benutzer löschen]]></de>
-            <en><![CDATA[Delete user]]></en>
+            <de><![CDATA[Löschen]]></de>
+            <en><![CDATA[Delete]]></en>
         </locale>
         <locale name="users.user.btn.permissions.title">
             <de><![CDATA[Benutzer Zugriffsrechte einstellen]]></de>
@@ -2483,8 +2869,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Search user]]></en>
         </locale>
         <locale name="users.panel.search.btn.start">
-            <de><![CDATA[Suche starten ...]]></de>
-            <en><![CDATA[Search ...]]></en>
+            <de><![CDATA[Suchen]]></de>
+            <en><![CDATA[Search]]></en>
         </locale>
         <locale name="users.panel.create.window.title">
             <de><![CDATA[Neuen Benutzer anlegen]]></de>
@@ -3477,6 +3863,968 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Simbabwe]]></de>
             <en><![CDATA[Zimbabwe]]></en>
         </locale>
+
+        <locale name="language.af">
+            <de><![CDATA[Afghanisch]]></de>
+            <en><![CDATA[Afghan]]></en>
+        </locale>
+        <locale name="language.al">
+            <de><![CDATA[Albanisch]]></de>
+            <en><![CDATA[Albanian]]></en>
+        </locale>
+        <locale name="language.dz">
+            <de><![CDATA[Algerisch]]></de>
+            <en><![CDATA[Algerian]]></en>
+        </locale>
+        <locale name="language.as">
+            <de><![CDATA[Amerikanisch-Samoa]]></de>
+            <en><![CDATA[American Samoa]]></en>
+        </locale>
+        <locale name="language.ad">
+            <de><![CDATA[Andorranisch]]></de>
+            <en><![CDATA[Andorran]]></en>
+        </locale>
+        <locale name="language.ao">
+            <de><![CDATA[Angolanisch]]></de>
+            <en><![CDATA[Angolan]]></en>
+        </locale>
+        <locale name="language.ai">
+            <de><![CDATA[Anguilla]]></de>
+            <en><![CDATA[Anguilla]]></en>
+        </locale>
+        <locale name="language.aq">
+            <de><![CDATA[Antarktis]]></de>
+            <en><![CDATA[Antarctica]]></en>
+        </locale>
+        <locale name="language.ag">
+            <de><![CDATA[Antigua und Barbuda]]></de>
+            <en><![CDATA[Antigua and Barbuda]]></en>
+        </locale>
+        <locale name="language.ar">
+            <de><![CDATA[Argentinien]]></de>
+            <en><![CDATA[Argentina]]></en>
+        </locale>
+        <locale name="language.am">
+            <de><![CDATA[Armenisch]]></de>
+            <en><![CDATA[Armenian]]></en>
+        </locale>
+        <locale name="language.aw">
+            <de><![CDATA[Aruba]]></de>
+            <en><![CDATA[Aruba]]></en>
+        </locale>
+        <locale name="language.au">
+            <de><![CDATA[Australisch]]></de>
+            <en><![CDATA[australian]]></en>
+        </locale>
+        <locale name="language.at">
+            <de><![CDATA[Oesterreichisch]]></de>
+            <en><![CDATA[Austrian]]></en>
+        </locale>
+        <locale name="language.az">
+            <de><![CDATA[Aserbaidschan]]></de>
+            <en><![CDATA[Azerbaijan]]></en>
+        </locale>
+        <locale name="language.bs">
+            <de><![CDATA[Bahamas]]></de>
+            <en><![CDATA[Bahamas]]></en>
+        </locale>
+        <locale name="language.bh">
+            <de><![CDATA[Bahrain]]></de>
+            <en><![CDATA[Bahrain]]></en>
+        </locale>
+        <locale name="language.bd">
+            <de><![CDATA[Bangladesh]]></de>
+            <en><![CDATA[Bangladesh]]></en>
+        </locale>
+        <locale name="language.bb">
+            <de><![CDATA[Barbados]]></de>
+            <en><![CDATA[Barbados]]></en>
+        </locale>
+        <locale name="language.by">
+            <de><![CDATA[Belarus]]></de>
+            <en><![CDATA[Belarus]]></en>
+        </locale>
+        <locale name="language.be">
+            <de><![CDATA[Belgien]]></de>
+            <en><![CDATA[Belgium]]></en>
+        </locale>
+        <locale name="language.bz">
+            <de><![CDATA[Belize]]></de>
+            <en><![CDATA[Belize]]></en>
+        </locale>
+        <locale name="language.bj">
+            <de><![CDATA[Benin]]></de>
+            <en><![CDATA[Benin]]></en>
+        </locale>
+        <locale name="language.bm">
+            <de><![CDATA[Bermuda]]></de>
+            <en><![CDATA[Bermuda]]></en>
+        </locale>
+        <locale name="language.bt">
+            <de><![CDATA[Bhutan]]></de>
+            <en><![CDATA[Bhutan]]></en>
+        </locale>
+        <locale name="language.bo">
+            <de><![CDATA[Bolivien]]></de>
+            <en><![CDATA[Bolivia]]></en>
+        </locale>
+        <locale name="language.ba">
+            <de><![CDATA[Bosnien und Herzegowina]]></de>
+            <en><![CDATA[Bosnia and Herzegowina]]></en>
+        </locale>
+        <locale name="language.bw">
+            <de><![CDATA[Botswana]]></de>
+            <en><![CDATA[Botswana]]></en>
+        </locale>
+        <locale name="language.bv">
+            <de><![CDATA[Bouvet Island]]></de>
+            <en><![CDATA[Bouvet Island]]></en>
+        </locale>
+        <locale name="language.br">
+            <de><![CDATA[Brasilien]]></de>
+            <en><![CDATA[Brazil]]></en>
+        </locale>
+        <locale name="language.io">
+            <de><![CDATA[Britische Territorien im Indischen Ozean]]></de>
+            <en><![CDATA[British Indian Ocean Territory]]></en>
+        </locale>
+        <locale name="language.bn">
+            <de><![CDATA[Brunei Darussalam]]></de>
+            <en><![CDATA[Brunei Darussalam]]></en>
+        </locale>
+        <locale name="language.bg">
+            <de><![CDATA[Bulgarien]]></de>
+            <en><![CDATA[Bulgaria]]></en>
+        </locale>
+        <locale name="language.bf">
+            <de><![CDATA[Burkina Faso]]></de>
+            <en><![CDATA[Burkina Faso]]></en>
+        </locale>
+        <locale name="language.bi">
+            <de><![CDATA[Burundi]]></de>
+            <en><![CDATA[Burundi]]></en>
+        </locale>
+        <locale name="language.kh">
+            <de><![CDATA[Kambodscha]]></de>
+            <en><![CDATA[Cambodia]]></en>
+        </locale>
+        <locale name="language.cm">
+            <de><![CDATA[Kamerun]]></de>
+            <en><![CDATA[Cameroon]]></en>
+        </locale>
+        <locale name="language.ca">
+            <de><![CDATA[Kanada]]></de>
+            <en><![CDATA[Canada]]></en>
+        </locale>
+        <locale name="language.cv">
+            <de><![CDATA[Kapverden]]></de>
+            <en><![CDATA[Cape Verde]]></en>
+        </locale>
+        <locale name="language.ky">
+            <de><![CDATA[Cayman-Inseln]]></de>
+            <en><![CDATA[Cayman Islands]]></en>
+        </locale>
+        <locale name="language.cf">
+            <de><![CDATA[Zentralafrika]]></de>
+            <en><![CDATA[Central African Republic]]></en>
+        </locale>
+        <locale name="language.td">
+            <de><![CDATA[Tschad]]></de>
+            <en><![CDATA[Chad]]></en>
+        </locale>
+        <locale name="language.cl">
+            <de><![CDATA[Chile]]></de>
+            <en><![CDATA[Chile]]></en>
+        </locale>
+        <locale name="language.cn">
+            <de><![CDATA[China]]></de>
+            <en><![CDATA[China]]></en>
+        </locale>
+        <locale name="language.cx">
+            <de><![CDATA[Weihnachtsinseln]]></de>
+            <en><![CDATA[Christmas Island]]></en>
+        </locale>
+        <locale name="language.cc">
+            <de><![CDATA[Kokosinseln]]></de>
+            <en><![CDATA[Cocos (Keeling) Islands]]></en>
+        </locale>
+        <locale name="language.co">
+            <de><![CDATA[Kolumbien]]></de>
+            <en><![CDATA[Colombia]]></en>
+        </locale>
+        <locale name="language.km">
+            <de><![CDATA[Komoren]]></de>
+            <en><![CDATA[Comoros]]></en>
+        </locale>
+        <locale name="language.cg">
+            <de><![CDATA[Bantu (Kongo)]]></de>
+            <en><![CDATA[Bantu (Congo)]]></en>
+        </locale>
+        <locale name="language.ck">
+            <de><![CDATA[Cook-Inseln]]></de>
+            <en><![CDATA[Cook Islands]]></en>
+        </locale>
+        <locale name="language.cr">
+            <de><![CDATA[Kostarika]]></de>
+            <en><![CDATA[Costa Rica]]></en>
+        </locale>
+        <locale name="language.ci">
+            <de><![CDATA[Elfenbeinkueste]]></de>
+            <en><![CDATA[Cote D'Ivoire]]></en>
+        </locale>
+        <locale name="language.hr">
+            <de><![CDATA[Kroatisch]]></de>
+            <en><![CDATA[Croatian]]></en>
+        </locale>
+        <locale name="language.cu">
+            <de><![CDATA[Spanisch (Kuba)]]></de>
+            <en><![CDATA[Spain (Cuba)]]></en>
+        </locale>
+        <locale name="language.cy">
+            <de><![CDATA[Zypern]]></de>
+            <en><![CDATA[Cyprus]]></en>
+        </locale>
+        <locale name="language.cz">
+            <de><![CDATA[Tschechisch]]></de>
+            <en><![CDATA[Czech]]></en>
+        </locale>
+        <locale name="language.dk">
+            <de><![CDATA[Dänisch]]></de>
+            <en><![CDATA[Danish]]></en>
+        </locale>
+        <locale name="language.dj">
+            <de><![CDATA[Djibouti]]></de>
+            <en><![CDATA[Djibouti]]></en>
+        </locale>
+        <locale name="language.dm">
+            <de><![CDATA[Dominica]]></de>
+            <en><![CDATA[Dominica]]></en>
+        </locale>
+        <locale name="language.do">
+            <de><![CDATA[Dominikanische Republik]]></de>
+            <en><![CDATA[Dominican Republic]]></en>
+        </locale>
+        <locale name="language.tp">
+            <de><![CDATA[Ost-Timor]]></de>
+            <en><![CDATA[East Timor]]></en>
+        </locale>
+        <locale name="language.ec">
+            <de><![CDATA[Ecuador]]></de>
+            <en><![CDATA[Ecuador]]></en>
+        </locale>
+        <locale name="language.en">
+            <de><![CDATA[Englisch]]></de>
+            <en><![CDATA[English]]></en>
+        </locale>
+        <locale name="language.eg">
+            <de><![CDATA[Aegypten]]></de>
+            <en><![CDATA[Egypt]]></en>
+        </locale>
+        <locale name="language.sv">
+            <de><![CDATA[El Salvador]]></de>
+            <en><![CDATA[El Salvador]]></en>
+        </locale>
+        <locale name="language.gq">
+            <de><![CDATA[Aequatorial-Guinea]]></de>
+            <en><![CDATA[Equatorial Guinea]]></en>
+        </locale>
+        <locale name="language.er">
+            <de><![CDATA[Eritrea]]></de>
+            <en><![CDATA[Eritrea]]></en>
+        </locale>
+        <locale name="language.ee">
+            <de><![CDATA[Estnisch]]></de>
+            <en><![CDATA[Estonian]]></en>
+        </locale>
+        <locale name="language.et">
+            <de><![CDATA[Amharisch]]></de>
+            <en><![CDATA[Amharic]]></en>
+        </locale>
+        <locale name="language.fk">
+            <de><![CDATA[Falkland-Inseln (Malvinen)]]></de>
+            <en><![CDATA[Falkland Islands (Malvinas)]]></en>
+        </locale>
+        <locale name="language.fo">
+            <de><![CDATA[Faeroeer]]></de>
+            <en><![CDATA[Faroe Islands]]></en>
+        </locale>
+        <locale name="language.fj">
+            <de><![CDATA[Fidschi]]></de>
+            <en><![CDATA[Fiji]]></en>
+        </locale>
+        <locale name="language.fi">
+            <de><![CDATA[Finnisch]]></de>
+            <en><![CDATA[Finnish]]></en>
+        </locale>
+        <locale name="language.fr">
+            <de><![CDATA[Französisch]]></de>
+            <en><![CDATA[French]]></en>
+        </locale>
+        <locale name="language.fx">
+            <de><![CDATA[Französisch, Metropolitan]]></de>
+            <en><![CDATA[French, Metropolitan]]></en>
+        </locale>
+        <locale name="language.gf">
+            <de><![CDATA[Französisch-Guyana]]></de>
+            <en><![CDATA[French Guiana]]></en>
+        </locale>
+        <locale name="language.pf">
+            <de><![CDATA[Französisch-Polynesien]]></de>
+            <en><![CDATA[French Polynesia]]></en>
+        </locale>
+        <locale name="language.tf">
+            <de><![CDATA[Französisch Suedterritorien]]></de>
+            <en><![CDATA[French Southern Territories]]></en>
+        </locale>
+        <locale name="language.ga">
+            <de><![CDATA[Gabon]]></de>
+            <en><![CDATA[Gabon]]></en>
+        </locale>
+        <locale name="language.gm">
+            <de><![CDATA[Gambia]]></de>
+            <en><![CDATA[Gambia]]></en>
+        </locale>
+        <locale name="language.ge">
+            <de><![CDATA[Georgisch]]></de>
+            <en><![CDATA[Georgian]]></en>
+        </locale>
+        <locale name="language.de">
+            <de><![CDATA[Deutsch]]></de>
+            <en><![CDATA[German]]></en>
+        </locale>
+        <locale name="language.gh">
+            <de><![CDATA[Griechisch]]></de>
+            <en><![CDATA[Greek]]></en>
+        </locale>
+        <locale name="language.gi">
+            <de><![CDATA[Gibraltar]]></de>
+            <en><![CDATA[Gibraltar]]></en>
+        </locale>
+        <locale name="language.gr">
+            <de><![CDATA[Griechisch]]></de>
+            <en><![CDATA[Greek]]></en>
+        </locale>
+        <locale name="language.gl">
+            <de><![CDATA[Grönländisch]]></de>
+            <en><![CDATA[Greenlandic]]></en>
+        </locale>
+        <locale name="language.gd">
+            <de><![CDATA[Grenada]]></de>
+            <en><![CDATA[Grenada]]></en>
+        </locale>
+        <locale name="language.gp">
+            <de><![CDATA[Guadeloupe]]></de>
+            <en><![CDATA[Guadeloupe]]></en>
+        </locale>
+        <locale name="language.gu">
+            <de><![CDATA[Guam]]></de>
+            <en><![CDATA[Guam]]></en>
+        </locale>
+        <locale name="language.gt">
+            <de><![CDATA[Guatemala]]></de>
+            <en><![CDATA[Guatemala]]></en>
+        </locale>
+        <locale name="language.gn">
+            <de><![CDATA[Guinea]]></de>
+            <en><![CDATA[Guinea]]></en>
+        </locale>
+        <locale name="language.gw">
+            <de><![CDATA[Guinea-Bissau]]></de>
+            <en><![CDATA[Guinea-bissau]]></en>
+        </locale>
+        <locale name="language.gy">
+            <de><![CDATA[Guyana]]></de>
+            <en><![CDATA[Guyana]]></en>
+        </locale>
+        <locale name="language.ht">
+            <de><![CDATA[Haitianisch]]></de>
+            <en><![CDATA[Haitian]]></en>
+        </locale>
+        <locale name="language.hm">
+            <de><![CDATA[Heard and Mc Donald Islands]]></de>
+            <en><![CDATA[Heard and Mc Donald Islands]]></en>
+        </locale>
+        <locale name="language.hn">
+            <de><![CDATA[Honduras]]></de>
+            <en><![CDATA[Honduras]]></en>
+        </locale>
+        <locale name="language.hk">
+            <de><![CDATA[Hong Kong]]></de>
+            <en><![CDATA[Hong Kong]]></en>
+        </locale>
+        <locale name="language.hu">
+            <de><![CDATA[Ungarisch]]></de>
+            <en><![CDATA[Hungarian]]></en>
+        </locale>
+        <locale name="language.is">
+            <de><![CDATA[Isländisch]]></de>
+            <en><![CDATA[Icelandic]]></en>
+        </locale>
+        <locale name="language.in">
+            <de><![CDATA[Indisch]]></de>
+            <en><![CDATA[Indian]]></en>
+        </locale>
+        <locale name="language.id">
+            <de><![CDATA[Indonesisch]]></de>
+            <en><![CDATA[Indonesian]]></en>
+        </locale>
+        <locale name="language.ir">
+            <de><![CDATA[Iranisch]]></de>
+            <en><![CDATA[Iranian]]></en>
+        </locale>
+        <locale name="language.iq">
+            <de><![CDATA[Irakisch]]></de>
+            <en><![CDATA[Iraqi]]></en>
+        </locale>
+        <locale name="language.ie">
+            <de><![CDATA[Irisch]]></de>
+            <en><![CDATA[Irish]]></en>
+        </locale>
+        <locale name="language.il">
+            <de><![CDATA[Israeli]]></de>
+            <en><![CDATA[Israeli]]></en>
+        </locale>
+        <locale name="language.it">
+            <de><![CDATA[Italienisch]]></de>
+            <en><![CDATA[Italian]]></en>
+        </locale>
+        <locale name="language.jm">
+            <de><![CDATA[Jamaikanisch]]></de>
+            <en><![CDATA[Jamaican]]></en>
+        </locale>
+        <locale name="language.jp">
+            <de><![CDATA[Japanisch]]></de>
+            <en><![CDATA[Japanese]]></en>
+        </locale>
+        <locale name="language.jo">
+            <de><![CDATA[Jordanisch]]></de>
+            <en><![CDATA[Jordanian]]></en>
+        </locale>
+        <locale name="language.kz">
+            <de><![CDATA[Kasachstan]]></de>
+            <en><![CDATA[Kazakhstan]]></en>
+        </locale>
+        <locale name="language.ke">
+            <de><![CDATA[Kenia]]></de>
+            <en><![CDATA[Kenya]]></en>
+        </locale>
+        <locale name="language.ki">
+            <de><![CDATA[Kiribati]]></de>
+            <en><![CDATA[Kiribati]]></en>
+        </locale>
+        <locale name="language.kp">
+            <de><![CDATA[Korea, Demokratische Volksrepublik]]></de>
+            <en><![CDATA[Korea, Democratic People's Republic of]]></en>
+        </locale>
+        <locale name="language.kr">
+            <de><![CDATA[Korea, Republik]]></de>
+            <en><![CDATA[Korea, Republic of]]></en>
+        </locale>
+        <locale name="language.kw">
+            <de><![CDATA[Kuwait]]></de>
+            <en><![CDATA[Kuwait]]></en>
+        </locale>
+        <locale name="language.kg">
+            <de><![CDATA[Kirgisien]]></de>
+            <en><![CDATA[Kyrgyzstan]]></en>
+        </locale>
+        <locale name="language.la">
+            <de><![CDATA[Laotische Demokratische Volksrepublik]]></de>
+            <en><![CDATA[Lao People's Democratic Republic]]></en>
+        </locale>
+        <locale name="language.lv">
+            <de><![CDATA[Lettland]]></de>
+            <en><![CDATA[Latvia]]></en>
+        </locale>
+        <locale name="language.lb">
+            <de><![CDATA[Libanon]]></de>
+            <en><![CDATA[Lebanon]]></en>
+        </locale>
+        <locale name="language.ls">
+            <de><![CDATA[Lesotho]]></de>
+            <en><![CDATA[Lesotho]]></en>
+        </locale>
+        <locale name="language.lr">
+            <de><![CDATA[Liberia]]></de>
+            <en><![CDATA[Liberia]]></en>
+        </locale>
+        <locale name="language.ly">
+            <de><![CDATA[Libyen]]></de>
+            <en><![CDATA[Libyan Arab Jamahiriya]]></en>
+        </locale>
+        <locale name="language.li">
+            <de><![CDATA[Liechtenstein]]></de>
+            <en><![CDATA[Liechtenstein]]></en>
+        </locale>
+        <locale name="language.lt">
+            <de><![CDATA[Litauen]]></de>
+            <en><![CDATA[Lithuania]]></en>
+        </locale>
+        <locale name="language.lu">
+            <de><![CDATA[Luxemburg]]></de>
+            <en><![CDATA[Luxembourg]]></en>
+        </locale>
+        <locale name="language.mo">
+            <de><![CDATA[Macau]]></de>
+            <en><![CDATA[Macau]]></en>
+        </locale>
+        <locale name="language.mk">
+            <de><![CDATA[Mazedonien]]></de>
+            <en><![CDATA[Macedonia, The Former Yugoslav Republic of]]></en>
+        </locale>
+        <locale name="language.mg">
+            <de><![CDATA[Madagaskar]]></de>
+            <en><![CDATA[Madagascar]]></en>
+        </locale>
+        <locale name="language.mw">
+            <de><![CDATA[Malawi]]></de>
+            <en><![CDATA[Malawi]]></en>
+        </locale>
+        <locale name="language.my">
+            <de><![CDATA[Malaysia]]></de>
+            <en><![CDATA[Malaysia]]></en>
+        </locale>
+        <locale name="language.mv">
+            <de><![CDATA[Malediven]]></de>
+            <en><![CDATA[Maldives]]></en>
+        </locale>
+        <locale name="language.ml">
+            <de><![CDATA[Mali]]></de>
+            <en><![CDATA[Mali]]></en>
+        </locale>
+        <locale name="language.mt">
+            <de><![CDATA[Malta]]></de>
+            <en><![CDATA[Malta]]></en>
+        </locale>
+        <locale name="language.mh">
+            <de><![CDATA[Marshall-Inseln]]></de>
+            <en><![CDATA[Marshall Islands]]></en>
+        </locale>
+        <locale name="language.mq">
+            <de><![CDATA[Martinique]]></de>
+            <en><![CDATA[Martinique]]></en>
+        </locale>
+        <locale name="language.mr">
+            <de><![CDATA[Mauritanien]]></de>
+            <en><![CDATA[Mauritania]]></en>
+        </locale>
+        <locale name="language.mu">
+            <de><![CDATA[Mauritius]]></de>
+            <en><![CDATA[Mauritius]]></en>
+        </locale>
+        <locale name="language.yt">
+            <de><![CDATA[Mayotte]]></de>
+            <en><![CDATA[Mayotte]]></en>
+        </locale>
+        <locale name="language.mx">
+            <de><![CDATA[Mexikanisch]]></de>
+            <en><![CDATA[Mexican]]></en>
+        </locale>
+        <locale name="language.fm">
+            <de><![CDATA[Mikronesien]]></de>
+            <en><![CDATA[Micronesia, Federated States of]]></en>
+        </locale>
+        <locale name="language.md">
+            <de><![CDATA[Moldawien]]></de>
+            <en><![CDATA[Moldova, Republic of]]></en>
+        </locale>
+        <locale name="language.mc">
+            <de><![CDATA[Monaco]]></de>
+            <en><![CDATA[Monaco]]></en>
+        </locale>
+        <locale name="language.mn">
+            <de><![CDATA[Mongolei]]></de>
+            <en><![CDATA[Mongolia]]></en>
+        </locale>
+        <locale name="language.ms">
+            <de><![CDATA[Montserrat]]></de>
+            <en><![CDATA[Montserrat]]></en>
+        </locale>
+        <locale name="language.ma">
+            <de><![CDATA[Marokko]]></de>
+            <en><![CDATA[Morocco]]></en>
+        </locale>
+        <locale name="language.mz">
+            <de><![CDATA[Mosambik]]></de>
+            <en><![CDATA[Mozambique]]></en>
+        </locale>
+        <locale name="language.mm">
+            <de><![CDATA[Myanmar]]></de>
+            <en><![CDATA[Myanmar]]></en>
+        </locale>
+        <locale name="language.na">
+            <de><![CDATA[Namibia]]></de>
+            <en><![CDATA[Namibia]]></en>
+        </locale>
+        <locale name="language.nr">
+            <de><![CDATA[Nauru]]></de>
+            <en><![CDATA[Nauru]]></en>
+        </locale>
+        <locale name="language.np">
+            <de><![CDATA[Nepal]]></de>
+            <en><![CDATA[Nepal]]></en>
+        </locale>
+        <locale name="language.nl">
+            <de><![CDATA[Niederlandisch]]></de>
+            <en><![CDATA[Dutch]]></en>
+        </locale>
+        <locale name="language.an">
+            <de><![CDATA[Niederlaendische Antillen]]></de>
+            <en><![CDATA[Netherlands Antilles]]></en>
+        </locale>
+        <locale name="language.nc">
+            <de><![CDATA[Neu-Kaledonien]]></de>
+            <en><![CDATA[New Caledonia]]></en>
+        </locale>
+        <locale name="language.nz">
+            <de><![CDATA[Neuseeland]]></de>
+            <en><![CDATA[New Zealand]]></en>
+        </locale>
+        <locale name="language.ni">
+            <de><![CDATA[Nikaragua]]></de>
+            <en><![CDATA[Nicaragua]]></en>
+        </locale>
+        <locale name="language.ne">
+            <de><![CDATA[Niger]]></de>
+            <en><![CDATA[Niger]]></en>
+        </locale>
+        <locale name="language.ng">
+            <de><![CDATA[Nigeria]]></de>
+            <en><![CDATA[Nigeria]]></en>
+        </locale>
+        <locale name="language.nu">
+            <de><![CDATA[Niue]]></de>
+            <en><![CDATA[Niue]]></en>
+        </locale>
+        <locale name="language.nf">
+            <de><![CDATA[Norfolk-Inseln]]></de>
+            <en><![CDATA[Norfolk Island]]></en>
+        </locale>
+        <locale name="language.mp">
+            <de><![CDATA[Noerdliche Marianen]]></de>
+            <en><![CDATA[Northern Mariana Islands]]></en>
+        </locale>
+        <locale name="language.no">
+            <de><![CDATA[Norwegisch]]></de>
+            <en><![CDATA[Norwegian]]></en>
+        </locale>
+        <locale name="language.om">
+            <de><![CDATA[Oman]]></de>
+            <en><![CDATA[Oman]]></en>
+        </locale>
+        <locale name="language.pk">
+            <de><![CDATA[Pakistani]]></de>
+            <en><![CDATA[Pakistani]]></en>
+        </locale>
+        <locale name="language.pw">
+            <de><![CDATA[Palau]]></de>
+            <en><![CDATA[Palau]]></en>
+        </locale>
+        <locale name="language.pa">
+            <de><![CDATA[Panama]]></de>
+            <en><![CDATA[Panama]]></en>
+        </locale>
+        <locale name="language.pg">
+            <de><![CDATA[Papua-Neuguinea]]></de>
+            <en><![CDATA[Papua New Guinea]]></en>
+        </locale>
+        <locale name="language.py">
+            <de><![CDATA[Paraguay]]></de>
+            <en><![CDATA[Paraguay]]></en>
+        </locale>
+        <locale name="language.pe">
+            <de><![CDATA[Peru]]></de>
+            <en><![CDATA[Peru]]></en>
+        </locale>
+        <locale name="language.ph">
+            <de><![CDATA[Philippinen]]></de>
+            <en><![CDATA[Philippines]]></en>
+        </locale>
+        <locale name="language.pn">
+            <de><![CDATA[Pitcairn]]></de>
+            <en><![CDATA[Pitcairn]]></en>
+        </locale>
+        <locale name="language.pl">
+            <de><![CDATA[Polnisch]]></de>
+            <en><![CDATA[Polish]]></en>
+        </locale>
+        <locale name="language.pt">
+            <de><![CDATA[Portugiesisch]]></de>
+            <en><![CDATA[Portuguese]]></en>
+        </locale>
+        <locale name="language.pr">
+            <de><![CDATA[Puerto ricanisch]]></de>
+            <en><![CDATA[Puerto Rican]]></en>
+        </locale>
+        <locale name="language.qa">
+            <de><![CDATA[Qatar]]></de>
+            <en><![CDATA[Qatar]]></en>
+        </locale>
+        <locale name="language.re">
+            <de><![CDATA[Reunion]]></de>
+            <en><![CDATA[Reunion]]></en>
+        </locale>
+        <locale name="language.ro">
+            <de><![CDATA[Rumaenien]]></de>
+            <en><![CDATA[Romania]]></en>
+        </locale>
+        <locale name="language.ru">
+            <de><![CDATA[Russisch]]></de>
+            <en><![CDATA[Russian]]></en>
+        </locale>
+        <locale name="language.rw">
+            <de><![CDATA[Kinyarwanda (Rwanda)]]></de>
+            <en><![CDATA[Kinyarwanda (Rwanda)]]></en>
+        </locale>
+        <locale name="language.kn">
+            <de><![CDATA[Saint Kitts and Nevis]]></de>
+            <en><![CDATA[Saint Kitts and Nevis]]></en>
+        </locale>
+        <locale name="language.lc">
+            <de><![CDATA[Saint Lucia]]></de>
+            <en><![CDATA[Saint Lucia]]></en>
+        </locale>
+        <locale name="language.vc">
+            <de><![CDATA[Saint Vincent und die Grenadinen]]></de>
+            <en><![CDATA[Saint Vincent and the Grenadines]]></en>
+        </locale>
+        <locale name="language.ws">
+            <de><![CDATA[Samoa]]></de>
+            <en><![CDATA[Samoa]]></en>
+        </locale>
+        <locale name="language.sm">
+            <de><![CDATA[San Marino]]></de>
+            <en><![CDATA[San Marino]]></en>
+        </locale>
+        <locale name="language.st">
+            <de><![CDATA[Sao Tome and Principe]]></de>
+            <en><![CDATA[Sao Tome and Principe]]></en>
+        </locale>
+        <locale name="language.sa">
+            <de><![CDATA[Saudi-Arabisch]]></de>
+            <en><![CDATA[Saudi Arabic]]></en>
+        </locale>
+        <locale name="language.sn">
+            <de><![CDATA[Senegal]]></de>
+            <en><![CDATA[Senegal]]></en>
+        </locale>
+        <locale name="language.sc">
+            <de><![CDATA[Seychellen]]></de>
+            <en><![CDATA[Seychelles]]></en>
+        </locale>
+        <locale name="language.sl">
+            <de><![CDATA[Sierra Leone]]></de>
+            <en><![CDATA[Sierra Leone]]></en>
+        </locale>
+        <locale name="language.sg">
+            <de><![CDATA[Singapur]]></de>
+            <en><![CDATA[Singapore]]></en>
+        </locale>
+        <locale name="language.sk">
+            <de><![CDATA[Slowakei]]></de>
+            <en><![CDATA[Slovakia (Slovak Republic)]]></en>
+        </locale>
+        <locale name="language.si">
+            <de><![CDATA[Slowenien]]></de>
+            <en><![CDATA[Slovenia]]></en>
+        </locale>
+        <locale name="language.sb">
+            <de><![CDATA[Solomon-Inseln]]></de>
+            <en><![CDATA[Solomon Islands]]></en>
+        </locale>
+        <locale name="language.so">
+            <de><![CDATA[Somalia]]></de>
+            <en><![CDATA[Somalia]]></en>
+        </locale>
+        <locale name="language.za">
+            <de><![CDATA[Suedafrikanisch]]></de>
+            <en><![CDATA[South African]]></en>
+        </locale>
+        <locale name="language.gs">
+            <de><![CDATA[South Georgia und die Suedlichen Sandwich-Inseln]]></de>
+            <en><![CDATA[South Georgia and the South Sandwich Islands]]></en>
+        </locale>
+        <locale name="language.es">
+            <de><![CDATA[Spanisch]]></de>
+            <en><![CDATA[Spanish]]></en>
+        </locale>
+        <locale name="language.lk">
+            <de><![CDATA[Sri Lanka]]></de>
+            <en><![CDATA[Sri Lanka]]></en>
+        </locale>
+        <locale name="language.sh">
+            <de><![CDATA[St. Helena]]></de>
+            <en><![CDATA[St. Helena]]></en>
+        </locale>
+        <locale name="language.pm">
+            <de><![CDATA[St. Pierre and Miquelon]]></de>
+            <en><![CDATA[St. Pierre and Miquelon]]></en>
+        </locale>
+        <locale name="language.sd">
+            <de><![CDATA[Sudan]]></de>
+            <en><![CDATA[Sudan]]></en>
+        </locale>
+        <locale name="language.sr">
+            <de><![CDATA[Surinam]]></de>
+            <en><![CDATA[Suriname]]></en>
+        </locale>
+        <locale name="language.sj">
+            <de><![CDATA[Svalbard und Jan Mayen Inseln]]></de>
+            <en><![CDATA[Svalbard and Jan Mayen Islands]]></en>
+        </locale>
+        <locale name="language.sz">
+            <de><![CDATA[Swaziland]]></de>
+            <en><![CDATA[Swaziland]]></en>
+        </locale>
+        <locale name="language.se">
+            <de><![CDATA[Schweden]]></de>
+            <en><![CDATA[Sweden]]></en>
+        </locale>
+        <locale name="language.ch">
+            <de><![CDATA[Schweiz]]></de>
+            <en><![CDATA[Switzerland]]></en>
+        </locale>
+        <locale name="language.sy">
+            <de><![CDATA[Syrische Arabische Republik]]></de>
+            <en><![CDATA[Syrian Arab Republic]]></en>
+        </locale>
+        <locale name="language.tw">
+            <de><![CDATA[Taiwan]]></de>
+            <en><![CDATA[Taiwan]]></en>
+        </locale>
+        <locale name="language.tj">
+            <de><![CDATA[Tadschikistan]]></de>
+            <en><![CDATA[Tajikistan]]></en>
+        </locale>
+        <locale name="language.tz">
+            <de><![CDATA[Tansania]]></de>
+            <en><![CDATA[Tanzania, United Republic of]]></en>
+        </locale>
+        <locale name="language.th">
+            <de><![CDATA[Thailand]]></de>
+            <en><![CDATA[Thailand]]></en>
+        </locale>
+        <locale name="language.tg">
+            <de><![CDATA[Togo]]></de>
+            <en><![CDATA[Togo]]></en>
+        </locale>
+        <locale name="language.tk">
+            <de><![CDATA[Tokelau]]></de>
+            <en><![CDATA[Tokelau]]></en>
+        </locale>
+        <locale name="language.to">
+            <de><![CDATA[Tonga]]></de>
+            <en><![CDATA[Tonga]]></en>
+        </locale>
+        <locale name="language.tt">
+            <de><![CDATA[Trinidad und Tobago]]></de>
+            <en><![CDATA[Trinidad and Tobago]]></en>
+        </locale>
+        <locale name="language.tn">
+            <de><![CDATA[Tunesien]]></de>
+            <en><![CDATA[Tunisia]]></en>
+        </locale>
+        <locale name="language.tr">
+            <de><![CDATA[Türkisch]]></de>
+            <en><![CDATA[Turkish]]></en>
+        </locale>
+        <locale name="language.tm">
+            <de><![CDATA[Turkmenistan]]></de>
+            <en><![CDATA[Turkmenistan]]></en>
+        </locale>
+        <locale name="language.tc">
+            <de><![CDATA[Turks und Caicos Inseln]]></de>
+            <en><![CDATA[Turks and Caicos Islands]]></en>
+        </locale>
+        <locale name="language.tv">
+            <de><![CDATA[Tuvalu]]></de>
+            <en><![CDATA[Tuvalu]]></en>
+        </locale>
+        <locale name="language.ug">
+            <de><![CDATA[Uganda]]></de>
+            <en><![CDATA[Uganda]]></en>
+        </locale>
+        <locale name="language.ua">
+            <de><![CDATA[Ukraine]]></de>
+            <en><![CDATA[Ukraine]]></en>
+        </locale>
+        <locale name="language.ae">
+            <de><![CDATA[Vereinigte Arabische Emirate]]></de>
+            <en><![CDATA[United Arab Emirates]]></en>
+        </locale>
+        <locale name="language.gb">
+            <de><![CDATA[Grossbritannien (Vereinigtes Koenigreich)]]></de>
+            <en><![CDATA[United Kingdom]]></en>
+        </locale>
+        <locale name="language.us">
+            <de><![CDATA[Vereinigte Staaten (USA)]]></de>
+            <en><![CDATA[United States]]></en>
+        </locale>
+        <locale name="language.um">
+            <de><![CDATA[Ueberseeinseln der USA]]></de>
+            <en><![CDATA[United States Minor Outlying Islands]]></en>
+        </locale>
+        <locale name="language.uy">
+            <de><![CDATA[Uruguay]]></de>
+            <en><![CDATA[Uruguay]]></en>
+        </locale>
+        <locale name="language.uz">
+            <de><![CDATA[Usbekistan]]></de>
+            <en><![CDATA[Uzbekistan]]></en>
+        </locale>
+        <locale name="language.vu">
+            <de><![CDATA[Vanuatu]]></de>
+            <en><![CDATA[Vanuatu]]></en>
+        </locale>
+        <locale name="language.va">
+            <de><![CDATA[Vatikan]]></de>
+            <en><![CDATA[Vatican City State (Holy See)]]></en>
+        </locale>
+        <locale name="language.ve">
+            <de><![CDATA[Venezuela]]></de>
+            <en><![CDATA[Venezuela]]></en>
+        </locale>
+        <locale name="language.vn">
+            <de><![CDATA[Vietnam]]></de>
+            <en><![CDATA[Viet Nam]]></en>
+        </locale>
+        <locale name="language.vg">
+            <de><![CDATA[Jungferninseln (Britisch)]]></de>
+            <en><![CDATA[Virgin Islands (British)]]></en>
+        </locale>
+        <locale name="language.vi">
+            <de><![CDATA[Jungferninseln (USA)]]></de>
+            <en><![CDATA[Virgin Islands (U.S.)]]></en>
+        </locale>
+        <locale name="language.wf">
+            <de><![CDATA[Wallis und Futuna]]></de>
+            <en><![CDATA[Wallis and Futuna Islands]]></en>
+        </locale>
+        <locale name="language.eh">
+            <de><![CDATA[Westsahara]]></de>
+            <en><![CDATA[Western Sahara]]></en>
+        </locale>
+        <locale name="language.ye">
+            <de><![CDATA[Jemen]]></de>
+            <en><![CDATA[Yemen]]></en>
+        </locale>
+        <locale name="language.yu">
+            <de><![CDATA[Jugoslawien]]></de>
+            <en><![CDATA[Yugoslavia]]></en>
+        </locale>
+        <locale name="language.zr">
+            <de><![CDATA[Zaire]]></de>
+            <en><![CDATA[Zaire]]></en>
+        </locale>
+        <locale name="language.zm">
+            <de><![CDATA[Sambia]]></de>
+            <en><![CDATA[Zambia]]></en>
+        </locale>
+        <locale name="language.zw">
+            <de><![CDATA[Simbabwe]]></de>
+            <en><![CDATA[Zimbabwe]]></en>
+        </locale>
+
         <locale name="projects.project.site.media.popup.window.activate.title">
             <de><![CDATA[Einfügen einer inaktiven Datei / Ordners]]></de>
             <en><![CDATA[Insert an inactive file / folder]]></en>
@@ -3714,6 +5062,23 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[The table contains no data]]></en>
         </locale>
 
+        <locale name="controls.group.table.btns.adduser">
+            <de><![CDATA[Benutzer hinzufügen]]></de>
+            <en><![CDATA[Add user(s)]]></en>
+        </locale>
+        <locale name="controls.group.table.btns.removeuser">
+            <de><![CDATA[Benutzer entfernen]]></de>
+            <en><![CDATA[Remove user(s)]]></en>
+        </locale>
+        <locale name="controls.group.deleteusers.confirm.info" html="true">
+            <de><![CDATA[Sind sie sicher, dass Sie folgende Benutzer aus der Gruppe <b>[groupName]</b> (#[groupId]) entfernen wollen?<br/><br/>[users]]]></de>
+            <en><![CDATA[Are you sure you want to remove the following users from the group <b>[groupName]</b> (#[groupId])?<br/><br/>[users]]]></en>
+        </locale>
+        <locale name="controls.group.deleteusers.confirm.title">
+            <de><![CDATA[Benutzer entfernen]]></de>
+            <en><![CDATA[Remove user(s)]]></en>
+        </locale>
+
     </groups>
     <groups name="quiqqer/system" datatype="php">
         <locale name="menu.quiqqer.text" html="true">
@@ -3749,8 +5114,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Media settings]]></en>
         </locale>
         <locale name="menu.settings.editor.text">
-            <de><![CDATA[WYSIWYG-Editor Einstellungen]]></de>
-            <en><![CDATA[WYSIWYG-Editor settings]]></en>
+            <de><![CDATA[WYSIWYG-Editor]]></de>
+            <en><![CDATA[WYSIWYG-Editor]]></en>
         </locale>
         <locale name="menu.settings.vhosts.text">
             <de><![CDATA[Virtual Hosts]]></de>
@@ -3797,8 +5162,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[QUIQQER Changelog]]></en>
         </locale>
         <locale name="quiqqer.settings.title">
-            <de><![CDATA[QUIQQER-Einstellungen]]></de>
-            <en><![CDATA[QUIQQER Settings]]></en>
+            <de><![CDATA[System]]></de>
+            <en><![CDATA[System]]></en>
         </locale>
         <locale name="quiqqer.settings.general.title">
             <de><![CDATA[Allgemein]]></de>
@@ -3827,12 +5192,12 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
 
         <locale name="quiqqer.settings.cache.management.title">
-            <de><![CDATA[Cache Verwaltung]]></de>
-            <en><![CDATA[Cache management]]></en>
+            <de><![CDATA[Cache]]></de>
+            <en><![CDATA[Cache]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.management.text">
-            <de><![CDATA[Cache-Verwaltung]]></de>
-            <en><![CDATA[Cache management]]></en>
+            <de><![CDATA[Cache]]></de>
+            <en><![CDATA[Cache]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.clear.title">
             <de><![CDATA[Cache leeren]]></de>
@@ -4054,8 +5419,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Port]]></en>
         </locale>
         <locale name="quiqqer.settings.cache">
-            <de><![CDATA[Cache-Verwaltung]]></de>
-            <en><![CDATA[Cache management]]></en>
+            <de><![CDATA[Cache]]></de>
+            <en><![CDATA[Cache]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.title">
             <de><![CDATA[Welche Cache-Arten sollen genutzt werden?]]></de>
@@ -4203,23 +5568,23 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Name]]></en>
         </locale>
         <locale name="control.contact.name.placeholder">
-            <de><![CDATA[Ihr vor- und Nachname...]]></de>
-            <en><![CDATA[Please enter Your First and Last Name here ...]]></en>
+            <de><![CDATA[Ihr vor- und Nachname]]></de>
+            <en><![CDATA[Please enter Your First and Last Name here]]></en>
         </locale>
         <locale name="control.contact.email">
             <de><![CDATA[E-Mail]]></de>
             <en><![CDATA[Email]]></en>
         </locale>
         <locale name="control.contact.email.placeholder">
-            <de><![CDATA[Ihre E-Mail-Adresse...]]></de>
-            <en><![CDATA[Please enter your email address here ...]]></en>
+            <de><![CDATA[Ihre E-Mail-Adresse]]></de>
+            <en><![CDATA[Please enter your email address here]]></en>
         </locale>
         <locale name="control.contact.message">
             <de><![CDATA[Nachricht]]></de>
             <en><![CDATA[Message]]></en>
         </locale>
         <locale name="control.contact.message.placeholder">
-            <de><![CDATA[Ihre Nachricht an uns...]]></de>
+            <de><![CDATA[Ihre Nachricht an uns]]></de>
             <en><![CDATA[Your message to us]]></en>
         </locale>
         <locale name="exception.media.not.a.folder">
@@ -4323,10 +5688,14 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[The code for the activation is not correct.]]></en>
         </locale>
         <locale name="exception.lib.user.activasion.no.groups">
-            <de>
-                <![CDATA[Der Benutzer ist noch keiner Gruppe zugeordnet. Ein Benutzer muss mindestens einer Gruppe zugeordnet sein.]]></de>
-            <en>
-                <![CDATA[The is no group assigned to the user. A user must have at least one group assigned to him.]]></en>
+            <de><![CDATA[
+            Der Benutzer ist noch keiner Gruppe zugeordnet.
+            Ein Benutzer muss mindestens einer Gruppe zugeordnet sein.
+            ]]></de>
+            <en><![CDATA[
+            The is no group assigned to the user.
+            A user must have at least one group assigned to him.
+            ]]></en>
         </locale>
         <locale name="exception.lib.user.activasion.no.password">
             <de><![CDATA[Dem Benutzer wurde noch kein Passwort gesetzt.
@@ -4395,8 +5764,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[The page is currently being edited by a other user]]></en>
         </locale>
         <locale name="exception.site.same.name">
-            <de><![CDATA[Eine Seite ([id]) mit dem Namen "[name]" existiert bereits in der gleichen Ebene]]></de>
-            <en><![CDATA[A page ([id]) with the name "[name]" already exists on the same level.]]></en>
+            <de><![CDATA[Eine Seite mit dem Namen "[name]" existiert bereits in der gleichen Ebene]]></de>
+            <en><![CDATA[A page with the name "[name]" already exists on the same level.]]></en>
         </locale>
         <locale name="exception.site.save.error">
             <de><![CDATA[Es sind Fehler beim Speichern der Seite aufgetreten]]></de>
@@ -4554,6 +5923,14 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[SHA1 Hashes der Dateien neu berechnen:]]></de>
             <en><![CDATA[Recalculate SHA1 hashes of files:]]></en>
         </locale>
+        <locale name="projects.project.site.copy.text.count">
+            <de><![CDATA[[name] (Kopie [count])]]></de>
+            <en><![CDATA[[name] (Copy [count])]]></en>
+        </locale>
+        <locale name="projects.project.site.copy.text">
+            <de><![CDATA[[name] (Kopie)]]></de>
+            <en><![CDATA[[name] (Copy)]]></en>
+        </locale>
         <locale name="exception.lib.qui.exceptions.handler.nocallback">
             <de><![CDATA[Keine callback funktion definiert [function]]]></de>
             <en><![CDATA[No callback passed to [function] method]]></en>
@@ -4569,18 +5946,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="exception.lib.cache.manager.not.exist">
             <de><![CDATA[Cache existiert nicht]]></de>
             <en><![CDATA[Cache doesn't exist]]></en>
-        </locale>
-        <locale name="message.packages.server.add.successfuly">
-            <de><![CDATA[Der Server [server] wurde erfolgreich hinzugefügt.]]></de>
-            <en><![CDATA[The Server [server] was successfuly added.]]></en>
-        </locale>
-        <locale name="message.packages.server.remove.successfuly">
-            <de><![CDATA[Die Server wurden erfolgreich entfernt.]]></de>
-            <en><![CDATA[The servers were successfully removed.]]></en>
-        </locale>
-        <locale name="message.packages.no.updates.available">
-            <de><![CDATA[Es wurden keine Updates gefunden. Ihr System ist auf dem aktuellsten Stand.]]></de>
-            <en><![CDATA[No updates were found. Your system is up to date.]]></en>
         </locale>
         <locale name="exception.packages.update.check">
             <de><![CDATA[Die Prüfung auf Updates konnte nicht durchgeführt werden.]]></de>
@@ -4949,9 +6314,17 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Datumsformat]]></de>
             <en><![CDATA[Date format]]></en>
         </locale>
+        <locale name="quiqqer.settings.languages.title">
+            <de><![CDATA[Allgemeine Sprach-Einstellungen]]></de>
+            <en><![CDATA[General language settings]]></en>
+        </locale>
+        <locale name="quiqqer.settings.language_settings">
+            <de><![CDATA[Sprach-Einstellungen]]></de>
+            <en><![CDATA[Language settings]]></en>
+        </locale>
         <locale name="quiqqer.settings.date_formats.title">
-            <de><![CDATA[Globales Datumsformat Einstellungen]]></de>
-            <en><![CDATA[Global date format settings]]></en>
+            <de><![CDATA[Globales Datumsformat]]></de>
+            <en><![CDATA[Global date format]]></en>
         </locale>
         <locale name="quiqqer.settings.date_formats.description" html="true">
             <de><![CDATA[<p>Einstellungen und oder mögliche Datumsformate finden Sie unter:</p>
@@ -4967,14 +6340,25 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
                     </a>
                 </p>]]></en>
         </locale>
+        <locale name="quiqqer.settings.delimiter_formats.title">
+            <de><![CDATA[Trennzeichen]]></de>
+            <en><![CDATA[Delimiter]]></en>
+        </locale>
+        <locale name="quiqqer.settings.general.globals.standardLanguage">
+            <de><![CDATA[Standard Sprache]]></de>
+            <en><![CDATA[Standard language]]></en>
+        </locale>
         <locale name="projects.project.site.btn.save.title">
             <de><![CDATA[Aktuelle Seite speichern]]></de>
             <en><![CDATA[Save the current page]]></en>
         </locale>
         <locale name="projects.project.site.btn.delete.title">
-            <de>
-                <![CDATA[Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden]]></de>
-            <en><![CDATA[Delete the page, the page is placed in the trash and can be restored]]></en>
+            <de><![CDATA[
+            Löschen Sie die Seite, die Seite wird in den Papierkorb gelegt und kann wieder hergestellt werden
+            ]]></de>
+            <en><![CDATA[
+            Delete the page, the page is placed in the trash and can be restored
+            ]]></en>
         </locale>
         <locale name="menu.apps.text">
             <de><![CDATA[Apps]]></de>
@@ -5054,8 +6438,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
     </groups>
     <groups name="quiqqer/system" datatype="php,js">
         <locale name="menu.extras.packages.text">
-            <de><![CDATA[System, Plugins und Paket-Manager]]></de>
-            <en><![CDATA[System, Plugins and Package Manager]]></en>
+            <de><![CDATA[Systemverwaltung]]></de>
+            <en><![CDATA[System administration]]></en>
         </locale>
         <locale name="projects.project.site.btn.new.text">
             <de><![CDATA[Neue Unterseite]]></de>
@@ -5078,8 +6462,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Deactivate]]></en>
         </locale>
         <locale name="packages.panel.title">
-            <de><![CDATA[System, Plugins und Paket Manager]]></de>
-            <en><![CDATA[System, Plugins and Package Manager]]></en>
+            <de><![CDATA[Systemverwaltung]]></de>
+            <en><![CDATA[System administration]]></en>
         </locale>
         <locale name="month">
             <de><![CDATA[Monat]]></de>
@@ -5192,6 +6576,16 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
                 <em>Add children sites</em> adds all children sites of the selected site. Unles it is a sitetype set. The the sitetype is used as a filter, it will only see all children sites of the selected sitetype.
                 </p>
             ]]></en>
+        </locale>
+        <locale name="exception.usergroups.search.cannot.search.users.without.parameters">
+            <de>
+                <![CDATA[Die Suche nach Benutzern kann ohne entsprechende Such-Parameter nicht durchgeführt werden.]]></de>
+            <en><![CDATA[The user search cannot be executed without search parameters.]]></en>
+        </locale>
+        <locale name="message.project.config.save.success">
+            <de>
+                <![CDATA[Die Projekt Einstellungen wurden erfolgreich gespeichert.]]></de>
+            <en><![CDATA[The project settings successfully saved]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php ">

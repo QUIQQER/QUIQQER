@@ -9,9 +9,7 @@
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_server_remove',
     function ($server) {
-        QUI::getPackageManager()->removeServer(
-            json_decode($server, true)
-        );
+        QUI::getPackageManager()->removeServer($server);
 
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(

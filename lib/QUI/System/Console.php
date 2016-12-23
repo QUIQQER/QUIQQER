@@ -56,30 +56,30 @@ class Console
      * @var array
      */
     protected $colors = array(
-        'black' => '0;30',
-        'dark_gray' => '1;30',
-        'blue' => '0;34',
-        'light_blue' => '1;34',
-        'green' => '0;32',
-        'light_green' => '1;32',
-        'cyan' => '0;36',
-        'light_cyan' => '1;36',
-        'red' => '0;31',
-        'light_red' => '1;31',
-        'purple' => '0;35',
+        'black'        => '0;30',
+        'dark_gray'    => '1;30',
+        'blue'         => '0;34',
+        'light_blue'   => '1;34',
+        'green'        => '0;32',
+        'light_green'  => '1;32',
+        'cyan'         => '0;36',
+        'light_cyan'   => '1;36',
+        'red'          => '0;31',
+        'light_red'    => '1;31',
+        'purple'       => '0;35',
         'light_purple' => '1;35',
-        'brown' => '0;33',
-        'yellow' => '1;33',
-        'light_gray' => '0;37',
-        'white' => '1;37',
-        'black_u' => '4;30',
-        'red_u' => '4;31',
-        'green_u' => '4;32',
-        'yellow_u' => '4;33',
-        'blue_u' => '4;34',
-        'purple_u' => '4;35',
-        'cyan_u' => '4;36',
-        'white_u' => '4;37'
+        'brown'        => '0;33',
+        'yellow'       => '1;33',
+        'light_gray'   => '0;37',
+        'white'        => '1;37',
+        'black_u'      => '4;30',
+        'red_u'        => '4;31',
+        'green_u'      => '4;32',
+        'yellow_u'     => '4;33',
+        'blue_u'       => '4;34',
+        'purple_u'     => '4;35',
+        'cyan_u'       => '4;36',
+        'white_u'      => '4;37'
     );
 
     /**
@@ -88,13 +88,13 @@ class Console
      * @var array
      */
     protected $bg = array(
-        'black' => '40',
-        'red' => '41',
-        'green' => '42',
-        'yellow' => '43',
-        'blue' => '44',
-        'magenta' => '45',
-        'cyan' => '46',
+        'black'      => '40',
+        'red'        => '41',
+        'green'      => '42',
+        'yellow'     => '43',
+        'blue'       => '44',
+        'magenta'    => '45',
+        'cyan'       => '46',
         'light_gray' => '47'
     );
 
@@ -133,12 +133,12 @@ class Console
             $params['--username'] = $this->readInput();
 
             $this->write("Password: ", 'green');
-            $params['--password'] = $this->readInput();
+            $params['--password'] = QUI\Utils\System\Console::readPassword();
         }
 
         if (!isset($params['--password'])) {
             $this->writeLn("Password:", 'green');
-            $params['--password'] = $this->readInput();
+            $params['--password'] = QUI\Utils\System\Console::readPassword();
         }
 
         try {
@@ -146,7 +146,6 @@ class Console
                 $params['--username'],
                 $params['--password']
             );
-
         } catch (QUI\Exception $Exception) {
             $this->writeLn($Exception->getMessage() . "\n\n", 'red');
             exit;
@@ -159,9 +158,9 @@ class Console
 
         QUI::getSession()->set('uid', $User->getId());
 
-        QUI\Rights\Permission::setUser($User);
+        QUI\Permissions\Permission::setUser($User);
 
-        if (!QUI\Rights\Permission::hasPermission('quiqqer.system.console')) {
+        if (!QUI\Permissions\Permission::hasPermission('quiqqer.system.console')) {
             $this->writeLn("Missing rights to use the console\n\n", 'red');
             $this->clearMsg();
             exit;
@@ -215,7 +214,6 @@ class Console
                 if (isset($var[0]) && isset($var[1])) {
                     $params[$var[0]] = $var[1];
                 }
-
             } else {
                 $params[$argv] = true;
             }
@@ -253,7 +251,8 @@ class Console
         $tool = $this->readInput();
         $Exec = false;
 
-        if ($tool == 'exit') {
+        if ($tool == 'exit' || !$tool) {
+            $this->writeLn();
             return;
         }
 
@@ -266,7 +265,6 @@ class Console
 
             try {
                 $Exec->execute();
-
             } catch (QUI\Exception $Exception) {
                 Log::addAlert($Exception->getMessage(), array(
                     'type' => 'cron',
@@ -278,6 +276,9 @@ class Console
 
                 return;
             }
+        } else {
+            $this->writeLn('Tool not found!', 'red');
+            $this->clearMsg();
         }
 
         $this->writeLn('Would you like any other steps to do?');
@@ -290,7 +291,7 @@ class Console
      *
      * @param boolean|string $tool - boolean true = all Tools | string = specific tool
      *
-     * @return array|Console\Tool
+     * @return array|Console\Tool|bool
      */
     public function get($tool)
     {
@@ -327,7 +328,6 @@ class Console
                 }
 
                 $Tool->execute();
-
             } catch (QUI\Exception $Exception) {
                 $this->writeLn($Exception->getMessage(), 'red');
                 $this->writeLn();
@@ -372,7 +372,7 @@ class Console
 
             $tools = array_merge(
                 $tools,
-                QUI\Utils\XML::getConsoleToolsFromXml($dir . '/console.xml')
+                QUI\Utils\Text\XML::getConsoleToolsFromXml($dir . '/console.xml')
             );
         }
 
@@ -389,7 +389,7 @@ class Console
 
             $tools = array_merge(
                 $tools,
-                QUI\Utils\XML::getConsoleToolsFromXml($dir . '/console.xml')
+                QUI\Utils\Text\XML::getConsoleToolsFromXml($dir . '/console.xml')
             );
         }
 

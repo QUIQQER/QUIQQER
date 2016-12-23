@@ -100,7 +100,6 @@ abstract class Item extends QUI\QDOM
         try {
             // activate the parents, otherwise the file is not accessible
             $this->getParent()->activate();
-
         } catch (QUI\Exception $Exception) {
             // has no parent
         }
@@ -205,11 +204,11 @@ abstract class Item extends QUI\QDOM
         QUI::getDataBase()->update(
             $this->Media->getTable(),
             array(
-                'title' => $this->getAttribute('title'),
-                'alt' => $this->getAttribute('alt'),
-                'short' => $this->getAttribute('short'),
-                'order' => $order,
-                'priority' => (int)$this->getAttribute('priority'),
+                'title'         => $this->getAttribute('title'),
+                'alt'           => $this->getAttribute('alt'),
+                'short'         => $this->getAttribute('short'),
+                'order'         => $order,
+                'priority'      => (int)$this->getAttribute('priority'),
                 'image_effects' => json_encode($image_effects)
             ),
             array(
@@ -294,7 +293,6 @@ abstract class Item extends QUI\QDOM
         // second, move the file to the trash
         try {
             QUIFile::unlink($var_folder . $this->getId());
-
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addWarning($Exception->getMessage());
         }
@@ -302,7 +300,6 @@ abstract class Item extends QUI\QDOM
         try {
             QUIFile::mkdir($var_folder);
             QUIFile::move($original, $var_folder . $this->getId());
-
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addWarning($Exception->getMessage());
         }
@@ -312,8 +309,8 @@ abstract class Item extends QUI\QDOM
             $this->Media->getTable(),
             array(
                 'deleted' => 1,
-                'active' => 0,
-                'file' => ''
+                'active'  => 0,
+                'file'    => ''
             ),
             array(
                 'id' => $this->getId()
@@ -593,17 +590,16 @@ abstract class Item extends QUI\QDOM
     /**
      * Returns the url from the file
      *
-     * @param boolean $rewrite - false = image.php, true = rewrited URL
+     * @param boolean $rewritten - false = image.php, true = rewrited URL
      *
      * @return string
      */
-    public function getUrl($rewrite = false)
+    public function getUrl($rewritten = false)
     {
-        if ($rewrite == false) {
+        if ($rewritten == false) {
             $Project = $this->Media->getProject();
 
-            $str = 'image.php?id=' . $this->getId() . '&project='
-                   . $Project->getAttribute('name');
+            $str = 'image.php?id=' . $this->getId() . '&project=' . $Project->getAttribute('name');
 
             if ($this->getAttribute('maxheight')) {
                 $str .= '&maxheight=' . $this->getAttribute('maxheight');
@@ -617,8 +613,7 @@ abstract class Item extends QUI\QDOM
         }
 
         if ($this->getAttribute('active') == 1) {
-            return URL_DIR . $this->Media->getCacheDir()
-                   . $this->getAttribute('file');
+            return URL_DIR . $this->Media->getCacheDir() . $this->getAttribute('file');
         }
 
         return '';
@@ -638,19 +633,21 @@ abstract class Item extends QUI\QDOM
             throw new QUI\Exception(
                 'File with a same Name exist in folder '
                 . $Folder->getAttribute('name')
-            );
+            ); // #locale
         }
 
         $Parent   = $this->getParent();
         $old_path = $this->getFullPath();
 
-        $new_file = str_replace(
-            $Parent->getAttribute('file'),
-            $Folder->getAttribute('file'),
-            $this->getAttribute('file')
+        $Parent->getFullPath();
+
+        $new_path = str_replace(
+            $Parent->getFullPath(),
+            $Folder->getFullPath(),
+            $this->getFullPath()
         );
 
-        $new_path = $this->Media->getFullPath() . $new_file;
+        $new_file = str_replace($this->getMedia()->getFullPath(), '', $new_path);
 
         // delete the file cache
         // @todo move the cache too
@@ -682,7 +679,7 @@ abstract class Item extends QUI\QDOM
             ),
             array(
                 'parent' => $Parent->getId(),
-                'child' => $this->getId()
+                'child'  => $this->getId()
             )
         );
 

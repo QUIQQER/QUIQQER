@@ -390,7 +390,7 @@ define('controls/projects/project/media/Panel', [
                 }
 
                 // cached id?
-                var Project    = this.$Media.getProject();
+                var Project    = self.$Media.getProject();
                 var cacheMedia = Project.getName() + '-' + Project.getLang() + '-id';
 
                 if (QUI.Storage.get(cacheMedia)) {
@@ -400,7 +400,6 @@ define('controls/projects/project/media/Panel', [
 
                 self.openID(1);
             });
-
         },
 
         unload: function () {
@@ -448,62 +447,66 @@ define('controls/projects/project/media/Panel', [
 
             this.setAttribute('startid', fileid);
 
-            // get the file object
-            this.getMedia().get(fileid).then(function (MediaFile) {
-                // set media image to the panel
-                self.setOptions({
-                    icon : 'fa fa-picture-o',
-                    title: ' Media (' + Project.getName() + ')'
+            return new Promise(function (resolve) {
+
+                // get the file object
+                self.getMedia().get(fileid).then(function (MediaFile) {
+                    // set media image to the panel
+                    self.setOptions({
+                        icon : 'fa fa-picture-o',
+                        title: ' Media (' + Project.getName() + ')'
+                    });
+
+                    //self.refresh();
+                    self.$File = MediaFile;
+
+                    // if the MediaFile is no Folder
+                    if (MediaFile.getType() !== 'classes/projects/project/media/Folder') {
+
+                        require([
+                            'controls/projects/project/media/FilePanel'
+                        ], function (FilePanel) {
+                            new FilePanel(MediaFile).inject(
+                                self.getParent()
+                            );
+
+                            self.Loader.hide();
+                        });
+
+                        // open parent-id
+                        MediaFile.getParentId().then(function (parentId) {
+                            self.openID(parentId).then(resolve);
+                        });
+
+                        return;
+                    }
+
+                    self.setAttribute('fileid', MediaFile.getId());
+
+                    // load children
+                    MediaFile.getChildren(function (children) {
+                        self.$children = children;
+                        self.$view(children);
+
+                        // load breadcrumb
+                        self.$File.getBreadcrumb(function (result) {
+                            self.$createBreadCrumb(result);
+
+                            // select active item, if map is open
+                            if (self.$Map) {
+                                self.$Map.selectFolder(MediaFile.getId());
+                            }
+
+                            resolve();
+                            self.Loader.hide();
+                        });
+                    }, {
+                        order: self.getAttribute('field') + ' ' + self.getAttribute('order')
+                    });
+                }).catch(function () {
+                    self.openID(1).then(resolve);
                 });
-
-                //self.refresh();
-                self.$File = MediaFile;
-
-                // if the MediaFile is no Folder
-                if (MediaFile.getType() !== 'classes/projects/project/media/Folder') {
-
-                    require([
-                        'controls/projects/project/media/FilePanel'
-                    ], function (FilePanel) {
-                        new FilePanel(MediaFile).inject(
-                            self.getParent()
-                        );
-
-                        self.Loader.hide();
-                    });
-
-                    // open parent-id
-                    MediaFile.getParentId().then(function (parentId) {
-                        self.openID(parentId);
-                    });
-
-                    return;
-                }
-
-                self.setAttribute('fileid', MediaFile.getId());
-
-                // load children
-                MediaFile.getChildren(function (children) {
-                    self.$children = children;
-                    self.$view(children);
-
-                    // load breadcrumb
-                    self.$File.getBreadcrumb(function (result) {
-                        self.$createBreadCrumb(result);
-
-                        // select active item, if map is open
-                        if (self.$Map) {
-                            self.$Map.selectFolder(MediaFile.getId());
-                        }
-
-                        self.Loader.hide();
-                    });
-                }, {
-                    order: self.getAttribute('field') + ' ' + self.getAttribute('order')
-                });
-            }).catch(function () {
-                this.openID(1);
-            }.bind(this));
+            });
         },
 
         /**
@@ -797,7 +800,7 @@ define('controls/projects/project/media/Panel', [
             this.$Map = new MediaSitemap({
                 project: Project.getName(),
                 lang   : Project.getLang(),
-                id     : this.getAttribute('startid'),
+                id     : 1,
                 events : {
                     onItemClick: function (Item) {
                         self.openID(
@@ -1567,6 +1570,26 @@ define('controls/projects/project/media/Panel', [
         },
 
         /**
+         * Opens the move dialog for the nodes
+         *
+         * @method controls/projects/project/media/Panel#deleteItem
+         * @param {Array|NodeList|HTMLElement} DOMNode - list
+         */
+        moveItem: function (DOMNode) {
+            this.$DOMEvents.move([DOMNode]);
+        },
+
+        /**
+         * Opens the move dialog for the nodes
+         *
+         * @method controls/projects/project/media/Panel#deleteItem
+         * @param {Array|NodeList|HTMLElement} DOMNode - list
+         */
+        moveItems: function (Nodes) {
+            this.$DOMEvents.move(Nodes);
+        },
+
+        /**
          * Rename the folder
          *
          * @method controls/projects/project/media/Panel#renameItem
@@ -1711,19 +1734,21 @@ define('controls/projects/project/media/Panel', [
          */
         moveTo: function (folderid, ids) {
             if (!ids.length) {
-                return;
+                return Promise.resolve();
             }
 
             var self = this;
 
-            self.Loader.show();
+            return new Promise(function (resolve) {
+                self.Loader.show();
 
-            Ajax.post('ajax_media_move', function () {
-                self.openID(self.getAttribute('fileid'));
-            }, {
-                project: this.$Media.getProject().getName(),
-                to     : folderid,
-                ids    : JSON.encode(ids)
+                Ajax.post('ajax_media_move', function () {
+                    self.openID(self.getAttribute('fileid')).then(resolve);
+                }, {
+                    project: self.$Media.getProject().getName(),
+                    to     : folderid,
+                    ids    : JSON.encode(ids)
+                });
             });
         },
 

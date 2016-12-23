@@ -74,11 +74,19 @@
     border: 1px solid #dedede;
     cursor: zoom-in;
     float: left;
-    height: 120px;
+    height: 150px;
     margin: 20px 0 0 20px;
     overflow: hidden;
     position: relative;
-    width: 120px;
+    width: 150px;
+}
+
+.qui-project-media-folderViewer-item-active {
+    border-top: 4px solid #77AB13;
+}
+
+.qui-project-media-folderViewer-item-inactive {
+    border-top: 4px solid #AE432E;
 }
 
 .qui-project-media-folderViewer-item.selected,
@@ -133,4 +141,8 @@
     position: absolute;
     width: 100%;
     z-index: 9;
+}
+
+.qui-project-media-folderViewer-item-action {
+
 }

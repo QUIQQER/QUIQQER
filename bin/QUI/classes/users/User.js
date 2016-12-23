@@ -117,7 +117,7 @@ define('classes/users/User', [
 
                         require(['Users'], function (Users) {
                             Users.onRefreshUser(self);
-                            resolve(self);
+                            reject(self);
                         });
 
                         return;
@@ -262,42 +262,42 @@ define('classes/users/User', [
          * @param {Function} [onfinish] - (optional), callback
          */
         savePassword: function (pass1, pass2, options, onfinish) {
-            if (!this.$uid) {
-                onfinish(false, false);
-                return;
-            }
+            return new Promise(function (resolve, reject) {
 
-            options = options || {};
+                if (!this.$uid) {
+                    onfinish(false, false);
+                    reject('Unknown User-ID');
+                    return;
+                }
 
-            if (pass1 != pass2) {
-                QUI.getMessageHandler(function (MH) {
-                    MH.addError(
-                        Locale.get(
-                            'quiqqer/system',
-                            'exception.user.wrong.passwords'
-                        )
-                    );
+                options = options || {};
+
+                if (pass1 != pass2) {
+                    if (typeof onfinish === 'function') {
+                        onfinish(false, false);
+                    }
+
+                    reject(Locale.get('quiqqer/system', 'exception.user.wrong.passwords'));
+                    return;
+                }
+
+                Ajax.post('ajax_users_set_password', function (result) {
+                    this.setAttribute('hasPassword', 1);
+
+                    if (typeof onfinish === 'function') {
+                        onfinish(result);
+                    }
+
+                    resolve(result);
+                }.bind(this), {
+                    uid    : this.getId(),
+                    pw1    : pass1,
+                    pw2    : pass2,
+                    params : JSON.encode(options),
+                    onError: reject
                 });
 
-                if (onfinish) {
-                    onfinish(false, false);
-                }
-
-                return;
-            }
-
-            Ajax.post('ajax_users_set_password', function (result, Request) {
-                this.setAttribute('hasPassword', 1);
-
-                if (typeof onfinish !== 'undefined') {
-                    onfinish(result, Request);
-                }
-            }.bind(this), {
-                uid   : this.getId(),
-                pw1   : pass1,
-                pw2   : pass2,
-                params: JSON.encode(options)
-            });
+            }.bind(this));
         },
 
         /**
@@ -310,7 +310,7 @@ define('classes/users/User', [
                 return 0;
             }
 
-            return (this.getAttribute('active')).toInt();
+            return parseInt(this.getAttribute('active'));
         },
 
         /**

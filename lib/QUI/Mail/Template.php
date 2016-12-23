@@ -46,9 +46,9 @@ class Template extends QUI\QDOM
 
         $header = $Engine->fetch($this->getHeaderTemplate());
         $footer = $Engine->fetch($this->getFooterTemplate());
-        $body = $this->getAttribute('body');
+        $body   = $this->getAttribute('body');
 
-        return $header.$body.$footer;
+        return $header . $body . $footer;
     }
 
     /**
@@ -114,7 +114,7 @@ class Template extends QUI\QDOM
             return $this->getAttribute('Project');
         }
 
-        return \QUI::getProjectManager()->get();
+        return QUI::getProjectManager()->get();
     }
 
     /**
@@ -124,24 +124,24 @@ class Template extends QUI\QDOM
      */
     public function getHeaderTemplate()
     {
-        $Project = $this->getProject();
-        $standardTpl = LIB_DIR.'templates/mail/header.html';
+        $Project     = $this->getProject();
+        $standardTpl = LIB_DIR . 'templates/mail/header.html';
 
         if (!$Project) {
             return $standardTpl;
         }
 
         // exit project template?
-        $template = $this->getAttribute('TplHeader');
-        $projectDir = USR_DIR.$Project->getName().'/lib/';
+        $template   = $this->getAttribute('TplHeader');
+        $projectDir = USR_DIR . $Project->getName() . '/lib/';
 
-        if (file_exists($projectDir.$template)) {
-            return $projectDir.$template;
+        if (file_exists($projectDir . $template)) {
+            return $projectDir . $template;
         }
 
         // exist template in opt?
-        if (file_exists(OPT_DIR.$template)) {
-            return OPT_DIR.$template;
+        if (file_exists(OPT_DIR . $template)) {
+            return OPT_DIR . $template;
         }
 
         return $standardTpl;
@@ -154,24 +154,24 @@ class Template extends QUI\QDOM
      */
     public function getFooterTemplate()
     {
-        $Project = $this->getProject();
-        $standardTpl = LIB_DIR.'templates/mail/footer.html';
+        $Project     = $this->getProject();
+        $standardTpl = LIB_DIR . 'templates/mail/footer.html';
 
         if (!$Project) {
             return $standardTpl;
         }
 
         // exit project template?
-        $template = $this->getAttribute('TplFooter');
-        $projectDir = USR_DIR.$Project->getName().'/lib/';
+        $template   = $this->getAttribute('TplFooter');
+        $projectDir = USR_DIR . $Project->getName() . '/lib/';
 
-        if (file_exists($projectDir.$template)) {
-            return $projectDir.$template;
+        if (file_exists($projectDir . $template)) {
+            return $projectDir . $template;
         }
 
         // exist template in opt?
-        if (file_exists(OPT_DIR.$template)) {
-            return OPT_DIR.$template;
+        if (file_exists(OPT_DIR . $template)) {
+            return OPT_DIR . $template;
         }
 
         return $standardTpl;

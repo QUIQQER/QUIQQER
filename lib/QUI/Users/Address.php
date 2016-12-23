@@ -37,14 +37,14 @@ class Address extends QUI\QDOM
      * @param QUI\Users\User $User - User
      * @param integer $id - Address id
      *
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      */
     public function __construct(User $User, $id)
     {
         $result = QUI::getDataBase()->fetch(array(
-            'from' => Manager::tableAddress(),
+            'from'  => Manager::tableAddress(),
             'where' => array(
-                'id' => (int)$id,
+                'id'  => (int)$id,
                 'uid' => $User->getId()
             ),
             'limit' => '1'
@@ -54,7 +54,7 @@ class Address extends QUI\QDOM
         $this->id   = (int)$id;
 
         if (!isset($result[0])) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'system',
                     'exception.lib.user.address.not.found'
@@ -186,12 +186,12 @@ class Address extends QUI\QDOM
      *
      * @param string $mail - new mail address
      *
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      */
     public function addMail($mail)
     {
         if (Orthos::checkMailSyntax($mail) == false) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'system',
                     'exception.lib.user.address.mail.wrong.syntax'
@@ -224,12 +224,12 @@ class Address extends QUI\QDOM
      * @param integer $index - index of the mail
      * @param string $mail - E-Mail (eq: my@mail.com)
      *
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      */
     public function editMail($index, $mail)
     {
         if (Orthos::checkMailSyntax($mail) == false) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'system',
                     'exception.lib.user.address.mail.wrong.syntax'
@@ -265,12 +265,12 @@ class Address extends QUI\QDOM
      * Länder bekommen
      *
      * @return QUI\Countries\Country
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      */
     public function getCountry()
     {
         if ($this->getAttribute('country') === false) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'system',
                     'exception.lib.user.address.no.country'
@@ -282,11 +282,10 @@ class Address extends QUI\QDOM
             return QUI\Countries\Manager::get(
                 $this->getAttribute('country')
             );
-
         } catch (QUI\Exception $Exception) {
         }
 
-        throw new QUI\Exception(
+        throw new QUI\Users\Exception(
             QUI::getLocale()->get(
                 'system',
                 'exception.lib.user.address.no.country'
@@ -306,16 +305,16 @@ class Address extends QUI\QDOM
             Manager::tableAddress(),
             array(
                 'salutation' => Orthos::clear($this->getAttribute('salutation')),
-                'firstname' => Orthos::clear($this->getAttribute('firstname')),
-                'lastname' => Orthos::clear($this->getAttribute('lastname')),
-                'company' => Orthos::clear($this->getAttribute('company')),
-                'delivery' => Orthos::clear($this->getAttribute('delivery')),
-                'street_no' => Orthos::clear($this->getAttribute('street_no')),
-                'zip' => Orthos::clear($this->getAttribute('zip')),
-                'city' => Orthos::clear($this->getAttribute('city')),
-                'country' => Orthos::clear($this->getAttribute('country')),
-                'mail' => $mail,
-                'phone' => $phone
+                'firstname'  => Orthos::clear($this->getAttribute('firstname')),
+                'lastname'   => Orthos::clear($this->getAttribute('lastname')),
+                'company'    => Orthos::clear($this->getAttribute('company')),
+                'delivery'   => Orthos::clear($this->getAttribute('delivery')),
+                'street_no'  => Orthos::clear($this->getAttribute('street_no')),
+                'zip'        => Orthos::clear($this->getAttribute('zip')),
+                'city'       => Orthos::clear($this->getAttribute('city')),
+                'country'    => Orthos::clear($this->getAttribute('country')),
+                'mail'       => $mail,
+                'phone'      => $phone
             ),
             array(
                 'id' => $this->id
@@ -330,9 +329,9 @@ class Address extends QUI\QDOM
     {
         QUI::getDataBase()->exec(array(
             'delete' => true,
-            'from' => Manager::tableAddress(),
-            'where' => array(
-                'id' => $this->getId(),
+            'from'   => Manager::tableAddress(),
+            'where'  => array(
+                'id'  => $this->getId(),
                 'uid' => $this->User->getId()
             )
         ));
@@ -350,9 +349,9 @@ class Address extends QUI\QDOM
         $Engine = QUI::getTemplateManager()->getEngine(true);
 
         $Engine->assign(array(
-            'User' => $this->User,
-            'Address' => $this,
-            'active' => $active,
+            'User'      => $this->User,
+            'Address'   => $this,
+            'active'    => $active,
             'Countries' => new QUI\Countries\Manager()
         ));
 

@@ -1,4 +1,3 @@
-
 /**
  * Login Window
  *
@@ -11,9 +10,9 @@
  * @require Ajax
  * @require css!controls/system/Login.css
  *
- * @event onSubmit [ {Array}, {this} ]
+ * @event onSubmit [ Array, this ]
+ * @event onLogin [self]
  */
-
 define('controls/system/Login', [
 
     'qui/QUI',
@@ -32,51 +31,51 @@ define('controls/system/Login', [
      */
     return new Class({
 
-        Extends : QUIConfirm,
-        Type    : 'controls/system/Login',
+        Extends: QUIConfirm,
+        Type   : 'controls/system/Login',
 
-        Binds : [
+        Binds: [
             'submit',
             '$onCreate',
             '$onSubmit'
         ],
 
-        options : {
-            title     : Locale.get('quiqqer/system', 'login.title'),
-            icon      : 'fa fa-sign-in',
-            maxHeight : 300,
-            maxWidth  : 500,
-            autoclose : false,
-            cancel_button : {
-                text      : Locale.get('quiqqer/system', 'logout'),
-                textimage : 'fa fa-remove'
+        options: {
+            title        : Locale.get('quiqqer/system', 'login.title'),
+            icon         : 'fa fa-sign-in',
+            maxHeight    : 300,
+            maxWidth     : 500,
+            autoclose    : false,
+            cancel_button: {
+                text     : Locale.get('quiqqer/system', 'logout'),
+                textimage: 'fa fa-remove'
             },
-            ok_button : {
-                text      : Locale.get('quiqqer/system', 'login'),
-                textimage : 'fa fa-check'
+            ok_button    : {
+                text     : Locale.get('quiqqer/system', 'login'),
+                textimage: 'fa fa-check'
             }
         },
 
-        initialize : function (options) {
+        initialize: function (options) {
             this.parent(options);
             this.$opened = false;
 
             this.addEvent('cancel', function () {
                 window.onbeforeunload = null;
-                window.location = '/admin/';
+                window.location       = '/admin/';
             });
         },
 
         /**
          * Open the Login
          */
-        open : function () {
+        open: function () {
             // check if one login window is still open
             var logins = QUI.Controls.getByType('controls/system/Login');
 
             if (logins.length >= 2) {
                 for (var i = 0, len = logins.length; i < len; i++) {
-                    if (logins[ i ].$opened) {
+                    if (logins[i].$opened) {
                         this.destroy();
                         return;
                     }
@@ -94,14 +93,14 @@ define('controls/system/Login', [
                 'html',
 
                 '<form class="qui-control-login">' +
-                    '<label>' +
-                        Locale.get('quiqqer/system', 'username') +
-                    '</label>' +
-                    '<input type="text" value="" name="username" />' +
-                    '<label>' +
-                        Locale.get('quiqqer/system', 'password') +
-                    '</label>' +
-                    '<input type="password" value="" name="password" />' +
+                '<label>' +
+                Locale.get('quiqqer/system', 'username') +
+                '</label>' +
+                '<input type="text" value="" name="username" />' +
+                '<label>' +
+                Locale.get('quiqqer/system', 'password') +
+                '</label>' +
+                '<input type="password" value="" name="password" />' +
                 '</form>'
             );
 
@@ -115,37 +114,47 @@ define('controls/system/Login', [
         /**
          * Close the Login
          */
-        close : function () {
+        close: function () {
             this.$opened = false;
             this.parent();
         },
 
         /**
          * Submit the login
+         *
+         * @return {Promise}
          */
-        submit : function () {
-            this.login();
+        submit: function () {
+            return this.login();
         },
 
         /**
          * Loge In
+         *
+         * @return {Promise}
          */
-        login : function () {
+        login: function () {
             var self    = this,
                 Content = this.getContent();
 
-            this.Loader.show();
+            return new Promise(function (resolve, reject) {
 
-            Ajax.post('ajax_login_login', function () {
-                window.fireEvent('login');
+                self.Loader.show();
 
-                self.close();
-            }, {
-                username : Content.getElement('[name="username"]').value,
-                password : Content.getElement('[name="password"]').value,
-                onError : function () {
-                    self.Loader.hide();
-                }
+                Ajax.post('ajax_login_login', function () {
+                    window.fireEvent('login');
+                    self.fireEvent('login', [self]);
+
+                    self.close();
+                    resolve();
+                }, {
+                    username: Content.getElement('[name="username"]').value,
+                    password: Content.getElement('[name="password"]').value,
+                    onError : function (Exception) {
+                        self.Loader.hide();
+                        reject(Exception);
+                    }
+                });
             });
         }
     });

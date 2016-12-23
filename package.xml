@@ -1,0 +1,23 @@
+<quiqqer>
+    <package>
+        <title>
+            <locale group="quiqqer/quiqqer" var="package.title"/>
+        </title>
+
+        <description>
+            <locale group="quiqqer/quiqqer" var="package.title"/>
+        </description>
+
+        <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/quiqqer_logo.png"/>
+
+        <preview>
+            <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/1.png"/>
+            <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/2.png"/>
+            <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/3.png"/>
+            <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/4.png"/>
+            <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/5.png"/>
+        </preview>
+
+        <!-- todo files -->
+    </package>
+</quiqqer>

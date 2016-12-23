@@ -271,7 +271,7 @@ define('controls/projects/project/media/Popup', [
                 return;
             }
 
-            // if folder is in the selectable_types, than you can select the folder
+            // if folder is in the selectable_types, you can select folders
             if (folderCheck) {
                 var folders = this.getAttribute('selectable_types');
 

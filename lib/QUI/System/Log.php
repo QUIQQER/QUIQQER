@@ -75,7 +75,6 @@ class Log
         $filename = false
     ) {
         $Logger = QUI\Log\Logger::getLogger();
-        $User   = QUI::getUserBySession();
         $levels = QUI\Log\Logger::$logLevels;
 
         $loglevelName = self::levelToLogName($loglevel);
@@ -89,6 +88,8 @@ class Log
         ) {
             $context['request'] = HOST . $_SERVER['REQUEST_URI'];
         }
+
+        $User = QUI::getUserBySession();
 
         $context['errorFilename'] = $filename;
         $context['userId']        = $User->getId();
@@ -149,7 +150,7 @@ class Log
     /**
      * Writes an Exception to a log file
      *
-     * @param \Exception $Exception
+     * @param \Exception|QUI\Exception $Exception
      * @param integer $loglevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
      * @param array $context - context data
      * @param string|boolean $filename - [optional] name of the log eq: messages, database,
@@ -161,7 +162,12 @@ class Log
         $filename = false
     ) {
         $message = $Exception->getCode() . " :: \n\n";
-        $message .= $Exception->getMessage() ."\n";
+
+        if (method_exists($Exception, 'getContext')) {
+            $message .= print_r($Exception->getContext(), true) . "\n\n";
+        }
+
+        $message .= $Exception->getMessage() . "\n";
         $message .= $Exception->getTraceAsString();
 
         self::write($message, $loglevel, $context, $filename);

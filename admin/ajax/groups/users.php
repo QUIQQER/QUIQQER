@@ -67,13 +67,13 @@ QUI::$Ajax->registerFunction(
 
         foreach ($users as $user) {
             $result[] = array(
-                'id' => $user['id'],
-                'active' => $user['active'],
-                'username' => $user['username'],
-                'email' => $user['email'],
+                'id'        => $user['id'],
+                'active'    => $user['active'],
+                'username'  => $user['username'],
+                'email'     => $user['email'],
                 'firstname' => $user['firstname'],
-                'lastname' => $user['lastname'],
-                'regdate' => $user['regdate']
+                'lastname'  => $user['lastname'],
+                'regdate'   => $user['regdate']
             );
         }
 
@@ -85,10 +85,9 @@ QUI::$Ajax->registerFunction(
 
         return array(
             'total' => isset($count[0]['cu']) ? $count[0]['cu'] : 0,
-            'page' => $page,
-            'data' => $result
+            'page'  => $page,
+            'data'  => $result
         );
-
     },
     array('gid', 'params'),
     'Permission::checkSU'

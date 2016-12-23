@@ -15,10 +15,10 @@
 define('classes/groups/Group', [
 
     'qui/classes/DOM',
-    'Ajax',
-    'qui/utils/Object'
+    'qui/utils/Object',
+    'Ajax'
 
-], function (DOM, Ajax, ObjectUtils) {
+], function (DOM, ObjectUtils, Ajax) {
     "use strict";
 
     /**
@@ -65,7 +65,7 @@ define('classes/groups/Group', [
          *
          * @method classes/groups/Group#load
          * @param {Function} [onfinish] - (optional), callback
-         * @return Promise
+         * @return {Promise}
          */
         load: function (onfinish) {
             var self = this;
@@ -88,6 +88,32 @@ define('classes/groups/Group', [
                     onError: reject
                 });
             });
+        },
+
+        /**
+         * Activate the group
+         *
+         * @returns {Promise}
+         */
+        activate: function () {
+            return new Promise(function (resolve) {
+                require(['Groups'], function (Groups) {
+                    return Groups.activate(this.getId()).then(resolve);
+                }.bind(this));
+            }.bind(this));
+        },
+
+        /**
+         * Deactivate the group
+         *
+         * @returns {Promise}
+         */
+        deactivate: function () {
+            return new Promise(function (resolve) {
+                require(['Groups'], function (Groups) {
+                    return Groups.deactivate(this.getId()).then(resolve);
+                }.bind(this));
+            }.bind(this));
         },
 
         /**

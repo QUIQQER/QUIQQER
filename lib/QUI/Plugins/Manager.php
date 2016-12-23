@@ -46,7 +46,6 @@ class Manager extends QUI\QDOM
      */
     protected $groupplugins = false;
 
-
     /**
      * Konstruktor
      * Ließt Plugin Config ein
@@ -198,7 +197,7 @@ class Manager extends QUI\QDOM
                 continue;
             }
 
-            $typeList = QUI\Utils\XML::getTypesFromXml($siteXml);
+            $typeList = QUI\Utils\Text\XML::getTypesFromXml($siteXml);
 
             foreach ($typeList as $Type) {
                 /* @var $Type \DOMElement */
@@ -271,7 +270,6 @@ class Manager extends QUI\QDOM
             if (empty($attributes)) {
                 return false;
             }
-
         } catch (QUI\Cache\Exception $Exception) {
             return false;
         }
@@ -502,7 +500,6 @@ class Manager extends QUI\QDOM
 
         try {
             return QUI\Cache\Manager::get($cache);
-
         } catch (QUI\Cache\Exception $Exception) {
         }
 
@@ -520,7 +517,7 @@ class Manager extends QUI\QDOM
             return false;
         }
 
-        $Dom   = QUI\Utils\XML::getDomFromXml($siteXml);
+        $Dom   = QUI\Utils\Text\XML::getDomFromXml($siteXml);
         $XPath = new \DOMXPath($Dom);
         $Types = $XPath->query('//type[@type="' . $type . '"]');
 
@@ -545,7 +542,7 @@ class Manager extends QUI\QDOM
         if ($loc->length) {
             $data['locale'] = array(
                 'group' => $loc->item(0)->getAttribute('group'),
-                'var' => $loc->item(0)->getAttribute('var')
+                'var'   => $loc->item(0)->getAttribute('var')
             );
         }
 

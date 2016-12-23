@@ -27,7 +27,6 @@
  * @require Locale
  * @require css!controls/upload/Form.css
  */
-
 define('controls/upload/Form', [
 
     'qui/QUI',
@@ -598,6 +597,10 @@ define('controls/upload/Form', [
                 }
 
                 params.extract = extract;
+            }
+
+            if (!files.length) {
+                return;
             }
 
             require(['UploadManager'], function (UploadManager) {

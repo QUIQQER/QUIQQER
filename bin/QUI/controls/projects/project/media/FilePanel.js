@@ -20,6 +20,7 @@ define('controls/projects/project/media/FilePanel', [
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
+    'qui/controls/loader/Loader',
     'classes/projects/project/media/panel/DOMEvents',
     'qui/controls/buttons/Button',
     'qui/controls/buttons/Seperator',
@@ -44,20 +45,21 @@ define('controls/projects/project/media/FilePanel', [
 
     var QUI                = arguments[0],
         QUIPanel           = arguments[1],
-        PanelDOMEvents     = arguments[2],
-        QUIButton          = arguments[3],
-        QUIButtonSeperator = arguments[4],
-        QUISelect          = arguments[5],
-        QUIConfirm         = arguments[6],
-        QUIRange           = arguments[7],
-        Template           = arguments[8],
-        FormUtils          = arguments[9],
-        StringUtils        = arguments[10],
-        ControlUtils       = arguments[11],
-        MediaUtils         = arguments[12],
-        MediaInput         = arguments[13],
-        Locale             = arguments[14],
-        Projects           = arguments[15];
+        QUILoader          = arguments[2],
+        PanelDOMEvents     = arguments[3],
+        QUIButton          = arguments[4],
+        QUIButtonSeperator = arguments[5],
+        QUISelect          = arguments[6],
+        QUIConfirm         = arguments[7],
+        QUIRange           = arguments[8],
+        Template           = arguments[9],
+        FormUtils          = arguments[10],
+        StringUtils        = arguments[11],
+        ControlUtils       = arguments[12],
+        MediaUtils         = arguments[13],
+        MediaInput         = arguments[14],
+        Locale             = arguments[15],
+        Projects           = arguments[16];
 
     /**
      * A Media-Panel, opens the Media in an Desktop Panel
@@ -98,6 +100,7 @@ define('controls/projects/project/media/FilePanel', [
 
             this.$DOMEvents        = new PanelDOMEvents(this);
             this.$EffectPreview    = null;
+            this.$EffectLoader     = null;
             this.$EffectBlur       = null;
             this.$EffectBrightness = null;
             this.$EffectContrast   = null;
@@ -272,11 +275,14 @@ define('controls/projects/project/media/FilePanel', [
          */
         refresh: function () {
             this.Loader.show();
+            this.parent();
 
             return this.$File.refresh().then(function () {
                 this.load();
-                this.parent();
-            }.bind(this));
+                this.$refresh();
+            }.bind(this)).catch(function (Exception) {
+                console.error(Exception);
+            });
         },
 
         /**
@@ -293,6 +299,7 @@ define('controls/projects/project/media/FilePanel', [
          * Saves the files
          *
          * @method controls/projects/project/media/FilePanel#save
+         * @return Promise
          */
         save: function () {
             var self = this;
@@ -309,6 +316,8 @@ define('controls/projects/project/media/FilePanel', [
                 });
 
                 self.Loader.hide();
+            }).catch(function (Exception) {
+                console.error(Exception);
             });
         },
 
@@ -742,7 +751,9 @@ define('controls/projects/project/media/FilePanel', [
                     src: URL_LIB_DIR + 'QUI/Projects/Media/bin/effectPreview.php'
                 }).inject(Content.getElement('.preview-frame'));
 
+                self.$EffectLoader = new QUILoader().inject(Content.getElement('.preview-frame'));
 
+                var Form      = Content.getElement('form');
                 var Greyscale = Content.getElement('[name="effect-greyscale"]');
 
                 if (!("blur" in Effects)) {
@@ -765,13 +776,32 @@ define('controls/projects/project/media/FilePanel', [
                     Effects.watermark_position = false;
                 }
 
+                new Element('input', {
+                    name: 'effect-blur',
+                    type: 'hidden'
+                }).inject(Form);
+
+                new Element('input', {
+                    name: 'effect-brightness',
+                    type: 'hidden'
+                }).inject(Form);
+
+                new Element('input', {
+                    name: 'effect-contrast',
+                    type: 'hidden'
+                }).inject(Form);
+
 
                 self.$EffectBlur = new QUIRange({
-                    name  : 'effect-blur',
-                    value : Effects.blur,
-                    min   : 0,
-                    max   : 100,
-                    events: {
+                    name     : 'effect-blur',
+                    min      : 0,
+                    max      : 100,
+                    start    : [0],
+                    step     : 1,
+                    Formatter: function (value) {
+                        return parseInt(value.from) + ' - ' + parseInt(value.to);
+                    },
+                    events   : {
                         onChange: self.$refreshImageEffectFrame
                     }
                 }).inject(Content.getElement('.effect-blur'));
@@ -781,6 +811,7 @@ define('controls/projects/project/media/FilePanel', [
                     value : Effects.brightness,
                     min   : -100,
                     max   : 100,
+                    start : [0],
                     events: {
                         onChange: self.$refreshImageEffectFrame
                     }
@@ -791,10 +822,15 @@ define('controls/projects/project/media/FilePanel', [
                     value : Effects.contrast,
                     min   : -100,
                     max   : 100,
+                    start : [0],
                     events: {
                         onChange: self.$refreshImageEffectFrame
                     }
                 }).inject(Content.getElement('.effect-contrast'));
+
+                self.$EffectBlur.setValue(Effects.blur);
+                self.$EffectBrightness.setValue(Effects.brightness);
+                self.$EffectContrast.setValue(Effects.contrast);
 
 
                 Greyscale.checked = Effects.greyscale || false;
@@ -892,24 +928,38 @@ define('controls/projects/project/media/FilePanel', [
                 fileId            = File.getId(),
                 project           = this.getProject().getName(),
                 Content           = this.getContent(),
+                Form              = Content.getElement('form'),
                 WatermarkPosition = Content.getElement('[name="effect-watermark_position"]');
 
             var Greyscale = Content.getElement('[name="effect-greyscale"]');
             var url       = URL_LIB_DIR + 'QUI/Projects/Media/bin/effectPreview.php?';
 
+            var effectBlur      = this.$EffectBlur.getValue();
+            var effectBrightnes = this.$EffectBrightness.getValue();
+            var effectContrast  = this.$EffectContrast.getValue();
+
             url = url + Object.toQueryString({
                     id                : fileId,
                     project           : project,
-                    blur              : this.$EffectBlur.getValue(),
-                    brightness        : this.$EffectBrightness.getValue(),
-                    contrast          : this.$EffectContrast.getValue(),
+                    blur              : parseInt(effectBlur.from),
+                    brightness        : effectBrightnes.from,
+                    contrast          : effectContrast.from,
                     greyscale         : Greyscale.checked ? 1 : 0,
                     watermark         : this.$EffectWatermark.value,
                     watermark_position: WatermarkPosition.value,
                     '__nocache'       : String.uniqueID()
                 });
 
-            this.$EffectPreview.set('src', url);
+            this.$EffectLoader.show();
+
+            Form.getElement('[name="effect-blur"]').value       = parseInt(effectBlur.from);
+            Form.getElement('[name="effect-brightness"]').value = effectBrightnes.from;
+            Form.getElement('[name="effect-contrast"]').value   = effectContrast.from;
+
+            require(['image!' + url], function () {
+                this.$EffectPreview.set('src', url);
+                this.$EffectLoader.hide();
+            }.bind(this));
         },
 
         /**

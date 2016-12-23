@@ -1,0 +1,226 @@
+.qui-control-packages-update-infos {
+    background: #f1f1f1;
+    float: left;
+    padding: 20px;
+    width: 100%;
+}
+
+.qui-control-packages-update-infos img {
+    float: left;
+}
+
+.qui-control-packages-update-infos-v {
+    float: left;
+    list-style-type: none;
+    margin: 0;
+    padding: 0 0 0 20px;
+}
+
+.qui-control-packages-update-infos-v li {
+    clear: both;
+}
+
+.qui-control-packages-update-infos-v li span:first-child {
+    float: left;
+    width: 80px;
+}
+
+.qui-control-packages-update-infos-lastCheck-cell {
+    padding-top: 10px;
+}
+
+.qui-control-packages-update-infos-lastCheck-cell span {
+    clear: both;
+    float: left;
+    white-space: nowrap;
+}
+
+.qui-control-packages-update-buttons {
+    float: left;
+    padding: 20px;
+    width: 100%;
+}
+
+.qui-control-packages-update-result {
+    border-top: 1px solid #D0D3D3;
+    float: left;
+    padding: 20px;
+    width: 100%;
+}
+
+/** package update
+ ============================================== */
+
+.qui-control-packages-update-result {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+    position: relative;
+    width: 100%;
+}
+
+/** Tile view
+ ============================================== */
+
+.qui-control-packages-system-package-viewTile .packages-package-loader {
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-size: 30px;
+    height: 100%;
+    line-height: 110px;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+}
+
+.qui-control-packages-system-package-viewTile {
+    border: 1px solid #D0D3D3;
+    cursor: default;
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+    overflow: hidden;
+    position: relative;
+    width: 160px;
+}
+
+.qui-control-packages-system-package-viewTile:hover {
+    border: 1px solid #BBB;
+    box-shadow: 0 0 10px -4px rgba(0, 0, 0, 0.75);
+    -webkit-box-shadow: 0 0 10px -4px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0 0 10px -4px rgba(0, 0, 0, 0.75);
+}
+
+.qui-control-packages-system-package-viewTile-text {
+    flex-grow: 1;
+    padding: 10px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.qui-control-packages-system-package-viewTile-text .version {
+    clear: both;
+    display: block;
+    font-weight: bold;
+    padding-top: 5px;
+}
+
+.qui-control-packages-system-package-viewTile-buttons {
+    background: #f6f6f6;
+    border-top: 1px solid #D0D3D3;
+    clear: both;
+    float: left;
+    height: 31px;
+    width: 100%;
+}
+
+.qui-control-packages-system-package-viewTile-buttons .button {
+    background: #f6f6f6;
+    box-shadow: none;
+    font-size: 16px;
+    line-height: 30px;
+    text-align: center;
+    width: 100%;
+}
+
+.qui-control-packages-system-package-viewTile-buttons .button:hover {
+    background: #0069b4;
+    color: #fff;
+}
+
+/** Tile view
+ ============================================== */
+
+.qui-control-packages-system-package-viewList .packages-package-loader {
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-size: 30px;
+    height: 100%;
+    line-height: 45px;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+}
+
+.qui-control-packages-system-package-viewList {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    clear: both;
+    cursor: default;
+    float: left;
+    padding: 0;
+    position: relative;
+    width: 100%;
+}
+
+.qui-control-packages-system-package-viewList:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.qui-control-packages-system-package-viewList-image {
+    float: left;
+    font-size: 30px;
+    line-height: 50px;
+    text-align: center;
+    width: 60px;
+}
+
+.qui-control-packages-system-package-viewList-image img {
+    max-height: 40px;
+    max-width: 40px;
+}
+
+.qui-control-packages-system-package-viewList-image .fa {
+    color: rgba(0, 0, 0, 0.05);
+}
+
+.qui-control-packages-system-package-viewList-text {
+    float: left;
+    line-height: 50px;
+    width: calc(100% - 50px);
+}
+
+.qui-control-packages-system-package-viewList-text .package {
+    float: left;
+    overflow: hidden;
+    padding-left: 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: calc(100% - 300px);
+}
+
+.qui-control-packages-system-package-viewList-text .version,
+.qui-control-packages-system-package-viewList-text .oldVersion {
+    float: left;
+    overflow: hidden;
+    padding-right: 10px;
+    text-overflow: ellipsis;
+    text-align: right;
+    white-space: nowrap;
+    width: 150px;
+}
+
+.qui-control-packages-system-package-viewList-text .version {
+    font-weight: bold;
+}
+
+.qui-control-packages-system-package-viewList-buttons {
+    float: left;
+    padding-right: 10px;
+    text-align: right;
+    width: 50px;
+}
+
+.qui-control-packages-system-package-viewList-buttons .button {
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    float: none;
+    font-size: 20px;
+    font-weight: normal;
+    padding: 15px;
+}
+
+.qui-control-packages-system-package-viewList-buttons .button:hover {
+    background: #0069b4;
+    color: #fff;
+}

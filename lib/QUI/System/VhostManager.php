@@ -69,7 +69,6 @@ class VhostManager
             try {
                 $Project = \QUI::getProject($data['project']);
                 $langs   = $Project->getAttribute('langs');
-
             } catch (QUI\Exception $Exception) {
                 QUI::getMessagesHandler()->addError($Exception->getMessage());
                 continue;

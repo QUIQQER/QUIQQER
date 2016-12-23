@@ -1,91 +1,60 @@
 /**
- * Group select item
- *
- * @module controls/groups/SelectItem
+ * @module package/quiqqer/areas/bin/controls/Areas
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/controls/Control
- * @require Groups
- * @require css!controls/groups/SelectItem.css
+ * @require qui/QUI
+ * @require qui/controls/elements/Select
+ * @require Ajax
+ * @require Locale
  */
 define('controls/groups/SelectItem', [
 
-    'qui/controls/Control',
-    'Groups',
+    'qui/QUI',
+    'qui/controls/elements/SelectItem',
+    'Ajax',
+    'Groups'
 
-    'css!controls/groups/SelectItem.css'
-
-], function (QUIControl, Groups) {
+], function (QUI, QUIElementSelectItem, QUIAjax, Groups) {
     "use strict";
 
     return new Class({
-        Extends: QUIControl,
+
+        Extends: QUIElementSelectItem,
         Type   : 'controls/groups/SelectItem',
 
         Binds: [
-            '$onInject'
+            'refresh'
         ],
-
-        options: {
-            id: false
-        },
 
         initialize: function (options) {
             this.parent(options);
-
-            this.$Icon    = null;
-            this.$Text    = null;
-            this.$Destroy = null;
-
-            this.addEvents({
-                onInject: this.$onInject
-            });
+            this.setAttribute('icon', 'fa fa-group');
         },
 
         /**
-         * Return the DOMNode Element
+         * Refresh the display
          *
-         * @returns {HTMLElement}
+         * @returns {Promise}
          */
-        create: function () {
-            var self = this,
-                Elm  = this.parent();
+        refresh: function () {
+            var id    = this.getAttribute('id'),
+                Group = Groups.get(id),
+                Prom  = Promise.resolve();
 
-            Elm.set({
-                'class': 'quiqer-group-selectItem smooth',
-                html   : '<span class="quiqer-group-selectItem-icon fa fa-group"></span>' +
-                         '<span class="quiqer-group-selectItem-text">&nbsp;</span>' +
-                         '<span class="quiqer-group-selectItem-destroy fa fa-remove"></span>'
-            });
+            if (!Group.isLoaded()) {
+                Prom = Group.load();
+            }
 
-            this.$Icon    = Elm.getElement('.quiqer-group-selectItem-icon');
-            this.$Text    = Elm.getElement('.quiqer-group-selectItem-text');
-            this.$Destroy = Elm.getElement('.quiqer-group-selectItem-destroy');
+            return Prom.then(function () {
+                // everyone is not deletable
+                if (id == 1) {
+                    this.$Destroy.setStyle('display', 'none');
+                }
 
-            this.$Destroy.addEvent('click', function () {
-                self.destroy();
-            });
-
-            return Elm;
-        },
-
-        /**
-         * event : on inject
-         */
-        $onInject: function () {
-            var self = this;
-
-            this.$Text.set({
-                html: '<span class="fa fa-spinner fa-spin"></span>'
-            });
-
-            Groups.get(this.getAttribute('id')).load().then(function (Group) {
-                self.$Text.set('html', Group.getAttribute('name'));
-            }).catch(function () {
-                self.$Icon.removeClass('fa-group');
-                self.$Icon.addClass('fa-bolt');
-                self.$Text.set('html', '...');
-            });
+                this.$Text.set({
+                    html: Group.getName()
+                });
+            }.bind(this));
         }
     });
 });

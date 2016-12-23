@@ -15,7 +15,6 @@
  * @events onSiteActivate [this, {classes/projects/project/Site}]
  * @events onSiteDeactivate [this, {classes/projects/project/Site}]
  */
-
 define('classes/projects/Project', [
 
     'qui/classes/DOM',
@@ -48,7 +47,8 @@ define('classes/projects/Project', [
             '$onSiteCreate',
             '$onSiteActivate',
             '$onSiteDeactivate',
-            '$onSiteDelete'
+            '$onSiteDelete',
+            '$onSiteUnlink'
         ],
 
         options: {
@@ -108,7 +108,8 @@ define('classes/projects/Project', [
                 onDeactivate : this.$onSiteDeactivate,
                 onCreateChild: this.$onSiteCreate,
                 onSortSave   : this.$onSiteSortSave,
-                onLoad       : this.$onSiteLoad
+                onLoad       : this.$onSiteLoad,
+                onUnlink     : this.$onSiteUnlink
             });
 
             this.$ids[id] = Site;
@@ -124,9 +125,7 @@ define('classes/projects/Project', [
          * @return Promise
          */
         getConfig: function (callback, param) {
-
             return new Promise(function (resolve, reject) {
-
                 param = param || false;
 
                 if (this.$config) {
@@ -208,11 +207,8 @@ define('classes/projects/Project', [
          * @return Promise
          */
         setConfig: function (params, callback) {
-
             var self = this;
-
             return new Promise(function (resolve, reject) {
-
                 Ajax.post('ajax_project_set_config', function (result) {
                     self.$config = false;
 
@@ -228,7 +224,6 @@ define('classes/projects/Project', [
                     params : JSON.encode(params || false),
                     onError: reject
                 });
-
             });
         },
 
@@ -398,6 +393,16 @@ define('classes/projects/Project', [
          */
         $onSiteSave: function (Site) {
             this.fireEvent('siteSave', [this, Site]);
+        },
+
+        /**
+         * event : on Site unlink
+         *
+         * @param {Object} Site - classes/projects/project/Site
+         * @fires siteUnlink
+         */
+        $onSiteUnlink: function (Site, parentId) {
+            this.fireEvent('siteUnlink', [this, Site, parentId]);
         },
 
         /**

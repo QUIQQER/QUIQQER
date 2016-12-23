@@ -15,6 +15,7 @@
 .qui-users-and-groups-list .group-entry,
 .qui-users-and-groups-list .users-entry {
     border-radius: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
     clear: both;
     cursor: default;
     float: left;
@@ -22,6 +23,10 @@
     max-width: none;
     padding: 5px;
     width: 100%;
+}
+
+.qui-users-and-groups-list > div:first-child {
+    border-top: none;
 }
 
 .qui-users-and-groups-list .group-entry .text,

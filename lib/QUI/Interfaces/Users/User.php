@@ -201,11 +201,9 @@ interface User
     /**
      * Returns the avatar of the user
      *
-     * @param boolean $url - get the avatar with the complete url string
-     *
-     * @return string
+     * @return \QUI\Projects\Media\Image|false
      */
-    public function getAvatar($url = false);
+    public function getAvatar();
 
     /**
      * Set the password of the user
@@ -257,4 +255,25 @@ interface User
      * @param boolean $status - true or false
      */
     public function setCompanyStatus($status);
+
+    /**
+     * Add the user to a group
+     *
+     * @param integer $groupId
+     */
+    public function addToGroup($groupId);
+
+    /**
+     * Remove a group from the user
+     *
+     * @param \QUI\Groups\Group|integer $Group
+     */
+    public function removeGroup($Group);
+
+    /**
+     * refresh the data from the database
+     *
+     * @throws \QUI\Users\Exception
+     */
+    public function refresh();
 }

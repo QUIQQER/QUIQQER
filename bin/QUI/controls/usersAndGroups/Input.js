@@ -1,5 +1,5 @@
 /**
- * Makes an input field to a user selection field
+ * Makes an input field to a user / group selection field
  *
  * @module controls/usersAndGroups/Input
  * @author www.pcsg.de (Henning Leutz)
@@ -9,14 +9,17 @@
  * @require controls/users/Entry
  * @require controls/groups/Entry
  * @require Ajax
+ * @require Locale
  *
  * @event onAddUser [ this, id ]
  * @event onAddgroup [ this, id ]
+ *
+ * @deprecated
  */
-
 define('controls/usersAndGroups/Input', [
 
-    'qui/controls/Control',
+    'qui/QUI',
+    'qui/controls/elements/Select',
     'qui/controls/buttons/Button',
     'controls/users/Entry',
     'controls/groups/Entry',
@@ -25,7 +28,7 @@ define('controls/usersAndGroups/Input', [
 
     'css!controls/usersAndGroups/Input.css'
 
-], function (QUIControl, QUIButton, UsersEntry, GroupsEntry, Ajax, Locale) {
+], function (QUI, QUIElementSelect, QUIButton, UsersEntry, GroupsEntry, Ajax, Locale) {
     "use strict";
 
     /**
@@ -38,7 +41,7 @@ define('controls/usersAndGroups/Input', [
      */
     return new Class({
 
-        Extends: QUIControl,
+        Extends: QUIElementSelect,
         Type   : 'controls/usersAndGroups/Input',
 
         Binds: [
@@ -56,7 +59,8 @@ define('controls/usersAndGroups/Input', [
             multible: true,  // select more than one entry?
             name    : '',    // string
             styles  : false, // object
-            label   : false  // text string or a <label> DOMNode Element
+            label   : false,  // text string or a <label> DOMNode Element
+            value   : false
         },
 
         initialize: function (options, Input) {
@@ -184,10 +188,24 @@ define('controls/usersAndGroups/Input', [
 
 
             // load values
+            var value = '';
+
             if (!this.$Input.value || this.$Input.value !== '') {
-                var val = this.$Input.value.split(',');
+                value = this.$Input.value;
+            }
+
+            if (value === '' && this.getAttribute('value')) {
+                value = this.getAttribute('value');
+            }
+
+            if (value) {
+                var val = value.split(',');
 
                 for (var i = 0, len = val.length; i < len; i++) {
+                    if (val[i] === '' || val[i] === false) {
+                        continue;
+                    }
+
                     switch (val[i].substr(0, 1)) {
                         case 'u':
                             this.addUser(val[i].substr(1));
@@ -214,6 +232,14 @@ define('controls/usersAndGroups/Input', [
             }
 
             this.create();
+        },
+
+        /**
+         * Return the value, the UG-String
+         * @returns {String}
+         */
+        getValue: function () {
+            return this.$Input.value;
         },
 
         /**
@@ -269,18 +295,18 @@ define('controls/usersAndGroups/Input', [
          */
         search: function () {
             Ajax.get('ajax_usersgroups_search', function (result, Request) {
+
+                var data = result.users.combine(result.groups).slice(0, 10);
+
                 var i, len, nam, type, Entry,
                     func_mousedown, func_mouseover,
-
-                    data     = result.data,
                     value    = Request.getAttribute('value'),
                     Elm      = Request.getAttribute('Elm'),
                     DropDown = Elm.$DropDown;
 
-
                 DropDown.set('html', '');
 
-                if (!data.length) {
+                if (!data || !data.length) {
                     new Element('div', {
                         html  : Locale.get('quiqqer/system', 'usersAndGroups.no.results'),
                         styles: {
@@ -368,7 +394,7 @@ define('controls/usersAndGroups/Input', [
                 }
             }, {
                 Elm   : this,
-                value : this.$Search.value,
+                search: this.$Search.value,
                 params: JSON.encode({
                     order         : 'ASC',
                     limit         : 5,
@@ -406,6 +432,10 @@ define('controls/usersAndGroups/Input', [
          * @return {Object} this (controls/usersAndGroups/Input)
          */
         addGroup: function (id) {
+            if (id === false || id === '') {
+                return this;
+            }
+
             new GroupsEntry(id, {
                 events: {
                     onDestroy: this.$onGroupUserDestroy
@@ -430,9 +460,17 @@ define('controls/usersAndGroups/Input', [
          * @return {Object} this (controls/usersAndGroups/Input)
          */
         addUser: function (id) {
+            if (id === false || id === '') {
+                return this;
+            }
+
             new UsersEntry(id, {
                 events: {
-                    onDestroy: this.$onGroupUserDestroy
+                    onDestroy: this.$onGroupUserDestroy,
+                    onError  : function (UserEntry, uid) {
+                        this.$values = this.$values.erase('u' + uid);
+                        this.$refreshValues();
+                    }.bind(this)
                 }
             }).inject(this.$List);
 

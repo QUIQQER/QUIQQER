@@ -28,10 +28,10 @@ QUI::$Ajax->registerFunction(
         $file = $File->getAttribute('filepath');
 
         if (!file_exists($file)) {
-            return;
+            return '';
         }
 
-        $Folder->uploadFile($file);
+        return $Folder->uploadFile($file)->getAttributes();
     },
     array('project', 'parentid', 'File'),
     'Permission::checkAdminUser'

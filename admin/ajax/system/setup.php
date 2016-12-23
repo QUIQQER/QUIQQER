@@ -11,7 +11,6 @@ QUI::$Ajax->registerFunction(
     function ($package) {
         if (isset($package) && !empty($package)) {
             QUI::getPackageManager()->setup($package);
-
             return;
         }
 

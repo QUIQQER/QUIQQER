@@ -1,4 +1,3 @@
-
 /**
  * A QUIQQER SystemUser
  *
@@ -30,12 +29,12 @@ define('classes/users/SystemUser', [
      */
     return new Class({
 
-        Extends : Nobody,
-        Type    : 'classes/users/SystemUser',
+        Extends: Nobody,
+        Type   : 'classes/users/SystemUser',
 
-        attributes : {}, // user attributes
+        attributes: {}, // user attributes
 
-        initialize : function () {
+        initialize: function () {
             this.$uid    = 5;
             this.$extras = {};
             this.$loaded = true;
@@ -47,7 +46,7 @@ define('classes/users/SystemUser', [
          * @method classes/users/Nobody#getId
          * @return {Number} User-ID
          */
-        getId : function () {
+        getId: function () {
             return 5;
         },
 
@@ -57,7 +56,7 @@ define('classes/users/SystemUser', [
          * @method classes/users/Nobody#getName
          * @return {String} Username
          */
-        getName : function () {
+        getName: function () {
             return 'System-User';
         }
     });

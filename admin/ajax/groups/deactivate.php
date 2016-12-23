@@ -24,7 +24,6 @@ QUI::$Ajax->registerFunction(
                 $Group->deactivate();
 
                 $result[$_gid] = $Group->isActive() ? 1 : 0;
-
             } catch (QUI\Exception $Exception) {
                 QUI::getMessagesHandler()->addError(
                     $Exception->getMessage()

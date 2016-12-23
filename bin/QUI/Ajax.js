@@ -33,6 +33,7 @@ define('Ajax', [
 
     return {
 
+        $globalJSF : {}, // global javascript callback functions
         $onprogress: {},
         $url       : typeof URL_DIR === 'undefined' ? '' : URL_DIR + 'admin/ajax.php',
 
@@ -76,20 +77,38 @@ define('Ajax', [
                     showError: typeof params.showError !== 'undefined' ? params.showError : true,
                     events   : {
                         onSuccess: function () {
-                            if (this.getAttribute('logout')) {
+                            var args    = arguments;
+                            var Request = args[args.length - 1];
+
+                            if (Request.getAttribute('logout')) {
                                 return;
                             }
 
+                            if (Request.getAttribute('hasError')) {
+                                return;
+                            }
+
+                            if (this in self.$onprogress &&
+                                "$result" in self.$onprogress[this] &&
+                                self.$onprogress[this].$result.jsCallbacks
+                            ) {
+                                self.$triggerGlobalJavaScriptCallback(
+                                    self.$onprogress[this].$result.jsCallbacks,
+                                    self.$onprogress[this].$result
+                                );
+                            }
+
                             // maintenance?
-                            if (id in self.$onprogress &&
-                                "$result" in self.$onprogress[id] &&
-                                "maintenance" in self.$onprogress[id].$result &&
-                                self.$onprogress[id].$result.maintenance) {
-                                self.showMaintennceMessage();
+                            if (this in self.$onprogress &&
+                                "$result" in self.$onprogress[this] &&
+                                "maintenance" in self.$onprogress[this].$result &&
+                                self.$onprogress[this].$result.maintenance
+                            ) {
+                                self.showMaintenanceMessage();
                             }
 
                             callback.apply(this, arguments);
-                        },
+                        }.bind(id),
 
                         onCancel: function (Request) {
                             if (Request.getAttribute('onCancel')) {
@@ -99,13 +118,28 @@ define('Ajax', [
 
                         onError: function (Exception, Request) {
                             // maintenance?
-                            if (id in self.$onprogress &&
-                                "$result" in self.$onprogress[id] &&
-                                "maintenance" in self.$onprogress[id].$result &&
-                                self.$onprogress[id].$result.maintenance) {
-                                self.showMaintennceMessage();
+                            if (this in self.$onprogress &&
+                                "$result" in self.$onprogress[this] &&
+                                self.$onprogress[this].$result &&
+                                "maintenance" in self.$onprogress[this].$result &&
+                                self.$onprogress[this].$result.maintenance
+                            ) {
+                                self.showMaintenanceMessage();
                             }
 
+
+                            if (this in self.$onprogress &&
+                                "$result" in self.$onprogress[this] &&
+                                self.$onprogress[this].$result &&
+                                self.$onprogress[this].$result.jsCallbacks
+                            ) {
+                                self.$triggerGlobalJavaScriptCallback(
+                                    self.$onprogress[this].$result.jsCallbacks,
+                                    self.$onprogress[this].$result
+                                );
+                            }
+
+                            Request.setAttribute('hasError', true);
 
                             if (Request.getAttribute('showError')) {
                                 QUI.getMessageHandler(function (MessageHandler) {
@@ -113,12 +147,22 @@ define('Ajax', [
                                 });
                             }
 
-                            if (Exception.getCode() === 401) {
+                            if (Exception.getCode() === 401 &&
+                                Exception.getAttribute('type') == 'QUI\\Users\\Exception'
+                            ) {
                                 Request.setAttribute('logout', true);
 
                                 require(['controls/system/Login'], function (Login) {
-                                    new Login().open();
+                                    new Login({
+                                        events: {
+                                            onLogin: function () {
+                                                self.request(call, method, callback, params);
+                                            }
+                                        }
+                                    }).open();
                                 });
+
+                                return;
                             }
 
                             if ("QUIQQER" in window &&
@@ -129,8 +173,16 @@ define('Ajax', [
                                 Request.setAttribute('logout', true);
 
                                 require(['controls/system/Login'], function (Login) {
-                                    new Login().open();
+                                    new Login({
+                                        events: {
+                                            onLogin: function () {
+                                                self.request(call, method, callback, params);
+                                            }
+                                        }
+                                    }).open();
                                 });
+
+                                return;
                             }
 
 
@@ -139,7 +191,7 @@ define('Ajax', [
                             }
 
                             QUI.triggerError(Exception, Request);
-                        }
+                        }.bind(id)
                     }
                 })
             );
@@ -150,9 +202,46 @@ define('Ajax', [
         },
 
         /**
+         * Register a global callback javascript function
+         * This functions are to be executed after every request
+         * the execution is controlled via php
+         * Ajax->triggerGlobalJavaScriptCallback();
+         *
+         * @param {String} fn - Function name
+         * @param {Function} callback - Callback function
+         */
+        registerGlobalJavaScriptCallback: function (fn, callback) {
+            if (typeOf(callback) === 'function') {
+                this.$globalJSF[fn] = callback;
+            }
+        },
+
+        /**
+         * Excute globale functions
+         *
+         * @param {Array} functionList - list of functions
+         * @param response - Request response
+         */
+        $triggerGlobalJavaScriptCallback: function (functionList, response) {
+            if (typeOf(functionList) != 'object') {
+                return;
+            }
+
+            if (!Object.getLength(functionList)) {
+                return;
+            }
+
+            for (var f in functionList) {
+                if (f in this.$globalJSF && this.$globalJSF.hasOwnProperty(f)) {
+                    this.$globalJSF[f](response, functionList[f]);
+                }
+            }
+        },
+
+        /**
          * show a maintenance message
          */
-        showMaintennceMessage: function () {
+        showMaintenanceMessage: function () {
             // #locale
             QUI.getMessageHandler(function (MH) {
                 MH.addInformation(

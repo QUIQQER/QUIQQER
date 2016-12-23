@@ -41,6 +41,11 @@ class Manager extends QUI\QDOM
     protected $groups;
 
     /**
+     * @var array
+     */
+    protected $data = array();
+
+    /**
      * Files that are to be loaded in the admin area
      *
      * @var array
@@ -66,13 +71,13 @@ class Manager extends QUI\QDOM
         $Table    = $DataBase->table();
 
         $Table->addColumn(self::table(), array(
-            'id' => 'int(11) NOT NULL',
-            'name' => 'varchar(50) NOT NULL',
-            'admin' => 'tinyint(2) NOT NULL',
-            'parent' => 'int(11) NOT NULL',
-            'active' => 'tinyint(1) NOT NULL',
+            'id'      => 'int(11) NOT NULL',
+            'name'    => 'varchar(50) NOT NULL',
+            'admin'   => 'tinyint(2) NOT NULL',
+            'parent'  => 'int(11) NOT NULL',
+            'active'  => 'tinyint(1) NOT NULL',
             'toolbar' => 'varchar(128) NULL',
-            'rights' => 'text'
+            'rights'  => 'text'
         ));
 
         $Table->setPrimaryKey(self::table(), 'id');
@@ -81,7 +86,7 @@ class Manager extends QUI\QDOM
 
         // Guest
         $result = QUI::getDataBase()->fetch(array(
-            'from' => $this->table(),
+            'from'  => $this->table(),
             'where' => array(
                 'id' => 0
             )
@@ -91,12 +96,11 @@ class Manager extends QUI\QDOM
             QUI\System\Log::addNotice('Guest Group does not exist.');
 
             QUI::getDataBase()->insert($this->table(), array(
-                'id' => 0,
+                'id'   => 0,
                 'name' => 'Guest'
             ));
 
             QUI\System\Log::addNotice('Guest Group was created.');
-
         } else {
             QUI::getDataBase()->update($this->table(), array(
                 'name' => 'Guest'
@@ -110,7 +114,7 @@ class Manager extends QUI\QDOM
 
         // Everyone
         $result = QUI::getDataBase()->fetch(array(
-            'from' => $this->table(),
+            'from'  => $this->table(),
             'where' => array(
                 'id' => 1
             )
@@ -120,12 +124,11 @@ class Manager extends QUI\QDOM
             QUI\System\Log::addNotice('Everyone Group does not exist...');
 
             QUI::getDataBase()->insert($this->table(), array(
-                'id' => 1,
+                'id'   => 1,
                 'name' => 'Everyone'
             ));
 
             QUI\System\Log::addNotice('Everyone Group was created.');
-
         } else {
             QUI::getDataBase()->update($this->table(), array(
                 'name' => 'Everyone'
@@ -196,6 +199,35 @@ class Manager extends QUI\QDOM
     }
 
     /**
+     * Return the db data of a group
+     *
+     * @param integer|string $groupId
+     * @return array
+     */
+    public function getGroupData($groupId)
+    {
+        if (isset($this->data[$groupId])) {
+            return $this->data[$groupId];
+        }
+
+        $groupId = (int)$groupId;
+
+        $result = QUI::getDataBase()->fetch(array(
+            'from'  => self::table(),
+            'where' => array(
+                'id' => $groupId
+            ),
+            'limit' => 1
+        ));
+
+        if ($groupId === 1 || $groupId === 0) {
+            $this->data[$groupId] = $result;
+        }
+
+        return $result;
+    }
+
+    /**
      * Return the name of a group
      *
      * @param integer $id - ID of the Group
@@ -205,6 +237,52 @@ class Manager extends QUI\QDOM
     public function getGroupNameById($id)
     {
         return $this->get($id)->getAttribute('name');
+    }
+
+    /**
+     * Get all groups
+     *
+     * @param boolean $objects - as objects=true, as array=false
+     *
+     * @return array
+     */
+    public function getAllGroups($objects = false)
+    {
+        if ($objects == false) {
+            return QUI::getDataBase()->fetch(array(
+                'from'  => self::table(),
+                'order' => 'name'
+            ));
+        }
+
+        $result = array();
+        $ids    = $this->getAllGroupIds();
+
+        foreach ($ids as $id) {
+            try {
+                $result[] = $this->get((int)$id['id']);
+            } catch (QUI\Exception $Exception) {
+                // nothing
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Returns all group ids
+     *
+     * @return array
+     */
+    public function getAllGroupIds()
+    {
+        $result = QUI::getDataBase()->fetch(array(
+            'select' => 'id',
+            'from'   => self::table(),
+            'order'  => 'name'
+        ));
+
+        return $result;
     }
 
     /**
@@ -284,9 +362,9 @@ class Manager extends QUI\QDOM
         );
 
         $allowSearchFields = array(
-            'id' => true,
-            'name' => true,
-            'admin' => true,
+            'id'     => true,
+            'name'   => true,
+            'admin'  => true,
             'parent' => true,
             'active' => true
         );
@@ -301,7 +379,7 @@ class Manager extends QUI\QDOM
         if (isset($params['count'])) {
             $_fields['count'] = array(
                 'select' => 'id',
-                'as' => 'count'
+                'as'     => 'count'
             );
         }
 
@@ -338,11 +416,10 @@ class Manager extends QUI\QDOM
         if (isset($params['search']) && !isset($params['searchSettings'])) {
             $_fields['where'] = array(
                 'name' => array(
-                    'type' => '%LIKE%',
+                    'type'  => '%LIKE%',
                     'value' => $params['search']
                 )
             );
-
         } elseif (isset($params['search'])
                   && isset($params['searchSettings'])
                   && is_array($params['searchSettings'])
@@ -353,7 +430,7 @@ class Manager extends QUI\QDOM
                 }
 
                 $_fields['where_or'][$field] = array(
-                    'type' => '%LIKE%',
+                    'type'  => '%LIKE%',
                     'value' => $params['search']
                 );
             }

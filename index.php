@@ -1,7 +1,10 @@
 <?php
 
 error_reporting(E_ALL);
-define('QUIQQER_SYSTEM', true);
+
+if (!defined('QUIQQER_SYSTEM')) {
+    define('QUIQQER_SYSTEM', true);
+}
 
 /**
  * @author www.pcsg.com (Henning Leutz)
@@ -20,7 +23,6 @@ if (isset($_REQUEST['_url'])
     }
 }
 
-
 use \Symfony\Component\HttpFoundation\Response;
 
 use QUI\Utils\System\Debug;
@@ -32,6 +34,19 @@ try {
 
     $Response = QUI::getGlobalResponse();
     $Engine   = QUI::getTemplateManager()->getEngine();
+
+    $Response->headers->set('Strict-Transport-Security', 'max-age=31536000'); // @todo setting
+    $Response->headers->set("X-Content-Type-Options", "nosniff");
+    $Response->headers->set("X-XSS-Protection", "1; mode=block");
+
+    // @todo settings
+    $Response->headers->set("X-Frame-Options", "SAMEORIGIN");
+
+    // @todo setting mit erlaubten
+    $Response->headers->set(
+        "Content-Security-Policy",
+        "script-src 'self' 'unsafe-eval' 'unsafe-inline'; object-src 'self'"
+    );
 
     // UTF 8 Prüfung für umlaute in url
     if (isset($_REQUEST['_url'])) {
@@ -100,7 +115,7 @@ try {
      */
     if (QUI::conf('globals', 'maintenance')
         && !(QUI::getUserBySession()->getId()
-             && QUI::getUserBySession()->isSu())
+             && QUI::getUserBySession()->isSU())
     ) {
         $Response->setStatusCode(Response::HTTP_SERVICE_UNAVAILABLE);
         $Response->headers->set('X-Powered-By', '');
@@ -109,15 +124,15 @@ try {
         $Smarty = QUI::getTemplateManager()->getEngine();
 
         $Smarty->assign(array(
-            'Project' => $Project,
-            'URL_DIR' => URL_DIR,
+            'Project'     => $Project,
+            'URL_DIR'     => URL_DIR,
             'URL_BIN_DIR' => URL_BIN_DIR,
             'URL_LIB_DIR' => URL_LIB_DIR,
             'URL_VAR_DIR' => URL_VAR_DIR,
             'URL_OPT_DIR' => URL_OPT_DIR,
             'URL_USR_DIR' => URL_USR_DIR,
             'URL_TPL_DIR' => URL_USR_DIR . $Project->getName() . '/',
-            'TPL_DIR' => OPT_DIR . $Project->getName() . '/',
+            'TPL_DIR'     => OPT_DIR . $Project->getName() . '/',
         ));
 
         $file  = LIB_DIR . 'templates/maintenance.html';
@@ -153,9 +168,12 @@ try {
         && !QUI::getUsers()->isAuth(QUI::getUserBySession())
     ) {
         $cache_content = file_get_contents($site_cache_file);
-        $_content      = $Rewrite->outputFilter($cache_content);
+        $content       = $Rewrite->outputFilter($cache_content);
+        $_content      = $content;
 
-        $Response->setContent($_content);
+        QUI::getEvents()->fireEvent('requestOutput', array(&$_content));
+
+        $Response->setContent($content);
         $Response->send();
         exit;
     }
@@ -173,7 +191,7 @@ try {
         $content = QUI\Control\Manager::setCSSToHead($content);
         Debug::marker('output done');
 
-        QUI::getEvents()->fireEvent('requestOutput', array($content));
+        QUI::getEvents()->fireEvent('requestOutput', array(&$content));
 
         $Response->setContent($content);
         Debug::marker('content done');
@@ -197,7 +215,6 @@ try {
             'CURRENT_LANG',
             QUI::getLocale()->getCurrent()
         );
-
     } catch (QUI\Exception $Exception) {
         if ($Exception->getCode() == 404) {
             $Response->setStatusCode(Response::HTTP_NOT_FOUND);
@@ -212,7 +229,6 @@ try {
 
         try {
             $content = $Template->fetchTemplate($Rewrite->getErrorSite());
-
         } catch (QUI\Exception $Exception) {
             $content = $Template->fetchTemplate($Project->firstChild());
         }
@@ -226,7 +242,6 @@ try {
     $Response->prepare(QUI::getRequest());
     $Response->send();
     exit;
-
 } catch (\Exception $Exception) {
     // error ??
     header('HTTP/1.1 503 Service Temporarily Unavailable');

@@ -36,15 +36,16 @@ define('controls/groups/sitemap/Window', [
         ],
 
         options: {
-            multible : false,
-            multiple : false,
-            message  : false,
-            title    : Locale.get('quiqqer/system', 'groups.sitemap.window.title'),
-            text     : Locale.get('quiqqer/system', 'groups.sitemap.window.text'),
-            texticon : false,
-            icon     : 'fa fa-group',
-            maxHeight: 600,
-            maxWidth : 400
+            multible   : false,
+            multiple   : false,
+            message    : false,
+            title      : Locale.get('quiqqer/system', 'groups.sitemap.window.title'),
+            text       : Locale.get('quiqqer/system', 'groups.sitemap.window.title'),
+            information: Locale.get('quiqqer/system', 'groups.sitemap.window.information'),
+            texticon   : false,
+            icon       : 'fa fa-group',
+            maxHeight  : 600,
+            maxWidth   : 400
         },
 
         initialize: function (options) {
@@ -66,7 +67,9 @@ define('controls/groups/sitemap/Window', [
                 'class': 'group-sitemap'
             }).inject(Content);
 
-            Content.getElements('.information').destroy();
+            if (!this.getAttribute('information')) {
+                Content.getElements('.information').destroy();
+            }
 
             if (this.getAttribute('message')) {
                 new Element('div', {

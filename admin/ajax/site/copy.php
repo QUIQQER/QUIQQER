@@ -19,7 +19,6 @@ QUI::$Ajax->registerFunction(
         if (is_numeric($newParent)) {
             $ParentProject = $Project;
             $newParentId   = $newParent;
-
         } else {
             $ParentProject = QUI::getProjectManager()->decode(
                 $newParent['project']

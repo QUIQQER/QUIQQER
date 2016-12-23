@@ -395,16 +395,46 @@ define('controls/desktop/panels/XML', [
         save: function () {
             this.unloadCategory(false);
 
-            var Save = this.getButtonBar().getElement('save');
+            var inList = {};
 
-            Save.setAttribute('textimage', 'fa fa-refresh fa-spin');
+            // filter controls with save method
+            var saveable = QUI.Controls.getControlsInElement(this.getBody())
+                .filter(function (Control) {
+                    if (Control.getId() in inList) {
+                        return false;
+                    }
 
-            Ajax.post('ajax_settings_save', function () {
-                Save.setAttribute('textimage', 'fa fa-save');
-            }, {
-                file  : JSON.encode(this.$file),
-                params: JSON.encode(this.$config)
+                    if (typeof Control.save === 'undefined') {
+                        return false;
+                    }
+
+                    inList[Control.getId()] = true;
+                    return true;
+                });
+
+            var promises = saveable.map(function (Control) {
+                return Control.save();
+            }).filter(function (Promise) {
+                return typeof Promise.then == 'function';
             });
+
+            if (!promises.length) {
+                promises = [Promise.resolve()];
+            }
+
+            Promise.all(promises).then(function () {
+                var Save = this.getButtonBar().getElement('save');
+
+                Save.setAttribute('textimage', 'fa fa-refresh fa-spin');
+
+                Ajax.post('ajax_settings_save', function () {
+                    Save.setAttribute('textimage', 'fa fa-save');
+                }, {
+                    file  : JSON.encode(this.$file),
+                    params: JSON.encode(this.$config)
+                });
+
+            }.bind(this));
         }
     });
 });

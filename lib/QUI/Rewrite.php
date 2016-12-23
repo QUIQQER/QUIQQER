@@ -187,6 +187,9 @@ class Rewrite
             $_REQUEST['_url'] = '';
         }
 
+        // nginx fix
+        $_REQUEST['_url'] = ltrim($_REQUEST['_url'], '/');
+
         //wenn seite existiert, dann muss nichts mehr gemacht werden
         if (isset($this->site) && $this->site) {
             QUI::getEvents()->fireEvent('request', array($this, $_REQUEST['_url']));
@@ -381,7 +384,6 @@ class Rewrite
                         $height = (int)$part_size[1];
                     }
                 }
-
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::addDebug($Exception->getMessage());
 
@@ -458,7 +460,6 @@ class Rewrite
                 // Falls keine Extension (.html) dann auf .html
                 // nur wenn $defaultSuffix == ''
                 $this->showErrorHeader(301, $url);
-
             } elseif ($defaultSuffix === ''
                       && isset($pathinfo['extension'])
                       && $pathinfo['extension'] == 'html'
@@ -482,7 +483,6 @@ class Rewrite
             // URL Parameter filtern
             try {
                 $this->site = $this->getSiteByUrl($_REQUEST['_url'], true);
-
             } catch (QUI\Exception $Exception) {
                 $Site = $this->existRegisterPath(
                     $_REQUEST['_url'],
@@ -493,7 +493,6 @@ class Rewrite
                     $Site->setAttribute('canonical', $_REQUEST['_url']);
 
                     $this->site = $Site;
-
                     return;
                 }
 
@@ -509,17 +508,17 @@ class Rewrite
             if (isset($_SERVER['HTTP_HOST'])
                 && isset($vhosts[$_SERVER['HTTP_HOST']])
                 && isset($vhosts[$_SERVER['HTTP_HOST']][$this->lang])
-                && $_SERVER['HTTP_HOST']
-                   != $vhosts[$_SERVER['HTTP_HOST']][$this->lang]
+                && $_SERVER['HTTP_HOST'] != $vhosts[$_SERVER['HTTP_HOST']][$this->lang]
                 && (int)$_SERVER['SERVER_PORT'] !== 443
-                && QUI::conf('globals', 'httpshost') !=
-                   'https://' . $_SERVER['HTTP_HOST']
+                && QUI::conf('globals', 'httpshost') != 'https://' . $_SERVER['HTTP_HOST']
             ) {
                 $url = $this->site->getUrlRewritten();
-                $url
-                     = $vhosts[$_SERVER['HTTP_HOST']][$this->lang] . URL_DIR . $url;
-                $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
-                $url = 'http://' . $this->project_prefix . $url;
+
+                if (strpos($url, 'http:') === false) {
+                    $url = $vhosts[$_SERVER['HTTP_HOST']][$this->lang] . URL_DIR . $url;
+                    $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
+                    $url = 'http://' . $this->project_prefix . $url;
+                }
 
                 $this->showErrorHeader(301, $url);
             }
@@ -540,11 +539,8 @@ class Rewrite
                     }
                 }
             }
-
         } else {
             $vhosts = $this->getVHosts();
-
-            //$url = $this->first_child->getUrlRewrited();
 
             /**
              * Sprache behandeln
@@ -554,13 +550,7 @@ class Rewrite
                 && isset($vhosts[$_SERVER['HTTP_HOST']])
                 && isset($vhosts[$_SERVER['HTTP_HOST']][$this->lang])
             ) {
-//                $url = $vhosts[$_SERVER['HTTP_HOST']][$this->lang] . URL_DIR;
-//                $url = QUI\Utils\string::replaceDblSlashes($url);
-//                $url = 'http://' . $this->project_prefix . $url;
-
-                if (isset($_SERVER['REQUEST_URI'])
-                    && $_SERVER['REQUEST_URI'] != URL_DIR
-                ) {
+                if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] != URL_DIR) {
                     $message = "\n\n===================================\n\n";
                     $message .= 'Rewrite 301 bei der wir nicht wissen wann es kommt. Rewrite.php Zeile 391 ';
                     $message .= "\n";
@@ -681,7 +671,7 @@ class Rewrite
             return $this->first_child;
         }
 
-        $_url = explode('/', $url);
+        $_url = explode('/', trim($url, '/'));
 
         if (count($_url) <= 1) {
             // Erste Ebene
@@ -822,7 +812,6 @@ class Rewrite
 
         try {
             $Project = QUI\Projects\Manager::get();
-
         } catch (QUI\Exception $Exception) {
             $Project = false;
         }
@@ -889,7 +878,6 @@ class Rewrite
                 $this->lang,
                 $template
             );
-
         } catch (QUI\Exception $Exception) {
             // nothing todo
             $Project = false;
@@ -1006,7 +994,6 @@ class Rewrite
                     $this->site    = $ErrorSite;
 
                     return true;
-
                 } catch (QUI\Exception $Exception) {
                     QUI\System\Log::writeException($Exception);
                 }
@@ -1063,7 +1050,6 @@ class Rewrite
                 $Site    = $Project->get((int)$error[2]);
 
                 return $Site;
-
             } catch (QUI\Exception $Exception) {
                 // no error site found, dry it global
                 echo $Exception->getMessage();
@@ -1083,7 +1069,6 @@ class Rewrite
                 $Site = $Project->get($vhosts[404]['id']);
 
                 return $Site;
-
             } catch (QUI\Exception $Exception) {
             }
         }
@@ -1305,7 +1290,6 @@ class Rewrite
     {
         try {
             $url = MediaUtils::getRewritedUrl('image.php?' . $output[3]);
-
         } catch (QUI\Exception $Excxeption) {
             $url = '';
         }
@@ -1355,7 +1339,6 @@ class Rewrite
                     ? $Image->getAttribute('title') : '';
 
                 $att['data-src'] = $Image->getSizeCacheUrl();
-
             } catch (QUI\Exception $Exception) {
             }
         }
@@ -1419,7 +1402,6 @@ class Rewrite
             $this->url_cache[$components] = $url . $anchor;
 
             return $output[1] . '="' . $url . $anchor . '"';
-
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
@@ -1496,7 +1478,7 @@ class Rewrite
 
         foreach ($paths as $path) {
             QUI::getDataBase()->insert($table, array(
-                'id' => $Site->getId(),
+                'id'   => $Site->getId(),
                 'path' => $path
             ));
         }
@@ -1523,7 +1505,7 @@ class Rewrite
      * @param string $path
      * @param \QUI\Projects\Project $Project
      *
-     * @return \QUI\Projects\Site
+     * @return \QUI\Projects\Site|false
      */
     public function existRegisterPath($path, $Project)
     {
@@ -1549,7 +1531,6 @@ class Rewrite
                 if ($Site->getAttribute('active')) {
                     return $Site;
                 }
-
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::addDebug($Exception->getMessage());
             }
@@ -1588,7 +1569,6 @@ class Rewrite
             $project = $Project->getName();
 
             unset($params['site']);
-
         } else {
             if (isset($params['id'])) {
                 $id = $params['id'];
@@ -1634,7 +1614,6 @@ class Rewrite
         if (file_exists($link_cache_file)) {
             $url = file_get_contents($link_cache_file);
             $url = $this->extendUrlWidthPrams($url, $params);
-
         } else {
             // Wenn nicht erstellen
             try {
@@ -1642,7 +1621,6 @@ class Rewrite
                 /* @var $Project \QUI\Projects\Project */
                 $Site = $Project->get((int)$id);
                 /* @var $s \QUI\Projects\Site */
-
             } catch (QUI\Exception $Exception) {
                 // Seite existiert nicht
                 return '';
@@ -1700,7 +1678,6 @@ class Rewrite
 
             $url = $this->project_prefix . $url;
             $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
-
         } elseif ($Project->getAttribute('default_lang') !== $lang) {
             // Falls kein Host Eintrag gibt
             // Und nicht die Standardsprache dann das Sprachenflag davor setzen
@@ -1744,7 +1721,6 @@ class Rewrite
         if (isset($params['_getParams']) && is_string($params['_getParams'])) {
             parse_str($params['_getParams'], $getParams);
             unset($params['_getParams']);
-
         } elseif (isset($params['_getParams']) && is_array($params['_getParams'])) {
             $getParams = $params['_getParams'];
             unset($params['_getParams']);

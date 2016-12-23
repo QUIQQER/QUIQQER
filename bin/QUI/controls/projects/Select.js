@@ -10,7 +10,8 @@
  * @require qui/controls/loader/Loader
  * @require Projects
  *
- * @event onChange [ value ]
+ * @event onChange [ value, self ]
+ * @event onLoad [ self ]
  */
 define('controls/projects/Select', [
 
@@ -30,7 +31,8 @@ define('controls/projects/Select', [
         Type   : 'controls/projects/Select',
 
         options: {
-            langSelect: true
+            langSelect : true,
+            emptyselect: true
         },
 
         initialize: function (options) {
@@ -51,7 +53,7 @@ define('controls/projects/Select', [
                 name  : 'projects-select',
                 events: {
                     onChange: function (value) {
-                        self.fireEvent('change', [value]);
+                        self.fireEvent('change', [value, self]);
                     }
                 }
             });
@@ -66,7 +68,9 @@ define('controls/projects/Select', [
             this.Loader.show();
 
             // empty value
-            self.$Select.appendChild('', '', 'fa fa-home');
+            if (this.getAttribute('emptyselect')) {
+                this.$Select.appendChild('', '', 'fa fa-home');
+            }
 
             Projects.getList(function (result) {
                 var i, len, langs, project;
@@ -101,6 +105,7 @@ define('controls/projects/Select', [
                     self.$Select.firstChild().getAttribute('value')
                 );
 
+                self.fireEvent('load', [self]);
                 self.Loader.hide();
             });
 

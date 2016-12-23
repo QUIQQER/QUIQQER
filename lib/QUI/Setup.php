@@ -29,7 +29,9 @@ class Setup
                 && strpos($_SERVER['argv'][0], 'phpunit') === false)
         ) {
             // nur Super User darf dies
-            Rights\Permission::checkSU();
+            Permissions\Permission::checkSU(
+                QUI::getUserBySession()
+            );
         }
 
         QUI::getSession()->setup();
@@ -87,15 +89,9 @@ class Setup
          */
         $projects = Projects\Manager::getProjects(true);
 
+        /* @var $Project \QUI\Projects\Project */
         foreach ($projects as $Project) {
-            /* @var $Project \QUI\Projects\Project */
             $Project->setup();
-
-            // Plugin Setup
-            QUI::getPlugins()->setup($Project);
-
-            // Media Setup
-            // $Project->getMedia()->setup();
         }
 
         /**
@@ -120,25 +116,26 @@ class Setup
                 continue;
             }
 
-            $package_dir = OPT_DIR . '/' . $package;
-            $list        = SystemFile::readDir($package_dir);
+            $list = SystemFile::readDir(OPT_DIR . '/' . $package);
 
-            foreach ($list as $sub) {
-                $PackageManager->setup($package . '/' . $sub);
+            foreach ($list as $key => $sub) {
+                $packageName = $package . '/' . $sub;
+                $PackageManager->setup($packageName);
             }
         }
 
+
         // generate translations
-        Update::importAllLocaleXMLs();
-        Translator::create();
+//        Update::importAllLocaleXMLs();
+//        Translator::create();
 
         // generate menu
-        Update::importAllMenuXMLs();
+//        Update::importAllMenuXMLs();
 
         // import permissions
-        Update::importAllPermissionsXMLs();
+//        Update::importAllPermissionsXMLs();
 
-        Rights\Manager::importPermissionsForGroups();
+        QUI\Permissions\Manager::importPermissionsForGroups();
 
 
         // setup set the last update date
@@ -183,6 +180,7 @@ class Setup
 ';
 
         $OPT_DIR = OPT_DIR;
+        $CMS_DIR = CMS_DIR;
 
         $image     = CMS_DIR . 'image.php';
         $index     = CMS_DIR . 'index.php';
@@ -211,23 +209,27 @@ if (file_exists(\$boot)) {
         file_put_contents($bootstrap, $bootstrapContent);
 
 
-        // rest
-        file_put_contents(
-            $image,
-            $fileHeader .
-            "require '{$OPT_DIR}quiqqer/quiqqer/image.php';\n"
-        );
+        // image.php
+        $content = $fileHeader .
+                   "define('QUIQQER_SYSTEM',true);" .
+                   "require dirname(__FILE__) .'/bootstrap.php';\n" .
+                   "require '{$OPT_DIR}quiqqer/quiqqer/image.php';\n";
 
-        file_put_contents(
-            $index,
-            $fileHeader .
-            "require '{$OPT_DIR}quiqqer/quiqqer/index.php';\n"
-        );
+        file_put_contents($image, $content);
 
-        file_put_contents(
-            $quiqqer,
-            $fileHeader .
-            "require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';\n"
-        );
+        // index.php
+        $content = $fileHeader .
+                   "define('QUIQQER_SYSTEM',true);" .
+                   "require dirname(__FILE__) .'/bootstrap.php';\n" .
+                   "require '{$OPT_DIR}quiqqer/quiqqer/index.php';\n";
+
+        file_put_contents($index, $content);
+
+        // quiqqer.php
+        $content = $fileHeader .
+                   "define('CMS_DIR', '{$CMS_DIR}');\n" .
+                   "require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';\n";
+
+        file_put_contents($quiqqer, $content);
     }
 }

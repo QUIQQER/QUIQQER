@@ -1,0 +1,36 @@
+.qui-control-packages-installed {
+    float: left;
+    width: 100%;
+}
+
+.qui-control-packages-installed-search {
+    background: #f1f1f1;
+    clear: both;
+    float: left;
+    padding: 20px;
+    width: 100%;
+}
+
+.qui-control-packages-installed-search fieldset {
+    border: none;
+    float: left;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.qui-control-packages-installed-search [type="search"] {
+    float: left;
+    width: calc(100% - 100px);
+}
+
+.qui-control-packages-installed-search [type="submit"] {
+    cursor: pointer;
+    width: 100px;
+}
+
+.qui-control-packages-installed-result {
+    clear: both;
+    float: left;
+    width: 100%;
+}

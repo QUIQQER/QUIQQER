@@ -109,9 +109,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     resolve();
 
-                }, function () {
-                    reject();
-                });
+                }).catch(reject);
             });
         },
 
@@ -141,9 +139,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     resolve();
 
-                }, function () {
-                    reject();
-                });
+                }, reject);
             });
         },
 
@@ -165,9 +161,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     resolve();
 
-                }, function () {
-                    reject();
-                });
+                }, reject);
             });
         },
 
@@ -306,7 +300,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
             return new Promise(function (resolve, reject) {
                 require([
 
-                    'package/quiqqer/calendar/bin/Calendar',
+                    'package/quiqqer/calendar-controls/bin/Calendar',
                     'qui/controls/buttons/Button',
                     'qui/utils/Elements'
 
@@ -353,9 +347,10 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                         Child.autocomplete = 'off';
 
                         Child.setStyles({
-                            float : 'left',
-                            cursor: 'pointer',
-                            width : datetime ? 180 : 105
+                            float   : 'left',
+                            cursor  : 'pointer',
+                            maxWidth: 'calc(100% - 31px)',
+                            width   : datetime ? 180 : 105
                         });
 
                         Picker = new DatePicker(Child, {
@@ -413,25 +408,26 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                                 .setStyles({
                                     border   : '1px solid rgba(147, 128, 108, 0.25)',
                                     boxShadow: 'none',
-                                    top      : 0
+                                    top      : 0,
+                                    width    : 50
                                 });
                         }
                     }
 
                     resolve();
 
-                }, function () {
+                }, function (err) {
                     require(['qui/QUI'], function (QUI) {
                         QUI.getMessageHandler(function (MH) {
                             // #locale
                             MH.addAttention(
-                                'Das Kalender Packet konnte nicht gefunden werden.' +
+                                'Das Kalender Paket konnte nicht gefunden werden.' +
                                 'Bitte installieren Sie quiqqer/calendar'
                             );
                         });
                     });
 
-                    reject();
+                    reject(err);
                 });
             });
         },
@@ -455,9 +451,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     resolve();
 
-                }, function () {
-                    reject();
-                });
+                }, reject);
             });
         },
 
@@ -478,21 +472,21 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     for (i = 0, len = mediaImages.length; i < len; i++) {
                         new ProjectMediaInput({
-                            selectable_types: ['image', 'file']
+                            selectable_types: ['image', 'file'],
+                            cssclasses      : mediaImages[i].get('data-qui-options-cssclasses')
                         }, mediaImages[i]).create();
                     }
 
                     for (i = 0, len = mediaFolder.length; i < len; i++) {
                         new ProjectMediaInput({
-                            selectable_types: ['folder']
+                            selectable_types: ['folder'],
+                            cssclasses      : mediaFolder[i].get('data-qui-options-cssclasses')
                         }, mediaFolder[i]).create();
                     }
 
                     resolve();
 
-                }, function () {
-                    reject();
-                });
+                }, reject);
             });
         },
 
@@ -517,9 +511,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     resolve();
 
-                }, function () {
-                    reject();
-                });
+                }, reject);
             });
         },
 
@@ -542,9 +534,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     resolve();
 
-                }, function () {
-                    reject();
-                });
+                }, reject);
             });
         },
 
@@ -567,9 +557,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     resolve();
 
-                }, function () {
-                    reject();
-                });
+                }, reject);
             });
         },
 
@@ -581,7 +569,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
          */
         parseUserAndGroups: function (Elm) {
             return new Promise(function (resolve, reject) {
-                require(['controls/usersAndGroups/Input'], function (UserAndGroup) {
+                require(['controls/usersAndGroups/Select'], function (UserAndGroup) {
                     var elements, Label, Control;
 
                     elements = Elm.getElements('.users_and_groups');
@@ -602,9 +590,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     resolve();
 
-                }, function () {
-                    reject();
-                });
+                }, reject);
             });
         },
 
@@ -639,9 +625,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     resolve();
 
-                }, function () {
-                    reject();
-                });
+                }, reject);
             });
         }
     };

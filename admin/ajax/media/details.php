@@ -25,7 +25,6 @@ QUI::$Ajax->registerFunction(
                 return $attr;
             }
 
-
             if (!$attr['image_width']) {
                 $attr['image_width'] = $File->getWidth();
             }

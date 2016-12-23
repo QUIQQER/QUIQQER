@@ -87,6 +87,10 @@
                     <type><![CDATA[string]]></type>
                     <defaultvalue>Europe/Berlin</defaultvalue>
                 </conf>
+                <conf name="standardLanguage">
+                    <type><![CDATA[string]]></type>
+                    <defaultvalue>en</defaultvalue>
+                </conf>
                 <conf name="htmlSuffix">
                     <type><![CDATA[bool]]></type>
                     <defaultvalue>0</defaultvalue>
@@ -239,7 +243,7 @@
 
         </config>
 
-        <window menu-parent="/settings/quiqqer/">
+        <window menu-parent="/settings/quiqqer/" name="quiqqer">
             <title>
                 <locale group="quiqqer/system" var="quiqqer.settings.title"/>
             </title>
@@ -327,46 +331,6 @@
                         </select>
                     </settings>
                 </category>
-
-                <!--
-                <category name="database">
-                    <text>
-                        <locale group="quiqqer/system" var="quiqqer.settings.database" />
-                    </text>
-                    <icon>fa fa-briefcase</icon>
-
-                    <settings title="database" name="database">
-                        <title>
-                            <locale group="quiqqer/system" var="quiqqer.settings.database.title" />
-                        </title>
-                        <input conf="db.driver" type="text">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.database.type" />
-                            </text>
-                        </input>
-                        <input conf="db.host" type="text">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.database.host" />
-                            </text>
-                        </input>
-                        <input conf="db.database" type="text">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.database.name" />
-                            </text>
-                        </input>
-                        <input conf="db.user" type="text">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.database.user" />
-                            </text>
-                        </input>
-                        <input conf="db.password" type="password">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.database.password" />
-                            </text>
-                        </input>
-                    </settings>
-                </category>
-                -->
 
                 <category name="mail" require="controls/system/settings/Mail" index="2">
                     <text>
@@ -544,12 +508,22 @@
 
                 </category>
 
-                <category name="date_formats" index="4">
+                <category name="language_settings" index="4">
                     <text>
-                        <locale group="quiqqer/system" var="quiqqer.settings.date_formats"/>
+                        <locale group="quiqqer/system" var="quiqqer.settings.language_settings"/>
                     </text>
                     <icon>fa fa-calendar</icon>
 
+                    <settings title="languages" name="languages">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.languages.title"/>
+                        </title>
+                        <input conf="globals.standardLanguage" type="string" data-qui="controls/lang/Select">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.general.globals.standardLanguage"/>
+                            </text>
+                        </input>
+                    </settings>
 
                     <settings title="date_timezone" name="date_timezone">
                         <title>
@@ -579,6 +553,14 @@
                             </description>
                         </input>
                     </settings>
+
+                    <settings title="delimiter_formats" name="delimiter_formats">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.delimiter_formats.title"/>
+                        </title>
+
+                        <input data-qui="controls/system/settings/FormatSettings"/>
+                    </settings>
                 </category>
 
                 <category name="gui" index="5">
@@ -602,7 +584,6 @@
                             </description>
                         </input>
                     </settings>
-
                 </category>
 
             </categories>

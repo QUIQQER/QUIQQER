@@ -26,7 +26,6 @@ Slick.definePseudo('display', function (value) {
 // IE Flickering Bug
 try {
     document.execCommand("BackgroundImageCache", false, true);
-
 } catch (err) {
     // Nothing to do
 }
@@ -74,6 +73,10 @@ var requireList = [
     'qui/controls/contextmenu/Item',
     'qui/controls/contextmenu/Seperator'
 ].append(QUIQQER_LOCALE || []);
+
+if (typeof window.Intl === "undefined") {
+    console.error("Intl is not supported");
+}
 
 require(requireList, function () {
     "use strict";
@@ -129,6 +132,24 @@ require(requireList, function () {
             QUIQQER_CONFIG.gui.displayTimeMessages
         );
     });
+
+    var menuLoaded             = false,
+        workspaceLoaded        = false,
+        quiqqerLoadedTriggered = false;
+
+    var quiqqerIsLoaded = function () {
+        if (quiqqerLoadedTriggered) {
+            return;
+        }
+
+        if (menuLoaded && workspaceLoaded) {
+            quiqqerLoadedTriggered = true;
+            QUI.fireEvent('quiqqerLoaded');
+            window.fireEvent('quiqqerLoaded');
+        }
+    };
+
+    window.addEvent('load', quiqqerIsLoaded);
 
     Ajax.get('ajax_isAuth', function (userId) {
 
@@ -186,7 +207,9 @@ require(requireList, function () {
                             }
                         }
 
+                        workspaceLoaded = true;
                         WS.Loader.hide();
+                        quiqqerIsLoaded();
 
                         // search
                         new MenuSearch().inject(
@@ -261,14 +284,18 @@ require(requireList, function () {
                     require(['Menu'], function (Menu) {
                         if (!Menu.isLoaded()) {
                             Menu.addEvent('onMenuLoaded', function () {
+                                menuLoaded = true;
                                 createMenu(Menu);
                             });
 
                             return;
                         }
 
+                        menuLoaded = true;
                         createMenu(Menu);
                     });
+
+                    quiqqerIsLoaded();
                 }
             }
         }).inject(Container);

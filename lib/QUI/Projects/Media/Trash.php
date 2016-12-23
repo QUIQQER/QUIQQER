@@ -67,7 +67,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
 
         // count
         $count = QUI::getDataBase()->fetch(array(
-            'from' => $this->Media->getTable(),
+            'from'  => $this->Media->getTable(),
             'count' => 'count',
             'where' => array(
                 'deleted' => 1
@@ -115,8 +115,8 @@ class Trash implements QUI\Interfaces\Projects\Trash
     {
         $data = QUI::getDataBase()->fetch(array(
             'select' => 'id',
-            'from' => $this->Media->getTable(),
-            'where' => array(
+            'from'   => $this->Media->getTable(),
+            'where'  => array(
                 'deleted' => 1
             )
         ));
@@ -130,7 +130,6 @@ class Trash implements QUI\Interfaces\Projects\Trash
                 }
 
                 $File->destroy();
-
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::addNotice($Exception->getMessage(), array(
                     'method' => 'Media/Trash::clear()',
@@ -162,7 +161,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
 
         // search old db entry for data
         $data = QUI::getDataBase()->fetch(array(
-            'from' => $this->Media->getTable(),
+            'from'  => $this->Media->getTable(),
             'where' => array(
                 'id' => $id
             ),
@@ -192,7 +191,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
         // change old db entry, if one exist
         $Item->setAttributes(array(
             'title' => $data[0]['title'],
-            'alt' => $data[0]['alt'],
+            'alt'   => $data[0]['alt'],
             'short' => $data[0]['short']
         ));
 

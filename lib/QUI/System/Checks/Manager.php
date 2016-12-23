@@ -109,7 +109,6 @@ class Manager
                 $APC->setAttribute('error', 0);
                 $APC->setAttribute('message', 'APC Cache kann nicht verwendet werden');
             }
-
         } else {
             $APC->setAttribute('error', 0);
             $APC->setAttribute('message', 'APC Cache kann nicht verwendet werden');
@@ -133,7 +132,6 @@ class Manager
         if (class_exists('Imagick')) {
             $Image->setAttribute('error', 1);
             $image_check_msg .= '<p>[ OK ] Image Magick als PHP Erweiterung vorhanden</p>';
-
         } else {
             $image_check_msg .= '<p>[ False ] Image Magick als PHP Erweiterung vorhanden</p>';
         }
@@ -142,7 +140,6 @@ class Manager
         if (isset($im_console) && is_array($im_console) && count($im_console)) {
             $Image->setAttribute('error', 1);
             $image_check_msg .= '<p>[ OK ] Image Magick wird in der Konsole verwendet</p>';
-
         } else {
             $image_check_msg .= '<p>[ FALSE ] Image Magick wird in der Konsole verwendet</p>';
         }

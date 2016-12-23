@@ -1,63 +1,51 @@
-
-<table class="data-table">
-<thead>
+<table class="data-table data-table-flexbox">
+    <thead>
     <tr>
-        <th colspan="2">Status</th>
+        <th>
+            Information
+        </th>
     </tr>
-</thead>
-<tbody>
-    <tr class="{cycle values="odd,even"}">
-        <td style="width: 30px">
-            <input type="radio" name="active" value="1" class="noborder" />
-        </td>
+    </thead>
+
+    <tbody>
+    <tr>
         <td>
-            <label for="active">
-                Aktiviert
+            <label class="field-container">
+                <span class="field-container-item">
+                    Gruppen-ID
+                </span>
+                <input type="text"
+                       name="id"
+                       value=""
+                       disabled="disabled"
+                       class="field-container-field"
+                />
             </label>
         </td>
     </tr>
-    <tr class="{cycle values="odd,even"}">
+    <tr>
         <td>
-            <input type="radio" name="active" value="0" class="noborder" />
-        </td>
-        <td>
-            <label for="active">
-                Deaktiviert
+            <label class="field-container">
+                <span class="field-container-item">
+                    Name
+                </span>
+                <input type="text"
+                       name="name"
+                       value=""
+                       class="field-container-field"
+                />
             </label>
         </td>
     </tr>
-</tbody>
-</table>
-
-
-<table class="data-table">
-<thead>
     <tr>
-        <th colspan="2">Information</th>
-    </tr>
-</thead>
-<tbody>
-    <tr class="{cycle values="odd,even"}">
-        <td style="width: 150px;">{t}Gruppen-ID{/t}</td>
         <td>
-            <input type="text" name="id" value="" />
+            <label class="field-container">
+                <span class="field-container-item">
+                    Toolbar
+                </span>
+                <span class="toolbar-listing"></span>
+            </label>
         </td>
     </tr>
-    <tr class="{cycle values="odd,even"}">
-        <td>{t}Name{/t}</td>
-        <td>
-            <input type="text" name="name" value="" />
-        </td>
-    </tr>
-    <tr class="{cycle values="odd,even"}">
-        <td>{t}Zugang zum Adminbereich{/t}</td>
-        <td>
-            <input type="checkbox" name="admin" class="noborder" /> Ja
-        </td>
-    </tr>
-    <tr class="{cycle values="odd,even"}">
-        <td>{t}Toolbar{/t}</td>
-        <td class="toolbar-listing"></td>
-    </tr>
-</tbody>
+    </tbody>
 </table>

@@ -9,6 +9,7 @@ namespace QUI\Editor;
 use QUI;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\System\File as QUIFile;
+use QUI\Utils\Text\XML;
 
 /**
  * Wysiwyg manager
@@ -18,8 +19,6 @@ use QUI\Utils\System\File as QUIFile;
  * @author  www.pcsg.de (Henning Leutz)
  * @package quiqqer/quiqqer
  * @licence For copyright and license information, please view the /README.md
- *
- * @todo    docu translation
  */
 class Manager
 {
@@ -54,7 +53,7 @@ class Manager
     }
 
     /**
-     * Pfad zu den XML Dateien
+     * Path to the toolbar xml files
      *
      * @return string
      */
@@ -117,8 +116,7 @@ class Manager
     }
 
     /**
-     * Bereitet HTML für den Editor
-     * URL bei Bildern richtig setzen damit diese im Admin angezeigt werden
+     * Load the html for an editor and clean it up
      *
      * @param string $html
      *
@@ -143,7 +141,7 @@ class Manager
     }
 
     /**
-     * Alle Toolbars bekommen, welche zur Verfügung stehen
+     * Return all available toolbars
      *
      * @return array
      */
@@ -153,6 +151,35 @@ class Manager
         $files  = QUIFile::readDir($folder, true);
 
         return $files;
+    }
+
+    /**
+     * Return all available toolbars for an user
+     *
+     * @param QUI\Interfaces\Users\User $User
+     * @return array
+     */
+    public static function getToolbarsFromUser(QUI\Interfaces\Users\User $User)
+    {
+        $Users = QUI::getUsers();
+
+        if ($Users->isNobodyUser($User)) {
+            return array();
+        }
+
+        $result = array();
+        $groups = $User->getGroups();
+
+        /* @var $Group QUI\Groups\Group */
+        foreach ($groups as $Group) {
+            if ($Group->getAttribute('toolbar')) {
+                $result[] = $Group->getAttribute('toolbar');
+            }
+        }
+
+        $result = array_unique($result);
+
+        return $result;
     }
 
     /**
@@ -169,7 +196,6 @@ class Manager
 
         try {
             return QUI\Cache\Manager::get($cacheName);
-
         } catch (QUI\Exception $Exception) {
         }
 
@@ -183,14 +209,14 @@ class Manager
 
         // project files
         if (file_exists($file)) {
-            $files = QUI\Utils\XML::getWysiwygCSSFromXml($file);
+            $files = XML::getWysiwygCSSFromXml($file);
 
             foreach ($files as $cssfile) {
                 $css[] = URL_USR_DIR . $project . '/' . $cssfile;
             }
 
             // id and css class
-            $Dom  = QUI\Utils\XML::getDomFromXml($file);
+            $Dom  = XML::getDomFromXml($file);
             $Path = new \DOMXPath($Dom);
 
             $WYSIWYG = $Path->query("//wysiwyg");
@@ -246,7 +272,7 @@ class Manager
             }
 
             if (empty($css)) {
-                $cssFiles = QUI\Utils\XML::getWysiwygCSSFromXml($file);
+                $cssFiles = XML::getWysiwygCSSFromXml($file);
 
                 foreach ($cssFiles as $cssFile) {
                     // external file
@@ -264,7 +290,7 @@ class Manager
 
             // id and css class
             if (!$bodyId && !$bodyClass) {
-                $Dom  = QUI\Utils\XML::getDomFromXml($file);
+                $Dom  = XML::getDomFromXml($file);
                 $Path = new \DOMXPath($Dom);
 
                 $WYSIWYG = $Path->query("//wysiwyg");
@@ -297,7 +323,7 @@ class Manager
                 continue;
             }
 
-            $Dom = QUI\Utils\XML::getDomFromXml($settings);
+            $Dom = XML::getDomFromXml($settings);
 
             // styles
             $styles = array_merge(
@@ -306,7 +332,7 @@ class Manager
             );
 
             // css files
-            $cssFiles = QUI\Utils\XML::getWysiwygCSSFromXml($settings);
+            $cssFiles = XML::getWysiwygCSSFromXml($settings);
 
             foreach ($cssFiles as $cssFile) {
                 // external file
@@ -324,10 +350,10 @@ class Manager
 
 
         $result = array(
-            'cssFiles' => $css,
-            'bodyId' => $bodyId,
+            'cssFiles'  => $css,
+            'bodyId'    => $bodyId,
             'bodyClass' => $bodyClass,
-            'styles' => $styles
+            'styles'    => $styles
         );
 
 
@@ -361,7 +387,7 @@ class Manager
      */
     public static function deleteToolbar($toolbar)
     {
-        QUI\Rights\Permission::hasPermission(
+        QUI\Permissions\Permission::hasPermission(
             'quiqqer.editors.toolbar.delete'
         );
 
@@ -384,7 +410,7 @@ class Manager
      */
     public static function addToolbar($toolbar)
     {
-        QUI\Rights\Permission::hasPermission(
+        QUI\Permissions\Permission::hasPermission(
             'quiqqer.editors.toolbar.add'
         );
 
@@ -415,7 +441,7 @@ class Manager
      */
     public static function saveToolbar($toolbar, $xml)
     {
-        QUI\Rights\Permission::hasPermission(
+        QUI\Permissions\Permission::hasPermission(
             'quiqqer.editors.toolbar.save'
         );
 
@@ -458,13 +484,13 @@ class Manager
     }
 
     /**
-     * Buttonliste vom aktuellen Benutzer bekommen
+     * Return the toolbar buttons for an user
+     * Used the right user toolbar
      *
      * @return array
      */
     public static function getToolbarButtonsFromUser()
     {
-        // Erste Benutzer spezifische Toolbar
         $Users = QUI::getUsers();
         $User  = $Users->getUserBySession();
 
@@ -472,21 +498,22 @@ class Manager
             return array();
         }
 
-        $toolbar     = $User->getAttribute('wysiwyg-toolbar');
+        // Benutzer spezifische Toolbar
+        $toolbar     = $User->getAttribute('toolbar');
         $toolbarPath = self::getToolbarsPath();
 
         if (!empty($toolbar)) {
-            $toolbar = $toolbarPath . $User->getAttribute('wysiwyg-toolbar');
+            $toolbar = $toolbarPath . $User->getAttribute('toolbar');
 
             if (file_exists($toolbar)) {
                 return self::parseXmlFileToArray($toolbar);
             }
         }
 
-        // Dann Gruppenspezifische Toolbar
-        // @todo gruppen toolbar muss im admin auswählbar sein
+        // Gruppenspezifische Toolbar
         $groups = $User->getGroups();
 
+        /* @var $Group QUI\Groups\Group */
         foreach ($groups as $Group) {
             $toolbar = $Group->getAttribute('toolbar');
 
@@ -518,7 +545,7 @@ class Manager
     }
 
     /**
-     * Toolbar auslesen
+     * Reads a toolbar xml and return and return it as array
      *
      * @param string $file - path to the file
      *
@@ -530,11 +557,10 @@ class Manager
 
         try {
             return QUI\Cache\Manager::get($cache);
-
         } catch (QUI\Exception $Exception) {
         }
 
-        $Dom     = QUI\Utils\XML::getDomFromXml($file);
+        $Dom     = XML::getDomFromXml($file);
         $toolbar = $Dom->getElementsByTagName('toolbar');
 
         if (!$toolbar->length) {
@@ -625,7 +651,7 @@ class Manager
 
             if ($Param->nodeName == 'button') {
                 $result[] = array(
-                    'type' => 'button',
+                    'type'   => 'button',
                     'button' => trim($Param->nodeValue)
                 );
             }
@@ -639,7 +665,7 @@ class Manager
      */
 
     /**
-     * Cleanup HTML - Saubermachen des HTML Codes
+     * Cleanup HTML
      *
      * @uses Tidy, if enabled
      *
@@ -662,11 +688,11 @@ class Manager
             $Tidy = new \Tidy();
 
             $config = array(
-                "char-encoding" => "utf8",
-                'output-xhtml' => true,
-                'indent-attributes' => false,
-                'wrap' => 0,
-                'word-2000' => 1,
+                "char-encoding"       => "utf8",
+                'output-xhtml'        => true,
+                'indent-attributes'   => false,
+                'wrap'                => 0,
+                'word-2000'           => 1,
                 // html 5 Tags registrieren
                 'new-blocklevel-tags' => 'header, footer, article, section, hgroup, nav, figure'
             );
@@ -680,7 +706,8 @@ class Manager
     }
 
     /**
-     * HTML Speichern
+     * Prepare html for saving
+     * Clean it up
      *
      * @param string $html
      *
@@ -720,7 +747,7 @@ class Manager
     }
 
     /**
-     * Entfernt Zeilenumbrüche in HTML
+     * Delete line breaks in html content
      *
      * @param array $params
      *
@@ -740,7 +767,7 @@ class Manager
     }
 
     /**
-     * Image Src sauber machen
+     * Cleanup image src
      *
      * @param array $html
      *
@@ -759,7 +786,7 @@ class Manager
     }
 
     /**
-     * HREF Src sauber machen
+     * Cleanup image href
      *
      * @param array $html
      *
@@ -784,11 +811,11 @@ class Manager
     }
 
     /**
-     * Bereitet HTML für den Editor
+     * Cleanup image.php? paths from the admin
      *
      * @param array $html
      *
-     * @return array
+     * @return string
      */
     public function cleanAdminSrc($html)
     {

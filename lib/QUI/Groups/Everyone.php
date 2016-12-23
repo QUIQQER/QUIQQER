@@ -44,18 +44,19 @@ class Everyone extends QUI\Groups\Group
      * set a group attribute
      * ID cannot be set
      *
-     * @param string                    $key   - Attribute name
+     * @param string $key - Attribute name
      * @param string|boolean|integer|array $value - value
      *
-     * @return boolean
+     * @return Everyone
      */
     public function setAttribute($key, $value)
     {
         if ($key == 'id') {
-            return false;
+            return $this;
         }
 
-        return parent::setAttribute($key, $value);
+        parent::setAttribute($key, $value);
+        return $this;
     }
 
     /**
@@ -74,12 +75,11 @@ class Everyone extends QUI\Groups\Group
      */
     public function save()
     {
-        $this->rights = QUI::getPermissionManager()
-                            ->getRightParamsFromGroup($this);
+        $this->rights = QUI::getPermissionManager()->getRightParamsFromGroup($this);
 
         // Felder bekommen
         QUI::getDataBase()->update(
-            QUI\Groups\Manager::Table(),
+            QUI\Groups\Manager::table(),
             array(
                 'name'    => 'Everyone',
                 'toolbar' => $this->getAttribute('toolbar'),
@@ -98,7 +98,6 @@ class Everyone extends QUI\Groups\Group
      */
     public function activate()
     {
-
     }
 
     /**
@@ -127,8 +126,8 @@ class Everyone extends QUI\Groups\Group
     /**
      * Checks if the ID is from a parent group
      *
-     * @param integer $id       - ID from parent
-     * @param boolean    $recursiv - checks recursive or not
+     * @param integer $id - ID from parent
+     * @param boolean $recursiv - checks recursive or not
      *
      * @return boolean
      */
@@ -147,7 +146,7 @@ class Everyone extends QUI\Groups\Group
      */
     public function getParent($obj = true)
     {
-
+        return false;
     }
 
     /**
@@ -157,7 +156,7 @@ class Everyone extends QUI\Groups\Group
      */
     public function getParentIds()
     {
-
+        return array();
     }
 
     /**
@@ -186,7 +185,7 @@ class Everyone extends QUI\Groups\Group
      * return the subgroup ids
      *
      * @param boolean $recursiv - recursiv true / false
-     * @param      $params   - SQL Params (limit, order)
+     * @param      $params - SQL Params (limit, order)
      *
      * @return array
      */
@@ -199,11 +198,12 @@ class Everyone extends QUI\Groups\Group
      * Create a subgroup
      *
      * @param string $name - name of the subgroup
+     * @param QUI\Interfaces\Users\User $ParentUser - (optional), Parent User, which create the user
      *
      * @return \QUI\Groups\Manager
      * @throws QUI\Exception
      */
-    public function createChild($name)
+    public function createChild($name, $ParentUser = null)
     {
         throw new QUI\Exception(
             QUI::getLocale()->get(

@@ -2,7 +2,6 @@
 .qui-xml-panel input,
 .qui-xml-panel select {
     float: left;
-    margin-right: 10px;
 }
 
 .qui-xml-panel select,
@@ -36,10 +35,11 @@
 
 .qui-xml-panel-row-item {
     float: left;
-    width: 70%
+    width: 100%
 }
 
 .qui-xml-panel-row-item.description {
     clear: none;
-    width: 30%
+    margin-top: 10px;
+    width: 100%
 }

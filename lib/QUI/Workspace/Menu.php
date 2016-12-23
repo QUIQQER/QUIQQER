@@ -8,7 +8,7 @@ namespace QUI\Workspace;
 use QUI;
 use QUI\Controls\Contextmenu\Bar;
 use QUI\Controls\Contextmenu\Menuitem;
-use QUI\Utils\XML;
+use QUI\Utils\Text\XML;
 
 /**
  * Class Menu
@@ -26,7 +26,6 @@ class Menu
             return QUI\Cache\Manager::get(
                 $this->getCacheName()
             );
-
         } catch (QUI\Exception $Exception) {
         }
 
@@ -48,9 +47,9 @@ class Menu
         );
 
         $Menu = new Bar(array(
-            'name' => 'menu',
+            'name'   => 'menu',
             'parent' => 'menubar',
-            'id' => 'menu'
+            'id'     => 'menu'
         ));
 
         XML::addXMLFileToMenu($Menu, SYS_DIR . 'menu.xml');
@@ -67,14 +66,14 @@ class Menu
 
             $Projects->appendChild(
                 new Menuitem(array(
-                    'text' => $project,
-                    'icon' => 'fa fa-home',
+                    'text'    => $project,
+                    'icon'    => 'fa fa-home',
                     'onclick' => '',
                     'require' => 'controls/projects/project/Settings',
                     'onClick' => 'QUI.Menu.menuClick',
                     'project' => $project,
-                    'name' => $project,
-                    '#id' => 'settings-' . $project
+                    'name'    => $project,
+                    '#id'     => 'settings-' . $project
                 ))
             );
         }
@@ -139,7 +138,7 @@ class Menu
 
                 $Item->setAttribute(
                     'name',
-                    '/settings/' . $Window->getAttribute('name') . '/'
+                    $menuParent . $Window->getAttribute('name') . '/'
                 );
 
                 $Item->setAttribute('onClick', 'QUI.Menu.menuClick');
@@ -196,31 +195,53 @@ class Menu
         // @todo rechte für settings und extras und quiqqer
         foreach ($menu as $key => $entry) {
             if ($entry['name'] == 'quiqqer') {
-                if (!QUI\Rights\Permission::hasPermission('quiqqer.menu.quiqqer')) {
+                if (!QUI\Permissions\Permission::hasPermission('quiqqer.menu.quiqqer')) {
                     unset($menu[$key]['items']);
                 }
             }
 
             if ($entry['name'] == 'settings') {
-                if (!QUI\Rights\Permission::hasPermission('quiqqer.menu.settings')) {
+                if (!QUI\Permissions\Permission::hasPermission('quiqqer.menu.settings')) {
                     unset($menu[$key]);
                 }
             }
 
             if ($entry['name'] == 'extras') {
-                if (!QUI\Rights\Permission::hasPermission('quiqqer.menu.extras')) {
+                if (!QUI\Permissions\Permission::hasPermission('quiqqer.menu.extras')) {
                     unset($menu[$key]);
                 }
             }
 
             if ($entry['name'] == 'apps') {
-                if (!QUI\Rights\Permission::hasPermission('quiqqer.menu.apps')) {
+                if (!QUI\Permissions\Permission::hasPermission('quiqqer.menu.apps')) {
                     unset($menu[$key]);
                 }
             }
         }
 
         $menu = array_values($menu);
+
+        // sort
+        foreach ($menu as $key => $item) {
+            if ($item['name'] != 'settings'
+                && $item['name'] != 'extras'
+                && $item['name'] != 'apps'
+            ) {
+                continue;
+            }
+
+            usort($menu[$key]['items'], function ($a, $b) {
+                if ($a['name'] == 'quiqqer') {
+                    return -1;
+                }
+
+                if ($b['name'] == 'quiqqer') {
+                    return 1;
+                }
+
+                return strcmp($a["text"], $b["text"]);
+            });
+        }
 
         QUI\Cache\Manager::set($this->getCacheName(), $menu);
 

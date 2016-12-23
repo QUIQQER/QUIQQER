@@ -9,6 +9,9 @@
  * @require Users
  * @require Locale
  * @require css!controls/users/Entry.css
+ *
+ * @event onLoad [self, User]
+ * @event onError [self, uid]
  */
 define('controls/users/Entry', [
 
@@ -120,7 +123,20 @@ define('controls/users/Entry', [
                 return this;
             }
 
-            this.$User.load();
+            var uid = this.$User.getId();
+
+            if (uid === '') {
+                this.fireEvent('error', [this, uid]);
+                this.destroy();
+                return this;
+            }
+
+            this.$User.load().then(function () {
+                this.fireEvent('load', [this, this.$User]);
+            }.bind(this)).catch(function () {
+                this.fireEvent('error', [this, uid]);
+                this.destroy();
+            }.bind(this));
 
             return this;
         },

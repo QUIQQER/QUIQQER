@@ -1,58 +1,92 @@
-
-<table class="data-table">
+<table class="data-table data-table-flexbox">
     <thead>
-        <tr>
-            <th colspan="2">
-                {title text="Details"}
-            </th>
-        </tr>
+    <tr>
+        <th>
+            {title text="Details"}
+        </th>
+    </tr>
     </thead>
 
     <tbody>
-        <tr class="{cycle values="odd,even"}">
-            <td>Benutzername</td>
-            <td><input type="text" name="username" value="" /></td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td>E-Mail</td>
-            <td><input type="text" name="email" value="" /></td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td>Benutzer-Sprache</td>
-            <td>
-                <select name="lang">
-                {assign var=langs value=$QUI->availableLanguages()}
-                {foreach from=$langs item=lang}
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {locale group="quiqqer/system" var="username"}
+                </span>
+                <input type="text" name="username" class="field-container-field"/>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {locale group="quiqqer/system" var="email"}
+                </span>
+                <input type="text" name="email" class="field-container-field"/>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {locale group="quiqqer/quiqqer" var="user.panel.userlanguage"}
+                </span>
+                <select name="lang" class="field-container-field">
+                    {assign var=langs value=$QUI->availableLanguages()}
+                    {foreach from=$langs item=lang}
                     <option value="{$lang}">{$lang}</option>
-                {/foreach}
+                    {/foreach}
                 </select>
-            </td>
-        </tr>
+            </label>
+        </td>
+    </tr>
     </tbody>
 </table>
 
-<table class="data-table">
+
+<table class="data-table data-table-flexbox">
     <thead>
-        <tr>
-            <th colspan="2">
-                Persönliche Daten
-            </th>
-        </tr>
+    <tr>
+        <th>
+            Persönliche Daten
+        </th>
+    </tr>
     </thead>
     <tbody>
-        <tr class="{cycle values="odd,even" reset=true}">
-            <td style="width: 80px">Vorname</td>
-            <td><input type="text" name="firstname" value="" /></td>
-        </tr>
-
-        <tr class="{cycle values="odd,even"}">
-            <td>Nachname</td>
-            <td><input type="text" name="lastname" /></td>
-        </tr>
-
-        <tr class="{cycle values="odd,even"}">
-            <td>Geburtstag</td>
-            <td><input type="date" name="birthday" /></td>
-        </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {locale group="quiqqer/system" var="firstname"}
+                </span>
+                <input type="text" name="firstname" class="field-container-field"/>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {locale group="quiqqer/system" var="lastname"}
+                </span>
+                <input type="text" name="lastname" class="field-container-field"/>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {locale group="quiqqer/system" var="birthday"}
+                </span>
+                <input type="date" name="birthday" class="field-container-field"/>
+            </label>
+        </td>
+    </tr>
     </tbody>
 </table>
+
+{$extend}

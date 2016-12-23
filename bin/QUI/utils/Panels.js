@@ -111,6 +111,10 @@ define('utils/Panels', function () {
                         for (i = 0, len = panels.length; i < len; i++) {
                             Panel = panels[i];
 
+                            if (!Panel.getParent()) {
+                                continue;
+                            }
+
                             if (Panel.getProject().getName() != project) {
                                 continue;
                             }

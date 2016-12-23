@@ -1,0 +1,48 @@
+.qui-control-packages-server-detail {
+    max-width: 400px;
+    width: 100%;
+}
+
+.qui-control-packages-server-detail label {
+    clear: both;
+    display: block;
+    padding-bottom: 10px;
+    width: 100%;
+}
+
+.qui-control-packages-server-detail select,
+.qui-control-packages-server-detail input {
+    clear: both;
+    width: 100%;
+}
+
+.qui-control-packages-server-detail-type span,
+.qui-control-packages-server-detail-server span {
+    clear: both;
+    float: left;
+    padding-bottom: 5px;
+    width: 100%;
+}
+
+.qui-control-packages-server-description {
+    padding-bottom: 20px;
+}
+
+.qui-control-packages-server-image {
+    clear: both;
+    display: block;
+    height: 160px;
+    text-align: center;
+    width: 100%;
+}
+
+.qui-control-packages-server-image .fa {
+    font-size: 50px;
+    line-height: 160px;
+}
+
+.qui-control-packages-server-image svg,
+.qui-control-packages-server-image img {
+    max-height: 150px;
+    max-width: 150px;
+}

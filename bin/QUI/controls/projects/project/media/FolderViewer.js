@@ -27,8 +27,10 @@ define('controls/projects/project/media/FolderViewer', [
     'qui/utils/String',
     'classes/request/Upload',
     'controls/upload/Form',
+    'utils/Panels',
     'Projects',
     'Locale',
+    'Ajax',
 
     'css!controls/projects/project/media/FolderViewer.css'
 
@@ -40,8 +42,10 @@ define('controls/projects/project/media/FolderViewer', [
              QUIStringUtils,
              RequestUpload,
              UploadForm,
+             PanelUtils,
              Projects,
-             QUILocale) {
+             QUILocale,
+             QUIAjax) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -55,6 +59,8 @@ define('controls/projects/project/media/FolderViewer', [
             'preview',
             'diashow',
             'openUpload',
+            'openInMedia',
+            'openFolder',
             '$onCreate',
             '$onInject',
             '$onDrop'
@@ -68,7 +74,8 @@ define('controls/projects/project/media/FolderViewer', [
             parentId     : false, // {number} parent id if the folder not exists
             filetype     : ['image'], // types : image, file, folder
             createMessage: QUILocale.get('quiqqer/quiqqer', 'folderviewer.create.folder'),
-            newFolderName: false
+            newFolderName: false,
+            autoactivate : false // activate files after the upload
         },
 
         initialize: function (options) {
@@ -131,6 +138,27 @@ define('controls/projects/project/media/FolderViewer', [
                 disabled : true
             }).inject(this.$Buttons);
 
+            this.$MediaFolder = new QUIButton({
+                icon  : 'fa fa-folder',
+                title : QUILocale.get(lg, 'properties'),
+                styles: {
+                    'float': 'right'
+                },
+                events: {
+                    onClick: this.openFolder
+                }
+            }).inject(this.$Buttons);
+
+            this.$MediaOpen = new QUIButton({
+                icon  : 'fa fa-picture-o',
+                title : QUILocale.get(lg, 'projects.project.site.btn.preview.text'),
+                styles: {
+                    'float': 'right'
+                },
+                events: {
+                    onClick: this.openInMedia
+                }
+            }).inject(this.$Buttons);
 
             this.$ButtonsDiashow.hide();
             this.$ButtonsSeperator.hide();
@@ -310,11 +338,20 @@ define('controls/projects/project/media/FolderViewer', [
                     };
                 });
 
-                self.$Diashow = new Diashow({
-                    images: imageData,
-                    zIndex: ElementUtils.getComputedZIndex(self.$Elm)
-                });
-
+                if (!self.$Diashow) {
+                    self.$Diashow = new Diashow({
+                        images: imageData,
+                        zIndex: ElementUtils.getComputedZIndex(self.$Elm),
+                        events: {
+                            onClose: function () {
+                                // workaround close bug
+                                console.log('close');
+                                self.$Diashow.destroy();
+                                self.$Diashow = null;
+                            }
+                        }
+                    });
+                }
 
                 if (typeOf(image) === 'string') {
                     self.$Diashow.showImage(image);
@@ -342,7 +379,14 @@ define('controls/projects/project/media/FolderViewer', [
                         onCancel  : function () {
                             Sheet.fireEvent('close');
                         },
-                        onComplete: function () {
+                        onComplete: function (Form, File, result) {
+                            if (this.getAttribute('autoactivate') && result && "url" in result) {
+                                this.$autoActivate(result.url).then(function () {
+                                    Sheet.fireEvent('close');
+                                });
+                                return;
+                            }
+
                             Sheet.fireEvent('close');
                             this.refresh();
                         }.bind(this)
@@ -418,6 +462,12 @@ define('controls/projects/project/media/FolderViewer', [
                     }
                 }
             });
+
+            if (imageData.active) {
+                Container.addClass('qui-project-media-folderViewer-item-active');
+            } else {
+                Container.addClass('qui-project-media-folderViewer-item-inactive');
+            }
 
             var IC = Container.getElement(
                 '.qui-project-media-folderViewer-item-image'
@@ -517,8 +567,13 @@ define('controls/projects/project/media/FolderViewer', [
 
                         self.Loader.show();
 
-                        self.$Folder.uploadFiles(Files, function () {
-                            self.refresh();
+                        self.$Folder.uploadFiles(Files).then(function (Img) {
+                            if (!self.getAttribute('autoactivate')) {
+                                self.refresh();
+                                return;
+                            }
+
+                            self.$autoActivate(Img.url);
                         });
                     }
                 }
@@ -609,6 +664,49 @@ define('controls/projects/project/media/FolderViewer', [
             this.getElm().getElements('.create-folder-container').destroy();
             this.$Buttons.setStyle('display', null);
             this.$Container.setStyle('display', null);
+        },
+
+        /**
+         * open the folder
+         */
+        openInMedia: function () {
+            var project  = this.getAttribute('project');
+            var folderId = this.getAttribute('folderId');
+
+            PanelUtils.openMediaPanel(project, {
+                fileid: folderId
+            });
+        },
+
+        /**
+         * open the folder details
+         */
+        openFolder: function () {
+            var project  = this.getAttribute('project');
+            var folderId = this.getAttribute('folderId');
+
+            PanelUtils.openMediaItemPanel(project, folderId);
+        },
+
+        /**
+         * activate a image
+         *
+         * @param {String} url
+         * @returns {Promise}
+         */
+        $autoActivate: function (url) {
+            return new Promise(function (resolve) {
+                // activate the file
+                var params = QUIStringUtils.getUrlParams(url);
+
+                QUIAjax.post('ajax_media_activate', function () {
+                    this.refresh();
+                    resolve();
+                }.bind(this), {
+                    project: params.project,
+                    fileid : params.id
+                });
+            }.bind(this));
         }
     });
 });
