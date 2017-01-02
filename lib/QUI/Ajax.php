@@ -346,6 +346,8 @@ class Ajax extends QUI\QDOM
             return $this->writeException($Exception);
         } catch (\PDOException $Exception) {
             return $this->writeException($Exception);
+        } catch (\Exception $Exception) {
+            return $this->writeException($Exception);
         }
 
 
@@ -397,7 +399,7 @@ class Ajax extends QUI\QDOM
     /**
      * Exceptions xml / json return
      *
-     * @param \QUI\Exception|\PDOException $Exception
+     * @param \QUI\Exception|\PDOException|\Exception $Exception
      *
      * @return array
      */

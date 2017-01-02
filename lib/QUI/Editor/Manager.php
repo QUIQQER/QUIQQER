@@ -19,8 +19,6 @@ use QUI\Utils\Text\XML;
  * @author  www.pcsg.de (Henning Leutz)
  * @package quiqqer/quiqqer
  * @licence For copyright and license information, please view the /README.md
- *
- * @todo    docu translation
  */
 class Manager
 {
@@ -55,7 +53,7 @@ class Manager
     }
 
     /**
-     * Pfad zu den XML Dateien
+     * Path to the toolbar xml files
      *
      * @return string
      */
@@ -118,8 +116,7 @@ class Manager
     }
 
     /**
-     * Bereitet HTML für den Editor
-     * URL bei Bildern richtig setzen damit diese im Admin angezeigt werden
+     * Load the html for an editor and clean it up
      *
      * @param string $html
      *
@@ -144,7 +141,7 @@ class Manager
     }
 
     /**
-     * Alle Toolbars bekommen, welche zur Verfügung stehen
+     * Return all available toolbars
      *
      * @return array
      */
@@ -154,6 +151,35 @@ class Manager
         $files  = QUIFile::readDir($folder, true);
 
         return $files;
+    }
+
+    /**
+     * Return all available toolbars for an user
+     *
+     * @param QUI\Interfaces\Users\User $User
+     * @return array
+     */
+    public static function getToolbarsFromUser(QUI\Interfaces\Users\User $User)
+    {
+        $Users = QUI::getUsers();
+
+        if ($Users->isNobodyUser($User)) {
+            return array();
+        }
+
+        $result = array();
+        $groups = $User->getGroups();
+
+        /* @var $Group QUI\Groups\Group */
+        foreach ($groups as $Group) {
+            if ($Group->getAttribute('toolbar')) {
+                $result[] = $Group->getAttribute('toolbar');
+            }
+        }
+
+        $result = array_unique($result);
+
+        return $result;
     }
 
     /**
@@ -458,13 +484,13 @@ class Manager
     }
 
     /**
-     * Buttonliste vom aktuellen Benutzer bekommen
+     * Return the toolbar buttons for an user
+     * Used the right user toolbar
      *
      * @return array
      */
     public static function getToolbarButtonsFromUser()
     {
-        // Erste Benutzer spezifische Toolbar
         $Users = QUI::getUsers();
         $User  = $Users->getUserBySession();
 
@@ -472,19 +498,19 @@ class Manager
             return array();
         }
 
-        $toolbar     = $User->getAttribute('wysiwyg-toolbar');
+        // Benutzer spezifische Toolbar
+        $toolbar     = $User->getAttribute('toolbar');
         $toolbarPath = self::getToolbarsPath();
 
         if (!empty($toolbar)) {
-            $toolbar = $toolbarPath . $User->getAttribute('wysiwyg-toolbar');
+            $toolbar = $toolbarPath . $User->getAttribute('toolbar');
 
             if (file_exists($toolbar)) {
                 return self::parseXmlFileToArray($toolbar);
             }
         }
 
-        // Dann Gruppenspezifische Toolbar
-        // @todo gruppen toolbar muss im admin auswählbar sein
+        // Gruppenspezifische Toolbar
         $groups = $User->getGroups();
 
         /* @var $Group QUI\Groups\Group */
@@ -519,7 +545,7 @@ class Manager
     }
 
     /**
-     * Toolbar auslesen
+     * Reads a toolbar xml and return and return it as array
      *
      * @param string $file - path to the file
      *
@@ -639,7 +665,7 @@ class Manager
      */
 
     /**
-     * Cleanup HTML - Saubermachen des HTML Codes
+     * Cleanup HTML
      *
      * @uses Tidy, if enabled
      *
@@ -680,7 +706,8 @@ class Manager
     }
 
     /**
-     * HTML Speichern
+     * Prepare html for saving
+     * Clean it up
      *
      * @param string $html
      *
@@ -720,7 +747,7 @@ class Manager
     }
 
     /**
-     * Entfernt Zeilenumbrüche in HTML
+     * Delete line breaks in html content
      *
      * @param array $params
      *
@@ -740,7 +767,7 @@ class Manager
     }
 
     /**
-     * Image Src sauber machen
+     * Cleanup image src
      *
      * @param array $html
      *
@@ -759,7 +786,7 @@ class Manager
     }
 
     /**
-     * HREF Src sauber machen
+     * Cleanup image href
      *
      * @param array $html
      *
@@ -784,11 +811,11 @@ class Manager
     }
 
     /**
-     * Bereitet HTML für den Editor
+     * Cleanup image.php? paths from the admin
      *
      * @param array $html
      *
-     * @return array
+     * @return string
      */
     public function cleanAdminSrc($html)
     {

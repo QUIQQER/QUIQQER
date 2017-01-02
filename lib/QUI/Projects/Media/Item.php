@@ -639,13 +639,15 @@ abstract class Item extends QUI\QDOM
         $Parent   = $this->getParent();
         $old_path = $this->getFullPath();
 
-        $new_file = str_replace(
-            $Parent->getAttribute('file'),
-            $Folder->getAttribute('file'),
-            $this->getAttribute('file')
+        $Parent->getFullPath();
+
+        $new_path = str_replace(
+            $Parent->getFullPath(),
+            $Folder->getFullPath(),
+            $this->getFullPath()
         );
 
-        $new_path = $this->Media->getFullPath() . $new_file;
+        $new_file = str_replace($this->getMedia()->getFullPath(), '', $new_path);
 
         // delete the file cache
         // @todo move the cache too

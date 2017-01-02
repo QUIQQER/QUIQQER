@@ -60,6 +60,7 @@ define('controls/packages/Panel', [
             this.setAttribute('icon', URL_BIN_DIR + '16x16/quiqqer.png');
 
             this.$Control = null;
+            this.Loader.setAttribute('closetime', 600000); // closing time 10minutes
 
             this.addEvents({
                 onCreate: this.$onCreate,

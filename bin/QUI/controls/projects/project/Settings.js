@@ -386,6 +386,48 @@ define('controls/projects/project/Settings', [
                         Standard.value = self.$config.default_lang;
                         Template.value = self.$config.template;
 
+                        new QUIButton({
+                            text  : 'Standard Seitenstruktur anlegen',
+                            events: {
+                                onClick: function (Btn) {
+                                    Btn.setAttribute(
+                                        'text',
+                                        '<span class="fa fa-spinner fa-spin"></span>'
+                                    );
+
+                                    Ajax.post('ajax_project_createDefaultStructure', function () {
+                                        Btn.setAttribute(
+                                            'text',
+                                            '<span class="fa fa-check"></span>'
+                                        );
+
+                                        (function () {
+                                            Btn.setAttribute(
+                                                'text',
+                                                'Standard Seitenstruktur anlegen'
+                                            );
+                                        }).delay(2000);
+                                    }, {
+                                        'project': self.getProject().encode(),
+                                        onError  : function () {
+                                            Btn.setAttribute(
+                                                'text',
+                                                '<span class="fa fa-bolt"></span>'
+                                            );
+
+                                            (function () {
+                                                Btn.setAttribute(
+                                                    'text',
+                                                    'Standard Seitenstruktur anlegen'
+                                                );
+                                            }).delay(2000);
+                                        }
+                                    });
+                                }
+                            }
+                        }).inject(Form.getElement('.create-default-structure'));
+
+
                         QUIFormUtils.setDataToForm(self.$config, Form);
 
                         Promise.all([

@@ -341,7 +341,7 @@ define('classes/projects/project/media/Item', [
                 return active;
             }
 
-            return (active).toInt() ? true : false;
+            return !!parseInt(active);
         },
 
         /**

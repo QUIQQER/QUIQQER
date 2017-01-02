@@ -26,6 +26,7 @@
             <field type="VARCHAR(2) DEFAULT NULL">lang</field>
             <field type="INT(11) DEFAULT NULL">address</field>
             <field type="TEXT(32) DEFAULT NULL">secHash</field>
+            <field type="TEXT NULL">toolbar</field>
 
             <primary>id</primary>
             <index>username,password</index>
