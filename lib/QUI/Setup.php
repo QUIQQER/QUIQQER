@@ -46,11 +46,11 @@ class Setup
         // mail queue setup
         Mail\Queue::setup();
 
-        // Gruppen erstellen
-        QUI::getGroups()->setup();
-
         // Rechte setup
         QUI::getPermissionManager()->setup();
+
+        // Gruppen erstellen
+        QUI::getGroups()->setup();
 
         // Benutzer erstellen
         QUI::getUsers()->setup();
