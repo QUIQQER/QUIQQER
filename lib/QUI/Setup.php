@@ -91,7 +91,11 @@ class Setup
 
         /* @var $Project \QUI\Projects\Project */
         foreach ($projects as $Project) {
-            $Project->setup();
+            try {
+                $Project->setup();
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
         }
 
         /**

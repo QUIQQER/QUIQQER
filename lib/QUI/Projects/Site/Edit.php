@@ -973,6 +973,22 @@ class Edit extends Site
 
         $newId = $DataBase->getPDO()->lastInsertId();
 
+        // something is wrong
+        if ($newId == 0) {
+            $max = $DataBase->fetch(array(
+                'select' => 'MAX(id)',
+                'from'   => $this->TABLE
+            ));
+
+            $newId = (int)reset($max[0]) + 1;
+
+            $DataBase->update(
+                $this->TABLE,
+                array('id' => $newId),
+                array('id' => 0)
+            );
+        }
+
         $DataBase->insert($this->RELTABLE, array(
             'parent' => $this->getId(),
             'child'  => $newId

@@ -554,6 +554,42 @@
             <en><![CDATA[Suffix]]></en>
         </locale>
 
+        <locale name="projects.defaultstructure.seach.title">
+            <de><![CDATA[Suche]]></de>
+            <en><![CDATA[Search]]></en>
+        </locale>
+        <locale name="projects.defaultstructure.seach.name">
+            <de><![CDATA[Suche]]></de>
+            <en><![CDATA[Search]]></en>
+        </locale>
+
+        <locale name="projects.defaultstructure.legalnotes.name">
+            <de><![CDATA[Impressum]]></de>
+            <en><![CDATA[Legal notice]]></en>
+        </locale>
+        <locale name="projects.defaultstructure.legalnotes.title">
+            <de><![CDATA[Impressum]]></de>
+            <en><![CDATA[Legal notice]]></en>
+        </locale>
+
+        <locale name="projects.defaultstructure.privacypolicy.name">
+            <de><![CDATA[Datenschutzerklärung]]></de>
+            <en><![CDATA[Privacy policy]]></en>
+        </locale>
+        <locale name="projects.defaultstructure.privacypolicy.title">
+            <de><![CDATA[Datenschutzerklärung]]></de>
+            <en><![CDATA[Legal notice]]></en>
+        </locale>
+
+        <locale name="projects.defaultstructure.generalTermsAndConditions.name">
+            <de><![CDATA[Allgemeine Geschäftsbedingungen]]></de>
+            <en><![CDATA[General terms and conditions]]></en>
+        </locale>
+        <locale name="projects.defaultstructure.generalTermsAndConditions.title">
+            <de><![CDATA[Allgemeine Geschäftsbedingungen]]></de>
+            <en><![CDATA[General terms and conditions]]></en>
+        </locale>
+
         <locale name="exception.delete.originalfile.notfound">
             <de><![CDATA[
                 Die Datei wurde auf dem Filesystem nicht gefunden.
@@ -5071,8 +5107,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Remove user(s)]]></en>
         </locale>
         <locale name="controls.group.deleteusers.confirm.info" html="true">
-            <de><![CDATA[Sind sie sicher, dass Sie folgende Benutzer aus der Gruppe <b>[groupName]</b> (#[groupId]) entfernen wollen?<br/><br/>[users]]]></de>
-            <en><![CDATA[Are you sure you want to remove the following users from the group <b>[groupName]</b> (#[groupId])?<br/><br/>[users]]]></en>
+            <de>
+                <![CDATA[Sind sie sicher, dass Sie folgende Benutzer aus der Gruppe <b>[groupName]</b> (#[groupId]) entfernen wollen?<br/><br/>[users]]]></de>
+            <en>
+                <![CDATA[Are you sure you want to remove the following users from the group <b>[groupName]</b> (#[groupId])?<br/><br/>[users]]]></en>
         </locale>
         <locale name="controls.group.deleteusers.confirm.title">
             <de><![CDATA[Benutzer entfernen]]></de>
