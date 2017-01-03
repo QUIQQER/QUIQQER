@@ -28,7 +28,7 @@ define('controls/desktop/panels/XML', [
 
     'css!controls/desktop/panels/XML.css'
 
-], function (QUI, QUIPanel, QUIButton, QUISeperator, QUIObjectUtils, Ajax, Locale, ControlUtils) {
+], function (QUI, QUIPanel, QUIButton, QUISeperator, QUIObjectUtils, Ajax, QUILocale, ControlUtils) {
     "use strict";
 
     /**
@@ -114,7 +114,7 @@ define('controls/desktop/panels/XML', [
                 'ajax_settings_get'
 
             ], function (result, config) {
-
+                console.info(result);
                 var categories = result.categories || [],
                     buttons    = result.buttons || [];
 
@@ -132,8 +132,10 @@ define('controls/desktop/panels/XML', [
                 self.getCategoryBar().clear();
 
                 // load categories
-                for (var i = 0, len = categories.length; i < len; i++) {
-                    var Category = new QUIButton(categories[i]);
+                var i, len, Category;
+
+                for (i = 0, len = categories.length; i < len; i++) {
+                    Category = new QUIButton(categories[i]);
 
                     Category.addEvents({
                         onActive: self.$onCategoryActive
@@ -145,7 +147,7 @@ define('controls/desktop/panels/XML', [
                 // load buttons
                 self.addButton({
                     name     : 'save',
-                    text     : Locale.get('quiqqer/system', 'desktop.panels.xml.btn.save'),
+                    text     : QUILocale.get('quiqqer/system', 'desktop.panels.xml.btn.save'),
                     textimage: 'fa fa-save',
                     events   : {
                         onClick: self.save
@@ -154,7 +156,7 @@ define('controls/desktop/panels/XML', [
 
                 self.addButton({
                     name     : 'reload',
-                    text     : Locale.get('quiqqer/system', 'desktop.panels.xml.btn.cancel'),
+                    text     : QUILocale.get('quiqqer/system', 'desktop.panels.xml.btn.cancel'),
                     textimage: 'fa fa-ban',
                     events   : {
                         onClick: self.$onCreate
