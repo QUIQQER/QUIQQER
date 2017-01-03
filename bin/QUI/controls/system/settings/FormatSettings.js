@@ -57,7 +57,8 @@ define('controls/system/settings/FormatSettings', [
 
             this.$Input = Elm;
             this.$Elm   = new Element('div', {
-                'data-quiid': this.getId()
+                'data-quiid': this.getId(),
+                'class'     : 'quiqqer-formatsettings-list'
             }).wraps(Elm);
 
             QUIAjax.get([
