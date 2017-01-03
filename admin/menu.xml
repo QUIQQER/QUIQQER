@@ -133,10 +133,18 @@
 
     <item parent="/settings/quiqqer/"
           name="vhosts"
-          icon="fa fa-external-link"
+          icon="fa fa-location-arrow"
           require="controls/system/VHosts"
     >
         <locale group="quiqqer/system" var="menu.settings.vhosts.text"/>
+    </item>
+
+    <item parent="/settings/quiqqer/"
+          name="forwardings"
+          icon="fa fa-external-link"
+          require="controls/system/forwardings/Panel"
+    >
+        <locale group="quiqqer/quiqqer" var="menu.settings.forwardings.text"/>
     </item>
 
 

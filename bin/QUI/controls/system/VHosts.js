@@ -47,7 +47,7 @@ define('controls/system/VHosts', [
 
         options: {
             title: Locale.get(lg, 'system.vhosts.title'),
-            icon : 'fa fa-external-link'
+            icon : 'fa fa-location-arrow'
         },
 
         initialize: function (options) {
@@ -281,8 +281,11 @@ define('controls/system/VHosts', [
 
             new QUIPrompt({
                 icon       : 'fa fa-plus',
+                titleicon  : 'fa fa-location-arrow',
                 title      : Locale.get(lg, 'system.vhosts.add.window.title'),
                 information: Locale.get(lg, 'system.vhosts.add.window.information'),
+                maxWidth   : 450,
+                maxHeight  : 300,
                 events     : {
                     onSubmit: function (value, Win) {
                         self.addVhost(value, function (host) {
@@ -318,7 +321,7 @@ define('controls/system/VHosts', [
                 title : Locale.get(lg, 'system.vhosts.edit.sheet.title', {
                     vhost: vhost
                 }),
-                icon  : 'fa fa-external-link',
+                icon  : 'fa fa-location-arrow',
                 events: {
                     onOpen: function (Sheet) {
                         self.Loader.show();
@@ -390,6 +393,8 @@ define('controls/system/VHosts', [
                     vhost: vhost
                 }),
                 texticon   : 'fa fa-trash-o',
+                maxWidth   : 450,
+                maxHeight  : 300,
                 information: Locale.get(lg, 'system.vhosts.del.window.information'),
 
                 closeButtonText: Locale.get(lg, 'cancel'),

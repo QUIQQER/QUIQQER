@@ -498,6 +498,23 @@
             <de><![CDATA[Manuelle Seitensortierung aufsteigend]]></de>
             <en><![CDATA[Site order ascending]]></en>
         </locale>
+
+        <locale name="add">
+            <de><![CDATA[Hinzufügen]]></de>
+            <en><![CDATA[Add]]></en>
+        </locale>
+        <locale name="remove">
+            <de><![CDATA[Entfernen]]></de>
+            <en><![CDATA[Remove]]></en>
+        </locale>
+        <locale name="edit">
+            <de><![CDATA[Bearbeiten]]></de>
+            <en><![CDATA[Edit]]></en>
+        </locale>
+        <locale name="save">
+            <de><![CDATA[Speichern]]></de>
+            <en><![CDATA[Save]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -607,6 +624,10 @@
         <locale name="exception.custom.css.is.not.writeable">
             <de><![CDATA[Die Custom-CSS [file] ist nicht schreibbar. Bitte ändern Sie die Schreibrechte.]]></de>
             <en><![CDATA[The Custom CSS [file] is not writable. Please change the write permission.]]></en>
+        </locale>
+        <locale name="menu.settings.forwardings.text">
+            <de><![CDATA[Globale Weiterleitungen]]></de>
+            <en><![CDATA[Global forwardings]]></en>
         </locale>
     </groups>
 
@@ -799,6 +820,10 @@
         <locale name="message.update.available.description">
             <de><![CDATA[Es sind Updates verfügbar]]></de>
             <en><![CDATA[New Updates are available]]></en>
+        </locale>
+        <locale name="system.forwardings.panel.title">
+            <de><![CDATA[Globale Weiterleitungen]]></de>
+            <en><![CDATA[Global forwardings]]></en>
         </locale>
     </groups>
 
@@ -1497,10 +1522,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Add new virtual host]]></en>
         </locale>
         <locale name="system.vhosts.add.window.information">
-            <de><![CDATA[Bitte geben Sie den neuen Host ein oder einen Server-Error-Code.<br />
-                Zum Beispiel: www.meine-domain.de oder einfach nur 404]]></de>
-            <en><![CDATA[Please enter the new host or a server error code. <br />
-                For example: www.meine-domain.de or just 404]]></en>
+            <de><![CDATA[Bitte geben Sie den neuen Host.<br />
+                Zum Beispiel: www.meine-domain.de]]></de>
+            <en><![CDATA[Please enter the new host. <br />
+                For example: www.meine-domain.de]]></en>
         </locale>
         <locale name="system.vhosts.del.window.title">
             <de><![CDATA[Virtuellen Host löschen]]></de>
