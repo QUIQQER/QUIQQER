@@ -16,43 +16,24 @@ QUI::$Ajax->registerFunction(
             $files = json_decode($file, true);
         }
 
-        $result    = '';
-        $cacheName = 'qui/admin/menu/categories/' . md5($file) . '/' . $category;
+        $cacheName = 'qui/admin/menu/categories/' . md5(json_encode($files)) . '/' . $category;
 
         try {
             return QUI\Cache\Manager::get($cacheName);
         } catch (QUI\Exception $Exception) {
         }
 
-        if (!is_array($files)) {
-            $files = array($files);
+        try {
+            $result = QUI\Utils\XML\Settings::getCategoriesHtml($files, $category);
+
+            QUI\Cache\Manager::set($cacheName, $result);
+
+            return $result;
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
         }
 
-        foreach ($files as $file) {
-            if (!file_exists($file)) {
-                continue;
-            }
-
-            $categories = array();
-
-            if ($category) {
-                $Category = QUI\Utils\Text\XML::getSettingCategoryFromXml($file, $category);
-
-                if ($Category) {
-                    $categories[] = $Category;
-                }
-            } else {
-                $categories = QUI\Utils\Text\XML::getSettingCategoriesFromXml($file);
-            }
-
-            foreach ($categories as $Category) {
-                $result .= QUI\Utils\DOM::parseCategorieToHTML($Category);
-            }
-        }
-
-        QUI\Cache\Manager::set($cacheName, $result);
-
-        return $result;
+        throw $Exception;
     },
     array('file', 'category'),
     'Permission::checkAdminUser'
