@@ -193,9 +193,6 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)$ index.php?_url=$1&%{QUERY_STRING} [END]
 
-    # quiqqer API allowed requests
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
     
     RewriteCond %{REQUEST_URI} !^(.*)bin(.*)$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}media/cache/(.*)$
