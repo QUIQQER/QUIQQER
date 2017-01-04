@@ -16,11 +16,12 @@ QUI::$Ajax->registerFunction(
         }
 
         $cacheName = 'qui/admin/menu/windows/' . md5(json_encode($files));
+        $Settings  = QUI\Utils\XML\Settings::getInstance();
 
         try {
             $result = QUI\Cache\Manager::get($cacheName);
         } catch (QUI\Exception $Exception) {
-            $result = QUI\Utils\XML\Settings::getPanel($files);
+            $result = $Settings->getPanel($files);
 
             $result['categories'] = $result['categories']->toArray();
 

@@ -17,12 +17,13 @@ QUI::$Ajax->registerFunction(
         }
 
         $cacheName = 'qui/admin/menu/categories/' . md5(json_encode($files)) . '/' . $category;
+        $Settings  = QUI\Utils\XML\Settings::getInstance();
 
         try {
             $result = QUI\Cache\Manager::get($cacheName);
         } catch (QUI\Exception $Exception) {
             try {
-                $result = QUI\Utils\XML\Settings::getCategoriesHtml($files, $category);
+                $result = $Settings->getCategoriesHtml($files, $category);
                 QUI\Cache\Manager::set($cacheName, $result);
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
