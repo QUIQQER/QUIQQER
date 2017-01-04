@@ -6,7 +6,7 @@
  * @return array
  */
 QUI::$Ajax->registerFunction(
-    'ajax_system_forwardings_getList',
+    'ajax_system_forwarding_getList',
     function () {
         return QUI\System\Forwarding::getList()->toArray();
     },

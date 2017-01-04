@@ -515,6 +515,28 @@
             <de><![CDATA[Speichern]]></de>
             <en><![CDATA[Save]]></en>
         </locale>
+
+        <locale name="system.forwarding.from">
+            <de><![CDATA[Von]]></de>
+            <en><![CDATA[From]]></en>
+        </locale>
+        <locale name="system.forwarding.target">
+            <de><![CDATA[Nach]]></de>
+            <en><![CDATA[Target]]></en>
+        </locale>
+        <locale name="system.forwarding.code">
+            <de><![CDATA[HTTP-Code]]></de>
+            <en><![CDATA[HTTP-Code]]></en>
+        </locale>
+
+        <locale name="exception.forwarding.already.exists">
+            <de><![CDATA[Diese Weiterleitung besteht bereits.]]></de>
+            <en><![CDATA[This forwarding already exists.]]></en>
+        </locale>
+        <locale name="exception.forwarding.not.found">
+            <de><![CDATA[Diese Weiterleitung besteht bereits.]]></de>
+            <en><![CDATA[This forwarding already exists.]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -625,9 +647,9 @@
             <de><![CDATA[Die Custom-CSS [file] ist nicht schreibbar. Bitte ändern Sie die Schreibrechte.]]></de>
             <en><![CDATA[The Custom CSS [file] is not writable. Please change the write permission.]]></en>
         </locale>
-        <locale name="menu.settings.forwardings.text">
+        <locale name="menu.settings.forwarding.text">
             <de><![CDATA[Globale Weiterleitungen]]></de>
-            <en><![CDATA[Global forwardings]]></en>
+            <en><![CDATA[Global forwarding]]></en>
         </locale>
     </groups>
 
@@ -821,9 +843,26 @@
             <de><![CDATA[Es sind Updates verfügbar]]></de>
             <en><![CDATA[New Updates are available]]></en>
         </locale>
-        <locale name="system.forwardings.panel.title">
+        <locale name="system.forwarding.panel.title">
             <de><![CDATA[Globale Weiterleitungen]]></de>
-            <en><![CDATA[Global forwardings]]></en>
+            <en><![CDATA[Global forwarding]]></en>
+        </locale>
+        <locale name="system.forwarding.window.create.title">
+            <de><![CDATA[Globale Weiterleitung hinzufügen]]></de>
+            <en><![CDATA[Add a global forwarding]]></en>
+        </locale>
+        <locale name="system.forwarding.window.edit.title">
+            <de><![CDATA[Globale Weiterleitung bearbeiten]]></de>
+            <en><![CDATA[Edit the global forwarding]]></en>
+        </locale>
+
+        <locale name="system.forwarding.window.remove.title">
+            <de><![CDATA[Globale Weiterleitung löschen]]></de>
+            <en><![CDATA[Delete the global forwarding]]></en>
+        </locale>
+        <locale name="system.forwarding.window.remove.text" html="true">
+            <de><![CDATA[Möchten Sie folgende Weiterlungen wirklich löschen? <br /><br />[list]]]></de>
+            <en><![CDATA[Are you sure you want to delete the following forwarding? <br /><br />[list]]]></en>
         </locale>
     </groups>
 

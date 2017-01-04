@@ -142,7 +142,7 @@
     <item parent="/settings/quiqqer/"
           name="forwardings"
           icon="fa fa-external-link"
-          require="controls/system/forwardings/Panel"
+          require="controls/system/forwarding/Panel"
     >
         <locale group="quiqqer/quiqqer" var="menu.settings.forwardings.text"/>
     </item>

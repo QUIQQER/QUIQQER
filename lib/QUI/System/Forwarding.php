@@ -16,34 +16,79 @@ class Forwarding
      * Create a forwarding entry
      *
      * @param string $from
-     * @param string $to
+     * @param string $target
      * @param string|int $httpCode
+     *
+     * @throws QUI\Exception
      */
-    public static function create($from, $to, $httpCode)
+    public static function create($from, $target, $httpCode = 301)
     {
-        self::getConfg()->setValue($from, $to, $httpCode);
+        $config = self::getConfg()->toArray();
+
+        if (isset($config[$from])) {
+            throw new QUI\Exception(array(
+                'quiqqer/quiqqer',
+                'exception.forwarding.already.exists'
+            ));
+        }
+
+        if (empty($httpCode)) {
+            $httpCode = 301;
+        }
+
+        self::getConfg()->setValue($from, 'target', $target);
+        self::getConfg()->setValue($from, 'code', $httpCode);
+        self::getConfg()->save();
     }
 
     /**
      * Update a forwarding entry
      *
      * @param string $from
-     * @param string $to
-     * @param string |int $httpCode
+     * @param string $target
+     * @param string|int $httpCode
+     *
+     * @throws QUI\Exception
      */
-    public static function update($from, $to, $httpCode)
+    public static function update($from, $target, $httpCode = 301)
     {
-        self::getConfg()->setValue($from, $to, $httpCode);
+        $config = self::getConfg()->toArray();
+
+        if (!isset($config[$from])) {
+            throw new QUI\Exception(
+                array(
+                    'quiqqer/quiqqer',
+                    'exception.forwarding.not.found'
+                ),
+                404
+            );
+        }
+
+        if (empty($httpCode)) {
+            $httpCode = 301;
+        }
+
+        self::getConfg()->setValue($from, 'target', $target);
+        self::getConfg()->setValue($from, 'code', $httpCode);
+        self::getConfg()->save();
     }
 
     /**
      * Löscht ein forwarding eintrag
      *
-     * @param string $from
+     * @param string|array $from
      */
     public static function delete($from)
     {
-        self::getConfg()->del($from);
+        if (is_array($from)) {
+            foreach ($from as $f) {
+                self::getConfg()->del($f);
+            }
+        } else {
+            self::getConfg()->del($from);
+        }
+
+        self::getConfg()->save();
     }
 
     /**
