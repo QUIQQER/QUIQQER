@@ -193,6 +193,27 @@ abstract class Item extends QUI\QDOM
                 $order = '';
         }
 
+        // svg fix
+        if ($this->getAttribute('mime_type') == 'text/html') {
+            $content = file_get_contents($this->getFullPath());
+
+            if (strpos($content, '<svg') !== false && strpos($content, '</svg>')) {
+                file_put_contents(
+                    $this->getFullPath(),
+                    '<?xml version="1.0" encoding="UTF-8"?>' .
+                    $content
+                );
+
+                $fileinfo = QUI\Utils\System\File::getInfo($this->getFullPath());
+
+                QUI::getDataBase()->update(
+                    $this->Media->getTable(),
+                    array('mime_type' => $fileinfo['mime_type']),
+                    array('id' => $this->getId())
+                );
+            }
+        }
+
         if (method_exists($this, 'deleteCache')) {
             $this->deleteCache();
         }
@@ -200,6 +221,8 @@ abstract class Item extends QUI\QDOM
         if (method_exists($this, 'deleteAdminCache')) {
             $this->deleteAdminCache();
         }
+
+        $fileinfo = QUI\Utils\System\File::getInfo($this->getFullPath());
 
         QUI::getDataBase()->update(
             $this->Media->getTable(),
@@ -209,7 +232,10 @@ abstract class Item extends QUI\QDOM
                 'short'         => $this->getAttribute('short'),
                 'order'         => $order,
                 'priority'      => (int)$this->getAttribute('priority'),
-                'image_effects' => json_encode($image_effects)
+                'image_effects' => json_encode($image_effects),
+                'type'          => QUI\Projects\Media\Utils::getMediaTypeByMimeType(
+                    $fileinfo['mime_type']
+                )
             ),
             array(
                 'id' => $this->getId()

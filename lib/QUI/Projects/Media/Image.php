@@ -286,6 +286,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             return $cachefile;
         }
 
+        if ($this->getAttribute('mime_type') == 'image/svg+xml') {
+            return $cachefile;
+        }
+
         // Cachefolder erstellen
         $this->getParent()->createCache();
 
@@ -477,9 +481,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $Media   = $this->Media;
         $Project = $Media->getProject();
 
-        $cacheDir = VAR_DIR . 'cache/admin/media/' . $Project->getName() . '/'
-                    . $Project->getLang() . '/';
-
+        $cacheDir  = VAR_DIR . 'cache/admin/media/' . $Project->getName() . '/' . $Project->getLang() . '/';
         $cacheName = $this->getId() . '__';
 
         $files = File::readDir($cacheDir);
@@ -505,6 +507,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     {
         $dir      = CMS_DIR . $this->Media->getPath();
         $original = $dir . $this->getAttribute('file');
+
+        if ($this->getAttribute('mime_type') == 'image/svg+xml') {
+            return $original;
+        }
 
         try {
             // create image

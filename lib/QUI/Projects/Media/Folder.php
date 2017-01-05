@@ -1125,12 +1125,28 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $fileinfo = FileUtils::getInfo($file);
         $filename = MediaUtils::stripMediaName($fileinfo['basename']);
 
+        // svg fix
+        if ($fileinfo['mime_type'] == 'text/html') {
+            $content = file_get_contents($file);
+
+            if (strpos($content, '<svg') !== false && strpos($content, '</svg>')) {
+                file_put_contents(
+                    $file,
+                    '<?xml version="1.0" encoding="UTF-8"?>' .
+                    $content
+                );
+
+                $fileinfo = FileUtils::getInfo($file);
+            }
+        }
+
         // if no ending, we search for one
         if (!isset($fileinfo['extension']) || empty($fileinfo['extension'])) {
             $filename .= FileUtils::getEndingByMimeType(
                 $fileinfo['mime_type']
             );
         }
+
 
         $new_file = $this->getFullPath() . '/' . $filename;
 
