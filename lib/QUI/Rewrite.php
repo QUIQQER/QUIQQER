@@ -1663,17 +1663,22 @@ class Rewrite
             && isset($vhosts[$_SERVER['HTTP_HOST']][$lang])
             && !empty($vhosts[$_SERVER['HTTP_HOST']][$lang])
         ) {
+            $data  = $vhosts[$_SERVER['HTTP_HOST']];
+            $vhost = $vhosts[$_SERVER['HTTP_HOST']][$lang];
+
             if (// wenn ein Host eingetragen ist
                 $lang != $Project->getAttribute('lang')
-                || // falls der jetzige host ein anderer ist als der vom link,
+                // falls der jetzige host ein anderer ist als der vom link,
                 // dann den host an den link setzen
-                $vhosts[$_SERVER['HTTP_HOST']][$lang] != $_SERVER['HTTP_HOST']
+                || $vhost != $_SERVER['HTTP_HOST']
             ) {
+                $protocol = empty($data['httpshost']) ? 'http://' : 'https://';
+
                 // und die Sprache nicht die vom jetzigen Projekt ist
                 // dann Host davor setzen
-                $url = $vhosts[$_SERVER['HTTP_HOST']][$lang] . URL_DIR . $url;
+                $url = $vhost . URL_DIR . $url;
                 $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
-                $url = 'http://' . $this->project_prefix . $url;
+                $url = $protocol . $this->project_prefix . $url;
 
                 return $url;
             }
@@ -1692,12 +1697,10 @@ class Rewrite
 
         // falls host anders ist, dann muss dieser dran gehängt werden
         // damit kein doppelter content entsteht
-        if ($_SERVER['HTTP_HOST'] != $Project->getHost() && $Project->getHost() == '') {
-            $url = $Project->getHost() . $url;
-
-            if (strpos($url, 'http://') === false) {
-                $url = 'http://' . $url;
-            }
+        if ($_SERVER['HTTP_HOST'] != $Project->getHost()
+            && $Project->getHost() == ''
+        ) {
+            $url = $Project->getVHost(true, true) . $url;
         }
 
         return $url;
