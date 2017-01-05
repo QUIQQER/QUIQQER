@@ -287,6 +287,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         if ($this->getAttribute('mime_type') == 'image/svg+xml') {
+            File::copy($original, $cachefile);
             return $cachefile;
         }
 

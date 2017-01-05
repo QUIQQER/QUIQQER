@@ -205,19 +205,6 @@ class Rewrite
 
         // globale forwarding - 301, etc
         QUI\System\Forwarding::forward(QUI::getRequest());
-//
-//        // 301 abfangen @deprecated
-//        if (isset($vhosts['301'])
-//            && isset($vhosts['301'][$_SERVER['HTTP_HOST']])
-//        ) {
-//            $url  = $_REQUEST['_url'];
-//            $host = $vhosts['301'][$_SERVER['HTTP_HOST']];
-//
-//            QUI::getEvents()->fireEvent('request', array($this, $_REQUEST['_url']));
-//
-//            $this->showErrorHeader(301, $host . '/' . $url);
-//            exit;
-//        }
 
         // wenn sprach ohne /
         // dann / dran
@@ -353,8 +340,7 @@ class Rewrite
         if (isset($_REQUEST['_url'])
             && strpos($_REQUEST['_url'], 'media/cache') !== false
         ) {
-            QUI::getEvents()
-                ->fireEvent('request', array($this, $_REQUEST['_url']));
+            QUI::getEvents()->fireEvent('request', array($this, $_REQUEST['_url']));
 
             $imageNotError = false;
             $Item          = false;
