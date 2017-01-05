@@ -4,6 +4,9 @@ namespace QUI\System;
 
 use QUI;
 use DusanKasan\Knapsack\Collection;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
  * Class Forwarding
@@ -113,5 +116,59 @@ class Forwarding
     public static function getList()
     {
         return new Collection(self::getConfg()->toArray());
+    }
+
+    /**
+     * Forward,
+     * If the Request matches to one of the global forwarding,
+     * it forward the request and cancel the current
+     *
+     * @param Request $Request
+     */
+    public static function forward(Request $Request)
+    {
+        $list = self::getConfg()->toArray();
+        $uri  = $Request->getRequestUri();
+        $host = $Request->getSchemeAndHttpHost();
+
+        $request = $host . $uri;
+
+        // directly found
+        if (isset($list[$request])) {
+            self::redirect($list[$request]);
+        }
+
+        // search
+        foreach ($list as $from => $params) {
+            if (!QUI\Utils\StringHelper::match($from, $request)) {
+                continue;
+            }
+
+            self::redirect($list[$from]);
+        }
+    }
+
+    /**
+     * @param array $data
+     */
+    protected static function redirect($data)
+    {
+        $target = $data['target'];
+        $code   = (int)$data['code'];
+
+        if (empty($target)) {
+            $target = URL_DIR;
+        }
+
+        if (!$code) {
+            $code = 301;
+        }
+
+        $Redirect = new RedirectResponse($target);
+        $Redirect->setStatusCode($code);
+
+        echo $Redirect->getContent();
+        $Redirect->send();
+        exit;
     }
 }

@@ -203,19 +203,21 @@ class Rewrite
             $_SERVER['HTTP_HOST'] = '';
         }
 
-        // 301 abfangen
-        if (isset($vhosts['301'])
-            && isset($vhosts['301'][$_SERVER['HTTP_HOST']])
-        ) {
-            $url  = $_REQUEST['_url'];
-            $host = $vhosts['301'][$_SERVER['HTTP_HOST']];
-
-            QUI::getEvents()
-                ->fireEvent('request', array($this, $_REQUEST['_url']));
-
-            $this->showErrorHeader(301, $host . '/' . $url);
-            exit;
-        }
+        // globale forwarding - 301, etc
+        QUI\System\Forwarding::forward(QUI::getRequest());
+//
+//        // 301 abfangen @deprecated
+//        if (isset($vhosts['301'])
+//            && isset($vhosts['301'][$_SERVER['HTTP_HOST']])
+//        ) {
+//            $url  = $_REQUEST['_url'];
+//            $host = $vhosts['301'][$_SERVER['HTTP_HOST']];
+//
+//            QUI::getEvents()->fireEvent('request', array($this, $_REQUEST['_url']));
+//
+//            $this->showErrorHeader(301, $host . '/' . $url);
+//            exit;
+//        }
 
         // wenn sprach ohne /
         // dann / dran
