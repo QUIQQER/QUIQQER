@@ -103,6 +103,13 @@ class Autoloader
                 set_include_path(join(PATH_SEPARATOR, $includePaths));
             }
 
+            // include files
+            $files = require OPT_DIR . 'composer/autoload_files.php';
+
+            foreach ($files as $namespace => $path) {
+                include $path;
+            }
+
             // namespaces
             $map      = require OPT_DIR . 'composer/autoload_namespaces.php';
             $classMap = require OPT_DIR . 'composer/autoload_classmap.php';

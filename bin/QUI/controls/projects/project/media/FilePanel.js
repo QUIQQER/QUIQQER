@@ -81,6 +81,7 @@ define('controls/projects/project/media/FilePanel', [
             'openDetails',
             'openImageEffects',
             'openPreview',
+            'refresh',
             '$onInject',
             '$unloadCategory',
             '$refreshImageEffectFrame',
@@ -251,6 +252,7 @@ define('controls/projects/project/media/FilePanel', [
                 title: File.getAttribute('file')
             });
 
+            this.$refresh();
 
             if (typeof callback === 'function') {
                 callback();
@@ -275,7 +277,7 @@ define('controls/projects/project/media/FilePanel', [
          */
         refresh: function () {
             this.Loader.show();
-            this.parent();
+            this.fireEvent('refresh', [this]);
 
             return this.$File.refresh().then(function () {
                 this.load();
@@ -514,6 +516,7 @@ define('controls/projects/project/media/FilePanel', [
                 return;
             }
 
+
             this.$ButtonEffects = new QUIButton({
                 text  : Locale.get(lg, 'projects.project.site.media.filePanel.image.effects.text'),
                 name  : 'imageEffects',
@@ -534,6 +537,11 @@ define('controls/projects/project/media/FilePanel', [
 
             this.addCategory(this.$ButtonEffects);
             this.addCategory(this.$ButtonPreview);
+
+
+            if (this.$File.getAttribute('mime_type') === 'image/svg+xml') {
+                this.$ButtonEffects.getElm().setStyle('display', 'none');
+            }
         },
 
         /**
@@ -798,6 +806,7 @@ define('controls/projects/project/media/FilePanel', [
                     max      : 100,
                     start    : [0],
                     step     : 1,
+                    connect  : false,
                     Formatter: function (value) {
                         return parseInt(value.from) + ' - ' + parseInt(value.to);
                     },
@@ -807,23 +816,25 @@ define('controls/projects/project/media/FilePanel', [
                 }).inject(Content.getElement('.effect-blur'));
 
                 self.$EffectBrightness = new QUIRange({
-                    name  : 'effect-brightness',
-                    value : Effects.brightness,
-                    min   : -100,
-                    max   : 100,
-                    start : [0],
-                    events: {
+                    name   : 'effect-brightness',
+                    value  : Effects.brightness,
+                    min    : -100,
+                    max    : 100,
+                    start  : [0],
+                    connect: false,
+                    events : {
                         onChange: self.$refreshImageEffectFrame
                     }
                 }).inject(Content.getElement('.effect-brightness'));
 
                 self.$EffectContrast = new QUIRange({
-                    name  : 'effect-contrast',
-                    value : Effects.contrast,
-                    min   : -100,
-                    max   : 100,
-                    start : [0],
-                    events: {
+                    name   : 'effect-contrast',
+                    value  : Effects.contrast,
+                    min    : -100,
+                    max    : 100,
+                    start  : [0],
+                    connect: false,
+                    events : {
                         onChange: self.$refreshImageEffectFrame
                     }
                 }).inject(Content.getElement('.effect-contrast'));

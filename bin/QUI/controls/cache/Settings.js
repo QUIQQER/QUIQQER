@@ -1,13 +1,16 @@
-
 /**
  * Cache Settings
  *
  * @module controls/cache/Settings
  * @author www.pcsg.de (Henning Leutz)
  *
+ * @require qui/QUI
+ * @require qui/controls/Control
+ * @require qui/controls/buttons/Button
+ * @require Ajax
+ * @require Locale
  */
-
-define([
+define('controls/cache/Settings', [
 
     'qui/QUI',
     'qui/controls/Control',
@@ -18,38 +21,36 @@ define([
 ], function (QUI, QUIControl, QUIButton, Ajax, Locale) {
     "use strict";
 
-
     return new Class({
 
-        Extends : QUIControl,
-        Type    : 'controls/cache/Settings',
+        Extends: QUIControl,
+        Type   : 'controls/cache/Settings',
 
-        Binds : [
+        Binds: [
             '$onImport'
         ],
 
-        initialize : function (Settings) {
+        initialize: function (Settings) {
             this.$Settings = Settings;
 
             this.addEvents({
-                onImport : this.$onImport
+                onImport: this.$onImport
             });
         },
 
         /**
          * event : on inject
          */
-        $onImport : function () {
+        $onImport: function () {
             var self        = this,
                 ClearButton = this.$Elm.getElement('[name="clearCache"]'),
                 PurgeButton = this.$Elm.getElement('[name="purgeCache"]');
 
-            new QUIButton({
-                text      : 'Cache leeren',
-                textimage : 'fa fa-trash-o',
-                events    :
-                {
-                    onClick : function (Btn) {
+            var Clear = new QUIButton({
+                text     : 'Cache leeren',
+                textimage: 'fa fa-trash-o',
+                events   : {
+                    onClick: function (Btn) {
                         Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
                         self.clear(function () {
@@ -59,12 +60,11 @@ define([
                 }
             }).replaces(ClearButton);
 
-            new QUIButton({
-                text      : 'Cache säubern',
-                textimage : 'fa fa-paint-brush',
-                events    :
-                {
-                    onClick : function (Btn) {
+            var Purge = new QUIButton({
+                text     : 'Cache säubern',
+                textimage: 'fa fa-paint-brush',
+                events   : {
+                    onClick: function (Btn) {
                         Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
                         self.purge(function () {
@@ -73,6 +73,9 @@ define([
                     }
                 }
             }).replaces(PurgeButton);
+
+            Clear.getElm().addClass('field-container-field');
+            Purge.getElm().addClass('field-container-field');
         },
 
         /**
@@ -80,17 +83,17 @@ define([
          *
          * @param {Function} [callback] - (optional), callback function
          */
-        clear : function (callback) {
+        clear: function (callback) {
             var params = {
-                plugins  : true,
-                compile  : true,
-                complete : true
+                plugins : true,
+                compile : true,
+                complete: true
             };
 
             if (this.$Elm) {
                 params.compile  = this.$Elm.getElement('[name="compile"]').checked;
                 params.plugins  = this.$Elm.getElement('[name="plugins"]').checked;
-                params.complete	= this.$Elm.getElement('[name="complete"]').checked;
+                params.complete = this.$Elm.getElement('[name="complete"]').checked;
             }
 
             Ajax.get('ajax_system_cache_clear', function () {
@@ -104,7 +107,7 @@ define([
                     );
                 });
             }, {
-                params : JSON.encode(params)
+                params: JSON.encode(params)
             });
         },
 
@@ -113,7 +116,7 @@ define([
          *
          * @param {Function} [callback] - (optional), callback function
          */
-        purge : function (callback) {
+        purge: function (callback) {
             Ajax.get('ajax_system_cache_purge', function () {
                 if (typeof callback !== 'undefined') {
                     callback();

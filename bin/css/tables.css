@@ -18,6 +18,10 @@
     box-sizing: border-box;
 }
 
+.data-table__noborder {
+    border: 0;
+}
+
 .data-table {
     width: 100%;
 }

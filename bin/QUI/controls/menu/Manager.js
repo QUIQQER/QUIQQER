@@ -57,6 +57,16 @@ define('controls/menu/Manager', [
             Ajax.get('ajax_menu', function (result) {
                 self.$Bar.insert(result);
 
+                result.each(function (entry, i) {
+                    var Child = self.$Bar.getElm().getChildren(
+                        'div:nth-child(' + (i + 1) + ')'
+                    );
+
+                    if ("name" in entry) {
+                        Child.set('data-name', entry.name);
+                    }
+                });
+
                 self.$isLoaded = true;
                 self.fireEvent('menuLoaded');
             });

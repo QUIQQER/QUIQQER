@@ -9,93 +9,51 @@
 QUI::$Ajax->registerFunction(
     'ajax_settings_window',
     function ($file) {
-        $cacheName = 'qui/admin/menu/windows/' . md5($file);
+        if (file_exists($file)) {
+            $files = array($file);
+        } else {
+            $files = json_decode($file, true);
+        }
+
+        $cacheName = 'qui/admin/menu/windows/' . md5(json_encode($files));
+        $Settings  = QUI\Utils\XML\Settings::getInstance();
 
         try {
-            return QUI\Cache\Manager::get($cacheName);
+            $result = QUI\Cache\Manager::get($cacheName);
         } catch (QUI\Exception $Exception) {
+            $result = $Settings->getPanel($files);
+
+            $result['categories'] = $result['categories']->toArray();
+
+            foreach ($result['categories'] as $key => $category) {
+                $result['categories'][$key]['items'] = $result['categories'][$key]['items']->toArray();
+            }
+
+            QUI\Cache\Manager::set($cacheName, $result);
         }
 
-        $files     = array();
-        $jsonFiles = json_decode($file, true);
+        // category translation
+        $categories = $result['categories'];
 
-        if ($jsonFiles) {
-            if (is_string($jsonFiles)) {
-                $files = array($jsonFiles);
-            } else {
-                $files = $jsonFiles;
+        $result['categories'] = array();
+
+        foreach ($categories as $key => $category) {
+            if (isset($category['text']) && is_array($category['text'])) {
+                $category['text'] = QUI::getLocale()->get(
+                    $category['text'][0],
+                    $category['text'][1]
+                );
             }
+
+            if (isset($category['title']) && is_array($category['title'])) {
+                $category['text'] = QUI::getLocale()->get(
+                    $category['title'][0],
+                    $category['title'][1]
+                );
+            }
+
+            $result['categories'][] = $category;
         }
-
-        if (empty($files) || !$jsonFiles) {
-            $files = array($file);
-        }
-
-        $Window = null;
-
-        foreach ($files as $file) {
-            if (!file_exists($file)) {
-                continue;
-            }
-
-            $Win = QUI\Utils\DOM::parseDomToWindow(
-                QUI\Utils\Text\XML::getDomFromXml($file)
-            );
-
-            if (!$Window) {
-                $Window = $Win;
-                continue;
-            }
-
-            $categories = $Win->getCategories();
-
-            /* @var $Window QUI\Controls\Windows\Window */
-            foreach ($categories as $Category) {
-                $Window->appendCategory($Category);
-            }
-
-            if (!$Window->getAttribute('title')) {
-                $Window->setAttribute('title', $Win->getAttribute('title'));
-            }
-
-            if (!$Window->getAttribute('icon')) {
-                $Window->setAttribute('icon', $Win->getAttribute('icon'));
-            }
-        }
-
-        if (!$Window) {
-            return array();
-        }
-
-        // sort categories
-        $categories = $Window->getCategories();
-
-        usort($categories, function ($CatA, $CatB) {
-            /* @var $CatA QUI\Controls\Buttons\Button */
-            /* @var $CatB QUI\Controls\Buttons\Button */
-            $indexA = $CatA->getAttribute('index');
-            $indexB = $CatB->getAttribute('index');
-
-            if (!$indexA) {
-                $indexA = 1;
-            }
-
-            if (!$indexB) {
-                $indexB = 1;
-            }
-
-            return $indexA > $indexB;
-        });
-
-        $Window->clearCategories();
-
-        foreach ($categories as $Category) {
-            $Window->appendCategory($Category);
-        }
-
-        $result = $Window->toArray();
-
-        QUI\Cache\Manager::set($cacheName, $result);
 
         return $result;
     },

@@ -39,7 +39,12 @@ require.config({
         "locale"     : URL_VAR_DIR + 'locale/bin',
         "URL_OPT_DIR": URL_OPT_DIR,
         "URL_BIN_DIR": URL_BIN_DIR,
-        "Mustache"   : URL_OPT_DIR + 'bin/mustache/mustache.min'
+        "Mustache"   : URL_OPT_DIR + 'bin/mustache/mustache.min',
+
+        "URI"               : URL_OPT_DIR + 'bin/urijs/src/URI',
+        'IPv6'              : URL_OPT_DIR + 'bin/urijs/src/IPv6',
+        'punycode'          : URL_OPT_DIR + 'bin/urijs/src/punycode',
+        'SecondLevelDomains': URL_OPT_DIR + 'bin/urijs/src/SecondLevelDomains'
     },
 
     waitSeconds: 0,

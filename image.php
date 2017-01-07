@@ -13,6 +13,32 @@ if (!isset($_REQUEST['project']) || !isset($_REQUEST['id'])) {
 
 use QUI\Projects\Media;
 
+/**
+ * return mime_type of a file
+ *
+ * @param string $file
+ * @return string
+ */
+function getMimeType($file)
+{
+    if (!file_exists($file)) {
+        return '';
+    }
+
+    if (function_exists('mime_content_type')) { // PHP interne Funktionen
+        return mime_content_type($file);
+    }
+
+    if (function_exists('finfo_open') && function_exists('finfo_file')) { // PECL
+        $finfo = finfo_open(FILEINFO_MIME);
+        $part  = explode(';', finfo_file($finfo, $file));
+
+        return $part[0];
+    }
+
+    return '';
+}
+
 try {
     /* @var $project \QUI\Projects\Project */
     $Project = QUI\Projects\Manager::getProject($_REQUEST['project']);
@@ -80,17 +106,27 @@ try {
         // filecache
         $ext = pathinfo($File->getFullPath(), \PATHINFO_EXTENSION);
 
+        if ($File->getAttribute('mime_type') == 'image/svg+xml') {
+            header('Content-type: image/svg+xml');
+            echo file_get_contents($File->getFullPath());
+            exit;
+        }
+
         $cacheFile = $cacheDir . $File->getId()
                      . '__' . $_REQUEST['maxheight'] . 'x'
                      . $_REQUEST['maxwidth'] . '.' . $ext;
 
+        if (getMimeType($cacheFile) == 'image/svg+xml') {
+            header('Content-type: image/svg+xml');
+            echo file_get_contents($cacheFile);
+            exit;
+        }
 
         if (file_exists($cacheFile)) {
             $Image = $Media->getImageManager()->make($cacheFile);
             echo $Image->response();
             exit;
         }
-
 
         $Image = $Media->getImageManager()->make($File->getFullPath());
 
@@ -161,7 +197,6 @@ try {
 
     echo $fr_image;
     exit;
-
 } catch (QUI\Exception $Exception) {
 }
 

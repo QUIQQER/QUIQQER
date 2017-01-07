@@ -64,6 +64,14 @@ define('controls/lang/Select', [
                 }
             }).inject(this.$Elm);
 
+            if (this.$Elm.getParent('.field-container')) {
+                this.$Elm.setStyles({
+                    'flex': 1
+                });
+
+                this.$Select.getElm().setStyle('width', '100%');
+            }
+
             QUIAjax.get('ajax_system_getAvailableLanguages', function (languages) {
                 for (var i = 0, len = languages.length; i < len; i++) {
                     this.$Select.appendChild(

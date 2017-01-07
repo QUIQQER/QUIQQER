@@ -202,6 +202,19 @@ label.field-container-field {
     padding: 0;
 }
 
+.field-container-item-desc {
+    background-color: #CEE6F2;
+    color: #00529B;
+    clear: both;
+    float: left;
+    padding: 10px 10px 10px 210px;
+    width: 100%;
+}
+
+.field-container-item-desc p {
+    width: 100%;
+}
+
 /** form elements
  * ====================================================== */
 
