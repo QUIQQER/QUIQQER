@@ -612,20 +612,20 @@ class Manager
         $Table->addColumn($table_site, array(
             "id"          => "bigint(20) NOT NULL",
             "name"        => "varchar(200) NOT NULL",
-            "title"       => "tinytext",
-            "short"       => "text",
-            "content"     => "longtext",
-            "type"        => "varchar(32) default NULL",
-            "active"      => "tinyint(1) NOT NULL",
-            "deleted"     => "tinyint(1) NOT NULL",
-            "c_date"      => "timestamp NULL default NULL",
-            "e_date"      => "timestamp NOT NULL default NOW() on update NOW()",
-            "c_user"      => "int(11) default NULL",
-            "e_user"      => "int(11) default NULL",
-            "nav_hide"    => "tinyint(1) NOT NULL",
-            "order_type"  => "varchar(100) default NULL",
-            "order_field" => "bigint(20) default NULL",
-            "extra"       => "text default NULL",
+            "title"       => "tinytext NULL",
+            "short"       => "text NULL",
+            "content"     => "longtext NULL",
+            "type"        => "varchar(32) DEFAULT NULL",
+            "active"      => "tinyint(1) NOT NULL DEFAULT 0",
+            "deleted"     => "tinyint(1) NOT NULL DEFAULT 0",
+            "c_date"      => "timestamp NULL DEFAULT NULL",
+            "e_date"      => "timestamp NOT NULL DEFAULT NOW() on update NOW()",
+            "c_user"      => "int(11) DEFAULT NULL",
+            "e_user"      => "int(11) DEFAULT NULL",
+            "nav_hide"    => "tinyint(1) NOT NULL DEFAULT 0",
+            "order_type"  => "varchar(100) NULL",
+            "order_field" => "bigint(20) NULL",
+            "extra"       => "text NULL",
         ));
 
         $Table->addColumn($table_site_rel, array(
@@ -648,9 +648,7 @@ class Manager
             "c_date"      => date('Y-m-d H:i:s'),
             "c_user"      => QUI::getUserBySession()->getId(),
             "e_user"      => QUI::getUserBySession()->getId(),
-            "nav_hide"    => '',
-            "order_type"  => "",
-            "order_field" => ""
+            "nav_hide"    => 0
         ));
 
 
@@ -663,18 +661,18 @@ class Manager
         $Table->addColumn($table_media, array(
             "id"           => "bigint(20) NOT NULL",
             "name"         => "varchar(200) NOT NULL",
-            "title"        => "tinytext",
-            "short"        => "text",
-            "type"         => "varchar(32) default NULL",
-            "active"       => "tinyint(1) NOT NULL",
-            "deleted"      => "tinyint(1) NOT NULL",
-            "c_date"       => "timestamp NULL default NULL",
+            "title"        => "tinytext NULL",
+            "short"        => "text NULL",
+            "type"         => "varchar(32) DEFAULT NULL",
+            "active"       => "tinyint(1) NOT NULL DEFAULT 0",
+            "deleted"      => "tinyint(1) NOT NULL DEFAULT 0",
+            "c_date"       => "timestamp NULL DEFAULT NULL",
             "e_date"       => "timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP",
-            "c_user"       => "int(11) default NULL",
-            "e_user"       => "int(11) default NULL",
-            "file"         => "text",
-            "alt"          => "text",
-            "mime_type"    => "text",
+            "c_user"       => "int(11) DEFAULT NULL",
+            "e_user"       => "int(11) DEFAULT NULL",
+            "file"         => "text NULL",
+            "alt"          => "text NULL",
+            "mime_type"    => "text NULL",
             "image_height" => "int(6) default NULL",
             "image_width"  => "int(6) default NULL"
         ));
@@ -742,7 +740,7 @@ class Manager
         $Project->setup();
 
         // Package / Plugin Setup
-        QUI::getPluginManager()->setup($Project);
+        QUI::getPluginManager()->setup();
 
         // Projekt Cache löschen
         QUI\Cache\Manager::clear('QUI::config');

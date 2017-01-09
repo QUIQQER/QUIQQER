@@ -70,16 +70,6 @@ class Manager extends QUI\QDOM
         $DataBase = QUI::getDataBase();
         $Table    = $DataBase->table();
 
-        $Table->addColumn(self::table(), array(
-            'id'      => 'int(11) NOT NULL',
-            'name'    => 'varchar(50) NOT NULL',
-            'admin'   => 'tinyint(2) NOT NULL',
-            'parent'  => 'int(11) NOT NULL',
-            'active'  => 'tinyint(1) NOT NULL',
-            'toolbar' => 'varchar(128) NULL',
-            'rights'  => 'text'
-        ));
-
         $Table->setPrimaryKey(self::table(), 'id');
         $Table->setIndex(self::table(), 'parent');
 
