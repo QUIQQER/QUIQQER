@@ -115,7 +115,11 @@ class Autoloader
             $files = require OPT_DIR . 'composer/autoload_files.php';
 
             foreach ($files as $namespace => $path) {
-                include $path;
+                try {
+                    include $path;
+                } catch (\Exception $Exception) {
+                    \QUI\System\Log::writeException($Exception);
+                }
             }
 
             // namespaces
