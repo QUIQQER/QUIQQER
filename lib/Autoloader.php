@@ -112,16 +112,14 @@ class Autoloader
             }
 
             // include files
-            $files = require OPT_DIR . 'composer/autoload_files.php';
+            if (!defined('QUIQQER_SETUP')) {
+                $files = require OPT_DIR . 'composer/autoload_files.php';
 
-            foreach ($files as $namespace => $path) {
-                try {
+                foreach ($files as $namespace => $path) {
                     include $path;
-                } catch (\Exception $Exception) {
-                    \QUI\System\Log::writeException($Exception);
                 }
             }
-
+            
             // namespaces
             $map      = require OPT_DIR . 'composer/autoload_namespaces.php';
             $classMap = require OPT_DIR . 'composer/autoload_classmap.php';
