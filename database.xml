@@ -41,7 +41,7 @@
             <field type="VARCHAR(50) NOT NULL DEFAULT ''">name</field>
             <field type="INT(11) NOT NULL DEFAULT 0">parent</field>
             <field type="TINYINT(1) NOT NULL DEFAULT '0'">active</field>
-            <field type="VARCHAR(128)">toolbar</field>
+            <field type="VARCHAR(128) DEFAULT ''">toolbar</field>
             <field type="TEXT NULL">avatar</field>
             <field type="TEXT NULL">extra</field>
             <field type="TEXT NULL">rights</field>
@@ -75,7 +75,7 @@
         <table name="permissions2sites">
             <field type="VARCHAR(200) NOT NULL DEFAULT ''">project</field>
             <field type="VARCHAR(2) NOT NULL DEFAULT ''">lang</field>
-            <field type="BIGINT(20)">id</field>
+            <field type="BIGINT(20) NULL">id</field>
             <field type="TEXT NULL">permission</field>
             <field type="TEXT NULL">value</field>
         </table>
@@ -89,8 +89,8 @@
 
         <table name="permissions2media">
             <field type="VARCHAR(200) NOT NULL DEFAULT ''">project</field>
-            <field type="VARCHAR(2)">lang</field>
-            <field type="BIGINT(20)">id</field>
+            <field type="VARCHAR(2) DEFAULT ''">lang</field>
+            <field type="BIGINT(20) DEFAULT NULL">id</field>
             <field type="TEXT NULL">permission</field>
             <field type="TEXT NULL">value</field>
         </table>
@@ -106,7 +106,7 @@
 
         <table name="updateChecks">
             <field type="INT(11) NOT NULL">id</field>
-            <field type="INT(11)">date</field>
+            <field type="INT(11) NULL">date</field>
             <field type="TEXT NULL">result</field>
             <field type="TEXT NULL">error</field>
 
