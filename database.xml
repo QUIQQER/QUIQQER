@@ -27,6 +27,9 @@
             <field type="INT(11) DEFAULT NULL">address</field>
             <field type="TEXT(32) NULL">secHash</field>
             <field type="TEXT NULL">toolbar</field>
+            <field type="VARCHAR(200) NULL">referal</field>
+            <field type="VARCHAR(20) NULL">activation</field>
+            <field type="VARCHAR(5) NULL">shortcuts</field>
 
             <primary>id</primary>
             <index>username,password</index>
@@ -41,6 +44,7 @@
             <field type="VARCHAR(128)">toolbar</field>
             <field type="TEXT NULL">avatar</field>
             <field type="TEXT NULL">extra</field>
+            <field type="TEXT NULL">rights</field>
 
             <primary>id</primary>
             <index>parent</index>
