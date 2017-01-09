@@ -40,6 +40,10 @@ class Autoloader
             return true;
         }
 
+        if (!function_exists($classname)) {
+            return true;
+        }
+
         // exists quiqqer?
         if (!class_exists('\QUI', false)) {
             require_once __DIR__ . '/QUI.php';
