@@ -40,7 +40,7 @@ class Autoloader
             return true;
         }
 
-        if (!function_exists($classname)) {
+        if (function_exists($classname)) {
             return true;
         }
 
@@ -58,6 +58,10 @@ class Autoloader
         }
 
         if (interface_exists($classname, false)) {
+            return true;
+        }
+
+        if (function_exists($classname)) {
             return true;
         }
 
