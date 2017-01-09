@@ -223,6 +223,13 @@ abstract class Item extends QUI\QDOM
         }
 
         $fileinfo = QUI\Utils\System\File::getInfo($this->getFullPath());
+        $type     = QUI\Projects\Media\Utils::getMediaTypeByMimeType(
+            $fileinfo['mime_type']
+        );
+
+        if (Utils::isFolder($this)) {
+            $type = 'folder';
+        }
 
         QUI::getDataBase()->update(
             $this->Media->getTable(),
@@ -233,9 +240,7 @@ abstract class Item extends QUI\QDOM
                 'order'         => $order,
                 'priority'      => (int)$this->getAttribute('priority'),
                 'image_effects' => json_encode($image_effects),
-                'type'          => QUI\Projects\Media\Utils::getMediaTypeByMimeType(
-                    $fileinfo['mime_type']
-                )
+                'type'          => $type
             ),
             array(
                 'id' => $this->getId()
