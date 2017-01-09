@@ -25,7 +25,7 @@
             <field type="TEXT NULL">extra</field>
             <field type="VARCHAR(2) DEFAULT NULL">lang</field>
             <field type="INT(11) DEFAULT NULL">address</field>
-            <field type="TEXT(32) DEFAULT NULL">secHash</field>
+            <field type="TEXT(32) NULL">secHash</field>
             <field type="TEXT NULL">toolbar</field>
 
             <primary>id</primary>
@@ -93,7 +93,7 @@
 
         <table name="sessions">
             <field type="VARCHAR(255) NOT NULL DEFAULT ''">session_id</field>
-            <field type="TEXT NOT NULL DEFAULT ''">session_value</field>
+            <field type="TEXT NULL ">session_value</field>
             <field type="INT(11) NOT NULL DEFAULT 0">session_time</field>
             <field type="INT(11) NOT NULL DEFAULT 0">session_lifetime</field>
 
@@ -113,7 +113,7 @@
 
     <projects>
         <table name="paths" no-auto-update="1">
-            <field type="TEXT NOT NULL DEFAULT ''">path</field>
+            <field type="TEXT NULL">path</field>
         </table>
     </projects>
 
