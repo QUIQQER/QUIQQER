@@ -37,7 +37,7 @@
             <field type="INT(11) NOT NULL">id</field>
             <field type="VARCHAR(50) NOT NULL">name</field>
             <field type="INT(11) NOT NULL">parent</field>
-            <field type="TINYINT(1) NOT NULL">active</field>
+            <field type="TINYINT(1) NOT NULL DEFAULT '0'">active</field>
             <field type="VARCHAR(128)">toolbar</field>
             <field type="TEXT NULL">avatar</field>
             <field type="TEXT NULL">extra</field>
