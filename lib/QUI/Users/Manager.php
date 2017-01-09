@@ -76,33 +76,6 @@ class Manager
     public function setup()
     {
         $DataBase = QUI::getDataBase();
-
-        $DataBase->table()->addColumn(self::table(), array(
-            'id'         => 'INT(11)',
-            'username'   => 'VARCHAR(50) NOT NULL',
-            'password'   => 'VARCHAR(50)',
-            'usergroup'  => 'TEXT NULL',
-            'firstname'  => 'VARCHAR(40)',
-            'lastname'   => 'VARCHAR(40)',
-            'usertitle'  => 'VARCHAR(40)',
-            'birthday'   => "DATE NULL DEFAULT NULL",
-            'email'      => 'VARCHAR(50)',
-            'active'     => 'INT(1)',
-            'regdate'    => 'INT(11)',
-            'lastvisit'  => 'INT(11)',
-            'su'         => 'TINYINT(1)',
-            'avatar'     => 'TEXT NULL',
-            'extra'      => 'TEXT NULL',
-            'lang'       => 'VARCHAR(2) NULL',
-            'expire'     => "DATETIME NULL DEFAULT NULL",
-            'lastedit'   => "DATETIME NULL DEFAULT NULL",
-            'shortcuts'  => 'VARCHAR(5) NULL',
-            'activation' => 'VARCHAR(20) NULL',
-            'referal'    => 'VARCHAR(200) NULL',
-            'user_agent' => 'TEXT NULL',
-            'address'    => 'INT(11)'
-        ));
-
         $table = self::table();
 
         // Patch strict
@@ -136,7 +109,6 @@ class Manager
             ");
         } catch (\PDOException $Exception) {
         }
-
 
         // Addresses
         $DataBase->table()->addColumn(self::tableAddress(), array(
