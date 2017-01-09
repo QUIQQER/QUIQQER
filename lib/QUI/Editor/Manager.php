@@ -170,6 +170,10 @@ class Manager
         $result = array();
         $groups = $User->getGroups();
 
+        if (empty($groups)) {
+            return array();
+        }
+
         /* @var $Group QUI\Groups\Group */
         foreach ($groups as $Group) {
             if ($Group->getAttribute('toolbar')) {
