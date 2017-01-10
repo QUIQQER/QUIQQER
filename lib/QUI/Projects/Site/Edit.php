@@ -557,6 +557,15 @@ class Edit extends Site
             QUI::getRewrite()->unregisterPath($this);
         }
 
+        $order_field = $this->getAttribute('order_field');
+
+        if (is_numeric($order_field)) {
+            $order_field = (int)$order_field;
+        }
+
+        if (!$order_field) {
+            $order_field = 0;
+        }
         // save main data
         $update = QUI::getDataBase()->update(
             $this->TABLE,
@@ -571,7 +580,7 @@ class Edit extends Site
                 'e_user'        => QUI::getUserBySession()->getId(),
                 // ORDER
                 'order_type'    => $order_type,
-                'order_field'   => $this->getAttribute('order_field'),
+                'order_field'   => $order_field,
                 // images
                 'image_emotion' => $this->getAttribute('image_emotion'),
                 'image_site'    => $this->getAttribute('image_site'),

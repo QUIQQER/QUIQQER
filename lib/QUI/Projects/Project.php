@@ -1082,8 +1082,8 @@ class Project
                 'c_user'        => 'int(11) DEFAULT NULL',
                 'e_user'        => 'int(11) DEFAULT NULL',
                 'nav_hide'      => 'tinyint(1) NOT NULL DEFAULT 0',
-                'order_type'    => 'varchar(255) DEFAULT NULL',
-                'order_field'   => 'bigint(20) DEFAULT NULL',
+                'order_type'    => 'varchar(255) NULL',
+                'order_field'   => 'bigint(20) NULL',
                 'extra'         => 'text NULL',
                 'c_user_ip'     => 'varchar(40) NULL',
                 'image_emotion' => 'text NULL',
@@ -1192,6 +1192,7 @@ class Project
             $dir . 'permissions.xml',
             'project/' . $this->name
         );
+
         QUI\Update::importEvents($dir . 'events.xml');
         QUI\Update::importMenu($dir . 'menu.xml');
 
@@ -1205,17 +1206,30 @@ class Project
             QUI\Translator::add($translationGroup, $translationVar);
         }
 
-        // settings
-        if (!file_exists($dir . 'settings.xml')) {
-            return;
+        // set default settings and current settings
+        QUI\Cache\Manager::clear(
+            'qui/projects/' . $this->getName()
+        );
+
+        $defaults = QUI\Projects\Manager::getProjectConfigList($this);
+        $Config   = Manager::getConfig();
+        $projects = $Config->toArray();
+        $config   = array();
+
+        if (isset($projects[$this->getName()])) {
+            $config = $projects[$this->getName()];
         }
 
-//         $defaults = QUI\Utils\Text\XML::getConfigParamsFromXml( $dir .'settings.xml' );
-//         $Config   = QUI\Utils\Text\XML::getConfigFromXml( $dir .'settings.xml' );
+        foreach ($defaults as $key => $value) {
+            if (!isset($config[$key])) {
+                $value = QUI\Utils\Security\Orthos::removeHTML($value);
+                $value = QUI\Utils\Security\Orthos::clearPath($value);
 
-//         if ( $Config ) {
-//             $Config->save();
-//         }
+                $Config->setValue($this->getName(), $key, $value);
+            }
+        }
+
+        $Config->save();
     }
 
     /**

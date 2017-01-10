@@ -63,14 +63,26 @@ class Manager
      * @param string $project
      * @param array $params
      */
-    public static function setConfigForProject($project, $params)
+    public static function setConfigForProject($project, $params = array())
     {
-        $Project = self::getProject($project);
+        $Project = $project;
+
+        if (is_string($Project)
+            || get_class($Project) != Project::class
+        ) {
+            $Project = self::getProject($project);
+        }
+
+        $projectName = $Project->getName();
 
         Permission::checkProjectPermission(
             'quiqqer.projects.setconfig',
             $Project
         );
+
+        if (!is_array($params)) {
+            $params = array();
+        }
 
         $Config   = self::getConfig();
         $projects = $Config->toArray();
@@ -79,13 +91,17 @@ class Manager
         $config     = self::getProjectConfigList($Project);
         $old_config = $config;
 
-        if (isset($projects[$project])) {
-            $old_config = $projects[$project];
+        if (isset($projects[$projectName])) {
+            $old_config = $projects[$projectName];
         }
 
         // generate new config for the project
         foreach ($config as $key => $value) {
             if (!isset($old_config[$key])) {
+                continue;
+            }
+
+            if (empty($params)) {
                 continue;
             }
 
@@ -109,19 +125,18 @@ class Manager
 
         $config['langs'] = implode(',', $langs);
 
-        $Config->setSection($project, $config);
+        $Config->setSection($projectName, $config);
         $Config->save();
 
-        QUI::getEvents()
-            ->fireEvent('projectConfigSave', array($project, $config));
+        QUI::getEvents()->fireEvent('projectConfigSave', array($projectName, $config));
 
         // remove the project from the temp
-        if (self::$projects[$project]) {
-            unset(self::$projects[$project]);
+        if (self::$projects[$projectName]) {
+            unset(self::$projects[$projectName]);
         }
 
         // execute the project setup
-        $Project = self::getProject($project);
+        $Project = self::getProject($projectName);
         $Project->setup();
 
         /**
@@ -188,7 +203,7 @@ class Manager
         $projects = $Config->toArray();
 
         foreach ($projects as $_project => $settings) {
-            if ($_project != $project) {
+            if ($_project != $projectName) {
                 $Config->setValue($_project, 'standard', 0);
             }
         }
@@ -236,6 +251,7 @@ class Manager
         $settingsXml = self::getRelatedSettingsXML($Project);
 
         foreach ($settingsXml as $file) {
+            QUI\System\Log::writeRecursive($file);
             $Dom  = XML::getDomFromXml($file);
             $Path = new \DOMXPath($Dom);
 
@@ -257,8 +273,7 @@ class Manager
                         $config[$settingsName . $section . '.' . $key] = '';
 
                         if (isset($param['default'])) {
-                            $config[$settingsName . $section . '.' . $key]
-                                = $param['default'];
+                            $config[$settingsName . $section . '.' . $key] = $param['default'];
                         }
                     }
                 }
@@ -612,20 +627,20 @@ class Manager
         $Table->addColumn($table_site, array(
             "id"          => "bigint(20) NOT NULL",
             "name"        => "varchar(200) NOT NULL",
-            "title"       => "tinytext",
-            "short"       => "text",
-            "content"     => "longtext",
-            "type"        => "varchar(32) default NULL",
-            "active"      => "tinyint(1) NOT NULL",
-            "deleted"     => "tinyint(1) NOT NULL",
-            "c_date"      => "timestamp NULL default NULL",
-            "e_date"      => "timestamp NOT NULL default NOW() on update NOW()",
-            "c_user"      => "int(11) default NULL",
-            "e_user"      => "int(11) default NULL",
-            "nav_hide"    => "tinyint(1) NOT NULL",
-            "order_type"  => "varchar(100) default NULL",
-            "order_field" => "bigint(20) default NULL",
-            "extra"       => "text default NULL",
+            "title"       => "tinytext NULL",
+            "short"       => "text NULL",
+            "content"     => "longtext NULL",
+            "type"        => "varchar(32) DEFAULT NULL",
+            "active"      => "tinyint(1) NOT NULL DEFAULT 0",
+            "deleted"     => "tinyint(1) NOT NULL DEFAULT 0",
+            "c_date"      => "timestamp NULL DEFAULT NULL",
+            "e_date"      => "timestamp NOT NULL DEFAULT NOW() on update NOW()",
+            "c_user"      => "int(11) DEFAULT NULL",
+            "e_user"      => "int(11) DEFAULT NULL",
+            "nav_hide"    => "tinyint(1) NOT NULL DEFAULT 0",
+            "order_type"  => "varchar(100) NULL",
+            "order_field" => "bigint(20) NULL",
+            "extra"       => "text NULL",
         ));
 
         $Table->addColumn($table_site_rel, array(
@@ -637,20 +652,18 @@ class Manager
 
         // first site
         $DataBase->insert($table_site, array(
-            "id"          => 1,
-            "name"        => 'Start',
-            "title"       => 'start',
-            "short"       => 'Shorttext',
-            "content"     => "<p>Welcome to my project</p>",
-            "type"        => 'standard',
-            "active"      => 1,
-            "deleted"     => 0,
-            "c_date"      => date('Y-m-d H:i:s'),
-            "c_user"      => QUI::getUserBySession()->getId(),
-            "e_user"      => QUI::getUserBySession()->getId(),
-            "nav_hide"    => '',
-            "order_type"  => "",
-            "order_field" => ""
+            "id"       => 1,
+            "name"     => 'Start',
+            "title"    => 'start',
+            "short"    => 'Shorttext',
+            "content"  => "<p>Welcome to my project</p>",
+            "type"     => 'standard',
+            "active"   => 1,
+            "deleted"  => 0,
+            "c_date"   => date('Y-m-d H:i:s'),
+            "c_user"   => QUI::getUserBySession()->getId(),
+            "e_user"   => QUI::getUserBySession()->getId(),
+            "nav_hide" => 0
         ));
 
 
@@ -663,18 +676,18 @@ class Manager
         $Table->addColumn($table_media, array(
             "id"           => "bigint(20) NOT NULL",
             "name"         => "varchar(200) NOT NULL",
-            "title"        => "tinytext",
-            "short"        => "text",
-            "type"         => "varchar(32) default NULL",
-            "active"       => "tinyint(1) NOT NULL",
-            "deleted"      => "tinyint(1) NOT NULL",
-            "c_date"       => "timestamp NULL default NULL",
+            "title"        => "tinytext NULL",
+            "short"        => "text NULL",
+            "type"         => "varchar(32) DEFAULT NULL",
+            "active"       => "tinyint(1) NOT NULL DEFAULT 0",
+            "deleted"      => "tinyint(1) NOT NULL DEFAULT 0",
+            "c_date"       => "timestamp NULL DEFAULT NULL",
             "e_date"       => "timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP",
-            "c_user"       => "int(11) default NULL",
-            "e_user"       => "int(11) default NULL",
-            "file"         => "text",
-            "alt"          => "text",
-            "mime_type"    => "text",
+            "c_user"       => "int(11) DEFAULT NULL",
+            "e_user"       => "int(11) DEFAULT NULL",
+            "file"         => "text NULL",
+            "alt"          => "text NULL",
+            "mime_type"    => "text NULL",
             "image_height" => "int(6) default NULL",
             "image_width"  => "int(6) default NULL"
         ));
@@ -742,7 +755,7 @@ class Manager
         $Project->setup();
 
         // Package / Plugin Setup
-        QUI::getPluginManager()->setup($Project);
+        QUI::getPluginManager()->setup();
 
         // Projekt Cache löschen
         QUI\Cache\Manager::clear('QUI::config');
