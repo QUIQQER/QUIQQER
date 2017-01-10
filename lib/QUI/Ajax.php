@@ -412,8 +412,6 @@ class Ajax extends QUI\QDOM
             case 'PDOException':
             case 'QUI\\Database\\Exception':
                 // DB Fehler immer loggen
-                System\Log::writeException($Exception);
-
                 if ($this->getAttribute('db_errors')) {
                     $return['ExceptionDBError']['message'] = $Exception->getMessage();
                     $return['ExceptionDBError']['code']    = $Exception->getCode();
@@ -429,6 +427,7 @@ class Ajax extends QUI\QDOM
                     $return['Exception']['context'] = $Exception->getContext();
                 }
 
+                System\Log::writeException($Exception);
                 break;
 
             case 'QUI\\ExceptionStack':
@@ -469,6 +468,10 @@ class Ajax extends QUI\QDOM
                 $return['Exception']['code']    = $Exception->getCode();
                 $return['Exception']['type']    = get_class($Exception);
                 break;
+        }
+
+        if (DEVELOPMENT || DEBUG_MODE) {
+            System\Log::writeException($Exception);
         }
 
         return $return;
