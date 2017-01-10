@@ -90,7 +90,9 @@ define('controls/system/Profile', [
 
                 ControlUtils.parse(Content);
 
-                self.Loader.hide();
+                QUI.parse(Content).then(function() {
+                    self.Loader.hide();
+                });
             }, {
                 uid: USER.id
             });
