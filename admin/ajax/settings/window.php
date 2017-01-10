@@ -52,6 +52,10 @@ QUI::$Ajax->registerFunction(
                 );
             }
 
+            if (empty($category['text']) && !empty($category['title'])) {
+                $category['text'] = $category['title'];
+            }
+
             $result['categories'][] = $category;
         }
 
