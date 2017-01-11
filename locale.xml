@@ -528,6 +528,10 @@
             <de><![CDATA[HTTP-Code]]></de>
             <en><![CDATA[HTTP-Code]]></en>
         </locale>
+        <locale name="menu.settings.forwardings.text">
+            <de><![CDATA[Globale Weiterleitungen]]></de>
+            <en><![CDATA[Global forwarding]]></en>
+        </locale>
 
         <locale name="exception.forwarding.already.exists">
             <de><![CDATA[Diese Weiterleitung besteht bereits.]]></de>
@@ -5222,10 +5226,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="menu.settings.vhosts.text">
             <de><![CDATA[Virtual Hosts]]></de>
             <en><![CDATA[Virtual hosts]]></en>
-        </locale>
-        <locale name="menu.settings.forwardings.text">
-            <de><![CDATA[Globale Weiterleitungen]]></de>
-            <en><![CDATA[Global forwarding]]></en>
         </locale>
         <locale name="menu.extras.rights.text">
             <de><![CDATA[Benutzerverwaltung]]></de>
