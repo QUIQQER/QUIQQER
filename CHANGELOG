@@ -1,3 +1,27 @@
+1.0.12
+
+    Benutzer
+
+    - Globale Weiterleitungen
+        - Globale Weiterleitungen mit Wildcards können eingerichtet werden
+        -> Menü -> Einstellungen -> QUIQQER -> Globale Weiterleitungen
+
+    Entwickler
+
+    - MySQL Strict Mode Kompatibel
+    - dusank/knapsack -> 8.* integriert
+    - HTACCESS fixes: disabled whitelist checking
+    - URI in requirejs als Module referenziert
+    - Neuer Settings DOM Interpreter
+    - Prioritäten bei Events eingeführt
+        - https://dev.quiqqer.com/quiqqer/quiqqer/wikis/Events-Xml
+
+    Bugfixes
+
+    - #445 Erstes Projekt anlegen und Standardseiten
+    - #14  Globale Weiterleitungen
+    - #458 SVG hochladen und verwenden
+
 
 1.0.11
 
