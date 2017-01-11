@@ -48,13 +48,15 @@ class Manager implements QUI\Interfaces\Events
                 'from'  => self::table(),
                 'where' => array(
                     'sitetype' => null
-                )
+                ),
+                'order' => 'priority ASC'
             ));
 
             foreach ($list as $params) {
                 $this->Events->addEvent(
                     $params['event'],
-                    $params['callback']
+                    $params['callback'],
+                    isset($params['priority']) ? $params['priority'] : 0
                 );
             }
 
@@ -65,7 +67,8 @@ class Manager implements QUI\Interfaces\Events
                         'type'  => 'NOT',
                         'value' => null
                     )
-                )
+                ),
+                'order' => 'priority ASC'
             ));
 
             $this->siteEvents = $list;
@@ -91,10 +94,11 @@ class Manager implements QUI\Interfaces\Events
         $DBTable = QUI::getDataBase()->table();
 
         $DBTable->addColumn(self::table(), array(
-            'event'    => 'varchar(255)',
-            'callback' => 'text',
-            'sitetype' => 'text',
-            'package'  => 'text'
+            'event'    => 'VARCHAR(255)',
+            'callback' => 'TEXT NULL',
+            'sitetype' => 'TEXT NULL',
+            'package'  => 'TEXT NULL',
+            'priority' => 'INT DEFAULT 0'
         ));
 
         self::clear();
@@ -157,9 +161,11 @@ class Manager implements QUI\Interfaces\Events
      * @example $EventManager->addEvent('myEvent', function() { });
      *
      * @param string $event - The type of event (e.g. 'complete').
-     * @param callback $fn - The function to execute.
+     * @param string|callable $fn - The function to execute.
+     * @param string $package - Name of the package
+     * @param int $priority - Event priority
      */
-    public function addEvent($event, $fn, $package = '')
+    public function addEvent($event, $fn, $package = '', $priority = 0)
     {
         if (!is_string($package)) {
             $package = '';
@@ -170,11 +176,12 @@ class Manager implements QUI\Interfaces\Events
             QUI::getDataBase()->insert(self::table(), array(
                 'event'    => $event,
                 'callback' => $fn,
-                'package'  => $package
+                'package'  => $package,
+                'priority' => (int)$priority
             ));
         }
 
-        $this->Events->addEvent($event, $fn);
+        $this->Events->addEvent($event, $fn, (int)$priority);
     }
 
     /**
@@ -184,9 +191,10 @@ class Manager implements QUI\Interfaces\Events
      *
      * @param string $event - The type of event (e.g. 'complete').
      * @param callback $fn - The function to execute.
-     * @param string $sitetype - type of the site
+     * @param string $siteType - type of the site
+     * @param int $priority - Event priority
      */
-    public function addSiteEvent($event, $fn, $sitetype)
+    public function addSiteEvent($event, $fn, $siteType, $priority = 0)
     {
         if (!is_string($fn)) {
             return;
@@ -195,7 +203,8 @@ class Manager implements QUI\Interfaces\Events
         QUI::getDataBase()->insert(self::table(), array(
             'event'    => $event,
             'callback' => $fn,
-            'sitetype' => $sitetype
+            'sitetype' => $siteType,
+            'priority' => (int)$priority
         ));
     }
 
