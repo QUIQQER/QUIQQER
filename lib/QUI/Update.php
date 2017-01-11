@@ -319,13 +319,24 @@ class Update
 
         foreach ($events as $Event) {
             /* @var $Event \DOMElement */
-            if ($Event->getAttribute('on') && $Event->getAttribute('fire')) {
-                $Events->addEvent(
-                    $Event->getAttribute('on'),
-                    $Event->getAttribute('fire'),
-                    $packageName
-                );
+            if (!$Event->getAttribute('on')
+                || !$Event->getAttribute('fire')
+            ) {
+                continue;
             }
+
+            $priority = 0;
+
+            if ($Event->getAttribute('priority')) {
+                $priority = (int)$Event->getAttribute('priority');
+            }
+
+            $Events->addEvent(
+                $Event->getAttribute('on'),
+                $Event->getAttribute('fire'),
+                $packageName,
+                $priority
+            );
         }
     }
 

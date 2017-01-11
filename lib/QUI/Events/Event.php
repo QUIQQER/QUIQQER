@@ -46,10 +46,14 @@ class Event implements QUI\Interfaces\Events
      *
      * @param string $event - The type of event (e.g. 'complete').
      * @param callback $fn - The function to execute.
+     * @param int $priority - optional, Priority of the event
      */
-    public function addEvent($event, $fn)
+    public function addEvent($event, $fn, $priority = 0)
     {
-        $this->events[$event][] = $fn;
+        $this->events[$event][] = array(
+            'callable' => $fn,
+            'priority' => $priority
+        );
     }
 
     /**
@@ -82,7 +86,6 @@ class Event implements QUI\Interfaces\Events
 
         if (!$fn) {
             unset($this->events[$event]);
-
             return;
         }
 
@@ -144,10 +147,21 @@ class Event implements QUI\Interfaces\Events
 
         $this->currentRunning[$event] = true;
 
-        $Stack = new QUI\ExceptionStack();
+        $Stack  = new QUI\ExceptionStack();
+        $events = $this->events[$event];
+
+        // sort
+        usort($events, function ($a, $b) {
+            if ($a['priority'] == $b['priority']) {
+                return 0;
+            }
+            return $a['priority'] < $b['priority'] ? -1 : 1;
+        });
 
         // execute events
-        foreach ($this->events[$event] as $fn) {
+        foreach ($events as $data) {
+            $fn = $data['callable'];
+
             try {
                 if (!is_string($fn)) {
                     if ($args === false) {
