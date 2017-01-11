@@ -1,3 +1,94 @@
+1.0.12
+
+    Benutzer
+
+    - Globale Weiterleitungen
+        - Globale Weiterleitungen mit Wildcards können eingerichtet werden
+        -> Menü -> Einstellungen -> QUIQQER -> Globale Weiterleitungen
+
+    Entwickler
+
+    - MySQL Strict Mode Kompatibel
+    - dusank/knapsack -> 8.* integriert
+    - HTACCESS fixes: disabled whitelist checking
+    - URI in requirejs als Module referenziert
+    - Neuer Settings DOM Interpreter
+    - Prioritäten bei Events eingeführt
+        - https://dev.quiqqer.com/quiqqer/quiqqer/wikis/Events-Xml
+
+    Bugfixes
+
+    - #445 Erstes Projekt anlegen und Standardseiten
+    - #14  Globale Weiterleitungen
+    - #458 SVG hochladen und verwenden
+
+
+1.0.11
+
+    Benutzer
+
+    - InputMultiLang optimiert
+    - Übersetzungen verbessert
+    - Setup besitzt push Nachrichten
+    - Settings für die verschiedenen Trennzeichen in den Spracheinstellungen
+    - Sitzungsablauf wurde zu früh beendet
+    - Benutzer Avatar eingeführt
+    - Benutzer und Gruppensuche verbessert
+    - Komplett neue Updateoberfläche
+
+
+    Entwickler
+
+    - CRUD System eingeführt
+    - Currencies sind keine Abhängigkeiten von QUIQQER mehr
+    - HTACCESS Generierung verbessert / Fehler behoben
+    - Fehler im Upload behoben
+    - Verbesserte Controls in Groups und Users
+    - Locale besitzt nun ein formatNumber()
+    - PSR2 in Unterbibliotheken umgesetzt
+    - Ajax Fehler werden besser abgefangen
+    - NGINX Generator
+    - noUISlider integriert
+    - settings.xml werden richtig ausgelesen
+    - Site besitzt neue Methode Site->lastChild()
+    - Neues Event: onUserChangePasswordBefore
+    - onUserSetPassword zu onUserChangePassword geändert
+    - JS Pakete werden nun über NPM gehohlt
+    - quiqqer/composer aufgenommen und integriert
+    - onRequestOutput -> Content ist änderbar
+    - getOutdatedPackages in System Update integriert
+    - URIjs integriert
+    - MySQL Strict Mode beachtet
+    - Intl für Safari 9 behoben
+
+
+    Bugfixes
+
+    - #420 Zugang zum Adminbereich Setting wird nicht in die Permissions übernommen
+    - #420 Zugang zum Adminbereich Setting wird nicht in die Permissions übernommen
+    - #415 Maximale Anzahl von Seiten (Projekteinstellungen)
+    - #412 Events werden bei Einzel-Setup eines Pakets mehrfach registriert
+    - #413 Einzel-Paket Setup veröffentlicht keine Sprachvariablen
+    - #418
+    - #425
+    - #417 Benutzer kann seine eigenen Daten nicht ändern, wenn er nicht SU ist.
+    - #433 Gruppe erweitern (groups.xml) Cache löschen => Einstellungen weg
+    - #362 Setup kann mehrmals gleichzeitig ausgeführt werden
+    - #378 Benutzer kann nicht mehr gespeichert werden, nachdem das Passwort geändert wurde
+    - #376 custom.css speichern - Dateirechte prüfen
+    - #370 Benutzerverwaltung -> Suche funktioniert nicht
+    - #49  Rechtschreibung
+    - #429 Verknüpfung löschen
+    - #49  Editor iFrame problem
+    - #54  open create child fix -> load error fixed
+    - #442 fix: quiqqer/quiqqer'441
+    - #450 Viele Pakete updaten --> loader.close
+    - #359 Editor Toolbar Auswahl
+    - #188 Im Media-Bereich fehlt die Funktion um Bilder von Ordner zu Ordner zu verschieben
+
+    - Projekt#14; Benutzer XML API Erweitert -> <profile> -> https://dev.quiqqer.com/quiqqer/quiqqer/wikis/User-Xml
+    - Projekt#15 Ergebnisse der Produktsuche / Bildanzeige Priorität
+
 
 1.0.10
 

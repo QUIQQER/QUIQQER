@@ -5223,6 +5223,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Virtual Hosts]]></de>
             <en><![CDATA[Virtual hosts]]></en>
         </locale>
+        <locale name="menu.settings.forwardings.text">
+            <de><![CDATA[Globale Weiterleitungen]]></de>
+            <en><![CDATA[Global forwarding]]></en>
+        </locale>
         <locale name="menu.extras.rights.text">
             <de><![CDATA[Benutzerverwaltung]]></de>
             <en><![CDATA[User management]]></en>
