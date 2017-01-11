@@ -55,7 +55,8 @@ class Manager implements QUI\Interfaces\Events
             foreach ($list as $params) {
                 $this->Events->addEvent(
                     $params['event'],
-                    $params['callback']
+                    $params['callback'],
+                    isset($params['priority']) ? $params['priority'] : 0
                 );
             }
 
