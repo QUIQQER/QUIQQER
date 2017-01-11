@@ -724,6 +724,10 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         $availableLangs = $Project->getAttribute('langs');
 
+        if (!is_array($availableLangs)) {
+            $availableLangs = array();
+        }
+
         $pname = $Project->getAttribute('name');
         $plang = $Project->getAttribute('lang');
 
@@ -1040,7 +1044,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @param array $params
      *
-     * @return array
+     * @return array|int
      */
     public function getNavigation($params = array())
     {
