@@ -90,6 +90,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $cdir = CMS_DIR . $Media->getCacheDir();
         $file = $this->getAttribute('file');
 
+        if ($this->getAttribute('mime_type') == 'image/svg+xml') {
+            return $cdir . $file;
+        }
+
         if (!$maxwidth && !$maxheight) {
             return $cdir . $file;
         }
@@ -206,6 +210,13 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function getResizeSize($maxwidth = false, $maxheight = false)
     {
+        if ($this->getAttribute('mime_type') == 'image/svg+xml') {
+            return array(
+                'width'  => false,
+                'height' => false
+            );
+        }
+
         $width  = $this->getAttribute('image_width');
         $height = $this->getAttribute('image_height');
 

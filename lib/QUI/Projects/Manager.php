@@ -63,14 +63,26 @@ class Manager
      * @param string $project
      * @param array $params
      */
-    public static function setConfigForProject($project, $params)
+    public static function setConfigForProject($project, $params = array())
     {
-        $Project = self::getProject($project);
+        $Project = $project;
+
+        if (is_string($Project)
+            || get_class($Project) != Project::class
+        ) {
+            $Project = self::getProject($project);
+        }
+
+        $projectName = $Project->getName();
 
         Permission::checkProjectPermission(
             'quiqqer.projects.setconfig',
             $Project
         );
+
+        if (!is_array($params)) {
+            $params = array();
+        }
 
         $Config   = self::getConfig();
         $projects = $Config->toArray();
@@ -79,13 +91,17 @@ class Manager
         $config     = self::getProjectConfigList($Project);
         $old_config = $config;
 
-        if (isset($projects[$project])) {
-            $old_config = $projects[$project];
+        if (isset($projects[$projectName])) {
+            $old_config = $projects[$projectName];
         }
 
         // generate new config for the project
         foreach ($config as $key => $value) {
             if (!isset($old_config[$key])) {
+                continue;
+            }
+
+            if (empty($params)) {
                 continue;
             }
 
@@ -109,19 +125,18 @@ class Manager
 
         $config['langs'] = implode(',', $langs);
 
-        $Config->setSection($project, $config);
+        $Config->setSection($projectName, $config);
         $Config->save();
 
-        QUI::getEvents()
-            ->fireEvent('projectConfigSave', array($project, $config));
+        QUI::getEvents()->fireEvent('projectConfigSave', array($projectName, $config));
 
         // remove the project from the temp
-        if (self::$projects[$project]) {
-            unset(self::$projects[$project]);
+        if (self::$projects[$projectName]) {
+            unset(self::$projects[$projectName]);
         }
 
         // execute the project setup
-        $Project = self::getProject($project);
+        $Project = self::getProject($projectName);
         $Project->setup();
 
         /**
@@ -188,7 +203,7 @@ class Manager
         $projects = $Config->toArray();
 
         foreach ($projects as $_project => $settings) {
-            if ($_project != $project) {
+            if ($_project != $projectName) {
                 $Config->setValue($_project, 'standard', 0);
             }
         }
@@ -236,6 +251,7 @@ class Manager
         $settingsXml = self::getRelatedSettingsXML($Project);
 
         foreach ($settingsXml as $file) {
+            QUI\System\Log::writeRecursive($file);
             $Dom  = XML::getDomFromXml($file);
             $Path = new \DOMXPath($Dom);
 
@@ -257,8 +273,7 @@ class Manager
                         $config[$settingsName . $section . '.' . $key] = '';
 
                         if (isset($param['default'])) {
-                            $config[$settingsName . $section . '.' . $key]
-                                = $param['default'];
+                            $config[$settingsName . $section . '.' . $key] = $param['default'];
                         }
                     }
                 }
@@ -637,18 +652,18 @@ class Manager
 
         // first site
         $DataBase->insert($table_site, array(
-            "id"          => 1,
-            "name"        => 'Start',
-            "title"       => 'start',
-            "short"       => 'Shorttext',
-            "content"     => "<p>Welcome to my project</p>",
-            "type"        => 'standard',
-            "active"      => 1,
-            "deleted"     => 0,
-            "c_date"      => date('Y-m-d H:i:s'),
-            "c_user"      => QUI::getUserBySession()->getId(),
-            "e_user"      => QUI::getUserBySession()->getId(),
-            "nav_hide"    => 0
+            "id"       => 1,
+            "name"     => 'Start',
+            "title"    => 'start',
+            "short"    => 'Shorttext',
+            "content"  => "<p>Welcome to my project</p>",
+            "type"     => 'standard',
+            "active"   => 1,
+            "deleted"  => 0,
+            "c_date"   => date('Y-m-d H:i:s'),
+            "c_user"   => QUI::getUserBySession()->getId(),
+            "e_user"   => QUI::getUserBySession()->getId(),
+            "nav_hide" => 0
         ));
 
 
