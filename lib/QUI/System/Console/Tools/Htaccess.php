@@ -316,6 +316,11 @@ class Htaccess extends QUI\System\Console\Tool
                 return null;
             }
         } else {
+            if (empty(shell_exec('which apache2'))) {
+                return null;
+            }
+
+
             $version = shell_exec('apache2 -v');
             $regex   = "/Apache\\/([0-9\\.]*)/i";
             $res     = preg_match($regex, $version, $matches);
