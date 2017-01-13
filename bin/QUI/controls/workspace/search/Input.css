@@ -1,0 +1,19 @@
+.qui-workspace-search-input {
+    float: left;
+    max-width: 100%;
+    position: relative;
+    width: 300px;
+}
+
+.qui-workspace-search-input input {
+    padding-left: 30px;
+    width: 100%;
+}
+
+.qui-workspace-search-input .fa-search {
+    left: 0;
+    line-height: 30px;
+    position: absolute;
+    text-align: center;
+    width: 30px;
+}

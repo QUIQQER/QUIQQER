@@ -73,7 +73,7 @@ var requireList = [
     'Ajax',
     'Projects',
     'controls/workspace/Manager',
-    'controls/menu/Search',
+    'controls/workspace/search/Input',
     'qui/controls/buttons/Button',
     'qui/controls/contextmenu/Item',
     'qui/controls/contextmenu/Seperator'
@@ -155,6 +155,25 @@ require(requireList, function () {
     };
 
     window.addEvent('load', quiqqerIsLoaded);
+    window.addEvent('keydown', function (event) {
+        if (!event.control) {
+            return;
+        }
+
+        if (event.key == 'f') {
+            event.stop();
+
+            require(['controls/workspace/search/Search'], function (Search) {
+                new Search({
+                    events: {
+                        onClose: function (S) {
+                            S.destroy();
+                        }
+                    }
+                }).open();
+            });
+        }
+    });
 
     Ajax.get('ajax_isAuth', function (userId) {
 
@@ -217,7 +236,11 @@ require(requireList, function () {
                         quiqqerIsLoaded();
 
                         // search
-                        new MenuSearch().inject(
+                        new MenuSearch({
+                            styles: {
+                                margin: '5px 0 0 10px'
+                            }
+                        }).inject(
                             document.getElement('.qui-contextmenu-bar'), 'after'
                         );
 
