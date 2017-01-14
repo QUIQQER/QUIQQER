@@ -235,15 +235,6 @@ require(requireList, function () {
                         WS.Loader.hide();
                         quiqqerIsLoaded();
 
-                        // search
-                        new MenuSearch({
-                            styles: {
-                                margin: '5px 0 0 10px'
-                            }
-                        }).inject(
-                            document.getElement('.qui-contextmenu-bar'), 'after'
-                        );
-
                         if (!Bar.getChildren('profile')) {
                             return;
                         }
@@ -269,7 +260,7 @@ require(requireList, function () {
                                 new QUIContextmenuItem({
                                     text  : Entry.title,
                                     wid   : Entry.id,
-                                    icon  : standard ? 'fa fa-laptop' : false,
+                                    icon  : standard ? 'fa fa-check' : 'fa fa-minus',
                                     events: {
                                         onClick: function (Item) {
                                             WS.loadWorkspace(Item.getAttribute('wid'));
@@ -303,6 +294,32 @@ require(requireList, function () {
                                 events: {
                                     onClick: function () {
                                         WS.openCreateWindow();
+                                    }
+                                }
+                            })
+                        );
+
+                        Workspaces.appendChild(
+                            new QUIContextmenuSeperator({})
+                        );
+
+                        Workspaces.appendChild(
+                            new QUIContextmenuItem({
+                                text  : Locale.get('quiqqer/quiqqer', 'workspace.fixed'),
+                                icon  : 'fa fa-laptop',
+                                status: 1,
+                                events: {
+                                    onClick: function (Item) {
+                                        if (Item.getAttribute('status') === 1) {
+                                            Workspace.unfix();
+                                            Item.setAttribute('text', Locale.get('quiqqer/quiqqer', 'workspace.flexible'));
+                                            Item.setAttribute('status', 0);
+                                            return;
+                                        }
+
+                                        Workspace.fix();
+                                        Item.setAttribute('text', Locale.get('quiqqer/quiqqer', 'workspace.fixed'));
+                                        Item.setAttribute('status', 1);
                                     }
                                 }
                             })
@@ -343,54 +360,30 @@ require(requireList, function () {
          * Menu
          */
         require(['Menu'], function () {
-            // workspace edit
-            new Element('div', {
-                'class': 'qui-contextmenu-baritem smooth ',
-                html   : '<span class="qui-contextmenu-baritem-text">' +
-                         '<span class="fa-stack">' +
-                         '<i class="fa fa-laptop fa-stack-base"></i>' +
-                         '<i class="fa fa-pencil" style="font-size: 0.8em; margin: -3px 0 0 1px;"></i>' +
-                         '</span>' +
-                         '</span>',
-                title  : Locale.get('quiqqer/quiqqer', 'workspace.fixed'),
-                styles : {
-                    'borderLeft': '1px solid #d1d4da',
-                    'float'     : 'right',
-                    'marginLeft': 5
-                },
-                events : {
-                    click: function () {
-                        if (this.hasClass('qui-contextmenu-baritem-active')) {
-                            this.removeClass('qui-contextmenu-baritem-active');
-
-                            Workspace.fix();
-                            this.set('title', Locale.get('quiqqer/quiqqer', 'workspace.fixed'));
-
-                            return;
-                        }
-
-                        this.addClass('qui-contextmenu-baritem-active');
-
-                        Workspace.unfix();
-                        this.set('title', Locale.get('quiqqer/quiqqer', 'workspace.flexible'));
-                    }
-                }
-            }).inject(Menu);
-
             // logout
             new Element('div', {
                 'class': 'qui-contextmenu-baritem smooth ',
                 html   : '<span class="qui-contextmenu-baritem-text">' +
+                         '<span class="fa fa-power-off"></span> ' +
                          Locale.get('quiqqer/quiqqer', 'menu.log.out') +
                          '</span>',
                 title  : Locale.get('quiqqer/quiqqer', 'menu.loged.in', {
                     username: USER.name
                 }),
                 styles : {
-                    'float': 'right'
+                    'float'   : 'right',
+                    borderLeft: '1px solid #CCCFD5'
                 },
                 events : {
                     click: window.logout
+                }
+            }).inject(Menu);
+
+            // search
+            new MenuSearch({
+                styles: {
+                    'float': 'right',
+                    margin : '5px 24px 0 10px'
                 }
             }).inject(Menu);
         });
