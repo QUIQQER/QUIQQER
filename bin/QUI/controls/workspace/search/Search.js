@@ -201,7 +201,8 @@ define('controls/workspace/search/Search', [
                 if ("require" in searchData) {
                     require([searchData.require], function (Cls) {
                         if (typeOf(Cls) == 'class') {
-                            var Instance = new Cls();
+                            var params   = searchData.params || {};
+                            var Instance = new Cls(params);
 
                             if (instanceOf(Instance, QUIPanel)) {
                                 PanelUtils.openPanelInTasks(Instance);
@@ -212,6 +213,8 @@ define('controls/workspace/search/Search', [
                     this.close();
                     return;
                 }
+
+                console.log(searchData);
 
             }.bind(this)).catch(function (Exception) {
                 console.error(Exception);

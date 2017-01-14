@@ -24,7 +24,7 @@ class Builder
 
     const TYPE_APPS_ICON = 'fa fa-diamond';
     const TYPE_EXTRAS_ICON = 'fa fa-cubes';
-    const TYPE_GROUPS_ICON = 'fa fa-groups';
+    const TYPE_GROUPS_ICON = 'fa fa-group';
     const TYPE_MEDIA_ICON = 'fa fa-picture-o';
     const TYPE_PROJECT_ICON = 'fa fa-home';
     const TYPE_SETTINGS_ICON = 'fa fa-gears';
@@ -113,22 +113,41 @@ class Builder
     }
 
     /**
-     * Build the complete search cache
+     * Build the complete search cache and clears the cache
      */
     public function buildCache()
     {
+        QUI::getDataBase()->table()->truncate($this->getTable());
+
+        // apps
         try {
             $this->buildAppsCache();
         } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
 
+        // extras
         try {
             $this->buildExtrasCache();
         } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
 
+        // groups
+        try {
+            $this->buildGroupUserCache();
+        } catch (Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+
+        // media
+        try {
+            $this->buildMediaCache();
+        } catch (Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+
+        // settings
         try {
             $this->buildSettingsCache();
         } catch (Exception $Exception) {
@@ -141,7 +160,7 @@ class Builder
      */
     public function buildAppsCache()
     {
-        $this->buildCacheHelper(self::TYPE_APPS);
+        $this->buildMenuCacheHelper(self::TYPE_APPS);
     }
 
     /**
@@ -149,7 +168,7 @@ class Builder
      */
     public function buildExtrasCache()
     {
-        $this->buildCacheHelper(self::TYPE_EXTRAS);
+        $this->buildMenuCacheHelper(self::TYPE_EXTRAS);
     }
 
     /**
@@ -157,15 +176,94 @@ class Builder
      */
     public function buildSettingsCache()
     {
-        $this->buildCacheHelper(self::TYPE_SETTINGS);
+        $this->buildMenuCacheHelper(self::TYPE_SETTINGS);
     }
 
     /**
-     * Helper to build a section / search group
+     * Build the group and user cache
+     */
+    public function buildGroupUserCache()
+    {
+        // groups
+        $groups = QUI::getGroups()->getAllGroups();
+
+        foreach ($groups as $group) {
+            $searchData = array(
+                'require' => 'controls/groups/Group',
+                'params'  => $group['id']
+            );
+
+            $this->addEntry(array(
+                'searchtype' => self::TYPE_GROUPS,
+                'icon'       => self::TYPE_GROUPS_ICON,
+                'searchdata' => json_encode($searchData),
+                'title'      => $group['name'],
+                'search'     => "{$group['id']} {$group['name']}"
+            ));
+        }
+
+        // users
+        $users = QUI::getUsers()->getAllUsers();
+
+        foreach ($users as $user) {
+            $search   = array();
+            $search[] = $user['id'];
+            $search[] = $user['username'];
+            $search[] = $user['usergroup'];
+            $search[] = $user['email'];
+            $search[] = $user['regdate'];
+            $search[] = $user['lastvisit'];
+            $search[] = $user['lastedit'];
+            $search[] = $user['firstname'];
+            $search[] = $user['lastname'];
+            $search[] = $user['usertitle'];
+            $search[] = $user['birthday'];
+
+            try {
+                $User      = QUI::getUsers()->get($user['id']);
+                $addresses = $User->getAddressList();
+
+                /* @var $Address QUI\Users\Address */
+                foreach ($addresses as $Address) {
+                    $search[] = json_encode($Address->getAttributes());
+                }
+            } catch (QUI\Exception $Exception) {
+                continue;
+            }
+
+
+            $this->addEntry(array(
+                'searchtype' => self::TYPE_GROUPS,
+                'icon'       => 'fa fa-user',
+                'searchdata' => json_encode(array(
+                    'require' => 'controls/users/User',
+                    'params'  => $user['id']
+                )),
+                'title'      => $user['username'],
+                'search'     => implode($search, ' ')
+            ));
+        }
+    }
+
+    /**
+     * build the media cache
+     */
+    protected function buildMediaCache()
+    {
+        $projects = QUI::getProjectManager()->getProjectList();
+
+        /* @var $Project QUI\Projects\Project */
+        foreach ($projects as $Project) {
+            $Media = $Project->getMedia();
+        }
+    }
+
+    /**
+     * Helper to build a section / search group via menu items
      *
      * @param string $type
      */
-    protected function buildCacheHelper($type)
+    protected function buildMenuCacheHelper($type)
     {
         QUI::getDataBase()->delete($this->getTable(), array(
             'searchtype' => $type
@@ -207,6 +305,12 @@ class Builder
                         $entry['icon'] = self::TYPE_SETTINGS_ICON;
                         break;
                 }
+            }
+
+            $searchData = json_decode($entry['searchdata'], true);
+
+            if (empty($searchData['require'])) {
+                continue;
             }
 
             $this->addEntry($entry);
