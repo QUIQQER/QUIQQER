@@ -21,6 +21,10 @@ define('controls/workspace/search/Input', [
 ], function (QUI, QUIControl, Mustache, Search, template) {
     "use strict";
 
+    if (!("Search" in window.QUIQQER)) {
+        window.QUIQQER.Search = new Search();
+    }
+
     return new Class({
 
         Extends: QUIControl,
@@ -28,7 +32,8 @@ define('controls/workspace/search/Input', [
 
         Binds: [
             'create',
-            '$onInject'
+            '$onInject',
+            '$collectKeyUp'
         ],
 
         options: {
@@ -38,8 +43,7 @@ define('controls/workspace/search/Input', [
         initialize: function (options) {
             this.parent(options);
 
-            this.$Input  = null;
-            this.$Search = new Search();
+            this.$Input = null;
 
             this.addEvents({
                 onInject: this.$onInject
@@ -61,6 +65,10 @@ define('controls/workspace/search/Input', [
                 Elm.setStyles(this.getAttribute('styles'));
             }
 
+            window.QUIQQER.Search.addEvent('close', function () {
+                this.$Input.value = window.QUIQQER.Search.getValue();
+            }.bind(this));
+
             return Elm;
         },
 
@@ -69,7 +77,12 @@ define('controls/workspace/search/Input', [
          */
         $onInject: function () {
             this.$Input.addEvent('focus', function () {
-                this.$Search.open();
+
+                window.QUIQQER.Search.open().then(function () {
+                    window.QUIQQER.Search.setValue(this.$Input.value);
+                    window.QUIQQER.Search.search();
+                }.bind(this));
+
             }.bind(this));
         }
     });

@@ -56,7 +56,8 @@ define('controls/workspace/search/Search', [
             this.$Close  = null;
             this.$Result = null;
 
-            this.$open = false;
+            this.$open  = false;
+            this.$value = false;
         },
 
         /**
@@ -97,7 +98,7 @@ define('controls/workspace/search/Search', [
                     this.$Input.value = '';
                 }
 
-                this.executeSearch();
+                this.search();
             }.bind(this));
 
 
@@ -140,14 +141,52 @@ define('controls/workspace/search/Search', [
                 }, {
                     duration: 250,
                     callback: function () {
-                        this.$Input.focus();
+                        if (this.$value) {
+                            this.setValue(this.$value);
+                        }
+
                         window.addEvent('keyup', this.$onWindowKeyUp);
+
+                        this.$Input.focus();
+
+                        if (this.$Input.value !== '') {
+                            this.search();
+                        }
+
                         this.fireEvent('open', [this]);
+
                         resolve();
                     }.bind(this)
                 });
 
             }.bind(this));
+        },
+
+        /**
+         * Set the value / search string for the search
+         *
+         * @param {String} value
+         */
+        setValue: function (value) {
+            if (this.$Input) {
+                this.$Input.value = value;
+                return;
+            }
+
+            this.$value = value;
+        },
+
+        /**
+         * Return the current search value
+         *
+         * @return {String}
+         */
+        getValue: function () {
+            if (this.$Input) {
+                return this.$Input.value;
+            }
+
+            return this.$value || '';
         },
 
         /**
@@ -166,8 +205,9 @@ define('controls/workspace/search/Search', [
                     callback: function () {
                         this.$Elm.destroy();
 
-                        this.$Elm  = null;
-                        this.$open = false;
+                        this.$Elm   = null;
+                        this.$open  = false;
+                        this.$value = this.$Input.value;
 
                         window.removeEvent('keyup', this.$onWindowKeyUp);
                         this.fireEvent('close', [this]);
@@ -224,13 +264,17 @@ define('controls/workspace/search/Search', [
         /**
          * Excecute the search with a delay
          */
-        executeSearch: function () {
+        search: function () {
+            if (!this.$open) {
+                this.open();
+            }
+
             if (this.$Timer) {
                 clearInterval(this.$Timer);
             }
 
             this.$Timer = (function () {
-                this.search(this.$Input.value).then(this.$renderResult);
+                this.executeSearch(this.$Input.value).then(this.$renderResult);
             }).delay(this.getAttribute('delay'), this);
         },
 
@@ -296,7 +340,7 @@ define('controls/workspace/search/Search', [
          * @param {Object} [params] - Search where params
          * @returns {Promise}
          */
-        search: function (search, params) {
+        executeSearch: function (search, params) {
             if (search === '') {
                 return Promise.resolve([]);
             }
