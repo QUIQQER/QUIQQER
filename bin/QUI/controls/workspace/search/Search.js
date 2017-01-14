@@ -14,6 +14,8 @@ define('controls/workspace/search/Search', [
 
     'qui/QUI',
     'qui/controls/Control',
+    'qui/controls/desktop/Panel',
+    'utils/Panels',
     'Mustache',
     'Ajax',
     'Locale',
@@ -22,7 +24,8 @@ define('controls/workspace/search/Search', [
     'text!controls/workspace/search/Search.ResultGroup.html',
     'css!controls/workspace/search/Search.css'
 
-], function (QUI, QUIControl, Mustache, QUIAjax, QUILocale, template, templateResultGroup) {
+], function (QUI, QUIControl, QUIPanel, PanelUtils, Mustache, QUIAjax, QUILocale,
+             template, templateResultGroup) {
     "use strict";
 
     return new Class({
@@ -148,6 +151,74 @@ define('controls/workspace/search/Search', [
         },
 
         /**
+         * Close the complete search
+         *
+         * @return {Promise}
+         */
+        close: function () {
+            return new Promise(function (resolve) {
+
+                moofx(this.$Elm).animate({
+                    opacity: 0,
+                    top    : -200
+                }, {
+                    duration: 250,
+                    callback: function () {
+                        this.$Elm.destroy();
+
+                        this.$Elm  = null;
+                        this.$open = false;
+
+                        window.removeEvent('keyup', this.$onWindowKeyUp);
+                        this.fireEvent('close', [this]);
+
+                        resolve();
+                    }.bind(this)
+                });
+
+            }.bind(this));
+        },
+
+        /**
+         * Open a cache entry and close the search
+         *
+         * @param id
+         */
+        openEntry: function (id) {
+            this.getEntry(id).then(function (data) {
+                if (!data || !("searchdata" in data)) {
+                    return;
+                }
+
+                var searchData;
+
+                try {
+                    searchData = JSON.decode(data.searchdata);
+                } catch (e) {
+                    return;
+                }
+
+                if ("require" in searchData) {
+                    require([searchData.require], function (Cls) {
+                        if (typeOf(Cls) == 'class') {
+                            var Instance = new Cls();
+
+                            if (instanceOf(Instance, QUIPanel)) {
+                                PanelUtils.openPanelInTasks(Instance);
+                            }
+                        }
+                    });
+
+                    this.close();
+                    return;
+                }
+
+            }.bind(this)).catch(function (Exception) {
+                console.error(Exception);
+            });
+        },
+
+        /**
          * Excecute the search with a delay
          */
         executeSearch: function () {
@@ -192,34 +263,14 @@ define('controls/workspace/search/Search', [
             }
 
             this.$Result.set('html', html);
-        },
+            this.$Result.getElements('li').addEvent('click', function (event) {
+                var Target = event.target;
 
-        /**
-         * Close the complete search
-         *
-         * @return {Promise}
-         */
-        close: function () {
-            return new Promise(function (resolve) {
+                if (Target.nodeName !== 'LI') {
+                    Target = Target.getParent('li');
+                }
 
-                moofx(this.$Elm).animate({
-                    opacity: 0,
-                    top    : -200
-                }, {
-                    duration: 250,
-                    callback: function () {
-                        this.$Elm.destroy();
-
-                        this.$Elm  = null;
-                        this.$open = false;
-
-                        window.removeEvent('keyup', this.$onWindowKeyUp);
-                        this.fireEvent('close', [this]);
-
-                        resolve();
-                    }.bind(this)
-                });
-
+                this.openEntry(Target.get('data-id'));
             }.bind(this));
         },
 
@@ -263,6 +314,22 @@ define('controls/workspace/search/Search', [
                 }, {
                     search: search,
                     params: JSON.encode(params)
+                });
+            });
+        },
+
+        /**
+         * Return a search cache entry
+         *
+         * @param {Number} id
+         * @returns {Promise}
+         */
+        getEntry: function (id) {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.get('ajax_workspace_getEntry', resolve, {
+                    id       : id,
+                    showError: false,
+                    onError  : reject
                 });
             });
         }

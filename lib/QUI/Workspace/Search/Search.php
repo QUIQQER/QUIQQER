@@ -66,4 +66,23 @@ class Search
 
         return $result;
     }
+
+    /**
+     * Return one search cache entry
+     *
+     * @param string $id
+     * @return array
+     */
+    public function getEntry($id)
+    {
+        $result = QUI::getDataBase()->fetch(array(
+            'from'  => Builder::getInstance()->getTable(),
+            'where' => array(
+                'id' => $id
+            ),
+            'limit' => 1
+        ));
+
+        return isset($result[0]) ? $result[0] : array();
+    }
 }

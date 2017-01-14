@@ -163,7 +163,7 @@ class Builder
     /**
      * Helper to build a section / search group
      *
-     * @param String $type
+     * @param string $type
      */
     protected function buildCacheHelper($type)
     {
