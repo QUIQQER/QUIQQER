@@ -68,6 +68,10 @@
     width: 100%;
 }
 
+.qui-workspace-search-search-resultGroup-header {
+    font-weight: bold;
+}
+
 .qui-workspace-search-search-resultGroup {
     float: left;
     width: 33.333%;
@@ -80,6 +84,7 @@
 
 .qui-workspace-search-search-resultGroup li {
     cursor: pointer;
+    line-height: 20px;
     padding: 5px 0;
 }
 
@@ -87,7 +92,10 @@
     background: #dedede;
 }
 
-.qui-workspace-search-search-resultGroup .icon {
+.qui-workspace-search-search-resultGroup-entry-icon {
+    float: left;
+    height: 20px;
+    line-height: 20px;
     text-align: center;
     width: 30px;
 }

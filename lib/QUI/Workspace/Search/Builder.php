@@ -17,10 +17,17 @@ class Builder
 {
     const TYPE_APPS = 'apps';
     const TYPE_EXTRAS = 'extras';
-    const TYPE_SETTINGS = 'settings';
-    const TYPE_PROJECT = 'project';
-    const TYPE_MEDIA = 'media';
     const TYPE_GROUPS = 'groups';
+    const TYPE_MEDIA = 'media';
+    const TYPE_PROJECT = 'project';
+    const TYPE_SETTINGS = 'settings';
+
+    const TYPE_APPS_ICON = 'fa fa-diamond';
+    const TYPE_EXTRAS_ICON = 'fa fa-cubes';
+    const TYPE_GROUPS_ICON = 'fa fa-groups';
+    const TYPE_MEDIA_ICON = 'fa fa-picture-o';
+    const TYPE_PROJECT_ICON = 'fa fa-home';
+    const TYPE_SETTINGS_ICON = 'fa fa-gears';
 
     /**
      * @var null
@@ -154,7 +161,9 @@ class Builder
     }
 
     /**
-     * @param $type
+     * Helper to build a section / search group
+     *
+     * @param String $type
      */
     protected function buildCacheHelper($type)
     {
@@ -171,6 +180,34 @@ class Builder
 
         foreach ($data as $key => $entry) {
             $entry['searchtype'] = $type;
+
+            if (empty($entry['icon'])) {
+                switch ($type) {
+                    case self::TYPE_APPS:
+                        $entry['icon'] = self::TYPE_APPS_ICON;
+                        break;
+
+                    case self::TYPE_EXTRAS:
+                        $entry['icon'] = self::TYPE_EXTRAS_ICON;
+                        break;
+
+                    case self::TYPE_GROUPS:
+                        $entry['icon'] = self::TYPE_GROUPS_ICON;
+                        break;
+
+                    case self::TYPE_MEDIA:
+                        $entry['icon'] = self::TYPE_MEDIA_ICON;
+                        break;
+
+                    case self::TYPE_PROJECT:
+                        $entry['icon'] = self::TYPE_PROJECT_ICON;
+                        break;
+
+                    case self::TYPE_SETTINGS:
+                        $entry['icon'] = self::TYPE_SETTINGS_ICON;
+                        break;
+                }
+            }
 
             $this->addEntry($entry);
         }

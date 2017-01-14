@@ -4,7 +4,10 @@
  * @require qui/QUI
  * @require qui/controls/Control
  * @require Mustache
+ * @require Ajax
+ * @require Locale
  * @require text!controls/workspace/search/Search.html
+ * @require text!controls/workspace/search/Search.ResultGroup.html
  * @require css!controls/workspace/search/Search.css
  */
 define('controls/workspace/search/Search', [
@@ -62,8 +65,13 @@ define('controls/workspace/search/Search', [
             Elm.addClass('qui-workspace-search-search');
             Elm.set('html', Mustache.render(template));
 
-            this.$Header = Elm.getElement('header');
-            this.$Result = Elm.getElement('.qui-workspace-search-search-container-result');
+            Elm.setStyles({
+                position: 'absolute'
+            });
+
+            this.$Header     = Elm.getElement('header');
+            this.$Result     = Elm.getElement('.qui-workspace-search-search-container-result');
+            this.$SearchIcon = Elm.getElement('.qui-workspace-search-search-container-input .fa-search');
 
             // input events
             var inputEsc = false;
@@ -84,7 +92,6 @@ define('controls/workspace/search/Search', [
                 if (inputEsc && this.$Input.value !== '') {
                     event.stop();
                     this.$Input.value = '';
-                    return;
                 }
 
                 this.executeSearch();
@@ -159,8 +166,9 @@ define('controls/workspace/search/Search', [
          * @param {Array} result
          */
         $renderResult: function (result) {
-            var html   = '', groupHTML = '';
-            var groups = {};
+            var group, groupHTML;
+            var html   = '',
+                groups = {};
 
             for (var i = 0, len = result.length; i < len; i++) {
                 if (typeof groups[result[i].searchtype] === 'undefined') {
@@ -170,9 +178,7 @@ define('controls/workspace/search/Search', [
                 groups[result[i].searchtype].push(result[i]);
             }
 
-            var complete = '';
-
-            for (var group in groups) {
+            for (group in groups) {
                 if (!groups.hasOwnProperty(group)) {
                     continue;
                 }
@@ -237,10 +243,24 @@ define('controls/workspace/search/Search', [
          * @returns {Promise}
          */
         search: function (search, params) {
+            if (search === '') {
+                return Promise.resolve([]);
+            }
+
             params = params || {};
 
+            var self = this;
+
+            this.$SearchIcon.removeClass('fa-search');
+            this.$SearchIcon.addClass('fa-spinner fa-spin');
+
             return new Promise(function (resolve) {
-                QUIAjax.get('ajax_workspace_search', resolve, {
+                QUIAjax.get('ajax_workspace_search', function (result) {
+                    self.$SearchIcon.addClass('fa-search');
+                    self.$SearchIcon.removeClass('fa-spinner');
+                    self.$SearchIcon.removeClass('fa-spin');
+                    resolve(result);
+                }, {
                     search: search,
                     params: JSON.encode(params)
                 });
