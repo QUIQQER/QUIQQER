@@ -10,8 +10,17 @@
  */
 QUI::$Ajax->registerFunction(
     'ajax_workspace_getEntry',
-    function ($id) {
-        return QUI\Workspace\Search\Search::getInstance()->getEntry($id);
+    function ($id, $provider) {
+        $Search  = QUI\Workspace\Search\Search::getInstance();
+        $Builder = QUI\Workspace\Search\Builder::getInstance();
+
+        if (empty($provider)) {
+            return $Search->getEntry($id);
+        }
+
+        $Provider = $Builder->getProvider($provider);
+
+        return $Provider->getEntry($id);
     },
-    array('id')
+    array('id', 'provider')
 );

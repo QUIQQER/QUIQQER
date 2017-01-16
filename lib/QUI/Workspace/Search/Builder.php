@@ -96,6 +96,91 @@ class Builder
     }
 
     /**
+     * Return the complete available list of all providers classes
+     *
+     * @return array
+     */
+    protected function getProviderClasses()
+    {
+        $cache = 'workspace/search/providers';
+
+        try {
+            return QUI\Cache\Manager::get($cache);
+        } catch (QUI\Cache\Exception $Exception) {
+        }
+
+        $packages = QUI::getPackageManager()->getInstalled();
+        $provider = array();
+
+        foreach ($packages as $package) {
+            try {
+                $Package = QUI::getPackage($package['name']);
+
+                if (!$Package->isQuiqqerPackage()) {
+                    continue;
+                }
+
+                $packageProvider = $Package->getProvider();
+
+                if (isset($packageProvider['desktopSearch'])) {
+                    $provider = array_merge($provider, $packageProvider['desktopSearch']);
+                }
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
+        }
+
+        QUI\Cache\Manager::set($cache, $provider);
+
+        return $provider;
+    }
+
+    /**
+     * Return the available provider instances
+     *
+     * @param string|bool $provider - optional, Return a specific provider
+     * @return array|ProviderInterface
+     *
+     * @throws QUI\Workspace\Search\Exception
+     */
+    public function getProvider($provider = false)
+    {
+        $result = array();
+
+        foreach ($this->getProviderClasses() as $cls) {
+            if (!class_exists($cls)) {
+                continue;
+            }
+
+            try {
+                $Instance = new $cls();
+
+                if ($Instance instanceof ProviderInterface) {
+                    $result[] = $Instance;
+                }
+
+                if ($provider && get_class($Instance) == $provider) {
+                    return $Instance;
+                }
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException(
+                    $Exception,
+                    QUI\System\Log::LEVEL_ERROR,
+                    array(
+                        'method' => 'QUI\Workspace\Search::getProviderInstances'
+                    )
+                );
+            }
+        }
+
+        if ($provider) {
+            throw new QUI\Workspace\Search\Exception('Provider not found', 404);
+        }
+
+        return $result;
+    }
+
+    /**
      * Return the menu data, entries of the admin menu
      *
      * @return array
@@ -110,6 +195,16 @@ class Builder
         }
 
         return $this->menu;
+    }
+
+    /**
+     * Executed at the QUIQQER Setup
+     */
+    public function setup()
+    {
+        QUI\Cache\Manager::clear('workspace/search/providers');
+
+        $this->buildCache();
     }
 
     /**
@@ -152,6 +247,17 @@ class Builder
             $this->buildSettingsCache();
         } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
+        }
+
+
+        $provider = $this->getProvider();
+
+
+        QUI\System\Log::writeRecursive($provider);
+
+        /* @var $Provider ProviderInterface */
+        foreach ($provider as $Provider) {
+            $Provider->buildCache();
         }
     }
 
@@ -263,8 +369,9 @@ class Builder
      *
      * @param string $type
      */
-    protected function buildMenuCacheHelper($type)
-    {
+    protected function buildMenuCacheHelper(
+        $type
+    ) {
         QUI::getDataBase()->delete($this->getTable(), array(
             'searchtype' => $type
         ));
@@ -323,8 +430,9 @@ class Builder
      * @param array $params
      * @throws QUI\Exception
      */
-    protected function addEntry($params)
-    {
+    protected function addEntry(
+        $params
+    ) {
         $needles = array('title', 'search', 'searchtype', 'searchdata');
 
         foreach ($needles as $needle) {
@@ -358,8 +466,9 @@ class Builder
      * @param array $items
      * @return array
      */
-    protected function parseMenuData($items)
-    {
+    protected function parseMenuData(
+        $items
+    ) {
         $data         = array();
         $searchFields = array('require', 'exec', 'onClick', 'type');
 

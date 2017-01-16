@@ -41,8 +41,10 @@ class Search
      */
     public function search($string, $params = array())
     {
+        $DesktopSearch = Builder::getInstance();
+
         $query = array(
-            'from'  => Builder::getInstance()->getTable(),
+            'from'  => $DesktopSearch->getTable(),
             'where' => array(
                 'search' => array(
                     'type'  => '%LIKE%',
@@ -62,6 +64,18 @@ class Search
         foreach ($result as $key => $data) {
             $result[$key]['title']       = $Locale->parseLocaleString($data['title']);
             $result[$key]['description'] = $Locale->parseLocaleString($data['description']);
+        }
+
+        /* @var $Provider ProviderInterface */
+        foreach ($DesktopSearch->getProvider() as $Provider) {
+            $providerResult = $Provider->search($string, $params);
+
+            foreach ($providerResult as $key => $product) {
+                $product['provider']  = get_class($Provider);
+                $providerResult[$key] = $product;
+            }
+
+            $result = array_merge($result, $providerResult);
         }
 
         return $result;

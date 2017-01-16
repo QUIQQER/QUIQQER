@@ -222,10 +222,11 @@ define('controls/workspace/search/Search', [
         /**
          * Open a cache entry and close the search
          *
-         * @param id
+         * @param {Number|String} id
+         * @param {String} [provider]
          */
-        openEntry: function (id) {
-            this.getEntry(id).then(function (data) {
+        openEntry: function (id, provider) {
+            this.getEntry(id, provider).then(function (data) {
                 if (!data || !("searchdata" in data)) {
                     return;
                 }
@@ -317,7 +318,7 @@ define('controls/workspace/search/Search', [
                     Target = Target.getParent('li');
                 }
 
-                this.openEntry(Target.get('data-id'));
+                this.openEntry(Target.get('data-id'), Target.get('data-provider'));
             }.bind(this));
         },
 
@@ -368,13 +369,15 @@ define('controls/workspace/search/Search', [
         /**
          * Return a search cache entry
          *
-         * @param {Number} id
+         * @param {Number|String} id - id of the entry
+         * @param {String} [provider] - optional, provider to get the entry data, if the entry is from a module
          * @returns {Promise}
          */
-        getEntry: function (id) {
+        getEntry: function (id, provider) {
             return new Promise(function (resolve, reject) {
                 QUIAjax.get('ajax_workspace_getEntry', resolve, {
                     id       : id,
+                    provider : provider,
                     showError: false,
                     onError  : reject
                 });
