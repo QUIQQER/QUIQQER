@@ -251,10 +251,7 @@ class Builder
 
 
         $provider = $this->getProvider();
-
-
-        QUI\System\Log::writeRecursive($provider);
-
+        
         /* @var $Provider ProviderInterface */
         foreach ($provider as $Provider) {
             $Provider->buildCache();
