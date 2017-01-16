@@ -95,6 +95,8 @@ class Manager
             $key = md5(__FILE__) . '/qui/';
         }
 
+        $key = QUI\Utils\StringHelper::replaceDblSlashes($key);
+
         if (self::$Stash !== null) {
             try {
                 return self::$Stash->getItem($key);
