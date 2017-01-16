@@ -1,8 +1,8 @@
 .qui-workspace-search-input {
     float: left;
-    max-width: 100%;
+    max-width: 300px;
     position: relative;
-    width: 300px;
+    width: calc(100% - 900px);
 }
 
 .qui-workspace-search-input input {
