@@ -6,11 +6,20 @@
 }
 
 .qui-workspace-search-input input {
+    border-radius: 3px 0 0 3px;
+    float: left;
     padding-left: 30px;
-    width: 100%;
+    width: calc(100% - 50px);
 }
 
-.qui-workspace-search-input .fa-search {
+.qui-workspace-search-input button {
+    border: 1px solid rgba(147, 128, 108, 0.25);
+    border-radius: 0 3px 3px 0;
+    box-shadow: none;
+    width: 50px;
+}
+
+.qui-workspace-search-input-icon {
     left: 0;
     line-height: 30px;
     position: absolute;
