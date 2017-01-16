@@ -62,8 +62,10 @@
  ==================================================== */
 
 .qui-workspace-search-search-container-result {
-    margin: 0 auto;
+    height: calc(100vh - 50vh);
+    margin: 20px auto 0;
     max-width: 900px;
+    overflow: auto;
     padding-top: 30px;
     width: 100%;
 }
