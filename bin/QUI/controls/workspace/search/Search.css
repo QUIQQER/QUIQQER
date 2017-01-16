@@ -1,0 +1,110 @@
+.qui-workspace-search-search {
+    background: rgba(255, 255, 255, 0.95);
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: -100px;
+    width: 100%;
+    z-index: 100000;
+}
+
+.qui-workspace-search-search-container {
+    margin: 0 auto;
+    max-width: 1200px;
+    width: 100%;
+}
+
+.qui-workspace-search-search-container-close {
+    cursor: pointer;
+    font-size: 40px;
+    line-height: 100px;
+    position: absolute;
+    text-align: center;
+    right: 0;
+    top: 0;
+    width: 100px;
+}
+
+/** header
+ ==================================================== */
+
+.qui-workspace-search-search-container-header img {
+    display: block;
+    height: 50px;
+    margin: 20vh auto 40px;
+}
+
+.qui-workspace-search-search-container-input {
+    clear: both;
+    display: block;
+    margin: 0 auto;
+    max-width: 400px;
+    position: relative;
+    width: 100%;
+}
+
+.qui-workspace-search-search-container-input input {
+    font-size: 20px;
+    line-height: 50px;
+    padding: 0 10px 0 50px;
+    width: 100%;
+}
+
+.qui-workspace-search-search-container-input .fa {
+    font-size: 16px;
+    line-height: 50px;
+    position: absolute;
+    text-align: center;
+    width: 50px;
+}
+
+/** result
+ ==================================================== */
+
+.qui-workspace-search-search-container-result {
+    height: calc(100vh - 50vh);
+    margin: 20px auto 0;
+    max-width: 900px;
+    overflow: auto;
+    padding-top: 30px;
+    width: 100%;
+}
+
+.qui-workspace-search-search-resultGroup-header {
+    font-weight: bold;
+}
+
+.qui-workspace-search-search-resultGroup {
+    float: left;
+    width: 33.333%;
+}
+
+.qui-workspace-search-search-resultGroup ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.qui-workspace-search-search-resultGroup li {
+    cursor: pointer;
+    float: left;
+    line-height: 20px;
+    padding: 5px 0;
+    width: 100%;
+}
+
+.qui-workspace-search-search-resultGroup li:hover {
+    background: #dedede;
+}
+
+.qui-workspace-search-search-resultGroup-entry-icon {
+    float: left;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    width: 30px;
+}
+
+.qui-workspace-search-search-resultGroup-entry-text {
+    float: left;
+    width: calc(100% - 30px);
+}

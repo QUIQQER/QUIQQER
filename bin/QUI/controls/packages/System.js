@@ -166,9 +166,13 @@ define('controls/packages/System', [
                         '.qui-control-packages-update-infos-version'
                     ).set('html', data.version);
 
+                    if (typeof data.source === 'undefined') {
+                        data.source = {};
+                    }
+
                     self.$Elm.getElement(
                         '.qui-control-packages-update-infos-ref'
-                    ).set('html', data.source.reference);
+                    ).set('html', data.source.reference || '');
 
                     self.$Elm.getElement(
                         '.qui-control-packages-update-infos-time'

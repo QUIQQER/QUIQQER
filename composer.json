@@ -57,6 +57,7 @@
     "quiqqer/lockclient": ">=0.9|dev-master|dev-dev",
     "quiqqer/messages": "1.*|dev-master|dev-dev",
     "quiqqer/meta": "0.9.*|dev-master|dev-dev",
+    "quiqqer/fontawesome": "*",
     "npm-asset/intl": "1.*",
     "npm-asset/nouislider": "*",
     "npm-asset/mustache": "2.*",
