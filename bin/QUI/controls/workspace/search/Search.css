@@ -84,8 +84,10 @@
 
 .qui-workspace-search-search-resultGroup li {
     cursor: pointer;
+    float: left;
     line-height: 20px;
     padding: 5px 0;
+    width: 100%;
 }
 
 .qui-workspace-search-search-resultGroup li:hover {
@@ -98,4 +100,9 @@
     line-height: 20px;
     text-align: center;
     width: 30px;
+}
+
+.qui-workspace-search-search-resultGroup-entry-text {
+    float: left;
+    width: calc(100% - 30px);
 }
