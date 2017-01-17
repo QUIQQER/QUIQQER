@@ -153,13 +153,18 @@ class Headers
         $csp  = array();
 
         foreach ($this->csp as $entry) {
-            $value = $entry['value'];
+            $value     = $entry['value'];
+            $directive = $entry['directive'];
 
             if (isset($this->cspSource[$value])) {
                 $value = $this->cspSource[$value];
             }
+            
+            if (isset($this->cspDirective[$directive])) {
+                $directive = $this->cspDirective[$directive];
+            }
 
-            $list[$entry['directive']][] = $value;
+            $list[$directive][] = $value;
         }
 
         foreach ($list as $directive => $entries) {
