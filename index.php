@@ -35,19 +35,6 @@ try {
     $Response = QUI::getGlobalResponse();
     $Engine   = QUI::getTemplateManager()->getEngine();
 
-    $Response->headers->set('Strict-Transport-Security', 'max-age=31536000'); // @todo setting
-    $Response->headers->set("X-Content-Type-Options", "nosniff");
-    $Response->headers->set("X-XSS-Protection", "1; mode=block");
-
-    // @todo settings
-    $Response->headers->set("X-Frame-Options", "SAMEORIGIN");
-
-    // @todo setting mit erlaubten
-    $Response->headers->set(
-        "Content-Security-Policy",
-        "script-src 'self' 'unsafe-eval' 'unsafe-inline'; object-src 'self'"
-    );
-
     // UTF 8 Prüfung für umlaute in url
     if (isset($_REQUEST['_url'])) {
         $_REQUEST['_url'] = QUI\Utils\StringHelper::toUTF8($_REQUEST['_url']);

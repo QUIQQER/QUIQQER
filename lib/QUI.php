@@ -942,8 +942,9 @@ class QUI
     {
         if (self::$Response === null) {
             self::$Response = new Response();
-            self::$Response->setCharset('UTF-8');
-            self::$Response->headers->set('Content-Type', 'text/html');
+
+            $Headers = new \QUI\System\Headers(self::$Response);
+            $Headers->compile();
         }
 
         return self::$Response;
