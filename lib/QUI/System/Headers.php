@@ -86,11 +86,31 @@ class Headers
             $this->Response = QUI::getGlobalResponse();
         }
 
-        // default
-        $this->cspAdd('self', 'script-src');
-        $this->cspAdd('self', 'object-src');
-        $this->cspAdd('unsafe-eval', 'script-src');
-        $this->cspAdd('unsafe-inline', 'script-src');
+        // default HSTS
+        if (QUI::conf('securityHeaders_hsts', 'max_age')) {
+            $this->hstsMaxAge(QUI::conf('securityHeaders_hsts', 'max_age'));
+        }
+
+        if (QUI::conf('securityHeaders_hsts', 'subdomains')) {
+            $this->hstsSubdomains(true);
+        }
+
+        if (QUI::conf('securityHeaders_hsts', 'preload')) {
+            $this->hstsPreload(true);
+        }
+
+        // default CSP
+        $cspHeaders = QUI::conf('securityHeaders_csp');
+
+        if (!empty($cspHeaders) && is_array($cspHeaders)) {
+            foreach ($cspHeaders as $key => $values) {
+                $values = explode(' ', $values);
+
+                foreach ($values as $value) {
+                    $this->cspAdd($value, $key);
+                }
+            }
+        }
     }
 
     /**
@@ -191,6 +211,17 @@ class Headers
     public function hstsPreload($mode = true)
     {
         $this->hsts['preload'] = (bool)$mode;
+    }
+
+    /**
+     * HTTP Strict Transport Security
+     * max age param
+     *
+     * @param integer $maxAge
+     */
+    public function hstsMaxAge($maxAge)
+    {
+        $this->hsts['max-age'] = (int)$maxAge;
     }
 
     /**
