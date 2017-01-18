@@ -657,10 +657,11 @@
                         </input>
                     </settings>
 
-                    <settings title="securityHeaders_hsts" name="securityHeaders_csp">
+                    <settings title="securityHeaders_csp" name="securityHeaders_csp">
                         <title>
                             <locale group="quiqqer/system" var="quiqqer.settings.security_headers.csp.title"/>
                         </title>
+                        <input type="hidden" data-qui="controls/system/settings/CSPSettings" label="false"/>
                     </settings>
 
                 </category>

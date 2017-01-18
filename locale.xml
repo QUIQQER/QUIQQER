@@ -868,6 +868,37 @@
             <de><![CDATA[Möchten Sie folgende Weiterlungen wirklich löschen? <br /><br />[list]]]></de>
             <en><![CDATA[Are you sure you want to delete the following forwarding? <br /><br />[list]]]></en>
         </locale>
+
+        <locale name="quiqqer.settings.security_headers.csp.value">
+            <de><![CDATA[Wert]]></de>
+            <en><![CDATA[Value]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.csp.directive">
+            <de><![CDATA[Richtlinie]]></de>
+            <en><![CDATA[Directive]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.security_headers.csp.delete.title">
+            <de><![CDATA[Richtlinie löschen]]></de>
+            <en><![CDATA[Delete the directive]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.csp.delete.text" html="true">
+            <de><![CDATA[Möchten Sie folgende CSP Einträge wirklich löschen?<br /><br />[list]]]></de>
+            <en><![CDATA[Are you sure you want to delete the following CSP entries?<br /><br />[list]]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.security_headers.csp.add.title">
+            <de><![CDATA[Neue Richtlinie hinzufügen]]></de>
+            <en><![CDATA[Add a new directive]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.csp.edit.title">
+            <de><![CDATA[Richtlinie bearbeiten]]></de>
+            <en><![CDATA[Edit the directive]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.csp.valuePlaceholder">
+            <de><![CDATA[Vordefinierte Werte:]]></de>
+            <en><![CDATA[Predefined values:]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/system" datatype="js,php">
@@ -6454,7 +6485,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Content Security Policy (CSP)]]></de>
             <en><![CDATA[Content Security Policy (CSP)]]></en>
         </locale>
-
 
         <locale name="quiqqer.settings.general.globals.timezone">
             <de><![CDATA[Zeitzone]]></de>
