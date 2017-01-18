@@ -71,14 +71,14 @@ class Session
         $classNativeSessionStorage = '\Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage';
 
         $fileNativeSessionStorage = OPT_DIR .
-                                    'symfony/http-foundation/Symfony/Component/' .
-                                    'HttpFoundation/Session/Storage/NativeSessionStorage.php';
+            'symfony/http-foundation/Symfony/Component/' .
+            'HttpFoundation/Session/Storage/NativeSessionStorage.php';
 
         $classSession = '\Symfony\Component\HttpFoundation\Session\Session';
 
         $fileSession = OPT_DIR .
-                       'symfony/http-foundation/Symfony/Component/' .
-                       'HttpFoundation/Session/Session.php';
+            'symfony/http-foundation/Symfony/Component/' .
+            'HttpFoundation/Session/Session.php';
 
 
         // options
@@ -240,6 +240,7 @@ class Session
 
         if ($this->Session->isStarted()) {
             $this->Session->getMetadataBag()->stampNew($this->lifetime);
+
             return;
         }
 
@@ -306,7 +307,7 @@ class Session
     }
 
     /**
-     * returns the session-id
+     * Returns the session-id
      *
      * @return string
      */
@@ -316,7 +317,7 @@ class Session
             return $this->Session->getId();
         }
 
-        return md5(microtime());
+        return md5(microtime()) . QUI\Utils\Security\Orthos::getPassword();
     }
 
     /**

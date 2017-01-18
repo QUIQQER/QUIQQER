@@ -286,8 +286,8 @@ class Manager
         if (strpos($function, 'ajax_') === 0) {
             // if the function is a ajax_function
             $_rf_file = OPT_DIR . 'quiqqer/quiqqer/admin/' .
-                        str_replace('_', '/', $function) .
-                        '.php';
+                str_replace('_', '/', $function) .
+                '.php';
 
             $_rf_file = Orthos::clearPath(realpath($_rf_file));
 
@@ -512,7 +512,14 @@ class Manager
             $User = QUI::getUserBySession();
         }
 
-        return $this->getDir() . $User->getId() . '/';
+        $id = $User->getId();
+
+        // for nobody we use the session id
+        if (!$id) {
+            $id = QUI::getSession()->getId();
+        }
+
+        return $this->getDir() . $id . '/';
     }
 
     /**
