@@ -12,13 +12,14 @@ define('controls/workspace/search/Input', [
 
     'qui/QUI',
     'qui/controls/Control',
+    'qui/controls/buttons/Button',
     'Mustache',
     'controls/workspace/search/Search',
 
     'text!controls/workspace/search/Input.html',
     'css!controls/workspace/search/Input.css'
 
-], function (QUI, QUIControl, Mustache, Search, template) {
+], function (QUI, QUIControl, QUIButton, Mustache, Search, template) {
     "use strict";
 
     if (!("Search" in window.QUIQQER)) {
@@ -32,6 +33,7 @@ define('controls/workspace/search/Input', [
 
         Binds: [
             'create',
+            'openSearch',
             '$onInject',
             '$collectKeyUp'
         ],
@@ -69,6 +71,13 @@ define('controls/workspace/search/Input', [
                 this.$Input.value = window.QUIQQER.Search.getValue();
             }.bind(this));
 
+            new QUIButton({
+                icon  : 'fa fa-search',
+                events: {
+                    onClick: this.openSearch
+                }
+            }).inject(Elm);
+
             return Elm;
         },
 
@@ -76,13 +85,20 @@ define('controls/workspace/search/Input', [
          * event : on inject
          */
         $onInject: function () {
-            this.$Input.addEvent('focus', function () {
+            this.$Input.addEvent('keyup', function (event) {
+                if (event.key === 'enter') {
+                    this.openSearch();
+                }
+            }.bind(this));
+        },
 
-                window.QUIQQER.Search.open().then(function () {
-                    window.QUIQQER.Search.setValue(this.$Input.value);
-                    window.QUIQQER.Search.search();
-                }.bind(this));
-
+        /**
+         * Opent the desktop search
+         */
+        openSearch: function () {
+            window.QUIQQER.Search.open().then(function () {
+                window.QUIQQER.Search.setValue(this.$Input.value);
+                window.QUIQQER.Search.search();
             }.bind(this));
         }
     });
