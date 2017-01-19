@@ -30,9 +30,9 @@ try {
 <head>
 
     <link
-        href="//fonts.googleapis.com/css?family=Open+Sans:400,700,400italic"
-        rel="stylesheet"
-        type="text/css"
+            href="//fonts.googleapis.com/css?family=Open+Sans:400,700,400italic"
+            rel="stylesheet"
+            type="text/css"
     />
 
     <meta name="viewport"
@@ -55,15 +55,21 @@ try {
           type="text/css"
     />
 
-    <link href="<?php echo $qui_extend; ?>font-awesome/css/font-awesome.min.css"
-          rel="stylesheet"
-          type="text/css"
-    />
+    <?php
 
-    <link href="<?php echo URL_BIN_DIR; ?>css/fonts/font-awesome.min.css"
-          rel="stylesheet"
-          type="text/css"
-    />
+    echo QUI\FontAwesome\EventHandler::fontawesome(false, false);
+
+    ?>
+
+    <!--    <link href="--><?php //echo $qui_extend; ?><!--font-awesome/css/font-awesome.min.css"-->
+    <!--          rel="stylesheet"-->
+    <!--          type="text/css"-->
+    <!--    />-->
+    <!---->
+    <!--    <link href="--><?php //echo URL_BIN_DIR; ?><!--css/fonts/font-awesome.min.css"-->
+    <!--          rel="stylesheet"-->
+    <!--          type="text/css"-->
+    <!--    />-->
 
     <!--[if (lt IE 9) & (!IEMobile)]>
     <link href="<?php echo $qui_extend; ?>unsemantic/ie.css"
@@ -73,15 +79,15 @@ try {
     <![endif]-->
 
     <link
-        href="<?php echo $qui_extend; ?>unsemantic/unsemantic-grid-responsive.css"
-        rel="stylesheet"
-        type="text/css"
+            href="<?php echo $qui_extend; ?>unsemantic/unsemantic-grid-responsive.css"
+            rel="stylesheet"
+            type="text/css"
     />
 
     <link
-        href="<?php echo URL_OPT_DIR; ?>quiqqer/messages/bin/messages.css"
-        rel="stylesheet"
-        type="text/css"
+            href="<?php echo URL_OPT_DIR; ?>quiqqer/messages/bin/messages.css"
+            rel="stylesheet"
+            type="text/css"
     />
 
     <link href="<?php echo $qui_extend; ?>animate.min.css"

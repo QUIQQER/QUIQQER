@@ -38,15 +38,13 @@ QUI::$Ajax->registerFunction(
         $result['categories'] = array();
 
         foreach ($categories as $key => $category) {
-            if (isset($category['text']) && is_array($category['text'])) {
-                $category['text'] = QUI::getLocale()->get(
-                    $category['text'][0],
-                    $category['text'][1]
-                );
-            }
-
             if (isset($category['title']) && is_array($category['title'])) {
                 $category['text'] = QUI::getLocale()->get(
+                    $category['title'][0],
+                    $category['title'][1]
+                );
+
+                $category['title'] = QUI::getLocale()->get(
                     $category['title'][0],
                     $category['title'][1]
                 );

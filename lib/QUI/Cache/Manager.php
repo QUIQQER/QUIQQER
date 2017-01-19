@@ -72,13 +72,19 @@ class Manager
      * @param string $key - (optional) cache name, cache key
      *
      * @return Stash\Interfaces\ItemInterface
-     * @throw
+     * @throws \QUI\Exception|\Exception
      */
     public static function getStash($key = '')
     {
         // pfad erstellen falls nicht erstellt ist
         if (!is_dir(VAR_DIR . 'cache/stack/')) {
             QUI\Utils\System\File::mkdir(VAR_DIR . 'cache/stack/');
+        }
+
+        if (!is_string($key)) {
+            throw new QUI\Exception('Cache: No String given', 405, array(
+                'key' => $key
+            ));
         }
 
         if (!empty($key)) {
@@ -89,8 +95,22 @@ class Manager
             $key = md5(__FILE__) . '/qui/';
         }
 
+        $key = QUI\Utils\StringHelper::replaceDblSlashes($key);
+
         if (self::$Stash !== null) {
-            return self::$Stash->getItem($key);
+            try {
+                return self::$Stash->getItem($key);
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException(
+                    $Exception,
+                    QUI\System\Log::LEVEL_ERROR,
+                    array(
+                        'key' => $key
+                    )
+                );
+
+                throw $Exception;
+            }
         }
 
 

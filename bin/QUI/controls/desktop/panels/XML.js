@@ -49,6 +49,10 @@ define('controls/desktop/panels/XML', [
             'save'
         ],
 
+        options: {
+            category: false // which category should be open at the start
+        },
+
         initialize: function (xmlfile, options) {
             this.$file    = xmlfile;
             this.$config  = null;
@@ -109,12 +113,10 @@ define('controls/desktop/panels/XML', [
             this.Loader.show();
 
             Ajax.get([
-
                 'ajax_settings_window',
                 'ajax_settings_get'
-
             ], function (result, config) {
-                console.info(result);
+
                 var categories = result.categories || [],
                     buttons    = result.buttons || [];
 
@@ -178,8 +180,19 @@ define('controls/desktop/panels/XML', [
                 self.refresh();
 
                 self.fireEvent('createEnd', [self]);
-                self.getCategoryBar().firstChild().click();
 
+                if (self.getAttribute('category')) {
+                    var Wanted = self.getCategoryBar().getElement(
+                        self.getAttribute('category')
+                    );
+
+                    if (Wanted) {
+                        Wanted.click();
+                        return;
+                    }
+                }
+
+                self.getCategoryBar().firstChild().click();
             }, {
                 file: JSON.encode(this.$file)
             });

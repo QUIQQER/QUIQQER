@@ -868,6 +868,37 @@
             <de><![CDATA[Möchten Sie folgende Weiterlungen wirklich löschen? <br /><br />[list]]]></de>
             <en><![CDATA[Are you sure you want to delete the following forwarding? <br /><br />[list]]]></en>
         </locale>
+
+        <locale name="quiqqer.settings.security_headers.csp.value">
+            <de><![CDATA[Wert]]></de>
+            <en><![CDATA[Value]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.csp.directive">
+            <de><![CDATA[Richtlinie]]></de>
+            <en><![CDATA[Directive]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.security_headers.csp.delete.title">
+            <de><![CDATA[Richtlinie löschen]]></de>
+            <en><![CDATA[Delete the directive]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.csp.delete.text" html="true">
+            <de><![CDATA[Möchten Sie folgende CSP Einträge wirklich löschen?<br /><br />[list]]]></de>
+            <en><![CDATA[Are you sure you want to delete the following CSP entries?<br /><br />[list]]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.security_headers.csp.add.title">
+            <de><![CDATA[Neue Richtlinie hinzufügen]]></de>
+            <en><![CDATA[Add a new directive]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.csp.edit.title">
+            <de><![CDATA[Richtlinie bearbeiten]]></de>
+            <en><![CDATA[Edit the directive]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.csp.valuePlaceholder">
+            <de><![CDATA[Vordefinierte Werte:]]></de>
+            <en><![CDATA[Predefined values:]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/system" datatype="js,php">
@@ -6400,6 +6431,61 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Zeitzonen Einstellung]]></de>
             <en><![CDATA[Timezone settings]]></en>
         </locale>
+        <locale name="quiqqer.settings.security_headers">
+            <de><![CDATA[Inhaltsschutzrichtlinie]]></de>
+            <en><![CDATA[Content Security Policy ]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.hsts.title">
+            <de><![CDATA[HTTP Strict Transport Security]]></de>
+            <en><![CDATA[HTTP Strict Transport Security]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.hsts.description">
+            <de>
+                <![CDATA[HTTP Strict Transport Security (HSTS) ist ein Sicherheitsmechanismus für HTTPS-Verbindungen, der sowohl vor Aushebelung der Verbindungsverschlüsselung durch eine downgrade Attacke als auch vor Session Hijacking schützen soll.]]></de>
+            <en>
+                <![CDATA[HTTP Strict Transport Security (HSTS) is a security mechanism for HTTPS connections designed to protect against both downgrade attack and session hijacking.]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.hsts.max_age">
+            <de><![CDATA[Max-age]]></de>
+            <en><![CDATA[Max-age]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.hsts.max_age.description" html="true">
+            <de><![CDATA[
+            <b>max-age</b> entspricht der Dauer in Sekunden, während der Browser die HSTS-Regel zwischenspeichern soll.
+            ]]></de>
+            <en><![CDATA[
+            <b>max-age</b> is the amount of time in seconds that a browser should cache the HSTS rule.
+            ]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.security_headers.hsts.subdomains">
+            <de><![CDATA[Subdomains]]></de>
+            <en><![CDATA[Subdomains]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.hsts.subdomains.description">
+            <de><![CDATA[Optional lassen sich die HSTS Parameter auf alle Subdomains ausweiten.]]></de>
+            <en><![CDATA[Optionally, the HSTS parameters can be extended to all subdomains.]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.security_headers.hsts.preload">
+            <de><![CDATA[Preload]]></de>
+            <en><![CDATA[Preload]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.hsts.preload.description">
+            <de><![CDATA[
+            Durch eine von Google Chrome betreute und den anderen großen Webbrowsern genutzte
+            HSTS preload list werden die Limitierungen des trust on first use-Prinzip für eine definierte
+            Liste von Domains umgangen.
+            ]]></de>
+            <en><![CDATA[
+            This list is distributed with the browser so that it uses HTTPS for the initial request to the listed sites as well.
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.csp.title">
+            <de><![CDATA[Content Security Policy (CSP)]]></de>
+            <en><![CDATA[Content Security Policy (CSP)]]></en>
+        </locale>
+
         <locale name="quiqqer.settings.general.globals.timezone">
             <de><![CDATA[Zeitzone]]></de>
             <en><![CDATA[Timezone]]></en>

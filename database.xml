@@ -128,6 +128,19 @@
             <primary>id</primary>
             <auto_increment>id</auto_increment>
         </table>
+
+        <table name="quiqqerBackendSearch">
+            <field type="INT(11) NOT NULL">id</field>
+            <field type="TEXT NULL">title</field>
+            <field type="TEXT NULL">description</field>
+            <field type="VARCHAR(255) NOT NULL DEFAULT ''">icon</field>
+            <field type="TEXT NULL">search</field>
+            <field type="VARCHAR(100) NULL  DEFAULT ''">searchtype</field>
+            <field type="TEXT">searchdata</field>
+
+            <primary>id</primary>
+            <auto_increment>id</auto_increment>
+        </table>
     </global>
 
     <projects>

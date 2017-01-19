@@ -153,6 +153,22 @@ class Package extends QUI\QDOM
     }
 
     /**
+     * Return all provider
+     *
+     * @return array
+     */
+    public function getProvider()
+    {
+        $packageData = $this->getPackageXMLData();
+
+        if (!empty($packageData['provider'])) {
+            return $packageData['provider'];
+        }
+
+        return array();
+    }
+
+    /**
      * Return the var dir for the package
      * you can use the var dir for not accessible files
      *
