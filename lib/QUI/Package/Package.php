@@ -384,7 +384,7 @@ class Package extends QUI\QDOM
         Update::importSiteEvents($dir . 'site.xml');
 
         // locale
-        Update::importLocale($dir . 'locale.xml');
+        QUI\Translator::importFromPackage($this, true, true);
 
         try {
             $groups = XML::getLocaleGroupsFromDom(
