@@ -251,7 +251,7 @@ class Builder
 
 
         $provider = $this->getProvider();
-        
+
         /* @var $Provider ProviderInterface */
         foreach ($provider as $Provider) {
             $Provider->buildCache();
@@ -366,9 +366,8 @@ class Builder
      *
      * @param string $type
      */
-    protected function buildMenuCacheHelper(
-        $type
-    ) {
+    protected function buildMenuCacheHelper($type)
+    {
         QUI::getDataBase()->delete($this->getTable(), array(
             'searchtype' => $type
         ));
@@ -427,9 +426,8 @@ class Builder
      * @param array $params
      * @throws QUI\Exception
      */
-    protected function addEntry(
-        $params
-    ) {
+    protected function addEntry($params)
+    {
         $needles = array('title', 'search', 'searchtype', 'searchdata');
 
         foreach ($needles as $needle) {
@@ -463,9 +461,8 @@ class Builder
      * @param array $items
      * @return array
      */
-    protected function parseMenuData(
-        $items
-    ) {
+    protected function parseMenuData($items)
+    {
         $data         = array();
         $searchFields = array('require', 'exec', 'onClick', 'type');
 

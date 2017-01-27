@@ -6780,7 +6780,7 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[The project settings successfully saved]]></en>
         </locale>
     </groups>
-    <groups name="quiqqer/system" datatype="js,php ">
+    <groups name="quiqqer/system" datatype="js,php">
         <locale name="projects.project.site.select.btn.addTypes">
             <de><![CDATA[Seitentyp hinzufügen ]]></de>
             <en><![CDATA[Add a site type]]></en>

@@ -128,6 +128,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             throw new QUI\Exception('Root cannot deleted', 400);
         }
 
+        QUI::getEvents()->fireEvent('mediaDeleteBegin', array($this));
 
         $children = $this->getAllRecursiveChildrenIds();
 
