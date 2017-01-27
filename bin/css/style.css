@@ -25,7 +25,18 @@ html, body {
 ::-webkit-scrollbar-thumb {
     background: rgba(0, 0, 0, .26);
 }
-
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    color: #BBBBBB;
+}
+::-moz-placeholder { /* Firefox 19+ */
+    color: #BBBBBB;
+}
+:-ms-input-placeholder { /* IE 10+ */
+    color: #BBBBBB;
+}
+:-moz-placeholder { /* Firefox 18- */
+    color: #BBBBBB;
+}
 .qui-contextmenu-container::-webkit-scrollbar-thumb {
     background: #2F8FC6;
 }
