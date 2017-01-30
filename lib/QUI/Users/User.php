@@ -104,6 +104,11 @@ class User implements QUI\Interfaces\Users\User
     protected $company = false;
 
     /**
+     * @var array
+     */
+    protected $authenticator = array();
+
+    /**
      * Settings
      *
      * @var array
@@ -274,8 +279,39 @@ class User implements QUI\Interfaces\Users\User
             }
         }
 
+        if (isset($data[0]['authenticator'])) {
+            $this->authenticator = json_decode($data[0]['authenticator'], true);
+        }
+
         // Event
         QUI::getEvents()->fireEvent('userLoad', array($this));
+    }
+
+    /**
+     * Return the authenticators from the user
+     *
+     * @return array
+     */
+    public function getAuthenticators()
+    {
+        $result = array();
+
+        $available = QUI::getUsers()->getAuthenticators();
+        $available = array_flip($available);
+
+        if (empty($this->authenticator)) {
+            $this->authenticator = array(
+                'QUI\Users\Auth'
+            );
+        }
+
+        foreach ($this->authenticator as $auth) {
+            if (isset($available[$auth])) {
+                $result[] = new $auth($this->getUsername());
+            }
+        }
+
+        return $result;
     }
 
     /**

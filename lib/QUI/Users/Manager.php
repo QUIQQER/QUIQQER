@@ -76,7 +76,7 @@ class Manager
     public function setup()
     {
         $DataBase = QUI::getDataBase();
-        $table = self::table();
+        $table    = self::table();
 
         // Patch strict
         $DataBase->getPDO()->exec(
@@ -432,7 +432,7 @@ class Manager
                 ]
             }
         ]';
-        
+
         $threeColumn = '[{
                 "attributes": {
                     "resizeLimit": [],
@@ -771,50 +771,87 @@ class Manager
     }
 
     /**
-     * Return the users authenticator
+     * Return all global active authenticators
      *
-     * @param string $username - username
-     * @return QUI\Interfaces\Users\Auth
-     *
-     * @throws Exception
+     * @return array
      */
-    public function getAuthenticator($username)
+    public function getAuthenticators()
     {
-        // Authentifizierung
-        $authType  = QUI::conf('auth', 'type');
-        $authClass = $authType;
+        $config = QUI::conf('auth');
 
-        if ($authType == 'standard') {
-            $authClass = Auth::class;
-        }
-
-        if (!class_exists($authClass)) {
-            QUI\System\Log::addError(
-                'Authentication Type not found. Please check your config settings'
-            );
-
-            throw new QUI\Users\Exception(
-                array('quiqqer/system', 'exception.login.fail'),
-                401
+        if (!empty($config)) {
+            return array(
+                Auth\QUIQQER::class
             );
         }
 
-        $Auth       = new $authClass($username);
-        $implements = class_implements($Auth);
+        $result = array();
 
-        if (!isset($implements['QUI\Interfaces\Users\Auth'])) {
-            QUI\System\Log::addError(
-                'Authentication Type is not from Interface QUI\Interfaces\Users\Auth'
-            );
+        $available = $this->getAvailableAuthenticators();
+        $available = array_flip($available);
 
-            throw new QUI\Users\Exception(
-                array('quiqqer/system', 'exception.login.fail'),
-                401
+        foreach ($config as $authenticator => $status) {
+            if ($status != 1) {
+                continue;
+            }
+
+            if (isset($available[$authenticator])) {
+                $result[] = $authenticator;
+            }
+        }
+
+        if (!empty($result)) {
+            return array(
+                Auth\QUIQQER::class
             );
         }
 
-        return $Auth;
+        return $result;
     }
+
+    /**
+     * Return all available authenticators
+     *
+     * @return array
+     */
+    public function getAvailableAuthenticators()
+    {
+        $authList  = array();
+        $list      = array();
+        $installed = QUI::getPackageManager()->getInstalled();
+
+        foreach ($installed as $package) {
+            try {
+                $Package = QUI::getPackage($package['name']);
+
+                if (!$Package->isQuiqqerPackage()) {
+                    continue;
+                }
+
+                $list = array_merge($list, $Package->getProvider('auth'));
+            } catch (QUI\Exception $exception) {
+            }
+        }
+
+        foreach ($list as $provider) {
+            try {
+                if (!class_exists($provider)) {
+                    continue;
+                }
+
+                $interfaces = class_implements($provider);
+
+                if (isset($interfaces['QUI\Interfaces\Users\Auth'])) {
+                    $authList[] = $provider;
+                }
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
+        }
+
+        return $authList;
+    }
+
 
     /**
      * Returns all userids
@@ -878,74 +915,46 @@ class Manager
     }
 
     /**
-     * Loged in a user
+     * Logged in a user
      *
      * @param string $username - username
-     * @param string $pass - password
+     * @param string|array|integer $password - password
      *
-     * @return QUI\Users\User
+     * @return QUI\Interfaces\Users\User
      * @throws QUI\Users\Exception
      */
-    public function login($username, $pass)
+    public function login($username, $password)
     {
-        if (!is_string($username) || empty($username)) {
+        // global authenticators
+        $authenticator = $this->getAuthenticators();
+
+        /* @var $Authenticator QUI\Users\AuthInterface */
+        foreach ($authenticator as $auth) {
+            $Authenticator   = new $auth($username);
+            $isAuthenticated = $Authenticator->auth($password);
+
+            // auth successful, set to session
+            if ($isAuthenticated) {
+                QUI::getSession()->set('auth-' . $auth, 1);
+            }
+        }
+
+        if (!isset($Authenticator)) {
             throw new QUI\Users\Exception(
-                array('quiqqer/system', 'exception.login.fail.wrong.username.input'),
-                401
+                array('quiqqer/system', 'exception.login.fail.user.not.found'),
+                404
             );
         }
 
-        if (!is_string($pass) || empty($pass)) {
+        $userId = $Authenticator->getUserId();
+        $User   = $Authenticator->getUser();
+
+        if (QUI::getUsers()->isNobodyUser($User)) {
             throw new QUI\Users\Exception(
-                array('quiqqer/system', 'exception.login.fail.wrong.password.input'),
-                401
+                array('quiqqer/system', 'exception.login.fail.user.not.found'),
+                404
             );
         }
-
-        $username = Orthos::clear($username);
-
-        if (function_exists('get_magic_quotes_gpc') && !get_magic_quotes_gpc()) {
-            $username = addslashes($username);
-            $pass     = addslashes($pass);
-        }
-
-        if (empty($pass)) {
-            throw new QUI\Users\Exception(
-                array('quiqqer/system', 'exception.login.fail.no.password'),
-                401
-            );
-        }
-
-        // Authentifizierung
-        $authType  = QUI::conf('auth', 'type');
-        $authClass = $authType;
-
-        if ($authType == 'standard') {
-            $authClass = '\QUI\Users\Auth';
-        }
-
-        if (!class_exists($authClass)) {
-            QUI\System\Log::addError(
-                'Authentication Type not found. Please check your config settings'
-            );
-
-            throw new QUI\Users\Exception(
-                array('quiqqer/system', 'exception.login.fail'),
-                401
-            );
-        }
-
-        $Auth = $this->getAuthenticator($username);
-
-        /* @var $Auth QUI\Interfaces\Users\Auth */
-        if ($Auth->auth($pass) === false) {
-            throw new QUI\Users\Exception(
-                array('quiqqer/system', 'exception.login.fail'),
-                401
-            );
-        }
-
-        $userId = $Auth->getUserId();
 
         // check user data
         $userData = QUI::getDataBase()->fetch(
@@ -984,19 +993,34 @@ class Manager
             );
         }
 
+        /* @var $User User */
+        // user authenticators
+        $authenticator = $User->getAuthenticators();
 
-        $User        = $this->get($userId);
-        $Groups      = $User->Group;
-        $groupActive = false;
+        foreach ($authenticator as $Authenticator) {
+            $isAuthenticated = $Authenticator->auth($password);
 
-        foreach ($Groups as $Group) {
-            /* @var $Group QUI\Groups\Group */
-            if ($Group->getAttribute('active') == 1) {
-                $groupActive = true;
+            // auth successful, set to session
+            if ($isAuthenticated) {
+                QUI::getSession()->set(
+                    'auth-' . get_class($Authenticator),
+                    1
+                );
             }
         }
 
-        if ($groupActive === false) {
+        // is one group active?
+        $activeGroupExists = false;
+
+        foreach ($User->getGroups() as $Group) {
+            /* @var $Group QUI\Groups\Group */
+            if ($Group->getAttribute('active') == 1) {
+                $activeGroupExists = true;
+                break;
+            }
+        }
+
+        if ($activeGroupExists === false) {
             throw new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail'),
                 401
@@ -1008,17 +1032,17 @@ class Manager
         QUI::getSession()->set('uid', $userId);
         QUI::getSession()->set('secHash', $this->getSecHash());
 
-        $useragent = '';
+        $userAgent = '';
 
         if (isset($_SERVER['HTTP_USER_AGENT'])) {
-            $useragent = $_SERVER['HTTP_USER_AGENT'];
+            $userAgent = $_SERVER['HTTP_USER_AGENT'];
         }
 
         QUI::getDataBase()->update(
             self::table(),
             array(
                 'lastvisit'  => time(),
-                'user_agent' => $useragent,
+                'user_agent' => $userAgent,
                 'secHash'    => $this->getSecHash()
             ),
             array('id' => $userId)

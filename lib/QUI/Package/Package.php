@@ -153,19 +153,35 @@ class Package extends QUI\QDOM
     }
 
     /**
-     * Return all provider
+     * Return all providers
      *
+     * @param string|bool $providerName - optional, Name of the wanted providers
      * @return array
+     *
+     * @todo cache that
      */
-    public function getProvider()
+    public function getProvider($providerName = false)
     {
         $packageData = $this->getPackageXMLData();
 
-        if (!empty($packageData['provider'])) {
+        if (empty($packageData['provider'])) {
+            return array();
+        }
+
+        if ($providerName === false) {
             return $packageData['provider'];
         }
 
-        return array();
+        $provider = $packageData['provider'];
+        $provider = array_filter($provider, function ($key) use ($providerName) {
+            return $key === $providerName;
+        }, \ARRAY_FILTER_USE_KEY);
+
+        if (!isset($provider[$providerName])) {
+            return array();
+        }
+
+        return $provider[$providerName];
     }
 
     /**
