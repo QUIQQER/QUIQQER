@@ -108,7 +108,7 @@ if ((int)QUI::conf('session', 'regenerate')) {
     QUI::getSession()->refresh();
 }
 
-
+// @todo auth controls
 if (isset($_POST['username'])
     && isset($_POST['password'])
     && isset($_POST['login'])

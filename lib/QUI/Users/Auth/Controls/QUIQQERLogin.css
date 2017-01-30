@@ -1,0 +1,20 @@
+.quiqqer-login label {
+    display: block;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.quiqqer-login label span {
+    display: block;
+    padding-bottom: 5px;
+    width: 100%;
+}
+
+.quiqqer-login label input {
+    display: block;
+    width: 100%;
+}
+
+.quiqqer-login [type="submit"] {
+    cursor: pointer;
+}
