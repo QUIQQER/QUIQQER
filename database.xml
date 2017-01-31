@@ -30,6 +30,7 @@
             <field type="VARCHAR(200) NULL">referal</field>
             <field type="VARCHAR(20) NULL">activation</field>
             <field type="VARCHAR(5) NULL">shortcuts</field>
+            <field type="TEXT NULL">authenticator</field>
 
             <primary>id</primary>
             <index>username,password</index>

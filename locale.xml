@@ -467,6 +467,22 @@
             <de><![CDATA[Beim nächsten Login muss der Benutzer ein neues Passwort setzen.]]></de>
             <en><![CDATA[At the next login, the user must set a new password.]]></en>
         </locale>
+        <locale name="user.settings.expire">
+            <de><![CDATA[Gültig bis]]></de>
+            <en><![CDATA[Date of Expiry]]></en>
+        </locale>
+        <locale name="user.settings.expire.always">
+            <de><![CDATA[Immer]]></de>
+            <en><![CDATA[Always]]></en>
+        </locale>
+        <locale name="user.settings.expire.date">
+            <de><![CDATA[Datum / Uhrzeit]]></de>
+            <en><![CDATA[Date / Time]]></en>
+        </locale>
+        <locale name="user.settings.authenticators">
+            <de><![CDATA[Zustäzliche Authentifizierung]]></de>
+            <en><![CDATA[Additional authentication]]></en>
+        </locale>
 
         <locale name="message.setup.is.currently.running">
             <de><![CDATA[Das Setup wird gerade ausgeführt. Bitte warten Sie bis dieses zu ende ist.]]></de>
@@ -531,6 +547,10 @@
         <locale name="menu.settings.forwardings.text">
             <de><![CDATA[Globale Weiterleitungen]]></de>
             <en><![CDATA[Global forwarding]]></en>
+        </locale>
+        <locale name="quiqqer.auth.title">
+            <de><![CDATA[QUIQQER Standard Authentifizierung]]></de>
+            <en><![CDATA[QUIQQER tandard authentifizierung]]></en>
         </locale>
 
         <locale name="exception.forwarding.already.exists">

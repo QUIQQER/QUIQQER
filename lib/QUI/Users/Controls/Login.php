@@ -25,7 +25,8 @@ class Login extends Control
         parent::__construct($options);
 
         $this->setAttributes(array(
-            'data-qui' => 'controls/users/Login'
+            'data-qui' => 'controls/users/Login',
+            'nodeName' => 'form'
         ));
     }
 
@@ -34,7 +35,16 @@ class Login extends Control
      */
     public function getBody()
     {
-        $Control = $this->next();
+        $authenticator = $this->next();
+
+        if (is_null($authenticator)) {
+            $this->setAttribute('data-authenticator', false);
+            return '';
+        }
+
+        $this->setAttribute('data-authenticator', $authenticator);
+
+        $Control = forward_static_call(array($authenticator, 'getLoginControl'));
 
         if (is_null($Control)) {
             return '';
@@ -44,9 +54,9 @@ class Login extends Control
     }
 
     /**
-     * Shows next authentication
+     * Return the next Authenticator, if one exists
      *
-     * @return QUI\Control
+     * @return QUI\Users\AuthInterface|null
      */
     public function next()
     {
@@ -54,7 +64,7 @@ class Login extends Control
 
         foreach ($authenticators as $auth) {
             if (QUI::getSession()->get('auth-' . $auth) !== 1) {
-                return forward_static_call(array($auth, 'getLoginControl'));
+                return $auth;
             }
         }
 

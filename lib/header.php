@@ -115,10 +115,10 @@ if (isset($_POST['username'])
 ) {
     // Falls ein Login versucht wurde
     try {
-        $User = QUI::getUsers()->login(
-            $_POST['username'],
-            $_POST['password']
-        );
+        $User = QUI::getUsers()->login(array(
+            'username' => $_POST['username'],
+            'password' => $_POST['password']
+        ));
     } catch (QUI\Exception $Exception) {
         define('LOGIN_FAILED', $Exception->getMessage());
     }
@@ -130,6 +130,8 @@ if (isset($_POST['username'])
     } catch (QUI\Exception $Exception) {
         define('LOGIN_FAILED', $Exception->getMessage());
     }
+} else {
+    QUI::getSession()->destroy();
 }
 
 // Logout

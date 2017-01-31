@@ -23,7 +23,7 @@ class QUIQQERLogin extends Control
     {
         parent::__construct($options);
 
-        $this->addCSSClass('quiqqer-login');
+        $this->addCSSClass('quiqqer-login-auth');
         $this->addCSSFile(dirname(__FILE__) . '/QUIQQERLogin.css');
     }
 

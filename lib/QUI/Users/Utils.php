@@ -28,22 +28,22 @@ class Utils
      */
     public static function getUserToolbar($User)
     {
-        $Tabbar = new QUI\Controls\Toolbar\Bar(array(
+        $TabBar = new QUI\Controls\Toolbar\Bar(array(
             'name' => 'UserToolbar'
         ));
 
         DOM::addTabsToToolbar(
             XML::getTabsFromXml(OPT_DIR . 'quiqqer/quiqqer/user.xml'),
-            $Tabbar,
+            $TabBar,
             'quiqqer/quiqqer'
         );
 
         if (!$User->getId()) {
-            return $Tabbar;
+            return $TabBar;
         }
 
         /**
-         * user extention from plugins
+         * user extension from plugins
          */
         $list = QUI::getPackageManager()->getInstalled();
 
@@ -60,7 +60,7 @@ class Utils
 
             DOM::addTabsToToolbar(
                 XML::getTabsFromXml($userXml),
-                $Tabbar,
+                $TabBar,
                 $entry['name']
             );
         }
@@ -73,12 +73,12 @@ class Utils
         foreach ($projects as $project) {
             DOM::addTabsToToolbar(
                 XML::getTabsFromXml(USR_DIR . 'lib/' . $project . '/user.xml'),
-                $Tabbar,
+                $TabBar,
                 'project.' . $project
             );
         }
 
-        return $Tabbar;
+        return $TabBar;
     }
 
     /**
@@ -99,6 +99,23 @@ class Utils
         // assign user as global var
         QUI::getTemplateManager()->assignGlobalParam('User', $User);
 
+        // authenticators
+        $userAuthenticators = array();
+        $authenticators     = array();
+        $available          = QUI::getUsers()->getAvailableAuthenticators();
+
+        foreach ($available as $auth) {
+            $authenticators[] = new $auth($User->getName());
+        }
+
+        QUI::getTemplateManager()->assignGlobalParam('authenticators', $authenticators);
+
+
+        $User->getAuthenticators();
+
+        QUI::getTemplateManager()->assignGlobalParam('userAuthenticators', $userAuthenticators);
+
+
         // project
         if (strpos($plugin, 'project.') !== false) {
             $project = explode('project.', $plugin);
@@ -108,6 +125,7 @@ class Utils
                 QUI::getProject($project[1])
             );
         }
+
 
         // plugin
         try {

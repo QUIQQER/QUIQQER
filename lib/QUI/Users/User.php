@@ -281,6 +281,10 @@ class User implements QUI\Interfaces\Users\User
 
         if (isset($data[0]['authenticator'])) {
             $this->authenticator = json_decode($data[0]['authenticator'], true);
+
+            if (!is_array($this->authenticator)) {
+                $this->authenticator = array();
+            }
         }
 
         // Event
@@ -296,12 +300,12 @@ class User implements QUI\Interfaces\Users\User
     {
         $result = array();
 
-        $available = QUI::getUsers()->getAuthenticators();
+        $available = QUI::getUsers()->getAvailableAuthenticators();
         $available = array_flip($available);
 
         if (empty($this->authenticator)) {
             $this->authenticator = array(
-                'QUI\Users\Auth'
+                'QUI\Users\Auth\QUIQQER'
             );
         }
 
@@ -312,6 +316,119 @@ class User implements QUI\Interfaces\Users\User
         }
 
         return $result;
+    }
+
+    /**
+     * Return the authenticators from the user
+     *
+     * @param string $authenticator - Name of the authenticator
+     * @return AuthInterface
+     *
+     * @throws QUI\Users\Exception
+     */
+    public function getAuthenticator($authenticator)
+    {
+        $available = QUI::getUsers()->getAvailableAuthenticators();
+        $available = array_flip($available);
+
+        if (!isset($available[$authenticator])) {
+            throw new QUI\Users\Exception(
+                array(
+                    'quiqqer/system',
+                    'exception.authenticator.not.found'
+                ),
+                404
+            );
+        }
+
+        if (!in_array($authenticator, $this->authenticator)) {
+            throw new QUI\Users\Exception(
+                array(
+                    'quiqqer/system',
+                    'exception.authenticator.not.found'
+                ),
+                404
+            );
+        }
+
+        return new $authenticator($this->getUsername());
+    }
+
+    /**
+     * Enables an authenticator for the user
+     *
+     * @param string $authenticator - Name of the authenticator
+     * @param QUI\Interfaces\Users\User|boolean $ParentUser - optional, the saving user, default = session user
+     * @throws QUI\Users\Exception
+     */
+    public function enableAuthenticator($authenticator, $ParentUser = false)
+    {
+        $available = QUI::getUsers()->getAvailableAuthenticators();
+        $available = array_flip($available);
+
+        if (!isset($available[$authenticator])) {
+            throw new QUI\Users\Exception(
+                array(
+                    'quiqqer/system',
+                    'exception.authenticator.not.found'
+                ),
+                404
+            );
+        }
+
+        if (in_array($authenticator, $this->authenticator)) {
+            return;
+        }
+
+        $this->authenticator[] = $authenticator;
+        $this->save($ParentUser);
+    }
+
+    /**
+     * Disables an authenticator from the user
+     *
+     * @param $authenticator
+     * @param QUI\Interfaces\Users\User|boolean $ParentUser - optional, the saving user, default = session user
+     *
+     * @throws Exception
+     */
+    public function disableAuthenticator($authenticator, $ParentUser = false)
+    {
+        $available = QUI::getUsers()->getAvailableAuthenticators();
+        $available = array_flip($available);
+
+        if (!isset($available[$authenticator])) {
+            throw new QUI\Users\Exception(
+                array(
+                    'quiqqer/system',
+                    'exception.authenticator.not.found'
+                ),
+                404
+            );
+        }
+
+        if (!in_array($authenticator, $this->authenticator)) {
+            return;
+        }
+
+        if (($key = array_search($authenticator, $this->authenticator)) !== false) {
+            unset($this->authenticator[$key]);
+        }
+
+        QUI\System\Log::writeRecursive($this->authenticator);
+
+        $this->save($ParentUser);
+    }
+
+    /**
+     * Is the wanted authenticator enabled for the user?
+     *
+     * @param string $authenticator - name of the authenticator
+     * @return bool
+     */
+    public function hasAuthenticator($authenticator)
+    {
+        return in_array($authenticator, $this->authenticator);
     }
 
     /**
@@ -1244,23 +1361,24 @@ class User implements QUI\Interfaces\Users\User
         $result = QUI::getDataBase()->update(
             Manager::table(),
             array(
-                'username'  => $this->getUsername(),
-                'usergroup' => ',' . implode(',', $this->getGroups(false)) . ',',
-                'firstname' => $this->getAttribute('firstname'),
-                'lastname'  => $this->getAttribute('lastname'),
-                'usertitle' => $this->getAttribute('usertitle'),
-                'birthday'  => $birthday,
-                'email'     => $this->getAttribute('email'),
-                'avatar'    => $avatar,
-                'su'        => $this->isSU(),
-                'extra'     => json_encode($extra),
-                'lang'      => $this->getAttribute('lang'),
-                'lastedit'  => date("Y-m-d H:i:s"),
-                'expire'    => $expire,
-                'shortcuts' => $this->getAttribute('shortcuts'),
-                'address'   => (int)$this->getAttribute('address'),
-                'company'   => $this->isCompany() ? 1 : 0,
-                'toolbar'   => $this->getAttribute('toolbar')
+                'username'      => $this->getUsername(),
+                'usergroup'     => ',' . implode(',', $this->getGroups(false)) . ',',
+                'firstname'     => $this->getAttribute('firstname'),
+                'lastname'      => $this->getAttribute('lastname'),
+                'usertitle'     => $this->getAttribute('usertitle'),
+                'birthday'      => $birthday,
+                'email'         => $this->getAttribute('email'),
+                'avatar'        => $avatar,
+                'su'            => $this->isSU(),
+                'extra'         => json_encode($extra),
+                'lang'          => $this->getAttribute('lang'),
+                'lastedit'      => date("Y-m-d H:i:s"),
+                'expire'        => $expire,
+                'shortcuts'     => $this->getAttribute('shortcuts'),
+                'address'       => (int)$this->getAttribute('address'),
+                'company'       => $this->isCompany() ? 1 : 0,
+                'toolbar'       => $this->getAttribute('toolbar'),
+                'authenticator' => json_encode($this->authenticator)
             ),
             array('id' => $this->getId())
         );
