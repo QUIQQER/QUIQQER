@@ -1,21 +1,21 @@
-.quiqqer-login label {
+.quiqqer-login-auth label {
     display: block;
     margin-bottom: 10px;
     position: relative;
     width: 100%;
 }
 
-.quiqqer-login label span {
+.quiqqer-login-auth label span {
     display: block;
     padding-bottom: 5px;
     width: 100%;
 }
 
-.quiqqer-login label input {
+.quiqqer-login-auth label input {
     display: block;
     width: 100%;
 }
 
-.quiqqer-login [type="submit"] {
+.quiqqer-login-auth [type="submit"] {
     cursor: pointer;
 }

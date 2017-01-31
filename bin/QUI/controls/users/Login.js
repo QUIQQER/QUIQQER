@@ -17,7 +17,9 @@ define('controls/users/Login', [
     'qui/controls/Control',
     'qui/controls/loader/Loader',
     'qui/utils/Form',
-    'Ajax'
+    'Ajax',
+
+    'css!controls/users/Login.css'
 
 ], function (QUI, QUIControl, QUILoader, QUIFormUtils, QUIAjax) {
     "use strict";
@@ -52,6 +54,7 @@ define('controls/users/Login', [
             this.Loader = new QUILoader().inject(this.getElm());
 
             this.getElm().set({
+                'class': 'quiqqer-login',
                 action: '',
                 method: 'POST',
                 events: {
@@ -95,11 +98,37 @@ define('controls/users/Login', [
                         return;
                     }
 
-                    // show next
-                    console.log(result);
+                    var Current = this.getElm().getChildren();
 
-                    self.fireEvent('authNext', [self]);
-                    resolve();
+                    // show next
+                    var Container = new Element('div', {
+                        html: result,
+                        styles: {
+                            opacity: 0,
+                            position: 'relative',
+                            top: 0,
+                            right: '100%'
+                        }
+                    }).inject(this.getElm());
+
+                    moofx(Current).animate({
+                        left: '-100%',
+                        opacity: 0
+                    }, {
+                        duration: 250,
+                        callback: function () {
+                            moofx(Container).animate({
+                                left: 0,
+                                opacity: 1
+                            }, {
+                                duration: 250,
+                                callback: function () {
+                                    self.fireEvent('authNext', [self]);
+                                    resolve();
+                                }
+                            });
+                        }
+                    });
                 }, {
                     authenticator: self.getElm().get('data-authenticator'),
                     params: JSON.encode(

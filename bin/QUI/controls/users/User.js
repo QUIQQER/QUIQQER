@@ -425,9 +425,17 @@ define('controls/users/User', [
                                     }).inject(Table);
                                 }
 
-                                TBody.getElement('td').set('html', TBody);
+                                TBody.getElement('td').set('html', settings);
 
                                 return QUI.parse(TBody);
+                            }).then(function () {
+
+                                QUI.Controls.getControlsInElement(Table.getElement('tbody')).each(function (Control) {
+                                    Control.setAttribute('Panel', self);
+                                    Control.setAttribute('uid', self.getUser().getId());
+                                    Control.setAttribute('User', self.getUser());
+                                });
+
                             }).catch(function (Exception) {
                                 console.error(Exception);
                                 Btn.setAttribute('text', '<span class="fa fa-bolt"></span>');
