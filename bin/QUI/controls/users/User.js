@@ -426,6 +426,9 @@ define('controls/users/User', [
                                 }
 
                                 TBody.getElement('td').set('html', settings);
+                                TBody.getElements('[data-qui]').set({
+                                    'data-qui-options-uid': self.getUser().getId()
+                                });
 
                                 return QUI.parse(TBody);
                             }).then(function () {

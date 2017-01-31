@@ -979,7 +979,16 @@ class Manager
             return true;
         }
 
-        $isAuthenticated = $Authenticator->auth($params);
+        try {
+            $isAuthenticated = $Authenticator->auth($params);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+
+            throw new QUI\Users\Exception(
+                array('quiqqer/system', 'exception.login.fail.wrong.password.input'),
+                401
+            );
+        }
 
         // auth successful, set to session
         if ($isAuthenticated) {
