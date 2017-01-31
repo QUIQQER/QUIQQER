@@ -980,12 +980,12 @@ class Manager
         }
 
         try {
-            $isAuthenticated = $Authenticator->auth($params);
+            $Authenticator->auth($params);
+            $isAuthenticated = true;
         } catch (QUI\Users\Exception $Exception) {
             throw $Exception;
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
-            //QUI::getSession()->destroy();
 
             throw new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail'),
@@ -1224,7 +1224,8 @@ class Manager
     {
         // max_life_time check
         if (!QUI::getSession()->check()) {
-            QUI::getSession()->destroy();
+// QUI::getSession()->destroy();
+// @todo delete authenticator params
 
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
@@ -1238,8 +1239,8 @@ class Manager
         if (!QUI::getSession()->get('uid')
             || !QUI::getSession()->get('auth')
         ) {
-            QUI::getSession()->destroy();
-            
+//            QUI::getSession()->destroy();
+
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
@@ -1252,7 +1253,7 @@ class Manager
         $User = $this->get(QUI::getSession()->get('uid'));
 
         if (!$User->isActive()) {
-            QUI::getSession()->destroy();
+//            QUI::getSession()->destroy();
 
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
