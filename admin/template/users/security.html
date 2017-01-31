@@ -114,7 +114,7 @@
 </table>
 
 {if count($authenticators)}
-<table class="data-table data-table-flexbox data-table-no-toggle">
+<table class="data-table data-table-flexbox data-table-no-toggle" style="margin-bottom: 5px">
     <thead>
     <tr>
         <th>
@@ -129,6 +129,7 @@
 {assign var=hasAuth value=$User->hasAuthenticator($cls)}
 <table class="data-table data-table-flexbox data-table-no-toggle authenticator{if $hasAuth} authenticator-enabled{/if}"
        data-authenticator="{$cls}"
+       style="margin-bottom: 5px"
 >
     <thead>
     <tr>
