@@ -1,40 +1,44 @@
-<div class="quiqqer-breadcrumb">
-    <div class="quiqqer-breadcrumb-container">
-        <span class="quiqqer-breadcrumb-title">
-            {locale group="quiqqer/system" value="control.breadcrumb.text"}
-        </span>
 
-        <ul class="fa-ul" itemscope itemtype="http://schema.org/BreadcrumbList">
-            {assign var=Path value=$Rewrite->getPath()}
-            {assign var=Project value=$Rewrite->getProject()}
-            {assign var=Site value=$Rewrite->getSite()}
-            {assign var=First value=$Project->firstChild()}
+<div class="quiqqer-breadcrumb-container">
+    <span class="quiqqer-breadcrumb-title">
+        {locale group="quiqqer/system" value="control.breadcrumb.text"}
+    </span>
 
-            {if $Site->getId() === 1}
-            <li itemprop="itemListElement" itemscope
-                itemtype="http://schema.org/ListItem">
-                <a href="{url site=$First}"
-                   title="{$First->getAttribute('title')|escape:"html"}"
-                   itemprop="item"
-                >
-                    <span class="fa fa-angle-right"></span>
-                    <span itemprop="name">{$First->getAttribute('title')}</span>
-                </a>
-            </li>
+    <ul class="fa-ul" itemscope itemtype="http://schema.org/BreadcrumbList">
+        {assign var=Path value=$Rewrite->getPath()}
+        {assign var=Project value=$Rewrite->getProject()}
+        {assign var=Site value=$Rewrite->getSite()}
+        {assign var=First value=$Project->firstChild()}
+        {assign var=Number value=count($Path)}
+
+        {if $Site->getId() === 1}
+        <li itemprop="itemListElement" itemscope
+            itemtype="http://schema.org/ListItem">
+            <a href="{url site=$First}"
+               title="{$First->getAttribute('title')|escape:"html"}"
+               itemprop="item"
+            >
+                <span class="fa fa-angle-right"></span>
+                <span itemprop="name">{$First->getAttribute('title')}</span>
+            </a>
+        </li>
+        {/if}
+
+        {foreach from=$Path key=i item=Crumb}
+        <li itemprop="itemListElement" itemscope
+            itemtype="http://schema.org/ListItem">
+            <a href="{url site=$Crumb}"
+               title="{$Crumb->getAttribute('title')|escape:"html"}"
+               itemprop="item"
+            >
+                <span class="fa fa-angle-right"></span>
+                <span class="quiqqer-breadcrumb-linkText"
+                      itemprop="name">{$Crumb->getAttribute('title')}</span>
+            </a>
+            {if $i+1 >= $Number}
+            <span class="fa fa-angle-double-down quiqqer-breadcrumb-icon"></span>
             {/if}
-
-            {foreach from=$Path item=Crumb}
-            <li itemprop="itemListElement" itemscope
-                itemtype="http://schema.org/ListItem">
-                <a href="{url site=$Crumb}"
-                   title="{$Crumb->getAttribute('title')|escape:"html"}"
-                   itemprop="item"
-                >
-                    <span class="fa fa-angle-right"></span>
-                    <span itemprop="name">{$Crumb->getAttribute('title')}</span>
-                </a>
-            </li>
-            {/foreach}
-        </ul>
-    </div>
+        </li>
+        {/foreach}
+    </ul>
 </div>
