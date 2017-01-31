@@ -1016,6 +1016,13 @@ class Manager
      */
     public function login($authData = array())
     {
+        if (QUI::getSession()->get('auth')
+            && QUI::getSession()->get('uid')
+        ) {
+            $userId = QUI::getSession()->get('uid');
+            return $this->get($userId);
+        }
+
         // global authenticators
         $authenticators = $this->getAuthenticators();
 
