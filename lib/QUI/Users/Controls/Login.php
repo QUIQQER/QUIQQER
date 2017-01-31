@@ -68,6 +68,22 @@ class Login extends Control
             }
         }
 
+        // test user authenticators
+        $uid = QUI::getSession()->get('uid');
+
+        if (!$uid) {
+            return null;
+        }
+
+        $User           = QUI::getUsers()->get($uid);
+        $authenticators = $User->getAuthenticators();
+
+        foreach ($authenticators as $Authenticator) {
+            if (QUI::getSession()->get('auth-' . get_class($Authenticator)) !== 1) {
+                return get_class($Authenticator);
+            }
+        }
+
         return null;
     }
 }

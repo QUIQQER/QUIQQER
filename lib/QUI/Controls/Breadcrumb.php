@@ -28,6 +28,7 @@ class Breadcrumb extends QUI\Control
             dirname(__FILE__) . '/Breadcrumb.css'
         );
 
+        $this->setAttribute('qui-class', "Controls/Breadcrumb");
         $this->setAttribute('class', 'quiqqer-breadcrumb');
     }
 
