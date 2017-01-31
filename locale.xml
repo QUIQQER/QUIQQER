@@ -548,6 +548,10 @@
             <de><![CDATA[Globale Weiterleitungen]]></de>
             <en><![CDATA[Global forwarding]]></en>
         </locale>
+        <locale name="quiqqer.auth.title">
+            <de><![CDATA[QUIQQER Standard Authentifizierung]]></de>
+            <en><![CDATA[QUIQQER tandard authentifizierung]]></en>
+        </locale>
 
         <locale name="exception.forwarding.already.exists">
             <de><![CDATA[Diese Weiterleitung besteht bereits.]]></de>

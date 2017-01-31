@@ -60,7 +60,7 @@ $languages = QUI::availableLanguages();
 
         .login {
             margin: 0 auto;
-            max-width: 400px;
+            max-width: 300px;
             width: 100%;
         }
 
@@ -272,6 +272,8 @@ $languages = QUI::availableLanguages();
 
     <script type="text/javascript">
 
+        var URL_DIR = '<?php echo URL_DIR; ?>';
+
         // require config
         require.config({
             baseUrl: '<?php echo URL_BIN_DIR; ?>QUI/',
@@ -279,6 +281,7 @@ $languages = QUI::availableLanguages();
                 "package": "<?php echo URL_OPT_DIR; ?>",
                 "qui": '<?php echo URL_OPT_DIR; ?>bin/qui/qui',
                 "locale": '<?php echo URL_VAR_DIR; ?>locale/bin',
+                "Ajax": '<?php echo URL_BIN_DIR; ?>QUI/Ajax',
                 "URL_OPT_DIR": "<?php echo URL_OPT_DIR; ?>",
                 "URL_BIN_DIR": "<?php echo URL_BIN_DIR; ?>"
             },
@@ -435,11 +438,25 @@ $languages = QUI::availableLanguages();
         //            });
         //        };
 
+        function onSuccess() {
+            moofx(document.getElement('.container')).animate({
+                opacity: 0
+            }, {
+                duration: 200,
+                callback: function () {
+                    window.location.reload();
+                }
+            });
+        }
+
     </script>
 
     <?php
 
-    $Login = new QUI\Users\Controls\Login();
+    $Login = new QUI\Users\Controls\Login(array(
+        'data-onsuccess' => 'onSuccess'
+    ));
+
     $login = $Login->create();
 
     echo QUI\Control\Manager::getCSS();
@@ -449,19 +466,15 @@ $languages = QUI::availableLanguages();
 <body>
 
 <div class="container">
-    <form action="" method="POST" name="login">
+    <img src="<?php echo URL_BIN_DIR; ?>quiqqer_logo.png"
+         alt="QUIQQER Login"
+         title="QUIQQER Logo"
+         class="logo"
+    />
 
-        <img src="<?php echo URL_BIN_DIR; ?>quiqqer_logo.png"
-             alt="QUIQQER Login"
-             title="QUIQQER Logo"
-             class="logo"
-        />
-
-        <div class="login">
-            <?php echo $login; ?>
-        </div>
-
-    </form>
+    <div class="login">
+        <?php echo $login; ?>
+    </div>
 </div>
 
 <?php if (defined('LOGIN_FAILED')) { ?>

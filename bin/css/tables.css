@@ -55,6 +55,14 @@
     width: 34px;
 }
 
+.data-table-no-toggle th {
+    cursor: default !important;
+}
+
+.data-table-no-toggle .data-table-toggle {
+    display: none;
+}
+
 .data-table-text {
     float: left;
     overflow: hidden;
@@ -122,6 +130,11 @@
 }
 
 /** flexbox tables */
+
+.data-table-flexbox thead tr {
+    display: block;
+}
+
 .data-table-flexbox thead,
 .data-table-flexbox th {
     background-color: #dedede;

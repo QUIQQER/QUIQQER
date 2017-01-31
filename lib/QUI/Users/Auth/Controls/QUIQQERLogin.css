@@ -1,6 +1,7 @@
 .quiqqer-login label {
     display: block;
     margin-bottom: 10px;
+    position: relative;
     width: 100%;
 }
 

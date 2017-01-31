@@ -70,7 +70,7 @@
     <thead>
     <tr>
         <th>
-            {title text="Gültig bis"}
+            {locale group="quiqqer/quiqqer" var="user.settings.expire"}
         </th>
     </tr>
     </thead>
@@ -80,7 +80,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    Immer
+                    {locale group="quiqqer/quiqqer" var="user.settings.expire.always"}
                 </span>
                 <span class="field-container-field">
                     <input type="radio" name="expire" value="never" class="noborder"/>
@@ -93,7 +93,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    Datum / Uhrzeit
+                    {locale group="quiqqer/quiqqer" var="user.settings.expire.date"}
                 </span>
                 <span class="field-container-field">
                     <input type="radio"
@@ -113,3 +113,42 @@
     </tbody>
 </table>
 
+{if count($authenticators)}
+<table class="data-table data-table-flexbox data-table-no-toggle">
+    <thead>
+    <tr>
+        <th>
+            {locale group="quiqqer/quiqqer" var="user.settings.authenticators"}
+        </th>
+    </tr>
+    </thead>
+</table>
+
+{foreach from=$authenticators item=$Authenticator}
+{assign var=cls value=get_class($Authenticator)}
+{assign var=hasAuth value=$User->hasAuthenticator($cls)}
+<table class="data-table data-table-flexbox data-table-no-toggle authenticator{if $hasAuth} authenticator-enabled{/if}"
+       data-authenticator="{$cls}"
+>
+    <thead>
+    <tr>
+        <th>
+            {$Authenticator->getTitle()}
+        </th>
+    </tr>
+    </thead>
+    {if $User->hasAuthenticator($cls)}
+    {assign var=Settings value=$Authenticator->getSettingsControl()}
+    {if $Settings}
+    <tbody>
+    <tr>
+        <td>
+            {$Settings->create()}
+        </td>
+    </tr>
+    </tbody>
+    {/if}
+    {/if}
+</table>
+{/foreach}
+{/if}

@@ -51,6 +51,21 @@ class QUIQQER implements QUI\Users\AuthInterface
     }
 
     /**
+     * Return the auth title
+     *
+     * @param null|\QUI\Locale $Locale
+     * @return string
+     */
+    public function getTitle($Locale = null)
+    {
+        if (is_null($Locale)) {
+            $Locale = QUI::getLocale();
+        }
+
+        return $Locale->get('quiqqer/quiqqer', 'quiqqer.auth.title');
+    }
+
+    /**
      * Authenticate the user
      *
      * @param string $password
@@ -60,6 +75,10 @@ class QUIQQER implements QUI\Users\AuthInterface
      */
     public function auth($password)
     {
+        if (is_array($password) && isset($password['password'])) {
+            $password = $password['password'];
+        }
+
         if (empty($password)) {
             throw new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail.wrong.password.input'),
@@ -169,13 +188,27 @@ class QUIQQER implements QUI\Users\AuthInterface
         return new Controls\QUIQQERLogin();
     }
 
+    /**
+     * @return null
+     */
     public static function getPasswordResetControl()
     {
-        // TODO: Implement getPasswordResetControl() method.
+        return null;
     }
 
+    /**
+     * @return null
+     */
+    public static function getSettingsControl()
+    {
+        return null;
+    }
+
+    /**
+     * @return null
+     */
     public static function getRegisterControl()
     {
-        // TODO: Implement getRegisterControl() method.
+        return null;
     }
 }

@@ -32,12 +32,12 @@ define('classes/users/User', [
     return new Class({
 
         Extends: DOM,
-        Type   : 'classes/users/User',
+        Type: 'classes/users/User',
 
         attributes: {}, // user attributes
 
         initialize: function (uid) {
-            this.$uid    = uid;
+            this.$uid = uid;
             this.$extras = {};
             this.$loaded = false;
         },
@@ -63,7 +63,7 @@ define('classes/users/User', [
          */
         getName: function () {
             var firstname = this.getAttribute('firstname');
-            var lastname  = this.getAttribute('lastname');
+            var lastname = this.getAttribute('lastname');
 
             if (firstname && lastname) {
                 return firstname + ' ' + lastname;
@@ -143,7 +143,7 @@ define('classes/users/User', [
                     });
 
                 }, {
-                    uid    : self.getId(),
+                    uid: self.getId(),
                     onError: reject
                 });
 
@@ -290,10 +290,10 @@ define('classes/users/User', [
 
                     resolve(result);
                 }.bind(this), {
-                    uid    : this.getId(),
-                    pw1    : pass1,
-                    pw2    : pass2,
-                    params : JSON.encode(options),
+                    uid: this.getId(),
+                    pw1: pass1,
+                    pw2: pass2,
+                    params: JSON.encode(options),
                     onError: reject
                 });
 
@@ -311,6 +311,64 @@ define('classes/users/User', [
             }
 
             return parseInt(this.getAttribute('active'));
+        },
+
+        /**
+         * Enable a authenticator for the user
+         *
+         * @param {String} authenticator - name of the authenticator
+         * @returns {Promise}
+         */
+        enableAuthenticator: function (authenticator) {
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_users_authenticator_enable', resolve, {
+                    authenticator: authenticator,
+                    uid: this.getId(),
+                    onError: reject
+                });
+            }.bind(this));
+        },
+
+        /**
+         * Disable a authenticator for the user
+         *
+         * @param {String} authenticator - name of the authenticator
+         * @returns {Promise}
+         */
+        disableAuthenticator: function (authenticator) {
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_users_authenticator_disable', resolve, {
+                    authenticator: authenticator,
+                    uid: this.getId(),
+                    onError: reject
+                });
+            }.bind(this));
+        },
+
+        /**
+         * Return the Authenticator settings control
+         *
+         * @param {String} authenticator - name of the authenticator
+         * @returns {Promise}
+         */
+        getAuthenticatorSettings: function (authenticator) {
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_users_authenticator_settings', resolve, {
+                    authenticator: authenticator,
+                    uid: this.getId(),
+                    onError: reject
+                });
+            }.bind(this));
+        },
+
+        hasAuthenticator: function (authenticator) {
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_users_authenticator_has', resolve, {
+                    authenticator: authenticator,
+                    uid: this.getId(),
+                    onError: reject
+                });
+            }.bind(this));
         },
 
         /**

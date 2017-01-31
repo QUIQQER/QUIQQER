@@ -810,8 +810,37 @@ class Manager
     }
 
     /**
+     * Returns a specific authenticator
+     *
+     * @param string $authenticator - name of the authenticator
+     * @param string $username - name of the user
+     *
+     * @return AuthInterface
+     *
+     * @throws Exception
+     */
+    public function getAuthenticator($authenticator, $username)
+    {
+        $authenticators = $this->getAuthenticators();
+        $authenticators = array_flip($authenticators);
+
+        if (isset($authenticators[$authenticator])) {
+            return new $authenticator($username);
+        }
+
+        throw new QUI\Users\Exception(
+            array(
+                'quiqqer/system',
+                'exception.authenticator.not.found'
+            ),
+            404
+        );
+    }
+
+    /**
      * Return all available authenticators
      *
+     * @todo cache
      * @return array
      */
     public function getAvailableAuthenticators()
@@ -841,8 +870,8 @@ class Manager
 
                 $interfaces = class_implements($provider);
 
-                if (isset($interfaces['QUI\Interfaces\Users\Auth'])) {
-                    $authList[] = $provider;
+                if (isset($interfaces['QUI\Users\AuthInterface'])) {
+                    $authList[] = trim($provider, '\\');
                 }
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
@@ -915,39 +944,88 @@ class Manager
     }
 
     /**
+     * Authenticate the user at one authenticator
+     *
+     * @param string|AuthInterface $authenticator
+     * @param array $params
+     * @return bool
+     *
+     * @throws QUI\Users\Exception
+     */
+    public function authenticate($authenticator, $params = array())
+    {
+        $username = '';
+        $Session  = QUI::getSession();
+
+        if (isset($params['username'])) {
+            $username = $params['username'];
+        } elseif (QUI::getSession()->get('username')) {
+            $username = QUI::getSession()->get('username');
+        }
+
+        if ($authenticator instanceof AuthInterface) {
+            $Authenticator = $authenticator;
+        } else {
+            $Authenticator = QUI::getUsers()->getAuthenticator(
+                $authenticator,
+                $username
+            );
+        }
+
+        if ($Session->get('auth-' . get_class($Authenticator))
+            && $Session->get('username')
+            && $Session->get('uid')
+        ) {
+            return true;
+        }
+
+        $isAuthenticated = $Authenticator->auth($params);
+
+        // auth successful, set to session
+        if ($isAuthenticated) {
+            if (!$Session->get('username')) {
+                $Session->set(
+                    'username',
+                    $Authenticator->getUser()->getUsername()
+                );
+            }
+
+            if (!$Session->get('uid')) {
+                $Session->set(
+                    'uid',
+                    $Authenticator->getUser()->getId()
+                );
+            }
+
+            $Session->set(
+                'auth-' . get_class($Authenticator),
+                1
+            );
+        }
+
+        return true;
+    }
+
+    /**
      * Logged in a user
      *
-     * @param string $username - username
-     * @param string|array|integer $password - password
+     * @param string|array|integer $authData - Authentication data, passwords, keys, hashes etc
      *
      * @return QUI\Interfaces\Users\User
      * @throws QUI\Users\Exception
      */
-    public function login($username, $password)
+    public function login($authData = array())
     {
         // global authenticators
-        $authenticator = $this->getAuthenticators();
+        $authenticators = $this->getAuthenticators();
 
         /* @var $Authenticator QUI\Users\AuthInterface */
-        foreach ($authenticator as $auth) {
-            $Authenticator   = new $auth($username);
-            $isAuthenticated = $Authenticator->auth($password);
-
-            // auth successful, set to session
-            if ($isAuthenticated) {
-                QUI::getSession()->set('auth-' . $auth, 1);
-            }
+        foreach ($authenticators as $authenticator) {
+            $this->authenticate($authenticator, $authData);
         }
 
-        if (!isset($Authenticator)) {
-            throw new QUI\Users\Exception(
-                array('quiqqer/system', 'exception.login.fail.user.not.found'),
-                404
-            );
-        }
-
-        $userId = $Authenticator->getUserId();
-        $User   = $Authenticator->getUser();
+        $userId = QUI::getSession()->get('uid');
+        $User   = $this->get($userId);
 
         if (QUI::getUsers()->isNobodyUser($User)) {
             throw new QUI\Users\Exception(
@@ -998,15 +1076,7 @@ class Manager
         $authenticator = $User->getAuthenticators();
 
         foreach ($authenticator as $Authenticator) {
-            $isAuthenticated = $Authenticator->auth($password);
-
-            // auth successful, set to session
-            if ($isAuthenticated) {
-                QUI::getSession()->set(
-                    'auth-' . get_class($Authenticator),
-                    1
-                );
-            }
+            $this->authenticate($Authenticator, $authData);
         }
 
         // is one group active?
@@ -1144,7 +1214,11 @@ class Manager
             );
         }
 
-        if (!QUI::getSession()->get('uid')) {
+        QUI::getUsers()->login();
+
+        if (!QUI::getSession()->get('uid')
+            || !QUI::getSession()->get('auth')
+        ) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
