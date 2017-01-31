@@ -285,6 +285,10 @@ define('controls/users/User', [
                 FormUtils.setDataToForm(extras, Body.getElement('form'));
                 FormUtils.setDataToForm(attributes, Body.getElement('form'));
 
+                Body.getElements('[data-qui]').set({
+                    'data-qui-options-uid': self.getUser().getId()
+                });
+
                 // parse all the controls
                 QUI.parse(Body).then(function () {
                     return ControlUtils.parse(Body);

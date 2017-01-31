@@ -1224,6 +1224,8 @@ class Manager
     {
         // max_life_time check
         if (!QUI::getSession()->check()) {
+            QUI::getSession()->destroy();
+
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
@@ -1236,6 +1238,8 @@ class Manager
         if (!QUI::getSession()->get('uid')
             || !QUI::getSession()->get('auth')
         ) {
+            QUI::getSession()->destroy();
+            
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',

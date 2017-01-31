@@ -415,8 +415,6 @@ class User implements QUI\Interfaces\Users\User
             unset($this->authenticator[$key]);
         }
 
-        QUI\System\Log::writeRecursive($this->authenticator);
-
         $this->save($ParentUser);
     }
 
@@ -1131,25 +1129,30 @@ class User implements QUI\Interfaces\Users\User
      *
      * @see QUI\Interfaces\Users\User::checkPassword()
      *
-     * @param string $pass - Password
+     * @param string $password - Password
      * @param boolean $encrypted - is the given password already encrypted?
      *
      * @return boolean
      */
-    public function checkPassword($pass, $encrypted = false)
+    public function checkPassword($password, $encrypted = false)
     {
         if ($encrypted) {
-            return $pass == $this->password ? true : false;
+            return $password == $this->password ? true : false;
         }
 
         try {
-            $Auth = QUI::getUsers()->getAuthenticator($this->getUsername());
+            $Auth = QUI::getUsers()->getAuthenticator(
+                Auth\QUIQQER::class,
+                $this->getUsername()
+            );
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addWarning($Exception->getMessage());
             return false;
         }
 
-        return $Auth->auth($pass);
+        return $Auth->auth(array(
+            'password' => $password
+        ));
     }
 
     /**

@@ -113,7 +113,7 @@ define('controls/users/Login', [
                     }).inject(self.getElm());
 
                     var newSize = Container.getSize();
-console.log(result.authenticator);
+
                     self.getElm().set('data-authenticator', result.authenticator);
 
                     moofx(self.getElm()).animate({
