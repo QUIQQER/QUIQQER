@@ -26,7 +26,7 @@ interface AuthInterface
      *
      * @param string|array|integer $authParams
      *
-     * @throws \QUI\Exception
+     * @throws \QUI\Users\Exception
      */
     public function auth($authParams);
 
@@ -38,6 +38,12 @@ interface AuthInterface
     public function getUser();
 
     /**
+     * @param null|\QUI\Locale $Locale
+     * @return mixed
+     */
+    public function getTitle($Locale = null);
+
+    /**
      * Return the quiqqer user id
      *
      * @return integer|boolean
@@ -45,17 +51,22 @@ interface AuthInterface
     public function getUserId();
 
     /**
-     * @return \QUI\Control
+     * @return \QUI\Control|null
      */
     public static function getLoginControl();
 
     /**
-     * @return \QUI\Control
+     * @return \QUI\Control|null
      */
     public static function getRegisterControl();
 
     /**
-     * @return \QUI\Control
+     * @return \QUI\Control|null
      */
     public static function getPasswordResetControl();
+
+    /**
+     * @return \QUI\Control|null
+     */
+    public static function getSettingsControl();
 }
