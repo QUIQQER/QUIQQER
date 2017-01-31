@@ -18,9 +18,11 @@ QUI::$Ajax->registerFunction(
             QUI::getUsers()->login();
         }
 
+        $Login->create();
+
         return array(
             'authenticator' => $Login->next(),
-            'control'       => $Login->create()
+            'control'       => $Login->getBody()
         );
     },
     array('authenticator', 'params')

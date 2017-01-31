@@ -98,18 +98,30 @@ define('controls/users/Login', [
                         return;
                     }
 
-                    var Current = this.getElm().getChildren();
+                    var Current = self.getElm().getChildren(':not(.qui-loader)');
 
                     // show next
                     var Container = new Element('div', {
-                        html: result,
+                        html: result.control,
                         styles: {
+                            display: 'block',
                             opacity: 0,
-                            position: 'relative',
+                            position: 'absolute',
                             top: 0,
                             right: '100%'
                         }
-                    }).inject(this.getElm());
+                    }).inject(self.getElm());
+
+                    var newSize = Container.getSize();
+console.log(result.authenticator);
+                    self.getElm().set('data-authenticator', result.authenticator);
+
+                    moofx(self.getElm()).animate({
+                        height: newSize.y,
+                        width: newSize.x
+                    }, {
+                        duration: 200
+                    });
 
                     moofx(Current).animate({
                         left: '-100%',
@@ -117,12 +129,15 @@ define('controls/users/Login', [
                     }, {
                         duration: 250,
                         callback: function () {
+                            Current.destroy();
+
                             moofx(Container).animate({
                                 left: 0,
                                 opacity: 1
                             }, {
                                 duration: 250,
                                 callback: function () {
+                                    self.Loader.hide();
                                     self.fireEvent('authNext', [self]);
                                     resolve();
                                 }
@@ -130,6 +145,7 @@ define('controls/users/Login', [
                         }
                     });
                 }, {
+                    showLogin: false,
                     authenticator: self.getElm().get('data-authenticator'),
                     params: JSON.encode(
                         QUIFormUtils.getFormData(self.getElm())

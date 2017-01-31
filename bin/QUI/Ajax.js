@@ -75,6 +75,7 @@ define('Ajax', [
                     url      : this.$url,
                     async    : true,
                     showError: typeof params.showError !== 'undefined' ? params.showError : true,
+                    showLogin: typeof params.showLogin !== 'undefined' ? params.showLogin : true,
                     events   : {
                         onSuccess: function () {
                             var args    = arguments;
@@ -148,7 +149,8 @@ define('Ajax', [
                             }
 
                             if (Exception.getCode() === 401 &&
-                                Exception.getAttribute('type') == 'QUI\\Users\\Exception'
+                                Exception.getAttribute('type') == 'QUI\\Users\\Exception' &&
+                                Request.getAttribute('showLogin')
                             ) {
                                 Request.setAttribute('logout', true);
 

@@ -821,7 +821,7 @@ class Manager
      */
     public function getAuthenticator($authenticator, $username)
     {
-        $authenticators = $this->getAuthenticators();
+        $authenticators = $this->getAvailableAuthenticators();
         $authenticators = array_flip($authenticators);
 
         if (isset($authenticators[$authenticator])) {
@@ -981,11 +981,14 @@ class Manager
 
         try {
             $isAuthenticated = $Authenticator->auth($params);
+        } catch (QUI\Users\Exception $Exception) {
+            throw $Exception;
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
+            //QUI::getSession()->destroy();
 
             throw new QUI\Users\Exception(
-                array('quiqqer/system', 'exception.login.fail.wrong.password.input'),
+                array('quiqqer/system', 'exception.login.fail'),
                 401
             );
         }
@@ -1228,8 +1231,6 @@ class Manager
                 401
             );
         }
-
-        QUI::getUsers()->login();
 
         if (!QUI::getSession()->get('uid')
             || !QUI::getSession()->get('auth')
