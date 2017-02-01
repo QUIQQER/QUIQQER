@@ -103,7 +103,6 @@ define('controls/users/Login', [
                 method: 'POST',
                 events: {
                     submit: function (event) {
-                        console.warn(11);
                         event.stop();
                         this.auth().catch(function () {
                         });
