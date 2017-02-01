@@ -63,4 +63,24 @@ class EventHandler
         $User->setAttribute('quiqqer.set.new.password', 0);
         $User->save(QUI::getUsers()->getSystemUser());
     }
+
+    /**
+     * @param Package\Package $Package
+     */
+    public function onPackageSetup(QUI\Package\Package $Package)
+    {
+        // create auth provider as user permissions
+        $authProviders = $Package->getProvider('auth');
+
+        if (!empty($authProviders)) {
+            return;
+        }
+
+        // <permission name="quiqqer.auth.AUTH.canUser" type="bool" />
+
+        foreach ($authProviders as $authProvider) {
+            $permissionName = 'quiqqer.auth.' . str_replace('\\', '', $authProvider) . '.canUser';
+
+        }
+    }
 }

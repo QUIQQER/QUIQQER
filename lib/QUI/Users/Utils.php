@@ -102,7 +102,7 @@ class Utils
         // authenticators
         $userAuthenticators = array();
         $authenticators     = array();
-        $available          = QUI::getUsers()->getAvailableAuthenticators();
+        $available          = QUI\Users\Auth\Handler::getInstance()->getAvailableAuthenticators();
 
         foreach ($available as $auth) {
             $authenticators[] = new $auth($User->getName());

@@ -29,6 +29,12 @@ define('controls/users/Login', [
         Extends: QUIControl,
         Type: 'controls/users/Login',
 
+        Binds: [
+            '$onImport',
+            '$onInject',
+            '$refreshForm'
+        ],
+
         options: {
             onSuccess: false //custom callback function
         },
@@ -41,10 +47,37 @@ define('controls/users/Login', [
             this.parent(options);
 
             this.Loader = null;
+            this.$Form = null;
 
             this.addEvents({
-                onImport: this.$onImport
+                onImport: this.$onImport,
+                onInject: this.$onInject
             });
+        },
+
+        /**
+         * Create the domnode
+         *
+         * @returns {HTMLDivElement}
+         */
+        create: function () {
+            this.$Elm = this.parent();
+            this.$Elm.addClass('quiqqer-login');
+
+            this.Loader = new QUILoader().inject(this.getElm());
+
+            return this.$Elm;
+        },
+
+        /**
+         * event : on inject
+         */
+        $onInject: function () {
+            this.Loader.show();
+
+            QUIAjax.get('ajax_users_loginControl', function (result) {
+                this.$buildAuthenticator(result);
+            }.bind(this));
         },
 
         /**
@@ -52,9 +85,20 @@ define('controls/users/Login', [
          */
         $onImport: function () {
             this.Loader = new QUILoader().inject(this.getElm());
+            this.$Form = this.getElm().getElement('form');
 
-            this.getElm().set({
-                'class': 'quiqqer-login',
+            if (this.getElm().get('data-onsuccess')) {
+                this.setAttribute('onSuccess', this.getElm().get('data-onsuccess'));
+            }
+
+            this.$refreshForm();
+        },
+
+        /**
+         * Refresh the form data and set events to the current form
+         */
+        $refreshForm: function () {
+            this.$Form.set({
                 action: '',
                 method: 'POST',
                 events: {
@@ -66,11 +110,61 @@ define('controls/users/Login', [
                 }
             });
 
-            var onSuccess = this.getElm().get('data-onsuccess');
+            var onSuccess = this.getAttribute('onSuccess');
 
             if (typeof window[onSuccess] === 'function') {
                 this.setAttribute('onSuccess', window[onSuccess]);
             }
+        },
+
+        /**
+         * Build the authenticator from the ajax html
+         *
+         * @param {String} html
+         */
+        $buildAuthenticator: function (html) {
+            var Container = new Element('div', {
+                html: html
+            });
+
+            var elements = Container.getChildren(),
+                Form = Container.getElement('form'),
+
+                children = elements.filter(function (Node) {
+                    return !Node.get('data-qui');
+                });
+
+            if (!Form) {
+                QUIAjax.post('ajax_user_logout', function () {
+                    window.location.reload();
+                });
+                return;
+            }
+
+            Form.setStyle('opacity', 0);
+            Form.inject(this.getElm());
+
+            this.$Form = Form;
+            this.$refreshForm();
+
+            children.each(function (Child) {
+                Child.inject(Form);
+            });
+
+            QUI.parse(Form).then(function () {
+                return this.Loader.hide()
+            }.bind(this)).then(function () {
+                Form.setStyle('top', 20);
+                moofx(Form).animate({
+                    opacity: 1,
+                    top: 0
+                }, {
+                    duration: 200,
+                    callback: function () {
+                        Form.elements[0].focus();
+                    }
+                });
+            });
         },
 
         /**
@@ -98,57 +192,21 @@ define('controls/users/Login', [
                         return;
                     }
 
-                    var Current = self.getElm().getChildren(':not(.qui-loader)');
-
-                    // show next
-                    var Container = new Element('div', {
-                        html: result.control,
-                        styles: {
-                            display: 'block',
-                            opacity: 0,
-                            position: 'absolute',
-                            top: 0,
-                            right: '100%'
-                        }
-                    }).inject(self.getElm());
-
-                    var newSize = Container.getSize();
-
-                    self.getElm().set('data-authenticator', result.authenticator);
-
-                    moofx(self.getElm()).animate({
-                        height: newSize.y,
-                        width: newSize.x
-                    }, {
-                        duration: 200
-                    });
-
-                    moofx(Current).animate({
-                        left: '-100%',
+                    moofx(self.$Form).animate({
+                        top: 20,
                         opacity: 0
                     }, {
                         duration: 250,
                         callback: function () {
-                            Current.destroy();
-
-                            moofx(Container).animate({
-                                left: 0,
-                                opacity: 1
-                            }, {
-                                duration: 250,
-                                callback: function () {
-                                    self.Loader.hide();
-                                    self.fireEvent('authNext', [self]);
-                                    resolve();
-                                }
-                            });
+                            self.$Form.destroy();
+                            self.$buildAuthenticator(result.control);
                         }
                     });
                 }, {
                     showLogin: false,
-                    authenticator: self.getElm().get('data-authenticator'),
+                    authenticator: self.$Form.get('data-authenticator'),
                     params: JSON.encode(
-                        QUIFormUtils.getFormData(self.getElm())
+                        QUIFormUtils.getFormData(self.$Form)
                     ),
                     onError: function () {
                         self.Loader.hide();

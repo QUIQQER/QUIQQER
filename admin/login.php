@@ -272,7 +272,8 @@ $languages = QUI::availableLanguages();
 
     <script type="text/javascript">
 
-        var URL_DIR = '<?php echo URL_DIR; ?>';
+        var URL_DIR = '<?php echo URL_DIR; ?>',
+            LANGUAGE = null;
 
         // require config
         require.config({
@@ -294,9 +295,57 @@ $languages = QUI::availableLanguages();
             }
         });
 
-        require(['qui/QUI'], function (QUI) {
-            QUI.parse(document.body);
+        function getCurrentLanguage() {
+            if (LANGUAGE) {
+                return LANGUAGE;
+            }
+
+            var lang = 'en';
+
+            if ("language" in navigator) {
+                lang = navigator.language;
+
+            } else if ("browserLanguage" in navigator) {
+                lang = navigator.browserLanguage;
+
+            } else if ("systemLanguage" in navigator) {
+                lang = navigator.systemLanguage;
+
+            } else if ("userLanguage" in navigator) {
+                lang = navigator.userLanguage;
+            }
+
+            LANGUAGE = lang.substr(0, 2);
+
+            return LANGUAGE;
+        }
+
+        function setLanguage(lang) {
+            return new Promise(function (resolve) {
+                require([
+                    'Locale',
+                    'locale/quiqqer/system/' + lang
+                ], function (QUILocale) {
+                    QUILocale.setCurrent(lang);
+                    resolve();
+                });
+            })
+        }
+
+        // init
+        require(['qui/QUI', 'controls/users/Login'], function (QUI, Login) {
+            QUI.setAttributes({
+                'control-loader-type': 'line-scale',
+                'control-loader-color': '#2f8fc8'
+            });
+
+            setLanguage(getCurrentLanguage()).then(function () {
+                new Login({
+                    onsuccess: 'onSuccess'
+                }).inject(document.getElement('.login'));
+            });
         });
+
 
         //        var languages = <?php //echo json_encode($languages); ?>
         //
@@ -450,18 +499,6 @@ $languages = QUI::availableLanguages();
         }
 
     </script>
-
-    <?php
-
-    $Login = new QUI\Users\Controls\Login(array(
-        'data-onsuccess' => 'onSuccess'
-    ));
-
-    $login = $Login->create();
-
-    echo QUI\Control\Manager::getCSS();
-
-    ?>
 </head>
 <body>
 
@@ -472,9 +509,7 @@ $languages = QUI::availableLanguages();
          class="logo"
     />
 
-    <div class="login">
-        <?php echo $login; ?>
-    </div>
+    <div class="login"></div>
 </div>
 
 <?php if (defined('LOGIN_FAILED')) { ?>

@@ -1,5 +1,11 @@
 .quiqqer-login {
+    min-height: 180px;
     overflow: auto;
+    padding: 20px;
     position: relative;
-    outline: 1px solid red;
+}
+
+.quiqqer-login form {
+    position: relative;
+    top: 0;
 }

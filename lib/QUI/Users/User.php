@@ -300,7 +300,7 @@ class User implements QUI\Interfaces\Users\User
     {
         $result = array();
 
-        $available = QUI::getUsers()->getAvailableAuthenticators();
+        $available = QUI\Users\Auth\Handler::getInstance()->getAvailableAuthenticators();
         $available = array_flip($available);
 
         if (empty($this->authenticator)) {
@@ -328,7 +328,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function getAuthenticator($authenticator)
     {
-        $available = QUI::getUsers()->getAvailableAuthenticators();
+        $available = QUI\Users\Auth\Handler::getInstance()->getAvailableAuthenticators();
         $available = array_flip($available);
 
         if (!isset($available[$authenticator])) {
@@ -363,7 +363,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function enableAuthenticator($authenticator, $ParentUser = false)
     {
-        $available = QUI::getUsers()->getAvailableAuthenticators();
+        $available = QUI\Users\Auth\Handler::getInstance()->getAvailableAuthenticators();
         $available = array_flip($available);
 
         if (!isset($available[$authenticator])) {
@@ -394,7 +394,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function disableAuthenticator($authenticator, $ParentUser = false)
     {
-        $available = QUI::getUsers()->getAvailableAuthenticators();
+        $available = QUI\Users\Auth\Handler::getInstance()->getAvailableAuthenticators();
         $available = array_flip($available);
 
         if (!isset($available[$authenticator])) {
@@ -1039,7 +1039,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function changePassword($newPassword, $oldPassword, $ParentUser = false)
     {
-        $this->checkRights($ParentUser);
+        $this->checkEditPermission($ParentUser);
 
         if (empty($newPassword) || empty($oldPassword)) {
             throw new QUI\Users\Exception(
@@ -1084,7 +1084,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function setPassword($new, $ParentUser = false)
     {
-        $this->checkRights($ParentUser);
+        $this->checkEditPermission($ParentUser);
 
         if (empty($new)) {
             throw new QUI\Users\Exception(
@@ -1141,7 +1141,7 @@ class User implements QUI\Interfaces\Users\User
         }
 
         try {
-            $Auth = QUI::getUsers()->getAuthenticator(
+            $Auth = QUI\Users\Auth\Handler::getInstance()->getAuthenticator(
                 Auth\QUIQQER::class,
                 $this->getUsername()
             );
@@ -1167,7 +1167,7 @@ class User implements QUI\Interfaces\Users\User
     public function activate($code = false, $ParentUser = null)
     {
         if ($code == false) {
-            $this->checkRights($ParentUser);
+            $this->checkEditPermission($ParentUser);
         }
 
         // benutzer ist schon aktiv, aktivierung kann nicht durchgeführt werden
@@ -1236,7 +1236,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function deactivate()
     {
-        $this->checkRights();
+        $this->checkEditPermission();
         $this->canBeDeleted();
 
         QUI::getEvents()->fireEvent('userDeactivate', array($this));
@@ -1265,7 +1265,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function disable($ParentUser = false)
     {
-        $this->checkRights($ParentUser);
+        $this->checkEditPermission($ParentUser);
         $this->canBeDeleted();
 
         QUI::getEvents()->fireEvent('userDisable', array($this));
@@ -1310,7 +1310,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function save($ParentUser = false)
     {
-        $this->checkRights($ParentUser);
+        $this->checkEditPermission($ParentUser);
 
         $expire   = '0000-00-00 00:00:00';
         $birthday = '0000-00-00';
@@ -1517,14 +1517,15 @@ class User implements QUI\Interfaces\Users\User
     }
 
     /**
-     * Checks the edit rights of a user
+     * Checks the edit permissions
+     * Can the user be edited by the current user?
      *
      * @param QUI\Users\User|boolean $ParentUser
      *
      * @return boolean - true
      * @throws QUI\Permissions\Exception
      */
-    protected function checkRights($ParentUser = false)
+    public function checkEditPermission($ParentUser = false)
     {
         $Users       = QUI::getUsers();
         $SessionUser = $Users->getUserBySession();

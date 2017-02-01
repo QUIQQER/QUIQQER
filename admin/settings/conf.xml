@@ -207,13 +207,6 @@
                 </conf>
             </section>
 
-            <section name="auth">
-                <conf name="type">
-                    <type><![CDATA[string]]></type>
-                    <defaultvalue>standard</defaultvalue>
-                </conf>
-            </section>
-
             <section name="template">
                 <conf name="engine">
                     <type><![CDATA[string]]></type>
@@ -481,15 +474,16 @@
                                 <locale group="quiqqer/system" var="quiqqer.settings.auth.emaillogin"/>
                             </text>
                         </input>
-                        <select conf="auth.type" type="text">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.auth.type"/>
-                            </text>
 
-                            <option value="standard">
-                                <locale group="quiqqer/system" var="quiqqer.settings.auth.standard"/>
-                            </option>
-                        </select>
+                        <!--<select conf="auth.type" type="text">-->
+                        <!--<text>-->
+                        <!--<locale group="quiqqer/system" var="quiqqer.settings.auth.type"/>-->
+                        <!--</text>-->
+
+                        <!--<option value="standard">-->
+                        <!--<locale group="quiqqer/system" var="quiqqer.settings.auth.standard"/>-->
+                        <!--</option>-->
+                        <!--</select>-->
                     </settings>
 
                     <settings title="auth-session" name="auth-session">
@@ -528,8 +522,19 @@
                             </option>-->
                         </select>
 
+                        <!--<input conf="session.memcached_data" type="hidden"/>-->
+                    </settings>
 
-                        <input conf="session.memcached_data" type="hidden"/>
+
+                    <settings>
+                        <title>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.auth.global"/>
+                        </title>
+                        <description>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.auth.global.desc"/>
+                        </description>
+                        <input type="hidden" name="global.authenticators"
+                               data-qui="controls/users/auth/GlobalAuthenticatorSettings"/>
                     </settings>
 
                 </category>
