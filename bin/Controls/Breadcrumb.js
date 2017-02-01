@@ -34,12 +34,14 @@ define('Controls/Breadcrumb', [
             this.container = null;
             this.title = null;
             this.breadcrumb = null;
-            this.button = null;
             this.elmNumber = null;
             this.height = null;
 
             this.isOpen = false;
+            this.isMobile = false;
             this.breadcrumbWidth = null;
+
+            this.button = null;
 
             this.addEvents({
                 onImport: this.$onImport
@@ -55,17 +57,20 @@ define('Controls/Breadcrumb', [
             this.container = document.getElement('.quiqqer-breadcrumb-container');
             this.title = document.getElement('.quiqqer-breadcrumb-title');
             this.breadcrumb = document.getElement('.quiqqer-breadcrumb');
-            this.button = document.getElement('.quiqqer-breadcrumb-link-icon');
             this.elmNumber = document.getElements('.quiqqer-breadcrumb-list li').length;
             this.height = parseInt(this.breadcrumb.getStyle('line-height'));
 
             this.isOpen = false;
+            this.isMobile = false;
             this.breadcrumbWidth = 0;
 
             this.checkWidth();
 
-            // button click
-            this.button.addEvent('click', this.trigger);
+            // if, weil auf startseite & in desktop kein button
+            if (document.getElement('.quiqqer-breadcrumb-link-icon') && this.isMobile) {
+                this.button = document.getElement('.quiqqer-breadcrumb-link-icon');
+                this.button.addEvent('click', this.trigger);
+            }
 
             QUI.addEvent('onResize', function ()
             {
@@ -106,6 +111,7 @@ define('Controls/Breadcrumb', [
         setMobile: function ()
         {
             this.title.setStyle('display', 'none');
+            this.isMobile = true;
             this.breadcrumb.addClass('quiqqer-breadcrumb-mobile');
         },
 
@@ -115,6 +121,7 @@ define('Controls/Breadcrumb', [
         unsetMobile: function ()
         {
             this.title.setStyle('display', 'inline');
+            this.isMobile = false;
             this.breadcrumb.removeClass('quiqqer-breadcrumb-mobile');
         },
 
