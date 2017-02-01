@@ -135,6 +135,13 @@ define('controls/users/Login', [
                     return !Node.get('data-qui');
                 });
 
+            if (!Form) {
+                QUIAjax.post('ajax_user_logout', function () {
+                    window.location.reload();
+                });
+                return;
+            }
+
             Form.setStyle('opacity', 0);
             Form.inject(this.getElm());
 
