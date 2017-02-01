@@ -4,7 +4,7 @@
         {locale group="quiqqer/system" value="control.breadcrumb.text"}
     </span>
 
-    <ul class="fa-ul" itemscope itemtype="http://schema.org/BreadcrumbList">
+    <ul class="fa-ul quiqqer-breadcrumb-list" itemscope itemtype="http://schema.org/BreadcrumbList">
         {assign var=Path value=$Rewrite->getPath()}
         {assign var=Project value=$Rewrite->getProject()}
         {assign var=Site value=$Rewrite->getSite()}
@@ -26,17 +26,20 @@
 
         {foreach from=$Path key=i item=Crumb}
         <li itemprop="itemListElement" itemscope
+            class="quiqqer-breadcrumb-list-element"
             itemtype="http://schema.org/ListItem">
             <a href="{url site=$Crumb}"
+               class="quiqqer-breadcrumb-link"
                title="{$Crumb->getAttribute('title')|escape:"html"}"
                itemprop="item"
             >
                 <span class="fa fa-angle-right"></span>
-                <span class="quiqqer-breadcrumb-linkText"
+                <span class="quiqqer-breadcrumb-link-text"
                       itemprop="name">{$Crumb->getAttribute('title')}</span>
             </a>
+            <!--<span class="quiqqer-breadcrumb-list-cover"></span>-->
             {if $i+1 >= $Number}
-            <span class="fa fa-angle-double-down quiqqer-breadcrumb-icon"></span>
+            <span class="fa fa-angle-double-down quiqqer-breadcrumb-link-icon"></span>
             {/if}
         </li>
         {/foreach}

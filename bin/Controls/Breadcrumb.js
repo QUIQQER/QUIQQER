@@ -39,7 +39,7 @@ define('Controls/Breadcrumb', [
             this.height = null;
 
             this.isOpen = false;
-            this.isMobile = false;
+            this.breadcrumbWidth = null;
 
             this.addEvents({
                 onImport: this.$onImport
@@ -55,11 +55,12 @@ define('Controls/Breadcrumb', [
             this.container = document.getElement('.quiqqer-breadcrumb-container');
             this.title = document.getElement('.quiqqer-breadcrumb-title');
             this.breadcrumb = document.getElement('.quiqqer-breadcrumb');
-            this.button = document.getElement('.quiqqer-breadcrumb-icon');
-            this.elmNumber = document.getElements('.quiqqer-breadcrumb-container ul li').length;
+            this.button = document.getElement('.quiqqer-breadcrumb-link-icon');
+            this.elmNumber = document.getElements('.quiqqer-breadcrumb-list li').length;
             this.height = parseInt(this.breadcrumb.getStyle('line-height'));
 
             this.isOpen = false;
+            this.breadcrumbWidth = 0;
 
             this.checkWidth();
 
@@ -84,19 +85,19 @@ define('Controls/Breadcrumb', [
             var containerWidth       = parseInt(this.container.getSize().x),
                 containerWidthScroll = parseInt(this.container.getScrollSize().x);
 
-            /*console.log('containerWidth ' + containerWidth)
-            console.log('containerWidthScroll ' + containerWidthScroll);
-            console.info('containerWidth < containerWidthScroll');*/
 
             // scroll width or window size 768px
             if (containerWidth < containerWidthScroll || parseInt(window.getSize().x) < 768) {
                 // mobile
                 this.setMobile();
+                this.breadcrumbWidth = containerWidthScroll;
                 return;
             }
 
-            // desktop
-            this.unsetMobile();
+            if (containerWidth >= this.breadcrumbWidth) {
+                // desktop
+                this.unsetMobile();
+            }
         },
 
         /**
@@ -122,18 +123,31 @@ define('Controls/Breadcrumb', [
          */
         trigger: function ()
         {
-            var height = this.height * this.elmNumber;
+            // jeweils +1px, weil border; -1px, weil letzter border fehlt
+            var height = (this.height +1) * this.elmNumber -1;
 
             if (this.isOpen === false) {
                 // open
                 this.container.setStyle('height', height);
                 this.isOpen = true;
+
+                moofx(this.button).animate({
+                    transform: 'rotate(180deg)'
+                }, {
+                    duration: 300
+                });
                 return;
             }
 
             // close
             this.container.setStyle('height', this.height);
             this.isOpen = false;
+
+            moofx(this.button).animate({
+                transform: 'rotate(0)'
+            }, {
+                duration: 300
+            });
         }
 
     });
