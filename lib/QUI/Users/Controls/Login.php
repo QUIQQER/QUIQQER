@@ -60,7 +60,7 @@ class Login extends Control
      */
     public function next()
     {
-        $authenticators = QUI::getUsers()->getAuthenticators();
+        $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalAuthenticators();
 
         foreach ($authenticators as $auth) {
             if (QUI::getSession()->get('auth-' . $auth) !== 1) {

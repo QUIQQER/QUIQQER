@@ -528,11 +528,13 @@
 
                     <settings>
                         <title>
-                            <locale group="quiqqer/system" var="quiqqer.settings.auth.global"/>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.auth.global"/>
                         </title>
                         <description>
-                            <locale group="quiqqer/system" var="quiqqer.settings.auth.global.desc"/>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.auth.global.desc"/>
                         </description>
+                        <input type="hidden" name="global.authenticators"
+                               data-qui="controls/users/auth/GlobalAuthenticatorSettings"/>
                     </settings>
 
                 </category>
