@@ -300,7 +300,7 @@ class User implements QUI\Interfaces\Users\User
     {
         $result = array();
 
-        $available = QUI::getUsers()->getAvailableAuthenticators();
+        $available = QUI\Users\Auth\Handler::getInstance()->getAvailableAuthenticators();
         $available = array_flip($available);
 
         if (empty($this->authenticator)) {
@@ -328,7 +328,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function getAuthenticator($authenticator)
     {
-        $available = QUI::getUsers()->getAvailableAuthenticators();
+        $available = QUI\Users\Auth\Handler::getInstance()->getAvailableAuthenticators();
         $available = array_flip($available);
 
         if (!isset($available[$authenticator])) {
@@ -363,7 +363,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function enableAuthenticator($authenticator, $ParentUser = false)
     {
-        $available = QUI::getUsers()->getAvailableAuthenticators();
+        $available = QUI\Users\Auth\Handler::getInstance()->getAvailableAuthenticators();
         $available = array_flip($available);
 
         if (!isset($available[$authenticator])) {
@@ -394,7 +394,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function disableAuthenticator($authenticator, $ParentUser = false)
     {
-        $available = QUI::getUsers()->getAvailableAuthenticators();
+        $available = QUI\Users\Auth\Handler::getInstance()->getAvailableAuthenticators();
         $available = array_flip($available);
 
         if (!isset($available[$authenticator])) {
@@ -1141,7 +1141,7 @@ class User implements QUI\Interfaces\Users\User
         }
 
         try {
-            $Auth = QUI::getUsers()->getAuthenticator(
+            $Auth = QUI\Users\Auth\Handler::getInstance()->getAuthenticator(
                 Auth\QUIQQER::class,
                 $this->getUsername()
             );
@@ -1517,14 +1517,15 @@ class User implements QUI\Interfaces\Users\User
     }
 
     /**
-     * Checks the edit rights of a user
+     * Checks the edit permissions
+     * Can the user be edited by the current user?
      *
      * @param QUI\Users\User|boolean $ParentUser
      *
      * @return boolean - true
      * @throws QUI\Permissions\Exception
      */
-    protected function checkRights($ParentUser = false)
+    public function checkEditPermission($ParentUser = false)
     {
         $Users       = QUI::getUsers();
         $SessionUser = $Users->getUserBySession();
@@ -1547,6 +1548,14 @@ class User implements QUI\Interfaces\Users\User
                 'exception.lib.user.no.edit.rights'
             )
         );
+    }
+
+    /**
+     * @deprecated use checkEditPermission
+     */
+    protected function checkRights($ParentUser = false)
+    {
+        $this->checkEditPermission($ParentUser);
     }
 
     /**

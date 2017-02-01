@@ -771,118 +771,6 @@ class Manager
     }
 
     /**
-     * Return all global active authenticators
-     *
-     * @return array
-     */
-    public function getAuthenticators()
-    {
-        $config = QUI::conf('auth');
-
-        if (!empty($config)) {
-            return array(
-                Auth\QUIQQER::class
-            );
-        }
-
-        $result = array();
-
-        $available = $this->getAvailableAuthenticators();
-        $available = array_flip($available);
-
-        foreach ($config as $authenticator => $status) {
-            if ($status != 1) {
-                continue;
-            }
-
-            if (isset($available[$authenticator])) {
-                $result[] = $authenticator;
-            }
-        }
-
-        if (!empty($result)) {
-            return array(
-                Auth\QUIQQER::class
-            );
-        }
-
-        return $result;
-    }
-
-    /**
-     * Returns a specific authenticator
-     *
-     * @param string $authenticator - name of the authenticator
-     * @param string $username - name of the user
-     *
-     * @return AuthInterface
-     *
-     * @throws Exception
-     */
-    public function getAuthenticator($authenticator, $username)
-    {
-        $authenticators = $this->getAvailableAuthenticators();
-        $authenticators = array_flip($authenticators);
-
-        if (isset($authenticators[$authenticator])) {
-            return new $authenticator($username);
-        }
-
-        throw new QUI\Users\Exception(
-            array(
-                'quiqqer/system',
-                'exception.authenticator.not.found'
-            ),
-            404
-        );
-    }
-
-    /**
-     * Return all available authenticators
-     *
-     * @todo cache
-     * @return array
-     */
-    public function getAvailableAuthenticators()
-    {
-        $authList  = array();
-        $list      = array();
-        $installed = QUI::getPackageManager()->getInstalled();
-
-        foreach ($installed as $package) {
-            try {
-                $Package = QUI::getPackage($package['name']);
-
-                if (!$Package->isQuiqqerPackage()) {
-                    continue;
-                }
-
-                $list = array_merge($list, $Package->getProvider('auth'));
-            } catch (QUI\Exception $exception) {
-            }
-        }
-
-        foreach ($list as $provider) {
-            try {
-                if (!class_exists($provider)) {
-                    continue;
-                }
-
-                $interfaces = class_implements($provider);
-
-                if (isset($interfaces['QUI\Users\AuthInterface'])) {
-                    $authList[] = trim($provider, '\\');
-                }
-            } catch (\Exception $Exception) {
-                QUI\System\Log::writeException($Exception);
-            }
-        }
-
-        return $authList;
-    }
-
-
-    /**
      * Returns all userids
      *
      * @return array
@@ -966,7 +854,7 @@ class Manager
         if ($authenticator instanceof AuthInterface) {
             $Authenticator = $authenticator;
         } else {
-            $Authenticator = QUI::getUsers()->getAuthenticator(
+            $Authenticator = QUI\Users\Auth\Handler::getInstance()->getAuthenticator(
                 $authenticator,
                 $username
             );
@@ -1036,7 +924,7 @@ class Manager
         }
 
         // global authenticators
-        $authenticators = $this->getAuthenticators();
+        $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalAuthenticators();
 
         /* @var $Authenticator QUI\Users\AuthInterface */
         foreach ($authenticators as $authenticator) {
