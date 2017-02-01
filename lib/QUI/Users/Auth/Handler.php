@@ -46,7 +46,7 @@ class Handler
     {
         $config = QUI::conf('auth');
 
-        if (!empty($config)) {
+        if (empty($config)) {
             return array(
                 QUIQQER::class
             );
@@ -67,7 +67,7 @@ class Handler
             }
         }
 
-        if (!empty($result)) {
+        if (empty($result)) {
             return array(
                 QUIQQER::class
             );
