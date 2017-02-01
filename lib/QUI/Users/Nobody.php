@@ -324,6 +324,8 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
 
         if (QUI::getSession()->get('CURRENT_LANG')) {
             $this->Locale->setCurrent(QUI::getSession()->get('CURRENT_LANG'));
+        } else {
+            $this->Locale->setCurrent(QUI::getLocale()->getCurrent());
         }
 
         return $this->Locale;
