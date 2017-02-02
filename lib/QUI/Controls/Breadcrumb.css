@@ -16,7 +16,7 @@
     padding: 0;
 }
 
-.quiqqer-breadcrumb a:hover .quiqqer-breadcrumb-linkText {
+.quiqqer-breadcrumb a:hover .quiqqer-breadcrumb-link-text {
     text-decoration: underline;
 }
 
@@ -29,6 +29,8 @@
     display: inline-block;
     margin-right: 15px;
     padding-left: 0;
+    position: relative;
+    white-space: nowrap;
 }
 
 .quiqqer-breadcrumb ul li:last-child {
@@ -50,13 +52,30 @@
     transition: 0.3s all ease-in-out;
 }
 
-.fa.quiqqer-breadcrumb-icon {
+.quiqqer-breadcrumb-list-element:after {
+    display: none;
+    position: absolute;
+    right: 0;
+    height: 3em;
+    width: 120px;
+    content: '';
+
+    background: rgba(255,255,255,0); /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%, #fff 70%, #fff 100%); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(left, rgba(255,255,255,0) 0%, #fff 70%, #fff 100%); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, #fff 70%, #fff 100%); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(left, rgba(255,255,255,0) 0%, #fff 70%, #fff 100%); /* Standard syntax */
+}
+
+.fa.quiqqer-breadcrumb-link-icon {
     cursor: pointer;
     margin-right: 0;
     display: none;
-    float: right;
     line-height: 1.5em;
     font-size: 2em;
+    position: absolute;
+    right: 0;
+    z-index: 10;
 }
 
 /* mobile
@@ -85,63 +104,11 @@
     border-bottom: none;
 }
 
-.quiqqer-breadcrumb.quiqqer-breadcrumb-mobile .fa.quiqqer-breadcrumb-icon {
+.quiqqer-breadcrumb.quiqqer-breadcrumb-mobile .fa.quiqqer-breadcrumb-link-icon {
     display: inline;
     padding: 0 10px;
 }
 
-
-/*
-.quiqqer-breadcrumb a,
-.quiqqer-breadcrumb ul,
-.quiqqer-breadcrumb li,
-.quiqqer-breadcrumb span {
-    float: left;
+.quiqqer-breadcrumb.quiqqer-breadcrumb-mobile .quiqqer-breadcrumb-list-element:after {
+    display: inline;
 }
-
-.quiqqer-breadcrumb ul {
-    margin-left: 10px;
-}
-
-.quiqqer-breadcrumb li {
-    margin: 0 5px 0 0;
-}
-
-.quiqqer-breadcrumb a {
-    padding: 0 5px;
-}
-
-.quiqqer-breadcrumb span {
-    line-height: 1.5em;
-}
-
-.quiqqer-breadcrumb .fa {
-    margin-right: 10px;
-}
-
-@media screen and (max-width: 767px) {
-
-    .quiqqer-breadcrumb-container {
-        padding: 20px 0;
-    }
-
-    .quiqqer-breadcrumb-title {
-        padding: 5px;
-    }
-
-    .quiqqer-breadcrumb ul {
-        margin-left: 0;
-    }
-
-    .quiqqer-breadcrumb ul,
-    .quiqqer-breadcrumb li,
-    .quiqqer-breadcrumb a {
-        clear: both;
-        padding: 0;
-        width: 100%;
-    }
-
-    .quiqqer-breadcrumb a {
-        padding: 5px;
-    }
-}*/

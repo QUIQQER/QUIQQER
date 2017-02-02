@@ -34,12 +34,14 @@ define('Controls/Breadcrumb', [
             this.container = null;
             this.title = null;
             this.breadcrumb = null;
-            this.button = null;
             this.elmNumber = null;
             this.height = null;
 
             this.isOpen = false;
             this.isMobile = false;
+            this.breadcrumbWidth = null;
+
+            this.button = null;
 
             this.addEvents({
                 onImport: this.$onImport
@@ -55,16 +57,20 @@ define('Controls/Breadcrumb', [
             this.container = document.getElement('.quiqqer-breadcrumb-container');
             this.title = document.getElement('.quiqqer-breadcrumb-title');
             this.breadcrumb = document.getElement('.quiqqer-breadcrumb');
-            this.button = document.getElement('.quiqqer-breadcrumb-icon');
-            this.elmNumber = document.getElements('.quiqqer-breadcrumb-container ul li').length;
+            this.elmNumber = document.getElements('.quiqqer-breadcrumb-list li').length;
             this.height = parseInt(this.breadcrumb.getStyle('line-height'));
 
             this.isOpen = false;
+            this.isMobile = false;
+            this.breadcrumbWidth = 0;
 
             this.checkWidth();
 
-            // button click
-            this.button.addEvent('click', this.trigger);
+            // if, weil auf startseite & in desktop kein button
+            if (document.getElement('.quiqqer-breadcrumb-link-icon') && this.isMobile) {
+                this.button = document.getElement('.quiqqer-breadcrumb-link-icon');
+                this.button.addEvent('click', this.trigger);
+            }
 
             QUI.addEvent('onResize', function ()
             {
@@ -84,19 +90,19 @@ define('Controls/Breadcrumb', [
             var containerWidth       = parseInt(this.container.getSize().x),
                 containerWidthScroll = parseInt(this.container.getScrollSize().x);
 
-            /*console.log('containerWidth ' + containerWidth)
-            console.log('containerWidthScroll ' + containerWidthScroll);
-            console.info('containerWidth < containerWidthScroll');*/
 
             // scroll width or window size 768px
             if (containerWidth < containerWidthScroll || parseInt(window.getSize().x) < 768) {
                 // mobile
                 this.setMobile();
+                this.breadcrumbWidth = containerWidthScroll;
                 return;
             }
 
-            // desktop
-            this.unsetMobile();
+            if (containerWidth >= this.breadcrumbWidth) {
+                // desktop
+                this.unsetMobile();
+            }
         },
 
         /**
@@ -105,6 +111,7 @@ define('Controls/Breadcrumb', [
         setMobile: function ()
         {
             this.title.setStyle('display', 'none');
+            this.isMobile = true;
             this.breadcrumb.addClass('quiqqer-breadcrumb-mobile');
         },
 
@@ -114,6 +121,7 @@ define('Controls/Breadcrumb', [
         unsetMobile: function ()
         {
             this.title.setStyle('display', 'inline');
+            this.isMobile = false;
             this.breadcrumb.removeClass('quiqqer-breadcrumb-mobile');
         },
 
@@ -122,18 +130,31 @@ define('Controls/Breadcrumb', [
          */
         trigger: function ()
         {
-            var height = this.height * this.elmNumber;
+            // jeweils +1px, weil border; -1px, weil letzter border fehlt
+            var height = (this.height +1) * this.elmNumber -1;
 
             if (this.isOpen === false) {
                 // open
                 this.container.setStyle('height', height);
                 this.isOpen = true;
+
+                moofx(this.button).animate({
+                    transform: 'rotate(180deg)'
+                }, {
+                    duration: 300
+                });
                 return;
             }
 
             // close
             this.container.setStyle('height', this.height);
             this.isOpen = false;
+
+            moofx(this.button).animate({
+                transform: 'rotate(0)'
+            }, {
+                duration: 300
+            });
         }
 
     });
