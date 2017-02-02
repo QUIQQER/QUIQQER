@@ -9,6 +9,7 @@ namespace QUI\Users;
 use QUI;
 use QUI\Utils\Security\Orthos as Orthos;
 use QUI\ERP\Currency\Handler as Currencies;
+use QUI\Users\Auth;
 
 /**
  * A user
@@ -300,7 +301,7 @@ class User implements QUI\Interfaces\Users\User
     {
         $result = array();
 
-        $available = QUI\Users\Auth\Handler::getInstance()->getAvailableAuthenticators();
+        $available = Auth\Handler::getInstance()->getAvailableAuthenticators();
         $available = array_flip($available);
 
         if (empty($this->authenticator)) {
@@ -310,6 +311,10 @@ class User implements QUI\Interfaces\Users\User
         }
 
         foreach ($this->authenticator as $auth) {
+            if (!Auth\Helper::hasUserPermissionToUseAuthenticator($this, $auth)) {
+                continue;
+            }
+
             if (isset($available[$auth])) {
                 $result[] = new $auth($this->getUsername());
             }
@@ -328,7 +333,8 @@ class User implements QUI\Interfaces\Users\User
      */
     public function getAuthenticator($authenticator)
     {
-        $available = QUI\Users\Auth\Handler::getInstance()->getAvailableAuthenticators();
+        $Handler   = Auth\Handler::getInstance();
+        $available = $Handler->getAvailableAuthenticators();
         $available = array_flip($available);
 
         if (!isset($available[$authenticator])) {
@@ -342,6 +348,16 @@ class User implements QUI\Interfaces\Users\User
         }
 
         if (!in_array($authenticator, $this->authenticator)) {
+            throw new QUI\Users\Exception(
+                array(
+                    'quiqqer/system',
+                    'exception.authenticator.not.found'
+                ),
+                404
+            );
+        }
+
+        if (!Auth\Helper::hasUserPermissionToUseAuthenticator($this, $authenticator)) {
             throw new QUI\Users\Exception(
                 array(
                     'quiqqer/system',
@@ -363,7 +379,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function enableAuthenticator($authenticator, $ParentUser = false)
     {
-        $available = QUI\Users\Auth\Handler::getInstance()->getAvailableAuthenticators();
+        $available = Auth\Handler::getInstance()->getAvailableAuthenticators();
         $available = array_flip($available);
 
         if (!isset($available[$authenticator])) {
@@ -376,8 +392,30 @@ class User implements QUI\Interfaces\Users\User
             );
         }
 
+        if (!Auth\Helper::hasUserPermissionToUseAuthenticator($this, $authenticator)) {
+            throw new QUI\Users\Exception(
+                array(
+                    'quiqqer/system',
+                    'exception.authenticator.not.found'
+                ),
+                404
+            );
+        }
+
         if (in_array($authenticator, $this->authenticator)) {
             return;
+        }
+
+        if (class_exists('QUI\Watcher')) {
+            QUI\Watcher::addString(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'user.enable.authenticator', array(
+                    'id' => $this->getId()
+                )),
+                '',
+                array(
+                    'authenticator' => $authenticator
+                )
+            );
         }
 
         $this->authenticator[] = $authenticator;
@@ -394,7 +432,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function disableAuthenticator($authenticator, $ParentUser = false)
     {
-        $available = QUI\Users\Auth\Handler::getInstance()->getAvailableAuthenticators();
+        $available = Auth\Handler::getInstance()->getAvailableAuthenticators();
         $available = array_flip($available);
 
         if (!isset($available[$authenticator])) {
@@ -415,6 +453,18 @@ class User implements QUI\Interfaces\Users\User
             unset($this->authenticator[$key]);
         }
 
+        if (class_exists('QUI\Watcher')) {
+            QUI\Watcher::addString(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'user.disable.authenticator', array(
+                    'id' => $this->getId()
+                )),
+                '',
+                array(
+                    'authenticator' => $authenticator
+                )
+            );
+        }
+
         $this->save($ParentUser);
     }
 
@@ -426,6 +476,10 @@ class User implements QUI\Interfaces\Users\User
      */
     public function hasAuthenticator($authenticator)
     {
+        if (!Auth\Helper::hasUserPermissionToUseAuthenticator($this, $authenticator)) {
+            return false;
+        }
+
         return in_array($authenticator, $this->authenticator);
     }
 
@@ -1141,7 +1195,7 @@ class User implements QUI\Interfaces\Users\User
         }
 
         try {
-            $Auth = QUI\Users\Auth\Handler::getInstance()->getAuthenticator(
+            $Auth = Auth\Handler::getInstance()->getAuthenticator(
                 Auth\QUIQQER::class,
                 $this->getUsername()
             );

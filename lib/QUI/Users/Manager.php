@@ -845,10 +845,12 @@ class Manager
         $username = '';
         $Session  = QUI::getSession();
 
-        if (isset($params['username'])) {
-            $username = $params['username'];
-        } elseif (QUI::getSession()->get('username')) {
+        // Wenn im Session ein Benutzernamen schon gesetzt wurde, von einem anderen Authenticator
+        // Dann muss IMMER dieser Benutzer zur Authentifizierung verwendet werden
+        if (QUI::getSession()->get('username')) {
             $username = QUI::getSession()->get('username');
+        } elseif (isset($params['username'])) {
+            $username = $params['username'];
         }
 
         if ($authenticator instanceof AuthInterface) {

@@ -24,11 +24,18 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
         Type: 'controls/users/auth/GlobalAuthenticatorSettings',
         Extends: QUIControl,
 
+        Binds: [
+            '$onChange'
+        ],
+
         initialize: function (options) {
             this.parent(options);
 
+            this.$rows = [];
+
             this.addEvents({
-                onImport: this.$onImport
+                onImport: this.$onImport,
+                onRefresh: this.$onRefresh
             });
         },
 
@@ -46,17 +53,55 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
                     html: QUILocale.get(lg, 'quiqqer.settings.auth.global.desc')
                 }).inject(self.getElm(), 'after');
 
+                var i, len, NewRow;
                 var Row = self.getElm().getParent('tr');
+                var rows = [];
 
-                for (var i = 0, len = available.length; i < len; i++) {
-                    new Element('tr', {
+                for (i = 0, len = available.length; i < len; i++) {
+                    NewRow = new Element('tr', {
                         html: Mustache.render(templateRow, {
                             title: available[i].title,
+                            description: available[i].description,
                             authenticator: available[i].authenticator
                         })
                     }).inject(Row, 'after');
+
+                    rows.push(NewRow);
+
+                    NewRow.getElement('input').addEvent('change', self.$onChange);
                 }
+
+                self.$rows = rows;
             });
+        },
+
+        /**
+         * event: on checkbox change
+         */
+        $onChange: function () {
+            var checked = this.$rows.filter(function (Row) {
+                return Row.getElement('input').checked;
+            }).map(function (Row) {
+                return Row.getElement('input').name;
+            });
+
+            if (this.getElm().nodeName == 'INPUT') {
+                this.getElm().value = JSON.encode(checked);
+            }
+        },
+
+        /**
+         * Save the authenticator settings
+         *
+         * @returns {Promise}
+         */
+        save: function () {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.post('ajax_users_authenticator_save', resolve, {
+                    authenticators: this.getElm().value,
+                    onError: reject
+                });
+            }.bind(this));
         }
     });
 });

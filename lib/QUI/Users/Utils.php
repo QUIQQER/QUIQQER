@@ -93,26 +93,27 @@ class Utils
      */
     public static function getTab($uid, $plugin, $tab)
     {
-        $Users = QUI::getUsers();
-        $User  = $Users->get((int)$uid);
+        $Users       = QUI::getUsers();
+        $User        = $Users->get((int)$uid);
+        $AuthHandler = Auth\Handler::getInstance();
 
         // assign user as global var
         QUI::getTemplateManager()->assignGlobalParam('User', $User);
 
         // authenticators
         $userAuthenticators = array();
-        $authenticators     = array();
-        $available          = QUI\Users\Auth\Handler::getInstance()->getAvailableAuthenticators();
+        $authenticators     = $AuthHandler->getAvailableAuthenticators();
 
-        foreach ($available as $auth) {
-            $authenticators[] = new $auth($User->getName());
+        foreach ($authenticators as $authenticator) {
+            try {
+                if (Auth\Helper::hasUserPermissionToUseAuthenticator($User, $authenticator)) {
+                    $userAuthenticators[] = new $authenticator($User->getName());
+                }
+            } catch (QUI\Exception $Exception) {
+            }
         }
 
         QUI::getTemplateManager()->assignGlobalParam('authenticators', $authenticators);
-
-
-        $User->getAuthenticators();
-
         QUI::getTemplateManager()->assignGlobalParam('userAuthenticators', $userAuthenticators);
 
 

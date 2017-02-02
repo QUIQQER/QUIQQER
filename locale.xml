@@ -582,6 +582,10 @@
             <de><![CDATA[Diese Weiterleitung besteht bereits.]]></de>
             <en><![CDATA[This forwarding already exists.]]></en>
         </locale>
+        <locale name="exception.config.save.not.allowed">
+            <de><![CDATA[Sie besitzen nicht die nötigen Rechte um die Konfiguration zu speichern.]]></de>
+            <en><![CDATA[You do not have the necessary permissions to save the configuration]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">

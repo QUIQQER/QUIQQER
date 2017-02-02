@@ -19,8 +19,10 @@ QUI::$Ajax->registerFunction(
             try {
                 $Authenticator = new $authenticator($User->getName());
 
+                /* @var $Authenticator \QUI\Users\AuthInterface */
                 $list[] = array(
                     'title'         => $Authenticator->getTitle(),
+                    'description'   => $Authenticator->getDescription(),
                     'authenticator' => $authenticator
                 );
             } catch (\Exception $Exception) {

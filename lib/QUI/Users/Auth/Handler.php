@@ -38,6 +38,46 @@ class Handler
     }
 
     /**
+     * @param QUI\Package\Package $Package
+     */
+    public static function onPackageSetup(QUI\Package\Package $Package)
+    {
+        // create auth provider as user permissions
+        $authProviders = $Package->getProvider('auth');
+
+        if (empty($authProviders)) {
+            return;
+        }
+
+        // <permission name="quiqqer.auth.AUTH.canUse" type="bool" />
+        $Locale      = new QUI\Locale();
+        $Permissions = new QUI\Permissions\Manager();
+        $User        = QUI::getUserBySession();
+
+        $Locale->no_translation = true;
+
+        foreach ($authProviders as $authProvider) {
+            if (trim($authProvider, '\\') == QUIQQER::class) {
+                continue;
+            }
+
+            /* @var $Authenticator AuthInterface */
+            $Authenticator  = new $authProvider($User->getName());
+            $permissionName = Helper::parseAuthenticatorToPermission($authProvider);
+
+            $Permissions->addPermission(array(
+                'name'         => $permissionName,
+                'title'        => $Authenticator->getTitle($Locale),
+                'desc'         => $Authenticator->getDescription($Locale),
+                'type'         => 'bool',
+                'area'         => '',
+                'src'          => $Package->getName(),
+                'defaultvalue' => 0
+            ));
+        }
+    }
+
+    /**
      * Return all global active authenticators
      *
      * @return array

@@ -124,7 +124,7 @@
     </thead>
 </table>
 
-{foreach from=$authenticators item=$Authenticator}
+{foreach from=$userAuthenticators item=$Authenticator}
 {assign var=cls value=get_class($Authenticator)}
 {assign var=hasAuth value=$User->hasAuthenticator($cls)}
 <table class="data-table data-table-flexbox data-table-no-toggle authenticator{if $hasAuth} authenticator-enabled{/if}"
