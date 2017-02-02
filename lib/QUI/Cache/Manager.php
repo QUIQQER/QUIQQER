@@ -312,7 +312,9 @@ class Manager
      */
     public static function set($name, $data, $time = null)
     {
-        self::getStash($name)->set($data, $time);
+        $Stash = self::getStash($name);
+        $Stash->set($data, $time);
+        $Stash->save();
     }
 
     /**
