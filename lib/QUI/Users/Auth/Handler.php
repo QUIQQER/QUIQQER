@@ -67,8 +67,8 @@ class Handler
 
             $Permissions->addPermission(array(
                 'name'         => $permissionName,
-                'title'        => $Authenticator->getTitle($Locale),
-                'desc'         => $Authenticator->getDescription($Locale),
+                'title'        => str_replace(array('[', ']'), '', $Authenticator->getTitle($Locale)),
+                'desc'         => str_replace(array('[', ']'), '', $Authenticator->getDescription($Locale)),
                 'type'         => 'bool',
                 'area'         => '',
                 'src'          => $Package->getName(),

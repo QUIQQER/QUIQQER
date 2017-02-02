@@ -264,13 +264,17 @@ define('controls/users/User', [
          * @param {Object} Btn - qui/controls/buttons/Button
          */
         $onButtonActive: function (Btn) {
-            var self = this;
+            var self = this,
+                Body = self.getBody(),
+                User = self.getUser(),
+                attributes = User.getAttributes();
 
             this.Loader.show();
 
-            QUIAjax.get('ajax_users_getCategory', function (result) {
-                var Body = self.getBody(),
-                    User = self.getUser();
+            this.$hideCurrentContent().then(function () {
+                return self.$getCategoryContent(Btn);
+
+            }).then(function (result) {
 
                 if (!result) {
                     result = '';
@@ -278,289 +282,367 @@ define('controls/users/User', [
 
                 Body.set('html', '<form>' + result + '</form>');
 
+                var Form = Body.getElement('form');
+
+                Form.setStyles({
+                    opacity: 0,
+                    position: 'relative',
+                    top: -50
+                });
+
                 // insert the values
-                var attributes = User.getAttributes();
                 var extras = JSON.decode(attributes.extra);
 
-                FormUtils.setDataToForm(extras, Body.getElement('form'));
-                FormUtils.setDataToForm(attributes, Body.getElement('form'));
+                FormUtils.setDataToForm(extras, Form);
+                FormUtils.setDataToForm(attributes, Form);
 
                 Body.getElements('[data-qui]').set({
                     'data-qui-options-uid': self.getUser().getId()
                 });
 
                 // parse all the controls
-                QUI.parse(Body).then(function () {
-                    return ControlUtils.parse(Body);
-                }).then(function () {
+                return QUI.parse(Body);
 
-                    // insert the values
-                    // var attributes = User.getAttributes();
-                    // var extras     = JSON.decode(attributes.extra);
-                    //
-                    // FormUtils.setDataToForm(attributes, Body.getElement('form'));
-                    // FormUtils.setDataToForm(extras, Body.getElement('form'));
+            }).then(function () {
+                return ControlUtils.parse(self.getBody());
 
-                    QUI.Controls.getControlsInElement(Body).each(function (Control) {
-                        Control.setAttribute('Panel', self);
-                        Control.setAttribute('uid', self.getUser().getId());
-                        Control.setAttribute('User', self.getUser());
+            }).then(function () {
 
-                        if (!('setValue' in Control)) {
-                            return;
-                        }
+                QUI.Controls.getControlsInElement(Body).each(function (Control) {
+                    Control.setAttribute('Panel', self);
+                    Control.setAttribute('uid', self.getUser().getId());
+                    Control.setAttribute('User', self.getUser());
 
-                        var name = Control.getAttribute('name');
-
-                        if (!name || name === '') {
-                            return;
-                        }
-
-                        if (name in attributes) {
-                            Control.setValue(attributes[name]);
-                        }
-
-                        if (extras && name in extras) {
-                            Control.setValue(extras[name]);
-                        }
-                    });
-
-                    // password save
-                    var i, len;
-
-                    var PasswordField = Body.getElement('input[name="password2"]'),
-                        PasswordExpire = Body.getElements('input[name="expire"]'),
-                        ShowPasswords = Body.getElement('input[name="showPasswords"]'),
-                        Toolbar = Body.getElement('[name="toolbar"]'),
-                        AddressList = Body.getElement('.address-list'),
-                        authenticators = Body.getElements('.authenticator');
-
-                    if (PasswordField) {
-                        PasswordField.setStyle('float', 'left');
-
-                        new QUIButton({
-                            textimage: 'fa fa-lock',
-                            text: QUILocale.get(lg, 'users.user.btn.password.generate'),
-                            events: {
-                                onClick: self.generatePassword
-                            }
-                        }).inject(PasswordField, 'after');
-
-                        ShowPasswords.addEvent('change', function () {
-                            var PasswordFields = Body.getElements(
-                                '[name="password2"],[name="password"]'
-                            );
-
-                            if (this.checked) {
-                                PasswordFields.set('type', 'text');
-                                return;
-                            }
-
-                            PasswordFields.set('type', 'password');
-                        });
-
-                        if (ShowPasswords.checked) {
-                            ShowPasswords.checked = false;
-                        }
-
-                        // has a password?
-                        if (!self.getUser().getAttribute('hasPassword')) {
-                            new Element('tr', {
-                                html: '<td colspan="2">' +
-                                '    <div class="content-message-error">' +
-                                QUILocale.get('quiqqer/quiqqer', 'message.user.has.no.password') +
-                                '    </div>' +
-                                '</td>'
-                            }).inject(Body.getElement('tbody'));
-                        }
-                    }
-
-                    // authenticator
-                    if (authenticators) {
-                        var toggleAuthenticator = function (Btn) {
-                            var Table = Btn.getElm().getParent('table'),
-                                auth = Table.get('data-authenticator'),
-                                Prom = Promise.resolve();
-
-                            Btn.getElm().setStyle('width', Btn.getElm().getSize().x);
-                            Btn.setAttribute('text', '<span class="fa fa-spinner fa-spin"></span>');
-
-                            if (Table.hasClass('authenticator-enabled')) {
-                                Prom = User.disableAuthenticator(auth);
-                            } else {
-                                Prom = User.enableAuthenticator(auth);
-                            }
-
-                            Prom.then(function () {
-                                return User.hasAuthenticator(auth);
-                            }).then(function (enabled) {
-                                if (enabled) {
-                                    Table.addClass('authenticator-enabled');
-
-                                    Btn.getElm().setStyle('width', null);
-                                    Btn.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isActivate'));
-                                    Btn.getElm().removeClass('btn-red');
-                                    Btn.getElm().addClass('btn-green');
-
-                                    return User.getAuthenticatorSettings(auth);
-                                }
-
-                                Table.removeClass('authenticator-enabled');
-
-                                Btn.getElm().setStyle('width', null);
-                                Btn.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isDeactivate'));
-                                Btn.getElm().addClass('btn-red');
-                                Btn.getElm().removeClass('btn-green');
-
-                                return false;
-                            }).then(function (settings) {
-                                var TBody = Table.getElement('tbody');
-
-                                if (!settings || settings === '') {
-                                    if (TBody) {
-                                        TBody.destroy();
-                                    }
-                                    return;
-                                }
-
-                                if (!TBody) {
-                                    TBody = new Element('tbody', {
-                                        html: '<tr><td></td></tr>'
-                                    }).inject(Table);
-                                }
-
-                                TBody.getElement('td').set('html', settings);
-                                TBody.getElements('[data-qui]').set({
-                                    'data-qui-options-uid': self.getUser().getId()
-                                });
-
-                                return QUI.parse(TBody);
-                            }).then(function () {
-
-                                QUI.Controls.getControlsInElement(Table.getElement('tbody')).each(function (Control) {
-                                    Control.setAttribute('Panel', self);
-                                    Control.setAttribute('uid', self.getUser().getId());
-                                    Control.setAttribute('User', self.getUser());
-                                });
-
-                            }).catch(function (Exception) {
-                                console.error(Exception);
-                                Btn.setAttribute('text', '<span class="fa fa-bolt"></span>');
-                            });
-                        };
-
-                        var cls, text, title, enabled;
-
-                        for (i = 0, len = authenticators.length; i < len; i++) {
-                            enabled = false;
-                            title = QUILocale.get('quiqqer/quiqqer', 'isDeactivate');
-                            text = QUILocale.get('quiqqer/quiqqer', 'isDeactivate');
-                            cls = 'btn-red';
-
-                            if (authenticators[i].hasClass('authenticator-enabled')) {
-                                enabled = true;
-                                title = QUILocale.get('quiqqer/quiqqer', 'isActivate');
-                                text = QUILocale.get('quiqqer/quiqqer', 'isActivate');
-                                cls = 'btn-green';
-                            }
-
-                            new QUIButton({
-                                text: text,
-                                title: title,
-                                'class': cls,
-                                styles: {
-                                    position: 'absolute',
-                                    right: 5,
-                                    top: 5
-                                },
-                                events: {
-                                    onClick: toggleAuthenticator
-                                }
-                            }).inject(authenticators[i].getElement('thead th'));
-                        }
-                    }
-
-                    // password expire
-                    if (PasswordExpire.length) {
-                        var expire = attributes.expire || false;
-
-                        if (!expire || expire == '0000-00-00 00:00:00') {
-                            PasswordExpire[0].checked = true;
-
-                        } else {
-                            PasswordExpire[1].checked = true;
-
-                            Body.getElement('input[name="expire_date"]').value = expire;
-                        }
-                    }
-
-                    if (AddressList) {
-                        self.$createAddressTable();
-                    }
-
-                    if (Toolbar) {
-                        var toolbars = User.getAttribute('toolbars');
-
-                        new Element('option', {
-                            value: '',
-                            html: ''
-                        }).inject(Toolbar);
-
-                        for (i = 0, len = toolbars.length; i < len; i++) {
-                            new Element('option', {
-                                value: toolbars[i],
-                                html: toolbars[i].replace('.xml', '')
-                            }).inject(Toolbar);
-                        }
-
-                        Toolbar.value = User.getAttribute('toolbar');
-                    }
-
-                    if (!Btn.getAttribute('onload_require') && !Btn.getAttribute('onload')) {
-                        self.Loader.hide();
+                    if (!('setValue' in Control)) {
                         return;
                     }
 
-                    // require onload
-                    try {
-                        var exec = Btn.getAttribute('onload'),
-                            req = Btn.getAttribute('onload_require');
+                    var name = Control.getAttribute('name');
 
-                        if (req) {
-                            require([req], function (result) {
-                                self.Loader.hide();
+                    if (!name || name === '') {
+                        return;
+                    }
 
-                                if (typeOf(result) == 'class') {
-                                    new result(self);
-                                }
+                    if (name in attributes) {
+                        Control.setValue(attributes[name]);
+                    }
 
-                                if (typeOf(result) == 'function') {
-                                    result(self);
-                                }
-
-                                if (exec) {
-                                    eval(exec + '( self )');
-                                }
-                            });
-
-                            return;
-                        }
-
-                        eval(exec + '( self )');
-
-                        self.Loader.hide();
-
-                    } catch (Exception) {
-                        console.error('some error occurred ' + Exception.getMessage());
-                        self.Loader.hide();
+                    if (extras && name in extras) {
+                        Control.setValue(extras[name]);
                     }
                 });
 
-            }, {
-                Tab: Btn,
-                plugin: Btn.getAttribute('plugin'),
-                tab: Btn.getAttribute('name'),
-                uid: this.getUser().getId()
+                // password save
+                var i, len;
+
+                var PasswordField = Body.getElement('input[name="password2"]'),
+                    PasswordExpire = Body.getElements('input[name="expire"]'),
+                    ShowPasswords = Body.getElement('input[name="showPasswords"]'),
+                    Toolbar = Body.getElement('[name="toolbar"]'),
+                    AddressList = Body.getElement('.address-list'),
+                    authenticators = Body.getElements('.authenticator');
+
+                if (PasswordField) {
+                    PasswordField.setStyle('float', 'left');
+
+                    new QUIButton({
+                        textimage: 'fa fa-lock',
+                        text: QUILocale.get(lg, 'users.user.btn.password.generate'),
+                        events: {
+                            onClick: self.generatePassword
+                        }
+                    }).inject(PasswordField, 'after');
+
+                    ShowPasswords.addEvent('change', function () {
+                        var PasswordFields = Body.getElements(
+                            '[name="password2"],[name="password"]'
+                        );
+
+                        if (this.checked) {
+                            PasswordFields.set('type', 'text');
+                            return;
+                        }
+
+                        PasswordFields.set('type', 'password');
+                    });
+
+                    if (ShowPasswords.checked) {
+                        ShowPasswords.checked = false;
+                    }
+
+                    // has a password?
+                    if (!self.getUser().getAttribute('hasPassword')) {
+                        new Element('tr', {
+                            html: '<td colspan="2">' +
+                            '    <div class="content-message-error">' +
+                            QUILocale.get('quiqqer/quiqqer', 'message.user.has.no.password') +
+                            '    </div>' +
+                            '</td>'
+                        }).inject(Body.getElement('tbody'));
+                    }
+                }
+
+                // authenticator
+                if (authenticators) {
+                    var toggleAuthenticator = function (Btn) {
+                        var Table = Btn.getElm().getParent('table'),
+                            auth = Table.get('data-authenticator'),
+                            Prom = Promise.resolve();
+
+                        Btn.getElm().setStyle('width', Btn.getElm().getSize().x);
+                        Btn.setAttribute('text', '<span class="fa fa-spinner fa-spin"></span>');
+
+                        if (Table.hasClass('authenticator-enabled')) {
+                            Prom = User.disableAuthenticator(auth);
+                        } else {
+                            Prom = User.enableAuthenticator(auth);
+                        }
+
+                        Prom.then(function () {
+                            return User.hasAuthenticator(auth);
+                        }).then(function (enabled) {
+                            if (enabled) {
+                                Table.addClass('authenticator-enabled');
+
+                                Btn.getElm().setStyle('width', null);
+                                Btn.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isActivate'));
+                                Btn.getElm().removeClass('btn-red');
+                                Btn.getElm().addClass('btn-green');
+
+                                return User.getAuthenticatorSettings(auth);
+                            }
+
+                            Table.removeClass('authenticator-enabled');
+
+                            Btn.getElm().setStyle('width', null);
+                            Btn.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isDeactivate'));
+                            Btn.getElm().addClass('btn-red');
+                            Btn.getElm().removeClass('btn-green');
+
+                            return false;
+                        }).then(function (settings) {
+                            var TBody = Table.getElement('tbody');
+
+                            if (!settings || settings === '') {
+                                if (TBody) {
+                                    TBody.destroy();
+                                }
+                                return;
+                            }
+
+                            if (!TBody) {
+                                TBody = new Element('tbody', {
+                                    html: '<tr><td></td></tr>'
+                                }).inject(Table);
+                            }
+
+                            TBody.getElement('td').set('html', settings);
+                            TBody.getElements('[data-qui]').set({
+                                'data-qui-options-uid': self.getUser().getId()
+                            });
+
+                            return QUI.parse(TBody);
+                        }).then(function () {
+
+                            QUI.Controls.getControlsInElement(Table.getElement('tbody')).each(function (Control) {
+                                Control.setAttribute('Panel', self);
+                                Control.setAttribute('uid', self.getUser().getId());
+                                Control.setAttribute('User', self.getUser());
+                            });
+
+                        }).catch(function (Exception) {
+                            console.error(Exception);
+                            Btn.setAttribute('text', '<span class="fa fa-bolt"></span>');
+                        });
+                    };
+
+                    var cls, text, title, enabled;
+
+                    for (i = 0, len = authenticators.length; i < len; i++) {
+                        enabled = false;
+                        title = QUILocale.get('quiqqer/quiqqer', 'isDeactivate');
+                        text = QUILocale.get('quiqqer/quiqqer', 'isDeactivate');
+                        cls = 'btn-red';
+
+                        if (authenticators[i].hasClass('authenticator-enabled')) {
+                            enabled = true;
+                            title = QUILocale.get('quiqqer/quiqqer', 'isActivate');
+                            text = QUILocale.get('quiqqer/quiqqer', 'isActivate');
+                            cls = 'btn-green';
+                        }
+
+                        new QUIButton({
+                            text: text,
+                            title: title,
+                            'class': cls,
+                            styles: {
+                                position: 'absolute',
+                                right: 5,
+                                top: 5
+                            },
+                            events: {
+                                onClick: toggleAuthenticator
+                            }
+                        }).inject(authenticators[i].getElement('thead th'));
+                    }
+                }
+
+                // password expire
+                if (PasswordExpire.length) {
+                    var expire = attributes.expire || false;
+
+                    if (!expire || expire == '0000-00-00 00:00:00') {
+                        PasswordExpire[0].checked = true;
+
+                    } else {
+                        PasswordExpire[1].checked = true;
+
+                        Body.getElement('input[name="expire_date"]').value = expire;
+                    }
+                }
+
+                if (AddressList) {
+                    self.$createAddressTable();
+                }
+
+                if (Toolbar) {
+                    var toolbars = User.getAttribute('toolbars');
+
+                    new Element('option', {
+                        value: '',
+                        html: ''
+                    }).inject(Toolbar);
+
+                    for (i = 0, len = toolbars.length; i < len; i++) {
+                        new Element('option', {
+                            value: toolbars[i],
+                            html: toolbars[i].replace('.xml', '')
+                        }).inject(Toolbar);
+                    }
+
+                    Toolbar.value = User.getAttribute('toolbar');
+                }
+
+                if (!Btn.getAttribute('onload_require') && !Btn.getAttribute('onload')) {
+                    self.Loader.hide();
+                    self.$showCurrentContent();
+                    return;
+                }
+
+                // require onload
+                try {
+                    var exec = Btn.getAttribute('onload'),
+                        req = Btn.getAttribute('onload_require');
+
+                    if (req) {
+                        require([req], function (result) {
+                            self.Loader.hide();
+
+                            if (typeOf(result) == 'class') {
+                                new result(self);
+                            }
+
+                            if (typeOf(result) == 'function') {
+                                result(self);
+                            }
+
+                            if (exec) {
+                                eval(exec + '(self)');
+                            }
+
+                            self.$showCurrentContent();
+                        });
+                        return;
+                    }
+
+                    eval(exec + '( self )');
+
+                    self.$showCurrentContent();
+                    self.Loader.hide();
+
+                } catch (Exception) {
+                    console.error('some error occurred ' + Exception.getMessage());
+                    self.$showCurrentContent();
+                    self.Loader.hide();
+                }
+            });
+
+        },
+
+        /**
+         * hide the current body content
+         *
+         * @returns {Promise}
+         */
+        $hideCurrentContent: function () {
+            var self = this;
+
+            return new Promise(function (resolve) {
+                var Body = self.getBody(),
+                    Form = Body.getElement('form');
+
+                if (!Form) {
+                    resolve();
+                    return;
+                }
+
+                Form.setStyle('position', 'relative');
+
+                moofx(Form).animate({
+                    opacity: 0,
+                    top: -50
+                }, {
+                    duration: 250,
+                    callback: resolve
+                });
+            });
+        },
+
+        /**
+         * show the current body content
+         *
+         * @returns {Promise}
+         */
+        $showCurrentContent: function () {
+            var self = this;
+
+            return new Promise(function (resolve) {
+                var Body = self.getBody(),
+                    Form = Body.getElement('form');
+
+                if (!Form) {
+                    resolve();
+                    return;
+                }
+
+                Form.setStyle('position', 'relative');
+
+                moofx(Form).animate({
+                    opacity: 1,
+                    top: 0
+                }, {
+                    duration: 250,
+                    callback: resolve
+                });
+            });
+        },
+
+        /**
+         * Return the category content
+         *
+         * @param {Object} Btn
+         * @returns {Promise}
+         */
+        $getCategoryContent: function (Btn) {
+            var self = this;
+
+            return new Promise(function (resolve) {
+                QUIAjax.get('ajax_users_getCategory', resolve, {
+                    Tab: Btn,
+                    plugin: Btn.getAttribute('plugin'),
+                    tab: Btn.getAttribute('name'),
+                    uid: self.getUser().getId()
+                });
             });
         },
 
