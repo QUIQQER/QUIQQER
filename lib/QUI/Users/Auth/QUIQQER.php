@@ -66,6 +66,21 @@ class QUIQQER implements QUI\Users\AuthInterface
     }
 
     /**
+     * Return the auth title
+     *
+     * @param null|\QUI\Locale $Locale
+     * @return string
+     */
+    public function getDescription($Locale = null)
+    {
+        if (is_null($Locale)) {
+            $Locale = QUI::getLocale();
+        }
+
+        return $Locale->get('quiqqer/quiqqer', 'quiqqer.auth.description');
+    }
+
+    /**
      * Authenticate the user
      *
      * @param string $password

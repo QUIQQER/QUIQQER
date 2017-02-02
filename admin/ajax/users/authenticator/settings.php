@@ -1,10 +1,11 @@
 <?php
 
 /**
- * Deactivate a authenticatior from the user
+ * Return the settings control from an authenticator
  *
  * @param integer|string $uid
  * @param string $authenticator
+ * @return string
  * @throws \QUI\Users\Exception
  */
 QUI::$Ajax->registerFunction(
@@ -13,7 +14,7 @@ QUI::$Ajax->registerFunction(
         $User          = QUI::getUsers()->get($uid);
         $Authenticator = $User->getAuthenticator($authenticator);
         $Settings      = $Authenticator->getSettingsControl();
-\QUI\System\Log::writeRecursive($Settings);
+
         if ($Settings) {
             return $Settings->create();
         }

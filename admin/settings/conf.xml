@@ -533,7 +533,9 @@
                         <description>
                             <locale group="quiqqer/quiqqer" var="quiqqer.settings.auth.global.desc"/>
                         </description>
-                        <input type="hidden" name="global.authenticators"
+                        <input label="false"
+                               type="hidden"
+                               name="global.authenticators"
                                data-qui="controls/users/auth/GlobalAuthenticatorSettings"/>
                     </settings>
 

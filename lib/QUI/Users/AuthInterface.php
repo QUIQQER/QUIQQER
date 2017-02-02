@@ -39,9 +39,15 @@ interface AuthInterface
 
     /**
      * @param null|\QUI\Locale $Locale
-     * @return mixed
+     * @return string
      */
     public function getTitle($Locale = null);
+
+    /**
+     * @param null|\QUI\Locale $Locale
+     * @return string
+     */
+    public function getDescription($Locale = null);
 
     /**
      * Return the quiqqer user id

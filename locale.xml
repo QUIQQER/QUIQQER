@@ -550,7 +550,28 @@
         </locale>
         <locale name="quiqqer.auth.title">
             <de><![CDATA[QUIQQER Standard Authentifizierung]]></de>
-            <en><![CDATA[QUIQQER tandard authentifizierung]]></en>
+            <en><![CDATA[QUIQQER Basic authentication]]></en>
+        </locale>
+        <locale name="quiqqer.auth.description">
+            <de><![CDATA[Die standard QUIQQER Authentifizierung per Benutzername und Passwort.]]></de>
+            <en><![CDATA[The standard QUIQQER authentication by username and password.]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.global">
+            <de><![CDATA[Primäre Authenticator]]></de>
+            <en><![CDATA[Primary Authentifiers]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.global.desc">
+            <de><![CDATA[
+            Primäre Authenticator sind Auhthentifizierungsmethoden welche dem Benutzer zu Anfang
+            seiner Authentifizierung zur Verfügung stehen. Zusätzlich können Sie über
+            die Zugriffsrechteverwaltung für jede Gruppe oder jeden User Mehrfachauthentifizierungen
+            zur Verfügung stellen.
+            ]]></de>
+            <en><![CDATA[
+            Primary Authenticators are authentication methods which provide the user at the beginning
+            of his Authentication. In addition, you can go over the permissions management
+            for each group or user and set more factor authentication.
+            ]]></en>
         </locale>
 
         <locale name="exception.forwarding.already.exists">
