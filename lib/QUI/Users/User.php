@@ -306,17 +306,17 @@ class User implements QUI\Interfaces\Users\User
 
         if (empty($this->authenticator)) {
             $this->authenticator = array(
-                'QUI\Users\Auth\QUIQQER'
+                QUI\Users\Auth\QUIQQER::class
             );
         }
 
-        foreach ($this->authenticator as $auth) {
-            if (!Auth\Helper::hasUserPermissionToUseAuthenticator($this, $auth)) {
+        foreach ($this->authenticator as $authenticator) {
+            if (!Auth\Helper::hasUserPermissionToUseAuthenticator($this, $authenticator)) {
                 continue;
             }
 
-            if (isset($available[$auth])) {
-                $result[] = new $auth($this->getUsername());
+            if (isset($available[$authenticator])) {
+                $result[] = new $authenticator($this->getUsername());
             }
         }
 

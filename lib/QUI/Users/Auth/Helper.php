@@ -20,13 +20,17 @@ class Helper
      * Return the authenticator class name as a permission name
      *
      * @param string|AuthInterface $authenticator - Name of the authenticator class
-     * @param string $permission - optional, wanted permission, eq: canUse
+     * @param string $permission - optional, wanted permission, eq: permissionName
      * @return string
      */
-    public static function parseAuthenticatorToPermission($authenticator, $permission = 'canUse')
+    public static function parseAuthenticatorToPermission($authenticator, $permission = '')
     {
         if (is_object($authenticator)) {
             $authenticator = get_class($authenticator);
+        }
+
+        if (empty($permission)) {
+            return 'quiqqer.auth.' . str_replace('\\', '', $authenticator);
         }
 
         return 'quiqqer.auth.' . str_replace('\\', '', $authenticator) . '.' . $permission;

@@ -84,6 +84,10 @@
             <de><![CDATA[Seiten]]></de>
             <en><![CDATA[Sites]]></en>
         </locale>
+        <locale name="permission.quiqqer.auth._header">
+            <de><![CDATA[Authentifizierung]]></de>
+            <en><![CDATA[Authentication]]></en>
+        </locale>
 
         <locale name="permission.quiqqer.menu._header">
             <de><![CDATA[Menu]]></de>
