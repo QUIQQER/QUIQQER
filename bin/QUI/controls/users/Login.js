@@ -214,13 +214,15 @@ define('controls/users/Login', [
                         return;
                     }
 
-                    var Or = self.getElm().getElements('.quiqqer-login-or');
+                    if (Or) {
+                        var Or = self.getElm().getElements('.quiqqer-login-or');
 
-                    moofx(Or).animate({
-                        opacity: 0
-                    }, {
-                        duration: 200
-                    });
+                        moofx(Or).animate({
+                            opacity: 0
+                        }, {
+                            duration: 200
+                        });
+                    }
 
                     moofx(self.$forms).animate({
                         top    : 20,
@@ -228,7 +230,10 @@ define('controls/users/Login', [
                     }, {
                         duration: 250,
                         callback: function () {
-                            Or.destroy();
+                            if (Or) {
+                                Or.destroy();
+                            }
+
                             self.$forms.destroy();
                             self.$buildAuthenticator(result.control);
                         }
