@@ -209,6 +209,30 @@ class Console
                 $this->User = $Authenticator->getUser();
             }
         }
+
+        if (!QUI::getUsers()->isUser($this->User)) {
+            throw new QUI\Users\Exception(
+                array('quiqqer/system', 'exception.login.fail'),
+                401
+            );
+        }
+
+        if (QUI::getUsers()->isNobodyUser($this->User)) {
+            throw new QUI\Users\Exception(
+                array('quiqqer/system', 'exception.login.fail'),
+                401
+            );
+        }
+
+        /* @var $User QUI\Users\User */
+        $User           = $this->User;
+        $authenticators = $User->getAuthenticators();
+
+        foreach ($authenticators as $Authenticator) {
+            if ($Authenticator->isCLICompatible()) {
+                $Authenticator->cliAuthentication($this);
+            }
+        }
     }
 
     /**
@@ -569,8 +593,7 @@ class Console
             return;
         }
 
-        $str
-            = '
+        $str = '
          _______          _________ _______  _______  _______  _______
         (  ___  )|\     /|\__   __/(  ___  )(  ___  )(  ____ \(  ____ )
         | (   ) || )   ( |   ) (   | (   ) || (   ) || (    \/| (    )|

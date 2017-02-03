@@ -231,6 +231,7 @@ class QUIQQER extends AbstractAuthenticator
             $Console->clearMsg();
             $Console->writeLn("Please enter your password");
             $Console->writeLn("Password: ", 'green');
+            $Console->clearMsg();
 
             $Console->setArgument('password', QUI\Utils\System\Console::readPassword());
             $password = $Console->getArgument('password');
