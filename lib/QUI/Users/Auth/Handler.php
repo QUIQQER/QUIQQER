@@ -113,6 +113,19 @@ class Handler
             );
         }
 
+        // sorting
+        usort($result, function ($a, $b) {
+            if ($a == QUIQQER::class) {
+                return 1;
+            }
+
+            if ($b == QUIQQER::class) {
+                return 1;
+            }
+
+            return strcmp($a, $b);
+        });
+
         return $result;
     }
 

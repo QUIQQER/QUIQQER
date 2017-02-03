@@ -53,7 +53,8 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
                     html: QUILocale.get(lg, 'quiqqer.settings.auth.global.desc')
                 }).inject(self.getElm(), 'after');
 
-                var i, len, NewRow;
+                var i, r, len, rlen, NewRow;
+
                 var Row = self.getElm().getParent('tr');
                 var rows = [];
 
@@ -69,6 +70,13 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
                     rows.push(NewRow);
 
                     NewRow.getElement('input').addEvent('change', self.$onChange);
+                }
+
+                for (i = 0, len = globals.length; i < len; i++) {
+                    for (r = 0, rlen = rows.length; r < rlen; r++) {
+                        rows[r].getElements('[name="' + globals[i].escapeRegExp() + '"]')
+                               .set('checked', true);
+                    }
                 }
 
                 self.$rows = rows;

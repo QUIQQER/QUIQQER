@@ -303,13 +303,7 @@ class User implements QUI\Interfaces\Users\User
 
         $available = Auth\Handler::getInstance()->getAvailableAuthenticators();
         $available = array_flip($available);
-
-        if (empty($this->authenticator)) {
-            $this->authenticator = array(
-                QUI\Users\Auth\QUIQQER::class
-            );
-        }
-
+        
         foreach ($this->authenticator as $authenticator) {
             if (!Auth\Helper::hasUserPermissionToUseAuthenticator($this, $authenticator)) {
                 continue;

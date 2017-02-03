@@ -17,6 +17,11 @@ use QUI\Control;
 class Login extends Control
 {
     /**
+     * @var bool
+     */
+    protected $isGlobalAuth = false;
+
+    /**
      * Login constructor.
      * @param array $options
      */
@@ -42,15 +47,34 @@ class Login extends Control
             return '';
         }
 
-        $Control = forward_static_call(array($authenticator, 'getLoginControl'));
-
-        if (is_null($Control)) {
-            return '';
+        if (!is_array($authenticator)) {
+            $authenticator = array($authenticator);
         }
 
-        return '<form name="login" data-authenticator="' . $authenticator . '">' .
-               $Control->create() .
-               '</form>';
+        $result       = '';
+        $isGlobalAuth = '';
+
+        if ($this->isGlobalAuth) {
+            $isGlobalAuth = ' data-globalauth="1"';
+        }
+
+        foreach ($authenticator as $auth) {
+            $Control = forward_static_call(array($auth, 'getLoginControl'));
+
+            if (is_null($Control)) {
+                continue;
+            }
+
+            if (!empty($result)) {
+                $result .= '<div>or</div>';
+            }
+
+            $result .= '<form name="login" data-authenticator="' . $auth . '"' . $isGlobalAuth . '>' .
+                       $Control->create() .
+                       '</form>';
+        }
+
+        return $result;
     }
 
     /**
@@ -61,14 +85,24 @@ class Login extends Control
     public function next()
     {
         $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalAuthenticators();
+        $globals        = array();
 
-        foreach ($authenticators as $auth) {
-            if (QUI::getSession()->get('auth-' . $auth) !== 1) {
-                return $auth;
+        if (QUI::getSession()->get('auth-globals') != 1) {
+            foreach ($authenticators as $auth) {
+                if (QUI::getSession()->get('auth-' . $auth) !== 1) {
+                    $globals[] = $auth;
+                }
             }
+
+            $this->isGlobalAuth = true;
+        }
+
+        if (!empty($globals)) {
+            return $globals;
         }
 
         // test user authenticators
+        // multi authenticators
         $uid = QUI::getSession()->get('uid');
 
         if (!$uid) {

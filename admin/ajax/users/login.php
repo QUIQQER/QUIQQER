@@ -5,11 +5,15 @@
  */
 QUI::$Ajax->registerFunction(
     'ajax_users_login',
-    function ($authenticator, $params) {
+    function ($authenticator, $params, $globalauth) {
         QUI::getUsers()->authenticate(
             $authenticator,
             json_decode($params, true)
         );
+
+        if ($globalauth) {
+            QUI::getSession()->set('auth-globals', 1);
+        }
 
         $Login = new QUI\Users\Controls\Login();
         $next  = $Login->next();
@@ -27,5 +31,5 @@ QUI::$Ajax->registerFunction(
             'control'       => $control
         );
     },
-    array('authenticator', 'params')
+    array('authenticator', 'params', 'globalauth')
 );

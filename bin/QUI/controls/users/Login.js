@@ -47,7 +47,7 @@ define('controls/users/Login', [
             this.parent(options);
 
             this.Loader = null;
-            this.$Form = null;
+            this.$forms = [];
 
             this.addEvents({
                 onImport: this.$onImport,
@@ -85,7 +85,7 @@ define('controls/users/Login', [
          */
         $onImport: function () {
             this.Loader = new QUILoader().inject(this.getElm());
-            this.$Form = this.getElm().getElement('form');
+            this.$forms = this.getElm().getElements('form');
 
             if (this.getElm().get('data-onsuccess')) {
                 this.setAttribute('onSuccess', this.getElm().get('data-onsuccess'));
@@ -98,13 +98,13 @@ define('controls/users/Login', [
          * Refresh the form data and set events to the current form
          */
         $refreshForm: function () {
-            this.$Form.set({
+            this.$forms.set({
                 action: '',
                 method: 'POST',
                 events: {
                     submit: function (event) {
                         event.stop();
-                        this.auth().catch(function () {
+                        this.auth(event.target).catch(function () {
                         });
                     }.bind(this)
                 }
@@ -128,40 +128,48 @@ define('controls/users/Login', [
             });
 
             var elements = Container.getChildren(),
-                Form = Container.getElement('form'),
+                forms = Container.getElements('form'),
 
                 children = elements.filter(function (Node) {
                     return !Node.get('data-qui');
                 });
 
-            if (!Form) {
+            if (!forms.length) {
                 QUIAjax.post('ajax_user_logout', function () {
                     window.location.reload();
                 });
                 return;
             }
 
-            Form.setStyle('opacity', 0);
-            Form.inject(this.getElm());
+            forms.setStyle('opacity', 0);
+            forms.inject(this.getElm());
 
-            this.$Form = Form;
+            for (var i = 1, len = forms.length; i < len; i++) {
+                new Element('div', {
+                    'class': 'quiqqer-login-or',
+                    html: '<span>or</span>'
+                }).inject(forms[i], 'before');
+            }
+
+            this.$forms = forms;
             this.$refreshForm();
 
             children.each(function (Child) {
-                Child.inject(Form);
+                Child.inject(forms[0]);
             });
 
-            QUI.parse(Form).then(function () {
+            QUI.parse(forms).then(function () {
                 return this.Loader.hide()
             }.bind(this)).then(function () {
-                Form.setStyle('top', 20);
-                moofx(Form).animate({
+                forms.setStyle('top', 20);
+
+                moofx(forms).animate({
                     opacity: 1,
                     top: 0
                 }, {
                     duration: 200,
                     callback: function () {
-                        Form.elements[0].focus();
+                        forms[0].elements[0].focus();
                     }
                 });
             });
@@ -170,7 +178,7 @@ define('controls/users/Login', [
         /**
          * Execute the current authentication
          */
-        auth: function () {
+        auth: function (Form) {
             var self = this;
 
             this.Loader.show();
@@ -192,21 +200,31 @@ define('controls/users/Login', [
                         return;
                     }
 
-                    moofx(self.$Form).animate({
+                    var Or = self.getElm().getElements('.quiqqer-login-or');
+
+                    moofx(Or).animate({
+                        opacity: 0
+                    }, {
+                        duration: 200
+                    });
+
+                    moofx(self.$forms).animate({
                         top: 20,
                         opacity: 0
                     }, {
                         duration: 250,
                         callback: function () {
-                            self.$Form.destroy();
+                            Or.destroy();
+                            self.$forms.destroy();
                             self.$buildAuthenticator(result.control);
                         }
                     });
                 }, {
                     showLogin: false,
-                    authenticator: self.$Form.get('data-authenticator'),
+                    authenticator: Form.get('data-authenticator'),
+                    globalauth: !!Form.get('data-globalauth') ? 1 : 0,
                     params: JSON.encode(
-                        QUIFormUtils.getFormData(self.$Form)
+                        QUIFormUtils.getFormData(Form)
                     ),
                     onError: function () {
                         self.Loader.hide();

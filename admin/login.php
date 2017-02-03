@@ -44,12 +44,11 @@ $languages = QUI::availableLanguages();
         }
 
         .container {
-            height: 380px;
             background: #fff;
+            box-shadow: 2px 0 5px #999;
             padding: 40px 0;
             margin: 50px 0 0;
-
-            box-shadow: 2px 0 5px #999;
+            min-height: 380px;
         }
 
         .logo {

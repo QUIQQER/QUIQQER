@@ -926,11 +926,15 @@ class Manager
         }
 
         // global authenticators
-        $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalAuthenticators();
+        if (QUI::getSession()->get('auth-globals') !== 1) {
+            $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalAuthenticators();
 
-        /* @var $Authenticator QUI\Users\AuthInterface */
-        foreach ($authenticators as $authenticator) {
-            $this->authenticate($authenticator, $authData);
+            /* @var $Authenticator QUI\Users\AuthInterface */
+            foreach ($authenticators as $authenticator) {
+                $this->authenticate($authenticator, $authData);
+            }
+
+            QUI::getSession()->set('auth-globals', 1);
         }
 
         $userId = QUI::getSession()->get('uid');
