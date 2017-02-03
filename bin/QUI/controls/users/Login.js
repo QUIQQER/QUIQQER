@@ -27,7 +27,7 @@ define('controls/users/Login', [
     return new Class({
 
         Extends: QUIControl,
-        Type: 'controls/users/Login',
+        Type   : 'controls/users/Login',
 
         Binds: [
             '$onImport',
@@ -103,8 +103,22 @@ define('controls/users/Login', [
                 method: 'POST',
                 events: {
                     submit: function (event) {
-                        event.stop();
-                        this.auth(event.target).catch(function () {
+                        var Target = null;
+
+                        if (typeOf(event) === 'element') {
+                            Target = event;
+                        }
+                        if (typeOf(event) == 'domevent') {
+                            event.stop();
+                            Target = event.target;
+                        }
+
+                        if (!Target) {
+                            console.error('No target given.');
+                            return;
+                        }
+
+                        this.auth(Target).catch(function () {
                         });
                     }.bind(this)
                 }
@@ -128,7 +142,7 @@ define('controls/users/Login', [
             });
 
             var elements = Container.getChildren(),
-                forms = Container.getElements('form'),
+                forms    = Container.getElements('form'),
 
                 children = elements.filter(function (Node) {
                     return !Node.get('data-qui');
@@ -147,7 +161,7 @@ define('controls/users/Login', [
             for (var i = 1, len = forms.length; i < len; i++) {
                 new Element('div', {
                     'class': 'quiqqer-login-or',
-                    html: '<span>or</span>'
+                    html   : '<span>or</span>'
                 }).inject(forms[i], 'before');
             }
 
@@ -165,7 +179,7 @@ define('controls/users/Login', [
 
                 moofx(forms).animate({
                     opacity: 1,
-                    top: 0
+                    top    : 0
                 }, {
                     duration: 200,
                     callback: function () {
@@ -209,7 +223,7 @@ define('controls/users/Login', [
                     });
 
                     moofx(self.$forms).animate({
-                        top: 20,
+                        top    : 20,
                         opacity: 0
                     }, {
                         duration: 250,
@@ -220,13 +234,13 @@ define('controls/users/Login', [
                         }
                     });
                 }, {
-                    showLogin: false,
+                    showLogin    : false,
                     authenticator: Form.get('data-authenticator'),
-                    globalauth: !!Form.get('data-globalauth') ? 1 : 0,
-                    params: JSON.encode(
+                    globalauth   : !!Form.get('data-globalauth') ? 1 : 0,
+                    params       : JSON.encode(
                         QUIFormUtils.getFormData(Form)
                     ),
-                    onError: function () {
+                    onError      : function () {
                         self.Loader.hide();
                         reject();
                     }
