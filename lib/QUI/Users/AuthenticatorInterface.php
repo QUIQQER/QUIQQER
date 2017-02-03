@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file contains \QUI\Users\AuthInterface
+ * This file contains \QUI\Users\AuthenticatorInterface
  */
 
 namespace QUI\Users;
@@ -14,7 +14,7 @@ namespace QUI\Users;
  * @licence For copyright and license information, please view the /README.md
  */
 
-interface AuthInterface
+interface AuthenticatorInterface
 {
     /**
      * @param string|array|integer $user - name of the user, or user id
@@ -57,22 +57,46 @@ interface AuthInterface
     public function getUserId();
 
     /**
+     * Return the login control
+     *
      * @return \QUI\Control|null
      */
     public static function getLoginControl();
 
     /**
+     * Return the registration control
+     *
      * @return \QUI\Control|null
      */
     public static function getRegisterControl();
 
     /**
+     * Return the password reset control
+     *
      * @return \QUI\Control|null
      */
     public static function getPasswordResetControl();
 
     /**
+     * Return the settings control (eq: for administration)
+     *
      * @return \QUI\Control|null
      */
     public static function getSettingsControl();
+
+    /**
+     * CLI
+     */
+
+    /**
+     * @return bool
+     */
+    public static function isCLICompatible();
+
+    /**
+     * The CLI Authentication, only if isCLICompatible returns true
+     *
+     * @param \QUI\System\Console $Console
+     */
+    public function cliAuthentication(\QUI\System\Console $Console);
 }

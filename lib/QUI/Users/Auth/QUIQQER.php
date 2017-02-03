@@ -6,6 +6,7 @@
 namespace QUI\Users\Auth;
 
 use QUI;
+use QUI\Users\AbstractAuthenticator;
 use QUI\Utils\Security\Orthos;
 
 /**
@@ -14,7 +15,7 @@ use QUI\Utils\Security\Orthos;
  *
  * @package QUI\Users
  */
-class QUIQQER implements QUI\Users\AuthInterface
+class QUIQQER extends AbstractAuthenticator
 {
     /**
      * User object
@@ -29,18 +30,16 @@ class QUIQQER implements QUI\Users\AuthInterface
     protected $username = null;
 
     /**
+     * @var bool
+     */
+    protected $authenticated = false;
+
+    /**
      * @param string $username
      * @throws QUI\Exception
      */
     public function __construct($username = '')
     {
-        if (!is_string($username) || empty($username)) {
-            throw new QUI\Users\Exception(
-                array('quiqqer/system', 'exception.login.fail.wrong.username.input'),
-                401
-            );
-        }
-
         $username = Orthos::clear($username);
 
         if (function_exists('get_magic_quotes_gpc') && !get_magic_quotes_gpc()) {
@@ -90,6 +89,13 @@ class QUIQQER implements QUI\Users\AuthInterface
      */
     public function auth($password)
     {
+        if (!is_string($this->username) || empty($this->username)) {
+            throw new QUI\Users\Exception(
+                array('quiqqer/system', 'exception.login.fail.wrong.username.input'),
+                401
+            );
+        }
+
         if (is_array($password) && isset($password['password'])) {
             $password = $password['password'];
         }
@@ -121,7 +127,10 @@ class QUIQQER implements QUI\Users\AuthInterface
             || !isset($userData[0]['password'])
             || empty($userData[0]['password'])
         ) {
-            return false;
+            throw new QUI\Users\Exception(
+                array('quiqqer/system', 'exception.login.fail'),
+                401
+            );
         }
 
         // retrieve salt from saved password
@@ -137,6 +146,8 @@ class QUIQQER implements QUI\Users\AuthInterface
                 401
             );
         }
+
+        $this->authenticated = true;
 
         return true;
     }
@@ -181,17 +192,6 @@ class QUIQQER implements QUI\Users\AuthInterface
     }
 
     /**
-     * Return the ID of the user
-     *
-     * @return integer
-     * @throws QUI\Users\Exception
-     */
-    public function getUserId()
-    {
-        return $this->getUser()->getId();
-    }
-
-    /**
      * Controls
      */
 
@@ -204,26 +204,39 @@ class QUIQQER implements QUI\Users\AuthInterface
     }
 
     /**
-     * @return null
+     * @return bool
      */
-    public static function getPasswordResetControl()
+    public static function isCLICompatible()
     {
-        return null;
+        return true;
     }
 
     /**
-     * @return null
+     * @param QUI\System\Console $Console
      */
-    public static function getSettingsControl()
+    public function cliAuthentication(\QUI\System\Console $Console)
     {
-        return null;
-    }
+        $username = $Console->getArgument('username');
+        $password = $Console->getArgument('password');
 
-    /**
-     * @return null
-     */
-    public static function getRegisterControl()
-    {
-        return null;
+        if (empty($username)) {
+            $Console->writeLn("Please enter your username");
+            $Console->writeLn("Username: ", 'green');
+
+            $Console->setArgument('username', $Console->readInput());
+            $username = $Console->getArgument('username');
+        }
+
+        if (empty($password)) {
+            $Console->clearMsg();
+            $Console->writeLn("Please enter your password");
+            $Console->writeLn("Password: ", 'green');
+
+            $Console->setArgument('password', QUI\Utils\System\Console::readPassword());
+            $password = $Console->getArgument('password');
+        }
+
+        $this->username = $username;
+        $this->auth($password);
     }
 }

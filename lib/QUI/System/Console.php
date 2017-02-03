@@ -99,6 +99,18 @@ class Console
     );
 
     /**
+     * CLI arguments
+     *
+     * @var array
+     */
+    protected $arguments = array();
+
+    /**
+     * @var null|QUI\Interfaces\Users\User
+     */
+    protected $User = null;
+
+    /**
      * constructor
      */
     public function __construct()
@@ -121,44 +133,22 @@ class Console
             exit;
         }
 
-        if (isset($params['-u']) && isset($params['-p'])) {
-            $params['--username'] = $params['-u'];
-            $params['--password'] = $params['-p'];
-        }
-
-        if (!isset($params['--username'])) {
-            $this->writeLn("Please enter your username and password");
-            $this->writeLn("Username: ", 'green');
-
-            $params['--username'] = $this->readInput();
-
-            $this->write("Password: ", 'green');
-            $params['--password'] = QUI\Utils\System\Console::readPassword();
-        }
-
-        if (!isset($params['--password'])) {
-            $this->writeLn("Password:", 'green');
-            $params['--password'] = QUI\Utils\System\Console::readPassword();
-        }
 
         try {
-            $User = QUI::getUsers()->login(array(
-                'username' => $params['--username'],
-                'password' => $params['--password']
-            ));
+            $this->authenticate();
         } catch (QUI\Exception $Exception) {
             $this->writeLn($Exception->getMessage() . "\n\n", 'red');
             exit;
         }
 
-        if (!$User->getId()) {
+        if (is_null($this->User) || !$this->User->getId()) {
             $this->writeLn("Login incorrect\n\n", 'red');
             exit;
         }
 
-        QUI::getSession()->set('uid', $User->getId());
+        QUI::getSession()->set('uid', $this->User->getId());
 
-        QUI\Permissions\Permission::setUser($User);
+        QUI\Permissions\Permission::setUser($this->User);
 
         if (!QUI\Permissions\Permission::hasPermission('quiqqer.system.console')) {
             $this->writeLn("Missing rights to use the console\n\n", 'red');
@@ -185,6 +175,39 @@ class Console
 
         if (!isset($params['--tool']) && !isset($params['--listtools'])) {
             $this->readToolFromShell();
+        }
+    }
+
+    /**
+     * Execute the authentication
+     */
+    protected function authenticate()
+    {
+        $username       = '';
+        $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalAuthenticators();
+
+        if (isset($params['-u'])) {
+            $this->setArgument('username', $params['-u']);
+        }
+
+        if (isset($params['-p'])) {
+            $this->setArgument('password', $params['-p']);
+        }
+
+        foreach ($authenticators as $authenticator) {
+            /* @var $Authenticator QUI\Users\AbstractAuthenticator */
+            $Authenticator = new $authenticator($username);
+
+            if (!$Authenticator->isCLICompatible()) {
+                continue;
+            }
+
+            $Authenticator->cliAuthentication($this);
+
+            if (is_null($this->User)) {
+                $this->setArgument('username', $Authenticator->getUser()->getName());
+                $this->User = $Authenticator->getUser();
+            }
         }
     }
 
@@ -220,6 +243,56 @@ class Console
         }
 
         return $params;
+    }
+
+    /**
+     * Return the CLI arguments
+     *
+     * @return array
+     */
+    public function getArguments()
+    {
+        if (!empty($this->arguments)) {
+            return $this->arguments;
+        }
+
+        $args = $this->readArgv();
+
+        foreach ($args as $arg => $value) {
+            $this->setArgument($arg, $value);
+        }
+
+        return $this->arguments;
+    }
+
+    /**
+     * Set CLI arguments
+     *
+     * @param string $argument
+     * @param string $value
+     */
+    public function setArgument($argument, $value)
+    {
+        $argument = trim($argument, '-');
+
+        $this->arguments[$argument] = $value;
+    }
+
+    /**
+     * Return the CLI argument
+     *
+     * @param string $argument
+     * @return mixed|null
+     */
+    public function getArgument($argument)
+    {
+        $argument = trim($argument, '-');
+
+        if (isset($this->arguments[$argument])) {
+            return $this->arguments[$argument];
+        }
+
+        return null;
     }
 
     /**
