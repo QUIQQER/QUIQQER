@@ -6,7 +6,7 @@
 namespace QUI\Users\Auth;
 
 use QUI;
-use QUI\Users\AuthInterface;
+use QUI\Users\AuthenticatorInterface;
 
 /**
  * Class Handler
@@ -61,7 +61,7 @@ class Handler
                 continue;
             }
 
-            /* @var $Authenticator AuthInterface */
+            /* @var $Authenticator AuthenticatorInterface */
             $Authenticator  = new $authProvider($User->getName());
             $permissionName = Helper::parseAuthenticatorToPermission($authProvider);
 
@@ -135,7 +135,7 @@ class Handler
      * @param string $authenticator - name of the authenticator
      * @param string $username - name of the user
      *
-     * @return AuthInterface
+     * @return AuthenticatorInterface
      *
      * @throws QUI\Users\Auth\Exception
      */

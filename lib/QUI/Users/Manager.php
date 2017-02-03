@@ -834,7 +834,7 @@ class Manager
     /**
      * Authenticate the user at one authenticator
      *
-     * @param string|AuthInterface $authenticator
+     * @param string|AbstractAuthenticator|AuthenticatorInterface $authenticator
      * @param array $params
      * @return bool
      *
@@ -853,7 +853,7 @@ class Manager
             $username = $params['username'];
         }
 
-        if ($authenticator instanceof AuthInterface) {
+        if ($authenticator instanceof AuthenticatorInterface) {
             $Authenticator = $authenticator;
         } else {
             $Authenticator = QUI\Users\Auth\Handler::getInstance()->getAuthenticator(
@@ -929,7 +929,7 @@ class Manager
         if (QUI::getSession()->get('auth-globals') !== 1) {
             $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalAuthenticators();
 
-            /* @var $Authenticator QUI\Users\AuthInterface */
+            /* @var $Authenticator QUI\Users\AbstractAuthenticator */
             foreach ($authenticators as $authenticator) {
                 $this->authenticate($authenticator, $authData);
             }

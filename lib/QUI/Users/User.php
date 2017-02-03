@@ -303,7 +303,7 @@ class User implements QUI\Interfaces\Users\User
 
         $available = Auth\Handler::getInstance()->getAvailableAuthenticators();
         $available = array_flip($available);
-        
+
         foreach ($this->authenticator as $authenticator) {
             if (!Auth\Helper::hasUserPermissionToUseAuthenticator($this, $authenticator)) {
                 continue;
@@ -321,7 +321,7 @@ class User implements QUI\Interfaces\Users\User
      * Return the authenticators from the user
      *
      * @param string $authenticator - Name of the authenticator
-     * @return AuthInterface
+     * @return AuthenticatorInterface
      *
      * @throws QUI\Users\Exception
      */
