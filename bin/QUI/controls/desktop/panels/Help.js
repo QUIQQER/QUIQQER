@@ -99,7 +99,7 @@ define('controls/desktop/panels/Help', [
             this.Loader.show();
 
             this.$Frame = new Element('iframe', {
-                src        : '//doc.quiqqer.com/',
+                src        : '//www.quiqqer.com/Infos-Tipps-Hilfe/QUIQQER-FAQ',
                 styles     : {
                     border: 0
                 },
