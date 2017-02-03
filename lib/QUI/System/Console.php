@@ -142,10 +142,10 @@ class Console
         }
 
         try {
-            $User = QUI::getUsers()->login(
-                $params['--username'],
-                $params['--password']
-            );
+            $User = QUI::getUsers()->login(array(
+                'username' => $params['--username'],
+                'password' => $params['--password']
+            ));
         } catch (QUI\Exception $Exception) {
             $this->writeLn($Exception->getMessage() . "\n\n", 'red');
             exit;
