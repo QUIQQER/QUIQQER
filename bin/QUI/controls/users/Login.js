@@ -216,7 +216,7 @@ define('controls/users/Login', [
 
                     var Or = self.getElm().getElements('.quiqqer-login-or');
 
-                    if (Or) {
+                    if (Or.length) {
                         moofx(Or).animate({
                             opacity: 0
                         }, {
@@ -230,7 +230,7 @@ define('controls/users/Login', [
                     }, {
                         duration: 250,
                         callback: function () {
-                            if (Or) {
+                            if (Or.length) {
                                 Or.destroy();
                             }
 

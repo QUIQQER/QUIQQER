@@ -6,7 +6,7 @@
 namespace QUI\Users\Auth;
 
 use QUI;
-use QUI\Users\AuthInterface;
+use QUI\Users\AuthenticatorInterface;
 
 /**
  * Class Helper
@@ -19,7 +19,7 @@ class Helper
     /**
      * Return the authenticator class name as a permission name
      *
-     * @param string|AuthInterface $authenticator - Name of the authenticator class
+     * @param string|AuthenticatorInterface $authenticator - Name of the authenticator class
      * @param string $permission - optional, wanted permission, eq: permissionName
      * @return string
      */
@@ -40,7 +40,7 @@ class Helper
      * Check if the user has the permission to user the authenticator
      *
      * @param QUI\Interfaces\Users\User|null|false $User - User
-     * @param string|AuthInterface $authenticator - Name of the authenticator class
+     * @param string|AuthenticatorInterface $authenticator - Name of the authenticator class
      * @throws QUI\Permissions\Exception
      */
     public static function checkUserPermissionToUseAuthenticator($User, $authenticator)
@@ -68,7 +68,7 @@ class Helper
      * has the the user the permission to user the authenticator
      *
      * @param QUI\Interfaces\Users\User|null|false $User - User
-     * @param string|AuthInterface $authenticator - Name of the authenticator class
+     * @param string|AuthenticatorInterface $authenticator - Name of the authenticator class
      * @return bool
      */
     public static function hasUserPermissionToUseAuthenticator($User, $authenticator)
