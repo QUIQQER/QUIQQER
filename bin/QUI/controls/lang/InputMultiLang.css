@@ -1,6 +1,7 @@
 
 .quiqqer-inputmultilang-entry {
     border-bottom: 1px solid #ddd;
+    overflow: hidden;
 }
 
 .quiqqer-inputmultilang-entry:last-child {
@@ -31,6 +32,10 @@
 
 .quiqqer-inputmultilang__minimize .quiqqer-inputmultilang-entry {
     border-bottom: 0;
+}
+
+.quiqqer-inputmultilang__minimize .quiqqer-inputmultilang-entry:nth-child(1n+2) {
+    display: none;
 }
 
 .quiqqer-inputmultilang-button .fa {

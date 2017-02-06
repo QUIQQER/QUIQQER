@@ -18,6 +18,9 @@
             <image src="URL_OPT_DIR/quiqqer/quiqqer/bin/preview/5.png"/>
         </preview>
 
-        <!-- todo files -->
+        <provider>
+            <rest src="\QUI\Projects\RestProvider"/>
+            <auth src="\QUI\Users\Auth\QUIQQER"/>
+        </provider>
     </package>
 </quiqqer>

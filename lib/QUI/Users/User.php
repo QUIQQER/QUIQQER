@@ -9,6 +9,7 @@ namespace QUI\Users;
 use QUI;
 use QUI\Utils\Security\Orthos as Orthos;
 use QUI\ERP\Currency\Handler as Currencies;
+use QUI\Users\Auth;
 
 /**
  * A user
@@ -102,6 +103,11 @@ class User implements QUI\Interfaces\Users\User
      * @var false
      */
     protected $company = false;
+
+    /**
+     * @var array
+     */
+    protected $authenticator = array();
 
     /**
      * Settings
@@ -274,8 +280,201 @@ class User implements QUI\Interfaces\Users\User
             }
         }
 
+        if (isset($data[0]['authenticator'])) {
+            $this->authenticator = json_decode($data[0]['authenticator'], true);
+
+            if (!is_array($this->authenticator)) {
+                $this->authenticator = array();
+            }
+        }
+
         // Event
         QUI::getEvents()->fireEvent('userLoad', array($this));
+    }
+
+    /**
+     * Return the authenticators from the user
+     *
+     * @return array
+     */
+    public function getAuthenticators()
+    {
+        $result = array();
+
+        $available = Auth\Handler::getInstance()->getAvailableAuthenticators();
+        $available = array_flip($available);
+
+        foreach ($this->authenticator as $authenticator) {
+            if (!Auth\Helper::hasUserPermissionToUseAuthenticator($this, $authenticator)) {
+                continue;
+            }
+
+            if (isset($available[$authenticator])) {
+                $result[] = new $authenticator($this->getUsername());
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Return the authenticators from the user
+     *
+     * @param string $authenticator - Name of the authenticator
+     * @return AuthenticatorInterface
+     *
+     * @throws QUI\Users\Exception
+     */
+    public function getAuthenticator($authenticator)
+    {
+        $Handler   = Auth\Handler::getInstance();
+        $available = $Handler->getAvailableAuthenticators();
+        $available = array_flip($available);
+
+        if (!isset($available[$authenticator])) {
+            throw new QUI\Users\Exception(
+                array(
+                    'quiqqer/system',
+                    'exception.authenticator.not.found'
+                ),
+                404
+            );
+        }
+
+        if (!in_array($authenticator, $this->authenticator)) {
+            throw new QUI\Users\Exception(
+                array(
+                    'quiqqer/system',
+                    'exception.authenticator.not.found'
+                ),
+                404
+            );
+        }
+
+        if (!Auth\Helper::hasUserPermissionToUseAuthenticator($this, $authenticator)) {
+            throw new QUI\Users\Exception(
+                array(
+                    'quiqqer/system',
+                    'exception.authenticator.not.found'
+                ),
+                404
+            );
+        }
+
+        return new $authenticator($this->getUsername());
+    }
+
+    /**
+     * Enables an authenticator for the user
+     *
+     * @param string $authenticator - Name of the authenticator
+     * @param QUI\Interfaces\Users\User|boolean $ParentUser - optional, the saving user, default = session user
+     * @throws QUI\Users\Exception
+     */
+    public function enableAuthenticator($authenticator, $ParentUser = false)
+    {
+        $available = Auth\Handler::getInstance()->getAvailableAuthenticators();
+        $available = array_flip($available);
+
+        if (!isset($available[$authenticator])) {
+            throw new QUI\Users\Exception(
+                array(
+                    'quiqqer/system',
+                    'exception.authenticator.not.found'
+                ),
+                404
+            );
+        }
+
+        if (!Auth\Helper::hasUserPermissionToUseAuthenticator($this, $authenticator)) {
+            throw new QUI\Users\Exception(
+                array(
+                    'quiqqer/system',
+                    'exception.authenticator.not.found'
+                ),
+                404
+            );
+        }
+
+        if (in_array($authenticator, $this->authenticator)) {
+            return;
+        }
+
+        if (class_exists('QUI\Watcher')) {
+            QUI\Watcher::addString(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'user.enable.authenticator', array(
+                    'id' => $this->getId()
+                )),
+                '',
+                array(
+                    'authenticator' => $authenticator
+                )
+            );
+        }
+
+        $this->authenticator[] = $authenticator;
+        $this->save($ParentUser);
+    }
+
+    /**
+     * Disables an authenticator from the user
+     *
+     * @param $authenticator
+     * @param QUI\Interfaces\Users\User|boolean $ParentUser - optional, the saving user, default = session user
+     *
+     * @throws Exception
+     */
+    public function disableAuthenticator($authenticator, $ParentUser = false)
+    {
+        $available = Auth\Handler::getInstance()->getAvailableAuthenticators();
+        $available = array_flip($available);
+
+        if (!isset($available[$authenticator])) {
+            throw new QUI\Users\Exception(
+                array(
+                    'quiqqer/system',
+                    'exception.authenticator.not.found'
+                ),
+                404
+            );
+        }
+
+        if (!in_array($authenticator, $this->authenticator)) {
+            return;
+        }
+
+        if (($key = array_search($authenticator, $this->authenticator)) !== false) {
+            unset($this->authenticator[$key]);
+        }
+
+        if (class_exists('QUI\Watcher')) {
+            QUI\Watcher::addString(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'user.disable.authenticator', array(
+                    'id' => $this->getId()
+                )),
+                '',
+                array(
+                    'authenticator' => $authenticator
+                )
+            );
+        }
+
+        $this->save($ParentUser);
+    }
+
+    /**
+     * Is the wanted authenticator enabled for the user?
+     *
+     * @param string $authenticator - name of the authenticator
+     * @return bool
+     */
+    public function hasAuthenticator($authenticator)
+    {
+        if (!Auth\Helper::hasUserPermissionToUseAuthenticator($this, $authenticator)) {
+            return false;
+        }
+
+        return in_array($authenticator, $this->authenticator);
     }
 
     /**
@@ -888,7 +1087,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function changePassword($newPassword, $oldPassword, $ParentUser = false)
     {
-        $this->checkRights($ParentUser);
+        $this->checkEditPermission($ParentUser);
 
         if (empty($newPassword) || empty($oldPassword)) {
             throw new QUI\Users\Exception(
@@ -933,7 +1132,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function setPassword($new, $ParentUser = false)
     {
-        $this->checkRights($ParentUser);
+        $this->checkEditPermission($ParentUser);
 
         if (empty($new)) {
             throw new QUI\Users\Exception(
@@ -978,25 +1177,30 @@ class User implements QUI\Interfaces\Users\User
      *
      * @see QUI\Interfaces\Users\User::checkPassword()
      *
-     * @param string $pass - Password
+     * @param string $password - Password
      * @param boolean $encrypted - is the given password already encrypted?
      *
      * @return boolean
      */
-    public function checkPassword($pass, $encrypted = false)
+    public function checkPassword($password, $encrypted = false)
     {
         if ($encrypted) {
-            return $pass == $this->password ? true : false;
+            return $password == $this->password ? true : false;
         }
 
         try {
-            $Auth = QUI::getUsers()->getAuthenticator($this->getUsername());
+            $Auth = Auth\Handler::getInstance()->getAuthenticator(
+                Auth\QUIQQER::class,
+                $this->getUsername()
+            );
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addWarning($Exception->getMessage());
             return false;
         }
 
-        return $Auth->auth($pass);
+        return $Auth->auth(array(
+            'password' => $password
+        ));
     }
 
     /**
@@ -1011,7 +1215,7 @@ class User implements QUI\Interfaces\Users\User
     public function activate($code = false, $ParentUser = null)
     {
         if ($code == false) {
-            $this->checkRights($ParentUser);
+            $this->checkEditPermission($ParentUser);
         }
 
         // benutzer ist schon aktiv, aktivierung kann nicht durchgeführt werden
@@ -1080,7 +1284,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function deactivate()
     {
-        $this->checkRights();
+        $this->checkEditPermission();
         $this->canBeDeleted();
 
         QUI::getEvents()->fireEvent('userDeactivate', array($this));
@@ -1109,7 +1313,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function disable($ParentUser = false)
     {
-        $this->checkRights($ParentUser);
+        $this->checkEditPermission($ParentUser);
         $this->canBeDeleted();
 
         QUI::getEvents()->fireEvent('userDisable', array($this));
@@ -1154,7 +1358,7 @@ class User implements QUI\Interfaces\Users\User
      */
     public function save($ParentUser = false)
     {
-        $this->checkRights($ParentUser);
+        $this->checkEditPermission($ParentUser);
 
         $expire   = '0000-00-00 00:00:00';
         $birthday = '0000-00-00';
@@ -1208,23 +1412,24 @@ class User implements QUI\Interfaces\Users\User
         $result = QUI::getDataBase()->update(
             Manager::table(),
             array(
-                'username'  => $this->getUsername(),
-                'usergroup' => ',' . implode(',', $this->getGroups(false)) . ',',
-                'firstname' => $this->getAttribute('firstname'),
-                'lastname'  => $this->getAttribute('lastname'),
-                'usertitle' => $this->getAttribute('usertitle'),
-                'birthday'  => $birthday,
-                'email'     => $this->getAttribute('email'),
-                'avatar'    => $avatar,
-                'su'        => $this->isSU(),
-                'extra'     => json_encode($extra),
-                'lang'      => $this->getAttribute('lang'),
-                'lastedit'  => date("Y-m-d H:i:s"),
-                'expire'    => $expire,
-                'shortcuts' => $this->getAttribute('shortcuts'),
-                'address'   => (int)$this->getAttribute('address'),
-                'company'   => $this->isCompany() ? 1 : 0,
-                'toolbar'   => $this->getAttribute('toolbar')
+                'username'      => $this->getUsername(),
+                'usergroup'     => ',' . implode(',', $this->getGroups(false)) . ',',
+                'firstname'     => $this->getAttribute('firstname'),
+                'lastname'      => $this->getAttribute('lastname'),
+                'usertitle'     => $this->getAttribute('usertitle'),
+                'birthday'      => $birthday,
+                'email'         => $this->getAttribute('email'),
+                'avatar'        => $avatar,
+                'su'            => $this->isSU(),
+                'extra'         => json_encode($extra),
+                'lang'          => $this->getAttribute('lang'),
+                'lastedit'      => date("Y-m-d H:i:s"),
+                'expire'        => $expire,
+                'shortcuts'     => $this->getAttribute('shortcuts'),
+                'address'       => (int)$this->getAttribute('address'),
+                'company'       => $this->isCompany() ? 1 : 0,
+                'toolbar'       => $this->getAttribute('toolbar'),
+                'authenticator' => json_encode($this->authenticator)
             ),
             array('id' => $this->getId())
         );
@@ -1360,14 +1565,15 @@ class User implements QUI\Interfaces\Users\User
     }
 
     /**
-     * Checks the edit rights of a user
+     * Checks the edit permissions
+     * Can the user be edited by the current user?
      *
      * @param QUI\Users\User|boolean $ParentUser
      *
      * @return boolean - true
      * @throws QUI\Permissions\Exception
      */
-    protected function checkRights($ParentUser = false)
+    public function checkEditPermission($ParentUser = false)
     {
         $Users       = QUI::getUsers();
         $SessionUser = $Users->getUserBySession();

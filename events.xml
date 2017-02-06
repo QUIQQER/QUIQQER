@@ -2,4 +2,5 @@
 <events>
     <event on="onAdminLoadFooter" fire="\QUI\EventHandler::onAdminLoadFooter"/>
     <event on="onUserChangePassword" fire="\QUI\EventHandler::onUserChangePassword"/>
+    <event on="onPackageSetup" fire="\QUI\Users\Auth\Handler::onPackageSetup"/>
 </events>

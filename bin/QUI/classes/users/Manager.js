@@ -37,8 +37,8 @@ define('classes/users/Manager', [
     return new Class({
 
         Extends: DOM,                   // @member classes/users/Manager
-        Type   : 'classes/users/Users', // @member classes/users/Manager
-        $users : {},                    // @member classes/users/Manager
+        Type: 'classes/users/Users', // @member classes/users/Manager
+        $users: {},                    // @member classes/users/Manager
 
         /**
          * Return a user
@@ -93,7 +93,7 @@ define('classes/users/Manager', [
                     resolve(result);
 
                 }, ObjectUtils.combine(params, {
-                    params : JSON.encode(search),
+                    params: JSON.encode(search),
                     onError: reject
                 }));
             });
@@ -300,7 +300,7 @@ define('classes/users/Manager', [
          */
         saveUser: function (User, params, onfinish) {
             return new Promise(function (resolve) {
-                var self       = this,
+                var self = this,
                     attributes = User.getAttributes();
 
                 for (var i in attributes) {
@@ -315,7 +315,7 @@ define('classes/users/Manager', [
 
                 // attributes.extra = User.getExtras();
                 params = ObjectUtils.combine(params, {
-                    uid       : User.getId(),
+                    uid: User.getId(),
                     attributes: JSON.encode(attributes)
                 });
 

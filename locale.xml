@@ -84,6 +84,10 @@
             <de><![CDATA[Seiten]]></de>
             <en><![CDATA[Sites]]></en>
         </locale>
+        <locale name="permission.quiqqer.auth._header">
+            <de><![CDATA[Authentifizierung]]></de>
+            <en><![CDATA[Authentication]]></en>
+        </locale>
 
         <locale name="permission.quiqqer.menu._header">
             <de><![CDATA[Menu]]></de>
@@ -467,6 +471,22 @@
             <de><![CDATA[Beim nächsten Login muss der Benutzer ein neues Passwort setzen.]]></de>
             <en><![CDATA[At the next login, the user must set a new password.]]></en>
         </locale>
+        <locale name="user.settings.expire">
+            <de><![CDATA[Gültig bis]]></de>
+            <en><![CDATA[Date of Expiry]]></en>
+        </locale>
+        <locale name="user.settings.expire.always">
+            <de><![CDATA[Immer]]></de>
+            <en><![CDATA[Always]]></en>
+        </locale>
+        <locale name="user.settings.expire.date">
+            <de><![CDATA[Datum / Uhrzeit]]></de>
+            <en><![CDATA[Date / Time]]></en>
+        </locale>
+        <locale name="user.settings.authenticators">
+            <de><![CDATA[Zustäzliche Authentifizierung]]></de>
+            <en><![CDATA[Additional authentication]]></en>
+        </locale>
 
         <locale name="message.setup.is.currently.running">
             <de><![CDATA[Das Setup wird gerade ausgeführt. Bitte warten Sie bis dieses zu ende ist.]]></de>
@@ -532,6 +552,31 @@
             <de><![CDATA[Globale Weiterleitungen]]></de>
             <en><![CDATA[Global forwarding]]></en>
         </locale>
+        <locale name="quiqqer.auth.title">
+            <de><![CDATA[QUIQQER Standard Authentifizierung]]></de>
+            <en><![CDATA[QUIQQER Basic authentication]]></en>
+        </locale>
+        <locale name="quiqqer.auth.description">
+            <de><![CDATA[Die standard QUIQQER Authentifizierung per Benutzername und Passwort.]]></de>
+            <en><![CDATA[The standard QUIQQER authentication by username and password.]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.global">
+            <de><![CDATA[Primäre Authenticator]]></de>
+            <en><![CDATA[Primary Authentifiers]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.global.desc">
+            <de><![CDATA[
+            Primäre Authenticator sind Auhthentifizierungsmethoden welche dem Benutzer zu Anfang
+            seiner Authentifizierung zur Verfügung stehen. Zusätzlich können Sie über
+            die Zugriffsrechteverwaltung für jede Gruppe oder jeden User Mehrfachauthentifizierungen
+            zur Verfügung stellen.
+            ]]></de>
+            <en><![CDATA[
+            Primary Authenticators are authentication methods which provide the user at the beginning
+            of his Authentication. In addition, you can go over the permissions management
+            for each group or user and set more factor authentication.
+            ]]></en>
+        </locale>
 
         <locale name="exception.forwarding.already.exists">
             <de><![CDATA[Diese Weiterleitung besteht bereits.]]></de>
@@ -540,6 +585,10 @@
         <locale name="exception.forwarding.not.found">
             <de><![CDATA[Diese Weiterleitung besteht bereits.]]></de>
             <en><![CDATA[This forwarding already exists.]]></en>
+        </locale>
+        <locale name="exception.config.save.not.allowed">
+            <de><![CDATA[Sie besitzen nicht die nötigen Rechte um die Konfiguration zu speichern.]]></de>
+            <en><![CDATA[You do not have the necessary permissions to save the configuration]]></en>
         </locale>
     </groups>
 

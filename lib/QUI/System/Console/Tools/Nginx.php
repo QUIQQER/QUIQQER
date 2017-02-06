@@ -73,101 +73,281 @@ class Nginx extends QUI\System\Console\Tool
      */
     protected function template()
     {
-        $quiqqerDir           = CMS_DIR;
-        $quiqqerHost          = HOST;
-        $quiqqerUrlDir        = URL_DIR;
-        $quiqqerUrlDirEscaped = str_replace("/", "\\/", URL_DIR);
-        $quiqqerLib           = URL_OPT_DIR . 'quiqqer/quiqqer/lib';
-        $quiqqerBin           = URL_OPT_DIR . 'quiqqer/quiqqer/bin';
-        $quiqqerSys           = URL_OPT_DIR . 'quiqqer/quiqqer/admin';
+        $quiqqerDir    = CMS_DIR;
+        $domain        = HOST;
+        $quiqqerUrlDir = URL_DIR;
 
 
         return <<<NGINX
-
-#  _______          _________ _______  _______  _______  _______
-# (  ___  )|\     /|\__   __/(  ___  )(  ___  )(  ____ \(  ____ )
-# | (   ) || )   ( |   ) (   | (   ) || (   ) || (    \/| (    )|
-# | |   | || |   | |   | |   | |   | || |   | || (__    | (____)|
-# | |   | || |   | |   | |   | |   | || |   | ||  __)   |     __)
-# | | /\| || |   | |   | |   | | /\| || | /\| || (      | (\ (
-# | (_\ \ || (___) |___) (___| (_\ \ || (_\ \ || (____/\| ) \ \__
-# (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
-#
-# Generated nginx.xonf File via QUIQQER
-# Date: ' . date('Y-m-d H:i:s') . '
-#
-# Command to create new nginx:
-# php quiqqer.php --username="" --password="" --tool=quiqqer:nginx
-
-
-# Nginx configuration
-
-server{
-
-    listen 0.0.0.0:80;
-    server_name {$quiqqerHost};
-    
-    
-    root   {$quiqqerDir};
-    index  index.php;
-    
-    # #########################
-    # Virtual Folders & SEO & UX
-    # #########################
-    
-    # Route /bin/ to its real location.
-    location ^~{$quiqqerUrlDir}bin/ {
-        rewrite ^{$quiqqerUrlDir}bin/(.*)$ {$quiqqerUrlDir}packages/quiqqer/quiqqer/bin/$1 break;
-    }
-    
-    
-    # Route /lib/ to its real location.
-    location ^~{$quiqqerUrlDir}lib/ {
-        rewrite ^{$quiqqerUrlDir}lib/(.*)$ {$quiqqerUrlDir}packages/quiqqer/quiqqer/lib/$1 break;
-    }
-    
-    
-    # #######################################################
-    # Admin
-    # #######################################################
-    
-    location = {$quiqqerUrlDir}admin {
-        rewrite ^{$quiqqerUrlDir}admin$ {$quiqqerUrlDir}admin/ last;
-    }
-    
-    location ~^{$quiqqerUrlDir}admin/ {    
-        rewrite ^{$quiqqerUrlDir}admin/(.*)$ {$quiqqerUrlDir}packages/quiqqer/quiqqer/admin/$1 last;
         
-    }
-    
-    # #######################################################
-    # General Rules
-    # #######################################################
-    
-    location ~*\.php$ {
-        if ( \$uri !~ ^{$quiqqerUrlDirEscaped}(index\.php|media\/cache|(.*)\.html|(.*)\.txt|favicon\.ico|robots\.txt|image\.php|(.*)\/?bin\/(.*)|(packages\/quiqqer\/quiqqer\/admin\/(image.php|index.php|ajax.php|login.php)?$)|(admin\/(image.php|index.php|ajax.php)?$))){ 
-            rewrite ^ {$quiqqerUrlDir}index.php?_url=error=403 last;
+        server {
+            listen 80;
+            listen [::]:80;
+            
+            server_name {$domain}
+            
+            return 301 https://\$http_host\$request_uri;
         }
         
         
-        fastcgi_pass php;
-        include snippets/fastcgi-php.conf;
-        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
-    }
-    
-    #Block Access to non-whitelisted Files
-    location ~{$quiqqerUrlDir} {
-    
-        try_files \$uri \$uri/ {$quiqqerUrlDir}index.php?_uri=\$uri&\$query_string;
-    
-    
-        if ( \$uri !~ ^{$quiqqerUrlDirEscaped}(index\.php|media\/cache\/(.*)|([a-zA-Z-\s0-9_+]*)\.html|([a-zA-Z-\s0-9_+]*)\.txt|favicon\.ico|robots\.txt|image\.php|(.*)\/?bin\/(.*)|packages\/ckeditor\/(.*)|(packages\/quiqqer\/quiqqer\/admin\/(image.php|index.php|ajax.php|login.php)?$)|(admin\/(image.php|index.php|ajax.php)?$))) {
-            rewrite ^ {$quiqqerUrlDir}index.php?_url=error=403 last;
-        }
+        server {
         
-    }
-}
+            listen 443;
+            listen [::]:443;
+    
+            root {$quiqqerDir};
+    
+            index index.php index.html index.htm;
+    
+            server_name {$domain};
+    
+            error_log  /var/log/nginx/{$domain}_error.log;
+    
+            ###############################
+            #  Virtual Folder/File Check  #
+            ###############################
+    
+            set \$virtual 0;
+    
+            # make all virtual folders redirect to the index php 
+            if ( !-e \$request_filename ) {
+                    set \$virtual 1;
+            }
+    
+            # Virtual folders, that should not be redirected to the index.php
+            if ( \$uri ~* '{$quiqqerUrlDir}admin(.*)'){
+                    set \$virtual 0;
+            }
+    
+            if ( \$uri ~* '{$quiqqerUrlDir}bin/(.*)'){
+                    set \$virtual 0;
+            }
+    
+            if ( \$uri ~* '{$quiqqerUrlDir}lib/(.*)'){
+                    set \$virtual 0;
+            }
+    
+    
+            # Execute virtual folder redirect if neccessary
+            if ( \$virtual = 1){
+                    rewrite ^ {$quiqqerUrlDir}index.php?_url=\$uri;
+            }
+            
+            
+            ################################
+            #          Redirects           #
+            ################################
+            
+            location ^~ {$quiqqerUrlDir}bin/ {
+                rewrite ^{$quiqqerUrlDir}bin/(.*) {$quiqqerUrlDir}packages/quiqqer/quiqqer/bin/$1 last;
+            }
+    
+            location ^~ {$quiqqerUrlDir}lib/ {
+                rewrite ^{$quiqqerUrlDir}lib/(.*) {$quiqqerUrlDir}packages/quiqqer/quiqqer/lib/$1 last;                                                                                              
+            }                                                                                                                                     
+    
+            location = {$quiqqerUrlDir}admin {
+                return 301 https://\$http_host{$quiqqerUrlDir}admin/;
+            }
+    
+            location = {$quiqqerUrlDir}admin/ {
+                    rewrite {$quiqqerUrlDir}admin/(.*) {$quiqqerUrlDir}packages/quiqqer/quiqqer/admin/index.php last;
+            }
+                                                                                                                                                
+            location ^~ {$quiqqerUrlDir}admin/ {                                                                                                                    
+                    rewrite {$quiqqerUrlDir}admin/(.*) {$quiqqerUrlDir}packages/quiqqer/quiqqer/admin/$1 last;
+            }        
+    
+            ################################
+            #         Whitelist            #
+            ################################
+    
+    
+            # /////////////////////////////////////////////////////////////////////////////////
+            # Whitelisted php
+            # ////////////////////////////////////////////////////////////////////////////////
+    
+            location = {$quiqqerUrlDir}index.php {
+                    fastcgi_param   QUERY_STRING            \$query_string;
+                    fastcgi_param   REQUEST_METHOD          \$request_method;
+                    fastcgi_param   CONTENT_TYPE            \$content_type;
+                    fastcgi_param   CONTENT_LENGTH          \$content_length;
+                    
+                    fastcgi_param   SCRIPT_FILENAME         \$request_filename;
+                    fastcgi_param   SCRIPT_NAME             \$fastcgi_script_name;
+                    fastcgi_param   REQUEST_URI             \$request_uri;
+                    fastcgi_param   DOCUMENT_URI            \$document_uri;
+                    fastcgi_param   DOCUMENT_ROOT           \$document_root;
+                    fastcgi_param   SERVER_PROTOCOL         \$server_protocol;
+                    
+                    fastcgi_param   GATEWAY_INTERFACE       CGI/1.1;
+                    fastcgi_param   SERVER_SOFTWARE         nginx/\$nginx_version;
+                    
+                    fastcgi_param   REMOTE_ADDR             \$remote_addr;
+                    fastcgi_param   REMOTE_PORT             \$remote_port;
+                    fastcgi_param   SERVER_ADDR             \$server_addr;
+                    fastcgi_param   SERVER_PORT             \$server_port;
+                    fastcgi_param   SERVER_NAME             \$server_name;
+                    
+                    fastcgi_param   HTTPS                   \$https if_not_empty;
+                    
+                    fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+                    
+                    # PHP only, required if PHP was built with --enable-force-cgi-redirect
+                    fastcgi_param   REDIRECT_STATUS         200;
+                    fastcgi_pass php;
+           }
+    
+    
+            location = {$quiqqerUrlDir}image.php {
+                    fastcgi_param   QUERY_STRING            \$query_string;
+                    fastcgi_param   REQUEST_METHOD          \$request_method;
+                    fastcgi_param   CONTENT_TYPE            \$content_type;
+                    fastcgi_param   CONTENT_LENGTH          \$content_length;
+                    
+                    fastcgi_param   SCRIPT_FILENAME         \$request_filename;
+                    fastcgi_param   SCRIPT_NAME             \$fastcgi_script_name;
+                    fastcgi_param   REQUEST_URI             \$request_uri;
+                    fastcgi_param   DOCUMENT_URI            \$document_uri;
+                    fastcgi_param   DOCUMENT_ROOT           \$document_root;
+                    fastcgi_param   SERVER_PROTOCOL         \$server_protocol;
+                    
+                    fastcgi_param   GATEWAY_INTERFACE       CGI/1.1;
+                    fastcgi_param   SERVER_SOFTWARE         nginx/\$nginx_version;
+                    
+                    fastcgi_param   REMOTE_ADDR             \$remote_addr;
+                    fastcgi_param   REMOTE_PORT             \$remote_port;
+                    fastcgi_param   SERVER_ADDR             \$server_addr;
+                    fastcgi_param   SERVER_PORT             \$server_port;
+                    fastcgi_param   SERVER_NAME             \$server_name;
+                    
+                    fastcgi_param   HTTPS                   \$https if_not_empty;
+                    
+                    fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+                    
+                    # PHP only, required if PHP was built with --enable-force-cgi-redirect
+                    fastcgi_param   REDIRECT_STATUS         200;
+                    fastcgi_pass php;
+            }
+    
+            location ~* ^(.*)/bin/(.*)\.php$ {
+                    fastcgi_param   QUERY_STRING            \$query_string;
+                    fastcgi_param   REQUEST_METHOD          \$request_method;
+                    fastcgi_param   CONTENT_TYPE            \$content_type;
+                    fastcgi_param   CONTENT_LENGTH          \$content_length;
+                    
+                    fastcgi_param   SCRIPT_FILENAME         \$request_filename;
+                    fastcgi_param   SCRIPT_NAME             \$fastcgi_script_name;
+                    fastcgi_param   REQUEST_URI             \$request_uri;
+                    fastcgi_param   DOCUMENT_URI            \$document_uri;
+                    fastcgi_param   DOCUMENT_ROOT           \$document_root;
+                    fastcgi_param   SERVER_PROTOCOL         \$server_protocol;
+                    
+                    fastcgi_param   GATEWAY_INTERFACE       CGI/1.1;
+                    fastcgi_param   SERVER_SOFTWARE         nginx/\$nginx_version;
+                    
+                    fastcgi_param   REMOTE_ADDR             \$remote_addr;
+                    fastcgi_param   REMOTE_PORT             \$remote_port;
+                    fastcgi_param   SERVER_ADDR             \$server_addr;
+                    fastcgi_param   SERVER_PORT             \$server_port;
+                    fastcgi_param   SERVER_NAME             \$server_name;
+                    
+                    fastcgi_param   HTTPS                   \$https if_not_empty;
+                    
+                    fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+                    
+                    # PHP only, required if PHP was built with --enable-force-cgi-redirect
+                    fastcgi_param   REDIRECT_STATUS         200;
+                    fastcgi_pass php;
+    
+            }
+    
+             location ~* {$quiqqerUrlDir}packages/quiqqer/quiqqer/admin/(.*).php$ {
+                    fastcgi_param   QUERY_STRING            \$query_string;
+                    fastcgi_param   REQUEST_METHOD          \$request_method;
+                    fastcgi_param   CONTENT_TYPE            \$content_type;
+                    fastcgi_param   CONTENT_LENGTH          \$content_length;
+                    
+                    fastcgi_param   SCRIPT_FILENAME         \$request_filename;
+                    fastcgi_param   SCRIPT_NAME             \$fastcgi_script_name;
+                    fastcgi_param   REQUEST_URI             \$request_uri;
+                    fastcgi_param   DOCUMENT_URI            \$document_uri;
+                    fastcgi_param   DOCUMENT_ROOT           \$document_root;
+                    fastcgi_param   SERVER_PROTOCOL         \$server_protocol;
+                    
+                    fastcgi_param   GATEWAY_INTERFACE       CGI/1.1;
+                    fastcgi_param   SERVER_SOFTWARE         nginx/\$nginx_version;
+                    
+                    fastcgi_param   REMOTE_ADDR             \$remote_addr;
+                    fastcgi_param   REMOTE_PORT             \$remote_port;
+                    fastcgi_param   SERVER_ADDR             \$server_addr;
+                    fastcgi_param   SERVER_PORT             \$server_port;
+                    fastcgi_param   SERVER_NAME             \$server_name;
+                    
+                    fastcgi_param   HTTPS                   \$https if_not_empty;
+                    
+                    fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+                    
+                    # PHP only, required if PHP was built with --enable-force-cgi-redirect
+                    fastcgi_param   REDIRECT_STATUS         200;
 
+                    fastcgi_pass php;
+            }
+    
+            # /////////////////////////////////////////////////////////////////////////////////
+            # Whitelisted static files
+            # /////////////////////////////////////////////////////////////////////////////////
+    
+            location ~ (.*)/bin/(.*){
+                # Do not block this
+            }
+    
+    
+            location {$quiqqerUrlDir}media/cache/ {
+                # Do not block this
+            }
+    
+            location {$quiqqerUrlDir}packages/ckeditor/ {
+                # Do not block this
+            }
+    
+            location ~ {$quiqqerUrlDir}([a-zA-Z-\s0-9_+]*)\.html{
+                # Do not block this
+            }
+    
+            location ~ {$quiqqerUrlDir}([a-zA-Z-\s0-9_+]*)\.txt{
+                # Do not block this
+            }
+    
+            location ~ {$quiqqerUrlDir}.*\.crt {
+                # Do not block this
+            }
+    
+            location ~ {$quiqqerUrlDir}.*\.pem {
+                # Do not block this
+            }
+    
+            location = {$quiqqerUrlDir}robots.txt {
+                # Do not block this
+            }
+    
+            location = {$quiqqerUrlDir}favicon.ico {
+                # Do not block this
+            }
+    
+            location = {$quiqqerUrlDir} {
+    
+            }
+    
+            # /////////////////////////////////////////////////////////////////////////////////
+            # Block everything not whitelisted
+            # /////////////////////////////////////////////////////////////////////////////////
+    
+            location / {
+                    rewrite ^ {$quiqqerUrlDir}index.php?_url=error403;
+            }
+
+        }
 NGINX;
     }
 }

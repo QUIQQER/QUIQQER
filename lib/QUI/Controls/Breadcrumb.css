@@ -2,56 +2,113 @@
 /** breadcrumb
  * ========================================================== */
 
-.quiqqer-breadcrumb a,
-.quiqqer-breadcrumb ul,
-.quiqqer-breadcrumb li,
-.quiqqer-breadcrumb span {
-    float: left;
-}
-
-.quiqqer-breadcrumb ul {
-    margin-left: 10px;
-}
-
-.quiqqer-breadcrumb li {
-    margin: 0 5px 0 0;
+.quiqqer-breadcrumb {
+    background-color: #fff;
+    font-size: 10pt;
+    line-height: 3em;
+    font-weight: normal;
+    letter-spacing: normal;
+    word-spacing: 1pt;
 }
 
 .quiqqer-breadcrumb a {
-    padding: 0 5px;
+    color: #8a8a8a;
+    padding: 0;
 }
 
-.quiqqer-breadcrumb span {
-    line-height: 1.5em;
+.quiqqer-breadcrumb a:hover .quiqqer-breadcrumb-link-text {
+    text-decoration: underline;
+}
+
+.quiqqer-breadcrumb ul {
+    margin: 0 0 0 15px;
+    display: inline-block;
+}
+
+.quiqqer-breadcrumb ul li {
+    display: inline-block;
+    margin-right: 15px;
+    padding-left: 0;
+    position: relative;
+    white-space: nowrap;
+}
+
+.quiqqer-breadcrumb ul li:last-child {
+    margin-right: 0;
 }
 
 .quiqqer-breadcrumb .fa {
-    margin-right: 10px;
+    margin-right: 15px;
 }
 
-@media screen and (max-width: 767px) {
+.quiqqer-breadcrumb-container {
+    overflow: hidden;
+    position: relative;
+    white-space: nowrap;
+    -webkit-transition: 0.3s all ease-in-out;
+    -moz-transition: 0.3s all ease-in-out;
+    -ms-transition: 0.3s all ease-in-out;
+    -o-transition: 0.3s all ease-in-out;
+    transition: 0.3s all ease-in-out;
+}
 
-    .quiqqer-breadcrumb-container {
-        padding: 20px 0;
-    }
+.quiqqer-breadcrumb-list-element:after {
+    display: none;
+    position: absolute;
+    right: 0;
+    height: 3em;
+    width: 120px;
+    content: '';
 
-    .quiqqer-breadcrumb-title {
-        padding: 5px;
-    }
+    background: rgba(255,255,255,0); /* For browsers that do not support gradients */
+    background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%, #fff 70%, #fff 100%); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(left, rgba(255,255,255,0) 0%, #fff 70%, #fff 100%); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, #fff 70%, #fff 100%); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(left, rgba(255,255,255,0) 0%, #fff 70%, #fff 100%); /* Standard syntax */
+}
 
-    .quiqqer-breadcrumb ul {
-        margin-left: 0;
-    }
+.fa.quiqqer-breadcrumb-link-icon {
+    cursor: pointer;
+    margin-right: 0;
+    display: none;
+    line-height: 1.5em;
+    font-size: 2em;
+    position: absolute;
+    right: 0;
+    z-index: 10;
+}
 
-    .quiqqer-breadcrumb ul,
-    .quiqqer-breadcrumb li,
-    .quiqqer-breadcrumb a {
-        clear: both;
-        padding: 0;
-        width: 100%;
-    }
+/* mobile
+ no fix point - JS calculate */
 
-    .quiqqer-breadcrumb a {
-        padding: 5px;
-    }
+.quiqqer-breadcrumb.quiqqer-breadcrumb-mobile .quiqqer-breadcrumb-container {
+    height: 3em;
+}
+
+.quiqqer-breadcrumb.quiqqer-breadcrumb-mobile ul {
+    bottom: 0;
+    display: block;
+    margin: 0;
+    position: absolute;
+    width: 100%;
+}
+
+.quiqqer-breadcrumb.quiqqer-breadcrumb-mobile ul li {
+    border-bottom: 1px solid #eee;
+    display: block;
+    margin: 0;
+    padding-left: 0;
+}
+
+.quiqqer-breadcrumb.quiqqer-breadcrumb-mobile ul li:last-child {
+    border-bottom: none;
+}
+
+.quiqqer-breadcrumb.quiqqer-breadcrumb-mobile .fa.quiqqer-breadcrumb-link-icon {
+    display: inline;
+    padding: 0 10px;
+}
+
+.quiqqer-breadcrumb.quiqqer-breadcrumb-mobile .quiqqer-breadcrumb-list-element:after {
+    display: inline;
 }

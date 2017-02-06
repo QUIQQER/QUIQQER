@@ -99,6 +99,18 @@ class Console
     );
 
     /**
+     * CLI arguments
+     *
+     * @var array
+     */
+    protected $arguments = array();
+
+    /**
+     * @var null|QUI\Interfaces\Users\User
+     */
+    protected $User = null;
+
+    /**
      * constructor
      */
     public function __construct()
@@ -114,51 +126,27 @@ class Console
             exit;
         }
 
-        $params = $this->readArgv();
+        $params = $this->getArguments();
 
         if (isset($params['--help']) && !isset($params['--tool'])) {
             $this->help();
             exit;
         }
 
-        if (isset($params['-u']) && isset($params['-p'])) {
-            $params['--username'] = $params['-u'];
-            $params['--password'] = $params['-p'];
-        }
-
-        if (!isset($params['--username'])) {
-            $this->writeLn("Please enter your username and password");
-            $this->writeLn("Username: ", 'green');
-
-            $params['--username'] = $this->readInput();
-
-            $this->write("Password: ", 'green');
-            $params['--password'] = QUI\Utils\System\Console::readPassword();
-        }
-
-        if (!isset($params['--password'])) {
-            $this->writeLn("Password:", 'green');
-            $params['--password'] = QUI\Utils\System\Console::readPassword();
-        }
 
         try {
-            $User = QUI::getUsers()->login(
-                $params['--username'],
-                $params['--password']
-            );
+            $this->authenticate();
         } catch (QUI\Exception $Exception) {
             $this->writeLn($Exception->getMessage() . "\n\n", 'red');
             exit;
         }
 
-        if (!$User->getId()) {
+        if (is_null($this->User) || !$this->User->getId()) {
             $this->writeLn("Login incorrect\n\n", 'red');
             exit;
         }
 
-        QUI::getSession()->set('uid', $User->getId());
-
-        QUI\Permissions\Permission::setUser($User);
+        QUI\Permissions\Permission::setUser($this->User);
 
         if (!QUI\Permissions\Permission::hasPermission('quiqqer.system.console')) {
             $this->writeLn("Missing rights to use the console\n\n", 'red');
@@ -186,6 +174,83 @@ class Console
         if (!isset($params['--tool']) && !isset($params['--listtools'])) {
             $this->readToolFromShell();
         }
+    }
+
+    /**
+     * Execute the authentication
+     */
+    protected function authenticate()
+    {
+        $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalAuthenticators();
+
+        if ($this->getArgument('u')) {
+            $this->setArgument('username', $this->getArgument('u'));
+        }
+
+        if ($this->getArgument('p')) {
+            $this->setArgument('password', $this->getArgument('p'));
+        }
+
+        foreach ($authenticators as $authenticator) {
+            /* @var $Authenticator QUI\Users\AbstractAuthenticator */
+            $Authenticator = new $authenticator('');
+
+            if (!$Authenticator->isCLICompatible()) {
+                continue;
+            }
+
+            $Authenticator->cliAuthentication($this);
+
+            if (is_null($this->User)) {
+                $this->setArgument('username', $Authenticator->getUser()->getName());
+                $this->User = $Authenticator->getUser();
+            }
+        }
+
+        if (!QUI::getUsers()->isUser($this->User)) {
+            throw new QUI\Users\Exception(
+                array('quiqqer/system', 'exception.login.fail'),
+                401
+            );
+        }
+
+        if (QUI::getUsers()->isNobodyUser($this->User)) {
+            throw new QUI\Users\Exception(
+                array('quiqqer/system', 'exception.login.fail'),
+                401
+            );
+        }
+
+        /* @var $User QUI\Users\User */
+        $User           = $this->User;
+        $authenticators = $User->getAuthenticators();
+
+        foreach ($authenticators as $Authenticator) {
+            if ($Authenticator->isCLICompatible()) {
+                $Authenticator->cliAuthentication($this);
+            }
+        }
+
+        // login
+        $Users     = QUI::getUsers();
+        $userAgent = '';
+
+        QUI::getSession()->set('auth', 1);
+        QUI::getSession()->set('secHash', $Users->getSecHash());
+
+        if (isset($_SERVER['HTTP_USER_AGENT'])) {
+            $userAgent = $_SERVER['HTTP_USER_AGENT'];
+        }
+
+        QUI::getDataBase()->update(
+            $Users->table(),
+            array(
+                'lastvisit'  => time(),
+                'user_agent' => $userAgent,
+                'secHash'    => $Users->getSecHash()
+            ),
+            array('id' => $User->getId())
+        );
     }
 
     /**
@@ -220,6 +285,56 @@ class Console
         }
 
         return $params;
+    }
+
+    /**
+     * Return the CLI arguments
+     *
+     * @return array
+     */
+    public function getArguments()
+    {
+        if (!empty($this->arguments)) {
+            return $this->arguments;
+        }
+
+        $args = $this->readArgv();
+
+        foreach ($args as $arg => $value) {
+            $this->setArgument($arg, $value);
+        }
+
+        return $this->arguments;
+    }
+
+    /**
+     * Set CLI arguments
+     *
+     * @param string $argument
+     * @param string $value
+     */
+    public function setArgument($argument, $value)
+    {
+        $argument = trim($argument, '-');
+
+        $this->arguments[$argument] = $value;
+    }
+
+    /**
+     * Return the CLI argument
+     *
+     * @param string $argument
+     * @return mixed|null
+     */
+    public function getArgument($argument)
+    {
+        $argument = trim($argument, '-');
+
+        if (isset($this->arguments[$argument])) {
+            return $this->arguments[$argument];
+        }
+
+        return null;
     }
 
     /**
@@ -496,8 +611,7 @@ class Console
             return;
         }
 
-        $str
-            = '
+        $str = '
          _______          _________ _______  _______  _______  _______
         (  ___  )|\     /|\__   __/(  ___  )(  ___  )(  ____ \(  ____ )
         | (   ) || )   ( |   ) (   | (   ) || (   ) || (    \/| (    )|

@@ -128,7 +128,7 @@ class Manager
         $Config->setSection($projectName, $config);
         $Config->save();
 
-        QUI::getEvents()->fireEvent('projectConfigSave', array($projectName, $config));
+        QUI::getEvents()->fireEvent('projectConfigSave', array($projectName, $config, $params));
 
         // remove the project from the temp
         if (self::$projects[$projectName]) {

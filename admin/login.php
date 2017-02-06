@@ -44,17 +44,11 @@ $languages = QUI::availableLanguages();
         }
 
         .container {
-            height: 380px;
             background: #fff;
+            box-shadow: 2px 0 5px #999;
             padding: 40px 0;
             margin: 50px 0 0;
-
-            box-shadow: 2px 0 5px #999;
-        }
-
-        .entry {
-            width: 440px;
-            margin: 10px auto;
+            min-height: 380px;
         }
 
         .logo {
@@ -63,60 +57,23 @@ $languages = QUI::availableLanguages();
             position: relative;
         }
 
-        form {
-            width: 600px;
+        .login {
             margin: 0 auto;
-        }
-
-        label {
-            width: 160px;
-            cursor: pointer;
-            float: left;
-            line-height: 26px;
-        }
-
-        input {
-            padding: 5px;
-            border: 1px solid #999;
-
-            border-radius: 5px;
-            -moz-border-radius: 5px;
-            -khtml-border-radius: 5px;
-            -webkit-border-radius: 5px;
-        }
-
-        input:focus,
-        input:hover {
-            background: #fff;
-            border: 1px solid #999;
-            box-shadow: 0 0 3px #999;
-        }
-
-        .logininput {
-            float: left;
-            margin: 0 auto;
-            padding-left: 240px;
+            max-width: 300px;
             width: 100%;
         }
 
+        input {
+            border: 1px solid #999;
+            border-radius: 3px;
+            padding: 5px 10px;
+        }
+
         input[type="submit"] {
-            cursor: pointer;
-            float: left;
-
-            width: 140px;
-
-            color: #e9e9e9 !important;
-            border: solid 1px #555 !important;
-            background: #6e6e6e !important;
-        }
-
-        input[type="submit"]:hover {
-            background: #616161 !important;
-        }
-
-        #username,
-        #password {
-            width: calc(100% - 160px);
+            border-color: #538312;
+            background: #64991e;
+            border-radius: 0;
+            color: #fff;
         }
 
         /* Animate.css - http://daneden.me/animate */
@@ -314,207 +271,244 @@ $languages = QUI::availableLanguages();
 
     <script type="text/javascript">
 
+        var URL_DIR = '<?php echo URL_DIR; ?>',
+            LANGUAGE = null;
+
         // require config
         require.config({
-            baseUrl    : '<?php echo URL_BIN_DIR; ?>QUI/',
-            paths      : {
-                "package"    : "<?php echo URL_OPT_DIR; ?>",
-                "qui"        : '<?php echo URL_OPT_DIR; ?>bin/qui/qui',
-                "locale"     : '<?php echo URL_VAR_DIR; ?>locale/bin',
+            baseUrl: '<?php echo URL_BIN_DIR; ?>QUI/',
+            paths: {
+                "package": "<?php echo URL_OPT_DIR; ?>",
+                "qui": '<?php echo URL_OPT_DIR; ?>bin/qui/qui',
+                "locale": '<?php echo URL_VAR_DIR; ?>locale/bin',
+                "Ajax": '<?php echo URL_BIN_DIR; ?>QUI/Ajax',
                 "URL_OPT_DIR": "<?php echo URL_OPT_DIR; ?>",
                 "URL_BIN_DIR": "<?php echo URL_BIN_DIR; ?>"
             },
             waitSeconds: 0,
-            catchError : true,
-            map        : {
+            catchError: true,
+            map: {
                 '*': {
                     'css': '<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/css.js'
                 }
             }
         });
 
-        var languages = <?php echo json_encode($languages); ?>
+        function getCurrentLanguage() {
+            if (LANGUAGE) {
+                return LANGUAGE;
+            }
 
-            document.id(window).addEvent('load', function () {
+            var lang = 'en';
+
+            if ("language" in navigator) {
+                lang = navigator.language;
+
+            } else if ("browserLanguage" in navigator) {
+                lang = navigator.browserLanguage;
+
+            } else if ("systemLanguage" in navigator) {
+                lang = navigator.systemLanguage;
+
+            } else if ("userLanguage" in navigator) {
+                lang = navigator.userLanguage;
+            }
+
+            LANGUAGE = lang.substr(0, 2);
+
+            return LANGUAGE;
+        }
+
+        function setLanguage(lang) {
+            return new Promise(function (resolve) {
                 require([
-                    'qui/controls/buttons/Select'
-                ], function (QUISelect) {
-                    var Logo = document.getElement('.logo'),
-                        Linp = document.getElement('.logininput');
-
-                    Logo.addClass('animated');
-                    Logo.addClass('swing');
-
-                    document.id('username').focus();
-
-                    window.LangSelect = new QUISelect({
-                        maxDropDownHeight: 300,
-                        styles           : {
-                            marginLeft: 10,
-                            width     : 130
-                        },
-                        events           : {
-                            onChange: function (val) {
-                                setLanguage(val);
-                            }
-                        }
-                    }).inject(Linp);
-
-                    <?php
-
-                    $url_bin_dir = URL_BIN_DIR;
-
-                    foreach ($languages as $lang) {
-                        $langText = '';
-
-                        switch ($lang) {
-                            case 'de':
-                                $langText = 'Deutsch';
-                                break;
-                            case 'en':
-                                $langText = 'English';
-                                break;
-
-                            default:
-                                continue 2;
-                        }
-
-                        echo "
-
-                            window.LangSelect.appendChild(
-                                '{$langText}',
-                                '{$lang}',
-                                '{$url_bin_dir}16x16/flags/{$lang}.png'
-                            );
-
-                        ";
-                    }
-
-                    ?>
-
-                    // browser language
-                    var lang = 'en';
-
-                    if ("language" in navigator) {
-                        lang = navigator.language;
-
-                    } else if ("browserLanguage" in navigator) {
-                        lang = navigator.browserLanguage;
-
-                    } else if ("systemLanguage" in navigator) {
-                        lang = navigator.systemLanguage;
-
-                    } else if ("userLanguage" in navigator) {
-                        lang = navigator.userLanguage;
-                    }
-
-                    lang = lang.substr(0, 2);
-
-                    switch (lang) {
-                        case 'de':
-                        case 'en':
-                            break;
-
-                        default:
-                            lang = 'en';
-                            break;
-                    }
-
-                    window.setLanguage(lang);
-
-
-                    document.id('username').focus();
+                    'Locale',
+                    'locale/quiqqer/system/' + lang
+                ], function (QUILocale) {
+                    QUILocale.setCurrent(lang);
+                    resolve();
                 });
+            })
+        }
+
+        // init
+        require(['qui/QUI', 'controls/users/Login'], function (QUI, Login) {
+            QUI.setAttributes({
+                'control-loader-type': 'line-scale',
+                'control-loader-color': '#2f8fc8'
             });
 
-        var setLanguage = function (lang) {
-            switch (lang) {
-                case 'de':
-                case 'en':
-                    break;
-
-                default:
-                    lang = 'en';
-                    break;
-            }
-
-            if (!languages.contains(lang)) {
-                window.LangSelect.setValue(
-                    window.LangSelect.firstChild().getAttribute('value')
-                );
-                return;
-            }
-
-            if (window.LangSelect.getValue() != lang) {
-                window.LangSelect.setValue(lang);
-                return;
-            }
-
-            require([
-                'Locale',
-                'locale/quiqqer/system/' + lang
-            ], function (QUILocale) {
-                QUILocale.setCurrent(lang);
-
-                document.getElements('[for="username"]').set(
-                    'html',
-                    QUILocale.get('quiqqer/system', 'username')
-                );
-
-                document.getElements('[for="password"]').set(
-                    'html',
-                    QUILocale.get('quiqqer/system', 'password')
-                );
-
-                document.getElements('[name="login"]').set(
-                    'value',
-                    QUILocale.get('quiqqer/system', 'login')
-                );
+            setLanguage(getCurrentLanguage()).then(function () {
+                new Login({
+                    onsuccess: 'onSuccess'
+                }).inject(document.getElement('.login'));
             });
-        };
+        });
+
+
+        //        var languages = <?php //echo json_encode($languages); ?>
+        //
+        //            document.id(window).addEvent('load', function () {
+        //                require([
+        //                    'qui/controls/buttons/Select'
+        //                ], function (QUISelect) {
+        //                    var Logo = document.getElement('.logo'),
+        //                        Linp = document.getElement('.logininput');
+        //
+        //                    Logo.addClass('animated');
+        //                    Logo.addClass('swing');
+        //
+        //                    document.id('username').focus();
+        //
+        //                    window.LangSelect = new QUISelect({
+        //                        maxDropDownHeight: 300,
+        //                        styles: {
+        //                            marginLeft: 10,
+        //                            width: 130
+        //                        },
+        //                        events: {
+        //                            onChange: function (val) {
+        //                                setLanguage(val);
+        //                            }
+        //                        }
+        //                    }).inject(Linp);
+        //
+        //                    <?php
+        //
+        //                    $url_bin_dir = URL_BIN_DIR;
+        //
+        //                    foreach ($languages as $lang) {
+        //                        $langText = '';
+        //
+        //                        switch ($lang) {
+        //                            case 'de':
+        //                                $langText = 'Deutsch';
+        //                                break;
+        //                            case 'en':
+        //                                $langText = 'English';
+        //                                break;
+        //
+        //                            default:
+        //                                continue 2;
+        //                        }
+        //
+        //                        echo "
+        //
+        //                            window.LangSelect.appendChild(
+        //                                '{$langText}',
+        //                                '{$lang}',
+        //                                '{$url_bin_dir}16x16/flags/{$lang}.png'
+        //                            );
+        //
+        //                        ";
+        //                    }
+        //
+        //                    ?>
+        //
+        //                    // browser language
+        //                    var lang = 'en';
+        //
+        //                    if ("language" in navigator) {
+        //                        lang = navigator.language;
+        //
+        //                    } else if ("browserLanguage" in navigator) {
+        //                        lang = navigator.browserLanguage;
+        //
+        //                    } else if ("systemLanguage" in navigator) {
+        //                        lang = navigator.systemLanguage;
+        //
+        //                    } else if ("userLanguage" in navigator) {
+        //                        lang = navigator.userLanguage;
+        //                    }
+        //
+        //                    lang = lang.substr(0, 2);
+        //
+        //                    switch (lang) {
+        //                        case 'de':
+        //                        case 'en':
+        //                            break;
+        //
+        //                        default:
+        //                            lang = 'en';
+        //                            break;
+        //                    }
+        //
+        //                    window.setLanguage(lang);
+        //
+        //
+        //                    document.id('username').focus();
+        //                });
+        //            });
+        //
+        //        var setLanguage = function (lang) {
+        //            switch (lang) {
+        //                case 'de':
+        //                case 'en':
+        //                    break;
+        //
+        //                default:
+        //                    lang = 'en';
+        //                    break;
+        //            }
+        //
+        //            if (!languages.contains(lang)) {
+        //                window.LangSelect.setValue(
+        //                    window.LangSelect.firstChild().getAttribute('value')
+        //                );
+        //                return;
+        //            }
+        //
+        //            if (window.LangSelect.getValue() != lang) {
+        //                window.LangSelect.setValue(lang);
+        //                return;
+        //            }
+        //
+        //            require([
+        //                'Locale',
+        //                'locale/quiqqer/system/' + lang
+        //            ], function (QUILocale) {
+        //                QUILocale.setCurrent(lang);
+        //
+        //                document.getElements('[for="username"]').set(
+        //                    'html',
+        //                    QUILocale.get('quiqqer/system', 'username')
+        //                );
+        //
+        //                document.getElements('[for="password"]').set(
+        //                    'html',
+        //                    QUILocale.get('quiqqer/system', 'password')
+        //                );
+        //
+        //                document.getElements('[name="login"]').set(
+        //                    'value',
+        //                    QUILocale.get('quiqqer/system', 'login')
+        //                );
+        //            });
+        //        };
+
+        function onSuccess() {
+            moofx(document.getElement('.container')).animate({
+                opacity: 0
+            }, {
+                duration: 200,
+                callback: function () {
+                    window.location.reload();
+                }
+            });
+        }
 
     </script>
-
 </head>
 <body>
-<?php
 
-if (isset($languages[0])) {
-    QUI::getLocale()->setCurrent($languages[0]);
-}
-
-?>
 <div class="container">
-    <form action="" method="POST" name="login">
+    <img src="<?php echo URL_BIN_DIR; ?>quiqqer_logo.png"
+         alt="QUIQQER Login"
+         title="QUIQQER Logo"
+         class="logo"
+    />
 
-        <img src="<?php echo URL_BIN_DIR; ?>quiqqer_logo.png"
-             alt="QUIQQER Login"
-             title="QUIQQER Logo"
-             class="logo"
-        />
-
-        <div class="entry">
-            <label for="username">
-                <?php echo QUI::getLocale()->get('quiqqer/system', 'username') ?>
-            </label>
-            <input id="username" name="username" type="text" value=""/>
-        </div>
-
-        <div class="entry">
-            <label for="password">
-                <?php echo QUI::getLocale()->get('quiqqer/system', 'password') ?>
-            </label>
-            <input id="password" name="password" type="password" value=""/>
-        </div>
-
-        <div class="logininput">
-            <input type="submit"
-                   name="login"
-                   value="<?php echo QUI::getLocale()->get('quiqqer/system', 'login') ?>"
-            />
-        </div>
-
-    </form>
+    <div class="login"></div>
 </div>
 
 <?php if (defined('LOGIN_FAILED')) { ?>
