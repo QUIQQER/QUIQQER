@@ -923,6 +923,18 @@ class Manager
             return $this->get($userId);
         }
 
+        $numArgs = func_num_args();
+
+        // old login -> v 1.0; fallback
+        if ($numArgs == 2) {
+            $arguments = func_get_args();
+            $authData  = array(
+                'username' => $arguments[0],
+                'password' => $arguments[1]
+            );
+        }
+
+
         // global authenticators
         if (QUI::getSession()->get('auth-globals') !== 1) {
             $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalAuthenticators();
