@@ -2356,8 +2356,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Remove project]]></en>
         </locale>
         <locale name="projects.project.panel.title">
-            <de><![CDATA[Projekte]]></de>
-            <en><![CDATA[Projects]]></en>
+            <de><![CDATA[Webseiten]]></de>
+            <en><![CDATA[Websites]]></en>
         </locale>
         <locale name="projects.project.panel.open.search">
             <de><![CDATA[Seitensuche öffnen]]></de>
