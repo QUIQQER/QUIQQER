@@ -96,30 +96,30 @@
         <table name="permissions2sites">
             <field type="VARCHAR(200) NOT NULL DEFAULT ''">project</field>
             <field type="VARCHAR(2) NOT NULL DEFAULT ''">lang</field>
-            <field type="BIGINT(20) NULL">id</field>
-            <field type="TEXT NULL">permission</field>
+            <field type="INT(20) NULL">id</field>
+            <field type="VARCHAR(100) NULL">permission</field>
             <field type="TEXT NULL">value</field>
 
-            <primary>project,lang,id</primary>
+            <primary>project,lang,id,permission</primary>
         </table>
 
         <table name="permissions2projects">
             <field type="VARCHAR(200) NOT NULL DEFAULT ''">project</field>
             <field type="VARCHAR(2) NOT NULL DEFAULT ''">lang</field>
-            <field type="TEXT NULL">permission</field>
+            <field type="VARCHAR(100) NULL">permission</field>
             <field type="TEXT NULL">value</field>
 
-            <primary>project,lang</primary>
+            <primary>project,lang,permission</primary>
         </table>
 
         <table name="permissions2media">
             <field type="VARCHAR(200) NOT NULL DEFAULT ''">project</field>
             <field type="VARCHAR(2) DEFAULT ''">lang</field>
-            <field type="BIGINT(20) DEFAULT NULL">id</field>
-            <field type="TEXT NULL">permission</field>
+            <field type="INT(20) DEFAULT NULL">id</field>
+            <field type="VARCHAR(100) NULL">permission</field>
             <field type="TEXT NULL">value</field>
 
-            <primary>project,lang,id</primary>
+            <primary>project,lang,id,permission</primary>
         </table>
 
         <table name="sessions">
