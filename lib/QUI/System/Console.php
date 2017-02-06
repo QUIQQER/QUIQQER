@@ -126,7 +126,7 @@ class Console
             exit;
         }
 
-        $params = $this->readArgv();
+        $params = $this->getArguments();
 
         if (isset($params['--help']) && !isset($params['--tool'])) {
             $this->help();
@@ -181,20 +181,19 @@ class Console
      */
     protected function authenticate()
     {
-        $username       = '';
         $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalAuthenticators();
 
-        if (isset($params['-u'])) {
-            $this->setArgument('username', $params['-u']);
+        if ($this->getArgument('u')) {
+            $this->setArgument('username', $this->getArgument('u'));
         }
 
-        if (isset($params['-p'])) {
-            $this->setArgument('password', $params['-p']);
+        if ($this->getArgument('p')) {
+            $this->setArgument('password', $this->getArgument('p'));
         }
 
         foreach ($authenticators as $authenticator) {
             /* @var $Authenticator QUI\Users\AbstractAuthenticator */
-            $Authenticator = new $authenticator($username);
+            $Authenticator = new $authenticator('');
 
             if (!$Authenticator->isCLICompatible()) {
                 continue;
