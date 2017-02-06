@@ -8,6 +8,7 @@
  * @require Ajax
  *
  * @event onAuthBegin
+ * @event onAuthNext
  * @event onSuccess
  * @event onAuthNext
  */
@@ -247,6 +248,7 @@ define('controls/users/Login', [
                     ),
                     onError: function () {
                         self.Loader.hide();
+                        self.fireEvent('authNext', [this]);
                         reject();
                     }
                 });

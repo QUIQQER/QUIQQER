@@ -871,7 +871,6 @@ class Manager
 
         try {
             $Authenticator->auth($params);
-            $isAuthenticated = true;
         } catch (QUI\Users\Exception $Exception) {
             throw $Exception;
         } catch (\Exception $Exception) {
@@ -884,26 +883,25 @@ class Manager
         }
 
         // auth successful, set to session
-        if ($isAuthenticated) {
-            if (!$Session->get('username')) {
-                $Session->set(
-                    'username',
-                    $Authenticator->getUser()->getUsername()
-                );
-            }
-
-            if (!$Session->get('uid')) {
-                $Session->set(
-                    'uid',
-                    $Authenticator->getUser()->getId()
-                );
-            }
-
+        if (!$Session->get('username')) {
             $Session->set(
-                'auth-' . get_class($Authenticator),
-                1
+                'username',
+                $Authenticator->getUser()->getUsername()
             );
         }
+
+        if (!$Session->get('uid')) {
+            $Session->set(
+                'uid',
+                $Authenticator->getUser()->getId()
+            );
+        }
+
+        $Session->set(
+            'auth-' . get_class($Authenticator),
+            1
+        );
+
 
         return true;
     }
@@ -1118,9 +1116,7 @@ class Manager
     {
         // max_life_time check
         if (!QUI::getSession()->check()) {
-// QUI::getSession()->destroy();
-// @todo delete authenticator params
-
+            // @todo delete authenticator params
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
@@ -1133,8 +1129,6 @@ class Manager
         if (!QUI::getSession()->get('uid')
             || !QUI::getSession()->get('auth')
         ) {
-//            QUI::getSession()->destroy();
-
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
@@ -1147,8 +1141,6 @@ class Manager
         $User = $this->get(QUI::getSession()->get('uid'));
 
         if (!$User->isActive()) {
-//            QUI::getSession()->destroy();
-
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
@@ -1167,9 +1159,13 @@ class Manager
         $secHash        = $this->getSecHash();
         $userSecHash    = $User->getAttribute('secHash');
 
+        QUI\System\Log::writeRecursive($userSecHash . '-' . $secHash);
+
         if ($sessionSecHash == $secHash && $userSecHash == $secHash) {
             return;
         }
+
+        QUI\System\Log::writeRecursive('BOOOOM!');
 
 
         $message = $User->getLocale()->get(

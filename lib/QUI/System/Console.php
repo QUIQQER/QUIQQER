@@ -146,8 +146,6 @@ class Console
             exit;
         }
 
-        QUI::getSession()->set('uid', $this->User->getId());
-
         QUI\Permissions\Permission::setUser($this->User);
 
         if (!QUI\Permissions\Permission::hasPermission('quiqqer.system.console')) {
@@ -233,6 +231,27 @@ class Console
                 $Authenticator->cliAuthentication($this);
             }
         }
+
+        // login
+        $Users     = QUI::getUsers();
+        $userAgent = '';
+
+        QUI::getSession()->set('auth', 1);
+        QUI::getSession()->set('secHash', $Users->getSecHash());
+
+        if (isset($_SERVER['HTTP_USER_AGENT'])) {
+            $userAgent = $_SERVER['HTTP_USER_AGENT'];
+        }
+
+        QUI::getDataBase()->update(
+            $Users->table(),
+            array(
+                'lastvisit'  => time(),
+                'user_agent' => $userAgent,
+                'secHash'    => $Users->getSecHash()
+            ),
+            array('id' => $User->getId())
+        );
     }
 
     /**
