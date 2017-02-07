@@ -271,30 +271,37 @@ $languages = QUI::availableLanguages();
 
     <script type="text/javascript">
 
-        var URL_DIR = '<?php echo URL_DIR; ?>',
-            LANGUAGE = null;
+        var URL_DIR     = '<?php echo URL_DIR; ?>',
+            URL_OPT_DIR = '<?php echo URL_OPT_DIR; ?>',
+            LANGUAGE    = null;
 
         // require config
         require.config({
-            baseUrl: '<?php echo URL_BIN_DIR; ?>QUI/',
-            paths: {
-                "package": "<?php echo URL_OPT_DIR; ?>",
-                "qui": '<?php echo URL_OPT_DIR; ?>bin/qui/qui',
-                "locale": '<?php echo URL_VAR_DIR; ?>locale/bin',
-                "Ajax": '<?php echo URL_BIN_DIR; ?>QUI/Ajax',
+            baseUrl    : '<?php echo URL_BIN_DIR; ?>QUI/',
+            paths      : {
+                "package"    : "<?php echo URL_OPT_DIR; ?>",
+                "qui"        : '<?php echo URL_OPT_DIR; ?>bin/qui/qui',
+                "locale"     : '<?php echo URL_VAR_DIR; ?>locale/bin',
+                "Ajax"       : '<?php echo URL_BIN_DIR; ?>QUI/Ajax',
                 "URL_OPT_DIR": "<?php echo URL_OPT_DIR; ?>",
-                "URL_BIN_DIR": "<?php echo URL_BIN_DIR; ?>"
+                "URL_BIN_DIR": "<?php echo URL_BIN_DIR; ?>",
+
+                "Mustache"          : URL_OPT_DIR + 'bin/mustache/mustache.min',
+                "URI"               : URL_OPT_DIR + 'bin/urijs/src/URI',
+                'IPv6'              : URL_OPT_DIR + 'bin/urijs/src/IPv6',
+                'punycode'          : URL_OPT_DIR + 'bin/urijs/src/punycode',
+                'SecondLevelDomains': URL_OPT_DIR + 'bin/urijs/src/SecondLevelDomains'
             },
             waitSeconds: 0,
-            catchError: true,
-            map: {
+            catchError : true,
+            map        : {
                 '*': {
                     'css': '<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/css.js'
                 }
             }
         });
 
-        function getCurrentLanguage() {
+        function getCurrentLanguage () {
             if (LANGUAGE) {
                 return LANGUAGE;
             }
@@ -319,7 +326,7 @@ $languages = QUI::availableLanguages();
             return LANGUAGE;
         }
 
-        function setLanguage(lang) {
+        function setLanguage (lang) {
             return new Promise(function (resolve) {
                 require([
                     'Locale',
@@ -334,7 +341,7 @@ $languages = QUI::availableLanguages();
         // init
         require(['qui/QUI', 'controls/users/Login'], function (QUI, Login) {
             QUI.setAttributes({
-                'control-loader-type': 'line-scale',
+                'control-loader-type' : 'line-scale',
                 'control-loader-color': '#2f8fc8'
             });
 
@@ -486,7 +493,7 @@ $languages = QUI::availableLanguages();
         //            });
         //        };
 
-        function onSuccess() {
+        function onSuccess () {
             moofx(document.getElement('.container')).animate({
                 opacity: 0
             }, {
