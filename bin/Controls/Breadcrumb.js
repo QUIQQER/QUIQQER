@@ -63,7 +63,7 @@ define('Controls/Breadcrumb', [
 
             this.height = document.getElement('.quiqqer-breadcrumb-list-element').getSize().y;
 
-            document.getElement('.quiqqer-breadcrumb-container').setStyle('height', this.height);
+//            document.getElement('.quiqqer-breadcrumb-container').setStyle('height', this.height);
 
             this.isOpen = false;
             this.isMobile = false;
@@ -98,6 +98,7 @@ define('Controls/Breadcrumb', [
             // scroll width or window size 768px
             if (containerWidth < containerWidthScroll /*|| parseInt(window.getSize().x) < 768*/) {
                 // mobile
+
                 this.setMobile();
                 this.breadcrumbWidth = containerWidthScroll;
                 return;
@@ -124,7 +125,7 @@ define('Controls/Breadcrumb', [
          */
         unsetMobile: function ()
         {
-            this.title.setStyle('display', 'inline');
+            this.title.setStyle('display', '');
             this.isMobile = false;
             this.breadcrumb.removeClass('quiqqer-breadcrumb-mobile');
         },
