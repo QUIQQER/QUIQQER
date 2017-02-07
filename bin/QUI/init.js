@@ -223,11 +223,13 @@ require(requireList, function () {
                             if (Quiqqer) {
                                 var Img = Quiqqer.getElm().getElement('img');
 
-                                Img.setStyles({
-                                    height  : 22,
-                                    position: 'relative',
-                                    top     : 6
-                                });
+                                if (Img) {
+                                    Img.setStyles({
+                                        height  : 22,
+                                        position: 'relative',
+                                        top     : 6
+                                    });
+                                }
                             }
                         }
 
