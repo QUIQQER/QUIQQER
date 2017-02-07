@@ -28,22 +28,16 @@ $languages = QUI::availableLanguages();
      * locale file
      */
 
-    $files = array();
+    $files     = array();
+    $languages = QUI::availableLanguages();
 
-    try {
-        $files = \QUI\Translator::getJSTranslationFiles($User->getLang());
-    } catch (\QUI\Exception $Exception) {
-    }
-
-    $locales = array();
-
-    foreach ($files as $package => $file) {
-        $locales[] = $package . '/' . $User->getLang();
+    foreach ($languages as $lang) {
+        $files[] = 'locale/_cache/' . $lang;
     }
 
     echo '<script type="text/javascript">';
     echo '/* <![CDATA[ */';
-    echo 'var QUIQQER_LOCALE = ' . json_encode($locales, true);
+    echo 'var QUIQQER_LOCALE = ' . json_encode($files, true);
     echo '/* ]]> */';
     echo '</script>';
     ?>
@@ -365,7 +359,8 @@ $languages = QUI::availableLanguages();
 
         // init
         require([
-            'qui/QUI', 'controls/users/Login'
+            'qui/QUI',
+            'controls/users/Login'
         ].append(QUIQQER_LOCALE || []), function (QUI, Login) {
             QUI.setAttributes({
                 'control-loader-type' : 'line-scale',
