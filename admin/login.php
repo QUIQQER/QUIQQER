@@ -304,6 +304,12 @@ foreach ($packages as $package) {
         }
     </style>
 
+    <?php
+
+    echo QUI\FontAwesome\EventHandler::fontawesome(false, false);
+
+    ?>
+
     <script src="<?php echo URL_OPT_DIR; ?>bin/require.js"></script>
     <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-core.js"></script>
     <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-more.js"></script>
