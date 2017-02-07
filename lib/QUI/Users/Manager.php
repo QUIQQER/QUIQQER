@@ -1171,14 +1171,9 @@ class Manager
         $secHash        = $this->getSecHash();
         $userSecHash    = $User->getAttribute('secHash');
 
-        QUI\System\Log::writeRecursive($userSecHash . '-' . $secHash);
-
         if ($sessionSecHash == $secHash && $userSecHash == $secHash) {
             return;
         }
-
-        QUI\System\Log::writeRecursive('BOOOOM!');
-
 
         $message = $User->getLocale()->get(
             'quiqqer/system',

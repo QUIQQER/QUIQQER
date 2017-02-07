@@ -251,7 +251,6 @@ class Manager
         $settingsXml = self::getRelatedSettingsXML($Project);
 
         foreach ($settingsXml as $file) {
-            QUI\System\Log::writeRecursive($file);
             $Dom  = XML::getDomFromXml($file);
             $Path = new \DOMXPath($Dom);
 

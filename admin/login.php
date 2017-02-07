@@ -23,6 +23,31 @@ $languages = QUI::availableLanguages();
         QUIQQER Content Management System - <?php echo HOST ?> -
     </title>
 
+    <?php
+    /**
+     * locale file
+     */
+
+    $files = array();
+
+    try {
+        $files = \QUI\Translator::getJSTranslationFiles($User->getLang());
+    } catch (\QUI\Exception $Exception) {
+    }
+
+    $locales = array();
+
+    foreach ($files as $package => $file) {
+        $locales[] = $package . '/' . $User->getLang();
+    }
+
+    echo '<script type="text/javascript">';
+    echo '/* <![CDATA[ */';
+    echo 'var QUIQQER_LOCALE = ' . json_encode($locales, true);
+    echo '/* ]]> */';
+    echo '</script>';
+    ?>
+
     <style type="text/css">
 
         * {
@@ -339,7 +364,9 @@ $languages = QUI::availableLanguages();
         }
 
         // init
-        require(['qui/QUI', 'controls/users/Login'], function (QUI, Login) {
+        require([
+            'qui/QUI', 'controls/users/Login'
+        ].append(QUIQQER_LOCALE || []), function (QUI, Login) {
             QUI.setAttributes({
                 'control-loader-type' : 'line-scale',
                 'control-loader-color': '#2f8fc8'
