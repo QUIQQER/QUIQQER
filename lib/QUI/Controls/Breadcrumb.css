@@ -3,9 +3,7 @@
  * ========================================================== */
 
 .quiqqer-breadcrumb {
-    background-color: #fff;
     font-size: 10pt;
-    line-height: 3em;
     font-weight: normal;
     letter-spacing: normal;
     word-spacing: 1pt;
@@ -26,10 +24,12 @@
 }
 
 .quiqqer-breadcrumb ul li {
-    display: inline-block;
+    display: inline;
     margin-right: 15px;
+    overflow: hidden;
     padding-left: 0;
     position: relative;
+    text-overflow: ellipsis;
     white-space: nowrap;
 }
 
@@ -52,38 +52,22 @@
     transition: 0.3s all ease-in-out;
 }
 
-.quiqqer-breadcrumb-list-element:after {
-    display: none;
-    position: absolute;
-    right: 0;
-    height: 3em;
-    width: 120px;
-    content: '';
-
-    background: rgba(255,255,255,0); /* For browsers that do not support gradients */
-    background: -webkit-linear-gradient(left, rgba(255,255,255,0) 0%, #fff 70%, #fff 100%); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(left, rgba(255,255,255,0) 0%, #fff 70%, #fff 100%); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(left, rgba(255,255,255,0) 0%, #fff 70%, #fff 100%); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(left, rgba(255,255,255,0) 0%, #fff 70%, #fff 100%); /* Standard syntax */
-}
-
 .fa.quiqqer-breadcrumb-link-icon {
     cursor: pointer;
     margin-right: 0;
     display: none;
-    line-height: 1.5em;
+    line-height: inherit;
     font-size: 2em;
     position: absolute;
     right: 0;
+    width: 40px;
+    text-align: center;
     z-index: 10;
 }
 
 /* mobile
  no fix point - JS calculate */
 
-.quiqqer-breadcrumb.quiqqer-breadcrumb-mobile .quiqqer-breadcrumb-container {
-    height: 3em;
-}
 
 .quiqqer-breadcrumb.quiqqer-breadcrumb-mobile ul {
     bottom: 0;
@@ -98,15 +82,16 @@
     display: block;
     margin: 0;
     padding-left: 0;
+    padding-right: 10px;
 }
 
 .quiqqer-breadcrumb.quiqqer-breadcrumb-mobile ul li:last-child {
     border-bottom: none;
+    padding-right: 40px;
 }
 
 .quiqqer-breadcrumb.quiqqer-breadcrumb-mobile .fa.quiqqer-breadcrumb-link-icon {
     display: inline;
-    padding: 0 10px;
 }
 
 .quiqqer-breadcrumb.quiqqer-breadcrumb-mobile .quiqqer-breadcrumb-list-element:after {
