@@ -241,8 +241,7 @@ class Manager
         $templates = array();
 
         if ($Project->getAttribute('template')) {
-            $templates[]
-                = OPT_DIR . $Project->getAttribute('template') . '/settings.xml';
+            $templates[] = OPT_DIR . $Project->getAttribute('template') . '/settings.xml';
         }
 
         // project vhosts

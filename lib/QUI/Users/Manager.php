@@ -273,7 +273,7 @@ class Manager
             $ParentUser
         );
 
-        $newid = $this->newId();
+        $newId = $this->newId();
 
         if ($username) {
             if ($this->usernameExists($username)) {
@@ -285,32 +285,30 @@ class Manager
                 );
             }
 
-            $newname = $username;
+            $newName = $username;
         } else {
-            $newname = 'Neuer Benutzer';
+            $newName = 'Neuer Benutzer';
             $i       = 0;
 
-            while ($this->usernameExists($newname)) {
-                $newname = 'Neuer Benutzer (' . $i . ')';
+            while ($this->usernameExists($newName)) {
+                $newName = 'Neuer Benutzer (' . $i . ')';
                 $i++;
             }
         }
 
         self::checkUsernameSigns($username);
 
-
-        // Nur erlaubte Zeichen zu lassen
-        //$newname
         QUI::getDataBase()->insert(
             self::table(),
             array(
-                'id'       => $newid,
-                'username' => $newname,
-                'regdate'  => time()
+                'id'       => $newId,
+                'username' => $newName,
+                'regdate'  => time(),
+                'lang'     => QUI::getLocale()->getCurrent()
             )
         );
 
-        $User = $this->get($newid);
+        $User = $this->get($newId);
 
         // workspace
         $twoColumn = '[{
@@ -581,6 +579,21 @@ class Manager
         );
 
         QUI\Workspace\Manager::setStandardWorkspace($User, $newWorkspaceId);
+
+        $Everyone = new QUI\Groups\Everyone();
+
+        $User->setAttribute('toolbar', $Everyone->getAttribute('toolbar'));
+
+        if (!$User->getAttribute('toolbar')) {
+            $available = QUI\Editor\Manager::getToolbars();
+
+            if (!empty($available)) {
+                $User->setAttribute('toolbar', $available[0]);
+            }
+        }
+
+        $User->addToGroup($Everyone->getId());
+        $User->save();
 
         return $User;
     }
