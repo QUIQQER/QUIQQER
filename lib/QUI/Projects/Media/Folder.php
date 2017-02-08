@@ -814,6 +814,34 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             }
         }
 
+        switch ($order) {
+            case 'priority':
+            case 'priority ASC':
+            case 'priority DESC':
+                // if priority, sort, that emty priority is the last
+                usort($result, function ($ImageA, $ImageB) {
+                    /* @var $ImageA Image */
+                    $a = $ImageA->getAttribute('priority');
+                    /* @var $ImageB Image */
+                    $b = $ImageB->getAttribute('priority');
+
+                    if (empty($a)) {
+                        return 1;
+                    }
+
+                    if (empty($b)) {
+                        return -1;
+                    }
+
+                    if ($a == $b) {
+                        return 0;
+                    }
+
+                    return ($a < $b) ? -1 : 1;
+                });
+                break;
+        }
+
         return $result;
     }
 
