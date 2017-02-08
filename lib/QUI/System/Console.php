@@ -128,7 +128,7 @@ class Console
 
         $params = $this->getArguments();
 
-        if (isset($params['--help']) && !isset($params['--tool'])) {
+        if (isset($params['help']) && !isset($params['tool'])) {
             $this->help();
             exit;
         }
@@ -158,7 +158,7 @@ class Console
         $this->argv = $params;
         $this->read();
 
-        if (isset($params['--listtools'])) {
+        if (isset($params['listtools'])) {
             $this->title();
             $this->writeLn("Tools\n");
 
@@ -171,7 +171,7 @@ class Console
             $this->writeLn("\n");
         }
 
-        if (!isset($params['--tool']) && !isset($params['--listtools'])) {
+        if (!isset($params['tool']) && !isset($params['listtools'])) {
             $this->readToolFromShell();
         }
     }
