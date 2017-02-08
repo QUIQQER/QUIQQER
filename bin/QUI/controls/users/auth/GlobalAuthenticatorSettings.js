@@ -80,6 +80,7 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
                 }
 
                 self.$rows = rows;
+                self.$onChange();
             });
         },
 

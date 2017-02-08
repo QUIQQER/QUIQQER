@@ -58,24 +58,23 @@ define('Controls/Breadcrumb', [
             this.title = document.getElement('.quiqqer-breadcrumb-title');
             this.breadcrumb = document.getElement('.quiqqer-breadcrumb');
             this.elmNumber = document.getElements('.quiqqer-breadcrumb-list li').length;
-            this.height = parseInt(this.breadcrumb.getStyle('line-height'));
+
+            this.checkWidth();
+
+            this.height = document.getElement('.quiqqer-breadcrumb-list-element').getSize().y;
+
+//            document.getElement('.quiqqer-breadcrumb-container').setStyle('height', this.height);
 
             this.isOpen = false;
             this.isMobile = false;
             this.breadcrumbWidth = 0;
 
-            this.checkWidth();
-
-            // if, weil auf startseite & in desktop kein button
-            if (document.getElement('.quiqqer-breadcrumb-link-icon') && this.isMobile) {
-                this.button = document.getElement('.quiqqer-breadcrumb-link-icon');
-                this.button.addEvent('click', this.trigger);
-            }
-
             QUI.addEvent('onResize', function ()
             {
                 this.checkWidth();
             }.bind(this));
+
+
         },
 
         /**
@@ -90,10 +89,16 @@ define('Controls/Breadcrumb', [
             var containerWidth       = parseInt(this.container.getSize().x),
                 containerWidthScroll = parseInt(this.container.getScrollSize().x);
 
+            // if, weil auf startseite & in desktop kein button
+            if (document.getElement('.quiqqer-breadcrumb-link-icon')) {
+                this.button = document.getElement('.quiqqer-breadcrumb-link-icon');
+                this.button.addEvent('click', this.trigger);
+            }
 
             // scroll width or window size 768px
-            if (containerWidth < containerWidthScroll || parseInt(window.getSize().x) < 768) {
+            if (containerWidth < containerWidthScroll /*|| parseInt(window.getSize().x) < 768*/) {
                 // mobile
+
                 this.setMobile();
                 this.breadcrumbWidth = containerWidthScroll;
                 return;
@@ -120,7 +125,7 @@ define('Controls/Breadcrumb', [
          */
         unsetMobile: function ()
         {
-            this.title.setStyle('display', 'inline');
+            this.title.setStyle('display', '');
             this.isMobile = false;
             this.breadcrumb.removeClass('quiqqer-breadcrumb-mobile');
         },
