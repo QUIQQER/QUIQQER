@@ -56,16 +56,16 @@ class Update extends QUI\System\Console\Tool
 
         $Packages = QUI::getPackageManager();
 
-        if ($this->getArgument('--set-date')) {
+        if ($this->getArgument('set-date')) {
             QUI::getPackageManager()->setLastUpdateDate();
             return;
         }
 
-        if ($this->getArgument('--clearCache')) {
+        if ($this->getArgument('clearCache')) {
             $Packages->clearComposerCache();
         }
 
-        if ($this->getArgument('--setDevelopment')) {
+        if ($this->getArgument('setDevelopment')) {
             $packageList = array();
 
             $libraries = QUI::getPackageManager()->getInstalled(array(
@@ -87,7 +87,7 @@ class Update extends QUI\System\Console\Tool
         }
 
 
-        if ($this->getArgument('--check')) {
+        if ($this->getArgument('check')) {
             $this->writeLn('Prüfe nach Aktualisierungen...');
             $this->writeLn();
             $this->writeLn();

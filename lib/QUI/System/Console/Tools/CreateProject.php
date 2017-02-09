@@ -44,7 +44,7 @@ class CreateProject extends QUI\System\Console\Tool
     public function execute()
     {
         // project name
-        $projectname = $this->getArgument('--projectname');
+        $projectname = $this->getArgument('projectname');
 
         if (!$projectname) {
             $this->writeLn('Enter the name of the new Project: ');
@@ -52,7 +52,7 @@ class CreateProject extends QUI\System\Console\Tool
         }
 
         // project languages
-        $projectlangs = $this->getArgument('--projectlangs');
+        $projectlangs = $this->getArgument('projectlangs');
 
         if (!$projectlangs) {
             $this->writeLn('Enter the available languages (comma separated): ');
@@ -62,7 +62,7 @@ class CreateProject extends QUI\System\Console\Tool
         $projectlangs = explode(',', $projectlangs);
 
         // project standard language
-        $projectlang = $this->getArgument('--projectlang');
+        $projectlang = $this->getArgument('projectlang');
 
         if (!$projectlang) {
             $this->writeLn('Which should be the standard language? : ');
@@ -70,7 +70,7 @@ class CreateProject extends QUI\System\Console\Tool
         }
 
         // project standard template
-        $template = $this->getArgument('--template');
+        $template = $this->getArgument('template');
 
         if (!$template) {
             $this->writeLn('Which should be the standard template? For none, leave empty. : ');
