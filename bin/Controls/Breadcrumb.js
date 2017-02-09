@@ -35,6 +35,8 @@ define('Controls/Breadcrumb', [
             this.title = null;
             this.breadcrumb = null;
             this.elmNumber = null;
+            this.bodyWidth = 0;
+
             this.height = null;
 
             this.isOpen = false;
@@ -58,12 +60,13 @@ define('Controls/Breadcrumb', [
             this.title = document.getElement('.quiqqer-breadcrumb-title');
             this.breadcrumb = document.getElement('.quiqqer-breadcrumb');
             this.elmNumber = document.getElements('.quiqqer-breadcrumb-list li').length;
+            this.bodyWidth = 0;
 
             this.checkWidth();
 
             this.height = document.getElement('.quiqqer-breadcrumb-list-element').getSize().y;
 
-//            document.getElement('.quiqqer-breadcrumb-container').setStyle('height', this.height);
+            document.getElement('.quiqqer-breadcrumb-container').setStyle('height', this.height);
 
             this.isOpen = false;
             this.isMobile = false;
@@ -73,8 +76,6 @@ define('Controls/Breadcrumb', [
             {
                 this.checkWidth();
             }.bind(this));
-
-
         },
 
         /**
@@ -82,6 +83,14 @@ define('Controls/Breadcrumb', [
          */
         checkWidth: function ()
         {
+            // resize only if width (x) changes
+            if (document.getElement('body').getSize().x === this.bodyWidth) {
+                return;
+            }
+
+            // set new width
+            this.bodyWidth = document.getElement('body').getSize().x;
+
             if (this.isOpen) {
                 this.trigger();
             }
@@ -89,14 +98,14 @@ define('Controls/Breadcrumb', [
             var containerWidth       = parseInt(this.container.getSize().x),
                 containerWidthScroll = parseInt(this.container.getScrollSize().x);
 
-            // if, weil auf startseite & in desktop kein button
+            // if, because on start page & desktop there is no button
             if (document.getElement('.quiqqer-breadcrumb-link-icon')) {
                 this.button = document.getElement('.quiqqer-breadcrumb-link-icon');
                 this.button.addEvent('click', this.trigger);
             }
 
             // scroll width or window size 768px
-            if (containerWidth < containerWidthScroll /*|| parseInt(window.getSize().x) < 768*/) {
+            if (containerWidth < containerWidthScroll || parseInt(window.getSize().x) < 768) {
                 // mobile
 
                 this.setMobile();
@@ -136,7 +145,7 @@ define('Controls/Breadcrumb', [
         trigger: function ()
         {
             // jeweils +1px, weil border; -1px, weil letzter border fehlt
-            var height = (this.height +1) * this.elmNumber -1;
+            var height = (this.height + 1) * this.elmNumber - 1;
 
             if (this.isOpen === false) {
                 // open

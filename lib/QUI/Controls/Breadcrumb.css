@@ -2,11 +2,6 @@
 /** breadcrumb
  * ========================================================== */
 
-.quiqqer-breadcrumb {
-    font-weight: normal;
-    letter-spacing: normal;
-}
-
 .quiqqer-breadcrumb a {
     color: #8a8a8a;
     padding: 0;
@@ -17,12 +12,12 @@
 }
 
 .quiqqer-breadcrumb-title {
-    display: inline-block;
+    display: inline-flex;
 }
 
 .quiqqer-breadcrumb ul {
     margin: 0 0 0 15px;
-    display: inline-block;
+    display: inline-flex;
 }
 
 .quiqqer-breadcrumb ul li {
@@ -65,7 +60,6 @@
     right: 0;
     width: 40px;
     text-align: center;
-    z-index: 10;
 }
 
 /* mobile
