@@ -426,19 +426,18 @@ class Console
      */
     public function start()
     {
-        if (!isset($this->argv['--tool'])) {
+        if (!$this->getArgument('tool')) {
             return;
         }
 
-        if ($Tool = $this->get($this->argv['--tool'])) {
+        if ($Tool = $this->get($this->getArgument('tool'))) {
             try {
                 if (is_array($Tool) || !$Tool) {
                     throw new QUI\Exception('Tool not found', 404);
                 }
 
-                if (isset($this->argv['--help'])) {
+                if ($this->getArgument('help')) {
                     $Tool->outputHelp();
-
                     return;
                 }
 
