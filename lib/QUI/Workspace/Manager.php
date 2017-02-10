@@ -247,7 +247,10 @@ class Manager
         }
 
         $panels   = array();
-        $xmlFiles = array(SYS_DIR . 'panels.xml');
+        $xmlFiles = array_merge(
+            array(SYS_DIR . 'panels.xml'),
+            QUI::getPackageManager()->getPackageXMLFiles('panels.xml')
+        );
 
         foreach ($xmlFiles as $file) {
             $panels = array_merge(
