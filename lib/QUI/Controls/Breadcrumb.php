@@ -22,14 +22,14 @@ class Breadcrumb extends QUI\Control
      */
     public function __construct($attributes = array())
     {
+        // default options
+        $this->setAttributes(array(
+            'class'  => 'quiqqer-breadcrumb',
+            'height' => 40,
+            'layout' => 'slider'
+        ));
+
         parent::__construct($attributes);
-
-        $this->addCSSFile(
-            dirname(__FILE__) . '/Breadcrumb.css'
-        );
-
-        $this->setAttribute('qui-class', "Controls/Breadcrumb");
-        $this->setAttribute('class', 'quiqqer-breadcrumb');
     }
 
     /**
@@ -41,9 +41,37 @@ class Breadcrumb extends QUI\Control
         $Engine = QUI::getTemplateManager()->getEngine();
 
         $Engine->assign(array(
+            'this'    => $this,
             'Rewrite' => QUI::getRewrite()
         ));
 
-        return $Engine->fetch(dirname(__FILE__) . '/Breadcrumb.html');
+        $this->setAttribute(
+            'height',
+            (int)$this->getAttribute('height') . 'px'
+        );
+
+        $this->setStyle('height', $this->getAttribute('height'));
+
+        $layout = strtolower($this->getAttribute('layout'));
+
+        switch ($layout) {
+            default:
+            case 'slider':
+                $template = '/Breadcrumb.Slider.html';
+                $css      = '/Breadcrumb.Slider.css';
+                break;
+
+            case 'dropdown':
+                $template = '/Breadcrumb.DropDown.html';
+                $css      = '/Breadcrumb.DropDown.css';
+                $this->setAttribute(
+                    'data-qui', 'package/quiqqer/quiqqer/bin/Controls/BreadcrumbDropDown'
+                );
+                break;
+        }
+
+        $this->addCSSFile(dirname(__FILE__) . $css);
+
+        return $Engine->fetch(dirname(__FILE__) . $template);
     }
 }

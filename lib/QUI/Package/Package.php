@@ -377,6 +377,23 @@ class Package extends QUI\QDOM
     }
 
     /**
+     * Get specific XML file from Package
+     *
+     * @param string $name - e.g. "database.xml" / "package.xml" etc.
+     * @return string|false - absolute file path or false if xml file does not exist
+     */
+    public function getXMLFile($name)
+    {
+        $file = $this->getDir() . $name;
+
+        if (!file_exists($file)) {
+            return false;
+        }
+
+        return $file;
+    }
+
+    /**
      * Execute the package setup
      */
     public function setup()

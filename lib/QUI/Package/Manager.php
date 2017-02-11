@@ -1366,6 +1366,32 @@ class Manager extends QUI\QDOM
     }
 
     /**
+     * Get specific XML file of all packages that provide it
+     *
+     * @param string $name - e.g. "database.xml" / "package.xml" etc.
+     * @return array - absolute file paths
+     */
+    public function getPackageXMLFiles($name)
+    {
+        // @todo cache
+
+        $packages = $this->getInstalled();
+        $result   = array();
+
+        foreach ($packages as $package) {
+            $file = OPT_DIR . $package['name'] . '/' . $name;
+
+            if (!file_exists($file)) {
+                continue;
+            }
+
+            $result[] = $file;
+        }
+
+        return $result;
+    }
+
+    /**
      * @return mixed|string
      */
     protected function getUploadPackageDir()
