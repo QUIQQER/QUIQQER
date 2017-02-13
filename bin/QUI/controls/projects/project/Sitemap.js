@@ -459,7 +459,7 @@ define('controls/projects/project/Sitemap', [
                             new QUISitemapItem({
                                 icon       : 'fa fa-level-up',
                                 text       : '...',
-                                title      : 'Zurück - Rechtsklick für weitere Optionen',
+                                title      : 'Zurück - Rechtsklick für weitere Optionen', // #locale
                                 contextmenu: false,
                                 sheets     : sheets,
                                 Item       : Item,
@@ -828,7 +828,7 @@ define('controls/projects/project/Sitemap', [
 
 
             new QUIConfirm({
-                title    : 'Blätterfunktion',
+                title    : 'Blätterfunktion', // #locale
                 maxHeight: 300,
                 maxWidth : 500,
                 events   : {
@@ -836,7 +836,7 @@ define('controls/projects/project/Sitemap', [
                         var Content = Win.getContent();
 
                         Content.set({
-                            html   : '<p>Welche Einträge der Seite sollen angezeigt werden?</p>',
+                            html   : '<p>Welche Einträge der Seite sollen angezeigt werden?</p>', // #locale
                             'class': 'qui-projects-sitemap-sheetsWindow'
                         });
 
