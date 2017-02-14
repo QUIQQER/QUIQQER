@@ -59,6 +59,9 @@ class Breadcrumb extends QUI\Control
             case 'slider':
                 $template = '/Breadcrumb.Slider.html';
                 $css      = '/Breadcrumb.Slider.css';
+                $this->setAttribute(
+                    'data-qui', 'package/quiqqer/quiqqer/bin/Controls/BreadcrumbSlider'
+                );
                 break;
 
             case 'dropdown':

@@ -23,6 +23,8 @@
     width: 100%;
     -webkit-overflow-scrolling: touch;
     white-space: nowrap;
+
+    /*background: #ee9900;*/
 }
 
 .quiqqer-breadcrumb-title {
@@ -38,7 +40,7 @@
 }
 
 .quiqqer-breadcrumb ul {
-    margin: 0 36px 0 15px;
+    margin: 0 0 0 15px;
     display: inline-block;
     padding: 0 !important;
     position: relative;
@@ -56,12 +58,25 @@
     margin-right: 0;
 }
 
-.quiqqer-breadcrumb .fa {
+.quiqqer-breadcrumb .breadcrumb-list-element-icon {
     margin-right: 15px;
 }
 
 .breadcrumb-shadow {
     z-index: -1;
+}
+
+.quiqqer-breadcrumb-slider-next,
+.quiqqer-breadcrumb-slider-prev {
+    position: absolute;
+    width: 30px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+.quiqqer-breadcrumb-slider-next {
+    right: -100px;
 }
 
 
