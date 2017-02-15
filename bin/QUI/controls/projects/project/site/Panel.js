@@ -265,6 +265,7 @@ define('controls/projects/project/site/Panel', [
             // permissions
             new QUIButton({
                 image: 'fa fa-shield',
+                name: 'permissions',
                 alt: Locale.get(lg, 'projects.project.site.panel.btn.permissions'),
                 title: Locale.get(lg, 'projects.project.site.panel.btn.permissions'),
                 styles: {
@@ -280,6 +281,7 @@ define('controls/projects/project/site/Panel', [
 
             new QUIButton({
                 image: 'fa fa-picture-o',
+                name: 'media',
                 alt: Locale.get(lg, 'projects.project.site.panel.btn.media'),
                 title: Locale.get(lg, 'projects.project.site.panel.btn.media'),
                 styles: {
@@ -294,6 +296,7 @@ define('controls/projects/project/site/Panel', [
 
             new QUIButton({
                 image: 'fa fa-sort',
+                name: 'sort',
                 alt: Locale.get(lg, 'projects.project.site.panel.btn.sort'),
                 title: Locale.get(lg, 'projects.project.site.panel.btn.sort'),
                 styles: {
