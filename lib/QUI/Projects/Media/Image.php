@@ -156,6 +156,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $cachePath = $this->getSizeCachePath($maxwidth, $maxheight);
         $cacheUrl  = str_replace(CMS_DIR, URL_DIR, $cachePath);
 
+        if (!preg_match('/[^a-zA-Z0-9_\-.\/]/i', $cacheUrl)) {
+            return $cacheUrl;
+        }
+
         // thanks to http://php.net/manual/de/function.rawurlencode.php#100313
         // thanks to http://php.net/manual/de/function.rawurlencode.php#63751
         $encoded = implode("/", array_map(function ($part) {
@@ -163,12 +167,19 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             $length  = mb_strlen($part);
 
             for ($i = 0; $i < $length; $i++) {
-                $encoded .= '%' . wordwrap(bin2hex(mb_substr($part, $i, 1)), 2, '%', true);
+                $str = mb_substr($part, $i, 1);
+
+                if (!preg_match('/[^a-zA-Z0-9_\-.]/i', $str)) {
+                    $encoded .= $str;
+                    continue;
+                }
+
+                $encoded .= '%' . wordwrap(bin2hex($str), 2, '%', true);
             }
 
             return $encoded;
         }, explode("/", $cacheUrl)));
-        
+
         return $encoded;
     }
 
