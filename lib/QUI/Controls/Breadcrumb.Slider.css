@@ -23,8 +23,7 @@
     width: 100%;
     -webkit-overflow-scrolling: touch;
     white-space: nowrap;
-
-    /*background: #ee9900;*/
+    height: calc(100% + 26px); /* to hide the scroll bar */
 }
 
 .quiqqer-breadcrumb-title {
@@ -69,14 +68,15 @@
 .quiqqer-breadcrumb-slider-next,
 .quiqqer-breadcrumb-slider-prev {
     position: absolute;
-    width: 30px;
-    text-align: center;
-    background: rgba(0, 0, 0, 0.1);
+    width: 24px;
+    /*background: rgba(0, 0, 0, 0.05);*/
     cursor: pointer;
+}
+
+.quiqqer-breadcrumb-slider-next {
+    text-align: right;
 }
 
 .quiqqer-breadcrumb-slider-next {
     right: -100px;
 }
-
-

@@ -41,39 +41,41 @@ define('package/quiqqer/quiqqer/bin/Controls/BreadcrumbSlider', [
 
             this.$scrollMax = 0;
 
-            this.nextButton = true;
+            this.nextButton = false;
             this.prevButton = false;
 
             this.addEvents({
                 onImport: this.$onImport
             });
 
-//            QUI.addEvent('resize', this.resize);
+            QUI.addEvent('resize', this.resize);
         },
 
         /**
-         * resize the control and recalc all slide vars
+         * resize the control and recalc the $Inner width
          */
         resize: function ()
         {
-            var offset = this.$IconWidth;
+            var offset = 0;
 
-
-            /*if ((this.prevButton === true) xor (this.nextButton === true)) {
+            if ((this.prevButton === true) && (this.nextButton === true)) {
                 offset = this.$IconWidth * 2;
+            } else {
+                if (this.prevButton === true || this.nextButton === true) {
+                    offset = this.$IconWidth;
+                }
             }
 
             moofx(this.$Inner).animate({
-                width: this.$InnerSize - offset
+                width: document.getElement('.quiqqer-breadcrumb-wrapper').getSize().x - offset
             }, {
                 duration: 300,
                 callback: function ()
                 {
+                    this.$InnerSize = this.$Inner.getSize().x + offset;
+                    this.$onScroll();
                 }.bind(this)
             });
-*/
-
-            this.$onScroll();
         },
 
         /**
@@ -87,7 +89,7 @@ define('package/quiqqer/quiqqer/bin/Controls/BreadcrumbSlider', [
             // next button
             this.$Next = new Element('div', {
                 'class': 'quiqqer-breadcrumb-slider-next',
-                html   : '<span class="fa fa-angle-double-right"></span>',
+                html   : '<span class="fa fa-arrow-circle-right"></span>',
                 styles : {
                     display   : 'none',
                     lineHeight: size.y,
@@ -102,7 +104,7 @@ define('package/quiqqer/quiqqer/bin/Controls/BreadcrumbSlider', [
             // prev button
             this.$Prev = new Element('div', {
                 'class': 'quiqqer-breadcrumb-slider-prev',
-                html   : '<span class="fa fa-angle-double-left"></span>',
+                html   : '<span class="fa fa-arrow-circle-left"></span>',
                 styles : {
                     display   : 'none',
                     left      : 0,
@@ -116,18 +118,11 @@ define('package/quiqqer/quiqqer/bin/Controls/BreadcrumbSlider', [
 
 
             this.$IconWidth = Elm.getElement('.quiqqer-breadcrumb-slider-next').getDimensions().x;
-
-            this.$Inner = Elm.getElement(
-                '.quiqqer-breadcrumb-container'
-            );
+            this.$Inner = Elm.getElement('.quiqqer-breadcrumb-container');
             this.$InnerSize = this.$Inner.getSize().x;
-            console.log(this.$InnerSize);
-
             this.$InnerScrollSize = this.$Inner.getScrollSize().x;
 
             this.$SlideFX = new Fx.Scroll(this.$Inner);
-
-//            this.$icons   = Elm.getElements('article a .quiqqer-icon');
 
             var scrollSpy = QUIFunctionUtils.debounce(this.$onScroll, 200);
 
@@ -136,13 +131,13 @@ define('package/quiqqer/quiqqer/bin/Controls/BreadcrumbSlider', [
             this.$NextFX = moofx(this.$Next);
             this.$PrevFX = moofx(this.$Prev);
 
-            this.showNextButton.delay(200, this);
-
-            this.resize();
+            if (this.$InnerScrollSize > this.$InnerSize) {
+                this.showNextButton.delay(200, this);
+            }
         },
 
         /**
-         * scroll to next
+         * scroll to preview
          *
          * @return {Promise}
          */
@@ -162,7 +157,7 @@ define('package/quiqqer/quiqqer/bin/Controls/BreadcrumbSlider', [
         },
 
         /**
-         * scroll to preview
+         * scroll to next
          *
          * @return {Promise}
          */
@@ -183,9 +178,12 @@ define('package/quiqqer/quiqqer/bin/Controls/BreadcrumbSlider', [
         {
             return new Promise(function (resolve)
             {
-                this.$Next.setStyle('display', null);
+                if (this.nextButton) {
+                    return;
+                }
 
                 this.nextButton = true;
+                this.$Next.setStyle('display', null);
 
                 var right   = 0,
                     opacity = 1,
@@ -198,10 +196,7 @@ define('package/quiqqer/quiqqer/bin/Controls/BreadcrumbSlider', [
                 moofx(this.$Inner).animate({
                     width: this.$InnerSize - offset
                 }, {
-                    duration: 300,
-                    callback: function ()
-                    {
-                    }.bind(this)
+                    duration: 300
                 });
 
                 this.$NextFX.animate({
@@ -222,6 +217,10 @@ define('package/quiqqer/quiqqer/bin/Controls/BreadcrumbSlider', [
         {
             return new Promise(function (resolve)
             {
+                if (this.prevButton) {
+                    return;
+                }
+
                 this.prevButton = true;
                 this.$Prev.setStyle('display', null);
 
@@ -258,6 +257,9 @@ define('package/quiqqer/quiqqer/bin/Controls/BreadcrumbSlider', [
         {
             return new Promise(function (resolve)
             {
+                if (!this.nextButton) {
+                    return;
+                }
 
                 this.nextButton = false;
 
@@ -273,7 +275,7 @@ define('package/quiqqer/quiqqer/bin/Controls/BreadcrumbSlider', [
                         resolve();
                     }.bind(this)
                 });
-
+                
                 moofx(this.$Inner).animate({
                     width: this.$InnerSize - this.$IconWidth
                 }, {
@@ -291,6 +293,10 @@ define('package/quiqqer/quiqqer/bin/Controls/BreadcrumbSlider', [
         {
             return new Promise(function (resolve)
             {
+                if (!this.prevButton) {
+                    return;
+                }
+
                 this.prevButton = false;
 
                 this.$PrevFX.animate({
@@ -306,11 +312,11 @@ define('package/quiqqer/quiqqer/bin/Controls/BreadcrumbSlider', [
                 });
 
                 moofx(this.$Inner).animate({
-                    left: 0
+                    left : 0,
+                    width: this.$Inner.getSize().x + this.$IconWidth
                 }, {
                     duration: 300
                 });
-                this.$Inner.setStyle('width', this.$Inner + 30);
 
             }.bind(this));
         },
