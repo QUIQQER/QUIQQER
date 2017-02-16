@@ -398,13 +398,21 @@ class Rewrite
                     $height = false;
                 }
 
-                $file = $Item->createSizeCache($width, $height);
+                try {
+                    $file = $Item->createSizeCache($width, $height);
+                } catch (QUI\Exception $Exception) {
+                    QUI\System\Log::writeException($Exception));
+                }
             } else {
-                /* @var $Item \QUI\Projects\Media\File */
-                $file = $Item->createCache();
+                try {
+                    /* @var $Item \QUI\Projects\Media\File */
+                    $file = $Item->createCache();
+                } catch (QUI\Exception $Exception) {
+                    QUI\System\Log::writeException($Exception);
+                }
             }
 
-            if (!file_exists($file)) {
+            if (!isset($file) || !file_exists($file)) {
                 $Redirect = new RedirectResponse(
                     $this->getErrorSite()->getUrlRewritten()
                 );
