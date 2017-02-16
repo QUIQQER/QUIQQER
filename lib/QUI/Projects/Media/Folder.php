@@ -347,7 +347,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $old_path = StringUtils::replaceDblSlashes($old_path);
         $new_path = StringUtils::replaceDblSlashes($new_path);
 
-
         // update children paths
         $Statement = $PDO->prepare(
             "UPDATE " . $this->Media->getTable() . "
@@ -355,8 +354,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
              WHERE file LIKE :search"
         );
 
-        $Statement->bindValue('oldpath', $old_path . '/');
-        $Statement->bindValue('newpath', $new_path . '/');
+        $Statement->bindValue('oldpath', StringUtils::replaceDblSlashes($old_path . '/'));
+        $Statement->bindValue('newpath', StringUtils::replaceDblSlashes($new_path . '/'));
         $Statement->bindValue('search', $old_path . "%");
 
         $Statement->execute();
@@ -364,9 +363,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         // update me
         QUI::getDataBase()->update(
             $this->Media->getTable(),
-            array(
-                'file' => $new_path
-            ),
+            array('file' => StringUtils::replaceDblSlashes($new_path . '/')),
             array('id' => $this->getId())
         );
 
@@ -389,7 +386,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         // @todo rename cache instead of delete
         $this->deleteCache();
-
         $this->setAttribute('file', $new_path);
     }
 
