@@ -401,7 +401,7 @@ class Rewrite
                 try {
                     $file = $Item->createSizeCache($width, $height);
                 } catch (QUI\Exception $Exception) {
-                    QUI\System\Log::writeException($Exception));
+                    QUI\System\Log::writeException($Exception);
                 }
             } else {
                 try {
