@@ -1140,8 +1140,17 @@ class Manager
     public function checkUserSession()
     {
         // max_life_time check
-        if (!QUI::getSession()->check()) {
-            // @todo delete authenticator params
+        $Session = QUI::getSession();
+
+        if (!$Session->check()) {
+            $sessionData = $Session->getSymfonySession()->all();
+
+            foreach ($sessionData as $key => $value) {
+                if (strpos($key, 'auth-') === 0) {
+                    $Session->remove($key);
+                }
+            }
+
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
@@ -1151,8 +1160,8 @@ class Manager
             );
         }
 
-        if (!QUI::getSession()->get('uid')
-            || !QUI::getSession()->get('auth')
+        if (!$Session->get('uid')
+            || !$Session->get('auth')
         ) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
@@ -1163,7 +1172,7 @@ class Manager
             );
         }
 
-        $User = $this->get(QUI::getSession()->get('uid'));
+        $User = $this->get($Session->get('uid'));
 
         if (!$User->isActive()) {
             throw new QUI\Users\Exception(
@@ -1180,7 +1189,7 @@ class Manager
             return;
         }
 
-        $sessionSecHash = QUI::getSession()->get('secHash');
+        $sessionSecHash = $Session->get('secHash');
         $secHash        = $this->getSecHash();
         $userSecHash    = $User->getAttribute('secHash');
 
@@ -1193,9 +1202,9 @@ class Manager
             'exception.session.expired.from.other'
         );
 
-        QUI::getSession()->set('uid', 0);
-        QUI::getSession()->getSymfonySession()->clear();
-        QUI::getSession()->refresh();
+        $Session->set('uid', 0);
+        $Session->getSymfonySession()->clear();
+        $Session->refresh();
 
         throw new QUI\Users\Exception($message, 401);
     }
