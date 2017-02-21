@@ -361,10 +361,30 @@ define('classes/users/User', [
             }.bind(this));
         },
 
+        /**
+         * Has the user the authenticator
+         *
+         * @param {String} authenticator - name of the authenticator
+         * @returns {Promise}
+         */
         hasAuthenticator: function (authenticator) {
             return new Promise(function (resolve, reject) {
                 Ajax.post('ajax_users_authenticator_has', resolve, {
                     authenticator: authenticator,
+                    uid: this.getId(),
+                    onError: reject
+                });
+            }.bind(this));
+        },
+
+        /**
+         * Return the address list from the user
+         *
+         * @returns {Promise}
+         */
+        getAddressList: function () {
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_users_address_list', resolve, {
                     uid: this.getId(),
                     onError: reject
                 });

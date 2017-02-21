@@ -338,24 +338,80 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * Adressen display
-     *
-     * @param boolean $active - Setzt den Eintrag auf checked (optional)
+     * Return the address as HTML display
      *
      * @return string - HTML <address>
      */
-    public function getDisplay($active = false)
+    public function getDisplay()
     {
         $Engine = QUI::getTemplateManager()->getEngine(true);
 
         $Engine->assign(array(
             'User'      => $this->User,
             'Address'   => $this,
-            'active'    => $active,
             'Countries' => new QUI\Countries\Manager()
         ));
 
         return $Engine->fetch(SYS_DIR . 'template/users/address/display.html');
+    }
+
+    /**
+     * @return string
+     */
+    public function getText()
+    {
+        $User = $this->User;
+
+        $salutation = $this->getAttribute('salutation');
+        $firstName  = $this->getAttribute('firstname');
+        $lastName   = $this->getAttribute('lastname');
+
+        $street_no = $this->getAttribute('street_no');
+        $zip       = $this->getAttribute('zip');
+        $city      = $this->getAttribute('city');
+        $country   = $this->getAttribute('country');
+
+        if (empty($firstName)) {
+            $firstName = $User->getAttribute('firstname');
+        }
+
+        if (!$firstName) {
+            $firstName = '';
+        }
+
+        if (empty($lastName)) {
+            $lastName = $User->getAttribute('lastname');
+        }
+
+        if (!$lastName) {
+            $lastName = '';
+        }
+
+
+        if (!$salutation) {
+            $salutation = '';
+        }
+
+        if (!$street_no) {
+            $street_no = '';
+        }
+
+        if (!$zip) {
+            $zip = '';
+        }
+
+        if (!$city) {
+            $city = '';
+        }
+
+        if (!$country) {
+            $country = '';
+        }
+
+        $result = "{$salutation} {$firstName} {$lastName}; {$street_no}; {$zip} {$city} {$country}";
+        $result = preg_replace('/[  ]{2,}/', ' ', $result);
+
+        return $result;
     }
 
     /**
