@@ -78,6 +78,21 @@ class Manager
     }
 
     /**
+     * Return the corresponding area for the object
+     *
+     * @param mixed $Object
+     * @return string
+     */
+    protected function objectToArea($Object)
+    {
+        if ($Object instanceof QUI\Interfaces\Users\User) {
+            return 'user';
+        }
+
+        return $this->classToArea(get_class($Object));
+    }
+
+    /**
      * Return the corresponding area of a php class
      *
      * @param string $cls
@@ -443,7 +458,7 @@ class Manager
      */
     public function getPermissions($Obj)
     {
-        $area = $this->classToArea(get_class($Obj));
+        $area = $this->objectToArea($Obj);
 
         switch ($area) {
             case 'project':
@@ -566,22 +581,17 @@ class Manager
             );
         }
 
-        $cls = get_class($Obj);
+        $area = $this->objectToArea($Obj);
 
-        switch ($cls) {
-            case QUI\Users\User::class:
-            case QUI\Groups\Group::class:
-            case QUI\Groups\Everyone::class:
-            case QUI\Groups\Guest::class:
+        switch ($area) {
+            case 'user':
                 break;
 
-            case QUI\Projects\Project::class:
+            case 'project':
                 $this->setProjectPermissions($Obj, $permissions, $EditUser);
                 return;
 
-            case QUI\Projects\Site::class:
-            case QUI\Projects\Site\Edit::class:
-            case QUI\Projects\Site\OnlyDB::class:
+            case 'site':
                 $this->setSitePermissions($Obj, $permissions, $EditUser);
                 return;
 
@@ -597,7 +607,6 @@ class Manager
             $EditUser
         );
 
-        $area  = $this->classToArea($cls);
         $_data = $this->getData($Obj); // old permissions
         $list  = $this->getPermissionList($area);
 
@@ -967,7 +976,7 @@ class Manager
         $DataBase = QUI::getDataBase();
 
         $table = QUI::getDBTableName(self::TABLE);
-        $area  = $this->classToArea(get_class($Obj));
+        $area  = $this->objectToArea($Obj);
         $cache = $this->getDataCacheId($Obj);
 
         if (isset($this->dataCache[$cache])) {
@@ -1080,7 +1089,7 @@ class Manager
      */
     protected function getDataCacheId($Obj)
     {
-        $area = $this->classToArea(get_class($Obj));
+        $area = $this->objectToArea($Obj);
 
         switch ($area) {
             case 'user':

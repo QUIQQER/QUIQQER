@@ -560,6 +560,23 @@ class Group extends QUI\QDOM
     }
 
     /**
+     * Get IDs of all users in the groups
+     *
+     * @return array
+     */
+    public function getUserIds()
+    {
+        $userIds = array();
+        $users   = $this->getUsers();
+
+        foreach ($users as $row) {
+            $userIds[] = $row['id'];
+        }
+
+        return $userIds;
+    }
+
+    /**
      * search a user by name
      *
      * @param string $username
