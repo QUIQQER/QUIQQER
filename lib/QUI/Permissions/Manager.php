@@ -585,6 +585,7 @@ class Manager
 
         switch ($area) {
             case 'user':
+            case 'groups':
                 break;
 
             case 'project':
