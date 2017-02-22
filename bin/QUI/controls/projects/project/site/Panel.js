@@ -1091,6 +1091,7 @@ define('controls/projects/project/site/Panel', [
          *
          * @param {Object} Category - qui/controls/buttons/Button
          * @param {Function} [callback] - (optional) callback function
+         * @return {Promise}
          */
         $onCategoryLeave: function (Category, callback) {
             this.Loader.show();
@@ -1113,7 +1114,7 @@ define('controls/projects/project/site/Panel', [
                     callback();
                 }
 
-                return;
+                return Promise.resolve();
             }
 
             // wysiwyg type
@@ -1130,7 +1131,7 @@ define('controls/projects/project/site/Panel', [
                     callback();
                 }
 
-                return;
+                return Promise.resolve();
             }
 
             // form unload
@@ -1144,7 +1145,7 @@ define('controls/projects/project/site/Panel', [
                     callback();
                 }
 
-                return;
+                return Promise.resolve();
             }
 
             var Form = Body.getElement('form'),
@@ -1166,7 +1167,7 @@ define('controls/projects/project/site/Panel', [
                     callback();
                 }
 
-                return;
+                return Promise.resolve();
             }
 
             // unload params
@@ -1187,31 +1188,39 @@ define('controls/projects/project/site/Panel', [
                 onunloadRequire = Category.getAttribute('onunload_require'),
                 onunload = Category.getAttribute('onunload');
 
-            if (onunloadRequire) {
-                require([onunloadRequire], function () {
-                    if (self.$CategoryControl) {
-                        self.$CategoryControl.destroy();
-                        self.$CategoryControl = null;
-                    }
+            return new Promise(function (resolve) {
+                if (onunloadRequire) {
+                    require([onunloadRequire], function () {
+                        if (self.$CategoryControl) {
+                            self.$CategoryControl.destroy();
+                            self.$CategoryControl = null;
+                        }
 
 
-                    eval(onunload + '( Category, self );');
+                        eval(onunload + '( Category, self );');
 
-                    if (typeof callback === 'function') {
-                        callback();
-                    }
-                });
-            }
+                        if (typeof callback === 'function') {
+                            callback();
+                        }
+
+                        resolve();
+                    });
+
+                    return;
+                }
 
 
-            if (this.$CategoryControl) {
-                this.$CategoryControl.destroy();
-                this.$CategoryControl = null;
-            }
+                if (self.$CategoryControl) {
+                    self.$CategoryControl.destroy();
+                    self.$CategoryControl = null;
+                }
 
-            if (typeof callback === 'function') {
-                callback();
-            }
+                if (typeof callback === 'function') {
+                    callback();
+                }
+
+                resolve();
+            });
         },
 
         /**
@@ -1754,7 +1763,7 @@ define('controls/projects/project/site/Panel', [
 
             this.Loader.show();
 
-            this.$onCategoryLeave(this.getActiveCategory(), function () {
+            return this.$onCategoryLeave(this.getActiveCategory()).then(function () {
                 var Site = self.getSite(),
                     Project = Site.getProject();
 
@@ -1828,7 +1837,9 @@ define('controls/projects/project/site/Panel', [
                 (function () {
                     Form.destroy();
                 }).delay(1000);
-            });
+            }).then(function () {
+                this.$onCategoryEnter(this.getActiveCategory());
+            }.bind(this));
         }
     });
 });
