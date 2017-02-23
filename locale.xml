@@ -751,6 +751,10 @@
             <de><![CDATA[Suche nach einer Gruppe ...]]></de>
             <en><![CDATA[Search for a group ...]]></en>
         </locale>
+        <locale name="control.users.select.search.field.placeholder">
+            <de><![CDATA[Suche nach einem Benutzer ...]]></de>
+            <en><![CDATA[Search for a user ...]]></en>
+        </locale>
         <locale name="control.usersgroups.select.search.field.placeholder">
             <de><![CDATA[Suche nach einer Gruppe oder einem Benutzer...]]></de>
             <en><![CDATA[Search for a group or a user ...]]></en>
