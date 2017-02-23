@@ -1142,7 +1142,7 @@ class Manager
         // max_life_time check
         $Session = QUI::getSession();
 
-        if (!$Session->check()) {
+        $clearSessionData = function () use ($Session) {
             $sessionData = $Session->getSymfonySession()->all();
 
             foreach ($sessionData as $key => $value) {
@@ -1150,6 +1150,10 @@ class Manager
                     $Session->remove($key);
                 }
             }
+        };
+
+        if (!$Session->check()) {
+            $clearSessionData();
 
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
@@ -1160,9 +1164,9 @@ class Manager
             );
         }
 
-        if (!$Session->get('uid')
-            || !$Session->get('auth')
-        ) {
+        if (!$Session->get('uid') || !$Session->get('auth')) {
+            $clearSessionData();
+            
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
@@ -1175,6 +1179,8 @@ class Manager
         $User = $this->get($Session->get('uid'));
 
         if (!$User->isActive()) {
+            $clearSessionData();
+
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
