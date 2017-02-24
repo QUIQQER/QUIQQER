@@ -143,6 +143,7 @@ define('controls/projects/project/media/Input', [
             }).inject(this.$Elm);
 
             this.$MediaButton = new QUIButton({
+                name  : 'media-input-image-select',
                 icon  : 'fa fa-picture-o',
                 alt   : Locale.get('quiqqer/system', 'projects.project.site.media.input.select.alt'),
                 title : Locale.get('quiqqer/system', 'projects.project.site.media.input.select.title'),
@@ -203,6 +204,7 @@ define('controls/projects/project/media/Input', [
 
             if (this.getAttribute('cssclasses')) {
                 this.$CSSButton = new QUIButton({
+                    name  : 'media-input-css-select',
                     icon  : 'fa fa-css3',
                     alt   : Locale.get('quiqqer/system', 'projects.project.site.media.input.cssclass.alt'),
                     title : Locale.get('quiqqer/system', 'projects.project.site.media.input.cssclass.title'),
@@ -218,6 +220,7 @@ define('controls/projects/project/media/Input', [
             }
 
             new QUIButton({
+                name  : 'media-input-clear',
                 icon  : 'fa fa-remove',
                 alt   : Locale.get('quiqqer/system', 'projects.project.site.media.input.clear.alt'),
                 title : Locale.get('quiqqer/system', 'projects.project.site.media.input.clear.alt'),

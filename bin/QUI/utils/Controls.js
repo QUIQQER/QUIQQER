@@ -131,7 +131,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                         Child = elements[i];
 
                         new QUIButton({
-                            text: Child.get('data-text'),
+                            text : Child.get('data-text'),
                             image: Child.get('data-image'),
                             click: Child.get('data-click')
                         }).inject(Child);
@@ -177,8 +177,8 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                 var theaders = Elm.getElements('.data-table tr ^ th');
 
                 var dataTableOpen = function () {
-                    var Table = this.getParent('table'),
-                        TBody = Table.getElement('tbody'),
+                    var Table  = this.getParent('table'),
+                        TBody  = Table.getElement('tbody'),
                         Toggle = Table.getElement('.data-table-toggle');
 
                     if (Table.hasClass('data-table-no-toggle')) {
@@ -194,7 +194,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                         duration: 250,
                         callback: function () {
                             Table.setStyles({
-                                display: null,
+                                display : null,
                                 overflow: null
                             });
 
@@ -211,9 +211,9 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                 };
 
                 var dataTableClose = function () {
-                    var Table = this.getParent('table'),
-                        THead = Table.getElement('thead'),
-                        TBody = Table.getElement('tbody'),
+                    var Table  = this.getParent('table'),
+                        THead  = Table.getElement('thead'),
+                        TBody  = Table.getElement('tbody'),
                         Toggle = Table.getElement('.data-table-toggle');
 
                     if (Table.hasClass('data-table-no-toggle')) {
@@ -229,7 +229,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                         duration: 250,
                         callback: function () {
                             Table.setStyles({
-                                display: 'block',
+                                display : 'block',
                                 overflow: 'hidden'
                             });
 
@@ -248,7 +248,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                 };
 
                 var dataTableClick = function () {
-                    var Table = this.getParent('table'),
+                    var Table  = this.getParent('table'),
                         Toggle = Table.getElement('.data-table-toggle');
 
                     if (Toggle.getElement('.fa-minus')) {
@@ -266,15 +266,15 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     TableText = new Element('div', {
                         'class': 'data-table-text',
-                        html: Header.get('html')
+                        html   : Header.get('html')
                     });
 
                     Header.set('html', '');
 
                     new Element('div', {
                         'class': 'data-table-toggle',
-                        html: '<span class="fa fa-minus"></span>',
-                        styles: {}
+                        html   : '<span class="fa fa-minus"></span>',
+                        styles : {}
                     }).inject(Header, 'top');
 
                     TableText.inject(Header);
@@ -322,12 +322,12 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                     // Date Buttons
                     for (i = 0, len = elements.length; i < len; i++) {
-                        Child = elements[i];
+                        Child          = elements[i];
                         fieldcontainer = false;
 
                         if (Child.getParent().hasClass('field-container')) {
                             fieldcontainer = true;
-                            Parent = Child;
+                            Parent         = Child;
                         } else {
                             Parent = new Element('div', {
                                 styles: {
@@ -355,21 +355,21 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                         Child.autocomplete = 'off';
 
                         Child.setStyles({
-                            float: 'left',
-                            cursor: 'pointer',
+                            float   : 'left',
+                            cursor  : 'pointer',
                             maxWidth: 'calc(100% - 31px)',
-                            width: datetime ? 180 : 105
+                            width   : datetime ? 180 : 105
                         });
 
                         Picker = new DatePicker(Child, {
-                            timePicker: datetime ? true : false,
-                            datetime: datetime,
+                            timePicker    : datetime ? true : false,
+                            datetime      : datetime,
                             positionOffset: {
                                 x: 5,
                                 y: 0
                             },
-                            pickerClass: 'datepicker_dashboard',
-                            onSelect: function (UserDate, elmList) {
+                            pickerClass   : 'datepicker_dashboard',
+                            onSelect      : function (UserDate, elmList) {
                                 var i, len;
 
                                 if (typeOf(elmList) === 'array') {
@@ -396,10 +396,10 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                         });
 
                         Cancel = new QUIButton({
-                            image: 'fa fa-remove',
-                            alt: 'Datum leeren', // #locale
-                            title: 'Datum leeren', // #locale
-                            Input: Child,
+                            image : 'fa fa-remove',
+                            alt   : 'Datum leeren', // #locale
+                            title : 'Datum leeren', // #locale
+                            Input : Child,
                             events: {
                                 onClick: function (Btn) {
                                     Btn.getAttribute('Input').value = '';
@@ -414,10 +414,10 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                             Cancel.getElm()
                                   .addClass('field-container-item')
                                   .setStyles({
-                                      border: '1px solid rgba(147, 128, 108, 0.25)',
+                                      border   : '1px solid rgba(147, 128, 108, 0.25)',
                                       boxShadow: 'none',
-                                      top: 0,
-                                      width: 50
+                                      top      : 0,
+                                      width    : 50
                                   });
                         }
                     }
@@ -481,14 +481,14 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                     for (i = 0, len = mediaImages.length; i < len; i++) {
                         new ProjectMediaInput({
                             selectable_types: ['image', 'file'],
-                            cssclasses: mediaImages[i].get('data-qui-options-cssclasses')
+                            cssclasses      : mediaImages[i].get('data-qui-options-cssclasses')
                         }, mediaImages[i]).create();
                     }
 
                     for (i = 0, len = mediaFolder.length; i < len; i++) {
                         new ProjectMediaInput({
                             selectable_types: ['folder'],
-                            cssclasses: mediaFolder[i].get('data-qui-options-cssclasses')
+                            cssclasses      : mediaFolder[i].get('data-qui-options-cssclasses')
                         }, mediaFolder[i]).create();
                     }
 
