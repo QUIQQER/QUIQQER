@@ -154,7 +154,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
 
         $this->setAttribute('sha1hash', $sha1);
 
-        \QUI::getDataBase()->update(
+        QUI::getDataBase()->update(
             $this->Media->getTable(),
             array('sha1hash' => $sha1),
             array('id' => $this->getId())

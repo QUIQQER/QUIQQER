@@ -71,6 +71,7 @@ abstract class Item extends QUI\QDOM
 
         $this->setAttribute('filesize', QUIFile::getFileSize($this->file));
         $this->setAttribute('url', $this->getUrl());
+
         $this->setAttribute(
             'cache_url',
             URL_DIR . $this->Media->getCacheDir() . $this->getPath()
@@ -223,9 +224,7 @@ abstract class Item extends QUI\QDOM
         }
 
         $fileinfo = QUI\Utils\System\File::getInfo($this->getFullPath());
-        $type     = QUI\Projects\Media\Utils::getMediaTypeByMimeType(
-            $fileinfo['mime_type']
-        );
+        $type     = QUI\Projects\Media\Utils::getMediaTypeByMimeType($fileinfo['mime_type']);
 
         if (Utils::isFolder($this)) {
             $type = 'folder';
@@ -279,8 +278,7 @@ abstract class Item extends QUI\QDOM
         $original = $this->getFullPath();
         $notFound = false;
 
-        $var_folder = VAR_DIR . 'media/' .
-                      $Media->getProject()->getAttribute('name') . '/';
+        $var_folder = VAR_DIR . 'media/' . $Media->getProject()->getAttribute('name') . '/';
 
         if (!is_file($original)) {
             QUI::getMessagesHandler()->addAttention(
