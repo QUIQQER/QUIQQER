@@ -45,7 +45,7 @@ class Event implements QUI\Interfaces\Events
      * @see \QUI\Interfaces\Events::addEvent()
      *
      * @param string $event - The type of event (e.g. 'complete').
-     * @param callback $fn - The function to execute.
+     * @param callable $fn - The function to execute.
      * @param int $priority - optional, Priority of the event
      */
     public function addEvent($event, $fn, $priority = 0)
@@ -76,7 +76,7 @@ class Event implements QUI\Interfaces\Events
      * @see \QUI\Interfaces\Events::removeEvent()
      *
      * @param string $event - The type of event (e.g. 'complete').
-     * @param callback|boolean $fn - (optional) The function to remove.
+     * @param callable|boolean $fn - (optional) The function to remove.
      */
     public function removeEvent($event, $fn = false)
     {

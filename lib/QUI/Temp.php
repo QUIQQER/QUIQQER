@@ -21,16 +21,21 @@ use QUI\Utils\Security\Orthos;
 class Temp
 {
     /**
+     * @var string
+     */
+    protected $folder;
+
+    /**
      * constructor
      *
      * @param string $tempfolder - opath to the tempfolder
      */
     public function __construct($tempfolder)
     {
-        $this->_folder = rtrim($tempfolder, '/') . '/';
+        $this->folder = rtrim($tempfolder, '/') . '/';
 
-        if (!is_dir($this->_folder)) {
-            QUIFile::mkdir($this->_folder);
+        if (!is_dir($this->folder)) {
+            QUIFile::mkdir($this->folder);
         }
     }
 
@@ -45,14 +50,14 @@ class Temp
     public function createFolder($name = false)
     {
         if (!empty($name)) {
-            $newFolder = $this->_folder . $name . '/';
+            $newFolder = $this->folder . $name . '/';
             $newFolder = Orthos::clearPath($newFolder);
 
             if (is_dir($newFolder)) {
                 return $newFolder;
             }
 
-            QUIFile::mkdir($this->_folder);
+            QUIFile::mkdir($this->folder);
             QUIFile::mkdir($newFolder);
 
             if (!is_dir($newFolder)) {
@@ -75,7 +80,7 @@ class Temp
 
         // create a var_dir temp folder
         do {
-            $folder = $this->_folder . str_replace(array(' ', '.'), '', microtime()) . '/';
+            $folder = $this->folder . str_replace(array(' ', '.'), '', microtime()) . '/';
         } while (file_exists($folder));
 
         QUIFile::mkdir($folder);
@@ -88,15 +93,15 @@ class Temp
      */
     public function clear()
     {
-        if (system('rm -rf ' . $this->_folder)) {
-            QUIFile::mkdir($this->_folder);
+        if (system('rm -rf ' . $this->folder)) {
+            QUIFile::mkdir($this->folder);
 
             return;
         }
 
         // system is not allowed
-        QUIFile::deleteDir($this->_folder);
-        QUIFile::mkdir($this->_folder);
+        QUIFile::deleteDir($this->folder);
+        QUIFile::mkdir($this->folder);
     }
 
     /**

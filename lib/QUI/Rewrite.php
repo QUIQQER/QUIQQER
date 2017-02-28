@@ -19,7 +19,7 @@ use \Symfony\Component\HttpFoundation\Response;
  * @licence For copyright and license information, please view the /README.md
  * @package QUI
  *
- * @todo  must be rewrited, spaghetti code :(
+ * @todo  must be rewritten, spaghetti code :(
  * @todo  create new concept
  * @todo  translate comments
  *
@@ -1228,7 +1228,7 @@ class Rewrite
         $this->setOutputContent($output);
 
         // fire Rewrite::onOutput
-        \QUI::getEvents()->fireEvent('QUI::rewriteOutput', array(
+        QUI::getEvents()->fireEvent('QUI::rewriteOutput', array(
             'Rewrite' => $this
         ));
 
