@@ -408,8 +408,7 @@ class Utils
         $name     = $Project->getName();
         $lang     = $Project->getLang();
         $siteType = $Site->getAttribute('type');
-        $cache
-                  = "site/site-extra-settings/project/{$name}-{$lang}/type/{$siteType}";
+        $cache    = "site/site-extra-settings/project/{$name}-{$lang}/type/{$siteType}";
 
         try {
             return QUI\Cache\Manager::get($cache);
