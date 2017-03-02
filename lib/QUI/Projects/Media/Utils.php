@@ -255,7 +255,7 @@ class Utils
     public static function getMediaItemByUrl($url)
     {
         if (self::isMediaUrl($url) === false) {
-            throw new QUI\Exception('Its not a QUIQQER image url');
+            throw new QUI\Exception('Its not a QUIQQER item url');
         }
 
         // Parameter herrausfinden
