@@ -11,7 +11,7 @@
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_search',
     function ($search) {
-        return QUI::getPackageManager()->searchNewPackagess($search);
+        return QUI::getPackageManager()->searchNewPackages($search);
     },
     array('search'),
     array(

@@ -404,7 +404,7 @@ class Manager extends QUI\QDOM
 
             // must have
             $require                    = array();
-            $require["php"]             = ">=5.3.2";
+            $require["php"]             = ">=5.5";
             $require["quiqqer/quiqqer"] = "dev-master";
 
             foreach ($list as $package) {
@@ -679,37 +679,37 @@ class Manager extends QUI\QDOM
     /**
      * Install Package
      *
-     * @param string $package - name of the package
+     * @param string|array $packages - name of the package, or list of paackages
      * @param string|boolean $version - (optional) version of the package default = dev-master
      */
-    public function install($package, $version = false)
+    public function install($packages, $version = false)
     {
         QUI\System\Log::addDebug(
-            'Install package ' . $package . ' -> install'
+            'Install package ' . print_r($packages, true) . ' -> install'
         );
 
-        $this->getComposer()->requirePackage($package, $version);
+        $this->getComposer()->requirePackage($packages, $version);
 
-        $this->setup($package);
+        $this->setup($packages);
     }
 
     /**
      * Install only a local package
      *
-     * @param  string $package - name of the package
+     * @param string|array $packages - name of the package
      * @param boolean $version - (optional) version of the package
      */
-    public function installLocalPackage($package, $version = false)
+    public function installLocalPackage($packages, $version = false)
     {
         QUI\System\Log::addDebug(
-            'Install package ' . $package . ' -> installLocalPackage'
+            'Install package ' . print_r($packages, true) . ' -> installLocalPackage'
         );
 
         $this->useOnlyLocalRepository();
-        $this->getComposer()->requirePackage($package, $version);
+        $this->getComposer()->requirePackage($packages, $version);
         $this->resetRepositories();
 
-        $this->setup($package);
+        $this->setup($packages);
     }
 
     /**
@@ -865,7 +865,7 @@ class Manager extends QUI\QDOM
      * @param string $search - search string
      * @return array
      */
-    public function searchNewPackagess($search)
+    public function searchNewPackages($search)
     {
         $result   = array();
         $packages = $this->searchPackages($search);
@@ -888,17 +888,23 @@ class Manager extends QUI\QDOM
     /**
      * Execute a setup for a package
      *
-     * @param string $package
+     * @param string|array $packages
      */
-    public function setup($package)
+    public function setup($packages)
     {
         QUIFile::mkdir(CMS_DIR . 'etc/plugins/');
 
-        try {
-            $Package = $this->getInstalledPackage($package);
-            $Package->setup();
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::writeException($Exception, QUI\System\Log::LEVEL_WARNING);
+        if (!is_array($packages)) {
+            $packages = array($packages);
+        }
+
+        foreach ($packages as $package) {
+            try {
+                $Package = $this->getInstalledPackage($package);
+                $Package->setup();
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeException($Exception, QUI\System\Log::LEVEL_WARNING);
+            }
         }
     }
 
