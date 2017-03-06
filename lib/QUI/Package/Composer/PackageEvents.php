@@ -31,8 +31,10 @@ class PackageEvents
      */
     public static function postPackageInstall(PackageEvent $Event)
     {
+        $packageName = $Event->getOperation()->getPackage();
+
         QUI\System\Log::writeRecursive('install');
-        QUI\System\Log::writeRecursive($Event);
+        QUI\System\Log::writeRecursive($packageName);
     }
 
     /**
@@ -49,10 +51,12 @@ class PackageEvents
      *
      * @param PackageEvent $Event
      */
-    public function postPackageUpdate(PackageEvent $Event)
+    public static function postPackageUpdate(PackageEvent $Event)
     {
+        $packageName = $Event->getOperation()->getPackage();
+
         QUI\System\Log::writeRecursive('update');
-        QUI\System\Log::writeRecursive($Event);
+        QUI\System\Log::writeRecursive($packageName);
     }
 
     /**
@@ -60,7 +64,7 @@ class PackageEvents
      *
      * @param PackageEvent $Event
      */
-    public function prePackageUninstall(PackageEvent $Event)
+    public static function prePackageUninstall(PackageEvent $Event)
     {
     }
 
@@ -69,7 +73,7 @@ class PackageEvents
      *
      * @param PackageEvent $Event
      */
-    public function postPackageUninstall(PackageEvent $Event)
+    public static function postPackageUninstall(PackageEvent $Event)
     {
     }
 }
