@@ -55,6 +55,7 @@ class PackageEvents
      */
     public static function postPackageUpdate(PackageEvent $Event)
     {
+        self::loadQUIQQER($Event);
 //        $packageName = $Event->getOperation()->getPackage();
 
         QUI\System\Log::writeRecursive('update');
@@ -85,7 +86,7 @@ class PackageEvents
     protected static function loadQUIQQER(PackageEvent $Event)
     {
         $Composer = $Event->getComposer();
-        
+
         echo $Composer->getConfig()->get('quiqqer-dir');
     }
 }
