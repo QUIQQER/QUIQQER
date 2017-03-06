@@ -6,6 +6,7 @@
 
 namespace QUI\Package\Composer;
 
+use Composer\DependencyResolver\Operation\UninstallOperation;
 use QUI;
 
 use Composer\Installer\PackageEvent;
@@ -96,6 +97,19 @@ class PackageEvents
      */
     public static function postPackageUninstall(PackageEvent $Event)
     {
+        self::loadQUIQQER($Event);
+
+        /* @var $Operation UninstallOperation */
+        $Operation     = $Event->getOperation();
+        $TargetPackage = $Operation->getPackage();
+        $packageName   = $TargetPackage->getName();
+
+        try {
+            $Package = QUI::getPackage($packageName);
+            $Package->uninstall();
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
     }
 
     /**
