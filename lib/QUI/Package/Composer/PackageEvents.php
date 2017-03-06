@@ -4,7 +4,7 @@
  * This file contains \QUI\Package\Composer\PackageEvents
  */
 
-namespace QUI\Package;
+namespace QUI\Package\Composer;
 
 use QUI;
 use Composer\Installer\PackageEvent;
