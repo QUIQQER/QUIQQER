@@ -7,31 +7,29 @@
 namespace QUI\Package;
 
 use QUI;
-use Composer\Script\Event;
 use Composer\Installer\PackageEvent;
 
+/**
+ * Class PackageEvents
+ * @package QUI\Package
+ */
 class PackageEvents
 {
     /**
-     * Package Events
-     */
-
-
-    /**
      * Occurs before a package is installed.
      *
-     * @param Event $Event
+     * @param PackageEvent $Event
      */
-    public static function prePackageInstall(Event $Event)
+    public static function prePackageInstall(PackageEvent $Event)
     {
     }
 
     /**
      * occurs after a package has been installed.
      *
-     * @param Event $Event
+     * @param PackageEvent $Event
      */
-    public static function postPackageInstall(Event $Event)
+    public static function postPackageInstall(PackageEvent $Event)
     {
         QUI\System\Log::writeRecursive('install');
         QUI\System\Log::writeRecursive($Event);
@@ -40,18 +38,18 @@ class PackageEvents
     /**
      * occurs before a package is updated.
      *
-     * @param Event $Event
+     * @param PackageEvent $Event
      */
-    public static function prePackageUpdate(Event $Event)
+    public static function prePackageUpdate(PackageEvent $Event)
     {
     }
 
     /**
      * occurs after a package has been updated.
      *
-     * @param Event $Event
+     * @param PackageEvent $Event
      */
-    public function postPackageUpdate(Event $Event)
+    public function postPackageUpdate(PackageEvent $Event)
     {
         QUI\System\Log::writeRecursive('update');
         QUI\System\Log::writeRecursive($Event);
@@ -60,18 +58,18 @@ class PackageEvents
     /**
      * occurs before a package is uninstalled.
      *
-     * @param Event $Event
+     * @param PackageEvent $Event
      */
-    public function prePackageUninstall(Event $Event)
+    public function prePackageUninstall(PackageEvent $Event)
     {
     }
 
     /**
      * occurs after a package has been uninstalled.
      *
-     * @param Event $Event
+     * @param PackageEvent $Event
      */
-    public function postPackageUninstall(Event $Event)
+    public function postPackageUninstall(PackageEvent $Event)
     {
     }
 }
