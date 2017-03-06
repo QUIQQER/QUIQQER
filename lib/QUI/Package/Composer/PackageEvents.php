@@ -31,6 +31,8 @@ class PackageEvents
      */
     public static function postPackageInstall(PackageEvent $Event)
     {
+        self::loadQUIQQER($Event);
+
 //        $packageName = $Event->getOperation()->getPackage();
 
         QUI\System\Log::writeRecursive('install');
@@ -75,5 +77,15 @@ class PackageEvents
      */
     public static function postPackageUninstall(PackageEvent $Event)
     {
+    }
+
+    /**
+     * @param PackageEvent $Event
+     */
+    protected static function loadQUIQQER(PackageEvent $Event)
+    {
+        $Composer = $Event->getComposer();
+        
+        echo $Composer->getConfig()->get('quiqqer-dir');
     }
 }
