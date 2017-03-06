@@ -473,8 +473,8 @@ class Package extends QUI\QDOM
     public function install()
     {
         $this->setup();
-
         QUI\Cache\Manager::clearAll();
+
         QUI::getEvents()->fireEvent('packageInstall', array($this));
     }
 
@@ -505,6 +505,9 @@ class Package extends QUI\QDOM
      */
     public function onUpdate()
     {
+        $this->setup();
+        QUI\Cache\Manager::clearAll();
+
         QUI::getEvents()->fireEvent('packageUpdate', array($this));
     }
 }
