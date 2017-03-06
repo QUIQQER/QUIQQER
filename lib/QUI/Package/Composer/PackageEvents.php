@@ -31,10 +31,10 @@ class PackageEvents
      */
     public static function postPackageInstall(PackageEvent $Event)
     {
-        $packageName = $Event->getOperation()->getPackage();
+//        $packageName = $Event->getOperation()->getPackage();
 
         QUI\System\Log::writeRecursive('install');
-        QUI\System\Log::writeRecursive($packageName);
+        QUI\System\Log::writeRecursive($Event);
     }
 
     /**
@@ -53,10 +53,10 @@ class PackageEvents
      */
     public static function postPackageUpdate(PackageEvent $Event)
     {
-        $packageName = $Event->getOperation()->getPackage();
+//        $packageName = $Event->getOperation()->getPackage();
 
         QUI\System\Log::writeRecursive('update');
-        QUI\System\Log::writeRecursive($packageName);
+        QUI\System\Log::writeRecursive($Event);
     }
 
     /**
