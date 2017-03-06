@@ -499,6 +499,6 @@ class Package extends QUI\QDOM
     public function destroy()
     {
         QUI::getEvents()
-            ->fireEvent('packageUninstall', array($this->getName()));
+            ->fireEvent('packageDestroy', array($this->getName()));
     }
 }

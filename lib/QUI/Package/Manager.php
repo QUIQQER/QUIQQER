@@ -340,6 +340,46 @@ class Manager extends QUI\QDOM
             )
         );
 
+        // composer events scripts
+        $composerEvents = array(
+            'pre-package-install'    => array(
+                'QUI\System\\Composer\PackageEvents::prePackageInstall'
+            ),
+            'post-package-install'   => array(
+                'QUI\System\\Composer\PackageEvents::postPackageInstall'
+            ),
+            'pre-package-update'     => array(
+                'QUI\System\\Composer\PackageEvents::prePackageUpdate'
+            ),
+            'post-package-update'    => array(
+                'QUI\System\\Composer\PackageEvents::postPackageUpdate'
+            ),
+            'pre-package-uninstall'  => array(
+                'QUI\System\\Composer\PackageEvents::prePackageUninstall'
+            ),
+            'post-package-uninstall' => array(
+                'QUI\System\\Composer\PackageEvents::postPackageUninstall'
+            )
+        );
+
+        if (empty($composerJson->scripts)) {
+            $composerJson->scripts = array();
+        }
+
+        foreach ($composerEvents as $composerEvent => $events) {
+            if (empty($composerJson->scripts[$composerEvent])) {
+                $composerJson->scripts[$composerEvent] = array();
+            }
+
+            $composerJson->scripts[$composerEvent] = array_merge(
+                $events,
+                $composerJson->scripts[$composerEvent]
+            );
+
+            array_unique($composerJson->scripts[$composerEvent]);
+        }
+
+
         // make the repository list
         $servers      = $this->getServerList();
         $repositories = array();
