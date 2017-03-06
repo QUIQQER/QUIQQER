@@ -486,8 +486,7 @@ class Package extends QUI\QDOM
      */
     public function uninstall()
     {
-        QUI::getEvents()
-            ->fireEvent('packageUninstall', array($this->getName()));
+        QUI::getEvents()->fireEvent('packageUninstall', array($this->getName()));
     }
 
     /**
@@ -500,5 +499,13 @@ class Package extends QUI\QDOM
     {
         QUI::getEvents()
             ->fireEvent('packageDestroy', array($this->getName()));
+    }
+
+    /**
+     * event on update
+     */
+    public function onUpdate()
+    {
+        QUI::getEvents()->fireEvent('packageUpdate', array($this));
     }
 }

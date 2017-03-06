@@ -7,7 +7,10 @@
 namespace QUI\Package\Composer;
 
 use QUI;
+
 use Composer\Installer\PackageEvent;
+use Composer\DependencyResolver\Operation\InstallOperation;
+use Composer\DependencyResolver\Operation\UpdateOperation;
 
 /**
  * Class PackageEvents
@@ -33,10 +36,17 @@ class PackageEvents
     {
         self::loadQUIQQER($Event);
 
-//        $packageName = $Event->getOperation()->getPackage();
+        /* @var $Operation InstallOperation */
+        $Operation     = $Event->getOperation();
+        $TargetPackage = $Operation->getPackage();
+        $packageName   = $TargetPackage->getName();
 
-        QUI\System\Log::writeRecursive('install');
-        QUI\System\Log::writeRecursive($Event);
+        try {
+            $Package = QUI::getPackage($packageName);
+            $Package->install();
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
     }
 
     /**
@@ -56,10 +66,18 @@ class PackageEvents
     public static function postPackageUpdate(PackageEvent $Event)
     {
         self::loadQUIQQER($Event);
-//        $packageName = $Event->getOperation()->getPackage();
 
-        QUI\System\Log::writeRecursive('update');
-        QUI\System\Log::writeRecursive($Event);
+        /* @var $Operation UpdateOperation */
+        $Operation     = $Event->getOperation();
+        $TargetPackage = $Operation->getTargetPackage();
+        $packageName   = $TargetPackage->getName();
+
+        try {
+            $Package = QUI::getPackage($packageName);
+            $Package->onUpdate();
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
     }
 
     /**
@@ -86,7 +104,16 @@ class PackageEvents
     protected static function loadQUIQQER(PackageEvent $Event)
     {
         $Composer = $Event->getComposer();
+        $config   = $Composer->getConfig()->all();
 
-        echo $Composer->getConfig()->get('quiqqer-dir');
+        if (!defined('CMS_DIR')) {
+            define('CMS_DIR', $config['config']['quiqqer-dir']);
+        }
+
+        if (!defined('ETC_DIR')) {
+            define('ETC_DIR', $config['config']['quiqqer-dir'] . 'etc/');
+        }
+
+        QUI::load();
     }
 }
