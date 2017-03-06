@@ -1,10 +1,10 @@
 <?php
 
 /**
- * This file contains \QUI\System\\Composer\PackageEvents
+ * This file contains \QUI\Package\Composer\PackageEvents
  */
 
-namespace QUI\System;
+namespace QUI\Package;
 
 use QUI;
 use Composer\Script\Event;
@@ -34,7 +34,7 @@ class PackageEvents
      */
     public static function postPackageInstall(Event $Event)
     {
-        Log::writeRecursive($Event);
+        QUI\System\Log::writeRecursive($Event);
     }
 
     /**

@@ -341,49 +341,51 @@ class Manager extends QUI\QDOM
         );
 
         // composer events scripts
-        $composerEvents = array(
-            'pre-package-install'    => array(
-                'QUI\System\\Composer\PackageEvents::prePackageInstall'
-            ),
-            'post-package-install'   => array(
-                'QUI\System\\Composer\PackageEvents::postPackageInstall'
-            ),
-            'pre-package-update'     => array(
-                'QUI\System\\Composer\PackageEvents::prePackageUpdate'
-            ),
-            'post-package-update'    => array(
-                'QUI\System\\Composer\PackageEvents::postPackageUpdate'
-            ),
-            'pre-package-uninstall'  => array(
-                'QUI\System\\Composer\PackageEvents::prePackageUninstall'
-            ),
-            'post-package-uninstall' => array(
-                'QUI\System\\Composer\PackageEvents::postPackageUninstall'
-            )
-        );
+        $composerEvents = [
+            'pre-package-install'    => [
+                'QUI\\Package\\Composer\\PackageEvents::prePackageInstall'
+            ],
+            'post-package-install'   => [
+                'QUI\\Package\\Composer\\PackageEvents::postPackageInstall'
+            ],
+            'pre-package-update'     => [
+                'QUI\\Package\\Composer\\PackageEvents::prePackageUpdate'
+            ],
+            'post-package-update'    => [
+                'QUI\\Package\\Composer\\PackageEvents::postPackageUpdate'
+            ],
+            'pre-package-uninstall'  => [
+                'QUI\\Package\\Composer\\PackageEvents::prePackageUninstall'
+            ],
+            'post-package-uninstall' => [
+                'QUI\\Package\\Composer\\PackageEvents::postPackageUninstall'
+            ]
+        ];
 
         if (empty($composerJson->scripts)) {
-            $composerJson->scripts = array();
+            $composerJson->scripts = (object)[];
         }
 
         foreach ($composerEvents as $composerEvent => $events) {
-            if (empty($composerJson->scripts[$composerEvent])) {
-                $composerJson->scripts[$composerEvent] = array();
+            if (empty($composerJson->scripts->{$composerEvent})) {
+                $composerJson->scripts->{$composerEvent} = [];
             }
 
-            $composerJson->scripts[$composerEvent] = array_merge(
-                $events,
-                $composerJson->scripts[$composerEvent]
-            );
+            if (!is_array($composerJson->scripts->{$composerEvent})) {
+                $composerJson->scripts->{$composerEvent} = [];
+            }
 
-            array_unique($composerJson->scripts[$composerEvent]);
+            $composerJson->scripts->{$composerEvent} = array_unique(array_merge(
+                $events,
+                $composerJson->scripts->{$composerEvent}
+            ));
         }
 
 
         // make the repository list
         $servers      = $this->getServerList();
-        $repositories = array();
-        $npmServer    = array();
+        $repositories = [];
+        $npmServer    = [];
 
         foreach ($servers as $server => $params) {
             if ($server == 'packagist') {
@@ -655,8 +657,9 @@ class Manager extends QUI\QDOM
      *
      * @return array
      */
-    public function getInstalled($params = array())
-    {
+    public function getInstalled(
+        $params = array()
+    ) {
         $list   = $this->getList();
         $result = $list;
 
@@ -707,8 +710,9 @@ class Manager extends QUI\QDOM
      * @return QUI\Package\Package
      * @throws QUI\Exception
      */
-    public function getInstalledPackage($package)
-    {
+    public function getInstalledPackage(
+        $package
+    ) {
         if (!isset($this->packages[$package])) {
             $this->packages[$package] = new QUI\Package\Package($package);
         }
@@ -722,8 +726,10 @@ class Manager extends QUI\QDOM
      * @param string|array $packages - name of the package, or list of paackages
      * @param string|boolean $version - (optional) version of the package default = dev-master
      */
-    public function install($packages, $version = false)
-    {
+    public function install(
+        $packages,
+        $version = false
+    ) {
         QUI\System\Log::addDebug(
             'Install package ' . print_r($packages, true) . ' -> install'
         );
@@ -739,8 +745,10 @@ class Manager extends QUI\QDOM
      * @param string|array $packages - name of the package
      * @param boolean $version - (optional) version of the package
      */
-    public function installLocalPackage($packages, $version = false)
-    {
+    public function installLocalPackage(
+        $packages,
+        $version = false
+    ) {
         QUI\System\Log::addDebug(
             'Install package ' . print_r($packages, true) . ' -> installLocalPackage'
         );
@@ -760,8 +768,9 @@ class Manager extends QUI\QDOM
      *
      * @return array
      */
-    public function getPackage($package)
-    {
+    public function getPackage(
+        $package
+    ) {
         $cache = 'packages/cache/info/' . $package;
 
         try {
@@ -807,8 +816,9 @@ class Manager extends QUI\QDOM
      *
      * @return array - list of dependencies
      */
-    public function getDependencies($package)
-    {
+    public function getDependencies(
+        $package
+    ) {
         $list   = $this->getList();
         $result = array();
 
@@ -833,8 +843,9 @@ class Manager extends QUI\QDOM
      *
      * @return array
      */
-    public function show($package)
-    {
+    public function show(
+        $package
+    ) {
         $cache = 'packages/cache/show/' . $package;
 
         try {
@@ -891,8 +902,9 @@ class Manager extends QUI\QDOM
      *
      * @return array
      */
-    public function searchPackages($search)
-    {
+    public function searchPackages(
+        $search
+    ) {
         return $this->getComposer()->search(
             QUI\Utils\Security\Orthos::clearShell($search)
         );
@@ -905,8 +917,9 @@ class Manager extends QUI\QDOM
      * @param string $search - search string
      * @return array
      */
-    public function searchNewPackages($search)
-    {
+    public function searchNewPackages(
+        $search
+    ) {
         $result   = array();
         $packages = $this->searchPackages($search);
 
@@ -930,8 +943,9 @@ class Manager extends QUI\QDOM
      *
      * @param string|array $packages
      */
-    public function setup($packages)
-    {
+    public function setup(
+        $packages
+    ) {
         QUIFile::mkdir(CMS_DIR . 'etc/plugins/');
 
         if (!is_array($packages)) {
@@ -997,8 +1011,11 @@ class Manager extends QUI\QDOM
      * @param boolean $status - 1 = active, 0 = disabled
      * @param boolean $backup - Optional (default=true, create a backup, false = create no backup
      */
-    public function setServerStatus($server, $status, $backup = true)
-    {
+    public function setServerStatus(
+        $server,
+        $status,
+        $backup = true
+    ) {
         $Config = QUI::getConfig('etc/source.list.ini.php');
         $status = (bool)$status ? 1 : 0;
 
@@ -1018,8 +1035,10 @@ class Manager extends QUI\QDOM
      * @param string $server - Server, IP, Host
      * @param array $params - Server Parameter
      */
-    public function addServer($server, $params = array())
-    {
+    public function addServer(
+        $server,
+        $params = array()
+    ) {
         if (empty($server)) {
             return;
         }
@@ -1058,8 +1077,10 @@ class Manager extends QUI\QDOM
      * @param string $server - Server, IP, Host
      * @param array $params - Server Parameter
      */
-    public function editServer($server, $params = array())
-    {
+    public function editServer(
+        $server,
+        $params = array()
+    ) {
         if (empty($server)) {
             return;
         }
@@ -1102,8 +1123,9 @@ class Manager extends QUI\QDOM
      *
      * @param string|array $server
      */
-    public function removeServer($server)
-    {
+    public function removeServer(
+        $server
+    ) {
         $Config = QUI::getConfig('etc/source.list.ini.php');
 
         if (is_array($server)) {
@@ -1144,8 +1166,9 @@ class Manager extends QUI\QDOM
      *
      * @throws \QUI\Exception
      */
-    public function getOutdated($force = false)
-    {
+    public function getOutdated(
+        $force = false
+    ) {
         if (!is_bool($force)) {
             $force = false;
         }
@@ -1215,8 +1238,9 @@ class Manager extends QUI\QDOM
      * @todo if exception uncommited changes -> own error message
      * @todo if exception uncommited changes -> interactive mode
      */
-    public function update($package = false)
-    {
+    public function update(
+        $package = false
+    ) {
         $this->createComposerBackup();
         $this->getComposer()->mute();
 
@@ -1292,8 +1316,9 @@ class Manager extends QUI\QDOM
      *
      * @throws QUI\Exception
      */
-    public function updateWithLocalRepository($package = false)
-    {
+    public function updateWithLocalRepository(
+        $package = false
+    ) {
         $this->createComposerBackup();
         $this->useOnlyLocalRepository();
 
@@ -1417,8 +1442,9 @@ class Manager extends QUI\QDOM
      * @param string $name - e.g. "database.xml" / "package.xml" etc.
      * @return array - absolute file paths
      */
-    public function getPackageXMLFiles($name)
-    {
+    public function getPackageXMLFiles(
+        $name
+    ) {
         // @todo cache
 
         $packages = $this->getInstalled();
@@ -1458,8 +1484,9 @@ class Manager extends QUI\QDOM
      *
      * @throws QUI\Exception
      */
-    public function uploadPackage($file)
-    {
+    public function uploadPackage(
+        $file
+    ) {
         $dir = $this->getUploadPackageDir();
 
         if (!is_dir($dir)) {
