@@ -1176,7 +1176,12 @@ class Manager
             );
         }
 
-        $User = $this->get($Session->get('uid'));
+        try {
+            $User = $this->get($Session->get('uid'));
+        } catch (QUI\Exception $Exception) {
+            $clearSessionData();
+            throw $Exception;
+        }
 
         if (!$User->isActive()) {
             $clearSessionData();
