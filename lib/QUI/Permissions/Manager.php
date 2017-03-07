@@ -89,6 +89,10 @@ class Manager
             return 'user';
         }
 
+        if ($Object instanceof QUI\Groups\Group) {
+            return 'groups';
+        }
+
         return $this->classToArea(get_class($Object));
     }
 
