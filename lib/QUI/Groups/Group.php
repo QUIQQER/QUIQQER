@@ -105,9 +105,7 @@ class Group extends QUI\QDOM
         }
 
         // rechte setzen
-        if ($this->getAttribute('rights')) {
-            $this->rights = json_decode($this->getAttribute('rights'), true);
-        }
+        $this->rights = QUI::getPermissionManager()->getPermissions($this);
 
         // Extras are deprected - we need an api
         if (isset($result[0]['extra'])) {
@@ -464,9 +462,7 @@ class Group extends QUI\QDOM
      */
     public function hasPermission($permission)
     {
-        $list = QUI::getPermissionManager()->getRightParamsFromGroup($this);
-
-        return isset($list[$permission]) ? $list[$permission] : false;
+        return isset($this->rights[$permission]) ? $this->rights[$permission] : false;
     }
 
     /**
