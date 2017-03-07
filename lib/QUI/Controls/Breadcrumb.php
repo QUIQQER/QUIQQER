@@ -24,9 +24,9 @@ class Breadcrumb extends QUI\Control
     {
         // default options
         $this->setAttributes(array(
-            'class'  => 'quiqqer-breadcrumb',
-            'height' => 40,
-            'layout' => 'slider'
+            'class'         => 'quiqqer-breadcrumb',
+            'controlHeight' => 40,
+            'layout'        => 'slider'
         ));
 
         parent::__construct($attributes);
@@ -47,10 +47,10 @@ class Breadcrumb extends QUI\Control
 
         $this->setAttribute(
             'height',
-            (int)$this->getAttribute('height') . 'px'
+            (int)$this->getAttribute('controlHeight') . 'px'
         );
 
-        $this->setStyle('height', $this->getAttribute('height'));
+        $this->setStyle('height', $this->getAttribute('controlHeight'));
 
         $layout = strtolower($this->getAttribute('layout'));
 
