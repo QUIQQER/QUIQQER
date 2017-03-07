@@ -156,21 +156,28 @@ require(requireList, function () {
 
     window.addEvent('load', quiqqerIsLoaded);
     window.addEvent('keydown', function (event) {
-        if (!event.control) {
+        if (!event.alt) {
             return;
         }
 
         if (event.key == 'f') {
             event.stop();
 
+            if (window.searchWindowOpen) {
+                return;
+            }
+
             require(['controls/workspace/search/Search'], function (Search) {
                 new Search({
                     events: {
                         onClose: function (S) {
+                            window.searchWindowOpen = false;
                             S.destroy();
                         }
                     }
                 }).open();
+
+                window.searchWindowOpen = true;
             });
         }
     });
