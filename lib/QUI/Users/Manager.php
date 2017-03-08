@@ -947,7 +947,6 @@ class Manager
             );
         }
 
-
         // global authenticators
         if (QUI::getSession()->get('auth-globals') !== 1) {
             $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalAuthenticators();
@@ -1034,6 +1033,7 @@ class Manager
         }
 
         // session
+        QUI::getSession()->remove('inAuthentication');
         QUI::getSession()->set('auth', 1);
         QUI::getSession()->set('uid', $userId);
         QUI::getSession()->set('secHash', $this->getSecHash());
@@ -1164,9 +1164,12 @@ class Manager
             );
         }
 
-        if (!$Session->get('uid') || !$Session->get('auth')) {
+        if ((!$Session->get('uid') || !$Session->get('auth'))
+            && !$Session->get('inAuthentication')
+        ) {
+
             $clearSessionData();
-            
+
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
@@ -1196,7 +1199,9 @@ class Manager
         }
 
         // Mehrfachanmeldungen? Dann keine Prüfung
-        if (QUI::conf('session', 'multible')) {
+        if (QUI::conf('session', 'multible')
+            || $Session->get('inAuthentication')
+        ) {
             return;
         }
 

@@ -6,6 +6,14 @@
 QUI::$Ajax->registerFunction(
     'ajax_users_login',
     function ($authenticator, $params, $globalauth) {
+        QUI::getSession()->set('inAuthentication', 1);
+
+        $User = QUI::getUserBySession();
+
+        if ($User->getId()) {
+            QUI::getSession()->remove('inAuthentication');
+        }
+
         QUI::getUsers()->authenticate(
             $authenticator,
             json_decode($params, true)

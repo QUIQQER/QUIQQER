@@ -99,8 +99,6 @@ try {
     exit;
 }
 
-// User ist Standard Nobody
-$User = QUI::getUsers()->getNobody();
 
 QUI::getSession()->start();
 
@@ -108,31 +106,7 @@ if ((int)QUI::conf('session', 'regenerate')) {
     QUI::getSession()->refresh();
 }
 
-// @todo auth controls
-if (isset($_POST['username'])
-    && isset($_POST['password'])
-    && isset($_POST['login'])
-) {
-    // Falls ein Login versucht wurde
-    try {
-        $User = QUI::getUsers()->login(array(
-            'username' => $_POST['username'],
-            'password' => $_POST['password']
-        ));
-    } catch (QUI\Exception $Exception) {
-        define('LOGIN_FAILED', $Exception->getMessage());
-    }
-} elseif (QUI::getSession()->get('uid')) {
-    try {
-        QUI::getUsers()->checkUserSession();
-
-        $User = QUI::getUserBySession();
-    } catch (QUI\Exception $Exception) {
-        define('LOGIN_FAILED', $Exception->getMessage());
-    }
-} else {
-    QUI::getSession()->destroy();
-}
+$User = QUI::getUserBySession();
 
 // Logout
 if (isset($_GET['logout'])) {
