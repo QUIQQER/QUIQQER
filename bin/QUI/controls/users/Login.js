@@ -119,7 +119,8 @@ define('controls/users/Login', [
                             return;
                         }
 
-                        this.auth(Target).catch(function () {
+                        this.auth(Target).catch(function (err) {
+                            console.log(err);
                         });
                     }.bind(this)
                 }
