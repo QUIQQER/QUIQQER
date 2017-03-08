@@ -2519,6 +2519,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Neue Gruppe erstellen]]></de>
             <en><![CDATA[Create new group]]></en>
         </locale>
+        <locale name="groups.panel.create.window.sitemap.text">
+            <de><![CDATA[Neue Gruppe]]></de>
+            <en><![CDATA[New group]]></en>
+        </locale>
         <locale name="groups.panel.create.window.sitemap.information">
             <de><![CDATA[Unter welcher Gruppe soll die neue Gruppe angelegt werden?]]></de>
             <en><![CDATA[Under which group should the new group to be created?]]></en>
