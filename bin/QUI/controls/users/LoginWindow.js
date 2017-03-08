@@ -30,7 +30,7 @@ define('controls/users/LoginWindow', [
     return new Class({
 
         Extends: QUIConfirm,
-        Type: 'controls/users/LoginWindow',
+        Type   : 'controls/users/LoginWindow',
 
         Binds: [
             'submit',
@@ -39,23 +39,28 @@ define('controls/users/LoginWindow', [
         ],
 
         options: {
-            title: Locale.get('quiqqer/system', 'login.title'),
-            icon: 'fa fa-sign-in',
+            title    : Locale.get('quiqqer/system', 'login.title'),
+            icon     : 'fa fa-sign-in',
             maxHeight: 400,
-            maxWidth: 400,
+            maxWidth : 400,
             autoclose: false,
-            buttons: false
+            buttons  : false,
+            logo     : false
         },
 
         initialize: function (options) {
             this.parent(options);
 
             this.$opened = false;
-            this.$Login = null;
+            this.$Login  = null;
+
 
             this.addEvent('cancel', function () {
                 window.onbeforeunload = null;
-                window.location = '/admin/';
+
+                if (typeof window.QUIQQER.inAdministration !== 'undefined') {
+                    window.location = window.URL_SYS_DIR;
+                }
             });
         },
 
@@ -78,21 +83,29 @@ define('controls/users/LoginWindow', [
             this.$opened = true;
             this.parent();
 
-            var self = this,
+            var self    = this,
                 Content = this.getContent();
 
             Content.getElements('.submit-body').destroy();
 
+            if (this.getAttribute('logo')) {
+                new Element('img', {
+                    'class': 'quiqqer-login-logo',
+                    src    : this.getAttribute('logo')
+                }).inject(Content);
+            }
+
             this.$Login = new Login({
-                onSuccess: function () {
+                showLoader: false,
+                onSuccess : function () {
                     self.close();
                     self.fireEvent('success', [self]);
                 },
-                events: {
+                events    : {
                     onAuthBegin: function () {
                         self.Loader.show();
                     },
-                    onAuthNext: function () {
+                    onAuthNext : function () {
                         self.Loader.hide();
                     }
                 }
