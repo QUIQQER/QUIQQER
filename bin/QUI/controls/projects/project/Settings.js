@@ -346,18 +346,20 @@ define('controls/projects/project/Settings', [
 
                         // prefix
                         new Translation({
-                            'group': 'project/' + self.$Project.getName(),
-                            'var'  : 'template.prefix',
-                            'type' : 'php,js'
+                            'group'  : 'project/' + self.$Project.getName(),
+                            'var'    : 'template.prefix',
+                            'type'   : 'php,js',
+                            'package': 'quiqqer/quiqqer'
                         }).inject(
                             Body.getElement('.prefix-settings-container')
                         );
 
                         // suffix
                         new Translation({
-                            'group': 'project/' + self.$Project.getName(),
-                            'var'  : 'template.suffix',
-                            'type' : 'php,js'
+                            'group'  : 'project/' + self.$Project.getName(),
+                            'var'    : 'template.suffix',
+                            'type'   : 'php,js',
+                            'package': 'quiqqer/quiqqer'
                         }).inject(
                             Body.getElement('.suffix-settings-container')
                         );
