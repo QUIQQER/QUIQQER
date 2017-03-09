@@ -34,14 +34,14 @@ if (DEVELOPMENT == 1) {
 }
 
 define('GENERATOR', 'QUIQQER /www.pcsg.de');
-
-define('URL_LIB_DIR', QUI::conf('globals', 'url_lib_dir'));
-define('URL_BIN_DIR', QUI::conf('globals', 'url_bin_dir'));
-define('URL_SYS_DIR', QUI::conf('globals', 'url_sys_dir'));
-
-define('URL_USR_DIR', URL_DIR . str_replace(CMS_DIR, '', USR_DIR));
-define('URL_OPT_DIR', URL_DIR . str_replace(CMS_DIR, '', OPT_DIR));
-define('URL_VAR_DIR', URL_DIR . str_replace(CMS_DIR, '', VAR_DIR));
+//
+//define('URL_LIB_DIR', QUI::conf('globals', 'url_lib_dir'));
+//define('URL_BIN_DIR', QUI::conf('globals', 'url_bin_dir'));
+//define('URL_SYS_DIR', QUI::conf('globals', 'url_sys_dir'));
+//
+//define('URL_USR_DIR', URL_DIR . str_replace(CMS_DIR, '', USR_DIR));
+//define('URL_OPT_DIR', URL_DIR . str_replace(CMS_DIR, '', OPT_DIR));
+//define('URL_VAR_DIR', URL_DIR . str_replace(CMS_DIR, '', VAR_DIR));
 
 define('HOST', QUI::conf('globals', 'host'));
 define('CACHE', QUI::conf('globals', 'cache'));

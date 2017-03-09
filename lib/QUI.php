@@ -400,6 +400,32 @@ class QUI
             QUI\Utils\System\File::mkdir($folder);
         }
 
+
+        if (!defined('URL_LIB_DIR')) {
+            define('URL_LIB_DIR', QUI::conf('globals', 'url_lib_dir'));
+        }
+
+        if (!defined('URL_BIN_DIR')) {
+            define('URL_BIN_DIR', QUI::conf('globals', 'url_bin_dir'));
+        }
+
+        if (!defined('URL_SYS_DIR')) {
+            define('URL_SYS_DIR', QUI::conf('globals', 'url_sys_dir'));
+        }
+
+        if (!defined('URL_USR_DIR')) {
+            define('URL_USR_DIR', URL_DIR . str_replace(CMS_DIR, '', USR_DIR));
+        }
+
+        if (!defined('URL_OPT_DIR')) {
+            define('URL_OPT_DIR', URL_DIR . str_replace(CMS_DIR, '', OPT_DIR));
+        }
+
+        if (!defined('URL_VAR_DIR')) {
+            define('URL_VAR_DIR', URL_DIR . str_replace(CMS_DIR, '', VAR_DIR));
+        }
+
+
         // Load Packages
         self::getPackageManager();
 
