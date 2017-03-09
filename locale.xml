@@ -1497,6 +1497,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Uploads]]></de>
             <en><![CDATA[Upload]]></en>
         </locale>
+        <locale name="upload.manager.clear">
+            <de><![CDATA[Uploads leeren]]></de>
+            <en><![CDATA[Clear Uploads]]></en>
+        </locale>
         <locale name="projects.project.sitemap.media">
             <de><![CDATA[Media]]></de>
             <en><![CDATA[Media]]></en>
