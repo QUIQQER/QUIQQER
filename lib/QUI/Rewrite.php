@@ -1187,6 +1187,11 @@ class Rewrite
      */
     public function outputFilter($output)
     {
+        QUI::getEvents()->fireEvent('rewriteOutputBegin', array(
+            'Rewrite' => $this,
+            'output'  => $output
+        ));
+
         // Bilder umschreiben
         $output = preg_replace_callback(
             '#<img([^>]*)>#i',
@@ -1232,6 +1237,11 @@ class Rewrite
             'Rewrite' => $this
         ));
 
+        QUI::getEvents()->fireEvent('rewriteOutput', array(
+            'Rewrite' => $this,
+            'output'  => $output
+        ));
+
         return $this->getOutputContent();
     }
 
@@ -1268,8 +1278,7 @@ class Rewrite
         if (isset($output[3]) && strpos($output[3], '@') !== false) {
             list($user, $domain) = explode("@", $output[3]);
 
-            return 'href="' . URL_DIR . '[mailto]' . $user . '[at]' . $domain
-                   . '" target="mail_protection"';
+            return 'href="' . URL_DIR . '[mailto]' . $user . '[at]' . $domain . '" target="mail_protection"';
         }
 
         return $output[0];
@@ -1289,7 +1298,6 @@ class Rewrite
         } catch (QUI\Exception $Excxeption) {
             $url = '';
         }
-
 
         return $output[1] . '="' . $url . '"';
     }
