@@ -26,7 +26,7 @@ class CommandEvents
      *
      * @param $packageName
      */
-    static function registerPackageChange($packageName)
+    public static function registerPackageChange($packageName)
     {
         self::$packages[] = $packageName;
         self::$packages   = array_unique(self::$packages);
@@ -51,8 +51,6 @@ class CommandEvents
      */
     public static function postUpdate(Event $Event)
     {
-        QUI\System\Log::writeRecursive(self::$packages);
-
         foreach (self::$packages as $package) {
             try {
                 $Package = QUI::getPackage($package);
