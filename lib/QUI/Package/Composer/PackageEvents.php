@@ -45,6 +45,8 @@ class PackageEvents
         try {
             $Package = QUI::getPackage($packageName);
             $Package->install();
+
+            CommandEvents::registerPackageChange($packageName);
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
@@ -76,6 +78,8 @@ class PackageEvents
         try {
             $Package = QUI::getPackage($packageName);
             $Package->onUpdate();
+
+            CommandEvents::registerPackageChange($packageName);
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }

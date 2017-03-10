@@ -440,10 +440,10 @@ class Package extends QUI\QDOM
             QUI\Translator::publish($group);
         }
 
-
         // settings
         if (!file_exists($dir . 'settings.xml')) {
             QUI::getEvents()->fireEvent('packageSetup', array($this));
+            QUI\Cache\Manager::clearAll();
             return;
         }
 
@@ -455,6 +455,9 @@ class Package extends QUI\QDOM
         }
 
         QUI::getEvents()->fireEvent('packageSetup', array($this));
+
+        // @todo überdenken
+        QUI\Cache\Manager::clearAll();
     }
 
     /**
@@ -472,9 +475,6 @@ class Package extends QUI\QDOM
      */
     public function install()
     {
-        $this->setup();
-        QUI\Cache\Manager::clearAll();
-
         QUI::getEvents()->fireEvent('packageInstall', array($this));
     }
 
@@ -505,9 +505,6 @@ class Package extends QUI\QDOM
      */
     public function onUpdate()
     {
-        $this->setup();
-        QUI\Cache\Manager::clearAll();
-
         QUI::getEvents()->fireEvent('packageUpdate', array($this));
     }
 }

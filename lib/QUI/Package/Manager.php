@@ -342,6 +342,14 @@ class Manager extends QUI\QDOM
 
         // composer events scripts
         $composerEvents = [
+            // command events
+            'pre-update-cmd'         => [
+                'QUI\\Package\\Composer\\CommandEvents::preUpdate'
+            ],
+            'post-update-cmd'        => [
+                'QUI\\Package\\Composer\\CommandEvents::postUpdate'
+            ],
+            // package events
             'pre-package-install'    => [
                 'QUI\\Package\\Composer\\PackageEvents::prePackageInstall'
             ],
