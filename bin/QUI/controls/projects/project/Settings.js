@@ -127,6 +127,7 @@ define('controls/projects/project/Settings', [
             this.getContent().addClass('qui-project-settings');
 
             this.addButton({
+                name     : 'save',
                 text     : Locale.get(lg, 'projects.project.panel.settings.btn.save'),
                 textimage: 'fa fa-save',
                 events   : {
@@ -135,6 +136,7 @@ define('controls/projects/project/Settings', [
             });
 
             this.addButton({
+                name     : 'remove',
                 text     : Locale.get(lg, 'projects.project.panel.settings.btn.remove'),
                 textimage: 'fa fa-remove',
                 events   : {
