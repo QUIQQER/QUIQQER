@@ -255,6 +255,7 @@ define('controls/projects/project/media/Panel', [
                 // views
                 var View = new QUIButton({
                     textimage: 'fa fa-th',
+                    name     : 'view',
                     text     : '',
                     methods  : {
                         change: function (Item) {
@@ -354,6 +355,7 @@ define('controls/projects/project/media/Panel', [
 
                 // Upload
                 var Upload = new QUIButton({
+                    name     : 'upload',
                     textimage: 'fa fa-upload',
                     text     : Locale.get(lg, 'projects.project.site.media.panel.btn.upload')
                 });
@@ -667,7 +669,10 @@ define('controls/projects/project/media/Panel', [
             extract = extract || false;
 
             Sheet.addEvents({
-                onOpen: function () {
+                onClose: function (Sheet) {
+                    Sheet.destroy();
+                },
+                onOpen : function () {
                     var Parent;
                     var Content = Sheet.getBody();
 
@@ -691,8 +696,8 @@ define('controls/projects/project/media/Panel', [
                     }
 
                     var height = Content.getSize().y -
-                                 Parent.getSize().y -
-                                 80; // 80 = content padding + form margin
+                        Parent.getSize().y -
+                        80; // 80 = content padding + form margin
 
                     // upload form
                     var Form = new UploadForm({
