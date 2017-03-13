@@ -139,9 +139,11 @@ class Template extends QUI\QDOM
             return $projectDir . $template;
         }
 
+        $tplPath = OPT_DIR . $Project->getAttribute('template') . '/';
+
         // exist template in opt?
-        if (file_exists(OPT_DIR . $template)) {
-            return OPT_DIR . $template;
+        if (file_exists($tplPath . $template)) {
+            return $tplPath . $template;
         }
 
         return $standardTpl;
@@ -169,9 +171,11 @@ class Template extends QUI\QDOM
             return $projectDir . $template;
         }
 
+        $tplPath = OPT_DIR . $Project->getAttribute('template') . '/';
+
         // exist template in opt?
-        if (file_exists(OPT_DIR . $template)) {
-            return OPT_DIR . $template;
+        if (file_exists($tplPath . $template)) {
+            return $tplPath . $template;
         }
 
         return $standardTpl;
