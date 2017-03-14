@@ -58,7 +58,8 @@ foreach ($packages as $package) {
 
     echo '<script type="text/javascript">';
     echo '/* <![CDATA[ */';
-    echo 'var QUIQQER_LOCALE = ' . json_encode($files, true);
+    echo 'var QUIQQER_LOCALE = ' . json_encode($files, true) . ';';
+    echo 'var QUIQQER_LANGUAGES = ' . json_encode($languages, true) . ';';
     echo '/* ]]> */';
     echo '</script>';
     ?>
@@ -317,30 +318,30 @@ foreach ($packages as $package) {
 
     <script type="text/javascript">
 
-        var URL_DIR = '<?php echo URL_DIR; ?>',
+        var URL_DIR     = '<?php echo URL_DIR; ?>',
             URL_OPT_DIR = '<?php echo URL_OPT_DIR; ?>',
-            LANGUAGE = null;
+            LANGUAGE    = null;
 
         // require config
         require.config({
-            baseUrl: '<?php echo URL_BIN_DIR; ?>QUI/',
-            paths: {
-                "package": "<?php echo URL_OPT_DIR; ?>",
-                "qui": '<?php echo URL_OPT_DIR; ?>bin/qui/qui',
-                "locale": '<?php echo URL_VAR_DIR; ?>locale/bin',
-                "Ajax": '<?php echo URL_BIN_DIR; ?>QUI/Ajax',
+            baseUrl    : '<?php echo URL_BIN_DIR; ?>QUI/',
+            paths      : {
+                "package"    : "<?php echo URL_OPT_DIR; ?>",
+                "qui"        : '<?php echo URL_OPT_DIR; ?>bin/qui/qui',
+                "locale"     : '<?php echo URL_VAR_DIR; ?>locale/bin',
+                "Ajax"       : '<?php echo URL_BIN_DIR; ?>QUI/Ajax',
                 "URL_OPT_DIR": "<?php echo URL_OPT_DIR; ?>",
                 "URL_BIN_DIR": "<?php echo URL_BIN_DIR; ?>",
 
-                "Mustache": URL_OPT_DIR + 'bin/mustache/mustache.min',
-                "URI": URL_OPT_DIR + 'bin/urijs/src/URI',
-                'IPv6': URL_OPT_DIR + 'bin/urijs/src/IPv6',
-                'punycode': URL_OPT_DIR + 'bin/urijs/src/punycode',
+                "Mustache"          : URL_OPT_DIR + 'bin/mustache/mustache.min',
+                "URI"               : URL_OPT_DIR + 'bin/urijs/src/URI',
+                'IPv6'              : URL_OPT_DIR + 'bin/urijs/src/IPv6',
+                'punycode'          : URL_OPT_DIR + 'bin/urijs/src/punycode',
                 'SecondLevelDomains': URL_OPT_DIR + 'bin/urijs/src/SecondLevelDomains'
             },
             waitSeconds: 0,
-            catchError: true,
-            map: {
+            catchError : true,
+            map        : {
                 '*': {
                     'css': '<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/css.js'
                 }
@@ -373,6 +374,10 @@ foreach ($packages as $package) {
         }
 
         function setLanguage(lang) {
+            if (!QUIQQER_LANGUAGES.contains(lang)) {
+                lang = QUIQQER_LANGUAGES[0];
+            }
+
             return new Promise(function (resolve) {
                 require([
                     'Locale',
@@ -390,7 +395,7 @@ foreach ($packages as $package) {
             'controls/users/Login'
         ].append(QUIQQER_LOCALE || []), function (QUI, Login) {
             QUI.setAttributes({
-                'control-loader-type': 'line-scale',
+                'control-loader-type' : 'line-scale',
                 'control-loader-color': '#2f8fc8'
             });
 
@@ -400,147 +405,6 @@ foreach ($packages as $package) {
                 }).inject(document.getElement('.login'));
             });
         });
-
-
-        //        var languages = <?php //echo json_encode($languages); ?>
-        //
-        //            document.id(window).addEvent('load', function () {
-        //                require([
-        //                    'qui/controls/buttons/Select'
-        //                ], function (QUISelect) {
-        //                    var Logo = document.getElement('.logo'),
-        //                        Linp = document.getElement('.logininput');
-        //
-        //                    Logo.addClass('animated');
-        //                    Logo.addClass('swing');
-        //
-        //                    document.id('username').focus();
-        //
-        //                    window.LangSelect = new QUISelect({
-        //                        maxDropDownHeight: 300,
-        //                        styles: {
-        //                            marginLeft: 10,
-        //                            width: 130
-        //                        },
-        //                        events: {
-        //                            onChange: function (val) {
-        //                                setLanguage(val);
-        //                            }
-        //                        }
-        //                    }).inject(Linp);
-        //
-        //                    <?php
-        //
-        //                    $url_bin_dir = URL_BIN_DIR;
-        //
-        //                    foreach ($languages as $lang) {
-        //                        $langText = '';
-        //
-        //                        switch ($lang) {
-        //                            case 'de':
-        //                                $langText = 'Deutsch';
-        //                                break;
-        //                            case 'en':
-        //                                $langText = 'English';
-        //                                break;
-        //
-        //                            default:
-        //                                continue 2;
-        //                        }
-        //
-        //                        echo "
-        //
-        //                            window.LangSelect.appendChild(
-        //                                '{$langText}',
-        //                                '{$lang}',
-        //                                '{$url_bin_dir}16x16/flags/{$lang}.png'
-        //                            );
-        //
-        //                        ";
-        //                    }
-        //
-        //                    ?>
-        //
-        //                    // browser language
-        //                    var lang = 'en';
-        //
-        //                    if ("language" in navigator) {
-        //                        lang = navigator.language;
-        //
-        //                    } else if ("browserLanguage" in navigator) {
-        //                        lang = navigator.browserLanguage;
-        //
-        //                    } else if ("systemLanguage" in navigator) {
-        //                        lang = navigator.systemLanguage;
-        //
-        //                    } else if ("userLanguage" in navigator) {
-        //                        lang = navigator.userLanguage;
-        //                    }
-        //
-        //                    lang = lang.substr(0, 2);
-        //
-        //                    switch (lang) {
-        //                        case 'de':
-        //                        case 'en':
-        //                            break;
-        //
-        //                        default:
-        //                            lang = 'en';
-        //                            break;
-        //                    }
-        //
-        //                    window.setLanguage(lang);
-        //
-        //
-        //                    document.id('username').focus();
-        //                });
-        //            });
-        //
-        //        var setLanguage = function (lang) {
-        //            switch (lang) {
-        //                case 'de':
-        //                case 'en':
-        //                    break;
-        //
-        //                default:
-        //                    lang = 'en';
-        //                    break;
-        //            }
-        //
-        //            if (!languages.contains(lang)) {
-        //                window.LangSelect.setValue(
-        //                    window.LangSelect.firstChild().getAttribute('value')
-        //                );
-        //                return;
-        //            }
-        //
-        //            if (window.LangSelect.getValue() != lang) {
-        //                window.LangSelect.setValue(lang);
-        //                return;
-        //            }
-        //
-        //            require([
-        //                'Locale',
-        //                'locale/quiqqer/system/' + lang
-        //            ], function (QUILocale) {
-        //                QUILocale.setCurrent(lang);
-        //
-        //                document.getElements('[for="username"]').set(
-        //                    'html',
-        //                    QUILocale.get('quiqqer/system', 'username')
-        //                );
-        //
-        //                document.getElements('[for="password"]').set(
-        //                    'html',
-        //                    QUILocale.get('quiqqer/system', 'password')
-        //                );
-        //
-        //                document.getElements('[name="login"]').set(
-        //                    'value',
-        //                    QUILocale.get('quiqqer/system', 'login')
-        //                );
-        //            });
-        //        };
 
         function onSuccess() {
             moofx(document.getElement('.container')).animate({
