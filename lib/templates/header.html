@@ -149,6 +149,21 @@
                         'image'  : URL_OPT_DIR +'bin/qui/qui/lib/image.js',
                         'text'   : URL_OPT_DIR +'bin/qui/qui/lib/text.js'
                     }
+                },
+
+                shim: {
+                    URI : {
+                        deps: ['IPv6', 'punycode', 'SecondLevelDomains']
+                    },
+                    IPv6 : {
+                        exports: 'IPv6'
+                    },
+                    punycode : {
+                        exports: 'punycode'
+                    },
+                    SecondLevelDomains: {
+                        exports: 'SecondLevelDomains'
+                    }
                 }
             });
         </script>
