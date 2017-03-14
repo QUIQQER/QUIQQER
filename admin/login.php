@@ -386,7 +386,7 @@ foreach ($packages as $package) {
                     QUILocale.setCurrent(lang);
                     resolve();
                 });
-            })
+            });
         }
 
         // init
