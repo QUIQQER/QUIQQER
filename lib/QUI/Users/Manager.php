@@ -593,7 +593,7 @@ class Manager
         }
 
         $User->addToGroup($Everyone->getId());
-        $User->save();
+        $User->save($ParentUser);
 
         return $User;
     }
@@ -1167,7 +1167,6 @@ class Manager
         if ((!$Session->get('uid') || !$Session->get('auth'))
             && !$Session->get('inAuthentication')
         ) {
-
             $clearSessionData();
 
             throw new QUI\Users\Exception(
