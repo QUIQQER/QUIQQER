@@ -223,7 +223,7 @@ define('controls/grid/Grid', [
                 }
 
                 el.getdate = function (str) {
-                    function fixYear (yr) {
+                    function fixYear(yr) {
                         yr = +yr;
 
                         if (yr < 50) {
@@ -955,10 +955,10 @@ define('controls/grid/Grid', [
 
             if (this.getAttribute('showtoggleicon') && li.getElement('.toggleicon')) {
                 li.getElement('.toggleicon')
-                    .setStyle(
-                        'background-position',
-                        section.getStyle('display') == 'block' ? '-16px 0' : '0 0'
-                    );
+                  .setStyle(
+                      'background-position',
+                      section.getStyle('display') == 'block' ? '-16px 0' : '0 0'
+                  );
             }
 
             this.lastsection = section;
@@ -974,12 +974,12 @@ define('controls/grid/Grid', [
         },
 
         unique  : function (a, asNumber) {
-            function om_sort_number (a, b) {
+            function om_sort_number(a, b) {
                 return a - b;
             }
 
             var sf = asNumber ? om_sort_number : function () {
-            };
+                };
 
             a.sort(sf);
             a = a.unique();
@@ -1094,7 +1094,7 @@ define('controls/grid/Grid', [
                     buttons.push(btns[i]);
                     continue;
                 }
-                
+
                 if (!btns[btns[i].name]) {
                     continue;
                 }
@@ -1154,10 +1154,10 @@ define('controls/grid/Grid', [
                     page = ((data.page - 1) * options.perPage + 1);
 
                 var stats = '<span>' + page + '</span>' +
-                            '<span>..</span>' +
-                            '<span>' + to + '</span>' +
-                            '<span> / </span>' +
-                            '<span>' + data.total + '</span>';
+                    '<span>..</span>' +
+                    '<span>' + to + '</span>' +
+                    '<span> / </span>' +
+                    '<span>' + data.total + '</span>';
 
                 container.getElements('div.pDiv .pPageStat').set('html', stats);
 
@@ -1896,8 +1896,8 @@ define('controls/grid/Grid', [
                     new Element('div', {
                         'class': 'data-empty',
                         html   : '<div class="data-empty-cell">' +
-                                 QUILocale.get('quiqqer/system', 'grid.is.empty') +
-                                 '</div>'
+                        QUILocale.get('quiqqer/system', 'grid.is.empty') +
+                        '</div>'
                     }).inject(this.container.getElement('.bDiv'));
                 }
             } else {
@@ -2175,7 +2175,7 @@ define('controls/grid/Grid', [
 
         // Main draw function
         draw: function () {
-            var i, len, columnModel;
+            var i, len, columnModel, sortable;
             var t = this;
 
             var container   = t.container,
@@ -2328,12 +2328,20 @@ define('controls/grid/Grid', [
                 }
 
                 // Header events
-                if (this.getAttribute('sortHeader')) {
+                sortable = this.getAttribute('sortHeader');
+
+                if ("sortable" in columnModel) {
+                    sortable = columnModel.sortable;
+                }
+
+                if (sortable) {
                     div.addEvents({
                         click    : t.clickHeaderColumn.bind(this),
                         mouseout : t.outHeaderColumn.bind(this),
                         mouseover: t.overHeaderColumn.bind(this)
                     });
+                } else {
+                    div.setStyle('cursor', 'default');
                 }
 
                 div.store('dataType', columnModel.dataType);
