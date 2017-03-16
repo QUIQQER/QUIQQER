@@ -71,7 +71,6 @@ define('classes/groups/Group', [
             var self = this;
 
             return new Promise(function (resolve, reject) {
-
                 Ajax.get('ajax_groups_get', function (result) {
                     self.setAttributes(result);
                     self.$loaded = true;
@@ -131,17 +130,22 @@ define('classes/groups/Group', [
          * @method classes/groups/Group#load
          * @param {Function} [onfinish] - (optional), callback
          * @param {Object} [params] - (optional), binded params at the request
+         * @return {Promise}
          */
         getChildren: function (onfinish, params) {
-            params = ObjectUtils.combine(params, {
-                gid: this.getId()
-            });
+            return new Promise(function (resolve) {
+                params = ObjectUtils.combine(params, {
+                    gid: this.getId()
+                });
 
-            Ajax.get('ajax_groups_children', function (result, Request) {
-                if (typeof onfinish !== 'undefined') {
-                    onfinish(result, Request);
-                }
-            }, params);
+                Ajax.get('ajax_groups_children', function (result) {
+                    if (typeof onfinish !== 'undefined') {
+                        onfinish(result);
+                    }
+
+                    resolve(result);
+                }, params);
+            }.bind(this));
         },
 
         /**
@@ -150,6 +154,7 @@ define('classes/groups/Group', [
          * @method classes/groups/Group#save
          * @param {Function} [onfinish] - (optional), callback
          * @param {Object} [params] - (optional), binded params at the request
+         * @return {Promise}
          */
         save: function (onfinish, params) {
             var self = this;
@@ -160,18 +165,21 @@ define('classes/groups/Group', [
                 rights    : '[]' //JSON.encode( this.getRights() )
             });
 
-            Ajax.post('ajax_groups_save', function (result, Request) {
-                if (typeof onfinish !== 'undefined') {
-                    onfinish(self, Request);
-                }
+            return new Promise(function (resolve) {
+                Ajax.post('ajax_groups_save', function () {
+                    if (typeof onfinish !== 'undefined') {
+                        onfinish(self);
+                    }
 
-                self.fireEvent('refresh', [self]);
+                    resolve(self);
 
-                require(['Groups'], function (Groups) {
-                    Groups.refreshGroup(self);
-                });
+                    self.fireEvent('refresh', [self]);
 
-            }, params);
+                    require(['Groups'], function (Groups) {
+                        Groups.refreshGroup(self);
+                    });
+                }, params);
+            });
         },
 
         /**
@@ -181,7 +189,7 @@ define('classes/groups/Group', [
          * @return {Boolean} true or false
          */
         isActive: function () {
-            return (this.getAttribute('active')).toInt() ? true : false;
+            return !!(this.getAttribute('active')).toInt();
         },
 
         /**
