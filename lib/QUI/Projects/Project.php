@@ -276,6 +276,14 @@ class Project
     }
 
     /**
+     * @return string
+     */
+    public function table()
+    {
+        return QUI::getDBTableName($this->name . '_' . $this->lang . '_sites');
+    }
+
+    /**
      * Projekt JSON Notation
      *
      * @return string
@@ -362,9 +370,7 @@ class Project
      */
     public function search($search, $select = false)
     {
-        $table = $this->getAttribute('db_table');
-
-        $query = 'SELECT id FROM ' . $table;
+        $query = 'SELECT id FROM ' . $this->table();
         $where = ' WHERE name LIKE :search';
 
         $allowed = array('id', 'name', 'title', 'short', 'content');
@@ -395,10 +401,10 @@ class Project
         $Statement->bindValue(':search', '%' . $search . '%', \PDO::PARAM_STR);
         $Statement->execute();
 
-        $dbresult = $Statement->fetchAll(\PDO::FETCH_ASSOC);
+        $dbResult = $Statement->fetchAll(\PDO::FETCH_ASSOC);
         $result   = array();
 
-        foreach ($dbresult as $entry) {
+        foreach ($dbResult as $entry) {
             $result[] = $this->get($entry['id']);
         }
 
@@ -687,16 +693,16 @@ class Project
      */
     public function getNewId()
     {
-        $maxid = QUI::getDataBase()->fetch(array(
+        $maxId = QUI::getDataBase()->fetch(array(
             'select' => 'id',
-            'from'   => $this->getAttribute('db_table'),
+            'from'   => $this->table(),
             'limit'  => '0,1',
             'order'  => array(
                 'id' => 'DESC'
             )
         ));
 
-        return (int)$maxid[0]['id'] + 1;
+        return (int)$maxId[0]['id'] + 1;
     }
 
     /**
@@ -930,13 +936,13 @@ class Project
             // @notice - Kann performancefressend sein
             return QUI::getDataBase()->fetch(array(
                 'select' => 'id',
-                'from'   => $this->getAttribute('db_table')
+                'from'   => $this->table()
             ));
         }
 
         $sql = array(
             'select' => 'id',
-            'from'   => $this->getAttribute('db_table')
+            'from'   => $this->table()
         );
 
         if (isset($params['where'])) {

@@ -195,9 +195,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         }
 
         // DB Tables
-        $this->TABLE        = $Project->getAttribute('db_table');
-        $this->RELTABLE     = $this->TABLE . '_relations';
-        $this->RELLANGTABLE = $Project->getAttribute('name') . '_multilingual';
+        $this->TABLE        = $Project->table();
+        $this->RELTABLE     = $Project->table() . '_relations';
+        $this->RELLANGTABLE = QUI::getDBTableName($Project->getAttribute('name') . '_multilingual');
 
         // Cachefiles
         $this->CACHENAME = 'site/' .
