@@ -60,7 +60,6 @@
             <field type="TEXT NULL">avatar</field>
             <field type="TEXT NULL">extra</field>
             <field type="TEXT NULL">rights</field>
-            <field type="INT(1) DEFAULT 0">admin</field>
 
             <primary>id</primary>
             <index>parent</index>

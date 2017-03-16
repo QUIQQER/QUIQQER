@@ -428,7 +428,8 @@ define('controls/groups/Group', [
 
             // permissions
             new QUIButton({
-                image : 'fa fa-gears',
+                name  : 'permissions',
+                image : 'fa fa-shield',
                 alt   : QUILocale.get(lg, 'groups.group.btn.permissions.alt'),
                 title : QUILocale.get(lg, 'groups.group.btn.permissions.title'),
                 styles: {
@@ -842,11 +843,11 @@ define('controls/groups/Group', [
                         text     : false,
                         textimage: 'fa fa-check'
                     },
-                    events: {
-                        onSubmit: function(Confirm) {
+                    events       : {
+                        onSubmit: function (Confirm) {
                             Confirm.Loader.show();
 
-                            Groups.removeUsers(self.$Group.getId(), userIds).then(function(result) {
+                            Groups.removeUsers(self.$Group.getId(), userIds).then(function (result) {
                                 self.refreshUser();
                                 Confirm.Loader.hide();
                             });

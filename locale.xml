@@ -2501,6 +2501,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Darf in die Administration]]></de>
             <en><![CDATA[Allowed to enter the administration]]></en>
         </locale>
+        <locale name="groups.panel.grid.users">
+            <de><![CDATA[Benutzer]]></de>
+            <en><![CDATA[Users]]></en>
+        </locale>
         <locale name="groups.panel.search.title">
             <de><![CDATA[Gruppen Suche]]></de>
             <en><![CDATA[Group search]]></en>
