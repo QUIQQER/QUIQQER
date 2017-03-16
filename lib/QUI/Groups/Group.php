@@ -920,7 +920,6 @@ class Group extends QUI\QDOM
                 'id'     => $newid,
                 'name'   => $name,
                 'parent' => $this->getId(),
-                'admin'  => 0,
                 'active' => 0
             )
         );
