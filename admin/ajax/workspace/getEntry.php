@@ -20,7 +20,15 @@ QUI::$Ajax->registerFunction(
 
         $Provider = $Builder->getProvider($provider);
 
-        return $Provider->getEntry($id);
+        $entryData = $Provider->getEntry($id);
+
+        if (isset($entryData['searchdata'])
+            && is_array($entryData['searchdata'])
+        ) {
+            $entryData['searchdata'] = json_encode($entryData['searchdata']);
+        }
+
+        return $entryData;
     },
     array('id', 'provider')
 );

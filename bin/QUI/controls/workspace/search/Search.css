@@ -35,27 +35,37 @@
 }
 
 .qui-workspace-search-search-container-input {
-    clear: both;
+    /*clear: both;*/
     display: block;
     margin: 0 auto;
-    max-width: 400px;
     position: relative;
+    max-width: 620px;
     width: 100%;
+}
+
+.qui-workspace-search-search-container-input label {
+    float: left;
 }
 
 .qui-workspace-search-search-container-input input {
     font-size: 20px;
     line-height: 50px;
     padding: 0 10px 0 50px;
+    max-width: 400px;
     width: 100%;
 }
 
-.qui-workspace-search-search-container-input .fa {
+.qui-workspace-search-search-container-input label .fa {
     font-size: 16px;
     line-height: 50px;
+    opacity: 0.7;
     position: absolute;
     text-align: center;
     width: 50px;
+}
+
+.qui-workspace-search-search-container-filterselect {
+    float: left;
 }
 
 /** result

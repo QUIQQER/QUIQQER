@@ -77,7 +77,10 @@ define('controls/groups/Group', [
             'user-page' : 1
         },
 
-        initialize: function (gid) {
+        initialize: function (gid, options) {
+            // defaults
+            this.parent(options);
+
             this.$Group    = null;
             this.$UserGrid = null;
 

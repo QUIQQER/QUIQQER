@@ -15,6 +15,12 @@ define('controls/workspace/search/Search', [
     'qui/QUI',
     'qui/controls/Control',
     'qui/controls/desktop/Panel',
+    'qui/controls/windows/Popup',
+    'qui/controls/buttons/Select',
+    'qui/controls/buttons/Button',
+    'qui/controls/loader/Loader',
+
+    'controls/workspace/search/FilterSelect',
     'utils/Panels',
     'Mustache',
     'Ajax',
@@ -24,9 +30,12 @@ define('controls/workspace/search/Search', [
     'text!controls/workspace/search/Search.ResultGroup.html',
     'css!controls/workspace/search/Search.css'
 
-], function (QUI, QUIControl, QUIPanel, PanelUtils, Mustache, QUIAjax, QUILocale,
-             template, templateResultGroup) {
+], function (QUI, QUIControl, QUIPanel, QUIPopup, QUISelect, QUIButton, QUILoader,
+             FilterSelect, PanelUtils, Mustache, QUIAjax, QUILocale, template,
+             templateResultGroup) {
     "use strict";
+
+    var lg = 'quiqqer/quiqqer';
 
     return new Class({
 
@@ -40,7 +49,8 @@ define('controls/workspace/search/Search', [
             'executeSearch',
             '$onInject',
             '$onWindowKeyUp',
-            '$renderResult'
+            '$renderResult',
+            'search'
         ],
 
         options: {
@@ -56,15 +66,19 @@ define('controls/workspace/search/Search', [
             this.$Close  = null;
             this.$Result = null;
 
-            this.$open  = false;
-            this.$value = false;
+            this.$open           = false;
+            this.$value          = false;
+            this.$FilterSelect   = null;
+            this.$extendedSearch = false;
+            this.$Settings       = {};
         },
 
         /**
          * event : on create
          */
         create: function () {
-            var Elm = this.parent();
+            var Elm  = this.parent();
+            var self = this;
 
             Elm.addClass('qui-workspace-search-search');
             Elm.set('html', Mustache.render(template));
@@ -75,7 +89,8 @@ define('controls/workspace/search/Search', [
 
             this.$Header     = Elm.getElement('header');
             this.$Result     = Elm.getElement('.qui-workspace-search-search-container-result');
-            this.$SearchIcon = Elm.getElement('.qui-workspace-search-search-container-input .fa-search');
+            this.$SearchIcon = Elm.getElement('.qui-workspace-search-search-container-input label .fa');
+            this.Loader      = new QUILoader();
 
             // input events
             var inputEsc = false;
@@ -98,9 +113,38 @@ define('controls/workspace/search/Search', [
                     this.$Input.value = '';
                 }
 
+                // auto-search requires minimum characters
+                if ((this.$Input.value.length < this.$Settings.minCharacters) &&
+                    event.code != 13) {
+                    return;
+                }
+
                 this.search();
             }.bind(this));
 
+            // search btn
+            new QUIButton({
+                'class'  : 'qui-workspace-search-search-container-btn',
+                textimage: 'fa fa-search',
+                text     : QUILocale.get(lg, 'controls.workspace.search.btn.text'),
+                events   : {
+                    onClick: function() {
+                        self.$Input.focus();
+
+                        if (self.$Input.value.trim() == '') {
+                            self.$Input.value = '';
+                            return;
+                        }
+
+                        self.search();
+                    }
+                }
+            }).inject(
+                Elm.getElement(
+                    '.qui-workspace-search-search-container-input label'
+                ),
+                'after'
+            );
 
             this.$Close = Elm.getElement('.qui-workspace-search-search-container-close');
             this.$Close.addEvent('click', this.close);
@@ -118,6 +162,8 @@ define('controls/workspace/search/Search', [
          * @return {Promise}
          */
         open: function () {
+            var self = this;
+
             if (!this.$Elm) {
                 this.create();
             }
@@ -132,34 +178,51 @@ define('controls/workspace/search/Search', [
                 top: '-100%'
             });
 
+            this.Loader.inject(this.$Elm);
             this.$Elm.inject(document.body);
 
+            // filter select
+            this.$FilterSelect = new FilterSelect().inject(
+                this.$Elm.getElement(
+                    '.qui-workspace-search-search-container-filterselect'
+                )
+            );
+
+            this.Loader.show();
+
             return new Promise(function (resolve) {
+                self.$getSettings('general').then(function (Settings) {
+                    self.$Settings = Settings;
 
-                moofx(this.$Elm).animate({
-                    top: 0
-                }, {
-                    duration: 250,
-                    callback: function () {
-                        if (this.$value) {
-                            this.setValue(this.$value);
+                    self.$FilterSelect.addEvents({
+                        onChange: self.search
+                    });
+
+                    moofx(self.$Elm).animate({
+                        top: 0
+                    }, {
+                        duration: 250,
+                        callback: function () {
+                            if (self.$value) {
+                                self.setValue(self.$value);
+                            }
+
+                            window.addEvent('keyup', self.$onWindowKeyUp);
+
+                            self.$Input.focus();
+
+                            if (self.$Input.value !== '') {
+                                self.search();
+                            }
+
+                            self.fireEvent('open', [self]);
+                            self.Loader.hide();
+
+                            resolve();
                         }
-
-                        window.addEvent('keyup', this.$onWindowKeyUp);
-
-                        this.$Input.focus();
-
-                        if (this.$Input.value !== '') {
-                            this.search();
-                        }
-
-                        this.fireEvent('open', [this]);
-
-                        resolve();
-                    }.bind(this)
+                    });
                 });
-
-            }.bind(this));
+            });
         },
 
         /**
@@ -248,15 +311,15 @@ define('controls/workspace/search/Search', [
                             if (instanceOf(Instance, QUIPanel)) {
                                 PanelUtils.openPanelInTasks(Instance);
                             }
+
+                            if (instanceOf(Instance, QUIPopup)) {
+                                Instance.open();
+                            }
                         }
                     });
 
                     this.close();
-                    return;
                 }
-
-                console.log(searchData);
-
             }.bind(this)).catch(function (Exception) {
                 console.error(Exception);
             });
@@ -270,12 +333,42 @@ define('controls/workspace/search/Search', [
                 this.open();
             }
 
+            var self = this;
+
             if (this.$Timer) {
                 clearInterval(this.$Timer);
             }
 
+            var searchValue = this.$Input.value.trim();
+
+            if (searchValue == '') {
+                this.$Input.value = '';
+                //this.$Input.focus();
+
+                return;
+            }
+
+            var twoStepSearch = parseInt(this.$Settings.twoStepSearch);
+
             this.$Timer = (function () {
-                this.executeSearch(this.$Input.value).then(this.$renderResult);
+                var Params = {
+                    filterGroups: this.$FilterSelect.getValue()
+                };
+
+                if (!this.$extendedSearch && twoStepSearch) {
+                    Params.limit = 5;
+                }
+
+                this.executeSearch(this.$Input.value, Params).then(function (result) {
+                    self.$renderResult(result);
+
+                    if (!self.$extendedSearch && twoStepSearch && result.length >= 5) {
+                        self.$extendedSearch = true;
+                        self.search();  // execute search without limits
+                    } else {
+                        self.$extendedSearch = false;
+                    }
+                });
             }).delay(this.getAttribute('delay'), this);
         },
 
@@ -285,26 +378,38 @@ define('controls/workspace/search/Search', [
          * @param {Array} result
          */
         $renderResult: function (result) {
-            var group, groupHTML;
-            var html   = '',
-                groups = {};
+            var self           = this;
+            var group, groupHTML, Entry, label;
+            var html           = '',
+                ResultsByGroup = {};
 
             for (var i = 0, len = result.length; i < len; i++) {
-                if (typeof groups[result[i].searchtype] === 'undefined') {
-                    groups[result[i].searchtype] = [];
+                Entry = result[i];
+
+                if (typeof ResultsByGroup[Entry.group] === 'undefined') {
+                    label = Entry.group;
+
+                    if ("groupLabel" in Entry) {
+                        label = Entry.groupLabel;
+                    }
+
+                    ResultsByGroup[Entry.group] = {
+                        label  : label,
+                        entries: []
+                    };
                 }
 
-                groups[result[i].searchtype].push(result[i]);
+                ResultsByGroup[result[i].group].entries.push(result[i]);
             }
 
-            for (group in groups) {
-                if (!groups.hasOwnProperty(group)) {
+            for (group in ResultsByGroup) {
+                if (!ResultsByGroup.hasOwnProperty(group)) {
                     continue;
                 }
 
                 groupHTML = Mustache.render(templateResultGroup, {
-                    title  : group,
-                    entries: groups[group]
+                    title  : ResultsByGroup[group].label,
+                    entries: ResultsByGroup[group].entries
                 });
 
                 html = html + groupHTML;
@@ -350,12 +455,12 @@ define('controls/workspace/search/Search', [
 
             var self = this;
 
-            this.$SearchIcon.removeClass('fa-search');
+            this.$SearchIcon.removeClass('fa-arrow-right');
             this.$SearchIcon.addClass('fa-spinner fa-spin');
 
             return new Promise(function (resolve) {
                 QUIAjax.get('ajax_workspace_search', function (result) {
-                    self.$SearchIcon.addClass('fa-search');
+                    self.$SearchIcon.addClass('fa-arrow-right');
                     self.$SearchIcon.removeClass('fa-spinner');
                     self.$SearchIcon.removeClass('fa-spin');
                     resolve(result);
@@ -382,6 +487,37 @@ define('controls/workspace/search/Search', [
                     onError  : reject
                 });
             });
+        },
+
+        /**
+         * Get search settings
+         *
+         * @param {string} section
+         * @param {string} [setting]
+         * @return {Promise}
+         */
+        $getSettings: function (section, setting) {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.get('ajax_workspace_search_getSetting', resolve, {
+                    onError: reject,
+                    section: section,
+                    'var'  : setting ? null : setting
+                });
+            });
+        },
+
+        /**
+         * Get all available provider search ResultsByGroup
+         *
+         * @return {Promise}
+         */
+        $getFilterGroups: function () {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.get('ajax_workspace_search_getFilterGroups', resolve, {
+                    onError: reject
+                });
+            });
         }
+
     });
 });

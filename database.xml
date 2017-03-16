@@ -146,8 +146,11 @@
             <field type="TEXT NULL">description</field>
             <field type="VARCHAR(255) NOT NULL DEFAULT ''">icon</field>
             <field type="TEXT NULL">search</field>
-            <field type="VARCHAR(100) NULL  DEFAULT ''">searchtype</field>
+            <field type="VARCHAR(255) NOT NULL">filterGroup</field>
+            <field type="VARCHAR(255) NOT NULL">group</field>
+            <field type="TEXT NULL">groupLabel</field>
             <field type="TEXT">searchdata</field>
+            <field type="VARCHAR(10) NOT NULL">lang</field>
 
             <primary>id</primary>
             <auto_increment>id</auto_increment>

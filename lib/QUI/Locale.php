@@ -646,4 +646,25 @@ class Locale
 
         return $this->get($parts[0], $parts[1]);
     }
+
+    /**
+     * Parse a locale array and translate it
+     *
+     * @param array $locale - with group, translation var and replacement vars (optional)
+     * @return string
+     */
+    public function parseLocaleArray($locale)
+    {
+        if (!isset($locale[0])
+            || !isset($locale[1])
+        ) {
+            return '';
+        }
+
+        if (!isset($locale[2])) {
+            return $this->get($locale[0], $locale[1]);
+        }
+
+        return $this->get($locale[0], $locale[1], $locale[2]);
+    }
 }

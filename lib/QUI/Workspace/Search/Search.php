@@ -42,33 +42,106 @@ class Search
     public function search($string, $params = array())
     {
         $DesktopSearch = Builder::getInstance();
+        $groupFilter   = false;
 
-        $query = array(
-            'from'  => $DesktopSearch->getTable(),
-            'where' => array(
-                'search' => array(
-                    'type'  => '%LIKE%',
-                    'value' => $string
-                )
-            ),
-            'limit' => 20
+//        $DesktopSearch->setup();
+//        return array();
+
+        $sql   = "SELECT * FROM " . $DesktopSearch->getTable();
+        $where = array(
+            '`search` LIKE :search',
+            '`lang` = \'' . QUI::getUserBySession()->getLang() . '\''
+        );
+        $binds = array(
+            'search' => array(
+                'value' => '%' . $string . '%',
+                'type'  => \PDO::PARAM_STR
+            )
         );
 
-        if (isset($params['limit'])) {
-            $query['limit'] = $params['limit'];
+        $where = array_merge($where, $DesktopSearch->getWhereConstraint($params['filterGroups']));
+
+        if (isset($params['group'])
+            && !empty($params['group'])
+        ) {
+            $where[]        = '`group` = :group';
+            $binds['group'] = array(
+                'value' => $params['group'],
+                'type'  => \PDO::PARAM_STR
+            );
+
+            $groupFilter = true;
         }
 
-        $Locale = QUI::getLocale();
-        $result = QUI::getDataBase()->fetch($query);
-
-        foreach ($result as $key => $data) {
-            $result[$key]['title']       = $Locale->parseLocaleString($data['title']);
-            $result[$key]['description'] = $Locale->parseLocaleString($data['description']);
+        if (isset($params['filterGroups'])
+            && !empty($params['filterGroups'])
+            && is_array($params['filterGroups'])
+        ) {
+            $where[] = '`filterGroup` IN (\'' . implode("','", $params['filterGroups']) . '\')';
         }
+
+        $sql .= " WHERE " . implode(' AND ', $where);
+
+        if (isset($params['limit'])
+            && !empty($params['limit'])
+        ) {
+            $sql .= " LIMIT " . (int)$params['limit'] * 3;
+        } else {
+            $limit           = (int)QUI::getConfig('etc/search.ini.php')->get('general', 'maxResultsPerGroup');
+            $params['limit'] = $limit;  // set limit parameter for provider search
+
+            $sql .= " LIMIT " . $limit;
+        }
+
+        $PDO  = QUI::getDataBase()->getPDO();
+        $Stmt = $PDO->prepare($sql);
+
+        foreach ($binds as $var => $bind) {
+            $Stmt->bindValue(':' . $var, $bind['value'], $bind['type']);
+        }
+
+        try {
+            $Stmt->execute();
+            $result = $Stmt->fetchAll(\PDO::FETCH_ASSOC);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError(
+                self::class . ' :: search -> ' . $Exception->getMessage()
+            );
+
+            return array();
+        }
+
+        // get group counts
+//        $countResult = QUI::getDataBase()->fetch(array(
+//            'select' => array(
+//                'group',
+//                'COUNT(`group`)'
+//            ),
+//            'from'   => $DesktopSearch->getTable(),
+//            'group'  => 'group'
+//        ));
+//
+//        $groupCounts = array();
+//
+//        foreach ($countResult as $row) {
+//            $groupCounts[$row['group']] = $row['COUNT(`group`)'];
+//        }
 
         /* @var $Provider ProviderInterface */
         foreach ($DesktopSearch->getProvider() as $Provider) {
-            $providerResult = $Provider->search($string, $params);
+            try {
+                $providerResult = $Provider->search($string, $params);
+            } catch (\Exception $Exception) {
+                QUI\System\Log::addError(
+                    self::class . ' :: search -> ' . $Exception->getMessage()
+                );
+
+                continue;
+            }
+
+            if (!is_array($providerResult)) {
+                continue;
+            }
 
             foreach ($providerResult as $key => $product) {
                 $product['provider']  = get_class($Provider);
@@ -79,6 +152,50 @@ class Search
         }
 
         return $result;
+
+//        $groups = array();
+//
+//        foreach ($result as $row) {
+//            $group = $row['group'];
+//
+//            if (!isset($groups[$group])) {
+//                $groups[$group] = array(
+//                    'count' => 0
+//                );
+//            }
+//
+//            $groups[$group]['count']++;
+//        }
+//
+//        $searchResult = array(
+//            'entries' => $result,
+//            'groups'  => $groups
+//        );
+
+        // if specific group was requested -> do not limit results
+//        if ($groupFilter) {
+//            return $searchResult;
+//        }
+
+//        // max limit per group
+//        $groupCount = array();
+//        $groupLimit = (int)QUI::getConfig('etc/search.ini.php')->get('general', 'maxResultsPerGroup');
+//
+//        foreach ($result as $k => $row) {
+//            $group = $row['group'];
+//
+//            if (!isset($groupCount[$group])) {
+//                $groupCount[$group] = 0;
+//            }
+//
+//            if ($groupCount[$group] >= $groupLimit) {
+//                unset($result[$k]);
+//            }
+//
+//            $groupCount[$group]++;
+//        }
+//
+//        return $result;
     }
 
     /**

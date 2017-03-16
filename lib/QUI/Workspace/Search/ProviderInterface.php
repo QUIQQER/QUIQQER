@@ -17,7 +17,7 @@ interface ProviderInterface
     /**
      * Build the cache
      *
-     * @return mixed
+     * @return void
      */
     public function buildCache();
 
@@ -37,4 +37,12 @@ interface ProviderInterface
      * @return mixed
      */
     public function getEntry($id);
+
+    /**
+     * Get all available search groups of this provider.
+     * Search results can be filtered by these search groups.
+     *
+     * @return array
+     */
+    public function getFilterGroups();
 }

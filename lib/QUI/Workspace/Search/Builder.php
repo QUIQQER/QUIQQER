@@ -5,7 +5,13 @@
  */
 namespace QUI\Workspace\Search;
 
+use Composer\Cache;
 use QUI;
+use QUI\Cache\Manager as CacheManager;
+use QUI\Permissions\Permission;
+use QUI\Utils\XML\Settings as SettingsXML;
+use QUI\Utils\Text\XML;
+use QUI\Utils\DOM as DOMUtils;
 
 /**
  * Class Builder
@@ -15,19 +21,18 @@ use QUI;
  */
 class Builder
 {
-    const TYPE_APPS = 'apps';
-    const TYPE_EXTRAS = 'extras';
-    const TYPE_GROUPS = 'groups';
-    const TYPE_MEDIA = 'media';
+    const TYPE_APPS    = 'apps';
+    const TYPE_EXTRAS  = 'extras';
     const TYPE_PROJECT = 'project';
-    const TYPE_SETTINGS = 'settings';
+    const TYPE_PROFILE = 'profile';
 
-    const TYPE_APPS_ICON = 'fa fa-diamond';
-    const TYPE_EXTRAS_ICON = 'fa fa-cubes';
-    const TYPE_GROUPS_ICON = 'fa fa-group';
-    const TYPE_MEDIA_ICON = 'fa fa-picture-o';
+    const FILTER_NAVIGATION = 'navigation';
+    const FILTER_SETTINGS   = 'settings';
+
+    const TYPE_APPS_ICON    = 'fa fa-diamond';
+    const TYPE_EXTRAS_ICON  = 'fa fa-cubes';
     const TYPE_PROJECT_ICON = 'fa fa-home';
-    const TYPE_SETTINGS_ICON = 'fa fa-gears';
+    const TYPE_PROFILE_ICON = 'fa fa-id-card-o';
 
     /**
      * @var null
@@ -136,6 +141,50 @@ class Builder
     }
 
     /**
+     * Get all groups the search results can be grouped by
+     *
+     * @return array
+     */
+    public function getFilterGroups()
+    {
+        $cacheName = 'quiqqer/desktopsearch/filtergroups';
+
+        try {
+            return json_decode(CacheManager::get($cacheName), true);
+        } catch (\Exception $Exception) {
+            // nothing, retrieve filter groups freshly
+        }
+
+        $providers = $this->getProvider();
+        $groups    = array(
+            array(
+                'group' => self::FILTER_NAVIGATION,
+                'label' => array(
+                    'quiqqer/quiqqer',
+                    'search.builder.filter.label.' . self::FILTER_NAVIGATION
+                )
+            )
+        );
+
+        /** @var ProviderInterface $Provider */
+        foreach ($providers as $Provider) {
+            $providerGroups = $Provider->getFilterGroups();
+
+            foreach ($providerGroups as $group) {
+                if (!isset($groups[$group['group']])) {
+                    $groups[$group['group']] = $group;
+                }
+            }
+        }
+
+        $groups = array_values($groups);
+
+        CacheManager::set($cacheName, json_encode($groups));
+
+        return $groups;
+    }
+
+    /**
      * Return the available provider instances
      *
      * @param string|bool $provider - optional, Return a specific provider
@@ -185,7 +234,7 @@ class Builder
      *
      * @return array
      */
-    protected function getMenuData()
+    public function getMenuData()
     {
         if (is_null($this->menu)) {
             $Menu = new QUI\Workspace\Menu();
@@ -228,27 +277,12 @@ class Builder
             QUI\System\Log::writeException($Exception);
         }
 
-        // groups
+        // profile
         try {
-            $this->buildGroupUserCache();
+            $this->buildProfileCache();
         } catch (Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
-
-        // media
-        try {
-            $this->buildMediaCache();
-        } catch (Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
-        }
-
-        // settings
-        try {
-            $this->buildSettingsCache();
-        } catch (Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
-        }
-
 
         $provider = $this->getProvider();
 
@@ -275,90 +309,88 @@ class Builder
     }
 
     /**
-     * Build the cache for the settings search
+     * Build the cache for the profile search
      */
-    public function buildSettingsCache()
+    public function buildProfileCache()
     {
-        $this->buildMenuCacheHelper(self::TYPE_SETTINGS);
-    }
+        QUI::getDataBase()->delete($this->getTable(), array(
+            'searchtype' => self::TYPE_PROFILE
+        ));
 
-    /**
-     * Build the group and user cache
-     */
-    public function buildGroupUserCache()
-    {
-        // groups
-        $groups = QUI::getGroups()->getAllGroups();
+        $locales          = $this->getLocales();
+        $QUILocale        = QUI::getLocale();
+        $quiLocaleCurrent = $QUILocale->getCurrent();
 
-        foreach ($groups as $group) {
-            $searchData = array(
-                'require' => 'controls/groups/Group',
-                'params'  => $group['id']
-            );
+        /** @var QUI\Locale $Locale */
+        foreach ($locales as $Locale) {
+            // temporarily set language of $QUILocale to current of $Locale (for template parsing)
+            $QUILocale->setCurrent($Locale->getCurrent());
 
-            $this->addEntry(array(
-                'searchtype' => self::TYPE_GROUPS,
-                'icon'       => self::TYPE_GROUPS_ICON,
-                'searchdata' => json_encode($searchData),
-                'title'      => $group['name'],
-                'search'     => "{$group['id']} {$group['name']}"
-            ));
-        }
+            $menu = $this->getMenuData();
 
-        // users
-        $users = QUI::getUsers()->getAllUsers();
+            $filter = array_filter($menu, function ($item) {
+                return $item['name'] == self::TYPE_PROFILE;
+            });
 
-        foreach ($users as $user) {
-            $search   = array();
-            $search[] = $user['id'];
-            $search[] = $user['username'];
-            $search[] = $user['usergroup'];
-            $search[] = $user['email'];
-            $search[] = $user['regdate'];
-            $search[] = $user['lastvisit'];
-            $search[] = $user['lastedit'];
-            $search[] = $user['firstname'];
-            $search[] = $user['lastname'];
-            $search[] = $user['usertitle'];
-            $search[] = $user['birthday'];
+            $groupLabel = $Locale->get('quiqqer/system', 'profile');
+            $data       = $this->parseMenuData($filter, $Locale);
 
-            try {
-                $User      = QUI::getUsers()->get($user['id']);
-                $addresses = $User->getAddressList();
-
-                /* @var $Address QUI\Users\Address */
-                foreach ($addresses as $Address) {
-                    $search[] = json_encode($Address->getAttributes());
+            foreach ($data as $key => $entry) {
+                // add special search terms to user profile entry
+                if ($entry['name'] == 'userProfile') {
+                    $entry['search'] .= ' ' . implode(' ', $this->getProfileSearchterms());
                 }
-            } catch (QUI\Exception $Exception) {
-                continue;
+
+                $entry['group']       = self::TYPE_PROFILE;
+                $entry['groupLabel']  = $groupLabel;
+                $entry['filterGroup'] = self::FILTER_NAVIGATION;
+
+                if (!isset($entry['icon'])) {
+                    $entry['icon'] = self::TYPE_PROFILE_ICON;
+                }
+
+                $searchData = json_decode($entry['searchdata'], true);
+
+                if (empty($searchData['require'])) {
+                    continue;
+                }
+
+                $this->addEntry($entry, $Locale->getCurrent());
             }
-
-
-            $this->addEntry(array(
-                'searchtype' => self::TYPE_GROUPS,
-                'icon'       => 'fa fa-user',
-                'searchdata' => json_encode(array(
-                    'require' => 'controls/users/User',
-                    'params'  => $user['id']
-                )),
-                'title'      => $user['username'],
-                'search'     => implode($search, ' ')
-            ));
         }
+
+        // reset $QUILocale
+        $QUILocale->setCurrent($quiLocaleCurrent);
     }
 
     /**
-     * build the media cache
+     * Gets the WHERE constraint based on user permissions
+     *
+     * @param array $filters - the filters that are considered
+     * @return array
      */
-    protected function buildMediaCache()
+    public function getWhereConstraint($filters)
     {
-        $projects = QUI::getProjectManager()->getProjectList();
+        $where = array(
+            'navApps'   => '`group` != \'' . self::TYPE_APPS . '\'',
+            'navExtras' => '`group` != \'' . self::TYPE_EXTRAS . '\'',
+        );
 
-        /* @var $Project QUI\Projects\Project */
-        foreach ($projects as $Project) {
-            $Media = $Project->getMedia();
+        foreach ($filters as $filter) {
+            switch ($filter) {
+                case self::FILTER_NAVIGATION:
+                    if (Permission::hasPermission('quiqqer.menu.apps')) {
+                        unset($where['navApps']);
+                    }
+
+                    if (Permission::hasPermission('quiqqer.menu.extras')) {
+                        unset($where['navExtras']);
+                    }
+                    break;
+            }
         }
+
+        return array_values($where);
     }
 
     /**
@@ -372,68 +404,108 @@ class Builder
             'searchtype' => $type
         ));
 
-        $menu   = $this->getMenuData();
+        $menu = $this->getMenuData();
+
         $filter = array_filter($menu, function ($item) use ($type) {
             return $item['name'] == $type;
         });
 
-        $data = $this->parseMenuData($filter);
+        $locales = $this->getLocales();
 
-        foreach ($data as $key => $entry) {
-            $entry['searchtype'] = $type;
+        /** @var QUI\Locale $Locale */
+        foreach ($locales as $Locale) {
+            $typeLabel = '';
 
-            if (empty($entry['icon'])) {
+            switch ($type) {
+                case self::TYPE_APPS:
+                    $typeLabel = $Locale->get(
+                        'quiqqer/system',
+                        'menu.apps.text'
+                    );
+                    break;
+
+                case self::TYPE_EXTRAS:
+                    $typeLabel = $Locale->get(
+                        'quiqqer/system',
+                        'menu.goto.text'
+                    );
+                    break;
+
+                case self::TYPE_PROFILE:
+                    $typeLabel = $Locale->get(
+                        'quiqqer/system',
+                        'profile'
+                    );
+                    break;
+            }
+
+            $groupLabel = $Locale->get(
+                'quiqqer/quiqqer',
+                'search.builder.group.menu.label',
+                array(
+                    'type' => $typeLabel
+                )
+            );
+
+            $data = $this->parseMenuData($filter, $Locale);
+
+            foreach ($data as $key => $entry) {
+                $entry['group']       = $type;
+                $entry['groupLabel']  = $groupLabel;
+                $entry['filterGroup'] = self::FILTER_NAVIGATION;
+
                 switch ($type) {
                     case self::TYPE_APPS:
-                        $entry['icon'] = self::TYPE_APPS_ICON;
+                        if (empty($entry['icon'])) {
+                            $entry['icon'] = self::TYPE_APPS_ICON;
+                        }
                         break;
 
                     case self::TYPE_EXTRAS:
-                        $entry['icon'] = self::TYPE_EXTRAS_ICON;
-                        break;
-
-                    case self::TYPE_GROUPS:
-                        $entry['icon'] = self::TYPE_GROUPS_ICON;
-                        break;
-
-                    case self::TYPE_MEDIA:
-                        $entry['icon'] = self::TYPE_MEDIA_ICON;
+                        if (empty($entry['icon'])) {
+                            $entry['icon'] = self::TYPE_EXTRAS_ICON;
+                        }
                         break;
 
                     case self::TYPE_PROJECT:
-                        $entry['icon'] = self::TYPE_PROJECT_ICON;
+                        if (empty($entry['icon'])) {
+                            $entry['icon'] = self::TYPE_PROJECT_ICON;
+                        }
                         break;
 
-                    case self::TYPE_SETTINGS:
-                        $entry['icon'] = self::TYPE_SETTINGS_ICON;
+                    case self::TYPE_PROFILE:
+                        if (empty($entry['icon'])) {
+                            $entry['icon'] = self::TYPE_PROFILE_ICON;
+                        }
                         break;
                 }
+
+                $searchData = json_decode($entry['searchdata'], true);
+
+                if (empty($searchData['require'])) {
+                    continue;
+                }
+
+                $this->addEntry($entry, $Locale->getCurrent());
             }
-
-            $searchData = json_decode($entry['searchdata'], true);
-
-            if (empty($searchData['require'])) {
-                continue;
-            }
-
-            $this->addEntry($entry);
         }
     }
 
     /**
-     * Add an entry
+     * Add cache entry for a specific language
      *
      * @param array $params
+     * @param string $lang
      * @throws QUI\Exception
      */
-    protected function addEntry($params)
+    public function addEntry($params, $lang)
     {
-        $needles = array('title', 'search', 'searchtype', 'searchdata');
+        $needles = array('title', 'search', 'group', 'filterGroup', 'searchdata');
 
         foreach ($needles as $needle) {
             if (!isset($params[$needle]) || empty($params[$needle])) {
                 throw new QUI\Workspace\Search\Exception(
-                    'Missing params',
+                    'Missing params',   #locale
                     404,
                     array(
                         'params' => $params,
@@ -443,7 +515,6 @@ class Builder
             }
         }
 
-
         if (!isset($params['description'])) {
             $params['description'] = '';
         }
@@ -452,6 +523,18 @@ class Builder
             $params['description'] = '';
         }
 
+        if (isset($params['name'])) {
+            unset($params['name']);
+        }
+
+        if (isset($params['groupLabel'])
+            && is_array($params['groupLabel'])
+        ) {
+            $params['groupLabel'] = json_encode($params['groupLabel']);
+        }
+
+        $params['lang'] = $lang;
+
         QUI::getDataBase()->insert($this->getTable(), $params);
     }
 
@@ -459,9 +542,11 @@ class Builder
      * Parse menu entries to a data array
      *
      * @param array $items
+     * @param QUI\Locale $Locale
+     * @param string $parentTitle (optional) - title of parent menu node
      * @return array
      */
-    protected function parseMenuData($items)
+    protected function parseMenuData($items, $Locale, $parentTitle = null)
     {
         $data         = array();
         $searchFields = array('require', 'exec', 'onClick', 'type');
@@ -470,26 +555,23 @@ class Builder
             return array();
         }
 
-
         foreach ($items as $item) {
             $title  = $item['text'];
-            $icon   = '';
             $search = $item['text'];
-
 
             // locale w. search string
             if (isset($item['locale']) && is_array($item['locale'])) {
-                $search = '';
-                $title  = "[{$item['locale'][0]}] {$item['locale'][1]}";
-
-                /* @var $Locale QUI\Locale */
-                foreach ($this->getLocales() as $Locale) {
-                    if ($Locale->exists($item['locale'][0], $item['locale'][1])) {
-                        $search .= ' ' . $Locale->get($item['locale'][0], $item['locale'][1]);
-                    }
-                }
+                $search = $Locale->get($item['locale'][0], $item['locale'][1]);
+                $title  = $search;
             }
 
+            $description = $title;
+
+            if (!is_null($parentTitle)) {
+                $description = $parentTitle . ' -> ' . $description;    // @todo Trennzeichen ggf. ändern
+            }
+
+            $icon = '';
 
             if (isset($item['icon'])) {
                 $icon = $item['icon'];
@@ -503,19 +585,55 @@ class Builder
                 }
             }
 
-
             $data[] = array(
-                'title'      => $title,
-                'icon'       => $icon,
-                'search'     => $search,
-                'searchdata' => json_encode($searchData)
+                'name'        => $item['name'],
+                'title'       => $title,
+                'description' => $description,
+                'icon'        => $icon,
+                'search'      => $search,
+                'searchdata'  => json_encode($searchData)
             );
 
-            if (isset($item['items'])) {
-                $data = array_merge($data, $this->parseMenuData($item['items']));
+            if (isset($item['items'])
+                && !empty($item['items'])
+            ) {
+                $data = array_merge($data, $this->parseMenuData($item['items'], $Locale, $description));
             }
         }
 
         return $data;
+    }
+
+    /**
+     * Get search terms from user profile (dynamic) template
+     *
+     * @return array - list of search terms
+     */
+    protected function getProfileSearchterms()
+    {
+        $search = array();
+        $html   = QUI::getUsers()->getProfileTemplate();
+
+        $Doc = new \DOMDocument();
+        $Doc->loadHTML($html);
+
+        $Path = new \DOMXPath($Doc);
+
+        // table headers
+        $titles = $Path->query('//table/thead/tr/th');
+
+        foreach ($titles as $Title) {
+            $search[] = utf8_decode(trim(DOMUtils::getTextFromNode($Title)));
+        }
+
+        // labels
+        $labels = $Path->query('//label/span');
+
+        /** @var \DOMNode $Label */
+        foreach ($labels as $Label) {
+            $search[] = utf8_decode(trim(DOMUtils::getTextFromNode($Label)));
+        }
+
+        return $search;
     }
 }

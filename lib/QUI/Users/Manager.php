@@ -7,6 +7,8 @@ namespace QUI\Users;
 
 use QUI;
 use QUI\Utils\Security\Orthos;
+use QUI\Utils\Text\XML;
+use QUI\Utils\DOM;
 
 /**
  * QUIQQER user manager
@@ -1817,5 +1819,43 @@ class Manager
         }
 
         return true;
+    }
+
+    /**
+     * Get user profile template (profile window)
+     *
+     * @return string
+     */
+    public static function getProfileTemplate()
+    {
+        $Engine   = QUI::getTemplateManager()->getEngine(true);
+        $packages = QUI::getPackageManager()->getInstalled();
+        $extend   = '';
+
+        foreach ($packages as $package) {
+            $name    = $package['name'];
+            $userXml = OPT_DIR . $name . '/user.xml';
+
+            if (!file_exists($userXml)) {
+                continue;
+            }
+
+            $Document = XML::getDomFromXml($userXml);
+            $Path     = new \DOMXPath($Document);
+
+            $tabs = $Path->query("//user/profile/tab");
+
+            /* @var $Tab \DOMElement */
+            foreach ($tabs as $Tab) {
+                $extend .= DOM::parseCategorieToHTML($Tab);
+            }
+        }
+
+        $Engine->assign(array(
+            'QUI'    => new QUI(),
+            'extend' => $extend
+        ));
+
+        return $Engine->fetch(SYS_DIR . 'template/users/profile.html');
     }
 }

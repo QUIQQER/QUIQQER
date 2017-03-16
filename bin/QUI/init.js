@@ -163,7 +163,7 @@ require(requireList, function () {
         if (event.key == 'f') {
             event.stop();
 
-            if (window.searchWindowOpen) {
+            if (window.QUIQQER.searchWindowOpen) {
                 return;
             }
 
@@ -171,13 +171,13 @@ require(requireList, function () {
                 new Search({
                     events: {
                         onClose: function (S) {
-                            window.searchWindowOpen = false;
+                            window.QUIQQER.searchWindowOpen = false;
                             S.destroy();
                         }
                     }
                 }).open();
 
-                window.searchWindowOpen = true;
+                window.QUIQQER.searchWindowOpen = true;
             });
         }
     });
