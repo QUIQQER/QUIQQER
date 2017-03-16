@@ -65,20 +65,20 @@ class Session
      */
     public function __construct()
     {
-        $this->table = QUI_DB_PRFX . 'sessions';
+        $this->table = QUI::getDBTableName('sessions');
 
         // symfony files
         $classNativeSessionStorage = '\Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage';
 
         $fileNativeSessionStorage = OPT_DIR .
-            'symfony/http-foundation/Symfony/Component/' .
-            'HttpFoundation/Session/Storage/NativeSessionStorage.php';
+                                    'symfony/http-foundation/Symfony/Component/' .
+                                    'HttpFoundation/Session/Storage/NativeSessionStorage.php';
 
         $classSession = '\Symfony\Component\HttpFoundation\Session\Session';
 
         $fileSession = OPT_DIR .
-            'symfony/http-foundation/Symfony/Component/' .
-            'HttpFoundation/Session/Session.php';
+                       'symfony/http-foundation/Symfony/Component/' .
+                       'HttpFoundation/Session/Session.php';
 
 
         // options

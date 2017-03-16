@@ -21,20 +21,20 @@ class OnlyDB extends QUI\Projects\Site
      * constructor
      *
      * @param \QUI\Projects\Project $Project
-     * @param integer               $id - Site ID
+     * @param integer $id - Site ID
      *
      * @throws QUI\Exception
      */
     public function __construct(QUI\Projects\Project $Project, $id)
     {
-        $this->TABLE = $Project->getAttribute('db_table');
-        $this->RELTABLE = $this->TABLE.'_relations';
-        $this->RELLANGTABLE = $Project->getAttribute('name').'_multilingual';
+        $this->TABLE        = $Project->table();
+        $this->RELTABLE     = $Project->table() . '_relations';
+        $this->RELLANGTABLE = $Project->getAttribute('name') . '_multilingual';
 
         $id = (int)$id;
 
         if (empty($id)) {
-            throw new QUI\Exception('Site Error; No ID given:'.$id, 400);
+            throw new QUI\Exception('Site Error; No ID given:' . $id, 400);
         }
 
         $this->id = $id;

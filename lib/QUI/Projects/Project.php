@@ -455,7 +455,7 @@ class Project
      * @param string $att -
      *                    name = Name des Projectes
      *                    lang = Aktuelle Sprache
-     *                    db_table = Standard Datebanktabelle
+     *                    db_table = Standard Datebanktabelle, please use this->table()
      *
      * @return string|false
      */
