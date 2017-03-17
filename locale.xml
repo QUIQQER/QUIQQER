@@ -1018,7 +1018,7 @@
             <de><![CDATA[Start]]></de>
             <en><![CDATA[Start]]></en>
         </locale>
-        <locale name="controls.workspace.search.search.filter.placeholder">
+        <locale name="controls.workspace.search.filter.placeholder">
             <de><![CDATA[Durchsuchte Bereiche]]></de>
             <en><![CDATA[Searched areas]]></en>
         </locale>
@@ -5484,12 +5484,12 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Determines the minimum number of characters needed in the fullscreen search input before the search starts automatically.]]></en>
         </locale>
         <locale name="quiqqer.settings.search.general.maxResultsPerGroup">
-            <de><![CDATA[Maximal angezeigte Ergebnisse pro Gruppe]]></de>
-            <en><![CDATA[Maximum number of shown results per Group]]></en>
+            <de><![CDATA[Maximal angezeigte Ergebnisse]]></de>
+            <en><![CDATA[Maximum number of shown results]]></en>
         </locale>
         <locale name="quiqqer.settings.search.general.maxResultsPerGroup.desc">
-            <de><![CDATA[Anzahl der Suchergebnisse, die pro Ergebnisgruppe maximal angezeigt werden.]]></de>
-            <en><![CDATA[Number of search results per result group shown.]]></en>
+            <de><![CDATA[Anzahl der Suchergebnisse, die maximal angezeigt werden.]]></de>
+            <en><![CDATA[Number of search results shown.]]></en>
         </locale>
         <locale name="quiqqer.settings.search.general.twoStepSearch">
             <de><![CDATA[Gestaffelte Suche]]></de>

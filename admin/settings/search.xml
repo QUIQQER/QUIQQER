@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiqqer>
+    <settings>
+
+        <config name="search">
+
+            <section name="general">
+                <conf name="minCharacters">
+                    <type><![CDATA[integer]]></type>
+                    <defaultvalue>3</defaultvalue>
+                </conf>
+                <conf name="maxResultsPerGroup">
+                    <type><![CDATA[integer]]></type>
+                    <defaultvalue>100</defaultvalue>
+                </conf>
+                <conf name="twoStepSearch">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
+                <conf name="defaultFilterGroups">
+                    <type><![CDATA[string]]></type>
+                </conf>
+            </section>
+
+        </config>
+
+        <window menu-parent="/settings/quiqqer/">
+            <title>
+                <locale group="quiqqer/system" var="quiqqer.settings.search"/>
+            </title>
+
+            <params>
+                <icon>fa fa-search</icon>
+            </params>
+
+            <categories>
+                <category name="settings">
+                    <title>
+                        <locale group="quiqqer/system" var="quiqqer.settings.search.settings.title"/>
+                    </title>
+                    <settings title="general" name="general">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.search.settings.general.title"/>
+                        </title>
+
+                        <input conf="general.minCharacters" type="number">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.search.general.minCharacters"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/system" var="quiqqer.settings.search.general.minCharacters.desc"/>
+                            </description>
+                        </input>
+
+                        <input conf="general.maxResultsPerGroup" type="number">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.search.general.maxResultsPerGroup"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/system" var="quiqqer.settings.search.general.maxResultsPerGroup.desc"/>
+                            </description>
+                        </input>
+
+                        <input conf="general.twoStepSearch" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.search.general.twoStepSearch"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/system" var="quiqqer.settings.search.general.twoStepSearch.desc"/>
+                            </description>
+                        </input>
+
+                        <input conf="general.defaultFilterGroups" type="text" data-qui="controls/workspace/search/FilterSelect">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.search.general.defaultFilterGroups"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/system" var="quiqqer.settings.search.general.defaultFilterGroups.desc"/>
+                            </description>
+                        </input>
+                    </settings>
+                </category>
+
+            </categories>
+        </window>
+
+    </settings>
+</quiqqer>

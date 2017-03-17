@@ -314,7 +314,7 @@ class Builder
     public function buildProfileCache()
     {
         QUI::getDataBase()->delete($this->getTable(), array(
-            'searchtype' => self::TYPE_PROFILE
+            'group' => self::TYPE_PROFILE
         ));
 
         $locales          = $this->getLocales();
@@ -401,7 +401,7 @@ class Builder
     protected function buildMenuCacheHelper($type)
     {
         QUI::getDataBase()->delete($this->getTable(), array(
-            'searchtype' => $type
+            'group' => $type
         ));
 
         $menu = $this->getMenuData();

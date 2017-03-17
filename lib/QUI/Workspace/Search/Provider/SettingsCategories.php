@@ -211,104 +211,112 @@ class SettingsCategories implements ProviderInterface
     {
         $xmlFile = $item['qui-xml-file'];
 
-        if (!file_exists($xmlFile)) {
-            QUI\System\Log::addWarning(
-                self::class . ' :: parseSearchStringFromSettingsXml -> XML file ' . $xmlFile . ' does not exist.'
-            );
-
-            return array();
+        if (is_array($xmlFile)) {
+            $xmlFiles = $xmlFile;
+        } else {
+            $xmlFiles = array($xmlFile);
         }
-
-        $Dom        = XML::getDomFromXml($xmlFile);
-        $Path       = new \DOMXPath($Dom);
-        $categories = $Path->query("//settings/window/categories/category");
-        $descPrefix = $Locale->get('quiqqer/system', 'settings') . ' -> ' . $item['text'];
 
         $dataEntries = array();
 
-        // ad menu entry for settings
-        $dataEntries[] = array(
-            'title'       => $item['text'],
-            'description' => $item['description'],
-            'group'       => self::TYPE_SETTINGS,
-            'groupLabel'  => $Locale->get(
-                'quiqqer/quiqqer',
-                'search.builder.group.menu.label',
-                array(
-                    'type' => $Locale->get('quiqqer/system', 'settings')
-                )
-            ),
-            'searchdata'  => json_encode(array(
-                'params'  => array(
-                    'category' => false,
-                    'xmlFile'  => $xmlFile
-                ),
-                'require' => 'package/quiqqer/quiqqer/bin/QUI/controls/workspace/search/builder/Settings'
-            )),
-            'icon'        => $item['icon'],
-            'search'      => $item['text']
-        );
+        foreach ($xmlFiles as $xmlFile) {
+            if (!file_exists($xmlFile)) {
+                QUI\System\Log::addWarning(
+                    self::class . ' :: parseSearchStringFromSettingsXml -> XML file ' . $xmlFile . ' does not exist.'
+                );
 
-        /** @var \DOMElement $Category */
-        foreach ($categories as $Category) {
-            $entry = array(
-                'searchdata'  => array(
+                continue;
+            }
+
+            $Dom        = XML::getDomFromXml($xmlFile);
+            $Path       = new \DOMXPath($Dom);
+            $categories = $Path->query("//settings/window/categories/category");
+            $descPrefix = $Locale->get('quiqqer/system', 'settings') . ' -> ' . $item['text'];
+
+            // ad menu entry for settings
+            $dataEntries[] = array(
+                'title'       => $item['text'],
+                'description' => $item['description'],
+                'group'       => self::TYPE_SETTINGS,
+                'groupLabel'  => $Locale->get(
+                    'quiqqer/quiqqer',
+                    'search.builder.group.menu.label',
+                    array(
+                        'type' => $Locale->get('quiqqer/system', 'settings')
+                    )
+                ),
+                'searchdata'  => json_encode(array(
                     'params'  => array(
-                        'category' => $Category->getAttribute('name'),
+                        'category' => false,
                         'xmlFile'  => $xmlFile
                     ),
                     'require' => 'package/quiqqer/quiqqer/bin/QUI/controls/workspace/search/builder/Settings'
-                ),
+                )),
                 'icon'        => $item['icon'],
-                'group'       => self::TYPE_SETTINGS_CONTENT,
-                'filterGroup' => self::TYPE_SETTINGS_CONTENT,
-                'groupLabel'  => $Locale->get('quiqqer/system', 'settings')
+                'search'      => $item['text']
             );
 
-            $searchStringParts = array();
+            /** @var \DOMElement $Category */
+            foreach ($categories as $Category) {
+                $entry = array(
+                    'searchdata'  => array(
+                        'params'  => array(
+                            'category' => $Category->getAttribute('name'),
+                            'xmlFile'  => $xmlFile
+                        ),
+                        'require' => 'package/quiqqer/quiqqer/bin/QUI/controls/workspace/search/builder/Settings'
+                    ),
+                    'icon'        => $item['icon'],
+                    'group'       => self::TYPE_SETTINGS_CONTENT,
+                    'filterGroup' => self::TYPE_SETTINGS_CONTENT,
+                    'groupLabel'  => $Locale->get('quiqqer/system', 'settings')
+                );
 
-            /** @var \DOMNode $Child */
-            foreach ($Category->childNodes as $Child) {
-                if ($Child->nodeName == '#text') {
-                    continue;
-                }
+                $searchStringParts = array();
 
-                if ($Child->nodeName == 'title' || $Child->nodeName == 'text') {
-                    $nodeText             = DOMUtils::getTextFromNode($Child);
-                    $entry['title']       = $item['text'] . ' - ' . $nodeText;
-                    $entry['description'] = $descPrefix . ' -> ' . $nodeText;
-                    $searchStringParts[]  = $nodeText;
-                    continue;
-                }
+                /** @var \DOMNode $Child */
+                foreach ($Category->childNodes as $Child) {
+                    if ($Child->nodeName == '#text') {
+                        continue;
+                    }
 
-                if ($Child->nodeName == 'settings') {
-                    /** @var \DOMNode $SettingChild */
-                    foreach ($Child->childNodes as $SettingChild) {
-                        if ($SettingChild->nodeName == 'title' || $SettingChild->nodeName == 'text') {
-                            $searchStringParts[] = DOMUtils::getTextFromNode($SettingChild);
-                            continue;
-                        }
+                    if ($Child->nodeName == 'title' || $Child->nodeName == 'text') {
+                        $nodeText             = DOMUtils::getTextFromNode($Child);
+                        $entry['title']       = $item['text'] . ' - ' . $nodeText;
+                        $entry['description'] = $descPrefix . ' -> ' . $nodeText;
+                        $searchStringParts[]  = $nodeText;
+                        continue;
+                    }
 
-                        if ($SettingChild->nodeName == 'title' || $SettingChild->nodeName == 'text') {
-                            $searchStringParts[] = DOMUtils::getTextFromNode($SettingChild);
-                            continue;
-                        }
+                    if ($Child->nodeName == 'settings') {
+                        /** @var \DOMNode $SettingChild */
+                        foreach ($Child->childNodes as $SettingChild) {
+                            if ($SettingChild->nodeName == 'title' || $SettingChild->nodeName == 'text') {
+                                $searchStringParts[] = DOMUtils::getTextFromNode($SettingChild);
+                                continue;
+                            }
 
-                        if ($SettingChild->hasChildNodes()) {
-                            foreach ($SettingChild->childNodes as $SettingInputChild) {
-                                if ($SettingInputChild->nodeName == 'title' || $SettingInputChild->nodeName == 'text') {
-                                    $searchStringParts[] = DOMUtils::getTextFromNode($SettingInputChild);
-                                    break;
+                            if ($SettingChild->nodeName == 'title' || $SettingChild->nodeName == 'text') {
+                                $searchStringParts[] = DOMUtils::getTextFromNode($SettingChild);
+                                continue;
+                            }
+
+                            if ($SettingChild->hasChildNodes()) {
+                                foreach ($SettingChild->childNodes as $SettingInputChild) {
+                                    if ($SettingInputChild->nodeName == 'title' || $SettingInputChild->nodeName == 'text') {
+                                        $searchStringParts[] = DOMUtils::getTextFromNode($SettingInputChild);
+                                        break;
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
 
-            $entry['search']     = implode(' ', $searchStringParts);
-            $entry['searchdata'] = json_encode($entry['searchdata']);
-            $dataEntries[]       = $entry;
+                $entry['search']     = implode(' ', $searchStringParts);
+                $entry['searchdata'] = json_encode($entry['searchdata']);
+                $dataEntries[]       = $entry;
+            }
         }
 
         return $dataEntries;
