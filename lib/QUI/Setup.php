@@ -141,10 +141,6 @@ class Setup
 
         QUI\Permissions\Manager::importPermissionsForGroups();
 
-        // create quiqqer search cache
-        QUI\Workspace\Search\Builder::getInstance()->setup();
-
-
         // setup set the last update date
         QUI::getPackageManager()->setLastUpdateDate();
 

@@ -73,7 +73,6 @@ var requireList = [
     'Ajax',
     'Projects',
     'controls/workspace/Manager',
-    'controls/workspace/search/Input',
     'qui/controls/buttons/Button',
     'qui/controls/contextmenu/Item',
     'qui/controls/contextmenu/Seperator'
@@ -91,11 +90,10 @@ require(requireList, function () {
         Ajax                    = arguments[2],
         Projects                = arguments[3],
         WSManager               = arguments[4],
-        MenuSearch              = arguments[5],
-        QUIButton               = arguments[6],
+        QUIButton               = arguments[5],
 
-        QUIContextmenuItem      = arguments[7],
-        QUIContextmenuSeperator = arguments[8];
+        QUIContextmenuItem      = arguments[6],
+        QUIContextmenuSeperator = arguments[7];
 
     Locale.setCurrent(USER.lang);
 
@@ -345,7 +343,7 @@ require(requireList, function () {
         require(['Menu'], function () {
             // logout
             new Element('div', {
-                'class': 'qui-contextmenu-baritem smooth ',
+                'class': 'qui-contextmenu-baritem smooth qui-logout-btn',
                 html   : '<span class="qui-contextmenu-baritem-text">' +
                          '<span class="fa fa-power-off"></span> ' +
                          Locale.get('quiqqer/quiqqer', 'menu.log.out') +
