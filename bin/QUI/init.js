@@ -155,32 +155,6 @@ require(requireList, function () {
     };
 
     window.addEvent('load', quiqqerIsLoaded);
-    window.addEvent('keydown', function (event) {
-        if (!event.alt) {
-            return;
-        }
-
-        if (event.key == 'f') {
-            event.stop();
-
-            if (window.QUIQQER.searchWindowOpen) {
-                return;
-            }
-
-            require(['controls/workspace/search/Search'], function (Search) {
-                new Search({
-                    events: {
-                        onClose: function (S) {
-                            window.QUIQQER.searchWindowOpen = false;
-                            S.destroy();
-                        }
-                    }
-                }).open();
-
-                window.QUIQQER.searchWindowOpen = true;
-            });
-        }
-    });
 
     Ajax.get('ajax_isAuth', function (userId) {
 
@@ -385,14 +359,6 @@ require(requireList, function () {
                 },
                 events : {
                     click: window.logout
-                }
-            }).inject(Menu);
-
-            // search
-            new MenuSearch({
-                styles: {
-                    'float': 'right',
-                    margin : '5px 24px 0 10px'
                 }
             }).inject(Menu);
         });

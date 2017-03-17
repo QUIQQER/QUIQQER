@@ -591,71 +591,6 @@
             <en><![CDATA[You do not have the necessary permissions to save the configuration]]></en>
         </locale>
 
-        <!-- Search Provider -->
-
-        <!-- Builder -->
-        <locale name="search.builder.group.menu.label">
-            <de><![CDATA[Menü: [type]]]></de>
-            <en><![CDATA[Menu: [type]]]></en>
-        </locale>
-        <locale name="search.builder.group.label.project">
-            <de><![CDATA[Projekte]]></de>
-            <en><![CDATA[Projects]]></en>
-        </locale>
-        <locale name="search.builder.filter.label.navigation">
-            <de><![CDATA[Navigation (Menüstruktur)]]></de>
-            <en><![CDATA[Navigation (menu structure)]]></en>
-        </locale>
-        <locale name="search.builder.filter.label.groups">
-            <de><![CDATA[Benutzer und Gruppen]]></de>
-            <en><![CDATA[Users and groups]]></en>
-        </locale>
-        <locale name="search.builder.filter.label.settings">
-            <de><![CDATA[Einstellungen]]></de>
-            <en><![CDATA[Settings]]></en>
-        </locale>
-
-        <!-- Provider: Sites -->
-        <locale name="search.provider.sites.filter.sites.label">
-            <de><![CDATA[Webseiten]]></de>
-            <en><![CDATA[Websites]]></en>
-        </locale>
-        <locale name="search.provider.sites.group.label">
-            <de><![CDATA[Webseite: [projectName] ([projectLang])]]></de>
-            <en><![CDATA[Website: [projectName] ([projectLang])]]></en>
-        </locale>
-
-        <!-- Provider: Projects -->
-        <locale name="search.provider.projects.group.label">
-            <de><![CDATA[Webseiten]]></de>
-            <en><![CDATA[Websites]]></en>
-        </locale>
-        <locale name="search.provider.projects.settings.group.label">
-            <de><![CDATA[Webseiten-Einstellungen: [project]]]></de>
-            <en><![CDATA[Website settings: [project]]]></en>
-        </locale>
-        <locale name="search.provider.projects.settings.description">
-            <de><![CDATA[Einstellungen -> Projekteinstellungen -> [project]]]></de>
-            <en><![CDATA[Settings -> Project settings -> [project]]]></en>
-        </locale>
-
-        <!-- Provider: Media -->
-        <locale name="search.provider.media.filter.folder.label">
-            <de><![CDATA[Ordner]]></de>
-            <en><![CDATA[Folders]]></en>
-        </locale>
-        <locale name="search.provider.media.filter.image.label">
-            <de><![CDATA[Bilder]]></de>
-            <en><![CDATA[Images]]></en>
-        </locale>
-        <locale name="search.provider.media.filter.file.label">
-            <de><![CDATA[Dateien]]></de>
-            <en><![CDATA[Files]]></en>
-        </locale>
-        <locale name="search.provider.media.group.label">
-            <de><![CDATA[Media: [projectName]]]></de>
-            <en><![CDATA[Media: [projectName]]]></en>
-        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -5471,51 +5406,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="quiqqer.settings.general.globals.htmlSuffix.description">
             <de><![CDATA[Die .html Endung wird an Seitenadressen angehängt. Ihre Projekteseiten besitzen .html]]></de>
             <en><![CDATA[The .html extension is appended to page addresses. Your projects have .html pages]]></en>
-        </locale>
-
-        <locale name="quiqqer.settings.search">
-            <de><![CDATA[Suche]]></de>
-            <en><![CDATA[Search]]></en>
-        </locale>
-        <locale name="quiqqer.settings.search.settings.title">
-            <de><![CDATA[Allgemeine Einstellungen]]></de>
-            <en><![CDATA[General settings]]></en>
-        </locale>
-        <locale name="quiqqer.settings.search.settings.general.title">
-            <de><![CDATA[Suche]]></de>
-            <en><![CDATA[Suche]]></en>
-        </locale>
-        <locale name="quiqqer.settings.search.general.minCharacters">
-            <de><![CDATA[Suche ab min. X Zeichen]]></de>
-            <en><![CDATA[Start search at X characters]]></en>
-        </locale>
-        <locale name="quiqqer.settings.search.general.minCharacters.desc">
-            <de><![CDATA[Bestimmt, wieviele Buchstaben ins Sucheingabefeld der Vollbild-Suche eingegeben werden müssen, bevor der Suchvorgang automatisch gestartet wird.]]></de>
-            <en><![CDATA[Determines the minimum number of characters needed in the fullscreen search input before the search starts automatically.]]></en>
-        </locale>
-        <locale name="quiqqer.settings.search.general.maxResultsPerGroup">
-            <de><![CDATA[Maximal angezeigte Ergebnisse]]></de>
-            <en><![CDATA[Maximum number of shown results]]></en>
-        </locale>
-        <locale name="quiqqer.settings.search.general.maxResultsPerGroup.desc">
-            <de><![CDATA[Anzahl der Suchergebnisse, die maximal angezeigt werden.]]></de>
-            <en><![CDATA[Number of search results shown.]]></en>
-        </locale>
-        <locale name="quiqqer.settings.search.general.twoStepSearch">
-            <de><![CDATA[Gestaffelte Suche]]></de>
-            <en><![CDATA[Graded search]]></en>
-        </locale>
-        <locale name="quiqqer.settings.search.general.twoStepSearch.desc">
-            <de><![CDATA[Anzahl der Suchergebnisse bei der ersten Suchabfrage beschränken und im Anschluss restliche Ergebnisse laden (empfohlen bei größeren Systemen)]]></de>
-            <en><![CDATA[Restrict number of search restults on first search request and subsequently show remaining results (suggested for bigger systems)]]></en>
-        </locale>
-        <locale name="quiqqer.settings.search.general.defaultFilterGroups">
-            <de><![CDATA[Standard Filter-Gruppen]]></de>
-            <en><![CDATA[Default filter groups]]></en>
-        </locale>
-        <locale name="quiqqer.settings.search.general.defaultFilterGroups.desc">
-            <de><![CDATA[Vorausgewählte Filter-Gruppen, die beim Öffnen der QUIQQER Suche aktiv sind.]]></de>
-            <en><![CDATA[Pre-selected filter groups that are active when opening the QUIQQER Search.]]></en>
         </locale>
 
         <locale name="quiqqer.settings.cache.management.title">
