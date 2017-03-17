@@ -245,7 +245,7 @@ class Project
 
         // tabellen setzen
         $this->TABLE        = QUI_DB_PRFX . $this->name . '_' . $this->lang . '_sites';
-        $this->RELTABLE     = QUI_DB_PRFX . $this->TABLE . '_relations';
+        $this->RELTABLE     = $this->TABLE . '_relations';
         $this->RELLANGTABLE = QUI_DB_PRFX . $this->name . '_multilingual';
 
 
@@ -959,7 +959,7 @@ class Project
         ) {
             $sql['where']['active'] = 1;
         } elseif (isset($sql['where']['active'])
-                  && $sql['where']['active'] == -1
+            && $sql['where']['active'] == -1
         ) {
             unset($sql['where']['active']);
         } elseif (isset($sql['where']) && is_string($sql['where'])) {
@@ -974,7 +974,7 @@ class Project
         ) {
             $sql['where']['deleted'] = 0;
         } elseif (isset($sql['where']['deleted'])
-                  && $sql['where']['deleted'] == -1
+            && $sql['where']['deleted'] == -1
         ) {
             unset($sql['where']['deleted']);
         } elseif (is_string($sql['where'])) {
@@ -1287,8 +1287,7 @@ class Project
     public function getCustomCSS()
     {
         if (file_exists(USR_DIR . $this->getName() . '/bin/custom.css')) {
-            return file_get_contents(USR_DIR . $this->getName()
-                                     . '/bin/custom.css');
+            return file_get_contents(USR_DIR . $this->getName() . '/bin/custom.css');
         }
 
         return '';

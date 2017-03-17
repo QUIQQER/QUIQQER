@@ -743,9 +743,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         }
 
 
-        $site_table = $pname . '_' . $plang . '_sites';
-        $lang_table = $pname . '_' . $lang . '_sites';
-        $rel_table  = $pname . '_multilingual';
+        $site_table = QUI::getDBTableName($pname . '_' . $plang . '_sites');
+        $lang_table = QUI::getDBTableName($pname . '_' . $lang . '_sites');
+        $rel_table  = QUI::getDBTableName($pname . '_multilingual');
 
         $PDO = QUI::getPDO();
 
