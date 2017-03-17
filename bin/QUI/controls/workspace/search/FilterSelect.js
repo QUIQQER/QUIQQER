@@ -68,7 +68,10 @@ define('controls/workspace/search/FilterSelect', [
                 this.$getDefaultFilters(),
                 this.$getFilterGroups()
             ]).then(function (result) {
-                self.$DefaultGroups = result[0];
+                if (result[0]) {
+                    self.$DefaultGroups = result[0];
+                }
+
                 var filterGroups    = result[1];
 
                 for (var i = 0, len = filterGroups.length; i < len; i++) {
@@ -118,6 +121,14 @@ define('controls/workspace/search/FilterSelect', [
 
                             self.selectChild(group);
                         }
+
+                        return;
+                    }
+
+                    var children = self.getChildren();
+
+                    for (var i = 0, len = children.length; i < len; i++) {
+                        self.selectChild(children[i].getAttribute('value'));
                     }
                 },
                 onChange: function () {
@@ -144,6 +155,16 @@ define('controls/workspace/search/FilterSelect', [
 
             this.addEvents({
                 onLoaded: function () {
+                    if (!Object.getLength(self.$DefaultGroups)) {
+                        var children = self.getChildren();
+
+                        for (var i = 0, len = children.length; i < len; i++) {
+                            self.selectChild(children[i].getAttribute('value'));
+                        }
+
+                        return;
+                    }
+
                     for (var group in self.$DefaultGroups) {
                         if (!self.$DefaultGroups.hasOwnProperty(group)) {
                             continue;
