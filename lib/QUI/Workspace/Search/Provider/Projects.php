@@ -4,16 +4,61 @@ namespace QUI\Workspace\Search\Provider;
 
 use QUI;
 use QUI\Workspace\Search\ProviderInterface;
+use QUI\Workspace\Search\Builder;
+use QUI\Utils\Text\XML;
+use QUI\Utils\DOM as DOMUtils;
 
 class Projects implements ProviderInterface
 {
+    const GROUP_WEBSITES         = 'websites';
+    const GROUP_PROJECT_SETTINGS = 'project_settings';
+
     /**
      * Build the cache
      *
-     * @return mixed
+     * @return void
      */
     public function buildCache()
     {
+        $projects = QUI::getProjectManager()->getProjectList();
+        $Builder  = Builder::getInstance();
+        $locales  = $Builder->getLocales();
+
+        /** @var QUI\Projects\Project $Project */
+        foreach ($projects as $Project) {
+            $projectName = $Project->getName();
+            $projectLang = $Project->getLang();
+
+            $entry = array(
+                'id'          => $projectName,
+                'title'       => $projectName . ' (' . $projectLang . ')',
+                'icon'        => 'fa fa-globe',
+                'groupLabel'  => QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'search.provider.projects.group.label'
+                ),
+                'group'       => self::GROUP_WEBSITES,
+                'filterGroup' => Sites::FILTER_SITES,
+                'search'      => $projectName,
+                'searchdata'  => array(
+                    'require' => 'controls/projects/project/Settings',
+                    'params'  => array(
+                        'project' => $projectName
+                    )
+                )
+            );
+
+            /** @var QUI\Locale $Locale */
+            foreach ($locales as $Locale) {
+                $Builder->addEntry($entry, $Locale->getCurrent());
+                $settingsEntries = $this->getProjectSettingsSearchTerms($Project, $Locale);
+
+                foreach ($settingsEntries as $settingsEntry) {
+                    $Builder->addEntry($settingsEntry, $Locale->getCurrent());
+                }
+                return;
+            }
+        }
     }
 
     /**
@@ -25,61 +70,6 @@ class Projects implements ProviderInterface
      */
     public function search($search, $params = array())
     {
-        if (!in_array(Sites::FILTER_SITES, $params['filterGroups'])) {
-            return array();
-        }
-
-        $projects = QUI::getProjectManager()->getProjectList();
-        $results  = array();
-
-        /** @var QUI\Projects\Project $Project */
-        foreach ($projects as $Project) {
-            $siteIds = $Project->getSitesIds(array(
-                'where'    => array(
-                    'active' => -1
-                ),
-                'where_or' => array(
-                    'title' => array(
-                        'type'  => '%LIKE%',
-                        'value' => $search
-                    ),
-                    'name'  => array(
-                        'type'  => '%LIKE%',
-                        'value' => $search
-                    )
-                ),
-                'limit' => isset($params['limit']) ? (int)$params['limit'] : null
-            ));
-
-            $projectName = $Project->getName();
-            $projectLang = $Project->getLang();
-            $groupLabel  = QUI::getLocale()->get(
-                'quiqqer/quiqqer',
-                'search.provider.sites.group.label',
-                array(
-                    'projectName' => $projectName,
-                    'projectLang' => $projectLang
-                )
-            );
-
-            $group = 'project-' . $projectName . '-' . $projectLang;
-
-            foreach ($siteIds as $row) {
-                $siteId = $row['id'];
-                $Site   = $Project->get($siteId);
-
-                $results[] = array(
-                    'id'          => $projectName . '-' . $projectLang . '-' . $siteId,
-                    'title'       => $Site->getAttribute('title'),
-                    'description' => $Site->getUrlRewritten(),
-                    'icon'        => 'fa fa-file-o',
-                    'groupLabel'  => $groupLabel,
-                    'group'       => $group
-                );
-            }
-        }
-
-        return $results;
     }
 
     /**
@@ -90,18 +80,6 @@ class Projects implements ProviderInterface
      */
     public function getEntry($id)
     {
-        $data = explode('-', $id);
-
-        return array(
-            'searchdata' => json_encode(array(
-                'require' => 'package/quiqqer/quiqqer/bin/QUI/controls/workspace/search/provider/Sites',
-                'params'  => array(
-                    'projectName' => $data[0],
-                    'projectLang' => $data[1],
-                    'siteId'      => $data[2]
-                )
-            ))
-        );
     }
 
     /**
@@ -112,14 +90,206 @@ class Projects implements ProviderInterface
      */
     public function getFilterGroups()
     {
-        return array(
+        return array();
+    }
+
+    /**
+     * Get all search entries from project settings
+     *
+     * @param QUI\Projects\Project $Project
+     * @param QUI\Locale $Locale
+     * @return array - search strings
+     */
+    protected function getProjectSettingsSearchTerms($Project, $Locale)
+    {
+        $dataEntries = array();
+        $projectName = $Project->getName();
+        $description = $Locale->get(
+            'quiqqer/quiqqer',
+            'search.provider.projects.settings.description',
             array(
-                'group' => self::FILTER_SITES,
-                'label' => array(
-                    'quiqqer/quiqqer',
-                    'search.provider.sites.filter.sites.label'
-                )
+                'project' => $projectName
             )
         );
+
+        $group      = 'settings-' . $projectName;
+        $groupLabel = $Locale->get(
+            'quiqqer/quiqqer',
+            'search.provider.projects.settings.group.label',
+            array(
+                'project' => $projectName
+            )
+        );
+
+        // parse standard project settings templates (HARDCODED)
+        $templateFiles = array(
+            SYS_DIR . 'template/project/settings.html',
+            SYS_DIR . 'template/project/settingsAdmin.html',
+            SYS_DIR . 'template/project/settingsMedia.html'
+        );
+
+        // prepare Engine object for parsing
+        $Engine = QUI::getTemplateManager()->getEngine(true);
+        $Engine->assign(array(
+            'QUI'     => new \QUI(),
+            'Project' => $Project
+        ));
+
+        $Doc = new \DOMDocument();
+
+        foreach ($templateFiles as $template) {
+            $html   = $Engine->fetch($template);
+            $search = array(); // search terms
+
+            $Doc->loadHTML($html);
+            $Path = new \DOMXPath($Doc);
+
+            // table headers
+            $titles = $Path->query('//table/thead/tr/th');
+
+            foreach ($titles as $Title) {
+                $search[] = utf8_decode(trim(DOMUtils::getTextFromNode($Title)));
+            }
+
+            // labels
+            $labels = $Path->query('//label');
+
+            /** @var \DOMNode $Label */
+            foreach ($labels as $Label) {
+                $search[] = utf8_decode(trim(DOMUtils::getTextFromNode($Label)));
+            }
+
+            $templateName = basename($template, '.html');
+
+            switch ($templateName) {
+                case 'settings':
+                    $text     = $Locale->get('quiqqer/system', 'projects.project.panel.settings.btn.settings');
+                    $icon     = 'fa fa-gear';
+                    $category = 'settings';
+                    break;
+
+                case 'settingsAdmin':
+                    $text     = $Locale->get('quiqqer/system', 'projects.project.panel.settings.btn.adminSettings');
+                    $icon     = 'fa fa-gear';
+                    $category = 'adminSettings';
+                    break;
+
+                case 'settingsMedia':
+                    $text     = $Locale->get('quiqqer/system', 'projects.project.panel.settings.btn.media');
+                    $icon     = 'fa fa-picture-o';
+                    $category = 'mediaSettings';
+                    break;
+            }
+
+            $entry = array(
+                'title'       => $text,
+                'description' => $description,
+                'searchdata'  => array(
+                    'require' => 'controls/projects/project/Settings',
+                    'params'  => array(
+                        'project'  => $projectName,
+                        'category' => $category
+                    )
+                ),
+                'search'      => implode(' ', $search),
+                'icon'        => $icon,
+                'group'       => $group,
+                'filterGroup' => SettingsCategories::TYPE_SETTINGS_CONTENT,
+                'groupLabel'  => $groupLabel
+            );
+
+            $dataEntries[] = $entry;
+        }
+
+        // parse xml files that extend the standard project settings
+        $xmlFiles = QUI::getProjectManager()->getRelatedSettingsXML($Project);
+
+        foreach ($xmlFiles as $xmlFile) {
+            if (!file_exists($xmlFile)) {
+                QUI\System\Log::addWarning(
+                    self::class . ' :: parseSearchStringFromSettingsXml -> XML file ' . $xmlFile . ' does not exist.'
+                );
+
+                continue;
+            }
+
+            $Dom        = XML::getDomFromXml($xmlFile);
+            $Path       = new \DOMXPath($Dom);
+            $categories = $Path->query("//settings/window/categories/category");
+
+            /** @var \DOMElement $Category */
+            foreach ($categories as $Category) {
+                $category = false;
+
+                if ($Category->hasAttribute('name')) {
+                    $category = $Category->getAttribute('name');
+                }
+
+                $entry = array(
+                    'searchdata'  => array(
+                        'require' => 'controls/projects/project/Settings',
+                        'params'  => array(
+                            'project'  => $projectName,
+                            'category' => $category
+                        )
+                    ),
+                    'icon'        => '',
+                    'group'       => $group,
+                    'filterGroup' => SettingsCategories::TYPE_SETTINGS_CONTENT,
+                    'groupLabel'  => $groupLabel
+                );
+
+                $searchStringParts = array();
+
+                /** @var \DOMNode $Child */
+                foreach ($Category->childNodes as $Child) {
+                    if ($Child->nodeName == '#text') {
+                        continue;
+                    }
+
+                    if ($Child->nodeName == 'title' || $Child->nodeName == 'text') {
+                        $nodeText             = DOMUtils::getTextFromNode($Child);
+                        $entry['title']       = $nodeText;
+                        $entry['description'] = $description;
+                        $searchStringParts[]  = $nodeText;
+                        continue;
+                    }
+
+                    if ($Child->nodeName == 'icon') {
+                        $entry['icon'] = $Child->nodeValue;
+                        continue;
+                    }
+
+                    if ($Child->nodeName == 'settings') {
+                        /** @var \DOMNode $SettingChild */
+                        foreach ($Child->childNodes as $SettingChild) {
+                            if ($SettingChild->nodeName == 'title' || $SettingChild->nodeName == 'text') {
+                                $searchStringParts[] = DOMUtils::getTextFromNode($SettingChild);
+                                continue;
+                            }
+
+                            if ($SettingChild->nodeName == 'title' || $SettingChild->nodeName == 'text') {
+                                $searchStringParts[] = DOMUtils::getTextFromNode($SettingChild);
+                                continue;
+                            }
+
+                            if ($SettingChild->hasChildNodes()) {
+                                foreach ($SettingChild->childNodes as $SettingInputChild) {
+                                    if ($SettingInputChild->nodeName == 'title' || $SettingInputChild->nodeName == 'text') {
+                                        $searchStringParts[] = DOMUtils::getTextFromNode($SettingInputChild);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                $entry['search'] = implode(' ', $searchStringParts);
+                $dataEntries[]   = $entry;
+            }
+        }
+
+        return $dataEntries;
     }
 }

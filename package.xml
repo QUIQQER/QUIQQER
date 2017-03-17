@@ -25,6 +25,7 @@
             <desktopSearch src="\QUI\Workspace\Search\Provider\Media" />
             <desktopSearch src="\QUI\Workspace\Search\Provider\SettingsCategories" />
             <desktopSearch src="\QUI\Workspace\Search\Provider\UsersAndGroups" />
+            <desktopSearch src="\QUI\Workspace\Search\Provider\Projects" />
         </provider>
     </package>
 </quiqqer>

@@ -233,7 +233,7 @@ class SettingsCategories implements ProviderInterface
             $categories = $Path->query("//settings/window/categories/category");
             $descPrefix = $Locale->get('quiqqer/system', 'settings') . ' -> ' . $item['text'];
 
-            // ad menu entry for settings
+            // add menu entry for settings
             $dataEntries[] = array(
                 'title'       => $item['text'],
                 'description' => $item['description'],

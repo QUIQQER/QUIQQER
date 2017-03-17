@@ -968,7 +968,6 @@ class Manager
             }
         }
 
-
         QUI\Cache\Manager::set('qui/projects/', $list);
 
         return $list;

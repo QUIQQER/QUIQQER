@@ -80,7 +80,8 @@ define('controls/projects/project/Settings', [
         ],
 
         options: {
-            project: ''
+            project : '',
+            category: false // open category on settings panel load
         },
 
         initialize: function (options) {
@@ -233,8 +234,20 @@ define('controls/projects/project/Settings', [
                 self.$config   = result[0];
                 self.$defaults = result[1];
 
-                self.getCategoryBar().firstChild().click();
                 self.Loader.hide();
+
+                if (self.getAttribute('category')) {
+                    var Wanted = self.getCategoryBar().getElement(
+                        self.getAttribute('category')
+                    );
+
+                    if (Wanted) {
+                        Wanted.click();
+                        return;
+                    }
+                }
+
+                self.getCategoryBar().firstChild().click();
             });
         },
 

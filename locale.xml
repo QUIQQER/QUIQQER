@@ -625,6 +625,20 @@
             <en><![CDATA[Website: [projectName] ([projectLang])]]></en>
         </locale>
 
+        <!-- Provider: Projects -->
+        <locale name="search.provider.projects.group.label">
+            <de><![CDATA[Webseiten]]></de>
+            <en><![CDATA[Websites]]></en>
+        </locale>
+        <locale name="search.provider.projects.settings.group.label">
+            <de><![CDATA[Webseiten-Einstellungen: [project]]]></de>
+            <en><![CDATA[Website settings: [project]]]></en>
+        </locale>
+        <locale name="search.provider.projects.settings.description">
+            <de><![CDATA[Einstellungen -> Projekteinstellungen -> [project]]]></de>
+            <en><![CDATA[Settings -> Project settings -> [project]]]></en>
+        </locale>
+
         <!-- Provider: Media -->
         <locale name="search.provider.media.filter.folder.label">
             <de><![CDATA[Ordner]]></de>
@@ -2092,10 +2106,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="projects.project.panel.settings.btn.remove">
             <de><![CDATA[Löschen]]></de>
             <en><![CDATA[Delete]]></en>
-        </locale>
-        <locale name="projects.project.panel.settings.btn.settings">
-            <de><![CDATA[Einstellungen]]></de>
-            <en><![CDATA[Settings]]></en>
         </locale>
         <locale name="projects.project.panel.settings.btn.meta">
             <de><![CDATA[Meta Angaben]]></de>
@@ -6844,6 +6854,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="projects.project.panel.settings.btn.adminSettings">
             <de><![CDATA[Backend-Einstellungen]]></de>
             <en><![CDATA[Backend settings]]></en>
+        </locale>
+        <locale name="projects.project.panel.settings.btn.settings">
+            <de><![CDATA[Einstellungen]]></de>
+            <en><![CDATA[Settings]]></en>
         </locale>
         <locale name="projects.project.settings.panel.adminSettings.title">
             <de><![CDATA[Projekteinstellungen für das Backend]]></de>

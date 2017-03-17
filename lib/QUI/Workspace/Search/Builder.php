@@ -533,6 +533,12 @@ class Builder
             $params['groupLabel'] = json_encode($params['groupLabel']);
         }
 
+        if (isset($params['searchdata'])
+            && is_array($params['searchdata'])
+        ) {
+            $params['searchdata'] = json_encode($params['searchdata']);
+        }
+
         $params['lang'] = $lang;
 
         QUI::getDataBase()->insert($this->getTable(), $params);
