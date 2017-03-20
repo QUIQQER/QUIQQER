@@ -240,8 +240,12 @@ class DBCheck extends QUI\System\Test
         }
 
         // check if user can set individual primary keys
-        if (empty($info['no-site-reference'])) {
-            if (empty($info['no-project-lang']) && !empty($primaryKeys)) {
+        if (!$isGlobal &&
+            empty($info['no-site-reference'])
+        ) {
+            if (empty($info['no-project-lang'])
+                && !empty($primaryKeys)
+            ) {
                 if (!(count($primaryKeys) === 1
                       && in_array('id', $primaryKeys))
                 ) {
@@ -261,7 +265,7 @@ class DBCheck extends QUI\System\Test
 
             // assume the xml file declares an id key
             // although technically it is created by the system in this special case
-            if (!$isGlobal && !in_array('id', $primaryKeys)) {
+            if (!in_array('id', $primaryKeys)) {
                 $checkData['primaryKeys'][] = 'id';
                 $checkData['fields']['id']  = 'BIGINT(20) NOT NULL PRIMARY KEY';
             }
@@ -294,6 +298,15 @@ class DBCheck extends QUI\System\Test
             );
 
             return;
+        }
+
+        if (empty($primaryKeys)) {
+            $this->addError(
+                $tbl,
+                $table,
+                "No PRIMARY KEY -> " .
+                "Table \"$table\" has no PRIMARY KEY."
+            );
         }
 
         // get table info from database
