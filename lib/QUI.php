@@ -604,8 +604,7 @@ class QUI
             return QUI_DB_PRFX . $Project->getName() . '_' . $table;
         }
 
-        return QUI_DB_PRFX . $Project->getName() . '_' . $Project->getLang() . '_'
-               . $table;
+        return QUI_DB_PRFX . $Project->getName() . '_' . $Project->getLang() . '_' . $table;
     }
 
     /**

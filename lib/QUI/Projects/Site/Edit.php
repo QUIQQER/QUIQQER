@@ -1204,8 +1204,10 @@ class Edit extends Site
         $Project = $this->getProject();
         $Parent  = $this->getParent();
 
-        $table = $Project->getAttribute('name') . '_' .
-                 $Project->getAttribute('lang') . '_sites_relations';
+        $table = QUI::getDBTableName(
+            $Project->getAttribute('name') . '_' .
+            $Project->getAttribute('lang') . '_sites_relations'
+        );
 
         // Prüfen ob die Seite schon in dem Parent ist
         // #locale
@@ -1257,8 +1259,10 @@ class Edit extends Site
         $Parent   = $this->getParent();
         $DataBase = QUI::getDataBase();
 
-        $table = $Project->getAttribute('name') . '_' .
-                 $Project->getAttribute('lang') . '_sites_relations';
+        $table = QUI::getDBTableName(
+            $Project->getAttribute('name') . '_' .
+            $Project->getAttribute('lang') . '_sites_relations'
+        );
 
         if (QUI\Utils\BoolHelper::JSBool($all)) {
             // Seite löschen
@@ -1306,7 +1310,8 @@ class Edit extends Site
 
         $link_cache_dir = VAR_DIR . 'cache/links/' . $Project->getAttribute('name') . '/';
 
-        $link_cache_file = $link_cache_dir . $this->getId() . '_' . $Project->getAttribute('name')
+        $link_cache_file = $link_cache_dir . $this->getId()
+                           . '_' . $Project->getAttribute('name')
                            . '_' . $Project->getAttribute('lang');
 
         if (file_exists($link_cache_file)) {
