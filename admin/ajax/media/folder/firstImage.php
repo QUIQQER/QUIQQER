@@ -27,8 +27,16 @@ QUI::$Ajax->registerFunction(
             ));
         }
 
-        /* @var $File \QUI\Projects\Media\Folder */
-        return $File->firstImage()->getAttributes();
+        try {
+            /* @var $File \QUI\Projects\Media\Folder */
+            return $File->firstImage()->getAttributes();
+        } catch (QUI\Exception $Exception) {
+            QUI::getMessagesHandler()->addError(
+                $Exception->getMessage()
+            );
+
+            return array();
+        }
     },
     array('project', 'folderId'),
     'Permission::checkAdminUser'
