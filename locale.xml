@@ -706,14 +706,6 @@
             <en><![CDATA[Global forwarding]]></en>
         </locale>
 
-        <locale name="cron.search.build.title">
-            <de><![CDATA[QUIQQER Suche (Cache erstellen)]]></de>
-            <en><![CDATA[QUIQQER Search (build cache)]]></en>
-        </locale>
-        <locale name="cron.search.build.description">
-            <de><![CDATA[Erstellt die QUIQQER Such-Tabelle neu mit allen installierten Such-Providern]]></de>
-            <en><![CDATA[Builds the QUIQQER Search table inlcuding all installed search providers]]></en>
-        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="js">
