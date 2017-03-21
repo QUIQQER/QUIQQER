@@ -456,7 +456,7 @@ class Locale
         }
 
         // auf gettext wenn vorhanden
-        $GetText = $this->initGetText($group);
+        $GetText = $this->initGetText($group, $current);
 
         if ($GetText !== false) {
             $str = $GetText->get($value);
@@ -471,16 +471,14 @@ class Locale
         ) {
             // Kein gettext vorhanden, dann Config einlesen
             $this->langs[$current][$group] = array();
-            $this->initConfig($group);
+            $this->initConfig($group, $current);
         }
 
         if (!$value) {
             return $this->langs[$current][$group];
         }
 
-        if (isset($this->langs[$current][$group][$value])
-            && !empty($this->langs[$current][$group][$value])
-        ) {
+        if (isset($this->langs[$current][$group][$value])) {
             return $this->langs[$current][$group][$value];
         }
 
@@ -490,13 +488,18 @@ class Locale
     /**
      * the GetText init
      *
-     * @param $group - language group
+     * @param string $group - language group
+     * @param string|null $lang - optional, language
      *
      * @return boolean|\QUI\Utils\Translation\GetText
      */
-    public function initGetText($group)
+    public function initGetText($group, $lang = null)
     {
         $current = $this->current;
+
+        if (is_string($lang)) {
+            $current = $lang;
+        }
 
         if (isset($this->gettext[$current])
             && isset($this->gettext[$current][$group])
@@ -506,24 +509,23 @@ class Locale
 
         if (!function_exists('gettext')) {
             $this->gettext[$current][$group] = false;
-
             return false;
         }
 
 
-        $Gettext = new QUI\Utils\Translation\GetText(
+        $GetText = new QUI\Utils\Translation\GetText(
             $current,
             $group,
             $this->dir()
         );
 
-        $this->gettext[$current][$group] = $Gettext;
+        $this->gettext[$current][$group] = $GetText;
 
-        if ($Gettext->fileExist()) {
-            return $Gettext;
+        if ($GetText->fileExist()) {
+            return $GetText;
         }
 
-        $file = $Gettext->getFile();
+        $file = $GetText->getFile();
 
         // #locale
         System\Log::addWarning(
@@ -539,14 +541,15 @@ class Locale
      * read a config
      *
      * @param string $group - translation group
+     * @param string|bool $lang - translation language
      */
-    public function initConfig($group)
+    public function initConfig($group, $lang = false)
     {
-        $lang = $this->current;
-        $file = $this->getTranslationFile(
-            $this->current,
-            $group
-        );
+        if ($lang === false) {
+            $lang = $this->current;
+        }
+
+        $file = $this->getTranslationFile($lang, $group);
 
         if (!file_exists($file)) {
             return;
@@ -571,7 +574,8 @@ class Locale
      */
     public function getTranslationFile($lang, $group)
     {
-        $locale = QUI\Utils\StringHelper::toLower($lang) . '_'
+        $locale = QUI\Utils\StringHelper::toLower($lang)
+                  . '_'
                   . QUI\Utils\StringHelper::toUpper($lang);
 
         $group = str_replace('/', '_', $group);
@@ -655,9 +659,7 @@ class Locale
      */
     public function parseLocaleArray($locale)
     {
-        if (!isset($locale[0])
-            || !isset($locale[1])
-        ) {
+        if (!isset($locale[0]) || !isset($locale[1])) {
             return '';
         }
 
