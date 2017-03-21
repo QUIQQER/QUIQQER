@@ -1105,7 +1105,6 @@ define('controls/projects/project/site/Panel', [
             var Site = this.getSite(),
                 Body = this.getBody();
 
-
             // main content
             if (Category.getAttribute('name') === 'content') {
                 Site.setAttribute(
@@ -1237,48 +1236,63 @@ define('controls/projects/project/site/Panel', [
          */
         $onPanelButtonClick: function (Btn) {
             var Panel = this,
-                Site  = Panel.getSite(); // maybe in eval
+                Site  = Panel.getSite();
+
+            var evalButtonClick = function () {
+                eval(Btn.getAttribute('_onclick') + '();');
+            };
 
             if (Btn.getAttribute('name') === 'status') {
-                this.$onCategoryLeave(this.getActiveCategory(), function () {
-                    // check if site must be saved
-                    if (!Site.hasWorkingStorage()) {
-                        eval(Btn.getAttribute('_onclick') + '();');
-                        return;
-                    }
-
-                    new QUIConfirm({
-                        title        : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.title'),
-                        text         : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.text'),
-                        information  : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.information'),
-                        maxHeight    : 400,
-                        maxWidth     : 600,
-                        texticon     : 'fa fa-edit',
-                        icon         : 'fa fa-edit',
-                        ok_button    : {
-                            text: Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.button.ok')
-                        },
-                        cancel_button: {
-                            text: Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.button.cancel')
-                        },
-                        events       : {
-                            onSubmit: function () {
-                                Site.save(function () {
-                                    eval(Btn.getAttribute('_onclick') + '();');
-                                });
-                            },
-
-                            onCancel: function () {
-                                eval(Btn.getAttribute('_onclick') + '();');
-                            }
+                var saving = function () {
+                    return new Promise(function (resolve) {
+                        // check if site must be saved
+                        if (!Site.hasWorkingStorage()) {
+                            evalButtonClick();
+                            return resolve();
                         }
-                    }).open();
-                });
+
+
+                        new QUIConfirm({
+                            title        : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.title'),
+                            text         : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.text'),
+                            information  : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.information'),
+                            maxHeight    : 400,
+                            maxWidth     : 600,
+                            texticon     : 'fa fa-edit',
+                            icon         : 'fa fa-edit',
+                            ok_button    : {
+                                text: Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.button.ok')
+                            },
+                            cancel_button: {
+                                text: Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.button.cancel')
+                            },
+                            events       : {
+                                onSubmit: function () {
+                                    Site.save(function () {
+                                        evalButtonClick();
+                                        resolve();
+                                    });
+                                },
+
+                                onCancel: function () {
+                                    evalButtonClick();
+                                    resolve();
+                                }
+                            }
+                        }).open();
+                    });
+                };
+
+                Panel.$onCategoryLeave(Panel.getActiveCategory())
+                     .then(saving)
+                     .then(function () {
+                         Panel.$onCategoryEnter(Panel.getActiveCategory());
+                     });
 
                 return;
             }
 
-            eval(Btn.getAttribute('_onclick') + '();');
+            evalButtonClick();
         },
 
         /**
@@ -1447,8 +1461,6 @@ define('controls/projects/project/site/Panel', [
                 'text'     : Status.getAttribute('dtext'),
                 '_onclick' : 'Panel.getSite().deactivate'
             });
-
-            this.Loader.hide();
         },
 
         /**
