@@ -30,6 +30,21 @@ class Console
     private $tools = array();
 
     /**
+     * List of system tools
+     * Tools which are called with the SystemUser
+     *
+     * @var array
+     */
+    private $systemTools = array(
+        'clear-all',
+        'clear-cache',
+        'clear-tmp',
+        'clear-sessions',
+        'clear-lock',
+        'cron'
+    );
+
+    /**
      * Console parameter
      *
      * @var array
@@ -128,6 +143,12 @@ class Console
 
         $params = $this->getArguments();
 
+        if (isset($params['#system-tool'])) {
+            $this->executeSystemTool();
+            exit;
+        }
+
+
         if (isset($params['help']) && !isset($params['tool'])) {
             $this->help();
             exit;
@@ -167,11 +188,10 @@ class Console
             foreach ($tools as $tool => $obj) {
                 $this->writeLn(" - " . $tool . "\n");
             }
-
-            $this->writeLn("\n");
         }
 
         if (!isset($params['tool']) && !isset($params['listtools'])) {
+            $this->writeLn("\n");
             $this->readToolFromShell();
         }
     }
@@ -298,7 +318,13 @@ class Console
             return $this->arguments;
         }
 
-        $args = $this->readArgv();
+        $args         = $this->readArgv();
+        $isSystemTool = key($args);
+
+        if (in_array($isSystemTool, $this->systemTools)) {
+            $this->setArgument('#system-tool', $isSystemTool);
+            return $this->arguments;
+        }
 
         foreach ($args as $arg => $value) {
             $this->setArgument($arg, $value);
@@ -343,6 +369,27 @@ class Console
     public function readToolFromShell()
     {
         $this->clearMsg();
+
+        // system tools
+        $this->writeLn("Available System-Tools");
+
+        $systemTools = $this->systemTools;
+
+        ksort($systemTools);
+
+        foreach ($systemTools as $tool) {
+            /* @var $Tool Console\Tool */
+            $this->writeLn(" - ");
+            $this->write($tool, 'green');
+
+            $this->clearMsg();
+            $this->write("\t\t");
+            $this->write(QUI::getLocale()->get('quiqqer/quiqqer', 'console.systemtool.' . $tool));
+        }
+
+
+        // tools
+        $this->writeLn();
         $this->writeLn("Available Tools");
 
         $tools = $this->get(true);
@@ -451,6 +498,53 @@ class Console
         }
 
         $this->writeLn('Tool not found', 'red');
+        $this->writeLn();
+    }
+
+    /**
+     * Exceute the system tool
+     */
+    protected function executeSystemTool()
+    {
+        QUI\Permissions\Permission::setUser(
+            QUI::getUsers()->getSystemUser()
+        );
+
+        switch ($this->getArgument('#system-tool')) {
+            case 'clear-all':
+                QUI\Cache\Manager::clearAll();
+                QUI::getTemp()->moveToTemp(VAR_DIR . 'cache');
+                QUI::getTemp()->moveToTemp(VAR_DIR . 'sessions');
+                QUI::getTemp()->clear();
+                break;
+
+            case 'clear-cache':
+                QUI\Cache\Manager::clearAll();
+                QUI::getTemp()->moveToTemp(VAR_DIR . 'cache');
+                break;
+
+            case 'clear-tmp':
+                QUI::getTemp()->clear();
+                break;
+
+            case 'clear-sessions':
+                QUI::getTemp()->moveToTemp(VAR_DIR . 'sessions');
+                break;
+
+            case 'clear-lock':
+                QUI::getTemp()->moveToTemp(VAR_DIR . 'lock');
+                break;
+
+            case 'cron':
+                QUI::getPackage('quiqqer/cron');
+
+                $CronManager = new QUI\Cron\Manager();
+                $CronManager->execute();
+                break;
+        }
+
+        $this->writeLn('Done.', 'green');
+        $this->resetMsg();
         $this->writeLn();
     }
 

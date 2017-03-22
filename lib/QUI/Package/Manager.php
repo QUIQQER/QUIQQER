@@ -185,7 +185,8 @@ class Manager extends QUI\QDOM
             'quiqqer-library', // deprecated
             'quiqqer-plugin',
             'quiqqer-module',
-            'quiqqer-template'
+            'quiqqer-template',
+            'quiqqer-application'
         );
     }
 
