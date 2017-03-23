@@ -706,6 +706,19 @@
             <en><![CDATA[Global forwarding]]></en>
         </locale>
 
+        <locale name="message.online.update.RAM.not.enough" html="1">
+            <de><![CDATA[
+            Für das Online-Update steht nicht genügende Arbeitsspeicher zur Verfügung.
+            Bitte führen Sie das Update in der CLI / Bash mit folgende Befehl aus: <br />
+            <code>[command]</code>
+            ]]></de>
+            <en><![CDATA[
+            There is not enough memory available for the online update.
+            Please run the update in the CLI / Bash with the following command: <br />
+            <code>[command]</code>
+            ]]></en>
+        </locale>
+
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="js">

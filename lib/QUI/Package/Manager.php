@@ -20,6 +20,7 @@ if (!defined('JSON_UNESCAPED_UNICODE')) {
 
 use QUI;
 use QUI\Utils\System\File as QUIFile;
+use QUI\Utils\System\File;
 
 /**
  * Package Manager for the QUIQQER System
@@ -666,9 +667,8 @@ class Manager extends QUI\QDOM
      *
      * @return array
      */
-    public function getInstalled(
-        $params = array()
-    ) {
+    public function getInstalled($params = array())
+    {
         $list   = $this->getList();
         $result = $list;
 
@@ -719,9 +719,8 @@ class Manager extends QUI\QDOM
      * @return QUI\Package\Package
      * @throws QUI\Exception
      */
-    public function getInstalledPackage(
-        $package
-    ) {
+    public function getInstalledPackage($package)
+    {
         if (!isset($this->packages[$package])) {
             $this->packages[$package] = new QUI\Package\Package($package);
         }
@@ -735,10 +734,8 @@ class Manager extends QUI\QDOM
      * @param string|array $packages - name of the package, or list of paackages
      * @param string|boolean $version - (optional) version of the package default = dev-master
      */
-    public function install(
-        $packages,
-        $version = false
-    ) {
+    public function install($packages, $version = false)
+    {
         QUI\System\Log::addDebug(
             'Install package ' . print_r($packages, true) . ' -> install'
         );
@@ -754,10 +751,8 @@ class Manager extends QUI\QDOM
      * @param string|array $packages - name of the package
      * @param boolean $version - (optional) version of the package
      */
-    public function installLocalPackage(
-        $packages,
-        $version = false
-    ) {
+    public function installLocalPackage($packages, $version = false)
+    {
         QUI\System\Log::addDebug(
             'Install package ' . print_r($packages, true) . ' -> installLocalPackage'
         );
@@ -777,9 +772,8 @@ class Manager extends QUI\QDOM
      *
      * @return array
      */
-    public function getPackage(
-        $package
-    ) {
+    public function getPackage($package)
+    {
         $cache = 'packages/cache/info/' . $package;
 
         try {
@@ -825,9 +819,8 @@ class Manager extends QUI\QDOM
      *
      * @return array - list of dependencies
      */
-    public function getDependencies(
-        $package
-    ) {
+    public function getDependencies($package)
+    {
         $list   = $this->getList();
         $result = array();
 
@@ -852,9 +845,8 @@ class Manager extends QUI\QDOM
      *
      * @return array
      */
-    public function show(
-        $package
-    ) {
+    public function show($package)
+    {
         $cache = 'packages/cache/show/' . $package;
 
         try {
@@ -911,9 +903,8 @@ class Manager extends QUI\QDOM
      *
      * @return array
      */
-    public function searchPackages(
-        $search
-    ) {
+    public function searchPackages($search)
+    {
         return $this->getComposer()->search(
             QUI\Utils\Security\Orthos::clearShell($search)
         );
@@ -926,9 +917,8 @@ class Manager extends QUI\QDOM
      * @param string $search - search string
      * @return array
      */
-    public function searchNewPackages(
-        $search
-    ) {
+    public function searchNewPackages($search)
+    {
         $result   = array();
         $packages = $this->searchPackages($search);
 
@@ -952,9 +942,8 @@ class Manager extends QUI\QDOM
      *
      * @param string|array $packages
      */
-    public function setup(
-        $packages
-    ) {
+    public function setup($packages)
+    {
         QUIFile::mkdir(CMS_DIR . 'etc/plugins/');
 
         if (!is_array($packages)) {
@@ -1044,10 +1033,8 @@ class Manager extends QUI\QDOM
      * @param string $server - Server, IP, Host
      * @param array $params - Server Parameter
      */
-    public function addServer(
-        $server,
-        $params = array()
-    ) {
+    public function addServer($server, $params = array())
+    {
         if (empty($server)) {
             return;
         }
@@ -1086,10 +1073,8 @@ class Manager extends QUI\QDOM
      * @param string $server - Server, IP, Host
      * @param array $params - Server Parameter
      */
-    public function editServer(
-        $server,
-        $params = array()
-    ) {
+    public function editServer($server, $params = array())
+    {
         if (empty($server)) {
             return;
         }
@@ -1132,9 +1117,8 @@ class Manager extends QUI\QDOM
      *
      * @param string|array $server
      */
-    public function removeServer(
-        $server
-    ) {
+    public function removeServer($server)
+    {
         $Config = QUI::getConfig('etc/source.list.ini.php');
 
         if (is_array($server)) {
@@ -1175,9 +1159,8 @@ class Manager extends QUI\QDOM
      *
      * @throws \QUI\Exception
      */
-    public function getOutdated(
-        $force = false
-    ) {
+    public function getOutdated($force = false)
+    {
         if (!is_bool($force)) {
             $force = false;
         }
@@ -1247,11 +1230,42 @@ class Manager extends QUI\QDOM
      * @todo if exception uncommited changes -> own error message
      * @todo if exception uncommited changes -> interactive mode
      */
-    public function update(
-        $package = false
-    ) {
+    public function update($package = false)
+    {
+        $Composer = $this->getComposer();
+
+        // WEB MODE Check
+        // Wenn VCS Server eingestellt sind sollte mindestens 256M vorhanden sein.
+        // Ohne VCS mindestens 128M
+        $existsVCS = function ($Update) {
+            /* @var $Update self */
+            $servers = $Update->getServerList();
+
+            foreach ($servers as $server) {
+                if ($server['type'] === 'vcs') {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+
+        $needledRAM = $existsVCS($this) ? '256M' : '128M';
+
+        if (true || File::getBytes($needledRAM) < QUI\Utils\System::getMemoryLimit()) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'message.online.update.RAM.not.enough',
+                    array(
+                        'command' => 'php quiqqer.php update'
+                    )
+                )
+            );
+        }
+
         $this->createComposerBackup();
-        $this->getComposer()->mute();
+        $Composer->mute();
 
         if (is_string($package) && empty($package)) {
             $package = false;
@@ -1262,15 +1276,15 @@ class Manager extends QUI\QDOM
         }
 
         if (!empty($package)) {
-            $this->getComposer()->update(array(
+            $Composer->update(array(
                 'packages' => array($package)
             ));
         } else {
-            $this->getComposer()->update();
+            $Composer->update();
         }
 
         // composer optimize
-        $this->getComposer()->dumpAutoload(array(
+        $Composer->dumpAutoload(array(
             'optimize' => true
         ));
 
@@ -1325,9 +1339,8 @@ class Manager extends QUI\QDOM
      *
      * @throws QUI\Exception
      */
-    public function updateWithLocalRepository(
-        $package = false
-    ) {
+    public function updateWithLocalRepository($package = false)
+    {
         $this->createComposerBackup();
         $this->useOnlyLocalRepository();
 
@@ -1451,9 +1464,8 @@ class Manager extends QUI\QDOM
      * @param string $name - e.g. "database.xml" / "package.xml" etc.
      * @return array - absolute file paths
      */
-    public function getPackageXMLFiles(
-        $name
-    ) {
+    public function getPackageXMLFiles($name)
+    {
         // @todo cache
 
         $packages = $this->getInstalled();
@@ -1493,9 +1505,8 @@ class Manager extends QUI\QDOM
      *
      * @throws QUI\Exception
      */
-    public function uploadPackage(
-        $file
-    ) {
+    public function uploadPackage($file)
+    {
         $dir = $this->getUploadPackageDir();
 
         if (!is_dir($dir)) {

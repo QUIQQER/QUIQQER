@@ -133,7 +133,8 @@ try {
             URL_VAR_DIR = "<?php echo URL_VAR_DIR; ?>";
 
         var PHP = {
-            upload_max_filesize: "<?php echo \QUI\Utils\System::getUploadMaxFileSize(); ?>"
+            upload_max_filesize: "<?php echo \QUI\Utils\System::getUploadMaxFileSize(); ?>",
+            memory_limit       : <?php echo QUI\Utils\System::getMemoryLimit(); ?>
         };
 
         var QUIQQER_VERSION = "<?php echo \QUI::version() ?>";
