@@ -719,6 +719,39 @@
             ]]></en>
         </locale>
 
+        <locale name="exception.console.execute.only.in.cli">
+            <de><![CDATA[System Tools können nur in der CLI ausgeführt werden.]]></de>
+            <en><![CDATA[System tools can only be run in the CLI.]]></en>
+        </locale>
+        <locale name="console.systemtool.clear-all">
+            <de><![CDATA[Leert alle variablen Daten (Cache, Temp, Sessions, Lock)]]></de>
+            <en><![CDATA[Clears all variable data (cache, temp, sessions, lock)]]></en>
+        </locale>
+        <locale name="console.systemtool.clear-cache">
+            <de><![CDATA[Leert den kompletten Cache]]></de>
+            <en><![CDATA[Clears the complete cache]]></en>
+        </locale>
+        <locale name="console.systemtool.clear-tmp">
+            <de><![CDATA[Leert das Temp Verzeichnis]]></de>
+            <en><![CDATA[Clears the temp folder]]></en>
+        </locale>
+        <locale name="console.systemtool.clear-sessions">
+            <de><![CDATA[Löscht alle Sessions (Sitzungen)]]></de>
+            <en><![CDATA[Deletes all Sessions]]></en>
+        </locale>
+        <locale name="console.systemtool.clear-lock">
+            <de><![CDATA[Löscht alle Lock Dateien]]></de>
+            <en><![CDATA[Deletes all Lock files]]></en>
+        </locale>
+        <locale name="console.systemtool.cron">
+            <de><![CDATA[Führt die Cron Verarbeitung aus]]></de>
+            <en><![CDATA[Executes Cron processing]]></en>
+        </locale>
+        <locale name="console.systemtool.update">
+            <de><![CDATA[Führt ein System-Update aus]]></de>
+            <en><![CDATA[Execute a system update]]></en>
+        </locale>
+
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="js">

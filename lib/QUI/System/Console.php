@@ -511,6 +511,13 @@ class Console
             QUI::getUsers()->getSystemUser()
         );
 
+        if (php_sapi_name() != 'cli') {
+            throw new QUI\Exception(array(
+                'quiqqer/quiqqer',
+                'exception.console.execute.only.in.cli'
+            ));
+        }
+
         switch ($this->getArgument('#system-tool')) {
             case 'clear-all':
                 QUI\Cache\Manager::clearAll();
