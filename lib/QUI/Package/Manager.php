@@ -169,7 +169,12 @@ class Manager extends QUI\QDOM
     {
         if (is_null($this->Composer)) {
             $this->Composer = new QUI\Composer\Composer($this->vardir);
-            $this->Composer->setMode(QUI\Composer\Composer::MODE_WEB);
+
+            if (php_sapi_name() != 'cli') {
+                $this->Composer->setMode(QUI\Composer\Composer::MODE_WEB);
+            } else {
+                $this->Composer->setMode(QUI\Composer\Composer::MODE_CLI);
+            }
         }
 
         return $this->Composer;

@@ -41,7 +41,8 @@ class Console
         'clear-tmp',
         'clear-sessions',
         'clear-lock',
-        'cron'
+        'cron',
+        'update'
     );
 
     /**
@@ -540,6 +541,10 @@ class Console
 
                 $CronManager = new QUI\Cron\Manager();
                 $CronManager->execute();
+                break;
+
+            case 'update':
+                QUI::getPackageManager()->update();
                 break;
         }
 
