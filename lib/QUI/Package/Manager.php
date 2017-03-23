@@ -1252,7 +1252,7 @@ class Manager extends QUI\QDOM
 
         $needledRAM = $existsVCS($this) ? '256M' : '128M';
 
-        if (true || File::getBytes($needledRAM) < QUI\Utils\System::getMemoryLimit()) {
+        if (File::getBytes($needledRAM) < QUI\Utils\System::getMemoryLimit()) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
