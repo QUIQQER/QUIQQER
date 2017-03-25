@@ -5795,28 +5795,57 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
 
         <locale name="panels.project.title">
-            <de><![CDATA[Projekte / Projekt Panel]]></de>
-            <en><![CDATA[Projects / Project Panel]]></en>
+            <de><![CDATA[Webseiten Panel]]></de>
+            <en><![CDATA[Website Panel]]></en>
+        </locale>
+        <locale name="panels.project.description">
+            <de><![CDATA[Zeigt alle Webseiten und den Webseitenbaum an.]]></de>
+            <en><![CDATA[Displays all web pages and the web page tree.]]></en>
         </locale>
         <locale name="panels.help.title">
             <de><![CDATA[QUIQQER Hilfe]]></de>
             <en><![CDATA[QUIQQER Help]]></en>
         </locale>
+        <locale name="panels.help.description">
+            <de><![CDATA[Zeigt die QUIQQER Hilfe an.]]></de>
+            <en><![CDATA[Displays the QUIQQER Help.]]></en>
+        </locale>
         <locale name="panels.bookmarks.title">
-            <de><![CDATA[Bookmarks]]></de>
+            <de><![CDATA[Lesezeichen (Bookmarks)]]></de>
             <en><![CDATA[Bookmarks]]></en>
+        </locale>
+        <locale name="panels.bookmarks.description">
+            <de><![CDATA[
+            Verwalten Sie schnell Aufrufe von Panels.
+            Legen Sie für sich Lesezeichen fest damit Sie Ihre oft genutzten Funtionen schnell erreichen.
+            ]]></de>
+            <en><![CDATA[
+            Use bookmarks to help you quickly reach your frequently used functions.
+            ]]></en>
         </locale>
         <locale name="panels.upload.title">
             <de><![CDATA[Uploads]]></de>
             <en><![CDATA[Uploads]]></en>
         </locale>
+        <locale name="panels.upload.description">
+            <de><![CDATA[Anzeige der hochgeladenen Dateien.]]></de>
+            <en><![CDATA[Display of the uploaded Files.]]></en>
+        </locale>
         <locale name="panels.messages.title">
             <de><![CDATA[Nachrichten]]></de>
             <en><![CDATA[Messages]]></en>
         </locale>
+        <locale name="panels.messages.description">
+            <de><![CDATA[Zeigt Nachrichten und Statusmeldungen an.]]></de>
+            <en><![CDATA[Displays messages and status messages.]]></en>
+        </locale>
         <locale name="panels.tasks.title">
             <de><![CDATA[Task-Panel]]></de>
             <en><![CDATA[Task panel]]></en>
+        </locale>
+        <locale name="panels.tasks.description">
+            <de><![CDATA[Panel welches mehrere Panels verwaltet.]]></de>
+            <en><![CDATA[Panel that manages multiple panels.]]></en>
         </locale>
         <locale name="control.contact.name">
             <de><![CDATA[Name]]></de>
