@@ -456,7 +456,7 @@ define('controls/projects/project/media/FolderPanel', [
             this.createSheet({
                 icon       : 'fa fa-sort-amount-asc',
                 title      : '<span class="fa fa-sort-amount-asc"></span> ' +
-                             Locale.get('quiqqer/system', 'projects.project.site.media.priority.sheet.title'),
+                Locale.get('quiqqer/system', 'projects.project.site.media.priority.sheet.title'),
                 closeButton: {
                     textimage: 'fa fa-remove',
                     text     : Locale.get('quiqqer/system', 'cancel')

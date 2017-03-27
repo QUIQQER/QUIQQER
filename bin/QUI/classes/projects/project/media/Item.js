@@ -51,9 +51,15 @@ define('classes/projects/project/media/Item', [
             active  : '',
             order   : '',
             priority: '',
+            file    : '',
 
-            c_user: '',
-            e_user: '',
+            c_date    : '',
+            c_user    : '',
+            c_username: '',
+
+            e_date    : '',
+            e_user    : '',
+            e_username: '',
 
             watermark   : false,
             roundcorners: false,
@@ -83,7 +89,6 @@ define('classes/projects/project/media/Item', [
 
             return this.getMedia().getData(this.getId()).then(function (result) {
                 self.setAttributes(result);
-
                 self.fireEvent('refresh', [self]);
 
                 if (typeOf(oncomplete) === 'function') {
