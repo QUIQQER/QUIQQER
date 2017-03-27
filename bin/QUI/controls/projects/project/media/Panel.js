@@ -1311,14 +1311,24 @@ define('controls/projects/project/media/Panel', [
                     dataType : 'string',
                     width    : 150
                 }, {
-                    header   : Locale.get(lg, 'size'),
-                    dataIndex: 'size',
+                    header   : Locale.get(lg, 'c_date'),
+                    dataIndex: 'c_date',
+                    dataType : 'date',
+                    width    : 150
+                }, {
+                    header   : Locale.get(lg, 'c_user'),
+                    dataIndex: 'c_user',
                     dataType : 'string',
                     width    : 150
                 }, {
-                    header   : Locale.get(lg, 'createdate'),
-                    dataIndex: 'cdate',
+                    header   : Locale.get(lg, 'e_date'),
+                    dataIndex: 'e_date',
                     dataType : 'date',
+                    width    : 150
+                }, {
+                    header   : Locale.get(lg, 'e_user'),
+                    dataIndex: 'e_user',
+                    dataType : 'string',
                     width    : 150
                 }],
 

@@ -1252,6 +1252,10 @@
             <de><![CDATA[Editierungsdatum]]></de>
             <en><![CDATA[Edit date]]></en>
         </locale>
+        <locale name="e_user">
+            <de><![CDATA[Letzter Bearbeiter]]></de>
+            <en><![CDATA[Last editor]]></en>
+        </locale>
         <locale name="site_id">
             <de><![CDATA[Seiten-ID]]></de>
             <en><![CDATA[Site ID]]></en>
