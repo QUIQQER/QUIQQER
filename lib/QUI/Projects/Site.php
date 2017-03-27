@@ -201,9 +201,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         // Cachefiles
         $this->CACHENAME = 'site/' .
-            $Project->getAttribute('name') . '/' .
-            $Project->getAttribute('lang') . '/' .
-            $this->getId();
+                           $Project->getAttribute('name') . '/' .
+                           $Project->getAttribute('lang') . '/' .
+                           $this->getId();
 
 
         // view permission check
@@ -1199,8 +1199,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     {
         // where
         $where = '`' . $this->RELTABLE . '`.`parent` = :pid AND ' .
-            '`' . $this->TABLE . '`.`deleted` = :deleted AND ' .
-            '`' . $this->RELTABLE . '`.`child` = `' . $this->TABLE . '`.`id`';
+                 '`' . $this->TABLE . '`.`deleted` = :deleted AND ' .
+                 '`' . $this->RELTABLE . '`.`child` = `' . $this->TABLE . '`.`id`';
 
         if ($navhide === false) {
             $where .= ' AND `' . $this->TABLE . '`.`nav_hide` = :nav_hide';
@@ -1363,8 +1363,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 //        }
 
         $str = 'index.php?id=' . $this->getId() .
-            '&project=' . $this->getProject()->getName() .
-            '&lang=' . $this->getProject()->getLang();
+               '&project=' . $this->getProject()->getName() .
+               '&lang=' . $this->getProject()->getLang();
 
         foreach ($params as $param => $value) {
             if (empty($value)) {
@@ -1462,7 +1462,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
                 foreach (array_reverse($this->parents) as $parent) {
                     $url .= QUI\Rewrite::replaceUrlSigns($parent, true)
-                        . '/'; // URL auch Slash ersetzen
+                            . '/'; // URL auch Slash ersetzen
                 }
             }
 
@@ -1515,7 +1515,14 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     {
         $pathParams['site'] = $this;
 
-        return QUI::getRewrite()->getUrlFromSite($pathParams, $getParams);
+        $Output = QUI::getRewrite()->getOutput();
+
+        if (QUI::getRewrite()->getProject()->toArray() != $this->getProject()->toArray()) {
+            $Output = new QUI\Output();
+            $Output->setProject($this->getProject());
+        }
+
+        return $Output->getSiteUrl($pathParams, $getParams);
     }
 
     /**
@@ -1539,7 +1546,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     protected function getUrlHelper($id)
     {
         if ($id != $this->getId()) {
-            $this->parents[] = $this->getProject()->getNameById($id);
+            $this->parents[] = $this->getProject()->get($id)->getAttribute('name');
         }
 
         $pid = $this->getProject()->getParentIdFrom($id);
