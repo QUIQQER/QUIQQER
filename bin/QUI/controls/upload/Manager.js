@@ -48,6 +48,7 @@ define('controls/upload/Manager', [
 
         Binds: [
             '$onCreate',
+            '$onInject',
             'uploadFiles',
             'clear',
             '$onFileUploadRefresh'
@@ -60,8 +61,6 @@ define('controls/upload/Manager', [
         initialize: function (options) {
             this.parent(options);
 
-            this.setAttribute('title', Locale.get(lg, 'upload.manager.title'));
-
             this.$files     = [];
             this.$container = null;
             this.$uploads   = {};
@@ -72,7 +71,8 @@ define('controls/upload/Manager', [
             this.$Container = null;
 
             this.addEvents({
-                onCreate: this.$onCreate
+                onCreate: this.$onCreate,
+                onInject: this.$onInject
             });
         },
 
@@ -94,6 +94,13 @@ define('controls/upload/Manager', [
                     onClick: this.clear
                 }
             });
+        },
+
+        /**
+         * event: on inject
+         */
+        $onInject: function () {
+            this.setAttribute('title', Locale.get(lg, 'upload.manager.title'));
         },
 
         /**
