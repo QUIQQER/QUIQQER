@@ -4,10 +4,16 @@
  * @module utils/Controls
  * @author www.pcsg.de (Henning Leutz)
  *
+ * @require qui/utils/Elements
  * @require qui/lib/polyfills/Promise
  */
 
-define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
+define('utils/Controls', [
+
+    'qui/utils/Elements',
+    'qui/lib/polyfills/Promise'
+
+], function (ElementUtils) {
     "use strict";
 
     return {
@@ -22,7 +28,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
         parse: function (Elm, callback) {
             var Form = false;
 
-            if (Elm.nodeName == 'FORM') {
+            if (Elm.nodeName === 'FORM') {
                 Form = Elm;
             }
 
@@ -46,9 +52,13 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                 needles.push(this.parseButtons(Elm));
             }
 
-            // Date
-            if (Elm.getElement('input[type="date"],input[type="datetime"]')) {
-                needles.push(this.parseDate(Elm));
+            // Date, only if date and datetime from the browser is not supported
+            if (!ElementUtils.isInputTypeSupported('date') && Elm.getElement('input[type="date"]')) {
+                needles.push(this.parseDate(Elm, 'input[type="date"]'));
+            }
+
+            if (!ElementUtils.isInputTypeSupported('datetime') && Elm.getElement('input[type="datetime"]')) {
+                needles.push(this.parseDate(Elm, 'input[type="datetime"]'));
             }
 
             // color
@@ -302,9 +312,10 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
          * Search all input[type="date"] and make a control
          *
          * @param {HTMLElement} Elm - parent node, this element in which is searched for
+         * @param {String} search - query
          * @return Promise
          */
-        parseDate: function (Elm) {
+        parseDate: function (Elm, search) {
             return new Promise(function (resolve, reject) {
                 require([
 
@@ -316,9 +327,25 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                     var i, len, htmlStr, elements, datetime, fieldcontainer,
                         Child, Cancel, Parent, Picker;
 
-                    elements = Elm.getElements(
-                        'input[type="date"],input[type="datetime"]'
-                    );
+                    elements = Elm.getElements(search);
+
+                    var onSelect = function (UserDate, elmList) {
+                        if (typeOf(elmList) === 'array') {
+                            for (var i = 0, len = elmList.length; i < len; i++) {
+                                if (elmList[i].get('data-type') === 'date') {
+                                    elmList[i].value = UserDate.format('%Y-%m-%d');
+                                } else {
+                                    elmList[i].value = UserDate.format('db');
+                                }
+                            }
+                        } else if (typeOf(elmList) === 'element') {
+                            if (elmList.get('data-type') === 'date') {
+                                elmList.value = UserDate.format('%Y-%m-%d');
+                            } else {
+                                elmList.value = UserDate.format('db');
+                            }
+                        }
+                    };
 
                     // Date Buttons
                     for (i = 0, len = elements.length; i < len; i++) {
@@ -342,15 +369,13 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
 
                         datetime = htmlStr.indexOf('datetime');
 
-                        if (datetime) {
+                        if (datetime !== -1) {
                             Child.placeholder = 'YYYY-MM-DD HH:MM:SS';
                             Child.set('data-type', 'datetime');
-
                         } else {
                             Child.placeholder = 'YYYY-MM-DD';
                             Child.set('data-type', 'date');
                         }
-
 
                         Child.autocomplete = 'off';
 
@@ -362,33 +387,14 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function () {
                         });
 
                         Picker = new DatePicker(Child, {
-                            timePicker    : datetime ? true : false,
+                            timePicker    : !!datetime,
                             datetime      : datetime,
                             positionOffset: {
                                 x: 5,
                                 y: 0
                             },
                             pickerClass   : 'datepicker_dashboard',
-                            onSelect      : function (UserDate, elmList) {
-                                var i, len;
-
-                                if (typeOf(elmList) === 'array') {
-                                    for (i = 0, len = elmList.length; i < len; i++) {
-                                        if (elmList[i].get('data-type') == 'date') {
-                                            elmList[i].value = UserDate.format('%Y-%m-%d');
-                                        } else {
-                                            elmList[i].value = UserDate.format('db');
-                                        }
-                                    }
-
-                                } else if (typeOf(elmList) === 'element') {
-                                    if (elmList.get('data-type') == 'date') {
-                                        elmList.value = UserDate.format('%Y-%m-%d');
-                                    } else {
-                                        elmList.value = UserDate.format('db');
-                                    }
-                                }
-                            }
+                            onSelect      : onSelect
                         });
 
                         Picker.picker.setStyles({
