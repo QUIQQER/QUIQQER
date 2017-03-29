@@ -1290,7 +1290,7 @@ class Manager extends QUI\QDOM
 
         // composer optimize
         $Composer->dumpAutoload(array(
-            'optimize' => true
+            '--optimize' => true
         ));
 
 
