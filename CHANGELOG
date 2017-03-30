@@ -1,3 +1,52 @@
+1.0.13
+
+    Benutzer
+
+    - feat: Neue Authentifizierungsmethoden
+        - 2FA, Facebook, Google
+    - feat: HSTS und CSP (Content Security Policy Verwaltung)
+    - feat: Bookmarks Panel ist nun einfacher Verwaltbar
+    - feat: Passwort Sicherheit erweitert um Authentifizierungen
+    - fix: Sprachvariablen komplett überarbeitet
+
+
+    Entwickler
+
+    - feat: Desktop Suche wurde in neues Modul ausgelagert quiqqer/backendsearch
+        - Doku und API befindet sich im Repository Wiki
+    - feat: Neue Auth API
+    - fix: Composer Event Handling - Es kann nun bessere auf Composer Events reagiert werden
+
+
+    Bugfixes
+
+    - fix: #502
+    - fix: #185
+    - fix: #464 Grid - Filter nur lowercase möglich
+    - fix: #500
+    - fix: #499
+    - fix: #498
+    - fix: #96
+    - fix: #217
+    - fix: quiqqer/tour#7
+    - fix: #488 - Gruppen-Liste: 'Darf in die Administration' fehlerhaft
+    - fix: #490 - Gruppen-Rechte für Everybody und Guest setzen
+    - fix: quiqqer/tour#2; fix: Sheet close -> destroy DOM Element
+    - fix: quiqqer/tour#4
+    - fix: #462; feat: Suche kann nun mit Alt+F aufgerufen werden
+    - fix: quiqqer/qsetup#34 - Exception beim Setup
+    - fix: #466 - Backend: Vorschau gibt weiße Seite
+
+    - fix: QUI\Cache\Manager::getStash -> double Slashes removed
+    - fix: QUI\Cache\Manager::getStash -> besseres Exception werden
+    - fix: Viele Fixes in CSS und Input Elemente
+    - fix: Rewrite -> Exception von File Objekte werden abgefangen und ein 404 mit ausgegeben
+
+    - feat: meta -> og:image twitter:image image
+    - feat: New way to generate the NGINX config.
+
+
+
 1.0.12
 
     Benutzer
