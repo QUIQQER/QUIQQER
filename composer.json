@@ -35,7 +35,7 @@
     "robloach/component-installer": "0.0.12",
     "phpmailer/phpmailer": "v5.2.*",
     "symfony/http-foundation": "2.6.*",
-    "symfony/console": "2.5",
+    "symfony/console": "~2.7",
     "html2text/html2text": "1.0.1",
     "intervention/image": "2.2.*",
     "t7systems/blowfish": "1.0.0",
@@ -58,13 +58,15 @@
     "quiqqer/messages": "1.*|dev-master|dev-dev",
     "quiqqer/meta": "0.9.*|dev-master|dev-dev",
     "quiqqer/fontawesome": "*",
+    "quiqqer/backendsearch": "dev-master|dev-dev",
     "npm-asset/intl": "1.*",
     "npm-asset/nouislider": "*",
     "npm-asset/mustache": "2.*",
     "npm-asset/urijs": "1.*"
   },
   "require-dev": {
-    "mikey179/vfsStream": "1.*"
+    "mikey179/vfsStream": "1.*",
+    "phpstan/phpstan": ">=0.5"
   },
   "scripts": {
     "post-install-cmd": [
@@ -77,6 +79,11 @@
   "autoload": {
     "psr-0": {
       "QUI": "lib/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "QUI\\Tests\\": "tests/QUI/"
     }
   }
 }

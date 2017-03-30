@@ -1,19 +1,20 @@
 /**
- * A sitemap that list the groups
- *
  * @module controls/groups/Sitemap
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * A Sitemap that list the groups
  *
  * @events onItemClick [ this, {qui/controls/sitemap/Item} ]
  * @events onItemDblClick [ this, {qui/controls/sitemap/Item} ]
  *
+ * @require qui/QUI
  * @require qui/controls/Control
  * @require qui/controls/sitemap/Map
  * @require qui/controls/sitemap/Item
+ * @require Locale
  * @require Ajax
  * @require Groups
  */
-
 define('controls/groups/Sitemap', [
 
     'qui/QUI',
@@ -105,7 +106,9 @@ define('controls/groups/Sitemap', [
          * the DOMNode is injected, then call the root group
          */
         $onDrawEnd: function () {
-            var First = this.$Map.firstChild();
+            var self  = this,
+                Map   = this.$Map,
+                First = this.$Map.firstChild();
 
             // load first child
             Ajax.get('ajax_groups_root', function (result) {
@@ -133,6 +136,48 @@ define('controls/groups/Sitemap', [
 
                 First.open();
                 First.select();
+
+                Promise.all([
+                    Groups.get(1).load(), // Everyone
+                    Groups.get(0).load()  // Guest
+                ]).then(function (data) {
+                    var everyone = data[0],
+                        guest    = data[1];
+
+                    // guest
+                    Map.appendChild(
+                        new QUISitemapItem({
+                            index      : guest.attributes.id,
+                            value      : guest.attributes.id,
+                            name       : guest.attributes.name,
+                            text       : guest.attributes.name,
+                            alt        : guest.attributes.name,
+                            icon       : 'fa fa-group',
+                            hasChildren: 0,
+                            events     : {
+                                onClick   : self.$onItemClick,
+                                onDblClick: self.$onItemDblClick
+                            }
+                        })
+                    );
+
+                    // everyone
+                    Map.appendChild(
+                        new QUISitemapItem({
+                            index      : everyone.attributes.id,
+                            value      : everyone.attributes.id,
+                            name       : everyone.attributes.name,
+                            text       : everyone.attributes.name,
+                            alt        : everyone.attributes.name,
+                            icon       : 'fa fa-group',
+                            hasChildren: 0,
+                            events     : {
+                                onClick   : self.$onItemClick,
+                                onDblClick: self.$onItemDblClick
+                            }
+                        })
+                    );
+                });
             });
         },
 
@@ -148,7 +193,7 @@ define('controls/groups/Sitemap', [
             var self  = this,
                 Group = Groups.get(Parent.getAttribute('value'));
 
-            Group.getChildren(function (result) {
+            Group.getChildren().then(function (result) {
                 var i, len, entry;
 
                 Parent.clearChildren();

@@ -30,6 +30,22 @@ class Console
     private $tools = array();
 
     /**
+     * List of system tools
+     * Tools which are called with the SystemUser
+     *
+     * @var array
+     */
+    private $systemTools = array(
+        'clear-all',
+        'clear-cache',
+        'clear-tmp',
+        'clear-sessions',
+        'clear-lock',
+        'cron',
+        'update'
+    );
+
+    /**
      * Console parameter
      *
      * @var array
@@ -99,6 +115,18 @@ class Console
     );
 
     /**
+     * CLI arguments
+     *
+     * @var array
+     */
+    protected $arguments = array();
+
+    /**
+     * @var null|QUI\Interfaces\Users\User
+     */
+    protected $User = null;
+
+    /**
      * constructor
      */
     public function __construct()
@@ -114,51 +142,33 @@ class Console
             exit;
         }
 
-        $params = $this->readArgv();
+        $params = $this->getArguments();
 
-        if (isset($params['--help']) && !isset($params['--tool'])) {
+        if (isset($params['#system-tool'])) {
+            $this->executeSystemTool();
+            exit;
+        }
+
+
+        if (isset($params['help']) && !isset($params['tool'])) {
             $this->help();
             exit;
         }
 
-        if (isset($params['-u']) && isset($params['-p'])) {
-            $params['--username'] = $params['-u'];
-            $params['--password'] = $params['-p'];
-        }
-
-        if (!isset($params['--username'])) {
-            $this->writeLn("Please enter your username and password");
-            $this->writeLn("Username: ", 'green');
-
-            $params['--username'] = $this->readInput();
-
-            $this->write("Password: ", 'green');
-            $params['--password'] = QUI\Utils\System\Console::readPassword();
-        }
-
-        if (!isset($params['--password'])) {
-            $this->writeLn("Password:", 'green');
-            $params['--password'] = QUI\Utils\System\Console::readPassword();
-        }
 
         try {
-            $User = QUI::getUsers()->login(
-                $params['--username'],
-                $params['--password']
-            );
+            $this->authenticate();
         } catch (QUI\Exception $Exception) {
             $this->writeLn($Exception->getMessage() . "\n\n", 'red');
             exit;
         }
 
-        if (!$User->getId()) {
+        if (is_null($this->User) || !$this->User->getId()) {
             $this->writeLn("Login incorrect\n\n", 'red');
             exit;
         }
 
-        QUI::getSession()->set('uid', $User->getId());
-
-        QUI\Permissions\Permission::setUser($User);
+        QUI\Permissions\Permission::setUser($this->User);
 
         if (!QUI\Permissions\Permission::hasPermission('quiqqer.system.console')) {
             $this->writeLn("Missing rights to use the console\n\n", 'red');
@@ -170,7 +180,7 @@ class Console
         $this->argv = $params;
         $this->read();
 
-        if (isset($params['--listtools'])) {
+        if (isset($params['listtools'])) {
             $this->title();
             $this->writeLn("Tools\n");
 
@@ -179,13 +189,89 @@ class Console
             foreach ($tools as $tool => $obj) {
                 $this->writeLn(" - " . $tool . "\n");
             }
-
-            $this->writeLn("\n");
         }
 
-        if (!isset($params['--tool']) && !isset($params['--listtools'])) {
+        if (!isset($params['tool']) && !isset($params['listtools'])) {
+            $this->writeLn("\n");
             $this->readToolFromShell();
         }
+    }
+
+    /**
+     * Execute the authentication
+     */
+    protected function authenticate()
+    {
+        $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalAuthenticators();
+
+        if ($this->getArgument('u')) {
+            $this->setArgument('username', $this->getArgument('u'));
+        }
+
+        if ($this->getArgument('p')) {
+            $this->setArgument('password', $this->getArgument('p'));
+        }
+
+        foreach ($authenticators as $authenticator) {
+            /* @var $Authenticator QUI\Users\AbstractAuthenticator */
+            $Authenticator = new $authenticator('');
+
+            if (!$Authenticator->isCLICompatible()) {
+                continue;
+            }
+
+            $Authenticator->cliAuthentication($this);
+
+            if (is_null($this->User)) {
+                $this->setArgument('username', $Authenticator->getUser()->getName());
+                $this->User = $Authenticator->getUser();
+            }
+        }
+
+        if (!QUI::getUsers()->isUser($this->User)) {
+            throw new QUI\Users\Exception(
+                array('quiqqer/system', 'exception.login.fail'),
+                401
+            );
+        }
+
+        if (QUI::getUsers()->isNobodyUser($this->User)) {
+            throw new QUI\Users\Exception(
+                array('quiqqer/system', 'exception.login.fail'),
+                401
+            );
+        }
+
+        /* @var $User QUI\Users\User */
+        $User           = $this->User;
+        $authenticators = $User->getAuthenticators();
+
+        foreach ($authenticators as $Authenticator) {
+            if ($Authenticator->isCLICompatible()) {
+                $Authenticator->cliAuthentication($this);
+            }
+        }
+
+        // login
+        $Users     = QUI::getUsers();
+        $userAgent = '';
+
+        QUI::getSession()->set('auth', 1);
+        QUI::getSession()->set('secHash', $Users->getSecHash());
+
+        if (isset($_SERVER['HTTP_USER_AGENT'])) {
+            $userAgent = $_SERVER['HTTP_USER_AGENT'];
+        }
+
+        QUI::getDataBase()->update(
+            $Users->table(),
+            array(
+                'lastvisit'  => time(),
+                'user_agent' => $userAgent,
+                'secHash'    => $Users->getSecHash()
+            ),
+            array('id' => $User->getId())
+        );
     }
 
     /**
@@ -223,11 +309,88 @@ class Console
     }
 
     /**
+     * Return the CLI arguments
+     *
+     * @return array
+     */
+    public function getArguments()
+    {
+        if (!empty($this->arguments)) {
+            return $this->arguments;
+        }
+
+        $args         = $this->readArgv();
+        $isSystemTool = key($args);
+
+        if (in_array($isSystemTool, $this->systemTools)) {
+            $this->setArgument('#system-tool', $isSystemTool);
+            return $this->arguments;
+        }
+
+        foreach ($args as $arg => $value) {
+            $this->setArgument($arg, $value);
+        }
+
+        return $this->arguments;
+    }
+
+    /**
+     * Set CLI arguments
+     *
+     * @param string $argument
+     * @param string $value
+     */
+    public function setArgument($argument, $value)
+    {
+        $argument = trim($argument, '-');
+
+        $this->arguments[$argument] = $value;
+    }
+
+    /**
+     * Return the CLI argument
+     *
+     * @param string $argument
+     * @return mixed|null
+     */
+    public function getArgument($argument)
+    {
+        $argument = trim($argument, '-');
+
+        if (isset($this->arguments[$argument])) {
+            return $this->arguments[$argument];
+        }
+
+        return null;
+    }
+
+    /**
      * List all tools in the shell for selection
      */
     public function readToolFromShell()
     {
         $this->clearMsg();
+
+        // system tools
+        $this->writeLn("Available System-Tools");
+
+        $systemTools = $this->systemTools;
+
+        ksort($systemTools);
+
+        foreach ($systemTools as $tool) {
+            /* @var $Tool Console\Tool */
+            $this->writeLn(" - ");
+            $this->write($tool, 'green');
+
+            $this->clearMsg();
+            $this->write("\t\t");
+            $this->write(QUI::getLocale()->get('quiqqer/quiqqer', 'console.systemtool.' . $tool));
+        }
+
+
+        // tools
+        $this->writeLn();
         $this->writeLn("Available Tools");
 
         $tools = $this->get(true);
@@ -311,19 +474,18 @@ class Console
      */
     public function start()
     {
-        if (!isset($this->argv['--tool'])) {
+        if (!$this->getArgument('tool')) {
             return;
         }
 
-        if ($Tool = $this->get($this->argv['--tool'])) {
+        if ($Tool = $this->get($this->getArgument('tool'))) {
             try {
                 if (is_array($Tool) || !$Tool) {
                     throw new QUI\Exception('Tool not found', 404);
                 }
 
-                if (isset($this->argv['--help'])) {
+                if ($this->getArgument('help')) {
                     $Tool->outputHelp();
-
                     return;
                 }
 
@@ -337,6 +499,64 @@ class Console
         }
 
         $this->writeLn('Tool not found', 'red');
+        $this->writeLn();
+    }
+
+    /**
+     * Exceute the system tool
+     */
+    protected function executeSystemTool()
+    {
+        QUI\Permissions\Permission::setUser(
+            QUI::getUsers()->getSystemUser()
+        );
+
+        if (php_sapi_name() != 'cli') {
+            throw new QUI\Exception(array(
+                'quiqqer/quiqqer',
+                'exception.console.execute.only.in.cli'
+            ));
+        }
+
+        switch ($this->getArgument('#system-tool')) {
+            case 'clear-all':
+                QUI\Cache\Manager::clearAll();
+                QUI::getTemp()->moveToTemp(VAR_DIR . 'cache');
+                QUI::getTemp()->moveToTemp(VAR_DIR . 'sessions');
+                QUI::getTemp()->clear();
+                break;
+
+            case 'clear-cache':
+                QUI\Cache\Manager::clearAll();
+                QUI::getTemp()->moveToTemp(VAR_DIR . 'cache');
+                break;
+
+            case 'clear-tmp':
+                QUI::getTemp()->clear();
+                break;
+
+            case 'clear-sessions':
+                QUI::getTemp()->moveToTemp(VAR_DIR . 'sessions');
+                break;
+
+            case 'clear-lock':
+                QUI::getTemp()->moveToTemp(VAR_DIR . 'lock');
+                break;
+
+            case 'cron':
+                QUI::getPackage('quiqqer/cron');
+
+                $CronManager = new QUI\Cron\Manager();
+                $CronManager->execute();
+                break;
+
+            case 'update':
+                QUI::getPackageManager()->update();
+                break;
+        }
+
+        $this->writeLn('Done.', 'green');
+        $this->resetMsg();
         $this->writeLn();
     }
 
@@ -496,8 +716,7 @@ class Console
             return;
         }
 
-        $str
-            = '
+        $str = '
          _______          _________ _______  _______  _______  _______
         (  ___  )|\     /|\__   __/(  ___  )(  ___  )(  ____ \(  ____ )
         | (   ) || )   ( |   ) (   | (   ) || (   ) || (    \/| (    )|

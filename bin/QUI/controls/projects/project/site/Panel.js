@@ -106,9 +106,9 @@ define('controls/projects/project/site/Panel', [
             if (typeOf(Site) === 'classes/projects/project/Site') {
                 var Project = Site.getProject(),
                     id      = 'panel-' +
-                              Project.getName() + '-' +
-                              Project.getLang() + '-' +
-                              Site.getId();
+                        Project.getName() + '-' +
+                        Project.getLang() + '-' +
+                        Site.getId();
 
                 // default id
                 this.setAttribute('id', id);
@@ -235,8 +235,8 @@ define('controls/projects/project/site/Panel', [
             title = Site.getAttribute('title') + ' (' + Site.getId() + ')';
 
             description = Site.getAttribute('name') + ' - ' +
-                          Site.getId() + ' - ' +
-                          Project.getName();
+                Site.getId() + ' - ' +
+                Project.getName();
 
             if (Site.getId() != 1) {
                 description = description + ' - ' + Site.getUrl();
@@ -265,6 +265,7 @@ define('controls/projects/project/site/Panel', [
             // permissions
             new QUIButton({
                 image : 'fa fa-shield',
+                name  : 'permissions',
                 alt   : Locale.get(lg, 'projects.project.site.panel.btn.permissions'),
                 title : Locale.get(lg, 'projects.project.site.panel.btn.permissions'),
                 styles: {
@@ -280,6 +281,7 @@ define('controls/projects/project/site/Panel', [
 
             new QUIButton({
                 image : 'fa fa-picture-o',
+                name  : 'media',
                 alt   : Locale.get(lg, 'projects.project.site.panel.btn.media'),
                 title : Locale.get(lg, 'projects.project.site.panel.btn.media'),
                 styles: {
@@ -294,6 +296,7 @@ define('controls/projects/project/site/Panel', [
 
             new QUIButton({
                 image : 'fa fa-sort',
+                name  : 'sort',
                 alt   : Locale.get(lg, 'projects.project.site.panel.btn.sort'),
                 title : Locale.get(lg, 'projects.project.site.panel.btn.sort'),
                 styles: {
@@ -331,7 +334,7 @@ define('controls/projects/project/site/Panel', [
                         };
                     }
 
-                    if (data.name === '_Del' || data.name === '_New') {
+                    if (data.name === 'delete' || data.name === 'new') {
                         data.styles = {
                             'float': 'right',
                             width  : 40
@@ -341,7 +344,7 @@ define('controls/projects/project/site/Panel', [
                     self.addButton(data);
                 }
 
-                var Save = self.getButtonBar().getChildren('_Save');
+                var Save = self.getButtonBar().getChildren('save');
 
                 if (Save) {
                     Save.getElm().addClass('qui-site-button-save');
@@ -871,6 +874,7 @@ define('controls/projects/project/site/Panel', [
                                 Node.set('html', '');
 
                                 new QUIButton({
+                                    name  : 'delete-linking',
                                     icon  : 'fa fa-trash',
                                     title : 'Verknüpfung löschen',
                                     events: {
@@ -884,6 +888,7 @@ define('controls/projects/project/site/Panel', [
                             var rowList = LinkinLangTable.getElements('tbody tr');
 
                             new QUIButton({
+                                name  : 'add-linking',
                                 text  : Locale.get(lg, 'projects.project.site.panel.linked.btn.add'),
                                 styles: {
                                     position: 'absolute',
@@ -910,6 +915,7 @@ define('controls/projects/project/site/Panel', [
 
                                     // seite in sprache kopieren und sprach verknüpfung anlegen
                                     new QUIButton({
+                                        name  : 'copy-linking',
                                         icon  : 'fa fa-copy',
                                         alt   : Locale.get(lg, 'copy.site.in.lang'),
                                         title : Locale.get(lg, 'copy.site.in.lang'),
@@ -930,6 +936,7 @@ define('controls/projects/project/site/Panel', [
                                 }
 
                                 new QUIButton({
+                                    name  : 'open-site',
                                     icon  : 'fa fa-file-o',
                                     alt   : Locale.get(lg, 'open.site'),
                                     title : Locale.get(lg, 'open.site'),
@@ -950,6 +957,7 @@ define('controls/projects/project/site/Panel', [
                                 }).inject(LastCell);
 
                                 new QUIButton({
+                                    name  : 'remove-linking',
                                     icon  : 'fa fa-remove',
                                     alt   : Locale.get(lg, 'projects.project.site.panel.linked.btn.delete'),
                                     title : Locale.get(lg, 'projects.project.site.panel.linked.btn.delete'),
@@ -974,6 +982,7 @@ define('controls/projects/project/site/Panel', [
                         // locked
                         if (Locked && USER.isSU) {
                             new QUIButton({
+                                name  : 'unlock',
                                 text  : 'Trotzdem freischalten', // #locale
                                 styles: {
                                     clear  : 'both',
@@ -1088,13 +1097,13 @@ define('controls/projects/project/site/Panel', [
          *
          * @param {Object} Category - qui/controls/buttons/Button
          * @param {Function} [callback] - (optional) callback function
+         * @return {Promise}
          */
         $onCategoryLeave: function (Category, callback) {
             this.Loader.show();
 
             var Site = this.getSite(),
                 Body = this.getBody();
-
 
             // main content
             if (Category.getAttribute('name') === 'content') {
@@ -1110,7 +1119,7 @@ define('controls/projects/project/site/Panel', [
                     callback();
                 }
 
-                return;
+                return Promise.resolve();
             }
 
             // wysiwyg type
@@ -1127,7 +1136,7 @@ define('controls/projects/project/site/Panel', [
                     callback();
                 }
 
-                return;
+                return Promise.resolve();
             }
 
             // form unload
@@ -1141,7 +1150,7 @@ define('controls/projects/project/site/Panel', [
                     callback();
                 }
 
-                return;
+                return Promise.resolve();
             }
 
             var Form     = Body.getElement('form'),
@@ -1163,7 +1172,7 @@ define('controls/projects/project/site/Panel', [
                     callback();
                 }
 
-                return;
+                return Promise.resolve();
             }
 
             // unload params
@@ -1184,31 +1193,39 @@ define('controls/projects/project/site/Panel', [
                 onunloadRequire = Category.getAttribute('onunload_require'),
                 onunload        = Category.getAttribute('onunload');
 
-            if (onunloadRequire) {
-                require([onunloadRequire], function () {
-                    if (self.$CategoryControl) {
-                        self.$CategoryControl.destroy();
-                        self.$CategoryControl = null;
-                    }
+            return new Promise(function (resolve) {
+                if (onunloadRequire) {
+                    require([onunloadRequire], function () {
+                        if (self.$CategoryControl) {
+                            self.$CategoryControl.destroy();
+                            self.$CategoryControl = null;
+                        }
 
 
-                    eval(onunload + '( Category, self );');
+                        eval(onunload + '( Category, self );');
 
-                    if (typeof callback === 'function') {
-                        callback();
-                    }
-                });
-            }
+                        if (typeof callback === 'function') {
+                            callback();
+                        }
+
+                        resolve();
+                    });
+
+                    return;
+                }
 
 
-            if (this.$CategoryControl) {
-                this.$CategoryControl.destroy();
-                this.$CategoryControl = null;
-            }
+                if (self.$CategoryControl) {
+                    self.$CategoryControl.destroy();
+                    self.$CategoryControl = null;
+                }
 
-            if (typeof callback === 'function') {
-                callback();
-            }
+                if (typeof callback === 'function') {
+                    callback();
+                }
+
+                resolve();
+            });
         },
 
         /**
@@ -1219,48 +1236,63 @@ define('controls/projects/project/site/Panel', [
          */
         $onPanelButtonClick: function (Btn) {
             var Panel = this,
-                Site  = Panel.getSite(); // maybe in eval
+                Site  = Panel.getSite();
+
+            var evalButtonClick = function () {
+                eval(Btn.getAttribute('_onclick') + '();');
+            };
 
             if (Btn.getAttribute('name') === 'status') {
-                this.$onCategoryLeave(this.getActiveCategory(), function () {
-                    // check if site must be saved
-                    if (!Site.hasWorkingStorage()) {
-                        eval(Btn.getAttribute('_onclick') + '();');
-                        return;
-                    }
-
-                    new QUIConfirm({
-                        title        : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.title'),
-                        text         : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.text'),
-                        information  : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.information'),
-                        maxHeight    : 400,
-                        maxWidth     : 600,
-                        texticon     : 'fa fa-edit',
-                        icon         : 'fa fa-edit',
-                        ok_button    : {
-                            text: Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.button.ok')
-                        },
-                        cancel_button: {
-                            text: Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.button.cancel')
-                        },
-                        events       : {
-                            onSubmit: function () {
-                                Site.save(function () {
-                                    eval(Btn.getAttribute('_onclick') + '();');
-                                });
-                            },
-
-                            onCancel: function () {
-                                eval(Btn.getAttribute('_onclick') + '();');
-                            }
+                var saving = function () {
+                    return new Promise(function (resolve) {
+                        // check if site must be saved
+                        if (!Site.hasWorkingStorage()) {
+                            evalButtonClick();
+                            return resolve();
                         }
-                    }).open();
-                });
+
+
+                        new QUIConfirm({
+                            title        : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.title'),
+                            text         : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.text'),
+                            information  : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.information'),
+                            maxHeight    : 400,
+                            maxWidth     : 600,
+                            texticon     : 'fa fa-edit',
+                            icon         : 'fa fa-edit',
+                            ok_button    : {
+                                text: Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.button.ok')
+                            },
+                            cancel_button: {
+                                text: Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.button.cancel')
+                            },
+                            events       : {
+                                onSubmit: function () {
+                                    Site.save(function () {
+                                        evalButtonClick();
+                                        resolve();
+                                    });
+                                },
+
+                                onCancel: function () {
+                                    evalButtonClick();
+                                    resolve();
+                                }
+                            }
+                        }).open();
+                    });
+                };
+
+                Panel.$onCategoryLeave(Panel.getActiveCategory())
+                     .then(saving)
+                     .then(function () {
+                         Panel.$onCategoryEnter(Panel.getActiveCategory());
+                     });
 
                 return;
             }
 
-            eval(Btn.getAttribute('_onclick') + '();');
+            evalButtonClick();
         },
 
         /**
@@ -1429,8 +1461,6 @@ define('controls/projects/project/site/Panel', [
                 'text'     : Status.getAttribute('dtext'),
                 '_onclick' : 'Panel.getSite().deactivate'
             });
-
-            this.Loader.hide();
         },
 
         /**
@@ -1751,7 +1781,7 @@ define('controls/projects/project/site/Panel', [
 
             this.Loader.show();
 
-            this.$onCategoryLeave(this.getActiveCategory(), function () {
+            return this.$onCategoryLeave(this.getActiveCategory()).then(function () {
                 var Site    = self.getSite(),
                     Project = Site.getProject();
 
@@ -1825,7 +1855,9 @@ define('controls/projects/project/site/Panel', [
                 (function () {
                     Form.destroy();
                 }).delay(1000);
-            });
+            }).then(function () {
+                this.$onCategoryEnter(this.getActiveCategory());
+            }.bind(this));
         }
     });
 });

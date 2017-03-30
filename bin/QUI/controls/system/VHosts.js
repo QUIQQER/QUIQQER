@@ -53,6 +53,8 @@ define('controls/system/VHosts', [
         initialize: function (options) {
             this.parent(options);
 
+            console.log(options);
+
             this.addEvents({
                 onCreate: this.$onCreate,
                 onResize: this.$onResize

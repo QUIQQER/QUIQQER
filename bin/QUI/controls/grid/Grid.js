@@ -223,7 +223,7 @@ define('controls/grid/Grid', [
                 }
 
                 el.getdate = function (str) {
-                    function fixYear (yr) {
+                    function fixYear(yr) {
                         yr = +yr;
 
                         if (yr < 50) {
@@ -282,51 +282,51 @@ define('controls/grid/Grid', [
                     var var1 = a.getChildren()[i].innerHTML.trim(),
                         var2 = b.getChildren()[i].innerHTML.trim();
 
-                    if (dataType == 'number' ||
-                        dataType == 'integer' ||
-                        dataType == 'int') {
+                    if (dataType === 'number' ||
+                        dataType === 'integer' ||
+                        dataType === 'int') {
 
                         var1 = parseFloat(el.stripHTML(var1));
                         var2 = parseFloat(el.stripHTML(var2));
 
-                        if (el.sortBy == 'ASC') {
+                        if (el.sortBy === 'ASC') {
                             return var1 - var2;
                         }
 
                         return var2 - var1;
                     }
 
-                    if (dataType == 'string' || dataType == 'text') {
+                    if (dataType === 'string' || dataType === 'text') {
                         var1 = var1.toUpperCase();
                         var2 = var2.toUpperCase();
 
-                        if (var1 == var2) {
+                        if (var1 === var2) {
                             return 0;
                         }
 
-                        if (el.sortBy == 'ASC') {
+                        if (el.sortBy === 'ASC') {
                             return var1 < var2 ? 1 : -1;
                         }
 
                         return var1 > var2 ? 1 : -1;
                     }
 
-                    if (dataType == 'date') {
+                    if (dataType === 'date') {
                         var1 = parseFloat(el.getdate(var1));
                         var2 = parseFloat(el.getdate(var2));
 
-                        if (el.sortBy == 'ASC') {
+                        if (el.sortBy === 'ASC') {
                             return var1 - var2;
                         }
 
                         return var2 - var1;
                     }
 
-                    if (dataType == 'currency') {
+                    if (dataType === 'currency') {
                         var1 = parseFloat(var1.substr(1).replace(',', ''));
                         var2 = parseFloat(var2.substr(1).replace(',', ''));
 
-                        if (el.sortBy == 'ASC') {
+                        if (el.sortBy === 'ASC') {
                             return var1 - var2;
                         }
 
@@ -955,10 +955,10 @@ define('controls/grid/Grid', [
 
             if (this.getAttribute('showtoggleicon') && li.getElement('.toggleicon')) {
                 li.getElement('.toggleicon')
-                    .setStyle(
-                        'background-position',
-                        section.getStyle('display') == 'block' ? '-16px 0' : '0 0'
-                    );
+                  .setStyle(
+                      'background-position',
+                      section.getStyle('display') == 'block' ? '-16px 0' : '0 0'
+                  );
             }
 
             this.lastsection = section;
@@ -974,7 +974,7 @@ define('controls/grid/Grid', [
         },
 
         unique  : function (a, asNumber) {
-            function om_sort_number (a, b) {
+            function om_sort_number(a, b) {
                 return a - b;
             }
 
@@ -1094,7 +1094,7 @@ define('controls/grid/Grid', [
                     buttons.push(btns[i]);
                     continue;
                 }
-                
+
                 if (!btns[btns[i].name]) {
                     continue;
                 }
@@ -1154,10 +1154,10 @@ define('controls/grid/Grid', [
                     page = ((data.page - 1) * options.perPage + 1);
 
                 var stats = '<span>' + page + '</span>' +
-                            '<span>..</span>' +
-                            '<span>' + to + '</span>' +
-                            '<span> / </span>' +
-                            '<span>' + data.total + '</span>';
+                    '<span>..</span>' +
+                    '<span>' + to + '</span>' +
+                    '<span> / </span>' +
+                    '<span>' + data.total + '</span>';
 
                 container.getElements('div.pDiv .pPageStat').set('html', stats);
 
@@ -1896,8 +1896,8 @@ define('controls/grid/Grid', [
                     new Element('div', {
                         'class': 'data-empty',
                         html   : '<div class="data-empty-cell">' +
-                                 QUILocale.get('quiqqer/system', 'grid.is.empty') +
-                                 '</div>'
+                        QUILocale.get('quiqqer/system', 'grid.is.empty') +
+                        '</div>'
                     }).inject(this.container.getElement('.bDiv'));
                 }
             } else {
@@ -2175,7 +2175,7 @@ define('controls/grid/Grid', [
 
         // Main draw function
         draw: function () {
-            var i, len, columnModel;
+            var i, len, columnModel, sortable;
             var t = this;
 
             var container   = t.container,
@@ -2328,12 +2328,20 @@ define('controls/grid/Grid', [
                 }
 
                 // Header events
-                if (this.getAttribute('sortHeader')) {
+                sortable = this.getAttribute('sortHeader');
+
+                if ("sortable" in columnModel) {
+                    sortable = columnModel.sortable;
+                }
+
+                if (sortable) {
                     div.addEvents({
                         click    : t.clickHeaderColumn.bind(this),
                         mouseout : t.outHeaderColumn.bind(this),
                         mouseover: t.overHeaderColumn.bind(this)
                     });
+                } else {
+                    div.setStyle('cursor', 'default');
                 }
 
                 div.store('dataType', columnModel.dataType);
@@ -2831,6 +2839,7 @@ define('controls/grid/Grid', [
             clen = this.$columnModel.length;
             len  = this.$data.length;
             data = this.$data;
+            key  = key.toString().toLowerCase();
 
             columnModel = this.$columnModel;
 
@@ -2848,7 +2857,7 @@ define('controls/grid/Grid', [
                 for (c = 0; c < clen; c++) {
                     cml = columnModel[c];
 
-                    if (cml.type == "checkbox") {
+                    if (cml.type === "checkbox") {
                         continue;
                     }
 
@@ -2908,8 +2917,8 @@ define('controls/grid/Grid', [
                 dataIndex   = columnModel.dataIndex;
 
                 if (columnModel.hidden ||
-                    columnModel.dataType == 'button' ||
-                    columnModel.dataType == 'checkbox') {
+                    columnModel.dataType === 'button' ||
+                    columnModel.dataType === 'checkbox') {
                     continue;
                 }
 

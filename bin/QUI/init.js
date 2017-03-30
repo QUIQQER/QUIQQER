@@ -73,7 +73,6 @@ var requireList = [
     'Ajax',
     'Projects',
     'controls/workspace/Manager',
-    'controls/workspace/search/Input',
     'qui/controls/buttons/Button',
     'qui/controls/contextmenu/Item',
     'qui/controls/contextmenu/Seperator'
@@ -91,11 +90,10 @@ require(requireList, function () {
         Ajax                    = arguments[2],
         Projects                = arguments[3],
         WSManager               = arguments[4],
-        MenuSearch              = arguments[5],
-        QUIButton               = arguments[6],
+        QUIButton               = arguments[5],
 
-        QUIContextmenuItem      = arguments[7],
-        QUIContextmenuSeperator = arguments[8];
+        QUIContextmenuItem      = arguments[6],
+        QUIContextmenuSeperator = arguments[7];
 
     Locale.setCurrent(USER.lang);
 
@@ -155,25 +153,6 @@ require(requireList, function () {
     };
 
     window.addEvent('load', quiqqerIsLoaded);
-    window.addEvent('keydown', function (event) {
-        if (!event.control) {
-            return;
-        }
-
-        if (event.key == 'f') {
-            event.stop();
-
-            require(['controls/workspace/search/Search'], function (Search) {
-                new Search({
-                    events: {
-                        onClose: function (S) {
-                            S.destroy();
-                        }
-                    }
-                }).open();
-            });
-        }
-    });
 
     Ajax.get('ajax_isAuth', function (userId) {
 
@@ -223,11 +202,13 @@ require(requireList, function () {
                             if (Quiqqer) {
                                 var Img = Quiqqer.getElm().getElement('img');
 
-                                Img.setStyles({
-                                    height  : 22,
-                                    position: 'relative',
-                                    top     : 6
-                                });
+                                if (Img) {
+                                    Img.setStyles({
+                                        height  : 22,
+                                        position: 'relative',
+                                        top     : 6
+                                    });
+                                }
                             }
                         }
 
@@ -362,7 +343,7 @@ require(requireList, function () {
         require(['Menu'], function () {
             // logout
             new Element('div', {
-                'class': 'qui-contextmenu-baritem smooth ',
+                'class': 'qui-contextmenu-baritem smooth qui-logout-btn',
                 html   : '<span class="qui-contextmenu-baritem-text">' +
                          '<span class="fa fa-power-off"></span> ' +
                          Locale.get('quiqqer/quiqqer', 'menu.log.out') +
@@ -376,14 +357,6 @@ require(requireList, function () {
                 },
                 events : {
                     click: window.logout
-                }
-            }).inject(Menu);
-
-            // search
-            new MenuSearch({
-                styles: {
-                    'float': 'right',
-                    margin : '5px 24px 0 10px'
                 }
             }).inject(Menu);
         });

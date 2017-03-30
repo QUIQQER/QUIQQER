@@ -1128,7 +1128,7 @@ define('controls/workspace/Manager', [
             var self = this;
 
             new QUIWindow({
-                title    : 'Panel Liste',
+                title    : 'Panel-Liste', // #locale
                 buttons  : false,
                 maxWidth : 500,
                 maxHeight: 700,
@@ -1152,7 +1152,7 @@ define('controls/workspace/Manager', [
 
                                 Elm = new Element('div', {
                                     html          : '<h2>' + panels[i].title + '</h2>' +
-                                                    '<p>' + panels[i].text + '</p>',
+                                    '<p>' + panels[i].text + '</p>',
                                     'class'       : 'qui-controls-workspace-panelList-panel smooth',
                                     'data-require': panels[i].require,
                                     events        : {

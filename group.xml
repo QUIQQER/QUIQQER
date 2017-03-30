@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <group>
 
-    <!--
     <attributes>
-        <attribute>quiqqer.group-attribute</attribute>
+        <attribute>description</attribute>
     </attributes>
-    -->
 
     <window>
         <tab name="settings">

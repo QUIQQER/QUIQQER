@@ -38,7 +38,7 @@ class Sites
 
         $Toolbar->appendChild(
             new Button(array(
-                'name'      => '_Save',
+                'name'      => 'save',
                 'textimage' => 'fa fa-save',
                 'text'      => QUI::getLocale()->get($gl, 'projects.project.site.btn.save.text'),
                 'onclick'   => 'Panel.save',
@@ -52,7 +52,7 @@ class Sites
         if ($Site->isLockedFromOther()
             || $Site->hasPermission('quiqqer.projects.site.edit') == false
         ) {
-            $Toolbar->getElementByName('_Save')->setDisable();
+            $Toolbar->getElementByName('save')->setDisable();
         }
 
         // Wenn das Bearbeiten Recht vorhanden ist
@@ -61,7 +61,7 @@ class Sites
         ) {
             $Toolbar->appendChild(
                 new Seperator(array(
-                    'name' => '_sep'
+                    'name' => 'separator'
                 ))
             );
 
@@ -95,13 +95,13 @@ class Sites
         // preview
         $Toolbar->appendChild(
             new Seperator(array(
-                'name' => '_sep'
+                'name' => 'separator'
             ))
         );
 
         $Toolbar->appendChild(
             new Button(array(
-                'name'      => '_Preview',
+                'name'      => 'preview',
                 'textimage' => 'fa fa-eye',
                 'text'      => QUI::getLocale()->get($gl, 'projects.project.site.btn.preview.text'),
                 'onclick'   => 'Panel.openPreview'
@@ -111,7 +111,7 @@ class Sites
         // delete site
         $Toolbar->appendChild(
             new Button(array(
-                'name'    => '_Del',
+                'name'    => 'delete',
                 'icon'    => 'fa fa-trash-o',
                 //'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.delete.text' ),
                 'onclick' => 'Panel.del',
@@ -126,13 +126,13 @@ class Sites
         if ($Site->isLockedFromOther()
             || $Site->hasPermission('quiqqer.projects.site.del') == false
         ) {
-            $Toolbar->getElementByName('_Del')->setDisable();
+            $Toolbar->getElementByName('delete')->setDisable();
         }
 
         // new sub site
         $Toolbar->appendChild(
             new Button(array(
-                'name'    => '_New',
+                'name'    => 'new',
                 'icon'    => 'fa fa-file-o',
                 //'text'      => QUI::getLocale()->get( $gl, 'projects.project.site.btn.new.text' ),
                 'onclick' => 'Panel.createNewChild',
@@ -143,7 +143,7 @@ class Sites
         );
 
         if ($Site->hasPermission('quiqqer.projects.site.new') == false) {
-            $Toolbar->getElementByName('_New')->setDisable();
+            $Toolbar->getElementByName('new')->setDisable();
         }
 
 

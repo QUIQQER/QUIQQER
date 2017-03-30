@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * This file contains QUI\System\Header
+ */
 namespace QUI\System;
 
 use QUI;
@@ -34,44 +37,6 @@ class Headers
      * @var array
      */
     protected $csp = array();
-
-    /**
-     * @var bool
-     */
-    protected $cspLegacy = false;
-
-    /**
-     * List of csp directives
-     *
-     * @var array
-     */
-    protected $cspDirective = array(
-        'base'    => 'base-uri',
-        'child'   => 'child-src',
-        'connect' => 'connect-src',
-        'default' => 'default-src',
-        'font'    => 'font-src',
-        'form'    => 'form-action',
-        'image'   => 'img-src',
-        'img'     => 'img-src',
-        'script'  => 'script-src',
-        'style'   => 'style-src',
-        'object'  => 'object-src',
-        'report'  => 'report-uri'
-    );
-
-    /**
-     * csp written out
-     *
-     * @var array
-     */
-    protected $cspSource = array(
-        'none'           => "'none'",
-        'self'           => "'self'",
-        'strict-dynamic' => "'strict-dynamic'",
-        'unsafe-inline'  => "'unsafe-inline'",
-        'unsafe-eval'    => "'unsafe-eval'"
-    );
 
     /**
      * Headers constructor.
@@ -152,16 +117,19 @@ class Headers
         $list = array();
         $csp  = array();
 
+        $cspSources    = CSP::getInstance()->getCSPSources();
+        $cspDirectives = CSP::getInstance()->getCSPDirectives();
+
         foreach ($this->csp as $entry) {
             $value     = $entry['value'];
             $directive = $entry['directive'];
 
-            if (isset($this->cspSource[$value])) {
-                $value = $this->cspSource[$value];
+            if (isset($cspSources[$value])) {
+                $value = $cspSources[$value];
             }
-            
-            if (isset($this->cspDirective[$directive])) {
-                $directive = $this->cspDirective[$directive];
+
+            if (isset($cspDirectives[$directive])) {
+                $directive = $cspDirectives[$directive];
             }
 
             $list[$directive][] = $value;
@@ -242,7 +210,7 @@ class Headers
      */
     public function cspAdd($value, $directive = 'default')
     {
-        if ($this->isDirectiveAllowed($directive) === false) {
+        if (CSP::getInstance()->isDirectiveAllowed($directive) === false) {
             return;
         }
 
@@ -275,36 +243,5 @@ class Headers
         }
 
         $this->csp = $new;
-    }
-
-    /**
-     * Content-Security-Policy
-     *
-     * @param bool $mode
-     */
-    public function cspLegacy($mode = true)
-    {
-        $this->cspLegacy = (bool)$mode;
-    }
-
-    /**
-     * Is the directive allowed?
-     *
-     * @param string $directive
-     * @return bool
-     */
-    public function isDirectiveAllowed($directive)
-    {
-        if (isset($this->cspDirective[$directive])) {
-            return true;
-        }
-
-        foreach ($this->cspDirective as $d) {
-            if ($d == $directive) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

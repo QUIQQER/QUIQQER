@@ -16,10 +16,11 @@ QUI::$Ajax->registerFunction(
 
         foreach ($addresses as $Address) {
             /* @var $Address \QUI\Users\Address */
-            $entry        = $Address->getAttributes();
-            $entry['id']  = $Address->getId();
-            $entry['uid'] = $User->getId();
-
+            $entry         = $Address->getAttributes();
+            $entry['id']   = $Address->getId();
+            $entry['text'] = $Address->getText();
+            $entry['uid']  = $User->getId();
+            
             $result[] = $entry;
         }
 

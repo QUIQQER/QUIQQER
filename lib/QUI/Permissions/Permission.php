@@ -187,14 +187,15 @@ class Permission
 
         $groups = $User->getGroups();
 
-        foreach ($groups as $Group) {
-            $permissions = $Manager->getPermissions($Group);
+        if (!empty($groups)) {
+            foreach ($groups as $Group) {
+                $permissions = $Manager->getPermissions($Group);
 
-            if (isset($permissions[$perm]) && !empty($permissions[$perm])) {
-                return $permissions[$perm];
+                if (isset($permissions[$perm]) && !empty($permissions[$perm])) {
+                    return $permissions[$perm];
+                }
             }
         }
-
 
         throw new QUI\Permissions\Exception(
             QUI::getLocale()->get('quiqqer/system', 'exception.no.permission'),

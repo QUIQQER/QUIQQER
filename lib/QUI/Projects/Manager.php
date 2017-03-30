@@ -128,7 +128,7 @@ class Manager
         $Config->setSection($projectName, $config);
         $Config->save();
 
-        QUI::getEvents()->fireEvent('projectConfigSave', array($projectName, $config));
+        QUI::getEvents()->fireEvent('projectConfigSave', array($projectName, $config, $params));
 
         // remove the project from the temp
         if (self::$projects[$projectName]) {
@@ -251,7 +251,6 @@ class Manager
         $settingsXml = self::getRelatedSettingsXML($Project);
 
         foreach ($settingsXml as $file) {
-            QUI\System\Log::writeRecursive($file);
             $Dom  = XML::getDomFromXml($file);
             $Path = new \DOMXPath($Dom);
 
@@ -968,7 +967,6 @@ class Manager
                 $list[] = $projectSettings;
             }
         }
-
 
         QUI\Cache\Manager::set('qui/projects/', $list);
 

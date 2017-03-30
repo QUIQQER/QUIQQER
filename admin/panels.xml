@@ -10,7 +10,7 @@
                 <locale group="quiqqer/system" var="panels.project.title"/>
             </title>
             <text>
-                <locale group="quiqqer/system" var="panels.project.text"/>
+                <locale group="quiqqer/system" var="panels.project.description"/>
             </text>
         </panel>
 
@@ -21,7 +21,7 @@
                 <locale group="quiqqer/system" var="panels.help.title"/>
             </title>
             <text>
-                <locale group="quiqqer/system" var="panels.help.text"/>
+                <locale group="quiqqer/system" var="panels.help.description"/>
             </text>
         </panel>
 
@@ -32,7 +32,7 @@
                 <locale group="quiqqer/system" var="panels.bookmarks.title"/>
             </title>
             <text>
-                <locale group="quiqqer/system" var="panels.bookmarks.text"/>
+                <locale group="quiqqer/system" var="panels.bookmarks.description"/>
             </text>
         </panel>
 
@@ -43,7 +43,7 @@
                 <locale group="quiqqer/system" var="panels.upload.title"/>
             </title>
             <text>
-                <locale group="quiqqer/system" var="panels.upload.text"/>
+                <locale group="quiqqer/system" var="panels.upload.description"/>
             </text>
         </panel>
 
@@ -54,7 +54,7 @@
                 <locale group="quiqqer/system" var="panels.messages.title"/>
             </title>
             <text>
-                <locale group="quiqqer/system" var="panels.messages.text"/>
+                <locale group="quiqqer/system" var="panels.messages.description"/>
             </text>
         </panel>
 
@@ -65,7 +65,7 @@
                 <locale group="quiqqer/system" var="panels.tasks.title"/>
             </title>
             <text>
-                <locale group="quiqqer/system" var="panels.tasks.text"/>
+                <locale group="quiqqer/system" var="panels.tasks.description"/>
             </text>
         </panel>
 

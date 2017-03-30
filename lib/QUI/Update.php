@@ -210,7 +210,6 @@ class Update
                 // events
                 self::importEvents(
                     $package_dir . '/' . $sub . '/events.xml',
-                    $IO,
                     $package . '/' . $sub
                 );
             }

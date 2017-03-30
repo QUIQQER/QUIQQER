@@ -1,147 +1,210 @@
-
 /**
  * QUIQQER Bookmars
  *
  * @module controls/desktop/panels/Bookmarks
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/controls/bookmarks/Panel
+ * @require classes/utils/Sortables
+ * @require css!controls/desktop/panels/Bookmarks.css
  */
-
 define('controls/desktop/panels/Bookmarks', [
 
+    'qui/QUI',
     'qui/controls/bookmarks/Panel',
     'classes/utils/Sortables',
+    'qui/controls/windows/Confirm',
+    'qui/controls/sitemap/Map',
+    'qui/controls/sitemap/Item',
+    'Ajax',
+    'utils/Panels',
 
     'css!controls/desktop/panels/Bookmarks.css'
 
-], function (QUIBookmarks, Sortables) {
+], function (QUI, QUIBookmarks, Sortables, QUIConfirm, QUISitemap, QUISitemapItem, QUIAjax, PanelUtils) {
     "use strict";
 
     return new Class({
 
-        Extends : QUIBookmarks,
-        Type    : 'controls/desktop/panels/Bookmarks',
+        Extends: QUIBookmarks,
+        Type   : 'controls/desktop/panels/Bookmarks',
 
-        /**
-         * Booksmarks not editable
-         */
-        fix : function () {
-            this.$fixed = true;
+        Binds: [
+            '$onCreate',
+            'openAddDialog',
+            'enableEdit',
+            'enableSorting'
+        ],
 
-            this.$normalizeButtons();
-            this.getButtonBar().clear();
+        initialize: function (options) {
+            this.parent(options);
+
+            this.addEvents({
+                onCreate: this.$onCreate
+            });
         },
 
         /**
-         * Booksmarks are editable
+         * event: on create
          */
-        unfix : function () {
+        $onCreate: function () {
             var self = this;
 
-            this.$fixed = false;
+            this.setAttributes({
+                title : 'Bookmarks', // #locale
+                icon  : 'fa fa-bookmark',
+                footer: false
+            });
 
             this.addButton({
-                name      : 'sort',
-                text      : 'Sortierung',
-                textimage : 'fa fa-sort',
-                events :
-                {
-                    onClick : function (Btn) {
+                name  : 'add',
+                icon  : 'fa fa-plus',
+                title : 'Bookmark hinzufügen', // #locale
+                events: {
+                    onClick: this.openAddDialog
+                }
+            });
+
+            this.addButton({
+                name  : 'edit',
+                icon  : 'fa fa-edit',
+                title : 'Bookmarks editieren', // #locale
+                events: {
+                    onClick: function (Btn) {
                         if (Btn.isActive()) {
-                            self.$normalizeButtons();
+                            Btn.setNormal();
                             return;
                         }
 
-                        self.$normalizeButtons();
                         Btn.setActive();
                     },
 
-                    onActive : function () {
+                    onActive: function () {
+                        self.enableEdit();
+                    },
+
+                    onNormal: function () {
+                        self.disableEdit();
+                    }
+                },
+                styles: {
+                    'float': 'right'
+                }
+            });
+
+            this.addButton({
+                name: 'seperator',
+                type: 'seperator'
+            });
+
+            this.addButton({
+                name  : 'sort',
+                title : 'Sortierung', // #locale
+                icon  : 'fa fa-sort',
+                styles: {
+                    'float': 'right'
+                },
+                events: {
+                    onClick: function (Btn) {
+                        if (Btn.isActive()) {
+                            Btn.setNormal();
+                            return;
+                        }
+
+                        Btn.setActive();
+                    },
+
+                    onActive: function () {
                         self.enableSorting();
                     },
 
-                    onNormal : function () {
+                    onNormal: function () {
                         self.disableSorting();
                     }
                 }
             });
 
-
-            this.addButton({
-                name      : 'edit',
-                text      : 'Editieren',
-                textimage : 'fa fa-edit',
-                events :
-                {
-                    onClick : function (Btn) {
-                        if (Btn.isActive()) {
-                            self.$normalizeButtons();
-                            return;
-                        }
-
-                        self.$normalizeButtons();
-                        Btn.setActive();
-                    },
-
-                    onActive : function () {
-                        self.enableEdit();
-                    },
-
-                    onNormal : function () {
-                        self.disableEdit();
-                    }
-                }
-            });
+            this.getButtons('seperator').getElm().setStyle('float', 'right');
         },
 
         /**
-         *
+         * Booksmarks not editable
          */
-        enableEdit : function () {
+        fix: function () {
+            this.$fixed = true;
+
+            // this.$normalizeButtons();
+            // this.getButtonBar().clear();
+        },
+
+        /**
+         * Booksmarks are editable
+         */
+        unfix: function () {
+            var self = this;
+
+            this.$fixed = false;
+        },
+
+        /**
+         * enable the bookmark edit
+         */
+        enableEdit: function () {
+            this.getButtons('sort').setNormal();
+
             var i, len, text, Elm;
             var bookmarks = this.$Container.getElements('.qui-bookmark-text');
 
             for (i = 0, len = bookmarks.length; i < len; i++) {
-                Elm  = bookmarks[ i ];
-                text = bookmarks[ i ].get('text');
+                Elm  = bookmarks[i];
+                text = bookmarks[i].get('text');
 
                 Elm.set('html', '');
 
                 new Element('input', {
-                    value  : text,
-                    styles : {
+                    value : text,
+                    styles: {
                         width: '100%'
                     }
                 }).inject(Elm);
             }
+
+            this.setAttribute('dragable', true);
+
+            this.unfix();
         },
 
         /**
          * disable sorting
          */
-        disableEdit : function () {
+        disableEdit: function () {
             var i, len, text;
             var fields = this.$Container.getElements('.qui-bookmark-text input');
 
             for (i = 0, len = fields.length; i < len; i++) {
-                text = fields[ i ].value;
-                fields[ i].getParent().set('html', text);
+                text = fields[i].value;
+                fields[i].getParent().set('html', text);
             }
+
+            this.setAttribute('dragable', false);
+            this.fix();
         },
 
         /**
          * enable sorting
          */
-        enableSorting : function () {
+        enableSorting: function () {
             var self = this;
             var List = this.$Elm.getElements('.qui-bookmark');
 
             this.$Container.addClass('qui-bookmark-list');
+            this.getButtons('edit').setNormal();
 
             // set placeholder divs
             List.each(function (Child) {
                 new Element('div', {
-                    'class' : 'qui-bookmark-placeholder',
-                    html    : '<span class="fa fa-arrows"></span>' +
+                    'class': 'qui-bookmark-placeholder',
+                    html   : '<span class="fa fa-arrows"></span>' +
                     Child.getElement('.qui-bookmark-text').get('text')
                 }).inject(Child);
             });
@@ -149,11 +212,11 @@ define('controls/desktop/panels/Bookmarks', [
             // dragdrop sort
             this.$Sortables = new Sortables(this.$Container, {
                 handles: List,
-                revert: {
-                    duration   : 500,
-                    transition : 'elastic:out'
+                revert : {
+                    duration  : 500,
+                    transition: 'elastic:out'
                 },
-                clone : function (event) {
+                clone  : function (event) {
                     var Target = event.target;
 
                     if (!Target.hasClass('.qui-bookmark')) {
@@ -166,30 +229,31 @@ define('controls/desktop/panels/Bookmarks', [
                     Target.addClass('qui-bookmark-active');
 
                     return new Element('div', {
-                        styles : {
-                            background : 'rgba(0,0,0,0.3)',
-                            height     : size.y,
-                            top        : pos.y,
-                            width      : size.x,
-                            zIndex     : 1000
+                        styles: {
+                            background: 'rgba(0,0,0,0.3)',
+                            height    : size.y,
+                            position  : 'absolute',
+                            top       : pos.y,
+                            width     : size.x,
+                            zIndex    : 1000
                         }
                     });
                 },
 
-                onStart : function () {
+                onStart: function () {
                     self.$Container.addClass('qui-bookmark-dd-active');
 
                     self.$Container.getElements('.qui-bookmark-placeholder')
                         .set('display', 'none');
 
                     self.$Container.setStyles({
-                        height   : self.$Container.getSize().y,
-                        overflow : 'hidden',
-                        width    : self.$Container.getSize().x
+                        height  : self.$Container.getSize().y,
+                        overflow: 'hidden',
+                        width   : self.$Container.getSize().x
                     });
                 },
 
-                onComplete : function () {
+                onComplete: function () {
                     self.$Container.removeClass('qui-bookmark-dd-active');
 
                     self.$Container.getElements('.qui-bookmark-active')
@@ -199,9 +263,9 @@ define('controls/desktop/panels/Bookmarks', [
                         .set('display', null);
 
                     self.$Container.setStyles({
-                        height   : null,
-                        overflow : null,
-                        width    : null
+                        height  : null,
+                        overflow: null,
+                        width   : null
                     });
                 }
             });
@@ -210,7 +274,7 @@ define('controls/desktop/panels/Bookmarks', [
         /**
          * disable sorting
          */
-        disableSorting : function () {
+        disableSorting: function () {
             this.$Container.removeClass('qui-bookmark-list');
             this.$Container.getElements('.qui-bookmark-placeholder').destroy();
 
@@ -226,7 +290,7 @@ define('controls/desktop/panels/Bookmarks', [
         /**
          * overwrite appendChild, because we must use some special click events
          */
-        appendChild : function (Item) {
+        appendChild: function (Item) {
             if (!this.$Container) {
                 return this;
             }
@@ -234,7 +298,17 @@ define('controls/desktop/panels/Bookmarks', [
             var Child;
 
             // parse qui/controls/contextmenu/Item to an Bookmark
-            if (Item.getType() == 'qui/controls/contextmenu/Item') {
+            if (typeOf(Item) === 'object') {
+                var json = JSON.encode(Item);
+
+                Child = this.$createEntry({
+                    text : Item.text,
+                    icon : Item.icon,
+                    path : '',
+                    click: 'BookmarkPanel.$itemClick(' + json + ')'
+                }).inject(this.$Container);
+
+            } else if (Item.getType() === 'qui/controls/contextmenu/Item') {
                 var path    = Item.getPath(),
                     xmlFile = Item.getAttribute('qui-xml-file');
 
@@ -243,18 +317,18 @@ define('controls/desktop/panels/Bookmarks', [
                 }
 
                 Child = this.$createEntry({
-                    text  : Item.getAttribute('text'),
-                    icon  : Item.getAttribute('icon'),
-                    path  : path,
-                    click : 'BookmarkPanel.xmlMenuClick(path)'
+                    text : Item.getAttribute('text'),
+                    icon : Item.getAttribute('icon'),
+                    path : path,
+                    click: 'BookmarkPanel.xmlMenuClick(path)'
                 }).inject(this.$Container);
 
-            } else if (Item.getType() == 'qui/controls/sitemap/Item') {
+            } else if (Item.getType() === 'qui/controls/sitemap/Item') {
                 var ProjectSitemap = Item.getMap().getParent(),
 
-                    project = ProjectSitemap.getAttribute('project'),
-                    lang    = ProjectSitemap.getAttribute('lang'),
-                    value   = Item.getAttribute('value');
+                    project        = ProjectSitemap.getAttribute('project'),
+                    lang           = ProjectSitemap.getAttribute('lang'),
+                    value          = Item.getAttribute('value');
 
                 var click = 'require(["utils/Panels"], function(U) { U.openSitePanel( "' + project + '", "' + lang + '", "' + value + '" ) })',
                     text  = Item.getAttribute('text');
@@ -265,18 +339,18 @@ define('controls/desktop/panels/Bookmarks', [
                 }
 
                 Child = this.$createEntry({
-                    text  : text,
-                    icon  : Item.getAttribute('icon'),
-                    click : click,
-                    path  : ''
+                    text : text,
+                    icon : Item.getAttribute('icon'),
+                    click: click,
+                    path : ''
                 }).inject(this.$Container);
 
             } else {
                 Child = this.$createEntry({
-                    text  : Item.getAttribute('text'),
-                    icon  : Item.getAttribute('icon'),
-                    click : Item.getAttribute('bookmark'),
-                    path  : ''
+                    text : Item.getAttribute('text'),
+                    icon : Item.getAttribute('icon'),
+                    click: Item.getAttribute('bookmark'),
+                    path : ''
                 }).inject(this.$Container);
             }
 
@@ -291,7 +365,7 @@ define('controls/desktop/panels/Bookmarks', [
          * XML menu click
          * @param {String} path - path of the xml file eq: xmlFile:path/settings.xml
          */
-        xmlMenuClick : function (path) {
+        xmlMenuClick: function (path) {
             if (path.match('xmlFile:')) {
                 require([
                     'Menu',
@@ -305,12 +379,43 @@ define('controls/desktop/panels/Bookmarks', [
         },
 
         /**
+         * item click for an object entry
+         *
+         * @param data
+         */
+        $itemClick: function (data) {
+            if (typeOf(data) !== 'object') {
+                return;
+            }
+
+            if (!data.hasOwnProperty('require')) {
+                return;
+            }
+
+            require([
+                data.require,
+                'qui/controls/desktop/Panel',
+                'qui/controls/windows/Popup'
+            ], function (Cls, QUIPanel, QUIPopup) {
+                var Instance = new Cls();
+                if (Instance instanceof QUIPanel) {
+                    PanelUtils.openPanelInTasks(Instance);
+                    return;
+                }
+
+                if (Instance instanceof QUIPopup) {
+                    Instance.open();
+                }
+            });
+        },
+
+        /**
          * make a click on a menu item by path
          *
          * @param {String} path - Path to the menu item
          * @return {Boolean}
          */
-        $clickMenuItem : function (path) {
+        $clickMenuItem: function (path) {
             if (this.$fixed === false) {
                 return true;
             }
@@ -321,10 +426,110 @@ define('controls/desktop/panels/Bookmarks', [
         /**
          * Set all buttons to normal status
          */
-        $normalizeButtons : function () {
+        $normalizeButtons: function () {
             this.getButtonBar().getChildren().each(function (Btn) {
                 Btn.setNormal();
             });
+        },
+
+        /**
+         * Opens the add dialog
+         * User can add a bookmark
+         */
+        openAddDialog: function () {
+            var self = this;
+
+            new QUIConfirm({
+                icon     : 'fa fa-bookmarks',
+                title    : 'Bookmarks',
+                maxWidth : 500,
+                maxHeight: 700,
+                events   : {
+                    onOpen: function (Win) {
+                        Win.getContent().set('html', '');
+                        Win.Loader.show();
+
+                        QUIAjax.get('ajax_menu', function (menu) {
+                            var getItems = function (items) {
+                                var i, len, item, children;
+                                var result = [];
+
+                                for (i = 0, len = items.length; i < len; i++) {
+                                    item = items[i];
+
+                                    if (item.items.length) {
+                                        children = getItems(item.items);
+                                        result.combine(children);
+                                    }
+
+                                    if (!item.hasOwnProperty('require')) {
+                                        continue;
+                                    }
+
+                                    if (item.require !== '') {
+                                        result.push(item);
+                                    }
+                                }
+
+                                return result;
+                            };
+
+                            var items   = getItems(menu);
+                            var Sitemap = new QUISitemap({
+                                multiple: true,
+                                styles  : {
+                                    margin : '10px 0px',
+                                    padding: 0
+                                }
+                            }).inject(Win.getContent());
+
+                            items.sort(function (a, b) {
+                                var nameA = a.text.toUpperCase();
+                                var nameB = b.text.toUpperCase();
+
+                                if (nameA < nameB) {
+                                    return -1;
+                                }
+                                if (nameA > nameB) {
+                                    return 1;
+                                }
+
+                                return 0;
+                            });
+
+                            for (var i = 0, len = items.length; i < len; i++) {
+                                Sitemap.appendChild(
+                                    new QUISitemapItem({
+                                        icon: items[i].icon,
+                                        name: items[i].name,
+                                        text: items[i].text,
+                                        data: items[i]
+                                    })
+                                );
+                            }
+
+                            Win.Loader.hide();
+                        });
+                    },
+
+                    onSubmit: function (Win) {
+                        Win.Loader.show();
+
+                        var Map = Win.getContent()
+                                     .getElement('[data-qui="qui/controls/sitemap/Map"]');
+
+                        var Sitemap = QUI.Controls.getById(Map.get('data-quiid'));
+                        var items   = Sitemap.getSelectedChildren()
+                                             .map(function (SitemapItem) {
+                                                 return SitemapItem.getAttribute('data');
+                                             });
+
+                        for (var i = 0, len = items.length; i < len; i++) {
+                            self.appendChild(items[i]);
+                        }
+                    }
+                }
+            }).open();
         }
     });
 });

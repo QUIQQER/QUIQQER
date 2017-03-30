@@ -153,19 +153,35 @@ class Package extends QUI\QDOM
     }
 
     /**
-     * Return all provider
+     * Return all providers
      *
+     * @param string|bool $providerName - optional, Name of the wanted providers
      * @return array
+     *
+     * @todo cache that
      */
-    public function getProvider()
+    public function getProvider($providerName = false)
     {
         $packageData = $this->getPackageXMLData();
 
-        if (!empty($packageData['provider'])) {
+        if (empty($packageData['provider'])) {
+            return array();
+        }
+
+        if ($providerName === false) {
             return $packageData['provider'];
         }
 
-        return array();
+        $provider = $packageData['provider'];
+        $provider = array_filter($provider, function ($key) use ($providerName) {
+            return $key === $providerName;
+        }, \ARRAY_FILTER_USE_KEY);
+
+        if (!isset($provider[$providerName])) {
+            return array();
+        }
+
+        return $provider[$providerName];
     }
 
     /**
@@ -361,6 +377,23 @@ class Package extends QUI\QDOM
     }
 
     /**
+     * Get specific XML file from Package
+     *
+     * @param string $name - e.g. "database.xml" / "package.xml" etc.
+     * @return string|false - absolute file path or false if xml file does not exist
+     */
+    public function getXMLFile($name)
+    {
+        $file = $this->getDir() . $name;
+
+        if (!file_exists($file)) {
+            return false;
+        }
+
+        return $file;
+    }
+
+    /**
      * Execute the package setup
      */
     public function setup()
@@ -384,7 +417,7 @@ class Package extends QUI\QDOM
         Update::importSiteEvents($dir . 'site.xml');
 
         // locale
-        Update::importLocale($dir . 'locale.xml');
+        QUI\Translator::importFromPackage($this, true, true);
 
         try {
             $groups = XML::getLocaleGroupsFromDom(
@@ -407,10 +440,10 @@ class Package extends QUI\QDOM
             QUI\Translator::publish($group);
         }
 
-
         // settings
         if (!file_exists($dir . 'settings.xml')) {
             QUI::getEvents()->fireEvent('packageSetup', array($this));
+            QUI\Cache\Manager::clearAll();
             return;
         }
 
@@ -422,6 +455,9 @@ class Package extends QUI\QDOM
         }
 
         QUI::getEvents()->fireEvent('packageSetup', array($this));
+
+        // @todo überdenken
+        QUI\Cache\Manager::clearAll();
     }
 
     /**
@@ -439,9 +475,6 @@ class Package extends QUI\QDOM
      */
     public function install()
     {
-        $this->setup();
-
-        QUI\Cache\Manager::clearAll();
         QUI::getEvents()->fireEvent('packageInstall', array($this));
     }
 
@@ -453,8 +486,7 @@ class Package extends QUI\QDOM
      */
     public function uninstall()
     {
-        QUI::getEvents()
-            ->fireEvent('packageUninstall', array($this->getName()));
+        QUI::getEvents()->fireEvent('packageUnInstall', array($this->getName()));
     }
 
     /**
@@ -465,7 +497,14 @@ class Package extends QUI\QDOM
      */
     public function destroy()
     {
-        QUI::getEvents()
-            ->fireEvent('packageUninstall', array($this->getName()));
+        QUI::getEvents()->fireEvent('packageDestroy', array($this->getName()));
+    }
+
+    /**
+     * event on update
+     */
+    public function onUpdate()
+    {
+        QUI::getEvents()->fireEvent('packageUpdate', array($this));
     }
 }

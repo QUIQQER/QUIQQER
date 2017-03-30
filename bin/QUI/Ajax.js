@@ -33,9 +33,9 @@ define('Ajax', [
 
     return {
 
-        $globalJSF : {}, // global javascript callback functions
+        $globalJSF: {}, // global javascript callback functions
         $onprogress: {},
-        $url       : typeof URL_DIR === 'undefined' ? '' : URL_DIR + 'admin/ajax.php',
+        $url: typeof URL_DIR === 'undefined' ? '' : URL_DIR + 'admin/ajax.php',
 
         /**
          * Send a Request async
@@ -52,14 +52,14 @@ define('Ajax', [
         request: function (call, method, callback, params) {
             // if sync, the browser freeze
             var self = this,
-                id   = String.uniqueID();
+                id = String.uniqueID();
 
-            method   = method || 'post'; // is post, put, get or delete
+            method = method || 'post'; // is post, put, get or delete
             callback = callback || function () {
                 };
 
             params = Utils.combine(params, {
-                '_rf'      : call,
+                '_rf': call,
                 '_FRONTEND': window.QUIQQER_FRONTEND || 0
             });
 
@@ -70,14 +70,15 @@ define('Ajax', [
             this.$onprogress[id] = new QUIAjax(
                 // combine all params, so, they are available in the Request Object
                 Utils.combine(params, {
-                    callback : callback,
-                    method   : method,
-                    url      : this.$url,
-                    async    : true,
+                    callback: callback,
+                    method: method,
+                    url: this.$url,
+                    async: true,
                     showError: typeof params.showError !== 'undefined' ? params.showError : true,
-                    events   : {
+                    showLogin: typeof params.showLogin !== 'undefined' ? params.showLogin : true,
+                    events: {
                         onSuccess: function () {
-                            var args    = arguments;
+                            var args = arguments;
                             var Request = args[args.length - 1];
 
                             if (Request.getAttribute('logout')) {
@@ -148,14 +149,15 @@ define('Ajax', [
                             }
 
                             if (Exception.getCode() === 401 &&
-                                Exception.getAttribute('type') == 'QUI\\Users\\Exception'
+                                Exception.getAttribute('type') == 'QUI\\Users\\Exception' &&
+                                Request.getAttribute('showLogin')
                             ) {
                                 Request.setAttribute('logout', true);
 
-                                require(['controls/system/Login'], function (Login) {
+                                require(['controls/users/LoginWindow'], function (Login) {
                                     new Login({
                                         events: {
-                                            onLogin: function () {
+                                            onSuccess: function () {
                                                 self.request(call, method, callback, params);
                                             }
                                         }
@@ -172,10 +174,10 @@ define('Ajax', [
                             ) {
                                 Request.setAttribute('logout', true);
 
-                                require(['controls/system/Login'], function (Login) {
+                                require(['controls/users/LoginWindow'], function (Login) {
                                     new Login({
                                         events: {
-                                            onLogin: function () {
+                                            onSuccess: function () {
                                                 self.request(call, method, callback, params);
                                             }
                                         }
@@ -275,11 +277,11 @@ define('Ajax', [
             this.$onprogress[id] = new QUIAjax(
                 // combine all params, so, they are available in the Request Object
                 Utils.combine(params, {
-                    method : method,
-                    url    : this.$url,
-                    async  : false,
+                    method: method,
+                    url: this.$url,
+                    async: false,
                     timeout: 5000,
-                    events : {
+                    events: {
                         onCancel: function (Request) {
                             if (Request.getAttribute('onCancel')) {
                                 return Request.getAttribute('onCancel')(Request);

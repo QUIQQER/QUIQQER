@@ -60,12 +60,12 @@ define('controls/users/password/Window', [
          * event : on open
          */
         $onOpen: function (Win) {
-            Win.getContent().addClass('qui-controle-user-password-window');
+            Win.getContent().addClass('qui-controls-user-password-window');
             Win.getContent().set('html', '');
 
             if (this.getAttribute('message')) {
                 var Message = new Element('div', {
-                    'class': 'qui-controle-user-password-window-message',
+                    'class': 'qui-controls-user-password-window-message',
                     html   : this.getAttribute('message')
                 }).inject(Win.getContent());
 

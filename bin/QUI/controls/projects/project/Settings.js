@@ -80,7 +80,8 @@ define('controls/projects/project/Settings', [
         ],
 
         options: {
-            project: ''
+            project : '',
+            category: false // open category on settings panel load
         },
 
         initialize: function (options) {
@@ -127,6 +128,7 @@ define('controls/projects/project/Settings', [
             this.getContent().addClass('qui-project-settings');
 
             this.addButton({
+                name     : 'save',
                 text     : Locale.get(lg, 'projects.project.panel.settings.btn.save'),
                 textimage: 'fa fa-save',
                 events   : {
@@ -135,6 +137,7 @@ define('controls/projects/project/Settings', [
             });
 
             this.addButton({
+                name     : 'remove',
                 text     : Locale.get(lg, 'projects.project.panel.settings.btn.remove'),
                 textimage: 'fa fa-remove',
                 events   : {
@@ -231,8 +234,20 @@ define('controls/projects/project/Settings', [
                 self.$config   = result[0];
                 self.$defaults = result[1];
 
-                self.getCategoryBar().firstChild().click();
                 self.Loader.hide();
+
+                if (self.getAttribute('category')) {
+                    var Wanted = self.getCategoryBar().getElement(
+                        self.getAttribute('category')
+                    );
+
+                    if (Wanted) {
+                        Wanted.click();
+                        return;
+                    }
+                }
+
+                self.getCategoryBar().firstChild().click();
             });
         },
 
@@ -346,18 +361,20 @@ define('controls/projects/project/Settings', [
 
                         // prefix
                         new Translation({
-                            'group': 'project/' + self.$Project.getName(),
-                            'var'  : 'template.prefix',
-                            'type' : 'php,js'
+                            'group'  : 'project/' + self.$Project.getName(),
+                            'var'    : 'template.prefix',
+                            'type'   : 'php,js',
+                            'package': 'quiqqer/quiqqer'
                         }).inject(
                             Body.getElement('.prefix-settings-container')
                         );
 
                         // suffix
                         new Translation({
-                            'group': 'project/' + self.$Project.getName(),
-                            'var'  : 'template.suffix',
-                            'type' : 'php,js'
+                            'group'  : 'project/' + self.$Project.getName(),
+                            'var'    : 'template.suffix',
+                            'type'   : 'php,js',
+                            'package': 'quiqqer/quiqqer'
                         }).inject(
                             Body.getElement('.suffix-settings-container')
                         );

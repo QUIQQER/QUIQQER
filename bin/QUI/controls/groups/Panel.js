@@ -17,7 +17,6 @@
  * @require qui/controls/buttons/Button
  * @require css!controls/groups/Panel.css
  */
-
 define('controls/groups/Panel', [
 
     'qui/QUI',
@@ -204,17 +203,22 @@ define('controls/groups/Panel', [
                 }, {
                     header   : Locale.get(lg, 'group_id'),
                     dataIndex: 'id',
-                    dataType : 'integer',
+                    dataType : 'number',
                     width    : 150
                 }, {
                     header   : Locale.get(lg, 'groupname'),
                     dataIndex: 'name',
-                    dataType : 'integer',
+                    dataType : 'number',
                     width    : 150
                 }, {
                     header   : Locale.get(lg, 'groups.panel.grid.admin'),
                     dataIndex: 'admin',
                     dataType : 'string',
+                    width    : 150
+                }, {
+                    header   : Locale.get(lg, 'groups.panel.grid.users'),
+                    dataIndex: 'users',
+                    dataType : 'number',
                     width    : 150
                 }],
                 pagination : true,
@@ -463,23 +467,6 @@ define('controls/groups/Panel', [
                 data.admin = Locale.get(lg, 'yes');
             }
 
-            //data.status = {
-            //    status : Group.isActive(),
-            //    value  : Group.getId(),
-            //    gid    : Group.getId(),
-            //    image  : Group.isActive() ?
-            //                this.getAttribute( 'active_image' ) :
-            //                this.getAttribute( 'deactive_image' ),
-            //
-            //    alt : Group.isActive() ?
-            //                this.getAttribute( 'deactive_text' ) :
-            //                this.getAttribute( 'active_text' ),
-            //
-            //    events : {
-            //        onClick : this.$btnSwitchStatus
-            //    }
-            //};
-
             data.status = new QUISwitch({
                 status: Group.isActive(),
                 value : Group.getId(),
@@ -636,31 +623,14 @@ define('controls/groups/Panel', [
                 data = result.data;
 
                 for (i = 0, len = data.length; i < len; i++) {
-                    admin = (data[i].admin).toInt();
+                    admin = parseInt(data[i].admin);
 
-                    data[i].active = (data[i].active).toInt();
+                    data[i].active = parseInt(data[i].active);
                     data[i].admin  = Locale.get(lg, 'no');
 
                     if (admin) {
                         data[i].admin = Locale.get(lg, 'yes');
                     }
-
-                    //data[i].status = {
-                    //    status : data[i].active,
-                    //    value  : data[i].id,
-                    //    gid    : data[i].id,
-                    //    image  : data[i].active ?
-                    //                Panel.getAttribute( 'active_image' ) :
-                    //                Panel.getAttribute( 'deactive_image' ),
-                    //
-                    //    alt : data[i].active ?
-                    //                Panel.getAttribute( 'deactive_text' ) :
-                    //                Panel.getAttribute( 'active_text' ),
-                    //
-                    //    events : {
-                    //        onClick : Panel.$btnSwitchStatus
-                    //    }
-                    //};
 
                     data[i].status = new QUISwitch({
                         status: data[i].active,

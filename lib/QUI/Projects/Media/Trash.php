@@ -44,8 +44,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
      */
     public function getPath()
     {
-        return VAR_DIR . 'media/' .
-               $this->Media->getProject()->getAttribute('name') . '/';
+        return VAR_DIR . 'media/' . $this->Media->getProject()->getAttribute('name') . '/';
     }
 
     /**

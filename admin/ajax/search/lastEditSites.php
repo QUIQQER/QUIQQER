@@ -19,7 +19,7 @@ QUI::$Ajax->registerFunction(
         $selects = array();
 
         foreach ($projects as $Project) {
-            $table   = $Project->getAttribute('db_table');
+            $table   = $Project->table();
             $lang    = $Project->getLang();
             $project = $Project->getName();
 

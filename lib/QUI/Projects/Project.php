@@ -245,7 +245,7 @@ class Project
 
         // tabellen setzen
         $this->TABLE        = QUI_DB_PRFX . $this->name . '_' . $this->lang . '_sites';
-        $this->RELTABLE     = QUI_DB_PRFX . $this->TABLE . '_relations';
+        $this->RELTABLE     = $this->TABLE . '_relations';
         $this->RELLANGTABLE = QUI_DB_PRFX . $this->name . '_multilingual';
 
 
@@ -273,6 +273,14 @@ class Project
     public function __toString()
     {
         return 'Object ' . get_class($this) . '(' . $this->name . ',' . $this->lang . ')';
+    }
+
+    /**
+     * @return string
+     */
+    public function table()
+    {
+        return QUI::getDBTableName($this->name . '_' . $this->lang . '_sites');
     }
 
     /**
@@ -362,9 +370,7 @@ class Project
      */
     public function search($search, $select = false)
     {
-        $table = $this->getAttribute('db_table');
-
-        $query = 'SELECT id FROM ' . $table;
+        $query = 'SELECT id FROM ' . $this->table();
         $where = ' WHERE name LIKE :search';
 
         $allowed = array('id', 'name', 'title', 'short', 'content');
@@ -395,10 +401,10 @@ class Project
         $Statement->bindValue(':search', '%' . $search . '%', \PDO::PARAM_STR);
         $Statement->execute();
 
-        $dbresult = $Statement->fetchAll(\PDO::FETCH_ASSOC);
+        $dbResult = $Statement->fetchAll(\PDO::FETCH_ASSOC);
         $result   = array();
 
-        foreach ($dbresult as $entry) {
+        foreach ($dbResult as $entry) {
             $result[] = $this->get($entry['id']);
         }
 
@@ -449,7 +455,7 @@ class Project
      * @param string $att -
      *                    name = Name des Projectes
      *                    lang = Aktuelle Sprache
-     *                    db_table = Standard Datebanktabelle
+     *                    db_table = Standard Datebanktabelle, please use this->table()
      *
      * @return string|false
      */
@@ -687,16 +693,16 @@ class Project
      */
     public function getNewId()
     {
-        $maxid = QUI::getDataBase()->fetch(array(
+        $maxId = QUI::getDataBase()->fetch(array(
             'select' => 'id',
-            'from'   => $this->getAttribute('db_table'),
+            'from'   => $this->table(),
             'limit'  => '0,1',
             'order'  => array(
                 'id' => 'DESC'
             )
         ));
 
-        return (int)$maxid[0]['id'] + 1;
+        return (int)$maxId[0]['id'] + 1;
     }
 
     /**
@@ -930,13 +936,13 @@ class Project
             // @notice - Kann performancefressend sein
             return QUI::getDataBase()->fetch(array(
                 'select' => 'id',
-                'from'   => $this->getAttribute('db_table')
+                'from'   => $this->table()
             ));
         }
 
         $sql = array(
             'select' => 'id',
-            'from'   => $this->getAttribute('db_table')
+            'from'   => $this->table()
         );
 
         if (isset($params['where'])) {
@@ -953,7 +959,7 @@ class Project
         ) {
             $sql['where']['active'] = 1;
         } elseif (isset($sql['where']['active'])
-                  && $sql['where']['active'] == -1
+            && $sql['where']['active'] == -1
         ) {
             unset($sql['where']['active']);
         } elseif (isset($sql['where']) && is_string($sql['where'])) {
@@ -968,7 +974,7 @@ class Project
         ) {
             $sql['where']['deleted'] = 0;
         } elseif (isset($sql['where']['deleted'])
-                  && $sql['where']['deleted'] == -1
+            && $sql['where']['deleted'] == -1
         ) {
             unset($sql['where']['deleted']);
         } elseif (is_string($sql['where'])) {
@@ -1281,8 +1287,7 @@ class Project
     public function getCustomCSS()
     {
         if (file_exists(USR_DIR . $this->getName() . '/bin/custom.css')) {
-            return file_get_contents(USR_DIR . $this->getName()
-                                     . '/bin/custom.css');
+            return file_get_contents(USR_DIR . $this->getName() . '/bin/custom.css');
         }
 
         return '';

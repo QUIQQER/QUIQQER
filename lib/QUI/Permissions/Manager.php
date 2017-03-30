@@ -44,7 +44,7 @@ class Manager
     {
         try {
             $result = QUI::getDataBase()->fetch(array(
-                'from' => QUI::getDBTableName(self::TABLE)
+                'from' => self::table()
             ));
 
             foreach ($result as $entry) {
@@ -52,6 +52,16 @@ class Manager
             }
         } catch (QUI\Exception $Exception) {
         }
+    }
+
+    /**
+     * Return the permission table name
+     *
+     * @return string
+     */
+    public static function table()
+    {
+        return QUI::getDBTableName(self::TABLE);
     }
 
     /**
@@ -75,6 +85,25 @@ class Manager
         }
 
         return '';
+    }
+
+    /**
+     * Return the corresponding area for the object
+     *
+     * @param mixed $Object
+     * @return string
+     */
+    protected function objectToArea($Object)
+    {
+        if ($Object instanceof QUI\Interfaces\Users\User) {
+            return 'user';
+        }
+
+        if ($Object instanceof QUI\Groups\Group) {
+            return 'groups';
+        }
+
+        return $this->classToArea(get_class($Object));
     }
 
     /**
@@ -147,7 +176,7 @@ class Manager
     public static function setup()
     {
         $DBTable = QUI::getDataBase()->table();
-        $table   = QUI::getDBTableName(self::TABLE);
+        $table   = self::table();
 
         $table2users    = $table . '2users';
         $table2groups   = $table . '2groups';
@@ -283,7 +312,7 @@ class Manager
         // if exist update it
         if (isset($this->cache[$params['name']])) {
             $DataBase->update(
-                QUI::getDBTableName(self::TABLE),
+                self::table(),
                 array(
                     'title'        => trim($params['title']),
                     'desc'         => trim($params['desc']),
@@ -302,7 +331,7 @@ class Manager
 
         // if not exist, insert it
         $DataBase->insert(
-            QUI::getDBTableName(self::TABLE),
+            self::table(),
             array(
                 'name'         => $params['name'],
                 'title'        => trim($params['title']),
@@ -349,7 +378,7 @@ class Manager
         }
 
         QUI::getDataBase()->delete(
-            QUI::getDBTableName(self::TABLE),
+            self::table(),
             array(
                 'name' => $permission,
                 'src'  => 'user'
@@ -443,7 +472,7 @@ class Manager
      */
     public function getPermissions($Obj)
     {
-        $area = $this->classToArea(get_class($Obj));
+        $area = $this->objectToArea($Obj);
 
         switch ($area) {
             case 'project':
@@ -566,22 +595,18 @@ class Manager
             );
         }
 
-        $cls = get_class($Obj);
+        $area = $this->objectToArea($Obj);
 
-        switch ($cls) {
-            case QUI\Users\User::class:
-            case QUI\Groups\Group::class:
-            case QUI\Groups\Everyone::class:
-            case QUI\Groups\Guest::class:
+        switch ($area) {
+            case 'user':
+            case 'groups':
                 break;
 
-            case QUI\Projects\Project::class:
+            case 'project':
                 $this->setProjectPermissions($Obj, $permissions, $EditUser);
                 return;
 
-            case QUI\Projects\Site::class:
-            case QUI\Projects\Site\Edit::class:
-            case QUI\Projects\Site\OnlyDB::class:
+            case 'site':
                 $this->setSitePermissions($Obj, $permissions, $EditUser);
                 return;
 
@@ -597,7 +622,6 @@ class Manager
             $EditUser
         );
 
-        $area  = $this->classToArea($cls);
         $_data = $this->getData($Obj); // old permissions
         $list  = $this->getPermissionList($area);
 
@@ -619,7 +643,7 @@ class Manager
         }
 
         $DataBase = QUI::getDataBase();
-        $table    = QUI::getDBTableName(self::TABLE);
+        $table    = self::table();
 
         $table2users  = $table . '2users';
         $table2groups = $table . '2groups';
@@ -790,7 +814,7 @@ class Manager
     protected function setSitePermission($Site, $permission, $value)
     {
         $Project = $Site->getProject();
-        $table   = QUI::getDBTableName(self::TABLE);
+        $table   = self::table();
 
         QUI::getDataBase()->update(
             $table . '2sites',
@@ -816,7 +840,7 @@ class Manager
     protected function addSitePermission($Site, $permission, $value)
     {
         $Project = $Site->getProject();
-        $table   = QUI::getDBTableName(self::TABLE);
+        $table   = self::table();
 
         QUI::getDataBase()->insert(
             $table . '2sites',
@@ -842,7 +866,7 @@ class Manager
 
 
         $Project = $Site->getProject();
-        $table   = QUI::getDBTableName(self::TABLE);
+        $table   = self::table();
 
         QUI::getDataBase()->delete(
             $table . '2sites',
@@ -915,10 +939,8 @@ class Manager
         $permission,
         $value
     ) {
-        $table = QUI::getDBTableName(self::TABLE);
-
         QUI::getDataBase()->update(
-            $table . '2projects',
+            self::table() . '2projects',
             array('value' => $value),
             array(
                 'project'    => $Project->getName(),
@@ -942,10 +964,8 @@ class Manager
         $permission,
         $value
     ) {
-        $table = QUI::getDBTableName(self::TABLE);
-
         QUI::getDataBase()->insert(
-            $table . '2projects',
+            self::table() . '2projects',
             array(
                 'project'    => $Project->getName(),
                 'lang'       => $Project->getLang(),
@@ -966,8 +986,8 @@ class Manager
     {
         $DataBase = QUI::getDataBase();
 
-        $table = QUI::getDBTableName(self::TABLE);
-        $area  = $this->classToArea(get_class($Obj));
+        $table = self::table();
+        $area  = $this->objectToArea($Obj);
         $cache = $this->getDataCacheId($Obj);
 
         if (isset($this->dataCache[$cache])) {
@@ -1080,7 +1100,7 @@ class Manager
      */
     protected function getDataCacheId($Obj)
     {
-        $area = $this->classToArea(get_class($Obj));
+        $area = $this->objectToArea($Obj);
 
         switch ($area) {
             case 'user':
@@ -1280,7 +1300,7 @@ class Manager
         $result = array();
         $rights = QUI::getDataBase()->fetch(array(
             'select' => 'name,type',
-            'from'   => self::TABLE
+            'from'   => self::table()
         ));
 
         foreach ($rights as $right) {

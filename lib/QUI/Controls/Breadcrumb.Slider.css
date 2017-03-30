@@ -1,0 +1,82 @@
+
+.quiqqer-breadcrumb {
+    position: relative;
+    width: 100%;
+    float: left;
+}
+
+.quiqqer-breadcrumb-wrapper {
+    float: left;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.quiqqer-breadcrumb-container {
+    float: left;
+    left: 0;
+    overflow-y: hidden;
+    overflow-x: auto;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    -webkit-overflow-scrolling: touch;
+    white-space: nowrap;
+    height: calc(100% + 26px); /* to hide the scroll bar */
+}
+
+.quiqqer-breadcrumb-title {
+    display: inline-block;
+}
+
+/* needed to vertical align title and ul list */
+.quiqqer-breadcrumb ul:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+.quiqqer-breadcrumb ul {
+    margin: 0 0 0 15px;
+    display: inline-block;
+    padding: 0 !important;
+    position: relative;
+    white-space: nowrap;
+}
+
+.quiqqer-breadcrumb ul li {
+    display: inline;
+    margin-right: 15px;
+    overflow: hidden;
+    padding-left: 0;
+}
+
+.quiqqer-breadcrumb ul li:last-child {
+    margin-right: 0;
+}
+
+.quiqqer-breadcrumb .breadcrumb-list-element-icon {
+    margin-right: 15px;
+}
+
+.breadcrumb-shadow {
+    z-index: -1;
+}
+
+.quiqqer-breadcrumb-slider-next,
+.quiqqer-breadcrumb-slider-prev {
+    position: absolute;
+    width: 24px;
+    /*background: rgba(0, 0, 0, 0.05);*/
+    cursor: pointer;
+}
+
+.quiqqer-breadcrumb-slider-next {
+    text-align: right;
+}
+
+.quiqqer-breadcrumb-slider-next {
+    right: -100px;
+}

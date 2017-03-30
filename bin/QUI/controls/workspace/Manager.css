@@ -46,6 +46,8 @@
 
 .qui-controls-workspace-panelList-panel p {
     clear: none;
+    float: left;
+    width: calc(100% - 80px);
 }
 
 .qui-controls-workspace-panelList-panel-icon {

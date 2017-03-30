@@ -289,6 +289,7 @@ class Plugin extends QUI\QDOM
     /**
      * Benutzererweiterungs Plugin
      * @return Plugin
+     * @deprecated
      */
     public function getUserPlugin()
     {

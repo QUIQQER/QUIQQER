@@ -48,13 +48,14 @@ define('controls/upload/Manager', [
 
         Binds: [
             '$onCreate',
+            '$onInject',
             'uploadFiles',
+            'clear',
             '$onFileUploadRefresh'
         ],
 
         options: {
-            title: false,
-            icon : 'fa fa-upload'
+            icon: 'fa fa-upload'
         },
 
         initialize: function (options) {
@@ -70,7 +71,8 @@ define('controls/upload/Manager', [
             this.$Container = null;
 
             this.addEvents({
-                onCreate: this.$onCreate
+                onCreate: this.$onCreate,
+                onInject: this.$onInject
             });
         },
 
@@ -78,13 +80,39 @@ define('controls/upload/Manager', [
          * event : onCreate
          */
         $onCreate: function () {
-            if (!this.getAttribute('title')) {
-                this.setAttribute('title', Locale.get(lg, 'upload.manager.title'));
-            }
-
             this.$Container = new Element('div', {
                 'class': 'upload-manager'
             }).inject(this.getContent());
+
+            this.addButton({
+                icon  : 'fa fa-trash',
+                title : Locale.get(lg, 'upload.manager.clear'),
+                styles: {
+                    'float': 'right'
+                },
+                events: {
+                    onClick: this.clear
+                }
+            });
+        },
+
+        /**
+         * event: on inject
+         */
+        $onInject: function () {
+            this.setAttribute('title', Locale.get(lg, 'upload.manager.title'));
+        },
+
+        /**
+         * Clear all upload
+         */
+        clear: function () {
+            for (var i = 0, len = this.$files.length; i < len; i++) {
+                this.$files[i].getElm().destroy();
+            }
+
+            this.$files = [];
+            this.$Container.set('html', '');
         },
 
         /**
@@ -94,9 +122,7 @@ define('controls/upload/Manager', [
          */
         sendMessage: function (message) {
             QUI.getMessageHandler(function (MH) {
-                MH.add(
-                    MH.parse(message)
-                );
+                MH.add(MH.parse(message));
             });
         },
 
@@ -136,7 +162,6 @@ define('controls/upload/Manager', [
             if (this.isOpen() === false) {
                 if (this.$Content) {
                     this.open();
-
                 } else {
                     Container = document.getElement(
                         '.qui-panel-content .upload-manager'
@@ -188,13 +213,13 @@ define('controls/upload/Manager', [
 
                 for (i = 0, len = archiveFiles.length; i < len; i++) {
                     list = list + '<div>' +
-                           '<input id="upload-file-' + i + '" type="checkbox" value="' + archiveFiles[i].name + '" />' +
-                           '<label for="upload-file-' + i + '" style="line-height: 20px; margin-left: 10px;">' +
-                           Locale.get(lg, 'upload.manager.message.archivfile.label', {
-                               file: archiveFiles[i].name
-                           }) +
-                           '</label>' +
-                           '</div>';
+                        '<input id="upload-file-' + i + '" type="checkbox" value="' + archiveFiles[i].name + '" />' +
+                        '<label for="upload-file-' + i + '" style="line-height: 20px; margin-left: 10px;">' +
+                        Locale.get(lg, 'upload.manager.message.archivfile.label', {
+                            file: archiveFiles[i].name
+                        }) +
+                        '</label>' +
+                        '</div>';
                 }
 
 
@@ -296,7 +321,6 @@ define('controls/upload/Manager', [
 
                 if (this.$Container) {
                     QUIFile.inject(this.$Container, 'top');
-
                 } else {
                     // exist upload container? ... not nice but functional
                     Container = document.getElement('.qui-panel-content .upload-manager');

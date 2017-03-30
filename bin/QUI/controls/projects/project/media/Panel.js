@@ -255,6 +255,7 @@ define('controls/projects/project/media/Panel', [
                 // views
                 var View = new QUIButton({
                     textimage: 'fa fa-th',
+                    name     : 'view',
                     text     : '',
                     methods  : {
                         change: function (Item) {
@@ -354,6 +355,7 @@ define('controls/projects/project/media/Panel', [
 
                 // Upload
                 var Upload = new QUIButton({
+                    name     : 'upload',
                     textimage: 'fa fa-upload',
                     text     : Locale.get(lg, 'projects.project.site.media.panel.btn.upload')
                 });
@@ -667,7 +669,10 @@ define('controls/projects/project/media/Panel', [
             extract = extract || false;
 
             Sheet.addEvents({
-                onOpen: function () {
+                onClose: function (Sheet) {
+                    Sheet.destroy();
+                },
+                onOpen : function () {
                     var Parent;
                     var Content = Sheet.getBody();
 
@@ -691,8 +696,8 @@ define('controls/projects/project/media/Panel', [
                     }
 
                     var height = Content.getSize().y -
-                                 Parent.getSize().y -
-                                 80; // 80 = content padding + form margin
+                        Parent.getSize().y -
+                        80; // 80 = content padding + form margin
 
                     // upload form
                     var Form = new UploadForm({
@@ -1306,14 +1311,24 @@ define('controls/projects/project/media/Panel', [
                     dataType : 'string',
                     width    : 150
                 }, {
-                    header   : Locale.get(lg, 'size'),
-                    dataIndex: 'size',
+                    header   : Locale.get(lg, 'c_date'),
+                    dataIndex: 'c_date',
+                    dataType : 'date',
+                    width    : 150
+                }, {
+                    header   : Locale.get(lg, 'c_user'),
+                    dataIndex: 'c_user',
                     dataType : 'string',
                     width    : 150
                 }, {
-                    header   : Locale.get(lg, 'createdate'),
-                    dataIndex: 'cdate',
+                    header   : Locale.get(lg, 'e_date'),
+                    dataIndex: 'e_date',
                     dataType : 'date',
+                    width    : 150
+                }, {
+                    header   : Locale.get(lg, 'e_user'),
+                    dataIndex: 'e_user',
+                    dataType : 'string',
                     width    : 150
                 }],
 

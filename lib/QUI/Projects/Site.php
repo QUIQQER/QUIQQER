@@ -195,9 +195,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         }
 
         // DB Tables
-        $this->TABLE        = $Project->getAttribute('db_table');
-        $this->RELTABLE     = $this->TABLE . '_relations';
-        $this->RELLANGTABLE = $Project->getAttribute('name') . '_multilingual';
+        $this->TABLE        = $Project->table();
+        $this->RELTABLE     = $Project->table() . '_relations';
+        $this->RELLANGTABLE = QUI::getDBTableName($Project->getAttribute('name') . '_multilingual');
 
         // Cachefiles
         $this->CACHENAME = 'site/' .
@@ -418,7 +418,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             }
 
             // get data
-            $tbl       = $project_name . '_' . $project_lang . '_' . $fields['suffix'];
+            $tbl       = QUI::getDBTableName($project_name . '_' . $project_lang . '_' . $fields['suffix']);
             $fieldList = array_keys($fields['fields']);
 
             $result = QUI::getDataBase()->fetch(array(
@@ -743,9 +743,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         }
 
 
-        $site_table = $pname . '_' . $plang . '_sites';
-        $lang_table = $pname . '_' . $lang . '_sites';
-        $rel_table  = $pname . '_multilingual';
+        $site_table = QUI::getDBTableName($pname . '_' . $plang . '_sites');
+        $lang_table = QUI::getDBTableName($pname . '_' . $lang . '_sites');
+        $rel_table  = QUI::getDBTableName($pname . '_multilingual');
 
         $PDO = QUI::getPDO();
 
@@ -1515,7 +1515,14 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     {
         $pathParams['site'] = $this;
 
-        return QUI::getRewrite()->getUrlFromSite($pathParams, $getParams);
+        $Output = QUI::getRewrite()->getOutput();
+
+        if (QUI::getRewrite()->getProject()->toArray() != $this->getProject()->toArray()) {
+            $Output = new QUI\Output();
+            $Output->setProject($this->getProject());
+        }
+
+        return $Output->getSiteUrl($pathParams, $getParams);
     }
 
     /**
@@ -1539,7 +1546,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     protected function getUrlHelper($id)
     {
         if ($id != $this->getId()) {
-            $this->parents[] = $this->getProject()->getNameById($id);
+            $this->parents[] = $this->getProject()->get($id)->getAttribute('name');
         }
 
         $pid = $this->getProject()->getParentIdFrom($id);

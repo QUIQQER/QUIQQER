@@ -426,6 +426,7 @@ define('controls/projects/project/media/FilePanel', [
 
             this.addButton(
                 new QUIButton({
+                    name     : 'save',
                     text     : Locale.get(lg, 'projects.project.site.media.filePanel.btn.save.text'),
                     textimage: 'fa fa-save',
                     events   : {
@@ -436,6 +437,7 @@ define('controls/projects/project/media/FilePanel', [
                 })
             ).addButton(
                 new QUIButton({
+                    'name'   : 'upload',
                     text     : Locale.get(lg, 'projects.project.site.media.filePanel.btn.replace.text'),
                     textimage: 'fa fa-upload',
                     events   : {
@@ -476,6 +478,7 @@ define('controls/projects/project/media/FilePanel', [
 
             this.addButton(
                 new QUIButton({
+                    name  : 'delete',
                     alt   : Locale.get(lg, 'projects.project.site.media.filePanel.btn.delete.text'),
                     title : Locale.get(lg, 'projects.project.site.media.filePanel.btn.delete.text'),
                     icon  : 'fa fa-trash-o',
@@ -634,8 +637,8 @@ define('controls/projects/project/media/FilePanel', [
                     if (File.getAttribute('image_width') &&
                         File.getAttribute('image_height')) {
                         dimension = File.getAttribute('image_width') +
-                                    ' x ' +
-                                    File.getAttribute('image_height');
+                            ' x ' +
+                            File.getAttribute('image_height');
                     }
 
                     // set data to form
@@ -963,14 +966,21 @@ define('controls/projects/project/media/FilePanel', [
 
             this.$EffectLoader.show();
 
-            Form.getElement('[name="effect-blur"]').value       = parseInt(effectBlur.from);
-            Form.getElement('[name="effect-brightness"]').value = effectBrightnes.from;
-            Form.getElement('[name="effect-contrast"]').value   = effectContrast.from;
+            if (typeof this.$effectDelay !== 'undefined' && this.$effectDelay) {
+                clearTimeout(this.$effectDelay);
+            }
 
-            require(['image!' + url], function () {
-                this.$EffectPreview.set('src', url);
-                this.$EffectLoader.hide();
-            }.bind(this));
+            this.$effectDelay = (function () {
+                Form.getElement('[name="effect-blur"]').value       = parseInt(effectBlur.from);
+                Form.getElement('[name="effect-brightness"]').value = effectBrightnes.from;
+                Form.getElement('[name="effect-contrast"]').value   = effectContrast.from;
+
+                require(['image!' + url], function () {
+                    this.$EffectPreview.set('src', url);
+                    this.$EffectLoader.hide();
+                }.bind(this));
+
+            }).delay(300, this);
         },
 
         /**

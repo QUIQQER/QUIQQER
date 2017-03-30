@@ -22,7 +22,7 @@ class Maintenance extends QUI\System\Console\Tool
     public function __construct()
     {
         $this->setName('quiqqer:maintenance')
-             ->setDescription('Set the maintenance status. Available commands: --status [on|off]');
+            ->setDescription('Set the maintenance status. Available commands: --status [on|off]');
     }
 
     /**
@@ -36,12 +36,12 @@ class Maintenance extends QUI\System\Console\Tool
 
         $Config = QUI::getConfig('etc/conf.ini.php');
 
-        if ($this->getArgument('--status') == 'on') {
+        if ($this->getArgument('status') == 'on') {
             $this->write('on');
             $Config->set('globals', 'maintenance', 1);
         }
 
-        if ($this->getArgument('--status') == 'off') {
+        if ($this->getArgument('status') == 'off') {
             $this->write('off');
             $Config->set('globals', 'maintenance', 0);
         }

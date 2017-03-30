@@ -128,6 +128,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             throw new QUI\Exception('Root cannot deleted', 400);
         }
 
+        QUI::getEvents()->fireEvent('mediaDeleteBegin', array($this));
 
         $children = $this->getAllRecursiveChildrenIds();
 
@@ -346,7 +347,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $old_path = StringUtils::replaceDblSlashes($old_path);
         $new_path = StringUtils::replaceDblSlashes($new_path);
 
-
         // update children paths
         $Statement = $PDO->prepare(
             "UPDATE " . $this->Media->getTable() . "
@@ -354,8 +354,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
              WHERE file LIKE :search"
         );
 
-        $Statement->bindValue('oldpath', $old_path . '/');
-        $Statement->bindValue('newpath', $new_path . '/');
+        $Statement->bindValue('oldpath', StringUtils::replaceDblSlashes($old_path . '/'));
+        $Statement->bindValue('newpath', StringUtils::replaceDblSlashes($new_path . '/'));
         $Statement->bindValue('search', $old_path . "%");
 
         $Statement->execute();
@@ -363,9 +363,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         // update me
         QUI::getDataBase()->update(
             $this->Media->getTable(),
-            array(
-                'file' => $new_path
-            ),
+            array('file' => StringUtils::replaceDblSlashes($new_path . '/')),
             array('id' => $this->getId())
         );
 
@@ -388,7 +386,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         // @todo rename cache instead of delete
         $this->deleteCache();
-
         $this->setAttribute('file', $new_path);
     }
 
@@ -811,6 +808,34 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::addDebug($Exception->getMessage());
             }
+        }
+
+        switch ($order) {
+            case 'priority':
+            case 'priority ASC':
+            case 'priority DESC':
+                // if priority, sort, that empty priority is the last
+                usort($result, function ($ImageA, $ImageB) {
+                    /* @var $ImageA Image */
+                    $a = $ImageA->getAttribute('priority');
+                    /* @var $ImageB Image */
+                    $b = $ImageB->getAttribute('priority');
+
+                    if (empty($a)) {
+                        return 1;
+                    }
+
+                    if (empty($b)) {
+                        return -1;
+                    }
+
+                    if ($a == $b) {
+                        return 0;
+                    }
+
+                    return ($a < $b) ? -1 : 1;
+                });
+                break;
         }
 
         return $result;

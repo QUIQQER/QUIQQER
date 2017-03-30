@@ -30,9 +30,24 @@
             <field type="VARCHAR(200) NULL">referal</field>
             <field type="VARCHAR(20) NULL">activation</field>
             <field type="VARCHAR(5) NULL">shortcuts</field>
+            <field type="TEXT NULL">authenticator</field>
 
             <primary>id</primary>
             <index>username,password</index>
+            <auto_increment>id</auto_increment>
+        </table>
+
+
+        <table name="users_workspaces">
+            <field type="INT(11) NOT NULL">id</field>
+            <field type="INT(11) NOT NULL">uid</field>
+            <field type="TEXT NULL">title</field>
+            <field type="TEXT NULL">data</field>
+            <field type="INT(11) DEFAULT 0">minHeight</field>
+            <field type="INT(11) DEFAULT 0">minWidth</field>
+            <field type="INT(1) DEFAULT 0">standard</field>
+
+            <primary>id</primary>
             <auto_increment>id</auto_increment>
         </table>
 
@@ -45,7 +60,6 @@
             <field type="TEXT NULL">avatar</field>
             <field type="TEXT NULL">extra</field>
             <field type="TEXT NULL">rights</field>
-            <field type="INT(1) DEFAULT 0">admin</field>
 
             <primary>id</primary>
             <index>parent</index>
@@ -60,40 +74,51 @@
             <field type="VARCHAR(200) NULL">src</field>
             <field type="TEXT NULL">defaultvalue</field>
 
+            <primary>name</primary>
             <index>name</index>
         </table>
 
         <table name="permissions2users">
             <field type="INT(11) NOT NULL DEFAULT 0">user_id</field>
             <field type="TEXT NULL">permissions</field>
+
+            <primary>user_id</primary>
         </table>
 
         <table name="permissions2groups">
             <field type="INT(11) NOT NULL DEFAULT 0">group_id</field>
             <field type="TEXT NULL">permissions</field>
+
+            <primary>group_id</primary>
         </table>
 
         <table name="permissions2sites">
             <field type="VARCHAR(200) NOT NULL DEFAULT ''">project</field>
             <field type="VARCHAR(2) NOT NULL DEFAULT ''">lang</field>
-            <field type="BIGINT(20) NULL">id</field>
-            <field type="TEXT NULL">permission</field>
+            <field type="INT(20) NULL">id</field>
+            <field type="VARCHAR(100) NULL">permission</field>
             <field type="TEXT NULL">value</field>
+
+            <primary>project,lang,id,permission</primary>
         </table>
 
         <table name="permissions2projects">
             <field type="VARCHAR(200) NOT NULL DEFAULT ''">project</field>
             <field type="VARCHAR(2) NOT NULL DEFAULT ''">lang</field>
-            <field type="TEXT NULL">permission</field>
+            <field type="VARCHAR(100) NULL">permission</field>
             <field type="TEXT NULL">value</field>
+
+            <primary>project,lang,permission</primary>
         </table>
 
         <table name="permissions2media">
             <field type="VARCHAR(200) NOT NULL DEFAULT ''">project</field>
             <field type="VARCHAR(2) DEFAULT ''">lang</field>
-            <field type="BIGINT(20) DEFAULT NULL">id</field>
-            <field type="TEXT NULL">permission</field>
+            <field type="INT(20) DEFAULT NULL">id</field>
+            <field type="VARCHAR(100) NULL">permission</field>
             <field type="TEXT NULL">value</field>
+
+            <primary>project,lang,id,permission</primary>
         </table>
 
         <table name="sessions">
@@ -110,19 +135,6 @@
             <field type="INT(11) NULL">date</field>
             <field type="TEXT NULL">result</field>
             <field type="TEXT NULL">error</field>
-
-            <primary>id</primary>
-            <auto_increment>id</auto_increment>
-        </table>
-
-        <table name="quiqqerBackendSearch">
-            <field type="INT(11) NOT NULL">id</field>
-            <field type="TEXT NULL">title</field>
-            <field type="TEXT NULL">description</field>
-            <field type="VARCHAR(255) NOT NULL DEFAULT ''">icon</field>
-            <field type="TEXT NULL">search</field>
-            <field type="VARCHAR(100) NULL  DEFAULT ''">searchtype</field>
-            <field type="TEXT">searchdata</field>
 
             <primary>id</primary>
             <auto_increment>id</auto_increment>

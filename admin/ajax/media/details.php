@@ -21,6 +21,18 @@ QUI::$Ajax->registerFunction(
             $File = $Media->get($fileid);
             $attr = $File->getAttributes();
 
+            try {
+                $attr['c_username'] = QUI::getUsers()->get($attr['c_user'])->getName();
+            } catch (QUI\Exception $Exception) {
+                $attr['c_username'] = '---';
+            }
+
+            try {
+                $attr['e_username'] = QUI::getUsers()->get($attr['e_user'])->getName();
+            } catch (QUI\Exception $Exception) {
+                $attr['e_username'] = '---';
+            }
+
             if (!Utils::isImage($File)) {
                 return $attr;
             }

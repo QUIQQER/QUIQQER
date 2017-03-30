@@ -34,14 +34,14 @@ if (DEVELOPMENT == 1) {
 }
 
 define('GENERATOR', 'QUIQQER /www.pcsg.de');
-
-define('URL_LIB_DIR', QUI::conf('globals', 'url_lib_dir'));
-define('URL_BIN_DIR', QUI::conf('globals', 'url_bin_dir'));
-define('URL_SYS_DIR', QUI::conf('globals', 'url_sys_dir'));
-
-define('URL_USR_DIR', URL_DIR . str_replace(CMS_DIR, '', USR_DIR));
-define('URL_OPT_DIR', URL_DIR . str_replace(CMS_DIR, '', OPT_DIR));
-define('URL_VAR_DIR', URL_DIR . str_replace(CMS_DIR, '', VAR_DIR));
+//
+//define('URL_LIB_DIR', QUI::conf('globals', 'url_lib_dir'));
+//define('URL_BIN_DIR', QUI::conf('globals', 'url_bin_dir'));
+//define('URL_SYS_DIR', QUI::conf('globals', 'url_sys_dir'));
+//
+//define('URL_USR_DIR', URL_DIR . str_replace(CMS_DIR, '', USR_DIR));
+//define('URL_OPT_DIR', URL_DIR . str_replace(CMS_DIR, '', OPT_DIR));
+//define('URL_VAR_DIR', URL_DIR . str_replace(CMS_DIR, '', VAR_DIR));
 
 define('HOST', QUI::conf('globals', 'host'));
 define('CACHE', QUI::conf('globals', 'cache'));
@@ -99,8 +99,6 @@ try {
     exit;
 }
 
-// User ist Standard Nobody
-$User = QUI::getUsers()->getNobody();
 
 QUI::getSession()->start();
 
@@ -108,29 +106,7 @@ if ((int)QUI::conf('session', 'regenerate')) {
     QUI::getSession()->refresh();
 }
 
-
-if (isset($_POST['username'])
-    && isset($_POST['password'])
-    && isset($_POST['login'])
-) {
-    // Falls ein Login versucht wurde
-    try {
-        $User = QUI::getUsers()->login(
-            $_POST['username'],
-            $_POST['password']
-        );
-    } catch (QUI\Exception $Exception) {
-        define('LOGIN_FAILED', $Exception->getMessage());
-    }
-} elseif (QUI::getSession()->get('uid')) {
-    try {
-        QUI::getUsers()->checkUserSession();
-
-        $User = QUI::getUserBySession();
-    } catch (QUI\Exception $Exception) {
-        define('LOGIN_FAILED', $Exception->getMessage());
-    }
-}
+$User = QUI::getUserBySession();
 
 // Logout
 if (isset($_GET['logout'])) {

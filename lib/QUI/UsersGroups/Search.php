@@ -149,7 +149,6 @@ class Search
                 if (!empty($resultGroups)) {
                     $selectFieldsAvailable = array(
                         'name'   => true,
-                        'admin'  => true,
                         'parent' => true,
                         'active' => true
                     );

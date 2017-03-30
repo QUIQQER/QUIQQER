@@ -37,7 +37,7 @@ class EventHandler
                         message: QUILocale.get('quiqqer/quiqqer', 'message.set.new.password')
                     }).open();
                 });
-            }
+            };
        
             require(['Locale'], function(QUILocale) {
                 if (!QUILocale.exists('quiqqer/quiqqer', 'message.set.new.password')) {

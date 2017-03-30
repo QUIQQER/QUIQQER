@@ -43,6 +43,9 @@ class Utils
                 'hasSubfolders' => $Item->hasSubFolders(),
                 'active'        => true,
                 'e_date'        => $Item->getAttribute('e_date'),
+                'e_user'        => $Item->getAttribute('e_user'),
+                'c_date'        => $Item->getAttribute('c_date'),
+                'c_user'        => $Item->getAttribute('c_user'),
                 'priority'      => $Item->getAttribute('priority')
             );
         }
@@ -61,6 +64,9 @@ class Utils
                 'hasSubfolders' => $Item->hasSubFolders(),
                 'active'        => $Item->isActive(),
                 'e_date'        => $Item->getAttribute('e_date'),
+                'e_user'        => $Item->getAttribute('e_user'),
+                'c_date'        => $Item->getAttribute('c_date'),
+                'c_user'        => $Item->getAttribute('c_user'),
                 'priority'      => $Item->getAttribute('priority')
             );
         }
@@ -79,6 +85,9 @@ class Utils
             'url'       => $Item->getUrl(),
             'active'    => $Item->isActive(),
             'e_date'    => $Item->getAttribute('e_date'),
+            'e_user'    => $Item->getAttribute('e_user'),
+            'c_date'    => $Item->getAttribute('c_date'),
+            'c_user'    => $Item->getAttribute('c_user'),
             'mimetype'  => $Item->getAttribute('mime_type'),
             'priority'  => $Item->getAttribute('priority')
         );
@@ -255,7 +264,7 @@ class Utils
     public static function getMediaItemByUrl($url)
     {
         if (self::isMediaUrl($url) === false) {
-            throw new QUI\Exception('Its not a QUIQQER image url');
+            throw new QUI\Exception('Its not a QUIQQER item url');
         }
 
         // Parameter herrausfinden

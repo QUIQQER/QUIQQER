@@ -117,6 +117,7 @@ define('controls/projects/TypeWindow', [
             });
 
             this.$ShowSitemap = new QUIButton({
+                name     : 'sitemap',
                 textimage: 'fa fa-sitemap',
                 text     : QUILocale.get('quiqqer/system', 'projects.typewindow.btn.sitemapView'),
                 events   : {
@@ -125,6 +126,7 @@ define('controls/projects/TypeWindow', [
             }).inject(this.$HeaderButtons);
 
             this.$ShowDetails = new QUIButton({
+                name     : 'details',
                 textimage: 'fa fa-file-text',
                 text     : QUILocale.get('quiqqer/system', 'projects.typewindow.btn.detailView'),
                 events   : {

@@ -84,6 +84,10 @@
             <de><![CDATA[Seiten]]></de>
             <en><![CDATA[Sites]]></en>
         </locale>
+        <locale name="permission.quiqqer.auth._header">
+            <de><![CDATA[Authentifizierung]]></de>
+            <en><![CDATA[Authentication]]></en>
+        </locale>
 
         <locale name="permission.quiqqer.menu._header">
             <de><![CDATA[Menu]]></de>
@@ -467,6 +471,22 @@
             <de><![CDATA[Beim nächsten Login muss der Benutzer ein neues Passwort setzen.]]></de>
             <en><![CDATA[At the next login, the user must set a new password.]]></en>
         </locale>
+        <locale name="user.settings.expire">
+            <de><![CDATA[Gültig bis]]></de>
+            <en><![CDATA[Date of Expiry]]></en>
+        </locale>
+        <locale name="user.settings.expire.always">
+            <de><![CDATA[Immer]]></de>
+            <en><![CDATA[Always]]></en>
+        </locale>
+        <locale name="user.settings.expire.date">
+            <de><![CDATA[Datum / Uhrzeit]]></de>
+            <en><![CDATA[Date / Time]]></en>
+        </locale>
+        <locale name="user.settings.authenticators">
+            <de><![CDATA[Zustäzliche Authentifizierung]]></de>
+            <en><![CDATA[Additional authentication]]></en>
+        </locale>
 
         <locale name="message.setup.is.currently.running">
             <de><![CDATA[Das Setup wird gerade ausgeführt. Bitte warten Sie bis dieses zu ende ist.]]></de>
@@ -532,6 +552,31 @@
             <de><![CDATA[Globale Weiterleitungen]]></de>
             <en><![CDATA[Global forwarding]]></en>
         </locale>
+        <locale name="quiqqer.auth.title">
+            <de><![CDATA[QUIQQER Standard Authentifizierung]]></de>
+            <en><![CDATA[QUIQQER Basic authentication]]></en>
+        </locale>
+        <locale name="quiqqer.auth.description">
+            <de><![CDATA[Die standard QUIQQER Authentifizierung per Benutzername und Passwort.]]></de>
+            <en><![CDATA[The standard QUIQQER authentication by username and password.]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.global">
+            <de><![CDATA[Primäre Authenticator]]></de>
+            <en><![CDATA[Primary Authentifiers]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.global.desc">
+            <de><![CDATA[
+            Primäre Authenticator sind Auhthentifizierungsmethoden welche dem Benutzer zu Anfang
+            seiner Authentifizierung zur Verfügung stehen. Zusätzlich können Sie über
+            die Zugriffsrechteverwaltung für jede Gruppe oder jeden User Mehrfachauthentifizierungen
+            zur Verfügung stellen.
+            ]]></de>
+            <en><![CDATA[
+            Primary Authenticators are authentication methods which provide the user at the beginning
+            of his Authentication. In addition, you can go over the permissions management
+            for each group or user and set more factor authentication.
+            ]]></en>
+        </locale>
 
         <locale name="exception.forwarding.already.exists">
             <de><![CDATA[Diese Weiterleitung besteht bereits.]]></de>
@@ -541,6 +586,11 @@
             <de><![CDATA[Diese Weiterleitung besteht bereits.]]></de>
             <en><![CDATA[This forwarding already exists.]]></en>
         </locale>
+        <locale name="exception.config.save.not.allowed">
+            <de><![CDATA[Sie besitzen nicht die nötigen Rechte um die Konfiguration zu speichern.]]></de>
+            <en><![CDATA[You do not have the necessary permissions to save the configuration]]></en>
+        </locale>
+
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -655,6 +705,53 @@
             <de><![CDATA[Globale Weiterleitungen]]></de>
             <en><![CDATA[Global forwarding]]></en>
         </locale>
+
+        <locale name="message.online.update.RAM.not.enough" html="1">
+            <de><![CDATA[
+            Für das Online-Update steht nicht genügende Arbeitsspeicher zur Verfügung.
+            Bitte führen Sie das Update in der CLI / Bash mit folgende Befehl aus: <br />
+            <code>[command]</code>
+            ]]></de>
+            <en><![CDATA[
+            There is not enough memory available for the online update.
+            Please run the update in the CLI / Bash with the following command: <br />
+            <code>[command]</code>
+            ]]></en>
+        </locale>
+
+        <locale name="exception.console.execute.only.in.cli">
+            <de><![CDATA[System Tools können nur in der CLI ausgeführt werden.]]></de>
+            <en><![CDATA[System tools can only be run in the CLI.]]></en>
+        </locale>
+        <locale name="console.systemtool.clear-all">
+            <de><![CDATA[Leert alle variablen Daten (Cache, Temp, Sessions, Lock)]]></de>
+            <en><![CDATA[Clears all variable data (cache, temp, sessions, lock)]]></en>
+        </locale>
+        <locale name="console.systemtool.clear-cache">
+            <de><![CDATA[Leert den kompletten Cache]]></de>
+            <en><![CDATA[Clears the complete cache]]></en>
+        </locale>
+        <locale name="console.systemtool.clear-tmp">
+            <de><![CDATA[Leert das Temp Verzeichnis]]></de>
+            <en><![CDATA[Clears the temp folder]]></en>
+        </locale>
+        <locale name="console.systemtool.clear-sessions">
+            <de><![CDATA[Löscht alle Sessions (Sitzungen)]]></de>
+            <en><![CDATA[Deletes all Sessions]]></en>
+        </locale>
+        <locale name="console.systemtool.clear-lock">
+            <de><![CDATA[Löscht alle Lock Dateien]]></de>
+            <en><![CDATA[Deletes all Lock files]]></en>
+        </locale>
+        <locale name="console.systemtool.cron">
+            <de><![CDATA[Führt die Cron Verarbeitung aus]]></de>
+            <en><![CDATA[Executes Cron processing]]></en>
+        </locale>
+        <locale name="console.systemtool.update">
+            <de><![CDATA[Führt ein System-Update aus]]></de>
+            <en><![CDATA[Execute a system update]]></en>
+        </locale>
+
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="js">
@@ -701,6 +798,10 @@
         <locale name="control.groups.select.search.field.placeholder">
             <de><![CDATA[Suche nach einer Gruppe ...]]></de>
             <en><![CDATA[Search for a group ...]]></en>
+        </locale>
+        <locale name="control.users.select.search.field.placeholder">
+            <de><![CDATA[Suche nach einem Benutzer ...]]></de>
+            <en><![CDATA[Search for a user ...]]></en>
         </locale>
         <locale name="control.usersgroups.select.search.field.placeholder">
             <de><![CDATA[Suche nach einer Gruppe oder einem Benutzer...]]></de>
@@ -867,6 +968,46 @@
         <locale name="system.forwarding.window.remove.text" html="true">
             <de><![CDATA[Möchten Sie folgende Weiterlungen wirklich löschen? <br /><br />[list]]]></de>
             <en><![CDATA[Are you sure you want to delete the following forwarding? <br /><br />[list]]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.security_headers.csp.value">
+            <de><![CDATA[Wert]]></de>
+            <en><![CDATA[Value]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.csp.directive">
+            <de><![CDATA[Richtlinie]]></de>
+            <en><![CDATA[Directive]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.security_headers.csp.delete.title">
+            <de><![CDATA[Richtlinie löschen]]></de>
+            <en><![CDATA[Delete the directive]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.csp.delete.text" html="true">
+            <de><![CDATA[Möchten Sie folgende CSP Einträge wirklich löschen?<br /><br />[list]]]></de>
+            <en><![CDATA[Are you sure you want to delete the following CSP entries?<br /><br />[list]]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.security_headers.csp.add.title">
+            <de><![CDATA[Neue Richtlinie hinzufügen]]></de>
+            <en><![CDATA[Add a new directive]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.csp.edit.title">
+            <de><![CDATA[Richtlinie bearbeiten]]></de>
+            <en><![CDATA[Edit the directive]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.csp.valuePlaceholder">
+            <de><![CDATA[Vordefinierte Werte:]]></de>
+            <en><![CDATA[Predefined values:]]></en>
+        </locale>
+
+        <locale name="controls.workspace.search.btn.text">
+            <de><![CDATA[Start]]></de>
+            <en><![CDATA[Start]]></en>
+        </locale>
+        <locale name="controls.workspace.search.filter.placeholder">
+            <de><![CDATA[Durchsuchte Bereiche]]></de>
+            <en><![CDATA[Searched areas]]></en>
         </locale>
     </groups>
 
@@ -1110,6 +1251,10 @@
         <locale name="e_date">
             <de><![CDATA[Editierungsdatum]]></de>
             <en><![CDATA[Edit date]]></en>
+        </locale>
+        <locale name="e_user">
+            <de><![CDATA[Letzter Bearbeiter]]></de>
+            <en><![CDATA[Last editor]]></en>
         </locale>
         <locale name="site_id">
             <de><![CDATA[Seiten-ID]]></de>
@@ -1412,6 +1557,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="upload.manager.title">
             <de><![CDATA[Uploads]]></de>
             <en><![CDATA[Upload]]></en>
+        </locale>
+        <locale name="upload.manager.clear">
+            <de><![CDATA[Uploads leeren]]></de>
+            <en><![CDATA[Clear Uploads]]></en>
         </locale>
         <locale name="projects.project.sitemap.media">
             <de><![CDATA[Media]]></de>
@@ -1935,10 +2084,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Löschen]]></de>
             <en><![CDATA[Delete]]></en>
         </locale>
-        <locale name="projects.project.panel.settings.btn.settings">
-            <de><![CDATA[Einstellungen]]></de>
-            <en><![CDATA[Settings]]></en>
-        </locale>
         <locale name="projects.project.panel.settings.btn.meta">
             <de><![CDATA[Meta Angaben]]></de>
             <en><![CDATA[Meta data]]></en>
@@ -2325,8 +2470,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Remove project]]></en>
         </locale>
         <locale name="projects.project.panel.title">
-            <de><![CDATA[Projekte]]></de>
-            <en><![CDATA[Projects]]></en>
+            <de><![CDATA[Webseiten]]></de>
+            <en><![CDATA[Websites]]></en>
         </locale>
         <locale name="projects.project.panel.open.search">
             <de><![CDATA[Seitensuche öffnen]]></de>
@@ -2413,6 +2558,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Darf in die Administration]]></de>
             <en><![CDATA[Allowed to enter the administration]]></en>
         </locale>
+        <locale name="groups.panel.grid.users">
+            <de><![CDATA[Benutzer]]></de>
+            <en><![CDATA[Users]]></en>
+        </locale>
         <locale name="groups.panel.search.title">
             <de><![CDATA[Gruppen Suche]]></de>
             <en><![CDATA[Group search]]></en>
@@ -2434,6 +2583,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="groups.panel.create.window.text">
             <de><![CDATA[Neue Gruppe erstellen]]></de>
             <en><![CDATA[Create new group]]></en>
+        </locale>
+        <locale name="groups.panel.create.window.sitemap.text">
+            <de><![CDATA[Neue Gruppe]]></de>
+            <en><![CDATA[New group]]></en>
         </locale>
         <locale name="groups.panel.create.window.sitemap.information">
             <de><![CDATA[Unter welcher Gruppe soll die neue Gruppe angelegt werden?]]></de>
@@ -5646,28 +5799,57 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
 
         <locale name="panels.project.title">
-            <de><![CDATA[Projekte / Projekt Panel]]></de>
-            <en><![CDATA[Projects / Project Panel]]></en>
+            <de><![CDATA[Webseiten Panel]]></de>
+            <en><![CDATA[Website Panel]]></en>
+        </locale>
+        <locale name="panels.project.description">
+            <de><![CDATA[Zeigt alle Webseiten und den Webseitenbaum an.]]></de>
+            <en><![CDATA[Displays all web pages and the web page tree.]]></en>
         </locale>
         <locale name="panels.help.title">
             <de><![CDATA[QUIQQER Hilfe]]></de>
             <en><![CDATA[QUIQQER Help]]></en>
         </locale>
+        <locale name="panels.help.description">
+            <de><![CDATA[Zeigt die QUIQQER Hilfe an.]]></de>
+            <en><![CDATA[Displays the QUIQQER Help.]]></en>
+        </locale>
         <locale name="panels.bookmarks.title">
-            <de><![CDATA[Bookmarks]]></de>
+            <de><![CDATA[Lesezeichen (Bookmarks)]]></de>
             <en><![CDATA[Bookmarks]]></en>
+        </locale>
+        <locale name="panels.bookmarks.description">
+            <de><![CDATA[
+            Verwalten Sie schnell Aufrufe von Panels.
+            Legen Sie für sich Lesezeichen fest damit Sie Ihre oft genutzten Funtionen schnell erreichen.
+            ]]></de>
+            <en><![CDATA[
+            Use bookmarks to help you quickly reach your frequently used functions.
+            ]]></en>
         </locale>
         <locale name="panels.upload.title">
             <de><![CDATA[Uploads]]></de>
             <en><![CDATA[Uploads]]></en>
         </locale>
+        <locale name="panels.upload.description">
+            <de><![CDATA[Anzeige der hochgeladenen Dateien.]]></de>
+            <en><![CDATA[Display of the uploaded Files.]]></en>
+        </locale>
         <locale name="panels.messages.title">
             <de><![CDATA[Nachrichten]]></de>
             <en><![CDATA[Messages]]></en>
         </locale>
+        <locale name="panels.messages.description">
+            <de><![CDATA[Zeigt Nachrichten und Statusmeldungen an.]]></de>
+            <en><![CDATA[Displays messages and status messages.]]></en>
+        </locale>
         <locale name="panels.tasks.title">
             <de><![CDATA[Task-Panel]]></de>
             <en><![CDATA[Task panel]]></en>
+        </locale>
+        <locale name="panels.tasks.description">
+            <de><![CDATA[Panel welches mehrere Panels verwaltet.]]></de>
+            <en><![CDATA[Panel that manages multiple panels.]]></en>
         </locale>
         <locale name="control.contact.name">
             <de><![CDATA[Name]]></de>
@@ -6400,6 +6582,61 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Zeitzonen Einstellung]]></de>
             <en><![CDATA[Timezone settings]]></en>
         </locale>
+        <locale name="quiqqer.settings.security_headers">
+            <de><![CDATA[Inhaltsschutzrichtlinie]]></de>
+            <en><![CDATA[Content Security Policy ]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.hsts.title">
+            <de><![CDATA[HTTP Strict Transport Security]]></de>
+            <en><![CDATA[HTTP Strict Transport Security]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.hsts.description">
+            <de>
+                <![CDATA[HTTP Strict Transport Security (HSTS) ist ein Sicherheitsmechanismus für HTTPS-Verbindungen, der sowohl vor Aushebelung der Verbindungsverschlüsselung durch eine downgrade Attacke als auch vor Session Hijacking schützen soll.]]></de>
+            <en>
+                <![CDATA[HTTP Strict Transport Security (HSTS) is a security mechanism for HTTPS connections designed to protect against both downgrade attack and session hijacking.]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.hsts.max_age">
+            <de><![CDATA[Max-age]]></de>
+            <en><![CDATA[Max-age]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.hsts.max_age.description" html="true">
+            <de><![CDATA[
+            <b>max-age</b> entspricht der Dauer in Sekunden, während der Browser die HSTS-Regel zwischenspeichern soll.
+            ]]></de>
+            <en><![CDATA[
+            <b>max-age</b> is the amount of time in seconds that a browser should cache the HSTS rule.
+            ]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.security_headers.hsts.subdomains">
+            <de><![CDATA[Subdomains]]></de>
+            <en><![CDATA[Subdomains]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.hsts.subdomains.description">
+            <de><![CDATA[Optional lassen sich die HSTS Parameter auf alle Subdomains ausweiten.]]></de>
+            <en><![CDATA[Optionally, the HSTS parameters can be extended to all subdomains.]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.security_headers.hsts.preload">
+            <de><![CDATA[Preload]]></de>
+            <en><![CDATA[Preload]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.hsts.preload.description">
+            <de><![CDATA[
+            Durch eine von Google Chrome betreute und den anderen großen Webbrowsern genutzte
+            HSTS preload list werden die Limitierungen des trust on first use-Prinzip für eine definierte
+            Liste von Domains umgangen.
+            ]]></de>
+            <en><![CDATA[
+            This list is distributed with the browser so that it uses HTTPS for the initial request to the listed sites as well.
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.settings.security_headers.csp.title">
+            <de><![CDATA[Content Security Policy (CSP)]]></de>
+            <en><![CDATA[Content Security Policy (CSP)]]></en>
+        </locale>
+
         <locale name="quiqqer.settings.general.globals.timezone">
             <de><![CDATA[Zeitzone]]></de>
             <en><![CDATA[Timezone]]></en>
@@ -6579,6 +6816,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Backend-Einstellungen]]></de>
             <en><![CDATA[Backend settings]]></en>
         </locale>
+        <locale name="projects.project.panel.settings.btn.settings">
+            <de><![CDATA[Einstellungen]]></de>
+            <en><![CDATA[Settings]]></en>
+        </locale>
         <locale name="projects.project.settings.panel.adminSettings.title">
             <de><![CDATA[Projekteinstellungen für das Backend]]></de>
             <en><![CDATA[Project settings for the backend]]></en>
@@ -6693,8 +6934,9 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
                 <![CDATA[Die Projekt Einstellungen wurden erfolgreich gespeichert.]]></de>
             <en><![CDATA[The project settings successfully saved]]></en>
         </locale>
+
     </groups>
-    <groups name="quiqqer/system" datatype="js,php ">
+    <groups name="quiqqer/system" datatype="js,php">
         <locale name="projects.project.site.select.btn.addTypes">
             <de><![CDATA[Seitentyp hinzufügen ]]></de>
             <en><![CDATA[Add a site type]]></en>

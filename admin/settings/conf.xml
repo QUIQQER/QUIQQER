@@ -207,13 +207,6 @@
                 </conf>
             </section>
 
-            <section name="auth">
-                <conf name="type">
-                    <type><![CDATA[string]]></type>
-                    <defaultvalue>standard</defaultvalue>
-                </conf>
-            </section>
-
             <section name="template">
                 <conf name="engine">
                     <type><![CDATA[string]]></type>
@@ -238,6 +231,32 @@
                 <conf name="displayTimeMessages">
                     <type><![CDATA[integer]]></type>
                     <defaultvalue>2500</defaultvalue>
+                </conf>
+            </section>
+
+            <section name="securityHeaders_hsts">
+                <conf name="max_age">
+                    <type><![CDATA[integer]]></type>
+                    <defaultvalue>31536000</defaultvalue>
+                </conf>
+                <conf name="subdomains">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
+                <conf name="preload">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
+            </section>
+
+            <section name="securityHeaders_csp">
+                <conf name="script">
+                    <type><![CDATA[string]]></type>
+                    <defaultvalue>'self' 'unsafe-eval' 'unsafe-inline'</defaultvalue>
+                </conf>
+                <conf name="object">
+                    <type><![CDATA[string]]></type>
+                    <defaultvalue>'self'</defaultvalue>
                 </conf>
             </section>
 
@@ -455,15 +474,16 @@
                                 <locale group="quiqqer/system" var="quiqqer.settings.auth.emaillogin"/>
                             </text>
                         </input>
-                        <select conf="auth.type" type="text">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.auth.type"/>
-                            </text>
 
-                            <option value="standard">
-                                <locale group="quiqqer/system" var="quiqqer.settings.auth.standard"/>
-                            </option>
-                        </select>
+                        <!--<select conf="auth.type" type="text">-->
+                        <!--<text>-->
+                        <!--<locale group="quiqqer/system" var="quiqqer.settings.auth.type"/>-->
+                        <!--</text>-->
+
+                        <!--<option value="standard">-->
+                        <!--<locale group="quiqqer/system" var="quiqqer.settings.auth.standard"/>-->
+                        <!--</option>-->
+                        <!--</select>-->
                     </settings>
 
                     <settings title="auth-session" name="auth-session">
@@ -502,8 +522,21 @@
                             </option>-->
                         </select>
 
+                        <!--<input conf="session.memcached_data" type="hidden"/>-->
+                    </settings>
 
-                        <input conf="session.memcached_data" type="hidden"/>
+
+                    <settings>
+                        <title>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.auth.global"/>
+                        </title>
+                        <description>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.auth.global.desc"/>
+                        </description>
+                        <input label="false"
+                               type="hidden"
+                               name="global.authenticators"
+                               data-qui="controls/users/auth/GlobalAuthenticatorSettings"/>
                     </settings>
 
                 </category>
@@ -584,6 +617,60 @@
                             </description>
                         </input>
                     </settings>
+                </category>
+
+                <category name="security_headers" index="5">
+                    <text>
+                        <locale group="quiqqer/system" var="quiqqer.settings.security_headers"/>
+                    </text>
+                    <icon>fa fa-unlock-alt</icon>
+
+                    <settings title="securityHeaders_hsts" name="securityHeaders_hsts">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.security_headers.hsts.title"/>
+                        </title>
+                        <description>
+                            <locale group="quiqqer/system" var="quiqqer.settings.security_headers.hsts.description"/>
+                        </description>
+
+                        <input conf="securityHeaders_hsts.max_age" type="number">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.security_headers.hsts.max_age"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/system"
+                                        var="quiqqer.settings.security_headers.hsts.max_age.description"/>
+                            </description>
+                        </input>
+
+                        <input conf="securityHeaders_hsts.preload" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.security_headers.hsts.preload"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/system"
+                                        var="quiqqer.settings.security_headers.hsts.preload.description"/>
+                            </description>
+                        </input>
+
+                        <input conf="securityHeaders_hsts.subdomains" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.security_headers.hsts.subdomains"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/system"
+                                        var="quiqqer.settings.security_headers.hsts.subdomains.description"/>
+                            </description>
+                        </input>
+                    </settings>
+
+                    <settings title="securityHeaders_csp" name="securityHeaders_csp">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.security_headers.csp.title"/>
+                        </title>
+                        <input type="hidden" data-qui="controls/system/settings/CSPSettings" label="false"/>
+                    </settings>
+
                 </category>
 
             </categories>

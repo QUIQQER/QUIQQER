@@ -6,6 +6,7 @@
  * @author www.pcsg.de (Henning Leutz)
  */
 
+define('QUIQQER_SYSTEM', true);
 require_once '../header.php';
 
 if (!QUI::getUserBySession()->canUseBackend()) {
@@ -30,6 +31,14 @@ if (isset($_POST['siteData']['type'])) {
 }
 
 $Site->load();
+
+if (!isset($_POST['siteData'])) {
+    $_POST['siteData'] = array();
+}
+
+if (!isset($_POST['siteDataJSON'])) {
+    $_POST['siteDataJSON'] = array();
+}
 
 // site data
 foreach ($_POST['siteData'] as $key => $value) {

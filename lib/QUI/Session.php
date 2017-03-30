@@ -65,7 +65,7 @@ class Session
      */
     public function __construct()
     {
-        $this->table = QUI_DB_PRFX . 'sessions';
+        $this->table = QUI::getDBTableName('sessions');
 
         // symfony files
         $classNativeSessionStorage = '\Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage';
@@ -240,6 +240,7 @@ class Session
 
         if ($this->Session->isStarted()) {
             $this->Session->getMetadataBag()->stampNew($this->lifetime);
+
             return;
         }
 
@@ -306,7 +307,7 @@ class Session
     }
 
     /**
-     * returns the session-id
+     * Returns the session-id
      *
      * @return string
      */
@@ -316,7 +317,7 @@ class Session
             return $this->Session->getId();
         }
 
-        return md5(microtime());
+        return md5(microtime()) . QUI\Utils\Security\Orthos::getPassword();
     }
 
     /**

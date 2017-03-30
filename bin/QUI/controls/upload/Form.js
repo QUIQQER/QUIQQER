@@ -126,7 +126,7 @@ define('controls/upload/Form', [
 
                     if (self.$Add &&
                         (self.getAttribute('maxuploads') === false ||
-                         self.getAttribute('maxuploads').toInt() > elms.length)) {
+                        self.getAttribute('maxuploads').toInt() > elms.length)) {
                         self.$Add.enable();
                     }
                 }
@@ -210,10 +210,10 @@ define('controls/upload/Form', [
             this.$Elm = new Element('div', {
                 'class': 'controls-upload-form',
                 html   : '<div class="controls-upload-info"></div>' +
-                         '<div class="controls-upload-buttons"></div>' +
-                         '<div class="controls-upload-bg-text">' +
-                         Locale.get(lg, 'upload.form.background.text') +
-                         '</div>',
+                '<div class="controls-upload-buttons"></div>' +
+                '<div class="controls-upload-bg-text">' +
+                Locale.get(lg, 'upload.form.background.text') +
+                '</div>',
                 styles : {
                     height: 140
                 }
@@ -262,6 +262,7 @@ define('controls/upload/Form', [
             }
 
             this.$Add = new QUIButton({
+                name     : 'add',
                 textimage: 'fa fa-hand-o-up',
                 text     : Locale.get(lg, 'upload.form.btn.add.text'),
                 events   : {
@@ -281,6 +282,7 @@ define('controls/upload/Form', [
 
             if (this.getAttribute('sendbutton')) {
                 new QUIButton({
+                    name     : 'upload',
                     textimage: 'fa fa-upload',
                     text     : Locale.get(lg, 'upload.form.btn.send.text'),
                     alt      : Locale.get(lg, 'upload.form.btn.send.alt'),
@@ -298,6 +300,7 @@ define('controls/upload/Form', [
 
             if (this.getAttribute('cancelbutton')) {
                 new QUIButton({
+                    name     : 'cancel',
                     textimage: 'fa fa-remove',
                     text     : Locale.get(lg, 'upload.form.btn.cancel.text'),
                     alt      : Locale.get(lg, 'upload.form.btn.cancel.alt'),
@@ -428,6 +431,7 @@ define('controls/upload/Form', [
 
 
             new QUIButton({
+                name  : 'remove',
                 image : 'fa fa-remove',
                 events: {
                     onClick: function () {
@@ -515,10 +519,10 @@ define('controls/upload/Form', [
         createInfo: function () {
             this.$Info = new Element('div', {
                 html   : '<div class="file-name">' +
-                         Locale.get(lg, 'upload.form.info.text') +
-                         '</div>' +
-                         '<div class="upload-time"></div>' +
-                         '<div class="progress"></div>',
+                Locale.get(lg, 'upload.form.info.text') +
+                '</div>' +
+                '<div class="upload-time"></div>' +
+                '<div class="progress"></div>',
                 'class': 'upload-manager-file box smooth'
             });
 

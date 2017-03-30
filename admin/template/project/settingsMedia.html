@@ -21,7 +21,9 @@
         </tr>
         <tr class="{cycle values="odd,even"}">
             <td class="first">
-                {t}quiqqer/system projects.project.settings.panel.mediaSettings.maxUploadSize{/t}
+                <label>
+                    {t}quiqqer/system projects.project.settings.panel.mediaSettings.maxUploadSize{/t}
+                </label>
             </td>
             <td>
                 <input type="number" name="media_maxUploadSize" />
@@ -47,10 +49,13 @@
         </tr>
         </thead>
 
+        <tbody>
         <tr>
         <tr class="{cycle values="odd,even"}">
             <td class="first">
-                {t}quiqqer/system projects.project.settings.panel.mediaSettings.watermark{/t}
+                <label>
+                    {t}quiqqer/system projects.project.settings.panel.mediaSettings.watermark{/t}
+                </label>
             </td>
             <td>
                 <input type="text" class="media-image" name="media_watermark" />
@@ -58,7 +63,9 @@
         </tr>
         <tr class="{cycle values="odd,even"}">
             <td class="first">
-                {t}quiqqer/system projects.project.settings.panel.mediaSettings.watermark.position{/t}
+                <label>
+                    {t}quiqqer/system projects.project.settings.panel.mediaSettings.watermark.position{/t}
+                </label>
             </td>
             <td>
                 <select name="media_watermark_position">
@@ -95,7 +102,9 @@
         </tr>
         <tr class="{cycle values="odd,even"}">
             <td class="first">
-                {t}quiqqer/system projects.project.settings.panel.mediaSettings.watermark.ratio{/t}
+                <label>
+                    {t}quiqqer/system projects.project.settings.panel.mediaSettings.watermark.ratio{/t}
+                </label>
             </td>
             <td>
                 <input type="number" name="media_watermark_ratio" />
@@ -123,13 +132,17 @@
     <tbody>
         <tr class="{cycle values="odd,even" reset=true}">
             <td class="first">
-                {t}quiqqer/system projects.project.site.media.manager.general.recalc.md5{/t}
+                <label>
+                    {t}quiqqer/system projects.project.site.media.manager.general.recalc.md5{/t}
+                </label>
             </td>
             <td class="md5hash"></td>
         </tr>
         <tr class="{cycle values="odd,even"}">
             <td class="first">
-                {t}quiqqer/system projects.project.site.media.manager.general.recalc.sha1{/t}
+                <label>
+                    {t}quiqqer/system projects.project.site.media.manager.general.recalc.sha1{/t}
+                </label>
             </td>
             <td class="sha1hash"></td>
         </tr>

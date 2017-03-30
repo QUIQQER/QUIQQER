@@ -190,7 +190,7 @@ class Manager implements QUI\Interfaces\Events
      * @example $EventManager->addEvent('onSave', '\Namespace\Class::exec', 'quiqqer/blog:blog/entry' });
      *
      * @param string $event - The type of event (e.g. 'complete').
-     * @param callback $fn - The function to execute.
+     * @param callable $fn - The function to execute.
      * @param string $siteType - type of the site
      * @param int $priority - Event priority
      */
@@ -223,7 +223,7 @@ class Manager implements QUI\Interfaces\Events
      * It remove the events from the database, too.
      *
      * @param string $event - The type of event (e.g. 'complete').
-     * @param callback|boolean $fn - (optional) The function to remove.
+     * @param callable|boolean $fn - (optional) The function to remove.
      */
     public function removeEvent($event, $fn = false)
     {

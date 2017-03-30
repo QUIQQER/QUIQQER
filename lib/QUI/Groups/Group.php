@@ -105,9 +105,7 @@ class Group extends QUI\QDOM
         }
 
         // rechte setzen
-        if ($this->getAttribute('rights')) {
-            $this->rights = json_decode($this->getAttribute('rights'), true);
-        }
+        $this->rights = QUI::getPermissionManager()->getPermissions($this);
 
         // Extras are deprected - we need an api
         if (isset($result[0]['extra'])) {
@@ -464,9 +462,7 @@ class Group extends QUI\QDOM
      */
     public function hasPermission($permission)
     {
-        $list = QUI::getPermissionManager()->getRightParamsFromGroup($this);
-
-        return isset($list[$permission]) ? $list[$permission] : false;
+        return isset($this->rights[$permission]) ? $this->rights[$permission] : false;
     }
 
     /**
@@ -557,6 +553,23 @@ class Group extends QUI\QDOM
         $params['where'] = "usergroup LIKE '%,{$id},%' OR usergroup = {$id}";
 
         return QUI::getDataBase()->fetch($params);
+    }
+
+    /**
+     * Get IDs of all users in the groups
+     *
+     * @return array
+     */
+    public function getUserIds()
+    {
+        $userIds = array();
+        $users   = $this->getUsers();
+
+        foreach ($users as $row) {
+            $userIds[] = $row['id'];
+        }
+
+        return $userIds;
     }
 
     /**
@@ -907,7 +920,6 @@ class Group extends QUI\QDOM
                 'id'     => $newid,
                 'name'   => $name,
                 'parent' => $this->getId(),
-                'admin'  => 0,
                 'active' => 0
             )
         );
