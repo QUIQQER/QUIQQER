@@ -707,10 +707,19 @@ class Utils
                 }
             }
 
+            if (!count($ids)) {
+                if (isset($params['count']) && $params['count']) {
+                    return array(array('count' => 0));
+                }
+
+                return array();
+            }
+
             $where['id'] = array(
                 'type'  => 'IN',
                 'value' => $ids
             );
+
 
             if (isset($params['count']) && $params['count']) {
                 return $Project->getSitesIds(array(
