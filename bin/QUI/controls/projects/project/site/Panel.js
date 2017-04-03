@@ -486,10 +486,13 @@ define('controls/projects/project/site/Panel', [
 
             window.removeEvent('login', this.$onLogin);
 
-            Ajax.get(['ajax_site_unlock'], false, {
-                project: Project.encode(),
-                id     : Site.getId()
-            });
+            // only unlock if the site was not locked from another user
+            if (!this.getContent().getElement('[data-locked]')) {
+                Ajax.get(['ajax_site_unlock'], false, {
+                    project: Project.encode(),
+                    id     : Site.getId()
+                });
+            }
         },
 
         /**
@@ -836,7 +839,7 @@ define('controls/projects/project/site/Panel', [
                 });
 
                 // minimize setting tables
-                if (Category.getAttribute('name') == 'settings') {
+                if (Category.getAttribute('name') === 'settings') {
                     Body.getElements('.data-table:not(.site-data)')
                         .addClass('data-table-closed');
                 }

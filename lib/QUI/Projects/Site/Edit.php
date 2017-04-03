@@ -1374,6 +1374,10 @@ class Edit extends Site
             return false;
         }
 
+        if (is_array($uid) && isset($uid['id'])) {
+            return $uid['id'];
+        }
+
         return (int)$uid;
     }
 
