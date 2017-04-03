@@ -20,6 +20,10 @@ QUI::$Ajax->registerFunction(
         $Group->setAttributes($attributes);
         $Group->save();
 
+        if (isset($attributes['parent'])) {
+            $Group->setParent($attributes['parent']);
+        }
+
         if (isset($attributes['active'])) {
             if ($attributes['active'] == 1) {
                 $Group->activate();

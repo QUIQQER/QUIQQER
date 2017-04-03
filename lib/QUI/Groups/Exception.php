@@ -1,10 +1,10 @@
 <?php
 
 /**
- * This file contains \QUI\Users\Exception
+ * This file contains \QUI\Groups\Exception
  */
 
-namespace QUI\Users;
+namespace QUI\Groups;
 
 use QUI;
 

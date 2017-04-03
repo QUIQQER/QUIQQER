@@ -36,7 +36,7 @@ define('classes/groups/Group', [
         attributes: {}, // group attributes
 
         initialize: function (gid) {
-            this.$gid    = gid;
+            this.$gid    = parseInt(gid);
             this.$loaded = false;
         },
 

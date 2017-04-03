@@ -21,7 +21,7 @@ class Guest extends QUI\Groups\Group
      */
     public function __construct()
     {
-        parent::__construct(0);
+        parent::__construct(Manager::GUEST_ID);
     }
 
     /**
@@ -66,7 +66,7 @@ class Guest extends QUI\Groups\Group
      */
     public function getId()
     {
-        return 0;
+        return Manager::GUEST_ID;
     }
 
     /**

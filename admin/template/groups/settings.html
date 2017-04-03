@@ -12,7 +12,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    Gruppen-ID
+                    {locale group="quiqqer/system" var="group_id"}
                 </span>
                 <input type="text"
                        name="id"
@@ -27,7 +27,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    Name
+                    {locale group="quiqqer/system" var="groupname"}
                 </span>
                 <input type="text"
                        name="name"
@@ -54,9 +54,19 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    Toolbar
+                    {locale group="quiqqer/system" var="toolbar"}
                 </span>
                 <span class="toolbar-listing"></span>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    Elterngruppe
+                </span>
+                <input name="parent" data-qui="controls/groups/Select" data-qui-options-max="1"/>
             </label>
         </td>
     </tr>

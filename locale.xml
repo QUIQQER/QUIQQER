@@ -1188,6 +1188,14 @@
             <de><![CDATA[Gruppenname]]></de>
             <en><![CDATA[Group name]]></en>
         </locale>
+        <locale name="parentGroup">
+            <de><![CDATA[Elterngruppe]]></de>
+            <en><![CDATA[Parent group]]></en>
+        </locale>
+        <locale name="toolbar">
+            <de><![CDATA[Toolbar]]></de>
+            <en><![CDATA[Toolbar]]></en>
+        </locale>
         <locale name="group_id">
             <de><![CDATA[Gruppen-ID]]></de>
             <en><![CDATA[Group ID]]></en>

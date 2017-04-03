@@ -519,6 +519,69 @@ class Group extends QUI\QDOM
     }
 
     /**
+     * Set a new parent
+     *
+     * @param integer $parentId
+     * @throws QUI\Groups\Exception
+     */
+    public function setParent($parentId)
+    {
+        if ($this->getParent()->getId() == $parentId
+            || $this->getId() == $parentId
+        ) {
+            return;
+        }
+
+        // you cant set for the root group, everyoneor guest a parent group
+        if ($this->getId() == QUI::conf('globals', 'root')
+            || $this->getId() == Manager::EVERYONE_ID
+            || $this->getId() == Manager::GUEST_ID
+        ) {
+            return;
+        }
+
+        if (empty($parentId)) {
+            $parentId = QUI::conf('globals', 'root');
+        }
+
+        // exists the parent group
+        $NewParent = QUI::getGroups()->get($parentId);
+
+        // can can only set a parent id, if the parent id is not as a child
+        $children = $this->getChildrenIds(true);
+
+        if (!empty($children)) {
+            $children = array_flip($children);
+
+            if (isset($children[$NewParent->getId()])) {
+                throw new QUI\Groups\Exception(
+                    array(
+                        'quiqqer/quiqqer',
+                        'exception.group.set.parent.not.allowed'
+                    ),
+                    400,
+                    array(
+                        'groupId'       => $this->getId(),
+                        'newParent'     => $NewParent->getId(),
+                        'currentParent' => $this->getParent()->getId()
+                    )
+                );
+            }
+        }
+
+
+        $this->setAttribute('parent', $NewParent->getId());
+
+        QUI::getDataBase()->update(
+            Manager::table(),
+            array('parent' => $NewParent->getId()),
+            array('id' => $this->getId())
+        );
+
+        QUI::getEvents()->fireEvent('setParent', array($this, $NewParent));
+    }
+
+    /**
      * Add a user to this group
      *
      * @param QUI\Users\User $User

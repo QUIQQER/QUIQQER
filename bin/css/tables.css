@@ -146,3 +146,8 @@
 .data-table-flexbox .odd {
     background: none;
 }
+
+.data-table-flexbox .qui-elements-select {
+    flex: 1;
+    width: inherit;
+}
