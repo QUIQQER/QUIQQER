@@ -224,9 +224,9 @@ define('controls/projects/project/media/Panel', [
             // buttons
             require([
                 'qui/controls/buttons/Button',
-                'qui/controls/buttons/Seperator',
+                'qui/controls/buttons/Separator',
                 'qui/controls/contextmenu/Item'
-            ], function (QUIButton, QUISeperator, ContextmenuItem) {
+            ], function (QUIButton, QUISeparator, ContextmenuItem) {
                 self.addButton(
                     new QUIButton({
                         name  : 'left-sitemap-media-button',
@@ -249,7 +249,7 @@ define('controls/projects/project/media/Panel', [
                 );
 
                 self.addButton(
-                    new QUISeperator()
+                    new QUISeparator()
                 );
 
                 // views
@@ -337,7 +337,7 @@ define('controls/projects/project/media/Panel', [
 
 
                 self.addButton(
-                    new QUISeperator()
+                    new QUISeparator()
                 );
 
                 self.addButton(

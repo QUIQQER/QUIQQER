@@ -1406,7 +1406,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getLocation($pathParams = array(), $getParams = array())
     {
-        $separator = QUI\Rewrite::URL_PARAM_SEPERATOR;
+        $separator = QUI\Rewrite::URL_PARAM_SEPARATOR;
         $params    = $pathParams;
 
         if (isset($params['paramAsSites']) && $params['paramAsSites']) {

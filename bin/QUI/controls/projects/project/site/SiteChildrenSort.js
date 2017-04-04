@@ -138,7 +138,7 @@ define('controls/projects/project/site/SiteChildrenSort', [
                         }
                     }
                 }, {
-                    type: 'seperator'
+                    type: 'separator'
                 }, {
                     name     : 'up',
                     textimage: 'fa fa-angle-up',

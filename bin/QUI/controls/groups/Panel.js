@@ -155,7 +155,7 @@ define('controls/groups/Panel', [
             });
 
             this.addButton({
-                type: 'seperator'
+                type: 'separator'
             });
 
             this.addButton({

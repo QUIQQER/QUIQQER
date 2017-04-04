@@ -11,7 +11,7 @@
  * @require qui/controls/Control
  * @require qui/controls/loader/Loader
  * @require qui/controls/buttons/Button
- * @require qui/controls/buttons/Seperator
+ * @require qui/controls/buttons/Separator
  * @require classes/request/Upload
  * @require Projects
  * @require Locale
@@ -23,7 +23,7 @@ define('controls/projects/project/media/FolderViewer', [
     'qui/controls/Control',
     'qui/controls/loader/Loader',
     'qui/controls/buttons/Button',
-    'qui/controls/buttons/Seperator',
+    'qui/controls/buttons/Separator',
     'qui/utils/String',
     'classes/request/Upload',
     'controls/upload/Form',
@@ -38,7 +38,7 @@ define('controls/projects/project/media/FolderViewer', [
              QUIControl,
              QUILoader,
              QUIButton,
-             QUISeperator,
+             QUISeparator,
              QUIStringUtils,
              RequestUpload,
              UploadForm,
@@ -87,7 +87,7 @@ define('controls/projects/project/media/FolderViewer', [
             this.$Diashow   = null;
 
             this.$ButtonsDiashow   = null;
-            this.$ButtonsSeperator = null;
+            this.$ButtonsSeparator = null;
             this.$ButtonsUpload    = null;
 
             this.$Folder = null;
@@ -108,7 +108,7 @@ define('controls/projects/project/media/FolderViewer', [
             this.$Elm.set({
                 'data-quiid': this.getId(),
                 html        : '<div class="qui-project-media-folderViewer-buttons"></div>' +
-                              '<div class="qui-project-media-folderViewer-container"></div>'
+                '<div class="qui-project-media-folderViewer-container"></div>'
             });
 
             this.Loader = new QUILoader().inject(this.$Elm);
@@ -126,7 +126,7 @@ define('controls/projects/project/media/FolderViewer', [
                 disabled : true
             }).inject(this.$Buttons);
 
-            this.$ButtonsSeperator = new QUISeperator().inject(this.$Buttons);
+            this.$ButtonsSeparator = new QUISeparator().inject(this.$Buttons);
 
             this.$ButtonsUpload = new QUIButton({
                 text     : QUILocale.get(lg, 'projects.project.site.media.panel.btn.upload'),
@@ -161,7 +161,7 @@ define('controls/projects/project/media/FolderViewer', [
             }).inject(this.$Buttons);
 
             this.$ButtonsDiashow.hide();
-            this.$ButtonsSeperator.hide();
+            this.$ButtonsSeparator.hide();
 
             // Upload events
             new RequestUpload([this.$Container], {
@@ -271,12 +271,11 @@ define('controls/projects/project/media/FolderViewer', [
 
                     if (files >= 2) {
                         self.$ButtonsDiashow.show();
-                        self.$ButtonsSeperator.show();
-
+                        self.$ButtonsSeparator.show();
                         self.$ButtonsDiashow.enable();
                     } else {
                         self.$ButtonsDiashow.hide();
-                        self.$ButtonsSeperator.hide();
+                        self.$ButtonsSeparator.hide();
                     }
 
                     if (files === 0) {
@@ -440,9 +439,9 @@ define('controls/projects/project/media/FolderViewer', [
             var Container = new Element('div', {
                 'class'     : 'qui-project-media-folderViewer-item',
                 html        : '<div class="qui-project-media-folderViewer-item-image"></div>' +
-                              '<span class="qui-project-media-folderViewer-item-title">' +
-                              imageData.name +
-                              '</span>',
+                '<span class="qui-project-media-folderViewer-item-title">' +
+                imageData.name +
+                '</span>',
                 alt         : imageData.name,
                 title       : imageData.name,
                 styles      : {

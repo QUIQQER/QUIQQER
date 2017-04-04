@@ -75,7 +75,7 @@ var requireList = [
     'controls/workspace/Manager',
     'qui/controls/buttons/Button',
     'qui/controls/contextmenu/Item',
-    'qui/controls/contextmenu/Seperator'
+    'qui/controls/contextmenu/Separator'
 ].append(QUIQQER_LOCALE || []);
 
 if (typeof window.Intl === "undefined") {
@@ -93,7 +93,7 @@ require(requireList, function () {
         QUIButton               = arguments[5],
 
         QUIContextmenuItem      = arguments[6],
-        QUIContextmenuSeperator = arguments[7];
+        QUIContextmenuSeparator = arguments[7];
 
     Locale.setCurrent(USER.lang);
 
@@ -225,7 +225,7 @@ require(requireList, function () {
                         }
 
                         var Workspaces = Bar.getChildren('profile')
-                            .getChildren('workspaces');
+                                            .getChildren('workspaces');
 
                         Workspaces.clear();
 
@@ -253,7 +253,7 @@ require(requireList, function () {
 
 
                         Workspaces.appendChild(
-                            new QUIContextmenuSeperator({})
+                            new QUIContextmenuSeparator({})
                         );
 
                         Workspaces.appendChild(
@@ -281,7 +281,7 @@ require(requireList, function () {
                         );
 
                         Workspaces.appendChild(
-                            new QUIContextmenuSeperator({})
+                            new QUIContextmenuSeparator({})
                         );
 
                         Workspaces.appendChild(
@@ -345,9 +345,9 @@ require(requireList, function () {
             new Element('div', {
                 'class': 'qui-contextmenu-baritem smooth qui-logout-btn',
                 html   : '<span class="qui-contextmenu-baritem-text">' +
-                         '<span class="fa fa-power-off"></span> ' +
-                         Locale.get('quiqqer/quiqqer', 'menu.log.out') +
-                         '</span>',
+                '<span class="fa fa-power-off"></span> ' +
+                Locale.get('quiqqer/quiqqer', 'menu.log.out') +
+                '</span>',
                 title  : Locale.get('quiqqer/quiqqer', 'menu.loged.in', {
                     username: USER.name
                 }),

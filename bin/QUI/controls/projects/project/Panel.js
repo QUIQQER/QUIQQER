@@ -9,7 +9,7 @@
  * @require controls/projects/project/Sitemap
  * @require utils/Panels
  * @require qui/controls/buttons/Button
- * @require qui/controls/buttons/Seperator
+ * @require qui/controls/buttons/Separator
  * @require qui/controls/sitemap/Map
  * @require qui/controls/sitemap/Item
  * @require qui/controls/sitemap/Filter
@@ -25,7 +25,7 @@ define('controls/projects/project/Panel', [
     'utils/Panels',
 
     'qui/controls/buttons/Button',
-    'qui/controls/buttons/Seperator',
+    'qui/controls/buttons/Separator',
     'qui/controls/sitemap/Map',
     'qui/controls/sitemap/Item',
     'qui/controls/sitemap/Filter',
@@ -45,7 +45,7 @@ define('controls/projects/project/Panel', [
         PanelUtils         = arguments[3],
 
         QUIButton          = arguments[4],
-        QUIButtonSeperator = arguments[5],
+        QUIButtonSeparator = arguments[5],
         QUISitemap         = arguments[6],
         QUISitemapItem     = arguments[7],
         QUISitemapFilter   = arguments[8],
@@ -248,7 +248,7 @@ define('controls/projects/project/Panel', [
                 }
             }).inject(this.$Filter.getElm());
 
-            new QUIButtonSeperator().inject(this.getHeader(), 'top');
+            new QUIButtonSeparator().inject(this.getHeader(), 'top');
 
             // title button
             this.$Button = new QUIButton({
@@ -593,15 +593,15 @@ define('controls/projects/project/Panel', [
                 onChildClick      : this.$openSitePanel,
                 onChildContextMenu: function (Item, MapItem, event) {
                     var title = MapItem.getAttribute('text') + ' - ' +
-                                MapItem.getAttribute('value');
+                        MapItem.getAttribute('value');
 
                     MapItem.getContextMenu()
-                        .setTitle(title)
-                        .setPosition(
-                            event.page.x,
-                            event.page.y
-                        )
-                        .show();
+                           .setTitle(title)
+                           .setPosition(
+                               event.page.x,
+                               event.page.y
+                           )
+                           .show();
 
                     event.stop();
                 }

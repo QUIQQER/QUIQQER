@@ -85,8 +85,8 @@ define('controls/packages/Panel', [
             });
 
             this.addButton({
-                type: 'seperator',
-                name: 'menuSeperator'
+                type: 'separator',
+                name: 'menuSeparator'
             });
 
             this.addButton({
@@ -161,9 +161,9 @@ define('controls/packages/Panel', [
                     onClick: function () {
                         require(['Menu'], function (Menu) {
                             var Item = Menu.getChildren()
-                                .getChildren('settings')
-                                .getChildren('quiqqer')
-                                .getChildren('/settings/quiqqer/quiqqer/');
+                                           .getChildren('settings')
+                                           .getChildren('quiqqer')
+                                           .getChildren('/settings/quiqqer/quiqqer/');
 
                             Menu.menuClick(Item);
                         });
@@ -319,7 +319,7 @@ define('controls/packages/Panel', [
                             switch (Button.getAttribute('name')) {
                                 case 'viewTile':
                                 case 'viewList':
-                                case 'menuSeperator':
+                                case 'menuSeparator':
                                 case 'menu':
                                     return;
                             }
@@ -331,7 +331,7 @@ define('controls/packages/Panel', [
                         if ("getButtons" in self.$Control) {
                             // refresh buttons
                             self.addButton({
-                                type: 'seperator'
+                                type: 'separator'
                             });
 
                             self.$Control.getButtons().each(function (btn) {

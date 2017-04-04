@@ -93,8 +93,8 @@ define('controls/desktop/panels/Bookmarks', [
             });
 
             this.addButton({
-                name: 'seperator',
-                type: 'seperator'
+                name: 'separator',
+                type: 'separator'
             });
 
             this.addButton({
@@ -124,7 +124,7 @@ define('controls/desktop/panels/Bookmarks', [
                 }
             });
 
-            this.getButtons('seperator').getElm().setStyle('float', 'right');
+            this.getButtons('separator').getElm().setStyle('float', 'right');
         },
 
         /**

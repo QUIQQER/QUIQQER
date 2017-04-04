@@ -29,7 +29,7 @@ use \Symfony\Component\HttpFoundation\Response;
  */
 class Rewrite
 {
-    const URL_PARAM_SEPERATOR = '_';
+    const URL_PARAM_SEPARATOR = '_';
     const URL_SPACE_CHARACTER = '-';
     const URL_PROJECT_CHARACTER = '^';
     const URL_DEFAULT_SUFFIX = '.html';
@@ -576,7 +576,7 @@ class Rewrite
 
         $request_url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
 
-        $pos = strpos($request_url, self::URL_PARAM_SEPERATOR);
+        $pos = strpos($request_url, self::URL_PARAM_SEPARATOR);
         $end = strpos($request_url, '.');
 
 
@@ -679,7 +679,7 @@ class Rewrite
             $site_url = explode('.', $_url[0]);
 
             $this->site_params = explode(
-                self::URL_PARAM_SEPERATOR,
+                self::URL_PARAM_SEPARATOR,
                 $site_url[0]
             );
 
@@ -725,7 +725,7 @@ class Rewrite
                 }
 
                 $this->site_params = explode(
-                    self::URL_PARAM_SEPERATOR,
+                    self::URL_PARAM_SEPARATOR,
                     $site_url
                 );
 

@@ -403,7 +403,7 @@ define('controls/groups/Group', [
             });
 
             this.addButton({
-                type: 'seperator'
+                type: 'separator'
             });
 
             this.addButton(

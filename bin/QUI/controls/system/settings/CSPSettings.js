@@ -107,7 +107,7 @@ define('controls/system/settings/CSPSettings', [
                         onClick: this.openAddDialoge
                     }
                 }, {
-                    type: 'seperator'
+                    type: 'separator'
                 }, {
                     name     : 'edit',
                     text     : QUILocale.get(lg, 'edit'),

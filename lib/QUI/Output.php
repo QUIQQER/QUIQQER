@@ -377,7 +377,7 @@ class Output extends Singleton
             return $url;
         }
 
-        $seperator = Rewrite::URL_PARAM_SEPERATOR;
+        $separator = Rewrite::URL_PARAM_SEPARATOR;
         $getParams = array();
 
         if (isset($params['_getParams']) && is_string($params['_getParams'])) {
@@ -389,7 +389,7 @@ class Output extends Singleton
         }
 
         if (isset($params['paramAsSites']) && $params['paramAsSites']) {
-            $seperator = '/';
+            $separator = '/';
             unset($params['paramAsSites']);
         }
 
@@ -400,7 +400,7 @@ class Output extends Singleton
 
         foreach ($params as $param => $value) {
             if (is_integer($param)) {
-                $url .= $seperator . $value;
+                $url .= $separator . $value;
                 continue;
             }
 
@@ -409,11 +409,11 @@ class Output extends Singleton
             }
 
             if ($param === "0") {
-                $url .= $seperator . $value;
+                $url .= $separator . $value;
                 continue;
             }
 
-            $url .= $seperator . $param . $seperator . $value;
+            $url .= $separator . $param . $separator . $value;
         }
 
         if (isset($params['suffix'])) {

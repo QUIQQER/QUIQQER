@@ -9,7 +9,7 @@ namespace QUI\Projects;
 use QUI;
 use QUI\Controls\Toolbar;
 use QUI\Controls\Buttons\Button;
-use QUI\Controls\Buttons\Seperator;
+use QUI\Controls\Buttons\Separator;
 use QUI\Utils\Text\XML;
 
 /**
@@ -60,7 +60,7 @@ class Sites
             && !$Site->isLockedFromOther()
         ) {
             $Toolbar->appendChild(
-                new Seperator(array(
+                new Separator(array(
                     'name' => 'separator'
                 ))
             );
@@ -94,7 +94,7 @@ class Sites
 
         // preview
         $Toolbar->appendChild(
-            new Seperator(array(
+            new Separator(array(
                 'name' => 'separator'
             ))
         );

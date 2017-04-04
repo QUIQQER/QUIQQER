@@ -103,7 +103,7 @@ class Locale
     /**
      * @return string
      */
-    public function getDecimalSeperator()
+    public function getDecimalSeparator()
     {
         return $this->get('quiqqer/quiqqer', 'numberFormat.decimal_separator');
     }
@@ -111,7 +111,7 @@ class Locale
     /**
      * @return string
      */
-    public function getGroupingSeperator()
+    public function getGroupingSeparator()
     {
         return $this->get('quiqqer/quiqqer', 'numberFormat.grouping_separator');
     }

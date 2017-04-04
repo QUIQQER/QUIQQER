@@ -94,7 +94,7 @@ define('controls/trash/Panel', [
             this.addButton(this.$Select);
 
             this.addButton({
-                type: 'seperator'
+                type: 'separator'
             });
 
             this.addButton({

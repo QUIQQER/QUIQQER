@@ -143,7 +143,7 @@ define('controls/users/Address', [
                             }
                         }
                     }, {
-                        type: 'seperator'
+                        type: 'separator'
                     }, {
                         name     : 'edit',
                         text     : Locale.get(lg, 'users.address.btn.edit'),
@@ -217,7 +217,7 @@ define('controls/users/Address', [
                             }
                         }
                     }, {
-                        type: 'seperator'
+                        type: 'separator'
                     }, {
                         name     : 'edit',
                         text     : Locale.get(lg, 'users.address.mail.btn.edit'),

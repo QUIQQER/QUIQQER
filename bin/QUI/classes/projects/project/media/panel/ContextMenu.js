@@ -5,17 +5,17 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * @require qui/controls/contextmenu/Item
- * @require qui/controls/contextmenu/Seperator
+ * @require qui/controls/contextmenu/Separator
  * @require qui/utils/Elements
  */
 
 define('classes/projects/project/media/panel/ContextMenu', [
 
     'qui/controls/contextmenu/Item',
-    'qui/controls/contextmenu/Seperator',
+    'qui/controls/contextmenu/Separator',
     'qui/utils/Elements'
 
-], function (QUIContextmenuItem, QUIContextmenuSeperator, QUIElementUtil) {
+], function (QUIContextmenuItem, QUIContextmenuSeparator, QUIElementUtil) {
     "use strict";
 
     /**
@@ -201,10 +201,10 @@ define('classes/projects/project/media/panel/ContextMenu', [
             });
 
 
-            Menu.appendChild(new QUIContextmenuSeperator())
+            Menu.appendChild(new QUIContextmenuSeparator())
                 .appendChild(Move)
                 .appendChild(Trash)
-                .appendChild(new QUIContextmenuSeperator());
+                .appendChild(new QUIContextmenuSeparator());
 
             Menu.appendChild(
                 new QUIContextmenuItem({
@@ -305,7 +305,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                         }
                     })
                 ).appendChild(
-                    new QUIContextmenuSeperator()
+                    new QUIContextmenuSeparator()
                 ).appendChild(
                     new QUIContextmenuItem({
                         name: 'cancel',
@@ -343,7 +343,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                         }
                     })
                 ).appendChild(
-                    new QUIContextmenuSeperator()
+                    new QUIContextmenuSeparator()
                 ).appendChild(
                     new QUIContextmenuItem({
                         name: 'cancel',
@@ -390,7 +390,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                     }
                 })
             ).appendChild(
-                new QUIContextmenuSeperator()
+                new QUIContextmenuSeparator()
             ).appendChild(
                 new QUIContextmenuItem({
                     name: 'cancel',
@@ -427,7 +427,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
 
             // #locale
             Menu.appendChild(
-                new QUIContextmenuSeperator()
+                new QUIContextmenuSeparator()
             ).appendChild(
                 new QUIContextmenuItem({
                     name  : 'rename',
@@ -459,7 +459,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                     }
                 })
             ).appendChild(
-                new QUIContextmenuSeperator()
+                new QUIContextmenuSeparator()
             ).appendChild(
                 new QUIContextmenuItem({
                     name  : 'properties',

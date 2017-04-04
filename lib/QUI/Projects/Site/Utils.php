@@ -83,7 +83,7 @@ class Utils
      */
     public static function clearUrl($url, QUI\Projects\Project $Project)
     {
-        // space seperator
+        // space separator
         $url = str_replace(QUI\Rewrite::URL_SPACE_CHARACTER, ' ', $url);
 
         // clear
