@@ -100,6 +100,11 @@ class Rewrite
     private $path = array();
 
     /**
+     * @var null
+     */
+    protected $registerPaths = null;
+
+    /**
      * current site path - but only the ids
      *
      * @var array
@@ -1316,6 +1321,10 @@ class Rewrite
         $Project = $Site->getProject();
         $table   = QUI::getDBProjectTableName('paths', $Project);
 
+        $currentPaths = QUI::getDataBase()->fetch(array(
+            'from' => $table
+        ));
+
         $this->unregisterPath($Site);
 
         if (!is_array($paths)) {
@@ -1332,6 +1341,54 @@ class Rewrite
                 'id'   => $Site->getId(),
                 'path' => $path
             ));
+        }
+
+        // change children - quiqqer/quiqqer#334
+        $currentPathsIds = array_map(function ($entry) {
+            return $entry['id'];
+        }, $currentPaths);
+
+        $childrenIds = array_flip($Site->getChildrenIdsRecursive());
+
+        /**
+         * Helper for site event triggering
+         *
+         * @param $eventName
+         * @param $Site
+         */
+        $triggerEvent = function ($eventName, $Site) {
+            try {
+                QUI::getEvents()->fireEvent($eventName, array($Site), true);
+            } catch (QUI\ExceptionStack $Exception) {
+                $list = $Exception->getExceptionList();
+
+                foreach ($list as $Exc) {
+                    /* @var $Exc \Exception */
+                    QUI\System\Log::addWarning($Exc->getMessage());
+                }
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addWarning($Exception->getMessage());
+            }
+        };
+
+        // save children
+        foreach ($currentPathsIds as $childId) {
+            if (isset($childrenIds[$childId])) {
+                try {
+                    $Child = $Project->get($childId)->getEdit();
+
+                    $triggerEvent('siteSaveBefore', $Child);
+
+                    // ich denke wir brauchen kein children save,
+                    // nur die events damit die registerPaths ausgeführt werden
+                    // falls doch:
+                    // $Child->save(QUI::getUsers()->getSystemUser());
+
+                    $triggerEvent('siteSave', $Child);
+                } catch (QUI\Exception $Exception) {
+                    QUI\System\Log::addNotice($Exception->getMessage());
+                }
+            }
         }
     }
 
@@ -1360,13 +1417,19 @@ class Rewrite
      */
     public function existRegisterPath($path, $Project)
     {
-        $table = QUI::getDBProjectTableName('paths', $Project);
-        $list  = QUI::getDataBase()->fetch(array(
-            'from' => $table
-        ));
+        if ($this->registerPaths === null) {
+            $table  = QUI::getDBProjectTableName('paths', $Project);
+            $result = QUI::getDataBase()->fetch(array(
+                'from' => $table
+            ));
 
-        // nach / (slash) sortieren, damit urls mit mehr kindseiten als erstes kommen
-        // ansonsten kann es vorkommen das die falsche seite für den Pfad zuständig ist
+            $this->registerPaths = $result;
+        }
+
+        $list = $this->registerPaths;
+
+        // Nach / (slash) sortieren, damit URL mit mehr Kindseiten als erstes kommen
+        // Ansonsten kann es vorkommen das die falsche Seite für den Pfad zuständig ist
         usort($list, function ($a, $b) {
             return substr_count($a['path'], '/') < substr_count($b['path'], '/');
         });

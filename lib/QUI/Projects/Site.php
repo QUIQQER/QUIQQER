@@ -1396,7 +1396,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     }
 
     /**
-     * Return site url without host, protocoll or project
+     * Return site url without host, protocol or project
      * it returns only the site location from the project
      *
      * @param array $pathParams - Path params, params in the site title
@@ -1406,11 +1406,11 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getLocation($pathParams = array(), $getParams = array())
     {
-        $seperator = QUI\Rewrite::URL_PARAM_SEPERATOR;
+        $separator = QUI\Rewrite::URL_PARAM_SEPERATOR;
         $params    = $pathParams;
 
         if (isset($params['paramAsSites']) && $params['paramAsSites']) {
-            $seperator = '/';
+            $separator = '/';
             unset($params['paramAsSites']);
         }
 
@@ -1425,7 +1425,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             // somit kann ein url cache aufgebaut werden
             foreach ($params as $param => $value) {
                 if (is_integer($param)) {
-                    $url .= $seperator . $value;
+                    $url .= $separator . $value;
                     continue;
                 }
 
@@ -1434,11 +1434,11 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 }
 
                 if (is_int($param)) {
-                    $url .= $seperator . $value;
+                    $url .= $separator . $value;
                     continue;
                 }
 
-                $url .= $seperator . $param . $seperator . $value;
+                $url .= $separator . $param . $separator . $value;
             }
 
             if (isset($params['suffix'])) {
@@ -1461,8 +1461,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 $this->getUrlHelper($this->getId());
 
                 foreach (array_reverse($this->parents) as $parent) {
-                    $url .= QUI\Rewrite::replaceUrlSigns($parent, true)
-                            . '/'; // URL auch Slash ersetzen
+                    $url .= QUI\Rewrite::replaceUrlSigns($parent, true) . '/'; // URL auch Slash ersetzen
                 }
             }
 
@@ -1473,7 +1472,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         foreach ($params as $param => $value) {
             if (is_integer($param)) {
-                $url .= $seperator . $value;
+                $url .= $separator . $value;
                 continue;
             }
 
@@ -1482,11 +1481,11 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             }
 
             if (is_int($param)) {
-                $url .= $seperator . $value;
+                $url .= $separator . $value;
                 continue;
             }
 
-            $url .= $seperator . $param . $seperator . $value;
+            $url .= $separator . $param . $separator . $value;
         }
 
         if (isset($params['suffix'])) {

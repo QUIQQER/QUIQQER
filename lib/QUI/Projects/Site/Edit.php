@@ -566,6 +566,7 @@ class Edit extends Site
         if (!$order_field) {
             $order_field = 0;
         }
+        
         // save main data
         $update = QUI::getDataBase()->update(
             $this->TABLE,
