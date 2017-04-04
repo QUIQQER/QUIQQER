@@ -39,7 +39,7 @@ define('controls/workspace/Manager', [
     'qui/controls/windows/Confirm',
     'qui/controls/messages/Panel',
     'qui/controls/contextmenu/Item',
-    'qui/controls/contextmenu/Seperator',
+    'qui/controls/contextmenu/Separator',
     'qui/utils/Controls',
 
     'controls/help/Dashboard',
@@ -67,7 +67,7 @@ define('controls/workspace/Manager', [
         QUIConfirm              = arguments[8],
         QUIMessagePanel         = arguments[9],
         QUIContextmenuItem      = arguments[10],
-        QUIContextmenuSeperator = arguments[11],
+        QUIContextmenuSeparator = arguments[11],
         QUIControlUtils         = arguments[12],
 
         WelcomePanel            = arguments[13],
@@ -876,7 +876,7 @@ define('controls/workspace/Manager', [
                 });
             }
 
-            Menu.appendChild(new QUIContextmenuSeperator());
+            Menu.appendChild(new QUIContextmenuSeparator());
 
             // add columns
             var AddColumn = new QUIContextmenuItem({

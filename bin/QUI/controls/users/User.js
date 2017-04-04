@@ -159,7 +159,7 @@ define('controls/users/User', [
             });
 
             this.addButton({
-                type: 'seperator'
+                type: 'separator'
             });
 
             this.addButton(
@@ -942,7 +942,7 @@ define('controls/users/User', [
                         }
                     }
                 }, {
-                    type: 'seperator'
+                    type: 'separator'
                 }, {
                     name: 'edit',
                     text: QUILocale.get(lg, 'users.user.address.table.btn.edit'),

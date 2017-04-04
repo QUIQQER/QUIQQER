@@ -79,7 +79,7 @@ define('controls/system/VHosts', [
             });
 
             this.addButton({
-                type: 'seperator'
+                type: 'separator'
             });
 
             this.addButton({

@@ -151,7 +151,7 @@ define('controls/users/Panel', [
 
             this.addButton({
                 name: 'usep',
-                type: 'seperator'
+                type: 'separator'
             });
 
             this.addButton({

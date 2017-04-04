@@ -3,9 +3,11 @@
 /**
  * This file contains QUI\Workspace\Menu
  */
+
 namespace QUI\Workspace;
 
 use QUI;
+use QUI\Permissions\Permission;
 use QUI\Controls\Contextmenu\Bar;
 use QUI\Controls\Contextmenu\Menuitem;
 use QUI\Utils\Text\XML;
@@ -195,25 +197,25 @@ class Menu
         // @todo rechte für settings und extras und quiqqer
         foreach ($menu as $key => $entry) {
             if ($entry['name'] == 'quiqqer') {
-                if (!QUI\Permissions\Permission::hasPermission('quiqqer.menu.quiqqer')) {
+                if (!Permission::hasPermission('quiqqer.menu.quiqqer')) {
                     unset($menu[$key]['items']);
                 }
             }
 
             if ($entry['name'] == 'settings') {
-                if (!QUI\Permissions\Permission::hasPermission('quiqqer.menu.settings')) {
+                if (!Permission::hasPermission('quiqqer.menu.settings')) {
                     unset($menu[$key]);
                 }
             }
 
             if ($entry['name'] == 'extras') {
-                if (!QUI\Permissions\Permission::hasPermission('quiqqer.menu.extras')) {
+                if (!Permission::hasPermission('quiqqer.menu.extras')) {
                     unset($menu[$key]);
                 }
             }
 
             if ($entry['name'] == 'apps') {
-                if (!QUI\Permissions\Permission::hasPermission('quiqqer.menu.apps')) {
+                if (!Permission::hasPermission('quiqqer.menu.apps')) {
                     unset($menu[$key]);
                 }
             }

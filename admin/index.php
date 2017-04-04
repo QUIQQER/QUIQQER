@@ -148,7 +148,7 @@ try {
 
         var QUIQQER = {
             Rewrite         : {
-                URL_PARAM_SEPERATOR  : "<?php echo \QUI\Rewrite::URL_PARAM_SEPERATOR; ?>",
+                URL_PARAM_SEPARATOR  : "<?php echo \QUI\Rewrite::URL_PARAM_SEPARATOR; ?>",
                 URL_SPACE_CHARACTER  : "<?php echo \QUI\Rewrite::URL_SPACE_CHARACTER; ?>",
                 URL_PROJECT_CHARACTER: "<?php echo \QUI\Rewrite::URL_PROJECT_CHARACTER; ?>",
                 SUFFIX               : "<?php echo \QUI\Rewrite::getDefaultSuffix(); ?>"

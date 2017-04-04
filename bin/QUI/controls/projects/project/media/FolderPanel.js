@@ -7,7 +7,7 @@
  * @require qui/QUI
  * @require qui/controls/desktop/Panel
  * @require qui/controls/buttons/Button
- * @require qui/controls/buttons/Seperator
+ * @require qui/controls/buttons/Separator
  * @require qui/controls/buttons/Select
  * @require qui/controls/windows/Confirm
  * @require qui/controls/input/Range
@@ -24,7 +24,7 @@ define('controls/projects/project/media/FolderPanel', [
     'qui/QUI',
     'qui/controls/desktop/Panel',
     'qui/controls/buttons/Button',
-    'qui/controls/buttons/Seperator',
+    'qui/controls/buttons/Separator',
     'qui/controls/buttons/Select',
     'qui/controls/windows/Confirm',
     'qui/controls/input/Range',
@@ -40,7 +40,7 @@ define('controls/projects/project/media/FolderPanel', [
 ], function (QUI,
              QUIPanel,
              QUIButton,
-             QUIButtonSeperator,
+             QUIButtonSeparator,
              QUISelect,
              QUIConfirm,
              QUIRange,

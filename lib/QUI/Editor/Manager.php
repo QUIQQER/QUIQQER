@@ -644,9 +644,9 @@ class Manager
         for ($i = 0; $i < $children->length; $i++) {
             $Param = $children->item($i);
 
-            if ($Param->nodeName == 'seperator') {
+            if ($Param->nodeName == 'separator') {
                 $result[] = array(
-                    'type' => 'seperator'
+                    'type' => 'separator'
                 );
 
                 continue;

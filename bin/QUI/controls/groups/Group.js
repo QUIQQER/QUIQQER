@@ -403,7 +403,7 @@ define('controls/groups/Group', [
             });
 
             this.addButton({
-                type: 'seperator'
+                type: 'separator'
             });
 
             this.addButton(
@@ -549,6 +549,17 @@ define('controls/groups/Group', [
          * event: on category click (settings)
          */
         $onCategorySettingsLoad: function () {
+            var Group  = this.getGroup(),
+                Parent = this.getContent().getElement('[name="parent"]');
+
+            if (Group.getId() === 1 ||
+                Group.getId() === 0 ||
+                Group.getId() === parseInt(window.QUIQQER_CONFIG.globals.root)) {
+                Parent.getParent('tr').setStyle('display', 'none');
+            } else {
+                Parent.set('value', Group.getAttribute('parent'));
+            }
+
             // load the wysiwyg toolbars
             Editors.getToolbars(function (toolbars) {
                 var i, len, Sel;

@@ -43,6 +43,13 @@
     width: 160px;
 }
 
+.qui-control-packages-server-tile-entry:focus {
+    border: 1px solid red;
+    box-shadow: 0 0 10px -4px rgba(0, 0, 0, 0.75);
+    -webkit-box-shadow: 0 0 10px -4px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0 0 10px -4px rgba(0, 0, 0, 0.75);
+}
+
 .qui-control-packages-server-tile-entry:hover {
     border: 1px solid #BBB;
     box-shadow: 0 0 10px -4px rgba(0, 0, 0, 0.75);
@@ -144,6 +151,11 @@
     float: left;
     padding: 10px 0;
     width: 100%;
+}
+
+.qui-control-packages-server-list-entry:focus {
+    background: rgba(0, 0, 0, 0.05);
+    outline: 1px solid red !important;
 }
 
 .qui-control-packages-server-list-entry:hover {

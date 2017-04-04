@@ -77,7 +77,7 @@ define('controls/system/forwarding/Panel', [
             });
 
             this.addButton({
-                type: 'seperator'
+                type: 'separator'
             });
 
             this.addButton({

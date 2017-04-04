@@ -566,6 +566,7 @@ class Edit extends Site
         if (!$order_field) {
             $order_field = 0;
         }
+        
         // save main data
         $update = QUI::getDataBase()->update(
             $this->TABLE,
@@ -1372,6 +1373,10 @@ class Edit extends Site
         if ($time > $max_life_time) {
             $this->unlock();
             return false;
+        }
+
+        if (is_array($uid) && isset($uid['id'])) {
+            return $uid['id'];
         }
 
         return (int)$uid;

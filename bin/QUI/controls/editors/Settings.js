@@ -71,7 +71,7 @@ define('controls/editors/Settings', [
             });
 
             this.addButton({
-                type: 'seperator'
+                type: 'separator'
             });
 
             this.addButton({

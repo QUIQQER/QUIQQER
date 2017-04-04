@@ -8,7 +8,7 @@
  * @require qui/controls/sitemap/Map
  * @require qui/controls/sitemap/Item
  * @require qui/controls/contextmenu/Item
- * @require qui/controls/contextmenu/Seperator
+ * @require qui/controls/contextmenu/Separator
  * @require Projects
  * @require Ajax
  * @require Locale
@@ -23,7 +23,7 @@ define('controls/projects/project/Sitemap', [
     'qui/controls/sitemap/Map',
     'qui/controls/sitemap/Item',
     'qui/controls/contextmenu/Item',
-    'qui/controls/contextmenu/Seperator',
+    'qui/controls/contextmenu/Separator',
     'qui/controls/windows/Confirm',
 
     'Projects',
@@ -41,7 +41,7 @@ define('controls/projects/project/Sitemap', [
         QUISitemap              = arguments[1],
         QUISitemapItem          = arguments[2],
         QUIContextmenuItem      = arguments[3],
-        QUIContextmenuSeperator = arguments[4],
+        QUIContextmenuSeparator = arguments[4],
         QUIConfirm              = arguments[5],
 
         Projects                = arguments[6],
@@ -615,43 +615,41 @@ define('controls/projects/project/Sitemap', [
             // contextmenu
             var ContextMenu = Itm.getContextMenu();
 
-            ContextMenu.clearChildren()
-                .appendChild(
-                    new QUIContextmenuItem({
-                        name  : 'create-new-site',
-                        text  : Locale.get('quiqqer/system', 'projects.project.site.btn.new.text'),
-                        icon  : 'fa fa-file-text',
-                        events: {
-                            onClick: function () {
-                                self.$createChild({
-                                    project: self.getAttribute('project'),
-                                    lang   : self.getAttribute('lang'),
-                                    id     : Itm.getAttribute('value')
-                                });
-                            }
+            ContextMenu.clearChildren().appendChild(
+                new QUIContextmenuItem({
+                    name  : 'create-new-site',
+                    text  : Locale.get('quiqqer/system', 'projects.project.site.btn.new.text'),
+                    icon  : 'fa fa-file-text',
+                    events: {
+                        onClick: function () {
+                            self.$createChild({
+                                project: self.getAttribute('project'),
+                                lang   : self.getAttribute('lang'),
+                                id     : Itm.getAttribute('value')
+                            });
                         }
-                    })
-                ).appendChild(
-                new QUIContextmenuSeperator()
-            )
-                .appendChild(
-                    new QUIContextmenuItem({
-                        name  : 'copy',
-                        text  : Locale.get('quiqqer/system', 'copy'),
-                        icon  : 'fa fa-copy',
-                        events: {
-                            onClick: function () {
-                                Clipboard.set({
-                                    project : self.getAttribute('project'),
-                                    lang    : self.getAttribute('lang'),
-                                    id      : Itm.getAttribute('value'),
-                                    Item    : Itm,
-                                    copyType: 'copy'
-                                });
-                            }
+                    }
+                })
+            ).appendChild(
+                new QUIContextmenuSeparator()
+            ).appendChild(
+                new QUIContextmenuItem({
+                    name  : 'copy',
+                    text  : Locale.get('quiqqer/system', 'copy'),
+                    icon  : 'fa fa-copy',
+                    events: {
+                        onClick: function () {
+                            Clipboard.set({
+                                project : self.getAttribute('project'),
+                                lang    : self.getAttribute('lang'),
+                                id      : Itm.getAttribute('value'),
+                                Item    : Itm,
+                                copyType: 'copy'
+                            });
                         }
-                    })
-                ).appendChild(
+                    }
+                })
+            ).appendChild(
                 new QUIContextmenuItem({
                     name  : 'cut',
                     text  : Locale.get('quiqqer/system', 'cut'),
@@ -669,7 +667,7 @@ define('controls/projects/project/Sitemap', [
                     }
                 })
             ).appendChild(
-                new QUIContextmenuSeperator()
+                new QUIContextmenuSeparator()
             ).appendChild(
                 new QUIContextmenuItem({
                     disabled: true,
@@ -695,7 +693,7 @@ define('controls/projects/project/Sitemap', [
                     }
                 })
             ).appendChild(
-                new QUIContextmenuSeperator()
+                new QUIContextmenuSeparator()
             ).appendChild(
                 new QUIContextmenuItem({
                     name  : 'de-activate-site',
@@ -754,7 +752,7 @@ define('controls/projects/project/Sitemap', [
                     }
 
                     var dataString = ' ' + data.project + ' (' + data.lang + ') ' +
-                                     '#' + data.id + '';
+                        '#' + data.id + '';
 
                     Paste.setAttribute(
                         'text', Locale.get('quiqqer/system', 'paste') + dataString

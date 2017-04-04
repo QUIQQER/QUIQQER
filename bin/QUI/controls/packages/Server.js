@@ -5,9 +5,10 @@
  * @requires qui/QUI
  * @requires qui/controls/Control
  * @requires qui/controls/buttons/Button
+ * @requires qui/controls/windows/Confirm
  * @requires Packages
  * @requires Mustache
- * @requires Ajax
+ * @requires Locale
  * @requires css!controls/packages/Server.css
  *
  * @event onLoad
@@ -88,14 +89,14 @@ define('controls/packages/Server', [
             this.$Elm = new Element('div', {
                 'class': 'qui-control-packages-server',
                 html   : '<form class="qui-control-packages-server-search">' +
-                         '  <fieldset>' +
-                         '      <label>' +
-                         '          <input type="search" name="search" placeholder="Filter..."/>' +
-                         '      </label>' +
-                         '      <input type="submit" value="Los"/>' +
-                         '  </fieldset>' +
-                         '</form>' +
-                         '<div class="qui-control-packages-server-result"></div>'
+                '  <fieldset>' +
+                '      <label>' +
+                '          <input type="search" name="search" placeholder="Filter..."/>' + // #locale
+                '      </label>' +
+                '      <input type="submit" value="Los"/>' + // #locale
+                '  </fieldset>' +
+                '</form>' +
+                '<div class="qui-control-packages-server-result"></div>'
             });
 
             this.$List = {
@@ -217,22 +218,25 @@ define('controls/packages/Server', [
                     'class': 'packages-server qui-control-packages-server-tile-entry',
                     title  : server.server,
                     'html' : '<div class="qui-control-packages-server-tile-entry-image">' +
-                             Packages.getServerTypeIcon(server.type) +
-                             '</div>' +
-                             '<div class="qui-control-packages-server-tile-entry-text">' +
-                             server.server +
-                             '</div>' +
-                             '<div class="qui-control-packages-server-tile-entry-buttons">' +
-                             '' +
-                             '</div>',
+                    Packages.getServerTypeIcon(server.type) +
+                    '</div>' +
+                    '<div class="qui-control-packages-server-tile-entry-text">' +
+                    server.server +
+                    '</div>' +
+                    '<div class="qui-control-packages-server-tile-entry-buttons">' +
+                    '' +
+                    '</div>',
                     events : {
                         click: this.$onServerClick
                     }
                 }).inject(this.$Result);
 
-                if (server.server == 'packagist' &&
-                    server.server != 'npm' &&
-                    server.server != 'bower') {
+                Server.style.outline = 0;
+                Server.setAttribute('tabindex', "-1");
+
+                if (server.server === 'packagist' &&
+                    server.server !== 'npm' &&
+                    server.server !== 'bower') {
 
                     Server.setStyle('cursor', 'default');
                 }
@@ -243,21 +247,21 @@ define('controls/packages/Server', [
 
                 if (server.active) {
                     Active.clone()
-                        .addEvent('click', this.$onToggleStatusClick)
-                        .inject(Buttons);
+                          .addEvent('click', this.$onToggleStatusClick)
+                          .inject(Buttons);
                 } else {
                     Deactive.clone()
-                        .addEvent('click', this.$onToggleStatusClick)
-                        .inject(Buttons);
+                            .addEvent('click', this.$onToggleStatusClick)
+                            .inject(Buttons);
                 }
 
-                if (server.server != 'packagist' &&
-                    server.server != 'npm' &&
-                    server.server != 'bower') {
+                if (server.server !== 'packagist' &&
+                    server.server !== 'npm' &&
+                    server.server !== 'bower') {
 
                     Delete.clone()
-                        .addEvent('click', this.$onDeleterClick)
-                        .inject(Buttons);
+                          .addEvent('click', this.$onDeleterClick)
+                          .inject(Buttons);
                 }
             }
         },
@@ -293,23 +297,26 @@ define('controls/packages/Server', [
                 Server = new Element('div', {
                     'class': 'packages-server qui-control-packages-server-list-entry',
                     title  : server.server,
-                    'html' : '<div class="qui-control-packages-server-list-entry-image">' +
-                             Packages.getServerTypeIcon(server.type) +
-                             '</div>' +
-                             '<div class="qui-control-packages-server-list-entry-text">' +
-                             server.server +
-                             '</div>' +
-                             '<div class="qui-control-packages-server-list-entry-buttons">' +
-                             '' +
-                             '</div>',
+                    html   : '<div class="qui-control-packages-server-list-entry-image">' +
+                    Packages.getServerTypeIcon(server.type) +
+                    '</div>' +
+                    '<div class="qui-control-packages-server-list-entry-text">' +
+                    server.server +
+                    '</div>' +
+                    '<div class="qui-control-packages-server-list-entry-buttons">' +
+                    '' +
+                    '</div>',
                     events : {
                         click: this.$onServerClick
                     }
                 }).inject(this.$Result);
 
-                if (server.server == 'packagist' &&
-                    server.server != 'npm' &&
-                    server.server != 'bower') {
+                Server.style.outline = 0;
+                Server.setAttribute('tabindex', "-1");
+
+                if (server.server === 'packagist' &&
+                    server.server !== 'npm' &&
+                    server.server !== 'bower') {
 
                     Server.setStyle('cursor', 'default');
                 }
@@ -320,23 +327,44 @@ define('controls/packages/Server', [
 
                 if (server.active) {
                     Active.clone()
-                        .addEvent('click', this.$onToggleStatusClick)
-                        .inject(Buttons);
+                          .addEvent('click', this.$onToggleStatusClick)
+                          .inject(Buttons);
                 } else {
                     Deactive.clone()
-                        .addEvent('click', this.$onToggleStatusClick)
-                        .inject(Buttons);
+                            .addEvent('click', this.$onToggleStatusClick)
+                            .inject(Buttons);
                 }
 
-                if (server.server != 'packagist' &&
-                    server.server != 'npm' &&
-                    server.server != 'bower') {
+                if (server.server !== 'packagist' &&
+                    server.server !== 'npm' &&
+                    server.server !== 'bower') {
 
                     Delete.clone()
-                        .addEvent('click', this.$onDeleterClick)
-                        .inject(Buttons);
+                          .addEvent('click', this.$onDeleterClick)
+                          .inject(Buttons);
                 }
             }
+        },
+
+        /**
+         * Highlight and scroll to the server
+         *
+         * @param {String} server
+         */
+        focusServer: function (server) {
+            if (server === '') {
+                return;
+            }
+
+            var Server = this.$Result.getElement('[title="' + server + '"]');
+
+            if (!Server) {
+                return;
+            }
+
+            new Fx.Scroll(this.$Result).toElement(Server).chain(function () {
+                Server.focus();
+            });
         },
 
         /**
@@ -402,15 +430,15 @@ define('controls/packages/Server', [
                 Target = Target.getParent('.packages-server');
             }
 
-            if (Target.get('title') == 'packagist') {
+            if (Target.get('title') === 'packagist') {
                 return;
             }
 
-            if (Target.get('title') == 'npm') {
+            if (Target.get('title') === 'npm') {
                 return;
             }
 
-            if (Target.get('title') == 'bower') {
+            if (Target.get('title') === 'bower') {
                 return;
             }
 
@@ -445,8 +473,12 @@ define('controls/packages/Server', [
             ], function (AddServerWindow) {
                 new AddServerWindow({
                     events: {
-                        onSubmit: function () {
-                            self.$reload().then(self.refresh.bind(self));
+                        onSubmit: function (Win, server) {
+                            self.$reload()
+                                .then(self.refresh.bind(self))
+                                .then(function () {
+                                    self.focusServer(server);
+                                });
                         }
                     }
                 }).open();

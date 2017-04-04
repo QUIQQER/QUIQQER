@@ -21,7 +21,7 @@ class Everyone extends QUI\Groups\Group
      */
     public function __construct()
     {
-        parent::__construct(1);
+        parent::__construct(Manager::EVERYONE_ID);
     }
 
     /**
@@ -66,7 +66,7 @@ class Everyone extends QUI\Groups\Group
      */
     public function getId()
     {
-        return 1;
+        return Manager::EVERYONE_ID;
     }
 
     /**

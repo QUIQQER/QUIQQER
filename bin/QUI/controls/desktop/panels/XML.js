@@ -8,7 +8,7 @@
  * @require qui/QUI
  * @require qui/controls/desktop/Panel
  * @require qui/controls/buttons/Button
- * @require qui/controls/buttons/Seperator
+ * @require qui/controls/buttons/Separator
  * @require qui/utils/Object
  * @require Ajax
  * @require Locale
@@ -20,7 +20,7 @@ define('controls/desktop/panels/XML', [
     'qui/QUI',
     'qui/controls/desktop/Panel',
     'qui/controls/buttons/Button',
-    'qui/controls/buttons/Seperator',
+    'qui/controls/buttons/Separator',
     'qui/utils/Object',
     'Ajax',
     'Locale',
@@ -28,7 +28,7 @@ define('controls/desktop/panels/XML', [
 
     'css!controls/desktop/panels/XML.css'
 
-], function (QUI, QUIPanel, QUIButton, QUISeperator, QUIObjectUtils, Ajax, QUILocale, ControlUtils) {
+], function (QUI, QUIPanel, QUIButton, QUISeparator, QUIObjectUtils, Ajax, QUILocale, ControlUtils) {
     "use strict";
 
     /**
@@ -167,7 +167,7 @@ define('controls/desktop/panels/XML', [
 
                 if (buttons.length) {
                     self.addButton(
-                        new QUISeperator()
+                        new QUISeparator()
                     );
                 }
 
@@ -414,18 +414,18 @@ define('controls/desktop/panels/XML', [
 
             // filter controls with save method
             var saveable = QUI.Controls.getControlsInElement(this.getBody())
-                .filter(function (Control) {
-                    if (Control.getId() in inList) {
-                        return false;
-                    }
+                              .filter(function (Control) {
+                                  if (Control.getId() in inList) {
+                                      return false;
+                                  }
 
-                    if (typeof Control.save === 'undefined') {
-                        return false;
-                    }
+                                  if (typeof Control.save === 'undefined') {
+                                      return false;
+                                  }
 
-                    inList[Control.getId()] = true;
-                    return true;
-                });
+                                  inList[Control.getId()] = true;
+                                  return true;
+                              });
 
             var promises = saveable.map(function (Control) {
                 return Control.save();

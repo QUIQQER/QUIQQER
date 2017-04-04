@@ -62,18 +62,18 @@ define('classes/Locale', needle, function (QUILocale) {
         },
 
         /**
-         * Return decimal seperator
+         * Return decimal separator
          * @returns {String}
          */
-        getDecimalSeperator: function () {
+        getDecimalSeparator: function () {
             return this.get('quiqqer/quiqqer', 'numberFormat.decimal_separator');
         },
 
         /**
-         * Return grouping seperator
+         * Return grouping separator
          * @returns {String}
          */
-        getGroupingSeperator: function () {
+        getGroupingSeparator: function () {
             return this.get('quiqqer/quiqqer', 'numberFormat.grouping_separator');
         },
 

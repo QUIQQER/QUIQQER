@@ -263,8 +263,9 @@ class Manager implements QUI\Interfaces\Events
      * @param string $event - The type of event (e.g. 'onComplete').
      * @param array|boolean $args - (optional) the argument(s) to pass to the function.
      *                          The arguments must be in an array.
+     * @param boolean $force - (optional) no recursion check, optional, default = false
      */
-    public function fireEvent($event, $args = false)
+    public function fireEvent($event, $args = false, $force = false)
     {
         // event onFireEvent
         $fireArgs = $args;
@@ -274,6 +275,6 @@ class Manager implements QUI\Interfaces\Events
         }
 
         $this->Events->fireEvent('onFireEvent', array($event, $fireArgs));
-        $this->Events->fireEvent($event, $fireArgs);
+        $this->Events->fireEvent($event, $fireArgs, $force);
     }
 }

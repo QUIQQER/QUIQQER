@@ -497,11 +497,11 @@
             <en><![CDATA[The setup is running.]]></en>
         </locale>
 
-        <locale name="message.packages.server.add.successfuly">
+        <locale name="message.packages.server.add.successfully">
             <de><![CDATA[Der Server [server] wurde erfolgreich hinzugefügt.]]></de>
             <en><![CDATA[The Server [server] was successfuly added.]]></en>
         </locale>
-        <locale name="message.packages.server.remove.successfuly">
+        <locale name="message.packages.server.remove.successfully">
             <de><![CDATA[Die Server wurden erfolgreich entfernt.]]></de>
             <en><![CDATA[The servers were successfully removed.]]></en>
         </locale>
@@ -1187,6 +1187,14 @@
         <locale name="groupname">
             <de><![CDATA[Gruppenname]]></de>
             <en><![CDATA[Group name]]></en>
+        </locale>
+        <locale name="parentGroup">
+            <de><![CDATA[Elterngruppe]]></de>
+            <en><![CDATA[Parent group]]></en>
+        </locale>
+        <locale name="toolbar">
+            <de><![CDATA[Toolbar]]></de>
+            <en><![CDATA[Toolbar]]></en>
         </locale>
         <locale name="group_id">
             <de><![CDATA[Gruppen-ID]]></de>

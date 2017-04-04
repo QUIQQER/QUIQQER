@@ -32,7 +32,7 @@
  *
  * @require qui/controls/Control
  * @require qui/controls/buttons/Button
- * @require qui/controls/buttons/Seperator
+ * @require qui/controls/buttons/Separator
  * @require qui/utils/Controls
  * @require css!controls/grid/Grid.css
  */
@@ -41,7 +41,7 @@ define('controls/grid/Grid', [
 
     'qui/controls/Control',
     'qui/controls/buttons/Button',
-    'qui/controls/buttons/Seperator',
+    'qui/controls/buttons/Separator',
     'qui/controls/contextmenu/Menu',
     'qui/controls/contextmenu/Item',
     'qui/utils/Controls',
@@ -49,7 +49,7 @@ define('controls/grid/Grid', [
 
     'css!controls/grid/Grid.css'
 
-], function (QUIControl, QUIButton, QUISeperator, QUIContextMenu,
+], function (QUIControl, QUIButton, QUISeparator, QUIContextMenu,
              QUIContextItem, ControlUtils, QUILocale) {
     "use strict";
 
@@ -2222,8 +2222,8 @@ define('controls/grid/Grid', [
                 var node, Btn;
 
                 for (i = 0, len = bt.length; i < len; i++) {
-                    if (bt[i].type == 'seperator') {
-                        new QUISeperator().inject(tDiv);
+                    if (bt[i].type === 'separator') {
+                        new QUISeparator().inject(tDiv);
                         continue;
                     }
 

@@ -49,10 +49,10 @@ define('controls/editors/ToolbarConfigurator', [
             this.$Elm = new Element('div', {
                 'class': 'control-editors-configurator box',
                 html   : '<label for="">Verfügbare Buttons:</label>' +
-                         '<select class="control-editors-configurator-buttons" ' +
-                         ' size="5"></select>' +
-                         '<label for="">Toolbar</label>' +
-                         '<textarea class="control-editors-configurator-toolbar box"></textarea>'
+                '<select class="control-editors-configurator-buttons" ' +
+                ' size="5"></select>' +
+                '<label for="">Toolbar</label>' +
+                '<textarea class="control-editors-configurator-toolbar box"></textarea>'
             });
 
             this.Loader.inject(this.$Elm);
@@ -72,15 +72,15 @@ define('controls/editors/ToolbarConfigurator', [
 
                     var Target = event.target;
 
-                    if (Target.nodeName != 'OPTION') {
+                    if (Target.nodeName !== 'OPTION') {
                         return;
                     }
 
                     var value = Target.value,
                         str   = '<button>' + value + '</button>' + "\n";
 
-                    if (value == 'seperator') {
-                        str = '<seperator></seperator>' + "\n";
+                    if (value === 'separator') {
+                        str = '<separator></separator>' + "\n";
                     }
 
                     FormUtils.insertTextAtCursor(self.$Textarea, str);
@@ -89,7 +89,7 @@ define('controls/editors/ToolbarConfigurator', [
 
             // load button list
             var options = {
-                'seperator': 'Seperator',
+                'separator': 'Separator',
 
                 'Source'        : 'Quelltext',
                 'Templates'     : 'Vorlagen',

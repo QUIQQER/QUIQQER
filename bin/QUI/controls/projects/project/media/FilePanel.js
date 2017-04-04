@@ -8,7 +8,7 @@
  * @requir qui/controls/desktop/Panel
  * @requir classes/projects/project/media/panel/DOMEvents
  * @requir qui/controls/buttons/Button
- * @requir qui/controls/buttons/Seperator
+ * @requir qui/controls/buttons/Separator
  * @requir qui/controls/windows/Confirm
  * @requir utils/Template
  * @requir qui/utils/Form
@@ -23,7 +23,7 @@ define('controls/projects/project/media/FilePanel', [
     'qui/controls/loader/Loader',
     'classes/projects/project/media/panel/DOMEvents',
     'qui/controls/buttons/Button',
-    'qui/controls/buttons/Seperator',
+    'qui/controls/buttons/Separator',
     'qui/controls/buttons/Select',
     'qui/controls/windows/Confirm',
     'qui/controls/input/Range',
@@ -48,7 +48,7 @@ define('controls/projects/project/media/FilePanel', [
         QUILoader          = arguments[2],
         PanelDOMEvents     = arguments[3],
         QUIButton          = arguments[4],
-        QUIButtonSeperator = arguments[5],
+        QUIButtonSeparator = arguments[5],
         QUISelect          = arguments[6],
         QUIConfirm         = arguments[7],
         QUIRange           = arguments[8],
@@ -447,7 +447,7 @@ define('controls/projects/project/media/FilePanel', [
                     }
                 })
             ).addButton(
-                new QUIButtonSeperator()
+                new QUIButtonSeparator()
             );
 
 
