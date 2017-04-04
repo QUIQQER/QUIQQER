@@ -491,8 +491,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         File::unlink($cachefile);
 
         // delete admin cache
-        $cache_folder
-            = VAR_DIR . 'media_cache/' . $Project->getAttribute('name') . '/';
+        $cache_folder = VAR_DIR . 'cache/admin/media/' . $Project->getName() . '/' . $Project->getLang();
 
         if (!is_dir($cache_folder)) {
             return;
