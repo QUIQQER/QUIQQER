@@ -151,3 +151,8 @@
     flex: 1;
     width: inherit;
 }
+
+.data-table-flexbox .field-container-field > .qui-elements-select {
+    flex: none;
+    width: 100%;
+}

@@ -41,6 +41,26 @@ class Setup
         SystemFile::mkdir(OPT_DIR);
         SystemFile::mkdir(VAR_DIR);
 
+        // look at media trash
+        $mediaTrash = VAR_DIR . 'media/trash';
+
+        if (!is_dir($mediaTrash)) {
+            SystemFile::mkdir($mediaTrash);
+
+            $folders = SystemFile::readDir(VAR_DIR . 'media');
+
+            foreach ($folders as $folder) {
+                if ($folder === 'trash') {
+                    continue;
+                }
+
+                SystemFile::move(
+                    VAR_DIR . 'media/' . $folder,
+                    $mediaTrash . '/' . $folder
+                );
+            }
+        }
+
         self::generateFileLinks();
 
         // mail queue setup
