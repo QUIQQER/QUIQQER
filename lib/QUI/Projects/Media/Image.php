@@ -489,7 +489,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
         File::unlink($cachefile);
 
-        // delete admin cache
+        // delete admin cache, too
         $this->deleteAdminCache();
     }
 
