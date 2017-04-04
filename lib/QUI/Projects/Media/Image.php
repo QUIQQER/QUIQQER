@@ -467,11 +467,9 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function deleteCache()
     {
-        $Media   = $this->Media;
-        $Project = $Media->getProject();
-
-        $cdir = CMS_DIR . $Media->getCacheDir();
-        $file = $this->getAttribute('file');
+        $Media = $this->Media;
+        $cdir  = CMS_DIR . $Media->getCacheDir();
+        $file  = $this->getAttribute('file');
 
         $cachefile = $cdir . $file;
         $cacheData = pathinfo($cachefile);
@@ -483,6 +481,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         foreach ($files as $file) {
             $len = strlen($filename);
 
+            // cache delete
             if (substr($file, 0, $len + 2) == $filename . '__') {
                 File::unlink($cacheData['dirname'] . '/' . $file);
             }
@@ -491,21 +490,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         File::unlink($cachefile);
 
         // delete admin cache
-        $cache_folder = VAR_DIR . 'cache/admin/media/' . $Project->getName() . '/' . $Project->getLang();
-
-        if (!is_dir($cache_folder)) {
-            return;
-        }
-
-        $list  = QUI\Utils\System\File::readDir($cache_folder);
-        $id    = $this->getId();
-        $cache = $id . '_';
-
-        foreach ($list as $file) {
-            if (strpos($file, $cache) !== false) {
-                File::unlink($cache_folder . $file);
-            }
-        }
+        $this->deleteAdminCache();
     }
 
     /**
