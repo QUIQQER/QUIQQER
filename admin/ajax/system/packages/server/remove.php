@@ -14,7 +14,7 @@ QUI::$Ajax->registerFunction(
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(
                 'quiqqer/system',
-                'message.packages.server.remove.successfuly',
+                'message.packages.server.remove.successfully',
                 array('server' => $server)
             )
         );

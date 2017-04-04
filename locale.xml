@@ -497,11 +497,11 @@
             <en><![CDATA[The setup is running.]]></en>
         </locale>
 
-        <locale name="message.packages.server.add.successfuly">
+        <locale name="message.packages.server.add.successfully">
             <de><![CDATA[Der Server [server] wurde erfolgreich hinzugefügt.]]></de>
             <en><![CDATA[The Server [server] was successfuly added.]]></en>
         </locale>
-        <locale name="message.packages.server.remove.successfuly">
+        <locale name="message.packages.server.remove.successfully">
             <de><![CDATA[Die Server wurden erfolgreich entfernt.]]></de>
             <en><![CDATA[The servers were successfully removed.]]></en>
         </locale>

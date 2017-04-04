@@ -114,7 +114,7 @@ define('controls/packages/server/AddServerWindow', [
             return Packages.addServer(this.$Server.value, {
                 type: this.$Type.value
             }).then(function () {
-                this.fireEvent('submit', [this]);
+                this.fireEvent('submit', [this, this.$Server.value]);
                 this.close();
             }.bind(this));
         }

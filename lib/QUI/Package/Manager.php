@@ -1063,6 +1063,7 @@ class Manager extends QUI\QDOM
                 case "npm":
                 case "bower":
                     $Config->setValue($server, 'type', $params['type']);
+                    $Config->setValue($server, 'active', 1);
                     break;
             }
         }
