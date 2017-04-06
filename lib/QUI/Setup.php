@@ -148,17 +148,6 @@ class Setup
             }
         }
 
-
-        // generate translations
-//        Update::importAllLocaleXMLs();
-//        Translator::create();
-
-        // generate menu
-//        Update::importAllMenuXMLs();
-
-        // import permissions
-//        Update::importAllPermissionsXMLs();
-
         QUI\Permissions\Manager::importPermissionsForGroups();
 
         // setup set the last update date

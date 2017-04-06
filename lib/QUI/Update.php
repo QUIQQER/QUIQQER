@@ -462,6 +462,7 @@ class Update
      * @param \Composer\Composer $Composer - optional
      *
      * @throws QUI\Exception
+     * @deprecated
      */
     public static function importAllMenuXMLs($Composer = null)
     {

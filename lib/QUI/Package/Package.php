@@ -424,8 +424,8 @@ class Package extends QUI\QDOM
      */
     public function hasPermission($permission = 'canUse', $User = null)
     {
-        if ($this->getName() === 'quiqqer/products') {
-            QUI\System\Log::writeRecursive($this->getPermissionName($permission));
+        if (!QUI::conf('permissions', 'package')) {
+            return true;
         }
 
         switch ($permission) {
@@ -450,14 +450,19 @@ class Package extends QUI\QDOM
         }
 
         // permissions
-        QUI::getPermissionManager()->addPermission(array(
-            'name'         => $this->getPermissionName(),
-            'title'        => 'quiqqer/quiqqer permission.package.canUse',
-            'desc'         => '',
-            'area'         => '',
-            'type'         => 'bool',
-            'defaultvalue' => 1
-        ));
+        try {
+            QUI::getPermissionManager()->addPermission(array(
+                'name'         => $this->getPermissionName(),
+                'title'        => 'quiqqer/quiqqer permission.package.canUse',
+                'desc'         => '',
+                'area'         => '',
+                'type'         => 'bool',
+                'defaultvalue' => 1
+            ));
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+
 
         $languages = QUI\Translator::getAvailableLanguages();
 
@@ -492,24 +497,24 @@ class Package extends QUI\QDOM
         }
 
         // xml
-        Update::importDatabase($dir . 'database . xml');
-        Update::importTemplateEngines($dir . 'engines . xml');
-        Update::importEditors($dir . 'wysiwyg . xml');
+        Update::importDatabase($dir . 'database.xml');
+        Update::importTemplateEngines($dir . 'engines.xml');
+        Update::importEditors($dir . 'wysiwyg.xml');
 
-        Update::importPermissions($dir . 'permissions . xml', $this->getName());
-        Update::importMenu($dir . 'menu . xml');
+        Update::importPermissions($dir . 'permissions.xml', $this->getName());
+        Update::importMenu($dir . 'menu.xml');
 
         // events
         QUI\Events\Manager::clear($this->getName());
-        Update::importEvents($dir . 'events . xml', $this->getName());
-        Update::importSiteEvents($dir . 'site . xml');
+        Update::importEvents($dir . 'events.xml', $this->getName());
+        Update::importSiteEvents($dir . 'site.xml');
 
         // locale
         QUI\Translator::importFromPackage($this, true, true);
 
         try {
             $groups = XML::getLocaleGroupsFromDom(
-                XML::getDomFromXml($dir . 'locale . xml')
+                XML::getDomFromXml($dir . 'locale.xml')
             );
 
             $groups = array_map(function ($data) {
@@ -530,14 +535,14 @@ class Package extends QUI\QDOM
         }
 
         // settings
-        if (!file_exists($dir . 'settings . xml')) {
+        if (!file_exists($dir . 'settings.xml')) {
             QUI::getEvents()->fireEvent('packageSetup', array($this));
             QUI\Cache\Manager::clearAll();
             return;
         }
 
-        // $defaults = XML::getConfigParamsFromXml( $dir .'settings . xml' );
-        $Config = XML::getConfigFromXml($dir . 'settings . xml');
+        // $defaults = XML::getConfigParamsFromXml( $dir .'settings.xml' );
+        $Config = XML::getConfigFromXml($dir . 'settings.xml');
 
         if ($Config) {
             $Config->save();

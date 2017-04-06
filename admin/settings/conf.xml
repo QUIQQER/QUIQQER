@@ -260,6 +260,13 @@
                 </conf>
             </section>
 
+            <section name="permissions">
+                <conf name="package">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
+            </section>
+
         </config>
 
         <window menu-parent="/settings/quiqqer/" name="quiqqer">
@@ -298,6 +305,15 @@
                             <description>
                                 <locale group="quiqqer/system"
                                         var="quiqqer.settings.general.globals.mailprotection.description"/>
+                            </description>
+                        </input>
+                        <input conf="permissions.package" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.general.permissions.package"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/system"
+                                        var="quiqqer.settings.general.permissions.description"/>
                             </description>
                         </input>
                     </settings>

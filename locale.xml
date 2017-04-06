@@ -5465,7 +5465,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Die .html Endung wird an Seitenadressen angehängt. Ihre Projekteseiten besitzen .html]]></de>
             <en><![CDATA[The .html extension is appended to page addresses. Your projects have .html pages]]></en>
         </locale>
-
         <locale name="quiqqer.settings.cache.management.title">
             <de><![CDATA[Cache]]></de>
             <en><![CDATA[Cache]]></en>
@@ -6795,6 +6794,7 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Enable Mail Queue]]></en>
         </locale>
     </groups>
+
     <groups name="quiqqer/system" datatype="php,js">
         <locale name="menu.extras.packages.text">
             <de><![CDATA[Systemverwaltung]]></de>
@@ -6949,6 +6949,20 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de>
                 <![CDATA[Die Projekt Einstellungen wurden erfolgreich gespeichert.]]></de>
             <en><![CDATA[The project settings successfully saved]]></en>
+        </locale>
+        <locale name="quiqqer.settings.general.permissions.package">
+            <de><![CDATA[Paketrechte verwenden]]></de>
+            <en><![CDATA[Use package permissions]]></en>
+        </locale>
+        <locale name="quiqqer.settings.general.permissions.description" html="true">
+            <de><![CDATA[
+            Nutzen Sie Paketrechte wenn Sie mehrere Benutzer mit unterschiedlichen Rechten versehen möchten.<br />
+            Wenn keine Paketrechte verwendet werden, sind einige Funktionen im System performanter.
+            ]]></de>
+            <en><![CDATA[
+            Use package rights if you want to provide multiple users with different rights. <br />
+            If no package rights are used, some functions in the system are more powerful.
+            ]]></en>
         </locale>
 
     </groups>
