@@ -179,48 +179,25 @@ class Menu
             }
         }
 
-        // read the menu.xmls
-        $dir = VAR_DIR . 'cache/menu/';
+        // read the menu.xml's
+        $packages = QUI::getPackageManager()->getInstalled();
 
-        if (!is_dir($dir)) {
-            QUI\Update::importAllMenuXMLs();
-        }
+        foreach ($packages as $package) {
+            $Package = QUI::getPackage($package['name']);
+            $menuXml = $Package->getXMLFile('menu.xml');
 
-        $files = QUI\Utils\System\File::readDir($dir);
+            if (!$menuXml) {
+                continue;
+            }
 
-        foreach ($files as $file) {
-            XML::addXMLFileToMenu($Menu, $dir . $file);
+            if (!$Package->hasPermission()) {
+                continue;
+            }
+
+            XML::addXMLFileToMenu($Menu, $menuXml);
         }
 
         $menu = $Menu->toArray();
-
-        // @todo rechte für settings und extras und quiqqer
-        foreach ($menu as $key => $entry) {
-            if ($entry['name'] == 'quiqqer') {
-                if (!Permission::hasPermission('quiqqer.menu.quiqqer')) {
-                    unset($menu[$key]['items']);
-                }
-            }
-
-            if ($entry['name'] == 'settings') {
-                if (!Permission::hasPermission('quiqqer.menu.settings')) {
-                    unset($menu[$key]);
-                }
-            }
-
-            if ($entry['name'] == 'extras') {
-                if (!Permission::hasPermission('quiqqer.menu.extras')) {
-                    unset($menu[$key]);
-                }
-            }
-
-            if ($entry['name'] == 'apps') {
-                if (!Permission::hasPermission('quiqqer.menu.apps')) {
-                    unset($menu[$key]);
-                }
-            }
-        }
-
         $menu = array_values($menu);
 
         // sort
@@ -232,17 +209,7 @@ class Menu
                 continue;
             }
 
-            usort($menu[$key]['items'], function ($a, $b) {
-                if ($a['name'] == 'quiqqer') {
-                    return -1;
-                }
-
-                if ($b['name'] == 'quiqqer') {
-                    return 1;
-                }
-
-                return strcmp($a["text"], $b["text"]);
-            });
+            $menu[$key]['items'] = $this->sortItems($menu[$key]['items']);
         }
 
         QUI\Cache\Manager::set($this->getCacheName(), $menu);
@@ -316,5 +283,44 @@ class Menu
         $cache = 'qui/admin/menu/' . $User->getId() . '/' . $User->getLang();
 
         return $cache;
+    }
+
+    /**
+     * Sort the menu items
+     *
+     * @param $items
+     * @return array
+     */
+    protected function sortItems($items)
+    {
+        usort($items, array($this, 'sortByTitle'));
+
+        foreach ($items as $key => $item) {
+            if (isset($item['items']) && !empty($item['items'])) {
+                $items[$key]['items'] = $this->sortItems($item['items']);
+            }
+        }
+
+        return $items;
+    }
+
+    /**
+     * usort helper function / method
+     *
+     * @param array $a
+     * @param array $b
+     * @return int
+     */
+    protected function sortByTitle($a, $b)
+    {
+        if ($a['name'] == 'quiqqer') {
+            return -1;
+        }
+
+        if ($b['name'] == 'quiqqer') {
+            return 1;
+        }
+
+        return strcmp($a["text"], $b["text"]);
     }
 }

@@ -56,6 +56,14 @@
             <de><![CDATA[Eine Seite]]></de>
             <en><![CDATA[A site]]></en>
         </locale>
+        <locale name="permission.quiqqer.packages._header">
+            <de><![CDATA[Pakete]]></de>
+            <en><![CDATA[Packages]]></en>
+        </locale>
+        <locale name="permission.package.canUse">
+            <de><![CDATA[Darf benutzen]]></de>
+            <en><![CDATA[Is allowed to use it]]></en>
+        </locale>
         <locale name="permission.quiqqer.editors._header">
             <de><![CDATA[Editor / WYSIWYG]]></de>
             <en><![CDATA[Editor / WYSIWYG]]></en>

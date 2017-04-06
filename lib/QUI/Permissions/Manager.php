@@ -280,7 +280,7 @@ class Manager
      *                            area =>
      *                            title => translation.var.var
      *                            type =>
-     *                            default =>
+     *                            defaultvalue =>
      *                            src =>
      *                            )
      *
@@ -724,6 +724,7 @@ class Manager
 
         unset($this->dataCache[$this->getDataCacheId($Obj)]);
 
+        QUI\Cache\Manager::clear('qui/admin/menu/');
         QUI::getEvents()->fireEvent('permissionsSet', array($Obj, $permissions));
     }
 

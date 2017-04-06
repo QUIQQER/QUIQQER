@@ -47,23 +47,6 @@
     <!-- Darf Benutzer anlegen -->
     <permission name="quiqqer.admin.users.create" type="bool"/>
 
-    <!-- Menurechte -->
-    <permission name="quiqqer.menu.quiqqer" type="bool">
-        <defaultvalue>1</defaultvalue>
-    </permission>
-
-    <permission name="quiqqer.menu.apps" type="bool">
-        <defaultvalue>1</defaultvalue>
-    </permission>
-
-    <permission name="quiqqer.menu.extras" type="bool">
-        <defaultvalue>1</defaultvalue>
-    </permission>
-
-    <permission name="quiqqer.menu.settings" type="bool">
-        <defaultvalue>1</defaultvalue>
-    </permission>
-
     <!-- Project User / group permissions  -->
 
     <!-- Darf Projekte anlegen -->
