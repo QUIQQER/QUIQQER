@@ -450,49 +450,51 @@ class Package extends QUI\QDOM
         }
 
         // permissions
-        try {
-            QUI::getPermissionManager()->addPermission(array(
-                'name'         => $this->getPermissionName(),
-                'title'        => 'quiqqer/quiqqer permission.package.canUse',
-                'desc'         => '',
-                'area'         => '',
-                'type'         => 'bool',
-                'defaultvalue' => 1
-            ));
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
-        }
-
-
-        $languages = QUI\Translator::getAvailableLanguages();
-
-        $data = array(
-            'datatype' => 'php,js',
-            'package'  => $this->getName()
-        );
-
-        foreach ($languages as $lang) {
-            $data[$lang] = QUI::getLocale()->getByLang($lang, $this->getName(), 'package.title');
-        }
-
-        try {
-            QUI\Translator::addUserVar(
-                'quiqqer/quiqqer',
-                $this->getPermissionName('header'),
-                $data
-            );
-        } catch (QUI\Exception $Exception) {
+        if ($this->getName() != 'quiqqer/quiqqer') { // you can't set permissions to the core
             try {
-                QUI\Translator::edit(
+                QUI::getPermissionManager()->addPermission(array(
+                    'name'         => $this->getPermissionName(),
+                    'title'        => 'quiqqer/quiqqer permission.package.canUse',
+                    'desc'         => '',
+                    'area'         => '',
+                    'type'         => 'bool',
+                    'defaultvalue' => 1
+                ));
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
+
+
+            $languages = QUI\Translator::getAvailableLanguages();
+
+            $data = array(
+                'datatype' => 'php,js',
+                'package'  => $this->getName()
+            );
+
+            foreach ($languages as $lang) {
+                $data[$lang] = QUI::getLocale()->getByLang($lang, $this->getName(), 'package.title');
+            }
+
+            try {
+                QUI\Translator::addUserVar(
                     'quiqqer/quiqqer',
                     $this->getPermissionName('header'),
-                    $this->getName(),
                     $data
                 );
             } catch (QUI\Exception $Exception) {
-                QUI::getMessagesHandler()->addAttention(
-                    $Exception->getMessage()
-                );
+                try {
+                    QUI\Translator::edit(
+                        'quiqqer/quiqqer',
+                        $this->getPermissionName('header'),
+                        $this->getName(),
+                        $data
+                    );
+                } catch (QUI\Exception $Exception) {
+                    QUI::getMessagesHandler()->addAttention(
+                        $Exception->getMessage()
+                    );
+                }
             }
         }
 

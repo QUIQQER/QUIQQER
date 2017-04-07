@@ -57,10 +57,21 @@ class Menu
         XML::addXMLFileToMenu($Menu, SYS_DIR . 'menu.xml');
 
         if (!$User->isSU()) {
-            $Menu->getElementByName('quiqqer')->clear();
-            $Menu->getElementByName('apps')->clear();
-            $Menu->getElementByName('extras')->clear();
-            $Menu->getElementByName('settings')->clear();
+            if ($Menu->getElementByName('quiqqer')) {
+                $Menu->getElementByName('quiqqer')->clear();
+            }
+
+            if ($Menu->getElementByName('apps')) {
+                $Menu->getElementByName('apps')->clear();
+            }
+
+            if ($Menu->getElementByName('extras')) {
+                $Menu->getElementByName('extras')->clear();
+            }
+
+            if ($Menu->getElementByName('settings')) {
+                $Menu->getElementByName('settings')->clear();
+            }
         }
 
         // projects settings
