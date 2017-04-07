@@ -55,12 +55,12 @@ class Project
                 $searchId = $First->createChild(array(
                     'name'  => self::parseForUrl(
                         'quiqqer/quiqqer',
-                        'projects.defaultstructure.seach.name',
+                        'projects.defaultstructure.search.name',
                         $Project
                     ),
                     'title' => self::parseForUrl(
                         'quiqqer/quiqqer',
-                        'projects.defaultstructure.seach.title',
+                        'projects.defaultstructure.search.title',
                         $Project
                     )
                 ));
