@@ -655,11 +655,11 @@
             <en><![CDATA[Suffix]]></en>
         </locale>
 
-        <locale name="projects.defaultstructure.seach.title">
+        <locale name="projects.defaultstructure.search.title">
             <de><![CDATA[Suche]]></de>
             <en><![CDATA[Search]]></en>
         </locale>
-        <locale name="projects.defaultstructure.seach.name">
+        <locale name="projects.defaultstructure.search.name">
             <de><![CDATA[Suche]]></de>
             <en><![CDATA[Search]]></en>
         </locale>

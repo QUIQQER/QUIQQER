@@ -52,22 +52,21 @@ class Project
 
         if (empty($search)) {
             try {
-                $searchId = $First->createChild();
-                $Search   = new QUI\Projects\Site\Edit($Project, $searchId);
+                $searchId = $First->createChild(array(
+                    'name'  => self::parseForUrl(
+                        'quiqqer/quiqqer',
+                        'projects.defaultstructure.seach.name',
+                        $Project
+                    ),
+                    'title' => self::parseForUrl(
+                        'quiqqer/quiqqer',
+                        'projects.defaultstructure.seach.title',
+                        $Project
+                    )
+                ));
 
+                $Search = new QUI\Projects\Site\Edit($Project, $searchId);
                 $Search->setAttribute('type', $searchType);
-                $Search->setAttribute('name', self::parseForUrl(
-                    'quiqqer/quiqqer',
-                    'projects.defaultstructure.seach.name',
-                    $Project
-                ));
-
-                $Search->setAttribute('title', self::parseForUrl(
-                    'quiqqer/quiqqer',
-                    'projects.defaultstructure.seach.title',
-                    $Project
-                ));
-
                 $Search->save();
                 $Search->activate();
             } catch (QUI\Exception $Exception) {
