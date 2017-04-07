@@ -91,20 +91,33 @@ class Menu
             );
         }
 
-        // read the settings.xmls
-        $dir      = SYS_DIR . 'settings/';
-        $files    = QUI\Utils\System\File::readDir($dir);
-        $Settings = $Menu->getElementByName('settings');
+        // read the settings.xml's
+        $files = array();
 
-        foreach ($files as $key => $file) {
-            $files[$key] = $dir . $file;
+        if ($User->isSU()) {
+            $dir   = SYS_DIR . 'settings/';
+            $files = QUI\Utils\System\File::readDir($dir);
+
+            foreach ($files as $key => $file) {
+                $files[$key] = $dir . $file;
+            }
         }
 
         // plugin settings
-        $plugins = QUI::getPackageManager()->getInstalled();
+        $packages = QUI::getPackageManager()->getInstalled();
 
-        foreach ($plugins as $plugin) {
-            $setting_file = OPT_DIR . $plugin['name'] . '/settings.xml';
+        foreach ($packages as $package) {
+            $Package = QUI::getPackage($package['name']);
+
+            if (!$Package->isQuiqqerPackage()) {
+                continue;
+            }
+
+            if (!$Package->hasPermission()) {
+                continue;
+            }
+
+            $setting_file = $Package->getXMLFile('settings.xml');
 
             if (file_exists($setting_file)) {
                 $files[] = $setting_file;
@@ -113,6 +126,7 @@ class Menu
 
 
         // create the menu setting entries
+        $Settings   = $Menu->getElementByName('settings');
         $windowList = array();
 
         foreach ($files as $file) {
