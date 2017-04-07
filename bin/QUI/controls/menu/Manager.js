@@ -56,6 +56,9 @@ define('controls/menu/Manager', [
 
             Ajax.get('ajax_menu', function (result) {
                 self.$Bar.insert(result);
+                self.$Bar.getChildren().each(function (BarItem) {
+                    BarItem.setAttribute('hideifempty', true);
+                });
 
                 result.each(function (entry, i) {
                     var Child = self.$Bar.getElm().getChildren(
@@ -127,7 +130,7 @@ define('controls/menu/Manager', [
                         // if a task exist, click it and open the instance
                         var Task = list[i].getAttribute('Task');
 
-                        if (Task && Task.getType() == 'qui/controls/taskbar/Task') {
+                        if (Task && Task.getType() === 'qui/controls/taskbar/Task') {
                             list[i].getAttribute('Task').click();
                             Item.setAttribute('icon', Item.getAttribute('originalIcon'));
                             return;
@@ -186,7 +189,7 @@ define('controls/menu/Manager', [
             return new Promise(function (resolve) {
 
                 if (list.length) {
-                    if (menuRequire == 'controls/projects/project/Settings') {
+                    if (menuRequire === 'controls/projects/project/Settings') {
                         for (i = 0, len = list.length; i < len; i++) {
                             if (list[i].getAttribute('project') == attributes.project) {
                                 PanelUtils.execPanelOpen(list[0]);
