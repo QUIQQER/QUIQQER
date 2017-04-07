@@ -24,7 +24,7 @@ class Locale
     /**
      * The current lang
      *
-     * @var string
+     * @var array|bool
      */
     protected $dateFormats = false;
 
@@ -146,6 +146,57 @@ class Locale
     public function getAccountingCurrencyPattern()
     {
         return $this->get('quiqqer/quiqqer', 'numberFormat.accounting_currency_pattern');
+    }
+
+    /**
+     * Refresh the locale
+     *
+     * @param string|bool $group - optional, which group should be refreshed
+     */
+    public function refresh($group = false)
+    {
+        $isGetText = function_exists('gettext');
+
+        $getOldGroups = function ($array) {
+            return array_map(function ($locales) {
+                return array_map(function ($data) {
+                    return key($data);
+                }, $locales);
+            }, $array);
+        };
+
+        $loadGroups = function ($lang, $groups) {
+            foreach ($groups as $group) {
+                $this->getHelper($group, false, $lang);
+            }
+        };
+
+        if ($group === false) {
+            if ($isGetText) {
+                $oldGroups = $getOldGroups($this->gettext);
+            } else {
+                $oldGroups = $getOldGroups($this->langs);
+            }
+
+            $this->gettext = array();
+
+            foreach ($oldGroups as $lang => $locales) {
+                $loadGroups($lang, array_keys($locales));
+            }
+
+            return;
+        }
+
+        $array = $isGetText ? $this->gettext : $this->langs;
+
+        foreach ($array as $lang => $groupData) {
+            foreach ($groupData as $getTextGroup => $GetText) {
+                if ($group == $getTextGroup) {
+                    unset($this->gettext[$lang][$group]);
+                    $this->getHelper($group, false, $lang);
+                }
+            }
+        }
     }
 
     /**
@@ -338,7 +389,6 @@ class Locale
 
         if (!is_array($key)) {
             $this->langs[$lang][$group][$key] = $value;
-
             return;
         }
 
