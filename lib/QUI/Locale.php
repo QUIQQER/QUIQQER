@@ -162,8 +162,11 @@ class Locale
                 if (!is_array($locales)) {
                     return '';
                 }
-                
+
                 return array_map(function ($data) {
+                    if (!is_array($data)) {
+                        return $data;
+                    }
                     return key($data);
                 }, $locales);
             }, $array);
