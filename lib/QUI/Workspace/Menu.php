@@ -56,12 +56,23 @@ class Menu
 
         XML::addXMLFileToMenu($Menu, SYS_DIR . 'menu.xml');
 
+        if (!$User->isSU()) {
+            $Menu->getElementByName('quiqqer')->clear();
+            $Menu->getElementByName('apps')->clear();
+            $Menu->getElementByName('extras')->clear();
+            $Menu->getElementByName('settings')->clear();
+        }
+
         // projects settings
         $projects = QUI\Projects\Manager::getProjects();
         $Settings = $Menu->getElementByName('settings');
         $Projects = $Settings->getElementByName('projects');
 
         foreach ($projects as $project) {
+            if (!$User->isSU()) {
+                continue;
+            }
+
             if (!$Projects) {
                 continue;
             }
@@ -131,7 +142,6 @@ class Menu
                     $Item->setAttribute('qui-xml-file', $files);
                     $this->setWindowTitle($Item, $Window);
                     $this->setWindowIcon($Item, $Window);
-
                     continue;
                 }
 
