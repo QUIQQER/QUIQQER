@@ -3,6 +3,7 @@
 /**
  * This file contains QUI\Utils\Project
  */
+
 namespace QUI\Utils;
 
 use QUI;
@@ -64,7 +65,7 @@ class Project
                     )
                 ));
 
-                $Search = $Project->get($searchId);
+                $Search = new QUI\Projects\Site\Edit($Project, $searchId);
                 $Search->setAttribute('type', $searchType);
                 $Search->save();
                 $Search->activate();
@@ -98,7 +99,7 @@ class Project
                     )
                 ));
 
-                $Legal = $Project->get($legalNoteId);
+                $Legal = new QUI\Projects\Site\Edit($Project, $legalNoteId);
                 $Legal->setAttribute('type', 'quiqqer/sitetypes:types/legalnotes');
                 $Legal->save();
                 $Legal->activate();
@@ -131,7 +132,7 @@ class Project
                     )
                 ));
 
-                $GTC = $Project->get($generalTermsAndConditionsId);
+                $GTC = new QUI\Projects\Site\Edit($Project, $generalTermsAndConditionsId);
                 $GTC->setAttribute('type', 'quiqqer/sitetypes:types/generalTermsAndConditions');
                 $GTC->save();
                 $GTC->activate();
@@ -165,7 +166,7 @@ class Project
                     )
                 ));
 
-                $Legal = $Project->get($privacyPolicyId);
+                $Legal = new QUI\Projects\Site\Edit($Project, $privacyPolicyId);
                 $Legal->setAttribute('type', 'quiqqer/sitetypes:types/privacypolicy');
                 $Legal->save();
             } catch (QUI\Exception $Exception) {
