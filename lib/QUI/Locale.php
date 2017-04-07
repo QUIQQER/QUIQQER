@@ -173,12 +173,12 @@ class Locale
 
         if ($group === false) {
             if ($isGetText) {
-                $oldGroups = $getOldGroups($this->gettext);
+                $oldGroups     = $getOldGroups($this->gettext);
+                $this->gettext = array();
             } else {
-                $oldGroups = $getOldGroups($this->langs);
+                $oldGroups   = $getOldGroups($this->langs);
+                $this->langs = array();
             }
-
-            $this->gettext = array();
 
             foreach ($oldGroups as $lang => $locales) {
                 $loadGroups($lang, array_keys($locales));
