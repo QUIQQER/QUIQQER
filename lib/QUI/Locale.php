@@ -150,60 +150,12 @@ class Locale
 
     /**
      * Refresh the locale
-     *
-     * @param string|bool $group - optional, which group should be refreshed
+     * Clears the locale
      */
-    public function refresh($group = false)
+    public function refresh()
     {
-        $isGetText = function_exists('gettext');
-
-        $getOldGroups = function ($array) {
-            return array_map(function ($locales) {
-                if (!is_array($locales)) {
-                    return '';
-                }
-
-                return array_map(function ($data) {
-                    if (!is_array($data)) {
-                        return $data;
-                    }
-                    return key($data);
-                }, $locales);
-            }, $array);
-        };
-
-        $loadGroups = function ($lang, $groups) {
-            foreach ($groups as $group) {
-                $this->getHelper($group, false, $lang);
-            }
-        };
-
-        if ($group === false) {
-            if ($isGetText) {
-                $oldGroups     = $getOldGroups($this->gettext);
-                $this->gettext = array();
-            } else {
-                $oldGroups   = $getOldGroups($this->langs);
-                $this->langs = array();
-            }
-
-            foreach ($oldGroups as $lang => $locales) {
-                $loadGroups($lang, array_keys($locales));
-            }
-
-            return;
-        }
-
-        $array = $isGetText ? $this->gettext : $this->langs;
-
-        foreach ($array as $lang => $groupData) {
-            foreach ($groupData as $getTextGroup => $GetText) {
-                if ($group == $getTextGroup) {
-                    unset($this->gettext[$lang][$group]);
-                    $this->getHelper($group, false, $lang);
-                }
-            }
-        }
+        $this->gettext = array();
+        $this->langs   = array();
     }
 
     /**
