@@ -159,6 +159,10 @@ class Locale
 
         $getOldGroups = function ($array) {
             return array_map(function ($locales) {
+                if (!is_array($locales)) {
+                    return '';
+                }
+                
                 return array_map(function ($data) {
                     return key($data);
                 }, $locales);
