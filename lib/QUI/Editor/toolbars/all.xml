@@ -1,0 +1,106 @@
+<toolbar>
+    <line>
+        <group>
+            <button>Source</button>
+            <button>Templates</button>
+        </group>
+
+        <group>
+            <button>Cut</button>
+            <button>Copy</button>
+            <separator/>
+            <button>Paste</button>
+            <button>PasteText</button>
+            <button>PasteFromWord</button>
+            <separator/>
+            <button>Undo</button>
+            <button>Redo</button>
+        </group>
+
+        <group>
+            <button>Find</button>
+            <button>Replace</button>
+            <separator/>
+            <button>SelectAll</button>
+            <separator/>
+            <button>Scayt</button>
+        </group>
+
+        <group>
+            <button>Form</button>
+            <button>Checkbox</button>
+            <button>Radio</button>
+            <button>TextField</button>
+            <button>Textarea</button>
+            <button>Select</button>
+            <button>Button</button>
+            <button>ImageButton</button>
+            <button>HiddenField</button>
+        </group>
+    </line>
+
+    <line>
+        <group>
+            <button>Bold</button>
+            <button>Italic</button>
+            <button>Underline</button>
+            <button>Strike</button>
+            <button>Subscript</button>
+            <button>Superscript</button>
+            <separator/>
+            <button>RemoveFormat</button>
+        </group>
+
+        <group>
+            <button>NumberedList</button>
+            <button>BulletedList</button>
+            <separator/>
+            <button>Outdent</button>
+            <button>Indent</button>
+            <separator/>
+            <button>Blockquote</button>
+            <button>CreateDiv</button>
+            <separator/>
+            <button>JustifyLeft</button>
+            <button>JustifyCenter</button>
+            <button>JustifyRight</button>
+            <button>JustifyBlock</button>
+            <separator/>
+            <button>BidiLtr</button>
+            <button>BidiRtl</button>
+            <button>Language</button>
+        </group>
+
+        <group>
+            <button>Link</button>
+            <button>Unlink</button>
+            <button>Anchor</button>
+        </group>
+
+        <group>
+            <button>Image</button>
+            <button>Flash</button>
+            <button>Table</button>
+            <button>HorizontalRule</button>
+            <button>Smiley</button>
+            <button>SpecialChar</button>
+            <button>PageBreak</button>
+            <button>Iframe</button>
+        </group>
+
+    </line>
+
+    <line>
+        <group>
+            <button>Styles</button>
+            <button>Format</button>
+            <button>Font</button>
+            <button>FontSize</button>
+        </group>
+
+        <group>
+            <button>TextColor</button>
+            <button>BGColor'</button>
+        </group>
+    </line>
+</toolbar>

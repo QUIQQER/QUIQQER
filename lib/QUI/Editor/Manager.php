@@ -9,6 +9,7 @@ namespace QUI\Editor;
 use QUI;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\System\File as QUIFile;
+use QUI\Utils\System\File;
 use QUI\Utils\Text\XML;
 
 /**
@@ -49,6 +50,27 @@ class Manager
 
         if (!file_exists(CMS_DIR . 'etc/wysiwyg/editors.ini.php')) {
             file_put_contents(CMS_DIR . 'etc/wysiwyg/editors.ini.php', '');
+        }
+
+        // if toolbar path is empty, use default toolbars
+        $path = self::getToolbarsPath();
+
+        if (!is_dir($path)) {
+            File::mkdir($path);
+        }
+
+        $toolbars = File::readDir($path);
+
+        if (empty($toolbars)) {
+            $defaultBarDir = dirname(__FILE__) . '/toolbars/';
+            $toolbars      = File::readDir($defaultBarDir);
+
+            foreach ($toolbars as $toolbar) {
+                File::copy(
+                    $defaultBarDir . $toolbar,
+                    $path . $toolbar
+                );
+            }
         }
     }
 
@@ -95,9 +117,7 @@ class Manager
     {
         $config             = self::getConf()->toArray();
         $config['toolbars'] = self::getToolbars();
-
-        $config['editors'] = QUI::getConfig('etc/wysiwyg/editors.ini.php')
-            ->toArray();
+        $config['editors']  = QUI::getConfig('etc/wysiwyg/editors.ini.php')->toArray();
 
         return $config;
     }

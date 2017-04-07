@@ -78,6 +78,9 @@ class Setup
         // Cron Setup
         QUI::getMessagesHandler()->setup();
 
+        // WYSIWYG
+        QUI\Editor\Manager::setup();
+
         // Events Setup
         Events\Manager::setup();
 

@@ -1,0 +1,53 @@
+<toolbar>
+    <line>
+        <group>
+            <button>Source</button>
+            <button>Cut</button>
+            <button>Copy</button>
+            <separator/>
+            <button>Paste</button>
+            <button>PasteText</button>
+            <button>PasteFromWord</button>
+            <separator/>
+            <button>Undo</button>
+            <button>Redo</button>
+        </group>
+
+        <group>
+            <button>Find</button>
+            <button>Replace</button>
+            <button>SelectAll</button>
+        </group>
+    </line>
+    <line>
+        <group>
+            <button>Bold</button>
+            <button>Italic</button>
+            <button>Underline</button>
+            <button>Strike</button>
+            <button>Subscript</button>
+            <button>Superscript</button>
+            <separator/>
+            <button>RemoveFormat</button>
+        </group>
+        <group>
+            <button>NumberedList</button>
+            <button>BulletedList</button>
+            <separator/>
+            <button>Outdent</button>
+            <button>Indent</button>
+            <separator/>
+            <button>Blockquote</button>
+            <separator/>
+            <button>JustifyLeft</button>
+            <button>JustifyCenter</button>
+            <button>JustifyRight</button>
+            <button>JustifyBlock</button>
+        </group>
+        <group>
+            <button>Link</button>
+            <button>Image</button>
+        </group>
+    </line>
+</toolbar>
+
