@@ -224,8 +224,12 @@ class Manager
 
         /* @var $Group QUI\Groups\Group */
         foreach ($groups as $Group) {
-            if ($Group->getAttribute('toolbar')) {
-                $result[] = $Group->getAttribute('toolbar');
+            if ($Group->getAttribute('assigned_toolbar')) {
+                $toolbars = explode(',', $Group->getAttribute('assigned_toolbar'));
+
+                foreach ($toolbars as $toolbar) {
+                    $result[] = $toolbar;
+                }
             }
         }
 
