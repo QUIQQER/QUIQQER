@@ -86,15 +86,15 @@ define('controls/editors/toolbars/Select', [
             Btn.setAttribute('icon', 'fa fa-spinner fa-spin');
 
             require([
-                'controls/editors/toolbar/Window'
+                'controls/editors/toolbars/Window'
             ], function (Window) {
                 new Window({
                     autoclose: true,
                     multiple : this.getAttribute('multiple'),
                     events   : {
-                        onSubmit: function (Win, userIds) {
-                            for (var i = 0, len = userIds.length; i < len; i++) {
-                                this.addItem(userIds[i].id);
+                        onSubmit: function (Win, toolbars) {
+                            for (var i = 0, len = toolbars.length; i < len; i++) {
+                                this.addItem(toolbars[i]);
                             }
                         }.bind(this)
                     }

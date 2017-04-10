@@ -535,8 +535,7 @@ define('controls/users/User', [
                                     html : toolbars[i].replace('.xml', '')
                                 }).inject(Toolbar);
                             }
-
-
+                            
                             Toolbar.value = User.getAttribute('toolbar');
                         });
                     };

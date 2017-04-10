@@ -234,7 +234,7 @@ define('controls/users/search/Search', [
                 return;
             }
 
-            var userStatus = User.isActive() ? true : false;
+            var userStatus = !!User.isActive();
 
             // status is the same as the switch, we do nothing
             if (userStatus === Switch.getStatus()) {
