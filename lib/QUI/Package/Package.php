@@ -452,14 +452,24 @@ class Package extends QUI\QDOM
         // permissions
         if ($this->getName() != 'quiqqer/quiqqer') { // you can't set permissions to the core
             try {
-                QUI::getPermissionManager()->addPermission(array(
-                    'name'         => $this->getPermissionName(),
-                    'title'        => 'quiqqer/quiqqer permission.package.canUse',
-                    'desc'         => '',
-                    'area'         => '',
-                    'type'         => 'bool',
-                    'defaultvalue' => 1
+                $found = QUI::getDataBase()->fetch(array(
+                    'from'  => QUI\Permissions\Manager::table(),
+                    'where' => array(
+                        'name' => $this->getPermissionName()
+                    ),
+                    'limit' => 1
                 ));
+
+                if (!isset($found[0])) {
+                    QUI::getPermissionManager()->addPermission(array(
+                        'name'         => $this->getPermissionName(),
+                        'title'        => 'quiqqer/quiqqer permission.package.canUse',
+                        'desc'         => '',
+                        'area'         => '',
+                        'type'         => 'bool',
+                        'defaultvalue' => 1
+                    ));
+                }
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }

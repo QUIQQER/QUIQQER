@@ -436,8 +436,7 @@ class Manager
             }
 
             if (empty($params['area'])
-                && ($area == 'user'
-                    || $area == 'groups')
+                && ($area == 'user' || $area == 'groups')
             ) {
                 $result[$key] = $params;
             }
