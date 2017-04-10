@@ -38,6 +38,11 @@ class Manager
     protected $plugins = array();
 
     /**
+     * @var null|array
+     */
+    protected static $toolbars = null;
+
+    /**
      * Setup
      */
     public static function setup()
@@ -161,14 +166,47 @@ class Manager
     }
 
     /**
+     * Search toolbars
+     *
+     * @param $search
+     * @return array
+     */
+    public static function search($search)
+    {
+        return array_filter(self::getToolbars(), function ($toolbar) use ($search) {
+            return strpos($toolbar, $search) !== false;
+        });
+    }
+
+    /**
+     * Checks if the toolbar exists
+     *
+     * @param $toolbar
+     * @return bool
+     */
+    public static function existsToolbar($toolbar)
+    {
+        $toolbars = self::getToolbars();
+        $toolbars = array_flip($toolbars);
+
+        return isset($toolbars[$toolbar]);
+    }
+
+    /**
      * Return all available toolbars
      *
      * @return array
      */
     public static function getToolbars()
     {
+        if (self::$toolbars !== null) {
+            return self::$toolbars;
+        }
+
         $folder = self::getToolbarsPath();
         $files  = QUIFile::readDir($folder, true);
+
+        self::$toolbars = $files;
 
         return $files;
     }
@@ -181,18 +219,8 @@ class Manager
      */
     public static function getToolbarsFromUser(QUI\Interfaces\Users\User $User)
     {
-        $Users = QUI::getUsers();
-
-        if ($Users->isNobodyUser($User)) {
-            return array();
-        }
-
         $result = array();
         $groups = $User->getGroups();
-
-        if (empty($groups)) {
-            return array();
-        }
 
         /* @var $Group QUI\Groups\Group */
         foreach ($groups as $Group) {
@@ -201,7 +229,18 @@ class Manager
             }
         }
 
+        $userSpecific = $User->getAttribute('assigned_toolbar');
+
+        if ($userSpecific) {
+            $userSpecific = explode(',', $userSpecific);
+
+            foreach ($userSpecific as $toolbar) {
+                $result[] = $toolbar;
+            }
+        }
+
         $result = array_unique($result);
+        sort($result);
 
         return $result;
     }

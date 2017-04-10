@@ -30,11 +30,12 @@ define('controls/users/User', [
     'Users',
     'Ajax',
     'Locale',
+    'Editors',
 
     'css!controls/users/User.css'
 
 ], function (QUI, QUIPanel, QUIButton, QUIButtonSwitch, QUIConfirm, Grid,
-             FormUtils, ControlUtils, Users, QUIAjax, QUILocale) {
+             FormUtils, ControlUtils, Users, QUIAjax, QUILocale, Editors) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -497,7 +498,7 @@ define('controls/users/User', [
                 if (PasswordExpire.length) {
                     var expire = attributes.expire || false;
 
-                    if (!expire || expire == '0000-00-00 00:00:00') {
+                    if (!expire || expire === '0000-00-00 00:00:00') {
                         PasswordExpire[0].checked = true;
 
                     } else {
@@ -512,21 +513,37 @@ define('controls/users/User', [
                 }
 
                 if (Toolbar) {
-                    var toolbars = User.getAttribute('toolbars');
+                    var AssignedToolbar = QUI.Controls.getById(
+                        Body.getElement('[name="assigned_toolbar"]').get('data-quiid')
+                    );
 
-                    new Element('option', {
-                        value: '',
-                        html : ''
-                    }).inject(Toolbar);
+                    var renderToolbars = function () {
+                        return Editors.getToolbarsFromUser(
+                            self.getUser().getId(),
+                            AssignedToolbar.getValue()
+                        ).then(function (toolbars) {
+                            Toolbar.set('html', '');
 
-                    for (i = 0, len = toolbars.length; i < len; i++) {
-                        new Element('option', {
-                            value: toolbars[i],
-                            html : toolbars[i].replace('.xml', '')
-                        }).inject(Toolbar);
-                    }
+                            new Element('option', {
+                                value: '',
+                                html : ''
+                            }).inject(Toolbar);
 
-                    Toolbar.value = User.getAttribute('toolbar');
+                            for (i = 0, len = toolbars.length; i < len; i++) {
+                                new Element('option', {
+                                    value: toolbars[i],
+                                    html : toolbars[i].replace('.xml', '')
+                                }).inject(Toolbar);
+                            }
+
+
+                            Toolbar.value = User.getAttribute('toolbar');
+                        });
+                    };
+
+                    renderToolbars();
+
+                    AssignedToolbar.addEvent('change', renderToolbars);
                 }
 
                 if (!Btn.getAttribute('onload_require') && !Btn.getAttribute('onload')) {
@@ -544,11 +561,11 @@ define('controls/users/User', [
                         require([req], function (result) {
                             self.Loader.hide();
 
-                            if (typeOf(result) == 'class') {
+                            if (typeOf(result) === 'class') {
                                 new result(self);
                             }
 
-                            if (typeOf(result) == 'function') {
+                            if (typeOf(result) === 'function') {
                                 result(self);
                             }
 

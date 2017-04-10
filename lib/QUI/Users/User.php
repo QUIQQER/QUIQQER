@@ -1409,27 +1409,42 @@ class User implements QUI\Interfaces\Users\User
         $Everyone = new QUI\Groups\Everyone();
         $this->addToGroup($Everyone->getId());
 
+        // check assigned toolbars
+        $assignedToolbars = '';
+
+        if ($this->getAttribute('assigned_toolbar')) {
+            $toolbars = explode(',', $this->getAttribute('assigned_toolbar'));
+
+            $assignedToolbars = array_filter($toolbars, function ($toolbar) {
+                return QUI\Editor\Manager::existsToolbar($toolbar);
+            });
+
+            $assignedToolbars = implode(',', $assignedToolbars);
+        }
+
+        // saving
         $result = QUI::getDataBase()->update(
             Manager::table(),
             array(
-                'username'      => $this->getUsername(),
-                'usergroup'     => ',' . implode(',', $this->getGroups(false)) . ',',
-                'firstname'     => $this->getAttribute('firstname'),
-                'lastname'      => $this->getAttribute('lastname'),
-                'usertitle'     => $this->getAttribute('usertitle'),
-                'birthday'      => $birthday,
-                'email'         => $this->getAttribute('email'),
-                'avatar'        => $avatar,
-                'su'            => $this->isSU(),
-                'extra'         => json_encode($extra),
-                'lang'          => $this->getAttribute('lang'),
-                'lastedit'      => date("Y-m-d H:i:s"),
-                'expire'        => $expire,
-                'shortcuts'     => $this->getAttribute('shortcuts'),
-                'address'       => (int)$this->getAttribute('address'),
-                'company'       => $this->isCompany() ? 1 : 0,
-                'toolbar'       => $this->getAttribute('toolbar'),
-                'authenticator' => json_encode($this->authenticator)
+                'username'         => $this->getUsername(),
+                'usergroup'        => ',' . implode(',', $this->getGroups(false)) . ',',
+                'firstname'        => $this->getAttribute('firstname'),
+                'lastname'         => $this->getAttribute('lastname'),
+                'usertitle'        => $this->getAttribute('usertitle'),
+                'birthday'         => $birthday,
+                'email'            => $this->getAttribute('email'),
+                'avatar'           => $avatar,
+                'su'               => $this->isSU(),
+                'extra'            => json_encode($extra),
+                'lang'             => $this->getAttribute('lang'),
+                'lastedit'         => date("Y-m-d H:i:s"),
+                'expire'           => $expire,
+                'shortcuts'        => $this->getAttribute('shortcuts'),
+                'address'          => (int)$this->getAttribute('address'),
+                'company'          => $this->isCompany() ? 1 : 0,
+                'toolbar'          => $this->getAttribute('toolbar'),
+                'assigned_toolbar' => $assignedToolbars,
+                'authenticator'    => json_encode($this->authenticator)
             ),
             array('id' => $this->getId())
         );

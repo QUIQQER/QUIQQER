@@ -123,7 +123,7 @@
             <en><![CDATA[Is allowed to loged in to the backend (Administration)]]></en>
         </locale>
         <locale name="permission.quiqqer.su">
-            <de><![CDATA[Ist Super-User.]]></de>
+            <de><![CDATA[Ist Super-User]]></de>
             <en><![CDATA[Is Superuser]]></en>
         </locale>
         <locale name="permission.quiqqer.system.update">
@@ -445,6 +445,14 @@
             <de><![CDATA[Bitte Suchbegriff eingeben.]]></de>
             <en><![CDATA[Please enter search term.]]></en>
         </locale>
+        <locale name="user.toolbar.title">
+            <de><![CDATA[Toolbar]]></de>
+            <en><![CDATA[Toolbar]]></en>
+        </locale>
+        <locale name="user.panel.assignedToolbars">
+            <de><![CDATA[Spezifisch zugewiesene Toolbars]]></de>
+            <en><![CDATA[Specifically assigned toolbars]]></en>
+        </locale>
 
         <locale name="message.user.saved" html="true">
             <de><![CDATA[Der Benutzer <b>[username] #[id]</b> wurde erfolgreich gespeichert.]]></de>
@@ -599,6 +607,10 @@
             <en><![CDATA[You do not have the necessary permissions to save the configuration]]></en>
         </locale>
 
+        <locale name="control.editor.toolbar.select.search.field.placeholder">
+            <de><![CDATA[Toolbars durchsuchen ...]]></de>
+            <en><![CDATA[Search toolbars ...]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
