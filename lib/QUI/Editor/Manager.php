@@ -246,6 +246,40 @@ class Manager
     }
 
     /**
+     * Return all available toolbars for a group
+     *
+     * @param QUI\Groups\Group $Group
+     * @return array
+     */
+    public static function getToolbarsFromGroup(QUI\Groups\Group $Group)
+    {
+        $result = array();
+
+        if ($Group->getAttribute('toolbar') &&
+            self::existsToolbar($Group->getAttribute('toolbar'))
+        ) {
+            $result[] = $Group->getAttribute('toolbar');
+        }
+
+        $groupSpecific = $Group->getAttribute('assigned_toolbar');
+
+        if ($groupSpecific) {
+            $groupSpecific = explode(',', $groupSpecific);
+
+            foreach ($groupSpecific as $toolbar) {
+                if (self::existsToolbar($toolbar)) {
+                    $result[] = $toolbar;
+                }
+            }
+        }
+
+        $result = array_unique($result);
+        sort($result);
+
+        return $result;
+    }
+
+    /**
      * Return the Editor Settings for a specific Project
      *
      * @param QUI\Projects\Project $Project

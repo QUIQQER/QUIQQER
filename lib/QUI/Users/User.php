@@ -1411,6 +1411,7 @@ class User implements QUI\Interfaces\Users\User
 
         // check assigned toolbars
         $assignedToolbars = '';
+        $toolbar          = '';
 
         if ($this->getAttribute('assigned_toolbar')) {
             $toolbars = explode(',', $this->getAttribute('assigned_toolbar'));
@@ -1420,6 +1421,10 @@ class User implements QUI\Interfaces\Users\User
             });
 
             $assignedToolbars = implode(',', $assignedToolbars);
+        }
+
+        if (QUI\Editor\Manager::existsToolbar($this->getAttribute('toolbar'))) {
+            $toolbar = $this->getAttribute('toolbar');
         }
 
         // saving
@@ -1442,7 +1447,7 @@ class User implements QUI\Interfaces\Users\User
                 'shortcuts'        => $this->getAttribute('shortcuts'),
                 'address'          => (int)$this->getAttribute('address'),
                 'company'          => $this->isCompany() ? 1 : 0,
-                'toolbar'          => $this->getAttribute('toolbar'),
+                'toolbar'          => $toolbar,
                 'assigned_toolbar' => $assignedToolbars,
                 'authenticator'    => json_encode($this->authenticator)
             ),

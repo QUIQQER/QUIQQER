@@ -249,6 +249,26 @@ define('classes/editor/Manager', [
         },
 
         /**
+         * Get all available toolbar from a group
+         *
+         * @method classes/editor/Manager#getToolbars
+         * @param {Number|String} gid - Group-ID
+         * @param {String} [assignedToolbars] - user assigned toolbars
+         * @return {Promise}
+         */
+        getToolbarsFromGroup: function (gid, assignedToolbars) {
+            assignedToolbars = assignedToolbars || '';
+
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_editor_get_toolbarsFromGroup', resolve, {
+                    onError         : reject,
+                    gid             : gid,
+                    assignedToolbars: assignedToolbars
+                });
+            });
+        },
+
+        /**
          * Get the project editor files
          *
          * @param {Object} Project - Project object
