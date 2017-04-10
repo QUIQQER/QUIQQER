@@ -212,9 +212,7 @@ class Locale
         if ($format) {
             $oldlocale = setlocale(LC_TIME, "0");
             setlocale(LC_TIME, $this->getLocalesByLang($current));
-
-            $result = utf8_encode(strftime($format, $timestamp));
-
+            $result = strftime($format, $timestamp);
             setlocale(LC_TIME, $oldlocale);
 
             return $result;
@@ -225,9 +223,7 @@ class Locale
         if (isset($formats[$current])) {
             $oldlocale = setlocale(LC_TIME, "0");
             setlocale(LC_TIME, $this->getLocalesByLang($current));
-
-            $result = utf8_encode(strftime($formats[$current], $timestamp));
-
+            $result = strftime($formats[$current], $timestamp);
             setlocale(LC_TIME, $oldlocale);
 
             return $result;
