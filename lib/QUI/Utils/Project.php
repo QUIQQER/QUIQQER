@@ -22,6 +22,26 @@ class Project
      */
     public static function createDefaultStructure(QUI\Projects\Project $Project)
     {
+        $languages = $Project->getLanguages();
+
+        foreach ($languages as $language) {
+            try {
+                self::createDefaultStructureForProjectLanguage(
+                    QUI::getProject($Project->getName(), $language)
+                );
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeRecursive($Exception);
+            }
+        }
+    }
+
+    /**
+     * Create the default structure for a specific project language
+     *
+     * @param QUI\Projects\Project $Project
+     */
+    protected static function createDefaultStructureForProjectLanguage(QUI\Projects\Project $Project)
+    {
         $First = $Project->firstChild();
         $First = $First->getEdit();
 
@@ -185,7 +205,7 @@ class Project
      */
     protected static function parseForUrl($group, $var, QUI\Projects\Project $Project)
     {
-        $str = QUI::getLocale()->get($group, $var);
+        $str = QUI::getLocale()->getByLang($Project->getLang(), $group, $var);
         $str = QUI\Projects\Site\Utils::clearUrl($str, $Project);
 
         return $str;

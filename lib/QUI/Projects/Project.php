@@ -333,13 +333,13 @@ class Project
      */
     public function getLanguages()
     {
-        $langs = $this->getAttribute('langs');
+        $languages = $this->getAttribute('langs');
 
-        if (is_string($langs)) {
-            $langs = explode(',', $langs);
+        if (is_string($languages)) {
+            $languages = explode(',', $languages);
         }
 
-        return $langs;
+        return $languages;
     }
 
     /**
@@ -959,7 +959,7 @@ class Project
         ) {
             $sql['where']['active'] = 1;
         } elseif (isset($sql['where']['active'])
-            && $sql['where']['active'] == -1
+                  && $sql['where']['active'] == -1
         ) {
             unset($sql['where']['active']);
         } elseif (isset($sql['where']) && is_string($sql['where'])) {
@@ -974,7 +974,7 @@ class Project
         ) {
             $sql['where']['deleted'] = 0;
         } elseif (isset($sql['where']['deleted'])
-            && $sql['where']['deleted'] == -1
+                  && $sql['where']['deleted'] == -1
         ) {
             unset($sql['where']['deleted']);
         } elseif (is_string($sql['where'])) {
