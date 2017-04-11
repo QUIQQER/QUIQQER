@@ -29,7 +29,18 @@ class Encryption
         if ($iv === false) {
             $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
 
-            QUI::getConfig('etc/conf.ini.php')->setValue('openssl', 'iv', bin2hex($iv));
+            QUI::getConfig('etc/conf.ini.php')->setValue(
+                'openssl',
+                'iv',
+                bin2hex($iv)
+            );
+
+            QUI::getConfig('etc/conf.ini.php')->setValue(
+                'openssl',
+                'length',
+                openssl_cipher_iv_length('aes-256-cbc')
+            );
+
             QUI::getConfig('etc/conf.ini.php')->save();
         } else {
             $iv = hex2bin($iv);
