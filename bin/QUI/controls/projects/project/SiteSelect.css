@@ -1,0 +1,22 @@
+.qui-controls-project-siteselect {
+
+}
+
+.qui-controls-project-siteselect-language {
+    float: left;
+    margin-top: 2px;
+    position: relative;
+    width: 100%;
+}
+
+.qui-controls-project-siteselect-language input {
+    cursor: pointer;
+    padding-left: 30px;
+    width: calc(100% - 80px);
+}
+
+.qui-controls-project-siteselect-flag {
+    left: 10px;
+    position: absolute;
+    top: 10px;
+}
