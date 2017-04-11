@@ -213,8 +213,8 @@ define('controls/editors/Editor', [
          * @param {Object} Project - (classes/projects/Project)
          */
         setProject: function (Project) {
-            if (typeOf(Project) == 'string') {
-                this.$Project = Projects.get(Project)
+            if (typeOf(Project) === 'string') {
+                this.$Project = Projects.get(Project);
                 return;
             }
 

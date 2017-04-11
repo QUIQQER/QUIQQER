@@ -674,7 +674,7 @@ define('controls/projects/project/Settings', [
 
                 return new Promise(function (resolve) {
 
-                    Ajax.get('ajax_settings_category', function (result) {
+                    Ajax.get('ajax_project_panel_categories_category', function (result) {
                         var Body = self.$Container;
 
                         if (!result) {

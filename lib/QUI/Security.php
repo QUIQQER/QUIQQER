@@ -24,6 +24,7 @@ class Security
      * @param string $str
      *
      * @return string
+     * @deprecated
      */
     public static function encrypt($str)
     {
@@ -42,6 +43,7 @@ class Security
      * @param string $str
      *
      * @return string
+     * @deprecated
      */
     public static function decrypt($str)
     {

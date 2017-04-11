@@ -56,6 +56,14 @@
             <de><![CDATA[Eine Seite]]></de>
             <en><![CDATA[A site]]></en>
         </locale>
+        <locale name="permission.quiqqer.packages._header">
+            <de><![CDATA[Pakete]]></de>
+            <en><![CDATA[Packages]]></en>
+        </locale>
+        <locale name="permission.package.canUse">
+            <de><![CDATA[Darf benutzen]]></de>
+            <en><![CDATA[Is allowed to use it]]></en>
+        </locale>
         <locale name="permission.quiqqer.editors._header">
             <de><![CDATA[Editor / WYSIWYG]]></de>
             <en><![CDATA[Editor / WYSIWYG]]></en>
@@ -115,7 +123,7 @@
             <en><![CDATA[Is allowed to loged in to the backend (Administration)]]></en>
         </locale>
         <locale name="permission.quiqqer.su">
-            <de><![CDATA[Ist Super-User.]]></de>
+            <de><![CDATA[Ist Super-User]]></de>
             <en><![CDATA[Is Superuser]]></en>
         </locale>
         <locale name="permission.quiqqer.system.update">
@@ -437,6 +445,14 @@
             <de><![CDATA[Bitte Suchbegriff eingeben.]]></de>
             <en><![CDATA[Please enter search term.]]></en>
         </locale>
+        <locale name="user.toolbar.title">
+            <de><![CDATA[Toolbar]]></de>
+            <en><![CDATA[Toolbar]]></en>
+        </locale>
+        <locale name="user.panel.assignedToolbars">
+            <de><![CDATA[Spezifisch zugewiesene Toolbars]]></de>
+            <en><![CDATA[Specifically assigned toolbars]]></en>
+        </locale>
 
         <locale name="message.user.saved" html="true">
             <de><![CDATA[Der Benutzer <b>[username] #[id]</b> wurde erfolgreich gespeichert.]]></de>
@@ -591,6 +607,10 @@
             <en><![CDATA[You do not have the necessary permissions to save the configuration]]></en>
         </locale>
 
+        <locale name="control.editor.toolbar.select.search.field.placeholder">
+            <de><![CDATA[Toolbars durchsuchen ...]]></de>
+            <en><![CDATA[Search toolbars ...]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -647,11 +667,11 @@
             <en><![CDATA[Suffix]]></en>
         </locale>
 
-        <locale name="projects.defaultstructure.seach.title">
+        <locale name="projects.defaultstructure.search.title">
             <de><![CDATA[Suche]]></de>
             <en><![CDATA[Search]]></en>
         </locale>
-        <locale name="projects.defaultstructure.seach.name">
+        <locale name="projects.defaultstructure.search.name">
             <de><![CDATA[Suche]]></de>
             <en><![CDATA[Search]]></en>
         </locale>
@@ -5457,7 +5477,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Die .html Endung wird an Seitenadressen angehängt. Ihre Projekteseiten besitzen .html]]></de>
             <en><![CDATA[The .html extension is appended to page addresses. Your projects have .html pages]]></en>
         </locale>
-
         <locale name="quiqqer.settings.cache.management.title">
             <de><![CDATA[Cache]]></de>
             <en><![CDATA[Cache]]></en>
@@ -6787,6 +6806,7 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Enable Mail Queue]]></en>
         </locale>
     </groups>
+
     <groups name="quiqqer/system" datatype="php,js">
         <locale name="menu.extras.packages.text">
             <de><![CDATA[Systemverwaltung]]></de>
@@ -6941,6 +6961,20 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de>
                 <![CDATA[Die Projekt Einstellungen wurden erfolgreich gespeichert.]]></de>
             <en><![CDATA[The project settings successfully saved]]></en>
+        </locale>
+        <locale name="quiqqer.settings.general.permissions.package">
+            <de><![CDATA[Paketrechte verwenden]]></de>
+            <en><![CDATA[Use package permissions]]></en>
+        </locale>
+        <locale name="quiqqer.settings.general.permissions.description" html="true">
+            <de><![CDATA[
+            Nutzen Sie Paketrechte wenn Sie mehrere Benutzer mit unterschiedlichen Rechten versehen möchten.<br />
+            Wenn keine Paketrechte verwendet werden, sind einige Funktionen im System performanter.
+            ]]></de>
+            <en><![CDATA[
+            Use package rights if you want to provide multiple users with different rights. <br />
+            If no package rights are used, some functions in the system are more powerful.
+            ]]></en>
         </locale>
 
     </groups>

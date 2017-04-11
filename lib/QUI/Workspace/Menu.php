@@ -56,12 +56,34 @@ class Menu
 
         XML::addXMLFileToMenu($Menu, SYS_DIR . 'menu.xml');
 
+        if (!$User->isSU()) {
+            if ($Menu->getElementByName('quiqqer')) {
+                $Menu->getElementByName('quiqqer')->clear();
+            }
+
+            if ($Menu->getElementByName('apps')) {
+                $Menu->getElementByName('apps')->clear();
+            }
+
+            if ($Menu->getElementByName('extras')) {
+                $Menu->getElementByName('extras')->clear();
+            }
+
+            if ($Menu->getElementByName('settings')) {
+                $Menu->getElementByName('settings')->clear();
+            }
+        }
+
         // projects settings
         $projects = QUI\Projects\Manager::getProjects();
         $Settings = $Menu->getElementByName('settings');
         $Projects = $Settings->getElementByName('projects');
 
         foreach ($projects as $project) {
+            if (!$User->isSU()) {
+                continue;
+            }
+
             if (!$Projects) {
                 continue;
             }
@@ -80,20 +102,33 @@ class Menu
             );
         }
 
-        // read the settings.xmls
-        $dir      = SYS_DIR . 'settings/';
-        $files    = QUI\Utils\System\File::readDir($dir);
-        $Settings = $Menu->getElementByName('settings');
+        // read the settings.xml's
+        $files = array();
 
-        foreach ($files as $key => $file) {
-            $files[$key] = $dir . $file;
+        if ($User->isSU()) {
+            $dir   = SYS_DIR . 'settings/';
+            $files = QUI\Utils\System\File::readDir($dir);
+
+            foreach ($files as $key => $file) {
+                $files[$key] = $dir . $file;
+            }
         }
 
         // plugin settings
-        $plugins = QUI::getPackageManager()->getInstalled();
+        $packages = QUI::getPackageManager()->getInstalled();
 
-        foreach ($plugins as $plugin) {
-            $setting_file = OPT_DIR . $plugin['name'] . '/settings.xml';
+        foreach ($packages as $package) {
+            $Package = QUI::getPackage($package['name']);
+
+            if (!$Package->isQuiqqerPackage()) {
+                continue;
+            }
+
+            if (!$Package->hasPermission()) {
+                continue;
+            }
+
+            $setting_file = $Package->getXMLFile('settings.xml');
 
             if (file_exists($setting_file)) {
                 $files[] = $setting_file;
@@ -102,6 +137,7 @@ class Menu
 
 
         // create the menu setting entries
+        $Settings   = $Menu->getElementByName('settings');
         $windowList = array();
 
         foreach ($files as $file) {
@@ -131,7 +167,6 @@ class Menu
                     $Item->setAttribute('qui-xml-file', $files);
                     $this->setWindowTitle($Item, $Window);
                     $this->setWindowIcon($Item, $Window);
-
                     continue;
                 }
 
@@ -179,48 +214,25 @@ class Menu
             }
         }
 
-        // read the menu.xmls
-        $dir = VAR_DIR . 'cache/menu/';
+        // read the menu.xml's
+        $packages = QUI::getPackageManager()->getInstalled();
 
-        if (!is_dir($dir)) {
-            QUI\Update::importAllMenuXMLs();
-        }
+        foreach ($packages as $package) {
+            $Package = QUI::getPackage($package['name']);
+            $menuXml = $Package->getXMLFile('menu.xml');
 
-        $files = QUI\Utils\System\File::readDir($dir);
+            if (!$menuXml) {
+                continue;
+            }
 
-        foreach ($files as $file) {
-            XML::addXMLFileToMenu($Menu, $dir . $file);
+            if (!$Package->hasPermission()) {
+                continue;
+            }
+
+            XML::addXMLFileToMenu($Menu, $menuXml);
         }
 
         $menu = $Menu->toArray();
-
-        // @todo rechte für settings und extras und quiqqer
-        foreach ($menu as $key => $entry) {
-            if ($entry['name'] == 'quiqqer') {
-                if (!Permission::hasPermission('quiqqer.menu.quiqqer')) {
-                    unset($menu[$key]['items']);
-                }
-            }
-
-            if ($entry['name'] == 'settings') {
-                if (!Permission::hasPermission('quiqqer.menu.settings')) {
-                    unset($menu[$key]);
-                }
-            }
-
-            if ($entry['name'] == 'extras') {
-                if (!Permission::hasPermission('quiqqer.menu.extras')) {
-                    unset($menu[$key]);
-                }
-            }
-
-            if ($entry['name'] == 'apps') {
-                if (!Permission::hasPermission('quiqqer.menu.apps')) {
-                    unset($menu[$key]);
-                }
-            }
-        }
-
         $menu = array_values($menu);
 
         // sort
@@ -232,17 +244,7 @@ class Menu
                 continue;
             }
 
-            usort($menu[$key]['items'], function ($a, $b) {
-                if ($a['name'] == 'quiqqer') {
-                    return -1;
-                }
-
-                if ($b['name'] == 'quiqqer') {
-                    return 1;
-                }
-
-                return strcmp($a["text"], $b["text"]);
-            });
+            $menu[$key]['items'] = $this->sortItems($menu[$key]['items']);
         }
 
         QUI\Cache\Manager::set($this->getCacheName(), $menu);
@@ -316,5 +318,44 @@ class Menu
         $cache = 'qui/admin/menu/' . $User->getId() . '/' . $User->getLang();
 
         return $cache;
+    }
+
+    /**
+     * Sort the menu items
+     *
+     * @param $items
+     * @return array
+     */
+    protected function sortItems($items)
+    {
+        usort($items, array($this, 'sortByTitle'));
+
+        foreach ($items as $key => $item) {
+            if (isset($item['items']) && !empty($item['items'])) {
+                $items[$key]['items'] = $this->sortItems($item['items']);
+            }
+        }
+
+        return $items;
+    }
+
+    /**
+     * usort helper function / method
+     *
+     * @param array $a
+     * @param array $b
+     * @return int
+     */
+    protected function sortByTitle($a, $b)
+    {
+        if ($a['name'] == 'quiqqer') {
+            return -1;
+        }
+
+        if ($b['name'] == 'quiqqer') {
+            return 1;
+        }
+
+        return strcmp($a["text"], $b["text"]);
     }
 }

@@ -77,10 +77,10 @@ define('controls/permissions/Permission', [
             this.$Elm = new Element('div', {
                 'class': 'controls-permissions-permission',
                 html   : '<div class="controls-permissions-permission-buttons"></div>' +
-                         '<div class="controls-permissions-permission-map"></div>' +
-                         '<div class="controls-permissions-permission-content">' +
-                         '<div class="controls-permissions-permission-content-sheet"></div>' +
-                         '</div>'
+                '<div class="controls-permissions-permission-map"></div>' +
+                '<div class="controls-permissions-permission-content">' +
+                '<div class="controls-permissions-permission-content-sheet"></div>' +
+                '</div>'
             });
 
             this.$MapContainer     = this.$Elm.getElement('.controls-permissions-permission-map');
@@ -106,9 +106,7 @@ define('controls/permissions/Permission', [
          */
         save: function () {
             if (!this.$Bind) {
-                return new Promise(function (resolve) {
-                    resolve();
-                });
+                return Promise.resolve();
             }
 
             return PermissionUtils.Permissions.savePermission(this.$Bind);
@@ -123,7 +121,6 @@ define('controls/permissions/Permission', [
             var self = this;
 
             return new Promise(function (response) {
-
                 var duration    = 250;
                 var SelectSheet = self.$Elm.getElement('.controls-permissions-select');
 
@@ -194,7 +191,6 @@ define('controls/permissions/Permission', [
             return new Promise(function (response, reject) {
 
                 if (!self.$Bind) {
-
                     self.$openBindSelect().then(function () {
                         return self.open();
 
@@ -206,15 +202,12 @@ define('controls/permissions/Permission', [
                 }
 
                 if (!self.$Map) {
-
                     self.$Map = new PermissionMap(self.$Bind, {
                         events: {
                             onItemClick: self.$onSitemapItemClick
                         }
                     }).inject(self.$MapContainer);
-
                 } else {
-
                     self.$Map.refresh();
                 }
 
@@ -238,7 +231,6 @@ define('controls/permissions/Permission', [
                             duration: 250,
                             equation: 'cubic-bezier(.42,.4,.46,1.29)',
                             callback: function () {
-
                                 moofx(self.$Buttons).animate({
                                     opacity: 1
                                 }, {
@@ -248,7 +240,6 @@ define('controls/permissions/Permission', [
                                 self.fireEvent('open');
 
                                 response();
-
                             }
                         });
 
@@ -290,7 +281,6 @@ define('controls/permissions/Permission', [
                 duration: 250,
                 equation: 'cubic-bezier(.42,.4,.46,1.29)',
                 callback: function () {
-
                     if (Item.getAttribute('value') === '') {
                         return;
                     }
@@ -301,7 +291,6 @@ define('controls/permissions/Permission', [
                         Permissions.getPermissionsByObject(this.$Bind),
                         Permissions.getList()
                     ]).then(function (result) {
-
                         var permissions    = result[0];
                         var permissionData = result[1];
 
@@ -317,7 +306,6 @@ define('controls/permissions/Permission', [
                         var _permHeaders = {};
 
                         for (var permission in permissions) {
-
                             if (!permissions.hasOwnProperty(permission)) {
                                 continue;
                             }
@@ -339,7 +327,8 @@ define('controls/permissions/Permission', [
                                 continue;
                             }
 
-                            title                = permissionData[permission].title.split(' ');
+                            title = permissionData[permission].title.split(' ');
+
                             _permHeaders[header] = true;
 
                             permHeaders.push({
@@ -351,32 +340,37 @@ define('controls/permissions/Permission', [
                         var itemValue = Item.getAttribute('value');
 
                         permHeaders.sort(function (a, b) {
-
-                            if (a.permission == itemValue) {
+                            if (a.permission === itemValue) {
                                 return -1;
                             }
 
-                            if (b.permission == itemValue) {
+                            if (b.permission === itemValue) {
                                 return 1;
                             }
 
-                            return a.translation > b.translation;
+                            if (a.translation > b.translation) {
+                                return 1;
+                            }
+
+                            if (a.translation < b.translation) {
+                                return -1;
+                            }
+
+                            return 0;
                         });
 
 
                         // create permission tables
                         for (i = 0, len = permHeaders.length; i < len; i++) {
-
                             perm = permHeaders[i];
 
                             this.$tableCache[perm.permission] = new Element('table', {
                                 'class': 'data-table',
                                 html   : '<thead>' +
-                                         '<tr><th>' + perm.translation + '</th></tr>' +
-                                         '</thead>' +
-                                         '<tbody></tbody>'
+                                '<tr><th>' + perm.translation + '</th></tr>' +
+                                '</thead>' +
+                                '<tbody></tbody>'
                             }).inject(this.$ContentSheet);
-
                         }
 
 
@@ -390,11 +384,11 @@ define('controls/permissions/Permission', [
                                 continue;
                             }
 
-                            if (val == '.' && right.match(/\./)) {
+                            if (val === '.' && right.match(/\./)) {
                                 continue;
                             }
 
-                            if (val == '.' && !right.match(/\./)) {
+                            if (val === '.' && !right.match(/\./)) {
                                 this.$createPermissionRow(
                                     permissionData[right]
                                 );
@@ -417,7 +411,6 @@ define('controls/permissions/Permission', [
                         // set values
                         // set form values
                         if (typeof permissions !== 'undefined' && permissions) {
-
                             list = this.$ContentSheet.getElements('input');
 
                             for (i = 0, len = list.length; i < len; i++) {
@@ -428,8 +421,7 @@ define('controls/permissions/Permission', [
                                     continue;
                                 }
 
-                                if (Elm.type == 'checkbox') {
-
+                                if (Elm.type === 'checkbox') {
                                     if (permissions[Elm.name] == 1) {
                                         Elm.checked = true;
                                     }
@@ -437,7 +429,7 @@ define('controls/permissions/Permission', [
                                     continue;
                                 }
 
-                                if (typeOf(permissions[Elm.name]) == 'boolean') {
+                                if (typeOf(permissions[Elm.name]) === 'boolean') {
                                     continue;
                                 }
 
@@ -449,7 +441,6 @@ define('controls/permissions/Permission', [
                         // parse controls
                         if (this.$Bind && typeOf(this.$Bind) !== 'qui/classes/DOM') {
                             ControlUtils.parse(this.$ContentSheet);
-
                         } else {
                             // if no bind exist, we would only edit the permissions
                             this.$ContentSheet.getElements('input,textarea').setStyles({
@@ -486,14 +477,13 @@ define('controls/permissions/Permission', [
             tableRightId = tableRightId.join('.');
 
             if (!(tableRightId in this.$tableCache)) {
-
                 var title  = right.title.split(' '),
                     header = QUILocale.get(title[0], 'permission.' + tableRightId + '._header');
 
                 this.$tableCache[tableRightId] = new Element('table', {
                     'class': 'data-table',
                     html   : '<thead><tr><th>' + header + '</th></tr></thead>' +
-                             '<tbody></tbody>'
+                    '<tbody></tbody>'
                 }).inject(this.$ContentSheet);
             }
 
@@ -532,9 +522,9 @@ define('controls/permissions/Permission', [
             }
 
             // edit modus
-            if (!this.$Bind || typeOf(this.$Bind) == 'qui/classes/DOM') {
+            if (!this.$Bind || typeOf(this.$Bind) === 'qui/classes/DOM') {
                 // only user rights can be deleted
-                if (right.src == 'user') {
+                if (right.src === 'user') {
                     new QUIButton({
                         icon  : 'fa fa-remove',
                         title : Locale.get(lg, 'permissions.panel.btn.delete.right.alt', {
@@ -579,16 +569,14 @@ define('controls/permissions/Permission', [
                         Win.Loader.show();
 
                         PermissionUtils.Permissions
-                            .deletePermission(permission)
-                            .then(function () {
+                                       .deletePermission(permission)
+                                       .then(function () {
+                                           Win.close();
 
-                                Win.close();
-
-                                self.close().then(function () {
-                                    self.open();
-                                });
-
-                            });
+                                           self.close().then(function () {
+                                               self.open();
+                                           });
+                                       });
                     }
                 }
             }).open();
@@ -600,15 +588,13 @@ define('controls/permissions/Permission', [
         $onFormElementChange: function (event) {
             var Target = event.target;
 
-            if (Target.type == 'checkbox') {
+            if (Target.type === 'checkbox') {
                 PermissionUtils.Permissions.setPermission(
                     this.$Bind,
                     Target.name,
                     Target.checked ? 1 : 0
                 );
-
             } else {
-
                 PermissionUtils.Permissions.setPermission(
                     this.$Bind,
                     Target.name,

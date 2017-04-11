@@ -209,7 +209,15 @@ define('controls/permissions/Sitemap', [
 
             // sort list
             list.sort(function (a, b) {
-                return a.translation > b.translation;
+                if (a.translation > b.translation) {
+                    return 1;
+                }
+
+                if (a.translation < b.translation) {
+                    return -1;
+                }
+
+                return 0;
             });
 
             for (i = 0, len = list.length; i < len; i++) {

@@ -9,6 +9,7 @@ namespace QUI\Editor;
 use QUI;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\System\File as QUIFile;
+use QUI\Utils\System\File;
 use QUI\Utils\Text\XML;
 
 /**
@@ -37,6 +38,11 @@ class Manager
     protected $plugins = array();
 
     /**
+     * @var null|array
+     */
+    protected static $toolbars = null;
+
+    /**
      * Setup
      */
     public static function setup()
@@ -49,6 +55,27 @@ class Manager
 
         if (!file_exists(CMS_DIR . 'etc/wysiwyg/editors.ini.php')) {
             file_put_contents(CMS_DIR . 'etc/wysiwyg/editors.ini.php', '');
+        }
+
+        // if toolbar path is empty, use default toolbars
+        $path = self::getToolbarsPath();
+
+        if (!is_dir($path)) {
+            File::mkdir($path);
+        }
+
+        $toolbars = File::readDir($path);
+
+        if (empty($toolbars)) {
+            $defaultBarDir = dirname(__FILE__) . '/toolbars/';
+            $toolbars      = File::readDir($defaultBarDir);
+
+            foreach ($toolbars as $toolbar) {
+                File::copy(
+                    $defaultBarDir . $toolbar,
+                    $path . $toolbar
+                );
+            }
         }
     }
 
@@ -95,9 +122,7 @@ class Manager
     {
         $config             = self::getConf()->toArray();
         $config['toolbars'] = self::getToolbars();
-
-        $config['editors'] = QUI::getConfig('etc/wysiwyg/editors.ini.php')
-            ->toArray();
+        $config['editors']  = QUI::getConfig('etc/wysiwyg/editors.ini.php')->toArray();
 
         return $config;
     }
@@ -141,14 +166,47 @@ class Manager
     }
 
     /**
+     * Search toolbars
+     *
+     * @param $search
+     * @return array
+     */
+    public static function search($search)
+    {
+        return array_filter(self::getToolbars(), function ($toolbar) use ($search) {
+            return strpos($toolbar, $search) !== false;
+        });
+    }
+
+    /**
+     * Checks if the toolbar exists
+     *
+     * @param $toolbar
+     * @return bool
+     */
+    public static function existsToolbar($toolbar)
+    {
+        $toolbars = self::getToolbars();
+        $toolbars = array_flip($toolbars);
+
+        return isset($toolbars[$toolbar]);
+    }
+
+    /**
      * Return all available toolbars
      *
      * @return array
      */
     public static function getToolbars()
     {
+        if (self::$toolbars !== null) {
+            return self::$toolbars;
+        }
+
         $folder = self::getToolbarsPath();
         $files  = QUIFile::readDir($folder, true);
+
+        self::$toolbars = $files;
 
         return $files;
     }
@@ -161,27 +219,66 @@ class Manager
      */
     public static function getToolbarsFromUser(QUI\Interfaces\Users\User $User)
     {
-        $Users = QUI::getUsers();
-
-        if ($Users->isNobodyUser($User)) {
-            return array();
-        }
-
         $result = array();
         $groups = $User->getGroups();
 
-        if (empty($groups)) {
-            return array();
-        }
-
         /* @var $Group QUI\Groups\Group */
         foreach ($groups as $Group) {
-            if ($Group->getAttribute('toolbar')) {
-                $result[] = $Group->getAttribute('toolbar');
+            if ($Group->getAttribute('assigned_toolbar')) {
+                $toolbars = explode(',', $Group->getAttribute('assigned_toolbar'));
+
+                foreach ($toolbars as $toolbar) {
+                    $result[] = $toolbar;
+                }
+            }
+        }
+
+        $userSpecific = $User->getAttribute('assigned_toolbar');
+
+        if ($userSpecific) {
+            $userSpecific = explode(',', $userSpecific);
+
+            foreach ($userSpecific as $toolbar) {
+                $result[] = $toolbar;
             }
         }
 
         $result = array_unique($result);
+        sort($result);
+
+        return $result;
+    }
+
+    /**
+     * Return all available toolbars for a group
+     *
+     * @param QUI\Groups\Group $Group
+     * @return array
+     */
+    public static function getToolbarsFromGroup(QUI\Groups\Group $Group)
+    {
+        $result = array();
+
+        if ($Group->getAttribute('toolbar') &&
+            self::existsToolbar($Group->getAttribute('toolbar'))
+        ) {
+            $result[] = $Group->getAttribute('toolbar');
+        }
+
+        $groupSpecific = $Group->getAttribute('assigned_toolbar');
+
+        if ($groupSpecific) {
+            $groupSpecific = explode(',', $groupSpecific);
+
+            foreach ($groupSpecific as $toolbar) {
+                if (self::existsToolbar($toolbar)) {
+                    $result[] = $toolbar;
+                }
+            }
+        }
+
+        $result = array_unique($result);
+        sort($result);
 
         return $result;
     }

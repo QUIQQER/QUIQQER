@@ -2,7 +2,7 @@
     <thead>
     <tr>
         <th>
-            Information
+            {locale group="quiqqer/quiqqer" var="user.panel.details"}
         </th>
     </tr>
     </thead>
@@ -54,9 +54,32 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
+                    Elterngruppe
+                </span>
+                <input name="parent" data-qui="controls/groups/Select" data-qui-options-max="1"/>
+            </label>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<table class="data-table data-table-flexbox">
+    <thead>
+    <tr>
+        <th>
+            {locale group="quiqqer/quiqqer" var="user.toolbar.title"}
+        </th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
                     {locale group="quiqqer/system" var="toolbar"}
                 </span>
-                <span class="toolbar-listing"></span>
+                <select name="toolbar" class="field-container-field"></select>
             </label>
         </td>
     </tr>
@@ -64,9 +87,9 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    Elterngruppe
+                    {locale group="quiqqer/quiqqer" var="user.panel.assignedToolbars"}
                 </span>
-                <input name="parent" data-qui="controls/groups/Select" data-qui-options-max="1"/>
+                <input type="text" name="assigned_toolbar" value="" data-qui="controls/editors/toolbars/Select"/>
             </label>
         </td>
     </tr>

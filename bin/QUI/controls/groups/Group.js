@@ -4,6 +4,7 @@
  * @module controls/groups/Group
  * @author www.pcsg.de (Henning Leutz)
  *
+ * @require qui/QUI
  * @require controls/desktop/Panel
  * @require qui/controls/buttons/ButtonSwitch
  * @require qui/controls/buttons/Button
@@ -19,6 +20,7 @@
  */
 define('controls/groups/Group', [
 
+    'qui/QUI',
     'qui/controls/desktop/Panel',
     'qui/controls/buttons/ButtonSwitch',
     'qui/controls/buttons/Button',
@@ -32,7 +34,7 @@ define('controls/groups/Group', [
 
     'css!controls/groups/Group.css'
 
-], function (QUIPanel, QUIButtonSwitch, QUIButton,
+], function (QUI, QUIPanel, QUIButtonSwitch, QUIButton,
              Grid, Groups, Ajax, Editors, QUILocale, FormUtils, ControlUtils) {
     "use strict";
 
@@ -485,8 +487,24 @@ define('controls/groups/Group', [
          * event: on category click
          *
          * @param {Object} Category - qui/controls/buttons/Button
+         * @param {Boolean} [force]
          */
-        $onCategoryLoad: function (Category) {
+        $onCategoryLoad: function (Category, force) {
+            force = force || false;
+
+            // 200ms limit, so you can't DDOS it
+            if (this.$categoryLoad) {
+                clearInterval(this.$categoryLoad);
+            }
+
+            if (force === false) {
+                this.$categoryLoad = (function () {
+                    this.$onCategoryLoad(Category, true);
+                }).delay(200, this);
+
+                return;
+            }
+
             var self = this;
 
             this.Loader.show();
@@ -549,8 +567,10 @@ define('controls/groups/Group', [
          * event: on category click (settings)
          */
         $onCategorySettingsLoad: function () {
-            var Group  = this.getGroup(),
-                Parent = this.getContent().getElement('[name="parent"]');
+            var Group   = this.getGroup(),
+                Content = this.getContent(),
+                Parent  = Content.getElement('[name="parent"]'),
+                Toolbar = Content.getElement('[name="toolbar"]');
 
             if (Group.getId() === 1 ||
                 Group.getId() === 0 ||
@@ -561,34 +581,56 @@ define('controls/groups/Group', [
             }
 
             // load the wysiwyg toolbars
-            Editors.getToolbars(function (toolbars) {
-                var i, len, Sel;
-
-                var Content = this.getBody(),
-                    Toolbar = Content.getElement('.toolbar-listing');
-
-                if (!Toolbar) {
-                    return;
-                }
-
-                Toolbar.set('html', '');
-
-                Sel = new Element('select', {
-                    'class': 'field-container-field',
-                    name   : 'toolbar'
+            if (Toolbar) {
+                Toolbar.addEvent('change', function () {
+                    Group.setAttribute('toolbar', this.value);
                 });
 
-                for (i = 0, len = toolbars.length; i < len; i++) {
-                    new Element('option', {
-                        value: toolbars[i],
-                        html : toolbars[i].replace('.xml', '')
-                    }).inject(Sel);
+                var rendered = false;
+                var AssignedToolbar;
+                var ATNode   = Content.getElement('[name="assigned_toolbar"]');
+
+                var renderToolbars = function () {
+                    if (rendered) {
+                        return;
+                    }
+
+                    rendered = true;
+
+                    return Editors.getToolbarsFromGroup(
+                        Group.getId(),
+                        AssignedToolbar.getValue()
+                    ).then(function (toolbars) {
+                        Toolbar.set('html', '');
+
+                        for (var i = 0, len = toolbars.length; i < len; i++) {
+                            new Element('option', {
+                                value: toolbars[i],
+                                html : toolbars[i].replace('.xml', '')
+                            }).inject(Toolbar);
+                        }
+
+                        Toolbar.value = Group.getAttribute('toolbar');
+
+                        if (Toolbar.value === '' && Toolbar.getElement('option')) {
+                            Toolbar.value = Toolbar.getElement('option').value;
+                            Toolbar.fireEvent('change');
+                        }
+                    });
+                };
+
+                var loadToolbars = function () {
+                    AssignedToolbar = QUI.Controls.getById(ATNode.get('data-quiid'));
+                    AssignedToolbar.addEvent('change', renderToolbars);
+                    renderToolbars();
+                };
+
+                if (!ATNode.get('data-quiid')) {
+                    ATNode.addEvent('load', loadToolbars);
+                } else {
+                    loadToolbars();
                 }
-
-                Sel.replaces(Toolbar);
-                Sel.value = this.getAttribute('toolbar');
-
-            }.bind(this));
+            }
         },
 
         /**

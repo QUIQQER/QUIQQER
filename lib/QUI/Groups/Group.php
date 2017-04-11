@@ -375,6 +375,24 @@ class Group extends QUI\QDOM
             $avatar = $this->getAttribute('avatar');
         }
 
+        // check assigned toolbars
+        $assignedToolbars = '';
+        $toolbar          = '';
+
+        if ($this->getAttribute('assigned_toolbar')) {
+            $toolbars = explode(',', $this->getAttribute('assigned_toolbar'));
+
+            $assignedToolbars = array_filter($toolbars, function ($toolbar) {
+                return QUI\Editor\Manager::existsToolbar($toolbar);
+            });
+
+            $assignedToolbars = implode(',', $assignedToolbars);
+        }
+
+        if (QUI\Editor\Manager::existsToolbar($this->getAttribute('toolbar'))) {
+            $toolbar = $this->getAttribute('toolbar');
+        }
+
         // saving
         QUI::getEvents()->fireEvent('groupSaveBegin', array($this));
         QUI::getEvents()->fireEvent('groupSave', array($this));
@@ -382,11 +400,12 @@ class Group extends QUI\QDOM
         QUI::getDataBase()->update(
             Manager::table(),
             array(
-                'name'    => $this->getAttribute('name'),
-                'toolbar' => $this->getAttribute('toolbar'),
-                'rights'  => json_encode($this->rights),
-                'extra'   => json_encode($extra),
-                'avatar'  => $avatar
+                'name'             => $this->getAttribute('name'),
+                'rights'           => json_encode($this->rights),
+                'extra'            => json_encode($extra),
+                'avatar'           => $avatar,
+                'assigned_toolbar' => $assignedToolbars,
+                'toolbar'          => $toolbar
             ),
             array('id' => $this->getId())
         );

@@ -278,7 +278,7 @@ abstract class Item extends QUI\QDOM
         $original = $this->getFullPath();
         $notFound = false;
 
-        $var_folder = VAR_DIR . 'media/' . $Media->getProject()->getAttribute('name') . '/';
+        $var_folder = VAR_DIR . 'media/trash/' . $Media->getProject()->getName() . '/';
 
         if (!is_file($original)) {
             QUI::getMessagesHandler()->addAttention(
@@ -384,7 +384,7 @@ abstract class Item extends QUI\QDOM
         $Media = $this->Media;
 
         // get the trash file and destroy it
-        $var_folder = VAR_DIR . 'media/' . $Media->getProject()->getAttribute('name') . '/';
+        $var_folder = VAR_DIR . 'media/trash/' . $Media->getProject()->getName() . '/';
         $var_file   = $var_folder . $this->getId();
 
         try {
@@ -476,7 +476,7 @@ abstract class Item extends QUI\QDOM
         }
 
 
-        \QUI::getDataBase()->update(
+        QUI::getDataBase()->update(
             $this->Media->getTable(),
             array(
                 'name' => $newname,

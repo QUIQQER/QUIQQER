@@ -41,6 +41,26 @@ class Setup
         SystemFile::mkdir(OPT_DIR);
         SystemFile::mkdir(VAR_DIR);
 
+        // look at media trash
+        $mediaTrash = VAR_DIR . 'media/trash';
+
+        if (!is_dir($mediaTrash)) {
+            SystemFile::mkdir($mediaTrash);
+
+            $folders = SystemFile::readDir(VAR_DIR . 'media');
+
+            foreach ($folders as $folder) {
+                if ($folder === 'trash') {
+                    continue;
+                }
+
+                SystemFile::move(
+                    VAR_DIR . 'media/' . $folder,
+                    $mediaTrash . '/' . $folder
+                );
+            }
+        }
+
         self::generateFileLinks();
 
         // mail queue setup
@@ -57,6 +77,9 @@ class Setup
 
         // Cron Setup
         QUI::getMessagesHandler()->setup();
+
+        // WYSIWYG
+        QUI\Editor\Manager::setup();
 
         // Events Setup
         Events\Manager::setup();
@@ -127,17 +150,6 @@ class Setup
                 $PackageManager->setup($packageName);
             }
         }
-
-
-        // generate translations
-//        Update::importAllLocaleXMLs();
-//        Translator::create();
-
-        // generate menu
-//        Update::importAllMenuXMLs();
-
-        // import permissions
-//        Update::importAllPermissionsXMLs();
 
         QUI\Permissions\Manager::importPermissionsForGroups();
 

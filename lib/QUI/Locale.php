@@ -24,7 +24,7 @@ class Locale
     /**
      * The current lang
      *
-     * @var string
+     * @var array|bool
      */
     protected $dateFormats = false;
 
@@ -149,6 +149,16 @@ class Locale
     }
 
     /**
+     * Refresh the locale
+     * Clears the locale
+     */
+    public function refresh()
+    {
+        $this->gettext = array();
+        $this->langs   = array();
+    }
+
+    /**
      * Format a number
      *
      * @param float|integer $number
@@ -202,9 +212,7 @@ class Locale
         if ($format) {
             $oldlocale = setlocale(LC_TIME, "0");
             setlocale(LC_TIME, $this->getLocalesByLang($current));
-
-            $result = utf8_encode(strftime($format, $timestamp));
-
+            $result = strftime($format, $timestamp);
             setlocale(LC_TIME, $oldlocale);
 
             return $result;
@@ -215,9 +223,7 @@ class Locale
         if (isset($formats[$current])) {
             $oldlocale = setlocale(LC_TIME, "0");
             setlocale(LC_TIME, $this->getLocalesByLang($current));
-
-            $result = utf8_encode(strftime($formats[$current], $timestamp));
-
+            $result = strftime($formats[$current], $timestamp);
             setlocale(LC_TIME, $oldlocale);
 
             return $result;
@@ -338,7 +344,6 @@ class Locale
 
         if (!is_array($key)) {
             $this->langs[$lang][$group][$key] = $value;
-
             return;
         }
 

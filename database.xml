@@ -27,6 +27,7 @@
             <field type="INT(11) DEFAULT NULL">address</field>
             <field type="TEXT(32) NULL">secHash</field>
             <field type="TEXT NULL">toolbar</field>
+            <field type="TEXT NULL">assigned_toolbar</field>
             <field type="VARCHAR(200) NULL">referal</field>
             <field type="VARCHAR(20) NULL">activation</field>
             <field type="VARCHAR(5) NULL">shortcuts</field>
@@ -57,6 +58,7 @@
             <field type="INT(11) NOT NULL DEFAULT 0">parent</field>
             <field type="TINYINT(1) NOT NULL DEFAULT '0'">active</field>
             <field type="VARCHAR(128) DEFAULT ''">toolbar</field>
+            <field type="TEXT NULL">assigned_toolbar</field>
             <field type="TEXT NULL">avatar</field>
             <field type="TEXT NULL">extra</field>
             <field type="TEXT NULL">rights</field>

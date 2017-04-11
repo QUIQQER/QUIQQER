@@ -1,14 +1,13 @@
 <?php
 
 /**
- * Return a xml category
+ * Return the project panel categories / tabs
  *
- * @param array $file - list of xml files
- * @param $category
- * @return String
+ * @param string $project - name of the project
+ * @return array
  */
 QUI::$Ajax->registerFunction(
-    'ajax_settings_category',
+    'ajax_project_panel_categories_category',
     function ($file, $category) {
         if (file_exists($file)) {
             $files = array($file);
@@ -18,7 +17,7 @@ QUI::$Ajax->registerFunction(
 
         $cacheName = 'qui/admin/menu/categories/' . md5(json_encode($files)) . '/' . $category;
         $Settings  = QUI\Utils\XML\Settings::getInstance();
-        $Settings->setXMLPath('//quiqqer/settings/window');
+        $Settings->setXMLPath('//quiqqer/project/settings/window');
 
         try {
             $result = QUI\Cache\Manager::get($cacheName);

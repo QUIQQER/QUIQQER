@@ -462,6 +462,7 @@ class Update
      * @param \Composer\Composer $Composer - optional
      *
      * @throws QUI\Exception
+     * @deprecated
      */
     public static function importAllMenuXMLs($Composer = null)
     {
@@ -489,6 +490,13 @@ class Update
                 continue;
             }
 
+            $Package = QUI::getPackage($package);
+
+            if (!$Package->hasPermission()) {
+                continue;
+            }
+
+            // @todo in Paket Klasse integrieren
             $package_dir = OPT_DIR . '/' . $package;
             $list        = QUIFile::readDir($package_dir);
 

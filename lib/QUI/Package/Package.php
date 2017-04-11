@@ -280,6 +280,27 @@ class Package extends QUI\QDOM
     }
 
     /**
+     * Return the permission name for a package permission
+     * eq:
+     * - canUse
+     *
+     * @param string $permissionName
+     * @return mixed
+     */
+    public function getPermissionName($permissionName = 'canUse')
+    {
+        $nameShortCut = preg_replace("/[^A-Za-z0-9 ]/", '', $this->getName());
+
+        switch ($permissionName) {
+            case 'header':
+                return 'permission.quiqqer.packages.' . $nameShortCut . '._header';
+
+            default:
+                return 'quiqqer.packages.' . $nameShortCut . '.canUse';
+        }
+    }
+
+    /**
      * Return all preview images
      * Not the main image
      *
@@ -315,7 +336,7 @@ class Package extends QUI\QDOM
     }
 
     /**
-     * Return the package lock date
+     * Return the package lock data
      *
      * @return array
      */
@@ -394,6 +415,30 @@ class Package extends QUI\QDOM
     }
 
     /**
+     * Checks the package permisson
+     *
+     * @param string $permission - could be canUse
+     * @param QUI\Interfaces\Users\User|null $User
+     *
+     * @return bool
+     */
+    public function hasPermission($permission = 'canUse', $User = null)
+    {
+        if (!QUI::conf('permissions', 'package')) {
+            return true;
+        }
+
+        switch ($permission) {
+            default:
+            case 'canUse':
+                return QUI\Permissions\Permission::hasPermission(
+                    $this->getPermissionName($permission),
+                    $User
+                );
+        }
+    }
+
+    /**
      * Execute the package setup
      */
     public function setup()
@@ -404,6 +449,66 @@ class Package extends QUI\QDOM
             return;
         }
 
+        // permissions
+        if ($this->getName() != 'quiqqer/quiqqer') { // you can't set permissions to the core
+            try {
+                $found = QUI::getDataBase()->fetch(array(
+                    'from'  => QUI\Permissions\Manager::table(),
+                    'where' => array(
+                        'name' => $this->getPermissionName()
+                    ),
+                    'limit' => 1
+                ));
+
+                if (!isset($found[0])) {
+                    QUI::getPermissionManager()->addPermission(array(
+                        'name'         => $this->getPermissionName(),
+                        'title'        => 'quiqqer/quiqqer permission.package.canUse',
+                        'desc'         => '',
+                        'area'         => '',
+                        'type'         => 'bool',
+                        'defaultvalue' => 1
+                    ));
+                }
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
+
+
+            $languages = QUI\Translator::getAvailableLanguages();
+
+            $data = array(
+                'datatype' => 'php,js',
+                'package'  => $this->getName()
+            );
+
+            foreach ($languages as $lang) {
+                $data[$lang] = QUI::getLocale()->getByLang($lang, $this->getName(), 'package.title');
+            }
+
+            try {
+                QUI\Translator::addUserVar(
+                    'quiqqer/quiqqer',
+                    $this->getPermissionName('header'),
+                    $data
+                );
+            } catch (QUI\Exception $Exception) {
+                try {
+                    QUI\Translator::edit(
+                        'quiqqer/quiqqer',
+                        $this->getPermissionName('header'),
+                        $this->getName(),
+                        $data
+                    );
+                } catch (QUI\Exception $Exception) {
+                    QUI::getMessagesHandler()->addAttention(
+                        $Exception->getMessage()
+                    );
+                }
+            }
+        }
+
+        // xml
         Update::importDatabase($dir . 'database.xml');
         Update::importTemplateEngines($dir . 'engines.xml');
         Update::importEditors($dir . 'wysiwyg.xml');
@@ -435,6 +540,7 @@ class Package extends QUI\QDOM
         }
 
         QUI\Translator::publish($this->getName());
+        QUI\Translator::publish('quiqqer/quiqqer');
 
         foreach ($groups as $group) {
             QUI\Translator::publish($group);
@@ -497,6 +603,9 @@ class Package extends QUI\QDOM
      */
     public function destroy()
     {
+        QUI::getPermissionManager()->removePermission($this->getPermissionName());
+        QUI::getPermissionManager()->removePermission($this->getPermissionName('header'));
+
         QUI::getEvents()->fireEvent('packageDestroy', array($this->getName()));
     }
 

@@ -20,10 +20,11 @@ define('controls/system/Profile', [
     'utils/Controls',
     'Ajax',
     'Locale',
+    'Editors',
 
     'css!controls/system/Profile.css'
 
-], function (QUI, QUIConfirm, FormUtils, ControlUtils, Ajax, Locale) {
+], function (QUI, QUIConfirm, FormUtils, ControlUtils, Ajax, Locale, Editors) {
     "use strict";
 
     return new Class({
@@ -83,14 +84,23 @@ define('controls/system/Profile', [
                     '<form class="qui-control-profil">' + profileTemplate + '</form>'
                 );
 
-                FormUtils.setDataToForm(
-                    data,
-                    Content.getElement('form')
-                );
+                var Toolbars = Content.getElement('[name="toolbar"]');
 
-                ControlUtils.parse(Content);
+                Editors.getToolbarsFromUser(USER.id).then(function (toolbars) {
 
-                QUI.parse(Content).then(function() {
+                    for (var i = 0, len = toolbars.length; i < len; i++) {
+                        new Element('option', {
+                            value: toolbars[i],
+                            html : toolbars[i].replace('\.xml', '')
+                        }).inject(Toolbars);
+                    }
+
+                    FormUtils.setDataToForm(data, Content.getElement('form'));
+
+                    return ControlUtils.parse(Content);
+                }).then(function () {
+                    return QUI.parse(Content);
+                }).then(function () {
                     self.Loader.hide();
                 });
             }, {
