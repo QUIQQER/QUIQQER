@@ -18,6 +18,7 @@ QUI::$Ajax->registerFunction(
 
         $cacheName = 'qui/admin/menu/categories/' . md5(json_encode($files)) . '/' . $category;
         $Settings  = QUI\Utils\XML\Settings::getInstance();
+        $Settings->setXMLPath('//quiqqer/settings/window');
 
         try {
             $result = QUI\Cache\Manager::get($cacheName);
