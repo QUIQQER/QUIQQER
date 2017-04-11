@@ -22,9 +22,11 @@ class Encryption
      */
     public static function encrypt($data)
     {
-        $salt = QUI::conf('globals', 'salt');
-        $sl   = QUI::conf('globals', 'saltlength');
-        $iv   = QUI::conf('openssl', 'iv');
+        $Config = QUI::getConfig('etc/conf.ini.php');
+
+        $salt = $Config->getValue('globals', 'salt');
+        $sl   = $Config->getValue('globals', 'saltlength');
+        $iv   = $Config->getValue('openssl', 'iv');
 
         if ($iv === false) {
             $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
@@ -59,10 +61,15 @@ class Encryption
      */
     public static function decrypt($data)
     {
-        $salt = QUI::conf('globals', 'salt');
-        $sl   = QUI::conf('globals', 'saltlength');
+        $Config = QUI::getConfig('etc/conf.ini.php');
+        $salt   = $Config->getValue('globals', 'salt');
+        $sl     = $Config->getValue('globals', 'saltlength');
 
-        $iv = QUI::conf('openssl', 'iv');
+        if (!$Config->getValue('openssl', 'iv')) {
+            self::encrypt('');
+        }
+
+        $iv = $Config->getValue('openssl', 'iv');
         $iv = hex2bin($iv);
 
         $data = openssl_decrypt($data, 'aes-256-cbc', $salt, 0, $iv);
