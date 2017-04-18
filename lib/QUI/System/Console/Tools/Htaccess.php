@@ -206,6 +206,8 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}image.php$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}index\.php$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}([^/]*)$
+
     RewriteRule ^(.*)$ {$URL_DIR}?error=403 [R=301,END]
 </IfModule>
         ";
