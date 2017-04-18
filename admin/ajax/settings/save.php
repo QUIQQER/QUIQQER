@@ -24,21 +24,47 @@ QUI::$Ajax->registerFunction(
             if (!file_exists($file)) {
                 // #locale
                 QUI\Log\Logger::getLogger()->addError(
-                    "Could not save the data. the config file {$file} was not found" // #locale
+                    QUI::getLocale()->get(
+                        'quiqqer/quiqqer',
+                        'exception.config.save.file.not.found'
+                    )
                 );
 
                 continue;
             }
 
-            QUI\Utils\Text\XML::setConfigFromXml(
-                $file,
-                json_decode($params, true)
-            );
+
+            $params = json_decode($params, true);
+
+            // csp data
+            if (strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') !== false
+                && isset($params['securityHeaders_csp'])
+            ) {
+                $cspData = $params['securityHeaders_csp'];
+                unset($params['securityHeaders_csp']);
+            }
+
+            QUI\Utils\Text\XML::setConfigFromXml($file, $params);
+
+
+            // save csp data -> workaround
+            if (isset($cspData)) {
+                $CSP = QUI\System\CSP::getInstance();
+                $CSP->clearCSPDirectives();
+
+                foreach ($cspData as $key => $value) {
+                    try {
+                        $CSP->setCSPDirectiveToConfig($key, $value);
+                    } catch (QUI\Exception $Exception) {
+                        \QUI\System\Log::addWarning($Exception->getMessage());
+                    }
+                }
+            }
         }
 
-        // # locale
+
         QUI::getMessagesHandler()->addSuccess(
-            'Konfiguration erfolgreich gespeichert'
+            QUI::getLocale()->get('quiqqer/quiqqer', 'message.config.saved')
         );
     },
     array('file', 'params'),

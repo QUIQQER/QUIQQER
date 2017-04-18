@@ -10,10 +10,11 @@
 
 define('utils/Controls', [
 
+    'qui/QUI',
     'qui/utils/Elements',
     'qui/lib/polyfills/Promise'
 
-], function (ElementUtils) {
+], function (QUI, ElementUtils) {
     "use strict";
 
     return {
@@ -640,6 +641,34 @@ define('utils/Controls', [
                     resolve();
 
                 }, reject);
+            });
+        },
+
+        /**
+         * Get a control from a DOMElement
+         *
+         * @param {HTMLElement} Elm
+         * @return {Promise}
+         */
+        getControlByElement: function(Elm)
+        {
+            var quiId = Elm.getProperty('data-quiid');
+
+            if (quiId) {
+                return Promise.resolve(QUI.Controls.getById(quiId));
+            }
+
+            return new Promise(function(resolve, reject) {
+                Elm.addEvent('load', function() {
+                    var quiId = Elm.getProperty('data-quiid');
+
+                    if (quiId) {
+                        resolve(QUI.Controls.getById(quiId));
+                        return;
+                    }
+
+                    reject();
+                });
             });
         }
     };

@@ -6,7 +6,7 @@
 QUI::$Ajax->registerFunction(
     'ajax_system_settings_getCSP',
     function () {
-        return QUI::conf('securityHeaders_csp');
+        return QUI\System\CSP::getInstance()->getCSPDirectiveConfig();
     },
     false,
     array('Permission::checkAdminUser')
