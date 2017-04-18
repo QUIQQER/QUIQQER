@@ -47,7 +47,7 @@ class CSP
         'default' => 'default-src',
         'font'    => 'font-src',
         'form'    => 'form-action',
-        'image'   => 'img-src',
+        'image'   => 'image-src',
         'img'     => 'img-src',
         'script'  => 'script-src',
         'style'   => 'style-src',
@@ -73,8 +73,33 @@ class CSP
      */
     public function clearCSPDirectives()
     {
-        QUI::getConfig('etc/conf.ini.php')->del('securityHeaders_csp');
-        QUI::getConfig('etc/conf.ini.php')->save();
+        $this->getConfig()->del('securityHeaders_csp');
+        $this->getConfig()->save();
+    }
+
+    /**
+     * @return QUI\Config
+     */
+    protected function getConfig()
+    {
+        return QUI::getConfig('etc/conf.ini.php');
+    }
+
+    /**
+     * Cleanups the CSP rules
+     */
+    public function cleanup()
+    {
+        $Config = $this->getConfig();
+        $list   = $this->getCSPDirectiveConfig();
+
+        $Config->del('securityHeaders_csp');
+
+        foreach ($list as $directive => $value) {
+            $Config->setValue('securityHeaders_csp', $directive, $value);
+        }
+
+        $Config->save();
     }
 
     /**
@@ -151,14 +176,59 @@ class CSP
             $list[] = $value;
         }
 
-        $list = array_unique($list);
+        $list   = array_unique($list);
+        $Config = $this->getConfig();
 
-        QUI::getConfig('etc/conf.ini.php')->setValue(
+        $Config->setValue(
             'securityHeaders_csp',
             $directive,
             implode(' ', $list)
         );
 
-        QUI::getConfig('etc/conf.ini.php')->save();
+        $Config->save();
+    }
+
+    /**
+     * @return array
+     */
+    public function getCSPDirectiveConfig()
+    {
+        $config = $this->getConfig()->toArray();
+        $csp    = array();
+
+        if (isset($config['securityHeaders_csp'])) {
+            $csp = $config['securityHeaders_csp'];
+        }
+
+        $result = array();
+
+        foreach ($csp as $directive => $value) {
+            if (isset($this->cspDirective[$directive])) {
+                $directive = $this->cspDirective[$directive];
+            }
+
+            $values = explode(' ', $value);
+
+            foreach ($values as $directiveValue) {
+                $directiveValue = str_replace(
+                    array(';', '"', "'"),
+                    '',
+                    $directiveValue
+                );
+
+                if (isset($this->cspSource[$directiveValue])) {
+                    $directiveValue = $this->cspSource[$directiveValue];
+                }
+
+                $result[$directive][] = $directiveValue;
+            }
+        }
+
+        // cleanup
+        foreach ($result as $directive => $values) {
+            $result[$directive] = implode(' ', array_unique($values));
+        }
+
+        return $result;
     }
 }

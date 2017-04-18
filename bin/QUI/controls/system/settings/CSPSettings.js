@@ -186,6 +186,28 @@ define('controls/system/settings/CSPSettings', [
         },
 
         /**
+         * Update the input value
+         */
+        $update: function () {
+            var data     = {};
+            var selected = this.$Grid.getData();
+
+            selected.each(function (entry) {
+                if (typeof data[entry.directive] === 'undefined') {
+                    data[entry.directive] = [];
+                }
+
+                data[entry.directive].push(entry.value);
+            });
+
+            for (var directive in data) {
+                data[directive] = data[directive].join(' ');
+            }
+
+            this.$Input.value = JSON.encode(data);
+        },
+
+        /**
          * Refresh the data
          *
          * @return {Promise}
@@ -237,27 +259,14 @@ define('controls/system/settings/CSPSettings', [
         save: function () {
             var self = this;
 
+            this.$update();
+
             return new Promise(function (resolve, reject) {
-                var data     = {};
-                var selected = self.$Grid.getData();
-
-                selected.each(function (entry) {
-                    if (typeof data[entry.directive] === 'undefined') {
-                        data[entry.directive] = [];
-                    }
-
-                    data[entry.directive].push(entry.value);
-                });
-
-                for (var directive in data) {
-                    data[directive] = data[directive].join(' ');
-                }
-
                 QUIAjax.post('ajax_system_settings_saveCSP', function () {
                     self.refresh().then(resolve);
                 }, {
                     onError: reject,
-                    data   : JSON.encode(data)
+                    data   : self.$Input.value
                 });
             });
         },
@@ -303,6 +312,8 @@ define('controls/system/settings/CSPSettings', [
                             value    : Value.value,
                             directive: Directive.value
                         });
+
+                        self.$update();
 
                         Win.close();
                         self.save();
@@ -361,6 +372,8 @@ define('controls/system/settings/CSPSettings', [
                             directive: Directive.value
                         });
 
+                        self.$update();
+
                         Win.close();
                         self.save();
                     }
@@ -407,6 +420,7 @@ define('controls/system/settings/CSPSettings', [
                             self.$Grid.getSelectedIndices()
                         );
 
+                        self.$update();
                         self.save();
                     }
                 }

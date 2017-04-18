@@ -7,11 +7,12 @@ QUI::$Ajax->registerFunction(
     'ajax_system_settings_saveCSP',
     function ($data) {
         $data = json_decode($data, true);
+        $CSP  = QUI\System\CSP::getInstance();
 
-        QUI\System\CSP::getInstance()->clearCSPDirectives();
+        $CSP->clearCSPDirectives();
 
         foreach ($data as $key => $value) {
-            QUI\System\CSP::getInstance()->setCSPDirectiveToConfig($key, $value);
+            $CSP->setCSPDirectiveToConfig($key, $value);
         }
     },
     array('data'),

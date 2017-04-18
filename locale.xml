@@ -772,6 +772,14 @@
             <en><![CDATA[Execute a system update]]></en>
         </locale>
 
+        <locale name="message.config.saved">
+            <de><![CDATA[Die Konfiguration wurde erfolgreich gespeichert.]]></de>
+            <en><![CDATA[The configuration has been saved successfully.]]></en>
+        </locale>
+        <locale name="exception.config.save.file.not.found">
+            <de><![CDATA[Konnte die Konfiguration nicht speichern. Datei [file] nicht gefunden.]]></de>
+            <en><![CDATA[Could not save the data. the config file [file] was not found.]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="js">
