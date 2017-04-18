@@ -1437,6 +1437,10 @@
                 <![CDATA[<p>Vielen Dank f&uuml;r Ihre E-Mail. Wir werden uns schnellstm&ouml;glich bei Ihnen melden.</p>]]></de>
             <en><![CDATA[Thank you for your email. We will contact you as soon as possible.]]></en>
         </locale>
+        <locale name="control.contact.send.button">
+            <de><![CDATA[Senden]]></de>
+            <en><![CDATA[Send]]></en>
+        </locale>
 
         <locale name="message.session.auth.memcached.notinstalled">
             <de><![CDATA[Die Memcached Erweiterung ist nicht vorhanden auf diesem Server.]]></de>

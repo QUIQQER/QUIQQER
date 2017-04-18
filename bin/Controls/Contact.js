@@ -59,7 +59,7 @@ define('Controls/Contact', [
             }).inject( this.$Elm );
              */
             new Element('button', {
-                html   : 'senden',
+                html   : Locale.get('quiqqer/system', 'control.contact.send.button'),
                 'class': 'button qui-button',
                 events : {
                     click: function () {
