@@ -40,26 +40,10 @@ QUI::$Ajax->registerFunction(
             if (strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') !== false
                 && isset($params['securityHeaders_csp'])
             ) {
-                $cspData = $params['securityHeaders_csp'];
                 unset($params['securityHeaders_csp']);
             }
 
             QUI\Utils\Text\XML::setConfigFromXml($file, $params);
-
-
-            // save csp data -> workaround
-            if (isset($cspData)) {
-                $CSP = QUI\System\CSP::getInstance();
-                $CSP->clearCSPDirectives();
-
-                foreach ($cspData as $key => $value) {
-                    try {
-                        $CSP->setCSPDirectiveToConfig($key, $value);
-                    } catch (QUI\Exception $Exception) {
-                        \QUI\System\Log::addWarning($Exception->getMessage());
-                    }
-                }
-            }
         }
 
 

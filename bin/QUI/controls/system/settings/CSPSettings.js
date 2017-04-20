@@ -180,6 +180,7 @@ define('controls/system/settings/CSPSettings', [
 
             this.$Elm.addClass('field-container-field');
             this.$Input.removeClass('field-container-field');
+            this.$Input.name = 'securityHeaders_csp';
             this.$Elm.wraps(this.$Input);
 
             this.$onInject();
@@ -205,6 +206,7 @@ define('controls/system/settings/CSPSettings', [
             }
 
             this.$Input.value = JSON.encode(data);
+            this.$Input.fireEvent('change');
         },
 
         /**

@@ -249,16 +249,7 @@
                 </conf>
             </section>
 
-            <section name="securityHeaders_csp">
-                <conf name="script">
-                    <type><![CDATA[string]]></type>
-                    <defaultvalue>'self' 'unsafe-eval' 'unsafe-inline'</defaultvalue>
-                </conf>
-                <conf name="object">
-                    <type><![CDATA[string]]></type>
-                    <defaultvalue>'self'</defaultvalue>
-                </conf>
-            </section>
+            <section name="securityHeaders_csp"/>
 
             <section name="permissions">
                 <conf name="package">
@@ -684,7 +675,10 @@
                         <title>
                             <locale group="quiqqer/system" var="quiqqer.settings.security_headers.csp.title"/>
                         </title>
-                        <input type="hidden" data-qui="controls/system/settings/CSPSettings" label="false"/>
+                        <input type="hidden"
+                               conf="securityHeaders_csp"
+                               data-qui="controls/system/settings/CSPSettings"
+                               label="false"/>
                     </settings>
 
                 </category>
