@@ -47,8 +47,10 @@ class PackageEvents
             $Package->install();
 
             CommandEvents::registerPackageChange($packageName);
-        } catch (\Exception $Exception) {
+        } catch (QUI\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::write($Exception->getMessage());
         }
     }
 
@@ -80,8 +82,10 @@ class PackageEvents
             $Package->onUpdate();
 
             CommandEvents::registerPackageChange($packageName);
-        } catch (\Exception $Exception) {
+        } catch (QUI\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::write($Exception->getMessage());
         }
     }
 
@@ -111,8 +115,10 @@ class PackageEvents
         try {
             $Package = QUI::getPackage($packageName);
             $Package->uninstall();
-        } catch (\Exception $Exception) {
+        } catch (QUI\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::write($Exception->getMessage());
         }
     }
 
