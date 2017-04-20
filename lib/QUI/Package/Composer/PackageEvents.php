@@ -48,7 +48,14 @@ class PackageEvents
 
             CommandEvents::registerPackageChange($packageName);
         } catch (\Exception $Exception) {
-            QUI\System\Log::write($Exception->getMessage());
+            QUI\System\Log::write(
+                $Exception->getMessage(),
+                $Exception->getCode(),
+                array(
+                    'method'  => 'QUI\Package\Composer\PackageEvents::postPackageInstall',
+                    'package' => $packageName
+                )
+            );
         }
     }
 
@@ -81,7 +88,14 @@ class PackageEvents
 
             CommandEvents::registerPackageChange($packageName);
         } catch (\Exception $Exception) {
-            QUI\System\Log::write($Exception->getMessage());
+            QUI\System\Log::write(
+                $Exception->getMessage(),
+                $Exception->getCode(),
+                array(
+                    'method'  => 'QUI\Package\Composer\PackageEvents::postPackageUpdate',
+                    'package' => $packageName
+                )
+            );
         }
     }
 
@@ -112,7 +126,14 @@ class PackageEvents
             $Package = QUI::getPackage($packageName);
             $Package->uninstall();
         } catch (\Exception $Exception) {
-            QUI\System\Log::write($Exception->getMessage());
+            QUI\System\Log::write(
+                $Exception->getMessage(),
+                $Exception->getCode(),
+                array(
+                    'method'  => 'QUI\Package\Composer\PackageEvents::postPackageUninstall',
+                    'package' => $packageName
+                )
+            );
         }
     }
 
