@@ -6071,7 +6071,7 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Login failed. User not found.]]></en>
         </locale>
         <locale name="message.site.save.success">
-            <de><![CDATA[Die Seite [id] [title] wurde erfolgreich gespeichert]]></de>
+            <de><![CDATA[Die Seite [id] [title] wurde erfolgreich gespeichert.]]></de>
             <en><![CDATA[The page [id] [title] are successfuly saved.]]]></en>
         </locale>
         <locale name="exception.site.not.found">
@@ -6091,24 +6091,28 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[The page is currently being edited by a other user]]></en>
         </locale>
         <locale name="exception.site.same.name">
-            <de><![CDATA[Eine Seite mit dem Namen "[name]" existiert bereits in der gleichen Ebene]]></de>
+            <de><![CDATA[Eine Seite mit dem Namen "[name]" existiert bereits in der gleichen Ebene.]]></de>
             <en><![CDATA[A page with the name "[name]" already exists on the same level.]]></en>
         </locale>
         <locale name="exception.site.save.error">
-            <de><![CDATA[Es sind Fehler beim Speichern der Seite aufgetreten]]></de>
+            <de><![CDATA[Es sind Fehler beim Speichern der Seite aufgetreten.]]></de>
             <en><![CDATA[Errors occurred while saving the page.]]></en>
         </locale>
         <locale name="permissions.message.save.success">
-            <de><![CDATA[Zugriffsrechte erfolgreich gespeichert]]></de>
+            <de><![CDATA[Zugriffsrechte erfolgreich gespeichert.]]></de>
             <en><![CDATA[Permissions successfuly saved.]]></en>
         </locale>
         <locale name="permissions.message.delete.success">
-            <de><![CDATA[Zugriffsrecht erfolgreich gelöscht]]></de>
+            <de><![CDATA[Zugriffsrecht erfolgreich gelöscht.]]></de>
             <en><![CDATA[Permission successfuly deleted.]]></en>
         </locale>
         <locale name="exception.permission.session.expired">
-            <de><![CDATA[Ihre Sitzung ist abgelaufen, bitte loggen Sie sich ein]]></de>
+            <de><![CDATA[Ihre Sitzung ist abgelaufen, bitte loggen Sie sich ein.]]></de>
             <en><![CDATA[Your session has expired, please login.]]></en>
+        </locale>
+        <locale name="exception.permission.no.admin">
+            <de><![CDATA[Sie besitzen nicht die nötigen Rechte sich an der Administration anzumelden.]]></de>
+            <en><![CDATA[You do not have the necessary permissions to log on to the administration.]]></en>
         </locale>
         <locale name="exception.session.expired.from.other">
             <de><![CDATA[

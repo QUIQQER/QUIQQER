@@ -112,7 +112,7 @@ define('controls/users/Login', [
                         if (typeOf(event) === 'element') {
                             Target = event;
                         }
-                        if (typeOf(event) == 'domevent') {
+                        if (typeOf(event) === 'domevent') {
                             event.stop();
                             Target = event.target;
                         }
@@ -166,7 +166,7 @@ define('controls/users/Login', [
             for (var i = 1, len = forms.length; i < len; i++) {
                 new Element('div', {
                     'class': 'quiqqer-login-or',
-                    html   : '<span>or</span>'
+                    html   : '<span>or</span>' // #locale
                 }).inject(forms[i], 'before');
             }
 
@@ -210,11 +210,11 @@ define('controls/users/Login', [
                 QUIAjax.post('ajax_users_login', function (result) {
                     // authentication was successful
                     if (!result.authenticator) {
-                        self.fireEvent('success');
-                        resolve();
+                        self.fireEvent('success', [self]);
+                        resolve(self);
 
                         if (typeof self.getAttribute('onSuccess') === 'function') {
-                            self.getAttribute('onSuccess')();
+                            self.getAttribute('onSuccess')(self);
                             return;
                         }
 

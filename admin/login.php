@@ -401,19 +401,41 @@ foreach ($packages as $package) {
 
             setLanguage(getCurrentLanguage()).then(function () {
                 new Login({
-                    onsuccess: 'onSuccess'
+                    onSuccess: window.onSuccess
                 }).inject(document.getElement('.login'));
             });
         });
 
-        function onSuccess() {
-            moofx(document.getElement('.container')).animate({
-                opacity: 0
-            }, {
-                duration: 200,
-                callback: function () {
-                    window.location.reload();
-                }
+        function onSuccess(Login) {
+            require([
+                'Ajax',
+                'Locale'
+            ], function (QUIAjax, QUILocale) {
+                // check if admin user
+                QUIAjax.get('ajax_user_canUseBackend', function (canUseAdmin) {
+                    if (canUseAdmin === false) {
+                        QUI.getMessageHandler().then(function (MH) {
+                            MH.addError(
+                                QUILocale.get(
+                                    'quiqqer/system',
+                                    'exception.permission.no.admin'
+                                )
+                            );
+                        });
+
+                        Login.Loader.hide();
+                        return;
+                    }
+
+                    moofx(document.getElement('.container')).animate({
+                        opacity: 0
+                    }, {
+                        duration: 200,
+                        callback: function () {
+                            window.location.reload();
+                        }
+                    });
+                });
             });
         }
 
