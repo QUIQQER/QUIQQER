@@ -74,36 +74,16 @@ class Nginx extends QUI\System\Console\Tool
     protected function template()
     {
         $quiqqerDir    = CMS_DIR;
-        $domain        = HOST;
         $quiqqerUrlDir = URL_DIR;
 
+        # Process domain
+        $domain = trim(HOST);
+        $domain = str_replace("https://", "", $domain);
+        $domain = str_replace("http://", "", $domain);
 
-        return <<<NGINX
-        
-        server {
-            listen 80;
-            listen [::]:80;
-            
-            server_name {$domain}
-            
-            return 301 https://\$http_host\$request_uri;
-        }
-        
-        
-        server {
-        
-            listen 443;
-            listen [::]:443;
-    
-            root {$quiqqerDir};
-    
-            index index.php index.html index.htm;
-    
-            server_name {$domain};
-    
-            error_log  /var/log/nginx/{$domain}_error.log;
-    
-            ###############################
+        # Define the rewrite directives
+        $rewriteRules = <<<REWRITE
+###############################
             #  Virtual Folder/File Check  #
             ###############################
     
@@ -290,7 +270,7 @@ class Nginx extends QUI\System\Console\Tool
                     
                     # PHP only, required if PHP was built with --enable-force-cgi-redirect
                     fastcgi_param   REDIRECT_STATUS         200;
-
+    
                     fastcgi_pass php;
             }
             
@@ -322,10 +302,10 @@ class Nginx extends QUI\System\Console\Tool
                     
                     # PHP only, required if PHP was built with --enable-force-cgi-redirect
                     fastcgi_param   REDIRECT_STATUS         200;
-
+    
                     fastcgi_pass php;
             }
-
+    
     
             # /////////////////////////////////////////////////////////////////////////////////
             # Whitelisted static files
@@ -382,8 +362,100 @@ class Nginx extends QUI\System\Console\Tool
             location / {
                     rewrite ^ {$quiqqerUrlDir}index.php?_url=error403;
             }
+REWRITE;
+
+
+        # Configuration to force https
+        $forceHttpsConfiguration = <<<NGINX
+        
+         upstream php {
+                server unix:/var/run/php/php7.0-fpm.sock;   # Replace with valid path to php-fpm
+                #server unix:/var/run/php5-fpm.sock;
+        }
+
+        server {
+            listen 80;
+            listen [::]:80;
+            
+            server_name {$domain};
+            
+            return 301 https://\$server_name\$request_uri;
+        }
+        
+        
+        server {
+        
+            listen 443;
+            listen [::]:443;
+    
+            root {$quiqqerDir};
+    
+            index index.php index.html index.htm;
+    
+            server_name {$domain};
+    
+            error_log  /var/log/nginx/{$domain}_error.log;
+    
+            ssl    on;
+            ssl_certificate        /etc/ssl/certs/ssl-cert-snakeoil.pem;        # Replace with valid certificate
+            ssl_certificate_key    /etc/ssl/private/ssl-cert-snakeoil.key;      # Replace with valid certificate key
+    
+           {$rewriteRules}
 
         }
 NGINX;
+
+        # Configuration for parallel http and https
+        $httpConfiguration = <<<NGINX
+        
+        upstream php {
+                server unix:/var/run/php/php7.0-fpm.sock;   # Replace with valid path to php-fpm
+                #server unix:/var/run/php5-fpm.sock;
+        }
+        
+        server {
+            listen 80;
+            listen [::]:80;
+            
+            server_name {$domain};
+            
+            root {$quiqqerDir};
+            
+            index index.php index.html index.htm;
+            
+            error_log  /var/log/nginx/{$domain}_error.log;
+            
+            {$rewriteRules}
+        }
+        
+        
+        server {
+        
+            listen 443;
+            listen [::]:443;
+    
+            root {$quiqqerDir};
+    
+            index index.php index.html index.htm;
+    
+            server_name {$domain};
+    
+            error_log  /var/log/nginx/{$domain}_error.log;
+    
+            ssl    on;
+            ssl_certificate         /etc/ssl/certs/ssl-cert-snakeoil.pem;   # Replace with valid certificate
+            ssl_certificate_key     /etc/ssl/private/ssl-cert-snakeoil.key; # Replace with valid certificate key
+
+   
+            {$rewriteRules}
+        }
+NGINX;
+
+
+        if (QUI::$Conf->get("webserver", "forceHttps")) {
+            return $forceHttpsConfiguration;
+        }
+
+        return $httpConfiguration;
     }
 }

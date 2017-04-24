@@ -5557,6 +5557,19 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Version des QUIQQER-Systems]]></de>
             <en><![CDATA[Version of the QUIQQER system]]></en>
         </locale>
+        <locale name="quiqqer.settings.general.webserver.title">
+            <de><![CDATA[Webserver]]></de>
+            <en><![CDATA[Webserver]]></en>
+        </locale>
+        <locale name="quiqqer.settings.general.webserver.forcehttps.title">
+            <de><![CDATA[HTTPS erzwingen]]></de>
+            <en><![CDATA[Force HTTPS]]></en>
+        </locale>
+        <locale name="quiqqer.settings.general.webserver.forcehttps.description">
+            <de><![CDATA[Alle http Requests werden per 301-Umleitung auf https  umgeleitet]]></de>
+            <en><![CDATA[All http request will be 301-redirected to https]]></en>
+        </locale>
+
         <locale name="quiqqer.settings.database">
             <de><![CDATA[Datenbank]]></de>
             <en><![CDATA[Database]]></en>
