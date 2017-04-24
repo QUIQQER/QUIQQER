@@ -367,15 +367,15 @@
 
                     <settings title="globals" name="globals">
                         <title>
-                            <locale group="quiqqer/system" var="quiqqer.settings.general.webserver.title"/>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.general.webserver.title"/>
                         </title>
                         <input conf="webserver.forceHttps" type="checkbox">
                             <text>
-                                <locale group="quiqqer/system"
+                                <locale group="quiqqer/quiqqer"
                                         var="quiqqer.settings.general.webserver.forcehttps.title"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/system"
+                                <locale group="quiqqer/quiqqer"
                                         var="quiqqer.settings.general.webserver.forcehttps.description"/>
                             </description>
                         </input>

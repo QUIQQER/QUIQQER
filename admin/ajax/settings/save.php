@@ -44,12 +44,54 @@ QUI::$Ajax->registerFunction(
             }
 
             QUI\Utils\Text\XML::setConfigFromXml($file, $params);
+
+            QUI::getMessagesHandler()->addSuccess(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'message.config.saved')
+            );
+
+
+            // Böser workaround by hen
+            if (strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') === false) {
+                return;
+            }
+
+            # Save the current .htaccess content to see if the config changed
+            $oldContent = "";
+            if (file_exists(CMS_DIR . ".htaccess")) {
+                $oldContent = file_get_contents(CMS_DIR . ".htaccess");
+            }
+
+            $Htaccess = new QUI\System\Console\Tools\Htaccess();
+            $Htaccess->execute();
+
+
+            # Compare new and old .htaccess
+
+            try {
+                $webserver = \QUI\Utils\System\Webserver::detectInstalledWebserver();
+            } catch (\Exception $Exception) {
+                $webserver = "";
+            }
+
+            if ($webserver === \QUI\Utils\System\Webserver::WEBSERVER_APACHE) {
+                return;
+            }
+
+            if (empty($oldContent)) {
+                return;
+            }
+
+            if (!file_exists(CMS_DIR . ".htaccess")) {
+                return;
+            }
+
+            $newContent = file_get_contents(CMS_DIR . ".htaccess");
+            if ($newContent != $oldContent) {
+                QUI::getMessagesHandler()->addInformation(
+                    QUI::getLocale()->get("quiqqer/quiqqer", "message.config.webserver.changed")
+                );
+            }
         }
-
-
-        QUI::getMessagesHandler()->addSuccess(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'message.config.saved')
-        );
     },
     array('file', 'params'),
     'Permission::checkAdminUser'
