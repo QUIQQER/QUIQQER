@@ -57,7 +57,9 @@ define('controls/menu/Manager', [
             Ajax.get('ajax_menu', function (result) {
                 self.$Bar.insert(result);
                 self.$Bar.getChildren().each(function (BarItem) {
-                    BarItem.setAttribute('hideifempty', true);
+                    if (BarItem.getAttribute('name') !== 'quiqqer') {
+                        BarItem.setAttribute('hideifempty', true);
+                    }
                 });
 
                 result.each(function (entry, i) {
