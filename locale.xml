@@ -611,6 +611,19 @@
             <de><![CDATA[Toolbars durchsuchen ...]]></de>
             <en><![CDATA[Search toolbars ...]]></en>
         </locale>
+
+        <locale name="quiqqer.settings.general.webserver.title">
+            <de><![CDATA[Webserver]]></de>
+            <en><![CDATA[Webserver]]></en>
+        </locale>
+        <locale name="quiqqer.settings.general.webserver.forcehttps.title">
+            <de><![CDATA[HTTPS erzwingen]]></de>
+            <en><![CDATA[Force HTTPS]]></en>
+        </locale>
+        <locale name="quiqqer.settings.general.webserver.forcehttps.description">
+            <de><![CDATA[Alle http Requests werden per 301-Umleitung auf https  umgeleitet]]></de>
+            <en><![CDATA[All http request will be 301-redirected to https]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -779,6 +792,10 @@
         <locale name="exception.config.save.file.not.found">
             <de><![CDATA[Konnte die Konfiguration nicht speichern. Datei [file] nicht gefunden.]]></de>
             <en><![CDATA[Could not save the data. the config file [file] was not found.]]></en>
+        </locale>
+        <locale name="message.config.webserver.changed">
+            <de><![CDATA[Webserver relevante Konfigurationen wurden geändert. Bitte aktualisieren Sie ihre Nginx Vhost Konfiguration]]></de>
+            <en><![CDATA[Webserver relevant configurations have been changed. Please update your Nginx virtual host configuration. ]]></en>
         </locale>
     </groups>
 
@@ -5557,6 +5574,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Version des QUIQQER-Systems]]></de>
             <en><![CDATA[Version of the QUIQQER system]]></en>
         </locale>
+
+
         <locale name="quiqqer.settings.database">
             <de><![CDATA[Datenbank]]></de>
             <en><![CDATA[Database]]></en>

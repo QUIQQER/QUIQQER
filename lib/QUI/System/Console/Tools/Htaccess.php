@@ -101,6 +101,7 @@ class Htaccess extends QUI\System\Console\Tool
 # https://dev.quiqqer.com/quiqqer/quiqqer/wikis/htaccess
 #';
 
+
         // custom htaccess
         if (file_exists(ETC_DIR . 'htaccess.custom.php')) {
             $htaccessContent .= "\n\n# custom htaccess\n";
@@ -153,6 +154,17 @@ class Htaccess extends QUI\System\Console\Tool
 
         $URL_SYS_ADMIN_DIR = trim($URL_SYS_DIR, '/');
 
+
+        # Check for QUIQQERs webserver configuration
+        $forceHttps = "";
+        if (QUI::$Conf->get("webserver", "forceHttps")) {
+            $forceHttps = "# Redirect non https traffic to https. For a safer web." . PHP_EOL;
+            $forceHttps .= "    RewriteEngine On" . PHP_EOL;
+            $forceHttps .= "    RewriteCond %{HTTPS} !on" . PHP_EOL;
+            $forceHttps .= "    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]" . PHP_EOL;
+        }
+
+
         return "
 # quiqqer rewrite
 <IfModule mod_rewrite.c>
@@ -160,8 +172,12 @@ class Htaccess extends QUI\System\Console\Tool
     SetEnv HTTP_MOD_REWRITE On
 
     RewriteEngine On
+    
+    
+    {$forceHttps}
+    
     RewriteBase {$URL_DIR}
-
+    
     RewriteRule ^{$URL_SYS_ADMIN_DIR}$ {$URL_DIR}{$URL_SYS_DIR} [R=301,L]
 
     #Block .git directories and their contents
@@ -171,8 +187,8 @@ class Htaccess extends QUI\System\Console\Tool
     ## bin dir
     RewriteRule ^bin/(.*)$ {$quiqqerBin}/$1 [END]" .
 
-        # This is a temporary workaround. needs to be removed when the media upload is relocated
-        "
+            # This is a temporary workaround. needs to be removed when the media upload is relocated
+            "
     ## lib dir
     RewriteRule ^lib/(.*)$ {$quiqqerLib}/$1 [END]
 
@@ -262,8 +278,8 @@ class Htaccess extends QUI\System\Console\Tool
     ## bin dir
     RewriteRule ^bin/(.*)$ {$quiqqerBin}/$1 [L]" .
 
-        # This is a temporary workaround. needs to be removed when the media upload is relocated
-        "
+            # This is a temporary workaround. needs to be removed when the media upload is relocated
+            "
     ## lib dir
     RewriteRule ^lib/(.*)$ {$quiqqerLib}/$1 [L]
 
