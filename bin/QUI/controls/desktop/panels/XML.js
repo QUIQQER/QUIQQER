@@ -353,7 +353,7 @@ define('controls/desktop/panels/XML', [
                     }
 
 
-                    if (Elm.type == 'radio' || Elm.type == 'checkbox') {
+                    if (Elm.type === 'radio' || Elm.type === 'checkbox') {
                         if (Elm.checked) {
                             values[name] = 1;
                         } else {
@@ -430,7 +430,7 @@ define('controls/desktop/panels/XML', [
             var promises = saveable.map(function (Control) {
                 return Control.save();
             }).filter(function (Promise) {
-                return typeof Promise.then == 'function';
+                return typeof Promise.then === 'function';
             });
 
             if (!promises.length) {

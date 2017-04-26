@@ -140,7 +140,7 @@ define('controls/projects/project/Panel', [
                 return;
             }
 
-            if (this.$ProjectList.getStyle('display') == 'none') {
+            if (this.$ProjectList.getStyle('display') === 'none') {
                 return;
             }
 

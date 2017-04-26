@@ -40,32 +40,58 @@ QUI::$Ajax->registerFunction(
             if (strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') !== false
                 && isset($params['securityHeaders_csp'])
             ) {
-                $cspData = $params['securityHeaders_csp'];
                 unset($params['securityHeaders_csp']);
             }
 
             QUI\Utils\Text\XML::setConfigFromXml($file, $params);
 
+            QUI::getMessagesHandler()->addSuccess(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'message.config.saved')
+            );
 
-            // save csp data -> workaround
-            if (isset($cspData)) {
-                $CSP = QUI\System\CSP::getInstance();
-                $CSP->clearCSPDirectives();
 
-                foreach ($cspData as $key => $value) {
-                    try {
-                        $CSP->setCSPDirectiveToConfig($key, $value);
-                    } catch (QUI\Exception $Exception) {
-                        \QUI\System\Log::addWarning($Exception->getMessage());
-                    }
-                }
+            // Böser workaround by hen
+            if (strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') === false) {
+                return;
+            }
+
+            # Save the current .htaccess content to see if the config changed
+            $oldContent = "";
+            if (file_exists(CMS_DIR . ".htaccess")) {
+                $oldContent = file_get_contents(CMS_DIR . ".htaccess");
+            }
+
+            $Htaccess = new QUI\System\Console\Tools\Htaccess();
+            $Htaccess->execute();
+
+
+            # Compare new and old .htaccess
+
+            try {
+                $webserver = \QUI\Utils\System\Webserver::detectInstalledWebserver();
+            } catch (\Exception $Exception) {
+                $webserver = "";
+            }
+
+            if ($webserver === \QUI\Utils\System\Webserver::WEBSERVER_APACHE) {
+                return;
+            }
+
+            if (empty($oldContent)) {
+                return;
+            }
+
+            if (!file_exists(CMS_DIR . ".htaccess")) {
+                return;
+            }
+
+            $newContent = file_get_contents(CMS_DIR . ".htaccess");
+            if ($newContent != $oldContent) {
+                QUI::getMessagesHandler()->addInformation(
+                    QUI::getLocale()->get("quiqqer/quiqqer", "message.config.webserver.changed")
+                );
             }
         }
-
-
-        QUI::getMessagesHandler()->addSuccess(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'message.config.saved')
-        );
     },
     array('file', 'params'),
     'Permission::checkAdminUser'

@@ -95,6 +95,14 @@
                     <type><![CDATA[bool]]></type>
                     <defaultvalue>0</defaultvalue>
                 </conf>
+
+            </section>
+
+            <section name="webserver">
+                <conf name="forceHttps">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
             </section>
 
             <section name="db">
@@ -249,16 +257,7 @@
                 </conf>
             </section>
 
-            <section name="securityHeaders_csp">
-                <conf name="script">
-                    <type><![CDATA[string]]></type>
-                    <defaultvalue>'self' 'unsafe-eval' 'unsafe-inline'</defaultvalue>
-                </conf>
-                <conf name="object">
-                    <type><![CDATA[string]]></type>
-                    <defaultvalue>'self'</defaultvalue>
-                </conf>
-            </section>
+            <section name="securityHeaders_csp"/>
 
             <section name="permissions">
                 <conf name="package">
@@ -364,6 +363,22 @@
                                 <locale group="quiqqer/system" var="quiqqer.settings.general.version.title"/>
                             </text>
                         </select>
+                    </settings>
+
+                    <settings title="globals" name="globals">
+                        <title>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.general.webserver.title"/>
+                        </title>
+                        <input conf="webserver.forceHttps" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.general.webserver.forcehttps.title"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.general.webserver.forcehttps.description"/>
+                            </description>
+                        </input>
                     </settings>
                 </category>
 
@@ -684,7 +699,10 @@
                         <title>
                             <locale group="quiqqer/system" var="quiqqer.settings.security_headers.csp.title"/>
                         </title>
-                        <input type="hidden" data-qui="controls/system/settings/CSPSettings" label="false"/>
+                        <input type="hidden"
+                               conf="securityHeaders_csp"
+                               data-qui="controls/system/settings/CSPSettings"
+                               label="false"/>
                     </settings>
 
                 </category>

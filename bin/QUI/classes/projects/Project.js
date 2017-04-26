@@ -283,7 +283,7 @@ define('classes/projects/Project', [
          */
         getTitle: function () {
             var group = 'project/' + this.getName();
-
+            
             if (QUILocale.exists(group, 'title')) {
                 return QUILocale.get(group, 'title');
             }

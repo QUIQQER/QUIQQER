@@ -74,36 +74,16 @@ class Nginx extends QUI\System\Console\Tool
     protected function template()
     {
         $quiqqerDir    = CMS_DIR;
-        $domain        = HOST;
         $quiqqerUrlDir = URL_DIR;
 
+        # Process domain
+        $domain = trim(HOST);
+        $domain = str_replace("https://", "", $domain);
+        $domain = str_replace("http://", "", $domain);
 
-        return <<<NGINX
-        
-        server {
-            listen 80;
-            listen [::]:80;
-            
-            server_name {$domain}
-            
-            return 301 https://\$http_host\$request_uri;
-        }
-        
-        
-        server {
-        
-            listen 443;
-            listen [::]:443;
-    
-            root {$quiqqerDir};
-    
-            index index.php index.html index.htm;
-    
-            server_name {$domain};
-    
-            error_log  /var/log/nginx/{$domain}_error.log;
-    
-            ###############################
+        # Define the rewrite directives
+        $rewriteRules = <<<REWRITE
+###############################
             #  Virtual Folder/File Check  #
             ###############################
     
@@ -290,9 +270,42 @@ class Nginx extends QUI\System\Console\Tool
                     
                     # PHP only, required if PHP was built with --enable-force-cgi-redirect
                     fastcgi_param   REDIRECT_STATUS         200;
-
+    
                     fastcgi_pass php;
             }
+            
+            location ~* {$quiqqerUrlDir}[^/]*\.php$ {
+                    fastcgi_param   QUERY_STRING            \$query_string;
+                    fastcgi_param   REQUEST_METHOD          \$request_method;
+                    fastcgi_param   CONTENT_TYPE            \$content_type;
+                    fastcgi_param   CONTENT_LENGTH          \$content_length;
+                    
+                    fastcgi_param   SCRIPT_FILENAME         \$request_filename;
+                    fastcgi_param   SCRIPT_NAME             \$fastcgi_script_name;
+                    fastcgi_param   REQUEST_URI             \$request_uri;
+                    fastcgi_param   DOCUMENT_URI            \$document_uri;
+                    fastcgi_param   DOCUMENT_ROOT           \$document_root;
+                    fastcgi_param   SERVER_PROTOCOL         \$server_protocol;
+                    
+                    fastcgi_param   GATEWAY_INTERFACE       CGI/1.1;
+                    fastcgi_param   SERVER_SOFTWARE         nginx/\$nginx_version;
+                    
+                    fastcgi_param   REMOTE_ADDR             \$remote_addr;
+                    fastcgi_param   REMOTE_PORT             \$remote_port;
+                    fastcgi_param   SERVER_ADDR             \$server_addr;
+                    fastcgi_param   SERVER_PORT             \$server_port;
+                    fastcgi_param   SERVER_NAME             \$server_name;
+                    
+                    fastcgi_param   HTTPS                   \$https if_not_empty;
+                    
+                    fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+                    
+                    # PHP only, required if PHP was built with --enable-force-cgi-redirect
+                    fastcgi_param   REDIRECT_STATUS         200;
+    
+                    fastcgi_pass php;
+            }
+    
     
             # /////////////////////////////////////////////////////////////////////////////////
             # Whitelisted static files
@@ -301,7 +314,6 @@ class Nginx extends QUI\System\Console\Tool
             location ~ (.*)/bin/(.*){
                 # Do not block this
             }
-    
     
             location {$quiqqerUrlDir}media/cache/ {
                 # Do not block this
@@ -326,7 +338,11 @@ class Nginx extends QUI\System\Console\Tool
             location ~ {$quiqqerUrlDir}.*\.pem {
                 # Do not block this
             }
-    
+            
+            location ~ {$quiqqerUrlDir}[^/]*$ {
+                # Do not block this (all files in the root directory)
+            }
+            
             location = {$quiqqerUrlDir}robots.txt {
                 # Do not block this
             }
@@ -336,9 +352,9 @@ class Nginx extends QUI\System\Console\Tool
             }
     
             location = {$quiqqerUrlDir} {
-    
+                # Do not block this
             }
-    
+            
             # /////////////////////////////////////////////////////////////////////////////////
             # Block everything not whitelisted
             # /////////////////////////////////////////////////////////////////////////////////
@@ -346,8 +362,100 @@ class Nginx extends QUI\System\Console\Tool
             location / {
                     rewrite ^ {$quiqqerUrlDir}index.php?_url=error403;
             }
+REWRITE;
+
+
+        # Configuration to force https
+        $forceHttpsConfiguration = <<<NGINX
+        
+         upstream php {
+                server unix:/var/run/php/php7.0-fpm.sock;   # Replace with valid path to php-fpm
+                #server unix:/var/run/php5-fpm.sock;
+        }
+
+        server {
+            listen 80;
+            listen [::]:80;
+            
+            server_name {$domain};
+            
+            return 301 https://\$server_name\$request_uri;
+        }
+        
+        
+        server {
+        
+            listen 443;
+            listen [::]:443;
+    
+            root {$quiqqerDir};
+    
+            index index.php index.html index.htm;
+    
+            server_name {$domain};
+    
+            error_log  /var/log/nginx/{$domain}_error.log;
+    
+            ssl    on;
+            ssl_certificate        /etc/ssl/certs/ssl-cert-snakeoil.pem;        # Replace with valid certificate
+            ssl_certificate_key    /etc/ssl/private/ssl-cert-snakeoil.key;      # Replace with valid certificate key
+    
+           {$rewriteRules}
 
         }
 NGINX;
+
+        # Configuration for parallel http and https
+        $httpConfiguration = <<<NGINX
+        
+        upstream php {
+                server unix:/var/run/php/php7.0-fpm.sock;   # Replace with valid path to php-fpm
+                #server unix:/var/run/php5-fpm.sock;
+        }
+        
+        server {
+            listen 80;
+            listen [::]:80;
+            
+            server_name {$domain};
+            
+            root {$quiqqerDir};
+            
+            index index.php index.html index.htm;
+            
+            error_log  /var/log/nginx/{$domain}_error.log;
+            
+            {$rewriteRules}
+        }
+        
+        
+        server {
+        
+            listen 443;
+            listen [::]:443;
+    
+            root {$quiqqerDir};
+    
+            index index.php index.html index.htm;
+    
+            server_name {$domain};
+    
+            error_log  /var/log/nginx/{$domain}_error.log;
+    
+            ssl    on;
+            ssl_certificate         /etc/ssl/certs/ssl-cert-snakeoil.pem;   # Replace with valid certificate
+            ssl_certificate_key     /etc/ssl/private/ssl-cert-snakeoil.key; # Replace with valid certificate key
+
+   
+            {$rewriteRules}
+        }
+NGINX;
+
+
+        if (QUI::$Conf->get("webserver", "forceHttps")) {
+            return $forceHttpsConfiguration;
+        }
+
+        return $httpConfiguration;
     }
 }
