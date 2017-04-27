@@ -157,7 +157,7 @@ class Htaccess extends QUI\System\Console\Tool
 
         # Check for QUIQQERs webserver configuration
         $forceHttps = "";
-        if (QUI::$Conf->get("webserver", "forceHttps")) {
+        if (QUI::conf("webserver", "forceHttps")) {
             $forceHttps = "# Redirect non https traffic to https. For a safer web." . PHP_EOL;
             $forceHttps .= "    RewriteEngine On" . PHP_EOL;
             $forceHttps .= "    RewriteCond %{HTTPS} !on" . PHP_EOL;
@@ -187,8 +187,8 @@ class Htaccess extends QUI\System\Console\Tool
     ## bin dir
     RewriteRule ^bin/(.*)$ {$quiqqerBin}/$1 [END]" .
 
-            # This is a temporary workaround. needs to be removed when the media upload is relocated
-            "
+               # This is a temporary workaround. needs to be removed when the media upload is relocated
+               "
     ## lib dir
     RewriteRule ^lib/(.*)$ {$quiqqerLib}/$1 [END]
 
@@ -278,8 +278,8 @@ class Htaccess extends QUI\System\Console\Tool
     ## bin dir
     RewriteRule ^bin/(.*)$ {$quiqqerBin}/$1 [L]" .
 
-            # This is a temporary workaround. needs to be removed when the media upload is relocated
-            "
+               # This is a temporary workaround. needs to be removed when the media upload is relocated
+               "
     ## lib dir
     RewriteRule ^lib/(.*)$ {$quiqqerLib}/$1 [L]
 
