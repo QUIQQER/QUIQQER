@@ -334,9 +334,9 @@ define('controls/users/User', [
                         Control.setValue(attributes[name]);
                     }
 
-                    if (extras && name in extras) {
-                        Control.setValue(extras[name]);
-                    }
+                    // if (extras && name in extras) {
+                    //     Control.setValue(extras[name]);
+                    // }
                 });
 
                 // password save
