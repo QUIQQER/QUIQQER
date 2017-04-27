@@ -421,6 +421,10 @@ class Project
      */
     public function getVHost($with_protocol = false, $ssl = false)
     {
+        if (QUI::$Conf->get("webserver", "forceHttps")) {
+            $ssl = true;
+        }
+
         $Hosts = QUI::getRewrite()->getVHosts();
 
         foreach ($Hosts as $url => $params) {
@@ -438,8 +442,11 @@ class Project
                 if ($ssl && isset($params['httpshost'])
                     && !empty($params['httpshost'])
                 ) {
-                    return $with_protocol ? 'https://' . $params['httpshost']
-                        : $params['httpshost'];
+                    return $with_protocol ? 'https://' . $params['httpshost'] : $params['httpshost'];
+                }
+
+                if (QUI::conf("webserver", "forceHttps")) {
+                    return $with_protocol ? 'https://' . $url : $url;
                 }
 
                 return $with_protocol ? 'http://' . $url : $url;
