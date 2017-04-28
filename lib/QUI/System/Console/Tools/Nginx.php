@@ -452,7 +452,7 @@ NGINX;
 NGINX;
 
 
-        if (QUI::$Conf->get("webserver", "forceHttps")) {
+        if (QUI::conf("webserver", "forceHttps")) {
             return $forceHttpsConfiguration;
         }
 

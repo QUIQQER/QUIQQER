@@ -319,8 +319,7 @@ class Rewrite
                     && isset($vhosts[$_SERVER['HTTP_HOST']][$this->lang])
                     && !empty($vhosts[$_SERVER['HTTP_HOST']][$this->lang])
                     && (int)$_SERVER['SERVER_PORT'] !== 443
-                    && QUI::conf('globals', 'httpshost') !=
-                       'https://' . $_SERVER['HTTP_HOST']
+                    && QUI::conf('globals', 'httpshost') != 'https://' . $_SERVER['HTTP_HOST']
                 ) {
                     $url = implode('/', $_url);
                     $url = $vhosts[$_SERVER['HTTP_HOST']][$this->lang] . URL_DIR . $url;

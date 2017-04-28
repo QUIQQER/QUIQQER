@@ -115,7 +115,7 @@ define('utils/Panels', function () {
                                 continue;
                             }
 
-                            if (Panel.getProject().getName() != project) {
+                            if (Panel.getProject().getName() !== project) {
                                 continue;
                             }
 
@@ -215,7 +215,7 @@ define('utils/Panels', function () {
 
                                 Panel = panels[i];
 
-                                if (Panel.getProject().getName() != project) {
+                                if (Panel.getProject().getName() !== project) {
                                     continue;
                                 }
 
@@ -287,7 +287,7 @@ define('utils/Panels', function () {
                     // if a task exist, click it and open the instance
                     var Task = panels[0].getAttribute('Task');
 
-                    if (Task && Task.getType() == 'qui/controls/taskbar/Task') {
+                    if (Task && Task.getType() === 'qui/controls/taskbar/Task') {
                         panels[0].getAttribute('Task').click();
                     }
 
@@ -338,19 +338,19 @@ define('utils/Panels', function () {
                                 continue;
                             }
 
-                            if ((Panel.getAttribute('title') != Child.getAttribute('title')) &&
+                            if ((Panel.getAttribute('title') !== Child.getAttribute('title')) &&
 
                                 (Panel.getAttribute('#id') &&
                                 Child.getAttribute('#id') &&
-                                Panel.getAttribute('#id') != Child.getAttribute('#id'))) {
+                                Panel.getAttribute('#id') !== Child.getAttribute('#id'))) {
 
                                 continue;
                             }
 
-                            if (pType == 'controls/desktop/panels/XML' &&
-                                Child.getType() == 'controls/desktop/panels/XML'
+                            if (pType === 'controls/desktop/panels/XML' &&
+                                Child.getType() === 'controls/desktop/panels/XML'
                             ) {
-                                if (Panel.getFile() != Child.getFile()) {
+                                if (Panel.getFile() !== Child.getFile()) {
                                     continue;
                                 }
                             }
@@ -399,7 +399,7 @@ define('utils/Panels', function () {
             // if a task exist, click it and open the instance
             var Task = Panel.getAttribute('Task');
 
-            if (Task && Task.getType() == 'qui/controls/taskbar/Task') {
+            if (Task && Task.getType() === 'qui/controls/taskbar/Task') {
                 Panel.getAttribute('Task').click();
                 return;
             }
