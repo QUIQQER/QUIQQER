@@ -23,8 +23,9 @@ if (!isset($_POST['project']) ||
     exit;
 }
 
-$Project = \QUI::getProject($_POST['project'], $_POST['lang']);
-$Site    = new \QUI\Projects\Site\Edit($Project, $_POST['id']);
+$Response = QUI::getGlobalResponse();
+$Project  = QUI::getProject($_POST['project'], $_POST['lang']);
+$Site     = new QUI\Projects\Site\Edit($Project, $_POST['id']);
 
 if (isset($_POST['siteData']['type'])) {
     $Site->setAttribute('type', $_POST['siteData']['type']);
@@ -52,6 +53,10 @@ foreach ($_POST['siteDataJSON'] as $key => $value) {
 $Template = QUI::getTemplateManager();
 $content  = $Template->fetchTemplate($Site);
 
-echo $content;
+$Output  = new QUI\Output();
+$content = $Output->parse($content);
 
+$Response->headers->set("X-XSS-Protection", "0"); // <<<--- BAD
+$Response->setContent($content);
+$Response->send();
 exit;
