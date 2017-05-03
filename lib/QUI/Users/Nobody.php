@@ -503,6 +503,20 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     }
 
     /**
+     * Exists the permission in the user permissions
+     *
+     * @param string $permission
+     *
+     * @return boolean|string
+     */
+    public function hasPermission($permission)
+    {
+        $list = QUI::getPermissionManager()->getUserPermissionData($this);
+
+        return isset($list[$permission]) ? $list[$permission] : false;
+    }
+
+    /**
      * (non-PHPdoc)
      *
      * @see \QUI\Interfaces\Users\User::getPermission()
@@ -515,8 +529,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      */
     public function getPermission($right, $ruleset = false)
     {
-        // @todo "Jeder" Gruppe muss im System vorhanden sein
-        return false;
+        return QUI::getPermissionManager()->getUserPermission($this, $right, $ruleset);
     }
 
     /**

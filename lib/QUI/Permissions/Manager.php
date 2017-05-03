@@ -1195,7 +1195,7 @@ class Manager
      * Rechte vom Benutzer bekommen
      * Geht besser über User->getPermission('right')
      *
-     * @param User $User
+     * @param QUI\Interfaces\Users\User $User
      * @param string $permission
      * @param callback|string|boolean $ruleset
      *
