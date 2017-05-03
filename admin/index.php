@@ -154,7 +154,12 @@ try {
                 SUFFIX               : "<?php echo \QUI\Rewrite::getDefaultSuffix(); ?>"
             },
             inAdministration: true,
-            lu              : "<?php echo QUI::getPackageManager()->getLastUpdateDate(); ?>"
+            lu              : "<?php echo QUI::getPackageManager()->getLastUpdateDate(); ?>",
+            installPackage  : function (packageName, version, server) {
+                return new Promise(function (resolve) {
+                    resolve();
+                });
+            }
         };
 
         /* ]]> */
