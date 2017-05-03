@@ -551,6 +551,10 @@
             <de><![CDATA[Speichern]]></de>
             <en><![CDATA[Save]]></en>
         </locale>
+        <locale name="data">
+            <de><![CDATA[Daten]]></de>
+            <en><![CDATA[Data]]></en>
+        </locale>
 
         <locale name="system.forwarding.from">
             <de><![CDATA[Von]]></de>
@@ -794,8 +798,10 @@
             <en><![CDATA[Could not save the data. the config file [file] was not found.]]></en>
         </locale>
         <locale name="message.config.webserver.changed">
-            <de><![CDATA[Webserver relevante Konfigurationen wurden geändert. Bitte aktualisieren Sie ihre Nginx Vhost Konfiguration]]></de>
-            <en><![CDATA[Webserver relevant configurations have been changed. Please update your Nginx virtual host configuration. ]]></en>
+            <de>
+                <![CDATA[Webserver relevante Konfigurationen wurden geändert. Bitte aktualisieren Sie ihre Nginx Vhost Konfiguration]]></de>
+            <en>
+                <![CDATA[Webserver relevant configurations have been changed. Please update your Nginx virtual host configuration. ]]></en>
         </locale>
     </groups>
 
@@ -1196,6 +1202,10 @@
         <locale name="salutation">
             <de><![CDATA[Anrede]]></de>
             <en><![CDATA[Salutation]]></en>
+        </locale>
+        <locale name="address">
+            <de><![CDATA[Anschrift]]></de>
+            <en><![CDATA[Address]]></en>
         </locale>
         <locale name="company">
             <de><![CDATA[Firma]]></de>
