@@ -652,6 +652,10 @@ define('utils/Controls', [
          */
         getControlByElement: function(Elm)
         {
+            if (!Elm) {
+                return Promise.reject("Element not found.");
+            }
+
             var quiId = Elm.getProperty('data-quiid');
 
             if (quiId) {
