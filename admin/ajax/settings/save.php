@@ -33,8 +33,9 @@ QUI::$Ajax->registerFunction(
                 continue;
             }
 
-
-            $params = json_decode($params, true);
+            if (is_string($params)) {
+                $params = json_decode($params, true);
+            }
 
             // csp data
             if (strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') !== false
@@ -52,11 +53,12 @@ QUI::$Ajax->registerFunction(
 
             // Böser workaround by hen
             if (strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') === false) {
-                return;
+                continue;
             }
 
             # Save the current .htaccess content to see if the config changed
             $oldContent = "";
+
             if (file_exists(CMS_DIR . ".htaccess")) {
                 $oldContent = file_get_contents(CMS_DIR . ".htaccess");
             }
@@ -66,29 +68,32 @@ QUI::$Ajax->registerFunction(
 
 
             # Compare new and old .htaccess
-
             try {
-                $webserver = \QUI\Utils\System\Webserver::detectInstalledWebserver();
+                $webServer = QUI\Utils\System\Webserver::detectInstalledWebserver();
             } catch (\Exception $Exception) {
-                $webserver = "";
+                $webServer = "";
             }
 
-            if ($webserver === \QUI\Utils\System\Webserver::WEBSERVER_APACHE) {
-                return;
+            if ($webServer === QUI\Utils\System\Webserver::WEBSERVER_APACHE) {
+                continue;
             }
 
             if (empty($oldContent)) {
-                return;
+                continue;
             }
 
             if (!file_exists(CMS_DIR . ".htaccess")) {
-                return;
+                continue;
             }
 
             $newContent = file_get_contents(CMS_DIR . ".htaccess");
+
             if ($newContent != $oldContent) {
                 QUI::getMessagesHandler()->addInformation(
-                    QUI::getLocale()->get("quiqqer/quiqqer", "message.config.webserver.changed")
+                    QUI::getLocale()->get(
+                        "quiqqer/quiqqer",
+                        "message.config.webserver.changed"
+                    )
                 );
             }
         }

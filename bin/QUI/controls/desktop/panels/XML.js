@@ -413,19 +413,18 @@ define('controls/desktop/panels/XML', [
             var inList = {};
 
             // filter controls with save method
-            var saveable = QUI.Controls.getControlsInElement(this.getBody())
-                              .filter(function (Control) {
-                                  if (Control.getId() in inList) {
-                                      return false;
-                                  }
+            var saveable = QUI.Controls.getControlsInElement(this.getBody()).filter(function (Control) {
+                if (Control.getId() in inList) {
+                    return false;
+                }
 
-                                  if (typeof Control.save === 'undefined') {
-                                      return false;
-                                  }
+                if (typeof Control.save === 'undefined') {
+                    return false;
+                }
 
-                                  inList[Control.getId()] = true;
-                                  return true;
-                              });
+                inList[Control.getId()] = true;
+                return true;
+            });
 
             var promises = saveable.map(function (Control) {
                 return Control.save();

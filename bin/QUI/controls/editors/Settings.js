@@ -104,6 +104,14 @@ define('controls/editors/Settings', [
                 }
             });
 
+            this.addCategory({
+                text: 'Toolbars'
+            });
+
+            this.addCategory({
+                text: 'Plugins'
+            });
+
             var Container = new Element('div').inject(
                 this.getContent()
             );
