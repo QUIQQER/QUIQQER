@@ -356,7 +356,10 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     public function getAddress($id)
     {
         throw new QUI\Users\Exception(
-            QUI::getLocale()->get('system', 'exception.lib.user.nobody.get.address')
+            QUI::getLocale()->get(
+                'quiqqer/quiqqer',
+                'exception.lib.user.nobody.get.address'
+            )
         );
     }
 

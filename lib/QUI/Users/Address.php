@@ -56,8 +56,12 @@ class Address extends QUI\QDOM
         if (!isset($result[0])) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'system',
-                    'exception.lib.user.address.not.found'
+                    'quiqqer/quiqqer',
+                    'exception.lib.user.address.not.found',
+                    array(
+                        'addressId' => (int)$id,
+                        'userId'    => $User->getId()
+                    )
                 )
             );
         }

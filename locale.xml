@@ -798,10 +798,23 @@
             <en><![CDATA[Could not save the data. the config file [file] was not found.]]></en>
         </locale>
         <locale name="message.config.webserver.changed">
-            <de>
-                <![CDATA[Webserver relevante Konfigurationen wurden geändert. Bitte aktualisieren Sie ihre Nginx Vhost Konfiguration]]></de>
-            <en>
-                <![CDATA[Webserver relevant configurations have been changed. Please update your Nginx virtual host configuration. ]]></en>
+            <de><![CDATA[
+                Webserver relevante Konfigurationen wurden geändert.
+                Bitte aktualisieren Sie Ihre NGINX Vhost Konfiguration.
+            ]]></de>
+            <en><![CDATA[
+                Web server relevant configurations have been changed.
+                Please update your NGINX virtual host configuration.
+            ]]></en>
+        </locale>
+
+        <locale name="exception.lib.user.nobody.get.address">
+            <de><![CDATA[Der Benutzer Nobody kann keine Address besitzen.]]></de>
+            <en><![CDATA[The user Nobody can not have an address.]]></en>
+        </locale>
+        <locale name="exception.lib.user.address.not.found">
+            <de><![CDATA[Die Address [addressId] für den Benutzer [userId] konnte nicht gefunden werden.]]></de>
+            <en><![CDATA[Could not find the address [addressId] for the user [userId].]]></en>
         </locale>
     </groups>
 
