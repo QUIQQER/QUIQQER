@@ -43,3 +43,24 @@
 .qui-control-packages-search-form-settings label {
     padding-right: 20px;
 }
+
+.qui-control-packages-search {
+    height: 100%;
+    width: 100%;
+}
+
+.qui-control-packages-search-iframe {
+    border: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.quiqqer-packages-search-termsofuse {
+    background: rgba(255, 255, 255, 1.0);
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 10;
+}

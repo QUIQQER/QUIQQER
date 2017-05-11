@@ -266,6 +266,17 @@
                 </conf>
             </section>
 
+            <section name="packagestore">
+                <conf name="url">
+                    <type><![CDATA[string]]></type>
+                    <defaultvalue>https://update.quiqqer.com/</defaultvalue>
+                </conf>
+                <conf name="agreedToTermsOfUse">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
+            </section>s
+
         </config>
 
         <window menu-parent="/settings/quiqqer/" name="quiqqer">
@@ -304,6 +315,15 @@
                             <description>
                                 <locale group="quiqqer/system"
                                         var="quiqqer.settings.general.globals.mailprotection.description"/>
+                            </description>
+                        </input>
+                        <input conf="permissions.package" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.general.permissions.package"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/system"
+                                        var="quiqqer.settings.general.permissions.description"/>
                             </description>
                         </input>
                         <input conf="permissions.package" type="checkbox">
@@ -377,6 +397,22 @@
                             <description>
                                 <locale group="quiqqer/quiqqer"
                                         var="quiqqer.settings.general.webserver.forcehttps.description"/>
+                            </description>
+                        </input>
+                    </settings>
+
+                    <settings title="packagestore" name="packagestore">
+                        <title>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.packagestore.title"/>
+                        </title>
+                        <input conf="packagestore.url" type="text">
+                            <text>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.packagestore.url.title"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.packagestore.url.description"/>
                             </description>
                         </input>
                     </settings>

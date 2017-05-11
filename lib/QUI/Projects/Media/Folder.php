@@ -1172,8 +1172,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             );
         }
 
-
         $new_file = $this->getFullPath() . '/' . $filename;
+        $new_file = str_replace("//", "/", $new_file);
 
         // overwrite the file
         if (file_exists($new_file)) {
@@ -1196,7 +1196,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 $Item->deactivate();
                 $Item->delete();
 
-                if (self::FILE_OVERWRITE_DESTROY) {
+                if ($options == self::FILE_OVERWRITE_DESTROY) {
                     $Item->destroy();
                 }
             } catch (QUI\Exception $Exception) {
