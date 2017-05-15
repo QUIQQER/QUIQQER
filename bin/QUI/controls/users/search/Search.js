@@ -199,12 +199,12 @@ define('controls/users/search/Search', [
                 data.data[i].active    = (entry.active).toInt();
                 data.data[i].usergroup = entry.usergroup || '';
 
-                if (entry.active == -1) {
+                if (entry.active === -1) {
                     continue;
                 }
 
                 data.data[i].status = new QUISwitch({
-                    status: entry.active == 1,
+                    status: entry.active === 1,
                     uid   : entry.id,
                     title : entry.active ? this.active_text : this.deactive_text,
                     events: {

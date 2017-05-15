@@ -3,6 +3,7 @@
 /**
  * This file contains \QUI\Users\Manager
  */
+
 namespace QUI\Users;
 
 use QUI;
@@ -1616,7 +1617,7 @@ class Manager
             if (empty($search)) {
                 $query .= ' WHERE 1=1 ';
             } else {
-                $query .= ' WHERE (';
+                $query            .= ' WHERE (';
                 $binds[':search'] = '%' . $search . '%';
 
                 if (empty($search)) {
@@ -1650,7 +1651,7 @@ class Manager
 
 
             if ($filter_status) {
-                $query .= ' AND active = :active';
+                $query            .= ' AND active = :active';
                 $binds[':active'] = (int)$filter['filter_status'];
             }
 
@@ -1660,7 +1661,7 @@ class Manager
 
                 foreach ($groups as $groupId) {
                     if ((int)$groupId > 0) {
-                        $query .= ' AND usergroup LIKE :' . $groupId . ' ';
+                        $query                 .= ' AND usergroup LIKE :' . $groupId . ' ';
                         $binds[':' . $groupId] = '%' . (int)$groupId . '%';
                     }
                 }
@@ -1669,14 +1670,14 @@ class Manager
             if ($filter_groups_exclude) {
                 foreach ($filter['filter_groups_exclude'] as $groupId) {
                     if ((int)$groupId > 0) {
-                        $query .= ' AND usergroup NOT LIKE :' . $groupId . ' ';
+                        $query                 .= ' AND usergroup NOT LIKE :' . $groupId . ' ';
                         $binds[':' . $groupId] = '%,' . (int)$groupId . ',%';
                     }
                 }
             }
 
             if ($filter_regdate_first) {
-                $query .= ' AND regdate >= :firstreg ';
+                $query              .= ' AND regdate >= :firstreg ';
                 $binds[':firstreg'] = QUI\Utils\Convert::convertMySqlDatetime(
                     $filter['filter_regdate_first'] . ' 00:00:00'
                 );
@@ -1684,7 +1685,7 @@ class Manager
 
 
             if ($filter_regdate_last) {
-                $query .= " AND regdate <= :lastreg ";
+                $query             .= " AND regdate <= :lastreg ";
                 $binds[':lastreg'] = QUI\Utils\Convert::convertMySqlDatetime(
                     $filter['filter_regdate_last'] . ' 00:00:00'
                 );

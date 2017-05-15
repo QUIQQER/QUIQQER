@@ -30,7 +30,7 @@ define('controls/users/search/Window', [
 
         initialize: function (options) {
             this.setAttributes({
-                title: 'Benutzersuche',
+                title: 'Benutzersuche', // #locale
                 icon : 'fa fa-users'
             });
 

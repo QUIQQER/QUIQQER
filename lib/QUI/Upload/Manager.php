@@ -176,7 +176,6 @@ class Manager
                 $this->formUpload($onfinish, $params);
             } catch (QUI\Exception $Exception) {
                 $this->flushMessage($Exception->toArray());
-
                 return '';
             }
 
@@ -187,7 +186,6 @@ class Manager
             }
 
             $this->flushAction('UploadManager.isFinish("' . $uploadid . '")');
-
             return '';
         }
 
@@ -223,6 +221,11 @@ class Manager
         $fileinfo = QUIFile::getInfo($tmp_name, array(
             'filesize' => true
         ));
+
+//        @todo config max file size
+//        @todo Prüfung einbauen
+//        if ((int)$fileinfo['filesize'] > $configMaxFileSize) {
+//        }
 
         // finish? then upload to folder
         if ((int)$fileinfo['filesize'] == $filesize) {
@@ -286,8 +289,8 @@ class Manager
         if (strpos($function, 'ajax_') === 0) {
             // if the function is a ajax_function
             $_rf_file = OPT_DIR . 'quiqqer/quiqqer/admin/' .
-                str_replace('_', '/', $function) .
-                '.php';
+                        str_replace('_', '/', $function) .
+                        '.php';
 
             $_rf_file = Orthos::clearPath(realpath($_rf_file));
 
