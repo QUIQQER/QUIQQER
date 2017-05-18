@@ -21,7 +21,7 @@ define('controls/lang/InputMultiLang', [
 
     return new Class({
         Extends: QUIControl,
-        Type: 'controls/lang/InputMultiLang',
+        Type   : 'controls/lang/InputMultiLang',
 
         Binds: [
             'toggle',
@@ -33,8 +33,8 @@ define('controls/lang/InputMultiLang', [
             this.parent(options);
 
             this.$Container = null;
-            this.$Button = null;
-            this.$Input = null;
+            this.$Button    = null;
+            this.$Input     = null;
 
             this.addEvents({
                 onImport: this.$onImport,
@@ -44,9 +44,9 @@ define('controls/lang/InputMultiLang', [
 
         create: function () {
             this.$Elm = new Element('input', {
-                type: 'hidden',
+                type : 'hidden',
                 value: this.getAttribute('value'),
-                name: this.getAttribute('name')
+                name : this.getAttribute('name')
             });
 
             return this.$Elm;
@@ -57,15 +57,15 @@ define('controls/lang/InputMultiLang', [
          */
         $onImport: function () {
             var self = this,
-                Elm = this.getElm(),
+                Elm  = this.getElm(),
                 path = URL_BIN_DIR + '16x16/flags/';
 
             this.$Button = new Element('span', {
                 'class': 'field-container-item quiqqer-inputmultilang-button',
-                html: '<span class="fa fa-spinner fa-spin"></span>',
-                styles: {
+                html   : '<span class="fa fa-spinner fa-spin"></span>',
+                styles : {
                     textAlign: 'center',
-                    width: 50
+                    width    : 50
                 }
             }).inject(Elm, 'after');
 
@@ -77,14 +77,14 @@ define('controls/lang/InputMultiLang', [
                 'quiqqer-inputmultilang__minimize'
             );
 
-            this.$Input = Elm;
+            this.$Input      = Elm;
             this.$Input.type = 'hidden';
 
             QUIAjax.get('ajax_system_getAvailableLanguages', function (languages) {
 
                 var i, len, flag, lang, LangContainer, InputField;
                 var current = QUILocale.getCurrent(),
-                    data = [];
+                    data    = [];
 
                 try {
                     data = JSON.decode(Elm.value);
@@ -104,17 +104,17 @@ define('controls/lang/InputMultiLang', [
                     data = newData;
                 }
 
-                if (typeOf(data) != 'object') {
+                if (typeOf(data) !== 'object') {
                     data = {};
                 }
 
                 // current language to the top
                 languages.sort(function (a, b) {
-                    if (a == current) {
+                    if (a === current) {
                         return -1;
                     }
 
-                    if (b == current) {
+                    if (b === current) {
                         return 1;
                     }
 
@@ -131,7 +131,7 @@ define('controls/lang/InputMultiLang', [
 
                     LangContainer = new Element('div', {
                         'class': 'quiqqer-inputmultilang-entry',
-                        html: '<input type="text" name="' + lang + '" />'
+                        html   : '<input type="text" name="' + lang + '" />'
                     }).inject(self.$Container);
 
                     InputField = LangContainer.getElement('input');
@@ -160,7 +160,7 @@ define('controls/lang/InputMultiLang', [
                 }
 
                 self.$Button.set({
-                    html: '<span class="fa fa-arrow-circle-o-right"></span>',
+                    html  : '<span class="fa fa-arrow-circle-o-right"></span>',
                     styles: {
                         cursor: 'pointer'
                     }
@@ -216,7 +216,7 @@ define('controls/lang/InputMultiLang', [
 
             list.setStyles({
                 display: null,
-                height: 0
+                height : 0
             });
 
             moofx(First).animate({
@@ -225,7 +225,7 @@ define('controls/lang/InputMultiLang', [
 
             if (list.length) {
                 moofx(list).animate({
-                    height: 34,
+                    height : 34,
                     opacity: 1
                 }, {
                     duration: 200,
@@ -256,7 +256,7 @@ define('controls/lang/InputMultiLang', [
             }
 
             moofx(list).animate({
-                height: 0,
+                height : 0,
                 opacity: 0
             }, {
                 duration: 200,
