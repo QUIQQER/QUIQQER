@@ -255,7 +255,7 @@ class Htaccess extends QUI\System\Console\Tool
         if (QUI::conf("webserver", "forceHttps")) {
             $forceHttps = "# Redirect non https traffic to https. For a safer web." . PHP_EOL;
             $forceHttps .= "    RewriteCond %{HTTPS} !on" . PHP_EOL;
-            $forceHttps .= "    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]" . PHP_EOL;
+            $forceHttps .= "    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,END]" . PHP_EOL;
         }
 
 
@@ -265,13 +265,11 @@ class Htaccess extends QUI\System\Console\Tool
     SetEnv HTTP_MOD_REWRITE On
 
     RewriteEngine On
-    
+    RewriteBase {$URL_DIR}
     
     {$forceHttps}
     
-    RewriteBase {$URL_DIR}
-    
-    RewriteRule ^{$URL_SYS_ADMIN_DIR}$ {$URL_DIR}{$URL_SYS_DIR} [R=301,L]
+    RewriteRule ^{$URL_SYS_ADMIN_DIR}$ {$URL_DIR}{$URL_SYS_DIR} [R=301,END]
 
     #Block .git directories and their contents
     RewriteCond %{REQUEST_URI} ^(.*\/)?.git(\/.*)?$
@@ -349,6 +347,14 @@ class Htaccess extends QUI\System\Console\Tool
 
         $URL_SYS_ADMIN_DIR = trim($URL_SYS_DIR, '/');
 
+        # Check for QUIQQERs webserver configuration
+        $forceHttps = "";
+        if (QUI::conf("webserver", "forceHttps")) {
+            $forceHttps = "# Redirect non https traffic to https. For a safer web." . PHP_EOL;
+            $forceHttps .= "    RewriteCond %{HTTPS} !on" . PHP_EOL;
+            $forceHttps .= "    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,END]" . PHP_EOL;
+        }
+
         return "
 <IfModule mod_rewrite.c>
 
@@ -356,7 +362,9 @@ class Htaccess extends QUI\System\Console\Tool
 
     RewriteEngine On
     RewriteBase {$URL_DIR}
-
+    
+    {$forceHttps}
+    
     RewriteRule ^{$URL_SYS_ADMIN_DIR}$ {$URL_DIR}{$URL_SYS_DIR} [R=301,L]
 
     #Block .git directories and their contents
