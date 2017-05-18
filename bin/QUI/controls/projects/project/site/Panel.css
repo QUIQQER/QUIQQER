@@ -80,6 +80,11 @@ form.qui-site-data {
     width: calc(100% - 200px);
 }
 
+.qui-site-data .data-table input[type="date"],
+.qui-site-data .data-table input[type="datetime"] {
+    width: calc(100% - 50px);
+}
+
 .qui-site-data .data-table input[type="checkbox"],
 .qui-site-data .data-table input[type="radio"] {
     width: 20px;

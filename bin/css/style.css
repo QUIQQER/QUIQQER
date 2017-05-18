@@ -261,6 +261,33 @@ select:disabled {
     width: 50px;
 }
 
+.date-input {
+    width: 100%;
+}
+
+.date-input input[type="date"],
+.date-input input[type="datetime"] {
+    float: left;
+    cursor: pointer;
+    max-width: calc(100% - 31px);
+    width: 105px;
+}
+
+.date-input button {
+    width: 50px;
+}
+
+.date-input input[type="datetime"] {
+    width: 180px;
+}
+
+.field-container-field > input[type="date"],
+.field-container-field > input[type="datetime"] {
+    border: none;
+    float: left;
+    width: calc(100% - 50px);
+}
+
 /** button helper
  * ====================================================== */
 
