@@ -43,26 +43,9 @@ class Htaccess extends QUI\System\Console\Tool
         }
 
         $oldTemplate = false;
-        try {
-            $version = $this->getApacheVersion();
-
-            if (!isset($version[1])) {
-                throw new QUI\Exception("Couldnt detect Webserver version");
-            }
-
-            $this->writeLn("Apache version detected : " . $version[0] . "." . $version[1]);
-            if ($version[1] <= 2) {
-                $oldTemplate = true;
-            }
-        } catch (\Exception $Exception) {
-            $this->writeLn("Please select your Apache Version.");
-            $this->writeLn("[1] Apache 2.3 and higher.");
-            $this->writeLn("[2] Apache 2.2 and lower.");
-            $this->writeLn("Please type a number [1]");
-            $input = $this->readInput();
-            if ($input == "2") {
-                $oldTemplate = true;
-            }
+        $webserverType = QUI::conf("webserver", "type");
+        if ($webserverType == "apache2.2") {
+            $oldTemplate = true;
         }
 
         //
