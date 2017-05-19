@@ -143,7 +143,7 @@ PHPPARAM;
 
         # Define the rewrite directives
         $rewriteRules = <<<REWRITE
-            ###############################
+###############################
             #  Virtual Folder/File Check  #
             ###############################
     
