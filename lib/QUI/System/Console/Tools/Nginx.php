@@ -16,6 +16,8 @@ use QUI;
  */
 class Nginx extends QUI\System\Console\Tool
 {
+    protected $nginxConfigFile;
+
     /**
      * Konstruktor
      */
@@ -23,6 +25,8 @@ class Nginx extends QUI\System\Console\Tool
     {
         $this->setName('quiqqer:nginx')
             ->setDescription('Generate the nginx.conf File.');
+
+        $this->nginxConfigFile = ETC_DIR . "nginx.conf";
     }
 
     /**
@@ -35,22 +39,22 @@ class Nginx extends QUI\System\Console\Tool
         $this->writeLn('Generating nginx.conf ...');
 
         $nginxBackupFile = VAR_DIR . 'backup/nginx.conf_' . date('Y-m-d__H_i_s');
-        $nginxFile       = CMS_DIR . 'nginx.conf';
+
 
         //
         // generate backup
         //
-        if (file_exists($nginxFile)) {
+        if (file_exists($this->nginxConfigFile)) {
             file_put_contents(
                 $nginxBackupFile,
-                file_get_contents($nginxFile)
+                file_get_contents($this->nginxConfigFile)
             );
 
             $this->writeLn('You can find a .nginx Backup File at:');
             $this->writeLn($nginxBackupFile);
         } else {
             $this->writeLn(
-                'No .nginx File found. Could not create a backup.',
+                'No nginx.conf File found. Could not create a backup.',
                 'red'
             );
         }
@@ -60,10 +64,32 @@ class Nginx extends QUI\System\Console\Tool
 
         $nginxContent = $this->template();
 
-        file_put_contents($nginxFile, $nginxContent);
+        file_put_contents($this->nginxConfigFile, $nginxContent);
 
         $this->writeLn('');
         $this->resetColor();
+    }
+
+    /**
+     * Checks if the nginx config has been modified since the last time generating it.
+     *
+     * @return bool
+     */
+    public function hasModifications()
+    {
+
+        if (!file_exists($this->nginxConfigFile)) {
+            return true;
+        }
+
+        $oldContent = file_get_contents($this->nginxConfigFile);
+        $content    = $this->template();
+
+        if (trim($oldContent) != trim($content)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -80,7 +106,6 @@ class Nginx extends QUI\System\Console\Tool
         $domain = trim(HOST);
         $domain = str_replace("https://", "", $domain);
         $domain = str_replace("http://", "", $domain);
-
 
 
         $phpParams = <<<PHPPARAM
@@ -114,8 +139,6 @@ fastcgi_param   QUERY_STRING            \$query_string;
                 fastcgi_read_timeout 180;
                 fastcgi_pass php;
 PHPPARAM;
-
-
 
 
         # Define the rewrite directives
