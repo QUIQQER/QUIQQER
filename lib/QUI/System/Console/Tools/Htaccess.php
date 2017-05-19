@@ -136,7 +136,7 @@ class Htaccess extends QUI\System\Console\Tool
      *
      * @return bool
      */
-    public function wouldChange()
+    public function hasModifications()
     {
         $htaccessFile = CMS_DIR . '.htaccess';
         $oldTemplate  = false;
