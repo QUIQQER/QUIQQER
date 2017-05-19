@@ -55,8 +55,8 @@ class EventHandler
 
     /**
      * @param QUI\Interfaces\Users\User $User
-     * @param string                    $newPass
-     * @param string                    $oldPass
+     * @param string $newPass
+     * @param string $oldPass
      */
     public static function onUserChangePassword(QUI\Interfaces\Users\User $User, $newPass, $oldPass)
     {
@@ -64,10 +64,8 @@ class EventHandler
         $User->save(QUI::getUsers()->getSystemUser());
     }
 
-
     /**
      * Event: OnPackageUpdate
-     *
      *
      * @param Package\Package $Package
      */
@@ -77,22 +75,30 @@ class EventHandler
             return;
         }
 
-        # Check if htaccess or nginx need to be recreated
+        // Check if htaccess or nginx need to be recreated
         $webServerType = QUI::conf("webserver", "type");
 
-        if ($webServerType == "apache2.4" || $webServerType == "apache2.2") {
+        if (strpos($webServerType, 'apache') !== false) {
             $HtAccess = new QUI\System\Console\Tools\Htaccess();
+
             if ($HtAccess->hasModifications()) {
                 $HtAccess->execute();
-                QUI\System\Log::addInfo("Found changes in .htaccess. Recreating the htaccess file.");
+
+                QUI\System\Log::addInfo(
+                    "Found changes in .htaccess. Recreating the htaccess file."
+                );
             }
         }
 
         if ($webServerType == "nginx") {
             $Nginx = new QUI\System\Console\Tools\Nginx();
+
             if ($Nginx->hasModifications()) {
                 $Nginx->execute();
-                QUI\System\Log::addInfo("Found changes in nginx.conf . Recreating the nginx.conf file.");
+
+                QUI\System\Log::addInfo(
+                    "Found changes in nginx.conf . Recreating the nginx.conf file."
+                );
             }
         }
     }
