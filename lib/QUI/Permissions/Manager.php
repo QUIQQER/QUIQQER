@@ -689,6 +689,8 @@ class Manager
                     array('permissions' => json_encode($data)),
                     array('group_id' => $Obj->getId())
                 );
+
+                QUI\Cache\Manager::clear('qui/groups/group/' . $Obj->getId() . '/');
                 break;
 
             case 'media':
@@ -722,6 +724,7 @@ class Manager
         }
 
         unset($this->dataCache[$this->getDataCacheId($Obj)]);
+
 
         QUI\Cache\Manager::clear('qui/admin/menu/');
         QUI::getEvents()->fireEvent('permissionsSet', array($Obj, $permissions));
