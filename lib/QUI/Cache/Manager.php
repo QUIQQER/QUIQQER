@@ -371,7 +371,7 @@ class Manager
      *
      * @param string|boolean $key - optional, falls kein Key übergeben wird, wird komplett geleert
      */
-    public static function clear($key = false)
+    public static function clear($key = "")
     {
         self::getStash($key)->clear();
 

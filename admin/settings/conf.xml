@@ -103,6 +103,10 @@
                     <type><![CDATA[bool]]></type>
                     <defaultvalue>0</defaultvalue>
                 </conf>
+                <conf name="type">
+                    <type><![CDATA[string]]></type>
+                    <defaultvalue>apache2.4</defaultvalue>
+                </conf>
             </section>
 
             <section name="db">
@@ -275,7 +279,8 @@
                     <type><![CDATA[bool]]></type>
                     <defaultvalue>0</defaultvalue>
                 </conf>
-            </section>s
+            </section>
+            s
 
         </config>
 
@@ -399,6 +404,18 @@
                                         var="quiqqer.settings.general.webserver.forcehttps.description"/>
                             </description>
                         </input>
+                        <select conf="webserver.type">
+                            <text>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.webserver.type.title"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.webserver.type.desc"/>
+                            </description>
+                            <option value="">---</option>
+                            <option value="apache2.4">Apache 2.4</option>
+                            <option value="apache2.2">Apache 2.2</option>
+                            <option value="nginx">Nginx</option>
+                        </select>
                     </settings>
 
                     <settings title="packagestore" name="packagestore">
