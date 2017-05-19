@@ -142,7 +142,7 @@ class VhostManager
      * Add or edit a vhost entry
      *
      * @param string $vhost - host name (eq: www.something.com)
-     * @param array $data - data of the host
+     * @param array  $data  - data of the host
      *
      * @throws \QUI\Exception
      */
@@ -314,5 +314,58 @@ class VhostManager
         }
 
         return $list;
+    }
+
+    /**
+     * Gets all domains which are registered in the system(config + VHost)
+     *
+     * @param  bool $includeWWW - (optional) Should www. domains be added?
+     *
+     * @return array
+     */
+    public function getRegisteredDomains($includeWWW = false)
+    {
+        $domains = array();
+
+        // Get the host from the config
+        $host      = QUI::conf("globals", "host");
+        $host      = str_replace("http://", "", $host);
+        $host      = str_replace("https://", "", $host);
+        $host      = rtrim($host, "/");
+        $domains[] = $host;
+
+        // Get the domains from the vhosts
+        $vhosts = QUI::vhosts();
+        foreach ($vhosts as $key => $data) {
+            if (!isset($data['project']) || empty($data['project'])) {
+                continue;
+            }
+
+            $domains[] = $key;
+            # Parse vhosts per language
+            $projectName = $data['project'];
+            $Project     = QUI::getProject($projectName);
+            $langs       = $Project->getLanguages();
+            foreach ($langs as $lang) {
+                if (isset($data[$lang]) && !empty($data[$lang])) {
+                    $domains[] = $data[$lang];
+                }
+            }
+
+            # Parse httpshost
+            if (isset($data['httpshost']) && !empty($data['httpshost'])) {
+                $domains[] = $data['httpshost'];
+            }
+        }
+
+        if ($includeWWW) {
+            foreach ($domains as $domain) {
+                $domains[] = "www." . $domain;
+            }
+        }
+
+        $domains = array_unique($domains);
+
+        return $domains;
     }
 }
