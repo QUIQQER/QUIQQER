@@ -1988,6 +1988,10 @@ define('controls/grid/Grid', [
                     }
                 });
 
+                if (columnModel.className) {
+                    div.addClass(columnModel.className);
+                }
+
                 li.appendChild(div);
 
                 firstvisible = (!columnModel.hidden && firstvisible == -1) ? c : firstvisible;
