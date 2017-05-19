@@ -839,6 +839,18 @@
             <de><![CDATA[Die Address [addressId] für den Benutzer [userId] konnte nicht gefunden werden.]]></de>
             <en><![CDATA[Could not find the address [addressId] for the user [userId].]]></en>
         </locale>
+        <locale name="exception.vhost.not.found">
+            <de><![CDATA[Der VHost wurde nicht gefunden]]></de>
+            <en><![CDATA[The Vhost was not found]]></en>
+        </locale>
+        <locale name="exception.vhost.missing.data.project">
+            <de><![CDATA[Fehlende Angabe: Projekt]]></de>
+            <en><![CDATA[Missing data: Project]]></en>
+        </locale>
+        <locale name="exception.vhost.missing.data.lang">
+            <de><![CDATA[Fehlende Angabe: Sprache]]></de>
+            <en><![CDATA[Missing data: language]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="js">

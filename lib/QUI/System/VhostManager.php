@@ -153,7 +153,7 @@ class VhostManager
         if (!$Config->existValue($vhost)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.vhost.not.found'
                 )
             );
@@ -167,6 +167,25 @@ class VhostManager
 
             $result[$key] = $value;
         }
+
+        if (!isset($result["project"])) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'exception.vhost.missing.data.project'
+                )
+            );
+        }
+
+        if (!isset($result["project"])) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'exception.vhost.missing.data.lang'
+                )
+            );
+        }
+
 
         // lang hosts
         $Project      = QUI::getProject($result['project']);
@@ -212,7 +231,7 @@ class VhostManager
         if (!$Config->existValue($vhost)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.vhost.not.found'
                 )
             );
