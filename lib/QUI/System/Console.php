@@ -42,7 +42,8 @@ class Console
         'clear-sessions',
         'clear-lock',
         'cron',
-        'update'
+        'update',
+        'password-reset'
     );
 
     /**
@@ -562,6 +563,9 @@ class Console
             case 'update':
                 QUI::getPackageManager()->update();
                 break;
+            case 'password-reset':
+                $this->passwordReset();
+                break;
         }
 
         $this->writeLn('Done.', 'green');
@@ -836,5 +840,95 @@ class Console
         $this->current_bg    = false;
 
         echo "\033[0m";
+    }
+
+
+    /**
+     * Initiates a password reset
+     */
+    protected function passwordReset()
+    {
+        $this->writeLn(QUI::getLocale()->get(
+            "quiqqer/quiqqer",
+            "console.tool.passwordreset.header"
+        ));
+
+        $this->writeLn(
+            QUI::getLocale()->get(
+                "quiqqer/quiqqer",
+                "console.tool.passwordreset.warning"
+            ),
+            "yellow"
+        );
+        $this->clearMsg();
+
+        // Get user Input
+        $this->writeLn(QUI::getLocale()->get(
+            "quiqqer/quiqqer",
+            "console.tool.passwordreset.prompt.username"
+        ));
+        $username = $this->readInput();
+        try {
+            $User = QUI::getUsers()->getUserByName($username);
+        } catch (\Exception $Exception) {
+            $this->writeLn(
+                QUI::getLocale()->get(
+                    "quiqqer/quiqqer",
+                    "console.tool.passwordreset.user.not.found"
+                ),
+                "red"
+            );
+            $this->write("\n");
+            exit;
+        }
+
+        // Confirmation
+        $this->writeLn(
+            QUI::getLocale()->get(
+                "quiqqer/quiqqer",
+                "console.tool.passwordreset.prompt.confirm",
+                array(
+                    "username" => $username
+                )
+            )
+        );
+
+        $confirm = strtolower(trim($this->readInput()));
+
+        if ($confirm != "y") {
+            exit;
+        }
+
+        $this->writeLn(
+            QUI::getLocale()->get(
+                "quiqqer/quiqqer",
+                "console.tool.passwordreset.prompt.confirm2",
+                array(
+                    "username" => $username
+                )
+            ),
+            "yellow"
+        );
+
+        $confirm = strtolower(trim($this->readInput()));
+
+        if ($confirm != "y") {
+            exit;
+        }
+
+        // Change the password!
+        $password = Orthos::getPassword(rand(8, 14));
+        $User->setPassword($password, QUI::getUsers()->getSystemUser());
+
+        $this->writeLn(
+            QUI::getLocale()->get(
+                "quiqqer/quiqqer",
+                "console.tool.passwordreset.success",
+                array(
+                    "password" => $password
+                )
+            ),
+            "green"
+        );
     }
 }
