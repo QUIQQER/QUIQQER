@@ -1612,7 +1612,7 @@ define('controls/grid/Grid', [
                 browser       = false, //Browser.Engine.trident,
                 cWidth        = 0;
 
-            if (typeof browser == 'undefined') {
+            if (typeof browser === 'undefined') {
                 browser = false;
             }
 
@@ -1653,7 +1653,7 @@ define('controls/grid/Grid', [
 
             t.sumWidth = 0;
 
-            if (typeof browser == 'undefined') {
+            if (typeof browser === 'undefined') {
                 browser = false;
             }
 
@@ -1734,7 +1734,7 @@ define('controls/grid/Grid', [
             Target.removeClass('ASC');
             Target.removeClass('DESC');
 
-            colSort = (colSort == 'ASC') ? 'DESC' : 'ASC';
+            colSort = (colSort === 'ASC') ? 'DESC' : 'ASC';
 
             this.setAttribute('sortBy', colSort);
             this.setAttribute('sortOn', columnModel.dataIndex);
@@ -1752,7 +1752,7 @@ define('controls/grid/Grid', [
             var colindex    = evt.target.getAttribute('column'),
                 columnModel = this.$columnModel[colindex] || {};
 
-            if (typeof columnModel.onmouseover == 'function') {
+            if (typeof columnModel.onmouseover === 'function') {
                 columnModel.onmouseover(evt);
             }
 
@@ -1767,7 +1767,7 @@ define('controls/grid/Grid', [
             var colindex    = evt.target.getAttribute('column'),
                 columnModel = this.$columnModel[colindex] || {};
 
-            if (typeof columnModel.onmouseout == 'function') {
+            if (typeof columnModel.onmouseout === 'function') {
                 columnModel.onmouseout(evt);
             }
 
@@ -2012,7 +2012,7 @@ define('controls/grid/Grid', [
                     div.title = rowdata[columnModel.title];
                 }
 
-                if (columnModel.dataType == 'button' && columnData) {
+                if (columnModel.dataType === 'button' && columnData) {
                     var _btn  = this.$data[r][columnDataIndex];
                     _btn.data = this.$data[r];
 
@@ -2034,12 +2034,12 @@ define('controls/grid/Grid', [
                     continue;
                 }
 
-                if (columnModel.dataType == 'QUI' && columnData) {
+                if (columnModel.dataType === 'QUI' && columnData) {
                     columnData.inject(div);
                     continue;
                 }
 
-                if (columnModel.dataType == 'code' && columnData) {
+                if (columnModel.dataType === 'code' && columnData) {
                     val = rowdata[columnDataIndex];
 
                     div.set('text', val);
@@ -2047,7 +2047,7 @@ define('controls/grid/Grid', [
                     continue;
                 }
 
-                if (columnModel.dataType == "checkbox") {
+                if (columnModel.dataType === "checkbox") {
                     var input = new Element('input', {type: "checkbox"});
 
                     input.onclick = func_input_click.bind(this, {
