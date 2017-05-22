@@ -156,6 +156,27 @@ class Console
         }
 
 
+        // system tools
+        if (empty($params)) {
+            $this->writeLn("Available System-Tools (Example: 'php quiqqer.php cron'): ");
+            $systemTools = $this->systemTools;
+            ksort($systemTools);
+            foreach ($systemTools as $tool) {
+                /* @var $Tool Console\Tool */
+                $this->writeLn(" - ");
+                $this->write($tool, 'green');
+
+                $this->clearMsg();
+                for ($i = 0; $i < 20 - strlen($tool); $i++) {
+                    $this->write(" ");
+                }
+                $this->write("- ");
+                $this->write(QUI::getLocale()->get('quiqqer/quiqqer', 'console.systemtool.' . $tool));
+            }
+            $this->write("\n\n");
+        }
+
+
         try {
             $this->authenticate();
         } catch (QUI\Exception $Exception) {
@@ -324,8 +345,10 @@ class Console
 
         if (in_array($isSystemTool, $this->systemTools)) {
             $this->setArgument('#system-tool', $isSystemTool);
+
             return $this->arguments;
         }
+
 
         foreach ($args as $arg => $value) {
             $this->setArgument($arg, $value);
@@ -351,6 +374,7 @@ class Console
      * Return the CLI argument
      *
      * @param string $argument
+     *
      * @return mixed|null
      */
     public function getArgument($argument)
@@ -370,23 +394,6 @@ class Console
     public function readToolFromShell()
     {
         $this->clearMsg();
-
-        // system tools
-        $this->writeLn("Available System-Tools");
-
-        $systemTools = $this->systemTools;
-
-        ksort($systemTools);
-
-        foreach ($systemTools as $tool) {
-            /* @var $Tool Console\Tool */
-            $this->writeLn(" - ");
-            $this->write($tool, 'green');
-
-            $this->clearMsg();
-            $this->write("\t\t");
-            $this->write(QUI::getLocale()->get('quiqqer/quiqqer', 'console.systemtool.' . $tool));
-        }
 
 
         // tools
@@ -416,6 +423,7 @@ class Console
 
         if ($tool == 'exit' || !$tool) {
             $this->writeLn();
+
             return;
         }
 
@@ -486,6 +494,7 @@ class Console
 
                 if ($this->getArgument('help')) {
                     $Tool->outputHelp();
+
                     return;
                 }
 
@@ -759,9 +768,9 @@ class Console
     /**
      * Write a new line
      *
-     * @param string $msg - (optional) the printed message
+     * @param string         $msg   - (optional) the printed message
      * @param string|boolean $color - (optional) textcolor
-     * @param string|boolean $bg - (optional) background color
+     * @param string|boolean $bg    - (optional) background color
      */
     public function writeLn($msg = '', $color = false, $bg = false)
     {
@@ -771,9 +780,9 @@ class Console
     /**
      * alternative for message()
      *
-     * @param string $msg - Message to output
+     * @param string         $msg   - Message to output
      * @param string|boolean $color - (optional) textcolor
-     * @param string|boolean $bg - (optional) background color
+     * @param string|boolean $bg    - (optional) background color
      */
     public function write($msg, $color = false, $bg = false)
     {
@@ -783,9 +792,9 @@ class Console
     /**
      * Output a message
      *
-     * @param string $msg - Message to output
+     * @param string         $msg   - Message to output
      * @param string|boolean $color - (optional) textcolor
-     * @param string|boolean $bg - (optional) background color
+     * @param string|boolean $bg    - (optional) background color
      */
     public function message($msg, $color = false, $bg = false)
     {
