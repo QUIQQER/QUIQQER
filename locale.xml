@@ -851,6 +851,40 @@
             <de><![CDATA[Fehlende Angabe: Sprache]]></de>
             <en><![CDATA[Missing data: language]]></en>
         </locale>
+
+        <locale name="console.tool.passwordreset.header">
+            <de><![CDATA[Password zurücksetzen]]></de>
+            <en><![CDATA[Password reset]]></en>
+        </locale>
+
+        <locale name="console.tool.passwordreset.warning">
+            <de><![CDATA[ACHTUNG! Dieses setzt das Passwort eines Benutzers unwiderbringlich zurück!]]></de>
+            <en><![CDATA[ATTENTION! This tool will ireversibly reset the password of a user!]]></en>
+        </locale>
+
+        <locale name="console.tool.passwordreset.prompt.username">
+            <de><![CDATA[Benutzername:]]></de>
+            <en><![CDATA[Username:]]></en>
+        </locale>
+
+        <locale name="console.tool.passwordreset.prompt.confirm">
+            <de><![CDATA[Sind Sie sicher, dass Sie das passwort des benutzers '[username]' zurücksetzen möchten? (y/n)]]></de>
+            <en><![CDATA[Are you sure you want to reset the password of the user '[username]'? (y/n)]]></en>
+        </locale>
+
+        <locale name="console.tool.passwordreset.prompt.confirm2">
+            <de><![CDATA[Sind Sie wirklich sicher? Dies kann nicht rückgängig gemacht werden! (y/n)]]></de>
+            <en><![CDATA[Are you really sure? This change can not be undone! (y/n)]]></en>
+        </locale>
+        <locale name="console.tool.passwordreset.user.not.found">
+            <de><![CDATA[Der gegebene Benutzer wurde nicht gefunden]]></de>
+            <en><![CDATA[The given user was not found]]></en>
+        </locale>
+
+        <locale name="console.tool.passwordreset.success">
+            <de><![CDATA[Das passwort wurde erfolgreich geändert! Das neue Passwort ist '[password]']]></de>
+            <en><![CDATA[The password has been changed successfully. The new password is '[password]']]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="js">
