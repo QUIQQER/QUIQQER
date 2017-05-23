@@ -170,7 +170,7 @@ try {
      */
     try {
         $Template = new QUI\Template();
-        $content  = $Template->fetchTemplate($Site);
+        $content  = $Template->fetchSite($Site);
 
         Debug::marker('fetch Template');
 
@@ -215,9 +215,9 @@ try {
         $Template = new QUI\Template();
 
         try {
-            $content = $Template->fetchTemplate($Rewrite->getErrorSite());
+            $content = $Template->fetchSite($Rewrite->getErrorSite());
         } catch (QUI\Exception $Exception) {
-            $content = $Template->fetchTemplate($Project->firstChild());
+            $content = $Template->fetchSite($Project->firstChild());
         }
 
         $content = $Rewrite->outputFilter($content);
