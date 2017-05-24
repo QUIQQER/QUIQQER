@@ -437,6 +437,36 @@ class Manager extends QUI\QDOM
             );
         }
 
+        // license information
+        $licenseConfigFile = CMS_DIR . 'etc/license.ini.php';
+
+        if (file_exists($licenseConfigFile)) {
+            $LicenseConfig    = new QUI\Config($licenseConfigFile);
+            $data             = $LicenseConfig->getSection('license');
+            $licenseServerUrl = QUI::conf('license', 'url');
+
+            if (!empty($data['id'])
+                && !empty($data['licenseHash'])
+                && !empty($licenseServerUrl)
+            ) {
+                $hash = bin2hex(QUI\Security\Encryption::decrypt(hex2bin($data['licenseHash'])));
+
+                $repositories[] = array(
+                    'type'    => 'composer',
+                    'url'     => $licenseServerUrl,
+                    'options' => array(
+                        'http' => array(
+                            'header' => array(
+                                'licenseid: ' . $data['id'],
+                                'licensehash: ' . $hash,
+                                'clientdata: ' . bin2hex(json_encode($this->getLicenseClientData()))
+                            )
+                        )
+                    )
+                );
+            }
+        }
+
         if (isset($servers['npm']) && $servers['npm']['active'] == 1) {
             $composerJson->extra["asset-registry-options"]["npm"]            = true;
             $composerJson->extra["asset-registry-options"]["npm-searchable"] = true;
@@ -1592,5 +1622,18 @@ class Manager extends QUI\QDOM
         }
 
         return $result;
+    }
+
+    /**
+     * Get extra client data for composer license server header
+     *
+     * @return array
+     */
+    protected function getLicenseClientData()
+    {
+        return array(
+            'phpVersion'     => phpversion(),
+            'quiqqerVersion' => QUI::version()
+        );
     }
 }
