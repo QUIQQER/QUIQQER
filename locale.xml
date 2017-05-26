@@ -646,10 +646,21 @@
             <en><![CDATA[URL Package Store Website]]></en>
         </locale>
         <locale name="quiqqer.settings.packagestore.url.description">
-            <de>
-                <![CDATA[Diese Seite wird in einem iFrame angezeigt, wenn der Benutzer in der Systemverwaltung auf "Erweiterungen installieren" klickt.]]></de>
-            <en>
-                <![CDATA[This site is shown in an iframe, when the user clicks "Install extensions" in the System administration.]]></en>
+            <de><![CDATA[Diese Seite wird in einem iFrame angezeigt, wenn der Benutzer in der Systemverwaltung auf "Erweiterungen installieren" klickt.]]></de>
+            <en><![CDATA[This site is shown in an iframe, when the user clicks "Install extensions" in the System administration.]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.license.title">
+            <de><![CDATA[QUIQQER Lizenz]]></de>
+            <en><![CDATA[QUIQQER License]]></en>
+        </locale>
+        <locale name="quiqqer.settings.license.url.title">
+            <de><![CDATA[URL Lizenz-Server]]></de>
+            <en><![CDATA[URL License server]]></en>
+        </locale>
+        <locale name="quiqqer.settings.license.url.description">
+            <de><![CDATA[Composer-Lizenzserver für alle kostenpflichtigen Pakete]]></de>
+            <en><![CDATA[Composer license server for all non-free packages]]></en>
         </locale>
     </groups>
 
@@ -5504,6 +5515,32 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Remove user(s)]]></en>
         </locale>
 
+        <!-- LicenseKey -->
+        <locale name="controls.licensekey.template.header">
+            <de><![CDATA[QUIQQER Lizenz-Informationen]]></de>
+            <en><![CDATA[QUIQQER license information]]></en>
+        </locale>
+        <locale name="controls.licensekey.template.labelId">
+            <de><![CDATA[Lizenz-ID]]></de>
+            <en><![CDATA[License ID]]></en>
+        </locale>
+        <locale name="controls.licensekey.template.labelCreated">
+            <de><![CDATA[Erstellt am]]></de>
+            <en><![CDATA[Created at]]></en>
+        </locale>
+        <locale name="controls.licensekey.template.labelValidUntil">
+            <de><![CDATA[Gültig bis]]></de>
+            <en><![CDATA[Valid until]]></en>
+        </locale>
+        <locale name="controls.licensekey.template.labelName">
+            <de><![CDATA[Ausgestellt für]]></de>
+            <en><![CDATA[Issued for]]></en>
+        </locale>
+        <locale name="controls.licensekey.template.labelUpload">
+            <de><![CDATA[Lizenz-Datei hochladen]]></de>
+            <en><![CDATA[Upload license file]]></en>
+        </locale>
+
     </groups>
     <groups name="quiqqer/system" datatype="php">
         <locale name="menu.quiqqer.text" html="true">
@@ -5582,9 +5619,13 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Über QUIQQER]]></de>
             <en><![CDATA[About QUIQQER]]></en>
         </locale>
-        <locale name="menu.help.changelog.text">
-            <de><![CDATA[QUIQQER-Changelog]]></de>
-            <en><![CDATA[QUIQQER Changelog]]></en>
+        <locale name="menu.help.about.text">
+            <de><![CDATA[Über QUIQQER]]></de>
+            <en><![CDATA[About QUIQQER]]></en>
+        </locale>
+        <locale name="menu.licenseKey.text">
+            <de><![CDATA[QUIQQER Lizenz]]></de>
+            <en><![CDATA[QUIQQER Lizenz]]></en>
         </locale>
         <locale name="quiqqer.settings.title">
             <de><![CDATA[System]]></de>
@@ -6949,9 +6990,24 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Mail-Queue aktivieren]]></de>
             <en><![CDATA[Enable Mail Queue]]></en>
         </locale>
+
+        <!-- License key -->
+        <locale name="message.ajax.licenseKey.upload.error">
+            <de><![CDATA[Beim Einlesen der Lizenz-Datei ist ein Fehler aufgetreten. Ggf. ist die Lizenz-Datei ungültig. Bitte wenden Sie sich an einen Administrator.]]></de>
+            <en><![CDATA[An error ocurred while reading the license file. The license file may be invalid. Please contact an administrator.]]></en>
+        </locale>
+        <locale name="message.ajax.licenseKey.upload.success">
+            <de><![CDATA[Die Lizenz-Datei wurde erfolgreich eingelesen. Ihr QUIQQER-Installation hat nun Zugriff auf alle Pakete, die diese Lizenz beinhaltet.]]></de>
+            <en><![CDATA[The license file has been imported succesfully. Your QUIQQER system now has access to all packages this license contains.]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/system" datatype="php,js">
+        <locale name="quiqqer.licenseKey.unlimited">
+            <de><![CDATA[unbegrenzt]]></de>
+            <en><![CDATA[unlimited]]></en>
+        </locale>
+
         <locale name="menu.extras.packages.text">
             <de><![CDATA[Systemverwaltung]]></de>
             <en><![CDATA[System administration]]></en>

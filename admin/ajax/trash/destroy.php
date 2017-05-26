@@ -13,7 +13,7 @@ QUI::$Ajax->registerFunction(
         $ids     = json_decode($ids, true);
         $Trash   = $Project->getTrash();
 
-        $Trash->destroy($Project, $ids);
+        $Trash->destroy($ids);
     },
     array('project', 'ids'),
     'Permission::checkAdminUser'

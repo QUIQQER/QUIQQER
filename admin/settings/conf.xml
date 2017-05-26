@@ -280,7 +280,12 @@
                     <defaultvalue>0</defaultvalue>
                 </conf>
             </section>
-            s
+
+            <section name="license">
+                <conf name="url">
+                    <type><![CDATA[string]]></type>
+                </conf>
+            </section>
 
         </config>
 
@@ -430,6 +435,22 @@
                             <description>
                                 <locale group="quiqqer/quiqqer"
                                         var="quiqqer.settings.packagestore.url.description"/>
+                            </description>
+                        </input>
+                    </settings>
+
+                    <settings title="license" name="license">
+                        <title>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.license.title"/>
+                        </title>
+                        <input conf="license.url" type="text">
+                            <text>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.license.url.title"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.license.url.description"/>
                             </description>
                         </input>
                     </settings>
