@@ -11,11 +11,12 @@
 
 define('classes/projects/project/media/panel/ContextMenu', [
 
+    'qui/QUI',
     'qui/controls/contextmenu/Item',
     'qui/controls/contextmenu/Separator',
     'qui/utils/Elements'
 
-], function (QUIContextmenuItem, QUIContextmenuSeparator, QUIElementUtil) {
+], function (QUI, QUIContextmenuItem, QUIContextmenuSeparator, QUIElementUtil) {
     "use strict";
 
     /**
@@ -57,7 +58,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
             var Menu;
             var Elm = event.target;
 
-            if (Elm.nodeName == 'SPAN') {
+            if (Elm.nodeName === 'SPAN') {
                 Elm = Elm.getParent('div');
             }
 
@@ -129,7 +130,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
             var Trash;
             var sels = this.getPanel().getSelectedItems();
 
-            if (!sels.length || sels.length == 1) {
+            if (!sels.length || sels.length === 1) {
                 Trash = new QUIContextmenuItem({
                     name  : 'delete',
                     text  : 'In den Papierkorb verschieben',
@@ -249,6 +250,43 @@ define('classes/projects/project/media/panel/ContextMenu', [
         },
 
         /**
+         *
+         * @param event
+         */
+        showMediaMenu: function (event) {
+            var Panel   = this.getPanel(),
+                Content = Panel.getContent(),
+                Menu    = Panel.getContextMenu();
+
+            var pos = {
+                x: event.page.x,
+                y: event.page.y
+            };
+
+            Menu.clearChildren()
+                .setPosition(pos.x, pos.y)
+                .setTitle(Panel.getAttribute('title'));
+
+            Menu.appendChild(
+                new QUIContextmenuItem({
+                    name  : 'select-all',
+                    text  : 'Alle markieren',
+                    icon  : 'fa fa-hand-grab-o',
+                    events: {
+                        onMouseDown: function (Item, event) {
+                            Content.getElements('.qui-media-item').each(function (Item) {
+                                Item.addClass('selected');
+                                Panel.$selected.push(Item);
+                            });
+                        }
+                    }
+                })
+            );
+
+            Menu.show().focus();
+        },
+
+        /**
          * If the DragDrop was dropped to a droppable element
          *
          * @param {HTMLElement|File} Element   - the dropabble element (media item div or File)
@@ -282,7 +320,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 .setTitle(title);
 
 
-            if (Droppable.get('data-type') != 'folder') {
+            if (Droppable.get('data-type') !== 'folder') {
                 Menu.appendChild(
                     new QUIContextmenuItem({
                         name  : 'copy-files',
@@ -477,7 +515,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                                 id      = DOMNode.get('data-id'),
                                 project = DOMNode.get('data-project');
 
-                            if (type != 'folder') {
+                            if (type !== 'folder') {
                                 return;
                             }
 
@@ -507,7 +545,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
             var self = this,
                 sels = this.getPanel().getSelectedItems();
 
-            if (!sels.length || sels.length == 1) {
+            if (!sels.length || sels.length === 1) {
                 return new QUIContextmenuItem({
                     name  : 'activate',
                     text  : 'Aktivieren',
@@ -572,7 +610,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
             var self = this,
                 sels = this.getPanel().getSelectedItems();
 
-            if (!sels.length || sels.length == 1) {
+            if (!sels.length || sels.length === 1) {
                 return new QUIContextmenuItem({
                     name  : 'deactivate',
                     text  : 'Deaktivieren',

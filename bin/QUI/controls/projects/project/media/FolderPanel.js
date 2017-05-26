@@ -368,7 +368,7 @@ define('controls/projects/project/media/FolderPanel', [
                     },
                     events   : {
                         onChange: function (value) {
-                            if (value == 'default' || value === '') {
+                            if (value === 'default' || value === '') {
                                 WatermarkRow.setStyle('display', 'none');
 
                                 if (WatermarkInput) {
@@ -435,7 +435,7 @@ define('controls/projects/project/media/FolderPanel', [
                     var i, len;
 
                     for (i = 0, len = children.length; i < len; i++) {
-                        if (children[i].type == 'image') {
+                        if (children[i].type === 'image') {
                             self.$previewImageData = children[i];
                             break;
                         }

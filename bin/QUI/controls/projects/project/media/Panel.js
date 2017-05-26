@@ -80,7 +80,9 @@ define('controls/projects/project/media/Panel', [
         Binds: [
             '$onCreate',
             '$viewOnDrop',
-            '$itemEvent'
+            '$itemEvent',
+            'unselectItems',
+            '$onContextMenu'
         ],
 
         options: {
@@ -216,10 +218,8 @@ define('controls/projects/project/media/Panel', [
             var self = this,
                 Body = this.getContent();
 
-            Body.addEvent('click', function () {
-                self.unselectItems();
-            });
-
+            Body.addEvent('click', this.unselectItems);
+            Body.addEvent('contextmenu', this.$onContextMenu);
 
             // buttons
             require([
@@ -402,6 +402,22 @@ define('controls/projects/project/media/Panel', [
 
                 self.openID(1);
             });
+        },
+
+        /**
+         * event on context menu
+         *
+         * @param {Event} event
+         */
+        $onContextMenu: function (event) {
+            if (this.getAttribute('view') !== 'symbols' &&
+                this.getAttribute('view') !== 'preview') {
+                return;
+            }
+
+            event.stop();
+
+            this.$PanelContextMenu.showMediaMenu(event);
         },
 
         unload: function () {
@@ -1004,7 +1020,7 @@ define('controls/projects/project/media/Panel', [
             }
 
             // drop on a file
-            if (!Elm || Elm.get('data-type') != 'folder') {
+            if (!Elm || Elm.get('data-type') !== 'folder') {
                 this.$PanelContextMenu.showDragDropMenu(files[0], Elm, event);
                 return;
             }
@@ -1198,7 +1214,7 @@ define('controls/projects/project/media/Panel', [
 
             var Target = event.target;
 
-            if (Target.nodeName == 'SPAN') {
+            if (Target.nodeName === 'SPAN') {
                 Target = Target.getParent('div');
             }
 
@@ -1210,7 +1226,6 @@ define('controls/projects/project/media/Panel', [
                 if (!Target.hasClass('selected')) {
                     Target.addClass('selected');
                     this.$selected.push(Target);
-
                 } else {
                     Target.removeClass('selected');
                     this.$selected.erase(Target);
@@ -1242,7 +1257,6 @@ define('controls/projects/project/media/Panel', [
          * @param {DOMEvent} event
          */
         $viewSymbolDblClick: function (event) {
-
             event.stop();
 
             this.$dragStop();
@@ -1441,7 +1455,7 @@ define('controls/projects/project/media/Panel', [
                             Win.Loader.show();
 
                             self.$File.createFolder(value).then(function (Folder) {
-                                if (typeOf(Folder) == 'classes/projects/project/media/Folder') {
+                                if (typeOf(Folder) === 'classes/projects/project/media/Folder') {
                                     self.openID(Folder.getId());
                                     Win.close();
                                 }
@@ -1502,7 +1516,7 @@ define('controls/projects/project/media/Panel', [
                             var value = Win.getAttribute('newName');
 
                             self.$File.createFolder(value).then(function (Folder) {
-                                if (typeOf(Folder) == 'classes/projects/project/media/Folder') {
+                                if (typeOf(Folder) === 'classes/projects/project/media/Folder') {
                                     self.openID(Folder.getId());
                                 }
 
@@ -1598,7 +1612,7 @@ define('controls/projects/project/media/Panel', [
          * Opens the move dialog for the nodes
          *
          * @method controls/projects/project/media/Panel#deleteItem
-         * @param {Array|NodeList|HTMLElement} DOMNode - list
+         * @param {Array|NodeList|HTMLElement} Nodes - list
          */
         moveItems: function (Nodes) {
             this.$DOMEvents.move(Nodes);
@@ -1686,7 +1700,7 @@ define('controls/projects/project/media/Panel', [
             var elmtype  = '',
                 mimeType = '';
 
-            if (typeOf(Item) == 'element') {
+            if (typeOf(Item) === 'element') {
                 elmtype  = Item.get('data-type');
                 mimeType = Item.get('data-mimetype');
             } else {
@@ -1694,7 +1708,7 @@ define('controls/projects/project/media/Panel', [
                 mimeType = Item.mimetype;
             }
 
-            if (elmtype == 'folder') {
+            if (elmtype === 'folder') {
                 return true;
             }
 
@@ -2117,7 +2131,7 @@ define('controls/projects/project/media/Panel', [
 
             Node.getElement('span').set('html', Item.getAttribute('name'));
 
-            var itemId = Item.getId()
+            var itemId = Item.getId();
 
             for (var i = 0, len = this.$children.length; i < len; i++) {
                 if (this.$children[i].id != itemId) {

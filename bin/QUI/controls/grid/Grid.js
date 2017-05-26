@@ -1992,9 +1992,13 @@ define('controls/grid/Grid', [
                     div.addClass(columnModel.className);
                 }
 
+                if (rowdata.className) {
+                    div.addClass(rowdata.className);
+                }
+
                 li.appendChild(div);
 
-                firstvisible = (!columnModel.hidden && firstvisible == -1) ? c : firstvisible;
+                firstvisible = (!columnModel.hidden && firstvisible === -1) ? c : firstvisible;
 
                 if (columnModel.hidden) {
                     div.setStyle('display', 'none');
@@ -2185,7 +2189,7 @@ define('controls/grid/Grid', [
             var container   = t.container,
                 browser     = false, // Browser.Engine.trident,
                 options     = t.getAttributes(),
-                width       = options.width - (browser ? 2 : 2), //-2 radi bordera
+                width       = options.width ? options.width - (browser ? 2 : 2) : '', //-2 radi bordera
                 columnCount = this.$columnModel ? this.$columnModel.length : 0,
                 tDiv        = null;
 
@@ -2226,6 +2230,8 @@ define('controls/grid/Grid', [
                 var node, Btn;
 
                 for (i = 0, len = bt.length; i < len; i++) {
+                    bt[i].type = bt[i].type || '';
+                    
                     if (bt[i].type === 'separator') {
                         new QUISeparator().inject(tDiv);
                         continue;
