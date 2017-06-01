@@ -1,3 +1,6 @@
+/**
+ * @module controls/editors/ToolbarConfigurator
+ */
 define('controls/editors/ToolbarConfigurator', [
 
     'qui/QUI',
@@ -49,10 +52,10 @@ define('controls/editors/ToolbarConfigurator', [
             this.$Elm = new Element('div', {
                 'class': 'control-editors-configurator box',
                 html   : '<label for="">Verfügbare Buttons:</label>' +
-                         '<select class="control-editors-configurator-buttons" ' +
-                         ' size="5"></select>' +
-                         '<label for="">Toolbar</label>' +
-                         '<textarea class="control-editors-configurator-toolbar box"></textarea>'
+                '<select class="control-editors-configurator-buttons" ' +
+                ' size="5"></select>' +
+                '<label for="">Toolbar</label>' +
+                '<textarea class="control-editors-configurator-toolbar box"></textarea>'
             });
 
             this.Loader.inject(this.$Elm);
@@ -198,13 +201,20 @@ define('controls/editors/ToolbarConfigurator', [
         save: function () {
             var self = this;
 
-            self.Loader.show();
+            return new Promise(function (resolve, reject) {
+                self.Loader.show();
 
-            Ajax.post('ajax_editor_toolbar_save', function () {
-                self.Loader.hide();
-            }, {
-                toolbar: this.getAttribute('toolbar'),
-                xml    : this.$Textarea.value
+                Ajax.post('ajax_editor_toolbar_save', function () {
+                    self.Loader.hide();
+                    resolve();
+                }, {
+                    toolbar: self.getAttribute('toolbar'),
+                    xml    : self.$Textarea.value,
+                    onError: function () {
+                        self.Loader.hide();
+                        reject();
+                    }
+                });
             });
         },
 
@@ -215,9 +225,7 @@ define('controls/editors/ToolbarConfigurator', [
             this.Loader.show();
 
             if (!this.getAttribute('toolbar')) {
-
                 this.Loader.hide();
-
                 return;
             }
 

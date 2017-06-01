@@ -545,6 +545,13 @@ class Manager
             'quiqqer.editors.toolbar.save'
         );
 
+        if (empty($xml)) {
+            throw new QUI\Exception(array(
+                'quiqqer/system',
+                'exception.lib.qui.editor.manager.toolbar.empty'
+            ));
+        }
+
         $toolbar = str_replace('.xml', '', $toolbar);
 
         $folder = self::getToolbarsPath();

@@ -6606,6 +6606,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Die Toolbar existiert bereits.]]></de>
             <en><![CDATA[The toolbar already exists.]]></en>
         </locale>
+        <locale name="exception.lib.qui.editor.manager.toolbar.empty">
+            <de><![CDATA[Die Toolbar ist leer und konnte daher nicht gespeichert werden.]]></de>
+            <en><![CDATA[The toolbar is empty and could not be saved.]]></en>
+        </locale>
         <locale name="exception.lib.qui.editor.manager.toolbar.xml.error">
             <de><![CDATA[Während dem einlesen einer toolbar XML Datei trat ein Fehler auf. [error]]]></de>
             <en><![CDATA[During the parsing of a toolbar XML file, an error occurred [error]]]></en>
@@ -7133,10 +7137,16 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
                 <![CDATA[An error ocurred while reading the license file. The license file may be invalid. Please contact an administrator.]]></en>
         </locale>
         <locale name="message.ajax.licenseKey.upload.success">
-            <de>
-                <![CDATA[Die Lizenz-Datei wurde erfolgreich eingelesen. Ihr QUIQQER-Installation hat nun Zugriff auf alle Pakete, die diese Lizenz beinhaltet.]]></de>
-            <en>
-                <![CDATA[The license file has been imported succesfully. Your QUIQQER system now has access to all packages this license contains.]]></en>
+            <de><![CDATA[
+            Die Lizenz-Datei wurde erfolgreich eingelesen. Ihr QUIQQER-Installation hat nun Zugriff auf alle Pakete, die diese Lizenz beinhaltet.
+            ]]></de>
+            <en><![CDATA[
+            The license file has been imported succesfully. Your QUIQQER system now has access to all packages this license contains.
+            ]]></en>
+        </locale>
+        <locale name="message.editor.toolbar.save.success">
+            <de><![CDATA[Die Toolbar wurde erfolgreich gespeichert.]]></de>
+            <en><![CDATA[The toolbar has been successfully saved.]]></en>
         </locale>
     </groups>
 
