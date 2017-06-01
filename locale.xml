@@ -359,6 +359,10 @@
             <de><![CDATA[Deaktivieren]]></de>
             <en><![CDATA[Deactivate]]></en>
         </locale>
+        <locale name="rename">
+            <de><![CDATA[Umbenennen]]></de>
+            <en><![CDATA[Rename]]></en>
+        </locale>
 
         <locale name="isActivate">
             <de><![CDATA[Ist aktiviert]]></de>
@@ -555,6 +559,14 @@
             <de><![CDATA[Daten]]></de>
             <en><![CDATA[Data]]></en>
         </locale>
+        <locale name="recipient">
+            <de><![CDATA[Empfänger]]></de>
+            <en><![CDATA[Recipient]]></en>
+        </locale>
+        <locale name="email">
+            <de><![CDATA[E-Mail]]></de>
+            <en><![CDATA[Email]]></en>
+        </locale>
 
         <locale name="system.forwarding.from">
             <de><![CDATA[Von]]></de>
@@ -646,8 +658,10 @@
             <en><![CDATA[URL Package Store Website]]></en>
         </locale>
         <locale name="quiqqer.settings.packagestore.url.description">
-            <de><![CDATA[Diese Seite wird in einem iFrame angezeigt, wenn der Benutzer in der Systemverwaltung auf "Erweiterungen installieren" klickt.]]></de>
-            <en><![CDATA[This site is shown in an iframe, when the user clicks "Install extensions" in the System administration.]]></en>
+            <de>
+                <![CDATA[Diese Seite wird in einem iFrame angezeigt, wenn der Benutzer in der Systemverwaltung auf "Erweiterungen installieren" klickt.]]></de>
+            <en>
+                <![CDATA[This site is shown in an iframe, when the user clicks "Install extensions" in the System administration.]]></en>
         </locale>
 
         <locale name="quiqqer.settings.license.title">
@@ -879,7 +893,8 @@
         </locale>
 
         <locale name="console.tool.passwordreset.prompt.confirm">
-            <de><![CDATA[Sind Sie sicher, dass Sie das passwort des benutzers '[username]' zurücksetzen möchten? (y/n)]]></de>
+            <de>
+                <![CDATA[Sind Sie sicher, dass Sie das passwort des benutzers '[username]' zurücksetzen möchten? (y/n)]]></de>
             <en><![CDATA[Are you sure you want to reset the password of the user '[username]'? (y/n)]]></en>
         </locale>
 
@@ -1189,6 +1204,39 @@
             <en><![CDATA[I acceept these Terms Of Use]]></en>
         </locale>
 
+        <locale name="dialog.projects.media.folder.delete.title">
+            <de><![CDATA[Ordner / Datei(en) löschen]]></de>
+            <en><![CDATA[Delete folder / file (s)]]></en>
+        </locale>
+        <locale name="dialog.projects.media.folder.delete.text">
+            <de><![CDATA[Möchten Sie folgende Ordner oder Dateien wirklich löschen?]]></de>
+            <en><![CDATA[Are you sure you want to delete the following folders or files?]]></en>
+        </locale>
+        <locale name="dialog.projects.media.folder.rename.title">
+            <de><![CDATA[Ordner umbenennen]]></de>
+            <en><![CDATA[Rename folder]]></en>
+        </locale>
+        <locale name="dialog.projects.media.folder.rename.information">
+            <de><![CDATA[Bitte geben Sie einen neuen Ordnernamen ein.]]></de>
+            <en><![CDATA[Please enter a new folder name.]]></en>
+        </locale>
+        <locale name="dialog.projects.media.file.replace.title">
+            <de><![CDATA[Datei ersetzen]]></de>
+            <en><![CDATA[Replace file]]></en>
+        </locale>
+        <locale name="dialog.projects.media.file.replace.information" html="true">
+            <de><![CDATA[
+                Wählen Sie bitte eine Datei aus, oder ziehen Sie eine Datei mit welcher Sie <b>[file]</b> ersetzen möchten in dieses Fenster
+            ]]></de>
+            <en><![CDATA[
+                Please choose a file or drag a file with which you want to replace <b>[file]</b> into this window
+            ]]></en>
+        </locale>
+
+        <locale name="projects.media.context.move.element.select.message">
+            <de><![CDATA[Bitte wählen Sie einen Ordner aus]]></de>
+            <en><![CDATA[Please select a folder]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/system" datatype="js,php">
@@ -1236,6 +1284,7 @@
             <de><![CDATA[Eigenschaften]]></de>
             <en><![CDATA[Properties]]></en>
         </locale>
+
         <locale name="search">
             <de><![CDATA[Suchen]]></de>
             <en><![CDATA[Search]]></en>
@@ -2681,6 +2730,48 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Media]]></de>
             <en><![CDATA[Media]]></en>
         </locale>
+        <locale name="projects.project.panel.media.contectMenu.trash">
+            <de><![CDATA[In den Papierkorb verschieben]]></de>
+            <en><![CDATA[Move to the Trash]]></en>
+        </locale>
+        <locale name="projects.project.panel.media.contectMenu.allElements">
+            <de><![CDATA[Alle markierte Elemente]]></de>
+            <en><![CDATA[All marked elements]]></en>
+        </locale>
+        <locale name="projects.project.panel.media.contectMenu.move">
+            <de><![CDATA[In einen anderen Ordner verschieben]]></de>
+            <en><![CDATA[Move to another folder]]></en>
+        </locale>
+        <locale name="projects.project.panel.media.contectMenu.replace">
+            <de><![CDATA[Datei ersetzen ...]]></de>
+            <en><![CDATA[Replace file ...]]></en>
+        </locale>
+        <locale name="projects.project.panel.media.contectMenu.download">
+            <de><![CDATA[Datei herunterladen]]></de>
+            <en><![CDATA[Download file]]></en>
+        </locale>
+        <locale name="projects.project.panel.media.contectMenu.markAll">
+            <de><![CDATA[Alle markieren]]></de>
+            <en><![CDATA[Mark all]]></en>
+        </locale>
+        <locale name="projects.project.panel.media.contectMenu.replaceFile">
+            <de><![CDATA[Datei ersetzen mit [file]]]></de>
+            <en><![CDATA[Replace with [file]]]></en>
+        </locale>
+        <locale name="projects.project.panel.media.contectMenu.copyLocation">
+            <de><![CDATA[An diese Stelle kopieren]]></de>
+            <en><![CDATA[Copy to this location]]></en>
+        </locale>
+        <locale name="projects.project.panel.media.contectMenu.moveLocation">
+            <de><![CDATA[An diese Stelle verschieben]]></de>
+            <en><![CDATA[Move to this location]]></en>
+        </locale>
+        <locale name="projects.project.panel.media.contectMenu.uploadLocation">
+            <de><![CDATA[An diese Stelle hochladen]]></de>
+            <en><![CDATA[Upload to this location]]></en>
+        </locale>
+
+
         <locale name="usersAndGroups.input.search.placeholder">
             <de><![CDATA[Suche nach einer Gruppe oder Benutzer...]]></de>
             <en><![CDATA[Search for a group or user ...]]></en>
@@ -7012,12 +7103,16 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
 
         <!-- License key -->
         <locale name="message.ajax.licenseKey.upload.error">
-            <de><![CDATA[Beim Einlesen der Lizenz-Datei ist ein Fehler aufgetreten. Ggf. ist die Lizenz-Datei ungültig. Bitte wenden Sie sich an einen Administrator.]]></de>
-            <en><![CDATA[An error ocurred while reading the license file. The license file may be invalid. Please contact an administrator.]]></en>
+            <de>
+                <![CDATA[Beim Einlesen der Lizenz-Datei ist ein Fehler aufgetreten. Ggf. ist die Lizenz-Datei ungültig. Bitte wenden Sie sich an einen Administrator.]]></de>
+            <en>
+                <![CDATA[An error ocurred while reading the license file. The license file may be invalid. Please contact an administrator.]]></en>
         </locale>
         <locale name="message.ajax.licenseKey.upload.success">
-            <de><![CDATA[Die Lizenz-Datei wurde erfolgreich eingelesen. Ihr QUIQQER-Installation hat nun Zugriff auf alle Pakete, die diese Lizenz beinhaltet.]]></de>
-            <en><![CDATA[The license file has been imported succesfully. Your QUIQQER system now has access to all packages this license contains.]]></en>
+            <de>
+                <![CDATA[Die Lizenz-Datei wurde erfolgreich eingelesen. Ihr QUIQQER-Installation hat nun Zugriff auf alle Pakete, die diese Lizenz beinhaltet.]]></de>
+            <en>
+                <![CDATA[The license file has been imported succesfully. Your QUIQQER system now has access to all packages this license contains.]]></en>
         </locale>
     </groups>
 
