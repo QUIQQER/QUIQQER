@@ -712,7 +712,7 @@ define('controls/upload/Form', [
                         return;
                     }
 
-                    if (Elm.nodeName != 'FORM') {
+                    if (Elm.nodeName !== 'FORM') {
                         Elm = Elm.getParent('form');
                     }
 
@@ -726,7 +726,7 @@ define('controls/upload/Form', [
                         return;
                     }
 
-                    if (Elm.nodeName != 'FORM') {
+                    if (Elm.nodeName !== 'FORM') {
                         return;
                     }
 
@@ -739,7 +739,7 @@ define('controls/upload/Form', [
                         return;
                     }
 
-                    if (Elm.nodeName != 'FORM') {
+                    if (Elm.nodeName !== 'FORM') {
                         Elm = Elm.getParent('form');
                     }
 
@@ -752,7 +752,7 @@ define('controls/upload/Form', [
                         return;
                     }
 
-                    if (Elm.nodeName != 'FORM') {
+                    if (Elm.nodeName !== 'FORM') {
                         Elm = Elm.getParent('form');
                     }
 
@@ -835,10 +835,6 @@ define('controls/upload/Form', [
                         self.$files = {};
                         self.$Form  = self.createForm();
                         self.$Form.inject(self.getElm());
-
-                        //                        for (var i = 0, len = self.getAttribute( 'uploads' ); i < len; i++) {
-                        //                            self.addInput();
-                        //                        }
                     }
                 }
             }).inject(this.$Info);
