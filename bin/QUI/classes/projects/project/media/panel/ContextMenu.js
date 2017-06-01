@@ -136,7 +136,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
             if (!sels.length || sels.length === 1) {
                 Trash = new QUIContextmenuItem({
                     name  : 'delete',
-                    text  : QUILocale.get(lg, 'projects.project.panel.media.contectMenu.trash'),
+                    text  : QUILocale.get(lg, 'projects.project.panel.media.contextMenu.trash'),
                     icon  : 'fa fa-trash-o',
                     events: {
                         onMouseDown: function () {
@@ -151,7 +151,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
             } else {
                 Trash = new QUIContextmenuItem({
                     name: 'delete',
-                    text: QUILocale.get(lg, 'projects.project.panel.media.contectMenu.trash'),
+                    text: QUILocale.get(lg, 'projects.project.panel.media.contextMenu.trash'),
                     icon: 'fa fa-trash-o'
                 });
 
@@ -172,7 +172,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 ).appendChild(
                     new QUIContextmenuItem({
                         name  : 'delete',
-                        text  : QUILocale.get(lg, 'projects.project.panel.media.contectMenu.allElements'),
+                        text  : QUILocale.get(lg, 'projects.project.panel.media.contextMenu.allElements'),
                         events: {
                             onMouseDown: function () {
                                 var Panel = self.getPanel(),
@@ -187,7 +187,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
 
             var Move = new QUIContextmenuItem({
                 name  : 'move',
-                text  : QUILocale.get(lg, 'projects.project.panel.media.contectMenu.move'),
+                text  : QUILocale.get(lg, 'projects.project.panel.media.contextMenu.move'),
                 icon  : 'fa fa-cut',
                 events: {
                     onMouseDown: function () {
@@ -205,15 +205,29 @@ define('classes/projects/project/media/panel/ContextMenu', [
             });
 
 
-            Menu.appendChild(new QUIContextmenuSeparator())
-                .appendChild(Move)
-                .appendChild(Trash)
-                .appendChild(new QUIContextmenuSeparator());
+            Menu.appendChild(new QUIContextmenuSeparator());
+
+            Menu.appendChild(
+                new QUIContextmenuItem({
+                    name  : 'rename',
+                    text  : QUILocale.get('quiqqer/quiqqer', 'rename'),
+                    icon  : 'fa fa-font',
+                    events: {
+                        onMouseDown: function () {
+                            if (!DOMNode) {
+                                return;
+                            }
+
+                            self.getPanel().renameItem(DOMNode);
+                        }
+                    }
+                })
+            );
 
             Menu.appendChild(
                 new QUIContextmenuItem({
                     name  : 'replace',
-                    text  : QUILocale.get(lg, 'projects.project.panel.media.contectMenu.replace'),
+                    text  : QUILocale.get(lg, 'projects.project.panel.media.contextMenu.replace'),
                     icon  : 'fa fa-retweet',
                     events: {
                         onMouseDown: function () {
@@ -232,7 +246,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 Menu.appendChild(
                     new QUIContextmenuItem({
                         name  : 'download',
-                        text  : QUILocale.get(lg, 'projects.project.panel.media.contectMenu.download'),
+                        text  : QUILocale.get(lg, 'projects.project.panel.media.contextMenu.download'),
                         icon  : 'fa fa-download',
                         events: {
                             onMouseDown: function () {
@@ -248,6 +262,10 @@ define('classes/projects/project/media/panel/ContextMenu', [
                     })
                 );
             }
+
+            Menu.appendChild(new QUIContextmenuSeparator())
+                .appendChild(Move)
+                .appendChild(Trash);
 
             return Menu;
         },
@@ -273,7 +291,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
             Menu.appendChild(
                 new QUIContextmenuItem({
                     name  : 'select-all',
-                    text  : QUILocale.get(lg, 'projects.project.panel.media.contectMenu.markAll'),
+                    text  : QUILocale.get(lg, 'projects.project.panel.media.contextMenu.markAll'),
                     icon  : 'fa fa-hand-grab-o',
                     events: {
                         onMouseDown: function () {
@@ -327,7 +345,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 Menu.appendChild(
                     new QUIContextmenuItem({
                         name  : 'copy-files',
-                        text  : QUILocale.get(lg, 'projects.project.panel.media.contectMenu.replaceFile', {
+                        text  : QUILocale.get(lg, 'projects.project.panel.media.contextMenu.replaceFile', {
                             file: Element.name
                         }),
                         icon  : 'fa fa-retweet',
@@ -369,7 +387,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 Menu.appendChild(
                     new QUIContextmenuItem({
                         name  : 'upload-files',
-                        text  : QUILocale.get(lg, 'projects.project.panel.media.contectMenu.uploadLocation'),
+                        text  : QUILocale.get(lg, 'projects.project.panel.media.contextMenu.uploadLocation'),
                         icon  : 'fa fa-upload',
                         events: {
                             onMouseDown: function (Item, event) {
@@ -409,7 +427,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
             Menu.appendChild(
                 new QUIContextmenuItem({
                     name  : 'copy-files',
-                    text  : QUILocale.get('lg', 'projects.project.panel.media.contectMenu.copyLocation'),
+                    text  : QUILocale.get('lg', 'projects.project.panel.media.contextMenu.copyLocation'),
                     icon  : 'fa fa-copy',
                     events: {
                         onMouseDown: function (Item, event) {
@@ -422,7 +440,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
             ).appendChild(
                 new QUIContextmenuItem({
                     name  : 'cut-files',
-                    text  : QUILocale.get(lg, 'projects.project.panel.media.contectMenu.moveLocation'),
+                    text  : QUILocale.get(lg, 'projects.project.panel.media.contextMenu.moveLocation'),
                     icon  : 'fa fa-cut',
                     events: {
                         onMouseDown: function (Item, event) {
@@ -488,7 +506,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
             ).appendChild(
                 new QUIContextmenuItem({
                     name  : 'delete',
-                    text  : QUILocale.get(lg, 'projects.project.panel.media.contectMenu.trash'),
+                    text  : QUILocale.get(lg, 'projects.project.panel.media.contextMenu.trash'),
                     icon  : 'fa fa-trash-o',
                     events: {
                         onMouseDown: function () {
@@ -589,7 +607,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
             ).appendChild(
                 new QUIContextmenuItem({
                     name  : 'activate',
-                    text  : QUILocale.get(lg, 'projects.project.panel.media.contectMenu.allElements'),
+                    text  : QUILocale.get(lg, 'projects.project.panel.media.contextMenu.allElements'),
                     events: {
                         onMouseDown: function () {
                             var Panel = self.getPanel(),
@@ -654,7 +672,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
             ).appendChild(
                 new QUIContextmenuItem({
                     name  : 'deactivate',
-                    text  : QUILocale.get(lg, 'projects.project.panel.media.contectMenu.allElements'),
+                    text  : QUILocale.get(lg, 'projects.project.panel.media.contextMenu.allElements'),
                     events: {
                         onMouseDown: function () {
                             var Panel = self.getPanel(),

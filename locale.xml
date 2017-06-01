@@ -1193,13 +1193,14 @@
             <de><![CDATA[Möchten Sie folgende Ordner oder Dateien wirklich löschen?]]></de>
             <en><![CDATA[Are you sure you want to delete the following folders or files?]]></en>
         </locale>
-        <locale name="dialog.projects.media.folder.rename.title">
-            <de><![CDATA[Ordner umbenennen]]></de>
-            <en><![CDATA[Rename folder]]></en>
+
+        <locale name="dialog.projects.media.rename.title">
+            <de><![CDATA[Umbenennen]]></de>
+            <en><![CDATA[Rename]]></en>
         </locale>
-        <locale name="dialog.projects.media.folder.rename.information">
-            <de><![CDATA[Bitte geben Sie einen neuen Ordnernamen ein.]]></de>
-            <en><![CDATA[Please enter a new folder name.]]></en>
+        <locale name="dialog.projects.media.rename.information">
+            <de><![CDATA[Bitte geben Sie einen neuen Namen für den Ordner oder Datei ein.]]></de>
+            <en><![CDATA[Please enter a new name for the folder or file.]]></en>
         </locale>
         <locale name="dialog.projects.media.file.replace.title">
             <de><![CDATA[Datei ersetzen]]></de>
@@ -2711,43 +2712,43 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Media]]></de>
             <en><![CDATA[Media]]></en>
         </locale>
-        <locale name="projects.project.panel.media.contectMenu.trash">
+        <locale name="projects.project.panel.media.contextMenu.trash">
             <de><![CDATA[In den Papierkorb verschieben]]></de>
             <en><![CDATA[Move to the Trash]]></en>
         </locale>
-        <locale name="projects.project.panel.media.contectMenu.allElements">
+        <locale name="projects.project.panel.media.contextMenu.allElements">
             <de><![CDATA[Alle markierte Elemente]]></de>
             <en><![CDATA[All marked elements]]></en>
         </locale>
-        <locale name="projects.project.panel.media.contectMenu.move">
+        <locale name="projects.project.panel.media.contextMenu.move">
             <de><![CDATA[In einen anderen Ordner verschieben]]></de>
             <en><![CDATA[Move to another folder]]></en>
         </locale>
-        <locale name="projects.project.panel.media.contectMenu.replace">
+        <locale name="projects.project.panel.media.contextMenu.replace">
             <de><![CDATA[Datei ersetzen ...]]></de>
             <en><![CDATA[Replace file ...]]></en>
         </locale>
-        <locale name="projects.project.panel.media.contectMenu.download">
+        <locale name="projects.project.panel.media.contextMenu.download">
             <de><![CDATA[Datei herunterladen]]></de>
             <en><![CDATA[Download file]]></en>
         </locale>
-        <locale name="projects.project.panel.media.contectMenu.markAll">
+        <locale name="projects.project.panel.media.contextMenu.markAll">
             <de><![CDATA[Alle markieren]]></de>
             <en><![CDATA[Mark all]]></en>
         </locale>
-        <locale name="projects.project.panel.media.contectMenu.replaceFile">
+        <locale name="projects.project.panel.media.contextMenu.replaceFile">
             <de><![CDATA[Datei ersetzen mit [file]]]></de>
             <en><![CDATA[Replace with [file]]]></en>
         </locale>
-        <locale name="projects.project.panel.media.contectMenu.copyLocation">
+        <locale name="projects.project.panel.media.contextMenu.copyLocation">
             <de><![CDATA[An diese Stelle kopieren]]></de>
             <en><![CDATA[Copy to this location]]></en>
         </locale>
-        <locale name="projects.project.panel.media.contectMenu.moveLocation">
+        <locale name="projects.project.panel.media.contextMenu.moveLocation">
             <de><![CDATA[An diese Stelle verschieben]]></de>
             <en><![CDATA[Move to this location]]></en>
         </locale>
-        <locale name="projects.project.panel.media.contectMenu.uploadLocation">
+        <locale name="projects.project.panel.media.contextMenu.uploadLocation">
             <de><![CDATA[An diese Stelle hochladen]]></de>
             <en><![CDATA[Upload to this location]]></en>
         </locale>

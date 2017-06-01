@@ -180,8 +180,8 @@ define('classes/projects/project/media/panel/DOMEvents', [
 
             new QUIPrompt({
                 name       : 'rename_item',
-                title      : QUILocale.get(lg, 'dialog.projects.media.folder.rename.title'),
-                information: QUILocale.get(lg, 'dialog.projects.media.folder.rename.information', {
+                title      : QUILocale.get(lg, 'dialog.projects.media.rename.title'),
+                information: QUILocale.get(lg, 'dialog.projects.media.rename.information', {
                     file: DOMNode.name
                 }),
                 icon       : 'fa fa-font',
@@ -195,11 +195,9 @@ define('classes/projects/project/media/panel/DOMEvents', [
                 },
 
                 events: {
-                    onCreate: function (Win) {
-                        Win.Loader.show();
-                    },
-
                     onOpen: function (Win) {
+                        Win.Loader.show();
+
                         var itemid = DOMNode.get('data-id');
 
                         Win.getContent().getElement('.qui-windows-prompt-input').setStyles({
@@ -208,6 +206,10 @@ define('classes/projects/project/media/panel/DOMEvents', [
                             textAlign: 'center',
                             width    : '100%'
                         });
+
+                        Win.getContent().getElements('.qui-windows-prompt-icon').destroy();
+                        Win.getContent().getElements('.qui-windows-prompt-text').destroy();
+
 
                         self.getMedia().get(itemid, function (Item) {
                             Win.setValue(Item.getAttribute('name'));
