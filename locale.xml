@@ -914,6 +914,25 @@
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="js">
+
+        <!-- Control: controls/packages/Panel -->
+        <locale name="controls.packages.search.template.togglePackageStore">
+            <de><![CDATA[QUIQQER Store]]></de>
+            <en><![CDATA[QUIQQER Store]]></en>
+        </locale>
+        <locale name="controls.packages.search.template.toggleOtherSources">
+            <de><![CDATA[Andere Paket-Server]]></de>
+            <en><![CDATA[Other package servers]]></en>
+        </locale>
+        <locale name="controls.packages.search.othersources.template.labelSearch">
+            <de><![CDATA[Andere Paket-Server durchsuchen]]></de>
+            <en><![CDATA[Search other package servers]]></en>
+        </locale>
+        <locale name="controls.packages.search.othersources.template.placeholderSearch">
+            <de><![CDATA[Suche...]]></de>
+            <en><![CDATA[Search...]]></en>
+        </locale>
+
         <locale name="folderviewer.create.folder" html="true">
             <de><![CDATA[
                 <p>Es wurde kein Ordner zugewiesen.</p>
