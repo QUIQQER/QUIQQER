@@ -262,6 +262,8 @@ class Manager
             if (isset($result['result'])) {
                 return $result['result'];
             }
+
+            return true;
         }
 
         return '';
