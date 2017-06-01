@@ -24,10 +24,12 @@ define('controls/packages/Search', [
 
     'text!controls/packages/Search.html',
     'text!controls/packages/Search.TermsOfUse.html',
+    'text!controls/packages/Search.OtherSources.html',
     'css!controls/packages/Search.css'
 
-], function (QUI, QUIControl, QUIButton, QUILoader, Packages, Mustache, PackageList,
-             QUILocale, QUIAjax, template, templateTermsOfUse) {
+], function (QUI, QUIControl, QUIButton, QUILoader, Packages,
+             Mustache, PackageList, QUILocale, QUIAjax, template,
+             templateTermsOfUse, templateOtherSources) {
     "use strict";
 
     var lg = 'quiqqer/quiqqer';
@@ -39,17 +41,25 @@ define('controls/packages/Search', [
 
         Binds: [
             '$onInject',
-            '$onClickInstall'
+            '$onClickInstall',
+            '$loadPackageStore',
+            '$loadOtherSourcesSearch',
+            '$onResize'
         ],
 
         initialize: function (options) {
             this.parent(options);
 
-            this.$List       = null;
-            this.$Results    = null;
-            this.$Input      = null;
-            this.$TermsOfUse = null;
-            this.Loader      = new QUILoader();
+            this.$OtherSourcesResultList = null;
+            this.$Results                = null;
+            this.$Input                  = null;
+            this.$TermsOfUse             = null;
+            this.Loader                  = new QUILoader();
+            this.$Content                = null;
+            this.$storeUrl               = null;
+            this.$PackageStoreBtn        = null;
+            this.$OtherSourcesBtn        = null;
+            this.$Panel                  = null;
 
             this.addEvents({
                 onInject: this.$onInject
@@ -77,7 +87,7 @@ define('controls/packages/Search', [
          * @returns {*} PackageList
          */
         getList: function () {
-            return this.$List;
+            return this.$OtherSourcesResultList;
         },
 
         /**
@@ -88,25 +98,111 @@ define('controls/packages/Search', [
 
             this.Loader.show();
 
+            // get parent panel
+            var Panel = this.$Elm.getParent('div.qui-panel');
+
             Promise.all([
                 this.$checkTermsOfUse(),
                 this.$getStoreUrl()
             ]).then(function (result) {
-                var agreed   = result[0];
-                var storeUrl = result[1];
+                var agreed     = result[0];
+                self.$storeUrl = result[1];
+
+                var lgPrefix = 'controls.packages.search.template.';
 
                 self.$Elm.set('html', Mustache.render(template, {
-                    storeUrl: storeUrl
+                    togglePackageStore: QUILocale.get(lg, lgPrefix + 'togglePackageStore'),
+                    toggleOtherSources: QUILocale.get(lg, lgPrefix + 'toggleOtherSources')
                 }));
+
+                self.$Content = self.$Elm.getElement(
+                    '.qui-controls-packages-search-content'
+                );
+
+                self.$PackageStoreBtn = self.$Elm.getElement(
+                    '.qui-controls-packages-search-toggle-packagestore'
+                );
+
+                self.$OtherSourcesBtn = self.$Elm.getElement(
+                    '.qui-controls-packages-search-toggle-othersources'
+                );
+
+                self.$PackageStoreBtn.addEvent('click', self.$loadPackageStore);
+                self.$OtherSourcesBtn.addEvent('click', self.$loadOtherSourcesSearch);
 
                 self.Loader.hide();
 
                 if (!agreed) {
                     self.$showTermsOfUse();
+                    return;
                 }
+
+                self.$loadPackageStore();
             });
 
             this.fireEvent('load');
+        },
+
+        /**
+         * Show the package store
+         */
+        $loadPackageStore: function () {
+            this.$Content.set('html', '');
+
+            this.$PackageStoreBtn.addClass('qui-controls-packages-search-toggle-active');
+            this.$OtherSourcesBtn.removeClass('qui-controls-packages-search-toggle-active');
+
+            new Element('iframe', {
+                'class': 'qui-control-packages-search-iframe',
+                src    : this.$storeUrl
+            }).inject(this.$Content);
+        },
+
+        /**
+         * Show othersources search
+         */
+        $loadOtherSourcesSearch: function () {
+            var self     = this;
+            var lgPrefix = 'controls.packages.search.othersources.template.';
+
+            this.$Content.set('html', Mustache.render(templateOtherSources, {
+                labelSearch      : QUILocale.get(lg, lgPrefix + 'labelSearch'),
+                placeholderSearch: QUILocale.get(lg, lgPrefix + 'placeholderSearch')
+            }));
+
+            this.$PackageStoreBtn.removeClass('qui-controls-packages-search-toggle-active');
+            this.$OtherSourcesBtn.addClass('qui-controls-packages-search-toggle-active');
+
+            var SearchInput = this.$Content.getElement('input');
+
+            SearchInput.addEvent('keydown', function (event) {
+                if (typeof event !== 'undefined' &&
+                    event.code === 13) {
+                    event.target.blur();
+                    self.search(event.target.value).then(function () {
+                        event.target.focus();
+                    });
+                }
+            });
+
+            SearchInput.focus();
+
+            this.$OtherSourcesResultList = new PackageList({
+                buttons: [{
+                    icon  : 'fa fa-download',
+                    title : 'Paket herunterladen und installieren',
+                    styles: {
+                        width: '100%'
+                    },
+                    events: {
+                        onClick: this.$onClickInstall
+                    }
+                }]
+            }).inject(
+                this.$Content.getElement(
+                    '.qui-controls-packages-search-othersources-content'
+                )
+            );
         },
 
         /**
@@ -179,31 +275,32 @@ define('controls/packages/Search', [
         /**
          * Return the list
          *
-         * @returns {Object} PackageList
+         * @param {String} term
+         * @returns {Promise}
          */
-        search: function () {
+        search: function (term) {
             this.fireEvent('searchBegin', [this]);
 
-            Packages.search(this.$Input.value).then(function (result) {
-                this.$List.clear();
+            return Packages.search(term).then(function (result) {
+                this.$OtherSourcesResultList.clear();
 
                 for (var name in result) {
                     if (!result.hasOwnProperty(name)) {
                         continue;
                     }
 
-                    this.$List.addPackage({
+                    this.$OtherSourcesResultList.addPackage({
                         name       : name,
                         title      : name,
                         description: result[name]
                     });
                 }
 
-                this.$List.refresh();
+                this.$OtherSourcesResultList.refresh();
 
                 this.fireEvent('searchEnd', [this]);
             }.bind(this)).catch(function () {
-                this.$List.clear();
+                this.$OtherSourcesResultList.clear();
                 this.fireEvent('searchEnd', [this]);
             }.bind(this));
         },
