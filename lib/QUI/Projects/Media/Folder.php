@@ -430,6 +430,65 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
+     * Creates a zip in the temp and return the path to it
+     *
+     * @return string
+     * @throws QUI\Exception
+     */
+    public function createZIP()
+    {
+        $path = $this->getFullPath();
+
+        $tempFolder = QUI::getTemp()->createFolder();
+        $newZipFile = $tempFolder . $this->getAttribute('name') . '.zip';
+
+        if (!class_exists('\ZipArchive')) {
+            throw new QUI\Exception(array(
+                'quiqqer/quiqqer',
+                'exception.zip.extension.not.installed'
+            ));
+        }
+
+        $files = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($path),
+            \RecursiveIteratorIterator::LEAVES_ONLY
+        );
+
+        $countFiles = 0;
+
+        foreach ($files as $name => $File) {
+            if (!$File->isDir()) {
+                $countFiles++;
+            }
+        }
+
+        if (!$countFiles) {
+            throw new QUI\Exception(array(
+                'quiqqer/quiqqer',
+                'exception.zip.folder.is.empty'
+            ));
+        }
+
+        $Zip = new \ZipArchive();
+        $Zip->open($newZipFile, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+
+        foreach ($files as $name => $File) {
+            if ($File->isDir()) {
+                continue;
+            }
+
+            $filePath     = $File->getRealPath();
+            $relativePath = substr($filePath, strlen($path));
+
+            $Zip->addFile($filePath, $relativePath);
+        }
+
+        $Zip->close();
+
+        return $newZipFile;
+    }
+
+    /**
      * Return the first child
      *
      * @return QUI\Projects\Media\File
@@ -439,9 +498,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     public function firstChild()
     {
         $result = $this->getChildren(
-            array(
-                'limit' => 1
-            )
+            array('limit' => 1)
         );
 
         if (isset($result[0])) {

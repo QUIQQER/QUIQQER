@@ -911,6 +911,25 @@
             <de><![CDATA[Das passwort wurde erfolgreich geändert! Das neue Passwort ist '[password]']]></de>
             <en><![CDATA[The password has been changed successfully. The new password is '[password]']]></en>
         </locale>
+
+        <locale name="exception.zip.extension.not.installed">
+            <de><![CDATA[
+            Die Aktion kann nicht durchgeführt werden.
+            Die ZIP Erweiterung von PHP ist auf dem System nicht vorhanden.
+            ]]></de>
+            <en><![CDATA[
+            The action can not be performed.
+            The ZIP extension of PHP is not installed on the system.
+            ]]></en>
+        </locale>
+        <locale name="exception.zip.folder.is.empty">
+            <de><![CDATA[
+            Eine ZIP Datei kann nicht erstellt werden da der Ordner leer ist.
+            ]]></de>
+            <en><![CDATA[
+            A ZIP file can not be created because the folder is empty
+            ]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="js">
@@ -2750,6 +2769,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="projects.project.panel.media.contextMenu.download">
             <de><![CDATA[Datei herunterladen]]></de>
             <en><![CDATA[Download file]]></en>
+        </locale>
+        <locale name="projects.project.panel.media.contextMenu.folder.download">
+            <de><![CDATA[Ordner herunterladen]]></de>
+            <en><![CDATA[Download folder]]></en>
         </locale>
         <locale name="projects.project.panel.media.contextMenu.markAll">
             <de><![CDATA[Alle markieren]]></de>

@@ -505,6 +505,21 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 })
             ).appendChild(
                 new QUIContextmenuItem({
+                    name  : 'download',
+                    text  : QUILocale.get(lg, 'projects.project.panel.media.contextMenu.folder.download'),
+                    icon  : 'fa fa-download',
+                    events: {
+                        onMouseDown: function () {
+                            if (!DOMNode) {
+                                return;
+                            }
+
+                            self.getPanel().downloadFile(DOMNode.get('data-id'));
+                        }
+                    }
+                })
+            ).appendChild(
+                new QUIContextmenuItem({
                     name  : 'delete',
                     text  : QUILocale.get(lg, 'projects.project.panel.media.contextMenu.trash'),
                     icon  : 'fa fa-trash-o',

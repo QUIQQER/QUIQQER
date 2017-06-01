@@ -119,6 +119,38 @@ define('classes/projects/project/media/Folder', [
         },
 
         /**
+         * Download the folder
+         *
+         * @method classes/projects/project/media/Folder#download
+         */
+        download: function () {
+            var url = Ajax.$url + '?' + Ajax.parseParams('ajax_media_folder_download', {
+                    project : this.getMedia().getProject().getName(),
+                    folderId: this.getId()
+                });
+
+            // create a iframe
+            if (!document.id('download-frame')) {
+                new Element('iframe#download-frame', {
+                    styles: {
+                        position: 'absolute',
+                        width   : 100,
+                        height  : 100,
+                        left    : -400,
+                        top     : -400
+                    },
+                    events: {
+                        load: function () {
+                            this.destroy();
+                        }
+                    }
+                }).inject(document.body);
+            }
+
+            document.id('download-frame').set('src', url);
+        },
+
+        /**
          * Folder replace
          * you cannot replace a folder at the moment
          *
