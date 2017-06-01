@@ -1149,6 +1149,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         $fileinfo = FileUtils::getInfo($file);
         $filename = MediaUtils::stripMediaName($fileinfo['basename']);
+        $filename = mb_strtolower($filename);
 
         // svg fix
         if ($fileinfo['mime_type'] == 'text/html') {
@@ -1167,9 +1168,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         // if no ending, we search for one
         if (!isset($fileinfo['extension']) || empty($fileinfo['extension'])) {
-            $filename .= FileUtils::getEndingByMimeType(
-                $fileinfo['mime_type']
-            );
+            $filename .= FileUtils::getEndingByMimeType($fileinfo['mime_type']);
         }
 
         $new_file = $this->getFullPath() . '/' . $filename;
@@ -1243,7 +1242,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             $imageHeight = $new_file_info['height'];
         }
 
-
         QUI::getDataBase()->insert($table, array(
             'name'         => $new_file_info['filename'],
             'title'        => $title,
@@ -1257,9 +1255,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             'mime_type'    => $new_file_info['mime_type'],
             'image_width'  => $imageWidth,
             'image_height' => $imageHeight,
-            'type'         => MediaUtils::getMediaTypeByMimeType(
-                $new_file_info['mime_type']
-            )
+            'type'         => MediaUtils::getMediaTypeByMimeType($new_file_info['mime_type'])
         ));
 
         $id = QUI::getDataBase()->getPDO()->lastInsertId();
