@@ -158,7 +158,7 @@ try {
 
             installPackage: function (packageName, version, server) {
                 return new Promise(function (resolve, reject) {
-                    require(['classes/packages/Manager'], function (Packages) {
+                    require(['Packages'], function (Packages) {
                         Packages.installPackage(packageName, version, server).then(resolve, reject);
                     });
                 });
@@ -166,7 +166,7 @@ try {
 
             updatePackage: function (packageName, version) {
                 return new Promise(function (resolve, reject) {
-                    require(['classes/packages/Manager'], function (Packages) {
+                    require(['Packages'], function (Packages) {
                         Packages.update(packageName, version).then(resolve, reject);
                     });
                 });
@@ -174,7 +174,7 @@ try {
 
             getPackage: function (packageName) {
                 return new Promise(function (resolve, reject) {
-                    require(['classes/packages/Manager'], function (Packages) {
+                    require(['Packages'], function (Packages) {
                         Packages.getPackage(packageName).then(resolve, reject);
                     });
                 });
