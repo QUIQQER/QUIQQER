@@ -181,17 +181,6 @@ class Htaccess extends QUI\System\Console\Tool
             $htaccessContent .= $this->template();
         }
 
-        echo "================" . PHP_EOL;
-        echo $oldHtaccessContent . PHP_EOL;
-        echo "================" . PHP_EOL;
-        echo PHP_EOL;
-        echo PHP_EOL;
-        echo PHP_EOL;
-        echo PHP_EOL;
-        echo "================" . PHP_EOL;
-        echo $htaccessContent . PHP_EOL;
-        echo "================" . PHP_EOL;
-
         if (trim($oldHtaccessContent) == trim($htaccessContent)) {
             return false;
         }
