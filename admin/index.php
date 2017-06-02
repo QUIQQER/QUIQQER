@@ -163,7 +163,16 @@ try {
                     });
                 });
             },
-            getPackage    : function (packageName) {
+
+            updatePackage: function (packageName, version) {
+                return new Promise(function (resolve, reject) {
+                    require(['classes/packages/Manager'], function (Packages) {
+                        Packages.update(packageName, version).then(resolve, reject);
+                    });
+                });
+            },
+
+            getPackage: function (packageName) {
                 return new Promise(function (resolve, reject) {
                     require(['classes/packages/Manager'], function (Packages) {
                         Packages.getPackage(packageName).then(resolve, reject);
