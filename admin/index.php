@@ -155,9 +155,19 @@ try {
             },
             inAdministration: true,
             lu              : "<?php echo QUI::getPackageManager()->getLastUpdateDate(); ?>",
-            installPackage  : function (packageName, version, server) {
-                return new Promise(function (resolve) {
-                    resolve();
+
+            installPackage: function (packageName, version, server) {
+                return new Promise(function (resolve, reject) {
+                    require(['classes/packages/Manager'], function (Packages) {
+                        Packages.installPackage(packageName, version, server).then(resolve, reject);
+                    });
+                });
+            },
+            getPackage    : function (packageName) {
+                return new Promise(function (resolve, reject) {
+                    require(['classes/packages/Manager'], function (Packages) {
+                        Packages.getPackage(packageName).then(resolve, reject);
+                    });
                 });
             }
         };
