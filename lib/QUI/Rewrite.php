@@ -475,9 +475,13 @@ class Rewrite
 
         $this->first_child = $this->getProject()->firstChild();
 
-        if (!$this->site) {
-            $this->site = $this->first_child;
+        if ($this->site) {
+            $this->setIntoPath($this->first_child);
+            $this->setIntoPath($this->site);
+            return;
         }
+
+        $this->site = $this->first_child;
 
         if (!empty($_REQUEST['_url'])) {
             // URL Parameter filtern
@@ -569,7 +573,7 @@ class Rewrite
 
         // Prüfen ob die aufgerufene URL gleich der von der Seite ist
         // Wenn nicht 301 auf die richtige
-        $url = $this->getUrlFromSite(array(
+        $url = $this->Output->getSiteUrl(array(
             'site' => $this->site
         ));
 
