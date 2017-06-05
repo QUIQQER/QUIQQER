@@ -249,7 +249,10 @@ define('controls/users/User', [
                     }
                 });
             }, {
-                uid: this.getUser().getId()
+                uid    : this.getUser().getId(),
+                onError: function () {
+                    self.destroy();
+                }
             });
         },
 
@@ -535,7 +538,7 @@ define('controls/users/User', [
                                     html : toolbars[i].replace('.xml', '')
                                 }).inject(Toolbar);
                             }
-                            
+
                             Toolbar.value = User.getAttribute('toolbar');
                         });
                     };

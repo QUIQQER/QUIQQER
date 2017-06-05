@@ -31,6 +31,7 @@ define('controls/users/Panel', [
     'utils/Template',
     'utils/Controls',
     'Locale',
+    'Permissions',
 
     'css!controls/users/Panel.css'
 
@@ -50,7 +51,8 @@ define('controls/users/Panel', [
         QUISwitch    = arguments[8],
         Template     = arguments[9],
         ControlUtils = arguments[10],
-        QUILocale    = arguments[11];
+        QUILocale    = arguments[11],
+        Permissions  = arguments[12];
 
     /**
      * @class controls/users/Panel
@@ -496,8 +498,27 @@ define('controls/users/Panel', [
                 events: {
                     onOpen: function (Win) {
                         Win.getContent()
-                            .getElement('.qui-windows-prompt-information')
-                            .setStyle('paddingBottom', 20);
+                           .getElement('.qui-windows-prompt-information')
+                           .setStyle('paddingBottom', 20);
+
+                        Win.Loader.show();
+
+
+                        Permissions.hasPermission(
+                            'quiqqer.admin.users.create'
+                        ).then(function (hasPermission) {
+                            if (!hasPermission) {
+                                QUI.getMessageHandler().then(function (MH) {
+                                    MH.addError(
+                                        QUILocale.get('quiqqer/system', 'exception.no.permission')
+                                    );
+                                });
+
+                                Win.close();
+                            }
+
+                            Win.Loader.hide();
+                        });
                     },
 
                     // own event, line 488
