@@ -16,5 +16,5 @@ QUI::$Ajax->registerFunction(
         return $children;
     },
     array('gid'),
-    'Permission::checkSU'
+    'Permission::checkAdminUser'
 );

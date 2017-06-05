@@ -150,7 +150,7 @@
             <de><![CDATA[Darf Gruppen editieren.]]></de>
             <en><![CDATA[Is allowed to edit groups.]]></en>
         </locale>
-        <locale name="permission.quiqqer.admin.groups.edit">
+        <locale name="permission.quiqqer.admin.groups.create">
             <de><![CDATA[Darf Gruppen anlegen.]]></de>
             <en><![CDATA[Is allowed to create groups.]]></en>
         </locale>
@@ -6431,10 +6431,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             For that reason, your session has ended. Please log in again.
             ]]></en>
         </locale>
-        <locale name="exception.no.permission">
-            <de><![CDATA[Sie haben nicht die nötigen Rechte um diese Aktion durchzuführen]]></de>
-            <en><![CDATA[You have not the necessary rights to perform this action.]]></en>
-        </locale>
         <locale name="exception.permissions.exists">
             <de><![CDATA[Das Zugriffsrecht existiert bereits]]></de>
             <en><![CDATA[The Permission still exists.]]></en>
@@ -7328,9 +7324,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             If no package rights are used, some functions in the system are more powerful.
             ]]></en>
         </locale>
-
-    </groups>
-    <groups name="quiqqer/system" datatype="js,php">
+        <locale name="exception.no.permission">
+            <de><![CDATA[Sie haben nicht die nötigen Rechte um diese Aktion durchzuführen]]></de>
+            <en><![CDATA[You have not the necessary rights to perform this action.]]></en>
+        </locale>
         <locale name="projects.project.site.select.btn.addTypes">
             <de><![CDATA[Seitentyp hinzufügen ]]></de>
             <en><![CDATA[Add a site type]]></en>

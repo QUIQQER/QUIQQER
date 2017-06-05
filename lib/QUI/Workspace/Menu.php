@@ -65,14 +65,44 @@ class Menu
                 $Menu->getElementByName('apps')->clear();
             }
 
-            if ($Menu->getElementByName('extras')) {
-                $Menu->getElementByName('extras')->clear();
-            }
-
             if ($Menu->getElementByName('settings')) {
                 $Menu->getElementByName('settings')->clear();
             }
         }
+
+        if ($Menu->getElementByName('extras')) {
+            // Benutzerverwaltung
+            $canSeeGroups      = Permission::hasPermission('quiqqer.admin.groups.view');
+            $canSeeUsers       = Permission::hasPermission('quiqqer.admin.users.view');
+            $canSeePermissions = false;
+
+            if ($User->isSU()) {
+                $canSeeGroups      = true;
+                $canSeeUsers       = true;
+                $canSeePermissions = true;
+            }
+
+            $Extras = $Menu->getElementByName('extras');
+            $Rights = $Extras->getElementByName('rights');
+
+            if (!$canSeeGroups && $Rights) {
+                $Rights->removeChild('groups');
+            }
+
+            if (!$canSeeUsers && $Rights) {
+                $Rights->removeChild('users');
+            }
+
+            if (!$canSeePermissions && $Rights) {
+                $Rights->removeChild('permissions');
+            }
+
+            // Projektverwaltung
+            if (!$User->isSU()) {
+                $Extras->removeChild('projects');
+            }
+        }
+
 
         // projects settings
         $projects = QUI\Projects\Manager::getProjects();

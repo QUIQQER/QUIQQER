@@ -13,11 +13,13 @@
 
 define('controls/groups/sitemap/Window', [
 
+    'qui/QUI',
     'qui/controls/windows/Confirm',
     'controls/groups/Sitemap',
-    'Locale'
+    'Locale',
+    'Permissions'
 
-], function (QUIConfirm, GroupSitemap, Locale) {
+], function (QUI, QUIConfirm, GroupSitemap, QUILocale, Permissions) {
     "use strict";
 
     /**
@@ -32,16 +34,17 @@ define('controls/groups/sitemap/Window', [
 
         Binds: [
             '$onWindowCreate',
-            '$onSubmit'
+            '$onSubmit',
+            '$onOpen'
         ],
 
         options: {
             multible   : false,
             multiple   : false,
             message    : false,
-            title      : Locale.get('quiqqer/system', 'groups.sitemap.window.title'),
-            text       : Locale.get('quiqqer/system', 'groups.sitemap.window.title'),
-            information: Locale.get('quiqqer/system', 'groups.sitemap.window.information'),
+            title      : QUILocale.get('quiqqer/system', 'groups.sitemap.window.title'),
+            text       : QUILocale.get('quiqqer/system', 'groups.sitemap.window.title'),
+            information: QUILocale.get('quiqqer/system', 'groups.sitemap.window.information'),
             texticon   : false,
             icon       : 'fa fa-group',
             maxHeight  : 600,
@@ -53,38 +56,63 @@ define('controls/groups/sitemap/Window', [
             this.$Map = null;
 
             this.parent(options);
+
+            this.addEvents({
+                onOpen: this.$onOpen
+            });
         },
 
         /**
          * event : onCreate
          */
-        open: function () {
-            this.parent();
+        $onOpen: function () {
+            var self    = this,
+                Content = this.getContent();
 
-            var Content = this.getContent();
+            this.Loader.show();
 
-            var SitemapBody = new Element('div', {
-                'class': 'group-sitemap'
-            }).inject(Content);
+            Permissions.hasPermission(
+                'quiqqer.admin.groups.create'
+            ).then(function (hasPermission) {
+                if (!hasPermission) {
+                    QUI.getMessageHandler().then(function (MH) {
+                        MH.addError(
+                            QUILocale.get('quiqqer/system', 'exception.no.permission')
+                        );
+                    });
 
-            if (!this.getAttribute('information')) {
-                Content.getElements('.information').destroy();
-            }
+                    self.close();
+                    return;
+                }
 
-            if (this.getAttribute('message')) {
-                new Element('div', {
-                    html: this.getAttribute('message')
-                }).inject(Content, 'top');
-            }
 
-            // bugfix
-            if (this.getAttribute('multible')) {
-                this.setAttribute('multiple', this.getAttribute('multible'));
-            }
+                var SitemapBody = new Element('div', {
+                    'class': 'group-sitemap'
+                }).inject(Content);
 
-            this.$Map = new GroupSitemap({
-                multible: this.getAttribute('multiple')
-            }).inject(SitemapBody);
+                if (!this.getAttribute('information')) {
+                    Content.getElements('.information').destroy();
+                }
+
+                if (this.getAttribute('message')) {
+                    new Element('div', {
+                        html: this.getAttribute('message')
+                    }).inject(Content, 'top');
+                }
+
+                // bugfix
+                if (this.getAttribute('multible')) {
+                    this.setAttribute('multiple', this.getAttribute('multible'));
+                }
+
+                this.$Map = new GroupSitemap({
+                    multible: this.getAttribute('multiple')
+                }).inject(SitemapBody);
+
+                self.Loader.hide();
+            }).catch(function () {
+                self.close();
+            });
         },
 
         /**

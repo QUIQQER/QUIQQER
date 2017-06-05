@@ -242,6 +242,8 @@ define('controls/groups/Group', [
                     self.getButtons('status').enable();
                     self.$onGroupRefresh();
                 });
+            }).catch(function () {
+                self.destroy();
             });
         },
 
@@ -458,7 +460,7 @@ define('controls/groups/Group', [
         $drawCategories: function (onfinish) {
             this.Loader.show();
 
-            return new Promise(function (resolve) {
+            return new Promise(function (resolve, reject) {
 
                 Ajax.get('ajax_groups_panel_categories', function (result) {
 
@@ -478,7 +480,8 @@ define('controls/groups/Group', [
                     resolve();
 
                 }.bind(this), {
-                    gid: this.getGroup().getId()
+                    gid    : this.getGroup().getId(),
+                    onError: reject
                 });
             }.bind(this));
         },
