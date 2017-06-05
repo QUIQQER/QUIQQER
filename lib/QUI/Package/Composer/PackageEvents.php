@@ -106,15 +106,6 @@ class PackageEvents
      */
     public static function prePackageUninstall(PackageEvent $Event)
     {
-    }
-
-    /**
-     * occurs after a package has been uninstalled.
-     *
-     * @param PackageEvent $Event
-     */
-    public static function postPackageUninstall(PackageEvent $Event)
-    {
         self::loadQUIQQER($Event);
 
         /* @var $Operation UninstallOperation */
@@ -135,6 +126,15 @@ class PackageEvents
                 )
             );
         }
+    }
+
+    /**
+     * occurs after a package has been uninstalled.
+     *
+     * @param PackageEvent $Event
+     */
+    public static function postPackageUninstall(PackageEvent $Event)
+    {
     }
 
     /**

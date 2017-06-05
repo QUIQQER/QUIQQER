@@ -587,11 +587,28 @@ class Package extends QUI\QDOM
     /**
      * Uninstall the package / plugin
      * it doesn't destroy the database data, its only uninstall the package
-     *
-     * @todo implementieren
      */
     public function uninstall()
     {
+        // remove events
+        $events = XML::getEventsFromXml($this->getXMLFile('events.xml'));
+        $Events = QUI::getEvents();
+
+        foreach ($events as $Event) {
+            /* @var $Event \DOMElement */
+            if (!$Event->getAttribute('on')
+                || !$Event->getAttribute('fire')
+            ) {
+                continue;
+            }
+
+            $Events->removeEvent(
+                $Event->getAttribute('on'),
+                $Event->getAttribute('fire'),
+                $this->getName()
+            );
+        }
+
         QUI::getEvents()->fireEvent('packageUnInstall', array($this->getName()));
     }
 
