@@ -476,6 +476,8 @@ define('classes/projects/project/media/panel/ContextMenu', [
 
             Menu.clearChildren();
 
+            var sels = this.getPanel().getSelectedItems();
+
             if (DOMNode.get('data-active').toInt() === 0) {
                 Menu.appendChild(
                     this.getActivateItem(DOMNode)
@@ -518,22 +520,66 @@ define('classes/projects/project/media/panel/ContextMenu', [
                         }
                     }
                 })
-            ).appendChild(
-                new QUIContextmenuItem({
-                    name  : 'delete',
-                    text  : QUILocale.get(lg, 'projects.project.panel.media.contextMenu.trash'),
-                    icon  : 'fa fa-trash-o',
-                    events: {
-                        onMouseDown: function () {
-                            if (!DOMNode) {
-                                return;
-                            }
+            );
 
-                            self.getPanel().deleteItem(DOMNode);
+            if (!sels.length || sels.length === 1) {
+                Menu.appendChild(
+                    new QUIContextmenuItem({
+                        name  : 'delete',
+                        text  : QUILocale.get(lg, 'projects.project.panel.media.contextMenu.trash'),
+                        icon  : 'fa fa-trash-o',
+                        events: {
+                            onMouseDown: function () {
+                                if (!DOMNode) {
+                                    return;
+                                }
+
+                                self.getPanel().deleteItem(DOMNode);
+                            }
                         }
-                    }
-                })
-            ).appendChild(
+                    })
+                );
+            } else {
+                var Trash = new QUIContextmenuItem({
+                    name: 'delete',
+                    text: QUILocale.get(lg, 'projects.project.panel.media.contextMenu.trash'),
+                    icon: 'fa fa-trash-o'
+                });
+
+                Trash.appendChild(
+                    new QUIContextmenuItem({
+                        name  : 'delete',
+                        text  : DOMNode.get('title'),
+                        events: {
+                            onMouseDown: function () {
+                                if (!DOMNode) {
+                                    return;
+                                }
+
+                                self.getPanel().deleteItem(DOMNode);
+                            }
+                        }
+                    })
+                ).appendChild(
+                    new QUIContextmenuItem({
+                        name  : 'delete',
+                        text  : QUILocale.get(lg, 'projects.project.panel.media.contextMenu.allElements'),
+                        events: {
+                            onMouseDown: function () {
+                                var Panel = self.getPanel(),
+                                    sels  = Panel.getSelectedItems();
+
+                                self.getPanel().deleteItems(sels);
+                            }
+                        }
+                    })
+                );
+
+                Menu.appendChild(Trash);
+            }
+
+
+            Menu.appendChild(
                 new QUIContextmenuSeparator()
             ).appendChild(
                 new QUIContextmenuItem({
