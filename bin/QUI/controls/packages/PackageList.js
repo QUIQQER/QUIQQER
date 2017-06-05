@@ -167,11 +167,14 @@ define('controls/packages/PackageList', [
                         description: entry.description,
                         image      : image
                     }),
-                    'data-name': entry.name,
-                    events     : {
-                        click: this.$packageClick
-                    }
+                    'data-name': entry.name
                 }).inject(this.$Elm);
+
+                if (!("installed" in entry) || entry.installed === true) {
+                    Package.addEvent('click', this.$packageClick);
+                } else {
+                    Package.setStyle('cursor', 'default');
+                }
 
                 ButtonContainer = Package.getElement('.packages-package-tile-package-buttons');
 
@@ -242,11 +245,14 @@ define('controls/packages/PackageList', [
                         description: entry.description,
                         image      : image
                     }),
-                    'data-name': entry.name,
-                    events     : {
-                        click: this.$packageClick
-                    }
+                    'data-name': entry.name
                 }).inject(this.$Elm);
+
+                if (!("installed" in entry) || entry.installed === true) {
+                    Package.addEvent('click', this.$packageClick);
+                } else {
+                    Package.setStyle('cursor', 'default');
+                }
 
                 ButtonContainer = Package.getElement(
                     '.packages-package-list-package-buttons'

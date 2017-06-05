@@ -4,6 +4,17 @@
  *
  * @requires qui/QUI
  * @requires qui/controls/Control
+ * @requires qui/controls/buttons/Button
+ * @requires qui/controls/loader/Loader
+ * @requires Packages
+ * @requires Mustache
+ * @requires controls/packages/PackageList
+ * @requires Locale
+ * @requires Ajax
+ * @requires text!controls/packages/Search.html
+ * @requires text!controls/packages/Search.TermsOfUse.html
+ * @requires text!controls/packages/Search.OtherSources.html
+ * @requires css!controls/packages/Search.css
  *
  * @event onLoad
  * @event onSearchBegin
@@ -55,15 +66,16 @@ define('controls/packages/Search', [
             this.parent(options);
 
             this.$OtherSourcesResultList = null;
-            this.$Results                = null;
-            this.$Input                  = null;
-            this.$TermsOfUse             = null;
-            this.Loader                  = new QUILoader();
-            this.$Content                = null;
-            this.$storeUrl               = null;
-            this.$PackageStoreBtn        = null;
-            this.$OtherSourcesBtn        = null;
-            this.$Panel                  = null;
+
+            this.$Results         = null;
+            this.$Input           = null;
+            this.$TermsOfUse      = null;
+            this.Loader           = new QUILoader();
+            this.$Content         = null;
+            this.$storeUrl        = null;
+            this.$PackageStoreBtn = null;
+            this.$OtherSourcesBtn = null;
+            this.$Panel           = null;
 
             this.addEvents({
                 onInject: this.$onInject
@@ -103,8 +115,6 @@ define('controls/packages/Search', [
             this.Loader.show();
 
             // get parent panel
-            var Panel = this.$Elm.getParent('div.qui-panel');
-
             Promise.all([
                 this.$checkTermsOfUse(),
                 this.$getStoreUrl()
@@ -263,7 +273,7 @@ define('controls/packages/Search', [
                 })
             }).inject(this.$Elm);
 
-            this.$TermsOfUse.getElement('button').addEvent('click', function (event) {
+            this.$TermsOfUse.getElement('button').addEvent('click', function () {
                 self.Loader.show();
 
                 self.$agreeToTermsOfUse().then(function () {
@@ -296,7 +306,8 @@ define('controls/packages/Search', [
                     this.$OtherSourcesResultList.addPackage({
                         name       : name,
                         title      : name,
-                        description: result[name]
+                        description: result[name],
+                        installed  : false
                     });
                 }
 
