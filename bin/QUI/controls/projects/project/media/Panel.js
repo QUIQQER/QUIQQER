@@ -104,13 +104,20 @@ define('controls/projects/project/media/Panel', [
             selectable          : false,    // is the media in the selectable mode (for popup or image inserts)
             selectable_types    : false,    // {Array} you can specified which types are selectable (folder, image, file, *)
             selectable_mimetypes: false,    // {Array} you can specified which mime types are selectable
-            selectable_multible : false     // multibel selection active? press ctrl / strg
+            selectable_multiple : false     // multiple selection active? press ctrl / strg,
         },
 
         initialize: function (Media, options) {
             // defaults
             this.setAttribute('id', 'projects-media-panel');
             this.setAttribute('name', 'projects-media-panel');
+
+            // bugfix for selectable_multiple / selectable_multible
+            if (typeof options.selectable_multible !== 'undefined' &&
+                typeof options.selectable_multiple === 'undefined') {
+                options.selectable_multiple = options.selectable_multible;
+                delete options.selectable_multible;
+            }
 
             if (typeOf(Media) === 'object') {
                 this.parent(options);
