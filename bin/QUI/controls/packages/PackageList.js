@@ -43,7 +43,7 @@ define('controls/packages/PackageList', [
         ],
 
         options: {
-            buttons: []
+            buttons: false
         },
 
         initialize: function (options) {
@@ -178,12 +178,16 @@ define('controls/packages/PackageList', [
                 if (extraButtons.length) {
                     var c, clen, options;
                     for (c = 0, clen = extraButtons.length; c < clen; c++) {
-                        options         = extraButtons[c];
+                        options         = Object.clone(extraButtons[c]);
                         options.package = entry.name;
 
                         new QUIButton(options).inject(ButtonContainer);
                     }
                 }
+
+                ButtonContainer.addEvent('click', function (event) {
+                    event.stop();
+                });
 
                 if (typeof entry.type === 'undefined' || !entry.type.match('quiqqer-')) {
                     continue;
@@ -200,7 +204,6 @@ define('controls/packages/PackageList', [
                         }
                     }).inject(Package.getElement('.packages-package-tile-package-buttons'));
                 }
-
             }
         },
 
@@ -249,10 +252,14 @@ define('controls/packages/PackageList', [
                     '.packages-package-list-package-buttons'
                 );
 
+                ButtonContainer.addEvent('click', function (event) {
+                    event.stop();
+                });
+
                 if (extraButtons.length) {
                     var c, clen, options;
                     for (c = 0, clen = extraButtons.length; c < clen; c++) {
-                        options         = extraButtons[c];
+                        options         = Object.clone(extraButtons[c]);
                         options.package = entry.name;
 
                         new QUIButton(options).inject(ButtonContainer);

@@ -1100,6 +1100,10 @@
             <de><![CDATA[Paket [package] aktualisieren auf Version [version]]]></de>
             <en><![CDATA[Update package [package] to version [version]]]></en>
         </locale>
+        <locale name="packages.panel.system.packageInstall.title">
+            <de><![CDATA[Paket herunterladen und installieren]]></de>
+            <en><![CDATA[Download and install the package]]></en>
+        </locale>
         <locale name="packages.setup">
             <de><![CDATA[[pkg] setup ausführen]]></de>
             <en><![CDATA[Execute the [pkg] setup]]></en>

@@ -47,6 +47,10 @@ define('controls/packages/Search', [
             '$onResize'
         ],
 
+        options: {
+            buttons: []
+        },
+
         initialize: function (options) {
             this.parent(options);
 
@@ -190,7 +194,7 @@ define('controls/packages/Search', [
             this.$OtherSourcesResultList = new PackageList({
                 buttons: [{
                     icon  : 'fa fa-download',
-                    title : 'Paket herunterladen und installieren',
+                    title : QUILocale.get(lg, 'packages.panel.system.packageInstall.title'),
                     styles: {
                         width: '100%'
                     },
@@ -314,13 +318,18 @@ define('controls/packages/Search', [
         $onClickInstall: function (Btn, event) {
             event.stop();
 
+            var self        = this,
+                SearchInput = this.$Content.getElement('input');
+
             this.fireEvent('onShowLoader', [this]);
 
             Packages.install([
                 Btn.getAttribute('package')
             ]).then(function () {
-                this.fireEvent('onHideLoader', [this]);
-            }.bind(this));
+                return self.search(SearchInput.value);
+            }).then(function () {
+                self.fireEvent('onHideLoader', [this]);
+            });
         }
     });
 });
