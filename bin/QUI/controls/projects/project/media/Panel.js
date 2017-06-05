@@ -113,8 +113,10 @@ define('controls/projects/project/media/Panel', [
             this.setAttribute('name', 'projects-media-panel');
 
             // bugfix for selectable_multiple / selectable_multible
-            if (typeof options.selectable_multible !== 'undefined' &&
-                typeof options.selectable_multiple === 'undefined') {
+            if (typeof options !== 'undefined' &&
+                typeof options.selectable_multible !== 'undefined' &&
+                typeof options.selectable_multiple === 'undefined'
+            ) {
                 options.selectable_multiple = options.selectable_multible;
                 delete options.selectable_multible;
             }
