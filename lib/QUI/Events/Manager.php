@@ -246,6 +246,16 @@ class Manager implements QUI\Interfaces\Events
     }
 
     /**
+     * @param QUI\Package\Package $Package
+     */
+    public function removePackageEvents(QUI\Package\Package $Package)
+    {
+        QUI::getDataBase()->delete(self::table(), array(
+            'package' => $Package->getName()
+        ));
+    }
+
+    /**
      * Removes all events of the given type from the stack of events of a Class instance.
      * If no $fn is specified, removes all events of the event.
      * It remove the events from the database, too.
