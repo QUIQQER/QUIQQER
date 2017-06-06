@@ -10,6 +10,7 @@
  * @fires onBegin [this]
  * @fires onCancel
  * @fires onComplete [this]
+ * @fires onFinished [this]
  * @fires onSubmit [Array, this]
  * @fires onInputDestroy
  * @fires onDragenter [event, DOMNode, controls/upload/Form]
@@ -643,6 +644,16 @@ define('controls/upload/Form', [
             }
 
             this.fireEvent('complete', [this, File, result]);
+
+            var files = this.getFiles();
+
+            for (var i = 0, len = files.length; i < len; i++) {
+                if (!files[i].isFinished()) {
+                    return;
+                }
+            }
+
+            this.fireEvent('finished', [this]);
         },
 
         /**
