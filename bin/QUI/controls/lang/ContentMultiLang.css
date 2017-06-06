@@ -1,0 +1,19 @@
+.quiqqer-lang-contentmultilang {
+    float: left;
+    width: 100%;
+}
+
+.quiqqer-lang-contentmultilang-langselect {
+    float: left;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.quiqqer-lang-contentmultilang-langselect .qui-select {
+    width: 100%;
+}
+
+.quiqqer-lang-contentmultilang-content {
+    float: left;
+    width: 100%;
+}

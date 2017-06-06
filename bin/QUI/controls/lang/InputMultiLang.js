@@ -81,7 +81,6 @@ define('controls/lang/InputMultiLang', [
             this.$Input.type = 'hidden';
 
             QUIAjax.get('ajax_system_getAvailableLanguages', function (languages) {
-
                 var i, len, flag, lang, LangContainer, InputField;
                 var current = QUILocale.getCurrent(),
                     data    = [];
