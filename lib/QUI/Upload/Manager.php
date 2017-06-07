@@ -248,10 +248,13 @@ class Manager
             $File->setAttribute('upload-dir', $uploaddir);
             $File->setAttribute('params', $Data->getAttribute('params'));
 
-            $result = $this->callFunction($onfinish, array(
-                'File' => $File
-            ));
+            $result = array();
 
+            if (!empty($onfinish)) {
+                $result = $this->callFunction($onfinish, array(
+                    'File' => $File
+                ));
+            }
 
             // delete the file from the database
             $this->delete($filename);
@@ -280,6 +283,10 @@ class Manager
      */
     protected function callFunction($function, $params = array())
     {
+        if ($function === false) {
+            return false;
+        }
+
         if (is_object($function) && get_class($function) === 'Closure') {
             return $function();
         }

@@ -645,15 +645,17 @@ define('controls/upload/Form', [
 
             this.fireEvent('complete', [this, File, result]);
 
-            var files = this.getFiles();
+            require(['UploadManager'], function (UploadManager) {
+                var files = UploadManager.$files;
 
-            for (var i = 0, len = files.length; i < len; i++) {
-                if (!files[i].isFinished()) {
-                    return;
+                for (var i = 0, len = files.length; i < len; i++) {
+                    if (!files[i].isFinished()) {
+                        return;
+                    }
                 }
-            }
 
-            this.fireEvent('finished', [this]);
+                this.fireEvent('finished', [this]);
+            }.bind(this));
         },
 
         /**
