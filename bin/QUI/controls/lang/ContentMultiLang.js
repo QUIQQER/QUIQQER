@@ -26,6 +26,7 @@ define('controls/lang/ContentMultiLang', [
     "use strict";
 
     return new Class({
+
         Extends: QUIControl,
         Type   : 'controls/lang/ContentMultiLang',
 
@@ -38,71 +39,126 @@ define('controls/lang/ContentMultiLang', [
             '$saveContent'
         ],
 
+        options: {
+            styles: false
+        },
+
         initialize: function (options) {
             this.parent(options);
 
-            this.$Container          = null;
-            this.$Button             = null;
-            this.$Input              = null;
-            this.$Content            = {};
+            this.$data = {};
+
+            this.Loader = new QUILoader();
+
+            this.$Elm    = null;
+            this.$Input  = null;
+            this.$Button = null;
+            this.$Input  = null;
+
             this.$ContentContainer   = null;
-            this.Loader              = new QUILoader();
-            this.$CurrentEditor      = null;
+            this.$Editor             = null;
             this.$editorSaveInterval = null;
             this.$LangSelect         = null;
 
             this.addEvents({
-                onImport: this.$onImport
+                onImport: this.$onImport,
+                onInject: this.$onInject
             });
         },
 
+        /**
+         * Create the domnode element
+         *
+         * @return {Element|null}
+         */
         create: function () {
-            this.$Elm = new Element('input', {
-                type : 'hidden',
-                value: this.getAttribute('value'),
-                name : this.getAttribute('name')
+            this.$Elm = new Element('div', {
+                'class': 'field-container-field quiqqer-lang-contentmultilang',
+                'html' : '<div class="quiqqer-lang-contentmultilang-langselect"></div>' +
+                '<div class="quiqqer-lang-contentmultilang-content"></div>',
+                styles : {
+                    minHeight: 300
+                }
             });
 
+            if (this.getAttribute('styles')) {
+                this.$Elm.setStyles(this.getAttribute('styles'));
+            }
+
+            if (!this.$Input) {
+                this.$Input = new Element('input', {
+                    type : 'hidden',
+                    value: this.getAttribute('value'),
+                    name : this.getAttribute('name')
+                });
+            }
+
+            this.Loader.inject(this.$Elm);
+
+            this.$LangSelect = new LangSelect({
+                'class': 'quiqqer-lang-contentmultilang-langselect-select',
+                events : {
+                    onChange: function (Control, lang) {
+                        this.$loadLangContent(lang);
+                    }.bind(this)
+                }
+            }).inject(
+                this.$Elm.getElement(
+                    '.quiqqer-lang-contentmultilang-langselect'
+                )
+            );
+
+            this.$ContentContainer = this.$Elm.getElement(
+                '.quiqqer-lang-contentmultilang-content'
+            );
+
+            if (this.$Input.value !== '') {
+                try {
+                    this.$data = JSON.decode(this.$Input.value);
+                } catch (e) {
+                }
+
+                if (typeOf(this.$data) !== 'object') {
+                    this.$data = {};
+                }
+            }
+
             return this.$Elm;
+        },
+
+        /**
+         * on inject
+         */
+        $onInject: function () {
+            var self = this;
+
+            if (!this.$Elm.getParent('.field-container')) {
+                this.$Elm.removeClass('field-container-field');
+            }
+
+            Editors.getEditor().then(function (Editor) {
+                Editor.addEvent('onLoaded', function () {
+                    self.Loader.hide();
+                    self.fireEvent('load', [self]);
+                });
+
+                Editor.inject(self.$ContentContainer);
+                Editor.setContent('');
+
+                self.$Editor = Editor;
+                self.$loadLangContent(self.$LangSelect.getValue());
+            });
         },
 
         /**
          * event : on import
          */
         $onImport: function () {
-            var self = this,
-                Elm  = this.getElm();
+            this.$Input      = this.getElm();
+            this.$Input.type = 'hidden';
 
-            this.$Container = new Element('div', {
-                'class': 'field-container-field quiqqer-lang-contentmultilang',
-                'html' : '<div class="quiqqer-lang-contentmultilang-langselect"></div>' +
-                '<div class="quiqqer-lang-contentmultilang-content"></div>'
-            }).inject(Elm, 'after');
-
-            this.Loader.inject(this.$Container);
-
-            this.$LangSelect = new LangSelect({
-                'class': 'quiqqer-lang-contentmultilang-langselect-select',
-                events : {
-                    onChange: function (Control, lang) {
-                        self.$loadLangContent(lang);
-                    }
-                }
-            }).inject(
-                this.$Container.getElement(
-                    '.quiqqer-lang-contentmultilang-langselect'
-                )
-            );
-
-            this.$Input            = Elm;
-            this.$Input.type       = 'hidden';
-            this.$ContentContainer = this.$Container.getElement(
-                '.quiqqer-lang-contentmultilang-content'
-            );
-
-            if (this.$Input.value !== '') {
-                this.$Content = JSON.decode(this.$Input.value);
-            }
+            this.create().wraps(this.$Input);
+            this.$onInject();
         },
 
         /**
@@ -111,28 +167,19 @@ define('controls/lang/ContentMultiLang', [
          * @param {string} lang
          */
         $loadLangContent: function (lang) {
-            var self    = this;
-            var content = '';
-
-            if (lang in this.$Content) {
-                content = this.$Content[lang];
+            if (!this.$Editor) {
+                return;
             }
 
-            this.$ContentContainer.set('html', '');
+            var content = '';
+
+            if (lang in this.$data) {
+                content = this.$data[lang];
+            }
+
             this.$clearEditorPeriodicalSave();
-            this.Loader.show();
-
-            Editors.getEditor().then(function (Editor) {
-                Editor.addEvent('onLoaded', function () {
-                    self.Loader.hide();
-                });
-
-                Editor.inject(self.$ContentContainer);
-                Editor.setContent(content);
-
-                self.$CurrentEditor = Editor;
-                self.$startEditorPeriodicalSave();
-            });
+            this.$Editor.setContent(content);
+            this.$startEditorPeriodicalSave();
         },
 
         /**
@@ -159,17 +206,18 @@ define('controls/lang/ContentMultiLang', [
         },
 
         /**
-         * Save current editor content
+         * Save editor content
          */
         $saveContent: function () {
             var currentLang = this.$LangSelect.getValue();
 
-            this.$Content[currentLang] = this.$CurrentEditor.getContent();
-            this.$Input.value          = JSON.encode(this.$Content);
+            this.$data[currentLang] = this.$Editor.getContent();
+            this.$Input.value       = JSON.encode(this.$data);
         },
 
         /**
          * Return the input value
+         *
          * @returns {String}
          */
         getValue: function () {

@@ -15,5 +15,6 @@
 
 .quiqqer-lang-contentmultilang-content {
     float: left;
+    height: calc(100% - 40px);
     width: 100%;
 }
