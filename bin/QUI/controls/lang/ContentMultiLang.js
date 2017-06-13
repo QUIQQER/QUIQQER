@@ -231,6 +231,28 @@ define('controls/lang/ContentMultiLang', [
          */
         getData: function () {
             return JSON.decode(this.getValue());
+        },
+
+        /**
+         * Set data
+         *
+         * @param data
+         */
+        setData: function (data) {
+            if (!this.$Input) {
+                return;
+            }
+
+            if (typeOf(data) !== 'string') {
+                data = JSON.encode(data);
+            }
+
+            this.$Input.value = data;
+            this.$data        = this.getData();
+
+            if (this.$LangSelect) {
+                this.$loadLangContent(this.$LangSelect.getValue());
+            }
         }
     });
 });

@@ -188,6 +188,38 @@ define('controls/lang/InputMultiLang', [
         },
 
         /**
+         * Set data
+         *
+         * @param data
+         */
+        setData: function (data) {
+            if (!this.$Input) {
+                return;
+            }
+
+            if (typeOf(data) !== 'string') {
+                data = JSON.encode(data);
+            }
+
+            this.$Input.value = data;
+
+            var lang, Input;
+            var inputData = this.getData();
+
+            for (lang in inputData) {
+                if (!inputData.hasOwnProperty(lang)) {
+                    continue;
+                }
+
+                Input = this.getElm().getElement('[name="' + lang + '"]');
+
+                if (Input) {
+                    Input.value = inputData[lang];
+                }
+            }
+        },
+
+        /**
          * Toggle the open status
          */
         toggle: function () {
