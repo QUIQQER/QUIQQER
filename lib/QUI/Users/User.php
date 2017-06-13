@@ -269,14 +269,27 @@ class User implements QUI\Interfaces\Users\User
                 $extraData = array();
             }
 
-            foreach ($extraList as $attribute) {
-                $extras[$attribute] = true;
+            foreach ($extraList as $entry) {
+                $extras[$entry['name']] = $entry;
             }
 
             foreach ($extraData as $attribute => $value) {
-                if (isset($extras[$attribute])) {
-                    $this->setAttribute($attribute, $extraData[$attribute]);
+                if (!isset($extras[$attribute])) {
+                    continue;
                 }
+
+                if (isset($extras[$attribute]['encrypt'])
+                    && $extras[$attribute]['encrypt']
+                ) {
+                    $this->setAttribute(
+                        $attribute,
+                        QUI\Security\Encryption::decrypt($extraData[$attribute])
+                    );
+
+                    continue;
+                }
+
+                $this->setAttribute($attribute, $extraData[$attribute]);
             }
         }
 
@@ -1399,7 +1412,16 @@ class User implements QUI\Interfaces\Users\User
         $extra      = array();
         $attributes = $this->getListOfExtraAttributes();
 
-        foreach ($attributes as $attribute) {
+        foreach ($attributes as $entry) {
+            $attribute = $entry['name'];
+
+            if (isset($entry['encrypt']) && $entry['encrypt']) {
+                $extra[$attribute] = QUI\Security\Encryption::encrypt(
+                    $this->getAttribute($attribute)
+                );
+                continue;
+            }
+
             $extra[$attribute] = $this->getAttribute($attribute);
         }
 
@@ -1664,6 +1686,13 @@ class User implements QUI\Interfaces\Users\User
      */
     protected function readAttributesFromUserXML($file)
     {
+        $cache = 'user/plugin-xml-attributes-' . md5($file);
+
+        try {
+            return QUI\Cache\Manager::get($cache);
+        } catch (QUI\Exception $Exception) {
+        }
+
         $Dom  = QUI\Utils\Text\XML::getDomFromXml($file);
         $Attr = $Dom->getElementsByTagName('attributes');
 
@@ -1688,8 +1717,13 @@ class User implements QUI\Interfaces\Users\User
                 continue;
             }
 
-            $attributes[] = trim($Attribute->nodeValue);
+            $attributes[] = array(
+                'name'    => trim($Attribute->nodeValue),
+                'encrypt' => !!$Attribute->getAttribute('encrypt')
+            );
         }
+
+        QUI\Cache\Manager::set($cache, $attributes);
 
         return $attributes;
     }
