@@ -110,7 +110,8 @@ define('controls/groups/sitemap/Window', [
                 }).inject(SitemapBody);
 
                 self.Loader.hide();
-            }).catch(function () {
+            }.bind(this)).catch(function (err) {
+                console.error(err);
                 self.close();
             });
         },
