@@ -132,15 +132,20 @@
 /** flexbox tables */
 
 .data-table-flexbox thead tr {
-    display: block;
+    /*display: block;*/
 }
 
 .data-table-flexbox thead,
 .data-table-flexbox th {
     background-color: #dedede;
     color: #666;
-    float: left;
+    /*float: left;*/
     width: 100%;
+}
+
+.data-table-flexbox tbody,
+.data-table-flexbox thead {
+    display: table;
 }
 
 .data-table-flexbox .odd {
