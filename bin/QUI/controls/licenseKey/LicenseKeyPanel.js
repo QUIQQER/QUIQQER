@@ -8,16 +8,18 @@
  *
  * @require qui/controls/desktop/Panel
  * @require controls/licenseKey/LicenseKey
+ * @require Locale
  * @require css!controls/licenseKey/LicenseKeyPanel.css
  */
 define('controls/licenseKey/LicenseKeyPanel', [
 
     'qui/controls/desktop/Panel',
     'controls/licenseKey/LicenseKey',
+    'Locale',
 
     'css!controls/licenseKey/LicenseKeyPanel.css'
 
-], function (QUIPanel, LicenseKey) {
+], function (QUIPanel, LicenseKey, QUILocale) {
     "use strict";
 
     return new Class({
@@ -28,6 +30,10 @@ define('controls/licenseKey/LicenseKeyPanel', [
         Binds: [
             '$onInject'
         ],
+
+        options: {
+            title: QUILocale.get('quiqqer/system', 'controls.licensekeypanel.title')
+        },
 
         initialize: function (options) {
             this.parent(options);

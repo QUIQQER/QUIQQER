@@ -1799,6 +1799,23 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js">
+        <locale name="controls.licensekeypanel.title">
+            <de><![CDATA[QUIQQER Lizenz]]></de>
+            <en><![CDATA[QUIQQER License]]></en>
+        </locale>
+        <locale name="controls.licensekey.delete.popup.title">
+            <de><![CDATA[QUIQQER Lizenz löschen]]></de>
+            <en><![CDATA[Delete QUIQQER License]]></en>
+        </locale>
+        <locale name="controls.licensekey.delete.popup.info">
+            <de><![CDATA[Sind Sie sicher, dass Sie Ihre aktuelle QUIQQER Lizenz löschen wollen? Sie haben dann ggf. keinen Zugriff mehr auf Pakete, die Teil Ihrer Lizenz waren.]]></de>
+            <en><![CDATA[Are you sure you want to delete your current QUIQQER license? You may no longer have access to packages that were part of your license.]]></en>
+        </locale>
+        <locale name="controls.licensekey.delete.btn">
+            <de><![CDATA[Lizenz löschen]]></de>
+            <en><![CDATA[Delete License]]></en>
+        </locale>
+
         <locale name="welcome.message">
             <de><![CDATA[Willkommen [username]]]></de>
             <en><![CDATA[Welcome [username]]]></en>
@@ -5678,6 +5695,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Lizenz-Datei hochladen]]></de>
             <en><![CDATA[Upload license file]]></en>
         </locale>
+        <locale name="controls.licensekey.template.labelDelete">
+            <de><![CDATA[Lizenz löschen]]></de>
+            <en><![CDATA[Delete license]]></en>
+        </locale>
 
     </groups>
     <groups name="quiqqer/system" datatype="php">
@@ -7132,9 +7153,9 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <!-- License key -->
         <locale name="message.ajax.licenseKey.upload.error">
             <de>
-                <![CDATA[Beim Einlesen der Lizenz-Datei ist ein Fehler aufgetreten. Ggf. ist die Lizenz-Datei ungültig. Bitte wenden Sie sich an einen Administrator.]]></de>
+                <![CDATA[Beim Einlesen der Lizenz-Datei ist ein Fehler aufgetreten. Ggf. ist die Lizenz-Datei ungültig. Bitte wenden Sie sich an einen Administrator oder an die Stelle, die die Lizenz ausgegeben hat.]]></de>
             <en>
-                <![CDATA[An error ocurred while reading the license file. The license file may be invalid. Please contact an administrator.]]></en>
+                <![CDATA[An error ocurred while reading the license file. The license file may be invalid. Please contact an administrator or the issuer of the license.]]></en>
         </locale>
         <locale name="message.ajax.licenseKey.upload.success">
             <de><![CDATA[
@@ -7148,6 +7169,15 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Die Toolbar wurde erfolgreich gespeichert.]]></de>
             <en><![CDATA[The toolbar has been successfully saved.]]></en>
         </locale>
+        <locale name="message.ajax.licenseKey.delete.error">
+            <de><![CDATA[Die Lizenz wurde nicht gelöscht, da keine Lizenz in Ihrem QUIQQER-System aktiviert war.]]></de>
+            <en><![CDATA[The license was not deleted because no license was active in your QUIQQER system.]]></en>
+        </locale>
+        <locale name="message.ajax.licenseKey.delete.success">
+            <de><![CDATA[Die Lizenz wurde erfolgreich gelöscht und ist nun nicht mehr aktiv.]]></de>
+            <en><![CDATA[The license was deleted successfully and is now inactive.]]></en>
+        </locale>
+
     </groups>
 
     <groups name="quiqqer/system" datatype="php,js">
