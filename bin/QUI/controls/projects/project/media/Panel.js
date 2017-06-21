@@ -1231,7 +1231,7 @@ define('controls/projects/project/media/Panel', [
                 return;
             }
 
-            if (event.control || this.getAttribute('selectable')) {
+            if (event.control || event.meta || this.getAttribute('selectable')) {
                 if (!Target.hasClass('selected')) {
                     Target.addClass('selected');
                     this.$selected.push(Target);
