@@ -199,6 +199,13 @@ interface User
     public function getAttribute($var);
 
     /**
+     * Return all attributes
+     *
+     * @return array
+     */
+    public function getAttributes();
+
+    /**
      * Returns the avatar of the user
      *
      * @return \QUI\Projects\Media\Image|false
