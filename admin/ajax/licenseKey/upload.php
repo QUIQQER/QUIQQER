@@ -71,6 +71,9 @@ QUI::$Ajax->registerFunction(
             $Config = new QUI\Config(ETC_DIR . 'conf.ini.php');
             $Config->set('license', 'url', $content['licenseServer']);
             $Config->save();
+
+            // re-create composer.json
+            QUI::getPackageManager()->refreshServerList();
         } catch (\Exception $Exception) {
             QUI\System\Log::addError('AJAX :: ajax_licenseKey_upload');
             QUI\System\Log::writeException($Exception);
@@ -81,6 +84,8 @@ QUI::$Ajax->registerFunction(
                     'message.ajax.licenseKey.upload.error'
                 )
             );
+
+            return;
         }
 
         QUI::getMessagesHandler()->addSuccess(
