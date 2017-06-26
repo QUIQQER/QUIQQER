@@ -32,14 +32,16 @@ define('classes/users/User', [
     return new Class({
 
         Extends: DOM,
-        Type: 'classes/users/User',
+        Type   : 'classes/users/User',
 
         attributes: {}, // user attributes
 
         initialize: function (uid) {
-            this.$uid = uid;
+            this.$uid    = uid;
             this.$extras = {};
             this.$loaded = false;
+
+            this.$addresses = false;
         },
 
         /**
@@ -63,7 +65,7 @@ define('classes/users/User', [
          */
         getName: function () {
             var firstname = this.getAttribute('firstname');
-            var lastname = this.getAttribute('lastname');
+            var lastname  = this.getAttribute('lastname');
 
             if (firstname && lastname) {
                 return firstname + ' ' + lastname;
@@ -93,7 +95,8 @@ define('classes/users/User', [
             return new Promise(function (resolve, reject) {
 
                 Ajax.get('ajax_users_get', function (result) {
-                    self.$loaded = true;
+                    self.$loaded    = true;
+                    self.$addresses = false;
 
                     var uid = 0;
 
@@ -143,7 +146,7 @@ define('classes/users/User', [
                     });
 
                 }, {
-                    uid: self.getId(),
+                    uid    : self.getId(),
                     onError: reject
                 });
 
@@ -178,6 +181,8 @@ define('classes/users/User', [
                 }
 
                 var self = this;
+
+                this.$addresses = false;
 
                 require(['Users'], function (Users) {
                     Users.saveUser(self, params).then(function () {
@@ -272,7 +277,7 @@ define('classes/users/User', [
 
                 options = options || {};
 
-                if (pass1 != pass2) {
+                if (pass1 !== pass2) {
                     if (typeof onfinish === 'function') {
                         onfinish(false, false);
                     }
@@ -290,10 +295,10 @@ define('classes/users/User', [
 
                     resolve(result);
                 }.bind(this), {
-                    uid: this.getId(),
-                    pw1: pass1,
-                    pw2: pass2,
-                    params: JSON.encode(options),
+                    uid    : this.getId(),
+                    pw1    : pass1,
+                    pw2    : pass2,
+                    params : JSON.encode(options),
                     onError: reject
                 });
 
@@ -323,8 +328,8 @@ define('classes/users/User', [
             return new Promise(function (resolve, reject) {
                 Ajax.post('ajax_users_authenticator_enable', resolve, {
                     authenticator: authenticator,
-                    uid: this.getId(),
-                    onError: reject
+                    uid          : this.getId(),
+                    onError      : reject
                 });
             }.bind(this));
         },
@@ -339,8 +344,8 @@ define('classes/users/User', [
             return new Promise(function (resolve, reject) {
                 Ajax.post('ajax_users_authenticator_disable', resolve, {
                     authenticator: authenticator,
-                    uid: this.getId(),
-                    onError: reject
+                    uid          : this.getId(),
+                    onError      : reject
                 });
             }.bind(this));
         },
@@ -355,8 +360,8 @@ define('classes/users/User', [
             return new Promise(function (resolve, reject) {
                 Ajax.get('ajax_users_authenticator_settings', resolve, {
                     authenticator: authenticator,
-                    uid: this.getId(),
-                    onError: reject
+                    uid          : this.getId(),
+                    onError      : reject
                 });
             }.bind(this));
         },
@@ -371,8 +376,8 @@ define('classes/users/User', [
             return new Promise(function (resolve, reject) {
                 Ajax.post('ajax_users_authenticator_has', resolve, {
                     authenticator: authenticator,
-                    uid: this.getId(),
-                    onError: reject
+                    uid          : this.getId(),
+                    onError      : reject
                 });
             }.bind(this));
         },
@@ -383,9 +388,19 @@ define('classes/users/User', [
          * @returns {Promise}
          */
         getAddressList: function () {
+            var self = this;
+
             return new Promise(function (resolve, reject) {
-                Ajax.post('ajax_users_address_list', resolve, {
-                    uid: this.getId(),
+                if (self.$addresses) {
+                    resolve(self.$addresses);
+                    return;
+                }
+
+                Ajax.post('ajax_users_address_list', function (result) {
+                    self.$addresses = result;
+                    resolve(self.$addresses);
+                }, {
+                    uid    : this.getId(),
                     onError: reject
                 });
             }.bind(this));
