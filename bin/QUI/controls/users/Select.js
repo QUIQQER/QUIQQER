@@ -4,10 +4,11 @@
  * @module controls/users/Select
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/controls/Control
+ * @require qui/QUI
  * @require qui/controls/elements/Select
  * @require Locale
- * @require Users
+ * @require Ajax
+ * @requuir css!controls/users/Select.css
  *
  * @event onAddItem [ this, id ]
  * @event onChange [ this ]
