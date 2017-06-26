@@ -98,11 +98,16 @@ define('controls/users/Select', [
         },
 
         /**
+         * event : on search click
          *
+         * @param {Object} Select
          * @param {Object} Btn
          */
-        $onSearchButtonClick: function (Btn) {
+        $onSearchButtonClick: function (Select, Btn) {
+            var oldIcon = Btn.getAttribute('icon');
+
             Btn.setAttribute('icon', 'fa fa-spinner fa-spin');
+            Btn.disable();
 
             require([
                 'controls/users/search/Window'
@@ -121,7 +126,8 @@ define('controls/users/Select', [
                     }
                 }).open();
 
-                Btn.setAttribute('icon', 'fa fa-search');
+                Btn.setAttribute('icon', oldIcon);
+                Btn.enable();
             }.bind(this));
         }
     });
