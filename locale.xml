@@ -7159,10 +7159,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
         <locale name="message.ajax.licenseKey.upload.success">
             <de><![CDATA[
-            Die Lizenz-Datei wurde erfolgreich eingelesen. Ihr QUIQQER-Installation hat nun Zugriff auf alle Pakete, die diese Lizenz beinhaltet.
+            Die Lizenz-Datei wurde erfolgreich eingelesen. Diese QUIQQER-Installation hat nun Zugriff auf alle Pakete, die diese Lizenz beinhaltet.
             ]]></de>
             <en><![CDATA[
-            The license file has been imported succesfully. Your QUIQQER system now has access to all packages this license contains.
+            The license file has been imported succesfully. This QUIQQER system now has access to all packages this license contains.
             ]]></en>
         </locale>
         <locale name="message.editor.toolbar.save.success">

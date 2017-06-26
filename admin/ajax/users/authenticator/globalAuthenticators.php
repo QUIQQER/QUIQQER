@@ -17,7 +17,7 @@ QUI::$Ajax->registerFunction(
 
         foreach ($available as $authenticator) {
             try {
-                $Authenticator = new $authenticator($User->getName());
+                $Authenticator = new $authenticator($User->getUsername());
 
                 /* @var $Authenticator \QUI\Users\AuthenticatorInterface */
                 $list[] = array(
