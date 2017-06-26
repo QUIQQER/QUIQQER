@@ -62,7 +62,7 @@ class Handler
             }
 
             /* @var $Authenticator AuthenticatorInterface */
-            $Authenticator  = new $authProvider($User->getName());
+            $Authenticator  = new $authProvider($User->getUsername());
             $permissionName = Helper::parseAuthenticatorToPermission($authProvider);
 
             $Permissions->addPermission(array(
