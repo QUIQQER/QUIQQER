@@ -238,7 +238,7 @@ define('controls/projects/project/site/Panel', [
                 Site.getId() + ' - ' +
                 Project.getName();
 
-            if (Site.getId() != 1) {
+            if (Site.getId() !== 1) {
                 description = description + ' - ' + Site.getUrl();
             }
 
@@ -412,60 +412,64 @@ define('controls/projects/project/site/Panel', [
                 return;
             }
 
-
             var self = this;
 
             this.Loader.show();
 
-            var Sheet = this.createSheet({
-                title: 'Wiederherstellung der Seite #' + Site.getId()
-            });
+            Site.hasWorkingStorageChanges().then(function (hasStorage) {
+                if (hasStorage === false) {
+                    self.Loader.show();
+                    return;
+                }
 
-            // #locale
-            Sheet.getContent().set(
-                'html',
+                var Sheet = self.createSheet({
+                    title: 'Wiederherstellung der Seite #' + Site.getId()
+                });
 
-                '<div class="qui-panel-dataRestore">' +
-                '<p>Es wurden nicht gespeicherte Daten der Seite #' + Site.getId() + ' gefunden.</p>' +
-                '<p>Sollen die Daten wieder hergestellt werden?</p>' +
-                '</div>' // #locale
-            );
+                // #locale
+                Sheet.getContent().set(
+                    'html',
 
-            Sheet.clearButtons();
+                    '<div class="qui-panel-dataRestore">' +
+                    '<p>Es wurden nicht gespeicherte Daten der Seite #' + Site.getId() + ' gefunden.</p>' +
+                    '<p>Sollen die Daten wieder hergestellt werden?</p>' +
+                    '</div>' // #locale
+                );
 
-            Sheet.addButton({
-                text  : 'Daten verwerfen',  // #locale
-                events: {
-                    onClick: function () {
-                        Sheet.hide(function () {
-                            Sheet.destroy();
-                        });
+                Sheet.clearButtons();
 
-                        Site.clearWorkingStorage();
-                        Site.load(function () {
+                Sheet.addButton({
+                    text  : 'Daten verwerfen',  // #locale
+                    events: {
+                        onClick: function () {
+                            Sheet.hide(function () {
+                                Sheet.destroy();
+                            });
+
+                            Site.clearWorkingStorage();
                             self.load();
-                        });
+                        }
                     }
-                }
-            });
+                });
 
-            Sheet.addButton({
-                text  : 'Daten übernehmen', // #locale
-                events: {
-                    onClick: function () {
-                        Sheet.hide(function () {
-                            Sheet.destroy();
-                        });
+                Sheet.addButton({
+                    text  : 'Daten übernehmen', // #locale
+                    events: {
+                        onClick: function () {
+                            Sheet.hide(function () {
+                                Sheet.destroy();
+                            });
 
-                        Site.restoreWorkingStorage();
-                        Site.clearWorkingStorage();
-                        self.load();
+                            Site.setAttributes(hasStorage);
+                            Site.clearWorkingStorage();
+                            self.load();
+                        }
                     }
-                }
-            });
+                });
 
-            Sheet.show(function () {
-                self.Loader.hide();
+                Sheet.show(function () {
+                    self.Loader.hide();
+                });
             });
         },
 
@@ -781,7 +785,7 @@ define('controls/projects/project/site/Panel', [
                 this.$onCategoryLeave(this.getActiveCategory());
             }
 
-            if (Category.getAttribute('name') == 'content') {
+            if (Category.getAttribute('name') === 'content') {
                 this.loadEditor(
                     this.getSite().getAttribute('content')
                 );
@@ -789,7 +793,7 @@ define('controls/projects/project/site/Panel', [
                 return;
             }
 
-            if (Category.getAttribute('type') == 'wysiwyg') {
+            if (Category.getAttribute('type') === 'wysiwyg') {
                 this.loadEditor(
                     this.getSite().getAttribute(
                         Category.getAttribute('name')
@@ -1019,7 +1023,7 @@ define('controls/projects/project/site/Panel', [
                                 continue;
                             }
 
-                            if (typeOf(Control.setProject) == 'function') {
+                            if (typeOf(Control.setProject) === 'function') {
                                 Control.setProject(Project);
                             }
 

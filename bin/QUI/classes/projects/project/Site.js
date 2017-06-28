@@ -62,9 +62,9 @@ define('classes/projects/project/Site', [
             this.$loaded       = false;
 
             this.$workingId = 'site-' +
-                              Project.getName() + '-' +
-                              Project.getLang() + '-' +
-                              id;
+                Project.getName() + '-' +
+                Project.getLang() + '-' +
+                id;
 
             this.$modulesLoaded = false;
 
@@ -103,7 +103,7 @@ define('classes/projects/project/Site', [
 
             Ajax.get('ajax_site_get', function (result) {
                 Site.setAttributes(result.attributes);
-                Site.clearWorkingStorage();
+                //Site.clearWorkingStorage();
 
                 Site.$has_children = false;
                 Site.$parentid     = false;
@@ -135,7 +135,7 @@ define('classes/projects/project/Site', [
                             continue;
                         }
 
-                        if (i == 'onSiteLoad') {
+                        if (i === 'onSiteLoad') {
                             onSiteLoad.append(jsModules[i]);
                         }
                     }
@@ -143,12 +143,12 @@ define('classes/projects/project/Site', [
                     if (onSiteLoad.length) {
                         require(onSiteLoad, function () {
                             for (var i = 0, len = onSiteLoad.length; i < len; i++) {
-                                if (typeOf(arguments[i]) == 'class') {
+                                if (typeOf(arguments[i]) === 'class') {
                                     new arguments[i](Site);
                                     continue;
                                 }
 
-                                if (typeOf(arguments[i]) == 'function') {
+                                if (typeOf(arguments[i]) === 'function') {
                                     arguments[i](Site);
                                 }
                             }
@@ -191,7 +191,7 @@ define('classes/projects/project/Site', [
          * @return {Number}
          */
         getId: function () {
-            return this.getAttribute('id');
+            return parseInt(this.getAttribute('id'));
         },
 
         /**
@@ -223,7 +223,7 @@ define('classes/projects/project/Site', [
          * @return {Boolean}
          */
         hasChildren: function () {
-            return this.$has_children ? true : false;
+            return !!this.$has_children;
         },
 
         /**
@@ -309,7 +309,6 @@ define('classes/projects/project/Site', [
          * Activate the site
          *
          * @method classes/projects/project/Site#ajaxParams
-         * @fires activate
          * @param {Function} [onfinish] - (optional), callback function
          * @return {Object} this (classes/projects/project/Site)
          */
@@ -340,7 +339,6 @@ define('classes/projects/project/Site', [
          * Deactivate the site
          *
          * @method classes/projects/project/Site#deactivate
-         * @fires deactivate
          * @param {Function} [onfinish] - (optional), callback function
          * @return {Object} this (classes/projects/project/Site)
          */
@@ -371,7 +369,6 @@ define('classes/projects/project/Site', [
          * Save the site
          *
          * @method classes/projects/project/Site#save
-         * @fires save
          * @param {Function} [onfinish] - (optional), callback function
          * @return {Object} this (classes/projects/project/Site)
          */
@@ -522,7 +519,6 @@ define('classes/projects/project/Site', [
                 }
 
                 Site.fireEvent('linked', [Site, newParentId]);
-
             }, params);
         },
 
@@ -586,7 +582,7 @@ define('classes/projects/project/Site', [
 
             var params = this.ajaxParams();
 
-            if (typeOf(newname) == 'object') {
+            if (typeOf(newname) === 'object') {
                 params.attributes = JSON.encode(newname);
 
             } else {
@@ -696,7 +692,62 @@ define('classes/projects/project/Site', [
          * @return {boolean}
          */
         hasWorkingStorage: function () {
-            return QUI.Storage.get(this.getWorkingStorageId()) ? true : false;
+            return !!QUI.Storage.get(this.getWorkingStorageId());
+        },
+
+        /**
+         * has the site some changes in the storage?
+         *
+         * @return {Promise}
+         */
+        hasWorkingStorageChanges: function () {
+            if (this.hasWorkingStorage() === false) {
+                return Promise.resolve(false);
+            }
+
+            var self        = this,
+                storageData = this.getWorkingStorage();
+
+            return new Promise(function (resolve) {
+                var Data;
+
+                if (self.isLoaded()) {
+                    Data = Promise.resolve();
+                } else {
+                    Data = new Promise(function (reslove) {
+                        self.load(reslove);
+                    });
+                }
+
+                Data.then(function () {
+                    var siteData = self.getAttributes();
+
+                    var hasChanges = function () {
+                        for (var attribute in storageData) {
+                            if (!storageData.hasOwnProperty(attribute)) {
+                                continue;
+                            }
+
+                            if (!siteData.hasOwnProperty(attribute)) {
+                                continue;
+                            }
+
+                            if (JSON.encode(siteData[attribute]) !== JSON.encode(storageData[attribute])) {
+                                return true;
+                            }
+                        }
+
+                        return false;
+                    };
+
+                    if (hasChanges()) {
+                        resolve(storageData);
+                        return;
+                    }
+
+                    resolve(false);
+                });
+            });
         },
 
         /**
@@ -793,7 +844,7 @@ define('classes/projects/project/Site', [
                 return;
             }
 
-            if (k == 'id') {
+            if (k === 'id') {
                 return;
             }
 
