@@ -106,9 +106,9 @@ define('controls/projects/project/site/Panel', [
             if (typeOf(Site) === 'classes/projects/project/Site') {
                 var Project = Site.getProject(),
                     id      = 'panel-' +
-                        Project.getName() + '-' +
-                        Project.getLang() + '-' +
-                        Site.getId();
+                              Project.getName() + '-' +
+                              Project.getLang() + '-' +
+                              Site.getId();
 
                 // default id
                 this.setAttribute('id', id);
@@ -235,8 +235,8 @@ define('controls/projects/project/site/Panel', [
             title = Site.getAttribute('title') + ' (' + Site.getId() + ')';
 
             description = Site.getAttribute('name') + ' - ' +
-                Site.getId() + ' - ' +
-                Project.getName();
+                          Site.getId() + ' - ' +
+                          Project.getName();
 
             if (Site.getId() !== 1) {
                 description = description + ' - ' + Site.getUrl();
@@ -407,6 +407,8 @@ define('controls/projects/project/site/Panel', [
                 onDelete    : this.$onSiteDelete
             });
 
+            this.Loader.show();
+
             if (!Site.hasWorkingStorage()) {
                 Site.load();
                 return;
@@ -414,11 +416,8 @@ define('controls/projects/project/site/Panel', [
 
             var self = this;
 
-            this.Loader.show();
-
             Site.hasWorkingStorageChanges().then(function (hasStorage) {
                 if (hasStorage === false) {
-                    self.Loader.show();
                     return;
                 }
 
@@ -1029,14 +1028,12 @@ define('controls/projects/project/site/Panel', [
 
                             Control.setAttribute('Site', self.getSite());
                         }
+
+                        self.$categoryOnLoad(Category);
                     });
                 }).catch(function (error) {
                     console.error(error);
                 });
-
-
-                self.$categoryOnLoad(Category);
-
             }, {
                 id     : Site.getId(),
                 project: Project.encode(),
@@ -1291,10 +1288,10 @@ define('controls/projects/project/site/Panel', [
                 };
 
                 Panel.$onCategoryLeave(Panel.getActiveCategory())
-                     .then(saving)
-                     .then(function () {
-                         Panel.$onCategoryEnter(Panel.getActiveCategory());
-                     });
+                    .then(saving)
+                    .then(function () {
+                        Panel.$onCategoryEnter(Panel.getActiveCategory());
+                    });
 
                 return;
             }
