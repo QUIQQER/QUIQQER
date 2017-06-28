@@ -840,7 +840,7 @@
             <de><![CDATA[Führt ein System-Setup aus]]></de>
             <en><![CDATA[Execute a system setup]]></en>
         </locale>
-        <locale name="console.systemtool.setup">
+        <locale name="console.systemtool.password-reset">
             <de><![CDATA[Initiiert ein Passwort-Reset]]></de>
             <en><![CDATA[Initiates a password reset]]></en>
         </locale>
