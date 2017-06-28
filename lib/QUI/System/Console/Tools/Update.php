@@ -88,7 +88,7 @@ class Update extends QUI\System\Console\Tool
 
 
         if ($this->getArgument('check')) {
-            $this->writeLn('Prüfe nach Aktualisierungen...');
+            $this->writeLn('Prüfe nach Aktualisierungen...'); // #locale
             $this->writeLn();
             $this->writeLn();
 
