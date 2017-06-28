@@ -836,6 +836,14 @@
             <de><![CDATA[Führt ein System-Update aus]]></de>
             <en><![CDATA[Execute a system update]]></en>
         </locale>
+        <locale name="console.systemtool.setup">
+            <de><![CDATA[Führt ein System-Setup aus]]></de>
+            <en><![CDATA[Execute a system setup]]></en>
+        </locale>
+        <locale name="console.systemtool.setup">
+            <de><![CDATA[Initiiert ein Passwort-Reset]]></de>
+            <en><![CDATA[Initiates a password reset]]></en>
+        </locale>
 
         <locale name="message.config.saved">
             <de><![CDATA[Die Konfiguration wurde erfolgreich gespeichert.]]></de>
@@ -1808,8 +1816,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Delete QUIQQER License]]></en>
         </locale>
         <locale name="controls.licensekey.delete.popup.info">
-            <de><![CDATA[Sind Sie sicher, dass Sie Ihre aktuelle QUIQQER Lizenz löschen wollen? Sie haben dann ggf. keinen Zugriff mehr auf Pakete, die Teil Ihrer Lizenz waren.]]></de>
-            <en><![CDATA[Are you sure you want to delete your current QUIQQER license? You may no longer have access to packages that were part of your license.]]></en>
+            <de>
+                <![CDATA[Sind Sie sicher, dass Sie Ihre aktuelle QUIQQER Lizenz löschen wollen? Sie haben dann ggf. keinen Zugriff mehr auf Pakete, die Teil Ihrer Lizenz waren.]]></de>
+            <en>
+                <![CDATA[Are you sure you want to delete your current QUIQQER license? You may no longer have access to packages that were part of your license.]]></en>
         </locale>
         <locale name="controls.licensekey.delete.btn">
             <de><![CDATA[Lizenz löschen]]></de>

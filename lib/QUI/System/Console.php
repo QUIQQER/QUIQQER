@@ -43,6 +43,7 @@ class Console
         'clear-lock',
         'cron',
         'update',
+        'setup',
         'password-reset'
     );
 
@@ -160,20 +161,24 @@ class Console
         // system tools
         if (empty($params)) {
             $this->writeLn("Available System-Tools (Example: 'php quiqqer.php cron'): ");
+
             $systemTools = $this->systemTools;
             ksort($systemTools);
+
             foreach ($systemTools as $tool) {
                 /* @var $Tool Console\Tool */
                 $this->writeLn(" - ");
                 $this->write($tool, 'green');
-
                 $this->clearMsg();
+
                 for ($i = 0; $i < 20 - strlen($tool); $i++) {
                     $this->write(" ");
                 }
+
                 $this->write("- ");
                 $this->write(QUI::getLocale()->get('quiqqer/quiqqer', 'console.systemtool.' . $tool));
             }
+
             $this->write("\n\n");
         }
 
@@ -563,6 +568,11 @@ class Console
             case 'update':
                 QUI::getPackageManager()->update();
                 break;
+
+            case 'setup':
+                QUI\Setup::all();
+                break;
+
             case 'password-reset':
                 $this->passwordReset();
                 break;
@@ -772,9 +782,9 @@ class Console
     /**
      * Write a new line
      *
-     * @param string         $msg   - (optional) the printed message
+     * @param string $msg - (optional) the printed message
      * @param string|boolean $color - (optional) textcolor
-     * @param string|boolean $bg    - (optional) background color
+     * @param string|boolean $bg - (optional) background color
      */
     public function writeLn($msg = '', $color = false, $bg = false)
     {
@@ -784,9 +794,9 @@ class Console
     /**
      * alternative for message()
      *
-     * @param string         $msg   - Message to output
+     * @param string $msg - Message to output
      * @param string|boolean $color - (optional) textcolor
-     * @param string|boolean $bg    - (optional) background color
+     * @param string|boolean $bg - (optional) background color
      */
     public function write($msg, $color = false, $bg = false)
     {
@@ -796,9 +806,9 @@ class Console
     /**
      * Output a message
      *
-     * @param string         $msg   - Message to output
+     * @param string $msg - Message to output
      * @param string|boolean $color - (optional) textcolor
-     * @param string|boolean $bg    - (optional) background color
+     * @param string|boolean $bg - (optional) background color
      */
     public function message($msg, $color = false, $bg = false)
     {
