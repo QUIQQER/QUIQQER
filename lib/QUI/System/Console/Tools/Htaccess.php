@@ -324,7 +324,7 @@ class Htaccess extends QUI\System\Console\Tool
         if (QUI::conf("webserver", "forceHttps")) {
             $forceHttps = "# Redirect non https traffic to https. For a safer web." . PHP_EOL;
             $forceHttps .= "    RewriteCond %{HTTPS} !on" . PHP_EOL;
-            $forceHttps .= "    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,END]" . PHP_EOL;
+            $forceHttps .= "    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]" . PHP_EOL;
         }
 
         return "
