@@ -200,9 +200,10 @@ define('classes/groups/Group', [
          *         the return of the function: {Array}
          * @param {Object} limits - limit params (limit, page, field, order)
          *
-         * @return {Object} this (classes/groups/Group)
+         * @return {Promise}
          */
         getUsers: function (onfinish, limits) {
+            var self   = this;
             var params = {
                 limit: limits.limit || 50,
                 page : limits.page || 1,
@@ -210,14 +211,19 @@ define('classes/groups/Group', [
                 order: limits.order || 'DESC'
             };
 
-            Ajax.get('ajax_groups_users', function (result, Request) {
-                onfinish(result, Request);
-            }, {
-                gid   : this.getId(),
-                params: JSON.encode(params)
-            });
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_groups_users', function (result, Request) {
+                    if (typeof onfinish !== 'undefined') {
+                        onfinish(result, Request);
+                    }
 
-            return this;
+                    resolve(self, result);
+                }, {
+                    gid    : self.getId(),
+                    params : JSON.encode(params),
+                    onError: reject
+                });
+            });
         },
 
         /**
