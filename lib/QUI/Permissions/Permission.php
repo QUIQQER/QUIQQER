@@ -179,7 +179,6 @@ class Permission
         $Manager     = QUI::getPermissionManager();
         $permissions = $Manager->getPermissions($User);
 
-
         // first check user permission
         if (isset($permissions[$perm]) && !empty($permissions[$perm])) {
             return $permissions[$perm];
@@ -595,6 +594,11 @@ class Permission
                         $User
                     );
                 } catch (QUI\Permissions\Exception $Exception) {
+                    // if site permissions are not empty do not check user permissions
+                    if (!empty($permissions['quiqqer.projects.site.view'])) {
+                        throw $Exception;
+                    }
+
                     return self::checkPermission(
                         'quiqqer.projects.sites.view',
                         $User
@@ -610,6 +614,11 @@ class Permission
                         $User
                     );
                 } catch (QUI\Permissions\Exception $Exception) {
+                    // if site permissions are not empty do not check user permissions
+                    if (!empty($permissions['quiqqer.projects.site.edit'])) {
+                        throw $Exception;
+                    }
+
                     return self::checkPermission(
                         'quiqqer.projects.sites.edit',
                         $User
@@ -625,6 +634,11 @@ class Permission
                         $User
                     );
                 } catch (QUI\Permissions\Exception $Exception) {
+                    // if site permissions are not empty do not check user permissions
+                    if (!empty($permissions['quiqqer.projects.site.del'])) {
+                        throw $Exception;
+                    }
+
                     return self::checkPermission(
                         'quiqqer.projects.sites.del',
                         $User
@@ -640,6 +654,11 @@ class Permission
                         $User
                     );
                 } catch (QUI\Permissions\Exception $Exception) {
+                    // if site permissions are not empty do not check user permissions
+                    if (!empty($permissions['quiqqer.projects.site.new'])) {
+                        throw $Exception;
+                    }
+
                     return self::checkPermission(
                         'quiqqer.projects.sites.new',
                         $User

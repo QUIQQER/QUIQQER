@@ -5816,6 +5816,14 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Alle E-Mail-Adressen werden für SpyBots unkenntlich gemacht]]></de>
             <en><![CDATA[All email addresses are defaced for spybots]]></en>
         </locale>
+        <locale name="quiqqer.settings.globals.sitePermissionDeniedErrorCode.title">
+            <de><![CDATA[HTTP Statuscode bei fehlendem Seiten-Recht]]></de>
+            <en><![CDATA[HTTP status code on missing site permission]]></en>
+        </locale>
+        <locale name="quiqqer.settings.globals.sitePermissionDeniedErrorCode.desc">
+            <de><![CDATA[Bestimmt, welcher HTTP Statuscode gesendet wird, wenn ein Benutzer eine Seite aufruft, für die er nicht das Recht besitzt, sie anzusehen.]]></de>
+            <en><![CDATA[Determines which HTTP status code is sent when a user visits a page for which he does not have the permission to view.]]></en>
+        </locale>
 
         <locale name="quiqqer.settings.general.globals.htmlSuffix">
             <de><![CDATA[HTML Endung an Seitenadressen]]></de>

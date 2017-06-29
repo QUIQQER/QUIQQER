@@ -1055,7 +1055,15 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         $params['where']['nav_hide'] = 0;
 
-        return $this->getChildren($params);
+        $children = $this->getChildren($params);
+
+        foreach ($children as $k => $Child) {
+            if ($Child instanceof QUI\Projects\Site\PermissionDenied) {
+                unset($children[$k]);
+            }
+        }
+
+        return $children;
     }
 
     /**
