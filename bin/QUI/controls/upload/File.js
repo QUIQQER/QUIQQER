@@ -371,15 +371,15 @@ define('controls/upload/File', [
                 return;
             }
 
-            if (this.$File.type === '' || !this.$File.type) {
-                QUI.getMessageHandler(function (MessageHandler) {
-                    MessageHandler.addError(
-                        Locale.get(lg, 'file.upload.unknown.filetype')
-                    );
-                });
-
-                return;
-            }
+            //if (this.$File.type === '' || !this.$File.type) {
+            //    QUI.getMessageHandler(function (MessageHandler) {
+            //        MessageHandler.addError(
+            //            Locale.get(lg, 'file.upload.unknown.filetype')
+            //        );
+            //    });
+            //
+            //    return;
+            //}
 
             if (this.$is_paused) {
                 return;
