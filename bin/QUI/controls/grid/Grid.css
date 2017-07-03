@@ -72,6 +72,11 @@
     /*background-color:red;*/
 }
 
+.omnigrid div.bDiv .td.clickable:hover {
+    background: #2F8FC6;
+    color: #fff;
+}
+
 .omnigrid div.bDiv .td img {
     float: left;
     margin: 0;
