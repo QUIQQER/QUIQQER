@@ -11,6 +11,7 @@ use QUI\Permissions\Permission;
 use QUI\Users\User;
 use QUI\Groups\Group;
 use QUI\Utils\Text\XML;
+use QUI\Projects\Site\PermissionDenied;
 
 /**
  * A project
@@ -125,8 +126,8 @@ class Project
     /**
      * Konstruktor eines Projektes
      *
-     * @param string         $name     - Name of the Project
-     * @param string|boolean $lang     - (optional) Language of the Project - optional
+     * @param string $name - Name of the Project
+     * @param string|boolean $lang - (optional) Language of the Project - optional
      * @param string|boolean $template - (optional) Template of the Project
      *
      * @throws QUI\Exception
@@ -362,8 +363,8 @@ class Project
     /**
      * Durchsucht das Projekt nach Seiten
      *
-     * @param string        $search   - Suchwort
-     * @param array|boolean $select   - (optional) in welchen Feldern gesucht werden soll
+     * @param string $search - Suchwort
+     * @param array|boolean $select - (optional) in welchen Feldern gesucht werden soll
      *                                array('name', 'title', 'short', 'content')
      *
      * @return array
@@ -415,7 +416,7 @@ class Project
      * VHost zurück geben
      *
      * @param boolean $with_protocol - Mit oder ohne http -> standard = ohne
-     * @param boolean $ssl           - mit oder ohne ssl
+     * @param boolean $ssl - mit oder ohne ssl
      *
      * @return boolean | string
      */
@@ -650,6 +651,7 @@ class Project
      * @param integer $id - ID der Seite
      *
      * @return Site|Site\Edit
+     * @throws QUI\Exception
      */
     public function get($id)
     {
@@ -661,7 +663,16 @@ class Project
             return $this->children[$id];
         }
 
-        $Site                = new Site($this, (int)$id);
+        try {
+            $Site = new Site($this, (int)$id);
+        } catch (QUI\Permissions\Exception $Exception) {
+            if ($Exception->getCode() !== 403) {
+                throw $Exception;
+            }
+
+            $Site = new PermissionDenied($this, (int)$id);
+        }
+
         $this->children[$id] = $Site;
 
         return $Site;
@@ -789,7 +800,7 @@ class Project
      * Return the children ids from a site
      *
      * @param integer $parentid - The parent site ID
-     * @param array   $params   - extra db statemens, like order, where, count, limit
+     * @param array $params - extra db statemens, like order, where, count, limit
      *
      * @return array|integer
      */
@@ -906,7 +917,7 @@ class Project
     /**
      * Gibt alle Parent IDs zurück
      *
-     * @param integer $id      - child id
+     * @param integer $id - child id
      * @param boolean $reverse - revers the result
      *
      * @return array
@@ -966,7 +977,7 @@ class Project
         ) {
             $sql['where']['active'] = 1;
         } elseif (isset($sql['where']['active'])
-            && $sql['where']['active'] == -1
+                  && $sql['where']['active'] == -1
         ) {
             unset($sql['where']['active']);
         } elseif (isset($sql['where']) && is_string($sql['where'])) {
@@ -981,7 +992,7 @@ class Project
         ) {
             $sql['where']['deleted'] = 0;
         } elseif (isset($sql['where']['deleted'])
-            && $sql['where']['deleted'] == -1
+                  && $sql['where']['deleted'] == -1
         ) {
             unset($sql['where']['deleted']);
         } elseif (is_string($sql['where'])) {
@@ -1326,7 +1337,7 @@ class Project
      * Add an user to the project permission
      *
      * @param string $permission - name of the permission
-     * @param User   $User       - User Object
+     * @param User $User - User Object
      */
     public function addUserToPermission(User $User, $permission)
     {
@@ -1337,7 +1348,7 @@ class Project
      * Add an group to the project permission
      *
      * @param string $permission - name of the permission
-     * @param Group  $Group      - Group Object
+     * @param Group $Group - Group Object
      */
     public function addGroupToPermission(Group $Group, $permission)
     {
@@ -1348,7 +1359,7 @@ class Project
      * Remove the user from the project permission
      *
      * @param string $permission - name of the permission
-     * @param User   $User       - User Object
+     * @param User $User - User Object
      */
     public function removeUserFromPermission(User $User, $permission)
     {

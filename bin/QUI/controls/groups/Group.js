@@ -795,7 +795,7 @@ define('controls/groups/Group', [
             }
 
             for (var i = 0, len = result.data.length; i < len; i++) {
-                if (result.data[i].active) {
+                if (result.data[i].active == 1) {
                     result.data[i].status = new Element('div', {
                         'class': 'fa fa-check',
                         styles : {
