@@ -18,6 +18,10 @@ QUI::$Ajax->registerFunction(
 
         foreach ($files as $file) {
             if (!file_exists($file)) {
+                $file = CMS_DIR . $file;
+            }
+
+            if (!file_exists($file)) {
                 continue;
             }
 

@@ -140,7 +140,7 @@ class Menu
             $files = QUI\Utils\System\File::readDir($dir);
 
             foreach ($files as $key => $file) {
-                $files[$key] = $dir . $file;
+                $files[$key] = str_replace(CMS_DIR, '', $dir . $file);
             }
         }
 
@@ -161,7 +161,7 @@ class Menu
             $setting_file = $Package->getXMLFile('settings.xml');
 
             if (file_exists($setting_file)) {
-                $files[] = $setting_file;
+                $files[] = str_replace(CMS_DIR, '', $setting_file);
             }
         }
 
@@ -171,7 +171,7 @@ class Menu
         $windowList = array();
 
         foreach ($files as $file) {
-            $windows = XML::getSettingWindowsFromXml($file);
+            $windows = XML::getSettingWindowsFromXml(CMS_DIR . $file);
 
             if (!$windows) {
                 continue;

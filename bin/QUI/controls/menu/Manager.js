@@ -128,7 +128,7 @@ define('controls/menu/Manager', [
                 list = QUI.Controls.getByType('controls/desktop/panels/XML');
 
                 for (i = 0, len = list.length; i < len; i++) {
-                    if (list[i].getFile() == xmlFile) {
+                    if (list[i].getFile() === xmlFile) {
                         // if a task exist, click it and open the instance
                         var Task = list[i].getAttribute('Task');
 
@@ -193,7 +193,7 @@ define('controls/menu/Manager', [
                 if (list.length) {
                     if (menuRequire === 'controls/projects/project/Settings') {
                         for (i = 0, len = list.length; i < len; i++) {
-                            if (list[i].getAttribute('project') == attributes.project) {
+                            if (list[i].getAttribute('project') === attributes.project) {
                                 PanelUtils.execPanelOpen(list[0]);
                                 return;
                             }
