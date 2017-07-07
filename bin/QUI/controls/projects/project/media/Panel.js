@@ -81,6 +81,7 @@ define('controls/projects/project/media/Panel', [
             '$onCreate',
             '$viewOnDrop',
             '$itemEvent',
+            '$onFilter',
             'unselectItems',
             '$onContextMenu'
         ],
@@ -132,9 +133,11 @@ define('controls/projects/project/media/Panel', [
             this.setAttribute('icon', 'fa fa-picture-o');
             this.parent(options);
 
-            this.$Map      = null;
-            this.$Media    = Media || null;
-            this.$File     = null;
+            this.$Map    = null;
+            this.$Media  = Media || null;
+            this.$File   = null;
+            this.$Filter = null;
+
             this.$children = [];
             this.$selected = [];
 
@@ -395,6 +398,21 @@ define('controls/projects/project/media/Panel', [
 
                 self.addButton(Upload);
 
+                self.$Filter = new Element('input', {
+                    placeholder: 'Filter...',
+                    styles     : {
+                        'float' : 'right',
+                        margin  : 10,
+                        maxWidth: '100%',
+                        width   : 200
+                    },
+                    events     : {
+                        keyup: self.$onFilter
+                    }
+                });
+
+                self.addButton(self.$Filter);
+
                 if (self.getAttribute('startid')) {
                     self.openID(self.getAttribute('startid'));
                     return;
@@ -458,6 +476,7 @@ define('controls/projects/project/media/Panel', [
                 Project = this.$Media.getProject();
 
             this.Loader.show();
+            this.$Filter.value = '';
 
             // set loader image
             this.setOptions({
@@ -1053,6 +1072,8 @@ define('controls/projects/project/media/Panel', [
                 Project  = Media.getProject(),
                 project  = Project.getName();
 
+            this.$Filter.setStyle('display', null);
+
             for (i = 0, len = children.length; i < len; i++) {
                 if (i === 0 && children[i].name === '..') {
                     continue;
@@ -1133,6 +1154,8 @@ define('controls/projects/project/media/Panel', [
                 Media    = this.$Media,
                 Project  = Media.getProject(),
                 project  = Project.getName();
+
+            this.$Filter.setStyle('display', null);
 
             for (i = 0, len = children.length; i < len; i++) {
                 if (i === 0 && children[i].name === '..') {
@@ -1310,6 +1333,8 @@ define('controls/projects/project/media/Panel', [
                 GridContainer = new Element('div');
 
             GridContainer.inject(Container);
+
+            this.$Filter.setStyle('display', 'none');
 
             var Grid = new GridControl(GridContainer, {
 
@@ -2119,7 +2144,7 @@ define('controls/projects/project/media/Panel', [
                 return;
             }
 
-            if (Node.get('data-project') != Media.getProject().getName()) {
+            if (Node.get('data-project') !== Media.getProject().getName()) {
                 return;
             }
 
@@ -2155,6 +2180,36 @@ define('controls/projects/project/media/Panel', [
                 this.$children[i].title    = Item.getAttribute('title');
                 break;
             }
+        },
+
+        /**
+         *
+         */
+        $onFilter: function () {
+            if (this.$filterDelay) {
+                clearTimeout(this.$filterDelay);
+            }
+
+            var self = this;
+
+            this.$filterDelay = function () {
+                var i, len, Child, Title;
+                var children = self.getContent().getElements('.qui-media-item');
+
+                var value = self.$Filter.value;
+
+                for (i = 0, len = children.length; i < len; i++) {
+                    Child = children[i];
+                    Title = Child.getElement('.title');
+
+                    if (Title.get('text').match(value)) {
+                        Child.setStyle('display', null);
+                        continue;
+                    }
+
+                    Child.setStyle('display', 'none');
+                }
+            }.delay(100);
         }
     });
 });
