@@ -22,7 +22,10 @@ QUI::$Ajax->registerFunction(
 
         foreach ($files as $file) {
             if (!file_exists($file)) {
-                // #locale
+                $file = CMS_DIR . $file;
+            }
+
+            if (!file_exists($file)) {
                 QUI\Log\Logger::getLogger()->addError(
                     QUI::getLocale()->get(
                         'quiqqer/quiqqer',
