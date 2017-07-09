@@ -854,14 +854,8 @@
             <en><![CDATA[Could not save the data. the config file [file] was not found.]]></en>
         </locale>
         <locale name="message.config.webserver.changed">
-            <de><![CDATA[
-                Webserver relevante Konfigurationen wurden geändert.
-                Bitte aktualisieren Sie Ihre NGINX Vhost Konfiguration.
-            ]]></de>
-            <en><![CDATA[
-                Web server relevant configurations have been changed.
-                Please update your NGINX virtual host configuration.
-            ]]></en>
+            <de><![CDATA[Sollten Sie den NGINX Server eingesetzt haben, so müssen Sie die Konfiguration anpassen]]></de>
+            <en><![CDATA[If your system operates on NGINX, you need to reapply the generated configuration.]]></en>
         </locale>
 
         <locale name="exception.lib.user.nobody.get.address">
