@@ -360,6 +360,16 @@ class Address extends QUI\QDOM
     }
 
     /**
+     * Alias for getDisplay
+     *
+     * @return string
+     */
+    public function render()
+    {
+        return $this->getDisplay();
+    }
+
+    /**
      * @return string
      */
     public function getText()
