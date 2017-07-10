@@ -2231,7 +2231,7 @@ define('controls/grid/Grid', [
 
                 for (i = 0, len = bt.length; i < len; i++) {
                     bt[i].type = bt[i].type || '';
-                    
+
                     if (bt[i].type === 'separator') {
                         new QUISeparator().inject(tDiv);
                         continue;
@@ -2252,6 +2252,7 @@ define('controls/grid/Grid', [
 
                     node = Btn.getElm();
                     node.removeProperty('tabindex'); // focus eigenschaft nehmen
+                    node.type = 'button';
                     node.addClass('btn-silver');
 
                     var Item = new QUIContextItem({
