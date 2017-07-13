@@ -104,6 +104,14 @@ define('controls/editors/Settings', [
                 }
             });
 
+            this.addCategory({
+                text: 'Toolbars'
+            });
+
+            this.addCategory({
+                text: 'Plugins'
+            });
+
             var Container = new Element('div').inject(
                 this.getContent()
             );
@@ -162,11 +170,20 @@ define('controls/editors/Settings', [
         /**
          * get the toolbars
          *
-         * @param {Function} callback - callback( list )
+         * @param {Function} [callback] - callback( list )
+         * @return {Promise}
          */
         getToolbars: function (callback) {
-            Ajax.get('ajax_editor_get_toolbars', function (list) {
-                callback(list);
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_editor_get_toolbars', function (list) {
+                    resolve(list);
+
+                    if (typeof callback === 'function') {
+                        callback(list);
+                    }
+                }, {
+                    onError: reject
+                });
             });
         },
 
@@ -174,13 +191,20 @@ define('controls/editors/Settings', [
          * Delete a toolbar
          *
          * @param {String} toolbar - name of the toolbar
-         * @param {Function} callback
+         * @param {Function} [callback]
          */
         deleteToolbar: function (toolbar, callback) {
-            Ajax.get('ajax_editor_toolbar_delete', function (list) {
-                callback(list);
-            }, {
-                toolbar: toolbar
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_editor_toolbar_delete', function (list) {
+                    resolve(list);
+
+                    if (typeof callback === 'function') {
+                        callback(list);
+                    }
+                }, {
+                    toolbar: toolbar,
+                    onError: reject
+                });
             });
         },
 
@@ -188,13 +212,20 @@ define('controls/editors/Settings', [
          * Add a toolbar
          *
          * @param {String} toolbar - name of the toolbar (myNewToolbar)
-         * @param {Function} callback
+         * @param {Function} [callback]
          */
         addToolbar: function (toolbar, callback) {
-            Ajax.get('ajax_editor_toolbar_add', function () {
-                callback();
-            }, {
-                toolbar: toolbar
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_editor_toolbar_add', function () {
+                    resolve();
+
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+                }, {
+                    toolbar: toolbar,
+                    onError: reject
+                });
             });
         },
 
@@ -307,7 +338,6 @@ define('controls/editors/Settings', [
                         });
                     }
                 }
-
             }).open();
         },
 
@@ -334,13 +364,10 @@ define('controls/editors/Settings', [
                     onSubmit: function (toolbar) {
                         self.addToolbar(toolbar, function () {
                             self.refresh();
-                            self.editToolbar(
-                                toolbar.replace('\.xml', '') + '.xml.php'
-                            );
+                            self.editToolbar(toolbar);
                         });
                     }
                 }
-
             }).open();
         },
 

@@ -170,7 +170,7 @@ define('controls/upload/Manager', [
                     if (Container) {
                         var Content = Container.getParent();
 
-                        if (Content && Content.getStyle('display') == 'none') {
+                        if (Content && Content.getStyle('display') === 'none') {
                             var Panel = QUI.Controls.getById(
                                 Content.getParent('.qui-panel').get('data-quiid')
                             );

@@ -43,7 +43,7 @@ define('controls/packages/PackageList', [
         ],
 
         options: {
-            buttons: []
+            buttons: false
         },
 
         initialize: function (options) {
@@ -167,23 +167,30 @@ define('controls/packages/PackageList', [
                         description: entry.description,
                         image      : image
                     }),
-                    'data-name': entry.name,
-                    events     : {
-                        click: this.$packageClick
-                    }
+                    'data-name': entry.name
                 }).inject(this.$Elm);
+
+                if (!("installed" in entry) || entry.installed === true) {
+                    Package.addEvent('click', this.$packageClick);
+                } else {
+                    Package.setStyle('cursor', 'default');
+                }
 
                 ButtonContainer = Package.getElement('.packages-package-tile-package-buttons');
 
                 if (extraButtons.length) {
                     var c, clen, options;
                     for (c = 0, clen = extraButtons.length; c < clen; c++) {
-                        options         = extraButtons[c];
+                        options         = Object.clone(extraButtons[c]);
                         options.package = entry.name;
 
                         new QUIButton(options).inject(ButtonContainer);
                     }
                 }
+
+                ButtonContainer.addEvent('click', function (event) {
+                    event.stop();
+                });
 
                 if (typeof entry.type === 'undefined' || !entry.type.match('quiqqer-')) {
                     continue;
@@ -200,7 +207,6 @@ define('controls/packages/PackageList', [
                         }
                     }).inject(Package.getElement('.packages-package-tile-package-buttons'));
                 }
-
             }
         },
 
@@ -239,20 +245,27 @@ define('controls/packages/PackageList', [
                         description: entry.description,
                         image      : image
                     }),
-                    'data-name': entry.name,
-                    events     : {
-                        click: this.$packageClick
-                    }
+                    'data-name': entry.name
                 }).inject(this.$Elm);
+
+                if (!("installed" in entry) || entry.installed === true) {
+                    Package.addEvent('click', this.$packageClick);
+                } else {
+                    Package.setStyle('cursor', 'default');
+                }
 
                 ButtonContainer = Package.getElement(
                     '.packages-package-list-package-buttons'
                 );
 
+                ButtonContainer.addEvent('click', function (event) {
+                    event.stop();
+                });
+
                 if (extraButtons.length) {
                     var c, clen, options;
                     for (c = 0, clen = extraButtons.length; c < clen; c++) {
-                        options         = extraButtons[c];
+                        options         = Object.clone(extraButtons[c]);
                         options.package = entry.name;
 
                         new QUIButton(options).inject(ButtonContainer);

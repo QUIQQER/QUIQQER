@@ -10,6 +10,7 @@
  * @fires onBegin [this]
  * @fires onCancel
  * @fires onComplete [this]
+ * @fires onFinished [this]
  * @fires onSubmit [Array, this]
  * @fires onInputDestroy
  * @fires onDragenter [event, DOMNode, controls/upload/Form]
@@ -643,6 +644,18 @@ define('controls/upload/Form', [
             }
 
             this.fireEvent('complete', [this, File, result]);
+
+            require(['UploadManager'], function (UploadManager) {
+                var files = UploadManager.$files;
+
+                for (var i = 0, len = files.length; i < len; i++) {
+                    if (!files[i].isFinished()) {
+                        return;
+                    }
+                }
+
+                this.fireEvent('finished', [this]);
+            }.bind(this));
         },
 
         /**
@@ -712,7 +725,7 @@ define('controls/upload/Form', [
                         return;
                     }
 
-                    if (Elm.nodeName != 'FORM') {
+                    if (Elm.nodeName !== 'FORM') {
                         Elm = Elm.getParent('form');
                     }
 
@@ -726,7 +739,7 @@ define('controls/upload/Form', [
                         return;
                     }
 
-                    if (Elm.nodeName != 'FORM') {
+                    if (Elm.nodeName !== 'FORM') {
                         return;
                     }
 
@@ -739,7 +752,7 @@ define('controls/upload/Form', [
                         return;
                     }
 
-                    if (Elm.nodeName != 'FORM') {
+                    if (Elm.nodeName !== 'FORM') {
                         Elm = Elm.getParent('form');
                     }
 
@@ -752,7 +765,7 @@ define('controls/upload/Form', [
                         return;
                     }
 
-                    if (Elm.nodeName != 'FORM') {
+                    if (Elm.nodeName !== 'FORM') {
                         Elm = Elm.getParent('form');
                     }
 
@@ -835,10 +848,6 @@ define('controls/upload/Form', [
                         self.$files = {};
                         self.$Form  = self.createForm();
                         self.$Form.inject(self.getElm());
-
-                        //                        for (var i = 0, len = self.getAttribute( 'uploads' ); i < len; i++) {
-                        //                            self.addInput();
-                        //                        }
                     }
                 }
             }).inject(this.$Info);

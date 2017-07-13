@@ -276,13 +276,24 @@ class Template extends QUI\QDOM
     }
 
     /**
+     * Return a template output
+     *
+     * @param string $template - Path to a template
+     * @return string
+     */
+    public function fetchTemplate($template)
+    {
+        return $this->getEngine()->fetch($template);
+    }
+
+    /**
      * Prepares the contents of a template
      *
      * @param QUI\Projects\Site|QUI\Projects\Site\Edit $Site
      *
      * @return string
      */
-    public function fetchTemplate($Site)
+    public function fetchSite($Site)
     {
         /* @var $Site QUI\Projects\Site */
         $Project = $Site->getProject();

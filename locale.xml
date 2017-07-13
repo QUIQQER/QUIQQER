@@ -150,7 +150,7 @@
             <de><![CDATA[Darf Gruppen editieren.]]></de>
             <en><![CDATA[Is allowed to edit groups.]]></en>
         </locale>
-        <locale name="permission.quiqqer.admin.groups.edit">
+        <locale name="permission.quiqqer.admin.groups.create">
             <de><![CDATA[Darf Gruppen anlegen.]]></de>
             <en><![CDATA[Is allowed to create groups.]]></en>
         </locale>
@@ -359,6 +359,10 @@
             <de><![CDATA[Deaktivieren]]></de>
             <en><![CDATA[Deactivate]]></en>
         </locale>
+        <locale name="rename">
+            <de><![CDATA[Umbenennen]]></de>
+            <en><![CDATA[Rename]]></en>
+        </locale>
 
         <locale name="isActivate">
             <de><![CDATA[Ist aktiviert]]></de>
@@ -551,6 +555,18 @@
             <de><![CDATA[Speichern]]></de>
             <en><![CDATA[Save]]></en>
         </locale>
+        <locale name="data">
+            <de><![CDATA[Daten]]></de>
+            <en><![CDATA[Data]]></en>
+        </locale>
+        <locale name="recipient">
+            <de><![CDATA[Empfänger]]></de>
+            <en><![CDATA[Recipient]]></en>
+        </locale>
+        <locale name="email">
+            <de><![CDATA[E-Mail]]></de>
+            <en><![CDATA[Email]]></en>
+        </locale>
 
         <locale name="system.forwarding.from">
             <de><![CDATA[Von]]></de>
@@ -623,6 +639,42 @@
         <locale name="quiqqer.settings.general.webserver.forcehttps.description">
             <de><![CDATA[Alle http Requests werden per 301-Umleitung auf https  umgeleitet]]></de>
             <en><![CDATA[All http request will be 301-redirected to https]]></en>
+        </locale>
+        <locale name="quiqqer.settings.webserver.type.title">
+            <de><![CDATA[Typ]]></de>
+            <en><![CDATA[Type]]></en>
+        </locale>
+        <locale name="quiqqer.settings.webserver.type.desc">
+            <de><![CDATA[Der Webserver, der auf Ihrem System eingesetzt wird]]></de>
+            <en><![CDATA[The Webserver which is used on your system]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.packagestore.title">
+            <de><![CDATA[Package Store]]></de>
+            <en><![CDATA[Package Store]]></en>
+        </locale>
+        <locale name="quiqqer.settings.packagestore.url.title">
+            <de><![CDATA[URL Package Store Webseite]]></de>
+            <en><![CDATA[URL Package Store Website]]></en>
+        </locale>
+        <locale name="quiqqer.settings.packagestore.url.description">
+            <de>
+                <![CDATA[Diese Seite wird in einem iFrame angezeigt, wenn der Benutzer in der Systemverwaltung auf "Erweiterungen installieren" klickt.]]></de>
+            <en>
+                <![CDATA[This site is shown in an iframe, when the user clicks "Install extensions" in the System administration.]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.license.title">
+            <de><![CDATA[QUIQQER Lizenz]]></de>
+            <en><![CDATA[QUIQQER License]]></en>
+        </locale>
+        <locale name="quiqqer.settings.license.url.title">
+            <de><![CDATA[URL Lizenz-Server]]></de>
+            <en><![CDATA[URL License server]]></en>
+        </locale>
+        <locale name="quiqqer.settings.license.url.description">
+            <de><![CDATA[Composer-Lizenzserver für alle kostenpflichtigen Pakete]]></de>
+            <en><![CDATA[Composer license server for all non-free packages]]></en>
         </locale>
     </groups>
 
@@ -784,6 +836,14 @@
             <de><![CDATA[Führt ein System-Update aus]]></de>
             <en><![CDATA[Execute a system update]]></en>
         </locale>
+        <locale name="console.systemtool.setup">
+            <de><![CDATA[Führt ein System-Setup aus]]></de>
+            <en><![CDATA[Execute a system setup]]></en>
+        </locale>
+        <locale name="console.systemtool.password-reset">
+            <de><![CDATA[Initiiert ein Passwort-Reset]]></de>
+            <en><![CDATA[Initiates a password reset]]></en>
+        </locale>
 
         <locale name="message.config.saved">
             <de><![CDATA[Die Konfiguration wurde erfolgreich gespeichert.]]></de>
@@ -794,12 +854,106 @@
             <en><![CDATA[Could not save the data. the config file [file] was not found.]]></en>
         </locale>
         <locale name="message.config.webserver.changed">
-            <de><![CDATA[Webserver relevante Konfigurationen wurden geändert. Bitte aktualisieren Sie ihre Nginx Vhost Konfiguration]]></de>
-            <en><![CDATA[Webserver relevant configurations have been changed. Please update your Nginx virtual host configuration. ]]></en>
+            <de><![CDATA[Sollten Sie den NGINX Server eingesetzt haben, so müssen Sie die Konfiguration anpassen]]></de>
+            <en><![CDATA[If your system operates on NGINX, you need to reapply the generated configuration.]]></en>
+        </locale>
+
+        <locale name="exception.lib.user.nobody.get.address">
+            <de><![CDATA[Der Benutzer Nobody kann keine Address besitzen.]]></de>
+            <en><![CDATA[The user Nobody can not have an address.]]></en>
+        </locale>
+        <locale name="exception.lib.user.address.not.found">
+            <de><![CDATA[Die Address [addressId] für den Benutzer [userId] konnte nicht gefunden werden.]]></de>
+            <en><![CDATA[Could not find the address [addressId] for the user [userId].]]></en>
+        </locale>
+        <locale name="exception.vhost.not.found">
+            <de><![CDATA[Der VHost wurde nicht gefunden]]></de>
+            <en><![CDATA[The Vhost was not found]]></en>
+        </locale>
+        <locale name="exception.vhost.missing.data.project">
+            <de><![CDATA[Fehlende Angabe: Projekt]]></de>
+            <en><![CDATA[Missing data: Project]]></en>
+        </locale>
+        <locale name="exception.vhost.missing.data.lang">
+            <de><![CDATA[Fehlende Angabe: Sprache]]></de>
+            <en><![CDATA[Missing data: language]]></en>
+        </locale>
+
+        <locale name="console.tool.passwordreset.header">
+            <de><![CDATA[Password zurücksetzen]]></de>
+            <en><![CDATA[Password reset]]></en>
+        </locale>
+
+        <locale name="console.tool.passwordreset.warning">
+            <de><![CDATA[ACHTUNG! Dieses setzt das Passwort eines Benutzers unwiderbringlich zurück!]]></de>
+            <en><![CDATA[ATTENTION! This tool will ireversibly reset the password of a user!]]></en>
+        </locale>
+
+        <locale name="console.tool.passwordreset.prompt.username">
+            <de><![CDATA[Benutzername:]]></de>
+            <en><![CDATA[Username:]]></en>
+        </locale>
+
+        <locale name="console.tool.passwordreset.prompt.confirm">
+            <de>
+                <![CDATA[Sind Sie sicher, dass Sie das passwort des benutzers '[username]' zurücksetzen möchten? (y/n)]]></de>
+            <en><![CDATA[Are you sure you want to reset the password of the user '[username]'? (y/n)]]></en>
+        </locale>
+
+        <locale name="console.tool.passwordreset.prompt.confirm2">
+            <de><![CDATA[Sind Sie wirklich sicher? Dies kann nicht rückgängig gemacht werden! (y/n)]]></de>
+            <en><![CDATA[Are you really sure? This change can not be undone! (y/n)]]></en>
+        </locale>
+        <locale name="console.tool.passwordreset.user.not.found">
+            <de><![CDATA[Der gegebene Benutzer wurde nicht gefunden]]></de>
+            <en><![CDATA[The given user was not found]]></en>
+        </locale>
+
+        <locale name="console.tool.passwordreset.success">
+            <de><![CDATA[Das passwort wurde erfolgreich geändert! Das neue Passwort ist '[password]']]></de>
+            <en><![CDATA[The password has been changed successfully. The new password is '[password]']]></en>
+        </locale>
+
+        <locale name="exception.zip.extension.not.installed">
+            <de><![CDATA[
+            Die Aktion kann nicht durchgeführt werden.
+            Die ZIP Erweiterung von PHP ist auf dem System nicht vorhanden.
+            ]]></de>
+            <en><![CDATA[
+            The action can not be performed.
+            The ZIP extension of PHP is not installed on the system.
+            ]]></en>
+        </locale>
+        <locale name="exception.zip.folder.is.empty">
+            <de><![CDATA[
+            Eine ZIP Datei kann nicht erstellt werden da der Ordner leer ist.
+            ]]></de>
+            <en><![CDATA[
+            A ZIP file can not be created because the folder is empty
+            ]]></en>
         </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="js">
+
+        <!-- Control: controls/packages/Panel -->
+        <locale name="controls.packages.search.template.togglePackageStore">
+            <de><![CDATA[QUIQQER Store]]></de>
+            <en><![CDATA[QUIQQER Store]]></en>
+        </locale>
+        <locale name="controls.packages.search.template.toggleOtherSources">
+            <de><![CDATA[Andere Paket-Server]]></de>
+            <en><![CDATA[Other package servers]]></en>
+        </locale>
+        <locale name="controls.packages.search.othersources.template.labelSearch">
+            <de><![CDATA[Andere Paket-Server durchsuchen]]></de>
+            <en><![CDATA[Search other package servers]]></en>
+        </locale>
+        <locale name="controls.packages.search.othersources.template.placeholderSearch">
+            <de><![CDATA[Suche...]]></de>
+            <en><![CDATA[Search...]]></en>
+        </locale>
+
         <locale name="folderviewer.create.folder" html="true">
             <de><![CDATA[
                 <p>Es wurde kein Ordner zugewiesen.</p>
@@ -948,6 +1102,10 @@
             <de><![CDATA[Paket [package] aktualisieren auf Version [version]]]></de>
             <en><![CDATA[Update package [package] to version [version]]]></en>
         </locale>
+        <locale name="packages.panel.system.packageInstall.title">
+            <de><![CDATA[Paket herunterladen und installieren]]></de>
+            <en><![CDATA[Download and install the package]]></en>
+        </locale>
         <locale name="packages.setup">
             <de><![CDATA[[pkg] setup ausführen]]></de>
             <en><![CDATA[Execute the [pkg] setup]]></en>
@@ -1054,6 +1212,57 @@
             <de><![CDATA[Durchsuchte Bereiche]]></de>
             <en><![CDATA[Searched areas]]></en>
         </locale>
+
+        <!-- Package search/store -->
+        <locale name="controls.packages.search.termsofuse.header">
+            <de><![CDATA[Nutzungsbedingungen]]></de>
+            <en><![CDATA[Terms Of Use]]></en>
+        </locale>
+        <locale name="controls.packages.search.termsofuse.content">
+            <de>
+                <![CDATA[Spicy jalapeno bacon ipsum dolor amet shoulder shankle picanha doner flank, leberkas boudin pig jowl venison beef tongue drumstick jerky short loin. Cupim jerky short loin bacon jowl. Tail swine ham hock corned beef, sausage turducken shoulder ham t-bone short loin. Short loin doner pork loin, ham hock swine chuck shank ribeye turkey pork belly tail kielbasa bresaola bacon frankfurter.]]></de>
+            <en>
+                <![CDATA[Spicy jalapeno bacon ipsum dolor amet shoulder shankle picanha doner flank, leberkas boudin pig jowl venison beef tongue drumstick jerky short loin. Cupim jerky short loin bacon jowl. Tail swine ham hock corned beef, sausage turducken shoulder ham t-bone short loin. Short loin doner pork loin, ham hock swine chuck shank ribeye turkey pork belly tail kielbasa bresaola bacon frankfurter.]]></en>
+        </locale>
+        <locale name="controls.packages.search.termsofuse.acceptBtnText">
+            <de><![CDATA[Ich akzeptiere die Nutzungsbedingungen]]></de>
+            <en><![CDATA[I acceept these Terms Of Use]]></en>
+        </locale>
+
+        <locale name="dialog.projects.media.folder.delete.title">
+            <de><![CDATA[Ordner / Datei(en) löschen]]></de>
+            <en><![CDATA[Delete folder / file (s)]]></en>
+        </locale>
+        <locale name="dialog.projects.media.folder.delete.text">
+            <de><![CDATA[Möchten Sie folgende Ordner oder Dateien wirklich löschen?]]></de>
+            <en><![CDATA[Are you sure you want to delete the following folders or files?]]></en>
+        </locale>
+
+        <locale name="dialog.projects.media.rename.title">
+            <de><![CDATA[Umbenennen]]></de>
+            <en><![CDATA[Rename]]></en>
+        </locale>
+        <locale name="dialog.projects.media.rename.information">
+            <de><![CDATA[Bitte geben Sie einen neuen Namen für den Ordner oder Datei ein.]]></de>
+            <en><![CDATA[Please enter a new name for the folder or file.]]></en>
+        </locale>
+        <locale name="dialog.projects.media.file.replace.title">
+            <de><![CDATA[Datei ersetzen]]></de>
+            <en><![CDATA[Replace file]]></en>
+        </locale>
+        <locale name="dialog.projects.media.file.replace.information" html="true">
+            <de><![CDATA[
+                Wählen Sie bitte eine Datei aus, oder ziehen Sie eine Datei mit welcher Sie <b>[file]</b> ersetzen möchten in dieses Fenster
+            ]]></de>
+            <en><![CDATA[
+                Please choose a file or drag a file with which you want to replace <b>[file]</b> into this window
+            ]]></en>
+        </locale>
+
+        <locale name="projects.media.context.move.element.select.message">
+            <de><![CDATA[Bitte wählen Sie einen Ordner aus]]></de>
+            <en><![CDATA[Please select a folder]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/system" datatype="js,php">
@@ -1101,6 +1310,7 @@
             <de><![CDATA[Eigenschaften]]></de>
             <en><![CDATA[Properties]]></en>
         </locale>
+
         <locale name="search">
             <de><![CDATA[Suchen]]></de>
             <en><![CDATA[Search]]></en>
@@ -1196,6 +1406,10 @@
         <locale name="salutation">
             <de><![CDATA[Anrede]]></de>
             <en><![CDATA[Salutation]]></en>
+        </locale>
+        <locale name="address">
+            <de><![CDATA[Anschrift]]></de>
+            <en><![CDATA[Address]]></en>
         </locale>
         <locale name="company">
             <de><![CDATA[Firma]]></de>
@@ -1587,6 +1801,25 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js">
+        <locale name="controls.licensekeypanel.title">
+            <de><![CDATA[QUIQQER Lizenz]]></de>
+            <en><![CDATA[QUIQQER License]]></en>
+        </locale>
+        <locale name="controls.licensekey.delete.popup.title">
+            <de><![CDATA[QUIQQER Lizenz löschen]]></de>
+            <en><![CDATA[Delete QUIQQER License]]></en>
+        </locale>
+        <locale name="controls.licensekey.delete.popup.info">
+            <de>
+                <![CDATA[Sind Sie sicher, dass Sie Ihre aktuelle QUIQQER Lizenz löschen wollen? Sie haben dann ggf. keinen Zugriff mehr auf Pakete, die Teil Ihrer Lizenz waren.]]></de>
+            <en>
+                <![CDATA[Are you sure you want to delete your current QUIQQER license? You may no longer have access to packages that were part of your license.]]></en>
+        </locale>
+        <locale name="controls.licensekey.delete.btn">
+            <de><![CDATA[Lizenz löschen]]></de>
+            <en><![CDATA[Delete License]]></en>
+        </locale>
+
         <locale name="welcome.message">
             <de><![CDATA[Willkommen [username]]]></de>
             <en><![CDATA[Welcome [username]]]></en>
@@ -2542,6 +2775,52 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Media]]></de>
             <en><![CDATA[Media]]></en>
         </locale>
+        <locale name="projects.project.panel.media.contextMenu.trash">
+            <de><![CDATA[In den Papierkorb verschieben]]></de>
+            <en><![CDATA[Move to the Trash]]></en>
+        </locale>
+        <locale name="projects.project.panel.media.contextMenu.allElements">
+            <de><![CDATA[Alle markierte Elemente]]></de>
+            <en><![CDATA[All marked elements]]></en>
+        </locale>
+        <locale name="projects.project.panel.media.contextMenu.move">
+            <de><![CDATA[In einen anderen Ordner verschieben]]></de>
+            <en><![CDATA[Move to another folder]]></en>
+        </locale>
+        <locale name="projects.project.panel.media.contextMenu.replace">
+            <de><![CDATA[Datei ersetzen ...]]></de>
+            <en><![CDATA[Replace file ...]]></en>
+        </locale>
+        <locale name="projects.project.panel.media.contextMenu.download">
+            <de><![CDATA[Datei herunterladen]]></de>
+            <en><![CDATA[Download file]]></en>
+        </locale>
+        <locale name="projects.project.panel.media.contextMenu.folder.download">
+            <de><![CDATA[Ordner herunterladen]]></de>
+            <en><![CDATA[Download folder]]></en>
+        </locale>
+        <locale name="projects.project.panel.media.contextMenu.markAll">
+            <de><![CDATA[Alle markieren]]></de>
+            <en><![CDATA[Mark all]]></en>
+        </locale>
+        <locale name="projects.project.panel.media.contextMenu.replaceFile">
+            <de><![CDATA[Datei ersetzen mit [file]]]></de>
+            <en><![CDATA[Replace with [file]]]></en>
+        </locale>
+        <locale name="projects.project.panel.media.contextMenu.copyLocation">
+            <de><![CDATA[An diese Stelle kopieren]]></de>
+            <en><![CDATA[Copy to this location]]></en>
+        </locale>
+        <locale name="projects.project.panel.media.contextMenu.moveLocation">
+            <de><![CDATA[An diese Stelle verschieben]]></de>
+            <en><![CDATA[Move to this location]]></en>
+        </locale>
+        <locale name="projects.project.panel.media.contextMenu.uploadLocation">
+            <de><![CDATA[An diese Stelle hochladen]]></de>
+            <en><![CDATA[Upload to this location]]></en>
+        </locale>
+
+
         <locale name="usersAndGroups.input.search.placeholder">
             <de><![CDATA[Suche nach einer Gruppe oder Benutzer...]]></de>
             <en><![CDATA[Search for a group or user ...]]></en>
@@ -5395,6 +5674,36 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Remove user(s)]]></en>
         </locale>
 
+        <!-- LicenseKey -->
+        <locale name="controls.licensekey.template.header">
+            <de><![CDATA[QUIQQER Lizenz-Informationen]]></de>
+            <en><![CDATA[QUIQQER license information]]></en>
+        </locale>
+        <locale name="controls.licensekey.template.labelId">
+            <de><![CDATA[Lizenz-ID]]></de>
+            <en><![CDATA[License ID]]></en>
+        </locale>
+        <locale name="controls.licensekey.template.labelCreated">
+            <de><![CDATA[Erstellt am]]></de>
+            <en><![CDATA[Created at]]></en>
+        </locale>
+        <locale name="controls.licensekey.template.labelValidUntil">
+            <de><![CDATA[Gültig bis]]></de>
+            <en><![CDATA[Valid until]]></en>
+        </locale>
+        <locale name="controls.licensekey.template.labelName">
+            <de><![CDATA[Ausgestellt für]]></de>
+            <en><![CDATA[Issued for]]></en>
+        </locale>
+        <locale name="controls.licensekey.template.labelUpload">
+            <de><![CDATA[Lizenz-Datei hochladen]]></de>
+            <en><![CDATA[Upload license file]]></en>
+        </locale>
+        <locale name="controls.licensekey.template.labelDelete">
+            <de><![CDATA[Lizenz löschen]]></de>
+            <en><![CDATA[Delete license]]></en>
+        </locale>
+
     </groups>
     <groups name="quiqqer/system" datatype="php">
         <locale name="menu.quiqqer.text" html="true">
@@ -5473,9 +5782,13 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Über QUIQQER]]></de>
             <en><![CDATA[About QUIQQER]]></en>
         </locale>
-        <locale name="menu.help.changelog.text">
-            <de><![CDATA[QUIQQER-Changelog]]></de>
-            <en><![CDATA[QUIQQER Changelog]]></en>
+        <locale name="menu.help.about.text">
+            <de><![CDATA[Über QUIQQER]]></de>
+            <en><![CDATA[About QUIQQER]]></en>
+        </locale>
+        <locale name="menu.licenseKey.text">
+            <de><![CDATA[QUIQQER Lizenz]]></de>
+            <en><![CDATA[QUIQQER Lizenz]]></en>
         </locale>
         <locale name="quiqqer.settings.title">
             <de><![CDATA[System]]></de>
@@ -5496,6 +5809,14 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="quiqqer.settings.general.globals.mailprotection.description">
             <de><![CDATA[Alle E-Mail-Adressen werden für SpyBots unkenntlich gemacht]]></de>
             <en><![CDATA[All email addresses are defaced for spybots]]></en>
+        </locale>
+        <locale name="quiqqer.settings.globals.sitePermissionDeniedErrorCode.title">
+            <de><![CDATA[HTTP Statuscode bei fehlendem Seiten-Recht]]></de>
+            <en><![CDATA[HTTP status code on missing site permission]]></en>
+        </locale>
+        <locale name="quiqqer.settings.globals.sitePermissionDeniedErrorCode.desc">
+            <de><![CDATA[Bestimmt, welcher HTTP Statuscode gesendet wird, wenn ein Benutzer eine Seite aufruft, für die er nicht das Recht besitzt, sie anzusehen.]]></de>
+            <en><![CDATA[Determines which HTTP status code is sent when a user visits a page for which he does not have the permission to view.]]></en>
         </locale>
 
         <locale name="quiqqer.settings.general.globals.htmlSuffix">
@@ -6143,10 +6464,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             For that reason, your session has ended. Please log in again.
             ]]></en>
         </locale>
-        <locale name="exception.no.permission">
-            <de><![CDATA[Sie haben nicht die nötigen Rechte um diese Aktion durchzuführen]]></de>
-            <en><![CDATA[You have not the necessary rights to perform this action.]]></en>
-        </locale>
         <locale name="exception.permissions.exists">
             <de><![CDATA[Das Zugriffsrecht existiert bereits]]></de>
             <en><![CDATA[The Permission still exists.]]></en>
@@ -6321,6 +6638,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="exception.lib.qui.editor.manager.toolbar.exist">
             <de><![CDATA[Die Toolbar existiert bereits.]]></de>
             <en><![CDATA[The toolbar already exists.]]></en>
+        </locale>
+        <locale name="exception.lib.qui.editor.manager.toolbar.empty">
+            <de><![CDATA[Die Toolbar ist leer und konnte daher nicht gespeichert werden.]]></de>
+            <en><![CDATA[The toolbar is empty and could not be saved.]]></en>
         </locale>
         <locale name="exception.lib.qui.editor.manager.toolbar.xml.error">
             <de><![CDATA[Während dem einlesen einer toolbar XML Datei trat ein Fehler auf. [error]]]></de>
@@ -6840,9 +7161,43 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Mail-Queue aktivieren]]></de>
             <en><![CDATA[Enable Mail Queue]]></en>
         </locale>
+
+        <!-- License key -->
+        <locale name="message.ajax.licenseKey.upload.error">
+            <de>
+                <![CDATA[Beim Einlesen der Lizenz-Datei ist ein Fehler aufgetreten. Ggf. ist die Lizenz-Datei ungültig. Bitte wenden Sie sich an einen Administrator oder an die Stelle, die die Lizenz ausgegeben hat.]]></de>
+            <en>
+                <![CDATA[An error ocurred while reading the license file. The license file may be invalid. Please contact an administrator or the issuer of the license.]]></en>
+        </locale>
+        <locale name="message.ajax.licenseKey.upload.success">
+            <de><![CDATA[
+            Die Lizenz-Datei wurde erfolgreich eingelesen. Diese QUIQQER-Installation hat nun Zugriff auf alle Pakete, die diese Lizenz beinhaltet.
+            ]]></de>
+            <en><![CDATA[
+            The license file has been imported succesfully. This QUIQQER system now has access to all packages this license contains.
+            ]]></en>
+        </locale>
+        <locale name="message.editor.toolbar.save.success">
+            <de><![CDATA[Die Toolbar wurde erfolgreich gespeichert.]]></de>
+            <en><![CDATA[The toolbar has been successfully saved.]]></en>
+        </locale>
+        <locale name="message.ajax.licenseKey.delete.error">
+            <de><![CDATA[Die Lizenz wurde nicht gelöscht, da keine Lizenz in Ihrem QUIQQER-System aktiviert war.]]></de>
+            <en><![CDATA[The license was not deleted because no license was active in your QUIQQER system.]]></en>
+        </locale>
+        <locale name="message.ajax.licenseKey.delete.success">
+            <de><![CDATA[Die Lizenz wurde erfolgreich gelöscht und ist nun nicht mehr aktiv.]]></de>
+            <en><![CDATA[The license was deleted successfully and is now inactive.]]></en>
+        </locale>
+
     </groups>
 
     <groups name="quiqqer/system" datatype="php,js">
+        <locale name="quiqqer.licenseKey.unlimited">
+            <de><![CDATA[unbegrenzt]]></de>
+            <en><![CDATA[unlimited]]></en>
+        </locale>
+
         <locale name="menu.extras.packages.text">
             <de><![CDATA[Systemverwaltung]]></de>
             <en><![CDATA[System administration]]></en>
@@ -7011,9 +7366,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             If no package rights are used, some functions in the system are more powerful.
             ]]></en>
         </locale>
-
-    </groups>
-    <groups name="quiqqer/system" datatype="js,php">
+        <locale name="exception.no.permission">
+            <de><![CDATA[Sie haben nicht die nötigen Rechte um diese Aktion durchzuführen]]></de>
+            <en><![CDATA[You have not the necessary rights to perform this action.]]></en>
+        </locale>
         <locale name="projects.project.site.select.btn.addTypes">
             <de><![CDATA[Seitentyp hinzufügen ]]></de>
             <en><![CDATA[Add a site type]]></en>

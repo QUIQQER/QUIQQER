@@ -234,7 +234,7 @@ define('controls/packages/Server', [
                 Server.style.outline = 0;
                 Server.setAttribute('tabindex', "-1");
 
-                if (server.server === 'packagist' &&
+                if (server.server === 'othersources' &&
                     server.server !== 'npm' &&
                     server.server !== 'bower') {
 
@@ -255,7 +255,7 @@ define('controls/packages/Server', [
                             .inject(Buttons);
                 }
 
-                if (server.server !== 'packagist' &&
+                if (server.server !== 'othersources' &&
                     server.server !== 'npm' &&
                     server.server !== 'bower') {
 
@@ -314,7 +314,7 @@ define('controls/packages/Server', [
                 Server.style.outline = 0;
                 Server.setAttribute('tabindex', "-1");
 
-                if (server.server === 'packagist' &&
+                if (server.server === 'othersources' &&
                     server.server !== 'npm' &&
                     server.server !== 'bower') {
 
@@ -335,7 +335,7 @@ define('controls/packages/Server', [
                             .inject(Buttons);
                 }
 
-                if (server.server !== 'packagist' &&
+                if (server.server !== 'othersources' &&
                     server.server !== 'npm' &&
                     server.server !== 'bower') {
 
@@ -430,7 +430,7 @@ define('controls/packages/Server', [
                 Target = Target.getParent('.packages-server');
             }
 
-            if (Target.get('title') === 'packagist') {
+            if (Target.get('title') === 'othersources') {
                 return;
             }
 

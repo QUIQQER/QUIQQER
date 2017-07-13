@@ -62,15 +62,13 @@ class Temp
 
             if (!is_dir($newFolder)) {
                 throw new QUI\Exception(
-                    'Folder ' . $newFolder
-                    . ' could not be created'
+                    'Folder ' . $newFolder . ' could not be created'
                 );
             }
 
             if (!realpath($newFolder)) {
                 throw new QUI\Exception(
-                    'Folder ' . $newFolder
-                    . ' could not be created'
+                    'Folder ' . $newFolder . ' could not be created'
                 );
             }
 

@@ -3,6 +3,7 @@
 /**
  * This file contains QUI\CRUD\Factory
  */
+
 namespace QUI\CRUD;
 
 use QUI;
@@ -16,7 +17,7 @@ use QUI;
  * @event onCreateBegin
  * @event onCreateEnd
  */
-abstract class Factory
+abstract class Factory extends QUI\Utils\Singleton
 {
     /**
      * @var QUI\Events\Event

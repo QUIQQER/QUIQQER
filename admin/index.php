@@ -154,7 +154,31 @@ try {
                 SUFFIX               : "<?php echo \QUI\Rewrite::getDefaultSuffix(); ?>"
             },
             inAdministration: true,
-            lu              : "<?php echo QUI::getPackageManager()->getLastUpdateDate(); ?>"
+            lu              : "<?php echo QUI::getPackageManager()->getLastUpdateDate(); ?>",
+
+            installPackage: function (packageName, version, server) {
+                return new Promise(function (resolve, reject) {
+                    require(['Packages'], function (Packages) {
+                        Packages.installPackage(packageName, version, server).then(resolve, reject);
+                    });
+                });
+            },
+
+            updatePackage: function (packageName, version) {
+                return new Promise(function (resolve, reject) {
+                    require(['Packages'], function (Packages) {
+                        Packages.update(packageName, version).then(resolve, reject);
+                    });
+                });
+            },
+
+            getPackage: function (packageName) {
+                return new Promise(function (resolve, reject) {
+                    require(['Packages'], function (Packages) {
+                        Packages.getPackage(packageName).then(resolve, reject);
+                    });
+                });
+            }
         };
 
         /* ]]> */

@@ -180,7 +180,7 @@ class Ajax extends QUI\QDOM
     /**
      * ajax processing
      *
-     * @return string - quiqqer XML
+     * @return string|array - quiqqer XML
      * @throws QUI\Exception
      */
     public function call()

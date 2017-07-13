@@ -1,9 +1,13 @@
     {strip}
     <title>
-        {$Template->getAttribute('site_title_prefix')}
-        {$Site->getAttribute('meta.seotitle')|escape:"html"}
-        {$Template->getAttribute('site_title_suffix')}
-        {$Template->getAttribute('site_title')}
+        {if $Site->getAttribute('quiqqer.meta.site.title')}
+            {$Site->getAttribute('meta.seotitle')|escape:"html"}
+        {else}
+            {$Template->getAttribute('site_title_prefix')}
+            {$Site->getAttribute('meta.seotitle')|escape:"html"}
+            {$Template->getAttribute('site_title_suffix')}
+            {$Template->getAttribute('site_title')}
+        {/if}
     </title>
     {/strip}
 
@@ -174,6 +178,11 @@
 
                 require(['Locale'].append(QUIQQER_LOCALE), function (QUILocale) {
                     QUILocale.setCurrent(QUIQQER_PROJECT.lang);
+                    
+                    if (window.location.toString().indexOf('lang=false') !== -1) {
+                        QUILocale.no_translation = true;
+                    }
+
                     // Load QUI
                     require(["qui/QUI"], function (QUI) {
                         QUI.addEvent("onError", function (msg, url, linenumber) {

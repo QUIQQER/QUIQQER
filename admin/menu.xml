@@ -40,10 +40,18 @@
           name="changelog"
           icon="URL_BIN_DIR/16x16/quiqqer.png"
           require="controls/help/Dashboard"
-          group="quiqqer/system"
-          var="menu.help.changelog.text"
     >
         <locale group="quiqqer/system" var="menu.help.dashboard.text"/>
+    </item>
+
+    <item parent="/quiqqer/"
+          name="licensekey"
+          icon="fa fa-key"
+          require="controls/licenseKey/LicenseKeyPanel"
+          group="quiqqer/system"
+          var="menu.licenseKey.text"
+    >
+        <locale group="quiqqer/system" var="menu.licenseKey.text"/>
     </item>
 
     <!-- Plugins und Packages -->

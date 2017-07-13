@@ -4,10 +4,11 @@
  * @module controls/users/Select
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/controls/Control
+ * @require qui/QUI
  * @require qui/controls/elements/Select
  * @require Locale
- * @require Users
+ * @require Ajax
+ * @requuir css!controls/users/Select.css
  *
  * @event onAddItem [ this, id ]
  * @event onChange [ this ]
@@ -37,7 +38,7 @@ define('controls/users/Select', [
     return new Class({
 
         Extends: QUIElementSelect,
-        Type: 'controls/users/Select',
+        Type   : 'controls/users/Select',
 
         Binds: [
             '$onSearchButtonClick',
@@ -58,7 +59,7 @@ define('controls/users/Select', [
 
             this.addEvents({
                 onSearchButtonClick: this.$onSearchButtonClick,
-                onCreate: function () {
+                onCreate           : function () {
                     this.getElm().addClass('quiqqer-user-select');
                 }.bind(this)
             });
@@ -75,14 +76,14 @@ define('controls/users/Select', [
                 QUIAjax.get('ajax_usersgroups_search', function (result) {
                     var i, len;
 
-                    var data = [],
+                    var data       = [],
                         userResult = result.users;
 
                     for (i = 0, len = userResult.length; i < len; i++) {
                         data.push({
-                            id: userResult[i].id,
+                            id   : userResult[i].id,
                             title: userResult[i].username,
-                            icon: 'fa fa-user'
+                            icon : 'fa fa-user'
                         });
                     }
 
@@ -98,19 +99,26 @@ define('controls/users/Select', [
         },
 
         /**
+         * event : on search click
          *
+         * @param {Object} Select
          * @param {Object} Btn
          */
-        $onSearchButtonClick: function (Btn) {
+        $onSearchButtonClick: function (Select, Btn) {
+            var oldIcon = Btn.getAttribute('icon');
+
             Btn.setAttribute('icon', 'fa fa-spinner fa-spin');
+            Btn.disable();
 
             require([
                 'controls/users/search/Window'
             ], function (Window) {
                 new Window({
-                    autoclose: true,
-                    multiple: this.getAttribute('multiple'),
-                    events: {
+                    autoclose     : true,
+                    multiple      : this.getAttribute('multiple'),
+                    search        : this.getAttribute('search'),
+                    searchSettings: this.getAttribute('searchSettings'),
+                    events        : {
                         onSubmit: function (Win, userIds) {
                             for (var i = 0, len = userIds.length; i < len; i++) {
                                 this.addItem(userIds[i].id);
@@ -119,7 +127,8 @@ define('controls/users/Select', [
                     }
                 }).open();
 
-                Btn.setAttribute('icon', 'fa fa-search');
+                Btn.setAttribute('icon', oldIcon);
+                Btn.enable();
             }.bind(this));
         }
     });

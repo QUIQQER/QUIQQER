@@ -133,7 +133,7 @@ define('controls/upload/File', [
 
             // check server answer
             this.$Request.onreadystatechange = function () {
-                if (self.$Request.readyState == 4) {
+                if (self.$Request.readyState === 4) {
                     self.$parseResult(self.$Request.responseText);
                 }
             };
@@ -169,9 +169,9 @@ define('controls/upload/File', [
 
             this.$Elm = new Element('div', {
                 html   : '<div class="file-name">' + this.getFilename() + '</div>' +
-                         '<div class="upload-time"></div>' +
-                         '<div class="progress"></div>' +
-                         '<div class="buttons"></div>',
+                '<div class="upload-time"></div>' +
+                '<div class="progress"></div>' +
+                '<div class="buttons"></div>',
                 'class': 'upload-manager-file box smooth'
             });
 
@@ -200,8 +200,8 @@ define('controls/upload/File', [
 
             Buttons.set({
                 html  : '<form action="" method=""">' +
-                        '<input type="file" name="files" value="upload" />' +
-                        '</form>',
+                '<input type="file" name="files" value="upload" />' +
+                '</form>',
                 styles: {
                     'float': 'right',
                     clear  : 'both',
@@ -371,15 +371,15 @@ define('controls/upload/File', [
                 return;
             }
 
-            if (this.$File.type === '' || !this.$File.type) {
-                QUI.getMessageHandler(function (MessageHandler) {
-                    MessageHandler.addError(
-                        Locale.get(lg, 'file.upload.unknown.filetype')
-                    );
-                });
-
-                return;
-            }
+            //if (this.$File.type === '' || !this.$File.type) {
+            //    QUI.getMessageHandler(function (MessageHandler) {
+            //        MessageHandler.addError(
+            //            Locale.get(lg, 'file.upload.unknown.filetype')
+            //        );
+            //    });
+            //
+            //    return;
+            //}
 
             if (this.$is_paused) {
                 return;
@@ -618,8 +618,8 @@ define('controls/upload/File', [
                 ]);
             }
 
-            if (str.substring(0, start) != '<quiqqer>' ||
-                str.substring(end, len) != '</quiqqer>') {
+            if (str.substring(0, start) !== '<quiqqer>' ||
+                str.substring(end, len) !== '</quiqqer>') {
                 this.$error = true;
 
                 return this.fireEvent('error', [
@@ -633,7 +633,8 @@ define('controls/upload/File', [
 
             // callback
             var result = eval('(' + str.substring(start, end) + ')');
-
+            console.warn('$parseResult');
+            console.warn(result);
             // exist messages?
             if (result.message_handler &&
                 result.message_handler.length) {

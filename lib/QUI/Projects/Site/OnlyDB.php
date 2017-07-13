@@ -37,7 +37,8 @@ class OnlyDB extends QUI\Projects\Site
             throw new QUI\Exception('Site Error; No ID given:' . $id, 400);
         }
 
-        $this->id = $id;
+        $this->id     = $id;
+        $this->Events = new QUI\Events\Event();
 
         // Daten aus der DB hohlen
         $this->refresh();

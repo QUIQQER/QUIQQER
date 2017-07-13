@@ -65,14 +65,44 @@ class Menu
                 $Menu->getElementByName('apps')->clear();
             }
 
-            if ($Menu->getElementByName('extras')) {
-                $Menu->getElementByName('extras')->clear();
-            }
-
             if ($Menu->getElementByName('settings')) {
                 $Menu->getElementByName('settings')->clear();
             }
         }
+
+        if ($Menu->getElementByName('extras')) {
+            // Benutzerverwaltung
+            $canSeeGroups      = Permission::hasPermission('quiqqer.admin.groups.view');
+            $canSeeUsers       = Permission::hasPermission('quiqqer.admin.users.view');
+            $canSeePermissions = false;
+
+            if ($User->isSU()) {
+                $canSeeGroups      = true;
+                $canSeeUsers       = true;
+                $canSeePermissions = true;
+            }
+
+            $Extras = $Menu->getElementByName('extras');
+            $Rights = $Extras->getElementByName('rights');
+
+            if (!$canSeeGroups && $Rights) {
+                $Rights->removeChild('groups');
+            }
+
+            if (!$canSeeUsers && $Rights) {
+                $Rights->removeChild('users');
+            }
+
+            if (!$canSeePermissions && $Rights) {
+                $Rights->removeChild('permissions');
+            }
+
+            // Projektverwaltung
+            if (!$User->isSU()) {
+                $Extras->removeChild('projects');
+            }
+        }
+
 
         // projects settings
         $projects = QUI\Projects\Manager::getProjects();
@@ -110,7 +140,7 @@ class Menu
             $files = QUI\Utils\System\File::readDir($dir);
 
             foreach ($files as $key => $file) {
-                $files[$key] = $dir . $file;
+                $files[$key] = str_replace(CMS_DIR, '', $dir . $file);
             }
         }
 
@@ -131,7 +161,7 @@ class Menu
             $setting_file = $Package->getXMLFile('settings.xml');
 
             if (file_exists($setting_file)) {
-                $files[] = $setting_file;
+                $files[] = str_replace(CMS_DIR, '', $setting_file);
             }
         }
 
@@ -141,7 +171,7 @@ class Menu
         $windowList = array();
 
         foreach ($files as $file) {
-            $windows = XML::getSettingWindowsFromXml($file);
+            $windows = XML::getSettingWindowsFromXml(CMS_DIR . $file);
 
             if (!$windows) {
                 continue;

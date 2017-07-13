@@ -235,7 +235,7 @@ define('controls/desktop/panels/XML', [
                         continue;
                     }
 
-                    if (Elm.type == 'checkbox' || Elm.type == 'radio') {
+                    if (Elm.type === 'checkbox' || Elm.type === 'radio') {
                         Elm.checked = (value).toInt();
                         continue;
                     }
@@ -258,9 +258,9 @@ define('controls/desktop/panels/XML', [
                         Node     = quiElements[i];
                         nodeName = Node.nodeName;
 
-                        if (nodeName != 'INPUT' &&
-                            nodeName != 'TEXTAREA' &&
-                            nodeName != 'SELECT') {
+                        if (nodeName !== 'INPUT' &&
+                            nodeName !== 'TEXTAREA' &&
+                            nodeName !== 'SELECT') {
                             continue;
                         }
 
@@ -380,10 +380,11 @@ define('controls/desktop/panels/XML', [
 
                 tok = namespace.split('.');
 
-                if (typeof tok[0] !== 'undefined' &&
-                    typeof tok[1] !== 'undefined' &&
-                    typeof this.$config[tok[0]] !== 'undefined' &&
-                    typeof this.$config[tok[0]][tok[1]] !== 'undefined') {
+                if (typeof tok[0] !== 'undefined' && typeof tok[1] !== 'undefined') {
+                    if (typeof this.$config[tok[0]] === 'undefined') {
+                        this.$config[tok[0]] = {};
+                    }
+
                     this.$config[tok[0]][tok[1]] = values[namespace];
                 }
             }
@@ -413,19 +414,18 @@ define('controls/desktop/panels/XML', [
             var inList = {};
 
             // filter controls with save method
-            var saveable = QUI.Controls.getControlsInElement(this.getBody())
-                              .filter(function (Control) {
-                                  if (Control.getId() in inList) {
-                                      return false;
-                                  }
+            var saveable = QUI.Controls.getControlsInElement(this.getBody()).filter(function (Control) {
+                if (Control.getId() in inList) {
+                    return false;
+                }
 
-                                  if (typeof Control.save === 'undefined') {
-                                      return false;
-                                  }
+                if (typeof Control.save === 'undefined') {
+                    return false;
+                }
 
-                                  inList[Control.getId()] = true;
-                                  return true;
-                              });
+                inList[Control.getId()] = true;
+                return true;
+            });
 
             var promises = saveable.map(function (Control) {
                 return Control.save();

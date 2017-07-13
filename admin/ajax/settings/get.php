@@ -18,10 +18,14 @@ QUI::$Ajax->registerFunction(
 
         foreach ($files as $file) {
             if (!file_exists($file)) {
+                $file = CMS_DIR . $file;
+            }
+
+            if (!file_exists($file)) {
                 continue;
             }
 
-            $Config = QUI\Utils\Text\XML::getConfigFromXml($file);
+            $Config = QUI\Utils\Text\XML::getConfigFromXml($file, true);
 
             if ($Config) {
                 $config = array_merge_recursive($config, $Config->toArray());

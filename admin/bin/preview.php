@@ -51,7 +51,7 @@ foreach ($_POST['siteDataJSON'] as $key => $value) {
 }
 
 $Template = QUI::getTemplateManager();
-$content  = $Template->fetchTemplate($Site);
+$content  = $Template->fetchSite($Site);
 
 $Output  = new QUI\Output();
 $content = $Output->parse($content);

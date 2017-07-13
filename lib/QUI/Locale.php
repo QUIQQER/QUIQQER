@@ -233,6 +233,21 @@ class Locale
     }
 
     /**
+     * Return a date formatter for the current language
+     *
+     * @param int $dateType
+     * @param int $timeType
+     * @return \IntlDateFormatter
+     */
+    public function getDateFormatter($dateType = \IntlDateFormatter::SHORT, $timeType = \IntlDateFormatter::NONE)
+    {
+        $localeCode = $this->getLocalesByLang($this->getCurrent());
+        $Formatter  = new \IntlDateFormatter($localeCode[0], $dateType, $timeType);
+
+        return $Formatter;
+    }
+
+    /**
      * Return all available dateformats
      *
      * @return array

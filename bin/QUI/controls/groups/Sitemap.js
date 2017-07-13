@@ -113,13 +113,11 @@ define('controls/groups/Sitemap', [
             // load first child
             Ajax.get('ajax_groups_root', function (result) {
                 if (!result) {
-
                     QUI.getMessageHandler().then(function (MH) {
                         MH.addAttention(
                             QUILocale.get('quiqqer/system', 'message.unknown.root.group')
                         );
                     });
-
                     return;
                 }
 

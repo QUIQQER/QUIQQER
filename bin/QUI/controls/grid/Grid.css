@@ -72,6 +72,11 @@
     /*background-color:red;*/
 }
 
+.omnigrid div.bDiv .td.clickable:hover {
+    background: #2F8FC6;
+    color: #fff;
+}
+
 .omnigrid div.bDiv .td img {
     float: left;
     margin: 0;
@@ -149,6 +154,18 @@
     border-right: 1px solid #ddd;
     border-bottom: 1px solid #eeeeee;
     border-top: 1px solid #eeeeee;
+    position: relative;
+}
+
+.omnigrid div.bDiv ul li.section:after {
+    background: rgba(0, 0, 0, 0) linear-gradient(to top, rgba(0, 0, 0, 0.65) 0px, rgba(0, 0, 0, 0) 100%) repeat scroll 0 0;
+    bottom: 0;
+    content: "";
+    height: 10px;
+    left: 0;
+    opacity: 0.4;
+    position: absolute;
+    width: 100%;
 }
 
 /* ************************************** */

@@ -1,3 +1,6 @@
+/**
+ * @module controls/editors/ToolbarConfigurator
+ */
 define('controls/editors/ToolbarConfigurator', [
 
     'qui/QUI',
@@ -91,65 +94,91 @@ define('controls/editors/ToolbarConfigurator', [
             var options = {
                 'separator': 'Separator',
 
-                'Source'        : 'Quelltext',
-                'Templates'     : 'Vorlagen',
-                'Cut'           : 'Ausschneiden',
-                'Copy'          : 'kopieren',
-                'Paste'         : 'einfügen',
-                'PasteText'     : 'Text einfügen',
-                'PasteFromWord' : 'Von Word einfügen',
-                'Undo'          : 'Rückgängig',
-                'Redo'          : 'Wiederherstellen',
-                'Find'          : 'Suchen',
-                'Replace'       : 'Ersetzen',
-                'SelectAll'     : 'Alles markieren',
-                'Scayt'         : 'Rechtschreibprüfung',
-                'Form'          : 'Formular',
-                'Checkbox'      : 'Checkbox / Auswahlbox',
-                'Radio'         : 'Radio-Button',
-                'TextField'     : 'Textfeld einzeilig',
-                'Textarea'      : 'Textfeld',
-                'Select'        : 'Select Box',
-                'Button'        : 'Button',
-                'ImageButton'   : 'Bildbutton',
-                'HiddenField'   : 'Verstecktes Feld',
-                'Bold'          : 'Fett',
-                'Italic'        : 'Kursiv',
-                'Underline'     : 'Unterstrichen',
-                'Strike'        : 'Durchgestrichen',
-                'Subscript'     : 'Tiefgestellt',
-                'Superscript'   : 'Hochgestellt',
-                'RemoveFormat'  : 'Formatierung entfernen',
-                'NumberedList'  : 'Nummerierte Liste',
-                'BulletedList'  : 'Liste',
-                'Outdent'       : 'Einzug verringern',
-                'Indent'        : 'Einzug erhöhen',
-                'Blockquote'    : 'Zitatblock',
-                'CreateDiv'     : 'DIV Container erzeugen',
-                'JustifyLeft'   : 'Linksbündig',
-                'JustifyCenter' : 'Zentriert',
-                'JustifyRight'  : 'Rechtsbündig',
-                'JustifyBlock'  : 'Blocksatz',
-                'BidiLtr'       : 'Leserichtung von Links nach Rechts',
-                'BidiRtl'       : 'Leserichtung von Rechts nach Links',
-                'Language'      : 'Sprache',
-                'Link'          : 'Link einfügen / editieren',
-                'Unlink'        : 'Link entfernen',
-                'Anchor'        : 'Anker einfügen / editieren',
-                'Image'         : 'Bild einfügen / editieren',
-                'Flash'         : 'Flash einfügen / editieren',
-                'Table'         : 'Tabelle',
-                'HorizontalRule': 'Horizontale Linie einfügen',
-                'Smiley'        : 'Smiley',
-                'SpecialChar'   : 'Sonderzeichen einfügen / editieren',
-                'PageBreak'     : 'Seitenumbruch einfügen',
-                'Iframe'        : 'IFrame',
-                'Styles'        : 'Formatierungsstil',
-                'Format'        : 'Format',
-                'Font'          : 'Schriftart',
-                'FontSize'      : 'Schriftgröße',
-                'TextColor'     : 'Textfarbe',
-                'BGColor'       : 'Hintergrundfarbe'
+                'Source'               : 'Quelltext',
+                'Templates'            : 'Vorlagen',
+                'Cut'                  : 'Ausschneiden',
+                'Copy'                 : 'kopieren',
+                'Paste'                : 'einfügen',
+                'PasteText'            : 'Text einfügen',
+                'PasteFromWord'        : 'Von Word einfügen',
+                'Undo'                 : 'Rückgängig',
+                'Redo'                 : 'Wiederherstellen',
+                'Find'                 : 'Suchen',
+                'Replace'              : 'Ersetzen',
+                'SelectAll'            : 'Alles markieren',
+                'Scayt'                : 'Rechtschreibprüfung',
+                'Form'                 : 'Formular',
+                'Checkbox'             : 'Checkbox / Auswahlbox',
+                'Radio'                : 'Radio-Button',
+                'TextField'            : 'Textfeld einzeilig',
+                'Textarea'             : 'Textfeld',
+                'Select'               : 'Select Box',
+                'Button'               : 'Button',
+                'ImageButton'          : 'Bildbutton',
+                'HiddenField'          : 'Verstecktes Feld',
+                'Bold'                 : 'Fett',
+                'Italic'               : 'Kursiv',
+                'Underline'            : 'Unterstrichen',
+                'Strike'               : 'Durchgestrichen',
+                'Subscript'            : 'Tiefgestellt',
+                'Superscript'          : 'Hochgestellt',
+                'RemoveFormat'         : 'Formatierung entfernen',
+                'NumberedList'         : 'Nummerierte Liste',
+                'BulletedList'         : 'Liste',
+                'Outdent'              : 'Einzug verringern',
+                'Indent'               : 'Einzug erhöhen',
+                'Blockquote'           : 'Zitatblock',
+                'CreateDiv'            : 'DIV Container erzeugen',
+                'JustifyLeft'          : 'Linksbündig',
+                'JustifyCenter'        : 'Zentriert',
+                'JustifyRight'         : 'Rechtsbündig',
+                'JustifyBlock'         : 'Blocksatz',
+                'BidiLtr'              : 'Leserichtung von Links nach Rechts',
+                'BidiRtl'              : 'Leserichtung von Rechts nach Links',
+                'Language'             : 'Sprache',
+                'Link'                 : 'Link einfügen / editieren',
+                'Unlink'               : 'Link entfernen',
+                'Anchor'               : 'Anker einfügen / editieren',
+                'Image'                : 'Bild einfügen / editieren',
+                'Flash'                : 'Flash einfügen / editieren',
+                'Table'                : 'Tabelle',
+                'HorizontalRule'       : 'Horizontale Linie einfügen',
+                'Smiley'               : 'Smiley',
+                'SpecialChar'          : 'Sonderzeichen einfügen / editieren',
+                'PageBreak'            : 'Seitenumbruch einfügen',
+                'Iframe'               : 'IFrame',
+                'Styles'               : 'Formatierungsstil',
+                'Format'               : 'Format',
+                'Font'                 : 'Schriftart',
+                'FontSize'             : 'Schriftgröße',
+                'TextColor'            : 'Textfarbe',
+                'BGColor'              : 'Hintergrundfarbe',
+                'Html5Audio'           : 'Audio',
+                'Html5Video'           : 'Video',
+                'Code'                 : 'Codetag',
+                'Zoom'                 : 'Zoom',
+                'Youtube'              : 'Youtube',
+                'Videodetector'        : 'Videos',
+                'Tweetabletext'        : 'Twitter',
+                'Createtoken'          : 'Token hinzufügen',
+                'TransformTextSwitcher': 'Transform Switcher',
+                'TransformToUppercase' : 'Transform Uppercase',
+                'TransformToLowercase' : 'Transform Lowercase',
+                'TransformCapitalize'  : 'Transform Capitalize',
+                't2s_button'           : 'Text to Speech',
+                'Symbol'               : 'Symbole',
+                'pre'                  : 'Pre tag',
+                'pbckeditor'           : 'PBCKEditor',
+                'page2images'          : 'Page 2 Image',
+                'Markdown'             : 'Markdown',
+                'Loremipsum'           : 'Lorem Ipsum',
+                'inserthtml4x'         : 'Insert HTML',
+                'EqnEditor'            : 'Formel Editor',
+                'cssanim'              : 'CSS Animationen',
+                'WebSpeechEnabled'     : 'WebSpeech',
+                'WebSpeechSettings'    : 'WebSpeech Settings',
+                'base64image'          : 'Base64Image',
+                'Autocorrect'          : 'Autocorrect'
             };
 
             for (var i in options) {
@@ -172,13 +201,20 @@ define('controls/editors/ToolbarConfigurator', [
         save: function () {
             var self = this;
 
-            self.Loader.show();
+            return new Promise(function (resolve, reject) {
+                self.Loader.show();
 
-            Ajax.post('ajax_editor_toolbar_save', function () {
-                self.Loader.hide();
-            }, {
-                toolbar: this.getAttribute('toolbar'),
-                xml    : this.$Textarea.value
+                Ajax.post('ajax_editor_toolbar_save', function () {
+                    self.Loader.hide();
+                    resolve();
+                }, {
+                    toolbar: self.getAttribute('toolbar'),
+                    xml    : self.$Textarea.value,
+                    onError: function () {
+                        self.Loader.hide();
+                        reject();
+                    }
+                });
             });
         },
 
@@ -189,9 +225,7 @@ define('controls/editors/ToolbarConfigurator', [
             this.Loader.show();
 
             if (!this.getAttribute('toolbar')) {
-
                 this.Loader.hide();
-
                 return;
             }
 

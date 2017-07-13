@@ -1612,7 +1612,7 @@ define('controls/grid/Grid', [
                 browser       = false, //Browser.Engine.trident,
                 cWidth        = 0;
 
-            if (typeof browser == 'undefined') {
+            if (typeof browser === 'undefined') {
                 browser = false;
             }
 
@@ -1653,7 +1653,7 @@ define('controls/grid/Grid', [
 
             t.sumWidth = 0;
 
-            if (typeof browser == 'undefined') {
+            if (typeof browser === 'undefined') {
                 browser = false;
             }
 
@@ -1734,7 +1734,7 @@ define('controls/grid/Grid', [
             Target.removeClass('ASC');
             Target.removeClass('DESC');
 
-            colSort = (colSort == 'ASC') ? 'DESC' : 'ASC';
+            colSort = (colSort === 'ASC') ? 'DESC' : 'ASC';
 
             this.setAttribute('sortBy', colSort);
             this.setAttribute('sortOn', columnModel.dataIndex);
@@ -1752,7 +1752,7 @@ define('controls/grid/Grid', [
             var colindex    = evt.target.getAttribute('column'),
                 columnModel = this.$columnModel[colindex] || {};
 
-            if (typeof columnModel.onmouseover == 'function') {
+            if (typeof columnModel.onmouseover === 'function') {
                 columnModel.onmouseover(evt);
             }
 
@@ -1767,7 +1767,7 @@ define('controls/grid/Grid', [
             var colindex    = evt.target.getAttribute('column'),
                 columnModel = this.$columnModel[colindex] || {};
 
-            if (typeof columnModel.onmouseout == 'function') {
+            if (typeof columnModel.onmouseout === 'function') {
                 columnModel.onmouseout(evt);
             }
 
@@ -1988,9 +1988,17 @@ define('controls/grid/Grid', [
                     }
                 });
 
+                if (columnModel.className) {
+                    div.addClass(columnModel.className);
+                }
+
+                if (rowdata.className) {
+                    div.addClass(rowdata.className);
+                }
+
                 li.appendChild(div);
 
-                firstvisible = (!columnModel.hidden && firstvisible == -1) ? c : firstvisible;
+                firstvisible = (!columnModel.hidden && firstvisible === -1) ? c : firstvisible;
 
                 if (columnModel.hidden) {
                     div.setStyle('display', 'none');
@@ -2008,7 +2016,7 @@ define('controls/grid/Grid', [
                     div.title = rowdata[columnModel.title];
                 }
 
-                if (columnModel.dataType == 'button' && columnData) {
+                if (columnModel.dataType === 'button' && columnData) {
                     var _btn  = this.$data[r][columnDataIndex];
                     _btn.data = this.$data[r];
 
@@ -2030,12 +2038,12 @@ define('controls/grid/Grid', [
                     continue;
                 }
 
-                if (columnModel.dataType == 'QUI' && columnData) {
+                if (columnModel.dataType === 'QUI' && columnData) {
                     columnData.inject(div);
                     continue;
                 }
 
-                if (columnModel.dataType == 'code' && columnData) {
+                if (columnModel.dataType === 'code' && columnData) {
                     val = rowdata[columnDataIndex];
 
                     div.set('text', val);
@@ -2043,7 +2051,7 @@ define('controls/grid/Grid', [
                     continue;
                 }
 
-                if (columnModel.dataType == "checkbox") {
+                if (columnModel.dataType === "checkbox") {
                     var input = new Element('input', {type: "checkbox"});
 
                     input.onclick = func_input_click.bind(this, {
@@ -2181,7 +2189,7 @@ define('controls/grid/Grid', [
             var container   = t.container,
                 browser     = false, // Browser.Engine.trident,
                 options     = t.getAttributes(),
-                width       = options.width - (browser ? 2 : 2), //-2 radi bordera
+                width       = options.width ? options.width - (browser ? 2 : 2) : '', //-2 radi bordera
                 columnCount = this.$columnModel ? this.$columnModel.length : 0,
                 tDiv        = null;
 
@@ -2222,6 +2230,8 @@ define('controls/grid/Grid', [
                 var node, Btn;
 
                 for (i = 0, len = bt.length; i < len; i++) {
+                    bt[i].type = bt[i].type || '';
+
                     if (bt[i].type === 'separator') {
                         new QUISeparator().inject(tDiv);
                         continue;
@@ -2242,6 +2252,7 @@ define('controls/grid/Grid', [
 
                     node = Btn.getElm();
                     node.removeProperty('tabindex'); // focus eigenschaft nehmen
+                    node.type = 'button';
                     node.addClass('btn-silver');
 
                     var Item = new QUIContextItem({

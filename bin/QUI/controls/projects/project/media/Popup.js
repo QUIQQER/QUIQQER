@@ -106,11 +106,11 @@ define('controls/projects/project/media/Popup', [
                             width    : '100%'
                         },
                         html  : '<div style="margin-bottom: 20px;">' +
-                                QUILocale.get(
-                                    'quiqqer/system',
-                                    'projects.project.site.media.popup.noProject.text'
-                                ) +
-                                '</div>'
+                        QUILocale.get(
+                            'quiqqer/system',
+                            'projects.project.site.media.popup.noProject.text'
+                        ) +
+                        '</div>'
                     }).inject(Content);
 
                     new ProjectSelect({
@@ -283,7 +283,7 @@ define('controls/projects/project/media/Popup', [
             }
 
 
-            if (imageData.type == 'folder') {
+            if (imageData.type === 'folder') {
                 this.$Panel.openID(imageData.id);
                 this.$folderData = imageData;
                 return;
@@ -303,6 +303,11 @@ define('controls/projects/project/media/Popup', [
             this.$Panel.Loader.hide();
 
             this.$getDetails(imageData, function (data) {
+                if (data.type === 'folder') {
+                    self.$submit(imageData);
+                    return;
+                }
+
                 if (!(data.active).toInt()) {
                     self.$Panel.Loader.hide();
                     self.$activateItem(imageData);

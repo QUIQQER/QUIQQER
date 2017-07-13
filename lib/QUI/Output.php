@@ -39,6 +39,13 @@ class Output extends Singleton
     protected $linkCache = array();
 
     /**
+     * @var array
+     */
+    protected $settings = array(
+        'use-system-image-paths' => false
+    );
+
+    /**
      * @param $content
      * @return mixed
      */
@@ -74,6 +81,17 @@ class Output extends Singleton
     public function setProject(QUI\Projects\Project $Project)
     {
         $this->Project = $Project;
+    }
+
+    /**
+     * Set a setting
+     *
+     * @param string $setting
+     * @param string|bool|float|integer $value
+     */
+    public function setSetting($setting, $value)
+    {
+        $this->settings[$setting] = $value;
     }
 
     /**
@@ -169,6 +187,19 @@ class Output extends Singleton
         }
 
         if (!MediaUtils::isMediaUrl($img)) {
+            // is relative url from the system?
+
+            if ($this->settings['use-system-image-paths']
+                && strpos($output[0], 'http') === false
+            ) {
+                // workaround for system paths, not optimal
+                $output[0] = str_replace(
+                    ' src="',
+                    ' src="' . CMS_DIR,
+                    $output[0]
+                );
+            }
+
             return $output[0];
         }
 
@@ -193,7 +224,18 @@ class Output extends Singleton
             }
         }
 
-        $this->imageCache[$img] = MediaUtils::getImageHTML($src, $att);
+        $html = MediaUtils::getImageHTML($src, $att);
+
+        // workaround
+        if ($this->settings['use-system-image-paths']) {
+            $html = str_replace(
+                ' src="',
+                ' src="' . CMS_DIR,
+                $html
+            );
+        }
+
+        $this->imageCache[$img] = $html;
 
         return $this->imageCache[$img];
     }

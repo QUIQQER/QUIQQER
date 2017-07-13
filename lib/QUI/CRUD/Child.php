@@ -93,6 +93,23 @@ abstract class Child extends QUI\QDOM
     }
 
     /**
+     * returns a attribute
+     * if the attribute is not set, it returns false
+     *
+     * @param string $name
+     *
+     * @return mixed
+     */
+    public function getAttribute($name)
+    {
+        if (array_key_exists($name, $this->attributes)) {
+            return $this->attributes[$name];
+        }
+
+        return false;
+    }
+
+    /**
      * Update the CRUD child
      *
      * @throws QUI\ExceptionStack|QUI\Exception
@@ -106,7 +123,7 @@ abstract class Child extends QUI\QDOM
         $savedData = array();
 
         foreach ($needles as $needle) {
-            if (!$this->existsAttribute($needle)) {
+            if (!array_key_exists($needle, $this->attributes)) {
                 continue;
             }
 

@@ -1,5 +1,5 @@
 /**
- * Permission Controler
+ * Permission Controller
  *
  * @author www.pcsg.de (Henning Leutz
  * @module classes/permissions/Permissions
@@ -14,7 +14,6 @@ define('classes/permissions/Permissions', [
 
 ], function (QUIDOM, QUIAjax) {
     "use strict";
-
 
     return new Class({
 
@@ -32,6 +31,21 @@ define('classes/permissions/Permissions', [
                 sites   : {},
                 projects: {}
             };
+        },
+
+        /**
+         * has the session user the permission?
+         *
+         * @param {String} permission - wanted permission
+         * @return {Promise}
+         */
+        hasPermission: function (permission) {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.get('ajax_permissions_session_hasPermission', resolve, {
+                    onError   : reject,
+                    permission: permission
+                });
+            });
         },
 
         /**

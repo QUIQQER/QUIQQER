@@ -430,6 +430,65 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
+     * Creates a zip in the temp and return the path to it
+     *
+     * @return string
+     * @throws QUI\Exception
+     */
+    public function createZIP()
+    {
+        $path = $this->getFullPath();
+
+        $tempFolder = QUI::getTemp()->createFolder();
+        $newZipFile = $tempFolder . $this->getAttribute('name') . '.zip';
+
+        if (!class_exists('\ZipArchive')) {
+            throw new QUI\Exception(array(
+                'quiqqer/quiqqer',
+                'exception.zip.extension.not.installed'
+            ));
+        }
+
+        $files = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($path),
+            \RecursiveIteratorIterator::LEAVES_ONLY
+        );
+
+        $countFiles = 0;
+
+        foreach ($files as $name => $File) {
+            if (!$File->isDir()) {
+                $countFiles++;
+            }
+        }
+
+        if (!$countFiles) {
+            throw new QUI\Exception(array(
+                'quiqqer/quiqqer',
+                'exception.zip.folder.is.empty'
+            ));
+        }
+
+        $Zip = new \ZipArchive();
+        $Zip->open($newZipFile, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+
+        foreach ($files as $name => $File) {
+            if ($File->isDir()) {
+                continue;
+            }
+
+            $filePath     = $File->getRealPath();
+            $relativePath = substr($filePath, strlen($path));
+
+            $Zip->addFile($filePath, $relativePath);
+        }
+
+        $Zip->close();
+
+        return $newZipFile;
+    }
+
+    /**
      * Return the first child
      *
      * @return QUI\Projects\Media\File
@@ -439,9 +498,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     public function firstChild()
     {
         $result = $this->getChildren(
-            array(
-                'limit' => 1
-            )
+            array('limit' => 1)
         );
 
         if (isset($result[0])) {
@@ -1149,6 +1206,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         $fileinfo = FileUtils::getInfo($file);
         $filename = MediaUtils::stripMediaName($fileinfo['basename']);
+        $filename = mb_strtolower($filename);
 
         // svg fix
         if ($fileinfo['mime_type'] == 'text/html') {
@@ -1167,13 +1225,11 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         // if no ending, we search for one
         if (!isset($fileinfo['extension']) || empty($fileinfo['extension'])) {
-            $filename .= FileUtils::getEndingByMimeType(
-                $fileinfo['mime_type']
-            );
+            $filename .= FileUtils::getEndingByMimeType($fileinfo['mime_type']);
         }
 
-
         $new_file = $this->getFullPath() . '/' . $filename;
+        $new_file = str_replace("//", "/", $new_file);
 
         // overwrite the file
         if (file_exists($new_file)) {
@@ -1196,7 +1252,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 $Item->deactivate();
                 $Item->delete();
 
-                if (self::FILE_OVERWRITE_DESTROY) {
+                if ($options == self::FILE_OVERWRITE_DESTROY) {
                     $Item->destroy();
                 }
             } catch (QUI\Exception $Exception) {
@@ -1243,7 +1299,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             $imageHeight = $new_file_info['height'];
         }
 
-
         QUI::getDataBase()->insert($table, array(
             'name'         => $new_file_info['filename'],
             'title'        => $title,
@@ -1257,9 +1312,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             'mime_type'    => $new_file_info['mime_type'],
             'image_width'  => $imageWidth,
             'image_height' => $imageHeight,
-            'type'         => MediaUtils::getMediaTypeByMimeType(
-                $new_file_info['mime_type']
-            )
+            'type'         => MediaUtils::getMediaTypeByMimeType($new_file_info['mime_type'])
         ));
 
         $id = QUI::getDataBase()->getPDO()->lastInsertId();

@@ -4,7 +4,7 @@
  * @module controls/groups/Select
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/controls/Control
+ * @require qui/QUI
  * @require qui/controls/elements/Select
  * @require Locale
  * @require Groups
@@ -93,11 +93,16 @@ define('controls/groups/Select', [
         },
 
         /**
+         * event : on search click
          *
+         * @param {Object} Select
          * @param {Object} Btn
          */
-        $onSearchButtonClick: function (Btn) {
+        $onSearchButtonClick: function (Select, Btn) {
+            var oldIcon = Btn.getAttribute('icon');
+
             Btn.setAttribute('icon', 'fa fa-spinner fa-spin');
+            Btn.disable();
 
             require([
                 'controls/groups/sitemap/Window'
@@ -114,7 +119,8 @@ define('controls/groups/Select', [
                     }
                 }).open();
 
-                Btn.setAttribute('icon', 'fa fa-search');
+                Btn.setAttribute('icon', oldIcon);
+                Btn.enable();
             }.bind(this));
         }
     });

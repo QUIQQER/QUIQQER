@@ -4,6 +4,7 @@
  * @module controls/projects/project/Settings
  * @author www.pcsg.de (Henning Leutz)
  *
+ * @require qui/QUI
  * @require qui/controls/desktop/Panel
  * @require qui/controls/buttons/Button
  * @require qui/controls/windows/Confirm
@@ -14,6 +15,7 @@
  * @require Ajax
  * @require Locale
  * @require utils/Controls
+ * @require package/quiqqer/translator/bin/controls/VariableTranslation
  * @require css!controls/projects/project/Settings.css
  */
 define('controls/projects/project/Settings', [
@@ -226,7 +228,7 @@ define('controls/projects/project/Settings', [
                 self.setAttributes({
                     name : 'projects-panel',
                     icon : 'fa fa-home',
-                    title: self.getProject().getName()
+                    title: self.getProject().getTitle()
                 });
 
                 self.$Title.set('html', self.getAttribute('title'));

@@ -353,12 +353,17 @@ define('utils/Controls', [
                         Child          = elements[i];
                         fieldcontainer = false;
 
-                        if (Child.getParent().hasClass('field-container')) {
+                        if (Child.getParent().hasClass('field-container') ||
+                            Child.getParent().hasClass('field-container-field')) {
                             fieldcontainer = true;
                             Parent         = Child;
+
+                            Parent.getParents('.field-container-field')
+                                  .addClass('field-container-field-no-padding');
                         } else {
                             Parent = new Element('div', {
-                                styles: {
+                                'class': 'date-input',
+                                styles : {
                                     'float': 'left'
                                 }
                             }).wraps(Child);
@@ -379,13 +384,6 @@ define('utils/Controls', [
                         }
 
                         Child.autocomplete = 'off';
-
-                        Child.setStyles({
-                            float   : 'left',
-                            cursor  : 'pointer',
-                            maxWidth: 'calc(100% - 31px)',
-                            width   : datetime ? 180 : 105
-                        });
 
                         Picker = new DatePicker(Child, {
                             timePicker    : !!datetime,
@@ -650,16 +648,19 @@ define('utils/Controls', [
          * @param {HTMLElement} Elm
          * @return {Promise}
          */
-        getControlByElement: function(Elm)
-        {
+        getControlByElement: function (Elm) {
+            if (!Elm) {
+                return Promise.reject("Element not found.");
+            }
+
             var quiId = Elm.getProperty('data-quiid');
 
             if (quiId) {
                 return Promise.resolve(QUI.Controls.getById(quiId));
             }
 
-            return new Promise(function(resolve, reject) {
-                Elm.addEvent('load', function() {
+            return new Promise(function (resolve, reject) {
+                Elm.addEvent('load', function () {
                     var quiId = Elm.getProperty('data-quiid');
 
                     if (quiId) {

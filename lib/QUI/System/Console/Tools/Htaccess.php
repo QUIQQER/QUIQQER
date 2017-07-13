@@ -37,23 +37,22 @@ class Htaccess extends QUI\System\Console\Tool
         $htaccessBackupFile = VAR_DIR . 'backup/htaccess_' . date('Y-m-d__H_i_s');
         $htaccessFile       = CMS_DIR . '.htaccess';
 
-        $oldTemplate = false;
+        # Create the custom htaccess file if it does not exist
+        if (!file_exists(ETC_DIR . 'htaccess.custom.php')) {
+            file_put_contents(ETC_DIR . 'htaccess.custom.php', "");
+        }
 
-        $version = $this->getApacheVersion();
-        if ($version != null && isset($version[1])) {
-            $this->writeLn("Apache version detected : " . $version[0] . "." . $version[1]);
-            if ($version[1] <= 2) {
-                $oldTemplate = true;
-            }
-        } else {
-            $this->writeLn("Please select your Apache Version.");
-            $this->writeLn("[1] Apache 2.3 and higher.");
-            $this->writeLn("[2] Apache 2.2 and lower.");
-            $this->writeLn("Please type a number [1]");
-            $input = $this->readInput();
-            if ($input == "2") {
-                $oldTemplate = true;
-            }
+        $oldTemplate = false;
+        $config = parse_ini_file(ETC_DIR."conf.ini.php", true);
+
+        if (!isset($config['webserver']['type'])) {
+            $this->writeLn('Webservertype is not configured!', "red");
+            return;
+        }
+        $webserverType = $config['webserver']['type'];
+
+        if ($webserverType == "apache2.2") {
+            $oldTemplate = true;
         }
 
         //
@@ -102,9 +101,9 @@ class Htaccess extends QUI\System\Console\Tool
 #';
 
 
-        // custom htaccess
+        // Custom htaccess
         if (file_exists(ETC_DIR . 'htaccess.custom.php')) {
-            $htaccessContent .= "\n\n# custom htaccess\n";
+            $htaccessContent .= "\n\n# Custom htaccess (" . ETC_DIR . 'htaccess.custom.php' . ")\n";
             $htaccessContent .= file_get_contents(ETC_DIR . 'htaccess.custom.php');
             $htaccessContent .= "\n\n";
         }
@@ -120,6 +119,81 @@ class Htaccess extends QUI\System\Console\Tool
 
         $this->writeLn('');
         $this->resetColor();
+    }
+
+    /**
+     * Checks if the htaccess file would change if it gets generated again
+     *
+     * @return bool
+     */
+    public function hasModifications()
+    {
+        $htaccessFile = CMS_DIR . '.htaccess';
+        $oldTemplate  = false;
+
+        // Read old htaccess content and remove header
+        $oldHtaccessContent = trim(file_get_contents($htaccessFile));
+        $lines              = explode(PHP_EOL, $oldHtaccessContent);
+        for ($i = 0; $i < count($lines); $i++) {
+            $line = $lines[$i];
+            if (substr($line, 0, 1) === "#") {
+                unset($lines[$i]);
+                continue;
+            }
+
+            break;
+        }
+        $oldHtaccessContent = implode(PHP_EOL, $lines);
+
+
+        try {
+            $version = $this->getApacheVersion();
+
+            if (!isset($version[1])) {
+                throw new QUI\Exception("Couldnt detect Webserver version");
+            }
+
+            $this->writeLn("Apache version detected : " . $version[0] . "." . $version[1]);
+            if ($version[1] <= 2) {
+                $oldTemplate = true;
+            }
+        } catch (\Exception $Exception) {
+            $this->writeLn("Please select your Apache Version.");
+            $this->writeLn("[1] Apache 2.3 and higher.");
+            $this->writeLn("[2] Apache 2.2 and lower.");
+            $this->writeLn("Please type a number [1]");
+            $input = $this->readInput();
+            if ($input == "2") {
+                $oldTemplate = true;
+            }
+        }
+
+
+        //
+        // Generate htaccess file
+        //
+        $htaccessContent = "";
+
+
+        // Custom htaccess
+        if (file_exists(ETC_DIR . 'htaccess.custom.php')) {
+            $htaccessContent .= "\n\n# Custom htaccess (" . ETC_DIR . 'htaccess.custom.php' . ")\n";
+            $htaccessContent .= file_get_contents(ETC_DIR . 'htaccess.custom.php');
+            $htaccessContent .= "\n\n";
+        }
+
+        if ($oldTemplate) {
+            $htaccessContent .= $this->templateOld();
+        } else {
+            $htaccessContent .= $this->template();
+        }
+
+        if (trim($oldHtaccessContent) == trim($htaccessContent)) {
+            return false;
+        }
+
+
+        return true;
     }
 
     /**
@@ -159,26 +233,22 @@ class Htaccess extends QUI\System\Console\Tool
         $forceHttps = "";
         if (QUI::conf("webserver", "forceHttps")) {
             $forceHttps = "# Redirect non https traffic to https. For a safer web." . PHP_EOL;
-            $forceHttps .= "    RewriteEngine On" . PHP_EOL;
             $forceHttps .= "    RewriteCond %{HTTPS} !on" . PHP_EOL;
-            $forceHttps .= "    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]" . PHP_EOL;
+            $forceHttps .= "    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,END]" . PHP_EOL;
         }
 
 
         return "
-# quiqqer rewrite
 <IfModule mod_rewrite.c>
 
     SetEnv HTTP_MOD_REWRITE On
 
     RewriteEngine On
-    
+    RewriteBase {$URL_DIR}
     
     {$forceHttps}
     
-    RewriteBase {$URL_DIR}
-    
-    RewriteRule ^{$URL_SYS_ADMIN_DIR}$ {$URL_DIR}{$URL_SYS_DIR} [R=301,L]
+    RewriteRule ^{$URL_SYS_ADMIN_DIR}$ {$URL_DIR}{$URL_SYS_DIR} [R=301,END]
 
     #Block .git directories and their contents
     RewriteCond %{REQUEST_URI} ^(.*\/)?.git(\/.*)?$
@@ -187,8 +257,8 @@ class Htaccess extends QUI\System\Console\Tool
     ## bin dir
     RewriteRule ^bin/(.*)$ {$quiqqerBin}/$1 [END]" .
 
-               # This is a temporary workaround. needs to be removed when the media upload is relocated
-               "
+            # This is a temporary workaround. needs to be removed when the media upload is relocated
+            "
     ## lib dir
     RewriteRule ^lib/(.*)$ {$quiqqerLib}/$1 [END]
 
@@ -256,15 +326,24 @@ class Htaccess extends QUI\System\Console\Tool
 
         $URL_SYS_ADMIN_DIR = trim($URL_SYS_DIR, '/');
 
+        # Check for QUIQQERs webserver configuration
+        $forceHttps = "";
+        if (QUI::conf("webserver", "forceHttps")) {
+            $forceHttps = "# Redirect non https traffic to https. For a safer web." . PHP_EOL;
+            $forceHttps .= "    RewriteCond %{HTTPS} !on" . PHP_EOL;
+            $forceHttps .= "    RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]" . PHP_EOL;
+        }
+
         return "
-# quiqqer rewrite
 <IfModule mod_rewrite.c>
 
     SetEnv HTTP_MOD_REWRITE On
 
     RewriteEngine On
     RewriteBase {$URL_DIR}
-
+    
+    {$forceHttps}
+    
     RewriteRule ^{$URL_SYS_ADMIN_DIR}$ {$URL_DIR}{$URL_SYS_DIR} [R=301,L]
 
     #Block .git directories and their contents
@@ -278,8 +357,8 @@ class Htaccess extends QUI\System\Console\Tool
     ## bin dir
     RewriteRule ^bin/(.*)$ {$quiqqerBin}/$1 [L]" .
 
-               # This is a temporary workaround. needs to be removed when the media upload is relocated
-               "
+            # This is a temporary workaround. needs to be removed when the media upload is relocated
+            "
     ## lib dir
     RewriteRule ^lib/(.*)$ {$quiqqerLib}/$1 [L]
 
@@ -317,9 +396,17 @@ class Htaccess extends QUI\System\Console\Tool
         ";
     }
 
-    private function getApacheVersion()
-    {
 
+    /**
+     * Attempts to detect the apache webserver version
+     * Returnformat array("major version","minor version","point release");
+     *
+     * @return array
+     * @throws QUI\Exception
+     */
+    protected function getApacheVersion()
+    {
+        # Attempt detection by apache2 module
         if (function_exists('apache_get_version')) {
             $version = apache_get_version();
             $regex   = "/Apache\\/([0-9\\.]*)/i";
@@ -330,15 +417,11 @@ class Htaccess extends QUI\System\Console\Tool
                 $verionParts = explode(".", $version);
 
                 return $verionParts;
-            } else {
-                return null;
             }
-        } else {
-            if (empty(shell_exec('which apache2'))) {
-                return null;
-            }
+        }
 
-
+        # Attempt detection by system shell
+        if (\QUI\Utils\System::isShellFunctionEnabled("shell_exec")) {
             $version = shell_exec('apache2 -v');
             $regex   = "/Apache\\/([0-9\\.]*)/i";
             $res     = preg_match($regex, $version, $matches);
@@ -348,9 +431,9 @@ class Htaccess extends QUI\System\Console\Tool
                 $verionParts = explode(".", $version);
 
                 return $verionParts;
-            } else {
-                return null;
             }
         }
+
+        throw new QUI\Exception("Could not detect Apache Version");
     }
 }

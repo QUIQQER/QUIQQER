@@ -224,8 +224,9 @@ class Manager implements QUI\Interfaces\Events
      *
      * @param string $event - The type of event (e.g. 'complete').
      * @param callable|boolean $fn - (optional) The function to remove.
+     * @param string $package - Name of the package
      */
-    public function removeEvent($event, $fn = false)
+    public function removeEvent($event, $fn = false, $package = '')
     {
         $this->Events->removeEvent($event, $fn);
 
@@ -238,9 +239,20 @@ class Manager implements QUI\Interfaces\Events
         if (is_string($fn)) {
             QUI::getDataBase()->delete(self::table(), array(
                 'event'    => $event,
-                'callback' => $fn
+                'callback' => $fn,
+                'package'  => $package
             ));
         }
+    }
+
+    /**
+     * @param QUI\Package\Package $Package
+     */
+    public function removePackageEvents(QUI\Package\Package $Package)
+    {
+        QUI::getDataBase()->delete(self::table(), array(
+            'package' => $Package->getName()
+        ));
     }
 
     /**

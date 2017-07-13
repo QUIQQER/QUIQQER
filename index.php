@@ -134,7 +134,6 @@ try {
         exit;
     }
 
-
     // Prüfen ob es ein Cachefile gibt damit alles andere übersprungen werden kann
     $site_cache_dir    = VAR_DIR . 'cache/sites/';
     $project_cache_dir = $site_cache_dir . $Project->getAttribute('name') . '/';
@@ -148,6 +147,12 @@ try {
     QUI::getEvents()->fireEvent('start');
 
     Debug::marker('objekte initialisiert');
+
+    // Check if user is allowed to view Site and set appropriate error code if not
+    if ($Site instanceof QUI\Projects\Site\PermissionDenied) {
+        $statusCode = (int)QUI::conf('globals', 'sitePermissionDeniedErrorCode');
+        $Response->setStatusCode($statusCode);
+    }
 
     // Wenn es ein Cache gibt und die Seite auch gecached werden soll
     if (CACHE && file_exists($site_cache_file)
@@ -170,7 +175,7 @@ try {
      */
     try {
         $Template = new QUI\Template();
-        $content  = $Template->fetchTemplate($Site);
+        $content  = $Template->fetchSite($Site);
 
         Debug::marker('fetch Template');
 
@@ -215,9 +220,9 @@ try {
         $Template = new QUI\Template();
 
         try {
-            $content = $Template->fetchTemplate($Rewrite->getErrorSite());
+            $content = $Template->fetchSite($Rewrite->getErrorSite());
         } catch (QUI\Exception $Exception) {
-            $content = $Template->fetchTemplate($Project->firstChild());
+            $content = $Template->fetchSite($Project->firstChild());
         }
 
         $content = $Rewrite->outputFilter($content);
