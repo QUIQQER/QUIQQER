@@ -10,6 +10,7 @@ use QUI;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\Text\XML;
 use QUI\Utils\DOM;
+use QUI\Security\Password;
 
 /**
  * QUIQQER user manager
@@ -1446,12 +1447,7 @@ class Manager
      */
     public static function genHash($pass, $salt = null)
     {
-        if ($salt === null) {
-            $randomBytes = openssl_random_pseudo_bytes(SALT_LENGTH);
-            $salt        = mb_substr(bin2hex($randomBytes), 0, SALT_LENGTH);
-        }
-
-        return $salt . md5($salt . $pass);
+        return Password::generateHash($pass);
     }
 
     /**
