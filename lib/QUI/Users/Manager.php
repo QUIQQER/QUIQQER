@@ -1438,6 +1438,8 @@ class Manager
     }
 
     /**
+     * @deprecated
+     *
      * Generates a hash of a password
      *
      * @param string $pass
