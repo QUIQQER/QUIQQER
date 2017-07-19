@@ -7,7 +7,7 @@
  * @param string|array $packages - Name of the package
  */
 QUI::$Ajax->registerFunction(
-    'ajax_system_packages_installPackages',
+    'ajax_system_packages_installPackage',
     function ($packageName, $packageVersion, $server) {
         $Packages = QUI::getPackageManager();
         $server   = json_decode($server, true);
