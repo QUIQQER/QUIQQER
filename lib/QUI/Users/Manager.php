@@ -651,7 +651,7 @@ class Manager
         }
 
         $username = $params['username'];
-        $password = $this->genHash($params['password']);
+        $password = QUI\Security\Password::generateHash($params['password']);
 
         // unerlaubte zeichen prüfen
         self::checkUsernameSigns($username);
@@ -1423,16 +1423,14 @@ class Manager
      */
     public function emailExists($email)
     {
-        $result = QUI::getDataBase()->fetch(
-            array(
-                'select' => 'email',
-                'from'   => self::table(),
-                'where'  => array(
-                    'email' => $email
-                ),
-                'limit'  => 1
-            )
-        );
+        $result = QUI::getDataBase()->fetch(array(
+            'select' => 'email',
+            'from'   => self::table(),
+            'where'  => array(
+                'email' => $email
+            ),
+            'limit'  => 1
+        ));
 
         return isset($result[0]) ? true : false;
     }
@@ -1443,7 +1441,7 @@ class Manager
      * Generates a hash of a password
      *
      * @param string $pass
-     * @param string $salt (optional) - use specific salt for password generation [default: randomly generated]
+     * @param string $salt -> deprecated
      *
      * @return string
      */

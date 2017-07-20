@@ -1169,18 +1169,18 @@ class User implements QUI\Interfaces\Users\User
     }
 
     /**
-     * internal set password
+     * Update password to the database
      *
      * @param string $password
      */
     protected function updatePassword($password)
     {
-        $newpass        = Manager::genHash($password);
-        $this->password = $newpass;
+        $newPassword    = QUI\Security\Password::generateHash($password);
+        $this->password = $newPassword;
 
         QUI::getDataBase()->update(
             Manager::table(),
-            array('password' => $newpass),
+            array('password' => $newPassword),
             array('id' => $this->getId())
         );
     }
