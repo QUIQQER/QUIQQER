@@ -33,6 +33,13 @@ class Manager
     public static $Stash = null;
 
     /**
+     * File system stach object
+     *
+     * @var Stash\Pool
+     */
+    public static $FileSystemStash = null;
+
+    /**
      * the stash multihandler
      *
      * @var Stash\Interfaces\DriverInterface
@@ -273,6 +280,42 @@ class Manager
         self::$handlers = $handlers;
 
         return self::$Stash->getItem($key);
+    }
+
+    /**
+     * Explicitly get file system cache
+     *
+     * @return false|Stash\Pool
+     */
+    public static function getFileSystemCache()
+    {
+        if (!is_null(self::$FileSystemStash)) {
+            return self::$FileSystemStash;
+        }
+
+        $Config = self::getConfig();
+        $conf   = $Config->get('filesystem');
+        $params = array(
+            'path' => VAR_DIR . 'cache/stack/'
+        );
+
+        if (!empty($conf['path']) && is_dir($conf['path'])) {
+            $params['path'] = $conf['path'];
+        }
+
+        try {
+            $handler = new Stash\Driver\FileSystem($params);
+        } catch (Stash\Exception\RuntimeException $Exception) {
+            return false;
+        }
+
+        $Handler = new Stash\Driver\Composite(array(
+            'drivers' => [$handler]
+        ));
+
+        self::$FileSystemStash = new Stash\Pool($Handler);
+
+        return self::$FileSystemStash;
     }
 
     /**

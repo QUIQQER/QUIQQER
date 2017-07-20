@@ -27,9 +27,13 @@ QUI::$Ajax->registerFunction(
             return false;
         }
 
+        $hash = $data['licenseHash'];
+        $hash = hex2bin($hash);
+        $hash = bin2hex(Encryption::decrypt($hash));
+
         return array(
             'licenseId'   => $data['id'],
-            'licenseHash' => $data['licenseHash']
+            'licenseHash' => $hash
         );
     },
     array(),
