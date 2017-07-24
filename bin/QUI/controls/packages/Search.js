@@ -56,7 +56,8 @@ define('controls/packages/Search', [
             '$onClickInstall',
             '$loadPackageStore',
             '$loadOtherSourcesSearch',
-            '$onResize'
+            '$onResize',
+            '$apiController'
         ],
 
         options: {
@@ -68,15 +69,17 @@ define('controls/packages/Search', [
 
             this.$OtherSourcesResultList = null;
 
-            this.$Results         = null;
-            this.$Input           = null;
-            this.$TermsOfUse      = null;
-            this.Loader           = new QUILoader();
-            this.$Content         = null;
-            this.$storeUrl        = null;
-            this.$PackageStoreBtn = null;
-            this.$OtherSourcesBtn = null;
-            this.$Panel           = null;
+            this.$Results                 = null;
+            this.$Input                   = null;
+            this.$TermsOfUse              = null;
+            this.Loader                   = new QUILoader();
+            this.$Content                 = null;
+            this.$storeUrl                = null;
+            this.$PackageStoreBtn         = null;
+            this.$OtherSourcesBtn         = null;
+            this.$Panel                   = null;
+            this.$storeApiEventRegistered = false;
+            this.$StoreFrame              = null;
 
             this.addEvents({
                 onInject: this.$onInject
@@ -159,6 +162,38 @@ define('controls/packages/Search', [
         },
 
         /**
+         * Event controller for StoreApi
+         *
+         * @param {Object} event
+         */
+        $apiController: function (event) {
+            var Data          = event.data;
+            var StoreApiClass = new StoreApi();
+            var frameWindow   = this.$StoreFrame.contentWindow;
+
+            // init request
+            if (Data.func === 'init') {
+                frameWindow.postMessage(true, '*');
+                return;
+            }
+
+            if (typeof StoreApiClass[Data.func] === 'undefined') {
+                console.log("func not found");
+                frameWindow.postMessage(null, '*');
+                return;
+            }
+
+            // regular request
+            var params = Data.params || [];
+
+            StoreApiClass[Data.func].apply(StoreApiClass, params).then(function (result) {
+                frameWindow.postMessage(result, '*');
+            }, function () {
+                frameWindow.postMessage(null, '*');
+            });
+        },
+
+        /**
          * Show the package store
          */
         $loadPackageStore: function () {
@@ -167,41 +202,15 @@ define('controls/packages/Search', [
             this.$PackageStoreBtn.addClass('qui-controls-packages-search-toggle-active');
             this.$OtherSourcesBtn.removeClass('qui-controls-packages-search-toggle-active');
 
-            var StoreFrame = new Element('iframe', {
+            this.$StoreFrame = new Element('iframe', {
                 'class': 'qui-control-packages-search-iframe',
                 src    : this.$storeUrl
             }).inject(this.$Content);
 
-            var frameWindow   = StoreFrame.contentWindow;
-            var StoreApiClass = new StoreApi();
-
-            var FuncApiController = function (event) {
-                var Data = event.data;
-
-                // init request
-                if (Data.func === 'init') {
-                    frameWindow.postMessage(true, '*');
-                    return;
-                }
-
-                if (typeof StoreApiClass[Data.func] === 'undefined') {
-                    console.log("func not found");
-                    frameWindow.postMessage(null, '*');
-                    return;
-                }
-
-                // regular request
-                var params = Data.params || [];
-
-                StoreApiClass[Data.func].apply(StoreApiClass, params).then(function (result) {
-                    frameWindow.postMessage(result, '*');
-                }, function () {
-                    frameWindow.postMessage(null, '*');
-                });
-            };
-
-            window.removeEventListener('message', FuncApiController);
-            window.addEventListener('message', FuncApiController);
+            if (!this.$storeApiEventRegistered) {
+                window.addEventListener('message', this.$apiController);
+                this.$storeApiEventRegistered = true;
+            }
         },
 
         /**
