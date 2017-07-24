@@ -29,6 +29,7 @@ define('controls/packages/Search', [
     'Packages',
     'Mustache',
     'controls/packages/PackageList',
+    'classes/packages/StoreApi',
 
     'Locale',
     'Ajax',
@@ -39,7 +40,7 @@ define('controls/packages/Search', [
     'css!controls/packages/Search.css'
 
 ], function (QUI, QUIControl, QUIButton, QUILoader, Packages,
-             Mustache, PackageList, QUILocale, QUIAjax, template,
+             Mustache, PackageList, StoreApi, QUILocale, QUIAjax, template,
              templateTermsOfUse, templateOtherSources) {
     "use strict";
 
@@ -166,10 +167,41 @@ define('controls/packages/Search', [
             this.$PackageStoreBtn.addClass('qui-controls-packages-search-toggle-active');
             this.$OtherSourcesBtn.removeClass('qui-controls-packages-search-toggle-active');
 
-            new Element('iframe', {
+            var StoreFrame = new Element('iframe', {
                 'class': 'qui-control-packages-search-iframe',
                 src    : this.$storeUrl
             }).inject(this.$Content);
+
+            var frameWindow   = StoreFrame.contentWindow;
+            var StoreApiClass = new StoreApi();
+
+            var FuncApiController = function (event) {
+                var Data = event.data;
+
+                // init request
+                if (Data.func === 'init') {
+                    frameWindow.postMessage(true, '*');
+                    return;
+                }
+
+                if (typeof StoreApiClass[Data.func] === 'undefined') {
+                    console.log("func not found");
+                    frameWindow.postMessage(null, '*');
+                    return;
+                }
+
+                // regular request
+                var params = Data.params || [];
+
+                StoreApiClass[Data.func].apply(StoreApiClass, params).then(function (result) {
+                    frameWindow.postMessage(result, '*');
+                }, function () {
+                    frameWindow.postMessage(null, '*');
+                });
+            };
+
+            window.removeEventListener('message', FuncApiController);
+            window.addEventListener('message', FuncApiController);
         },
 
         /**

@@ -110,7 +110,7 @@ define('classes/editor/Manager', [
 
 
                 if (name in self.$editors) {
-                    var Editor = new self.$editors[name](this);
+                    var Editor = new self.$editors[name](self);
 
                     self.$registerEditor(Editor);
 
