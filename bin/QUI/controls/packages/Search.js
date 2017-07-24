@@ -57,7 +57,7 @@ define('controls/packages/Search', [
             '$loadPackageStore',
             '$loadOtherSourcesSearch',
             '$onResize',
-            '$apiController'
+            '$storeApiController'
         ],
 
         options: {
@@ -166,7 +166,7 @@ define('controls/packages/Search', [
          *
          * @param {Object} event
          */
-        $apiController: function (event) {
+        $storeApiController: function (event) {
             var Data          = event.data;
             var StoreApiClass = new StoreApi();
             var frameWindow   = this.$StoreFrame.contentWindow;
@@ -178,7 +178,6 @@ define('controls/packages/Search', [
             }
 
             if (typeof StoreApiClass[Data.func] === 'undefined') {
-                console.log("func not found");
                 frameWindow.postMessage(null, '*');
                 return;
             }
@@ -208,7 +207,7 @@ define('controls/packages/Search', [
             }).inject(this.$Content);
 
             if (!this.$storeApiEventRegistered) {
-                window.addEventListener('message', this.$apiController);
+                window.addEventListener('message', this.$storeApiController);
                 this.$storeApiEventRegistered = true;
             }
         },
