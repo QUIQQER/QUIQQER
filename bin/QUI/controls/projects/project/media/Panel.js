@@ -2183,7 +2183,7 @@ define('controls/projects/project/media/Panel', [
         },
 
         /**
-         *
+         * event: on filter
          */
         $onFilter: function () {
             if (this.$filterDelay) {
@@ -2196,13 +2196,13 @@ define('controls/projects/project/media/Panel', [
                 var i, len, Child, Title;
                 var children = self.getContent().getElements('.qui-media-item');
 
-                var value = self.$Filter.value;
+                var value = String(self.$Filter.value).toLowerCase();
 
                 for (i = 0, len = children.length; i < len; i++) {
                     Child = children[i];
                     Title = Child.getElement('.title');
 
-                    if (Title.get('text').match(value)) {
+                    if (Title.get('text').toLowerCase().match(value)) {
                         Child.setStyle('display', null);
                         continue;
                     }

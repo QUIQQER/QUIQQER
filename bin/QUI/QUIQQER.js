@@ -25,19 +25,6 @@ define('QUIQQER', ['Ajax', 'Packages'], function (QUIAjax, Packages) {
          */
         getInformation: function () {
             return Packages.getPackageLock('quiqqer/quiqqer');
-        },
-
-        /**
-         * Get license data of QUIQQER system
-         *
-         * @return {Promise}
-         */
-        getLicenseData: function() {
-            return new Promise(function(resolve, reject) {
-                QUIAjax.get('ajax_licenseKey_getAuthData', resolve, {
-                    onError: reject
-                })
-            });
         }
     };
 });
