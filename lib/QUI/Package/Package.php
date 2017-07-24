@@ -513,6 +513,8 @@ class Package extends QUI\QDOM
         Update::importTemplateEngines($dir . 'engines.xml');
         Update::importEditors($dir . 'wysiwyg.xml');
 
+        QUI::getPermissionManager()->deletePermissionsFromPackage($this);
+
         Update::importPermissions($dir . 'permissions.xml', $this->getName());
         Update::importMenu($dir . 'menu.xml');
 

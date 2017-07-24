@@ -172,6 +172,7 @@ class QUIQQER extends AbstractAuthenticator
      * @param string $pass
      * @param string $salt
      * @return string
+     * @deprecated
      */
     protected function genHash($pass, $salt = null)
     {
@@ -245,7 +246,7 @@ class QUIQQER extends AbstractAuthenticator
     /**
      * @param QUI\System\Console $Console
      */
-    public function cliAuthentication(\QUI\System\Console $Console)
+    public function cliAuthentication(QUI\System\Console $Console)
     {
         $username = $Console->getArgument('username');
         $password = $Console->getArgument('password');
