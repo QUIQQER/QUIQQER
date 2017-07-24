@@ -80,6 +80,7 @@ define('controls/packages/Search', [
             this.$Panel                   = null;
             this.$storeApiEventRegistered = false;
             this.$StoreFrame              = null;
+            this.$StoreApi                = new StoreApi();
 
             this.addEvents({
                 onInject: this.$onInject
@@ -167,9 +168,12 @@ define('controls/packages/Search', [
          * @param {Object} event
          */
         $storeApiController: function (event) {
-            var Data          = event.data;
-            var StoreApiClass = new StoreApi();
-            var frameWindow   = this.$StoreFrame.contentWindow;
+            var Data        = event.data;
+            var frameWindow = this.$StoreFrame.contentWindow;
+
+            if (!frameWindow) {
+                return;
+            }
 
             // init request
             if (Data.func === 'init') {
@@ -177,7 +181,7 @@ define('controls/packages/Search', [
                 return;
             }
 
-            if (typeof StoreApiClass[Data.func] === 'undefined') {
+            if (typeof this.$StoreApi[Data.func] === 'undefined') {
                 frameWindow.postMessage(null, '*');
                 return;
             }
@@ -185,7 +189,7 @@ define('controls/packages/Search', [
             // regular request
             var params = Data.params || [];
 
-            StoreApiClass[Data.func].apply(StoreApiClass, params).then(function (result) {
+            this.$StoreApi[Data.func].apply(this.$StoreApi, params).then(function (result) {
                 frameWindow.postMessage(result, '*');
             }, function () {
                 frameWindow.postMessage(null, '*');
