@@ -6741,7 +6741,7 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Name / URL]]></en>
         </locale>
         <locale name="projects.project.site.panel.information.title">
-            <de><![CDATA[Title]]></de>
+            <de><![CDATA[Titel]]></de>
             <en><![CDATA[Title]]></en>
         </locale>
         <locale name="projects.project.site.panel.information.short">
