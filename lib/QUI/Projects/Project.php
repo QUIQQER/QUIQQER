@@ -656,7 +656,7 @@ class Project
     public function get($id)
     {
         if ((defined('ADMIN') && ADMIN == 1)
-            || defined('QUIQQER_CONSOLE')) {
+            || (defined('QUIQQER_CONSOLE') && QUIQQER_CONSOLE == 1)) {
             return new Site\Edit($this, (int)$id);
         }
 
