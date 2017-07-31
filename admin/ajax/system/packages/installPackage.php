@@ -20,7 +20,13 @@ QUI::$Ajax->registerFunction(
             }
         }
 
-        $Packages->install($packageName, $packageVersion);
+        try {
+            $Packages->install($packageName, $packageVersion);
+        } catch (\Exception $Exception) {
+            return false;
+        }
+
+        return true;
     },
     array('packageName', 'packageVersion', 'server'),
     array(
