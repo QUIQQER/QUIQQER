@@ -1667,6 +1667,8 @@ class Manager extends QUI\QDOM
     {
         return array(
             'phpVersion'     => phpversion(),
+            'quiqqerHost'    => QUI::conf('globals', 'host'),
+            'quiqqerCmsDir'  => QUI::conf('globals', 'cms_dir'),
             'quiqqerVersion' => QUI::version()
         );
     }

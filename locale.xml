@@ -1093,6 +1093,10 @@
             <de><![CDATA[Einstellungen]]></de>
             <en><![CDATA[Settings]]></en>
         </locale>
+        <locale name="packages.panel.category.license">
+            <de><![CDATA[Lizenz]]></de>
+            <en><![CDATA[License]]></en>
+        </locale>
 
         <locale name="packages.panel.btn.setup">
             <de><![CDATA[System Setup ausführen]]></de>
@@ -5794,10 +5798,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="menu.help.about.text">
             <de><![CDATA[Über QUIQQER]]></de>
             <en><![CDATA[About QUIQQER]]></en>
-        </locale>
-        <locale name="menu.licenseKey.text">
-            <de><![CDATA[QUIQQER Lizenz]]></de>
-            <en><![CDATA[QUIQQER Lizenz]]></en>
         </locale>
         <locale name="quiqqer.settings.title">
             <de><![CDATA[System]]></de>

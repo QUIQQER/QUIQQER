@@ -49,7 +49,8 @@ define('controls/packages/Panel', [
             'executeCompleteSetup',
             '$onCreate',
             '$onShow',
-            '$loadControl'
+            '$loadControl',
+            'loadLicense'
         ],
 
         initialize: function (options) {
@@ -171,6 +172,14 @@ define('controls/packages/Panel', [
                 }
             });
 
+            this.addCategory({
+                name  : 'license',
+                text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.license'),
+                image : 'fa fa-key',
+                events: {
+                    onActive: this.loadLicense
+                }
+            });
 
             this.$Categories.addClass('packages-panel-categories');
 
@@ -251,6 +260,13 @@ define('controls/packages/Panel', [
          */
         loadPHPInfo: function () {
             this.$loadControl('controls/packages/PHPInfo');
+        },
+
+        /**
+         * Load QUIQQER license info
+         */
+        loadLicense: function () {
+            this.$loadControl('controls/licenseKey/LicenseKey');
         },
 
         /**

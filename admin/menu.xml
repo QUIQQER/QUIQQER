@@ -44,16 +44,6 @@
         <locale group="quiqqer/system" var="menu.help.dashboard.text"/>
     </item>
 
-    <item parent="/quiqqer/"
-          name="licensekey"
-          icon="fa fa-key"
-          require="controls/licenseKey/LicenseKeyPanel"
-          group="quiqqer/system"
-          var="menu.licenseKey.text"
-    >
-        <locale group="quiqqer/system" var="menu.licenseKey.text"/>
-    </item>
-
     <!-- Plugins und Packages -->
     <item parent="/quiqqer/"
           name="packages"
