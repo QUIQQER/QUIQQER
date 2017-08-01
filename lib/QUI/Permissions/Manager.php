@@ -1251,26 +1251,28 @@ class Manager
         $usersAndGroups = $User->getGroups();
         $result         = false;
 
-        if (!$User->getId()) {
-            return false;
-        }
+//        if (!$User->getId()) {
+//            return false;
+//        }
 
         // user permission check
-        if ($ruleset) {
-            $usersAndGroups[] = $User;
-        } else {
-            $userPermissions = $this->getData($User);
+        if ($User->getId()) {
+            if ($ruleset) {
+                $usersAndGroups[] = $User;
+            } else {
+                $userPermissions = $this->getData($User);
 
-            if (isset($userPermissions[0])
-                && isset($userPermissions[0]['permissions'])
-            ) {
-                $userPermissions = json_decode(
-                    $userPermissions[0]['permissions'],
-                    true
-                );
+                if (isset($userPermissions[0])
+                    && isset($userPermissions[0]['permissions'])
+                ) {
+                    $userPermissions = json_decode(
+                        $userPermissions[0]['permissions'],
+                        true
+                    );
 
-                if (isset($userPermissions[$permission])) {
-                    return $userPermissions[$permission];
+                    if (isset($userPermissions[$permission])) {
+                        return $userPermissions[$permission];
+                    }
                 }
             }
         }
