@@ -57,13 +57,18 @@ class Manager
             file_put_contents(CMS_DIR . 'etc/wysiwyg/editors.ini.php', '');
         }
 
-        // if toolbar path is empty, use default toolbars
+        // If toolbar path is empty, use default toolbars
         $path = self::getToolbarsPath();
 
         if (!is_dir($path)) {
             File::mkdir($path);
         }
 
+        // Remove old standard.xml toolbar for compatibility
+        if (file_exists($path."standard.xml")) {
+            rename($path."standard.xml", CMS_DIR."var/backup/standard.xml");
+        }
+        
         $toolbars = File::readDir($path);
 
         if (empty($toolbars)) {
@@ -74,6 +79,41 @@ class Manager
                 File::copy(
                     $defaultBarDir . $toolbar,
                     $path . $toolbar
+                );
+            }
+
+            // Prepare the root (admin) group for the new toolbars
+            $rootGroupID = QUI::conf("globals", "root");
+            $rootToolbar = "redakteur.xml";
+            
+            // Fallback in case the "redakteur.xml" toolbar does not exist.
+            // Should never happen in properly configured systems!
+            if (!in_array("redakteur.xml", $toolbars)) {
+                $rootToolbar = $toolbars[0];
+            }
+
+            QUI::getDataBase()->update(
+                QUI::getDBTableName("groups"),
+                array(
+                    "toolbar"          => $rootToolbar,
+                    "assigned_toolbar" => implode(",", $toolbars)
+                ),
+                array(
+                    "id" => $rootGroupID
+                )
+            );
+
+            // Set "minimal.xml" as new default toolbar for the everyone group
+            if (in_array("minimal.xml", $toolbars)) {
+                QUI::getDataBase()->update(
+                    QUI::getDBTableName("groups"),
+                    array(
+                        "toolbar"          => "minimal.xml",
+                        "assigned_toolbar" => "minimal.xml"
+                    ),
+                    array(
+                        "id" => 1
+                    )
                 );
             }
         }
@@ -130,7 +170,7 @@ class Manager
     /**
      * Register a js editor
      *
-     * @param string $name - name of the editor
+     * @param string $name    - name of the editor
      * @param string $package - js modul/package name
      */
     public static function registerEditor($name, $package)
@@ -169,6 +209,7 @@ class Manager
      * Search toolbars
      *
      * @param $search
+     *
      * @return array
      */
     public static function search($search)
@@ -182,6 +223,7 @@ class Manager
      * Checks if the toolbar exists
      *
      * @param $toolbar
+     *
      * @return bool
      */
     public static function existsToolbar($toolbar)
@@ -215,6 +257,7 @@ class Manager
      * Return all available toolbars for an user
      *
      * @param QUI\Interfaces\Users\User $User
+     *
      * @return array
      */
     public static function getToolbarsFromUser(QUI\Interfaces\Users\User $User)
@@ -253,6 +296,7 @@ class Manager
      * Return all available toolbars for a group
      *
      * @param QUI\Groups\Group $Group
+     *
      * @return array
      */
     public static function getToolbarsFromGroup(QUI\Groups\Group $Group)
@@ -535,7 +579,7 @@ class Manager
      * Save the Toolbar
      *
      * @param string $toolbar - toolbar name
-     * @param string $xml - toolbar xml
+     * @param string $xml     - toolbar xml
      *
      * @throws QUI\Exception
      */
