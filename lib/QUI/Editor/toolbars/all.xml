@@ -79,7 +79,6 @@
 
         <group>
             <button>Image</button>
-            <button>Flash</button>
             <button>Table</button>
             <button>HorizontalRule</button>
             <button>Smiley</button>
