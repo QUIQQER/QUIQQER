@@ -1,15 +1,4 @@
-    {strip}
-    <title>
-        {if $Site->getAttribute('quiqqer.meta.site.title')}
-            {$Site->getAttribute('meta.seotitle')|escape:"html"}
-        {else}
-            {$Template->getAttribute('site_title_prefix')}
-            {$Site->getAttribute('meta.seotitle')|escape:"html"}
-            {$Template->getAttribute('site_title_suffix')}
-            {$Template->getAttribute('site_title')}
-        {/if}
-    </title>
-    {/strip}
+    {strip}<title>{$Template->getTitle()}</title>{/strip}
 
     <!-- [begin] meta -->
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -70,8 +59,9 @@
             URL_TEMPLATE_DIR = '{$URL_OPT_DIR}{$Project->getAttribute('template')}/';
 
         var QUIQQER = {
-            lu : "{$lastUpdate}",
-            ajax: '/ajax.php'
+            lu : '{$lastUpdate}',
+            ajax: '/ajax.php',
+            title: '{$Template->getTitle()}'
         };
 
         {assign var=httpshost value=$Project->getVHost( true, true )}
