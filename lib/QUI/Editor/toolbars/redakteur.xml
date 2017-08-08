@@ -47,6 +47,7 @@
         <group>
             <button>Link</button>
             <button>Image</button>
+            <button>FontAwesome</button>
         </group>
     </line>
 </toolbar>

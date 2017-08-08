@@ -108,6 +108,13 @@ class Canonical
             return '';
         }
 
+
+        // fix doppelter HOST  im canonical https://dev.quiqqer.com/quiqqer/quiqqer/issues/574
+
+        if (strpos($canonical, 'https:') !== false || strpos($canonical, 'http:') !== false) {
+            return $this->getLinkRel($canonical);
+        }
+
         return $this->getLinkRel($httpsHost . URL_DIR . $canonical);
     }
 

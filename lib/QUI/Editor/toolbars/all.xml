@@ -8,11 +8,11 @@
         <group>
             <button>Cut</button>
             <button>Copy</button>
-            <separator/>
+            <seperator></seperator>
             <button>Paste</button>
             <button>PasteText</button>
             <button>PasteFromWord</button>
-            <separator/>
+            <seperator></seperator>
             <button>Undo</button>
             <button>Redo</button>
         </group>
@@ -20,9 +20,9 @@
         <group>
             <button>Find</button>
             <button>Replace</button>
-            <separator/>
+            <seperator></seperator>
             <button>SelectAll</button>
-            <separator/>
+            <seperator></seperator>
             <button>Scayt</button>
         </group>
 
@@ -47,25 +47,25 @@
             <button>Strike</button>
             <button>Subscript</button>
             <button>Superscript</button>
-            <separator/>
+            <seperator></seperator>
             <button>RemoveFormat</button>
         </group>
 
         <group>
             <button>NumberedList</button>
             <button>BulletedList</button>
-            <separator/>
+            <seperator></seperator>
             <button>Outdent</button>
             <button>Indent</button>
-            <separator/>
+            <seperator></seperator>
             <button>Blockquote</button>
             <button>CreateDiv</button>
-            <separator/>
+            <seperator></seperator>
             <button>JustifyLeft</button>
             <button>JustifyCenter</button>
             <button>JustifyRight</button>
             <button>JustifyBlock</button>
-            <separator/>
+            <seperator></seperator>
             <button>BidiLtr</button>
             <button>BidiRtl</button>
             <button>Language</button>
@@ -79,13 +79,13 @@
 
         <group>
             <button>Image</button>
-            <button>Flash</button>
             <button>Table</button>
             <button>HorizontalRule</button>
             <button>Smiley</button>
             <button>SpecialChar</button>
             <button>PageBreak</button>
             <button>Iframe</button>
+            <button>FontAwesome</button>
         </group>
 
     </line>
@@ -100,7 +100,40 @@
 
         <group>
             <button>TextColor</button>
-            <button>BGColor'</button>
+            <button>BGColor</button>
+        </group>
+    </line>
+
+    <line>
+        <group>
+            <button>About</button>
+            <button>base64image</button>
+            <button>Smiley</button>
+            <button>Print</button>
+            <button>CodeSnippet</button>
+            <button>DocProps</button>
+            <button>EmbedSemantic</button>
+            <button>Html5audio</button>
+            <button>Html5video</button>
+            <button>iframedialog</button>
+            <button>image2</button>
+            <button>lineheight</button>
+            <button>NewPage</button>
+            <button>CreatePlaceholder</button>
+            <button>pre</button>
+            <button>Preview</button>
+            <button>Save</button>
+            <button>ShowBlocks</button>
+            <button>Sourcedialog</button>
+            <button>SpecialChar</button>
+            <button>Symbol</button>
+            <button>TransformTextSwitcher</button>
+            <button>TransformTextToLowercase</button>
+            <button>TransformTextToUppercase</button>
+            <button>TransformTextCapitalize</button>
+            <button>UIColor</button>
+            <button>Youtube</button>
+            <button>Zoom</button>
         </group>
     </line>
 </toolbar>

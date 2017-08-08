@@ -51,10 +51,6 @@ define('controls/licenseKey/LicenseKey', [
             '$deleteLicense'
         ],
 
-        options: {
-            licenseId: false
-        },
-
         initialize: function (options) {
             this.parent(options);
 
@@ -74,17 +70,23 @@ define('controls/licenseKey/LicenseKey', [
             this.$Elm.addClass('quiqqer-licensekey');
             this.Loader.inject(this.$Elm);
 
-            this.refresh();
+            var self = this;
+
+            this.refresh().then(function() {
+                self.fireEvent('load');
+            });
         },
 
         /**
          * Refresh license data
+         *
+         * @return {Promise}
          */
         refresh: function () {
             var self = this;
             this.Loader.show();
 
-            this.$getLicenseData().then(function (LicenseData) {
+            return this.$getLicenseData().then(function (LicenseData) {
                 self.Loader.hide();
                 self.$displayLicenseData(LicenseData);
             });

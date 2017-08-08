@@ -10,6 +10,7 @@ use QUI;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\Text\XML;
 use QUI\Utils\DOM;
+use QUI\Security\Password;
 
 /**
  * QUIQQER user manager
@@ -650,7 +651,7 @@ class Manager
         }
 
         $username = $params['username'];
-        $password = $this->genHash($params['password']);
+        $password = QUI\Security\Password::generateHash($params['password']);
 
         // unerlaubte zeichen prüfen
         self::checkUsernameSigns($username);
@@ -1422,36 +1423,31 @@ class Manager
      */
     public function emailExists($email)
     {
-        $result = QUI::getDataBase()->fetch(
-            array(
-                'select' => 'email',
-                'from'   => self::table(),
-                'where'  => array(
-                    'email' => $email
-                ),
-                'limit'  => 1
-            )
-        );
+        $result = QUI::getDataBase()->fetch(array(
+            'select' => 'email',
+            'from'   => self::table(),
+            'where'  => array(
+                'email' => $email
+            ),
+            'limit'  => 1
+        ));
 
         return isset($result[0]) ? true : false;
     }
 
     /**
+     * @deprecated
+     *
      * Generates a hash of a password
      *
      * @param string $pass
-     * @param string $salt (optional) - use specific salt for password generation [default: randomly generated]
+     * @param string $salt -> deprecated
      *
      * @return string
      */
     public static function genHash($pass, $salt = null)
     {
-        if ($salt === null) {
-            $randomBytes = openssl_random_pseudo_bytes(SALT_LENGTH);
-            $salt        = mb_substr(bin2hex($randomBytes), 0, SALT_LENGTH);
-        }
-
-        return $salt . md5($salt . $pass);
+        return Password::generateHash($pass);
     }
 
     /**

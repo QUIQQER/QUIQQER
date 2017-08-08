@@ -29,6 +29,7 @@ define('controls/packages/Search', [
     'Packages',
     'Mustache',
     'controls/packages/PackageList',
+    'classes/packages/StoreApi',
 
     'Locale',
     'Ajax',
@@ -39,7 +40,7 @@ define('controls/packages/Search', [
     'css!controls/packages/Search.css'
 
 ], function (QUI, QUIControl, QUIButton, QUILoader, Packages,
-             Mustache, PackageList, QUILocale, QUIAjax, template,
+             Mustache, PackageList, StoreApi, QUILocale, QUIAjax, template,
              templateTermsOfUse, templateOtherSources) {
     "use strict";
 
@@ -55,7 +56,8 @@ define('controls/packages/Search', [
             '$onClickInstall',
             '$loadPackageStore',
             '$loadOtherSourcesSearch',
-            '$onResize'
+            '$onResize',
+            '$storeApiController'
         ],
 
         options: {
@@ -67,15 +69,18 @@ define('controls/packages/Search', [
 
             this.$OtherSourcesResultList = null;
 
-            this.$Results         = null;
-            this.$Input           = null;
-            this.$TermsOfUse      = null;
-            this.Loader           = new QUILoader();
-            this.$Content         = null;
-            this.$storeUrl        = null;
-            this.$PackageStoreBtn = null;
-            this.$OtherSourcesBtn = null;
-            this.$Panel           = null;
+            this.$Results                 = null;
+            this.$Input                   = null;
+            this.$TermsOfUse              = null;
+            this.Loader                   = new QUILoader();
+            this.$Content                 = null;
+            this.$storeUrl                = null;
+            this.$PackageStoreBtn         = null;
+            this.$OtherSourcesBtn         = null;
+            this.$Panel                   = null;
+            this.$storeApiEventRegistered = false;
+            this.$StoreFrame              = null;
+            this.$StoreApi                = new StoreApi();
 
             this.addEvents({
                 onInject: this.$onInject
@@ -158,6 +163,40 @@ define('controls/packages/Search', [
         },
 
         /**
+         * Event controller for StoreApi
+         *
+         * @param {Object} event
+         */
+        $storeApiController: function (event) {
+            var Data        = event.data;
+            var frameWindow = this.$StoreFrame.contentWindow;
+
+            if (!frameWindow) {
+                return;
+            }
+
+            // init request
+            if (Data.func === 'init') {
+                frameWindow.postMessage(true, '*');
+                return;
+            }
+
+            if (typeof this.$StoreApi[Data.func] === 'undefined') {
+                frameWindow.postMessage(null, '*');
+                return;
+            }
+
+            // regular request
+            var params = Data.params || [];
+
+            this.$StoreApi[Data.func].apply(this.$StoreApi, params).then(function (result) {
+                frameWindow.postMessage(result, '*');
+            }, function () {
+                frameWindow.postMessage(null, '*');
+            });
+        },
+
+        /**
          * Show the package store
          */
         $loadPackageStore: function () {
@@ -166,10 +205,15 @@ define('controls/packages/Search', [
             this.$PackageStoreBtn.addClass('qui-controls-packages-search-toggle-active');
             this.$OtherSourcesBtn.removeClass('qui-controls-packages-search-toggle-active');
 
-            new Element('iframe', {
+            this.$StoreFrame = new Element('iframe', {
                 'class': 'qui-control-packages-search-iframe',
                 src    : this.$storeUrl
             }).inject(this.$Content);
+
+            if (!this.$storeApiEventRegistered) {
+                window.addEventListener('message', this.$storeApiController);
+                this.$storeApiEventRegistered = true;
+            }
         },
 
         /**

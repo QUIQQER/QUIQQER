@@ -428,18 +428,26 @@ class Edit extends Site
             foreach ($parent_ids as $pid) {
                 $Parent = new QUI\Projects\Site\Edit($Project, $pid);
 
-                if ($Parent->existNameInChildren($name) > 1) {
-                    throw new QUI\Exception(
-                        QUI::getLocale()->get(
-                            'quiqqer/system',
-                            'exception.site.same.name',
-                            array(
-                                'id'   => $pid,
-                                'name' => $name
-                            )
-                        ),
-                        703
-                    );
+                try {
+                    $childId = (int)$Parent->getChildIdByName($name);
+
+                    if ($childId !== $this->id) {
+                        throw new QUI\Exception(
+                            QUI::getLocale()->get(
+                                'quiqqer/system',
+                                'exception.site.same.name',
+                                array(
+                                    'id'   => $pid,
+                                    'name' => $name
+                                )
+                            ),
+                            703
+                        );
+                    }
+                } catch (QUI\Exception $Exception) {
+                    if ($Exception->getCode() !== 705) {
+                        throw $Exception;
+                    }
                 }
             }
         }
@@ -566,7 +574,7 @@ class Edit extends Site
         if (!$order_field) {
             $order_field = 0;
         }
-        
+
         // save main data
         $update = QUI::getDataBase()->update(
             $this->TABLE,
@@ -844,8 +852,7 @@ class Edit extends Site
 
         $Project = $this->getProject();
         $p_lang  = $Project->getAttribute('lang');
-
-        $id = (int)$id;
+        $id      = (int)$id;
 
         $result = QUI::getDataBase()->fetch(array(
             'from'  => $this->RELLANGTABLE,

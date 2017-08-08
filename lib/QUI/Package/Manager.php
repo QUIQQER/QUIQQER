@@ -110,6 +110,13 @@ class Manager extends QUI\QDOM
     protected $packages = array();
 
     /**
+     * List of installed packages flags
+     *
+     * @var array
+     */
+    protected $installed = array();
+
+    /**
      * internal event manager
      *
      * @var QUI\Events\Manager
@@ -778,6 +785,32 @@ class Manager extends QUI\QDOM
         $this->getComposer()->requirePackage($packages, $version);
 
         $this->setup($packages);
+    }
+
+    /**
+     * Returns whether the package is installed or not
+     *
+     * Please use this method to check the installation status and not ->getInstalledPackage()
+     * This method use an internal caching
+     *
+     * @param string $packageName
+     * @return bool
+     */
+    public function isInstalled($packageName)
+    {
+        if (isset($this->installed[$packageName])) {
+            return $this->installed[$packageName];
+        }
+
+        try {
+            $this->getInstalledPackage($packageName);
+
+            $this->installed[$packageName] = true;
+        } catch (QUI\Exception $Exception) {
+            $this->installed[$packageName] = false;
+        }
+
+        return $this->installed[$packageName];
     }
 
     /**
@@ -1634,6 +1667,8 @@ class Manager extends QUI\QDOM
     {
         return array(
             'phpVersion'     => phpversion(),
+            'quiqqerHost'    => QUI::conf('globals', 'host'),
+            'quiqqerCmsDir'  => QUI::conf('globals', 'cms_dir'),
             'quiqqerVersion' => QUI::version()
         );
     }

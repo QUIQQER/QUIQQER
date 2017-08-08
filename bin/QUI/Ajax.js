@@ -31,11 +31,17 @@ define('Ajax', [
 ], function (QUI, QUIAjax, Utils, Locale) {
     "use strict";
 
-    return {
+    var apiPoint = '/ajax.php';
 
+    if (typeof QUIQQER !== 'undefined' &&
+        "ajax" in QUIQQER) {
+        apiPoint = QUIQQER.ajax;
+    }
+
+    return {
         $globalJSF : {}, // global javascript callback functions
         $onprogress: {},
-        $url       : typeof URL_DIR === 'undefined' ? '' : URL_DIR + 'admin/ajax.php',
+        $url       : apiPoint,
 
         /**
          * Send a Request async
@@ -56,7 +62,7 @@ define('Ajax', [
 
             method   = method || 'post'; // is post, put, get or delete
             callback = callback || function () {
-                };
+            };
 
             params = Utils.combine(params, {
                 '_rf'      : call,

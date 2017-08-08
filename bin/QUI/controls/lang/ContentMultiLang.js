@@ -3,7 +3,7 @@
  *
  * @module controls/lang/ContentMultiLang
  * @author www.pcsg.de (Henning Leutz)
- * @authro www.pcsg.de (Patrick Müller)
+ * @author www.pcsg.de (Patrick Müller)
  *
  * @require qui/QUI
  * @require qui/controls/Control

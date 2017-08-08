@@ -3,6 +3,7 @@
 /**
  * This file contains QUI\Users\Auth\QUIQQER
  */
+
 namespace QUI\Users\Auth;
 
 use QUI;
@@ -133,23 +134,54 @@ class QUIQQER extends AbstractAuthenticator
             );
         }
 
-        // retrieve salt from saved password
-        $savedPassword = $userData[0]['password'];
-        $salt          = mb_substr($savedPassword, 0, SALT_LENGTH);
+        // get password hash from db
+        $passwordHash = $userData[0]['password'];
 
         // generate password with given password and salt
-        $password = QUI::getUsers()->genHash($password, $salt);
+        if (!password_verify($password, $passwordHash)) {
+            // fallback to old method
+            $salt               = mb_substr($passwordHash, 0, SALT_LENGTH);
+            $actualPasswordHash = $this->genHash($password, $salt);
 
-        if ($savedPassword !== $password) {
-            throw new QUI\Users\Exception(
-                array('quiqqer/system', 'exception.login.fail'),
-                401
+            if ($actualPasswordHash !== $passwordHash) {
+                throw new QUI\Users\Exception(
+                    array('quiqqer/system', 'exception.login.fail'),
+                    401
+                );
+            }
+
+            QUI::getDataBase()->update(
+                QUI::getDBTableName('users'),
+                array(
+                    'password' => QUI\Security\Password::generateHash($password)
+                ),
+                array(
+                    'id' => $this->getUserId()
+                )
             );
         }
 
         $this->authenticated = true;
 
         return true;
+    }
+
+    /**
+     * Old genHash method
+     *
+     * @param string $pass
+     * @param string $salt
+     * @return string
+     * @deprecated
+     */
+    protected function genHash($pass, $salt = null)
+    {
+        if ($salt === null) {
+            $randomBytes = openssl_random_pseudo_bytes(SALT_LENGTH);
+            $salt        = mb_substr(bin2hex($randomBytes), 0, SALT_LENGTH);
+        }
+
+        return $salt . md5($salt . $pass);
     }
 
     /**
@@ -214,7 +246,7 @@ class QUIQQER extends AbstractAuthenticator
     /**
      * @param QUI\System\Console $Console
      */
-    public function cliAuthentication(\QUI\System\Console $Console)
+    public function cliAuthentication(QUI\System\Console $Console)
     {
         $username = $Console->getArgument('username');
         $password = $Console->getArgument('password');

@@ -414,6 +414,36 @@ class Manager
     }
 
     /**
+     * Delete all permissions from the package list
+     * It does not delete permissions created by the user
+     *
+     * @param QUI\Package\Package $Package
+     */
+    public function deletePermissionsFromPackage(QUI\Package\Package $Package)
+    {
+        // remove from cache
+        $result = QUI::getDataBase()->fetch(array(
+            'select' => 'name',
+            'from'   => self::table(),
+            'where'  => array(
+                'src' => $Package->getName()
+            )
+        ));
+
+        foreach ($result as $permission) {
+            if (isset($this->cache[$permission['name']])) {
+                unset($this->cache[$permission['name']]);
+            }
+        }
+
+        // delete from DB
+        QUI::getDataBase()->delete(
+            self::table(),
+            array('src' => $Package->getName())
+        );
+    }
+
+    /**
      * Return all available permissions
      *
      * @param string|boolean $area - optional, specified the area of the permissions
@@ -1221,26 +1251,28 @@ class Manager
         $usersAndGroups = $User->getGroups();
         $result         = false;
 
-        if (!$User->getId()) {
-            return false;
-        }
+//        if (!$User->getId()) {
+//            return false;
+//        }
 
         // user permission check
-        if ($ruleset) {
-            $usersAndGroups[] = $User;
-        } else {
-            $userPermissions = $this->getData($User);
+        if ($User->getId()) {
+            if ($ruleset) {
+                $usersAndGroups[] = $User;
+            } else {
+                $userPermissions = $this->getData($User);
 
-            if (isset($userPermissions[0])
-                && isset($userPermissions[0]['permissions'])
-            ) {
-                $userPermissions = json_decode(
-                    $userPermissions[0]['permissions'],
-                    true
-                );
+                if (isset($userPermissions[0])
+                    && isset($userPermissions[0]['permissions'])
+                ) {
+                    $userPermissions = json_decode(
+                        $userPermissions[0]['permissions'],
+                        true
+                    );
 
-                if (isset($userPermissions[$permission])) {
-                    return $userPermissions[$permission];
+                    if (isset($userPermissions[$permission])) {
+                        return $userPermissions[$permission];
+                    }
                 }
             }
         }

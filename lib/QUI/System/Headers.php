@@ -110,7 +110,7 @@ class Headers
         // @todo variable
         $Response->headers->set("X-Content-Type-Options", "nosniff");
         $Response->headers->set("X-XSS-Protection", "1; mode=block");
-        $Response->headers->set("X-Frame-Options", "SAMEORIGIN");
+//        $Response->headers->set("X-Frame-Options", "SAMEORIGIN");
 
 
         // create CSP header
