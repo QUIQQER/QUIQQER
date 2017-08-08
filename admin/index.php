@@ -4,8 +4,8 @@ define('QUIQQER_SYSTEM', true);
 require 'header.php';
 
 // qui path
-$qui_path   = URL_OPT_DIR . 'bin/qui/';
-$qui_extend = URL_OPT_DIR . 'bin/qui/extend/';
+$qui_path   = URL_OPT_DIR.'bin/qui/';
+$qui_extend = URL_OPT_DIR.'bin/qui/extend/';
 
 $config            = array();
 $config['globals'] = QUI::conf('globals');
@@ -153,6 +153,7 @@ try {
                 URL_PROJECT_CHARACTER: "<?php echo \QUI\Rewrite::URL_PROJECT_CHARACTER; ?>",
                 SUFFIX               : "<?php echo \QUI\Rewrite::getDefaultSuffix(); ?>"
             },
+            ajax            : '<?php echo URL_SYS_DIR; ?>ajax.php',
             inAdministration: true,
             lu              : "<?php echo QUI::getPackageManager()->getLastUpdateDate(); ?>",
 
@@ -199,12 +200,12 @@ try {
     $locales = array();
 
     foreach ($files as $package => $file) {
-        $locales[] = $package . '/' . $User->getLang();
+        $locales[] = $package.'/'.$User->getLang();
     }
 
     echo '<script type="text/javascript">';
     echo '/* <![CDATA[ */';
-    echo 'var QUIQQER_LOCALE = ' . json_encode($locales, true);
+    echo 'var QUIQQER_LOCALE = '.json_encode($locales, true);
     echo '/* ]]> */';
     echo '</script>';
 

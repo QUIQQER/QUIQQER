@@ -70,7 +70,8 @@
             URL_TEMPLATE_DIR = '{$URL_OPT_DIR}{$Project->getAttribute('template')}/';
 
         var QUIQQER = {
-            lu : "{$lastUpdate}"
+            lu : "{$lastUpdate}",
+            ajax: '/ajax.php'
         };
 
         {assign var=httpshost value=$Project->getVHost( true, true )}
@@ -178,7 +179,7 @@
 
                 require(['Locale'].append(QUIQQER_LOCALE), function (QUILocale) {
                     QUILocale.setCurrent(QUIQQER_PROJECT.lang);
-                    
+
                     if (window.location.toString().indexOf('lang=false') !== -1) {
                         QUILocale.no_translation = true;
                     }
