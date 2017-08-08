@@ -468,10 +468,41 @@ class Template extends QUI\QDOM
      */
     public function getTitle()
     {
-        $Site = $this->getAttribute('Site');
+        $Site    = $this->getAttribute('Site');
+        $Project = $this->getAttribute('Project');
 
         if ($Site->getAttribute('quiqqer.meta.site.title')) {
             return $Site->getAttribute('meta.seotitle');
+        }
+
+        // prefix / suffix
+        if ($Project) {
+            $projectName  = $Project->getName();
+            $localeGroup  = 'project/'.$projectName;
+            $localePrefix = 'template.prefix';
+            $localeSuffix = 'template.suffix';
+
+            if (QUI::getLocale()->exists($localeGroup, $localePrefix)) {
+                $prefix = QUI::getLocale()->get($localeGroup, $localePrefix);
+
+                if (!empty($prefix)) {
+                    $this->setAttribute(
+                        'site_title_prefix',
+                        htmlspecialchars($prefix).' '
+                    );
+                }
+            }
+
+            if (QUI::getLocale()->exists($localeGroup, $localeSuffix)) {
+                $suffix = QUI::getLocale()->get($localeGroup, $localeSuffix);
+
+                if (!empty($suffix)) {
+                    $this->setAttribute(
+                        'site_title_suffix',
+                        ' '.htmlspecialchars($suffix)
+                    );
+                }
+            }
         }
 
         $title = $this->getAttribute('site_title_prefix');
