@@ -58,6 +58,8 @@ class CommandEvents
             } catch (QUI\Exception $Package) {
             }
         }
+
+        // @todo system setup, user groups, events and so on
     }
 
     /**
@@ -73,7 +75,7 @@ class CommandEvents
         }
 
         if (!defined('ETC_DIR')) {
-            define('ETC_DIR', $config['config']['quiqqer-dir'] . 'etc/');
+            define('ETC_DIR', $config['config']['quiqqer-dir'].'etc/');
         }
 
         QUI::load();
