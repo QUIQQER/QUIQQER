@@ -523,7 +523,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $Media   = $this->Media;
         $Project = $Media->getProject();
 
-        $cacheDir  = VAR_DIR.'cache/admin/media/'.$Project->getName().'/'.$Project->getLang().'/';
+        $cacheDir  = VAR_DIR.'media/cache/admin/'.$Project->getName().'/'.$Project->getLang().'/';
         $cacheName = $this->getId().'__';
 
         $files = File::readDir($cacheDir);

@@ -97,7 +97,7 @@ try {
         }
 
         // cache
-        $cacheDir = VAR_DIR . 'cache/admin/media/'
+        $cacheDir = VAR_DIR . 'media/cache/admin/'
                     . $Project->getName() . '/'
                     . $Project->getLang() . '/';
 
