@@ -61,7 +61,7 @@ class Manager
      */
     public static function table()
     {
-        return QUI_DB_PRFX . 'users';
+        return QUI_DB_PRFX.'users';
     }
 
     /**
@@ -71,7 +71,7 @@ class Manager
      */
     public static function tableAddress()
     {
-        return QUI_DB_PRFX . 'users_address';
+        return QUI_DB_PRFX.'users_address';
     }
 
     /**
@@ -295,7 +295,7 @@ class Manager
             $i       = 0;
 
             while ($this->usernameExists($newName)) {
-                $newName = 'Neuer Benutzer (' . $i . ')';
+                $newName = 'Neuer Benutzer ('.$i.')';
                 $i++;
             }
         }
@@ -697,7 +697,7 @@ class Manager
                     }
                 }
 
-                $regparams['usergroup'] = ',' . implode(',', $gids) . ',';
+                $regparams['usergroup'] = ','.implode(',', $gids).',';
                 continue;
             }
 
@@ -879,7 +879,7 @@ class Manager
             );
         }
 
-        if ($Session->get('auth-' . get_class($Authenticator))
+        if ($Session->get('auth-'.get_class($Authenticator))
             && $Session->get('username')
             && $Session->get('uid')
         ) {
@@ -915,7 +915,7 @@ class Manager
         }
 
         $Session->set(
-            'auth-' . get_class($Authenticator),
+            'auth-'.get_class($Authenticator),
             1
         );
 
@@ -936,8 +936,10 @@ class Manager
         if (QUI::getSession()->get('auth')
             && QUI::getSession()->get('uid')
         ) {
-            $userId = QUI::getSession()->get('uid');
-            return $this->get($userId);
+            $userId        = QUI::getSession()->get('uid');
+            $this->Session = $this->get($userId);
+
+            return $this->Session;
         }
 
         $numArgs = func_num_args();
@@ -1530,11 +1532,11 @@ class Manager
         /**
          * SELECT
          */
-        $query = 'SELECT * FROM ' . self::table();
+        $query = 'SELECT * FROM '.self::table();
         $binds = array();
 
         if (isset($params['count'])) {
-            $query = 'SELECT COUNT( id ) AS count FROM ' . self::table();
+            $query = 'SELECT COUNT( id ) AS count FROM '.self::table();
         }
 
         /**
@@ -1614,7 +1616,7 @@ class Manager
                 $query .= ' WHERE 1=1 ';
             } else {
                 $query            .= ' WHERE (';
-                $binds[':search'] = '%' . $search . '%';
+                $binds[':search'] = '%'.$search.'%';
 
                 if (empty($search)) {
                     $binds[':search'] = '%';
@@ -1629,7 +1631,7 @@ class Manager
                         continue;
                     }
 
-                    $query .= ' ' . $field . ' LIKE :search OR ';
+                    $query .= ' '.$field.' LIKE :search OR ';
                 }
 
                 if (substr($query, -3) == 'OR ') {
@@ -1657,8 +1659,8 @@ class Manager
 
                 foreach ($groups as $groupId) {
                     if ((int)$groupId > 0) {
-                        $query                 .= ' AND usergroup LIKE :' . $groupId . ' ';
-                        $binds[':' . $groupId] = '%' . (int)$groupId . '%';
+                        $query               .= ' AND usergroup LIKE :'.$groupId.' ';
+                        $binds[':'.$groupId] = '%'.(int)$groupId.'%';
                     }
                 }
             }
@@ -1666,8 +1668,8 @@ class Manager
             if ($filter_groups_exclude) {
                 foreach ($filter['filter_groups_exclude'] as $groupId) {
                     if ((int)$groupId > 0) {
-                        $query                 .= ' AND usergroup NOT LIKE :' . $groupId . ' ';
-                        $binds[':' . $groupId] = '%,' . (int)$groupId . ',%';
+                        $query               .= ' AND usergroup NOT LIKE :'.$groupId.' ';
+                        $binds[':'.$groupId] = '%,'.(int)$groupId.',%';
                     }
                 }
             }
@@ -1675,7 +1677,7 @@ class Manager
             if ($filter_regdate_first) {
                 $query              .= ' AND regdate >= :firstreg ';
                 $binds[':firstreg'] = QUI\Utils\Convert::convertMySqlDatetime(
-                    $filter['filter_regdate_first'] . ' 00:00:00'
+                    $filter['filter_regdate_first'].' 00:00:00'
                 );
             }
 
@@ -1683,7 +1685,7 @@ class Manager
             if ($filter_regdate_last) {
                 $query             .= " AND regdate <= :lastreg ";
                 $binds[':lastreg'] = QUI\Utils\Convert::convertMySqlDatetime(
-                    $filter['filter_regdate_last'] . ' 00:00:00'
+                    $filter['filter_regdate_last'].' 00:00:00'
                 );
             }
         }
@@ -1697,7 +1699,7 @@ class Manager
             && $params['field']
             && isset($allowOrderFields[$params['field']])
         ) {
-            $query .= ' ORDER BY ' . $params['field'] . ' ' . $params['order'];
+            $query .= ' ORDER BY '.$params['field'].' '.$params['order'];
         }
 
         /**
@@ -1712,7 +1714,7 @@ class Manager
                 $start = (int)$params['start'];
             }
 
-            $query .= ' LIMIT ' . $start . ', ' . $max;
+            $query .= ' LIMIT '.$start.', '.$max;
         }
 
         $Statement = $PDO->prepare($query);
@@ -1831,7 +1833,7 @@ class Manager
 
         foreach ($packages as $package) {
             $name    = $package['name'];
-            $userXml = OPT_DIR . $name . '/user.xml';
+            $userXml = OPT_DIR.$name.'/user.xml';
 
             if (!file_exists($userXml)) {
                 continue;
@@ -1853,6 +1855,6 @@ class Manager
             'extend' => $extend
         ));
 
-        return $Engine->fetch(SYS_DIR . 'template/users/profile.html');
+        return $Engine->fetch(SYS_DIR.'template/users/profile.html');
     }
 }

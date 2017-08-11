@@ -70,14 +70,14 @@ class Session
         // symfony files
         $classNativeSessionStorage = '\Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage';
 
-        $fileNativeSessionStorage = OPT_DIR .
-                                    'symfony/http-foundation/Symfony/Component/' .
+        $fileNativeSessionStorage = OPT_DIR.
+                                    'symfony/http-foundation/Symfony/Component/'.
                                     'HttpFoundation/Session/Storage/NativeSessionStorage.php';
 
         $classSession = '\Symfony\Component\HttpFoundation\Session\Session';
 
-        $fileSession = OPT_DIR .
-                       'symfony/http-foundation/Symfony/Component/' .
+        $fileSession = OPT_DIR.
+                       'symfony/http-foundation/Symfony/Component/'.
                        'HttpFoundation/Session/Session.php';
 
 
@@ -99,7 +99,7 @@ class Session
                 include_once $fileNativeSessionStorage;
             } else {
                 throw new \Exception(
-                    'Session File not found ' . $fileNativeSessionStorage
+                    'Session File not found '.$fileNativeSessionStorage
                 );
             }
 
@@ -120,7 +120,7 @@ class Session
             if (file_exists($fileSession)) {
                 include_once $fileSession;
             } else {
-                throw new \Exception('Session File not found ' . $fileSession);
+                throw new \Exception('Session File not found '.$fileSession);
             }
 
             if (class_exists($classSession)) {
@@ -156,7 +156,7 @@ class Session
                 break;
 
             default:
-                return new NativeFileSessionHandler(VAR_DIR . 'sessions');
+                return new NativeFileSessionHandler(VAR_DIR.'sessions');
         }
 
 
@@ -226,7 +226,7 @@ class Session
             ));
         }
 
-        return new NativeFileSessionHandler(VAR_DIR . 'sessions');
+        return new NativeFileSessionHandler(VAR_DIR.'sessions');
     }
 
     /**
@@ -317,7 +317,7 @@ class Session
             return $this->Session->getId();
         }
 
-        return md5(microtime()) . QUI\Utils\Security\Orthos::getPassword();
+        return md5(microtime()).QUI\Utils\Security\Orthos::getPassword();
     }
 
     /**

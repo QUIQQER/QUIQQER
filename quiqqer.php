@@ -8,14 +8,14 @@ if (!defined('CMS_DIR')) {
 }
 
 define('QUIQQER_SYSTEM', true);
-require CMS_DIR . '/bootstrap.php';
+require 'bootstrap.php';
 
 // no console
 if (php_sapi_name() != 'cli') {
     exit;
 }
 
-$conf = ETC_DIR . 'conf.ini.php';
+$conf = ETC_DIR.'conf.ini.php';
 
 if (!file_exists($conf)) {
     exit(1);
