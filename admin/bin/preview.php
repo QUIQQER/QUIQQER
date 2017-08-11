@@ -7,9 +7,9 @@
  */
 
 define('QUIQQER_SYSTEM', true);
-define('QUIQQER_FRONTEND', true);
+define('ETC_DIR', dirname(__FILE__, 6).'/etc/');
 
-require_once '../header.php';
+require_once dirname(dirname(dirname(__FILE__))).'/bootstrap.php';
 
 if (!QUI::getUserBySession()->canUseBackend()) {
     header("HTTP/1.1 404 Not Found");
@@ -31,7 +31,6 @@ $Project  = QUI::getProject($_POST['project'], $_POST['lang']);
 $Site     = new QUI\Projects\Site\Edit($Project, $_POST['id']);
 
 $Rewrite->setSite($Site);
-
 $Rewrite->setPath($Site->getParents());
 $Rewrite->addSiteToPath($Site);
 
