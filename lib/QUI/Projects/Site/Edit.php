@@ -77,8 +77,8 @@ class Edit extends Site
         $this->refresh();
 
         // Temp Dir abfragen ob existiert
-        QUI\Utils\System\File::mkdir(VAR_DIR . 'admin/');
-        QUI\Utils\System\File::mkdir(VAR_DIR . 'lock/');
+        QUI\Utils\System\File::mkdir(VAR_DIR.'admin/');
+        QUI\Utils\System\File::mkdir(VAR_DIR.'lock/');
 
         $this->load();
 
@@ -615,12 +615,12 @@ class Edit extends Site
             $package   = $dataEntry['package'];
             $suffix    = $dataEntry['suffix'];
 
-            $attributeSuffix = $package . '.' . $suffix . '.';
+            $attributeSuffix = $package.'.'.$suffix.'.';
             $attributeSuffix = str_replace('/', '.', $attributeSuffix);
 
             foreach ($fieldList as $siteAttribute) {
                 $data[$siteAttribute] = $this->getAttribute(
-                    $attributeSuffix . $siteAttribute
+                    $attributeSuffix.$siteAttribute
                 );
             }
 
@@ -710,33 +710,33 @@ class Edit extends Site
     public function getChildrenIdsFromParentId($pid, $params = array())
     {
         $where_1 = array(
-            $this->RELTABLE . '.parent' => (int)$pid,
-            $this->TABLE . '.deleted'   => 0,
-            $this->RELTABLE . '.child'  => '`' . $this->TABLE . '.id`'
+            $this->RELTABLE.'.parent' => (int)$pid,
+            $this->TABLE.'.deleted'   => 0,
+            $this->RELTABLE.'.child'  => '`'.$this->TABLE.'.id`'
         );
 
         if (isset($params['where']) && is_array($params['where'])) {
             $where = array_merge($where_1, $params['where']);
         } elseif (isset($params['where']) && is_string($params['where'])) {
             // @todo where als param string
-            QUI\System\Log::addDebug('WIRD NICHT verwendet' . $params['where']);
+            QUI\System\Log::addDebug('WIRD NICHT verwendet'.$params['where']);
             $where = $where_1;
         } else {
             $where = $where_1;
         }
 
-        $order = $this->TABLE . '.order_field';
+        $order = $this->TABLE.'.order_field';
 
         if (isset($params['order'])) {
             if (strpos($params['order'], '.') !== false) {
-                $order = $this->TABLE . '.' . $params['order'];
+                $order = $this->TABLE.'.'.$params['order'];
             } else {
                 $order = $params['order'];
             }
         }
 
         $result = QUI::getDataBase()->fetch(array(
-            'select' => $this->TABLE . '.id',
+            'select' => $this->TABLE.'.id',
             'count'  => isset($params['count']) ? 'count' : false,
             'from'   => array(
                 $this->RELTABLE,
@@ -791,7 +791,7 @@ class Edit extends Site
      *                        $params['limit']
      * @param boolean $recursiv Rekursiv alle Kinder IDs bekommen
      *
-     * @return array;
+     * @return array|int
      */
     public function getChildren($params = array(), $recursiv = false)
     {
@@ -827,6 +827,10 @@ class Edit extends Site
 
         $children = array();
         $result   = $this->getChildrenIds($params);
+
+        if (isset($params['count'])) {
+            return (int)$result[0]['count'];
+        }
 
         if (isset($result[0])) {
             foreach ($result as $id) {
@@ -938,7 +942,7 @@ class Edit extends Site
 
         if (!isset($params['name']) || empty($params['name'])) {
             while ($this->existNameInChildren($new_name)) {
-                $new_name = $old . ' (' . $i . ')';
+                $new_name = $old.' ('.$i.')';
                 $i++;
             }
         } else {
@@ -1072,7 +1076,7 @@ class Edit extends Site
             QUI::getDataBase()->update(
                 $this->RELTABLE,
                 array('parent' => $Parent->getId()),
-                'child = ' . $this->getId() . ' AND oparent IS NULL'
+                'child = '.$this->getId().' AND oparent IS NULL'
             );
 
             //$this->deleteTemp();
@@ -1213,8 +1217,8 @@ class Edit extends Site
         $Parent  = $this->getParent();
 
         $table = QUI::getDBTableName(
-            $Project->getAttribute('name') . '_' .
-            $Project->getAttribute('lang') . '_sites_relations'
+            $Project->getAttribute('name').'_'.
+            $Project->getAttribute('lang').'_sites_relations'
         );
 
         // Prüfen ob die Seite schon in dem Parent ist
@@ -1268,8 +1272,8 @@ class Edit extends Site
         $DataBase = QUI::getDataBase();
 
         $table = QUI::getDBTableName(
-            $Project->getAttribute('name') . '_' .
-            $Project->getAttribute('lang') . '_sites_relations'
+            $Project->getAttribute('name').'_'.
+            $Project->getAttribute('lang').'_sites_relations'
         );
 
         if (QUI\Utils\BoolHelper::JSBool($all)) {
@@ -1284,6 +1288,7 @@ class Edit extends Site
                     'type'  => 'NOT'
                 )
             ));
+
             return;
         }
 
@@ -1293,6 +1298,7 @@ class Edit extends Site
                 'child'  => $this->getId(),
                 'parent' => (int)$pid
             ));
+
             return;
         }
 
@@ -1316,11 +1322,11 @@ class Edit extends Site
         // Link Cache löschen
         $Project = $this->getProject();
 
-        $link_cache_dir = VAR_DIR . 'cache/links/' . $Project->getAttribute('name') . '/';
+        $link_cache_dir = VAR_DIR.'cache/links/'.$Project->getAttribute('name').'/';
 
-        $link_cache_file = $link_cache_dir . $this->getId()
-                           . '_' . $Project->getAttribute('name')
-                           . '_' . $Project->getAttribute('lang');
+        $link_cache_file = $link_cache_dir.$this->getId()
+                           .'_'.$Project->getAttribute('name')
+                           .'_'.$Project->getAttribute('lang');
 
         if (file_exists($link_cache_file)) {
             unlink($link_cache_file);
@@ -1341,11 +1347,11 @@ class Edit extends Site
         // Link Cache
         $Project = $this->getProject();
 
-        $link_cache_dir = VAR_DIR . 'cache/links/' .
-                          $Project->getAttribute('name') . '/';
+        $link_cache_dir = VAR_DIR.'cache/links/'.
+                          $Project->getAttribute('name').'/';
 
-        $link_cache_file = $link_cache_dir . $this->getId() . '_' .
-                           $Project->getAttribute('name') . '_' .
+        $link_cache_file = $link_cache_dir.$this->getId().'_'.
+                           $Project->getAttribute('name').'_'.
                            $Project->getAttribute('lang');
 
         QUI\Utils\System\File::mkdir($link_cache_dir);
@@ -1379,6 +1385,7 @@ class Edit extends Site
 
         if ($time > $max_life_time) {
             $this->unlock();
+
             return false;
         }
 
@@ -1459,8 +1466,8 @@ class Edit extends Site
      */
     protected function getLockKey()
     {
-        return $this->getProject()->getName() . '_' .
-               $this->getProject()->getLang() . '_' .
+        return $this->getProject()->getName().'_'.
+               $this->getProject()->getLang().'_'.
                $this->getId();
     }
 
