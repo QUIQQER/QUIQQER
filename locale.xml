@@ -10,7 +10,7 @@
             <de><![CDATA[Nachname]]></de>
             <en><![CDATA[Lastname]]></en>
         </locale>
-        
+
         <locale name="package.title">
             <de><![CDATA[QUIQQER - Core]]></de>
             <en><![CDATA[QUIQQER - Core]]></en>
@@ -267,6 +267,18 @@
         <locale name="projects.project.settings.panel.mediaSettings.createCacheOnSave">
             <de><![CDATA[Bildercache on the Fly erstellen.]]></de>
             <en><![CDATA[Create image cache on the fly.]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.maxUploadFileSize">
+            <de><![CDATA[Maximale Dateigröße eines Bildes]]></de>
+            <en><![CDATA[Maximum file size of an image]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.maxUploadFileSize.description" html="true">
+            <de><![CDATA[
+                Nur Bilder welche kleiner als der angegebene Wert sind dürfen hochgeladen werden.
+            ]]></de>
+            <en><![CDATA[
+                Only images smaller than the specified value are allowed to be uploaded.
+            ]]></en>
         </locale>
 
         <locale name="text.mail.subject">
@@ -630,6 +642,10 @@
         <locale name="exception.config.save.not.allowed">
             <de><![CDATA[Sie besitzen nicht die nötigen Rechte um die Konfiguration zu speichern.]]></de>
             <en><![CDATA[You do not have the necessary permissions to save the configuration]]></en>
+        </locale>
+        <locale name="exception.media.upload.fileSize.is.to.big">
+            <de><![CDATA[Die Datei ist leider zu gross. Die maximale Uploadgröße ist einer Datei beträgt [size]]]></de>
+            <en><![CDATA[The file is unfortunately too big. The maximum upload size for a file is [size]]]></en>
         </locale>
 
         <locale name="control.editor.toolbar.select.search.field.placeholder">
@@ -5824,8 +5840,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[HTTP status code on missing site permission]]></en>
         </locale>
         <locale name="quiqqer.settings.globals.sitePermissionDeniedErrorCode.desc">
-            <de><![CDATA[Bestimmt, welcher HTTP Statuscode gesendet wird, wenn ein Benutzer eine Seite aufruft, für die er nicht das Recht besitzt, sie anzusehen.]]></de>
-            <en><![CDATA[Determines which HTTP status code is sent when a user visits a page for which he does not have the permission to view.]]></en>
+            <de>
+                <![CDATA[Bestimmt, welcher HTTP Statuscode gesendet wird, wenn ein Benutzer eine Seite aufruft, für die er nicht das Recht besitzt, sie anzusehen.]]></de>
+            <en>
+                <![CDATA[Determines which HTTP status code is sent when a user visits a page for which he does not have the permission to view.]]></en>
         </locale>
 
         <locale name="quiqqer.settings.general.globals.htmlSuffix">

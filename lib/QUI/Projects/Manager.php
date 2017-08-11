@@ -161,6 +161,7 @@ class Manager
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
+
                 return;
             }
 
@@ -170,6 +171,7 @@ class Manager
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
+
                 return;
             }
 
@@ -179,6 +181,7 @@ class Manager
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
+
                 return;
             }
 
@@ -188,6 +191,7 @@ class Manager
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
+
                 return;
             }
         };
@@ -220,7 +224,7 @@ class Manager
      */
     public static function getProjectConfigList(QUI\Projects\Project $Project)
     {
-        $cache = 'qui/projects/' . $Project->getName() . '/configList';
+        $cache = 'qui/projects/'.$Project->getName().'/configList';
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -241,6 +245,7 @@ class Manager
             "media_watermark_ratio"    => "",
             "media_image_library"      => "",
             "media_maxUploadSize"      => "",
+            "media_maxUploadFileSize"  => "",
             "media_createCacheOnSave"  => "1",
             "placeholder"              => "",
             "logo"                     => "",
@@ -264,15 +269,15 @@ class Manager
                 $settingsName = $Settings->getAttribute('name');
 
                 if (!empty($settingsName)) {
-                    $settingsName = $settingsName . '.';
+                    $settingsName = $settingsName.'.';
                 }
 
                 foreach ($sections as $section => $entry) {
                     foreach ($entry as $key => $param) {
-                        $config[$settingsName . $section . '.' . $key] = '';
+                        $config[$settingsName.$section.'.'.$key] = '';
 
                         if (isset($param['default'])) {
-                            $config[$settingsName . $section . '.' . $key] = $param['default'];
+                            $config[$settingsName.$section.'.'.$key] = $param['default'];
                         }
                     }
                 }
@@ -620,8 +625,8 @@ class Manager
         /**
          * Sites and sites relation
          */
-        $table_site     = QUI_DB_PRFX . $name . '_' . $lang . '_sites';
-        $table_site_rel = QUI_DB_PRFX . $name . '_' . $lang . '_sites_relations';
+        $table_site     = QUI_DB_PRFX.$name.'_'.$lang.'_sites';
+        $table_site_rel = QUI_DB_PRFX.$name.'_'.$lang.'_sites_relations';
 
         $Table->addColumn($table_site, array(
             "id"          => "bigint(20) NOT NULL",
@@ -669,8 +674,8 @@ class Manager
         /**
          * Media and media relation
          */
-        $table_media     = QUI_DB_PRFX . $name . '_media';
-        $table_media_rel = QUI_DB_PRFX . $name . '_media_relations';
+        $table_media     = QUI_DB_PRFX.$name.'_media';
+        $table_media_rel = QUI_DB_PRFX.$name.'_media_relations';
 
         $Table->addColumn($table_media, array(
             "id"           => "bigint(20) NOT NULL",
@@ -715,15 +720,15 @@ class Manager
         /**
          * Create the file system folders
          */
-        QUI\Utils\System\File::mkdir(CMS_DIR . 'media/sites/' . $name . '/');
-        QUI\Utils\System\File::mkdir(USR_DIR . $name . '/');
+        QUI\Utils\System\File::mkdir(CMS_DIR.'media/sites/'.$name.'/');
+        QUI\Utils\System\File::mkdir(USR_DIR.$name.'/');
 
 
         /**
          * Write the config
          */
-        if (!file_exists(CMS_DIR . 'etc/projects.ini.php')) {
-            file_put_contents(CMS_DIR . 'etc/projects.ini.php', '');
+        if (!file_exists(CMS_DIR.'etc/projects.ini.php')) {
+            file_put_contents(CMS_DIR.'etc/projects.ini.php', '');
         }
 
         $Config = self::getConfig();
@@ -785,15 +790,15 @@ class Manager
 
         // delete site tables for all languages
         foreach ($langs as $lang) {
-            $table_site     = QUI::getDBTableName($project . '_' . $lang . '_sites');
+            $table_site     = QUI::getDBTableName($project.'_'.$lang.'_sites');
             $table_site_rel = QUI::getDBTableName(
-                $project . '_' . $lang
-                . '_sites_relations'
+                $project.'_'.$lang
+                .'_sites_relations'
             );
-            $table_multi    = QUI::getDBTableName($project . '_multilingual');
+            $table_multi    = QUI::getDBTableName($project.'_multilingual');
 
-            $table_media     = QUI::getDBTableName($project . '_media');
-            $table_media_rel = QUI::getDBTableName($project . '_media_relations');
+            $table_media     = QUI::getDBTableName($project.'_media');
+            $table_media_rel = QUI::getDBTableName($project.'_media_relations');
 
 
             $Table->delete($table_site);
@@ -808,7 +813,7 @@ class Manager
 
         foreach ($packages as $package) {
             // search database tables
-            $databaseXml = OPT_DIR . $package['name'] . '/database.xml';
+            $databaseXml = OPT_DIR.$package['name'].'/database.xml';
 
             if (!file_exists($databaseXml)) {
                 continue;
@@ -824,7 +829,7 @@ class Manager
             foreach ($dbfields['projects'] as $table) {
                 foreach ($langs as $lang) {
                     $tbl = QUI::getDBTableName(
-                        $project . '_' . $lang . '_' . $table['suffix']
+                        $project.'_'.$lang.'_'.$table['suffix']
                     );
 
                     $Table->delete($tbl);
@@ -834,14 +839,14 @@ class Manager
 
         // delete projects permissions
         QUI::getDataBase()->delete(
-            QUI::getDBTableName(QUI\Permissions\Manager::TABLE) . '2projects',
+            QUI::getDBTableName(QUI\Permissions\Manager::TABLE).'2projects',
             array(
                 'project' => $project
             )
         );
 
         QUI::getDataBase()->delete(
-            QUI::getDBTableName(QUI\Permissions\Manager::TABLE) . '2sites',
+            QUI::getDBTableName(QUI\Permissions\Manager::TABLE).'2sites',
             array(
                 'project' => $project
             )
@@ -915,7 +920,7 @@ class Manager
      */
     public static function getRelatedSettingsXML(QUI\Projects\Project $Project)
     {
-        $cache = 'qui/projects/' . $Project->getName() . '/relatedSettingsXml';
+        $cache = 'qui/projects/'.$Project->getName().'/relatedSettingsXml';
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -938,7 +943,7 @@ class Manager
                 }
             }
 
-            $file = OPT_DIR . $package['name'] . '/settings.xml';
+            $file = OPT_DIR.$package['name'].'/settings.xml';
 
             if (!file_exists($file)) {
                 continue;
@@ -955,7 +960,7 @@ class Manager
         }
 
         // direct - project settings
-        $projectSettings = USR_DIR . $Project->getName() . '/settings.xml';
+        $projectSettings = USR_DIR.$Project->getName().'/settings.xml';
 
         if (file_exists($projectSettings)) {
             $Dom  = XML::getDomFromXml($projectSettings);
