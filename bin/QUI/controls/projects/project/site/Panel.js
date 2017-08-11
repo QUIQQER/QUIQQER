@@ -610,20 +610,23 @@ define('controls/projects/project/site/Panel', [
         save: function () {
             var self = this;
 
-            this.$onCategoryLeave(this.getActiveCategory(), function () {
-                self.getSite().save(function () {
-                    // refresh data
-                    var Form = self.getContent().getElement('form');
+            this.$onCategoryLeave(this.getActiveCategory()).then(function () {
+                return self.getSite().save();
+            }).then(function () {
+                // refresh data
+                var Form = self.getContent().getElement('form');
 
-                    if (Form) {
-                        QUIFormUtils.setDataToForm(
-                            self.getSite().getAttributes(),
-                            Form
-                        );
-                    }
+                if (Form) {
+                    QUIFormUtils.setDataToForm(
+                        self.getSite().getAttributes(),
+                        Form
+                    );
+                }
 
-                    self.load();
-                });
+                self.load();
+            }).catch(function (err) {
+                console.error(err);
+                self.Loader.hide();
             });
         },
 
