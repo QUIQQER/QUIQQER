@@ -1,13 +1,16 @@
 <toolbar>
     <line>
         <group>
-            <button>Cut</button>
-            <button>Copy</button>
-            <separator/>
-            <button>Paste</button>
-            <separator/>
             <button>Undo</button>
             <button>Redo</button>
+            <button>Styles</button>
+            <button>Format</button>
+        </group>
+
+        <group>
+            <button>Paste</button>
+            <button>PasteText</button>
+            <button>PasteFromWord</button>
         </group>
 
         <group>
@@ -16,29 +19,19 @@
             <button>Underline</button>
             <button>Strike</button>
             <separator/>
-            <button>Subscript</button>
-            <button>Superscript</button>
-            <separator/>
+            <button>NumberedList</button>
+            <button>BulletedList</button>
+            <saparator/>
             <button>RemoveFormat</button>
         </group>
 
         <group>
-            <button>NumberedList</button>
-            <button>BulletedList</button>
-            <separator/>
-            <button>Outdent</button>
-            <button>Indent</button>
-            <separator/>
-            <button>Blockquote</button>
-            <button>JustifyLeft</button>
-            <button>JustifyCenter</button>
-            <button>JustifyRight</button>
-            <button>JustifyBlock</button>
-        </group>
-
-        <group>
-            <button>Image</button>
             <button>Link</button>
+            <button>Unlink</button>
+            <button>Anchor</button>
+            <separator/>
+            <button>Image</button>
+            <button>FontAwesome</button>
         </group>
     </line>
 </toolbar>
