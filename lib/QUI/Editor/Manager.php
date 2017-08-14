@@ -84,11 +84,11 @@ class Manager
 
             // Prepare the root (admin) group for the new toolbars
             $rootGroupID = QUI::conf("globals", "root");
-            $rootToolbar = "redakteur.xml";
+            $rootToolbar = "advanced.xml";
             
             // Fallback in case the "redakteur.xml" toolbar does not exist.
             // Should never happen in properly configured systems!
-            if (!in_array("redakteur.xml", $toolbars)) {
+            if (!in_array("advanced.xml", $toolbars)) {
                 $rootToolbar = $toolbars[0];
             }
 
