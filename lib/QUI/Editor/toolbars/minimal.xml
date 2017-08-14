@@ -3,7 +3,6 @@
         <group>
             <button>Undo</button>
             <button>Redo</button>
-            <button>Styles</button>
             <button>Format</button>
         </group>
 
