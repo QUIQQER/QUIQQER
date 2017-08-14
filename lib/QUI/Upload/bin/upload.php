@@ -8,7 +8,7 @@
 $dir = str_replace('quiqqer/quiqqer/lib/QUI/Upload/bin', '', dirname(__FILE__));
 define('QUIQQER_SYSTEM', true);
 
-require_once $dir . 'header.php';
+require_once $dir.'header.php';
 
 try {
     $QUM = new QUI\Upload\Manager();
@@ -29,11 +29,11 @@ try {
         }
 
         // maintenance flag
-        echo '<quiqqer>' . json_encode($result) . '</quiqqer>';
+        echo '<quiqqer>'.json_encode($result).'</quiqqer>';
     }
 } catch (QUI\Exception $Exception) {
     QUI\System\Log::writeException($Exception);
-    $QUM->flushMessage($Exception->toArray());
+    $QUM->flushException($Exception);
 } catch (\Exception $Exception) {
     QUI\System\Log::writeException($Exception);
 }

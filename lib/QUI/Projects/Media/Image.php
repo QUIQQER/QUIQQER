@@ -87,15 +87,15 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     {
         $Media = $this->Media;
         /* @var $Media QUI\Projects\Media */
-        $cdir = CMS_DIR . $Media->getCacheDir();
+        $cdir = CMS_DIR.$Media->getCacheDir();
         $file = $this->getAttribute('file');
 
         if ($this->getAttribute('mime_type') == 'image/svg+xml') {
-            return $cdir . $file;
+            return $cdir.$file;
         }
 
         if (!$maxwidth && !$maxheight) {
-            return $cdir . $file;
+            return $cdir.$file;
         }
 
 
@@ -110,8 +110,20 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $extra  = '';
         $params = $this->getResizeSize($maxwidth, $maxheight);
 
-        $width  = $params['width'];
-        $height = $params['height'];
+        if ($params['height'] > $params['width']) {
+            $tempParams = $this->getResizeSize(
+                false,
+                QUI\Utils\Math::ceilUp($params['height'], 100)
+            );
+        } else {
+            $tempParams = $this->getResizeSize(
+                QUI\Utils\Math::ceilUp($params['width'], 100),
+                false
+            );
+        }
+
+        $height = $tempParams['height'];
+        $width  = $tempParams['width'];
 
         if ($this->getAttribute('reflection')) {
             $extra = '_reflection';
@@ -120,24 +132,21 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
         if ($width || $height) {
             $part      = explode('.', $file);
-            $cachefile = $cdir . $part[0] . '__' . $width . 'x' . $height . $extra . '.'
-                         . StringHelper::toLower(end($part));
+            $cachefile = $cdir.$part[0].'__'.$width.'x'.$height.$extra.'.'.StringHelper::toLower(end($part));
 
             if (empty($height)) {
-                $cachefile = $cdir . $part[0] . '__' . $width . $extra . '.'
-                             . StringHelper::toLower(end($part));
+                $cachefile = $cdir.$part[0].'__'.$width.$extra.'.'.StringHelper::toLower(end($part));
             }
 
             if ($this->getAttribute('reflection')) {
-                $cachefile
-                    = $cdir . $part[0] . '__' . $width . 'x' . $height . $extra . '.png';
+                $cachefile = $cdir.$part[0].'__'.$width.'x'.$height.$extra.'.png';
 
                 if (empty($height)) {
-                    $cachefile = $cdir . $part[0] . '__' . $width . $extra . '.png';
+                    $cachefile = $cdir.$part[0].'__'.$width.$extra.'.png';
                 }
             }
         } else {
-            $cachefile = $cdir . $file;
+            $cachefile = $cdir.$file;
         }
 
         return $cachefile;
@@ -174,7 +183,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                     continue;
                 }
 
-                $encoded .= '%' . wordwrap(bin2hex($str), 2, '%', true);
+                $encoded .= '%'.wordwrap(bin2hex($str), 2, '%', true);
             }
 
             return $encoded;
@@ -323,6 +332,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
         if ($this->getAttribute('mime_type') == 'image/svg+xml') {
             File::copy($original, $cachefile);
+
             return $cachefile;
         }
 
@@ -334,8 +344,20 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
         if ($width === false && $height === false && empty($effects)) {
             File::copy($original, $cachefile);
+
             return $cachefile;
         }
+
+
+        // resize the proportions
+        if ($width) {
+            $width = QUI\Utils\Math::ceilUp($width, 100);
+        }
+
+        if ($height) {
+            $height = QUI\Utils\Math::ceilUp($height, 100);
+        }
+
 
         // create image
         $Image = $Media->getImageManager()->make($original);
@@ -468,10 +490,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     public function deleteCache()
     {
         $Media = $this->Media;
-        $cdir  = CMS_DIR . $Media->getCacheDir();
+        $cdir  = CMS_DIR.$Media->getCacheDir();
         $file  = $this->getAttribute('file');
 
-        $cachefile = $cdir . $file;
+        $cachefile = $cdir.$file;
         $cacheData = pathinfo($cachefile);
 
         $fileData = File::getInfo($this->getFullPath());
@@ -482,8 +504,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             $len = strlen($filename);
 
             // cache delete
-            if (substr($file, 0, $len + 2) == $filename . '__') {
-                File::unlink($cacheData['dirname'] . '/' . $file);
+            if (substr($file, 0, $len + 2) == $filename.'__') {
+                File::unlink($cacheData['dirname'].'/'.$file);
             }
         }
 
@@ -501,14 +523,14 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $Media   = $this->Media;
         $Project = $Media->getProject();
 
-        $cacheDir  = VAR_DIR . 'cache/admin/media/' . $Project->getName() . '/' . $Project->getLang() . '/';
-        $cacheName = $this->getId() . '__';
+        $cacheDir  = VAR_DIR.'media/cache/admin/'.$Project->getName().'/'.$Project->getLang().'/';
+        $cacheName = $this->getId().'__';
 
         $files = File::readDir($cacheDir);
 
         foreach ($files as $file) {
             if (strpos($file, $cacheName) === 0) {
-                unlink($cacheDir . $file);
+                unlink($cacheDir.$file);
             }
         }
     }
@@ -525,8 +547,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function resize($newWidth = 0, $newHeight = 0)
     {
-        $dir      = CMS_DIR . $this->Media->getPath();
-        $original = $dir . $this->getAttribute('file');
+        $dir      = CMS_DIR.$this->Media->getPath();
+        $original = $dir.$this->getAttribute('file');
 
         if ($this->getAttribute('mime_type') == 'image/svg+xml') {
             return $original;

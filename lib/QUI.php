@@ -220,7 +220,7 @@ class QUI
     public static function load()
     {
         // load the main configuration
-        $config = parse_ini_file(ETC_DIR . 'conf.ini.php', true);
+        $config = parse_ini_file(ETC_DIR.'conf.ini.php', true);
 
         /**
          * load the constants
@@ -258,14 +258,14 @@ class QUI
 
         $var_dir = $config['globals']['var_dir'];
 
-        if (file_exists($var_dir . 'last_update')) {
-            self::$last_up_date = file_get_contents($var_dir . 'last_update');
+        if (file_exists($var_dir.'last_update')) {
+            self::$last_up_date = file_get_contents($var_dir.'last_update');
 
         } else {
             self::$last_up_date = time();
         }
 
-        $lib_dir = dirname(__FILE__) . '/';
+        $lib_dir = dirname(__FILE__).'/';
         $var_dir = $config['globals']['var_dir'];
 
         // Define quiqqer path constants
@@ -298,7 +298,7 @@ class QUI
              * @var string
              * @package com.pcsg.qui
              */
-            define('BIN_DIR', dirname(LIB_DIR) . '/bin/');
+            define('BIN_DIR', dirname(LIB_DIR).'/bin/');
         }
 
         if (!defined('USR_DIR')) {
@@ -318,7 +318,7 @@ class QUI
              * @var string
              * @package com.pcsg.qui
              */
-            define('SYS_DIR', dirname(LIB_DIR) . '/admin/');
+            define('SYS_DIR', dirname(LIB_DIR).'/admin/');
         }
 
         if (!defined('OPT_DIR')) {
@@ -342,7 +342,7 @@ class QUI
         }
 
 
-        $Config     = new QUI\Config(ETC_DIR . 'conf.ini.php');
+        $Config     = new QUI\Config(ETC_DIR.'conf.ini.php');
         self::$Conf = $Config;
 
         if ($Config->getValue('globals', 'timezone')) {
@@ -381,19 +381,19 @@ class QUI
         // create the temp folder
         // @todo better do at the setup
         $folders = array(
-            CMS_DIR . 'media/users/',
+            CMS_DIR.'media/users/',
             // VAR
-            VAR_DIR . 'log/',
-            VAR_DIR . 'sessions/',
-            VAR_DIR . 'uid_sess/',
-            VAR_DIR . 'backup/',
-            VAR_DIR . 'lock/',
+            VAR_DIR.'log/',
+            VAR_DIR.'sessions/',
+            VAR_DIR.'uid_sess/',
+            VAR_DIR.'backup/',
+            VAR_DIR.'lock/',
             // Cache - noch nötig?
-            VAR_DIR . 'cache/url/',
-            VAR_DIR . 'cache/siteobjects/',
-            VAR_DIR . 'cache/projects',
-            VAR_DIR . 'locale/',
-            VAR_DIR . 'tmp/'
+            VAR_DIR.'cache/url/',
+            VAR_DIR.'cache/siteobjects/',
+            VAR_DIR.'cache/projects',
+            VAR_DIR.'locale/',
+            VAR_DIR.'tmp/'
         );
 
         foreach ($folders as $folder) {
@@ -414,15 +414,15 @@ class QUI
         }
 
         if (!defined('URL_USR_DIR')) {
-            define('URL_USR_DIR', URL_DIR . str_replace(CMS_DIR, '', USR_DIR));
+            define('URL_USR_DIR', URL_DIR.str_replace(CMS_DIR, '', USR_DIR));
         }
 
         if (!defined('URL_OPT_DIR')) {
-            define('URL_OPT_DIR', URL_DIR . str_replace(CMS_DIR, '', OPT_DIR));
+            define('URL_OPT_DIR', URL_DIR.str_replace(CMS_DIR, '', OPT_DIR));
         }
 
         if (!defined('URL_VAR_DIR')) {
-            define('URL_VAR_DIR', URL_DIR . str_replace(CMS_DIR, '', VAR_DIR));
+            define('URL_VAR_DIR', URL_DIR.str_replace(CMS_DIR, '', VAR_DIR));
         }
 
 
@@ -457,15 +457,15 @@ class QUI
                     $_SERVER["HTTP_REFERER"] = '';
                 }
 
-                $message = "Peak usage: " . $limit . "\n" .
-                           "memory_limit: " . ini_get('memory_limit') . "\n" .
-                           "URI: " . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"] . "\n" .
-                           "HTTP_REFERER: " . $_SERVER["HTTP_REFERER"];
+                $message = "Peak usage: ".$limit."\n".
+                           "memory_limit: ".ini_get('memory_limit')."\n".
+                           "URI: ".$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"]."\n".
+                           "HTTP_REFERER: ".$_SERVER["HTTP_REFERER"];
 
                 if (self::conf('mail', 'admin_mail')) {
                     self::getMailManager()->send(
                         self::conf('mail', 'admin_mail'),
-                        'Memory limit reached at http://' . $_SERVER["HTTP_HOST"],
+                        'Memory limit reached at http://'.$_SERVER["HTTP_HOST"],
                         $message
                     );
                 }
@@ -583,7 +583,7 @@ class QUI
      */
     public static function getDBTableName($table)
     {
-        return QUI_DB_PRFX . $table;
+        return QUI_DB_PRFX.$table;
     }
 
     /**
@@ -601,10 +601,10 @@ class QUI
         $lang = true
     ) {
         if ($lang === false) {
-            return QUI_DB_PRFX . $Project->getName() . '_' . $table;
+            return QUI_DB_PRFX.$Project->getName().'_'.$table;
         }
 
-        return QUI_DB_PRFX . $Project->getName() . '_' . $Project->getLang() . '_' . $table;
+        return QUI_DB_PRFX.$Project->getName().'_'.$Project->getLang().'_'.$table;
     }
 
     /**
@@ -623,7 +623,7 @@ class QUI
             return self::$Configs[$file];
         }
 
-        $_file = CMS_DIR . $file;
+        $_file = CMS_DIR.$file;
 
         if (substr($file, -4) !== '.php') {
             $_file .= '.php';
@@ -632,7 +632,7 @@ class QUI
         if (!isset(self::$Configs[$file])) {
             if (!file_exists($_file) || is_dir($_file)) {
                 throw new \QUI\Exception(
-                    'Error: Ini Datei: ' . $_file . ' existiert nicht.',
+                    'Error: Ini Datei: '.$_file.' existiert nicht.',
                     404
                 );
             }
@@ -760,13 +760,13 @@ class QUI
     public static function getErrorHandler()
     {
         if (self::$ErrorHandler === null) {
-            require_once dirname(__FILE__) . '/QUI/Exceptions/Handler.php';
+            require_once dirname(__FILE__).'/QUI/Exceptions/Handler.php';
 
             self::$ErrorHandler = new \QUI\Exceptions\Handler();
 
             self::$ErrorHandler->setAttribute(
                 'logdir',
-                self::conf('globals', 'var_dir') . 'log/'
+                self::conf('globals', 'var_dir').'log/'
             );
 
             self::$ErrorHandler->setAttribute(
@@ -978,10 +978,18 @@ class QUI
     /**
      * Return the global QUI Session
      *
-     * @return \QUI\Session
+     * @return \QUI\Session|QUI\System\Console\Session
      */
     public static function getSession()
     {
+        if (php_sapi_name() === 'cli') {
+            if (self::$Session === null) {
+                self::$Session = new QUI\System\Console\Session();
+            }
+
+            return self::$Session;
+        }
+
         if (self::$Session === null) {
             self::$Session = new \QUI\Session();
             self::getRequest()->setSession(self::$Session->getSymfonySession());
@@ -998,7 +1006,7 @@ class QUI
     public static function getTemp()
     {
         if (self::$Temp === null) {
-            self::$Temp = new \QUI\Temp(VAR_DIR . 'tmp');
+            self::$Temp = new \QUI\Temp(VAR_DIR.'tmp');
         }
 
         return self::$Temp;

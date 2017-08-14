@@ -113,7 +113,10 @@ define('controls/projects/project/settings/Media', [
                 }).inject(Elm.getElement('.sha1hash'));
 
 
-                UtilsControls.parse(Form, function () {
+                Promise.all([
+                    QUI.parse(Form),
+                    UtilsControls.parse(Form)
+                ]).then(function () {
                     self.Loader.hide();
                     self.fireEvent('load');
                 });

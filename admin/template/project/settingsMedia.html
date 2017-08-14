@@ -15,7 +15,7 @@
             <td class="first {cycle values="odd,even"}" colspan="2">
                 <label>
                     <input type="checkbox" name="media_createCacheOnSave" />
-                    {t}quiqqer/system projects.project.settings.panel.mediaSettings.createCacheOnSave{/t}
+                    {t}quiqqer/quiqqer projects.project.settings.panel.mediaSettings.createCacheOnSave{/t}
                 </label>
             </td>
         </tr>
@@ -33,7 +33,29 @@
         <tr class="{cycle values="odd,even"}">
             <td colspan="2" class="first-100">
                 <div class="description-no-padding">
-                    {t}quiqqer/quiqqer projects.project.settings.panel.mediaSettings.maxUploadSize.description{/t}
+                    {t}quiqqer/system projects.project.settings.panel.mediaSettings.maxUploadSize.description{/t}
+                </div>
+            </td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td class="first">
+                <label>
+                    {t}quiqqer/quiqqer projects.project.settings.panel.mediaSettings.maxUploadFileSize{/t}
+                </label>
+            </td>
+            <td>
+                <input type="number"
+                       min="0"
+                       name="media_maxUploadFileSize"
+                       data-qui="controls/projects/project/settings/FileFormat"
+                />
+                <span style="line-height: 30px; padding-left: 10px;"> Byte</span>
+            </td>
+        </tr>
+        <tr class="{cycle values="odd,even"}">
+            <td colspan="2" class="first-100">
+                <div class="description-no-padding">
+                    {t}quiqqer/quiqqer projects.project.settings.panel.mediaSettings.maxUploadFileSize.description{/t}
                 </div>
             </td>
         </tr>
@@ -51,7 +73,7 @@
 
         <tbody>
         <tr>
-        <tr class="{cycle values="odd,even"}">
+        <tr class="{cycle values="odd,even" reset=true}">
             <td class="first">
                 <label>
                     {t}quiqqer/system projects.project.settings.panel.mediaSettings.watermark{/t}

@@ -21,8 +21,6 @@
             <button>Find</button>
             <button>Replace</button>
             <separator/>
-            <button>SelectAll</button>
-            <separator/>
             <button>Scayt</button>
         </group>
     </line>
@@ -35,7 +33,7 @@
             <button>Strike</button>
             <button>Subscript</button>
             <button>Superscript</button>
-            <separator/>
+            <saparator/>
             <button>RemoveFormat</button>
         </group>
 
@@ -46,32 +44,28 @@
             <button>Outdent</button>
             <button>Indent</button>
             <separator/>
-            <button>Blockquote</button>
-            <button>CreateDiv</button>
-            <separator/>
             <button>JustifyLeft</button>
             <button>JustifyCenter</button>
             <button>JustifyRight</button>
             <button>JustifyBlock</button>
-        </group>
-
-        <group>
-            <button>Link</button>
-            <button>Unlink</button>
-            <button>Anchor</button>
-        </group>
-
-        <group>
-            <button>Image</button>
+            <separator/>
+            <button>Blockquote</button>
+            <button>CreateDiv</button>
             <button>HorizontalRule</button>
-            <button>Smiley</button>
-            <button>SpecialChar</button>
             <button>PageBreak</button>
+            <button>SpecialChar</button>
+        </group>
+
+        <group>
             <button>Iframe</button>
-            <button>FontAwesome</button>
+            <button>Html5video</button>
+            <button>Youtube</button>
+            <button>pre</button>
+            <button>ShowBlocks</button>
+            <button>SpecialChar</button>
+            <separator />
             <button>Table</button>
         </group>
-
     </line>
 
     <line>
@@ -86,21 +80,14 @@
             <button>TextColor</button>
             <button>BGColor</button>
         </group>
-    </line>
 
-    <line>
         <group>
-            <button>CodeSnippet</button>
-            <button>EmbedSemantic</button>
-            <button>Html5audio</button>
-            <button>Html5video</button>
-            <button>iframedialog</button>
-            <button>CreatePlaceholder</button>
-            <button>pre</button>
-            <button>ShowBlocks</button>
-            <button>SpecialChar</button>
-            <button>Youtube</button>
-            <button>Zoom</button>
+            <button>Link</button>
+            <button>Unlink</button>
+            <button>Anchor</button>
+            <separator/>
+            <button>Image</button>
+            <button>FontAwesome</button>
         </group>
     </line>
 </toolbar>

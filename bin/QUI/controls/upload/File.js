@@ -339,6 +339,16 @@ define('controls/upload/File', [
                         background: 'url(' + URL_BIN_DIR + '16x16/error.png) no-repeat left center'
                     }
                 }).inject(Elm);
+
+                (function () {
+                    moofx(Elm).animate({
+                        opacity: 0
+                    }, {
+                        callback: function () {
+                            Elm.destroy();
+                        }
+                    });
+                }).delay(2000);
             });
 
             return this.$Elm;
@@ -593,8 +603,6 @@ define('controls/upload/File', [
          * send errors to the message handler and cancel the request if some errores exist
          *
          * @param {String} responseText - server answer
-         *
-         * @todo better to use the direct classes.request.Ajax.$parseResult method
          */
         $parseResult: function (responseText) {
             var str   = responseText || '',
@@ -633,8 +641,7 @@ define('controls/upload/File', [
 
             // callback
             var result = eval('(' + str.substring(start, end) + ')');
-            console.warn('$parseResult');
-            console.warn(result);
+
             // exist messages?
             if (result.message_handler &&
                 result.message_handler.length) {
@@ -644,6 +651,7 @@ define('controls/upload/File', [
                     var send = function (Message) {
                         MH.add(Message);
                     };
+
                     for (var i = 0, len = messages.length; i < len; i++) {
                         MH.parse(messages[i], send);
                     }
@@ -652,7 +660,8 @@ define('controls/upload/File', [
 
             // exist a main exception?
             if (result.Exception) {
-                this.$error = true;
+                this.$error   = true;
+                this.$execute = false;
 
                 return this.fireEvent('error', [
                     new MessageError({

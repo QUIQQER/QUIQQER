@@ -7,7 +7,9 @@
  */
 
 define('QUIQQER_SYSTEM', true);
-require_once '../header.php';
+define('ETC_DIR', dirname(__FILE__, 6).'/etc/');
+
+require_once dirname(dirname(dirname(__FILE__))).'/bootstrap.php';
 
 if (!QUI::getUserBySession()->canUseBackend()) {
     header("HTTP/1.1 404 Not Found");
@@ -23,9 +25,14 @@ if (!isset($_POST['project']) ||
     exit;
 }
 
+$Rewrite  = QUI::getRewrite();
 $Response = QUI::getGlobalResponse();
 $Project  = QUI::getProject($_POST['project'], $_POST['lang']);
 $Site     = new QUI\Projects\Site\Edit($Project, $_POST['id']);
+
+$Rewrite->setSite($Site);
+$Rewrite->setPath($Site->getParents());
+$Rewrite->addSiteToPath($Site);
 
 if (isset($_POST['siteData']['type'])) {
     $Site->setAttribute('type', $_POST['siteData']['type']);
@@ -52,9 +59,14 @@ foreach ($_POST['siteDataJSON'] as $key => $value) {
 
 $Template = QUI::getTemplateManager();
 $content  = $Template->fetchSite($Site);
+$content  = QUI\Control\Manager::setCSSToHead($content);
 
 $Output  = new QUI\Output();
 $content = $Output->parse($content);
+
+$_content = $content;
+
+QUI::getEvents()->fireEvent('requestOutput', array(&$_content));
 
 $Response->headers->set("X-XSS-Protection", "0"); // <<<--- BAD
 $Response->setContent($content);

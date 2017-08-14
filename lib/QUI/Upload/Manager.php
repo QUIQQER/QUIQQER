@@ -9,6 +9,7 @@ namespace QUI\Upload;
 use QUI;
 use QUI\Utils\System\File as QUIFile;
 use QUI\Utils\Security\Orthos;
+use QUI\Utils\System\File;
 
 /**
  * Upload Manager
@@ -32,7 +33,7 @@ class Manager
      */
     public function __construct()
     {
-        $this->table = \QUI_DB_PRFX . 'uploads';
+        $this->table = \QUI_DB_PRFX.'uploads';
     }
 
     /**
@@ -40,7 +41,7 @@ class Manager
      */
     public function getDir()
     {
-        return VAR_DIR . 'uploads/';
+        return VAR_DIR.'uploads/';
     }
 
     /**
@@ -89,15 +90,15 @@ class Manager
         $message = '<script type="text/javascript">
             var UploadManager = false;
 
-            if ( typeof window.parent !== "undefined" &&
-                 typeof window.parent.QUI !== "undefined" &&
-                 typeof window.parent.QUI.UploadManager !== "undefined" )
+            if (typeof window.parent !== "undefined" &&
+                typeof window.parent.QUI !== "undefined" &&
+                typeof window.parent.QUI.UploadManager !== "undefined")
             {
                 UploadManager = window.parent.QUI.UploadManager;
             }
 
-            if ( UploadManager ) {
-                UploadManager.sendMessage(' . json_encode($message) . ');
+            if (UploadManager) {
+                UploadManager.sendMessage('.json_encode($message).');
             }
         </script>';
 
@@ -116,15 +117,15 @@ class Manager
         $message = '<script type="text/javascript">
             var UploadManager = false;
 
-            if ( typeof window.parent !== "undefined" &&
-                 typeof window.parent.QUI !== "undefined" &&
-                 typeof window.parent.QUI.UploadManager !== "undefined" )
+            if (typeof window.parent !== "undefined" &&
+                typeof window.parent.QUI !== "undefined" &&
+                typeof window.parent.QUI.UploadManager !== "undefined")
             {
                 UploadManager = window.parent.QUI.UploadManager;
             }
 
-            if ( UploadManager ) {
-                ' . $call . '
+            if (UploadManager) {
+                '.$call.'
             }
         </script>';
 
@@ -134,10 +135,27 @@ class Manager
     }
 
     /**
+     * Flush a exception to the UploadManager
+     *
+     * @param QUI\Exception $Exception
+     */
+    public function flushException(QUI\Exception $Exception)
+    {
+        $message = array(
+            'Exception' => $Exception->toArray()
+        );
+
+        echo '<quiqqer>'.json_encode($message).'</quiqqer>';
+        ob_flush();
+        flush();
+    }
+
+    /**
      * Upload the file data,
      * read the PUT data and write it to the filesystem or read the $_FILES
      *
      * @return string
+     * @throws QUI\Exception
      */
     public function upload()
     {
@@ -176,6 +194,7 @@ class Manager
                 $this->formUpload($onfinish, $params);
             } catch (QUI\Exception $Exception) {
                 $this->flushMessage($Exception->toArray());
+
                 return '';
             }
 
@@ -185,7 +204,8 @@ class Manager
                 $uploadid = $_REQUEST['uploadid'];
             }
 
-            $this->flushAction('UploadManager.isFinish("' . $uploadid . '")');
+            $this->flushAction('UploadManager.isFinish("'.$uploadid.'")');
+
             return '';
         }
 
@@ -196,7 +216,7 @@ class Manager
             $file = json_decode($_REQUEST['file'], true);
         }
 
-        if (isset($file['chunkstart']) && $file['chunkstart'] == 0) {
+        if (isset($file) && isset($file['chunkstart']) && $file['chunkstart'] == 0) {
             $this->delete($filename);
         }
 
@@ -205,7 +225,7 @@ class Manager
 
 
         $uploaddir = $this->getUserUploadDir();
-        $tmp_name  = $uploaddir . $filename;
+        $tmp_name  = $uploaddir.$filename;
 
         /* PUT REQUEST */
         $putdata = file_get_contents('php://input');
@@ -222,10 +242,19 @@ class Manager
             'filesize' => true
         ));
 
-//        @todo config max file size
-//        @todo Prüfung einbauen
-//        if ((int)$fileinfo['filesize'] > $configMaxFileSize) {
-//        }
+        $configMaxFileSize = QUI\Projects\Manager::get()->getConfig('media_maxUploadFileSize');
+
+        if ($configMaxFileSize && (int)$fileinfo['filesize'] > $configMaxFileSize) {
+            QUIFile::unlink($tmp_name);
+
+            throw new QUI\Exception(array(
+                'quiqqer/quiqqer',
+                'exception.media.upload.fileSize.is.to.big',
+                array(
+                    'size' => QUI\Utils\System\File::formatSize($configMaxFileSize)
+                )
+            ));
+        }
 
         // finish? then upload to folder
         if ((int)$fileinfo['filesize'] == $filesize) {
@@ -241,7 +270,7 @@ class Manager
 
                 $File->setAttribute(
                     'filepath',
-                    $uploaddir . $File->getAttribute('file')
+                    $uploaddir.$File->getAttribute('file')
                 );
             }
 
@@ -297,8 +326,8 @@ class Manager
 
         if (strpos($function, 'ajax_') === 0) {
             // if the function is a ajax_function
-            $_rf_file = OPT_DIR . 'quiqqer/quiqqer/admin/' .
-                        str_replace('_', '/', $function) .
+            $_rf_file = OPT_DIR.'quiqqer/quiqqer/admin/'.
+                        str_replace('_', '/', $function).
                         '.php';
 
             $_rf_file = Orthos::clearPath(realpath($_rf_file));
@@ -308,7 +337,7 @@ class Manager
             }
 
             $_REQUEST = array_merge($_REQUEST, $params, array(
-                '_rf' => '["' . $function . '"]'
+                '_rf' => '["'.$function.'"]'
             ));
 
             return QUI::getAjax()->callRequestFunction($function, $_REQUEST);
@@ -316,9 +345,9 @@ class Manager
 
         if (strpos($function, 'package_') === 0) {
             $dir  = OPT_DIR;
-            $file = substr(str_replace('_', '/', $function), 8) . '.php';
+            $file = substr(str_replace('_', '/', $function), 8).'.php';
 
-            $_rf_file = $dir . $file;
+            $_rf_file = $dir.$file;
             $_rf_file = Orthos::clearPath(realpath($_rf_file));
 
             if (file_exists($_rf_file)) {
@@ -326,14 +355,14 @@ class Manager
             }
 
             $_REQUEST = array_merge($_REQUEST, $params, array(
-                '_rf' => '["' . $function . '"]'
+                '_rf' => '["'.$function.'"]'
             ));
 
             return QUI::getAjax()->callRequestFunction($function, $_REQUEST);
         }
 
         throw new QUI\Exception(
-            'Function ' . $function . ' not found',
+            'Function '.$function.' not found',
             404
         );
     }
@@ -363,10 +392,10 @@ class Manager
 
             $uploaddir = $this->getUserUploadDir();
             $filename  = $list['name'];
-            $file      = $uploaddir . $filename;
+            $file      = $uploaddir.$filename;
 
             if (!move_uploaded_file($list["tmp_name"], $file)) {
-                throw new QUI\Exception('Could not move file' . $filename);
+                throw new QUI\Exception('Could not move file'.$filename);
             }
 
             // extract if the the extract file is set
@@ -398,10 +427,10 @@ class Manager
 
             $uploaddir = $this->getUserUploadDir();
             $filename  = $list['name'][$key];
-            $file      = $uploaddir . $filename;
+            $file      = $uploaddir.$filename;
 
             if (!move_uploaded_file($list["tmp_name"], $file)) {
-                throw new QUI\Exception('Could not move file' . $filename);
+                throw new QUI\Exception('Could not move file'.$filename);
             }
 
             // extract if the the extract file is set
@@ -497,7 +526,7 @@ class Manager
             );
         }
 
-        $to = $this->getUserUploadDir() . $fileinfo['filename'];
+        $to = $this->getUserUploadDir().$fileinfo['filename'];
 
         QUIFile::unlink($to);
         QUIFile::mkdir($to);
@@ -531,7 +560,7 @@ class Manager
             $id = QUI::getSession()->getId();
         }
 
-        return $this->getDir() . $id . '/';
+        return $this->getDir().$id.'/';
     }
 
     /**
@@ -552,7 +581,7 @@ class Manager
      */
     protected function add($filename, $params)
     {
-        $file = $this->getUserUploadDir() . $filename;
+        $file = $this->getUserUploadDir().$filename;
 
         if (file_exists($file)) {
             return;
@@ -584,7 +613,7 @@ class Manager
         ));
 
         QUIFile::unlink(
-            $this->getUserUploadDir() . $filename
+            $this->getUserUploadDir().$filename
         );
     }
 
@@ -638,7 +667,7 @@ class Manager
         }
 
         // read user upload dir
-        $dir = $this->getDir() . $User->getId() . '/';
+        $dir = $this->getDir().$User->getId().'/';
 
         if (!file_exists($dir) || !is_dir($dir)) {
             return array();
@@ -656,7 +685,7 @@ class Manager
                     && is_string($attributes['params'])
                 ) {
                     $params    = json_decode($attributes['params'], true);
-                    $file_info = QUIFile::getInfo($dir . $file);
+                    $file_info = QUIFile::getInfo($dir.$file);
 
                     $params['file']['uploaded'] = $file_info['filesize'];
 
@@ -666,7 +695,7 @@ class Manager
                 $result[] = $attributes;
             } catch (QUI\Exception $Exception) {
                 if ($Exception->getCode() === 404) {
-                    QUIFile::unlink($dir . $file);
+                    QUIFile::unlink($dir.$file);
                 }
             }
         }

@@ -370,46 +370,48 @@ define('classes/projects/project/Site', [
          *
          * @method classes/projects/project/Site#save
          * @param {Function} [onfinish] - (optional), callback function
-         * @return {Object} this (classes/projects/project/Site)
+         * @return {Promise}
          */
         save: function (onfinish) {
             var Site   = this,
                 params = this.ajaxParams(),
                 status = this.getAttribute('active');
 
-            params.attributes = JSON.encode(this.getAttributes());
+            return new Promise(function (resolve, reject) {
+                params.attributes = JSON.encode(Site.getAttributes());
+                params.onError    = reject;
 
-            Ajax.post('ajax_site_save', function (result) {
-                if (result && result.attributes) {
-                    Site.setAttributes(result.attributes);
-                }
-
-                if (result) {
-                    Site.$has_children = (result.has_children).toInt() || false;
-                    Site.$parentid     = (result.parentid).toInt() || false;
-                    Site.$url          = result.url || '';
-                }
-
-                Site.clearWorkingStorage();
-
-                // if status change, trigger events
-                if (Site.getAttribute('active') != status) {
-                    if (Site.getAttribute('active') == 1) {
-                        Site.fireEvent('activate', [Site]);
-                    } else {
-                        Site.fireEvent('deactivate', [Site]);
+                Ajax.post('ajax_site_save', function (result) {
+                    if (result && result.attributes) {
+                        Site.setAttributes(result.attributes);
                     }
-                }
 
-                if (typeof onfinish === 'function') {
-                    onfinish(result);
-                }
+                    if (result) {
+                        Site.$has_children = (result.has_children).toInt() || false;
+                        Site.$parentid     = (result.parentid).toInt() || false;
+                        Site.$url          = result.url || '';
+                    }
 
-                Site.fireEvent('save', [Site]);
+                    Site.clearWorkingStorage();
 
-            }, params);
+                    // if status change, trigger events
+                    if (Site.getAttribute('active') != status) {
+                        if (Site.getAttribute('active') == 1) {
+                            Site.fireEvent('activate', [Site]);
+                        } else {
+                            Site.fireEvent('deactivate', [Site]);
+                        }
+                    }
 
-            return this;
+                    Site.fireEvent('save', [Site]);
+
+                    if (typeof onfinish === 'function') {
+                        onfinish(result);
+                    }
+
+                    resolve(result);
+                }, params);
+            });
         },
 
         /**

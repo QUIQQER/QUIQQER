@@ -106,9 +106,9 @@ define('controls/projects/project/site/Panel', [
             if (typeOf(Site) === 'classes/projects/project/Site') {
                 var Project = Site.getProject(),
                     id      = 'panel-' +
-                              Project.getName() + '-' +
-                              Project.getLang() + '-' +
-                              Site.getId();
+                        Project.getName() + '-' +
+                        Project.getLang() + '-' +
+                        Site.getId();
 
                 // default id
                 this.setAttribute('id', id);
@@ -235,8 +235,8 @@ define('controls/projects/project/site/Panel', [
             title = Site.getAttribute('title') + ' (' + Site.getId() + ')';
 
             description = Site.getAttribute('name') + ' - ' +
-                          Site.getId() + ' - ' +
-                          Project.getName();
+                Site.getId() + ' - ' +
+                Project.getName();
 
             if (Site.getId() !== 1) {
                 description = description + ' - ' + Site.getUrl();
@@ -375,7 +375,6 @@ define('controls/projects/project/site/Panel', [
                             eval('fn = ' + events[ev]);
 
                             Category.addEvent(ev, fn);
-
                         } catch (e) {
                         }
                     }
@@ -611,20 +610,23 @@ define('controls/projects/project/site/Panel', [
         save: function () {
             var self = this;
 
-            this.$onCategoryLeave(this.getActiveCategory(), function () {
-                self.getSite().save(function () {
-                    // refresh data
-                    var Form = self.getContent().getElement('form');
+            this.$onCategoryLeave(this.getActiveCategory()).then(function () {
+                return self.getSite().save();
+            }).then(function () {
+                // refresh data
+                var Form = self.getContent().getElement('form');
 
-                    if (Form) {
-                        QUIFormUtils.setDataToForm(
-                            self.getSite().getAttributes(),
-                            Form
-                        );
-                    }
+                if (Form) {
+                    QUIFormUtils.setDataToForm(
+                        self.getSite().getAttributes(),
+                        Form
+                    );
+                }
 
-                    self.load();
-                });
+                self.load();
+            }).catch(function (err) {
+                console.error(err);
+                self.Loader.hide();
             });
         },
 
@@ -780,7 +782,7 @@ define('controls/projects/project/site/Panel', [
             var Active = this.getActiveCategory();
 
             if (Active &&
-                Active.getAttribute('name') != Category.getAttribute('name')) {
+                Active.getAttribute('name') !== Category.getAttribute('name')) {
                 this.$onCategoryLeave(this.getActiveCategory());
             }
 
@@ -910,6 +912,27 @@ define('controls/projects/project/site/Panel', [
                                 }
                             }).inject(LinkinLangTable.getElement('th'));
 
+                            // helper functions
+                            var copyLinking = function (Btn) {
+                                self.copySiteToLang(
+                                    Btn.getAttribute('lang')
+                                );
+                            };
+
+                            var openSite = function (Btn) {
+                                PanelUtils.openSitePanel(
+                                    Project.getName(),
+                                    Btn.getAttribute('lang'),
+                                    Btn.getAttribute('siteId')
+                                );
+                            };
+
+                            var removeLinking = function (Btn) {
+                                self.removeLanguagLink(
+                                    Btn.getAttribute('lang'),
+                                    Btn.getAttribute('siteId')
+                                );
+                            };
 
                             for (i = 0, len = rowList.length; i < len; i++) {
                                 Row      = rowList[i];
@@ -918,7 +941,6 @@ define('controls/projects/project/site/Panel', [
                                 LastCell.set('html', '');
 
                                 if (!Row.get('data-id').toInt()) {
-
                                     // seite in sprache kopieren und sprach verknüpfung anlegen
                                     new QUIButton({
                                         name  : 'copy-linking',
@@ -927,11 +949,7 @@ define('controls/projects/project/site/Panel', [
                                         title : Locale.get(lg, 'copy.site.in.lang'),
                                         lang  : Row.get('data-lang'),
                                         events: {
-                                            onClick: function (Btn) {
-                                                self.copySiteToLang(
-                                                    Btn.getAttribute('lang')
-                                                );
-                                            }
+                                            onClick: copyLinking
                                         },
                                         styles: {
                                             'float': 'right'
@@ -952,13 +970,7 @@ define('controls/projects/project/site/Panel', [
                                         'float': 'right'
                                     },
                                     events: {
-                                        onClick: function (Btn) {
-                                            PanelUtils.openSitePanel(
-                                                Project.getName(),
-                                                Btn.getAttribute('lang'),
-                                                Btn.getAttribute('siteId')
-                                            );
-                                        }
+                                        onClick: openSite
                                     }
                                 }).inject(LastCell);
 
@@ -973,12 +985,7 @@ define('controls/projects/project/site/Panel', [
                                         'float': 'right'
                                     },
                                     events: {
-                                        onClick: function (Btn) {
-                                            self.removeLanguagLink(
-                                                Btn.getAttribute('lang'),
-                                                Btn.getAttribute('siteId')
-                                            );
-                                        }
+                                        onClick: removeLinking
                                     }
                                 }).inject(LastCell);
                             }
@@ -1127,7 +1134,7 @@ define('controls/projects/project/site/Panel', [
             }
 
             // wysiwyg type
-            if (Category.getAttribute('type') == 'wysiwyg') {
+            if (Category.getAttribute('type') === 'wysiwyg') {
                 Site.setAttribute(
                     Category.getAttribute('name'),
                     this.getAttribute('Editor').getContent()
@@ -1288,10 +1295,10 @@ define('controls/projects/project/site/Panel', [
                 };
 
                 Panel.$onCategoryLeave(Panel.getActiveCategory())
-                    .then(saving)
-                    .then(function () {
-                        Panel.$onCategoryEnter(Panel.getActiveCategory());
-                    });
+                     .then(saving)
+                     .then(function () {
+                         Panel.$onCategoryEnter(Panel.getActiveCategory());
+                     });
 
                 return;
             }
@@ -1573,7 +1580,7 @@ define('controls/projects/project/site/Panel', [
                 attribute = 'content';
             }
 
-            if (Category.getAttribute('type') == 'wysiwyg') {
+            if (Category.getAttribute('type') === 'wysiwyg') {
                 attribute = Category.getAttribute('name');
             }
 
@@ -1585,7 +1592,6 @@ define('controls/projects/project/site/Panel', [
                 }
 
                 this.getSite().setAttribute(attr, Editor.getContent());
-
             }).periodical(this.getAttribute('editorPeriode'), this, [attribute]);
         },
 
@@ -1618,7 +1624,7 @@ define('controls/projects/project/site/Panel', [
                     var needles = [];
 
                     for (var i = 0, len = langs.length; i < len; i++) {
-                        if (langs[i] != lang) {
+                        if (langs[i] !== lang) {
                             needles.push(langs[i]);
                         }
                     }
