@@ -1,0 +1,10 @@
+.quiqqer-loginWindow-content {
+    padding: 0 !important;
+}
+
+.quiqqer-loginWindow-message {
+    clear: both;
+    float: left;
+    padding: 10px 20px;
+    width: 100%;
+}
