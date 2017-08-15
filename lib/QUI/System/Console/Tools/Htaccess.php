@@ -278,7 +278,6 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)$ index.php?_url=$1&%{QUERY_STRING} [END]
-
     
     RewriteCond %{REQUEST_URI} !^(.*)bin(.*)$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}media/cache/(.*)$
@@ -289,8 +288,9 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}.*\.pem$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}favicon\.ico$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}robots\.txt$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}image.php$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}image\.php$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}index\.php$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}ajax\.php$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}([^/]*)$
 
@@ -386,11 +386,14 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}([a-zA-Z-\s0-9_+]*)\.txt$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}favicon\.ico$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}robots\.txt$
-    RewriteCond %{REQUEST_URI} !^{$URL_DIR}image.php$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}image\.php$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}index\.php$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}ajax\.php$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}.*\.crt$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}.*\.pem$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}([^/]*)$
+    
     RewriteRule ^(.*)$ {$URL_DIR}?error=403 [R=301,L]
 </IfModule>
         ";
