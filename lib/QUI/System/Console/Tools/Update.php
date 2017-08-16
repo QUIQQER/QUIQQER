@@ -3,6 +3,7 @@
 /**
  * This file contains QUI\System\Console\Tools\Update
  */
+
 namespace QUI\System\Console\Tools;
 
 use QUI;
@@ -52,12 +53,14 @@ class Update extends QUI\System\Console\Tool
      */
     public function execute()
     {
-        $this->writeLn('Start Update ...');
+        $this->writeLn('- Starting Update:');
+        $this->writeLn('');
 
         $Packages = QUI::getPackageManager();
 
         if ($this->getArgument('set-date')) {
             QUI::getPackageManager()->setLastUpdateDate();
+
             return;
         }
 
@@ -124,7 +127,7 @@ class Update extends QUI\System\Console\Tool
 
                 $this->resetColor();
                 $this->write(
-                    str_pad($package['oldVersion'], $versionLength + 2, ' ') . ' -> '
+                    str_pad($package['oldVersion'], $versionLength + 2, ' ').' -> '
                 );
 
                 $this->write($package['version'], 'cyan');
@@ -137,15 +140,22 @@ class Update extends QUI\System\Console\Tool
 
         try {
             $Packages->refreshServerList();
-            $Packages->update();
+            $Packages->getComposer()->unmute();
+            $Packages->update(false, false);
 
-            $this->write(' [ok]');
-            $this->writeLn('');
+            $this->write('- Update was executed');
+            $this->write('- Generating Server files .htaccess and NGINX');
+
+            $Httaccess = new Htaccess();
+            $Httaccess->execute();
+
+            $Httaccess = new Nginx();
+            $Httaccess->execute();
         } catch (\Exception $Exception) {
             $this->write(' [error]', 'red');
             $this->writeLn('');
             $this->writeLn(
-                'Something went wrong::' . $Exception->getMessage(),
+                'Something went wrong::'.$Exception->getMessage(),
                 'red'
             );
 
@@ -157,7 +167,7 @@ class Update extends QUI\System\Console\Tool
             $this->writeLn('');
 
             $this->writeLn(
-                'php var/composer/composer.phar --working-dir="' . VAR_DIR . 'composer" update',
+                'php var/composer/composer.phar --working-dir="'.VAR_DIR.'composer" update',
                 'red'
             );
 

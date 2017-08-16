@@ -122,7 +122,7 @@ define('controls/projects/TypeSitemap', [
                 First.addIcon('fa fa-magic');
 
                 // empty result
-                if (typeOf(result) == 'array') {
+                if (typeOf(result) === 'array') {
                     First.setAttribute(
                         'text',
                         Locale.get('quiqqer/system', 'projects.typesitemap.message.no.types')
@@ -132,7 +132,7 @@ define('controls/projects/TypeSitemap', [
                     return;
                 }
 
-                var c, i, len, data, icon, Plugin;
+                var c, i, len, ilen, data, icon, Plugin, packageName;
 
                 var func_itm_click = function (Itm) {
                     Itm.open();
@@ -148,19 +148,44 @@ define('controls/projects/TypeSitemap', [
                     }
                 };
 
+                var pluginSorted = Object.keys(result).sort(function (a, b) {
+                    if (a === 'standard') {
+                        return -1;
+                    }
+
+                    if (b === 'standard') {
+                        return 1;
+                    }
+
+                    a = Locale.get(a, 'package.title');
+                    b = Locale.get(b, 'package.title');
+
+                    if (a > b) {
+                        return 1;
+                    }
+
+                    if (a < b) {
+                        return -1;
+                    }
+
+                    return 0;
+                });
+
                 // create the map
-                for (i in result) {
-                    if (!result.hasOwnProperty(i)) {
+                for (i = 0, ilen = pluginSorted.length; i < ilen; i++) {
+                    packageName = pluginSorted[i];
+
+                    if (!result.hasOwnProperty(packageName)) {
                         continue;
                     }
 
-                    if (i == 'standard') {
+                    if (packageName === 'standard') {
                         new QUISitemapItem({
-                            name       : i,
-                            value      : i,
-                            text       : i,
-                            alt        : i,
-                            icon       : result[i].icon,
+                            name       : packageName,
+                            value      : packageName,
+                            text       : packageName,
+                            alt        : packageName,
+                            icon       : result[packageName].icon,
                             hasChildren: false
                         }).inject(First);
 
@@ -168,14 +193,13 @@ define('controls/projects/TypeSitemap', [
                     }
 
                     Plugin = new QUISitemapItem({
-                        name       : i,
-                        value      : i,
-                        text       : Locale.get(i, 'package.title'),
-                        alt        : i,
+                        name       : packageName,
+                        value      : packageName,
+                        text       : Locale.get(packageName, 'package.title'),
+                        alt        : packageName,
                         icon       : 'fa fa-puzzle-piece',
                         hasChildren: true,
-
-                        events: {
+                        events     : {
                             onClick: func_itm_click
                         }
                     });
@@ -183,16 +207,16 @@ define('controls/projects/TypeSitemap', [
                     First.appendChild(Plugin);
 
 
-                    for (c = 0, len = result[i].length; c < len; c++) {
+                    for (c = 0, len = result[packageName].length; c < len; c++) {
                         icon = 'fa fa-magic';
-                        data = result[i][c];
+                        data = result[packageName][c];
 
                         if (data.icon) {
                             icon = data.icon;
                         }
 
                         new QUISitemapItem({
-                            name : i,
+                            name : packageName,
                             value: data.type,
                             text : data.text || data.type.split(':')[1],
                             alt  : data.type,
@@ -203,7 +227,6 @@ define('controls/projects/TypeSitemap', [
 
                 self.fireEvent('load', [self]);
                 First.open();
-
             }, {
                 project: JSON.encode({
                     name: this.getAttribute('project')

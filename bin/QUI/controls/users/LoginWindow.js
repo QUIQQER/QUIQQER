@@ -19,7 +19,9 @@ define('controls/users/LoginWindow', [
     'qui/controls/windows/Confirm',
     'qui/controls/buttons/Button',
     'Locale',
-    'controls/users/Login'
+    'controls/users/Login',
+
+    'css!controls/users/LoginWindow.css'
 
 ], function (QUI, QUIConfirm, QUIButton, Locale, Login) {
     "use strict";
@@ -45,7 +47,8 @@ define('controls/users/LoginWindow', [
             maxWidth : 400,
             autoclose: false,
             buttons  : false,
-            logo     : false
+            logo     : false,
+            message  : false
         },
 
         initialize: function (options) {
@@ -87,6 +90,14 @@ define('controls/users/LoginWindow', [
                 Content = this.getContent();
 
             Content.getElements('.submit-body').destroy();
+            Content.addClass('quiqqer-loginWindow-content');
+
+            if (this.getAttribute('message')) {
+                new Element('div', {
+                    'class': 'quiqqer-loginWindow-message message-attention',
+                    html   : this.getAttribute('message')
+                }).inject(Content);
+            }
 
             if (this.getAttribute('logo')) {
                 new Element('img', {

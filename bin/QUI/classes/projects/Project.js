@@ -64,7 +64,8 @@ define('classes/projects/Project', [
         initialize: function (options) {
             this.parent(options);
 
-            this.$config = false;
+            this.$config  = false;
+            this.$layouts = null;
         },
 
         /**
@@ -199,6 +200,29 @@ define('classes/projects/Project', [
         },
 
         /**
+         * return all layouts in the project
+         *
+         * @return {Promise}
+         */
+        getLayouts: function () {
+            var self = this;
+
+            if (this.$layouts) {
+                return Promise.resolve(this.$layouts);
+            }
+
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_project_get_layouts', function (result) {
+                    self.$layouts = result;
+                    resolve(result);
+                }, {
+                    project: self.encode(),
+                    onError: reject
+                });
+            });
+        },
+
+        /**
          * Set the config for a project
          * You can set a single config parameter or multible parameters
          *
@@ -283,7 +307,7 @@ define('classes/projects/Project', [
          */
         getTitle: function () {
             var group = 'project/' + this.getName();
-            
+
             if (QUILocale.exists(group, 'title')) {
                 return QUILocale.get(group, 'title');
             }

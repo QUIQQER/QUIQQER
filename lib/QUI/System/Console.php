@@ -570,7 +570,9 @@ class Console
                 break;
 
             case 'update':
-                QUI::getPackageManager()->update();
+                $Tool = new QUI\System\Console\Tools\Update();
+                $Tool->setAttribute('parent', $this);
+                $Tool->execute();
                 break;
 
             case 'setup':
@@ -582,7 +584,7 @@ class Console
                 break;
         }
 
-        $this->writeLn('Done.', 'green');
+        $this->writeLn('Everything is done. Thank you for using QUIQQER', 'green');
         $this->resetMsg();
         $this->writeLn();
     }

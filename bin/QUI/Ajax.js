@@ -162,7 +162,8 @@ define('Ajax', [
 
                                 require(['controls/users/LoginWindow'], function (Login) {
                                     new Login({
-                                        events: {
+                                        message: Locale.get('quiqqer/system', 'exception.permission.session.expired'),
+                                        events : {
                                             onSuccess: function () {
                                                 self.request(call, method, callback, params);
                                             }
