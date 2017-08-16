@@ -451,7 +451,7 @@ class Manager extends QUI\QDOM
         $data = $this->getSiteXMLDataByType($type);
 
         if (isset($data['locale'])) {
-            return \QUI::getLocale()->get(
+            return QUI::getLocale()->get(
                 $data['locale']['group'],
                 $data['locale']['var']
             );
