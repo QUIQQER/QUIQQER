@@ -42,6 +42,7 @@
     "pcsg\/composer-assets": "*",
     "dusank/knapsack": "8.*",
     "quiqqer/composer": "1.*|dev-master|dev-dev",
+    "quiqqer/controls": "dev-master|dev-dev",
     "quiqqer/qui": ">=1|dev-master|dev-dev",
     "quiqqer/qui-php": "0.10.0|dev-master|dev-dev",
     "quiqqer/smarty3": "1.*|dev-master|dev-dev",
