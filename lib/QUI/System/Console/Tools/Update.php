@@ -53,7 +53,8 @@ class Update extends QUI\System\Console\Tool
      */
     public function execute()
     {
-        $this->writeLn('Starting Update ...');
+        $this->writeLn('- Starting Update:');
+        $this->writeLn('');
 
         $Packages = QUI::getPackageManager();
 
@@ -143,6 +144,13 @@ class Update extends QUI\System\Console\Tool
             $Packages->update(false, false);
 
             $this->write('- Update was executed');
+            $this->write('- Generating Server files .htaccess and NGINX');
+
+            $Httaccess = new Htaccess();
+            $Httaccess->execute();
+
+            $Httaccess = new Nginx();
+            $Httaccess->execute();
         } catch (\Exception $Exception) {
             $this->write(' [error]', 'red');
             $this->writeLn('');
