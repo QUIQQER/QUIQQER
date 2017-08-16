@@ -584,7 +584,7 @@ class Console
                 break;
         }
 
-        $this->writeLn('Done.', 'green');
+        $this->writeLn('Everything is done. Thank you for using QUIQQER', 'green');
         $this->resetMsg();
         $this->writeLn();
     }

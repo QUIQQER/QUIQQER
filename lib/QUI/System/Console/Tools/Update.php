@@ -53,7 +53,7 @@ class Update extends QUI\System\Console\Tool
      */
     public function execute()
     {
-        $this->writeLn('Start Update ...');
+        $this->writeLn('Starting Update ...');
 
         $Packages = QUI::getPackageManager();
 
@@ -142,8 +142,11 @@ class Update extends QUI\System\Console\Tool
             $Packages->getComposer()->unmute();
             $Packages->update(false, false);
 
-            $this->write(' [ok]');
+            $this->write('- Update was executed');
             $this->writeLn('');
+            $this->writeLn('Starting Setup...');
+
+            QUI\Setup::all();
         } catch (\Exception $Exception) {
             $this->write(' [error]', 'red');
             $this->writeLn('');
