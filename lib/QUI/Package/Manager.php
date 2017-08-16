@@ -1324,7 +1324,9 @@ class Manager extends QUI\QDOM
         $needledRAM = $existsVCS($this) ? '256M' : '128M';
         $limit      = QUI\Utils\System::getMemoryLimit();
 
-        if ($limit != -1 && File::getBytes($needledRAM) > $limit) {
+        if (php_sapi_name() != 'cli'
+            && $limit != -1
+            && File::getBytes($needledRAM) > $limit) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
