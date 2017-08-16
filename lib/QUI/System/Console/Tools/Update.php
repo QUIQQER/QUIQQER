@@ -143,10 +143,6 @@ class Update extends QUI\System\Console\Tool
             $Packages->update(false, false);
 
             $this->write('- Update was executed');
-            $this->writeLn('');
-            $this->writeLn('Starting Setup...');
-
-            QUI\Setup::all();
         } catch (\Exception $Exception) {
             $this->write(' [error]', 'red');
             $this->writeLn('');
