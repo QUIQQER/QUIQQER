@@ -570,7 +570,9 @@ class Console
                 break;
 
             case 'update':
-                QUI::getPackageManager()->update();
+                $Tool = new QUI\System\Console\Tools\Update();
+                $Tool->setAttribute('parent', $this);
+                $Tool->execute();
                 break;
 
             case 'setup':

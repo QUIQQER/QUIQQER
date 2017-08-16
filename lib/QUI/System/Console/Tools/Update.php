@@ -139,7 +139,8 @@ class Update extends QUI\System\Console\Tool
 
         try {
             $Packages->refreshServerList();
-            $Packages->update(false, true);
+            $Packages->getComposer()->unmute();
+            $Packages->update(false, false);
 
             $this->write(' [ok]');
             $this->writeLn('');

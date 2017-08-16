@@ -1294,6 +1294,7 @@ class Manager extends QUI\QDOM
      * Update a package or the entire system
      *
      * @param string|boolean $package - optional, package name, if false, it updates the complete system
+     * @param bool $mute -mute option for the composer output
      *
      * @throws QUI\Exception
      *
@@ -1337,7 +1338,7 @@ class Manager extends QUI\QDOM
 
         $this->createComposerBackup();
 
-        if ($mute) {
+        if ($mute === true) {
             $Composer->mute();
         }
 
