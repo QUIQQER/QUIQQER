@@ -478,15 +478,36 @@ define('utils/Controls', [
             return new Promise(function (resolve, reject) {
                 require(['controls/projects/project/media/Input'], function (ProjectMediaInput) {
 
-                    var i, len,
-
+                    var i, len, selectableTypes, selectableMimeTypes,
                         mediaImages = Elm.getElements('input.media-image'),
                         mediaFolder = Elm.getElements('input.media-folder');
 
                     for (i = 0, len = mediaImages.length; i < len; i++) {
+                        selectableTypes     = mediaImages[i].get('data-qui-options-selectable_types');
+                        selectableMimeTypes = mediaImages[i].get('data-qui-options-selectable_mimetypes');
+
+                        // mimetypes
+                        if (selectableMimeTypes && selectableMimeTypes !== '') {
+                            selectableMimeTypes = selectableMimeTypes.split(',');
+                        }
+
+                        if (!selectableMimeTypes.length) {
+                            selectableMimeTypes = ['*'];
+                        }
+
+                        // types
+                        if (selectableTypes && selectableTypes !== '') {
+                            selectableTypes = selectableTypes.split(',');
+                        }
+
+                        if (!selectableTypes.length) {
+                            selectableTypes = ['image', 'file'];
+                        }
+
                         new ProjectMediaInput({
-                            selectable_types: ['image', 'file'],
-                            cssclasses      : mediaImages[i].get('data-qui-options-cssclasses')
+                            selectable_types    : ['image', 'file'],
+                            selectable_mimetypes: selectableMimeTypes,
+                            cssclasses          : mediaImages[i].get('data-qui-options-cssclasses')
                         }, mediaImages[i]).create();
                     }
 
