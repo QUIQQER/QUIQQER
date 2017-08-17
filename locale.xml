@@ -588,6 +588,14 @@
             <de><![CDATA[E-Mail]]></de>
             <en><![CDATA[Email]]></en>
         </locale>
+        <locale name="username">
+            <de><![CDATA[Benutzername]]></de>
+            <en><![CDATA[Username]]></en>
+        </locale>
+        <locale name="password">
+            <de><![CDATA[Passwort]]></de>
+            <en><![CDATA[Password]]></en>
+        </locale>
 
         <locale name="system.forwarding.from">
             <de><![CDATA[Von]]></de>

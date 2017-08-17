@@ -52,14 +52,14 @@ foreach ($packages as $package) {
 
     foreach ($authPackages as $package) {
         foreach ($languages as $lang) {
-            $files[] = 'locale/' . $package . '/' . $lang;
+            $files[] = 'locale/'.$package.'/'.$lang;
         }
     }
 
     echo '<script type="text/javascript">';
     echo '/* <![CDATA[ */';
-    echo 'var QUIQQER_LOCALE = ' . json_encode($files, true) . ';';
-    echo 'var QUIQQER_LANGUAGES = ' . json_encode($languages, true) . ';';
+    echo 'var QUIQQER_LOCALE = '.json_encode($files, true).';';
+    echo 'var QUIQQER_LANGUAGES = '.json_encode($languages, true).';';
     echo '/* ]]> */';
     echo '</script>';
     ?>
@@ -73,15 +73,15 @@ foreach ($packages as $package) {
         }
 
         html, body {
-            margin: 0;
-            padding: 0;
             background: #dedede;
-
-            text-align: left;
+            color: #333;
+            float: left;
             font-family: Arial, Helvetica, sans-serif;
             font-size: 13px;
-
-            color: #333;
+            margin: 0;
+            padding: 0;
+            text-align: left;
+            width: 100%;
         }
 
         .container {
@@ -303,7 +303,14 @@ foreach ($packages as $package) {
             -o-animation-name: swing;
             animation-name: swing;
         }
+
+        .quiqqer-language-switch {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
     </style>
+
 
     <?php
 
@@ -319,6 +326,7 @@ foreach ($packages as $package) {
     <script type="text/javascript">
 
         var URL_DIR     = '<?php echo URL_DIR; ?>',
+            URL_BIN_DIR = '<?php echo URL_BIN_DIR; ?>',
             URL_OPT_DIR = '<?php echo URL_OPT_DIR; ?>',
             LANGUAGE    = null;
 
@@ -380,10 +388,23 @@ foreach ($packages as $package) {
 
             return new Promise(function (resolve) {
                 require([
+                    'qui/QUI',
+                    'utils/Session',
                     'Locale',
                     'locale/quiqqer/system/' + lang
-                ], function (QUILocale) {
+                ], function (QUI, Session, QUILocale) {
                     QUILocale.setCurrent(lang);
+                    Session.set('quiqqer-user-language', lang);
+
+                    var LoginElement = document.getElement('.quiqqer-login');
+
+                    if (!LoginElement) {
+                        resolve();
+                        return;
+                    }
+
+                    QUI.Controls.getById(LoginElement.get('data-quiid')).refresh();
+
                     resolve();
                 });
             });
@@ -444,6 +465,7 @@ foreach ($packages as $package) {
 <body>
 
 <div class="container">
+    <div class="quiqqer-language-switch"></div>
     <img src="<?php echo URL_BIN_DIR; ?>quiqqer_logo.png"
          alt="QUIQQER Login"
          title="QUIQQER Logo"
@@ -462,6 +484,37 @@ foreach ($packages as $package) {
         });
     </script>
 <?php } ?>
+
+<script>
+    var LoginContainer = document.getElement('.quiqqer-language-switch');
+
+    require([
+        'qui/controls/buttons/Select',
+        'Ajax'
+    ], function (QUISelect, Ajax) {
+        var Select = new QUISelect({
+            events: {
+                onChange: function () {
+                    setLanguage(Select.getValue());
+                }
+            }
+        }).inject(LoginContainer);
+
+        Select.appendChild(
+            'deutsch',
+            'de',
+            URL_BIN_DIR + '16x16/flags/de.png'
+        );
+
+        Select.appendChild(
+            'english',
+            'en',
+            URL_BIN_DIR + '16x16/flags/en.png'
+        );
+
+        Select.setValue(getCurrentLanguage());
+    });
+</script>
 
 </body>
 </html>
