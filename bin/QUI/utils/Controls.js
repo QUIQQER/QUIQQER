@@ -491,7 +491,7 @@ define('utils/Controls', [
                             selectableMimeTypes = selectableMimeTypes.split(',');
                         }
 
-                        if (!selectableMimeTypes.length) {
+                        if (!selectableMimeTypes || !selectableMimeTypes.length) {
                             selectableMimeTypes = ['*'];
                         }
 
@@ -500,7 +500,7 @@ define('utils/Controls', [
                             selectableTypes = selectableTypes.split(',');
                         }
 
-                        if (!selectableTypes.length) {
+                        if (!selectableTypes || !selectableTypes.length) {
                             selectableTypes = ['image', 'file'];
                         }
 
