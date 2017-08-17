@@ -1454,9 +1454,7 @@ define('controls/projects/project/media/Panel', [
                         return;
                     }
 
-                    if (rowData.type === 'folder') {
-                        self.openID(Grid.getDataByRow(row).id);
-                    }
+                    self.openID(Grid.getDataByRow(row).id);
                 }
             });
 
