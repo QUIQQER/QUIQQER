@@ -6,8 +6,10 @@
  *
  * @require qui/controls/Control
  * @require qui/controls/buttons/Button
+ * @require controls/icons/Confirm
  * @require qui/utils/String
  * @require controls/projects/project/media/Popup
+ * @require Projects
  * @require Ajax
  * @require Locale
  * @require css!controls/projects/project/media/Input.css
