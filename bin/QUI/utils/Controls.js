@@ -483,8 +483,8 @@ define('utils/Controls', [
                         mediaFolder = Elm.getElements('input.media-folder');
 
                     for (i = 0, len = mediaImages.length; i < len; i++) {
-                        selectableTypes     = mediaImages.get('data-qui-options-selectable_types');
-                        selectableMimeTypes = mediaImages.get('data-qui-options-selectable_mimetypes');
+                        selectableTypes     = mediaImages[i].get('data-qui-options-selectable_types');
+                        selectableMimeTypes = mediaImages[i].get('data-qui-options-selectable_mimetypes');
 
                         // mimetypes
                         if (selectableMimeTypes && selectableMimeTypes !== '') {
