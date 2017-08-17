@@ -193,6 +193,9 @@ define('controls/projects/project/media/Popup', [
 
                 self.$Panel.inject(Content);
 
+                if (self.isOpened()) {
+                    self.$Panel.resize();
+                }
             }, {
                 fileid : this.getAttribute('fileid'),
                 project: Project.getName()
