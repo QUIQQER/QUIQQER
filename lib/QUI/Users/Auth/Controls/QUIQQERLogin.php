@@ -3,6 +3,7 @@
 /**
  * This file contains
  */
+
 namespace QUI\Users\Auth\Controls;
 
 use QUI;
@@ -24,7 +25,7 @@ class QUIQQERLogin extends Control
         parent::__construct($options);
 
         $this->addCSSClass('quiqqer-login-auth');
-        $this->addCSSFile(dirname(__FILE__) . '/QUIQQERLogin.css');
+        $this->addCSSFile(dirname(__FILE__).'/QUIQQERLogin.css');
     }
 
     /**
@@ -34,6 +35,11 @@ class QUIQQERLogin extends Control
     {
         $Engine = QUI::getTemplateManager()->getEngine();
 
-        return $Engine->fetch(dirname(__FILE__) . '/QUIQQERLogin.html');
+        $Engine->assign(array(
+            'usernameText' => QUI::getLocale()->get('quiqqer/quiqqer', 'username'),
+            'passwordText' => QUI::getLocale()->get('quiqqer/quiqqer', 'password'),
+        ));
+
+        return $Engine->fetch(dirname(__FILE__).'/QUIQQERLogin.html');
     }
 }

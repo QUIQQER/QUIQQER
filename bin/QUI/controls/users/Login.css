@@ -38,3 +38,9 @@
     display: block;
     margin: 0 auto;
 }
+
+.quiqqer-login-language {
+    position: absolute;
+    right: 20px;
+    top: 0;
+}

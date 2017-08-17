@@ -71,6 +71,11 @@ define('controls/users/Login', [
             return this.$Elm;
         },
 
+        refresh: function () {
+            this.$Elm.set('html', '');
+            this.$onInject();
+        },
+
         /**
          * event : on inject
          */
@@ -112,6 +117,7 @@ define('controls/users/Login', [
                         if (typeOf(event) === 'element') {
                             Target = event;
                         }
+
                         if (typeOf(event) === 'domevent') {
                             event.stop();
                             Target = event.target;

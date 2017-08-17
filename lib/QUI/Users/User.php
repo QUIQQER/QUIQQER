@@ -561,7 +561,7 @@ class User implements QUI\Interfaces\Users\User
         $lastname  = $this->getAttribute('lastname');
 
         if ($firstname && $lastname) {
-            return $firstname . ' ' . $lastname;
+            return $firstname.' '.$lastname;
         }
 
         return $this->getUsername();
@@ -585,6 +585,12 @@ class User implements QUI\Interfaces\Users\User
     public function getLang()
     {
         if ($this->lang !== null) {
+            return $this->lang;
+        }
+
+        if (QUI::getSession()->get('quiqqer-user-language')) {
+            $this->lang = QUI::getSession()->get('quiqqer-user-language');
+
             return $this->lang;
         }
 
@@ -658,6 +664,7 @@ class User implements QUI\Interfaces\Users\User
             QUI::getPackage('quiqqer/currency');
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::writeException($Exception, QUI\System\Log::LEVEL_ALERT);
+
             return 'EUR';
         }
 
@@ -754,7 +761,8 @@ class User implements QUI\Interfaces\Users\User
                 }
             }
 
-            $this->groups = ',' . implode($aTmp, ',') . ',';
+            $this->groups = ','.implode($aTmp, ',').',';
+
             return;
         }
 
@@ -775,7 +783,8 @@ class User implements QUI\Interfaces\Users\User
                 }
             }
 
-            $this->groups = ',' . implode($aTmp, ',') . ',';
+            $this->groups = ','.implode($aTmp, ',').',';
+
             return;
         }
 
@@ -783,7 +792,7 @@ class User implements QUI\Interfaces\Users\User
         if (is_string($groups)) {
             try {
                 $this->Group[] = $Groups->get($groups);
-                $this->groups  = ',' . $groups . ',';
+                $this->groups  = ','.$groups.',';
             } catch (QUI\Exception $Exception) {
             }
         }
@@ -1208,6 +1217,7 @@ class User implements QUI\Interfaces\Users\User
             );
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addWarning($Exception->getMessage());
+
             return false;
         }
 
@@ -1454,7 +1464,7 @@ class User implements QUI\Interfaces\Users\User
             Manager::table(),
             array(
                 'username'         => $this->getUsername(),
-                'usergroup'        => ',' . implode(',', $this->getGroups(false)) . ',',
+                'usergroup'        => ','.implode(',', $this->getGroups(false)).',',
                 'firstname'        => $this->getAttribute('firstname'),
                 'lastname'         => $this->getAttribute('lastname'),
                 'usertitle'        => $this->getAttribute('usertitle'),
@@ -1659,7 +1669,7 @@ class User implements QUI\Interfaces\Users\User
 
         foreach ($list as $entry) {
             $plugin  = $entry['name'];
-            $userXml = OPT_DIR . $plugin . '/user.xml';
+            $userXml = OPT_DIR.$plugin.'/user.xml';
 
             if (!file_exists($userXml)) {
                 continue;
@@ -1686,7 +1696,7 @@ class User implements QUI\Interfaces\Users\User
      */
     protected function readAttributesFromUserXML($file)
     {
-        $cache = 'user/plugin-xml-attributes-' . md5($file);
+        $cache = 'user/plugin-xml-attributes-'.md5($file);
 
         try {
             return QUI\Cache\Manager::get($cache);

@@ -146,6 +146,7 @@ define('controls/projects/project/media/Panel', [
 
             this.addEvents({
                 onCreate : this.$onCreate,
+                onResize : this.$onResize,
                 onDestroy: function () {
                     this.$Media.removeEvent('onItemRename', this.$itemEvent);
                     this.$Media.removeEvent('onItemActivate', this.$itemEvent);
@@ -216,6 +217,28 @@ define('controls/projects/project/media/Panel', [
          */
         close: function () {
             this.destroy();
+        },
+
+        /**
+         * event: on resize
+         */
+        $onResize: function () {
+            if (!this.getElm()) {
+                return;
+            }
+
+            var Omnigrid  = this.getBody().getElement('.omnigrid');
+            var Container = this.getBody().getElement('.qui-media-content');
+
+            if (!Omnigrid) {
+                return;
+            }
+
+            var Grid = QUI.Controls.getById(Omnigrid.get('data-quiid'));
+
+            if (Grid) {
+                Grid.setHeight(Container.getSize().y - 10);
+            }
         },
 
         /**
@@ -1006,19 +1029,17 @@ define('controls/projects/project/media/Panel', [
 
             droplist.push(MediaBody);
 
+            this.$onResize();
 
             // Upload events
             new RequestUpload(droplist, {
-
                 onDragenter: function (event, Elm) {
                     self.$dragEnter(event, Elm);
-
                     event.stop();
                 },
 
                 onDragend: function (event, Elm) {
                     self.$dragLeave(event, Elm);
-
                     event.stop();
                 },
 
@@ -1410,17 +1431,17 @@ define('controls/projects/project/media/Panel', [
 
             Grid.addEvents({
                 onClick: function (data) {
-                    var Grid = data.target,
-                        row  = data.row;
+                    var Grid    = data.target,
+                        row     = data.row,
+                        rowData = Grid.getDataByRow(row);
 
-                    if (!self.isItemSelectable(data)) {
-                        return;
-                    }
-
-                    if (self.getAttribute('selectable')) {
+                    if (self.getAttribute('selectable') &&
+                        self.isItemSelectable(rowData) &&
+                        rowData.type !== 'folder' // folder must be openable
+                    ) {
                         var GridData = Grid.getDataByRow(row),
                             id       = GridData.id,
-                            project  = this.getProject().getName();
+                            project  = self.getProject().getName();
 
                         var imageData = {
                             id     : id,
@@ -1429,12 +1450,13 @@ define('controls/projects/project/media/Panel', [
                             type   : ''
                         };
 
-
                         self.fireEvent('childClick', [self, imageData]);
                         return;
                     }
 
-                    self.openID(Grid.getDataByRow(row).id);
+                    if (rowData.type === 'folder') {
+                        self.openID(Grid.getDataByRow(row).id);
+                    }
                 }
             });
 

@@ -7,6 +7,7 @@
 namespace QUI;
 
 use QUI;
+use QUI\Utils\StringHelper;
 
 /**
  * The locale object
@@ -87,6 +88,8 @@ class Locale
      */
     public function setCurrent($lang)
     {
+        $lang = preg_replace('/[^a-zA-Z_]/', '', $lang);
+
         $this->current = $lang;
     }
 
@@ -283,13 +286,13 @@ class Locale
         // no shell
         if (!QUI\Utils\System::isShellFunctionEnabled('locale')) {
             // if we cannot read locale list, so we must guess
-            $langCode = strtolower($lang) . '_' . strtoupper($lang);
+            $langCode = strtolower($lang).'_'.strtoupper($lang);
 
             $this->localeList[$lang] = array(
                 $langCode,
-                $langCode . '.utf8',
-                $langCode . '.UTF-8',
-                $langCode . '@euro'
+                $langCode.'.utf8',
+                $langCode.'.UTF-8',
+                $langCode.'@euro'
             );
 
             return $this->localeList[$lang];
@@ -310,7 +313,7 @@ class Locale
             $langList[] = $locale;
         }
 
-        $langCode = strtolower($lang) . '_' . strtoupper($lang);
+        $langCode = strtolower($lang).'_'.strtoupper($lang);
 
         // not the best solution
         if ($lang == 'en') {
@@ -359,6 +362,7 @@ class Locale
 
         if (!is_array($key)) {
             $this->langs[$lang][$group][$key] = $value;
+
             return;
         }
 
@@ -388,7 +392,7 @@ class Locale
             return true;
         }
 
-        $_str = '[' . $group . '] ' . $value;
+        $_str = '['.$group.'] '.$value;
 
         if ($_str === $str) {
             return false;
@@ -419,7 +423,7 @@ class Locale
                 continue;
             }
 
-            $str = str_replace('[' . $key . ']', $value, $str);
+            $str = str_replace('['.$key.']', $value, $str);
         };
 
         return $str;
@@ -448,7 +452,7 @@ class Locale
                 continue;
             }
 
-            $str = str_replace('[' . $key . ']', $value, $str);
+            $str = str_replace('['.$key.']', $value, $str);
         };
 
         return $str;
@@ -468,7 +472,7 @@ class Locale
     protected function getHelper($group, $value = false, $current = false)
     {
         if ($this->no_translation) {
-            return '[' . $group . '] ' . $value;
+            return '['.$group.'] '.$value;
         }
 
         if (!$current) {
@@ -502,7 +506,7 @@ class Locale
             return $this->langs[$current][$group][$value];
         }
 
-        return '[' . $group . '] ' . $value;
+        return '['.$group.'] '.$value;
     }
 
     /**
@@ -529,6 +533,7 @@ class Locale
 
         if (!function_exists('gettext')) {
             $this->gettext[$current][$group] = false;
+
             return false;
         }
 
@@ -549,7 +554,7 @@ class Locale
 
         // #locale
         System\Log::addWarning(
-            'Übersetzungsdatei für ' . $file . ' nicht gefunden.'
+            'Übersetzungsdatei für '.$file.' nicht gefunden.'
         );
 
         $this->gettext[$current][$group] = false;
@@ -594,13 +599,11 @@ class Locale
      */
     public function getTranslationFile($lang, $group)
     {
-        $locale = QUI\Utils\StringHelper::toLower($lang)
-                  . '_'
-                  . QUI\Utils\StringHelper::toUpper($lang);
+        $lang   = preg_replace('/[^a-zA-Z]/', '', $lang);
+        $locale = StringHelper::toLower($lang).'_'.StringHelper::toUpper($lang);
+        $group  = str_replace('/', '_', $group);
 
-        $group = str_replace('/', '_', $group);
-
-        return $this->dir() . '/' . $locale . '/LC_MESSAGES/' . $group . '.ini.php';
+        return $this->dir().'/'.$locale.'/LC_MESSAGES/'.$group.'.ini.php';
     }
 
     /**
@@ -610,7 +613,7 @@ class Locale
      */
     public function dir()
     {
-        return VAR_DIR . 'locale/';
+        return VAR_DIR.'locale/';
     }
 
     /**
