@@ -9,6 +9,7 @@
  * @requires Packages
  * @requires Mustache
  * @requires controls/packages/PackageList
+ * @requires controls/packages/PackageList
  * @requires Locale
  * @requires Ajax
  * @requires text!controls/packages/Search.html
@@ -56,6 +57,7 @@ define('controls/packages/Search', [
             '$onClickInstall',
             '$loadPackageStore',
             '$loadOtherSourcesSearch',
+            '$loadUpload',
             '$onResize',
             '$storeApiController'
         ],
@@ -67,20 +69,24 @@ define('controls/packages/Search', [
         initialize: function (options) {
             this.parent(options);
 
-            this.$OtherSourcesResultList = null;
-
-            this.$Results                 = null;
-            this.$Input                   = null;
-            this.$TermsOfUse              = null;
-            this.Loader                   = new QUILoader();
-            this.$Content                 = null;
-            this.$storeUrl                = null;
-            this.$PackageStoreBtn         = null;
-            this.$OtherSourcesBtn         = null;
-            this.$Panel                   = null;
+            this.$OtherSourcesResultList  = null;
             this.$storeApiEventRegistered = false;
-            this.$StoreFrame              = null;
-            this.$StoreApi                = new StoreApi();
+
+            this.Loader = new QUILoader();
+
+            this.$Results    = null;
+            this.$Input      = null;
+            this.$TermsOfUse = null;
+            this.$Content    = null;
+            this.$storeUrl   = null;
+            this.$Panel      = null;
+
+            this.$PackageStoreBtn = null;
+            this.$OtherSourcesBtn = null;
+            this.$UploadBtn       = null;
+
+            this.$StoreFrame = null;
+            this.$StoreApi   = new StoreApi();
 
             this.addEvents({
                 onInject: this.$onInject
@@ -146,8 +152,13 @@ define('controls/packages/Search', [
                     '.qui-controls-packages-search-toggle-othersources'
                 );
 
+                self.$UploadBtn = self.$Elm.getElement(
+                    '.qui-controls-packages-search-toggle-upload'
+                );
+
                 self.$PackageStoreBtn.addEvent('click', self.$loadPackageStore);
                 self.$OtherSourcesBtn.addEvent('click', self.$loadOtherSourcesSearch);
+                self.$UploadBtn.addEvent('click', self.$loadUpload);
 
                 self.Loader.hide();
 
@@ -261,6 +272,15 @@ define('controls/packages/Search', [
                     '.qui-controls-packages-search-othersources-content'
                 )
             );
+        },
+
+        /**
+         * Load package upload
+         */
+        $loadUpload: function () {
+            require(['controls/packages/upload/Window'], function (Window) {
+                new Window().open();
+            });
         },
 
         /**

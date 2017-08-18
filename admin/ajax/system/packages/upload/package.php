@@ -9,7 +9,7 @@ QUI::$Ajax->registerFunction(
     'ajax_system_packages_upload_package',
     function ($File) {
         /* @var $File \QUI\QDOM */
-        QUI::getPackageManager()->uploadPackage(
+        QUI\Package\LocalServer::getInstance()->uploadPackage(
             $File->getAttribute('filepath')
         );
     },

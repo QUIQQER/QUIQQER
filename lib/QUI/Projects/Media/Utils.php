@@ -577,14 +577,14 @@ class Utils
      */
     public static function stripMediaName($str)
     {
-        $str = preg_replace('/[^0-9a-zA-Z\.\-]/', '_', $str);
-
         // Umlaute
         $str = str_replace(
             array('ä', 'ö', 'ü'),
-            array('ar', 'oe', 'ue'),
+            array('ae', 'oe', 'ue'),
             $str
         );
+
+        $str = preg_replace('/[^0-9a-zA-Z\.\-]/', '_', $str);
 
         // delete the dots but not the last dot
         $str = str_replace('.', '_', $str);

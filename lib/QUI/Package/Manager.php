@@ -20,7 +20,6 @@ if (!defined('JSON_UNESCAPED_UNICODE')) {
 
 use QUI;
 use QUI\Utils\System\File as QUIFile;
-use QUI\Utils\System\File;
 
 /**
  * Package Manager for the QUIQQER System
@@ -1395,21 +1394,6 @@ class Manager extends QUI\QDOM
     }
 
     /**
-     * activate the locale repository,
-     * if the repository is not in the server list, the repository would be added
-     */
-    public function activateLocalServer()
-    {
-        $serverDir = $this->getUploadPackageDir();
-
-        $this->addServer($serverDir, array(
-            "type" => "artifact"
-        ));
-
-        $this->setServerStatus($serverDir, 1);
-    }
-
-    /**
      * Update a package or the entire system from a package archive
      *
      * @param string|boolean $package - Name of the package
@@ -1446,6 +1430,7 @@ class Manager extends QUI\QDOM
         }
 
         // activate local repos
+        LocaleServer::getInstance()->
         $this->activateLocalServer();
         $this->createComposerJSON();
 
@@ -1562,20 +1547,6 @@ class Manager extends QUI\QDOM
     }
 
     /**
-     * @return mixed|string
-     */
-    protected function getUploadPackageDir()
-    {
-        $updatePath = QUI::conf('update', 'updatePath');
-
-        if (!empty($updatePath) && is_dir($updatePath)) {
-            return rtrim($updatePath, '/').'/';
-        }
-
-        return QUI::getTemp()->createFolder('quiqqerUpdate');
-    }
-
-    /**
      * Upload a archiv file to the local quiqqer repository
      *
      * @param string $file - Path to the package archive file
@@ -1591,7 +1562,7 @@ class Manager extends QUI\QDOM
         }
 
         if (!file_exists($file)) {
-            throw new QUI\Exception('Archiv file not found');
+            throw new QUI\Exception('Archive file not found');
         }
 
         $fileInfos = QUIFile::getInfo($file, array(
