@@ -1410,6 +1410,7 @@ class Manager extends QUI\QDOM
             $this->resetRepositories();
         } catch (QUI\Exception $Exception) {
             $this->resetRepositories();
+            LocalServer::getInstance()->activate();
 
             throw $Exception;
         }
