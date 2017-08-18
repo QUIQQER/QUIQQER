@@ -78,4 +78,60 @@ class LocalServer extends QUI\Utils\Singleton
 
         File::move($file, $serverDir.$filename);
     }
+
+    /**
+     * Return the package list in the locale server
+     *
+     * @return array
+     */
+    public function getPackageList()
+    {
+        $dir = $this->getDir();
+
+        if (!is_dir($dir)) {
+            return array();
+        }
+
+        $files  = File::readDir($dir);
+        $result = array();
+
+        chdir($dir);
+
+        foreach ($files as $package) {
+            try {
+                $composerJson = file_get_contents(
+                    "zip://{$package}#composer.json"
+                );
+            } catch (\Exception $Exception) {
+                // maybe gitlab package?
+                try {
+                    $packageName  = pathinfo($package);
+                    $composerJson = file_get_contents(
+                        "zip://{$package}#{$packageName['filename']}/composer.json"
+                    );
+                } catch (\Exception $Exception) {
+                    QUI\System\Log::addDebug($Exception->getMessage());
+                    continue;
+                }
+            }
+
+            if (empty($composerJson)) {
+                continue;
+            }
+
+            $composerJson = json_decode($composerJson, true);
+
+            if (!isset($composerJson['name'])) {
+                continue;
+            }
+
+            if (is_dir(OPT_DIR.$composerJson['name'])) {
+                continue;
+            }
+
+            $result[] = $composerJson;
+        }
+
+        return $result;
+    }
 }
