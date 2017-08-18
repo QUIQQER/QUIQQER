@@ -135,6 +135,12 @@ define('controls/packages/upload/Upload', [
                 }).catch(function (err) {
                     self.fireEvent('finished', [self]);
                     console.error(err);
+
+                    if (typeOf(err) === 'qui/controls/messages/Error') {
+                        QUI.getMessageHandler().then(function (MH) {
+                            MH.add(err);
+                        });
+                    }
                 });
             });
         }

@@ -1404,8 +1404,15 @@ class Manager extends QUI\QDOM
     {
         $this->createComposerBackup();
         $this->useOnlyLocalRepository();
-        $this->update($package);
-        $this->resetRepositories();
+
+        try {
+            $this->update($package);
+            $this->resetRepositories();
+        } catch (QUI\Exception $Exception) {
+            $this->resetRepositories();
+
+            throw $Exception;
+        }
     }
 
     /**

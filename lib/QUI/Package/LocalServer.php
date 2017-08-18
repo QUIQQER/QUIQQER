@@ -33,6 +33,16 @@ class LocalServer extends QUI\Utils\Singleton
     }
 
     /**
+     * deactivate the locale repository,
+     */
+    public function deactivate()
+    {
+        $serverDir = $this->getDir();
+        $Packages  = QUI::getPackageManager();
+        $Packages->removeServer($serverDir);
+    }
+
+    /**
      * @return string
      */
     public function getDir()
