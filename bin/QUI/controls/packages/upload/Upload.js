@@ -46,6 +46,7 @@ define('controls/packages/upload/Upload', [
             this.$Upload = new UploadForm({
                 sendbutton  : true,
                 cancelbutton: true,
+                accept      : 'application/zip',
                 events      : {
                     onCancel: function () {
                         self.fireEvent('cancel', [self]);

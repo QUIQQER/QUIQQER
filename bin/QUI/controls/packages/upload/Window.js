@@ -22,8 +22,8 @@ define('controls/packages/upload/Window', [
         ],
 
         options: {
-            maxHeight: 600,
-            maxWidth : 800,
+            maxHeight: 450,
+            maxWidth : 900,
             buttons  : false
         },
 
