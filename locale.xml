@@ -965,6 +965,18 @@
             A ZIP file can not be created because the folder is empty
             ]]></en>
         </locale>
+        <locale name="exception.image.upload.image.corrupted">
+            <de><![CDATA[
+            Das Bild beinhaltet fehlerhafte oder korrupte Daten.
+            Leider konnte der Upload daher nicht erfolgreich durchgeführt werden.
+            Weitere Fehlerinformationen finden Sie in der error.log.
+            ]]></de>
+            <en><![CDATA[
+            The image contains corrupted data.
+            Unfortunately, the upload was not successful.
+            For more error information, please look at the error.log.
+            ]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="js">

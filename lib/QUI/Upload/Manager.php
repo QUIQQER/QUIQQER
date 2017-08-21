@@ -291,6 +291,13 @@ class Manager
             // delete the real file
             QUIFile::unlink($tmp_name);
 
+            if (isset($result['Exception'])) {
+                throw new QUI\Exception(
+                    $result['Exception']['message'],
+                    $result['Exception']['code']
+                );
+            }
+
             if (isset($result['result'])) {
                 return $result['result'];
             }

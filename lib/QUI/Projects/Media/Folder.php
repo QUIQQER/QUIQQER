@@ -1208,6 +1208,21 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $fileinfo = FileUtils::getInfo($file);
         $filename = MediaUtils::stripMediaName($fileinfo['basename']);
 
+
+        // test if the image is readable
+        if (MediaUtils::getMediaTypeByMimeType($fileinfo['mime_type']) === 'image') {
+            try {
+                $this->getMedia()->getImageManager()->make($file);
+            } catch (\Exception $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
+                throw new QUI\Exception(array(
+                    'quiqqer/quiqqer',
+                    'exception.image.upload.image.corrupted'
+                ));
+            }
+        }
+
+
         // mb_strtolower hat folgenden Grund: file_exists beachtet Gross und Kleinschreibung im Unix Systemen
         // Daher sind die Namen im Mediabereich alle klein geschrieben damit es keine Doppelten Dateien geben kann
         // Test.jpg und test.jpg wären unterschiedliche Dateien bei Windows aber nicht

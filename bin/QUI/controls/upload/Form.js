@@ -127,7 +127,7 @@ define('controls/upload/Form', [
 
                     if (self.$Add &&
                         (self.getAttribute('maxuploads') === false ||
-                        self.getAttribute('maxuploads').toInt() > elms.length)) {
+                            self.getAttribute('maxuploads').toInt() > elms.length)) {
                         self.$Add.enable();
                     }
                 }
@@ -851,6 +851,10 @@ define('controls/upload/Form', [
                     }
                 }
             }).inject(this.$Info);
+
+            QUI.getMessageHandler().then(function (MH) {
+                MH.add(Error);
+            });
 
             this.fireEvent('error', [this, Error]);
         }
