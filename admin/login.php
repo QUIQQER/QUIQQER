@@ -486,12 +486,14 @@ foreach ($packages as $package) {
 <?php } ?>
 
 <script>
-    var LoginContainer = document.getElement('.quiqqer-language-switch');
+    var LoginContainer = document.getElement('.quiqqer-language-switch'),
+        needle         = ['qui/controls/buttons/Select', 'Locale'];
 
-    require([
-        'qui/controls/buttons/Select',
-        'Ajax'
-    ], function (QUISelect, Ajax) {
+    for (var i = 0, len = QUIQQER_LANGUAGES.length; i < len; i++) {
+        needle.push('locale/quiqqer/system/' + QUIQQER_LANGUAGES[i]);
+    }
+
+    require(needle, function (QUISelect, QUILocale) {
         var Select = new QUISelect({
             events: {
                 onChange: function () {
@@ -500,18 +502,21 @@ foreach ($packages as $package) {
             }
         }).inject(LoginContainer);
 
-        Select.appendChild(
-            'deutsch',
-            'de',
-            URL_BIN_DIR + '16x16/flags/de.png'
-        );
+        var i, len, lang;
+        var current = QUILocale.getCurrent();
 
-        Select.appendChild(
-            'english',
-            'en',
-            URL_BIN_DIR + '16x16/flags/en.png'
-        );
+        for (i = 0, len = QUIQQER_LANGUAGES.length; i < len; i++) {
+            lang = QUIQQER_LANGUAGES[i];
+            QUILocale.setCurrent(lang);
 
+            Select.appendChild(
+                QUILocale.get('quiqqer/system', 'language.' + lang),
+                lang,
+                URL_BIN_DIR + '16x16/flags/' + lang + '.png'
+            );
+        }
+
+        QUILocale.setCurrent(current);
         Select.setValue(getCurrentLanguage());
     });
 </script>
