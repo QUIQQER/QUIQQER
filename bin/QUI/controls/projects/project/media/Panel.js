@@ -736,11 +736,14 @@ define('controls/projects/project/media/Panel', [
                     buttons: false
                 });
 
+            self.fireEvent('uploadOpenBegin', [self, Sheet]);
+
             extract = extract || false;
 
             Sheet.addEvents({
                 onClose: function (Sheet) {
                     Sheet.destroy();
+                    self.fireEvent('uploadClose', [self]);
                 },
                 onOpen : function () {
                     var Parent;
@@ -841,7 +844,18 @@ define('controls/projects/project/media/Panel', [
                 }
             });
 
-            Sheet.show();
+            var showSheet = function () {
+                Sheet.show().then(function () {
+                    self.fireEvent('uploadOpen', [self, Sheet]);
+                });
+            };
+
+            if (this.getAttribute('isInPopup')) {
+                showSheet.delay(250);
+                return;
+            }
+
+            showSheet();
         },
 
         /**
