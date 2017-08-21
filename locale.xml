@@ -3308,8 +3308,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[By clicking, you can select another file ...]]></en>
         </locale>
         <locale name="upload.form.message.limit">
-            <de><![CDATA[Es sind nur [limit] Uploads erlaubt.]]></de>
-            <en><![CDATA[There are only allowed [limit] uploads.]]></en>
+            <de><![CDATA[Sie dürfen maximal [limit] Dateien gleichzeitig hochgeladen werden.]]></de>
+            <en><![CDATA[You are only allowed [limit] files to upload at the same time.]]></en>
         </locale>
         <locale name="upload.form.info.text">
             <de><![CDATA[Hochladen ...]]></de>

@@ -87,12 +87,13 @@ define('controls/upload/Form', [
 
             this.parent(options);
 
-            this.$Add     = null;
-            this.$Elm     = null;
-            this.$Form    = null;
-            this.$Frame   = null;
-            this.$Buttons = null;
-            this.$BgText  = null;
+            this.$Add        = null;
+            this.$Elm        = null;
+            this.$Form       = null;
+            this.$Frame      = null;
+            this.$Buttons    = null;
+            this.$BgText     = null;
+            this.$SendButton = null;
 
             this.$enabled = true;
             this.$files   = {};
@@ -119,6 +120,11 @@ define('controls/upload/Form', [
                         self.$BgText.setStyles({
                             display: null
                         });
+
+                        (function () {
+                            self.$Form.setStyle('cursor', 'pointer');
+                            self.$formClick = false;
+                        }).delay(100);
 
                         moofx(self.$BgText).animate({
                             opacity: 1
@@ -197,6 +203,16 @@ define('controls/upload/Form', [
                     max  : this.getAttribute('maxuploads')
                 })
             );
+
+            if (this.$SendButton) {
+                this.$SendButton.disable();
+                this.$SendButton.getElm().removeClass('btn-green');
+
+                if (Object.getLength(this.$files)) {
+                    this.$SendButton.enable();
+                    this.$SendButton.getElm().addClass('btn-green');
+                }
+            }
         },
 
         /**
@@ -244,22 +260,40 @@ define('controls/upload/Form', [
             this.$Form = this.createForm();
             this.$Form.inject(this.$Elm, 'top');
 
+            this.$Form.removeEvents('click');
+            this.$Form.setStyle('cursor', 'pointer');
+            this.$formClick = false;
+
+            var delayClick = false;
+
+            this.$Form.addEvent('click', function (event) {
+                if (self.$formClick || delayClick) {
+                    return;
+                }
+
+                delayClick = true;
+
+                (function () {
+                    delayClick = false;
+                }).delay(100);
+
+                if (Object.getLength(self.$files)) {
+                    return;
+                }
+
+                event.stop();
+
+                var Input = self.addInput();
+
+                if (Input) {
+                    Input.click();
+                }
+            });
+
             this.$dragDropInit();
 
             if (this.getAttribute('styles')) {
                 this.$Elm.setStyles(this.getAttribute('styles'));
-            }
-
-            var buttonWidth = '100%';
-
-            if (this.getAttribute('sendbutton') ||
-                this.getAttribute('cancelbutton')) {
-                buttonWidth = '50%';
-            }
-
-            if (this.getAttribute('sendbutton') &&
-                this.getAttribute('cancelbutton')) {
-                buttonWidth = '33.3%';
             }
 
             this.$Add = new QUIButton({
@@ -276,25 +310,27 @@ define('controls/upload/Form', [
                     }
                 },
                 styles   : {
-                    width: buttonWidth
+                    width: '30%'
                 }
             }).inject(this.$Buttons);
 
 
             if (this.getAttribute('sendbutton')) {
-                new QUIButton({
+                this.$SendButton = new QUIButton({
                     name     : 'upload',
                     textimage: 'fa fa-upload',
                     text     : Locale.get(lg, 'upload.form.btn.send.text'),
                     alt      : Locale.get(lg, 'upload.form.btn.send.alt'),
                     title    : Locale.get(lg, 'upload.form.btn.send.title'),
+                    disabled : true,
                     events   : {
                         onClick: function () {
                             self.submit();
                         }
                     },
                     styles   : {
-                        width: buttonWidth
+                        'float': 'right',
+                        width  : '30%'
                     }
                 }).inject(this.$Buttons);
             }
@@ -312,9 +348,10 @@ define('controls/upload/Form', [
                         }
                     },
                     styles   : {
-                        width: buttonWidth
+                        'float': 'right',
+                        width  : '20%'
                     }
-                }).inject(this.$Buttons, 'top');
+                }).inject(this.$Buttons);
             }
 
             this.refreshDisplay();
@@ -403,12 +440,13 @@ define('controls/upload/Form', [
             var Container = new Element('div.qui-form-upload');
 
             var Input = new Element('input', {
-                type  : "file",
-                name  : "files",
-                events: {
+                type    : "file",
+                name    : "files",
+                multiple: true,
+                events  : {
                     change: this.$onInputChange.bind(this)
                 },
-                styles: {
+                styles  : {
                     display: 'inline'
                 }
             }).inject(Container);
@@ -432,15 +470,18 @@ define('controls/upload/Form', [
 
 
             new QUIButton({
-                name  : 'remove',
-                image : 'fa fa-remove',
-                events: {
-                    onClick: function () {
-                        var fid = Slick.uidOf(Input);
+                name     : 'remove',
+                image    : 'fa fa-remove',
+                Container: Container,
+                events   : {
+                    onClick: function (Btn) {
+                        var Container = Btn.getAttribute('Container');
+                        var fid       = Slick.uidOf(Input);
 
                         if (self.$files[fid]) {
                             delete self.$files[fid];
                         }
+
 
                         Container.destroy();
                         self.fireEvent('inputDestroy');
@@ -485,6 +526,10 @@ define('controls/upload/Form', [
                 }
             }
 
+            if (Input === false) {
+                return;
+            }
+
             this.$files[Slick.uidOf(Input)] = File;
 
             var Container = Input.getParent('.qui-form-upload'),
@@ -508,6 +553,8 @@ define('controls/upload/Form', [
             }, {
                 callback: function () {
                     self.$BgText.setStyle('display', 'none');
+                    self.$Form.setStyle('cursor', null);
+                    self.$formClick = true;
                 }
             });
         },
@@ -708,7 +755,39 @@ define('controls/upload/Form', [
                 return;
             }
 
-            this.addUpload(files[0], Target);
+            // check max length
+            var maxUploads = this.getAttribute('maxuploads'),
+                current    = Object.getLength(this.$files),
+                sum        = current + files.length;
+
+            if (maxUploads && maxUploads < sum) {
+                QUI.getMessageHandler().then(function (MH) {
+                    MH.addError(
+                        Locale.get(lg, 'upload.form.message.limit', {
+                            limit: maxUploads
+                        })
+                    );
+                });
+
+                return;
+            }
+
+            if (files.length === 1) {
+                this.addUpload(files[0], Target);
+                this.fireEvent('change', [this.getFiles(), this]);
+                return;
+            }
+
+
+            for (var i = 0, len = files.length; i < len; i++) {
+                if (i === 0) {
+                    this.addUpload(files[i], Target);
+                    continue;
+                }
+
+                this.addUpload(files[i]);
+            }
+
             this.fireEvent('change', [this.getFiles(), this]);
         },
 
