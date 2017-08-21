@@ -437,6 +437,8 @@ define('controls/upload/Form', [
                 return false;
             }
 
+            this.cleanup();
+
             var Container = new Element('div.qui-form-upload');
 
             var Input = new Element('input', {
@@ -457,13 +459,19 @@ define('controls/upload/Form', [
                 title  : Locale.get(lg, 'upload.form.btn.change.title'),
                 events : {
                     click: function (event) {
+                        event.stop();
+
                         var Target = event.target;
 
                         if (!Target.hasClass('.qui-form-upload')) {
                             Target = Target.getParent('.qui-form-upload');
                         }
 
-                        Target.getElement('input[type="file"]').click();
+                        var File = Target.getElement('input[type="file"]');
+
+                        File.focus();
+
+                        (File.click()).delay(200);
                     }
                 }
             }).inject(Container);
@@ -557,6 +565,33 @@ define('controls/upload/Form', [
                     self.$formClick = true;
                 }
             });
+        },
+
+        /**
+         * Cleanup the form
+         * Removes empty file entries
+         */
+        cleanup: function () {
+            var emptyUploads = this.$Form.getElements('div.qui-form-upload').filter(function (Upload) {
+                var Input = Upload.getElement('input');
+
+                if (typeof Input.files === 'undefined') {
+                    return false;
+                }
+
+                return !Input.files.length;
+            });
+
+            var i, len, button, Button;
+
+            for (i = 0, len = emptyUploads.length; i < len; i++) {
+                button = emptyUploads[i].getElement('button');
+                Button = QUI.Controls.getById(button.get('data-quiid'));
+
+                if (Button) {
+                    Button.click();
+                }
+            }
         },
 
         /**
