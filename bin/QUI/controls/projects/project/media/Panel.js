@@ -499,7 +499,10 @@ define('controls/projects/project/media/Panel', [
                 Project = this.$Media.getProject();
 
             this.Loader.show();
-            this.$Filter.value = '';
+
+            if (this.$Filter) {
+                this.$Filter.value = '';
+            }
 
             // set loader image
             this.setOptions({
