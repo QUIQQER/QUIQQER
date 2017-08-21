@@ -178,11 +178,11 @@ class Manager
         $DBTable = QUI::getDataBase()->table();
         $table   = self::table();
 
-        $table2users    = $table . '2users';
-        $table2groups   = $table . '2groups';
-        $table2sites    = $table . '2sites';
-        $table2projects = $table . '2projects';
-        $table2media    = $table . '2media';
+        $table2users    = $table.'2users';
+        $table2groups   = $table.'2groups';
+        $table2sites    = $table.'2sites';
+        $table2projects = $table.'2projects';
+        $table2media    = $table.'2media';
 
         // Haupttabelle anlegen
         $DBTable->addColumn($table, array(
@@ -247,7 +247,7 @@ class Manager
                 );
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::addError(
-                    '\QUI\Permissions\Manager::importPermissionsForGroups() -> ' .
+                    '\QUI\Permissions\Manager::importPermissionsForGroups() -> '.
                     $Exception->getMessage()
                 );
             }
@@ -633,10 +633,12 @@ class Manager
 
             case 'project':
                 $this->setProjectPermissions($Obj, $permissions, $EditUser);
+
                 return;
 
             case 'site':
                 $this->setSitePermissions($Obj, $permissions, $EditUser);
+
                 return;
 
             default:
@@ -674,9 +676,9 @@ class Manager
         $DataBase = QUI::getDataBase();
         $table    = self::table();
 
-        $table2users  = $table . '2users';
-        $table2groups = $table . '2groups';
-        $table2media  = $table . '2media';
+        $table2users  = $table.'2users';
+        $table2groups = $table.'2groups';
+        $table2media  = $table.'2media';
 
         // areas
         switch ($area) {
@@ -720,7 +722,7 @@ class Manager
                     array('group_id' => $Obj->getId())
                 );
 
-                QUI\Cache\Manager::clear('qui/groups/group/' . $Obj->getId() . '/');
+                QUI\Cache\Manager::clear('qui/groups/group/'.$Obj->getId().'/');
                 break;
 
             case 'media':
@@ -797,23 +799,23 @@ class Manager
                 foreach ($Perm as $PermValue) {
                     if (QUI::getUsers()->isUser($PermValue)) {
                         /* @var $PermValue QUI\Users\User */
-                        $permissionValues[] = 'u' . $PermValue->getId();
+                        $permissionValues[] = 'u'.$PermValue->getId();
                         continue;
                     }
 
                     if (QUI::getGroups()->isGroup($PermValue)) {
                         /* @var $PermValue QUI\Groups\Group */
-                        $permissionValues[] = 'g' . $PermValue->getId();
+                        $permissionValues[] = 'g'.$PermValue->getId();
                     }
                 }
 
                 $permissionValue = implode(',', $permissionValues);
             } elseif (QUI::getUsers()->isUser($Perm)) {
                 /* @var $Perm QUI\Users\User */
-                $permissionValue = 'u' . $Perm->getId();
+                $permissionValue = 'u'.$Perm->getId();
             } elseif (QUI::getGroups()->isGroup($Perm)) {
                 /* @var $Perm QUI\Groups\Group */
-                $permissionValue = 'g' . $Perm->getId();
+                $permissionValue = 'g'.$Perm->getId();
             } else {
                 continue;
             }
@@ -850,7 +852,7 @@ class Manager
         $table   = self::table();
 
         QUI::getDataBase()->update(
-            $table . '2sites',
+            $table.'2sites',
             array('value' => $value),
             array(
                 'project'    => $Project->getName(),
@@ -876,7 +878,7 @@ class Manager
         $table   = self::table();
 
         QUI::getDataBase()->insert(
-            $table . '2sites',
+            $table.'2sites',
             array(
                 'project'    => $Project->getName(),
                 'lang'       => $Project->getLang(),
@@ -902,7 +904,7 @@ class Manager
         $table   = self::table();
 
         QUI::getDataBase()->delete(
-            $table . '2sites',
+            $table.'2sites',
             array(
                 'project' => $Project->getName(),
                 'lang'    => $Project->getLang(),
@@ -973,7 +975,7 @@ class Manager
         $value
     ) {
         QUI::getDataBase()->update(
-            self::table() . '2projects',
+            self::table().'2projects',
             array('value' => $value),
             array(
                 'project'    => $Project->getName(),
@@ -998,7 +1000,7 @@ class Manager
         $value
     ) {
         QUI::getDataBase()->insert(
-            self::table() . '2projects',
+            self::table().'2projects',
             array(
                 'project'    => $Project->getName(),
                 'lang'       => $Project->getLang(),
@@ -1030,7 +1032,7 @@ class Manager
         if ($area === 'user') {
             /* @var $Obj User */
             $this->dataCache[$cache] = $DataBase->fetch(array(
-                'from'  => $table . '2users',
+                'from'  => $table.'2users',
                 'where' => array(
                     'user_id' => $Obj->getId()
                 ),
@@ -1043,7 +1045,7 @@ class Manager
         if ($area === 'groups') {
             /* @var $Obj Group */
             $this->dataCache[$cache] = $DataBase->fetch(array(
-                'from'  => $table . '2groups',
+                'from'  => $table.'2groups',
                 'where' => array(
                     'group_id' => $Obj->getId()
                 ),
@@ -1056,7 +1058,7 @@ class Manager
         if ($area === 'project') {
             /* @var $Obj QUI\Projects\Project */
             $data = $DataBase->fetch(array(
-                'from'  => $table . '2projects',
+                'from'  => $table.'2projects',
                 'where' => array(
                     'project' => $Obj->getName(),
                     'lang'    => $Obj->getLang()
@@ -1080,7 +1082,7 @@ class Manager
             $Project = $Obj->getProject();
 
             $data = $DataBase->fetch(array(
-                'from'  => $table . '2sites',
+                'from'  => $table.'2sites',
                 'where' => array(
                     'project' => $Project->getName(),
                     'lang'    => $Project->getLang(),
@@ -1106,7 +1108,7 @@ class Manager
             $Project = $Obj->getProject();
 
             $result = $DataBase->fetch(array(
-                'from'  => $table . '2media',
+                'from'  => $table.'2media',
                 'where' => array(
                     'project' => $Project->getName(),
                     'lang'    => $Project->getLang(),
@@ -1138,34 +1140,37 @@ class Manager
         switch ($area) {
             case 'user':
                 /* @var $Obj User */
-                return 'permission2user_' . $Obj->getId();
+                return 'permission2user_'.$Obj->getId();
 
             case 'groups':
                 /* @var $Obj Group */
-                return 'permission2groups_' . $Obj->getId();
+                return 'permission2groups_'.$Obj->getId();
 
             case 'project':
                 /* @var $Obj QUI\Projects\Project */
-                $id = $Obj->getName() . '_' . $Obj->getLang();
-                return 'permission2groups_' . $id;
+                $id = $Obj->getName().'_'.$Obj->getLang();
+
+                return 'permission2groups_'.$id;
 
             case 'site':
                 /* @var $Obj QUI\Projects\Site */
                 /* @var $Project QUI\Projects\Project */
                 $Project = $Obj->getProject();
-                $id      = $Project->getName() . '_' . $Project->getLang() . '_' . $Obj->getId();
-                return 'permission2site_' . $id;
+                $id      = $Project->getName().'_'.$Project->getLang().'_'.$Obj->getId();
+
+                return 'permission2site_'.$id;
 
             case 'media':
                 /* @var $Obj QUI\Interfaces\Projects\Media\File */
                 /* @var $Project QUI\Projects\Project */
                 $Project = $Obj->getProject();
-                $id      = $Project->getName() . '_' . $Project->getLang() . '_' . $Obj->getId();
-                return 'permission2media_' . $id;
+                $id      = $Project->getName().'_'.$Project->getLang().'_'.$Obj->getId();
+
+                return 'permission2media_'.$id;
         }
 
         QUI\System\Log::addInfo(
-            'Permission Area ' . get_class($Obj) . ' not found'
+            'Permission Area '.get_class($Obj).' not found'
         );
 
         return '__NULL__';

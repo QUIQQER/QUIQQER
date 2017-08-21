@@ -82,22 +82,23 @@
 }
 
 .qui-controls-packages-search-toggle > div:hover {
-    cursor:pointer;
+    cursor: pointer;
     background-color: #0081b4;
 }
 
-.qui-controls-packages-search-toggle-packagestore {
-    background-color: #2f8fc6;
-    height: 100%;
-    float: left;
-    width: 50%;
-}
-
+.qui-controls-packages-search-toggle-packagestore,
 .qui-controls-packages-search-toggle-othersources {
     background-color: #2f8fc6;
     height: 100%;
-    float: right;
-    width: 50%;
+    float: left;
+    width: 40%;
+}
+
+.qui-controls-packages-search-toggle-upload {
+    background-color: #2f8fc6;
+    height: 100%;
+    float: left;
+    width: 20%;
 }
 
 .qui-controls-packages-search-othersources-search {

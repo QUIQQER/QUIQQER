@@ -20,7 +20,6 @@ if (!defined('JSON_UNESCAPED_UNICODE')) {
 
 use QUI;
 use QUI\Utils\System\File as QUIFile;
-use QUI\Utils\System\File;
 
 /**
  * Package Manager for the QUIQQER System
@@ -1326,7 +1325,7 @@ class Manager extends QUI\QDOM
 
         if (php_sapi_name() != 'cli'
             && $limit != -1
-            && File::getBytes($needledRAM) > $limit) {
+            && QUIFile::getBytes($needledRAM) > $limit) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
@@ -1395,21 +1394,6 @@ class Manager extends QUI\QDOM
     }
 
     /**
-     * activate the locale repository,
-     * if the repository is not in the server list, the repository would be added
-     */
-    public function activateLocalServer()
-    {
-        $serverDir = $this->getUploadPackageDir();
-
-        $this->addServer($serverDir, array(
-            "type" => "artifact"
-        ));
-
-        $this->setServerStatus($serverDir, 1);
-    }
-
-    /**
      * Update a package or the entire system from a package archive
      *
      * @param string|boolean $package - Name of the package
@@ -1421,9 +1405,15 @@ class Manager extends QUI\QDOM
         $this->createComposerBackup();
         $this->useOnlyLocalRepository();
 
-        $this->update($package);
+        try {
+            $this->update($package);
+            $this->resetRepositories();
+        } catch (QUI\Exception $Exception) {
+            $this->resetRepositories();
+            LocalServer::getInstance()->activate();
 
-        $this->resetRepositories();
+            throw $Exception;
+        }
     }
 
     /**
@@ -1446,9 +1436,9 @@ class Manager extends QUI\QDOM
         }
 
         // activate local repos
-        $this->activateLocalServer();
-        $this->createComposerJSON();
+        LocalServer::getInstance()->activate();
 
+        $this->createComposerJSON();
         $this->activeServers = $activeServers;
     }
 
@@ -1556,110 +1546,6 @@ class Manager extends QUI\QDOM
             }
 
             $result[] = $file;
-        }
-
-        return $result;
-    }
-
-    /**
-     * @return mixed|string
-     */
-    protected function getUploadPackageDir()
-    {
-        $updatePath = QUI::conf('update', 'updatePath');
-
-        if (!empty($updatePath) && is_dir($updatePath)) {
-            return rtrim($updatePath, '/').'/';
-        }
-
-        return QUI::getTemp()->createFolder('quiqqerUpdate');
-    }
-
-    /**
-     * Upload a archiv file to the local quiqqer repository
-     *
-     * @param string $file - Path to the package archive file
-     *
-     * @throws QUI\Exception
-     */
-    public function uploadPackage($file)
-    {
-        $dir = $this->getUploadPackageDir();
-
-        if (!is_dir($dir)) {
-            throw new QUI\Exception('Local Repository not exist');
-        }
-
-        if (!file_exists($file)) {
-            throw new QUI\Exception('Archiv file not found');
-        }
-
-        $fileInfos = QUIFile::getInfo($file, array(
-            'filesize'  => true,
-            'mime_type' => true,
-            'pathinfo'  => true
-        ));
-
-        $tempFile = $dir.'/'.$fileInfos['basename'];
-
-        if (file_exists($tempFile)) {
-            unlink($tempFile);
-        }
-
-        QUIFile::move($file, $tempFile);
-    }
-
-    /**
-     * Read the locale repository and search installable packages
-     *
-     * @return array
-     */
-    public function readLocalRepository()
-    {
-        $dir = $this->getUploadPackageDir();
-
-        if (!is_dir($dir)) {
-            return array();
-        }
-
-        $files  = QUIFile::readDir($dir);
-        $result = array();
-
-        chdir($dir);
-
-        foreach ($files as $package) {
-            try {
-                $composerJson = file_get_contents(
-                    "zip://{$package}#composer.json"
-                );
-            } catch (\Exception $Exception) {
-                // maybe gitlab package?
-                try {
-                    $packageName  = pathinfo($package);
-                    $composerJson = file_get_contents(
-                        "zip://{$package}#{$packageName['filename']}/composer.json"
-                    );
-                } catch (\Exception $Exception) {
-                    QUI\System\Log::addDebug($Exception->getMessage());
-                    continue;
-                }
-            }
-
-            if (empty($composerJson)) {
-                continue;
-            }
-
-            $composerJson = json_decode($composerJson, true);
-
-            if (!isset($composerJson['name'])) {
-                continue;
-            }
-
-            if (is_dir(OPT_DIR.$composerJson['name'])) {
-                continue;
-            }
-
-            $result[] = $composerJson;
         }
 
         return $result;
