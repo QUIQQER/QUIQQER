@@ -179,6 +179,7 @@ define('controls/projects/project/media/Popup', [
                     breadcrumb          : self.getAttribute('breadcrumb'),
                     selectable_types    : self.getAttribute('selectable_types'),
                     selectable_mimetypes: self.getAttribute('selectable_mimetypes'),
+                    isInPopup           : true,
                     events              : {
                         onCreate: function (Panel) {
                             Panel.getElm().setStyle('borderRadius', 0);
@@ -187,6 +188,21 @@ define('controls/projects/project/media/Popup', [
 
                         onChildClick: function (Panel, imageData) {
                             self.$itemClick(imageData);
+                        },
+
+                        onUploadOpenBegin: function (Panel) {
+                            moofx(Panel.getContent()).animate({
+                                opacity: 0
+                            });
+                            self.hideButtons();
+                        },
+
+                        onUploadClose: function (Panel) {
+                            self.showButtons();
+
+                            moofx(Panel.getContent()).animate({
+                                opacity: 1
+                            });
                         }
                     }
                 });
