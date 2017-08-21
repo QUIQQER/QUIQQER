@@ -298,10 +298,11 @@ define('controls/users/Panel', [
          * @return {Object} this
          */
         openUser: function (uid) {
-            var self = this;
-
-            require(['controls/users/User'], function (User) {
-                self.getParent().appendChild(new User(uid));
+            require([
+                'controls/users/User',
+                'utils/Panels'
+            ], function (User, PanelUtils) {
+                PanelUtils.openPanelInTasks(new User(uid));
             });
 
             return this;

@@ -141,16 +141,19 @@ define('controls/projects/project/media/FolderPanel', [
          * Saves the folder
          *
          * @param {Function} [callback] - optional, callback function
+         * @return {Promise}
          */
         save: function (callback) {
             if (!this.$Folder) {
-                return;
+                return Promise.resolve();
             }
+
+            var self = this;
 
             this.Loader.show();
             this.$unloadCategory();
 
-            this.$Folder.save().then(function () {
+            return this.$Folder.save().then(function () {
                 QUI.getMessageHandler(function (MH) {
                     MH.addSuccess(
                         Locale.get(lg, 'projects.project.site.media.folderPanel.message.save.success')
@@ -161,9 +164,11 @@ define('controls/projects/project/media/FolderPanel', [
                     callback();
                 }
 
-                this.Loader.hide();
-
-            }.bind(this));
+                self.Loader.hide();
+            }).catch(function (Exception) {
+                console.error(Exception);
+                self.Loader.hide();
+            });
         },
 
         /**
@@ -619,17 +624,17 @@ define('controls/projects/project/media/FolderPanel', [
             var url       = URL_LIB_DIR + 'QUI/Projects/Media/bin/effectPreview.php?';
 
             url = url + Object.toQueryString({
-                    id                : fileId,
-                    project           : project,
-                    blur              : this.$EffectBlur.getValue(),
-                    brightness        : this.$EffectBrightness.getValue(),
-                    contrast          : this.$EffectContrast.getValue(),
-                    greyscale         : Greyscale.checked ? 1 : 0,
-                    watermark         : this.$EffectWatermark.value,
-                    watermark_position: WatermarkPosition.value,
-                    watermark_ratio   : WatermarkRatio.value,
-                    '__nocache'       : String.uniqueID()
-                });
+                id                : fileId,
+                project           : project,
+                blur              : this.$EffectBlur.getValue(),
+                brightness        : this.$EffectBrightness.getValue(),
+                contrast          : this.$EffectContrast.getValue(),
+                greyscale         : Greyscale.checked ? 1 : 0,
+                watermark         : this.$EffectWatermark.value,
+                watermark_position: WatermarkPosition.value,
+                watermark_ratio   : WatermarkRatio.value,
+                '__nocache'       : String.uniqueID()
+            });
 
             Image.set('src', url);
         },

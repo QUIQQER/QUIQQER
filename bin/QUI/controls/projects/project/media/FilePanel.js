@@ -320,6 +320,7 @@ define('controls/projects/project/media/FilePanel', [
                 self.Loader.hide();
             }).catch(function (Exception) {
                 console.error(Exception);
+                self.Loader.hide();
             });
         },
 
