@@ -277,7 +277,7 @@
             <section name="packagestore">
                 <conf name="url">
                     <type><![CDATA[string]]></type>
-                    <defaultvalue><![CDATA[https://update.quiqqer.com/]]></defaultvalue>
+                    <defaultvalue><![CDATA[https://backendstore.quiqqer.com/]]></defaultvalue>
                 </conf>
                 <conf name="agreedToTermsOfUse">
                     <type><![CDATA[bool]]></type>
@@ -351,10 +351,12 @@
                         </input>
                         <select conf="globals.sitePermissionDeniedErrorCode">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.globals.sitePermissionDeniedErrorCode.title"/>
+                                <locale group="quiqqer/system"
+                                        var="quiqqer.settings.globals.sitePermissionDeniedErrorCode.title"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/system" var="quiqqer.settings.globals.sitePermissionDeniedErrorCode.desc"/>
+                                <locale group="quiqqer/system"
+                                        var="quiqqer.settings.globals.sitePermissionDeniedErrorCode.desc"/>
                             </description>
                             <option value="403">403 - Forbidden</option>
                             <option value="404">404 - Not Found</option>
