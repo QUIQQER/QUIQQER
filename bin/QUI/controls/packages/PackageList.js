@@ -43,7 +43,8 @@ define('controls/packages/PackageList', [
         ],
 
         options: {
-            buttons: false
+            buttons    : false,
+            showButtons: true
         },
 
         initialize: function (options) {
@@ -163,7 +164,7 @@ define('controls/packages/PackageList', [
                 Package = new Element('div', {
                     'class'    : 'packages-package-tile-package packages-package',
                     html       : Mustache.render(templatePackageTile, {
-                        title      : entry.title,
+                        title      : entry.title || entry.name,
                         description: entry.description,
                         image      : image
                     }),
@@ -174,6 +175,10 @@ define('controls/packages/PackageList', [
                     Package.addEvent('click', this.$packageClick);
                 } else {
                     Package.setStyle('cursor', 'default');
+                }
+
+                if (this.getAttribute('showButtons') === false) {
+                    continue;
                 }
 
                 ButtonContainer = Package.getElement('.packages-package-tile-package-buttons');
@@ -241,8 +246,9 @@ define('controls/packages/PackageList', [
                 Package = new Element('div', {
                     'class'    : 'packages-package-list-package packages-package',
                     html       : Mustache.render(templatePackageList, {
-                        title      : entry.title,
+                        title      : entry.title || entry.name,
                         description: entry.description,
+                        version    : entry.version,
                         image      : image
                     }),
                     'data-name': entry.name
@@ -252,6 +258,11 @@ define('controls/packages/PackageList', [
                     Package.addEvent('click', this.$packageClick);
                 } else {
                     Package.setStyle('cursor', 'default');
+                }
+
+
+                if (this.getAttribute('showButtons') === false) {
+                    continue;
                 }
 
                 ButtonContainer = Package.getElement(
