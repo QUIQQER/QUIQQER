@@ -8,9 +8,10 @@
 QUI::$Ajax->registerFunction(
     'ajax_system_changelog',
     function () {
-        return QUI\Utils\Request\Url::get(
-            'http://update.quiqqer.com/CHANGELOG'
-        );
+        $Package   = QUI::getPackage('quiqqer/quiqqer');
+        $changelog = $Package->getDir().'CHANGELOG';
+
+        return htmlspecialchars(file_get_contents($changelog));
     },
     false,
     'Permission::checkUser'
