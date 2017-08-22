@@ -1,16 +1,6 @@
 /**
  * @module controls/packages/Package
  * @author www.pcsg.de (Henning Leutz)
- *
- * @requires qui/QUI
- * @requires qui/controls/Control
- * @requires qui/controls/buttons/Button
- * @requires Locale
- * @requires Packages
- * @requires Mustache
- * @requires text!controls/packages/PackageList.ViewTile.html
- * @requires text!controls/packages/PackageList.ViewList.html
- * @requires css!controls/packages/PackageList.css
  */
 define('controls/packages/PackageList', [
 

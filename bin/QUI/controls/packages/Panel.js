@@ -3,12 +3,6 @@
  *
  * @module controls/packages/Panel
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/desktop/Panel
- * @require qui/controls/buttons/Button
- * @require Locale
- * @require css!controls/packages/Panel.css
  */
 define('controls/packages/Panel', [
 
@@ -43,8 +37,6 @@ define('controls/packages/Panel', [
             'loadServer',
             'loadSystem',
             'loadPHPInfo',
-            'viewTile',
-            'viewList',
             'checkUpdates',
             'executeCompleteSetup',
             '$onCreate',
@@ -88,24 +80,6 @@ define('controls/packages/Panel', [
             this.addButton({
                 type: 'separator',
                 name: 'menuSeparator'
-            });
-
-            this.addButton({
-                name  : 'viewTile',
-                title : QUILocale.get(lg, 'packages.panel.menu'),
-                icon  : 'fa fa-th',
-                events: {
-                    onClick: this.viewTile
-                }
-            });
-
-            this.addButton({
-                name  : 'viewList',
-                title : QUILocale.get(lg, 'packages.panel.menu'),
-                icon  : 'fa fa-th-list',
-                events: {
-                    onClick: this.viewList
-                }
             });
 
             // left categories
@@ -203,34 +177,9 @@ define('controls/packages/Panel', [
         },
 
         /**
-         * View tile
-         */
-        viewTile: function () {
-            if ("getList" in this.$Control) {
-                this.$Control.getList().viewTile();
-            }
-
-            this.getButtons('viewTile').setActive();
-            this.getButtons('viewList').setNormal();
-        },
-
-        /**
-         * View list
-         */
-        viewList: function () {
-            if ("getList" in this.$Control) {
-                this.$Control.getList().viewList();
-            }
-
-            this.getButtons('viewTile').setNormal();
-            this.getButtons('viewList').setActive();
-        },
-
-        /**
          * event: on open
          */
         $onShow: function () {
-            this.getButtons('viewTile').setActive();
             this.getCategory('system').click();
         },
 
@@ -294,12 +243,7 @@ define('controls/packages/Panel', [
          * @return {Promise}
          */
         $loadControl: function (ctrl) {
-            var self = this,
-                view = 'tile';
-
-            if (this.getButtons('viewList').isActive()) {
-                view = 'list';
-            }
+            var self = this;
 
             this.Loader.show();
 
@@ -307,7 +251,6 @@ define('controls/packages/Panel', [
                 return new Promise(function (resolve) {
                     require([ctrl], function (Control) {
                         self.$Control = new Control({
-                            view  : view,
                             events: {
                                 onLoad      : function () {
                                     self.Loader.hide();
@@ -333,8 +276,6 @@ define('controls/packages/Panel', [
                         // refresh buttons
                         self.getButtons().each(function (Button) {
                             switch (Button.getAttribute('name')) {
-                                case 'viewTile':
-                                case 'viewList':
                                 case 'menuSeparator':
                                 case 'menu':
                                     return;

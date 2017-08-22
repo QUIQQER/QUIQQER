@@ -2,15 +2,6 @@
  * @module controls/packages/Package
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires qui/QUI
- * @requires qui/controls/Control
- * @requires qui/controls/buttons/Button
- * @requires Packages
- * @requires Mustache
- * @requires controls/packages/PackageList
- * @requires text!controls/packages/Installed.html
- * @requires css!controls/packages/Installed.css
- *
  * @event onLoad
  */
 define('controls/packages/Installed', [
@@ -20,12 +11,13 @@ define('controls/packages/Installed', [
     'qui/controls/buttons/Button',
     'Packages',
     'Mustache',
+    'Locale',
     'controls/packages/PackageList',
 
     'text!controls/packages/Installed.html',
     'css!controls/packages/Installed.css'
 
-], function (QUI, QUIControl, QUIButton, Packages, Mustache, PackageList, template) {
+], function (QUI, QUIControl, QUIButton, Packages, Mustache, QUILocale, PackageList, template) {
     "use strict";
 
     return new Class({
@@ -35,14 +27,15 @@ define('controls/packages/Installed', [
 
         Binds: [
             '$onInject',
-            '$refreshFilter'
+            '$refreshFilter',
+            '$setView'
         ],
 
         initialize: function (options) {
             this.parent(options);
 
             this.$List = new PackageList({
-                view: options.view || 'tile'
+                view: options.view || 'list'
             });
 
             this.$Result = null;
@@ -79,6 +72,32 @@ define('controls/packages/Installed', [
                 blur   : this.$refreshFilter
             });
 
+            this.$ViewTile = new QUIButton({
+                name  : 'viewTile',
+                title : QUILocale.get('quiqqer/quiqqer', 'packages.panel.menu'),
+                icon  : 'fa fa-th',
+                styles: {
+                    width: 50
+                },
+                events: {
+                    onClick: this.$setView
+                }
+            }).inject(this.$Search, 'top');
+
+            this.$ViewList = new QUIButton({
+                name  : 'viewList',
+                title : QUILocale.get('quiqqer/quiqqer', 'packages.panel.menu'),
+                icon  : 'fa fa-th-list',
+                styles: {
+                    width: 50
+                },
+                events: {
+                    onClick: this.$setView
+                }
+            }).inject(this.$Search, 'top');
+
+            this.$ViewList.setActive();
+
             this.$Elm.getElement('form').addEvent('submit', function (event) {
                 event.stop();
                 this.$refreshFilter();
@@ -95,6 +114,21 @@ define('controls/packages/Installed', [
             self.$List.clear();
 
             return Packages.getInstalledPackages().then(function (result) {
+                result.sort(function (a, b) {
+                    var nameA = a.title.toUpperCase();
+                    var nameB = b.title.toUpperCase();
+
+                    if (nameA < nameB) {
+                        return -1;
+                    }
+
+                    if (nameA > nameB) {
+                        return 1;
+                    }
+
+                    return 0;
+                });
+
                 for (var i = 0, len = result.length; i < len; i++) {
                     self.$List.addPackage(result[i]);
                 }
@@ -118,6 +152,21 @@ define('controls/packages/Installed', [
          */
         $refreshFilter: function () {
             this.$List.filter(this.$SearchInput.value);
+        },
+
+        $setView: function (Btn) {
+            switch (Btn.getAttribute('name')) {
+                case 'viewTile':
+                    this.$ViewTile.setActive();
+                    this.$ViewList.setNormal();
+                    this.$List.viewTile();
+                    break;
+
+                default:
+                    this.$ViewTile.setNormal();
+                    this.$ViewList.setActive();
+                    this.$List.viewList();
+            }
         }
     });
 });
