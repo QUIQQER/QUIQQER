@@ -5848,9 +5848,9 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Über QUIQQER]]></de>
             <en><![CDATA[About QUIQQER]]></en>
         </locale>
-        <locale name="menu.help.about.text">
-            <de><![CDATA[Über QUIQQER]]></de>
-            <en><![CDATA[About QUIQQER]]></en>
+        <locale name="menu.help.changelog.text">
+            <de><![CDATA[Changelog]]></de>
+            <en><![CDATA[Changelog]]></en>
         </locale>
         <locale name="quiqqer.settings.title">
             <de><![CDATA[System]]></de>
