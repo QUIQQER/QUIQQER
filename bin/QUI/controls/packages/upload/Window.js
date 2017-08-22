@@ -109,6 +109,11 @@ define('controls/packages/upload/Window', [
 
                     onFinished: function () {
                         self.close();
+                    },
+
+                    onNotInstalledPackagesFound: function () {
+                        self.$TextContainer.setStyle('display', 'none');
+                        self.Loader.hide();
                     }
                 }
             }).inject(UploadContainer);

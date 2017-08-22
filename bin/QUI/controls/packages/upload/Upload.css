@@ -1,0 +1,15 @@
+.qui-packages-upload-notInstalled {
+    float: left;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.qui-packages-upload-notInstalled-package {
+    clear: both;
+    float: left;
+    padding: 10px 0;
+    width: 100%;
+}

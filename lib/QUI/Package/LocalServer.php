@@ -144,4 +144,25 @@ class LocalServer extends QUI\Utils\Singleton
 
         return $result;
     }
+
+    /**
+     * Return all not installed packages in the local server
+     *
+     * @return array
+     */
+    public function getNotInstalledPackage()
+    {
+        $result   = array();
+        $packages = $this->getPackageList();
+
+        foreach ($packages as $package) {
+            try {
+                QUI::getPackage($package['name']);
+            } catch (QUI\Exception $Exception) {
+                $result[] = $package;
+            }
+        }
+
+        return $result;
+    }
 }
