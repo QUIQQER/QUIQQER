@@ -143,8 +143,8 @@ class Update extends QUI\System\Console\Tool
             $Packages->getComposer()->unmute();
             $Packages->update(false, false);
 
-            $this->write('- Update was executed');
-            $this->write('- Generating Server files .htaccess and NGINX');
+            $this->writeLn('- Update was executed');
+            $this->writeLn('- Generating Server files .htaccess and NGINX');
 
             $Httaccess = new Htaccess();
             $Httaccess->execute();
