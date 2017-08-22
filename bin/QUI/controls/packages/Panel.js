@@ -77,10 +77,6 @@ define('controls/packages/Panel', [
                 }
             });
 
-            this.addButton({
-                type: 'separator',
-                name: 'menuSeparator'
-            });
 
             // left categories
             this.addCategory({

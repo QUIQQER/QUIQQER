@@ -1156,8 +1156,8 @@
             <en><![CDATA[Download and install the package]]></en>
         </locale>
         <locale name="packages.setup">
-            <de><![CDATA[[pkg] setup ausführen]]></de>
-            <en><![CDATA[Execute the [pkg] setup]]></en>
+            <de><![CDATA[Setup für das Paket '[pkgTitle]' ausführen]]></de>
+            <en><![CDATA[Execute the setup for the package '[pkgTitle]']]></en>
         </locale>
 
         <locale name="message.setup.successfull.title">
