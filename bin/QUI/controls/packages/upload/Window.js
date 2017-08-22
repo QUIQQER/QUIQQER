@@ -7,10 +7,17 @@ define('controls/packages/upload/Window', [
 
     'qui/QUI',
     'qui/controls/windows/Popup',
-    'controls/packages/upload/Upload'
+    'qui/controls/buttons/Button',
+    'controls/packages/upload/Upload',
+    'controls/packages/upload/List',
+    'Locale',
 
-], function (QUI, QUIPopup, PackageUpload) {
+    'css!controls/packages/upload/Window.css'
+
+], function (QUI, QUIPopup, QUIButton, PackageUpload, PackageList, QUILocale) {
     "use strict";
+
+    var lg = 'quiqqer/quiqqer';
 
     return new Class({
 
@@ -18,22 +25,26 @@ define('controls/packages/upload/Window', [
         Type   : 'controls/packages/upload/Window',
 
         Binds: [
-            '$onOpen'
+            '$onOpen',
+            'openList'
         ],
 
         options: {
-            maxHeight: 600,
-            maxWidth : 800,
+            maxHeight: 450,
+            maxWidth : 900,
             buttons  : false
         },
 
         initialize: function (options) {
             this.setAttributes({
-                title: 'Paket Upload',
+                title: QUILocale.get(lg, 'dialog.packages.install.upload.title'),
                 icon : 'fa fa-upload'
             });
 
             this.parent(options);
+
+            this.$UploadContainer = null;
+            this.$ListContainer   = null;
 
             this.$Upload        = null;
             this.$TextContainer = null;
@@ -50,21 +61,41 @@ define('controls/packages/upload/Window', [
         $onOpen: function () {
             var self = this;
 
+            this.$UploadContainer = new Element('div', {
+                styles: {
+                    left    : 20,
+                    position: 'absolute',
+                    top     : 20,
+                    width   : 'calc(100% - 40px)'
+                }
+            }).inject(this.getContent());
+
+            this.$ListContainer = new Element('div', {
+                styles: {
+                    display : 'none',
+                    opacity : 0,
+                    position: 'absolute',
+                    width   : 'calc(100% - 40px)'
+                }
+            }).inject(this.getContent());
+
+
+            // upload
             this.$TextContainer = new Element('div', {
-                html  : 'Laden Sie die Zip-Archive eines oder mehrerer QUIQQER Pakete hoch um diese zu installieren.',
+                html  : QUILocale.get(lg, 'dialog.packages.install.upload.description'),
                 styles: {
                     'float': 'left',
                     padding: '0 0 20px 0',
                     width  : '100%'
                 }
-            }).inject(this.getContent());
+            }).inject(this.$UploadContainer);
 
             var UploadContainer = new Element('div', {
                 styles: {
                     'float': 'left',
                     width  : '100%'
                 }
-            }).inject(this.getContent());
+            }).inject(this.$UploadContainer);
 
             this.$Upload = new PackageUpload({
                 events: {
@@ -81,6 +112,26 @@ define('controls/packages/upload/Window', [
                     }
                 }
             }).inject(UploadContainer);
+
+
+            // list
+            this.$ListButton = new QUIButton({
+                icon   : 'fa fa-list',
+                'class': 'quiqqer-packages-upload-uploadedList-listBtn',
+                title  : QUILocale.get(lg, 'dialog.packages.install.upload.listBtn.title'),
+                events : {
+                    onClick: function (Btn) {
+                        if (Btn.isActive()) {
+                            self.openUpload();
+                        } else {
+                            self.openList();
+                        }
+                    }
+                }
+            }).inject(this.$Title);
+
+            new PackageList().inject(this.$ListContainer);
+
 
             this.$onResize();
         },
@@ -100,6 +151,82 @@ define('controls/packages/upload/Window', [
 
             this.$Upload.setAttribute('height', height - 50);
             this.$Upload.resize();
+        },
+
+        /**
+         * Open the package list
+         *
+         * @return {Promise}
+         */
+        openList: function () {
+            var self = this;
+
+            this.getContent().setStyle('overflow', 'hidden');
+
+            return new Promise(function (resolve) {
+                moofx(self.$UploadContainer).animate({
+                    left   : -20,
+                    opacity: 0
+                }, {
+                    duration: 300,
+                    callback: function () {
+                        self.$UploadContainer.setStyle('display', 'none');
+
+                        self.$ListContainer.setStyle('opacity', 0);
+                        self.$ListContainer.setStyle('display', null);
+                        self.$ListContainer.setStyle('left', 60);
+
+                        moofx(self.$ListContainer).animate({
+                            left   : 20,
+                            opacity: 1
+                        }, {
+                            callback: function () {
+                                self.getContent().setStyle('overflow', null);
+                                self.$ListButton.setActive();
+                                resolve();
+                            }
+                        });
+                    }
+                });
+            });
+        },
+
+        /**
+         * Open the upload
+         *
+         * @return {Promise}
+         */
+        openUpload: function () {
+            var self = this;
+
+            this.getContent().setStyle('overflow', 'hidden');
+
+            return new Promise(function (resolve) {
+                moofx(self.$ListContainer).animate({
+                    left   : 60,
+                    opacity: 0
+                }, {
+                    duration: 300,
+                    callback: function () {
+                        self.$ListContainer.setStyle('display', 'none');
+
+                        self.$UploadContainer.setStyle('opacity', 0);
+                        self.$UploadContainer.setStyle('display', null);
+                        self.$UploadContainer.setStyle('left', -20);
+
+                        moofx(self.$UploadContainer).animate({
+                            left   : 20,
+                            opacity: 1
+                        }, {
+                            callback: function () {
+                                self.getContent().setStyle('overflow', null);
+                                self.$ListButton.setNormal();
+                                resolve();
+                            }
+                        });
+                    }
+                });
+            });
         }
     });
 });

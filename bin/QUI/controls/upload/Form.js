@@ -453,6 +453,10 @@ define('controls/upload/Form', [
                 }
             }).inject(Container);
 
+            if (this.getAttribute('accept')) {
+                Input.accept = this.getAttribute('accept');
+            }
+
             new Element('div', {
                 'class': 'controls-upload-form-fileinfo smooth',
                 alt    : Locale.get(lg, 'upload.form.btn.change.alt'),

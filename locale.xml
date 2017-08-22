@@ -1312,6 +1312,23 @@
             <de><![CDATA[Bitte wählen Sie einen Ordner aus]]></de>
             <en><![CDATA[Please select a folder]]></en>
         </locale>
+
+        <locale name="dialog.packages.install.upload.title">
+            <de><![CDATA[Paket Installation über Datei-Upload]]></de>
+            <en><![CDATA[Package installation via file upload]]></en>
+        </locale>
+        <locale name="dialog.packages.install.upload.description">
+            <de><![CDATA[
+            Laden Sie die ZIP-Archive eines oder mehrerer QUIQQER Pakete hoch um diese zu installieren.
+            ]]></de>
+            <en><![CDATA[
+            Upload the ZIP archives of one or more QUIQQER packages to install them.
+            ]]></en>
+        </locale>
+        <locale name="dialog.packages.install.upload.listBtn.title">
+            <de><![CDATA[Hochgeladene Pakete anzeigen]]></de>
+            <en><![CDATA[View uploaded packages]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/system" datatype="js,php">
