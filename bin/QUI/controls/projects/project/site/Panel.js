@@ -884,7 +884,10 @@ define('controls/projects/project/site/Panel', [
                                 new QUIButton({
                                     name  : 'delete-linking',
                                     icon  : 'fa fa-trash',
-                                    title : 'Verknüpfung löschen',
+                                    title : 'Verknüpfung löschen', // #locale
+                                    styles: {
+                                        width: 50
+                                    },
                                     events: {
                                         onClick: openDeleteLink
                                     }
@@ -893,7 +896,8 @@ define('controls/projects/project/site/Panel', [
                         }
 
                         if (LinkinLangTable) {
-                            var rowList = LinkinLangTable.getElements('tbody tr');
+                            var Buttons,
+                                rowList = LinkinLangTable.getElements('tbody tr');
 
                             new QUIButton({
                                 name  : 'add-linking',
@@ -935,10 +939,8 @@ define('controls/projects/project/site/Panel', [
                             };
 
                             for (i = 0, len = rowList.length; i < len; i++) {
-                                Row      = rowList[i];
-                                LastCell = rowList[i].getLast();
-
-                                LastCell.set('html', '');
+                                Row     = rowList[i];
+                                Buttons = rowList[i].getElement('.site-lang-entry-button');
 
                                 if (!Row.get('data-id').toInt()) {
                                     // seite in sprache kopieren und sprach verknüpfung anlegen
@@ -952,9 +954,9 @@ define('controls/projects/project/site/Panel', [
                                             onClick: copyLinking
                                         },
                                         styles: {
-                                            'float': 'right'
+                                            width: 50
                                         }
-                                    }).inject(LastCell);
+                                    }).inject(Buttons);
 
                                     continue;
                                 }
@@ -967,12 +969,12 @@ define('controls/projects/project/site/Panel', [
                                     lang  : Row.get('data-lang'),
                                     siteId: Row.get('data-id'),
                                     styles: {
-                                        'float': 'right'
+                                        width: 50
                                     },
                                     events: {
                                         onClick: openSite
                                     }
-                                }).inject(LastCell);
+                                }).inject(Buttons);
 
                                 new QUIButton({
                                     name  : 'remove-linking',
@@ -982,12 +984,12 @@ define('controls/projects/project/site/Panel', [
                                     lang  : Row.get('data-lang'),
                                     siteId: Row.get('data-id'),
                                     styles: {
-                                        'float': 'right'
+                                        width: 50
                                     },
                                     events: {
                                         onClick: removeLinking
                                     }
-                                }).inject(LastCell);
+                                }).inject(Buttons);
                             }
                         }
 
