@@ -1,4 +1,19 @@
+1.1
+------
+
+    News [https://www.quiqqer.com/](https://www.quiqqer.com/)
+
+    Overview
+
+
+    Features
+
+
+    Bugfixes
+
+
 1.0.13
+------
 
     Benutzer
 
@@ -46,8 +61,8 @@
     - feat: New way to generate the NGINX config.
 
 
-
 1.0.12
+------
 
     Benutzer
 
@@ -73,6 +88,7 @@
 
 
 1.0.11
+------
 
     Benutzer
 
@@ -140,6 +156,7 @@
 
 
 1.0.10
+------
 
     Benutzer
 
@@ -163,3 +180,7 @@
     - fxp/composer-asset-plugin fix Update, wegen Composer Update nötig
     - Beim Speichern eines Bildes werden Fehler im createCache abgefangen. Manchmal wirft das Filesystem Fehler.
     - Projekt Einstellungen: QUI parse und Controls parse integriert. Controls werden nun interpretiert und Promises werden eingesetzt
+
+
+Big Bang
+------

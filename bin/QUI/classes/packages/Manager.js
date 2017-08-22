@@ -187,6 +187,20 @@ define('classes/packages/Manager', [
         },
 
         /**
+         * Return all not installed packages in the local server
+         *
+         * @return {Promise}
+         */
+        getNotInstalledPackages: function () {
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_system_packages_upload_getNotInstalledPackages', resolve, {
+                    showError: false,
+                    onError  : reject
+                });
+            });
+        },
+
+        /**
          * Search for packages
          *
          * @param {String} search - search string

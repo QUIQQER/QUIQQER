@@ -7,10 +7,16 @@ define('controls/packages/upload/Upload', [
 
     'qui/QUI',
     'qui/controls/Control',
-    'controls/upload/Form'
+    'qui/controls/buttons/Button',
+    'controls/upload/Form',
+    'Locale',
 
-], function (QUI, QUIControl, UploadForm) {
+    'css!controls/packages/upload/Upload.css'
+
+], function (QUI, QUIControl, QUIButton, UploadForm, QUILocale) {
     "use strict";
+
+    var lg = 'quiqqer/quiqqer';
 
     return new Class({
 
@@ -131,7 +137,13 @@ define('controls/packages/upload/Upload', [
             var self = this;
 
             require(['Packages'], function (Packages) {
-                Packages.updateWithLocalServer().then(function () {
+                Packages.getNotInstalledPackages().then(function (packages) {
+                    if (!packages.length) {
+                        return Packages.updateWithLocalServer();
+                    }
+
+                    return self.$notInstalledPackagesFound(packages);
+                }).then(function () {
                     self.fireEvent('finished', [self]);
                 }).catch(function (err) {
                     self.fireEvent('finished', [self]);
@@ -142,6 +154,103 @@ define('controls/packages/upload/Upload', [
                             MH.add(err);
                         });
                     }
+                });
+            });
+        },
+
+        /**
+         * open the not installed packages dialog
+         *
+         * @param {Array} packages
+         * @return {Promise}
+         */
+        $notInstalledPackagesFound: function (packages) {
+            var self = this;
+
+            this.fireEvent('notInstalledPackagesFound', [this]);
+
+            return new Promise(function (resolve) {
+                moofx(self.$Upload.getElm()).animate({
+                    opacity: 0
+                }, {
+                    duration: 200,
+                    callback: function () {
+                        var Container = new Element('label', {
+                            'class': 'qui-packages-upload-notInstalled',
+                            html   : QUILocale.get(lg, 'dialog.packages.install.upload.notInstalled.text'),
+                            styles : {
+                                opacity: 0
+                            }
+                        }).inject(self.$Elm);
+
+                        var i, len, title;
+
+                        for (i = 0, len = packages.length; i < len; i++) {
+                            title = packages[i].title || packages[i].name;
+
+                            new Element('div', {
+                                'class': 'qui-packages-upload-notInstalled-package',
+                                html   : '<input type="checkbox" name="' + packages[i].name + '" /> ' + title
+                            }).inject(Container);
+                        }
+
+                        Container.getElements('input').set('checked', true);
+
+                        new QUIButton({
+                            text  : QUILocale.get(lg, 'dialog.packages.install.upload.notInstalled.installBtn'),
+                            styles: {
+                                marginRight: 10
+                            },
+                            events: {
+                                onClick: function () {
+                                    self.$install(
+                                        Container.getElements('input:checked').get('name')
+                                    ).then(resolve);
+                                }
+                            }
+                        }).inject(Container);
+
+                        new QUIButton({
+                            text  : QUILocale.get('quiqqer/system', 'cancel'),
+                            events: {
+                                onClick: resolve
+                            }
+                        }).inject(Container);
+
+                        moofx(Container).animate({
+                            opacity: 1
+                        }, {
+                            duration: 200
+                        });
+                    }
+                });
+            });
+        },
+
+        /**
+         * Install a list of packages
+         *
+         * @param {Array} packages
+         * @return {Promise}
+         */
+        $install: function (packages) {
+            if (!packages.length) {
+                return Promise.resolve();
+            }
+
+            var self = this;
+
+            return new Promise(function (resolve) {
+                self.fireEvent('begin', [self]);
+
+                require(['Packages'], function (Packages) {
+                    var list = {};
+
+                    for (var i = 0, len = packages.length; i < len; i++) {
+                        list[packages[i]] = false;
+                    }
+
+                    Packages.installLocalPackages(list).then(resolve);
                 });
             });
         }
