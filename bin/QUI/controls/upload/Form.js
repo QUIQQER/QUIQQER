@@ -192,6 +192,16 @@ define('controls/upload/Form', [
          * refreshs the info display
          */
         refreshDisplay: function () {
+            if (this.$SendButton) {
+                this.$SendButton.disable();
+                this.$SendButton.getElm().removeClass('btn-green');
+
+                if (Object.getLength(this.$files)) {
+                    this.$SendButton.enable();
+                    this.$SendButton.getElm().addClass('btn-green');
+                }
+            }
+
             if (!this.getAttribute('maxuploads')) {
                 return;
             }
@@ -203,16 +213,6 @@ define('controls/upload/Form', [
                     max  : this.getAttribute('maxuploads')
                 })
             );
-
-            if (this.$SendButton) {
-                this.$SendButton.disable();
-                this.$SendButton.getElm().removeClass('btn-green');
-
-                if (Object.getLength(this.$files)) {
-                    this.$SendButton.enable();
-                    this.$SendButton.getElm().addClass('btn-green');
-                }
-            }
         },
 
         /**
