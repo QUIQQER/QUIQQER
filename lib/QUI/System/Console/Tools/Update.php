@@ -151,6 +151,10 @@ class Update extends QUI\System\Console\Tool
 
             $Httaccess = new Nginx();
             $Httaccess->execute();
+
+            // setup set the last update date
+            QUI::getPackageManager()->setLastUpdateDate();
+            QUI\Cache\Manager::clearAll();
         } catch (\Exception $Exception) {
             $this->write(' [error]', 'red');
             $this->writeLn('');
