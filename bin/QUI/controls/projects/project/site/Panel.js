@@ -1390,6 +1390,10 @@ define('controls/projects/project/site/Panel', [
                 UrlEditButton = Body.getElement('.site-url-display-edit'),
                 siteUrl       = Site.getUrl();
 
+            if (!NameInput) {
+                return;
+            }
+
             if (Site.getId() !== 1) {
                 UrlDisplay.set('html', Site.getUrl());
             }

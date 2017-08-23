@@ -1480,7 +1480,7 @@ class User implements QUI\Interfaces\Users\User
                 'birthday'         => $birthday,
                 'email'            => $this->getAttribute('email'),
                 'avatar'           => $avatar,
-                'su'               => $this->isSU(),
+                'su'               => $this->isSU() ? 1 : 0,
                 'extra'            => json_encode($extra),
                 'lang'             => $this->getAttribute('lang'),
                 'lastedit'         => date("Y-m-d H:i:s"),
