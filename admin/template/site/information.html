@@ -17,7 +17,6 @@
             </label>
         </td>
     </tr>
-    {if $Site->getId() != 1}
     <tr>
         <td>
             <label class="field-container">
@@ -25,13 +24,15 @@
                     {locale group="quiqqer/system" var="projects.project.site.panel.information.nameUrl"}
                 </span>
                 <span class="field-container-field field-container-field-no-padding">
-                    <input name="site-name" value=""/>
-                    <span class="site-url-display"></span>
+                    <span class="site-url-display-container">
+                        <input name="site-name" value="" style="display: none"/>
+                        <span class="site-url-display"></span>
+                    </span>
+                    <span class="site-url-display-edit"></span>
                 </span>
             </label>
         </td>
     </tr>
-    {/if}
     <tr>
         <td>
             <label class="field-container">

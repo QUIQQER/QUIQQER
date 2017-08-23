@@ -31,12 +31,26 @@
     padding: 0 0.75em;
 }
 
+.site-url-display-container {
+    float: left;
+    width: calc(100% - 50px);
+}
+
+.site-url-display-edit button {
+    border-left: 1px solid #DEDEDE;
+    border-radius: 0;
+    box-shadow: none;
+}
+
 .site-url-display {
-    border-top: 1px solid #DEDEDE;
     clear: both;
     display: inline-block;
     padding: 0.5em 0.75em;
     width: 100%;
+}
+
+.site-url-display-active {
+    border-top: 1px solid #DEDEDE;
 }
 
 .site-data textarea[name="short"] {

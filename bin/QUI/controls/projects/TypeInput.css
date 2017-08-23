@@ -8,6 +8,7 @@
 }
 
 .qui-projects-type-input-text {
+    cursor: pointer;
     float: left;
     overflow: hidden;
     padding: 6px 10px;

@@ -859,7 +859,7 @@ define('controls/projects/project/site/Panel', [
                         self.$bindNameInputUrlFilter();
 
                         // site linking
-                        var i, len, Row, LastCell;
+                        var i, len, Row;
 
                         var LinkinTable     = Body.getElement('.site-linking'),
                             LinkinLangTable = Body.getElement('.site-langs'),
@@ -1315,13 +1315,36 @@ define('controls/projects/project/site/Panel', [
             var Site = this.getSite(),
                 Body = this.getContent();
 
-            var NameInput  = Body.getElements('input[name="site-name"]'),
-                UrlDisplay = Body.getElements('.site-url-display'),
-                siteUrl    = Site.getUrl();
+            var NameInput     = Body.getElement('input[name="site-name"]'),
+                UrlDisplay    = Body.getElement('.site-url-display'),
+                UrlEditButton = Body.getElement('.site-url-display-edit'),
+                siteUrl       = Site.getUrl();
 
-            if (Site.getId() != 1) {
+            if (Site.getId() !== 1) {
                 UrlDisplay.set('html', Site.getUrl());
             }
+
+            new QUIButton({
+                icon  : 'fa fa-edit',
+                styles: {
+                    width: 50
+                },
+                events: {
+                    onClick: function (Btn) {
+                        if (Btn.isActive()) {
+                            NameInput.setStyle('display', 'none');
+                            UrlDisplay.removeClass('site-url-display-active');
+                            Btn.setNormal();
+                            return;
+                        }
+
+                        NameInput.setStyle('display', null);
+                        NameInput.focus();
+                        UrlDisplay.addClass('site-url-display-active');
+                        Btn.setActive();
+                    }
+                }
+            }).inject(UrlEditButton);
 
             // filter
             var sitePath   = siteUrl.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '') + '/',
@@ -1343,11 +1366,11 @@ define('controls/projects/project/site/Panel', [
                         this.value = this.value.replace(reg, '');
                         this.value = this.value.replace(/ /g, QUIQQER.Rewrite.URL_SPACE_CHARACTER);
 
-                        if (old != this.value) {
+                        if (old !== this.value) {
                             QUIElmUtils.setCursorPosition(this, lastPos);
                         }
 
-                        if (Site.getId() != 1) {
+                        if (Site.getId() !== 1) {
                             UrlDisplay.set('html', sitePath + this.value + QUIQQER.Rewrite.SUFFIX);
                         }
                     },
