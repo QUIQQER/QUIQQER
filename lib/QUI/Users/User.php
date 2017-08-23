@@ -1459,6 +1459,15 @@ class User implements QUI\Interfaces\Users\User
             $toolbar = $this->getAttribute('toolbar');
         }
 
+        if ($expire === '0000-00-00 00:00:00') {
+            $expire = null;
+        }
+
+        if ($birthday === '0000-00-00') {
+            $birthday = null;
+        }
+
+
         // saving
         $result = QUI::getDataBase()->update(
             Manager::table(),
