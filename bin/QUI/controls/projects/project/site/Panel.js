@@ -801,6 +801,17 @@ define('controls/projects/project/site/Panel', [
             return this.$onCategoryLeaveHide().then(function () {
                 return self.$onCategoryLeave(self.$PreviousCategory);
             }).then(function () {
+                // cleanup controls
+                if (self.getAttribute('Editor')) {
+                    self.getAttribute('Editor').destroy();
+                }
+
+                if (self.$CategoryControl) {
+                    self.$CategoryControl.destroy();
+                    self.$CategoryControl = null;
+                }
+
+                // create content
                 self.$PreviousCategory = Category;
 
                 if (Category.getAttribute('name') === 'content') {
@@ -1077,6 +1088,7 @@ define('controls/projects/project/site/Panel', [
 
             return new Promise(function (resolve) {
                 if (onloadRequire) {
+
                     require([onloadRequire], function (Plugin) {
                         if (onload) {
                             eval(onload + '( Category, self );');
@@ -1133,8 +1145,7 @@ define('controls/projects/project/site/Panel', [
         $onCategoryLeave: function (Category, callback) {
             this.Loader.show();
 
-            var self = this,
-                Site = this.getSite(),
+            var Site = this.getSite(),
                 Body = this.$Container;
 
             if (typeof Category === 'undefined' || !Category) {
@@ -1154,13 +1165,12 @@ define('controls/projects/project/site/Panel', [
 
                 this.$clearEditorPeriodicalSave();
 
-                return Promise.resolve().then(function () {
-                    self.getAttribute('Editor').destroy();
+                if (typeof callback === 'function') {
+                    callback();
+                }
 
-                    if (typeof callback === 'function') {
-                        callback();
-                    }
-                });
+                return Promise.resolve()
+                //self.getAttribute('Editor').destroy();
             }
 
             // wysiwyg type
@@ -1176,21 +1186,20 @@ define('controls/projects/project/site/Panel', [
 
                 this.$clearEditorPeriodicalSave();
 
-                return Promise.resolve().then(function () {
-                    self.getAttribute('Editor').destroy();
+                if (typeof callback === 'function') {
+                    callback();
+                }
 
-                    if (typeof callback === 'function') {
-                        callback();
-                    }
-                });
+                return Promise.resolve();
+                //self.getAttribute('Editor').destroy();
             }
 
             // form unload
             if (!Body.getElement('form')) {
-                if (this.$CategoryControl) {
-                    this.$CategoryControl.destroy();
-                    this.$CategoryControl = null;
-                }
+                // if (this.$CategoryControl) {
+                //     this.$CategoryControl.destroy();
+                //     this.$CategoryControl = null;
+                // }
 
                 return Promise.resolve().then(function () {
                     if (typeof callback === 'function') {
@@ -1214,11 +1223,11 @@ define('controls/projects/project/site/Panel', [
                     Site.setAttribute('layout', elements.layout.value);
                 }
 
-                return Promise.resolve().then(function () {
-                    if (typeof callback === 'function') {
-                        callback();
-                    }
-                });
+                if (typeof callback === 'function') {
+                    callback();
+                }
+
+                return Promise.resolve();
             }
 
             // unload params
@@ -1242,11 +1251,10 @@ define('controls/projects/project/site/Panel', [
                 if (onunloadRequire) {
                     return new Promise(function (resolve) {
                         require([onunloadRequire], function () {
-                            if (self.$CategoryControl) {
-                                self.$CategoryControl.destroy();
-                                self.$CategoryControl = null;
-                            }
-
+                            // if (self.$CategoryControl) {
+                            //     self.$CategoryControl.destroy();
+                            //     self.$CategoryControl = null;
+                            // }
 
                             eval(onunload + '( Category, self );');
 
@@ -1259,10 +1267,10 @@ define('controls/projects/project/site/Panel', [
                     });
                 }
 
-                if (self.$CategoryControl) {
-                    self.$CategoryControl.destroy();
-                    self.$CategoryControl = null;
-                }
+                // if (self.$CategoryControl) {
+                //     self.$CategoryControl.destroy();
+                //     self.$CategoryControl = null;
+                // }
 
                 if (typeof callback === 'function') {
                     callback();
