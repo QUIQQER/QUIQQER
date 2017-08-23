@@ -1156,8 +1156,8 @@
             <en><![CDATA[Download and install the package]]></en>
         </locale>
         <locale name="packages.setup">
-            <de><![CDATA[[pkg] setup ausführen]]></de>
-            <en><![CDATA[Execute the [pkg] setup]]></en>
+            <de><![CDATA[Setup für das Paket '[pkgTitle]' ausführen]]></de>
+            <en><![CDATA[Execute the setup for the package '[pkgTitle]']]></en>
         </locale>
 
         <locale name="message.setup.successfull.title">
@@ -6838,6 +6838,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="projects.project.site.panel.extras.nav_hide">
             <de><![CDATA[Nicht in Navigation anzeigen]]></de>
             <en><![CDATA[Do not show in navigation]]></en>
+        </locale>
+        <locale name="projects.project.site.panel.extras.nav_hide.description">
+            <de><![CDATA[Die Seite wird nicht in Navigationen und Menüs angezeigt.]]></de>
+            <en><![CDATA[The page is not displayed in navigations and menus.]]></en>
         </locale>
         <locale name="projects.project.site.panel.langlinking">
             <de><![CDATA[Sprach-Verknüpfungen]]></de>

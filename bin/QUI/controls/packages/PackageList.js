@@ -1,16 +1,6 @@
 /**
  * @module controls/packages/Package
  * @author www.pcsg.de (Henning Leutz)
- *
- * @requires qui/QUI
- * @requires qui/controls/Control
- * @requires qui/controls/buttons/Button
- * @requires Locale
- * @requires Packages
- * @requires Mustache
- * @requires text!controls/packages/PackageList.ViewTile.html
- * @requires text!controls/packages/PackageList.ViewList.html
- * @requires css!controls/packages/PackageList.css
  */
 define('controls/packages/PackageList', [
 
@@ -205,7 +195,8 @@ define('controls/packages/PackageList', [
                     new QUIButton({
                         icon  : 'fa fa-hdd-o',
                         title : QUILocale.get(lg, 'packages.setup', {
-                            pkg: entry.name
+                            pkg     : entry.name,
+                            pkgTitle: entry.title || entry.name
                         }),
                         events: {
                             onClick: this.$setupClick
@@ -290,7 +281,8 @@ define('controls/packages/PackageList', [
                 new QUIButton({
                     icon  : 'fa fa-hdd-o',
                     title : QUILocale.get(lg, 'packages.setup', {
-                        pkg: entry.name
+                        pkg     : entry.name,
+                        pkgTitle: entry.title || entry.name
                     }),
                     events: {
                         onClick: this.$setupClick

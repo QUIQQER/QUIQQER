@@ -16,7 +16,7 @@
     float: left;
     margin: 0;
     padding: 0;
-    width: 100%;
+    width: calc(100% - 100px);
 }
 
 .qui-control-packages-installed-search [type="search"] {

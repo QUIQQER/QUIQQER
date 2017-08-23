@@ -859,7 +859,7 @@ define('controls/projects/project/site/Panel', [
                         self.$bindNameInputUrlFilter();
 
                         // site linking
-                        var i, len, Row, LastCell;
+                        var i, len, Row;
 
                         var LinkinTable     = Body.getElement('.site-linking'),
                             LinkinLangTable = Body.getElement('.site-langs'),
@@ -884,7 +884,10 @@ define('controls/projects/project/site/Panel', [
                                 new QUIButton({
                                     name  : 'delete-linking',
                                     icon  : 'fa fa-trash',
-                                    title : 'Verknüpfung löschen',
+                                    title : 'Verknüpfung löschen', // #locale
+                                    styles: {
+                                        width: 50
+                                    },
                                     events: {
                                         onClick: openDeleteLink
                                     }
@@ -893,7 +896,8 @@ define('controls/projects/project/site/Panel', [
                         }
 
                         if (LinkinLangTable) {
-                            var rowList = LinkinLangTable.getElements('tbody tr');
+                            var Buttons,
+                                rowList = LinkinLangTable.getElements('tbody tr');
 
                             new QUIButton({
                                 name  : 'add-linking',
@@ -935,10 +939,8 @@ define('controls/projects/project/site/Panel', [
                             };
 
                             for (i = 0, len = rowList.length; i < len; i++) {
-                                Row      = rowList[i];
-                                LastCell = rowList[i].getLast();
-
-                                LastCell.set('html', '');
+                                Row     = rowList[i];
+                                Buttons = rowList[i].getElement('.site-lang-entry-button');
 
                                 if (!Row.get('data-id').toInt()) {
                                     // seite in sprache kopieren und sprach verknüpfung anlegen
@@ -952,9 +954,9 @@ define('controls/projects/project/site/Panel', [
                                             onClick: copyLinking
                                         },
                                         styles: {
-                                            'float': 'right'
+                                            width: 50
                                         }
-                                    }).inject(LastCell);
+                                    }).inject(Buttons);
 
                                     continue;
                                 }
@@ -967,12 +969,12 @@ define('controls/projects/project/site/Panel', [
                                     lang  : Row.get('data-lang'),
                                     siteId: Row.get('data-id'),
                                     styles: {
-                                        'float': 'right'
+                                        width: 50
                                     },
                                     events: {
                                         onClick: openSite
                                     }
-                                }).inject(LastCell);
+                                }).inject(Buttons);
 
                                 new QUIButton({
                                     name  : 'remove-linking',
@@ -982,12 +984,12 @@ define('controls/projects/project/site/Panel', [
                                     lang  : Row.get('data-lang'),
                                     siteId: Row.get('data-id'),
                                     styles: {
-                                        'float': 'right'
+                                        width: 50
                                     },
                                     events: {
                                         onClick: removeLinking
                                     }
-                                }).inject(LastCell);
+                                }).inject(Buttons);
                             }
                         }
 
@@ -1313,39 +1315,70 @@ define('controls/projects/project/site/Panel', [
             var Site = this.getSite(),
                 Body = this.getContent();
 
-            var NameInput  = Body.getElements('input[name="site-name"]'),
-                UrlDisplay = Body.getElements('.site-url-display'),
-                siteUrl    = Site.getUrl();
+            var NameInput     = Body.getElement('input[name="site-name"]'),
+                UrlDisplay    = Body.getElement('.site-url-display'),
+                UrlEditButton = Body.getElement('.site-url-display-edit'),
+                siteUrl       = Site.getUrl();
 
-            if (Site.getId() != 1) {
+            if (Site.getId() !== 1) {
                 UrlDisplay.set('html', Site.getUrl());
             }
+
+            new QUIButton({
+                icon  : 'fa fa-edit',
+                styles: {
+                    width: 50
+                },
+                events: {
+                    onClick: function (Btn) {
+                        if (Btn.isActive()) {
+                            NameInput.setStyle('display', 'none');
+                            UrlDisplay.removeClass('site-url-display-active');
+                            Btn.setNormal();
+                            return;
+                        }
+
+                        NameInput.setStyle('display', null);
+                        NameInput.focus();
+                        UrlDisplay.addClass('site-url-display-active');
+                        Btn.setActive();
+                    }
+                }
+            }).inject(UrlEditButton);
 
             // filter
             var sitePath   = siteUrl.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '') + '/',
                 notAllowed = Object.keys(SiteUtils.notAllowedUrlSigns()).join('|'),
                 reg        = new RegExp('[' + notAllowed + ']', "g");
 
-            var lastPos = null;
+            var lastPos = null,
+                hold    = false;
 
             NameInput.set({
                 value : Site.getAttribute('name'),
                 events: {
                     keydown: function (event) {
+                        if (hold) {
+                            return;
+                        }
+
+                        hold    = true;
                         lastPos = QUIElmUtils.getCursorPosition(event.target);
                     },
 
                     keyup: function () {
                         var old = this.value;
 
+                        hold = false;
+
                         this.value = this.value.replace(reg, '');
                         this.value = this.value.replace(/ /g, QUIQQER.Rewrite.URL_SPACE_CHARACTER);
 
-                        if (old != this.value) {
-                            QUIElmUtils.setCursorPosition(this, lastPos);
+                        if (old !== this.value) {
+                            QUIElmUtils.setCursorPosition(this, lastPos - 1);
                         }
 
-                        if (Site.getId() != 1) {
+                        if (Site.getId() !== 1) {
                             UrlDisplay.set('html', sitePath + this.value + QUIQQER.Rewrite.SUFFIX);
                         }
                     },

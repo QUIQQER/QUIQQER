@@ -3,14 +3,29 @@
 .qui-projects-type-input {
     float: left;
     padding: 5px;
+    position: relative;
     width: 100%;
 }
 
 .qui-projects-type-input-text {
+    cursor: pointer;
     float: left;
     overflow: hidden;
     padding: 6px 10px;
     text-overflow: ellipsis;
     white-space: nowrap;
     width: calc(100% - 50px);
+}
+
+.qui-projects-type-input.field-container-field {
+    padding: 0;
+}
+
+.qui-projects-type-input.field-container-field button {
+    border-left: 1px solid #DEDEDE;
+    border-radius: 0;
+    box-shadow: none;
+    position: absolute;
+    right: 0;
+    width: 50px;
 }

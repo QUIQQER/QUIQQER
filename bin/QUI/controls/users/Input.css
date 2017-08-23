@@ -5,6 +5,22 @@
     display: block;
 }
 
+.user-input-container {
+    clear: both;
+    float: left;
+}
+
+.field-container > .users-input {
+    border-bottom: 1px solid rgba(147, 128, 108, 0.25);
+    border-right: 1px solid rgba(147, 128, 108, 0.25);
+    border-top: 1px solid rgba(147, 128, 108, 0.25);
+    flex: 1;
+}
+
+.field-container > .users-input .user-input-container {
+    float: none;
+}
+
 .users-input-entry {
     float: left;
     margin: 5px;
