@@ -80,7 +80,6 @@ define('controls/projects/project/site/Panel', [
             '$onInject',
             '$onCategoryEnter',
             '$onCategoryLeave',
-            '$onEditorLoad',
             '$onEditorDestroy',
             '$onPanelButtonClick',
             '$onLogin',
@@ -100,7 +99,9 @@ define('controls/projects/project/site/Panel', [
         initialize: function (Site, options) {
             this.$Site            = null;
             this.$CategoryControl = null;
+            this.$Container       = null;
 
+            this.$PreviousCategory     = null;
             this.$editorPeriodicalSave = false; // delay for the wysiwyg editor, to save to the locale storage
 
             if (typeOf(Site) === 'classes/projects/project/Site') {
@@ -260,6 +261,16 @@ define('controls/projects/project/site/Panel', [
             this.Loader.show();
 
             window.addEvent('login', this.$onLogin);
+
+            this.$Container = new Element('div', {
+                styles: {
+                    height  : '100%',
+                    position: 'relative',
+                    width   : '100%'
+                }
+            }).inject(this.getContent());
+
+            this.getContent().setStyle('position', 'relative');
 
 
             // permissions
@@ -489,7 +500,7 @@ define('controls/projects/project/site/Panel', [
             window.removeEvent('login', this.$onLogin);
 
             // only unlock if the site was not locked from another user
-            if (!this.getContent().getElement('[data-locked]')) {
+            if (!this.$Container.getElement('[data-locked]')) {
                 Ajax.get(['ajax_site_unlock'], false, {
                     project: Project.encode(),
                     id     : Site.getId()
@@ -614,7 +625,7 @@ define('controls/projects/project/site/Panel', [
                 return self.getSite().save();
             }).then(function () {
                 // refresh data
-                var Form = self.getContent().getElement('form');
+                var Form = self.$Container.getElement('form');
 
                 if (Form) {
                     QUIFormUtils.setDataToForm(
@@ -775,278 +786,280 @@ define('controls/projects/project/site/Panel', [
          * @fires onSiteTabLoad
          *
          * @param {Object} Category - qui/controls/toolbar/Button
+         * @return {Promise}
          */
         $onCategoryEnter: function (Category) {
+            var self = this;
+
+            if (Category === this.getActiveCategory()) {
+                this.Loader.hide();
+                return Promise.resolve();
+            }
+
             this.Loader.show();
 
-            var Active = this.getActiveCategory();
+            return this.$onCategoryLeaveHide().then(function () {
+                return self.$onCategoryLeave(self.$PreviousCategory);
+            }).then(function () {
+                self.$PreviousCategory = Category;
 
-            if (Active &&
-                Active.getAttribute('name') !== Category.getAttribute('name')) {
-                this.$onCategoryLeave(this.getActiveCategory());
-            }
-
-            if (Category.getAttribute('name') === 'content') {
-                this.loadEditor(
-                    this.getSite().getAttribute('content')
-                );
-
-                return;
-            }
-
-            if (Category.getAttribute('type') === 'wysiwyg') {
-                this.loadEditor(
-                    this.getSite().getAttribute(
-                        Category.getAttribute('name')
-                    )
-                );
-
-                return;
-            }
-
-            if (!Category.getAttribute('template')) {
-                this.getContent().set('html', '');
-                this.$categoryOnLoad(Category);
-
-                QUI.parse(Category);
-                return;
-            }
-
-            var self    = this,
-                Site    = this.getSite(),
-                Project = Site.getProject();
-
-            Ajax.get([
-                'ajax_site_categories_template',
-                'ajax_site_lock'
-            ], function (result) {
-                var Body = self.getContent();
-
-                if (!result) {
-                    Body.set('html', '');
-                    self.$categoryOnLoad(Category);
-
-                    return;
+                if (Category.getAttribute('name') === 'content') {
+                    return this.loadEditor(
+                        this.getSite().getAttribute('content')
+                    );
                 }
 
-                var Form;
-
-                Body.set('html', '<form class="qui-site-data">' + result + '</form>');
-
-                Form = Body.getElement('form');
-                Form.addEvent('submit', function (event) {
-                    event.stop();
-                });
-
-                // set to the media inputs the right project
-                Body.getElements('.media-image,.media-folder').each(function (Elm) {
-                    Elm.set('data-project', Project.getName());
-                });
-
-                // minimize setting tables
-                if (Category.getAttribute('name') === 'settings') {
-                    Body.getElements('.data-table:not(.site-data)')
-                        .addClass('data-table-closed');
+                if (Category.getAttribute('type') === 'wysiwyg') {
+                    return this.loadEditor(
+                        this.getSite().getAttribute(
+                            Category.getAttribute('name')
+                        )
+                    );
                 }
 
-                // set data
-                QUIFormUtils.setDataToForm(Site.getAttributes(), Form);
+                if (!Category.getAttribute('template')) {
+                    this.$Container.set('html', '');
+                    this.$categoryOnLoad(Category);
 
-                ControlUtils.parse(Form).then(function () {
+                    return QUI.parse(Category);
+                }
 
-                    // information tab
-                    if (Category.getAttribute('name') === 'information') {
-                        self.$bindNameInputUrlFilter();
 
-                        // site linking
-                        var i, len, Row;
+                var Site    = self.getSite(),
+                    Project = Site.getProject();
 
-                        var LinkinTable     = Body.getElement('.site-linking'),
-                            LinkinLangTable = Body.getElement('.site-langs'),
-                            Locked          = Body.getElement('[data-locked]');
+                return new Promise(function (resolve) {
+                    Ajax.get([
+                        'ajax_site_categories_template',
+                        'ajax_site_lock'
+                    ], function (result) {
+                        var Body = self.$Container;
 
-                        if (LinkinTable) {
-                            var openDeleteLink = function (Btn) {
-                                Btn.setAttribute('icon', 'fa fa-spinner fa-spin');
-
-                                self.deleteLinked(
-                                    Btn.getElm().getParent().get('data-parentid')
-                                ).then(function () {
-                                    Btn.setAttribute('icon', 'fa fa-trash');
-                                }, function () {
-                                    Btn.setAttribute('icon', 'fa fa-trash');
-                                });
-                            };
-
-                            LinkinTable.getElements('.site-linking-entry-button').each(function (Node) {
-                                Node.set('html', '');
-
-                                new QUIButton({
-                                    name  : 'delete-linking',
-                                    icon  : 'fa fa-trash',
-                                    title : 'Verknüpfung löschen', // #locale
-                                    styles: {
-                                        width: 50
-                                    },
-                                    events: {
-                                        onClick: openDeleteLink
-                                    }
-                                }).inject(Node);
-                            });
+                        if (!result) {
+                            Body.set('html', '');
+                            self.$categoryOnLoad(Category).then(resolve);
+                            return;
                         }
 
-                        if (LinkinLangTable) {
-                            var Buttons,
-                                rowList = LinkinLangTable.getElements('tbody tr');
+                        Body.set('html', '<form class="qui-site-data">' + result + '</form>');
 
-                            new QUIButton({
-                                name  : 'add-linking',
-                                text  : Locale.get(lg, 'projects.project.site.panel.linked.btn.add'),
-                                styles: {
-                                    position: 'absolute',
-                                    right   : 5,
-                                    top     : 5,
-                                    zIndex  : 1
-                                },
-                                events: {
-                                    onClick: function (Btn, event) {
-                                        event.stop();
-                                        self.addLanguagLink();
-                                    }
+                        var Form = Body.getElement('form');
+
+                        Form.addEvent('submit', function (event) {
+                            event.stop();
+                        });
+
+                        // set to the media inputs the right project
+                        Body.getElements('.media-image,.media-folder').each(function (Elm) {
+                            Elm.set('data-project', Project.getName());
+                        });
+
+                        // minimize setting tables
+                        if (Category.getAttribute('name') === 'settings') {
+                            Body.getElements('.data-table:not(.site-data)')
+                                .addClass('data-table-closed');
+                        }
+
+                        // set data
+                        QUIFormUtils.setDataToForm(Site.getAttributes(), Form);
+
+                        ControlUtils.parse(Form).then(function () {
+                            // information tab
+                            if (Category.getAttribute('name') === 'information') {
+                                self.$bindNameInputUrlFilter();
+
+                                // site linking
+                                var i, len, Row;
+
+                                var LinkinTable     = Body.getElement('.site-linking'),
+                                    LinkinLangTable = Body.getElement('.site-langs'),
+                                    Locked          = Body.getElement('[data-locked]');
+
+                                if (LinkinTable) {
+                                    var openDeleteLink = function (Btn) {
+                                        Btn.setAttribute('icon', 'fa fa-spinner fa-spin');
+
+                                        self.deleteLinked(
+                                            Btn.getElm().getParent().get('data-parentid')
+                                        ).then(function () {
+                                            Btn.setAttribute('icon', 'fa fa-trash');
+                                        }, function () {
+                                            Btn.setAttribute('icon', 'fa fa-trash');
+                                        });
+                                    };
+
+                                    LinkinTable.getElements('.site-linking-entry-button').each(function (Node) {
+                                        Node.set('html', '');
+
+                                        new QUIButton({
+                                            name  : 'delete-linking',
+                                            icon  : 'fa fa-trash',
+                                            title : 'Verknüpfung löschen', // #locale
+                                            styles: {
+                                                width: 50
+                                            },
+                                            events: {
+                                                onClick: openDeleteLink
+                                            }
+                                        }).inject(Node);
+                                    });
                                 }
-                            }).inject(LinkinLangTable.getElement('th'));
 
-                            // helper functions
-                            var copyLinking = function (Btn) {
-                                self.copySiteToLang(
-                                    Btn.getAttribute('lang')
-                                );
-                            };
+                                if (LinkinLangTable) {
+                                    var Buttons,
+                                        rowList = LinkinLangTable.getElements('tbody tr');
 
-                            var openSite = function (Btn) {
-                                PanelUtils.openSitePanel(
-                                    Project.getName(),
-                                    Btn.getAttribute('lang'),
-                                    Btn.getAttribute('siteId')
-                                );
-                            };
-
-                            var removeLinking = function (Btn) {
-                                self.removeLanguagLink(
-                                    Btn.getAttribute('lang'),
-                                    Btn.getAttribute('siteId')
-                                );
-                            };
-
-                            for (i = 0, len = rowList.length; i < len; i++) {
-                                Row     = rowList[i];
-                                Buttons = rowList[i].getElement('.site-lang-entry-button');
-
-                                if (!Row.get('data-id').toInt()) {
-                                    // seite in sprache kopieren und sprach verknüpfung anlegen
                                     new QUIButton({
-                                        name  : 'copy-linking',
-                                        icon  : 'fa fa-copy',
-                                        alt   : Locale.get(lg, 'copy.site.in.lang'),
-                                        title : Locale.get(lg, 'copy.site.in.lang'),
-                                        lang  : Row.get('data-lang'),
-                                        events: {
-                                            onClick: copyLinking
-                                        },
+                                        name  : 'add-linking',
+                                        text  : Locale.get(lg, 'projects.project.site.panel.linked.btn.add'),
                                         styles: {
-                                            width: 50
+                                            position: 'absolute',
+                                            right   : 5,
+                                            top     : 5,
+                                            zIndex  : 1
+                                        },
+                                        events: {
+                                            onClick: function (Btn, event) {
+                                                event.stop();
+                                                self.addLanguagLink();
+                                            }
                                         }
-                                    }).inject(Buttons);
+                                    }).inject(LinkinLangTable.getElement('th'));
 
-                                    continue;
+                                    // helper functions
+                                    var copyLinking = function (Btn) {
+                                        self.copySiteToLang(
+                                            Btn.getAttribute('lang')
+                                        );
+                                    };
+
+                                    var openSite = function (Btn) {
+                                        PanelUtils.openSitePanel(
+                                            Project.getName(),
+                                            Btn.getAttribute('lang'),
+                                            Btn.getAttribute('siteId')
+                                        );
+                                    };
+
+                                    var removeLinking = function (Btn) {
+                                        self.removeLanguagLink(
+                                            Btn.getAttribute('lang'),
+                                            Btn.getAttribute('siteId')
+                                        );
+                                    };
+
+                                    for (i = 0, len = rowList.length; i < len; i++) {
+                                        Row     = rowList[i];
+                                        Buttons = rowList[i].getElement('.site-lang-entry-button');
+
+                                        if (!Row.get('data-id').toInt()) {
+                                            // seite in sprache kopieren und sprach verknüpfung anlegen
+                                            new QUIButton({
+                                                name  : 'copy-linking',
+                                                icon  : 'fa fa-copy',
+                                                alt   : Locale.get(lg, 'copy.site.in.lang'),
+                                                title : Locale.get(lg, 'copy.site.in.lang'),
+                                                lang  : Row.get('data-lang'),
+                                                events: {
+                                                    onClick: copyLinking
+                                                },
+                                                styles: {
+                                                    width: 50
+                                                }
+                                            }).inject(Buttons);
+
+                                            continue;
+                                        }
+
+                                        new QUIButton({
+                                            name  : 'open-site',
+                                            icon  : 'fa fa-file-o',
+                                            alt   : Locale.get(lg, 'open.site'),
+                                            title : Locale.get(lg, 'open.site'),
+                                            lang  : Row.get('data-lang'),
+                                            siteId: Row.get('data-id'),
+                                            styles: {
+                                                width: 50
+                                            },
+                                            events: {
+                                                onClick: openSite
+                                            }
+                                        }).inject(Buttons);
+
+                                        new QUIButton({
+                                            name  : 'remove-linking',
+                                            icon  : 'fa fa-remove',
+                                            alt   : Locale.get(lg, 'projects.project.site.panel.linked.btn.delete'),
+                                            title : Locale.get(lg, 'projects.project.site.panel.linked.btn.delete'),
+                                            lang  : Row.get('data-lang'),
+                                            siteId: Row.get('data-id'),
+                                            styles: {
+                                                width: 50
+                                            },
+                                            events: {
+                                                onClick: removeLinking
+                                            }
+                                        }).inject(Buttons);
+                                    }
                                 }
 
-                                new QUIButton({
-                                    name  : 'open-site',
-                                    icon  : 'fa fa-file-o',
-                                    alt   : Locale.get(lg, 'open.site'),
-                                    title : Locale.get(lg, 'open.site'),
-                                    lang  : Row.get('data-lang'),
-                                    siteId: Row.get('data-id'),
-                                    styles: {
-                                        width: 50
-                                    },
-                                    events: {
-                                        onClick: openSite
-                                    }
-                                }).inject(Buttons);
 
-                                new QUIButton({
-                                    name  : 'remove-linking',
-                                    icon  : 'fa fa-remove',
-                                    alt   : Locale.get(lg, 'projects.project.site.panel.linked.btn.delete'),
-                                    title : Locale.get(lg, 'projects.project.site.panel.linked.btn.delete'),
-                                    lang  : Row.get('data-lang'),
-                                    siteId: Row.get('data-id'),
-                                    styles: {
-                                        width: 50
-                                    },
-                                    events: {
-                                        onClick: removeLinking
-                                    }
-                                }).inject(Buttons);
-                            }
-                        }
-
-
-                        // locked
-                        if (Locked && USER.isSU) {
-                            new QUIButton({
-                                name  : 'unlock',
-                                text  : 'Trotzdem freischalten', // #locale
-                                styles: {
-                                    clear  : 'both',
-                                    display: 'block',
-                                    'float': 'none',
-                                    margin : '10px auto',
-                                    width  : 200
-                                },
-                                events: {
-                                    onClick: function () {
-                                        self.unlockSite();
-                                    }
+                                // locked
+                                if (Locked && USER.isSU) {
+                                    new QUIButton({
+                                        name  : 'unlock',
+                                        text  : 'Trotzdem freischalten', // #locale
+                                        styles: {
+                                            clear  : 'both',
+                                            display: 'block',
+                                            'float': 'none',
+                                            margin : '10px auto',
+                                            width  : 200
+                                        },
+                                        events: {
+                                            onClick: function () {
+                                                self.unlockSite();
+                                            }
+                                        }
+                                    }).inject(Locked);
                                 }
-                            }).inject(Locked);
-                        }
-                    }
-
-
-                    QUI.parse(Form, function () {
-                        // set the project to the controls
-                        var i, len, Control;
-                        var quiids = Form.getElements('[data-quiid]');
-
-                        for (i = 0, len = quiids.length; i < len; i++) {
-
-                            Control = QUI.Controls.getById(
-                                quiids[i].get('data-quiid')
-                            );
-
-                            if (!Control) {
-                                continue;
                             }
 
-                            if (typeOf(Control.setProject) === 'function') {
-                                Control.setProject(Project);
-                            }
+                            QUI.parse(Form, function () {
+                                // set the project to the controls
+                                var i, len, Control;
+                                var quiids = Form.getElements('[data-quiid]');
 
-                            Control.setAttribute('Site', self.getSite());
-                        }
+                                for (i = 0, len = quiids.length; i < len; i++) {
 
-                        self.$categoryOnLoad(Category);
+                                    Control = QUI.Controls.getById(
+                                        quiids[i].get('data-quiid')
+                                    );
+
+                                    if (!Control) {
+                                        continue;
+                                    }
+
+                                    if (typeOf(Control.setProject) === 'function') {
+                                        Control.setProject(Project);
+                                    }
+
+                                    Control.setAttribute('Site', self.getSite());
+                                }
+
+                                self.$categoryOnLoad(Category).then(resolve);
+                            });
+                        }).catch(function (error) {
+                            console.error(error);
+                        });
+                    }, {
+                        id     : Site.getId(),
+                        project: Project.encode(),
+                        tab    : Category.getAttribute('name')
                     });
-                }).catch(function (error) {
-                    console.error(error);
                 });
-            }, {
-                id     : Site.getId(),
-                project: Project.encode(),
-                tab    : Category.getAttribute('name')
+            }.bind(this)).then(function () {
+                return self.$onCategoryEntryShow();
             });
         },
 
@@ -1055,101 +1068,121 @@ define('controls/projects/project/site/Panel', [
          *
          * @method controls/projects/project/site/Panel#$categoryOnLoad
          * @param {Object} Category - qui/controls/buttons/Button
+         * @return {Promise}
          */
         $categoryOnLoad: function (Category) {
             var self          = this,
-
                 onloadRequire = Category.getAttribute('onload_require'),
                 onload        = Category.getAttribute('onload');
 
-            if (onloadRequire) {
-                require([onloadRequire], function (Plugin) {
-                    if (onload) {
-                        eval(onload + '( Category, self );');
-                        return;
-                    }
-
-                    var type = typeOf(Plugin);
-
-                    if (type === 'function') {
-                        type(Category, self);
-                        return;
-                    }
-
-                    if (type === 'class') {
-                        self.$CategoryControl = new Plugin({
-                            Site : self.getSite(),
-                            Panel: self
-                        });
-
-                        if (QUI.Controls.isControl(self.$CategoryControl)) {
-                            self.$CategoryControl.inject(self.getContent());
-                            self.$CategoryControl.setParent(self);
-
-                            self.Loader.hide();
+            return new Promise(function (resolve) {
+                if (onloadRequire) {
+                    require([onloadRequire], function (Plugin) {
+                        if (onload) {
+                            eval(onload + '( Category, self );');
+                            resolve();
+                            return;
                         }
-                    }
-                });
 
-                return;
-            }
+                        var type = typeOf(Plugin);
 
-            if (onload) {
-                eval(onload + '( Category, self );');
-                return;
-            }
+                        if (type === 'function') {
+                            type(Category, self);
+                            resolve();
+                            return;
+                        }
 
-            this.Loader.hide();
+                        if (type === 'class') {
+                            self.$CategoryControl = new Plugin({
+                                Site : self.getSite(),
+                                Panel: self
+                            });
+
+                            if (QUI.Controls.isControl(self.$CategoryControl)) {
+                                self.$CategoryControl.inject(self.$Container);
+                                self.$CategoryControl.setParent(self);
+                            }
+                        }
+
+                        resolve();
+                    }, resolve);
+
+                    return;
+                }
+
+                if (onload) {
+                    eval(onload + '(Category, self);');
+                    return resolve();
+                }
+
+                resolve();
+            });
         },
 
         /**
          * The site tab leave event
+         * Unload the category
          *
          * @method controls/projects/project/site/Panel#$tabLeave
          * @fires onSiteTabUnLoad
          *
-         * @param {Object} Category - qui/controls/buttons/Button
+         * @param {Object} [Category] - qui/controls/buttons/Button
          * @param {Function} [callback] - (optional) callback function
          * @return {Promise}
          */
         $onCategoryLeave: function (Category, callback) {
             this.Loader.show();
 
-            var Site = this.getSite(),
-                Body = this.getBody();
+            var self = this,
+                Site = this.getSite(),
+                Body = this.$Container;
+
+            if (typeof Category === 'undefined' || !Category) {
+                return Promise.resolve();
+            }
 
             // main content
             if (Category.getAttribute('name') === 'content') {
+                if (!this.getAttribute('Editor')) {
+                    return Promise.resolve();
+                }
+
                 Site.setAttribute(
                     'content',
                     this.getAttribute('Editor').getContent()
                 );
 
                 this.$clearEditorPeriodicalSave();
-                this.getAttribute('Editor').destroy();
 
-                if (typeof callback === 'function') {
-                    callback();
-                }
+                return Promise.resolve().then(function () {
+                    self.getAttribute('Editor').destroy();
 
-                return Promise.resolve();
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+                });
             }
 
             // wysiwyg type
             if (Category.getAttribute('type') === 'wysiwyg') {
+                if (!this.getAttribute('Editor')) {
+                    return Promise.resolve();
+                }
+
                 Site.setAttribute(
                     Category.getAttribute('name'),
                     this.getAttribute('Editor').getContent()
                 );
 
                 this.$clearEditorPeriodicalSave();
-                this.getAttribute('Editor').destroy();
 
-                if (typeof callback === 'function') {
-                    callback();
-                }
+                return Promise.resolve().then(function () {
+                    self.getAttribute('Editor').destroy();
 
-                return Promise.resolve();
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+                });
             }
 
             // form unload
@@ -1159,11 +1192,11 @@ define('controls/projects/project/site/Panel', [
                     this.$CategoryControl = null;
                 }
 
-                if (typeof callback === 'function') {
-                    callback();
-                }
-
-                return Promise.resolve();
+                return Promise.resolve().then(function () {
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+                });
             }
 
             var Form     = Body.getElement('form'),
@@ -1181,11 +1214,11 @@ define('controls/projects/project/site/Panel', [
                     Site.setAttribute('layout', elements.layout.value);
                 }
 
-                if (typeof callback === 'function') {
-                    callback();
-                }
-
-                return Promise.resolve();
+                return Promise.resolve().then(function () {
+                    if (typeof callback === 'function') {
+                        callback();
+                    }
+                });
             }
 
             // unload params
@@ -1202,31 +1235,29 @@ define('controls/projects/project/site/Panel', [
             }
 
 
-            var self            = this,
-                onunloadRequire = Category.getAttribute('onunload_require'),
+            var onunloadRequire = Category.getAttribute('onunload_require'),
                 onunload        = Category.getAttribute('onunload');
 
-            return new Promise(function (resolve) {
+            return Promise.resolve().then(function () {
                 if (onunloadRequire) {
-                    require([onunloadRequire], function () {
-                        if (self.$CategoryControl) {
-                            self.$CategoryControl.destroy();
-                            self.$CategoryControl = null;
-                        }
+                    return new Promise(function (resolve) {
+                        require([onunloadRequire], function () {
+                            if (self.$CategoryControl) {
+                                self.$CategoryControl.destroy();
+                                self.$CategoryControl = null;
+                            }
 
 
-                        eval(onunload + '( Category, self );');
+                            eval(onunload + '( Category, self );');
 
-                        if (typeof callback === 'function') {
-                            callback();
-                        }
+                            if (typeof callback === 'function') {
+                                callback();
+                            }
 
-                        resolve();
+                            resolve();
+                        }, resolve);
                     });
-
-                    return;
                 }
-
 
                 if (self.$CategoryControl) {
                     self.$CategoryControl.destroy();
@@ -1236,8 +1267,47 @@ define('controls/projects/project/site/Panel', [
                 if (typeof callback === 'function') {
                     callback();
                 }
+            });
+        },
 
-                resolve();
+        /**
+         * Helper to hide body
+         *
+         * @return {Promise}
+         */
+        $onCategoryLeaveHide: function () {
+            var self = this;
+
+            return new Promise(function (resolve) {
+                moofx(self.$Container).animate({
+                    opacity: 0,
+                    top    : -20
+                }, {
+                    duration: 250,
+                    callback: resolve
+                });
+            });
+        },
+
+        /**
+         * Helper to hide body
+         *
+         * @return {Promise}
+         */
+        $onCategoryEntryShow: function () {
+            var self = this;
+
+            return new Promise(function (resolve) {
+                moofx(self.$Container).animate({
+                    opacity: 1,
+                    top    : 0
+                }, {
+                    duration: 250,
+                    callback: function () {
+                        self.Loader.hide();
+                        resolve();
+                    }
+                });
             });
         },
 
@@ -1313,7 +1383,7 @@ define('controls/projects/project/site/Panel', [
          */
         $bindNameInputUrlFilter: function () {
             var Site = this.getSite(),
-                Body = this.getContent();
+                Body = this.$Container;
 
             var NameInput     = Body.getElement('input[name="site-name"]'),
                 UrlDisplay    = Body.getElement('.site-url-display'),
@@ -1542,50 +1612,43 @@ define('controls/projects/project/site/Panel', [
          *
          * @method controls/projects/project/site/Panel#loadEditor
          * @param {String} content - content of the editor
+         * @return {Promise}
          */
         loadEditor: function (content) {
             var self = this,
-                Body = this.getBody();
+                Body = this.$Container;
 
             Body.set('html', '');
+            Body.setStyle('opacity', 0);
 
-            require(['Editors'], function (Editors) {
-                Editors.getEditor().then(function (Editor) {
-                    var Site    = self.getSite(),
-                        Project = Site.getProject();
+            return new Promise(function (resolve) {
+                require(['Editors'], function (Editors) {
+                    Editors.getEditor().then(function (Editor) {
+                        var Site    = self.getSite(),
+                            Project = Site.getProject();
 
-                    self.setAttribute('Editor', Editor);
+                        self.setAttribute('Editor', Editor);
 
-                    // draw the editor
-                    Editor.setAttribute('Panel', self);
-                    Editor.setAttribute('name', Site.getId());
-                    Editor.setAttribute('showLoader', false);
-                    Editor.setProject(Project);
-                    Editor.addEvent('onDestroy', self.$onEditorDestroy);
+                        // draw the editor
+                        Editor.setAttribute('Panel', self);
+                        Editor.setAttribute('name', Site.getId());
+                        Editor.setAttribute('showLoader', false);
+                        Editor.setProject(Project);
+                        Editor.addEvent('onDestroy', self.$onEditorDestroy);
 
-                    // set the site content
-                    if (typeof content === 'undefined' || !content) {
-                        content = '';
-                    }
+                        // set the site content
+                        if (typeof content === 'undefined' || !content) {
+                            content = '';
+                        }
 
-                    Editor.addEvent('onLoaded', self.$onEditorLoad);
+                        Editor.addEvent('onLoaded', resolve);
+                        Editor.inject(Body);
+                        Editor.setContent(content);
 
-                    Editor.inject(Body);
-                    Editor.setContent(content);
-
-                    self.$startEditorPeriodicalSave();
+                        self.$startEditorPeriodicalSave();
+                    });
                 });
             });
-        },
-
-        /**
-         * event: on editor load
-         * if the editor is finished
-         *
-         * @method controls/projects/project/site/Panel#$onEditorLoad
-         */
-        $onEditorLoad: function () {
-            this.Loader.hide();
         },
 
         /**
@@ -1606,7 +1669,8 @@ define('controls/projects/project/site/Panel', [
                 this.$clearEditorPeriodicalSave();
             }
 
-            var Category  = this.getActiveCategory(),
+            var self      = this,
+                Category  = this.getActiveCategory(),
                 attribute = false;
 
             if (Category.getAttribute('name') === 'content') {
@@ -1618,13 +1682,13 @@ define('controls/projects/project/site/Panel', [
             }
 
             this.$editorPeriodicalSave = (function (attr) {
-                var Editor = this.getAttribute('Editor');
+                var Editor = self.getAttribute('Editor');
 
                 if (!Editor) {
                     return;
                 }
 
-                this.getSite().setAttribute(attr, Editor.getContent());
+                self.getSite().setAttribute(attr, Editor.getContent());
             }).periodical(this.getAttribute('editorPeriode'), this, [attribute]);
         },
 
