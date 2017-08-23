@@ -1351,23 +1351,31 @@ define('controls/projects/project/site/Panel', [
                 notAllowed = Object.keys(SiteUtils.notAllowedUrlSigns()).join('|'),
                 reg        = new RegExp('[' + notAllowed + ']', "g");
 
-            var lastPos = null;
+            var lastPos = null,
+                hold    = false;
 
             NameInput.set({
                 value : Site.getAttribute('name'),
                 events: {
                     keydown: function (event) {
+                        if (hold) {
+                            return;
+                        }
+
+                        hold    = true;
                         lastPos = QUIElmUtils.getCursorPosition(event.target);
                     },
 
                     keyup: function () {
                         var old = this.value;
 
+                        hold = false;
+
                         this.value = this.value.replace(reg, '');
                         this.value = this.value.replace(/ /g, QUIQQER.Rewrite.URL_SPACE_CHARACTER);
 
                         if (old !== this.value) {
-                            QUIElmUtils.setCursorPosition(this, lastPos);
+                            QUIElmUtils.setCursorPosition(this, lastPos - 1);
                         }
 
                         if (Site.getId() !== 1) {
