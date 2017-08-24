@@ -1268,10 +1268,12 @@
             <en><![CDATA[Terms Of Use]]></en>
         </locale>
         <locale name="controls.packages.search.termsofuse.content">
-            <de>
-                <![CDATA[Spicy jalapeno bacon ipsum dolor amet shoulder shankle picanha doner flank, leberkas boudin pig jowl venison beef tongue drumstick jerky short loin. Cupim jerky short loin bacon jowl. Tail swine ham hock corned beef, sausage turducken shoulder ham t-bone short loin. Short loin doner pork loin, ham hock swine chuck shank ribeye turkey pork belly tail kielbasa bresaola bacon frankfurter.]]></de>
-            <en>
-                <![CDATA[Spicy jalapeno bacon ipsum dolor amet shoulder shankle picanha doner flank, leberkas boudin pig jowl venison beef tongue drumstick jerky short loin. Cupim jerky short loin bacon jowl. Tail swine ham hock corned beef, sausage turducken shoulder ham t-bone short loin. Short loin doner pork loin, ham hock swine chuck shank ribeye turkey pork belly tail kielbasa bresaola bacon frankfurter.]]></en>
+            <de><![CDATA[
+            Spicy jalapeno bacon ipsum dolor amet shoulder shankle picanha doner flank, leberkas boudin pig jowl venison beef tongue drumstick jerky short loin. Cupim jerky short loin bacon jowl. Tail swine ham hock corned beef, sausage turducken shoulder ham t-bone short loin. Short loin doner pork loin, ham hock swine chuck shank ribeye turkey pork belly tail kielbasa bresaola bacon frankfurter.
+            ]]></de>
+            <en><![CDATA[
+            Spicy jalapeno bacon ipsum dolor amet shoulder shankle picanha doner flank, leberkas boudin pig jowl venison beef tongue drumstick jerky short loin. Cupim jerky short loin bacon jowl. Tail swine ham hock corned beef, sausage turducken shoulder ham t-bone short loin. Short loin doner pork loin, ham hock swine chuck shank ribeye turkey pork belly tail kielbasa bresaola bacon frankfurter.
+            ]]></en>
         </locale>
         <locale name="controls.packages.search.termsofuse.acceptBtnText">
             <de><![CDATA[Ich akzeptiere die Nutzungsbedingungen]]></de>
@@ -1877,6 +1879,14 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Passwort ändern]]></de>
             <en><![CDATA[Change password]]></en>
         </locale>
+        <locale name="projects.project.site.media.filePanel.message.save.success">
+            <de><![CDATA[Die Datei wurde erfolgreich gespeichert]]></de>
+            <en><![CDATA[The File has been saved successfully]]></en>
+        </locale>
+        <locale name="projects.project.site.media.folderPanel.message.save.success">
+            <de><![CDATA[Der Ordner wurde erfolgreich gespeichert]]></de>
+            <en><![CDATA[The Folder has been saved successfully]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js">
         <locale name="controls.licensekeypanel.title">
@@ -2471,10 +2481,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="projects.project.site.media.input.clear.title">
             <de><![CDATA[Eingabe leeren]]></de>
             <en><![CDATA[Clear]]></en>
-        </locale>
-        <locale name="projects.project.site.media.filePanel.message.save.success">
-            <de><![CDATA[Die Datei wurde erfolgreich gespeichert]]></de>
-            <en><![CDATA[The File has been saved successfully]]></en>
         </locale>
         <locale name="projects.project.site.media.filePanel.btn.save.text">
             <de><![CDATA[Speichern]]></de>
@@ -5611,10 +5617,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
                 All changes of the folder will be stored.
                 The folder effects are applied rekusriv on all <u>images</u> and <u>folders</u>.
             ]]></en>
-        </locale>
-        <locale name="projects.project.site.media.folderPanel.message.save.success">
-            <de><![CDATA[Der Ordner wurde erfolgreich gespeichert]]></de>
-            <en><![CDATA[The Folder has been saved successfully]]></en>
         </locale>
         <locale name="projects.project.site.media.folderPanel.window.delete.title">
             <de><![CDATA[Möchten Sie den Ordner [folder] wirklich löschen?]]></de>

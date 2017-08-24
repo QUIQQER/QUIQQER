@@ -311,12 +311,6 @@ define('controls/projects/project/media/FilePanel', [
             this.$unloadCategory();
 
             this.getFile().save(function () {
-                QUI.getMessageHandler(function (MH) {
-                    MH.addSuccess(
-                        Locale.get(lg, 'projects.project.site.media.folderPanel.message.save.success')
-                    );
-                });
-
                 self.Loader.hide();
             }).catch(function (Exception) {
                 console.error(Exception);
@@ -954,16 +948,16 @@ define('controls/projects/project/media/FilePanel', [
             var effectContrast  = this.$EffectContrast.getValue();
 
             url = url + Object.toQueryString({
-                    id                : fileId,
-                    project           : project,
-                    blur              : parseInt(effectBlur.from),
-                    brightness        : effectBrightnes.from,
-                    contrast          : effectContrast.from,
-                    greyscale         : Greyscale.checked ? 1 : 0,
-                    watermark         : this.$EffectWatermark.value,
-                    watermark_position: WatermarkPosition.value,
-                    '__nocache'       : String.uniqueID()
-                });
+                id                : fileId,
+                project           : project,
+                blur              : parseInt(effectBlur.from),
+                brightness        : effectBrightnes.from,
+                contrast          : effectContrast.from,
+                greyscale         : Greyscale.checked ? 1 : 0,
+                watermark         : this.$EffectWatermark.value,
+                watermark_position: WatermarkPosition.value,
+                '__nocache'       : String.uniqueID()
+            });
 
             this.$EffectLoader.show();
 

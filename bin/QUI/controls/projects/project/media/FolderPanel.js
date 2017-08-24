@@ -154,12 +154,6 @@ define('controls/projects/project/media/FolderPanel', [
             this.$unloadCategory();
 
             return this.$Folder.save().then(function () {
-                QUI.getMessageHandler(function (MH) {
-                    MH.addSuccess(
-                        Locale.get(lg, 'projects.project.site.media.folderPanel.message.save.success')
-                    );
-                });
-
                 if (typeof callback === 'function') {
                     callback();
                 }
