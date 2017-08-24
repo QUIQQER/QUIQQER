@@ -1191,16 +1191,14 @@ define('controls/projects/project/site/Panel', [
                 }
 
                 return Promise.resolve();
-                //self.getAttribute('Editor').destroy();
             }
 
             // form unload
-            if (!Body.getElement('form')) {
-                // if (this.$CategoryControl) {
-                //     this.$CategoryControl.destroy();
-                //     this.$CategoryControl = null;
-                // }
+            if (this.$CategoryControl && "unload" in this.$CategoryControl) {
+                this.$CategoryControl.unload();
+            }
 
+            if (!Body.getElement('form')) {
                 return Promise.resolve().then(function () {
                     if (typeof callback === 'function') {
                         callback();
