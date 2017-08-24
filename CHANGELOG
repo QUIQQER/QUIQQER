@@ -1,4 +1,4 @@
-1.1
+1.1 ()
 ------
 
     News [https://www.quiqqer.com/](https://www.quiqqer.com/)
@@ -8,11 +8,65 @@
 
     Features
 
+    - feat: quiqqer/quiqqer#579 - Manuell heruntergeladene Pakete installieren
+    - feat: quiqqer/quiqqer#571 - ADMIN ist true im Frontend
+    - feat: quiqqer/quiqqer#545 - Filter im Media Bereich wäre toll
+    - feat: quiqqer/quiqqer#361 - Symmetrische Verschlüsselung überarbeiten
+    - feat: quiqqer/quiqqer#508 - Toolbars WYSIWYG-Editor
+    - feat: quiqqer/quiqqer#300 - Menü Rechte
+    - feat: quiqqer/quiqqer#535 - Im Media Bereich möchte ich einen ganzen Ordner als .zip runterladen
+
+    - feat: quiqqer/packagestore#1 - Package-Store
 
     Bugfixes
 
+    - fix: quiqqer/quiqqer#569 - Upload-Control umgestalten
+    - fix: quiqqer/quiqqer#584 - Media: Datei umbennen -> in Namen auf bestehende Datei
+    - fix: quiqqer/quiqqer#471 - Benutzer-Panel für einen Benutzer lassen sich mehrfach öffnen
+    - fix: quiqqer/quiqqer#467 - Media: Fehlerhaftes Bild verursacht Internal Server Error
+    - fix: quiqqer/quiqqer#585 - Malformed gitlab
+    - fix: quiqqer/quiqqer#568 - Media Popup: Navigation in Ordner in Listenaischt nicht möglich.
+    - fix: quiqqer/quiqqer#581 - Update Konsolen Tool zeigt kein Fortschritt an
+    - fix: quiqqer/quiqqer#575 - Console: getUserBySession sollte den eingeloggten Benutzer zurückgeben
+    - fix: quiqqer/quiqqer#542 - Config für max file size bitte bauen
+    - fix: quiqqer/quiqqer#566 - Loader im Seiten-Panel verschwindet nicht, wenn ein Fehler beim Speichern auftritt
+    - fix: quiqqer/quiqqer#567 - Vorschau Funktion nicht nutzbar
+    - fix: quiqqer/quiqqer#574 - Host kommt in Canonical doppelt
+    - fix: quiqqer/quiqqer#432 - Passwort-Sicherheit mangelhaft -> genHash replaced
+    - fix: quiqqer/quiqqer#544 - Einstellung Paketrechte verwenden doppelt vorhanden
+    - fix: quiqqer/quiqqer#556 - Media: Suche case insensitive suchen lassen?
+    - fix: quiqqer/quiqqer#557 - Media: Theoretisch funktionierender SVG kann nicht angezeigt werden.
+    - fix: quiqqer/quiqqer#487 - Fehler bei Migration
+    - fix: quiqqer/quiqqer#543 - -1 max memory wird beim update mit beachtet
+    - fix: quiqqer/quiqqer#539 - MAC OS - Media Mehrfachmarkierung funktioniert nicht
+    - fix: quiqqer/quiqqer#456 - Neue Gruppe anlegen ohne Rechte - Fenster öffnet sich
+    - fix: quiqqer/quiqqer#493 - Mehrere Ordner löschen in Media-Bereich
+    - fix: quiqqer/quiqqer#520 - Falscher Text in den Projekteinstellungen Einstellungen--> projekt
+    - fix: quiqqer/quiqqer#534 - Bei Package uninstall werden keine Events entfernt
+    - fix: quiqqer/quiqqer#533 - In der Sortierung in den Ordnereigenschaften wären Vorschaubilder super
+    - fix: quiqqer/quiqqer#521 - Media Detailansicht verhindert Ordner Navigation
+    - fix: quiqqer/quiqqer#518 - Absturz beim erstellen einer neuen Toolbar
+    - fix: quiqqer/quiqqer#532 - upload.php did not pass messages to the end user
+    - fix: quiqqer/quiqqer#536 - Groß geschriebene Datei-Endungen werden im Media-Bereich nicht als Bild erkannt
+    - fix: quiqqer/quiqqer#537 - Mit Rechtsklick Datei im Media umbenennen
+    - fix: quiqqer/quiqqer#524 - Nginx: FastCGI Pamater erweitern.
+    - fix: quiqqer/quiqqer#483 - Endloses Laden wenn Systemverwaltung mit nicht SU Nutzer aufgerufen wird
+    - fix: quiqqer/quiqqer#516 - Meldung anzeigen wenn Backend-Login nicht erlaubt
+    - fix: quiqqer/quiqqer#515 - Fehlerhafte Umsetzung von hreflang
+    - fix: quiqqer/quiqqer#504 - Gelöschte CSP Regeln kommen nach dem Speichern wieder
+    - fix: quiqqer/quiqqer#514 - Setup: SQL Fehler doppelter Eintrag von Permissions.
+    - fix: quiqqer/quiqqer#513 - Setup: Standard Seitenstruktur für alle Sprachen anlegen. (Bisher wird nur Deutsch beachtet)
+    - fix: quiqqer/quiqqer#400 - var/media order zusammenführen
+    - fix: quiqqer/quiqqer#496 - Update Server hinzufügen: Fehlende Übersicht
+    - fix: quiqqer/quiqqer#334 - Pfade von Kind-Seiten beim Speichern einer Seite beachten
+    - fix: quiqqer/quiqqer#489 - Gruppen: Parent-Gruppe ändern
+    - fix: quiqqer/quiqqer#503 - Lock-Fehler behoben
 
-1.0.13
+    - fix: quiqqer/package-bricks#64 - Bausteine in einer Seite lassen sich nicht mehr aufrufen
+    - fix: quiqqer/package-meta#3 - Permalink funktioniert nicht; Bug in Rewrite wenn setSite genutzt wurde
+
+
+1.0.13 (30.03.2017)
 ------
 
     Benutzer
@@ -61,7 +115,7 @@
     - feat: New way to generate the NGINX config.
 
 
-1.0.12
+1.0.12 (11.01.2017)
 ------
 
     Benutzer
