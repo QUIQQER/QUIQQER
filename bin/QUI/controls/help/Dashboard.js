@@ -155,7 +155,7 @@ define('controls/help/Dashboard', [
                     Entry = lastEdited[i];
 
                     text = Entry.name + ' (' + Entry.project + ',' + Entry.lang + ')' +
-                           ' - ' + Entry.e_date;
+                        ' - ' + Entry.e_date;
 
                     new Element('div', {
                         'class'       : 'quiqqer-dashboard-last-edit-result-entry smooth',
@@ -178,7 +178,7 @@ define('controls/help/Dashboard', [
          * @param {DOMEvent} event
          */
         $openSitePanel: function (event) {
-            if (typeOf(event) == 'domevent') {
+            if (typeOf(event) === 'domevent') {
                 event.stop();
             }
 
