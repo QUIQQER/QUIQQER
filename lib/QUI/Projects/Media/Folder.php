@@ -1310,16 +1310,17 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         $filePath    = StringUtils::replaceDblSlashes($filePath);
-        $imageWidth  = '';
-        $imageHeight = '';
+        $imageWidth  = null;
+        $imageHeight = null;
 
         if (isset($new_file_info['width']) && $new_file_info['width']) {
-            $imageWidth = $new_file_info['width'];
+            $imageWidth = (int)$new_file_info['width'];
         }
 
         if (isset($new_file_info['height']) && $new_file_info['height']) {
-            $imageHeight = $new_file_info['height'];
+            $imageHeight = (int)$new_file_info['height'];
         }
+
 
         QUI::getDataBase()->insert($table, array(
             'name'         => $new_file_info['filename'],
