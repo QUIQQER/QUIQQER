@@ -61,10 +61,15 @@
     background: rgba(255, 255, 255, 1.0);
     height: 100%;
     left: 0;
+    padding: 20px;
     position: absolute;
     top: 0;
     width: 100%;
     z-index: 10;
+}
+
+.quiqqer-packages-search-termsofuse button {
+    margin-top: 20px;
 }
 
 .qui-controls-packages-search-toggle {
