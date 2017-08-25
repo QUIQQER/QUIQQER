@@ -69,21 +69,12 @@ QUI::$Ajax->registerFunction(
                 'text.mail.body'
             );
 
-            $DebugOutput        = new stdClass();
-            $DebugOutput->debug = "\n";
-
-            $Mail->SMTPDebug   = 2;
-            $Mail->Debugoutput = function ($str, $level) use ($DebugOutput) {
-                $DebugOutput->debug .= rtrim($str) . "\n";
+            $Mail->SMTPDebug   = 3;
+            $Mail->Debugoutput = function ($str, $level) {
+                QUI\System\Log::writeRecursive(rtrim($str).PHP_EOL);
             };
 
             $Mail->send();
-
-            QUI\System\Log::addInfo(
-                $DebugOutput->debug,
-                $params,
-                'mailtest'
-            );
         } catch (\Exception $Exception) {
             throw new QUI\Exception(
                 $Exception->getMessage(),
