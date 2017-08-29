@@ -1,71 +1,80 @@
-
-<table class="data-table site-data" data-name="media-settings">
-<thead>
+<table class="data-table data-table-flexbox site-data">
+    <thead>
     <tr>
-        <th colspan="2">
-            {t}quiqqer/system projects.project.site.panel.settings.media{/t}
+        <th>
+            {locale group="quiqqer/system" var="projects.project.site.panel.settings.media"}
+            <div class="description">
+                {locale group="quiqqer/system" var="projects.project.site.panel.settings.media.info"}
+            </div>
         </th>
     </tr>
+    </thead>
+    <tbody>
+
     <tr>
-        <td class="{cycle values="odd,even" reset=true}" colspan="2">
-            {t}quiqqer/system projects.project.site.panel.settings.media.info{/t}
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {locale group="quiqqer/system" var="projects.project.site.panel.settings.media.emotion_image"}
+                </span>
+                <input name="image_emotion" class="media-image field-container-field" />
+            </label>
         </td>
     </tr>
-</thead>
-<tbody>
-    <tr class="{cycle values="odd,even"}" data-name="media-settings-emotion">
-        <td class="grid-20">
-            {t}quiqqer/system projects.project.site.panel.settings.media.emotion_image{/t}
-        </td>
-        <td class="grid-80">
-            <input type="text" name="image_emotion" class="media-image" />
-        </td>
-    </tr>
-    <tr class="{cycle values="odd,even"}" data-name="media-settings-siteimage">
-        <td class="grid-20">
-            {t}quiqqer/system projects.project.site.panel.settings.media.site_image{/t}
-        </td>
-        <td class="grid-80">
-            <input type="text" name="image_site" class="media-image" data-qui-options-cssclasses="1" />
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {locale group="quiqqer/system" var="projects.project.site.panel.settings.media.site_image"}
+                </span>
+                <input name="image_site" class="media-image field-container-field" data-qui-options-cssclasses="1" />
+            </label>
         </td>
     </tr>
-</tbody>
+
+    </tbody>
 </table>
 
-
-<table class="data-table site-data data-table-closed" data-name="publication-settings">
-<thead>
+<table class="data-table data-table-flexbox site-data">
+    <thead>
     <tr>
-        <th colspan="2">
-            {t}quiqqer/system projects.project.site.panel.settings.publication{/t}
+        <th>
+            {locale group="quiqqer/system" var="projects.project.site.panel.settings.publication"}
         </th>
     </tr>
-</thead>
-<tbody>
-    <tr class="{cycle values="odd,even" reset=true}">
-        <td class="grid-20">
-            {t}quiqqer/system projects.project.site.panel.settings.publication.from{/t}
-        </td>
-        <td class="grid-80">
-            <input type="datetime" name="release_from" />
-        </td>
-    </tr>
-    <tr class="{cycle values="odd,even"}">
-        <td class="grid-20">
-            {t}quiqqer/system projects.project.site.panel.settings.publication.to{/t}
-        </td>
-        <td class="grid-80">
-            <input type="datetime" name="release_to" />
+    </thead>
+    <tbody>
+
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {locale group="quiqqer/system" var="projects.project.site.panel.settings.publication.from"}
+                </span>
+                <input type="datetime" name="release_from" />
+            </label>
         </td>
     </tr>
     <tr>
-        <td colspan="2" class="desc {cycle values="odd,even"}">
-            {t}quiqqer/system projects.project.site.panel.settings.publication.info{/t}
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {locale group="quiqqer/system" var="projects.project.site.panel.settings.publication.to"}
+                </span>
+                <input type="datetime" name="release_to" />
+            </label>
         </td>
     </tr>
-</tbody>
+    <tr>
+        <td>
+            <div class="description">
+                {locale group="quiqqer/system" var="projects.project.site.panel.settings.publication.info"}
+            </div>
+        </td>
+    </tr>
+
+    </tbody>
 </table>
 
+<!-- don't delete this comment -->
 <!-- extra plugin settings -->
-
-
