@@ -118,15 +118,9 @@ form.qui-site-data {
     margin-top: 5px;
 }
 
-/*.qui-site-data .data-table input,*/
-/*.qui-site-data .data-table select,*/
-/*.qui-site-data .data-table textarea {*/
-/*width: calc(100% - 150px);*/
-/*}*/
-
 .qui-site-data .data-table input[type="date"],
 .qui-site-data .data-table input[type="datetime"] {
-    width: calc(100% - 50px);
+    width: calc(100% - 250px);
 }
 
 .qui-site-data .data-table input[type="checkbox"],
