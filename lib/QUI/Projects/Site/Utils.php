@@ -64,8 +64,8 @@ class Utils
         // Prüfung des Namens - Sonderzeichen
         if (preg_match($signs, $name)) { // #locale
             throw new QUI\Exception(
-                'In der URL "' . $name
-                . '" dürfen folgende Zeichen nicht verwendet werden: _-.,:;#@`!§$%&/?<>=\'"[]+',
+                'In der URL "'.$name
+                .'" dürfen folgende Zeichen nicht verwendet werden: _-.,:;#@`!§$%&/?<>=\'"[]+',
                 702
             );
         }
@@ -123,8 +123,8 @@ class Utils
         // @todo als event
         // URL Filter
         $name   = $Project->getAttribute('name');
-        $filter = USR_DIR . 'lib/' . $name . '/url.filter.php';
-        $func   = 'url_filter_' . $name;
+        $filter = USR_DIR.'lib/'.$name.'/url.filter.php';
+        $func   = 'url_filter_'.$name;
 
         $filter = Orthos::clearPath(realpath($filter));
 
@@ -168,7 +168,7 @@ class Utils
 
 
         foreach ($dbXmlList as $package) {
-            $file = OPT_DIR . $package . '/database.xml';
+            $file = OPT_DIR.$package.'/database.xml';
 
             if (!file_exists($file)) {
                 continue;
@@ -285,7 +285,7 @@ class Utils
                 $suffix = $Table->getAttribute('name');
                 $fields = $Table->getElementsByTagName('field');
 
-                $table = QUI::getDBTableName($name . '_' . $lang . '_' . $suffix);
+                $table = QUI::getDBTableName($name.'_'.$lang.'_'.$suffix);
                 $data  = array();
 
 
@@ -345,7 +345,7 @@ class Utils
 
 
         foreach ($siteXmlList as $package) {
-            $file = OPT_DIR . $package . '/site.xml';
+            $file = OPT_DIR.$package.'/site.xml';
 
             if (!file_exists($file)) {
                 continue;
@@ -372,9 +372,9 @@ class Utils
         if (isset($type[1])) {
             $expr
                 =
-                '//site/types/type[@type="' . $type[1] . '"]/attributes/attribute';
+                '//site/types/type[@type="'.$type[1].'"]/attributes/attribute';
 
-            $siteXmlFile = OPT_DIR . $type[0] . '/site.xml';
+            $siteXmlFile = OPT_DIR.$type[0].'/site.xml';
 
             $Dom  = XML::getDomFromXml($siteXmlFile);
             $Path = new \DOMXPath($Dom);
@@ -421,7 +421,7 @@ class Utils
         $result      = '';
 
         foreach ($siteXmlList as $package) {
-            $file = OPT_DIR . $package . '/site.xml';
+            $file = OPT_DIR.$package.'/site.xml';
 
             if (!file_exists($file)) {
                 continue;
@@ -432,15 +432,15 @@ class Utils
             $cats = $Path->query("//site/settings/category");
 
             foreach ($cats as $Category) {
-                $result .= DOM::parseCategorieToHTML($Category);
+                $result .= DOM::parseCategoryToHTML($Category);
             }
         }
 
 
         // site type extra xml
         $type    = explode(':', $Site->getAttribute('type'));
-        $dir     = OPT_DIR . $type[0];
-        $siteXML = $dir . '/site.xml';
+        $dir     = OPT_DIR.$type[0];
+        $siteXML = $dir.'/site.xml';
 
         if (file_exists($siteXML)) {
             $Dom  = XML::getDomFromXml($siteXML);
@@ -448,11 +448,11 @@ class Utils
 
             // type extra
             $cats = $Path->query(
-                "//site/types/type[@type='" . $type[1] . "']/settings/category"
+                "//site/types/type[@type='".$type[1]."']/settings/category"
             );
 
             foreach ($cats as $Category) {
-                $result .= DOM::parseCategorieToHTML($Category);
+                $result .= DOM::parseCategoryToHTML($Category);
             }
         }
 
@@ -484,8 +484,8 @@ class Utils
 
         // site type extra xml
         $type    = explode(':', $Site->getAttribute('type'));
-        $dir     = OPT_DIR . $type[0];
-        $siteXML = $dir . '/site.xml';
+        $dir     = OPT_DIR.$type[0];
+        $siteXML = $dir.'/site.xml';
 
         $result = array();
 
@@ -495,7 +495,7 @@ class Utils
 
             // type extra
             $modules = $Path->query(
-                "//site/types/type[@type='" . $type[1] . "']/admin/js"
+                "//site/types/type[@type='".$type[1]."']/admin/js"
             );
 
             foreach ($modules as $Module) {

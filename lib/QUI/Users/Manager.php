@@ -1846,7 +1846,7 @@ class Manager
 
             /* @var $Tab \DOMElement */
             foreach ($tabs as $Tab) {
-                $extend .= DOM::parseCategorieToHTML($Tab);
+                $extend .= DOM::parseCategoryToHTML($Tab);
             }
         }
 
