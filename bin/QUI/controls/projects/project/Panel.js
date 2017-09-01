@@ -190,7 +190,7 @@ define('controls/projects/project/Panel', [
 
             // language select
             this.$LanguageSelect = new QUISelect({
-                title : 'Sprachauswahl',
+                title : Locale.get('quiqqer/system', 'projects.project.panel.languageSwitch'),
                 styles: {
                     width: 100
                 },
@@ -319,7 +319,7 @@ define('controls/projects/project/Panel', [
             this.$Button = new QUIButton({
                 name  : 'projects',
                 image : 'fa fa-arrow-circle-left',
-                title : 'Projekt Auswahl',
+                title : Locale.get('quiqqer/system', 'projects.project.panel.projectSelect'),
                 events: {
                     onClick: function (Btn, event) {
                         if (typeof event !== 'undefined') {
@@ -387,11 +387,11 @@ define('controls/projects/project/Panel', [
                     // no projects exists
                     var Body = self.getBody();
 
-                    Body.set('html', '<p>Leider existieren noch keine Projekte</p>'); // #locale
+                    Body.set('html', Locale.get('quiqqer/system', 'projects.project.panel.message.no.project'));
 
                     new QUIButton({
                         textimage: 'fa fa-home',
-                        text     : 'Projekt erstellen', // #locale
+                        text     : Locale.get('quiqqer/system', 'projects.project.panel.create'),
                         events   : {
                             onClick: function () {
                                 var PM = new ProjectManager();

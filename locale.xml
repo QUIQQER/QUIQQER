@@ -2907,7 +2907,26 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[An diese Stelle hochladen]]></de>
             <en><![CDATA[Upload to this location]]></en>
         </locale>
-
+        <locale name="projects.project.panel.languageSwitch">
+            <de><![CDATA[Sprachauswahl]]></de>
+            <en><![CDATA[Language selection]]></en>
+        </locale>
+        <locale name="projects.project.panel.projectSelect">
+            <de><![CDATA[Projektauswahl]]></de>
+            <en><![CDATA[Project selection]]></en>
+        </locale>
+        <locale name="projects.project.panel.message.no.project" html="true">
+            <de><![CDATA[
+            <p>Leider existieren noch keine Projekte</p>
+            ]]></de>
+            <en><![CDATA[
+            Sorry, there are no projects yet.
+            ]]></en>
+        </locale>
+        <locale name="projects.project.panel.create">
+            <de><![CDATA[Projekt erstellen]]></de>
+            <en><![CDATA[Create project]]></en>
+        </locale>
 
         <locale name="usersAndGroups.input.search.placeholder">
             <de><![CDATA[Suche nach einer Gruppe oder Benutzer...]]></de>
