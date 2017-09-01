@@ -160,9 +160,10 @@ define('controls/projects/project/Panel', [
          * @method controls/projects/project/Panel#$onCreate
          */
         $onCreate: function () {
-            var self = this;
+            var self    = this,
+                Content = this.getContent();
 
-            this.getBody().set(
+            Content.set(
                 'html',
 
                 '<div class="project-container">' +
@@ -172,7 +173,7 @@ define('controls/projects/project/Panel', [
                 '<div class="project-search"></div>'
             );
 
-            var Content = this.getBody();
+            Content.setStyle('opacity', 0);
 
             this.$ProjectContainer = Content.getElement('.project-container');
             this.$ProjectList      = Content.getElement('.project-list');
@@ -367,12 +368,6 @@ define('controls/projects/project/Panel', [
                 self.Loader.show();
 
                 Projects.getList(function (result) {
-                    if (Object.getLength(result) > 1) {
-                        self.Loader.hide();
-                        self.$Button.click();
-                        return;
-                    }
-
                     if (Object.getLength(result)) {
                         for (var key in result) {
                             if (!result.hasOwnProperty(key)) {
@@ -412,7 +407,6 @@ define('controls/projects/project/Panel', [
 
                     self.Loader.hide();
                 });
-
             }).delay(250);
         },
 
@@ -420,6 +414,19 @@ define('controls/projects/project/Panel', [
          * event : on panel resize
          */
         $onResize: function () {
+            var self    = this,
+                Content = this.getContent();
+
+            if (parseInt(Content.getStyle('opacity')) === 0) {
+                moofx(Content).animate({
+                    opacity: 1
+                }, {
+                    duration: 250,
+                    callback: function () {
+                        self.getContent().setStyle('opacity', null);
+                    }
+                });
+            }
         },
 
         /**
@@ -452,6 +459,12 @@ define('controls/projects/project/Panel', [
 
             this.$LanguageSelect.disable();
             this.$MediaButton.disable();
+
+            this.setAttributes({
+                title: Locale.get('quiqqer/system', 'projects.project.panel.title')
+            });
+
+            this.refresh();
 
             Projects.getList(function (result) {
                 if (!Object.getLength(result)) {
