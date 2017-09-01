@@ -274,39 +274,68 @@ define('utils/Panels', function () {
         openTrashPanel: function (callback) {
             var self = this;
 
-            require([
-                'qui/QUI',
-                'controls/trash/Panel'
-            ], function (QUI, TrashPanel) {
-                var name   = 'panel-trash',
-                    panels = QUI.Controls.get(name);
+            return new Promise(function (resolve, reject) {
+                require([
+                    'qui/QUI',
+                    'controls/trash/Panel'
+                ], function (QUI, TrashPanel) {
+                    var name   = 'panel-trash',
+                        panels = QUI.Controls.get(name);
 
-                if (panels.length) {
-                    panels[0].open();
+                    if (panels.length) {
+                        panels[0].open();
 
-                    // if a task exist, click it and open the instance
-                    var Task = panels[0].getAttribute('Task');
+                        // if a task exist, click it and open the instance
+                        var Task = panels[0].getAttribute('Task');
 
-                    if (Task && Task.getType() === 'qui/controls/taskbar/Task') {
-                        panels[0].getAttribute('Task').click();
+                        if (Task && Task.getType() === 'qui/controls/taskbar/Task') {
+                            panels[0].getAttribute('Task').click();
+                        }
+
+                        if (typeof callback !== 'undefined') {
+                            callback(panels[0]);
+                        }
+
+                        return;
                     }
+
+                    var Panel = new TrashPanel({
+                        name: name
+                    });
+
+                    self.openPanelInTasks(Panel);
 
                     if (typeof callback !== 'undefined') {
-                        callback(panels[0]);
+                        callback(Panel);
                     }
 
-                    return;
-                }
+                    resolve(Panel);
+                }, reject);
+            });
+        },
 
-                var Panel = new TrashPanel({
-                    name: name
+        /**
+         * opens the project settings
+         *
+         * @param {String} project
+         * @return {Promise}
+         */
+        openProjectSettings: function (project) {
+            var self = this;
+
+            return new Promise(function (resolve) {
+                require([
+                    'Projects',
+                    'controls/projects/project/Settings'
+                ], function (Projects, Settings) {
+                    self.openPanelInTasks(
+                        new Settings({
+                            project: project
+                        })
+                    );
+
+                    resolve();
                 });
-
-                self.openPanelInTasks(Panel);
-
-                if (typeof callback !== 'undefined') {
-                    callback(Panel);
-                }
             });
         },
 
@@ -318,13 +347,10 @@ define('utils/Panels', function () {
          * @return Promise
          */
         openPanelInTasks: function (Panel) {
-
             var self = this;
 
             return new Promise(function (resolve, reject) {
-
                 require(['qui/QUI'], function (QUI) {
-
                     var i, len, Child;
 
                     var pType  = Panel.getType(),
@@ -341,8 +367,8 @@ define('utils/Panels', function () {
                             if ((Panel.getAttribute('title') !== Child.getAttribute('title')) &&
 
                                 (Panel.getAttribute('#id') &&
-                                Child.getAttribute('#id') &&
-                                Panel.getAttribute('#id') !== Child.getAttribute('#id'))) {
+                                    Child.getAttribute('#id') &&
+                                    Panel.getAttribute('#id') !== Child.getAttribute('#id'))) {
 
                                 continue;
                             }

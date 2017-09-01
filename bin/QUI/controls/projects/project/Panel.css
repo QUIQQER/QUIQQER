@@ -36,3 +36,32 @@
 .project-list .qui-sitemap-entry-icon img {
     margin: 10px 0 0 4px;
 }
+
+.project-search {
+    background: #F2F2F2;
+    height: 40px;
+    padding: 2px;
+}
+
+.project-search button,
+.project-search input {
+    box-shadow: none;
+    border-radius: 0;
+    line-height: 36px;
+    margin: 0;
+}
+
+.project-search .qui-sitemap-filter input {
+    border: none;
+    border-radius: 2px 0 0 2px;
+    margin: 0;
+    padding: 0 10px;
+    width: calc(100% - 40px);
+}
+
+.project-search .qui-sitemap-filter button {
+    border-radius: 0 2px 2px 0;
+    line-height: 36px !important;
+    margin: 0 !important;
+    width: 40px !important;
+}

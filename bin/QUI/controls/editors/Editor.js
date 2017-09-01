@@ -99,7 +99,10 @@ define('controls/editors/Editor', [
         create: function () {
             this.$Elm = new Element('div', {
                 html   : '<div class="control-editor-container"></div>',
-                'class': 'control-editor'
+                'class': 'control-editor',
+                styles : {
+                    minHeight: 300
+                }
             });
 
             this.Loader = new QUILoader().inject(this.$Elm);

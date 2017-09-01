@@ -25,6 +25,7 @@ define('controls/projects/project/Panel', [
     'utils/Panels',
 
     'qui/controls/buttons/Button',
+    'qui/controls/buttons/Select',
     'qui/controls/buttons/Separator',
     'qui/controls/sitemap/Map',
     'qui/controls/sitemap/Item',
@@ -45,13 +46,14 @@ define('controls/projects/project/Panel', [
         PanelUtils         = arguments[3],
 
         QUIButton          = arguments[4],
-        QUIButtonSeparator = arguments[5],
-        QUISitemap         = arguments[6],
-        QUISitemapItem     = arguments[7],
-        QUISitemapFilter   = arguments[8],
+        QUISelect          = arguments[5],
+        QUIButtonSeparator = arguments[6],
+        QUISitemap         = arguments[7],
+        QUISitemapItem     = arguments[8],
+        QUISitemapFilter   = arguments[9],
 
-        Locale             = arguments[9],
-        ProjectManager     = arguments[10];
+        Locale             = arguments[10],
+        ProjectManager     = arguments[11];
 
     /**
      * @class controls/projects/project/Panel
@@ -100,6 +102,9 @@ define('controls/projects/project/Panel', [
             this.$ProjectSearch    = null;
             this.$ProjectContent   = null;
 
+            this.$LanguageSelect = null;
+            this.$MediaButton    = null;
+
             this.$__fx_run = false;
 
             Projects.addEvents({
@@ -136,6 +141,8 @@ define('controls/projects/project/Panel', [
          * refresh the project list
          */
         refresh: function () {
+            this.parent();
+
             if (!this.$ProjectList) {
                 return;
             }
@@ -173,18 +180,82 @@ define('controls/projects/project/Panel', [
             this.$ProjectContent   = Content.getElement('.project-content');
 
             this.$ProjectContainer.setStyles({
-                height: 'calc( 100% - 45px )'
+                height: 'calc(100% - 40px)'
             });
 
             this.$ProjectList.setStyles({
                 left: -300
             });
 
+            // language select
+            this.$LanguageSelect = new QUISelect({
+                title : 'Sprachauswahl',
+                styles: {
+                    width: 100
+                },
+                events: {
+                    onChange: function (value) {
+                        if (value === self.getAttribute('lang')) {
+                            return;
+                        }
+
+                        self.setAttribute('lang', value);
+                        self.openProject();
+                    }
+                }
+            });
+
+            this.addButton(this.$LanguageSelect);
+
+            this.$MediaButton = new QUIButton({
+                textimage: 'fa fa-picture-o',
+                text     : Locale.get('quiqqer/system', 'projects.project.panel.media'),
+                styles   : {
+                    'float': 'right'
+                },
+                events   : {
+                    onClick: function (Btn) {
+                        Btn.setAttribute('textimage', '');
+
+                        require(['controls/projects/project/Panel'], function (Panel) {
+                            new Panel().openMediaPanel(
+                                self.getAttribute('project')
+                            );
+
+                            Btn.setAttribute('textimage', 'fa fa-picture-o');
+                        });
+                    }
+                }
+            });
+
+            this.addButton(this.$MediaButton);
+
+
             // draw filter
+            new QUIButton({
+                icon  : 'fa fa-trash',
+                styles: {
+                    width: 40
+                },
+                events: {
+                    onClick: function (Btn) {
+                        Btn.setAttribute('icon', 'fa fa-spinner fa-spin');
+
+                        require(['utils/Panels'], function (Utils) {
+                            Utils.openTrashPanel().then(function () {
+                                Btn.setAttribute('icon', 'fa fa-trash');
+                            });
+                        });
+                    }
+                }
+            }).inject(this.$ProjectSearch);
+
             this.$Filter = new QUISitemapFilter(null, {
                 styles: {
-                    background : '#F2F2F2',
-                    paddingLeft: 30
+                    background: '#F2F2F2',
+                    'float'   : 'right',
+                    height    : 38,
+                    width     : 'calc(100% - 100px)'
                 },
                 events: {
                     onFilter: function (Filter, result) {
@@ -201,18 +272,11 @@ define('controls/projects/project/Panel', [
                 }
             }).inject(this.$ProjectSearch);
 
-            this.$Filter.getElm().getElement('input').setStyles({
-                width: 'calc(100% - 100px)'
-            });
-
             // site search
             new QUIButton({
                 icon  : 'fa fa-search',
                 title : Locale.get('quiqqer/system', 'projects.project.panel.open.search'),
                 alt   : Locale.get('quiqqer/system', 'projects.project.panel.open.search'),
-                styles: {
-                    paddingTop: 2
-                },
                 events: {
                     onClick: function () {
                         require([
@@ -254,6 +318,7 @@ define('controls/projects/project/Panel', [
             this.$Button = new QUIButton({
                 name  : 'projects',
                 image : 'fa fa-arrow-circle-left',
+                title : 'Projekt Auswahl',
                 events: {
                     onClick: function (Btn, event) {
                         if (typeof event !== 'undefined') {
@@ -355,20 +420,6 @@ define('controls/projects/project/Panel', [
          * event : on panel resize
          */
         $onResize: function () {
-            //            var Body      = this.getBody(),
-            //                Container = this.$ProjectContainer,
-            //                Search    = this.$ProjectSearch;
-            //
-            //            var height = Body.getComputedSize().height;
-            //
-            //            if ( !height || !Container || !this.$ProjectSearch ) {
-            //                return;
-            //            }
-            //
-            //            Container.setStyle(
-            //                'height',
-            //                height - Search.getComputedSize().totalHeight
-            //            );
         },
 
         /**
@@ -399,6 +450,9 @@ define('controls/projects/project/Panel', [
                 this.$Map.destroy();
             }
 
+            this.$LanguageSelect.disable();
+            this.$MediaButton.disable();
+
             Projects.getList(function (result) {
                 if (!Object.getLength(result)) {
                     self.$ProjectContainer.setStyle('overflow', null);
@@ -408,7 +462,7 @@ define('controls/projects/project/Panel', [
 
 
                 var i, l, langs, len, Map, Project,
-                    func_project_click, func_media_click, func_trash_click;
+                    func_project_click, func_media_click, func_trash_click, func_settings_click;
 
                 var List = self.$ProjectList;
 
@@ -430,6 +484,19 @@ define('controls/projects/project/Panel', [
 
                 func_trash_click = function () {
                     PanelUtils.openTrashPanel();
+                };
+
+                func_settings_click = function (Itm) {
+                    var project = Itm.getAttribute('project'),
+                        lang    = Itm.getAttribute('lang');
+
+                    Itm.setAttribute('icon', 'fa fa-spinner fa-spin');
+
+                    require(['utils/Panels'], function (Utils) {
+                        Utils.openProjectSettings(project, lang).then(function () {
+                            Itm.setAttribute('icon', 'fa fa-gears');
+                        });
+                    });
                 };
 
                 if (self.$Filter) {
@@ -500,7 +567,7 @@ define('controls/projects/project/Panel', [
                         })
                     );
 
-                    // Media
+                    // Trash
                     Project.appendChild(
                         new QUISitemapItem({
                             text   : Locale.get('quiqqer/system', 'projects.project.panel.tash'),
@@ -512,6 +579,17 @@ define('controls/projects/project/Panel', [
                         })
                     );
 
+                    // Settings
+                    Project.appendChild(
+                        new QUISitemapItem({
+                            text   : Locale.get('quiqqer/system', 'projects.project.panel.settings'),
+                            icon   : 'fa fa-gears',
+                            project: i,
+                            events : {
+                                onClick: func_settings_click
+                            }
+                        })
+                    );
 
                     List.appendChild(Map.create());
 
@@ -556,25 +634,15 @@ define('controls/projects/project/Panel', [
             var self      = this,
                 List      = this.$ProjectList,
                 Container = this.$ProjectContent,
-                lang      = this.getAttribute('lang'),
+                project   = this.getAttribute('project'),
+                lang      = this.getAttribute('lang');
 
-                Project   = Projects.get(
-                    this.getAttribute('project'),
-                    this.getAttribute('lang')
-                );
+            var Project = Projects.get(project, lang);
 
             Container.setStyle('overflow', 'hidden');
 
-            Container.set(
-                'html',
-                '<h2>' + Projects.get(this.getAttribute('project')).getTitle() + '</h2>'
-            );
-
-            Container.getElement('h2').setStyles({
-                margin    : '20px 0 0 20px',
-                background: 'url(' + URL_BIN_DIR + '16x16/flags/' + lang + '.png) no-repeat left center',
-                padding   : '0 0 0 20px'
-            });
+            this.setAttribute('title', Project.getTitle());
+            this.refresh();
 
             // create the project sitemap in the panel
             if (this.$Map) {
@@ -584,7 +652,7 @@ define('controls/projects/project/Panel', [
             this.$Map = new ProjectSitemap({
                 project: Project.getAttribute('name'),
                 lang   : Project.getAttribute('lang'),
-                media  : true
+                media  : false
             });
 
             this.$Sitemap = this.$Map.getMap();
@@ -595,13 +663,10 @@ define('controls/projects/project/Panel', [
                     var title = MapItem.getAttribute('text') + ' - ' +
                         MapItem.getAttribute('value');
 
-                    MapItem.getContextMenu()
-                           .setTitle(title)
-                           .setPosition(
-                               event.page.x,
-                               event.page.y
-                           )
-                           .show();
+                    MapItem.getContextMenu().setTitle(title).setPosition(
+                        event.page.x,
+                        event.page.y
+                    ).show();
 
                     event.stop();
                 }
@@ -617,6 +682,31 @@ define('controls/projects/project/Panel', [
             });
 
             this.$Button.setNormal();
+
+            // project select
+            this.$LanguageSelect.clear();
+            this.$LanguageSelect.disable();
+            this.$MediaButton.enable();
+
+            Project.getConfig(false, 'langs').then(function (langs) {
+                langs = langs.split(',');
+
+                if (!langs.length) {
+                    self.$LanguageSelect.hide();
+                    return;
+                }
+
+                langs.each(function (lng) {
+                    self.$LanguageSelect.appendChild(
+                        Locale.get('quiqqer/system', 'language.' + lng),
+                        lng,
+                        URL_BIN_DIR + '16x16/flags/' + lng + '.png'
+                    );
+
+                    self.$LanguageSelect.enable();
+                    self.$LanguageSelect.setValue(Project.getLang());
+                });
+            });
 
             List.setStyle('boxShadow', '0 6px 20px 0 rgba(0, 0, 0, 0.19)');
 
@@ -704,7 +794,7 @@ define('controls/projects/project/Panel', [
             PanelUtils.openSitePanel(project, lang, id, function (Panel) {
                 Panel.addEvents({
                     onShow: function (Panel) {
-                        if (Panel.getType() != 'controls/projects/project/site/Panel') {
+                        if (Panel.getType() !== 'controls/projects/project/site/Panel') {
                             return;
                         }
 
@@ -712,11 +802,11 @@ define('controls/projects/project/Panel', [
                             project   = self.getAttribute('project'),
                             lang      = self.getAttribute('lang');
 
-                        if (project != PanelSite.getProject().getName()) {
+                        if (project !== PanelSite.getProject().getName()) {
                             return;
                         }
 
-                        if (lang != PanelSite.getProject().getLang()) {
+                        if (lang !== PanelSite.getProject().getLang()) {
                             return;
                         }
 

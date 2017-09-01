@@ -2859,6 +2859,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Media]]></de>
             <en><![CDATA[Media]]></en>
         </locale>
+        <locale name="projects.project.panel.settings">
+            <de><![CDATA[Einstellungen]]></de>
+            <en><![CDATA[Settings]]></en>
+        </locale>
         <locale name="projects.project.panel.media.contextMenu.trash">
             <de><![CDATA[In den Papierkorb verschieben]]></de>
             <en><![CDATA[Move to the Trash]]></en>
