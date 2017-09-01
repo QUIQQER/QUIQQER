@@ -240,8 +240,13 @@ define('controls/packages/System', [
                             return;
                         }
 
-                        MH.addError(Error.getMessage());
-                        Loading.finish(Error.getMessage(), 'error');
+                        if ("getMessage" in Error) {
+                            MH.addError(Error.getMessage());
+                            Loading.finish(Error.getMessage(), 'error');
+                            return;
+                        }
+
+                        console.error(Error);
                     });
                 });
 
@@ -392,11 +397,11 @@ define('controls/packages/System', [
                 Package = new Element('div', {
                     'class'       : 'packages-package qui-control-packages-system-package-viewTile',
                     'html'        : '<div class="qui-control-packages-system-package-viewTile-text">' +
-                                    '  <span class="package">' + pkg.package + '</span>' +
-                                    '  <span class="version">' + pkg.version + '</span>' +
-                                    '  <span class="oldVersion">' + pkg.oldVersion + '</span>' +
-                                    '</div>' +
-                                    '<div class="qui-control-packages-system-package-viewTile-buttons"></div>',
+                    '  <span class="package">' + pkg.package + '</span>' +
+                    '  <span class="version">' + pkg.version + '</span>' +
+                    '  <span class="oldVersion">' + pkg.oldVersion + '</span>' +
+                    '</div>' +
+                    '<div class="qui-control-packages-system-package-viewTile-buttons"></div>',
                     title         : QUILocale.get(lg, 'packages.panel.system.packageUpdate.title', {
                         package: pkg.package,
                         version: pkg.version
@@ -405,7 +410,7 @@ define('controls/packages/System', [
                 }).inject(this.$Result);
 
                 Update.clone().addEvent('click', this.$onPackageUpdate)
-                    .inject(Package.getElement('.qui-control-packages-system-package-viewTile-buttons'));
+                      .inject(Package.getElement('.qui-control-packages-system-package-viewTile-buttons'));
             }
         },
 
@@ -428,11 +433,11 @@ define('controls/packages/System', [
                 Package = new Element('div', {
                     'class'       : 'packages-package qui-control-packages-system-package-viewList',
                     'html'        : '<div class="qui-control-packages-system-package-viewList-text">' +
-                                    '  <span class="package">' + pkg.package + '</span>' +
-                                    '  <span class="oldVersion">' + pkg.oldVersion + '</span>' +
-                                    '  <span class="version">' + pkg.version + '</span>' +
-                                    '</div>' +
-                                    '<div class="qui-control-packages-system-package-viewList-buttons"></div>',
+                    '  <span class="package">' + pkg.package + '</span>' +
+                    '  <span class="oldVersion">' + pkg.oldVersion + '</span>' +
+                    '  <span class="version">' + pkg.version + '</span>' +
+                    '</div>' +
+                    '<div class="qui-control-packages-system-package-viewList-buttons"></div>',
                     events        : {
                         click: this.$onPackageUpdate
                     },
@@ -444,7 +449,7 @@ define('controls/packages/System', [
                 Package.getElement('.oldVersion').set('title', pkg.oldVersion);
 
                 Update.clone().addEvent('click', this.$onPackageUpdate)
-                    .inject(Package.getElement('.qui-control-packages-system-package-viewList-buttons'));
+                      .inject(Package.getElement('.qui-control-packages-system-package-viewList-buttons'));
             }
         },
 
