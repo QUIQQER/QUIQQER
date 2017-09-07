@@ -871,6 +871,17 @@ define('controls/projects/project/site/Panel', [
                                 .addClass('data-table-closed');
                         }
 
+                        // search editor controls
+                        if (Category.getAttribute('name') === 'settings') {
+                            var Editors = Body.getElements('[data-qui="controls/editors/Editor"]');
+
+                            if (Editors.length) {
+                                Editors.set('data-qui', null);
+                                console.error('Please don\'t include controls/editors/Editor in Settings.');
+                            }
+                        }
+
+
                         // set data
                         QUIFormUtils.setDataToForm(Site.getAttributes(), Form);
 
