@@ -1398,8 +1398,10 @@ define('controls/grid/Grid', [
                 nsel = [];
 
             for (i = 0, len = sel.length; i < len; i++) {
-                if (sel[i].hasClass('selected')) {
-                    nsel.push(sel[i]);
+                var RowElm = this.getRowElement(i);
+
+                if (RowElm.hasClass('selected')) {
+                    nsel.push(RowElm);
                 }
             }
 
@@ -2877,6 +2879,7 @@ define('controls/grid/Grid', [
                         dat[cml.dataIndex] !== null &&
                         dat[cml.dataIndex].toString().toLowerCase().indexOf(key) > -1) {
                         el.removeClass(filterHideCls);
+                        this.unSelectRow(el);
                         break;
                     }
                 }
