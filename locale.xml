@@ -877,6 +877,14 @@
             <de><![CDATA[Initiiert ein Passwort-Reset]]></de>
             <en><![CDATA[Initiates a password reset]]></en>
         </locale>
+        <locale name="console.tool.project.rename.description">
+            <de><![CDATA[Benennt ein vorhandenes Projekt um.]]></de>
+            <en><![CDATA[Changes the name of an existing project.]]></en>
+        </locale>
+        <locale name="console.tool.project.delete.description">
+            <de><![CDATA[Entfernt ein Projekt.]]></de>
+            <en><![CDATA[Removes a project.]]></en>
+        </locale>
 
         <locale name="message.config.saved">
             <de><![CDATA[Die Konfiguration wurde erfolgreich gespeichert.]]></de>
@@ -976,6 +984,88 @@
             Unfortunately, the upload was not successful.
             For more error information, please look at the error.log.
             ]]></en>
+        </locale>
+
+        <!-- Consoletool: quiqqer:rename-project -->
+        <locale name="console.tool.project.rename.project.not.found">
+            <de><![CDATA[Das ausgewählte Projekt wurde nicht gefunden.]]></de>
+            <en><![CDATA[The selected project was not found.]]></en>
+        </locale>
+        <locale name="console.tool.project.rename.prompt.new.name">
+            <de><![CDATA[Bitte geben Sie den neuen Projektnamen ein: ]]></de>
+            <en><![CDATA[Please enter the new projectname: ]]></en>
+        </locale>
+        <locale name="console.tool.project.rename.validation.invalid.signs">
+            <de><![CDATA[Der neue Name enthält unzulässige Zeichen.]]></de>
+            <en><![CDATA[The chosen name contains invalid characters.]]></en>
+        </locale>
+        <locale name="console.tool.project.rename.validation.clear.name">
+            <de><![CDATA[Der Name wurde automatisch bereinigt: ]]></de>
+            <en><![CDATA[The name has been cleared automatically: ]]></en>
+        </locale>
+        <locale name="console.tool.project.rename.prompt.continue.new.name">
+            <de><![CDATA[Möchten Sie mit dem bereinigten Namen fortfahren? (y/n) ]]></de>
+            <en><![CDATA[Do you want to continue with the cleared name? (y/n) ]]></en>
+        </locale>
+        <locale name="console.tool.project.rename.finished.success">
+            <de><![CDATA[Das Projekt wurde erfolgreich umbenannt]]></de>
+            <en><![CDATA[The project has been renamed successfully]]></en>
+        </locale>
+        <locale name="console.tool.project.rename.prompt.projectname">
+            <de><![CDATA[Aktueller Projektname: ]]></de>
+            <en><![CDATA[Current projectname: ]]></en>
+        </locale>
+        <locale name="console.tool.project.rename.prompt.projectname.info">
+            <de><![CDATA[Welches Projekt möchten Sie umbenennen: ]]></de>
+            <en><![CDATA[Which project should be renamed: ]]></en>
+        </locale>
+
+        <!-- Consoletool: quiqqer:delete-project -->
+        <locale name="console.tool.project.delete.warning.header">
+            <de><![CDATA[Achtung!]]></de>
+            <en><![CDATA[Attention!]]></en>
+        </locale>
+        <locale name="console.tool.project.delete.warning">
+            <de><![CDATA[Das Löschen eines Projekts kann nicht rückgängig gemacht werden!]]></de>
+            <en><![CDATA[Deleting a project can not be undone!]]></en>
+        </locale>
+        <locale name="console.tool.project.delete.prompt.projectname.info">
+            <de><![CDATA[Welches Projekt soll gelöscht werden?]]></de>
+            <en><![CDATA[Which project should be removed?]]></en>
+        </locale>
+        <locale name="console.tool.project.delete.prompt.projectname">
+            <de><![CDATA[Projektname:]]></de>
+            <en><![CDATA[Projectname:]]></en>
+        </locale>
+        <locale name="console.tool.project.delete.project.not.found">
+            <de><![CDATA[Das ausgewählte Projekt wurde nicht gefunden.]]></de>
+            <en><![CDATA[The selected project was not found.]]></en>
+        </locale>
+        <locale name="console.tool.project.delete.project.delete.last.project">
+            <de>
+                <![CDATA[Fehler: Sie versuchen das letzte Projekt zu löschen. Es muss immer mindestens ein Projekt existieren.]]>
+            </de>
+            <en>
+                <![CDATA[Error: You tried to delete the last project. There must exist at least one project at any given time!]]>
+            </en>
+        </locale>
+        <locale name="console.tool.project.delete.prompt.warning.confirm">
+            <de>
+                <![CDATA[Sind Sie sich sicher, dass das Projekt gelöscht werden soll? Bitte bestätigen Sie dies durch die erneute Eingabe des Projektnamens]]></de>
+            <en>
+                <![CDATA[Are you really sure that the project should be deleted? Please confirm by entering the projects name again:]]></en>
+        </locale>
+        <locale name="console.tool.project.delete.prompt.projectname.confirm">
+            <de><![CDATA[Projektname:]]></de>
+            <en><![CDATA[Projectname:]]></en>
+        </locale>
+        <locale name="console.tool.project.delete.error.confirm.mismatch">
+            <de><![CDATA[Die Bestätigungseingabe stimmt nicht überein. Abbruch!]]></de>
+            <en><![CDATA[The confirmation did not match. Aborting!]]></en>
+        </locale>
+        <locale name="console.tool.project.delete.success.finished">
+            <de><![CDATA[Das Projekt wurde erfolgreich gelöscht.]]></de>
+            <en><![CDATA[The project was deleted successfully.]]></en>
         </locale>
     </groups>
 
