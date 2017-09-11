@@ -201,6 +201,7 @@ class Project
      * @param string $group
      * @param string $var
      * @param QUI\Projects\Project $Project
+     *
      * @return array|string
      */
     protected static function parseForUrl($group, $var, QUI\Projects\Project $Project)
@@ -209,5 +210,53 @@ class Project
         $str = QUI\Projects\Site\Utils::clearUrl($str, $Project);
 
         return $str;
+    }
+
+    /**
+     * Validates the priojects name
+     * 
+     * @param $projectName
+     *
+     * @return bool
+     * @throws QUI\Exception
+     */
+    public static function validateProjectName($projectName)
+    {
+        $forbiddenSigns = array(
+            '-',
+            '.',
+            ',',
+            ':',
+            ';',
+            '#',
+            '`',
+            '!',
+            '§',
+            '$',
+            '%',
+            '&',
+            '/',
+            '?',
+            '<',
+            '>',
+            '=',
+            '\'',
+            '"'
+        );
+
+        if (preg_match("@[-.,:;#`!§$%&/?<>\=\'\" ]@", $projectName)) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.project.not.allowed.signs',
+                    array(
+                        'signs' => implode(' ', $forbiddenSigns)
+                    )
+                ),
+                802
+            );
+        }
+        
+        return true;
     }
 }

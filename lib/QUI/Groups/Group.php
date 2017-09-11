@@ -1011,6 +1011,8 @@ class Group extends QUI\QDOM
         // set standard permissions
         QUI::getPermissionManager()->importPermissionsForGroup($Group, $ParentUser);
 
+        QUI::getEvents()->fireEvent('onGroupCreate', array($Group));
+
         return $Group;
     }
 
