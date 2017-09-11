@@ -1887,6 +1887,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Der Ordner wurde erfolgreich gespeichert]]></de>
             <en><![CDATA[The Folder has been saved successfully]]></en>
         </locale>
+        <locale name="exception.permission.session.expired">
+            <de><![CDATA[Ihre Sitzung ist abgelaufen, bitte loggen Sie sich ein.]]></de>
+            <en><![CDATA[Your session has expired, please login.]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js">
         <locale name="controls.licensekeypanel.title">
@@ -6546,10 +6550,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="permissions.message.delete.success">
             <de><![CDATA[Zugriffsrecht erfolgreich gelöscht.]]></de>
             <en><![CDATA[Permission successfuly deleted.]]></en>
-        </locale>
-        <locale name="exception.permission.session.expired">
-            <de><![CDATA[Ihre Sitzung ist abgelaufen, bitte loggen Sie sich ein.]]></de>
-            <en><![CDATA[Your session has expired, please login.]]></en>
         </locale>
         <locale name="exception.permission.no.admin">
             <de><![CDATA[Sie besitzen nicht die nötigen Rechte sich an der Administration anzumelden.]]></de>
