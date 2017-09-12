@@ -1,8 +1,12 @@
 <?php
 
+/**
+ * This file contains \QUI\System\Console\Tools\RenameProject
+ */
+
 namespace QUI\System\Console\Tools;
 
-
+use QUI;
 use QUI\Projects\Manager;
 use QUI\System\Console\Tool;
 use QUI\Utils\Project;
@@ -25,9 +29,8 @@ class RenameProject extends Tool
     {
         $this->setName("quiqqer:rename-project");
         $this->setDescription(
-            \QUI::getLocale()->get("quiqqer/quiqqer", "console.tool.project.rename.description")
+            QUI::getLocale()->get("quiqqer/quiqqer", "console.tool.project.rename.description")
         );
-
     }
 
     /**
@@ -41,7 +44,7 @@ class RenameProject extends Tool
         $this->oldProjectName = trim($this->readInput());
 
         try {
-            $this->Project = \QUI::getProject($this->oldProjectName);
+            $this->Project = QUI::getProject($this->oldProjectName);
         } catch (\Exception $Exception) {
             $this->writeLnLocale("console.tool.project.rename.project.not.found", "white");
             $this->writeLn("");
@@ -66,7 +69,7 @@ class RenameProject extends Tool
         }
 
 
-        \QUI::getProjectManager()->rename($this->oldProjectName, $this->newProjectName);
+        QUI::getProjectManager()->rename($this->oldProjectName, $this->newProjectName);
 
         $this->writeLnLocale("console.tool.project.rename.finished.success");
         $this->writeLn("");
@@ -117,9 +120,8 @@ class RenameProject extends Tool
      */
     protected function writeLnLocale($locale, $color = false, $background = false)
     {
-        $text = \QUI::getLocale()->get("quiqqer/quiqqer", $locale);
+        $text = QUI::getLocale()->get("quiqqer/quiqqer", $locale);
 
         $this->writeLn($text, $color, $background);
     }
-
 }

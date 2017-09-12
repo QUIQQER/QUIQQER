@@ -213,8 +213,8 @@ class Project
     }
 
     /**
-     * Validates the priojects name
-     * 
+     * Validates the projects name
+     *
      * @param $projectName
      *
      * @return bool

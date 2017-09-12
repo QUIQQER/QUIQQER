@@ -831,10 +831,16 @@ class Manager
         QUI::getEvents()->fireEvent('deleteProject', array($project));
     }
 
+    /**
+     * Renames the given project
+     *
+     * @param string $oldName - The projects current name
+     * @param string $newName - The new name for the project
+     */
     public static function rename($oldName, $newName)
     {
         QUI\Utils\Project::validateProjectName($newName);
-        
+
         $Project = self::getProject($oldName);
         // ----------------------------- //
         //              Config           //
@@ -871,12 +877,18 @@ class Manager
         }
 
         foreach ($tables as $oldTableName) {
-            if (strpos($oldTableName . "_", $oldName) === false) {
+            if (strpos($oldTableName . "_", QUI_DB_PRFX . $oldName) === false) {
                 continue;
             }
 
-            $newTableName = str_replace($oldName . "_", $newName . "_", $oldTableName);
-            
+
+            $newTableName = preg_replace(
+                "~^" . QUI_DB_PRFX . $oldName . "_~m",
+                QUI_DB_PRFX . $newName . "_",
+                $oldTableName
+            );
+
+
             $sql  = "ALTER TABLE " . $oldTableName . " RENAME " . $newTableName . ";";
             $Stmt = \QUI::getDataBase()->getPDO()->prepare($sql);
 
@@ -892,8 +904,8 @@ class Manager
         //              Media           //
         // ----------------------------- //
 
-        $sourceDir = CMS_DIR."media/sites/" . $oldName;
-        $targetDir = CMS_DIR."media/sites/" . $newName;
+        $sourceDir = CMS_DIR . "media/sites/" . $oldName;
+        $targetDir = CMS_DIR . "media/sites/" . $newName;
 
         if (is_dir($sourceDir)) {
             rename($sourceDir, $targetDir);

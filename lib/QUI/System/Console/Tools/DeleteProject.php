@@ -1,9 +1,12 @@
 <?php
 
+/**
+ * This file contains QUI\System\Console\Tools\DeleteProject
+ */
 namespace QUI\System\Console\Tools;
 
+use QUI;
 use QUI\System\Console\Tool;
-
 
 /**
  * Class RenameProject
@@ -19,13 +22,12 @@ class DeleteProject extends Tool
     {
         $this->setName("quiqqer:delete-project");
         $this->setDescription(
-            \QUI::getLocale()->get("quiqqer/quiqqer", "console.tool.project.delete.description")
+            QUI::getLocale()->get("quiqqer/quiqqer", "console.tool.project.delete.description")
         );
     }
 
     /**
      * Executes the tool
-     * 
      */
     public function execute()
     {
@@ -37,7 +39,7 @@ class DeleteProject extends Tool
         $projectName = $this->readInput();
 
         try {
-            $Project = \QUI::getProject($projectName);
+            $Project = QUI::getProject($projectName);
         } catch (\Exception $Exception) {
             $this->writeLnLocale("console.tool.project.delete.project.not.found", "light_red");
             $this->writeLn("");
@@ -45,7 +47,7 @@ class DeleteProject extends Tool
         }
 
         // Check if this project is the only one
-        if (\QUI::getProjectManager()->count() == 1) {
+        if (QUI::getProjectManager()->count() == 1) {
             $this->writeLnLocale("console.tool.project.delete.project.delete.last.project", "light_red");
             $this->writeLn("");
             exit;
@@ -63,7 +65,7 @@ class DeleteProject extends Tool
             exit;
         }
 
-        \QUI::getProjectManager()->deleteProject($Project);
+        QUI::getProjectManager()->deleteProject($Project);
 
         $this->writeLnLocale("console.tool.project.delete.success.finished", "light_green");
         $this->writeLn("");
@@ -78,7 +80,7 @@ class DeleteProject extends Tool
      */
     protected function writeLnLocale($locale, $color = false, $background = false)
     {
-        $text = \QUI::getLocale()->get("quiqqer/quiqqer", $locale);
+        $text = QUI::getLocale()->get("quiqqer/quiqqer", $locale);
 
         $this->writeLn($text, $color, $background);
     }
