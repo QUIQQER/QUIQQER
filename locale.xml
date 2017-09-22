@@ -709,6 +709,10 @@
             <de><![CDATA[Composer-Lizenzserver für alle kostenpflichtigen Pakete]]></de>
             <en><![CDATA[Composer license server for all non-free packages]]></en>
         </locale>
+        <locale name="site.type.standard">
+            <de><![CDATA[Einfacher Inhalt]]></de>
+            <en><![CDATA[Default content]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -784,21 +788,21 @@
         </locale>
 
         <locale name="projects.defaultstructure.privacypolicy.name">
-            <de><![CDATA[Datenschutzerklärung]]></de>
+            <de><![CDATA[Datenschutz]]></de>
             <en><![CDATA[Privacy policy]]></en>
         </locale>
         <locale name="projects.defaultstructure.privacypolicy.title">
-            <de><![CDATA[Datenschutzerklärung]]></de>
+            <de><![CDATA[Datenschutz]]></de>
             <en><![CDATA[Legal notice]]></en>
         </locale>
 
         <locale name="projects.defaultstructure.generalTermsAndConditions.name">
-            <de><![CDATA[Allgemeine Geschäftsbedingungen]]></de>
-            <en><![CDATA[General terms and conditions]]></en>
+            <de><![CDATA[AGB]]></de>
+            <en><![CDATA[Terms and conditions]]></en>
         </locale>
         <locale name="projects.defaultstructure.generalTermsAndConditions.title">
-            <de><![CDATA[Allgemeine Geschäftsbedingungen]]></de>
-            <en><![CDATA[General terms and conditions]]></en>
+            <de><![CDATA[AGB]]></de>
+            <en><![CDATA[Terms and conditions]]></en>
         </locale>
 
         <locale name="exception.delete.originalfile.notfound">

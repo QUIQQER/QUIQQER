@@ -183,7 +183,7 @@ define('controls/projects/TypeSitemap', [
                         new QUISitemapItem({
                             name       : packageName,
                             value      : packageName,
-                            text       : packageName,
+                            text       : Locale.get('quiqqer/quiqqer', 'site.type.standard'),
                             alt        : packageName,
                             icon       : result[packageName].icon,
                             hasChildren: false

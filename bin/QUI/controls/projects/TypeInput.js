@@ -15,9 +15,11 @@ define('controls/projects/TypeInput', [
     'controls/projects/TypeButton',
     'controls/projects/TypeWindow',
     'Plugins',
+    'Locale',
+
     'css!controls/projects/TypeInput.css'
 
-], function (QUIControl, TypeButton, TypeWindow, Plugins) {
+], function (QUIControl, TypeButton, TypeWindow, Plugins, QUILocale) {
     "use strict";
 
     /**
@@ -127,7 +129,18 @@ define('controls/projects/TypeInput', [
                 title: '...'
             });
 
-            Plugins.getTypeName(this.$Input.value, function (result) {
+            var value = this.$Input.value;
+
+
+            if (!value || value === '' || value === 'standard') {
+                self.$Text.set({
+                    html : QUILocale.get('quiqqer/quiqqer', 'site.type.standard'),
+                    title: QUILocale.get('quiqqer/quiqqer', 'site.type.standard')
+                });
+                return;
+            }
+
+            Plugins.getTypeName(value, function (result) {
                 if (self.$Text) {
                     self.$Text.set({
                         html : result,
