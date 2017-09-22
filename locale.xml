@@ -709,6 +709,10 @@
             <de><![CDATA[Composer-Lizenzserver für alle kostenpflichtigen Pakete]]></de>
             <en><![CDATA[Composer license server for all non-free packages]]></en>
         </locale>
+        <locale name="site.type.standard">
+            <de><![CDATA[Einfacher Inhalt]]></de>
+            <en><![CDATA[Default content]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -784,21 +788,21 @@
         </locale>
 
         <locale name="projects.defaultstructure.privacypolicy.name">
-            <de><![CDATA[Datenschutzerklärung]]></de>
+            <de><![CDATA[Datenschutz]]></de>
             <en><![CDATA[Privacy policy]]></en>
         </locale>
         <locale name="projects.defaultstructure.privacypolicy.title">
-            <de><![CDATA[Datenschutzerklärung]]></de>
+            <de><![CDATA[Datenschutz]]></de>
             <en><![CDATA[Legal notice]]></en>
         </locale>
 
         <locale name="projects.defaultstructure.generalTermsAndConditions.name">
-            <de><![CDATA[Allgemeine Geschäftsbedingungen]]></de>
-            <en><![CDATA[General terms and conditions]]></en>
+            <de><![CDATA[AGB]]></de>
+            <en><![CDATA[Terms and conditions]]></en>
         </locale>
         <locale name="projects.defaultstructure.generalTermsAndConditions.title">
-            <de><![CDATA[Allgemeine Geschäftsbedingungen]]></de>
-            <en><![CDATA[General terms and conditions]]></en>
+            <de><![CDATA[AGB]]></de>
+            <en><![CDATA[Terms and conditions]]></en>
         </locale>
 
         <locale name="exception.delete.originalfile.notfound">
@@ -876,6 +880,14 @@
         <locale name="console.systemtool.password-reset">
             <de><![CDATA[Initiiert ein Passwort-Reset]]></de>
             <en><![CDATA[Initiates a password reset]]></en>
+        </locale>
+        <locale name="console.tool.project.rename.description">
+            <de><![CDATA[Benennt ein vorhandenes Projekt um.]]></de>
+            <en><![CDATA[Changes the name of an existing project.]]></en>
+        </locale>
+        <locale name="console.tool.project.delete.description">
+            <de><![CDATA[Entfernt ein Projekt.]]></de>
+            <en><![CDATA[Removes a project.]]></en>
         </locale>
 
         <locale name="message.config.saved">
@@ -976,6 +988,88 @@
             Unfortunately, the upload was not successful.
             For more error information, please look at the error.log.
             ]]></en>
+        </locale>
+
+        <!-- Consoletool: quiqqer:rename-project -->
+        <locale name="console.tool.project.rename.project.not.found">
+            <de><![CDATA[Das ausgewählte Projekt wurde nicht gefunden.]]></de>
+            <en><![CDATA[The selected project was not found.]]></en>
+        </locale>
+        <locale name="console.tool.project.rename.prompt.new.name">
+            <de><![CDATA[Bitte geben Sie den neuen Projektnamen ein: ]]></de>
+            <en><![CDATA[Please enter the new projectname: ]]></en>
+        </locale>
+        <locale name="console.tool.project.rename.validation.invalid.signs">
+            <de><![CDATA[Der neue Name enthält unzulässige Zeichen.]]></de>
+            <en><![CDATA[The chosen name contains invalid characters.]]></en>
+        </locale>
+        <locale name="console.tool.project.rename.validation.clear.name">
+            <de><![CDATA[Der Name wurde automatisch bereinigt: ]]></de>
+            <en><![CDATA[The name has been cleared automatically: ]]></en>
+        </locale>
+        <locale name="console.tool.project.rename.prompt.continue.new.name">
+            <de><![CDATA[Möchten Sie mit dem bereinigten Namen fortfahren? (y/n) ]]></de>
+            <en><![CDATA[Do you want to continue with the cleared name? (y/n) ]]></en>
+        </locale>
+        <locale name="console.tool.project.rename.finished.success">
+            <de><![CDATA[Das Projekt wurde erfolgreich umbenannt]]></de>
+            <en><![CDATA[The project has been renamed successfully]]></en>
+        </locale>
+        <locale name="console.tool.project.rename.prompt.projectname">
+            <de><![CDATA[Aktueller Projektname: ]]></de>
+            <en><![CDATA[Current projectname: ]]></en>
+        </locale>
+        <locale name="console.tool.project.rename.prompt.projectname.info">
+            <de><![CDATA[Welches Projekt möchten Sie umbenennen: ]]></de>
+            <en><![CDATA[Which project should be renamed: ]]></en>
+        </locale>
+
+        <!-- Consoletool: quiqqer:delete-project -->
+        <locale name="console.tool.project.delete.warning.header">
+            <de><![CDATA[Achtung!]]></de>
+            <en><![CDATA[Attention!]]></en>
+        </locale>
+        <locale name="console.tool.project.delete.warning">
+            <de><![CDATA[Das Löschen eines Projekts kann nicht rückgängig gemacht werden!]]></de>
+            <en><![CDATA[Deleting a project can not be undone!]]></en>
+        </locale>
+        <locale name="console.tool.project.delete.prompt.projectname.info">
+            <de><![CDATA[Welches Projekt soll gelöscht werden?]]></de>
+            <en><![CDATA[Which project should be removed?]]></en>
+        </locale>
+        <locale name="console.tool.project.delete.prompt.projectname">
+            <de><![CDATA[Projektname:]]></de>
+            <en><![CDATA[Projectname:]]></en>
+        </locale>
+        <locale name="console.tool.project.delete.project.not.found">
+            <de><![CDATA[Das ausgewählte Projekt wurde nicht gefunden.]]></de>
+            <en><![CDATA[The selected project was not found.]]></en>
+        </locale>
+        <locale name="console.tool.project.delete.project.delete.last.project">
+            <de>
+                <![CDATA[Fehler: Sie versuchen das letzte Projekt zu löschen. Es muss immer mindestens ein Projekt existieren.]]>
+            </de>
+            <en>
+                <![CDATA[Error: You tried to delete the last project. There must exist at least one project at any given time!]]>
+            </en>
+        </locale>
+        <locale name="console.tool.project.delete.prompt.warning.confirm">
+            <de>
+                <![CDATA[Sind Sie sich sicher, dass das Projekt gelöscht werden soll? Bitte bestätigen Sie dies durch die erneute Eingabe des Projektnamens]]></de>
+            <en>
+                <![CDATA[Are you really sure that the project should be deleted? Please confirm by entering the projects name again:]]></en>
+        </locale>
+        <locale name="console.tool.project.delete.prompt.projectname.confirm">
+            <de><![CDATA[Projektname:]]></de>
+            <en><![CDATA[Projectname:]]></en>
+        </locale>
+        <locale name="console.tool.project.delete.error.confirm.mismatch">
+            <de><![CDATA[Die Bestätigungseingabe stimmt nicht überein. Abbruch!]]></de>
+            <en><![CDATA[The confirmation did not match. Aborting!]]></en>
+        </locale>
+        <locale name="console.tool.project.delete.success.finished">
+            <de><![CDATA[Das Projekt wurde erfolgreich gelöscht.]]></de>
+            <en><![CDATA[The project was deleted successfully.]]></en>
         </locale>
     </groups>
 
@@ -1886,6 +1980,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="projects.project.site.media.folderPanel.message.save.success">
             <de><![CDATA[Der Ordner wurde erfolgreich gespeichert]]></de>
             <en><![CDATA[The Folder has been saved successfully]]></en>
+        </locale>
+        <locale name="exception.permission.session.expired">
+            <de><![CDATA[Ihre Sitzung ist abgelaufen, bitte loggen Sie sich ein.]]></de>
+            <en><![CDATA[Your session has expired, please login.]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js">
@@ -2907,7 +3005,26 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[An diese Stelle hochladen]]></de>
             <en><![CDATA[Upload to this location]]></en>
         </locale>
-
+        <locale name="projects.project.panel.languageSwitch">
+            <de><![CDATA[Sprachauswahl]]></de>
+            <en><![CDATA[Language selection]]></en>
+        </locale>
+        <locale name="projects.project.panel.projectSelect">
+            <de><![CDATA[Projektauswahl]]></de>
+            <en><![CDATA[Project selection]]></en>
+        </locale>
+        <locale name="projects.project.panel.message.no.project" html="true">
+            <de><![CDATA[
+            <p>Leider existieren noch keine Projekte</p>
+            ]]></de>
+            <en><![CDATA[
+            Sorry, there are no projects yet.
+            ]]></en>
+        </locale>
+        <locale name="projects.project.panel.create">
+            <de><![CDATA[Projekt erstellen]]></de>
+            <en><![CDATA[Create project]]></en>
+        </locale>
 
         <locale name="usersAndGroups.input.search.placeholder">
             <de><![CDATA[Suche nach einer Gruppe oder Benutzer...]]></de>
@@ -6527,10 +6644,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="permissions.message.delete.success">
             <de><![CDATA[Zugriffsrecht erfolgreich gelöscht.]]></de>
             <en><![CDATA[Permission successfuly deleted.]]></en>
-        </locale>
-        <locale name="exception.permission.session.expired">
-            <de><![CDATA[Ihre Sitzung ist abgelaufen, bitte loggen Sie sich ein.]]></de>
-            <en><![CDATA[Your session has expired, please login.]]></en>
         </locale>
         <locale name="exception.permission.no.admin">
             <de><![CDATA[Sie besitzen nicht die nötigen Rechte sich an der Administration anzumelden.]]></de>

@@ -1,10 +1,10 @@
-
 /**
  * @todo -> irgendwann als package manager
  */
 
 define('classes/plugins/Manager', [
 
+    'qui/QUI',
     'qui/classes/DOM',
     'classes/plugins/Plugin',
     'qui/utils/Object',
@@ -12,15 +12,15 @@ define('classes/plugins/Manager', [
     'Plugins',
     'Projects'
 
-], function (DOM, Plugin, ObjectUtils, Ajax, Plugins, Projects) {
+], function (QUI, DOM, Plugin, ObjectUtils, Ajax, Plugins, Projects) {
     "use strict";
 
     return new Class({
 
-        Extends : DOM,
-        Type    : '',
+        Extends: DOM,
+        Type   : 'classes/plugins/Manager',
 
-        initialize : function (options) {
+        initialize: function (options) {
             this.parent(options);
 
             this.$plugins    = {};
@@ -35,15 +35,15 @@ define('classes/plugins/Manager', [
          *     events
          *     methods
          */
-        create : function (plugin, options) {
+        create: function (plugin, options) {
             options      = options || {};
             options.name = plugin;
 
-            this.$plugins[ plugin ] = new Plugin(options);
+            this.$plugins[plugin] = new Plugin(options);
         },
 
 
-        get : function (plugin, onfinish) {
+        get: function (plugin, onfinish) {
             if (this.$plugins[plugin]) {
                 this.$get(plugin, onfinish);
                 return;
@@ -63,7 +63,7 @@ define('classes/plugins/Manager', [
         /**
          * Load ausführen
          */
-        $get : function (plugin, onfinish) {
+        $get: function (plugin, onfinish) {
             if (this.$plugins[plugin].isLoaded()) {
                 onfinish(this.$plugins[plugin]);
                 return;
@@ -81,17 +81,17 @@ define('classes/plugins/Manager', [
          * @param {Function} [onfinish]
          * @param {Object} [params]
          */
-        getTypeName : function (type, onfinish, params) {
-            if (typeof this.$typesNames[ type ] !== 'undefined') {
+        getTypeName: function (type, onfinish, params) {
+            if (typeof this.$typesNames[type] !== 'undefined') {
                 if (typeof onfinish === 'function') {
-                    onfinish(this.$typesNames[ type ]);
+                    onfinish(this.$typesNames[type]);
                 }
 
                 return;
             }
 
             params = ObjectUtils.combine(params, {
-                sitetype : type
+                sitetype: type
             });
 
             Ajax.get('ajax_project_types_get_title', function (result) {
@@ -108,16 +108,14 @@ define('classes/plugins/Manager', [
          * @param {Function} [onfinish] - callback
          * @param {Object} [params]
          */
-        getTypes : function (project, onfinish, params) {
+        getTypes: function (project, onfinish, params) {
             var Project = Projects.get();
 
             if (typeof project !== 'undefined') {
                 Project = Projects.get(project);
             }
 
-            console.log(Project);
-
-            params = params || {};
+            params         = params || {};
             params.project = Project.encode();
 
             Ajax.get('ajax_project_types_get_list', function (result, Ajax) {
