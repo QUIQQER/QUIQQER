@@ -4,24 +4,6 @@
  * @module controls/workspace/Manager
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/loader/Loader
- * @require qui/controls/desktop/Workspace
- * @require qui/controls/desktop/Column
- * @require qui/controls/desktop/Panel
- * @require qui/controls/desktop/Tasks
- * @require qui/controls/windows/Popup
- * @require qui/controls/windows/Submit
- * @require qui/controls/messages/Panel
- * @require controls/help/Welcome
- * @require controls/desktop/panels/Help
- * @require controls/desktop/panels/Bookmarks
- * @require controls/projects/project/Panel
- * @require Ajax
- * @require UploadManager
- * @require css!controls/workspace/Manager.css
- *
  * @event onWorkspaceLoaded [ {self} ]
  * @event onLoadWorkspace [ {self} ]
  */
@@ -50,7 +32,9 @@ define('controls/workspace/Manager', [
     'Ajax',
     'Locale',
     'UploadManager',
+    'Mustache',
 
+    'text!controls/workspace/Create.html',
     'css!controls/workspace/Manager.css'
 
 ], function () {
@@ -77,7 +61,9 @@ define('controls/workspace/Manager', [
         Grid                    = arguments[17],
         Ajax                    = arguments[18],
         Locale                  = arguments[19],
-        UploadManager           = arguments[20];
+        UploadManager           = arguments[20],
+        Mustache                = arguments[21],
+        templateCreate          = arguments[22];
 
 
     return new Class({
@@ -237,7 +223,7 @@ define('controls/workspace/Manager', [
                     self.$loadDefault2Column(Workspace);
 
                     colums2 = {
-                        title    : '2 Spalten',
+                        title    : Locale.get('quiqqer/quiqqer', 'workspaces.2.columns'),
                         data     : JSON.encode(Workspace.serialize()),
                         minHeight: self.$minHeight,
                         minWidth : self.$minWidth
@@ -249,7 +235,7 @@ define('controls/workspace/Manager', [
                     self.$loadDefault3Column(Workspace);
 
                     colums3 = {
-                        title    : '3 Spalten',
+                        title    : Locale.get('quiqqer/quiqqer', 'workspaces.3.columns'),
                         data     : JSON.encode(Workspace.serialize()),
                         minHeight: self.$minHeight,
                         minWidth : self.$minWidth
@@ -396,14 +382,14 @@ define('controls/workspace/Manager', [
                 id = id.toInt();
             }
 
-            if (!id || typeOf(id) != 'number') {
+            if (!id || typeOf(id) !== 'number') {
                 this.$useBestWorkspace();
                 return;
             }
 
             if (typeof this.$spaces[id] === 'undefined') {
                 QUI.getMessageHandler(function (MH) {
-                    MH.addError('Workspace not found');
+                    MH.addError(Locale.get('quiqqer/quiqqer', 'message.workspace.not.found'));
                 });
 
                 this.Loader.hide();
@@ -421,9 +407,8 @@ define('controls/workspace/Manager', [
                 data = JSON.decode(workspace.data);
 
             } catch (e) {
-                // #locale
                 QUI.getMessageHandler().then(function (MH) {
-                    MH.addError('Die Daten Ihres Arbeitsbereiches sind fehlerhaft.');
+                    MH.addError(Locale.get('quiqqer/quiqqer', 'message.error.in.workspace'));
                 });
 
                 this.Workspace.clear();
@@ -449,22 +434,19 @@ define('controls/workspace/Manager', [
             var self = this;
 
             new QUIWindow({
-                title    : 'Standard Arbeitsbereich wählen',
+                title    : Locale.get('quiqqer/quiqqer', 'window.workspaces.select.title'),
                 maxHeight: 200,
                 maxWidth : 500,
                 autoclose: false,
                 buttons  : false,
                 events   : {
                     onOpen: function (Win) {
-                        var Body   = Win.getContent().set(
+                        var Body = Win.getContent().set(
                             'html',
+                            Locale.get('quiqqer/quiqqer', 'window.workspaces.select.text') + '<select></select>'
+                        );
 
-                            // #locale
-                                '<p>Bitte wählen Sie einen Arbeitsbereich aus welchen Sie nutzen möchten</p>' +
-                                '<select></select>'
-                            ),
-
-                            Select = Body.getElement('select');
+                        var Select = Body.getElement('select');
 
                         Select.setStyles({
                             display: 'block',
@@ -836,7 +818,7 @@ define('controls/workspace/Manager', [
             // add panels
             Menu.appendChild(
                 new QUIContextmenuItem({
-                    text  : 'Panels hinzufügen',
+                    text  : Locale.get('quiqqer/quiqqer', 'workspace.contextmenu.add.panel'),
                     icon  : 'fa fa-plus',
                     name  : 'addPanelsToColumn',
                     events: {
@@ -852,7 +834,7 @@ define('controls/workspace/Manager', [
             if (Object.getLength(panels)) {
                 // remove panels
                 var RemovePanels = new QUIContextmenuItem({
-                    text: 'Panel löschen',
+                    text: Locale.get('quiqqer/quiqqer', 'workspace.contextmenu.remove.panel'),
                     name: 'removePanelOfColumn',
                     icon: 'fa fa-trash-o'
                 });
@@ -880,14 +862,14 @@ define('controls/workspace/Manager', [
 
             // add columns
             var AddColumn = new QUIContextmenuItem({
-                text: 'Spalte hinzufügen',
+                text: Locale.get('quiqqer/quiqqer', 'workspace.contextmenu.add.column'),
                 name: 'add_columns',
                 icon: 'fa fa-plus'
             });
 
             AddColumn.appendChild(
                 new QUIContextmenuItem({
-                    text  : 'Spalte davor einfügen',
+                    text  : Locale.get('quiqqer/quiqqer', 'workspace.contextmenu.add.column.before'),
                     name  : 'addColumnBefore',
                     icon  : 'fa fa-long-arrow-left',
                     events: {
@@ -905,7 +887,7 @@ define('controls/workspace/Manager', [
                 })
             ).appendChild(
                 new QUIContextmenuItem({
-                    text  : 'Spalte danach einfügen',
+                    text  : Locale.get('quiqqer/quiqqer', 'workspace.contextmenu.add.column.after'),
                     name  : 'addColumnAfter',
                     icon  : 'fa fa-long-arrow-right',
                     events: {
@@ -929,7 +911,7 @@ define('controls/workspace/Manager', [
             // remove column
             Menu.appendChild(
                 new QUIContextmenuItem({
-                    text  : 'Spalte löschen',
+                    text  : Locale.get('quiqqer/quiqqer', 'workspace.contextmenu.delete.column'),
                     icon  : 'fa fa-trash-o',
                     name  : 'removeColumn',
                     events: {
@@ -998,17 +980,17 @@ define('controls/workspace/Manager', [
             var self = this;
 
             new QUIConfirm({
-                title        : 'Neuen Arbeitsbereich erstellen',
+                title        : Locale.get('quiqqer/quiqqer', 'window.workspaces.add'),
                 icon         : 'fa fa-rocket',
-                maxWidth     : 400,
-                maxHeight    : 500,
+                maxWidth     : 600,
+                maxHeight    : 600,
                 autoclose    : false,
                 ok_button    : {
-                    text     : 'Erstellen',
+                    text     : Locale.get('quiqqer/quiqqer', 'create'),
                     textimage: 'fa fa-check'
                 },
                 cancel_button: {
-                    text     : 'Abbrechen',
+                    text     : Locale.get('quiqqer/quiqqer', 'cancel'),
                     textimage: 'fa fa-remove'
                 },
                 events       : {
@@ -1018,50 +1000,20 @@ define('controls/workspace/Manager', [
                             size    = document.getSize();
 
                         Content.addClass('qui-workspace-manager-window');
+                        Content.set('html', Mustache.render(templateCreate, {
+                            id            : id,
+                            size          : size,
+                            title         : Locale.get('quiqqer/quiqqer', 'window.workspaces.create.header.title'),
+                            labelTitle    : Locale.get('quiqqer/system', 'title'),
+                            labelCols     : Locale.get('quiqqer/quiqqer', 'window.workspaces.create.cols'),
+                            titleUsage    : Locale.get('quiqqer/quiqqer', 'window.workspaces.create.usage'),
+                            labelMinWidth : Locale.get('quiqqer/quiqqer', 'window.workspaces.create.usage.minWidth'),
+                            labelMinHeight: Locale.get('quiqqer/quiqqer', 'window.workspaces.create.usage.minWidth')
+                        }));
+                    },
 
-                        Content.set(
-                            'html',
-
-                            '<table class="data-table">' +
-                            '<thead>' +
-                            '<tr>' +
-                            '<th colspan="2">Arbeitsbereich Einstellungen</th>' +
-                            '</tr>' +
-                            '</thead>' +
-                            '<tbody>' +
-
-                            '<tr class="odd">' +
-                            '<td><label for="workspace-title-' + id + '">Titel</label></td>' +
-                            '<td><input id="workspace-title-' + id + '" name="workspace-title" type="text" value="" /></td>' +
-                            '</tr>' +
-                            '<tr class="even">' +
-                            '<td><label for="workspace-columns-' + id + '">Spalten</label></td>' +
-                            '<td><input id="workspace-columns-' + id + '" name="workspace-columns" type="number" min="1" value="1" /></td>' +
-                            '</tr>' +
-
-                            '</tbody>' +
-                            '</table>' +
-
-                            '<table class="data-table">' +
-                            '<thead>' +
-                            '<tr>' +
-                            '<th colspan="2">Nutzung bei</th>' +
-                            '</tr>' +
-                            '</thead>' +
-                            '<tbody>' +
-
-                            '<tr class="odd">' +
-                            '<td><label for="workspace-minWidth-' + id + '">Minimale Fensterbreite</label></td>' +
-                            '<td><input id="workspace-minWidth-' + id + '" name="workspace-minWidth" type="number" min="1" value="' + size.x + '" /></td>' +
-                            '</tr>' +
-                            '<tr class="even">' +
-                            '<td><label for="workspace-minHeight-' + id + '">Minimale Fensterhöhe</label></td>' +
-                            '<td><input id="workspace-minHeight-' + id + '" name="workspace-minHeight" type="number" min="1" value="' + size.y + '" /></td>' +
-                            '</tr>' +
-
-                            '</tbody>' +
-                            '</table>'
-                        );
+                    onClose: function () {
+                        self.openWorkspaceEdit();
                     },
 
                     onSubmit: function (Win) {
@@ -1128,7 +1080,7 @@ define('controls/workspace/Manager', [
             var self = this;
 
             new QUIWindow({
-                title    : 'Panel-Liste', // #locale
+                title    : Locale.get('quiqqer/quiqqer', 'window.workspaces.panel.list.title'),
                 buttons  : false,
                 maxWidth : 500,
                 maxHeight: 700,
@@ -1196,10 +1148,10 @@ define('controls/workspace/Manager', [
             var self = this;
 
             new QUIWindow({
-                title    : 'Arbeitsbereiche',
+                title    : Locale.get('quiqqer/quiqqer', 'window.workspaces.title'),
                 buttons  : false,
-                maxWidth : 500,
-                maxHeight: 700,
+                maxWidth : 800,
+                maxHeight: 600,
                 events   : {
                     onOpen: function (Win) {
                         Win.Loader.show();
@@ -1209,7 +1161,7 @@ define('controls/workspace/Manager', [
                             GridContainer = new Element('div').inject(Content);
 
                         new Element('p', {
-                            html  : 'Editieren Sie per Doppelklick ihre Arbeitsbereiche',
+                            html  : Locale.get('quiqqer/quiqqer', 'window.workspaces.message'),
                             styles: {
                                 marginBottom: 10
                             }
@@ -1221,26 +1173,41 @@ define('controls/workspace/Manager', [
                                 dataType : 'Integer',
                                 hidden   : true
                             }, {
-                                header   : 'Title',
+                                header   : Locale.get('quiqqer/system', 'title'),
                                 dataIndex: 'title',
                                 dataType : 'string',
                                 width    : 200,
                                 editable : true
                             }, {
-                                header   : 'Fenster Breite',
+                                header   : Locale.get('quiqqer/quiqqer', 'window.workspaces.width'),
                                 dataIndex: 'minWidth',
                                 dataType : 'string',
                                 width    : 100,
                                 editable : true
                             }, {
-                                header   : 'Fenster Höhe',
+                                header   : Locale.get('quiqqer/quiqqer', 'window.workspaces.height'),
                                 dataIndex: 'minHeight',
                                 dataType : 'string',
                                 width    : 100,
                                 editable : true
                             }],
                             buttons          : [{
-                                text     : 'Markierte Arbeitsbereiche löschen',
+                                name     : 'add',
+                                title    : Locale.get('quiqqer/quiqqer', 'window.workspaces.add'),
+                                text     : Locale.get('quiqqer/quiqqer', 'add'),
+                                textimage: 'fa fa-plus',
+                                events   : {
+                                    onClick: function () {
+                                        Win.close();
+                                        self.openCreateWindow();
+                                    }
+                                }
+                            }, {
+                                type: 'separator'
+                            }, {
+                                name     : 'delete',
+                                title    : Locale.get('quiqqer/quiqqer', 'window.workspaces.delete'),
+                                text     : Locale.get('quiqqer/system', 'delete'),
                                 textimage: 'fa fa-trash-o',
                                 disabled : true,
                                 events   : {
@@ -1257,12 +1224,20 @@ define('controls/workspace/Manager', [
                                         Win.close();
 
                                         new QUIConfirm({
+                                            name       : 'delete',
                                             icon       : 'fa fa-trash-o',
-                                            title      : 'Arbeitsbereiche löschen?',
-                                            text       : 'Möchten Sie folgende Arbeitsbereiche wirklich löschen?',
-                                            information: ids.join(','),
-                                            maxWidth   : 500,
-                                            maxHeight  : 400,
+                                            title      : Locale.get('quiqqer/quiqqer', 'window.workspaces.delete.title'),
+                                            text       : Locale.get('quiqqer/quiqqer', 'window.workspaces.delete.text'),
+                                            information: Locale.get('quiqqer/quiqqer', 'window.workspaces.delete.information', {
+                                                ids: ids.join(',')
+                                            }),
+                                            ok_button  : {
+                                                text     : Locale.get('quiqqer/system', 'delete'),
+                                                textimage: 'fa fa-trash'
+                                            },
+                                            texticon   : 'fa fa-trash-o',
+                                            maxWidth   : 450,
+                                            maxHeight  : 300,
                                             autoclose  : false,
                                             events     : {
                                                 onCancel: function () {
@@ -1281,6 +1256,26 @@ define('controls/workspace/Manager', [
                                                 }
                                             }
                                         }).open();
+                                    }
+                                }
+                            }, {
+                                name  : '',
+                                text  : Locale.get('quiqqer/quiqqer', 'workspace.fixed'),
+                                styles: {
+                                    'float': 'right'
+                                },
+                                events: {
+                                    onClick: function (Btn) {
+                                        if (self.Workspace.$fixed) {
+                                            self.unfix();
+                                            Btn.setAttribute('text', Locale.get('quiqqer/quiqqer', 'workspace.flexible'));
+                                            Btn.setAttribute('status', 0);
+                                            return;
+                                        }
+
+                                        self.fix();
+                                        Btn.setAttribute('text', Locale.get('quiqqer/quiqqer', 'workspace.fixed'));
+                                        Btn.setAttribute('status', 1);
                                     }
                                 }
                             }],
@@ -1304,10 +1299,12 @@ define('controls/workspace/Manager', [
                             data: data
                         });
 
-                        var DelButton = EditGrid.getButtons()[0];
-
                         EditGrid.addEvents({
                             onClick: function () {
+                                var DelButton = EditGrid.getButtons().filter(function (Btn) {
+                                    return Btn.getAttribute('name') === 'delete';
+                                })[0];
+
                                 var sels = EditGrid.getSelectedData();
 
                                 if (sels.length) {
@@ -1334,6 +1331,7 @@ define('controls/workspace/Manager', [
                             }
                         });
 
+                        EditGrid.resize();
                         Win.Loader.hide();
                     }
                 }
