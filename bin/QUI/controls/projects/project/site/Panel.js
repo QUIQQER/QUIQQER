@@ -828,13 +828,22 @@ define('controls/projects/project/site/Panel', [
                     );
                 }
 
+                if (Category.getAttribute('type') === 'xml') {
+                    this.$Container.set('html', '');
+
+                    return this.$getCategoryFromXml(Category.getAttribute('name')).then(function (result) {
+                        self.$Container.set('html', result);
+
+                        return QUI.parse(self.$Container);
+                    });
+                }
+
                 if (!Category.getAttribute('template')) {
                     this.$Container.set('html', '');
                     this.$categoryOnLoad(Category);
 
                     return QUI.parse(Category);
                 }
-
 
                 var Site    = self.getSite(),
                     Project = Site.getProject();
@@ -1139,6 +1148,24 @@ define('controls/projects/project/site/Panel', [
                 }
 
                 resolve();
+            });
+        },
+
+        /**
+         * Return the html from a xml category
+         *
+         * @return {Promise}
+         */
+        $getCategoryFromXml: function (name) {
+            var Site    = this.getSite(),
+                Project = Site.getProject();
+
+            return new Promise(function (resolve) {
+                Ajax.get('ajax_site_categories_xml', resolve, {
+                    project : Project.encode(),
+                    id      : Site.getId(),
+                    category: name
+                });
             });
         },
 

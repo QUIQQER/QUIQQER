@@ -13,8 +13,8 @@ QUI::$Ajax->registerFunction(
         $Project = QUI::getProjectManager()->decode($project);
         $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
 
-        $Tabbar   = QUI\Projects\Sites::getTabs($Site);
-        $children = $Tabbar->getChildren();
+        $TabBar   = QUI\Projects\Sites::getTabs($Site);
+        $children = $TabBar->getChildren();
         $result   = array();
 
         /* @var $Itm QUI\Controls\Toolbar\Tab */
