@@ -1437,6 +1437,12 @@
             <de><![CDATA[Pakete installieren]]></de>
             <en><![CDATA[Install packages]]></en>
         </locale>
+
+        <!-- Control: email/Select -->
+        <locale name="control.email.select.placeholder">
+            <de><![CDATA[E-Mail-Adresse]]></de>
+            <en><![CDATA[Email address]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/system" datatype="js,php">

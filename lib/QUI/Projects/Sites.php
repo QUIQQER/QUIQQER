@@ -187,8 +187,8 @@ class Sites
                         'projects.project.site.information'
                     ),
                     'template' => SYS_DIR
-                                  . 'template/site/information_norights.html',
-                    'icon'     => URL_BIN_DIR . '16x16/page.png'
+                                  .'template/site/information_norights.html',
+                    'icon'     => URL_BIN_DIR.'16x16/page.png'
                 ))
             );
 
@@ -206,7 +206,7 @@ class Sites
                         'quiqqer/system',
                         'projects.project.site.information'
                     ),
-                    'template' => SYS_DIR . 'template/site/information.html',
+                    'template' => SYS_DIR.'template/site/information.html',
                     'icon'     => 'fa fa-file-o'
                 ))
             );
@@ -218,7 +218,7 @@ class Sites
                         'quiqqer/system',
                         'projects.project.site.information'
                     ),
-                    'template' => SYS_DIR . 'template/site/noview.html',
+                    'template' => SYS_DIR.'template/site/noview.html',
                     'icon'     => 'fa fa-file-o'
                 ))
             );
@@ -234,7 +234,7 @@ class Sites
                         'projects.project.site.information'
                     ),
                     'template' => SYS_DIR
-                                  . 'template/site/information_norights.html',
+                                  .'template/site/information_norights.html',
                     'icon'     => 'fa fa-file-o'
                 ))
             );
@@ -263,7 +263,7 @@ class Sites
                     'projects.project.site.settings'
                 ),
                 'icon'     => 'fa fa-cog',
-                'template' => SYS_DIR . 'template/site/settings.html'
+                'template' => SYS_DIR.'template/site/settings.html'
             ))
         );
 
@@ -271,14 +271,14 @@ class Sites
         $type  = $Site->getAttribute('type');
         $types = explode(':', $type);
 
-        $file = OPT_DIR . $types[0] . '/site.xml';
+        $file = OPT_DIR.$types[0].'/site.xml';
 
         if (file_exists($file)) {
             $Dom  = XML::getDomFromXml($file);
             $Path = new \DOMXPath($Dom);
 
             QUI\Utils\DOM::addTabsToToolbar(
-                $Path->query("//site/types/type[@type='" . $types[1] . "']/tab"),
+                $Path->query("//site/types/type[@type='".$types[1]."']/tab"),
                 $Tabbar
             );
         }
@@ -293,7 +293,7 @@ class Sites
                 continue;
             }
 
-            $file = OPT_DIR . $package['name'] . '/site.xml';
+            $file = OPT_DIR.$package['name'].'/site.xml';
 
             if (!file_exists($file)) {
                 continue;
@@ -320,7 +320,7 @@ class Sites
                 continue;
             }
 
-            $file = OPT_DIR . $template['name'] . '/site.xml';
+            $file = OPT_DIR.$template['name'].'/site.xml';
 
             if (!file_exists($file)) {
                 continue;
@@ -493,21 +493,21 @@ class Sites
 
             foreach ($langs as $lang) {
                 $tables[] = array(
-                    'table'   => QUI_DB_PRFX . $name . '_' . $lang . '_sites',
+                    'table'   => QUI_DB_PRFX.$name.'_'.$lang.'_sites',
                     'lang'    => $lang,
                     'project' => $name
                 );
             }
         }
 
-        $search = '%' . $search . '%';
+        $search = '%'.$search.'%';
         $query  = '';
 
         foreach ($tables as $table) {
             $where = '';
 
             foreach ($fields as $field) {
-                $where .= $field . ' LIKE :search';
+                $where .= $field.' LIKE :search';
 
                 if ($field !== end($fields)) {
                     $where .= ' OR ';
@@ -515,10 +515,10 @@ class Sites
             }
 
             $query .= '(SELECT
-                            "' . $table['project'] . ' (' . $table['lang'] . ')" as "project",
-                            ' . implode(',', $selectList) . '
-                        FROM `' . $table['table'] . '`
-                        WHERE (' . $where . ') AND deleted = 0) ';
+                            "'.$table['project'].' ('.$table['lang'].')" as "project",
+                            '.implode(',', $selectList).'
+                        FROM `'.$table['table'].'`
+                        WHERE ('.$where.') AND deleted = 0) ';
 
             if ($table !== end($tables)) {
                 $query .= ' UNION ';
@@ -533,7 +533,7 @@ class Sites
                 $page = 0;
             }
 
-            $query .= ' LIMIT ' . ($page * $limit) . ',' . $limit;
+            $query .= ' LIMIT '.($page * $limit).','.$limit;
         }
 
 
