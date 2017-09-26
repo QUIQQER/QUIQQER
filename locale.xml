@@ -1080,6 +1080,30 @@
             <de><![CDATA[Das Projekt wurde erfolgreich gelöscht.]]></de>
             <en><![CDATA[The project was deleted successfully.]]></en>
         </locale>
+        <locale name="console.tool.setup.start.message">
+            <de><![CDATA[Starte QUIQQER Setup ...]]></de>
+            <en><![CDATA[Start QUIQQER Setup ...]]></en>
+        </locale>
+        <locale name="console.tool.setup.start.data" html="1">
+            <de><![CDATA[
+            Aktuelles System<br />
+            Version: [version]<br />
+            Von: [versionDate]<br />
+            Referenz: [ref]<br />
+            Letzte Aktualisierungsprüfung: [date]
+            ]]></de>
+            <en><![CDATA[
+            Current system<br />
+            Version: [version]<br />
+            From: [versionDate]<br />
+            Reference: [ref]<br />
+            Last update check: [date]
+            ]]></en>
+        </locale>
+        <locale name="console.tool.setup.message.success">
+            <de><![CDATA[Das Setup wurde erfolgreich durchgeführt.]]></de>
+            <en><![CDATA[The setup was successful.]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="js">

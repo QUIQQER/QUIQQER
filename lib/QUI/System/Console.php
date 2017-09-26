@@ -576,7 +576,9 @@ class Console
                 break;
 
             case 'setup':
-                QUI\Setup::all();
+                $Tool = new QUI\System\Console\Tools\Setup();
+                $Tool->setAttribute('parent', $this);
+                $Tool->execute();
                 break;
 
             case 'password-reset':
