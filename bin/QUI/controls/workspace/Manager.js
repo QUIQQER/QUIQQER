@@ -13,6 +13,7 @@ define('controls/workspace/Manager', [
     'qui/QUI',
     'qui/controls/Control',
     'qui/controls/loader/Loader',
+    'qui/controls/buttons/Button',
     'qui/controls/desktop/Workspace',
     'qui/controls/desktop/Column',
     'qui/controls/desktop/Panel',
@@ -43,27 +44,28 @@ define('controls/workspace/Manager', [
     var QUI                     = arguments[0],
         QUIControl              = arguments[1],
         QUILoader               = arguments[2],
-        QUIWorkspace            = arguments[3],
-        QUIColumn               = arguments[4],
-        QUIPanel                = arguments[5],
-        QUITasks                = arguments[6],
-        QUIWindow               = arguments[7],
-        QUIConfirm              = arguments[8],
-        QUIMessagePanel         = arguments[9],
-        QUIContextmenuItem      = arguments[10],
-        QUIContextmenuSeparator = arguments[11],
-        QUIControlUtils         = arguments[12],
+        QUIButton               = arguments[3],
+        QUIWorkspace            = arguments[4],
+        QUIColumn               = arguments[5],
+        QUIPanel                = arguments[6],
+        QUITasks                = arguments[7],
+        QUIWindow               = arguments[8],
+        QUIConfirm              = arguments[9],
+        QUIMessagePanel         = arguments[10],
+        QUIContextmenuItem      = arguments[11],
+        QUIContextmenuSeparator = arguments[12],
+        QUIControlUtils         = arguments[13],
 
-        WelcomePanel            = arguments[13],
-        HelpPanel               = arguments[14],
-        BookmarkPanel           = arguments[15],
-        ProjectPanel            = arguments[16],
-        Grid                    = arguments[17],
-        Ajax                    = arguments[18],
-        Locale                  = arguments[19],
-        UploadManager           = arguments[20],
-        Mustache                = arguments[21],
-        templateCreate          = arguments[22];
+        WelcomePanel            = arguments[14],
+        HelpPanel               = arguments[15],
+        BookmarkPanel           = arguments[16],
+        ProjectPanel            = arguments[17],
+        Grid                    = arguments[18],
+        Ajax                    = arguments[19],
+        Locale                  = arguments[20],
+        UploadManager           = arguments[21],
+        Mustache                = arguments[22],
+        templateCreate          = arguments[23];
 
 
     return new Class({
@@ -338,7 +340,7 @@ define('controls/workspace/Manager', [
         loadWorkspace: function (id) {
             if (typeof this.$spaces[id] === 'undefined') {
                 QUI.getMessageHandler(function (MH) {
-                    MH.addError('Workspace not found');
+                    MH.addError(Locale.get('quiqqer/quiqqer', 'message.workspace.not.found'));
                 });
 
                 return;
@@ -396,7 +398,8 @@ define('controls/workspace/Manager', [
                 return;
             }
 
-            var workspace = this.$spaces[id];
+            var self      = this,
+                workspace = this.$spaces[id];
 
             this.$minWidth  = workspace.minWidth;
             this.$minHeight = workspace.minHeight;
@@ -405,14 +408,97 @@ define('controls/workspace/Manager', [
 
             try {
                 data = JSON.decode(workspace.data);
-
             } catch (e) {
                 QUI.getMessageHandler().then(function (MH) {
                     MH.addError(Locale.get('quiqqer/quiqqer', 'message.error.in.workspace'));
                 });
 
                 this.Workspace.clear();
-                this.Loader.hide();
+
+                // load standard
+                new QUIConfirm({
+                    icon       : 'fa fa-laptop',
+                    title      : Locale.get('quiqqer/quiqqer', 'window.workspace.corrupt.title'),
+                    text       : Locale.get('quiqqer/quiqqer', 'window.workspace.corrupt.text'),
+                    texticon   : false,
+                    information: Locale.get('quiqqer/quiqqer', 'window.workspace.corrupt.information'),
+                    maxHeight  : 600,
+                    maxWidth   : 800,
+                    autoclose  : false,
+                    events     : {
+                        onOpen: function (Win) {
+                            var Content = Win.getContent();
+                            var Active  = null;
+
+                            var activate = function (Btn) {
+                                if (Active !== null) {
+                                    Active.setNormal();
+                                }
+
+                                Btn.setActive();
+                                Active = Btn;
+                            };
+
+                            var Container = new Element('div', {
+                                styles: {
+                                    margin   : 10,
+                                    textAlign: 'center',
+                                    width    : '100%'
+                                }
+                            }).inject(Content.getElement('.information'), 'after');
+
+                            var TwoColumns = new QUIButton({
+                                name  : 'twoColumns',
+                                text  : Locale.get('quiqqer/quiqqer', 'workspaces.2.columns'),
+                                styles: {
+                                    'float': 'none',
+                                    margin : 5,
+                                    width  : 160
+                                },
+                                events: {
+                                    onClick: activate
+                                }
+                            }).inject(Container);
+
+                            new QUIButton({
+                                name  : 'threeColumns',
+                                text  : Locale.get('quiqqer/quiqqer', 'workspaces.3.columns'),
+                                styles: {
+                                    'float': 'none',
+                                    margin : 5,
+                                    width  : 160
+                                },
+                                events: {
+                                    onClick: activate
+                                }
+                            }).inject(Container);
+
+                            activate(TwoColumns);
+                        },
+
+                        onSubmit: function (Win) {
+                            Win.Loader.show();
+
+                            var Content        = Win.getContent(),
+                                TwoColumnsNode = Content.getElement('[name="twoColumns"]');
+
+                            var TwoColumns = QUI.Controls.getById(TwoColumnsNode.get('data-quiid'));
+                            var Prom       = TwoColumns.isActive() ? self.getTwoColumnDefault() : self.getThreeColumnDefault();
+
+                            Prom.then(function (result) {
+                                self.Workspace.unserialize(JSON.decode(result));
+                                self.Workspace.fix();
+                                self.Workspace.resize();
+                                self.setAttribute('workspaceId', id);
+
+                                Win.close();
+                                self.Loader.hide();
+                            });
+                        }
+                    }
+                }).open();
+
+                //this.Loader.hide();
                 return;
             }
 
@@ -968,6 +1054,27 @@ define('controls/workspace/Manager', [
             this.focus();
         },
 
+        /**
+         * Return the two column workspace default settings
+         *
+         * @return {Promise|*}
+         */
+        getTwoColumnDefault: function () {
+            return new Promise(function (resolve) {
+                Ajax.get('ajax_desktop_workspace_twoColumns', resolve);
+            });
+        },
+
+        /**
+         * Return the three column workspace default settings
+         *
+         * @return {Promise|*}
+         */
+        getThreeColumnDefault: function () {
+            return new Promise(function (resolve) {
+                Ajax.get('ajax_desktop_workspace_threeColumns', resolve);
+            });
+        },
 
         /**
          * windows
@@ -981,7 +1088,7 @@ define('controls/workspace/Manager', [
 
             new QUIConfirm({
                 title        : Locale.get('quiqqer/quiqqer', 'window.workspaces.add'),
-                icon         : 'fa fa-rocket',
+                icon         : 'fa fa-laptop',
                 maxWidth     : 600,
                 maxHeight    : 600,
                 autoclose    : false,
@@ -1127,7 +1234,6 @@ define('controls/workspace/Manager', [
                                     Icon.inject(Elm, 'top');
                                 }
                             }
-
 
                             Win.Loader.hide();
                         });

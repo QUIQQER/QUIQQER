@@ -25,7 +25,7 @@ class Manager
      */
     public static function table()
     {
-        return QUI_DB_PRFX . 'users_workspaces';
+        return QUI_DB_PRFX.'users_workspaces';
     }
 
     /**
@@ -248,7 +248,7 @@ class Manager
 
         $panels   = array();
         $xmlFiles = array_merge(
-            array(SYS_DIR . 'panels.xml'),
+            array(SYS_DIR.'panels.xml'),
             QUI::getPackageManager()->getPackageXMLFiles('panels.xml')
         );
 
@@ -262,5 +262,25 @@ class Manager
         QUI\Cache\Manager::set($cache, $panels);
 
         return $panels;
+    }
+
+    /**
+     * Return the two column workspace default
+     *
+     * @return string
+     */
+    public static function getTwoColumnDefault()
+    {
+        return file_get_contents(dirname(__FILE__).'/workspaces/twoColumns.js');
+    }
+
+    /**
+     * Return the three column workspace default
+     *
+     * @return string
+     */
+    public static function getThreeColumnDefault()
+    {
+        return file_get_contents(dirname(__FILE__).'/workspaces/threeColumns.js');
     }
 }

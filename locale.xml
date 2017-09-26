@@ -1365,6 +1365,27 @@
             <en><![CDATA[Delete column]]></en>
         </locale>
 
+        <locale name="window.workspace.corrupt.title">
+            <de><![CDATA[Arbeitsbereich ist beschädigt]]></de>
+            <en><![CDATA[Workspace is damaged]]></en>
+        </locale>
+
+        <locale name="window.workspace.corrupt.text">
+            <de><![CDATA[Der Arbeitsbereich ist beschädigt und konnte nicht geladen werden.]]></de>
+            <en><![CDATA[The workspace is corrupted and could not be loaded.]]></en>
+        </locale>
+
+        <locale name="window.workspace.corrupt.information">
+            <de><![CDATA[
+            Es tut uns leid aber der Arbeitsbereich ist beschädigt und konnte nicht wieder hergestellt werden.<br />
+            Wir empfehlen einen der QUIQQER Standard Arbeitsbereiche zu laden.
+            ]]></de>
+            <en><![CDATA[
+            We are sorry but the workspace is damaged and could not be restored. <br />
+            We recommend to load one of the QUIQQER standard workspaces.
+            ]]></en>
+        </locale>
+
 
         <locale name="packages.panel.btn.setup">
             <de><![CDATA[System Setup ausführen]]></de>
