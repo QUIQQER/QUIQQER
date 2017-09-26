@@ -741,7 +741,9 @@ class Console
      */
     public function title()
     {
-        $params = $this->readArgv();
+        $params     = $this->readArgv();
+        $lastUpdate = QUI::getPackageManager()->setLastUpdateDate();
+        $version    = QUI::getPackageManager()->getVersion();
 
         if (isset($params['--noLogo'])) {
             return;
@@ -758,7 +760,7 @@ class Console
         (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
 
 
-            Welcome to QUIQQER.
+        Welcome to QUIQQER Version '.$version.' Last Update '.$lastUpdate.'
 
         ';
 
