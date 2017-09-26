@@ -385,6 +385,15 @@
             <en><![CDATA[Rename]]></en>
         </locale>
 
+        <locale name="cancel">
+            <de><![CDATA[Abbrechen]]></de>
+            <en><![CDATA[Cancel]]></en>
+        </locale>
+        <locale name="create">
+            <de><![CDATA[Erstellen]]></de>
+            <en><![CDATA[Create]]></en>
+        </locale>
+
         <locale name="isActivate">
             <de><![CDATA[Ist aktiviert]]></de>
             <en><![CDATA[Is activate]]></en>
@@ -1227,6 +1236,156 @@
             <de><![CDATA[Lizenz]]></de>
             <en><![CDATA[License]]></en>
         </locale>
+
+        <locale name="menu.workspaces.edit">
+            <de><![CDATA[Einstellungen]]></de>
+            <en><![CDATA[Settings]]></en>
+        </locale>
+        <locale name="window.workspaces.title">
+            <de><![CDATA[Arbeitsbereiche]]></de>
+            <en><![CDATA[Workspaces]]></en>
+        </locale>
+        <locale name="window.workspaces.message">
+            <de><![CDATA[Editieren Sie per Doppelklick ihre Arbeitsbereiche]]></de>
+            <en><![CDATA[Edit your workspaces by double-clicking]]></en>
+        </locale>
+        <locale name="window.workspaces.width">
+            <de><![CDATA[Fensterbreite]]></de>
+            <en><![CDATA[Window width]]></en>
+        </locale>
+        <locale name="window.workspaces.height">
+            <de><![CDATA[Fensterhöhe]]></de>
+            <en><![CDATA[Window height]]></en>
+        </locale>
+        <locale name="window.workspaces.add">
+            <de><![CDATA[Neuen Arbeitsbereich erstellen]]></de>
+            <en><![CDATA[Create new workspace]]></en>
+        </locale>
+        <locale name="window.workspaces.delete">
+            <de><![CDATA[Markierte Arbeitsbereiche löschen]]></de>
+            <en><![CDATA[Delete selected workspaces]]></en>
+        </locale>
+        <locale name="window.workspaces.delete.title">
+            <de><![CDATA[Arbeitsbereiche löschen?]]></de>
+            <en><![CDATA[Delete workspaces?]]></en>
+        </locale>
+        <locale name="window.workspaces.delete.text">
+            <de><![CDATA[Arbeitsbereiche wirklich löschen?]]></de>
+            <en><![CDATA[Really delete the workspaces?]]></en>
+        </locale>
+        <locale name="window.workspaces.delete.information" html="true">
+            <de><![CDATA[
+            Möchten Sie folgende Arbeitsbereiche wirklich löschen?
+            <br /><br />
+            [ids]
+            ]]></de>
+            <en><![CDATA[
+            Are you sure you want to delete the following workspaces?
+            <br /><br />
+            [ids]
+            ]]></en>
+        </locale>
+        <locale name="workspaces.2.columns">
+            <de><![CDATA[2 Spalten]]></de>
+            <en><![CDATA[2 columns]]></en>
+        </locale>
+        <locale name="workspaces.3.columns">
+            <de><![CDATA[3 Spalten]]></de>
+            <en><![CDATA[3 columns]]></en>
+        </locale>
+        <locale name="message.error.in.workspace">
+            <de><![CDATA[Die Daten Ihres Arbeitsbereiches sind fehlerhaft.]]></de>
+            <en><![CDATA[The data in your workspace are incorrect.]]></en>
+        </locale>
+        <locale name="message.workspace.not.found">
+            <de><![CDATA[Der Arbeitsbereich wurde nicht gefunden.]]></de>
+            <en><![CDATA[Workspace not found.]]></en>
+        </locale>
+
+        <locale name="window.workspaces.create.header.title">
+            <de><![CDATA[Arbeitsbereich Einstellungen]]></de>
+            <en><![CDATA[Workspace settings]]></en>
+        </locale>
+        <locale name="window.workspaces.create.cols">
+            <de><![CDATA[Spalten]]></de>
+            <en><![CDATA[Columns]]></en>
+        </locale>
+        <locale name="window.workspaces.create.usage">
+            <de><![CDATA[Nutzung bei]]></de>
+            <en><![CDATA[Use at]]></en>
+        </locale>
+        <locale name="window.workspaces.create.usage.minWidth">
+            <de><![CDATA[Minimale Fensterbreite]]></de>
+            <en><![CDATA[Minimum window width]]></en>
+        </locale>
+        <locale name="window.workspaces.create.usage.minHeight">
+            <de><![CDATA[Minimale Fensterhöhe]]></de>
+            <en><![CDATA[Minimum window height]]></en>
+        </locale>
+
+        <locale name="window.workspaces.select.title">
+            <de><![CDATA[Standard Arbeitsbereich wählen]]></de>
+            <en><![CDATA[Select standard Workspace]]></en>
+        </locale>
+        <locale name="window.workspaces.select.text">
+            <de><![CDATA[
+            <p>Bitte wählen Sie einen Arbeitsbereich aus welchen Sie nutzen möchten</p>
+            ]]></de>
+            <en><![CDATA[
+            <p>Please select a workspace which you would like to use</p>
+            ]]></en>
+        </locale>
+
+        <locale name="window.workspaces.panel.list.title">
+            <de><![CDATA[Panel-Liste]]></de>
+            <en><![CDATA[Panel list]]></en>
+        </locale>
+        <locale name="workspace.contextmenu.add.panel">
+            <de><![CDATA[Panels hinzufügen]]></de>
+            <en><![CDATA[Add Panel]]></en>
+        </locale>
+        <locale name="workspace.contextmenu.remove.panel">
+            <de><![CDATA[Panel löschen]]></de>
+            <en><![CDATA[Remove Panel]]></en>
+        </locale>
+        <locale name="workspace.contextmenu.add.column">
+            <de><![CDATA[Spalte hinzufügen]]></de>
+            <en><![CDATA[Add column]]></en>
+        </locale>
+        <locale name="workspace.contextmenu.add.column.before">
+            <de><![CDATA[Spalte davor hinzufügen]]></de>
+            <en><![CDATA[Add column nefore]]></en>
+        </locale>
+        <locale name="workspace.contextmenu.add.column.after">
+            <de><![CDATA[Spalte danach hinzufügen]]></de>
+            <en><![CDATA[Add column after]]></en>
+        </locale>
+        <locale name="workspace.contextmenu.delete.column">
+            <de><![CDATA[Spalte löschen]]></de>
+            <en><![CDATA[Delete column]]></en>
+        </locale>
+
+        <locale name="window.workspace.corrupt.title">
+            <de><![CDATA[Arbeitsbereich ist beschädigt]]></de>
+            <en><![CDATA[Workspace is damaged]]></en>
+        </locale>
+
+        <locale name="window.workspace.corrupt.text">
+            <de><![CDATA[Der Arbeitsbereich ist beschädigt und konnte nicht geladen werden.]]></de>
+            <en><![CDATA[The workspace is corrupted and could not be loaded.]]></en>
+        </locale>
+
+        <locale name="window.workspace.corrupt.information">
+            <de><![CDATA[
+            Es tut uns leid aber der Arbeitsbereich ist beschädigt und konnte nicht wieder hergestellt werden.<br />
+            Wir empfehlen einen der QUIQQER Standard Arbeitsbereiche zu laden.
+            ]]></de>
+            <en><![CDATA[
+            We are sorry but the workspace is damaged and could not be restored. <br />
+            We recommend to load one of the QUIQQER standard workspaces.
+            ]]></en>
+        </locale>
+
 
         <locale name="packages.panel.btn.setup">
             <de><![CDATA[System Setup ausführen]]></de>

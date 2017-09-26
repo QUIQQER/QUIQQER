@@ -291,7 +291,7 @@ class Manager
 
             $newName = $username;
         } else {
-            $newName = 'Neuer Benutzer';
+            $newName = 'Neuer Benutzer'; // #locale
             $i       = 0;
 
             while ($this->usernameExists($newName)) {
@@ -302,273 +302,22 @@ class Manager
 
         self::checkUsernameSigns($username);
 
-        QUI::getDataBase()->insert(
-            self::table(),
-            array(
-                'id'       => $newId,
-                'username' => $newName,
-                'regdate'  => time(),
-                'lang'     => QUI::getLocale()->getCurrent()
-            )
-        );
+        QUI::getDataBase()->insert(self::table(), array(
+            'id'       => $newId,
+            'username' => $newName,
+            'regdate'  => time(),
+            'lang'     => QUI::getLocale()->getCurrent()
+        ));
 
         $User = $this->get($newId);
 
         // workspace
-        $twoColumn = '[{
-                "attributes": {
-                    "resizeLimit": [],
-                    "height": 775,
-                    "width": 373,
-                    "setting_toggle": true
-                },
-                "children": [
-                    {
-                        "attributes": {
-                            "name": "projects-panel",
-                            "icon": "fa fa-home",
-                            "title": "Projects",
-                            "collapsible": true,
-                            "dragable": false,
-                            "closeButton": false,
-                            "height": 599
-                        },
-                        "type": "controls/projects/project/Panel",
-                        "isOpen": true
-                    },
-                    {
-                        "attributes": {
-                            "title": "Bookmarks",
-                            "icon": "fa fa-bookmark",
-                            "footer": false,
-                            "name": "qui-bookmarks",
-                            "height": 300,
-                            "collapsible": true,
-                            "dragable": false,
-                            "closeButton": false
-                        },
-                        "type": "controls/desktop/panels/Bookmarks",
-                        "bookmarks": [],
-                        "isOpen": false
-                    },
-                    {
-                        "attributes": {
-                            "height": 100,
-                            "collapsible": true,
-                            "dragable": false,
-                            "closeButton": false
-                        },
-                        "type": "qui/controls/messages/Panel",
-                        "isOpen": false
-                    },
-                    {
-                        "attributes": {
-                            "height": 100,
-                            "collapsible": true,
-                            "dragable": false,
-                            "closeButton": false,
-                            "title": "Upload"
-                        },
-                        "type": "controls/upload/Manager",
-                        "isOpen": false
-                    },
-                    {
-                        "attributes": {
-                            "title": "QUIQQER-Hilfe",
-                            "icon": "fa fa-h-square",
-                            "height": 100,
-                            "collapsible": true,
-                            "dragable": false,
-                            "closeButton": false
-                        },
-                        "type": "controls/desktop/panels/Help",
-                        "isOpen": false
-                    }
-                ]
-            },
-            {
-                "attributes": {
-                    "resizeLimit": [],
-                    "height": 775,
-                    "width": 1244
-                },
-                "children": [
-                    {
-                        "attributes": {
-                            "title": "My Panel 1",
-                            "icon": "fa fa-heart",
-                            "name": "tasks"
-                        },
-                        "type": "qui/controls/desktop/Tasks",
-                        "bar": {
-                            "attributes": {
-                                "name": "qui-taskbar-issogpst",
-                                "styles": {
-                                    "bottom": 0,
-                                    "left": 0,
-                                    "position": "absolute"
-                                }
-                            },
-                            "type": "qui/controls/taskbar/Bar",
-                            "tasks": [
-                                {
-                                    "attributes": {
-                                        "closeable": true,
-                                        "dragable": true
-                                    },
-                                    "type": "qui/controls/taskbar/Task",
-                                    "instance": {
-                                        "attributes": {
-                                            "closeButton": true,
-                                            "collapsible": false,
-                                            "height": 745,
-                                            "dragable": true
-                                        },
-                                        "type": "controls/help/Dashboard"
-                                    }
-                                }
-                            ]
-                        },
-                        "isOpen": true
-                    }
-                ]
-            }
-        ]';
-
-        $threeColumn = '[{
-                "attributes": {
-                    "resizeLimit": [],
-                    "height": 775,
-                    "width": 329,
-                    "setting_toggle": true
-                },
-                "children": [
-                    {
-                        "attributes": {
-                            "name": "projects-panel",
-                            "icon": "fa fa-home",
-                            "title": "Projects",
-                            "collapsible": true,
-                            "dragable": false,
-                            "closeButton": false,
-                            "height": 731
-                        },
-                        "type": "controls/projects/project/Panel",
-                        "isOpen": true
-                    },
-                    {
-                        "attributes": {
-                            "title": "Bookmarks",
-                            "icon": "fa fa-bookmark",
-                            "footer": false,
-                            "name": "qui-bookmarks",
-                            "height": 400,
-                            "collapsible": true,
-                            "dragable": false,
-                            "closeButton": false
-                        },
-                        "type": "controls/desktop/panels/Bookmarks",
-                        "bookmarks": [],
-                        "isOpen": false
-                    }
-                ]
-            },
-            {
-                "attributes": {
-                    "resizeLimit": [],
-                    "height": 775,
-                    "width": 984,
-                    "setting_toggle": false
-                },
-                "children": [
-                    {
-                        "attributes": {
-                            "title": "My Panel 1",
-                            "icon": "fa fa-heart",
-                            "name": "tasks"
-                        },
-                        "type": "qui/controls/desktop/Tasks",
-                        "bar": {
-                            "attributes": {
-                                "name": "qui-taskbar-issogpue",
-                                "styles": {
-                                    "bottom": 0,
-                                    "left": 0,
-                                    "position": "absolute"
-                                }
-                            },
-                            "type": "qui/controls/taskbar/Bar",
-                            "tasks": [
-                                {
-                                    "attributes": {
-                                        "closeable": true,
-                                        "dragable": true
-                                    },
-                                    "type": "qui/controls/taskbar/Task",
-                                    "instance": {
-                                        "attributes": {
-                                            "closeButton": true,
-                                            "collapsible": false,
-                                            "height": 745,
-                                            "dragable": true
-                                        },
-                                        "type": "controls/help/Dashboard"
-                                    }
-                                }
-                            ]
-                        },
-                        "isOpen": true
-                    }
-                ]
-            },
-            {
-                "attributes": {
-                    "resizeLimit": [],
-                    "height": 775,
-                    "width": 283,
-                    "setting_toggle": true
-                },
-                "children": [
-                    {
-                        "attributes": {
-                            "height": 687,
-                            "collapsible": true,
-                            "dragable": false,
-                            "closeButton": false
-                        },
-                        "type": "qui/controls/messages/Panel",
-                        "isOpen": true
-                    },
-                    {
-                        "attributes": {
-                            "height": 300,
-                            "collapsible": true,
-                            "dragable": false,
-                            "closeButton": false,
-                            "title": "Upload"
-                        },
-                        "type": "controls/upload/Manager",
-                        "isOpen": false
-                    },
-                    {
-                        "attributes": {
-                            "title": "QUIQQER-Hilfe",
-                            "icon": "fa fa-h-square",
-                            "height": 400,
-                            "collapsible": true,
-                            "dragable": false,
-                            "closeButton": false
-                        },
-                        "type": "controls/desktop/panels/Help",
-                        "isOpen": false
-                    }
-                ]
-            }
-        ]';
+        $twoColumn   = QUI\Workspace\Manager::getTwoColumnDefault();
+        $threeColumn = QUI\Workspace\Manager::getThreeColumnDefault();
 
         $newWorkspaceId = QUI\Workspace\Manager::addWorkspace(
             $User,
-            '2 Spalten', // #locale
+            QUI::getLocale()->get('quiqqer/quiqqer', 'workspaces.2.columns'),
             $twoColumn,
             500,
             700
@@ -576,7 +325,7 @@ class Manager
 
         QUI\Workspace\Manager::addWorkspace(
             $User,
-            '3 Spalten', // #locale
+            QUI::getLocale()->get('quiqqer/quiqqer', 'workspaces.3.columns'),
             $threeColumn,
             500,
             700

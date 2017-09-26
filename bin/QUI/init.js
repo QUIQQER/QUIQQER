@@ -258,7 +258,7 @@ require(requireList, function () {
 
                         Workspaces.appendChild(
                             new QUIContextmenuItem({
-                                text  : 'Arbeitsbereiche bearbeiten', // #locale
+                                text  : Locale.get('quiqqer/quiqqer', 'menu.workspaces.edit'),
                                 icon  : 'fa fa-edit',
                                 events: {
                                     onClick: function () {
@@ -268,43 +268,44 @@ require(requireList, function () {
                             })
                         );
 
-                        Workspaces.appendChild(
-                            new QUIContextmenuItem({
-                                text  : 'Arbeitsbereich erstellen', // #locale
-                                icon  : 'fa fa-plus',
-                                events: {
-                                    onClick: function () {
-                                        WS.openCreateWindow();
-                                    }
-                                }
-                            })
-                        );
 
-                        Workspaces.appendChild(
-                            new QUIContextmenuSeparator({})
-                        );
-
-                        Workspaces.appendChild(
-                            new QUIContextmenuItem({
-                                text  : Locale.get('quiqqer/quiqqer', 'workspace.fixed'),
-                                icon  : 'fa fa-laptop',
-                                status: 1,
-                                events: {
-                                    onClick: function (Item) {
-                                        if (Item.getAttribute('status') === 1) {
-                                            Workspace.unfix();
-                                            Item.setAttribute('text', Locale.get('quiqqer/quiqqer', 'workspace.flexible'));
-                                            Item.setAttribute('status', 0);
-                                            return;
-                                        }
-
-                                        Workspace.fix();
-                                        Item.setAttribute('text', Locale.get('quiqqer/quiqqer', 'workspace.fixed'));
-                                        Item.setAttribute('status', 1);
-                                    }
-                                }
-                            })
-                        );
+                        // Workspaces.appendChild(
+                        //     new QUIContextmenuItem({
+                        //         text  : 'Arbeitsbereich erstellen', // #locale
+                        //         icon  : 'fa fa-plus',
+                        //         events: {
+                        //             onClick: function () {
+                        //                 WS.openCreateWindow();
+                        //             }
+                        //         }
+                        //     })
+                        // );
+                        //
+                        // Workspaces.appendChild(
+                        //     new QUIContextmenuSeparator({})
+                        // );
+                        //
+                        // Workspaces.appendChild(
+                        //     new QUIContextmenuItem({
+                        //         text  : Locale.get('quiqqer/quiqqer', 'workspace.fixed'),
+                        //         icon  : 'fa fa-laptop',
+                        //         status: 1,
+                        //         events: {
+                        //             onClick: function (Item) {
+                        //                 if (Item.getAttribute('status') === 1) {
+                        //                     Workspace.unfix();
+                        //                     Item.setAttribute('text', Locale.get('quiqqer/quiqqer', 'workspace.flexible'));
+                        //                     Item.setAttribute('status', 0);
+                        //                     return;
+                        //                 }
+                        //
+                        //                 Workspace.fix();
+                        //                 Item.setAttribute('text', Locale.get('quiqqer/quiqqer', 'workspace.fixed'));
+                        //                 Item.setAttribute('status', 1);
+                        //             }
+                        //         }
+                        //     })
+                        // );
                     };
 
                     require(['Menu'], function (Menu) {

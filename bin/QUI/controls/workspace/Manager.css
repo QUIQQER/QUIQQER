@@ -7,20 +7,6 @@
     width: 100%;
 }
 
-.qui-workspace-manager-window label {
-    cursor: pointer;
-    width: 100px !important;
-}
-
-.qui-workspace-manager-window input {
-    width: 100%;
-}
-
-.qui-workspace-manager-window td:first-child {
-    padding-top: 15px;
-    width: 100px;
-}
-
 /** window - panel liste
  * ===================================================== */
 

@@ -1,0 +1,88 @@
+<table class="data-table data-table-flexbox">
+    <thead>
+    <tr>
+        <th>
+            {{title}}
+        </th>
+    </tr>
+    </thead>
+
+    <tbody>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {{labelTitle}}
+                </span>
+                <input id="workspace-title"
+                       name="workspace-title"
+                       type="text"
+                       class="field-container-field"
+                />
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {{labelCols}}
+                </span>
+                <input id="workspace-columns"
+                       name="workspace-columns"
+                       type="number"
+                       min="1"
+                       value="1"
+                       class="field-container-field"
+                />
+            </label>
+        </td>
+    </tr>
+
+    </tbody>
+</table>
+
+<table class="data-table data-table-flexbox">
+    <thead>
+    <tr>
+        <th>
+            {{titleUsage}}
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {{labelMinWidth}}
+                </span>
+
+                <input id="workspace-minWidth"
+                       name="workspace-minWidth"
+                       type="number"
+                       min="1"
+                       value="{{size.x}}"
+                       class="field-container-field"
+                />
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {{labelMinHeight}}
+                </span>
+                <input id="workspace-minHeight"
+                       name="workspace-minHeight"
+                       type="number"
+                       min="1"
+                       value="{{size.y}}"
+                       class="field-container-field"
+                />
+            </label>
+        </td>
+    </tr>
+    </tbody>
+</table>
