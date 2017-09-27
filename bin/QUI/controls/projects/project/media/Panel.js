@@ -436,6 +436,48 @@ define('controls/projects/project/media/Panel', [
 
                 self.addButton(self.$Filter);
 
+                // show project select
+                if (self.getAttribute('isInPopup')) {
+                    var Breadcrumb = self.getElm().getElement('.qui-panel-breadcrumb');
+
+                    require([
+                        'controls/projects/Select'
+                    ], function (ProjectSelect) {
+                        self.getBreadcrumb().getElm().setStyles({
+                            clear: 'none'
+                        });
+
+                        Breadcrumb.setStyles({
+                            paddingLeft: 0
+                        });
+
+                        new ProjectSelect({
+                            langSelect : false,
+                            emptyselect: false,
+                            styles     : {
+                                border      : 'none',
+                                borderRight : '1px solid #dedede',
+                                borderRadius: 0,
+                                margin      : '4px 0 0',
+                                paddingRight: 10,
+                                width       : 'inherit'
+                            },
+                            events     : {
+                                onChange: function (value) {
+                                    if (self.$Media && self.$Media.getProject() &&
+                                        self.$Media.getProject() === value) {
+                                        return;
+                                    }
+
+                                    var Project = Projects.get(value);
+                                    self.$Media = Project.getMedia();
+                                    self.openID(1);
+                                }
+                            }
+                        }).inject(Breadcrumb, 'top');
+                    });
+                }
+
                 if (self.getAttribute('startid')) {
                     self.openID(self.getAttribute('startid'));
                     return;
@@ -943,7 +985,7 @@ define('controls/projects/project/media/Panel', [
                     onClick: func_open
                 });
 
-                if (items[i].icon) {
+                if (!(items[i].id === 1 && this.getAttribute('isInPopup')) && items[i].icon) {
                     Item.setAttribute('icon', items[i].icon);
                 }
 
