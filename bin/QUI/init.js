@@ -108,7 +108,10 @@ require(requireList, function () {
         'control-windows-prompt-canceltext'    : Locale.get('quiqqer/system', 'cancel'),
         'control-windows-prompt-submittext'    : Locale.get('quiqqer/system', 'accept'),
         'control-windows-submit-canceltext'    : Locale.get('quiqqer/system', 'cancel'),
-        'control-windows-submit-submittext'    : Locale.get('quiqqer/system', 'accept')
+        'control-windows-submit-submittext'    : Locale.get('quiqqer/system', 'accept'),
+
+        'control-task-panel-limit'        : 2,
+        'control-task-panel-limit-message': Locale.get('quiqqer/quiqqer', 'message.to.much.tasks')
     });
 
     QUI.addEvent('onError', function (err, url, line) {

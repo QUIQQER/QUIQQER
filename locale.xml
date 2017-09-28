@@ -1626,6 +1626,12 @@
             <de><![CDATA[E-Mail-Adresse]]></de>
             <en><![CDATA[Email address]]></en>
         </locale>
+
+        
+        <locale name="message.to.much.tasks">
+            <de><![CDATA[Leider sind zu viele Tasks offen. Es wurden einige Tasks geschlossen.]]></de>
+            <en><![CDATA[Unfortunately, too many tasks are open. Some tasks have been closed]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/system" datatype="js,php">
