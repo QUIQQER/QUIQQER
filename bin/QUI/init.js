@@ -110,7 +110,7 @@ require(requireList, function () {
         'control-windows-submit-canceltext'    : Locale.get('quiqqer/system', 'cancel'),
         'control-windows-submit-submittext'    : Locale.get('quiqqer/system', 'accept'),
 
-        'control-task-panel-limit'        : 2,
+        'control-task-panel-limit'        : 50,
         'control-task-panel-limit-message': Locale.get('quiqqer/quiqqer', 'message.to.much.tasks')
     });
 
@@ -123,8 +123,11 @@ require(requireList, function () {
         }
     });
 
-    QUI.getMessageHandler(function (MH) {
+    if ("gui" in QUIQQER_CONFIG && QUIQQER_CONFIG.gui && QUIQQER_CONFIG.gui.panelTaskLimit) {
+        QUI.setAttribute('control-task-panel-limit', parseInt(QUIQQER_CONFIG.gui.panelTaskLimit));
+    }
 
+    QUI.getMessageHandler(function (MH) {
         if (!("gui" in QUIQQER_CONFIG) || !QUIQQER_CONFIG.gui) {
             return;
         }
@@ -270,45 +273,6 @@ require(requireList, function () {
                                 }
                             })
                         );
-
-
-                        // Workspaces.appendChild(
-                        //     new QUIContextmenuItem({
-                        //         text  : 'Arbeitsbereich erstellen', // #locale
-                        //         icon  : 'fa fa-plus',
-                        //         events: {
-                        //             onClick: function () {
-                        //                 WS.openCreateWindow();
-                        //             }
-                        //         }
-                        //     })
-                        // );
-                        //
-                        // Workspaces.appendChild(
-                        //     new QUIContextmenuSeparator({})
-                        // );
-                        //
-                        // Workspaces.appendChild(
-                        //     new QUIContextmenuItem({
-                        //         text  : Locale.get('quiqqer/quiqqer', 'workspace.fixed'),
-                        //         icon  : 'fa fa-laptop',
-                        //         status: 1,
-                        //         events: {
-                        //             onClick: function (Item) {
-                        //                 if (Item.getAttribute('status') === 1) {
-                        //                     Workspace.unfix();
-                        //                     Item.setAttribute('text', Locale.get('quiqqer/quiqqer', 'workspace.flexible'));
-                        //                     Item.setAttribute('status', 0);
-                        //                     return;
-                        //                 }
-                        //
-                        //                 Workspace.fix();
-                        //                 Item.setAttribute('text', Locale.get('quiqqer/quiqqer', 'workspace.fixed'));
-                        //                 Item.setAttribute('status', 1);
-                        //             }
-                        //         }
-                        //     })
-                        // );
                     };
 
                     require(['Menu'], function (Menu) {

@@ -1627,7 +1627,7 @@
             <en><![CDATA[Email address]]></en>
         </locale>
 
-        
+
         <locale name="message.to.much.tasks">
             <de><![CDATA[Leider sind zu viele Tasks offen. Es wurden einige Tasks geschlossen.]]></de>
             <en><![CDATA[Unfortunately, too many tasks are open. Some tasks have been closed]]></en>
@@ -6568,6 +6568,20 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
                 Determine how long is the display time of the message.<br />
                 Messages are success, information, warnings or error messages.<br >
                 The value are specified in milliseconds.
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.settings.gui.panel.task.limit">
+            <de><![CDATA[Maximale Tasks in einem Task Panel]]></de>
+            <en><![CDATA[Maximum tasks in a task panel]]></en>
+        </locale>
+        <locale name="quiqqer.settings.gui.panel.task.limit.description">
+            <de><![CDATA[
+                Bestimmen Sie wie viele Tasks in einem Task Panel maximal sein dürfen.
+                Wenn zu viele Tasks in einem Panel geöffnet werden, wirkt sich dies auf die Performance des Arbeitsbereiches aus.
+            ]]></de>
+            <en><![CDATA[
+                Determine the maximum number of tasks in a task panel.
+                If too many tasks are opened in a panel, this affects the performance of the workspace.
             ]]></en>
         </locale>
 

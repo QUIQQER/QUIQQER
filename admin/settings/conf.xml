@@ -248,6 +248,10 @@
                     <type><![CDATA[integer]]></type>
                     <defaultvalue>2500</defaultvalue>
                 </conf>
+                <conf name="panelTaskLimit">
+                    <type><![CDATA[integer]]></type>
+                    <defaultvalue>50</defaultvalue>
+                </conf>
             </section>
 
             <section name="securityHeaders_hsts">
@@ -736,6 +740,16 @@
                             <description>
                                 <locale group="quiqqer/system"
                                         var="quiqqer.settings.gui.displayTimeMessages.description"/>
+                            </description>
+                        </input>
+
+                        <input conf="gui.panelTaskLimit" type="number">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.gui.panel.task.limit"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/system"
+                                        var="quiqqer.settings.gui.panel.task.limit.description"/>
                             </description>
                         </input>
                     </settings>
