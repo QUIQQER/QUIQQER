@@ -3,13 +3,7 @@
  *
  * @module controls/projects/project/site/Input
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/controls/Control
- * @require qui/controls/buttons/Button
- * @require controls/projects/Popup
- * @require css!controls/projects/project/site/Input.css
  */
-
 define('controls/projects/project/site/Input', [
 
     'qui/controls/Control',

@@ -80,7 +80,7 @@ define('controls/projects/project/media/Input', [
          * @param {Object} Project - classes/projects/project
          */
         setProject: function (Project) {
-            if (typeOf(Project) == 'string') {
+            if (typeOf(Project) === 'string') {
                 Project = Projects.get(Project);
             }
 
@@ -288,7 +288,7 @@ define('controls/projects/project/media/Input', [
         $refreshPreview: function () {
             var value = this.$Input.value;
 
-            if (value === '' || value == '0') {
+            if (value === '' || value === '0') {
                 this.$Preview.setStyle('background', null);
                 this.$Preview.getElements('.qui-controls-project-media-input-preview-icon').destroy();
                 return;

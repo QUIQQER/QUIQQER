@@ -39,6 +39,7 @@
 
 .field-container > .qui-controls-project-media-input {
     border: 1px solid rgba(147, 128, 108, 0.25);
+    border-left: 0;
     flex: 1;
     width: 100%;
 }
