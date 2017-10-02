@@ -48,8 +48,9 @@ define('controls/users/Login', [
         initialize: function (options) {
             this.parent(options);
 
-            this.Loader = null;
-            this.$forms = [];
+            this.Loader  = null;
+            this.$forms  = [];
+            this.$loaded = false;
 
             this.addEvents({
                 onImport: this.$onImport,
@@ -71,6 +72,9 @@ define('controls/users/Login', [
             return this.$Elm;
         },
 
+        /**
+         * Refresh the display
+         */
         refresh: function () {
             this.$Elm.set('html', '');
             this.$onInject();
