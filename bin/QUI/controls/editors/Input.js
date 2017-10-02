@@ -34,6 +34,7 @@ define('controls/editors/Input', [
             this.$Project = null;
             this.$Preview = null;
             this.$Click   = null;
+            this.$opened  = false;
 
             this.addEvents({
                 onImport: this.$onImport
@@ -120,9 +121,16 @@ define('controls/editors/Input', [
          * open the editor window
          */
         open: function (event) {
+
             if (typeOf(event) === 'domevent') {
                 event.stop();
             }
+            console.warn(this.$opened);
+            if (this.$opened) {
+                return;
+            }
+
+            this.$opened = true;
 
             var self = this;
 
@@ -154,6 +162,10 @@ define('controls/editors/Input', [
 
                         self.$Input.value = self.$Editor.getContent();
                         self.$Preview.setContent(self.$Input.value);
+                    },
+
+                    onClose: function () {
+                        self.$opened = false;
                     }
                 }
             }).open();
