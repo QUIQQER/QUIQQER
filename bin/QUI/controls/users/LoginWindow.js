@@ -4,12 +4,6 @@
  * @module controls/users/LoginWindow
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/QUI
- * @require qui/controls/windows/Confirm
- * @require qui/controls/buttons/Button
- * @require Locale
- * @require controls/users/Login
- *
  * @event onSubmit [ Array, this ]
  * @event onLogin [self]
  */
