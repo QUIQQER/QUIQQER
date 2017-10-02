@@ -70,17 +70,24 @@ QUI::$Ajax->registerFunction(
             $Htaccess->execute();
 
 
+            $webserverConfig = QUI::conf("webserver", "type");
+            if ($webserverConfig !== false && is_string($webserverConfig) && strpos($webserverConfig, "apache") !== false) {
+                continue;
+            }
+
             # Compare new and old .htaccess
             try {
                 $webServer = QUI\Utils\System\Webserver::detectInstalledWebserver();
             } catch (\Exception $Exception) {
                 $webServer = "";
             }
-
+            
             if ($webServer === QUI\Utils\System\Webserver::WEBSERVER_APACHE) {
                 continue;
             }
 
+           
+            
             if (empty($oldContent)) {
                 continue;
             }
