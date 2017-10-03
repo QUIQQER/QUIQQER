@@ -57,6 +57,12 @@ class Package extends QUI\System\Console\Tool
             return;
         }
 
+        if ($this->getArgument('install')) {
+            $this->installPackage($this->getArgument('install'));
+
+            return;
+        }
+
         if ($this->getArgument('show')) {
             $this->showPackageInformation($this->getArgument('show'));
 
@@ -237,8 +243,13 @@ class Package extends QUI\System\Console\Tool
         $this->writeLn();
         $Climate = new CLImate();
 
-        $Climate->output->write('Package installation from '.$package);
-        $PackageManager = QUI::getPackageManager();
-        $PackageManager->install($package);
+        try {
+            QUI::getPackage($package);
+            $this->writeLn('Package already exists');
+        } catch (QUI\Exception $Exception) {
+            $Climate->output->write('The following package will be installed: '.$package);
+            $PackageManager = QUI::getPackageManager();
+            $PackageManager->install($package);
+        }
     }
 }
