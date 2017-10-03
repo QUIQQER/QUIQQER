@@ -25,11 +25,36 @@ class Package extends QUI\System\Console\Tool
     {
         $this->setName('quiqqer:package')
             ->setDescription('Package management')
-            ->addArgument('help', 'List the help message', false, true)
-            ->addArgument('list', 'List all installed packages', false, true)
-            ->addArgument('install', 'Install a package', false, true)
-            ->addArgument('remove', 'Remove a package', false, true)
-            ->addArgument('setup', 'List all installed packages', false, true);
+            ->addArgument(
+                'help',
+                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.help.description'),
+                false,
+                true
+            )
+            ->addArgument(
+                'list',
+                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.list.description'),
+                false,
+                true
+            )
+            ->addArgument(
+                'show',
+                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.show.description'),
+                false,
+                true
+            )
+            ->addArgument(
+                'install',
+                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.install.description'),
+                false,
+                true
+            )
+            ->addArgument(
+                'setup',
+                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.setup.description'),
+                false,
+                true
+            );
     }
 
     /**
@@ -82,29 +107,25 @@ class Package extends QUI\System\Console\Tool
         $Climate->arguments->add([
             'help'    => [
                 'longPrefix'  => 'help',
-                'description' => 'List the help message',
+                'description' => QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.help.description'),
                 'noValue'     => true
             ],
             'list'    => [
                 'longPrefix'  => 'list',
-                'description' => 'List all installed packages',
+                'description' => QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.installed.description'),
                 'noValue'     => true
             ],
             'setup'   => [
                 'longPrefix'  => 'setup',
-                'description' => 'Execute a package setup'
+                'description' => QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.setup.description')
             ],
             'install' => [
                 'longPrefix'  => 'install',
-                'description' => 'Install a package'
+                'description' => QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.install.description')
             ],
-//            'remove'  => [
-//                'longPrefix'  => 'remove',
-//                'description' => 'Remove a package'
-//            ],
             'show'    => [
                 'longPrefix'  => 'show',
-                'description' => 'Show package information'
+                'description' => QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.show.description')
             ]
         ]);
 
@@ -224,7 +245,9 @@ class Package extends QUI\System\Console\Tool
         try {
             $Package = QUI::getPackage($package);
 
-            $Climate->output->write('Execute setup for package');
+            $Climate->output->write(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.message.setup.execute')
+            );
             $Climate->lightGreen($package);
             $Package->setup();
         } catch (QUI\Exception $Exception) {
@@ -247,7 +270,14 @@ class Package extends QUI\System\Console\Tool
             QUI::getPackage($package);
             $this->writeLn('Package already exists');
         } catch (QUI\Exception $Exception) {
-            $Climate->output->write('The following package will be installed: '.$package);
+            $Climate->output->write(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'console.tool.package.message.install.execute',
+                    array('package' => $package)
+                )
+            );
+
             $PackageManager = QUI::getPackageManager();
             $PackageManager->install($package);
         }
