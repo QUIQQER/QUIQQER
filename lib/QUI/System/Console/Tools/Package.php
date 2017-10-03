@@ -92,10 +92,10 @@ class Package extends QUI\System\Console\Tool
                 'longPrefix'  => 'install',
                 'description' => 'Install a package'
             ],
-            'remove'  => [
-                'longPrefix'  => 'remove',
-                'description' => 'Remove a package'
-            ],
+//            'remove'  => [
+//                'longPrefix'  => 'remove',
+//                'description' => 'Remove a package'
+//            ],
             'show'    => [
                 'longPrefix'  => 'show',
                 'description' => 'Show package information'
@@ -135,7 +135,7 @@ class Package extends QUI\System\Console\Tool
     }
 
     /**
-     * Show package informations
+     * Show package information
      *
      * @param string $package
      */
@@ -225,5 +225,20 @@ class Package extends QUI\System\Console\Tool
             $Climate->error($Exception->getMessage());
             exit;
         }
+    }
+
+    /**
+     * Install a package
+     *
+     * @param string $package
+     */
+    protected function installPackage($package)
+    {
+        $this->writeLn();
+        $Climate = new CLImate();
+
+        $Climate->output->write('Package installation from '.$package);
+        $PackageManager = QUI::getPackageManager();
+        $PackageManager->install($package);
     }
 }
