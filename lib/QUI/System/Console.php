@@ -44,7 +44,8 @@ class Console
         'cron',
         'update',
         'setup',
-        'password-reset'
+        'password-reset',
+        'package'
     );
 
     /**
@@ -578,6 +579,17 @@ class Console
             case 'setup':
                 $Tool = new QUI\System\Console\Tools\Setup();
                 $Tool->setAttribute('parent', $this);
+                $Tool->execute();
+                break;
+
+            case 'package':
+                $Tool = new QUI\System\Console\Tools\Package();
+                $Tool->setAttribute('parent', $this);
+
+                foreach ($this->readArgv() as $key => $value) {
+                    $Tool->setArgument($key, $value);
+                }
+
                 $Tool->execute();
                 break;
 
