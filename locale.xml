@@ -1105,6 +1105,10 @@
             <en><![CDATA[The setup was successful.]]></en>
         </locale>
 
+        <locale name="console.systemtool.package">
+            <de><![CDATA[Paket verwaltung]]></de>
+            <en><![CDATA[Package management]]></en>
+        </locale>
         <locale name="console.tool.package.help.description">
             <de><![CDATA[Zeigt den Hilfetext an.]]></de>
             <en><![CDATA[Display the help message.]]></en>

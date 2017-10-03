@@ -161,26 +161,7 @@ class Console
 
         // system tools
         if (empty($params)) {
-            $this->writeLn("Available System-Tools (Example: 'php quiqqer.php cron'): ");
-
-            $systemTools = $this->systemTools;
-            ksort($systemTools);
-
-            foreach ($systemTools as $tool) {
-                /* @var $Tool Console\Tool */
-                $this->writeLn(" - ");
-                $this->write($tool, 'green');
-                $this->clearMsg();
-
-                for ($i = 0; $i < 20 - strlen($tool); $i++) {
-                    $this->write(" ");
-                }
-
-                $this->write("- ");
-                $this->write(QUI::getLocale()->get('quiqqer/quiqqer', 'console.systemtool.'.$tool));
-            }
-
-            $this->write("\n\n");
+            $this->displaySystemTools();
         }
 
 
@@ -713,6 +694,33 @@ class Console
     }
 
     /**
+     * Display the list of the system tool
+     */
+    public function displaySystemTools()
+    {
+        $this->writeLn("Available System-Tools (Example: 'php quiqqer.php cron'): ");
+
+        $systemTools = $this->systemTools;
+        ksort($systemTools);
+
+        foreach ($systemTools as $tool) {
+            /* @var $Tool Console\Tool */
+            $this->writeLn(" - ");
+            $this->write($tool, 'green');
+            $this->clearMsg();
+
+            for ($i = 0; $i < 20 - strlen($tool); $i++) {
+                $this->write(" ");
+            }
+
+            $this->write("- ");
+            $this->write(QUI::getLocale()->get('quiqqer/quiqqer', 'console.systemtool.'.$tool));
+        }
+
+        $this->write("\n\n");
+    }
+
+    /**
      * Output the help
      *
      * @param string $msg - [optional] extra text
@@ -741,6 +749,9 @@ class Console
         $this->writeLn(" --help			This help text");
         $this->writeLn(" --listtools		Lists the available console tools");
         $this->writeLn(" 			Only with the correct login");
+
+        $this->writeLn();
+        $this->displaySystemTools();
 
         $this->writeLn($msg);
         exit;
