@@ -8,7 +8,6 @@ namespace QUI\System;
 
 use QUI;
 use QUI\Utils\Security\Orthos;
-use League\CLImate\CLImate;
 
 /**
  * The QUIQQER Console
@@ -720,7 +719,6 @@ class Console
      */
     public function help($msg = '')
     {
-        //$this->title();
         $this->clearMsg();
 
         $this->writeLn();
