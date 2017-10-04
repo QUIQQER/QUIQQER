@@ -134,6 +134,21 @@ class Console
      */
     public function __construct()
     {
+        // check locale
+        $languages = QUI::availableLanguages();
+        $languages = array_flip($languages);
+        $locale    = QUI::getLocale()->getCurrent();
+
+        if (!isset($languages[$locale])) {
+            if (isset($languages['en'])) {
+                QUI::getLocale()->setCurrent('en');
+            } elseif (isset($languages['de'])) {
+                QUI::getLocale()->setCurrent('de');
+            } else {
+                QUI::getLocale()->setCurrent(key($languages));
+            }
+        }
+
         $this->title();
 
         if (!isset($_SERVER['HTTP_HOST'])) {
