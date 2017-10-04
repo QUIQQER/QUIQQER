@@ -840,7 +840,7 @@
         <locale name="message.online.update.RAM.not.enough" html="1">
             <de><![CDATA[
             Für das Online-Update steht nicht genügende Arbeitsspeicher zur Verfügung.
-            Bitte führen Sie das Update in der CLI / Bash mit folgende Befehl aus: <br />
+            Bitte führen Sie das Update in der CLI / Bash mit folgendem Befehl aus: <br />
             <code>[command]</code>
             ]]></de>
             <en><![CDATA[
