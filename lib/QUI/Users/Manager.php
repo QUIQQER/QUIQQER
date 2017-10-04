@@ -924,6 +924,16 @@ class Manager
         ) {
             $clearSessionData();
 
+            if ($Session->get('expired.from.other')) {
+                throw new QUI\Users\Exception(
+                    QUI::getLocale()->get(
+                        'quiqqer/system',
+                        'exception.session.expired.from.other'
+                    ),
+                    401
+                );
+            }
+
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
@@ -975,6 +985,7 @@ class Manager
         $Session->set('uid', 0);
         $Session->getSymfonySession()->clear();
         $Session->refresh();
+        $Session->set('expired.from.other', 1);
 
         throw new QUI\Users\Exception($message, 401);
     }

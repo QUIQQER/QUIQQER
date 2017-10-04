@@ -44,7 +44,8 @@ class Console
         'cron',
         'update',
         'setup',
-        'password-reset'
+        'password-reset',
+        'package'
     );
 
     /**
@@ -160,26 +161,7 @@ class Console
 
         // system tools
         if (empty($params)) {
-            $this->writeLn("Available System-Tools (Example: 'php quiqqer.php cron'): ");
-
-            $systemTools = $this->systemTools;
-            ksort($systemTools);
-
-            foreach ($systemTools as $tool) {
-                /* @var $Tool Console\Tool */
-                $this->writeLn(" - ");
-                $this->write($tool, 'green');
-                $this->clearMsg();
-
-                for ($i = 0; $i < 20 - strlen($tool); $i++) {
-                    $this->write(" ");
-                }
-
-                $this->write("- ");
-                $this->write(QUI::getLocale()->get('quiqqer/quiqqer', 'console.systemtool.'.$tool));
-            }
-
-            $this->write("\n\n");
+            $this->displaySystemTools();
         }
 
 
@@ -581,6 +563,17 @@ class Console
                 $Tool->execute();
                 break;
 
+            case 'package':
+                $Tool = new QUI\System\Console\Tools\Package();
+                $Tool->setAttribute('parent', $this);
+
+                foreach ($this->readArgv() as $key => $value) {
+                    $Tool->setArgument($key, $value);
+                }
+
+                $Tool->execute();
+                break;
+
             case 'password-reset':
                 $this->passwordReset();
                 break;
@@ -701,13 +694,39 @@ class Console
     }
 
     /**
+     * Display the list of the system tool
+     */
+    public function displaySystemTools()
+    {
+        $this->writeLn("Available System-Tools (Example: 'php quiqqer.php cron'): ");
+
+        $systemTools = $this->systemTools;
+        ksort($systemTools);
+
+        foreach ($systemTools as $tool) {
+            /* @var $Tool Console\Tool */
+            $this->writeLn(" - ");
+            $this->write($tool, 'green');
+            $this->clearMsg();
+
+            for ($i = 0; $i < 20 - strlen($tool); $i++) {
+                $this->write(" ");
+            }
+
+            $this->write("- ");
+            $this->write(QUI::getLocale()->get('quiqqer/quiqqer', 'console.systemtool.'.$tool));
+        }
+
+        $this->write("\n\n");
+    }
+
+    /**
      * Output the help
      *
      * @param string $msg - [optional] extra text
      */
     public function help($msg = '')
     {
-        $this->title();
         $this->clearMsg();
 
         $this->writeLn();
@@ -730,6 +749,9 @@ class Console
         $this->writeLn(" --help			This help text");
         $this->writeLn(" --listtools		Lists the available console tools");
         $this->writeLn(" 			Only with the correct login");
+
+        $this->writeLn();
+        $this->displaySystemTools();
 
         $this->writeLn($msg);
         exit;

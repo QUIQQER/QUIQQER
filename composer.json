@@ -41,6 +41,7 @@
     "t7systems/blowfish": "1.0.0",
     "pcsg\/composer-assets": "*",
     "dusank/knapsack": "8.*",
+    "league/climate": "3.*",
     "quiqqer/composer": "1.*|dev-master|dev-dev",
     "quiqqer/controls": "dev-master|dev-dev",
     "quiqqer/qui": ">=1|dev-master|dev-dev",

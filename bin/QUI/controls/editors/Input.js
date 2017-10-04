@@ -3,12 +3,6 @@
  *
  * @package controls/editors/Input
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/windows/Confirm
- * @require controls/editors/Preview
- * @require css!controls/editors/Input.css
  */
 define('controls/editors/Input', [
 
@@ -40,6 +34,7 @@ define('controls/editors/Input', [
             this.$Project = null;
             this.$Preview = null;
             this.$Click   = null;
+            this.$opened  = false;
 
             this.addEvents({
                 onImport: this.$onImport
@@ -59,11 +54,15 @@ define('controls/editors/Input', [
                 self.$Preview.setContent(self.$Input.value);
             });
 
+            this.$Input.addEvent('focus', this.open);
+
             this.$Elm = new Element('div', {
-                'class': 'field-container-field control-editor-input',
-                events : {
-                    click: this.open
-                }
+                'class' : 'field-container-field control-editor-input',
+                events  : {
+                    click: this.open,
+                    focus: this.open
+                },
+                tabIndex: -1
             }).wraps(this.$Input);
 
 
@@ -82,7 +81,8 @@ define('controls/editors/Input', [
             this.$Click = new Element('div', {
                 'class': 'control-editor-input-click',
                 events : {
-                    click: this.open
+                    click: this.open,
+                    focus: this.open
                 }
             }).inject(this.$Elm);
 
@@ -106,7 +106,7 @@ define('controls/editors/Input', [
          * @param {Object}  Project
          */
         setProject: function (Project) {
-            if (typeOf(Project) == 'string') {
+            if (typeOf(Project) === 'string') {
                 require(['Projects'], function (Projects) {
                     this.setProject(Projects.get(Project));
                 }.bind(this));
@@ -121,9 +121,16 @@ define('controls/editors/Input', [
          * open the editor window
          */
         open: function (event) {
+
             if (typeOf(event) === 'domevent') {
                 event.stop();
             }
+            console.warn(this.$opened);
+            if (this.$opened) {
+                return;
+            }
+
+            this.$opened = true;
 
             var self = this;
 
@@ -155,6 +162,10 @@ define('controls/editors/Input', [
 
                         self.$Input.value = self.$Editor.getContent();
                         self.$Preview.setContent(self.$Input.value);
+                    },
+
+                    onClose: function () {
+                        self.$opened = false;
                     }
                 }
             }).open();

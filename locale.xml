@@ -1104,6 +1104,39 @@
             <de><![CDATA[Das Setup wurde erfolgreich durchgeführt.]]></de>
             <en><![CDATA[The setup was successful.]]></en>
         </locale>
+
+        <locale name="console.systemtool.package">
+            <de><![CDATA[Paket verwaltung]]></de>
+            <en><![CDATA[Package management]]></en>
+        </locale>
+        <locale name="console.tool.package.help.description">
+            <de><![CDATA[Zeigt den Hilfetext an.]]></de>
+            <en><![CDATA[Display the help message.]]></en>
+        </locale>
+        <locale name="console.tool.package.installed.description">
+            <de><![CDATA[Listet alle installierten Pakete.]]></de>
+            <en><![CDATA[List all installed packages.]]></en>
+        </locale>
+        <locale name="console.tool.package.setup.description">
+            <de><![CDATA[Führt ein Paket Setup aus.]]></de>
+            <en><![CDATA[Execute a package setup.]]></en>
+        </locale>
+        <locale name="console.tool.package.install.description">
+            <de><![CDATA[Installiert ein neues Paket.]]></de>
+            <en><![CDATA[Install a new package.]]></en>
+        </locale>
+        <locale name="console.tool.package.show.description">
+            <de><![CDATA[Zeigt informationen über ein installiertes Paket an.]]></de>
+            <en><![CDATA[Displays information about an installed package.]]></en>
+        </locale>
+        <locale name="console.tool.package.message.setup.execute">
+            <de><![CDATA[Führe das Setup für folgendes Paket aus:]]></de>
+            <en><![CDATA[Execute the setup for the following package:]]></en>
+        </locale>
+        <locale name="console.tool.package.message.install.execute">
+            <de><![CDATA[Das Paket [package] wird gesucht und installiert]]></de>
+            <en><![CDATA[The package [package] will be searched and installed:]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="js">
