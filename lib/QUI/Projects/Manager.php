@@ -728,6 +728,9 @@ class Manager
         // Package / Plugin Setup
         QUI::getPluginManager()->setup();
 
+        // Execute the quiqqer/quiqqer setup to create the project related tables
+        QUI::getPackage("quiqqer/quiqqer")->setup();
+        
         // Projekt Cache löschen
         QUI\Cache\Manager::clear('QUI::config');
 
