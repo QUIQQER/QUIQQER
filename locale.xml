@@ -1141,6 +1141,16 @@
 
     <groups name="quiqqer/quiqqer" datatype="js">
 
+        <!-- Control: controls/email/Select -->
+        <locale name="controls.email.select.email_invalid">
+            <de><![CDATA[Diese E-Mail-Adresse ist ungültig. Bitte geben Sie eine gültige E-Mail-Adresse ein.]]></de>
+            <en><![CDATA[This e-mail address is invalid. Please enter a valid e-mail address.]]></en>
+        </locale>
+        <locale name="controls.email.select.email_already_added">
+            <de><![CDATA[Diese E-Mail-Adresse befindet sich bereits in der Liste.]]></de>
+            <en><![CDATA[This e-mail address has already been added.]]></en>
+        </locale>
+
         <!-- Control: controls/packages/Panel -->
         <locale name="controls.packages.search.template.togglePackageStore">
             <de><![CDATA[QUIQQER Store]]></de>
