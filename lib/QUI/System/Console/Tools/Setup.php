@@ -23,6 +23,8 @@ class Setup extends QUI\System\Console\Tool
     {
         $this->setName('quiqqer:setup')
             ->setDescription('Execute the setup from quiqqer');
+
+        $this->addArgument('package', 'Execute setup for a specific package', 'p', true);
     }
 
     /**
@@ -56,11 +58,31 @@ class Setup extends QUI\System\Console\Tool
         $this->writeLn($data);
         $this->writeLn('');
 
-        $this->writeLn(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.setup.start.message')
-        );
+        $package = $this->getArgument('--package');
 
-        QUI\Setup::all();
+        if ($package) {
+            $this->writeLn(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.setup.start.package_setup', array(
+                    'package' => $package
+                ))
+            );
+
+            // check if package exists
+            try {
+                QUI::getPackage($package);
+            } catch (\Exception $Exception) {
+                $this->writeLn($Exception->getMessage() . "\n\n");
+                exit(1);
+            }
+
+            QUI::getPackageManager()->setup($package);
+        } else {
+            $this->writeLn(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.setup.start.message')
+            );
+
+            QUI\Setup::all();
+        }
 
         $this->writeLn(
             QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.setup.message.success')

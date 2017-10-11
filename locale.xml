@@ -1084,6 +1084,10 @@
             <de><![CDATA[Starte QUIQQER Setup ...]]></de>
             <en><![CDATA[Start QUIQQER Setup ...]]></en>
         </locale>
+        <locale name="console.tool.setup.start.package_setup">
+            <de><![CDATA[Starte Setup für Paket "[package]"]]></de>
+            <en><![CDATA[Start setup for package "[package]"]]></en>
+        </locale>
         <locale name="console.tool.setup.start.data" html="1">
             <de><![CDATA[
             Aktuelles System<br />
