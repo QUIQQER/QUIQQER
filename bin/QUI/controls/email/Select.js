@@ -40,7 +40,11 @@ define('controls/email/Select', [
         ],
 
         options: {
+<<<<<<< Updated upstream
             asyncSearch: false
+=======
+            asyncSearch: false // temporary until user email search is implemented
+>>>>>>> Stashed changes
         },
 
         initialize: function (options) {

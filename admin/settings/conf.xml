@@ -326,7 +326,7 @@
                                         var="quiqqer.settings.general.globals.htmlSuffix.description"/>
                             </description>
                         </input>
-                        <input conf="globals.mailprotection" type="checkbox">
+                        <!--<input conf="globals.mailprotection" type="checkbox">
                             <text>
                                 <locale group="quiqqer/system" var="quiqqer.settings.general.globals.mailprotection"/>
                             </text>
@@ -334,7 +334,7 @@
                                 <locale group="quiqqer/system"
                                         var="quiqqer.settings.general.globals.mailprotection.description"/>
                             </description>
-                        </input>
+                        </input>-->
                         <input conf="permissions.package" type="checkbox">
                             <text>
                                 <locale group="quiqqer/system" var="quiqqer.settings.general.permissions.package"/>

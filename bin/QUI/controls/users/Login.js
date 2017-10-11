@@ -1,12 +1,6 @@
 /**
  * @module controls/users/Login
  *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/loader/Loader
- * @require qui/utils/Form
- * @require Ajax
- *
  * @event onAuthBegin
  * @event onAuthNext
  * @event onSuccess
@@ -188,8 +182,8 @@ define('controls/users/Login', [
             });
 
             QUI.parse(forms).then(function () {
-                return this.Loader.hide();
-            }.bind(this)).then(function () {
+                this.Loader.hide();
+
                 forms.setStyle('top', 20);
 
                 moofx(forms).animate({
@@ -201,7 +195,7 @@ define('controls/users/Login', [
                         forms[0].elements[0].focus();
                     }
                 });
-            });
+            }.bind(this));
         },
 
         /**
