@@ -102,8 +102,12 @@ define('controls/menu/Manager', [
          *
          * @param {Object} Item - (qui/controls/contextmenu/Item) Menu Item
          */
-        menuClick: function (Item) {
+        menuClick: function (Item, event) {
             var i, len, list;
+
+            if (typeOf(event) === 'domevent') {
+                event.stop();
+            }
 
             var self        = this,
                 menuRequire = Item.getAttribute('require'),
@@ -155,15 +159,22 @@ define('controls/menu/Manager', [
                 return;
             }
 
+            if (exec === '') {
+                Item.setAttribute('icon', Item.getAttribute('originalIcon'));
+                Item.$onMouseEnter.delay(10, this); // workaround, menu don't hide
+                return;
+            }
+
             // js function
             try {
                 eval(exec);
-
             } catch (e) {
                 QUI.getMessageHandler(function (MessageHandler) {
                     MessageHandler.addError(e);
                 });
             }
+
+            Item.setAttribute('icon', Item.getAttribute('originalIcon'));
         },
 
         /**

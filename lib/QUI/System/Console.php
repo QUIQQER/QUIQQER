@@ -44,7 +44,8 @@ class Console
         'cron',
         'update',
         'setup',
-        'password-reset'
+        'password-reset',
+        'package'
     );
 
     /**
@@ -133,6 +134,21 @@ class Console
      */
     public function __construct()
     {
+        // check locale
+        $languages = QUI::availableLanguages();
+        $languages = array_flip($languages);
+        $locale    = QUI::getLocale()->getCurrent();
+
+        if (!isset($languages[$locale])) {
+            if (isset($languages['en'])) {
+                QUI::getLocale()->setCurrent('en');
+            } elseif (isset($languages['de'])) {
+                QUI::getLocale()->setCurrent('de');
+            } else {
+                QUI::getLocale()->setCurrent(key($languages));
+            }
+        }
+
         $this->title();
 
         if (!isset($_SERVER['HTTP_HOST'])) {
@@ -160,26 +176,7 @@ class Console
 
         // system tools
         if (empty($params)) {
-            $this->writeLn("Available System-Tools (Example: 'php quiqqer.php cron'): ");
-
-            $systemTools = $this->systemTools;
-            ksort($systemTools);
-
-            foreach ($systemTools as $tool) {
-                /* @var $Tool Console\Tool */
-                $this->writeLn(" - ");
-                $this->write($tool, 'green');
-                $this->clearMsg();
-
-                for ($i = 0; $i < 20 - strlen($tool); $i++) {
-                    $this->write(" ");
-                }
-
-                $this->write("- ");
-                $this->write(QUI::getLocale()->get('quiqqer/quiqqer', 'console.systemtool.'.$tool));
-            }
-
-            $this->write("\n\n");
+            $this->displaySystemTools();
         }
 
 
@@ -576,7 +573,20 @@ class Console
                 break;
 
             case 'setup':
-                QUI\Setup::all();
+                $Tool = new QUI\System\Console\Tools\Setup();
+                $Tool->setAttribute('parent', $this);
+                $Tool->execute();
+                break;
+
+            case 'package':
+                $Tool = new QUI\System\Console\Tools\Package();
+                $Tool->setAttribute('parent', $this);
+
+                foreach ($this->readArgv() as $key => $value) {
+                    $Tool->setArgument($key, $value);
+                }
+
+                $Tool->execute();
                 break;
 
             case 'password-reset':
@@ -699,13 +709,39 @@ class Console
     }
 
     /**
+     * Display the list of the system tool
+     */
+    public function displaySystemTools()
+    {
+        $this->writeLn("Available System-Tools (Example: 'php quiqqer.php cron'): ");
+
+        $systemTools = $this->systemTools;
+        ksort($systemTools);
+
+        foreach ($systemTools as $tool) {
+            /* @var $Tool Console\Tool */
+            $this->writeLn(" - ");
+            $this->write($tool, 'green');
+            $this->clearMsg();
+
+            for ($i = 0; $i < 20 - strlen($tool); $i++) {
+                $this->write(" ");
+            }
+
+            $this->write("- ");
+            $this->write(QUI::getLocale()->get('quiqqer/quiqqer', 'console.systemtool.'.$tool));
+        }
+
+        $this->write("\n\n");
+    }
+
+    /**
      * Output the help
      *
      * @param string $msg - [optional] extra text
      */
     public function help($msg = '')
     {
-        $this->title();
         $this->clearMsg();
 
         $this->writeLn();
@@ -729,6 +765,9 @@ class Console
         $this->writeLn(" --listtools		Lists the available console tools");
         $this->writeLn(" 			Only with the correct login");
 
+        $this->writeLn();
+        $this->displaySystemTools();
+
         $this->writeLn($msg);
         exit;
     }
@@ -739,7 +778,11 @@ class Console
      */
     public function title()
     {
-        $params = $this->readArgv();
+        $params  = $this->readArgv();
+        $version = QUI::getPackageManager()->getVersion();
+
+        $lastUpdate = QUI::getPackageManager()->getLastUpdateDate();
+        $lastUpdate = QUI::getLocale()->formatDate($lastUpdate);
 
         if (isset($params['--noLogo'])) {
             return;
@@ -756,7 +799,7 @@ class Console
         (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
 
 
-            Welcome to QUIQQER.
+        Welcome to QUIQQER Version '.$version.' - Last Update: '.$lastUpdate.'
 
         ';
 

@@ -233,8 +233,7 @@ try {
 <noscript>
     <div class="error"
          style="position: absolute; z-index: 100000; width: 100%; height: 30px; line-height: 30px; color: red; text-align: center;">
-        JavaScript ist in Ihrem Browser nicht aktiviert. Bitte aktivieren Sie
-        JavaScript
+        JavaScript ist in Ihrem Browser nicht aktiviert. Bitte aktivieren Sie JavaScript
     </div>
 </noscript>
 

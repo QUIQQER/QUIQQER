@@ -12,11 +12,9 @@ define('controls/email/Select', [
     'qui/QUI',
     'qui/controls/elements/Select',
     'Locale',
-    'Ajax',
+    'Ajax'
 
-    //'css!controls/email/Select.css'
-
-], function (QUIControl, QUIElementSelect, QUILocale, QUIAjax) {
+], function (QUI, QUIElementSelect, QUILocale, QUIAjax) {
     "use strict";
 
     var lg = 'quiqqer/quiqqer';
@@ -40,6 +38,10 @@ define('controls/email/Select', [
             'mailSearch',
             '$setValue'
         ],
+
+        options: {
+            asyncSearch: false // temporary until user email search is implemented
+        },
 
         initialize: function (options) {
             this.parent(options);
@@ -70,23 +72,47 @@ define('controls/email/Select', [
 
             this.$Search.addEvent('keydown', function (event) {
                 if (event.code === 13) {
-                    var mail = event.target.value;
+                    event.stop();
+
+                    var mail = event.target.value.trim();
+
+                    if (mail === '') {
+                        return;
+                    }
 
                     if (self.$entries.contains(mail)) {
+
+                        QUI.getMessageHandler().then(function(MH) {
+                            MH.addAttention(
+                                QUILocale.get(lg,
+                                    'controls.email.select.email_already_added'
+                                ),
+                                self.$Search
+                            )
+                        });
                         return;
                     }
 
                     self.Loader.show();
 
-                    self.$checkMail(mail).then(function(isValid) {
+                    self.$checkMail(mail).then(function (isValid) {
                         self.Loader.hide();
 
                         if (isValid) {
                             self.addItem(mail);
-                            self.$Input.value = '';
+                            self.$Search.value = '';
+                        } else {
+                            QUI.getMessageHandler().then(function(MH) {
+                                MH.addError(
+                                    QUILocale.get(lg,
+                                        'controls.email.select.email_invalid'
+                                    ),
+                                    self.$Search
+                                )
+                            });
                         }
 
-                        self.$Input.focus();
+                        self.$Search.focus();
                     });
                 }
             });
@@ -99,9 +125,8 @@ define('controls/email/Select', [
          * @param {String} mailaddress
          * @param {Object} Child [qui/controls/elements/SelectItem]
          */
-        $onAddItem: function(Control, mailaddress, Child)
-        {
-            Child.addEvent('onDestroy', function() {
+        $onAddItem: function (Control, mailaddress, Child) {
+            Child.addEvent('onDestroy', function () {
                 this.$entries.erase(mailaddress);
             }.bind(this));
 
@@ -134,8 +159,8 @@ define('controls/email/Select', [
          * @param {String} mail
          * @returns {Promise}
          */
-        $checkMail: function(mail) {
-            return new Promise(function(resolve, reject) {
+        $checkMail: function (mail) {
+            return new Promise(function (resolve, reject) {
                 QUIAjax.get('ajax_email_validate', resolve, {
                     mail   : mail,
                     onError: reject

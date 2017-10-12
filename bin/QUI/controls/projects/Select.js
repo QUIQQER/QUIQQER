@@ -32,7 +32,8 @@ define('controls/projects/Select', [
 
         options: {
             langSelect : true,
-            emptyselect: true
+            emptyselect: true,
+            icon       : 'fa fa-home'
         },
 
         initialize: function (options) {
@@ -69,7 +70,7 @@ define('controls/projects/Select', [
 
             // empty value
             if (this.getAttribute('emptyselect')) {
-                this.$Select.appendChild('', '', 'fa fa-home');
+                this.$Select.appendChild('', '', this.getAttribute('icon'));
             }
 
             Projects.getList(function (result) {
@@ -84,7 +85,7 @@ define('controls/projects/Select', [
                         self.$Select.appendChild(
                             project,
                             project,
-                            'fa fa-home'
+                            self.getAttribute('icon')
                         );
 
                         continue;
@@ -96,7 +97,7 @@ define('controls/projects/Select', [
                         self.$Select.appendChild(
                             project + ' ( ' + langs[i] + ' )',
                             project + ',' + langs[i],
-                            'fa fa-home'
+                            self.getAttribute('icon')
                         );
                     }
                 }

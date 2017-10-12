@@ -421,9 +421,25 @@ foreach ($packages as $package) {
             });
 
             setLanguage(getCurrentLanguage()).then(function () {
-                new Login({
+                var LogIn = new Login({
                     onSuccess: window.onSuccess
                 }).inject(document.getElement('.login'));
+
+
+                // chrome workaround - because of state saving
+                // sometimes, chrome don't load all events on a back up'd tab
+                (function () {
+                    var Form = LogIn.getElm().getElement('form');
+
+                    if (!Form) {
+                        LogIn.refresh();
+                        return;
+                    }
+
+                    if (!parseInt(Form.getStyle('opacity'))) {
+                        LogIn.refresh();
+                    }
+                }).delay(2000);
             });
         });
 

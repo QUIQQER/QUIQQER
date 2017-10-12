@@ -9,6 +9,7 @@ namespace QUI\System;
 use QUI;
 use QUI\Config;
 use QUI\Utils\Security\Orthos;
+use QUI\Projects\Manager as ProjectManager;
 
 /**
  * Virtual Host Manager
@@ -314,6 +315,25 @@ class VhostManager
         }
 
         return $list;
+    }
+
+    /**
+     * Get Project by VHost
+     *
+     * @param string $vhost
+     * @return QUI\Projects\Project|false - Project or false if no project not found
+     */
+    public function getProjectByHost($vhost)
+    {
+        foreach ($this->getList() as $host => $data) {
+            if ($host !== $vhost) {
+                continue;
+            }
+
+            return ProjectManager::getProject($data['project'], $data['lang']);
+        }
+
+        return false;
     }
 
     /**

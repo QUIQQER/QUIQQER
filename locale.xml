@@ -840,7 +840,7 @@
         <locale name="message.online.update.RAM.not.enough" html="1">
             <de><![CDATA[
             Für das Online-Update steht nicht genügende Arbeitsspeicher zur Verfügung.
-            Bitte führen Sie das Update in der CLI / Bash mit folgende Befehl aus: <br />
+            Bitte führen Sie das Update in der CLI / Bash mit folgendem Befehl aus: <br />
             <code>[command]</code>
             ]]></de>
             <en><![CDATA[
@@ -1080,9 +1080,80 @@
             <de><![CDATA[Das Projekt wurde erfolgreich gelöscht.]]></de>
             <en><![CDATA[The project was deleted successfully.]]></en>
         </locale>
+        <locale name="console.tool.setup.start.message">
+            <de><![CDATA[Starte QUIQQER Setup ...]]></de>
+            <en><![CDATA[Start QUIQQER Setup ...]]></en>
+        </locale>
+        <locale name="console.tool.setup.start.package_setup">
+            <de><![CDATA[Starte Setup für Paket "[package]"]]></de>
+            <en><![CDATA[Start setup for package "[package]"]]></en>
+        </locale>
+        <locale name="console.tool.setup.start.data" html="1">
+            <de><![CDATA[
+            Aktuelles System<br />
+            Version: [version]<br />
+            Von: [versionDate]<br />
+            Referenz: [ref]<br />
+            Letzte Aktualisierungsprüfung: [date]
+            ]]></de>
+            <en><![CDATA[
+            Current system<br />
+            Version: [version]<br />
+            From: [versionDate]<br />
+            Reference: [ref]<br />
+            Last update check: [date]
+            ]]></en>
+        </locale>
+        <locale name="console.tool.setup.message.success">
+            <de><![CDATA[Das Setup wurde erfolgreich durchgeführt.]]></de>
+            <en><![CDATA[The setup was successful.]]></en>
+        </locale>
+
+        <locale name="console.systemtool.package">
+            <de><![CDATA[Paket verwaltung]]></de>
+            <en><![CDATA[Package management]]></en>
+        </locale>
+        <locale name="console.tool.package.help.description">
+            <de><![CDATA[Zeigt den Hilfetext an.]]></de>
+            <en><![CDATA[Display the help message.]]></en>
+        </locale>
+        <locale name="console.tool.package.installed.description">
+            <de><![CDATA[Listet alle installierten Pakete.]]></de>
+            <en><![CDATA[List all installed packages.]]></en>
+        </locale>
+        <locale name="console.tool.package.setup.description">
+            <de><![CDATA[Führt ein Paket Setup aus.]]></de>
+            <en><![CDATA[Execute a package setup.]]></en>
+        </locale>
+        <locale name="console.tool.package.install.description">
+            <de><![CDATA[Installiert ein neues Paket.]]></de>
+            <en><![CDATA[Install a new package.]]></en>
+        </locale>
+        <locale name="console.tool.package.show.description">
+            <de><![CDATA[Zeigt informationen über ein installiertes Paket an.]]></de>
+            <en><![CDATA[Displays information about an installed package.]]></en>
+        </locale>
+        <locale name="console.tool.package.message.setup.execute">
+            <de><![CDATA[Führe das Setup für folgendes Paket aus:]]></de>
+            <en><![CDATA[Execute the setup for the following package:]]></en>
+        </locale>
+        <locale name="console.tool.package.message.install.execute">
+            <de><![CDATA[Das Paket [package] wird gesucht und installiert]]></de>
+            <en><![CDATA[The package [package] will be searched and installed:]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="js">
+
+        <!-- Control: controls/email/Select -->
+        <locale name="controls.email.select.email_invalid">
+            <de><![CDATA[Diese E-Mail-Adresse ist ungültig. Bitte geben Sie eine gültige E-Mail-Adresse ein.]]></de>
+            <en><![CDATA[This e-mail address is invalid. Please enter a valid e-mail address.]]></en>
+        </locale>
+        <locale name="controls.email.select.email_already_added">
+            <de><![CDATA[Diese E-Mail-Adresse befindet sich bereits in der Liste.]]></de>
+            <en><![CDATA[This e-mail address has already been added.]]></en>
+        </locale>
 
         <!-- Control: controls/packages/Panel -->
         <locale name="controls.packages.search.template.togglePackageStore">
@@ -1601,6 +1672,12 @@
         <locale name="control.email.select.placeholder">
             <de><![CDATA[E-Mail-Adresse]]></de>
             <en><![CDATA[Email address]]></en>
+        </locale>
+
+
+        <locale name="message.to.much.tasks">
+            <de><![CDATA[Leider sind zu viele Tasks offen. Es wurden einige Tasks geschlossen.]]></de>
+            <en><![CDATA[Unfortunately, too many tasks are open. Some tasks have been closed]]></en>
         </locale>
     </groups>
 
@@ -6538,6 +6615,20 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
                 Determine how long is the display time of the message.<br />
                 Messages are success, information, warnings or error messages.<br >
                 The value are specified in milliseconds.
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.settings.gui.panel.task.limit">
+            <de><![CDATA[Maximale Tasks in einem Task Panel]]></de>
+            <en><![CDATA[Maximum tasks in a task panel]]></en>
+        </locale>
+        <locale name="quiqqer.settings.gui.panel.task.limit.description">
+            <de><![CDATA[
+                Bestimmen Sie wie viele Tasks in einem Task Panel maximal sein dürfen.
+                Wenn zu viele Tasks in einem Panel geöffnet werden, wirkt sich dies auf die Performance des Arbeitsbereiches aus.
+            ]]></de>
+            <en><![CDATA[
+                Determine the maximum number of tasks in a task panel.
+                If too many tasks are opened in a panel, this affects the performance of the workspace.
             ]]></en>
         </locale>
 

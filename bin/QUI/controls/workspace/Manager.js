@@ -351,10 +351,11 @@ define('controls/workspace/Manager', [
             this.save();
             this.Workspace.clear();
 
-            this.Workspace.unserialize(
-                JSON.decode(this.$spaces[id].data)
-            );
+            var data = JSON.decode(this.$spaces[id].data);
 
+            console.warn(data);
+
+            this.Workspace.unserialize(data);
             this.Workspace.fix();
             this.Workspace.resize();
 
@@ -500,6 +501,19 @@ define('controls/workspace/Manager', [
 
                 //this.Loader.hide();
                 return;
+            }
+
+            // cleanup
+            var c, i, len, clen, children;
+
+            for (i = 0, len = data.length; i < len; i++) {
+                children = data[i].children;
+
+                for (c = 0, clen = children.length; c < clen; c++) {
+                    if (children[c].type === 'qui/controls/desktop/Tasks') {
+                        delete data[i].children[c].attributes.limit;
+                    }
+                }
             }
 
             this.Workspace.clear();

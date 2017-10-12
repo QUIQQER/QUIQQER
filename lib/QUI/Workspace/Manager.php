@@ -271,7 +271,7 @@ class Manager
      */
     public static function getTwoColumnDefault()
     {
-        return file_get_contents(dirname(__FILE__).'/workspaces/twoColumns.js');
+        return file_get_contents(dirname(dirname(__FILE__)).'/Users/workspaces/twoColumns.js');
     }
 
     /**
@@ -281,6 +281,6 @@ class Manager
      */
     public static function getThreeColumnDefault()
     {
-        return file_get_contents(dirname(__FILE__).'/workspaces/threeColumns.js');
+        return file_get_contents(dirname(dirname(__FILE__)).'/Users/workspaces/threeColumns.js');
     }
 }

@@ -43,7 +43,7 @@
             <field type="INT(11) NOT NULL">id</field>
             <field type="INT(11) NOT NULL">uid</field>
             <field type="TEXT NULL">title</field>
-            <field type="TEXT NULL">data</field>
+            <field type="LONGTEXT NULL">data</field>
             <field type="INT(11) DEFAULT 0">minHeight</field>
             <field type="INT(11) DEFAULT 0">minWidth</field>
             <field type="INT(1) DEFAULT 0">standard</field>
