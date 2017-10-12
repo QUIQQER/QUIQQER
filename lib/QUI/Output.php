@@ -67,7 +67,7 @@ class Output extends Singleton
 
         //Links umschreiben
         $content = preg_replace_callback(
-            '#(href|src|action|value|data)="(index.php)\?([^"]*)"#',
+            '#(href|src|action|value|data\-.*)="(index.php)\?([^"]*)"#',
             array(&$this, "links"),
             $content
         );
