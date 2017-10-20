@@ -6217,6 +6217,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[QUIQQER]]></de>
             <en><![CDATA[QUIQQER]]></en>
         </locale>
+        <locale name="menu.help.changelog.text">
+            <de><![CDATA[Changelog]]></de>
+            <en><![CDATA[Changelog]]></en>
+        </locale>
         <locale name="menu.help.dashboard.text">
             <de><![CDATA[Dashboard]]></de>
             <en><![CDATA[Dashboard]]></en>
