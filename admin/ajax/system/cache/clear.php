@@ -18,7 +18,12 @@ QUI::$Ajax->registerFunction(
             QUI\Plugins\Manager::clearCache();
         }
 
-        if (isset($params['complete']) || $params['complete'] == 1) {
+        if (isset($params['templates']) && $params['templates'] == 1) {
+            // @TODO: Ist das die richtige Funktion zum Löschen des Template Caches?
+            QUI\Utils\System\File::unlink(VAR_DIR . 'cache/templates');
+        }
+
+        if (isset($params['complete']) && $params['complete'] == 1) {
             QUI\Cache\Manager::clearAll();
             QUI\Plugins\Manager::clearCache();
         }

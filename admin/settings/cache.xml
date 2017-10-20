@@ -13,6 +13,7 @@
             <section name="handlers">
                 <conf name="filesystem">
                     <type><![CDATA[bool]]></type>
+                    <defaultvalue>1</defaultvalue>
                 </conf>
                 <conf name="apc">
                     <type><![CDATA[bool]]></type>
@@ -53,19 +54,6 @@
                     <type><![CDATA[string]]></type>
                 </conf>
             </section>
-            <!--
-            <section name="memcache$">
-                <conf name="host">
-                    <type><![CDATA[string]]></type>
-                </conf>
-                <conf name="post">
-                    <type><![CDATA[integer]]></type>
-                </conf>
-                <conf name="weight">
-                    <type><![CDATA[integer]]></type>
-                </conf>
-            </section>
-             -->
 
             <section name="filesystem">
                 <conf name="path">
@@ -94,22 +82,18 @@
                     <title>
                         <locale group="quiqqer/system" var="quiqqer.settings.general.title"/>
                     </title>
+                    <icon>fa fa-cogs</icon>
+
                     <settings title="general" name="general">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.cache.title"/>
+                        </title>
+
                         <input conf="general.nocache" type="checkbox">
                             <text>
                                 <locale group="quiqqer/system" var="quiqqer.settings.cache.general.nocache"/>
                             </text>
                         </input>
-                    </settings>
-
-
-                    <title>
-                        <locale group="quiqqer/system" var="quiqqer.settings.cache.title"/>
-                    </title>
-                    <text>
-                        <locale group="quiqqer/system" var="quiqqer.settings.cache.text"/>
-                    </text>
-                    <settings title="caches" name="caches">
                         <input conf="handlers.filesystem" type="checkbox">
                             <text>
                                 <locale group="quiqqer/system" var="quiqqer.settings.cache.handler.filesystem"/>
@@ -131,16 +115,12 @@
                             </text>
                         </input>
                     </settings>
-                </category>
 
-                <category name="apc">
-                    <title>
-                        <locale group="quiqqer/system" var="quiqqer.settings.cache.apc.title"/>
-                    </title>
-                    <text>
-                        <locale group="quiqqer/system" var="quiqqer.settings.cache.apc.text"/>
-                    </text>
                     <settings title="apc" name="apc">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.cache.apc.title"/>
+                        </title>
+
                         <input conf="apc.namespace" type="text">
                             <text>
                                 <locale group="quiqqer/system" var="quiqqer.settings.cache.apc.namespace"/>
@@ -153,16 +133,13 @@
                             </text>
                         </input>
                     </settings>
-                </category>
 
-                <category name="memcache">
-                    <title>
-                        <locale group="quiqqer/system" var="quiqqer.settings.memcache.title"/>
-                    </title>
-                    <text>
-                        <locale group="quiqqer/system" var="quiqqer.settings.memcache.text"/>
-                    </text>
+
                     <settings title="memcache" name="memcache">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.memcache.title"/>
+                        </title>
+
                         <input conf="memcache.servers" type="text">
                             <text>
                                 <locale group="quiqqer/system" var="quiqqer.settings.memcache.servers"/>
@@ -193,16 +170,11 @@
                             </text>
                         </input>
                     </settings>
-                </category>
 
-                <category name="filesystem">
-                    <title>
-                        <locale group="quiqqer/system" var="quiqqer.settings.filesystem.title"/>
-                    </title>
-                    <text>
-                        <locale group="quiqqer/system" var="quiqqer.settings.filesystem.text"/>
-                    </text>
                     <settings title="filesystem" name="filesystem">
+                        <title>
+                            <locale group="quiqqer/system" var="quiqqer.settings.filesystem.title"/>
+                        </title>
                         <input conf="filesystem.path" type="text">
                             <text>
                                 <locale group="quiqqer/system" var="quiqqer.settings.filesystem.path"/>
@@ -214,6 +186,7 @@
                     </settings>
                 </category>
 
+
                 <category name="management" require="controls/cache/Settings">
                     <title>
                         <locale group="quiqqer/system" var="quiqqer.settings.cache.management.title"/>
@@ -221,39 +194,24 @@
                     <text>
                         <locale group="quiqqer/system" var="quiqqer.settings.cache.management.text"/>
                     </text>
+                    <icon>fa fa-paint-brush</icon>
+
                     <settings title="clearCache" name="clearCache">
                         <title>
                             <locale group="quiqqer/system" var="quiqqer.settings.cache.clear.title"/>
                         </title>
-
-                        <input conf="complete" type="checkbox">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.cache.clear.complete"/>
-                            </text>
-                        </input>
-                        <input conf="compile" type="checkbox">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.cache.clear.compile"/>
-                            </text>
-                        </input>
-                        <input conf="plugins" type="checkbox">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.cache.clear.plugins"/>
-                            </text>
-                        </input>
-
-                        <input conf="clearCache" type="button"/>
-
+                        <input conf="clearCompleteCache" type="button" label="false"/>
+                        <input conf="clearSystemCache" type="button" label="false"/>
+                        <input conf="clearPluginCache" type="button" label="false"/>
+                        <input conf="clearTemplateCache" type="button" label="false"/>
                     </settings>
 
-                    <settings title="clearCache" name="clearCache">
+                    <settings title="purgeCache" name="purgeCache">
                         <title>
                             <locale group="quiqqer/system" var="quiqqer.settings.cache.purge.title"/>
                         </title>
-
-                        <input conf="purgeCache" type="button"/>
+                        <input conf="purgeCache" type="button" label="false"/>
                     </settings>
-
                 </category>
 
             </categories>

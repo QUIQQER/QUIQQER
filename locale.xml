@@ -2064,7 +2064,7 @@
             <en><![CDATA[Company]]></en>
         </locale>
         <locale name="message.clear.cache.successful">
-            <de><![CDATA[Der Cache wurde erfolgreich gelöscht.]]></de>
+            <de><![CDATA[Der Cache wurde erfolgreich geleert.]]></de>
             <en><![CDATA[Cache successful cleared.]]></en>
         </locale>
         <locale name="message.clear.cache.purged">
@@ -6063,6 +6063,27 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Test Server]]></en>
         </locale>
 
+        <locale name="quiqqer.settings.cache.clear.complete">
+            <de><![CDATA[Kompletten Cache leeren]]></de>
+            <en><![CDATA[Clear complete cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.compile">
+            <de><![CDATA[System-Cache leeren]]></de>
+            <en><![CDATA[Clear system-cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.plugins">
+            <de><![CDATA[Plugin-Cache leeren]]></de>
+            <en><![CDATA[Clear plugin-cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.templates">
+            <de><![CDATA[Template-Cache leeren]]></de>
+            <en><![CDATA[Clear template-cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.purge.button">
+            <de><![CDATA[Cache säubern]]></de>
+            <en><![CDATA[Purge cache]]></en>
+        </locale>
+
         <locale name="workspace.toolarge.window.title">
             <de><![CDATA[Der Arbeitsbereich ist zu gross]]></de>
             <en><![CDATA[The workspace is too large]]></en>
@@ -6273,32 +6294,20 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[The .html extension is appended to page addresses. Your projects have .html pages]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.management.title">
-            <de><![CDATA[Cache]]></de>
-            <en><![CDATA[Cache]]></en>
+            <de><![CDATA[Cache Management]]></de>
+            <en><![CDATA[Cache Management]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.management.text">
-            <de><![CDATA[Cache]]></de>
-            <en><![CDATA[Cache]]></en>
+            <de><![CDATA[Cache Management]]></de>
+            <en><![CDATA[Cache Management]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.clear.title">
-            <de><![CDATA[Cache leeren]]></de>
-            <en><![CDATA[Cache cleaning]]></en>
+            <de><![CDATA[Caches leeren...]]></de>
+            <en><![CDATA[Clean caches...]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.purge.title">
-            <de><![CDATA[Cache säubern]]></de>
-            <en><![CDATA[Cache purging]]></en>
-        </locale>
-        <locale name="quiqqer.settings.cache.clear.complete">
-            <de><![CDATA[Kompletten Cache leeren.]]></de>
-            <en><![CDATA[Clear the complete cache.]]></en>
-        </locale>
-        <locale name="quiqqer.settings.cache.clear.compile">
-            <de><![CDATA[System-Cache leeren.]]></de>
-            <en><![CDATA[Clear the system cache.]]></en>
-        </locale>
-        <locale name="quiqqer.settings.cache.clear.plugins">
-            <de><![CDATA[Plugin-Cache leeren.]]></de>
-            <en><![CDATA[Clear the plugin cache.]]></en>
+            <de><![CDATA[Cache säubern...]]></de>
+            <en><![CDATA[Purge cache...]]></en>
         </locale>
         <locale name="quiqqer.settings.general.template.title">
             <de><![CDATA[Template-Engine Einstellungen]]></de>
