@@ -45,7 +45,9 @@ class Console
         'update',
         'setup',
         'password-reset',
-        'package'
+        'package',
+        'htaccess',
+        'nginx'
     );
 
     /**
@@ -183,7 +185,7 @@ class Console
         try {
             $this->authenticate();
         } catch (QUI\Exception $Exception) {
-            $this->writeLn($Exception->getMessage()."\n\n", 'red');
+            $this->writeLn($Exception->getMessage() . "\n\n", 'red');
             exit;
         }
 
@@ -210,7 +212,7 @@ class Console
             $tools = $this->get(true);
 
             foreach ($tools as $tool => $obj) {
-                $this->writeLn(" - ".$tool."\n");
+                $this->writeLn(" - " . $tool . "\n");
             }
         }
 
@@ -537,14 +539,14 @@ class Console
         switch ($this->getArgument('#system-tool')) {
             case 'clear-all':
                 QUI\Cache\Manager::clearAll();
-                QUI::getTemp()->moveToTemp(VAR_DIR.'cache');
-                QUI::getTemp()->moveToTemp(VAR_DIR.'sessions');
+                QUI::getTemp()->moveToTemp(VAR_DIR . 'cache');
+                QUI::getTemp()->moveToTemp(VAR_DIR . 'sessions');
                 QUI::getTemp()->clear();
                 break;
 
             case 'clear-cache':
                 QUI\Cache\Manager::clearAll();
-                QUI::getTemp()->moveToTemp(VAR_DIR.'cache');
+                QUI::getTemp()->moveToTemp(VAR_DIR . 'cache');
                 break;
 
             case 'clear-tmp':
@@ -552,11 +554,11 @@ class Console
                 break;
 
             case 'clear-sessions':
-                QUI::getTemp()->moveToTemp(VAR_DIR.'sessions');
+                QUI::getTemp()->moveToTemp(VAR_DIR . 'sessions');
                 break;
 
             case 'clear-lock':
-                QUI::getTemp()->moveToTemp(VAR_DIR.'lock');
+                QUI::getTemp()->moveToTemp(VAR_DIR . 'lock');
                 break;
 
             case 'cron':
@@ -592,6 +594,15 @@ class Console
             case 'password-reset':
                 $this->passwordReset();
                 break;
+
+            case 'htaccess':
+                $Tool = new QUI\System\Console\Tools\Htaccess();
+                $Tool->execute();
+                break;
+            case 'nginx':
+                $Tool = new QUI\System\Console\Tools\Nginx();
+                $Tool->execute();
+                break;
         }
 
         $this->writeLn('Everything is done. Thank you for using QUIQQER', 'green');
@@ -605,11 +616,11 @@ class Console
     private function read()
     {
         // Standard Konsoletools
-        $path  = LIB_DIR.'QUI/System/Console/Tools/';
+        $path  = LIB_DIR . 'QUI/System/Console/Tools/';
         $files = QUI\Utils\System\File::readDir($path, true);
 
         for ($i = 0, $len = count($files); $i < $len; $i++) {
-            if (!file_exists($path.$files[$i])) {
+            if (!file_exists($path . $files[$i])) {
                 continue;
             }
 
@@ -623,15 +634,15 @@ class Console
         $tools = array();
 
         foreach ($plugins as $plugin) {
-            $dir = OPT_DIR.$plugin['name'];
+            $dir = OPT_DIR . $plugin['name'];
 
-            if (!file_exists($dir.'/console.xml')) {
+            if (!file_exists($dir . '/console.xml')) {
                 continue;
             }
 
             $tools = array_merge(
                 $tools,
-                QUI\Utils\Text\XML::getConsoleToolsFromXml($dir.'/console.xml')
+                QUI\Utils\Text\XML::getConsoleToolsFromXml($dir . '/console.xml')
             );
         }
 
@@ -640,15 +651,15 @@ class Console
         $projects       = $ProjectManager->getProjects();
 
         foreach ($projects as $project) {
-            $dir = USR_DIR.$project;
+            $dir = USR_DIR . $project;
 
-            if (!file_exists($dir.'/console.xml')) {
+            if (!file_exists($dir . '/console.xml')) {
                 continue;
             }
 
             $tools = array_merge(
                 $tools,
-                QUI\Utils\Text\XML::getConsoleToolsFromXml($dir.'/console.xml')
+                QUI\Utils\Text\XML::getConsoleToolsFromXml($dir . '/console.xml')
             );
         }
 
@@ -681,7 +692,7 @@ class Console
      */
     protected function includeClasses($file, $dir)
     {
-        $file = Orthos::clearPath(realpath($dir.$file));
+        $file = Orthos::clearPath(realpath($dir . $file));
 
         if (!file_exists($file)) {
             throw new QUI\Exception('console tool not exists');
@@ -729,7 +740,7 @@ class Console
             }
 
             $this->write("- ");
-            $this->write(QUI::getLocale()->get('quiqqer/quiqqer', 'console.systemtool.'.$tool));
+            $this->write(QUI::getLocale()->get('quiqqer/quiqqer', 'console.systemtool.' . $tool));
         }
 
         $this->write("\n\n");
@@ -799,7 +810,7 @@ class Console
         (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
 
 
-        Welcome to QUIQQER Version '.$version.' - Last Update: '.$lastUpdate.'
+        Welcome to QUIQQER Version ' . $version . ' - Last Update: ' . $lastUpdate . '
 
         ';
 
@@ -837,7 +848,7 @@ class Console
      */
     public function writeLn($msg = '', $color = false, $bg = false)
     {
-        $this->message("\n".$msg, $color, $bg);
+        $this->message("\n" . $msg, $color, $bg);
     }
 
     /**
@@ -870,11 +881,11 @@ class Console
         }
 
         if (isset($this->colors[$this->current_color])) {
-            echo "\033[".$this->colors[$this->current_color]."m";
+            echo "\033[" . $this->colors[$this->current_color] . "m";
         }
 
         if (isset($this->bg[$this->current_bg])) {
-            echo "\033[".$this->bg[$this->current_bg]."m";
+            echo "\033[" . $this->bg[$this->current_bg] . "m";
         }
 
         echo $msg;
