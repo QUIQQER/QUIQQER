@@ -147,7 +147,7 @@ class Htaccess extends QUI\System\Console\Tool
 
 
         try {
-            $version = $this->getApacheVersion();
+            $version = QUI\Utils\System\Webserver::detectApacheVersion();
 
             if (!isset($version[1])) {
                 throw new QUI\Exception("Couldnt detect Webserver version");
@@ -397,46 +397,5 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteRule ^(.*)$ {$URL_DIR}?error=403 [R=301,L]
 </IfModule>
         ";
-    }
-
-
-    /**
-     * Attempts to detect the apache webserver version
-     * Returnformat array("major version","minor version","point release");
-     *
-     * @return array
-     * @throws QUI\Exception
-     */
-    protected function getApacheVersion()
-    {
-        # Attempt detection by apache2 module
-        if (function_exists('apache_get_version')) {
-            $version = apache_get_version();
-            $regex   = "/Apache\\/([0-9\\.]*)/i";
-            $res     = preg_match($regex, $version, $matches);
-
-            if ($res && isset($matches[1])) {
-                $version     = $matches[1];
-                $verionParts = explode(".", $version);
-
-                return $verionParts;
-            }
-        }
-
-        # Attempt detection by system shell
-        if (\QUI\Utils\System::isShellFunctionEnabled("shell_exec")) {
-            $version = shell_exec('apache2 -v');
-            $regex   = "/Apache\\/([0-9\\.]*)/i";
-            $res     = preg_match($regex, $version, $matches);
-            if ($res && isset($matches[1])) {
-                $version = $matches[1];
-
-                $verionParts = explode(".", $version);
-
-                return $verionParts;
-            }
-        }
-
-        throw new QUI\Exception("Could not detect Apache Version");
     }
 }
