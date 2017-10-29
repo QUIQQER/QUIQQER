@@ -105,6 +105,8 @@ define('Ajax', [
                                 );
                             }
 
+                            QUI.fireEvent('ajaxResult', [self.$onprogress[this].$result]);
+
                             // maintenance?
                             if (this in self.$onprogress &&
                                 "$result" in self.$onprogress[this] &&
