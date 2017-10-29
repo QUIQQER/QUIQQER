@@ -149,6 +149,7 @@ class Ajax extends QUI\QDOM
 
         if (is_object($function) && get_class($function) === 'Closure') {
             $function();
+
             return;
         }
 
@@ -166,7 +167,7 @@ class Ajax extends QUI\QDOM
             }
 
             if (strpos($func, 'Permission') === 0) {
-                $func = '\\QUI\\Rights\\' . $func;
+                $func = '\\QUI\\Rights\\'.$func;
             }
 
             if (!is_callable($func)) {
@@ -216,6 +217,10 @@ class Ajax extends QUI\QDOM
         $result['maintenance'] = QUI::conf('globals', 'maintenance') ? 1 : 0;
         $result['jsCallbacks'] = $this->jsCallbacks;
 
+        QUI::getEvents()->fireEvent('ajaxResult', array(
+            &$result
+        ));
+
         $encoded = json_encode($result);
 
         $utf8ize = function ($mixed) use (&$utf8ize) {
@@ -251,15 +256,15 @@ class Ajax extends QUI\QDOM
                 case JSON_ERROR_UTF8:
                 default:
                     QUI\System\Log::addError(
-                        'JSON Error: ' .
-                        json_last_error() . ' :: ' .
+                        'JSON Error: '.
+                        json_last_error().' :: '.
                         print_r($encoded, true)
                     );
                     break;
             }
         }
 
-        return '<quiqqer>' . $encoded . '</quiqqer>';
+        return '<quiqqer>'.$encoded.'</quiqqer>';
     }
 
     /**
@@ -274,7 +279,7 @@ class Ajax extends QUI\QDOM
     {
         if (!isset(self::$functions[$_rf]) && !isset(self::$callables[$_rf])) {
             if (defined('DEVELOPMENT') && DEVELOPMENT) {
-                System\Log::addDebug('Funktion ' . $_rf . ' nicht gefunden');
+                System\Log::addDebug('Funktion '.$_rf.' nicht gefunden');
             }
 
             return $this->writeException(
@@ -486,13 +491,13 @@ class Ajax extends QUI\QDOM
             case 2: // timeout #locale
                 $return = array(
                     'Exception' => array(
-                        'message' => 'Zeitüberschreitung der Anfrage.' .
+                        'message' => 'Zeitüberschreitung der Anfrage.'.
                                      'Bitte versuchen Sie es erneut oder zu einem späteren Zeitpunkt.',
                         'code'    => 504
                     )
                 );
 
-                echo '<quiqqer>' . json_encode($return) . '</quiqqer>';
+                echo '<quiqqer>'.json_encode($return).'</quiqqer>';
                 break;
         }
     }
