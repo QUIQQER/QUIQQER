@@ -381,7 +381,6 @@ class QUI
         // create the temp folder
         // @todo better do at the setup
         $folders = array(
-            CMS_DIR.'media/users/',
             // VAR
             VAR_DIR.'log/',
             VAR_DIR.'sessions/',
