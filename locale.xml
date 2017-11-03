@@ -1832,8 +1832,12 @@
             <en><![CDATA[Company]]></en>
         </locale>
         <locale name="street">
-            <de><![CDATA[Strasse]]></de>
+            <de><![CDATA[Straße]]></de>
             <en><![CDATA[Street]]></en>
+        </locale>
+        <locale name="street_no">
+            <de><![CDATA[Straße und Hausnr.]]></de>
+            <en><![CDATA[Street and no.]]></en>
         </locale>
         <locale name="zip">
             <de><![CDATA[PLZ]]></de>
@@ -2032,6 +2036,10 @@
             <en><![CDATA[Number]]></en>
         </locale>
         <locale name="tel">
+            <de><![CDATA[Telefon]]></de>
+            <en><![CDATA[Telephone]]></en>
+        </locale>
+        <locale name="phone">
             <de><![CDATA[Telefon]]></de>
             <en><![CDATA[Telephone]]></en>
         </locale>
