@@ -668,7 +668,6 @@ class Manager
             1
         );
 
-
         return true;
     }
 

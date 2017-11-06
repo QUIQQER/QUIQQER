@@ -61,7 +61,7 @@
         var QUIQQER = {
             lu : '{$lastUpdate}',
             ajax: '/ajax.php',
-            title: '{$Template->getTitle()}'
+            title: '{$Template->getTitle()|escape:"html"}'
         };
 
         {assign var=httpshost value=$Project->getVHost( true, true )}
