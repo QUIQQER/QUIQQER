@@ -49,14 +49,11 @@ class Manager
      */
     public function setup()
     {
-        QUI::getDataBase()->table()->addColumn(
-            $this->table,
-            array(
-                'file'   => 'varchar(255)',
-                'user'   => 'int(11)',
-                'params' => 'text'
-            )
-        );
+        QUI::getDataBase()->table()->addColumn($this->table, array(
+            'file'   => 'varchar(255)',
+            'user'   => 'int(11)',
+            'params' => 'text'
+        ));
 
         QUI::getDataBase()->table()->setIndex(
             $this->table,

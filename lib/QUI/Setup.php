@@ -36,6 +36,80 @@ class Setup
 
         QUI::getSession()->setup();
 
+        self::makeDirectories();
+
+        self::generateFileLinks();
+
+        self::executeMainSystemSetup();
+
+        self::executeCommunicationSetup();
+
+        self::makeHeaderFiles();
+
+        self::executeEachProjectSetup();
+
+        self::executeEachPackageSetup();
+
+        self::importPermissions();
+
+        self::finish();
+    }
+
+    /**
+     * Execute the main System Setup
+     *
+     * - Permissions
+     * - Groups
+     * - Users
+     * - Workspace
+     */
+    public static function executeMainSystemSetup()
+    {
+        // Rechte setup
+        QUI::getPermissionManager()->setup();
+
+        // Gruppen erstellen
+        QUI::getGroups()->setup();
+
+        // Benutzer erstellen
+        QUI::getUsers()->setup();
+
+        // workspaces
+        Workspace\Manager::setup();
+
+        // Upload Manager
+        $UploadManager = new Upload\Manager();
+        $UploadManager->setup();
+    }
+
+    /**
+     * Execute the setup of the main communication classes
+     *
+     * - Mail
+     * - Messages
+     * - Editor
+     * - Events
+     */
+    public static function executeCommunicationSetup()
+    {
+        // mail queue setup
+        Mail\Queue::setup();
+
+        // Cron Setup
+        QUI::getMessagesHandler()->setup();
+
+        // WYSIWYG
+        QUI\Editor\Manager::setup();
+
+        // Events Setup
+        Events\Manager::setup();
+    }
+
+    /**
+     * Create the default directories for QUIQQER
+     */
+    public static function makeDirectories()
+    {
         // create dirs
         SystemFile::mkdir(USR_DIR);
         SystemFile::mkdir(OPT_DIR);
@@ -60,40 +134,13 @@ class Setup
                 );
             }
         }
+    }
 
-        self::generateFileLinks();
-
-        // mail queue setup
-        Mail\Queue::setup();
-
-        // Rechte setup
-        QUI::getPermissionManager()->setup();
-
-        // Gruppen erstellen
-        QUI::getGroups()->setup();
-
-        // Benutzer erstellen
-        QUI::getUsers()->setup();
-
-        // Cron Setup
-        QUI::getMessagesHandler()->setup();
-
-        // WYSIWYG
-        QUI\Editor\Manager::setup();
-
-        // Events Setup
-        Events\Manager::setup();
-
-        // workspaces
-        Workspace\Manager::setup();
-
-        // Upload Manager
-        $UploadManager = new Upload\Manager();
-        $UploadManager->setup();
-
-        /**
-         * header dateien
-         */
+    /**
+     * Create the header files
+     */
+    public static function makeHeaderFiles()
+    {
         $str = "<?php require_once '".CMS_DIR."bootstrap.php'; ?>";
 
         if (file_exists(USR_DIR.'header.php')) {
@@ -106,10 +153,13 @@ class Setup
 
         file_put_contents(USR_DIR.'header.php', $str);
         file_put_contents(OPT_DIR.'header.php', $str);
+    }
 
-        /**
-         * Project Setup
-         */
+    /**
+     * Execute for each project the setup
+     */
+    public static function executeEachProjectSetup()
+    {
         $projects = Projects\Manager::getProjects(true);
 
         /* @var $Project \QUI\Projects\Project */
@@ -120,10 +170,13 @@ class Setup
                 QUI\System\Log::writeException($Exception);
             }
         }
+    }
 
-        /**
-         * composer setup
-         */
+    /**
+     * Execute for each package the setup
+     */
+    public static function executeEachPackageSetup()
+    {
         $PackageManager = QUI::getPackageManager();
         $packages       = SystemFile::readDir(OPT_DIR);
 
@@ -150,9 +203,24 @@ class Setup
                 $PackageManager->setup($packageName);
             }
         }
+    }
 
+    /**
+     * Import all important permissions
+     */
+    public static function importPermissions()
+    {
         QUI\Permissions\Manager::importPermissionsForGroups();
+    }
 
+    /**
+     * Finish the setup
+     *
+     * - set last update
+     * - clear the cache
+     */
+    public static function finish()
+    {
         // setup set the last update date
         QUI::getPackageManager()->setLastUpdateDate();
 
