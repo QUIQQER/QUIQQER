@@ -36,23 +36,19 @@ class Setup
 
         QUI::getSession()->setup();
 
+        $start = date('H:i:s');
+
         self::makeDirectories();
-
         self::generateFileLinks();
-
         self::executeMainSystemSetup();
-
         self::executeCommunicationSetup();
-
         self::makeHeaderFiles();
-
         self::executeEachProjectSetup();
-
         self::executeEachPackageSetup();
-
         self::importPermissions();
-
         self::finish();
+
+        QUI\System\Log::writeRecursive('Setup Time '.$start.' -> '.date('H:i:s'));
     }
 
     /**
@@ -165,7 +161,12 @@ class Setup
         /* @var $Project \QUI\Projects\Project */
         foreach ($projects as $Project) {
             try {
+                QUI\System\Log::writeRecursive('Project Setup '.$Project->getName());
+                QUI\System\Log::writeRecursive(date('H:i:s'));
+
                 $Project->setup();
+
+                QUI\System\Log::writeRecursive(date('H:i:s'));
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }
@@ -181,6 +182,8 @@ class Setup
         $packages       = SystemFile::readDir(OPT_DIR);
 
         $PackageManager->refreshServerList();
+
+        QUI\Cache\Manager::$noClearing = true;
 
         // first we need all databases
         foreach ($packages as $package) {
@@ -203,6 +206,9 @@ class Setup
                 $PackageManager->setup($packageName);
             }
         }
+
+        QUI\Cache\Manager::$noClearing = false;
+        QUI\Cache\Manager::clearAll();
     }
 
     /**

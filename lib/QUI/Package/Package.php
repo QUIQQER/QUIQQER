@@ -76,10 +76,10 @@ class Package extends QUI\QDOM
      */
     public function __construct($package)
     {
-        $packageDir = OPT_DIR . $package . '/';
+        $packageDir = OPT_DIR.$package.'/';
 
         if (strpos($package, '-asset/') !== false) {
-            $packageDir = OPT_DIR . '/bin/' . explode('/', $package)[1] . '/';
+            $packageDir = OPT_DIR.'/bin/'.explode('/', $package)[1].'/';
         }
 
         if (!is_dir($packageDir)) {
@@ -90,12 +90,12 @@ class Package extends QUI\QDOM
         $this->name       = $package;
 
         // no composer.json, no real package
-        if (!file_exists($packageDir . 'composer.json')) {
+        if (!file_exists($packageDir.'composer.json')) {
             return;
         }
 
         $this->composerData = json_decode(
-            file_get_contents($packageDir . 'composer.json'),
+            file_get_contents($packageDir.'composer.json'),
             true
         );
 
@@ -108,7 +108,7 @@ class Package extends QUI\QDOM
         }
 
         $this->isQuiqqerPackage = true;
-        $this->configPath       = CMS_DIR . 'etc/plugins/' . $this->getName() . '.ini.php';
+        $this->configPath       = CMS_DIR.'etc/plugins/'.$this->getName().'.ini.php';
 
         QUI\Utils\System\File::mkfile($this->configPath);
     }
@@ -128,7 +128,7 @@ class Package extends QUI\QDOM
             return $this->packageXML;
         }
 
-        $packageXML = $this->packageDir . '/package.xml';
+        $packageXML = $this->packageDir.'/package.xml';
 
         // package xml
         if (!file_exists($packageXML)) {
@@ -192,7 +192,7 @@ class Package extends QUI\QDOM
      */
     public function getVarDir()
     {
-        $varDir = VAR_DIR . 'package/' . $this->getName() . '/';
+        $varDir = VAR_DIR.'package/'.$this->getName().'/';
 
         QUI\Utils\System\File::mkdir($varDir);
 
@@ -272,8 +272,8 @@ class Package extends QUI\QDOM
             return $packageData['image'];
         }
 
-        if (file_exists($this->packageDir . 'bin/package.png')) {
-            return str_replace(OPT_DIR, URL_OPT_DIR, $this->packageDir) . 'bin/package.png';
+        if (file_exists($this->packageDir.'bin/package.png')) {
+            return str_replace(OPT_DIR, URL_OPT_DIR, $this->packageDir).'bin/package.png';
         }
 
         return '';
@@ -293,10 +293,10 @@ class Package extends QUI\QDOM
 
         switch ($permissionName) {
             case 'header':
-                return 'permission.quiqqer.packages.' . $nameShortCut . '._header';
+                return 'permission.quiqqer.packages.'.$nameShortCut.'._header';
 
             default:
-                return 'quiqqer.packages.' . $nameShortCut . '.canUse';
+                return 'quiqqer.packages.'.$nameShortCut.'.canUse';
         }
     }
 
@@ -357,23 +357,23 @@ class Package extends QUI\QDOM
             return $this->composerData;
         }
 
-        if (file_exists($this->packageDir . 'composer.json')) {
+        if (file_exists($this->packageDir.'composer.json')) {
             $this->composerData = json_decode(
-                file_get_contents($this->packageDir . 'composer.json'),
+                file_get_contents($this->packageDir.'composer.json'),
                 true
             );
         }
 
-        if (file_exists($this->packageDir . 'package.json')) {
+        if (file_exists($this->packageDir.'package.json')) {
             $this->composerData = json_decode(
-                file_get_contents($this->packageDir . 'package.json'),
+                file_get_contents($this->packageDir.'package.json'),
                 true
             );
         }
 
-        if (file_exists($this->packageDir . 'bower.json')) {
+        if (file_exists($this->packageDir.'bower.json')) {
             $this->composerData = json_decode(
-                file_get_contents($this->packageDir . 'bower.json'),
+                file_get_contents($this->packageDir.'bower.json'),
                 true
             );
         }
@@ -405,7 +405,7 @@ class Package extends QUI\QDOM
      */
     public function getXMLFile($name)
     {
-        $file = $this->getDir() . $name;
+        $file = $this->getDir().$name;
 
         if (!file_exists($file)) {
             return false;
@@ -509,26 +509,26 @@ class Package extends QUI\QDOM
         }
 
         // xml
-        Update::importDatabase($dir . 'database.xml');
-        Update::importTemplateEngines($dir . 'engines.xml');
-        Update::importEditors($dir . 'wysiwyg.xml');
+        Update::importDatabase($dir.'database.xml');
+        Update::importTemplateEngines($dir.'engines.xml');
+        Update::importEditors($dir.'wysiwyg.xml');
 
         QUI::getPermissionManager()->deletePermissionsFromPackage($this);
 
-        Update::importPermissions($dir . 'permissions.xml', $this->getName());
-        Update::importMenu($dir . 'menu.xml');
+        Update::importPermissions($dir.'permissions.xml', $this->getName());
+        Update::importMenu($dir.'menu.xml');
 
         // events
         QUI\Events\Manager::clear($this->getName());
-        Update::importEvents($dir . 'events.xml', $this->getName());
-        Update::importSiteEvents($dir . 'site.xml');
+        Update::importEvents($dir.'events.xml', $this->getName());
+        Update::importSiteEvents($dir.'site.xml');
 
         // locale
         QUI\Translator::importFromPackage($this, true, true);
 
         try {
             $groups = XML::getLocaleGroupsFromDom(
-                XML::getDomFromXml($dir . 'locale.xml')
+                XML::getDomFromXml($dir.'locale.xml')
             );
 
             $groups = array_map(function ($data) {
@@ -549,14 +549,15 @@ class Package extends QUI\QDOM
         }
 
         // settings
-        if (!file_exists($dir . 'settings.xml')) {
+        if (!file_exists($dir.'settings.xml')) {
             QUI::getEvents()->fireEvent('packageSetup', array($this));
             QUI\Cache\Manager::clearAll();
+
             return;
         }
 
         // $defaults = XML::getConfigParamsFromXml( $dir .'settings.xml' );
-        $Config = XML::getConfigFromXml($dir . 'settings.xml');
+        $Config = XML::getConfigFromXml($dir.'settings.xml');
 
         if ($Config) {
             $Config->save();
@@ -564,7 +565,6 @@ class Package extends QUI\QDOM
 
         QUI::getEvents()->fireEvent('packageSetup', array($this));
 
-        // @todo überdenken
         QUI\Cache\Manager::clearAll();
     }
 
