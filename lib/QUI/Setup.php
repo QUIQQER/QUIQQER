@@ -19,10 +19,12 @@ use QUI\Utils\System\File as SystemFile;
 class Setup
 {
     /**
-     * Excute the QUIQQER Setup
+     * Execute the QUIQQER Setup
      */
     public static function all()
     {
+        QUI::getEvents()->fireEvent('setupAllBegin');
+
         // not at phpunit
         if (!isset($_SERVER['argv'])
             || (isset($_SERVER['argv'][0])
@@ -36,8 +38,6 @@ class Setup
 
         QUI::getSession()->setup();
 
-        $start = date('H:i:s');
-
         self::makeDirectories();
         self::generateFileLinks();
         self::executeMainSystemSetup();
@@ -48,7 +48,7 @@ class Setup
         self::importPermissions();
         self::finish();
 
-        QUI\System\Log::writeRecursive('Setup Time '.$start.' -> '.date('H:i:s'));
+        QUI::getEvents()->fireEvent('setupAllEnd');
     }
 
     /**
@@ -61,6 +61,8 @@ class Setup
      */
     public static function executeMainSystemSetup()
     {
+        QUI::getEvents()->fireEvent('setupMainSystemBegin');
+
         // Rechte setup
         QUI::getPermissionManager()->setup();
 
@@ -76,6 +78,8 @@ class Setup
         // Upload Manager
         $UploadManager = new Upload\Manager();
         $UploadManager->setup();
+
+        QUI::getEvents()->fireEvent('setupMainSystemEnd');
     }
 
     /**
@@ -88,6 +92,8 @@ class Setup
      */
     public static function executeCommunicationSetup()
     {
+        QUI::getEvents()->fireEvent('setupCommunicationBegin');
+
         // mail queue setup
         Mail\Queue::setup();
 
@@ -99,6 +105,8 @@ class Setup
 
         // Events Setup
         Events\Manager::setup();
+
+        QUI::getEvents()->fireEvent('setupCommunicationEnd');
     }
 
     /**
@@ -106,6 +114,8 @@ class Setup
      */
     public static function makeDirectories()
     {
+        QUI::getEvents()->fireEvent('setupMakeDirectoriesBegin');
+
         // create dirs
         SystemFile::mkdir(USR_DIR);
         SystemFile::mkdir(OPT_DIR);
@@ -130,6 +140,8 @@ class Setup
                 );
             }
         }
+
+        QUI::getEvents()->fireEvent('setupMakeDirectoriesEnd');
     }
 
     /**
@@ -137,6 +149,8 @@ class Setup
      */
     public static function makeHeaderFiles()
     {
+        QUI::getEvents()->fireEvent('setupMakeHeaderFilesBegin');
+
         $str = "<?php require_once '".CMS_DIR."bootstrap.php'; ?>";
 
         if (file_exists(USR_DIR.'header.php')) {
@@ -149,6 +163,8 @@ class Setup
 
         file_put_contents(USR_DIR.'header.php', $str);
         file_put_contents(OPT_DIR.'header.php', $str);
+
+        QUI::getEvents()->fireEvent('setupMakeHeaderFilesEnd');
     }
 
     /**
@@ -161,12 +177,7 @@ class Setup
         /* @var $Project \QUI\Projects\Project */
         foreach ($projects as $Project) {
             try {
-                QUI\System\Log::writeRecursive('Project Setup '.$Project->getName());
-                QUI\System\Log::writeRecursive(date('H:i:s'));
-
                 $Project->setup();
-
-                QUI\System\Log::writeRecursive(date('H:i:s'));
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }
@@ -178,6 +189,8 @@ class Setup
      */
     public static function executeEachPackageSetup()
     {
+        QUI::getEvents()->fireEvent('setupPackageSetupBegin');
+
         $PackageManager = QUI::getPackageManager();
         $packages       = SystemFile::readDir(OPT_DIR);
 
@@ -209,6 +222,8 @@ class Setup
 
         QUI\Cache\Manager::$noClearing = false;
         QUI\Cache\Manager::clearAll();
+
+        QUI::getEvents()->fireEvent('setupPackageSetupEnd');
     }
 
     /**

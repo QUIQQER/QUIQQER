@@ -443,9 +443,13 @@ class Package extends QUI\QDOM
      */
     public function setup()
     {
+        QUI::getEvents()->fireEvent('packageSetupBegin', array($this));
+
         $dir = $this->getDir();
 
         if (!$this->isQuiqqerPackage()) {
+            QUI::getEvents()->fireEvent('packageSetupEnd', array($this));
+
             return;
         }
 
@@ -553,6 +557,8 @@ class Package extends QUI\QDOM
             QUI::getEvents()->fireEvent('packageSetup', array($this));
             QUI\Cache\Manager::clearAll();
 
+            QUI::getEvents()->fireEvent('packageSetupEnd', array($this));
+
             return;
         }
 
@@ -566,6 +572,7 @@ class Package extends QUI\QDOM
         QUI::getEvents()->fireEvent('packageSetup', array($this));
 
         QUI\Cache\Manager::clearAll();
+        QUI::getEvents()->fireEvent('packageSetupEnd', array($this));
     }
 
     /**
