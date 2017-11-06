@@ -1357,8 +1357,8 @@ class Manager extends QUI\QDOM
             ));
         } else {
             $Composer->update(array(
-                'prefer-dist'   => false,
-                'prefer-source' => true
+                '--prefer-dist'   => false,
+                '--prefer-source' => true
             ));
         }
 
