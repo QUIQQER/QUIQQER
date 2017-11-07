@@ -838,7 +838,7 @@ define('controls/projects/project/site/Panel', [
 
                         QUIFormUtils.setDataToForm(self.getSite().getAttributes(), Form);
 
-                        return QUI.parse(self.$Container);
+                        return QUI.parse(Form);
                     });
                 }
 
@@ -846,7 +846,7 @@ define('controls/projects/project/site/Panel', [
                     this.$Container.set('html', '');
                     this.$categoryOnLoad(Category);
 
-                    return QUI.parse(Category);
+                    return QUI.parse(this.$Container);
                 }
 
                 var Site    = self.getSite(),
