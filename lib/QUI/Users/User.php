@@ -212,6 +212,9 @@ class User implements QUI\Interfaces\Users\User
         }
 
         // Eigenschaften setzen
+        $this->uuid = $data[0]['uuid'];
+
+
         if (isset($data[0]['username'])) {
             $this->name = $data[0]['username'];
             unset($data[0]['username']);

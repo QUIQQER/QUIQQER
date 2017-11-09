@@ -18,7 +18,7 @@ if (isset($_REQUEST['_url'])
     list($user, $host) = explode("[at]", $addr);
 
     if (isset($user) && isset($host)) {
-        header("Location: mailto:" . $user . "@" . $host);
+        header("Location: mailto:".$user."@".$host);
         exit;
     }
 }
@@ -49,7 +49,7 @@ try {
 
         $Response->setContent(
             '<div style="text-align: center; margin-top: 100px;">
-                <img src="' . URL_BIN_DIR . 'quiqqer_logo.png" style="max-width: 100%;" />
+                <img src="'.URL_BIN_DIR.'quiqqer_logo.png" style="max-width: 100%;" />
             </div>'
         );
 
@@ -118,12 +118,12 @@ try {
             'URL_VAR_DIR' => URL_VAR_DIR,
             'URL_OPT_DIR' => URL_OPT_DIR,
             'URL_USR_DIR' => URL_USR_DIR,
-            'URL_TPL_DIR' => URL_USR_DIR . $Project->getName() . '/',
-            'TPL_DIR'     => OPT_DIR . $Project->getName() . '/',
+            'URL_TPL_DIR' => URL_USR_DIR.$Project->getName().'/',
+            'TPL_DIR'     => OPT_DIR.$Project->getName().'/',
         ));
 
-        $file  = LIB_DIR . 'templates/maintenance.html';
-        $pfile = USR_DIR . $Project->getName() . '/lib/maintenance.html';
+        $file  = LIB_DIR.'templates/maintenance.html';
+        $pfile = USR_DIR.$Project->getName().'/lib/maintenance.html';
 
         if (file_exists($pfile)) {
             $file = $pfile;
@@ -135,13 +135,13 @@ try {
     }
 
     // Prüfen ob es ein Cachefile gibt damit alles andere übersprungen werden kann
-    $site_cache_dir    = VAR_DIR . 'cache/sites/';
-    $project_cache_dir = $site_cache_dir . $Project->getAttribute('name') . '/';
-    $site_cache_file   = $project_cache_dir . $Site->getId() . '_'
-                         . $Project->getAttribute('name') . '_'
-                         . $Project->getAttribute('lang');
+    $site_cache_dir    = VAR_DIR.'cache/sites/';
+    $project_cache_dir = $site_cache_dir.$Project->getAttribute('name').'/';
+    $site_cache_file   = $project_cache_dir.$Site->getId().'_'
+                         .$Project->getAttribute('name').'_'
+                         .$Project->getAttribute('lang');
 
-    $site_cache_file .= '_' . md5(QUI::getRequest()->getRequestUri());
+    $site_cache_file .= '_'.md5(QUI::getRequest()->getRequestUri());
 
     // Event onstart
     QUI::getEvents()->fireEvent('start');
@@ -193,7 +193,7 @@ try {
             && !QUI::getUsers()->isAuth(QUI::getUserBySession())
         ) {
             QUI\Utils\System\File::mkdir(
-                $site_cache_dir . $Project->getAttribute('name') . '/'
+                $site_cache_dir.$Project->getAttribute('name').'/'
             );
 
             file_put_contents($site_cache_file, $content);
@@ -243,6 +243,6 @@ try {
     error_log($Exception->getMessage());
 
     echo file_get_contents(
-        dirname(__FILE__) . '/lib/templates/error.html'
+        dirname(__FILE__).'/lib/templates/error.html'
     );
 }
