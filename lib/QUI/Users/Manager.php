@@ -36,6 +36,11 @@ class Manager
     private $users = array();
 
     /**
+     * @var array
+     */
+    private $usersUUIDs = array();
+
+    /**
      * @var null|Nobody
      */
     private $Nobody = null;
@@ -567,7 +572,7 @@ class Manager
     }
 
     /**
-     * Returns all userids
+     * Returns all user-IDs
      *
      * @return array
      */
@@ -1078,6 +1083,54 @@ class Manager
     }
 
     /**
+     * Return a user by its unique id (UUID)
+     *
+     * @param string $uuid
+     * @return QUI\Users\User|Nobody|SystemUser|false
+     * @throws QUI\Users\Exception
+     */
+    public function getByUniqueId($uuid)
+    {
+        if (!$uuid || empty($uuid)) {
+            return new Nobody();
+        }
+
+        if ($uuid == 5) {
+            return new SystemUser();
+        }
+
+        if (isset($this->usersUUIDs[$uuid])) {
+            return $this->get($this->usersUUIDs[$uuid]);
+        }
+
+
+        $result = QUI::getDataBase()->fetch(array(
+            'select' => array('uuid', 'id'),
+            'from'   => self::table(),
+            'where'  => array(
+                'uuid' => $uuid
+            ),
+            'limit'  => 1
+        ));
+
+        if (!isset($result[0])) {
+            throw new QUI\Users\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.lib.user.user.not.found'
+                ),
+                404
+            );
+        }
+
+        $userId = (int)$result[0]['id'];
+
+        $this->usersUUIDs[$uuid] = $userId;
+
+        return $this->get($userId);
+    }
+
+    /**
      * get the user by username
      *
      * @param string $username - Username
@@ -1087,16 +1140,14 @@ class Manager
      */
     public function getUserByName($username)
     {
-        $result = QUI::getDataBase()->fetch(
-            array(
-                'select' => 'id',
-                'from'   => self::table(),
-                'where'  => array(
-                    'username' => $username
-                ),
-                'limit'  => 1
-            )
-        );
+        $result = QUI::getDataBase()->fetch(array(
+            'select' => 'id',
+            'from'   => self::table(),
+            'where'  => array(
+                'username' => $username
+            ),
+            'limit'  => 1
+        ));
 
         if (!isset($result[0])) {
             throw new QUI\Users\Exception(
@@ -1121,16 +1172,14 @@ class Manager
      */
     public function getUserByMail($email)
     {
-        $result = QUI::getDataBase()->fetch(
-            array(
-                'select' => 'id',
-                'from'   => self::table(),
-                'where'  => array(
-                    'email' => $email
-                ),
-                'limit'  => 1
-            )
-        );
+        $result = QUI::getDataBase()->fetch(array(
+            'select' => 'id',
+            'from'   => self::table(),
+            'where'  => array(
+                'email' => $email
+            ),
+            'limit'  => 1
+        ));
 
         if (!isset($result[0])) {
             throw new QUI\Users\Exception(
