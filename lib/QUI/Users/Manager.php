@@ -326,11 +326,12 @@ class Manager
 
             $newName = $username;
         } else {
-            $newName = 'Neuer Benutzer'; // #locale
-            $i       = 0;
+            $newUserLocale = QUI::getLocale()->get('quiqqer/quiqqer', 'user.create.new.username');
+            $newName       = $newUserLocale;
+            $i             = 0;
 
             while ($this->usernameExists($newName)) {
-                $newName = 'Neuer Benutzer ('.$i.')';
+                $newName = $newUserLocale.' ('.$i.')';
                 $i++;
             }
         }
@@ -1380,14 +1381,14 @@ class Manager
         /**
          * WHERE
          */
-        if (isset($params['where'])) {
-            // $_fields['where'] = $params['where'];
-        }
+//        if (isset($params['where'])) {
+        // $_fields['where'] = $params['where'];
+//        }
 
         // wenn nicht durchsucht wird dann gelöschte nutzer nicht anzeigen
-        if (!isset($params['search'])) {
-            // $_fields['where_relation']  = "`active` != '-1' ";
-        }
+//        if (!isset($params['search'])) {
+        // $_fields['where_relation']  = "`active` != '-1' ";
+//        }
 
 
         /**
@@ -1589,42 +1590,30 @@ class Manager
     }
 
     /**
-     * Gibt eine neue Benutzer Id zwischen 100 und 1000000000 zurück
+     * Create a new ID for a not created user
      *
      * @return integer
      * @throws QUI\Users\Exception
      */
     protected function newId()
     {
-        $create = true;
-        $newid  = false;
+        $result = QUI::getDataBase()->fetch(array(
+            'select' => 'MAX(id) AS id',
+            'from'   => self::table(),
+            'limit'  => 1
+        ));
 
-        while ($create) {
-            srand(microtime() * 1000000);
-            $newid = rand(100, 1000000000);
+        $newId = 100;
 
-            $result = QUI::getDataBase()->fetch(
-                array(
-                    'from'  => self::table(),
-                    'where' => array(
-                        'id' => $newid
-                    )
-                )
-            );
-
-            if (isset($result[0]) && $result[0]['id']) {
-                $create = true;
-                continue;
-            }
-
-            $create = false;
+        if (isset($result[0]['id'])) {
+            $newId = $result[0]['id'] + 1;
         }
 
-        if (!$newid) {
-            throw new QUI\Users\Exception('Could not create new User-ID');
+        if ($newId < 100) {
+            $newId = 100;
         }
 
-        return $newid;
+        return $newId;
     }
 
     /**

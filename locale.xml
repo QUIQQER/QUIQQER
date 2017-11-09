@@ -1141,6 +1141,11 @@
             <de><![CDATA[Das Paket [package] wird gesucht und installiert]]></de>
             <en><![CDATA[The package [package] will be searched and installed:]]></en>
         </locale>
+
+        <locale name="user.create.new.username">
+            <de><![CDATA[Neuer Benutzer]]></de>
+            <en><![CDATA[New User]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="js">
