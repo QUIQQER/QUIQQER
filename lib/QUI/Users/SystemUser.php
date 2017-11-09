@@ -39,6 +39,16 @@ class SystemUser extends QUI\Users\Nobody implements QUI\Interfaces\Users\User
     }
 
     /**
+     * (non-PHPdoc)
+     *
+     * @see \QUI\Users\Nobody::getUniqueId()
+     */
+    public function getUniqueId()
+    {
+        return '5';
+    }
+
+    /**
      * @param bool|true $array
      * @return array
      */

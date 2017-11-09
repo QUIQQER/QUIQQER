@@ -32,6 +32,7 @@
             <field type="VARCHAR(20) NULL">activation</field>
             <field type="VARCHAR(5) NULL">shortcuts</field>
             <field type="TEXT NULL">authenticator</field>
+            <field type="VARCHAR(50) NOT NULL">uuid</field>
 
             <primary>id</primary>
             <index>username,password</index>

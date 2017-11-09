@@ -49,6 +49,13 @@ class User implements QUI\Interfaces\Users\User
     protected $id;
 
     /**
+     * User UUID
+     *
+     * @var string
+     */
+    protected $uuid;
+
+    /**
      * User groups
      *
      * @var array
@@ -548,6 +555,16 @@ class User implements QUI\Interfaces\Users\User
     public function getId()
     {
         return $this->id ? $this->id : false;
+    }
+
+    /**
+     * Return the unique id for the user
+     *
+     * @return string
+     */
+    public function getUniqueId()
+    {
+        return $this->uuid ? $this->uuid : '';
     }
 
     /**

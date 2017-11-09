@@ -12,6 +12,9 @@ use QUI\Utils\Text\XML;
 use QUI\Utils\DOM;
 use QUI\Security\Password;
 
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
+
 /**
  * QUIQQER user manager
  *
@@ -138,6 +141,33 @@ class Manager
         $DataBase->getPDO()->exec(
             "ALTER TABLE `{$tableAddress}` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT"
         );
+
+        // users with no uuid
+        $DataBase->table()->addColumn($table, array(
+            'uuid' => 'VARCHAR(50) NOT NULL'
+        ));
+
+        $list = QUI::getDataBase()->fetch(array(
+            'from'  => $table,
+            'where' => array(
+                'uuid' => ''
+            )
+        ));
+
+        foreach ($list as $entry) {
+            try {
+                $uuid = Uuid::uuid1()->toString();
+            } catch (UnsatisfiedDependencyException $Exception) {
+                QUI\System\Log::writeException($Exception);
+                continue;
+            }
+
+            QUI::getDataBase()->update($table, array(
+                'uuid' => $uuid
+            ), array(
+                'id' => $entry['id']
+            ));
+        }
     }
 
     /**
