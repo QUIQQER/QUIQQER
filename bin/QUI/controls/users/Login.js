@@ -5,6 +5,7 @@
  * @event onAuthNext
  * @event onSuccess
  * @event onAuthNext
+ * @event onUserLoginError [error, this]
  */
 define('controls/users/Login', [
 
@@ -105,6 +106,8 @@ define('controls/users/Login', [
          * Refresh the form data and set events to the current form
          */
         $refreshForm: function () {
+            var self = this;
+
             this.$forms.set({
                 action: '',
                 method: 'POST',
@@ -127,7 +130,7 @@ define('controls/users/Login', [
                         }
 
                         this.auth(Target).catch(function (err) {
-                            console.log(err);
+                            self.fireEvent('userLoginError', [err, self]);
                         });
                     }.bind(this)
                 }
@@ -257,10 +260,11 @@ define('controls/users/Login', [
                     params       : JSON.encode(
                         QUIFormUtils.getFormData(Form)
                     ),
-                    onError      : function () {
+                    onError      : function (e) {
                         self.Loader.hide();
                         self.fireEvent('authNext', [this]);
-                        reject();
+
+                        reject(e);
                     }
                 });
             });
