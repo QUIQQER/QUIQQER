@@ -1751,11 +1751,16 @@ class User implements QUI\Interfaces\Users\User
      * Add a address to the user
      *
      * @param array $params
+     * @param QUI\Interfaces\Users\User $ParentUser - Edit user [default: Session user]
      *
      * @return QUI\Users\Address
      */
-    public function addAddress($params = array())
+    public function addAddress($params = array(), $ParentUser = null)
     {
+        if (is_null($ParentUser)) {
+            $ParentUser = QUI::getUserBySession();
+        }
+
         $_params = array();
         $needles = array(
             'salutation',
@@ -1798,7 +1803,7 @@ class User implements QUI\Interfaces\Users\User
         if (empty($tmp_first) && empty($tmp_last)) {
             $this->setAttribute('firstname', $_params['firstname']);
             $this->setAttribute('lastname', $_params['lastname']);
-            $this->save();
+            $this->save($ParentUser);
         }
 
 
