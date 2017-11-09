@@ -39,16 +39,6 @@ abstract class AbstractAuthenticator implements QUI\Users\AuthenticatorInterface
     }
 
     /**
-     * Return the registration control
-     *
-     * @return \QUI\Control|null
-     */
-    public static function getRegisterControl()
-    {
-        return null;
-    }
-
-    /**
      * Return the password reset control
      *
      * @return \QUI\Control|null
