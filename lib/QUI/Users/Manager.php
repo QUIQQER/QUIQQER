@@ -1108,7 +1108,7 @@ class Manager
             'select' => array('uuid', 'id'),
             'from'   => self::table(),
             'where'  => array(
-                'uuid' => $uuid
+                'uuid' => trim($uuid)
             ),
             'limit'  => 1
         ));
