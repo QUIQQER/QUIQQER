@@ -25,6 +25,13 @@ use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
  */
 class Manager
 {
+    const AUTH_ERROR_PRIMARY_AUTH_ERROR   = 'auth_error_primary_auth_error';
+    const AUTH_ERROR_SECONDARY_AUTH_ERROR = 'auth_error_secondary_auth_error';
+    const AUTH_ERROR_USER_NOT_FOUND       = 'auth_error_user_not_found';
+    const AUTH_ERROR_USER_NOT_ACTIVE      = 'auth_error_user_not_active';
+    const AUTH_ERROR_LOGIN_EXPIRED        = 'auth_error_login_expired';
+    const AUTH_ERROR_NO_ACTIVE_GROUP      = 'auth_error_no_active_group';
+
     /**
      * @var QUI\Projects\Project (active internal project)
      */
@@ -331,7 +338,7 @@ class Manager
             $i             = 0;
 
             while ($this->usernameExists($newName)) {
-                $newName = $newUserLocale.' ('.$i.')';
+                $newName = $newUserLocale . ' (' . $i . ')';
                 $i++;
             }
         }
@@ -729,6 +736,7 @@ class Manager
 
         $Events  = QUI::getEvents();
         $numArgs = func_num_args();
+        $userId  = false;
 
         // old login -> v 1.0; fallback
         if ($numArgs == 2) {
@@ -745,7 +753,20 @@ class Manager
 
             /* @var $Authenticator QUI\Users\AbstractAuthenticator */
             foreach ($authenticators as $authenticator) {
-                $this->authenticate($authenticator, $authData);
+                try {
+                    $this->authenticate($authenticator, $authData);
+                } catch (\Exception $Exception) {
+                    $Exception = new QUI\Users\Exception(
+                        array('quiqqer/system', 'exception.login.fail.authenticator_error'),
+                        404
+                    );
+
+                    $Exception->setAttribute('reason', self::AUTH_ERROR_PRIMARY_AUTH_ERROR);
+
+                    $Events->fireEvent('userLoginError', array($userId, $Exception));
+
+                    throw $Exception;
+                }
             }
 
             QUI::getSession()->set('auth-globals', 1);
@@ -762,6 +783,8 @@ class Manager
                 array('quiqqer/system', 'exception.login.fail.user.not.found'),
                 404
             );
+
+            $Exception->setAttribute('reason', self::AUTH_ERROR_USER_NOT_FOUND);
 
             $Events->fireEvent('userLoginError', array($userId, $Exception));
 
@@ -786,6 +809,8 @@ class Manager
                 404
             );
 
+            $Exception->setAttribute('reason', self::AUTH_ERROR_USER_NOT_FOUND);
+
             $Events->fireEvent('userLoginError', array($userId, $Exception));
 
             throw $Exception;
@@ -798,7 +823,7 @@ class Manager
             );
 
             $Exception->setAttribute('userId', $userId);
-            $Exception->setAttribute('reason', 'user_not_active');
+            $Exception->setAttribute('reason', self::AUTH_ERROR_USER_NOT_ACTIVE);
 
             $Events->fireEvent('userLoginError', array($userId, $Exception));
 
@@ -815,6 +840,8 @@ class Manager
                 ))
             );
 
+            $Exception->setAttribute('reason', self::AUTH_ERROR_LOGIN_EXPIRED);
+
             $Events->fireEvent('userLoginError', array($userId, $Exception));
 
             throw $Exception;
@@ -830,6 +857,10 @@ class Manager
             }
         } catch (\Exception $Exception) {
             $Events->fireEvent('userLoginError', array($userId, $Exception));
+
+            if (method_exists($Exception, 'setAttribute')) {
+                $Exception->setAttribute('reason', self::AUTH_ERROR_SECONDARY_AUTH_ERROR);
+            }
 
             throw $Exception;
         }
@@ -851,6 +882,7 @@ class Manager
                 401
             );
 
+            $Exception->setAttribute('reason', self::AUTH_ERROR_NO_ACTIVE_GROUP);
             $Events->fireEvent('userLoginError', array($userId, $Exception));
 
             throw $Exception;
