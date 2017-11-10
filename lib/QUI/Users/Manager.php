@@ -797,6 +797,9 @@ class Manager
                 401
             );
 
+            $Exception->setAttribute('userId', $userId);
+            $Exception->setAttribute('reason', 'user_not_active');
+
             $Events->fireEvent('userLoginError', array($userId, $Exception));
 
             throw $Exception;
