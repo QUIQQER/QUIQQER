@@ -66,7 +66,9 @@ class Login extends Control
             }
 
             if (!empty($result)) {
-                $result .= '<div>or</div>';
+                $result .= '<div>';
+                $result .= QUI::getLocale()->get('quiqqer/system', 'controls.users.auth.login.or');
+                $result .= '</div>';
             }
 
             $result .= '<form method="POST" name="login" data-authenticator="' . $auth . '"' . $isGlobalAuth . '>' .

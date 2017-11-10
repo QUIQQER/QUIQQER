@@ -6183,6 +6183,12 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
 
     </groups>
     <groups name="quiqqer/system" datatype="php">
+        <!-- Control: Users/Controls/Login -->
+        <locale name="controls.users.auth.login.or">
+            <de><![CDATA[oder]]></de>
+            <en><![CDATA[or]]></en>
+        </locale>
+
         <locale name="menu.quiqqer.text" html="true">
             <de><![CDATA[<img src="../bin/quiqqer_logo_mini.png" />]]></de>
             <en><![CDATA[<img src="../bin/quiqqer_logo_mini.png" />]]></en>
