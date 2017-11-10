@@ -69,7 +69,7 @@ class Login extends Control
                 $result .= '<div>or</div>';
             }
 
-            $result .= '<form name="login" data-authenticator="' . $auth . '"' . $isGlobalAuth . '>' .
+            $result .= '<form method="POST" name="login" data-authenticator="' . $auth . '"' . $isGlobalAuth . '>' .
                        $Control->create() .
                        '</form>';
         }
