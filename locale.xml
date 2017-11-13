@@ -6183,7 +6183,17 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
 
     </groups>
     <groups name="quiqqer/system" datatype="php">
-        <!-- Control: Users/Controls/Login -->
+        <!-- Class: QUI\Watch -->
+        <locale name="watch.unknown_user">
+            <de><![CDATA[Unbekannter Benutzer]]></de>
+            <en><![CDATA[Unknown user]]></en>
+        </locale>
+        <locale name="watch.authenticatorLoginError">
+            <de><![CDATA[Gescheiterter Login-Versuch: "[username]" (#[userId]) | Authenticator: "[authenticator]" | IP-Adresse: [ipAddress] | User Agent: "[userAgent]"]]></de>
+            <en><![CDATA[Failed login attempt: "[username]" (#[userId]) | Authenticator: "[authenticator]" | IP address: [ipAddress] | User Agent: "[userAgent]"]]></en>
+        </locale>
+
+        <!-- Control: QUI\Users\Controls\Login -->
         <locale name="controls.users.auth.login.or">
             <de><![CDATA[oder]]></de>
             <en><![CDATA[or]]></en>
