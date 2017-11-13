@@ -26,12 +26,11 @@ use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
  */
 class Manager
 {
-    const AUTH_ERROR_PRIMARY_AUTH_ERROR   = 'auth_error_primary_auth_error';
-    const AUTH_ERROR_SECONDARY_AUTH_ERROR = 'auth_error_secondary_auth_error';
-    const AUTH_ERROR_USER_NOT_FOUND       = 'auth_error_user_not_found';
-    const AUTH_ERROR_USER_NOT_ACTIVE      = 'auth_error_user_not_active';
-    const AUTH_ERROR_LOGIN_EXPIRED        = 'auth_error_login_expired';
-    const AUTH_ERROR_NO_ACTIVE_GROUP      = 'auth_error_no_active_group';
+    const AUTH_ERROR_AUTH_ERROR      = 'AUTH_ERROR_AUTH_ERROR';
+    const AUTH_ERROR_USER_NOT_FOUND  = 'auth_error_user_not_found';
+    const AUTH_ERROR_USER_NOT_ACTIVE = 'auth_error_user_not_active';
+    const AUTH_ERROR_LOGIN_EXPIRED   = 'auth_error_login_expired';
+    const AUTH_ERROR_NO_ACTIVE_GROUP = 'auth_error_no_active_group';
 
     /**
      * @var QUI\Projects\Project (active internal project)
@@ -663,6 +662,20 @@ class Manager
             $username = $params['username'];
         }
 
+        // try to get user id
+        $userId = false;
+
+        if (!empty($username)) {
+            try {
+                $User   = self::getUserByName($username);
+                $userId = $User->getId();
+            } catch (\Exception $Exception) {
+                // nothing
+            }
+        }
+
+        QUI::getEvents()->fireEvent('userAuthenticatorLoginStart', array($userId, $authenticator));
+
         if ($authenticator instanceof AuthenticatorInterface) {
             $Authenticator = $authenticator;
         } else {
@@ -682,6 +695,10 @@ class Manager
         try {
             $Authenticator->auth($params);
         } catch (QUI\Users\Exception $Exception) {
+            $Exception->setAttribute('reason', self::AUTH_ERROR_AUTH_ERROR);
+
+            QUI::getEvents()->fireEvent('userLoginError', array($userId, $Exception));
+
             throw $Exception;
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
@@ -748,36 +765,32 @@ class Manager
             );
         }
 
+        // try to get userId by authData
+        if (!empty($authData['username'])) {
+            try {
+                $User   = self::getUserByName($authData['username']);
+                $userId = $User->getId();
+            } catch (\Exception $Exception) {
+                // nothing
+            }
+        }
+
+        $Events->fireEvent('userLoginStart', array($userId));
+
         // global authenticators
         if (QUI::getSession()->get('auth-globals') !== 1) {
             $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalAuthenticators();
 
             /* @var $Authenticator QUI\Users\AbstractAuthenticator */
             foreach ($authenticators as $authenticator) {
-                try {
-                    $this->authenticate($authenticator, $authData);
-                } catch (\Exception $Exception) {
-                    $Exception = new QUI\Users\Exception(
-                        array('quiqqer/system', 'exception.login.fail.authenticator_error'),
-                        404
-                    );
-
-                    $Exception->setAttribute('reason', self::AUTH_ERROR_PRIMARY_AUTH_ERROR);
-
-                    $Events->fireEvent('userLoginError', array($userId, $Exception));
-
-                    throw $Exception;
-                }
+                $this->authenticate($authenticator, $authData);
             }
 
             QUI::getSession()->set('auth-globals', 1);
         }
 
         $userId = QUI::getSession()->get('uid');
-
-        $Events->fireEvent('userLoginStart', array($userId));
-
-        $User = $this->get($userId);
+        $User   = $this->get($userId);
 
         if (QUI::getUsers()->isNobodyUser($User)) {
             $Exception = new QUI\Users\Exception(
@@ -852,18 +865,8 @@ class Manager
         // user authenticators
         $authenticator = $User->getAuthenticators();
 
-        try {
-            foreach ($authenticator as $Authenticator) {
-                $this->authenticate($Authenticator, $authData);
-            }
-        } catch (\Exception $Exception) {
-            $Events->fireEvent('userLoginError', array($userId, $Exception));
-
-            if (method_exists($Exception, 'setAttribute')) {
-                $Exception->setAttribute('reason', self::AUTH_ERROR_SECONDARY_AUTH_ERROR);
-            }
-
-            throw $Exception;
+        foreach ($authenticator as $Authenticator) {
+            $this->authenticate($Authenticator, $authData);
         }
 
         // is one group active?

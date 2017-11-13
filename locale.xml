@@ -6901,6 +6901,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Login fehlgeschlagen. Benutzer ist nicht aktiv.]]></de>
             <en><![CDATA[Login failed. User is not active.]]></en>
         </locale>
+        <locale name="exception.login.fail.login_locked">
+            <de><![CDATA[Login fehlgeschlagen. Der Login für diesen Benutzer ist z.Z. gesperrt. Bitte versuchen Sie es später noch einmal.]]></de>
+            <en><![CDATA[Login failed. Login for this user is currently locked. Please try again later.]]></en>
+        </locale>
         <locale name="message.site.save.success">
             <de><![CDATA[Die Seite [id] [title] wurde erfolgreich gespeichert.]]></de>
             <en><![CDATA[The page [id] [title] are successfuly saved.]]]></en>

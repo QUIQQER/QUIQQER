@@ -33,6 +33,8 @@
             <field type="VARCHAR(5) NULL">shortcuts</field>
             <field type="TEXT NULL">authenticator</field>
             <field type="VARCHAR(50) NOT NULL">uuid</field>
+            <field type="DATETIME NULL DEFAULT NULL">lastLoginAttempt</field>
+            <field type="SMALLINT UNSIGNED NOT NULL DEFAULT '0'">failedLogins</field>
 
             <primary>id</primary>
             <index>username,password</index>
