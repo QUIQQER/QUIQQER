@@ -697,7 +697,7 @@ class Manager
         } catch (QUI\Users\Exception $Exception) {
             $Exception->setAttribute('reason', self::AUTH_ERROR_AUTH_ERROR);
 
-            QUI::getEvents()->fireEvent('userLoginError', array($userId, $Exception));
+            QUI::getEvents()->fireEvent('userLoginError', array($userId, $Exception, $authenticator));
 
             throw $Exception;
         } catch (\Exception $Exception) {
