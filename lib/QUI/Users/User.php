@@ -46,14 +46,14 @@ class User implements QUI\Interfaces\Users\User
      *
      * @var integer
      */
-    protected $id;
+    protected $id = null;
 
     /**
      * User UUID
      *
      * @var string
      */
-    protected $uuid;
+    protected $uuid = null;
 
     /**
      * User groups
@@ -168,20 +168,25 @@ class User implements QUI\Interfaces\Users\User
      */
     public function __construct($id, Manager $Users)
     {
-        $id = (int)$id;
-
-        if (!$id || $id <= 10) {
-            throw new QUI\Users\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/system',
-                    'exception.lib.user.wrong.uid'
-                ),
-                404
-            );
-        }
-
         $this->Users = $Users;
-        $this->id    = $id;
+
+        if (is_numeric($id)) {
+            $id = (int)$id;
+
+            if (!$id || $id <= 10) {
+                throw new QUI\Users\Exception(
+                    QUI::getLocale()->get(
+                        'quiqqer/system',
+                        'exception.lib.user.wrong.uid'
+                    ),
+                    404
+                );
+            }
+
+            $this->id = $id;
+        } else {
+            $this->uuid = $id;
+        }
 
         $this->refresh();
     }
@@ -193,13 +198,23 @@ class User implements QUI\Interfaces\Users\User
      */
     public function refresh()
     {
-        $data = QUI::getDataBase()->fetch(array(
-            'from'  => Manager::table(),
-            'where' => array(
-                'id' => $this->id
-            ),
-            'limit' => '1'
-        ));
+        if ($this->uuid !== null) {
+            $data = QUI::getDataBase()->fetch(array(
+                'from'  => Manager::table(),
+                'where' => array(
+                    'uuid' => $this->uuid
+                ),
+                'limit' => 1
+            ));
+        } else {
+            $data = QUI::getDataBase()->fetch(array(
+                'from'  => Manager::table(),
+                'where' => array(
+                    'id' => $this->id
+                ),
+                'limit' => 1
+            ));
+        }
 
         if (!isset($data[0])) {
             throw new QUI\Users\Exception(
@@ -213,16 +228,12 @@ class User implements QUI\Interfaces\Users\User
 
         // Eigenschaften setzen
         $this->uuid = $data[0]['uuid'];
+        $this->id   = (int)$data[0]['id'];
 
 
         if (isset($data[0]['username'])) {
             $this->name = $data[0]['username'];
             unset($data[0]['username']);
-        }
-
-        if (isset($data[0]['id'])) {
-            $this->id = $data[0]['id'];
-            unset($data[0]['id']);
         }
 
         if (isset($data[0]['usergroup'])) {
@@ -955,9 +966,7 @@ class User implements QUI\Interfaces\Users\User
                 // Falls der Name geändert wird muss geprüft werden das es diesen nicht schon gibt
                 Manager::checkUsernameSigns($value);
 
-                if ($this->name != $value
-                    && $this->Users->usernameExists($value)
-                ) {
+                if ($this->name != $value && QUI::getUsers()->usernameExists($value)) {
                     throw new QUI\Users\Exception('Name existiert bereits');
                 }
 

@@ -5,6 +5,7 @@
 
         <table name="users">
             <field type="INT(11) NOT NULL">id</field>
+            <field type="VARCHAR(50) NOT NULL">uuid</field>
             <field type="VARCHAR(50) NOT NULL DEFAULT ''">username</field>
             <field type="VARCHAR(255) NOT NULL DEFAULT ''">password</field>
             <field type="TEXT NULL">usergroup</field>
@@ -38,6 +39,7 @@
 
             <primary>id</primary>
             <index>username,password</index>
+            <index>uuid</index>
             <auto_increment>id</auto_increment>
         </table>
 

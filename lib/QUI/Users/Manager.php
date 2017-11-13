@@ -155,9 +155,12 @@ class Manager
         );
 
         // users with no uuid
+        // @todo after 1.2 we can delete this
         $DataBase->table()->addColumn($table, array(
             'uuid' => 'VARCHAR(50) NOT NULL'
         ));
+
+        $DataBase->table()->setUniqueColumns($table, 'uuid');
 
         $list = QUI::getDataBase()->fetch(array(
             'from'  => $table,
@@ -347,6 +350,7 @@ class Manager
 
         QUI::getDataBase()->insert(self::table(), array(
             'id'       => $newId,
+            'uuid'     => Uuid::uuid1()->toString(),
             'username' => $newName,
             'regdate'  => time(),
             'lang'     => QUI::getLocale()->getCurrent()
@@ -1133,72 +1137,31 @@ class Manager
      */
     public function get($id)
     {
-        $id = (int)$id;
+        if (is_numeric($id)) {
+            if (!$id) {
+                return new Nobody();
+            }
 
-        if (!$id) {
-            return new Nobody();
+            if ($id == 5) {
+                return new SystemUser();
+            }
         }
 
-        if ($id == 5) {
-            return new SystemUser();
+        if (isset($this->usersUUIDs[$id])) {
+            $id = $this->usersUUIDs[$id];
         }
 
         if (isset($this->users[$id])) {
             return $this->users[$id];
         }
 
-        $User             = new User($id, $this);
-        $this->users[$id] = $User;
+        $User = new User($id, $this);
+        $uuid = $User->getUniqueId();
+
+        $this->usersUUIDs[$uuid] = $User->getId();
+        $this->users[$id]        = $User;
 
         return $User;
-    }
-
-    /**
-     * Return a user by its unique id (UUID)
-     *
-     * @param string $uuid
-     * @return QUI\Users\User|Nobody|SystemUser|false
-     * @throws QUI\Users\Exception
-     */
-    public function getByUniqueId($uuid)
-    {
-        if (!$uuid || empty($uuid)) {
-            return new Nobody();
-        }
-
-        if ($uuid == 5) {
-            return new SystemUser();
-        }
-
-        if (isset($this->usersUUIDs[$uuid])) {
-            return $this->get($this->usersUUIDs[$uuid]);
-        }
-
-
-        $result = QUI::getDataBase()->fetch(array(
-            'select' => array('uuid', 'id'),
-            'from'   => self::table(),
-            'where'  => array(
-                'uuid' => trim($uuid)
-            ),
-            'limit'  => 1
-        ));
-
-        if (!isset($result[0])) {
-            throw new QUI\Users\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/system',
-                    'exception.lib.user.user.not.found'
-                ),
-                404
-            );
-        }
-
-        $userId = (int)$result[0]['id'];
-
-        $this->usersUUIDs[$uuid] = $userId;
-
-        return $this->get($userId);
     }
 
     /**
