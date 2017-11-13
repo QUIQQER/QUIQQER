@@ -198,7 +198,7 @@ class QUI
      *
      * @var \QUI\Events\Manager
      */
-    public static $Events;
+    public static $Events = null;
 
     /**
      * Country Manager
