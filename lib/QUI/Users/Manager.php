@@ -6,6 +6,7 @@
 
 namespace QUI\Users;
 
+use function GuzzleHttp\Promise\queue;
 use QUI;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\Text\XML;
@@ -25,6 +26,12 @@ use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
  */
 class Manager
 {
+    const AUTH_ERROR_AUTH_ERROR      = 'AUTH_ERROR_AUTH_ERROR';
+    const AUTH_ERROR_USER_NOT_FOUND  = 'auth_error_user_not_found';
+    const AUTH_ERROR_USER_NOT_ACTIVE = 'auth_error_user_not_active';
+    const AUTH_ERROR_LOGIN_EXPIRED   = 'auth_error_login_expired';
+    const AUTH_ERROR_NO_ACTIVE_GROUP = 'auth_error_no_active_group';
+
     /**
      * @var QUI\Projects\Project (active internal project)
      */
@@ -69,7 +76,7 @@ class Manager
      */
     public static function table()
     {
-        return QUI_DB_PRFX.'users';
+        return QUI_DB_PRFX . 'users';
     }
 
     /**
@@ -79,7 +86,7 @@ class Manager
      */
     public static function tableAddress()
     {
-        return QUI_DB_PRFX.'users_address';
+        return QUI_DB_PRFX . 'users_address';
     }
 
     /**
@@ -334,7 +341,7 @@ class Manager
             $i             = 0;
 
             while ($this->usernameExists($newName)) {
-                $newName = $newUserLocale.' ('.$i.')';
+                $newName = $newUserLocale . ' (' . $i . ')';
                 $i++;
             }
         }
@@ -486,7 +493,7 @@ class Manager
                     }
                 }
 
-                $regparams['usergroup'] = ','.implode(',', $gids).',';
+                $regparams['usergroup'] = ',' . implode(',', $gids) . ',';
                 continue;
             }
 
@@ -659,6 +666,20 @@ class Manager
             $username = $params['username'];
         }
 
+        // try to get user id
+        $userId = false;
+
+        if (!empty($username)) {
+            try {
+                $User   = self::getUserByName($username);
+                $userId = $User->getId();
+            } catch (\Exception $Exception) {
+                // nothing
+            }
+        }
+
+        QUI::getEvents()->fireEvent('userAuthenticatorLoginStart', array($userId, $authenticator));
+
         if ($authenticator instanceof AuthenticatorInterface) {
             $Authenticator = $authenticator;
         } else {
@@ -668,7 +689,7 @@ class Manager
             );
         }
 
-        if ($Session->get('auth-'.get_class($Authenticator))
+        if ($Session->get('auth-' . get_class($Authenticator))
             && $Session->get('username')
             && $Session->get('uid')
         ) {
@@ -678,6 +699,10 @@ class Manager
         try {
             $Authenticator->auth($params);
         } catch (QUI\Users\Exception $Exception) {
+            $Exception->setAttribute('reason', self::AUTH_ERROR_AUTH_ERROR);
+
+            QUI::getEvents()->fireEvent('userLoginError', array($userId, $Exception));
+
             throw $Exception;
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
@@ -704,7 +729,7 @@ class Manager
         }
 
         $Session->set(
-            'auth-'.get_class($Authenticator),
+            'auth-' . get_class($Authenticator),
             1
         );
 
@@ -718,6 +743,7 @@ class Manager
      *
      * @return QUI\Interfaces\Users\User
      * @throws QUI\Users\Exception
+     * @throws \Exception
      */
     public function login($authData = array())
     {
@@ -730,7 +756,9 @@ class Manager
             return $this->Session;
         }
 
+        $Events  = QUI::getEvents();
         $numArgs = func_num_args();
+        $userId  = false;
 
         // old login -> v 1.0; fallback
         if ($numArgs == 2) {
@@ -740,6 +768,18 @@ class Manager
                 'password' => $arguments[1]
             );
         }
+
+        // try to get userId by authData
+        if (!empty($authData['username'])) {
+            try {
+                $User   = self::getUserByName($authData['username']);
+                $userId = $User->getId();
+            } catch (\Exception $Exception) {
+                // nothing
+            }
+        }
+
+        $Events->fireEvent('userLoginStart', array($userId));
 
         // global authenticators
         if (QUI::getSession()->get('auth-globals') !== 1) {
@@ -757,10 +797,16 @@ class Manager
         $User   = $this->get($userId);
 
         if (QUI::getUsers()->isNobodyUser($User)) {
-            throw new QUI\Users\Exception(
+            $Exception = new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail.user.not.found'),
                 404
             );
+
+            $Exception->setAttribute('reason', self::AUTH_ERROR_USER_NOT_FOUND);
+
+            $Events->fireEvent('userLoginError', array($userId, $Exception));
+
+            throw $Exception;
         }
 
         // check user data
@@ -776,28 +822,47 @@ class Manager
         );
 
         if (!isset($userData[0])) {
-            throw new QUI\Users\Exception(
+            $Exception = new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail.user.not.found'),
                 404
             );
+
+            $Exception->setAttribute('reason', self::AUTH_ERROR_USER_NOT_FOUND);
+
+            $Events->fireEvent('userLoginError', array($userId, $Exception));
+
+            throw $Exception;
         }
 
         if ($userData[0]['active'] == 0) {
-            throw new QUI\Users\Exception(
-                array('quiqqer/system', 'exception.login.fail.user.not.found'),
+            $Exception = new QUI\Users\Exception(
+                array('quiqqer/system', 'exception.login.fail.user_not_active'),
                 401
             );
+
+            $Exception->setAttribute('userId', $userId);
+            $Exception->setAttribute('reason', self::AUTH_ERROR_USER_NOT_ACTIVE);
+
+            $Events->fireEvent('userLoginError', array($userId, $Exception));
+
+            throw $Exception;
         }
 
         if ($userData[0]['expire']
             && $userData[0]['expire'] != '0000-00-00 00:00:00'
             && strtotime($userData[0]['expire']) < time()
         ) {
-            throw new QUI\Users\Exception(
+            $Exception = new QUI\Users\Exception(
                 QUI::getLocale()->get('quiqqer/system', 'exception.login.expire', array(
                     'expire' => $userData[0]['expire']
                 ))
             );
+
+            $Exception->setAttribute('reason', self::AUTH_ERROR_LOGIN_EXPIRED);
+
+            $Events->fireEvent('userLoginError', array($userId, $Exception));
+
+            throw $Exception;
         }
 
         /* @var $User User */
@@ -820,10 +885,15 @@ class Manager
         }
 
         if ($activeGroupExists === false) {
-            throw new QUI\Users\Exception(
+            $Exception = new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail'),
                 401
             );
+
+            $Exception->setAttribute('reason', self::AUTH_ERROR_NO_ACTIVE_GROUP);
+            $Events->fireEvent('userLoginError', array($userId, $Exception));
+
+            throw $Exception;
         }
 
         // session
@@ -958,10 +1028,10 @@ class Manager
             );
         }
 
-        if ((!$Session->get('uid') || !$Session->get('auth'))
-            && !$Session->get('inAuthentication')
-        ) {
-            $clearSessionData();
+        if (!$Session->get('uid') || !$Session->get('auth')) {
+            if (!$Session->get('inAuthentication')) {
+                $clearSessionData();
+            }
 
             if ($Session->get('expired.from.other')) {
                 throw new QUI\Users\Exception(
@@ -1334,11 +1404,11 @@ class Manager
         /**
          * SELECT
          */
-        $query = 'SELECT * FROM '.self::table();
+        $query = 'SELECT * FROM ' . self::table();
         $binds = array();
 
         if (isset($params['count'])) {
-            $query = 'SELECT COUNT( id ) AS count FROM '.self::table();
+            $query = 'SELECT COUNT( id ) AS count FROM ' . self::table();
         }
 
         /**
@@ -1418,7 +1488,7 @@ class Manager
                 $query .= ' WHERE 1=1 ';
             } else {
                 $query            .= ' WHERE (';
-                $binds[':search'] = '%'.$search.'%';
+                $binds[':search'] = '%' . $search . '%';
 
                 if (empty($search)) {
                     $binds[':search'] = '%';
@@ -1433,7 +1503,7 @@ class Manager
                         continue;
                     }
 
-                    $query .= ' '.$field.' LIKE :search OR ';
+                    $query .= ' ' . $field . ' LIKE :search OR ';
                 }
 
                 if (substr($query, -3) == 'OR ') {
@@ -1461,8 +1531,8 @@ class Manager
 
                 foreach ($groups as $groupId) {
                     if ((int)$groupId > 0) {
-                        $query               .= ' AND usergroup LIKE :'.$groupId.' ';
-                        $binds[':'.$groupId] = '%'.(int)$groupId.'%';
+                        $query                 .= ' AND usergroup LIKE :' . $groupId . ' ';
+                        $binds[':' . $groupId] = '%' . (int)$groupId . '%';
                     }
                 }
             }
@@ -1470,8 +1540,8 @@ class Manager
             if ($filter_groups_exclude) {
                 foreach ($filter['filter_groups_exclude'] as $groupId) {
                     if ((int)$groupId > 0) {
-                        $query               .= ' AND usergroup NOT LIKE :'.$groupId.' ';
-                        $binds[':'.$groupId] = '%,'.(int)$groupId.',%';
+                        $query                 .= ' AND usergroup NOT LIKE :' . $groupId . ' ';
+                        $binds[':' . $groupId] = '%,' . (int)$groupId . ',%';
                     }
                 }
             }
@@ -1479,7 +1549,7 @@ class Manager
             if ($filter_regdate_first) {
                 $query              .= ' AND regdate >= :firstreg ';
                 $binds[':firstreg'] = QUI\Utils\Convert::convertMySqlDatetime(
-                    $filter['filter_regdate_first'].' 00:00:00'
+                    $filter['filter_regdate_first'] . ' 00:00:00'
                 );
             }
 
@@ -1487,7 +1557,7 @@ class Manager
             if ($filter_regdate_last) {
                 $query             .= " AND regdate <= :lastreg ";
                 $binds[':lastreg'] = QUI\Utils\Convert::convertMySqlDatetime(
-                    $filter['filter_regdate_last'].' 00:00:00'
+                    $filter['filter_regdate_last'] . ' 00:00:00'
                 );
             }
         }
@@ -1501,7 +1571,7 @@ class Manager
             && $params['field']
             && isset($allowOrderFields[$params['field']])
         ) {
-            $query .= ' ORDER BY '.$params['field'].' '.$params['order'];
+            $query .= ' ORDER BY ' . $params['field'] . ' ' . $params['order'];
         }
 
         /**
@@ -1516,7 +1586,7 @@ class Manager
                 $start = (int)$params['start'];
             }
 
-            $query .= ' LIMIT '.$start.', '.$max;
+            $query .= ' LIMIT ' . $start . ', ' . $max;
         }
 
         $Statement = $PDO->prepare($query);
@@ -1623,7 +1693,7 @@ class Manager
 
         foreach ($packages as $package) {
             $name    = $package['name'];
-            $userXml = OPT_DIR.$name.'/user.xml';
+            $userXml = OPT_DIR . $name . '/user.xml';
 
             if (!file_exists($userXml)) {
                 continue;
@@ -1645,6 +1715,6 @@ class Manager
             'extend' => $extend
         ));
 
-        return $Engine->fetch(SYS_DIR.'template/users/profile.html');
+        return $Engine->fetch(SYS_DIR . 'template/users/profile.html');
     }
 }

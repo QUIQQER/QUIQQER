@@ -102,4 +102,118 @@ class EventHandler
             }
         }
     }
+
+    /**
+     * quiqqer/quiqqer: onUserLoginError
+     *
+     * Increase User failedLogins counter
+     *
+     * @param int $userId - ID of the QUIQQER user that tries to log in
+     * @param QUI\Users\Exception $Exception
+     * @return void
+     */
+    public static function onUserLoginError($userId, QUI\Users\Exception $Exception)
+    {
+        switch ($Exception->getAttribute('reason')) {
+            case QUI\Users\Manager::AUTH_ERROR_AUTH_ERROR:
+                break;
+
+            default:
+                return;
+        }
+
+        try {
+            $User         = QUI::getUsers()->get($userId);
+            $failedLogins = $User->getAttribute('failedLogins');
+
+            if (empty($failedLogins)) {
+                $failedLogins = 0;
+            }
+
+            $User->setAttributes(array(
+                'failedLogins'     => ++$failedLogins,
+                'lastLoginAttempt' => date('Y-m-d H:i:s')
+            ));
+
+            $User->save(QUI::getUsers()->getSystemUser());
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+    }
+
+    /**
+     * quiqqer/quiqer: userAuthenticatorLoginStart
+     *
+     * @param int|false $userId
+     * @param string $authenticator
+     * @return void
+     *
+     * @throws QUI\Users\Exception
+     */
+    public static function onUserAuthenticatorLoginStart($userId, $authenticator)
+    {
+        self::onUserLoginStart($userId);
+    }
+
+    /**
+     * quiqqer/quiqqer: onUserLoginStart
+     *
+     * @param int|false $userId
+     * @return void
+     *
+     * @throws QUI\Users\Exception
+     */
+    public static function onUserLoginStart($userId)
+    {
+        if (!$userId) {
+            return;
+        }
+
+        try {
+            $User = QUI::getUsers()->get((int)$userId);
+        } catch (\Exception $Exception) {
+            // do nothing if user cannot be found
+            return;
+        }
+
+        $failedLogins     = (int)$User->getAttribute('failedLogins');
+        $lastLoginAttempt = $User->getAttribute('lastLoginAttempt');
+
+        if (!$failedLogins || !$lastLoginAttempt) {
+            return;
+        }
+
+        $NextLoginAllowed = new \DateTime($lastLoginAttempt . ' +' . $failedLogins . ' second');
+        $Now              = new \DateTime();
+
+        if ($Now < $NextLoginAllowed) {
+            throw new QUI\Users\Exception(
+                array(
+                    'quiqqer/system',
+                    'exception.login.fail.login_locked'
+                ),
+                404
+            );
+        }
+    }
+
+    /**
+     * quiqqer/quiqqer: onUserLogin
+     *
+     * @param Users\User $User
+     * @return void
+     */
+    public static function onUserLogin(QUI\Users\User $User)
+    {
+        try {
+            $User->setAttributes(array(
+                'failedLogins'     => 0,
+                'lastLoginAttempt' => false
+            ));
+
+            $User->save(QUI::getUsers()->getSystemUser());
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+    }
 }

@@ -592,7 +592,7 @@ class User implements QUI\Interfaces\Users\User
         $lastname  = $this->getAttribute('lastname');
 
         if ($firstname && $lastname) {
-            return $firstname.' '.$lastname;
+            return $firstname . ' ' . $lastname;
         }
 
         return $this->getUsername();
@@ -792,7 +792,7 @@ class User implements QUI\Interfaces\Users\User
                 }
             }
 
-            $this->groups = ','.implode($aTmp, ',').',';
+            $this->groups = ',' . implode($aTmp, ',') . ',';
 
             return;
         }
@@ -814,7 +814,7 @@ class User implements QUI\Interfaces\Users\User
                 }
             }
 
-            $this->groups = ','.implode($aTmp, ',').',';
+            $this->groups = ',' . implode($aTmp, ',') . ',';
 
             return;
         }
@@ -823,7 +823,7 @@ class User implements QUI\Interfaces\Users\User
         if (is_string($groups)) {
             try {
                 $this->Group[] = $Groups->get($groups);
-                $this->groups  = ','.$groups.',';
+                $this->groups  = ',' . $groups . ',';
             } catch (QUI\Exception $Exception) {
             }
         }
@@ -1502,7 +1502,7 @@ class User implements QUI\Interfaces\Users\User
             Manager::table(),
             array(
                 'username'         => $this->getUsername(),
-                'usergroup'        => ','.implode(',', $this->getGroups(false)).',',
+                'usergroup'        => ',' . implode(',', $this->getGroups(false)) . ',',
                 'firstname'        => $this->getAttribute('firstname'),
                 'lastname'         => $this->getAttribute('lastname'),
                 'usertitle'        => $this->getAttribute('usertitle'),
@@ -1519,7 +1519,9 @@ class User implements QUI\Interfaces\Users\User
                 'company'          => $this->isCompany() ? 1 : 0,
                 'toolbar'          => $toolbar,
                 'assigned_toolbar' => $assignedToolbars,
-                'authenticator'    => json_encode($this->authenticator)
+                'authenticator'    => json_encode($this->authenticator),
+                'lastLoginAttempt' => $this->getAttribute('lastLoginAttempt') ?: null,
+                'failedLogins'     => $this->getAttribute('failedLogins') ?: 0
             ),
             array('id' => $this->getId())
         );
@@ -1707,7 +1709,7 @@ class User implements QUI\Interfaces\Users\User
 
         foreach ($list as $entry) {
             $plugin  = $entry['name'];
-            $userXml = OPT_DIR.$plugin.'/user.xml';
+            $userXml = OPT_DIR . $plugin . '/user.xml';
 
             if (!file_exists($userXml)) {
                 continue;
@@ -1734,7 +1736,7 @@ class User implements QUI\Interfaces\Users\User
      */
     protected function readAttributesFromUserXML($file)
     {
-        $cache = 'user/plugin-xml-attributes-'.md5($file);
+        $cache = 'user/plugin-xml-attributes-' . md5($file);
 
         try {
             return QUI\Cache\Manager::get($cache);

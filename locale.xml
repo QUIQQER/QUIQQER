@@ -6183,6 +6183,12 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
 
     </groups>
     <groups name="quiqqer/system" datatype="php">
+        <!-- Control: Users/Controls/Login -->
+        <locale name="controls.users.auth.login.or">
+            <de><![CDATA[oder]]></de>
+            <en><![CDATA[or]]></en>
+        </locale>
+
         <locale name="menu.quiqqer.text" html="true">
             <de><![CDATA[<img src="../bin/quiqqer_logo_mini.png" />]]></de>
             <en><![CDATA[<img src="../bin/quiqqer_logo_mini.png" />]]></en>
@@ -6890,6 +6896,14 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="exception.login.fail.user.not.found">
             <de><![CDATA[Login fehlgeschlagen. Benutzer wurde nicht gefunden.]]></de>
             <en><![CDATA[Login failed. User not found.]]></en>
+        </locale>
+        <locale name="exception.login.fail.user_not_active">
+            <de><![CDATA[Login fehlgeschlagen. Benutzer ist nicht aktiv.]]></de>
+            <en><![CDATA[Login failed. User is not active.]]></en>
+        </locale>
+        <locale name="exception.login.fail.login_locked">
+            <de><![CDATA[Login fehlgeschlagen. Der Login für diesen Benutzer ist z.Z. gesperrt. Bitte versuchen Sie es später noch einmal.]]></de>
+            <en><![CDATA[Login failed. Login for this user is currently locked. Please try again later.]]></en>
         </locale>
         <locale name="message.site.save.success">
             <de><![CDATA[Die Seite [id] [title] wurde erfolgreich gespeichert.]]></de>

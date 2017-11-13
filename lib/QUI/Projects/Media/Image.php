@@ -360,6 +360,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
 
         // create image
+        set_time_limit(10);
+
         $Image = $Media->getImageManager()->make($original);
 
         if ($width || $height) {
