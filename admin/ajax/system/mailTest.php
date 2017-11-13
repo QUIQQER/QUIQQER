@@ -86,5 +86,5 @@ QUI::$Ajax->registerFunction(
         );
     },
     array('params'),
-    'Permission::checkUser'
+    'Permission::checkSU'
 );
