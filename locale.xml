@@ -280,6 +280,32 @@
                 Only images smaller than the specified value are allowed to be uploaded.
             ]]></en>
         </locale>
+        <locale name="projects.project.settings.panel.defaultSitestructure">
+            <de><![CDATA[Seitenstruktur]]></de>
+            <en><![CDATA[Page structure]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.defaultSitestructure.button">
+            <de><![CDATA[Standard Seitenstruktur anlegen]]></de>
+            <en><![CDATA[Create standard page structure]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.defaultSitestructure.win.title">
+            <de><![CDATA[Standard Seitenstruktur anlegen]]></de>
+            <en><![CDATA[Create standard page structure]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.defaultSitestructure.win.text" html="true">
+            <de><![CDATA[Möchten Sie für das Projekt eine standard Seitenstruktur anlegen?]]></de>
+            <en><![CDATA[Do you want to create a standard page structure for the project?]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.defaultSitestructure.win.information" html="true">
+            <de><![CDATA[
+            Für das Projekt werden standard Seiten angelegt, wie Impressum, Suche, AGB oder Datenschutz.
+            Dies vereinfacht den Start Ihrer neuen Seite oder Ihres neuen Projektes.
+            ]]></de>
+            <en><![CDATA[
+            For the project standard pages are created, such as imprint, search, terms and conditions or privacy policy.
+            This simplifies the start of your new page or project.
+            ]]></en>
+        </locale>
 
         <locale name="text.mail.subject">
             <de><![CDATA[QUIQQER Test E-Mail]]></de>
@@ -6189,8 +6215,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Unknown user]]></en>
         </locale>
         <locale name="watch.authenticatorLoginError">
-            <de><![CDATA[Gescheiterter Login-Versuch: "[username]" (#[userId]) | Authenticator: "[authenticator]" | IP-Adresse: [ipAddress] | User Agent: "[userAgent]"]]></de>
-            <en><![CDATA[Failed login attempt: "[username]" (#[userId]) | Authenticator: "[authenticator]" | IP address: [ipAddress] | User Agent: "[userAgent]"]]></en>
+            <de>
+                <![CDATA[Gescheiterter Login-Versuch: "[username]" (#[userId]) | Authenticator: "[authenticator]" | IP-Adresse: [ipAddress] | User Agent: "[userAgent]"]]></de>
+            <en>
+                <![CDATA[Failed login attempt: "[username]" (#[userId]) | Authenticator: "[authenticator]" | IP address: [ipAddress] | User Agent: "[userAgent]"]]></en>
         </locale>
 
         <!-- Control: QUI\Users\Controls\Login -->
@@ -6912,7 +6940,8 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Login failed. User is not active.]]></en>
         </locale>
         <locale name="exception.login.fail.login_locked">
-            <de><![CDATA[Login fehlgeschlagen. Der Login für diesen Benutzer ist z.Z. gesperrt. Bitte versuchen Sie es später noch einmal.]]></de>
+            <de>
+                <![CDATA[Login fehlgeschlagen. Der Login für diesen Benutzer ist z.Z. gesperrt. Bitte versuchen Sie es später noch einmal.]]></de>
             <en><![CDATA[Login failed. Login for this user is currently locked. Please try again later.]]></en>
         </locale>
         <locale name="message.site.save.success">
