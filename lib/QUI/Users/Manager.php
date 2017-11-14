@@ -160,15 +160,13 @@ class Manager
             'uuid' => 'VARCHAR(50) NOT NULL'
         ));
 
-        $DataBase->table()->setUniqueColumns($table, 'uuid');
-
         $list = QUI::getDataBase()->fetch(array(
             'from'  => $table,
             'where' => array(
                 'uuid' => ''
             )
         ));
-
+        
         foreach ($list as $entry) {
             try {
                 $uuid = Uuid::uuid1()->toString();
@@ -177,14 +175,14 @@ class Manager
                 continue;
             }
 
-            QUI::getDataBase()->update($table, array(
+            $DataBase->update($table, array(
                 'uuid' => $uuid
             ), array(
                 'id' => $entry['id']
             ));
         }
 
-        QUI::getDataBase()->table()->setUniqueColumns($table, 'uuid');
+        $DataBase->table()->setUniqueColumns($table, 'uuid');
     }
 
     /**
