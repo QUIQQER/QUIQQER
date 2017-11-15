@@ -139,6 +139,10 @@ define('utils/Controls', [
                     elements = Elm.getElements('.btn-button');
 
                     for (i = 0, len = elements.length; i < len; i++) {
+                        if (elements[i].get('data-quiid')) {
+                            continue;
+                        }
+                        
                         Child = elements[i];
 
                         new QUIButton({
@@ -167,6 +171,10 @@ define('utils/Controls', [
                     var elements = Elm.getElements('input[type="color"]');
 
                     for (i = 0, len = elements.length; i < len; i++) {
+                        if (elements[i].get('data-quiid')) {
+                            continue;
+                        }
+
                         new QUIColorPicker().imports(elements[i]);
                     }
 
@@ -350,6 +358,10 @@ define('utils/Controls', [
 
                     // Date Buttons
                     for (i = 0, len = elements.length; i < len; i++) {
+                        if (elements[i].get('data-quiid')) {
+                            continue;
+                        }
+
                         Child          = elements[i];
                         fieldcontainer = false;
 
@@ -459,6 +471,10 @@ define('utils/Controls', [
                     elements = Elm.getElements('input.groups,input.group');
 
                     for (i = 0, len = elements.length; i < len; i++) {
+                        if (elements[i].get('data-quiid')) {
+                            continue;
+                        }
+
                         new GroupInput(null, elements[i]).create();
                     }
 
@@ -483,6 +499,10 @@ define('utils/Controls', [
                         mediaFolder = Elm.getElements('input.media-folder');
 
                     for (i = 0, len = mediaImages.length; i < len; i++) {
+                        if (mediaImages[i].get('data-quiid')) {
+                            continue;
+                        }
+
                         selectableTypes     = mediaImages[i].get('data-qui-options-selectable_types');
                         selectableMimeTypes = mediaImages[i].get('data-qui-options-selectable_mimetypes');
 
@@ -512,6 +532,10 @@ define('utils/Controls', [
                     }
 
                     for (i = 0, len = mediaFolder.length; i < len; i++) {
+                        if (mediaFolder[i].get('data-quiid')) {
+                            continue;
+                        }
+
                         new ProjectMediaInput({
                             selectable_types: ['folder'],
                             cssclasses      : mediaFolder[i].get('data-qui-options-cssclasses')
@@ -538,6 +562,10 @@ define('utils/Controls', [
                     elements = Elm.getElements('input.project');
 
                     for (i = 0, len = elements.length; i < len; i++) {
+                        if (elements[i].get('data-quiid')) {
+                            continue;
+                        }
+
                         new ProjectInput({
                             multible: false
                         }, elements[i]).create();
@@ -563,6 +591,10 @@ define('utils/Controls', [
                     elements = Elm.getElements('input.project-types');
 
                     for (i = 0, len = elements.length; i < len; i++) {
+                        if (elements[i].get('data-quiid')) {
+                            continue;
+                        }
+
                         new TypeInput(null, elements[i]).create();
                     }
 
@@ -586,6 +618,10 @@ define('utils/Controls', [
                     elements = Elm.getElements('input.project-site');
 
                     for (i = 0, len = elements.length; i < len; i++) {
+                        if (elements[i].get('data-quiid')) {
+                            continue;
+                        }
+
                         new SiteInput(null, elements[i]).create();
                     }
 
@@ -609,6 +645,10 @@ define('utils/Controls', [
                     elements = Elm.getElements('.users_and_groups');
 
                     for (var i = 0, len = elements.length; i < len; i++) {
+                        if (elements[i].get('data-quiid')) {
+                            continue;
+                        }
+
                         Control = new UserAndGroup(null, elements[i]);
 
                         if (elements[i].id) {
@@ -642,6 +682,10 @@ define('utils/Controls', [
                     elements = Elm.getElements('.user');
 
                     for (i = 0, len = elements.length; i < len; i++) {
+                        if (elements[i].get('data-quiid')) {
+                            continue;
+                        }
+
                         Control = new UserInput({
                             max: 1
                         }, elements[i]);
