@@ -8,7 +8,9 @@
 define('controls/projects/project/settings/FileFormat', [
 
     'qui/QUI',
-    'qui/controls/Control'
+    'qui/controls/Control',
+
+    'css!controls/projects/project/settings/FileFormat.css'
 
 ], function (QUI, QUIControl) {
     "use strict";
@@ -38,16 +40,13 @@ define('controls/projects/project/settings/FileFormat', [
          */
         $onImport: function () {
             this.$Input = this.getElm();
-            this.$Elm   = new Element('div', {
-                styles: {
-                    'float': 'left'
-                }
+
+            this.$Elm = new Element('div', {
+                'class': 'qui-projects-settings-file-format'
             }).wraps(this.$Input);
 
             this.$Display = new Element('div', {
-                styles: {
-                    clear: 'both'
-                }
+                'class': 'qui-projects-settings-file-format-display'
             }).inject(this.$Elm);
 
             this.$Input.addEvents({

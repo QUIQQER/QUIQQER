@@ -31,7 +31,7 @@ define('controls/projects/project/Settings', [
     'Ajax',
     'Locale',
     'utils/Controls',
-    'package/quiqqer/translator/bin/controls/VariableTranslation',
+    'package/quiqqer/translator/bin/controls/Update',
 
     'css!controls/projects/project/Settings.css'
 
@@ -71,6 +71,7 @@ define('controls/projects/project/Settings', [
             '$onResize',
             '$onCategoryEnter',
             '$onCategoryLeave',
+            '$openCreatePageStructureDialog',
 
             'save',
             'del',
@@ -97,6 +98,9 @@ define('controls/projects/project/Settings', [
             this.$Project = Projects.get(
                 this.getAttribute('project')
             );
+
+            this.$Prefix = null;
+            this.$Suffix = null;
 
             this.$config   = {};
             this.$defaults = {};
@@ -255,18 +259,20 @@ define('controls/projects/project/Settings', [
 
         /**
          * Save the project settings
+         *
+         * @return {Promise}
          */
         save: function () {
-            var self   = this,
-                Active = this.getCategoryBar().getActive();
+            var self = this;
 
             this.Loader.show();
             this.$onCategoryLeave(false);
 
-            var Project = this.getProject();
-
-            // clear config for projects
-            var name = Project.getName();
+            var Project  = this.getProject(),
+                name     = Project.getName(),
+                loadHide = function () {
+                    self.Loader.hide();
+                };
 
             for (var project in Projects.$projects) {
                 if (!Projects.$projects.hasOwnProperty(project)) {
@@ -280,11 +286,22 @@ define('controls/projects/project/Settings', [
                 }
             }
 
-            var callback = function () {
-                self.Loader.hide();
-            };
 
-            Project.setConfig(this.$config).then(callback).catch(callback);
+            var promises = [Project.setConfig(this.$config)];
+
+            if (this.$Suffix) {
+                promises.push(
+                    this.$Suffix.save()
+                );
+            }
+
+            if (this.$Prefix) {
+                promises.push(
+                    this.$Prefix.save()
+                );
+            }
+
+            return Promise.all(promises).then(loadHide).catch(loadHide);
         },
 
         /**
@@ -362,7 +379,7 @@ define('controls/projects/project/Settings', [
                         }
 
                         // prefix
-                        new Translation({
+                        self.$Prefix = new Translation({
                             'group'  : 'project/' + self.$Project.getName(),
                             'var'    : 'template.prefix',
                             'type'   : 'php,js',
@@ -372,7 +389,7 @@ define('controls/projects/project/Settings', [
                         );
 
                         // suffix
-                        new Translation({
+                        self.$Suffix = new Translation({
                             'group'  : 'project/' + self.$Project.getName(),
                             'var'    : 'template.suffix',
                             'type'   : 'php,js',
@@ -385,7 +402,7 @@ define('controls/projects/project/Settings', [
                             text     : Locale.get(lg, 'projects.project.panel.btn.addlanguage'),
                             textimage: 'fa fa-plus',
                             styles   : {
-                                width: 200,
+                                width: '100%',
                                 clear: 'both'
                             },
                             events   : {
@@ -406,43 +423,12 @@ define('controls/projects/project/Settings', [
                         Template.value = self.$config.template;
 
                         new QUIButton({
-                            text  : 'Standard Seitenstruktur anlegen',
+                            text  : Locale.get('quiqqer/quiqqer', 'projects.project.settings.panel.defaultSitestructure.button'),
+                            styles: {
+                                width: '100%'
+                            },
                             events: {
-                                onClick: function (Btn) {
-                                    Btn.setAttribute(
-                                        'text',
-                                        '<span class="fa fa-spinner fa-spin"></span>'
-                                    );
-
-                                    Ajax.post('ajax_project_createDefaultStructure', function () {
-                                        Btn.setAttribute(
-                                            'text',
-                                            '<span class="fa fa-check"></span>'
-                                        );
-
-                                        (function () {
-                                            Btn.setAttribute(
-                                                'text',
-                                                'Standard Seitenstruktur anlegen'
-                                            );
-                                        }).delay(2000);
-                                    }, {
-                                        'project': self.getProject().encode(),
-                                        onError  : function () {
-                                            Btn.setAttribute(
-                                                'text',
-                                                '<span class="fa fa-bolt"></span>'
-                                            );
-
-                                            (function () {
-                                                Btn.setAttribute(
-                                                    'text',
-                                                    'Standard Seitenstruktur anlegen'
-                                                );
-                                            }).delay(2000);
-                                        }
-                                    });
-                                }
+                                onClick: self.$openCreatePageStructureDialog
                             }
                         }).inject(Form.getElement('.create-default-structure'));
 
@@ -453,16 +439,14 @@ define('controls/projects/project/Settings', [
                             QUI.parse(Body),
                             ControlUtils.parse(Body)
                         ]).then(function () {
-
                             QUI.Controls.getControlsInElement(Body).each(function (Control) {
                                 if ("setProject" in Control) {
                                     Control.setProject(self.$Project);
                                 }
                             });
 
-                            self.$showBody().then(resolve);
-                        });
-
+                            return self.$showBody();
+                        }).then(resolve);
                     }, {
                         project: self.getProject().encode()
                     });
@@ -598,7 +582,20 @@ define('controls/projects/project/Settings', [
                 return Promise.resolve();
             }
 
-            noHide = noHide || true;
+            if (typeof noHide === 'undefined') {
+                noHide = true;
+            }
+
+
+            if (this.$Prefix && noHide) {
+                this.$Prefix.destroy();
+                this.$Prefix = null;
+            }
+
+            if (this.$Suffix && noHide) {
+                this.$Suffix.destroy();
+                this.$Suffix = null;
+            }
 
             var data = QUIFormUtils.getFormData(Form);
 
@@ -618,7 +615,7 @@ define('controls/projects/project/Settings', [
                 this.$config.langs = langs.join(',');
             }
 
-            if (noHide === true) {
+            if (noHide === false) {
                 return Promise.resolve();
             }
 
@@ -717,7 +714,7 @@ define('controls/projects/project/Settings', [
                                     continue;
                                 }
 
-                                if (typeOf(Control.setProject) == 'function') {
+                                if (typeOf(Control.setProject) === 'function') {
                                     Control.setProject(self.getProject());
                                 }
                             }
@@ -732,6 +729,60 @@ define('controls/projects/project/Settings', [
 
                 });
             }.bind(this));
+        },
+
+        /**
+         * open the dialog for default page structure creation
+         *
+         * @param {Object} Btn
+         */
+        $openCreatePageStructureDialog: function (Btn) {
+            var self              = this;
+            var defaultButtonText = Locale.get(
+                'quiqqer/quiqqer',
+                'projects.project.settings.panel.defaultSitestructure.button'
+            );
+
+            if (Btn) {
+                Btn.setAttribute('text', '<span class="fa fa-spinner fa-spin"></span>');
+            }
+
+            new QUIConfirm({
+                icon       : 'fa fa-sitemap',
+                texticon   : 'fa fa-sitemap',
+                title      : Locale.get('quiqqer/quiqqer', 'projects.project.settings.panel.defaultSitestructure.win.title'),
+                text       : Locale.get('quiqqer/quiqqer', 'projects.project.settings.panel.defaultSitestructure.win.text'),
+                information: Locale.get('quiqqer/quiqqer', 'projects.project.settings.panel.defaultSitestructure.win.information'),
+                maxHeight  : 300,
+                maxWidth   : 600,
+                autoclose  : false,
+                events     : {
+                    onSubmit: function (Win) {
+                        Win.Loader.show();
+
+                        Ajax.post('ajax_project_createDefaultStructure', function () {
+                            if (Btn) {
+                                Btn.setAttribute('text', '<span class="fa fa-check"></span>');
+
+                                (function () {
+                                    Btn.setAttribute('text', defaultButtonText);
+                                }).delay(2000);
+                            }
+
+                            Win.close();
+                        }, {
+                            project: self.getProject().encode(),
+                            onError: function () {
+                                Btn.setAttribute('text', defaultButtonText);
+                            }
+                        });
+                    },
+
+                    onCancel: function () {
+                        Btn.setAttribute('text', defaultButtonText);
+                    }
+                }
+            }).open();
         },
 
         /**

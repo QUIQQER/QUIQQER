@@ -104,35 +104,35 @@ define('controls/system/settings/Mail', [
 
             VerifyPeer.set({
                 html: '<td>' +
-                      '  <p>' +
-                      '      <label class="checkbox-label hasCheckbox">' +
-                      '           <input type="checkbox" name="mail.SMTPSecureSSL_verify_peer" />' +
-                      QUILocale.get('quiqqer/quiqqer', 'mail.settings.verify_peer') +
-                      '      </label>' +
-                      '  </p>' +
-                      '</td>'
+                '  <p>' +
+                '      <label class="checkbox-label hasCheckbox">' +
+                '           <input type="checkbox" name="mail.SMTPSecureSSL_verify_peer" />' +
+                QUILocale.get('quiqqer/quiqqer', 'mail.settings.verify_peer') +
+                '      </label>' +
+                '  </p>' +
+                '</td>'
             });
 
             VerifyPeerName.set({
                 html: '<td>' +
-                      '  <p>' +
-                      '      <label class="checkbox-label hasCheckbox">' +
-                      '           <input type="checkbox" name="mail.SMTPSecureSSL_verify_peer_name" />' +
-                      QUILocale.get('quiqqer/quiqqer', 'mail.settings.verify_peer_name') +
-                      '      </label>' +
-                      '  </p>' +
-                      '</td>'
+                '  <p>' +
+                '      <label class="checkbox-label hasCheckbox">' +
+                '           <input type="checkbox" name="mail.SMTPSecureSSL_verify_peer_name" />' +
+                QUILocale.get('quiqqer/quiqqer', 'mail.settings.verify_peer_name') +
+                '      </label>' +
+                '  </p>' +
+                '</td>'
             });
 
             AllowSelfSigned.set({
                 html: '<td>' +
-                      '  <p>' +
-                      '      <label class="checkbox-label hasCheckbox">' +
-                      '           <input type="checkbox" name="mail.SMTPSecureSSL_allow_self_signed" />' +
-                      QUILocale.get('quiqqer/quiqqer', 'mail.settings.allow_self_signed') +
-                      '      </label>' +
-                      '  </p>' +
-                      '</td>'
+                '  <p>' +
+                '      <label class="checkbox-label hasCheckbox">' +
+                '           <input type="checkbox" name="mail.SMTPSecureSSL_allow_self_signed" />' +
+                QUILocale.get('quiqqer/quiqqer', 'mail.settings.allow_self_signed') +
+                '      </label>' +
+                '  </p>' +
+                '</td>'
             });
 
             VerifyPeer.addClass(evenCssClass ? 'odd' : 'even');
@@ -222,36 +222,30 @@ define('controls/system/settings/Mail', [
                 SMTPSecure: Form.elements['mail.SMTPSecure'].value
             };
 
-            if (Form.elements['mail.SMTPSecure'].value == 'ssl') {
+            if (Form.elements['mail.SMTPSecure'].value === 'ssl') {
                 params.SMTPSecureSSL_verify_peer       = Form.elements['mail.SMTPSecureSSL_verify_peer'].checked ? 1 : 0;
                 params.SMTPSecureSSL_verify_peer_name  = Form.elements['mail.SMTPSecureSSL_verify_peer_name'].checked ? 1 : 0;
                 params.SMTPSecureSSL_allow_self_signed = Form.elements['mail.SMTPSecureSSL_allow_self_signed'].checked ? 1 : 0;
             }
 
-            Button.setAttribute(
-                'textimage',
-                'fa fa-spinner fa-spin'
-            );
+            if (!Form.elements['mail.SMTP'].checked) {
+                params = {};
+            }
+
+            Button.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
             QUIAjax.get('ajax_system_mailTest', function () {
-                Button.setAttribute(
-                    'textimage',
-                    'fa fa-envelope-o'
-                );
+                Button.setAttribute('textimage', 'fa fa-envelope-o');
             }, {
                 params : JSON.encode(params),
                 onError: function (Error) {
-
                     QUI.getMessageHandler().then(function (MH) {
                         MH.addError(
                             Error.getMessage()
                         );
                     });
 
-                    Button.setAttribute(
-                        'textimage',
-                        'fa fa-envelope-o'
-                    );
+                    Button.setAttribute('textimage', 'fa fa-envelope-o');
                 }
             });
         }
