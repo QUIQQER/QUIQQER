@@ -19,6 +19,15 @@ use Stash;
 class Manager
 {
     /**
+     * Global clearing flag
+     * better control about the cache clearing process
+     * (for process performance optimization)
+     *
+     * @var bool
+     */
+    public static $noClearing = false;
+
+    /**
      * Cache Manager Configs
      *
      * @var \QUI\Config
@@ -64,7 +73,7 @@ class Manager
             try {
                 self::$Config = QUI::getConfig('etc/cache.ini.php');
             } catch (QUI\Exception $Exception) {
-                file_put_contents(CMS_DIR . 'etc/cache.ini.php', '');
+                file_put_contents(CMS_DIR.'etc/cache.ini.php', '');
 
                 self::$Config = QUI::getConfig('etc/cache.ini.php');
             }
@@ -84,8 +93,8 @@ class Manager
     public static function getStash($key = '')
     {
         // pfad erstellen falls nicht erstellt ist
-        if (!is_dir(VAR_DIR . 'cache/stack/')) {
-            QUI\Utils\System\File::mkdir(VAR_DIR . 'cache/stack/');
+        if (!is_dir(VAR_DIR.'cache/stack/')) {
+            QUI\Utils\System\File::mkdir(VAR_DIR.'cache/stack/');
         }
 
         if (!is_string($key)) {
@@ -95,11 +104,11 @@ class Manager
         }
 
         if (!empty($key)) {
-            $key = md5(__FILE__) . '/qui/' . $key;
+            $key = md5(__FILE__).'/qui/'.$key;
         }
 
         if (empty($key)) {
-            $key = md5(__FILE__) . '/qui/';
+            $key = md5(__FILE__).'/qui/';
         }
 
         $key = QUI\Utils\StringHelper::replaceDblSlashes($key);
@@ -162,7 +171,7 @@ class Manager
                 case 'filesystem':
                     $conf   = $Config->get('filesystem');
                     $params = array(
-                        'path' => VAR_DIR . 'cache/stack/'
+                        'path' => VAR_DIR.'cache/stack/'
                     );
 
                     if (!empty($conf['path']) && is_dir($conf['path'])) {
@@ -179,7 +188,7 @@ class Manager
                 case 'sqlite':
                     $conf   = $Config->get('sqlite');
                     $params = array(
-                        'path' => VAR_DIR . 'cache/stack/'
+                        'path' => VAR_DIR.'cache/stack/'
                     );
 
                     if (!empty($conf['path']) && is_dir($conf['path'])) {
@@ -207,7 +216,7 @@ class Manager
                     $servers = array();
 
                     for ($i = 1; $i <= $scount; $i++) {
-                        $section = 'memcache' . $i;
+                        $section = 'memcache'.$i;
 
                         $servers[] = array(
                             $Config->get($section, 'host'),
@@ -260,7 +269,7 @@ class Manager
         // all handlers false, so we use filesystem
         if (empty($handlers)) {
             $conf   = $Config->get('filesystem');
-            $params = array('path' => VAR_DIR . 'cache/stack/');
+            $params = array('path' => VAR_DIR.'cache/stack/');
 
             if (!empty($conf['path']) && is_dir($conf['path'])) {
                 $params['path'] = $conf['path'];
@@ -296,7 +305,7 @@ class Manager
         $Config = self::getConfig();
         $conf   = $Config->get('filesystem');
         $params = array(
-            'path' => VAR_DIR . 'cache/stack/'
+            'path' => VAR_DIR.'cache/stack/'
         );
 
         if (!empty($conf['path']) && is_dir($conf['path'])) {
@@ -416,6 +425,10 @@ class Manager
      */
     public static function clear($key = "")
     {
+        if (self::$noClearing) {
+            return;
+        }
+
         self::getStash($key)->clear();
 
         QUI::getEvents()->fireEvent('cacheClear', array($key));
@@ -438,7 +451,11 @@ class Manager
      */
     public static function clearAll()
     {
-        QUI\Utils\System\File::unlink(VAR_DIR . 'cache/');
+        if (self::$noClearing) {
+            return;
+        }
+
+        QUI\Utils\System\File::unlink(VAR_DIR.'cache/');
 
         self::getStash('')->clear();
 

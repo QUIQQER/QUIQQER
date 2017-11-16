@@ -81,6 +81,11 @@ interface User
     public function getId();
 
     /**
+     * @return string|bool
+     */
+    public function getUniqueId();
+
+    /**
      * Returns the name of the user
      * If the user has an first and Lastname, it returns the "Firstname Lastname".
      * otherwise it returns getUsername()

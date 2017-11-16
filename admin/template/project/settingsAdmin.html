@@ -1,26 +1,25 @@
-
 <form name="projectAdminSettings" action="" class="qui-project-settings">
 
-    <table class="data-table">
+    <table class="data-table data-table-flexbox">
         <thead>
         <tr>
-            <th colspan="2">
+            <th>
                 {t}quiqqer/system projects.project.settings.panel.adminSettings.title{/t}
             </th>
         </tr>
         </thead>
 
         <tbody>
-            <tr class="{cycle values="odd,even"}">
-                <td class="first">
-                    <label for="adminSitemapMax">
-                        {t}quiqqer/system projects.project.settings.panel.adminSitemapMax{/t}
-                    </label>
-                </td>
-                <td>
-                    <input type="number" name="adminSitemapMax" value="" />
-                </td>
-            </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/system" var="projects.project.settings.panel.adminSitemapMax"}
+                    </span>
+                    <input class="field-container-field" type="number" name="adminSitemapMax" value=""/>
+                </label>
+            </td>
+        </tr>
         </tbody>
     </table>
 

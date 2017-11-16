@@ -18,8 +18,10 @@ define('controls/cache/Settings', [
     'Ajax',
     'Locale'
 
-], function (QUI, QUIControl, QUIButton, Ajax, Locale) {
+], function (QUI, QUIControl, QUIButton, Ajax, QUILocale) {
     "use strict";
+
+    var lg = 'quiqqer/system';
 
     return new Class({
 
@@ -42,26 +44,79 @@ define('controls/cache/Settings', [
          * event : on inject
          */
         $onImport: function () {
-            var self        = this,
-                ClearButton = this.$Elm.getElement('[name="clearCache"]'),
-                PurgeButton = this.$Elm.getElement('[name="purgeCache"]');
+            var self = this;
 
-            var Clear = new QUIButton({
-                text     : 'Cache leeren',
+            var ClearCompleteCacheButton = new QUIButton({
+                text     : QUILocale.get(lg, 'quiqqer.settings.cache.clear.complete'),
                 textimage: 'fa fa-trash-o',
                 events   : {
                     onClick: function (Btn) {
                         Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
-                        self.clear(function () {
-                            Btn.setAttribute('textimage', 'fa fa-trash-o');
-                        });
+                        self.clear(
+                            {complete: true},
+                            function () {
+                                Btn.setAttribute('textimage', 'fa fa-trash-o');
+                            }
+                        );
                     }
                 }
-            }).replaces(ClearButton);
+            }).replaces(this.$Elm.getElement('[name="clearCompleteCache"]'));
 
-            var Purge = new QUIButton({
-                text     : 'Cache säubern',
+            var ClearSystemCacheButton = new QUIButton({
+                text     : QUILocale.get(lg, 'quiqqer.settings.cache.clear.compile'),
+                textimage: 'fa fa-server',
+                events   : {
+                    onClick: function (Btn) {
+                        Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
+
+                        self.clear(
+                            {compile: true},
+                            function () {
+                                Btn.setAttribute('textimage', 'fa fa-server');
+                            }
+                        );
+                    }
+                }
+            }).replaces(this.$Elm.getElement('[name="clearSystemCache"]'));
+
+            var ClearPluginCacheButton = new QUIButton({
+                text     : QUILocale.get(lg, 'quiqqer.settings.cache.clear.plugins'),
+                textimage: 'fa fa-gift',
+                events   : {
+                    onClick: function (Btn) {
+                        Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
+
+                        self.clear(
+                            {plugins: true},
+                            function () {
+                                Btn.setAttribute('textimage', 'fa fa-gift');
+                            }
+                        );
+                    }
+                }
+            }).replaces(this.$Elm.getElement('[name="clearPluginCache"]'));
+
+            var ClearTemplateCacheButton = new QUIButton({
+                text     : QUILocale.get(lg, 'quiqqer.settings.cache.clear.templates'),
+                textimage: 'fa fa-file-text',
+                events   : {
+                    onClick: function (Btn) {
+                        Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
+
+                        self.clear(
+                            {templates: true},
+                            function () {
+                                Btn.setAttribute('textimage', 'fa fa-file-text');
+                            }
+                        );
+                    }
+                }
+            }).replaces(this.$Elm.getElement('[name="clearTemplateCache"]'));
+
+
+            var PurgeCacheButton = new QUIButton({
+                text     : QUILocale.get(lg, 'quiqqer.settings.cache.purge.button'),
                 textimage: 'fa fa-paint-brush',
                 events   : {
                     onClick: function (Btn) {
@@ -72,30 +127,28 @@ define('controls/cache/Settings', [
                         });
                     }
                 }
-            }).replaces(PurgeButton);
+            }).replaces(this.$Elm.getElement('[name="purgeCache"]'));
 
-            Clear.getElm().addClass('field-container-field');
-            Purge.getElm().addClass('field-container-field');
+            ClearCompleteCacheButton.getElm().addClass('field-container-field');
+            ClearSystemCacheButton.getElm().addClass('field-container-field');
+            ClearPluginCacheButton.getElm().addClass('field-container-field');
+            ClearTemplateCacheButton.getElm().addClass('field-container-field');
+
+            PurgeCacheButton.getElm().addClass('field-container-field');
         },
+
 
         /**
          * Clear the cache
          *
+         * @param {Object} [params] - Caches to clear as object attribute: plugins, compile, template
+         * @param {boolean} [params.plugins] - Clear plugins cache
+         * @param {boolean} [params.compile] - Clear system cache
+         * @param {boolean} [params.templates] - Clear templates cache
+         * @param {boolean} [params.complete] - Clears everything in the cache
          * @param {Function} [callback] - (optional), callback function
          */
-        clear: function (callback) {
-            var params = {
-                plugins : true,
-                compile : true,
-                complete: true
-            };
-
-            if (this.$Elm) {
-                params.compile  = this.$Elm.getElement('[name="compile"]').checked;
-                params.plugins  = this.$Elm.getElement('[name="plugins"]').checked;
-                params.complete = this.$Elm.getElement('[name="complete"]').checked;
-            }
-
+        clear: function (params, callback) {
             Ajax.get('ajax_system_cache_clear', function () {
                 if (typeof callback !== 'undefined') {
                     callback();
@@ -103,7 +156,7 @@ define('controls/cache/Settings', [
 
                 QUI.getMessageHandler(function (QUI) {
                     QUI.addSuccess(
-                        Locale.get('quiqqer/system', 'message.clear.cache.successful')
+                        QUILocale.get(lg, 'message.clear.cache.successful')
                     );
                 });
             }, {
@@ -124,7 +177,7 @@ define('controls/cache/Settings', [
 
                 QUI.getMessageHandler(function (QUI) {
                     QUI.addSuccess(
-                        Locale.get('quiqqer/system', 'message.clear.cache.successful')
+                        QUILocale.get(lg, 'message.clear.cache.successful')
                     );
                 });
             });

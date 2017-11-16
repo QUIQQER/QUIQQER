@@ -46,7 +46,14 @@ class User implements QUI\Interfaces\Users\User
      *
      * @var integer
      */
-    protected $id;
+    protected $id = null;
+
+    /**
+     * User UUID
+     *
+     * @var string
+     */
+    protected $uuid = null;
 
     /**
      * User groups
@@ -161,20 +168,25 @@ class User implements QUI\Interfaces\Users\User
      */
     public function __construct($id, Manager $Users)
     {
-        $id = (int)$id;
-
-        if (!$id || $id <= 10) {
-            throw new QUI\Users\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/system',
-                    'exception.lib.user.wrong.uid'
-                ),
-                404
-            );
-        }
-
         $this->Users = $Users;
-        $this->id    = $id;
+
+        if (is_numeric($id)) {
+            $id = (int)$id;
+
+            if (!$id || $id <= 10) {
+                throw new QUI\Users\Exception(
+                    QUI::getLocale()->get(
+                        'quiqqer/system',
+                        'exception.lib.user.wrong.uid'
+                    ),
+                    404
+                );
+            }
+
+            $this->id = $id;
+        } else {
+            $this->uuid = $id;
+        }
 
         $this->refresh();
     }
@@ -186,13 +198,23 @@ class User implements QUI\Interfaces\Users\User
      */
     public function refresh()
     {
-        $data = QUI::getDataBase()->fetch(array(
-            'from'  => Manager::table(),
-            'where' => array(
-                'id' => $this->id
-            ),
-            'limit' => '1'
-        ));
+        if ($this->uuid !== null) {
+            $data = QUI::getDataBase()->fetch(array(
+                'from'  => Manager::table(),
+                'where' => array(
+                    'uuid' => $this->uuid
+                ),
+                'limit' => 1
+            ));
+        } else {
+            $data = QUI::getDataBase()->fetch(array(
+                'from'  => Manager::table(),
+                'where' => array(
+                    'id' => $this->id
+                ),
+                'limit' => 1
+            ));
+        }
 
         if (!isset($data[0])) {
             throw new QUI\Users\Exception(
@@ -205,14 +227,13 @@ class User implements QUI\Interfaces\Users\User
         }
 
         // Eigenschaften setzen
+        $this->uuid = $data[0]['uuid'];
+        $this->id   = (int)$data[0]['id'];
+
+
         if (isset($data[0]['username'])) {
             $this->name = $data[0]['username'];
             unset($data[0]['username']);
-        }
-
-        if (isset($data[0]['id'])) {
-            $this->id = $data[0]['id'];
-            unset($data[0]['id']);
         }
 
         if (isset($data[0]['usergroup'])) {
@@ -551,6 +572,16 @@ class User implements QUI\Interfaces\Users\User
     }
 
     /**
+     * Return the unique id for the user
+     *
+     * @return string
+     */
+    public function getUniqueId()
+    {
+        return $this->uuid ? $this->uuid : '';
+    }
+
+    /**
      * (non-PHPdoc)
      *
      * @see QUI\Interfaces\Users\User::getName()
@@ -561,7 +592,7 @@ class User implements QUI\Interfaces\Users\User
         $lastname  = $this->getAttribute('lastname');
 
         if ($firstname && $lastname) {
-            return $firstname.' '.$lastname;
+            return $firstname . ' ' . $lastname;
         }
 
         return $this->getUsername();
@@ -761,7 +792,7 @@ class User implements QUI\Interfaces\Users\User
                 }
             }
 
-            $this->groups = ','.implode($aTmp, ',').',';
+            $this->groups = ',' . implode($aTmp, ',') . ',';
 
             return;
         }
@@ -783,7 +814,7 @@ class User implements QUI\Interfaces\Users\User
                 }
             }
 
-            $this->groups = ','.implode($aTmp, ',').',';
+            $this->groups = ',' . implode($aTmp, ',') . ',';
 
             return;
         }
@@ -792,7 +823,7 @@ class User implements QUI\Interfaces\Users\User
         if (is_string($groups)) {
             try {
                 $this->Group[] = $Groups->get($groups);
-                $this->groups  = ','.$groups.',';
+                $this->groups  = ',' . $groups . ',';
             } catch (QUI\Exception $Exception) {
             }
         }
@@ -935,9 +966,7 @@ class User implements QUI\Interfaces\Users\User
                 // Falls der Name geändert wird muss geprüft werden das es diesen nicht schon gibt
                 Manager::checkUsernameSigns($value);
 
-                if ($this->name != $value
-                    && $this->Users->usernameExists($value)
-                ) {
+                if ($this->name != $value && QUI::getUsers()->usernameExists($value)) {
                     throw new QUI\Users\Exception('Name existiert bereits');
                 }
 
@@ -1473,7 +1502,7 @@ class User implements QUI\Interfaces\Users\User
             Manager::table(),
             array(
                 'username'         => $this->getUsername(),
-                'usergroup'        => ','.implode(',', $this->getGroups(false)).',',
+                'usergroup'        => ',' . implode(',', $this->getGroups(false)) . ',',
                 'firstname'        => $this->getAttribute('firstname'),
                 'lastname'         => $this->getAttribute('lastname'),
                 'usertitle'        => $this->getAttribute('usertitle'),
@@ -1490,7 +1519,9 @@ class User implements QUI\Interfaces\Users\User
                 'company'          => $this->isCompany() ? 1 : 0,
                 'toolbar'          => $toolbar,
                 'assigned_toolbar' => $assignedToolbars,
-                'authenticator'    => json_encode($this->authenticator)
+                'authenticator'    => json_encode($this->authenticator),
+                'lastLoginAttempt' => $this->getAttribute('lastLoginAttempt') ?: null,
+                'failedLogins'     => $this->getAttribute('failedLogins') ?: 0
             ),
             array('id' => $this->getId())
         );
@@ -1678,7 +1709,7 @@ class User implements QUI\Interfaces\Users\User
 
         foreach ($list as $entry) {
             $plugin  = $entry['name'];
-            $userXml = OPT_DIR.$plugin.'/user.xml';
+            $userXml = OPT_DIR . $plugin . '/user.xml';
 
             if (!file_exists($userXml)) {
                 continue;
@@ -1705,7 +1736,7 @@ class User implements QUI\Interfaces\Users\User
      */
     protected function readAttributesFromUserXML($file)
     {
-        $cache = 'user/plugin-xml-attributes-'.md5($file);
+        $cache = 'user/plugin-xml-attributes-' . md5($file);
 
         try {
             return QUI\Cache\Manager::get($cache);

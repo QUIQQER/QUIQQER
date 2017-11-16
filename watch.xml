@@ -1,0 +1,3 @@
+<quiqqer>
+    <watch event="onUserLoginError" exec="\QUI\Watch::authenticatorLoginError" />
+</quiqqer>

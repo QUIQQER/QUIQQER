@@ -832,9 +832,13 @@ define('controls/projects/project/site/Panel', [
                     this.$Container.set('html', '');
 
                     return this.$getCategoryFromXml(Category.getAttribute('name')).then(function (result) {
-                        self.$Container.set('html', result);
+                        var Form = new Element('form', {
+                            html: result
+                        }).inject(self.$Container);
 
-                        return QUI.parse(self.$Container);
+                        QUIFormUtils.setDataToForm(self.getSite().getAttributes(), Form);
+
+                        return QUI.parse(Form);
                     });
                 }
 
@@ -842,7 +846,7 @@ define('controls/projects/project/site/Panel', [
                     this.$Container.set('html', '');
                     this.$categoryOnLoad(Category);
 
-                    return QUI.parse(Category);
+                    return QUI.parse(this.$Container);
                 }
 
                 var Site    = self.getSite(),
@@ -1278,7 +1282,6 @@ define('controls/projects/project/site/Panel', [
                     Site.setAttribute(key, FormData[key]);
                 }
             }
-
 
             var onunloadRequire = Category.getAttribute('onunload_require'),
                 onunload        = Category.getAttribute('onunload');

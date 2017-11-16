@@ -29,7 +29,7 @@ QUI::$Ajax->registerFunction(
                 // exist authenticator?
                 QUI\Users\Auth\Handler::getInstance()->getAuthenticator(
                     $authenticator,
-                    $User->getName()
+                    $User->getUsername()
                 );
 
                 $Config->setValue('auth', $authenticator, 1);

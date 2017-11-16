@@ -1,174 +1,214 @@
-
 <form name="projectMediaSettings" action="" class="qui-project-media-settings">
 
-    <table class="data-table">
-    <thead>
-        <tr>
-            <th colspan="2">
-                {t}quiqqer/system projects.project.settings.panel.mediaSettings.title{/t}
-            </th>
-        </tr>
-    </thead>
-
-    <tbody>
-        <tr>
-            <td class="first {cycle values="odd,even"}" colspan="2">
-                <label>
-                    <input type="checkbox" name="media_createCacheOnSave" />
-                    {t}quiqqer/quiqqer projects.project.settings.panel.mediaSettings.createCacheOnSave{/t}
-                </label>
-            </td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td class="first">
-                <label>
-                    {t}quiqqer/system projects.project.settings.panel.mediaSettings.maxUploadSize{/t}
-                </label>
-            </td>
-            <td>
-                <input type="number" name="media_maxUploadSize" />
-                <span style="line-height: 30px; padding-left: 10px;">px</span>
-            </td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td colspan="2" class="first-100">
-                <div class="description-no-padding">
-                    {t}quiqqer/system projects.project.settings.panel.mediaSettings.maxUploadSize.description{/t}
-                </div>
-            </td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td class="first">
-                <label>
-                    {t}quiqqer/quiqqer projects.project.settings.panel.mediaSettings.maxUploadFileSize{/t}
-                </label>
-            </td>
-            <td>
-                <input type="number"
-                       min="0"
-                       name="media_maxUploadFileSize"
-                       data-qui="controls/projects/project/settings/FileFormat"
-                />
-                <span style="line-height: 30px; padding-left: 10px;"> Byte</span>
-            </td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td colspan="2" class="first-100">
-                <div class="description-no-padding">
-                    {t}quiqqer/quiqqer projects.project.settings.panel.mediaSettings.maxUploadFileSize.description{/t}
-                </div>
-            </td>
-        </tr>
-    </tbody>
-    </table>
-
-    <table class="data-table">
+    <table class="data-table data-table-flexbox">
         <thead>
         <tr>
-            <th colspan="2">
-                {t}quiqqer/system projects.project.settings.panel.mediaSettings.title{/t}
+            <th>
+                {locale group="quiqqer/system" var="projects.project.settings.panel.mediaSettings.title"}
             </th>
         </tr>
         </thead>
 
         <tbody>
         <tr>
-        <tr class="{cycle values="odd,even" reset=true}">
-            <td class="first">
-                <label>
-                    {t}quiqqer/system projects.project.settings.panel.mediaSettings.watermark{/t}
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale
+                            group="quiqqer/quiqqer"
+                            var="projects.project.settings.panel.mediaSettings.createCacheOnSave"
+                        }
+                    </span>
+                    <span class="field-container-field">
+                        <input type="checkbox" name="media_createCacheOnSave"/>
+                    </span>
                 </label>
             </td>
-            <td>
-                <input type="text" class="media-image" name="media_watermark" />
-            </td>
         </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td class="first">
-                <label>
-                    {t}quiqqer/system projects.project.settings.panel.mediaSettings.watermark.position{/t}
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                    {locale
+                        group="quiqqer/system"
+                        var="projects.project.settings.panel.mediaSettings.maxUploadSize"
+                    }
+                    </span>
+                    <span class="field-container-field field-container-field-no-padding">
+                        <input type="number" name="media_maxUploadSize"/>
+                        <span style="line-height: 30px; padding-left: 10px;">px</span>
+                    </span>
                 </label>
             </td>
-            <td>
-                <select name="media_watermark_position">
-                    <option value=""></option>
-                    <option value="top-left">
-                        {t}quiqqer/system watermark.position.top.left{/t}
-                    </option>
-                    <option value="top">
-                        {t}quiqqer/system watermark.position.top{/t}
-                    </option>
-                    <option value="top-right">
-                        {t}quiqqer/system watermark.position.top.right{/t}
-                    </option>
-                    <option value="left">
-                        {t}quiqqer/system watermark.position.left{/t}
-                    </option>
-                    <option value="center">
-                        {t}quiqqer/system watermark.position.center{/t}
-                    </option>
-                    <option value="right">
-                        {t}quiqqer/system watermark.position.right{/t}
-                    </option>
-                    <option value="bottom-left">
-                        {t}quiqqer/system watermark.position.bottom.left{/t}
-                    </option>
-                    <option value="bottom">
-                        {t}quiqqer/system watermark.position.bottom{/t}
-                    </option>
-                    <option value="bottom-right">
-                        {t}quiqqer/system watermark.position.bottom.right{/t}
-                    </option>
-                </select>
-            </td>
         </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td class="first">
-                <label>
-                    {t}quiqqer/system projects.project.settings.panel.mediaSettings.watermark.ratio{/t}
-                </label>
-            </td>
+        <tr>
             <td>
-                <input type="number" name="media_watermark_ratio" />
-                <span style="line-height: 30px; padding-left: 10px;">%</span>
-            </td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td colspan="2" class="first-100">
                 <div class="description-no-padding">
-                    {t}quiqqer/system projects.project.settings.panel.mediaSettings.watermark.description{/t}
+                    {locale group="quiqqer/system"
+                    var="projects.project.settings.panel.mediaSettings.maxUploadSize.description"}
                 </div>
             </td>
         </tr>
-    </tbody>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale
+                            group="quiqqer/quiqqer"
+                            var="projects.project.settings.panel.mediaSettings.maxUploadFileSize"
+                        }
+                    </span>
+                    <span class="field-container-field field-container-field-no-padding">
+                        <input type="number"
+                               min="0"
+                               name="media_maxUploadFileSize"
+                               data-qui="controls/projects/project/settings/FileFormat"
+                        />
+                        <span style="line-height: 30px; padding-left: 10px;"> Byte</span>
+                    </span>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="description-no-padding">
+                    {locale
+                    group="quiqqer/quiqqer"
+                    var="projects.project.settings.panel.mediaSettings.maxUploadFileSize.description"
+                    }
+                </div>
+            </td>
+        </tr>
+        </tbody>
     </table>
 
-    <table class="data-table qui-media-manager-hash">
-    <thead>
+    <table class="data-table data-table-flexbox">
+        <thead>
         <tr>
-            <th colspan="2">
-                {t}quiqqer/system projects.project.site.media.manager.general.tpl.title{/t}
+            <th>
+                {locale group="quiqqer/system" var="projects.project.settings.panel.mediaSettings.title"}
             </th>
         </tr>
-    </thead>
-    <tbody>
-        <tr class="{cycle values="odd,even" reset=true}">
-            <td class="first">
-                <label>
-                    {t}quiqqer/system projects.project.site.media.manager.general.recalc.md5{/t}
+        </thead>
+
+        <tbody>
+        <tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale
+                            group="quiqqer/system"
+                            var="projects.project.settings.panel.mediaSettings.watermark"
+                        }
+                    </span>
+                    <input class="field-container-field media-image" type="text" name="media_watermark"/>
                 </label>
             </td>
-            <td class="md5hash"></td>
         </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td class="first">
-                <label>
-                    {t}quiqqer/system projects.project.site.media.manager.general.recalc.sha1{/t}
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale
+                            group="quiqqer/system"
+                            var="projects.project.settings.panel.mediaSettings.watermark.position"
+                        }
+                    </span>
+
+                    <select class="field-container-field" name="media_watermark_position">
+                        <option value=""></option>
+                        <option value="top-left">
+                            {locale group="quiqqer/system" var="watermark.position.top.left"}
+                        </option>
+                        <option value="top">
+                            {locale group="quiqqer/system" var="watermark.position.top"}
+                        </option>
+                        <option value="top-right">
+                            {locale group="quiqqer/system" var="watermark.position.top.right"}
+                        </option>
+                        <option value="left">
+                            {locale group="quiqqer/system" var="watermark.position.left"}
+                        </option>
+                        <option value="center">
+                            {locale group="quiqqer/system" var="watermark.position.center"}
+                        </option>
+                        <option value="right">
+                            {locale group="quiqqer/system" var="watermark.position.right"}
+                        </option>
+                        <option value="bottom-left">
+                            {locale group="quiqqer/system" var="watermark.position.bottom.left"}
+                        </option>
+                        <option value="bottom">
+                            {locale group="quiqqer/system" var="watermark.position.bottom"}
+                        </option>
+                        <option value="bottom-right">
+                            {locale group="quiqqer/system" var="watermark.position.bottom.right"}
+                        </option>
+                    </select>
                 </label>
             </td>
-            <td class="sha1hash"></td>
         </tr>
-    </tbody>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale
+                            group="quiqqer/system"
+                            var="projects.project.settings.panel.mediaSettings.watermark.ratio"
+                        }
+                    </span>
+                    <span class="field-container-field field-container-field-no-padding">
+                        <input type="number" name="media_watermark_ratio"/>
+                        <span style="line-height: 30px; padding-left: 10px;">%</span>
+                    </span>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="description-no-padding">
+                    {locale
+                    group="quiqqer/system"
+                    var="projects.project.settings.panel.mediaSettings.watermark.description"
+                    }
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="data-table data-table-flexbox qui-media-manager-hash">
+        <thead>
+        <tr>
+            <th>
+                {locale group="quiqqer/system" var="projects.project.site.media.manager.general.tpl.title"}
+            </th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/system" var="projects.project.site.media.manager.general.recalc.md5"}
+                    </span>
+                    <span class="field-container-field field-container-field-no-padding md5hash"></span>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/system" var="projects.project.site.media.manager.general.recalc.sha1"}
+                    </span>
+                    <span class="field-container-field field-container-field-no-padding sha1hash"></span>
+                </label>
+            </td>
+        </tr>
+        </tbody>
     </table>
 
 </form>

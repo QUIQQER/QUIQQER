@@ -6,11 +6,15 @@
 
 namespace QUI\Users;
 
+use function GuzzleHttp\Promise\queue;
 use QUI;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\Text\XML;
 use QUI\Utils\DOM;
 use QUI\Security\Password;
+
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
 
 /**
  * QUIQQER user manager
@@ -22,6 +26,12 @@ use QUI\Security\Password;
  */
 class Manager
 {
+    const AUTH_ERROR_AUTH_ERROR = 'AUTH_ERROR_AUTH_ERROR';
+    const AUTH_ERROR_USER_NOT_FOUND = 'auth_error_user_not_found';
+    const AUTH_ERROR_USER_NOT_ACTIVE = 'auth_error_user_not_active';
+    const AUTH_ERROR_LOGIN_EXPIRED = 'auth_error_login_expired';
+    const AUTH_ERROR_NO_ACTIVE_GROUP = 'auth_error_no_active_group';
+
     /**
      * @var QUI\Projects\Project (active internal project)
      */
@@ -31,6 +41,11 @@ class Manager
      * @var array - list of users (cache)
      */
     private $users = array();
+
+    /**
+     * @var array
+     */
+    private $usersUUIDs = array();
 
     /**
      * @var null|Nobody
@@ -138,6 +153,36 @@ class Manager
         $DataBase->getPDO()->exec(
             "ALTER TABLE `{$tableAddress}` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT"
         );
+
+        // users with no uuid
+        // @todo after 1.2 we can delete this
+        $DataBase->table()->addColumn($table, array(
+            'uuid' => 'VARCHAR(50) NOT NULL'
+        ));
+
+        $list = QUI::getDataBase()->fetch(array(
+            'from'  => $table,
+            'where' => array(
+                'uuid' => ''
+            )
+        ));
+        
+        foreach ($list as $entry) {
+            try {
+                $uuid = Uuid::uuid1()->toString();
+            } catch (UnsatisfiedDependencyException $Exception) {
+                QUI\System\Log::writeException($Exception);
+                continue;
+            }
+
+            $DataBase->update($table, array(
+                'uuid' => $uuid
+            ), array(
+                'id' => $entry['id']
+            ));
+        }
+
+        $DataBase->table()->setUniqueColumns($table, 'uuid');
     }
 
     /**
@@ -291,11 +336,12 @@ class Manager
 
             $newName = $username;
         } else {
-            $newName = 'Neuer Benutzer'; // #locale
-            $i       = 0;
+            $newUserLocale = QUI::getLocale()->get('quiqqer/quiqqer', 'user.create.new.username');
+            $newName       = $newUserLocale;
+            $i             = 0;
 
             while ($this->usernameExists($newName)) {
-                $newName = 'Neuer Benutzer ('.$i.')';
+                $newName = $newUserLocale.' ('.$i.')';
                 $i++;
             }
         }
@@ -304,6 +350,7 @@ class Manager
 
         QUI::getDataBase()->insert(self::table(), array(
             'id'       => $newId,
+            'uuid'     => Uuid::uuid1()->toString(),
             'username' => $newName,
             'regdate'  => time(),
             'lang'     => QUI::getLocale()->getCurrent()
@@ -537,7 +584,7 @@ class Manager
     }
 
     /**
-     * Returns all userids
+     * Returns all user-IDs
      *
      * @return array
      */
@@ -619,6 +666,20 @@ class Manager
             $username = $params['username'];
         }
 
+        // try to get user id
+        $userId = false;
+
+        if (!empty($username)) {
+            try {
+                $User   = self::getUserByName($username);
+                $userId = $User->getId();
+            } catch (\Exception $Exception) {
+                // nothing
+            }
+        }
+
+        QUI::getEvents()->fireEvent('userAuthenticatorLoginStart', array($userId, $authenticator));
+
         if ($authenticator instanceof AuthenticatorInterface) {
             $Authenticator = $authenticator;
         } else {
@@ -638,6 +699,10 @@ class Manager
         try {
             $Authenticator->auth($params);
         } catch (QUI\Users\Exception $Exception) {
+            $Exception->setAttribute('reason', self::AUTH_ERROR_AUTH_ERROR);
+
+            QUI::getEvents()->fireEvent('userLoginError', array($userId, $Exception, $authenticator));
+
             throw $Exception;
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
@@ -668,7 +733,6 @@ class Manager
             1
         );
 
-
         return true;
     }
 
@@ -679,6 +743,7 @@ class Manager
      *
      * @return QUI\Interfaces\Users\User
      * @throws QUI\Users\Exception
+     * @throws \Exception
      */
     public function login($authData = array())
     {
@@ -691,7 +756,9 @@ class Manager
             return $this->Session;
         }
 
+        $Events  = QUI::getEvents();
         $numArgs = func_num_args();
+        $userId  = false;
 
         // old login -> v 1.0; fallback
         if ($numArgs == 2) {
@@ -701,6 +768,18 @@ class Manager
                 'password' => $arguments[1]
             );
         }
+
+        // try to get userId by authData
+        if (!empty($authData['username'])) {
+            try {
+                $User   = self::getUserByName($authData['username']);
+                $userId = $User->getId();
+            } catch (\Exception $Exception) {
+                // nothing
+            }
+        }
+
+        $Events->fireEvent('userLoginStart', array($userId));
 
         // global authenticators
         if (QUI::getSession()->get('auth-globals') !== 1) {
@@ -718,10 +797,16 @@ class Manager
         $User   = $this->get($userId);
 
         if (QUI::getUsers()->isNobodyUser($User)) {
-            throw new QUI\Users\Exception(
+            $Exception = new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail.user.not.found'),
                 404
             );
+
+            $Exception->setAttribute('reason', self::AUTH_ERROR_USER_NOT_FOUND);
+
+            $Events->fireEvent('userLoginError', array($userId, $Exception));
+
+            throw $Exception;
         }
 
         // check user data
@@ -737,28 +822,47 @@ class Manager
         );
 
         if (!isset($userData[0])) {
-            throw new QUI\Users\Exception(
+            $Exception = new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail.user.not.found'),
                 404
             );
+
+            $Exception->setAttribute('reason', self::AUTH_ERROR_USER_NOT_FOUND);
+
+            $Events->fireEvent('userLoginError', array($userId, $Exception));
+
+            throw $Exception;
         }
 
         if ($userData[0]['active'] == 0) {
-            throw new QUI\Users\Exception(
-                array('quiqqer/system', 'exception.login.fail.user.not.found'),
+            $Exception = new QUI\Users\Exception(
+                array('quiqqer/system', 'exception.login.fail.user_not_active'),
                 401
             );
+
+            $Exception->setAttribute('userId', $userId);
+            $Exception->setAttribute('reason', self::AUTH_ERROR_USER_NOT_ACTIVE);
+
+            $Events->fireEvent('userLoginError', array($userId, $Exception));
+
+            throw $Exception;
         }
 
         if ($userData[0]['expire']
             && $userData[0]['expire'] != '0000-00-00 00:00:00'
             && strtotime($userData[0]['expire']) < time()
         ) {
-            throw new QUI\Users\Exception(
+            $Exception = new QUI\Users\Exception(
                 QUI::getLocale()->get('quiqqer/system', 'exception.login.expire', array(
                     'expire' => $userData[0]['expire']
                 ))
             );
+
+            $Exception->setAttribute('reason', self::AUTH_ERROR_LOGIN_EXPIRED);
+
+            $Events->fireEvent('userLoginError', array($userId, $Exception));
+
+            throw $Exception;
         }
 
         /* @var $User User */
@@ -781,10 +885,15 @@ class Manager
         }
 
         if ($activeGroupExists === false) {
-            throw new QUI\Users\Exception(
+            $Exception = new QUI\Users\Exception(
                 array('quiqqer/system', 'exception.login.fail'),
                 401
             );
+
+            $Exception->setAttribute('reason', self::AUTH_ERROR_NO_ACTIVE_GROUP);
+            $Events->fireEvent('userLoginError', array($userId, $Exception));
+
+            throw $Exception;
         }
 
         // session
@@ -919,10 +1028,10 @@ class Manager
             );
         }
 
-        if ((!$Session->get('uid') || !$Session->get('auth'))
-            && !$Session->get('inAuthentication')
-        ) {
-            $clearSessionData();
+        if (!$Session->get('uid') || !$Session->get('auth')) {
+            if (!$Session->get('inAuthentication')) {
+                $clearSessionData();
+            }
 
             if ($Session->get('expired.from.other')) {
                 throw new QUI\Users\Exception(
@@ -1028,22 +1137,29 @@ class Manager
      */
     public function get($id)
     {
-        $id = (int)$id;
+        if (is_numeric($id)) {
+            if (!$id) {
+                return new Nobody();
+            }
 
-        if (!$id) {
-            return new Nobody();
+            if ($id == 5) {
+                return new SystemUser();
+            }
         }
 
-        if ($id == 5) {
-            return new SystemUser();
+        if (isset($this->usersUUIDs[$id])) {
+            $id = $this->usersUUIDs[$id];
         }
 
         if (isset($this->users[$id])) {
             return $this->users[$id];
         }
 
-        $User             = new User($id, $this);
-        $this->users[$id] = $User;
+        $User = new User($id, $this);
+        $uuid = $User->getUniqueId();
+
+        $this->usersUUIDs[$uuid] = $User->getId();
+        $this->users[$id]        = $User;
 
         return $User;
     }
@@ -1058,16 +1174,14 @@ class Manager
      */
     public function getUserByName($username)
     {
-        $result = QUI::getDataBase()->fetch(
-            array(
-                'select' => 'id',
-                'from'   => self::table(),
-                'where'  => array(
-                    'username' => $username
-                ),
-                'limit'  => 1
-            )
-        );
+        $result = QUI::getDataBase()->fetch(array(
+            'select' => 'id',
+            'from'   => self::table(),
+            'where'  => array(
+                'username' => $username
+            ),
+            'limit'  => 1
+        ));
 
         if (!isset($result[0])) {
             throw new QUI\Users\Exception(
@@ -1092,16 +1206,14 @@ class Manager
      */
     public function getUserByMail($email)
     {
-        $result = QUI::getDataBase()->fetch(
-            array(
-                'select' => 'id',
-                'from'   => self::table(),
-                'where'  => array(
-                    'email' => $email
-                ),
-                'limit'  => 1
-            )
-        );
+        $result = QUI::getDataBase()->fetch(array(
+            'select' => 'id',
+            'from'   => self::table(),
+            'where'  => array(
+                'email' => $email
+            ),
+            'limit'  => 1
+        ));
 
         if (!isset($result[0])) {
             throw new QUI\Users\Exception(
@@ -1302,14 +1414,14 @@ class Manager
         /**
          * WHERE
          */
-        if (isset($params['where'])) {
-            // $_fields['where'] = $params['where'];
-        }
+//        if (isset($params['where'])) {
+        // $_fields['where'] = $params['where'];
+//        }
 
         // wenn nicht durchsucht wird dann gelöschte nutzer nicht anzeigen
-        if (!isset($params['search'])) {
-            // $_fields['where_relation']  = "`active` != '-1' ";
-        }
+//        if (!isset($params['search'])) {
+        // $_fields['where_relation']  = "`active` != '-1' ";
+//        }
 
 
         /**
@@ -1511,42 +1623,30 @@ class Manager
     }
 
     /**
-     * Gibt eine neue Benutzer Id zwischen 100 und 1000000000 zurück
+     * Create a new ID for a not created user
      *
      * @return integer
      * @throws QUI\Users\Exception
      */
     protected function newId()
     {
-        $create = true;
-        $newid  = false;
+        $result = QUI::getDataBase()->fetch(array(
+            'select' => 'MAX(id) AS id',
+            'from'   => self::table(),
+            'limit'  => 1
+        ));
 
-        while ($create) {
-            srand(microtime() * 1000000);
-            $newid = rand(100, 1000000000);
+        $newId = 100;
 
-            $result = QUI::getDataBase()->fetch(
-                array(
-                    'from'  => self::table(),
-                    'where' => array(
-                        'id' => $newid
-                    )
-                )
-            );
-
-            if (isset($result[0]) && $result[0]['id']) {
-                $create = true;
-                continue;
-            }
-
-            $create = false;
+        if (isset($result[0]['id'])) {
+            $newId = $result[0]['id'] + 1;
         }
 
-        if (!$newid) {
-            throw new QUI\Users\Exception('Could not create new User-ID');
+        if ($newId < 100) {
+            $newId = 100;
         }
 
-        return $newid;
+        return $newId;
     }
 
     /**

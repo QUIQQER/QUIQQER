@@ -437,8 +437,6 @@ define('controls/upload/Form', [
                 return false;
             }
 
-            this.cleanup();
-
             var Container = new Element('div.qui-form-upload');
 
             var Input = new Element('input', {
@@ -574,6 +572,8 @@ define('controls/upload/Form', [
         /**
          * Cleanup the form
          * Removes empty file entries
+         *
+         * @deprecated
          */
         cleanup: function () {
             var emptyUploads = this.$Form.getElements('div.qui-form-upload').filter(function (Upload) {

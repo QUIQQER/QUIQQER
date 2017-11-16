@@ -1,65 +1,99 @@
-@CHARSET "UTF-8";
+/*@CHARSET "UTF-8";*/
 
-.qui-project-settings p {
+.qui-project-settings [name="langs"] {
+    border: none;
     clear: both;
-    float: left;
-    margin: 2px 0;
     width: 100%;
 }
 
-.qui-project-settings td.first {
-    max-width: 200px;
-    padding: 10px;
-    width: 33%;
+.qui-project-settings-defaultSitestructure button,
+.qui-project-settings-langs button {
+    border-radius: 0;
+    box-shadow: none;
 }
 
-.qui-project-settings td.first-100 {
-    max-width: 100%;
-    padding: 10px;
+.qui-project-media-settings [name="media_maxUploadSize"],
+.qui-project-media-settings [name="media_watermark_ratio"] {
+    border: none;
+    width: calc(100% - 40px);
+}
+
+.qui-project-media-settings [name="media_maxUploadFileSize"] {
+    border: none;
+}
+
+.qui-project-media-settings .sha1hash button,
+.qui-project-media-settings .md5hash button {
+    border-radius: 0;
+    box-shadow: none;
+    height: 100%;
     width: 100%;
 }
 
-.qui-project-settings td {
-    padding: 5px 0;
-    vertical-align: top;
+.qui-projects-settings-file-format {
+    width: calc(100% - 50px);
 }
 
-.qui-project-settings td label {
-    float: left;
-    margin: 0;
-    width: 100%;
-}
+/*.qui-project-settings p {*/
+/*clear: both;*/
+/*float: left;*/
+/*margin: 2px 0;*/
+/*width: 100%;*/
+/*}*/
 
-.qui-project-settings td p label {
-    margin: 7px 0;
-    width: 33%;
-}
+/*.qui-project-settings td.first {*/
+/*max-width: 200px;*/
+/*padding: 10px;*/
+/*width: 33%;*/
+/*}*/
 
-.qui-project-settings input,
-.qui-project-settings select {
-    width: 200px;
-    float: left;
-}
+/*.qui-project-settings td.first-100 {*/
+/*max-width: 100%;*/
+/*padding: 10px;*/
+/*width: 100%;*/
+/*}*/
 
-.qui-project-settings input[type="checkbox"],
-.qui-project-settings input[type="radio"] {
-    margin-right: 10px;
-    width: 20px;
-}
+/*.qui-project-settings td {*/
+/*padding: 5px 0;*/
+/*vertical-align: top;*/
+/*}*/
 
-.qui-project-settings input[type="color"] {
-    cursor: pointer;
-    height: 30px;
-    padding: 0;
-    width: 30px;
-}
+/*.qui-project-settings td label {*/
+/*float: left;*/
+/*margin: 0;*/
+/*width: 100%;*/
+/*}*/
 
-.qui-project-settings .description {
-    font-style: italic;
-    padding: 10px 0 0;
-}
+/*.qui-project-settings td p label {*/
+/*margin: 7px 0;*/
+/*width: 33%;*/
+/*}*/
 
-.qui-project-settings .description-no-padding {
-    font-style: italic;
-    padding: 0;
-}
+/*.qui-project-settings input,*/
+/*.qui-project-settings select {*/
+/*width: 200px;*/
+/*float: left;*/
+/*}*/
+
+/*.qui-project-settings input[type="checkbox"],*/
+/*.qui-project-settings input[type="radio"] {*/
+/*margin-right: 10px;*/
+/*width: 20px;*/
+/*}*/
+
+/*.qui-project-settings input[type="color"] {*/
+/*cursor: pointer;*/
+/*height: 30px;*/
+/*padding: 0;*/
+/*width: 30px;*/
+/*}*/
+
+/*.qui-project-settings .description {*/
+/*font-style: italic;*/
+/*padding: 10px 0 0;*/
+/*}*/
+
+/*.qui-project-settings .description-no-padding {*/
+/*font-style: italic;*/
+/*padding: 0;*/
+/*}*/

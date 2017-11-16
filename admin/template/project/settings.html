@@ -1,178 +1,196 @@
-
 <form name="edit_project" action="" class="qui-project-settings">
 
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th colspan="2">
-                    {t}quiqqer/quiqqer projects.project.settings.panel.settings.title{/t}
-                </th>
-            </tr>
-        </thead>
-
-        <tbody>
-            <tr class="{cycle values="odd,even"}">
-                <td class="first">
-                    <label for="default_lang">
-                        {t}quiqqer/quiqqer projects.project.settings.panel.language.default{/t}
-                    </label>
-                </td>
-                <td>
-                    <select name="default_lang" id="default_lang"></select>
-                </td>
-            </tr>
-            <tr class="{cycle values="odd,even"}">
-                <td class="first">
-                    <label for="langs">
-                        {t}quiqqer/quiqqer projects.project.settings.panel.language.available{/t}
-                    </label>
-                </td>
-                <td>
-                    <select name="langs" size="3" id="langs"></select>
-                </td>
-            </tr>
-            <tr class="{cycle values="odd,even"}">
-                <td class="first">
-                    <label for="templates">
-                        {t}quiqqer/quiqqer projects.project.settings.panel.admin.email{/t}
-                    </label>
-                </td>
-                <td>
-                    <input type="text" name="admin_mail" value="" />
-                </td>
-            </tr>
-
-            <tr class="{cycle values="odd,even"}">
-                <td class="first">
-                    <label for="templates">
-                        {t}quiqqer/quiqqer projects.project.settings.panel.set.standard{/t}
-                    </label>
-                </td>
-                <td>
-                    <input type="checkbox" name="standard" />
-                </td>
-            </tr>
-
-            <tr class="{cycle values="odd,even"}">
-                <td></td>
-                <td class="create-default-structure"></td>
-            </tr>
-        </tbody>
-    </table>
-
-
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th colspan="2">
-                    {t}quiqqer/quiqqer projects.project.settings.panel.settings.template.title{/t}
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-
-        <tr class="{cycle values="odd,even"}">
-            <td class="first">
-                <label for="template">
-                    {t}quiqqer/quiqqer projects.project.settings.panel.templates.default{/t}
-                </label>
-            </td>
-            <td>
-                <select name="template" id="template">
-                    <option value="">
-                        {t}quiqqer/quiqqer projects.project.settings.panel.templates.no.template{/t}
-                    </option>
-
-                    {assign var=PM value=$QUI->getPackageManager()}
-
-                    {array var=params type="quiqqer-template"}
-                    {assign var=templates value=$PM->getInstalled( $params )}
-
-                    {foreach from=$templates item=tpl}
-                    <option value="{$tpl.name}">{$tpl.name}</option>
-                    {/foreach}
-                </select>
-            </td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td class="first">
-                <label for="templates">
-                    {t}quiqqer/quiqqer projects.project.settings.panel.templates.available{/t}
-                </label>
-            </td>
-            <td>
-                <select name="templates" multiple="multiple" size="5" id="templates">
-                    {assign var=PM value=$QUI->getPackageManager()}
-
-                    {array var=params type="quiqqer-template"}
-                    {assign var=templates value=$PM->getInstalled( $params )}
-
-                    {foreach from=$templates item=tpl}
-                    <option value="{$tpl.name}">{$tpl.name}</option>
-                    {/foreach}
-                </select>
-            </td>
-        </tr>
-
-        <tr class="{cycle values="odd,even"}">
-            <td class="first">
-                <label for="logo">
-                    {t}quiqqer/quiqqer projects.project.settings.panel.logo{/t}
-                </label>
-            </td>
-            <td>
-                <input name="logo" class="media-image" />
-            </td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td class="first">
-                <label for="placeholder">
-                    {t}quiqqer/quiqqer projects.project.settings.panel.placeholder{/t}
-                </label>
-            </td>
-            <td>
-                <input name="placeholder" id="placeholder" class="media-image" />
-            </td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td class="first">
-                <label for="favicon">
-                    {t}quiqqer/quiqqer projects.project.settings.panel.favicon{/t}
-                </label>
-            </td>
-            <td>
-                <input name="favicon" id="favicon" class="media-image" />
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-
-    <table class="data-table">
+    <table class="data-table data-table-flexbox">
         <thead>
         <tr>
-            <th colspan="2">
-                {t}quiqqer/quiqqer projects.project.settings.panel.settings.suffixprefix.title{/t}
+            <th>
+                {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.settings.title"}
             </th>
         </tr>
         </thead>
 
         <tbody>
-        <tr class="{cycle values="odd,even" reset=1}">
-        <td class="first">
-            <label for="prefix">
-                {t}quiqqer/quiqqer projects.project.settings.panel.prefix{/t}
-            </label>
-        </td>
-        <td class="prefix-settings-container"></td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td class="first">
-                <label for="suffix">
-                    {t}quiqqer/quiqqer projects.project.settings.panel.suffix{/t}
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.language.default"}
+                    </span>
+                    <select class="field-container-field" name="default_lang" id="default_lang"></select>
                 </label>
             </td>
-            <td class="suffix-settings-container"></td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container qui-project-settings-langs">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.language.available"}
+                    </span>
+                    <span class="field-container-field field-container-field-no-padding">
+                        <select name="langs" size="3" id="langs"></select>
+                    </span>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.admin.email"}
+                    </span>
+                    <input class="field-container-field" type="text" name="admin_mail" value=""/>
+                </label>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.set.standard"}
+                    </span>
+                    <span class="field-container-field">
+                        <input type="checkbox" name="standard"/>
+                    </span>
+                </label>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <label class="field-container qui-project-settings-defaultSitestructure">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.defaultSitestructure"}
+                    </span>
+                    <span class="field-container-field field-container-field-no-padding create-default-structure"></span>
+                </label>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="data-table data-table-flexbox">
+        <thead>
+        <tr>
+            <th>
+                {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.settings.template.title"}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.templates.default"}
+                    </span>
+                    <select class="field-container-field" name="template" id="template">
+                        <option value="">
+                            {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.templates.no.template"}
+                        </option>
+                        {assign var=PM value=$QUI->getPackageManager()}
+                        {array var=params type="quiqqer-template"}
+                        {assign var=templates value=$PM->getInstalled( $params )}
+
+                        {foreach from=$templates item=tpl}
+                        <option value="{$tpl.name}">{$tpl.name}</option>
+                        {/foreach}
+                    </select>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.templates.available"}
+                    </span>
+
+                    <select class="field-container-field"
+                            name="templates"
+                            multiple="multiple"
+                            size="5"
+                            id="templates"
+                    >
+                        {assign var=PM value=$QUI->getPackageManager()}
+                        {array var=params type="quiqqer-template"}
+                        {assign var=templates value=$PM->getInstalled( $params )}
+
+                        {foreach from=$templates item=tpl}
+                        <option value="{$tpl.name}">{$tpl.name}</option>
+                        {/foreach}
+                    </select>
+                </label>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.logo"}
+                    </span>
+                    <input name="logo" class="field-container-field media-image"/>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.placeholder"}
+                    </span>
+                    <input name="placeholder" id="placeholder" class="field-container-field media-image"/>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.favicon"}
+                    </span>
+                    <input name="favicon" id="favicon" class="field-container-field media-image"/>
+                </label>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="data-table data-table-flexbox">
+        <thead>
+        <tr>
+            <th>
+                {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.settings.suffixprefix.title"}
+            </th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.prefix"}
+                    </span>
+                    <span class="field-container-field">
+                        <span class="prefix-settings-container"></span>
+                    </span>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.suffix"}
+                    </span>
+                    <span class="field-container-field">
+                        <span class="suffix-settings-container"></span>
+                    </span>
+                </label>
+            </td>
         </tr>
         </tbody>
     </table>

@@ -66,10 +66,12 @@ class Login extends Control
             }
 
             if (!empty($result)) {
-                $result .= '<div>or</div>';
+                $result .= '<div>';
+                $result .= QUI::getLocale()->get('quiqqer/system', 'controls.users.auth.login.or');
+                $result .= '</div>';
             }
 
-            $result .= '<form name="login" data-authenticator="' . $auth . '"' . $isGlobalAuth . '>' .
+            $result .= '<form method="POST" name="login" data-authenticator="' . $auth . '"' . $isGlobalAuth . '>' .
                        $Control->create() .
                        '</form>';
         }
@@ -80,7 +82,7 @@ class Login extends Control
     /**
      * Return the next Authenticator, if one exists
      *
-     * @return string|null
+     * @return array|null
      */
     public function next()
     {
@@ -98,6 +100,19 @@ class Login extends Control
         }
 
         if (!empty($globals)) {
+            // sort globals (QUIQQER Login has to be first!)
+            usort($globals, function($a, $b) {
+                if ($a === QUI\Users\Auth\QUIQQER::class) {
+                    return -1;
+                }
+
+                if ($b === QUI\Users\Auth\QUIQQER::class) {
+                    return 1;
+                }
+
+                return 0;
+            });
+
             return $globals;
         }
 

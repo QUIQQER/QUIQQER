@@ -149,6 +149,7 @@ class Ajax extends QUI\QDOM
 
         if (is_object($function) && get_class($function) === 'Closure') {
             $function();
+
             return;
         }
 
@@ -215,6 +216,10 @@ class Ajax extends QUI\QDOM
         // maintenance flag
         $result['maintenance'] = QUI::conf('globals', 'maintenance') ? 1 : 0;
         $result['jsCallbacks'] = $this->jsCallbacks;
+
+        QUI::getEvents()->fireEvent('ajaxResult', array(
+            &$result
+        ));
 
         $encoded = json_encode($result);
 
@@ -408,6 +413,24 @@ class Ajax extends QUI\QDOM
         $return = array();
         $class  = get_class($Exception);
 
+        $data = array();
+
+        if (method_exists($Exception, 'toArray')) {
+            $data = $Exception->toArray();
+        }
+
+        $attributes = array_filter($data, function ($v, $k) {
+            switch ($k) {
+                case 'message':
+                case 'code':
+                case 'type':
+                case 'context':
+                    return false;
+            }
+
+            return is_string($v) || is_array($v) || is_numeric($v);
+        }, ARRAY_FILTER_USE_BOTH);
+
         switch ($class) {
             case 'PDOException':
             case 'QUI\\Database\\Exception':
@@ -473,6 +496,8 @@ class Ajax extends QUI\QDOM
         if (DEVELOPMENT || DEBUG_MODE) {
             System\Log::writeException($Exception);
         }
+
+        $return['Exception']['attributes'] = $attributes;
 
         return $return;
     }

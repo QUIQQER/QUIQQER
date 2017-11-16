@@ -133,7 +133,7 @@ class Handler
      * Returns a specific authenticator
      *
      * @param string $authenticator - name of the authenticator
-     * @param string $username - name of the user
+     * @param string $username - QUIQQER username of the user
      *
      * @return AuthenticatorInterface
      *

@@ -162,6 +162,8 @@ define('classes/projects/project/Site', [
                         });
                     }
 
+                    Site.fireEvent('load', [Site]);
+
                     return;
                 }
 

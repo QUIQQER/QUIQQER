@@ -64,13 +64,6 @@ interface AuthenticatorInterface
     public static function getLoginControl();
 
     /**
-     * Return the registration control
-     *
-     * @return \QUI\Control|null
-     */
-    public static function getRegisterControl();
-
-    /**
      * Return the password reset control
      *
      * @return \QUI\Control|null

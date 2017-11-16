@@ -280,6 +280,32 @@
                 Only images smaller than the specified value are allowed to be uploaded.
             ]]></en>
         </locale>
+        <locale name="projects.project.settings.panel.defaultSitestructure">
+            <de><![CDATA[Seitenstruktur]]></de>
+            <en><![CDATA[Page structure]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.defaultSitestructure.button">
+            <de><![CDATA[Standard Seitenstruktur anlegen]]></de>
+            <en><![CDATA[Create standard page structure]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.defaultSitestructure.win.title">
+            <de><![CDATA[Standard Seitenstruktur anlegen]]></de>
+            <en><![CDATA[Create standard page structure]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.defaultSitestructure.win.text" html="true">
+            <de><![CDATA[Möchten Sie für das Projekt eine standard Seitenstruktur anlegen?]]></de>
+            <en><![CDATA[Do you want to create a standard page structure for the project?]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.defaultSitestructure.win.information" html="true">
+            <de><![CDATA[
+            Für das Projekt werden standard Seiten angelegt, wie Impressum, Suche, AGB oder Datenschutz.
+            Dies vereinfacht den Start Ihrer neuen Seite oder Ihres neuen Projektes.
+            ]]></de>
+            <en><![CDATA[
+            For the project standard pages are created, such as imprint, search, terms and conditions or privacy policy.
+            This simplifies the start of your new page or project.
+            ]]></en>
+        </locale>
 
         <locale name="text.mail.subject">
             <de><![CDATA[QUIQQER Test E-Mail]]></de>
@@ -1141,6 +1167,11 @@
             <de><![CDATA[Das Paket [package] wird gesucht und installiert]]></de>
             <en><![CDATA[The package [package] will be searched and installed:]]></en>
         </locale>
+
+        <locale name="user.create.new.username">
+            <de><![CDATA[Neuer Benutzer]]></de>
+            <en><![CDATA[New User]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="js">
@@ -1832,8 +1863,12 @@
             <en><![CDATA[Company]]></en>
         </locale>
         <locale name="street">
-            <de><![CDATA[Strasse]]></de>
+            <de><![CDATA[Straße]]></de>
             <en><![CDATA[Street]]></en>
+        </locale>
+        <locale name="street_no">
+            <de><![CDATA[Straße und Hausnr.]]></de>
+            <en><![CDATA[Street and no.]]></en>
         </locale>
         <locale name="zip">
             <de><![CDATA[PLZ]]></de>
@@ -2035,6 +2070,10 @@
             <de><![CDATA[Telefon]]></de>
             <en><![CDATA[Telephone]]></en>
         </locale>
+        <locale name="phone">
+            <de><![CDATA[Telefon]]></de>
+            <en><![CDATA[Telephone]]></en>
+        </locale>
         <locale name="fax">
             <de><![CDATA[Fax]]></de>
             <en><![CDATA[Fax]]></en>
@@ -2064,7 +2103,7 @@
             <en><![CDATA[Company]]></en>
         </locale>
         <locale name="message.clear.cache.successful">
-            <de><![CDATA[Der Cache wurde erfolgreich gelöscht.]]></de>
+            <de><![CDATA[Der Cache wurde erfolgreich geleert.]]></de>
             <en><![CDATA[Cache successful cleared.]]></en>
         </locale>
         <locale name="message.clear.cache.purged">
@@ -6063,6 +6102,27 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Test Server]]></en>
         </locale>
 
+        <locale name="quiqqer.settings.cache.clear.complete">
+            <de><![CDATA[Kompletten Cache leeren]]></de>
+            <en><![CDATA[Clear complete cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.compile">
+            <de><![CDATA[System-Cache leeren]]></de>
+            <en><![CDATA[Clear system-cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.plugins">
+            <de><![CDATA[Plugin-Cache leeren]]></de>
+            <en><![CDATA[Clear plugin-cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.templates">
+            <de><![CDATA[Template-Cache leeren]]></de>
+            <en><![CDATA[Clear template-cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.purge.button">
+            <de><![CDATA[Cache säubern]]></de>
+            <en><![CDATA[Purge cache]]></en>
+        </locale>
+
         <locale name="workspace.toolarge.window.title">
             <de><![CDATA[Der Arbeitsbereich ist zu gross]]></de>
             <en><![CDATA[The workspace is too large]]></en>
@@ -6149,6 +6209,24 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
 
     </groups>
     <groups name="quiqqer/system" datatype="php">
+        <!-- Class: QUI\Watch -->
+        <locale name="watch.unknown_user">
+            <de><![CDATA[Unbekannter Benutzer]]></de>
+            <en><![CDATA[Unknown user]]></en>
+        </locale>
+        <locale name="watch.authenticatorLoginError">
+            <de>
+                <![CDATA[Gescheiterter Login-Versuch: "[username]" (#[userId]) | Authenticator: "[authenticator]" | IP-Adresse: [ipAddress] | User Agent: "[userAgent]"]]></de>
+            <en>
+                <![CDATA[Failed login attempt: "[username]" (#[userId]) | Authenticator: "[authenticator]" | IP address: [ipAddress] | User Agent: "[userAgent]"]]></en>
+        </locale>
+
+        <!-- Control: QUI\Users\Controls\Login -->
+        <locale name="controls.users.auth.login.or">
+            <de><![CDATA[oder]]></de>
+            <en><![CDATA[or]]></en>
+        </locale>
+
         <locale name="menu.quiqqer.text" html="true">
             <de><![CDATA[<img src="../bin/quiqqer_logo_mini.png" />]]></de>
             <en><![CDATA[<img src="../bin/quiqqer_logo_mini.png" />]]></en>
@@ -6217,6 +6295,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[QUIQQER]]></de>
             <en><![CDATA[QUIQQER]]></en>
         </locale>
+        <locale name="menu.help.changelog.text">
+            <de><![CDATA[Changelog]]></de>
+            <en><![CDATA[Changelog]]></en>
+        </locale>
         <locale name="menu.help.dashboard.text">
             <de><![CDATA[Dashboard]]></de>
             <en><![CDATA[Dashboard]]></en>
@@ -6269,32 +6351,20 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[The .html extension is appended to page addresses. Your projects have .html pages]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.management.title">
-            <de><![CDATA[Cache]]></de>
-            <en><![CDATA[Cache]]></en>
+            <de><![CDATA[Cache Management]]></de>
+            <en><![CDATA[Cache Management]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.management.text">
-            <de><![CDATA[Cache]]></de>
-            <en><![CDATA[Cache]]></en>
+            <de><![CDATA[Cache Management]]></de>
+            <en><![CDATA[Cache Management]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.clear.title">
-            <de><![CDATA[Cache leeren]]></de>
-            <en><![CDATA[Cache cleaning]]></en>
+            <de><![CDATA[Caches leeren...]]></de>
+            <en><![CDATA[Clean caches...]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.purge.title">
-            <de><![CDATA[Cache säubern]]></de>
-            <en><![CDATA[Cache purging]]></en>
-        </locale>
-        <locale name="quiqqer.settings.cache.clear.complete">
-            <de><![CDATA[Kompletten Cache leeren.]]></de>
-            <en><![CDATA[Clear the complete cache.]]></en>
-        </locale>
-        <locale name="quiqqer.settings.cache.clear.compile">
-            <de><![CDATA[System-Cache leeren.]]></de>
-            <en><![CDATA[Clear the system cache.]]></en>
-        </locale>
-        <locale name="quiqqer.settings.cache.clear.plugins">
-            <de><![CDATA[Plugin-Cache leeren.]]></de>
-            <en><![CDATA[Clear the plugin cache.]]></en>
+            <de><![CDATA[Cache säubern...]]></de>
+            <en><![CDATA[Purge cache...]]></en>
         </locale>
         <locale name="quiqqer.settings.general.template.title">
             <de><![CDATA[Template-Engine Einstellungen]]></de>
@@ -6864,6 +6934,15 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         <locale name="exception.login.fail.user.not.found">
             <de><![CDATA[Login fehlgeschlagen. Benutzer wurde nicht gefunden.]]></de>
             <en><![CDATA[Login failed. User not found.]]></en>
+        </locale>
+        <locale name="exception.login.fail.user_not_active">
+            <de><![CDATA[Login fehlgeschlagen. Benutzer ist nicht aktiv.]]></de>
+            <en><![CDATA[Login failed. User is not active.]]></en>
+        </locale>
+        <locale name="exception.login.fail.login_locked">
+            <de>
+                <![CDATA[Login fehlgeschlagen. Der Login für diesen Benutzer ist z.Z. gesperrt. Bitte versuchen Sie es später noch einmal.]]></de>
+            <en><![CDATA[Login failed. Login for this user is currently locked. Please try again later.]]></en>
         </locale>
         <locale name="message.site.save.success">
             <de><![CDATA[Die Seite [id] [title] wurde erfolgreich gespeichert.]]></de>

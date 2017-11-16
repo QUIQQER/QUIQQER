@@ -6,51 +6,50 @@
 QUI::$Ajax->registerFunction(
     'ajax_system_mailTest',
     function ($params) {
-
         $params = json_decode($params, true);
         $Mail   = QUI::getMailManager()->getPHPMailer();
 
-        if (isset($params['SMTPServer'])) {
+        $Mail->Mailer = 'mail';
+
+        if (isset($params['SMTPServer']) && !empty($params['SMTPServer'])) {
             $Mail->Mailer   = 'smtp';
             $Mail->SMTPAuth = true;
             $Mail->Host     = $params['SMTPServer'];
         }
 
-        if (isset($params['SMTPUser'])) {
+        if (isset($params['SMTPUser']) && !empty($params['SMTPUser'])) {
             $Mail->Mailer   = 'smtp';
             $Mail->SMTPAuth = true;
             $Mail->Username = $params['SMTPUser'];
         }
 
-        if (isset($params['SMTPPass'])) {
+        if (isset($params['SMTPPass']) && !empty($params['SMTPPass'])) {
             $Mail->Mailer   = 'smtp';
             $Mail->SMTPAuth = true;
             $Mail->Password = $params['SMTPPass'];
         }
 
-        if (isset($config['SMTPPort'])
-            && !empty($params['SMTPPort'])
-        ) {
+        if (isset($params['SMTPPort']) && !empty($params['SMTPPort'])) {
             $Mail->Mailer   = 'smtp';
             $Mail->SMTPAuth = true;
             $Mail->Port     = (int)$params['SMTPPort'];
         }
 
-        if (isset($config['SMTPSecure'])) {
-            switch ($config['SMTPSecure']) {
+        if (isset($params['SMTPSecure']) && !empty($params['SMTPSecure'])) {
+            switch ($params['SMTPSecure']) {
                 case "ssl":
-                    $Mail->SMTPSecure = $config['SMTPSecure'];
+                    $Mail->SMTPSecure = $params['SMTPSecure'];
 
                     $Mail->SMTPOptions = array(
                         'ssl' => array(
-                            'verify_peer'       => (int)$config['SMTPSecureSSL_verify_peer'],
-                            'verify_peer_name'  => (int)$config['SMTPSecureSSL_verify_peer_name'],
-                            'allow_self_signed' => (int)$config['SMTPSecureSSL_allow_self_signed']
+                            'verify_peer'       => (int)$params['SMTPSecureSSL_verify_peer'],
+                            'verify_peer_name'  => (int)$params['SMTPSecureSSL_verify_peer_name'],
+                            'allow_self_signed' => (int)$params['SMTPSecureSSL_allow_self_signed']
                         )
                     );
                     break;
                 case "tls":
-                    $Mail->SMTPSecure = $config['SMTPSecure'];
+                    $Mail->SMTPSecure = $params['SMTPSecure'];
                     break;
             }
         }
@@ -83,12 +82,9 @@ QUI::$Ajax->registerFunction(
         }
 
         QUI::getMessagesHandler()->addSuccess(
-            QUI::getLocale()->get(
-                'quiqqer/quiqqer',
-                'message.testmail.success'
-            )
+            QUI::getLocale()->get('quiqqer/quiqqer', 'message.testmail.success')
         );
     },
     array('params'),
-    'Permission::checkUser'
+    'Permission::checkSU'
 );
