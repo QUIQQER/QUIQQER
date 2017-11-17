@@ -194,6 +194,10 @@ class VhostManager
         $lang         = $result['lang'];
 
         foreach ($projectLangs as $projectLang) {
+            if ($projectLang === $lang) {
+                continue;
+            }
+
             if (!isset($result[$projectLang])) {
                 $result[$projectLang] = '';
             }
@@ -208,7 +212,7 @@ class VhostManager
             );
         }
 
-        if (!isset($result[$lang]) || empty($result[$lang])) {
+        if (empty($result[$lang])) {
             $result[$lang] = $vhost;
         }
 
