@@ -19,10 +19,10 @@ class Site
     /**
      * Set a attribute recursive from its parents if the attribute is not set
      *
-     * @param \QUI\Projects\Site $Site
+     * @param \QUI\Interfaces\Projects\Site $Site
      * @param string $attribute
      */
-    public static function setRecursivAttribute(\QUI\Projects\Site $Site, $attribute)
+    public static function setRecursivAttribute(\QUI\Interfaces\Projects\Site $Site, $attribute)
     {
         $value = $Site->getAttribute($attribute);
 

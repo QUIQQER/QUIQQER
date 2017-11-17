@@ -16,7 +16,7 @@ use QUI;
  *
  * @errorcodes 7XX = Site Errors -> look at Site/Edit
  */
-interface Site
+interface Site extends QUI\QDOMInterface
 {
     /**
      * Return the project object of the site
