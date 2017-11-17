@@ -2446,6 +2446,29 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <de><![CDATA[Login]]></de>
             <en><![CDATA[Login]]></en>
         </locale>
+
+        <!-- logout window -->
+        <locale name="window.logout.title">
+            <de><![CDATA[Abmelden]]></de>
+            <en><![CDATA[Logout]]></en>
+        </locale>
+        <locale name="window.logout.text">
+            <de><![CDATA[Abmelden]]></de>
+            <en><![CDATA[Logout]]></en>
+        </locale>
+        <locale name="window.logout.information">
+            <de><![CDATA[Möchten Sie sich wirklich abmelden?]]></de>
+            <en><![CDATA[Do you really want to log out?]]></en>
+        </locale>
+        <locale name="window.logout.button.ok">
+            <de><![CDATA[Abmelden]]></de>
+            <en><![CDATA[Logout]]></en>
+        </locale>
+        <locale name="window.logout.button.cancel">
+            <de><![CDATA[Abbrechen]]></de>
+            <en><![CDATA[Cancel]]></en>
+        </locale>
+
         <locale name="system.vhosts.title">
             <de><![CDATA[Virtual Hosts Einstellungen]]></de>
             <en><![CDATA[Virtual hosts settings]]></en>
