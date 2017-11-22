@@ -3,6 +3,8 @@
 define('QUIQQER_SYSTEM', true);
 require 'header.php';
 
+QUI::getEvents()->fireEvent('adminRequest');
+
 // qui path
 $qui_path   = URL_OPT_DIR.'bin/qui/';
 $qui_extend = URL_OPT_DIR.'bin/qui/extend/';
