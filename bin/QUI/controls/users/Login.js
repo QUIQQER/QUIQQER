@@ -85,7 +85,9 @@ define('controls/users/Login', [
 
             QUIAjax.get('ajax_users_loginControl', function (result) {
                 this.$buildAuthenticator(result);
-            }.bind(this));
+            }.bind(this), {
+                isAdminLogin: typeof QUIQQER_IS_ADMIN_LOGIN !== 'undefined' ? 1 : 0
+            });
         },
 
         /**

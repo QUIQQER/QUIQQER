@@ -52,14 +52,15 @@ foreach ($packages as $package) {
 
     foreach ($authPackages as $package) {
         foreach ($languages as $lang) {
-            $files[] = 'locale/'.$package.'/'.$lang;
+            $files[] = 'locale/' . $package . '/' . $lang;
         }
     }
 
     echo '<script type="text/javascript">';
     echo '/* <![CDATA[ */';
-    echo 'var QUIQQER_LOCALE = '.json_encode($files, true).';';
-    echo 'var QUIQQER_LANGUAGES = '.json_encode($languages, true).';';
+    echo 'var QUIQQER_LOCALE = ' . json_encode($files, true) . ';';
+    echo 'var QUIQQER_LANGUAGES = ' . json_encode($languages, true) . ';';
+    echo 'var QUIQQER_IS_ADMIN_LOGIN = true;';
     echo '/* ]]> */';
     echo '</script>';
     ?>
