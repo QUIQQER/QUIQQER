@@ -25,7 +25,9 @@ class QUIQQERLogin extends Control
         parent::__construct($options);
 
         $this->addCSSClass('quiqqer-login-auth');
-        $this->addCSSFile(dirname(__FILE__).'/QUIQQERLogin.css');
+        $this->addCSSFile(dirname(__FILE__) . '/QUIQQERLogin.css');
+
+        $this->setJavaScriptControl('controls/users/auth/QUIQQERLogin');
     }
 
     /**
@@ -35,11 +37,22 @@ class QUIQQERLogin extends Control
     {
         $Engine = QUI::getTemplateManager()->getEngine();
 
+        $showPasswordReset = false;
+
+        if (QUI\Users\Auth\Handler::getInstance()->isQuiqqerVerificationPackageInstalled()) {
+            if (QUI::isBackend()) {
+                $showPasswordReset = boolval(QUI::conf('auth_settings', 'showResetPasswordBackend'));
+            } else {
+                $showPasswordReset = boolval(QUI::conf('auth_settings', 'showResetPasswordFrontend'));
+            }
+        }
+
         $Engine->assign(array(
-            'usernameText' => QUI::getLocale()->get('quiqqer/quiqqer', 'username'),
-            'passwordText' => QUI::getLocale()->get('quiqqer/quiqqer', 'password'),
+            'usernameText'      => QUI::getLocale()->get('quiqqer/quiqqer', 'username'),
+            'passwordText'      => QUI::getLocale()->get('quiqqer/quiqqer', 'password'),
+            'showPasswordReset' => $showPasswordReset
         ));
 
-        return $Engine->fetch(dirname(__FILE__).'/QUIQQERLogin.html');
+        return $Engine->fetch(dirname(__FILE__) . '/QUIQQERLogin.html');
     }
 }

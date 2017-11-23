@@ -102,6 +102,21 @@
 
             </section>
 
+            <section name="auth_settings">
+                <conf name="showResetPasswordBackend">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
+                <conf name="showResetPasswordFrontend">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
+                <conf name="forceNewPasswordOnReset">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>1</defaultvalue>
+                </conf>
+            </section>
+
             <section name="webserver">
                 <conf name="forceHttps">
                     <type><![CDATA[bool]]></type>
@@ -599,6 +614,33 @@
                             <text>
                                 <locale group="quiqqer/system" var="quiqqer.settings.auth.emaillogin"/>
                             </text>
+                        </input>
+
+                        <input conf="auth_settings.showResetPasswordBackend" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.showResetPasswordBackend"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.showResetPasswordBackend.description"/>
+                            </description>
+                        </input>
+
+                        <input conf="auth_settings.showResetPasswordFrontend" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.showResetPasswordFrontend"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.showResetPasswordFrontend.description"/>
+                            </description>
+                        </input>
+
+                        <input conf="auth_settings.forceNewPasswordOnReset" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.forceNewPasswordOnReset"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.forceNewPasswordOnReset.description"/>
+                            </description>
                         </input>
 
                         <!--<select conf="auth.type" type="text">-->
