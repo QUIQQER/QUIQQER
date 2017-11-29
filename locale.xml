@@ -1619,16 +1619,8 @@
 
         <!-- Package search/store -->
         <locale name="controls.packages.search.termsofuse.header">
-            <de><![CDATA[Nutzungsbedingungen]]></de>
-            <en><![CDATA[Terms Of Use]]></en>
-        </locale>
-        <locale name="controls.packages.search.termsofuse.content">
-            <de><![CDATA[
-            Spicy jalapeno bacon ipsum dolor amet shoulder shankle picanha doner flank, leberkas boudin pig jowl venison beef tongue drumstick jerky short loin. Cupim jerky short loin bacon jowl. Tail swine ham hock corned beef, sausage turducken shoulder ham t-bone short loin. Short loin doner pork loin, ham hock swine chuck shank ribeye turkey pork belly tail kielbasa bresaola bacon frankfurter.
-            ]]></de>
-            <en><![CDATA[
-            Spicy jalapeno bacon ipsum dolor amet shoulder shankle picanha doner flank, leberkas boudin pig jowl venison beef tongue drumstick jerky short loin. Cupim jerky short loin bacon jowl. Tail swine ham hock corned beef, sausage turducken shoulder ham t-bone short loin. Short loin doner pork loin, ham hock swine chuck shank ribeye turkey pork belly tail kielbasa bresaola bacon frankfurter.
-            ]]></en>
+            <de><![CDATA[Nutzungsbedingungen des Q-Store]]></de>
+            <en><![CDATA[Terms of use of the Q-Store]]></en>
         </locale>
         <locale name="controls.packages.search.termsofuse.acceptBtnText">
             <de><![CDATA[Ich akzeptiere die Nutzungsbedingungen]]></de>
