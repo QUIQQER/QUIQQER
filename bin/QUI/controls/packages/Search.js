@@ -325,27 +325,43 @@ define('controls/packages/Search', [
          * Show terms of use layer
          */
         $showTermsOfUse: function () {
-            var self     = this;
-            var lgPrefix = 'controls.packages.search.termsofuse.';
+            var template;
 
-            this.$TermsOfUse = new Element('div', {
-                'class': 'quiqqer-packages-search-termsofuse',
-                html   : Mustache.render(templateTermsOfUse, {
-                    header       : QUILocale.get(lg, lgPrefix + 'header'),
-                    content      : QUILocale.get(lg, lgPrefix + 'content'),
-                    acceptBtnText: QUILocale.get(lg, lgPrefix + 'acceptBtnText')
-                })
-            }).inject(this.$Elm);
+            var self     = this,
+                lang     = QUILocale.getCurrent(),
+                lgPrefix = 'controls.packages.search.termsofuse.';
 
-            this.$TermsOfUse.getElement('button').addEvent('click', function () {
-                self.Loader.show();
+            switch (lang) {
+                case 'de':
+                    template = 'text!controls/packages/termsOfUse/' + lang + '.html';
+                    break;
 
-                self.$agreeToTermsOfUse().then(function () {
-                    if (self.$TermsOfUse) {
-                        self.$TermsOfUse.destroy();
-                    }
+                default:
+                case 'en':
+                    template = 'text!controls/packages/termsOfUse/en.html';
+                    break;
+            }
 
-                    self.Loader.hide();
+            require([template], function (templateTOU) {
+                self.$TermsOfUse = new Element('div', {
+                    'class': 'quiqqer-packages-search-termsofuse',
+                    html   : Mustache.render(templateTermsOfUse, {
+                        header       : QUILocale.get(lg, lgPrefix + 'header'),
+                        content      : Mustache.render(templateTOU),
+                        acceptBtnText: QUILocale.get(lg, lgPrefix + 'acceptBtnText')
+                    })
+                }).inject(self.$Elm);
+
+                self.$TermsOfUse.getElement('button').addEvent('click', function () {
+                    self.Loader.show();
+
+                    self.$agreeToTermsOfUse().then(function () {
+                        if (self.$TermsOfUse) {
+                            self.$TermsOfUse.destroy();
+                        }
+
+                        self.Loader.hide();
+                    });
                 });
             });
         },
