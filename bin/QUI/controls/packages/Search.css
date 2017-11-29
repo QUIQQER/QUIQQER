@@ -150,3 +150,15 @@
     float: none;
     margin-top: 10px;
 }
+
+.quiqqer-packages-search-buttons {
+    background: #e1e4e9;
+    height: 50px;
+    position: relative;
+    width: 100%;
+}
+
+.quiqqer-packages-search-container {
+    height: calc(100% - 50px);
+    position: relative;
+}

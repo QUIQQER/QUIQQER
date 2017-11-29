@@ -1191,6 +1191,10 @@
             <de><![CDATA[QUIQQER Store]]></de>
             <en><![CDATA[QUIQQER Store]]></en>
         </locale>
+        <locale name="controls.packages.search.template.upload">
+            <de><![CDATA[Upload]]></de>
+            <en><![CDATA[Upload]]></en>
+        </locale>
         <locale name="controls.packages.search.template.toggleOtherSources">
             <de><![CDATA[Andere Paket-Server]]></de>
             <en><![CDATA[Other package servers]]></en>
