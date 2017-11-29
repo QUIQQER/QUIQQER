@@ -79,7 +79,8 @@
 
         var QUIQQER_SITE = {
             id   : '{$Site->getId()}',
-            type : '{$Site->getAttribute("type")}'
+            type : '{$Site->getAttribute("type")}',
+            url  : '{$Site->getUrlRewritten()}'
         };
 
         var QUIQQER_ONLOAD_MODULES = {$loadModuleFiles|json_encode:true},
