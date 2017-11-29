@@ -6,6 +6,9 @@
  * @require qui/controls/windows/Confirm
  * @require controls/users/password/Password
  * @require css!controls/users/password/Window.css
+ *
+ * @event onSuccess [this]
+ * @event onError [this]
  */
 define('controls/users/password/Window', [
 
@@ -104,8 +107,10 @@ define('controls/users/password/Window', [
             this.Loader.show();
             this.$Password.save().then(function () {
                 this.close();
+                this.fireEvent('success', [this]);
             }.bind(this)).catch(function () {
                 this.Loader.hide();
+                this.fireEvent('error', [this]);
             }.bind(this));
         }
     });

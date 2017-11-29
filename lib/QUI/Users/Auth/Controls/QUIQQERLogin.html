@@ -1,3 +1,5 @@
+<div class="quiqqer-auth-login-message"></div>
+
 <label>
     <span>{$usernameText}</span>
     <input type="text" value="" name="username"/>
@@ -7,6 +9,21 @@
     <span>{$passwordText}</span>
     <input type="password" value="" name="password"/>
 </label>
+
+{if $showPasswordReset}
+<div class="quiqqer-auth-login-passwordreset">
+    <label style="display: none;">
+        <span>
+            {locale group="quiqqer/system" var="quiqqer.auth.login.label.email"}
+        </span>
+        <input type="email" value="" name="email"/>
+    </label>
+
+    <span class="quiqqer-auth-login-passwordreset-start">
+        {locale group="quiqqer/system" var="quiqqer.auth.login.password_reset"}
+    </span>
+</div>
+{/if}
 
 <input type="hidden" value="1" name="login"/>
 <input type="submit" value="Login!" class="login qui-button btn-green"/>

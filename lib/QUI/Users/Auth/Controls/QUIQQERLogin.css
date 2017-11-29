@@ -19,3 +19,13 @@
 .quiqqer-login-auth [type="submit"] {
     cursor: pointer;
 }
+
+.quiqqer-auth-login-passwordreset {
+    float: left;
+    width: 100%;
+}
+
+.quiqqer-auth-login-passwordreset-start {
+    cursor: pointer;
+    float: right;
+}
