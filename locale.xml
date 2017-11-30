@@ -6345,8 +6345,8 @@ You have requested the reset of your password. You can log in with the following
             <en><![CDATA[Workspaces]]></en>
         </locale>
         <locale name="menu.profile.userProfile.text">
-            <de><![CDATA[Profil]]></de>
-            <en><![CDATA[Profile]]></en>
+            <de><![CDATA[Einstellungen]]></de>
+            <en><![CDATA[Settings]]></en>
         </locale>
         <locale name="menu.goto.text">
             <de><![CDATA[Verwaltung]]></de>
