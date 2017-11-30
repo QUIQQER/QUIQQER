@@ -42,6 +42,7 @@ define('Ajax', [
         $globalJSF : {}, // global javascript callback functions
         $onprogress: {},
         $url       : apiPoint,
+        $on401     : false,
 
         /**
          * Send a Request async
@@ -161,6 +162,13 @@ define('Ajax', [
                                 Request.getAttribute('showLogin')
                             ) {
                                 Request.setAttribute('logout', true);
+
+                                if (self.$on401) {
+                                    if (typeof self.$on401 === 'function') {
+                                        self.$on401(Exception);
+                                    }
+                                    return;
+                                }
 
                                 require(['controls/users/LoginWindow'], function (Login) {
                                     new Login({
