@@ -19,6 +19,15 @@ try {
     $Project = QUI::getProjectManager()->getStandard();
 } catch (QUI\Exception $Exception) {
 }
+
+// user avatar
+$Avatar = QUI::getUserBySession()->getAvatar();
+$avatar = '';
+
+if ($Avatar) {
+    $avatar = $Avatar->getSizeCacheUrl(60, 60);
+}
+
 ?>
 <!doctype html>
 <!--[if lt IE 7 ]>
@@ -120,10 +129,12 @@ try {
     <script type="text/javascript">
         /* <![CDATA[ */
         var USER = {
-            isSU: <?php echo $User->isSU() ? 1 : 0; ?>,
-            id  : <?php echo $User->getId() ? $User->getId() : 0; ?>,
-            lang: "<?php echo $User->getLang(); ?>",
-            name: "<?php echo $User->getName(); ?>"
+            isSU    : <?php echo $User->isSU() ? 1 : 0; ?>,
+            id      : <?php echo $User->getId() ? $User->getId() : 0; ?>,
+            lang    : "<?php echo $User->getLang(); ?>",
+            name    : "<?php echo $User->getName(); ?>",
+            avatar  : "<?php echo $avatar;?>",
+            username: "<?php echo $User->getUsername(); ?>"
         };
 
         var URL_DIR     = "<?php echo URL_DIR; ?>",
