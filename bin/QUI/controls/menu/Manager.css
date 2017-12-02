@@ -6,7 +6,7 @@
     border: 1px solid #DDDDDD;
     border-radius: 20px;
     cursor: pointer;
-    float: right;
+    float: right !important;
     font-size: 16px;
     height: 40px;
     line-height: 40px;
