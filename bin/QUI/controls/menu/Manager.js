@@ -3,15 +3,6 @@
  *
  * @module controls/menu/Manager
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/contextmenu/Bar
- * @require qui/controls/contextmenu/BarItem
- * @require qui/controls/contextmenu/Item
- * @require qui/controls/desktop/Panel
- * @require Ajax
- * @require utils/Panels
  */
 define('controls/menu/Manager', [
 
@@ -22,9 +13,12 @@ define('controls/menu/Manager', [
     'qui/controls/contextmenu/Item',
     'qui/controls/desktop/Panel',
     'Ajax',
-    'utils/Panels'
+    'Locale',
+    'utils/Panels',
 
-], function (QUI, Control, ContextmenuBar, ContextmenuBarItem, ContextmenuItem, Panel, Ajax, PanelUtils) {
+    'css!controls/menu/Manager.css'
+
+], function (QUI, Control, ContextmenuBar, ContextmenuBarItem, ContextmenuItem, Panel, Ajax, QUILocale, PanelUtils) {
     "use strict";
 
     return new Class({
@@ -33,9 +27,10 @@ define('controls/menu/Manager', [
         Type   : 'controls/menu/Manager',
 
         initialize: function (options) {
-            this.$Bar = null;
             this.parent(options);
 
+            this.$Bar      = null;
+            this.$Profile  = null;
             this.$isLoaded = false;
         },
 
@@ -60,6 +55,11 @@ define('controls/menu/Manager', [
                     if (BarItem.getAttribute('name') !== 'quiqqer') {
                         BarItem.setAttribute('hideifempty', true);
                     }
+
+                    if (BarItem.getAttribute('name') === 'profile') {
+                        self.$Profile = BarItem;
+                        BarItem.getElm().setStyle('display', 'none');
+                    }
                 });
 
                 result.each(function (entry, i) {
@@ -71,6 +71,8 @@ define('controls/menu/Manager', [
                         Child.set('data-name', entry.name);
                     }
                 });
+
+                self.$renderProfile();
 
                 self.$isLoaded = true;
                 self.fireEvent('menuLoaded');
@@ -98,9 +100,72 @@ define('controls/menu/Manager', [
         },
 
         /**
+         * render the profile items
+         */
+        $renderProfile: function () {
+            var self   = this,
+                Menu   = document.getElement('.qui-menu-container'),
+                letter = USER.name.substr(0, 1);
+
+            var ContextMenu = self.$Profile.getContextMenu();
+
+            ContextMenu.addEvent('blur', function () {
+                ContextMenu.hide.delay(200, ContextMenu);
+            });
+
+            ContextMenu.setTitle(window.USER.username);
+            ContextMenu.getElm().addClass('qui-profile-contextMenu');
+
+            require([
+                'qui/controls/contextmenu/Item',
+                'qui/controls/contextmenu/Seperator'
+            ], function (Item, Seperator) {
+                ContextMenu.appendChild(new Seperator());
+
+                ContextMenu.appendChild(
+                    new Item({
+                        icon  : 'fa fa-power-off',
+                        text  : QUILocale.get('quiqqer/quiqqer', 'menu.log.out'),
+                        events: {
+                            onClick: window.logout
+                        }
+                    })
+                );
+            });
+
+            var Profile = new Element('div', {
+                'class': 'qui-contextmenu-baritem smooth qui-profile-button',
+                html   : letter,
+                events : {
+                    click: function () {
+                        var Menu    = self.$Profile.getContextMenu(),
+                            MenuElm = Menu.getElm();
+
+                        Menu.setPosition(
+                            this.getPosition().x,
+                            70
+                        );
+
+                        Menu.setAttribute('corner', 'topRight');
+                        Menu.getElm().inject(document.body);
+                        Menu.show();
+                        MenuElm.setStyle('left', parseInt(MenuElm.getStyle('left')) + 40);
+                        Menu.focus();
+                    }
+                }
+            }).inject(Menu);
+
+            if (window.USER.avatar !== '') {
+                Profile.setStyle('background-image', "url('" + window.USER.avatar + "')");
+                Profile.set('html', '');
+            }
+        },
+
+        /**
          * Menu click helper method
          *
          * @param {Object} Item - (qui/controls/contextmenu/Item) Menu Item
+         * @param {Event} event
          */
         menuClick: function (Item, event) {
             var i, len, list;
@@ -184,11 +249,10 @@ define('controls/menu/Manager', [
          * @return {Promise}
          */
         $menuRequire: function (Item) {
-            var i, len, list;
+            var i, len;
 
-            var menuRequire = Item.getAttribute('require');
-
-            list = QUI.Controls.getByType(menuRequire);
+            var menuRequire = Item.getAttribute('require'),
+                list        = QUI.Controls.getByType(menuRequire);
 
             var attributes = Object.merge(
                 Item.getStorageAttributes(),
@@ -200,33 +264,30 @@ define('controls/menu/Manager', [
             }
 
             return new Promise(function (resolve) {
-
-                if (list.length) {
-                    if (menuRequire === 'controls/projects/project/Settings') {
-                        for (i = 0, len = list.length; i < len; i++) {
-                            if (list[i].getAttribute('project') === attributes.project) {
-                                PanelUtils.execPanelOpen(list[0]);
-                                return;
-                            }
-                        }
-
-                        this.$createControl(menuRequire, attributes).then(resolve);
-                        return;
-                    }
-
-                    if (instanceOf(list[0], Panel)) {
-                        PanelUtils.execPanelOpen(list[0]);
-
-                    } else {
-                        list[0].open();
-                    }
-
-                    resolve();
+                if (!list.length) {
+                    this.$createControl(menuRequire, attributes).then(resolve);
                     return;
                 }
 
-                this.$createControl(menuRequire, attributes).then(resolve);
+                if (menuRequire === 'controls/projects/project/Settings') {
+                    for (i = 0, len = list.length; i < len; i++) {
+                        if (list[i].getAttribute('project') === attributes.project) {
+                            PanelUtils.execPanelOpen(list[0]);
+                            return;
+                        }
+                    }
 
+                    this.$createControl(menuRequire, attributes).then(resolve);
+                    return;
+                }
+
+                if (instanceOf(list[0], Panel)) {
+                    PanelUtils.execPanelOpen(list[0]);
+                } else {
+                    list[0].open();
+                }
+
+                resolve();
             }.bind(this));
         },
 
@@ -239,6 +300,7 @@ define('controls/menu/Manager', [
          */
         $createControl: function (controlName, attributes) {
             var self = this;
+
             return new Promise(function (resolve, reject) {
                 require([controlName], function (Control) {
                     var Ctrl = new Control(attributes);

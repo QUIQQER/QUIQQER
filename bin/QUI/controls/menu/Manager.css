@@ -1,0 +1,33 @@
+.qui-profile-button {
+    background-color: #DDDDDD;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border: 1px solid #DDDDDD;
+    border-radius: 20px;
+    cursor: pointer;
+    float: right;
+    font-size: 16px;
+    height: 40px;
+    line-height: 40px;
+    margin: 5px 10px 0 0;
+    position: relative;
+    text-align: center;
+    top: -10px;
+    width: 40px;
+}
+
+.qui-profile-button:hover {
+    background-color: #d1d4da;
+    border: 1px solid #d1d4da;
+}
+
+.qui-profile-contextMenu:after {
+    right: 10px !important;
+}
+
+.qui-profile-contextMenu .qui-contextmenu-title {
+    background: #d1d4da;
+    border-bottom: 2px solid #BEBEBE;
+    color: #666;
+}
