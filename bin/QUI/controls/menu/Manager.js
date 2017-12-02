@@ -118,9 +118,9 @@ define('controls/menu/Manager', [
 
             require([
                 'qui/controls/contextmenu/Item',
-                'qui/controls/contextmenu/Seperator'
-            ], function (Item, Seperator) {
-                ContextMenu.appendChild(new Seperator());
+                'qui/controls/contextmenu/Separator'
+            ], function (Item, Separator) {
+                ContextMenu.appendChild(new Separator());
 
                 ContextMenu.appendChild(
                     new Item({
