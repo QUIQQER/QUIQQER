@@ -8038,4 +8038,11 @@ You have requested the reset of your password. You can log in with the following
             <en><![CDATA[Add a site type]]></en>
         </locale>
     </groups>
+
+    <groups name="quiqqer/controls" datatype="php,js">
+        <locale name="package.title">
+            <de><![CDATA[QUIQQER Controls]]></de>
+            <en><![CDATA[QUIQQER Controls]]></en>
+        </locale>
+    </groups>
 </locales>
