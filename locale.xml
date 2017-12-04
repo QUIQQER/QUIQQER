@@ -1716,6 +1716,81 @@
             <de><![CDATA[Leider sind zu viele Tasks offen. Es wurden einige Tasks geschlossen.]]></de>
             <en><![CDATA[Unfortunately, too many tasks are open. Some tasks have been closed]]></en>
         </locale>
+
+        <locale name="exception.site.panel.error">
+            <de><![CDATA[
+            Seitenpanel mit der Seiten ID #[id] konnte nicht geladen werden.
+            Das Panel wurde wieder geschlossen
+            ]]></de>
+            <en><![CDATA[
+            Site panel with page ID #[id] could not be loaded.
+            The panel was closed again
+            ]]></en>
+        </locale>
+
+        <locale name="panel.site.restore.title">
+            <de><![CDATA[Wiederherstellung der Seite #[id]]]></de>
+            <en><![CDATA[Restoring the page #[id]]]></en>
+        </locale>
+        <locale name="panel.site.restore.message.local.newer" html="true">
+            <de><![CDATA[
+            <h1>Wiederherstellung der Seite<br />#[id] - [title]</h1>
+
+            <p>Auf Ihrem PC wurden Änderungen gefunden die Online noch nicht gespeichert wurden.</p>
+            <p>Die lokalen Änderungen sind vom <strong>[localeDate]</strong>.</p>
+            <br />
+            <p>Online wurde die Seite <strong>zuletzt am [editDate] von [editUser] ([editUsername])</strong> gespeichert.</p>
+            ]]></de>
+            <en><![CDATA[
+            <h1>Restoring the page<br />#[id] - [title]</h1>
+
+            <p>Changes have been found on your PC that have not yet been saved online.</p>
+            <p>The local changes are from the <strong>[localeDate]</strong>.</p>
+            <br />
+            <p>The online page was <strong> last updated on [editDate] from [editUser] ([editUsername])</strong>.</p>
+            ]]></en>
+        </locale>
+        <locale name="panel.site.restore.message.online.newer" html="true">
+            <de><![CDATA[
+            <h1>Wiederherstellung der Seite<br />#[id] - [title]</h1>
+
+            <p>Auf Ihrem PC wurden Änderungen gefunden die Online noch nicht gespeichert wurden.</p>
+            <p>Die lokalen Änderungen sind vom <strong>[localeDate]</strong>,</p>
+            <br />
+            <p>Online wurde die Seite <strong>zuletzt am [editDate] von [editUser] ([editUsername])</strong> gespeichert.</p>
+            <br />
+
+            <strong>Achtung:</strong>
+            <p>Die Onlineversion der Seite ist neuer als die Lokalen
+            (noch nicht gespeicherte) Version. Wenn Sie die Lokalen Daten übernehmen
+            wird die neuere Online Version beim speichern der Seite überschrieben.</p>
+
+            <p>Wenn Sie sich unsicher sind verwerfen Sie die lokalen Änderungen.</p>
+            ]]></de>
+            <en><![CDATA[
+            <h1>Restoring the page<br />#[id] - [title]</h1>
+
+            <p>Changes have been found on your PC that have not yet been saved online.</p>
+            <p>The local changes are from the <strong>[localeDate]</strong>.</p>
+            <br />
+            <p>The online page was <strong> last updated on [editDate] from [editUser] ([editUsername])</strong>.</p>
+
+            <strong>Attention:</strong>
+            <p>The online version of the site is newer than the local (not yet saved) version.
+            If you accept the local data, the newer online version will be overwritten
+            when you save the page.</p>
+
+            <p>Wenn Sie sich unsicher sind verwerfen Sie die lokalen Änderungen.</p>
+            ]]></en>
+        </locale>
+        <locale name="panel.site.restore.button.cancel">
+            <de><![CDATA[Lokale Daten verwerfen]]></de>
+            <en><![CDATA[Discard local data]]></en>
+        </locale>
+        <locale name="panel.site.restore.button.restore">
+            <de><![CDATA[Lokale Daten laden]]></de>
+            <en><![CDATA[Load local data]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/system" datatype="js,php">
@@ -2280,8 +2355,10 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
             <en><![CDATA[Reset password]]></en>
         </locale>
         <locale name="controls.users.auth.quiqqerlogin.send_mail_success">
-            <de><![CDATA[Falls unter der von Ihnen angegebenen E-Mail-Adresse ein Benutzerkonto existiert, wurde  Ihnen zur Bestätigung des Vorgangs eine E-Mail mit einem Bestätigungs-Link gesendet. Sollten innerhalb der nächsten 10 Minuten keine E-Mail erhalten, wiederholen Sie bitte den Vorgang.]]></de>
-            <en><![CDATA[If there is a user account under the e-mail address you provided, you will receive an e-mail with a confirmation link to confirm the process. If no e-mail is received within the next 10 minutes, please repeat the process.]]></en>
+            <de>
+                <![CDATA[Falls unter der von Ihnen angegebenen E-Mail-Adresse ein Benutzerkonto existiert, wurde  Ihnen zur Bestätigung des Vorgangs eine E-Mail mit einem Bestätigungs-Link gesendet. Sollten innerhalb der nächsten 10 Minuten keine E-Mail erhalten, wiederholen Sie bitte den Vorgang.]]></de>
+            <en>
+                <![CDATA[If there is a user account under the e-mail address you provided, you will receive an e-mail with a confirmation link to confirm the process. If no e-mail is received within the next 10 minutes, please repeat the process.]]></en>
         </locale>
         <locale name="controls.users.auth.quiqqerlogin.send_mail_error">
             <de><![CDATA[Der Vorgang konnte leider nicht durchgeführt werden:<br><br>[error]]]></de>
@@ -6282,12 +6359,16 @@ You requested a reset of your login password on [date]. In order to be able to s
 </p>]]></en>
         </locale>
         <locale name="exception.user.auth.handler.verification_package_not_installed">
-            <de><![CDATA[Bestätigungs-Mail für das "Passwort zurücksetzen" kann nicht versendet werden, da das Paket "quiqqer/verification" nicht installiert ist.]]></de>
-            <en><![CDATA[Confirmation mail for "Password reset" cannot be sent because the package "quiqqer/verification" is not installed.]]></en>
+            <de>
+                <![CDATA[Bestätigungs-Mail für das "Passwort zurücksetzen" kann nicht versendet werden, da das Paket "quiqqer/verification" nicht installiert ist.]]></de>
+            <en>
+                <![CDATA[Confirmation mail for "Password reset" cannot be sent because the package "quiqqer/verification" is not installed.]]></en>
         </locale>
         <locale name="exception.user.auth.handler.missing_user_email">
-            <de><![CDATA[Bestätigungs-Mail für das "Passwort zurücksetzen" kann nicht versendet werden, da der Benutzer keine E-Mail-Adresse eingetragen hat.]]></de>
-            <en><![CDATA[Confirmation mail for "Password reset" cannot be sent because the user has no e-mail address.]]></en>
+            <de>
+                <![CDATA[Bestätigungs-Mail für das "Passwort zurücksetzen" kann nicht versendet werden, da der Benutzer keine E-Mail-Adresse eingetragen hat.]]></de>
+            <en>
+                <![CDATA[Confirmation mail for "Password reset" cannot be sent because the user has no e-mail address.]]></en>
         </locale>
         <locale name="mail.auth.password_reset_newpassword.subject">
             <de><![CDATA[Neues Login-Passwort]]></de>
@@ -6308,7 +6389,8 @@ You have requested the reset of your password. You can log in with the following
 </p>]]></en>
         </locale>
         <locale name="exception.user.auth.send_password_reset_mail_error">
-            <de><![CDATA[Beim Vorgang "Passwort zurücksetzen" ist ein unerwarteter Fehler aufgetreten. Bitte versuchen Sie es später noch einmal.]]></de>
+            <de>
+                <![CDATA[Beim Vorgang "Passwort zurücksetzen" ist ein unerwarteter Fehler aufgetreten. Bitte versuchen Sie es später noch einmal.]]></de>
             <en><![CDATA[The process "Reset Password" encountered an unexpected error. Please try again later.]]></en>
         </locale>
         <locale name="quiqqer.auth.login.label.email">
@@ -6316,12 +6398,16 @@ You have requested the reset of your password. You can log in with the following
             <en><![CDATA[Email address]]></en>
         </locale>
         <locale name="users.auth.passwordresetverification.success">
-            <de><![CDATA[Das Zurücksetzen Ihres Passworts wurde erfolgreich verifiziert. Sie erhalten nun eine E-Mail mit einem neuen Login-Passwort.]]></de>
-            <en><![CDATA[Resetting your password has been successfully verified. You will receive an e-mail with a new login password.]]></en>
+            <de>
+                <![CDATA[Das Zurücksetzen Ihres Passworts wurde erfolgreich verifiziert. Sie erhalten nun eine E-Mail mit einem neuen Login-Passwort.]]></de>
+            <en>
+                <![CDATA[Resetting your password has been successfully verified. You will receive an e-mail with a new login password.]]></en>
         </locale>
         <locale name="users.auth.passwordresetverification.error">
-            <de><![CDATA[Das Zurücksetzen Ihres Passworts hat leider nicht funktioniert. Bitte wiederholen Sie den Vorgang oder probieren Sie es später noch einmal.]]></de>
-            <en><![CDATA[Unfortunately, resetting your password did not work. Please try again or try again later.]]></en>
+            <de>
+                <![CDATA[Das Zurücksetzen Ihres Passworts hat leider nicht funktioniert. Bitte wiederholen Sie den Vorgang oder probieren Sie es später noch einmal.]]></de>
+            <en>
+                <![CDATA[Unfortunately, resetting your password did not work. Please try again or try again later.]]></en>
         </locale>
 
         <!-- Class: QUI\Watch -->
@@ -6639,16 +6725,22 @@ You have requested the reset of your password. You can log in with the following
             <en><![CDATA[Force set new password]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.showResetPasswordBackend.description" html="true">
-            <de><![CDATA[Zeige "Passwort vergessen"-Option für das Login im Backend (Modul <b>quiqqer/verification</b> erforderlich!)]]></de>
-            <en><![CDATA[Show "Forgot password" option for backend Login (requires module <b>quiqqer/verification</b>!)]]></en>
+            <de>
+                <![CDATA[Zeige "Passwort vergessen"-Option für das Login im Backend (Modul <b>quiqqer/verification</b> erforderlich!)]]></de>
+            <en>
+                <![CDATA[Show "Forgot password" option for backend Login (requires module <b>quiqqer/verification</b>!)]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.showResetPasswordFrontend.description" html="true">
-            <de><![CDATA[Zeige "Passwort vergessen"-Option für das Login im Frontend (Modul <b>quiqqer/verification</b> erforderlich!)]]></de>
-            <en><![CDATA[Show "Forgot password" option for frontend Login (requires module <b>quiqqer/verification</b>!)]]></en>
+            <de>
+                <![CDATA[Zeige "Passwort vergessen"-Option für das Login im Frontend (Modul <b>quiqqer/verification</b> erforderlich!)]]></de>
+            <en>
+                <![CDATA[Show "Forgot password" option for frontend Login (requires module <b>quiqqer/verification</b>!)]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.forceNewPasswordOnReset.description">
-            <de><![CDATA[Benutzer, die Ihr Passwort über die "Passwort vergessen"-Funktion zurücksetzen, müssen nach dem ersten Login ihr Passwort ändern]]></de>
-            <en><![CDATA[Users who reset their password via the "Forgot password" function must change their password after the first login]]></en>
+            <de>
+                <![CDATA[Benutzer, die Ihr Passwort über die "Passwort vergessen"-Funktion zurücksetzen, müssen nach dem ersten Login ihr Passwort ändern]]></de>
+            <en>
+                <![CDATA[Users who reset their password via the "Forgot password" function must change their password after the first login]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.type">
             <de><![CDATA[Authentifizierungstyp]]></de>

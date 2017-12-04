@@ -4,18 +4,6 @@
  *
  * @module controls/users/User
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/desktop/Panel
- * @require qui/controls/buttons/Button
- * @require qui/controls/windows/Confirm
- * @require controls/grid/Grid
- * @require qui/utils/Form
- * @require utils/Controls
- * @require Users
- * @require Ajax
- * @require Locale
- * @require css!controls/users/User.css
  */
 define('controls/users/User', [
 
