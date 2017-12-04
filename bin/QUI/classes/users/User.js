@@ -4,11 +4,6 @@
  * @module classes/users/User
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/QUI
- * @require qui/classes/DOM
- * @require Ajax
- * @require Locale
- *
  * @event onRefresh [ {classes/users/User} ]
  */
 define('classes/users/User', [

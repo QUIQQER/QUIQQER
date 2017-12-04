@@ -853,10 +853,10 @@ define('classes/projects/project/Site', [
             }
 
             // locale storage
-            QUI.Storage.set(
-                this.getWorkingStorageId(),
-                JSON.encode(this.options.attributes)
-            );
+            var attributes           = this.options.attributes;
+            attributes.__storageTime = new Date().getTime();
+
+            QUI.Storage.set(this.getWorkingStorageId(), JSON.encode(attributes));
         },
 
         /**
