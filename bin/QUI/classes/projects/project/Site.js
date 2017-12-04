@@ -766,7 +766,11 @@ define('classes/projects/project/Site', [
                 return false;
             }
 
-            return JSON.decode(storage);
+            try {
+                return JSON.decode(storage);
+            } catch (e) {
+                return false;
+            }
         },
 
         /**

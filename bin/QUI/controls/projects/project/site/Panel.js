@@ -118,7 +118,7 @@ define('controls/projects/project/site/Panel', [
                     typeof Site.id !== 'undefined') {
                     this.unserialize(Site);
                 }
-            }
+        }
 
             this.parent(options);
 
@@ -416,6 +416,11 @@ define('controls/projects/project/site/Panel', [
 
             this.Loader.show();
 
+            // workaround loading
+            // (function () {
+            //     Site.load();
+            // }).delay(4000);
+
             if (!Site.hasWorkingStorage()) {
                 Site.load();
                 return;
@@ -425,6 +430,7 @@ define('controls/projects/project/site/Panel', [
 
             Site.hasWorkingStorageChanges().then(function (hasStorage) {
                 if (hasStorage === false) {
+                    Site.load();
                     return;
                 }
 
@@ -439,6 +445,7 @@ define('controls/projects/project/site/Panel', [
                 });
             }).then(function (EditUser) {
                 if (!EditUser) {
+                    Site.load();
                     return;
                 }
 
