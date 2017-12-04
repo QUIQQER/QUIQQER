@@ -52,14 +52,14 @@ foreach ($packages as $package) {
 
     foreach ($authPackages as $package) {
         foreach ($languages as $lang) {
-            $files[] = 'locale/' . $package . '/' . $lang;
+            $files[] = 'locale/'.$package.'/'.$lang;
         }
     }
 
     echo '<script type="text/javascript">';
     echo '/* <![CDATA[ */';
-    echo 'var QUIQQER_LOCALE = ' . json_encode($files, true) . ';';
-    echo 'var QUIQQER_LANGUAGES = ' . json_encode($languages, true) . ';';
+    echo 'var QUIQQER_LOCALE = '.json_encode($files, true).';';
+    echo 'var QUIQQER_LANGUAGES = '.json_encode($languages, true).';';
     echo 'var QUIQQER_IS_ADMIN_LOGIN = true;';
     echo '/* ]]> */';
     echo '</script>';
@@ -329,6 +329,7 @@ foreach ($packages as $package) {
         var URL_DIR     = '<?php echo URL_DIR; ?>',
             URL_BIN_DIR = '<?php echo URL_BIN_DIR; ?>',
             URL_OPT_DIR = '<?php echo URL_OPT_DIR; ?>',
+            URL_SYS_DIR = '<?php echo URL_SYS_DIR; ?>',
             LANGUAGE    = null;
 
         // require config

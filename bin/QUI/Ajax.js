@@ -33,9 +33,10 @@ define('Ajax', [
 
     var apiPoint = '/ajax.php';
 
-    if (typeof QUIQQER !== 'undefined' &&
-        "ajax" in QUIQQER) {
+    if (typeof QUIQQER !== 'undefined' && "ajax" in QUIQQER) {
         apiPoint = QUIQQER.ajax;
+    } else if (typeof URL_SYS_DIR !== 'undefined') {
+        apiPoint = URL_SYS_DIR + 'ajax.php';
     }
 
     return {
