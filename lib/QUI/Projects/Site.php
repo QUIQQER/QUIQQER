@@ -1551,7 +1551,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     }
 
     /**
-     * Returns a "speeking" URL
+     * Returns a "speeking" URL with host
      *
      * @param array $pathParams
      * @param array $getParams
