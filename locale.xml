@@ -744,10 +744,20 @@
             <de><![CDATA[Composer-Lizenzserver für alle kostenpflichtigen Pakete]]></de>
             <en><![CDATA[Composer license server for all non-free packages]]></en>
         </locale>
+        <locale name="quiqqer.settings.general.globals.lockserver.enabled.title">
+            <de><![CDATA[Lockserver verwenden]]></de>
+            <en><![CDATA[Use lockserver]]></en>
+        </locale>
+        <locale name="quiqqer.settings.general.globals.lockserver.enabled.description">
+            <de><![CDATA[Der Lockserver lagert die Abhängigkeitsauflösung von Composer auf ein externes QUIQQER-System aus. <a href="https://dev.quiqqer.com/quiqqer/Lockserver/wikis/home" target='_blank'>Mehr Details</a>]]></de>
+            <en><![CDATA[The lockserver outsources the dependency solution to an external QUIQQER server. <a href="https://dev.quiqqer.com/quiqqer/Lockserver/wikis/home" target='_blank'>Read more</a>]]></en>
+        </locale>
+        
         <locale name="site.type.standard">
             <de><![CDATA[Einfacher Inhalt]]></de>
             <en><![CDATA[Default content]]></en>
         </locale>
+        
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -6511,7 +6521,7 @@ You have requested the reset of your password. You can log in with the following
             <de><![CDATA[Version des QUIQQER-Systems]]></de>
             <en><![CDATA[Version of the QUIQQER system]]></en>
         </locale>
-
+        
 
         <locale name="quiqqer.settings.database">
             <de><![CDATA[Datenbank]]></de>
