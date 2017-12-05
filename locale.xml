@@ -1346,9 +1346,10 @@
             <de><![CDATA[Aktualisierung]]></de>
             <en><![CDATA[Update]]></en>
         </locale>
-        <locale name="packages.panel.category.phpinfo">
-            <de><![CDATA[PHP-Info]]></de>
-            <en><![CDATA[PHP Info]]></en>
+        <locale name="packages.panel.category.systemCheck">
+            <de><![CDATA[System Check]]></de>
+            <en><![CDATA[System check]]></en>
+            <en><![CDATA[System check]]></en>
         </locale>
         <locale name="packages.panel.category.settings">
             <de><![CDATA[Einstellungen]]></de>
@@ -2004,6 +2005,7 @@
         <locale name="close">
             <de><![CDATA[Schließen]]></de>
             <en><![CDATA[Close]]></en>
+            <pl><![CDATA[Zamknij]]></pl>
         </locale>
         <locale name="ok">
             <de><![CDATA[Ok]]></de>
@@ -8139,6 +8141,39 @@ You have requested the reset of your password. You can log in with the following
         <locale name="projects.project.site.select.btn.addTypes">
             <de><![CDATA[Seitentyp hinzufügen ]]></de>
             <en><![CDATA[Add a site type]]></en>
+        </locale>
+
+
+        <locale name="packages.panel.category.systemcheck">
+            <de><![CDATA[PHP-Info]]></de>
+            <en><![CDATA[PHP Info]]></en>
+            <pl><![CDATA[PHP Info]]></pl>
+        </locale>
+
+        <locale name="packages.panel.category.systemcheck.title">
+            <de><![CDATA[QUIQQER System Check]]></de>
+            <en><![CDATA[QUIQQER System check]]></en>
+            <pl><![CDATA[QUIQQER System check]]></pl>
+        </locale>
+        <locale name="packages.panel.category.systemcheck.phpinfo">
+            <de><![CDATA[PHP-Info]]></de>
+            <en><![CDATA[PHP Info]]></en>
+            <pl><![CDATA[PHP Info]]></pl>
+        </locale>
+        <locale name="packages.panel.category.systemcheck.phpinfo.error">
+            <de><![CDATA[System check konnte nicht ausgeführt werden.]]></de>
+            <en><![CDATA[System check could not run.]]></en>
+            <pl><![CDATA[Sprawdzenie systemu nie może być przeprowadzone.]]></pl>
+        </locale>
+        <locale name="packages.panel.category.systemcheck.checksum">
+            <de><![CDATA[Paketintegrität]]></de>
+            <en><![CDATA[Package integrity check sum]]></en>
+            <pl><![CDATA[Sprawdzenie integralności paczek]]></pl>
+        </locale>
+        <locale name="packages.panel.category.systemcheck.checksum.error">
+            <de><![CDATA[Paketintegrität konnte nicht geprüft werden.]]></de>
+            <en><![CDATA[Package integrity check sum could not run.]]></en>
+            <pl><![CDATA[Sprawdzenie integralności paczek nie powiodło się.]]></pl>
         </locale>
     </groups>
 
