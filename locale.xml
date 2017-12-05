@@ -1182,6 +1182,12 @@
             <de><![CDATA[Neuer Benutzer]]></de>
             <en><![CDATA[New User]]></en>
         </locale>
+
+        <!-- Authenticator: QUIQQER Login -->
+        <locale name="controls.users.auth.quiqqerlogin.btn.password_reset">
+            <de><![CDATA[Passwort zurücksetzen]]></de>
+            <en><![CDATA[Reset password]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="js">
@@ -2349,11 +2355,6 @@ Folgende Zeichen sind erlaubt: 0-9 a-z A-Z _ -</p>]]></de>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js">
-        <!-- Authenticator: QUIQQER Login -->
-        <locale name="controls.users.auth.quiqqerlogin.btn.password_reset">
-            <de><![CDATA[Passwort zurücksetzen]]></de>
-            <en><![CDATA[Reset password]]></en>
-        </locale>
         <locale name="controls.users.auth.quiqqerlogin.send_mail_success">
             <de>
                 <![CDATA[Falls unter der von Ihnen angegebenen E-Mail-Adresse ein Benutzerkonto existiert, wurde  Ihnen zur Bestätigung des Vorgangs eine E-Mail mit einem Bestätigungs-Link gesendet. Sollten innerhalb der nächsten 10 Minuten keine E-Mail erhalten, wiederholen Sie bitte den Vorgang.]]></de>
