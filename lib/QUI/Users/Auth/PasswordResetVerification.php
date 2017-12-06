@@ -40,6 +40,17 @@ class PasswordResetVerification extends AbstractVerification
     }
 
     /**
+     * Get the duration of a Verification (minutes)
+     *
+     * @return int|false - duration in minutes;
+     * if this method returns false use the module setting default value
+     */
+    public function getValidDuration()
+    {
+        return (int)QUI::conf('auth_settings', 'passwordResetLinkValidTime');
+    }
+
+    /**
      * Execute this method on unsuccessful verification
      *
      * @return void

@@ -111,6 +111,10 @@
                     <type><![CDATA[bool]]></type>
                     <defaultvalue>0</defaultvalue>
                 </conf>
+                <conf name="passwordResetLinkValidTime">
+                    <type><![CDATA[integer]]></type>
+                    <defaultvalue>720</defaultvalue>
+                </conf>
                 <conf name="forceNewPasswordOnReset">
                     <type><![CDATA[bool]]></type>
                     <defaultvalue>1</defaultvalue>
@@ -627,19 +631,28 @@
 
                         <input conf="auth_settings.showResetPasswordFrontend" type="checkbox">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.auth.showResetPasswordFrontend"/>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.auth.showResetPasswordFrontend"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/system" var="quiqqer.settings.auth.showResetPasswordFrontend.description"/>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.auth.showResetPasswordFrontend.description"/>
                             </description>
                         </input>
 
                         <input conf="auth_settings.forceNewPasswordOnReset" type="checkbox">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.auth.forceNewPasswordOnReset"/>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.auth.forceNewPasswordOnReset"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/system" var="quiqqer.settings.auth.forceNewPasswordOnReset.description"/>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.auth.forceNewPasswordOnReset.description"/>
+                            </description>
+                        </input>
+
+                        <input conf="auth_settings.passwordResetLinkValidTime" type="number">
+                            <text>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.auth.passwordResetLinkValidTime"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.auth.passwordResetLinkValidTime.description"/>
                             </description>
                         </input>
 

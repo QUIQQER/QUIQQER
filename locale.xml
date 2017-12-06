@@ -751,6 +751,41 @@
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
+        <!-- Settings: auth -->
+        <locale name="quiqqer.settings.auth.showResetPasswordBackend">
+            <de><![CDATA["Passwort vergessen" im Backend Login]]></de>
+            <en><![CDATA["Forgot password" in backend Login]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.showResetPasswordFrontend">
+            <de><![CDATA["Passwort vergessen" im Frontend Login]]></de>
+            <en><![CDATA["Forgot password" in frontend Login]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.forceNewPasswordOnReset">
+            <de><![CDATA[Neues Passwort setzen erzwingen]]></de>
+            <en><![CDATA[Force set new password]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.showResetPasswordBackend.description" html="true">
+            <de><![CDATA[Zeige "Passwort vergessen"-Option für das Login im Backend (Modul <b>quiqqer/verification</b> erforderlich!)]]></de>
+            <en><![CDATA[Show "Forgot password" option for backend Login (requires module <b>quiqqer/verification</b>!)]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.showResetPasswordFrontend.description" html="true">
+            <de><![CDATA[Zeige "Passwort vergessen"-Option für das Login im Frontend (Modul <b>quiqqer/verification</b> erforderlich!)]]></de>
+            <en><![CDATA[Show "Forgot password" option for frontend Login (requires module <b>quiqqer/verification</b>!)]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.forceNewPasswordOnReset.description">
+            <de><![CDATA[Benutzer, die Ihr Passwort über die "Passwort vergessen"-Funktion zurücksetzen, müssen nach dem ersten Login ihr Passwort ändern]]></de>
+            <en><![CDATA[Users who reset their password via the "Forgot password" function must change their password after the first login]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.passwordResetLinkValidTime">
+            <de><![CDATA[Gültigkeitsdauer "Passwort vergessen"-Link]]></de>
+            <en><![CDATA[Period of validity for "Forgot password" link]]></en>
+        </locale>
+        <locale name="quiqqer.settings.auth.passwordResetLinkValidTime.description" html="true">
+            <de><![CDATA[Gültigkeitsdauer in <b>Minuten</b> für den Link zur Bestätigung des Zurücksetzens des Passworts.]]></de>
+            <en><![CDATA[Period of validity in <b>minutes</b> for the link to confirm password reset.]]></en>
+        </locale>
+
+
         <locale name="projects.project.settings.panel.settings.title">
             <de><![CDATA[Projekte]]></de>
             <en><![CDATA[Projects]]></en>
@@ -6615,30 +6650,6 @@ You have requested the reset of your password. You can log in with the following
         <locale name="quiqqer.settings.auth.emaillogin">
             <de><![CDATA[Login über die E-Mail-Adresse zulassen]]></de>
             <en><![CDATA[Allow login via the email address]]></en>
-        </locale>
-        <locale name="quiqqer.settings.auth.showResetPasswordBackend">
-            <de><![CDATA["Passwort vergessen" im Backend Login]]></de>
-            <en><![CDATA["Forgot password" in backend Login]]></en>
-        </locale>
-        <locale name="quiqqer.settings.auth.showResetPasswordFrontend">
-            <de><![CDATA["Passwort vergessen" im Frontend Login]]></de>
-            <en><![CDATA["Forgot password" in frontend Login]]></en>
-        </locale>
-        <locale name="quiqqer.settings.auth.forceNewPasswordOnReset">
-            <de><![CDATA[Neues Passwort setzen erzwingen]]></de>
-            <en><![CDATA[Force set new password]]></en>
-        </locale>
-        <locale name="quiqqer.settings.auth.showResetPasswordBackend.description" html="true">
-            <de><![CDATA[Zeige "Passwort vergessen"-Option für das Login im Backend (Modul <b>quiqqer/verification</b> erforderlich!)]]></de>
-            <en><![CDATA[Show "Forgot password" option for backend Login (requires module <b>quiqqer/verification</b>!)]]></en>
-        </locale>
-        <locale name="quiqqer.settings.auth.showResetPasswordFrontend.description" html="true">
-            <de><![CDATA[Zeige "Passwort vergessen"-Option für das Login im Frontend (Modul <b>quiqqer/verification</b> erforderlich!)]]></de>
-            <en><![CDATA[Show "Forgot password" option for frontend Login (requires module <b>quiqqer/verification</b>!)]]></en>
-        </locale>
-        <locale name="quiqqer.settings.auth.forceNewPasswordOnReset.description">
-            <de><![CDATA[Benutzer, die Ihr Passwort über die "Passwort vergessen"-Funktion zurücksetzen, müssen nach dem ersten Login ihr Passwort ändern]]></de>
-            <en><![CDATA[Users who reset their password via the "Forgot password" function must change their password after the first login]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.type">
             <de><![CDATA[Authentifizierungstyp]]></de>
