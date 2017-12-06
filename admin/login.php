@@ -1,5 +1,7 @@
 <?php
 
+QUI::getEvents()->fireEvent('adminRequest');
+
 $languages = QUI::availableLanguages();
 $packages  = QUI::getPackageManager()->getInstalled();
 

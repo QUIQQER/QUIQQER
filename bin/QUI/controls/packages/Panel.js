@@ -36,7 +36,7 @@ define('controls/packages/Panel', [
             'loadSearch',
             'loadServer',
             'loadSystem',
-            'loadPHPInfo',
+            'loadSystemCheck',
             'checkUpdates',
             'executeCompleteSetup',
             '$onCreate',
@@ -121,11 +121,11 @@ define('controls/packages/Panel', [
             });
 
             this.addCategory({
-                name  : 'phpinfo',
-                text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.phpinfo'),
+                name  : 'systemcheck',
+                text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.systemCheck'),
                 image : 'fa fa-info-circle',
                 events: {
-                    onActive: this.loadPHPInfo
+                    onActive: this.loadSystemCheck
                 }
             });
 
@@ -206,10 +206,10 @@ define('controls/packages/Panel', [
         },
 
         /**
-         * Load the server list
+         * Load the system check
          */
-        loadPHPInfo: function () {
-            this.$loadControl('controls/packages/PHPInfo');
+        loadSystemCheck: function () {
+            this.$loadControl('controls/packages/SystemCheck');
         },
 
         /**

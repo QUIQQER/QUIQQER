@@ -1,0 +1,191 @@
+.qui-control-packages-systemcheck-title {
+    padding: 10px;
+    background: #f1f1f1;
+}
+
+.qui-control-packages-systemcheck-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* check table */
+.check-table {
+    border: 1px solid #e5e5e5;
+    padding: 10px;
+    margin-bottom: 20px;
+    margin: 10px;
+}
+
+.check-table ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.system-check .fa-check {
+    color: #75b947;
+}
+
+.system-check .fa-close,
+.system-check .fa-remove {
+    color: #cc6666;
+}
+
+.system-check .fa-exclamation-circle {
+    color: #ffa500;
+}
+
+.system-check li {
+    margin-bottom: 5px;
+}
+
+.system-check .fa {
+    width: 30px;
+    margin-right: 0;
+}
+
+.failed .test-name {
+    color: #cc6666;
+    font-weight: 400;
+}
+
+.system-check .test-message .fa {
+    width: 18px;
+}
+
+.check-table-row {
+    display: flex;
+    padding: 10px 8px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.check-table-row:last-child {
+    border-bottom: none;
+}
+
+.check-table-col-test {
+    overflow: hidden;
+    width: 30%;
+    font-weight: 400;
+    text-overflow: ellipsis;
+    padding-right: 10px;
+}
+
+.check-table-col-message {
+    width: 70%;
+}
+
+.test-message {
+    margin-left: 30px;
+    font-size: 80%;
+    line-height: 150%;
+}
+
+.test-message.test-message-checkSum {
+    font-size: 100%;
+    line-height: 170%;
+}
+
+.test-message.test-message-checkSum span {
+    display: block;
+    cursor: pointer;
+}
+
+.test-message.test-message-checkSum .package-ok {
+    color: #75b947;
+}
+
+.test-message.test-message-checkSum .package-warning {
+    color: #ea8f16;
+}
+
+.test-message.test-message-checkSum .package-error {
+    color: #cc6666;
+}
+
+/* system check button */
+.system-check-button-container {
+    background: #f5f5f5;
+    border-bottom: 1px solid #fff;
+    color: #999;
+    font-weight: 300;
+    font-size: 15px;
+    transition: all 0.2s;
+    transition-delay: 0s;
+    display: flex;
+    border-top: 1px solid #fff;
+}
+
+.system-check-button-container.ok {
+    color: #75b947;
+}
+.system-check-button-container.failed {
+    color: #cc6666;
+}
+.system-check-button-container.warning {
+    color: #ea8f16;
+}
+
+#system-check {
+    width: 100%;
+    min-width: 0;
+    border-radius: 0;
+    background: none;
+    color: inherit;
+    font-size: inherit;
+    text-align: left;
+    padding: 1em 1.2em;
+    transition: all 0s;
+}
+
+#system-check:hover {
+    background: #eee;
+}
+
+pre {
+    margin: 0;
+    max-width: 100%;
+    overflow: auto;
+}
+
+code {
+    background: #454545 none repeat scroll 0 0;
+    border: 1px solid #666;
+    border-radius: 0;
+    font-family: "Liberation Mono",dl_liberation_mono,monospace;
+    margin: 10px 0;
+    padding: 0.25em 0.65em;
+    color: white
+}
+
+pre code {
+    display: block;
+    line-height: 1.75em;
+    overflow-x: auto;
+    padding: 1em 1.5em;
+}
+
+/* PHP Info */
+.qui-control-packages-systemcheck-phpinfo table {
+    width: 100%;
+}
+
+.qui-control-packages-systemcheck-phpinfo table td {
+    hyphens: auto;
+    overflow-wrap: break-word;
+    word-break: break-all;
+    word-wrap: break-word;
+
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+}
+
+.qui-control-packages-systemcheck-phpinfo table tr td:first-child {
+    width: 200px;
+}
+
+.qui-control-packages-systemcheck-phpinfo table td[colspan="2"] {
+    width: calc(100% - 200px);
+}

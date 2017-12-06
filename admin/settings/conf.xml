@@ -55,6 +55,10 @@
                     <type><![CDATA[string]]></type>
                     <defaultvalue>master-dev</defaultvalue>
                 </conf>
+                <conf name="lockserver_enabled">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue><![CDATA[1]]></defaultvalue>
+                </conf>
                 <conf name="mailprotection">
                     <type><![CDATA[bool]]></type>
                     <defaultvalue>0</defaultvalue>
@@ -433,6 +437,16 @@
                                 <locale group="quiqqer/system" var="quiqqer.settings.general.version.title"/>
                             </text>
                         </select>
+                        <input conf="globals.lockserver_enabled" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.general.globals.lockserver.enabled.title"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.general.globals.lockserver.enabled.description"/>
+                            </description>
+                        </input>
                     </settings>
 
                     <settings title="globals" name="globals">
