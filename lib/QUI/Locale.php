@@ -223,7 +223,7 @@ class Locale
 
         $formats = $this->getDateFormats();
 
-        if (isset($formats[$current])) {
+        if (!empty($formats[$current])) {
             $oldlocale = setlocale(LC_TIME, "0");
             setlocale(LC_TIME, $this->getLocalesByLang($current));
             $result = strftime($formats[$current], $timestamp);
