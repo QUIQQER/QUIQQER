@@ -303,11 +303,7 @@ class Manager extends QUI\QDOM
             return false;
         }
 
-        if (get_class($Group) === 'QUI\\Groups\\Group') {
-            return true;
-        }
-
-        return false;
+        return $Group instanceof Group;
     }
 
     /**
