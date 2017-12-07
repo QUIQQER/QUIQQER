@@ -8190,9 +8190,10 @@ You have requested the reset of your password. You can log in with the following
             <ul>
             <li>OK - die Checksummen passen</li>
             <li>Unbekannt - keine checksume datei</li>
-            <li>Verändert - Locale oer online Version von der Datei ist nicht gleich, wie der auf dem locale Dateisystem</li>
-            <li>Hinzugefügt - Die Datei existiert in der Liste der lokarer Prüfsumme-Datei (checklist.md5)
-             bzw. in der online Version auf dem Updateserver.</li></ul>]]></de>
+            <li>Verändert - locale oer online Version von der Datei ist nicht gleich, wie der auf dem locale Dateisystem</li>
+            <li>Hinzugefügt - die Datei existiert in der Liste der lokarer Prüfsumme-Datei (checklist.md5)
+             bzw. in der online Version auf dem Updateserver.</li>
+             <li>Entfernt - die Datei existiert nicht.</li></ul>]]></de>
             <en><![CDATA[]]></en>
             <pl><![CDATA[]]></pl>
         </locale>
