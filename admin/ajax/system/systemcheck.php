@@ -47,7 +47,7 @@ QUI::$Ajax->registerFunction(
                         break;
 
                     case \QUI\Requirements\TestResult::STATUS_FAILED:
-                        $html .= '<li class="failed"><span class="fa fa-close" title="';
+                        $html .= '<li class="failed"><span class="fa fa-remove" title="';
                         break;
 
                     case \QUI\Requirements\TestResult::STATUS_UNKNOWN:

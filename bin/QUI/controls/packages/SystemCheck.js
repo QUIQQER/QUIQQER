@@ -13,13 +13,14 @@ define('controls/packages/SystemCheck', [
     'qui/controls/buttons/Button',
     'qui/controls/Control',
     'qui/controls/windows/Popup',
+    'qui/controls/loader/Loader',
     'Ajax',
     'Locale',
 
     'css!controls/packages/SystemCheck.css'
 
 
-], function (QUI, QUIButton, QUIControl, QUIPopup, QUIAjax, QUILocale) {
+], function (QUI, QUIButton, QUIControl, QUIPopup, QUILoader, QUIAjax, QUILocale) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -34,7 +35,6 @@ define('controls/packages/SystemCheck', [
             'runSystemCheck',
             'openPHPInfoWindow',
             'getPHPInfo',
-            'openChecksumPopup',
             'getChecksumForPackage'
         ],
 
@@ -63,6 +63,10 @@ define('controls/packages/SystemCheck', [
                 '.qui-control-packages-systemcheck-container'
             );
 
+            this.Loader = new QUILoader({
+                'cssclass' : 'system-check-loader'
+            });
+
             return this.$Elm;
         },
 
@@ -71,9 +75,15 @@ define('controls/packages/SystemCheck', [
          */
         $onInject: function () {
             var self = this;
+
+            this.Loader.inject(this.$Elm.getParent('.qui-panel'));
+            this.Loader.show(QUILocale.get(lg, 'packages.panel.category.systemcheck.loader'));
+
+            self.fireEvent('load', [this]);
+
             this.runSystemCheck().then(function () {
-                self.fireEvent('load', [this]);
-                console.log(document.getElement('div[data-package="mtdowling/cron-expression"]'));
+
+                self.Loader.hide();
 
                 var checksums = self.$Elm.getElement('.test-message-checkSum');
 
@@ -81,13 +91,40 @@ define('controls/packages/SystemCheck', [
 
                 Packages.each(function (Package) {
                     Package.addEvent('click', function () {
-                        self.openChecksumPopup(Package.getAttribute('data-package'));
+                        var packageName = Package.getAttribute('data-package');
+                        self.getChecksumForPackage(packageName).then(function (response) {
+                            var Popup = new QUIPopup({
+                                'class'        : 'qui-control-packages-systemcheck-checksum',
+                                maxWidth       : 900,
+                                maxHeight      : 700,
+                                title          : packageName,
+                                closeButtonText: QUILocale.get(lg, 'close'),
+                                events         : {
+                                    onOpen: function (Win) {
+                                        var Content = Win.getContent();
+                                        Content.set('html', response);
+                                    }
+                                }
+                            });
+                            Popup.open();
+                        }).catch(function (ajaxError) {
+
+                            // error comes from ajax file itself
+                            if (ajaxError) {
+                                return;
+                            }
+
+                            // internal server error? response time expired?
+                            QUI.getMessageHandler().then(function (MH) {
+                                var message = QUILocale.get(lg, 'packages.panel.category.systemcheck.checksum.error');
+
+                                MH.setAttribute('displayTimeMessages', 6000);
+                                MH.addError(message);
+                            });
+                        });
                     });
                 });
-
-
             });
-
         },
 
         /**
@@ -119,9 +156,8 @@ define('controls/packages/SystemCheck', [
                             }
                         }
                     }).inject(document.getElement('.qui-control-packages-systemcheck-title'));
+
                     resolve();
-
-
                 });
             });
         },
@@ -149,7 +185,6 @@ define('controls/packages/SystemCheck', [
                                 QUILocale.get(lg, 'packages.panel.category.systemcheck.phpinfo.error')
                             );
                         });
-
                     }
                 }
             });
@@ -171,37 +206,6 @@ define('controls/packages/SystemCheck', [
             });
         },
 
-        /**
-         * Open the check sum for files popup
-         *
-         * @param packageName
-         */
-        openChecksumPopup: function (packageName) {
-            var self = this;
-
-            var Popup = new QUIPopup({
-                'class'        : 'qui-control-packages-systemcheck-checksum',
-                maxWidth       : 900,
-                maxHeight      : 700,
-                title          : QUILocale.get(lg, 'packages.panel.category.systemcheck.checksum'),
-                closeButtonText: QUILocale.get(lg, 'close'),
-                events         : {
-                    onOpen: function (Win) {
-                        var Content = Win.getContent();
-                        self.getChecksumForPackage(packageName).then(function (response) {
-                            Content.set('html', response);
-                        }).catch(function () {
-                            Content.set(
-                                'html',
-                                QUILocale.get(lg, 'packages.panel.category.systemcheck.checksum.error')
-                            );
-                        });
-
-                    }
-                }
-            });
-            Popup.open();
-        },
 
         /**
          * Get check sum for files
@@ -212,12 +216,16 @@ define('controls/packages/SystemCheck', [
         getChecksumForPackage: function (packageName) {
             return new Promise(function (resolve, reject) {
                 QUIAjax.get('ajax_system_systemcheckChecksum', function (result) {
+
+                    if (!result) {
+                        reject(true);
+                    }
+
                     resolve(result);
                 }, {
-                    params : JSON.encode({
-                        packageName: packageName
-                    }),
-                    onError: reject
+                    'package'  : 'quiqqer/quiqqer',
+                    packageName: packageName,
+                    onError    : reject
                 });
             });
         }

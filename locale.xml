@@ -8149,6 +8149,12 @@ You have requested the reset of your password. You can log in with the following
         </locale>
 
 
+        <locale name="packages.panel.category.systemcheck.loader">
+            <de><![CDATA[System Check läuft...]]></de>
+            <en><![CDATA[System check ist running...]]></en>
+            <pl><![CDATA[Sprawdzanie systemu trwa...]]></pl>
+        </locale>
+
         <locale name="packages.panel.category.systemcheck">
             <de><![CDATA[PHP-Info]]></de>
             <en><![CDATA[PHP Info]]></en>
@@ -8179,6 +8185,16 @@ You have requested the reset of your password. You can log in with the following
             <de><![CDATA[Paketintegrität konnte nicht geprüft werden.]]></de>
             <en><![CDATA[Package integrity check sum could not run.]]></en>
             <pl><![CDATA[Sprawdzenie integralności paczek nie powiodło się.]]></pl>
+        </locale>
+        <locale name="packages.panel.category.systemcheck.checksum.fileNotFound">
+            <de><![CDATA[Cache Datei zur Prüfung der Paketintegrität konnte nicht gefunden werden.]]></de>
+            <en><![CDATA[Cache file with check sum result not exist.]]></en>
+            <pl><![CDATA[Plik z informacjami dotyczącymi integralności paczek nie został znaleziony.]]></pl>
+        </locale>
+        <locale name="packages.panel.category.systemcheck.checksum.cacheForThisPackageNotFound">
+            <de><![CDATA[Cache für <strong>[cacheForThisPackage]</strong> konnte nicht gefunden werden.]]></de>
+            <en><![CDATA[Cache for <strong>[cacheForThisPackage]</strong> could not found.]]></en>
+            <pl><![CDATA[Cache dla <strong>[cacheForThisPackage]</strong> nie zostal znaleziony.]]></pl>
         </locale>
     </groups>
 

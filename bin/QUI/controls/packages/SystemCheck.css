@@ -1,3 +1,8 @@
+.system-check-loader .qui-loader-message {
+    padding: 20px;
+}
+
+
 .qui-control-packages-systemcheck-title {
     padding: 10px;
     background: #f1f1f1;
@@ -13,8 +18,7 @@
 .check-table {
     border: 1px solid #e5e5e5;
     padding: 10px;
-    margin-bottom: 20px;
-    margin: 10px;
+    margin: 10px 10px 20px 10px;
 }
 
 .check-table ul {
@@ -43,11 +47,6 @@
 .system-check .fa {
     width: 30px;
     margin-right: 0;
-}
-
-.failed .test-name {
-    color: #cc6666;
-    font-weight: 400;
 }
 
 .system-check .test-message .fa {
@@ -82,26 +81,48 @@
     line-height: 150%;
 }
 
+.test-message > div {
+    display: flex;
+}
+
+.test-message > div:hover {
+    background: #eee;
+}
+
 .test-message.test-message-checkSum {
     font-size: 100%;
     line-height: 170%;
 }
 
 .test-message.test-message-checkSum span {
-    display: block;
+    flex-grow: 2;
     cursor: pointer;
 }
 
-.test-message.test-message-checkSum .package-ok {
+/* Icons for file check sums */
+.test-message .package-ok:before {
+    content: "\f00c";
     color: #75b947;
+    margin-right: 10px;
+    font-family: FontAwesome;
 }
 
-.test-message.test-message-checkSum .package-warning {
+.test-message .package-warning:before {
+    content: "\f06a";
     color: #ea8f16;
+    margin-right: 10px;
+    font-family: FontAwesome;
 }
 
-.test-message.test-message-checkSum .package-error {
+.test-message .package-error {
     color: #cc6666;
+}
+
+.test-message .package-error:before {
+    content: "\f00d";
+    color: #cc6666;
+    margin-right: 10px;
+    font-family: FontAwesome;
 }
 
 /* system check button */
@@ -120,9 +141,11 @@
 .system-check-button-container.ok {
     color: #75b947;
 }
+
 .system-check-button-container.failed {
     color: #cc6666;
 }
+
 .system-check-button-container.warning {
     color: #ea8f16;
 }
@@ -153,7 +176,7 @@ code {
     background: #454545 none repeat scroll 0 0;
     border: 1px solid #666;
     border-radius: 0;
-    font-family: "Liberation Mono",dl_liberation_mono,monospace;
+    font-family: "Liberation Mono", dl_liberation_mono, monospace;
     margin: 10px 0;
     padding: 0.25em 0.65em;
     color: white
@@ -188,4 +211,84 @@ pre code {
 
 .qui-control-packages-systemcheck-phpinfo table td[colspan="2"] {
     width: calc(100% - 200px);
+}
+
+/* system check popup */
+.qui-control-packages-systemcheck-checksum .qui-window-popup-title-text {
+    font-weight: bold;
+}
+
+/************************/
+/* file check sum table */
+/************************/
+.qui-control-packages-systemcheck-checksum table {
+    width: 100%;
+}
+
+.qui-control-packages-systemcheck-checksum table th,
+.qui-control-packages-systemcheck-checksum table td {
+    padding: 4px 8px;
+    margin: 0;
+}
+
+.qui-control-packages-systemcheck-checksum td:nth-child(1) {
+    width: 70%;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    -ms-word-break: break-all;
+    word-break: break-all;
+    word-break: break-word;
+}
+
+.qui-control-packages-systemcheck-checksum td:nth-child(2) {
+    width: 15%;
+}
+
+.qui-control-packages-systemcheck-checksum td:nth-child(3) {
+    width: 15%;
+}
+
+.qui-control-packages-systemcheck-checksum thead {
+    background: #ccc;
+}
+
+.qui-control-packages-systemcheck-checksum tbody tr:nth-child(2n) {
+    background: #eee;
+}
+
+tr.tr-ok td:nth-child(2),
+tr.tr-ok td:nth-child(3) {
+    color: #75b947;
+}
+
+/*
+tr.tr-warning td:nth-child(2),
+tr.tr-warning td:nth-child(3) {
+    color: #ea8f16;
+}*/
+
+.tr-error td:nth-child(2),
+.tr-error td:nth-child(3) {
+    color: #cc6666;
+}
+
+.tr-ok td:first-child:before {
+    content: "\f00c";
+    color: #75b947;
+    margin-right: 10px;
+    font-family: FontAwesome;
+}
+
+.tr-warning td:first-child:before {
+    content: "\f06a";
+    color: #ea8f16;
+    margin-right: 10px;
+    font-family: FontAwesome;
+}
+
+.tr-error td:first-child:before {
+    content: "\f00d";
+    color: #cc6666;
+    margin-right: 10px;
+    font-family: FontAwesome;
 }
