@@ -8181,6 +8181,21 @@ You have requested the reset of your password. You can log in with the following
             <en><![CDATA[Package integrity check sum]]></en>
             <pl><![CDATA[Sprawdzenie integralności paczek]]></pl>
         </locale>
+        <locale name="packages.panel.category.systemcheck.checksum.popupText">
+            <de><![CDATA[<p>Hier finden Sie eine Auflistung aller Dateien, die dieses Paket enthält.
+            Sollten Dateien geändert worden sein und diese Änderungen gehen nicht von Ihnen aus,
+             sollten Sie das Paket überprüfen.</p>
+
+            <p>Legende:</p>
+            <ul>
+            <li>OK - die Checksummen passen</li>
+            <li>Unbekannt - keine checksume datei</li>
+            <li>Verändert - Locale oer online Version von der Datei ist nicht gleich, wie der auf dem locale Dateisystem</li>
+            <li>Hinzugefügt - Die Datei existiert in der Liste der lokarer Prüfsumme-Datei (checklist.md5)
+             bzw. in der online Version auf dem Updateserver.</li></ul>]]></de>
+            <en><![CDATA[]]></en>
+            <pl><![CDATA[]]></pl>
+        </locale>
         <locale name="packages.panel.category.systemcheck.checksum.error">
             <de><![CDATA[Paketintegrität konnte nicht geprüft werden.]]></de>
             <en><![CDATA[Package integrity check sum could not run.]]></en>

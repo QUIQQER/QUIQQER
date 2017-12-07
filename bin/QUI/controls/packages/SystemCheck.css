@@ -1,7 +1,6 @@
-.system-check-loader .qui-loader-message {
+.qui-loader-message {
     padding: 20px;
 }
-
 
 .qui-control-packages-systemcheck-title {
     padding: 10px;
@@ -212,10 +211,28 @@ pre code {
 .qui-control-packages-systemcheck-phpinfo table td[colspan="2"] {
     width: calc(100% - 200px);
 }
-
+/**********************/
 /* system check popup */
+/**********************/
 .qui-control-packages-systemcheck-checksum .qui-window-popup-title-text {
     font-weight: bold;
+}
+
+.qui-control-packages-systemcheck-checksum p,
+.qui-control-packages-systemcheck-checksum ul {
+    line-height: 150%;
+}
+
+.qui-control-packages-systemcheck-checksum p {
+    margin-top: 10px;
+}
+
+.qui-control-packages-systemcheck-checksum p:first-child {
+    margin-top: 0;
+}
+
+.qui-control-packages-systemcheck-checksum ul {
+    margin-top: 0;
 }
 
 /************************/

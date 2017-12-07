@@ -137,9 +137,9 @@ define('controls/packages/Panel', [
                     onClick: function () {
                         require(['Menu'], function (Menu) {
                             var Item = Menu.getChildren()
-                                           .getChildren('settings')
-                                           .getChildren('quiqqer')
-                                           .getChildren('/settings/quiqqer/quiqqer/');
+                                .getChildren('settings')
+                                .getChildren('quiqqer')
+                                .getChildren('/settings/quiqqer/quiqqer/');
 
                             Menu.menuClick(Item);
                         });
@@ -273,7 +273,16 @@ define('controls/packages/Panel', [
         $loadControl: function (ctrl) {
             var self = this;
 
-            this.Loader.show();
+            switch (ctrl) {
+                case 'controls/packages/SystemCheck':
+                    this.Loader.show(QUILocale.get(
+                        lg, 'packages.panel.category.systemcheck.loader'
+                    ));
+                    break;
+
+                default:
+                    this.Loader.show();
+            }
 
             return this.$hideControl(self.$Control).then(function () {
                 return new Promise(function (resolve) {
