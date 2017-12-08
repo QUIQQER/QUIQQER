@@ -18,13 +18,12 @@ QUI::$Ajax->registerFunction(
 
         $Requirements = new \QUI\Requirements\Requirements($lang);
 
-        $allTests = $Requirements->getAllTests();
+        $allTests = $Requirements->getTests();
 
         $html = '<div class="check-table">';
 
         /** @var \QUI\Requirements\Tests\Test $Test */
         foreach ($allTests as $category => $Tests) {
-
             $html .= '<div class="system-check check-table-row">';
             $html .= '<div class="check-table-col check-table-col-test">';
             $html .= $category;
