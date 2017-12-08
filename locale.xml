@@ -8188,24 +8188,23 @@ You have requested the reset of your password. You can log in with the following
 
             <p>Legende:</p>
             <ul>
-            <li>OK - die Checksummen passen.</li>
-            <li>Unbekannt - keine Checksume-Datei.</li>
-            <li>Verändert - locale oder online Version von der Datei ist nicht gleich, wie der auf dem locale Dateisystem.</li>
-            <li>Hinzugefügt - die Datei existiert in der Liste der lokalen Prüfsumme-Datei (checklist.md5)
-             bzw. in der online Version auf dem Updateserver nicht.</li>
-             <li>Entfernt - die Datei existiert nicht.</li></ul>]]></de>
+            <li>OK - Die Checksummen passen.</li>
+            <li>Unbekannt - Keine Checksummen-Datei.</li>
+            <li>Verändert - Lokale oder online Version von der Datei ist nicht gleich, wie die auf dem lokalen Dateisystem.</li>
+            <li>Fehlt - Die Datei existiert nicht in der Liste der lokalen Prüfsumme-Datei (checklist.md5)
+             bzw. in der online Version auf dem Updateserver.</li>
+             <li>Zusätzlich - Die Datei ist im originalen Paket vorhanden, aber nicht auf dem lokalen Dateisystem.</li></ul>]]></de>
             <en><![CDATA[<p>Here you will find a list of all the files that this package contains.
             If files have been changed and these changes do not come from you,
              you should check the package. The checksum test is based on the local file system.</p>
 
             <p>Legend:</p>
             <ul>
-            <li>OK - the checksums match.</li>
-            <li>Unknown - no checksum file.</li>
-            <li>Modified - local or online version of the file is not the same as the one on the local file system.</li>
-            <li>Added - the file does not exist in the list of the local checksum file (checklist. md5)
-            or in the online version on the update server.</li>
-            <li>Removed - the file does not exist.</li></ul>]]></en>
+            <li>OK - The checksums match.</li>
+            <li>Unknown - No checksum file.</li>
+            <li>Modified - Local or online version of the file is not the same as the one on the local file system.</li>
+            <li>Missing - The file is not within the original package and it was created on your filesystem.</li>
+            <li>Additional - The original package contains this file, but it was not found on your local filesystem.</li></ul>]]></en>
             <pl><![CDATA[<p>Poniżej znajduje się lista wszystkich plików z wybranej paczki.
             Jeżeli jakieś pliki są oznaczone jako "zmienione" i te zmiany nie są ci znane,
             powinieneś sprawdzić tę paczkę. Punktem wyjścia jest lokalny system plików.</p>
