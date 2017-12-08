@@ -8184,18 +8184,38 @@ You have requested the reset of your password. You can log in with the following
         <locale name="packages.panel.category.systemcheck.checksum.popupText">
             <de><![CDATA[<p>Hier finden Sie eine Auflistung aller Dateien, die dieses Paket enthält.
             Sollten Dateien geändert worden sein und diese Änderungen gehen nicht von Ihnen aus,
-             sollten Sie das Paket überprüfen.</p>
+             sollten Sie das Paket überprüfen. Der Ausgangspunkt ist das lokale Dateisystem.</p>
 
             <p>Legende:</p>
             <ul>
-            <li>OK - die Checksummen passen</li>
-            <li>Unbekannt - keine checksume datei</li>
-            <li>Verändert - locale oer online Version von der Datei ist nicht gleich, wie der auf dem locale Dateisystem</li>
-            <li>Hinzugefügt - die Datei existiert in der Liste der lokarer Prüfsumme-Datei (checklist.md5)
-             bzw. in der online Version auf dem Updateserver.</li>
+            <li>OK - die Checksummen passen.</li>
+            <li>Unbekannt - keine Checksume-Datei.</li>
+            <li>Verändert - locale oder online Version von der Datei ist nicht gleich, wie der auf dem locale Dateisystem.</li>
+            <li>Hinzugefügt - die Datei existiert in der Liste der lokalen Prüfsumme-Datei (checklist.md5)
+             bzw. in der online Version auf dem Updateserver nicht.</li>
              <li>Entfernt - die Datei existiert nicht.</li></ul>]]></de>
-            <en><![CDATA[]]></en>
-            <pl><![CDATA[]]></pl>
+            <en><![CDATA[<p>Here you will find a list of all the files that this package contains.
+            If files have been changed and these changes do not come from you,
+             you should check the package. The checksum test is based on the local file system.</p>
+
+            <p>Legend:</p>
+            <ul>
+            <li>OK - the checksums match.</li>
+            <li>Unknown - no checksum file.</li>
+            <li>Modified - local or online version of the file is not the same as the one on the local file system.</li>
+            <li>Added - the file does not exist in the list of the local checksum file (checklist. md5)
+            or in the online version on the update server.</li>
+            <li>Removed - the file does not exist.</li></ul>]]></en>
+            <pl><![CDATA[<p>Poniżej znajduje się lista wszystkich plików z wybranej paczki.
+            Jeżeli jakieś pliki są oznaczone jako "zmienione" i te zmiany nie są ci znane,
+            powinieneś sprawdzić tę paczkę. Punktem wyjścia jest lokalny system plików.</p>
+            <p>Legenda:</p>
+            <ul>
+            <li>OK - sumy się zgadzają.</li>
+            <li>Nieznany - plik z sumą kontrolna nie istnieje.</li>
+            <li>Zmieniony - lokalna albo online (update server) suma kontrolna nie zgadza się z sumą pliku lokalnego.</li>
+            <li>Dodany - plik nie istnieje w lokalnej albo online (update server) liście sumy kontrolnej (checklist.md5).</li>
+            <li>Entfernt - plik został usunięty.</li></ul>]]></pl>
         </locale>
         <locale name="packages.panel.category.systemcheck.checksum.error">
             <de><![CDATA[Paketintegrität konnte nicht geprüft werden.]]></de>
