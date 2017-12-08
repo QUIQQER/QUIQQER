@@ -265,14 +265,17 @@ pre code {
 
 .qui-control-packages-systemcheck-checksum td:nth-child(2) {
     width: 15%;
+    text-align: center;
 }
 
 .qui-control-packages-systemcheck-checksum td:nth-child(3) {
     width: 15%;
+    text-align: center;
 }
 
 .qui-control-packages-systemcheck-checksum td:nth-child(4) {
     width: 15%;
+    text-align: center;
 }
 
 .qui-control-packages-systemcheck-checksum thead {
