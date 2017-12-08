@@ -76,6 +76,9 @@ define('controls/packages/SystemCheck', [
                 var checksums = self.$Elm.getElement('.test-message-checkSum');
 
                 var click = function (PackageElm) {
+                    if (PackageElm.hasClass('unknown-packages-warning')) {
+                        return;
+                    }
                     PackageElm.addEvent('click', self.$packageClick);
                 };
 

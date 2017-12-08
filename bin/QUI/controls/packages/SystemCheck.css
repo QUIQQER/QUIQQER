@@ -98,6 +98,12 @@
     cursor: pointer;
 }
 
+span.unknown-packages-warning {
+    margin-top: 10px;
+    display: inline-block;
+    line-height: 150%;
+}
+
 /* Icons for file check sums */
 .test-message .package-ok:before {
     content: "\f00c";
@@ -249,7 +255,7 @@ pre code {
 }
 
 .qui-control-packages-systemcheck-checksum td:nth-child(1) {
-    width: 70%;
+    width: 55%;
     overflow-wrap: break-word;
     word-wrap: break-word;
     -ms-word-break: break-all;
@@ -265,6 +271,10 @@ pre code {
     width: 15%;
 }
 
+.qui-control-packages-systemcheck-checksum td:nth-child(4) {
+    width: 15%;
+}
+
 .qui-control-packages-systemcheck-checksum thead {
     background: #ccc;
 }
@@ -273,8 +283,13 @@ pre code {
     background: #eee;
 }
 
-tr.tr-ok td:nth-child(2),
-tr.tr-ok td:nth-child(3) {
+.qui-control-packages-systemcheck-checksum tbody tr:hover {
+    background: #e1e1e1;
+}
+
+
+tr.tr-ok td:nth-child(3),
+tr.tr-ok td:nth-child(4) {
     color: #75b947;
 }
 
@@ -284,8 +299,8 @@ tr.tr-warning td:nth-child(3) {
     color: #ea8f16;
 }*/
 
-.tr-error td:nth-child(2),
-.tr-error td:nth-child(3) {
+.tr-error td:nth-child(3),
+.tr-error td:nth-child(4) {
     color: #cc6666;
 }
 
