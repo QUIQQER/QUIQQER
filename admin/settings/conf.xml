@@ -367,15 +367,6 @@
                                         var="quiqqer.settings.general.permissions.description"/>
                             </description>
                         </input>
-                        <input conf="permissions.package" type="checkbox">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.general.permissions.package"/>
-                            </text>
-                            <description>
-                                <locale group="quiqqer/system"
-                                        var="quiqqer.settings.general.permissions.description"/>
-                            </description>
-                        </input>
                         <select conf="globals.sitePermissionDeniedErrorCode">
                             <text>
                                 <locale group="quiqqer/system"
@@ -639,7 +630,8 @@
                                 <locale group="quiqqer/system" var="quiqqer.settings.auth.showResetPasswordBackend"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/system" var="quiqqer.settings.auth.showResetPasswordBackend.description"/>
+                                <locale group="quiqqer/system"
+                                        var="quiqqer.settings.auth.showResetPasswordBackend.description"/>
                             </description>
                         </input>
 
@@ -648,7 +640,8 @@
                                 <locale group="quiqqer/quiqqer" var="quiqqer.settings.auth.showResetPasswordFrontend"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.auth.showResetPasswordFrontend.description"/>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.auth.showResetPasswordFrontend.description"/>
                             </description>
                         </input>
 
@@ -657,7 +650,8 @@
                                 <locale group="quiqqer/quiqqer" var="quiqqer.settings.auth.forceNewPasswordOnReset"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.auth.forceNewPasswordOnReset.description"/>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.auth.forceNewPasswordOnReset.description"/>
                             </description>
                         </input>
 
@@ -666,7 +660,8 @@
                                 <locale group="quiqqer/quiqqer" var="quiqqer.settings.auth.passwordResetLinkValidTime"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.auth.passwordResetLinkValidTime.description"/>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.auth.passwordResetLinkValidTime.description"/>
                             </description>
                         </input>
 
