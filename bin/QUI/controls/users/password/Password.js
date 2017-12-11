@@ -43,7 +43,15 @@ define('controls/users/password/Password', [
             this.parent(options);
 
             if (!this.getAttribute('uid')) {
-                this.setAttribute('uid', USER.id);
+                var uid = false;
+
+                if (typeof USER !== 'undefined') {
+                    uid = USER.id;
+                } else if (typeof QUIQQER_USER !== 'undefined') {
+                    uid = QUIQQER_USER.id;
+                }
+
+                this.setAttribute('uid', uid);
             }
 
             this.$Password         = null;
