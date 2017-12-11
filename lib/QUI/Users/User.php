@@ -1258,9 +1258,19 @@ class User implements QUI\Interfaces\Users\User
             return false;
         }
 
-        return $Auth->auth(array(
-            'password' => $password
-        ));
+        try {
+            $Auth->auth(array(
+                'password' => $password
+            ));
+
+            return true;
+        } catch (QUI\Users\Exception $Exception) {
+            // 401 -> wrong password
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+
+        return false;
     }
 
     /**
