@@ -749,15 +749,17 @@
             <en><![CDATA[Use lockserver]]></en>
         </locale>
         <locale name="quiqqer.settings.general.globals.lockserver.enabled.description">
-            <de><![CDATA[Der Lockserver lagert die Abhängigkeitsauflösung von Composer auf ein externes QUIQQER-System aus. <a href="https://dev.quiqqer.com/quiqqer/Lockserver/wikis/home" target='_blank'>Mehr Details</a>]]></de>
-            <en><![CDATA[The lockserver outsources the dependency solution to an external QUIQQER server. <a href="https://dev.quiqqer.com/quiqqer/Lockserver/wikis/home" target='_blank'>Read more</a>]]></en>
+            <de>
+                <![CDATA[Der Lockserver lagert die Abhängigkeitsauflösung von Composer auf ein externes QUIQQER-System aus. <a href="https://dev.quiqqer.com/quiqqer/Lockserver/wikis/home" target='_blank'>Mehr Details</a>]]></de>
+            <en>
+                <![CDATA[The lockserver outsources the dependency solution to an external QUIQQER server. <a href="https://dev.quiqqer.com/quiqqer/Lockserver/wikis/home" target='_blank'>Read more</a>]]></en>
         </locale>
-        
+
         <locale name="site.type.standard">
             <de><![CDATA[Einfacher Inhalt]]></de>
             <en><![CDATA[Default content]]></en>
         </locale>
-        
+
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -775,23 +777,30 @@
             <en><![CDATA[Force set new password]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.showResetPasswordBackend.description" html="true">
-            <de><![CDATA[Zeige "Passwort vergessen"-Option für das Login im Backend (Modul <b>quiqqer/verification</b> erforderlich!)]]></de>
-            <en><![CDATA[Show "Forgot password" option for backend Login (requires module <b>quiqqer/verification</b>!)]]></en>
+            <de>
+                <![CDATA[Zeige "Passwort vergessen"-Option für das Login im Backend (Modul <b>quiqqer/verification</b> erforderlich!)]]></de>
+            <en>
+                <![CDATA[Show "Forgot password" option for backend Login (requires module <b>quiqqer/verification</b>!)]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.showResetPasswordFrontend.description" html="true">
-            <de><![CDATA[Zeige "Passwort vergessen"-Option für das Login im Frontend (Modul <b>quiqqer/verification</b> erforderlich!)]]></de>
-            <en><![CDATA[Show "Forgot password" option for frontend Login (requires module <b>quiqqer/verification</b>!)]]></en>
+            <de>
+                <![CDATA[Zeige "Passwort vergessen"-Option für das Login im Frontend (Modul <b>quiqqer/verification</b> erforderlich!)]]></de>
+            <en>
+                <![CDATA[Show "Forgot password" option for frontend Login (requires module <b>quiqqer/verification</b>!)]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.forceNewPasswordOnReset.description">
-            <de><![CDATA[Benutzer, die Ihr Passwort über die "Passwort vergessen"-Funktion zurücksetzen, müssen nach dem ersten Login ihr Passwort ändern]]></de>
-            <en><![CDATA[Users who reset their password via the "Forgot password" function must change their password after the first login]]></en>
+            <de>
+                <![CDATA[Benutzer, die Ihr Passwort über die "Passwort vergessen"-Funktion zurücksetzen, müssen nach dem ersten Login ihr Passwort ändern]]></de>
+            <en>
+                <![CDATA[Users who reset their password via the "Forgot password" function must change their password after the first login]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.passwordResetLinkValidTime">
             <de><![CDATA[Gültigkeitsdauer "Passwort vergessen"-Link]]></de>
             <en><![CDATA[Period of validity for "Forgot password" link]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.passwordResetLinkValidTime.description" html="true">
-            <de><![CDATA[Gültigkeitsdauer in <b>Minuten</b> für den Link zur Bestätigung des Zurücksetzens des Passworts.]]></de>
+            <de>
+                <![CDATA[Gültigkeitsdauer in <b>Minuten</b> für den Link zur Bestätigung des Zurücksetzens des Passworts.]]></de>
             <en><![CDATA[Period of validity in <b>minutes</b> for the link to confirm password reset.]]></en>
         </locale>
 
@@ -6645,7 +6654,7 @@ You have requested the reset of your password. You can log in with the following
             <de><![CDATA[Version des QUIQQER-Systems]]></de>
             <en><![CDATA[Version of the QUIQQER system]]></en>
         </locale>
-        
+
 
         <locale name="quiqqer.settings.database">
             <de><![CDATA[Datenbank]]></de>
@@ -8150,9 +8159,9 @@ You have requested the reset of your password. You can log in with the following
 
 
         <locale name="packages.panel.category.systemcheck.loader">
-            <de><![CDATA[System Check läuft...]]></de>
-            <en><![CDATA[System check ist running...]]></en>
-            <pl><![CDATA[Sprawdzanie systemu trwa...]]></pl>
+            <de><![CDATA[Der System Check läuft, dies kann bis zu 30 Sekunden dauern.]]></de>
+            <en><![CDATA[The system check is running, this can take up to 30 seconds.]]></en>
+            <pl><![CDATA[Sprawdzenie działania systemu może zająć do 30 sekund.]]></pl>
         </locale>
 
         <locale name="packages.panel.category.systemcheck">

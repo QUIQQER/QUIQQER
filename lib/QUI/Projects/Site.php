@@ -339,6 +339,10 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         if ($Type) {
             $extend = $Type->getAttribute('extend');
+
+            if ($Type->hasAttribute('cache') && (int)$Type->getAttribute('cache') === 0) {
+                $this->setAttribute('nocache', 1);
+            }
         }
 
         if ($extend) {
@@ -533,7 +537,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         $params = $result[0];
 
-        if ($params['active'] != 1) {
+        if ($params['active'] != 1 && !defined('QUIQQER_PREVIEW')) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
