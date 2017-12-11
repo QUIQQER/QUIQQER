@@ -339,6 +339,10 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         if ($Type) {
             $extend = $Type->getAttribute('extend');
+
+            if ($Type->hasAttribute('cache') && (int)$Type->getAttribute('cache') === 0) {
+                $this->setAttribute('nocache', 1);
+            }
         }
 
         if ($extend) {
