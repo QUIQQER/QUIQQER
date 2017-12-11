@@ -361,14 +361,13 @@ define('controls/users/Panel', [
                         inputs[i].set('id', new_id);
 
                         if (values[inputs[i].name]) {
-                            if (inputs[i].type == 'checkbox') {
+                            if (inputs[i].type === 'checkbox') {
                                 inputs[i].checked = true;
                             } else {
                                 inputs[i].value = values[inputs[i].name];
                             }
-
                         } else {
-                            if (inputs[i].type == 'checkbox') {
+                            if (inputs[i].type === 'checkbox') {
                                 inputs[i].checked = false;
                             } else {
                                 inputs[i].value = '';
@@ -697,13 +696,14 @@ define('controls/users/Panel', [
 
             if (!User.isLoaded()) {
                 User.load(function () {
+                    Switch = self.$getUserSwitch(User);
                     self.$btnSwitchStatus(Switch);
                 });
 
                 return;
             }
 
-            var userStatus = User.isActive() ? true : false;
+            var userStatus = !!User.isActive();
 
             // status is the same as the switch, we must do nothing
             if (userStatus === Switch.getStatus()) {
@@ -725,11 +725,11 @@ define('controls/users/Panel', [
                         onSubmit: function (Win) {
                             Win.Loader.show();
 
-                            Users.deactivate(Switch.getAttribute('uid'), function () {
+                            Users.deactivate(Switch.getAttribute('uid')).then(function () {
                                 var Switch = self.$getUserSwitch(User);
 
                                 if (Switch) {
-                                    Switch.off();
+                                    Switch.setSilentOff();
                                 }
 
                                 Win.close();
@@ -737,7 +737,7 @@ define('controls/users/Panel', [
                         },
 
                         onCancel: function () {
-                            Switch.on();
+                            Switch.setSilentOn();
                         }
                     }
                 }).open();
@@ -745,7 +745,13 @@ define('controls/users/Panel', [
                 return;
             }
 
-            Users.activate(Switch.getAttribute('uid'));
+            Users.activate(Switch.getAttribute('uid')).then(function () {
+                var Switch = self.$getUserSwitch(User);
+
+                if (Switch) {
+                    Switch.setSilentOn();
+                }
+            });
         },
 
         /**
@@ -767,19 +773,19 @@ define('controls/users/Panel', [
 
                 entry = data[i];
 
-                status = (entry.active).toInt();
+                status = parseInt(entry.active);
                 Switch = entry.status;
 
                 // user is active
                 if (status) {
                     Switch.setAttribute('alt', this.active_text);
-                    Switch.on();
+                    Switch.setSilentOn();
                     continue;
                 }
 
                 // user is deactive
                 Switch.setAttribute('alt', this.deactive_text);
-                Switch.off();
+                Switch.setSilentOff();
             }
         },
 
@@ -795,11 +801,9 @@ define('controls/users/Panel', [
                 id   = User.getId();
 
             for (var i = 0, len = data.length; i < len; i++) {
-                if (data[i].id != id) {
-                    continue;
+                if (parseInt(data[i].id) === id) {
+                    Grid.setDataByRow(i, this.userToGridData(User));
                 }
-
-                Grid.setDataByRow(i, this.userToGridData(User));
             }
         },
 
@@ -839,7 +843,7 @@ define('controls/users/Panel', [
                 return;
             }
 
-            if (seldata.length == 1) {
+            if (seldata.length === 1) {
                 this.openUser(seldata[0].id);
                 return;
             }
@@ -931,12 +935,12 @@ define('controls/users/Panel', [
                 data[i].active    = parseInt(entry.active);
                 data[i].usergroup = entry.usergroup || '';
 
-                if (entry.active == -1) {
+                if (entry.active === -1) {
                     continue;
                 }
 
                 data[i].status = new QUISwitch({
-                    status: entry.active == 1,
+                    status: entry.active === 1,
                     uid   : entry.id,
                     title : entry.active ? this.active_text : this.deactive_text,
                     events: {
@@ -960,16 +964,13 @@ define('controls/users/Panel', [
                 id   = User.getId();
 
             for (var i = 0, len = data.length; i < len; i++) {
-                if (data[i].id != id) {
-                    continue;
+                if (parseInt(data[i].id) === id) {
+                    return Grid.getDataByRow(i).status;
                 }
-
-                return Grid.getDataByRow(i).status;
             }
 
             return false;
         },
-
 
         /**
          * Parse the attributes to grid data entry
@@ -978,15 +979,15 @@ define('controls/users/Panel', [
          * @return {Object}
          */
         userToGridData: function (User) {
-            var active = (User.isActive()).toInt(),
+            var active = parseInt(User.isActive()),
                 id     = User.getId(),
                 result = User.getAttributes();
 
             result.usergroup = result.usergroup || '';
 
-            if (active != -1) {
+            if (active !== -1) {
                 result.status = new QUISwitch({
-                    status: active == 1,
+                    status: active === 1,
                     uid   : id,
                     title : active ? this.active_text : this.deactive_text,
                     events: {

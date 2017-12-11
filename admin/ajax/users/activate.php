@@ -16,8 +16,9 @@ QUI::$Ajax->registerFunction(
             $uid = array($uid);
         }
 
-        $Users  = QUI::getUsers();
-        $result = array();
+        $Users     = QUI::getUsers();
+        $result    = array();
+        $activated = array();
 
         foreach ($uid as $_uid) {
             try {
@@ -25,6 +26,10 @@ QUI::$Ajax->registerFunction(
                 $User->activate();
 
                 $result[$_uid] = $User->isActive() ? 1 : 0;
+
+                if ($User->isActive()) {
+                    $activated[] = $User->getId();
+                }
             } catch (QUI\Exception $Exception) {
                 $result[$_uid] = 0;
 
@@ -34,6 +39,18 @@ QUI::$Ajax->registerFunction(
 
                 continue;
             }
+        }
+
+        if (count($activated)) {
+            QUI::getMessagesHandler()->addSuccess(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'message.users.activated',
+                    array(
+                        'users' => implode(',', $activated)
+                    )
+                )
+            );
         }
 
         return $result;
