@@ -84,7 +84,7 @@ define('controls/users/auth/QUIQQERLogin', [
                 event.stop();
                 self.$showPasswordReset();
             });
-            console.info();
+
             PasswordResetCancel.addEvent('click', function (event) {
                 event.stop();
                 self.$showPassword();
@@ -186,9 +186,7 @@ define('controls/users/auth/QUIQQERLogin', [
                 SubmitBtn  = Elm.getElement('.quiqqer-auth-login-passwordreset input[type="submit"]'),
                 MsgElm     = Elm.getElement('.quiqqer-auth-login-message');
 
-            SubmitBtn.addEvent('click', function (event) {
-                event.stop();
-
+            var submit = function() {
                 var email = EmailInput.value.trim();
 
                 if (email === '') {
@@ -228,6 +226,19 @@ define('controls/users/auth/QUIQQERLogin', [
 
                     SubmitBtn.disabled = false;
                 });
+            };
+
+            EmailInput.addEvent('keydown', function(event) {
+                // stop login-form submit on enter
+                if (event.code === 13) {
+                    event.stop();
+                    submit();
+                }
+            });
+
+            SubmitBtn.addEvent('click', function (event) {
+                event.stop();
+                submit();
             });
         },
 
