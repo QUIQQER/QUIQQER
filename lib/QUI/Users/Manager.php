@@ -154,6 +154,36 @@ class Manager
             "ALTER TABLE `{$tableAddress}` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT"
         );
 
+        // uuid extrem indexes patch
+        $Stmt = $DataBase->getPDO()->prepare(
+            "SHOW INDEXES FROM `{$table}`
+            WHERE 
+                non_unique = 0 AND Key_name != 'PRIMARY';"
+        );
+
+        $Stmt->execute();
+        $columns = $Stmt->fetchAll();
+        $dropSql = [];
+
+        foreach ($columns as $column) {
+            if (strpos($column['Key_name'], 'uuid_') === 0) {
+                $dropSql[] = "ALTER TABLE `users` DROP INDEX `{$column['Key_name']}`;";
+            }
+        }
+
+        if (!empty($dropSql)) {
+            try {
+                // foreach because of PDO::MYSQL_ATTR_USE_BUFFERED_QUERY
+                foreach ($dropSql as $sql) {
+                    $Stmt = $DataBase->getPDO()->prepare($sql);
+                    $Stmt->execute();
+                }
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeRecursive($dropSql);
+                QUI\System\Log::writeException($Exception);
+            }
+        }
+
         // users with no uuid
         // @todo after 1.2 we can delete this
         $DataBase->table()->addColumn($table, array(
@@ -166,7 +196,7 @@ class Manager
                 'uuid' => ''
             )
         ));
-        
+
         foreach ($list as $entry) {
             try {
                 $uuid = Uuid::uuid1()->toString();

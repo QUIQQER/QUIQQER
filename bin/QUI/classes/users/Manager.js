@@ -37,8 +37,8 @@ define('classes/users/Manager', [
     return new Class({
 
         Extends: DOM,                   // @member classes/users/Manager
-        Type: 'classes/users/Users', // @member classes/users/Manager
-        $users: {},                    // @member classes/users/Manager
+        Type   : 'classes/users/Users', // @member classes/users/Manager
+        $users : {},                    // @member classes/users/Manager
 
         /**
          * Return a user
@@ -93,7 +93,7 @@ define('classes/users/Manager', [
                     resolve(result);
 
                 }, ObjectUtils.combine(params, {
-                    params: JSON.encode(search),
+                    params : JSON.encode(search),
                     onError: reject
                 }));
             });
@@ -126,26 +126,31 @@ define('classes/users/Manager', [
          * @param {Array|Number} uid    - search options
          * @param {Function} [onfinish] - (optional), callback function
          * @param {Object} [params]     - (optional), extra params
+         * @return Promise
          */
         switchStatus: function (uid, onfinish, params) {
             var self = this;
 
-            params = ObjectUtils.combine(params, {
-                uid: JSON.encode(uid)
+            return new Promise(function (resolve, reject) {
+                params = ObjectUtils.combine(params, {
+                    uid    : JSON.encode(uid),
+                    onError: reject
+                });
+
+                Ajax.post('ajax_users_switchstatus', function (result) {
+                    if (uid in result && uid in self.$users) {
+                        self.$users[uid].setAttribute('active', result[uid]);
+                    }
+
+                    if (typeof onfinish !== 'undefined') {
+                        onfinish(result);
+                    }
+
+                    resolve(self, result);
+
+                    self.fireEvent('switchStatus', [self, result]);
+                }, params);
             });
-
-            Ajax.post('ajax_users_switchstatus', function (result, Request) {
-                if (uid in result && uid in self.$users) {
-                    self.$users[uid].setAttribute('active', result[uid]);
-                }
-
-                if (typeof onfinish !== 'undefined') {
-                    onfinish(result, Request);
-                }
-
-                self.fireEvent('switchStatus', [self, result, Request]);
-
-            }, params);
         },
 
         /**
@@ -155,27 +160,32 @@ define('classes/users/Manager', [
          * @param {Array|Number} uid - search options
          * @param {Function} [onfinish] - (optional), callback function
          * @param {Object} [params]     - (optional), extra params
+         * @return Promise
          */
         activate: function (uid, onfinish, params) {
             var self = this;
 
-            params = ObjectUtils.combine(params, {
-                uid: JSON.encode(uid)
+            return new Promise(function (resolve, reject) {
+                params = ObjectUtils.combine(params, {
+                    uid    : JSON.encode(uid),
+                    onError: reject
+                });
+
+                Ajax.post('ajax_users_activate', function (result) {
+                    if (uid in result && uid in self.$users) {
+                        self.$users[uid].setAttribute('active', result[uid]);
+                    }
+
+                    if (typeof onfinish !== 'undefined') {
+                        onfinish(result);
+                    }
+
+                    resolve(self, result);
+
+                    self.fireEvent('activate', [self, result]);
+                    self.fireEvent('switchStatus', [self, result]);
+                }, params);
             });
-
-            Ajax.post('ajax_users_activate', function (result, Request) {
-                if (uid in result && uid in self.$users) {
-                    self.$users[uid].setAttribute('active', result[uid]);
-                }
-
-                if (typeof onfinish !== 'undefined') {
-                    onfinish(result, Request);
-                }
-
-                self.fireEvent('activate', [self, result, Request]);
-                self.fireEvent('switchStatus', [self, result, Request]);
-
-            }, params);
         },
 
         /**
@@ -185,27 +195,32 @@ define('classes/users/Manager', [
          * @param {Array|Number} uid    - search options
          * @param {Function} [onfinish] - (optional), callback function
          * @param {Object} [params]     - (optional), extra params
+         * @return Promise
          */
         deactivate: function (uid, onfinish, params) {
             var self = this;
 
-            params = ObjectUtils.combine(params, {
-                uid: JSON.encode(uid)
+            return new Promise(function (resolve, reject) {
+                params = ObjectUtils.combine(params, {
+                    uid    : JSON.encode(uid),
+                    onError: reject
+                });
+
+                Ajax.post('ajax_users_deactivate', function (result) {
+                    if (uid in result && uid in self.$users) {
+                        self.$users[uid].setAttribute('active', result[uid]);
+                    }
+
+                    if (typeof onfinish !== 'undefined') {
+                        onfinish(result, Request);
+                    }
+
+                    resolve(self, result);
+
+                    self.fireEvent('deactivate', [self, result]);
+                    self.fireEvent('switchStatus', [self, result]);
+                }, params);
             });
-
-            Ajax.post('ajax_users_deactivate', function (result, Request) {
-                if (uid in result && uid in self.$users) {
-                    self.$users[uid].setAttribute('active', result[uid]);
-                }
-
-                if (typeof onfinish !== 'undefined') {
-                    onfinish(result, Request);
-                }
-
-                self.fireEvent('deactivate', [self, result, Request]);
-                self.fireEvent('switchStatus', [self, result, Request]);
-
-            }, params);
         },
 
         /**
@@ -300,7 +315,7 @@ define('classes/users/Manager', [
          */
         saveUser: function (User, params, onfinish) {
             return new Promise(function (resolve) {
-                var self = this,
+                var self       = this,
                     attributes = User.getAttributes();
 
                 for (var i in attributes) {
@@ -315,7 +330,7 @@ define('classes/users/Manager', [
 
                 // attributes.extra = User.getExtras();
                 params = ObjectUtils.combine(params, {
-                    uid: User.getId(),
+                    uid       : User.getId(),
                     attributes: JSON.encode(attributes)
                 });
 

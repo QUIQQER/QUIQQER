@@ -1232,6 +1232,15 @@
             <de><![CDATA[Passwort zurücksetzen]]></de>
             <en><![CDATA[Reset password]]></en>
         </locale>
+
+        <locale name="message.users.activated">
+            <de><![CDATA[Die Benutzer [users] wurden erfolgreich aktiviert.]]></de>
+            <en><![CDATA[The users [users] have been activated successfully.]]></en>
+        </locale>
+        <locale name="message.users.deactivated">
+            <de><![CDATA[Die Benutzer [users] wurden erfolgreich deaktiviert.]]></de>
+            <en><![CDATA[The users [users] have been deactivated successfully.]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="js">
