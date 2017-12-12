@@ -163,18 +163,21 @@ class Manager
 
         $Stmt->execute();
         $columns = $Stmt->fetchAll();
-        $dropSql = '';
+        $dropSql = [];
 
         foreach ($columns as $column) {
             if (strpos($column['Key_name'], 'uuid_') === 0) {
-                $dropSql .= "ALTER TABLE `users` DROP INDEX `{$column['Key_name']}`;";
+                $dropSql[] = "ALTER TABLE `users` DROP INDEX `{$column['Key_name']}`;";
             }
         }
 
         if (!empty($dropSql)) {
             try {
-                $Stmt = $DataBase->getPDO()->prepare($dropSql);
-                $Stmt->execute();
+                // foreach because of PDO::MYSQL_ATTR_USE_BUFFERED_QUERY
+                foreach ($dropSql as $sql) {
+                    $Stmt = $DataBase->getPDO()->prepare($sql);
+                    $Stmt->execute();
+                }
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::writeRecursive($dropSql);
                 QUI\System\Log::writeException($Exception);
