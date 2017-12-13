@@ -352,8 +352,6 @@ class Manager
             $ParentUser
         );
 
-        $newId = $this->newId();
-
         if ($username) {
             if ($this->usernameExists($username)) {
                 throw new QUI\Users\Exception(
@@ -379,14 +377,14 @@ class Manager
         self::checkUsernameSigns($username);
 
         QUI::getDataBase()->insert(self::table(), array(
-            'id'       => $newId,
             'uuid'     => Uuid::uuid1()->toString(),
             'username' => $newName,
             'regdate'  => time(),
             'lang'     => QUI::getLocale()->getCurrent()
         ));
 
-        $User = $this->get($newId);
+        $newId = QUI::getDataBase()->getPDO()->lastInsertId();
+        $User  = $this->get($newId);
 
         // workspace
         $twoColumn   = QUI\Workspace\Manager::getTwoColumnDefault();
@@ -426,138 +424,6 @@ class Manager
         $User->save($ParentUser);
 
         return $User;
-    }
-
-    /**
-     * Register a user
-     *
-     * @param array $params
-     *
-     * @return User
-     * @throws QUI\Users\Exception
-     *
-     * @needle
-     * <ul>
-     *   <li>$param['username']</li>
-     *   <li>$param['password']</li>
-     * </ul>
-     *
-     * @optional
-     * <ul>
-     *   <li>$param['firstname']</li>
-     *     <li>$param['lastname']</li>
-     *     <li>$param['usertitle']</li>
-     *     <li>$param['birthday']</li>
-     *     <li>$param['email']</li>
-     *     <li>$param['lang']</li>
-     *     <li>$param['expire']</li>
-     *     <li>$param['usergroup']</li>
-     * </ul>
-     *
-     * @todo use bind params
-     */
-    public function register($params)
-    {
-        if (!isset($params['username'])) {
-            throw new QUI\Users\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/system',
-                    'exception.lib.user.register.specify.username'
-                )
-            );
-        }
-
-        if (!isset($params['password'])) {
-            throw new QUI\Users\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/system',
-                    ''
-                )
-            );
-        }
-
-        $username = $params['username'];
-        $password = QUI\Security\Password::generateHash($params['password']);
-
-        // unerlaubte zeichen prüfen
-        self::checkUsernameSigns($username);
-
-        if ($this->usernameExists($username)) {
-            throw new QUI\Users\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/system',
-                    'exception.lib.user.register.specify.password'
-                )
-            );
-        }
-
-        $regparams = array();
-        $optional  = array(
-            'firstname',
-            'lastname',
-            'usertitle',
-            'birthday',
-            'email',
-            'lang',
-            'expire',
-            'usergroup'
-        );
-
-        $rootid = QUI::conf('globals', 'root');
-
-        foreach ($optional as $key) {
-            if (!isset($params[$key])) {
-                continue;
-            }
-
-            $value = $params[$key];
-
-            // Benutzergruppen gesondert behandeln - darf nicht in die Root Gruppe
-            if ($key == 'usergroup') {
-                $_gids = explode(',', $value);
-                $gids  = array();
-
-                foreach ($_gids as $gid) {
-                    if (!empty($gid) && $gid != $rootid) {
-                        $gids[] = (int)$gid;
-                    }
-                }
-
-                $regparams['usergroup'] = ','.implode(',', $gids).',';
-                continue;
-            }
-
-            // $regparams[ $key ] = Orthos::clearMySQL( $params[ $key ] );
-            $regparams[$key] = $params[$key];
-        }
-
-        $useragent = '';
-
-        if (isset($_SERVER['HTTP_USER_AGENT'])) {
-            $useragent = $_SERVER['HTTP_USER_AGENT'];
-        }
-
-        $Session = QUI::getSession();
-
-        $regparams['id']         = $this->newId();
-        $regparams['su']         = 0;
-        $regparams['username']   = $username;
-        $regparams['password']   = $password;
-        $regparams['active']     = 0;
-        $regparams['activation'] = Orthos::getPassword(20);
-        $regparams['regdate']    = time();
-        $regparams['lastedit']   = date('Y-m-d H:i:s');
-        $regparams['user_agent'] = $useragent;
-
-        if ($Session->get('ref')) {
-            $regparams['referal'] = $Session->get('ref');
-        }
-
-        QUI::getDataBase()->insert(self::table(), $regparams);
-
-        $lastId = QUI::getDataBase()->getPDO()->lastInsertId('id');
-
-        return $this->get((int)$lastId);
     }
 
     /**
@@ -1657,6 +1523,7 @@ class Manager
      *
      * @return integer
      * @throws QUI\Users\Exception
+     * @deprecated
      */
     protected function newId()
     {
