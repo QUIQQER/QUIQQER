@@ -225,9 +225,14 @@ class Handler
             return;
         }
 
-        $EmailConfirmVerification = new PasswordResetVerification($User->getId());
+        $Project = QUI::getRewrite()->getProject();
 
-        $confirmLink = QUI\Verification\Verifier::startVerification($EmailConfirmVerification, true);
+        $PasswordResetVerification = new PasswordResetVerification($User->getId(), array(
+            'project'     => $Project->getName(),
+            'projectLang' => $Project->getLang()
+        ));
+
+        $confirmLink = QUI\Verification\Verifier::startVerification($PasswordResetVerification, true);
 
         $L      = QUI::getLocale();
         $lg     = 'quiqqer/system';

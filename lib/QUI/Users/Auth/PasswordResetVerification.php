@@ -8,6 +8,25 @@ use QUI\Verification\AbstractVerification;
 class PasswordResetVerification extends AbstractVerification
 {
     /**
+     * Project
+     *
+     * @var QUI\Projects\Project
+     */
+    protected $Project;
+
+    /**
+     * PasswordResetVerification constructor.
+     *
+     * @param string $identifier
+     * @param array $additionalData
+     */
+    public function __construct($identifier, $additionalData = array())
+    {
+        parent::__construct($identifier, $additionalData);
+        $this->Project = new QUI\Projects\Project($additionalData['project'], $additionalData['projectLang']);
+    }
+
+    /**
      * Execute this method on successful verification
      *
      * @return void
@@ -85,6 +104,41 @@ class PasswordResetVerification extends AbstractVerification
             'quiqqer/system',
             'users.auth.passwordresetverification.error'
         );
+    }
+
+    /**
+     * Automatically redirect the user to this URL on successful verification
+     *
+     * @return string|false - If this method returns false, no redirection takes place
+     */
+    public function getOnSuccessRedirectUrl()
+    {
+        $result = $this->Project->getSites(array(
+            'where' => array(
+                'type' => 'quiqqer/frontend-users:types/login'
+            ),
+            'limit' => 1
+        ));
+
+        if (!empty($result)) {
+            $LoginSite = current($result);
+        } else {
+            $LoginSite = $this->Project->get(1);
+        }
+
+        return $LoginSite->getUrlRewritten(array(), array(
+            'password_reset' => '1'
+        ));
+    }
+
+    /**
+     * Automatically redirect the user to this URL on unsuccessful verification
+     *
+     * @return string|false - If this method returns false, no redirection takes place
+     */
+    public function getOnErrorRedirectUrl()
+    {
+        return false;
     }
 
     /**

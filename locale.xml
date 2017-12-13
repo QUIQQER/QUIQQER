@@ -6483,6 +6483,10 @@ You have requested the reset of your password. You can log in with the following
             <de><![CDATA[oder]]></de>
             <en><![CDATA[or]]></en>
         </locale>
+        <locale name="controls.users.auth.login.password_reset">
+            <de><![CDATA[oder]]></de>
+            <en><![CDATA[or]]></en>
+        </locale>
 
         <locale name="menu.quiqqer.text" html="true">
             <de><![CDATA[<img src="../bin/quiqqer_logo_mini.png" />]]></de>
