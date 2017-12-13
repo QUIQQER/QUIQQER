@@ -1351,10 +1351,11 @@ class User implements QUI\Interfaces\Users\User
      * (non-PHPdoc)
      *
      * @see QUI\Interfaces\Users\User::deactivate()
+     * @param User $ParentUser (optional) - Executing User
      */
-    public function deactivate()
+    public function deactivate($ParentUser = null)
     {
-        $this->checkEditPermission();
+        $this->checkEditPermission($ParentUser);
         $this->canBeDeleted();
 
         QUI::getEvents()->fireEvent('userDeactivate', array($this));
