@@ -59,7 +59,6 @@ define('controls/users/auth/QUIQQERLogin', [
         $initPasswordReset: function () {
             var self                = this,
                 PasswordReset       = this.getElm().getElement('.quiqqer-auth-login-passwordreset'),
-
                 PasswordResetCancel = this.getElm().getElement(
                     '.quiqqer-auth-login-passwordreset [name="cancel"]'
                 );
@@ -148,7 +147,7 @@ define('controls/users/auth/QUIQQERLogin', [
             if (!PasswordContainer) {
                 return Promise.resolve();
             }
-            console.warn('$showPassword');
+
             return new Promise(function (resolve) {
                 moofx(PasswordReset).animate({
                     left   : -100,
@@ -186,7 +185,7 @@ define('controls/users/auth/QUIQQERLogin', [
                 SubmitBtn  = Elm.getElement('.quiqqer-auth-login-passwordreset input[type="submit"]'),
                 MsgElm     = Elm.getElement('.quiqqer-auth-login-message');
 
-            var submit = function() {
+            var submit = function () {
                 var email = EmailInput.value.trim();
 
                 if (email === '') {
@@ -199,36 +198,72 @@ define('controls/users/auth/QUIQQERLogin', [
                 SubmitBtn.disabled = true;
                 MsgElm.set('html', '');
 
+                var showHideMessage = function (Message) {
+                    moofx(Message).animate({
+                        opacity: 1,
+                        top    : 0
+                    }, {
+                        duration: 200,
+                        callback: function () {
+                            (function () {
+                                moofx(Message).animate({
+                                    opacity: 0,
+                                    top    : -20
+                                }, {
+                                    duration: 200,
+                                    callback: function () {
+                                        Message.destroy();
+                                    }
+                                });
+                            }).delay(4000);
+                        }
+                    });
+                };
+
                 self.$sendPasswordResetConfirmMail(email).then(function () {
                     self.Loader.hide();
 
-                    QUI.getMessageHandler().then(function (MH) {
-                        MH.setAttribute('displayTimeMessages', 5000);
-                        MH.addSuccess(
-                            QUILocale.get(lg, 'controls.users.auth.quiqqerlogin.send_mail_success'),
-                            Elm
-                        );
-                    });
+                    var Message = new Element('div', {
+                        html   : QUILocale.get(lg, 'controls.users.auth.quiqqerlogin.send_mail_success'),
+                        'class': 'message-success',
+                        styles : {
+                            height  : '100%',
+                            opacity : 0,
+                            padding : 20,
+                            position: 'absolute',
+                            top     : -20,
+                            width   : '100%'
+                        }
+                    }).inject(self.getElm());
 
+                    showHideMessage(Message);
                     self.$showPassword();
+                    SubmitBtn.disabled = false;
                 }, function (e) {
                     self.Loader.hide();
 
-                    QUI.getMessageHandler().then(function (MH) {
-                        MH.setAttribute('displayTimeMessages', 5000);
-                        MH.addAttention(
-                            QUILocale.get(lg, 'controls.users.auth.quiqqerlogin.send_mail_error', {
-                                error: e.getMessage()
-                            }),
-                            EmailInput
-                        );
-                    });
+                    var Message = new Element('div', {
+                        html   : QUILocale.get(lg, 'controls.users.auth.quiqqerlogin.send_mail_error', {
+                            error: e.getMessage()
+                        }),
+                        'class': 'message-error',
+                        styles : {
+                            height  : '100%',
+                            opacity : 0,
+                            padding : 20,
+                            position: 'absolute',
+                            top     : -20,
+                            width   : '100%'
+                        }
+                    }).inject(self.getElm());
+
+                    showHideMessage(Message);
 
                     SubmitBtn.disabled = false;
                 });
             };
 
-            EmailInput.addEvent('keydown', function(event) {
+            EmailInput.addEvent('keydown', function (event) {
                 // stop login-form submit on enter
                 if (event.code === 13) {
                     event.stop();
@@ -250,12 +285,11 @@ define('controls/users/auth/QUIQQERLogin', [
          */
         $sendPasswordResetConfirmMail: function (email) {
             return new Promise(function (resolve, reject) {
-                QUIAjax.post(
-                    'ajax_users_authenticator_sendPasswordResetConfirmMail', resolve, {
-                        email  : email,
-                        onError: reject
-                    }
-                );
+                QUIAjax.post('ajax_users_authenticator_sendPasswordResetConfirmMail', resolve, {
+                    email    : email,
+                    onError  : reject,
+                    showError: false
+                });
             });
         }
     });
