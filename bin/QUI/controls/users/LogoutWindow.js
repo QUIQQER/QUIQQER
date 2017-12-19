@@ -64,7 +64,7 @@ define('controls/users/LogoutWindow', [
             this.Loader.show();
 
             Ajax.post('ajax_users_logout', function () {
-                window.location = window.location;
+                window.location.reload();
             });
         }
     });
