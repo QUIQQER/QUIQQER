@@ -137,7 +137,9 @@ define('controls/menu/Manager', [
                 'class': 'qui-contextmenu-baritem smooth qui-profile-button',
                 html   : letter,
                 events : {
-                    click: function () {
+                    click: function (event) {
+                        event.stop();
+
                         var Menu    = self.$Profile.getContextMenu(),
                             MenuElm = Menu.getElm();
 
@@ -150,7 +152,11 @@ define('controls/menu/Manager', [
                         Menu.getElm().inject(document.body);
                         Menu.show();
                         MenuElm.setStyle('left', parseInt(MenuElm.getStyle('left')) + 40);
-                        Menu.focus();
+
+                        // ff blur focus workaround
+                        (function () {
+                            Menu.focus();
+                        }).delay(200);
                     }
                 }
             }).inject(Menu);
