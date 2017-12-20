@@ -39,19 +39,18 @@ class Manager implements QUI\Interfaces\Events
     {
         $this->Events = new Event();
 
-        $cache = 'qui/table/exists/'.self::table();
-
         try {
-            $exists = QUI\Cache\Manager::get($cache);
-        } catch (QUI\Cache\Exception $Exception) {
-            $exists = QUI::getDataBase()->table()->exist(self::table());
-            QUI\Cache\Manager::set($cache, $exists);
-        }
+            if (!QUI::$Conf->existValue('globals', 'eventsCreated')) {
+                $exists = QUI::getDataBase()->table()->exist(self::table());
 
-        try {
-            if (!$exists) {
-                return;
+                QUI::$Conf->setValue('globals', 'eventsCreated', $exists);
+                QUI::$Conf->save();
+
+                if (!$exists) {
+                    return;
+                }
             }
+
 
             $list = QUI::getDataBase()->fetch(array(
                 'from'  => self::table(),
