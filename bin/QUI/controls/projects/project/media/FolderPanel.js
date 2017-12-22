@@ -3,21 +3,6 @@
  *
  * @module controls/projects/project/media/FolderPanel
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/desktop/Panel
- * @require qui/controls/buttons/Button
- * @require qui/controls/buttons/Separator
- * @require qui/controls/buttons/Select
- * @require qui/controls/windows/Confirm
- * @require qui/controls/input/Range
- * @require qui/utils/Form
- * @require utils/Template
- * @require controls/projects/project/media/Input
- * @require Projects
- * @require Locale
- * @require Ajax
- * @require css!controls/projects/project/media/FolderPanel.css
  */
 define('controls/projects/project/media/FolderPanel', [
 
