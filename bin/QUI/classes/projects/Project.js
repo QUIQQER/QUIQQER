@@ -4,11 +4,6 @@
  * @module classes/projects/Project
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/classes/DOM
- * @require Ajax
- * @require classes/projects/Site
- * @require classes/projects/Media
- *
  * @events onSiteDelete [this, {Number}]
  * @events onSiteSave [this, {classes/projects/project/Site}]
  * @events onSiteCreate [this, {classes/projects/project/Site}]
@@ -265,17 +260,6 @@ define('classes/projects/Project', [
             return this.$Media;
         },
 
-        /*
-
-         getTrash : function()
-         {
-         if ( !this.$Trash ) {
-         this.$Trash = new Trash( this );
-         }
-
-         return this.$Trash;
-         },*/
-
         /**
          * Return the Project name
          *
@@ -342,15 +326,15 @@ define('classes/projects/Project', [
                         continue;
                     }
 
-                    if (h == 404 || h == 301) {
+                    if (h === 404 || h === 301) {
                         continue;
                     }
 
-                    if (vhosts[h].project != projectName) {
+                    if (vhosts[h].project !== projectName) {
                         continue;
                     }
 
-                    if (vhosts[h].lang != projectLang) {
+                    if (vhosts[h].lang !== projectLang) {
                         continue;
                     }
 

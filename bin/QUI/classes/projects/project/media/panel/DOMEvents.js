@@ -4,7 +4,6 @@
  * @module classes/projects/project/media/panel/DOMEvents
  * @author www.pcsg.de (Henning Leutz)
  */
-
 define('classes/projects/project/media/panel/DOMEvents', [
 
     'qui/QUI',

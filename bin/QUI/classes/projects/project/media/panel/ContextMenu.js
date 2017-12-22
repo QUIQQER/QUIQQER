@@ -8,7 +8,6 @@
  * @require qui/controls/contextmenu/Separator
  * @require qui/utils/Elements
  */
-
 define('classes/projects/project/media/panel/ContextMenu', [
 
     'qui/QUI',
