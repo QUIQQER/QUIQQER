@@ -56,6 +56,8 @@ try {
     define('CHECK_CACHE', QUI\Cache\Manager::get('qui_cache_test'));
 } catch (QUI\Cache\Exception $e) {
     define('CHECK_CACHE', false);
+} catch (Stash\Exception\InvalidArgumentException $e) {
+    define('CHECK_CACHE', false);
 }
 
 $error_mail = QUI::conf('error', 'mail');
