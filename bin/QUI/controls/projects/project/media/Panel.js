@@ -1204,7 +1204,6 @@ define('controls/projects/project/media/Panel', [
                             'File is broken #' + Child.id + ' ' + Child.name
                         );
                     });
-
                 } else {
                     Elm.setStyles({
                         backgroundImage: 'url(' + Child.icon80x80 + ')',
@@ -1574,7 +1573,7 @@ define('controls/projects/project/media/Panel', [
                                 }
                             }).catch(function (Exception) {
                                 // nicht erlaubte zeichen
-                                if (Exception.getCode() == 702) {
+                                if (Exception.getCode() === 702) {
                                     Win.close();
                                     self.createFolderReplaceName(value);
                                 }
@@ -2216,6 +2215,14 @@ define('controls/projects/project/media/Panel', [
          * @param {Object} Item - qui/classes/projects/media/Item
          */
         $itemEvent: function (Media, Item) {
+            if (typeOf(Item) === 'string' || typeOf(Item) === 'number') {
+                var self = this;
+                Media.get(Item).then(function (File) {
+                    self.$itemEvent(Media, File);
+                });
+                return;
+            }
+
             var Content = this.getContent();
             var Node    = Content.getElement('[data-id="' + Item.getId() + '"]');
 

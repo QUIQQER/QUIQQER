@@ -413,7 +413,10 @@ class Locale
     public function get($group, $value = false, $replace = false)
     {
         if ($replace === false || empty($replace)) {
-            return $this->getHelper($group, $value);
+            $str = $this->getHelper($group, $value);
+            $str = str_replace('{\n}', PHP_EOL, $str);
+
+            return $str;
         }
 
         $str = $this->getHelper($group, $value);
@@ -425,6 +428,8 @@ class Locale
 
             $str = str_replace('['.$key.']', $value, $str);
         };
+
+        $str = str_replace('{\n}', PHP_EOL, $str);
 
         return $str;
     }
@@ -454,6 +459,8 @@ class Locale
 
             $str = str_replace('['.$key.']', $value, $str);
         };
+
+        $str = str_replace('{\n}', PHP_EOL, $str);
 
         return $str;
     }

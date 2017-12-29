@@ -376,8 +376,18 @@ class Manager
 
         self::checkUsernameSigns($username);
 
+        try {
+            $uuid = Uuid::uuid3(
+                Uuid::NAMESPACE_DNS,
+                microtime(true)
+            )->toString();
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+            throw new QUI\Users\Exception('Could not create User. Please try again later.');
+        }
+
         QUI::getDataBase()->insert(self::table(), array(
-            'uuid'     => Uuid::uuid1()->toString(),
+            'uuid'     => $uuid,
             'username' => $newName,
             'regdate'  => time(),
             'lang'     => QUI::getLocale()->getCurrent()
