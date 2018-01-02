@@ -29,8 +29,8 @@ define('controls/menu/Manager', [
         initialize: function (options) {
             this.parent(options);
 
-            this.$Bar      = null;
-            this.$Profile  = null;
+            this.$Bar = null;
+            this.$Profile = null;
             this.$isLoaded = false;
         },
 
@@ -41,6 +41,8 @@ define('controls/menu/Manager', [
          */
         create: function () {
             var self = this;
+
+            QUILocale.setCurrent(USER.lang);
 
             this.$Bar = new ContextmenuBar({
                 dragable: true,
@@ -118,8 +120,9 @@ define('controls/menu/Manager', [
 
             require([
                 'qui/controls/contextmenu/Item',
-                'qui/controls/contextmenu/Separator'
-            ], function (Item, Separator) {
+                'qui/controls/contextmenu/Separator',
+                'Locale'
+            ].concat(QUIQQER_LOCALE), function (Item, Separator) {
                 ContextMenu.appendChild(new Separator());
 
                 ContextMenu.appendChild(
@@ -127,7 +130,9 @@ define('controls/menu/Manager', [
                         icon  : 'fa fa-power-off',
                         text  : QUILocale.get('quiqqer/quiqqer', 'menu.log.out'),
                         events: {
-                            onClick: window.logout
+                            onClick: function () {
+                                window.logout();
+                            }
                         }
                     })
                 );

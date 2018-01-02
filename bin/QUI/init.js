@@ -231,7 +231,7 @@ require(requireList, function () {
                         }
 
                         var Workspaces = Bar.getChildren('profile')
-                                            .getChildren('workspaces');
+                            .getChildren('workspaces');
 
                         Workspaces.clear();
 
@@ -344,7 +344,7 @@ require(requireList, function () {
                 // logout
                 Ajax.post('ajax_user_logout', function () {
                     window.onbeforeunload = null;
-                    window.location       = URL_DIR + 'admin/';
+                    window.location = URL_DIR + 'admin/';
                 });
             });
         };
