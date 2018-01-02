@@ -19,7 +19,7 @@ QUI::$Ajax->registerFunction(
         //#locale
         if ($Folder->getType() != 'QUI\\Projects\\Media\\Folder') {
             throw new QUI\Exception(
-                'The parent id is not a folder. You can only upload files to folders'
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.is.no.folder')
             );
         }
 

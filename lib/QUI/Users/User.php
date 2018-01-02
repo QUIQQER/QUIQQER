@@ -1969,7 +1969,8 @@ class User implements QUI\Interfaces\Users\User
 
             if (count($suUsers) <= 1) {
                 throw new QUI\Users\Exception(
-                    'User cant be destroyed or deactivated. At least it must be one super user exist in the system.'
+                    'User cant be destroyed or deactivated. 
+                    At least it must be one super user exist in the system.'
                 ); // #locale
             }
         }

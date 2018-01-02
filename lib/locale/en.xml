@@ -201,7 +201,7 @@
         </locale>
         <locale name="projects.project.settings.panel.mediaSettings.maxUploadFileSize.description" html="true">
             <en>
-                <![CDATA[                Only images smaller than the specified value are allowed to be uploaded.            ]]></en>
+                <![CDATA[Only images smaller than the specified value are allowed to be uploaded.            ]]></en>
         </locale>
         <locale name="projects.project.settings.panel.defaultSitestructure">
             <en><![CDATA[Page structure]]></en>
@@ -239,7 +239,7 @@
         </locale>
         <locale name="message.testmail.success" html="true">
             <en>
-                <![CDATA[                Test Email successfuly send.                You can find a detailed Log in mailtest.log or debug.log.            ]]></en>
+                <![CDATA[Test Email successfuly send.                You can find a detailed Log in mailtest.log or debug.log.            ]]></en>
         </locale>
         <locale name="menu.search.title">
             <en><![CDATA[Search]]></en>
@@ -465,8 +465,10 @@
             <en><![CDATA[Primary Authentifiers]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.global.desc">
-            <en>
-                <![CDATA[            Primary Authenticators are authentication methods which provide the user at the beginning            of his Authentication. In addition, you can go over the permissions management            for each group or user and set more factor authentication.            ]]></en>
+            <en><![CDATA[
+            Primary Authenticators are authentication methods which provide the user at the beginning of his Authentication.
+            In addition, you can go over the permissions management for each group or user and set more factor authentication.
+            ]]></en>
         </locale>
         <locale name="exception.forwarding.already.exists">
             <en><![CDATA[This forwarding already exists.]]></en>
@@ -479,6 +481,21 @@
         </locale>
         <locale name="exception.media.upload.fileSize.is.to.big">
             <en><![CDATA[The file is unfortunately too big. The maximum upload size for a file is [size]]]></en>
+        </locale>
+        <locale name="exception.media.move.is.no.folder">
+            <en><![CDATA[Please select a folder to move the files.]]></en>
+        </locale>
+        <locale name="exception.media.copy.is.no.folder">
+            <en><![CDATA[Please select a folder to copy the files.]]></en>
+        </locale>
+        <locale name="exception.media.restore.is.no.folder">
+            <en><![CDATA[Please select a folder to restore a folder.]]></en>
+        </locale>
+        <locale name="exception.media.upload.is.no.folder">
+            <en><![CDATA[
+            Please select a folder.
+            You can only upload files to a folder.
+            ]]></en>
         </locale>
         <locale name="control.editor.toolbar.select.search.field.placeholder">
             <en><![CDATA[Search toolbars ...]]></en>
@@ -621,7 +638,7 @@
         </locale>
         <locale name="exception.delete.originalfile.notfound">
             <en>
-                <![CDATA[                The File could not be found.                The file is completely deleted for this reason.            ]]></en>
+                <![CDATA[The File could not be found.                The file is completely deleted for this reason.            ]]></en>
         </locale>
         <locale name="exception.delete.root.file">
             <en><![CDATA[You cannot delete the root file.]]></en>
@@ -858,7 +875,7 @@
         </locale>
         <locale name="folderviewer.create.folder" html="true">
             <en>
-                <![CDATA[                <p>No folder was assigned.</p>                <p>Would you like to create a new folder?</p>                <br />            ]]></en>
+                <![CDATA[<p>No folder was assigned.</p>                <p>Would you like to create a new folder?</p>                <br />            ]]></en>
         </locale>
         <locale name="site.window.siteChangesExists.title">
             <en><![CDATA[The page has changes]]></en>
@@ -1139,7 +1156,7 @@
         </locale>
         <locale name="dialog.projects.media.file.replace.information" html="true">
             <en>
-                <![CDATA[                Please choose a file or drag a file with which you want to replace <b>[file]</b> into this window            ]]></en>
+                <![CDATA[Please choose a file or drag a file with which you want to replace <b>[file]</b> into this window            ]]></en>
         </locale>
         <locale name="projects.media.context.move.element.select.message">
             <en><![CDATA[Please select a folder]]></en>
@@ -1515,7 +1532,7 @@
         </locale>
         <locale name="message.session.auth.memcached.success" html="true">
             <en>
-                <![CDATA[                No Memcached errors found.<br />                With all the memcached servers could be successfully connected.            ]]></en>
+                <![CDATA[No Memcached errors found.<br />                With all the memcached servers could be successfully connected.            ]]></en>
         </locale>
         <locale name="login">
             <en><![CDATA[Login]]></en>
@@ -1562,7 +1579,7 @@
         </locale>
         <locale name="exception.media.check.name.underline" html="true">
             <en>
-                <![CDATA[                <p>Invalid characters were found in the name.<br />                Double underscores may not be used.</p>            ]]></en>
+                <![CDATA[<p>Invalid characters were found in the name.<br />                Double underscores may not be used.</p>            ]]></en>
         </locale>
         <locale name="exception.media.check.name.allowed.signs" html="true">
             <en>
@@ -2249,7 +2266,7 @@
         </locale>
         <locale name="projects.project.site.panel.window.create.clear.information">
             <en>
-                <![CDATA[                The name of the page contains characters that are not allowed.<br />                Should the special characters are filtered out and the original name are used as the title?                <br /><br />                <p>New name of the page: <b>[newName]</b></p>                <p>New Title of page: <b>[value]</b></p>            ]]></en>
+                <![CDATA[The name of the page contains characters that are not allowed.<br />                Should the special characters are filtered out and the original name are used as the title?                <br /><br />                <p>New name of the page: <b>[newName]</b></p>                <p>New Title of page: <b>[value]</b></p>            ]]></en>
         </locale>
         <locale name="projects.project.site.panel.sort.title">
             <en><![CDATA[Sorting of the pages below #[id] [title]]]></en>
@@ -4288,7 +4305,7 @@
         </locale>
         <locale name="projects.project.site.media.popup.noProject.text" html="true">
             <en>
-                <![CDATA[                Unfortunately, there was no project to selected and harvested.<br />                Please select a project from which you want to select files.            ]]></en>
+                <![CDATA[Unfortunately, there was no project to selected and harvested.<br />                Please select a project from which you want to select files.            ]]></en>
         </locale>
         <locale name="projects.project.site.media.popup.window.activate.information" html="true">
             <en><![CDATA[Inactive files can not be inserted. Would you activate this file?]]></en>
@@ -4354,7 +4371,7 @@
         </locale>
         <locale name="media.folderPanel.window.effect.recursive.information" html="true">
             <en>
-                <![CDATA[                All changes of the folder will be stored.                The folder effects are applied rekusriv on all <u>images</u> and <u>folders</u>.            ]]></en>
+                <![CDATA[All changes of the folder will be stored.                The folder effects are applied rekusriv on all <u>images</u> and <u>folders</u>.            ]]></en>
         </locale>
         <locale name="projects.project.site.media.folderPanel.window.delete.title">
             <en><![CDATA[Are you sure you want to delete the folder [folder]?]]></en>
@@ -4860,14 +4877,14 @@
         </locale>
         <locale name="quiqqer.settings.gui.displayTimeMessages.description" html="true">
             <en>
-                <![CDATA[                Determine how long is the display time of the message.<br />                Messages are success, information, warnings or error messages.<br >                The value are specified in milliseconds.            ]]></en>
+                <![CDATA[Determine how long is the display time of the message.<br />                Messages are success, information, warnings or error messages.<br >                The value are specified in milliseconds.            ]]></en>
         </locale>
         <locale name="quiqqer.settings.gui.panel.task.limit">
             <en><![CDATA[Maximum tasks in a task panel]]></en>
         </locale>
         <locale name="quiqqer.settings.gui.panel.task.limit.description">
             <en>
-                <![CDATA[                Determine the maximum number of tasks in a task panel.                If too many tasks are opened in a panel, this affects the performance of the workspace.            ]]></en>
+                <![CDATA[Determine the maximum number of tasks in a task panel.                If too many tasks are opened in a panel, this affects the performance of the workspace.            ]]></en>
         </locale>
         <locale name="panels.project.title">
             <en><![CDATA[Website Panel]]></en>
@@ -4968,12 +4985,11 @@
             <en><![CDATA[Your Account is inactive.]]></en>
         </locale>
         <locale name="exception.lib.user.illegal.signs">
-            <en>
-                <![CDATA[                The user name contains invalid characters.                Please use only letters, numbers and special characters _ ä ö ü ß            ]]></en>
+            <en><![CDATA[The user name contains invalid characters.                Please use only letters, numbers and special characters _ ä ö ü ß            ]]></en>
         </locale>
         <locale name="exception.lib.user.nobody.add.address">
             <en>
-                <![CDATA[                This user does not exist, therefore no address can be deposited.                Please create a user.            ]]></en>
+                <![CDATA[This user does not exist, therefore no address can be deposited.                Please create a user.            ]]></en>
         </locale>
         <locale name="exception.lib.user.nobody.get.address">
             <en><![CDATA[This user has not any address]]></en>
@@ -5556,7 +5572,7 @@
         </locale>
         <locale name="quiqqer.settings.email.queue.desc">
             <en>
-                <![CDATA[                E-mails are saved in a queue until it is certain that they were sent.            ]]></en>
+                <![CDATA[E-mails are saved in a queue until it is certain that they were sent.            ]]></en>
         </locale>
         <locale name="quiqqer.settings.email.queue">
             <en><![CDATA[Enable Mail Queue]]></en>
@@ -5636,7 +5652,7 @@
         </locale>
         <locale name="projects.project.settings.panel.mediaSettings.maxUploadSize.description" html="true">
             <en>
-                <![CDATA[                Images that are larger than the specified value are automatically adjusted.            ]]></en>
+                <![CDATA[Images that are larger than the specified value are automatically adjusted.            ]]></en>
         </locale>
         <locale name="projects.project.settings.panel.mediaSettings.watermark.description">
             <en><![CDATA[Note: Changes to the watermark delete the entire media cache.]]></en>
@@ -5679,7 +5695,7 @@
         </locale>
         <locale name="projects.project.site.select.description" html="true">
             <en>
-                <![CDATA[                <p>                <em>Add sitetype</em> adds all pages of the selected sitetypes.<br />                <em>Add site</em> adds a single site.<br />                <em>Add children sites</em> adds all children sites of the selected site. Unles it is a sitetype set. The the sitetype is used as a filter, it will only see all children sites of the selected sitetype.                </p>            ]]></en>
+                <![CDATA[<p>                <em>Add sitetype</em> adds all pages of the selected sitetypes.<br />                <em>Add site</em> adds a single site.<br />                <em>Add children sites</em> adds all children sites of the selected site. Unles it is a sitetype set. The the sitetype is used as a filter, it will only see all children sites of the selected sitetype.                </p>            ]]></en>
         </locale>
         <locale name="exception.usergroups.search.cannot.search.users.without.parameters">
             <en><![CDATA[The user search cannot be executed without search parameters.]]></en>

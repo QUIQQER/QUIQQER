@@ -20,8 +20,8 @@ QUI::$Ajax->registerFunction(
 
         if (!QUI\Projects\Media\Utils::isFolder($Folder)) {
             throw new QUI\Exception(
-                'Bitte wählen Sie ein Ordner aus um die Dateie zu kopieren.'
-            ); // #locale
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.copy.is.no.folder')
+            );
         }
 
         /* @var $Folder \QUI\Projects\Media\Folder */
