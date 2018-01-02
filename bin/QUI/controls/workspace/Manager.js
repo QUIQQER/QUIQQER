@@ -353,8 +353,6 @@ define('controls/workspace/Manager', [
 
             var data = JSON.decode(this.$spaces[id].data);
 
-            console.warn(data);
-
             this.Workspace.unserialize(data);
             this.Workspace.fix();
             this.Workspace.resize();
