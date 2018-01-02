@@ -1302,7 +1302,7 @@ class User implements QUI\Interfaces\Users\User
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
-                    'exception.lib.user.activasion.wrong.code'
+                    'exception.lib.user.activation.wrong.code'
                 )
             );
         }
@@ -1313,7 +1313,7 @@ class User implements QUI\Interfaces\Users\User
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
-                    'exception.lib.user.activasion.no.groups'
+                    'exception.lib.user.activation.no.groups'
                 )
             );
         }
@@ -1322,7 +1322,7 @@ class User implements QUI\Interfaces\Users\User
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
-                    'exception.lib.user.activasion.no.password'
+                    'exception.lib.user.activation.no.password'
                 )
             );
         }
@@ -1352,6 +1352,7 @@ class User implements QUI\Interfaces\Users\User
      *
      * @see QUI\Interfaces\Users\User::deactivate()
      * @param User $ParentUser (optional) - Executing User
+     * @return bool
      */
     public function deactivate($ParentUser = null)
     {
@@ -1940,10 +1941,7 @@ class User implements QUI\Interfaces\Users\User
         }
 
         throw new QUI\Users\Exception(
-            QUI::getLocale()->get(
-                'quiqqer/system',
-                'exception.user.no.address.exists'
-            )
+            QUI::getLocale()->get('quiqqer/system', 'exception.user.no.address.exists')
         );
     }
 
@@ -1969,9 +1967,8 @@ class User implements QUI\Interfaces\Users\User
 
             if (count($suUsers) <= 1) {
                 throw new QUI\Users\Exception(
-                    'User cant be destroyed or deactivated. 
-                    At least it must be one super user exist in the system.'
-                ); // #locale
+                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.user.one.superuser.must.exists')
+                );
             }
         }
 
@@ -1985,7 +1982,7 @@ class User implements QUI\Interfaces\Users\User
 
         if (count($activeUsers) <= 1) {
             throw new QUI\Users\Exception(
-                'User cant be destroyed or deactivated. At least it must be one user exist in the system.'
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.user.one.active.user.must.exists')
             );
         }
     }

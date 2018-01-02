@@ -545,7 +545,7 @@
             <en><![CDATA[Default content]]></en>
         </locale>
     </groups>
-    <groups name="quiqqer/quiqqer" datatype="php">        <!-- Settings: auth -->
+    <groups name="quiqqer/quiqqer" datatype="php">
         <locale name="quiqqer.settings.auth.showResetPasswordBackend">
             <en><![CDATA["Forgot password" in backend Login]]></en>
         </locale>
@@ -849,6 +849,58 @@
         </locale>
         <locale name="message.users.deactivated">
             <en><![CDATA[The users [users] have been deactivated successfully.]]></en>
+        </locale>
+
+
+        <locale name="exception.site.url.missing.title">
+            <en><![CDATA[Bitte gebe einen Titel ein.]]></en>
+        </locale>
+        <locale name="exception.site.url.2.signs">
+            <en><![CDATA[Die URL muss mehr als 2 Zeichen lang sein.]]></en>
+        </locale>
+        <locale name="exception.site.url.200.signs">
+            <en><![CDATA[Die URL darf nicht länger als 200 Zeichen lang sein.]]></en>
+        </locale>
+        <locale name="exception.site.url.wrong.signs">
+            <en><![CDATA[
+            In der URL "[name]" dürfen folgende Zeichen nicht verwendet werden: [signs]
+            ]]></en>
+        </locale>
+
+        <locale name="exception.user.one.superuser.must.exists">
+            <en><![CDATA[
+                User cant be destroyed or deactivated.
+                There must be at least one super-user in the system.
+            ]]></en>
+        </locale>
+        <locale name="exception.user.one.active.user.must.exists">
+            <en><![CDATA[
+                User cant be destroyed or deactivated.
+                There must be at least one active user in the system.
+            ]]></en>
+        </locale>
+
+        <locale name="exception.site.linked.already.exists">
+            <en><![CDATA[
+            It is not possible to create a link in this layer, because a link or the original page already exists in this level.
+            ]]></en>
+        </locale>
+
+        <locale name="exception.media.already.deleted">
+            <en><![CDATA[File is already deleted]]></en>
+        </locale>
+        <locale name="exception.media.file.with.same.name.exists">
+            <en><![CDATA[
+                A file with the name [name] already exists. Please choose a different name.
+            ]]></en>
+        </locale>
+        <locale name="message.user.deleted.successful">
+            <en><![CDATA[
+            The users [ids] have been deleted successfully
+            ]]></en>
+        </locale>
+        <locale name="exception.missing.permission.entry">
+            <en><![CDATA[Cannot find permissions for Object]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->
@@ -4985,7 +5037,8 @@
             <en><![CDATA[Your Account is inactive.]]></en>
         </locale>
         <locale name="exception.lib.user.illegal.signs">
-            <en><![CDATA[The user name contains invalid characters.                Please use only letters, numbers and special characters _ ä ö ü ß            ]]></en>
+            <en>
+                <![CDATA[The user name contains invalid characters.                Please use only letters, numbers and special characters _ ä ö ü ß            ]]></en>
         </locale>
         <locale name="exception.lib.user.nobody.add.address">
             <en>
@@ -5003,16 +5056,16 @@
         <locale name="exception.lib.user.wrong.passwords">
             <en><![CDATA[The passwords do not match. Please enter correct passwords.]]></en>
         </locale>
-        <locale name="exception.lib.user.activasion.wrong.code">
+        <locale name="exception.lib.user.activation.wrong.code">
             <en><![CDATA[The code for the activation is not correct.]]></en>
         </locale>
-        <locale name="exception.lib.user.activasion.no.groups">
+        <locale name="exception.lib.user.activation.no.groups">
             <en>
-                <![CDATA[            The is no group assigned to the user.            A user must have at least one group assigned to him.            ]]></en>
+                <![CDATA[The is no group assigned to the user. A user must have at least one group assigned to him.]]></en>
         </locale>
-        <locale name="exception.lib.user.activasion.no.password">
+        <locale name="exception.lib.user.activation.no.password">
             <en>
-                <![CDATA[There has no password been set for this user.                Only with a password a user can be activated.]]></en>
+                <![CDATA[There has no password been set for this user. Only with a password a user can be activated.]]></en>
         </locale>
         <locale name="exception.lib.user.no.edit.rights">
             <en><![CDATA[You have no permission to edit this user]]></en>

@@ -853,6 +853,58 @@
         <locale name="message.users.deactivated">
             <de><![CDATA[Die Benutzer [users] wurden erfolgreich deaktiviert.]]></de>
         </locale>
+
+        <locale name="exception.site.url.missing.title">
+            <de><![CDATA[Bitte gebe einen Titel ein.]]></de>
+        </locale>
+        <locale name="exception.site.url.2.signs">
+            <de><![CDATA[Die URL muss mehr als 2 Zeichen lang sein.]]></de>
+        </locale>
+        <locale name="exception.site.url.200.signs">
+            <de><![CDATA[Die URL darf nicht länger als 200 Zeichen lang sein.]]></de>
+        </locale>
+        <locale name="exception.site.url.wrong.signs">
+            <de><![CDATA[
+            In der URL "[name]" dürfen folgende Zeichen nicht verwendet werden: [signs]
+            ]]></de>
+        </locale>
+
+        <locale name="exception.user.one.superuser.must.exists">
+            <de><![CDATA[
+                Der Benutzer kann nicht zerstört oder deaktiviert werden.
+                Es muss mindestens ein Super-User im System vorhanden sein.
+            ]]></de>
+        </locale>
+        <locale name="exception.user.one.active.user.must.exists">
+            <de><![CDATA[
+                Der Benutzer kann nicht zerstört oder deaktiviert werden.
+                Es muss mindestens ein aktiver Benutzer im System vorhanden sein.
+            ]]></de>
+        </locale>
+
+        <locale name="exception.site.linked.already.exists">
+            <de><![CDATA[
+            Es kann keine Verknüpfung in dieser Ebene erstellt werden,
+            da eine Verknüpfung oder die original Seite bereits in dieser Ebene existiert
+            ]]></de>
+        </locale>
+
+        <locale name="exception.media.already.deleted">
+            <de><![CDATA[Datei ist bereits gelöscht]]></de>
+        </locale>
+        <locale name="exception.media.file.with.same.name.exists">
+            <de><![CDATA[
+                Eine Datei mit dem Namen [name] existiert bereits. Bitte wählen Sie einen anderen Namen.
+            ]]></de>
+        </locale>
+        <locale name="message.user.deleted.successful">
+            <de><![CDATA[
+            Die Benutzer [ids] wurden erfolgreich gelöscht
+            ]]></de>
+        </locale>
+        <locale name="exception.missing.permission.entry">
+            <de><![CDATA[Das zuständige Recht für das Objekt konnte nicht gefunden werden.]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->
         <locale name="controls.email.select.email_invalid">
@@ -4584,7 +4636,7 @@
             <de><![CDATA[Lizenz löschen]]></de>
         </locale>
     </groups>
-    <groups name="quiqqer/system" datatype="php">        <!-- QUIQQERLogin -->
+    <groups name="quiqqer/system" datatype="php">
         <locale name="quiqqer.auth.login.password_reset">
             <de><![CDATA[Passwort vergessen]]></de>
         </locale>
@@ -5145,16 +5197,16 @@
         <locale name="exception.lib.user.wrong.passwords">
             <de><![CDATA[Die Passwörter stimmen nicht überein. Bitte geben Sie korrekte Passwörter ein]]></de>
         </locale>
-        <locale name="exception.lib.user.activasion.wrong.code">
+        <locale name="exception.lib.user.activation.wrong.code">
             <de><![CDATA[Ihr Aktivierungscode ist nicht korrekt]]></de>
         </locale>
-        <locale name="exception.lib.user.activasion.no.groups">
+        <locale name="exception.lib.user.activation.no.groups">
             <de><![CDATA[
             Der Benutzer ist noch keiner Gruppe zugeordnet.
             Ein Benutzer muss mindestens einer Gruppe zugeordnet sein.
             ]]></de>
         </locale>
-        <locale name="exception.lib.user.activasion.no.password">
+        <locale name="exception.lib.user.activation.no.password">
             <de><![CDATA[
             Dem Benutzer wurde noch kein Passwort gesetzt. Nur mit einem Passwort kann ein Benutzer aktiviert werden
             ]]></de>

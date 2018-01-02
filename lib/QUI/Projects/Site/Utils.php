@@ -32,24 +32,22 @@ class Utils
      */
     public static function checkName($name)
     {
-        // @todo multilingual
-
         if (!isset($name)) {
             throw new QUI\Exception(
-                'Bitte gebe einen Titel ein'
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.url.missing.title')
             );
         }
 
         if (strlen($name) <= 2) {
             throw new QUI\Exception(
-                'Die URL muss mehr als 2 Zeichen lang sein',
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.url.2.signs'),
                 701
             );
         }
 
         if (strlen($name) > 200) {
             throw new QUI\Exception(
-                'Die URL darf nicht länger als 200 Zeichen lang sein',
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.url.200.signs'),
                 704
             );
         }
@@ -62,10 +60,12 @@ class Utils
         }
 
         // Prüfung des Namens - Sonderzeichen
-        if (preg_match($signs, $name)) { // #locale
+        if (preg_match($signs, $name)) {
             throw new QUI\Exception(
-                'In der URL "'.$name
-                .'" dürfen folgende Zeichen nicht verwendet werden: _-.,:;#@`!§$%&/?<>=\'"[]+',
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.url.wrong.signs', array(
+                    'name'  => $name,
+                    'signs' => $signs
+                )),
                 702
             );
         }
@@ -798,6 +798,6 @@ class Utils
         // html_entity_decode because -> &nbsp; in index.php links
         parse_str(html_entity_decode($parseUrl['query']), $urlQueryParams);
 
-        return QUI::getRewrite()->getUrlFromSite($urlQueryParams);
+        return QUI::getRewrite()->getOutput()->getSiteUrl($urlQueryParams);
     }
 }

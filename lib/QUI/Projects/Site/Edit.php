@@ -1222,11 +1222,9 @@ class Edit extends Site
         );
 
         // Prüfen ob die Seite schon in dem Parent ist
-        // #locale
         if ($Parent->getId() == $pid) {
             throw new QUI\Exception(
-                'Es kann keine Verknüpfung in dieser Ebene erstellt werden,
-                da eine Verknüpfung oder die original Seite bereits in dieser Ebene existiert',
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.linked.already.exists'),
                 703
             );
         }
@@ -1238,12 +1236,10 @@ class Edit extends Site
             )
         ));
 
-        // #locale
         foreach ($links as $entry) {
             if ($entry['parent'] == $pid) {
                 throw new QUI\Exception(
-                    'Es kann keine Verknüpfung in dieser Ebene erstellt werden,
-                    da eine Verknüpfung oder die original Seite bereits in dieser Ebene existiert',
+                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.linked.already.exists'),
                     703
                 );
             }
