@@ -14,10 +14,11 @@ define('controls/users/Login', [
     'qui/controls/loader/Loader',
     'qui/utils/Form',
     'Ajax',
+    'Locale',
 
     'css!controls/users/Login.css'
 
-], function (QUI, QUIControl, QUILoader, QUIFormUtils, QUIAjax) {
+], function (QUI, QUIControl, QUILoader, QUIFormUtils, QUIAjax, QUILocale) {
     "use strict";
 
     return new Class({
@@ -175,7 +176,7 @@ define('controls/users/Login', [
             for (var i = 1, len = forms.length; i < len; i++) {
                 new Element('div', {
                     'class': 'quiqqer-login-or',
-                    html   : '<span>or</span>' // #locale
+                    html   : '<span>' + QUILocale.get('quiqqer/system', 'controls.users.auth.login.or') + '</span>'
                 }).inject(forms[i], 'before');
             }
 

@@ -18,10 +18,11 @@ define('controls/help/Dashboard', [
     'controls/projects/Manager',
     'utils/Panels',
     'Ajax',
+    'Locale',
 
     'css!controls/help/Dashboard.css'
 
-], function (QUI, QUIPanel, ProjectManager, PanelUtils, QUIAjax) {
+], function (QUI, QUIPanel, ProjectManager, PanelUtils, QUIAjax, QUILocale) {
     "use strict";
 
     /**
@@ -103,9 +104,8 @@ define('controls/help/Dashboard', [
 
                 Container.set('html', '');
 
-                // #locale
                 if (!messages.length) {
-                    Container.set('html', '<p>Keine Nachrichten vorhanden</p>');
+                    Container.set('html', QUILocale.get('quiqqer/quiqqer', 'dashboard.messages.empty'));
                     return;
                 }
 

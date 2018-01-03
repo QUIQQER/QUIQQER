@@ -118,7 +118,7 @@ define('controls/projects/project/site/Panel', [
                     typeof Site.id !== 'undefined') {
                     this.unserialize(Site);
                 }
-        }
+            }
 
             this.parent(options);
 
@@ -518,7 +518,7 @@ define('controls/projects/project/site/Panel', [
                 });
 
                 Sheet.addButton({
-                    text  : Locale.get('quiqqer/quiqqer', 'panel.site.restore.button.restore'), // #locale
+                    text  : Locale.get('quiqqer/quiqqer', 'panel.site.restore.button.restore'),
                     events: {
                         onClick: function () {
                             Sheet.hide(function () {
@@ -985,7 +985,7 @@ define('controls/projects/project/site/Panel', [
                                         new QUIButton({
                                             name  : 'delete-linking',
                                             icon  : 'fa fa-trash',
-                                            title : 'Verknüpfung löschen', // #locale
+                                            title : Locale.get(lg, 'projects.project.site.panel.window.deleteLinked.button'),
                                             styles: {
                                                 width: 50
                                             },
@@ -1099,7 +1099,7 @@ define('controls/projects/project/site/Panel', [
                                 if (Locked && USER.isSU) {
                                     new QUIButton({
                                         name  : 'unlock',
-                                        text  : 'Trotzdem freischalten', // #locale
+                                        text  : Locale.get(lg, 'projects.project.site.panel.unlock'),
                                         styles: {
                                             clear  : 'both',
                                             display: 'block',

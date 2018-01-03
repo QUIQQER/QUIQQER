@@ -1499,7 +1499,6 @@ define('controls/workspace/Manager', [
                             width   = size.x,
                             height  = size.y;
 
-                        // #locale
                         Content.set(
                             'html',
 
@@ -1537,7 +1536,6 @@ define('controls/workspace/Manager', [
                             return;
                         }
 
-                        // #locale
                         // no workspaces available
                         Content.set(
                             'html',

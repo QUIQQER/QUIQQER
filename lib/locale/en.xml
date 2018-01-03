@@ -902,6 +902,9 @@
         <locale name="exception.missing.permission.entry">
             <en><![CDATA[Cannot find permissions for the Object.]]></en>
         </locale>
+        <locale name="exception.missing.missing.index.id">
+            <de><![CDATA[Undefined index: id]]></de>
+        </locale>
         <locale name="exception.media.create.folder.only.in.folder">
             <en><![CDATA[You can only create a folder in a folder.]]></en>
         </locale>
@@ -934,12 +937,12 @@
             ]]></en>
         </locale>
         <locale name="message.translation.file.not.found">
-            <de><![CDATA[Translation file for [file] not found.]]></de>
+            <en><![CDATA[Translation file for [file] not found.]]></en>
         </locale>
         <locale name="exception.timeout">
-            <de><![CDATA[
+            <en><![CDATA[
                 Request timeout. Please try again or at a later time.
-            ]]></de>
+            ]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->
@@ -1313,6 +1316,53 @@
                 The calendar package could not be found.
                 Please install quiqqer/calendar
             ]]></en>
+        </locale>
+        <locale name="help.panel.title">
+            <en><![CDATA[QUIQQER Help]]></en>
+        </locale>
+        <locale name="help.panel.button.open.text">
+            <en><![CDATA[Open help]]></en>
+        </locale>
+
+        <locale name="control.bookmarks.panel.button.add.title">
+            <en><![CDATA[Add Bookmark]]></en>
+        </locale>
+        <locale name="control.bookmarks.panel.button.edit.title">
+            <en><![CDATA[Edit Bookmarks]]></en>
+        </locale>
+        <locale name="control.bookmarks.panel.button.sort.title">
+            <en><![CDATA[Sort]]></en>
+        </locale>
+
+        <locale name="dashboard.messages.empty">
+            <en><![CDATA[No messages available.]]></en>
+        </locale>
+
+        <locale name="control.project.sitemap.next">
+            <en><![CDATA[Next (right click for more options) ]]></en>
+        </locale>
+        <locale name="control.project.sitemap.prev">
+            <en><![CDATA[Back (right click for more options)]]></en>
+        </locale>
+
+        <locale name="control.server.button.add.text">
+            <en><![CDATA[Add new server]]></en>
+        </locale>
+        <locale name="control.server.filter.placeholder">
+            <en><![CDATA[Filter...]]></en>
+        </locale>
+        <locale name="control.server.filter.submit">
+            <en><![CDATA[Start search]]></en>
+        </locale>
+
+        <locale name="control.media.create.folder.window.title">
+            <de><![CDATA[Create new media folder]]></de>
+        </locale>
+        <locale name="control.media.create.folder.window.back.button.title">
+            <de><![CDATA[Back]]></de>
+        </locale>
+        <locale name="control.media.create.folder.window.continue.button.title">
+            <de><![CDATA[Continue]]></de>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">
@@ -2359,6 +2409,9 @@
         <locale name="projects.project.site.panel.window.create.title">
             <en><![CDATA[How be called the new page?]]></en>
         </locale>
+        <locale name="projects.project.site.panel.unlock">
+            <de><![CDATA[Unlock anyway]]></de>
+        </locale>
         <locale name="projects.project.site.panel.window.create.button.submit">
             <en><![CDATA[Create]]></en>
         </locale>
@@ -2924,6 +2977,9 @@
         </locale>
         <locale name="users.panel.user.is.deactive">
             <en><![CDATA[User is inactive. Click on the button to activate the user.]]></en>
+        </locale>
+        <locale name="users.panel.search.title">
+            <en><![CDATA[User search]]></en>
         </locale>
         <locale name="users.panel.btn.search.alt">
             <en><![CDATA[Search user]]></en>
@@ -4563,8 +4619,11 @@
                 <![CDATA[            <h1>The workspace is too large</h1>            <p>The workspace is unfortunately too big for your browser window. Please choose an appropriate workspace.</p>            <h2>Available matching workspaces:</h2>            ]]></en>
         </locale>
         <locale name="workspace.toolarge.window.noWorkspaces.text" html="true">
-            <en>
-                <![CDATA[            <h1>The workspace is too large</h1>            <p>The workspace is unfortunately too big and no suitable workspace exists.</p>            <p>Would you like to create a new workspace?</p>            ]]></en>
+            <en><![CDATA[
+                <h1>The workspace is too large</h1>
+                <p>The workspace is unfortunately too big and no suitable workspace exists.</p>
+                <p>Would you like to create a new workspace?</p>
+            ]]></en>
         </locale>
         <locale name="grid.is.empty">
             <en><![CDATA[The table contains no data]]></en>
@@ -4650,7 +4709,7 @@
         <locale name="watch.authenticatorLoginError">
             <en>
                 <![CDATA[Failed login attempt: "[username]" (#[userId]) | Authenticator: "[authenticator]" | IP address: [ipAddress] | User Agent: "[userAgent]"]]></en>
-        </locale>        <!-- Control: QUI\Users\Controls\Login -->
+        </locale>
         <locale name="controls.users.auth.login.or">
             <en><![CDATA[or]]></en>
         </locale>

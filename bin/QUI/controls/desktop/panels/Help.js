@@ -12,9 +12,10 @@ define('controls/desktop/panels/Help', [
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
-    'qui/controls/buttons/Button'
+    'qui/controls/buttons/Button',
+    'Locale'
 
-], function (QUI, QUIPanel, QUIButton) {
+], function (QUI, QUIPanel, QUIButton, QUILocale) {
     "use strict";
 
     return new Class({
@@ -32,7 +33,7 @@ define('controls/desktop/panels/Help', [
 
             this.$Frame = null;
 
-            this.setAttribute('title', 'QUIQQER-Hilfe'); // #locale
+            this.setAttribute('title', QUILocale.get('quiqqer/quiqqer', 'help.panel.title'));
             this.setAttribute('icon', 'fa fa-h-square');
 
             this.addEvents({
@@ -53,7 +54,7 @@ define('controls/desktop/panels/Help', [
             });
 
             new QUIButton({
-                text  : 'Hilfe laden', // #locale
+                text  : QUILocale.get('quiqqer/quiqqer', 'help.panel.button.open.text'),
                 icon  : 'fa fa-refresh',
                 styles: {
                     fontSize: 18,

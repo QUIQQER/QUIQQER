@@ -1,10 +1,6 @@
 /**
  * @module controls/projects/project/media/CreateFolder
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/loader/Loader
  */
 define('controls/projects/project/media/CreateFolder', [
 
@@ -13,12 +9,16 @@ define('controls/projects/project/media/CreateFolder', [
     'qui/controls/buttons/Button',
     'controls/projects/Select',
     'controls/projects/project/media/Sitemap',
-    'Projects'
+    'Projects',
+    'Locale'
 
-], function (QUI, QUIPopup, QUIButton, ProjectSelect, MediaSitemap, Projects) {
+], function (QUI, QUIPopup, QUIButton, ProjectSelect, MediaSitemap, Projects, QUILocale) {
     "use strict";
 
+    var lg = 'quiqqer/quiqqer';
+
     return new Class({
+
         Extends: QUIPopup,
         Type   : 'controls/projects/project/media/CreateFolder',
 
@@ -41,7 +41,7 @@ define('controls/projects/project/media/CreateFolder', [
             this.parent(options);
 
             this.setAttributes({
-                title  : 'Neuen Mediaordner anlegen',
+                title  : QUILocale.get(lg, 'control.media.create.folder.window.title'),
                 icon   : 'fa fa-plus',
                 buttons: true
             });
@@ -62,7 +62,7 @@ define('controls/projects/project/media/CreateFolder', [
             this.$Buttons.set('html', '');
 
             this.$Prev = new QUIButton({
-                text    : 'Zurück', // #locale
+                text    : QUILocale.get(lg, 'control.media.create.folder.window.back.button.title'),
                 disabled: true,
                 events  : {
                     click: this.prev
@@ -70,7 +70,7 @@ define('controls/projects/project/media/CreateFolder', [
             });
 
             this.$Next = new QUIButton({
-                text    : 'Weiter', // #locale
+                text    : QUILocale.get(lg, 'control.media.create.folder.window.continue.button.title'),
                 disabled: true,
                 events  : {
                     click: this.next

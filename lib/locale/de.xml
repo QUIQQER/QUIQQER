@@ -939,6 +939,9 @@
         <locale name="exception.missing.permission.entry">
             <de><![CDATA[Das zuständige Recht für das Objekt konnte nicht gefunden werden.]]></de>
         </locale>
+        <locale name="exception.missing.missing.index.id">
+            <de><![CDATA[Undefinierter Index: id]]></de>
+        </locale>
         <locale name="exception.media.create.folder.only.in.folder">
             <de><![CDATA[Sie können nur in einem Ordner einen Ordner erstellen.]]></de>
         </locale>
@@ -1380,6 +1383,64 @@
                 Das Kalender Paket konnte nicht gefunden werden.
                 Bitte installieren Sie quiqqer/calendar
             ]]></de>
+        </locale>
+        <locale name="help.panel.title">
+            <de><![CDATA[QUIQQER-Hilfe]]></de>
+        </locale>
+        <locale name="help.panel.title">
+            <de><![CDATA[QUIQQER-Hilfe]]></de>
+        </locale>
+        <locale name="help.panel.button.open.text">
+            <de><![CDATA[Hilfe öffnen]]></de>
+        </locale>
+
+        <locale name="control.bookmarks.panel.button.add.title">
+            <de><![CDATA[Bookmark hinzufügen]]></de>
+        </locale>
+        <locale name="control.bookmarks.panel.button.edit.title">
+            <de><![CDATA[Bookmarks editieren]]></de>
+        </locale>
+        <locale name="control.bookmarks.panel.button.sort.title">
+            <de><![CDATA[Sortierung]]></de>
+        </locale>
+
+        <locale name="dashboard.messages.empty">
+            <de><![CDATA[Keine Nachrichten vorhanden.]]></de>
+        </locale>
+
+        <locale name="control.project.sitemap.next">
+            <de><![CDATA[Vor (Rechtsklick für weitere Optionen)]]></de>
+        </locale>
+        <locale name="control.project.sitemap.prev">
+            <de><![CDATA[Zurück (Rechtsklick für weitere Optionen)]]></de>
+        </locale>
+        <locale name="control.project.sitemap.sheetWindow.title">
+            <de><![CDATA[Blätterfunktion]]></de>
+        </locale>
+        <locale name="control.project.sitemap.sheetWindow.content" html="true">
+            <de><![CDATA[
+            <p>Welche Einträge der Seite sollen angezeigt werden?</p>
+            ]]></de>
+        </locale>
+
+        <locale name="control.server.button.add.text">
+            <de><![CDATA[Neuen Server hinzufügen]]></de>
+        </locale>
+        <locale name="control.server.filter.placeholder">
+            <de><![CDATA[Filter...]]></de>
+        </locale>
+        <locale name="control.server.filter.submit">
+            <de><![CDATA[Suche starten]]></de>
+        </locale>
+
+        <locale name="control.media.create.folder.window.title">
+            <de><![CDATA[Neuen Mediaordner anlegen]]></de>
+        </locale>
+        <locale name="control.media.create.folder.window.back.button.title">
+            <de><![CDATA[Zurück]]></de>
+        </locale>
+        <locale name="control.media.create.folder.window.continue.button.title">
+            <de><![CDATA[Weiter]]></de>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">
@@ -2474,6 +2535,9 @@
         <locale name="projects.project.site.panel.window.create.title">
             <de><![CDATA[Wie soll die neue Seite heißen?]]></de>
         </locale>
+        <locale name="projects.project.site.panel.unlock">
+            <de><![CDATA[Trotzdem freischalten]]></de>
+        </locale>
         <locale name="projects.project.site.panel.window.create.button.submit">
             <de><![CDATA[Anlegen]]></de>
         </locale>
@@ -3066,6 +3130,9 @@
         </locale>
         <locale name="users.panel.user.is.deactive">
             <de><![CDATA[Benutzer ist deaktiviert. Per Klick auf den Button aktivieren Sie den Benutzer.]]></de>
+        </locale>
+        <locale name="users.panel.search.title">
+            <de><![CDATA[Benutzersuche]]></de>
         </locale>
         <locale name="users.panel.btn.search.alt">
             <de><![CDATA[Benutzer suchen]]></de>
