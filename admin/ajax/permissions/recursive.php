@@ -26,11 +26,10 @@ QUI::$Ajax->registerFunction(
                 $Site    = $Project->get($params['id']);
                 break;
 
-            default: // #locale
+            default:
                 throw new QUI\Exception(
-                    'Cannot find permissions for Object'
+                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.missing.permission.entry')
                 );
-                break;
         }
 
 

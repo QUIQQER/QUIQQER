@@ -44,7 +44,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
      */
     public function getPath()
     {
-        return VAR_DIR . 'media/trash/' . $this->Media->getProject()->getName() . '/';
+        return VAR_DIR.'media/trash/'.$this->Media->getProject()->getName().'/';
     }
 
     /**
@@ -97,7 +97,6 @@ class Trash implements QUI\Interfaces\Projects\Trash
         // check if the file is realy deleted?
         $File = $this->Media->get($id);
 
-        // #locale
         if (!$File->isDeleted()) {
             $File->delete();
         }
@@ -149,12 +148,13 @@ class Trash implements QUI\Interfaces\Projects\Trash
      */
     public function restore($id, Folder $Folder)
     {
-        $file = $this->getPath() . $id;
+        $file = $this->getPath().$id;
 
-        // #locale
         if (!file_exists($file)) {
             throw new QUI\Exception(
-                'Could not find the file ' . $id . ' in the Trash'
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.trash.file.not.found', array(
+                    'id' => $id
+                ))
             );
         }
 
@@ -168,9 +168,8 @@ class Trash implements QUI\Interfaces\Projects\Trash
         ));
 
         if (!isset($data[0])) {
-            // #locale
             throw new QUI\Exception(
-                'No data for the file found. Can\'t restore the file'
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.trash.file.not.found')
             );
         }
 
@@ -180,7 +179,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
             $data[0]['mime_type']
         );
 
-        $newFile = $this->getPath() . $data[0]['name'] . $extension;
+        $newFile = $this->getPath().$data[0]['name'].$extension;
 
         QUI\Utils\System\File::move($file, $newFile);
 

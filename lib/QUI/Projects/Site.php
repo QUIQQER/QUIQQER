@@ -896,7 +896,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             }
         }
 
-        throw new QUI\Exception('Die Seite besitzt keine nächstfolgende Seite'); // #locale
+        throw new QUI\Exception(
+            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.no.next.sibling')
+        );
     }
 
     /**
@@ -952,7 +954,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             }
         }
 
-        throw new QUI\Exception('Die Seite besitzt keine vorhergehenden Seite'); // #locale
+        throw new QUI\Exception(
+            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.no.previous.sibling')
+        );
     }
 
     /**

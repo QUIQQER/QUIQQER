@@ -559,9 +559,10 @@ class Locale
 
         $file = $GetText->getFile();
 
-        // #locale
         System\Log::addWarning(
-            'Übersetzungsdatei für '.$file.' nicht gefunden.'
+            QUI::getLocale()->get('quiqqer/quiqqer', 'message.translation.file.not.found', array(
+                'file' => $file
+            ))
         );
 
         $this->gettext[$current][$group] = false;

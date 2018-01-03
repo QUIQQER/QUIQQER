@@ -900,7 +900,46 @@
             ]]></en>
         </locale>
         <locale name="exception.missing.permission.entry">
-            <en><![CDATA[Cannot find permissions for the Object]]></en>
+            <en><![CDATA[Cannot find permissions for the Object.]]></en>
+        </locale>
+        <locale name="exception.media.create.folder.only.in.folder">
+            <en><![CDATA[You can only create a folder in a folder.]]></en>
+        </locale>
+        <locale name="exception.trash.file.not.found">
+            <en><![CDATA[
+            No data for the file found. Can't restore the file.
+            ]]></en>
+        </locale>
+        <locale name="exception.trash.file.id.not.found">
+            <en><![CDATA[
+            File with ID #[id] could not be found in the Recycle Bin.
+            ]]></en>
+        </locale>
+        <locale name="exception.folder.has.no.images">
+            <en><![CDATA[The folder does not contain any images.]]></en>
+        </locale>
+        <locale name="exception.folder.has.no.files">
+            <en><![CDATA[The folder does not contain any files.]]></en>
+        </locale>
+        <locale name="exception.site.no.next.sibling">
+            <en><![CDATA[The page does not have a next sibling page.]]></en>
+        </locale>
+        <locale name="exception.site.no.previous.sibling">
+            <en><![CDATA[The page does not have a previous sibling page.]]></en>
+        </locale>
+        <locale name="exception.group.create.id.creation.error">
+            <en><![CDATA[
+                Die Gruppe konnte nicht angelegt werden.
+                Es ist ein Fehler bei der ID Erstellung aufgetreten.
+            ]]></en>
+        </locale>
+        <locale name="message.translation.file.not.found">
+            <de><![CDATA[Translation file for [file] not found.]]></de>
+        </locale>
+        <locale name="exception.timeout">
+            <de><![CDATA[
+                Request timeout. Please try again or at a later time.
+            ]]></de>
         </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->
@@ -1255,6 +1294,25 @@
         </locale>
         <locale name="panel.site.restore.button.restore">
             <en><![CDATA[Load local data]]></en>
+        </locale>
+        <locale name="message.maintenance" html="true">
+            <en><![CDATA[
+                Maintenance work is currently underway.<br />
+                Under certain circumstances, the system can only be used to a limited extent.<br />
+                Please contact your administrator.
+            ]]></en>
+        </locale>
+        <locale name="control.date.button.alt">
+            <en><![CDATA[Clear date]]></en>
+        </locale>
+        <locale name="control.date.button.title">
+            <en><![CDATA[Clear date]]></en>
+        </locale>
+        <locale name="control.date.missing.package">
+            <en><![CDATA[
+                The calendar package could not be found.
+                Please install quiqqer/calendar
+            ]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">
@@ -5592,6 +5650,9 @@
         </locale>
         <locale name="exception.media.file.already.exists">
             <en><![CDATA[A file with the name [filename] already exist.]]></en>
+        </locale>
+        <locale name="exception.media.folder.already.exists">
+            <en><![CDATA[A folder with the name [name] already exist.]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.session.type">
             <en><![CDATA[Session data storage]]></en>

@@ -919,12 +919,12 @@
         <locale name="exception.site.linked.already.exists">
             <de><![CDATA[
             Es kann keine Verknüpfung in dieser Ebene erstellt werden,
-            da eine Verknüpfung oder die original Seite bereits in dieser Ebene existiert
+            da eine Verknüpfung oder die original Seite bereits in dieser Ebene existiert.
             ]]></de>
         </locale>
 
         <locale name="exception.media.already.deleted">
-            <de><![CDATA[Datei ist bereits gelöscht]]></de>
+            <de><![CDATA[Datei ist bereits gelöscht.]]></de>
         </locale>
         <locale name="exception.media.file.with.same.name.exists">
             <de><![CDATA[
@@ -933,11 +933,51 @@
         </locale>
         <locale name="message.user.deleted.successful">
             <de><![CDATA[
-            Die Benutzer [ids] wurden erfolgreich gelöscht
+            Die Benutzer [ids] wurden erfolgreich gelöscht.
             ]]></de>
         </locale>
         <locale name="exception.missing.permission.entry">
             <de><![CDATA[Das zuständige Recht für das Objekt konnte nicht gefunden werden.]]></de>
+        </locale>
+        <locale name="exception.media.create.folder.only.in.folder">
+            <de><![CDATA[Sie können nur in einem Ordner einen Ordner erstellen.]]></de>
+        </locale>
+
+        <locale name="exception.trash.file.not.found">
+            <de><![CDATA[
+            Es wurden keine Daten für die Datei gefunden. Die Datei kann nicht wiederhergestellt werden.
+            ]]></de>
+        </locale>
+        <locale name="exception.trash.file.id.not.found">
+            <de><![CDATA[
+            Datei mit der ID #[id] konnte im Papierkorb nicht gefunden werden.
+            ]]></de>
+        </locale>
+        <locale name="exception.folder.has.no.images">
+            <de><![CDATA[Der Ordner enthält keine Bilder.]]></de>
+        </locale>
+        <locale name="exception.folder.has.no.files">
+            <de><![CDATA[Der Ordner enthält keine Dateien.]]></de>
+        </locale>
+        <locale name="exception.site.no.next.sibling">
+            <de><![CDATA[Die Seite besitzt keine nächstfolgende Seite.]]></de>
+        </locale>
+        <locale name="exception.site.no.previous.sibling">
+            <de><![CDATA[Die Seite besitzt keine vorhergehenden Seite.]]></de>
+        </locale>
+        <locale name="exception.group.create.id.creation.error">
+            <de><![CDATA[
+                Die Gruppe konnte nicht angelegt werden.
+                Es ist ein Fehler bei der ID Erstellung aufgetreten.
+            ]]></de>
+        </locale>
+        <locale name="message.translation.file.not.found">
+            <de><![CDATA[Übersetzungsdatei für [file] nicht gefunden.]]></de>
+        </locale>
+        <locale name="exception.timeout">
+            <de><![CDATA[
+                Zeitüberschreitung der Anfrage. Bitte versuchen Sie es erneut oder zu einem späteren Zeitpunkt.
+            ]]></de>
         </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">
@@ -1321,6 +1361,25 @@
         </locale>
         <locale name="panel.site.restore.button.restore">
             <de><![CDATA[Lokale Daten laden]]></de>
+        </locale>
+        <locale name="message.maintenance" html="true">
+            <de><![CDATA[
+                Derzeit werden Wartungsarbeiten getätigt.<br />
+                Unter Umstände ist das System nur eingeschränkt nutzbar.<br />
+                Bitte wenden Sie sich an ihren Administrator.
+            ]]></de>
+        </locale>
+        <locale name="control.date.button.alt">
+            <de><![CDATA[Datum leeren]]></de>
+        </locale>
+        <locale name="control.date.button.title">
+            <de><![CDATA[Datum leeren]]></de>
+        </locale>
+        <locale name="control.date.missing.package">
+            <de><![CDATA[
+                Das Kalender Paket konnte nicht gefunden werden.
+                Bitte installieren Sie quiqqer/calendar
+            ]]></de>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">
@@ -5845,6 +5904,9 @@
         </locale>
         <locale name="exception.media.file.already.exists">
             <de><![CDATA[Eine Datei mit dem Namen [filename] existiert bereits.]]></de>
+        </locale>
+        <locale name="exception.media.folder.already.exists">
+            <de><![CDATA[Eine Ordner mit dem Namen [name] existiert bereits.]]></de>
         </locale>
         <locale name="quiqqer.settings.auth.session.type">
             <de><![CDATA[Speicherung Sitzungsdaten]]></de>

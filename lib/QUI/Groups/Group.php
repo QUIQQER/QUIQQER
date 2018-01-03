@@ -66,7 +66,7 @@ class Group extends QUI\QDOM
 
         try {
             // falls cache vorhanden ist
-            $cache = QUI\Cache\Manager::get('qui/groups/group/' . $this->getId());
+            $cache = QUI\Cache\Manager::get('qui/groups/group/'.$this->getId());
 
             if (isset($cache['parentids'])) {
                 $this->parentids = $cache['parentids'];
@@ -170,8 +170,8 @@ class Group extends QUI\QDOM
                 WHERE usergroup LIKE :where"
             );
 
-            $Statement->bindValue('where', '%,' . $groupId . ',%');
-            $Statement->bindValue('search', ',' . $groupId . ',');
+            $Statement->bindValue('where', '%,'.$groupId.',%');
+            $Statement->bindValue('search', ','.$groupId.',');
             $Statement->bindValue('replace', ',');
             $Statement->execute();
         };
@@ -204,7 +204,7 @@ class Group extends QUI\QDOM
             )
         ));
 
-        QUI\Cache\Manager::clear('qui/groups/group/' . $this->getId());
+        QUI\Cache\Manager::clear('qui/groups/group/'.$this->getId());
     }
 
     /**
@@ -246,7 +246,7 @@ class Group extends QUI\QDOM
 
         foreach ($list as $entry) {
             $plugin  = $entry['name'];
-            $userXml = OPT_DIR . $plugin . '/group.xml';
+            $userXml = OPT_DIR.$plugin.'/group.xml';
 
             if (!file_exists($userXml)) {
                 continue;
@@ -671,7 +671,7 @@ class Group extends QUI\QDOM
                 'username'  => $username,
                 'usergroup' => array(
                     'type'  => '%LIKE%',
-                    'value' => ',' . $this->getId() . ','
+                    'value' => ','.$this->getId().','
                 )
             ),
             'limit'  => '1'
@@ -708,7 +708,7 @@ class Group extends QUI\QDOM
             'where' => array(
                 'usergroup' => array(
                     'type'  => '%LIKE%',
-                    'value' => "," . $this->getId() . ","
+                    'value' => ",".$this->getId().","
                 )
             )
         );
@@ -991,9 +991,13 @@ class Group extends QUI\QDOM
             }
         }
 
-        // #locale
         if (!$newid) {
-            throw new QUI\Exception('Could not create new group');
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'exception.group.create.id.creation.error'
+                )
+            );
         }
 
         QUI::getDataBase()->insert(
@@ -1024,7 +1028,7 @@ class Group extends QUI\QDOM
     protected function createCache()
     {
         // Cache aufbauen
-        QUI\Cache\Manager::set('qui/groups/group/' . $this->getId(), array(
+        QUI\Cache\Manager::set('qui/groups/group/'.$this->getId(), array(
             'parentids'  => $this->getParentIds(),
             'attributes' => $this->getAttributes(),
             'rights'     => $this->rights

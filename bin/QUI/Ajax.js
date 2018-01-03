@@ -262,12 +262,9 @@ define('Ajax', [
          * show a maintenance message
          */
         showMaintenanceMessage: function () {
-            // #locale
             QUI.getMessageHandler(function (MH) {
                 MH.addInformation(
-                    'Derzeit werden Wartungsarbeiten getätigt.<br />' +
-                    'Unter Umstände ist das System nur eingeschränkt nutzbar.<br />' +
-                    'Bitte wenden Sie sich an ihren Administrator.'
+                    Locale.get('quiqqer/quiqqer', 'message.maintenance')
                 );
             });
         },
