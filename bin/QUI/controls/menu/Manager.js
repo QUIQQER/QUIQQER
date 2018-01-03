@@ -166,6 +166,9 @@ define('controls/menu/Manager', [
                 }
             }).inject(Menu);
 
+            var letterClass = 'qui-profile-button-' + letter.toLowerCase();
+            Profile.addClass(letterClass);
+
             if (window.USER.avatar !== '') {
                 Profile.setStyle('background-image', "url('" + window.USER.avatar + "')");
                 Profile.set('html', '');
