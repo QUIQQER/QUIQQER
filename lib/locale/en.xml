@@ -900,7 +900,7 @@
             ]]></en>
         </locale>
         <locale name="exception.missing.permission.entry">
-            <en><![CDATA[Cannot find permissions for Object]]></en>
+            <en><![CDATA[Cannot find permissions for the Object]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->

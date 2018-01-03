@@ -200,8 +200,9 @@
             <de><![CDATA[Maximale Dateigröße eines Bildes]]></de>
         </locale>
         <locale name="projects.project.settings.panel.mediaSettings.maxUploadFileSize.description" html="true">
-            <de>
-                <![CDATA[Nur Bilder welche kleiner als der angegebene Wert sind dürfen hochgeladen werden.            ]]></de>
+            <de><![CDATA[
+            Nur Bilder welche kleiner als der angegebene Wert sind dürfen hochgeladen werden.
+            ]]></de>
         </locale>
         <locale name="projects.project.settings.panel.defaultSitestructure">
             <de><![CDATA[Seitenstruktur]]></de>
@@ -216,8 +217,10 @@
             <de><![CDATA[Möchten Sie für das Projekt eine standard Seitenstruktur anlegen?]]></de>
         </locale>
         <locale name="projects.project.settings.panel.defaultSitestructure.win.information" html="true">
-            <de>
-                <![CDATA[Für das Projekt werden standard Seiten angelegt, wie Impressum, Suche, AGB oder Datenschutz.            Dies vereinfacht den Start Ihrer neuen Seite oder Ihres neuen Projektes.            ]]></de>
+            <de><![CDATA[
+            Für das Projekt werden standard Seiten angelegt, wie Impressum, Suche, AGB oder Datenschutz.
+            Dies vereinfacht den Start Ihrer neuen Seite oder Ihres neuen Projektes.
+            ]]></de>
         </locale>
         <locale name="text.mail.subject">
             <de><![CDATA[QUIQQER Test E-Mail]]></de>
@@ -238,8 +241,10 @@
             <de><![CDATA[Selbst signierte Zerifikate erlauben.]]></de>
         </locale>
         <locale name="message.testmail.success" html="true">
-            <de>
-                <![CDATA[Test E-Mail erfolgreich versendet.<br />                Eine ausführliche LOG finden sie in der mailtest.log oder der debug.log            ]]></de>
+            <de><![CDATA[
+            Test E-Mail erfolgreich versendet.<br />
+            Eine ausführliche LOG finden sie in der mailtest.log oder der debug.log
+            ]]></de>
         </locale>
         <locale name="menu.search.title">
             <de><![CDATA[Suche]]></de>
@@ -260,8 +265,11 @@
             <de><![CDATA[Abmelden]]></de>
         </locale>
         <locale name="log.out.message">
-            <de>
-                <![CDATA[Bitte melden Sie sich vor dem schließen der Administration ab.            Ansonsten können bestehende Daten verloren gehen.            Möchten Sie trotzdem weiter fortfahren?            ]]></de>
+            <de><![CDATA[
+            Bitte melden Sie sich vor dem schließen der Administration ab.
+            Ansonsten können bestehende Daten verloren gehen.
+            Möchten Sie trotzdem weiter fortfahren?
+            ]]></de>
         </locale>
         <locale name="workspace.fixed">
             <de><![CDATA[Arbeitsbereich ist festgesetzt]]></de>
@@ -538,14 +546,16 @@
             <de><![CDATA[Lockserver verwenden]]></de>
         </locale>
         <locale name="quiqqer.settings.general.globals.lockserver.enabled.description">
-            <de>
-                <![CDATA[Der Lockserver lagert die Abhängigkeitsauflösung von Composer auf ein externes QUIQQER-System aus. <a href="https://dev.quiqqer.com/quiqqer/Lockserver/wikis/home" target='_blank'>Mehr Details</a>]]></de>
+            <de><![CDATA[
+                Der Lockserver lagert die Abhängigkeitsauflösung von Composer auf ein externes QUIQQER-System aus.
+                <a href="https://dev.quiqqer.com/quiqqer/Lockserver/wikis/home" target='_blank'>Mehr Details</a>
+            ]]></de>
         </locale>
         <locale name="site.type.standard">
             <de><![CDATA[Einfacher Inhalt]]></de>
         </locale>
     </groups>
-    <groups name="quiqqer/quiqqer" datatype="php">        <!-- Settings: auth -->
+    <groups name="quiqqer/quiqqer" datatype="php">
         <locale name="quiqqer.settings.auth.showResetPasswordBackend">
             <de><![CDATA["Passwort vergessen" im Backend Login]]></de>
         </locale>
@@ -556,23 +566,28 @@
             <de><![CDATA[Neues Passwort setzen erzwingen]]></de>
         </locale>
         <locale name="quiqqer.settings.auth.showResetPasswordBackend.description" html="true">
-            <de>
-                <![CDATA[Zeige "Passwort vergessen"-Option für das Login im Backend (Modul <b>quiqqer/verification</b> erforderlich!)]]></de>
+            <de><![CDATA[
+            Zeige "Passwort vergessen"-Option für das Login im Backend (Modul <b>quiqqer/verification</b> erforderlich!)
+            ]]></de>
         </locale>
         <locale name="quiqqer.settings.auth.showResetPasswordFrontend.description" html="true">
-            <de>
-                <![CDATA[Zeige "Passwort vergessen"-Option für das Login im Frontend (Modul <b>quiqqer/verification</b> erforderlich!)]]></de>
+            <de><![CDATA[
+            Zeige "Passwort vergessen"-Option für das Login im Frontend (Modul <b>quiqqer/verification</b> erforderlich!)
+            ]]></de>
         </locale>
         <locale name="quiqqer.settings.auth.forceNewPasswordOnReset.description">
-            <de>
-                <![CDATA[Benutzer, die Ihr Passwort über die "Passwort vergessen"-Funktion zurücksetzen, müssen nach dem ersten Login ihr Passwort ändern]]></de>
+            <de><![CDATA[
+            Benutzer, die Ihr Passwort über die "Passwort vergessen"-Funktion zurücksetzen,
+            müssen nach dem ersten Login ihr Passwort ändern
+            ]]></de>
         </locale>
         <locale name="quiqqer.settings.auth.passwordResetLinkValidTime">
             <de><![CDATA[Gültigkeitsdauer "Passwort vergessen"-Link]]></de>
         </locale>
         <locale name="quiqqer.settings.auth.passwordResetLinkValidTime.description" html="true">
-            <de>
-                <![CDATA[Gültigkeitsdauer in <b>Minuten</b> für den Link zur Bestätigung des Zurücksetzens des Passworts.]]></de>
+            <de><![CDATA[
+            Gültigkeitsdauer in <b>Minuten</b> für den Link zur Bestätigung des Zurücksetzens des Passworts.
+            ]]></de>
         </locale>
         <locale name="projects.project.settings.panel.settings.title">
             <de><![CDATA[Projekte]]></de>
@@ -638,8 +653,10 @@
             <de><![CDATA[AGB]]></de>
         </locale>
         <locale name="exception.delete.originalfile.notfound">
-            <de>
-                <![CDATA[Die Datei wurde auf dem Filesystem nicht gefunden.                Daher wird die Datei aus diesem Grund komplett gelöscht.                ]]></de>
+            <de><![CDATA[
+                Die Datei wurde auf dem Filesystem nicht gefunden.
+                Daher wird die Datei aus diesem Grund komplett gelöscht.
+            ]]></de>
         </locale>
         <locale name="exception.delete.root.file">
             <de><![CDATA[Sie können den Hauptordner nicht löschen.]]></de>
@@ -651,8 +668,11 @@
             <de><![CDATA[Globale Weiterleitungen]]></de>
         </locale>
         <locale name="message.online.update.RAM.not.enough" html="1">
-            <de>
-                <![CDATA[Für das Online-Update steht nicht genügende Arbeitsspeicher zur Verfügung.            Bitte führen Sie das Update in der CLI / Bash mit folgendem Befehl aus: <br />            <code>[command]</code>            ]]></de>
+            <de><![CDATA[
+            Für das Online-Update steht nicht genügende Arbeitsspeicher zur Verfügung.
+            Bitte führen Sie das Update in der CLI / Bash mit folgendem Befehl aus: <br />
+            <code>[command]</code>
+            ]]></de>
         </locale>
         <locale name="exception.console.execute.only.in.cli">
             <de><![CDATA[System Tools können nur in der CLI ausgeführt werden.]]></de>
@@ -724,8 +744,9 @@
             <de><![CDATA[Benutzername:]]></de>
         </locale>
         <locale name="console.tool.passwordreset.prompt.confirm">
-            <de>
-                <![CDATA[Sind Sie sicher, dass Sie das passwort des benutzers '[username]' zurücksetzen möchten? (y/n)]]></de>
+            <de><![CDATA[
+            Sind Sie sicher, dass Sie das passwort des benutzers '[username]' zurücksetzen möchten? (y/n)
+            ]]></de>
         </locale>
         <locale name="console.tool.passwordreset.prompt.confirm2">
             <de><![CDATA[Sind Sie wirklich sicher? Dies kann nicht rückgängig gemacht werden! (y/n)]]></de>
@@ -737,17 +758,22 @@
             <de><![CDATA[Das passwort wurde erfolgreich geändert! Das neue Passwort ist '[password]']]></de>
         </locale>
         <locale name="exception.zip.extension.not.installed">
-            <de>
-                <![CDATA[Die Aktion kann nicht durchgeführt werden.            Die ZIP Erweiterung von PHP ist auf dem System nicht vorhanden.            ]]></de>
+            <de><![CDATA[
+            Die Aktion kann nicht durchgeführt werden.
+            Die ZIP Erweiterung von PHP ist auf dem System nicht vorhanden.
+            ]]></de>
         </locale>
         <locale name="exception.zip.folder.is.empty">
             <de>
-                <![CDATA[Eine ZIP Datei kann nicht erstellt werden da der Ordner leer ist.            ]]></de>
+                <![CDATA[Eine ZIP Datei kann nicht erstellt werden da der Ordner leer ist.]]></de>
         </locale>
         <locale name="exception.image.upload.image.corrupted">
-            <de>
-                <![CDATA[Das Bild beinhaltet fehlerhafte oder korrupte Daten.            Leider konnte der Upload daher nicht erfolgreich durchgeführt werden.            Weitere Fehlerinformationen finden Sie in der error.log.            ]]></de>
-        </locale>        <!-- Consoletool: quiqqer:rename-project -->
+            <de><![CDATA[
+                Das Bild beinhaltet fehlerhafte oder korrupte Daten.
+                Leider konnte der Upload daher nicht erfolgreich durchgeführt werden.
+                Weitere Fehlerinformationen finden Sie in der error.log.
+            ]]></de>
+        </locale>
         <locale name="console.tool.project.rename.project.not.found">
             <de><![CDATA[Das ausgewählte Projekt wurde nicht gefunden.]]></de>
         </locale>
@@ -771,7 +797,7 @@
         </locale>
         <locale name="console.tool.project.rename.prompt.projectname.info">
             <de><![CDATA[Welches Projekt möchten Sie umbenennen: ]]></de>
-        </locale>        <!-- Consoletool: quiqqer:delete-project -->
+        </locale>
         <locale name="console.tool.project.delete.warning.header">
             <de><![CDATA[Achtung!]]></de>
         </locale>
@@ -788,12 +814,15 @@
             <de><![CDATA[Das ausgewählte Projekt wurde nicht gefunden.]]></de>
         </locale>
         <locale name="console.tool.project.delete.project.delete.last.project">
-            <de>
-                <![CDATA[Fehler: Sie versuchen das letzte Projekt zu löschen. Es muss immer mindestens ein Projekt existieren.]]>            </de>
+            <de><![CDATA[
+            Fehler: Sie versuchen das letzte Projekt zu löschen. Es muss immer mindestens ein Projekt existieren.
+            ]]></de>
         </locale>
         <locale name="console.tool.project.delete.prompt.warning.confirm">
-            <de>
-                <![CDATA[Sind Sie sich sicher, dass das Projekt gelöscht werden soll? Bitte bestätigen Sie dies durch die erneute Eingabe des Projektnamens]]></de>
+            <de><![CDATA[
+            Sind Sie sich sicher, dass das Projekt gelöscht werden soll?
+            Bitte bestätigen Sie dies durch die erneute Eingabe des Projektnamens
+            ]]></de>
         </locale>
         <locale name="console.tool.project.delete.prompt.projectname.confirm">
             <de><![CDATA[Projektname:]]></de>
@@ -811,8 +840,13 @@
             <de><![CDATA[Starte Setup für Paket "[package]"]]></de>
         </locale>
         <locale name="console.tool.setup.start.data" html="1">
-            <de>
-                <![CDATA[Aktuelles System<br />            Version: [version]<br />            Von: [versionDate]<br />            Referenz: [ref]<br />            Letzte Aktualisierungsprüfung: [date]            ]]></de>
+            <de><![CDATA[
+                Aktuelles System<br />
+                Version: [version]<br />
+                Von: [versionDate]<br />
+                Referenz: [ref]<br />
+                Letzte Aktualisierungsprüfung: [date]
+            ]]></de>
         </locale>
         <locale name="console.tool.setup.message.success">
             <de><![CDATA[Das Setup wurde erfolgreich durchgeführt.]]></de>
@@ -843,7 +877,7 @@
         </locale>
         <locale name="user.create.new.username">
             <de><![CDATA[Neuer Benutzer]]></de>
-        </locale>        <!-- Authenticator: QUIQQER Login -->
+        </locale>
         <locale name="controls.users.auth.quiqqerlogin.btn.password_reset">
             <de><![CDATA[Passwort zurücksetzen]]></de>
         </locale>
@@ -906,13 +940,13 @@
             <de><![CDATA[Das zuständige Recht für das Objekt konnte nicht gefunden werden.]]></de>
         </locale>
     </groups>
-    <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->
+    <groups name="quiqqer/quiqqer" datatype="js">
         <locale name="controls.email.select.email_invalid">
             <de><![CDATA[Diese E-Mail-Adresse ist ungültig. Bitte geben Sie eine gültige E-Mail-Adresse ein.]]></de>
         </locale>
         <locale name="controls.email.select.email_already_added">
             <de><![CDATA[Diese E-Mail-Adresse befindet sich bereits in der Liste.]]></de>
-        </locale>        <!-- Control: controls/packages/Panel -->
+        </locale>
         <locale name="controls.packages.search.template.togglePackageStore">
             <de><![CDATA[QUIQQER Store]]></de>
         </locale>
@@ -929,8 +963,11 @@
             <de><![CDATA[Suche...]]></de>
         </locale>
         <locale name="folderviewer.create.folder" html="true">
-            <de>
-                <![CDATA[<p>Es wurde kein Ordner zugewiesen.</p>                <p>Möchten Sie ein neuen Ordner anlegen?</p>                <br />            ]]></de>
+            <de><![CDATA[
+            <p>Es wurde kein Ordner zugewiesen.</p>
+            <p>Möchten Sie ein neuen Ordner anlegen?</p>
+            <br />
+            ]]></de>
         </locale>
         <locale name="site.window.siteChangesExists.title">
             <de><![CDATA[Die Seite besitzt Änderungen]]></de>
@@ -939,8 +976,10 @@
             <de><![CDATA[Die Seite besitzt Änderungen]]></de>
         </locale>
         <locale name="site.window.siteChangesExists.information" html="true">
-            <de>
-                <![CDATA[Möchten Sie diese Änderungen auch speichern?<br />            Die Seite wird aktiviert und die Änderungen werden gleichzeitig übernommen.            ]]></de>
+            <de><![CDATA[
+            Möchten Sie diese Änderungen auch speichern?<br />
+            Die Seite wird aktiviert und die Änderungen werden gleichzeitig übernommen.
+            ]]></de>
         </locale>
         <locale name="site.window.siteChangesExists.button.ok">
             <de><![CDATA[Änderungen auch speichern]]></de>
@@ -1189,7 +1228,7 @@
         </locale>
         <locale name="controls.workspace.search.filter.placeholder">
             <de><![CDATA[Durchsuchte Bereiche]]></de>
-        </locale>        <!-- Package search/store -->
+        </locale>
         <locale name="controls.packages.search.termsofuse.header">
             <de><![CDATA[Nutzungsbedingungen des Q-Store]]></de>
         </locale>
@@ -1843,7 +1882,7 @@
         </locale>
         <locale name="login.title">
             <de><![CDATA[Login]]></de>
-        </locale>        <!-- logout window -->
+        </locale>
         <locale name="window.logout.title">
             <de><![CDATA[Abmelden]]></de>
         </locale>
@@ -2298,8 +2337,12 @@
             <de><![CDATA[Unerlaubte Zeichen wurden gefunden]]></de>
         </locale>
         <locale name="projects.project.site.folder.createNewName.information" html="true">
-            <de>
-                <![CDATA[Möchten Sie die Zeichen ersetzen lassen?                <br /><br />                Folgender Ordnername wird verwendet:<br />                <b>[newName]</b>            ]]></de>
+            <de><![CDATA[
+                Möchten Sie die Zeichen ersetzen lassen?
+                <br /><br />
+                Folgender Ordnername wird verwendet:<br />
+                <b>[newName]</b>
+            ]]></de>
         </locale>
         <locale name="projects.project.site.childrensort.order_field">
             <de><![CDATA[Sortierungsfeld]]></de>
@@ -2362,8 +2405,9 @@
             <de><![CDATA[Möchten Sie die Verknüpfung wirklich löschen?]]></de>
         </locale>
         <locale name="projects.project.site.panel.window.deleteLinked.information" html="1">
-            <de>
-                <![CDATA[Die Verknüpfung <b>[path]</b> wird unwiderruflich gelöscht und kann nicht wieder hergestellt werden.]]></de>
+            <de><![CDATA[
+            Die Verknüpfung <b>[path]</b> wird unwiderruflich gelöscht und kann nicht wieder hergestellt werden.
+            ]]></de>
         </locale>
         <locale name="projects.project.site.panel.window.deleteLinked.button">
             <de><![CDATA[Verknüpfung löschen]]></de>
@@ -2387,8 +2431,13 @@
             <de><![CDATA[Unerlaubte Zeichen im Namen]]></de>
         </locale>
         <locale name="projects.project.site.panel.window.create.clear.information">
-            <de>
-                <![CDATA[Der Name der Seite beinhaltet Zeichen die nicht erlaubt sind. <br />                Sollen aus dem Namen die Sonderzeichen herausgefiltert werden und der ursprüngliche Name als Titel verwendet werden?                <br /><br />                <p>Neuer Name der Seite: <b>[newName]</b></p>                <p>Neuer Title der Seite: <b>[value]</b></p>            ]]></de>
+            <de><![CDATA[
+            Der Name der Seite beinhaltet Zeichen die nicht erlaubt sind. <br />
+            Sollen aus dem Namen die Sonderzeichen herausgefiltert werden und der ursprüngliche Name als Titel verwendet werden?
+            <br /><br />
+            <p>Neuer Name der Seite: <b>[newName]</b></p>
+            <p>Neuer Title der Seite: <b>[value]</b></p>
+            ]]></de>
         </locale>
         <locale name="projects.project.site.panel.sort.title">
             <de><![CDATA[Sortierung der Seiten unter #[id] [title]]]></de>
@@ -2415,8 +2464,10 @@
             <de><![CDATA[Seiten Inhalte in eine andere Sprache und Verknüpfung erstellen.]]></de>
         </locale>
         <locale name="projects.project.site.panel.copySiteToLink.window.information" html="true">
-            <de>
-                <![CDATA[Es wird eine neue Seite in der Sprache <b>[lang]</b> mit allen Inhalte dieser Seite erstellt.<br />            Die Sprachverknüpfung zu dieser Seite wird automatisch gesetzt.            ]]></de>
+            <de><![CDATA[
+            Es wird eine neue Seite in der Sprache <b>[lang]</b> mit allen Inhalte dieser Seite erstellt.<br />
+            Die Sprachverknüpfung zu dieser Seite wird automatisch gesetzt.
+            ]]></de>
         </locale>
         <locale name="projects.project.site.panel.copySiteToLink.window.submit">
             <de><![CDATA[Elternseite auswählen]]></de>
@@ -2503,8 +2554,9 @@
             <de><![CDATA[Möchten Sie die Gruppe [group] wirklich löschen?]]></de>
         </locale>
         <locale name="groups.group.delete.information">
-            <de>
-                <![CDATA[Die Gruppe wird komplett aus dem System entfernt und kann nicht wieder hergestellt werden]]></de>
+            <de><![CDATA[
+            Die Gruppe wird komplett aus dem System entfernt und kann nicht wieder hergestellt werden
+            ]]></de>
         </locale>
         <locale name="groups.group.btn.save">
             <de><![CDATA[Speichern]]></de>
@@ -2549,8 +2601,10 @@
             <de><![CDATA[Suche starten ...]]></de>
         </locale>
         <locale name="groups.panel.search.active.message">
-            <de>
-                <![CDATA[Sucheparameter sind aktiviert.<br />                Klicken Sie hier um die Suche zu beenden und alle Gruppen wieder anzeigen zu lassen]]></de>
+            <de><![CDATA[
+                Sucheparameter sind aktiviert.<br />
+                Klicken Sie hier um die Suche zu beenden und alle Gruppen wieder anzeigen zu lassen
+            ]]></de>
         </locale>
         <locale name="groups.panel.create.window.title">
             <de><![CDATA[Gruppe erstellen]]></de>
@@ -2620,8 +2674,10 @@
             <de><![CDATA[Prüfen Sie QUIQQER auf neue Updates]]></de>
         </locale>
         <locale name="packages.grid.update.information">
-            <de>
-                <![CDATA[<p>Alle Plugins, Pakete und auch QUIQQER selbst werden auf neuere Versionen geprüft.</p>                <p>Klicken Sie "Auf Update prüfen" um die Prüfung zu starten.</p>]]></de>
+            <de><![CDATA[
+                <p>Alle Plugins, Pakete und auch QUIQQER selbst werden auf neuere Versionen geprüft.</p>
+                <p>Klicken Sie "Auf Update prüfen" um die Prüfung zu starten.</p>
+            ]]></de>
         </locale>
         <locale name="packages.grid.update.btn.execute">
             <de><![CDATA[Komplettes Update durchführen.]]></de>
@@ -2726,8 +2782,10 @@
             <de><![CDATA[Die Server werden unwiderruflich aus der Updateserver-Liste entfernt.]]></de>
         </locale>
         <locale name="packages.systemhealth.text">
-            <de>
-                <![CDATA[<h1>Haben sich Dateien verändert?</h1>                <p>Führen Sie einen Selbstcheck durch oder prüfen Sie Ihr System mit unseren Online Servern.</p>]]></de>
+            <de><![CDATA[
+                <h1>Haben sich Dateien verändert?</h1>
+                <p>Führen Sie einen Selbstcheck durch oder prüfen Sie Ihr System mit unseren Online Servern.</p>
+            ]]></de>
         </locale>
         <locale name="packages.grid.healthcheck.systemcheck">
             <de><![CDATA[Systemcheck durchführen]]></de>
@@ -2751,8 +2809,10 @@
             <de><![CDATA[Änderungen speichern]]></de>
         </locale>
         <locale name="file.message.corrupt.file">
-            <de>
-                <![CDATA[Die Datei ist fehlerhaft und kann nicht hochgeladen werden.<br />                Bitte laden Sie eine andere Datei hoch.]]></de>
+            <de><![CDATA[
+                Die Datei ist fehlerhaft und kann nicht hochgeladen werden.<br />
+                Bitte laden Sie eine andere Datei hoch.
+            ]]></de>
         </locale>
         <locale name="file.upload.cancel.title">
             <de><![CDATA[Upload abbrechen]]></de>
@@ -2767,19 +2827,26 @@
             <de><![CDATA[Von der Liste entfernen]]></de>
         </locale>
         <locale name="file.upload.unknown.filetype">
-            <de>
-                <![CDATA[Die Dateiart ist unbekannt.<br />                Bitte wählen Sie für den Upload nur Dateien und Bilder aus.<br />                Ordner können nur gepackt hochgeladen werden.]]></de>
+            <de><![CDATA[
+                Die Dateiart ist unbekannt.<br />
+                Bitte wählen Sie für den Upload nur Dateien und Bilder aus.<br />
+                Ordner können nur gepackt hochgeladen werden.
+            ]]></de>
         </locale>
         <locale name="upload.manager.message.not.finish">
-            <de>
-                <![CDATA[Sie haben nicht fertiggestellte Uploads im Upload-Manager.<br />                Führen Sie die Uploads bitte fort oder brechen Sie diese ab.]]></de>
+            <de><![CDATA[
+            Sie haben nicht fertiggestellte Uploads im Upload-Manager.<br />
+            Führen Sie die Uploads bitte fort oder brechen Sie diese ab.
+            ]]></de>
         </locale>
         <locale name="upload.manager.message.archivfile.title">
             <de><![CDATA[Archiv Dateien gefunden]]></de>
         </locale>
         <locale name="upload.manager.message.archivfile.text">
-            <de>
-                <![CDATA[Sie möchten folgende Archivdateien hochladen.<br />                Möchten Sie diese direkt entpacken?]]></de>
+            <de><![CDATA[
+            Sie möchten folgende Archivdateien hochladen.<br />
+            Möchten Sie diese direkt entpacken?
+            ]]></de>
         </locale>
         <locale name="upload.manager.message.archivfile.btn.start">
             <de><![CDATA[Upload starten]]></de>
@@ -2930,8 +2997,10 @@
             <de><![CDATA[Benutzerverwaltung]]></de>
         </locale>
         <locale name="users.panel.search.info">
-            <de>
-                <![CDATA[Suchparameter sind aktiviert.<br />                Klicken Sie hier um die Suche zu beenden und alle Benutzer wieder anzeigen zu lassen.]]></de>
+            <de><![CDATA[
+                Suchparameter sind aktiviert.<br />
+                Klicken Sie hier um die Suche zu beenden und alle Benutzer wieder anzeigen zu lassen.
+            ]]></de>
         </locale>
         <locale name="users.panel.user.is.active">
             <de><![CDATA[Benutzer ist aktiviert. Per Klick auf den Button deaktivieren Sie den Benutzer.]]></de>
@@ -4429,12 +4498,15 @@
             <de><![CDATA[Sie möchten eine inaktive Datei oder ein inaktiven Ordner einfügen.]]></de>
         </locale>
         <locale name="projects.project.site.media.popup.noProject.text" html="true">
-            <de>
-                <![CDATA[Es wurde leider kein Projekt zu gewiesen.<br />                Bitte wählen Sie ein Projekt aus, aus welchem Sie Dateien auswählen möchten.            ]]></de>
+            <de><![CDATA[
+                Es wurde leider kein Projekt zu gewiesen.<br />
+                Bitte wählen Sie ein Projekt aus, aus welchem Sie Dateien auswählen möchten.
+            ]]></de>
         </locale>
         <locale name="projects.project.site.media.popup.window.activate.information" html="true">
-            <de>
-                <![CDATA[Inaktive Dateien können nicht eingefügt werden. Möchten Sie diese Datei daher aktivieren?]]></de>
+            <de><![CDATA[
+            Inaktive Dateien können nicht eingefügt werden. Möchten Sie diese Datei daher aktivieren?
+            ]]></de>
         </locale>
         <locale name="users.user.btn.password.generate">
             <de><![CDATA[Passwort generieren]]></de>
@@ -4446,12 +4518,17 @@
             <de><![CDATA[Benutzer deaktivieren]]></de>
         </locale>
         <locale name="users.panel.deactivate.window.information" html="true">
-            <de>
-                <![CDATA[<p>Möchten Sie den Benutzer wirklich deaktivieren?</p>                <p>Der Benutzer kann sich nicht mehr am System anmelden.</p>]]></de>
+            <de><![CDATA[
+            <p>Möchten Sie den Benutzer wirklich deaktivieren?</p>
+            <p>Der Benutzer kann sich nicht mehr am System anmelden.</p>
+            ]]></de>
         </locale>
         <locale name="users.panel.deactivate.window.text" html="true">
-            <de>
-                <![CDATA[Sie möchten folgenden Benutzer deaktivieren:                <br /><br />                [userid] - [username]]]></de>
+            <de><![CDATA[
+                Sie möchten folgenden Benutzer deaktivieren:
+                <br /><br />
+                [userid] - [username]
+            ]]></de>
         </locale>
         <locale name="lang.en">
             <de><![CDATA[England]]></de>
@@ -4550,8 +4627,12 @@
             <de><![CDATA[[count] von [max] Uploads genutzt.]]></de>
         </locale>
         <locale name="upload.form.background.text">
-            <de>
-                <![CDATA[<p>                    Um eine Datei hinzuzufügen, klicken Sie bitte auf <u>Datei auswählen</u> oder<br />                    ziehen Sie eine Datei in dieses Feld.                </p>]]></de>
+            <de><![CDATA[
+                <p>Um eine Datei hinzuzufügen, klicken Sie bitte auf <u>Datei auswählen</u> oder
+                <br />
+                ziehen Sie eine Datei in dieses Feld.
+                </p>
+            ]]></de>
         </locale>
         <locale name="packages.category.modules">
             <de><![CDATA[Module]]></de>
@@ -4613,7 +4694,7 @@
         </locale>
         <locale name="controls.group.deleteusers.confirm.title">
             <de><![CDATA[Benutzer entfernen]]></de>
-        </locale>        <!-- LicenseKey -->
+        </locale>
         <locale name="controls.licensekey.template.header">
             <de><![CDATA[QUIQQER Lizenz-Informationen]]></de>
         </locale>
@@ -5536,8 +5617,10 @@
             <de><![CDATA[Veröffentlichung bis]]></de>
         </locale>
         <locale name="projects.project.site.panel.settings.publication.info">
-            <de>
-                <![CDATA[Beachten Sie:<br />                Damit die Seite automatisiert veröffentlicht wird, muss in der "Geplante Aufgaben"-Verwaltung die Veröffentlichungs-Aufgabe eingerichtet sein.]]></de>
+            <de><![CDATA[
+            Beachten Sie:<br />
+            Damit die Seite automatisiert veröffentlicht wird, muss in der "Geplante Aufgaben"-Verwaltung die Veröffentlichungs-Aufgabe eingerichtet sein.
+            ]]></de>
         </locale>
         <locale name="projects.project.site.panel.settings.media">
             <de><![CDATA[Media-Einstellungen]]></de>
@@ -5672,15 +5755,18 @@
             <de><![CDATA[HTTP Strict Transport Security]]></de>
         </locale>
         <locale name="quiqqer.settings.security_headers.hsts.description">
-            <de>
-                <![CDATA[HTTP Strict Transport Security (HSTS) ist ein Sicherheitsmechanismus für HTTPS-Verbindungen, der sowohl vor Aushebelung der Verbindungsverschlüsselung durch eine downgrade Attacke als auch vor Session Hijacking schützen soll.]]></de>
+            <de><![CDATA[
+                HTTP Strict Transport Security (HSTS) ist ein Sicherheitsmechanismus für HTTPS-Verbindungen,
+                der sowohl vor Aushebelung der Verbindungsverschlüsselung durch eine downgrade Attacke als auch vor Session Hijacking schützen soll.
+            ]]></de>
         </locale>
         <locale name="quiqqer.settings.security_headers.hsts.max_age">
             <de><![CDATA[Max-age]]></de>
         </locale>
         <locale name="quiqqer.settings.security_headers.hsts.max_age.description" html="true">
-            <de>
-                <![CDATA[<b>max-age</b> entspricht der Dauer in Sekunden, während der Browser die HSTS-Regel zwischenspeichern soll.            ]]></de>
+            <de><![CDATA[
+            <b>max-age</b> entspricht der Dauer in Sekunden, während der Browser die HSTS-Regel zwischenspeichern soll.
+            ]]></de>
         </locale>
         <locale name="quiqqer.settings.security_headers.hsts.subdomains">
             <de><![CDATA[Subdomains]]></de>
@@ -5692,8 +5778,10 @@
             <de><![CDATA[Preload]]></de>
         </locale>
         <locale name="quiqqer.settings.security_headers.hsts.preload.description">
-            <de>
-                <![CDATA[Durch eine von Google Chrome betreute und den anderen großen Webbrowsern genutzte            HSTS preload list werden die Limitierungen des trust on first use-Prinzip für eine definierte            Liste von Domains umgangen.            ]]></de>
+            <de><![CDATA[Durch eine von Google Chrome betreute und den anderen großen Webbrowsern genutzte
+            HSTS preload list werden die Limitierungen des trust on first use-Prinzip für eine definierte
+            Liste von Domains umgangen.
+            ]]></de>
         </locale>
         <locale name="quiqqer.settings.security_headers.csp.title">
             <de><![CDATA[Content Security Policy (CSP)]]></de>
@@ -5702,8 +5790,13 @@
             <de><![CDATA[Zeitzone]]></de>
         </locale>
         <locale name="quiqqer.settings.general.globals.timezone.description" html="true">
-            <de>
-                <![CDATA[<p>Diese Einstellung beeinflusst alle Zeit und Datumsangaben.</p>                <p>                    Eine Liste aller Zeitzonen finden Sie unter:                    <a href="http://php.net/manual/de/timezones.php" target="_blank">http://php.net/manual/de/timezones.php</a>                </p>]]></de>
+            <de><![CDATA[
+                <p>Diese Einstellung beeinflusst alle Zeit und Datumsangaben.</p>
+                <p>
+                    Eine Liste aller Zeitzonen finden Sie unter:
+                    <a href="http://php.net/manual/de/timezones.php" target="_blank">http://php.net/manual/de/timezones.php</a>
+                </p>
+            ]]></de>
         </locale>
         <locale name="quiqqer.settings.date_formats">
             <de><![CDATA[Datumsformat]]></de>
@@ -5790,7 +5883,7 @@
         </locale>
         <locale name="quiqqer.settings.email.queue">
             <de><![CDATA[Mail-Queue aktivieren]]></de>
-        </locale>        <!-- License key -->
+        </locale>
         <locale name="message.ajax.licenseKey.upload.error">
             <de><![CDATA[Beim Einlesen der Lizenz-Datei ist ein Fehler aufgetreten.
                 Ggf. ist die Lizenz-Datei ungültig. Bitte wenden Sie sich an einen Administrator oder an die Stelle,
