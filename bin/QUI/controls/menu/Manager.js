@@ -29,8 +29,8 @@ define('controls/menu/Manager', [
         initialize: function (options) {
             this.parent(options);
 
-            this.$Bar = null;
-            this.$Profile = null;
+            this.$Bar      = null;
+            this.$Profile  = null;
             this.$isLoaded = false;
         },
 
@@ -165,6 +165,16 @@ define('controls/menu/Manager', [
                     }
                 }
             }).inject(Menu);
+
+            new Element('span', {
+                html  : '<span class="fa fa-angle-down"></span>',
+                styles: {
+                    position: 'absolute',
+                    right   : -15,
+                    top     : 0
+                }
+            }).inject(Profile);
+
 
             Profile.addClass('qui-profile-button-' + letter.toLowerCase());
 

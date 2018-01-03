@@ -8,13 +8,13 @@
     cursor: pointer;
     float: right !important;
     font-size: 16px;
-    height: 40px;
-    line-height: 40px;
-    margin: 5px 10px 0 0;
+    height: 30px;
+    line-height: 30px;
+    margin: 15px 30px 0 0;
     position: relative;
     text-align: center;
     top: -10px;
-    width: 40px;
+    width: 30px;
 }
 
 .qui-profile-button:hover {
@@ -40,7 +40,7 @@
 
 .qui-profile-button-b,
 .qui-profile-button-0 {
-    background-color: #479bcc;
+    background-color: #6fc3f5;
     border-color: #2d76a0;
     color: #2d76a0;
 }
