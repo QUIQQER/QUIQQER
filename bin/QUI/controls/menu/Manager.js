@@ -140,7 +140,6 @@ define('controls/menu/Manager', [
 
             var Profile = new Element('div', {
                 'class': 'qui-contextmenu-baritem smooth qui-profile-button',
-                html   : letter,
                 events : {
                     click: function (event) {
                         event.stop();
@@ -166,6 +165,11 @@ define('controls/menu/Manager', [
                 }
             }).inject(Menu);
 
+            var LetterElm = new Element('span', {
+                html   : letter,
+                'class': 'qui-profile-button-letter'
+            }).inject(Profile);
+
             new Element('span', {
                 html  : '<span class="fa fa-angle-down"></span>',
                 styles: {
@@ -175,12 +179,11 @@ define('controls/menu/Manager', [
                 }
             }).inject(Profile);
 
-
-            Profile.addClass('qui-profile-button-' + letter.toLowerCase());
-
             if (window.USER.avatar !== '') {
                 Profile.setStyle('background-image', "url('" + window.USER.avatar + "')");
-                Profile.set('html', '');
+                LetterElm.destroy();
+            } else {
+                Profile.addClass('qui-profile-button-' + letter.toLowerCase());
             }
         },
 

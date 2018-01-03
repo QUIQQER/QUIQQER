@@ -31,6 +31,10 @@
     color: #666;
 }
 
+.qui-profile-button .fa {
+    color: #212527;
+}
+
 .qui-profile-button-a,
 .qui-profile-button-_ {
     background-color: #2f8fc6;
@@ -40,7 +44,7 @@
 
 .qui-profile-button-b,
 .qui-profile-button-0 {
-    background-color: #6fc3f5;
+    background-color: #a4ddff;
     border-color: #2d76a0;
     color: #2d76a0;
 }
@@ -75,14 +79,14 @@
 
 .qui-profile-button-g,
 .qui-profile-button-5 {
-    background-color: #8f5eec;
+    background-color: #996bf1;
     border-color: #7e5ac3;
     color: #fff;
 }
 
 .qui-profile-button-h,
 .qui-profile-button-6 {
-    background-color: #d5c5f3;
+    background-color: #e1d6f7;
     border-color: #7e5ac3;
     color: #7e5ac3;
 }
@@ -117,9 +121,9 @@
 
 .qui-profile-button-n,
 .qui-profile-button-o {
-    background-color: #f7f753;
+    background-color: #f3f300;
     border-color: #caca2e;
-    color: #84842d;
+    color: #676725;
 }
 
 .qui-profile-button-p,
