@@ -31,10 +31,10 @@ define('controls/help/About', [
         ],
 
         options: {
-            maxHeight: 400,
-            maxWidth : 600,
-            title    : QUILocale.get('quiqqer/system', 'menu.help.about.text'),
-            buttons  : false
+            maxHeight      : 400,
+            maxWidth       : 600,
+            title          : QUILocale.get('quiqqer/system', 'menu.help.about.text'),
+            closeButtonText: QUILocale.get('quiqqer/system', 'close')
         },
 
         initialize: function (options) {
