@@ -4880,6 +4880,12 @@
         <locale name="quiqqer.auth.login.password_reset">
             <de><![CDATA[Passwort vergessen]]></de>
         </locale>
+        <locale name="quiqqer.auth.login.password.message">
+            <de><![CDATA[
+            Passwort anfordern. Wenn Sie Ihr Passwort vergessen haben, geben Sie hier bitte Ihre Email-Adresse ein und klicken auf 'Passwort zurücksetzen'.
+            Sie bekommen dann eine Email mit Ihrem Benutzernamen und einem neuen Passwort zugesendet.
+        ]]></de>
+        </locale>
         <locale name="mail.auth.password_reset_confirm.subject">
             <de><![CDATA[Passwort zurücksetzen]]></de>
         </locale>

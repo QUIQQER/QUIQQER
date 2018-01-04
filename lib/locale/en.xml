@@ -4764,6 +4764,12 @@
         <locale name="quiqqer.auth.login.password_reset">
             <en><![CDATA[Forgot password]]></en>
         </locale>
+        <locale name="quiqqer.auth.login.password.message">
+            <de><![CDATA[
+            Request password. If you have forgotten your password, please enter your email address here and click on' Reset password'.
+            You will then receive an email with your user name and a new password.
+        ]]></de>
+        </locale>
         <locale name="mail.auth.password_reset_confirm.subject">
             <en><![CDATA[Reset password]]></en>
         </locale>
