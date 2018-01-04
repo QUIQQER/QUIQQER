@@ -1112,7 +1112,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         }
 
         throw new QUI\Exception(
-            'No Child found with name '.$name,
+            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.child.by.name.not.found', array(
+                'name' => $name
+            )),
             705
         );
     }

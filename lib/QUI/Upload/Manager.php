@@ -330,10 +330,7 @@ class Manager
 
         if (strpos($function, 'ajax_') === 0) {
             // if the function is a ajax_function
-            $_rf_file = OPT_DIR.'quiqqer/quiqqer/admin/'.
-                        str_replace('_', '/', $function).
-                        '.php';
-
+            $_rf_file = OPT_DIR.'quiqqer/quiqqer/admin/'.str_replace('_', '/', $function).'.php';
             $_rf_file = Orthos::clearPath(realpath($_rf_file));
 
             if (file_exists($_rf_file)) {
@@ -376,7 +373,7 @@ class Manager
      * If the upload is not over HTML5
      *
      * @param string|callback $onfinish - Function
-     * @param                 $params - extra params for the \QUI\QDOM File Object
+     * @param $params - extra params for the \QUI\QDOM File Object
      *
      * @throws \QUI\Exception
      */
@@ -384,7 +381,7 @@ class Manager
     {
         if (empty($_FILES) || !isset($_FILES['files'])) {
             throw new QUI\Exception(
-                'No files where send',
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.no.data'),
                 400
             );
         }
@@ -399,7 +396,11 @@ class Manager
             $file      = $uploaddir.$filename;
 
             if (!move_uploaded_file($list["tmp_name"], $file)) {
-                throw new QUI\Exception('Could not move file'.$filename);
+                throw new QUI\Exception(
+                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.move', array(
+                        'file' => $file
+                    ))
+                );
             }
 
             // extract if the the extract file is set
@@ -434,7 +435,9 @@ class Manager
             $file      = $uploaddir.$filename;
 
             if (!move_uploaded_file($list["tmp_name"], $file)) {
-                throw new QUI\Exception('Could not move file'.$filename);
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.move', array(
+                    'file' => $filename
+                ));
             }
 
             // extract if the the extract file is set
@@ -461,7 +464,7 @@ class Manager
     }
 
     /**
-     * Check if some errors occured on the upload entry
+     * Check if some errors occurred on the upload entry
      *
      * @param integer $error
      *
@@ -471,40 +474,35 @@ class Manager
     protected function checkUpload($error)
     {
         switch ($error) {
-            // There is no error, the file upload was successfull
+            // There is no error, the file upload was successful
             case UPLOAD_ERR_OK:
                 return true;
                 break;
 
             case UPLOAD_ERR_INI_SIZE:
                 throw new QUI\Exception(
-                    'The uploaded file exceeds the upload_max_filesize'
+                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.max.filesize')
                 );
-                break;
 
             case UPLOAD_ERR_FORM_SIZE:
                 throw new QUI\Exception(
-                    'The uploaded file exceeds the MAX_FILE_SIZE'
+                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.max.form.filesize')
                 );
-                break;
 
             case UPLOAD_ERR_PARTIAL:
                 throw new QUI\Exception(
-                    'The uploaded file was only partially uploaded.'
+                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.partially.uploaded')
                 );
-                break;
 
             case UPLOAD_ERR_NO_FILE:
                 throw new QUI\Exception(
-                    'No file was uploaded'
+                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.no.data')
                 );
-                break;
 
             case UPLOAD_ERR_NO_TMP_DIR:
                 throw new QUI\Exception(
-                    'Missing a temporary folder'
+                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.missing.temp')
                 );
-                break;
         }
 
         return true;
@@ -526,7 +524,7 @@ class Manager
 
         if ($fileinfo['mime_type'] != 'application/zip') {
             throw new QUI\Exception(
-                'No supported archive was uploaded. Could not extract the File'
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.unsupported.archive')
             );
         }
 
@@ -640,7 +638,10 @@ class Manager
         ));
 
         if (!isset($db_result[0])) {
-            throw new QUI\Exception('File not found', 404);
+            throw new QUI\Exception(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.not.found'),
+                404
+            );
         }
 
         $File = new QUI\QDOM();

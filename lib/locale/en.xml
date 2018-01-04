@@ -200,8 +200,9 @@
             <en><![CDATA[Maximum file size of an image]]></en>
         </locale>
         <locale name="projects.project.settings.panel.mediaSettings.maxUploadFileSize.description" html="true">
-            <en>
-                <![CDATA[Only images smaller than the specified value are allowed to be uploaded.            ]]></en>
+            <en><![CDATA[
+            Only images smaller than the specified value are allowed to be uploaded.
+            ]]></en>
         </locale>
         <locale name="projects.project.settings.panel.defaultSitestructure">
             <en><![CDATA[Page structure]]></en>
@@ -216,8 +217,10 @@
             <en><![CDATA[Do you want to create a standard page structure for the project?]]></en>
         </locale>
         <locale name="projects.project.settings.panel.defaultSitestructure.win.information" html="true">
-            <en>
-                <![CDATA[            For the project standard pages are created, such as imprint, search, terms and conditions or privacy policy.            This simplifies the start of your new page or project.            ]]></en>
+            <en><![CDATA[
+            For the project standard pages are created, such as imprint, search, terms and conditions or privacy policy.
+            This simplifies the start of your new page or project.
+            ]]></en>
         </locale>
         <locale name="text.mail.subject">
             <en><![CDATA[QUIQQER Test Email]]></en>
@@ -238,8 +241,9 @@
             <en><![CDATA[Allow self signed certificates.]]></en>
         </locale>
         <locale name="message.testmail.success" html="true">
-            <en>
-                <![CDATA[Test Email successfuly send.                You can find a detailed Log in mailtest.log or debug.log.            ]]></en>
+            <en><![CDATA[
+            Test Email successfuly send. You can find a detailed Log in mailtest.log or debug.log.
+            ]]></en>
         </locale>
         <locale name="menu.search.title">
             <en><![CDATA[Search]]></en>
@@ -260,8 +264,11 @@
             <en><![CDATA[Log out]]></en>
         </locale>
         <locale name="log.out.message">
-            <en>
-                <![CDATA[            Please sign out before you close the administration.            Otherwise, existing data will be lost.            Would you still continue to proceed?            ]]></en>
+            <en><![CDATA[
+            Please sign out before you close the administration.
+            Otherwise, existing data will be lost.
+            Would you still continue to proceed?
+            ]]></en>
         </locale>
         <locale name="workspace.fixed">
             <en><![CDATA[Workspace is fixed]]></en>
@@ -485,6 +492,9 @@
         <locale name="exception.media.move.is.no.folder">
             <en><![CDATA[Please select a folder to move the files.]]></en>
         </locale>
+        <locale name="exception.media.move">
+            <en><![CDATA[The file [file] could not be moved]]></en>
+        </locale>
         <locale name="exception.media.copy.is.no.folder">
             <en><![CDATA[Please select a folder to copy the files.]]></en>
         </locale>
@@ -497,6 +507,28 @@
             You can only upload files to a folder.
             ]]></en>
         </locale>
+        <locale name="exception.media.upload.no.data">
+            <en><![CDATA[No data was sent from files.]]></en>
+        </locale>
+        <locale name="exception.media.upload.max.filesize">
+            <en><![CDATA[The uploaded file exceeds the upload_max_filesize.]]></en>
+        </locale>
+        <locale name="exception.media.upload.max.form.filesize">
+            <en><![CDATA[The uploaded file exceeds the MAX_FILE_SIZE]]></en>
+        </locale>
+        <locale name="exception.media.upload.partially.uploaded">
+            <en><![CDATA[The uploaded file was only partially uploaded.]]></en>
+        </locale>
+        <locale name="exception.media.upload.missing.temp">
+            <en><![CDATA[Missing a temporary folder.]]></en>
+        </locale>
+        <locale name="exception.media.upload.unsupported.archive">
+            <en><![CDATA[An unsupported archive was uploaded. The archive couldn't extracted.]]></en>
+        </locale>
+        <locale name="exception.media.file.not.found">
+            <en><![CDATA[File not found.]]></en>
+        </locale>
+
         <locale name="control.editor.toolbar.select.search.field.placeholder">
             <en><![CDATA[Search toolbars ...]]></en>
         </locale>
@@ -522,8 +554,9 @@
             <en><![CDATA[URL Package Store Website]]></en>
         </locale>
         <locale name="quiqqer.settings.packagestore.url.description">
-            <en>
-                <![CDATA[This site is shown in an iframe, when the user clicks "Install extensions" in the System administration.]]></en>
+            <en><![CDATA[
+            This site is shown in an iframe, when the user clicks "Install extensions" in the System administration.
+            ]]></en>
         </locale>
         <locale name="quiqqer.settings.license.title">
             <en><![CDATA[QUIQQER License]]></en>
@@ -538,8 +571,10 @@
             <en><![CDATA[Use lockserver]]></en>
         </locale>
         <locale name="quiqqer.settings.general.globals.lockserver.enabled.description">
-            <en>
-                <![CDATA[The lockserver outsources the dependency solution to an external QUIQQER server. <a href="https://dev.quiqqer.com/quiqqer/Lockserver/wikis/home" target='_blank'>Read more</a>]]></en>
+            <en><![CDATA[
+            The lockserver outsources the dependency solution to an external QUIQQER server.
+            <a href="https://dev.quiqqer.com/quiqqer/Lockserver/wikis/home" target='_blank'>Read more</a>
+            ]]></en>
         </locale>
         <locale name="site.type.standard">
             <en><![CDATA[Default content]]></en>
@@ -556,16 +591,19 @@
             <en><![CDATA[Force set new password]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.showResetPasswordBackend.description" html="true">
-            <en>
-                <![CDATA[Show "Forgot password" option for backend Login (requires module <b>quiqqer/verification</b>!)]]></en>
+            <en><![CDATA[
+            Show "Forgot password" option for backend Login (requires module <b>quiqqer/verification</b>!)
+            ]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.showResetPasswordFrontend.description" html="true">
-            <en>
-                <![CDATA[Show "Forgot password" option for frontend Login (requires module <b>quiqqer/verification</b>!)]]></en>
+            <en><![CDATA[
+            Show "Forgot password" option for frontend Login (requires module <b>quiqqer/verification</b>!)
+            ]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.forceNewPasswordOnReset.description">
-            <en>
-                <![CDATA[Users who reset their password via the "Forgot password" function must change their password after the first login]]></en>
+            <en><![CDATA[
+            Users who reset their password via the "Forgot password" function must change their password after the first login
+            ]]></en>
         </locale>
         <locale name="quiqqer.settings.auth.passwordResetLinkValidTime">
             <en><![CDATA[Period of validity for "Forgot password" link]]></en>
@@ -637,8 +675,9 @@
             <en><![CDATA[Terms and conditions]]></en>
         </locale>
         <locale name="exception.delete.originalfile.notfound">
-            <en>
-                <![CDATA[The File could not be found.                The file is completely deleted for this reason.            ]]></en>
+            <en><![CDATA[
+                The File could not be found. The file is completely deleted for this reason.
+            ]]></en>
         </locale>
         <locale name="exception.delete.root.file">
             <en><![CDATA[You cannot delete the root file.]]></en>
@@ -650,8 +689,11 @@
             <en><![CDATA[Global forwarding]]></en>
         </locale>
         <locale name="message.online.update.RAM.not.enough" html="1">
-            <en>
-                <![CDATA[            There is not enough memory available for the online update.            Please run the update in the CLI / Bash with the following command: <br />            <code>[command]</code>            ]]></en>
+            <en><![CDATA[
+            There is not enough memory available for the online update.
+            Please run the update in the CLI / Bash with the following command: <br />
+            <code>[command]</code>
+            ]]></en>
         </locale>
         <locale name="exception.console.execute.only.in.cli">
             <en><![CDATA[System tools can only be run in the CLI.]]></en>
@@ -735,16 +777,19 @@
             <en><![CDATA[The password has been changed successfully. The new password is '[password]']]></en>
         </locale>
         <locale name="exception.zip.extension.not.installed">
-            <en>
-                <![CDATA[            The action can not be performed.            The ZIP extension of PHP is not installed on the system.            ]]></en>
+            <en><![CDATA[
+            The action can not be performed. The ZIP extension of PHP is not installed on the system.
+            ]]></en>
         </locale>
         <locale name="exception.zip.folder.is.empty">
-            <en><![CDATA[            A ZIP file can not be created because the folder is empty            ]]></en>
+            <en><![CDATA[A ZIP file can not be created because the folder is empty]]></en>
         </locale>
         <locale name="exception.image.upload.image.corrupted">
-            <en>
-                <![CDATA[            The image contains corrupted data.            Unfortunately, the upload was not successful.            For more error information, please look at the error.log.            ]]></en>
-        </locale>        <!-- Consoletool: quiqqer:rename-project -->
+            <en><![CDATA[
+            The image contains corrupted data.Unfortunately, the upload was not successful.
+            For more error information, please look at the error.log.
+            ]]></en>
+        </locale>
         <locale name="console.tool.project.rename.project.not.found">
             <en><![CDATA[The selected project was not found.]]></en>
         </locale>
@@ -785,12 +830,14 @@
             <en><![CDATA[The selected project was not found.]]></en>
         </locale>
         <locale name="console.tool.project.delete.project.delete.last.project">
-            <en>
-                <![CDATA[Error: You tried to delete the last project. There must exist at least one project at any given time!]]>            </en>
+            <en><![CDATA[
+            Error: You tried to delete the last project. There must exist at least one project at any given time!
+            ]]></en>
         </locale>
         <locale name="console.tool.project.delete.prompt.warning.confirm">
-            <en>
-                <![CDATA[Are you really sure that the project should be deleted? Please confirm by entering the projects name again:]]></en>
+            <en><![CDATA[
+            Are you really sure that the project should be deleted? Please confirm by entering the projects name again:
+            ]]></en>
         </locale>
         <locale name="console.tool.project.delete.prompt.projectname.confirm">
             <en><![CDATA[Projectname:]]></en>
@@ -808,8 +855,13 @@
             <en><![CDATA[Start setup for package "[package]"]]></en>
         </locale>
         <locale name="console.tool.setup.start.data" html="1">
-            <en>
-                <![CDATA[            Current system<br />            Version: [version]<br />            From: [versionDate]<br />            Reference: [ref]<br />            Last update check: [date]            ]]></en>
+            <en><![CDATA[
+            Current system<br />
+            Version: [version]<br />
+            From: [versionDate]<br />
+            Reference: [ref]<br />
+            Last update check: [date]
+            ]]></en>
         </locale>
         <locale name="console.tool.setup.message.success">
             <en><![CDATA[The setup was successful.]]></en>
@@ -903,7 +955,7 @@
             <en><![CDATA[Cannot find permissions for the Object.]]></en>
         </locale>
         <locale name="exception.missing.missing.index.id">
-            <de><![CDATA[Undefined index: id]]></de>
+            <en><![CDATA[Undefined index: id]]></en>
         </locale>
         <locale name="exception.media.create.folder.only.in.folder">
             <en><![CDATA[You can only create a folder in a folder.]]></en>
@@ -929,6 +981,12 @@
         </locale>
         <locale name="exception.site.no.previous.sibling">
             <en><![CDATA[The page does not have a previous sibling page.]]></en>
+        </locale>
+        <locale name="exception.site.child.not.found">
+            <en><![CDATA[The child page not found.]]></en>
+        </locale>
+        <locale name="exception.site.child.by.name.not.found">
+            <en><![CDATA[The child page with the name [name] was not found.]]></en>
         </locale>
         <locale name="exception.group.create.id.creation.error">
             <en><![CDATA[
@@ -968,8 +1026,11 @@
             <en><![CDATA[Search...]]></en>
         </locale>
         <locale name="folderviewer.create.folder" html="true">
-            <en>
-                <![CDATA[<p>No folder was assigned.</p>                <p>Would you like to create a new folder?</p>                <br />            ]]></en>
+            <en><![CDATA[
+            <p>No folder was assigned.</p>
+            <p>Would you like to create a new folder?</p>
+            <br />
+            ]]></en>
         </locale>
         <locale name="site.window.siteChangesExists.title">
             <en><![CDATA[The page has changes]]></en>
@@ -978,8 +1039,10 @@
             <en><![CDATA[The page has changes]]></en>
         </locale>
         <locale name="site.window.siteChangesExists.information" html="true">
-            <en>
-                <![CDATA[            Do you want to save these changes, too?            The site will be activated and the changes are applied.            ]]></en>
+            <en><![CDATA[
+            Do you want to save these changes, too?
+            The site will be activated and the changes are applied.
+            ]]></en>
         </locale>
         <locale name="site.window.siteChangesExists.button.ok">
             <en><![CDATA[Also save changes]]></en>
@@ -1012,14 +1075,15 @@
             <en><![CDATA[Edit the update server]]></en>
         </locale>
         <locale name="packages.panel.server.win.add.text" html="true">
-            <en>
-                <![CDATA[            Add a new update server. Enter the host, or the server IP address from the update server.            ]]></en>
+            <en><![CDATA[
+            Add a new update server. Enter the host, or the server IP address from the update server.
+            ]]></en>
         </locale>
         <locale name="message.packages.panel.server.emptyserver">
-            <en><![CDATA[            Please specify a server.            ]]></en>
+            <en><![CDATA[Please specify a server.]]></en>
         </locale>
         <locale name="packages.panel.server.win.remove.text" html="true">
-            <en><![CDATA[            Do you realy want to delete the update server?            ]]></en>
+            <en><![CDATA[Do you realy want to delete the update server?]]></en>
         </locale>
         <locale name="packages.panel.menu">
             <en><![CDATA[Menu / Navigation]]></en>
@@ -1073,8 +1137,11 @@
             <en><![CDATA[Really delete the workspaces?]]></en>
         </locale>
         <locale name="window.workspaces.delete.information" html="true">
-            <en>
-                <![CDATA[            Are you sure you want to delete the following workspaces?            <br /><br />            [ids]            ]]></en>
+            <en><![CDATA[
+            Are you sure you want to delete the following workspaces?
+            <br /><br />
+            [ids]
+            ]]></en>
         </locale>
         <locale name="workspaces.2.columns">
             <en><![CDATA[2 columns]]></en>
@@ -1107,7 +1174,7 @@
             <en><![CDATA[Select standard Workspace]]></en>
         </locale>
         <locale name="window.workspaces.select.text">
-            <en><![CDATA[            <p>Please select a workspace which you would like to use</p>            ]]></en>
+            <en><![CDATA[<p>Please select a workspace which you would like to use</p>]]></en>
         </locale>
         <locale name="window.workspaces.panel.list.title">
             <en><![CDATA[Panel list]]></en>
@@ -1137,8 +1204,10 @@
             <en><![CDATA[The workspace is corrupted and could not be loaded.]]></en>
         </locale>
         <locale name="window.workspace.corrupt.information">
-            <en>
-                <![CDATA[            We are sorry but the workspace is damaged and could not be restored. <br />            We recommend to load one of the QUIQQER standard workspaces.            ]]></en>
+            <en><![CDATA[
+            We are sorry but the workspace is damaged and could not be restored. <br />
+            We recommend to load one of the QUIQQER standard workspaces.
+            ]]></en>
         </locale>
         <locale name="packages.panel.btn.setup">
             <en><![CDATA[Execute the system setup]]></en>
@@ -1249,8 +1318,9 @@
             <en><![CDATA[Replace file]]></en>
         </locale>
         <locale name="dialog.projects.media.file.replace.information" html="true">
-            <en>
-                <![CDATA[Please choose a file or drag a file with which you want to replace <b>[file]</b> into this window            ]]></en>
+            <en><![CDATA[
+            Please choose a file or drag a file with which you want to replace <b>[file]</b> into this window
+            ]]></en>
         </locale>
         <locale name="projects.media.context.move.element.select.message">
             <en><![CDATA[Please select a folder]]></en>
@@ -1259,8 +1329,7 @@
             <en><![CDATA[Package installation via file upload]]></en>
         </locale>
         <locale name="dialog.packages.install.upload.description">
-            <en>
-                <![CDATA[            Upload the ZIP archives of one or more QUIQQER packages to install them.            ]]></en>
+            <en><![CDATA[Upload the ZIP archives of one or more QUIQQER packages to install them.]]></en>
         </locale>
         <locale name="dialog.packages.install.upload.listBtn.title">
             <en><![CDATA[View uploaded packages]]></en>
@@ -1278,19 +1347,34 @@
             <en><![CDATA[Unfortunately, too many tasks are open. Some tasks have been closed]]></en>
         </locale>
         <locale name="exception.site.panel.error">
-            <en>
-                <![CDATA[            Site panel with page ID #[id] could not be loaded.            The panel was closed again            ]]></en>
+            <en><![CDATA[Site panel with page ID #[id] could not be loaded.The panel was closed again]]></en>
         </locale>
         <locale name="panel.site.restore.title">
             <en><![CDATA[Restoring the page #[id]]]></en>
         </locale>
         <locale name="panel.site.restore.message.local.newer" html="true">
-            <en>
-                <![CDATA[            <h1>Restoring the page<br />#[id] - [title]</h1>            <p>Changes have been found on your PC that have not yet been saved online.</p>            <p>The local changes are from the <strong>[localeDate]</strong>.</p>            <br />            <p>The online page was <strong> last updated on [editDate] from [editUser] ([editUsername])</strong>.</p>            ]]></en>
+            <en><![CDATA[
+            <h1>Restoring the page<br />#[id] - [title]</h1>
+            <p>Changes have been found on your PC that have not yet been saved online.</p>
+            <p>The local changes are from the <strong>[localeDate]</strong>.</p>
+            <br />
+            <p>The online page was <strong> last updated on [editDate] from [editUser] ([editUsername])</strong>.</p>
+            ]]></en>
         </locale>
         <locale name="panel.site.restore.message.online.newer" html="true">
-            <en>
-                <![CDATA[            <h1>Restoring the page<br />#[id] - [title]</h1>            <p>Changes have been found on your PC that have not yet been saved online.</p>            <p>The local changes are from the <strong>[localeDate]</strong>.</p>            <br />            <p>The online page was <strong> last updated on [editDate] from [editUser] ([editUsername])</strong>.</p>            <strong>Attention:</strong>            <p>The online version of the site is newer than the local (not yet saved) version.            If you accept the local data, the newer online version will be overwritten            when you save the page.</p>            <p>Wenn Sie sich unsicher sind verwerfen Sie die lokalen Änderungen.</p>            ]]></en>
+            <en><![CDATA[
+            <h1>Restoring the page<br />#[id] - [title]</h1>
+            <p>Changes have been found on your PC that have not yet been saved online.</p>
+            <p>The local changes are from the <strong>[localeDate]</strong>.</p>
+            <br />
+            <p>The online page was <strong> last updated on [editDate] from [editUser] ([editUsername])</strong>.</p>
+            <strong>Attention:</strong>
+            <p>
+                The online version of the site is newer than the local (not yet saved) version.
+                If you accept the local data, the newer online version will be overwritten when you save the page.
+            </p>
+            <p>Wenn Sie sich unsicher sind verwerfen Sie die lokalen Änderungen.</p>
+            ]]></en>
         </locale>
         <locale name="panel.site.restore.button.cancel">
             <en><![CDATA[Discard local data]]></en>
@@ -1356,13 +1440,13 @@
         </locale>
 
         <locale name="control.media.create.folder.window.title">
-            <de><![CDATA[Create new media folder]]></de>
+            <en><![CDATA[Create new media folder]]></en>
         </locale>
         <locale name="control.media.create.folder.window.back.button.title">
-            <de><![CDATA[Back]]></de>
+            <en><![CDATA[Back]]></en>
         </locale>
         <locale name="control.media.create.folder.window.continue.button.title">
-            <de><![CDATA[Continue]]></de>
+            <en><![CDATA[Continue]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">
@@ -2410,7 +2494,7 @@
             <en><![CDATA[How be called the new page?]]></en>
         </locale>
         <locale name="projects.project.site.panel.unlock">
-            <de><![CDATA[Unlock anyway]]></de>
+            <en><![CDATA[Unlock anyway]]></en>
         </locale>
         <locale name="projects.project.site.panel.window.create.button.submit">
             <en><![CDATA[Create]]></en>
@@ -2428,8 +2512,13 @@
             <en><![CDATA[Unauthorized characters in names]]></en>
         </locale>
         <locale name="projects.project.site.panel.window.create.clear.information">
-            <en>
-                <![CDATA[The name of the page contains characters that are not allowed.<br />                Should the special characters are filtered out and the original name are used as the title?                <br /><br />                <p>New name of the page: <b>[newName]</b></p>                <p>New Title of page: <b>[value]</b></p>            ]]></en>
+            <en><![CDATA[
+            The name of the page contains characters that are not allowed.<br />
+            Should the special characters are filtered out and the original name are used as the title?
+            <br /><br />
+            <p>New name of the page: <b>[newName]</b></p>
+            <p>New Title of page: <b>[value]</b></p>
+            ]]></en>
         </locale>
         <locale name="projects.project.site.panel.sort.title">
             <en><![CDATA[Sorting of the pages below #[id] [title]]]></en>
@@ -2456,8 +2545,10 @@
             <en><![CDATA[Copy site content to another language and create a language link.]]></en>
         </locale>
         <locale name="projects.project.site.panel.copySiteToLink.window.information" html="true">
-            <en>
-                <![CDATA[            A new page would be created in the language [lang].            The language link to this page will be set automatically.            ]]></en>
+            <en><![CDATA[
+                A new page would be created in the language [lang].
+                The language link to this page will be set automatically.
+            ]]></en>
         </locale>
         <locale name="projects.project.site.panel.copySiteToLink.window.submit">
             <en><![CDATA[Select parent page]]></en>
@@ -2520,8 +2611,7 @@
             <en><![CDATA[Project selection]]></en>
         </locale>
         <locale name="projects.project.panel.message.no.project" html="true">
-
-            <en><![CDATA[            Sorry, there are no projects yet.            ]]></en>
+            <en><![CDATA[Sorry, there are no projects yet.]]></en>
         </locale>
         <locale name="projects.project.panel.create">
             <en><![CDATA[Create project]]></en>
@@ -2807,19 +2897,26 @@
             <en><![CDATA[Remove from list]]></en>
         </locale>
         <locale name="file.upload.unknown.filetype">
-            <en>
-                <![CDATA[The file type is unknown. <br />                Please choose to upload only files and pictures.<br />                Folders can only be uploaded packed.]]></en>
+            <en><![CDATA[
+            The file type is unknown. <br />
+            Please choose to upload only files and pictures.<br />
+            Folders can only be uploaded packed.
+            ]]></en>
         </locale>
         <locale name="upload.manager.message.not.finish">
-            <en>
-                <![CDATA[You have unfinished uploads in the Upload Manager.<br />                Please resume or cancel the uploads.]]></en>
+            <en><![CDATA[
+            You have unfinished uploads in the Upload Manager.<br />
+            Please resume or cancel the uploads.
+            ]]></en>
         </locale>
         <locale name="upload.manager.message.archivfile.title">
             <en><![CDATA[Found archive files]]></en>
         </locale>
         <locale name="upload.manager.message.archivfile.text">
-            <en>
-                <![CDATA[You want to upload the following archive files.<br />                Do you want to extract it directly?]]></en>
+            <en><![CDATA[
+            You want to upload the following archive files.<br />
+            Do you want to extract it directly?
+            ]]></en>
         </locale>
         <locale name="upload.manager.message.archivfile.btn.start">
             <en><![CDATA[Start Upload]]></en>
@@ -4795,8 +4892,9 @@
             <en><![CDATA[HTTP status code on missing site permission]]></en>
         </locale>
         <locale name="quiqqer.settings.globals.sitePermissionDeniedErrorCode.desc">
-            <en>
-                <![CDATA[Determines which HTTP status code is sent when a user visits a page for which he does not have the permission to view.]]></en>
+            <en><![CDATA[
+            Determines which HTTP status code is sent when a user visits a page for which he does not have the permission to view.
+            ]]></en>
         </locale>
         <locale name="quiqqer.settings.general.globals.htmlSuffix">
             <en><![CDATA[HTML ending at page addresses]]></en>

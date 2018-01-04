@@ -493,6 +493,9 @@
         <locale name="exception.media.move.is.no.folder">
             <de><![CDATA[Bitte wählen Sie einen Ordner aus um die Dateien zu verschieben.]]></de>
         </locale>
+        <locale name="exception.media.move">
+            <de><![CDATA[Konnte Datei [file] nicht verschieben.]]></de>
+        </locale>
         <locale name="exception.media.copy.is.no.folder">
             <de><![CDATA[Bitte wählen Sie einen Ordner aus um die Dateien zu kopieren.]]></de>
         </locale>
@@ -505,6 +508,30 @@
             Sie können Dateien nur in einen Ordner hochladen
             ]]></de>
         </locale>
+        <locale name="exception.media.upload.no.data">
+            <de><![CDATA[Es wurden keine Daten von Dateien gesendet.]]></de>
+        </locale>
+        <locale name="exception.media.upload.max.filesize">
+            <de><![CDATA[Die hochgeladene Datei überschreitet die upload_max_filesize.]]></de>
+        </locale>
+        <locale name="exception.media.upload.max.form.filesize">
+            <de><![CDATA[Die hochgeladene Datei überschreitet die MAX_FILE_SIZE.]]></de>
+        </locale>
+        <locale name="exception.media.upload.partially.uploaded">
+            <de><![CDATA[Die hochgeladene Datei wurde nur teilweise hochgeladen.]]></de>
+        </locale>
+        <locale name="exception.media.upload.missing.temp">
+            <de><![CDATA[Fehlen eines temporären Ordners.]]></de>
+        </locale>
+        <locale name="exception.media.upload.unsupported.archive">
+            <de><![CDATA[
+            Ein nicht unterstütztes Archiv wurde hochgeladen. Das Archiv konnte nicht extrahiert werden.
+            ]]></de>
+        </locale>
+        <locale name="exception.media.file.not.found">
+            <en><![CDATA[Datei wurde nicht gefunden.]]></en>
+        </locale>
+
         <locale name="control.editor.toolbar.select.search.field.placeholder">
             <de><![CDATA[Toolbars durchsuchen ...]]></de>
         </locale>
@@ -967,6 +994,12 @@
         </locale>
         <locale name="exception.site.no.previous.sibling">
             <de><![CDATA[Die Seite besitzt keine vorhergehenden Seite.]]></de>
+        </locale>
+        <locale name="exception.site.child.not.found">
+            <de><![CDATA[Die Unterseite wurde nicht gefunden.]]></de>
+        </locale>
+        <locale name="exception.site.child.by.name.not.found">
+            <de><![CDATA[Ein Unterseite mit dem Namen existiert nicht.]]></de>
         </locale>
         <locale name="exception.group.create.id.creation.error">
             <de><![CDATA[

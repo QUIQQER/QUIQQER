@@ -3,6 +3,7 @@
 /**
  * File contains QUI\Projects\Site\Virtual
  */
+
 namespace QUI\Projects\Site;
 
 use QUI;
@@ -49,7 +50,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         foreach ($needles as $needle) {
             if (!$this->getAttribute($needle)) {
-                throw new QUI\Exception('Misisng attribute ' . $needle);
+                throw new QUI\Exception('Misisng attribute '.$needle);
             }
         }
     }
@@ -176,7 +177,9 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function nextSibling()
     {
-        throw new QUI\Exception('Die Seite besitzt keine nächstfolgende Seite');
+        throw new QUI\Exception(
+            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.no.next.sibling')
+        );
     }
 
     /**
@@ -199,7 +202,9 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function previousSibling()
     {
-        throw new QUI\Exception('Die Seite besitzt keine vorhergehenden Seite');
+        throw new QUI\Exception(
+            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.no.previous.sibling')
+        );
     }
 
     /**
@@ -249,7 +254,9 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     public function getChildIdByName($name)
     {
         throw new QUI\Exception(
-            'No Child found with name ' . $name,
+            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.child.by.name.not.found', array(
+                'name' => $name
+            )),
             705
         );
     }
@@ -264,7 +271,10 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getChild($id)
     {
-        throw new QUI\Exception('Child not found', 705);
+        throw new QUI\Exception(
+            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.child.not.found'),
+            705
+        );
     }
 
     /**

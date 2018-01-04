@@ -62,7 +62,6 @@ define('controls/menu/Responsive', [
         create: function () {
             var self = this;
 
-            // #locale
             this.$Elm = new Element('div', {
                 'class': 'qui-controls-menu-responsive',
                 html   : '<div class="qcm-responsive-title">' +
