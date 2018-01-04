@@ -4776,9 +4776,6 @@
         <locale name="menu.help.about.text">
             <en><![CDATA[About QUIQQER]]></en>
         </locale>
-        <locale name="menu.help.about.text">
-            <en><![CDATA[About QUIQQER]]></en>
-        </locale>
         <locale name="quiqqer.settings.title">
             <en><![CDATA[System]]></en>
         </locale>
