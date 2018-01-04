@@ -4882,8 +4882,8 @@
         </locale>
         <locale name="quiqqer.auth.login.password.message">
             <de><![CDATA[
-            Wenn Sie Ihr Passwort vergessen haben, geben Sie hier bitte Ihre Email-Adresse ein und klicken auf 'Passwort zurücksetzen'.
-            Sie bekommen dann eine Email mit Ihrem Benutzernamen und einem neuen Passwort zugesendet.
+            Wenn Sie Ihr Passwort vergessen haben, geben Sie hier bitte Ihre E-Mail-Adresse ein und klicken auf 'Passwort zurücksetzen'.
+            Sie bekommen eine E-Mail mit weiteren Anweisungen.
         ]]></de>
         </locale>
         <locale name="mail.auth.password_reset_confirm.subject">
