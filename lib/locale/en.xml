@@ -4766,7 +4766,7 @@
         </locale>
         <locale name="quiqqer.auth.login.password.message">
             <en><![CDATA[
-            Request password. If you have forgotten your password, please enter your email address here and click on' Reset password'.
+            If you have forgotten your password, please enter your email address here and click on' Reset password'.
             You will then receive an email with your user name and a new password.
         ]]></en>
         </locale>

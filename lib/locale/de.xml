@@ -4882,7 +4882,7 @@
         </locale>
         <locale name="quiqqer.auth.login.password.message">
             <de><![CDATA[
-            Passwort anfordern. Wenn Sie Ihr Passwort vergessen haben, geben Sie hier bitte Ihre Email-Adresse ein und klicken auf 'Passwort zurücksetzen'.
+            Wenn Sie Ihr Passwort vergessen haben, geben Sie hier bitte Ihre Email-Adresse ein und klicken auf 'Passwort zurücksetzen'.
             Sie bekommen dann eine Email mit Ihrem Benutzernamen und einem neuen Passwort zugesendet.
         ]]></de>
         </locale>
