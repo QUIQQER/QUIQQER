@@ -392,7 +392,7 @@ class QUI
             VAR_DIR.'cache/siteobjects/',
             VAR_DIR.'cache/projects',
             VAR_DIR.'locale/',
-            VAR_DIR.'tmp/'
+            VAR_DIR.'tmp/' // @todo temp
         );
 
         foreach ($folders as $folder) {
@@ -422,6 +422,13 @@ class QUI
 
         if (!defined('URL_VAR_DIR')) {
             define('URL_VAR_DIR', URL_DIR.str_replace(CMS_DIR, '', VAR_DIR));
+        }
+
+        // bugfix: workround: Uncaught Error: Call to undefined function DusanKasan\Knapsack\append()
+        if (!function_exists('\DusanKasan\Knapsack\append')) {
+            if (file_exists(OPT_DIR.'dusank/knapsack/src/collection_functions.php')) {
+                require_once OPT_DIR.'dusank/knapsack/src/collection_functions.php';
+            }
         }
 
 
