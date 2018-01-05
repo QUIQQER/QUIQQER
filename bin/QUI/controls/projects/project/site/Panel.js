@@ -203,11 +203,9 @@ define('controls/projects/project/site/Panel', [
                 if (this.$delayTest > 10) {
                     QUI.getMessageHandler(function (MH) {
                         MH.addError(
-                            Locale.get(
-                                'quiqqer/quiqqer',
-                                'exception.site.panel.error',
-                                {id: this.getSite().getId()}
-                            )
+                            Locale.get('quiqqer/quiqqer', 'exception.site.panel.error', {
+                                id: this.getSite().getId()
+                            })
                         );
                     });
 
@@ -415,11 +413,6 @@ define('controls/projects/project/site/Panel', [
             });
 
             this.Loader.show();
-
-            // workaround loading
-            // (function () {
-            //     Site.load();
-            // }).delay(4000);
 
             if (!Site.hasWorkingStorage()) {
                 Site.load();
@@ -1033,7 +1026,7 @@ define('controls/projects/project/site/Panel', [
                                     };
 
                                     var removeLinking = function (Btn) {
-                                        self.removeLanguagLink(
+                                        self.removeLanguageLink(
                                             Btn.getAttribute('lang'),
                                             Btn.getAttribute('siteId')
                                         );
@@ -1841,9 +1834,11 @@ define('controls/projects/project/site/Panel', [
                                 Popup.Loader.show();
 
                                 Ajax.post('ajax_site_language_add', function () {
-                                    Popup.close();
-
-                                    self.load();
+                                    self.$ActiveCat = null;
+                                    self.getSite().load(function () {
+                                        Popup.close();
+                                        self.load();
+                                    });
                                 }, {
                                     project     : Project.encode(),
                                     id          : Site.getId(),
@@ -1865,7 +1860,7 @@ define('controls/projects/project/site/Panel', [
          * @param {String} lang - lang of the language link
          * @param {String} id - Site-ID of the language link
          */
-        removeLanguagLink: function (lang, id) {
+        removeLanguageLink: function (lang, id) {
             var self = this;
 
             var Site    = self.getSite(),
@@ -1882,9 +1877,11 @@ define('controls/projects/project/site/Panel', [
                         Confirm.Loader.show();
 
                         Ajax.post('ajax_site_language_remove', function () {
-                            Confirm.close();
-
-                            self.load();
+                            self.$ActiveCat = null;
+                            self.getSite().load(function () {
+                                Confirm.close();
+                                self.load();
+                            });
                         }, {
                             project     : Project.encode(),
                             id          : Site.getId(),
@@ -1905,7 +1902,6 @@ define('controls/projects/project/site/Panel', [
          * @param {String} lang
          */
         copySiteToLang: function (lang) {
-
             if (!this.$Site) {
                 return;
             }
@@ -1914,15 +1910,16 @@ define('controls/projects/project/site/Panel', [
                 Project = this.$Site.getProject();
 
             new QUIConfirm({
-                title        : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.title', {
+                title      : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.title', {
                     lang: lang
                 }),
-                text         : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.text', {
+                text       : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.text', {
                     lang: lang
                 }),
-                information  : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.information', {
+                information: Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.information', {
                     lang: lang
                 }),
+
                 icon         : 'fa fa-copy',
                 texticon     : 'fa fa-copy',
                 autoclose    : false,
@@ -1930,11 +1927,9 @@ define('controls/projects/project/site/Panel', [
                 maxWidth     : 600,
                 events       : {
                     onSubmit: function (Win) {
-
                         Win.Loader.show();
 
                         require(['controls/projects/Popup'], function (ProjectPopup) {
-
                             Win.close();
 
                             new ProjectPopup({
@@ -1953,11 +1948,12 @@ define('controls/projects/project/site/Panel', [
                                                 lang: lang
                                             }
                                         }).then(function (newChildId) {
-
                                             Ajax.post('ajax_site_language_add', function () {
-                                                Popup.close();
-
-                                                self.load();
+                                                self.$ActiveCat = null;
+                                                self.getSite().load(function () {
+                                                    Popup.close();
+                                                    self.load();
+                                                });
                                             }, {
                                                 project     : Project.encode(),
                                                 id          : self.$Site.getId(),
