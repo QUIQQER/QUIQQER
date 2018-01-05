@@ -6,7 +6,6 @@
 
 namespace QUI\Users;
 
-use function GuzzleHttp\Promise\queue;
 use QUI;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\Text\XML;
