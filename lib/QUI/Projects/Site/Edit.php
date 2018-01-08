@@ -533,10 +533,10 @@ class Edit extends Site
 
             foreach ($list as $Exc) {
                 /* @var $Exc \Exception */
-                QUI\System\Log::addWarning($Exc->getMessage());
+                QUI\System\Log::writeException($Exc);
             }
         } catch (QUI\Exception $Exception) {
-            QUI\System\Log::addWarning($Exception->getMessage());
+            QUI\System\Log::writeException($Exception);
         }
 
         // save extra package attributes (site.xml)
@@ -665,10 +665,10 @@ class Edit extends Site
 
             foreach ($list as $Exc) {
                 /* @var $Exc \Exception */
-                QUI\System\Log::addWarning($Exc->getMessage());
+                QUI\System\Log::writeException($Exc);
             }
         } catch (\Exception $Exception) {
-            QUI\System\Log::addWarning($Exception->getMessage());
+            QUI\System\Log::writeException($Exception);
         }
 
 
