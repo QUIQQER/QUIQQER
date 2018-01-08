@@ -12,9 +12,6 @@ use QUI\Utils\Text\XML;
 use QUI\Utils\DOM;
 use QUI\Security\Password;
 
-use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
-
 /**
  * QUIQQER user manager
  *
@@ -197,15 +194,8 @@ class Manager
         ));
 
         foreach ($list as $entry) {
-            try {
-                $uuid = Uuid::uuid1()->toString();
-            } catch (UnsatisfiedDependencyException $Exception) {
-                QUI\System\Log::writeException($Exception);
-                continue;
-            }
-
             $DataBase->update($table, array(
-                'uuid' => $uuid
+                'uuid' => QUI\Utils\Uuid::get()
             ), array(
                 'id' => $entry['id']
             ));
