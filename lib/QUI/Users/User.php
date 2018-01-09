@@ -1134,6 +1134,8 @@ class User implements QUI\Interfaces\Users\User
             $Session = QUI::getSession();
             $Session->destroy();
         }
+
+        QUI::getEvents()->fireEvent('userLogout', array($this));
     }
 
     /**
