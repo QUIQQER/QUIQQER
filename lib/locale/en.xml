@@ -2503,7 +2503,7 @@
             <en><![CDATA[Please enter a name for the new page]]></en>
         </locale>
         <locale name="projects.project.site.panel.window.create.information">
-            <en><![CDATA[You create a new page under [name].html.]]></en>
+            <en><![CDATA[You create a new page under [name].]]></en>
         </locale>
         <locale name="projects.project.site.panel.window.create.clear.title">
             <en><![CDATA[Unauthorized characters in names]]></en>
