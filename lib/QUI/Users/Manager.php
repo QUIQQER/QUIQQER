@@ -872,6 +872,10 @@ class Manager
             $this->checkUserSession();
             $this->Session = $this->get(QUI::getSession()->get('uid'));
         } catch (QUI\Exception $Exception) {
+            if (DEBUG_MODE) {
+                QUI\System\Log::writeException($Exception);
+            }
+
             $this->Session = $this->getNobody();
         }
 
@@ -891,7 +895,7 @@ class Manager
     /**
      * Checks, if the session is ok
      *
-     * @throws QUI\Users\Exception
+     * @throws QUI\Users\Exception|QUI\Exception
      */
     public function checkUserSession()
     {
