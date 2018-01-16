@@ -931,10 +931,44 @@ class Manager
             rename($sourceDir, $targetDir);
         }
 
-        // ----------------------------- //
+        // -----------------------------//
         //              Cache           //
-        // ----------------------------- //
+        // -----------------------------//
         QUI\Cache\Manager::clearAll();
+
+
+        // ----------------------------- //
+        //              Locale           //
+        // ----------------------------- //
+        if (file_exists(VAR_DIR."locale/localefiles")) {
+            unlink(VAR_DIR."locale/localefiles");
+        }
+
+
+
+        // Remove old translation
+        $translationGroup = 'project/'.$oldName;
+        $translationVar   = 'title';
+
+        $translation = QUI\Translator::get($translationGroup, $translationVar);
+        if (isset($translation[0])) {
+            QUI\Translator::delete($translationGroup, $translationVar);
+        }
+
+        
+        $translationGroup = 'project/'.$newName;
+        $translationVar   = 'title';
+
+        $translation = QUI\Translator::get($translationGroup, $translationVar);
+        if (!isset($translation[0])) {
+            try {
+                QUI\Translator::add($translationGroup, $translationVar);
+            } catch (\Exception $Exception) {
+                QUI\System\Log::addError("Rename project: Could not add language variable ".$translationGroup."/".$translationVar.": ".$Exception->getMessage());
+            }
+        }
+
+        QUI\Translator::create();
 
         // ----------------------------- //
         //              Finish           //
