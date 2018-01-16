@@ -88,47 +88,54 @@ class Manager
         $projects = $Config->toArray();
 
         // $config
-        $config     = self::getProjectConfigList($Project);
-        $old_config = $config;
+        $availableConfig = self::getProjectConfigList($Project);
+        $projectConfig   = array();
 
         if (isset($projects[$projectName])) {
-            $old_config = $projects[$projectName];
+            $projectConfig = $projects[$projectName];
         }
 
-        // generate new config for the project
-        foreach ($config as $key => $value) {
-            if (!isset($old_config[$key])) {
+        // merge current config and available config
+        foreach ($availableConfig as $key => $value) {
+            if (!isset($projectConfig[$key])) {
                 continue;
             }
 
-            if (empty($params)) {
-                continue;
-            }
+            $str = Orthos::removeHTML($projectConfig[$key]);
+            $str = Orthos::clearPath($str);
 
-            if (isset($params[$key])) {
+            $availableConfig[$key] = $str;
+        }
+
+        // merge params config with available / current config
+        if (!empty($params)) {
+            foreach ($availableConfig as $key => $value) {
+                if (!isset($params[$key])) {
+                    continue;
+                }
+
                 $str = Orthos::removeHTML($params[$key]);
                 $str = Orthos::clearPath($str);
 
-                $config[$key] = $str;
-                continue;
+                $availableConfig[$key] = $str;
             }
-
-            $str = Orthos::removeHTML($value);
-            $str = Orthos::clearPath($str);
-
-            $config[$key] = $str;
         }
 
         // doppelte sprachen filtern
-        $langs = explode(',', $config['langs']);
-        $langs = array_unique($langs);
+        $languages = explode(',', $availableConfig['langs']);
+        $languages = array_unique($languages);
 
-        $config['langs'] = implode(',', $langs);
+        $availableConfig['langs'] = implode(',', $languages);
 
-        $Config->setSection($projectName, $config);
+        $Config->setSection($projectName, $availableConfig);
         $Config->save();
 
-        QUI::getEvents()->fireEvent('projectConfigSave', array($projectName, $config, $params));
+
+        QUI::getEvents()->fireEvent('projectConfigSave', array(
+            $projectName,
+            $availableConfig,
+            $params
+        ));
 
         // remove the project from the temp
         if (self::$projects[$projectName]) {
@@ -144,10 +151,10 @@ class Manager
          * eq: if watermark settings changed
          *
          * @param array $config
-         * @param array $old_config
+         * @param array $oldConfig
          * @param Project $Project
          */
-        $clearMediaCache = function ($config, $old_config, Project $Project) {
+        $clearMediaCache = function ($config, $oldConfig, Project $Project) {
             if (!isset($config["media_watermark"])
                 && !isset($config["media_watermark_position"])
                 && !isset($config["media_image_library"])
@@ -156,8 +163,8 @@ class Manager
             }
 
             if (isset($config["media_watermark"])
-                && isset($old_config['media_watermark'])
-                && $config["media_watermark"] != $old_config['media_watermark']
+                && isset($oldConfig['media_watermark'])
+                && $config["media_watermark"] != $oldConfig['media_watermark']
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
@@ -166,8 +173,8 @@ class Manager
             }
 
             if (isset($config["media_watermark_ratio"])
-                && isset($old_config['media_watermark_ratio'])
-                && $config["media_watermark_ratio"] != $old_config['media_watermark_ratio']
+                && isset($oldConfig['media_watermark_ratio'])
+                && $config["media_watermark_ratio"] != $oldConfig['media_watermark_ratio']
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
@@ -176,8 +183,8 @@ class Manager
             }
 
             if (isset($config["media_watermark_position"])
-                && isset($old_config['media_watermark_position'])
-                && $config["media_watermark_position"] != $old_config['media_watermark_position']
+                && isset($oldConfig['media_watermark_position'])
+                && $config["media_watermark_position"] != $oldConfig['media_watermark_position']
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
@@ -186,8 +193,8 @@ class Manager
             }
 
             if (isset($config["media_image_library"])
-                && isset($old_config['media_image_library'])
-                && $config["media_image_library"] != $old_config['media_image_library']
+                && isset($oldConfig['media_image_library'])
+                && $config["media_image_library"] != $oldConfig['media_image_library']
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
@@ -196,11 +203,11 @@ class Manager
             }
         };
 
-        $clearMediaCache($config, $old_config, $Project);
+        $clearMediaCache($availableConfig, $projectConfig, $Project);
 
         // if this project should be the standard,
         // all other projects are not
-        if (!isset($config['standard']) || $config['standard'] != 1) {
+        if (!isset($availableConfig['standard']) || $availableConfig['standard'] != 1) {
             return;
         }
 
@@ -224,7 +231,7 @@ class Manager
      */
     public static function getProjectConfigList(QUI\Projects\Project $Project)
     {
-        $cache = 'qui/projects/' . $Project->getName() . '/configList';
+        $cache = 'qui/projects/'.$Project->getName().'/configList';
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -269,15 +276,15 @@ class Manager
                 $settingsName = $Settings->getAttribute('name');
 
                 if (!empty($settingsName)) {
-                    $settingsName = $settingsName . '.';
+                    $settingsName = $settingsName.'.';
                 }
 
                 foreach ($sections as $section => $entry) {
                     foreach ($entry as $key => $param) {
-                        $config[$settingsName . $section . '.' . $key] = '';
+                        $config[$settingsName.$section.'.'.$key] = '';
 
                         if (isset($param['default'])) {
-                            $config[$settingsName . $section . '.' . $key] = $param['default'];
+                            $config[$settingsName.$section.'.'.$key] = $param['default'];
                         }
                     }
                 }
@@ -592,8 +599,8 @@ class Manager
         /**
          * Sites and sites relation
          */
-        $table_site     = QUI_DB_PRFX . $name . '_' . $lang . '_sites';
-        $table_site_rel = QUI_DB_PRFX . $name . '_' . $lang . '_sites_relations';
+        $table_site     = QUI_DB_PRFX.$name.'_'.$lang.'_sites';
+        $table_site_rel = QUI_DB_PRFX.$name.'_'.$lang.'_sites_relations';
 
         $Table->addColumn($table_site, array(
             "id"          => "bigint(20) NOT NULL",
@@ -641,8 +648,8 @@ class Manager
         /**
          * Media and media relation
          */
-        $table_media     = QUI_DB_PRFX . $name . '_media';
-        $table_media_rel = QUI_DB_PRFX . $name . '_media_relations';
+        $table_media     = QUI_DB_PRFX.$name.'_media';
+        $table_media_rel = QUI_DB_PRFX.$name.'_media_relations';
 
         $Table->addColumn($table_media, array(
             "id"           => "bigint(20) NOT NULL",
@@ -687,15 +694,15 @@ class Manager
         /**
          * Create the file system folders
          */
-        QUI\Utils\System\File::mkdir(CMS_DIR . 'media/sites/' . $name . '/');
-        QUI\Utils\System\File::mkdir(USR_DIR . $name . '/');
+        QUI\Utils\System\File::mkdir(CMS_DIR.'media/sites/'.$name.'/');
+        QUI\Utils\System\File::mkdir(USR_DIR.$name.'/');
 
 
         /**
          * Write the config
          */
-        if (!file_exists(CMS_DIR . 'etc/projects.ini.php')) {
-            file_put_contents(CMS_DIR . 'etc/projects.ini.php', '');
+        if (!file_exists(CMS_DIR.'etc/projects.ini.php')) {
+            file_put_contents(CMS_DIR.'etc/projects.ini.php', '');
         }
 
         $Config = self::getConfig();
@@ -730,7 +737,7 @@ class Manager
 
         // Execute the quiqqer/quiqqer setup to create the project related tables
         QUI::getPackage("quiqqer/quiqqer")->setup();
-        
+
         // Projekt Cache löschen
         QUI\Cache\Manager::clear('QUI::config');
 
@@ -760,15 +767,15 @@ class Manager
 
         // delete site tables for all languages
         foreach ($langs as $lang) {
-            $table_site     = QUI::getDBTableName($project . '_' . $lang . '_sites');
+            $table_site     = QUI::getDBTableName($project.'_'.$lang.'_sites');
             $table_site_rel = QUI::getDBTableName(
-                $project . '_' . $lang
-                . '_sites_relations'
+                $project.'_'.$lang
+                .'_sites_relations'
             );
-            $table_multi    = QUI::getDBTableName($project . '_multilingual');
+            $table_multi    = QUI::getDBTableName($project.'_multilingual');
 
-            $table_media     = QUI::getDBTableName($project . '_media');
-            $table_media_rel = QUI::getDBTableName($project . '_media_relations');
+            $table_media     = QUI::getDBTableName($project.'_media');
+            $table_media_rel = QUI::getDBTableName($project.'_media_relations');
 
 
             $Table->delete($table_site);
@@ -783,7 +790,7 @@ class Manager
 
         foreach ($packages as $package) {
             // search database tables
-            $databaseXml = OPT_DIR . $package['name'] . '/database.xml';
+            $databaseXml = OPT_DIR.$package['name'].'/database.xml';
 
             if (!file_exists($databaseXml)) {
                 continue;
@@ -799,7 +806,7 @@ class Manager
             foreach ($dbfields['projects'] as $table) {
                 foreach ($langs as $lang) {
                     $tbl = QUI::getDBTableName(
-                        $project . '_' . $lang . '_' . $table['suffix']
+                        $project.'_'.$lang.'_'.$table['suffix']
                     );
 
                     $Table->delete($tbl);
@@ -809,14 +816,14 @@ class Manager
 
         // delete projects permissions
         QUI::getDataBase()->delete(
-            QUI::getDBTableName(QUI\Permissions\Manager::TABLE) . '2projects',
+            QUI::getDBTableName(QUI\Permissions\Manager::TABLE).'2projects',
             array(
                 'project' => $project
             )
         );
 
         QUI::getDataBase()->delete(
-            QUI::getDBTableName(QUI\Permissions\Manager::TABLE) . '2sites',
+            QUI::getDBTableName(QUI\Permissions\Manager::TABLE).'2sites',
             array(
                 'project' => $project
             )
@@ -850,7 +857,7 @@ class Manager
         // ----------------------------- //
 
         // File: etc/projects.ini.php
-        $filename = ETC_DIR . "projects.ini.php";
+        $filename = ETC_DIR."projects.ini.php";
         $content  = file_get_contents($filename);
 
         $content = str_replace($oldName, $newName, $content);
@@ -858,7 +865,7 @@ class Manager
 
 
         // File: etc/vhosts.ini.php
-        $filename = ETC_DIR . "vhosts.ini.php";
+        $filename = ETC_DIR."vhosts.ini.php";
         $content  = file_get_contents($filename);
 
         $content = str_replace($oldName, $newName, $content);
@@ -880,25 +887,25 @@ class Manager
         }
 
         foreach ($tables as $oldTableName) {
-            if (strpos($oldTableName . "_", QUI_DB_PRFX . $oldName) === false) {
+            if (strpos($oldTableName."_", QUI_DB_PRFX.$oldName) === false) {
                 continue;
             }
 
 
             $newTableName = preg_replace(
-                "~^" . QUI_DB_PRFX . $oldName . "_~m",
-                QUI_DB_PRFX . $newName . "_",
+                "~^".QUI_DB_PRFX.$oldName."_~m",
+                QUI_DB_PRFX.$newName."_",
                 $oldTableName
             );
 
 
-            $sql  = "ALTER TABLE " . $oldTableName . " RENAME " . $newTableName . ";";
+            $sql  = "ALTER TABLE ".$oldTableName." RENAME ".$newTableName.";";
             $Stmt = \QUI::getDataBase()->getPDO()->prepare($sql);
 
             try {
                 $Stmt->execute();
             } catch (\Exception $Exception) {
-                QUI\System\Log::writeRecursive("Could not rename Table '" . $oldTableName . "': " . $Exception->getMessage());
+                QUI\System\Log::writeRecursive("Could not rename Table '".$oldTableName."': ".$Exception->getMessage());
             }
         }
 
@@ -907,8 +914,8 @@ class Manager
         //              Media           //
         // ----------------------------- //
 
-        $sourceDir = CMS_DIR . "media/sites/" . $oldName;
-        $targetDir = CMS_DIR . "media/sites/" . $newName;
+        $sourceDir = CMS_DIR."media/sites/".$oldName;
+        $targetDir = CMS_DIR."media/sites/".$newName;
 
         if (is_dir($sourceDir)) {
             rename($sourceDir, $targetDir);
@@ -917,8 +924,8 @@ class Manager
         // ----------------------------- //
         //              USR           //
         // ----------------------------- //
-        $sourceDir = USR_DIR . $oldName;
-        $targetDir = USR_DIR . $newName;
+        $sourceDir = USR_DIR.$oldName;
+        $targetDir = USR_DIR.$newName;
 
         if (is_dir($sourceDir)) {
             rename($sourceDir, $targetDir);
@@ -998,7 +1005,7 @@ class Manager
      */
     public static function getRelatedSettingsXML(QUI\Projects\Project $Project)
     {
-        $cache = 'qui/projects/' . $Project->getName() . '/relatedSettingsXml';
+        $cache = 'qui/projects/'.$Project->getName().'/relatedSettingsXml';
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -1021,7 +1028,7 @@ class Manager
                 }
             }
 
-            $file = OPT_DIR . $package['name'] . '/settings.xml';
+            $file = OPT_DIR.$package['name'].'/settings.xml';
 
             if (!file_exists($file)) {
                 continue;
@@ -1038,7 +1045,7 @@ class Manager
         }
 
         // direct - project settings
-        $projectSettings = USR_DIR . $Project->getName() . '/settings.xml';
+        $projectSettings = USR_DIR.$Project->getName().'/settings.xml';
 
         if (file_exists($projectSettings)) {
             $Dom  = XML::getDomFromXml($projectSettings);

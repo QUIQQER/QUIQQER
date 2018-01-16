@@ -5,9 +5,10 @@ define('controls/users/search/Window', [
 
     'qui/QUI',
     'qui/controls/windows/Confirm',
-    'controls/users/search/Search'
+    'controls/users/search/Search',
+    'Locale'
 
-], function (QUI, QUIConfirm, UserSearch) {
+], function (QUI, QUIConfirm, UserSearch, QUILocale) {
     "use strict";
 
     return new Class({
@@ -30,7 +31,7 @@ define('controls/users/search/Window', [
 
         initialize: function (options) {
             this.setAttributes({
-                title: 'Benutzersuche', // #locale
+                title: QUILocale.get('quiqqer/system', 'users.panel.search.title'),
                 icon : 'fa fa-users'
             });
 

@@ -43,7 +43,15 @@ define('controls/users/password/Password', [
             this.parent(options);
 
             if (!this.getAttribute('uid')) {
-                this.setAttribute('uid', USER.id);
+                var uid = false;
+
+                if (typeof USER !== 'undefined') {
+                    uid = USER.id;
+                } else if (typeof QUIQQER_USER !== 'undefined') {
+                    uid = QUIQQER_USER.id;
+                }
+
+                this.setAttribute('uid', uid);
             }
 
             this.$Password         = null;
@@ -63,21 +71,21 @@ define('controls/users/password/Password', [
          */
         create: function () {
             this.$Elm = new Element('form', {
-                'class'     : 'qui-controle-user-password',
+                'class'     : 'qui-control-user-password',
                 html        : '<label>' +
-                '    <span class="qui-controle-user-password-title">' +
+                '    <span class="qui-control-user-password-title">' +
                 QUILocale.get(lg, 'user.panel.password.old') +
                 '    </span>' +
                 '    <input type="password" name="oldPassword" required autocomplete="off" />' +
                 '</label>' +
                 '<label>' +
-                '    <span class="qui-controle-user-password-title">' +
+                '    <span class="qui-control-user-password-title">' +
                 QUILocale.get(lg, 'user.panel.password.new') +
                 '    </span>' +
                 '    <input type="password" name="password" required autocomplete="off" />' +
                 '</label>' +
                 '<label>' +
-                '    <span class="qui-controle-user-password-title">' +
+                '    <span class="qui-control-user-password-title">' +
                 QUILocale.get(lg, 'user.panel.password.repeat') +
                 '    </span>' +
                 '    <input type="password" name="password2" required autocomplete="off" />' +

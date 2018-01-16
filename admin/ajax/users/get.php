@@ -23,5 +23,5 @@ QUI::$Ajax->registerFunction(
         return $attributes;
     },
     array('uid'),
-    'Permission::checkUser'
+    'Permission::checkAdminUser'
 );

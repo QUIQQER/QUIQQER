@@ -360,7 +360,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
 
         // create image
-        set_time_limit(10);
+        $time = ini_get('max_execution_time');
+        set_time_limit(1000);
 
         $Image = $Media->getImageManager()->make($original);
 
@@ -477,6 +478,9 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
         // save cache image
         $Image->save($cachefile);
+
+        // reset to the normal limit
+        set_time_limit($time);
 
         QUI::getEvents()->fireEvent('mediaCreateSizeCache', array($this, $Image));
 

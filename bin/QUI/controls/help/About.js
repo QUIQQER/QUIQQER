@@ -10,9 +10,15 @@
 define('controls/help/About', [
 
     'qui/controls/windows/Popup',
-    'Locale'
+    'Locale',
+    'Mustache',
 
-], function (QUIPopup, QUILocale) {
+    'text!controls/help/About.de.html',
+    'text!controls/help/About.en.html',
+
+    'css!controls/help/About.css'
+
+], function (QUIPopup, QUILocale, Mustache, templateDe, templateEn) {
     "use strict";
 
     return new Class({
@@ -25,10 +31,10 @@ define('controls/help/About', [
         ],
 
         options: {
-            maxHeight: 300,
-            maxWidth : 450,
-            title    : 'About',
-            closeButtonText : QUILocale.get('quiqqer/system', 'close')
+            maxHeight      : 400,
+            maxWidth       : 600,
+            title          : QUILocale.get('quiqqer/system', 'menu.help.about.text'),
+            closeButtonText: QUILocale.get('quiqqer/system', 'close')
         },
 
         initialize: function (options) {
@@ -36,26 +42,26 @@ define('controls/help/About', [
             this.addEvent('onOpen', this.$onOpen);
         },
 
+        /**
+         * event: on open
+         */
         $onOpen: function () {
-            // #locale
-            this.getContent().set(
-                'html',
+            var template;
 
-                '<div style="text-align: center;">' +
-                '<h2>QUIQQER Management System</h2>' +
-                '<p><a href="http://www.quiqqer.com" target="_blank">www.quiqqer.com</a></p>' +
-                '<br />' +
-                'Version: ' + QUIQQER_VERSION +
-                '<br />' +
-                '<p>' +
-                'Copyright ' +
-                '<a href="http://www.pcsg.de" target="_blank">' +
-                'http://www.pcsg.de' +
-                '</a>' +
-                '</p>' +
-                '<p>Author: Henning Leutz & Moritz Scholz</p>' +
-                '</div>'
-            );
+            this.getContent().addClass('quiqqer-about-window');
+
+            switch (QUILocale.getCurrent()) {
+                case 'de':
+                    template = templateDe;
+                    break;
+
+                default:
+                    template = templateEn;
+            }
+
+            this.getContent().set('html', Mustache.render(template, {
+                version: QUIQQER_VERSION
+            }));
         }
     });
 });

@@ -2,21 +2,6 @@
  * @module controls/packages/Package
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires qui/QUI
- * @requires qui/controls/Control
- * @requires qui/controls/buttons/Button
- * @requires qui/controls/loader/Loader
- * @requires Packages
- * @requires Mustache
- * @requires controls/packages/PackageList
- * @requires controls/packages/PackageList
- * @requires Locale
- * @requires Ajax
- * @requires text!controls/packages/Search.html
- * @requires text!controls/packages/Search.TermsOfUse.html
- * @requires text!controls/packages/Search.OtherSources.html
- * @requires css!controls/packages/Search.css
- *
  * @event onLoad
  * @event onSearchBegin
  * @event onSearchEnd
@@ -35,13 +20,12 @@ define('controls/packages/Search', [
     'Locale',
     'Ajax',
 
-    'text!controls/packages/Search.html',
     'text!controls/packages/Search.TermsOfUse.html',
     'text!controls/packages/Search.OtherSources.html',
     'css!controls/packages/Search.css'
 
 ], function (QUI, QUIControl, QUIButton, QUILoader, Packages,
-             Mustache, PackageList, StoreApi, QUILocale, QUIAjax, template,
+             Mustache, PackageList, StoreApi, QUILocale, QUIAjax,
              templateTermsOfUse, templateOtherSources) {
     "use strict";
 
@@ -53,10 +37,10 @@ define('controls/packages/Search', [
         Type   : 'controls/packages/Search',
 
         Binds: [
+            'openStore',
+            'openOtherSources',
             '$onInject',
             '$onClickInstall',
-            '$loadPackageStore',
-            '$loadOtherSourcesSearch',
             '$loadUpload',
             '$onResize',
             '$storeApiController'
@@ -78,15 +62,14 @@ define('controls/packages/Search', [
             this.$Input      = null;
             this.$TermsOfUse = null;
             this.$Content    = null;
-            this.$storeUrl   = null;
             this.$Panel      = null;
 
-            this.$PackageStoreBtn = null;
-            this.$OtherSourcesBtn = null;
-            this.$UploadBtn       = null;
+            this.$StoreApi = new StoreApi();
+            this.$Store    = null;
 
-            this.$StoreFrame = null;
-            this.$StoreApi   = new StoreApi();
+            this.$StoreButton   = null;
+            this.$PackageButton = null;
+            this.$SearchButton  = null;
 
             this.addEvents({
                 onInject: this.$onInject
@@ -104,6 +87,42 @@ define('controls/packages/Search', [
             });
 
             this.Loader.inject(this.$Elm);
+
+            this.$Buttons = new Element('div', {
+                'class': 'quiqqer-packages-search-buttons qui-panel-buttons'
+            }).inject(this.$Elm);
+
+            this.$Container = new Element('div', {
+                'class': 'quiqqer-packages-search-container'
+            }).inject(this.$Elm);
+
+
+            this.$StoreButton = new QUIButton({
+                text  : QUILocale.get('quiqqer/quiqqer', 'controls.packages.search.template.togglePackageStore'),
+                events: {
+                    onClick: this.openStore
+                }
+            }).inject(this.$Buttons);
+
+            this.$PackageButton = new QUIButton({
+                text  : QUILocale.get('quiqqer/quiqqer', 'controls.packages.search.template.upload'),
+                title : QUILocale.get('quiqqer/quiqqer', 'dialog.packages.install.upload.title'),
+                events: {
+                    onClick: this.openUpload
+                }
+            }).inject(this.$Buttons);
+
+            this.$SearchButton = new QUIButton({
+                icon  : 'fa fa-search',
+                title : QUILocale.get('quiqqer/quiqqer', 'controls.packages.search.othersources.template.labelSearch'),
+                styles: {
+                    'float': 'right'
+                },
+                events: {
+                    onClick: this.openOtherSources
+                }
+            }).inject(this.$Buttons);
+
 
             return this.$Elm;
         },
@@ -125,52 +144,16 @@ define('controls/packages/Search', [
 
             this.Loader.show();
 
-            // get parent panel
-            Promise.all([
-                this.$checkTermsOfUse(),
-                this.$getStoreUrl()
-            ]).then(function (result) {
-                var agreed     = result[0];
-                self.$storeUrl = result[1];
-
-                var lgPrefix = 'controls.packages.search.template.';
-
-                self.$Elm.set('html', Mustache.render(template, {
-                    togglePackageStore: QUILocale.get(lg, lgPrefix + 'togglePackageStore'),
-                    toggleOtherSources: QUILocale.get(lg, lgPrefix + 'toggleOtherSources')
-                }));
-
-                self.$Content = self.$Elm.getElement(
-                    '.qui-controls-packages-search-content'
-                );
-
-                self.$PackageStoreBtn = self.$Elm.getElement(
-                    '.qui-controls-packages-search-toggle-packagestore'
-                );
-
-                self.$OtherSourcesBtn = self.$Elm.getElement(
-                    '.qui-controls-packages-search-toggle-othersources'
-                );
-
-                self.$UploadBtn = self.$Elm.getElement(
-                    '.qui-controls-packages-search-toggle-upload'
-                );
-
-                self.$PackageStoreBtn.addEvent('click', self.$loadPackageStore);
-                self.$OtherSourcesBtn.addEvent('click', self.$loadOtherSourcesSearch);
-                self.$UploadBtn.addEvent('click', self.$loadUpload);
-
-                self.Loader.hide();
-
+            this.$checkTermsOfUse().then(function (agreed) {
                 if (!agreed) {
                     self.$showTermsOfUse();
-                    return;
+                } else {
+                    self.openStore();
                 }
 
-                self.$loadPackageStore();
+                self.fireEvent('load');
+                self.Loader.hide();
             });
-
-            this.fireEvent('load');
         },
 
         /**
@@ -179,8 +162,16 @@ define('controls/packages/Search', [
          * @param {Object} event
          */
         $storeApiController: function (event) {
-            var Data        = event.data;
-            var frameWindow = this.$StoreFrame.contentWindow;
+            if (!this.$Store) {
+                return;
+            }
+
+            if (!this.$Store.getFrame()) {
+                return;
+            }
+
+            var Data        = event.data,
+                frameWindow = this.$Store.getFrame().contentWindow;
 
             if (!frameWindow) {
                 return;
@@ -210,16 +201,15 @@ define('controls/packages/Search', [
         /**
          * Show the package store
          */
-        $loadPackageStore: function () {
-            this.$Content.set('html', '');
+        openStore: function () {
+            var self = this;
 
-            this.$PackageStoreBtn.addClass('qui-controls-packages-search-toggle-active');
-            this.$OtherSourcesBtn.removeClass('qui-controls-packages-search-toggle-active');
+            this.$activateButton(this.$StoreButton);
 
-            this.$StoreFrame = new Element('iframe', {
-                'class': 'qui-control-packages-search-iframe',
-                src    : this.$storeUrl
-            }).inject(this.$Content);
+            require(['controls/packages/store/Store'], function (Store) {
+                self.$Container.set('html', '');
+                self.$Store = new Store().inject(self.$Container);
+            });
 
             if (!this.$storeApiEventRegistered) {
                 window.addEventListener('message', this.$storeApiController);
@@ -228,26 +218,24 @@ define('controls/packages/Search', [
         },
 
         /**
-         * Show othersources search
+         * Show other sources search
          */
-        $loadOtherSourcesSearch: function () {
-            var self     = this;
-            var lgPrefix = 'controls.packages.search.othersources.template.';
+        openOtherSources: function () {
+            var self = this;
 
-            this.$Content.set('html', Mustache.render(templateOtherSources, {
-                labelSearch      : QUILocale.get(lg, lgPrefix + 'labelSearch'),
-                placeholderSearch: QUILocale.get(lg, lgPrefix + 'placeholderSearch')
+            this.$activateButton(this.$SearchButton);
+
+            this.$Container.set('html', Mustache.render(templateOtherSources, {
+                labelSearch      : QUILocale.get(lg, 'controls.packages.search.othersources.template.labelSearch'),
+                placeholderSearch: QUILocale.get(lg, 'controls.packages.search.othersources.template.placeholderSearch')
             }));
 
-            this.$PackageStoreBtn.removeClass('qui-controls-packages-search-toggle-active');
-            this.$OtherSourcesBtn.addClass('qui-controls-packages-search-toggle-active');
-
-            var SearchInput = this.$Content.getElement('input');
+            var SearchInput = this.$Container.getElement('input');
 
             SearchInput.addEvent('keydown', function (event) {
-                if (typeof event !== 'undefined' &&
-                    event.code === 13) {
+                if (typeof event !== 'undefined' && event.code === 13) {
                     event.target.blur();
+
                     self.search(event.target.value).then(function () {
                         event.target.focus();
                     });
@@ -267,17 +255,29 @@ define('controls/packages/Search', [
                         onClick: this.$onClickInstall
                     }
                 }]
-            }).inject(
-                this.$Content.getElement(
-                    '.qui-controls-packages-search-othersources-content'
-                )
-            );
+            }).inject(this.$Container.getElement('.qui-controls-packages-search-othersources-content'));
+        },
+
+        /**
+         * activate the wanted button
+         * and normalize the other
+         */
+        $activateButton: function (Btn) {
+            this.$StoreButton.setNormal();
+            this.$PackageButton.setNormal();
+            this.$SearchButton.setNormal();
+
+            if (this.$Store) {
+                this.$Store.destroy();
+            }
+
+            Btn.setActive();
         },
 
         /**
          * Load package upload
          */
-        $loadUpload: function () {
+        openUpload: function () {
             require(['controls/packages/upload/Window'], function (Window) {
                 new Window().open();
             });
@@ -325,27 +325,46 @@ define('controls/packages/Search', [
          * Show terms of use layer
          */
         $showTermsOfUse: function () {
-            var self     = this;
-            var lgPrefix = 'controls.packages.search.termsofuse.';
+            this.$activateButton(this.$StoreButton);
 
-            this.$TermsOfUse = new Element('div', {
-                'class': 'quiqqer-packages-search-termsofuse',
-                html   : Mustache.render(templateTermsOfUse, {
-                    header       : QUILocale.get(lg, lgPrefix + 'header'),
-                    content      : QUILocale.get(lg, lgPrefix + 'content'),
-                    acceptBtnText: QUILocale.get(lg, lgPrefix + 'acceptBtnText')
-                })
-            }).inject(this.$Elm);
+            var template;
 
-            this.$TermsOfUse.getElement('button').addEvent('click', function () {
-                self.Loader.show();
+            var self     = this,
+                lang     = QUILocale.getCurrent(),
+                lgPrefix = 'controls.packages.search.termsofuse.';
 
-                self.$agreeToTermsOfUse().then(function () {
-                    if (self.$TermsOfUse) {
-                        self.$TermsOfUse.destroy();
-                    }
+            switch (lang) {
+                case 'de':
+                    template = 'text!controls/packages/termsOfUse/' + lang + '.html';
+                    break;
 
-                    self.Loader.hide();
+                default:
+                case 'en':
+                    template = 'text!controls/packages/termsOfUse/en.html';
+                    break;
+            }
+
+            require([template], function (templateTOU) {
+                self.$TermsOfUse = new Element('div', {
+                    'class': 'quiqqer-packages-search-termsofuse',
+                    html   : Mustache.render(templateTermsOfUse, {
+                        header       : QUILocale.get(lg, lgPrefix + 'header'),
+                        content      : Mustache.render(templateTOU),
+                        acceptBtnText: QUILocale.get(lg, lgPrefix + 'acceptBtnText')
+                    })
+                }).inject(self.$Container);
+
+                self.$TermsOfUse.getElement('button').addEvent('click', function () {
+                    self.Loader.show();
+
+                    self.$agreeToTermsOfUse().then(function () {
+                        if (self.$TermsOfUse) {
+                            self.$TermsOfUse.destroy();
+                        }
+
+                        self.Loader.hide();
+                        self.openStore();
+                    });
                 });
             });
         },

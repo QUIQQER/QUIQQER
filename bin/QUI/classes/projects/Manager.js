@@ -4,10 +4,6 @@
  * @module classes/projects/Manager
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/classes/DOM
- * @require classes/projects/Project
- * @require Ajax
- *
  * @event onCreate
  * @event onDelete
  * @event onProjectSave -> triggerd via project

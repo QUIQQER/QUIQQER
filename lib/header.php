@@ -22,8 +22,8 @@ ini_set("log_errors", "on");
 QUI::load();
 QUI\Utils\System\Debug::marker('header start');
 
-ini_set("error_log", VAR_DIR . 'log/error' . date('-Y-m-d') . '.log');
-ini_set('session.save_path', VAR_DIR . 'sessions');
+ini_set("error_log", VAR_DIR.'log/error'.date('-Y-m-d').'.log');
+ini_set('session.save_path', VAR_DIR.'sessions');
 
 set_error_handler("exception_error_handler");
 
@@ -51,11 +51,12 @@ define('ADMIN_CACHE', false);
 define('DEBUG_MEMORY', false);
 
 // Cacheflag setzen
-QUI\Cache\Manager::set('qui_cache_test', 1);
-
 try {
+    QUI\Cache\Manager::set('qui_cache_test', 1);
     define('CHECK_CACHE', QUI\Cache\Manager::get('qui_cache_test'));
 } catch (QUI\Cache\Exception $e) {
+    define('CHECK_CACHE', false);
+} catch (Stash\Exception\InvalidArgumentException $e) {
     define('CHECK_CACHE', false);
 }
 
@@ -81,7 +82,7 @@ try {
     header('Status: 503 Service Temporarily Unavailable');
 
     $Template = QUI::getTemplateManager()->getEngine();
-    $file     = LIB_DIR . 'templates/db_error.html';
+    $file     = LIB_DIR.'templates/db_error.html';
 
     if (QUI::conf('db', 'error_html')
         && file_exists(QUI::conf('db', 'error_html'))
@@ -92,7 +93,7 @@ try {
     try {
         echo $Template->fetch($file);
     } catch (QUI\Exception $Exception) {
-        echo $Template->fetch(LIB_DIR . 'templates/db_error.html');
+        echo $Template->fetch(LIB_DIR.'templates/db_error.html');
     }
 
     QUI\System\Log::writeException($Exception);
@@ -116,7 +117,7 @@ if (isset($_GET['logout'])) {
     if (isset($_SERVER['REQUEST_URI'])
         && strpos($_SERVER['REQUEST_URI'], 'logout=1') !== false
     ) {
-        header('Location: ' . str_replace('logout=1', '', $_SERVER['REQUEST_URI']));
+        header('Location: '.str_replace('logout=1', '', $_SERVER['REQUEST_URI']));
         exit;
     }
 }

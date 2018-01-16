@@ -1,3 +1,13 @@
+.quiqqer-login-auth {
+    overflow: hidden;
+    position: relative;
+}
+
+.quiqqer-auth-login-container {
+    float: left;
+    width: 100%;
+}
+
 .quiqqer-login-auth label {
     display: block;
     margin-bottom: 10px;
@@ -18,4 +28,29 @@
 
 .quiqqer-login-auth [type="submit"] {
     cursor: pointer;
+}
+
+.quiqqer-auth-login-passwordreset {
+    float: left;
+    width: 100%;
+}
+
+.quiqqer-auth-login-passwordreset-link {
+    cursor: pointer;
+    float: right;
+    margin-bottom: 20px;
+}
+
+.quiqqer-auth-login-passwordreset [type="submit"] {
+    float: left;
+    width: 100%
+}
+
+.quiqqer-auth-login-passwordreset button {
+    clear: both;
+    cursor: pointer;
+    float: left;
+    line-height: 20px;
+    margin-top: 20px;
+    width: 100%
 }

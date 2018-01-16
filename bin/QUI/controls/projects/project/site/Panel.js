@@ -3,18 +3,6 @@
  *
  * @module controls/projects/project/site/Panel
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/controls/desktop/Panel
- * @require Projects
- * @require Ajax
- * @require classes/projects/project/Site
- * @require qui/controls/buttons/Button
- * @require qui/utils/Form
- * @require utils/Controls
- * @require utils/Panels
- * @require utils/Site
- * @require Locale
- * @require css!controls/projects/project/site/Panel.css
  */
 define('controls/projects/project/site/Panel', [
 
@@ -30,24 +18,30 @@ define('controls/projects/project/site/Panel', [
     'utils/Panels',
     'utils/Site',
     'Locale',
+    'Users',
+    'Mustache',
 
+    'text!controls/projects/project/site/Panel.restore.html',
     'css!controls/projects/project/site/Panel.css'
 
 ], function () {
     "use strict";
 
-    var QUI          = arguments[0],
-        QUIPanel     = arguments[1],
-        Projects     = arguments[2],
-        Ajax         = arguments[3],
-        QUIButton    = arguments[4],
-        QUIConfirm   = arguments[5],
-        QUIFormUtils = arguments[6],
-        QUIElmUtils  = arguments[7],
-        ControlUtils = arguments[8],
-        PanelUtils   = arguments[9],
-        SiteUtils    = arguments[10],
-        Locale       = arguments[11];
+    var QUI             = arguments[0],
+        QUIPanel        = arguments[1],
+        Projects        = arguments[2],
+        Ajax            = arguments[3],
+        QUIButton       = arguments[4],
+        QUIConfirm      = arguments[5],
+        QUIFormUtils    = arguments[6],
+        QUIElmUtils     = arguments[7],
+        ControlUtils    = arguments[8],
+        PanelUtils      = arguments[9],
+        SiteUtils       = arguments[10],
+        Locale          = arguments[11],
+        Users           = arguments[12],
+        Mustache        = arguments[13],
+        templateRestore = arguments[14];
 
     var lg = 'quiqqer/system';
 
@@ -209,9 +203,10 @@ define('controls/projects/project/site/Panel', [
                 if (this.$delayTest > 10) {
                     QUI.getMessageHandler(function (MH) {
                         MH.addError(
-                            'Seitenpanel mit der Seiten ID #' + this.getSite().getId() +
-                            ' konnte nicht geladen werden. Das Panel wurde wieder geschlossen'
-                        ); // #locale
+                            Locale.get('quiqqer/quiqqer', 'exception.site.panel.error', {
+                                id: this.getSite().getId()
+                            })
+                        );
                     });
 
                     this.destroy();
@@ -428,27 +423,81 @@ define('controls/projects/project/site/Panel', [
 
             Site.hasWorkingStorageChanges().then(function (hasStorage) {
                 if (hasStorage === false) {
+                    Site.load();
+                    return;
+                }
+
+                var EditUser = Users.get(Site.getAttribute('e_user'));
+
+                if (EditUser.isLoaded()) {
+                    return Promise.resolve(EditUser);
+                }
+
+                return EditUser.load().then(function () {
+                    return Promise.resolve(EditUser);
+                });
+            }).then(function (EditUser) {
+                if (!EditUser) {
+                    Site.load();
                     return;
                 }
 
                 var Sheet = self.createSheet({
-                    title: 'Wiederherstellung der Seite #' + Site.getId()
+                    icon : 'fa fa-window-restore',
+                    title: Locale.get('quiqqer/quiqqer', 'panel.site.restore.title', {
+                        id: Site.getId()
+                    })
                 });
 
-                // #locale
-                Sheet.getContent().set(
-                    'html',
 
-                    '<div class="qui-panel-dataRestore">' +
-                    '<p>Es wurden nicht gespeicherte Daten der Seite #' + Site.getId() + ' gefunden.</p>' +
-                    '<p>Sollen die Daten wieder hergestellt werden?</p>' +
-                    '</div>' // #locale
+                var StorageTime = null;
+                var storageDate = '---';
+                var storage     = Site.getWorkingStorage();
+                var EditDate    = new Date(Site.getAttribute('e_date'));
+
+                if ("__storageTime" in storage) {
+                    StorageTime = new Date(storage.__storageTime);
+                    storageDate = StorageTime.toLocaleDateString([], {
+                        hour  : '2-digit',
+                        minute: '2-digit'
+                    });
+                }
+
+                var localeParams = {
+                    id          : Site.getId(),
+                    title       : Site.getAttribute('title'),
+                    editUser    : EditUser.getName(),
+                    editUsername: EditUser.getUsername(),
+                    editDate    : EditDate.toLocaleDateString([], {
+                        hour  : '2-digit',
+                        minute: '2-digit'
+                    }),
+                    localeDate  : storageDate
+                };
+
+                var text = Locale.get(
+                    'quiqqer/quiqqer',
+                    'panel.site.restore.message.local.newer',
+                    localeParams
                 );
+
+                if (StorageTime && EditDate > StorageTime) {
+                    text = Locale.get(
+                        'quiqqer/quiqqer',
+                        'panel.site.restore.message.online.newer',
+                        localeParams
+                    );
+                }
+
+                Sheet.getContent().set('html', Mustache.render(templateRestore, {
+                    id  : Site.getId(),
+                    text: text
+                }));
 
                 Sheet.clearButtons();
 
                 Sheet.addButton({
-                    text  : 'Daten verwerfen',  // #locale
+                    text  : Locale.get('quiqqer/quiqqer', 'panel.site.restore.button.cancel'),
                     events: {
                         onClick: function () {
                             Sheet.hide(function () {
@@ -462,14 +511,14 @@ define('controls/projects/project/site/Panel', [
                 });
 
                 Sheet.addButton({
-                    text  : 'Daten übernehmen', // #locale
+                    text  : Locale.get('quiqqer/quiqqer', 'panel.site.restore.button.restore'),
                     events: {
                         onClick: function () {
                             Sheet.hide(function () {
                                 Sheet.destroy();
                             });
 
-                            Site.setAttributes(hasStorage);
+                            Site.setAttributes(storage);
                             Site.clearWorkingStorage();
                             self.load();
                         }
@@ -929,7 +978,7 @@ define('controls/projects/project/site/Panel', [
                                         new QUIButton({
                                             name  : 'delete-linking',
                                             icon  : 'fa fa-trash',
-                                            title : 'Verknüpfung löschen', // #locale
+                                            title : Locale.get(lg, 'projects.project.site.panel.window.deleteLinked.button'),
                                             styles: {
                                                 width: 50
                                             },
@@ -977,7 +1026,7 @@ define('controls/projects/project/site/Panel', [
                                     };
 
                                     var removeLinking = function (Btn) {
-                                        self.removeLanguagLink(
+                                        self.removeLanguageLink(
                                             Btn.getAttribute('lang'),
                                             Btn.getAttribute('siteId')
                                         );
@@ -1043,7 +1092,7 @@ define('controls/projects/project/site/Panel', [
                                 if (Locked && USER.isSU) {
                                     new QUIButton({
                                         name  : 'unlock',
-                                        text  : 'Trotzdem freischalten', // #locale
+                                        text  : Locale.get(lg, 'projects.project.site.panel.unlock'),
                                         styles: {
                                             clear  : 'both',
                                             display: 'block',
@@ -1785,9 +1834,11 @@ define('controls/projects/project/site/Panel', [
                                 Popup.Loader.show();
 
                                 Ajax.post('ajax_site_language_add', function () {
-                                    Popup.close();
-
-                                    self.load();
+                                    self.$ActiveCat = null;
+                                    self.getSite().load(function () {
+                                        Popup.close();
+                                        self.load();
+                                    });
                                 }, {
                                     project     : Project.encode(),
                                     id          : Site.getId(),
@@ -1809,7 +1860,7 @@ define('controls/projects/project/site/Panel', [
          * @param {String} lang - lang of the language link
          * @param {String} id - Site-ID of the language link
          */
-        removeLanguagLink: function (lang, id) {
+        removeLanguageLink: function (lang, id) {
             var self = this;
 
             var Site    = self.getSite(),
@@ -1826,9 +1877,11 @@ define('controls/projects/project/site/Panel', [
                         Confirm.Loader.show();
 
                         Ajax.post('ajax_site_language_remove', function () {
-                            Confirm.close();
-
-                            self.load();
+                            self.$ActiveCat = null;
+                            self.getSite().load(function () {
+                                Confirm.close();
+                                self.load();
+                            });
                         }, {
                             project     : Project.encode(),
                             id          : Site.getId(),
@@ -1849,7 +1902,6 @@ define('controls/projects/project/site/Panel', [
          * @param {String} lang
          */
         copySiteToLang: function (lang) {
-
             if (!this.$Site) {
                 return;
             }
@@ -1858,15 +1910,16 @@ define('controls/projects/project/site/Panel', [
                 Project = this.$Site.getProject();
 
             new QUIConfirm({
-                title        : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.title', {
+                title      : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.title', {
                     lang: lang
                 }),
-                text         : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.text', {
+                text       : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.text', {
                     lang: lang
                 }),
-                information  : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.information', {
+                information: Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.information', {
                     lang: lang
                 }),
+
                 icon         : 'fa fa-copy',
                 texticon     : 'fa fa-copy',
                 autoclose    : false,
@@ -1874,11 +1927,9 @@ define('controls/projects/project/site/Panel', [
                 maxWidth     : 600,
                 events       : {
                     onSubmit: function (Win) {
-
                         Win.Loader.show();
 
                         require(['controls/projects/Popup'], function (ProjectPopup) {
-
                             Win.close();
 
                             new ProjectPopup({
@@ -1897,11 +1948,12 @@ define('controls/projects/project/site/Panel', [
                                                 lang: lang
                                             }
                                         }).then(function (newChildId) {
-
                                             Ajax.post('ajax_site_language_add', function () {
-                                                Popup.close();
-
-                                                self.load();
+                                                self.$ActiveCat = null;
+                                                self.getSite().load(function () {
+                                                    Popup.close();
+                                                    self.load();
+                                                });
                                             }, {
                                                 project     : Project.encode(),
                                                 id          : self.$Site.getId(),

@@ -17,11 +17,12 @@ define('controls/desktop/panels/Bookmarks', [
     'qui/controls/sitemap/Map',
     'qui/controls/sitemap/Item',
     'Ajax',
+    'Locale',
     'utils/Panels',
 
     'css!controls/desktop/panels/Bookmarks.css'
 
-], function (QUI, QUIBookmarks, Sortables, QUIConfirm, QUISitemap, QUISitemapItem, QUIAjax, PanelUtils) {
+], function (QUI, QUIBookmarks, Sortables, QUIConfirm, QUISitemap, QUISitemapItem, QUIAjax, QUILocale, PanelUtils) {
     "use strict";
 
     return new Class({
@@ -51,7 +52,7 @@ define('controls/desktop/panels/Bookmarks', [
             var self = this;
 
             this.setAttributes({
-                title : 'Bookmarks', // #locale
+                title : QUILocale.get('quiqqer/system', 'panels.bookmarks.title'),
                 icon  : 'fa fa-bookmark',
                 footer: false
             });
@@ -59,7 +60,7 @@ define('controls/desktop/panels/Bookmarks', [
             this.addButton({
                 name  : 'add',
                 icon  : 'fa fa-plus',
-                title : 'Bookmark hinzufügen', // #locale
+                title : QUILocale.get('quiqqer/quiqqer', 'control.bookmarks.panel.button.add.title'),
                 events: {
                     onClick: this.openAddDialog
                 }
@@ -68,7 +69,7 @@ define('controls/desktop/panels/Bookmarks', [
             this.addButton({
                 name  : 'edit',
                 icon  : 'fa fa-edit',
-                title : 'Bookmarks editieren', // #locale
+                title : QUILocale.get('quiqqer/quiqqer', 'control.bookmarks.panel.button.edit.title'),
                 events: {
                     onClick: function (Btn) {
                         if (Btn.isActive()) {
@@ -99,7 +100,7 @@ define('controls/desktop/panels/Bookmarks', [
 
             this.addButton({
                 name  : 'sort',
-                title : 'Sortierung', // #locale
+                title : QUILocale.get('quiqqer/quiqqer', 'control.bookmarks.panel.button.sort.title'),
                 icon  : 'fa fa-sort',
                 styles: {
                     'float': 'right'
@@ -132,17 +133,12 @@ define('controls/desktop/panels/Bookmarks', [
          */
         fix: function () {
             this.$fixed = true;
-
-            // this.$normalizeButtons();
-            // this.getButtonBar().clear();
         },
 
         /**
          * Booksmarks are editable
          */
         unfix: function () {
-            var self = this;
-
             this.$fixed = false;
         },
 
@@ -170,7 +166,6 @@ define('controls/desktop/panels/Bookmarks', [
             }
 
             this.setAttribute('dragable', true);
-
             this.unfix();
         },
 
@@ -297,7 +292,6 @@ define('controls/desktop/panels/Bookmarks', [
 
             var Child;
 
-            // parse qui/controls/contextmenu/Item to an Bookmark
             if (typeOf(Item) === 'object') {
                 var json = JSON.encode(Item);
 

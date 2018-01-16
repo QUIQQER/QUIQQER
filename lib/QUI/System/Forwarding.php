@@ -101,8 +101,8 @@ class Forwarding
      */
     public static function getConfg()
     {
-        if (!file_exists(CMS_DIR . 'etc/forwarding.ini.php')) {
-            file_put_contents(CMS_DIR . 'etc/forwarding.ini.php', '');
+        if (!file_exists(CMS_DIR.'etc/forwarding.ini.php')) {
+            file_put_contents(CMS_DIR.'etc/forwarding.ini.php', '');
         }
 
         return QUI::getConfig('etc/forwarding.ini.php');
@@ -131,10 +131,10 @@ class Forwarding
         $uri  = $Request->getRequestUri();
         $host = $Request->getSchemeAndHttpHost();
 
-        $request = $host . $uri;
+        $request = $host.$uri;
 
         // directly found
-        if (isset($list[$request])) {
+        if (isset($list[$request]) || isset($list[trim($request, '/')])) {
             self::redirect($list[$request]);
         }
 

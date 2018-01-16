@@ -33,15 +33,17 @@ define('Ajax', [
 
     var apiPoint = '/ajax.php';
 
-    if (typeof QUIQQER !== 'undefined' &&
-        "ajax" in QUIQQER) {
+    if (typeof QUIQQER !== 'undefined' && "ajax" in QUIQQER) {
         apiPoint = QUIQQER.ajax;
+    } else if (typeof URL_SYS_DIR !== 'undefined') {
+        apiPoint = URL_SYS_DIR + 'ajax.php';
     }
 
     return {
         $globalJSF : {}, // global javascript callback functions
         $onprogress: {},
         $url       : apiPoint,
+        $on401     : false,
 
         /**
          * Send a Request async
@@ -162,6 +164,13 @@ define('Ajax', [
                             ) {
                                 Request.setAttribute('logout', true);
 
+                                if (self.$on401) {
+                                    if (typeof self.$on401 === 'function') {
+                                        self.$on401(Exception);
+                                    }
+                                    return;
+                                }
+
                                 require(['controls/users/LoginWindow'], function (Login) {
                                     new Login({
                                         message: Exception.getMessage(),
@@ -253,12 +262,9 @@ define('Ajax', [
          * show a maintenance message
          */
         showMaintenanceMessage: function () {
-            // #locale
             QUI.getMessageHandler(function (MH) {
                 MH.addInformation(
-                    'Derzeit werden Wartungsarbeiten getätigt.<br />' +
-                    'Unter Umstände ist das System nur eingeschränkt nutzbar.<br />' +
-                    'Bitte wenden Sie sich an ihren Administrator.'
+                    Locale.get('quiqqer/quiqqer', 'message.maintenance')
                 );
             });
         },

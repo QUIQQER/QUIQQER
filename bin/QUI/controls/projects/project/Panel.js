@@ -3,19 +3,6 @@
  *
  * @module controls/projects/project/Panel
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/controls/desktop/Panel
- * @require Projects
- * @require controls/projects/project/Sitemap
- * @require utils/Panels
- * @require qui/controls/buttons/Button
- * @require qui/controls/buttons/Separator
- * @require qui/controls/sitemap/Map
- * @require qui/controls/sitemap/Item
- * @require qui/controls/sitemap/Filter
- * @require Locale
- * @require controls/projects/Manager
- * @require css!controls/projects/project/Panel.css'
  */
 define('controls/projects/project/Panel', [
 

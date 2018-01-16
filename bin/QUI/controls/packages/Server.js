@@ -2,15 +2,6 @@
  * @module controls/packages/Package
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires qui/QUI
- * @requires qui/controls/Control
- * @requires qui/controls/buttons/Button
- * @requires qui/controls/windows/Confirm
- * @requires Packages
- * @requires Mustache
- * @requires Locale
- * @requires css!controls/packages/Server.css
- *
  * @event onLoad
  */
 define('controls/packages/Server', [
@@ -71,7 +62,7 @@ define('controls/packages/Server', [
             return [{
                 name     : 'addServer',
                 textimage: 'fa fa-plus',
-                text     : 'Neuen Server hinzufügen', // #locale
+                text     : QUILocale.get(lg, 'control.server.button.add.text'),
                 events   : {
                     onClick: function () {
                         this.openAddServerDialog();
@@ -86,14 +77,17 @@ define('controls/packages/Server', [
          * @returns {HTMLDivElement}
          */
         create: function () {
+            var placeholder = QUILocale.get(lg, 'control.server.filter.placeholder');
+            var submitText  = QUILocale.get(lg, 'control.server.filter.submit');
+
             this.$Elm = new Element('div', {
                 'class': 'qui-control-packages-server',
                 html   : '<form class="qui-control-packages-server-search">' +
                 '  <fieldset>' +
                 '      <label>' +
-                '          <input type="search" name="search" placeholder="Filter..."/>' + // #locale
+                '          <input type="search" name="search" />' +
                 '      </label>' +
-                '      <input type="submit" value="Los"/>' + // #locale
+                '      <input type="submit"/>' +
                 '  </fieldset>' +
                 '</form>' +
                 '<div class="qui-control-packages-server-result"></div>'
@@ -105,6 +99,9 @@ define('controls/packages/Server', [
             };
 
             this.$SearchInput = this.$Elm.getElement('[type="search"]');
+            this.$SearchInput.set('placeholder', placeholder);
+
+            this.$Elm.getElement('[type="submit"]').set('value', submitText);
 
             this.$SearchInput.addEvents({
                 change : this.$refreshFilter,

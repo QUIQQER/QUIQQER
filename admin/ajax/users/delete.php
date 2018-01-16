@@ -22,8 +22,10 @@ QUI::$Ajax->registerFunction(
         }
 
         QUI::getMessagesHandler()->addInformation(
-            'Die Benutzer ' . implode(', ', $uids) . ' wurden erfolgreich gelöscht'
-        ); // #locale
+            QUI::getLocale()->get('quiqqer/quiqqer', 'message.user.deleted.successful', array(
+                'ids' => implode(', ', $uids)
+            ))
+        );
 
         return true;
     },

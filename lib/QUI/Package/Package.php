@@ -531,9 +531,23 @@ class Package extends QUI\QDOM
         QUI\Translator::importFromPackage($this, true, true);
 
         try {
-            $groups = XML::getLocaleGroupsFromDom(
-                XML::getDomFromXml($dir.'locale.xml')
-            );
+            $groups   = array();
+            $files    = [$dir.'locale.xml'];
+            $Dom      = XML::getDomFromXml($dir.'locale.xml');
+            $FileList = $Dom->getElementsByTagName('file');
+
+            if ($FileList->length) {
+                /** @var \DOMElement $File */
+                foreach ($FileList as $File) {
+                    $files[] = $this->getDir().ltrim($File->getAttribute('file'), '/');
+                }
+            }
+
+            foreach ($files as $file) {
+                $groups = XML::getLocaleGroupsFromDom(
+                    XML::getDomFromXml($file)
+                );
+            }
 
             $groups = array_map(function ($data) {
                 return $data['group'];

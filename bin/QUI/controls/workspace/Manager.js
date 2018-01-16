@@ -353,8 +353,6 @@ define('controls/workspace/Manager', [
 
             var data = JSON.decode(this.$spaces[id].data);
 
-            console.warn(data);
-
             this.Workspace.unserialize(data);
             this.Workspace.fix();
             this.Workspace.resize();
@@ -1501,7 +1499,6 @@ define('controls/workspace/Manager', [
                             width   = size.x,
                             height  = size.y;
 
-                        // #locale
                         Content.set(
                             'html',
 
@@ -1539,7 +1536,6 @@ define('controls/workspace/Manager', [
                             return;
                         }
 
-                        // #locale
                         // no workspaces available
                         Content.set(
                             'html',
