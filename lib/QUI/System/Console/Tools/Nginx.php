@@ -17,6 +17,8 @@ use QUI;
 class Nginx extends QUI\System\Console\Tool
 {
     protected $nginxConfigFile;
+    protected $nginxConfDir;
+    protected $subConfDir;
 
     /**
      * Konstruktor
@@ -26,7 +28,8 @@ class Nginx extends QUI\System\Console\Tool
         $this->setName('quiqqer:nginx')
             ->setDescription('Generate the nginx.conf File.');
 
-        $this->nginxConfigFile = ETC_DIR . "nginx.conf";
+        $this->nginxConfDir = ETC_DIR."nginx/";
+        $this->nginxConfigFile = $this->nginxConfDir."nginx.conf";
     }
 
     /**
@@ -38,12 +41,65 @@ class Nginx extends QUI\System\Console\Tool
     {
         $this->writeLn('Generating nginx.conf ...');
 
-        $nginxBackupFile = VAR_DIR . 'backup/nginx.conf_' . date('Y-m-d__H_i_s');
+        $nginxBackupFile = VAR_DIR.'backup/nginx.conf_'.date('Y-m-d__H_i_s');
+
+        // ************************************* //
+        //              Sub Configs              //
+        // ************************************* //
+
+        $header = <<<HEAD
+# This file will be included into the auto generated nginx config.
+# You can make changes to the nginx configuration by editing this file
 
 
-        //
-        // generate backup
-        //
+HEAD;
+
+        // Create subconfig dir
+        $this->subConfDir = $this->nginxConfDir."conf.d/";
+        if (!is_dir($this->subConfDir)) {
+            mkdir($this->subConfDir, 0755, true);
+        }
+
+        // Create subconfig: PHP
+        if (!file_exists($this->subConfDir."php.include")) {
+            file_put_contents($this->subConfDir."php.include", $header);
+
+            $geoIPSettings = <<<GEO
+### SET GEOIP Variables ###
+#fastcgi_param GEOIP_COUNTRY_CODE \$geoip_country_code;
+#fastcgi_param GEOIP_COUNTRY_CODE3 \$geoip_country_code3;
+#fastcgi_param GEOIP_COUNTRY_NAME \$geoip_country_name;
+
+#fastcgi_param GEOIP_CITY_COUNTRY_CODE \$geoip_city_country_code;
+#fastcgi_param GEOIP_CITY_COUNTRY_CODE3 \$geoip_city_country_code3;
+#fastcgi_param GEOIP_CITY_COUNTRY_NAME \$geoip_city_country_name;
+#fastcgi_param GEOIP_REGION \$geoip_region;
+#fastcgi_param GEOIP_CITY \$geoip_city;
+#fastcgi_param GEOIP_POSTAL_CODE \$geoip_postal_code;
+#fastcgi_param GEOIP_CITY_CONTINENT_CODE \$geoip_city_continent_code;
+#fastcgi_param GEOIP_LATITUDE \$geoip_latitude;
+#fastcgi_param GEOIP_LONGITUDE \$geoip_longitude;
+GEO;
+
+            file_put_contents($this->subConfDir."php.include", $geoIPSettings, FILE_APPEND);
+        }
+
+        if (!file_exists($this->subConfDir."redirects.include")) {
+            file_put_contents($this->subConfDir."redirects.include", $header);
+        }
+
+        if (!file_exists($this->subConfDir."whitelist.include")) {
+            file_put_contents($this->subConfDir."whitelist.include", $header);
+        }
+
+        if (!file_exists($this->subConfDir."server.include")) {
+            file_put_contents($this->subConfDir."server.include", $header);
+        }
+
+        // ************************************* //
+        //              Backup                   //
+        // ************************************* //
+
         if (file_exists($this->nginxConfigFile)) {
             file_put_contents(
                 $nginxBackupFile,
@@ -61,6 +117,9 @@ class Nginx extends QUI\System\Console\Tool
 
         $this->resetColor();
 
+        // ************************************* //
+        //           Generate Template           //
+        // ************************************* //
 
         $nginxContent = $this->template();
 
@@ -83,7 +142,7 @@ class Nginx extends QUI\System\Console\Tool
         }
 
         $oldContent = file_get_contents($this->nginxConfigFile);
-        $content    = $this->template();
+        $content = $this->template();
 
         if (trim($oldContent) != trim($content)) {
             return true;
@@ -99,14 +158,13 @@ class Nginx extends QUI\System\Console\Tool
      */
     protected function template()
     {
-        $quiqqerDir    = CMS_DIR;
+        $quiqqerDir = CMS_DIR;
         $quiqqerUrlDir = URL_DIR;
 
         # Process domain
         $domain = trim(HOST);
         $domain = str_replace("https://", "", $domain);
         $domain = str_replace("http://", "", $domain);
-
 
         $phpParams = <<<PHPPARAM
 fastcgi_param   QUERY_STRING            \$query_string;
@@ -138,8 +196,9 @@ fastcgi_param   QUERY_STRING            \$query_string;
                 fastcgi_param   REDIRECT_STATUS         200;
                 fastcgi_read_timeout 180;
                 fastcgi_pass php;
+                
+                include {$this->subConfDir}php.include
 PHPPARAM;
-
 
         # Define the rewrite directives
         $rewriteRules = <<<REWRITE
@@ -197,6 +256,8 @@ PHPPARAM;
             location ^~ {$quiqqerUrlDir}admin/ {                                                                                                                    
                 rewrite {$quiqqerUrlDir}admin/(.*) {$quiqqerUrlDir}packages/quiqqer/quiqqer/admin/$1 last;
             }        
+    
+            include {$this->subConfDir}redirects.include
     
             ################################
             #         Whitelist            #
@@ -277,6 +338,8 @@ PHPPARAM;
                 # Do not block this
             }
             
+            include {$this->subConfDir}whitelist.include
+            
             # /////////////////////////////////////////////////////////////////////////////////
             # Block everything not whitelisted
             # /////////////////////////////////////////////////////////////////////////////////
@@ -285,7 +348,6 @@ PHPPARAM;
                 rewrite ^ {$quiqqerUrlDir}index.php?_url=error403;
             }
 REWRITE;
-
 
         # Configuration to force https
         $forceHttpsConfiguration = <<<NGINX
@@ -322,6 +384,8 @@ REWRITE;
             ssl_certificate        /etc/ssl/certs/ssl-cert-snakeoil.pem;        # Replace with valid certificate
             ssl_certificate_key    /etc/ssl/private/ssl-cert-snakeoil.key;      # Replace with valid certificate key
     
+            include {$this->subConfDir}server.include
+    
            {$rewriteRules}
 
         }
@@ -347,6 +411,8 @@ NGINX;
             
             error_log  /var/log/nginx/{$domain}_error.log;
             
+            include {$this->subConfDir}server.include
+            
             {$rewriteRules}
         }
         
@@ -368,11 +434,11 @@ NGINX;
             ssl_certificate         /etc/ssl/certs/ssl-cert-snakeoil.pem;   # Replace with valid certificate
             ssl_certificate_key     /etc/ssl/private/ssl-cert-snakeoil.key; # Replace with valid certificate key
 
+            include {$this->subConfDir}server.include
    
             {$rewriteRules}
         }
 NGINX;
-
 
         if (QUI::conf("webserver", "forceHttps")) {
             return $forceHttpsConfiguration;
