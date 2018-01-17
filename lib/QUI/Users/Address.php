@@ -37,7 +37,7 @@ class Address extends QUI\QDOM
      * @param QUI\Users\User $User - User
      * @param integer $id - Address id
      *
-     * @throws QUI\Users\Exception
+     * @throws \QUI\Users\Exception
      */
     public function __construct(User $User, $id)
     {
@@ -327,7 +327,9 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * Löscht den Eintrag
+     * Delete the address
+     *
+     * @throws QUI\Exception
      */
     public function delete()
     {
@@ -345,6 +347,7 @@ class Address extends QUI\QDOM
      * Return the address as HTML display
      *
      * @return string - HTML <address>
+     * @throws
      */
     public function getDisplay()
     {
@@ -356,7 +359,7 @@ class Address extends QUI\QDOM
             'Countries' => new QUI\Countries\Manager()
         ));
 
-        return $Engine->fetch(SYS_DIR . 'template/users/address/display.html');
+        return $Engine->fetch(SYS_DIR.'template/users/address/display.html');
     }
 
     /**

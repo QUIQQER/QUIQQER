@@ -3,6 +3,7 @@
 /**
  * this file contains QUI\Lock\Locker
  */
+
 namespace QUI\Lock;
 
 use QUI;
@@ -23,6 +24,9 @@ class Locker
      * @param Package $Package
      * @param string $key
      * @param bool|integer $lifetime
+     * @param null|QUI\Interfaces\Users\User $User
+     *
+     * @throws QUI\Lock\Exception
      */
     public static function lock(Package $Package, $key, $lifetime = false, $User = null)
     {
@@ -52,6 +56,7 @@ class Locker
      * @param null $User
      *
      * @throws QUI\Permissions\Exception
+     * @throws QUI\Lock\Exception
      */
     public static function lockWithPermissions(Package $Package, $key, $permission = '', $User = null)
     {
@@ -74,6 +79,7 @@ class Locker
      *
      * @param Package $Package
      * @param string $key
+     * @throws QUI\Lock\Exception
      */
     public static function unlock(Package $Package, $key)
     {
@@ -90,6 +96,7 @@ class Locker
      * @param null $User
      *
      * @throws QUI\Permissions\Exception
+     * @throws QUI\Lock\Exception
      */
     public static function unlockWithPermissions(Package $Package, $key, $permission = '', $User = null)
     {
@@ -106,6 +113,7 @@ class Locker
         if (!empty($permission)) {
             QUI\Permissions\Permission::checkPermission($permission, $User);
             self::unlock($Package, $key);
+
             return;
         }
 
@@ -156,7 +164,7 @@ class Locker
      * @param String $key
      * @param null|QUI\Interfaces\Users\User $User - default = session user
      *
-     * @throws QUI\Exception
+     * @throws QUI\Lock\Exception
      */
     public static function checkLocked(Package $Package, $key, $User = null)
     {
@@ -171,6 +179,7 @@ class Locker
      * @param Package $Package
      * @param string $key
      * @return int
+     * @throws QUI\Lock\Exception
      */
     public static function getLockTime(Package $Package, $key)
     {
@@ -199,7 +208,7 @@ class Locker
             throw new QUI\Lock\Exception('Lock::lock() need a string as key');
         }
 
-        return 'lock/' . $Package->getName() . '_' . $key;
+        return 'lock/'.$Package->getName().'_'.$key;
     }
 
     /**
