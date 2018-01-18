@@ -197,7 +197,7 @@ fastcgi_param   QUERY_STRING            \$query_string;
                 fastcgi_read_timeout 180;
                 fastcgi_pass php;
                 
-                include {$this->subConfDir}php.include
+                include {$this->subConfDir}php.include;
 PHPPARAM;
 
         # Define the rewrite directives
@@ -257,7 +257,7 @@ PHPPARAM;
                 rewrite {$quiqqerUrlDir}admin/(.*) {$quiqqerUrlDir}packages/quiqqer/quiqqer/admin/$1 last;
             }        
     
-            include {$this->subConfDir}redirects.include
+            include {$this->subConfDir}redirects.include;
     
             ################################
             #         Whitelist            #
@@ -338,7 +338,7 @@ PHPPARAM;
                 # Do not block this
             }
             
-            include {$this->subConfDir}whitelist.include
+            include {$this->subConfDir}whitelist.include;
             
             # /////////////////////////////////////////////////////////////////////////////////
             # Block everything not whitelisted
@@ -384,7 +384,7 @@ REWRITE;
             ssl_certificate        /etc/ssl/certs/ssl-cert-snakeoil.pem;        # Replace with valid certificate
             ssl_certificate_key    /etc/ssl/private/ssl-cert-snakeoil.key;      # Replace with valid certificate key
     
-            include {$this->subConfDir}server.include
+            include {$this->subConfDir}server.include;
     
            {$rewriteRules}
 
@@ -411,7 +411,7 @@ NGINX;
             
             error_log  /var/log/nginx/{$domain}_error.log;
             
-            include {$this->subConfDir}server.include
+            include {$this->subConfDir}server.include;
             
             {$rewriteRules}
         }
@@ -434,7 +434,7 @@ NGINX;
             ssl_certificate         /etc/ssl/certs/ssl-cert-snakeoil.pem;   # Replace with valid certificate
             ssl_certificate_key     /etc/ssl/private/ssl-cert-snakeoil.key; # Replace with valid certificate key
 
-            include {$this->subConfDir}server.include
+            include {$this->subConfDir}server.include;
    
             {$rewriteRules}
         }
