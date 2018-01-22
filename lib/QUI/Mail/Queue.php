@@ -159,19 +159,13 @@ class Queue
     public function sendAll()
     {
         $result = QUI::getDataBase()->fetch(array(
-            'from'  => self::table()
+            'select' => 'id',
+            'from'   => self::table()
         ));
 
-        foreach ($result as $mailData) {
+        foreach ($result as $row) {
             try {
-                $send = $this->sendMail($mailData);
-
-                // successful send
-                if ($send) {
-                    QUI::getDataBase()->delete(self::table(), array(
-                        'id' => $mailData['id']
-                    ));
-                }
+                $this->sendById($row['id']);
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::addError(
                     $Exception->getMessage(),
