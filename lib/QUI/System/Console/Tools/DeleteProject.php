@@ -35,6 +35,9 @@ class DeleteProject extends Tool
         $this->writeLnLocale("console.tool.project.delete.warning", "white");
         $this->writeLn("");
         $this->writeLnLocale("console.tool.project.delete.prompt.projectname.info", "cyan");
+        foreach (QUI::getProjectManager()->getProjects() as $projectName) {
+            $this->writeLn(" * ". $projectName);
+        }
         $this->writeLnLocale("console.tool.project.delete.prompt.projectname", "light_cyan");
         $projectName = $this->readInput();
 

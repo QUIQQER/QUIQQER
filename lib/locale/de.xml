@@ -820,7 +820,7 @@
             <de><![CDATA[Das Projekt wurde erfolgreich umbenannt]]></de>
         </locale>
         <locale name="console.tool.project.rename.prompt.projectname">
-            <de><![CDATA[Aktueller Projektname: ]]></de>
+            <de><![CDATA[Projektname: ]]></de>
         </locale>
         <locale name="console.tool.project.rename.prompt.projectname.info">
             <de><![CDATA[Welches Projekt möchten Sie umbenennen: ]]></de>
@@ -835,7 +835,7 @@
             <de><![CDATA[Welches Projekt soll gelöscht werden?]]></de>
         </locale>
         <locale name="console.tool.project.delete.prompt.projectname">
-            <de><![CDATA[Projektname:]]></de>
+            <de><![CDATA[Projektname: ]]></de>
         </locale>
         <locale name="console.tool.project.delete.project.not.found">
             <de><![CDATA[Das ausgewählte Projekt wurde nicht gefunden.]]></de>

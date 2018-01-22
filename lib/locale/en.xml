@@ -809,11 +809,12 @@
             <en><![CDATA[The project has been renamed successfully]]></en>
         </locale>
         <locale name="console.tool.project.rename.prompt.projectname">
-            <en><![CDATA[Current projectname: ]]></en>
+            <en><![CDATA[Projectname: ]]></en>
         </locale>
         <locale name="console.tool.project.rename.prompt.projectname.info">
             <en><![CDATA[Which project should be renamed: ]]></en>
-        </locale>        <!-- Consoletool: quiqqer:delete-project -->
+        </locale>
+        <!-- Consoletool: quiqqer:delete-project -->
         <locale name="console.tool.project.delete.warning.header">
             <en><![CDATA[Attention!]]></en>
         </locale>
