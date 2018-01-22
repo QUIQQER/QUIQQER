@@ -1894,8 +1894,13 @@ class User implements QUI\Interfaces\Users\User
         $list = array();
 
         foreach ($result as $entry) {
-            $id        = (int)$entry['id'];
-            $list[$id] = $this->getAddress($id);
+            $id = (int)$entry['id'];
+
+            try {
+                $list[$id] = $this->getAddress($id);
+            } catch (QUI\Users\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
         }
 
         return $list;
@@ -1905,8 +1910,9 @@ class User implements QUI\Interfaces\Users\User
      * Get a address from the user
      *
      * @param integer $id - address ID
-     *
      * @return QUI\Users\Address
+     *
+     * @throws \QUI\Users\Exception
      */
     public function getAddress($id)
     {
