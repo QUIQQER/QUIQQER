@@ -152,6 +152,37 @@ class Queue
     }
 
     /**
+     * Send all mails from the queue
+     *
+     * @return void
+     */
+    public function sendAll()
+    {
+        $result = QUI::getDataBase()->fetch(array(
+            'from'  => self::table()
+        ));
+
+        foreach ($result as $mailData) {
+            try {
+                $send = $this->sendMail($mailData);
+
+                // successful send
+                if ($send) {
+                    QUI::getDataBase()->delete(self::table(), array(
+                        'id' => $mailData['id']
+                    ));
+                }
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addError(
+                    $Exception->getMessage(),
+                    array('trace' => $Exception->getTraceAsString()),
+                    'mail_queue'
+                );
+            }
+        }
+    }
+
+    /**
      * Send an mail by its mailqueue id
      *
      * @param integer $id
