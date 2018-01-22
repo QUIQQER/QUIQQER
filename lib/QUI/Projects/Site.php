@@ -1860,7 +1860,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param string $permission - name of the permission
      * @param QUI\Users\User|boolean $User - optional
      *
-     * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
      */
     public function checkPermission($permission, $User = false)
     {

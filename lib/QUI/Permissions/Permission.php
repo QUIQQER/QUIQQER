@@ -217,7 +217,7 @@ class Permission
     {
         if (!isset($permissions[$perm])) {
             QUI\System\Log::addNotice(
-                'Permission missing: ' . $perm
+                'Permission missing: '.$perm
             );
 
             return true;
@@ -242,8 +242,16 @@ class Permission
         }
 
         // what type
-        $Manager    = QUI::getPermissionManager();
-        $perm_data  = $Manager->getPermissionData($perm);
+        try {
+            $Manager   = QUI::getPermissionManager();
+            $perm_data = $Manager->getPermissionData($perm);
+        } catch (QUI\Exception $Exception) {
+            throw new QUI\Permissions\Exception(
+                $Exception->getMessage(),
+                $Exception->getCode()
+            );
+        }
+
         $perm_value = $permissions[$perm];
 
         $check = false;
@@ -354,6 +362,7 @@ class Permission
      * @param \QUI\Users\User|boolean $User - optional
      *
      * @throws \QUI\Permissions\Exception
+     * @throws \QUI\Exception
      */
     public static function checkSU($User = false)
     {
@@ -386,6 +395,7 @@ class Permission
      * @param \QUI\Users\User|boolean $User - optional
      *
      * @throws \QUI\Permissions\Exception
+     * @throws \QUI\Exception
      */
     public static function checkUser($User = false)
     {
@@ -459,6 +469,8 @@ class Permission
      * @param boolean|\QUI\Users\User $EditUser
      *
      * @return bool
+     *
+     * @throws QUI\Permissions\Exception
      */
     public static function addUserToSitePermission(User $User, $Site, $permission, $EditUser = false)
     {
@@ -477,7 +489,7 @@ class Permission
         }
 
         $permList = array();
-        $user     = 'u' . $User->getId();
+        $user     = 'u'.$User->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -510,6 +522,8 @@ class Permission
      * @param boolean|\QUI\Users\User $EditUser
      *
      * @return bool
+     *
+     * @throws QUI\Permissions\Exception
      */
     public static function addGroupToSitePermission(Group $Group, $Site, $permission, $EditUser)
     {
@@ -528,7 +542,7 @@ class Permission
         }
 
         $permList = array();
-        $group    = 'g' . $Group->getId();
+        $group    = 'g'.$Group->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -729,6 +743,8 @@ class Permission
      * @param boolean|\QUI\Users\User $EditUser
      *
      * @return bool
+     *
+     * @throws QUI\Permissions\Exception
      */
     public static function removeGroupFromSitePermission(
         Group $Group,
@@ -751,7 +767,7 @@ class Permission
         }
 
         $permList = array();
-        $group    = 'g' . $Group->getId();
+        $group    = 'g'.$Group->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -785,6 +801,8 @@ class Permission
      * @param boolean|\QUI\Users\User $EditUser
      *
      * @return bool
+     *
+     * @throws QUI\Permissions\Exception
      */
     public static function removeUserFromSitePermission(User $User, $Site, $permission, $EditUser = false)
     {
@@ -803,7 +821,7 @@ class Permission
         }
 
         $permList = array();
-        $user     = 'u' . $User->getId();
+        $user     = 'u'.$User->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -842,6 +860,8 @@ class Permission
      * @param boolean|\QUI\Users\User $EditUser
      *
      * @return bool
+     *
+     * @throws QUI\Permissions\Exception
      */
     public static function addGroupToProjectPermission(
         Group $Group,
@@ -859,7 +879,7 @@ class Permission
         }
 
         $permList = array();
-        $groups   = 'g' . $Group->getId();
+        $groups   = 'g'.$Group->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -910,7 +930,7 @@ class Permission
         }
 
         $permList = array();
-        $user     = 'u' . $User->getId();
+        $user     = 'u'.$User->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -943,7 +963,7 @@ class Permission
      *
      * @return bool
      *
-     * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
      */
     public static function checkProjectPermission(
         $perm,
@@ -1039,6 +1059,8 @@ class Permission
      * @param \QUI\Users\User $User
      * @param \QUI\Projects\Project $Project
      * @param string $permission - name of the permission
+     *
+     * @throws QUI\Permissions\Exception
      */
     public static function removeUserFromProjectPermission(
         User $User,
@@ -1055,7 +1077,7 @@ class Permission
         }
 
         $permList = array();
-        $user     = 'u' . $User->getId();
+        $user     = 'u'.$User->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));
@@ -1085,6 +1107,8 @@ class Permission
      * @param string $permission - name of the permission
      *
      * @return bool
+     *
+     * @throws QUI\Permissions\Exception
      */
     public static function removeGroupFromProjectPermission(
         Group $Group,
@@ -1101,7 +1125,7 @@ class Permission
         }
 
         $permList = array();
-        $group    = 'g' . $Group->getId();
+        $group    = 'g'.$Group->getId();
 
         if (!empty($permissions[$permission])) {
             $permList = explode(',', trim($permissions[$permission], ' ,'));

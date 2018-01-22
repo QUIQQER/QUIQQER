@@ -72,7 +72,7 @@ class Package extends QUI\QDOM
      *
      * @param string $package - Name of the Package
      *
-     * @throws QUI\Exception
+     * @throws \QUI\Exception
      */
     public function __construct($package)
     {

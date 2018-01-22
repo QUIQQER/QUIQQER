@@ -895,7 +895,8 @@ class Manager
     /**
      * Checks, if the session is ok
      *
-     * @throws QUI\Users\Exception|QUI\Exception
+     * @throws QUI\Users\Exception
+     * @throws QUI\Exception
      */
     public function checkUserSession()
     {
