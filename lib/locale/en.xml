@@ -2302,6 +2302,12 @@
         <locale name="projects.project.site.media.input.clear.title">
             <en><![CDATA[Clear]]></en>
         </locale>
+        <locale name="projects.project.site.media.input.cssclass.alt">
+            <de><![CDATA[Select an icon]]></de>
+        </locale>
+        <locale name="projects.project.site.media.input.cssclass.title">
+            <de><![CDATA[Select an icon]]></de>
+        </locale>
         <locale name="projects.project.site.media.filePanel.btn.save.text">
             <en><![CDATA[Save]]></en>
         </locale>
