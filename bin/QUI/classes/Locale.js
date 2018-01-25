@@ -133,6 +133,31 @@ define('classes/Locale', needle, function (QUILocale) {
             } catch (e) {
                 return window.Intl.NumberFormat(locale);
             }
+        },
+
+        /**
+         *
+         * @param options
+         * @return {Intl.DateTimeFormat}
+         */
+        getDateTimeFormatter: function (options) {
+            var locale = this.getCurrent();
+
+            if (!locale.match('_')) {
+                locale = locale.toLowerCase() + '_' + locale.toUpperCase();
+            }
+
+            locale = locale.replace('_', '-');
+
+            try {
+                if (typeof options === 'undefined') {
+                    return window.Intl.DateTimeFormat(locale);
+                }
+
+                return window.Intl.DateTimeFormat(locale, options);
+            } catch (e) {
+                return window.Intl.DateTimeFormat(locale);
+            }
         }
     });
 });
