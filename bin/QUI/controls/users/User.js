@@ -305,6 +305,37 @@ define('controls/users/User', [
                 return ControlUtils.parse(self.getBody());
 
             }).then(function () {
+                var LastEdit    = self.getBody().getElement('[name="lastedit"]');
+                var LastVisit   = self.getBody().getElement('[name="lastvisit"]');
+                var dateOptions = {
+                    year  : 'numeric',
+                    month : 'numeric',
+                    day   : 'numeric',
+                    hour  : 'numeric',
+                    minute: 'numeric',
+                    second: 'numeric',
+                    hour12: false
+                };
+
+                if (LastEdit) {
+                    try {
+                        LastEdit.value = QUILocale.getDateTimeFormatter(dateOptions).format(
+                            new Date(LastEdit.value)
+                        );
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
+
+                if (LastVisit) {
+                    try {
+                        LastVisit.value = QUILocale.getDateTimeFormatter(dateOptions).format(
+                            new Date(LastVisit.value * 1000)
+                        );
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
 
                 QUI.Controls.getControlsInElement(Body).each(function (Control) {
                     Control.setAttribute('Panel', self);

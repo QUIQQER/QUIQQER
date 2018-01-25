@@ -2362,6 +2362,12 @@
         <locale name="projects.project.site.media.input.clear.title">
             <de><![CDATA[Eingabe leeren]]></de>
         </locale>
+        <locale name="projects.project.site.media.input.cssclass.alt">
+            <de><![CDATA[Icon auswählen]]></de>
+        </locale>
+        <locale name="projects.project.site.media.input.cssclass.title">
+            <de><![CDATA[Icon auswählen]]></de>
+        </locale>
         <locale name="projects.project.site.media.filePanel.btn.save.text">
             <de><![CDATA[Speichern]]></de>
         </locale>
