@@ -90,8 +90,8 @@ define('controls/projects/project/site/Select', [
             this.$Elm = new Element('div', {
                 'class': 'control-site-select',
                 html   : '<div class="control-site-select-container"></div>' +
-                         '<div class="control-site-select-buttons"></div>' +
-                         '<div class="control-site-select-description"></div>'
+                '<div class="control-site-select-buttons"></div>' +
+                '<div class="control-site-select-description"></div>'
             });
 
             if (!this.$Input) {
@@ -115,25 +115,35 @@ define('controls/projects/project/site/Select', [
                 this.getAttribute('placeholder') +
                 '</p>'
             );
-
-            new QUIHelp({
-                text: QUILocale.get(lg, 'projects.project.site.select.description')
-            }).inject(this.$Description);
+            var selecttypesLocale  = '',
+                selectidsLocale    = '',
+                selectparentLocale = '';
 
             var buttons = 0;
             var width   = '100%';
 
             if (this.getAttribute('selecttypes')) {
+                selecttypesLocale = QUILocale.get(lg, 'projects.project.site.select.description.site_types');
                 buttons++;
             }
 
             if (this.getAttribute('selectids')) {
+                selectidsLocale = QUILocale.get(lg, 'projects.project.site.select.description.sites');
                 buttons++;
             }
 
             if (this.getAttribute('selectparent')) {
+                selectparentLocale = QUILocale.get(lg, 'projects.project.site.select.description.site_children');
                 buttons++;
             }
+
+            new QUIHelp({
+                text: QUILocale.get(lg, 'projects.project.site.select.description', {
+                    site_types   : selecttypesLocale,
+                    sites        : selectidsLocale,
+                    site_children: selectparentLocale
+                })
+            }).inject(this.$Description);
 
             switch (buttons) {
                 case 1:
@@ -518,9 +528,9 @@ define('controls/projects/project/site/Select', [
             var Item = new Element('div', {
                 'class'     : 'control-site-select-entry',
                 html        : '<div class="control-site-select-entry-text">' + value + '</div>' +
-                              '<div class="control-site-select-entry-delete">' +
-                              '<span class="fa fa-remove"></span>' +
-                              '</div>',
+                '<div class="control-site-select-entry-delete">' +
+                '<span class="fa fa-remove"></span>' +
+                '</div>',
                 "data-value": value
             });
 
