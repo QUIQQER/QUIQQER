@@ -6174,15 +6174,18 @@
         <locale name="projects.project.site.select.btn.addParent">
             <de><![CDATA[Unterseiten hinzufügen]]></de>
         </locale>
+        <locale name="projects.project.site.select.description.site_types" html="true">
+            <de><![CDATA[<em>Seitentyp hinzuf&uuml;gen</em> fügt alle Seiten des ausgew&auml;hlten Seitentyps hinzu.<br/>]]></de>
+        </locale>
+        <locale name="projects.project.site.select.description.sites" html="true">
+            <de><![CDATA[<em>Seite hinzuf&uuml;gen</em> fügt eine einzelne Seite hinzu.<br/>]]></de>
+        </locale>
+        <locale name="projects.project.site.select.description.site_children" html="true">
+            <de><![CDATA[<em>Unterseiten hinzufügen</em> fügt alle Unterseiten der ausgewählten Seite hinzu, es seid denn es ist ein Seitentyp gesetzt. Dann dient der Seitentyp als Filter und es werden nur alle Unterseiten des ausgewählten Seitentyps angezeigt.]]></de>
+        </locale>
         <locale name="projects.project.site.select.description" html="true">
             <de><![CDATA[
-                <p>
-                    <em>Seitentyp hinzuf&uuml;gen</em> fügt alle Seiten des ausgew&auml;hlten Seitentyps hinzu.<br />
-                    <em>Seite hinzuf&uuml;gen</em> fügt eine einzelne Seite hinzu.<br />
-                    <em>Unterseiten hinzufügen</em> fügt alle Unterseiten der ausgewählten Seite hinzu,
-                    es seid denn es ist ein Seitentyp gesetzt.
-                    Dann dient der Seitentyp als Filter und es werden nur alle Unterseiten des ausgewählten Seitentyps angezeigt.
-                </p>
+                <p>[site_types][sites][site_children]</p>
             ]]></de>
         </locale>
         <locale name="exception.usergroups.search.cannot.search.users.without.parameters">

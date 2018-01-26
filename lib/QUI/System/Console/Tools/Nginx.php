@@ -28,8 +28,8 @@ class Nginx extends QUI\System\Console\Tool
         $this->setName('quiqqer:nginx')
             ->setDescription('Generate the nginx.conf File.');
 
-        $this->nginxConfDir = ETC_DIR."nginx/";
-        $this->nginxConfigFile = $this->nginxConfDir."nginx.conf";
+        $this->nginxConfDir    = ETC_DIR . "nginx/";
+        $this->nginxConfigFile = $this->nginxConfDir . "nginx.conf";
     }
 
     /**
@@ -41,7 +41,7 @@ class Nginx extends QUI\System\Console\Tool
     {
         $this->writeLn('Generating nginx.conf ...');
 
-        $nginxBackupFile = VAR_DIR.'backup/nginx.conf_'.date('Y-m-d__H_i_s');
+        $nginxBackupFile = VAR_DIR . 'backup/nginx.conf_' . date('Y-m-d__H_i_s');
 
         // ************************************* //
         //              Sub Configs              //
@@ -54,15 +54,20 @@ class Nginx extends QUI\System\Console\Tool
 
 HEAD;
 
+        // Create cert directory
+        if (!is_dir($this->nginxConfDir . "/certs")) {
+            mkdir($this->nginxConfDir . "/certs", 0755, true);
+        }
+
         // Create subconfig dir
-        $this->subConfDir = $this->nginxConfDir."conf.d/";
+        $this->subConfDir = $this->nginxConfDir . "conf.d/";
         if (!is_dir($this->subConfDir)) {
             mkdir($this->subConfDir, 0755, true);
         }
 
         // Create subconfig: PHP
-        if (!file_exists($this->subConfDir."php.include")) {
-            file_put_contents($this->subConfDir."php.include", $header);
+        if (!file_exists($this->subConfDir . "php.include")) {
+            file_put_contents($this->subConfDir . "php.include", $header);
 
             $geoIPSettings = <<<GEO
 ### SET GEOIP Variables ###
@@ -81,19 +86,31 @@ HEAD;
 #fastcgi_param GEOIP_LONGITUDE \$geoip_longitude;
 GEO;
 
-            file_put_contents($this->subConfDir."php.include", $geoIPSettings, FILE_APPEND);
+            file_put_contents($this->subConfDir . "php.include", $geoIPSettings, FILE_APPEND);
         }
 
-        if (!file_exists($this->subConfDir."redirects.include")) {
-            file_put_contents($this->subConfDir."redirects.include", $header);
+        if (!file_exists($this->subConfDir . "redirects.include")) {
+            file_put_contents($this->subConfDir . "redirects.include", $header);
         }
 
-        if (!file_exists($this->subConfDir."whitelist.include")) {
-            file_put_contents($this->subConfDir."whitelist.include", $header);
+        if (!file_exists($this->subConfDir . "whitelist.include")) {
+            file_put_contents($this->subConfDir . "whitelist.include", $header);
         }
 
-        if (!file_exists($this->subConfDir."server.include")) {
-            file_put_contents($this->subConfDir."server.include", $header);
+        if (!file_exists($this->subConfDir . "server.include")) {
+            file_put_contents($this->subConfDir . "server.include", $header);
+        }
+
+        if (!file_exists($this->subConfDir . "ssl.include")) {
+            $sslConfTemplate = $header;
+            $sslConfTemplate .= "ssl    on;" . PHP_EOL;
+            $sslConfTemplate .= "ssl_certificate        " . $this->nginxConfDir . "certs/cert.pem;        # Replace with valid certificate" . PHP_EOL;
+            $sslConfTemplate .= "ssl_certificate_key    " . $this->nginxConfDir . "certs/key.pem;      # Replace with valid certificate key" . PHP_EOL;
+
+            
+            file_put_contents($this->nginxConfDir . "certs/cert.pem", "# Replace this file with your valid SSL certificate");
+            file_put_contents($this->nginxConfDir . "certs/key.pem", "# Replace this file with your valid certificates key");
+            file_put_contents($this->subConfDir . "ssl.include", $sslConfTemplate);
         }
 
         // ************************************* //
@@ -142,7 +159,7 @@ GEO;
         }
 
         $oldContent = file_get_contents($this->nginxConfigFile);
-        $content = $this->template();
+        $content    = $this->template();
 
         if (trim($oldContent) != trim($content)) {
             return true;
@@ -158,7 +175,7 @@ GEO;
      */
     protected function template()
     {
-        $quiqqerDir = CMS_DIR;
+        $quiqqerDir    = CMS_DIR;
         $quiqqerUrlDir = URL_DIR;
 
         # Process domain
@@ -380,10 +397,9 @@ REWRITE;
     
             error_log  /var/log/nginx/{$domain}_error.log;
     
-            ssl    on;
-            ssl_certificate        /etc/ssl/certs/ssl-cert-snakeoil.pem;        # Replace with valid certificate
-            ssl_certificate_key    /etc/ssl/private/ssl-cert-snakeoil.key;      # Replace with valid certificate key
-    
+            
+            include {$this->subConfDir}ssl.include;
+            
             include {$this->subConfDir}server.include;
     
            {$rewriteRules}
@@ -430,9 +446,7 @@ NGINX;
     
             error_log  /var/log/nginx/{$domain}_error.log;
     
-            ssl    on;
-            ssl_certificate         /etc/ssl/certs/ssl-cert-snakeoil.pem;   # Replace with valid certificate
-            ssl_certificate_key     /etc/ssl/private/ssl-cert-snakeoil.key; # Replace with valid certificate key
+            include {$this->subConfDir}ssl.include;
 
             include {$this->subConfDir}server.include;
    
