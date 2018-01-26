@@ -5018,16 +5018,16 @@
             <en><![CDATA[SMTP password]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.auth.MAILFrom">
-            <en><![CDATA[Displayed name]]></en>
+            <en><![CDATA[Sender e-mail address]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.auth.MAILFrom.description">
-            <en><![CDATA[For example: Thomas Meier]]></en>
+            <en><![CDATA[Sender's e-mail address displayed by the recipient]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.auth.MAILReplyTo">
             <en><![CDATA[Reply to email address]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.auth.MAILReplyTo.description">
-            <en><![CDATA[For example: Thomas Meier]]></en>
+            <en><![CDATA[Mail address to which the reply should be sent.]]></en>
         </locale>
         <locale name="quiqqer.settings.auth">
             <en><![CDATA[Authentication]]></en>
@@ -5744,15 +5744,17 @@
             <en><![CDATA[HTTP Strict Transport Security]]></en>
         </locale>
         <locale name="quiqqer.settings.security_headers.hsts.description">
-            <en>
-                <![CDATA[HTTP Strict Transport Security (HSTS) is a security mechanism for HTTPS connections designed to protect against both downgrade attack and session hijacking.]]></en>
+            <en><![CDATA[
+            HTTP Strict Transport Security (HSTS) is a security mechanism for HTTPS connections designed to protect against both downgrade attack and session hijacking.
+            ]]></en>
         </locale>
         <locale name="quiqqer.settings.security_headers.hsts.max_age">
             <en><![CDATA[Max-age]]></en>
         </locale>
         <locale name="quiqqer.settings.security_headers.hsts.max_age.description" html="true">
-            <en>
-                <![CDATA[            <b>max-age</b> is the amount of time in seconds that a browser should cache the HSTS rule.            ]]></en>
+            <en><![CDATA[
+                <b>max-age</b> is the amount of time in seconds that a browser should cache the HSTS rule.
+            ]]></en>
         </locale>
         <locale name="quiqqer.settings.security_headers.hsts.subdomains">
             <en><![CDATA[Subdomains]]></en>
@@ -5764,8 +5766,9 @@
             <en><![CDATA[Preload]]></en>
         </locale>
         <locale name="quiqqer.settings.security_headers.hsts.preload.description">
-            <en>
-                <![CDATA[            This list is distributed with the browser so that it uses HTTPS for the initial request to the listed sites as well.            ]]></en>
+            <en><![CDATA[
+                This list is distributed with the browser so that it uses HTTPS for the initial request to the listed sites as well.
+            ]]></en>
         </locale>
         <locale name="quiqqer.settings.security_headers.csp.title">
             <en><![CDATA[Content Security Policy (CSP)]]></en>
@@ -5774,8 +5777,11 @@
             <en><![CDATA[Timezone]]></en>
         </locale>
         <locale name="quiqqer.settings.general.globals.timezone.description" html="true">
-            <en>
-                <![CDATA[<p>This setting affects all time and dates</p>                <p>                    You can find a complete list of all timezones at:                    <a href="http://php.net/manual/en/timezones.php" target="_blank">http://php.net/manual/en/timezones.php</a>                </p>]]></en>
+            <en><![CDATA[
+            <p>This setting affects all time and dates</p>
+            <p>You can find a complete list of all timezones at:
+            <a href="http://php.net/manual/en/timezones.php" target="_blank">http://php.net/manual/en/timezones.php</a>
+            </p>]]></en>
         </locale>
         <locale name="quiqqer.settings.date_formats">
             <en><![CDATA[Date format]]></en>
@@ -5790,8 +5796,13 @@
             <en><![CDATA[Global date format]]></en>
         </locale>
         <locale name="quiqqer.settings.date_formats.description" html="true">
-            <en>
-                <![CDATA[<p>Einstellungen und oder mögliche Datumsformate finden Sie unter:</p>                <p>                    <a href="http://php.net/manual/en/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">                        http://php.net/manual/en/function.strftime.php#refsect1-function.strftime-parameters                    </a>                </p>]]></en>
+            <en><![CDATA[
+                <p>Einstellungen und oder mögliche Datumsformate finden Sie unter:</p>
+                <p><a href="http://php.net/manual/en/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">
+                    http://php.net/manual/en/function.strftime.php#refsect1-function.strftime-parameters
+                    </a>
+                </p>
+            ]]></en>
         </locale>
         <locale name="quiqqer.settings.delimiter_formats.title">
             <en><![CDATA[Delimiter]]></en>
@@ -5803,8 +5814,9 @@
             <en><![CDATA[Save the current page]]></en>
         </locale>
         <locale name="projects.project.site.btn.delete.title">
-            <en>
-                <![CDATA[            Delete the page, the page is placed in the trash and can be restored            ]]></en>
+            <en><![CDATA[
+                Delete the page, the page is placed in the trash and can be restored
+            ]]></en>
         </locale>
         <locale name="menu.apps.text">
             <en><![CDATA[Apps]]></en>
@@ -5849,25 +5861,27 @@
             <en><![CDATA[Port]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.auth.MAILFromText.description">
-            <en><![CDATA[The receiver name displayed at the sender.]]></en>
+            <en><![CDATA[Name of the sender displayed to the recipient.]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.auth.MAILFromText">
             <en><![CDATA[Displayed sender name]]></en>
         </locale>
         <locale name="quiqqer.settings.email.queue.desc">
-            <en>
-                <![CDATA[E-mails are saved in a queue until it is certain that they were sent.            ]]></en>
+            <en><![CDATA[E-mails are saved in a queue until it is certain that they were sent.]]></en>
         </locale>
         <locale name="quiqqer.settings.email.queue">
             <en><![CDATA[Enable Mail Queue]]></en>
         </locale>        <!-- License key -->
         <locale name="message.ajax.licenseKey.upload.error">
-            <en>
-                <![CDATA[An error ocurred while reading the license file. The license file may be invalid. Please contact an administrator or the issuer of the license.]]></en>
+            <en><![CDATA[
+            An error ocurred while reading the license file. The license file may be invalid. Please contact an administrator or the issuer of the license.
+            ]]></en>
         </locale>
         <locale name="message.ajax.licenseKey.upload.success">
-            <en>
-                <![CDATA[            The license file has been imported succesfully. This QUIQQER system now has access to all packages this license contains.            ]]></en>
+            <en><![CDATA[
+            The license file has been imported succesfully.
+            This QUIQQER system now has access to all packages this license contains.
+            ]]></en>
         </locale>
         <locale name="message.editor.toolbar.save.success">
             <en><![CDATA[The toolbar has been successfully saved.]]></en>
@@ -5935,8 +5949,7 @@
             <en><![CDATA[Maximum size of an image]]></en>
         </locale>
         <locale name="projects.project.settings.panel.mediaSettings.maxUploadSize.description" html="true">
-            <en>
-                <![CDATA[Images that are larger than the specified value are automatically adjusted.            ]]></en>
+            <en><![CDATA[Images that are larger than the specified value are automatically adjusted.]]></en>
         </locale>
         <locale name="projects.project.settings.panel.mediaSettings.watermark.description">
             <en><![CDATA[Note: Changes to the watermark delete the entire media cache.]]></en>
@@ -5978,22 +5991,29 @@
             <en><![CDATA[Add children sites]]></en>
         </locale>
         <locale name="projects.project.site.select.description" html="true">
-            <en>
-                <![CDATA[<p>                <em>Add sitetype</em> adds all pages of the selected sitetypes.<br />                <em>Add site</em> adds a single site.<br />                <em>Add children sites</em> adds all children sites of the selected site. Unles it is a sitetype set. The the sitetype is used as a filter, it will only see all children sites of the selected sitetype.                </p>            ]]></en>
+            <en><![CDATA[
+                <p>
+                <em>Add sitetype</em> adds all pages of the selected sitetypes.<br />
+                <em>Add site</em> adds a single site.<br />
+                <em>Add children sites</em> adds all children sites of the selected site.
+                Unles it is a sitetype set. The the sitetype is used as a filter, it will only see all children sites of the selected sitetype.
+                </p>
+            ]]></en>
         </locale>
         <locale name="exception.usergroups.search.cannot.search.users.without.parameters">
             <en><![CDATA[The user search cannot be executed without search parameters.]]></en>
         </locale>
         <locale name="message.project.config.save.success">
-
             <en><![CDATA[The project settings successfully saved]]></en>
         </locale>
         <locale name="quiqqer.settings.general.permissions.package">
             <en><![CDATA[Use package permissions]]></en>
         </locale>
         <locale name="quiqqer.settings.general.permissions.description" html="true">
-            <en>
-                <![CDATA[            Use package rights if you want to provide multiple users with different rights. <br />            If no package rights are used, some functions in the system are more powerful.            ]]></en>
+            <en><![CDATA[
+            Use package rights if you want to provide multiple users with different rights. <br />
+            If no package rights are used, some functions in the system are more powerful.
+            ]]></en>
         </locale>
         <locale name="exception.no.permission">
             <en><![CDATA[You have not the necessary rights to perform this action.]]></en>
