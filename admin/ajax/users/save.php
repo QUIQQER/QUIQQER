@@ -35,6 +35,7 @@ QUI::$Ajax->registerFunction(
         // if language changed
         if ($User->getAttribute('lang') !== $language) {
             QUI\Cache\Manager::clear();
+            QUI::getSession()->set('quiqqer-user-language', false);
         }
 
         QUI::getMessagesHandler()->addSuccess(
@@ -44,7 +45,7 @@ QUI::$Ajax->registerFunction(
             ))
         );
 
-        return true;
+        return $User->getAttributes();
     },
     array('uid', 'attributes'),
     'Permission::checkAdminUser'

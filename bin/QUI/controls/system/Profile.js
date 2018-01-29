@@ -120,7 +120,7 @@ define('controls/system/Profile', [
 
             var data = FormUtils.getFormData(Form);
 
-            Ajax.post('ajax_users_save', function () {
+            Ajax.post('ajax_users_save', function (data) {
                 // reload if lang not the current lang
                 if (Locale.getCurrent() !== data.lang) {
                     window.location.reload();
