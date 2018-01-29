@@ -281,12 +281,46 @@ class Sites
                 $Path->query("//site/types/type[@type='".$types[1]."']/tab"),
                 $Tabbar
             );
+
+            QUI\Utils\DOM::addTabsToToolbar(
+                $Path->query("//site/types/type[@type='".$type."']/tab"),
+                $Tabbar
+            );
+        }
+
+        // module / package extensions
+        $packages = QUI::getPackageManager()->getInstalled();
+
+
+        // packages site types
+        foreach ($packages as $package) {
+            // templates would be seperated
+            if ($package['type'] == 'quiqqer-template') {
+                continue;
+            }
+
+            if ($package['name'] === $types[0]) {
+                continue;
+            }
+
+
+            $file = OPT_DIR.$package['name'].'/site.xml';
+
+            if (!file_exists($file)) {
+                continue;
+            }
+
+            $Dom  = XML::getDomFromXml($file);
+            $Path = new \DOMXPath($Dom);
+
+            QUI\Utils\DOM::addTabsToToolbar(
+                $Path->query("//site/types/type[@type='".$type."']/tab"),
+                $Tabbar
+            );
         }
 
 
         // Global tabs
-        $packages = QUI::getPackageManager()->getInstalled();
-
         foreach ($packages as $package) {
             // templates would be seperated
             if ($package['type'] == 'quiqqer-template') {
@@ -345,7 +379,7 @@ class Sites
      * @param Site\Edit $Site
      *
      * @throws \QUI\Exception
-     * @return \QUI\Controls\Toolbar\Tab
+     * @return \QUI\Controls\Toolbar\Tab|bool
      */
     public static function getTab($tabname, $Site)
     {
