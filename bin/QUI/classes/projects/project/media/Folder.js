@@ -37,7 +37,6 @@ define('classes/projects/project/media/Folder', [
          */
         createFolder: function (newfolder, oncomplete) {
             return new Promise(function (resolve, reject) {
-
                 Ajax.post('ajax_media_folder_create', function (result) {
                     var items = this.getMedia().$parseResultToItem(result);
 
@@ -68,7 +67,6 @@ define('classes/projects/project/media/Folder', [
          */
         getChildren: function (oncomplete, params) {
             return new Promise(function (resolve, reject) {
-
                 params = params || {};
 
                 Ajax.get('ajax_media_folder_children', function (result) {
@@ -100,7 +98,6 @@ define('classes/projects/project/media/Folder', [
          */
         uploadFiles: function (files, onfinish) {
             return new Promise(function (resolve) {
-
                 UploadManager.uploadFiles(files, 'ajax_media_upload', {
                     project : this.getMedia().getProject().getName(),
                     parentid: this.getId(),
@@ -114,7 +111,6 @@ define('classes/projects/project/media/Folder', [
                         }
                     }
                 });
-
             }.bind(this));
         },
 
@@ -125,9 +121,9 @@ define('classes/projects/project/media/Folder', [
          */
         download: function () {
             var url = Ajax.$url + '?' + Ajax.parseParams('ajax_media_folder_download', {
-                    project : this.getMedia().getProject().getName(),
-                    folderId: this.getId()
-                });
+                project : this.getMedia().getProject().getName(),
+                folderId: this.getId()
+            });
 
             // create a iframe
             if (!document.id('download-frame')) {

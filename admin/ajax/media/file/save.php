@@ -12,11 +12,21 @@
 QUI::$Ajax->registerFunction(
     'ajax_media_file_save',
     function ($project, $fileid, $attributes) {
-        $Project = QUI\Projects\Manager::getProject($project);
-        $Media   = $Project->getMedia();
-        $File    = $Media->get($fileid);
-
+        $Project    = QUI\Projects\Manager::getProject($project);
+        $Media      = $Project->getMedia();
+        $File       = $Media->get($fileid);
         $attributes = json_decode($attributes, true);
+
+        // rename check
+        if (isset($attributes['name']) && $File->getAttribute('name') != $attributes['name']) {
+            $File->rename($attributes['name']);
+
+            unset($attributes['name']);
+        }
+
+        if (isset($attributes['file'])) {
+            unset($attributes['file']);
+        }
 
         $File->setAttributes($attributes);
         $File->save();
