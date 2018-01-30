@@ -82,6 +82,8 @@ class Template extends QUI\QDOM
 
     /**
      * Load the registered engines
+     *
+     * @throws QUI\Exception
      */
     public function load()
     {
@@ -104,6 +106,8 @@ class Template extends QUI\QDOM
      * Return the Template Config object
      *
      * @return QUI\Config
+     *
+     * @throws QUI\Exception
      */
     public static function getConfig()
     {
@@ -158,6 +162,7 @@ class Template extends QUI\QDOM
      *
      * @param string $name
      * @param string $class - must a class that implements QUI\Interfaces\Template\EngineInterface
+     * @throws QUI\Exception
      */
     public static function registerEngine($name, $class)
     {
@@ -280,6 +285,8 @@ class Template extends QUI\QDOM
      *
      * @param string $template - Path to a template
      * @return string
+     *
+     * @throws QUI\Exception
      */
     public function fetchTemplate($template)
     {
@@ -292,6 +299,8 @@ class Template extends QUI\QDOM
      * @param QUI\Projects\Site|QUI\Projects\Site\Edit $Site
      *
      * @return string
+     *
+     * @throws QUI\Exception
      */
     public function fetchSite($Site)
     {
@@ -465,6 +474,8 @@ class Template extends QUI\QDOM
      * eq: <title></title>
      *
      * @return string
+     *
+     * @throws QUI\Exception
      */
     public function getTitle()
     {
@@ -522,6 +533,8 @@ class Template extends QUI\QDOM
      * With all important meta entries and quiqqer libraries
      *
      * @return string
+     *
+     * @throws QUI\Exception
      */
     public function getHeader()
     {

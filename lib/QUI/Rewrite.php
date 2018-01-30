@@ -188,6 +188,8 @@ class Rewrite
 
     /**
      * Request verarbeiten
+     *
+     * @throws QUI\Exception
      */
     public function exec()
     {
@@ -670,6 +672,8 @@ class Rewrite
      * @param boolean $setpath
      *
      * @return \QUI\Projects\Site|false
+     *
+     * @throws QUI\Exception
      */
     public function getSiteByUrl($url, $setpath = true)
     {
@@ -751,6 +755,8 @@ class Rewrite
 
     /**
      * @return Output
+     *
+     * @throws QUI\Exception
      */
     public function getOutput()
     {
@@ -764,6 +770,8 @@ class Rewrite
      * Die Daten werden aus der URL gehohlt
      *
      * @return \QUI\Projects\Project
+     *
+     * @throws QUI\Exception
      */
     public function getProject()
     {
@@ -1103,6 +1111,8 @@ class Rewrite
      * Gibt die aktuelle Seite zurück
      *
      * @return \QUI\Projects\Site
+     *
+     * @throws QUI\Exception
      */
     public function getSite()
     {
@@ -1205,6 +1215,8 @@ class Rewrite
      * @param string $output - html, text
      *
      * @return string
+     *
+     * @throws QUI\Exception
      */
     public function outputFilter($output)
     {
@@ -1321,6 +1333,8 @@ class Rewrite
      *
      * @param string|array $paths
      * @param \QUI\Projects\Site $Site
+     *
+     * @throws QUI\Exception
      */
     public function registerPath($paths, $Site)
     {
@@ -1402,6 +1416,8 @@ class Rewrite
      * Unregister a rewrite path
      *
      * @param \QUI\Projects\Site $Site
+     *
+     * @throws QUI\Exception
      */
     public function unregisterPath($Site)
     {
