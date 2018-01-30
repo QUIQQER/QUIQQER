@@ -407,7 +407,11 @@ class Project
         $result   = array();
 
         foreach ($dbResult as $entry) {
-            $result[] = $this->get($entry['id']);
+            try {
+                $result[] = $this->get($entry['id']);
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
         }
 
         return $result;
@@ -603,6 +607,8 @@ class Project
      * @$pluginload boolean
      *
      * @return Site
+     *
+     * @throws QUI\Exception
      */
     public function firstChild()
     {
@@ -618,6 +624,8 @@ class Project
      *
      * @param boolean $link - Link Cache löschen
      * @param boolean $site - Site Cache löschen
+     *
+     * @throws QUI\Exception
      *
      * @todo muss überarbeitet werden
      */
@@ -1079,7 +1087,11 @@ class Project
         $sites = array();
 
         foreach ($s as $site_id) {
-            $sites[] = $this->get((int)$site_id['id']);
+            try {
+                $sites[] = $this->get((int)$site_id['id']);
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
         }
 
         return $sites;
@@ -1087,6 +1099,11 @@ class Project
 
     /**
      * Execute the project setup
+     *
+     * @throws \Exception
+     * @throws QUI\Exception
+     * @throws QUI\ExceptionStack
+     * @throws QUI\DataBase\Exception
      */
     public function setup()
     {
@@ -1356,6 +1373,8 @@ class Project
      *
      * @param string $permission - name of the permission
      * @param User $User - User Object
+     *
+     * @throws QUI\Exception
      */
     public function addUserToPermission(User $User, $permission)
     {
@@ -1367,6 +1386,8 @@ class Project
      *
      * @param string $permission - name of the permission
      * @param Group $Group - Group Object
+     *
+     * @throws QUI\Exception
      */
     public function addGroupToPermission(Group $Group, $permission)
     {
@@ -1378,6 +1399,8 @@ class Project
      *
      * @param string $permission - name of the permission
      * @param User $User - User Object
+     *
+     * @throws QUI\Exception
      */
     public function removeUserFromPermission(User $User, $permission)
     {
@@ -1388,6 +1411,7 @@ class Project
      * Renames the project
      *
      * @param $newName
+     * @throws QUI\Exception
      */
     public function rename($newName)
     {
@@ -1485,8 +1509,7 @@ class Project
         $this->TABLE        = str_replace($this->name."_", $newName."_", $this->TABLE);
         $this->RELTABLE     = str_replace($this->name."_", $newName."_", $this->RELTABLE);
         $this->RELLANGTABLE = str_replace($this->name."_", $newName."_", $this->RELLANGTABLE);
-        $this->name         = $newName;
+
+        $this->name = $newName;
     }
-
-
 }
