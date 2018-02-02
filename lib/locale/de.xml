@@ -1475,6 +1475,10 @@
         <locale name="control.media.create.folder.window.continue.button.title">
             <de><![CDATA[Weiter]]></de>
         </locale>
+
+        <locale name="control.icons.confirm.title">
+            <de><![CDATA[Icon-Auswahl]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">
         <locale name="yes">
@@ -6175,13 +6179,15 @@
             <de><![CDATA[Unterseiten hinzufügen]]></de>
         </locale>
         <locale name="projects.project.site.select.description.site_types" html="true">
-            <de><![CDATA[<em>Seitentyp hinzuf&uuml;gen</em> fügt alle Seiten des ausgew&auml;hlten Seitentyps hinzu.<br/>]]></de>
+            <de>
+                <![CDATA[<em>Seitentyp hinzuf&uuml;gen</em> fügt alle Seiten des ausgew&auml;hlten Seitentyps hinzu.<br/>]]></de>
         </locale>
         <locale name="projects.project.site.select.description.sites" html="true">
             <de><![CDATA[<em>Seite hinzuf&uuml;gen</em> fügt eine einzelne Seite hinzu.<br/>]]></de>
         </locale>
         <locale name="projects.project.site.select.description.site_children" html="true">
-            <de><![CDATA[<em>Unterseiten hinzufügen</em> fügt alle Unterseiten der ausgewählten Seite hinzu, es seid denn es ist ein Seitentyp gesetzt. Dann dient der Seitentyp als Filter und es werden nur alle Unterseiten des ausgewählten Seitentyps angezeigt.]]></de>
+            <de>
+                <![CDATA[<em>Unterseiten hinzufügen</em> fügt alle Unterseiten der ausgewählten Seite hinzu, es seid denn es ist ein Seitentyp gesetzt. Dann dient der Seitentyp als Filter und es werden nur alle Unterseiten des ausgewählten Seitentyps angezeigt.]]></de>
         </locale>
         <locale name="projects.project.site.select.description" html="true">
             <de><![CDATA[

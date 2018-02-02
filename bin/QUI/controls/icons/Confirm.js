@@ -8,9 +8,10 @@
 define('controls/icons/Confirm', [
 
     'qui/QUI',
-    'qui/controls/windows/Confirm'
+    'qui/controls/windows/Confirm',
+    'Locale'
 
-], function (QUI, QUIConfirm) {
+], function (QUI, QUIConfirm, QUILocale) {
     "use strict";
 
     return new Class({
@@ -22,7 +23,7 @@ define('controls/icons/Confirm', [
         ],
 
         options: {
-            title    : 'Icon-Auswahl',
+            title    : QUILocale.get('quiqqer/quiqqer', 'control.icons.confirm.title'),
             icon     : 'fa fa-css3',
             maxHeight: 600,
             maxWidth : 800
