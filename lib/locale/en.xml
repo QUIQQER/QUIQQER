@@ -1449,6 +1449,10 @@
         <locale name="control.media.create.folder.window.continue.button.title">
             <en><![CDATA[Continue]]></en>
         </locale>
+
+        <locale name="control.icons.confirm.title">
+            <en><![CDATA[Icon-Select]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">
         <locale name="yes">
