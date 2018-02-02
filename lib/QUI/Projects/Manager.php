@@ -51,6 +51,8 @@ class Manager
      * projects.ini
      *
      * @return \QUI\Config
+     *
+     * @throws QUI\Exception
      */
     public static function getConfig()
     {
@@ -62,6 +64,9 @@ class Manager
      *
      * @param string $project
      * @param array $params
+     *
+     * @throws QUI\Exception
+     * @throws \Exception
      */
     public static function setConfigForProject($project, $params = array())
     {
@@ -300,6 +305,8 @@ class Manager
      * Return the projects count
      *
      * @return integer
+     *
+     * @throws QUI\Exception
      */
     public static function count()
     {
@@ -386,6 +393,8 @@ class Manager
      * @param string|boolean $template - used template, optional (if not set, the standard templaed used)
      *
      * @return \QUI\Projects\Project
+     *
+     * @throws QUI\Exception
      */
     public static function getProject($project, $lang = false, $template = false)
     {
@@ -428,6 +437,8 @@ class Manager
      * @param boolean $asobject - Als Objekte bekommen, default = false
      *
      * @return array
+     *
+     * @throws QUI\Exception
      */
     public static function getProjects($asobject = false)
     {
@@ -462,6 +473,8 @@ class Manager
      * Return all projects as objects
      *
      * @return array
+     *
+     * @throws QUI\Exception
      */
     public static function getProjectList()
     {
@@ -547,6 +560,7 @@ class Manager
      *
      * @return \QUI\Projects\Project
      * @throws \QUI\Exception
+     * @throws \Exception
      *
      * @todo noch einmal anschauen und übersichtlicher schreiben
      */
@@ -751,6 +765,9 @@ class Manager
      * Delete a project
      *
      * @param \QUI\Projects\Project $Project
+     *
+     * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
      */
     public static function deleteProject(QUI\Projects\Project $Project)
     {
@@ -846,6 +863,8 @@ class Manager
      *
      * @param string $oldName - The projects current name
      * @param string $newName - The new name for the project
+     *
+     * @throws QUI\Exception
      */
     public static function rename($oldName, $newName)
     {
@@ -945,7 +964,6 @@ class Manager
         }
 
 
-
         // Remove old translation
         $translationGroup = 'project/'.$oldName;
         $translationVar   = 'title';
@@ -955,7 +973,7 @@ class Manager
             QUI\Translator::delete($translationGroup, $translationVar);
         }
 
-        
+
         $translationGroup = 'project/'.$newName;
         $translationVar   = 'title';
 
@@ -1106,6 +1124,8 @@ class Manager
      *                      'page'   => 1
      *
      * @return array
+     *
+     * @throws QUI\Exception
      */
     public static function search($params)
     {
