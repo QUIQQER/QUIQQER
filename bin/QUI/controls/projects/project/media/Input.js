@@ -197,6 +197,15 @@ define('controls/projects/project/media/Input', [
                                 onSubmit: function (Popup, params) {
                                     self.$Input.value = params.url;
                                     self.fireEvent('change', [self, self.getValue()]);
+
+                                    if ("createEvent" in document) {
+                                        var evt = document.createEvent("HTMLEvents");
+                                        evt.initEvent("change", false, true);
+                                        self.$Input.dispatchEvent(evt);
+                                    } else {
+                                        self.$Input.fireEvent("onchange");
+                                    }
+
                                     self.$refreshPreview();
                                 }
                             }
