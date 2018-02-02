@@ -1571,7 +1571,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     {
         $url = $this->getUrlRewritten($pathParams, $getParams);
 
-        if (strpos($url, 'https://') !== false || strpos($url, 'https://') !== false) {
+        if (mb_strpos($url, 'http://') !== false || mb_strpos($url, 'https://') !== false) {
             return $url;
         }
 
