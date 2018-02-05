@@ -3,6 +3,10 @@
  *
  * @module controls/projects/project/site/Input
  * @author www.pcsg.de (Henning Leutz)
+ * @author www.pcsg.de (Patrick Müller)
+ *
+ * @event onSelect [url, this] - fires if the user selects a site
+ * @event onRemove [this] - fires if the user removes the selected site
  */
 define('controls/projects/project/site/Input', [
 
@@ -96,6 +100,7 @@ define('controls/projects/project/site/Input', [
                             events: {
                                 onSubmit: function (Popup, params) {
                                     self.$Input.value = params.urls[0];
+                                    self.fireEvent('select', [params.urls[0], self]);
                                 }
                             }
                         }).open();
@@ -110,6 +115,7 @@ define('controls/projects/project/site/Input', [
                 events: {
                     onClick: function () {
                         self.$Input.value = '';
+                        self.fireEvent('remove', [self]);
                     }
                 }
             }).inject(this.$Elm);

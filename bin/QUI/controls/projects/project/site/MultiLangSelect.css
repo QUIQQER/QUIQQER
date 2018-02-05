@@ -1,0 +1,29 @@
+.quiqqer-MultiLangSelect-entry img {
+    padding-right: 10px;
+}
+
+.quiqqer-MultiLangSelect-entry input,
+.quiqqer-MultiLangSelect-entry input:hover,
+.quiqqer-MultiLangSelect-entry input:focus {
+    border: none;
+    padding-left: 30px;
+    width: calc(100% - 65px);
+}
+
+.quiqqer-MultiLangSelect-entry input {
+    background-position: 5px center;
+    background-repeat: no-repeat;
+}
+
+.quiqqer-MultiLangSelect-entry input:focus {
+    background-color: rgba(0, 0, 0, 0.075);
+    box-shadow: none;
+}
+
+.quiqqer-MultiLangSelect__minimize .quiqqer-MultiLangSelect-entry {
+    border-bottom: 0;
+}
+
+.quiqqer-MultiLangSelect__minimize .quiqqer-MultiLangSelect-entry:nth-child(1n+2) {
+    display: none;
+}
