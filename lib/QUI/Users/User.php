@@ -252,6 +252,7 @@ class User implements QUI\Interfaces\Users\User
 
         if ($data[0]['active'] == -1) {
             $this->deleted = 1;
+            $this->active  = -1;
         }
 
         if (isset($data[0]['su']) && $data[0]['su'] == 1) {

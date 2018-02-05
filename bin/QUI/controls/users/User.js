@@ -226,6 +226,13 @@ define('controls/users/User', [
                         username: User.getAttribute('username')
                     }));
 
+                    if (User.isActive() === -1) {
+                        Status.setSilentOff();
+                        Status.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isDeactivate'));
+                        Status.disable();
+                        return;
+                    }
+
                     Status.enable();
 
                     if (!User.isActive()) {
@@ -317,7 +324,7 @@ define('controls/users/User', [
                     hour12: false
                 };
 
-                if (LastEdit) {
+                if (LastEdit && LastEdit.value) {
                     try {
                         LastEdit.value = QUILocale.getDateTimeFormatter(dateOptions).format(
                             new Date(LastEdit.value)
@@ -327,7 +334,7 @@ define('controls/users/User', [
                     }
                 }
 
-                if (LastVisit) {
+                if (LastVisit && LastVisit.value) {
                     try {
                         LastVisit.value = QUILocale.getDateTimeFormatter(dateOptions).format(
                             new Date(LastVisit.value * 1000)
@@ -717,6 +724,24 @@ define('controls/users/User', [
             var Active = this.getCategoryBar().getActive(),
                 Status = this.getButtons('status');
 
+            if (this.getUser().isActive() === -1) {
+                Status.enable();
+                Status.setSilentOff();
+                Status.disable();
+
+                this.setAttribute('icon', 'fa fa-user');
+                this.refresh();
+
+                if (!Active) {
+                    Active = this.getCategoryBar().firstChild();
+                }
+
+                if (Active) {
+                    Active.click();
+                }
+                return;
+            }
+
             if (this.getUser().isActive()) {
                 Status.setSilentOn();
                 Status.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isActivate'));
@@ -747,7 +772,7 @@ define('controls/users/User', [
                 User         = this.getUser(),
                 userStatus   = User.isActive();
 
-            if (buttonStatus == userStatus) {
+            if (buttonStatus === userStatus || userStatus === -1) {
                 return;
             }
 
@@ -762,6 +787,12 @@ define('controls/users/User', [
             }
 
             Prom.then(function () {
+                if (User.isActive() === -1) {
+                    Button.disable();
+                    this.Loader.hide();
+                    return;
+                }
+
                 if (User.isActive()) {
                     Button.on();
                     Button.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isActivate'));
@@ -806,7 +837,7 @@ define('controls/users/User', [
 
             var PassWordSave = Promise.resolve();
 
-            if (Active.getAttribute('name') == 'security') {
+            if (Active.getAttribute('name') === 'security') {
                 PassWordSave = this.savePassword()
             }
 

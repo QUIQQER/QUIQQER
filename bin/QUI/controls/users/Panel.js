@@ -936,6 +936,7 @@ define('controls/users/Panel', [
                 data[i].usergroup = entry.usergroup || '';
 
                 if (entry.active === -1) {
+                    data[i].status = new Element('span', {html: '&nbsp;'});
                     continue;
                 }
 
@@ -994,6 +995,8 @@ define('controls/users/Panel', [
                         onChange: this.$btnSwitchStatus
                     }
                 });
+            } else {
+                result.status = new Element('span', {html: '&nbsp;'});
             }
 
             return result;
