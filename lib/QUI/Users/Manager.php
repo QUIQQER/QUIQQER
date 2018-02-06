@@ -332,6 +332,7 @@ class Manager
      *
      * @return QUI\Users\User
      * @throws QUI\Users\Exception
+     * @throws QUI\Exception
      */
     public function createChild($username = false, $ParentUser = null)
     {
@@ -418,6 +419,8 @@ class Manager
 
         $User->addToGroup($Everyone->getId());
         $User->save($ParentUser);
+
+        QUI::getEvents()->fireEvent('userCreate', array($User));
 
         return $User;
     }
