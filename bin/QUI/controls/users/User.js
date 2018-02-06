@@ -332,7 +332,7 @@ define('controls/users/User', [
                     } catch (e) {
                         console.error(e);
                     }
-                } else {
+                } else if (LastEdit) {
                     LastEdit.value = '---';
                 }
 
@@ -344,7 +344,7 @@ define('controls/users/User', [
                     } catch (e) {
                         console.error(e);
                     }
-                } else {
+                } else if (LastVisit) {
                     LastVisit.value = '---';
                 }
 
