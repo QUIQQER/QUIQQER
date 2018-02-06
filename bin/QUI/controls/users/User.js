@@ -324,7 +324,7 @@ define('controls/users/User', [
                     hour12: false
                 };
 
-                if (LastEdit && LastEdit.value) {
+                if (LastEdit && LastEdit.value !== '' && parseInt(LastEdit.value) !== 0) {
                     try {
                         LastEdit.value = QUILocale.getDateTimeFormatter(dateOptions).format(
                             new Date(LastEdit.value)
@@ -332,9 +332,11 @@ define('controls/users/User', [
                     } catch (e) {
                         console.error(e);
                     }
+                } else {
+                    LastEdit.value = '---';
                 }
 
-                if (LastVisit && LastVisit.value) {
+                if (LastVisit && LastVisit.value !== '' && parseInt(LastVisit.value) !== 0) {
                     try {
                         LastVisit.value = QUILocale.getDateTimeFormatter(dateOptions).format(
                             new Date(LastVisit.value * 1000)
@@ -342,6 +344,8 @@ define('controls/users/User', [
                     } catch (e) {
                         console.error(e);
                     }
+                } else {
+                    LastVisit.value = '---';
                 }
 
                 QUI.Controls.getControlsInElement(Body).each(function (Control) {
