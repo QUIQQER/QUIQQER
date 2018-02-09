@@ -1,3 +1,7 @@
+.quiqqer-MultiLangSelect-entry + .quiqqer-MultiLangSelect-entry {
+    margin-top: 10px;
+}
+
 .quiqqer-MultiLangSelect-entry img {
     padding-right: 10px;
 }
@@ -26,4 +30,8 @@
 
 .quiqqer-MultiLangSelect__minimize .quiqqer-MultiLangSelect-entry:nth-child(1n+2) {
     display: none;
+}
+
+.field-container .quiqqer-MultiLangSelect-entry button {
+    border-radius: 0;
 }
