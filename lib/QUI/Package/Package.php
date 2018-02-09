@@ -321,6 +321,8 @@ class Package extends QUI\QDOM
      * Return the package config
      *
      * @return QUI\Config|boolean
+     *
+     * @throws QUI\Exception
      */
     public function getConfig()
     {
@@ -349,7 +351,6 @@ class Package extends QUI\QDOM
      * Return the composer data of the package
      *
      * @return array|bool|mixed
-     * @throws QUI\Exception
      */
     public function getComposerData()
     {
@@ -440,10 +441,26 @@ class Package extends QUI\QDOM
 
     /**
      * Execute the package setup
+     *
+     * @param array $params - optional ['localePublish' => true, 'localeImport' => true]
+     * @throws QUI\Exception
      */
-    public function setup()
+    public function setup($params = array())
     {
         QUI::getEvents()->fireEvent('packageSetupBegin', array($this));
+
+        // options
+        $optionLocalePublish = true;
+        $optionLocaleImport  = true;
+
+        if (isset($params['localePublish'])) {
+            $optionLocalePublish = $params['localePublish'];
+        }
+
+        if (isset($params['localeImport'])) {
+            $optionLocaleImport = $params['localeImport'];
+        }
+
 
         $dir = $this->getDir();
 
@@ -504,7 +521,7 @@ class Package extends QUI\QDOM
                         $this->getName(),
                         $data
                     );
-                } catch (QUI\Exception $Exception) {
+                } catch (\Exception $Exception) {
                     QUI::getMessagesHandler()->addAttention(
                         $Exception->getMessage()
                     );
@@ -528,43 +545,14 @@ class Package extends QUI\QDOM
         Update::importSiteEvents($dir.'site.xml');
 
         // locale
-        QUI\Translator::importFromPackage($this, true, true);
-
-        try {
-            $groups   = array();
-            $files    = [$dir.'locale.xml'];
-            $Dom      = XML::getDomFromXml($dir.'locale.xml');
-            $FileList = $Dom->getElementsByTagName('file');
-
-            if ($FileList->length) {
-                /** @var \DOMElement $File */
-                foreach ($FileList as $File) {
-                    $files[] = $this->getDir().ltrim($File->getAttribute('file'), '/');
-                }
-            }
-
-            foreach ($files as $file) {
-                $groups = XML::getLocaleGroupsFromDom(
-                    XML::getDomFromXml($file)
-                );
-            }
-
-            $groups = array_map(function ($data) {
-                return $data['group'];
-            }, $groups);
-
-            $groups = array_unique($groups);
-        } catch (QUI\Exception $Exception) {
-            $groups = array();
-            QUI\System\Log::addWarning($Exception->getMessage());
+        if ($optionLocaleImport) {
+            QUI\Translator::importFromPackage($this, true, true);
         }
 
-        QUI\Translator::publish($this->getName());
-        QUI\Translator::publish('quiqqer/quiqqer');
-
-        foreach ($groups as $group) {
-            QUI\Translator::publish($group);
+        if ($optionLocalePublish) {
+            $this->setupLocalePublish();
         }
+
 
         // settings
         if (!file_exists($dir.'settings.xml')) {
@@ -590,6 +578,57 @@ class Package extends QUI\QDOM
     }
 
     /**
+     * publish the locale files of the package
+     */
+    protected function setupLocalePublish()
+    {
+        $dir = $this->getDir();
+
+        try {
+            $groups   = array();
+            $files    = [$dir.'locale.xml'];
+            $Dom      = XML::getDomFromXml($dir.'locale.xml');
+            $FileList = $Dom->getElementsByTagName('file');
+
+            if ($FileList->length) {
+                /** @var \DOMElement $File */
+                foreach ($FileList as $File) {
+                    $files[] = $this->getDir().ltrim($File->getAttribute('file'), '/');
+                }
+            }
+
+            foreach ($files as $file) {
+                $groups = XML::getLocaleGroupsFromDom(
+                    XML::getDomFromXml($file)
+                );
+            }
+
+            $groups = array_map(function ($data) {
+                return $data['group'];
+            }, $groups);
+
+            $groups = array_unique($groups);
+        } catch (\Exception $Exception) {
+            $groups = array();
+            QUI\System\Log::addWarning($Exception->getMessage());
+        }
+
+
+        $groups[] = $this->getName();
+        $groups[] = 'quiqqer/quiqqer';
+
+        $groups = array_unique($groups);
+
+        foreach ($groups as $group) {
+            try {
+                QUI\Translator::publish($group);
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
+        }
+    }
+
+    /**
      * Is the package a quiqqer package?
      *
      * @return bool
@@ -601,6 +640,8 @@ class Package extends QUI\QDOM
 
     /**
      * Execute first install
+     *
+     * @throws QUI\Exception
      */
     public function install()
     {
@@ -610,6 +651,8 @@ class Package extends QUI\QDOM
     /**
      * Uninstall the package / plugin
      * it doesn't destroy the database data, its only uninstall the package
+     *
+     * @throws QUI\Exception
      */
     public function uninstall()
     {
@@ -624,6 +667,7 @@ class Package extends QUI\QDOM
      * it destroy the database data, too
      *
      * @todo implementieren
+     * @throws QUI\Exception
      */
     public function destroy()
     {
@@ -635,6 +679,8 @@ class Package extends QUI\QDOM
 
     /**
      * event on update
+     *
+     * @throws QUI\Exception
      */
     public function onUpdate()
     {

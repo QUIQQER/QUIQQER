@@ -184,6 +184,8 @@ class Setup
 
     /**
      * Execute for each project the setup
+     *
+     * @throws QUI\Exception
      */
     public static function executeEachProjectSetup()
     {
@@ -234,7 +236,7 @@ class Setup
 
             foreach ($list as $key => $sub) {
                 $packageName = $package.'/'.$sub;
-                $PackageManager->setup($packageName);
+                $PackageManager->setup($packageName, ['localePublish' => false]);
             }
         }
 
