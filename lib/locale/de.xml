@@ -581,6 +581,49 @@
         <locale name="site.type.standard">
             <de><![CDATA[Einfacher Inhalt]]></de>
         </locale>
+
+        <locale name="day">
+            <de><![CDATA[Tag]]></de>
+        </locale>
+        <locale name="year">
+            <de><![CDATA[Jahr]]></de>
+        </locale>
+        <locale name="month.01">
+            <de><![CDATA[Januar]]></de>
+        </locale>
+        <locale name="month.02">
+            <de><![CDATA[Februar]]></de>
+        </locale>
+        <locale name="month.03">
+            <de><![CDATA[März]]></de>
+        </locale>
+        <locale name="month.04">
+            <de><![CDATA[April]]></de>
+        </locale>
+        <locale name="month.05">
+            <de><![CDATA[Mai]]></de>
+        </locale>
+        <locale name="month.06">
+            <de><![CDATA[Juni]]></de>
+        </locale>
+        <locale name="month.07">
+            <de><![CDATA[Juli]]></de>
+        </locale>
+        <locale name="month.08">
+            <de><![CDATA[August]]></de>
+        </locale>
+        <locale name="month.09">
+            <de><![CDATA[September]]></de>
+        </locale>
+        <locale name="month.10">
+            <de><![CDATA[Oktober]]></de>
+        </locale>
+        <locale name="month.11">
+            <de><![CDATA[November]]></de>
+        </locale>
+        <locale name="month.12">
+            <de><![CDATA[Dezember]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="php">
         <locale name="quiqqer.settings.auth.showResetPasswordBackend">
@@ -5691,48 +5734,6 @@
         </locale>
         <locale name="exception.lib.qui.manager.no.groupid">
             <de><![CDATA[Es wurde keine Gruppen ID übergeben.]]></de>
-        </locale>
-        <locale name="day">
-            <de><![CDATA[Tag]]></de>
-        </locale>
-        <locale name="year">
-            <de><![CDATA[Jahr]]></de>
-        </locale>
-        <locale name="month.01">
-            <de><![CDATA[Januar]]></de>
-        </locale>
-        <locale name="month.02">
-            <de><![CDATA[Februar]]></de>
-        </locale>
-        <locale name="month.03">
-            <de><![CDATA[März]]></de>
-        </locale>
-        <locale name="month.04">
-            <de><![CDATA[April]]></de>
-        </locale>
-        <locale name="month.05">
-            <de><![CDATA[Mai]]></de>
-        </locale>
-        <locale name="month.06">
-            <de><![CDATA[Juni]]></de>
-        </locale>
-        <locale name="month.07">
-            <de><![CDATA[Juli]]></de>
-        </locale>
-        <locale name="month.08">
-            <de><![CDATA[August]]></de>
-        </locale>
-        <locale name="month.09">
-            <de><![CDATA[September]]></de>
-        </locale>
-        <locale name="month.10">
-            <de><![CDATA[Oktober]]></de>
-        </locale>
-        <locale name="month.11">
-            <de><![CDATA[November]]></de>
-        </locale>
-        <locale name="month.12">
-            <de><![CDATA[Dezember]]></de>
         </locale>
         <locale name="projects.project.site.panel.information.header">
             <de><![CDATA[Daten von Seite: #[id]]]></de>
