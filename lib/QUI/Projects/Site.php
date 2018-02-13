@@ -942,6 +942,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                     try {
                         $result[] = $Project->get((int)$list[$key + $i]);
                     } catch (QUI\Exception $Exception) {
+                        if (defined('DEBUG_MODE')) {
+                            QUI\System\Log::writeException($Exception);
+                        }
                     }
                 }
             }
@@ -1002,6 +1005,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                     try {
                         $result[] = $Project->get((int)$list[$key - $i]);
                     } catch (QUI\Exception $Exception) {
+                        if (defined('DEBUG_MODE')) {
+                            QUI\System\Log::writeException($Exception);
+                        }
                     }
                 }
             }
