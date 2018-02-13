@@ -1808,12 +1808,18 @@ class User implements QUI\Interfaces\Users\User
      * @param QUI\Interfaces\Users\User $ParentUser - Edit user [default: Session user]
      *
      * @return QUI\Users\Address
+     *
+     * @throws Exception
+     * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
      */
     public function addAddress($params = array(), $ParentUser = null)
     {
         if (is_null($ParentUser)) {
             $ParentUser = QUI::getUserBySession();
         }
+
+        $this->checkEditPermission($ParentUser);
 
         $_params = array();
         $needles = array(
