@@ -548,32 +548,6 @@ class Rewrite
                     }
                 }
             }
-        } else {
-            $vhosts = $this->getVHosts();
-
-            /**
-             * Sprache behandeln
-             * Falls für die Sprache ein Host Eintrag existiert
-             */
-            if (isset($_SERVER['HTTP_HOST'])
-                && isset($vhosts[$_SERVER['HTTP_HOST']])
-                && isset($vhosts[$_SERVER['HTTP_HOST']][$this->lang])
-            ) {
-                if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] != URL_DIR) {
-                    $message = "\n\n===================================\n\n";
-                    $message .= 'Rewrite 301 bei der wir nicht wissen wann es kommt. Rewrite.php Zeile 391 ';
-                    $message .= "\n";
-                    $message .= print_r($_SERVER, true);
-
-                    error_log(
-                        $message,
-                        3,
-                        VAR_DIR.'log/rewrite'.date('-Y-m-d').'.log'
-                    );
-
-                    //$this->showErrorHeader(301, $url);
-                }
-            }
         }
 
         // Prüfen ob die aufgerufene URL gleich der von der Seite ist
