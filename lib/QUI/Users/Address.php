@@ -132,7 +132,7 @@ class Address extends QUI\QDOM
      * Editier ein bestehenden Eintrag
      *
      * @param integer $index
-     * @param string $phone
+     * @param array $phone
      */
     public function editPhone($index, $phone)
     {
@@ -426,6 +426,45 @@ class Address extends QUI\QDOM
         }
 
         $result = "{$salutation} {$firstName} {$lastName}; {$street_no}; {$zip} {$city} {$country}";
+        $result = preg_replace('/[  ]{2,}/', ' ', $result);
+
+        return $result;
+    }
+
+    /**
+     * Return the main name of the address
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        $User = $this->User;
+
+        $salutation = $this->getAttribute('salutation');
+        $firstName  = $this->getAttribute('firstname');
+        $lastName   = $this->getAttribute('lastname');
+
+        if (empty($firstName)) {
+            $firstName = $User->getAttribute('firstname');
+        }
+
+        if (!$firstName) {
+            $firstName = '';
+        }
+
+        if (empty($lastName)) {
+            $lastName = $User->getAttribute('lastname');
+        }
+
+        if (!$lastName) {
+            $lastName = '';
+        }
+
+        if (!$salutation) {
+            $salutation = '';
+        }
+
+        $result = "{$salutation} {$firstName} {$lastName}";
         $result = preg_replace('/[  ]{2,}/', ' ', $result);
 
         return $result;
