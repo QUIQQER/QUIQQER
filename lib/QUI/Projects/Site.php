@@ -937,11 +937,14 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             }
 
             // die nächsten x Kinder
-            for ($i = 1; $i < $no; $i++) {
+            for ($i = 1; $i <= $no; $i++) {
                 if (isset($list[$key + $i])) {
                     try {
                         $result[] = $Project->get((int)$list[$key + $i]);
                     } catch (QUI\Exception $Exception) {
+                        if (defined('DEBUG_MODE')) {
+                            QUI\System\Log::writeException($Exception);
+                        }
                     }
                 }
             }
@@ -997,11 +1000,14 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             }
 
             // die nächsten x Kinder
-            for ($i = 1; $i < $no; $i++) {
+            for ($i = 1; $i <= $no; $i++) {
                 if (isset($list[$key - $i])) {
                     try {
                         $result[] = $Project->get((int)$list[$key - $i]);
                     } catch (QUI\Exception $Exception) {
+                        if (defined('DEBUG_MODE')) {
+                            QUI\System\Log::writeException($Exception);
+                        }
                     }
                 }
             }
