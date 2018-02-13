@@ -1046,6 +1046,9 @@
                 Request timeout. Please try again or at a later time.
             ]]></en>
         </locale>
+        <locale name="exception.too.many.addresses">
+            <de><![CDATA[You cannot create further addresses.]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->
         <locale name="controls.email.select.email_invalid">

@@ -1821,6 +1821,24 @@ class User implements QUI\Interfaces\Users\User
 
         $this->checkEditPermission($ParentUser);
 
+        // check max limit of user address
+        $addresses = QUI::getDataBase()->fetch([
+            'count' => 'count',
+            'from'  => Manager::tableAddress(),
+            'where' => [
+                'uid' => $this->getId()
+            ]
+        ]);
+
+        // max 100 addresses per user
+        if (!empty($addresses[0]['count']) && $addresses[0]['count'] > 100) {
+            throw new QUI\Exception(array(
+                'quiqqer/quiqqer',
+                'exception.too.many.addresses'
+            ));
+        }
+
+
         $_params = array();
         $needles = array(
             'salutation',

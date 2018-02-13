@@ -1058,6 +1058,9 @@
                 Zeitüberschreitung der Anfrage. Bitte versuchen Sie es erneut oder zu einem späteren Zeitpunkt.
             ]]></de>
         </locale>
+        <locale name="exception.too.many.addresses">
+            <de><![CDATA[Sie können keine weitere Adressen anlegen.]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">
         <locale name="controls.email.select.email_invalid">
