@@ -186,6 +186,22 @@ class Address extends QUI\QDOM
     }
 
     /**
+     * Return the telephone number
+     *
+     * @return string
+     */
+    public function getPhone()
+    {
+        $list = $this->getPhoneList();
+
+        if (!empty($list)) {
+            return $list[0];
+        }
+
+        return '';
+    }
+
+    /**
      * Add a EMail address
      *
      * @param string $mail - new mail address
