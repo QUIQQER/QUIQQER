@@ -3,6 +3,8 @@
 define('QUIQQER_SYSTEM', true);
 require 'header.php';
 
+QUI::getEvents()->fireEvent('adminRequest');
+
 // qui path
 $qui_path   = URL_OPT_DIR.'bin/qui/';
 $qui_extend = URL_OPT_DIR.'bin/qui/extend/';
@@ -17,6 +19,15 @@ try {
     $Project = QUI::getProjectManager()->getStandard();
 } catch (QUI\Exception $Exception) {
 }
+
+// user avatar
+$Avatar = QUI::getUserBySession()->getAvatar();
+$avatar = '';
+
+if ($Avatar) {
+    $avatar = $Avatar->getSizeCacheUrl(60, 60);
+}
+
 ?>
 <!doctype html>
 <!--[if lt IE 7 ]>
@@ -118,10 +129,12 @@ try {
     <script type="text/javascript">
         /* <![CDATA[ */
         var USER = {
-            isSU: <?php echo $User->isSU() ? 1 : 0; ?>,
-            id  : <?php echo $User->getId() ? $User->getId() : 0; ?>,
-            lang: "<?php echo $User->getLang(); ?>",
-            name: "<?php echo $User->getName(); ?>"
+            isSU    : <?php echo $User->isSU() ? 1 : 0; ?>,
+            id      : <?php echo $User->getId() ? $User->getId() : 0; ?>,
+            lang    : "<?php echo $User->getLang(); ?>",
+            name    : "<?php echo $User->getName(); ?>",
+            avatar  : "<?php echo $avatar;?>",
+            username: "<?php echo $User->getUsername(); ?>"
         };
 
         var URL_DIR     = "<?php echo URL_DIR; ?>",
@@ -133,7 +146,7 @@ try {
             URL_VAR_DIR = "<?php echo URL_VAR_DIR; ?>";
 
         var PHP = {
-            upload_max_filesize: "<?php echo \QUI\Utils\System::getUploadMaxFileSize(); ?>",
+            upload_max_filesize: "<?php echo QUI\Utils\System::getUploadMaxFileSize(); ?>",
             memory_limit       : <?php echo QUI\Utils\System::getMemoryLimit(); ?>
         };
 
@@ -148,10 +161,10 @@ try {
 
         var QUIQQER = {
             Rewrite         : {
-                URL_PARAM_SEPARATOR  : "<?php echo \QUI\Rewrite::URL_PARAM_SEPARATOR; ?>",
-                URL_SPACE_CHARACTER  : "<?php echo \QUI\Rewrite::URL_SPACE_CHARACTER; ?>",
-                URL_PROJECT_CHARACTER: "<?php echo \QUI\Rewrite::URL_PROJECT_CHARACTER; ?>",
-                SUFFIX               : "<?php echo \QUI\Rewrite::getDefaultSuffix(); ?>"
+                URL_PARAM_SEPARATOR  : "<?php echo QUI\Rewrite::URL_PARAM_SEPARATOR; ?>",
+                URL_SPACE_CHARACTER  : "<?php echo QUI\Rewrite::URL_SPACE_CHARACTER; ?>",
+                URL_PROJECT_CHARACTER: "<?php echo QUI\Rewrite::URL_PROJECT_CHARACTER; ?>",
+                SUFFIX               : "<?php echo QUI\Rewrite::getDefaultSuffix(); ?>"
             },
             ajax            : '<?php echo URL_SYS_DIR; ?>ajax.php',
             inAdministration: true,
@@ -193,8 +206,8 @@ try {
     $files = array();
 
     try {
-        $files = \QUI\Translator::getJSTranslationFiles($User->getLang());
-    } catch (\QUI\Exception $Exception) {
+        $files = QUI\Translator::getJSTranslationFiles($User->getLang());
+    } catch (QUI\Exception $Exception) {
     }
 
     $locales = array();
@@ -209,7 +222,7 @@ try {
     echo '/* ]]> */';
     echo '</script>';
 
-    \QUI::getEvents()->fireEvent('adminLoad');
+    QUI::getEvents()->fireEvent('adminLoad');
     ?>
 
 </head>

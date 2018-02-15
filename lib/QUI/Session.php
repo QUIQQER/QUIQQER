@@ -62,6 +62,8 @@ class Session
 
     /**
      * constructor
+     *
+     * @throws \Exception
      */
     public function __construct()
     {
@@ -144,6 +146,8 @@ class Session
      * Return the storage type
      *
      * @return \SessionHandlerInterface
+     *
+     * @throws QUI\Exception
      */
     protected function getStorage()
     {
@@ -249,6 +253,8 @@ class Session
 
     /**
      * Session setup
+     *
+     * @throws \Exception
      */
     public function setup()
     {

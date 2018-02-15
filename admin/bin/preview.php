@@ -8,6 +8,7 @@
 
 define('QUIQQER_SYSTEM', true);
 define('ETC_DIR', dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))).'/etc/');
+define('QUIQQER_PREVIEW', true);
 
 require_once dirname(dirname(dirname(__FILE__))).'/bootstrap.php';
 

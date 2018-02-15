@@ -16,9 +16,10 @@ define('controls/projects/project/media/Sitemap', [
     'qui/controls/sitemap/Item',
     'qui/controls/windows/Confirm',
     'Ajax',
+    'Locale',
     'Projects'
 
-], function (QUIControl, QUISitemap, QUISitemapItem, QUIConfirm, Ajax, Projects) {
+], function (QUIControl, QUISitemap, QUISitemapItem, QUIConfirm, Ajax, QUILocale, Projects) {
     "use strict";
 
     /**
@@ -298,7 +299,7 @@ define('controls/projects/project/media/Sitemap', [
                             new QUISitemapItem({
                                 icon       : 'fa fa-level-up',
                                 text       : '...',
-                                title      : 'Zurück - Rechtsklick für weitere Optionen',
+                                title      : QUILocale.get('quiqqer/quiqqer', 'control.project.sitemap.prev'),
                                 contextmenu: false,
                                 sheets     : sheets,
                                 Item       : Item,
@@ -330,7 +331,7 @@ define('controls/projects/project/media/Sitemap', [
                             new QUISitemapItem({
                                 icon       : 'fa fa-level-down',
                                 text       : '...',
-                                title      : 'Vor - Rechtsklick für weitere Optionen', // #locale
+                                title      : QUILocale.get('quiqqer/quiqqer', 'control.project.sitemap.next'),
                                 contextmenu: false,
                                 sheets     : sheets,
                                 Item       : Item,

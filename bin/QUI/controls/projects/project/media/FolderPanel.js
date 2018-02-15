@@ -3,21 +3,6 @@
  *
  * @module controls/projects/project/media/FolderPanel
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/desktop/Panel
- * @require qui/controls/buttons/Button
- * @require qui/controls/buttons/Separator
- * @require qui/controls/buttons/Select
- * @require qui/controls/windows/Confirm
- * @require qui/controls/input/Range
- * @require qui/utils/Form
- * @require utils/Template
- * @require controls/projects/project/media/Input
- * @require Projects
- * @require Locale
- * @require Ajax
- * @require css!controls/projects/project/media/FolderPanel.css
  */
 define('controls/projects/project/media/FolderPanel', [
 
@@ -61,11 +46,13 @@ define('controls/projects/project/media/FolderPanel', [
 
         Binds: [
             '$onInject',
+            '$onDestroy',
             'openDetails',
             'openEffects',
             'openPriorityOrder',
             'executeEffectsRecursive',
-            '$refreshImageEffectFrame'
+            '$refreshImageEffectFrame',
+            '$onFolderRefresh'
         ],
 
         options: {
@@ -87,7 +74,8 @@ define('controls/projects/project/media/FolderPanel', [
             this.$loaded = false;
 
             this.addEvents({
-                onInject: this.$onInject
+                onInject : this.$onInject,
+                onDestroy: this.$onDestroy
             });
         },
 
@@ -96,6 +84,18 @@ define('controls/projects/project/media/FolderPanel', [
          */
         $onInject: function () {
             this.$load();
+        },
+
+        /**
+         * event : on panel destroy
+         */
+        $onDestroy: function () {
+            if (this.$Folder) {
+                this.$Folder.removeEvents({
+                    onRefresh: this.$onFolderRefresh,
+                    onSave   : this.$onFolderRefresh
+                });
+            }
         },
 
         /**
@@ -115,9 +115,14 @@ define('controls/projects/project/media/FolderPanel', [
                 Project = Projects.get(this.getAttribute('project')),
                 Media   = Project.getMedia();
 
-            Media.get(this.getAttribute('folderId')).done(function (Folder) {
+            Media.get(this.getAttribute('folderId')).then(function (Folder) {
                 self.$Folder = Folder;
                 self.$Media  = Media;
+
+                self.$Folder.addEvents({
+                    onRefresh: self.$onFolderRefresh,
+                    onSave   : self.$onFolderRefresh
+                });
 
                 var title = Project.getName() + '://' + Folder.getAttribute('file');
 
@@ -135,6 +140,29 @@ define('controls/projects/project/media/FolderPanel', [
 
                 self.getCategoryBar().firstChild().click();
             });
+        },
+
+        /**
+         * on refresh
+         */
+        $onFolderRefresh: function () {
+            var Project = Projects.get(this.getAttribute('project')),
+                title   = Project.getName() + '://' + this.$Folder.getAttribute('file');
+
+            this.setAttributes({
+                title: title
+            });
+
+            this.refresh();
+
+            var Category = this.getActiveCategory();
+
+            if (Category.getAttribute('name') === 'details') {
+                this.openDetails(false);
+                return;
+            }
+
+            this.openEffects();
         },
 
         /**
@@ -161,6 +189,11 @@ define('controls/projects/project/media/FolderPanel', [
                 self.Loader.hide();
             }).catch(function (Exception) {
                 console.error(Exception);
+
+                if (typeof callback === 'function') {
+                    callback();
+                }
+
                 self.Loader.hide();
             });
         },
@@ -204,14 +237,22 @@ define('controls/projects/project/media/FolderPanel', [
         },
 
         /**
-         * Oepn the folder details
+         * Open the folder details
+         *
+         * @param {Boolean} [unload] - execute an unload
          */
-        openDetails: function () {
-            this.$unloadCategory();
+        openDetails: function (unload) {
+            if (typeof unload === 'undefined') {
+                unload = true;
+            }
 
-            var self   = this,
-                Body   = this.getContent(),
-                Folder = this.$Folder;
+            if (unload) {
+                this.$unloadCategory();
+            }
+
+
+            var self = this,
+                Body = this.getContent();
 
             Body.set('html', '');
 
@@ -226,7 +267,7 @@ define('controls/projects/project/media/FolderPanel', [
                 var Form  = Body.getElement('form'),
                     Order = Form.getElement('[name="order"]');
 
-                QUIFormUtils.setDataToForm(Folder.getAttributes(), Form);
+                QUIFormUtils.setDataToForm(self.$Folder.getAttributes(), Form);
 
                 Order.setStyles({
                     'float': 'left'
@@ -251,9 +292,17 @@ define('controls/projects/project/media/FolderPanel', [
 
         /**
          * Open the folder effects
+         *
+         * @param {Boolean} [unload] - execute an unload
          */
-        openEffects: function () {
-            this.$unloadCategory();
+        openEffects: function (unload) {
+            if (typeof unload === 'undefined') {
+                unload = true;
+            }
+
+            if (unload) {
+                this.$unloadCategory();
+            }
 
             this.Loader.show();
 

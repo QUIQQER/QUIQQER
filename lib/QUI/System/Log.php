@@ -62,31 +62,35 @@ class Log
      * Writes a string to a log file
      *
      * @param string $message - string to write
-     * @param integer $loglevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
+     * @param integer $logLevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
      * @param array $context - context data
      * @param string|boolean $filename - [optional] name of the log eq: messages, database,
+     * @param boolean $force - [optional] if true: log in any case, no matter which settings
      *
      * @example \QUI\System\Log::write( 'My Error', \QUI\System\Log::LEVEL_ERROR );
      */
     public static function write(
         $message,
-        $loglevel = self::LEVEL_INFO,
+        $logLevel = self::LEVEL_INFO,
         $context = array(),
-        $filename = false
+        $filename = false,
+        $force = false
     ) {
         $Logger = QUI\Log\Logger::getLogger();
         $levels = QUI\Log\Logger::$logLevels;
 
-        $loglevelName = self::levelToLogName($loglevel);
+        $logLevelName = self::levelToLogName($logLevel);
 
-        if (isset($levels[$loglevelName]) && (int)$levels[$loglevelName] == 0) {
+        if ($force === false
+            && isset($levels[$logLevelName])
+            && (int)$levels[$logLevelName] == 0) {
             return;
         }
 
         if (isset($_SERVER['REQUEST_URI'])
             && !empty($_SERVER['REQUEST_URI'])
         ) {
-            $context['request'] = HOST . $_SERVER['REQUEST_URI'];
+            $context['request'] = HOST.$_SERVER['REQUEST_URI'];
         }
 
         $User = QUI::getUserBySession();
@@ -95,7 +99,7 @@ class Log
         $context['userId']        = $User->getId();
         $context['username']      = $User->getUsername();
 
-        switch ($loglevelName) {
+        switch ($logLevelName) {
             case 'debug':
                 $Logger->addDebug($message, $context);
                 break;
@@ -134,43 +138,47 @@ class Log
      * Writes with print_r the object into a log file
      *
      * @param object|string|integer|array $object
-     * @param integer $loglevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
+     * @param integer $logLevel - Log-Level ( \QUI\System\Log::LEVEL_ERROR ... )
      * @param array $context - context data
-     * @param string|boolean $filename - [optional] name of the log eq: messages, database,
+     * @param string|boolean $filename - [optional] name of the log eq: messages, database
+     * @param boolean $force - [optional] if true: log in any case, no matter which settings
      */
     public static function writeRecursive(
         $object,
-        $loglevel = self::LEVEL_INFO,
+        $logLevel = self::LEVEL_INFO,
         $context = array(),
-        $filename = false
+        $filename = false,
+        $force = false
     ) {
-        self::write(print_r($object, true), $loglevel, $context, $filename);
+        self::write(print_r($object, true), $logLevel, $context, $filename, $force);
     }
 
     /**
      * Writes an Exception to a log file
      *
      * @param \Exception|QUI\Exception $Exception
-     * @param integer $loglevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
+     * @param integer $logLevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
      * @param array $context - context data
-     * @param string|boolean $filename - [optional] name of the log eq: messages, database,
+     * @param string|boolean $filename - [optional] name of the log eq: messages, database
+     * @param boolean $force - [optional] if true: log in any case, no matter which settings
      */
     public static function writeException(
         $Exception,
-        $loglevel = self::LEVEL_ERROR,
+        $logLevel = self::LEVEL_ERROR,
         $context = array(),
-        $filename = false
+        $filename = false,
+        $force = false
     ) {
-        $message = $Exception->getCode() . " :: \n\n";
+        $message = $Exception->getCode()." :: \n\n";
 
         if (method_exists($Exception, 'getContext')) {
-            $message .= print_r($Exception->getContext(), true) . "\n\n";
+            $message .= print_r($Exception->getContext(), true)."\n\n";
         }
 
-        $message .= $Exception->getMessage() . "\n";
+        $message .= $Exception->getMessage()."\n";
         $message .= $Exception->getTraceAsString();
 
-        self::write($message, $loglevel, $context, $filename);
+        self::write($message, $logLevel, $context, $filename, $force);
     }
 
     /**

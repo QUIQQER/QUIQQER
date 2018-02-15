@@ -243,7 +243,7 @@ define('controls/projects/project/media/FilePanel', [
             var File = this.$File,
                 icon = 'fa fa-picture-o';
 
-            if (File.getAttribute('type') == 'image') {
+            if (File.getAttribute('type') === 'image') {
                 icon = URL_BIN_DIR + '16x16/extensions/image.png';
             }
 
@@ -405,7 +405,12 @@ define('controls/projects/project/media/FilePanel', [
          * @method controls/projects/project/media/FilePanel#replace
          */
         replace: function () {
-            this.$DOMEvents.replace(this.getBody());
+            this.$DOMEvents.replace(
+                new Element('div', {
+                    'data-id': this.$File.getId(),
+                    title    : this.$File.getAttribute('title')
+                })
+            );
         },
 
         /**
@@ -573,23 +578,23 @@ define('controls/projects/project/media/FilePanel', [
                 }
 
 
-                if ("file_name" == i) {
+                if ("file_name" === i) {
                     File.setAttribute('name', data[i]);
                 }
 
-                if ("file_title" == i) {
+                if ("file_title" === i) {
                     File.setAttribute('title', data[i]);
                 }
 
-                if ("file_alt" == i) {
+                if ("file_alt" === i) {
                     File.setAttribute('alt', data[i]);
                 }
 
-                if ("file_short" == i) {
+                if ("file_short" === i) {
                     File.setAttribute('short', data[i]);
                 }
 
-                if ("file_priority" == i) {
+                if ("file_priority" === i) {
                     File.setAttribute('priority', data[i]);
                 }
             }
@@ -857,7 +862,7 @@ define('controls/projects/project/media/FilePanel', [
                     },
                     events   : {
                         onChange: function (value) {
-                            if (value == 'default' || value === '') {
+                            if (value === 'default' || value === '') {
                                 WatermarkRow.setStyle('display', 'none');
 
                                 if (WatermarkInput) {

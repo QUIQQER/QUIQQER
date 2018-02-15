@@ -40,9 +40,17 @@ class Manager implements QUI\Interfaces\Events
         $this->Events = new Event();
 
         try {
-            if (!QUI::getDataBase()->table()->exist(self::table())) {
-                return;
+            if (!QUI::$Conf->existValue('globals', 'eventsCreated')) {
+                $exists = QUI::getDataBase()->table()->exist(self::table());
+
+                QUI::$Conf->setValue('globals', 'eventsCreated', $exists);
+                QUI::$Conf->save();
+
+                if (!$exists) {
+                    return;
+                }
             }
+
 
             $list = QUI::getDataBase()->fetch(array(
                 'from'  => self::table(),
@@ -83,7 +91,7 @@ class Manager implements QUI\Interfaces\Events
      */
     public static function table()
     {
-        return QUI_DB_PRFX . 'events';
+        return QUI_DB_PRFX.'events';
     }
 
     /**
@@ -115,6 +123,7 @@ class Manager implements QUI\Interfaces\Events
             QUI::getDataBase()->table()->truncate(
                 self::table()
             );
+
             return;
         }
 
@@ -276,6 +285,10 @@ class Manager implements QUI\Interfaces\Events
      * @param array|boolean $args - (optional) the argument(s) to pass to the function.
      *                          The arguments must be in an array.
      * @param boolean $force - (optional) no recursion check, optional, default = false
+     * @return array
+     *
+     * @throws QUI\Exception
+     * @throws QUI\ExceptionStack
      */
     public function fireEvent($event, $args = false, $force = false)
     {
@@ -287,6 +300,7 @@ class Manager implements QUI\Interfaces\Events
         }
 
         $this->Events->fireEvent('onFireEvent', array($event, $fireArgs));
-        $this->Events->fireEvent($event, $fireArgs, $force);
+
+        return $this->Events->fireEvent($event, $fireArgs, $force);
     }
 }

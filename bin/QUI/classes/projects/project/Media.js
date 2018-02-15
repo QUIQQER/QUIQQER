@@ -4,20 +4,12 @@
  * @module classes/projects/project/Media
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/classes/DOM
- * @require qui/utils/Object
- * @require Ajax
- * @require classes/projects/project/media/Image
- * @require classes/projects/project/media/File
- * @require classes/projects/project/media/Folder
- * @require classes/projects/project/media/Trash
- *
  * @event onItemRename [ self, Item ]
  * @event onItemRefresh [ self, Item ]
  * @event onItemSave [ self, Item ]
- * @event onItemDelete [ self, Item ]
- * @event onItemActivate [ self, Item ]
- * @event onItemDeactivate [ self, Item ]
+ * @event onItemDelete [ self, Item|id ]
+ * @event onItemActivate [ self, Item|id ]
+ * @event onItemDeactivate [ self, Item|id ]
  * @event onItemRename [ self, Item ]
  */
 define('classes/projects/project/Media', [
@@ -87,7 +79,7 @@ define('classes/projects/project/Media', [
 
             return new Promise(function (resolve, reject) {
                 // id list
-                if (typeOf(id) == 'array') {
+                if (typeOf(id) === 'array') {
                     var i, len, itemId;
                     var result = [];
 
@@ -127,11 +119,10 @@ define('classes/projects/project/Media', [
                 Ajax.get('ajax_media_details', function (result) {
                     var children = self.$parseResultToItem(result);
 
-                    if (typeOf(children) == 'array') {
+                    if (typeOf(children) === 'array') {
                         for (var i = 0, len = children.length; i < len; i++) {
                             self.$items[children[i].getId()] = children[i];
                         }
-
                     } else {
                         self.$items[children.getId()] = children;
                     }
@@ -141,7 +132,6 @@ define('classes/projects/project/Media', [
                     }
 
                     resolve(children);
-
                 }, {
                     fileid : JSON.encode(id),
                     project: self.getProject().getName(),
@@ -249,11 +239,17 @@ define('classes/projects/project/Media', [
                     if (typeOf(id) !== 'array') {
                         if (typeof this.$items[id] !== 'undefined') {
                             this.$items[id].setAttribute('active', result);
+                            this.fireEvent('itemActivate', [this, this.$items[id]]);
+                        } else {
+                            this.fireEvent('itemActivate', [this, id]);
                         }
                     } else {
                         id.each(function (id) {
                             if (id in this.$items) {
                                 this.$items[id].setAttribute('active', result[id]);
+                                this.fireEvent('itemActivate', [this, this.$items[id]]);
+                            } else {
+                                this.fireEvent('itemActivate', [this, id]);
                             }
                         }.bind(this));
                     }
@@ -263,7 +259,6 @@ define('classes/projects/project/Media', [
                     }
 
                     resolve(result);
-
                 }.bind(this), params);
             }.bind(this));
         },
@@ -291,11 +286,17 @@ define('classes/projects/project/Media', [
                     if (typeOf(id) !== 'array') {
                         if (typeof this.$items[id] !== 'undefined') {
                             this.$items[id].setAttribute('active', result);
+                            this.fireEvent('itemDeactivate', [this, this.$items[id]]);
+                        } else {
+                            this.fireEvent('itemDeactivate', [this, id]);
                         }
                     } else {
                         id.each(function (id) {
                             if (id in this.$items) {
                                 this.$items[id].setAttribute('active', result[id]);
+                                this.fireEvent('itemDeactivate', [this, this.$items[id]]);
+                            } else {
+                                this.fireEvent('itemDeactivate', [this, id]);
                             }
                         }.bind(this));
                     }
@@ -305,9 +306,7 @@ define('classes/projects/project/Media', [
                     }
 
                     resolve(result);
-
                 }.bind(this), params);
-
             }.bind(this));
         },
 
@@ -345,8 +344,10 @@ define('classes/projects/project/Media', [
                     }
 
                     resolve(false);
-                }, params);
 
+                    delete this.$items[id];
+                    this.fireEvent('itemDeactivate', [this, id]);
+                }, params);
             }.bind(this));
         },
 
@@ -360,7 +361,7 @@ define('classes/projects/project/Media', [
                 return [];
             }
 
-            if (typeOf(result) == 'array' && result.length) {
+            if (typeOf(result) === 'array' && result.length) {
                 var list = [];
 
                 for (var i = 0, len = result.length; i < len; i++) {
@@ -410,7 +411,7 @@ define('classes/projects/project/Media', [
                     self.fireEvent('itemSave', [self, Item]);
                 },
                 onDelete    : function (Item) {
-                    self.fireEvent('itemDelete', [self, Item]);
+                    self.fireEvent('itemDelete', [self, Item.getId()]);
                 }
             });
 

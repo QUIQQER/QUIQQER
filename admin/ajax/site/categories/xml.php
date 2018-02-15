@@ -31,9 +31,23 @@ QUI::$Ajax->registerFunction(
         $file  = OPT_DIR.$types[0].'/site.xml';
 
         if (file_exists($file)) {
-            $Settings->setXMLPath("//site/types/type[@type='".$types[1]."']/tab[@name='".$category."']");
+            try {
+                $Settings->setXMLPath(
+                    "//site/types/type[@type='".$types[1]."']/tab[@name='".$category."']"
+                );
+
+                $result .= $Settings->getCategoriesHtml($file);
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+                $exception = true;
+            }
+
 
             try {
+                $Settings->setXMLPath(
+                    "//site/types/type[@type='".$type."']/tab[@name='".$category."']"
+                );
+
                 $result .= $Settings->getCategoriesHtml($file);
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
@@ -45,8 +59,12 @@ QUI::$Ajax->registerFunction(
         $files    = array();
 
         foreach ($packages as $package) {
-            // templates would be seperated
+            // templates would be separated
             if ($package['type'] == 'quiqqer-template') {
+                continue;
+            }
+
+            if ($package['name'] == $types[0]) {
                 continue;
             }
 
@@ -58,9 +76,20 @@ QUI::$Ajax->registerFunction(
         }
 
         if (count($files)) {
-            $Settings->setXMLPath("//site/window/tab[@name='".$category."']");
+            try {
+                $Settings->setXMLPath("//site/window/tab[@name='".$category."']");
+
+                $result .= $Settings->getCategoriesHtml($files);
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+                $exception = true;
+            }
 
             try {
+                $Settings->setXMLPath(
+                    "//site/types/type[@type='".$type."']/tab[@name='".$category."']"
+                );
+
                 $result .= $Settings->getCategoriesHtml($files);
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);

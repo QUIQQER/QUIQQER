@@ -344,7 +344,6 @@ define('controls/projects/project/media/FolderViewer', [
                         events: {
                             onClose: function () {
                                 // workaround close bug
-                                console.log('close');
                                 self.$Diashow.destroy();
                                 self.$Diashow = null;
                             }

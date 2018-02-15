@@ -3,6 +3,7 @@
 /**
  * This file contains QUI\Users\Auth\Handler
  */
+
 namespace QUI\Users\Auth;
 
 use QUI;
@@ -199,5 +200,81 @@ class Handler
         }
 
         return $authList;
+    }
+
+    /**
+     * Send e-mail to the user to confirm password reset
+     *
+     * @param QUI\Users\User $User
+     * @return void
+     *
+     * @throws QUI\Exception
+     */
+    public function sendPasswordResetVerificationMail($User)
+    {
+        if (!$this->isQuiqqerVerificationPackageInstalled()) {
+            throw new QUI\Exception(array(
+                'quiqqer/system',
+                'exception.user.auth.handler.verification_package_not_installed'
+            ));
+        }
+
+        $email = $User->getAttribute('email');
+
+        if (empty($email)) {
+            return;
+        }
+
+        $Project = QUI::getRewrite()->getProject();
+
+        $PasswordResetVerification = new PasswordResetVerification($User->getId(), array(
+            'project'     => $Project->getName(),
+            'projectLang' => $Project->getLang()
+        ));
+
+        $confirmLink = QUI\Verification\Verifier::startVerification($PasswordResetVerification, true);
+
+        $L      = QUI::getLocale();
+        $lg     = 'quiqqer/system';
+        $tplDir = QUI::getPackage('quiqqer/quiqqer')->getDir() . 'lib/templates/mail/auth/';
+
+        $Mailer = new QUI\Mail\Mailer();
+        $Engine = QUI::getTemplateManager()->getEngine();
+
+        $Engine->assign(array(
+            'body' => $L->get($lg, 'mail.auth.password_reset_confirm.body', array(
+                'username'    => $User->getUsername(),
+                'date'        => $L->formatDate(time()),
+                'confirmLink' => $confirmLink
+            ))
+        ));
+
+        $template = $Engine->fetch($tplDir . 'password_reset_confirm.html');
+
+        $Mailer->addRecipient($email);
+        $Mailer->setSubject(
+            $L->get($lg, 'mail.auth.password_reset_confirm.subject')
+        );
+
+        $Mailer->setBody($template);
+        $Mailer->send();
+    }
+
+    /**
+     * Check if the package "quiqqer/verification" is installed
+     *
+     * @return bool
+     */
+    public function isQuiqqerVerificationPackageInstalled()
+    {
+        $isInstalled = true;
+
+        try {
+            QUI::getPackage('quiqqer/verification');
+        } catch (\Exception $Exception) {
+            $isInstalled = false;
+        }
+
+        return $isInstalled;
     }
 }

@@ -19,18 +19,19 @@ QUI::$Ajax->registerFunction(
         switch ($btype) {
             case 'classes/projects/project/Site':
                 if (!isset($params['id'])) {
-                    throw new QUI\Exception('Undefined index id'); // #locale
+                    throw new QUI\Exception(
+                        QUI::getLocale()->get('quiqqer/quiqqer', 'exception.missing.missing.index.id')
+                    );
                 }
 
                 $Project = QUI::getProject($params['project'], $params['lang']);
                 $Site    = $Project->get($params['id']);
                 break;
 
-            default: // #locale
+            default:
                 throw new QUI\Exception(
-                    'Cannot find permissions for Object'
+                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.missing.permission.entry')
                 );
-                break;
         }
 
 

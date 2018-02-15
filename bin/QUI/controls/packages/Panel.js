@@ -36,7 +36,7 @@ define('controls/packages/Panel', [
             'loadSearch',
             'loadServer',
             'loadSystem',
-            'loadPHPInfo',
+            'loadSystemCheck',
             'checkUpdates',
             'executeCompleteSetup',
             '$onCreate',
@@ -65,6 +65,8 @@ define('controls/packages/Panel', [
          * event : on create
          */
         $onCreate: function () {
+            var self = this;
+
             this.addButton({
                 name  : 'menu',
                 title : QUILocale.get('quiqqer/quiqqer', 'packages.panel.menu'),
@@ -91,8 +93,11 @@ define('controls/packages/Panel', [
             this.addCategory({
                 name  : 'search',
                 text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.search'),
-                image : 'fa fa-search',
+                image : 'fa fa-plug',
                 events: {
+                    onClick : function () {
+                        self.$Before = self.getActiveCategory();
+                    },
                     onActive: this.loadSearch
                 }
             });
@@ -100,7 +105,7 @@ define('controls/packages/Panel', [
             this.addCategory({
                 name  : 'installed',
                 text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.installed'),
-                image : 'fa fa-gift',
+                image : 'fa fa-puzzle-piece',
                 events: {
                     onActive: this.loadInstalled
                 }
@@ -116,11 +121,11 @@ define('controls/packages/Panel', [
             });
 
             this.addCategory({
-                name  : 'phpinfo',
-                text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.phpinfo'),
+                name  : 'systemcheck',
+                text  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.systemCheck'),
                 image : 'fa fa-info-circle',
                 events: {
-                    onActive: this.loadPHPInfo
+                    onActive: this.loadSystemCheck
                 }
             });
 
@@ -132,9 +137,9 @@ define('controls/packages/Panel', [
                     onClick: function () {
                         require(['Menu'], function (Menu) {
                             var Item = Menu.getChildren()
-                                           .getChildren('settings')
-                                           .getChildren('quiqqer')
-                                           .getChildren('/settings/quiqqer/quiqqer/');
+                                .getChildren('settings')
+                                .getChildren('quiqqer')
+                                .getChildren('/settings/quiqqer/quiqqer/');
 
                             Menu.menuClick(Item);
                         });
@@ -201,10 +206,10 @@ define('controls/packages/Panel', [
         },
 
         /**
-         * Load the server list
+         * Load the system check
          */
-        loadPHPInfo: function () {
-            this.$loadControl('controls/packages/PHPInfo');
+        loadSystemCheck: function () {
+            this.$loadControl('controls/packages/SystemCheck');
         },
 
         /**
@@ -220,16 +225,43 @@ define('controls/packages/Panel', [
         loadSearch: function () {
             var self = this;
 
-            this.$loadControl('controls/packages/Search').then(function (Search) {
-                Search.addEvents({
-                    onSearchBegin: function () {
-                        self.Loader.show();
-                    },
-                    onSearchEnd  : function () {
-                        self.Loader.hide();
-                    }
+            var Sheet = this.createSheet({
+                buttons: false,
+                icon   : 'fa fa-plug',
+                title  : QUILocale.get('quiqqer/quiqqer', 'packages.panel.category.search')
+            });
+
+            Sheet.addEvent('show', function () {
+                self.Loader.show();
+
+                require(['controls/packages/Search'], function (Search) {
+                    new Search({
+                        events: {
+                            onLoad       : function () {
+                                self.Loader.hide();
+                            },
+                            onSearchBegin: function () {
+                                self.Loader.show();
+                            },
+                            onSearchEnd  : function () {
+                                self.Loader.hide();
+                            }
+                        }
+                    }).inject(Sheet.getContent());
                 });
             });
+
+            Sheet.addEvent('close', function () {
+                if (self.$Before) {
+                    self.$Before.click();
+                }
+            });
+
+            Sheet.addButton({
+                text: 'test'
+            });
+
+            Sheet.show();
         },
 
         /**
@@ -241,7 +273,16 @@ define('controls/packages/Panel', [
         $loadControl: function (ctrl) {
             var self = this;
 
-            this.Loader.show();
+            switch (ctrl) {
+                case 'controls/packages/SystemCheck':
+                    this.Loader.show(QUILocale.get(
+                        lg, 'packages.panel.category.systemcheck.loader'
+                    ));
+                    break;
+
+                default:
+                    this.Loader.show();
+            }
 
             return this.$hideControl(self.$Control).then(function () {
                 return new Promise(function (resolve) {

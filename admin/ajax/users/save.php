@@ -13,6 +13,7 @@ QUI::$Ajax->registerFunction(
     function ($uid, $attributes) {
         $User       = QUI::getUsers()->get($uid);
         $attributes = json_decode($attributes, true);
+        $language   = $User->getAttribute('lang');
 
         foreach ($attributes as $key => $value) {
             $User->setAttribute($key, $value);
@@ -31,6 +32,12 @@ QUI::$Ajax->registerFunction(
 
         $User->save();
 
+        // if language changed
+        if ($User->getAttribute('lang') !== $language) {
+            QUI\Cache\Manager::clear();
+            QUI::getSession()->set('quiqqer-user-language', false);
+        }
+
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get('quiqqer/quiqqer', 'message.user.saved', array(
                 'username' => $User->getName(),
@@ -38,7 +45,8 @@ QUI::$Ajax->registerFunction(
             ))
         );
 
-        return true;
+        return $User->getAttributes();
     },
-    array('uid', 'attributes')
+    array('uid', 'attributes'),
+    'Permission::checkAdminUser'
 );

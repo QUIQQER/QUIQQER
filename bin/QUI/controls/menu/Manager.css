@@ -1,0 +1,163 @@
+.qui-profile-button {
+    background-color: #DDDDDD;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    border: 1px solid #DDDDDD;
+    border-radius: 20px;
+    cursor: pointer;
+    float: right !important;
+    font-size: 16px;
+    height: 30px;
+    line-height: 30px;
+    margin: 15px 30px 0 0;
+    position: relative;
+    text-align: center;
+    top: -10px;
+    width: 30px;
+}
+
+.qui-profile-button:hover {
+    opacity: 0.8;
+}
+
+.qui-profile-contextMenu:after {
+    right: 10px !important;
+}
+
+.qui-profile-contextMenu .qui-contextmenu-title {
+    background: #d1d4da;
+    border-bottom: 2px solid #BEBEBE;
+    color: #666;
+}
+
+.qui-profile-button .fa {
+    color: #212527;
+}
+
+.qui-profile-button-a,
+.qui-profile-button-_ {
+    background-color: #2f8fc6;
+    border-color: #2d76a0;
+    color: #fff;
+}
+
+.qui-profile-button-b,
+.qui-profile-button-0 {
+    background-color: #a4ddff;
+    border-color: #2d76a0;
+    color: #2d76a0;
+}
+
+.qui-profile-button-c,
+.qui-profile-button-1 {
+    background-color: #e63434;
+    border-color: #b92424;
+    color: #fff;
+}
+
+.qui-profile-button-d,
+.qui-profile-button-2 {
+    background-color: #f1c5c5;
+    border-color: #b92424;
+    color: #b92424;
+}
+
+.qui-profile-button-e,
+.qui-profile-button-3 {
+    background-color: #e222ec;
+    border-color: #b826bf;
+    color: #fff;
+}
+
+.qui-profile-button-f,
+.qui-profile-button-4 {
+    background-color: #f1abf5;
+    border-color: #b826bf;
+    color: #b826bf;
+}
+
+.qui-profile-button-g,
+.qui-profile-button-5 {
+    background-color: #996bf1;
+    border-color: #7e5ac3;
+    color: #fff;
+}
+
+.qui-profile-button-h,
+.qui-profile-button-6 {
+    background-color: #e1d6f7;
+    border-color: #7e5ac3;
+    color: #7e5ac3;
+}
+
+.qui-profile-button-i,
+.qui-profile-button-7 {
+    background-color: #43cec0;
+    border-color: #39968d;
+    color: #fff;
+}
+
+.qui-profile-button-j,
+.qui-profile-button-8 {
+    background-color: #b6f3ec;
+    border-color: #39968d;
+    color: #39968d;
+}
+
+.qui-profile-button-k,
+.qui-profile-button-9 {
+    background-color: #54af27;
+    border-color: #4a8e28;
+    color: #fff;
+}
+
+.qui-profile-button-l,
+.qui-profile-button-m {
+    background-color: #caf5b5;
+    border-color: #4a8e28;
+    color: #4a8e28;
+}
+
+.qui-profile-button-n,
+.qui-profile-button-o {
+    background-color: #f3f300;
+    border-color: #caca2e;
+    color: #676725;
+}
+
+.qui-profile-button-p,
+.qui-profile-button-q {
+    background-color: #a5831f;
+    border-color: #887029;
+    color: #fff;
+}
+
+.qui-profile-button-r,
+.qui-profile-button-s {
+    background-color: #f1dfab;
+    border-color: #887029;
+    color: #887029;
+}
+
+.qui-profile-button-t,
+.qui-profile-button-u {
+    background-color: #ec7c18;
+    border-color: #ce7322;
+    color: #fff;
+}
+
+.qui-profile-button-v,
+.qui-profile-button-w {
+    background-color: #ffdebf;
+    border-color: #ce7322;
+    color: #ce7322;
+}
+
+.qui-profile-button-x,
+.qui-profile-button-y,
+.qui-profile-button-z {
+    background-color: #444444;
+    border-color: #444444;
+    color: #fff;
+}

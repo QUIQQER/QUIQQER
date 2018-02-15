@@ -6,15 +6,11 @@
 
 namespace QUI\Users;
 
-use function GuzzleHttp\Promise\queue;
 use QUI;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\Text\XML;
 use QUI\Utils\DOM;
 use QUI\Security\Password;
-
-use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
 
 /**
  * QUIQQER user manager
@@ -154,6 +150,36 @@ class Manager
             "ALTER TABLE `{$tableAddress}` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT"
         );
 
+        // uuid extrem indexes patch
+        $Stmt = $DataBase->getPDO()->prepare(
+            "SHOW INDEXES FROM `{$table}`
+            WHERE 
+                non_unique = 0 AND Key_name != 'PRIMARY';"
+        );
+
+        $Stmt->execute();
+        $columns = $Stmt->fetchAll();
+        $dropSql = [];
+
+        foreach ($columns as $column) {
+            if (strpos($column['Key_name'], 'uuid_') === 0) {
+                $dropSql[] = "ALTER TABLE `users` DROP INDEX `{$column['Key_name']}`;";
+            }
+        }
+
+        if (!empty($dropSql)) {
+            try {
+                // foreach because of PDO::MYSQL_ATTR_USE_BUFFERED_QUERY
+                foreach ($dropSql as $sql) {
+                    $Stmt = $DataBase->getPDO()->prepare($sql);
+                    $Stmt->execute();
+                }
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeRecursive($dropSql);
+                QUI\System\Log::writeException($Exception);
+            }
+        }
+
         // users with no uuid
         // @todo after 1.2 we can delete this
         $DataBase->table()->addColumn($table, array(
@@ -166,17 +192,10 @@ class Manager
                 'uuid' => ''
             )
         ));
-        
-        foreach ($list as $entry) {
-            try {
-                $uuid = Uuid::uuid1()->toString();
-            } catch (UnsatisfiedDependencyException $Exception) {
-                QUI\System\Log::writeException($Exception);
-                continue;
-            }
 
+        foreach ($list as $entry) {
             $DataBase->update($table, array(
-                'uuid' => $uuid
+                'uuid' => QUI\Utils\Uuid::get()
             ), array(
                 'id' => $entry['id']
             ));
@@ -313,6 +332,7 @@ class Manager
      *
      * @return QUI\Users\User
      * @throws QUI\Users\Exception
+     * @throws QUI\Exception
      */
     public function createChild($username = false, $ParentUser = null)
     {
@@ -321,8 +341,6 @@ class Manager
             'quiqqer.admin.users.create',
             $ParentUser
         );
-
-        $newId = $this->newId();
 
         if ($username) {
             if ($this->usernameExists($username)) {
@@ -348,15 +366,22 @@ class Manager
 
         self::checkUsernameSigns($username);
 
+        try {
+            $uuid = QUI\Utils\Uuid::get();
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+            throw new QUI\Users\Exception('Could not create User. Please try again later.');
+        }
+
         QUI::getDataBase()->insert(self::table(), array(
-            'id'       => $newId,
-            'uuid'     => Uuid::uuid1()->toString(),
+            'uuid'     => $uuid,
             'username' => $newName,
             'regdate'  => time(),
             'lang'     => QUI::getLocale()->getCurrent()
         ));
 
-        $User = $this->get($newId);
+        $newId = QUI::getDataBase()->getPDO()->lastInsertId();
+        $User  = $this->get($newId);
 
         // workspace
         $twoColumn   = QUI\Workspace\Manager::getTwoColumnDefault();
@@ -395,139 +420,9 @@ class Manager
         $User->addToGroup($Everyone->getId());
         $User->save($ParentUser);
 
+        QUI::getEvents()->fireEvent('userCreate', array($User));
+
         return $User;
-    }
-
-    /**
-     * Register a user
-     *
-     * @param array $params
-     *
-     * @return User
-     * @throws QUI\Users\Exception
-     *
-     * @needle
-     * <ul>
-     *   <li>$param['username']</li>
-     *   <li>$param['password']</li>
-     * </ul>
-     *
-     * @optional
-     * <ul>
-     *   <li>$param['firstname']</li>
-     *     <li>$param['lastname']</li>
-     *     <li>$param['usertitle']</li>
-     *     <li>$param['birthday']</li>
-     *     <li>$param['email']</li>
-     *     <li>$param['lang']</li>
-     *     <li>$param['expire']</li>
-     *     <li>$param['usergroup']</li>
-     * </ul>
-     *
-     * @todo use bind params
-     */
-    public function register($params)
-    {
-        if (!isset($params['username'])) {
-            throw new QUI\Users\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/system',
-                    'exception.lib.user.register.specify.username'
-                )
-            );
-        }
-
-        if (!isset($params['password'])) {
-            throw new QUI\Users\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/system',
-                    ''
-                )
-            );
-        }
-
-        $username = $params['username'];
-        $password = QUI\Security\Password::generateHash($params['password']);
-
-        // unerlaubte zeichen prüfen
-        self::checkUsernameSigns($username);
-
-        if ($this->usernameExists($username)) {
-            throw new QUI\Users\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/system',
-                    'exception.lib.user.register.specify.password'
-                )
-            );
-        }
-
-        $regparams = array();
-        $optional  = array(
-            'firstname',
-            'lastname',
-            'usertitle',
-            'birthday',
-            'email',
-            'lang',
-            'expire',
-            'usergroup'
-        );
-
-        $rootid = QUI::conf('globals', 'root');
-
-        foreach ($optional as $key) {
-            if (!isset($params[$key])) {
-                continue;
-            }
-
-            $value = $params[$key];
-
-            // Benutzergruppen gesondert behandeln - darf nicht in die Root Gruppe
-            if ($key == 'usergroup') {
-                $_gids = explode(',', $value);
-                $gids  = array();
-
-                foreach ($_gids as $gid) {
-                    if (!empty($gid) && $gid != $rootid) {
-                        $gids[] = (int)$gid;
-                    }
-                }
-
-                $regparams['usergroup'] = ','.implode(',', $gids).',';
-                continue;
-            }
-
-            // $regparams[ $key ] = Orthos::clearMySQL( $params[ $key ] );
-            $regparams[$key] = $params[$key];
-        }
-
-        $useragent = '';
-
-        if (isset($_SERVER['HTTP_USER_AGENT'])) {
-            $useragent = $_SERVER['HTTP_USER_AGENT'];
-        }
-
-        $Session = QUI::getSession();
-
-        $regparams['id']         = $this->newId();
-        $regparams['su']         = 0;
-        $regparams['username']   = $username;
-        $regparams['password']   = $password;
-        $regparams['active']     = 0;
-        $regparams['activation'] = Orthos::getPassword(20);
-        $regparams['regdate']    = time();
-        $regparams['lastedit']   = date('Y-m-d H:i:s');
-        $regparams['user_agent'] = $useragent;
-
-        if ($Session->get('ref')) {
-            $regparams['referal'] = $Session->get('ref');
-        }
-
-        QUI::getDataBase()->insert(self::table(), $regparams);
-
-        $lastId = QUI::getDataBase()->getPDO()->lastInsertId('id');
-
-        return $this->get((int)$lastId);
     }
 
     /**
@@ -980,6 +875,10 @@ class Manager
             $this->checkUserSession();
             $this->Session = $this->get(QUI::getSession()->get('uid'));
         } catch (QUI\Exception $Exception) {
+            if (DEBUG_MODE) {
+                QUI\System\Log::writeException($Exception);
+            }
+
             $this->Session = $this->getNobody();
         }
 
@@ -1000,6 +899,7 @@ class Manager
      * Checks, if the session is ok
      *
      * @throws QUI\Users\Exception
+     * @throws QUI\Exception
      */
     public function checkUserSession()
     {
@@ -1627,6 +1527,7 @@ class Manager
      *
      * @return integer
      * @throws QUI\Users\Exception
+     * @deprecated
      */
     protected function newId()
     {

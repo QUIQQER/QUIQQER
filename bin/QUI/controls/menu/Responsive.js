@@ -1,7 +1,6 @@
 /**
- *
+ * @deprecated
  */
-
 define('controls/menu/Responsive', [
 
     'qui/controls/Control',
@@ -14,6 +13,9 @@ define('controls/menu/Responsive', [
 
 ], function (QUIControl, QUIButton, QUIBackground, QUILoader, Ajax) {
     "use strict";
+
+    console.warn('deprecated:');
+    console.warn('controls/menu/Responsive');
 
     return new Class({
 
@@ -60,18 +62,17 @@ define('controls/menu/Responsive', [
         create: function () {
             var self = this;
 
-            // #locale
             this.$Elm = new Element('div', {
                 'class': 'qui-controls-menu-responsive',
                 html   : '<div class="qcm-responsive-title">' +
-                         '<div class="qcm-responsive-title-home">' +
-                         '<span class="fa fa-home"></span>' +
-                         '<span>Menü</span>' +
-                         '</div>' +
-                         '<div class="qcm-responsive-title-close fa fa-remove"></div>' +
-                         '</div>' +
-                         '<div class="qcm-responsive-buttons"></div>' +
-                         '<div class="qcm-responsive-content"></div>',
+                '<div class="qcm-responsive-title-home">' +
+                '<span class="fa fa-home"></span>' +
+                '<span>Menü</span>' +
+                '</div>' +
+                '<div class="qcm-responsive-title-close fa fa-remove"></div>' +
+                '</div>' +
+                '<div class="qcm-responsive-buttons"></div>' +
+                '<div class="qcm-responsive-content"></div>',
                 styles : {
                     left    : -500,
                     position: 'fixed',
@@ -152,7 +153,7 @@ define('controls/menu/Responsive', [
                 this.inject(document.body);
             }
 
-            if (this.$Elm.getParent() == document.body) {
+            if (this.$Elm.getParent() === document.body) {
                 this.$Elm.addClass('shadow');
 
                 if (!this.$Background.getElm()) {
@@ -209,7 +210,7 @@ define('controls/menu/Responsive', [
             ], function (result, parentId) {
                 self.$parentId = parentId;
 
-                if (siteid == 1) {
+                if (parseInt(siteid) === 1) {
                     self.$Back.disable();
                 } else {
                     self.$Back.enable();

@@ -7,8 +7,10 @@
 }
 
 .quiqqer-login form {
+    float: left;
     position: relative;
     top: 0;
+    width: 100%;
 }
 
 .quiqqer-login-or {

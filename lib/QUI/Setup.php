@@ -20,6 +20,9 @@ class Setup
 {
     /**
      * Execute the QUIQQER Setup
+     *
+     * @throws QUI\Exception
+     * @throws QUI\ExceptionStack
      */
     public static function all()
     {
@@ -58,6 +61,9 @@ class Setup
      * - Groups
      * - Users
      * - Workspace
+     *
+     * @throws QUI\Exception
+     * @throws QUI\ExceptionStack
      */
     public static function executeMainSystemSetup()
     {
@@ -89,6 +95,9 @@ class Setup
      * - Messages
      * - Editor
      * - Events
+     *
+     * @throws QUI\Exception
+     * @throws QUI\ExceptionStack
      */
     public static function executeCommunicationSetup()
     {
@@ -111,6 +120,9 @@ class Setup
 
     /**
      * Create the default directories for QUIQQER
+     *
+     * @throws QUI\Exception
+     * @throws QUI\ExceptionStack
      */
     public static function makeDirectories()
     {
@@ -146,6 +158,9 @@ class Setup
 
     /**
      * Create the header files
+     *
+     * @throws QUI\Exception
+     * @throws QUI\ExceptionStack
      */
     public static function makeHeaderFiles()
     {
@@ -169,6 +184,8 @@ class Setup
 
     /**
      * Execute for each project the setup
+     *
+     * @throws QUI\Exception
      */
     public static function executeEachProjectSetup()
     {
@@ -178,7 +195,7 @@ class Setup
         foreach ($projects as $Project) {
             try {
                 $Project->setup();
-            } catch (QUI\Exception $Exception) {
+            } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }
         }
@@ -186,6 +203,9 @@ class Setup
 
     /**
      * Execute for each package the setup
+     *
+     * @throws QUI\Exception
+     * @throws QUI\ExceptionStack
      */
     public static function executeEachPackageSetup()
     {
@@ -216,7 +236,7 @@ class Setup
 
             foreach ($list as $key => $sub) {
                 $packageName = $package.'/'.$sub;
-                $PackageManager->setup($packageName);
+                $PackageManager->setup($packageName, ['localePublish' => false]);
             }
         }
 
@@ -239,9 +259,13 @@ class Setup
      *
      * - set last update
      * - clear the cache
+     *
+     * @throws QUI\Exception
      */
     public static function finish()
     {
+        QUI\Translator::create();
+
         // setup set the last update date
         QUI::getPackageManager()->setLastUpdateDate();
 

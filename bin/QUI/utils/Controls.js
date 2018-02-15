@@ -12,9 +12,10 @@ define('utils/Controls', [
 
     'qui/QUI',
     'qui/utils/Elements',
+    'Locale',
     'qui/lib/polyfills/Promise'
 
-], function (QUI, ElementUtils) {
+], function (QUI, ElementUtils, QUILocale) {
     "use strict";
 
     return {
@@ -142,7 +143,7 @@ define('utils/Controls', [
                         if (elements[i].get('data-quiid')) {
                             continue;
                         }
-                        
+
                         Child = elements[i];
 
                         new QUIButton({
@@ -414,8 +415,8 @@ define('utils/Controls', [
 
                         Cancel = new QUIButton({
                             image : 'fa fa-remove',
-                            alt   : 'Datum leeren', // #locale
-                            title : 'Datum leeren', // #locale
+                            alt   : QUILocale.get('quiqqer/quiqqer', 'control.date.button.alt'),
+                            title : QUILocale.get('quiqqer/quiqqer', 'control.date.button.title'),
                             Input : Child,
                             events: {
                                 onClick: function (Btn) {
@@ -444,10 +445,8 @@ define('utils/Controls', [
                 }, function (err) {
                     require(['qui/QUI'], function (QUI) {
                         QUI.getMessageHandler(function (MH) {
-                            // #locale
                             MH.addAttention(
-                                'Das Kalender Paket konnte nicht gefunden werden.' +
-                                'Bitte installieren Sie quiqqer/calendar'
+                                QUILocale.get('quiqqer/quiqqer', 'control.date.missing.package')
                             );
                         });
                     });

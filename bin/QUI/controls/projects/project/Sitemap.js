@@ -207,10 +207,7 @@ define('controls/projects/project/Sitemap', [
                     if (self.getAttribute('media')) {
                         self.$Map.appendChild(
                             new QUISitemapItem({
-                                text    : Locale.get(
-                                    'quiqqer/system',
-                                    'projects.project.sitemap.media'
-                                ),
+                                text    : Locale.get('quiqqer/system', 'projects.project.sitemap.media'),
                                 value   : 'media',
                                 icon    : 'fa fa-picture-o',
                                 dragable: true,
@@ -459,7 +456,7 @@ define('controls/projects/project/Sitemap', [
                             new QUISitemapItem({
                                 icon       : 'fa fa-level-up',
                                 text       : '...',
-                                title      : 'Zurück - Rechtsklick für weitere Optionen', // #locale
+                                title      : Locale.get('quiqqer/system', 'control.project.sitemap.prev'),
                                 contextmenu: false,
                                 sheets     : sheets,
                                 Item       : Item,
@@ -493,7 +490,7 @@ define('controls/projects/project/Sitemap', [
                             new QUISitemapItem({
                                 icon       : 'fa fa-level-down',
                                 text       : '...',
-                                title      : 'Vor - Rechtsklick für weitere Optionen', // #locale
+                                title      : Locale.get('quiqqer/quiqqer', 'control.project.sitemap.next'),
                                 contextmenu: false,
                                 sheets     : sheets,
                                 Item       : Item,
@@ -826,7 +823,7 @@ define('controls/projects/project/Sitemap', [
 
 
             new QUIConfirm({
-                title    : 'Blätterfunktion', // #locale
+                title    : Locale.get('quiqqer/quiqqer', 'control.project.sitemap.sheetWindow.title'),
                 maxHeight: 300,
                 maxWidth : 500,
                 events   : {
@@ -834,7 +831,7 @@ define('controls/projects/project/Sitemap', [
                         var Content = Win.getContent();
 
                         Content.set({
-                            html   : '<p>Welche Einträge der Seite sollen angezeigt werden?</p>', // #locale
+                            html   : Locale.get('quiqqer/quiqqer', 'control.project.sitemap.sheetWindow.content'),
                             'class': 'qui-projects-sitemap-sheetsWindow'
                         });
 

@@ -59,11 +59,11 @@ abstract class Item extends QUI\QDOM
         $this->Media = $Media;
         $this->setAttributes($params);
 
-        $this->file = CMS_DIR . $this->Media->getPath() . $this->getPath();
+        $this->file = CMS_DIR.$this->Media->getPath().$this->getPath();
 
         if (!file_exists($this->file)) {
             QUI::getMessagesHandler()->addAttention(
-                'File ' . $this->file . ' (' . $this->getId() . ') doesn\'t exist'
+                'File '.$this->file.' ('.$this->getId().') doesn\'t exist'
             );
 
             return;
@@ -74,7 +74,7 @@ abstract class Item extends QUI\QDOM
 
         $this->setAttribute(
             'cache_url',
-            URL_DIR . $this->Media->getCacheDir() . $this->getPath()
+            URL_DIR.$this->Media->getCacheDir().$this->getPath()
         );
     }
 
@@ -95,6 +95,8 @@ abstract class Item extends QUI\QDOM
     /**
      * Activate the file
      * The file is now public
+     *
+     * @throws QUI\Exception
      */
     public function activate()
     {
@@ -136,6 +138,8 @@ abstract class Item extends QUI\QDOM
     /**
      * Deactivate the file
      * the file is no longer public
+     *
+     * @throws QUI\Exception
      */
     public function deactivate()
     {
@@ -157,6 +161,8 @@ abstract class Item extends QUI\QDOM
     /**
      * Save the file to the database
      * The id attribute can not be overwritten
+     *
+     * @throws QUI\Exception
      */
     public function save()
     {
@@ -201,7 +207,7 @@ abstract class Item extends QUI\QDOM
             if (strpos($content, '<svg') !== false && strpos($content, '</svg>')) {
                 file_put_contents(
                     $this->getFullPath(),
-                    '<?xml version="1.0" encoding="UTF-8"?>' .
+                    '<?xml version="1.0" encoding="UTF-8"?>'.
                     $content
                 );
 
@@ -266,7 +272,10 @@ abstract class Item extends QUI\QDOM
     public function delete()
     {
         if ($this->isDeleted()) {
-            throw new QUI\Exception('File is already deleted', 400); // #locale
+            throw new QUI\Exception(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.already.deleted'),
+                400
+            );
         }
 
         QUI::getEvents()->fireEvent('mediaDeleteBegin', array($this));
@@ -278,7 +287,7 @@ abstract class Item extends QUI\QDOM
         $original = $this->getFullPath();
         $notFound = false;
 
-        $var_folder = VAR_DIR . 'media/trash/' . $Media->getProject()->getName() . '/';
+        $var_folder = VAR_DIR.'media/trash/'.$Media->getProject()->getName().'/';
 
         if (!is_file($original)) {
             QUI::getMessagesHandler()->addAttention(
@@ -321,14 +330,14 @@ abstract class Item extends QUI\QDOM
 
         // second, move the file to the trash
         try {
-            QUIFile::unlink($var_folder . $this->getId());
+            QUIFile::unlink($var_folder.$this->getId());
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addWarning($Exception->getMessage());
         }
 
         try {
             QUIFile::mkdir($var_folder);
-            QUIFile::move($original, $var_folder . $this->getId());
+            QUIFile::move($original, $var_folder.$this->getId());
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addWarning($Exception->getMessage());
         }
@@ -384,8 +393,8 @@ abstract class Item extends QUI\QDOM
         $Media = $this->Media;
 
         // get the trash file and destroy it
-        $var_folder = VAR_DIR . 'media/trash/' . $Media->getProject()->getName() . '/';
-        $var_file   = $var_folder . $this->getId();
+        $var_folder = VAR_DIR.'media/trash/'.$Media->getProject()->getName().'/';
+        $var_file   = $var_folder.$this->getId();
 
         try {
             QUIFile::unlink($var_file);
@@ -433,8 +442,8 @@ abstract class Item extends QUI\QDOM
         $extension = QUI\Utils\StringHelper::pathinfo($original, PATHINFO_EXTENSION);
         $Parent    = $this->getParent();
 
-        $new_full_file = $Parent->getFullPath() . $newname . '.' . $extension;
-        $new_file      = $Parent->getPath() . $newname . '.' . $extension;
+        $new_full_file = $Parent->getFullPath().$newname.'.'.$extension;
+        $new_file      = $Parent->getPath().$newname.'.'.$extension;
 
         if ($new_full_file == $original) {
             return;
@@ -454,16 +463,18 @@ abstract class Item extends QUI\QDOM
 
         if ($Parent->childWithNameExists($newname)) {
             throw new QUI\Exception(
-                'Eine Datei mit dem Namen ' . $newname . 'existiert bereits.
-                Bitte wählen Sie einen anderen Namen.'
-            ); // #locale
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.with.same.name.exists', array(
+                    'name' => $newname
+                ))
+            );
         }
 
-        if ($Parent->fileWithNameExists($newname . '.' . $extension)) {
+        if ($Parent->fileWithNameExists($newname.'.'.$extension)) {
             throw new QUI\Exception(
-                'Eine Datei mit dem Namen ' . $newname . 'existiert bereits.
-                Bitte wählen Sie einen anderen Namen.'
-            ); // #locale
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.with.same.name.exists', array(
+                    'name' => $newname
+                ))
+            );
         }
 
 
@@ -561,6 +572,8 @@ abstract class Item extends QUI\QDOM
      * Return all Parents
      *
      * @return array
+     *
+     * @throws QUI\Exception
      */
     public function getParents()
     {
@@ -595,7 +608,7 @@ abstract class Item extends QUI\QDOM
      */
     public function getFullPath()
     {
-        return $this->Media->getFullPath() . $this->getAttribute('file');
+        return $this->Media->getFullPath().$this->getAttribute('file');
     }
 
     /**
@@ -628,21 +641,21 @@ abstract class Item extends QUI\QDOM
         if ($rewritten == false) {
             $Project = $this->Media->getProject();
 
-            $str = 'image.php?id=' . $this->getId() . '&project=' . $Project->getAttribute('name');
+            $str = 'image.php?id='.$this->getId().'&project='.$Project->getAttribute('name');
 
             if ($this->getAttribute('maxheight')) {
-                $str .= '&maxheight=' . $this->getAttribute('maxheight');
+                $str .= '&maxheight='.$this->getAttribute('maxheight');
             }
 
             if ($this->getAttribute('maxwidth')) {
-                $str .= '&maxwidth=' . $this->getAttribute('maxwidth');
+                $str .= '&maxwidth='.$this->getAttribute('maxwidth');
             }
 
             return $str;
         }
 
         if ($this->getAttribute('active') == 1) {
-            return URL_DIR . $this->Media->getCacheDir() . $this->getAttribute('file');
+            return URL_DIR.$this->Media->getCacheDir().$this->getAttribute('file');
         }
 
         return '';
@@ -660,9 +673,10 @@ abstract class Item extends QUI\QDOM
         // check if a child with the same name exist
         if ($Folder->fileWithNameExists($this->getAttribute('name'))) {
             throw new QUI\Exception(
-                'File with a same Name exist in folder '
-                . $Folder->getAttribute('name')
-            ); // #locale
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.with.same.name.exists', array(
+                    'name' => $Folder->getAttribute('name')
+                ))
+            );
         }
 
         $Parent   = $this->getParent();
@@ -728,6 +742,8 @@ abstract class Item extends QUI\QDOM
      * @param \QUI\Projects\Media\Folder $Folder
      *
      * @return \QUI\Projects\Media\Item - The new file
+     *
+     * @throws QUI\Exception
      */
     public function copyTo(Folder $Folder)
     {

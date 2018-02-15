@@ -57,21 +57,6 @@
     width: 100%;
 }
 
-.quiqqer-packages-search-termsofuse {
-    background: rgba(255, 255, 255, 1.0);
-    height: 100%;
-    left: 0;
-    padding: 20px;
-    position: absolute;
-    top: 0;
-    width: 100%;
-    z-index: 10;
-}
-
-.quiqqer-packages-search-termsofuse button {
-    margin-top: 20px;
-}
-
 .qui-controls-packages-search-toggle {
     color: #fcfeff;
     float: left;
@@ -120,4 +105,60 @@
 .qui-controls-packages-search-othersources-search > label > input {
     margin-top: 10px;
     width: 100%;
+}
+
+/** Terms of use
+ ================================================== */
+
+.quiqqer-packages-search-termsofuse {
+    background: rgba(255, 255, 255, 1.0);
+    height: 100%;
+    left: 0;
+    padding: 20px;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 10;
+}
+
+.quiqqer-packages-search-termsOfUse-container {
+    float: left;
+    height: calc(100% - 100px);
+    overflow: auto;
+    width: 100%;
+}
+
+.quiqqer-packages-search-termsOfUse-container h2 {
+    margin: 20px 0 10px;
+}
+
+.quiqqer-packages-search-termsOfUse-container p {
+    margin: 0 0 10px;
+}
+
+.quiqqer-packages-search-termsOfUse-container .bold {
+    font-weight: bold;
+}
+
+.quiqqer-packages-search-termsOfUse-button {
+    text-align: center;
+    width: 100%;
+}
+
+.quiqqer-packages-search-termsOfUse-button button {
+    display: inline-block;
+    float: none;
+    margin-top: 10px;
+}
+
+.quiqqer-packages-search-buttons {
+    background: #e1e4e9;
+    height: 50px;
+    position: relative;
+    width: 100%;
+}
+
+.quiqqer-packages-search-container {
+    height: calc(100% - 50px);
+    position: relative;
 }

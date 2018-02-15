@@ -19,8 +19,8 @@ QUI::$Ajax->registerFunction(
         $ids = json_decode($ids, true);
 
         if (!QUI\Projects\Media\Utils::isFolder($Folder)) {
-            throw new \QUI\Exception(
-                'Bitte wählen Sie ein Ordner aus um die Dateien zu verschieben.' // #locale
+            throw new QUI\Exception(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.move.is.no.folder')
             );
         }
 
@@ -30,7 +30,9 @@ QUI::$Ajax->registerFunction(
                 $Item = $Media->get((int)$id);
                 $Item->moveTo($Folder);
             } catch (QUI\Exception $Exception) {
-                QUI::getMessagesHandler()->addError($Exception->getMessage());
+                QUI::getMessagesHandler()->addError(
+                    $Exception->getMessage()
+                );
             }
         }
     },

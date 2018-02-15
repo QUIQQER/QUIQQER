@@ -392,7 +392,7 @@ class QUI
             VAR_DIR.'cache/siteobjects/',
             VAR_DIR.'cache/projects',
             VAR_DIR.'locale/',
-            VAR_DIR.'tmp/'
+            VAR_DIR.'tmp/' // @todo temp
         );
 
         foreach ($folders as $folder) {
@@ -424,6 +424,13 @@ class QUI
             define('URL_VAR_DIR', URL_DIR.str_replace(CMS_DIR, '', VAR_DIR));
         }
 
+        // bugfix: workround: Uncaught Error: Call to undefined function DusanKasan\Knapsack\append()
+        if (!function_exists('\DusanKasan\Knapsack\append')) {
+            if (file_exists(OPT_DIR.'dusank/knapsack/src/collection_functions.php')) {
+                require_once OPT_DIR.'dusank/knapsack/src/collection_functions.php';
+            }
+        }
+
 
         // Load Packages
         self::getPackageManager();
@@ -434,10 +441,8 @@ class QUI
             QUI\Utils\System\Debug::marker('END');
 
             // ram peak, if the ram usage is to high, than write and send a message
-            $peak = memory_get_peak_usage();
-            $mem_limit
-                  = QUI\Utils\System\File::getBytes(ini_get('memory_limit'))
-                    * 0.8;
+            $peak      = memory_get_peak_usage();
+            $mem_limit = QUI\Utils\System\File::getBytes(ini_get('memory_limit')) * 0.8;
 
             if ($peak > $mem_limit && $mem_limit > 0) {
                 $limit = QUI\Utils\System\File::formatSize(
@@ -863,6 +868,8 @@ class QUI
      * @param string $package - name of the package eq: quiqqer/blog or quiqqer/quiqqer
      *
      * @return \QUI\Package\Package
+     *
+     * @throws QUI\Exception
      */
     public static function getPackage($package)
     {

@@ -259,7 +259,7 @@ class Menu
                 continue;
             }
 
-            XML::addXMLFileToMenu($Menu, $menuXml);
+            XML::addXMLFileToMenu($Menu, $menuXml, $User);
         }
 
         $menu = $Menu->toArray();

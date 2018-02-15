@@ -1,12 +1,44 @@
-<label>
-    <span>{$usernameText}</span>
-    <input type="text" value="" name="username"/>
-</label>
+<div class="quiqqer-auth-login-message"></div>
 
-<label>
-    <span>{$passwordText}</span>
-    <input type="password" value="" name="password"/>
-</label>
+<div class="quiqqer-auth-login-container">
+    <label>
+        <span>{$usernameText}</span>
+        <input type="text" value="" name="username"/>
+    </label>
 
-<input type="hidden" value="1" name="login"/>
-<input type="submit" value="Login!" class="login qui-button btn-green"/>
+    <label>
+        <span>{$passwordText}</span>
+        <input type="password" value="" name="password"/>
+    </label>
+
+    {if $showPasswordReset}
+    <span class="quiqqer-auth-login-passwordreset-link">
+        {locale group="quiqqer/system" var="quiqqer.auth.login.password_reset"}
+    </span>
+    {/if}
+
+    <input type="hidden" value="1" name="login"/>
+    <input type="submit" value="Login" class="login qui-button btn-green"/>
+</div>
+
+{if $showPasswordReset}
+<div class="quiqqer-auth-login-passwordreset" style="display: none;">
+    <p>
+        {locale group="quiqqer/system" var="quiqqer.auth.login.password.message"}
+    </p>
+    <label>
+        <span>
+            {locale group="quiqqer/system" var="quiqqer.auth.login.label.email"}
+        </span>
+        <input type="email" value="" name="email"/>
+    </label>
+
+    <input type="submit"
+           value="{locale group='quiqqer/quiqqer' value='controls.users.auth.quiqqerlogin.btn.password_reset'}"
+    />
+
+    <button name="cancel" type="reset">
+        {locale group='quiqqer/quiqqer' value='cancel'}
+    </button>
+</div>
+{/if}

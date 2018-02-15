@@ -60,7 +60,7 @@
 
         var QUIQQER = {
             lu : '{$lastUpdate}',
-            ajax: '/ajax.php',
+            ajax: '{$URL_DIR}ajax.php',
             title: '{$Template->getTitle()|escape:"html"}'
         };
 
@@ -79,7 +79,8 @@
 
         var QUIQQER_SITE = {
             id   : '{$Site->getId()}',
-            type : '{$Site->getAttribute("type")}'
+            type : '{$Site->getAttribute("type")}',
+            url  : '{$Site->getUrlRewritten()}'
         };
 
         var QUIQQER_ONLOAD_MODULES = {$loadModuleFiles|json_encode:true},

@@ -223,7 +223,7 @@ class Locale
 
         $formats = $this->getDateFormats();
 
-        if (isset($formats[$current])) {
+        if (!empty($formats[$current])) {
             $oldlocale = setlocale(LC_TIME, "0");
             setlocale(LC_TIME, $this->getLocalesByLang($current));
             $result = strftime($formats[$current], $timestamp);
@@ -413,7 +413,10 @@ class Locale
     public function get($group, $value = false, $replace = false)
     {
         if ($replace === false || empty($replace)) {
-            return $this->getHelper($group, $value);
+            $str = $this->getHelper($group, $value);
+            $str = str_replace('{\n}', PHP_EOL, $str);
+
+            return $str;
         }
 
         $str = $this->getHelper($group, $value);
@@ -425,6 +428,8 @@ class Locale
 
             $str = str_replace('['.$key.']', $value, $str);
         };
+
+        $str = str_replace('{\n}', PHP_EOL, $str);
 
         return $str;
     }
@@ -454,6 +459,8 @@ class Locale
 
             $str = str_replace('['.$key.']', $value, $str);
         };
+
+        $str = str_replace('{\n}', PHP_EOL, $str);
 
         return $str;
     }
@@ -552,9 +559,10 @@ class Locale
 
         $file = $GetText->getFile();
 
-        // #locale
         System\Log::addWarning(
-            'Übersetzungsdatei für '.$file.' nicht gefunden.'
+            QUI::getLocale()->get('quiqqer/quiqqer', 'message.translation.file.not.found', array(
+                'file' => $file
+            ))
         );
 
         $this->gettext[$current][$group] = false;

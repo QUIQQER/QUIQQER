@@ -15,11 +15,20 @@ QUI::$Ajax->registerFunction(
 
         $TabBar   = QUI\Projects\Sites::getTabs($Site);
         $children = $TabBar->getChildren();
-        $result   = array();
+        $result   = [];
+        $names    = [];
 
         /* @var $Itm QUI\Controls\Toolbar\Tab */
         foreach ($children as $Itm) {
-            $result[] = $Itm->getAttributes();
+            $name = $Itm->getAttribute('name');
+
+            // filter duplicate
+            if (isset($names[$name])) {
+                continue;
+            }
+
+            $result[]     = $Itm->getAttributes();
+            $names[$name] = true;
         }
 
         return $result;

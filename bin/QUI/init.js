@@ -231,7 +231,7 @@ require(requireList, function () {
                         }
 
                         var Workspaces = Bar.getChildren('profile')
-                                            .getChildren('workspaces');
+                            .getChildren('workspaces');
 
                         Workspaces.clear();
 
@@ -308,26 +308,7 @@ require(requireList, function () {
         /**
          * Menu
          */
-        require(['Menu'], function () {
-            // logout
-            new Element('div', {
-                'class': 'qui-contextmenu-baritem smooth qui-logout-btn',
-                html   : '<span class="qui-contextmenu-baritem-text">' +
-                '<span class="fa fa-power-off"></span> ' +
-                Locale.get('quiqqer/quiqqer', 'menu.log.out') +
-                '</span>',
-                title  : Locale.get('quiqqer/quiqqer', 'menu.loged.in', {
-                    username: USER.name
-                }),
-                styles : {
-                    'float'   : 'right',
-                    borderLeft: '1px solid #CCCFD5'
-                },
-                events : {
-                    click: window.logout
-                }
-            }).inject(Menu);
-        });
+        require(['Menu']);
 
         /**
          * If files were droped to quiqqer
@@ -363,7 +344,7 @@ require(requireList, function () {
                 // logout
                 Ajax.post('ajax_user_logout', function () {
                     window.onbeforeunload = null;
-                    window.location       = URL_DIR + 'admin/';
+                    window.location = URL_DIR + 'admin/';
                 });
             });
         };

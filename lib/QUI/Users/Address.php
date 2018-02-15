@@ -37,7 +37,7 @@ class Address extends QUI\QDOM
      * @param QUI\Users\User $User - User
      * @param integer $id - Address id
      *
-     * @throws QUI\Users\Exception
+     * @throws \QUI\Users\Exception
      */
     public function __construct(User $User, $id)
     {
@@ -132,7 +132,7 @@ class Address extends QUI\QDOM
      * Editier ein bestehenden Eintrag
      *
      * @param integer $index
-     * @param string $phone
+     * @param array $phone
      */
     public function editPhone($index, $phone)
     {
@@ -183,6 +183,22 @@ class Address extends QUI\QDOM
         }
 
         return array();
+    }
+
+    /**
+     * Return the telephone number
+     *
+     * @return string
+     */
+    public function getPhone()
+    {
+        $list = $this->getPhoneList();
+
+        if (!empty($list)) {
+            return $list[0];
+        }
+
+        return '';
     }
 
     /**
@@ -327,7 +343,9 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * Löscht den Eintrag
+     * Delete the address
+     *
+     * @throws QUI\Exception
      */
     public function delete()
     {
@@ -345,6 +363,7 @@ class Address extends QUI\QDOM
      * Return the address as HTML display
      *
      * @return string - HTML <address>
+     * @throws
      */
     public function getDisplay()
     {
@@ -356,7 +375,7 @@ class Address extends QUI\QDOM
             'Countries' => new QUI\Countries\Manager()
         ));
 
-        return $Engine->fetch(SYS_DIR . 'template/users/address/display.html');
+        return $Engine->fetch(SYS_DIR.'template/users/address/display.html');
     }
 
     /**
@@ -423,6 +442,45 @@ class Address extends QUI\QDOM
         }
 
         $result = "{$salutation} {$firstName} {$lastName}; {$street_no}; {$zip} {$city} {$country}";
+        $result = preg_replace('/[  ]{2,}/', ' ', $result);
+
+        return $result;
+    }
+
+    /**
+     * Return the main name of the address
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        $User = $this->User;
+
+        $salutation = $this->getAttribute('salutation');
+        $firstName  = $this->getAttribute('firstname');
+        $lastName   = $this->getAttribute('lastname');
+
+        if (empty($firstName)) {
+            $firstName = $User->getAttribute('firstname');
+        }
+
+        if (!$firstName) {
+            $firstName = '';
+        }
+
+        if (empty($lastName)) {
+            $lastName = $User->getAttribute('lastname');
+        }
+
+        if (!$lastName) {
+            $lastName = '';
+        }
+
+        if (!$salutation) {
+            $salutation = '';
+        }
+
+        $result = "{$salutation} {$firstName} {$lastName}";
         $result = preg_replace('/[  ]{2,}/', ' ', $result);
 
         return $result;

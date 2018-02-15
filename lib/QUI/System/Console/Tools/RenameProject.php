@@ -40,6 +40,11 @@ class RenameProject extends Tool
     {
 
         $this->writeLnLocale("console.tool.project.rename.prompt.projectname.info", "cyan");
+
+        foreach (QUI::getProjectManager()->getProjects() as $projectName) {
+            $this->writeLn(" * ". $projectName);
+        }
+
         $this->writeLnLocale("console.tool.project.rename.prompt.projectname", "light_cyan");
         $this->oldProjectName = trim($this->readInput());
 

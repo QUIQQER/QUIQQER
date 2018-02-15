@@ -58,22 +58,28 @@ class Login extends Control
             $isGlobalAuth = ' data-globalauth="1"';
         }
 
-        foreach ($authenticator as $auth) {
+        if (!empty($_REQUEST['password_reset'])) {
+            $result .= '<div class="quiqqer-users-login-success">';
+            $result .= QUI::getLocale()->get('quiqqer/system', 'users.auth.passwordresetverification.success');
+            $result .= '</div>';
+        }
+
+        foreach ($authenticator as $k => $auth) {
             $Control = forward_static_call(array($auth, 'getLoginControl'));
 
             if (is_null($Control)) {
                 continue;
             }
 
-            if (!empty($result)) {
+            $result .= '<form method="POST" name="login" data-authenticator="' . $auth . '"' . $isGlobalAuth . '>' .
+                       $Control->create() .
+                       '</form>';
+
+            if (isset($authenticator[$k+1])) {
                 $result .= '<div>';
                 $result .= QUI::getLocale()->get('quiqqer/system', 'controls.users.auth.login.or');
                 $result .= '</div>';
             }
-
-            $result .= '<form method="POST" name="login" data-authenticator="' . $auth . '"' . $isGlobalAuth . '>' .
-                       $Control->create() .
-                       '</form>';
         }
 
         return $result;
