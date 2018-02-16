@@ -99,6 +99,10 @@ class Log
         $context['userId']        = $User->getId();
         $context['username']      = $User->getUsername();
 
+        if ($filename) {
+            $context['filename'] = $filename;
+        }
+
         switch ($logLevelName) {
             case 'debug':
                 $Logger->addDebug($message, $context);
