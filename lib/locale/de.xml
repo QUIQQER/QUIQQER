@@ -6055,6 +6055,12 @@
         <locale name="quiqqer.settings.email.smtp.auth.MAILFromText">
             <de><![CDATA[Angezeigter Absendername]]></de>
         </locale>
+        <locale name="quiqqer.settings.email.queueLimitPerHour">
+            <de><![CDATA[Maximale Anzahl E-Mail pro Stunde]]></de>
+        </locale>
+        <locale name="quiqqer.settings.email.queueLimitPerHour.desc" html="true">
+            <de><![CDATA[Bestimmt die maximale Anzahl an E-Mails, die per Mail-Queue innerhalb einer Stunde versendet werden dürfen. <b>0 = kein Limit</b>.]]></de>
+        </locale>
         <locale name="quiqqer.settings.email.queue.desc">
             <de><![CDATA[
             E-Mails werden so lange in einer Warteschlange gespeichert, bis es sicher ist, dass sie versendet wurden.
