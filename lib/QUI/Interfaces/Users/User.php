@@ -162,6 +162,8 @@ interface User
      * @param integer $id - ID of the address
      *
      * @return \QUI\Users\Address
+     *
+     * @throws \QUI\Exception
      */
     public function getAddress($id);
 

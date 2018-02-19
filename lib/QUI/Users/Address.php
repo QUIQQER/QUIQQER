@@ -41,14 +41,14 @@ class Address extends QUI\QDOM
      */
     public function __construct(User $User, $id)
     {
-        $result = QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch([
             'from'  => Manager::tableAddress(),
-            'where' => array(
+            'where' => [
                 'id'  => (int)$id,
                 'uid' => $User->getId()
-            ),
+            ],
             'limit' => '1'
-        ));
+        ]);
 
         $this->User = $User;
         $this->id   = (int)$id;
@@ -58,10 +58,10 @@ class Address extends QUI\QDOM
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'exception.lib.user.address.not.found',
-                    array(
+                    [
                         'addressId' => (int)$id,
                         'userId'    => $User->getId()
-                    )
+                    ]
                 )
             );
         }
@@ -80,6 +80,14 @@ class Address extends QUI\QDOM
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return User
+     */
+    public function getUser()
+    {
+        return $this->User;
     }
 
     /**
@@ -162,7 +170,7 @@ class Address extends QUI\QDOM
      */
     public function clearPhone()
     {
-        $this->setAttribute('phone', array());
+        $this->setAttribute('phone', []);
     }
 
     /**
@@ -182,7 +190,7 @@ class Address extends QUI\QDOM
             return $result;
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -278,7 +286,7 @@ class Address extends QUI\QDOM
             return $result;
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -314,16 +322,30 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * Addresse speichern
+     * Saves the address
+     *
+     *
+     * @param null|QUI\Interfaces\Users\User $PermissionUser
+     * @throws QUI\Permissions\Exception
      */
-    public function save()
+    public function save($PermissionUser = null)
     {
+        if (!$this->getUser()) {
+            return;
+        }
+
+        if (is_null($PermissionUser)) {
+            $PermissionUser = QUI::getUserBySession();
+        }
+
+        $this->getUser()->checkEditPermission($PermissionUser);
+
         $mail  = json_encode($this->getMailList());
         $phone = json_encode($this->getPhoneList());
 
         QUI::getDataBase()->update(
             Manager::tableAddress(),
-            array(
+            [
                 'salutation' => Orthos::clear($this->getAttribute('salutation')),
                 'firstname'  => Orthos::clear($this->getAttribute('firstname')),
                 'lastname'   => Orthos::clear($this->getAttribute('lastname')),
@@ -335,10 +357,10 @@ class Address extends QUI\QDOM
                 'country'    => Orthos::clear($this->getAttribute('country')),
                 'mail'       => $mail,
                 'phone'      => $phone
-            ),
-            array(
+            ],
+            [
                 'id' => $this->id
-            )
+            ]
         );
     }
 
@@ -349,14 +371,14 @@ class Address extends QUI\QDOM
      */
     public function delete()
     {
-        QUI::getDataBase()->exec(array(
+        QUI::getDataBase()->exec([
             'delete' => true,
             'from'   => Manager::tableAddress(),
-            'where'  => array(
+            'where'  => [
                 'id'  => $this->getId(),
                 'uid' => $this->User->getId()
-            )
-        ));
+            ]
+        ]);
     }
 
     /**
@@ -369,11 +391,11 @@ class Address extends QUI\QDOM
     {
         $Engine = QUI::getTemplateManager()->getEngine(true);
 
-        $Engine->assign(array(
+        $Engine->assign([
             'User'      => $this->User,
             'Address'   => $this,
             'Countries' => new QUI\Countries\Manager()
-        ));
+        ]);
 
         return $Engine->fetch(SYS_DIR.'template/users/address/display.html');
     }
