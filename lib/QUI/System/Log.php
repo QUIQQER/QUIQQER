@@ -72,7 +72,7 @@ class Log
     public static function write(
         $message,
         $logLevel = self::LEVEL_INFO,
-        $context = array(),
+        $context = [],
         $filename = false,
         $force = false
     ) {
@@ -150,7 +150,7 @@ class Log
     public static function writeRecursive(
         $object,
         $logLevel = self::LEVEL_INFO,
-        $context = array(),
+        $context = [],
         $filename = false,
         $force = false
     ) {
@@ -169,10 +169,42 @@ class Log
     public static function writeException(
         $Exception,
         $logLevel = self::LEVEL_ERROR,
-        $context = array(),
+        $context = [],
         $filename = false,
         $force = false
     ) {
+        $message = $Exception->getCode()." :: \n\n";
+
+        if (method_exists($Exception, 'getContext')) {
+            $message .= print_r($Exception->getContext(), true)."\n\n";
+        }
+
+        $message .= $Exception->getMessage()."\n";
+        $message .= $Exception->getTraceAsString();
+
+        self::write($message, $logLevel, $context, $filename, $force);
+    }
+
+    /**
+     * Writes an Exception to a log file
+     *
+     * @param \Exception|QUI\Exception $Exception
+     * @param integer $logLevel - loglevel ( \QUI\System\Log::LEVEL_ERROR ... )
+     * @param array $context - context data
+     * @param string|boolean $filename - [optional] name of the log eq: messages, database
+     * @param boolean $force - [optional] if true: log in any case, no matter which settings
+     */
+    public static function writeDebugException(
+        $Exception,
+        $logLevel = self::LEVEL_ERROR,
+        $context = [],
+        $filename = false,
+        $force = false
+    ) {
+        if (DEBUG_MODE === false) {
+            return;
+        }
+
         $message = $Exception->getCode()." :: \n\n";
 
         if (method_exists($Exception, 'getContext')) {
@@ -192,7 +224,7 @@ class Log
      * @param array $context - context data
      * @param string|boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    public static function addDebug($message, $context = array(), $filename = false)
+    public static function addDebug($message, $context = [], $filename = false)
     {
         self::write($message, self::LEVEL_DEBUG, $context, $filename);
     }
@@ -204,7 +236,7 @@ class Log
      * @param array $context - context data
      * @param string|boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    public static function addInfo($message, $context = array(), $filename = false)
+    public static function addInfo($message, $context = [], $filename = false)
     {
         self::write($message, self::LEVEL_INFO, $context, $filename);
     }
@@ -216,7 +248,7 @@ class Log
      * @param array $context - context data
      * @param string|boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    public static function addNotice($message, $context = array(), $filename = false)
+    public static function addNotice($message, $context = [], $filename = false)
     {
         self::write($message, self::LEVEL_NOTICE, $context, $filename);
     }
@@ -228,7 +260,7 @@ class Log
      * @param array $context - context data
      * @param string|boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    public static function addWarning($message, $context = array(), $filename = false)
+    public static function addWarning($message, $context = [], $filename = false)
     {
         self::write($message, self::LEVEL_WARNING, $context, $filename);
     }
@@ -240,7 +272,7 @@ class Log
      * @param array $context - context data
      * @param string|boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    public static function addError($message, $context = array(), $filename = false)
+    public static function addError($message, $context = [], $filename = false)
     {
         self::write($message, self::LEVEL_ERROR, $context, $filename);
     }
@@ -252,7 +284,7 @@ class Log
      * @param array $context - context data
      * @param string|boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    public static function addCritical($message, $context = array(), $filename = false)
+    public static function addCritical($message, $context = [], $filename = false)
     {
         self::write($message, self::LEVEL_CRITICAL, $context, $filename);
     }
@@ -264,7 +296,7 @@ class Log
      * @param array $context - context data
      * @param string|boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    public static function addAlert($message, $context = array(), $filename = false)
+    public static function addAlert($message, $context = [], $filename = false)
     {
         self::write($message, self::LEVEL_ALERT, $context, $filename);
     }
@@ -276,7 +308,7 @@ class Log
      * @param array $context - context data
      * @param string|boolean $filename - [optional] name of the log eq: messages, database (default = error)
      */
-    public static function addEmergency($message, $context = array(), $filename = false)
+    public static function addEmergency($message, $context = [], $filename = false)
     {
         self::write($message, self::LEVEL_EMERGENCY, $context, $filename);
     }
