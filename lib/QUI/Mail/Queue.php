@@ -237,6 +237,12 @@ class Queue
      */
     protected function sendMail($params)
     {
+        $queueLimitPerHour = (int)QUI::conf('mail', 'queueLimitPerHour');
+
+        if ($queueLimitPerHour > 0 && $this->getMailsSentInLastHour() >= $queueLimitPerHour) {
+            return false;
+        }
+
         try {
             $PhpMailer = QUI::getMailManager()->getPHPMailer();
 
@@ -321,11 +327,14 @@ class Queue
             $PhpMailer->Subject  = $params['subject'];
             $PhpMailer->Body     = $params['body'];
 
-
             $PhpMailer->send();
 
             if (is_dir($mailQueueDir)) {
                 File::deleteDir($mailQueueDir);
+            }
+
+            if ($queueLimitPerHour > 0) {
+                $this->increaseMailsSent();
             }
 
             return true;
@@ -365,5 +374,45 @@ class Queue
         return QUI::getDataBase()->fetch(array(
             'from' => self::table()
         ));
+    }
+
+    /**
+     * Get number of mails that have been sent via queue in the last hour
+     *
+     * @return int
+     */
+    protected function getMailsSentInLastHour()
+    {
+        $cacheFile = QUI::getPackage('quiqqer/quiqqer')->getVarDir() . 'mailqueue';
+        $time      = time();
+
+        if (!file_exists($cacheFile)) {
+            file_put_contents($cacheFile, "$time-0");
+            return 0;
+        }
+
+        $mailsSent  = explode('-', file_get_contents($cacheFile));
+        $createTime = (int)$mailsSent[0];
+
+        if ((time() - $createTime) > 3600) {
+            file_put_contents($cacheFile, "$time-0");
+            return 0;
+        }
+
+        return (int)$mailsSent[1];
+    }
+
+    /**
+     * Increase number of mails sent by 1 and save this information in the cache
+     *
+     * @return void
+     */
+    protected function increaseMailsSent()
+    {
+        $cacheFile = QUI::getPackage('quiqqer/quiqqer')->getVarDir() . 'mailqueue';
+        $mailsSent = $this->getMailsSentInLastHour();
+
+        $mailsSentCache = explode('-', file_get_contents($cacheFile));
+        file_put_contents($cacheFile, $mailsSentCache[0] . '-' . ($mailsSent + 1));
     }
 }
