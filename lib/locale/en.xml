@@ -5877,6 +5877,12 @@
         <locale name="quiqqer.settings.email.queue.desc">
             <en><![CDATA[E-mails are saved in a queue until it is certain that they were sent.]]></en>
         </locale>
+        <locale name="quiqqer.settings.email.queueLimitPerHour">
+            <en><![CDATA[Max number of mails per hour]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.queueLimitPerHour.desc" html="true">
+            <en><![CDATA[Specifies the maximum number of e-mails that can be sent within one hour. <b>0 = no limit</b>.]]></en>
+        </locale>
         <locale name="quiqqer.settings.email.queue">
             <en><![CDATA[Enable Mail Queue]]></en>
         </locale>        <!-- License key -->
