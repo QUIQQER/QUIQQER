@@ -73,7 +73,7 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * ID der Addresse
+     * Return the ID of the address
      *
      * @return integer
      */
@@ -91,14 +91,14 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * Telefon Nummer hinzufügen
+     * Add an phone number
      *
      * @param array $phone
      *
      * @example addPhone(array(
-     *        'no'   => '555 29 29',
-     *      'type' => 'tel'
-     * ))
+     *     'no'   => '555 29 29',
+     *     'type' => 'tel'
+     * ));
      */
     public function addPhone($phone)
     {
@@ -137,17 +137,20 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * Editier ein bestehenden Eintrag
+     * Edit an existing entry
      *
      * @param integer $index
-     * @param array $phone
+     * @param array|string $phone - [no => '+0049 929292', 'type' => 'fax'] or '+0049 929292'
      */
     public function editPhone($index, $phone)
     {
         $index = (int)$index;
 
         if (!is_array($phone)) {
-            return;
+            $phone = [
+                'no'   => $phone,
+                'type' => 'tel'
+            ];
         }
 
         if (!isset($phone['no'])) {
@@ -166,7 +169,7 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * Löscht die Phoneliste
+     * Delete the complete phone list
      */
     public function clearPhone()
     {
@@ -174,7 +177,7 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * Telefon Liste
+     * Return the complete phone list
      *
      * @return array
      */
@@ -194,7 +197,7 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * Return the telephone number
+     * Return the first telephone number
      *
      * @return string
      */
@@ -202,15 +205,47 @@ class Address extends QUI\QDOM
     {
         $list = $this->getPhoneList();
 
-        if (!empty($list)) {
-            return $list[0];
+        if (empty($list)) {
+            return '';
+        }
+
+        foreach ($list as $entry) {
+            if ($entry['type'] !== 'tel') {
+                continue;
+            }
+
+            return $entry['no'];
         }
 
         return '';
     }
 
     /**
-     * Add a EMail address
+     * Return the first fax number
+     *
+     * @return string
+     */
+    public function getFax()
+    {
+        $list = $this->getPhoneList();
+
+        if (empty($list)) {
+            return '';
+        }
+
+        foreach ($list as $entry) {
+            if ($entry['type'] !== 'fax') {
+                continue;
+            }
+
+            return $entry['no'];
+        }
+
+        return '';
+    }
+
+    /**
+     * Add an Email address
      *
      * @param string $mail - new mail address
      *
@@ -247,7 +282,7 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * E-Mail Eintrag editieren
+     * Edit an Email Entry
      *
      * @param integer $index - index of the mail
      * @param string $mail - E-Mail (eq: my@mail.com)
@@ -274,7 +309,7 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * E-Mail Liste
+     * Return the Email list
      *
      * @return array
      */
@@ -290,7 +325,7 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * Länder bekommen
+     * Return the address country
      *
      * @return QUI\Countries\Country
      * @throws QUI\Users\Exception
@@ -323,7 +358,6 @@ class Address extends QUI\QDOM
 
     /**
      * Saves the address
-     *
      *
      * @param null|QUI\Interfaces\Users\User $PermissionUser
      * @throws QUI\Permissions\Exception
@@ -509,7 +543,7 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * Addresse als JSON string
+     * Return the address as json
      *
      * @return string
      */
