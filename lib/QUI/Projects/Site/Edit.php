@@ -452,25 +452,6 @@ class Edit extends Site
             }
         }
 
-        // order type
-        $order_type = 'manuell';
-
-        switch ($this->getAttribute('order_type')) {
-            case 'manuell':
-            case 'name ASC':
-            case 'name DESC':
-            case 'title ASC':
-            case 'title DESC':
-            case 'c_date ASC':
-            case 'c_date DESC':
-            case 'd_date ASC':
-            case 'd_date DESC':
-            case 'release_from ASC':
-            case 'release_from DESC':
-                $order_type = $this->getAttribute('order_type');
-                break;
-        }
-
         // release dates
         $release_from = '';
         $release_to   = '';
@@ -557,6 +538,24 @@ class Edit extends Site
             $siteExtra[$attribute] = $default;
         }
 
+        // order type
+        $order_type = 'manuell';
+
+        switch ($this->getAttribute('order_type')) {
+            case 'manuell':
+            case 'name ASC':
+            case 'name DESC':
+            case 'title ASC':
+            case 'title DESC':
+            case 'c_date ASC':
+            case 'c_date DESC':
+            case 'd_date ASC':
+            case 'd_date DESC':
+            case 'release_from ASC':
+            case 'release_from DESC':
+                $order_type = $this->getAttribute('order_type');
+                break;
+        }
 
         // clear paths
         // wenn sich der seitentyp geändert hat, muss ein clear path gemacht werden
