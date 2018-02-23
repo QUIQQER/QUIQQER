@@ -38,7 +38,7 @@ class Manager
      *
      * @var array
      */
-    public static $projects = array();
+    public static $projects = [];
 
     /**
      * standard project
@@ -60,6 +60,14 @@ class Manager
     }
 
     /**
+     * Clearing / cleanup the manager
+     */
+    public static function cleanup()
+    {
+        self::$projects = [];
+    }
+
+    /**
      * set configuration for a project
      *
      * @param string $project
@@ -68,7 +76,7 @@ class Manager
      * @throws QUI\Exception
      * @throws \Exception
      */
-    public static function setConfigForProject($project, $params = array())
+    public static function setConfigForProject($project, $params = [])
     {
         $Project = $project;
 
@@ -86,7 +94,7 @@ class Manager
         );
 
         if (!is_array($params)) {
-            $params = array();
+            $params = [];
         }
 
         $Config   = self::getConfig();
@@ -94,7 +102,7 @@ class Manager
 
         // $config
         $availableConfig = self::getProjectConfigList($Project);
-        $projectConfig   = array();
+        $projectConfig   = [];
 
         if (isset($projects[$projectName])) {
             $projectConfig = $projects[$projectName];
@@ -412,7 +420,7 @@ class Manager
 
         // Wenn der RAM zu voll wird, Objekte mal leeren
         if (QUI\Utils\System::memUsageToHigh()) {
-            self::$projects = array();
+            self::$projects = [];
         }
 
 
@@ -443,7 +451,7 @@ class Manager
     public static function getProjects($asobject = false)
     {
         $config = self::getConfig()->toArray();
-        $list   = array();
+        $list   = [];
 
         foreach ($config as $project => $conf) {
             try {
@@ -479,7 +487,7 @@ class Manager
     public static function getProjectList()
     {
         $config = self::getConfig()->toArray();
-        $result = array();
+        $result = [];
 
         foreach ($config as $project => $conf) {
             $langs = explode(',', trim($conf['langs']));
@@ -895,7 +903,7 @@ class Manager
         //            Database           //
         // ----------------------------- //
 
-        $tables = array();
+        $tables = [];
 
         $Stmt = \QUI::getDataBase()->getPDO()->prepare("SHOW TABLES;");
         $Stmt->execute();
@@ -1011,8 +1019,8 @@ class Manager
      */
     public static function getRelatedTemplates(QUI\Projects\Project $Project)
     {
-        $result    = array();
-        $templates = array();
+        $result    = [];
+        $templates = [];
         $project   = $Project->getName();
 
         if ($Project->getAttribute('template')) {
@@ -1064,7 +1072,7 @@ class Manager
         } catch (QUI\Exception $Exception) {
         }
 
-        $list     = array();
+        $list     = [];
         $packages = QUI::getPackageManager()->getInstalled();
 
         $templates = self::getRelatedTemplates($Project);
@@ -1130,12 +1138,12 @@ class Manager
     public static function search($params)
     {
         if (!isset($params['search'])) {
-            return array();
+            return [];
         }
 
         $search = $params['search'];
 
-        $result = array();
+        $result = [];
         $list   = self::getConfig()->toArray();
 
         foreach ($list as $project => $entry) {
