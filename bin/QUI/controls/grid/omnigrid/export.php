@@ -6,7 +6,7 @@
  * @version    $Revision: 3315 $
  */
 
-define('TCPDF_FILE', '../../../../../lib/extern/tcpdf/tcpdf.php');
+define('TCPDF_FILE', dirname(__FILE__, 9) . '/packages/tecnickcom/tcpdf/tcpdf.php');
 
 class OmnigridExport
 {
@@ -56,6 +56,7 @@ class OmnigridExport
     private function _pdf()
     {
         if (!file_exists(TCPDF_FILE)) {
+            echo "Package \"tecnickcom/tcpdf\" not found. Please install to use PDF export.";
             exit;
         }
 
@@ -115,7 +116,7 @@ class OmnigridExport
 		//$pdf->setLanguageArray($l);
 
 		//initialize document
-		$Pdf->AliasNbPages();
+//		$Pdf->AliasNbPages();
 
 
 		// add a page
