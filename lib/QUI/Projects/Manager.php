@@ -767,6 +767,7 @@ class Manager
 
         // Project setup
         $Project = self::getProject($name);
+        $Project->refresh();
         $Project->setup();
 
         // Package / Plugin Setup
