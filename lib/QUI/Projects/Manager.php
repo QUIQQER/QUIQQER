@@ -771,13 +771,7 @@ class Manager
         $Project->setup();
 
         // Package / Plugin Setup
-        QUI::getPluginManager()->setup();
-
-        // Execute the quiqqer/quiqqer setup to create the project related tables
-        QUI::getPackage("quiqqer/quiqqer")->setup();
-
-        // Projekt Cache löschen
-        QUI\Cache\Manager::clear('QUI::config');
+        QUI\Setup::executeEachPackageSetup();
 
         // project create event
         QUI::getEvents()->fireEvent('createProject', array($Project));
