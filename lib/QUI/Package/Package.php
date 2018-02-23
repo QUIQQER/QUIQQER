@@ -442,7 +442,7 @@ class Package extends QUI\QDOM
     /**
      * Execute the package setup
      *
-     * @param array $params - optional ['localePublish' => true, 'localeImport' => true]
+     * @param array $params - optional ['localePublish' => true, 'localeImport' => true, 'forceImport' => false]
      * @throws QUI\Exception
      */
     public function setup($params = array())
@@ -452,6 +452,7 @@ class Package extends QUI\QDOM
         // options
         $optionLocalePublish = true;
         $optionLocaleImport  = true;
+        $optionForceImport   = false;
 
         if (isset($params['localePublish'])) {
             $optionLocalePublish = $params['localePublish'];
@@ -459,6 +460,10 @@ class Package extends QUI\QDOM
 
         if (isset($params['localeImport'])) {
             $optionLocaleImport = $params['localeImport'];
+        }
+
+        if (isset($params['forceImport'])) {
+            $optionForceImport = $params['forceImport'];
         }
 
 
@@ -546,7 +551,7 @@ class Package extends QUI\QDOM
 
         // locale
         if ($optionLocaleImport) {
-            QUI\Translator::importFromPackage($this, true, true);
+            QUI\Translator::importFromPackage($this, true, true, $optionForceImport);
         }
 
         if ($optionLocalePublish) {
