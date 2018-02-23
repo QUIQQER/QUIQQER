@@ -565,6 +565,7 @@ class Manager
      *
      * @param string $name - Project name
      * @param string $lang - Project lang
+     * @param array $languages - optional, additional languages
      *
      * @return \QUI\Projects\Project
      * @throws \QUI\Exception
@@ -572,7 +573,7 @@ class Manager
      *
      * @todo noch einmal anschauen und übersichtlicher schreiben
      */
-    public static function createProject($name, $lang)
+    public static function createProject($name, $lang, $languages = [])
     {
         Permission::checkPermission(
             'quiqqer.projects.create'
@@ -721,6 +722,20 @@ class Manager
 
 
         /**
+         * Languages
+         */
+        if (!in_array($lang, $languages)) {
+            $languages[] = $lang;
+        }
+
+        $languages = array_filter($languages, function ($language) {
+            return strlen($language) === 2;
+        });
+
+        $languages = array_unique($languages);
+
+
+        /**
          * Write the config
          */
         if (!file_exists(CMS_DIR.'etc/projects.ini.php')) {
@@ -731,7 +746,7 @@ class Manager
 
         $Config->setSection($name, array(
             'default_lang' => $lang,
-            'langs'        => $lang,
+            'langs'        => implode(',', $languages),
             'admin_mail'   => 'support@pcsg.de',
             'template'     => $name,
             'image_text'   => '0',
@@ -750,7 +765,7 @@ class Manager
 
         $Config->save();
 
-        // Projekt setup
+        // Project setup
         $Project = self::getProject($name);
         $Project->setup();
 
