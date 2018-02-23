@@ -72,6 +72,7 @@ class Update
      * @param Event $Event
      *
      * @throws QUI\Exception
+     * @throws \Exception
      */
     public static function onUpdate(Event $Event)
     {
@@ -412,6 +413,7 @@ class Update
      * @param $IO - Composer InputOutput
      *
      * @throws QUI\Exception
+     * @throws \Exception
      */
     public static function importDatabase($xml_file, $IO = null)
     {
