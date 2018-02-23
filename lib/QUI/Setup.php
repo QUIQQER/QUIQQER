@@ -204,10 +204,12 @@ class Setup
     /**
      * Execute for each package the setup
      *
+     * @param array $setupOptions - options for the package setup
+     *
      * @throws QUI\Exception
      * @throws QUI\ExceptionStack
      */
-    public static function executeEachPackageSetup()
+    public static function executeEachPackageSetup($setupOptions = array())
     {
         QUI::getEvents()->fireEvent('setupPackageSetupBegin');
 
@@ -215,6 +217,14 @@ class Setup
         $packages       = SystemFile::readDir(OPT_DIR);
 
         $PackageManager->refreshServerList();
+
+        if (!is_array($setupOptions)) {
+            $setupOptions = [];
+        }
+
+        if (!isset($setupOptions['localePublish'])) {
+            $setupOptions['localePublish'] = false;
+        }
 
         QUI\Cache\Manager::$noClearing = true;
 
@@ -236,7 +246,7 @@ class Setup
 
             foreach ($list as $key => $sub) {
                 $packageName = $package.'/'.$sub;
-                $PackageManager->setup($packageName, ['localePublish' => false]);
+                $PackageManager->setup($packageName, $setupOptions);
             }
         }
 
