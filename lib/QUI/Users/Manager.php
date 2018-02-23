@@ -87,6 +87,9 @@ class Manager
 
     /**
      * Create the database tables for the users
+     *
+     * @throws QUI\DataBase\Exception
+     * @throws \Exception
      */
     public function setup()
     {
@@ -547,6 +550,8 @@ class Manager
      * @return bool
      *
      * @throws QUI\Users\Exception
+     * @throws QUI\Exception
+     * @throws QUI\ExceptionStack
      */
     public function authenticate($authenticator, $params = array())
     {
@@ -1230,6 +1235,8 @@ class Manager
      * @param integer $id
      *
      * @return boolean
+     *
+     * @throws QUI\Users\Exception
      */
     public function deleteUser($id)
     {
@@ -1242,6 +1249,8 @@ class Manager
      * @param array $params
      *
      * @return array
+     *
+     * @throws QUI\DataBase\Exception
      */
     public function search($params)
     {
@@ -1254,6 +1263,8 @@ class Manager
      * @param array $params - Search parameter
      *
      * @return integer
+     *
+     * @throws QUI\DataBase\Exception
      */
     public function count($params = array())
     {
@@ -1526,7 +1537,6 @@ class Manager
      * Create a new ID for a not created user
      *
      * @return integer
-     * @throws QUI\Users\Exception
      * @deprecated
      */
     protected function newId()
@@ -1588,7 +1598,14 @@ class Manager
      */
     public static function getProfileTemplate()
     {
-        $Engine   = QUI::getTemplateManager()->getEngine(true);
+        try {
+            $Engine = QUI::getTemplateManager()->getEngine(true);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+
+            return '';
+        }
+
         $packages = QUI::getPackageManager()->getInstalled();
         $extend   = '';
 

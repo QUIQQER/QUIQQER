@@ -111,7 +111,7 @@ define('controls/grid/Grid', [
                 json: 'JSON'
             }, // {print : 'Drucken', pdf : 'PDF', csv : 'CSV', json : 'JSON'},
             exportRenderer: null, // function(data){data.type data.data data.Grid}
-            exportBinUrl  : URL_BIN_DIR + 'js/extern/omnigrid1.2.3/omnigrid/',
+            exportBinUrl  : URL_OPT_DIR + 'quiqqer/quiqqer/bin/QUI/controls/grid/omnigrid/',
 
             // drag & Drop
             dragdrop         : false,
@@ -3039,7 +3039,7 @@ define('controls/grid/Grid', [
         },
 
         exportGrid: function (type) {
-            var data      = this.getAttribute('exportData'),
+            var data      = this.setExportData(),
                 exportUrl = this.getAttribute('exportBinUrl') + 'export.php';
 
             if (this.getAttribute('exportRenderer')) {

@@ -123,7 +123,6 @@ class Project
      */
     protected $cache_files = array();
 
-
     /**
      * Konstruktor eines Projektes
      *
@@ -135,8 +134,35 @@ class Project
      */
     public function __construct($name, $lang = false, $template = false)
     {
+        $this->name     = $name;
+        $this->lang     = $lang;
+        $this->template = $template;
+
+        try {
+            $this->refresh();
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeDebugException($Exception);
+
+            $this->name     = null;
+            $this->lang     = null;
+            $this->template = null;
+
+            throw $Exception;
+        }
+    }
+
+    /**
+     * Refresh the config
+     *
+     * @throws QUI\Exception
+     */
+    public function refresh()
+    {
         $config = Manager::getConfig()->toArray();
-        $name   = (string)$name;
+
+        $name     = (string)$this->name;
+        $lang     = (string)$this->lang;
+        $template = (string)$this->template;
 
         // Konfiguration einlesen
         if (!isset($config[$name])) {
@@ -470,52 +496,42 @@ class Project
      *                    lang = Aktuelle Sprache
      *                    db_table = Standard Datebanktabelle, please use this->table()
      *
-     * @return string|false
+     * @return string|false|array
      */
     public function getAttribute($att)
     {
         switch ($att) {
             case "name":
                 return $this->getName();
-                break;
 
             case "lang":
                 return $this->getLang();
-                break;
 
             case "e_date":
                 return $this->getLastEditDate();
-                break;
 
             case "config":
                 return $this->config;
-                break;
 
             case "default_lang":
                 return $this->default_lang;
-                break;
 
             case "langs":
                 return $this->langs;
-                break;
 
             case "template":
                 return $this->template;
-                break;
 
             case "db_table":
                 # Anzeigen demo_de_sites
                 return $this->name.'_'.$this->lang.'_sites';
-                break;
 
             case "media_table":
                 # Anzeigen demo_de_sites
                 return $this->name.'_de_media';
-                break;
 
             default:
                 return false;
-                break;
         }
     }
 
