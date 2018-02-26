@@ -551,7 +551,7 @@ class Package extends QUI\QDOM
 
         // locale
         if ($optionLocaleImport) {
-            QUI\Translator::importFromPackage($this, true, true, $optionForceImport);
+            QUI\Translator::batchImportFromPackage($this);
         }
 
         if ($optionLocalePublish) {
