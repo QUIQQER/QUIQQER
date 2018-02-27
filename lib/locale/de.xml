@@ -624,6 +624,10 @@
         <locale name="month.12">
             <de><![CDATA[Dezember]]></de>
         </locale>
+
+        <locale name="exception.error">
+            <de><![CDATA[Es ist ein Fehler aufgetreten. Der Administrator wurde in Kenntnis gesetzt.]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="php">
         <locale name="quiqqer.settings.auth.showResetPasswordBackend">
@@ -6059,7 +6063,8 @@
             <de><![CDATA[Maximale Anzahl E-Mail pro Stunde]]></de>
         </locale>
         <locale name="quiqqer.settings.email.queueLimitPerHour.desc" html="true">
-            <de><![CDATA[Bestimmt die maximale Anzahl an E-Mails, die per Mail-Queue innerhalb einer Stunde versendet werden dürfen. <b>0 = kein Limit</b>.]]></de>
+            <de>
+                <![CDATA[Bestimmt die maximale Anzahl an E-Mails, die per Mail-Queue innerhalb einer Stunde versendet werden dürfen. <b>0 = kein Limit</b>.]]></de>
         </locale>
         <locale name="quiqqer.settings.email.queue.desc">
             <de><![CDATA[
