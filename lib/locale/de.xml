@@ -628,6 +628,15 @@
         <locale name="exception.error">
             <de><![CDATA[Es ist ein Fehler aufgetreten. Der Administrator wurde in Kenntnis gesetzt.]]></de>
         </locale>
+        <locale name="panels.bookmarks.title">
+            <de><![CDATA[Lesezeichen (Bookmarks)]]></de>
+        </locale>
+        <locale name="panels.bookmarks.description">
+            <de><![CDATA[
+            Verwalten Sie schnell Aufrufe von Panels.
+            Legen Sie für sich Lesezeichen fest damit Sie Ihre oft genutzten Funtionen schnell erreichen.
+            ]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="php">
         <locale name="quiqqer.settings.auth.showResetPasswordBackend">
@@ -5384,15 +5393,6 @@
         </locale>
         <locale name="panels.help.description">
             <de><![CDATA[Zeigt die QUIQQER Hilfe an.]]></de>
-        </locale>
-        <locale name="panels.bookmarks.title">
-            <de><![CDATA[Lesezeichen (Bookmarks)]]></de>
-        </locale>
-        <locale name="panels.bookmarks.description">
-            <de><![CDATA[
-            Verwalten Sie schnell Aufrufe von Panels.
-            Legen Sie für sich Lesezeichen fest damit Sie Ihre oft genutzten Funtionen schnell erreichen.
-            ]]></de>
         </locale>
         <locale name="panels.upload.title">
             <de><![CDATA[Uploads]]></de>

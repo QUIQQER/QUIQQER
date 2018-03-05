@@ -626,7 +626,16 @@
         <locale name="exception.error">
             <en><![CDATA[An error has occurred. The administrator has been notified.]]></en>
         </locale>
+        <locale name="panels.bookmarks.title">
+            <en><![CDATA[Bookmarks]]></en>
+        </locale>
+        <locale name="panels.bookmarks.description">
+            <en><![CDATA[
+            Use bookmarks to help you quickly reach your frequently used functions.
+            ]]></en>
+        </locale>
     </groups>
+
     <groups name="quiqqer/quiqqer" datatype="php">
         <locale name="quiqqer.settings.auth.showResetPasswordBackend">
             <en><![CDATA["Forgot password" in backend Login]]></en>
@@ -5231,13 +5240,6 @@
         </locale>
         <locale name="panels.help.description">
             <en><![CDATA[Displays the QUIQQER Help.]]></en>
-        </locale>
-        <locale name="panels.bookmarks.title">
-            <en><![CDATA[Bookmarks]]></en>
-        </locale>
-        <locale name="panels.bookmarks.description">
-            <en>
-                <![CDATA[            Use bookmarks to help you quickly reach your frequently used functions.            ]]></en>
         </locale>
         <locale name="panels.upload.title">
             <en><![CDATA[Uploads]]></en>

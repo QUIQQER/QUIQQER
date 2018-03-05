@@ -29,10 +29,10 @@
         <panel require="controls/desktop/panels/Bookmarks">
             <image>fa fa-bookmark</image>
             <title>
-                <locale group="quiqqer/system" var="panels.bookmarks.title"/>
+                <locale group="quiqqer/quiqqer" var="panels.bookmarks.title"/>
             </title>
             <text>
-                <locale group="quiqqer/system" var="panels.bookmarks.description"/>
+                <locale group="quiqqer/quiqqer" var="panels.bookmarks.description"/>
             </text>
         </panel>
 
