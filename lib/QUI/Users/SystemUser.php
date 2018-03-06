@@ -49,6 +49,30 @@ class SystemUser extends QUI\Users\Nobody implements QUI\Interfaces\Users\User
     }
 
     /**
+     * (non-PHPdoc)
+     *
+     * @see \QUI\Interfaces\Users\User::getUsername()
+     *
+     * @return string
+     */
+    public function getUsername()
+    {
+        return $this->getName();
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
+     * @see \QUI\Interfaces\Users\User::getName()
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->getAttribute('username');
+    }
+
+    /**
      * @param bool|true $array
      * @return array
      */
