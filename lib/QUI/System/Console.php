@@ -525,16 +525,18 @@ class Console
      */
     protected function executeSystemTool()
     {
-        QUI\Permissions\Permission::setUser(
-            QUI::getUsers()->getSystemUser()
-        );
-
         if (php_sapi_name() != 'cli') {
             throw new QUI\Exception(array(
                 'quiqqer/quiqqer',
                 'exception.console.execute.only.in.cli'
             ));
         }
+
+        define('SYSTEM_INTERN', true);
+
+        QUI\Permissions\Permission::setUser(
+            QUI::getUsers()->getSystemUser()
+        );
 
         switch ($this->getArgument('#system-tool')) {
             case 'clear-all':

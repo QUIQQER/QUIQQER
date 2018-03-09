@@ -32,6 +32,13 @@ class Address extends QUI\QDOM
     protected $id = false;
 
     /**
+     * Custom address data
+     *
+     * @var array
+     */
+    protected $customData = [];
+
+    /**
      * constructor
      *
      * @param QUI\Users\User $User - User
@@ -66,10 +73,16 @@ class Address extends QUI\QDOM
             );
         }
 
-        unset($result[0]['id']);
-        unset($result[0]['uid']);
+        $data = current($result);
 
-        $this->setAttributes($result[0]);
+        unset($data['id']);
+        unset($data['uid']);
+
+        if (!empty($data['custom_data'])) {
+            $this->setCustomData(json_decode($data['custom_data'], true));
+        }
+
+        $this->setAttributes($data);
     }
 
     /**
@@ -380,17 +393,18 @@ class Address extends QUI\QDOM
         QUI::getDataBase()->update(
             Manager::tableAddress(),
             [
-                'salutation' => Orthos::clear($this->getAttribute('salutation')),
-                'firstname'  => Orthos::clear($this->getAttribute('firstname')),
-                'lastname'   => Orthos::clear($this->getAttribute('lastname')),
-                'company'    => Orthos::clear($this->getAttribute('company')),
-                'delivery'   => Orthos::clear($this->getAttribute('delivery')),
-                'street_no'  => Orthos::clear($this->getAttribute('street_no')),
-                'zip'        => Orthos::clear($this->getAttribute('zip')),
-                'city'       => Orthos::clear($this->getAttribute('city')),
-                'country'    => Orthos::clear($this->getAttribute('country')),
-                'mail'       => $mail,
-                'phone'      => $phone
+                'salutation'  => Orthos::clear($this->getAttribute('salutation')),
+                'firstname'   => Orthos::clear($this->getAttribute('firstname')),
+                'lastname'    => Orthos::clear($this->getAttribute('lastname')),
+                'company'     => Orthos::clear($this->getAttribute('company')),
+                'delivery'    => Orthos::clear($this->getAttribute('delivery')),
+                'street_no'   => Orthos::clear($this->getAttribute('street_no')),
+                'zip'         => Orthos::clear($this->getAttribute('zip')),
+                'city'        => Orthos::clear($this->getAttribute('city')),
+                'country'     => Orthos::clear($this->getAttribute('country')),
+                'mail'        => $mail,
+                'phone'       => $phone,
+                'custom_data' => json_encode($this->getCustomData())
             ],
             [
                 'id' => $this->id
@@ -431,7 +445,7 @@ class Address extends QUI\QDOM
             'Countries' => new QUI\Countries\Manager()
         ]);
 
-        return $Engine->fetch(SYS_DIR.'template/users/address/display.html');
+        return $Engine->fetch(SYS_DIR . 'template/users/address/display.html');
     }
 
     /**
@@ -540,6 +554,57 @@ class Address extends QUI\QDOM
         $result = preg_replace('/[  ]{2,}/', ' ', $result);
 
         return $result;
+    }
+
+    /**
+     * Set custom data entry
+     *
+     * @param string $key
+     * @param mixed $value
+     * @return void
+     */
+    public function setCustomDataEntry($key, $value)
+    {
+        $this->customData[$key] = $value;
+        $this->setAttribute('customData', $this->customData);
+    }
+
+    /**
+     * Get custom data entry
+     *
+     * @param string $key
+     * @return mixed|null - Null if no entry set
+     */
+    public function getCustomDataEntry($key)
+    {
+        if (array_key_exists($key, $this->customData)) {
+            return $this->customData[$key];
+        }
+
+        return null;
+    }
+
+    /**
+     * Set multiple custom data entries
+     *
+     * @param array $entries
+     * @return void
+     */
+    public function setCustomData($entries)
+    {
+        foreach ($entries as $k => $v) {
+            $this->setCustomDataEntry($k, $v);
+        }
+    }
+
+    /**
+     * Get all custom data entries
+     *
+     * @return array
+     */
+    public function getCustomData()
+    {
+        return $this->customData;
     }
 
     /**

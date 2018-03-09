@@ -128,31 +128,6 @@ class Manager
         } catch (\PDOException $Exception) {
         }
 
-        // Addresses
-        $DataBase->table()->addColumn(self::tableAddress(), array(
-            'id'         => 'INT(11)',
-            'uid'        => 'INT(11)',
-            'salutation' => 'VARCHAR(10)',
-            'firstname'  => 'VARCHAR(40)',
-            'lastname'   => 'VARCHAR(40)',
-            'phone'      => 'TEXT NULL',
-            'mail'       => 'TEXT NULL',
-            'company'    => 'VARCHAR(100)',
-            'delivery'   => 'TEXT NULL',
-            'street_no'  => 'TEXT NULL',
-            'zip'        => 'TEXT NULL',
-            'city'       => 'TEXT NULL',
-            'country'    => 'TEXT NULL'
-        ));
-
-        $DataBase->table()->setIndex(self::tableAddress(), 'id');
-
-        $tableAddress = self::tableAddress();
-
-        $DataBase->getPDO()->exec(
-            "ALTER TABLE `{$tableAddress}` CHANGE `id` `id` INT(11) NOT NULL AUTO_INCREMENT"
-        );
-
         // uuid extrem indexes patch
         $Stmt = $DataBase->getPDO()->prepare(
             "SHOW INDEXES FROM `{$table}`
