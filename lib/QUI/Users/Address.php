@@ -445,7 +445,7 @@ class Address extends QUI\QDOM
             'Countries' => new QUI\Countries\Manager()
         ]);
 
-        return $Engine->fetch(SYS_DIR . 'template/users/address/display.html');
+        return $Engine->fetch(SYS_DIR.'template/users/address/display.html');
     }
 
     /**
@@ -560,11 +560,23 @@ class Address extends QUI\QDOM
      * Set custom data entry
      *
      * @param string $key
-     * @param mixed $value
+     * @param integer|float|double|bool|string $value
      * @return void
      */
     public function setCustomDataEntry($key, $value)
     {
+        if (is_object($value)) {
+            return;
+        }
+
+        if (is_array($value)) {
+            return;
+        }
+
+        if (!is_numeric($value) && !is_string($value) && !is_bool($value)) {
+            return;
+        }
+
         $this->customData[$key] = $value;
         $this->setAttribute('customData', $this->customData);
     }
