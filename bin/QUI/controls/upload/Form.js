@@ -425,7 +425,7 @@ define('controls/upload/Form', [
 
             if (this.getAttribute('maxuploads') !== false &&
                 elms.length !== 0 &&
-                this.getAttribute('maxuploads') <= elms.length) {
+                this.getAttribute('maxuploads') < elms.length) {
                 QUI.getMessageHandler(function (MH) {
                     MH.addError(
                         Locale.get(lg, 'upload.form.message.limit', {
