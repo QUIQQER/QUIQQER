@@ -7,6 +7,7 @@
 
 $dir = str_replace('quiqqer/quiqqer/lib/QUI/Upload/bin', '', dirname(__FILE__));
 define('QUIQQER_SYSTEM', true);
+define('QUIQQER_AJAX', true);
 
 require_once $dir.'header.php';
 
@@ -17,10 +18,10 @@ try {
     $uploadResult = $QUM->init();
 
     if (!empty($uploadResult)) {
-        $result = array(
+        $result = [
             'result'      => $uploadResult,
             'maintenance' => QUI::conf('globals', 'maintenance') ? 1 : 0
-        );
+        ];
 
         if (QUI::getMessagesHandler()) {
             $result['message_handler'] = QUI::getMessagesHandler()->getMessagesAsArray(
