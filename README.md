@@ -1,4 +1,3 @@
-
 QUIQQER Management System
 ========
 
@@ -8,6 +7,7 @@ www.pcsg.de
 www.quiqqer.com
 
 ![QUIQQER dev-dev](https://img.shields.io/badge/QUIQQER-dev-dd1144.svg)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FQUIQQER%2FQUIQQER.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FQUIQQER%2FQUIQQER?ref=badge_shield)
 
 
 About QUIQQER
@@ -96,3 +96,7 @@ Thanks for all the nice lines of code.
 If we forget somebody, please not hesitate and write us an email.
 
 Henning and Moritz from PCSG / QUIQQER
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FQUIQQER%2FQUIQQER.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FQUIQQER%2FQUIQQER?ref=badge_large)
