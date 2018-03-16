@@ -5030,12 +5030,6 @@
             | Authenticator: "[authenticator]" | IP-Adresse: [ipAddress] | User Agent: "[userAgent]"
             ]]></de>
         </locale>
-        <locale name="controls.users.auth.login.or">
-            <de><![CDATA[oder]]></de>
-        </locale>
-        <locale name="controls.users.auth.login.password_reset">
-            <de><![CDATA[oder]]></de>
-        </locale>
         <locale name="menu.quiqqer.text" html="true">
             <de><![CDATA[<img src="../bin/quiqqer_logo_mini.png" />]]></de>
         </locale>
@@ -6097,6 +6091,12 @@
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="php,js">
+        <locale name="controls.users.auth.login.or">
+            <de><![CDATA[oder]]></de>
+        </locale>
+        <locale name="controls.users.auth.login.password_reset">
+            <de><![CDATA[oder]]></de>
+        </locale>
         <locale name="quiqqer.licenseKey.unlimited">
             <de><![CDATA[unbegrenzt]]></de>
         </locale>

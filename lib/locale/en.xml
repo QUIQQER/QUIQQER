@@ -4886,12 +4886,6 @@
             <en>
                 <![CDATA[Failed login attempt: "[username]" (#[userId]) | Authenticator: "[authenticator]" | IP address: [ipAddress] | User Agent: "[userAgent]"]]></en>
         </locale>
-        <locale name="controls.users.auth.login.or">
-            <en><![CDATA[or]]></en>
-        </locale>
-        <locale name="controls.users.auth.login.password_reset">
-            <en><![CDATA[or]]></en>
-        </locale>
         <locale name="menu.quiqqer.text" html="true">
             <en><![CDATA[<img src="../bin/quiqqer_logo_mini.png" />]]></en>
         </locale>
@@ -5915,6 +5909,12 @@
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="php,js">
+        <locale name="controls.users.auth.login.or">
+            <en><![CDATA[or]]></en>
+        </locale>
+        <locale name="controls.users.auth.login.password_reset">
+            <en><![CDATA[or]]></en>
+        </locale>
         <locale name="quiqqer.licenseKey.unlimited">
             <en><![CDATA[unlimited]]></en>
         </locale>
