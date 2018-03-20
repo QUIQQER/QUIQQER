@@ -357,9 +357,10 @@ define('controls/grid/Grid', [
             }
 
             var sumWidth = buttons.map(function (Button) {
-                    return Button.getComputedSize().totalWidth;
-                }).sum() - menuWidth + (buttons.length * 10);
+                return Button.getComputedSize().totalWidth;
+            }).sum() - menuWidth + (buttons.length * 10);
 
+            // console.log(this.$Menu.getElm());
             if (sumWidth > width) {
                 // hide buttons
                 buttons.setStyle('display', 'none');
@@ -1985,7 +1986,8 @@ define('controls/grid/Grid', [
                 columnData      = this.$data[r][columnDataIndex] || false;
 
                 div = new Element('div.td', {
-                    styles: {
+                    'data-index': columnModel.dataIndex || '',
+                    styles     : {
                         width: (columnModel.width - 6).abs()
                     }
                 });
