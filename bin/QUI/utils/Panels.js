@@ -340,6 +340,25 @@ define('utils/Panels', function () {
         },
 
         /**
+         * Opens an user panel
+         *
+         * @param {number} userId
+         */
+        openUserPanel: function (userId) {
+            var self = this;
+
+            return new Promise(function (resolve) {
+                require(['controls/users/User'], function (UserPanel) {
+                    self.openPanelInTasks(
+                        new UserPanel(userId)
+                    );
+
+                    resolve();
+                });
+            });
+        },
+
+        /**
          * Open a panel in a task panel
          * it search the first taskpanel
          *
