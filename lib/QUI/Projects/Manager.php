@@ -241,6 +241,8 @@ class Manager
      * @param \QUI\Projects\Project $Project
      *
      * @return array
+     *
+     * @throws QUI\Exception
      */
     public static function getProjectConfigList(QUI\Projects\Project $Project)
     {

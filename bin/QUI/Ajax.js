@@ -75,6 +75,10 @@ define('Ajax', [
                 params.lang = Locale.getCurrent();
             }
 
+            if (typeof params.project === 'undefined' && typeof window.QUIQQER_PROJECT !== 'undefined') {
+                params.project = JSON.encode(window.QUIQQER_PROJECT);
+            }
+
             this.$onprogress[id] = new QUIAjax(
                 // combine all params, so, they are available in the Request Object
                 Utils.combine(params, {

@@ -145,6 +145,28 @@
             <primary>id</primary>
             <auto_increment>id</auto_increment>
         </table>
+
+        <!-- Addresses -->
+        <table name="users_address">
+            <field type="INT(11) NOT NULL">id</field>
+            <field type="INT(11) NOT NULL">uid</field>
+            <field type="VARCHAR(10)">salutation</field>
+            <field type="VARCHAR(40)">firstname</field>
+            <field type="VARCHAR(40)">lastname</field>
+            <field type="TEXT NULL">phone</field>
+            <field type="TEXT NULL">mail</field>
+            <field type="VARCHAR(100)">company</field>
+            <field type="TEXT NULL">delivery</field>
+            <field type="TEXT NULL">street_no</field>
+            <field type="TEXT NULL">zip</field>
+            <field type="TEXT NULL">city</field>
+            <field type="TEXT NULL">country</field>
+            <field type="TEXT NULL">custom_data</field>
+
+            <primary>id</primary>
+            <auto_increment>id</auto_increment>
+        </table>
+
     </global>
 
     <projects>

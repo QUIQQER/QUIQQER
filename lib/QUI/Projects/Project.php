@@ -237,7 +237,7 @@ class Project
         }
 
         // Template
-        if ($template === false) {
+        if (empty($template)) {
             $this->template = $config[$name]['template'];
         } else {
             $this->template = $template;

@@ -624,6 +624,19 @@
         <locale name="month.12">
             <de><![CDATA[Dezember]]></de>
         </locale>
+
+        <locale name="exception.error">
+            <de><![CDATA[Es ist ein Fehler aufgetreten. Der Administrator wurde in Kenntnis gesetzt.]]></de>
+        </locale>
+        <locale name="panels.bookmarks.title">
+            <de><![CDATA[Lesezeichen (Bookmarks)]]></de>
+        </locale>
+        <locale name="panels.bookmarks.description">
+            <de><![CDATA[
+            Verwalten Sie schnell Aufrufe von Panels.
+            Legen Sie für sich Lesezeichen fest damit Sie Ihre oft genutzten Funtionen schnell erreichen.
+            ]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="php">
         <locale name="quiqqer.settings.auth.showResetPasswordBackend">
@@ -5017,12 +5030,6 @@
             | Authenticator: "[authenticator]" | IP-Adresse: [ipAddress] | User Agent: "[userAgent]"
             ]]></de>
         </locale>
-        <locale name="controls.users.auth.login.or">
-            <de><![CDATA[oder]]></de>
-        </locale>
-        <locale name="controls.users.auth.login.password_reset">
-            <de><![CDATA[oder]]></de>
-        </locale>
         <locale name="menu.quiqqer.text" html="true">
             <de><![CDATA[<img src="../bin/quiqqer_logo_mini.png" />]]></de>
         </locale>
@@ -5380,15 +5387,6 @@
         </locale>
         <locale name="panels.help.description">
             <de><![CDATA[Zeigt die QUIQQER Hilfe an.]]></de>
-        </locale>
-        <locale name="panels.bookmarks.title">
-            <de><![CDATA[Lesezeichen (Bookmarks)]]></de>
-        </locale>
-        <locale name="panels.bookmarks.description">
-            <de><![CDATA[
-            Verwalten Sie schnell Aufrufe von Panels.
-            Legen Sie für sich Lesezeichen fest damit Sie Ihre oft genutzten Funtionen schnell erreichen.
-            ]]></de>
         </locale>
         <locale name="panels.upload.title">
             <de><![CDATA[Uploads]]></de>
@@ -6059,7 +6057,8 @@
             <de><![CDATA[Maximale Anzahl E-Mail pro Stunde]]></de>
         </locale>
         <locale name="quiqqer.settings.email.queueLimitPerHour.desc" html="true">
-            <de><![CDATA[Bestimmt die maximale Anzahl an E-Mails, die per Mail-Queue innerhalb einer Stunde versendet werden dürfen. <b>0 = kein Limit</b>.]]></de>
+            <de>
+                <![CDATA[Bestimmt die maximale Anzahl an E-Mails, die per Mail-Queue innerhalb einer Stunde versendet werden dürfen. <b>0 = kein Limit</b>.]]></de>
         </locale>
         <locale name="quiqqer.settings.email.queue.desc">
             <de><![CDATA[
@@ -6092,6 +6091,12 @@
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="php,js">
+        <locale name="controls.users.auth.login.or">
+            <de><![CDATA[oder]]></de>
+        </locale>
+        <locale name="controls.users.auth.login.password_reset">
+            <de><![CDATA[oder]]></de>
+        </locale>
         <locale name="quiqqer.licenseKey.unlimited">
             <de><![CDATA[unbegrenzt]]></de>
         </locale>

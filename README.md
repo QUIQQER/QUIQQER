@@ -2,6 +2,8 @@
 QUIQQER Management System
 ========
 
+![QUIQQER](bin/images/Readme.png)
+
 Copyright PCSG OhG
 
 www.pcsg.de

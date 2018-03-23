@@ -243,7 +243,12 @@ class Session
         }
 
         if ($this->Session->isStarted()) {
-            $this->Session->getMetadataBag()->stampNew($this->lifetime);
+            $MetaBag = $this->Session->getMetadataBag();
+
+            // workaround for session refresh
+            if ($this->lifetime && $MetaBag->getLastUsed() + ($this->lifetime / 2) < time()) {
+                $this->refresh();
+            }
 
             return;
         }

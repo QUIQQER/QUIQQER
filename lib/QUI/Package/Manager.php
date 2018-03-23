@@ -206,6 +206,8 @@ class Manager extends QUI\QDOM
      * Return the last update date
      *
      * @return integer
+     *
+     * @throws QUI\Exception
      */
     public function getLastUpdateDate()
     {
@@ -216,6 +218,8 @@ class Manager extends QUI\QDOM
      * Return the last update date
      *
      * @return integer
+     *
+     * @throws QUI\Exception
      */
     public function getLastUpdateCheckDate()
     {
@@ -338,8 +342,14 @@ class Manager extends QUI\QDOM
             "component-dir"     => OPT_DIR.'bin',
             "quiqqer-dir"       => CMS_DIR,
             "minimum-stability" => 'dev',
-            "secure-http"       => false
+            "secure-http"       => false,
+            "preferred-install" => 'dist'
         );
+
+        if (DEVELOPMENT) {
+            $composerJson->config['preferred-install'] = 'source';
+        }
+
 
         $composerJson->extra = array(
             "asset-installer-paths"  => array(
@@ -517,6 +527,8 @@ class Manager extends QUI\QDOM
 
     /**
      * Creates a backup from the composer.json file
+     *
+     * @throws QUI\Exception
      */
     public function createComposerBackup()
     {
@@ -562,6 +574,8 @@ class Manager extends QUI\QDOM
 
     /**
      * Clear the complete composer cache
+     *
+     * @throws QUI\Exception
      */
     public function clearComposerCache()
     {
@@ -816,6 +830,8 @@ class Manager extends QUI\QDOM
      *
      * @param string|array $packages - name of the package
      * @param boolean $version - (optional) version of the package
+     *
+     * @throws QUI\Exception
      */
     public function installLocalPackage($packages, $version = false)
     {
@@ -1076,6 +1092,8 @@ class Manager extends QUI\QDOM
      * @param string $server - Server, IP, Host
      * @param boolean $status - 1 = active, 0 = disabled
      * @param boolean $backup - Optional (default=true, create a backup, false = create no backup
+     *
+     * @throws QUI\Exception
      */
     public function setServerStatus(
         $server,
@@ -1100,6 +1118,8 @@ class Manager extends QUI\QDOM
      *
      * @param string $server - Server, IP, Host
      * @param array $params - Server Parameter
+     *
+     * @throws QUI\Exception
      */
     public function addServer($server, $params = array())
     {
@@ -1141,6 +1161,8 @@ class Manager extends QUI\QDOM
      *
      * @param string $server - Server, IP, Host
      * @param array $params - Server Parameter
+     *
+     * @throws QUI\Exception
      */
     public function editServer($server, $params = array())
     {
@@ -1185,6 +1207,8 @@ class Manager extends QUI\QDOM
      * Remove a Server completly from the update-server list
      *
      * @param string|array $server
+     *
+     * @throws QUI\Exception
      */
     public function removeServer($server)
     {
@@ -1210,8 +1234,6 @@ class Manager extends QUI\QDOM
 
     /**
      * Check for updates
-     *
-     * @throws \QUI\Exception
      */
     public function checkUpdates()
     {
@@ -1228,6 +1250,7 @@ class Manager extends QUI\QDOM
      * @return array
      *
      * @throws \QUI\Exception
+     * @throws \Exception
      */
     public function getOutdated($force = false)
     {
@@ -1377,6 +1400,8 @@ class Manager extends QUI\QDOM
      * Returns the update config object
      *
      * @return QUI\Config
+     *
+     * @throws QUI\Exception
      */
     protected function getUpdateConf()
     {
@@ -1413,6 +1438,8 @@ class Manager extends QUI\QDOM
 
     /**
      * use only the local repository
+     *
+     * @throws QUI\Exception
      */
     protected function useOnlyLocalRepository()
     {
@@ -1439,6 +1466,8 @@ class Manager extends QUI\QDOM
 
     /**
      * reset the repositories after only local repo using
+     *
+     * @throws QUI\Exception
      */
     protected function resetRepositories()
     {

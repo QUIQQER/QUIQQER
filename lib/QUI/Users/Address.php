@@ -32,6 +32,13 @@ class Address extends QUI\QDOM
     protected $id = false;
 
     /**
+     * Custom address data
+     *
+     * @var array
+     */
+    protected $customData = [];
+
+    /**
      * constructor
      *
      * @param QUI\Users\User $User - User
@@ -66,10 +73,16 @@ class Address extends QUI\QDOM
             );
         }
 
-        unset($result[0]['id']);
-        unset($result[0]['uid']);
+        $data = current($result);
 
-        $this->setAttributes($result[0]);
+        unset($data['id']);
+        unset($data['uid']);
+
+        if (!empty($data['custom_data'])) {
+            $this->setCustomData(json_decode($data['custom_data'], true));
+        }
+
+        $this->setAttributes($data);
     }
 
     /**
@@ -380,17 +393,18 @@ class Address extends QUI\QDOM
         QUI::getDataBase()->update(
             Manager::tableAddress(),
             [
-                'salutation' => Orthos::clear($this->getAttribute('salutation')),
-                'firstname'  => Orthos::clear($this->getAttribute('firstname')),
-                'lastname'   => Orthos::clear($this->getAttribute('lastname')),
-                'company'    => Orthos::clear($this->getAttribute('company')),
-                'delivery'   => Orthos::clear($this->getAttribute('delivery')),
-                'street_no'  => Orthos::clear($this->getAttribute('street_no')),
-                'zip'        => Orthos::clear($this->getAttribute('zip')),
-                'city'       => Orthos::clear($this->getAttribute('city')),
-                'country'    => Orthos::clear($this->getAttribute('country')),
-                'mail'       => $mail,
-                'phone'      => $phone
+                'salutation'  => Orthos::clear($this->getAttribute('salutation')),
+                'firstname'   => Orthos::clear($this->getAttribute('firstname')),
+                'lastname'    => Orthos::clear($this->getAttribute('lastname')),
+                'company'     => Orthos::clear($this->getAttribute('company')),
+                'delivery'    => Orthos::clear($this->getAttribute('delivery')),
+                'street_no'   => Orthos::clear($this->getAttribute('street_no')),
+                'zip'         => Orthos::clear($this->getAttribute('zip')),
+                'city'        => Orthos::clear($this->getAttribute('city')),
+                'country'     => Orthos::clear($this->getAttribute('country')),
+                'mail'        => $mail,
+                'phone'       => $phone,
+                'custom_data' => json_encode($this->getCustomData())
             ],
             [
                 'id' => $this->id
@@ -431,7 +445,7 @@ class Address extends QUI\QDOM
             'Countries' => new QUI\Countries\Manager()
         ]);
 
-        return $Engine->fetch(SYS_DIR.'template/users/address/display.html');
+        return $Engine->fetch(SYS_DIR . 'template/users/address/display.html');
     }
 
     /**
@@ -543,6 +557,69 @@ class Address extends QUI\QDOM
     }
 
     /**
+     * Set custom data entry
+     *
+     * @param string $key
+     * @param integer|float|double|bool|string $value
+     * @return void
+     */
+    public function setCustomDataEntry($key, $value)
+    {
+        if (is_object($value)) {
+            return;
+        }
+
+        if (is_array($value)) {
+            return;
+        }
+
+        if (!is_numeric($value) && !is_string($value) && !is_bool($value)) {
+            return;
+        }
+
+        $this->customData[$key] = $value;
+        $this->setAttribute('customData', $this->customData);
+    }
+
+    /**
+     * Get custom data entry
+     *
+     * @param string $key
+     * @return mixed|null - Null if no entry set
+     */
+    public function getCustomDataEntry($key)
+    {
+        if (array_key_exists($key, $this->customData)) {
+            return $this->customData[$key];
+        }
+
+        return null;
+    }
+
+    /**
+     * Set multiple custom data entries
+     *
+     * @param array $entries
+     * @return void
+     */
+    public function setCustomData($entries)
+    {
+        foreach ($entries as $k => $v) {
+            $this->setCustomDataEntry($k, $v);
+        }
+    }
+
+    /**
+     * Get all custom data entries
+     *
+     * @return array
+     */
+    public function getCustomData()
+    {
+        return $this->customData;
+    }
+
+    /**
      * Return the address as json
      *
      * @return string
@@ -553,5 +630,57 @@ class Address extends QUI\QDOM
         $attributes['id'] = $this->getId();
 
         return json_encode($attributes);
+    }
+
+    /**
+     * Check if this address equals another address
+     *
+     * @param Address $Address
+     * @param bool $compareCustomData (optional) - Consider custom data on comparison [default: false]
+     * @return bool
+     */
+    public function equals(Address $Address, $compareCustomData = false)
+    {
+        if ($this->getId() === $Address->getId()) {
+            return false;
+        }
+
+        $dataThis  = $this->getAttributes();
+        $dataOther = $Address->getAttributes();
+
+        // always ignore internal custom_data attribute
+        if (array_key_exists('custom_data', $dataThis)) {
+            unset($dataThis['custom_data']);
+        }
+
+        if (array_key_exists('custom_data', $dataOther)) {
+            unset($dataOther['custom_data']);
+        }
+
+        // consider actual custom data
+        if (!$compareCustomData) {
+            if (array_key_exists('customData', $dataThis)) {
+                unset($dataThis['customData']);
+            }
+
+            if (array_key_exists('customData', $dataOther)) {
+                unset($dataOther['customData']);
+            }
+        }
+
+        // ignore empty fields
+        foreach ($dataThis as $k => $v) {
+            if (empty($v)) {
+                unset($dataThis[$k]);
+            }
+        }
+
+        foreach ($dataOther as $k => $v) {
+            if (empty($v)) {
+                unset($dataOther[$k]);
+            }
+        }
+
+        return $dataThis == $dataOther;
     }
 }

@@ -1,8 +1,9 @@
 <?php
 
 /**
- * This file contains
+ * This file contains QUI\Users\Controls\Login
  */
+
 namespace QUI\Users\Controls;
 
 use QUI;
@@ -38,6 +39,8 @@ class Login extends Control
 
     /**
      * @return string
+     *
+     * @throws QUI\Users\Exception
      */
     public function getBody()
     {
@@ -71,11 +74,11 @@ class Login extends Control
                 continue;
             }
 
-            $result .= '<form method="POST" name="login" data-authenticator="' . $auth . '"' . $isGlobalAuth . '>' .
-                       $Control->create() .
+            $result .= '<form method="POST" name="login" data-authenticator="'.$auth.'"'.$isGlobalAuth.'>'.
+                       $Control->create().
                        '</form>';
 
-            if (isset($authenticator[$k+1])) {
+            if (isset($authenticator[$k + 1])) {
                 $result .= '<div>';
                 $result .= QUI::getLocale()->get('quiqqer/system', 'controls.users.auth.login.or');
                 $result .= '</div>';
@@ -89,6 +92,8 @@ class Login extends Control
      * Return the next Authenticator, if one exists
      *
      * @return array|null
+     *
+     * @throws QUI\Users\Exception
      */
     public function next()
     {
@@ -97,7 +102,7 @@ class Login extends Control
 
         if (QUI::getSession()->get('auth-globals') != 1) {
             foreach ($authenticators as $auth) {
-                if (QUI::getSession()->get('auth-' . $auth) !== 1) {
+                if (QUI::getSession()->get('auth-'.$auth) !== 1) {
                     $globals[] = $auth;
                 }
             }
@@ -107,7 +112,7 @@ class Login extends Control
 
         if (!empty($globals)) {
             // sort globals (QUIQQER Login has to be first!)
-            usort($globals, function($a, $b) {
+            usort($globals, function ($a, $b) {
                 if ($a === QUI\Users\Auth\QUIQQER::class) {
                     return -1;
                 }
@@ -134,7 +139,7 @@ class Login extends Control
         $authenticators = $User->getAuthenticators();
 
         foreach ($authenticators as $Authenticator) {
-            if (QUI::getSession()->get('auth-' . get_class($Authenticator)) !== 1) {
+            if (QUI::getSession()->get('auth-'.get_class($Authenticator)) !== 1) {
                 return get_class($Authenticator);
             }
         }

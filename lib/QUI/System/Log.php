@@ -196,7 +196,7 @@ class Log
      */
     public static function writeDebugException(
         $Exception,
-        $logLevel = self::LEVEL_ERROR,
+        $logLevel = self::LEVEL_DEBUG,
         $context = [],
         $filename = false,
         $force = false
