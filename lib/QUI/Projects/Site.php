@@ -255,6 +255,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Returns the Edit Site object from this Site
      *
      * @return QUI\Projects\Site\Edit
+     *
+     * @throws QUI\Exception
      */
     public function getEdit()
     {
@@ -289,6 +291,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param string|boolean $plugin - Plugin welches geladen werden soll, optional, ansonsten werden alle geladen
      *
      * @return Site
+     *
+     * @throws QUI\Exception
      */
     public function load($plugin = false)
     {
@@ -362,6 +366,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param string $package - name of the package
      *
      * @rewrite it to events
+     *
+     * @throws QUI\Exception
      */
     protected function loadDatabases($dir, $package)
     {
@@ -507,6 +513,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
     /**
      * Hohlt frisch die Daten aus der DB
+     *
+     * @throws QUI\Exception
      */
     public function refresh()
     {
@@ -622,6 +630,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param boolean $check_only_active - check only active pages
      *
      * @return boolean
+     *
+     * @throws QUI\Exception
      */
     public function existLang($lang, $check_only_active = true)
     {
@@ -805,6 +815,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param boolean $load - Legt fest ob die Kinder die Plugins laden sollen
      *
      * @return array|integer
+     *
+     * @throws QUI\Exception
      */
     public function getChildren($params = array(), $load = false)
     {
@@ -907,6 +919,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param integer $no
      *
      * @return array
+     *
+     * @throws QUI\Exception
      */
     public function nextSiblings($no)
     {
@@ -923,11 +937,14 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             }
 
             // die nächsten x Kinder
-            for ($i = 1; $i < $no; $i++) {
+            for ($i = 1; $i <= $no; $i++) {
                 if (isset($list[$key + $i])) {
                     try {
                         $result[] = $Project->get((int)$list[$key + $i]);
                     } catch (QUI\Exception $Exception) {
+                        if (defined('DEBUG_MODE')) {
+                            QUI\System\Log::writeException($Exception);
+                        }
                     }
                 }
             }
@@ -965,6 +982,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param integer $no
      *
      * @return array
+     *
+     * @throws QUI\Exception
      */
     public function previousSiblings($no)
     {
@@ -981,11 +1000,14 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             }
 
             // die nächsten x Kinder
-            for ($i = 1; $i < $no; $i++) {
+            for ($i = 1; $i <= $no; $i++) {
                 if (isset($list[$key - $i])) {
                     try {
                         $result[] = $Project->get((int)$list[$key - $i]);
                     } catch (QUI\Exception $Exception) {
+                        if (defined('DEBUG_MODE')) {
+                            QUI\System\Log::writeException($Exception);
+                        }
                     }
                 }
             }
@@ -999,7 +1021,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @param array $params
      *
-     * @return QUI\Projects\Site | false
+     * @return QUI\Projects\Site|false
+     *
+     * @throws QUI\Exception
      */
     public function firstChild($params = array())
     {
@@ -1023,6 +1047,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @param array $params
      * @return bool|Site|Site\Edit
+     *
+     * @throws QUI\Exception
      */
     public function lastChild($params = array())
     {
@@ -1054,6 +1080,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param array $params
      *
      * @return array|int
+     *
+     * @throws QUI\Exception
      */
     public function getNavigation($params = array())
     {
@@ -1166,9 +1194,33 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *                      $params['limit']
      *
      * @return array
+     *
+     * @throws QUI\Exception
      */
     public function getChildrenIds($params = array())
     {
+        if (!isset($params['order'])) {
+            switch ($this->getAttribute('order_type')) {
+                case 'name ASC':
+                case 'name DESC':
+                case 'title ASC':
+                case 'title DESC':
+                case 'c_date ASC':
+                case 'c_date DESC':
+                case 'd_date ASC':
+                case 'd_date DESC':
+                case 'release_from ASC':
+                case 'release_from DESC':
+                    $params['order'] = $this->getAttribute('order_type');
+                    break;
+
+                case 'manuell':
+                default:
+                    $params['order'] = 'order_field';
+                    break;
+            }
+        }
+
         return $this->getProject()->getChildrenIdsFrom(
             $this->getId(),
             $params
@@ -1181,6 +1233,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param array $params - db parameter
      *
      * @return array
+     *
+     * @throws QUI\Exception
      */
     public function getChildrenIdsRecursive($params = array())
     {
@@ -1217,6 +1271,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param boolean $navhide - if navhide == false, navhide must be 0
      *
      * @return integer - Anzahl der Kinder
+     *
+     * @throws QUI\Exception
      */
     public function hasChildren($navhide = false)
     {
@@ -1257,6 +1313,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Setzt das delete Flag
      *
      * @todo move to Site/Edit
+     *
+     * @throws QUI\Exception
      */
     public function delete()
     {
@@ -1341,6 +1399,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param string $name
      *
      * @return boolean
+     *
+     * @throws QUI\Exception
      */
     protected function existNameInChildren($name)
     {
@@ -1368,6 +1428,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param array $getParams
      *
      * @return string
+     *
+     * @throws QUI\Exception
      */
     public function getUrl($pathParams = array(), $getParams = array())
     {
@@ -1426,6 +1488,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param array $getParams - GET params, params as get params eq: ?param=1
      *
      * @return string
+     *
+     * @throws QUI\Exception
      */
     public function getLocation($pathParams = array(), $getParams = array())
     {
@@ -1532,6 +1596,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param array $getParams - Parameter welche an die URL angehängt werden
      *
      * @return string
+     *
+     * @throws QUI\Exception
      */
     public function getUrlRewritten($pathParams = array(), $getParams = array())
     {
@@ -1554,6 +1620,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param array $getParams - Parameter welche an die URL angehängt werden
      *
      * @return string
+     *
+     * @throws QUI\Exception
      */
     public function getUrlRewrited($pathParams = array(), $getParams = array())
     {
@@ -1566,12 +1634,14 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param array $pathParams
      * @param array $getParams
      * @return string
+     *
+     * @throws QUI\Exception
      */
     public function getUrlRewrittenWithHost($pathParams = array(), $getParams = array())
     {
         $url = $this->getUrlRewritten($pathParams, $getParams);
 
-        if (strpos($url, 'https://') !== false || strpos($url, 'https://') !== false) {
+        if (mb_strpos($url, 'http://') !== false || mb_strpos($url, 'https://') !== false) {
             return $url;
         }
 
@@ -1587,6 +1657,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * rekursiver Aufruf getUrl
      *
      * @param integer $id - Site ID
+     *
+     * @throws QUI\Exception
      */
     protected function getUrlHelper($id)
     {
@@ -1605,6 +1677,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Return the Parent id from the site object
      *
      * @return integer
+     *
+     * @throws QUI\Exception
      */
     public function getParentId()
     {
@@ -1630,6 +1704,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * ->Parent
      *
      * @return array
+     *
+     * @throws QUI\Exception
      */
     public function getParentIds()
     {
@@ -1669,6 +1745,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Return the Parent ID List
      *
      * @return array
+     *
+     * @throws QUI\Exception
      */
     public function getParentIdTree()
     {
@@ -1700,6 +1778,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Gibt das Parent Objekt zurück
      *
      * @return Site|bool
+     *
+     * @throws QUI\Exception
      */
     public function getParent()
     {
@@ -1715,6 +1795,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Site->Parent->ParentParent->ParentParentParent
      *
      * @return array
+     *
+     * @throws QUI\Exception
      */
     public function getParents()
     {
@@ -1746,6 +1828,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Stellt die Seite wieder her
      *
      * ??? wieso hier? und nicht im trash? O.o
+     *
+     * @throws QUI\Exception
      */
     public function restore()
     {
@@ -1760,6 +1844,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Zerstört die Seite
      * Die Seite wird komplett aus der DB gelöscht und auch alle Beziehungen
      * Funktioniert nur wenn die Seite gelöscht ist
+     *
+     * @throws QUI\Database\Exception
+     * @throws QUI\Exception
      */
     public function destroy()
     {
@@ -1809,6 +1896,8 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Canonical URL - Um doppelte Inhalt zu vermeiden
      *
      * @return string
+     *
+     * @throws QUI\Exception
      */
     public function getCanonical()
     {
@@ -1860,7 +1949,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param string $permission - name of the permission
      * @param QUI\Users\User|boolean $User - optional
      *
-     * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
      */
     public function checkPermission($permission, $User = false)
     {

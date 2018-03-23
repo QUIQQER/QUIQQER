@@ -305,6 +305,21 @@ define('classes/users/Manager', [
         },
 
         /**
+         * Check if the given user has an email address
+         *
+         * @param {Number} userId
+         * @return {Promise}
+         */
+        hasEmail: function (userId) {
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_users_hasEmail', resolve, {
+                    userId : userId,
+                    onError: reject
+                });
+            });
+        },
+
+        /**
          * Save a user with its attributes and rights
          *
          * @method classes/users/Manager#saveUser

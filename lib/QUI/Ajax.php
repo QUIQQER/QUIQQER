@@ -428,7 +428,7 @@ class Ajax extends QUI\QDOM
                     return false;
             }
 
-            return is_string($v) || is_array($v) || is_numeric($v);
+            return is_string($v) || is_array($v) || is_numeric($v) || is_bool($v);
         }, ARRAY_FILTER_USE_BOTH);
 
         switch ($class) {

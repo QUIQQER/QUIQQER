@@ -226,6 +226,13 @@ define('controls/users/User', [
                         username: User.getAttribute('username')
                     }));
 
+                    if (User.isActive() === -1) {
+                        Status.setSilentOff();
+                        Status.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isDeactivate'));
+                        Status.disable();
+                        return;
+                    }
+
                     Status.enable();
 
                     if (!User.isActive()) {
@@ -305,6 +312,41 @@ define('controls/users/User', [
                 return ControlUtils.parse(self.getBody());
 
             }).then(function () {
+                var LastEdit    = self.getBody().getElement('[name="lastedit"]');
+                var LastVisit   = self.getBody().getElement('[name="lastvisit"]');
+                var dateOptions = {
+                    year  : 'numeric',
+                    month : 'numeric',
+                    day   : 'numeric',
+                    hour  : 'numeric',
+                    minute: 'numeric',
+                    second: 'numeric',
+                    hour12: false
+                };
+
+                if (LastEdit && LastEdit.value !== '' && parseInt(LastEdit.value) !== 0) {
+                    try {
+                        LastEdit.value = QUILocale.getDateTimeFormatter(dateOptions).format(
+                            new Date(LastEdit.value)
+                        );
+                    } catch (e) {
+                        console.error(e);
+                    }
+                } else if (LastEdit) {
+                    LastEdit.value = '---';
+                }
+
+                if (LastVisit && LastVisit.value !== '' && parseInt(LastVisit.value) !== 0) {
+                    try {
+                        LastVisit.value = QUILocale.getDateTimeFormatter(dateOptions).format(
+                            new Date(LastVisit.value * 1000)
+                        );
+                    } catch (e) {
+                        console.error(e);
+                    }
+                } else if (LastVisit) {
+                    LastVisit.value = '---';
+                }
 
                 QUI.Controls.getControlsInElement(Body).each(function (Control) {
                     Control.setAttribute('Panel', self);
@@ -686,6 +728,24 @@ define('controls/users/User', [
             var Active = this.getCategoryBar().getActive(),
                 Status = this.getButtons('status');
 
+            if (this.getUser().isActive() === -1) {
+                Status.enable();
+                Status.setSilentOff();
+                Status.disable();
+
+                this.setAttribute('icon', 'fa fa-user');
+                this.refresh();
+
+                if (!Active) {
+                    Active = this.getCategoryBar().firstChild();
+                }
+
+                if (Active) {
+                    Active.click();
+                }
+                return;
+            }
+
             if (this.getUser().isActive()) {
                 Status.setSilentOn();
                 Status.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isActivate'));
@@ -716,7 +776,7 @@ define('controls/users/User', [
                 User         = this.getUser(),
                 userStatus   = User.isActive();
 
-            if (buttonStatus == userStatus) {
+            if (buttonStatus === userStatus || userStatus === -1) {
                 return;
             }
 
@@ -731,6 +791,12 @@ define('controls/users/User', [
             }
 
             Prom.then(function () {
+                if (User.isActive() === -1) {
+                    Button.disable();
+                    this.Loader.hide();
+                    return;
+                }
+
                 if (User.isActive()) {
                     Button.on();
                     Button.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isActivate'));
@@ -775,7 +841,7 @@ define('controls/users/User', [
 
             var PassWordSave = Promise.resolve();
 
-            if (Active.getAttribute('name') == 'security') {
+            if (Active.getAttribute('name') === 'security') {
                 PassWordSave = this.savePassword()
             }
 

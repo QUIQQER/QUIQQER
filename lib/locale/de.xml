@@ -581,6 +581,62 @@
         <locale name="site.type.standard">
             <de><![CDATA[Einfacher Inhalt]]></de>
         </locale>
+
+        <locale name="day">
+            <de><![CDATA[Tag]]></de>
+        </locale>
+        <locale name="year">
+            <de><![CDATA[Jahr]]></de>
+        </locale>
+        <locale name="month.01">
+            <de><![CDATA[Januar]]></de>
+        </locale>
+        <locale name="month.02">
+            <de><![CDATA[Februar]]></de>
+        </locale>
+        <locale name="month.03">
+            <de><![CDATA[März]]></de>
+        </locale>
+        <locale name="month.04">
+            <de><![CDATA[April]]></de>
+        </locale>
+        <locale name="month.05">
+            <de><![CDATA[Mai]]></de>
+        </locale>
+        <locale name="month.06">
+            <de><![CDATA[Juni]]></de>
+        </locale>
+        <locale name="month.07">
+            <de><![CDATA[Juli]]></de>
+        </locale>
+        <locale name="month.08">
+            <de><![CDATA[August]]></de>
+        </locale>
+        <locale name="month.09">
+            <de><![CDATA[September]]></de>
+        </locale>
+        <locale name="month.10">
+            <de><![CDATA[Oktober]]></de>
+        </locale>
+        <locale name="month.11">
+            <de><![CDATA[November]]></de>
+        </locale>
+        <locale name="month.12">
+            <de><![CDATA[Dezember]]></de>
+        </locale>
+
+        <locale name="exception.error">
+            <de><![CDATA[Es ist ein Fehler aufgetreten. Der Administrator wurde in Kenntnis gesetzt.]]></de>
+        </locale>
+        <locale name="panels.bookmarks.title">
+            <de><![CDATA[Lesezeichen (Bookmarks)]]></de>
+        </locale>
+        <locale name="panels.bookmarks.description">
+            <de><![CDATA[
+            Verwalten Sie schnell Aufrufe von Panels.
+            Legen Sie für sich Lesezeichen fest damit Sie Ihre oft genutzten Funtionen schnell erreichen.
+            ]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="php">
         <locale name="quiqqer.settings.auth.showResetPasswordBackend">
@@ -820,7 +876,7 @@
             <de><![CDATA[Das Projekt wurde erfolgreich umbenannt]]></de>
         </locale>
         <locale name="console.tool.project.rename.prompt.projectname">
-            <de><![CDATA[Aktueller Projektname: ]]></de>
+            <de><![CDATA[Projektname: ]]></de>
         </locale>
         <locale name="console.tool.project.rename.prompt.projectname.info">
             <de><![CDATA[Welches Projekt möchten Sie umbenennen: ]]></de>
@@ -835,7 +891,7 @@
             <de><![CDATA[Welches Projekt soll gelöscht werden?]]></de>
         </locale>
         <locale name="console.tool.project.delete.prompt.projectname">
-            <de><![CDATA[Projektname:]]></de>
+            <de><![CDATA[Projektname: ]]></de>
         </locale>
         <locale name="console.tool.project.delete.project.not.found">
             <de><![CDATA[Das ausgewählte Projekt wurde nicht gefunden.]]></de>
@@ -1014,6 +1070,9 @@
             <de><![CDATA[
                 Zeitüberschreitung der Anfrage. Bitte versuchen Sie es erneut oder zu einem späteren Zeitpunkt.
             ]]></de>
+        </locale>
+        <locale name="exception.too.many.addresses">
+            <de><![CDATA[Sie können keine weitere Adressen anlegen.]]></de>
         </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">
@@ -1474,6 +1533,10 @@
         </locale>
         <locale name="control.media.create.folder.window.continue.button.title">
             <de><![CDATA[Weiter]]></de>
+        </locale>
+
+        <locale name="control.icons.confirm.title">
+            <de><![CDATA[Icon-Auswahl]]></de>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">
@@ -2361,6 +2424,12 @@
         </locale>
         <locale name="projects.project.site.media.input.clear.title">
             <de><![CDATA[Eingabe leeren]]></de>
+        </locale>
+        <locale name="projects.project.site.media.input.cssclass.alt">
+            <de><![CDATA[Icon auswählen]]></de>
+        </locale>
+        <locale name="projects.project.site.media.input.cssclass.title">
+            <de><![CDATA[Icon auswählen]]></de>
         </locale>
         <locale name="projects.project.site.media.filePanel.btn.save.text">
             <de><![CDATA[Speichern]]></de>
@@ -4961,12 +5030,6 @@
             | Authenticator: "[authenticator]" | IP-Adresse: [ipAddress] | User Agent: "[userAgent]"
             ]]></de>
         </locale>
-        <locale name="controls.users.auth.login.or">
-            <de><![CDATA[oder]]></de>
-        </locale>
-        <locale name="controls.users.auth.login.password_reset">
-            <de><![CDATA[oder]]></de>
-        </locale>
         <locale name="menu.quiqqer.text" html="true">
             <de><![CDATA[<img src="../bin/quiqqer_logo_mini.png" />]]></de>
         </locale>
@@ -5325,15 +5388,6 @@
         <locale name="panels.help.description">
             <de><![CDATA[Zeigt die QUIQQER Hilfe an.]]></de>
         </locale>
-        <locale name="panels.bookmarks.title">
-            <de><![CDATA[Lesezeichen (Bookmarks)]]></de>
-        </locale>
-        <locale name="panels.bookmarks.description">
-            <de><![CDATA[
-            Verwalten Sie schnell Aufrufe von Panels.
-            Legen Sie für sich Lesezeichen fest damit Sie Ihre oft genutzten Funtionen schnell erreichen.
-            ]]></de>
-        </locale>
         <locale name="panels.upload.title">
             <de><![CDATA[Uploads]]></de>
         </locale>
@@ -5682,48 +5736,6 @@
         <locale name="exception.lib.qui.manager.no.groupid">
             <de><![CDATA[Es wurde keine Gruppen ID übergeben.]]></de>
         </locale>
-        <locale name="day">
-            <de><![CDATA[Tag]]></de>
-        </locale>
-        <locale name="year">
-            <de><![CDATA[Jahr]]></de>
-        </locale>
-        <locale name="month.01">
-            <de><![CDATA[Januar]]></de>
-        </locale>
-        <locale name="month.02">
-            <de><![CDATA[Februar]]></de>
-        </locale>
-        <locale name="month.03">
-            <de><![CDATA[März]]></de>
-        </locale>
-        <locale name="month.04">
-            <de><![CDATA[April]]></de>
-        </locale>
-        <locale name="month.05">
-            <de><![CDATA[Mai]]></de>
-        </locale>
-        <locale name="month.06">
-            <de><![CDATA[Juni]]></de>
-        </locale>
-        <locale name="month.07">
-            <de><![CDATA[Juli]]></de>
-        </locale>
-        <locale name="month.08">
-            <de><![CDATA[August]]></de>
-        </locale>
-        <locale name="month.09">
-            <de><![CDATA[September]]></de>
-        </locale>
-        <locale name="month.10">
-            <de><![CDATA[Oktober]]></de>
-        </locale>
-        <locale name="month.11">
-            <de><![CDATA[November]]></de>
-        </locale>
-        <locale name="month.12">
-            <de><![CDATA[Dezember]]></de>
-        </locale>
         <locale name="projects.project.site.panel.information.header">
             <de><![CDATA[Daten von Seite: #[id]]]></de>
         </locale>
@@ -6041,6 +6053,13 @@
         <locale name="quiqqer.settings.email.smtp.auth.MAILFromText">
             <de><![CDATA[Angezeigter Absendername]]></de>
         </locale>
+        <locale name="quiqqer.settings.email.queueLimitPerHour">
+            <de><![CDATA[Maximale Anzahl E-Mail pro Stunde]]></de>
+        </locale>
+        <locale name="quiqqer.settings.email.queueLimitPerHour.desc" html="true">
+            <de>
+                <![CDATA[Bestimmt die maximale Anzahl an E-Mails, die per Mail-Queue innerhalb einer Stunde versendet werden dürfen. <b>0 = kein Limit</b>.]]></de>
+        </locale>
         <locale name="quiqqer.settings.email.queue.desc">
             <de><![CDATA[
             E-Mails werden so lange in einer Warteschlange gespeichert, bis es sicher ist, dass sie versendet wurden.
@@ -6072,6 +6091,12 @@
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="php,js">
+        <locale name="controls.users.auth.login.or">
+            <de><![CDATA[oder]]></de>
+        </locale>
+        <locale name="controls.users.auth.login.password_reset">
+            <de><![CDATA[oder]]></de>
+        </locale>
         <locale name="quiqqer.licenseKey.unlimited">
             <de><![CDATA[unbegrenzt]]></de>
         </locale>
@@ -6168,15 +6193,20 @@
         <locale name="projects.project.site.select.btn.addParent">
             <de><![CDATA[Unterseiten hinzufügen]]></de>
         </locale>
+        <locale name="projects.project.site.select.description.site_types" html="true">
+            <de>
+                <![CDATA[<em>Seitentyp hinzuf&uuml;gen</em> fügt alle Seiten des ausgew&auml;hlten Seitentyps hinzu.<br/>]]></de>
+        </locale>
+        <locale name="projects.project.site.select.description.sites" html="true">
+            <de><![CDATA[<em>Seite hinzuf&uuml;gen</em> fügt eine einzelne Seite hinzu.<br/>]]></de>
+        </locale>
+        <locale name="projects.project.site.select.description.site_children" html="true">
+            <de>
+                <![CDATA[<em>Unterseiten hinzufügen</em> fügt alle Unterseiten der ausgewählten Seite hinzu, es seid denn es ist ein Seitentyp gesetzt. Dann dient der Seitentyp als Filter und es werden nur alle Unterseiten des ausgewählten Seitentyps angezeigt.]]></de>
+        </locale>
         <locale name="projects.project.site.select.description" html="true">
             <de><![CDATA[
-                <p>
-                    <em>Seitentyp hinzuf&uuml;gen</em> fügt alle Seiten des ausgew&auml;hlten Seitentyps hinzu.<br />
-                    <em>Seite hinzuf&uuml;gen</em> fügt eine einzelne Seite hinzu.<br />
-                    <em>Unterseiten hinzufügen</em> fügt alle Unterseiten der ausgewählten Seite hinzu,
-                    es seid denn es ist ein Seitentyp gesetzt.
-                    Dann dient der Seitentyp als Filter und es werden nur alle Unterseiten des ausgewählten Seitentyps angezeigt.
-                </p>
+                <p>[site_types][sites][site_children]</p>
             ]]></de>
         </locale>
         <locale name="exception.usergroups.search.cannot.search.users.without.parameters">

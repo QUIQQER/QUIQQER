@@ -24,35 +24,35 @@ class Template extends QUI\QDOM
      *
      * @var array
      */
-    protected $engines = array();
+    protected $engines = [];
 
     /**
      * Header extentions
      *
      * @var array
      */
-    protected $header = array();
+    protected $header = [];
 
     /**
      * Footer extentions
      *
      * @var array
      */
-    protected $footer = array();
+    protected $footer = [];
 
     /**
      * assigned vars
      *
      * @var array
      */
-    protected $assigned = array();
+    protected $assigned = [];
 
     /**
      * modules that loaded after the onload event
      *
      * @var array
      */
-    protected $onLoadModules = array();
+    protected $onLoadModules = [];
 
     /**
      * site type tpl
@@ -71,17 +71,21 @@ class Template extends QUI\QDOM
         $this->setAttribute('html5', true);
 
         // defaults
-        $this->setAttributes(array(
-            'mootools'       => true,
-            'requirejs'      => true,
-            'html5'          => true,
-            'content-header' => true,
-            'content-body'   => true
-        ));
+        $this->setAttributes([
+            'mootools'        => true,
+            'requirejs'       => true,
+            'html5'           => true,
+            'content-header'  => true,
+            'content-body'    => true,
+            'template-header' => true,
+            'template-footer' => true
+        ]);
     }
 
     /**
      * Load the registered engines
+     *
+     * @throws QUI\Exception
      */
     public function load()
     {
@@ -104,6 +108,8 @@ class Template extends QUI\QDOM
      * Return the Template Config object
      *
      * @return QUI\Config
+     *
+     * @throws QUI\Exception
      */
     public static function getConfig()
     {
@@ -158,6 +164,7 @@ class Template extends QUI\QDOM
      *
      * @param string $name
      * @param string $class - must a class that implements QUI\Interfaces\Template\EngineInterface
+     * @throws QUI\Exception
      */
     public static function registerEngine($name, $class)
     {
@@ -280,6 +287,8 @@ class Template extends QUI\QDOM
      *
      * @param string $template - Path to a template
      * @return string
+     *
+     * @throws QUI\Exception
      */
     public function fetchTemplate($template)
     {
@@ -292,6 +301,8 @@ class Template extends QUI\QDOM
      * @param QUI\Projects\Site|QUI\Projects\Site\Edit $Site
      *
      * @return string
+     *
+     * @throws QUI\Exception
      */
     public function fetchSite($Site)
     {
@@ -312,7 +323,7 @@ class Template extends QUI\QDOM
         $this->setAttribute('Engine', $Engine);
 
         // Zuweisungen
-        $Engine->assign(array(
+        $Engine->assign([
             'URL_DIR'     => URL_DIR,
             'URL_BIN_DIR' => URL_BIN_DIR,
             'URL_LIB_DIR' => URL_LIB_DIR,
@@ -327,7 +338,7 @@ class Template extends QUI\QDOM
             'Project'     => $Project,
             'Rewrite'     => $Rewrite,
             'lastUpdate'  => QUI::getPackageManager()->getLastUpdateDate()
-        ));
+        ]);
 
         /**
          * find the index.html
@@ -368,19 +379,19 @@ class Template extends QUI\QDOM
         if ($template_tpl && file_exists($template_tpl)) {
             $tpl = $template_tpl;
 
-            $Engine->assign(array(
+            $Engine->assign([
                 'URL_TPL_DIR' => URL_OPT_DIR.$projectTemplate.'/',
                 'TPL_DIR'     => OPT_DIR.$projectTemplate.'/',
-            ));
+            ]);
         }
 
         if (file_exists($project_tpl)) {
             $tpl = $project_tpl;
 
-            $Engine->assign(array(
+            $Engine->assign([
                 'URL_TPL_DIR' => URL_USR_DIR.$Project->getAttribute('name').'/',
                 'TPL_DIR'     => USR_DIR.$Project->getAttribute('name').'/',
-            ));
+            ]);
         }
 
         // @todo suffix template prüfen
@@ -442,7 +453,7 @@ class Template extends QUI\QDOM
             }
         }
 
-        QUI::getEvents()->fireEvent('templateSiteFetch', array($this, $Site));
+        QUI::getEvents()->fireEvent('templateSiteFetch', [$this, $Site]);
 
         $result = $Engine->fetch($tpl);
 
@@ -465,6 +476,8 @@ class Template extends QUI\QDOM
      * eq: <title></title>
      *
      * @return string
+     *
+     * @throws QUI\Exception
      */
     public function getTitle()
     {
@@ -472,7 +485,7 @@ class Template extends QUI\QDOM
         $Project = $this->getAttribute('Project');
 
         if ($Site->getAttribute('quiqqer.meta.site.title')) {
-            QUI::getEvents()->fireEvent('templateGetSiteTitle', array($this, $Site));
+            QUI::getEvents()->fireEvent('templateGetSiteTitle', [$this, $Site]);
 
             return $Site->getAttribute('meta.seotitle');
         }
@@ -507,7 +520,7 @@ class Template extends QUI\QDOM
             }
         }
 
-        QUI::getEvents()->fireEvent('templateGetSiteTitle', array($this, $Site));
+        QUI::getEvents()->fireEvent('templateGetSiteTitle', [$this, $Site]);
 
         $title = $this->getAttribute('site_title_prefix');
         $title .= $Site->getAttribute('meta.seotitle');
@@ -522,6 +535,8 @@ class Template extends QUI\QDOM
      * With all important meta entries and quiqqer libraries
      *
      * @return string
+     *
+     * @throws QUI\Exception
      */
     public function getHeader()
     {
@@ -532,7 +547,7 @@ class Template extends QUI\QDOM
 
         $siteType = $Site->getAttribute('type');
         $siteType = explode(':', $siteType);
-        $files    = array();
+        $files    = [];
 
         if (isset($siteType[0]) && isset($siteType[1])) {
             $package = $siteType[0];
@@ -567,7 +582,7 @@ class Template extends QUI\QDOM
             }
         }
 
-        QUI::getEvents()->fireEvent('templateGetHeader', array($this));
+        QUI::getEvents()->fireEvent('templateGetHeader', [$this]);
 
         // locale files
         try {
@@ -577,7 +592,7 @@ class Template extends QUI\QDOM
         } catch (QUI\Exception $Exception) {
         }
 
-        $locales = array();
+        $locales = [];
 
         foreach ($files as $package => $file) {
             $locales[] = $package.'/'.$Project->getLang();
@@ -632,7 +647,7 @@ class Template extends QUI\QDOM
         }
 
         // assign
-        $Engine->assign(array(
+        $Engine->assign([
             'Project'         => $Project,
             'Site'            => $Site,
             'Engine'          => $Engine,
@@ -642,7 +657,7 @@ class Template extends QUI\QDOM
             'ControlManager'  => new QUI\Control\Manager(),
             'Canonical'       => new QUI\Projects\Site\Canonical($Site),
             'lastUpdate'      => QUI::getPackageManager()->getLastUpdateDate()
-        ));
+        ]);
 
         return $Engine->fetch(LIB_DIR.'templates/header.html');
     }
@@ -655,7 +670,7 @@ class Template extends QUI\QDOM
      *
      * @return string
      */
-    public function getLayout($params = array())
+    public function getLayout($params = [])
     {
         if (is_array($params)) {
             $this->setAttributes($params);
@@ -714,7 +729,7 @@ class Template extends QUI\QDOM
      *
      * @return string
      */
-    public function getBody($params = array())
+    public function getBody($params = [])
     {
         /* @var $Project QUI\Projects\Project */
         /* @var $Site QUI\Projects\Site */

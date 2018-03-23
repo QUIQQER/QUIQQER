@@ -41,7 +41,15 @@ define('controls/desktop/panels/Bookmarks', [
             this.parent(options);
 
             this.addEvents({
-                onCreate: this.$onCreate
+                onCreate: this.$onCreate,
+                onInject: function () {
+                    this.setAttributes({
+                        title: QUILocale.get('quiqqer/quiqqer', 'panels.bookmarks.title'),
+                        icon : 'fa fa-bookmark'
+                    });
+
+                    this.refresh();
+                }.bind(this)
             });
         },
 
@@ -52,7 +60,7 @@ define('controls/desktop/panels/Bookmarks', [
             var self = this;
 
             this.setAttributes({
-                title : QUILocale.get('quiqqer/system', 'panels.bookmarks.title'),
+                title : QUILocale.get('quiqqer/quiqqer', 'panels.bookmarks.title'),
                 icon  : 'fa fa-bookmark',
                 footer: false
             });

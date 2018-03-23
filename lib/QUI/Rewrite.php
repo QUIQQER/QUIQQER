@@ -188,6 +188,8 @@ class Rewrite
 
     /**
      * Request verarbeiten
+     *
+     * @throws QUI\Exception
      */
     public function exec()
     {
@@ -546,32 +548,6 @@ class Rewrite
                     }
                 }
             }
-        } else {
-            $vhosts = $this->getVHosts();
-
-            /**
-             * Sprache behandeln
-             * Falls für die Sprache ein Host Eintrag existiert
-             */
-            if (isset($_SERVER['HTTP_HOST'])
-                && isset($vhosts[$_SERVER['HTTP_HOST']])
-                && isset($vhosts[$_SERVER['HTTP_HOST']][$this->lang])
-            ) {
-                if (isset($_SERVER['REQUEST_URI']) && $_SERVER['REQUEST_URI'] != URL_DIR) {
-                    $message = "\n\n===================================\n\n";
-                    $message .= 'Rewrite 301 bei der wir nicht wissen wann es kommt. Rewrite.php Zeile 391 ';
-                    $message .= "\n";
-                    $message .= print_r($_SERVER, true);
-
-                    error_log(
-                        $message,
-                        3,
-                        VAR_DIR.'log/rewrite'.date('-Y-m-d').'.log'
-                    );
-
-                    //$this->showErrorHeader(301, $url);
-                }
-            }
         }
 
         // Prüfen ob die aufgerufene URL gleich der von der Seite ist
@@ -670,6 +646,8 @@ class Rewrite
      * @param boolean $setpath
      *
      * @return \QUI\Projects\Site|false
+     *
+     * @throws QUI\Exception
      */
     public function getSiteByUrl($url, $setpath = true)
     {
@@ -751,6 +729,8 @@ class Rewrite
 
     /**
      * @return Output
+     *
+     * @throws QUI\Exception
      */
     public function getOutput()
     {
@@ -764,6 +744,8 @@ class Rewrite
      * Die Daten werden aus der URL gehohlt
      *
      * @return \QUI\Projects\Project
+     *
+     * @throws QUI\Exception
      */
     public function getProject()
     {
@@ -1103,6 +1085,8 @@ class Rewrite
      * Gibt die aktuelle Seite zurück
      *
      * @return \QUI\Projects\Site
+     *
+     * @throws QUI\Exception
      */
     public function getSite()
     {
@@ -1205,6 +1189,8 @@ class Rewrite
      * @param string $output - html, text
      *
      * @return string
+     *
+     * @throws QUI\Exception
      */
     public function outputFilter($output)
     {
@@ -1321,6 +1307,8 @@ class Rewrite
      *
      * @param string|array $paths
      * @param \QUI\Projects\Site $Site
+     *
+     * @throws QUI\Exception
      */
     public function registerPath($paths, $Site)
     {
@@ -1402,6 +1390,8 @@ class Rewrite
      * Unregister a rewrite path
      *
      * @param \QUI\Projects\Site $Site
+     *
+     * @throws QUI\Exception
      */
     public function unregisterPath($Site)
     {

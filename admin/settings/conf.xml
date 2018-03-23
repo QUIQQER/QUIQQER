@@ -201,6 +201,11 @@
                 <conf name="MAILReplyTo">
                     <type><![CDATA[string]]></type>
                 </conf>
+
+                <conf name="queueLimitPerHour">
+                    <type><![CDATA[number]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
             </section>
 
             <section name="session">
@@ -222,6 +227,10 @@
                 <conf name="memcache_data">
                     <type><![CDATA[string]]></type>
                 </conf>
+                <locale name="regenerate">
+                    <type><![CDATA[integer]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </locale>
             </section>
 
             <section name="error">
@@ -552,6 +561,14 @@
                             </text>
                             <description>
                                 <locale group="quiqqer/system" var="quiqqer.settings.email.queue.desc"/>
+                            </description>
+                        </input>
+                        <input conf="mail.queueLimitPerHour" type="number">
+                            <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.queueLimitPerHour"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/system" var="quiqqer.settings.email.queueLimitPerHour.desc"/>
                             </description>
                         </input>
                     </settings>

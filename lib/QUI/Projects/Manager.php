@@ -38,7 +38,7 @@ class Manager
      *
      * @var array
      */
-    public static $projects = array();
+    public static $projects = [];
 
     /**
      * standard project
@@ -51,6 +51,8 @@ class Manager
      * projects.ini
      *
      * @return \QUI\Config
+     *
+     * @throws QUI\Exception
      */
     public static function getConfig()
     {
@@ -58,12 +60,23 @@ class Manager
     }
 
     /**
+     * Clearing / cleanup the manager
+     */
+    public static function cleanup()
+    {
+        self::$projects = [];
+    }
+
+    /**
      * set configuration for a project
      *
      * @param string $project
      * @param array $params
+     *
+     * @throws QUI\Exception
+     * @throws \Exception
      */
-    public static function setConfigForProject($project, $params = array())
+    public static function setConfigForProject($project, $params = [])
     {
         $Project = $project;
 
@@ -81,7 +94,7 @@ class Manager
         );
 
         if (!is_array($params)) {
-            $params = array();
+            $params = [];
         }
 
         $Config   = self::getConfig();
@@ -89,7 +102,7 @@ class Manager
 
         // $config
         $availableConfig = self::getProjectConfigList($Project);
-        $projectConfig   = array();
+        $projectConfig   = [];
 
         if (isset($projects[$projectName])) {
             $projectConfig = $projects[$projectName];
@@ -228,6 +241,8 @@ class Manager
      * @param \QUI\Projects\Project $Project
      *
      * @return array
+     *
+     * @throws QUI\Exception
      */
     public static function getProjectConfigList(QUI\Projects\Project $Project)
     {
@@ -300,6 +315,8 @@ class Manager
      * Return the projects count
      *
      * @return integer
+     *
+     * @throws QUI\Exception
      */
     public static function count()
     {
@@ -386,6 +403,8 @@ class Manager
      * @param string|boolean $template - used template, optional (if not set, the standard templaed used)
      *
      * @return \QUI\Projects\Project
+     *
+     * @throws QUI\Exception
      */
     public static function getProject($project, $lang = false, $template = false)
     {
@@ -403,7 +422,7 @@ class Manager
 
         // Wenn der RAM zu voll wird, Objekte mal leeren
         if (QUI\Utils\System::memUsageToHigh()) {
-            self::$projects = array();
+            self::$projects = [];
         }
 
 
@@ -428,11 +447,13 @@ class Manager
      * @param boolean $asobject - Als Objekte bekommen, default = false
      *
      * @return array
+     *
+     * @throws QUI\Exception
      */
     public static function getProjects($asobject = false)
     {
         $config = self::getConfig()->toArray();
-        $list   = array();
+        $list   = [];
 
         foreach ($config as $project => $conf) {
             try {
@@ -462,11 +483,13 @@ class Manager
      * Return all projects as objects
      *
      * @return array
+     *
+     * @throws QUI\Exception
      */
     public static function getProjectList()
     {
         $config = self::getConfig()->toArray();
-        $result = array();
+        $result = [];
 
         foreach ($config as $project => $conf) {
             $langs = explode(',', trim($conf['langs']));
@@ -544,13 +567,15 @@ class Manager
      *
      * @param string $name - Project name
      * @param string $lang - Project lang
+     * @param array $languages - optional, additional languages
      *
      * @return \QUI\Projects\Project
      * @throws \QUI\Exception
+     * @throws \Exception
      *
      * @todo noch einmal anschauen und übersichtlicher schreiben
      */
-    public static function createProject($name, $lang)
+    public static function createProject($name, $lang, $languages = [])
     {
         Permission::checkPermission(
             'quiqqer.projects.create'
@@ -699,6 +724,20 @@ class Manager
 
 
         /**
+         * Languages
+         */
+        if (!in_array($lang, $languages)) {
+            $languages[] = $lang;
+        }
+
+        $languages = array_filter($languages, function ($language) {
+            return strlen($language) === 2;
+        });
+
+        $languages = array_unique($languages);
+
+
+        /**
          * Write the config
          */
         if (!file_exists(CMS_DIR.'etc/projects.ini.php')) {
@@ -709,7 +748,7 @@ class Manager
 
         $Config->setSection($name, array(
             'default_lang' => $lang,
-            'langs'        => $lang,
+            'langs'        => implode(',', $languages),
             'admin_mail'   => 'support@pcsg.de',
             'template'     => $name,
             'image_text'   => '0',
@@ -728,18 +767,13 @@ class Manager
 
         $Config->save();
 
-        // Projekt setup
+        // Project setup
         $Project = self::getProject($name);
+        $Project->refresh();
         $Project->setup();
 
         // Package / Plugin Setup
-        QUI::getPluginManager()->setup();
-
-        // Execute the quiqqer/quiqqer setup to create the project related tables
-        QUI::getPackage("quiqqer/quiqqer")->setup();
-
-        // Projekt Cache löschen
-        QUI\Cache\Manager::clear('QUI::config');
+        QUI\Setup::executeEachPackageSetup();
 
         // project create event
         QUI::getEvents()->fireEvent('createProject', array($Project));
@@ -751,6 +785,9 @@ class Manager
      * Delete a project
      *
      * @param \QUI\Projects\Project $Project
+     *
+     * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
      */
     public static function deleteProject(QUI\Projects\Project $Project)
     {
@@ -846,6 +883,8 @@ class Manager
      *
      * @param string $oldName - The projects current name
      * @param string $newName - The new name for the project
+     *
+     * @throws QUI\Exception
      */
     public static function rename($oldName, $newName)
     {
@@ -876,7 +915,7 @@ class Manager
         //            Database           //
         // ----------------------------- //
 
-        $tables = array();
+        $tables = [];
 
         $Stmt = \QUI::getDataBase()->getPDO()->prepare("SHOW TABLES;");
         $Stmt->execute();
@@ -931,10 +970,43 @@ class Manager
             rename($sourceDir, $targetDir);
         }
 
-        // ----------------------------- //
+        // -----------------------------//
         //              Cache           //
-        // ----------------------------- //
+        // -----------------------------//
         QUI\Cache\Manager::clearAll();
+
+
+        // ----------------------------- //
+        //              Locale           //
+        // ----------------------------- //
+        if (file_exists(VAR_DIR."locale/localefiles")) {
+            unlink(VAR_DIR."locale/localefiles");
+        }
+
+
+        // Remove old translation
+        $translationGroup = 'project/'.$oldName;
+        $translationVar   = 'title';
+
+        $translation = QUI\Translator::get($translationGroup, $translationVar);
+        if (isset($translation[0])) {
+            QUI\Translator::delete($translationGroup, $translationVar);
+        }
+
+
+        $translationGroup = 'project/'.$newName;
+        $translationVar   = 'title';
+
+        $translation = QUI\Translator::get($translationGroup, $translationVar);
+        if (!isset($translation[0])) {
+            try {
+                QUI\Translator::add($translationGroup, $translationVar);
+            } catch (\Exception $Exception) {
+                QUI\System\Log::addError("Rename project: Could not add language variable ".$translationGroup."/".$translationVar.": ".$Exception->getMessage());
+            }
+        }
+
+        QUI\Translator::create();
 
         // ----------------------------- //
         //              Finish           //
@@ -959,8 +1031,8 @@ class Manager
      */
     public static function getRelatedTemplates(QUI\Projects\Project $Project)
     {
-        $result    = array();
-        $templates = array();
+        $result    = [];
+        $templates = [];
         $project   = $Project->getName();
 
         if ($Project->getAttribute('template')) {
@@ -1012,7 +1084,7 @@ class Manager
         } catch (QUI\Exception $Exception) {
         }
 
-        $list     = array();
+        $list     = [];
         $packages = QUI::getPackageManager()->getInstalled();
 
         $templates = self::getRelatedTemplates($Project);
@@ -1072,16 +1144,18 @@ class Manager
      *                      'page'   => 1
      *
      * @return array
+     *
+     * @throws QUI\Exception
      */
     public static function search($params)
     {
         if (!isset($params['search'])) {
-            return array();
+            return [];
         }
 
         $search = $params['search'];
 
-        $result = array();
+        $result = [];
         $list   = self::getConfig()->toArray();
 
         foreach ($list as $project => $entry) {

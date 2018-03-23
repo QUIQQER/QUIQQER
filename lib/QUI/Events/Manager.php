@@ -286,6 +286,9 @@ class Manager implements QUI\Interfaces\Events
      *                          The arguments must be in an array.
      * @param boolean $force - (optional) no recursion check, optional, default = false
      * @return array
+     *
+     * @throws QUI\Exception
+     * @throws QUI\ExceptionStack
      */
     public function fireEvent($event, $args = false, $force = false)
     {

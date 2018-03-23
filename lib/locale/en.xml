@@ -579,7 +579,63 @@
         <locale name="site.type.standard">
             <en><![CDATA[Default content]]></en>
         </locale>
+
+        <locale name="day">
+            <en><![CDATA[Tag]]></en>
+        </locale>
+        <locale name="year">
+            <en><![CDATA[Year]]></en>
+        </locale>
+        <locale name="month.01">
+            <en><![CDATA[January]]></en>
+        </locale>
+        <locale name="month.02">
+            <en><![CDATA[February]]></en>
+        </locale>
+        <locale name="month.03">
+            <en><![CDATA[March]]></en>
+        </locale>
+        <locale name="month.04">
+            <en><![CDATA[April]]></en>
+        </locale>
+        <locale name="month.05">
+            <en><![CDATA[Mai]]></en>
+        </locale>
+        <locale name="month.06">
+            <en><![CDATA[June]]></en>
+        </locale>
+        <locale name="month.07">
+            <en><![CDATA[July]]></en>
+        </locale>
+        <locale name="month.08">
+            <en><![CDATA[August]]></en>
+        </locale>
+        <locale name="month.09">
+            <en><![CDATA[September]]></en>
+        </locale>
+        <locale name="month.10">
+            <en><![CDATA[October]]></en>
+        </locale>
+        <locale name="month.11">
+            <en><![CDATA[November]]></en>
+        </locale>
+        <locale name="month.12">
+            <en><![CDATA[December]]></en>
+        </locale>
+
+        <locale name="exception.error">
+            <en><![CDATA[An error has occurred. The administrator has been notified.]]></en>
+        </locale>
+        <locale name="panels.bookmarks.title">
+            <en><![CDATA[Bookmarks]]></en>
+        </locale>
+        <locale name="panels.bookmarks.description">
+            <en><![CDATA[
+            Use bookmarks to help you quickly reach your frequently used functions.
+            ]]></en>
+        </locale>
     </groups>
+
     <groups name="quiqqer/quiqqer" datatype="php">
         <locale name="quiqqer.settings.auth.showResetPasswordBackend">
             <en><![CDATA["Forgot password" in backend Login]]></en>
@@ -809,11 +865,12 @@
             <en><![CDATA[The project has been renamed successfully]]></en>
         </locale>
         <locale name="console.tool.project.rename.prompt.projectname">
-            <en><![CDATA[Current projectname: ]]></en>
+            <en><![CDATA[Projectname: ]]></en>
         </locale>
         <locale name="console.tool.project.rename.prompt.projectname.info">
             <en><![CDATA[Which project should be renamed: ]]></en>
-        </locale>        <!-- Consoletool: quiqqer:delete-project -->
+        </locale>
+        <!-- Consoletool: quiqqer:delete-project -->
         <locale name="console.tool.project.delete.warning.header">
             <en><![CDATA[Attention!]]></en>
         </locale>
@@ -1001,6 +1058,9 @@
             <en><![CDATA[
                 Request timeout. Please try again or at a later time.
             ]]></en>
+        </locale>
+        <locale name="exception.too.many.addresses">
+            <de><![CDATA[You cannot create further addresses.]]></de>
         </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->
@@ -1447,6 +1507,10 @@
         </locale>
         <locale name="control.media.create.folder.window.continue.button.title">
             <en><![CDATA[Continue]]></en>
+        </locale>
+
+        <locale name="control.icons.confirm.title">
+            <en><![CDATA[Icon-Select]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">
@@ -2300,6 +2364,12 @@
         </locale>
         <locale name="projects.project.site.media.input.clear.title">
             <en><![CDATA[Clear]]></en>
+        </locale>
+        <locale name="projects.project.site.media.input.cssclass.alt">
+            <en><![CDATA[Select an icon]]></en>
+        </locale>
+        <locale name="projects.project.site.media.input.cssclass.title">
+            <en><![CDATA[Select an icon]]></en>
         </locale>
         <locale name="projects.project.site.media.filePanel.btn.save.text">
             <en><![CDATA[Save]]></en>
@@ -4816,12 +4886,6 @@
             <en>
                 <![CDATA[Failed login attempt: "[username]" (#[userId]) | Authenticator: "[authenticator]" | IP address: [ipAddress] | User Agent: "[userAgent]"]]></en>
         </locale>
-        <locale name="controls.users.auth.login.or">
-            <en><![CDATA[or]]></en>
-        </locale>
-        <locale name="controls.users.auth.login.password_reset">
-            <en><![CDATA[or]]></en>
-        </locale>
         <locale name="menu.quiqqer.text" html="true">
             <en><![CDATA[<img src="../bin/quiqqer_logo_mini.png" />]]></en>
         </locale>
@@ -5011,16 +5075,16 @@
             <en><![CDATA[SMTP password]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.auth.MAILFrom">
-            <en><![CDATA[Displayed name]]></en>
+            <en><![CDATA[Sender e-mail address]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.auth.MAILFrom.description">
-            <en><![CDATA[For example: Thomas Meier]]></en>
+            <en><![CDATA[Sender's e-mail address displayed by the recipient]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.auth.MAILReplyTo">
             <en><![CDATA[Reply to email address]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.auth.MAILReplyTo.description">
-            <en><![CDATA[For example: Thomas Meier]]></en>
+            <en><![CDATA[Mail address to which the reply should be sent.]]></en>
         </locale>
         <locale name="quiqqer.settings.auth">
             <en><![CDATA[Authentication]]></en>
@@ -5170,13 +5234,6 @@
         </locale>
         <locale name="panels.help.description">
             <en><![CDATA[Displays the QUIQQER Help.]]></en>
-        </locale>
-        <locale name="panels.bookmarks.title">
-            <en><![CDATA[Bookmarks]]></en>
-        </locale>
-        <locale name="panels.bookmarks.description">
-            <en>
-                <![CDATA[            Use bookmarks to help you quickly reach your frequently used functions.            ]]></en>
         </locale>
         <locale name="panels.upload.title">
             <en><![CDATA[Uploads]]></en>
@@ -5506,48 +5563,6 @@
         <locale name="exception.lib.qui.manager.no.groupid">
             <en><![CDATA[No group ID is passed.]]></en>
         </locale>
-        <locale name="day">
-            <en><![CDATA[Tag]]></en>
-        </locale>
-        <locale name="year">
-            <en><![CDATA[Year]]></en>
-        </locale>
-        <locale name="month.01">
-            <en><![CDATA[January]]></en>
-        </locale>
-        <locale name="month.02">
-            <en><![CDATA[February]]></en>
-        </locale>
-        <locale name="month.03">
-            <en><![CDATA[March]]></en>
-        </locale>
-        <locale name="month.04">
-            <en><![CDATA[April]]></en>
-        </locale>
-        <locale name="month.05">
-            <en><![CDATA[Mai]]></en>
-        </locale>
-        <locale name="month.06">
-            <en><![CDATA[June]]></en>
-        </locale>
-        <locale name="month.07">
-            <en><![CDATA[July]]></en>
-        </locale>
-        <locale name="month.08">
-            <en><![CDATA[August]]></en>
-        </locale>
-        <locale name="month.09">
-            <en><![CDATA[September]]></en>
-        </locale>
-        <locale name="month.10">
-            <en><![CDATA[October]]></en>
-        </locale>
-        <locale name="month.11">
-            <en><![CDATA[November]]></en>
-        </locale>
-        <locale name="month.12">
-            <en><![CDATA[December]]></en>
-        </locale>
         <locale name="projects.project.site.panel.information.header">
             <en><![CDATA[Data from site: #[id]]]></en>
         </locale>
@@ -5737,15 +5752,17 @@
             <en><![CDATA[HTTP Strict Transport Security]]></en>
         </locale>
         <locale name="quiqqer.settings.security_headers.hsts.description">
-            <en>
-                <![CDATA[HTTP Strict Transport Security (HSTS) is a security mechanism for HTTPS connections designed to protect against both downgrade attack and session hijacking.]]></en>
+            <en><![CDATA[
+            HTTP Strict Transport Security (HSTS) is a security mechanism for HTTPS connections designed to protect against both downgrade attack and session hijacking.
+            ]]></en>
         </locale>
         <locale name="quiqqer.settings.security_headers.hsts.max_age">
             <en><![CDATA[Max-age]]></en>
         </locale>
         <locale name="quiqqer.settings.security_headers.hsts.max_age.description" html="true">
-            <en>
-                <![CDATA[            <b>max-age</b> is the amount of time in seconds that a browser should cache the HSTS rule.            ]]></en>
+            <en><![CDATA[
+                <b>max-age</b> is the amount of time in seconds that a browser should cache the HSTS rule.
+            ]]></en>
         </locale>
         <locale name="quiqqer.settings.security_headers.hsts.subdomains">
             <en><![CDATA[Subdomains]]></en>
@@ -5757,8 +5774,9 @@
             <en><![CDATA[Preload]]></en>
         </locale>
         <locale name="quiqqer.settings.security_headers.hsts.preload.description">
-            <en>
-                <![CDATA[            This list is distributed with the browser so that it uses HTTPS for the initial request to the listed sites as well.            ]]></en>
+            <en><![CDATA[
+                This list is distributed with the browser so that it uses HTTPS for the initial request to the listed sites as well.
+            ]]></en>
         </locale>
         <locale name="quiqqer.settings.security_headers.csp.title">
             <en><![CDATA[Content Security Policy (CSP)]]></en>
@@ -5767,8 +5785,11 @@
             <en><![CDATA[Timezone]]></en>
         </locale>
         <locale name="quiqqer.settings.general.globals.timezone.description" html="true">
-            <en>
-                <![CDATA[<p>This setting affects all time and dates</p>                <p>                    You can find a complete list of all timezones at:                    <a href="http://php.net/manual/en/timezones.php" target="_blank">http://php.net/manual/en/timezones.php</a>                </p>]]></en>
+            <en><![CDATA[
+            <p>This setting affects all time and dates</p>
+            <p>You can find a complete list of all timezones at:
+            <a href="http://php.net/manual/en/timezones.php" target="_blank">http://php.net/manual/en/timezones.php</a>
+            </p>]]></en>
         </locale>
         <locale name="quiqqer.settings.date_formats">
             <en><![CDATA[Date format]]></en>
@@ -5783,8 +5804,13 @@
             <en><![CDATA[Global date format]]></en>
         </locale>
         <locale name="quiqqer.settings.date_formats.description" html="true">
-            <en>
-                <![CDATA[<p>Einstellungen und oder mögliche Datumsformate finden Sie unter:</p>                <p>                    <a href="http://php.net/manual/en/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">                        http://php.net/manual/en/function.strftime.php#refsect1-function.strftime-parameters                    </a>                </p>]]></en>
+            <en><![CDATA[
+                <p>Einstellungen und oder mögliche Datumsformate finden Sie unter:</p>
+                <p><a href="http://php.net/manual/en/function.strftime.php#refsect1-function.strftime-parameters" target="_blank">
+                    http://php.net/manual/en/function.strftime.php#refsect1-function.strftime-parameters
+                    </a>
+                </p>
+            ]]></en>
         </locale>
         <locale name="quiqqer.settings.delimiter_formats.title">
             <en><![CDATA[Delimiter]]></en>
@@ -5796,8 +5822,9 @@
             <en><![CDATA[Save the current page]]></en>
         </locale>
         <locale name="projects.project.site.btn.delete.title">
-            <en>
-                <![CDATA[            Delete the page, the page is placed in the trash and can be restored            ]]></en>
+            <en><![CDATA[
+                Delete the page, the page is placed in the trash and can be restored
+            ]]></en>
         </locale>
         <locale name="menu.apps.text">
             <en><![CDATA[Apps]]></en>
@@ -5842,25 +5869,34 @@
             <en><![CDATA[Port]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.auth.MAILFromText.description">
-            <en><![CDATA[The receiver name displayed at the sender.]]></en>
+            <en><![CDATA[Name of the sender displayed to the recipient.]]></en>
         </locale>
         <locale name="quiqqer.settings.email.smtp.auth.MAILFromText">
             <en><![CDATA[Displayed sender name]]></en>
         </locale>
         <locale name="quiqqer.settings.email.queue.desc">
+            <en><![CDATA[E-mails are saved in a queue until it is certain that they were sent.]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.queueLimitPerHour">
+            <en><![CDATA[Max number of mails per hour]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.queueLimitPerHour.desc" html="true">
             <en>
-                <![CDATA[E-mails are saved in a queue until it is certain that they were sent.            ]]></en>
+                <![CDATA[Specifies the maximum number of e-mails that can be sent within one hour. <b>0 = no limit</b>.]]></en>
         </locale>
         <locale name="quiqqer.settings.email.queue">
             <en><![CDATA[Enable Mail Queue]]></en>
         </locale>        <!-- License key -->
         <locale name="message.ajax.licenseKey.upload.error">
-            <en>
-                <![CDATA[An error ocurred while reading the license file. The license file may be invalid. Please contact an administrator or the issuer of the license.]]></en>
+            <en><![CDATA[
+            An error ocurred while reading the license file. The license file may be invalid. Please contact an administrator or the issuer of the license.
+            ]]></en>
         </locale>
         <locale name="message.ajax.licenseKey.upload.success">
-            <en>
-                <![CDATA[            The license file has been imported succesfully. This QUIQQER system now has access to all packages this license contains.            ]]></en>
+            <en><![CDATA[
+            The license file has been imported succesfully.
+            This QUIQQER system now has access to all packages this license contains.
+            ]]></en>
         </locale>
         <locale name="message.editor.toolbar.save.success">
             <en><![CDATA[The toolbar has been successfully saved.]]></en>
@@ -5873,6 +5909,12 @@
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="php,js">
+        <locale name="controls.users.auth.login.or">
+            <en><![CDATA[or]]></en>
+        </locale>
+        <locale name="controls.users.auth.login.password_reset">
+            <en><![CDATA[or]]></en>
+        </locale>
         <locale name="quiqqer.licenseKey.unlimited">
             <en><![CDATA[unlimited]]></en>
         </locale>
@@ -5928,8 +5970,7 @@
             <en><![CDATA[Maximum size of an image]]></en>
         </locale>
         <locale name="projects.project.settings.panel.mediaSettings.maxUploadSize.description" html="true">
-            <en>
-                <![CDATA[Images that are larger than the specified value are automatically adjusted.            ]]></en>
+            <en><![CDATA[Images that are larger than the specified value are automatically adjusted.]]></en>
         </locale>
         <locale name="projects.project.settings.panel.mediaSettings.watermark.description">
             <en><![CDATA[Note: Changes to the watermark delete the entire media cache.]]></en>
@@ -5971,22 +6012,29 @@
             <en><![CDATA[Add children sites]]></en>
         </locale>
         <locale name="projects.project.site.select.description" html="true">
-            <en>
-                <![CDATA[<p>                <em>Add sitetype</em> adds all pages of the selected sitetypes.<br />                <em>Add site</em> adds a single site.<br />                <em>Add children sites</em> adds all children sites of the selected site. Unles it is a sitetype set. The the sitetype is used as a filter, it will only see all children sites of the selected sitetype.                </p>            ]]></en>
+            <en><![CDATA[
+                <p>
+                <em>Add sitetype</em> adds all pages of the selected sitetypes.<br />
+                <em>Add site</em> adds a single site.<br />
+                <em>Add children sites</em> adds all children sites of the selected site.
+                Unles it is a sitetype set. The the sitetype is used as a filter, it will only see all children sites of the selected sitetype.
+                </p>
+            ]]></en>
         </locale>
         <locale name="exception.usergroups.search.cannot.search.users.without.parameters">
             <en><![CDATA[The user search cannot be executed without search parameters.]]></en>
         </locale>
         <locale name="message.project.config.save.success">
-
             <en><![CDATA[The project settings successfully saved]]></en>
         </locale>
         <locale name="quiqqer.settings.general.permissions.package">
             <en><![CDATA[Use package permissions]]></en>
         </locale>
         <locale name="quiqqer.settings.general.permissions.description" html="true">
-            <en>
-                <![CDATA[            Use package rights if you want to provide multiple users with different rights. <br />            If no package rights are used, some functions in the system are more powerful.            ]]></en>
+            <en><![CDATA[
+            Use package rights if you want to provide multiple users with different rights. <br />
+            If no package rights are used, some functions in the system are more powerful.
+            ]]></en>
         </locale>
         <locale name="exception.no.permission">
             <en><![CDATA[You have not the necessary rights to perform this action.]]></en>

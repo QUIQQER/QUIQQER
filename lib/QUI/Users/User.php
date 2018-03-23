@@ -252,6 +252,7 @@ class User implements QUI\Interfaces\Users\User
 
         if ($data[0]['active'] == -1) {
             $this->deleted = 1;
+            $this->active  = -1;
         }
 
         if (isset($data[0]['su']) && $data[0]['su'] == 1) {
@@ -1807,12 +1808,36 @@ class User implements QUI\Interfaces\Users\User
      * @param QUI\Interfaces\Users\User $ParentUser - Edit user [default: Session user]
      *
      * @return QUI\Users\Address
+     *
+     * @throws Exception
+     * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
      */
     public function addAddress($params = array(), $ParentUser = null)
     {
         if (is_null($ParentUser)) {
             $ParentUser = QUI::getUserBySession();
         }
+
+        $this->checkEditPermission($ParentUser);
+
+        // check max limit of user address
+        $addresses = QUI::getDataBase()->fetch([
+            'count' => 'count',
+            'from'  => Manager::tableAddress(),
+            'where' => [
+                'uid' => $this->getId()
+            ]
+        ]);
+
+        // max 100 addresses per user
+        if (!empty($addresses[0]['count']) && $addresses[0]['count'] > 100) {
+            throw new QUI\Exception(array(
+                'quiqqer/quiqqer',
+                'exception.too.many.addresses'
+            ));
+        }
+
 
         $_params = array();
         $needles = array(
@@ -1894,8 +1919,13 @@ class User implements QUI\Interfaces\Users\User
         $list = array();
 
         foreach ($result as $entry) {
-            $id        = (int)$entry['id'];
-            $list[$id] = $this->getAddress($id);
+            $id = (int)$entry['id'];
+
+            try {
+                $list[$id] = $this->getAddress($id);
+            } catch (QUI\Users\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
         }
 
         return $list;
@@ -1905,8 +1935,9 @@ class User implements QUI\Interfaces\Users\User
      * Get a address from the user
      *
      * @param integer $id - address ID
-     *
      * @return QUI\Users\Address
+     *
+     * @throws \QUI\Users\Exception
      */
     public function getAddress($id)
     {

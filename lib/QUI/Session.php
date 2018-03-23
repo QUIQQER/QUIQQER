@@ -62,6 +62,8 @@ class Session
 
     /**
      * constructor
+     *
+     * @throws \Exception
      */
     public function __construct()
     {
@@ -144,6 +146,8 @@ class Session
      * Return the storage type
      *
      * @return \SessionHandlerInterface
+     *
+     * @throws QUI\Exception
      */
     protected function getStorage()
     {
@@ -239,7 +243,12 @@ class Session
         }
 
         if ($this->Session->isStarted()) {
-            $this->Session->getMetadataBag()->stampNew($this->lifetime);
+            $MetaBag = $this->Session->getMetadataBag();
+
+            // workaround for session refresh
+            if ($this->lifetime && $MetaBag->getLastUsed() + ($this->lifetime / 2) < time()) {
+                $this->refresh();
+            }
 
             return;
         }
@@ -249,6 +258,8 @@ class Session
 
     /**
      * Session setup
+     *
+     * @throws \Exception
      */
     public function setup()
     {

@@ -95,6 +95,8 @@ abstract class Item extends QUI\QDOM
     /**
      * Activate the file
      * The file is now public
+     *
+     * @throws QUI\Exception
      */
     public function activate()
     {
@@ -136,6 +138,8 @@ abstract class Item extends QUI\QDOM
     /**
      * Deactivate the file
      * the file is no longer public
+     *
+     * @throws QUI\Exception
      */
     public function deactivate()
     {
@@ -157,6 +161,8 @@ abstract class Item extends QUI\QDOM
     /**
      * Save the file to the database
      * The id attribute can not be overwritten
+     *
+     * @throws QUI\Exception
      */
     public function save()
     {
@@ -566,6 +572,8 @@ abstract class Item extends QUI\QDOM
      * Return all Parents
      *
      * @return array
+     *
+     * @throws QUI\Exception
      */
     public function getParents()
     {
@@ -734,6 +742,8 @@ abstract class Item extends QUI\QDOM
      * @param \QUI\Projects\Media\Folder $Folder
      *
      * @return \QUI\Projects\Media\Item - The new file
+     *
+     * @throws QUI\Exception
      */
     public function copyTo(Folder $Folder)
     {

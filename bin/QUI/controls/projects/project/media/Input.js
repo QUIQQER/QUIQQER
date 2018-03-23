@@ -108,7 +108,6 @@ define('controls/projects/project/media/Input', [
                 this.$Input = new Element('input', {
                     name: this.getAttribute('name')
                 }).inject(this.$Elm);
-
             } else {
                 this.$Elm.wraps(this.$Input);
             }
@@ -116,6 +115,8 @@ define('controls/projects/project/media/Input', [
             if (this.getAttribute('styles')) {
                 this.$Elm.setStyles(this.getAttribute('styles'));
             }
+
+            this.$Input.set('data-quiid', this.getId());
 
             this.$Input.setStyles({
                 display: 'none'
@@ -196,6 +197,15 @@ define('controls/projects/project/media/Input', [
                                 onSubmit: function (Popup, params) {
                                     self.$Input.value = params.url;
                                     self.fireEvent('change', [self, self.getValue()]);
+
+                                    if ("createEvent" in document) {
+                                        var evt = document.createEvent("HTMLEvents");
+                                        evt.initEvent("change", false, true);
+                                        self.$Input.dispatchEvent(evt);
+                                    } else {
+                                        self.$Input.fireEvent("onchange");
+                                    }
+
                                     self.$refreshPreview();
                                 }
                             }

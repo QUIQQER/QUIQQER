@@ -111,7 +111,7 @@ define('controls/grid/Grid', [
                 json: 'JSON'
             }, // {print : 'Drucken', pdf : 'PDF', csv : 'CSV', json : 'JSON'},
             exportRenderer: null, // function(data){data.type data.data data.Grid}
-            exportBinUrl  : URL_BIN_DIR + 'js/extern/omnigrid1.2.3/omnigrid/',
+            exportBinUrl  : URL_OPT_DIR + 'quiqqer/quiqqer/bin/QUI/controls/grid/omnigrid/',
 
             // drag & Drop
             dragdrop         : false,
@@ -357,9 +357,10 @@ define('controls/grid/Grid', [
             }
 
             var sumWidth = buttons.map(function (Button) {
-                    return Button.getComputedSize().totalWidth;
-                }).sum() - menuWidth + (buttons.length * 10);
+                return Button.getComputedSize().totalWidth;
+            }).sum() - menuWidth + (buttons.length * 10);
 
+            // console.log(this.$Menu.getElm());
             if (sumWidth > width) {
                 // hide buttons
                 buttons.setStyle('display', 'none');
@@ -1985,7 +1986,8 @@ define('controls/grid/Grid', [
                 columnData      = this.$data[r][columnDataIndex] || false;
 
                 div = new Element('div.td', {
-                    styles: {
+                    'data-index': columnModel.dataIndex || '',
+                    styles     : {
                         width: (columnModel.width - 6).abs()
                     }
                 });
@@ -3039,7 +3041,7 @@ define('controls/grid/Grid', [
         },
 
         exportGrid: function (type) {
-            var data      = this.getAttribute('exportData'),
+            var data      = this.setExportData(),
                 exportUrl = this.getAttribute('exportBinUrl') + 'export.php';
 
             if (this.getAttribute('exportRenderer')) {

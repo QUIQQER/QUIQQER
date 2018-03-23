@@ -168,6 +168,21 @@
     width: 100%;
 }
 
+.omnigrid div.bDiv ul li.section ul {
+    border-bottom: none;
+    left: initial;
+    list-style-type: circle;
+    overflow: visible;
+    padding-left: 20px;
+    position: relative;
+    top: initial;
+}
+
+.omnigrid div.bDiv ul li.section ul > li {
+    list-style-type: circle;
+    overflow: visible;
+}
+
 /* ************************************** */
 /* ************** Toolbar *************** */
 /* ************************************** */

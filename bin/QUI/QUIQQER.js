@@ -25,6 +25,20 @@ define('QUIQQER', ['Ajax', 'Packages'], function (QUIAjax, Packages) {
          */
         getInformation: function () {
             return Packages.getPackageLock('quiqqer/quiqqer');
+        },
+
+        /**
+         * checks the authentication status
+         * can be used to check the message handler, too
+         *
+         * @return {Promise}
+         */
+        isAuthenticated: function () {
+            return new Promise(function (resolve, reject) {
+                QUIAjax.get('ajax_isAuth', resolve, {
+                    onError: reject
+                });
+            });
         }
     };
 });

@@ -123,7 +123,6 @@ define('classes/projects/project/Media', [
                         for (var i = 0, len = children.length; i < len; i++) {
                             self.$items[children[i].getId()] = children[i];
                         }
-
                     } else {
                         self.$items[children.getId()] = children;
                     }
@@ -133,7 +132,6 @@ define('classes/projects/project/Media', [
                     }
 
                     resolve(children);
-
                 }, {
                     fileid : JSON.encode(id),
                     project: self.getProject().getName(),

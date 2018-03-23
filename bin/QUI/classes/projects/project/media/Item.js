@@ -137,13 +137,11 @@ define('classes/projects/project/media/Item', [
          */
         getParentId: function () {
             return new Promise(function (resolve, reject) {
-
                 Ajax.get('ajax_media_file_getParentId', resolve, {
                     project: this.getMedia().getProject().getName(),
                     fileid : this.getId(),
                     onError: reject
                 });
-
             }.bind(this));
         },
 
@@ -169,9 +167,8 @@ define('classes/projects/project/media/Item', [
          */
         getBreadcrumb: function (oncomplete) {
             return new Promise(function (resolve, reject) {
-
                 Ajax.get('ajax_media_breadcrumb', function (result) {
-                    if (typeof oncomplete == 'function') {
+                    if (typeof oncomplete === 'function') {
                         oncomplete(result);
                     }
 
@@ -181,7 +178,6 @@ define('classes/projects/project/media/Item', [
                     fileid : this.getId(),
                     onError: reject
                 });
-
             }.bind(this));
         },
 
@@ -201,7 +197,6 @@ define('classes/projects/project/media/Item', [
             var self = this;
 
             return new Promise(function (resolve, reject) {
-
                 var attributes = self.getAttributes();
 
                 attributes.image_effects = self.getEffects();
@@ -213,7 +208,6 @@ define('classes/projects/project/media/Item', [
                     onError   : reject
                 });
 
-
                 Ajax.post('ajax_media_file_save', function (result) {
                     self.setAttributes(result);
                     self.fireEvent('save', [self]);
@@ -223,7 +217,6 @@ define('classes/projects/project/media/Item', [
                     }
 
                     resolve(result);
-
                 }, params);
             });
         },
@@ -298,9 +291,9 @@ define('classes/projects/project/media/Item', [
             }
 
             var url = Ajax.$url + '?' + Ajax.parseParams('ajax_media_file_download', {
-                    project: this.getMedia().getProject().getName(),
-                    fileid : this.getId()
-                });
+                project: this.getMedia().getProject().getName(),
+                fileid : this.getId()
+            });
 
             // create a iframe
             if (!document.id('download-frame')) {
@@ -362,7 +355,6 @@ define('classes/projects/project/media/Item', [
          */
         rename: function (newname, oncomplete, params) {
             return new Promise(function (resolve, reject) {
-
                 params = Utils.combine(params, {
                     project: this.getMedia().getProject().getName(),
                     id     : this.getId(),
@@ -380,9 +372,7 @@ define('classes/projects/project/media/Item', [
                     resolve(result);
 
                     this.fireEvent('rename', [this]);
-
                 }.bind(this), params);
-
             }.bind(this));
         },
 

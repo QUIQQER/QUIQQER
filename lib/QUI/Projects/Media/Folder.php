@@ -46,6 +46,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * (non-PHPdoc)
      *
      * @see QUI\Interfaces\Projects\Media\File::activate()
+     * @throws QUI\Exception
      */
     public function activate()
     {
@@ -80,6 +81,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * (non-PHPdoc)
      *
      * @see QUI\Interfaces\Projects\Media\File::deactivate()
+     * @throws QUI\Exception
      */
     public function deactivate()
     {
@@ -117,6 +119,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * (non-PHPdoc)
      *
      * @see QUI\Projects\Media\Item::delete()
+     *
+     * @throws QUI\Exception
      */
     public function delete()
     {
@@ -229,32 +233,30 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     {
         if (empty($newname)) {
             throw new QUI\Exception(
-                'Dieser Name ist ungültig'
+                'Dieser Name ist ungültig' // #locale
             );
-        }
-
-        // filter illegal characters
-        $newname = Utils::stripFolderName($newname);
-
-        // rename
-
-        if ($newname == $this->getAttribute('name')) {
-            return;
         }
 
         if ($this->getId() == 1) {
             throw new QUI\Exception(
-                'Der Media-Root-Verzeichnis eines Projektes kann nicht umbenannt werden'
+                'Der Media-Root-Verzeichnis eines Projektes kann nicht umbenannt werden' // #locale
             );
+        }
+
+        // filter illegal characters
+        $Parent  = $this->getParent();
+        $newname = Utils::stripFolderName($newname);
+
+        // rename
+        if ($newname == $this->getAttribute('name')) {
+            return;
         }
 
 
         // check if a folder with the new name exist
-        $Parent = $this->getParent();
-
         if ($Parent->childWithNameExists($newname)) {
             throw new QUI\Exception(
-                'Ein Ordner mit dem gleichen Namen existiert bereits.',
+                'Ein Ordner mit dem gleichen Namen existiert bereits.', // #locale
                 403
             );
         }
