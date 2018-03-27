@@ -4752,7 +4752,12 @@
             <en><![CDATA[[count] off [max] uploads used.]]></en>
         </locale>
         <locale name="upload.form.background.text">
-            <en><![CDATA[Select a file]]></en>
+            <en><![CDATA[
+                <p>To add a file, please click on <u>Select a file</u> or
+                <br />
+                drag a file onto this field.
+                </p>
+            ]]></en>
         </locale>
         <locale name="packages.category.modules">
             <en><![CDATA[Modules]]></en>
