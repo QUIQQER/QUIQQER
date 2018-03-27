@@ -445,7 +445,7 @@ class Address extends QUI\QDOM
             'Countries' => new QUI\Countries\Manager()
         ]);
 
-        return $Engine->fetch(SYS_DIR.'template/users/address/display.html');
+        return $Engine->fetch(SYS_DIR . 'template/users/address/display.html');
     }
 
     /**
@@ -630,5 +630,57 @@ class Address extends QUI\QDOM
         $attributes['id'] = $this->getId();
 
         return json_encode($attributes);
+    }
+
+    /**
+     * Check if this address equals another address
+     *
+     * @param Address $Address
+     * @param bool $compareCustomData (optional) - Consider custom data on comparison [default: false]
+     * @return bool
+     */
+    public function equals(Address $Address, $compareCustomData = false)
+    {
+        if ($this->getId() === $Address->getId()) {
+            return false;
+        }
+
+        $dataThis  = $this->getAttributes();
+        $dataOther = $Address->getAttributes();
+
+        // always ignore internal custom_data attribute
+        if (array_key_exists('custom_data', $dataThis)) {
+            unset($dataThis['custom_data']);
+        }
+
+        if (array_key_exists('custom_data', $dataOther)) {
+            unset($dataOther['custom_data']);
+        }
+
+        // consider actual custom data
+        if (!$compareCustomData) {
+            if (array_key_exists('customData', $dataThis)) {
+                unset($dataThis['customData']);
+            }
+
+            if (array_key_exists('customData', $dataOther)) {
+                unset($dataOther['customData']);
+            }
+        }
+
+        // ignore empty fields
+        foreach ($dataThis as $k => $v) {
+            if (empty($v)) {
+                unset($dataThis[$k]);
+            }
+        }
+
+        foreach ($dataOther as $k => $v) {
+            if (empty($v)) {
+                unset($dataOther[$k]);
+            }
+        }
+
+        return $dataThis == $dataOther;
     }
 }
