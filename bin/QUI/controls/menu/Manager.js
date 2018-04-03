@@ -45,8 +45,9 @@ define('controls/menu/Manager', [
             QUILocale.setCurrent(USER.lang);
 
             this.$Bar = new ContextmenuBar({
-                dragable: true,
-                name    : 'quiqqer-menu-bar'
+                dragable     : true,
+                name         : 'quiqqer-menu-bar',
+                menuMaxHeight: 400
             });
 
             this.$Bar.setParent(this);
