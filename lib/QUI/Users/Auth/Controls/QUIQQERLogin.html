@@ -18,7 +18,9 @@
     {/if}
 
     <input type="hidden" value="1" name="login"/>
-    <input type="submit" value="Login" class="login qui-button btn-green"/>
+    <button type="submit" value="Login" class="login qui-button btn-green">
+        <span>{locale group="quiqqer/system" var="quiqqer.auth.login.btn_text"}</span>
+    </button>
 </div>
 
 {if $showPasswordReset}

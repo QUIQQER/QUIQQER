@@ -4839,6 +4839,9 @@
         <locale name="quiqqer.auth.login.password_reset">
             <en><![CDATA[Forgot password]]></en>
         </locale>
+        <locale name="quiqqer.auth.login.btn_text">
+            <en><![CDATA[Login]]></en>
+        </locale>
         <locale name="quiqqer.auth.login.password.message">
             <en><![CDATA[
             If you have forgotten your password, please enter your email address here and click on' Reset password'.

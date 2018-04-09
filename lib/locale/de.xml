@@ -4949,6 +4949,9 @@
         <locale name="quiqqer.auth.login.password_reset">
             <de><![CDATA[Passwort vergessen]]></de>
         </locale>
+        <locale name="quiqqer.auth.login.btn_text">
+            <de><![CDATA[Login]]></de>
+        </locale>
         <locale name="quiqqer.auth.login.password.message">
             <de><![CDATA[
             Wenn Sie Ihr Passwort vergessen haben, geben Sie hier bitte Ihre E-Mail-Adresse ein und klicken auf 'Passwort zurücksetzen'.
