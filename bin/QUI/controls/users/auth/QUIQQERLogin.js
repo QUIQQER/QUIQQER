@@ -231,7 +231,10 @@ define('controls/users/auth/QUIQQERLogin', [
                                     duration: 200,
                                     callback: function () {
                                         Message.destroy();
-                                        self.$showPassword();
+                                        self.$showPassword().then(function() {
+                                            EmailInput.value = '';
+                                            EmailInput.setStyle('display', null);
+                                        });
                                     }
                                 });
                             }).delay(4000);
