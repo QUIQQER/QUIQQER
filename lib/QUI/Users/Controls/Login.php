@@ -28,11 +28,13 @@ class Login extends Control
      */
     public function __construct($options = [])
     {
-        parent::__construct($options);
-
         $this->setAttributes([
-            'data-qui' => 'controls/users/Login'
+            'data-qui'       => 'controls/users/Login',
+            'authenticators' => [] // predefined list of Authenticator classes; if empty = use all authenticators
+            // that are configured
         ]);
+
+        parent::__construct($options);
 
         $this->addCSSClass('quiqqer-login');
     }
@@ -54,9 +56,18 @@ class Login extends Control
             $authenticator = [$authenticator];
         }
 
-        $authenticators = [];
+        $authenticators          = [];
+        $exclusiveAuthenticators = $this->getAttribute('authenticators');
+
+        if (empty($exclusiveAuthenticators)) {
+            $exclusiveAuthenticators = [];
+        }
 
         foreach ($authenticator as $k => $auth) {
+            if (!empty($exclusiveAuthenticators) && !in_array($auth, $exclusiveAuthenticators)) {
+                continue;
+            }
+
             $Control = forward_static_call([$auth, 'getLoginControl']);
 
             if (is_null($Control)) {
