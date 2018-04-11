@@ -231,6 +231,7 @@ define('controls/users/auth/QUIQQERLogin', [
                                     duration: 200,
                                     callback: function () {
                                         Message.destroy();
+                                        self.$showPassword();
                                     }
                                 });
                             }).delay(4000);
@@ -255,7 +256,7 @@ define('controls/users/auth/QUIQQERLogin', [
                     }).inject(self.getElm());
 
                     showHideMessage(Message);
-                    self.$showPassword();
+                    EmailInput.setStyle('display', 'none');
                     SubmitBtn.disabled = false;
                 }, function (e) {
                     self.Loader.hide();
