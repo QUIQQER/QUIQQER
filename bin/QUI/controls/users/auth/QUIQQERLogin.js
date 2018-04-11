@@ -200,7 +200,7 @@ define('controls/users/auth/QUIQQERLogin', [
             var self       = this,
                 Elm        = this.getElm(),
                 EmailInput = Elm.getElement('input[name="email"]'),
-                SubmitBtn  = Elm.getElement('.quiqqer-auth-login-passwordreset input[type="submit"]'),
+                SubmitBtn  = Elm.getElement('.quiqqer-auth-login-passwordreset button.reset-password'),
                 MsgElm     = Elm.getElement('.quiqqer-auth-login-message');
 
             var submit = function () {

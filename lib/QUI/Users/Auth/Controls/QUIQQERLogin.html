@@ -3,12 +3,12 @@
 <div class="quiqqer-auth-login-container">
     <label>
         <span>{$usernameText}</span>
-        <input type="text" value="" name="username"/>
+        <input type="text" value="" name="username" required/>
     </label>
 
     <label>
         <span>{$passwordText}</span>
-        <input type="password" value="" name="password"/>
+        <input type="password" value="" name="password" required/>
     </label>
 
     {if $showPasswordReset}
@@ -35,9 +35,9 @@
         <input type="email" value="" name="email"/>
     </label>
 
-    <input type="submit"
-           value="{locale group='quiqqer/quiqqer' value='controls.users.auth.quiqqerlogin.btn.password_reset'}"
-    />
+    <button type="submit" class="login qui-button btn-green reset-password">
+        <span>{locale group='quiqqer/quiqqer' value='controls.users.auth.quiqqerlogin.btn.password_reset'}</span>
+    </button>
 
     <button name="cancel" type="reset">
         {locale group='quiqqer/quiqqer' value='cancel'}
