@@ -144,11 +144,11 @@ class Manager
         $Config->save();
 
 
-        QUI::getEvents()->fireEvent('projectConfigSave', array(
+        QUI::getEvents()->fireEvent('projectConfigSave', [
             $projectName,
             $availableConfig,
             $params
-        ));
+        ]);
 
         // remove the project from the temp
         if (self::$projects[$projectName]) {
@@ -253,7 +253,7 @@ class Manager
         } catch (QUI\Exception $Exception) {
         }
 
-        $config = array(
+        $config = [
             "default_lang"             => "de",
             "langs"                    => "de",
             "admin_mail"               => "support@pcsg.de",
@@ -272,7 +272,7 @@ class Manager
             "placeholder"              => "",
             "logo"                     => "",
             "favicon"                  => ""
-        );
+        ];
 
         // settings.xml
         $settingsXml = self::getRelatedSettingsXML($Project);
@@ -627,7 +627,7 @@ class Manager
         $table_site     = QUI_DB_PRFX.$name.'_'.$lang.'_sites';
         $table_site_rel = QUI_DB_PRFX.$name.'_'.$lang.'_sites_relations';
 
-        $Table->addColumn($table_site, array(
+        $Table->addColumn($table_site, [
             "id"          => "bigint(20) NOT NULL",
             "name"        => "varchar(200) NOT NULL",
             "title"       => "tinytext NULL",
@@ -644,17 +644,17 @@ class Manager
             "order_type"  => "varchar(100) NULL",
             "order_field" => "bigint(20) NULL",
             "extra"       => "text NULL",
-        ));
+        ]);
 
-        $Table->addColumn($table_site_rel, array(
+        $Table->addColumn($table_site_rel, [
             "parent" => "bigint(20) NOT NULL",
             "child"  => "bigint(20) NOT NULL"
-        ));
+        ]);
 
         $Table->setAutoIncrement($table_site, 'id');
 
         // first site
-        $DataBase->insert($table_site, array(
+        $DataBase->insert($table_site, [
             "id"       => 1,
             "name"     => 'Start',
             "title"    => 'start',
@@ -667,7 +667,7 @@ class Manager
             "c_user"   => QUI::getUserBySession()->getId(),
             "e_user"   => QUI::getUserBySession()->getId(),
             "nav_hide" => 0
-        ));
+        ]);
 
 
         /**
@@ -676,7 +676,7 @@ class Manager
         $table_media     = QUI_DB_PRFX.$name.'_media';
         $table_media_rel = QUI_DB_PRFX.$name.'_media_relations';
 
-        $Table->addColumn($table_media, array(
+        $Table->addColumn($table_media, [
             "id"           => "bigint(20) NOT NULL",
             "name"         => "varchar(200) NOT NULL",
             "title"        => "tinytext NULL",
@@ -693,15 +693,15 @@ class Manager
             "mime_type"    => "text NULL",
             "image_height" => "int(6) default NULL",
             "image_width"  => "int(6) default NULL"
-        ));
+        ]);
 
-        $Table->addColumn($table_media_rel, array(
+        $Table->addColumn($table_media_rel, [
             "parent" => "bigint(20) NOT NULL",
             "child"  => "bigint(20) NOT NULL"
-        ));
+        ]);
 
         // first folder
-        $DataBase->insert($table_media, array(
+        $DataBase->insert($table_media, [
             "id"      => 1,
             "name"    => 'Start',
             "title"   => 'start',
@@ -713,7 +713,7 @@ class Manager
             "c_date"  => date('Y-m-d H:i:s'),
             "c_user"  => QUI::getUserBySession()->getId(),
             "e_user"  => QUI::getUserBySession()->getId()
-        ));
+        ]);
 
 
         /**
@@ -746,7 +746,7 @@ class Manager
 
         $Config = self::getConfig();
 
-        $Config->setSection($name, array(
+        $Config->setSection($name, [
             'default_lang' => $lang,
             'langs'        => implode(',', $languages),
             'admin_mail'   => 'support@pcsg.de',
@@ -759,7 +759,7 @@ class Manager
             'publisher'    => '',
             'copyright'    => '',
             'standard'     => '0'
-        ));
+        ]);
 
         if (count($Config->toArray()) <= 1) {
             $Config->setValue($name, 'standard', 1);
@@ -776,7 +776,7 @@ class Manager
         QUI\Setup::executeEachPackageSetup();
 
         // project create event
-        QUI::getEvents()->fireEvent('createProject', array($Project));
+        QUI::getEvents()->fireEvent('createProject', [$Project]);
 
         return $Project;
     }
@@ -854,16 +854,16 @@ class Manager
         // delete projects permissions
         QUI::getDataBase()->delete(
             QUI::getDBTableName(QUI\Permissions\Manager::TABLE).'2projects',
-            array(
+            [
                 'project' => $project
-            )
+            ]
         );
 
         QUI::getDataBase()->delete(
             QUI::getDBTableName(QUI\Permissions\Manager::TABLE).'2sites',
-            array(
+            [
                 'project' => $project
-            )
+            ]
         );
 
         // config schreiben
@@ -875,7 +875,7 @@ class Manager
 
 
         // project create event
-        QUI::getEvents()->fireEvent('deleteProject', array($project));
+        QUI::getEvents()->fireEvent('deleteProject', [$project]);
     }
 
     /**
@@ -1012,11 +1012,11 @@ class Manager
         //              Finish           //
         // ----------------------------- //
 
-        \QUI::getEvents()->fireEvent("projectRenamed", array(
+        \QUI::getEvents()->fireEvent("projectRenamed", [
             $Project,
             $oldName,
             $newName
-        ));
+        ]);
 
         unset(self::$projects[$oldName]);
     }
@@ -1166,10 +1166,10 @@ class Manager
             $langs = explode(',', $entry['langs']);
 
             foreach ($langs as $lang) {
-                $result[] = array(
+                $result[] = [
                     'project' => $project,
                     'lang'    => $lang
-                );
+                ];
             }
         }
 
