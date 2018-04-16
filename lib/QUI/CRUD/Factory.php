@@ -53,18 +53,18 @@ abstract class Factory extends QUI\Utils\Singleton
      * @param array $queryParams
      * @return int
      */
-    public function countChildren($queryParams = array())
+    public function countChildren($queryParams = [])
     {
-        $query = array(
+        $query = [
             'from'  => $this->getDataBaseTableName(),
-            'count' => array(
+            'count' => [
                 'select' => 'id',
                 'as'     => 'id'
-            )
-        );
+            ]
+        ];
 
         if (!is_array($queryParams)) {
-            $queryParams = array();
+            $queryParams = [];
         }
 
         if (isset($queryParams['where'])) {
@@ -89,16 +89,18 @@ abstract class Factory extends QUI\Utils\Singleton
      *
      * @param array $data
      * @return QUI\CRUD\Child
+     *
+     * @throws QUI\Exception
      */
-    public function createChild($data = array())
+    public function createChild($data = [])
     {
         $this->Events->fireEvent('createBegin');
 
         $attributes = $this->getChildAttributes();
-        $childData  = array();
+        $childData  = [];
 
         if (!is_array($data)) {
-            $data = array();
+            $data = [];
         }
 
         foreach ($attributes as $attribute) {
@@ -119,7 +121,9 @@ abstract class Factory extends QUI\Utils\Singleton
             QUI::getDataBase()->getPDO()->lastInsertId()
         );
 
-        $this->Events->fireEvent('createEnd', array($Child, $data));
+        $Child->setAttributes($data);
+
+        $this->Events->fireEvent('createEnd', [$Child, $data]);
 
         return $Child;
     }
@@ -135,19 +139,19 @@ abstract class Factory extends QUI\Utils\Singleton
     {
         $childClass = $this->getChildClass();
 
-        $result = QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch([
             'from'  => $this->getDataBaseTableName(),
-            'where' => array(
+            'where' => [
                 'id' => $id
-            )
-        ));
+            ]
+        ]);
 
         if (!isset($result[0])) {
             throw new QUI\Exception(
-                array(
+                [
                     'quiqqer/system',
                     'crud.child.not.found'
-                ),
+                ],
                 404
             );
         }
@@ -168,9 +172,9 @@ abstract class Factory extends QUI\Utils\Singleton
      * @param array $queryParams
      * @return array - [Child, Child, Child]
      */
-    public function getChildren($queryParams = array())
+    public function getChildren($queryParams = [])
     {
-        $result = array();
+        $result = [];
         $data   = $this->getChildrenData($queryParams);
 
         $childClass = $this->getChildClass();
@@ -194,14 +198,14 @@ abstract class Factory extends QUI\Utils\Singleton
      * @param array $queryParams
      * @return array - [array, array, array]
      */
-    public function getChildrenData($queryParams = array())
+    public function getChildrenData($queryParams = [])
     {
-        $query = array(
+        $query = [
             'from' => $this->getDataBaseTableName()
-        );
+        ];
 
         if (!is_array($queryParams)) {
-            $queryParams = array();
+            $queryParams = [];
         }
 
         if (isset($queryParams['select'])) {
