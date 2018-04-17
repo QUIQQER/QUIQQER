@@ -185,3 +185,12 @@
 .field-container .qui-elements-select-list-search {
     border: none;
 }
+
+.field-container-item-help {
+    float: right;
+    font: normal normal 300 14px/1 FontAwesome;
+}
+
+.field-container-item-help:before {
+    content: "\f128";
+}
