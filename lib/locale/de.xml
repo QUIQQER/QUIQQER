@@ -1074,6 +1074,9 @@
         <locale name="exception.too.many.addresses">
             <de><![CDATA[Sie können keine weitere Adressen anlegen.]]></de>
         </locale>
+        <locale name="exception.crud.child.not.found">
+            <de><![CDATA[Der Eintrag konnte nicht gefunden werden.]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">
         <locale name="controls.email.select.email_invalid">
@@ -4948,6 +4951,9 @@
     <groups name="quiqqer/system" datatype="php">
         <locale name="quiqqer.auth.login.password_reset">
             <de><![CDATA[Passwort vergessen]]></de>
+        </locale>
+        <locale name="quiqqer.auth.login.btn_text">
+            <de><![CDATA[Login]]></de>
         </locale>
         <locale name="quiqqer.auth.login.password.message">
             <de><![CDATA[

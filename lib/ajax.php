@@ -18,12 +18,19 @@ if ($User->getId() && $User->getLang()) {
     QUI::getLocale()->setCurrent($User->getLang());
 }
 
+// @todo dies muss wirklich getestet werden
+// @todo falls sprachen chaos erscheint
+if (defined('QUIQQER_FRONTEND')
+    && isset($_REQUEST['lang'])
+    && (strlen($_REQUEST['lang']) === 2 || strlen($_REQUEST['lang']) === 5)) {
+    QUI::getLocale()->setCurrent($_REQUEST['lang']);
+}
 
 // required ajax files
 $_rf_files = json_decode($_REQUEST['_rf'], true);
 
 if (!is_array($_rf_files)) {
-    $_rf_files = array($_rf_files);
+    $_rf_files = [$_rf_files];
 }
 
 QUI::getAjax();

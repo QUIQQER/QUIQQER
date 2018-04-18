@@ -1060,7 +1060,10 @@
             ]]></en>
         </locale>
         <locale name="exception.too.many.addresses">
-            <de><![CDATA[You cannot create further addresses.]]></de>
+            <en><![CDATA[You cannot create further addresses.]]></en>
+        </locale>
+        <locale name="exception.crud.child.not.found">
+            <en><![CDATA[The entry could not be found.]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->
@@ -4752,7 +4755,12 @@
             <en><![CDATA[[count] off [max] uploads used.]]></en>
         </locale>
         <locale name="upload.form.background.text">
-            <en><![CDATA[Select a file]]></en>
+            <en><![CDATA[
+                <p>To add a file, please click on <u>Select a file</u> or
+                <br />
+                drag a file onto this field.
+                </p>
+            ]]></en>
         </locale>
         <locale name="packages.category.modules">
             <en><![CDATA[Modules]]></en>
@@ -4833,6 +4841,9 @@
     <groups name="quiqqer/system" datatype="php">        <!-- QUIQQERLogin -->
         <locale name="quiqqer.auth.login.password_reset">
             <en><![CDATA[Forgot password]]></en>
+        </locale>
+        <locale name="quiqqer.auth.login.btn_text">
+            <en><![CDATA[Login]]></en>
         </locale>
         <locale name="quiqqer.auth.login.password.message">
             <en><![CDATA[

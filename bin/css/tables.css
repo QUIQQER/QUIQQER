@@ -161,3 +161,36 @@
     flex: none;
     width: 100%;
 }
+
+.field-container > .qui-elements-select {
+    border: 1px solid #dedede;
+    border-left: 0;
+    flex: 1;
+    float: none;
+    max-width: none;
+    padding: 0;
+}
+
+.field-container > .qui-elements-select > button {
+    border-radius: 0;
+    border-left: 1px solid #dedede;
+    box-shadow: none;
+}
+
+.field-container .qui-elements-select-list {
+    border: none;
+    border-bottom: 1px solid #dedede;
+}
+
+.field-container .qui-elements-select-list-search {
+    border: none;
+}
+
+.field-container-item-help {
+    float: right;
+    font: normal normal 300 14px/1 FontAwesome;
+}
+
+.field-container-item-help:before {
+    content: "\f128";
+}

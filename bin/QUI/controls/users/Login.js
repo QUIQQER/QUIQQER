@@ -33,8 +33,9 @@ define('controls/users/Login', [
         ],
 
         options: {
-            onSuccess : false, //custom callback function
-            showLoader: true
+            onSuccess     : false, //custom callback function
+            showLoader    : true,
+            authenticators: []  // fixed list of authenticators shown
         },
 
         /**
@@ -87,7 +88,8 @@ define('controls/users/Login', [
             QUIAjax.get('ajax_users_loginControl', function (result) {
                 this.$buildAuthenticator(result);
             }.bind(this), {
-                isAdminLogin: typeof QUIQQER_IS_ADMIN_LOGIN !== 'undefined' ? 1 : 0
+                isAdminLogin  : typeof QUIQQER_IS_ADMIN_LOGIN !== 'undefined' ? 1 : 0,
+                authenticators: JSON.encode(this.getAttribute('authenticators'))
             });
         },
 

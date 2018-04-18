@@ -1,0 +1,18 @@
+{if $passwordReset}
+<div class="quiqqer-users-login-success">
+    {locale group="quiqqer/system" var="users.auth.passwordresetverification.success"}
+</div>
+{/if}
+
+{foreach $authenticators as $k => $authenticator}
+<form method="POST" name="login" data-authenticator="{$authenticator['class']}"{if $globalAuth} data-globalauth="1"{/if}>
+{$authenticator['control']->create()}
+</form>
+
+{if $k >= $count}
+{break}
+{/if}
+<div>
+    {locale group="quiqqer/system" var="controls.users.auth.login.or"}
+</div>
+{/foreach}
