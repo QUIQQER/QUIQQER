@@ -5,7 +5,7 @@ QUI::getEvents()->fireEvent('adminRequest');
 $languages = QUI::availableLanguages();
 $packages  = QUI::getPackageManager()->getInstalled();
 
-$authPackages = array();
+$authPackages = [];
 
 foreach ($packages as $package) {
     try {
@@ -50,7 +50,7 @@ foreach ($packages as $package) {
     /**
      * locale file
      */
-    $files = array();
+    $files = [];
 
     foreach ($authPackages as $package) {
         foreach ($languages as $lang) {
@@ -113,11 +113,18 @@ foreach ($packages as $package) {
             padding: 5px 10px;
         }
 
-        input[type="submit"] {
+        button[type="submit"],
+        button.reset-password {
             border-color: #538312;
             background: #64991e;
+            border: none;
             border-radius: 0;
+            line-height: 30px !important;
             color: #fff;
+        }
+
+        button[name="cancel"] {
+            line-height: 30px !important;
         }
 
         /* Animate.css - http://daneden.me/animate */
