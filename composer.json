@@ -63,7 +63,7 @@
     "quiqqer/fontawesome": "*",
     "quiqqer/backendsearch": "dev-master|dev-dev",
     "quiqqer/requirements": "2.*",
-    "npm-asset/intl": "2.*",
+    "npm-asset/intl": "1.*",
     "npm-asset/nouislider": "*",
     "npm-asset/mustache": "2.*",
     "npm-asset/urijs": "1.*"
