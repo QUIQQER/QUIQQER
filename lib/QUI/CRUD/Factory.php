@@ -133,6 +133,7 @@ abstract class Factory extends QUI\Utils\Singleton
      *
      * @param integer $id
      * @return QUI\CRUD\Child
+     *
      * @throws QUI\Exception
      */
     public function getChild($id)
@@ -148,10 +149,7 @@ abstract class Factory extends QUI\Utils\Singleton
 
         if (!isset($result[0])) {
             throw new QUI\Exception(
-                [
-                    'quiqqer/system',
-                    'crud.child.not.found'
-                ],
+                ['quiqqer/quiqqer', 'exception.crud.child.not.found'],
                 404
             );
         }
