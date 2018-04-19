@@ -29,21 +29,21 @@ class Output extends Singleton
      * internal lifetime image cache
      * @var array
      */
-    protected $imageCache = array();
+    protected $imageCache = [];
 
     /**
      * internal lifetime link cache
      *
      * @var array
      */
-    protected $linkCache = array();
+    protected $linkCache = [];
 
     /**
      * @var array
      */
-    protected $settings = array(
+    protected $settings = [
         'use-system-image-paths' => false
-    );
+    ];
 
     /**
      * @param $content
@@ -54,21 +54,21 @@ class Output extends Singleton
         // Bilder umschreiben
         $content = preg_replace_callback(
             '#<img([^>]*)>#i',
-            array(&$this, "images"),
+            [&$this, "images"],
             $content
         );
 
         // restliche Dateien umschreiben
         $content = preg_replace_callback(
             '#(href|src|value)="(image.php)\?([^"]*)"#',
-            array(&$this, "files"),
+            [&$this, "files"],
             $content
         );
 
         //Links umschreiben
         $content = preg_replace_callback(
             '#(href|src|action|value|data\-.*)="(index.php)\?([^"]*)"#',
-            array(&$this, "links"),
+            [&$this, "links"],
             $content
         );
 
@@ -114,10 +114,10 @@ class Output extends Singleton
 
         // Falls in der eigenen Sammlung schon vorhanden
         if (isset($this->linkCache[$components])) {
-            return $output[1] . '="' . $this->linkCache[$components] . '"';
+            return $output[1].'="'.$this->linkCache[$components].'"';
         }
 
-        $parseUrl = parse_url($output[2] . '?' . $components);
+        $parseUrl = parse_url($output[2].'?'.$components);
 
         if (!isset($parseUrl['query']) || empty($parseUrl['query'])) {
             return $output[0];
@@ -141,12 +141,12 @@ class Output extends Singleton
             $anchor = '';
 
             if (isset($parseUrl['fragment']) && !empty($parseUrl['fragment'])) {
-                $anchor = '#' . $parseUrl['fragment'];
+                $anchor = '#'.$parseUrl['fragment'];
             }
 
-            $this->linkCache[$components] = $url . $anchor;
+            $this->linkCache[$components] = $url.$anchor;
 
-            return $output[1] . '="' . $url . $anchor . '"';
+            return $output[1].'="'.$url.$anchor.'"';
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
@@ -163,12 +163,12 @@ class Output extends Singleton
     protected function files($output)
     {
         try {
-            $url = MediaUtils::getRewritedUrl('image.php?' . $output[3]);
+            $url = MediaUtils::getRewrittenUrl('image.php?'.$output[3]);
         } catch (QUI\Exception $Excxeption) {
             $url = '';
         }
 
-        return $output[1] . '="' . $url . '"';
+        return $output[1].'="'.$url.'"';
     }
 
     /**
@@ -195,7 +195,7 @@ class Output extends Singleton
                 // workaround for system paths, not optimal
                 $output[0] = str_replace(
                     ' src="',
-                    ' src="' . CMS_DIR,
+                    ' src="'.CMS_DIR,
                     $output[0]
                 );
             }
@@ -230,7 +230,7 @@ class Output extends Singleton
         if ($this->settings['use-system-image-paths']) {
             $html = str_replace(
                 ' src="',
-                ' src="' . CMS_DIR,
+                ' src="'.CMS_DIR,
                 $html
             );
         }
@@ -246,7 +246,7 @@ class Output extends Singleton
      * @return bool|string
      * @throws Exception
      */
-    public function getSiteUrl($params = array(), $getParams = array())
+    public function getSiteUrl($params = [], $getParams = [])
     {
         $project = false;
         $id      = false;
@@ -292,12 +292,12 @@ class Output extends Singleton
             $lang = '';
         }
 
-        QUI\Utils\System\File::mkdir(VAR_DIR . 'cache/links');
+        QUI\Utils\System\File::mkdir(VAR_DIR.'cache/links');
 
-        $link_cache_dir = VAR_DIR . 'cache/links/' . $project . '/';
+        $link_cache_dir = VAR_DIR.'cache/links/'.$project.'/';
         QUI\Utils\System\File::mkdir($link_cache_dir);
 
-        $link_cache_file = $link_cache_dir . $id . '_' . $project . '_' . $lang;
+        $link_cache_file = $link_cache_dir.$id.'_'.$project.'_'.$lang;
 
         // get params
         if (!empty($getParams)) {
@@ -318,7 +318,7 @@ class Output extends Singleton
             $url = file_get_contents($link_cache_file);
             $url = $this->extendUrlWithParams($url, $params);
         } else {
-            $_params = array();
+            $_params = [];
 
             if (isset($params['suffix'])) {
                 $_params['suffix'] = $params['suffix'];
@@ -350,7 +350,7 @@ class Output extends Singleton
         if (!$this->Project ||
             $Project->toArray() != $this->Project->toArray()
         ) {
-            return $Project->getVHost(true, true) . URL_DIR . $url;
+            return $Project->getVHost(true, true).URL_DIR.$url;
         }
 
         $vHosts = QUI::getRewrite()->getVHosts();
@@ -393,12 +393,12 @@ class Output extends Singleton
 //            $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
 //        }
 
-        $url = URL_DIR . $url;
+        $url = URL_DIR.$url;
 
         // falls host anders ist, dann muss dieser dran gehängt werden
         // damit kein doppelter content entsteht
         if ($_SERVER['HTTP_HOST'] != $Project->getHost() && $Project->getHost() != '') {
-            $url = $Project->getVHost(true, true) . $url;
+            $url = $Project->getVHost(true, true).$url;
         }
 
         return $url;
@@ -420,7 +420,7 @@ class Output extends Singleton
         }
 
         $separator = Rewrite::URL_PARAM_SEPARATOR;
-        $getParams = array();
+        $getParams = [];
 
         if (isset($params['_getParams']) && is_string($params['_getParams'])) {
             parse_str($params['_getParams'], $getParams);
@@ -442,7 +442,7 @@ class Output extends Singleton
 
         foreach ($params as $param => $value) {
             if (is_integer($param)) {
-                $url .= $separator . $value;
+                $url .= $separator.$value;
                 continue;
             }
 
@@ -451,19 +451,19 @@ class Output extends Singleton
             }
 
             if ($param === "0") {
-                $url .= $separator . $value;
+                $url .= $separator.$value;
                 continue;
             }
 
-            $url .= $separator . $param . $separator . $value;
+            $url .= $separator.$param.$separator.$value;
         }
 
         if (isset($params['suffix'])) {
-            $suffix = '.' . $params['suffix'];
+            $suffix = '.'.$params['suffix'];
         }
 
         if (empty($suffix) && isset($exp[1])) {
-            $suffix = '.' . $exp[1];
+            $suffix = '.'.$exp[1];
         }
 
         if (empty($suffix)) {
@@ -471,9 +471,9 @@ class Output extends Singleton
         }
 
         if (empty($getParams)) {
-            return $url . $suffix;
+            return $url.$suffix;
         }
 
-        return $url . $suffix . '?' . http_build_query($getParams);
+        return $url.$suffix.'?'.http_build_query($getParams);
     }
 }

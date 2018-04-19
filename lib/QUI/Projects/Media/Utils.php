@@ -31,7 +31,7 @@ class Utils
     {
         if ($Item->getId() === 1) {
             /* @var $Item \QUI\Projects\Media\Folder */
-            return array(
+            return [
                 'icon'          => 'fa fa-home',
                 'icon80x80'     => URL_BIN_DIR.'80x80/media.png',
                 'id'            => $Item->getId(),
@@ -47,12 +47,12 @@ class Utils
                 'c_date'        => $Item->getAttribute('c_date'),
                 'c_user'        => $Item->getAttribute('c_user'),
                 'priority'      => $Item->getAttribute('priority')
-            );
+            ];
         }
 
         if ($Item->getType() == QUI\Projects\Media\Folder::class) {
             /* @var $Item \QUI\Projects\Media\Folder */
-            return array(
+            return [
                 'icon'          => 'fa fa-folder-o',
                 'icon80x80'     => URL_BIN_DIR.'80x80/extensions/folder.png',
                 'id'            => $Item->getId(),
@@ -68,13 +68,13 @@ class Utils
                 'c_date'        => $Item->getAttribute('c_date'),
                 'c_user'        => $Item->getAttribute('c_user'),
                 'priority'      => $Item->getAttribute('priority')
-            );
+            ];
         }
 
 
         $extension = self::getExtension($Item->getAttribute('file'));
 
-        $result = array(
+        $result = [
             'icon'      => self::getIconByExtension($extension),
             'icon80x80' => self::getIconByExtension($extension, '80x80'),
             'id'        => $Item->getId(),
@@ -90,7 +90,7 @@ class Utils
             'c_user'    => $Item->getAttribute('c_user'),
             'mimetype'  => $Item->getAttribute('mime_type'),
             'priority'  => $Item->getAttribute('priority')
-        );
+        ];
 
         return $result;
     }
@@ -117,7 +117,7 @@ class Utils
                 $size = '16x16';
         }
 
-        $extensions['16x16'] = array(
+        $extensions['16x16'] = [
             'folder' => URL_BIN_DIR.'16x16/extensions/folder.png',
             'pdf'    => URL_BIN_DIR.'16x16/extensions/pdf.png',
             // Images
@@ -140,9 +140,9 @@ class Utils
             // Music
             'mp3'    => URL_BIN_DIR.'16x16/extensions/sound.png',
             'ogg'    => URL_BIN_DIR.'16x16/extensions/sound.png',
-        );
+        ];
 
-        $extensions['80x80'] = array(
+        $extensions['80x80'] = [
             'folder' => URL_BIN_DIR.'80x80/extensions/folder.png',
             'pdf'    => URL_BIN_DIR.'80x80/extensions/pdf.png',
             // Images
@@ -164,7 +164,7 @@ class Utils
 
             // Music
             'mp3'    => URL_BIN_DIR.'80x80/extensions/sound.png',
-        );
+        ];
 
         if (isset($extensions[$size][$ext])) {
             return $extensions[$size][$ext];
@@ -288,7 +288,7 @@ class Utils
      *
      * @return string
      */
-    public static function getImageHTML($src, $attributes = array())
+    public static function getImageHTML($src, $attributes = [])
     {
         $width  = false;
         $height = false;
@@ -368,20 +368,36 @@ class Utils
     }
 
     /**
-     * Return the rewrited url from a image.php? url
+     * @param $output
+     * @param array $size
+     * @return string
+     *
+     * @throws QUI\Exception
+     *
+     * @deprecated use getRewrittenUrl
+     */
+    public static function getRewritedUrl($output, $size = [])
+    {
+        return self::getRewrittenUrl($output, $size);
+    }
+
+    /**
+     * Return the rewritten url from a image.php? url
      *
      * @param string $output
      * @param array $size
      *
      * @return string
+     *
+     * @throws QUI\Exception
      */
-    public static function getRewritedUrl($output, $size = array())
+    public static function getRewrittenUrl($output, $size = [])
     {
         if (self::isMediaUrl($output) === false) {
             return $output;
         }
 
-        // Parameter herrausfinden
+        // detect parameters
         $params = StringUtils::getUrlAttributes($output);
 
         $id      = $params['id'];
@@ -394,6 +410,7 @@ class Utils
         try {
             $url = QUI\Cache\Manager::get($cache);
         } catch (QUI\Cache\Exception $Exception) {
+            Log::writeDebugException($Exception);
         }
 
         if (empty($url)) {
@@ -405,17 +422,17 @@ class Utils
                     return $url;
                 }
             } catch (QUI\Exception $Exception) {
-                Log::addDebug($Exception->getMessage(), array(
+                Log::addDebug($Exception->getMessage(), [
                     'url'   => $output,
                     'trace' => $Exception->getTrace()
-                ));
+                ]);
 
                 return URL_DIR.$output;
             } catch (\Exception $Exception) {
-                Log::addDebug($Exception->getMessage(), array(
+                Log::addDebug($Exception->getMessage(), [
                     'url'   => $output,
                     'trace' => $Exception->getTrace()
-                ));
+                ]);
 
                 return URL_DIR.$output;
             }
@@ -488,7 +505,7 @@ class Utils
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.media.check.foldername.allowed.signs',
-                    array('foldername' => $str)
+                    ['foldername' => $str]
                 ),
                 702
             );
@@ -540,7 +557,7 @@ class Utils
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.media.check.name.allowed.signs',
-                    array('filename' => $filename)
+                    ['filename' => $filename]
                 ),
                 702
             );
@@ -579,8 +596,8 @@ class Utils
     {
         // Umlaute
         $str = str_replace(
-            array('ä', 'ö', 'ü'),
-            array('ae', 'oe', 'ue'),
+            ['ä', 'ö', 'ü'],
+            ['ae', 'oe', 'ue'],
             $str
         );
 
@@ -728,20 +745,20 @@ class Utils
     ) {
         $fileid = (int)$fileid;
 
-        $result = QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch([
             'from'  => $Media->getTable(),
-            'where' => array(
+            'where' => [
                 'id' => $fileid
-            ),
+            ],
             'limit' => 1
-        ));
+        ]);
 
         if (!isset($result[0])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'exception.file.not.found',
-                    array('file' => $fileid)
+                    ['file' => $fileid]
                 ),
                 404
             );
@@ -768,7 +785,7 @@ class Utils
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'exception.media.file.already.exists',
-                    array('filename' => $uploadparams['name'])
+                    ['filename' => $uploadparams['name']]
                 ),
                 403
             );
