@@ -186,6 +186,10 @@
     border: none;
 }
 
+.field-container .qui-elements-select-multiple .qui-elements-select-list-search {
+    border-top: 1px solid #dedede;
+}
+
 .field-container-item-help {
     float: right;
     font: normal normal 300 14px/1 FontAwesome;
