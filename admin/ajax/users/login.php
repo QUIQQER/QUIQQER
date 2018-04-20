@@ -27,7 +27,13 @@ QUI::$Ajax->registerFunction(
         $next  = $Login->next();
 
         if (empty($next)) {
-            QUI::getUsers()->login();
+            try {
+                QUI::getUsers()->login();
+            } catch (\Exception $Exception) {
+                // User cannot log in (e.g. User is not active)
+                QUI::getSession()->destroy();
+                throw $Exception;
+            }
         }
 
         $control = '';
