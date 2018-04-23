@@ -46,9 +46,6 @@ class PackageEvents
             $Package = QUI::getPackage($packageName);
             $Package->install();
 
-            QUI\System\Log::writeRecursive('postPackageInstall');
-            QUI\System\Log::writeRecursive($packageName);
-
             CommandEvents::registerPackageChange($packageName);
         } catch (\Exception $Exception) {
             QUI\System\Log::write(
