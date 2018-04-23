@@ -121,7 +121,7 @@ class Package extends QUI\QDOM
     protected function getPackageXMLData()
     {
         if (!$this->isQuiqqerPackage()) {
-            return array();
+            return [];
         }
 
         if (!is_null($this->packageXML)) {
@@ -132,7 +132,7 @@ class Package extends QUI\QDOM
 
         // package xml
         if (!file_exists($packageXML)) {
-            $this->packageXML = array();
+            $this->packageXML = [];
 
             return $this->packageXML;
         }
@@ -165,7 +165,7 @@ class Package extends QUI\QDOM
         $packageData = $this->getPackageXMLData();
 
         if (empty($packageData['provider'])) {
-            return array();
+            return [];
         }
 
         if ($providerName === false) {
@@ -178,7 +178,7 @@ class Package extends QUI\QDOM
         }, \ARRAY_FILTER_USE_KEY);
 
         if (!isset($provider[$providerName])) {
-            return array();
+            return [];
         }
 
         return $provider[$providerName];
@@ -311,7 +311,7 @@ class Package extends QUI\QDOM
         $packageData = $this->getPackageXMLData();
 
         if (!isset($packageData['preview']) || !is_array($packageData['preview'])) {
-            return array();
+            return [];
         }
 
         return $packageData['preview'];
@@ -379,7 +379,7 @@ class Package extends QUI\QDOM
             );
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -395,7 +395,7 @@ class Package extends QUI\QDOM
             return $composer['require'];
         }
 
-        return array();
+        return [];
     }
 
     /**
@@ -445,9 +445,9 @@ class Package extends QUI\QDOM
      * @param array $params - optional ['localePublish' => true, 'localeImport' => true, 'forceImport' => false]
      * @throws QUI\Exception
      */
-    public function setup($params = array())
+    public function setup($params = [])
     {
-        QUI::getEvents()->fireEvent('packageSetupBegin', array($this));
+        QUI::getEvents()->fireEvent('packageSetupBegin', [$this]);
 
         // options
         $optionLocalePublish = true;
@@ -470,7 +470,7 @@ class Package extends QUI\QDOM
         $dir = $this->getDir();
 
         if (!$this->isQuiqqerPackage()) {
-            QUI::getEvents()->fireEvent('packageSetupEnd', array($this));
+            QUI::getEvents()->fireEvent('packageSetupEnd', [$this]);
 
             return;
         }
@@ -478,23 +478,23 @@ class Package extends QUI\QDOM
         // permissions
         if ($this->getName() != 'quiqqer/quiqqer') { // you can't set permissions to the core
             try {
-                $found = QUI::getDataBase()->fetch(array(
+                $found = QUI::getDataBase()->fetch([
                     'from'  => QUI\Permissions\Manager::table(),
-                    'where' => array(
+                    'where' => [
                         'name' => $this->getPermissionName()
-                    ),
+                    ],
                     'limit' => 1
-                ));
+                ]);
 
                 if (!isset($found[0])) {
-                    QUI::getPermissionManager()->addPermission(array(
+                    QUI::getPermissionManager()->addPermission([
                         'name'         => $this->getPermissionName(),
                         'title'        => 'quiqqer/quiqqer permission.package.canUse',
                         'desc'         => '',
                         'area'         => '',
                         'type'         => 'bool',
                         'defaultvalue' => 1
-                    ));
+                    ]);
                 }
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
@@ -503,10 +503,10 @@ class Package extends QUI\QDOM
 
             $languages = QUI\Translator::getAvailableLanguages();
 
-            $data = array(
+            $data = [
                 'datatype' => 'php,js',
                 'package'  => $this->getName()
-            );
+            ];
 
             foreach ($languages as $lang) {
                 $data[$lang] = QUI::getLocale()->getByLang($lang, $this->getName(), 'package.title');
@@ -561,10 +561,10 @@ class Package extends QUI\QDOM
 
         // settings
         if (!file_exists($dir.'settings.xml')) {
-            QUI::getEvents()->fireEvent('packageSetup', array($this));
+            QUI::getEvents()->fireEvent('packageSetup', [$this]);
             QUI\Cache\Manager::clearAll();
 
-            QUI::getEvents()->fireEvent('packageSetupEnd', array($this));
+            QUI::getEvents()->fireEvent('packageSetupEnd', [$this]);
 
             return;
         }
@@ -576,10 +576,10 @@ class Package extends QUI\QDOM
             $Config->save();
         }
 
-        QUI::getEvents()->fireEvent('packageSetup', array($this));
+        QUI::getEvents()->fireEvent('packageSetup', [$this]);
 
         QUI\Cache\Manager::clearAll();
-        QUI::getEvents()->fireEvent('packageSetupEnd', array($this));
+        QUI::getEvents()->fireEvent('packageSetupEnd', [$this]);
     }
 
     /**
@@ -590,7 +590,7 @@ class Package extends QUI\QDOM
         $dir = $this->getDir();
 
         try {
-            $groups   = array();
+            $groups   = [];
             $files    = [$dir.'locale.xml'];
             $Dom      = XML::getDomFromXml($dir.'locale.xml');
             $FileList = $Dom->getElementsByTagName('file');
@@ -614,7 +614,7 @@ class Package extends QUI\QDOM
 
             $groups = array_unique($groups);
         } catch (\Exception $Exception) {
-            $groups = array();
+            $groups = [];
             QUI\System\Log::addWarning($Exception->getMessage());
         }
 
@@ -650,7 +650,9 @@ class Package extends QUI\QDOM
      */
     public function install()
     {
-        QUI::getEvents()->fireEvent('packageInstall', array($this));
+        $this->setup();
+
+        QUI::getEvents()->fireEvent('packageInstall', [$this]);
     }
 
     /**
@@ -661,7 +663,7 @@ class Package extends QUI\QDOM
      */
     public function uninstall()
     {
-        QUI::getEvents()->fireEvent('packageUnInstall', array($this->getName()));
+        QUI::getEvents()->fireEvent('packageUnInstall', [$this->getName()]);
 
         // remove events
         QUI::getEvents()->removePackageEvents($this);
@@ -679,7 +681,7 @@ class Package extends QUI\QDOM
         QUI::getPermissionManager()->removePermission($this->getPermissionName());
         QUI::getPermissionManager()->removePermission($this->getPermissionName('header'));
 
-        QUI::getEvents()->fireEvent('packageDestroy', array($this->getName()));
+        QUI::getEvents()->fireEvent('packageDestroy', [$this->getName()]);
     }
 
     /**
@@ -689,6 +691,6 @@ class Package extends QUI\QDOM
      */
     public function onUpdate()
     {
-        QUI::getEvents()->fireEvent('packageUpdate', array($this));
+        QUI::getEvents()->fireEvent('packageUpdate', [$this]);
     }
 }
