@@ -650,6 +650,11 @@ class Package extends QUI\QDOM
      */
     public function install()
     {
+        Update::importEvents(
+            $this->getDir().'events.xml',
+            $this->getName()
+        );
+
         QUI::getEvents()->fireEvent('packageInstall', [$this]);
     }
 
