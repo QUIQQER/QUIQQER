@@ -1047,8 +1047,8 @@
         </locale>
         <locale name="exception.group.create.id.creation.error">
             <en><![CDATA[
-                Die Gruppe konnte nicht angelegt werden.
-                Es ist ein Fehler bei der ID Erstellung aufgetreten.
+                The group could not be created.
+                An error occurred creating the ID.
             ]]></en>
         </locale>
         <locale name="message.translation.file.not.found">
