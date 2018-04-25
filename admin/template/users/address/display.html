@@ -86,6 +86,7 @@
     {/foreach}
 
     {foreach from=$phonelist item=phone}
+        {if $phone.no !== ''}
         <div class="{$phone.type}">
             {assign var="cssclass" value="phone"}
             {if $phone.type == 'mobile'}
@@ -95,6 +96,7 @@
             <span class="fa fa-{$cssclass}"></span>
             {$phone.no}
         </div>
+        {/if}
     {/foreach}
 
 </address>
