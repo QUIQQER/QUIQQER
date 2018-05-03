@@ -2129,6 +2129,8 @@ define('controls/grid/Grid', [
 
                 if (typeof rowdata[columnDataIndex] !== 'undefined') {
                     str = rowdata[columnDataIndex];
+                } else {
+                    str = '';
                 }
 
                 str = str.toString().trim();
