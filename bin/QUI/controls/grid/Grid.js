@@ -39,6 +39,7 @@
 
 define('controls/grid/Grid', [
 
+    'qui/QUI',
     'qui/controls/Control',
     'qui/controls/buttons/Button',
     'qui/controls/buttons/Separator',
@@ -49,7 +50,7 @@ define('controls/grid/Grid', [
 
     'css!controls/grid/Grid.css'
 
-], function (QUIControl, QUIButton, QUISeparator, QUIContextMenu,
+], function (QUI, QUIControl, QUIButton, QUISeparator, QUIContextMenu,
              QUIContextItem, ControlUtils, QUILocale) {
     "use strict";
 
@@ -463,7 +464,7 @@ define('controls/grid/Grid', [
                 }
             });
 
-            if (this.getAttribute('editType') == 'textarea') {
+            if (this.getAttribute('editType') === 'textarea') {
                 input.setAttribute('title', 'Doppelklick mit der linken Maustaste um die Änderungen zu übernehmen');
             }
 
@@ -491,10 +492,10 @@ define('controls/grid/Grid', [
             }
 
             if (evt &&
-                evt.type == "keyup" &&
-                evt.key != 'enter' &&
-                evt.key != 'esc' &&
-                evt.type != 'dblclick') {
+                evt.type === "keyup" &&
+                evt.key !== 'enter' &&
+                evt.key !== 'esc' &&
+                evt.type !== 'dblclick') {
                 return;
             }
 
@@ -504,25 +505,25 @@ define('controls/grid/Grid', [
                 td       = t.inlineEditSafe.td,
                 editType = colmod.editType ? colmod.editType : this.getAttribute('editType');
 
-            if (editType == 'textarea' &&
+            if (editType === 'textarea' &&
                 evt &&
-                evt.key != 'esc' &&
-                evt.type != 'dblclick') {
+                evt.key !== 'esc' &&
+                evt.type !== 'dblclick') {
                 return;
             }
 
             t.inlineeditmode = false;
 
             if (editType == 'input') {
-                if ((evt && ((evt.type == 'keyup' && evt.key == 'enter') || (evt.type == 'dblclick')))) {
+                if ((evt && ((evt.type === 'keyup' && evt.key === 'enter') || (evt.type === 'dblclick')))) {
                     data[colmod.dataIndex] = t.inlineEditSafe.input.value;
                 } else {
                     data[colmod.dataIndex] = t.inlineEditSafe.oldvalue;
                 }
             }
 
-            if (editType == 'textarea') {
-                if (evt && evt.type == 'dblclick') {
+            if (editType === 'textarea') {
+                if (evt && evt.type === 'dblclick') {
                     data[colmod.dataIndex] = t.inlineEditSafe.input.value;
                 } else {
                     data[colmod.dataIndex] = t.inlineEditSafe.oldvalue;
@@ -541,15 +542,17 @@ define('controls/grid/Grid', [
             }
 
             // Key Events
-            if (evt && evt.type == 'keyup' &&
-                evt.key == 'enter' && t.inlineEditSafe.oldvalue != td.innerHTML) {
+            if (evt && evt.type === 'keyup' &&
+                evt.key === 'enter' &&
+                t.inlineEditSafe.oldvalue !== td.innerHTML) {
                 t.inlineEditSafe.target = t;
                 t.fireEvent("editComplete", t.inlineEditSafe);
             }
 
             // bei dbl click auch speichern ausführen
-            if (evt && evt.type == 'dblclick' &&
-                t.inlineEditSafe.oldvalue != td.innerHTML) {
+            if (evt &&
+                evt.type === 'dblclick' &&
+                t.inlineEditSafe.oldvalue !== td.innerHTML) {
                 t.inlineEditSafe.target = t;
                 t.fireEvent("editComplete", t.inlineEditSafe);
             }
@@ -562,7 +565,7 @@ define('controls/grid/Grid', [
                 return;
             }
 
-            if (el.style.display == 'block') {
+            if (el.style.display === 'block') {
                 el.style.display = 'none';
                 return;
             }
@@ -958,7 +961,7 @@ define('controls/grid/Grid', [
                 li.getElement('.toggleicon')
                   .setStyle(
                       'background-position',
-                      section.getStyle('display') == 'block' ? '-16px 0' : '0 0'
+                      section.getStyle('display') === 'block' ? '-16px 0' : '0 0'
                   );
             }
 
@@ -1297,13 +1300,14 @@ define('controls/grid/Grid', [
 
             gBlock = new Element('div.gBlock', {
                 styles: {
-                    position                       : 'absolute',
-                    top                            : 0,
-                    left                           : 0,
-                    zIndex                         : 999,
-                    opacity                        : 0.5,
-                    filter                         : 'alpha(opacity=50)',
-                    background                     : 'white none repeat scroll 0% 0%;',
+                    position  : 'absolute',
+                    top       : 0,
+                    left      : 0,
+                    zIndex    : 999,
+                    opacity   : 0.5,
+                    filter    : 'alpha(opacity=50)',
+                    background: 'white none repeat scroll 0% 0%;',
+
                     '-moz-background-clip'         : '-moz-initial',
                     '-moz-background-origin'       : '-moz-initial',
                     '-moz-background-inline-policy': '-moz-initial'
@@ -1517,7 +1521,11 @@ define('controls/grid/Grid', [
 
             // uzmi schemu od prvog podatka
             for (var cn in this.$data[0]) {
-                var dataType = typeof (this.$data[0][cn]) == "number" ? "number" : "string";
+                if (!this.$data[0].hasOwnProperty(cn)) {
+                    continue;
+                }
+
+                var dataType = typeof (this.$data[0][cn]) === "number" ? "number" : "string";
 
                 this.$columnModel.push({
                     header   : cn,
@@ -1802,9 +1810,7 @@ define('controls/grid/Grid', [
          * @returns {Promise}
          */
         setHeight: function (height) {
-
             return new Promise(function (resolve) {
-
                 if (height <= 0) {
                     resolve();
                     return;
@@ -1833,7 +1839,6 @@ define('controls/grid/Grid', [
                         }
 
                         resolve();
-
                     }.bind(this)
                 });
             }.bind(this));
@@ -1846,9 +1851,7 @@ define('controls/grid/Grid', [
          * @returns {Promise}
          */
         setWidth: function (width) {
-
             return new Promise(function (resolve) {
-
                 if (width <= 0) {
                     resolve();
                     return;
@@ -1877,7 +1880,6 @@ define('controls/grid/Grid', [
                         }
 
                         resolve();
-
                     }.bind(this)
                 });
             }.bind(this));
@@ -1946,7 +1948,7 @@ define('controls/grid/Grid', [
          * @param {Number} row - row number
          * @param {Object} data - data for the row
          *
-         * @return {HTMLElement} li
+         * @return {HTMLElement|Element} li
          */
         renderRow: function (row, data) {
             var c;
@@ -1987,7 +1989,7 @@ define('controls/grid/Grid', [
 
                 div = new Element('div.td', {
                     'data-index': columnModel.dataIndex || '',
-                    styles     : {
+                    styles      : {
                         width: (columnModel.width - 6).abs()
                     }
                 });
@@ -2038,7 +2040,6 @@ define('controls/grid/Grid', [
 
                     node.removeProperty('tabindex');  // focus eigenschaft nehmen
                     node.inject(div);
-
                     continue;
                 }
 
@@ -2051,7 +2052,6 @@ define('controls/grid/Grid', [
                     val = rowdata[columnDataIndex];
 
                     div.set('text', val);
-
                     continue;
                 }
 
@@ -2069,14 +2069,14 @@ define('controls/grid/Grid', [
 
                     val = rowdata[columnDataIndex];
 
-                    if (val == 1 || val == 't') {
+                    if (val == 1 || val === 't') {
                         input.set('checked', true);
                     }
 
                     continue;
                 }
 
-                if (columnModel.dataType == "image") {
+                if (columnModel.dataType === "image") {
                     if (ControlUtils.isFontAwesomeClass(rowdata[columnDataIndex])) {
                         new Element('span', {
                             'class': rowdata[columnDataIndex]
@@ -2098,8 +2098,8 @@ define('controls/grid/Grid', [
                     continue;
                 }
 
-                if (columnModel.dataType == "node") {
-                    if (typeof rowdata[columnDataIndex] != 'undefined' &&
+                if (columnModel.dataType === "node") {
+                    if (typeof rowdata[columnDataIndex] !== 'undefined' &&
                         rowdata[columnDataIndex] &&
                         rowdata[columnDataIndex].nodeName) {
                         div.appendChild(
@@ -2115,7 +2115,7 @@ define('controls/grid/Grid', [
                     continue;
                 }
 
-                if (columnModel.dataType == "style") {
+                if (columnModel.dataType === "style") {
                     if (rowdata[columnDataIndex]) {
                         div.setStyles(rowdata[columnDataIndex]);
                     }
@@ -2132,10 +2132,11 @@ define('controls/grid/Grid', [
                 }
 
                 if (str === null ||
-                    str == 'null' ||
+                    str === 'null' ||
                     str === 'undefined' ||
+                    typeof str === 'undefined' ||
                     str === '' ||
-                    str == '&nbsp;') {
+                    str === '&nbsp;') {
                     str = '';
                 }
 
@@ -2332,7 +2333,7 @@ define('controls/grid/Grid', [
                 });
 
                 // default postavke columnModela
-                if (typeof columnModel.width == 'undefined') {
+                if (typeof columnModel.width === 'undefined') {
                     columnModel.width = 100;
                 }
 
@@ -3005,8 +3006,8 @@ define('controls/grid/Grid', [
                 dataIndex   = columnModel.dataIndex;
 
                 if (columnModel.hidden ||
-                    columnModel.dataType == 'button' ||
-                    columnModel.dataType == 'checkbox') {
+                    columnModel.dataType === 'button' ||
+                    columnModel.dataType === 'checkbox') {
                     continue;
                 }
 
@@ -3059,7 +3060,7 @@ define('controls/grid/Grid', [
                 type: type
             };
 
-            if (type != 'print') {
+            if (type !== 'print') {
                 new Element('input#exportDataField', {
                     name  : 'data',
                     value : JSON.encode(tempData),
@@ -3146,7 +3147,7 @@ define('controls/grid/Grid', [
 
                 droppables: this.getAttribute('droppables'),
 
-                onBeforeStart: function (element) {
+                onBeforeStart: function () {
                     this.Drag.focus();
                 }.bind(this),
 
