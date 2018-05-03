@@ -514,7 +514,7 @@ define('controls/grid/Grid', [
 
             t.inlineeditmode = false;
 
-            if (editType == 'input') {
+            if (editType === 'input') {
                 if ((evt && ((evt.type === 'keyup' && evt.key === 'enter') || (evt.type === 'dblclick')))) {
                     data[colmod.dataIndex] = t.inlineEditSafe.input.value;
                 } else {
@@ -2130,6 +2130,8 @@ define('controls/grid/Grid', [
                 if (typeof rowdata[columnDataIndex] !== 'undefined') {
                     str = rowdata[columnDataIndex];
                 }
+
+                str = str.toString().trim();
 
                 if (str === null ||
                     str === 'null' ||
