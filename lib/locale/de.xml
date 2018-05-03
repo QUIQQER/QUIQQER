@@ -5742,6 +5742,12 @@
         <locale name="exception.lib.qui.manager.no.groupid">
             <de><![CDATA[Es wurde keine Gruppen ID übergeben.]]></de>
         </locale>
+        <locale name="exception.cannot.create.children">
+            <de><![CDATA[
+                Die Gruppe konnte nicht angelegt werden.
+                Erstellung unterhalb dieser Eltern-Gruppe ist nicht möglich.
+            ]]></de>
+        </locale>
         <locale name="projects.project.site.panel.information.header">
             <de><![CDATA[Daten von Seite: #[id]]]></de>
         </locale>

@@ -51,10 +51,10 @@ class PackageEvents
             QUI\System\Log::write(
                 $Exception->getMessage(),
                 $Exception->getCode(),
-                array(
+                [
                     'method'  => 'QUI\Package\Composer\PackageEvents::postPackageInstall',
                     'package' => $packageName
-                )
+                ]
             );
         }
     }
@@ -91,10 +91,10 @@ class PackageEvents
             QUI\System\Log::write(
                 $Exception->getMessage(),
                 $Exception->getCode(),
-                array(
+                [
                     'method'  => 'QUI\Package\Composer\PackageEvents::postPackageUpdate',
                     'package' => $packageName
-                )
+                ]
             );
         }
     }
@@ -120,10 +120,10 @@ class PackageEvents
             QUI\System\Log::write(
                 $Exception->getMessage(),
                 $Exception->getCode(),
-                array(
+                [
                     'method'  => 'QUI\Package\Composer\PackageEvents::postPackageUninstall',
                     'package' => $packageName
-                )
+                ]
             );
         }
     }
@@ -150,7 +150,7 @@ class PackageEvents
         }
 
         if (!defined('ETC_DIR')) {
-            define('ETC_DIR', $config['config']['quiqqer-dir'] . 'etc/');
+            define('ETC_DIR', $config['config']['quiqqer-dir'].'etc/');
         }
 
         QUI::load();
