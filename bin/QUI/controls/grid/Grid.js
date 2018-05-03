@@ -2127,7 +2127,8 @@ define('controls/grid/Grid', [
 
                 var str = rowdata[columnDataIndex];
 
-                if (typeof rowdata[columnDataIndex] !== 'undefined') {
+                if (typeof rowdata[columnDataIndex] !== 'undefined'
+                    && rowdata[columnDataIndex] !== null) {
                     str = rowdata[columnDataIndex];
                 } else {
                     str = '';
