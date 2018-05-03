@@ -359,7 +359,7 @@ define('controls/grid/Grid', [
             var sumWidth = buttons.map(function (Button) {
                 return Button.getComputedSize().totalWidth;
             }).sum() - menuWidth + (buttons.length * 10);
-            
+
             if (sumWidth > width) {
                 // hide buttons
                 buttons.setStyle('display', 'none');
@@ -2306,7 +2306,13 @@ define('controls/grid/Grid', [
                     // context menu
                     if (Btn.$items.length) {
                         for (var itm = 0, itmLength = Btn.$items.length; itm < itmLength; itm++) {
-                            Item.appendChild(Btn.$items[itm]);
+                            var ItemClone = new QUIContextItem(
+                                Btn.$items[itm].getAttributes()
+                            );
+
+                            ItemClone.addEvent('onClick', itemClick.bind(Btn.$items[itm]));
+
+                            Item.appendChild(ItemClone);
                         }
                     }
 
