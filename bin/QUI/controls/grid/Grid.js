@@ -174,9 +174,8 @@ define('controls/grid/Grid', [
             this.resize();
             this.loadData();
 
-            (function () {
-                this.resize();
-            }).delay(500, this);
+            this.resize.delay(250, this);
+            this.resize.delay(500, this);
         },
 
         getElm: function () {
@@ -362,7 +361,7 @@ define('controls/grid/Grid', [
             }).sum() - menuWidth + (buttons.length * 10);
 
             // console.log(this.$Menu.getElm());
-            if (sumWidth > width) {
+            if (sumWidth > width || true) {
                 // hide buttons
                 buttons.setStyle('display', 'none');
 
@@ -370,7 +369,6 @@ define('controls/grid/Grid', [
                     this.$Menu.enable();
                     this.$Menu.show();
                 }
-
             } else {
                 // show buttons
                 buttons.setStyle('display', null);
@@ -1483,7 +1481,7 @@ define('controls/grid/Grid', [
         },
 
         // API
-        setColumnModel    : function (cmu) {
+        setColumnModel: function (cmu) {
             if (!cmu) {
                 return;
             }
@@ -1491,8 +1489,9 @@ define('controls/grid/Grid', [
             this.$columnModel = cmu;
             this.draw();
         },
+
         // API
-        setColumnProperty : function (columnName, property, value) {
+        setColumnProperty: function (columnName, property, value) {
             var i, len;
             var cmu = this.$columnModel;
 
@@ -1503,12 +1502,13 @@ define('controls/grid/Grid', [
             columnName = columnName.toLowerCase();
 
             for (i = 0, len = cmu.length; i < len; i++) {
-                if (cmu[i].dataIndex.toLowerCase() == columnName) {
+                if (cmu[i].dataIndex.toLowerCase() === columnName) {
                     cmu[i][property] = value;
                     return;
                 }
             }
         },
+
         // Automatsko odredivanje column modela ako nije zadan
         setAutoColumnModel: function () {
             var rowCount = this.$data.length;
@@ -1542,8 +1542,9 @@ define('controls/grid/Grid', [
 
             this.draw();
         },
+
         // API
-        setSize           : function (w, h) {
+        setSize: function (w, h) {
             var container = this.container,
                 gBlock    = container.getElement('.gBlock'),
                 hDiv      = container.getElement('.hDiv'),
@@ -2230,13 +2231,27 @@ define('controls/grid/Grid', [
                 // button drop down
                 this.$Menu = new QUIButton({
                     textimage   : 'fa fa-navicon',
-                    text        : 'Menü',
+                    text        : 'Menü', // @todo #locale
                     dropDownIcon: false
                 }).inject(tDiv);
 
                 var bt = this.getAttribute('buttons');
 
                 var node, Btn;
+
+                var itemClick = function () {
+                    if (!this.getChildren().length) {
+                        this.click();
+                    }
+                };
+
+                var itemDisable = function () {
+                    this.disable();
+                };
+
+                var itemNormal = function () {
+                    this.enable();
+                };
 
                 for (i = 0, len = bt.length; i < len; i++) {
                     bt[i].type = bt[i].type || '';
@@ -2268,24 +2283,14 @@ define('controls/grid/Grid', [
                         text  : Btn.getAttribute('text'),
                         icon  : Btn.getAttribute('image') || Btn.getAttribute('textimage'),
                         events: {
-                            onClick: function () {
-                                this.click();
-                            }.bind(Btn)
+                            onClick: itemClick.bind(Btn)
                         }
                     });
 
                     Btn.addEvents({
-                        onDisable: function () {
-                            this.disable();
-                        }.bind(Item),
-
-                        onNormal: function () {
-                            this.enable();
-                        }.bind(Item),
-
-                        onEnable: function () {
-                            this.enable();
-                        }.bind(Item),
+                        onDisable: itemDisable.bind(Item),
+                        onNormal : itemNormal.bind(Item),
+                        onEnable : itemNormal.bind(Item),
 
                         onSetAttribute: function (key, value) {
                             if (key === 'text') {
@@ -2296,11 +2301,16 @@ define('controls/grid/Grid', [
                             if (key === 'image' || key === 'textimage') {
                                 this.setAttribute('icon', value);
                             }
-
                         }.bind(Item)
                     });
 
                     // context menu
+                    if (Btn.$items.length) {
+                        for (var itm = 0, itmLength = Btn.$items.length; itm < itmLength; itm++) {
+                            Item.appendChild(Btn.$items[itm]);
+                        }
+                    }
+
                     this.$Menu.appendChild(Item);
 
                     if (Btn.isDisabled()) {
@@ -2426,7 +2436,7 @@ define('controls/grid/Grid', [
                     var dragSt       = new Element('div');
                     var headerHeight = options.showHeader ? 24 + 2 : 0; // +2 border
 
-                    if (typeof columnModel.width == 'undefined') {
+                    if (typeof columnModel.width === 'undefined') {
                         columnModel.width = 100;
                     }
 
@@ -2970,6 +2980,10 @@ define('controls/grid/Grid', [
             };
 
             for (var exportType in options.exportTypes) {
+                if (!options.exportTypes.hasOwnProperty(exportType)) {
+                    continue;
+                }
+
                 new QUIButton({
                     name      : exportType,
                     text      : options.exportTypes[exportType],
@@ -2984,7 +2998,7 @@ define('controls/grid/Grid', [
 
             new QUIButton({
                 name     : 'cancel',
-                text     : 'Abbrechen',
+                text     : QUILocale.get('quiqqer/quiqqer', 'cancel'),
                 events   : {
                     click: function () {
                         document.getElement('.exportSelectDiv').destroy();
