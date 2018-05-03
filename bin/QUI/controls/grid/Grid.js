@@ -359,9 +359,8 @@ define('controls/grid/Grid', [
             var sumWidth = buttons.map(function (Button) {
                 return Button.getComputedSize().totalWidth;
             }).sum() - menuWidth + (buttons.length * 10);
-
-            // console.log(this.$Menu.getElm());
-            if (sumWidth > width || true) {
+            
+            if (sumWidth > width) {
                 // hide buttons
                 buttons.setStyle('display', 'none');
 
