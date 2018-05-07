@@ -343,26 +343,30 @@ define('controls/grid/Grid', [
          * Resize the grid
          */
         resize: function () {
-            var Container = this.container,
-                width     = Container.getSize().x,
-                buttons   = Container.getElements('.tDiv button'),
-                menuWidth = 0;
+            var self       = 0,
+                Container  = this.container,
+                width      = Container.getSize().x,
+                buttons    = Container.getElements('.tDiv button'),
+                separators = Container.getElements('.tDiv .qui-buttons-separator');
 
             buttons.setStyle('display', null);
 
-            if (this.$Menu) {
-                this.$Menu.hide();
-
-                menuWidth = this.$Menu.getElm().getSize().x;
-            }
-
             var sumWidth = buttons.map(function (Button) {
+                if (self.$Menu === Button) {
+                    return 0;
+                }
+
                 return Button.getComputedSize().totalWidth;
-            }).sum() - menuWidth + (buttons.length * 10);
+            }).sum();
+
+            sumWidth = sumWidth + separators.map(function (Separator) {
+                return Separator.getComputedSize().totalWidth;
+            }).sum();
 
             if (sumWidth > width) {
                 // hide buttons
                 buttons.setStyle('display', 'none');
+                separators.setStyle('display', 'none');
 
                 if (this.$Menu) {
                     this.$Menu.enable();
@@ -371,6 +375,7 @@ define('controls/grid/Grid', [
             } else {
                 // show buttons
                 buttons.setStyle('display', null);
+                separators.setStyle('display', null);
 
                 if (this.$Menu) {
                     this.$Menu.disable();
