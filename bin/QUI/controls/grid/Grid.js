@@ -430,13 +430,13 @@ define('controls/grid/Grid', [
                         continue;
                     }
 
-                    if (colmod.dataIndex == options.dataIndex) {
+                    if (colmod.dataIndex === options.dataIndex) {
                         break;
                     }
                 }
             }
 
-            if (c == this.$columnModel.length) {
+            if (c === this.$columnModel.length) {
                 return;
             }
 
@@ -764,6 +764,10 @@ define('controls/grid/Grid', [
                     endindex = Math.max(si, endindex);
 
                     for (i = startindex; i <= endindex; i++) {
+                        if (t.elements[i].hasClass('hide')) {
+                            continue;
+                        }
+
                         t.elements[i].addClass('selected');
                         t.selected.push(Number(i));
                     }
@@ -1363,7 +1367,12 @@ define('controls/grid/Grid', [
             for (i = 0, len = this.elements.length; i < len; i++) {
                 el = this.elements[i];
 
+                if (el.hasClass('hide')) {
+                    continue;
+                }
+
                 this.selected.push(el.retrieve('row'));
+
                 el.addClass('selected');
             }
 
@@ -1381,6 +1390,10 @@ define('controls/grid/Grid', [
                 // nothing
             } else {
                 this.unselectAll();
+            }
+
+            if (Row.hasClass('hide')) {
+                return;
             }
 
             var i, len;
