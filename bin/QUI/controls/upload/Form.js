@@ -17,16 +17,7 @@
  * @fires onDragleave [event, DOMNode, controls/upload/Form]
  * @fires onDragend [event, DOMNode, controls/upload/Form]
  * @fires onDrop [event, files, Elm, Upload]
- * @fires onError [ qui/controls/messages/Error }
- *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/utils/Progressbar
- * @require qui/controls/buttons/Button
- * @require utils/Media
- * @require classes/request/Upload
- * @require Locale
- * @require css!controls/upload/Form.css
+ * @fires onError [qui/controls/messages/Error]
  */
 define('controls/upload/Form', [
 
@@ -219,7 +210,7 @@ define('controls/upload/Form', [
          * Create the Form DOMNode
          *
          * @method controls/upload/Form#create
-         * @return {HTMLElement} Form
+         * @return {HTMLElement|Element} Form
          */
         create: function () {
             var self = this;
@@ -302,10 +293,17 @@ define('controls/upload/Form', [
                 text     : Locale.get(lg, 'upload.form.btn.add.text'),
                 events   : {
                     onClick: function () {
+                        self.cleanup();
+
                         var Input = self.addInput();
 
                         if (Input) {
+                            self.$formClick = true;
                             Input.click();
+
+                            (function () {
+                                self.$formClick = false;
+                            }).delay(200);
                         }
                     }
                 },
@@ -426,6 +424,7 @@ define('controls/upload/Form', [
             if (this.getAttribute('maxuploads') !== false &&
                 elms.length !== 0 &&
                 this.getAttribute('maxuploads') < elms.length) {
+
                 QUI.getMessageHandler(function (MH) {
                     MH.addError(
                         Locale.get(lg, 'upload.form.message.limit', {
@@ -472,8 +471,7 @@ define('controls/upload/Form', [
                         var File = Target.getElement('input[type="file"]');
 
                         File.focus();
-
-                        (File.click()).delay(200);
+                        File.click.delay(200, File);
                     }
                 }
             }).inject(Container);
@@ -492,13 +490,12 @@ define('controls/upload/Form', [
                             delete self.$files[fid];
                         }
 
-
                         Container.destroy();
+
                         self.fireEvent('inputDestroy');
                         self.refreshDisplay();
                     }
                 }
-
             }).inject(Container);
 
 
@@ -572,8 +569,6 @@ define('controls/upload/Form', [
         /**
          * Cleanup the form
          * Removes empty file entries
-         *
-         * @deprecated
          */
         cleanup: function () {
             var emptyUploads = this.$Form.getElements('div.qui-form-upload').filter(function (Upload) {
