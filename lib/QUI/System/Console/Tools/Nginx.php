@@ -28,8 +28,8 @@ class Nginx extends QUI\System\Console\Tool
         $this->setName('quiqqer:nginx')
             ->setDescription('Generate the nginx.conf File.');
 
-        $this->nginxConfDir    = ETC_DIR . "nginx/";
-        $this->nginxConfigFile = $this->nginxConfDir . "nginx.conf";
+        $this->nginxConfDir    = ETC_DIR."nginx/";
+        $this->nginxConfigFile = $this->nginxConfDir."nginx.conf";
     }
 
     /**
@@ -41,7 +41,7 @@ class Nginx extends QUI\System\Console\Tool
     {
         $this->writeLn('Generating nginx.conf ...');
 
-        $nginxBackupFile = VAR_DIR . 'backup/nginx.conf_' . date('Y-m-d__H_i_s');
+        $nginxBackupFile = VAR_DIR.'backup/nginx.conf_'.date('Y-m-d__H_i_s');
 
         // ************************************* //
         //              Sub Configs              //
@@ -55,19 +55,19 @@ class Nginx extends QUI\System\Console\Tool
 HEAD;
 
         // Create cert directory
-        if (!is_dir($this->nginxConfDir . "/certs")) {
-            mkdir($this->nginxConfDir . "/certs", 0755, true);
+        if (!is_dir($this->nginxConfDir."/certs")) {
+            mkdir($this->nginxConfDir."/certs", 0755, true);
         }
 
         // Create subconfig dir
-        $this->subConfDir = $this->nginxConfDir . "conf.d/";
+        $this->subConfDir = $this->nginxConfDir."conf.d/";
         if (!is_dir($this->subConfDir)) {
             mkdir($this->subConfDir, 0755, true);
         }
 
         // Create subconfig: PHP
-        if (!file_exists($this->subConfDir . "php.include")) {
-            file_put_contents($this->subConfDir . "php.include", $header);
+        if (!file_exists($this->subConfDir."php.include")) {
+            file_put_contents($this->subConfDir."php.include", $header);
 
             $geoIPSettings = <<<GEO
 ### SET GEOIP Variables ###
@@ -86,31 +86,94 @@ HEAD;
 #fastcgi_param GEOIP_LONGITUDE \$geoip_longitude;
 GEO;
 
-            file_put_contents($this->subConfDir . "php.include", $geoIPSettings, FILE_APPEND);
+            file_put_contents($this->subConfDir."php.include", $geoIPSettings, FILE_APPEND);
         }
 
-        if (!file_exists($this->subConfDir . "redirects.include")) {
-            file_put_contents($this->subConfDir . "redirects.include", $header);
+        if (!file_exists($this->subConfDir."redirects.include")) {
+            file_put_contents($this->subConfDir."redirects.include", $header);
         }
 
-        if (!file_exists($this->subConfDir . "whitelist.include")) {
-            file_put_contents($this->subConfDir . "whitelist.include", $header);
+        if (!file_exists($this->subConfDir."whitelist.include")) {
+            file_put_contents($this->subConfDir."whitelist.include", $header);
         }
 
-        if (!file_exists($this->subConfDir . "server.include")) {
-            file_put_contents($this->subConfDir . "server.include", $header);
+        if (!file_exists($this->subConfDir."server.include")) {
+            file_put_contents($this->subConfDir."server.include", $header);
         }
 
-        if (!file_exists($this->subConfDir . "ssl.include")) {
+        if (!file_exists($this->subConfDir."ssl.include")) {
             $sslConfTemplate = $header;
-            $sslConfTemplate .= "ssl    on;" . PHP_EOL;
-            $sslConfTemplate .= "ssl_certificate        " . $this->nginxConfDir . "certs/cert.pem;        # Replace with valid certificate" . PHP_EOL;
-            $sslConfTemplate .= "ssl_certificate_key    " . $this->nginxConfDir . "certs/key.pem;      # Replace with valid certificate key" . PHP_EOL;
+            $sslConfTemplate .= "ssl    on;".PHP_EOL;
+            $sslConfTemplate .= "ssl_certificate        ".$this->nginxConfDir."certs/cert.pem;        # Replace with valid certificate".PHP_EOL;
+            $sslConfTemplate .= "ssl_certificate_key    ".$this->nginxConfDir."certs/key.pem;      # Replace with valid certificate key".PHP_EOL;
 
-            
-            file_put_contents($this->nginxConfDir . "certs/cert.pem", "# Replace this file with your valid SSL certificate");
-            file_put_contents($this->nginxConfDir . "certs/key.pem", "# Replace this file with your valid certificates key");
-            file_put_contents($this->subConfDir . "ssl.include", $sslConfTemplate);
+            file_put_contents(
+                $this->nginxConfDir."certs/cert.pem",
+                "# Replace this file with your valid SSL certificate"
+            );
+            file_put_contents(
+                $this->nginxConfDir."certs/key.pem",
+                "# Replace this file with your valid certificates key"
+            );
+            file_put_contents($this->subConfDir."ssl.include", $sslConfTemplate);
+        }
+
+        if (!file_exists($this->subConfDir."optimization.include")) {
+            $optimizations = $header;
+            $optimizations .= PHP_EOL;
+            $optimizations .= <<<OPTI
+# GZIP Compression
+gzip on;
+gzip_comp_level    5;
+gzip_min_length    256;
+gzip_proxied       any;
+gzip_vary          on;
+
+gzip_types
+application/atom+xml
+application/javascript
+application/json
+application/ld+json
+application/manifest+json
+application/rss+xml
+application/vnd.geo+json
+application/vnd.ms-fontobject
+application/x-font-ttf
+application/x-web-app-manifest+json
+application/xhtml+xml
+application/xml
+font/opentype
+image/bmp
+image/svg+xml
+image/x-icon
+text/cache-manifest
+text/css
+text/plain
+text/xml
+text/vcard
+text/vnd.rim.location.xloc
+text/vtt
+text/x-component
+text/x-cross-domain-policy;
+
+# Cache Control
+location ~*  \.(css|html|js)$ {
+    expires 7d;
+}
+
+location ~*  \.(xml)$ {
+    expires 600s;
+}
+
+location ~*  \.(gif|jpg|jpeg|png|svg|ico)$ {
+    expires 1M;
+}
+
+# ETag
+etag off;
+OPTI;
+
+            file_put_contents($this->subConfDir."optimization.include", $optimizations);
         }
 
         // ************************************* //
@@ -276,11 +339,9 @@ PHPPARAM;
     
             include {$this->subConfDir}redirects.include;
     
-            ################################
-            #         Whitelist            #
-            ################################
+          
     
-    
+   
             # /////////////////////////////////////////////////////////////////////////////////
             # Whitelisted php
             # ////////////////////////////////////////////////////////////////////////////////
@@ -306,6 +367,11 @@ PHPPARAM;
                 {$phpParams}
             }
     
+    
+            # /////////////////////////////////////////////////////////////////////////////////
+            # Optimize static files (Cache, Compression)
+            # /////////////////////////////////////////////////////////////////////////////////
+            include {$this->subConfDir}optimization.include;
     
             # /////////////////////////////////////////////////////////////////////////////////
             # Whitelisted static files
