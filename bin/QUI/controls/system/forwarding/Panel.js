@@ -1,11 +1,6 @@
 /**
  * @module controls/system/forwarding/Panel
- *
- * @require qui/QUI
- * @require qui/controls/desktop/Panel
- * @require controls/grid/Grid
- * @require Ajax
- * @require Locale
+ * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/system/forwarding/Panel', [
 
@@ -316,20 +311,42 @@ define('controls/system/forwarding/Panel', [
 
                     onSubmit: function (Win) {
                         var Content = Win.getContent(),
-                            Form    = Content.getElement('form');
+                            Form    = Content.getElement('form'),
+                            data    = QUIFormUtils.getFormData(Form);
 
                         Win.Loader.show();
 
-                        var data = QUIFormUtils.getFormData(Form);
+                        if (forwarding !== data.from) {
+                            // remove old one
+                            QUIAjax.get('ajax_system_forwarding_delete', function () {
+                                // create new one
+                                QUIAjax.get('ajax_system_forwarding_create', function () {
+                                    self.refresh().then(function () {
+                                        Win.close();
+                                    });
+                                }, {
+                                    from  : data.from,
+                                    target: data.target,
+                                    code  : data.code
+                                });
+                            }, {
+                                from: JSON.encode(forwarding)
+                            });
+
+                            return;
+                        }
 
                         QUIAjax.get('ajax_system_forwarding_update', function () {
                             self.refresh().then(function () {
                                 Win.close();
                             });
                         }, {
-                            from  : data.from,
-                            target: data.target,
-                            code  : data.code
+                            from   : data.from,
+                            target : data.target,
+                            code   : data.code,
+                            onError: function () {
+                                Win.Loader.hide();
+                            }
                         });
                     }
                 }
@@ -346,7 +363,7 @@ define('controls/system/forwarding/Panel', [
                 return;
             }
 
-            if (typeOf(forwarding) == 'string') {
+            if (typeOf(forwarding) === 'string') {
                 forwarding = [forwarding];
             }
 
