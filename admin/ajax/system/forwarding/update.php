@@ -12,6 +12,6 @@ QUI::$Ajax->registerFunction(
     function ($from, $target, $code) {
         QUI\System\Forwarding::update($from, $target, $code);
     },
-    array('from', 'target', 'code'),
+    ['from', 'target', 'code'],
     'Permission::checkUser'
 );
