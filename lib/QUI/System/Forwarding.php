@@ -29,10 +29,10 @@ class Forwarding
         $config = self::getConfg()->toArray();
 
         if (isset($config[$from])) {
-            throw new QUI\Exception(array(
+            throw new QUI\Exception([
                 'quiqqer/quiqqer',
                 'exception.forwarding.already.exists'
-            ));
+            ]);
         }
 
         if (empty($httpCode)) {
@@ -59,10 +59,10 @@ class Forwarding
 
         if (!isset($config[$from])) {
             throw new QUI\Exception(
-                array(
+                [
                     'quiqqer/quiqqer',
                     'exception.forwarding.not.found'
-                ),
+                ],
                 404
             );
         }
@@ -134,9 +134,14 @@ class Forwarding
         $request = $host.$uri;
 
         // directly found
-        if (isset($list[$request]) || isset($list[trim($request, '/')])) {
+        if (isset($list[$request])) {
             self::redirect($list[$request]);
         }
+
+        if (isset($list[trim($request, '/')])) {
+            self::redirect($list[trim($request, '/')]);
+        }
+        
 
         // search
         foreach ($list as $from => $params) {
