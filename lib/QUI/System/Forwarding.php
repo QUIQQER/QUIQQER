@@ -80,6 +80,7 @@ class Forwarding
      * Löscht ein forwarding eintrag
      *
      * @param string|array $from
+     * @throws QUI\Exception
      */
     public static function delete($from)
     {
@@ -98,6 +99,8 @@ class Forwarding
      * Return the forwarding config
      *
      * @return QUI\Config
+     *
+     * @throws QUI\Exception
      */
     public static function getConfg()
     {
@@ -115,7 +118,13 @@ class Forwarding
      */
     public static function getList()
     {
-        return new Collection(self::getConfg()->toArray());
+        try {
+            return new Collection(self::getConfg()->toArray());
+        } catch (QUI\Exception $Exception) {
+            Log::writeException($Exception);
+        }
+
+        return new Collection([]);
     }
 
     /**
@@ -127,7 +136,14 @@ class Forwarding
      */
     public static function forward(Request $Request)
     {
-        $list = self::getConfg()->toArray();
+        $list = [];
+
+        try {
+            $list = self::getConfg()->toArray();
+        } catch (QUI\Exception $Exception) {
+            Log::writeException($Exception);
+        }
+
         $uri  = $Request->getRequestUri();
         $host = $Request->getSchemeAndHttpHost();
 
@@ -141,7 +157,7 @@ class Forwarding
         if (isset($list[trim($request, '/')])) {
             self::redirect($list[trim($request, '/')]);
         }
-        
+
 
         // search
         foreach ($list as $from => $params) {
@@ -154,6 +170,8 @@ class Forwarding
     }
 
     /**
+     * Execute a redirection
+     *
      * @param array $data
      */
     protected static function redirect($data)
