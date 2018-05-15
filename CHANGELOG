@@ -1,4 +1,5 @@
-1.1 (xx.09.2017)
+
+1.1 (15.05.2018)
 ------
 
     Overview
@@ -7,63 +8,166 @@
 
     Features
 
-    - feat: quiqqer/quiqqer#579 - Manuell heruntergeladene Pakete installieren
-    - feat: quiqqer/quiqqer#571 - ADMIN ist true im Frontend
-    - feat: quiqqer/quiqqer#545 - Filter im Media Bereich wäre toll
-    - feat: quiqqer/quiqqer#361 - Symmetrische Verschlüsselung überarbeiten
-    - feat: quiqqer/quiqqer#508 - Toolbars WYSIWYG-Editor
-    - feat: quiqqer/quiqqer#300 - Menü Rechte
-    - feat: quiqqer/quiqqer#535 - Im Media Bereich möchte ich einen ganzen Ordner als .zip runterladen
+    - feat: #300 - Menü Permissions
+    - feat: #361 - Symmetric encryption improved
+    - feat: #508 - Default Toolbars for the WYSIWYG-Editor
+    - feat: #535 - In the media area its possible to download a whole folder as a.zip file
+    - feat: #545 - Filters integrated in the media area
+    - feat: #565 - Console tool for changing the project name and deleting projects
+    - feat: #571 - Dev: ADMIN Flag is true
+    - feat: #579 - Installing manually downloaded Packages
+    - feat: #594 - New menu for the user profile in the administration
+    - feat: #601 - Dev: site.xml extend by category entries
+    - feat: #605 - Project selection in the media area
+    - feat: #607 - Workspace optimizations if it does not fit into the view
+    - feat: #623 - Console tool for package / module management
+    - feat: #630 - Integration of the Q-Store
+    - feat: #638 - Dev: External Image Object
+    - feat: #641 - Dev: nocache Flag for the site.xml
+    - feat: #648 - Integration of a system check
+    - feat: #676 - New button colors
+    - feat: #698 - Custom data for addresses
 
+    - feat: Added lockserver support to package manager. Might still be broken.
+    - feat: Added new consoletools to remove or rename a project
+    - feat: Added new setting for the lock server
+    - feat: Added static file optimizations to the nginx config generator.
+    - feat: Address getPhone Method
+    - feat: Address->equals() to compare two addresses
+    - feat: Address->getName() method
+    - feat: Addresslimit per user built in - quiqqer/frontend-users#19
+    - feat: API extension for the Panel Utils
+    - feat: Check if user with email address exists
+    - feat: CLImate integration
+    - feat: controls/users/Login -> userLoginError event
+    - feat: CopyLanguageSites console tool
+    - feat: create Project -> languages parameter -> create a project with multiple languages
+    - feat: Erklärungstext für Datei Checksum Popup. refactor: Code Optimierung in SystemCheck.js.
+    - feat: Execute package setup via console
+    - feat: Flexbox tables -> have a css to display help texts on a question mark
+    - feat: Generate random password
+    - feat: GetProjectByVhost
+    - feat: Global forwardings are now completly editable
+    - feat: Grid -> Grid cells now have a data-index attribute, so it is possible to react to cell events better
+    - feat: Grid: deselect rows that are hidden by filter
+    - feat: JS has the posibility to get the base url from a site
+    - feat: Log::writeDebugException
+    - feat: Mail Test logged noch mehr -> auf phpmail loglevel 3 gestellt
+    - feat: MailQueue->sendAll()
+    - feat: Name / Url Field in Seiten Information -> ein / ausklapbar
+    - feat: New Event: onGroupCreate event
+    - feat: New events for setup, project and package
+    - feat: ParentUser for ->addAddress()
+    - feat: Project data are sent by ajax as standard.
+    - feat: Projekt-Panel optimiert; Schnelleres Arbeiten durch Umsetllung der GUI
+    - feat: Reasons for authentication error exceptions
+    - feat: Redirect to login site after successful password reset
+    - feat: refactor: User->getUniqueId : RFC 4122
+    - feat: Renamed the requirements-checksum states and their descriptions
+    - feat: Reset password functionality
+    - feat: Restrict login for X seconds after failed login attempt
+    - feat: Send QUI\Exception attributes to frontend
+    - feat: set mail limit per hour for mail queue
+    - feat: set period of validity for password reset link
+    - feat: Setup::executeEachPackageSetup has the package setup options
+    - feat: Show specific authenticators in login control
+    - feat: Site->getUrlRewrittenWithHost() method
+    - feat: SSl configuration is now done by an included config to avoid overwriting certificate locations on
+    - feat: The main QUIQQER Object now has an auth verification method; with the auth message its possible to refresh the user messages, too
+    - feat: The webinterface will now use the lockserver to check for updates and to run updates
+    - feat: Users->hasEmail() to check if a user has an email address quiqqer/contact#14
+
+    - feat: quiqqer/package-translator#28 - Package setup will now use \QUI\Translator::batchImportFromPackage() to import the packages locale.xml files
     - feat: quiqqer/packagestore#1 - Package-Store
+    - feat: quiqqer/packagestore#28 Multilang package store url
+    - feat: quiqqer/package-sitetypes#7
+
+    - feat: API - New global admin event -> onAdminRequest
+    - feat: API - New Event: onUserLoginStart
+    - feat: API - New Event: onUserGetAvatar
+    - feat: API - New Event: onUserLogout
+    - feat: API - New Event: onUserCreate
+
 
     Bugfixes
 
-    - fix: quiqqer/quiqqer#569 - Upload-Control umgestalten
-    - fix: quiqqer/quiqqer#584 - Media: Datei umbennen -> in Namen auf bestehende Datei
-    - fix: quiqqer/quiqqer#471 - Benutzer-Panel für einen Benutzer lassen sich mehrfach öffnen
-    - fix: quiqqer/quiqqer#467 - Media: Fehlerhaftes Bild verursacht Internal Server Error
-    - fix: quiqqer/quiqqer#585 - Malformed gitlab
-    - fix: quiqqer/quiqqer#568 - Media Popup: Navigation in Ordner in Listenaischt nicht möglich.
-    - fix: quiqqer/quiqqer#581 - Update Konsolen Tool zeigt kein Fortschritt an
-    - fix: quiqqer/quiqqer#575 - Console: getUserBySession sollte den eingeloggten Benutzer zurückgeben
-    - fix: quiqqer/quiqqer#542 - Config für max file size bitte bauen
-    - fix: quiqqer/quiqqer#566 - Loader im Seiten-Panel verschwindet nicht, wenn ein Fehler beim Speichern auftritt
-    - fix: quiqqer/quiqqer#567 - Vorschau Funktion nicht nutzbar
-    - fix: quiqqer/quiqqer#574 - Host kommt in Canonical doppelt
-    - fix: quiqqer/quiqqer#432 - Passwort-Sicherheit mangelhaft -> genHash replaced
-    - fix: quiqqer/quiqqer#544 - Einstellung Paketrechte verwenden doppelt vorhanden
-    - fix: quiqqer/quiqqer#556 - Media: Suche case insensitive suchen lassen?
-    - fix: quiqqer/quiqqer#557 - Media: Theoretisch funktionierender SVG kann nicht angezeigt werden.
-    - fix: quiqqer/quiqqer#487 - Fehler bei Migration
-    - fix: quiqqer/quiqqer#543 - -1 max memory wird beim update mit beachtet
-    - fix: quiqqer/quiqqer#539 - MAC OS - Media Mehrfachmarkierung funktioniert nicht
-    - fix: quiqqer/quiqqer#456 - Neue Gruppe anlegen ohne Rechte - Fenster öffnet sich
-    - fix: quiqqer/quiqqer#493 - Mehrere Ordner löschen in Media-Bereich
-    - fix: quiqqer/quiqqer#520 - Falscher Text in den Projekteinstellungen Einstellungen--> projekt
-    - fix: quiqqer/quiqqer#534 - Bei Package uninstall werden keine Events entfernt
-    - fix: quiqqer/quiqqer#533 - In der Sortierung in den Ordnereigenschaften wären Vorschaubilder super
-    - fix: quiqqer/quiqqer#521 - Media Detailansicht verhindert Ordner Navigation
-    - fix: quiqqer/quiqqer#518 - Absturz beim erstellen einer neuen Toolbar
+    - fix: quiqqer/quiqqer#334 - Note paths of child pages when saving a page
+    - fix: quiqqer/quiqqer#392 - Media -> Image title upper and lower case
+    - fix: quiqqer/quiqqer#400 - var/media folders merged
+    - fix: quiqqer/quiqqer#432 - Password security deficient -> genHash replaced
+    - fix: quiqqer/quiqqer#456 - Create new group without permissions - window opens
+    - fix: quiqqer/quiqqer#467 - Media: Incorrect image causes Internal Server Error
+    - fix: quiqqer/quiqqer#471 - User panel for one user can be opened multiple times
+    - fix: quiqqer/quiqqer#483 - Endless loading when system management is called with non SU users
+    - fix: quiqqer/quiqqer#487 - Error during migration
+    - fix: quiqqer/quiqqer#489 - Groups: Change parent group
+    - fix: quiqqer/quiqqer#493 - Delete multiple folders in media area
+    - fix: quiqqer/quiqqer#496 - Add Update Server: Missing overview
+    - fix: quiqqer/quiqqer#503 - Lock error fixed
+    - fix: quiqqer/quiqqer#504 - Deleted CSP rules come back after saving
+    - fix: quiqqer/quiqqer#513 - Setup: Create standard page structure for all languages. (So far only German is considered)
+    - fix: quiqqer/quiqqer#514 - Setup: SQL error duplicate entry of permissions.
+    - fix: quiqqer/quiqqer#515 - Incorrect implementation of hreflang
+    - fix: quiqqer/quiqqer#516 - Display message if backend login not allowed
+    - fix: quiqqer/quiqqer#518 - Crash when creating a new toolbar
+    - fix: quiqqer/quiqqer#520 - Wrong text in project settings--> project
+    - fix: quiqqer/quiqqer#521 - Media detail view prevents folder navigation
+    - fix: quiqqer/quiqqer#524 - Nginx: Extend FastCGI Pamater.
     - fix: quiqqer/quiqqer#532 - upload.php did not pass messages to the end user
-    - fix: quiqqer/quiqqer#536 - Groß geschriebene Datei-Endungen werden im Media-Bereich nicht als Bild erkannt
-    - fix: quiqqer/quiqqer#537 - Mit Rechtsklick Datei im Media umbenennen
-    - fix: quiqqer/quiqqer#524 - Nginx: FastCGI Pamater erweitern.
-    - fix: quiqqer/quiqqer#483 - Endloses Laden wenn Systemverwaltung mit nicht SU Nutzer aufgerufen wird
-    - fix: quiqqer/quiqqer#516 - Meldung anzeigen wenn Backend-Login nicht erlaubt
-    - fix: quiqqer/quiqqer#515 - Fehlerhafte Umsetzung von hreflang
-    - fix: quiqqer/quiqqer#504 - Gelöschte CSP Regeln kommen nach dem Speichern wieder
-    - fix: quiqqer/quiqqer#514 - Setup: SQL Fehler doppelter Eintrag von Permissions.
-    - fix: quiqqer/quiqqer#513 - Setup: Standard Seitenstruktur für alle Sprachen anlegen. (Bisher wird nur Deutsch beachtet)
-    - fix: quiqqer/quiqqer#400 - var/media order zusammenführen
-    - fix: quiqqer/quiqqer#496 - Update Server hinzufügen: Fehlende Übersicht
-    - fix: quiqqer/quiqqer#334 - Pfade von Kind-Seiten beim Speichern einer Seite beachten
-    - fix: quiqqer/quiqqer#489 - Gruppen: Parent-Gruppe ändern
-    - fix: quiqqer/quiqqer#503 - Lock-Fehler behoben
-
-    - fix: quiqqer/package-bricks#64 - Bausteine in einer Seite lassen sich nicht mehr aufrufen
-    - fix: quiqqer/package-meta#3 - Permalink funktioniert nicht; Bug in Rewrite wenn setSite genutzt wurde
-
+    - fix: quiqqer/quiqqer#533 - In the sorting in the folder properties thumbnails would be super
+    - fix: quiqqer/quiqqer#534 - No events are removed with Package uninstall
+    - fix: quiqqer/quiqqer#536 - Capitalized file extensions are not recognized as images in the media area
+    - fix: quiqqer/quiqqer#537 - Right click rename file in media
+    - fix: quiqqer/quiqqer#539 - MAC OS - media multiple selection does not work
+    - fix: quiqqer/quiqqer#542 - Config for max file size
+    - fix: quiqqer/quiqqer#543 - -1 max memory will be considered during the update
+    - fix: quiqqer/quiqqer#544 - Setting Use Package Rights exists twice
+    - fix: quiqqer/quiqqer#556 - Media: Let the search case insensitive searching
+    - fix: quiqqer/quiqqer#557 - Media: Theoretically correct SVG cannot be displayed.
+    - fix: quiqqer/quiqqer#566 - Loader in the page panel does not disappear if an error occurs while saving
+    - fix: quiqqer/quiqqer#567 - Preview function not usable
+    - fix: quiqqer/quiqqer#568 - Media popup: Cannot navigate in folders in List view.
+    - fix: quiqqer/quiqqer#569 - Redesign Upload-Control
+    - fix: quiqqer/quiqqer#574 - Double host in Canonical
+    - fix: quiqqer/quiqqer#575 - Console: getUserBySession should return the logged in user
+    - fix: quiqqer/quiqqer#580 - MySql Strict: Password change
+    - fix: quiqqer/quiqqer#581 - Update console tool does not show any progress
+    - fix: quiqqer/quiqqer#584 - Media: Rename file -> in name to existing file
+    - fix: quiqqer/quiqqer#585 - Malformed gitlab
+    - fix: quiqqer/quiqqer#589 - Defective links in dashboard
+    - fix: quiqqer/quiqqer#597 - User cannot be deactivated via grid
+    - fix: quiqqer/quiqqer#599 - WYSIWYG/Editor Control should not be able to be displayed in Site Panel Settings
+    - fix: quiqqer/quiqqer#600 - Extend QUIQQER Login with Forgotten Password
+    - fix: quiqqer/quiqqer#606 - If the workspace has errors or is defective, the user should be given the opportunity to restore a standard.
+    - fix: quiqqer/quiqqer#609 - Feedback when running the setup in the console
+    - fix: quiqqer/quiqqer#612 - Missing language variable when removing Update Server
+    - fix: quiqqer/quiqqer#614 - Media -> Upload data behaves strangely
+    - fix: quiqqer/quiqqer#617 - If another user logs in -> wrong message
+    - fix: quiqqer/quiqqer#621 - site.xml: Extending page types from other packages
+    - fix: quiqqer/quiqqer#628 - Page preview not available for disabled subpages
+    - fix: quiqqer/quiqqer#632 - System Update error: The "prefer-dist" argument does not exist.
+    - fix: quiqqer/quiqqer#636 - Page panels sometimes do not load
+    - fix: quiqqer/quiqqer#639 - Delete /media/users
+    - fix: quiqqer/quiqqer#643 - E-Mail setting: Test mail always uses SMTP
+    - fix: quiqqer/quiqqer#648 - Ajax file check gives corresponding messages in case of errors
+    - fix: quiqqer/quiqqer#649 - Two-factor authentication can be ignored
+    - fix: quiqqer/quiqqer#652 - Language variable for logout window in QUIQQER Locale
+    - fix: quiqqer/quiqqer#658 - Backend Ajax will not be found if QUIQQER is installed in subdirectory
+    - fix: quiqqer/quiqqer#659 - UserIcon Position
+    - fix: quiqqer/quiqqer#660 - Settings: Using package permissions is double
+    - fix: quiqqer/quiqqer#667 - Media: Incorrect display of the active status of files
+    - fix: quiqqer/quiqqer#670 - Dependencies
+    - fix: quiqqer/quiqqer#671 - For each resuest in QUIQQER a SHOW TABLES
+    - fix: quiqqer/quiqqer#672 - Replacen of an image dont work
+    - fix: quiqqer/quiqqer#673 - Update error
+    - fix: quiqqer/quiqqer#680 - Missing translation for icon selection
+    - fix: quiqqer/quiqqer#681 - Missing translation for Confirm.js
+    - fix: quiqqer/quiqqer#686 - Media - Image sorting in a folder does not work
+    - fix: quiqqer/quiqqer#691 - Preferred language in the backend
+    - fix: quiqqer/quiqqer#693 - Incorrect display of users who are disabled
+    - fix: quiqqer/quiqqer#703 - Upload-Control looks ugly
+    - fix: quiqqer/quiqqer#704 - Grid mass-selection selects too many entries
+    - fix: quiqqer/quiqqer#707 - Error at a redirect
 
 1.0.13 (30.03.2017)
 ------
