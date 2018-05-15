@@ -101,6 +101,47 @@ class EventHandler
                 );
             }
         }
+
+        self::setPackageStoreUrl();
+    }
+
+    /**
+     * Set (default) package store URL in QUIQQER settings
+     *
+     * @return void
+     */
+    public static function setPackageStoreUrl()
+    {
+        $packageStoreUrlConf = QUI::conf('packagestore', 'url');
+
+        if (empty($packageStoreUrlConf)) {
+            $packageStoreUrlConf = [];
+        } else {
+            $packageStoreUrlConf = json_decode($packageStoreUrlConf, true);
+
+            if (empty($packageStoreUrlConf) || !is_array($packageStoreUrlConf)) {
+                $packageStoreUrlConf = [];
+            }
+        }
+
+        foreach (QUI::availableLanguages() as $lang) {
+            switch ($lang) {
+                case 'de':
+                    $url = 'https://store.quiqqer.de';
+                    break;
+
+                default:
+                    $url = 'https://store.quiqqer.com';
+            }
+
+            if (empty($packageStoreUrlConf[$lang])) {
+                $packageStoreUrlConf[$lang] = $url;
+            }
+        }
+
+        $Conf = QUI::getConfig('etc/conf.ini.php');
+        $Conf->set('packagestore', 'url', json_encode($packageStoreUrlConf));
+        $Conf->save();
     }
 
     /**
