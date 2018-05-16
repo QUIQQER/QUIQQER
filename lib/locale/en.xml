@@ -4954,9 +4954,6 @@
         <locale name="menu.help.dashboard.text">
             <en><![CDATA[Dashboard]]></en>
         </locale>
-        <locale name="menu.help.about.text">
-            <en><![CDATA[About QUIQQER]]></en>
-        </locale>
         <locale name="quiqqer.settings.title">
             <en><![CDATA[System]]></en>
         </locale>
@@ -6100,6 +6097,9 @@
         </locale>
         <locale name="packages.panel.category.systemcheck.checksum.cacheForThisPackageNotFound">
             <en><![CDATA[Cache for <strong>[cacheForThisPackage]</strong> could not found.]]></en>
+        </locale>
+        <locale name="menu.help.about.text">
+            <en><![CDATA[About QUIQQER]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/controls" datatype="php,js">
