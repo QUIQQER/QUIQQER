@@ -22,12 +22,12 @@ class Event implements QUI\Interfaces\Events
      *
      * @var array
      */
-    protected $events = array();
+    protected $events = [];
 
     /**
      * @var array
      */
-    protected $currentRunning = array();
+    protected $currentRunning = [];
 
     /**
      * (non-PHPdoc)
@@ -50,10 +50,21 @@ class Event implements QUI\Interfaces\Events
      */
     public function addEvent($event, $fn, $priority = 0)
     {
-        $this->events[$event][] = array(
+        if (!isset($this->events[$event])) {
+            $this->events[$event] = [];
+        }
+
+        // don't add double events
+        foreach ($this->events[$event] as $params) {
+            if ($params['callable'] == $fn) {
+                return;
+            }
+        }
+
+        $this->events[$event][] = [
             'callable' => $fn,
             'priority' => $priority
-        );
+        ];
     }
 
     /**
@@ -86,6 +97,7 @@ class Event implements QUI\Interfaces\Events
 
         if (!$fn) {
             unset($this->events[$event]);
+
             return;
         }
 
@@ -126,10 +138,10 @@ class Event implements QUI\Interfaces\Events
      */
     public function fireEvent($event, $args = false, $force = false)
     {
-        $results = array();
+        $results = [];
 
         if (strpos($event, 'on') !== 0) {
-            $event = 'on' . ucfirst($event);
+            $event = 'on'.ucfirst($event);
         }
 
 
@@ -155,6 +167,7 @@ class Event implements QUI\Interfaces\Events
             if ($a['priority'] == $b['priority']) {
                 return 0;
             }
+
             return $a['priority'] < $b['priority'] ? -1 : 1;
         });
 
@@ -185,13 +198,13 @@ class Event implements QUI\Interfaces\Events
                 $message = $Exception->getMessage();
 
                 if (is_string($fn)) {
-                    $message .= ' :: ' . $fn;
+                    $message .= ' :: '.$fn;
                 }
 
                 $Clone = new QUI\Exception(
                     $message,
                     $Exception->getCode(),
-                    array('trace' => $Exception->getTraceAsString())
+                    ['trace' => $Exception->getTraceAsString()]
                 );
 
                 $Stack->addException($Clone);
@@ -199,13 +212,13 @@ class Event implements QUI\Interfaces\Events
                 $message = $Exception->getMessage();
 
                 if (is_string($fn)) {
-                    $message .= ' :: ' . $fn;
+                    $message .= ' :: '.$fn;
                 }
 
                 $Clone = new QUI\Exception(
                     $message,
                     $Exception->getCode(),
-                    array('trace' => $Exception->getTraceAsString())
+                    ['trace' => $Exception->getTraceAsString()]
                 );
 
                 $Stack->addException($Clone);
