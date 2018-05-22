@@ -3,19 +3,6 @@
  *
  * @module controls/groups/Panel
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/controls/desktop/Panel
- * @require Groups
- * @require Locale
- * @require controls/grid/Grid
- * @require utils/Controls
- * @require controls/groups/sitemap/Window
- * @require utils/Template
- * @require qui/controls/messages/Attention
- * @require qui/controls/windows/Prompt
- * @require qui/controls/windows/Confirm
- * @require qui/controls/buttons/Button
- * @require css!controls/groups/Panel.css
  */
 define('controls/groups/Panel', [
 
