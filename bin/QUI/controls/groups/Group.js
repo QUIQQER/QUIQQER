@@ -3,20 +3,6 @@
  *
  * @module controls/groups/Group
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require controls/desktop/Panel
- * @require qui/controls/buttons/ButtonSwitch
- * @require qui/controls/buttons/Button
- * @require controls/grid/Grid
- * @require Groups
- * @require Ajax
- * @require Editors
- * @require Locale
- * @require qui/controls/buttons/Button
- * @require qui/utils/Form
- * @require utils/Controls
- * @require css!controls/groups/Group.css
  */
 define('controls/groups/Group', [
 
@@ -239,10 +225,14 @@ define('controls/groups/Group', [
                 }
 
                 Prom.then(function () {
-                    self.getButtons('status').enable();
+                    (function () { // because of animation bug of select button
+                        self.getButtons('status').enable();
+                    }).delay(400);
+
                     self.$onGroupRefresh();
                 });
-            }).catch(function () {
+            }).catch(function (err) {
+                console.error(err);
                 self.destroy();
             });
         },
@@ -841,7 +831,7 @@ define('controls/groups/Group', [
                                 userIds.push(users[i].id);
                             }
 
-                            Groups.addUsers(self.$Group.getId(), userIds).then(function (result) {
+                            Groups.addUsers(self.$Group.getId(), userIds).then(function () {
                                 self.refreshUser();
                             });
                         }
@@ -876,9 +866,12 @@ define('controls/groups/Group', [
                 'qui/controls/windows/Confirm'
             ], function (QUIConfirm) {
                 new QUIConfirm({
-                    'autoclose': true,
+                    autoclose: true,
+                    title    : QUILocale.get('quiqqer/system', 'controls.group.deleteusers.confirm.title'),
+                    texticon : 'fa fa-user-times',
+                    icon     : 'fa fa-user-times',
 
-                    'information': QUILocale.get(
+                    information: QUILocale.get(
                         'quiqqer/system',
                         'controls.group.deleteusers.confirm.info', {
                             groupId  : self.$Group.getId(),
@@ -886,18 +879,11 @@ define('controls/groups/Group', [
                             users    : users.join(', ')
                         }
                     ),
-                    'title'      : QUILocale.get(
-                        'quiqqer/system',
-                        'controls.group.deleteusers.confirm.title'
-                    ),
-                    'texticon'   : 'fa fa-user-times',
-                    'icon'       : 'fa fa-user-times',
 
                     cancel_button: {
                         text     : false,
                         textimage: 'fa fa-remove'
-                    }
-                    ,
+                    },
                     ok_button    : {
                         text     : false,
                         textimage: 'fa fa-check'
@@ -906,7 +892,7 @@ define('controls/groups/Group', [
                         onSubmit: function (Confirm) {
                             Confirm.Loader.show();
 
-                            Groups.removeUsers(self.$Group.getId(), userIds).then(function (result) {
+                            Groups.removeUsers(self.$Group.getId(), userIds).then(function () {
                                 self.refreshUser();
                                 Confirm.Loader.hide();
                             });
