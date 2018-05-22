@@ -1915,6 +1915,9 @@
         <locale name="exception.permission.session.expired">
             <en><![CDATA[Your session has expired, please login.]]></en>
         </locale>
+        <locale name="exception.permission.no.admin">
+            <en><![CDATA[You do not have the necessary permissions to log on to the administration.]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js">
         <locale name="controls.users.auth.quiqqerlogin.send_mail_success">
@@ -5415,9 +5418,6 @@
         </locale>
         <locale name="permissions.message.delete.success">
             <en><![CDATA[Permission successfuly deleted.]]></en>
-        </locale>
-        <locale name="exception.permission.no.admin">
-            <en><![CDATA[You do not have the necessary permissions to log on to the administration.]]></en>
         </locale>
         <locale name="exception.session.expired.from.other">
             <en>

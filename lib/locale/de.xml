@@ -1953,6 +1953,9 @@
         <locale name="exception.permission.session.expired">
             <de><![CDATA[Ihre Sitzung ist abgelaufen, bitte loggen Sie sich ein.]]></de>
         </locale>
+        <locale name="exception.permission.no.admin">
+            <de><![CDATA[Sie besitzen nicht die nötigen Rechte sich an der Administration anzumelden.]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js">
         <locale name="controls.users.auth.quiqqerlogin.send_mail_success">
@@ -5574,9 +5577,6 @@
         </locale>
         <locale name="permissions.message.delete.success">
             <de><![CDATA[Zugriffsrecht erfolgreich gelöscht.]]></de>
-        </locale>
-        <locale name="exception.permission.no.admin">
-            <de><![CDATA[Sie besitzen nicht die nötigen Rechte sich an der Administration anzumelden.]]></de>
         </locale>
         <locale name="exception.session.expired.from.other">
             <de><![CDATA[
