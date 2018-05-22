@@ -260,9 +260,7 @@ class Update
 
         foreach ($engines as $Engine) {
             /* @var $Engine \DOMElement */
-            if (!$Engine->getAttribute('class_name')
-                || empty($Engine->nodeValue)
-            ) {
+            if (!$Engine->getAttribute('class_name') || empty($Engine->nodeValue)) {
                 continue;
             }
 
@@ -291,9 +289,7 @@ class Update
 
         foreach ($editors as $Editor) {
             /* @var $Editor \DOMElement */
-            if (!$Editor->getAttribute('package')
-                || empty($Editor->nodeValue)
-            ) {
+            if (!$Editor->getAttribute('package') || empty($Editor->nodeValue)) {
                 continue;
             }
 
@@ -323,9 +319,7 @@ class Update
 
         foreach ($events as $Event) {
             /* @var $Event \DOMElement */
-            if (!$Event->getAttribute('on')
-                || !$Event->getAttribute('fire')
-            ) {
+            if (!$Event->getAttribute('on') || !$Event->getAttribute('fire')) {
                 continue;
             }
 
@@ -388,8 +382,8 @@ class Update
         }
 
         $file = str_replace(
-            array(CMS_DIR, '/'),
-            array('', '_'),
+            [CMS_DIR, '/'],
+            ['', '_'],
             $xml_file
         );
 
@@ -534,12 +528,12 @@ class Update
         // clear system permissions
         QUI::getDataBase()->delete(
             QUI::getDBTableName(QUI\Permissions\Manager::TABLE),
-            array(
-                'src' => array(
+            [
+                'src' => [
                     'type'  => 'NOT',
                     'value' => 'user'
-                )
-            )
+                ]
+            ]
         );
 
         QUI::$Rights = null; // so we have no permission cache

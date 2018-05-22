@@ -533,7 +533,7 @@ class Package extends QUI\QDOM
                 }
             }
         }
-
+        
         // xml
         Update::importDatabase($dir.'database.xml');
         Update::importTemplateEngines($dir.'engines.xml');
