@@ -4,16 +4,6 @@
  * @module controls/projects/project/media/Input
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/controls/Control
- * @require qui/controls/buttons/Button
- * @require controls/icons/Confirm
- * @require qui/utils/String
- * @require controls/projects/project/media/Popup
- * @require Projects
- * @require Ajax
- * @require Locale
- * @require css!controls/projects/project/media/Input.css
- *
  * @event onChange [ {self}, {String} ]
  */
 define('controls/projects/project/media/Input', [
@@ -46,7 +36,7 @@ define('controls/projects/project/media/Input', [
         Type   : 'controls/projects/project/media/Input',
 
         Binds: [
-            '$onCreate',
+            '$onInject',
             '$openCSSClassDialog'
         ],
 
@@ -72,6 +62,10 @@ define('controls/projects/project/media/Input', [
 
             this.$CSSButton   = null;
             this.$MediaButton = null;
+
+            this.addEvents({
+                onImport: this.$onImport
+            });
         },
 
         /**
@@ -94,7 +88,7 @@ define('controls/projects/project/media/Input', [
         /**
          * Create the DOMNode
          *
-         * @return {HTMLElement}
+         * @return {HTMLElement|Element}
          */
         create: function () {
             var self = this;
@@ -256,6 +250,14 @@ define('controls/projects/project/media/Input', [
             this.$refreshPreview();
 
             return this.$Elm;
+        },
+
+        /**
+         * event: on import
+         */
+        $onImport: function () {
+            this.$Input = this.getElm();
+            this.create();
         },
 
         /**
