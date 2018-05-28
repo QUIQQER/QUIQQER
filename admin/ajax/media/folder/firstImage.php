@@ -21,23 +21,14 @@ QUI::$Ajax->registerFunction(
         $File    = $Media->get($folderId);
 
         if (!QUI\Projects\Media\Utils::isFolder($File)) {
-            throw new QUI\Exception(array(
+            throw new QUI\Exception([
                 'quiqqer/quiqqer',
                 'exception.no.folder.given'
-            ));
+            ]);
         }
 
-        try {
-            /* @var $File \QUI\Projects\Media\Folder */
-            return $File->firstImage()->getAttributes();
-        } catch (QUI\Exception $Exception) {
-            QUI::getMessagesHandler()->addError(
-                $Exception->getMessage()
-            );
-
-            return array();
-        }
+        return $File->firstImage()->getAttributes();
     },
-    array('project', 'folderId'),
+    ['project', 'folderId'],
     'Permission::checkAdminUser'
 );
