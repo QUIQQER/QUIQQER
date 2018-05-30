@@ -84,7 +84,7 @@ define('controls/users/Input', [
         /**
          * Return the DOMNode of the users search
          *
-         * @return {HTMLElement}
+         * @return {HTMLElement|Element}
          */
         create: function () {
             this.$Elm = new Element('div.users-input');
@@ -93,7 +93,6 @@ define('controls/users/Input', [
                 this.$Bind = new Element('input', {
                     name: this.getAttribute('name')
                 }).inject(this.$Elm);
-
             } else {
                 this.$disabled = this.$Bind.disabled;
 
@@ -206,8 +205,6 @@ define('controls/users/Input', [
             if (Elm.nodeName === 'INPUT') {
                 this.$Bind = Elm;
             }
-
-            console.log(this.getElm().getParent());
 
             this.create();
         },

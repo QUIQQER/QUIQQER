@@ -46,7 +46,7 @@ define('controls/projects/project/site/Input', [
         initialize: function (options, Input) {
             this.parent(options);
 
-            this.$Input      = Input || null;
+            this.$Input = Input || null;
             this.$SiteButton = null;
 
             this.addEvents({
@@ -69,7 +69,6 @@ define('controls/projects/project/site/Input', [
                 this.$Input = new Element('input', {
                     name: this.getAttribute('name')
                 }).inject(this.$Elm);
-
             } else {
                 this.$Elm.wraps(this.$Input);
 
@@ -81,6 +80,8 @@ define('controls/projects/project/site/Input', [
             if (this.getAttribute('styles')) {
                 this.$Elm.setStyles(this.getAttribute('styles'));
             }
+
+            this.$Input.set('data-quiid', this.getId());
 
             this.$Input.setStyles({
                 'float': 'left'
@@ -101,6 +102,14 @@ define('controls/projects/project/site/Input', [
                                 onSubmit: function (Popup, params) {
                                     self.$Input.value = params.urls[0];
                                     self.fireEvent('select', [params.urls[0], self]);
+
+                                    if ("createEvent" in document) {
+                                        var evt = document.createEvent("HTMLEvents");
+                                        evt.initEvent("change", false, true);
+                                        self.$Input.dispatchEvent(evt);
+                                    } else {
+                                        self.$Input.fireEvent("onchange");
+                                    }
                                 }
                             }
                         }).open();
@@ -116,6 +125,14 @@ define('controls/projects/project/site/Input', [
                     onClick: function () {
                         self.$Input.value = '';
                         self.fireEvent('remove', [self]);
+
+                        if ("createEvent" in document) {
+                            var evt = document.createEvent("HTMLEvents");
+                            evt.initEvent("change", false, true);
+                            self.$Input.dispatchEvent(evt);
+                        } else {
+                            self.$Input.fireEvent("onchange");
+                        }
                     }
                 }
             }).inject(this.$Elm);
