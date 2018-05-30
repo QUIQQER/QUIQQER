@@ -1,3 +1,21 @@
+1.1.1 (30.05.2018)
+
+    Feature:
+
+    - feat: global forwardings are now completly editable
+    - feat: multilang package store url quiqqer/packagestore#28
+
+    Bugfixes
+
+    - fix: Media Input can be used by an input field in the flexbox tables
+    - fix: Add change event to the site input field
+    - fix: Notice: Undefined index: source in console setup
+    - fix: Composer asset require - correct Version
+
+    - fix: quiqqer/quiqqer#707 - Redirect Error
+    - fix: quiqqer/quiqqer#709 - Double execution of setup event
+    - fix: quiqqer/quiqqer#710 - Missing translation
+    - fix: quiqqer/quiqqer#711 - Cannot activate deactivated Group in Group Panel
 
 1.1 (15.05.2018)
 ------
