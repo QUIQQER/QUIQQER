@@ -99,6 +99,18 @@ class Package extends QUI\QDOM
             true
         );
 
+        // ERROR
+        if (!$this->composerData) {
+            QUI\System\Log::addCritical(
+                'Package composer.json has some errors: '.json_last_error_msg(),
+                [
+                    'package'    => $package,
+                    'packageDir' => $packageDir
+                ]
+            );
+        }
+
+
         if (!isset($this->composerData['type'])) {
             return;
         }
@@ -533,7 +545,7 @@ class Package extends QUI\QDOM
                 }
             }
         }
-        
+
         // xml
         Update::importDatabase($dir.'database.xml');
         Update::importTemplateEngines($dir.'engines.xml');
