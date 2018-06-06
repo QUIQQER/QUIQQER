@@ -29,12 +29,6 @@
  * @fires onDrop
  *
  * @licence: MIT licence
- *
- * @require qui/controls/Control
- * @require qui/controls/buttons/Button
- * @require qui/controls/buttons/Separator
- * @require qui/utils/Controls
- * @require css!controls/grid/Grid.css
  */
 
 define('controls/grid/Grid', [
@@ -2690,23 +2684,30 @@ define('controls/grid/Grid', [
             this.refresh();
         },
 
-        pageChange: function () {
-            var np = this.container.getElement('div.pDiv2 input').value;
+        pageChange: function (event) {
+            if (typeOf(event) !== 'domevent') {
+                return;
+            }
+
+            if (event.key !== 'enter') {
+                return;
+            }
+
+            var Input = this.container.getElement('div.pDiv2 input');
+            var np    = Input.value;
 
             if (np > 0 && np <= this.getAttribute('maxpage')) {
-                if (this.$refreshDelayID) {
-                    $clear(this.$refreshDelayID);
-                }
-
                 this.setAttribute('page', np);
-                this.$refreshDelayID = this.refresh.delay(1000, this);
+                this.refresh();
+            } else {
+                Input.value = this.getAttribute('page');
             }
         },
 
         // API
         gotoPage: function (p) {
             if (p > 0 && p <= this.getAttribute('maxpage')) {
-                this.getAttribute('page', p);
+                this.setAttribute('page', p);
                 this.refresh();
             }
         },

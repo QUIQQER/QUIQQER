@@ -64,6 +64,15 @@ define('controls/users/address/Select', [
 
             this.setAttribute('name', this.$Elm.name);
             this.setValue(this.$Elm.value);
+
+            if (this.$Elm.get('data-value')) {
+                this.setValue(this.$Elm.get('data-value'));
+            }
+
+            if (this.$Elm.value && this.$Elm.value !== '') {
+                this.setValue(this.$Elm.value);
+            }
+
             this.$onInject();
         },
 
