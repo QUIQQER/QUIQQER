@@ -75,28 +75,34 @@
         {/if}
     </div>
 
-    {assign var=maillist value=$Address->getMailList()}
-    {assign var=phonelist value=$Address->getPhoneList()}
 
-    {foreach from=$maillist item=mail}
-    <div class="mail">
-        <span class="fa fa-envelope"></span>
-        {$mail}
-    </div>
-    {/foreach}
+    {if $options['mail']}
+        {assign var=maillist value=$Address->getMailList()}
 
-    {foreach from=$phonelist item=phone}
-        {if $phone.no !== ''}
-        <div class="{$phone.type}">
-            {assign var="cssclass" value="phone"}
-            {if $phone.type == 'mobile'}
-                {assign var="cssclass" value="mobile-phone"}
-            {/if}
-
-            <span class="fa fa-{$cssclass}"></span>
-            {$phone.no}
+        {foreach from=$maillist item=mail}
+        <div class="mail">
+            <span class="fa fa-envelope"></span>
+            {$mail}
         </div>
-        {/if}
-    {/foreach}
+        {/foreach}
+    {/if}
 
+
+    {if $options['tel']}
+        {assign var=phonelist value=$Address->getPhoneList()}
+
+        {foreach from=$phonelist item=phone}
+            {if $phone.no !== ''}
+            <div class="{$phone.type}">
+                {assign var="cssclass" value="phone"}
+                {if $phone.type == 'mobile'}
+                    {assign var="cssclass" value="mobile-phone"}
+                {/if}
+
+                <span class="fa fa-{$cssclass}"></span>
+                {$phone.no}
+            </div>
+            {/if}
+        {/foreach}
+    {/if}
 </address>

@@ -432,30 +432,48 @@ class Address extends QUI\QDOM
     /**
      * Return the address as HTML display
      *
+     * @param array $options - options ['mail' => true, 'tel' => true]
      * @return string - HTML <address>
-     * @throws
      */
-    public function getDisplay()
+    public function getDisplay($options = [])
     {
-        $Engine = QUI::getTemplateManager()->getEngine(true);
+        try {
+            $Engine = QUI::getTemplateManager()->getEngine(true);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeDebugException($Exception);
+
+            return '';
+        }
+
+        // defaults
+        if (!isset($options['tel'])) {
+            $options['tel'] = true;
+        }
+
+        if (!isset($options['mail'])) {
+            $options['mail'] = true;
+        }
+
 
         $Engine->assign([
             'User'      => $this->User,
             'Address'   => $this,
-            'Countries' => new QUI\Countries\Manager()
+            'Countries' => new QUI\Countries\Manager(),
+            'options'   => $options
         ]);
 
-        return $Engine->fetch(SYS_DIR . 'template/users/address/display.html');
+        return $Engine->fetch(SYS_DIR.'template/users/address/display.html');
     }
 
     /**
      * Alias for getDisplay
      *
+     * @param array $options - options
      * @return string
      */
-    public function render()
+    public function render($options = [])
     {
-        return $this->getDisplay();
+        return $this->getDisplay($options);
     }
 
     /**
