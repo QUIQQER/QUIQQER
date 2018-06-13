@@ -38,7 +38,11 @@ define('controls/users/SelectItem', [
             // user
             this.setAttribute('icon', 'fa fa-user');
 
-            if (!parseInt(id)) {
+            var isnum = /^\d+$/.test(id);
+
+            if (!isnum) {
+                this.destroy();
+
                 return Prom;
             }
 
