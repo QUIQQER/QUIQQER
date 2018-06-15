@@ -168,8 +168,33 @@ define('controls/grid/Grid', [
             this.resize();
             this.loadData();
 
-            this.resize.delay(250, this);
-            this.resize.delay(500, this);
+            // this.resize.delay(250, this);
+            // this.resize.delay(500, this);
+
+            var PanelNode = this.container.getParent('.qui-panel');
+
+            if (!PanelNode) {
+                return;
+            }
+
+            var Panel = QUI.Controls.getById(PanelNode.get('data-quiid'));
+
+            if (!Panel) {
+                return;
+            }
+
+            var self = this;
+
+            var resizeMeInThePanel = function () {
+                self.resize();
+                Panel.removeEvent('resize', resizeMeInThePanel);
+            };
+
+            Panel.addEvent('resize', resizeMeInThePanel);
+
+            (function () {
+                Panel.removeEvent('resize', resizeMeInThePanel);
+            }).delay(2000);
         },
 
         getElm: function () {
