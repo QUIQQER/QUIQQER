@@ -58,6 +58,7 @@ define('controls/users/User', [
             if (typeOf(uid) === 'string' || typeOf(uid) === 'number') {
                 this.$User = Users.get(uid);
                 this.setAttribute('name', 'user-panel-' + uid);
+                this.setAttribute('#id', 'user-panel-' + uid);
             }
 
             this.$AddressGrid = null;
@@ -103,6 +104,9 @@ define('controls/users/User', [
             this.setAttributes(data.attributes);
 
             this.$User = Users.get(data.userid);
+
+            this.setAttribute('name', 'user-panel-' + data.userid);
+            this.setAttribute('#id', 'user-panel-' + data.userid);
 
             return this;
         },
