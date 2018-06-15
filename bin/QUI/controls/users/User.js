@@ -846,7 +846,7 @@ define('controls/users/User', [
             var PassWordSave = Promise.resolve();
 
             if (Active.getAttribute('name') === 'security') {
-                PassWordSave = this.savePassword()
+                PassWordSave = this.savePassword();
             }
 
             PassWordSave.then(function () {
