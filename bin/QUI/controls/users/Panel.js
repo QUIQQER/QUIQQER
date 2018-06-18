@@ -3,19 +3,6 @@
  *
  * @module controls/users/Panel
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/desktop/Panel
- * @require controls/grid/Grid
- * @require Users
- * @require qui/controls/messages/Attention
- * @require qui/controls/windows/Confirm
- * @require qui/controls/windows/Prompt
- * @require qui/controls/buttons/Button
- * @require utils/Template
- * @require utils/Controls
- * @require Locale
- * @require css!controls/users/Panel.css
  */
 define('controls/users/Panel', [
 
@@ -254,7 +241,6 @@ define('controls/users/Panel', [
                     this.setAttribute('page', options.page);
 
                     this.load();
-
                 }.bind(this),
 
                 alternaterows    : true,

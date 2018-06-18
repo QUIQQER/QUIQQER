@@ -1005,6 +1005,11 @@
             da eine Verknüpfung oder die original Seite bereits in dieser Ebene existiert.
             ]]></de>
         </locale>
+        <locale name="exception.site.linked.in.itself">
+            <de><![CDATA[
+             Es kann keine Verknüpfung unter dieser Ebene erstellt werden, da dies eine Endlosschleife verursachen würde.
+            ]]></de>
+        </locale>
 
         <locale name="exception.media.already.deleted">
             <de><![CDATA[Datei ist bereits gelöscht.]]></de>

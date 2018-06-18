@@ -1,12 +1,6 @@
 /**
  * @module controls/users/SelectItem
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/elements/Select
- * @require Ajax
- * @require Groups
- * @require Users
  */
 define('controls/users/SelectItem', [
 
@@ -21,7 +15,7 @@ define('controls/users/SelectItem', [
     return new Class({
 
         Extends: QUIElementSelectItem,
-        Type: 'controls/users/SelectItem',
+        Type   : 'controls/users/SelectItem',
 
         Binds: [
             'refresh'
@@ -38,11 +32,19 @@ define('controls/users/SelectItem', [
          * @returns {Promise}
          */
         refresh: function () {
-            var id = this.getAttribute('id'),
+            var id   = this.getAttribute('id'),
                 Prom = Promise.resolve();
 
             // user
             this.setAttribute('icon', 'fa fa-user');
+
+            var isnum = /^\d+$/.test(id);
+
+            if (!isnum) {
+                this.destroy();
+
+                return Prom;
+            }
 
             var User = Users.get(parseInt(id));
 
@@ -54,7 +56,9 @@ define('controls/users/SelectItem', [
                 this.$Text.set({
                     html: User.getName()
                 });
-            }.bind(this));
+            }.bind(this)).catch(function (err) {
+                console.error(err);
+            });
         }
     });
 });

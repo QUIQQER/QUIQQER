@@ -23,14 +23,14 @@ class Ajax extends QUI\QDOM
      *
      * @var array
      */
-    protected static $functions = array();
+    protected static $functions = [];
 
     /**
      * Available ajax lambda functions
      *
      * @var array
      */
-    protected static $callables = array();
+    protected static $callables = [];
 
     /**
      * javascript functions to be executed by after a request
@@ -38,27 +38,27 @@ class Ajax extends QUI\QDOM
      *
      * @var array
      */
-    protected $jsCallbacks = array();
+    protected $jsCallbacks = [];
 
     /**
      * registered permissions from available ajax functions
      *
      * @var array
      */
-    protected static $permissions = array();
+    protected static $permissions = [];
 
     /**
      * constructor
      *
      * @param array $params
      */
-    public function __construct($params = array())
+    public function __construct($params = [])
     {
         self::setAttributes($params);
 
         // Shutdown Handling
         $ErrorHandler = QUI::getErrorHandler();
-        $ErrorHandler->registerShutdown(array($this, 'onShutdown'));
+        $ErrorHandler->registerShutdown([$this, 'onShutdown']);
     }
 
     /**
@@ -72,7 +72,7 @@ class Ajax extends QUI\QDOM
      */
     public static function register(
         $reg_function,
-        $reg_vars = array(),
+        $reg_vars = [],
         $user_perm = false
     ) {
         if (!is_string($reg_function)) {
@@ -80,7 +80,7 @@ class Ajax extends QUI\QDOM
         }
 
         if (!is_array($reg_vars)) {
-            $reg_vars = array();
+            $reg_vars = [];
         }
 
         self::$functions[$reg_function] = $reg_vars;
@@ -105,7 +105,7 @@ class Ajax extends QUI\QDOM
     public static function registerFunction(
         $name,
         $function,
-        $reg_vars = array(),
+        $reg_vars = [],
         $user_perm = false
     ) {
         if (!is_callable($function)) {
@@ -117,13 +117,13 @@ class Ajax extends QUI\QDOM
         }
 
         if (!is_array($reg_vars)) {
-            $reg_vars = array();
+            $reg_vars = [];
         }
 
-        self::$callables[$name] = array(
+        self::$callables[$name] = [
             'callable' => $function,
             'params'   => $reg_vars
-        );
+        ];
 
         if ($user_perm) {
             self::$permissions[$name] = $user_perm;
@@ -155,7 +155,7 @@ class Ajax extends QUI\QDOM
 
 
         if (is_string($function)) {
-            $function = array($function);
+            $function = [$function];
         }
 
         foreach ($function as $func) {
@@ -195,10 +195,10 @@ class Ajax extends QUI\QDOM
         }
 
         $_rfs   = json_decode($_REQUEST['_rf'], true);
-        $result = array();
+        $result = [];
 
         if (!is_array($_rfs)) {
-            $_rfs = array($_rfs);
+            $_rfs = [$_rfs];
         }
 
         foreach ($_rfs as $_rf) {
@@ -217,9 +217,7 @@ class Ajax extends QUI\QDOM
         $result['maintenance'] = QUI::conf('globals', 'maintenance') ? 1 : 0;
         $result['jsCallbacks'] = $this->jsCallbacks;
 
-        QUI::getEvents()->fireEvent('ajaxResult', array(
-            &$result
-        ));
+        QUI::getEvents()->fireEvent('ajaxResult', [&$result]);
 
         $encoded = json_encode($result);
 
@@ -290,7 +288,7 @@ class Ajax extends QUI\QDOM
         // Rechte prüfung
         try {
             $this->checkPermissions($_rf);
-        } catch (QUI\Exception $Exception) {
+        } catch (\Exception $Exception) {
             return $this->writeException($Exception);
         }
 
@@ -301,7 +299,7 @@ class Ajax extends QUI\QDOM
         }
 
         // Params
-        $params = array();
+        $params = [];
 
         if (isset(self::$callables[$_rf])) {
             $functionParams = self::$callables[$_rf]['params'];
@@ -329,61 +327,41 @@ class Ajax extends QUI\QDOM
             $params[$var] = $value;
         }
 
-        QUI::getEvents()->fireEvent('ajaxCallBefore', array(
-            'function' => $_rf,
-            'params'   => $params
-        ));
-
         try {
-            if (isset(self::$callables[$_rf])) {
-                $return = array(
-                    'result' => call_user_func_array(
-                        self::$callables[$_rf]['callable'],
-                        $params
-                    )
-                );
-            } else {
-                $return = array(
-                    'result' => call_user_func_array($_rf, $params)
-                );
-            }
-        } catch (QUI\Exception $Exception) {
-            return $this->writeException($Exception);
-        } catch (\PDOException $Exception) {
-            return $this->writeException($Exception);
+            QUI::getEvents()->fireEvent('ajaxCallBefore', [
+                'function' => $_rf,
+                'params'   => $params
+            ]);
         } catch (\Exception $Exception) {
             return $this->writeException($Exception);
         }
 
+        try {
+            if (isset(self::$callables[$_rf])) {
+                $return = [
+                    'result' => call_user_func_array(
+                        self::$callables[$_rf]['callable'],
+                        $params
+                    )
+                ];
+            } else {
+                $return = [
+                    'result' => call_user_func_array($_rf, $params)
+                ];
+            }
+        } catch (\Exception $Exception) {
+            return $this->writeException($Exception);
+        }
 
-        QUI::getEvents()->fireEvent('ajaxCall', array(
-            'function' => $_rf,
-            'result'   => $return,
-            'params'   => $params
-        ));
-
-
-        // json errors bekommen
-//        if (function_exists('json_last_error')) {
-//            switch (json_last_error()) {
-//                case JSON_ERROR_NONE:
-//                    // alles ok
-//                    break;
-//
-//                case JSON_ERROR_DEPTH:
-//                case JSON_ERROR_STATE_MISMATCH:
-//                case JSON_ERROR_CTRL_CHAR:
-//                case JSON_ERROR_SYNTAX:
-//                case JSON_ERROR_UTF8:
-//                default:
-//                    QUI\System\Log::addError(
-//                        'JSON Error: ' .
-//                        json_last_error() . ' :: ' .
-//                        print_r($return, true)
-//                    );
-//                    break;
-//            }
-//        }
+        try {
+            QUI::getEvents()->fireEvent('ajaxCall', [
+                'function' => $_rf,
+                'result'   => $return,
+                'params'   => $params
+            ]);
+        } catch (\Exception $Exception) {
+            return $this->writeException($Exception);
+        }
 
         return $return;
     }
@@ -394,7 +372,7 @@ class Ajax extends QUI\QDOM
      * @param string $javascriptFunctionName - name of the javascript callback function
      * @param array $params - optional, params for the javascript callback function
      */
-    public function triggerGlobalJavaScriptCallback($javascriptFunctionName, $params = array())
+    public function triggerGlobalJavaScriptCallback($javascriptFunctionName, $params = [])
     {
         if (is_string($javascriptFunctionName)) {
             $this->jsCallbacks[$javascriptFunctionName] = $params;
@@ -410,10 +388,10 @@ class Ajax extends QUI\QDOM
      */
     public function writeException($Exception)
     {
-        $return = array();
+        $return = [];
         $class  = get_class($Exception);
 
-        $data = array();
+        $data = [];
 
         if (method_exists($Exception, 'toArray')) {
             $data = $Exception->toArray();
@@ -449,8 +427,6 @@ class Ajax extends QUI\QDOM
                 if ((DEVELOPMENT || DEBUG_MODE) && $class != 'PDOException') {
                     $return['Exception']['context'] = $Exception->getContext();
                 }
-
-                System\Log::writeException($Exception);
                 break;
 
             case 'QUI\\ExceptionStack':
@@ -493,9 +469,7 @@ class Ajax extends QUI\QDOM
                 break;
         }
 
-        if (DEVELOPMENT || DEBUG_MODE) {
-            System\Log::writeException($Exception);
-        }
+        System\Log::writeException($Exception);
 
         $return['Exception']['attributes'] = $attributes;
 
@@ -509,12 +483,12 @@ class Ajax extends QUI\QDOM
     {
         switch (connection_status()) {
             case 2:
-                $return = array(
-                    'Exception' => array(
+                $return = [
+                    'Exception' => [
                         'message' => QUI::getLocale()->get('quiqqer/quiqqer', 'exception.timeout'),
                         'code'    => 504
-                    )
-                );
+                    ]
+                ];
 
                 echo '<quiqqer>'.json_encode($return).'</quiqqer>';
                 break;
