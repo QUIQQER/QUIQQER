@@ -991,7 +991,12 @@
 
         <locale name="exception.site.linked.already.exists">
             <en><![CDATA[
-            It is not possible to create a link in this layer, because a link or the original page already exists in this level.
+            It is not possible to create a linkage in this layer, because a linkage or the original page already exists in this level.
+            ]]></en>
+        </locale>
+        <locale name="exception.site.linked.in.itself">
+            <en><![CDATA[
+             You cannot create a linkage below this level because it would cause an infinite loop.
             ]]></en>
         </locale>
 
