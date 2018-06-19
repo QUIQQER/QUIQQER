@@ -34,7 +34,7 @@
     "tedivm/stash": "0.14.*",
     "robloach/component-installer": "0.0.12",
     "phpmailer/phpmailer": "v5.2.*",
-    "symfony/http-foundation": "4.2.*",
+    "symfony/http-foundation": ">=2.3|3.*|4.2.*",
     "symfony/console": "~2.7",
     "html2text/html2text": "1.0.1",
     "intervention/image": "2.2.*",
