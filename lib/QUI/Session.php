@@ -58,7 +58,7 @@ class Session
     /**
      * @var array
      */
-    protected $vars = array();
+    protected $vars = [];
 
     /**
      * constructor
@@ -71,39 +71,36 @@ class Session
 
         // symfony files
         $classNativeSessionStorage = '\Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage';
-
-        $fileNativeSessionStorage = OPT_DIR.
-                                    'symfony/http-foundation/Symfony/Component/'.
-                                    'HttpFoundation/Session/Storage/NativeSessionStorage.php';
-
-        $classSession = '\Symfony\Component\HttpFoundation\Session\Session';
-
-        $fileSession = OPT_DIR.
-                       'symfony/http-foundation/Symfony/Component/'.
-                       'HttpFoundation/Session/Session.php';
-
+        $classSession              = '\Symfony\Component\HttpFoundation\Session\Session';
+        $symfonyDir                = OPT_DIR.'symfony/http-foundation/';
 
         // options
         if (QUI::conf('session', 'max_life_time')) {
             $this->lifetime = QUI::conf('session', 'max_life_time');
         }
 
-        $storageOptions = array(
+        $storageOptions = [
             'cookie_httponly' => true,
             'name'            => 'qsess',
             'cookie_lifetime' => $this->lifetime,
             'gc_maxlifetime'  => $this->lifetime,
             'cookie_secure'   => QUI\Utils\System::isProtocolSecure()
-        );
+        ];
 
         if (!class_exists('NativeSessionStorage')) {
-            if (file_exists($fileNativeSessionStorage)) {
-                include_once $fileNativeSessionStorage;
-            } else {
+            $fileNativeSessionStorage = $symfonyDir.'Session/Storage/NativeSessionStorage.php';
+
+            if (!file_exists($fileNativeSessionStorage)) {
+                $fileNativeSessionStorage = $symfonyDir.'Component/HttpFoundation/Session/Storage/NativeSessionStorage.php';
+            }
+
+            if (!file_exists($fileNativeSessionStorage)) {
                 throw new \Exception(
                     'Session File not found '.$fileNativeSessionStorage
                 );
             }
+
+            include_once $fileNativeSessionStorage;
 
             if (class_exists($classNativeSessionStorage)) {
                 $this->Storage = new $classNativeSessionStorage(
@@ -119,11 +116,17 @@ class Session
         }
 
         if (!class_exists('NativeSessionStorage')) {
-            if (file_exists($fileSession)) {
-                include_once $fileSession;
-            } else {
+            $fileSession = $symfonyDir.'Session/Session.php';
+
+            if (!file_exists($fileSession)) {
+                $fileSession = $symfonyDir.'Symfony/Component/HttpFoundation/Session/Session.php';
+            }
+
+            if (!file_exists($fileSession)) {
                 throw new \Exception('Session File not found '.$fileSession);
             }
+
+            include_once $fileSession;
 
             if (class_exists($classSession)) {
                 $this->Session = new $classSession($this->Storage);
@@ -221,13 +224,13 @@ class Session
             $PDO = QUI::getDataBase()->getNewPDO();
             $PDO->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
 
-            return new PdoSessionHandler($PDO, array(
+            return new PdoSessionHandler($PDO, [
                 'db_table'        => $this->table,
                 'db_id_col'       => 'session_id',
                 'db_data_col'     => 'session_value',
                 'db_time_col'     => 'session_time',
                 'db_lifetime_col' => 'session_lifetime'
-            ));
+            ]);
         }
 
         return new NativeFileSessionHandler(VAR_DIR.'sessions');
@@ -267,13 +270,13 @@ class Session
 
         // pdo mysql options db
         // more at http://symfony.com/doc/current/cookbook/configuration/pdo_session_storage.html
-        $DBTable->addColumn($this->table, array(
+        $DBTable->addColumn($this->table, [
             'session_id'       => 'varchar(255) NOT NULL',
             'session_value'    => 'text NOT NULL',
             'session_time'     => 'int(11) NOT NULL',
             'session_lifetime' => 'int(12) NOT NULL',
             'uid'              => 'int(11) NOT NULL'
-        ));
+        ]);
 
         $DBTable->setPrimaryKey($this->table, 'session_id');
     }
@@ -398,13 +401,13 @@ class Session
     public function getLastRefreshFrom($sid)
     {
         $result = QUI::getDataBase()->fetch(
-            array(
+            [
                 'from'  => $this->table,
-                'where' => array(
+                'where' => [
                     'session_id' => $sid
-                ),
+                ],
                 'limit' => 1
-            )
+            ]
         );
 
         if (!isset($result[0])) {
@@ -424,13 +427,13 @@ class Session
     public function isUserOnline($uid)
     {
         $result = QUI::getDataBase()->fetch(
-            array(
+            [
                 'from'  => $this->table,
-                'where' => array(
+                'where' => [
                     'uid' => (int)$uid
-                ),
+                ],
                 'limit' => 1
-            )
+            ]
         );
 
         return isset($result[0]) ? true : false;
