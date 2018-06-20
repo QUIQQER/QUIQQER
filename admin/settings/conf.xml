@@ -481,7 +481,7 @@
                         <title>
                             <locale group="quiqqer/quiqqer" var="quiqqer.settings.packagestore.title"/>
                         </title>
-                        <input conf="packagestore.url" type="text" data-qui="controls/projects/project/site/MultiLangSelect">
+                        <input conf="packagestore.url" type="text" data-qui="controls/lang/InputMultiLang">
                             <text>
                                 <locale group="quiqqer/quiqqer"
                                         var="quiqqer.settings.packagestore.url.title"/>
