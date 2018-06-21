@@ -194,6 +194,7 @@ class Session
 
 
         // memcache
+        // @deprecated
         if ($sessionType == 'memcache' && class_exists('Memcache')) {
             $memcache_data = QUI::conf('session', 'memcache_data');
             $memcache_data = explode(';', $memcache_data);
