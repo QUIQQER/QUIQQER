@@ -7,6 +7,7 @@
 namespace QUI\Mail;
 
 use QUI;
+use PHPMailer\PHPMailer\PHPMailer;
 
 /**
  * Mail Manager
@@ -29,6 +30,8 @@ class Manager
      * @param string $to
      * @param string $subject
      * @param string $body
+     *
+     * @throws QUI\Exception
      */
     public function send($to, $subject, $body)
     {
@@ -74,12 +77,12 @@ class Manager
     /**
      * Return a PHPMailer object
      *
-     * @return \PHPMailer
+     * @return PHPMailer
      */
     public function getPHPMailer()
     {
         $config = QUI::conf('mail');
-        $Mail   = new \PHPMailer(true);
+        $Mail   = new PHPMailer(true);
 
         if ($config['SMTP'] == true) {
             $Mail->Mailer   = 'smtp';
@@ -105,13 +108,13 @@ class Manager
                     case "ssl":
                         $Mail->SMTPSecure = $config['SMTPSecure'];
 
-                        $Mail->SMTPOptions = array(
-                            'ssl' => array(
+                        $Mail->SMTPOptions = [
+                            'ssl' => [
                                 'verify_peer'       => (int)$config['SMTPSecureSSL_verify_peer'],
                                 'verify_peer_name'  => (int)$config['SMTPSecureSSL_verify_peer_name'],
                                 'allow_self_signed' => (int)$config['SMTPSecureSSL_allow_self_signed']
-                            )
-                        );
+                            ]
+                        ];
                         break;
                     case "tls":
                         $Mail->SMTPSecure = $config['SMTPSecure'];
