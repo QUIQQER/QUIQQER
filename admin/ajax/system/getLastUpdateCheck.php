@@ -17,6 +17,6 @@ QUI::$Ajax->registerFunction(
 
         return QUI::getLocale()->formatDate($date, '%B %d %Y, %X %Z');
     },
-    array('formatted'),
+    ['formatted'],
     'Permission::checkSU'
 );
