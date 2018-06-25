@@ -93,6 +93,12 @@ class Mailer extends QUI\QDOM
         $this->Template = new Template([
             'Project' => $this->getAttribute('Project')
         ]);
+
+        try {
+            QUI::getEvents()->fireEvent('mailer', [$this]);;
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
     }
 
     /**
@@ -106,6 +112,12 @@ class Mailer extends QUI\QDOM
 
         $PHPMailer->Subject = $this->getAttribute('subject');
         $PHPMailer->Body    = $this->Template->getHTML();
+
+        try {
+            QUI::getEvents()->fireEvent('mailerSendBegin', [$this, $PHPMailer]);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
 
         // html ?
         if ($this->getAttribute('html')) {
@@ -176,6 +188,11 @@ class Mailer extends QUI\QDOM
             }
         }
 
+        try {
+            QUI::getEvents()->fireEvent('mailerSend', [$this, $PHPMailer]);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
 
         // with mail queue?
         if (QUI::conf('mail', 'queue')) {
