@@ -35,7 +35,15 @@ define('QUIQQER', ['Ajax', 'Packages'], function (QUIAjax, Packages) {
          */
         isAuthenticated: function () {
             return new Promise(function (resolve, reject) {
-                QUIAjax.get('ajax_isAuth', resolve, {
+                QUIAjax.get('ajax_isAuth', function(User) {
+                    if (!User.id) {
+                        resolve(false);
+                        return;
+                    }
+
+                    window.QUIQQER_USER = User;
+                    resolve(true);
+                }, {
                     onError: reject
                 });
             });

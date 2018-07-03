@@ -19,6 +19,7 @@ class Encryption
      *
      * @param string $data
      * @return string
+     * @throws QUI\Exception
      */
     public static function encrypt($data)
     {

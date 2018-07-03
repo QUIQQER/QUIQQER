@@ -40,10 +40,17 @@ QUI::$Ajax->registerFunction(
         $control .= $Login->create();
         $control .= QUI\Control\Manager::getCSS();
 
-        return array(
+        $SessionUser = QUI::getUserBySession();
+
+        return [
             'authenticator' => $Login->next(),
-            'control'       => $control
-        );
+            'control'       => $control,
+            'user'          => [
+                'id'   => $SessionUser->getId(),
+                'name' => $SessionUser->getName(),
+                'lang' => $SessionUser->getLang()
+            ]
+        ];
     },
-    array('authenticator', 'params', 'globalauth')
+    ['authenticator', 'params', 'globalauth']
 );
