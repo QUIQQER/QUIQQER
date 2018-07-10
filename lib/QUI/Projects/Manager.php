@@ -796,6 +796,16 @@ class Manager
             $Project
         );
 
+        // If only one project exists it should not be deleted (no existing projects cause errors)
+        if (self::count() < 2) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.project.delete.last'
+                )
+            );
+        }
+
         $project = $Project->getName();
         $langs   = $Project->getAttribute('langs');
 

@@ -4965,6 +4965,9 @@
         <locale name="exception.project.exist">
             <en><![CDATA[The project already exist.]]></en>
         </locale>
+        <locale name="exception.project.delete.last">
+            <en><![CDATA[The project can not be deleted, since it is the last one existing.]]></en>
+        </locale>
         <locale name="projects.project.settings.meta.settings.title">
             <en><![CDATA[Meta data]]></en>
         </locale>
