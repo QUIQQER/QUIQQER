@@ -71,6 +71,17 @@
                 {{/data.type}}
             </span>
         </li>
+        <li>
+            <span class="qui-control-package-infos-title">Versions-Hash:</span>
+            <span class="qui-control-package-infos-value" {{#data.hash.full}}title="{{data.hash.full}}"{{/data.hash.full}}">
+                {{#data.hash.short}}
+                    {{data.hash.short}}...
+                {{/data.hash.short}}
+                {{^data.hash.short}}
+                    ---
+                {{/data.hash.short}}
+            </span>
+        </li>
     </ul>
 </div>
 
