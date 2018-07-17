@@ -1177,6 +1177,36 @@
         <locale name="packages.panel.category.license">
             <en><![CDATA[License]]></en>
         </locale>
+        <locale name="packages.dialog.info.support">
+            <en><![CDATA[Support]]></en>
+        </locale>
+        <locale name="packages.dialog.info.preview">
+            <en><![CDATA[Preview]]></en>
+        </locale>
+        <locale name="packages.dialog.info.preview.none">
+            <en><![CDATA[No images available]]></en>
+        </locale>
+        <locale name="packages.dialog.info.more">
+            <en><![CDATA[Further Information]]></en>
+        </locale>
+        <locale name="packages.dialog.info.name">
+            <en><![CDATA[Package Name]]></en>
+        </locale>
+        <locale name="packages.dialog.info.license">
+            <en><![CDATA[License]]></en>
+        </locale>
+        <locale name="packages.dialog.info.version">
+            <en><![CDATA[Version]]></en>
+        </locale>
+        <locale name="packages.dialog.info.type">
+            <en><![CDATA[Type]]></en>
+        </locale>
+        <locale name="packages.dialog.info.hash">
+            <en><![CDATA[Version-Hash]]></en>
+        </locale>
+        <locale name="packages.dialog.info.dependencies">
+            <en><![CDATA[Dependencies]]></en>
+        </locale>
         <locale name="menu.workspaces.edit">
             <en><![CDATA[Settings]]></en>
         </locale>

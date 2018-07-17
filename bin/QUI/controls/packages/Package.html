@@ -9,14 +9,14 @@
         </div>
         {{#support.email}}
         <p class="qui-control-package-header-text-description">
-            Support: {{support.email}}
+            {{locale.support}}: {{support.email}}
         </p>
         {{/support.email}}
     </div>
 </header>
 
 <div class="qui-control-package-images">
-    <h2>Vorschau</h2>
+    <h2>{{locale.preview}}</h2>
     <div class="qui-control-package-images-container">
         <ul>
             {{#data.preview}}
@@ -25,21 +25,21 @@
             </li>
             {{/data.preview}}
             {{^data.preview}}
-            <li>Keine Bilder vorhanden</li>
+            <li>{{locale.noPreview}}</li>
             {{/data.preview}}
         </ul>
     </div>
 </div>
 
 <div class="qui-control-package-infos">
-    <h2>Weitere Informationen</h2>
+    <h2>{{locale.more}}</h2>
     <ul class="qui-control-package-infos-list">
         <li>
-            <span class="qui-control-package-infos-title">Paketname:</span>
+            <span class="qui-control-package-infos-title">{{locale.name}}:</span>
             <span class="qui-control-package-infos-value">{{data.name}}</span>
         </li>
         <li>
-            <span class="qui-control-package-infos-title">Lizenz:</span>
+            <span class="qui-control-package-infos-title">{{locale.license}}:</span>
             <span class="qui-control-package-infos-value">
                 {{#data.licence}}
                 {{data.licence}}
@@ -50,7 +50,7 @@
             </span>
         </li>
         <li>
-            <span class="qui-control-package-infos-title">Version:</span>
+            <span class="qui-control-package-infos-title">{{locale.version}}:</span>
             <span class="qui-control-package-infos-value">
                 {{#data.version}}
                 {{data.version}}
@@ -61,7 +61,7 @@
             </span>
         </li>
         <li>
-            <span class="qui-control-package-infos-title">Type:</span>
+            <span class="qui-control-package-infos-title">{{locale.type}}:</span>
             <span class="qui-control-package-infos-value">
                 {{#data.type}}
                 {{data.type}}
@@ -72,7 +72,7 @@
             </span>
         </li>
         <li>
-            <span class="qui-control-package-infos-title">Versions-Hash:</span>
+            <span class="qui-control-package-infos-title">{{locale.hash}}:</span>
             <span class="qui-control-package-infos-value" {{#data.hash.full}}title="{{data.hash.full}}"{{/data.hash.full}}">
                 {{#data.hash.short}}
                     {{data.hash.short}}...
@@ -86,7 +86,7 @@
 </div>
 
 <div class="qui-control-package-requirements">
-    <h2>Abhängigkeiten</h2>
+    <h2>{{locale.dependencies}}</h2>
     <ul>
         {{#require}}
         <li>{{name}} ({{version}})</li>
