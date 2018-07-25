@@ -361,6 +361,10 @@ define('controls/projects/project/Panel', [
                                 continue;
                             }
 
+                            if (result[key].standard !== "1") {
+                                continue;
+                            }
+
                             self.setAttribute('project', key);
                             self.setAttribute('lang', result[key].default_lang);
                             break;
