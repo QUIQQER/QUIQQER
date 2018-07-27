@@ -521,7 +521,7 @@ class QUI
      */
     public static function availableLanguages()
     {
-        $langs = QUI\Translator::langs();
+        $langs = QUI\Translator::getAvailableLanguages();
 
         if (empty($langs)) {
             $langs = array('en');
