@@ -709,7 +709,7 @@ class Manager
             throw $Exception;
         }
 
-        if ($userData[0]['active'] == 0) {
+        if ($userData[0]['active'] != 1) {
             $Exception = new QUI\Users\Exception(
                 ['quiqqer/system', 'exception.login.fail.user_not_active'],
                 401
