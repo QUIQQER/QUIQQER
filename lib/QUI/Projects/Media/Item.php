@@ -49,6 +49,11 @@ abstract class Item extends QUI\QDOM
     protected $file;
 
     /**
+     * @var array
+     */
+    protected $pathHistory = [];
+
+    /**
      * constructor
      *
      * @param array $params - item attributes
@@ -76,6 +81,18 @@ abstract class Item extends QUI\QDOM
             'cache_url',
             URL_DIR.$this->Media->getCacheDir().$this->getPath()
         );
+
+        if (!empty($params['pathHistory'])) {
+            $pathHistory = json_decode($params['pathHistory'], true);
+
+            if (is_array($pathHistory)) {
+                $this->pathHistory = $pathHistory;
+            }
+        }
+
+        if (empty($this->pathHistory)) {
+            $this->pathHistory[] = $this->getPath();
+        }
     }
 
     /**
@@ -109,8 +126,8 @@ abstract class Item extends QUI\QDOM
 
         QUI::getDataBase()->update(
             $this->Media->getTable(),
-            array('active' => 1),
-            array('id' => $this->getId())
+            ['active' => 1],
+            ['id' => $this->getId()]
         );
 
         $this->setAttribute('active', 1);
@@ -132,7 +149,7 @@ abstract class Item extends QUI\QDOM
             }
         }
 
-        QUI::getEvents()->fireEvent('mediaActivate', array($this));
+        QUI::getEvents()->fireEvent('mediaActivate', [$this]);
     }
 
     /**
@@ -145,8 +162,8 @@ abstract class Item extends QUI\QDOM
     {
         QUI::getDataBase()->update(
             $this->Media->getTable(),
-            array('active' => 0),
-            array('id' => $this->getId())
+            ['active' => 0],
+            ['id' => $this->getId()]
         );
 
         $this->setAttribute('active', 0);
@@ -155,7 +172,7 @@ abstract class Item extends QUI\QDOM
             $this->deleteCache();
         }
 
-        QUI::getEvents()->fireEvent('mediaDeactivate', array($this));
+        QUI::getEvents()->fireEvent('mediaDeactivate', [$this]);
     }
 
     /**
@@ -166,7 +183,7 @@ abstract class Item extends QUI\QDOM
      */
     public function save()
     {
-        QUI::getEvents()->fireEvent('mediaSaveBegin', array($this));
+        QUI::getEvents()->fireEvent('mediaSaveBegin', [$this]);
 
         // Rename the file, if necessary
         $this->rename($this->getAttribute('name'));
@@ -174,7 +191,7 @@ abstract class Item extends QUI\QDOM
         $image_effects = $this->getEffects();
 
         if (is_string($image_effects) || is_bool($image_effects)) {
-            $image_effects = array();
+            $image_effects = [];
         }
 
         switch ($this->getAttribute('order')) {
@@ -215,8 +232,8 @@ abstract class Item extends QUI\QDOM
 
                 QUI::getDataBase()->update(
                     $this->Media->getTable(),
-                    array('mime_type' => $fileinfo['mime_type']),
-                    array('id' => $this->getId())
+                    ['mime_type' => $fileinfo['mime_type']],
+                    ['id' => $this->getId()]
                 );
             }
         }
@@ -238,18 +255,19 @@ abstract class Item extends QUI\QDOM
 
         QUI::getDataBase()->update(
             $this->Media->getTable(),
-            array(
+            [
                 'title'         => $this->getAttribute('title'),
                 'alt'           => $this->getAttribute('alt'),
                 'short'         => $this->getAttribute('short'),
                 'order'         => $order,
                 'priority'      => (int)$this->getAttribute('priority'),
                 'image_effects' => json_encode($image_effects),
-                'type'          => $type
-            ),
-            array(
+                'type'          => $type,
+                'pathHistory'   => json_encode($this->pathHistory)
+            ],
+            [
                 'id' => $this->getId()
-            )
+            ]
         );
 
         // @todo in eine queue setzen
@@ -261,7 +279,7 @@ abstract class Item extends QUI\QDOM
             $this->createCache();
         }
 
-        QUI::getEvents()->fireEvent('mediaSave', array($this));
+        QUI::getEvents()->fireEvent('mediaSave', [$this]);
     }
 
     /**
@@ -278,7 +296,7 @@ abstract class Item extends QUI\QDOM
             );
         }
 
-        QUI::getEvents()->fireEvent('mediaDeleteBegin', array($this));
+        QUI::getEvents()->fireEvent('mediaDeleteBegin', [$this]);
 
         $Media = $this->Media;
         $First = $Media->firstChild();
@@ -302,10 +320,10 @@ abstract class Item extends QUI\QDOM
 
         if ($First->getFullPath() == $original) {
             throw new QUI\Exception(
-                array(
+                [
                     'quiqqer/quiqqer',
                     'exception.delete.root.file'
-                ),
+                ],
                 400
             );
         }
@@ -345,19 +363,19 @@ abstract class Item extends QUI\QDOM
         // change db entries
         QUI::getDataBase()->update(
             $this->Media->getTable(),
-            array(
+            [
                 'deleted' => 1,
                 'active'  => 0,
                 'file'    => ''
-            ),
-            array(
+            ],
+            [
                 'id' => $this->getId()
-            )
+            ]
         );
 
         QUI::getDataBase()->delete(
             $this->Media->getTable('relations'),
-            array('child' => $this->getId())
+            ['child' => $this->getId()]
         );
 
         $this->parent_id = false;
@@ -365,7 +383,7 @@ abstract class Item extends QUI\QDOM
         $this->setAttribute('active', 0);
 
         try {
-            QUI::getEvents()->fireEvent('mediaDelete', array($this));
+            QUI::getEvents()->fireEvent('mediaDelete', [$this]);
         } catch (QUI\ExceptionStack $Exception) {
             QUI\System\Log::addWarning($Exception->getMessage());
         }
@@ -402,11 +420,11 @@ abstract class Item extends QUI\QDOM
             QUI\System\Log::addWarning($Exception->getMessage());
         }
 
-        QUI::getDataBase()->delete($this->Media->getTable(), array(
+        QUI::getDataBase()->delete($this->Media->getTable(), [
             'id' => $this->getId()
-        ));
+        ]);
 
-        QUI::getEvents()->fireEvent('mediaDestroy', array($this));
+        QUI::getEvents()->fireEvent('mediaDestroy', [$this]);
     }
 
     /**
@@ -463,17 +481,17 @@ abstract class Item extends QUI\QDOM
 
         if ($Parent->childWithNameExists($newname)) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.with.same.name.exists', array(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.with.same.name.exists', [
                     'name' => $newname
-                ))
+                ])
             );
         }
 
         if ($Parent->fileWithNameExists($newname.'.'.$extension)) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.with.same.name.exists', array(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.with.same.name.exists', [
                     'name' => $newname
-                ))
+                ])
             );
         }
 
@@ -487,15 +505,18 @@ abstract class Item extends QUI\QDOM
         }
 
 
+        $this->pathHistory[] = $new_file;
+
         QUI::getDataBase()->update(
             $this->Media->getTable(),
-            array(
-                'name' => $newname,
-                'file' => $new_file
-            ),
-            array(
+            [
+                'name'        => $newname,
+                'file'        => $new_file,
+                'pathHistory' => json_encode($this->pathHistory)
+            ],
+            [
                 'id' => $this->getId()
-            )
+            ]
         );
 
         $this->setAttribute('name', $newname);
@@ -507,7 +528,7 @@ abstract class Item extends QUI\QDOM
             $this->createCache();
         }
 
-        QUI::getEvents()->fireEvent('mediaRename', array($this));
+        QUI::getEvents()->fireEvent('mediaRename', [$this]);
     }
 
     /**
@@ -544,10 +565,10 @@ abstract class Item extends QUI\QDOM
     public function getParentIds()
     {
         if ($this->getId() === 1) {
-            return array();
+            return [];
         }
 
-        $parents = array();
+        $parents = [];
         $id      = $this->getId();
 
         while ($id = $this->Media->getParentIdFrom($id)) {
@@ -578,7 +599,7 @@ abstract class Item extends QUI\QDOM
     public function getParents()
     {
         $ids     = $this->getParentIds();
-        $parents = array();
+        $parents = [];
 
         foreach ($ids as $id) {
             $parents[] = $this->Media->get($id);
@@ -673,9 +694,9 @@ abstract class Item extends QUI\QDOM
         // check if a child with the same name exist
         if ($Folder->fileWithNameExists($this->getAttribute('name'))) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.with.same.name.exists', array(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.with.same.name.exists', [
                     'name' => $Folder->getAttribute('name')
-                ))
+                ])
             );
         }
 
@@ -706,24 +727,24 @@ abstract class Item extends QUI\QDOM
         // update file path
         QUI::getDataBase()->update(
             $this->Media->getTable(),
-            array(
+            [
                 'file' => $new_file
-            ),
-            array(
+            ],
+            [
                 'id' => $this->getId()
-            )
+            ]
         );
 
         // set the new parent relationship
         QUI::getDataBase()->update(
             $this->Media->getTable('relations'),
-            array(
+            [
                 'parent' => $Folder->getId()
-            ),
-            array(
+            ],
+            [
                 'parent' => $Parent->getId(),
                 'child'  => $this->getId()
-            )
+            ]
         );
 
         // move file on the real directory
@@ -800,7 +821,7 @@ abstract class Item extends QUI\QDOM
         if (is_array($effects)) {
             $this->effects = $effects;
         } else {
-            $this->effects = array();
+            $this->effects = [];
         }
 
         return $this->effects;
@@ -824,7 +845,7 @@ abstract class Item extends QUI\QDOM
      *
      * @param array $effects
      */
-    public function setEffects($effects = array())
+    public function setEffects($effects = [])
     {
         $this->effects = $effects;
     }

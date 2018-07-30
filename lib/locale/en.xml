@@ -426,6 +426,9 @@
         <locale name="add">
             <en><![CDATA[Add]]></en>
         </locale>
+        <locale name="path">
+            <en><![CDATA[Path]]></en>
+        </locale>
         <locale name="remove">
             <en><![CDATA[Remove]]></en>
         </locale>

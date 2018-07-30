@@ -13,6 +13,6 @@ QUI::$Ajax->registerFunction(
 
         $Trash->clear();
     },
-    array('project'),
+    ['project'],
     'Permission::checkAdminUser'
 );
