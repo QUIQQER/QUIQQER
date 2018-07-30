@@ -10,11 +10,11 @@ QUI::$Ajax->registerFunction(
     'ajax_settings_save',
     function ($file, $params) {
         $jsonFiles = json_decode($file, true);
-        $files     = array();
+        $files     = [];
 
         if ($jsonFiles) {
             if (is_string($jsonFiles)) {
-                $files = array($jsonFiles);
+                $files = [$jsonFiles];
             } else {
                 $files = $jsonFiles;
             }
@@ -22,7 +22,7 @@ QUI::$Ajax->registerFunction(
 
         foreach ($files as $file) {
             if (!file_exists($file)) {
-                $file = CMS_DIR . $file;
+                $file = CMS_DIR.$file;
             }
 
             if (!file_exists($file)) {
@@ -62,8 +62,8 @@ QUI::$Ajax->registerFunction(
             # Save the current .htaccess content to see if the config changed
             $oldContent = "";
 
-            if (file_exists(CMS_DIR . ".htaccess")) {
-                $oldContent = file_get_contents(CMS_DIR . ".htaccess");
+            if (file_exists(CMS_DIR.".htaccess")) {
+                $oldContent = file_get_contents(CMS_DIR.".htaccess");
             }
 
             $Htaccess = new QUI\System\Console\Tools\Htaccess();
@@ -71,7 +71,8 @@ QUI::$Ajax->registerFunction(
 
 
             $webserverConfig = QUI::conf("webserver", "type");
-            if ($webserverConfig !== false && is_string($webserverConfig) && strpos($webserverConfig, "apache") !== false) {
+            if ($webserverConfig !== false && is_string($webserverConfig)
+                && strpos($webserverConfig, "apache") !== false) {
                 continue;
             }
 
@@ -81,22 +82,21 @@ QUI::$Ajax->registerFunction(
             } catch (\Exception $Exception) {
                 $webServer = "";
             }
-            
+
             if ($webServer === QUI\Utils\System\Webserver::WEBSERVER_APACHE) {
                 continue;
             }
 
-           
-            
+
             if (empty($oldContent)) {
                 continue;
             }
 
-            if (!file_exists(CMS_DIR . ".htaccess")) {
+            if (!file_exists(CMS_DIR.".htaccess")) {
                 continue;
             }
 
-            $newContent = file_get_contents(CMS_DIR . ".htaccess");
+            $newContent = file_get_contents(CMS_DIR.".htaccess");
 
             if ($newContent != $oldContent) {
                 QUI::getMessagesHandler()->addInformation(
@@ -108,6 +108,6 @@ QUI::$Ajax->registerFunction(
             }
         }
     },
-    array('file', 'params'),
+    ['file', 'params'],
     'Permission::checkAdminUser'
 );

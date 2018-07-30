@@ -93,6 +93,9 @@
                             <text>
                                 <locale group="quiqqer/system" var="quiqqer.settings.cache.general.nocache"/>
                             </text>
+                            <description>
+                                <locale group="quiqqer/system" var="quiqqer.settings.cache.general.nocache.description"/>
+                            </description>
                         </input>
                         <input conf="handlers.filesystem" type="checkbox">
                             <text>
