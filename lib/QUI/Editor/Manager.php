@@ -35,7 +35,7 @@ class Manager
      *
      * @var array
      */
-    protected $plugins = array();
+    protected $plugins = [];
 
     /**
      * @var null|array
@@ -94,26 +94,26 @@ class Manager
 
             QUI::getDataBase()->update(
                 QUI::getDBTableName("groups"),
-                array(
+                [
                     "toolbar"          => $rootToolbar,
                     "assigned_toolbar" => implode(",", $toolbars)
-                ),
-                array(
+                ],
+                [
                     "id" => $rootGroupID
-                )
+                ]
             );
 
             // Set "minimal.xml" as new default toolbar for the everyone group
             if (in_array("minimal.xml", $toolbars)) {
                 QUI::getDataBase()->update(
                     QUI::getDBTableName("groups"),
-                    array(
+                    [
                         "toolbar"          => "minimal.xml",
                         "assigned_toolbar" => "minimal.xml"
-                    ),
-                    array(
+                    ],
+                    [
                         "id" => 1
-                    )
+                    ]
                 );
             }
         }
@@ -192,7 +192,7 @@ class Manager
         // Bilder umschreiben
         $html = preg_replace_callback(
             '#(src)="([^"]*)"#',
-            array($this, "cleanAdminSrc"),
+            [$this, "cleanAdminSrc"],
             $html
         );
 
@@ -262,7 +262,7 @@ class Manager
      */
     public static function getToolbarsFromUser(QUI\Interfaces\Users\User $User)
     {
-        $result = array();
+        $result = [];
         $groups = $User->getGroups();
 
         if (!is_array($groups)) {
@@ -305,7 +305,7 @@ class Manager
      */
     public static function getToolbarsFromGroup(QUI\Groups\Group $Group)
     {
-        $result = array();
+        $result = [];
 
         if ($Group->getAttribute('toolbar') &&
             self::existsToolbar($Group->getAttribute('toolbar'))
@@ -349,8 +349,8 @@ class Manager
         }
 
         // css files
-        $css    = array();
-        $styles = array();
+        $css    = [];
+        $styles = [];
         $file   = USR_DIR.$Project->getName().'/settings.xml';
 
         $bodyId    = false;
@@ -383,7 +383,7 @@ class Manager
         }
 
         // template files
-        $templates = array();
+        $templates = [];
 
         if ($Project->getAttribute('template')) {
             $templates[] = OPT_DIR.$Project->getAttribute('template').'/settings.xml';
@@ -496,16 +496,23 @@ class Manager
             }
         }
 
+        // custom css file
+        if (file_exists(USR_DIR.$project.'/bin/custom.css')) {
+            $css[] = URL_USR_DIR.$project.'/bin/custom.css';
+        }
 
-        $result = array(
+        $result = [
             'cssFiles'  => $css,
             'bodyId'    => $bodyId,
             'bodyClass' => $bodyClass,
             'styles'    => $styles
-        );
+        ];
 
-
-        QUI\Cache\Manager::set($cacheName, $result);
+        try {
+            QUI\Cache\Manager::set($cacheName, $result);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
 
         return $result;
     }
@@ -520,7 +527,7 @@ class Manager
      */
     public static function getStyles($Project = false)
     {
-        $styles = array();
+        $styles = [];
 
         if ($Project) {
         }
@@ -594,10 +601,10 @@ class Manager
         );
 
         if (empty($xml)) {
-            throw new QUI\Exception(array(
+            throw new QUI\Exception([
                 'quiqqer/system',
                 'exception.lib.qui.editor.manager.toolbar.empty'
-            ));
+            ]);
         }
 
         $toolbar = str_replace('.xml', '', $toolbar);
@@ -627,7 +634,7 @@ class Manager
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.qui.editor.manager.toolbar.xml.error',
-                    array('error' => $errors[0]->message)
+                    ['error' => $errors[0]->message]
                 )
             );
         }
@@ -650,7 +657,7 @@ class Manager
         $User  = $Users->getUserBySession();
 
         if (!$Users->isAuth($User)) {
-            return array();
+            return [];
         }
 
         // Benutzer spezifische Toolbar
@@ -687,7 +694,7 @@ class Manager
 
         // standard
         if ($toolbar === false) {
-            return array();
+            return [];
         }
 
         if (strpos($toolbar, '.xml') !== false) {
@@ -719,11 +726,11 @@ class Manager
         $toolbar = $Dom->getElementsByTagName('toolbar');
 
         if (!$toolbar->length) {
-            return array();
+            return [];
         }
 
         $children = $toolbar->item(0)->childNodes;
-        $result   = array();
+        $result   = [];
 
         for ($i = 0; $i < $children->length; $i++) {
             $Param = $children->item($i);
@@ -760,7 +767,7 @@ class Manager
         }
 
         $children = $Node->childNodes;
-        $result   = array();
+        $result   = [];
 
         for ($i = 0; $i < $children->length; $i++) {
             $Param = $children->item($i);
@@ -791,24 +798,24 @@ class Manager
         }
 
         $children = $Node->childNodes;
-        $result   = array();
+        $result   = [];
 
         for ($i = 0; $i < $children->length; $i++) {
             $Param = $children->item($i);
 
             if ($Param->nodeName == 'separator') {
-                $result[] = array(
+                $result[] = [
                     'type' => 'separator'
-                );
+                ];
 
                 continue;
             }
 
             if ($Param->nodeName == 'button') {
-                $result[] = array(
+                $result[] = [
                     'type'   => 'button',
                     'button' => trim($Param->nodeValue)
-                );
+                ];
             }
         }
 
@@ -832,17 +839,17 @@ class Manager
     {
         $html = preg_replace('/<!--\[if gte mso.*?-->/s', '', $html);
 
-        $search = array(
+        $search = [
             'font-family: Arial',
             'class="MsoNormal"'
-        );
+        ];
 
         $html = str_ireplace($search, '', $html);
 
         if (class_exists('tidy')) {
             $Tidy = new \Tidy();
 
-            $config = array(
+            $config = [
                 "char-encoding"       => "utf8",
                 'output-xhtml'        => true,
                 'indent-attributes'   => false,
@@ -850,7 +857,7 @@ class Manager
                 'word-2000'           => 1,
                 // html 5 Tags registrieren
                 'new-blocklevel-tags' => 'header, footer, article, section, hgroup, nav, figure'
-            );
+            ];
 
             $Tidy->parseString($html, $config, 'utf8');
             $Tidy->cleanRepair();
@@ -873,13 +880,13 @@ class Manager
         // Bilder umschreiben
         $html = preg_replace_callback(
             '#(src)="([^"]*)"#',
-            array($this, "cleanSrc"),
+            [$this, "cleanSrc"],
             $html
         );
 
         $html = preg_replace_callback(
             '#(href)="([^"]*)"#',
-            array($this, "cleanHref"),
+            [$this, "cleanHref"],
             $html
         );
 
@@ -894,7 +901,7 @@ class Manager
         // Zeilenumbrüche in HTML löschen
         $html = preg_replace_callback(
             '#(<)(.*?)(>)#',
-            array($this, "deleteLineBreaksInHtml"),
+            [$this, "deleteLineBreaksInHtml"],
             $html
         );
 
@@ -915,7 +922,7 @@ class Manager
         }
 
         return str_replace(
-            array("\r\n", "\n", "\r"),
+            ["\r\n", "\n", "\r"],
             "",
             $params[0]
         );
