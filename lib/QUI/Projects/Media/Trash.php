@@ -85,10 +85,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
             $pathHistory = json_decode($entry['pathHistory'], true);
 
             if (!empty($pathHistory)) {
-                $path = end($pathHistory);
-                $path = dirname($path);
-
-                $data[$key]['path'] = $path.'/';
+                $data[$key]['path'] = end($pathHistory).'/';
             }
         }
 

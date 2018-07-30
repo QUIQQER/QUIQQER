@@ -647,7 +647,7 @@ define('controls/trash/Panel', [
                     header   : Locale.get(lg, 'path'),
                     dataIndex: 'path',
                     dataType : 'string',
-                    width    : 200
+                    width    : 300
                 }],
                 pagination       : true,
                 selectable       : true,
