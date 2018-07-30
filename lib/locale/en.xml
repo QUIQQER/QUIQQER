@@ -4472,7 +4472,10 @@
             <en><![CDATA[Cache types]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.general.nocache">
-            <en><![CDATA[Set the complete entire cache off. Recommended only in development mode.]]></en>
+            <en><![CDATA[Set the complete entire cache off]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.general.nocache.description">
+            <en><![CDATA[Switches off the complete cache. Recommended only in development mode.]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.handler.filesystem">
             <en><![CDATA[Filesystem]]></en>

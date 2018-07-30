@@ -4612,7 +4612,10 @@
             <de><![CDATA[Cache-Arten]]></de>
         </locale>
         <locale name="quiqqer.settings.cache.general.nocache">
-            <de><![CDATA[Kompletten Cache ausschalten. Nur im Entwicklungsmodus empfohlen.]]></de>
+            <de><![CDATA[Kompletten Cache ausschalten]]></de>
+        </locale>
+        <locale name="quiqqer.settings.cache.general.nocache.description">
+            <de><![CDATA[Schaltet den kompletten Cache aus. Nur im Entwicklungsmodus empfohlen.]]></de>
         </locale>
         <locale name="quiqqer.settings.cache.handler.filesystem">
             <de><![CDATA[Dateisystem]]></de>
