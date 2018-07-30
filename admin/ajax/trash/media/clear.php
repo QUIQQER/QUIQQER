@@ -13,6 +13,6 @@ QUI::$Ajax->registerFunction(
         $Trash   = $Media->getTrash();
         $Trash->clear();
     },
-    array('project'),
+    ['project'],
     'Permission::checkAdminUser'
 );

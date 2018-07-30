@@ -3,17 +3,6 @@
  *
  * @module controls/trash/Panel
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/desktop/Panel
- * @require qui/controls/buttons/Select
- * @require qui/controls/windows/Confirm
- * @require controls/grid/Grid
- * @require controls/projects/Popup
- * @require controls/projects/project/media/Popup
- * @require Projects
- * @require Ajax
- * @require Locale
  */
 define('controls/trash/Panel', [
 
@@ -33,8 +22,7 @@ define('controls/trash/Panel', [
 
     var lg = 'quiqqer/system';
 
-    var QUI          = arguments[0],
-        QUIPanel     = arguments[1],
+    var QUIPanel     = arguments[1],
         QUISelect    = arguments[2],
         QUIConfirm   = arguments[3],
         Grid         = arguments[4],
@@ -193,7 +181,7 @@ define('controls/trash/Panel', [
         $onSelectChange: function (value) {
             value = value.split(',');
 
-            if (value[1] == 'media') {
+            if (value[1] === 'media') {
                 this.$displayProjectMediaTrash(value[0]);
                 return;
             }
@@ -239,7 +227,7 @@ define('controls/trash/Panel', [
                     onSubmit: function (Win) {
                         Win.Loader.show();
 
-                        if (type == 'project') {
+                        if (type === 'project') {
                             self.clearProjectItems(params[0], params[1]).then(function () {
                                 Win.close();
 
@@ -292,8 +280,8 @@ define('controls/trash/Panel', [
 
             for (i = 0, len = selectedData.length; i < len; i++) {
                 information = information + '<li>' +
-                              selectedData[i].id + ' ' + selectedData[i].name +
-                              '</li>';
+                    selectedData[i].id + ' ' + selectedData[i].name +
+                    '</li>';
 
                 ids.push(selectedData[i].id);
             }
@@ -311,7 +299,7 @@ define('controls/trash/Panel', [
                     onSubmit: function (Win) {
                         Win.Loader.show();
 
-                        if (type == 'project') {
+                        if (type === 'project') {
                             self.destroyProjectItems(params[0], params[1], ids, function () {
                                 Win.close();
 
@@ -464,6 +452,11 @@ define('controls/trash/Panel', [
                     dataIndex: 'e_user',
                     dataType : 'integer',
                     width    : 100
+                }, {
+                    header   : Locale.get(lg, 'path'),
+                    dataIndex: 'path',
+                    dataType : 'string',
+                    width    : 200
                 }],
                 pagination       : true,
                 selectable       : true,
@@ -650,6 +643,11 @@ define('controls/trash/Panel', [
                     dataIndex: 'e_user',
                     dataType : 'integer',
                     width    : 100
+                }, {
+                    header   : Locale.get(lg, 'path'),
+                    dataIndex: 'path',
+                    dataType : 'string',
+                    width    : 200
                 }],
                 pagination       : true,
                 selectable       : true,

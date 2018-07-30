@@ -46,17 +46,17 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      *
      * @return array
      */
-    public function getList($params = array())
+    public function getList($params = [])
     {
         // create grid
         $Grid = new QUI\Utils\Grid();
 
         $_params = $Grid->parseDBParams($params);
 
-        $_params['where'] = array(
+        $_params['where'] = [
             'active'  => -1,
             'deleted' => 1
-        );
+        ];
 
 
         /**
@@ -79,11 +79,11 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
         if (isset($params['sort'])) {
             switch ($params['sort']) {
                 case 'ASC':
-                    $_params['order'] = $_params['order'] . ' ASC';
+                    $_params['order'] = $_params['order'].' ASC';
                     break;
 
                 default:
-                    $_params['order'] = $_params['order'] . ' DESC';
+                    $_params['order'] = $_params['order'].' DESC';
                     break;
             }
         }
@@ -91,27 +91,32 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
         /**
          * Creating result
          */
-        $result = array();
+        $result = [];
         $sites  = $this->Project->getSites($_params);
 
         foreach ($sites as $Site) {
-            /* @var $Site Site */
-            $result[] = array(
-                'icon'  => URL_BIN_DIR . '16x16/page.png',
-                'name'  => $Site->getAttribute('name'),
-                'title' => $Site->getAttribute('title'),
-                'type'  => $Site->getAttribute('type'),
-                'id'    => $Site->getId()
-            );
+            try {
+                /* @var $Site Site */
+                $result[] = [
+                    'icon'  => URL_BIN_DIR.'16x16/page.png',
+                    'name'  => $Site->getAttribute('name'),
+                    'title' => $Site->getAttribute('title'),
+                    'type'  => $Site->getAttribute('type'),
+                    'id'    => $Site->getId(),
+                    'path'  => $Site->getUrlRewritten()
+                ];
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
         }
 
-        $total = $this->Project->getSites(array(
-            'where' => array(
+        $total = $this->Project->getSites([
+            'where' => [
                 'active'  => -1,
                 'deleted' => 1
-            ),
+            ],
             'count' => true
-        ));
+        ]);
 
         return $Grid->parseResult($result, (int)$total);
     }
@@ -121,7 +126,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      *
      * @param array $ids
      */
-    public function destroy($ids = array())
+    public function destroy($ids = [])
     {
         if (!is_array($ids)) {
             return;
@@ -138,11 +143,11 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      */
     public function clear()
     {
-        $ids = $this->Project->getSitesIds(array(
-            'where' => array(
+        $ids = $this->Project->getSitesIds([
+            'where' => [
                 'deleted' => 1
-            )
-        ));
+            ]
+        ]);
 
         foreach ($ids as $data) {
             $Site = new Site\Edit($this->Project, (int)$data['id']);
@@ -156,6 +161,8 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      * @param \QUI\Projects\Project $Project
      * @param array $ids
      * @param integer $parentid
+     *
+     * @throws QUI\Exception
      */
     public function restore(Project $Project, $ids, $parentid)
     {

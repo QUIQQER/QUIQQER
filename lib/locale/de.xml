@@ -1860,6 +1860,9 @@
         <locale name="add">
             <de><![CDATA[Hinzufügen]]></de>
         </locale>
+        <locale name="path">
+            <de><![CDATA[Pfad]]></de>
+        </locale>
         <locale name="address.salutation.male">
             <de><![CDATA[Herr]]></de>
         </locale>

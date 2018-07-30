@@ -18,6 +18,6 @@ QUI::$Ajax->registerFunction(
             json_decode($params, true)
         );
     },
-    array('project', 'params'),
+    ['project', 'params'],
     'Permission::checkAdminUser'
 );
