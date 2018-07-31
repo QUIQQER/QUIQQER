@@ -1393,6 +1393,13 @@ class User implements QUI\Interfaces\Users\User
 
         QUI::getEvents()->fireEvent('userDisable', array($this));
 
+        $addresses = $this->getAddressList();
+
+        /** @var Address $Address */
+        foreach ($addresses as $Address) {
+            $Address->delete();
+        }
+
         QUI::getDataBase()->update(
             Manager::table(),
             array(
