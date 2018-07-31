@@ -2268,7 +2268,7 @@ define('controls/grid/Grid', [
                 // button drop down
                 this.$Menu = new QUIButton({
                     textimage   : 'fa fa-navicon',
-                    text        : 'Menü', // @todo #locale
+                    text        : QUILocale.get('quiqqer/quiqqer', 'control.grid.menu.button'),
                     dropDownIcon: false
                 }).inject(tDiv);
 

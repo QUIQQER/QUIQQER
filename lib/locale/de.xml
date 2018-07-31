@@ -1591,6 +1591,9 @@
         <locale name="control.icons.confirm.title">
             <de><![CDATA[Icon-Auswahl]]></de>
         </locale>
+        <locale name="control.grid.menu.button">
+            <de><![CDATA[Menü]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">
         <locale name="yes">

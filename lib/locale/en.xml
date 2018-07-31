@@ -1568,6 +1568,9 @@
         <locale name="control.icons.confirm.title">
             <en><![CDATA[Icon-Select]]></en>
         </locale>
+        <locale name="control.grid.menu.button">
+            <en><![CDATA[Menu]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">
         <locale name="yes">
