@@ -1438,7 +1438,7 @@ class User implements QUI\Interfaces\Users\User
         $expire   = '0000-00-00 00:00:00';
         $birthday = '0000-00-00';
 
-        QUI::getEvents()->fireEvent('userSaveBegin', array($this));
+        QUI::getEvents()->fireEvent('userSaveBegin', [$this]);
 
         if ($this->getAttribute('expire')) {
             // Datumsprüfung auf Syntax
