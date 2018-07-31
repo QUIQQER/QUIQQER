@@ -387,6 +387,12 @@ class Address extends QUI\QDOM
 
         $this->getUser()->checkEditPermission($PermissionUser);
 
+        try {
+            QUI::getEvents()->fireEvent('userAddressSaveBegin', [$this, $this->getUser()]);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+
         $mail  = json_encode($this->getMailList());
         $phone = json_encode($this->getPhoneList());
 
@@ -410,6 +416,12 @@ class Address extends QUI\QDOM
                 'id' => $this->id
             ]
         );
+
+        try {
+            QUI::getEvents()->fireEvent('userAddressSave', [$this, $this->getUser()]);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
     }
 
     /**
