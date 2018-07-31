@@ -4,22 +4,6 @@
  * @module controls/projects/project/media/Panel
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/QUI
- * @require qui/controls/desktop/Panel
- * @require classes/projects/project/Media
- * @require controls/projects/project/media/Sitemap
- * @require classes/projects/project/media/panel/DOMEvents
- * @require classes/projects/project/media/panel/ContextMenu
- * @require qui/controls/breadcrumb/Item
- * @require controls/grid/Grid
- * @require controls/upload/Form
- * @require classes/request/Upload
- * @require Ajax
- * @require Locale
- * @require utils/Media
- * @require Projects
- * @require css!controls/projects/project/media/Panel.css
- *
  * @event onDragDropComplete [this, event]
  * @event childClick [ this, imageData ]
  */
