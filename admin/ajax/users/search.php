@@ -36,7 +36,7 @@ QUI::$Ajax->registerFunction(
         }
 
         $search = $Users->search($params);
-        $result = array();
+        $result = [];
 
         foreach ($search as $user) {
             if (!isset($user['usergroup'])) {
@@ -53,9 +53,9 @@ QUI::$Ajax->registerFunction(
                 }
 
                 try {
-                    $groupnames .= $Groups->getGroupNameById($gid) . ',';
+                    $groupnames .= $Groups->getGroupNameById($gid).',';
                 } catch (QUI\Exception $Exception) {
-                    $groupnames .= $gid . ',';
+                    $groupnames .= $gid.',';
                 }
             }
 
@@ -73,6 +73,6 @@ QUI::$Ajax->registerFunction(
 
         return $Grid->parseResult($result, $Users->count($params));
     },
-    array('params'),
+    ['params'],
     'Permission::checkAdminUser'
 );

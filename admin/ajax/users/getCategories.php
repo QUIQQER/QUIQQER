@@ -16,6 +16,6 @@ QUI::$Ajax->registerFunction(
 
         return $Toolbar->toArray();
     },
-    array('uid'),
-    'Permission::checkSU'
+    ['uid'],
+    'Permission::checkAdminUser'
 );

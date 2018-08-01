@@ -14,6 +14,6 @@ QUI::$Ajax->registerFunction(
     function ($uid, $plugin, $tab) {
         return QUI\Users\Utils::getTab($uid, $plugin, $tab);
     },
-    array('uid', 'plugin', 'tab'),
-    'Permission::checkSU'
+    ['uid', 'plugin', 'tab'],
+    'Permission::checkAdminUser'
 );

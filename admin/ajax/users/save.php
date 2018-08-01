@@ -39,14 +39,14 @@ QUI::$Ajax->registerFunction(
         }
 
         QUI::getMessagesHandler()->addSuccess(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'message.user.saved', array(
+            QUI::getLocale()->get('quiqqer/quiqqer', 'message.user.saved', [
                 'username' => $User->getName(),
                 'id'       => $User->getId()
-            ))
+            ])
         );
 
         return $User->getAttributes();
     },
-    array('uid', 'attributes'),
+    ['uid', 'attributes'],
     'Permission::checkAdminUser'
 );

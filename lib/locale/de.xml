@@ -5441,6 +5441,9 @@
         <locale name="message.ajax.licenseKey.delete.success">
             <de><![CDATA[Die Lizenz wurde erfolgreich gelöscht und ist nun nicht mehr aktiv.]]></de>
         </locale>
+        <locale name="exception.lib.user.activasion.user.is.activated">
+            <de><![CDATA[Der Benutzer konnte nicht aktiviert werde da dieser schon aktiviert ist.]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/system" datatype="php,js">
         <locale name="language.af">

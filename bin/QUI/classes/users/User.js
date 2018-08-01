@@ -166,7 +166,7 @@ define('classes/users/User', [
          * @return {Promise}
          */
         save: function (params, callback) {
-            return new Promise(function (resolve) {
+            return new Promise(function (resolve, reject) {
                 if (!this.$uid) {
                     if (typeof callback === 'function') {
                         callback();
@@ -186,7 +186,7 @@ define('classes/users/User', [
                         }
 
                         resolve();
-                    });
+                    }).catch(reject);
                 });
             }.bind(this));
         },
@@ -199,7 +199,7 @@ define('classes/users/User', [
          * @return {Promise}
          */
         activate: function (onfinish) {
-            return new Promise(function (resolve) {
+            return new Promise(function (resolve, reject) {
                 if (!this.$uid) {
                     if (typeof onfinish === 'function') {
                         onfinish();
@@ -215,10 +215,10 @@ define('classes/users/User', [
                         if (typeof onfinish === 'function') {
                             onfinish();
                         }
-                        resolve();
-                    });
-                });
 
+                        resolve();
+                    }).catch(reject);
+                });
             }.bind(this));
         },
 
@@ -230,7 +230,7 @@ define('classes/users/User', [
          * @return {Promise}
          */
         deactivate: function (onfinish) {
-            return new Promise(function (resolve) {
+            return new Promise(function (resolve, reject) {
                 if (!this.$uid) {
                     if (typeof onfinish === 'function') {
                         onfinish();
@@ -247,7 +247,7 @@ define('classes/users/User', [
                             onfinish();
                         }
                         resolve();
-                    });
+                    }).catch(reject);
                 });
             }.bind(this));
         },

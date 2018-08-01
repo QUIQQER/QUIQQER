@@ -14,7 +14,7 @@ QUI::$Ajax->registerFunction(
         $uids  = json_decode($uid, true);
 
         if (!is_array($uids)) {
-            $uids = array($uids);
+            $uids = [$uids];
         }
 
         foreach ($uids as $uid) {
@@ -22,13 +22,13 @@ QUI::$Ajax->registerFunction(
         }
 
         QUI::getMessagesHandler()->addInformation(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'message.user.deleted.successful', array(
+            QUI::getLocale()->get('quiqqer/quiqqer', 'message.user.deleted.successful', [
                 'ids' => implode(', ', $uids)
-            ))
+            ])
         );
 
         return true;
     },
-    array('uid'),
+    ['uid'],
     'Permission::checkSU'
 );

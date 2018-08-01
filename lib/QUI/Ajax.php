@@ -51,6 +51,7 @@ class Ajax extends QUI\QDOM
      * constructor
      *
      * @param array $params
+     * @throws \Exception
      */
     public function __construct($params = [])
     {
@@ -138,6 +139,7 @@ class Ajax extends QUI\QDOM
      * @param string|callback $reg_function
      *
      * @throws \QUI\Exception
+     * @throws \QUI\Permissions\Exception
      */
     public static function checkPermissions($reg_function)
     {
@@ -171,7 +173,7 @@ class Ajax extends QUI\QDOM
             }
 
             if (!is_callable($func)) {
-                throw new QUI\Exception('Permission denied', 503);
+                throw new QUI\Permissions\Exception('Permission denied', 503);
             }
 
             call_user_func($func);
@@ -469,7 +471,11 @@ class Ajax extends QUI\QDOM
                 break;
         }
 
-        System\Log::writeException($Exception);
+        if ($class === 'QUI\\Permissions\\Exception') {
+            QUI\System\Log::addInfo($Exception->getMessage());
+        } else {
+            QUI\System\Log::writeException($Exception);
+        }
 
         $return['Exception']['attributes'] = $attributes;
 

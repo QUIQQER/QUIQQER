@@ -13,16 +13,21 @@ QUI::$Ajax->registerFunction(
         $uid = json_decode($uid, true);
 
         if (!is_array($uid)) {
-            $uid = array($uid);
+            $uid = [$uid];
         }
 
         $Users       = QUI::getUsers();
-        $result      = array();
-        $deactivated = array();
+        $result      = [];
+        $deactivated = [];
 
         foreach ($uid as $_uid) {
             try {
                 $User = $Users->get($_uid);
+            } catch (QUI\Exception $Exception) {
+                continue;
+            }
+
+            try {
                 $User->deactivate();
 
                 $result[$_uid] = $User->isActive() ? 1 : 0;
@@ -31,7 +36,7 @@ QUI::$Ajax->registerFunction(
                     $deactivated[] = $User->getId();
                 }
             } catch (QUI\Exception $Exception) {
-                $result[$_uid] = 0;
+                $result[$_uid] = $User->isActive() ? 1 : 0;
 
                 QUI::getMessagesHandler()->addError(
                     $Exception->getMessage()
@@ -46,15 +51,15 @@ QUI::$Ajax->registerFunction(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'message.users.deactivated',
-                    array(
+                    [
                         'users' => implode(',', $deactivated)
-                    )
+                    ]
                 )
             );
         }
 
         return $result;
     },
-    array('uid'),
-    'Permission::checkSU'
+    ['uid'],
+    'Permission::checkAdminUser'
 );

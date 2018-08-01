@@ -14,6 +14,6 @@ QUI::$Ajax->registerFunction(
 
         return !empty($email);
     },
-    array('userId'),
+    ['userId'],
     'Permission::checkAdminUser'
 );

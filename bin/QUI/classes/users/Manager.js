@@ -4,11 +4,6 @@
  * @module classes/users/Manager
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/classes/DOM
- * @require classes/users/User
- * @require Ajax
- * @require qui/utils/Object
- *
  * @event onSwitchStatus [this, result, Request]
  * @event onActivate [this, result, Request]
  * @event onDeactivate [this, result, Request]

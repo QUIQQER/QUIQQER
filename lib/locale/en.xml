@@ -5266,6 +5266,9 @@
         <locale name="message.ajax.licenseKey.delete.success">
             <en><![CDATA[The license was deleted successfully and is now inactive.]]></en>
         </locale>
+        <locale name="exception.lib.user.activasion.user.is.activated">
+            <en><![CDATA[The user could not be activated because he is already activated.]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/system" datatype="php,js">
         <locale name="language.al">
