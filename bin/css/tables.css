@@ -178,6 +178,10 @@
     height: 100%;
 }
 
+.field-container > .qui-elements-select-multiple > button {
+    height: auto;
+}
+
 .field-container .qui-elements-select-list {
     border: none;
     border-bottom: 1px solid #dedede;
