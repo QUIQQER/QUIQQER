@@ -715,7 +715,7 @@ define('controls/users/Panel', [
                                 var Switch = self.$getUserSwitch(User);
 
                                 if (Switch) {
-                                    Switch.setSilentOff();
+                                    User.isActive() ? Switch.setSilentOn() : Switch.setSilentOff();
                                 }
 
                                 Win.close();
@@ -735,7 +735,7 @@ define('controls/users/Panel', [
                 var Switch = self.$getUserSwitch(User);
 
                 if (Switch) {
-                    Switch.setSilentOn();
+                    User.isActive() ? Switch.setSilentOn() : Switch.setSilentOff();
                 }
             });
         },

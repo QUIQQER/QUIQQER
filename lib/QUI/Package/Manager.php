@@ -223,7 +223,14 @@ class Manager extends QUI\QDOM
      */
     public function getLastUpdateCheckDate()
     {
-        return (int)$this->getUpdateConf()->get('quiqqer', 'lastUpdateCheck');
+        $lastCheck  = (int)$this->getUpdateConf()->get('quiqqer', 'lastUpdateCheck');
+        $lastUpdate = $this->getLastUpdateDate();
+
+        if ($lastUpdate > $lastCheck) {
+            $lastCheck = $lastUpdate;
+        }
+
+        return $lastCheck;
     }
 
     /**

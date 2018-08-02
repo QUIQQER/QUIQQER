@@ -16,6 +16,6 @@ QUI::$Ajax->registerFunction(
 
         $Trash->restore($Project, $ids, $parentid);
     },
-    array('project', 'ids', 'parentid'),
+    ['project', 'ids', 'parentid'],
     'Permission::checkAdminUser'
 );

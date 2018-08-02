@@ -32,50 +32,50 @@ class Mailer extends QUI\QDOM
      *
      * @var array
      */
-    protected $recipients = array();
+    protected $recipients = [];
 
     /**
      * list of reply
      *
      * @var array
      */
-    protected $reply = array();
+    protected $reply = [];
 
     /**
      * list of cc
      *
      * @var array
      */
-    protected $cc = array();
+    protected $cc = [];
 
     /**
      * list of bcc
      *
      * @var array
      */
-    protected $bcc = array();
+    protected $bcc = [];
 
     /**
      * list of attachments
      *
      * @var array
      */
-    protected $attachments = array();
+    protected $attachments = [];
 
     /**
      * constructor
      *
      * @param array $attributes
      */
-    public function __construct($attributes = array())
+    public function __construct($attributes = [])
     {
         $config = QUI::conf('mail');
 
         // default
-        $this->setAttributes(array(
+        $this->setAttributes([
             'html'    => true,
             'Project' => QUI::getProjectManager()->get()
-        ));
+        ]);
 
         if (isset($config['MAILFrom'])) {
             $this->setFrom($config['MAILFrom']);
@@ -90,9 +90,15 @@ class Mailer extends QUI\QDOM
         $this->setAttributes($attributes);
 
         // html mail template
-        $this->Template = new Template(array(
+        $this->Template = new Template([
             'Project' => $this->getAttribute('Project')
-        ));
+        ]);
+
+        try {
+            QUI::getEvents()->fireEvent('mailer', [$this]);;
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
     }
 
     /**
@@ -106,6 +112,12 @@ class Mailer extends QUI\QDOM
 
         $PHPMailer->Subject = $this->getAttribute('subject');
         $PHPMailer->Body    = $this->Template->getHTML();
+
+        try {
+            QUI::getEvents()->fireEvent('mailerSendBegin', [$this, $PHPMailer]);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
 
         // html ?
         if ($this->getAttribute('html')) {
@@ -155,20 +167,32 @@ class Mailer extends QUI\QDOM
                 continue;
             }
 
-            $infos = QUI\Utils\System\File::getInfo($file);
+            $info = QUI\Utils\System\File::getInfo($file);
 
-            if (!isset($infos['mime_type'])) {
-                $infos['mime_type'] = 'application/octet-stream';
+            if (!isset($info['mime_type'])) {
+                $info['mime_type'] = 'application/octet-stream';
             }
 
-            $PHPMailer->addAttachment(
-                $file,
-                $infos['basename'],
-                'base64',
-                $infos['mime_type']
-            );
+            try {
+                $PHPMailer->addAttachment(
+                    $file,
+                    $info['basename'],
+                    'base64',
+                    $info['mime_type']
+                );
+            } catch (\PHPMailer\PHPMailer\Exception $Exception) {
+                throw new QUI\Exception(
+                    $Exception->getMessage(),
+                    $Exception->getCode()
+                );
+            }
         }
 
+        try {
+            QUI::getEvents()->fireEvent('mailerSend', [$this, $PHPMailer]);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
 
         // with mail queue?
         if (QUI::conf('mail', 'queue')) {
@@ -183,10 +207,11 @@ class Mailer extends QUI\QDOM
         // no mail queue
         try {
             $PHPMailer->send();
+
             return true;
         } catch (\Exception $Exception) {
             throw new QUI\Exception(
-                'Mail Error: ' . $Exception->getMessage()
+                'Mail Error: '.$Exception->getMessage()
             );
         }
     }
@@ -198,7 +223,7 @@ class Mailer extends QUI\QDOM
      */
     public function toArray()
     {
-        return array(
+        return [
             'subject'      => $this->getAttribute('subject'),
             'body'         => $this->Template->getHTML(),
             'text'         => $this->Template->getText(),
@@ -210,7 +235,7 @@ class Mailer extends QUI\QDOM
             'cc'           => $this->cc,
             'bcc'          => $this->bcc,
             'attachements' => $this->attachments
-        );
+        ];
     }
 
     /**
@@ -295,7 +320,7 @@ class Mailer extends QUI\QDOM
 
         foreach ($email as $mail) {
             if ($name) {
-                $this->recipients[] = array($mail, $name);
+                $this->recipients[] = [$mail, $name];
                 continue;
             }
             $this->recipients[] = $mail;
@@ -315,7 +340,7 @@ class Mailer extends QUI\QDOM
 
         foreach ($email as $mail) {
             if ($name) {
-                $this->reply[] = array($mail, $name);
+                $this->reply[] = [$mail, $name];
                 continue;
             }
             $this->reply[] = $mail;
@@ -335,7 +360,7 @@ class Mailer extends QUI\QDOM
 
         foreach ($email as $mail) {
             if ($name) {
-                $this->cc[] = array($mail, $name);
+                $this->cc[] = [$mail, $name];
                 continue;
             }
             $this->cc[] = $mail;
@@ -355,7 +380,7 @@ class Mailer extends QUI\QDOM
 
         foreach ($email as $mail) {
             if ($name) {
-                $this->bcc[] = array($mail, $name);
+                $this->bcc[] = [$mail, $name];
                 continue;
             }
             $this->bcc[] = $mail;

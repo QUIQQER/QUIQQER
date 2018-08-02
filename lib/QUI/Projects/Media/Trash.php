@@ -54,24 +54,24 @@ class Trash implements QUI\Interfaces\Projects\Trash
      *
      * @return array
      */
-    public function getList($params = array())
+    public function getList($params = [])
     {
-        $Grid = new QUI\Utils\Grid();
+        $Grid  = new QUI\Utils\Grid();
+        $query = $Grid->parseDBParams($params);
 
-        $query          = $Grid->parseDBParams($params);
         $query['from']  = $this->Media->getTable();
-        $query['where'] = array(
+        $query['where'] = [
             'deleted' => 1
-        );
+        ];
 
         // count
-        $count = QUI::getDataBase()->fetch(array(
+        $count = QUI::getDataBase()->fetch([
             'from'  => $this->Media->getTable(),
             'count' => 'count',
-            'where' => array(
+            'where' => [
                 'deleted' => 1
-            )
-        ));
+            ]
+        ]);
 
         $data = QUI::getDataBase()->fetch($query);
 
@@ -79,6 +79,14 @@ class Trash implements QUI\Interfaces\Projects\Trash
             $data[$key]['icon'] = Utils::getIconByExtension(
                 Utils::getExtension($entry['file'])
             );
+
+            $data[$key]['path'] = '---';
+
+            $pathHistory = json_decode($entry['pathHistory'], true);
+
+            if (!empty($pathHistory)) {
+                $data[$key]['path'] = end($pathHistory).'/';
+            }
         }
 
         return $Grid->parseResult($data, $count[0]['count']);
@@ -94,7 +102,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
      */
     public function destroy($id)
     {
-        // check if the file is realy deleted?
+        // check if the file is really deleted?
         $File = $this->Media->get($id);
 
         if (!$File->isDeleted()) {
@@ -106,18 +114,16 @@ class Trash implements QUI\Interfaces\Projects\Trash
 
     /**
      * Clears the complete trash
-     *
-     * @throws QUI\Exception
      */
     public function clear()
     {
-        $data = QUI::getDataBase()->fetch(array(
+        $data = QUI::getDataBase()->fetch([
             'select' => 'id',
             'from'   => $this->Media->getTable(),
-            'where'  => array(
+            'where'  => [
                 'deleted' => 1
-            )
-        ));
+            ]
+        ]);
 
         foreach ($data as $key => $entry) {
             try {
@@ -129,10 +135,10 @@ class Trash implements QUI\Interfaces\Projects\Trash
 
                 $File->destroy();
             } catch (QUI\Exception $Exception) {
-                QUI\System\Log::addNotice($Exception->getMessage(), array(
+                QUI\System\Log::addNotice($Exception->getMessage(), [
                     'method' => 'Media/Trash::clear()',
                     'fileId' => $entry['id']
-                ));
+                ]);
             }
         }
     }
@@ -152,20 +158,20 @@ class Trash implements QUI\Interfaces\Projects\Trash
 
         if (!file_exists($file)) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.trash.file.not.found', array(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.trash.file.not.found', [
                     'id' => $id
-                ))
+                ])
             );
         }
 
         // search old db entry for data
-        $data = QUI::getDataBase()->fetch(array(
+        $data = QUI::getDataBase()->fetch([
             'from'  => $this->Media->getTable(),
-            'where' => array(
+            'where' => [
                 'id' => $id
-            ),
+            ],
             'limit' => 1
-        ));
+        ]);
 
         if (!isset($data[0])) {
             throw new QUI\Exception(
@@ -187,18 +193,18 @@ class Trash implements QUI\Interfaces\Projects\Trash
         $Item = $Folder->uploadFile($newFile);
 
         // change old db entry, if one exist
-        $Item->setAttributes(array(
+        $Item->setAttributes([
             'title' => $data[0]['title'],
             'alt'   => $data[0]['alt'],
             'short' => $data[0]['short']
-        ));
+        ]);
 
         $Item->save();
 
         // delete the old db entry
         QUI::getDataBase()->delete(
             $this->Media->getTable(),
-            array('id' => $id)
+            ['id' => $id]
         );
 
         return $Item;

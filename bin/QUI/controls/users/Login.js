@@ -222,6 +222,8 @@ define('controls/users/Login', [
                 QUIAjax.post('ajax_users_login', function (result) {
                     // authentication was successful
                     if (!result.authenticator) {
+                        window.QUIQQER_USER = result.user;
+
                         self.fireEvent('success', [self]);
                         resolve(self);
 

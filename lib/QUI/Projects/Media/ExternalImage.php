@@ -213,10 +213,10 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
      */
     public function getResizeSize($maxwidth = false, $maxheight = false)
     {
-        return array(
+        return [
             'width'  => false,
             'height' => false
-        );
+        ];
     }
 
     /**
@@ -336,7 +336,6 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
      */
     public function deleteAdminCache()
     {
-
     }
 
     /**

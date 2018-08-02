@@ -5,7 +5,7 @@
  */
 QUI::$Ajax->registerFunction(
     'ajax_users_logout',
-    function() {
+    function () {
         QUI::getUserBySession()->logout();
     },
     false

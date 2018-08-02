@@ -175,6 +175,11 @@
     border-radius: 0;
     border-left: 1px solid #dedede;
     box-shadow: none;
+    height: 100%;
+}
+
+.field-container > .qui-elements-select-multiple > button {
+    height: auto;
 }
 
 .field-container .qui-elements-select-list {

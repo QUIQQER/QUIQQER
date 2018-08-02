@@ -800,12 +800,28 @@ define('controls/users/User', [
                     this.Loader.hide();
                     return;
                 }
-
+console.log(User.isActive());
                 if (User.isActive()) {
                     Button.on();
                     Button.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isActivate'));
                 } else {
                     Button.off();
+                    Button.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isDeactivate'));
+                }
+
+                this.Loader.hide();
+            }.bind(this)).catch(function () {
+                if (User.isActive() === -1) {
+                    Button.disable();
+                    this.Loader.hide();
+                    return;
+                }
+console.log(User.isActive());
+                if (User.isActive()) {
+                    Button.setSilentOn();
+                    Button.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isActivate'));
+                } else {
+                    Button.setSilentOff();
                     Button.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isDeactivate'));
                 }
 

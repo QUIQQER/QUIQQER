@@ -17,12 +17,15 @@ define('controls/packages/Package', [
     'qui/controls/Control',
     'Packages',
     'Mustache',
+    'Locale',
 
     'text!controls/packages/Package.html',
     'css!controls/packages/Package.css'
 
-], function (QUI, QUIControl, Packages, Mustache, template) {
+], function (QUI, QUIControl, Packages, Mustache, QUILocale, template) {
     "use strict";
+
+    var lg = "quiqqer/quiqqer";
 
     return new Class({
 
@@ -83,6 +86,19 @@ define('controls/packages/Package', [
                     });
                 }
 
+                var locale = {
+                    support     : QUILocale.get(lg, 'packages.dialog.info.support'),
+                    preview     : QUILocale.get(lg, 'packages.dialog.info.preview'),
+                    noPreview   : QUILocale.get(lg, 'packages.dialog.info.preview.none'),
+                    more        : QUILocale.get(lg, 'packages.dialog.info.more'),
+                    name        : QUILocale.get(lg, 'packages.dialog.info.name'),
+                    license     : QUILocale.get(lg, 'packages.dialog.info.license'),
+                    version     : QUILocale.get(lg, 'packages.dialog.info.version'),
+                    type        : QUILocale.get(lg, 'packages.dialog.info.type'),
+                    hash        : QUILocale.get(lg, 'packages.dialog.info.hash'),
+                    dependencies: QUILocale.get(lg, 'packages.dialog.info.dependencies')
+                };
+
                 this.$Elm.set({
                     html: Mustache.render(template, {
                         data       : data,
@@ -90,8 +106,8 @@ define('controls/packages/Package', [
                         description: data.description,
                         image      : image,
                         support    : data.support || {},
-                        require    : require
-
+                        require    : require,
+                        locale     : locale
                     })
                 });
 

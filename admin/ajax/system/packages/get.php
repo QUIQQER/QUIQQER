@@ -12,6 +12,20 @@ QUI::$Ajax->registerFunction(
         $Package = QUI::getPackageManager()->getInstalledPackage($package);
 
         $composerData = $Package->getComposerData();
+        $lockData = $Package->getLock();
+
+        $hashData = array();
+        if (isset($lockData['dist']['reference'])) {
+            $hashValue = $lockData['dist']['reference'];
+            $hashData  = array(
+                'hash' => array(
+                    'full'  => $hashValue,
+                    'short' => substr($hashValue, 0, 8)
+                )
+            );
+        }
+
+
         $standardData = array(
             'name'        => $Package->getName(),
             'title'       => $Package->getTitle(),
@@ -23,7 +37,7 @@ QUI::$Ajax->registerFunction(
         // require sort
         ksort($composerData['require']);
 
-        return array_merge($composerData, $standardData);
+        return array_merge($composerData, $standardData, $hashData);
     },
     array('package'),
     array(

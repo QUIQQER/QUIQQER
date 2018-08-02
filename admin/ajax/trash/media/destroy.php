@@ -19,6 +19,6 @@ QUI::$Ajax->registerFunction(
             $Trash->destroy($id);
         }
     },
-    array('project', 'ids'),
+    ['project', 'ids'],
     'Permission::checkAdminUser'
 );

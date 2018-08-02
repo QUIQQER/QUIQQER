@@ -20,13 +20,13 @@
             <de><![CDATA[#,##0.###]]></de>
         </locale>
         <locale name="numberFormat.percent_pattern">
-            <de><![CDATA[#,##0 %]]></de>
+            <de><![CDATA[#,##0 %]]></de>
         </locale>
         <locale name="numberFormat.currency_pattern">
-            <de><![CDATA[#,##0.00 ¤]]></de>
+            <de><![CDATA[#,##0.00 ¤]]></de>
         </locale>
         <locale name="numberFormat.accounting_currency_pattern">
-            <de><![CDATA[#,##0.00 ¤]]></de>
+            <de><![CDATA[#,##0.00 ¤]]></de>
         </locale>
         <locale name="numberFormat.decimal_separator">
             <de><![CDATA[,]]></de>
@@ -529,7 +529,22 @@
             ]]></de>
         </locale>
         <locale name="exception.media.file.not.found">
-            <en><![CDATA[Datei wurde nicht gefunden.]]></en>
+            <de><![CDATA[Datei wurde nicht gefunden.]]></de>
+        </locale>
+        <locale name="exception.media.file.not.found.NAME">
+            <de><![CDATA[Die Datei [file] wurde nicht gefunden.]]></de>
+        </locale>
+        <locale name="exception.media.folder.name.invalid">
+            <de><![CDATA[Dieser Name ist für einen Ordner ungültig.]]></de>
+        </locale>
+        <locale name="exception.media.root.folder.rename">
+            <de><![CDATA[Das Media-Root-Verzeichnis eines Projektes kann nicht umbenannt werden.]]></de>
+        </locale>
+        <locale name="exception.media.folder.with.same.name.exists">
+            <de><![CDATA[Ein Ordner mit dem gleichen Namen existiert bereits.]]></de>
+        </locale>
+        <locale name="exception.media.folder.could.not.be.created">
+            <de><![CDATA[Der Ordner konnte nicht erstellt werden.]]></de>
         </locale>
 
         <locale name="control.editor.toolbar.select.search.field.placeholder">
@@ -1188,6 +1203,36 @@
         <locale name="packages.panel.category.license">
             <de><![CDATA[Lizenz]]></de>
         </locale>
+        <locale name="packages.dialog.info.support">
+            <de><![CDATA[Support]]></de>
+        </locale>
+        <locale name="packages.dialog.info.preview">
+            <de><![CDATA[Vorschau]]></de>
+        </locale>
+        <locale name="packages.dialog.info.preview.none">
+            <de><![CDATA[Keine Bilder vorhanden]]></de>
+        </locale>
+        <locale name="packages.dialog.info.more">
+            <de><![CDATA[Weitere Informationen]]></de>
+        </locale>
+        <locale name="packages.dialog.info.name">
+            <de><![CDATA[Paketname]]></de>
+        </locale>
+        <locale name="packages.dialog.info.license">
+            <de><![CDATA[Lizenz]]></de>
+        </locale>
+        <locale name="packages.dialog.info.version">
+            <de><![CDATA[Version]]></de>
+        </locale>
+        <locale name="packages.dialog.info.type">
+            <de><![CDATA[Typ]]></de>
+        </locale>
+        <locale name="packages.dialog.info.hash">
+            <de><![CDATA[Versions-Hash]]></de>
+        </locale>
+        <locale name="packages.dialog.info.dependencies">
+            <de><![CDATA[Abhängigkeiten]]></de>
+        </locale>
         <locale name="menu.workspaces.edit">
             <de><![CDATA[Einstellungen]]></de>
         </locale>
@@ -1546,6 +1591,9 @@
         <locale name="control.icons.confirm.title">
             <de><![CDATA[Icon-Auswahl]]></de>
         </locale>
+        <locale name="control.grid.menu.button">
+            <de><![CDATA[Menü]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">
         <locale name="yes">
@@ -1829,6 +1877,9 @@
         </locale>
         <locale name="add">
             <de><![CDATA[Hinzufügen]]></de>
+        </locale>
+        <locale name="path">
+            <de><![CDATA[Pfad]]></de>
         </locale>
         <locale name="address.salutation.male">
             <de><![CDATA[Herr]]></de>
@@ -4582,7 +4633,10 @@
             <de><![CDATA[Cache-Arten]]></de>
         </locale>
         <locale name="quiqqer.settings.cache.general.nocache">
-            <de><![CDATA[Kompletten Cache ausschalten. Nur im Entwicklungsmodus empfohlen.]]></de>
+            <de><![CDATA[Kompletten Cache ausschalten]]></de>
+        </locale>
+        <locale name="quiqqer.settings.cache.general.nocache.description">
+            <de><![CDATA[Schaltet den kompletten Cache aus. Nur im Entwicklungsmodus empfohlen.]]></de>
         </locale>
         <locale name="quiqqer.settings.cache.handler.filesystem">
             <de><![CDATA[Dateisystem]]></de>
@@ -5133,6 +5187,9 @@
         <locale name="exception.project.exist">
             <de><![CDATA[Projekt existiert bereits.]]></de>
         </locale>
+        <locale name="exception.project.delete.last">
+            <de><![CDATA[Löschen des Projektes nicht möglich, da es das letzte existierende ist.]]></de>
+        </locale>
         <locale name="projects.project.settings.meta.settings.title">
             <de><![CDATA[Meta Angaben]]></de>
         </locale>
@@ -5383,6 +5440,9 @@
         </locale>
         <locale name="message.ajax.licenseKey.delete.success">
             <de><![CDATA[Die Lizenz wurde erfolgreich gelöscht und ist nun nicht mehr aktiv.]]></de>
+        </locale>
+        <locale name="exception.lib.user.activasion.user.is.activated">
+            <de><![CDATA[Der Benutzer konnte nicht aktiviert werde da dieser schon aktiviert ist.]]></de>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="php,js">
@@ -6244,7 +6304,7 @@
             <de><![CDATA[Sie haben nicht die nötigen Rechte um diese Aktion durchzuführen]]></de>
         </locale>
         <locale name="projects.project.site.select.btn.addTypes">
-            <de><![CDATA[Seitentyp hinzufügen ]]></de>
+            <de><![CDATA[Seitentyp hinzufügen ]]></de>
         </locale>
         <locale name="packages.panel.category.systemcheck.loader">
             <de><![CDATA[Der System Check läuft, dies kann bis zu 30 Sekunden dauern.]]></de>

@@ -3,18 +3,6 @@
  *
  * @module controls/projects/project/media/FilePanel
  * @author www.pcsg.de (Henning Leutz)
- *
- * @requir qui/QUI
- * @requir qui/controls/desktop/Panel
- * @requir classes/projects/project/media/panel/DOMEvents
- * @requir qui/controls/buttons/Button
- * @requir qui/controls/buttons/Separator
- * @requir qui/controls/windows/Confirm
- * @requir utils/Template
- * @requir qui/utils/Form
- * @requir utils/Controls
- * @requir Locale
- * @requir css!controls/projects/project/media/FilePanel.css
  */
 define('controls/projects/project/media/FilePanel', [
 

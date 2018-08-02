@@ -426,6 +426,9 @@
         <locale name="add">
             <en><![CDATA[Add]]></en>
         </locale>
+        <locale name="path">
+            <en><![CDATA[Path]]></en>
+        </locale>
         <locale name="remove">
             <en><![CDATA[Remove]]></en>
         </locale>
@@ -473,7 +476,7 @@
         </locale>
         <locale name="quiqqer.settings.auth.global.desc">
             <en><![CDATA[
-            Primary Authenticators are authentication methods which provide the user at the beginning of his Authentication.
+            Primary Authenticators are authentication methods which provide the user at the beginning of his Authentication.
             In addition, you can go over the permissions management for each group or user and set more factor authentication.
             ]]></en>
         </locale>
@@ -527,6 +530,21 @@
         </locale>
         <locale name="exception.media.file.not.found">
             <en><![CDATA[File not found.]]></en>
+        </locale>
+        <locale name="exception.media.file.not.found.NAME">
+            <en><![CDATA[File [file] not found.]]></en>
+        </locale>
+        <locale name="exception.media.folder.name.invalid">
+            <en><![CDATA[This name is invalid for a folder.]]></en>
+        </locale>
+        <locale name="exception.media.root.folder.rename">
+            <en><![CDATA[The media root directory of a project cannot be renamed.]]></en>
+        </locale>
+        <locale name="exception.media.folder.with.same.name.exists">
+            <en><![CDATA[A folder with the same name already exists.]]></en>
+        </locale>
+        <locale name="exception.media.folder.could.not.be.created">
+            <en><![CDATA[The folder could not be created.]]></en>
         </locale>
 
         <locale name="control.editor.toolbar.select.search.field.placeholder">
@@ -1177,6 +1195,36 @@
         <locale name="packages.panel.category.license">
             <en><![CDATA[License]]></en>
         </locale>
+        <locale name="packages.dialog.info.support">
+            <en><![CDATA[Support]]></en>
+        </locale>
+        <locale name="packages.dialog.info.preview">
+            <en><![CDATA[Preview]]></en>
+        </locale>
+        <locale name="packages.dialog.info.preview.none">
+            <en><![CDATA[No images available]]></en>
+        </locale>
+        <locale name="packages.dialog.info.more">
+            <en><![CDATA[Further Information]]></en>
+        </locale>
+        <locale name="packages.dialog.info.name">
+            <en><![CDATA[Package Name]]></en>
+        </locale>
+        <locale name="packages.dialog.info.license">
+            <en><![CDATA[License]]></en>
+        </locale>
+        <locale name="packages.dialog.info.version">
+            <en><![CDATA[Version]]></en>
+        </locale>
+        <locale name="packages.dialog.info.type">
+            <en><![CDATA[Type]]></en>
+        </locale>
+        <locale name="packages.dialog.info.hash">
+            <en><![CDATA[Version-Hash]]></en>
+        </locale>
+        <locale name="packages.dialog.info.dependencies">
+            <en><![CDATA[Dependencies]]></en>
+        </locale>
         <locale name="menu.workspaces.edit">
             <en><![CDATA[Settings]]></en>
         </locale>
@@ -1519,6 +1567,9 @@
 
         <locale name="control.icons.confirm.title">
             <en><![CDATA[Icon-Select]]></en>
+        </locale>
+        <locale name="control.grid.menu.button">
+            <en><![CDATA[Menu]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">
@@ -4442,7 +4493,10 @@
             <en><![CDATA[Cache types]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.general.nocache">
-            <en><![CDATA[Set the complete entire cache off. Recommended only in development mode.]]></en>
+            <en><![CDATA[Set the complete entire cache off]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.general.nocache.description">
+            <en><![CDATA[Switches off the complete cache. Recommended only in development mode.]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.handler.filesystem">
             <en><![CDATA[Filesystem]]></en>
@@ -4965,6 +5019,9 @@
         <locale name="exception.project.exist">
             <en><![CDATA[The project already exist.]]></en>
         </locale>
+        <locale name="exception.project.delete.last">
+            <en><![CDATA[The project can not be deleted, since it is the last one existing.]]></en>
+        </locale>
         <locale name="projects.project.settings.meta.settings.title">
             <en><![CDATA[Meta data]]></en>
         </locale>
@@ -5208,6 +5265,9 @@
         </locale>
         <locale name="message.ajax.licenseKey.delete.success">
             <en><![CDATA[The license was deleted successfully and is now inactive.]]></en>
+        </locale>
+        <locale name="exception.lib.user.activasion.user.is.activated">
+            <en><![CDATA[The user could not be activated because he is already activated.]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="php,js">
@@ -6052,7 +6112,7 @@
         <locale name="quiqqer.settings.general.permissions.description" html="true">
             <en><![CDATA[
             Use package rights if you want to provide multiple users with different rights. <br />
-            If no package rights are used, some functions in the system are more powerful.
+            If no package rights are used, some functions in the system are more powerful.
             ]]></en>
         </locale>
         <locale name="exception.no.permission">
