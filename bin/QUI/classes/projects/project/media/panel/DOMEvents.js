@@ -118,13 +118,14 @@ define('classes/projects/project/media/panel/DOMEvents', [
 
                             items = result;
 
+                            // @todo do it as mustache template
                             var folderIcon = URL_BIN_DIR + '16x16/extensions/folder.png',
                                 imageIcon  = URL_BIN_DIR + '16x16/extensions/image.png',
                                 fileIcon   = URL_BIN_DIR + '16x16/extensions/empty.png';
 
                             for (i = 0, len = items.length; i < len; i++) {
                                 item = items[i];
-
+console.log(item);
                                 if (item.getAttribute('mime_type') === 'folder') {
                                     mime = folderIcon;
                                 } else if (item.getAttribute('mime_type').indexOf('image') !== -1) {
@@ -139,7 +140,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
                                 information = information +
                                     '<li>' +
                                     icon + '#' + item.getAttribute('id') +
-                                    ' - ' + item.getAttribute('name') +
+                                    ' - ' + item.getAttribute('file') +
                                     '</li>';
                             }
 
