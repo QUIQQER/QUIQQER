@@ -161,7 +161,7 @@ class Address extends QUI\QDOM
 
         if (!is_array($phone)) {
             $phone = [
-                'no'   => $phone,
+                'no'   => Orthos::clear($phone),
                 'type' => 'tel'
             ];
         }
@@ -176,7 +176,10 @@ class Address extends QUI\QDOM
 
         $list = $this->getPhoneList();
 
-        $list[$index] = $phone;
+        $list[$index] = [
+            'no'   => Orthos::clear($phone['no']),
+            'type' => Orthos::clear($phone['type'])
+        ];
 
         $this->setAttribute('phone', json_encode($list));
     }
