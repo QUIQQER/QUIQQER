@@ -13,11 +13,11 @@ QUI::$Ajax->registerFunction(
         $uid = json_decode($uid, true);
 
         if (!is_array($uid)) {
-            $uid = array($uid);
+            $uid = [$uid];
         }
 
         $Users  = QUI::getUsers();
-        $result = array();
+        $result = [];
 
         foreach ($uid as $_uid) {
             try {
@@ -55,6 +55,6 @@ QUI::$Ajax->registerFunction(
 
         return $result;
     },
-    array('uid'),
-    'Permission::checkSU'
+    ['uid'],
+    'Permission::checkAdminUser'
 );

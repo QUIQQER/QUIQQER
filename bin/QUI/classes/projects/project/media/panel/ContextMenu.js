@@ -3,10 +3,6 @@
  *
  * @module classes/projects/project/media/panel/ContextMenu
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/controls/contextmenu/Item
- * @require qui/controls/contextmenu/Separator
- * @require qui/utils/Elements
  */
 define('classes/projects/project/media/panel/ContextMenu', [
 
@@ -112,8 +108,11 @@ define('classes/projects/project/media/panel/ContextMenu', [
          * @return {qui/controls/contextmenu/Menu}
          */
         getFileMenu: function (DOMNode) {
-            var self = this,
-                Menu = this.getPanel().getContextMenu();
+            var Trash;
+
+            var self  = this,
+                Panel = this.getPanel(),
+                Menu  = Panel.getContextMenu();
 
             Menu.clearChildren();
 
@@ -128,9 +127,8 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 );
             }
 
-
-            var Trash;
-            var sels = this.getPanel().getSelectedItems();
+            var sels    = this.getPanel().getSelectedItems();
+            var Content = Panel.getContent();
 
             if (!sels.length || sels.length === 1) {
                 Trash = new QUIContextmenuItem({
@@ -261,6 +259,26 @@ define('classes/projects/project/media/panel/ContextMenu', [
                     })
                 );
             }
+
+            Menu.appendChild(new QUIContextmenuSeparator());
+
+            Menu.appendChild(
+                new QUIContextmenuItem({
+                    name  : 'select-all',
+                    text  : QUILocale.get(lg, 'projects.project.panel.media.contextMenu.markAll'),
+                    icon  : 'fa fa-hand-grab-o',
+                    events: {
+                        onMouseDown: function () {
+                            Content.getElements('.qui-media-item').each(function (Item) {
+                                Item.addClass('selected');
+                                Panel.$selected.push(Item);
+                            });
+                        }
+                    }
+                })
+            );
+
+            Menu.appendChild(new QUIContextmenuSeparator());
 
             Menu.appendChild(new QUIContextmenuSeparator())
                 .appendChild(Move)
@@ -470,8 +488,10 @@ define('classes/projects/project/media/panel/ContextMenu', [
          * @return {Object} qui/controls/contextmenu/Menu
          */
         getFolderMenu: function (DOMNode) {
-            var self = this,
-                Menu = this.getPanel().getContextMenu();
+            var self    = this,
+                Panel   = this.getPanel(),
+                Menu    = Panel.getContextMenu(),
+                Content = Panel.getContent();
 
             Menu.clearChildren();
 
@@ -520,6 +540,26 @@ define('classes/projects/project/media/panel/ContextMenu', [
                     }
                 })
             );
+
+            Menu.appendChild(new QUIContextmenuSeparator());
+
+            Menu.appendChild(
+                new QUIContextmenuItem({
+                    name  : 'select-all',
+                    text  : QUILocale.get(lg, 'projects.project.panel.media.contextMenu.markAll'),
+                    icon  : 'fa fa-hand-grab-o',
+                    events: {
+                        onMouseDown: function () {
+                            Content.getElements('.qui-media-item').each(function (Item) {
+                                Item.addClass('selected');
+                                Panel.$selected.push(Item);
+                            });
+                        }
+                    }
+                })
+            );
+
+            Menu.appendChild(new QUIContextmenuSeparator());
 
             if (!sels.length || sels.length === 1) {
                 Menu.appendChild(

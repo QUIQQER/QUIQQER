@@ -15,6 +15,6 @@ QUI::$Ajax->registerFunction(
 
         return $User->getId();
     },
-    array('username'),
+    ['username'],
     'Permission::checkUser'
 );

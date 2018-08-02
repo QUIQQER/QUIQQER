@@ -153,7 +153,7 @@ class Permission
     }
 
     /**
-     * Prüft ob der Benutzer das Recht besitzt
+     * Checks whether the user has the permission
      *
      * @param string $perm
      * @param \QUI\Users\User|boolean|null $User - optional
@@ -234,10 +234,10 @@ class Permission
                     'exception.no.permission'
                 ),
                 403,
-                array(
+                [
                     'userid'   => $User->getId(),
                     'username' => $User->getName()
-                )
+                ]
             );
         }
 
@@ -307,7 +307,7 @@ class Permission
                 }
 
 
-                $user_group_ids = array();
+                $user_group_ids = [];
 
                 foreach ($group_ids as $gid) {
                     $user_group_ids[$gid] = true;
@@ -488,7 +488,7 @@ class Permission
             return false;
         }
 
-        $permList = array();
+        $permList = [];
         $user     = 'u'.$User->getId();
 
         if (!empty($permissions[$permission])) {
@@ -506,7 +506,7 @@ class Permission
 
         $Manager->setSitePermissions(
             $Site,
-            array($permission => implode(',', $permList)),
+            [$permission => implode(',', $permList)],
             $EditUser
         );
 
@@ -541,7 +541,7 @@ class Permission
             return false;
         }
 
-        $permList = array();
+        $permList = [];
         $group    = 'g'.$Group->getId();
 
         if (!empty($permissions[$permission])) {
@@ -560,7 +560,7 @@ class Permission
 
         $Manager->setSitePermissions(
             $Site,
-            array($permission => implode(',', $permList)),
+            [$permission => implode(',', $permList)],
             $EditUser
         );
 
@@ -766,7 +766,7 @@ class Permission
             return false;
         }
 
-        $permList = array();
+        $permList = [];
         $group    = 'g'.$Group->getId();
 
         if (!empty($permissions[$permission])) {
@@ -785,7 +785,7 @@ class Permission
 
         $Manager->setSitePermissions(
             $Site,
-            array($permission => implode(',', $permList)),
+            [$permission => implode(',', $permList)],
             $EditUser
         );
 
@@ -820,7 +820,7 @@ class Permission
             return false;
         }
 
-        $permList = array();
+        $permList = [];
         $user     = 'u'.$User->getId();
 
         if (!empty($permissions[$permission])) {
@@ -839,7 +839,7 @@ class Permission
 
         $Manager->setSitePermissions(
             $Site,
-            array($permission => implode(',', $permList)),
+            [$permission => implode(',', $permList)],
             $EditUser
         );
 
@@ -878,7 +878,7 @@ class Permission
             return false;
         }
 
-        $permList = array();
+        $permList = [];
         $groups   = 'g'.$Group->getId();
 
         if (!empty($permissions[$permission])) {
@@ -896,7 +896,7 @@ class Permission
 
         $Manager->setProjectPermissions(
             $Project,
-            array($permission => implode(',', $permList)),
+            [$permission => implode(',', $permList)],
             $EditUser
         );
 
@@ -929,7 +929,7 @@ class Permission
             return false;
         }
 
-        $permList = array();
+        $permList = [];
         $user     = 'u'.$User->getId();
 
         if (!empty($permissions[$permission])) {
@@ -947,7 +947,7 @@ class Permission
 
         $Manager->setProjectPermissions(
             $Project,
-            array($permission => implode(',', $permList)),
+            [$permission => implode(',', $permList)],
             $EditUser
         );
 
@@ -1076,7 +1076,7 @@ class Permission
             return;
         }
 
-        $permList = array();
+        $permList = [];
         $user     = 'u'.$User->getId();
 
         if (!empty($permissions[$permission])) {
@@ -1095,7 +1095,7 @@ class Permission
 
         $Manager->setProjectPermissions(
             $Project,
-            array($permission => implode(',', $permList))
+            [$permission => implode(',', $permList)]
         );
     }
 
@@ -1124,7 +1124,7 @@ class Permission
             return false;
         }
 
-        $permList = array();
+        $permList = [];
         $group    = 'g'.$Group->getId();
 
         if (!empty($permissions[$permission])) {
@@ -1143,7 +1143,7 @@ class Permission
 
         $Manager->setProjectPermissions(
             $Project,
-            array($permission => implode(',', $permList))
+            [$permission => implode(',', $permList)]
         );
 
         return true;

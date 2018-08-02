@@ -531,6 +531,21 @@
         <locale name="exception.media.file.not.found">
             <en><![CDATA[File not found.]]></en>
         </locale>
+        <locale name="exception.media.file.not.found.NAME">
+            <en><![CDATA[File [file] not found.]]></en>
+        </locale>
+        <locale name="exception.media.folder.name.invalid">
+            <en><![CDATA[This name is invalid for a folder.]]></en>
+        </locale>
+        <locale name="exception.media.root.folder.rename">
+            <en><![CDATA[The media root directory of a project cannot be renamed.]]></en>
+        </locale>
+        <locale name="exception.media.folder.with.same.name.exists">
+            <en><![CDATA[A folder with the same name already exists.]]></en>
+        </locale>
+        <locale name="exception.media.folder.could.not.be.created">
+            <en><![CDATA[The folder could not be created.]]></en>
+        </locale>
 
         <locale name="control.editor.toolbar.select.search.field.placeholder">
             <en><![CDATA[Search toolbars ...]]></en>
@@ -1552,6 +1567,9 @@
 
         <locale name="control.icons.confirm.title">
             <en><![CDATA[Icon-Select]]></en>
+        </locale>
+        <locale name="control.grid.menu.button">
+            <en><![CDATA[Menu]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">
@@ -5247,6 +5265,9 @@
         </locale>
         <locale name="message.ajax.licenseKey.delete.success">
             <en><![CDATA[The license was deleted successfully and is now inactive.]]></en>
+        </locale>
+        <locale name="exception.lib.user.activasion.user.is.activated">
+            <en><![CDATA[The user could not be activated because he is already activated.]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="php,js">

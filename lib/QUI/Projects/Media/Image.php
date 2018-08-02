@@ -22,7 +22,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the real with of the image
      *
-     * @return integer | false
+     * @return integer|false
+     * @throws QUI\Exception
      */
     public function getWidth()
     {
@@ -30,10 +31,9 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             return $this->getAttribute('image_width');
         }
 
-        $data = File::getInfo(
-            $this->getFullPath(),
-            array('imagesize' => true)
-        );
+        $data = File::getInfo($this->getFullPath(), [
+            'imagesize' => true
+        ]);
 
         if (isset($data['width'])) {
             return $data['width'];
@@ -45,7 +45,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the real height of the image
      *
-     * @return integer | false
+     * @return integer|false
+     * @throws QUI\Exception
      */
     public function getHeight()
     {
@@ -53,10 +54,9 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             return $this->getAttribute('image_height');
         }
 
-        $data = File::getInfo(
-            $this->getFullPath(),
-            array('imagesize' => true)
-        );
+        $data = File::getInfo($this->getFullPath(), [
+            'imagesize' => true
+        ]);
 
         if (isset($data['height'])) {
             return $data['height'];
@@ -244,19 +244,19 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     public function getResizeSize($maxwidth = false, $maxheight = false)
     {
         if ($this->getAttribute('mime_type') == 'image/svg+xml') {
-            return array(
+            return [
                 'width'  => false,
                 'height' => false
-            );
+            ];
         }
 
         $width  = $this->getAttribute('image_width');
         $height = $this->getAttribute('image_height');
 
         if (!$width || !$height) {
-            $info = File::getInfo($this->getFullPath(), array(
+            $info = File::getInfo($this->getFullPath(), [
                 'imagesize' => true
-            ));
+            ]);
 
             $width  = $info['width'];
             $height = $info['height'];
@@ -300,10 +300,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             $newheight = $maxheight;
         }
 
-        return array(
+        return [
             'width'  => $newwidth,
             'height' => $newheight
-        );
+        ];
     }
 
     /**
@@ -466,11 +466,11 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                 $Image->insert($WatermarkImage, $watermarkPosition);
             }
         } catch (\Exception $Exception) {
-            QUI\System\Log::addInfo($Exception->getMessage(), array(
+            QUI\System\Log::addInfo($Exception->getMessage(), [
                 'file'   => $this->getFullPath(),
                 'fileId' => $this->getId(),
                 'info'   => 'watermark creation'
-            ));
+            ]);
         }
 
         // create folders
@@ -482,8 +482,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         // reset to the normal limit
         set_time_limit($time);
 
-        QUI::getEvents()->fireEvent('mediaCreateSizeCache', array($this, $Image));
-
+        QUI::getEvents()->fireEvent('mediaCreateSizeCache', [$this, $Image]);
 
         return $cachefile;
     }
@@ -688,9 +687,9 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         if (!file_exists($this->getFullPath())) {
             throw new QUI\Exception(
                 QUI::getLocale()
-                    ->get('quiqqer/system', 'exception.file.not.found', array(
+                    ->get('quiqqer/system', 'exception.file.not.found', [
                         'file' => $this->getAttribute('file')
-                    )),
+                    ]),
                 404
             );
         }
@@ -701,8 +700,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
         QUI::getDataBase()->update(
             $this->Media->getTable(),
-            array('md5hash' => $md5),
-            array('id' => $this->getId())
+            ['md5hash' => $md5],
+            ['id' => $this->getId()]
         );
     }
 
@@ -714,9 +713,9 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         if (!file_exists($this->getFullPath())) {
             throw new QUI\Exception(
                 QUI::getLocale()
-                    ->get('quiqqer/system', 'exception.file.not.found', array(
+                    ->get('quiqqer/system', 'exception.file.not.found', [
                         'file' => $this->getAttribute('file')
-                    )),
+                    ]),
                 404
             );
         }
@@ -727,8 +726,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
         QUI::getDataBase()->update(
             $this->Media->getTable(),
-            array('sha1hash' => $sha1),
-            array('id' => $this->getId())
+            ['sha1hash' => $sha1],
+            ['id' => $this->getId()]
         );
     }
 }

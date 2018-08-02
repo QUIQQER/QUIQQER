@@ -529,7 +529,22 @@
             ]]></de>
         </locale>
         <locale name="exception.media.file.not.found">
-            <en><![CDATA[Datei wurde nicht gefunden.]]></en>
+            <de><![CDATA[Datei wurde nicht gefunden.]]></de>
+        </locale>
+        <locale name="exception.media.file.not.found.NAME">
+            <de><![CDATA[Die Datei [file] wurde nicht gefunden.]]></de>
+        </locale>
+        <locale name="exception.media.folder.name.invalid">
+            <de><![CDATA[Dieser Name ist für einen Ordner ungültig.]]></de>
+        </locale>
+        <locale name="exception.media.root.folder.rename">
+            <de><![CDATA[Das Media-Root-Verzeichnis eines Projektes kann nicht umbenannt werden.]]></de>
+        </locale>
+        <locale name="exception.media.folder.with.same.name.exists">
+            <de><![CDATA[Ein Ordner mit dem gleichen Namen existiert bereits.]]></de>
+        </locale>
+        <locale name="exception.media.folder.could.not.be.created">
+            <de><![CDATA[Der Ordner konnte nicht erstellt werden.]]></de>
         </locale>
 
         <locale name="control.editor.toolbar.select.search.field.placeholder">
@@ -1575,6 +1590,9 @@
 
         <locale name="control.icons.confirm.title">
             <de><![CDATA[Icon-Auswahl]]></de>
+        </locale>
+        <locale name="control.grid.menu.button">
+            <de><![CDATA[Menü]]></de>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">
@@ -5422,6 +5440,9 @@
         </locale>
         <locale name="message.ajax.licenseKey.delete.success">
             <de><![CDATA[Die Lizenz wurde erfolgreich gelöscht und ist nun nicht mehr aktiv.]]></de>
+        </locale>
+        <locale name="exception.lib.user.activasion.user.is.activated">
+            <de><![CDATA[Der Benutzer konnte nicht aktiviert werde da dieser schon aktiviert ist.]]></de>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="php,js">
