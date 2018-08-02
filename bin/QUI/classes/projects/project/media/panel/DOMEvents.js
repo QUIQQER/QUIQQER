@@ -113,16 +113,34 @@ define('classes/projects/project/media/panel/DOMEvents', [
                         }
 
                         Media.get(list).done(function (result) {
-                            var i, len;
+                            var i, len, item, icon, mime;
                             var information = '<ul>';
 
                             items = result;
 
+                            // @todo do it as mustache template
+                            var folderIcon = URL_BIN_DIR + '16x16/extensions/folder.png',
+                                imageIcon  = URL_BIN_DIR + '16x16/extensions/image.png',
+                                fileIcon   = URL_BIN_DIR + '16x16/extensions/empty.png';
+
                             for (i = 0, len = items.length; i < len; i++) {
+                                item = items[i];
+
+                                if (item.getAttribute('mime_type') === 'folder') {
+                                    mime = folderIcon;
+                                } else if (item.getAttribute('mime_type').indexOf('image') !== -1) {
+                                    mime = imageIcon;
+                                } else {
+                                    mime = fileIcon;
+                                }
+
+                                icon = '<span class="qui-media-deleteWindow-preview-icon" ' +
+                                    'style="background-image: url(\'' + mime + '\')"></span>';
+
                                 information = information +
                                     '<li>' +
-                                    '#' + items[i].getAttribute('id') +
-                                    ' - ' + items[i].getAttribute('name') +
+                                    icon + '#' + item.getAttribute('id') +
+                                    ' - ' + item.getAttribute('file') +
                                     '</li>';
                             }
 

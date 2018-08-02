@@ -3,15 +3,6 @@
  *
  * @module controls/projects/project/media/Popup
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/controls/windows/Popup
- * @require qui/controls/windows/Confirm
- * @require qui/controls/buttons/Button
- * @require controls/projects/project/media/Panel
- * @require controls/projects/Select
- * @require Projects
- * @require Locale
- * @require Ajax
  */
 define('controls/projects/project/media/Popup', [
 
@@ -82,9 +73,7 @@ define('controls/projects/project/media/Popup', [
 
             // project selection, if no project exists
             if (!project) {
-
                 Projects.getList(function (result) {
-
                     var length = Object.getLength(result);
 
                     if (length === 1) {
@@ -121,7 +110,6 @@ define('controls/projects/project/media/Popup', [
                         },
                         events    : {
                             onChange: function (value) {
-
                                 if (value === '') {
                                     return;
                                 }
@@ -143,7 +131,6 @@ define('controls/projects/project/media/Popup', [
 
 
                     this.Loader.hide();
-
                 }.bind(this));
 
                 return;

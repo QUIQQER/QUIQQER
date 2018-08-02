@@ -110,7 +110,7 @@ try {
 
         $Smarty = QUI::getTemplateManager()->getEngine();
 
-        $Smarty->assign(array(
+        $Smarty->assign([
             'Project'     => $Project,
             'URL_DIR'     => URL_DIR,
             'URL_BIN_DIR' => URL_BIN_DIR,
@@ -120,7 +120,7 @@ try {
             'URL_USR_DIR' => URL_USR_DIR,
             'URL_TPL_DIR' => URL_USR_DIR.$Project->getName().'/',
             'TPL_DIR'     => OPT_DIR.$Project->getName().'/',
-        ));
+        ]);
 
         $file  = LIB_DIR.'templates/maintenance.html';
         $pfile = USR_DIR.$Project->getName().'/lib/maintenance.html';
@@ -163,7 +163,7 @@ try {
         $content       = $Rewrite->outputFilter($cache_content);
         $_content      = $content;
 
-        QUI::getEvents()->fireEvent('requestOutput', array(&$_content));
+        QUI::getEvents()->fireEvent('requestOutput', [&$_content]);
 
         $Response->setContent($content);
         $Response->send();
@@ -171,7 +171,7 @@ try {
     }
 
     /**
-     * Template Content generieren
+     * Template Content generating
      */
     try {
         $Template = new QUI\Template();
@@ -183,7 +183,7 @@ try {
         $content = QUI\Control\Manager::setCSSToHead($content);
         Debug::marker('output done');
 
-        QUI::getEvents()->fireEvent('requestOutput', array(&$content));
+        QUI::getEvents()->fireEvent('requestOutput', [&$content]);
 
         $Response->setContent($content);
         Debug::marker('content done');
