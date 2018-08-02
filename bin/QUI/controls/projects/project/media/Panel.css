@@ -80,6 +80,19 @@
     width: 100%;
 }
 
+.qui-media-file-delete ul li {
+    clear: both;
+}
+
+.qui-media-deleteWindow-preview-icon {
+    background-position: center center;
+    background-repeat: no-repeat;
+    float: left;
+    height: 20px;
+    margin-right: 5px;
+    width: 20px;
+}
+
 /** Media grid style
  ================================================ */
 
