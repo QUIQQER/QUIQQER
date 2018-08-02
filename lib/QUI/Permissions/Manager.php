@@ -518,15 +518,16 @@ class Manager
         $data  = $this->getData($Obj);
         $_list = $this->getPermissionList($area);
 
-        foreach ($_list as $permission => $params) {
-            if (isset($params['defaultvalue'])) {
-                $permissions[$permission] = $params['defaultvalue'];
-                continue;
+        if (!($Obj instanceof User)) {
+            foreach ($_list as $permission => $params) {
+                if (isset($params['defaultvalue'])) {
+                    $permissions[$permission] = $params['defaultvalue'];
+                    continue;
+                }
+
+                $permissions[$permission] = false;
             }
-
-            $permissions[$permission] = false;
         }
-
 
         if (!isset($data[0])) {
             return $permissions;
