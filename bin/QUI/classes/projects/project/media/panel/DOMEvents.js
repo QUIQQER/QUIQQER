@@ -125,7 +125,7 @@ define('classes/projects/project/media/panel/DOMEvents', [
 
                             for (i = 0, len = items.length; i < len; i++) {
                                 item = items[i];
-console.log(item);
+
                                 if (item.getAttribute('mime_type') === 'folder') {
                                     mime = folderIcon;
                                 } else if (item.getAttribute('mime_type').indexOf('image') !== -1) {
