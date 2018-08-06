@@ -1334,6 +1334,21 @@ class Edit extends Site
         if (file_exists($link_cache_file)) {
             unlink($link_cache_file);
         }
+
+        // sites cache
+        $siteCacheDir = VAR_DIR.'cache/sites/';
+
+        $siteCacheFile = $siteCacheDir.$this->getId().'_';
+        $siteCacheFile .= $Project->getAttribute('name').'_';
+        $siteCacheFile .= $Project->getAttribute('lang');
+
+        $files = QUI\Utils\System\File::readDir($siteCacheDir);
+
+        foreach ($files as $file) {
+            if (strpos($file, $siteCacheFile) !== false) {
+                unlink($siteCacheFile);
+            }
+        }
     }
 
     /**

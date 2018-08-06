@@ -12,6 +12,6 @@ QUI::$Ajax->registerFunction(
         $Package = QUI::getPackage($package);
         QUI\Lock\Locker::unlockWithPermissions($Package, $key);
     },
-    array('package', 'key'),
+    ['package', 'key'],
     'Permission::checkAdminUser'
 );

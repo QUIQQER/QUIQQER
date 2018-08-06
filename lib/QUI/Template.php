@@ -194,6 +194,16 @@ class Template extends QUI\QDOM
     }
 
     /**
+     * Return the current header extensions
+     *
+     * @return array
+     */
+    public function getExtendHeader()
+    {
+        return $this->header;
+    }
+
+    /**
      *
      * @param string $cssPath
      * @param int $prio
@@ -270,6 +280,16 @@ class Template extends QUI\QDOM
             '<script src="'.$jsPath.'"></script>',
             $prio
         );
+    }
+
+    /**
+     * Return the current footer extensions
+     *
+     * @return array
+     */
+    public function getExtendFooter()
+    {
+        return $this->footer;
     }
 
     /**

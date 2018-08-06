@@ -525,6 +525,7 @@ define('controls/projects/project/media/Panel', [
                 Project = this.$Media.getProject();
 
             this.Loader.show();
+            this.$selected = [];
 
             if (this.$Filter) {
                 this.$Filter.value = '';
