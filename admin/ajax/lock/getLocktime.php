@@ -12,8 +12,9 @@ QUI::$Ajax->registerFunction(
     'ajax_lock_getLocktime',
     function ($package, $key) {
         $Package = QUI::getPackage($package);
+
         return QUI\Lock\Locker::getLockTime($Package, $key);
     },
-    array('package', 'key'),
+    ['package', 'key'],
     'Permission::checkAdminUser'
 );
