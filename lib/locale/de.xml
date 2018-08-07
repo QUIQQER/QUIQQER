@@ -811,6 +811,30 @@
         <locale name="message.config.saved">
             <de><![CDATA[Die Konfiguration wurde erfolgreich gespeichert.]]></de>
         </locale>
+        <locale name="console.permissions.user">
+            <de><![CDATA[Rechte für den Benutzer: [username] - [user]]]></de>
+        </locale>
+        <locale name="console.permissions.group">
+            <de><![CDATA[Rechte für die Gruppe: [group]]]></de>
+        </locale>
+        <locale name="console.tool.permissions.help.description">
+            <de><![CDATA[Zeigt diesen Hilfetext an.]]></de>
+        </locale>
+        <locale name="console.tool.permissions.list.description">
+            <de><![CDATA[Zeigt eine komplette Liste aller Rechte an.]]></de>
+        </locale>
+        <locale name="console.tool.permissions.user.description">
+            <de><![CDATA[
+            Zeigt alle Rechte oder ein spezifisches Recht eines Benutzers an. Zusätzlich mit --permission=[recht] kann nur ein spezifisches Recht angezeigt werden.
+            ]]></de>
+        </locale>
+        <locale name="console.tool.permissions.group.description">
+            <de><![CDATA[
+            Zeigt alle Rechte oder ein spezifisches Recht einer Gruppe an. Zusätzlich mit --permission=[recht] kann nur ein spezifisches Recht angezeigt werden.
+            ]]></de>
+        </locale>
+
+
         <locale name="exception.config.save.file.not.found">
             <de><![CDATA[Konnte die Konfiguration nicht speichern. Datei [file] nicht gefunden.]]></de>
         </locale>

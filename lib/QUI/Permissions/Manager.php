@@ -791,6 +791,7 @@ class Manager
                 );
 
                 QUI\Cache\Manager::clear('qui/groups/group/'.$Obj->getId().'/');
+                QUI\Cache\Manager::clear($this->getDataCacheId($Obj).'/complete');
                 break;
 
             case 'media':
