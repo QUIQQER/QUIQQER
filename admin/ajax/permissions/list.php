@@ -11,8 +11,8 @@ QUI::$Ajax->registerFunction(
         return QUI::getPermissionManager()->getPermissionList();
     },
     false,
-    array(
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.permissions'
-    )
+    ]
 );

@@ -35,9 +35,9 @@ QUI::$Ajax->registerFunction(
         }
 
 
-        $childrenIds = $Site->getChildrenIdsRecursive(array(
+        $childrenIds = $Site->getChildrenIdsRecursive([
             'active' => '0&1'
-        ));
+        ]);
 
         foreach ($childrenIds as $siteId) {
             try {
@@ -63,9 +63,9 @@ QUI::$Ajax->registerFunction(
             );
         }
     },
-    array('params', 'btype', 'permissions'),
-    array(
+    ['params', 'btype', 'permissions'],
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.permissions'
-    )
+    ]
 );
