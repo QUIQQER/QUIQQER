@@ -391,7 +391,6 @@ class Manager
      * @param string $src - optional, the src from where the rights come from
      *                            eq: system, plugin-name, user
      *
-     * @throws QUI\Permissions\Exception
      */
     public function importPermissionsFromXml($xmlFile, $src = '')
     {
@@ -502,36 +501,6 @@ class Manager
      */
     public function getPermissions($Obj)
     {
-        if ($Obj instanceof User) {
-            return $this->getPermissionListForObject($Obj, false);
-        }
-
-        return $this->getPermissionListForObject($Obj);
-    }
-
-    /**
-     * Return all permissions from a group, user, site, project or media
-     *
-     * @param QUI\Groups\Group|QUI\Users\User|QUI\Projects\Project|QUI\Projects\Site $Obj
-     *
-     * @return array
-     */
-    public function getCompletePermissionList($Obj)
-    {
-        return $this->getPermissionListForObject($Obj);
-    }
-
-    /**
-     * Return the current permissions from a group, user, site, project or media
-     * Returns the set permissions
-     *
-     * @param QUI\Groups\Group|QUI\Users\User|QUI\Projects\Project|QUI\Projects\Site $Obj
-     * @param bool $includeDefaults - include the default permissions
-     *
-     * @return array
-     */
-    protected function getPermissionListForObject($Obj, $includeDefaults = true)
-    {
         $area = $this->objectToArea($Obj);
 
         switch ($area) {
@@ -549,7 +518,7 @@ class Manager
         $data  = $this->getData($Obj);
         $_list = $this->getPermissionList($area);
 
-        if ($includeDefaults) {
+        if (!($Obj instanceof User)) {
             foreach ($_list as $permission => $params) {
                 if (isset($params['defaultvalue'])) {
                     $permissions[$permission] = $params['defaultvalue'];
@@ -575,6 +544,71 @@ class Manager
             if (isset($permissions[$obj_permission])) {
                 $permissions[$obj_permission] = $value;
             }
+        }
+
+        return $permissions;
+    }
+
+    /**
+     * Return all permissions from a group, user, site, project or media
+     *
+     * @param QUI\Groups\Group|QUI\Users\User|QUI\Projects\Project|QUI\Projects\Site $Obj
+     *
+     * @return array
+     */
+    public function getCompletePermissionList($Obj)
+    {
+        $cache = $this->getDataCacheId($Obj).'/complete';
+
+        try {
+            return QUI\Cache\Manager::get($cache);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeDebugException($Exception);
+        }
+
+
+        $area = $this->objectToArea($Obj);
+
+        switch ($area) {
+            case 'project':
+                return $this->getProjectPermissions($Obj);
+                break;
+
+            case 'site':
+                return $this->getSitePermissions($Obj);
+                break;
+        }
+
+        $permissions = [];
+
+        $data  = $this->getData($Obj);
+        $_list = $this->getPermissionList($area);
+
+        foreach ($_list as $permission => $params) {
+            $permissions[$permission] = false;
+        }
+
+        if (!isset($data[0])) {
+            return $permissions;
+        }
+
+        $obj_permissions = json_decode($data[0]['permissions'], true);
+
+        if (!is_array($obj_permissions)) {
+            $obj_permissions = [];
+        }
+
+        foreach ($obj_permissions as $obj_permission => $value) {
+            // parse var type
+            if (isset($permissions[$obj_permission])) {
+                $permissions[$obj_permission] = $value;
+            }
+        }
+
+        try {
+            QUI\Cache\Manager::set($cache, $permissions);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeDebugException($Exception);
         }
 
         return $permissions;
@@ -732,6 +766,8 @@ class Manager
                     ['permissions' => json_encode($data)],
                     ['user_id' => $Obj->getId()]
                 );
+
+                QUI\Cache\Manager::clear($this->getDataCacheId($Obj).'/complete');
                 break;
 
             case 'groups':
@@ -791,6 +827,7 @@ class Manager
 
 
         QUI\Cache\Manager::clear('qui/admin/menu/');
+
         QUI::getEvents()->fireEvent('permissionsSet', [$Obj, $permissions]);
     }
 
@@ -882,7 +919,6 @@ class Manager
      * @param string|integer $value
      *
      * @throws QUI\Exception
-     * @throws QUI\Permissions\Exception
      */
     protected function setSitePermission($Site, $permission, $value)
     {
@@ -1007,8 +1043,6 @@ class Manager
      * @param QUI\Projects\Project $Project
      * @param string $permission
      * @param string|integer $value
-     *
-     * @throws QUI\Permissions\Exception
      */
     protected function setProjectPermission(
         QUI\Projects\Project $Project,
@@ -1057,9 +1091,6 @@ class Manager
      * @param mixed $Obj
      *
      * @return array
-     *
-     * @throws QUI\Exception
-     * @throws QUI\Permissions\Exception
      */
     protected function getData($Obj)
     {
@@ -1125,14 +1156,20 @@ class Manager
             /* @var $Project QUI\Projects\Project */
             $Project = $Obj->getProject();
 
-            $data = $DataBase->fetch([
-                'from'  => $table.'2sites',
-                'where' => [
-                    'project' => $Project->getName(),
-                    'lang'    => $Project->getLang(),
-                    'id'      => $Obj->getId()
-                ]
-            ]);
+            try {
+                $data = $DataBase->fetch([
+                    'from'  => $table.'2sites',
+                    'where' => [
+                        'project' => $Project->getName(),
+                        'lang'    => $Project->getLang(),
+                        'id'      => $Obj->getId()
+                    ]
+                ]);
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeDebugException($Exception);
+
+                return [];
+            }
 
             $result = [];
 
@@ -1174,44 +1211,45 @@ class Manager
      * @param mixed $Obj
      *
      * @return string
-     *
-     * @throws QUI\Exception
-     * @throws QUI\Permissions\Exception
      */
     protected function getDataCacheId($Obj)
     {
         $area = $this->objectToArea($Obj);
 
-        switch ($area) {
-            case 'user':
-                /* @var $Obj User */
-                return 'permission2user_'.$Obj->getId();
+        try {
+            switch ($area) {
+                case 'user':
+                    /* @var $Obj User */
+                    return 'permission2user_'.$Obj->getId();
 
-            case 'groups':
-                /* @var $Obj Group */
-                return 'permission2groups_'.$Obj->getId();
+                case 'groups':
+                    /* @var $Obj Group */
+                    return 'permission2groups_'.$Obj->getId();
 
-            case 'project':
-                /* @var $Obj QUI\Projects\Project */
-                $id = $Obj->getName().'_'.$Obj->getLang();
+                case 'project':
+                    /* @var $Obj QUI\Projects\Project */
+                    $id = $Obj->getName().'_'.$Obj->getLang();
 
-                return 'permission2groups_'.$id;
+                    return 'permission2groups_'.$id;
 
-            case 'site':
-                /* @var $Obj QUI\Projects\Site */
-                /* @var $Project QUI\Projects\Project */
-                $Project = $Obj->getProject();
-                $id      = $Project->getName().'_'.$Project->getLang().'_'.$Obj->getId();
+                case 'site':
+                    /* @var $Obj QUI\Projects\Site */
+                    /* @var $Project QUI\Projects\Project */
+                    $Project = $Obj->getProject();
+                    $id      = $Project->getName().'_'.$Project->getLang().'_'.$Obj->getId();
 
-                return 'permission2site_'.$id;
+                    return 'permission2site_'.$id;
 
-            case 'media':
-                /* @var $Obj QUI\Interfaces\Projects\Media\File */
-                /* @var $Project QUI\Projects\Project */
-                $Project = $Obj->getProject();
-                $id      = $Project->getName().'_'.$Project->getLang().'_'.$Obj->getId();
+                case 'media':
+                    /* @var $Obj QUI\Interfaces\Projects\Media\File */
+                    /* @var $Project QUI\Projects\Project */
+                    $Project = $Obj->getProject();
+                    $id      = $Project->getName().'_'.$Project->getLang().'_'.$Obj->getId();
 
-                return 'permission2media_'.$id;
+                    return 'permission2media_'.$id;
+            }
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeDebugException($Exception);
         }
 
         QUI\System\Log::addInfo(
@@ -1349,8 +1387,6 @@ class Manager
     /**
      * @param $User
      * @return array
-     *
-     * @throws QUI\Exception
      */
     public function getUserPermissionData($User)
     {

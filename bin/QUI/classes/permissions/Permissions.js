@@ -119,7 +119,8 @@ define('classes/permissions/Permissions', [
                     return;
                 }
 
-                if (User.getId() in self.$cache.users && self.$cache.users[User.getId()].length) {
+                if (User.getId() in self.$cache.users &&
+                    Object.keys(self.$cache.users[User.getId()]).length) {
                     resolve(self.$cache.users[User.getId()]);
                     return;
                 }
