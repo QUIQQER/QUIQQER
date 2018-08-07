@@ -233,6 +233,8 @@ class Group extends QUI\QDOM
      * - https://dev.quiqqer.com/quiqqer/quiqqer/wikis/Group-Xml
      *
      * @return array
+     *
+     * @throws QUI\Exception
      */
     protected function getListOfExtraAttributes()
     {
@@ -485,7 +487,7 @@ class Group extends QUI\QDOM
      *
      * @param string $permission
      *
-     * @return boolean|string
+     * @return boolean|string|array
      */
     public function hasPermission($permission)
     {
@@ -1033,6 +1035,7 @@ class Group extends QUI\QDOM
      * creates the group cache
      *
      * @ignore
+     * @throws QUI\Exception
      */
     protected function createCache()
     {

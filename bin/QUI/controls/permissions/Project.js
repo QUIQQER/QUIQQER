@@ -3,10 +3,6 @@
  *
  * @module controls/permissions/Project
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require controls/permissions/Permission
- * @require qui/controls/buttons/Button
- * @require Locale
  */
 define('controls/permissions/Project', [
 

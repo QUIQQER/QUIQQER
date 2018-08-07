@@ -4,16 +4,6 @@
  * @module controls/permissions/Permission
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/buttons/Button
- * @require qui/controls/windows/Confirm
- * @require controls/permissions/Sitemap
- * @require utils/Controls
- * @require utils/permissions/Utils
- * @require Locale
- * @require css!controls/permissions/Permission.css
- *
  * @event onLoad
  * @event onLoadError
  * @event onCreate

@@ -3,11 +3,6 @@
  *
  * @module controls/permissions/Site
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require controls/permissions/Permission
- * @require qui/controls/buttons/Button
- * @require qui/controls/windows/Confirm
- * @require Locale
  */
 define('controls/permissions/Site', [
 

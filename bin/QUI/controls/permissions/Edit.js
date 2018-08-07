@@ -4,12 +4,6 @@
  *
  * @module controls/permissions/Edit
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/classes/DOM
- * @require qui/controls/buttons/Button
- * @require qui/controls/windows/Prompt
- * @require controls/permissions/Permission
- * @require Locale
  */
 define('controls/permissions/Edit', [
 

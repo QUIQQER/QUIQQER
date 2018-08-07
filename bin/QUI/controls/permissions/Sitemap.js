@@ -4,14 +4,6 @@
  * @module controls/permissions/Panel
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/sitemap/Map
- * @require qui/controls/sitemap/Item
- * @require qui/utils/Object
- * @require utils/permissions/Utils
- * @require Locale
- *
  * @event itemClick [Item, value]
  */
 define('controls/permissions/Sitemap', [
@@ -110,6 +102,9 @@ define('controls/permissions/Sitemap', [
                 case 'qui/classes/DOM':
                     Permissions.getList().then(this.$createMap);
                     break;
+
+                default:
+                    console.error(typeOf(this.$Bind));
             }
         },
 

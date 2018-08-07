@@ -119,12 +119,12 @@ define('classes/permissions/Permissions', [
                     return;
                 }
 
-                if (User.getId() in self.$cache.users) {
+                if (User.getId() in self.$cache.users && self.$cache.users[User.getId()].length) {
                     resolve(self.$cache.users[User.getId()]);
                     return;
                 }
 
-                QUIAjax.get('ajax_permissions_get', function (permissions) {
+                QUIAjax.get('ajax_permissions_getCompleteList', function (permissions) {
                     self.$cache.users[User.getId()] = permissions;
 
                     resolve(permissions);
