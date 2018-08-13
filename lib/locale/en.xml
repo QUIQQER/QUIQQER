@@ -808,6 +808,30 @@
         <locale name="message.config.saved">
             <en><![CDATA[The configuration has been saved successfully.]]></en>
         </locale>
+        <locale name="console.permissions.user">
+            <en><![CDATA[Permissions for the user: [username] - [user]]]></en>
+        </locale>
+        <locale name="console.permissions.group">
+            <en><![CDATA[Permissions for the group: [group]]]></en>
+        </locale>
+        <locale name="console.tool.permissions.help.description">
+            <en><![CDATA[Displays this help text.]]></en>
+        </locale>
+        <locale name="console.tool.permissions.list.description">
+            <en><![CDATA[Displays a complete list of all permissions.]]></en>
+        </locale>
+        <locale name="console.tool.permissions.user.description">
+            <en><![CDATA[
+            Displays all permissions or a specific permission of a user. Additionally with --permission=[permission] only a specific permission can be displayed.
+            ]]></en>
+        </locale>
+        <locale name="console.tool.permissions.group.description">
+            <en><![CDATA[
+            Displays all permissions or a specific permission of a group. Additionally with --permission=[permission] only a specific permission can be displayed.
+            ]]></en>
+        </locale>
+
+
         <locale name="exception.config.save.file.not.found">
             <en><![CDATA[Could not save the data. the config file [file] was not found.]]></en>
         </locale>

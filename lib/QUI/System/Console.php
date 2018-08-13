@@ -27,7 +27,7 @@ class Console
      *
      * @var array
      */
-    private $tools = array();
+    private $tools = [];
 
     /**
      * List of system tools
@@ -35,7 +35,7 @@ class Console
      *
      * @var array
      */
-    private $systemTools = array(
+    private $systemTools = [
         'clear-all',
         'clear-cache',
         'clear-tmp',
@@ -46,9 +46,10 @@ class Console
         'setup',
         'password-reset',
         'package',
+        'permissions',
         'htaccess',
         'nginx'
-    );
+    ];
 
     /**
      * Console parameter
@@ -76,7 +77,7 @@ class Console
      *
      * @var array
      */
-    protected $colors = array(
+    protected $colors = [
         'black'        => '0;30',
         'dark_gray'    => '1;30',
         'blue'         => '0;34',
@@ -101,14 +102,14 @@ class Console
         'purple_u'     => '4;35',
         'cyan_u'       => '4;36',
         'white_u'      => '4;37'
-    );
+    ];
 
     /**
      * All available background colors
      *
      * @var array
      */
-    protected $bg = array(
+    protected $bg = [
         'black'      => '40',
         'red'        => '41',
         'green'      => '42',
@@ -117,14 +118,14 @@ class Console
         'magenta'    => '45',
         'cyan'       => '46',
         'light_gray' => '47'
-    );
+    ];
 
     /**
      * CLI arguments
      *
      * @var array
      */
-    protected $arguments = array();
+    protected $arguments = [];
 
     /**
      * @var null|QUI\Interfaces\Users\User
@@ -185,7 +186,7 @@ class Console
         try {
             $this->authenticate();
         } catch (QUI\Exception $Exception) {
-            $this->writeLn($Exception->getMessage() . "\n\n", 'red');
+            $this->writeLn($Exception->getMessage()."\n\n", 'red');
             exit;
         }
 
@@ -212,7 +213,7 @@ class Console
             $tools = $this->get(true);
 
             foreach ($tools as $tool => $obj) {
-                $this->writeLn(" - " . $tool . "\n");
+                $this->writeLn(" - ".$tool."\n");
             }
         }
 
@@ -255,14 +256,14 @@ class Console
 
         if (!QUI::getUsers()->isUser($this->User)) {
             throw new QUI\Users\Exception(
-                array('quiqqer/system', 'exception.login.fail'),
+                ['quiqqer/system', 'exception.login.fail'],
                 401
             );
         }
 
         if (QUI::getUsers()->isNobodyUser($this->User)) {
             throw new QUI\Users\Exception(
-                array('quiqqer/system', 'exception.login.fail'),
+                ['quiqqer/system', 'exception.login.fail'],
                 401
             );
         }
@@ -295,12 +296,12 @@ class Console
 
         QUI::getDataBase()->update(
             $Users->table(),
-            array(
+            [
                 'lastvisit'  => time(),
                 'user_agent' => $userAgent,
                 'secHash'    => $Users->getSecHash()
-            ),
-            array('id' => $User->getId())
+            ],
+            ['id' => $User->getId()]
         );
     }
 
@@ -312,15 +313,15 @@ class Console
     protected function readArgv()
     {
         // Vars löschen die Probleme bereiten können
-        $_REQUEST = array();
-        $_POST    = array();
-        $_GET     = array();
+        $_REQUEST = [];
+        $_POST    = [];
+        $_GET     = [];
 
         if (isset($_SERVER['argv'][0])) {
             unset($_SERVER['argv'][0]);
         }
 
-        $params = array();
+        $params = [];
 
         // Parameter auslesen
         foreach ($_SERVER['argv'] as $argv) {
@@ -446,10 +447,10 @@ class Console
             try {
                 $Exec->execute();
             } catch (QUI\Exception $Exception) {
-                Log::addAlert($Exception->getMessage(), array(
+                Log::addAlert($Exception->getMessage(), [
                     'type' => 'cron',
                     'tool' => $tool
-                ));
+                ]);
 
                 $this->writeLn($Exception->getMessage(), 'red');
                 $this->writeLn();
@@ -526,10 +527,10 @@ class Console
     protected function executeSystemTool()
     {
         if (php_sapi_name() != 'cli') {
-            throw new QUI\Exception(array(
+            throw new QUI\Exception([
                 'quiqqer/quiqqer',
                 'exception.console.execute.only.in.cli'
-            ));
+            ]);
         }
 
         define('SYSTEM_INTERN', true);
@@ -541,14 +542,14 @@ class Console
         switch ($this->getArgument('#system-tool')) {
             case 'clear-all':
                 QUI\Cache\Manager::clearAll();
-                QUI::getTemp()->moveToTemp(VAR_DIR . 'cache');
-                QUI::getTemp()->moveToTemp(VAR_DIR . 'sessions');
+                QUI::getTemp()->moveToTemp(VAR_DIR.'cache');
+                QUI::getTemp()->moveToTemp(VAR_DIR.'sessions');
                 QUI::getTemp()->clear();
                 break;
 
             case 'clear-cache':
                 QUI\Cache\Manager::clearAll();
-                QUI::getTemp()->moveToTemp(VAR_DIR . 'cache');
+                QUI::getTemp()->moveToTemp(VAR_DIR.'cache');
                 break;
 
             case 'clear-tmp':
@@ -556,11 +557,11 @@ class Console
                 break;
 
             case 'clear-sessions':
-                QUI::getTemp()->moveToTemp(VAR_DIR . 'sessions');
+                QUI::getTemp()->moveToTemp(VAR_DIR.'sessions');
                 break;
 
             case 'clear-lock':
-                QUI::getTemp()->moveToTemp(VAR_DIR . 'lock');
+                QUI::getTemp()->moveToTemp(VAR_DIR.'lock');
                 break;
 
             case 'cron':
@@ -584,6 +585,17 @@ class Console
 
             case 'package':
                 $Tool = new QUI\System\Console\Tools\Package();
+                $Tool->setAttribute('parent', $this);
+
+                foreach ($this->readArgv() as $key => $value) {
+                    $Tool->setArgument($key, $value);
+                }
+
+                $Tool->execute();
+                break;
+
+            case 'permissions':
+                $Tool = new QUI\System\Console\Tools\Permissions();
                 $Tool->setAttribute('parent', $this);
 
                 foreach ($this->readArgv() as $key => $value) {
@@ -618,11 +630,11 @@ class Console
     private function read()
     {
         // Standard Konsoletools
-        $path  = LIB_DIR . 'QUI/System/Console/Tools/';
+        $path  = LIB_DIR.'QUI/System/Console/Tools/';
         $files = QUI\Utils\System\File::readDir($path, true);
 
         for ($i = 0, $len = count($files); $i < $len; $i++) {
-            if (!file_exists($path . $files[$i])) {
+            if (!file_exists($path.$files[$i])) {
                 continue;
             }
 
@@ -633,18 +645,18 @@ class Console
         $PackageManager = QUI::getPackageManager();
         $plugins        = $PackageManager->getInstalled();
 
-        $tools = array();
+        $tools = [];
 
         foreach ($plugins as $plugin) {
-            $dir = OPT_DIR . $plugin['name'];
+            $dir = OPT_DIR.$plugin['name'];
 
-            if (!file_exists($dir . '/console.xml')) {
+            if (!file_exists($dir.'/console.xml')) {
                 continue;
             }
 
             $tools = array_merge(
                 $tools,
-                QUI\Utils\Text\XML::getConsoleToolsFromXml($dir . '/console.xml')
+                QUI\Utils\Text\XML::getConsoleToolsFromXml($dir.'/console.xml')
             );
         }
 
@@ -653,15 +665,15 @@ class Console
         $projects       = $ProjectManager->getProjects();
 
         foreach ($projects as $project) {
-            $dir = USR_DIR . $project;
+            $dir = USR_DIR.$project;
 
-            if (!file_exists($dir . '/console.xml')) {
+            if (!file_exists($dir.'/console.xml')) {
                 continue;
             }
 
             $tools = array_merge(
                 $tools,
-                QUI\Utils\Text\XML::getConsoleToolsFromXml($dir . '/console.xml')
+                QUI\Utils\Text\XML::getConsoleToolsFromXml($dir.'/console.xml')
             );
         }
 
@@ -694,7 +706,7 @@ class Console
      */
     protected function includeClasses($file, $dir)
     {
-        $file = Orthos::clearPath(realpath($dir . $file));
+        $file = Orthos::clearPath(realpath($dir.$file));
 
         if (!file_exists($file)) {
             throw new QUI\Exception('console tool not exists');
@@ -742,7 +754,7 @@ class Console
             }
 
             $this->write("- ");
-            $this->write(QUI::getLocale()->get('quiqqer/quiqqer', 'console.systemtool.' . $tool));
+            $this->write(QUI::getLocale()->get('quiqqer/quiqqer', 'console.systemtool.'.$tool));
         }
 
         $this->write("\n\n");
@@ -812,7 +824,7 @@ class Console
         (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
 
 
-        Welcome to QUIQQER Version ' . $version . ' - Last Update: ' . $lastUpdate . '
+        Welcome to QUIQQER Version '.$version.' - Last Update: '.$lastUpdate.'
 
         ';
 
@@ -827,7 +839,7 @@ class Console
     {
         array_map(
             create_function('$a', 'print chr($a);'),
-            array(27, 91, 72, 27, 91, 50, 74)
+            [27, 91, 72, 27, 91, 50, 74]
         );
     }
 
@@ -850,7 +862,7 @@ class Console
      */
     public function writeLn($msg = '', $color = false, $bg = false)
     {
-        $this->message("\n" . $msg, $color, $bg);
+        $this->message("\n".$msg, $color, $bg);
     }
 
     /**
@@ -883,11 +895,11 @@ class Console
         }
 
         if (isset($this->colors[$this->current_color])) {
-            echo "\033[" . $this->colors[$this->current_color] . "m";
+            echo "\033[".$this->colors[$this->current_color]."m";
         }
 
         if (isset($this->bg[$this->current_bg])) {
-            echo "\033[" . $this->bg[$this->current_bg] . "m";
+            echo "\033[".$this->bg[$this->current_bg]."m";
         }
 
         echo $msg;
@@ -959,9 +971,9 @@ class Console
             QUI::getLocale()->get(
                 "quiqqer/quiqqer",
                 "console.tool.passwordreset.prompt.confirm",
-                array(
+                [
                     "username" => $username
-                )
+                ]
             )
         );
 
@@ -975,9 +987,9 @@ class Console
             QUI::getLocale()->get(
                 "quiqqer/quiqqer",
                 "console.tool.passwordreset.prompt.confirm2",
-                array(
+                [
                     "username" => $username
-                )
+                ]
             ),
             "yellow"
         );
@@ -996,9 +1008,9 @@ class Console
             QUI::getLocale()->get(
                 "quiqqer/quiqqer",
                 "console.tool.passwordreset.success",
-                array(
+                [
                     "password" => $password
-                )
+                ]
             ),
             "green"
         );

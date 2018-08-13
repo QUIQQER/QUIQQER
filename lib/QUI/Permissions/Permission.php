@@ -470,6 +470,7 @@ class Permission
      *
      * @return bool
      *
+     * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
     public static function addUserToSitePermission(User $User, $Site, $permission, $EditUser = false)
@@ -523,6 +524,7 @@ class Permission
      *
      * @return bool
      *
+     * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
     public static function addGroupToSitePermission(Group $Group, $Site, $permission, $EditUser)
@@ -744,6 +746,7 @@ class Permission
      *
      * @return bool
      *
+     * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
     public static function removeGroupFromSitePermission(
@@ -802,6 +805,7 @@ class Permission
      *
      * @return bool
      *
+     * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
     public static function removeUserFromSitePermission(User $User, $Site, $permission, $EditUser = false)

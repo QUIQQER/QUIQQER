@@ -53,9 +53,9 @@ QUI::$Ajax->registerFunction(
             )
         );
     },
-    array('params', 'btype', 'permissions'),
-    array(
+    ['params', 'btype', 'permissions'],
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.permissions'
-    )
+    ]
 );

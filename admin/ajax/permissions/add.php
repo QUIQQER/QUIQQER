@@ -25,20 +25,20 @@ QUI::$Ajax->registerFunction(
             );
         }
 
-        $Manager->addPermission(array(
-            'name' => $permission,
+        $Manager->addPermission([
+            'name'  => $permission,
             'title' => $permission,
-            'desc' => $permission,
-            'type' => $permissiontype,
-            'area' => $area,
-            'src' => 'user'
-        ));
+            'desc'  => $permission,
+            'type'  => $permissiontype,
+            'area'  => $area,
+            'src'   => 'user'
+        ]);
 
         return true;
     },
-    array('permission', 'permissiontype', 'area'),
-    array(
+    ['permission', 'permissiontype', 'area'],
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.permissions'
-    )
+    ]
 );

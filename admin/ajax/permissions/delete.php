@@ -17,9 +17,9 @@ QUI::$Ajax->registerFunction(
             )
         );
     },
-    array('permission'),
-    array(
+    ['permission'],
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.permissions'
-    )
+    ]
 );

@@ -2998,6 +2998,7 @@ define('controls/grid/Grid', [
                 dataIndex   = columnModel.dataIndex;
 
                 if (columnModel.hidden ||
+                    columnModel.showNotInExport ||
                     columnModel.dataType === 'button' ||
                     columnModel.dataType === 'checkbox') {
                     continue;
@@ -3051,7 +3052,7 @@ define('controls/grid/Grid', [
                 text     : QUILocale.get('quiqqer/quiqqer', 'cancel'),
                 events   : {
                     click: function () {
-                        document.getElement('.exportSelectDiv').destroy();
+                        t.container.getElement('.exportSelectDiv').destroy();
                     }
                 },
                 textimage: 'fa fa-remove'
@@ -3061,7 +3062,8 @@ define('controls/grid/Grid', [
         },
 
         setExportData: function () {
-            var c, i, len, columnModel, header, dataIndex;
+            var c, i, len, columnModel, header, dataIndex, Checkbox;
+            var t = this;
 
             var data = {
                 header: {},
@@ -3079,7 +3081,9 @@ define('controls/grid/Grid', [
                     continue;
                 }
 
-                if (!document.id('export_' + dataIndex).checked) {
+                Checkbox = t.container.getElement('#export_' + dataIndex);
+
+                if (!Checkbox || !Checkbox.checked) {
                     continue;
                 }
 

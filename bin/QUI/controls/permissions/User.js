@@ -3,10 +3,6 @@
  *
  * @module controls/permissions/User
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require controls/permissions/Permission
- * @require qui/controls/buttons/Button
- * @require Locale
  */
 define('controls/permissions/User', [
 
@@ -99,7 +95,7 @@ define('controls/permissions/User', [
                                                     'html',
                                                     QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
                                                         name: '<span class="fa fa-user"></span>' +
-                                                              self.$Bind.getName()
+                                                        self.$Bind.getName()
                                                     })
                                                 );
                                             } else {
@@ -108,7 +104,7 @@ define('controls/permissions/User', [
                                                         'html',
                                                         QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
                                                             name: '<span class="fa fa-user"></span>' +
-                                                                  self.$Bind.getName()
+                                                            self.$Bind.getName()
                                                         })
                                                     );
                                                 });

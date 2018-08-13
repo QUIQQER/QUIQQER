@@ -10,7 +10,7 @@
  * @throws \QUI\Exception
  */
 QUI::$Ajax->registerFunction(
-    'ajax_permissions_get',
+    'ajax_permissions_getCompleteList',
     function ($params, $btype) {
         $params  = json_decode($params, true);
         $Manager = QUI::getPermissionManager();
@@ -40,7 +40,9 @@ QUI::$Ajax->registerFunction(
                 break;
         }
 
-        return $Manager->getPermissions($Bind);
+        $result = $Manager->getCompletePermissionList($Bind);
+
+        return $result;
     },
     ['params', 'btype'],
     [
