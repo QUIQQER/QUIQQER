@@ -185,16 +185,22 @@ class Setup
     /**
      * Execute for each project the setup
      *
+     * @param array $setupOptions - options for the package setup [executePackageSetup]
+     *
      * @throws QUI\Exception
      */
-    public static function executeEachProjectSetup()
+    public static function executeEachProjectSetup($setupOptions = [])
     {
         $projects = Projects\Manager::getProjects(true);
+
+        if (!isset($setupOptions['executePackagesSetup'])) {
+            $setupOptions['executePackagesSetup'] = false;
+        }
 
         /* @var $Project \QUI\Projects\Project */
         foreach ($projects as $Project) {
             try {
-                $Project->setup();
+                $Project->setup($setupOptions);
             } catch (\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }
@@ -209,7 +215,7 @@ class Setup
      * @throws QUI\Exception
      * @throws QUI\ExceptionStack
      */
-    public static function executeEachPackageSetup($setupOptions = array())
+    public static function executeEachPackageSetup($setupOptions = [])
     {
         QUI::getEvents()->fireEvent('setupPackageSetupBegin');
 

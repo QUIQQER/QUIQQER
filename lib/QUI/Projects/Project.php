@@ -100,14 +100,14 @@ class Project
      *
      * @var array
      */
-    private $children = array();
+    private $children = [];
 
     /**
      * loaded edit_sites
      *
      * @var array
      */
-    private $children_tmp = array();
+    private $children_tmp = [];
 
     /**
      * first child
@@ -121,7 +121,7 @@ class Project
      *
      * @var array
      */
-    protected $cache_files = array();
+    protected $cache_files = [];
 
     /**
      * Konstruktor eines Projektes
@@ -170,7 +170,7 @@ class Project
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.project.not.found',
-                    array('name' => $name)
+                    ['name' => $name]
                 ),
                 804
             );
@@ -212,9 +212,9 @@ class Project
                     QUI::getLocale()->get(
                         'quiqqer/system',
                         'exception.project.lang.not.found',
-                        array(
+                        [
                             'lang' => $lang
-                        )
+                        ]
                     ),
                     806
                 );
@@ -278,10 +278,10 @@ class Project
 
 
         // cache files
-        $this->cache_files = array(
+        $this->cache_files = [
             'types'  => 'projects.'.$this->getAttribute('name').'.types',
             'gtypes' => 'projects.'.$this->getAttribute('name').'.globaltypes'
-        );
+        ];
     }
 
     /**
@@ -328,10 +328,10 @@ class Project
      */
     public function toArray()
     {
-        return array(
+        return [
             'name' => $this->getAttribute('name'),
             'lang' => $this->getAttribute('lang')
-        );
+        ];
     }
 
     /**
@@ -401,7 +401,7 @@ class Project
         $query = 'SELECT id FROM '.$this->table();
         $where = ' WHERE name LIKE :search';
 
-        $allowed = array('id', 'name', 'title', 'short', 'content');
+        $allowed = ['id', 'name', 'title', 'short', 'content'];
 
         if (is_array($select)) {
             $where = ' WHERE (';
@@ -430,7 +430,7 @@ class Project
         $Statement->execute();
 
         $dbResult = $Statement->fetchAll(\PDO::FETCH_ASSOC);
-        $result   = array();
+        $result   = [];
 
         foreach ($dbResult as $entry) {
             try {
@@ -607,14 +607,14 @@ class Project
      */
     public function getAllAttributes()
     {
-        return array(
+        return [
             'config'  => $this->config,
             'lang'    => $this->lang,
             'langs'   => $this->langs,
             'name'    => $this->name,
             'sheets'  => $this->getConfig('sheets'),
             'archive' => $this->getConfig('archive')
-        );
+        ];
     }
 
     /**
@@ -714,14 +714,14 @@ class Project
      */
     public function getNameById($id)
     {
-        $result = QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch([
             'select' => 'name',
             'from'   => $this->TABLE,
-            'where'  => array(
+            'where'  => [
                 'id' => $id
-            ),
+            ],
             'limit'  => '1'
-        ));
+        ]);
 
         if (isset($result[0]) && is_array($result)) {
             return $result[0]['name'];
@@ -737,14 +737,14 @@ class Project
      */
     public function getNewId()
     {
-        $maxId = QUI::getDataBase()->fetch(array(
+        $maxId = QUI::getDataBase()->fetch([
             'select' => 'id',
             'from'   => $this->table(),
             'limit'  => '0,1',
-            'order'  => array(
+            'order'  => [
                 'id' => 'DESC'
-            )
-        ));
+            ]
+        ]);
 
         return (int)$maxId[0]['id'] + 1;
     }
@@ -770,9 +770,9 @@ class Project
         $vhostList = $VHosts->getHostsByProject($this->getName());
         $template  = OPT_DIR.$this->getAttribute('template');
 
-        $siteXMLs = array(
+        $siteXMLs = [
             $template.'/site.xml'
-        );
+        ];
 
         foreach ($vhostList as $vhost) {
             $hostData = $VHosts->getVhost($vhost);
@@ -782,8 +782,8 @@ class Project
             }
         }
 
-        $result   = array();
-        $_resTemp = array();
+        $result   = [];
+        $_resTemp = [];
         $siteXMLs = array_unique($siteXMLs);
 
         foreach ($siteXMLs as $siteXML) {
@@ -795,12 +795,12 @@ class Project
                     continue;
                 }
 
-                $data = array(
+                $data = [
                     'type'        => $Layout->getAttribute('type'),
                     'title'       => '',
                     'description' => '',
                     'image'       => ''
-                );
+                ];
 
                 $_resTemp[$Layout->getAttribute('type')] = true;
 
@@ -842,21 +842,21 @@ class Project
      *
      * @return array|integer
      */
-    public function getChildrenIdsFrom($parentid, $params = array())
+    public function getChildrenIdsFrom($parentid, $params = [])
     {
-        $where_1 = array(
+        $where_1 = [
             $this->RELTABLE.'.parent' => $parentid,
             $this->TABLE.'.deleted'   => 0,
             $this->TABLE.'.active'    => 1,
             $this->RELTABLE.'.child'  => '`'.$this->TABLE.'.id`'
-        );
+        ];
 
         if (isset($params['active']) && $params['active'] === '0&1') {
-            $where_1 = array(
+            $where_1 = [
                 $this->RELTABLE.'.parent' => $parentid,
                 $this->TABLE.'.deleted'   => 0,
                 $this->RELTABLE.'.child'  => '`'.$this->TABLE.'.id`'
-            );
+            ];
         }
 
         if (isset($params['where']) && is_array($params['where'])) {
@@ -882,23 +882,23 @@ class Project
             }
         }
 
-        $result = QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch([
             'select' => $this->TABLE.'.id',
             'count'  => isset($params['count']) ? 'count' : false,
-            'from'   => array(
+            'from'   => [
                 $this->RELTABLE,
                 $this->TABLE
-            ),
+            ],
             'order'  => $order,
             'limit'  => isset($params['limit']) ? $params['limit'] : false,
             'where'  => $where
-        ));
+        ]);
 
         if (isset($params['count'])) {
             return (int)$result[0]['count'];
         }
 
-        $ids = array();
+        $ids = [];
 
         foreach ($result as $entry) {
             if (isset($entry['id'])) {
@@ -935,15 +935,15 @@ class Project
             return 0;
         }
 
-        $result = QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch([
             'select' => 'parent',
             'from'   => $this->RELTABLE,
-            'where'  => array(
+            'where'  => [
                 'child' => (int)$id
-            ),
+            ],
             'order'  => 'oparent ASC',
             'limit'  => '1'
-        ));
+        ]);
 
         if (isset($result[0]) && $result[0]['parent']) {
             return (int)$result[0]['parent'];
@@ -962,7 +962,7 @@ class Project
      */
     public function getParentIds($id, $reverse = false)
     {
-        $ids = array();
+        $ids = [];
         $pid = $this->getParentIdFrom($id);
 
         while ($pid != 1) {
@@ -985,21 +985,21 @@ class Project
      * @todo Muss mal echt überarbeitet werden, bad code
      * @return array
      */
-    public function getSitesIds($params = array())
+    public function getSitesIds($params = [])
     {
         if (empty($params) || !is_array($params)) {
             // Falls kein Query dann alle Seiten hohlen
             // @notice - Kann performancefressend sein
-            return QUI::getDataBase()->fetch(array(
+            return QUI::getDataBase()->fetch([
                 'select' => 'id',
                 'from'   => $this->table()
-            ));
+            ]);
         }
 
-        $sql = array(
+        $sql = [
             'select' => 'id',
             'from'   => $this->table()
-        );
+        ];
 
         if (isset($params['where'])) {
             $sql['where'] = $params['where'];
@@ -1040,10 +1040,10 @@ class Project
         }
 
         if (isset($params['count'])) {
-            $sql['count'] = array(
+            $sql['count'] = [
                 'select' => 'id',
                 'as'     => 'count'
-            );
+            ];
 
             unset($sql['select']);
         } else {
@@ -1089,7 +1089,7 @@ class Project
         $s = $this->getSitesIds($params);
 
         if (empty($s) || !is_array($s)) {
-            return array();
+            return [];
         }
 
         if (isset($params['count'])) {
@@ -1100,7 +1100,7 @@ class Project
             return 0;
         }
 
-        $sites = array();
+        $sites = [];
 
         foreach ($s as $site_id) {
             try {
@@ -1116,14 +1116,26 @@ class Project
     /**
      * Execute the project setup
      *
+     * @param array $setupOptions - options for the package setup
+     *                              -> [executePackagesSetup => true]
+     *
      * @throws \Exception
      * @throws QUI\Exception
      * @throws QUI\ExceptionStack
      * @throws QUI\DataBase\Exception
      */
-    public function setup()
+    public function setup($setupOptions = [])
     {
-        QUI::getEvents()->fireEvent('projectSetupBegin', array($this));
+        if (!isset($setupOptions)) {
+            $setupOptions = [];
+        }
+
+        if (!isset($setupOptions['executePackagesSetup'])) {
+            $setupOptions['executePackagesSetup'] = true;
+        }
+
+
+        QUI::getEvents()->fireEvent('projectSetupBegin', [$this]);
 
         $DataBase = QUI::getDataBase();
         $Table    = $DataBase->table();
@@ -1132,15 +1144,15 @@ class Project
         // multi lingual table
         $multiLingualTable = QUI_DB_PRFX.$this->name.'_multilingual';
 
-        $Table->addColumn($multiLingualTable, array(
+        $Table->addColumn($multiLingualTable, [
             'id' => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY'
-        ));
+        ]);
 
 
         foreach ($this->langs as $lang) {
             $table = QUI_DB_PRFX.$this->name.'_'.$lang.'_sites';
 
-            $Table->addColumn($table, array(
+            $Table->addColumn($table, [
                 'id'            => 'bigint(20) NOT NULL AUTO_INCREMENT PRIMARY KEY',
                 'name'          => 'varchar(255) NOT NULL',
                 'title'         => 'tinytext NULL',
@@ -1163,7 +1175,7 @@ class Project
                 'image_site'    => 'text NULL',
                 'release_from'  => 'DATETIME NULL DEFAULT NULL',
                 'release_to'    => 'DATETIME NULL DEFAULT NULL'
-            ));
+            ]);
 
             // fix for old tables
             $DataBase->getPDO()->exec(
@@ -1208,16 +1220,16 @@ class Project
 
 
             // create first site -> id 1 if not exist
-            $firstChildResult = $DataBase->fetch(array(
+            $firstChildResult = $DataBase->fetch([
                 'from'  => $table,
-                'where' => array(
+                'where' => [
                     'id' => 1
-                ),
+                ],
                 'limit' => 1
-            ));
+            ]);
 
             if (!isset($firstChildResult[0])) {
-                $DataBase->insert($table, array(
+                $DataBase->insert($table, [
                     'id'        => 1,
                     'name'      => 'start',
                     'title'     => 'Start',
@@ -1225,17 +1237,17 @@ class Project
                     'c_date'    => date('Y-m-d H:i:s'),
                     'c_user'    => $User->getId(),
                     'c_user_ip' => QUI\Utils\System::getClientIP()
-                ));
+                ]);
             }
 
             // Beziehungen
             $table = QUI_DB_PRFX.$this->name.'_'.$lang.'_sites_relations';
 
-            $Table->addColumn($table, array(
+            $Table->addColumn($table, [
                 'parent'  => 'bigint(20)',
                 'child'   => 'bigint(20)',
                 'oparent' => 'bigint(20)'
-            ));
+            ]);
 
             $Table->setIndex($table, 'parent');
             $Table->setIndex($table, 'child');
@@ -1243,7 +1255,7 @@ class Project
             // multilingual field
             $Table->addColumn(
                 $multiLingualTable,
-                array($lang => 'bigint(20)')
+                [$lang => 'bigint(20)']
             );
 
             // Translation Setup
@@ -1287,7 +1299,7 @@ class Project
         $defaults = QUI\Projects\Manager::getProjectConfigList($this);
         $Config   = Manager::getConfig();
         $projects = $Config->toArray();
-        $config   = array();
+        $config   = [];
 
         if (isset($projects[$this->getName()])) {
             $config = $projects[$this->getName()];
@@ -1304,7 +1316,12 @@ class Project
 
         $Config->save();
 
-        QUI::getEvents()->fireEvent('projectSetupEnd', array($this));
+        if (!empty($setupOptions['executePackagesSetup'])) {
+            QUI\Setup::executeEachPackageSetup();
+        }
+
+
+        QUI::getEvents()->fireEvent('projectSetupEnd', [$this]);
     }
 
     /**
@@ -1314,10 +1331,14 @@ class Project
      */
     public function setEditDate($date)
     {
-        QUI\Cache\Manager::set(
-            'projects/edate/'.md5($this->getName().'_'.$this->getLang()),
-            (int)$date
-        );
+        try {
+            QUI\Cache\Manager::set(
+                'projects/edate/'.md5($this->getName().'_'.$this->getLang()),
+                (int)$date
+            );
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeDebugException($Exception);
+        }
     }
 
     /**
@@ -1339,11 +1360,11 @@ class Project
         QUI\Utils\System\File::mkfile($file);
 
         if (!is_writable($file)) {
-            throw new QUI\Exception(array(
+            throw new QUI\Exception([
                 'quiqqer/quiqqer',
                 'exception.custom.css.is.not.writeable',
-                array('file' => $file)
-            ));
+                ['file' => $file]
+            ]);
         }
 
         file_put_contents($file, $css);
@@ -1457,7 +1478,7 @@ class Project
         //            Database           //
         // ----------------------------- //
 
-        $tables = array();
+        $tables = [];
 
         $Stmt = \QUI::getDataBase()->getPDO()->prepare("SHOW TABLES;");
         $Stmt->execute();
@@ -1515,11 +1536,11 @@ class Project
         //              Finish           //
         // ----------------------------- //
 
-        \QUI::getEvents()->fireEvent("projectRenamed", array(
+        \QUI::getEvents()->fireEvent("projectRenamed", [
             $this,
             $this->name,
             $newName
-        ));
+        ]);
 
 
         $this->TABLE        = str_replace($this->name."_", $newName."_", $this->TABLE);
