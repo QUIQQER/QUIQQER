@@ -1611,7 +1611,11 @@ class Manager
 
             /* @var $Tab \DOMElement */
             foreach ($tabs as $Tab) {
-                $extend .= DOM::parseCategoryToHTML($Tab);
+                try {
+                    $extend .= DOM::parseCategoryToHTML($Tab);
+                } catch (QUI\Exception $Exception) {
+                    QUI\System\Log::writeDebugException($Exception);
+                }
             }
         }
 
