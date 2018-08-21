@@ -454,6 +454,7 @@ class Ajax extends QUI\QDOM
                 break;
 
             case 'QUI\\Exception':
+            case 'QUI\\Users\\Exception':
                 $return['Exception']['message'] = $Exception->getMessage();
                 $return['Exception']['code']    = $Exception->getCode();
                 $return['Exception']['type']    = $Exception->getType();

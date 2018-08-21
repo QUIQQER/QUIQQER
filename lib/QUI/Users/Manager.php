@@ -576,11 +576,23 @@ class Manager
         } catch (QUI\Users\Exception $Exception) {
             $Exception->setAttribute('reason', self::AUTH_ERROR_AUTH_ERROR);
 
+            QUI\System\Log::write(
+                'Login failed: '.$username,
+                QUI\System\Log::LEVEL_WARNING,
+                [],
+                'auth'
+            );
+
             QUI::getEvents()->fireEvent('userLoginError', [$userId, $Exception, $authenticator]);
 
             throw $Exception;
         } catch (\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
+            QUI\System\Log::write(
+                'Login failed: '.$username,
+                QUI\System\Log::LEVEL_WARNING,
+                [],
+                'auth'
+            );
 
             throw new QUI\Users\Exception(
                 ['quiqqer/system', 'exception.login.fail'],

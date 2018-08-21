@@ -195,7 +195,7 @@ define('utils/Controls', [
             return new Promise(function (resolve) {
                 var i, len, Header, TableText;
                 var theaders = Elm.getElements('.data-table tr ^ th');
-
+console.log(Elm);
                 var dataTableOpen = function () {
                     var Table  = this.getParent('table'),
                         TBody  = Table.getElement('tbody'),

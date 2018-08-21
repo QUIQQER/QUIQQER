@@ -98,6 +98,7 @@ class Log
         $context['errorFilename'] = $filename;
         $context['userId']        = $User->getId();
         $context['username']      = $User->getUsername();
+        $context['IP']            = QUI\Utils\System::getClientIP();
 
         if ($filename) {
             $context['filename'] = $filename;
@@ -180,7 +181,10 @@ class Log
         }
 
         $message .= $Exception->getMessage()."\n";
-        $message .= $Exception->getTraceAsString();
+
+        if (DEVELOPMENT || DEBUG_MODE) {
+            $message .= $Exception->getTraceAsString();
+        }
 
         self::write($message, $logLevel, $context, $filename, $force);
     }
