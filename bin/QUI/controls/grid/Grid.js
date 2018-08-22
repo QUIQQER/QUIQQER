@@ -477,7 +477,7 @@ define('controls/grid/Grid', [
                 'class': 'inline',
                 style  : "width: " + width + "px; height: auto;",
                 value  : html,
-                title  : 'Doppelklick oder Enter um die änderungen zu übernehmen',
+                title  : 'Doppelklick oder Enter um die Änderungen zu übernehmen', // #locale
                 events : {
                     keyup   : t.finishEditing.bind(this),
                     blur    : t.finishEditing.bind(this),
@@ -706,14 +706,22 @@ define('controls/grid/Grid', [
                 return;
             }
 
+            if (event.target.nodeName === 'INPUT') {
+                return;
+            }
+
             this._stopdrag  = false;
             this._dragtimer = this.startDrag.delay(200, this, event);
         },
 
         onRowMouseUp: function (event) {
+            if (event.target.nodeName === 'INPUT') {
+                return;
+            }
+
             // stop drag an drop
             if (!this.getAttribute('dragdrop')) {
-                return false;
+                return;
             }
 
             // if dragdrop is start
@@ -736,6 +744,10 @@ define('controls/grid/Grid', [
             var t       = this,
                 li      = this.getLiParent(evt.target),
                 onclick = false;
+
+            if (event.target.nodeName === 'INPUT') {
+                return;
+            }
 
             if (!li) {
                 return;
@@ -2164,8 +2176,7 @@ define('controls/grid/Grid', [
 
                 var str = rowdata[columnDataIndex];
 
-                if (typeof rowdata[columnDataIndex] !== 'undefined'
-                    && rowdata[columnDataIndex] !== null) {
+                if (typeof rowdata[columnDataIndex] !== 'undefined' && rowdata[columnDataIndex] !== null) {
                     str = rowdata[columnDataIndex];
                 } else {
                     str = '';
