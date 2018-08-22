@@ -181,10 +181,7 @@ class Log
         }
 
         $message .= $Exception->getMessage()."\n";
-
-        if (DEVELOPMENT || DEBUG_MODE) {
-            $message .= $Exception->getTraceAsString();
-        }
+        $message .= $Exception->getTraceAsString();
 
         self::write($message, $logLevel, $context, $filename, $force);
     }

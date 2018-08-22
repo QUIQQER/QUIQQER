@@ -524,7 +524,7 @@ class Manager
      * @param array $params
      * @return bool
      *
-     * @throws QUI\Users\Exception
+     * @throws QUI\Users\UserAuthException
      * @throws QUI\Exception
      * @throws QUI\ExceptionStack
      */
@@ -585,7 +585,11 @@ class Manager
 
             QUI::getEvents()->fireEvent('userLoginError', [$userId, $Exception, $authenticator]);
 
-            throw $Exception;
+            throw new QUI\Users\UserAuthException(
+                $Exception->getMessage(),
+                $Exception->getCode(),
+                $Exception->getContext()
+            );
         } catch (\Exception $Exception) {
             QUI\System\Log::write(
                 'Login failed: '.$username,
@@ -594,7 +598,7 @@ class Manager
                 'auth'
             );
 
-            throw new QUI\Users\Exception(
+            throw new QUI\Users\UserAuthException(
                 ['quiqqer/system', 'exception.login.fail'],
                 401
             );
