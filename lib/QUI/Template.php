@@ -78,7 +78,8 @@ class Template extends QUI\QDOM
             'content-header'  => true,
             'content-body'    => true,
             'template-header' => true,
-            'template-footer' => true
+            'template-footer' => true,
+            'noConflict'      => false // @todo in Version 2.0 -> true becomes the default
         ]);
     }
 
@@ -678,6 +679,10 @@ class Template extends QUI\QDOM
             'Canonical'       => new QUI\Projects\Site\Canonical($Site),
             'lastUpdate'      => QUI::getPackageManager()->getLastUpdateDate()
         ]);
+
+        if ($this->getAttribute('noConflict')) {
+            return $Engine->fetch(LIB_DIR.'templates/headerNoConflict.html');
+        }
 
         return $Engine->fetch(LIB_DIR.'templates/header.html');
     }
