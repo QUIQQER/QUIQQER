@@ -745,7 +745,7 @@ define('controls/grid/Grid', [
                 li      = this.getLiParent(evt.target),
                 onclick = false;
 
-            if (event.target.nodeName === 'INPUT') {
+            if (evt.target.nodeName === 'INPUT') {
                 return;
             }
 
