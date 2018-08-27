@@ -20,7 +20,7 @@ class PasswordResetVerification extends AbstractVerification
      * @param string $identifier
      * @param array $additionalData
      */
-    public function __construct($identifier, $additionalData = array())
+    public function __construct($identifier, $additionalData = [])
     {
         parent::__construct($identifier, $additionalData);
         $this->Project = new QUI\Projects\Project($additionalData['project'], $additionalData['projectLang']);
@@ -51,7 +51,7 @@ class PasswordResetVerification extends AbstractVerification
             $this->sendNewUserPasswordMail($User, $newPassword);
         } catch (\Exception $Exception) {
             QUI\System\Log::addError(
-                self::class . ' :: onSuccess -> Error while setting temporary new user password'
+                self::class.' :: onSuccess -> Error while setting temporary new user password'
             );
 
             QUI\System\Log::writeException($Exception);
@@ -113,22 +113,22 @@ class PasswordResetVerification extends AbstractVerification
      */
     public function getOnSuccessRedirectUrl()
     {
-        $result = $this->Project->getSites(array(
-            'where' => array(
+        $result = $this->Project->getSites([
+            'where' => [
                 'type' => 'quiqqer/frontend-users:types/login'
-            ),
+            ],
             'limit' => 1
-        ));
+        ]);
 
-        if (!empty($result)) {
-            $LoginSite = current($result);
-        } else {
-            $LoginSite = $this->Project->get(1);
+        if (empty($result)) {
+            return false;
         }
 
-        return $LoginSite->getUrlRewritten(array(), array(
+        $LoginSite = current($result);
+
+        return $LoginSite->getUrlRewritten([], [
             'password_reset' => '1'
-        ));
+        ]);
     }
 
     /**
@@ -158,19 +158,19 @@ class PasswordResetVerification extends AbstractVerification
 
         $L      = QUI::getLocale();
         $lg     = 'quiqqer/system';
-        $tplDir = QUI::getPackage('quiqqer/quiqqer')->getDir() . 'lib/templates/mail/auth/';
+        $tplDir = QUI::getPackage('quiqqer/quiqqer')->getDir().'lib/templates/mail/auth/';
 
         $Mailer = new QUI\Mail\Mailer();
         $Engine = QUI::getTemplateManager()->getEngine();
 
-        $Engine->assign(array(
-            'body' => $L->get($lg, 'mail.auth.password_reset_newpassword.body', array(
+        $Engine->assign([
+            'body' => $L->get($lg, 'mail.auth.password_reset_newpassword.body', [
                 'username'    => $User->getUsername(),
                 'newPassword' => $newPass
-            ))
-        ));
+            ])
+        ]);
 
-        $template = $Engine->fetch($tplDir . 'password_reset_newpassword.html');
+        $template = $Engine->fetch($tplDir.'password_reset_newpassword.html');
 
         $Mailer->addRecipient($email);
         $Mailer->setSubject(
