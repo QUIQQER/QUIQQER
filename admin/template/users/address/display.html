@@ -47,7 +47,7 @@
     <div class="adr">
         {if $Address->getAttribute('company')}
         <div class="company">
-            Firma<br />
+            {locale group="quiqqer/system" var="company"}<br />
             {$Address->getAttribute('company')}
         </div>
         {/if}
