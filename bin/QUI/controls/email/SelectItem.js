@@ -11,11 +11,9 @@
 define('controls/email/SelectItem', [
 
     'qui/QUI',
-    'qui/controls/elements/SelectItem',
-    'Ajax',
-    'Users'
+    'qui/controls/elements/SelectItem'
 
-], function (QUI, QUIElementSelectItem, QUIAjax, Users) {
+], function (QUI, QUIElementSelectItem) {
     "use strict";
 
     return new Class({
@@ -41,7 +39,7 @@ define('controls/email/SelectItem', [
             var self = this,
                 id   = this.getAttribute('id');
 
-            return Promise.resolve().then(function() {
+            return Promise.resolve().then(function () {
                 self.$Text.set({
                     html: id
                 });
