@@ -456,7 +456,7 @@ abstract class Item extends QUI\QDOM
      */
     public function rename($newname)
     {
-        $newname = trim($newname);
+        $newname = trim($newname, "_ \t\n\r\0\x0B"); // Trim the default characters and underscores
 
         $original  = $this->getFullPath();
         $extension = QUI\Utils\StringHelper::pathinfo($original, PATHINFO_EXTENSION);
