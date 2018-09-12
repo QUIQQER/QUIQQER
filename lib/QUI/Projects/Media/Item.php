@@ -456,6 +456,8 @@ abstract class Item extends QUI\QDOM
      */
     public function rename($newname)
     {
+        $newname = trim($newname);
+
         $original  = $this->getFullPath();
         $extension = QUI\Utils\StringHelper::pathinfo($original, PATHINFO_EXTENSION);
         $Parent    = $this->getParent();
