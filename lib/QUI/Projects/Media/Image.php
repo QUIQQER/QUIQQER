@@ -730,4 +730,18 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             ['id' => $this->getId()]
         );
     }
+
+
+    /**
+     * Rename the image
+     *
+     * @param string $newname - The new name of the image
+     *
+     * @throws \QUI\Exception
+     */
+    public function rename($newname)
+    {
+        $newname = trim($newname);
+        return parent::rename($newname);
+    }
 }
