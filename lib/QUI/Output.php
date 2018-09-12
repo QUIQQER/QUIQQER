@@ -42,7 +42,8 @@ class Output extends Singleton
      * @var array
      */
     protected $settings = [
-        'use-system-image-paths' => false
+        'use-system-image-paths' => false,
+        'remove-deleted-links'   => true
     ];
 
     /**
@@ -51,26 +52,35 @@ class Output extends Singleton
      */
     public function parse($content)
     {
-        // Bilder umschreiben
+        // rewrite image
         $content = preg_replace_callback(
             '#<img([^>]*)>#i',
             [&$this, "images"],
             $content
         );
 
-        // restliche Dateien umschreiben
+        // rewrite files
         $content = preg_replace_callback(
             '#(href|src|value)="(image.php)\?([^"]*)"#',
             [&$this, "files"],
             $content
         );
 
-        //Links umschreiben
+        // rewrite links
         $content = preg_replace_callback(
             '#(href|src|action|value|data\-.*)="(index.php)\?([^"]*)"#',
             [&$this, "links"],
             $content
         );
+
+        // search empty <a> links
+        if ($this->settings['remove-deleted-links']) {
+            $content = preg_replace_callback(
+                '/<a.*?>(.*?)<\/a>/ims',
+                [&$this, "cleanEmptyLinks"],
+                $content
+            );
+        }
 
         return $content;
     }
@@ -144,11 +154,31 @@ class Output extends Singleton
                 $anchor = '#'.$parseUrl['fragment'];
             }
 
+            if (empty($url)) {
+                return '';
+            }
+
             $this->linkCache[$components] = $url.$anchor;
 
             return $output[1].'="'.$url.$anchor.'"';
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
+        }
+
+        return $output[0];
+    }
+
+    /**
+     * search empty a href links
+     * - if link is empty, return = inner html of the link
+     *
+     * @param array $output
+     * @return string
+     */
+    protected function cleanEmptyLinks($output)
+    {
+        if (strpos($output[0], 'href=') === false) {
+            return $output[1];
         }
 
         return $output[0];
@@ -328,6 +358,10 @@ class Output extends Singleton
                 /* @var $Site \QUI\Projects\Site */
                 $Site = $Project->get((int)$id);
             } catch (QUI\Exception $Exception) {
+                return '';
+            }
+
+            if ($Site->getAttribute('deleted')) {
                 return '';
             }
 
