@@ -212,8 +212,10 @@
     {assign var=projectLang value=$Project->getLang()}
     {assign var=projectLangs value=$Project->getAttribute('langs')}
     {foreach from=$projectLangs item=lang}
-    {if $projectLang != $lang && $Site->existLang( $lang )}
-        <link rel="alternate" hreflang="{$lang}" href="{url id=$Site->getId( $lang ) lang=$lang rewrited=true}" />
+    {if $Site->existLang($lang)}
+        <link rel="alternate" hreflang="{$lang}"
+              href="{url id=$Site->getId($lang) lang=$lang rewritten=true host=true}"
+        />
     {/if}
     {/foreach}
 
