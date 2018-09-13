@@ -153,8 +153,7 @@ class Output extends Singleton
             if (isset($parseUrl['fragment']) && !empty($parseUrl['fragment'])) {
                 $anchor = '#'.$parseUrl['fragment'];
             }
-            QUI\System\Log::writeRecursive($url);
-            QUI\System\Log::writeRecursive($urlQueryParams);
+
             if (empty($url)) {
                 return '';
             }
@@ -178,8 +177,6 @@ class Output extends Singleton
      */
     protected function cleanEmptyLinks($output)
     {
-        QUI\System\Log::writeRecursive($output);
-
         if (strpos($output[0], 'href=') === false) {
             return $output[1];
         }
