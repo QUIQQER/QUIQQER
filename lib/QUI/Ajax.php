@@ -454,6 +454,7 @@ class Ajax extends QUI\QDOM
                 break;
 
             case 'QUI\\Exception':
+            case 'QUI\\Users\\Exception':
                 $return['Exception']['message'] = $Exception->getMessage();
                 $return['Exception']['code']    = $Exception->getCode();
                 $return['Exception']['type']    = $Exception->getType();
@@ -471,7 +472,10 @@ class Ajax extends QUI\QDOM
                 break;
         }
 
-        if ($class === 'QUI\\Permissions\\Exception') {
+        if ($Exception instanceof QUI\Users\UserAuthException) {
+            // do nothing
+            // UserAuthException writes its own log (auth.log)
+        } elseif ($class === 'QUI\\Permissions\\Exception') {
             QUI\System\Log::addInfo($Exception->getMessage());
         } else {
             QUI\System\Log::writeException($Exception);

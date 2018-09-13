@@ -41,7 +41,7 @@ class Rewrite
      *
      * @var array
      */
-    public $site_params = array();
+    public $site_params = [];
 
     /**
      * active project
@@ -97,7 +97,7 @@ class Rewrite
      *
      * @var array
      */
-    private $path = array();
+    private $path = [];
 
     /**
      * @var null
@@ -109,21 +109,21 @@ class Rewrite
      *
      * @var array
      */
-    private $ids_in_path = array();
+    private $ids_in_path = [];
 
     /**
      * internal url cache
      *
      * @var array
      */
-    private $url_cache = array();
+    private $url_cache = [];
 
     /**
      * internal image link cache
      *
      * @var array
      */
-    private $image_cache = array();
+    private $image_cache = [];
 
     /**
      * loaded vhosts
@@ -202,7 +202,7 @@ class Rewrite
 
         //wenn seite existiert, dann muss nichts mehr gemacht werden
         if (isset($this->site) && $this->site) {
-            QUI::getEvents()->fireEvent('request', array($this, $_REQUEST['_url']));
+            QUI::getEvents()->fireEvent('request', [$this, $_REQUEST['_url']]);
 
             return;
         }
@@ -221,7 +221,7 @@ class Rewrite
         // dann / dran
         // sprach ist ein ordner keine seite
         if (!empty($_REQUEST['_url']) && strlen($_REQUEST['_url']) == 2) {
-            QUI::getEvents()->fireEvent('request', array($this, $_REQUEST['_url'].'/'));
+            QUI::getEvents()->fireEvent('request', [$this, $_REQUEST['_url'].'/']);
 
             // 301 weiterleiten
             $this->showErrorHeader(301, URL_DIR.$_REQUEST['_url'].'/');
@@ -237,7 +237,7 @@ class Rewrite
         ) {
             $_REQUEST['_url'] = substr($_REQUEST['_url'], 0, -1).$defaultSuffix;
 
-            QUI::getEvents()->fireEvent('request', array($this, $_REQUEST['_url']));
+            QUI::getEvents()->fireEvent('request', [$this, $_REQUEST['_url']]);
 
             // 301 weiterleiten
             $this->showErrorHeader(301, URL_DIR.$_REQUEST['_url']);
@@ -286,7 +286,7 @@ class Rewrite
 
                 unset($_url[0]);
 
-                $_new_url = array();
+                $_new_url = [];
 
                 foreach ($_url as $elm) {
                     $_new_url[] = $elm;
@@ -306,7 +306,7 @@ class Rewrite
 
                 unset($_url[0]);
 
-                $_new_url = array();
+                $_new_url = [];
 
                 foreach ($_url as $elm) {
                     $_new_url[] = $elm;
@@ -329,7 +329,7 @@ class Rewrite
                     $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
                     $url = 'http://'.$this->project_prefix.$url;
 
-                    QUI::getEvents()->fireEvent('request', array($this, $_REQUEST['_url']));
+                    QUI::getEvents()->fireEvent('request', [$this, $_REQUEST['_url']]);
 
                     $this->showErrorHeader(301, $url);
                 }
@@ -347,7 +347,7 @@ class Rewrite
         if (isset($_REQUEST['_url'])
             && strpos($_REQUEST['_url'], 'media/cache') !== false
         ) {
-            QUI::getEvents()->fireEvent('request', array($this, $_REQUEST['_url']));
+            QUI::getEvents()->fireEvent('request', [$this, $_REQUEST['_url']]);
 
             $imageNotError = false;
             $Item          = false;
@@ -450,7 +450,7 @@ class Rewrite
             $_REQUEST['_url'] = '';
         }
 
-        QUI::getEvents()->fireEvent('request', array($this, $_REQUEST['_url']));
+        QUI::getEvents()->fireEvent('request', [$this, $_REQUEST['_url']]);
 
         // Falls kein suffix dann 301 weiterleiten auf .html
         if (!empty($_REQUEST['_url']) && substr($_REQUEST['_url'], -1) != '/') {
@@ -552,9 +552,9 @@ class Rewrite
 
         // Prüfen ob die aufgerufene URL gleich der von der Seite ist
         // Wenn nicht 301 auf die richtige
-        $url = $this->Output->getSiteUrl(array(
+        $url = $this->Output->getSiteUrl([
             'site' => $this->site
-        ));
+        ]);
 
         $request_url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
 
@@ -790,7 +790,7 @@ class Rewrite
         $host = '';
 
         if (defined('HOST')) {
-            $host = str_replace(array('http://', 'https://'), '', HOST);
+            $host = str_replace(['http://', 'https://'], '', HOST);
         }
 
         if (isset($_SERVER['HTTP_HOST']) && $host != $_SERVER['HTTP_HOST'] && $this->project) {
@@ -1122,7 +1122,7 @@ class Rewrite
         $path = $this->path;
 
         if (!isset($path[0])) {
-            return array();
+            return [];
         }
 
         if ($start == true) {
@@ -1196,24 +1196,24 @@ class Rewrite
     {
         $this->Output->setProject($this->getProject());
 
-        QUI::getEvents()->fireEvent('rewriteOutputBegin', array(
+        QUI::getEvents()->fireEvent('rewriteOutputBegin', [
             'Rewrite' => $this,
             'output'  => $output
-        ));
+        ]);
 
         $output = $this->Output->parse($output);
 
         $this->setOutputContent($output);
 
         // fire Rewrite::onOutput
-        QUI::getEvents()->fireEvent('QUI::rewriteOutput', array(
+        QUI::getEvents()->fireEvent('QUI::rewriteOutput', [
             'Rewrite' => $this
-        ));
+        ]);
 
-        QUI::getEvents()->fireEvent('rewriteOutput', array(
+        QUI::getEvents()->fireEvent('rewriteOutput', [
             'Rewrite' => $this,
             'output'  => $output
-        ));
+        ]);
 
         return $this->getOutputContent();
     }
@@ -1267,7 +1267,7 @@ class Rewrite
      */
     public static function replaceUrlSigns($url, $slash = false)
     {
-        $search = array('%20', '.', ' ', '_');
+        $search = ['%20', '.', ' ', '_'];
 
         if ($slash) {
             $search[] = '/';
@@ -1290,7 +1290,7 @@ class Rewrite
     public function getUrlParamsList()
     {
         if (!isset($_REQUEST['_url'])) {
-            return array();
+            return [];
         }
 
         $url = $_REQUEST['_url'];
@@ -1315,14 +1315,14 @@ class Rewrite
         $Project = $Site->getProject();
         $table   = QUI::getDBProjectTableName('paths', $Project);
 
-        $currentPaths = QUI::getDataBase()->fetch(array(
+        $currentPaths = QUI::getDataBase()->fetch([
             'from' => $table
-        ));
+        ]);
 
         $this->unregisterPath($Site);
 
         if (!is_array($paths)) {
-            $paths = array($paths);
+            $paths = [$paths];
         }
 
         // cleanup paths - use only paths
@@ -1331,10 +1331,10 @@ class Rewrite
         }
 
         foreach ($paths as $path) {
-            QUI::getDataBase()->insert($table, array(
+            QUI::getDataBase()->insert($table, [
                 'id'   => $Site->getId(),
                 'path' => $path
-            ));
+            ]);
         }
 
         // change children - quiqqer/quiqqer#334
@@ -1352,7 +1352,7 @@ class Rewrite
          */
         $triggerEvent = function ($eventName, $Site) {
             try {
-                QUI::getEvents()->fireEvent($eventName, array($Site), true);
+                QUI::getEvents()->fireEvent($eventName, [$Site], true);
             } catch (QUI\ExceptionStack $Exception) {
                 $list = $Exception->getExceptionList();
 
@@ -1398,9 +1398,9 @@ class Rewrite
         $Project = $Site->getProject();
         $table   = QUI::getDBProjectTableName('paths', $Project);
 
-        QUI::getDataBase()->delete($table, array(
+        QUI::getDataBase()->delete($table, [
             'id' => $Site->getId()
-        ));
+        ]);
     }
 
     /**
@@ -1415,9 +1415,9 @@ class Rewrite
     {
         if ($this->registerPaths === null) {
             $table  = QUI::getDBProjectTableName('paths', $Project);
-            $result = QUI::getDataBase()->fetch(array(
+            $result = QUI::getDataBase()->fetch([
                 'from' => $table
-            ));
+            ]);
 
             $this->registerPaths = $result;
         }
@@ -1466,7 +1466,7 @@ class Rewrite
      * @throws QUI\Exception
      * @deprecated
      */
-    public function getUrlFromSite($params = array(), $getParams = array())
+    public function getUrlFromSite($params = [], $getParams = [])
     {
         return $this->Output->getSiteUrl($params, $getParams);
     }

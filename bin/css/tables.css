@@ -196,10 +196,12 @@
 }
 
 .field-container-item-help {
+    cursor: help;
+    display: inline-block;
     float: right;
-    font: normal normal 300 14px/1 FontAwesome;
 }
 
 .field-container-item-help:before {
+    font: normal normal 300 14px/1 FontAwesome;
     content: "\f128";
 }

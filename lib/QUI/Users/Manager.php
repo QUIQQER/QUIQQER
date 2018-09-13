@@ -524,7 +524,7 @@ class Manager
      * @param array $params
      * @return bool
      *
-     * @throws QUI\Users\Exception
+     * @throws QUI\Users\UserAuthException
      * @throws QUI\Exception
      * @throws QUI\ExceptionStack
      */
@@ -576,13 +576,29 @@ class Manager
         } catch (QUI\Users\Exception $Exception) {
             $Exception->setAttribute('reason', self::AUTH_ERROR_AUTH_ERROR);
 
+            QUI\System\Log::write(
+                'Login failed: '.$username,
+                QUI\System\Log::LEVEL_WARNING,
+                [],
+                'auth'
+            );
+
             QUI::getEvents()->fireEvent('userLoginError', [$userId, $Exception, $authenticator]);
 
-            throw $Exception;
+            throw new QUI\Users\UserAuthException(
+                $Exception->getMessage(),
+                $Exception->getCode(),
+                $Exception->getContext()
+            );
         } catch (\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
+            QUI\System\Log::write(
+                'Login failed: '.$username,
+                QUI\System\Log::LEVEL_WARNING,
+                [],
+                'auth'
+            );
 
-            throw new QUI\Users\Exception(
+            throw new QUI\Users\UserAuthException(
                 ['quiqqer/system', 'exception.login.fail'],
                 401
             );
@@ -1599,7 +1615,11 @@ class Manager
 
             /* @var $Tab \DOMElement */
             foreach ($tabs as $Tab) {
-                $extend .= DOM::parseCategoryToHTML($Tab);
+                try {
+                    $extend .= DOM::parseCategoryToHTML($Tab);
+                } catch (QUI\Exception $Exception) {
+                    QUI\System\Log::writeDebugException($Exception);
+                }
             }
         }
 

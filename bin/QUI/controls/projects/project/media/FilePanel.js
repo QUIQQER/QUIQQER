@@ -298,7 +298,12 @@ define('controls/projects/project/media/FilePanel', [
 
             this.$unloadCategory();
 
-            this.getFile().save(function () {
+            var File = this.getFile();
+            File.save(function () {
+                // Update the (maybe truncated) filename
+                var NameInput = self.getContent().getElement('input[name=file_name]');
+                NameInput.value = File.getAttribute('name');
+
                 self.Loader.hide();
             }).catch(function (Exception) {
                 console.error(Exception);

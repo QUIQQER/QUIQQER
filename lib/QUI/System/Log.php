@@ -98,6 +98,7 @@ class Log
         $context['errorFilename'] = $filename;
         $context['userId']        = $User->getId();
         $context['username']      = $User->getUsername();
+        $context['IP']            = QUI\Utils\System::getClientIP();
 
         if ($filename) {
             $context['filename'] = $filename;

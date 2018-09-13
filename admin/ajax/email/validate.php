@@ -14,5 +14,5 @@ QUI::$Ajax->registerFunction(
         return boolval(Orthos::checkMailSyntax($mail));
     },
     array('mail'),
-    'Permission::checkAdminUser'
+    'Permission::checkUser'
 );

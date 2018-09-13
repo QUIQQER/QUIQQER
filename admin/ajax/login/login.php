@@ -15,5 +15,5 @@ QUI::$Ajax->registerFunction(
 
         return QUI::getUserBySession()->getAttributes();
     },
-    array('username', 'password')
+    ['username', 'password']
 );
