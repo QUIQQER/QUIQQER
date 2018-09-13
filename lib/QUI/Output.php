@@ -76,7 +76,7 @@ class Output extends Singleton
         // search empty <a> links
         if ($this->settings['remove-deleted-links']) {
             $content = preg_replace_callback(
-                '/<a.*?>(.*?)<\/a>/ims',
+                '/<a[ ]*?>(.*?)<\/a>/ims',
                 [&$this, "cleanEmptyLinks"],
                 $content
             );
@@ -153,7 +153,8 @@ class Output extends Singleton
             if (isset($parseUrl['fragment']) && !empty($parseUrl['fragment'])) {
                 $anchor = '#'.$parseUrl['fragment'];
             }
-
+            QUI\System\Log::writeRecursive($url);
+            QUI\System\Log::writeRecursive($urlQueryParams);
             if (empty($url)) {
                 return '';
             }
@@ -177,6 +178,8 @@ class Output extends Singleton
      */
     protected function cleanEmptyLinks($output)
     {
+        QUI\System\Log::writeRecursive($output);
+
         if (strpos($output[0], 'href=') === false) {
             return $output[1];
         }

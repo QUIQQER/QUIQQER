@@ -692,7 +692,7 @@ class Project
         try {
             $Site = new Site($this, (int)$id);
         } catch (QUI\Exception $Exception) {
-            if ($Exception->getCode() !== 705 && $Exception->getCode() !== 403) {
+            if ($Exception->getCode() !== 403) {
                 throw $Exception;
             }
 
