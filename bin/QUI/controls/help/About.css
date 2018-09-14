@@ -6,3 +6,13 @@
 .quiqqer-about-window h1 {
     font-weight: 300;
 }
+
+.quiqqer-about-window img {
+    max-width: 300px;
+}
+
+.quiqqer-about-window-data {
+    text-align: left;
+    max-width: 400px;
+    margin: 0 auto;
+}

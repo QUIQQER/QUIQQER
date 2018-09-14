@@ -102,6 +102,13 @@ class Manager extends QUI\QDOM
     protected $version = null;
 
     /**
+     * QUIQQER Version ->getHash()
+     *
+     * @var string
+     */
+    protected $hash = null;
+
+    /**
      * List of packages objects
      *
      * @var array
@@ -283,6 +290,37 @@ class Manager extends QUI\QDOM
         $this->version = $package['version'];
 
         return $this->version;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHash()
+    {
+        if ($this->hash) {
+            return $this->hash;
+        }
+
+        if (!file_exists($this->composer_json)) {
+            return '';
+        }
+
+        $this->hash = '';
+
+        $data = file_get_contents($this->composer_lock);
+        $data = json_decode($data, true);
+
+        $package = array_filter($data['packages'], function ($package) {
+            return $package['name'] === 'quiqqer/quiqqer';
+        });
+
+        $package = current($package);
+
+        if (!empty($package['source']['reference'])) {
+            $this->hash = $package['source']['reference'];
+        }
+
+        return $this->hash;
     }
 
     /**

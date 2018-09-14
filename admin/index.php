@@ -150,7 +150,8 @@ if ($Avatar) {
             memory_limit       : <?php echo QUI\Utils\System::getMemoryLimit(); ?>
         };
 
-        var QUIQQER_VERSION = "<?php echo \QUI::version() ?>";
+        var QUIQQER_VERSION = "<?php echo QUI::getPackageManager()->getVersion(); ?>";
+        var QUIQQER_HASH    = "<?php echo QUI::getPackageManager()->getHash(); ?>";
         var QUIQQER_CONFIG  = <?php echo json_encode($config); ?>;
 
         // standard project

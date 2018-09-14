@@ -3,10 +3,7 @@
  *
  * @module controls/help/About
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/controls/windows/Popup
  */
-
 define('controls/help/About', [
 
     'qui/controls/windows/Popup',
@@ -27,7 +24,8 @@ define('controls/help/About', [
         Type   : 'controls/help/About',
 
         Binds: [
-            '$onOpen'
+            '$onOpen',
+            '$onCreate'
         ],
 
         options: {
@@ -39,7 +37,17 @@ define('controls/help/About', [
 
         initialize: function (options) {
             this.parent(options);
-            this.addEvent('onOpen', this.$onOpen);
+            this.addEvents({
+                onOpen  : this.$onOpen,
+                onCreate: this.$onCreate
+            });
+        },
+
+        /**
+         * event: on create
+         */
+        $onCreate: function () {
+            this.$Buttons.getElement('button').removeClass('btn-red');
         },
 
         /**
@@ -60,7 +68,9 @@ define('controls/help/About', [
             }
 
             this.getContent().set('html', Mustache.render(template, {
-                version: QUIQQER_VERSION
+                version: QUIQQER_VERSION,
+                hash   : QUIQQER_HASH,
+                logo   : URL_BIN_DIR + 'quiqqer_logo.png'
             }));
         }
     });
