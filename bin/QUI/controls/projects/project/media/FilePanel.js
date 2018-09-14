@@ -270,6 +270,7 @@ define('controls/projects/project/media/FilePanel', [
             return this.$File.refresh().then(function () {
                 this.load();
                 this.$refresh();
+                this.Loader.hide();
             }.bind(this)).catch(function (Exception) {
                 console.error(Exception);
             });

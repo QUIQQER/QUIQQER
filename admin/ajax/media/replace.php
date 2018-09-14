@@ -22,6 +22,6 @@ QUI::$Ajax->registerFunction(
 
         $Media->replace($fileid, $file);
     },
-    array('project', 'fileid', 'File'),
+    ['project', 'fileid', 'File'],
     'Permission::checkAdminUser'
 );
