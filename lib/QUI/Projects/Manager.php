@@ -157,7 +157,9 @@ class Manager
 
         // execute the project setup
         $Project = self::getProject($projectName);
-        $Project->setup();
+        $Project->setup([
+            'executePackagesSetup' => false
+        ]);
 
         /**
          * clear media cache
