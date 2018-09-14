@@ -162,10 +162,12 @@ class Output extends Singleton
 
             return $output[1].'="'.$url.$anchor.'"';
         } catch (\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);
+            QUI\System\Log::writeDebugException($Exception);
+
+            return '';
         }
 
-        return $output[0];
+        //return $output[0];
     }
 
     /**
