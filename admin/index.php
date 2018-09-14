@@ -9,7 +9,7 @@ QUI::getEvents()->fireEvent('adminRequest');
 $qui_path   = URL_OPT_DIR.'bin/qui/';
 $qui_extend = URL_OPT_DIR.'bin/qui/extend/';
 
-$config            = array();
+$config            = [];
 $config['globals'] = QUI::conf('globals');
 $config['gui']     = QUI::conf('gui');
 
@@ -57,7 +57,7 @@ if ($Avatar) {
 
     <title>QUIQQER - <?php echo HOST ?></title>
 
-    <link href="<?php echo URL_BIN_DIR; ?>images/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+    <link href="<?php echo URL_BIN_DIR; ?>images/Q.png" rel="shortcut icon" type="image/x-icon"/>
 
     <!-- [begin] css combine -->
 
@@ -154,10 +154,10 @@ if ($Avatar) {
         var QUIQQER_CONFIG  = <?php echo json_encode($config); ?>;
 
         // standard project
-        var QUIQQER_PROJECT = <?php echo json_encode(array(
+        var QUIQQER_PROJECT = <?php echo json_encode([
             'name' => $Project ? $Project->getName() : '',
             'lang' => $Project ? $Project->getLang() : ''
-        )); ?>;
+        ]); ?>;
 
         var QUIQQER = {
             Rewrite         : {
@@ -203,14 +203,14 @@ if ($Avatar) {
      * locale file
      */
 
-    $files = array();
+    $files = [];
 
     try {
         $files = QUI\Translator::getJSTranslationFiles($User->getLang());
     } catch (QUI\Exception $Exception) {
     }
 
-    $locales = array();
+    $locales = [];
 
     foreach ($files as $package => $file) {
         $locales[] = $package.'/'.$User->getLang();
