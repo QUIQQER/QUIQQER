@@ -450,15 +450,13 @@ class Media extends QUI\QDOM
 
         // use direct db not the objects, because
         // if file is not ok you can replace the file though
-        $result = QUI::getDataBase()->fetch(
-            [
-                'from'  => $this->getTable(),
-                'where' => [
-                    'id' => $id
-                ],
-                'limit' => 1
-            ]
-        );
+        $result = QUI::getDataBase()->fetch([
+            'from'  => $this->getTable(),
+            'where' => [
+                'id' => $id
+            ],
+            'limit' => 1
+        ]);
 
 
         if (!isset($result[0])) {
