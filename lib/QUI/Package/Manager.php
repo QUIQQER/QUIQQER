@@ -1722,7 +1722,7 @@ class Manager extends QUI\QDOM
             }
         }
 
-        if ($this->Composer->getMode() != QUI\Composer\Composer::MODE_WEB) {
+        if ($this->getComposer()->getMode() != QUI\Composer\Composer::MODE_WEB) {
             return $this->getComposer()->requirePackage($packages, $version);
         }
 
