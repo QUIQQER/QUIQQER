@@ -46,7 +46,7 @@
     "quiqqer/composer": ">=1.3",
     "quiqqer/controls": "dev-master|dev-dev",
     "quiqqer/qui": ">=1",
-    "quiqqer/qui-php": "0.11.0|dev-master",
+    "quiqqer/qui-php": ">=0.11.0|dev-master",
     "quiqqer/smarty3": "1.*",
     "quiqqer/ckeditor4": "2.*|1.*",
     "quiqqer/calendar-controls": "1.*",
