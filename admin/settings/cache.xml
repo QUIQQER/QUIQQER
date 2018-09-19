@@ -8,6 +8,9 @@
                 <conf name="nocache">
                     <type><![CDATA[bool]]></type>
                 </conf>
+                <conf name="redis">
+                    <type><![CDATA[string]]></type>
+                </conf>
             </section>
 
             <section name="handlers">
@@ -21,7 +24,7 @@
                 <conf name="memcache">
                     <type><![CDATA[bool]]></type>
                 </conf>
-                <conf name="sqlite">
+                <conf name="redis">
                     <type><![CDATA[bool]]></type>
                 </conf>
             </section>
@@ -78,7 +81,7 @@
             </params>
 
             <categories>
-                <category name="settings">
+                <category name="settings" require="controls/cache/General">
                     <title>
                         <locale group="quiqqer/system" var="quiqqer.settings.general.title"/>
                     </title>
@@ -94,29 +97,29 @@
                                 <locale group="quiqqer/system" var="quiqqer.settings.cache.general.nocache"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/system" var="quiqqer.settings.cache.general.nocache.description"/>
+                                <locale group="quiqqer/system"
+                                        var="quiqqer.settings.cache.general.nocache.description"/>
                             </description>
                         </input>
-                        <input conf="handlers.filesystem" type="checkbox">
+
+                        <select conf="general.cacheType">
                             <text>
+                                <locale group="quiqqer/system" var="quiqqer.settings.cache.handler.title"/>
+                            </text>
+
+                            <option value="filesystem">
                                 <locale group="quiqqer/system" var="quiqqer.settings.cache.handler.filesystem"/>
-                            </text>
-                        </input>
-                        <input conf="handlers.apc" type="checkbox">
-                            <text>
+                            </option>
+                            <option value="apc">
                                 <locale group="quiqqer/system" var="quiqqer.settings.cache.handler.apc"/>
-                            </text>
-                        </input>
-                        <input conf="handlers.memcache" type="checkbox">
-                            <text>
+                            </option>
+                            <option value="memcache">
                                 <locale group="quiqqer/system" var="quiqqer.settings.cache.handler.memcache"/>
-                            </text>
-                        </input>
-                        <input conf="handlers.sqlite" type="checkbox">
-                            <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.cache.handler.sqlite"/>
-                            </text>
-                        </input>
+                            </option>
+                            <option value="redis">
+                                <locale group="quiqqer/system" var="quiqqer.settings.cache.handler.redis"/>
+                            </option>
+                        </select>
                     </settings>
 
                     <settings title="apc" name="apc">

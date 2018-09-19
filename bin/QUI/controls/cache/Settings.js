@@ -3,12 +3,6 @@
  *
  * @module controls/cache/Settings
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/buttons/Button
- * @require Ajax
- * @require Locale
  */
 define('controls/cache/Settings', [
 

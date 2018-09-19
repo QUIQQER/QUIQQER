@@ -184,18 +184,20 @@ class Manager
 
                     break;
 
-                case 'sqlite':
-                    $conf   = $Config->get('sqlite');
-                    $params = [
-                        'path' => VAR_DIR.'cache/stack/'
-                    ];
+                case 'redis':
+                    $conf = $Config->get('general', 'redis');
+                    $conf = explode(',', $conf);
 
-                    if (!empty($conf['path']) && is_dir($conf['path'])) {
-                        $params['path'] = $conf['path'];
+                    $servers = [];
+
+                    foreach ($conf as $server) {
+                        $servers[] = explode(':', $server);
                     }
 
                     try {
-                        $handlers[] = new Stash\Driver\Sqlite($params);
+                        $handlers[] = new Stash\Driver\Redis([
+                            'servers' => $servers
+                        ]);
                     } catch (Stash\Exception\RuntimeException $Exception) {
                     }
 

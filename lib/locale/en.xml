@@ -4522,6 +4522,9 @@
         <locale name="quiqqer.settings.cache.general.nocache.description">
             <en><![CDATA[Switches off the complete cache. Recommended only in development mode.]]></en>
         </locale>
+        <locale name="quiqqer.settings.cache.handler.title">
+            <en><![CDATA[Cache type]]></en>
+        </locale>
         <locale name="quiqqer.settings.cache.handler.filesystem">
             <en><![CDATA[Filesystem]]></en>
         </locale>
@@ -4533,6 +4536,9 @@
         </locale>
         <locale name="quiqqer.settings.cache.handler.sqlite">
             <en><![CDATA[SQLite]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.handler.redis">
+            <en><![CDATA[Redis]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.apc.title">
             <en><![CDATA[APC settings]]></en>
