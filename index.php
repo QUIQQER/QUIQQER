@@ -1,14 +1,23 @@
 <?php
 
+/**
+ *  _______          _________ _______  _______  _______  _______
+ * (  ___  )|\     /|\__   __/(  ___  )(  ___  )(  ____ \(  ____ )
+ * | (   ) || )   ( |   ) (   | (   ) || (   ) || (    \/| (    )|
+ * | |   | || |   | |   | |   | |   | || |   | || (__    | (____)|
+ * | |   | || |   | |   | |   | |   | || |   | ||  __)   |     __)
+ * | | /\| || |   | |   | |   | | /\| || | /\| || (      | (\ (
+ * | (_\ \ || (___) |___) (___| (_\ \ || (_\ \ || (____/\| ) \ \__
+ * (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
+ *
+ * @author www.pcsg.com (Henning Leutz)
+ */
+
 error_reporting(E_ALL);
 
 if (!defined('QUIQQER_SYSTEM')) {
     define('QUIQQER_SYSTEM', true);
 }
-
-/**
- * @author www.pcsg.com (Henning Leutz)
- */
 
 // Mailto
 if (isset($_REQUEST['_url'])
@@ -66,7 +75,7 @@ try {
     );
 
 
-    // sprache ausschalten
+    // switch off language
     if (isset($_REQUEST['lang']) && $_REQUEST['lang'] == 'false') {
         $Response->headers->set('X-Robots-Tag', 'noindex, nofollow');
         QUI::getLocale()->no_translation = true;
@@ -90,19 +99,17 @@ try {
     }
 
     /**
-     * Referal System
+     * Referral System
      */
-
     if (isset($_REQUEST['ref'])) {
         QUI::getSession()->set('ref', Orthos::clear($_REQUEST['ref']));
     }
 
     /**
-     * Wartungsarbeiten
+     * maintenance work
      */
     if (QUI::conf('globals', 'maintenance')
-        && !(QUI::getUserBySession()->getId()
-             && QUI::getUserBySession()->isSU())
+        && !(QUI::getUserBySession()->getId() && QUI::getUserBySession()->isSU())
     ) {
         $Response->setStatusCode(Response::HTTP_SERVICE_UNAVAILABLE);
         $Response->headers->set('X-Powered-By', '');
@@ -134,19 +141,11 @@ try {
         exit;
     }
 
-    // Prüfen ob es ein Cachefile gibt damit alles andere übersprungen werden kann
-    $site_cache_dir    = VAR_DIR.'cache/sites/';
-    $project_cache_dir = $site_cache_dir.$Project->getAttribute('name').'/';
-    $site_cache_file   = $project_cache_dir.$Site->getId().'_'
-                         .$Project->getAttribute('name').'_'
-                         .$Project->getAttribute('lang');
-
-    $site_cache_file .= '_'.md5(QUI::getRequest()->getRequestUri());
-
     // Event onstart
     QUI::getEvents()->fireEvent('start');
-
     Debug::marker('objekte initialisiert');
+
+    $siteCachePath = $Site->getCachePath().'/'.md5(QUI::getRequest()->getRequestUri());
 
     // Check if user is allowed to view Site and set appropriate error code if not
     if ($Site instanceof QUI\Projects\Site\PermissionDenied) {
@@ -154,25 +153,28 @@ try {
         $Response->setStatusCode($statusCode);
     }
 
-    // Wenn es ein Cache gibt und die Seite auch gecached werden soll
-    if (CACHE && file_exists($site_cache_file)
+
+    // if cache exists, and cache should also be used
+    if (CACHE
         && $Site->getAttribute('nocache') != true
         && !QUI::getUsers()->isAuth(QUI::getUserBySession())
     ) {
-        $cache_content = file_get_contents($site_cache_file);
-        $content       = $Rewrite->outputFilter($cache_content);
-        $_content      = $content;
+        try {
+            $cache_content = QUI\Cache\Manager::get($siteCachePath);
+            $content       = $Rewrite->outputFilter($cache_content);
+            $_content      = $content;
 
-        QUI::getEvents()->fireEvent('requestOutput', [&$_content]);
+            QUI::getEvents()->fireEvent('requestOutput', [&$_content]);
 
-        $Response->setContent($content);
-        $Response->send();
-        exit;
+            $Response->setContent($content);
+            $Response->send();
+            exit;
+        } catch (\Exception $Exception) {
+            Log::writeDebugException($Exception);
+        }
     }
 
-    /**
-     * Template Content generating
-     */
+    // Template Content generating
     try {
         $Template = new QUI\Template();
         $content  = $Template->fetchSite($Site);
@@ -192,11 +194,11 @@ try {
         if ($Site->getAttribute('nocache') != true
             && !QUI::getUsers()->isAuth(QUI::getUserBySession())
         ) {
-            QUI\Utils\System\File::mkdir(
-                $site_cache_dir.$Project->getAttribute('name').'/'
-            );
-
-            file_put_contents($site_cache_file, $content);
+            try {
+                QUI\Cache\Manager::set($siteCachePath, $content);
+            } catch (\Exception $Exception) {
+                Log::writeDebugException($Exception);
+            }
         }
 
         if (Debug::$run) {

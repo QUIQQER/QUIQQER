@@ -273,6 +273,8 @@ class Output extends Singleton
     }
 
     /**
+     * Return a rewritten url from a site
+     *
      * @param array $params
      * @param array $getParams
      * @return bool|string
@@ -313,7 +315,6 @@ class Output extends Singleton
             unset($params['lang']);
         }
 
-        // Wenn nicht alles da ist dann wird ein Exception geworfen
         if ($id === false || $project === false) {
             throw new QUI\Exception(
                 'Params missing Rewrite::getUrlFromPage'
@@ -324,12 +325,6 @@ class Output extends Singleton
             $lang = '';
         }
 
-        QUI\Utils\System\File::mkdir(VAR_DIR.'cache/links');
-
-        $link_cache_dir = VAR_DIR.'cache/links/'.$project.'/';
-        QUI\Utils\System\File::mkdir($link_cache_dir);
-
-        $link_cache_file = $link_cache_dir.$id.'_'.$project.'_'.$lang;
 
         // get params
         if (!empty($getParams)) {
@@ -345,11 +340,11 @@ class Output extends Singleton
             }
         }
 
-        // Falls es das Cachefile schon gibt
-        if (file_exists($link_cache_file)) {
-            $url = file_get_contents($link_cache_file);
-            $url = $this->extendUrlWithParams($url, $params);
-        } else {
+        $linkCachePath = QUI\Projects\Site::getLinkCachePath($project, $lang, $id);
+
+        try {
+            $url = QUI\Cache\Manager::get($linkCachePath);
+        } catch (\Exception $Exception) {
             $_params = [];
 
             if (isset($params['suffix'])) {
@@ -367,22 +362,20 @@ class Output extends Singleton
                 return '';
             }
 
-            // Link Cache
-            file_put_contents(
-                $link_cache_file,
-                str_replace(
-                    '.print',
-                    QUI::getRewrite()->getDefaultSuffix(),
-                    $Site->getLocation($_params)
-                )
-            );
-
+            // Create cache
             $url = $Site->getLocation($_params);
-            $url = $this->extendUrlWithParams($url, $params);
+
+            try {
+                QUI\Cache\Manager::set($linkCachePath, $url);
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
         }
 
-        // Wenn das Output Projekt anders ist, wie das der Seite
-        // Dann absoluten Domain Pfad verwenden
+        $url = $this->extendUrlWithParams($url, $params);
+
+        // If the output project is different than the one of the page
+        // Then use absolute domain path
         if (!$this->Project ||
             $Project->toArray() != $this->Project->toArray()
         ) {

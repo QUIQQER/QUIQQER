@@ -278,6 +278,7 @@ class Project
 
 
         // cache files
+        // @todo move to the cache
         $this->cache_files = [
             'types'  => 'projects.'.$this->getAttribute('name').'.types',
             'gtypes' => 'projects.'.$this->getAttribute('name').'.globaltypes'
@@ -365,6 +366,10 @@ class Project
 
         if (is_string($languages)) {
             $languages = explode(',', $languages);
+        }
+
+        if (!is_array($languages)) {
+            $languages = [];
         }
 
         return $languages;
@@ -635,11 +640,59 @@ class Project
         return $this->firstchild;
     }
 
+    //region cache
+
     /**
-     * Leert den Cache des Objektes
+     * Return the cache path for a project (without language)
      *
-     * @param boolean $link - Link Cache löschen
-     * @param boolean $site - Site Cache löschen
+     * @param string $projectName
+     * @return string
+     */
+    public static function getProjectCachePath($projectName)
+    {
+        return 'qui/projects/'.$projectName;
+    }
+
+    /**
+     * Return the cache path with the language path for a project
+     *
+     * @param string $projectName
+     * @param string $projectLang
+     * @return string
+     */
+    public static function getProjectLanguageCachePath($projectName, $projectLang)
+    {
+        return self::getProjectCachePath($projectName).'/'.$projectLang;
+    }
+
+    /**
+     * Return the project cache path
+     *
+     * @return string
+     */
+    public function getCachePath()
+    {
+        return $this->getProjectCachePath($this->getName());
+    }
+
+    /**
+     * Return the project cache path with the language path
+     *
+     * @return string
+     */
+    public function getCacheLanguagePath()
+    {
+        return $this->getProjectLanguageCachePath(
+            $this->getName(),
+            $this->getLang()
+        );
+    }
+
+    /**
+     * Clears the project cache path
+     *
+     * @param boolean $link - Clears the site link cache
+     * @param boolean $site - Clears the site cache
      *
      * @throws QUI\Exception
      *
@@ -647,22 +700,14 @@ class Project
      */
     public function clearCache($link = true, $site = true)
     {
-        if ($link == true) {
-            $cache = VAR_DIR.'cache/links/'.$this->getAttribute('name').'/';
-            $files = QUI\Utils\System\File::readDir($cache);
+        $cachePath = $this->getCacheLanguagePath();
 
-            foreach ($files as $file) {
-                QUI\Utils\System\File::unlink($cache.$file);
-            }
+        if ($link === true) {
+            QUI\Cache\Manager::clear($cachePath.'/urlRewritten');
         }
 
-        if ($site == true) {
-            $cache = VAR_DIR.'cache/sites/'.$this->getAttribute('name').'/';
-            $files = QUI\Utils\System\File::readDir($cache);
-
-            foreach ($files as $file) {
-                QUI\Utils\System\File::unlink($cache.$file);
-            }
+        if ($site === true) {
+            QUI\Cache\Manager::clear($cachePath.'/site');
         }
 
         foreach ($this->cache_files as $cache) {
@@ -670,8 +715,10 @@ class Project
         }
     }
 
+    //endregion
+
     /**
-     * Eine Seite bekommen
+     * Return a site
      *
      * @param integer $id - ID der Seite
      *
@@ -705,7 +752,7 @@ class Project
     }
 
     /**
-     * Name einer bestimmten ID bekommen
+     * Return the name of a site
      *
      * @param integer $id
      *
@@ -731,7 +778,8 @@ class Project
     }
 
     /**
-     * Gibt eine neue ID zurück
+     * Return a new id
+     * - this id is not created
      *
      * @deprecated
      */
@@ -750,7 +798,7 @@ class Project
     }
 
     /**
-     * Media Objekt zum Projekt bekommen
+     * Return the media object from the project
      *
      * @return QUI\Projects\Media
      */
