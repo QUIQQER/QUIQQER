@@ -8,7 +8,7 @@
 {assign var=city value=$Address->getAttribute('city')}
 {assign var=country value=$Address->getAttribute('country')}
 
-{if empty($firstname)}
+{if empty($firstname) && isset($User)}
     {assign var=firstname value=$User->getAttribute('firstname')}
 {/if}
 
@@ -17,7 +17,7 @@
 {/if}
 
 
-{if empty($lastname)}
+{if empty($lastname) && isset($User)}
     {assign var=lastname value=$User->getAttribute('lastname')}
 {/if}
 
