@@ -13,7 +13,7 @@ use QUI;
  *
  * @package QUI\Cache
  */
-class FileDriver extends \Stash\Driver\FileSystem
+class QuiqqerFileDriver extends \Stash\Driver\FileSystem
 {
     /**
      * @param null $key

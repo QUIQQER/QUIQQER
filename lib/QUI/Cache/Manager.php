@@ -178,7 +178,7 @@ class Manager
                     }
 
                     try {
-                        $handlers[] = new FileDriver($params);
+                        $handlers[] = new QuiqqerFileDriver($params);
                     } catch (Stash\Exception\RuntimeException $Exception) {
                     }
 
@@ -276,7 +276,7 @@ class Manager
                 $params['path'] = $conf['path'];
             }
 
-            $handlers[] = new Stash\Driver\FileSystem($params);
+            $handlers[] = new QuiqqerFileDriver($params);
         }
 
         $Handler = new Stash\Driver\Composite([
