@@ -178,7 +178,7 @@ class Manager
                     }
 
                     try {
-                        $handlers[] = new Stash\Driver\FileSystem($params);
+                        $handlers[] = new FileDriver($params);
                     } catch (Stash\Exception\RuntimeException $Exception) {
                     }
 
