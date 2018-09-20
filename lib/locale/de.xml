@@ -4663,7 +4663,7 @@
             <de><![CDATA[Schaltet den kompletten Cache aus. Nur im Entwicklungsmodus empfohlen.]]></de>
         </locale>
         <locale name="quiqqer.settings.cache.handler.title">
-            <de><![CDATA[Cache-Art]]></de>
+            <de><![CDATA[Caching-Typ]]></de>
         </locale>
         <locale name="quiqqer.settings.cache.handler.filesystem">
             <de><![CDATA[Dateisystem]]></de>
