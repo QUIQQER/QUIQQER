@@ -65,10 +65,12 @@ class Edit extends Site
     public $conf = [];
 
     /**
-     * Konstruktor
+     * Constructor
      *
      * @param QUI\Projects\Project $Project
      * @param integer $id
+     *
+     * @throws QUI\Exception
      */
     public function __construct(Project $Project, $id)
     {
@@ -76,7 +78,6 @@ class Edit extends Site
 
         $this->refresh();
 
-        // Temp Dir abfragen ob existiert
         QUI\Utils\System\File::mkdir(VAR_DIR.'admin/');
         QUI\Utils\System\File::mkdir(VAR_DIR.'lock/');
 
@@ -1265,10 +1266,13 @@ class Edit extends Site
      * @param integer $pid - Parent ID
      * @param integer|boolean $all - (optional) Delete all linked sites and the original site
      * @param boolean $orig - (optional) Delete the original site, too
+     *
+     * @throws QUI\Permissions\Exception
      */
     public function deleteLinked($pid, $all = false, $orig = false)
     {
         $this->checkPermission('quiqqer.projects.site.edit');
+
 
         $Project  = $this->getProject();
         $Parent   = $this->getParent();
@@ -1312,70 +1316,31 @@ class Edit extends Site
         ]);
     }
 
-    /**
-     * Löscht den Site Cache
-     *
-     * @todo -> use internal caching system
-     */
-    public function deleteCache()
-    {
-        // Seiten Cache löschen
-        parent::deleteCache();
-
-        // Link Cache löschen
-        $Project = $this->getProject();
-
-        $link_cache_dir = VAR_DIR.'cache/links/'.$Project->getAttribute('name').'/';
-
-        $link_cache_file = $link_cache_dir.$this->getId()
-                           .'_'.$Project->getAttribute('name')
-                           .'_'.$Project->getAttribute('lang');
-
-        if (file_exists($link_cache_file)) {
-            unlink($link_cache_file);
-        }
-
-        // sites cache
-        $siteCacheDir = VAR_DIR.'cache/sites/';
-
-        $siteCacheFile = $siteCacheDir.$this->getId().'_';
-        $siteCacheFile .= $Project->getAttribute('name').'_';
-        $siteCacheFile .= $Project->getAttribute('lang');
-
-        $files = QUI\Utils\System\File::readDir($siteCacheDir);
-
-        foreach ($files as $file) {
-            if (strpos($file, $siteCacheFile) !== false) {
-                unlink($siteCacheFile);
-            }
-        }
-    }
+    //region cache
 
     /**
-     * Erstellt den Site Cache
-     *
-     * @todo -> use internal caching system
+     * Create the site cache
      */
     public function createCache()
     {
-        // Objekt Cache
+        // create object cache
         parent::createCache();
 
+        // create url rewritten cache
+        $linkCache = $this->getLinkCachePath(
+            $this->getProject()->getName(),
+            $this->getProject()->getLang(),
+            $this->getId()
+        );
 
-        // Link Cache
-        $Project = $this->getProject();
-
-        $link_cache_dir = VAR_DIR.'cache/links/'.
-                          $Project->getAttribute('name').'/';
-
-        $link_cache_file = $link_cache_dir.$this->getId().'_'.
-                           $Project->getAttribute('name').'_'.
-                           $Project->getAttribute('lang');
-
-        QUI\Utils\System\File::mkdir($link_cache_dir);
-
-        file_put_contents($link_cache_file, $this->getLocation());
+        try {
+            QUI\Cache\Manager::set($linkCache, $this->getLocation());
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
     }
+
+    //endregion
 
     /**
      * is the page currently edited from another user than me?

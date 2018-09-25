@@ -47,14 +47,34 @@ QUI::$Ajax->registerFunction(
                 unset($params['securityHeaders_csp']);
             }
 
+            // more bad workaround by hen
+            // @todo need to fix that
+            if (strpos($file, 'quiqqer/quiqqer/admin/settings/cache.xml') !== false) {
+                if (!empty($params['general']['cacheType'])) {
+                    $cacheType = $params['general']['cacheType'];
+
+                    $params['handlers'] = array_fill_keys([
+                        'apc',
+                        'filesystem',
+                        'redis',
+                        'memcache'
+                    ], 0);
+
+                    if (isset($params['handlers'][$cacheType])) {
+                        $params['handlers'][$cacheType] = 1;
+                    } else {
+                        $params['handlers']['filesystem'] = 1;
+                    }
+                }
+            }
+
             QUI\Utils\Text\XML::setConfigFromXml($file, $params);
 
             QUI::getMessagesHandler()->addSuccess(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'message.config.saved')
             );
 
-
-            // Böser workaround by hen
+            // bad workaround by hen
             if (strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') === false) {
                 continue;
             }

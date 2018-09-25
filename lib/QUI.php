@@ -191,7 +191,7 @@ class QUI
      *
      * @var array
      */
-    public static $Configs = array();
+    public static $Configs = [];
 
     /**
      * QUI global Events
@@ -380,20 +380,18 @@ class QUI
 
         // create the temp folder
         // @todo better do at the setup
-        $folders = array(
+        $folders = [
             // VAR
             VAR_DIR.'log/',
             VAR_DIR.'sessions/',
             VAR_DIR.'uid_sess/',
             VAR_DIR.'backup/',
             VAR_DIR.'lock/',
+
             // Cache - noch nötig?
-            VAR_DIR.'cache/url/',
-            VAR_DIR.'cache/siteobjects/',
-            VAR_DIR.'cache/projects',
             VAR_DIR.'locale/',
             VAR_DIR.'tmp/' // @todo temp
-        );
+        ];
 
         foreach ($folders as $folder) {
             QUI\Utils\System\File::mkdir($folder);
@@ -524,7 +522,7 @@ class QUI
         $langs = QUI\Translator::getAvailableLanguages();
 
         if (empty($langs)) {
-            $langs = array('en');
+            $langs = ['en'];
         }
 
         return $langs;
@@ -556,7 +554,7 @@ class QUI
             self::$vhosts = $vhosts->toArray();
 
         } catch (\QUI\Exception $Exception) {
-            self::$vhosts = array();
+            self::$vhosts = [];
         }
 
         return self::$vhosts;
@@ -570,9 +568,9 @@ class QUI
     public static function getAjax()
     {
         if (self::$Ajax === null) {
-            self::$Ajax = new QUI\Ajax(array(
+            self::$Ajax = new QUI\Ajax([
                 'db_errors' => self::conf('error', 'mysql_ajax_errors_backend')
-            ));
+            ]);
         }
 
         return self::$Ajax;
@@ -685,13 +683,13 @@ class QUI
     public static function getDataBase()
     {
         if (self::$DataBase2 === null) {
-            self::$DataBase2 = new \QUI\Database\DB(array(
+            self::$DataBase2 = new \QUI\Database\DB([
                 'driver'   => self::conf('db', 'driver'),
                 'host'     => self::conf('db', 'host'),
                 'user'     => self::conf('db', 'user'),
                 'password' => self::conf('db', 'password'),
                 'dbname'   => self::conf('db', 'database')
-            ));
+            ]);
         }
 
         return self::$DataBase2;
@@ -733,6 +731,8 @@ class QUI
      *
      * @return \QUI\Projects\Project
      * @uses \QUI\Projects\Manager
+     *
+     * @throws QUI\Exception
      */
     public static function getProject($project, $lang = false, $template = false)
     {

@@ -63,6 +63,16 @@ class Manager
     public static $handlers = null;
 
     /**
+     * @var array
+     */
+    protected static $drivers = [];
+
+    /**
+     * @var null
+     */
+    protected static $currentDriver = null;
+
+    /**
      * Cache Settings
      *
      * @return QUI\Config
@@ -98,9 +108,9 @@ class Manager
         }
 
         if (!is_string($key)) {
-            throw new QUI\Exception('Cache: No String given', 405, array(
+            throw new QUI\Exception('Cache: No String given', 405, [
                 'key' => $key
-            ));
+            ]);
         }
 
         if (!empty($key)) {
@@ -120,144 +130,74 @@ class Manager
                 QUI\System\Log::writeException(
                     $Exception,
                     QUI\System\Log::LEVEL_ERROR,
-                    array(
+                    [
                         'key' => $key
-                    )
+                    ]
                 );
 
                 throw $Exception;
             }
         }
 
+        $Handler = new Stash\Driver\Composite([
+            'drivers' => self::getHandlers()
+        ]);
+
+        $Stash = new Stash\Pool($Handler);
+
+        self::$Stash    = $Stash;
+        self::$handlers = self::getHandlers();
+
+        return self::$Stash->getItem($key);
+    }
+
+    /**
+     * @return array
+     */
+    public static function getHandlers()
+    {
         $Config = self::getConfig();
 
-        $handlers     = array();
-        $confhandlers = $Config->get('handlers');
+        $handlers     = [];
+        $confHandlers = $Config->get('handlers');
 
-        if (empty($confhandlers)) {
-            $confhandlers['filesystem'] = 1;
+        if (empty($confHandlers)) {
+            $confHandlers['filesystem'] = 1;
         }
 
-        foreach ($confhandlers as $confhandler => $bool) {
+        foreach ($confHandlers as $confHandler => $bool) {
             if (!$bool) {
                 continue;
             }
 
-            $params = array();
-
-            switch ($confhandler) {
+            switch ($confHandler) {
                 case 'apc':
-                    $conf   = $Config->get('apc');
-                    $params = array(
-                        'namespace' => 'pcsg'
-                    );
-
-                    if (isset($conf['namespace'])) {
-                        $params['namespace'] = $conf['namespace'];
-                    }
-
-                    if (isset($conf['ttl'])) {
-                        $params['ttl'] = $conf['ttl'];
-                    }
-
                     try {
-                        array_unshift($handlers, new Stash\Driver\Apc($params));
+                        array_unshift($handlers, self::getDriver([], 'apc'));
                     } catch (Stash\Exception\RuntimeException $Exception) {
                     }
 
                     break;
 
                 case 'filesystem':
-                    $conf   = $Config->get('filesystem');
-                    $params = array(
-                        'path' => VAR_DIR.'cache/stack/'
-                    );
-
-                    if (!empty($conf['path']) && is_dir($conf['path'])) {
-                        $params['path'] = $conf['path'];
-                    }
-
                     try {
-                        $handlers[] = new Stash\Driver\FileSystem($params);
+                        $handlers[] = self::getDriver([], 'filesystem');
                     } catch (Stash\Exception\RuntimeException $Exception) {
                     }
 
                     break;
 
-                case 'sqlite':
-                    $conf   = $Config->get('sqlite');
-                    $params = array(
-                        'path' => VAR_DIR.'cache/stack/'
-                    );
-
-                    if (!empty($conf['path']) && is_dir($conf['path'])) {
-                        $params['path'] = $conf['path'];
-                    }
-
+                case 'redis':
                     try {
-                        $handlers[] = new Stash\Driver\Sqlite($params);
+                        $handlers[] = self::getDriver([], 'redis');
                     } catch (Stash\Exception\RuntimeException $Exception) {
                     }
 
                     break;
 
                 case 'memcache':
-                    // defaults
-                    $options = array(
-                        'prefix_key'           => 'pcsg',
-                        'libketama_compatible' => true,
-                        'cache_lookups'        => true,
-                        'serializer'           => 'json'
-                    );
-
-                    // servers
-                    $scount  = $Config->get('memcache', 'servers');
-                    $servers = array();
-
-                    for ($i = 1; $i <= $scount; $i++) {
-                        $section = 'memcache'.$i;
-
-                        $servers[] = array(
-                            $Config->get($section, 'host'),
-                            $Config->get($section, 'port'),
-                            $Config->get($section, 'weight')
-                        );
-                    }
-
-                    $options['servers'] = $servers;
-
-                    $conf = $Config->get('memcache');
-
-                    if (isset($conf['prefix_key'])
-                        && !empty($conf['prefix_key'])
-                    ) {
-                        $options['prefix_key'] = $conf['prefix_key'];
-                    }
-
-                    if (isset($conf['libketama_compatible'])
-                        && !empty($conf['libketama_compatible'])
-                    ) {
-                        $options['libketama_compatible']
-                            = $conf['libketama_compatible'];
-                    }
-
-                    if (isset($conf['cache_lookups'])
-                        && !empty($conf['cache_lookups'])
-                    ) {
-                        $options['cache_lookups'] = $conf['cache_lookups'];
-                    }
-
-                    if (isset($conf['serializer'])
-                        && !empty($conf['serializer'])
-                    ) {
-                        $options['serializer'] = $conf['serializer'];
-                    }
-
                     try {
-                        array_unshift(
-                            $handlers,
-                            new Stash\Driver\Memcache($params)
-                        );
+                        array_unshift($handlers, self::getDriver([], 'memcache'));
                     } catch (Stash\Exception\RuntimeException $Exception) {
                     }
 
@@ -267,32 +207,181 @@ class Manager
 
         // all handlers false, so we use filesystem
         if (empty($handlers)) {
-            $conf   = $Config->get('filesystem');
-            $params = array('path' => VAR_DIR.'cache/stack/');
-
-            if (!empty($conf['path']) && is_dir($conf['path'])) {
-                $params['path'] = $conf['path'];
-            }
-
-            $handlers[] = new Stash\Driver\FileSystem($params);
+            $handlers[] = self::getDriver();
         }
 
-        $Handler = new Stash\Driver\Composite(array(
-            'drivers' => $handlers
-        ));
+        return $handlers;
+    }
 
-        $Stash = new Stash\Pool($Handler);
+    /**
+     * Return the current driver
+     *
+     * @param array $options - optional
+     * @param string|boolean $driver - optional
+     *
+     * @return Stash\Driver\AbstractDriver
+     */
+    public static function getDriver($options = [], $driver = false)
+    {
+        if ($driver === false) {
+            $driver = self::getCurrentDriver();
+        }
 
-        self::$Stash    = $Stash;
-        self::$handlers = $handlers;
+        $Config = self::getConfig();
 
-        return self::$Stash->getItem($key);
+        switch ($driver) {
+            case 'apc':
+                $conf   = $Config->get('apc');
+                $params = [
+                    'namespace' => 'pcsg'
+                ];
+
+                if (isset($conf['namespace'])) {
+                    $params['namespace'] = $conf['namespace'];
+                }
+
+                if (isset($options['namespace'])) {
+                    $params['namespace'] = $options['namespace'];
+                }
+
+                if (isset($conf['ttl'])) {
+                    $params['ttl'] = $conf['ttl'];
+                }
+
+                try {
+                    return new Stash\Driver\Apc($params);
+                } catch (Stash\Exception\RuntimeException $Exception) {
+                }
+
+                break;
+
+            case 'redis':
+                $conf = $Config->get('general', 'redis');
+                $conf = explode(',', $conf);
+
+                $servers = [];
+
+                foreach ($conf as $server) {
+                    $servers[] = explode(':', $server);
+                }
+
+                try {
+                    return new Stash\Driver\Redis([
+                        'servers' => $servers
+                    ]);
+                } catch (Stash\Exception\RuntimeException $Exception) {
+                }
+
+                break;
+
+            case 'memcache':
+                // defaults
+                $defaults = [
+                    'prefix_key'           => 'pcsg',
+                    'libketama_compatible' => true,
+                    'cache_lookups'        => true,
+                    'serializer'           => 'json'
+                ];
+
+                // servers
+                $serverCount = $Config->get('memcache', 'servers');
+                $servers     = [];
+
+                for ($i = 1; $i <= $serverCount; $i++) {
+                    $section = 'memcache'.$i;
+
+                    $servers[] = [
+                        $Config->get($section, 'host'),
+                        $Config->get($section, 'port'),
+                        $Config->get($section, 'weight')
+                    ];
+                }
+
+                $defaults['servers'] = $servers;
+
+                $conf = $Config->get('memcache');
+
+                if (isset($conf['prefix_key']) && !empty($conf['prefix_key'])) {
+                    $defaults['prefix_key'] = $conf['prefix_key'];
+                }
+
+                if (isset($conf['libketama_compatible']) && !empty($conf['libketama_compatible'])) {
+                    $defaults['libketama_compatible'] = $conf['libketama_compatible'];
+                }
+
+                if (isset($conf['cache_lookups']) && !empty($conf['cache_lookups'])) {
+                    $defaults['cache_lookups'] = $conf['cache_lookups'];
+                }
+
+                if (isset($conf['serializer']) && !empty($conf['serializer'])) {
+                    $defaults['serializer'] = $conf['serializer'];
+                }
+
+                if (isset($options['prefix_key']) && !empty($options['prefix_key'])) {
+                    $defaults['prefix_key'] = $options['prefix_key'];
+                }
+
+                try {
+                    return new Stash\Driver\Memcache($defaults);
+                } catch (Stash\Exception\RuntimeException $Exception) {
+                }
+
+                break;
+        }
+
+        // default = filesystem
+        $conf   = $Config->get('filesystem');
+        $params = [
+            'path' => VAR_DIR.'cache/stack/'
+        ];
+
+        if (!empty($conf['path']) && is_dir($conf['path'])) {
+            $params['path'] = $conf['path'];
+        }
+
+        if (!empty($options['path']) && is_dir($options['path'])) {
+            $params['path'] = $options['path'];
+        }
+
+        return new QuiqqerFileDriver($params);
+    }
+
+    /**
+     * @return int|string
+     */
+    protected static function getCurrentDriver()
+    {
+        if (self::$currentDriver === null) {
+            return self::$currentDriver;
+        }
+
+        $Config   = self::getConfig();
+        $handlers = $Config->get('handlers');
+
+        if (empty($handlers)) {
+            self::$currentDriver = 'filesystem';
+
+            return 'filesystem';
+        }
+
+        foreach ($handlers as $handler => $bool) {
+            if ($bool) {
+                self::$currentDriver = $handler;
+
+                return $handler;
+            }
+        }
+
+        self::$currentDriver = 'filesystem';
+
+        return 'filesystem';
     }
 
     /**
      * Explicitly get file system cache
      *
      * @return false|Stash\Pool
+     * @deprecated use getDriver
      */
     public static function getFileSystemCache()
     {
@@ -302,23 +391,23 @@ class Manager
 
         $Config = self::getConfig();
         $conf   = $Config->get('filesystem');
-        $params = array(
+        $params = [
             'path' => VAR_DIR.'cache/stack/'
-        );
+        ];
 
         if (!empty($conf['path']) && is_dir($conf['path'])) {
             $params['path'] = $conf['path'];
         }
 
         try {
-            $handler = new Stash\Driver\FileSystem($params);
+            $handler = new QuiqqerFileDriver($params);
         } catch (Stash\Exception\RuntimeException $Exception) {
             return false;
         }
 
-        $Handler = new Stash\Driver\Composite(array(
+        $Handler = new Stash\Driver\Composite([
             'drivers' => [$handler]
-        ));
+        ]);
 
         self::$FileSystemStash = new Stash\Pool($Handler);
 
@@ -326,7 +415,7 @@ class Manager
     }
 
     /**
-     * Gibt den Stash\Driver\Composite oder den Stash\Driver zurück
+     * Returns the Stash\Driver\Composite or the Stash\Driver
      *
      * @param string|boolean $type = optional: bestimmten Cache Handler bekommen
      *
@@ -354,11 +443,11 @@ class Manager
     }
 
     /**
-     * Daten in den Cache setzen
+     * Put data into the cache
      *
      * @param string $name
      * @param mixed $data
-     * @param \DateTimeInterface|int|\DateInterval|null $time  Seconds, Interval or exact date at/after which the cache item expires.
+     * @param \DateTimeInterface|int|\DateInterval|null $time Seconds, Interval or exact date at/after which the cache item expires.
      *                                                         If $time is null, the cache will try to use the default value,
      *                                                         if no default value is set, the maximum possible time for the used implementation will be used.
      *
@@ -382,7 +471,7 @@ class Manager
     }
 
     /**
-     * Daten aus dem Cache bekommen
+     * Returns cache data
      *
      * @param string $name
      *
@@ -430,7 +519,7 @@ class Manager
     }
 
     /**
-     * Cache leeren
+     * Clears the cache
      *
      * @param string|boolean $key - optional, falls kein Key übergeben wird, wird komplett geleert
      */
@@ -440,9 +529,13 @@ class Manager
             return;
         }
 
-        self::getStash($key)->clear();
+        try {
+            self::getStash($key)->clear();
 
-        QUI::getEvents()->fireEvent('cacheClear', array($key));
+            QUI::getEvents()->fireEvent('cacheClear', [$key]);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
     }
 
     /**
@@ -454,11 +547,15 @@ class Manager
     {
         self::$Stash->purge();
 
-        QUI::getEvents()->fireEvent('cachePurge');
+        try {
+            QUI::getEvents()->fireEvent('cachePurge');
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
     }
 
     /**
-     * Löscht den kompletten CMS Cache
+     * Clears the complete quiqqer cache
      */
     public static function clearAll()
     {
@@ -466,10 +563,14 @@ class Manager
             return;
         }
 
-        QUI\Utils\System\File::unlink(VAR_DIR.'cache/');
+        try {
+            QUI::getTemp()->moveToTemp(VAR_DIR.'cache/');
 
-        self::getStash('')->clear();
+            self::getStash('')->clear();
 
-        QUI::getEvents()->fireEvent('cacheClearAll');
+            QUI::getEvents()->fireEvent('cacheClearAll');
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
     }
 }
