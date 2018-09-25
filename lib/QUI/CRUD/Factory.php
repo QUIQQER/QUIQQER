@@ -94,8 +94,6 @@ abstract class Factory extends QUI\Utils\Singleton
      */
     public function createChild($data = [])
     {
-        $this->Events->fireEvent('createBegin');
-
         $attributes = $this->getChildAttributes();
         $childData  = [];
 
@@ -114,6 +112,8 @@ abstract class Factory extends QUI\Utils\Singleton
                 $childData[$attribute] = '';
             }
         }
+
+        $this->Events->fireEvent('createBegin', [&$childData]);
 
         QUI::getDataBase()->insert($this->getDataBaseTableName(), $childData);
 
