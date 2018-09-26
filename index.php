@@ -82,6 +82,7 @@ try {
 
     $Project = $Rewrite->getProject();
     $Site    = $Rewrite->getSite();
+    $Engine  = QUI::getTemplateManager()->getEngine();
 
     $Site->load();
 

@@ -331,7 +331,9 @@ class Rewrite
 
                     QUI::getEvents()->fireEvent('request', [$this, $_REQUEST['_url']]);
 
-                    $this->showErrorHeader(301, $url);
+                    if ($url !== $this->getRequestUri()) {
+                        $this->showErrorHeader(301, $url);
+                    }
                 }
             }
 
@@ -517,6 +519,7 @@ class Rewrite
             if (isset($_SERVER['HTTP_HOST'])
                 && isset($vhosts[$_SERVER['HTTP_HOST']])
                 && isset($vhosts[$_SERVER['HTTP_HOST']][$this->lang])
+                && !empty($vhosts[$_SERVER['HTTP_HOST']][$this->lang])
                 && $_SERVER['HTTP_HOST'] != $vhosts[$_SERVER['HTTP_HOST']][$this->lang]
                 && (int)$_SERVER['SERVER_PORT'] !== 443
                 && QUI::conf('globals', 'httpshost') != 'https://'.$_SERVER['HTTP_HOST']
@@ -529,10 +532,7 @@ class Rewrite
                     $url = 'http://'.$this->project_prefix.$url;
                 }
 
-                $Request = QUI::getRequest();
-                $uri     = strtok($Request->getUri(), '?');
-
-                if ($url !== $uri) {
+                if ($url !== $this->getRequestUri()) {
                     $this->showErrorHeader(301, $url);
                 }
             }
@@ -642,6 +642,16 @@ class Rewrite
     public function getProjectPrefix()
     {
         return $this->project_prefix;
+    }
+
+    /**
+     * Return the current request uri without params
+     *
+     * @return string
+     */
+    public function getRequestUri()
+    {
+        return strtok(QUI::getRequest()->getUri(), '?');
     }
 
     /**
@@ -889,6 +899,7 @@ class Rewrite
 
         if ($Project) {
             $this->project = $Project;
+            $this->Output->setProject($Project);
 
             QUI::getLocale()->setCurrent(
                 $Project->getAttribute('lang')
