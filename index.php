@@ -42,7 +42,6 @@ try {
     require_once 'bootstrap.php';
 
     $Response = QUI::getGlobalResponse();
-    $Engine   = QUI::getTemplateManager()->getEngine();
 
     // UTF 8 Prüfung für umlaute in url
     if (isset($_REQUEST['_url'])) {
