@@ -528,8 +528,13 @@ class Rewrite
                     $url = QUI\Utils\StringHelper::replaceDblSlashes($url);
                     $url = 'http://'.$this->project_prefix.$url;
                 }
+                
+                $Request = QUI::getRequest();
+                $uri     = strtok($Request->getUri(), '?');
 
-                $this->showErrorHeader(301, $url);
+                if ($url !== $uri) {
+                    $this->showErrorHeader(301, $url);
+                }
             }
 
             // REQUEST setzen
