@@ -529,7 +529,12 @@ class Rewrite
                     $url = 'http://'.$this->project_prefix.$url;
                 }
 
-                $this->showErrorHeader(301, $url);
+                $Request = QUI::getRequest();
+                $uri     = strtok($Request->getUri(), '?');
+
+                if ($url !== $uri) {
+                    $this->showErrorHeader(301, $url);
+                }
             }
 
             // REQUEST setzen
