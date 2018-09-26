@@ -325,7 +325,6 @@ class Output extends Singleton
             $lang = '';
         }
 
-
         // get params
         if (!empty($getParams)) {
             $params['_getParams'] = $getParams;
@@ -374,16 +373,16 @@ class Output extends Singleton
 
         $url = $this->extendUrlWithParams($url, $params);
 
+        if (!$Project->hasVHost()) {
+            $url = $Project->getLang().'/'.$url;
+        }
+
         // If the output project is different than the one of the page
         // Then use absolute domain path
         if (!$this->Project ||
             $Project->toArray() != $this->Project->toArray()
         ) {
             return $Project->getVHost(true, true).URL_DIR.$url;
-        }
-
-        if (!$Project->hasVHost()) {
-            $url = $Project->getLang().'/'.$url;
         }
 
         $vHosts = QUI::getRewrite()->getVHosts();
@@ -428,15 +427,17 @@ class Output extends Singleton
 
         $url = URL_DIR.$url;
 
+        $projectHost = $Project->getHost();
+        $projectHost = str_replace(['https://', 'http://'], '', $projectHost);
+
         // falls host anders ist, dann muss dieser dran gehängt werden
         // damit kein doppelter content entsteht
-        if ($_SERVER['HTTP_HOST'] != $Project->getHost() && $Project->getHost() != '') {
+        if ($_SERVER['HTTP_HOST'] != $projectHost && $projectHost != '') {
             $url = $Project->getVHost(true, true).$url;
         }
 
         return $url;
     }
-
 
     /**
      * Erweitert die URL um Params
