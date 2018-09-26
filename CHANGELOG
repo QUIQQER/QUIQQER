@@ -1,3 +1,89 @@
+1.2 (30.09.2018)
+
+    Main Features
+
+    - Bootstrap, jQuery, Angular and other Frameworks are supported
+    - Caching performance improved
+    - Caching with Redis
+    - Systemadministrator: New permission console tool
+    - SEO: Each language list itself as own alternate hreflang
+
+    Features
+
+    - User address - render options, it is now possible to determine if phone and mail is displayed
+    - New mailer events - onMailer, onMailerSendBegin, onMailerSend
+    - Installed extensions info now shows version-hash
+    - Package-info-dialog now uses locale-variables & is translated to english
+    - Load standard-project by default in admin project side-panel
+    - Trash shows path of deleted files
+    - New user address events: onUserAddressSaveBegin, onUserAddressSave
+    - Template Object extended -> getExtendHeader(); getExtendFooter()
+    - Implented a new methode for complete permission list for an user
+    - UserAuthException implemented
+    - New Template option -> noConflict option; Mootools and QUI is integrated to work with jquery and other frameworks
+    - Each language version must list itself as well as all other language versions -> alternate hreflang
+    - New about window, added hash reference and new logo
+
+    - quiqqer/quiqqer#721 - Media - better confirmation when deleting files / folders
+    - quiqqer/quiqqer#744 - If a page is deleted or hidden, links to it will automatically be removed from view.
+
+    Refactor / Requirement updates
+
+    - Upgrade to http-foundation 4.2
+    - Upgrade to PhpMailer 6
+    - symfony/http-foundation v2 v3 and v4.2 are allowed now
+    - deprecate: memcache is deprecate now, memcached is still available
+
+    Fixes
+
+    - Log critical error if a package composer file has some errors
+    - Empty user integer value -> intercepted in controls/users/SelectItem
+    - User Select checks the value, whether it really is a number
+    - Grid resize workaround in Panels
+    - Event handling in the ajax handler are optimized
+    - User Panel has now unique IDs, so they are not opened twice
+    - Correct input type for package store url setting
+    - Security fix for the custome htaccess file
+    - Changed datatype to 'php,js' for all 'language.*' variables
+    - Set QUIQQER_USER after successul asynchronous authentication
+    - isAuthenticated sets the correct window.QUIQQER_USER
+    - Last existing project can't be deleted anymore
+    - Read QUIQQER_USER.country correctly
+    - Correctly get all available languages in QUIQQER
+    - Users cannot login if they are not active
+    - Delete addresses on User->disable()
+    - Delete addresses on User->disable()
+    - Correctly get all available languages in QUIQQER
+    - qui/controls/elements/Select option multiple -> button height fixed
+    - Do not set default permission values to users
+    - Grid export popup -> js errors fixed and tested
+    - Workaround for the mustache symlink issue
+    - Show standard verification site for PasswordResetVerification if no designated login site is configured
+    - ajax_email_validate -> allowed for all logged in users instead of admin users only
+    - Removed unnecessary require modules from controls/email/SelectItem
+    - Project->get throws no exception if site is inactive, instead the page is displayed with no permission
+    - Media file replacement -> loader hide error fixed
+    - At CRUD Factor, createBegin Event triggered on better position
+
+    - quiqqer/quiqqer#472 - Create project via console does not create paths table
+    - quiqqer/quiqqer#714 - Activate/deactivate Use without permission -> Eternal Loader and JavaScript error
+    - quiqqer/quiqqer#715 - Non-SuperUser Cannot Edit Users
+    - quiqqer/quiqqer#716 - Grid - Manual page entry incorrect
+    - quiqqer/quiqqer#719 - Image selection -> Bug when deleting
+    - quiqqer/quiqqer#725 - Infinite link tree in sitemap
+    - quiqqer/quiqqer#726 - Set global cache flag correctly
+    - quiqqer/quiqqer#727 - Update date "Last update check" for QUIQQER Update
+    - quiqqer/quiqqer#729 - exception stacktrace ONLY if dev and debug are active; the exception context contain the ip, too;
+                                login errors will be logged into a new error log -> auth.log
+    - quiqqer/quiqqer#731 - CKEditor and custom.css errors
+    - quiqqer/quiqqer#735 - Media: change priorities in the folder properties - number to set rushes up or down if you stay with the mouse on the corresponding arrow
+    - quiqqer/quiqqer#747 - Trim image name on upload & save (closes #747)
+    - quiqqer/quiqqer#748 - Uncaught Error: Call to a member function getMode() on null
+
+    - quiqqer/order#44 - Wrong VAT Value -> result of wrong address value
+    - quiqqer/products/issues/112 - Category Select has wrong layout
+
+
 1.1.1 (30.05.2018)
 
     Feature:
