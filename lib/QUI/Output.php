@@ -196,7 +196,7 @@ class Output extends Singleton
     {
         try {
             $url = MediaUtils::getRewrittenUrl('image.php?'.$output[3]);
-        } catch (QUI\Exception $Excxeption) {
+        } catch (QUI\Exception $Exception) {
             $url = '';
         }
 
@@ -380,6 +380,10 @@ class Output extends Singleton
             $Project->toArray() != $this->Project->toArray()
         ) {
             return $Project->getVHost(true, true).URL_DIR.$url;
+        }
+
+        if (!$Project->hasVHost()) {
+            $url = $Project->getLang().'/'.$url;
         }
 
         $vHosts = QUI::getRewrite()->getVHosts();

@@ -493,6 +493,38 @@ class Project
         return HOST;
     }
 
+    public function hasVHost()
+    {
+        $Hosts = QUI::getRewrite()->getVHosts();
+
+        foreach ($Hosts as $url => $params) {
+            if ($url == 404 || $url == 301) {
+                continue;
+            }
+
+            if (empty($params['project']) || empty($params['lang'])) {
+                continue;
+            }
+
+            $project = $params['project'];
+            $lang    = $params['lang'];
+
+            if ($project != $this->getName()) {
+                continue;
+            }
+
+            if ($lang == $this->getLang()) {
+                return true;
+            }
+
+            if (!empty($params[$lang])) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Namen des Projektes
      *
