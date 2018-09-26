@@ -493,6 +493,9 @@ class Project
         return HOST;
     }
 
+    /**
+     * @return bool
+     */
     public function hasVHost()
     {
         $Hosts = QUI::getRewrite()->getVHosts();
@@ -507,19 +510,16 @@ class Project
             }
 
             $project = $params['project'];
-            $lang    = $params['lang'];
 
             if ($project != $this->getName()) {
                 continue;
             }
 
-            if ($lang == $this->getLang()) {
-                return true;
+            if (empty($params[$this->getLang()])) {
+                return false;
             }
 
-            if (!empty($params[$lang])) {
-                return true;
-            }
+            return true;
         }
 
         return false;
