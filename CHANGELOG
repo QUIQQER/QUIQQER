@@ -31,8 +31,10 @@
 
     - Upgrade to http-foundation 4.2
     - Upgrade to PhpMailer 6
+    - Upgrade to CKEditor 4.1
     - symfony/http-foundation v2 v3 and v4.2 are allowed now
     - deprecate: memcache is deprecate now, memcached is still available
+
 
     Fixes
 
