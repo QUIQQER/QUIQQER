@@ -57,7 +57,7 @@
                 </conf>
                 <conf name="lockserver_enabled">
                     <type><![CDATA[bool]]></type>
-                    <defaultvalue><![CDATA[1]]></defaultvalue>
+                    <defaultvalue>1</defaultvalue>
                 </conf>
                 <conf name="mailprotection">
                     <type><![CDATA[bool]]></type>
