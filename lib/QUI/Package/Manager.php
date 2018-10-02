@@ -395,7 +395,6 @@ class Manager extends QUI\QDOM
             $composerJson->config['preferred-install'] = 'source';
         }
 
-
         $composerJson->extra = [
             "asset-installer-paths"  => [
                 "npm-asset-library"   => OPT_DIR.'bin',
@@ -1427,7 +1426,6 @@ class Manager extends QUI\QDOM
             QUI::getTemp()->moveToTemp(OPT_DIR.'bin/mustache');
         }
 
-
         if ($mute === true) {
             $Composer->mute();
         }
@@ -1698,9 +1696,9 @@ class Manager extends QUI\QDOM
             return $this->getComposer()->update();
         }
 
-        file_put_contents($this->composer_lock, $lockContent);
+        #file_put_contents($this->composer_lock, $lockContent);
 
-        return $this->getComposer()->install();
+        #return $this->getComposer()->install();
     }
 
     /**
@@ -1775,10 +1773,11 @@ class Manager extends QUI\QDOM
         }
 
         // use the lockserver to get the outdated packages
+        $Lockclient  = new QUI\Lockclient\Lockclient();
         $result      = [];
         $constraints = [];
 
-        $outdatedPackages = $this->getComposer()->outdated();
+        $outdatedPackages = $Lockclient->getOutdated();
 
         foreach ($outdatedPackages as $outdatedPackage) {
             $packageName = $outdatedPackage['package'];
@@ -1798,7 +1797,6 @@ class Manager extends QUI\QDOM
             }
         }
 
-        $Lockclient     = new QUI\Lockclient\Lockclient();
         $latestVersions = $Lockclient->getLatestVersionInContraints($constraints, $onlyStable);
 
         foreach ($outdatedPackages as $outdatedPackage) {
