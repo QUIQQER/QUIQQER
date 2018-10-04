@@ -843,7 +843,26 @@ class Manager extends QUI\QDOM
 
         $this->composerRequireOrInstall($packages, $version);
 
-        $this->setup($packages);
+        // quiqqer/package-bricks#91
+        // because package is not real available
+        // it needs its own process at this time
+
+        try {
+            $url = URL_SYS_DIR.'ajax.php?'.http_build_query([
+                    'package'   => 'quiqqer/quiqqer',
+                    '_rf'       => ["ajax_system_packages_setup"],
+                    '_FRONTEND' => 0,
+                    'lang'      => QUI::getLocale()->getCurrent(),
+                    'packages'  => json_encode($packages)
+                ]);
+
+            QUI\Utils\Request\Url::get($url);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+            QUI\System\Log::addError($Exception->getMessage());
+        }
+
+        //$this->setup($packages);
     }
 
     /**
@@ -904,7 +923,7 @@ class Manager extends QUI\QDOM
      */
     public function getPackage($package)
     {
-        $cache = 'packages/cache/info/'.$package;
+        $cache = 'packages / cache / info / '.$package;
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -933,8 +952,8 @@ class Manager extends QUI\QDOM
             $result['versions'] = $showData['versions'];
         }
 
-        if (isset($showData['require'])) {
-            $result['require'] = $showData['require'];
+        if (isset($showData['require '])) {
+            $result['require '] = $showData['require '];
         }
 
         try {
@@ -959,11 +978,11 @@ class Manager extends QUI\QDOM
         $result = [];
 
         foreach ($list as $pkg) {
-            if (!isset($pkg['require']) || empty($pkg['require'])) {
+            if (!isset($pkg['require ']) || empty($pkg['require '])) {
                 continue;
             }
 
-            if (isset($pkg['require'][$package])) {
+            if (isset($pkg['require '][$package])) {
                 $result[] = $pkg['name'];
             }
         }
@@ -981,7 +1000,7 @@ class Manager extends QUI\QDOM
      */
     public function show($package)
     {
-        $cache = 'packages/cache/show/'.$package;
+        $cache = 'packages / cache / show / '.$package;
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -995,7 +1014,7 @@ class Manager extends QUI\QDOM
         $show   = $this->getComposer()->show($package);
 
         foreach ($show as $k => $line) {
-            if (strpos($line, '<info>') === false) {
+            if (strpos($line, ' < info>') === false) {
                 continue;
             }
 
@@ -1016,8 +1035,8 @@ class Manager extends QUI\QDOM
             }
 
             if ($line == 'requires') {
-                $_temp             = $show;
-                $result['require'] = array_slice($_temp, $k + 1);
+                $_temp              = $show;
+                $result['require '] = array_slice($_temp, $k + 1);
 
                 continue;
             }
@@ -1084,7 +1103,7 @@ class Manager extends QUI\QDOM
      */
     public function setup($packages, $setupOptions = [])
     {
-        QUIFile::mkdir(CMS_DIR.'etc/plugins/');
+        QUIFile::mkdir(CMS_DIR.'etc / plugins / ');
 
         if (!is_array($packages)) {
             $packages = [$packages];
@@ -1120,7 +1139,7 @@ class Manager extends QUI\QDOM
     public function getServerList()
     {
         try {
-            $servers = QUI::getConfig('etc/source.list.ini.php')->toArray();
+            $servers = QUI::getConfig('etc / source.list.ini.php')->toArray();
 
             if (!isset($servers['npm'])) {
                 $servers['npm']['active'] = false;
@@ -1156,7 +1175,7 @@ class Manager extends QUI\QDOM
         $status,
         $backup = true
     ) {
-        $Config = QUI::getConfig('etc/source.list.ini.php');
+        $Config = QUI::getConfig('etc / source.list.ini.php');
         $status = (bool)$status ? 1 : 0;
 
         $Config->setValue($server, 'active', $status);
@@ -1189,7 +1208,7 @@ class Manager extends QUI\QDOM
 
         $this->createComposerBackup();
 
-        $Config = QUI::getConfig('etc/source.list.ini.php');
+        $Config = QUI::getConfig('etc / source.list.ini.php');
         $Config->setValue($server, 'active', 0);
 
         if (isset($params['type'])) {
@@ -1230,7 +1249,7 @@ class Manager extends QUI\QDOM
             return;
         }
 
-        $Config = QUI::getConfig('etc/source.list.ini.php');
+        $Config = QUI::getConfig('etc / source.list.ini.php');
 
         // rename server
         if (isset($params['server'])
@@ -1268,7 +1287,7 @@ class Manager extends QUI\QDOM
      */
     public function removeServer($server)
     {
-        $Config = QUI::getConfig('etc/source.list.ini.php');
+        $Config = QUI::getConfig('etc / source.list.ini.php');
 
         if (is_array($server)) {
             foreach ($server as $entry) {
