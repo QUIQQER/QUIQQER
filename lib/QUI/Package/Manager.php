@@ -841,6 +841,8 @@ class Manager extends QUI\QDOM
             'Install package '.print_r($packages, true).' -> install'
         );
 
+        QUI\Cache\Manager::clearAll();
+
         $this->composerRequireOrInstall($packages, $version);
 
         // quiqqer/package-bricks#91
