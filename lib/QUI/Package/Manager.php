@@ -845,23 +845,22 @@ class Manager extends QUI\QDOM
 
         $this->composerRequireOrInstall($packages, $version);
 
-        // quiqqer/package-bricks#91
-        if (!is_array($packages)) {
-            $packages = [$packages];
-        }
+//        // quiqqer/package-bricks#91
+//        if (!is_array($packages)) {
+//            $packages = [$packages];
+//        }
+//
+//        foreach ($packages as $package) {
+//            try {
+//                // get the new package
+//                $Package = new QUI\Package\Package($package);
+//                $Package->setup();
+//            } catch (QUI\Exception $Exception) {
+//                QUI\System\Log::addError($Exception->getMessage());
+//            }
+//        }
 
-        foreach ($packages as $package) {
-            try {
-                // get the new package
-                $Package = new QUI\Package\Package($package);
-                $Package->setup();
-            } catch (QUI\Exception $Exception) {
-                QUI\System\Log::addError($Exception->getMessage());
-            }
-        }
-
-
-        $this->setup($packages);
+        // $this->setup($packages);
     }
 
     /**
