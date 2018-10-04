@@ -1,12 +1,6 @@
 /**
  * @module controls/lang/InputMultiLang
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require Ajax
- * @require Locale
- * @require css!controls/lang/InputMultiLang.css
  */
 define('controls/lang/InputMultiLang', [
 
@@ -83,13 +77,20 @@ define('controls/lang/InputMultiLang', [
             QUIAjax.get('ajax_system_getAvailableLanguages', function (languages) {
                 var i, len, flag, lang, LangContainer, InputField;
                 var current = QUILocale.getCurrent(),
-                    data    = [];
+                    data    = {};
 
                 try {
                     data = JSON.decode(Elm.value);
                 } catch (e) {
-                    console.error(Elm.value);
-                    console.error(e);
+                    if (Elm.value.indexOf('https://') !== -1) {
+                        for (i = 0, len = languages.length; i < len; i++) {
+                            lang       = languages[i];
+                            data[lang] = Elm.value;
+                        }
+                    } else {
+                        console.error(Elm.value);
+                        console.error(e);
+                    }
                 }
 
                 // php <-> js -> array / object conversion fix
