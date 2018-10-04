@@ -270,6 +270,14 @@ class Manager
         $Manager     = QUI::getPermissionManager();
         $permissions = $Manager->getPermissions($Group);
 
+        if (empty($permissions)) {
+            QUI\System\Log::addInfo(
+                QUI::getLocale()->get('quiqqer/system', 'exception.permissions.are.empty')
+            );
+
+            return;
+        }
+
         $Manager->setPermissions($Group, $permissions, $ParentUser);
     }
 
@@ -686,7 +694,7 @@ class Manager
     {
         if (empty($permissions)) {
             throw new QUI\Exception(
-                'Permissions are empty'
+                QUI::getLocale()->get('quiqqer/system', 'exception.permissions.are.empty')
             );
         }
 

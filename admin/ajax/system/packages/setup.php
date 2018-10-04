@@ -6,11 +6,11 @@
  * @param string|array $packages - Name of the package
  */
 QUI::$Ajax->registerFunction(
-    'ajax_system_packages_install',
-    function ($packages) {
-        QUI::getPackageManager()->install(json_decode($packages, true));
+    'ajax_system_packages_setup',
+    function ($package) {
+        QUI::getPackageManager()->setup($package);
     },
-    ['packages'],
+    ['package'],
     [
         'Permission::checkAdminUser',
         'quiqqer.system.update'
