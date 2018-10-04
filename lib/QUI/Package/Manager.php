@@ -395,7 +395,6 @@ class Manager extends QUI\QDOM
             $composerJson->config['preferred-install'] = 'source';
         }
 
-
         $composerJson->extra = [
             "asset-installer-paths"  => [
                 "npm-asset-library"   => OPT_DIR.'bin',
@@ -842,9 +841,9 @@ class Manager extends QUI\QDOM
             'Install package '.print_r($packages, true).' -> install'
         );
 
-        $this->composerRequireOrInstall($packages, $version);
+        QUI\Cache\Manager::clearAll();
 
-        $this->setup($packages);
+        $this->composerRequireOrInstall($packages, $version);
     }
 
     /**
@@ -934,8 +933,8 @@ class Manager extends QUI\QDOM
             $result['versions'] = $showData['versions'];
         }
 
-        if (isset($showData['require'])) {
-            $result['require'] = $showData['require'];
+        if (isset($showData['require '])) {
+            $result['require '] = $showData['require '];
         }
 
         try {
@@ -960,11 +959,11 @@ class Manager extends QUI\QDOM
         $result = [];
 
         foreach ($list as $pkg) {
-            if (!isset($pkg['require']) || empty($pkg['require'])) {
+            if (!isset($pkg['require ']) || empty($pkg['require '])) {
                 continue;
             }
 
-            if (isset($pkg['require'][$package])) {
+            if (isset($pkg['require '][$package])) {
                 $result[] = $pkg['name'];
             }
         }
@@ -996,7 +995,7 @@ class Manager extends QUI\QDOM
         $show   = $this->getComposer()->show($package);
 
         foreach ($show as $k => $line) {
-            if (strpos($line, '<info>') === false) {
+            if (strpos($line, ' < info>') === false) {
                 continue;
             }
 
@@ -1017,8 +1016,8 @@ class Manager extends QUI\QDOM
             }
 
             if ($line == 'requires') {
-                $_temp             = $show;
-                $result['require'] = array_slice($_temp, $k + 1);
+                $_temp              = $show;
+                $result['require '] = array_slice($_temp, $k + 1);
 
                 continue;
             }
@@ -1427,7 +1426,6 @@ class Manager extends QUI\QDOM
             QUI::getTemp()->moveToTemp(OPT_DIR.'bin/mustache');
         }
 
-
         if ($mute === true) {
             $Composer->mute();
         }
@@ -1676,6 +1674,7 @@ class Manager extends QUI\QDOM
     {
         // Disable lockserver if a vcs repository is used
         $repositories = $this->getServerList();
+
         foreach ($repositories as $repo) {
             if ($repo['type'] === 'vcs') {
                 return $this->getComposer()->update();
@@ -1687,20 +1686,22 @@ class Manager extends QUI\QDOM
         }
 
         $lockServerEnabled = QUI::conf("globals", "lockserver_enabled");
+
         if (!$lockServerEnabled) {
             return $this->getComposer()->update();
         }
 
-        $Lockclient = new QUI\Lockclient\Lockclient();
+        $LockClient = new QUI\Lockclient\Lockclient();
+
         try {
-            $lockContent = $Lockclient->update($this->composer_json, $package);
+            $LockClient->update($this->composer_json, $package);
         } catch (\Exception $Exception) {
             return $this->getComposer()->update();
         }
 
-        file_put_contents($this->composer_lock, $lockContent);
+        #file_put_contents($this->composer_lock, $lockContent);
 
-        return $this->getComposer()->install();
+        #return $this->getComposer()->install();
     }
 
     /**
@@ -1716,6 +1717,7 @@ class Manager extends QUI\QDOM
     {
         // Disable lockserver if a vcs repository is used
         $repositories = $this->getServerList();
+
         foreach ($repositories as $repo) {
             if ($repo['type'] === 'vcs') {
                 return $this->getComposer()->requirePackage($packages, $version);
@@ -1727,13 +1729,15 @@ class Manager extends QUI\QDOM
         }
 
         $lockServerEnabled = QUI::conf("globals", "lockserver_enabled");
+
         if (!$lockServerEnabled) {
             return $this->getComposer()->requirePackage($packages, $version);
         }
 
-        $Lockclient = new QUI\Lockclient\Lockclient();
+        $LockClient = new QUI\Lockclient\Lockclient();
+
         try {
-            $lockContent = $Lockclient->requirePackage($this->composer_json, $packages, $version);
+            $lockContent = $LockClient->requirePackage($this->composer_json, $packages, $version);
         } catch (\Exception $Exception) {
             return $this->getComposer()->requirePackage($packages, $version);
         }
@@ -1775,10 +1779,11 @@ class Manager extends QUI\QDOM
         }
 
         // use the lockserver to get the outdated packages
+        $Lockclient  = new QUI\Lockclient\Lockclient();
         $result      = [];
         $constraints = [];
 
-        $outdatedPackages = $this->getComposer()->outdated();
+        $outdatedPackages = $Lockclient->getOutdated();
 
         foreach ($outdatedPackages as $outdatedPackage) {
             $packageName = $outdatedPackage['package'];
@@ -1798,7 +1803,6 @@ class Manager extends QUI\QDOM
             }
         }
 
-        $Lockclient     = new QUI\Lockclient\Lockclient();
         $latestVersions = $Lockclient->getLatestVersionInContraints($constraints, $onlyStable);
 
         foreach ($outdatedPackages as $outdatedPackage) {
