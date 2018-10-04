@@ -1690,6 +1690,7 @@ class Manager extends QUI\QDOM
     {
         // Disable lockserver if a vcs repository is used
         $repositories = $this->getServerList();
+
         foreach ($repositories as $repo) {
             if ($repo['type'] === 'vcs') {
                 return $this->getComposer()->update();
@@ -1701,13 +1702,15 @@ class Manager extends QUI\QDOM
         }
 
         $lockServerEnabled = QUI::conf("globals", "lockserver_enabled");
+
         if (!$lockServerEnabled) {
             return $this->getComposer()->update();
         }
 
-        $Lockclient = new QUI\Lockclient\Lockclient();
+        $LockClient = new QUI\Lockclient\Lockclient();
+
         try {
-            $lockContent = $Lockclient->update($this->composer_json, $package);
+            $LockClient->update($this->composer_json, $package);
         } catch (\Exception $Exception) {
             return $this->getComposer()->update();
         }
@@ -1730,6 +1733,7 @@ class Manager extends QUI\QDOM
     {
         // Disable lockserver if a vcs repository is used
         $repositories = $this->getServerList();
+
         foreach ($repositories as $repo) {
             if ($repo['type'] === 'vcs') {
                 return $this->getComposer()->requirePackage($packages, $version);
@@ -1741,13 +1745,15 @@ class Manager extends QUI\QDOM
         }
 
         $lockServerEnabled = QUI::conf("globals", "lockserver_enabled");
+
         if (!$lockServerEnabled) {
             return $this->getComposer()->requirePackage($packages, $version);
         }
 
-        $Lockclient = new QUI\Lockclient\Lockclient();
+        $LockClient = new QUI\Lockclient\Lockclient();
+
         try {
-            $lockContent = $Lockclient->requirePackage($this->composer_json, $packages, $version);
+            $lockContent = $LockClient->requirePackage($this->composer_json, $packages, $version);
         } catch (\Exception $Exception) {
             return $this->getComposer()->requirePackage($packages, $version);
         }
