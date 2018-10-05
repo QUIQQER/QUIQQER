@@ -1694,14 +1694,19 @@ class Manager extends QUI\QDOM
         $LockClient = new QUI\Lockclient\Lockclient();
 
         try {
-            $LockClient->update($this->composer_json, $package);
+            $lockContent = $LockClient->update($this->composer_json, $package);
         } catch (\Exception $Exception) {
             return $this->getComposer()->update();
         }
 
-        #file_put_contents($this->composer_lock, $lockContent);
+        file_put_contents($this->composer_lock, $lockContent);
 
-        #return $this->getComposer()->install();
+        //Workaround to avoid composer shenanigans with sym links
+        if (file_exists(OPT_DIR.'bin/mustache')) {
+            QUI::getTemp()->moveToTemp(OPT_DIR.'bin/mustache');
+        }
+        
+        return $this->getComposer()->install();
     }
 
     /**
@@ -1743,6 +1748,12 @@ class Manager extends QUI\QDOM
         }
 
         file_put_contents($this->composer_lock, $lockContent);
+
+        //Workaround to avoid composer shenanigans with sym links
+        if (file_exists(OPT_DIR.'bin/mustache')) {
+            QUI::getTemp()->moveToTemp(OPT_DIR.'bin/mustache');
+        }
+
 
         return $this->getComposer()->install();
     }
