@@ -2039,6 +2039,12 @@
         <locale name="exception.permissions.are.empty">
             <de><![CDATA[Berechtigungen sind leer.]]></de>
         </locale>
+        <locale name="exception.guest.group.cannot.be.deleted">
+            <de><![CDATA[Die Gast Gruppe kann nicht gelöscht werden.]]></de>
+        </locale>
+        <locale name="exception.everonye.group.cannot.be.deleted">
+            <de><![CDATA[Die Jeder Gruppe kann nicht gelöscht werden.]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js">
         <locale name="controls.users.auth.quiqqerlogin.send_mail_success">
