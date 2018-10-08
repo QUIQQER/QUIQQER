@@ -59,7 +59,7 @@
     "quiqqer/diashow": ">=0.9|1.*",
     "quiqqer/lockclient": "1.*",
     "quiqqer/messages": "1.*",
-    "quiqqer/meta": "0.9.*",
+    "quiqqer/meta": "1.*",
     "quiqqer/fontawesome": "*",
     "quiqqer/backendsearch": "1.*",
     "quiqqer/requirements": "2.*",
