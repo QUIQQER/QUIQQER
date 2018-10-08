@@ -59,7 +59,7 @@
     "quiqqer/diashow": ">=0.9|dev-master|dev-dev",
     "quiqqer/lockclient": "1.*|dev-master|dev-dev",
     "quiqqer/messages": "1.*|dev-master|dev-dev",
-    "quiqqer/meta": "0.9.*|dev-master|dev-dev",
+    "quiqqer/meta": "1.*|dev-master|dev-dev",
     "quiqqer/fontawesome": "*",
     "quiqqer/backendsearch": "1.*|dev-master|dev-dev",
     "quiqqer/requirements": "2.*",
