@@ -61,7 +61,7 @@ define('controls/email/Select', [
             this.addEvents({
                 onCreate : this.$onCreate,
                 onAddItem: this.$onAddItem
-            })
+            });
         },
 
         /**
@@ -71,7 +71,7 @@ define('controls/email/Select', [
             var self = this;
 
             this.$Search.addEvent('keydown', function (event) {
-                if (event.code === 13) {
+                if (event.code === 13 || event.code === 9) {
                     event.stop();
 
                     var mail = event.target.value.trim();
@@ -88,7 +88,7 @@ define('controls/email/Select', [
                                     'controls.email.select.email_already_added'
                                 ),
                                 self.$Search
-                            )
+                            );
                         });
                         return;
                     }
@@ -108,7 +108,7 @@ define('controls/email/Select', [
                                         'controls.email.select.email_invalid'
                                     ),
                                     self.$Search
-                                )
+                                );
                             });
                         }
 

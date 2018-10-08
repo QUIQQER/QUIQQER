@@ -57,10 +57,17 @@ define('controls/system/settings/Config', [
                     }).inject(Select);
                 }
 
+                if (!Select.getElement('[value="' + QUIQQER_VERSION + '"]')) {
+                    new Element('option', {
+                        value: QUIQQER_VERSION,
+                        html : QUIQQER_VERSION
+                    }).inject(Select);
+                }
+
                 Select.value = QUIQQER_VERSION;
 
                 Select.addEvent('change', function () {
-                    if (this.value == 'dev-dev') {
+                    if (this.value === 'dev-dev') {
                         self.setDevelopment();
                     }
                 });
@@ -108,7 +115,7 @@ define('controls/system/settings/Config', [
                             for (var i = 0, len = result.length; i < len; i++) {
                                 new Element('div', {
                                     html: '<input type="checkbox" value="' + result[i].name + '" id="w' + id + '_' + i + '" />' +
-                                          '<label for="w' + id + '_' + i + '">' + result[i].name + '</label>'
+                                        '<label for="w' + id + '_' + i + '">' + result[i].name + '</label>'
                                 }).inject(Content);
                             }
 
@@ -127,10 +134,10 @@ define('controls/system/settings/Config', [
                         Win.Loader.show();
 
                         var packages = Win.getContent()
-                            .getElements('[type="checkbox"]:checked')
-                            .map(function (Elm) {
-                                     return Elm.get('value');
-                                 });
+                                          .getElements('[type="checkbox"]:checked')
+                                          .map(function (Elm) {
+                                              return Elm.get('value');
+                                          });
 
                         if (!packages.length) {
                             Win.close();

@@ -2036,6 +2036,9 @@
         <locale name="exception.permission.no.admin">
             <de><![CDATA[Sie besitzen nicht die nötigen Rechte sich an der Administration anzumelden.]]></de>
         </locale>
+        <locale name="exception.permissions.are.empty">
+            <de><![CDATA[Berechtigungen sind leer.]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js">
         <locale name="controls.users.auth.quiqqerlogin.send_mail_success">

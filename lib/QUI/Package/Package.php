@@ -668,6 +668,10 @@ class Package extends QUI\QDOM
         );
 
         QUI::getEvents()->fireEvent('packageInstall', [$this]);
+
+        if ($this->isQuiqqerPackage()) {
+            $this->setup();
+        }
     }
 
     /**
