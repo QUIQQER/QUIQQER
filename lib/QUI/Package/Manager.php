@@ -452,10 +452,12 @@ class Manager extends QUI\QDOM
                 $composerJson->scripts->{$composerEvent} = [];
             }
 
-            $composerJson->scripts->{$composerEvent} = array_unique(array_merge(
+            $eventList = array_unique(array_merge(
                 $events,
                 $composerJson->scripts->{$composerEvent}
             ));
+
+            $composerJson->scripts->{$composerEvent} = array_values($eventList);
         }
 
         // make the repository list
