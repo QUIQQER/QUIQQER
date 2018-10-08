@@ -44,7 +44,7 @@
     "league/climate": "3.*",
     "ramsey/uuid": "3.*",
     "quiqqer/composer": ">=1.3",
-    "quiqqer/controls": "dev-master|dev-dev",
+    "quiqqer/controls": "1.*|>=0.9.0",
     "quiqqer/qui": ">=1",
     "quiqqer/qui-php": ">=0.11.0",
     "quiqqer/smarty3": "1.*",
