@@ -5268,6 +5268,9 @@
         <locale name="template.project.media.folder.path">
             <de><![CDATA[Ordnerpfad]]></de>
         </locale>
+        <locale name="template.project.media.folder.size">
+            <de><![CDATA[Ordner Größe]]></de>
+        </locale>
         <locale name="template.project.media.file.path">
             <de><![CDATA[Dateipfad]]></de>
         </locale>
@@ -5276,6 +5279,9 @@
         </locale>
         <locale name="template.project.media.file.dimension">
             <de><![CDATA[Dimension]]></de>
+        </locale>
+        <locale name="template.project.media.properties.header">
+            <de><![CDATA[Datei Eigenschaften]]></de>
         </locale>
         <locale name="template.project.site.search.title">
             <de><![CDATA[Suche]]></de>

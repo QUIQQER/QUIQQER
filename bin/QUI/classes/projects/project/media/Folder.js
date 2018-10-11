@@ -87,6 +87,21 @@ define('classes/projects/project/media/Folder', [
         },
 
         /**
+         * Return the size of the folder
+         *
+         * @return {Promise}
+         */
+        getSize: function () {
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_media_folder_getSize', resolve, {
+                    project: this.getMedia().getProject().getName(),
+                    id     : this.getId(),
+                    onError: reject
+                });
+            }.bind(this));
+        },
+
+        /**
          * Upload files to the folder
          *
          * @method classes/projects/project/media/Folder#uploadFiles

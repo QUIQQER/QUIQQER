@@ -752,6 +752,16 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
+     * @return int
+     *
+     * @todo as cron
+     */
+    public function getSize()
+    {
+        return QUI\Utils\System\File::getDirectorySize($this->getFullPath());
+    }
+
+    /**
      * Return the images from the folder
      *
      * @param array $params - filter paramater

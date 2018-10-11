@@ -286,7 +286,24 @@ define('controls/projects/project/media/FolderPanel', [
                     }
                 }).inject(Order, 'after');
 
-                self.Loader.hide();
+                self.$Folder.getSize().then(function (bytes) {
+                    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+
+                    bytes = parseInt(bytes);
+
+                    if (bytes === 0) {
+                        return '0 Byte';
+                    }
+
+                    var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+                    var r = Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+
+                    Form.elements.size.value = r;
+
+                    self.Loader.hide();
+                }).catch(function () {
+                    self.Loader.hide();
+                });
             });
         },
 
