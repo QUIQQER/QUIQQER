@@ -91,19 +91,19 @@ define('controls/projects/project/site/Panel', [
         },
 
         initialize: function (Site, options) {
-            this.$Site = null;
+            this.$Site            = null;
             this.$CategoryControl = null;
-            this.$Container = null;
+            this.$Container       = null;
 
-            this.$PreviousCategory = null;
+            this.$PreviousCategory     = null;
             this.$editorPeriodicalSave = false; // delay for the wysiwyg editor, to save to the locale storage
 
             if (typeOf(Site) === 'classes/projects/project/Site') {
                 var Project = Site.getProject(),
                     id      = 'panel-' +
-                              Project.getName() + '-' +
-                              Project.getLang() + '-' +
-                              Site.getId();
+                        Project.getName() + '-' +
+                        Project.getLang() + '-' +
+                        Site.getId();
 
                 // default id
                 this.setAttribute('id', id);
@@ -164,7 +164,7 @@ define('controls/projects/project/site/Panel', [
                 data.lang
             );
 
-            this.$Site = Project.get(data.id);
+            this.$Site      = Project.get(data.id);
             this.$delayTest = 0;
 
             return this;
@@ -231,8 +231,8 @@ define('controls/projects/project/site/Panel', [
             title = Site.getAttribute('title') + ' (' + Site.getId() + ')';
 
             description = Site.getAttribute('name') + ' - ' +
-                          Site.getId() + ' - ' +
-                          Project.getName();
+                Site.getId() + ' - ' +
+                Project.getName();
 
             if (Site.getId() !== 1) {
                 description = description + ' - ' + Site.getUrl();
@@ -358,7 +358,7 @@ define('controls/projects/project/site/Panel', [
 
 
                 for (i = 0, len = categories.length; i < len; i++) {
-                    events = {};
+                    events   = {};
                     category = categories[i];
 
                     if (typeOf(category.events) === 'object') {
@@ -452,8 +452,8 @@ define('controls/projects/project/site/Panel', [
 
                 var StorageTime = null;
                 var storageDate = '---';
-                var storage = Site.getWorkingStorage();
-                var EditDate = new Date(Site.getAttribute('e_date'));
+                var storage     = Site.getWorkingStorage();
+                var EditDate    = new Date(Site.getAttribute('e_date'));
 
                 if ("__storageTime" in storage) {
                     StorageTime = new Date(storage.__storageTime);
@@ -691,33 +691,33 @@ define('controls/projects/project/site/Panel', [
         },
 
         /**
-         * opens the delet dialog
+         * opens the site delete dialog
          */
         del: function () {
             var Site = this.getSite();
 
             require(['qui/controls/windows/Confirm'], function (Confirm) {
                 new Confirm({
-                    title      : Locale.get(lg, 'projects.project.site.panel.window.delete.title', {
+                    title        : Locale.get(lg, 'projects.project.site.panel.window.delete.title', {
                         id: Site.getId()
                     }),
-                    icon       : 'fa fa-trash-o',
-                    text       : Locale.get(lg, 'projects.project.site.panel.window.delete.text', {
+                    icon         : 'fa fa-trash-o',
+                    text         : Locale.get(lg, 'projects.project.site.panel.window.delete.text', {
                         id   : Site.getId(),
                         url  : Site.getAttribute('name') + QUIQQER.Rewrite.SUFFIX,
                         name : Site.getAttribute('name'),
                         title: Site.getAttribute('title')
                     }),
-                    texticon   : 'fa fa-trash-o',
-                    information: Locale.get(lg, 'projects.project.site.panel.window.delete.information', {
+                    texticon     : 'fa fa-trash-o',
+                    information  : Locale.get(lg, 'projects.project.site.panel.window.delete.information', {
                         id   : Site.getId(),
                         url  : Site.getAttribute('name') + QUIQQER.Rewrite.SUFFIX,
                         name : Site.getAttribute('name'),
                         title: Site.getAttribute('title')
                     }),
-                    maxHeight  : 400,
-                    maxWidth   : 600,
-
+                    maxHeight    : 400,
+                    maxWidth     : 600,
+                    autoclose    : false,
                     cancel_button: {
                         text     : Locale.get(lg, 'cancel'),
                         textimage: 'fa fa-remove'
@@ -728,8 +728,14 @@ define('controls/projects/project/site/Panel', [
                     },
 
                     events: {
-                        onSubmit: function () {
-                            Site.del();
+                        onSubmit: function (Win) {
+                            Win.Loader.show();
+
+                            Site.del().then(function () {
+                                Win.close();
+                            }).catch(function () {
+                                Win.Loader.hide();
+                            });
                         }
                     }
                 }).open();
@@ -1062,7 +1068,7 @@ define('controls/projects/project/site/Panel', [
                                     };
 
                                     for (i = 0, len = rowList.length; i < len; i++) {
-                                        Row = rowList[i];
+                                        Row     = rowList[i];
                                         Buttons = rowList[i].getElement('.site-lang-entry-button');
 
                                         if (!Row.get('data-id').toInt()) {
@@ -1266,7 +1272,7 @@ define('controls/projects/project/site/Panel', [
                     callback();
                 }
 
-                return Promise.resolve()
+                return Promise.resolve();
                 //self.getAttribute('Editor').destroy();
             }
 
@@ -1469,10 +1475,10 @@ define('controls/projects/project/site/Panel', [
                 };
 
                 Panel.$onCategoryLeave(Panel.getActiveCategory())
-                    .then(saving)
-                    .then(function () {
-                        Panel.$onCategoryEnter(Panel.getActiveCategory());
-                    });
+                     .then(saving)
+                     .then(function () {
+                         Panel.$onCategoryEnter(Panel.getActiveCategory());
+                     });
 
                 return;
             }
@@ -1538,7 +1544,7 @@ define('controls/projects/project/site/Panel', [
                             return;
                         }
 
-                        hold = true;
+                        hold    = true;
                         lastPos = QUIElmUtils.getCursorPosition(event.target);
                     },
 
@@ -2040,7 +2046,7 @@ define('controls/projects/project/site/Panel', [
                         continue;
                     }
 
-                    to = typeOf(attributes[key]);
+                    to  = typeOf(attributes[key]);
                     val = attributes[key];
 
                     if (to !== 'string' && to !== 'number') {

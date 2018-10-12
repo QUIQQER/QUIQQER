@@ -4,10 +4,6 @@
  * @module classes/projects/project/Site
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/QUI
- * @require qui/classes/DOM
- * @require Ajax
- *
  * @event onLoad [ this ]
  * @event onGetChildren [ this, {Array} ]
  * @event onActivate [ this ]
@@ -435,13 +431,10 @@ define('classes/projects/project/Site', [
                     }
 
                     this.clearWorkingStorage();
-
                     this.fireEvent('delete', [this]);
 
                     resolve(result);
-
                 }.bind(this), this.ajaxParams());
-
             }.bind(this));
         },
 
@@ -454,7 +447,6 @@ define('classes/projects/project/Site', [
          */
         move: function (newParentId, callback) {
             return new Promise(function (resolve, reject) {
-
                 var Site   = this,
                     params = this.ajaxParams();
 
@@ -469,9 +461,7 @@ define('classes/projects/project/Site', [
                     Site.fireEvent('move', [Site, newParentId]);
 
                     resolve(result);
-
                 }, params);
-
             }.bind(this));
         },
 
