@@ -79,6 +79,16 @@ QUI::$Ajax->registerFunction(
                 continue;
             }
 
+            if (isset($params['globals']['quiqqer_version'])) {
+                try {
+                    QUI::getPackageManager()->setQuiqqerVersion(
+                        $params['globals']['quiqqer_version']
+                    );
+                } catch (\UnexpectedValueException $Exception) {
+                    QUI::getMessagesHandler()->addError($Exception->getMessage());
+                }
+            }
+
             # Save the current .htaccess content to see if the config changed
             $oldContent = "";
 

@@ -564,11 +564,31 @@ class Manager extends QUI\QDOM
             $composerJson->require = $require;
         }
 
+        if ($this->version) {
+            $composerJson->require->{"quiqqer/quiqqer"} = $this->version;
+        }
+
         // save
         file_put_contents($this->composer_json, json_encode(
             $composerJson,
             \JSON_PRETTY_PRINT
         ));
+    }
+
+    /**
+     * Set a quiqqer version to the composer file
+     * This method does not perform an update
+     *
+     * @param $version
+     * @throws \UnexpectedValueException
+     */
+    public function setQuiqqerVersion($version)
+    {
+        $Parser = new \Composer\Semver\VersionParser();
+        $Parser->normalize(str_replace('*', '0', $version)); // workaround, normalize cant check 1.*
+
+        $this->version = $version;
+        $this->createComposerJSON();
     }
 
     /**
@@ -1707,7 +1727,7 @@ class Manager extends QUI\QDOM
         if (file_exists(OPT_DIR.'bin/mustache')) {
             QUI::getTemp()->moveToTemp(OPT_DIR.'bin/mustache');
         }
-        
+
         return $this->getComposer()->install();
     }
 
