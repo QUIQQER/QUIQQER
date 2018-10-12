@@ -218,6 +218,10 @@ label.field-container-field {
     padding: 0;
 }
 
+.field-container-field > .field-container-field {
+    border: none;
+}
+
 .field-container-item-desc {
     background-color: #CEE6F2;
     color: #00529B;
