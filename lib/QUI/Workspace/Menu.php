@@ -20,6 +20,8 @@ use QUI\Utils\Text\XML;
 class Menu
 {
     /**
+     * Return the menu für the session user
+     *
      * @return array
      */
     public function getMenu()
@@ -31,7 +33,13 @@ class Menu
         } catch (QUI\Exception $Exception) {
         }
 
-        return $this->createMenu();
+        try {
+            return $this->createMenu();
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeDebugException($Exception);
+        }
+
+        return [];
     }
 
     /**
@@ -39,6 +47,7 @@ class Menu
      * no caches use
      *
      * @return array
+     * @throws QUI\Exception
      */
     public function createMenu()
     {
@@ -48,13 +57,13 @@ class Menu
             $User->getLocale()->getCurrent()
         );
 
-        $Menu = new Bar(array(
+        $Menu = new Bar([
             'name'   => 'menu',
             'parent' => 'menubar',
             'id'     => 'menu'
-        ));
+        ]);
 
-        XML::addXMLFileToMenu($Menu, SYS_DIR . 'menu.xml');
+        XML::addXMLFileToMenu($Menu, SYS_DIR.'menu.xml');
 
         if (!$User->isSU()) {
             if ($Menu->getElementByName('quiqqer')) {
@@ -119,7 +128,7 @@ class Menu
             }
 
             $Projects->appendChild(
-                new Menuitem(array(
+                new Menuitem([
                     'text'    => $project,
                     'icon'    => 'fa fa-home',
                     'onclick' => '',
@@ -127,20 +136,20 @@ class Menu
                     'onClick' => 'QUI.Menu.menuClick',
                     'project' => $project,
                     'name'    => $project,
-                    '#id'     => 'settings-' . $project
-                ))
+                    '#id'     => 'settings-'.$project
+                ])
             );
         }
 
         // read the settings.xml's
-        $files = array();
+        $files = [];
 
         if ($User->isSU()) {
-            $dir   = SYS_DIR . 'settings/';
+            $dir   = SYS_DIR.'settings/';
             $files = QUI\Utils\System\File::readDir($dir);
 
             foreach ($files as $key => $file) {
-                $files[$key] = str_replace(CMS_DIR, '', $dir . $file);
+                $files[$key] = str_replace(CMS_DIR, '', $dir.$file);
             }
         }
 
@@ -168,10 +177,10 @@ class Menu
 
         // create the menu setting entries
         $Settings   = $Menu->getElementByName('settings');
-        $windowList = array();
+        $windowList = [];
 
         foreach ($files as $file) {
-            $windows = XML::getSettingWindowsFromXml(CMS_DIR . $file);
+            $windows = XML::getSettingWindowsFromXml(CMS_DIR.$file);
 
             if (!$windows) {
                 continue;
@@ -189,7 +198,7 @@ class Menu
                     $files = $Item->getAttribute('qui-xml-file');
 
                     if (!is_array($files)) {
-                        $files = array($files);
+                        $files = [$files];
                     }
 
                     $files[] = $file;
@@ -205,7 +214,7 @@ class Menu
 
                 $Item->setAttribute(
                     'name',
-                    $menuParent . $Window->getAttribute('name') . '/'
+                    $menuParent.$Window->getAttribute('name').'/'
                 );
 
                 $Item->setAttribute('onClick', 'QUI.Menu.menuClick');
@@ -345,9 +354,21 @@ class Menu
     protected function getCacheName()
     {
         $User  = QUI::getUserBySession();
-        $cache = 'qui/admin/menu/' . $User->getId() . '/' . $User->getLang();
+        $cache = 'qui/admin/menu/'.$User->getId().'/'.$User->getLang();
 
         return $cache;
+    }
+
+    /**
+     * Clear the menu cache for an user
+     *
+     * @param QUI\Interfaces\Users\User $User
+     */
+    public static function clearMenuCache(QUI\Interfaces\Users\User $User)
+    {
+        QUI\Cache\Manager::clear(
+            'qui/admin/menu/'.$User->getId().'/'.$User->getLang()
+        );
     }
 
     /**
@@ -358,7 +379,7 @@ class Menu
      */
     protected function sortItems($items)
     {
-        usort($items, array($this, 'sortByTitle'));
+        usort($items, [$this, 'sortByTitle']);
 
         foreach ($items as $key => $item) {
             if (isset($item['items']) && !empty($item['items'])) {
