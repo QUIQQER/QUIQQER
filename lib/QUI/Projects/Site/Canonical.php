@@ -37,6 +37,7 @@ class Canonical
      * Return the meta tag, if it is allowed
      *
      * @return string
+     * @throws QUI\Exception
      */
     public function output()
     {
@@ -45,12 +46,12 @@ class Canonical
 
         // host check
         if (isset($_SERVER['HTTP_HOST'])) {
-            $requestHost          = $_SERVER['HTTP_HOST'];
-            $hostWithoutProtocoll = $Project->getVHost(false, true);
-            $httpsHost            = $Project->getVHost(true, true);
+            $requestHost         = $_SERVER['HTTP_HOST'];
+            $hostWithoutProtocol = $Project->getVHost(false, true);
+            $httpsHost           = $Project->getVHost(true, true);
 
-            if ($requestHost != $hostWithoutProtocoll) {
-                return $this->getLinkRel($httpsHost . $this->Site->getCanonical());
+            if ($requestHost != $hostWithoutProtocol) {
+                return $this->getLinkRel($httpsHost.$this->Site->getCanonical());
             }
         }
 
@@ -66,7 +67,7 @@ class Canonical
             if ($httpsHostExists
                 && QUI\Utils\System::isProtocolSecure() === false
             ) {
-                return $this->getLinkRel($httpsHost . $this->Site->getCanonical());
+                return $this->getLinkRel($httpsHost.$this->Site->getCanonical());
             }
 
             return '';
@@ -97,25 +98,24 @@ class Canonical
             if ($httpsHostExists
                 && QUI\Utils\System::isProtocolSecure() === false
             ) {
-                return $this->getLinkRel($httpsHost . URL_DIR . $requestUrl);
+                return $this->getLinkRel($httpsHost.URL_DIR.$requestUrl);
             }
 
             return '';
         }
 
         // canonical and request the same? than no output
-        if ($httpsHost . URL_DIR . $requestUrl == $canonical) {
+        if ($httpsHost.URL_DIR.$requestUrl == $canonical) {
             return '';
         }
 
 
-        // fix doppelter HOST  im canonical https://dev.quiqqer.com/quiqqer/quiqqer/issues/574
-
+        // fix doppelter HOST im canonical https://dev.quiqqer.com/quiqqer/quiqqer/issues/574
         if (strpos($canonical, 'https:') !== false || strpos($canonical, 'http:') !== false) {
             return $this->getLinkRel($canonical);
         }
 
-        return $this->getLinkRel($httpsHost . URL_DIR . $canonical);
+        return $this->getLinkRel($httpsHost.URL_DIR.$canonical);
     }
 
     /**
@@ -127,6 +127,6 @@ class Canonical
      */
     protected function getLinkRel($url)
     {
-        return '<link rel="canonical" href="' . $url . '" />';
+        return '<link rel="canonical" href="'.$url.'" />';
     }
 }
