@@ -1999,7 +1999,13 @@
             <en><![CDATA[You do not have the necessary permissions to log on to the administration.]]></en>
         </locale>
         <locale name="exception.permissions.are.empty">
-            <de><![CDATA[Permissions are empty.]]></de>
+            <en><![CDATA[Permissions are empty.]]></en>
+        </locale>
+        <locale name="exception.guest.group.cannot.be.deleted">
+            <en><![CDATA[The Guest group cannot be deleted.]]></en>
+        </locale>
+        <locale name="exception.everyone.group.cannot.be.deleted">
+            <en><![CDATA[The Everyone group cannot be deleted.]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js">
@@ -5094,6 +5100,9 @@
         <locale name="template.project.media.folder.path">
             <en><![CDATA[Folder path]]></en>
         </locale>
+        <locale name="template.project.media.folder.size">
+            <en><![CDATA[Folder size]]></en>
+        </locale>
         <locale name="template.project.media.file.path">
             <en><![CDATA[File path]]></en>
         </locale>
@@ -5108,6 +5117,9 @@
         </locale>
         <locale name="template.project.site.search.legend">
             <en><![CDATA[Fields that will be searched]]></en>
+        </locale>
+        <locale name="template.project.media.properties.header">
+            <en><![CDATA[File properties]]></en>
         </locale>
         <locale name="exception.site.release.from.inFuture">
             <en><![CDATA[The page can not be activated because the date "release from" is in the future.]]></en>

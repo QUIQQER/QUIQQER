@@ -1566,6 +1566,8 @@ class User implements QUI\Interfaces\Users\User
 
         QUI::getEvents()->fireEvent('userSaveEnd', [$this]);
 
+        QUI\Workspace\Menu::clearMenuCache($this);
+
         return $result;
     }
 

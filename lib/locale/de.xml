@@ -2039,6 +2039,12 @@
         <locale name="exception.permissions.are.empty">
             <de><![CDATA[Berechtigungen sind leer.]]></de>
         </locale>
+        <locale name="exception.guest.group.cannot.be.deleted">
+            <de><![CDATA[Die Gast Gruppe kann nicht gelöscht werden.]]></de>
+        </locale>
+        <locale name="exception.everonye.group.cannot.be.deleted">
+            <de><![CDATA[Die Jeder Gruppe kann nicht gelöscht werden.]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js">
         <locale name="controls.users.auth.quiqqerlogin.send_mail_success">
@@ -5262,6 +5268,9 @@
         <locale name="template.project.media.folder.path">
             <de><![CDATA[Ordnerpfad]]></de>
         </locale>
+        <locale name="template.project.media.folder.size">
+            <de><![CDATA[Ordner Größe]]></de>
+        </locale>
         <locale name="template.project.media.file.path">
             <de><![CDATA[Dateipfad]]></de>
         </locale>
@@ -5270,6 +5279,9 @@
         </locale>
         <locale name="template.project.media.file.dimension">
             <de><![CDATA[Dimension]]></de>
+        </locale>
+        <locale name="template.project.media.properties.header">
+            <de><![CDATA[Datei Eigenschaften]]></de>
         </locale>
         <locale name="template.project.site.search.title">
             <de><![CDATA[Suche]]></de>

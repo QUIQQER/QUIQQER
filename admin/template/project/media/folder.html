@@ -1,114 +1,169 @@
 <div class="qui-media-folder-details">
-    <table class="data-table">
-    <thead>
+    <table class="data-table data-table-flexbox site-data">
+        <thead>
         <tr>
-            <th colspan="2">
+            <th>
                 {t}quiqqer/system template.project.media.file.header{/t}
             </th>
         </tr>
-    </thead>
+        </thead>
 
-    <tbody>
-        <tr class="{cycle values="odd,even" reset="true"}">
-            <td>{t}quiqqer/system name{/t}</td>
-            <td><input type="text" name="name" value="" /></td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td>{t}quiqqer/system title{/t}</td>
-            <td><input type="text" name="title" value="" /></td>
-        </tr>
-    </tbody>
-    </table>
-
-    <table class="data-table">
-    <thead>
+        <tbody>
         <tr>
-            <th>{t}quiqqer/system description{/t}</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        <tr class="{cycle values="odd,even" reset=true}">
             <td>
-                <textarea name="short"></textarea>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {t}quiqqer/system name{/t}
+                    </span>
+                    <input name="name" class="field-container-field"/>
+                </label>
             </td>
         </tr>
-    </tbody>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {t}quiqqer/system title{/t}
+                    </span>
+                    <input name="title" class="field-container-field"/>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {t}quiqqer/system description{/t}
+                    </span>
+                    <textarea name="short" class="field-container-field"></textarea>
+                </label>
+            </td>
+        </tr>
+        </tbody>
     </table>
 
-
-    <table class="data-table">
-    <thead>
+    <table class="data-table data-table-flexbox site-data">
+        <thead>
         <tr>
-            <th colspan="2">
-                {t}quiqqer/system template.project.media.file.header{/t}
+            <th>
+                {t}quiqqer/system template.project.media.properties.header{/t}
             </th>
         </tr>
-    </thead>
-    <tbody>
-        <tr class="{cycle values="odd,even" reset="true"}">
-            <td>{t}quiqqer/system id{/t}</td>
-            <td><input type="text" name="id" disabled="disabled" value="" /></td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td>{t}quiqqer/system template.project.media.folder.path{/t}</td>
-            <td><input type="text" name="file" disabled="disabled" value="" /></td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td>{t}quiqqer/system c_user{/t}</td>
-            <td><input type="text" name="c_username" disabled="disabled" value="" /></td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td>{t}quiqqer/system c_date{/t}</td>
-            <td><input type="text" name="c_date" disabled="disabled" value="" /></td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td>{t}quiqqer/system e_user{/t}</td>
-            <td><input type="text" name="e_username" disabled="disabled" value="" /></td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td>{t}quiqqer/system e_date{/t}</td>
-            <td><input type="text" name="e_date" disabled="disabled" value="" /></td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td>{t}quiqqer/system template.project.media.folder.order{/t}</td>
+        </thead>
+        <tbody>
+        <tr>
             <td>
-                <select name="order">
-                    <option value=""></option>
-                    <option value="priority ASC">
-                        {locale group="quiqqer/system" var="priority_asc"}
-                    </option>
-                    <option value="priority DESC">
-                        {locale group="quiqqer/system" var="priority_desc"}
-                    </option>
-                    <option value="c_date ASC">
-                        {locale group="quiqqer/system" var="c_date_asc"}
-                    </option>
-                    <option value="c_date DESC">
-                        {locale group="quiqqer/system" var="c_date_desc"}
-                    </option>
-                    <option value="name ASC">
-                        {locale group="quiqqer/system" var="name_asc"}
-                    </option>
-                    <option value="name DESC">
-                        {locale group="quiqqer/system" var="name_desc"}
-                    </option>
-                    <option value="title ASC">
-                        {locale group="quiqqer/system" var="name_asc"}
-                    </option>
-                    <option value="title DESC">
-                        {locale group="quiqqer/system" var="name_desc"}
-                    </option>
-                    <option value="id ASC">
-                        {locale group="quiqqer/system" var="id_asc"}
-                    </option>
-                    <option value="id DESC">
-                        {locale group="quiqqer/system" var="id_desc"}
-                    </option>
-                </select>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {t}quiqqer/system id{/t}
+                    </span>
+                    <input type="text" name="id" disabled="disabled" class="field-container-field"/>
+                </label>
             </td>
         </tr>
-    </tbody>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {t}quiqqer/system template.project.media.folder.path{/t}
+                    </span>
+                    <input type="text" name="file" disabled="disabled" class="field-container-field"/>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {t}quiqqer/system template.project.media.folder.size{/t}
+                    </span>
+                    <input type="text" name="size" disabled="disabled" class="field-container-field" value="---"/>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {t}quiqqer/system c_user{/t}
+                    </span>
+                    <input type="text" name="c_username" disabled="disabled" class="field-container-field"/>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {t}quiqqer/system c_date{/t}
+                    </span>
+                    <input type="text" name="c_date" disabled="disabled" class="field-container-field"/>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {t}quiqqer/system e_user{/t}
+                    </span>
+                    <input type="text" name="e_username" disabled="disabled" class="field-container-field"/>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {t}quiqqer/system e_date{/t}
+                    </span>
+                    <input type="text" name="e_date" disabled="disabled" class="field-container-field"/>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {t}quiqqer/system template.project.media.folder.order{/t}
+                    </span>
+                    <select name="order" class="field-container-field">
+                        <option value=""></option>
+                        <option value="priority ASC">
+                            {locale group="quiqqer/system" var="priority_asc"}
+                        </option>
+                        <option value="priority DESC">
+                            {locale group="quiqqer/system" var="priority_desc"}
+                        </option>
+                        <option value="c_date ASC">
+                            {locale group="quiqqer/system" var="c_date_asc"}
+                        </option>
+                        <option value="c_date DESC">
+                            {locale group="quiqqer/system" var="c_date_desc"}
+                        </option>
+                        <option value="name ASC">
+                            {locale group="quiqqer/system" var="name_asc"}
+                        </option>
+                        <option value="name DESC">
+                            {locale group="quiqqer/system" var="name_desc"}
+                        </option>
+                        <option value="title ASC">
+                            {locale group="quiqqer/system" var="name_asc"}
+                        </option>
+                        <option value="title DESC">
+                            {locale group="quiqqer/system" var="name_desc"}
+                        </option>
+                        <option value="id ASC">
+                            {locale group="quiqqer/system" var="id_asc"}
+                        </option>
+                        <option value="id DESC">
+                            {locale group="quiqqer/system" var="id_desc"}
+                        </option>
+                    </select>
+                </label>
+            </td>
+        </tr>
+        </tbody>
     </table>
 
 </div>

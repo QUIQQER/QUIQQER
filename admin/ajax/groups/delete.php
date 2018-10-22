@@ -13,11 +13,13 @@ QUI::$Ajax->registerFunction(
         $Groups = QUI::getGroups();
 
         if (!is_array($gids)) {
-            $gids = array($gids);
+            $gids = [$gids];
         }
 
-        $result = array();
-        $names  = array();
+        $result = [];
+        $names  = [];
+
+        $ExceptionStack = new QUI\ExceptionStack();
 
         foreach ($gids as $gid) {
             try {
@@ -29,28 +31,40 @@ QUI::$Ajax->registerFunction(
                 $result[] = $groupId;
                 $names[]  = $groupName;
             } catch (QUI\Exception $Exception) {
+                $ExceptionStack->addException($Exception);
             }
         }
 
         if (!empty($result)) {
             if (count($result) === 1) {
                 QUI::getMessagesHandler()->addSuccess(
-                    QUI::getLocale()->get('quiqqer/quiqqer', 'message.group.deleted', array(
+                    QUI::getLocale()->get('quiqqer/quiqqer', 'message.group.deleted', [
                         'groupname' => $names[0],
                         'id'        => $result[0]
-                    ))
+                    ])
                 );
             } else {
                 QUI::getMessagesHandler()->addSuccess(
-                    QUI::getLocale()->get('quiqqer/quiqqer', 'message.groups.deleted', array(
+                    QUI::getLocale()->get('quiqqer/quiqqer', 'message.groups.deleted', [
                         'groups' => implode(', ', $result)
-                    ))
+                    ])
                 );
             }
         }
 
+        if (!$ExceptionStack->isEmpty()) {
+            $message = array_map(function ($Exception) {
+                /* @var $Exception QUI\Exception */
+                return $Exception->getMessage();
+            }, $ExceptionStack->getExceptionList());
+
+            QUI::getMessagesHandler()->addAttention(
+                implode("<br>", $message)
+            );
+        }
+
         return $result;
     },
-    array('gids'),
+    ['gids'],
     'Permission::checkSU'
 );

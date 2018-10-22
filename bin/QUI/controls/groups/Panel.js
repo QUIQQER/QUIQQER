@@ -477,15 +477,23 @@ define('controls/groups/Panel', [
                 Edit   = this.getButtons('groupEdit'),
                 Delete = this.getButtons('groupDel');
 
-            if (len === 0) {
-                Edit.disable();
-                Delete.disable();
+            Edit.disable();
+            Delete.disable();
 
+            if (len === 0) {
                 return;
             }
 
+            var selectedData  = this.$Grid.getSelectedData();
+            var guestEveryone = selectedData.filter(function (entry) {
+                return parseInt(entry.id) === 1 || parseInt(entry.id) === 0;
+            }).length;
+
+            if (!guestEveryone) {
+                Delete.enable();
+            }
+
             Edit.enable();
-            Delete.enable();
 
             if ("evt" in data) {
                 data.evt.stop();
@@ -671,11 +679,11 @@ define('controls/groups/Panel', [
 
                 entry = data[i];
 
-                status = (ids[data[i].id]).toInt();
+                status = parseInt(ids[data[i].id]);
                 Status = entry.status;
 
                 // group is active
-                if (status == 1) {
+                if (status === 1) {
                     Status.setAttribute('title', this.getAttribute('active_text'));
                     Status.setSilentOn();
                     continue;
@@ -702,7 +710,7 @@ define('controls/groups/Panel', [
                 id   = Group.getId();
 
             for (i = 0, len = data.length; i < len; i++) {
-                if (data[i].id != id) {
+                if (parseInt(data[i].id) !== id) {
                     continue;
                 }
 
@@ -750,7 +758,7 @@ define('controls/groups/Panel', [
                 return;
             }
 
-            if (seldata.length == 1) {
+            if (seldata.length === 1) {
                 this.openGroup(seldata[0].id);
                 return;
             }
@@ -796,6 +804,11 @@ define('controls/groups/Panel', [
                 data = this.getGrid().getSelectedData();
 
             for (i = 0, len = data.length; i < len; i++) {
+                // everyone and guest is not deletable
+                if (data[i].id === 0 || data[i].id === 1) {
+                    continue;
+                }
+
                 gids.push(data[i].id);
             }
 

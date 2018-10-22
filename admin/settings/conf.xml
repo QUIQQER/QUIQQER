@@ -313,7 +313,7 @@
             <section name="packagestore">
                 <conf name="url">
                     <type><![CDATA[string]]></type>
-                    <defaultvalue><![CDATA[https://backendstore.quiqqer.com/]]></defaultvalue>
+                    <defaultvalue><![CDATA[https://store.quiqqer.com/]]></defaultvalue>
                 </conf>
                 <conf name="agreedToTermsOfUse">
                     <type><![CDATA[bool]]></type>

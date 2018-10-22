@@ -691,33 +691,33 @@ define('controls/projects/project/site/Panel', [
         },
 
         /**
-         * opens the delet dialog
+         * opens the site delete dialog
          */
         del: function () {
             var Site = this.getSite();
 
             require(['qui/controls/windows/Confirm'], function (Confirm) {
                 new Confirm({
-                    title      : Locale.get(lg, 'projects.project.site.panel.window.delete.title', {
+                    title        : Locale.get(lg, 'projects.project.site.panel.window.delete.title', {
                         id: Site.getId()
                     }),
-                    icon       : 'fa fa-trash-o',
-                    text       : Locale.get(lg, 'projects.project.site.panel.window.delete.text', {
+                    icon         : 'fa fa-trash-o',
+                    text         : Locale.get(lg, 'projects.project.site.panel.window.delete.text', {
                         id   : Site.getId(),
                         url  : Site.getAttribute('name') + QUIQQER.Rewrite.SUFFIX,
                         name : Site.getAttribute('name'),
                         title: Site.getAttribute('title')
                     }),
-                    texticon   : 'fa fa-trash-o',
-                    information: Locale.get(lg, 'projects.project.site.panel.window.delete.information', {
+                    texticon     : 'fa fa-trash-o',
+                    information  : Locale.get(lg, 'projects.project.site.panel.window.delete.information', {
                         id   : Site.getId(),
                         url  : Site.getAttribute('name') + QUIQQER.Rewrite.SUFFIX,
                         name : Site.getAttribute('name'),
                         title: Site.getAttribute('title')
                     }),
-                    maxHeight  : 400,
-                    maxWidth   : 600,
-
+                    maxHeight    : 400,
+                    maxWidth     : 600,
+                    autoclose    : false,
                     cancel_button: {
                         text     : Locale.get(lg, 'cancel'),
                         textimage: 'fa fa-remove'
@@ -728,8 +728,14 @@ define('controls/projects/project/site/Panel', [
                     },
 
                     events: {
-                        onSubmit: function () {
-                            Site.del();
+                        onSubmit: function (Win) {
+                            Win.Loader.show();
+
+                            Site.del().then(function () {
+                                Win.close();
+                            }).catch(function () {
+                                Win.Loader.hide();
+                            });
                         }
                     }
                 }).open();
@@ -845,6 +851,35 @@ define('controls/projects/project/site/Panel', [
                 return Promise.resolve();
             }
 
+            var setProject = function () {
+                // set the project to the controls
+                var i, len, Control;
+
+                var Site    = self.getSite(),
+                    Project = Site.getProject(),
+                    Form    = self.getBody().getElement('form'),
+                    quiids  = Form.getElements('[data-quiid]');
+
+                for (i = 0, len = quiids.length; i < len; i++) {
+
+                    Control = QUI.Controls.getById(
+                        quiids[i].get('data-quiid')
+                    );
+
+                    if (!Control) {
+                        continue;
+                    }
+
+                    if (typeOf(Control.setProject) === 'function') {
+                        Control.setProject(Project);
+                    }
+
+                    Control.setAttribute('Site', self.getSite());
+                }
+
+                return self.$categoryOnLoad(Category);
+            };
+
             this.Loader.show();
 
             return this.$onCategoryLeaveHide().then(function () {
@@ -887,7 +922,7 @@ define('controls/projects/project/site/Panel', [
 
                         QUIFormUtils.setDataToForm(self.getSite().getAttributes(), Form);
 
-                        return QUI.parse(Form);
+                        return QUI.parse(Form).then(setProject);
                     });
                 }
 
@@ -1109,30 +1144,7 @@ define('controls/projects/project/site/Panel', [
                                 }
                             }
 
-                            QUI.parse(Form, function () {
-                                // set the project to the controls
-                                var i, len, Control;
-                                var quiids = Form.getElements('[data-quiid]');
-
-                                for (i = 0, len = quiids.length; i < len; i++) {
-
-                                    Control = QUI.Controls.getById(
-                                        quiids[i].get('data-quiid')
-                                    );
-
-                                    if (!Control) {
-                                        continue;
-                                    }
-
-                                    if (typeOf(Control.setProject) === 'function') {
-                                        Control.setProject(Project);
-                                    }
-
-                                    Control.setAttribute('Site', self.getSite());
-                                }
-
-                                self.$categoryOnLoad(Category).then(resolve);
-                            });
+                            QUI.parse(Form).then(setProject).then(resolve);
                         }).catch(function (error) {
                             console.error(error);
                         });
@@ -1260,7 +1272,7 @@ define('controls/projects/project/site/Panel', [
                     callback();
                 }
 
-                return Promise.resolve()
+                return Promise.resolve();
                 //self.getAttribute('Editor').destroy();
             }
 

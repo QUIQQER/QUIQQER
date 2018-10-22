@@ -270,23 +270,44 @@ define('controls/projects/project/media/FolderPanel', [
                 QUIFormUtils.setDataToForm(self.$Folder.getAttributes(), Form);
 
                 Order.setStyles({
-                    'float': 'left'
+                    'borderRadius': 0,
+                    'float'       : 'left'
                 });
 
                 new QUIButton({
-                    alt   : Locale.get(lg, 'projects.project.site.panel.btn.priority'),
-                    title : Locale.get(lg, 'projects.project.site.panel.btn.priority'),
-                    icon  : 'fa fa-sort-amount-asc',
-                    events: {
+                    alt    : Locale.get(lg, 'projects.project.site.panel.btn.priority'),
+                    title  : Locale.get(lg, 'projects.project.site.panel.btn.priority'),
+                    icon   : 'fa fa-sort-amount-asc',
+                    'class': 'field-container-item',
+                    events : {
                         onClick: self.openPriorityOrder
                     },
-                    styles: {
-                        marginTop : 3,
-                        marginLeft: 10
+                    styles : {
+                        border   : '1px solid rgba(147, 128, 108, 0.25)',
+                        boxShadow: 'none',
+                        width    : 50
                     }
                 }).inject(Order, 'after');
 
-                self.Loader.hide();
+                self.$Folder.getSize().then(function (bytes) {
+                    var value;
+                    var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+
+                    bytes = parseInt(bytes);
+
+                    if (bytes === 0) {
+                        value = '0 Byte';
+                    } else {
+                        var i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+                        value = Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+                    }
+
+                    Form.elements.size.value = value;
+
+                    self.Loader.hide();
+                }).catch(function () {
+                    self.Loader.hide();
+                });
             });
         },
 
