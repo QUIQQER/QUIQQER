@@ -157,6 +157,7 @@ define('controls/lang/InputMultiLang', [
 
                 if (languages.length <= 1) {
                     self.$Button.setStyle('display', 'none');
+                    self.$Button.destroy(); // needed because of css bug -> not last child
                 }
 
                 self.$Button.set({
@@ -223,7 +224,11 @@ define('controls/lang/InputMultiLang', [
         /**
          * Toggle the open status
          */
-        toggle: function () {
+        toggle: function (event) {
+            if (typeOf(event) === 'domevent') {
+                event.stop();
+            }
+
             if (this.$Button.getElement('span').hasClass('fa-arrow-circle-o-right')) {
                 this.open();
             } else {
