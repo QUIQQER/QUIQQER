@@ -549,7 +549,8 @@ class Manager
 
         foreach ($obj_permissions as $obj_permission => $value) {
             // parse var type
-            if (isset($permissions[$obj_permission])) {
+            if (isset($permissions[$obj_permission]) ||
+                isset($obj_permissions[$obj_permission])) {
                 $permissions[$obj_permission] = $value;
             }
         }
