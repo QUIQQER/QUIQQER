@@ -388,12 +388,16 @@ class Manager extends QUI\QDOM
             "cache-dir"         => $this->vardir,
             "component-dir"     => OPT_DIR.'bin',
             "quiqqer-dir"       => CMS_DIR,
-            "minimum-stability" => 'dev',
             "secure-http"       => false,
             "preferred-install" => 'dist'
         ];
 
+        if (!isset($composerJson->config)) {
+            $composerJson->config['minimum-stability'] = 'stable';
+        }
+
         if (DEVELOPMENT) {
+            $composerJson->config['minimum-stability'] = 'dev';
             $composerJson->config['preferred-install'] = 'source';
         }
 
@@ -1829,11 +1833,14 @@ class Manager extends QUI\QDOM
 
         file_put_contents($this->composer_lock, $lockContent);
 
-        //Workaround to avoid composer shenanigans with sym links
+        // Workaround to avoid composer shenanigans with sym links
         if (file_exists(OPT_DIR.'bin/mustache')) {
-            QUI::getTemp()->moveToTemp(OPT_DIR.'bin/mustache');
+            try {
+                QUI::getTemp()->moveToTemp(OPT_DIR.'bin/mustache');
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeDebugException($Exception);
+            }
         }
-
 
         return $this->getComposer()->install();
     }
@@ -1854,6 +1861,7 @@ class Manager extends QUI\QDOM
     protected function getOutdatedPackages()
     {
         $repositories = $this->getServerList();
+
         foreach ($repositories as $repo) {
             if ($repo['type'] === 'vcs') {
                 return $this->getComposer()->getOutdatedPackages();
@@ -1865,16 +1873,17 @@ class Manager extends QUI\QDOM
         }
 
         $lockServerEnabled = QUI::conf("globals", "lockserver_enabled");
+
         if (!$lockServerEnabled) {
             return $this->getComposer()->getOutdatedPackages();
         }
 
         // use the lockserver to get the outdated packages
-        $Lockclient  = new QUI\Lockclient\Lockclient();
+        $LockClient  = new QUI\Lockclient\Lockclient();
         $result      = [];
         $constraints = [];
 
-        $outdatedPackages = $Lockclient->getOutdated();
+        $outdatedPackages = $LockClient->getOutdated();
 
         foreach ($outdatedPackages as $outdatedPackage) {
             $packageName = $outdatedPackage['package'];
@@ -1886,15 +1895,17 @@ class Manager extends QUI\QDOM
         }
 
         $onlyStable = true;
+
         if (file_exists(VAR_DIR."composer/composer.json")) {
             $composerJsonContent = file_get_contents(VAR_DIR."composer/composer.json");
             $composerJsonData    = json_decode($composerJsonContent, true);
+
             if (isset($composerJsonData['minimum-stability']) && $composerJsonData['minimum-stability'] != "stable") {
                 $onlyStable = false;
             }
         }
 
-        $latestVersions = $Lockclient->getLatestVersionInContraints($constraints, $onlyStable);
+        $latestVersions = $LockClient->getLatestVersionInContraints($constraints, $onlyStable);
 
         foreach ($outdatedPackages as $outdatedPackage) {
             $packageName    = $outdatedPackage['package'];
