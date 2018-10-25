@@ -365,8 +365,10 @@ class Manager extends QUI\QDOM
 
     /**
      * Create the composer.json file for the system
+     *
+     * @param array $packages - add packages to the composer json
      */
-    protected function createComposerJSON()
+    protected function createComposerJSON($packages = [])
     {
         if (file_exists($this->composer_json)) {
             $composerJson = json_decode(
@@ -503,29 +505,33 @@ class Manager extends QUI\QDOM
         $licenseConfigFile = CMS_DIR.'etc/license.ini.php';
 
         if (file_exists($licenseConfigFile)) {
-            $LicenseConfig    = new QUI\Config($licenseConfigFile);
-            $data             = $LicenseConfig->getSection('license');
-            $licenseServerUrl = QUI::conf('license', 'url');
+            try {
+                $LicenseConfig    = new QUI\Config($licenseConfigFile);
+                $data             = $LicenseConfig->getSection('license');
+                $licenseServerUrl = QUI::conf('license', 'url');
 
-            if (!empty($data['id'])
-                && !empty($data['licenseHash'])
-                && !empty($licenseServerUrl)
-            ) {
-                $hash = bin2hex(QUI\Security\Encryption::decrypt(hex2bin($data['licenseHash'])));
+                if (!empty($data['id'])
+                    && !empty($data['licenseHash'])
+                    && !empty($licenseServerUrl)
+                ) {
+                    $hash = bin2hex(QUI\Security\Encryption::decrypt(hex2bin($data['licenseHash'])));
 
-                $repositories[] = [
-                    'type'    => 'composer',
-                    'url'     => $licenseServerUrl,
-                    'options' => [
-                        'http' => [
-                            'header' => [
-                                'licenseid: '.$data['id'],
-                                'licensehash: '.$hash,
-                                'clientdata: '.bin2hex(json_encode($this->getLicenseClientData()))
+                    $repositories[] = [
+                        'type'    => 'composer',
+                        'url'     => $licenseServerUrl,
+                        'options' => [
+                            'http' => [
+                                'header' => [
+                                    'licenseid: '.$data['id'],
+                                    'licensehash: '.$hash,
+                                    'clientdata: '.bin2hex(json_encode($this->getLicenseClientData()))
+                                ]
                             ]
                         ]
-                    ]
-                ];
+                    ];
+                }
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeDebugException($Exception);
             }
         }
 
@@ -564,6 +570,21 @@ class Manager extends QUI\QDOM
             $composerJson->require = $require;
         }
 
+        if (!empty($packages)) {
+            foreach ($packages as $package => $version) {
+                try {
+                    $this->getInstalledPackage($package);
+
+                    $Parser = new \Composer\Semver\VersionParser();
+                    $Parser->normalize(str_replace('*', '0', $version)); // workaround, normalize cant check 1.*
+
+                    $composerJson->require[$package] = $version;
+                } catch (\Exception $Exception) {
+                    QUI\System\Log::addError($Exception->getMessage());
+                }
+            }
+        }
+
         if ($this->version) {
             $composerJson->require->{"quiqqer/quiqqer"} = $this->version;
         }
@@ -589,6 +610,39 @@ class Manager extends QUI\QDOM
 
         $this->version = $version;
         $this->createComposerJSON();
+    }
+
+    /**
+     * Set the version to packages or a package
+     * This method does not perform an update
+     *
+     * @param array|string $packages - list of packages or package name
+     * @param string $version - wanted version
+     *
+     * @throws \UnexpectedValueException
+     */
+    public function setPackageVersion($packages, $version)
+    {
+        if (!is_array($packages)) {
+            $packages = [$packages];
+        }
+
+        $list = [];
+
+        $Parser = new \Composer\Semver\VersionParser();
+        $Parser->normalize(str_replace('*', '0', $version)); // workaround, normalize cant check 1.*
+
+        foreach ($packages as $package) {
+            try {
+                $this->getInstalledPackage($package);
+
+                $list[$package] = $version;
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeDebugException($Exception);
+            }
+        }
+
+        $this->createComposerJSON($packages);
     }
 
     /**
@@ -1723,9 +1777,13 @@ class Manager extends QUI\QDOM
 
         file_put_contents($this->composer_lock, $lockContent);
 
-        //Workaround to avoid composer shenanigans with sym links
+        // Workaround to avoid composer shenanigans with sym links
         if (file_exists(OPT_DIR.'bin/mustache')) {
-            QUI::getTemp()->moveToTemp(OPT_DIR.'bin/mustache');
+            try {
+                QUI::getTemp()->moveToTemp(OPT_DIR.'bin/mustache');
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeDebugException($Exception);
+            }
         }
 
         return $this->getComposer()->install();
