@@ -1,4 +1,8 @@
 
+1.2.3 (29.10.2018)
+
+    - fix: patch -> quiqqer/quiqqer#772
+
 1.2.2 (24.10.2018)
 
     - fix: permissions -> only user permissions considered -> patch
