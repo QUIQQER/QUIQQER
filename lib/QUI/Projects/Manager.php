@@ -78,7 +78,8 @@ class Manager
      */
     public static function setConfigForProject($project, $params = [])
     {
-        $Project = $project;
+        $Project      = $project;
+        $handedParams = $params;
 
         if (is_string($Project)
             || get_class($Project) != Project::class
@@ -157,9 +158,20 @@ class Manager
 
         // execute the project setup
         $Project = self::getProject($projectName);
-        $Project->setup([
-            'executePackagesSetup' => false
-        ]);
+
+        // if language config has changed,
+        // we need to execute a complete project setup
+        // quiqqer/quiqqer#768
+        // quiqqer/quiqqer#767
+        if (isset($handedParams['langs']) &&
+            isset($projectConfig['langs']) &&
+            $handedParams['langs'] !== $projectConfig['langs']) {
+            $Project->setup();
+        } else {
+            $Project->setup([
+                'executePackagesSetup' => false
+            ]);
+        }
 
         /**
          * clear media cache
