@@ -1,3 +1,12 @@
+
+1.2.2 (24.10.2018)
+
+    - fix: permissions -> only user permissions considered -> patch
+
+1.2.1 (22.10.2018)
+
+    - fix: meta hreflang bugfix
+
 1.2 (30.09.2018)
 
     Main Features

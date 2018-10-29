@@ -12,13 +12,13 @@ QUI::$Ajax->registerFunction(
         $Engine  = QUI::getTemplateManager()->getEngine(true);
         $Project = QUI::getProjectManager()->decode($project);
 
-        $Engine->assign(array(
-            'QUI' => new \QUI(),
+        $Engine->assign([
+            'QUI'     => new QUI(),
             'Project' => $Project
-        ));
+        ]);
 
-        return $Engine->fetch(SYS_DIR . 'template/project/settings.html');
+        return $Engine->fetch(SYS_DIR.'template/project/settings.html');
     },
-    array('project'),
+    ['project'],
     'Permission::checkAdminUser'
 );

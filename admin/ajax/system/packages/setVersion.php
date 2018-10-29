@@ -9,14 +9,14 @@
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_setVersion',
     function ($packages, $version) {
-        QUI::getPackageManager()->setPackage(
+        QUI::getPackageManager()->setPackageVersion(
             json_decode($packages, true),
             $version
         );
     },
-    array('packages', 'version'),
-    array(
+    ['packages', 'version'],
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.update'
-    )
+    ]
 );

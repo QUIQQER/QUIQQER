@@ -11,6 +11,6 @@ QUI::$Ajax->registerFunction(
 
         return $Project->getCustomCSS();
     },
-    array('project'),
+    ['project'],
     'Permission::checkAdminUser'
 );

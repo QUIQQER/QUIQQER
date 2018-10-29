@@ -11,7 +11,7 @@ QUI::$Ajax->registerFunction(
     function ($project) {
         $Project = QUI::getProjectManager()->decode($project);
 
-        $buttonList  = array();
+        $buttonList  = [];
         $settingsXml = QUI::getProjectManager()->getRelatedSettingsXML($Project);
 
         // read template config
@@ -36,6 +36,6 @@ QUI::$Ajax->registerFunction(
 
         return $buttonList;
     },
-    array('project', 'lang'),
+    ['project', 'lang'],
     'Permission::checkAdminUser'
 );

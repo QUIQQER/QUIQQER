@@ -11,6 +11,6 @@ QUI::$Ajax->registerFunction(
     function ($sitetype) {
         return QUI::getPluginManager()->getTypeName($sitetype);
     },
-    array('sitetype'),
+    ['sitetype'],
     'Permission::checkAdminUser'
 );
