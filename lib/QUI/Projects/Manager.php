@@ -167,6 +167,7 @@ class Manager
             isset($projectConfig['langs']) &&
             $handedParams['langs'] !== $projectConfig['langs']) {
             $Project->setup();
+            QUI\Translator::create();
         } else {
             $Project->setup([
                 'executePackagesSetup' => false
