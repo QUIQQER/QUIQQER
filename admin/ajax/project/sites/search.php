@@ -15,11 +15,11 @@ QUI::$Ajax->registerFunction(
         $Project = QUI::getProjectManager()->decode($project);
 
         $sites  = $Project->search($search, $params['fields']);
-        $result = array();
+        $result = [];
 
         foreach ($sites as $Site) {
             /* @var $Site \QUI\Projects\Site */
-            $result[] = array(
+            $result[] = [
                 'id'     => $Site->getId(),
                 'name'   => $Site->getAttribute('name'),
                 'title'  => $Site->getAttribute('title'),
@@ -27,11 +27,11 @@ QUI::$Ajax->registerFunction(
                 'c_user' => $Site->getAttribute('c_user'),
                 'e_date' => $Site->getAttribute('e_date'),
                 'e_user' => $Site->getAttribute('e_user')
-            );
+            ];
         }
 
         return QUI\Utils\Grid::getResult($result, 1, 10);
     },
-    array('project', 'search', 'params'),
+    ['project', 'search', 'params'],
     'Permission::checkAdminUser'
 );

@@ -19,5 +19,5 @@ QUI::$Ajax->registerFunction(
 
         return $Site->getParentId();
     },
-    array('project', 'id')
+    ['project', 'id']
 );

@@ -12,14 +12,14 @@ QUI::$Ajax->registerFunction(
         $Project  = QUI::getProjectManager()->decode($project);
         $Template = QUI::getTemplateManager()->getEngine();
 
-        $Template->assign(array(
+        $Template->assign([
             'Project' => $Project,
-            'Site' => $Project->firstChild()
-        ));
+            'Site'    => $Project->firstChild()
+        ]);
 
         return $Template->fetch(
-            LIB_DIR . 'templates/sitemap.html'
+            LIB_DIR.'templates/sitemap.html'
         );
     },
-    array('project')
+    ['project']
 );

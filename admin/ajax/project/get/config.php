@@ -18,6 +18,6 @@ QUI::$Ajax->registerFunction(
 
         return $Project->getConfig();
     },
-    array('project', 'param'),
+    ['project', 'param'],
     'Permission::checkAdminUser'
 );
