@@ -51,7 +51,7 @@ define('controls/upload/Form', [
             action      : URL_LIB_DIR + 'QUI/Upload/bin/upload.php',
             method      : 'POST', // form method
             maxuploads  : false,  // how many uploads are allowed
-            multible    : false,  // are multible uploads allowed?
+            multiple    : false,  // are multiple uploads allowed?
             sendbutton  : false,  // insert a send button
             cancelbutton: false,  // insert a cancel button
             styles      : false
@@ -72,6 +72,12 @@ define('controls/upload/Form', [
         initialize: function (options) {
             if (typeof options.params !== 'undefined') {
                 this.setParams(options.params);
+            }
+
+            // quiqqer/quiqqer#772
+            if (typeof options.multible !== 'undefined') {
+                options.multiple = options.multible;
+                delete options.multible;
             }
 
             var self = this;
@@ -218,10 +224,10 @@ define('controls/upload/Form', [
             this.$Elm = new Element('div', {
                 'class': 'controls-upload-form',
                 html   : '<div class="controls-upload-info"></div>' +
-                '<div class="controls-upload-buttons"></div>' +
-                '<div class="controls-upload-bg-text">' +
-                Locale.get(lg, 'upload.form.background.text') +
-                '</div>',
+                    '<div class="controls-upload-buttons"></div>' +
+                    '<div class="controls-upload-bg-text">' +
+                    Locale.get(lg, 'upload.form.background.text') +
+                    '</div>',
                 styles : {
                     height: 140
                 }
@@ -423,7 +429,7 @@ define('controls/upload/Form', [
 
             if (this.getAttribute('maxuploads') !== false &&
                 elms.length !== 0 &&
-                this.getAttribute('maxuploads') < elms.length) {
+                this.getAttribute('maxuploads') <= elms.length) {
 
                 QUI.getMessageHandler(function (MH) {
                     MH.addError(
@@ -441,7 +447,7 @@ define('controls/upload/Form', [
             var Input = new Element('input', {
                 type    : "file",
                 name    : "files",
-                multiple: true,
+                multiple: !!this.getAttribute('multiple'),
                 events  : {
                     change: this.$onInputChange.bind(this)
                 },
@@ -601,10 +607,10 @@ define('controls/upload/Form', [
         createInfo: function () {
             this.$Info = new Element('div', {
                 html   : '<div class="file-name">' +
-                Locale.get(lg, 'upload.form.info.text') +
-                '</div>' +
-                '<div class="upload-time"></div>' +
-                '<div class="progress"></div>',
+                    Locale.get(lg, 'upload.form.info.text') +
+                    '</div>' +
+                    '<div class="upload-time"></div>' +
+                    '<div class="progress"></div>',
                 'class': 'upload-manager-file box smooth'
             });
 
