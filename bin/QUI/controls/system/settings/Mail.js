@@ -41,27 +41,12 @@ define('controls/system/settings/Mail', [
          * event : on import
          */
         $onImport: function () {
-            var self    = this,
-                Panel   = this.$Panel,
+            var Panel   = this.$Panel,
                 Content = Panel.getContent();
 
             var Table = Content.getElement('table:last-child');
 
-            // ssl select
-            var Select = Content.getElement('[name="mail.SMTPSecure"]');
-
-            Select.addEvent('change', function () {
-                if (this.value == 'ssl') {
-                    self.showSSLOptions();
-                    return;
-                }
-
-                self.hideSSLOptions();
-            });
-
-            if (Select.value == 'ssl') {
-                self.showSSLOptions();
-            }
+            this.showSSLOptions();
 
             new QUIButton({
                 text     : QUILocale.get('quiqqer/quiqqer', 'test.mail.button'),
@@ -104,35 +89,35 @@ define('controls/system/settings/Mail', [
 
             VerifyPeer.set({
                 html: '<td>' +
-                '  <p>' +
-                '      <label class="checkbox-label hasCheckbox">' +
-                '           <input type="checkbox" name="mail.SMTPSecureSSL_verify_peer" />' +
-                QUILocale.get('quiqqer/quiqqer', 'mail.settings.verify_peer') +
-                '      </label>' +
-                '  </p>' +
-                '</td>'
+                    '  <p>' +
+                    '      <label class="checkbox-label hasCheckbox">' +
+                    '           <input type="checkbox" name="mail.SMTPSecureSSL_verify_peer" />' +
+                    QUILocale.get('quiqqer/quiqqer', 'mail.settings.verify_peer') +
+                    '      </label>' +
+                    '  </p>' +
+                    '</td>'
             });
 
             VerifyPeerName.set({
                 html: '<td>' +
-                '  <p>' +
-                '      <label class="checkbox-label hasCheckbox">' +
-                '           <input type="checkbox" name="mail.SMTPSecureSSL_verify_peer_name" />' +
-                QUILocale.get('quiqqer/quiqqer', 'mail.settings.verify_peer_name') +
-                '      </label>' +
-                '  </p>' +
-                '</td>'
+                    '  <p>' +
+                    '      <label class="checkbox-label hasCheckbox">' +
+                    '           <input type="checkbox" name="mail.SMTPSecureSSL_verify_peer_name" />' +
+                    QUILocale.get('quiqqer/quiqqer', 'mail.settings.verify_peer_name') +
+                    '      </label>' +
+                    '  </p>' +
+                    '</td>'
             });
 
             AllowSelfSigned.set({
                 html: '<td>' +
-                '  <p>' +
-                '      <label class="checkbox-label hasCheckbox">' +
-                '           <input type="checkbox" name="mail.SMTPSecureSSL_allow_self_signed" />' +
-                QUILocale.get('quiqqer/quiqqer', 'mail.settings.allow_self_signed') +
-                '      </label>' +
-                '  </p>' +
-                '</td>'
+                    '  <p>' +
+                    '      <label class="checkbox-label hasCheckbox">' +
+                    '           <input type="checkbox" name="mail.SMTPSecureSSL_allow_self_signed" />' +
+                    QUILocale.get('quiqqer/quiqqer', 'mail.settings.allow_self_signed') +
+                    '      </label>' +
+                    '  </p>' +
+                    '</td>'
             });
 
             VerifyPeer.addClass(evenCssClass ? 'odd' : 'even');

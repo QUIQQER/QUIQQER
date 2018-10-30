@@ -1,3 +1,10 @@
+1.2.4 (30.10.2018)
+
+    - refactor: Mail settings -> always show and set SSL/TLS security settings
+
+1.2.3 (29.10.2018)
+
+    - fix: patch -> quiqqer/quiqqer#772
 
 1.2.2 (24.10.2018)
 

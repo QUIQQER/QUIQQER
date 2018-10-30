@@ -107,20 +107,25 @@ class Manager
                 switch ($config['SMTPSecure']) {
                     case "ssl":
                         $Mail->SMTPSecure = $config['SMTPSecure'];
-
-                        $Mail->SMTPOptions = [
-                            'ssl' => [
-                                'verify_peer'       => (int)$config['SMTPSecureSSL_verify_peer'],
-                                'verify_peer_name'  => (int)$config['SMTPSecureSSL_verify_peer_name'],
-                                'allow_self_signed' => (int)$config['SMTPSecureSSL_allow_self_signed']
-                            ]
-                        ];
                         break;
                     case "tls":
                         $Mail->SMTPSecure = $config['SMTPSecure'];
                         break;
                 }
             }
+
+            /**
+             * These options are set regardless of the "SMTPSecure" setting
+             * because PHPMailer may try to establish a secure connection if the mail
+             * server supports it regardless of the "SMTPSecure" setting.
+             */
+            $Mail->SMTPOptions = [
+                'ssl' => [
+                    'verify_peer'       => (int)$config['SMTPSecureSSL_verify_peer'],
+                    'verify_peer_name'  => (int)$config['SMTPSecureSSL_verify_peer_name'],
+                    'allow_self_signed' => (int)$config['SMTPSecureSSL_allow_self_signed']
+                ]
+            ];
         }
 
         $Mail->From     = $config['MAILFrom'];
