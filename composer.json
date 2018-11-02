@@ -45,6 +45,7 @@
     "ramsey/uuid": "3.*",
     "quiqqer/composer": ">=1.3|dev-master|dev-dev",
     "quiqqer/controls": "1.*|dev-master|dev-dev",
+    "quiqqer/dashboard": "1.*|dev-master|dev-dev",
     "quiqqer/qui": ">=1|dev-master|dev-dev",
     "quiqqer/qui-php": ">=0.12|dev-master|dev-dev",
     "quiqqer/smarty3": "1.*|dev-master|dev-dev",
