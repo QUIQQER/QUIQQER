@@ -330,7 +330,7 @@ define('controls/menu/Manager', [
 
             return new Promise(function (resolve, reject) {
                 require([controlName], function (Control) {
-                    if (typeof Control === 'function') {
+                    if (typeOf(Control) === 'function') {
                         Control();
                         resolve();
                         return;
