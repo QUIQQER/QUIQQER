@@ -41,14 +41,14 @@ class Locale
      *
      * @var array
      */
-    protected $langs = array();
+    protected $langs = [];
 
     /**
      * gettext object
      *
      * @var array
      */
-    protected $gettext = array();
+    protected $gettext = [];
     /**
      * no translation flag
      *
@@ -61,14 +61,14 @@ class Locale
      *
      * @var array
      */
-    protected $inis = array();
+    protected $inis = [];
 
     /**
      * List of internal locale list for setlocale()
      *
      * @var array
      */
-    protected $localeList = array();
+    protected $localeList = [];
 
 
     /**
@@ -157,8 +157,8 @@ class Locale
      */
     public function refresh()
     {
-        $this->gettext = array();
-        $this->langs   = array();
+        $this->gettext = [];
+        $this->langs   = [];
     }
 
     /**
@@ -242,8 +242,10 @@ class Locale
      * @param int $timeType
      * @return \IntlDateFormatter
      */
-    public function getDateFormatter($dateType = \IntlDateFormatter::SHORT, $timeType = \IntlDateFormatter::NONE)
-    {
+    public function getDateFormatter(
+        $dateType = \IntlDateFormatter::SHORT,
+        $timeType = \IntlDateFormatter::NONE
+    ) {
         $localeCode = $this->getLocalesByLang($this->getCurrent());
         $Formatter  = new \IntlDateFormatter($localeCode[0], $dateType, $timeType);
 
@@ -264,7 +266,7 @@ class Locale
         $this->dateFormats = QUI::conf('date_formats');
 
         if (!$this->dateFormats) {
-            $this->dateFormats = array();
+            $this->dateFormats = [];
         }
 
         return $this->dateFormats;
@@ -288,12 +290,12 @@ class Locale
             // if we cannot read locale list, so we must guess
             $langCode = strtolower($lang).'_'.strtoupper($lang);
 
-            $this->localeList[$lang] = array(
+            $this->localeList[$lang] = [
                 $langCode,
                 $langCode.'.utf8',
                 $langCode.'.UTF-8',
                 $langCode.'@euro'
-            );
+            ];
 
             return $this->localeList[$lang];
         }
@@ -303,7 +305,7 @@ class Locale
         $locales = shell_exec('locale -a');
         $locales = explode("\n", $locales);
 
-        $langList = array();
+        $langList = [];
 
         foreach ($locales as $locale) {
             if (strpos($locale, $lang) !== 0) {
@@ -353,11 +355,11 @@ class Locale
     public function set($lang, $group, $key, $value = false)
     {
         if (!isset($this->langs[$lang])) {
-            $this->langs[$lang] = array();
+            $this->langs[$lang] = [];
         }
 
         if (!isset($this->langs[$lang][$group])) {
-            $this->langs[$lang][$group] = array();
+            $this->langs[$lang][$group] = [];
         }
 
         if (!is_array($key)) {
@@ -501,7 +503,7 @@ class Locale
             || !isset($this->langs[$current][$group])
         ) {
             // Kein gettext vorhanden, dann Config einlesen
-            $this->langs[$current][$group] = array();
+            $this->langs[$current][$group] = [];
             $this->initConfig($group, $current);
         }
 
@@ -560,9 +562,9 @@ class Locale
         $file = $GetText->getFile();
 
         System\Log::addWarning(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'message.translation.file.not.found', array(
+            QUI::getLocale()->get('quiqqer/quiqqer', 'message.translation.file.not.found', [
                 'file' => $file
-            ))
+            ])
         );
 
         $this->gettext[$current][$group] = false;
@@ -658,10 +660,10 @@ class Locale
             return $str;
         }
 
-        $group = str_replace(array('[', ']'), '', $str[0]);
+        $group = str_replace(['[', ']'], '', $str[0]);
         $var   = trim($str[1]);
 
-        return array($group, $var);
+        return [$group, $var];
     }
 
     /**

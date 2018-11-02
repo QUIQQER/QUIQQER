@@ -297,7 +297,6 @@ require(requireList, function () {
 
         // resizing
         QUI.addEvent('resize', function () {
-
             Container.setStyles({
                 height: QUI.getWindowSize().y - menuY,
                 width : QUI.getWindowSize().x

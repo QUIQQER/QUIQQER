@@ -1595,6 +1595,9 @@
         <locale name="control.grid.menu.button">
             <en><![CDATA[Menu]]></en>
         </locale>
+        <locale name="panels.messages.title">
+            <en><![CDATA[Messages]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">
         <locale name="yes">

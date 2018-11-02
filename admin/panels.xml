@@ -14,17 +14,6 @@
             </text>
         </panel>
 
-        <!-- quiqqer Help panel -->
-        <panel require="controls/desktop/panels/Help">
-            <image>fa fa-h-square</image>
-            <title>
-                <locale group="quiqqer/system" var="panels.help.title"/>
-            </title>
-            <text>
-                <locale group="quiqqer/system" var="panels.help.description"/>
-            </text>
-        </panel>
-
         <!-- quiqqer Bookmarks -->
         <panel require="controls/desktop/panels/Bookmarks">
             <image>fa fa-bookmark</image>

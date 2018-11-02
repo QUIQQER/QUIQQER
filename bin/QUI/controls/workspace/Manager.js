@@ -25,8 +25,6 @@ define('controls/workspace/Manager', [
     'qui/controls/contextmenu/Separator',
     'qui/utils/Controls',
 
-    'controls/help/Dashboard',
-    'controls/desktop/panels/Help',
     'controls/desktop/panels/Bookmarks',
     'controls/projects/project/Panel',
     'controls/grid/Grid',
@@ -56,16 +54,14 @@ define('controls/workspace/Manager', [
         QUIContextmenuSeparator = arguments[12],
         QUIControlUtils         = arguments[13],
 
-        WelcomePanel            = arguments[14],
-        HelpPanel               = arguments[15],
-        BookmarkPanel           = arguments[16],
-        ProjectPanel            = arguments[17],
-        Grid                    = arguments[18],
-        Ajax                    = arguments[19],
-        Locale                  = arguments[20],
-        UploadManager           = arguments[21],
-        Mustache                = arguments[22],
-        templateCreate          = arguments[23];
+        BookmarkPanel           = arguments[14],
+        ProjectPanel            = arguments[15],
+        Grid                    = arguments[16],
+        Ajax                    = arguments[17],
+        Locale                  = arguments[18],
+        UploadManager           = arguments[19],
+        Mustache                = arguments[20],
+        templateCreate          = arguments[21];
 
 
     return new Class({
@@ -130,7 +126,7 @@ define('controls/workspace/Manager', [
         /**
          * Create the DOMNode Element
          *
-         * @return {HTMLElement}
+         * @return {Element}
          */
         create: function () {
             this.$Elm = new Element('div', {
@@ -510,6 +506,14 @@ define('controls/workspace/Manager', [
                 for (c = 0, clen = children.length; c < clen; c++) {
                     if (children[c].type === 'qui/controls/desktop/Tasks') {
                         delete data[i].children[c].attributes.limit;
+                        continue;
+                    }
+
+                    if (children[c].type === 'qui/controls/messages/Panel') {
+                        data[i].children[c].attributes.title = Locale.get(
+                            'quiqqer/quiqqer',
+                            'panels.messages.title'
+                        );
                     }
                 }
             }
@@ -743,7 +747,6 @@ define('controls/workspace/Manager', [
             panels.Bookmarks.setAttribute('height', 400);
             panels.Messages.setAttribute('height', 100);
             panels.Uploads.setAttribute('height', 300);
-            panels.Help.setAttribute('height', 400);
 
             // insert panels
             LeftColumn.appendChild(panels.Projects);
@@ -753,9 +756,6 @@ define('controls/workspace/Manager', [
 
             RightColumn.appendChild(panels.Messages);
             RightColumn.appendChild(panels.Uploads);
-            RightColumn.appendChild(panels.Help);
-
-            panels.Help.minimize();
 
             Workspace.fix();
         },
@@ -788,17 +788,13 @@ define('controls/workspace/Manager', [
             panels.Bookmarks.setAttribute('height', 300);
             panels.Messages.setAttribute('height', 100);
             panels.Uploads.setAttribute('height', 100);
-            panels.Help.setAttribute('height', 100);
 
             LeftColumn.appendChild(panels.Projects);
             LeftColumn.appendChild(panels.Bookmarks);
             LeftColumn.appendChild(panels.Messages);
             LeftColumn.appendChild(panels.Uploads);
-            LeftColumn.appendChild(panels.Help);
 
             MiddleColumn.appendChild(panels.Tasks);
-
-            panels.Help.minimize();
 
             Workspace.fix();
         },
@@ -872,16 +868,12 @@ define('controls/workspace/Manager', [
                 name : 'tasks'
             });
 
-            Tasks.appendChild(new WelcomePanel());
-
-
             return {
                 Projects : new ProjectPanel(),
                 Bookmarks: Bookmarks,
                 Tasks    : Tasks,
                 Messages : new QUIMessagePanel(),
-                Uploads  : UploadManager,
-                Help     : new HelpPanel()
+                Uploads  : UploadManager
             };
         },
 
@@ -1213,6 +1205,19 @@ define('controls/workspace/Manager', [
 
                         Column.highlight();
 
+                        var click = function (event) {
+                            var Target = event.target;
+
+                            if (Target.nodeName !== 'div') {
+                                Target = Target.getParent('div');
+                            }
+
+                            self.appendControlToColumn(
+                                Target.get('data-require'),
+                                Column
+                            );
+                        };
+
                         // loads available panels
                         self.getAvailablePanels(function (panels) {
                             var i, len, Elm, Icon;
@@ -1223,16 +1228,11 @@ define('controls/workspace/Manager', [
 
                                 Elm = new Element('div', {
                                     html          : '<h2>' + panels[i].title + '</h2>' +
-                                    '<p>' + panels[i].text + '</p>',
+                                        '<p>' + panels[i].text + '</p>',
                                     'class'       : 'qui-controls-workspace-panelList-panel smooth',
                                     'data-require': panels[i].require,
                                     events        : {
-                                        click: function () {
-                                            self.appendControlToColumn(
-                                                this.get('data-require'),
-                                                Column
-                                            );
-                                        }
+                                        click: click
                                     }
                                 }).inject(Content);
 

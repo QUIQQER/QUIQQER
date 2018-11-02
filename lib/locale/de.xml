@@ -1618,6 +1618,9 @@
         <locale name="control.grid.menu.button">
             <de><![CDATA[Menü]]></de>
         </locale>
+        <locale name="panels.messages.title">
+            <de><![CDATA[Nachrichten]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">
         <locale name="yes">
