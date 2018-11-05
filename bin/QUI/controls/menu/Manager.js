@@ -330,6 +330,12 @@ define('controls/menu/Manager', [
 
             return new Promise(function (resolve, reject) {
                 require([controlName], function (Control) {
+                    if (typeOf(Control) === 'function') {
+                        Control();
+                        resolve();
+                        return;
+                    }
+
                     var Ctrl = new Control(attributes);
 
                     if (instanceOf(Ctrl, Panel)) {

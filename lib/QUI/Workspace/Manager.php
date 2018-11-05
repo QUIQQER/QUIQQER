@@ -29,13 +29,13 @@ class Manager
     }
 
     /**
-     * Setup for the user workespaces
+     * Setup for the user workspaces
      */
     public static function setup()
     {
         $Table = QUI::getDataBase()->table();
 
-        $Table->addColumn(self::table(), array(
+        $Table->addColumn(self::table(), [
             'id'        => 'int(11) NOT NULL',
             'uid'       => 'int(11) NOT NULL',
             'title'     => 'text',
@@ -43,7 +43,7 @@ class Manager
             'minHeight' => 'int',
             'minWidth'  => 'int',
             'standard'  => 'int(1)'
-        ));
+        ]);
 
         $Table->setAutoIncrement(self::table(), 'id');
         $Table->setPrimaryKey(self::table(), 'id');
@@ -66,13 +66,13 @@ class Manager
         $minHeight = (int)$minHeight;
         $minWidth  = (int)$minWidth;
 
-        QUI::getDataBase()->insert(self::table(), array(
+        QUI::getDataBase()->insert(self::table(), [
             'uid'       => $User->getId(),
             'title'     => $title,
             'data'      => $data,
             'minHeight' => $minHeight,
             'minWidth'  => $minWidth
-        ));
+        ]);
 
         return QUI::getDataBase()->getPDO()->lastInsertId('id');
     }
@@ -85,10 +85,10 @@ class Manager
      */
     public static function deleteWorkspace($id, $User)
     {
-        QUI::getDataBase()->delete(self::table(), array(
+        QUI::getDataBase()->delete(self::table(), [
             'uid' => $User->getId(),
             'id'  => (int)$id
-        ));
+        ]);
     }
 
     /**
@@ -100,12 +100,12 @@ class Manager
      */
     public static function getWorkspacesByUser(QUI\Users\User $User)
     {
-        $result = QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch([
             'from'  => self::table(),
-            'where' => array(
+            'where' => [
                 'uid' => $User->getId()
-            )
-        ));
+            ]
+        ]);
 
         return $result;
     }
@@ -122,14 +122,14 @@ class Manager
      */
     public static function getWorkspaceById($id, $User)
     {
-        $result = QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch([
             'from'  => self::table(),
-            'where' => array(
+            'where' => [
                 'id'  => $id,
                 'uid' => $User->getId()
-            ),
+            ],
             'limit' => 1
-        ));
+        ]);
 
         if (!isset($result[0])) {
             throw new QUI\Exception(
@@ -154,7 +154,7 @@ class Manager
     public static function getWorkspacesTitlesByUser(QUI\Users\User $User)
     {
         $workspaces = self::getWorkspacesByUser($User);
-        $result     = array();
+        $result     = [];
 
         foreach ($workspaces as $entry) {
             $result[] = $entry['title'];
@@ -169,8 +169,10 @@ class Manager
      * @param \QUI\Users\User $User
      * @param integer $id
      * @param array $data
+     *
+     * @throws QUI\Exception
      */
-    public static function saveWorkspace(QUI\Users\User $User, $id, $data = array())
+    public static function saveWorkspace(QUI\Users\User $User, $id, $data = [])
     {
         $workspace = self::getWorkspaceById($id, $User);
 
@@ -191,14 +193,10 @@ class Manager
             $workspace['data'] = json_encode($data['data']);
         }
 
-        QUI::getDataBase()->update(
-            self::table(),
-            $workspace,
-            array(
-                'id'  => $id,
-                'uid' => $User->getId()
-            )
-        );
+        QUI::getDataBase()->update(self::table(), $workspace, [
+            'id'  => $id,
+            'uid' => $User->getId()
+        ]);
 
 
         if (isset($data['standard']) && (int)$data['standard'] === 1) {
@@ -217,18 +215,18 @@ class Manager
         // all to no standard
         QUI::getDataBase()->update(
             self::table(),
-            array('standard' => 0),
-            array('uid' => $User->getId())
+            ['standard' => 0],
+            ['uid' => $User->getId()]
         );
 
         // standard
         QUI::getDataBase()->update(
             self::table(),
-            array('standard' => 1),
-            array(
+            ['standard' => 1],
+            [
                 'id'  => $id,
                 'uid' => $User->getId()
-            )
+            ]
         );
     }
 
@@ -246,9 +244,9 @@ class Manager
         } catch (QUI\Exception $Exception) {
         }
 
-        $panels   = array();
+        $panels   = [];
         $xmlFiles = array_merge(
-            array(SYS_DIR.'panels.xml'),
+            [SYS_DIR.'panels.xml'],
             QUI::getPackageManager()->getPackageXMLFiles('panels.xml')
         );
 
@@ -259,7 +257,11 @@ class Manager
             );
         }
 
-        QUI\Cache\Manager::set($cache, $panels);
+        try {
+            QUI\Cache\Manager::set($cache, $panels);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeDebugException($Exception);
+        }
 
         return $panels;
     }

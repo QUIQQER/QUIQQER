@@ -603,6 +603,9 @@
         <locale name="year">
             <de><![CDATA[Jahr]]></de>
         </locale>
+        <locale name="month">
+            <de><![CDATA[Monat]]></de>
+        </locale>
         <locale name="month.01">
             <de><![CDATA[Januar]]></de>
         </locale>
@@ -1617,6 +1620,9 @@
         </locale>
         <locale name="control.grid.menu.button">
             <de><![CDATA[Menü]]></de>
+        </locale>
+        <locale name="panels.messages.title">
+            <de><![CDATA[Nachrichten]]></de>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">
