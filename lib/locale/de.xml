@@ -603,6 +603,9 @@
         <locale name="year">
             <de><![CDATA[Jahr]]></de>
         </locale>
+        <locale name="month">
+            <de><![CDATA[Monat]]></de>
+        </locale>
         <locale name="month.01">
             <de><![CDATA[Januar]]></de>
         </locale>
