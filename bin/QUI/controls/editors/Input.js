@@ -29,12 +29,12 @@ define('controls/editors/Input', [
         initialize: function (options) {
             this.parent(options);
 
-            this.$Input   = null;
-            this.$Editor  = null;
+            this.$Input = null;
+            this.$Editor = null;
             this.$Project = null;
             this.$Preview = null;
-            this.$Click   = null;
-            this.$opened  = false;
+            this.$Click = null;
+            this.$opened = false;
 
             this.addEvents({
                 onImport: this.$onImport
@@ -47,7 +47,7 @@ define('controls/editors/Input', [
         $onImport: function () {
             var self = this;
 
-            this.$Input      = this.getElm();
+            this.$Input = this.getElm();
             this.$Input.type = 'hidden';
 
             this.$Input.addEvent('change', function () {
@@ -121,11 +121,10 @@ define('controls/editors/Input', [
          * open the editor window
          */
         open: function (event) {
-
             if (typeOf(event) === 'domevent') {
                 event.stop();
             }
-            console.warn(this.$opened);
+
             if (this.$opened) {
                 return;
             }
@@ -135,7 +134,7 @@ define('controls/editors/Input', [
             var self = this;
 
             new QUIConfirm({
-                title    : 'Inhalt einfügen',
+                title    : 'Inhalt einfügen', // #locale
                 maxHeight: 600,
                 maxWidth : 800,
                 events   : {
@@ -162,6 +161,15 @@ define('controls/editors/Input', [
 
                         self.$Input.value = self.$Editor.getContent();
                         self.$Preview.setContent(self.$Input.value);
+
+                        // trigger change event
+                        if ("createEvent" in document) {
+                            var evt = document.createEvent("HTMLEvents");
+                            evt.initEvent("change", false, true);
+                            self.$Input.dispatchEvent(evt);
+                        } else {
+                            self.$Input.fireEvent("onchange");
+                        }
                     },
 
                     onClose: function () {
