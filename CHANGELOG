@@ -1,3 +1,7 @@
+1.2.5 (08.11.2018)
+
+    - fix: `+` is not an illegal character in an email.
+
 1.2.4 (30.10.2018)
 
     - refactor: Mail settings -> always show and set SSL/TLS security settings
