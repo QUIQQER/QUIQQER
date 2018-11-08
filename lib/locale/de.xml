@@ -1816,7 +1816,7 @@
             <de><![CDATA[Ersteller]]></de>
         </locale>
         <locale name="e_date">
-            <de><![CDATA[Editierungsdatum]]></de>
+            <de><![CDATA[Änderungsdatum]]></de>
         </locale>
         <locale name="e_user">
             <de><![CDATA[Letzter Bearbeiter]]></de>

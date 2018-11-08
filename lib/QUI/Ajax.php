@@ -99,7 +99,7 @@ class Ajax extends QUI\QDOM
      * @param string $name - Name of the function
      * @param callable $function - Function
      * @param array $reg_vars - Variables of the function
-     * @param bool|false $user_perm - (optional) permissions / rights
+     * @param bool|false|array|string $user_perm - (optional) permissions / rights
      *
      * @return bool
      */
