@@ -58,6 +58,8 @@ define('controls/editors/Settings', [
         $onCreate: function () {
             var self = this;
 
+            this.setAttribute('title', Locale.get('quiqqer/system', 'editors.settings.title'));
+
             this.addButton({
                 name     : 'toolbarAdd',
                 text     : Locale.get(
@@ -103,14 +105,14 @@ define('controls/editors/Settings', [
                     }
                 }
             });
-
-            this.addCategory({
-                text: 'Toolbars'
-            });
-
-            this.addCategory({
-                text: 'Plugins'
-            });
+            //
+            // this.addCategory({
+            //     text: 'Toolbars'
+            // });
+            //
+            // this.addCategory({
+            //     text: 'Plugins'
+            // });
 
             var Container = new Element('div').inject(
                 this.getContent()

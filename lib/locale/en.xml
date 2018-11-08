@@ -2380,7 +2380,7 @@
             <en><![CDATA[Start search]]></en>
         </locale>
         <locale name="editors.settings.title">
-            <en><![CDATA[WYSIWYG-Editor]]></en>
+            <en><![CDATA[Toolbar management for the content editor]]></en>
         </locale>
         <locale name="editors.settings.btn.edit.toolbar">
             <en><![CDATA[Edit the toolbar]]></en>
@@ -4306,7 +4306,7 @@
             <en><![CDATA[Media settings]]></en>
         </locale>
         <locale name="menu.settings.editor.text">
-            <en><![CDATA[WYSIWYG-Editor]]></en>
+            <en><![CDATA[Toolbar management for the content editor]]></en>
         </locale>
         <locale name="menu.settings.vhosts.text">
             <en><![CDATA[Virtual hosts]]></en>

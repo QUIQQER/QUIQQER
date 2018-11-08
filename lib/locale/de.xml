@@ -2437,7 +2437,7 @@
             <de><![CDATA[Suche starten]]></de>
         </locale>
         <locale name="editors.settings.title">
-            <de><![CDATA[WYSIWYG-Editor]]></de>
+            <de><![CDATA[Toolbar Verwaltung für den Inhaltseditor]]></de>
         </locale>
         <locale name="editors.settings.btn.edit.toolbar">
             <de><![CDATA[Toolbar editieren]]></de>
@@ -4440,7 +4440,7 @@
             <de><![CDATA[Media-Einstellungen]]></de>
         </locale>
         <locale name="menu.settings.editor.text">
-            <de><![CDATA[WYSIWYG-Editor]]></de>
+            <de><![CDATA[Toolbar Verwaltung für den Inhaltseditor]]></de>
         </locale>
         <locale name="menu.settings.vhosts.text">
             <de><![CDATA[Virtual Hosts]]></de>
