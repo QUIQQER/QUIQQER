@@ -1,3 +1,7 @@
+1.2.6 (08.11.2018)
+
+    - fix: Wrong store url fixed
+
 1.2.5 (08.11.2018)
 
     - fix: `+` is not an illegal character in an email.
