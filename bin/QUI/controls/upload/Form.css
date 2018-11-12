@@ -39,6 +39,12 @@
     z-index: 2;
 }
 
+.controls-upload-buttons button {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
 .controls-upload-bg-text {
     color: #999;
     font-size: 14px;
@@ -48,8 +54,8 @@
     text-align: center;
     top: 0;
     transform-style: preserve-3d;
-        -webkit-transform-style: preserve-3d;
-        -moz-transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
     width: 100%;
     z-index: 1;
 }
@@ -83,10 +89,9 @@
     overflow: hidden;
     padding: 5px 5px 5px 25px;
     text-overflow: ellipsis;
-    width: calc( 100% - 40px );
+    width: calc(100% - 40px);
     white-space: nowrap;
 }
-
 
 .controls-upload-form-fileinfo:hover {
     background-color: #2F8FC6;
