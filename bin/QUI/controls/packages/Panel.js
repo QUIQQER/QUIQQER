@@ -273,16 +273,7 @@ define('controls/packages/Panel', [
         $loadControl: function (ctrl) {
             var self = this;
 
-            switch (ctrl) {
-                case 'controls/packages/SystemCheck':
-                    this.Loader.show(QUILocale.get(
-                        lg, 'packages.panel.category.systemcheck.loader'
-                    ));
-                    break;
-
-                default:
-                    this.Loader.show();
-            }
+            this.Loader.show();
 
             return this.$hideControl(self.$Control).then(function () {
                 return new Promise(function (resolve) {

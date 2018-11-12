@@ -6175,6 +6175,12 @@
         <locale name="projects.project.site.select.btn.addTypes">
             <en><![CDATA[Add a site type]]></en>
         </locale>
+        <locale name="packages.panel.category.systemcheck.execbutton">
+            <en><![CDATA[Run system check]]></en>
+        </locale>
+        <locale name="packages.panel.category.systemcheck.textinfo">
+            <en><![CDATA[This process may take some time.]]></en>
+        </locale>
         <locale name="packages.panel.category.systemcheck.loader">
             <en><![CDATA[The system check is running, this can take up to 30 seconds.]]></en>
         </locale>
