@@ -1090,13 +1090,9 @@ class Project
         }
 
         // Aktivflag abfragen
-        if (isset($sql['where']) && is_array($sql['where'])
-            && !isset($sql['where']['active'])
-        ) {
+        if (isset($sql['where']) && is_array($sql['where']) && !isset($sql['where']['active'])) {
             $sql['where']['active'] = 1;
-        } elseif (isset($sql['where']['active'])
-                  && $sql['where']['active'] == -1
-        ) {
+        } elseif (isset($sql['where']['active']) && $sql['where']['active'] == -1) {
             unset($sql['where']['active']);
         } elseif (isset($sql['where']) && is_string($sql['where'])) {
             $sql['where'] .= ' AND active = 1';

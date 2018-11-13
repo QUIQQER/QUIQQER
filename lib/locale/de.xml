@@ -1816,7 +1816,7 @@
             <de><![CDATA[Ersteller]]></de>
         </locale>
         <locale name="e_date">
-            <de><![CDATA[Editierungsdatum]]></de>
+            <de><![CDATA[Änderungsdatum]]></de>
         </locale>
         <locale name="e_user">
             <de><![CDATA[Letzter Bearbeiter]]></de>
@@ -2437,7 +2437,7 @@
             <de><![CDATA[Suche starten]]></de>
         </locale>
         <locale name="editors.settings.title">
-            <de><![CDATA[WYSIWYG-Editor]]></de>
+            <de><![CDATA[Toolbar Verwaltung für den Inhaltseditor]]></de>
         </locale>
         <locale name="editors.settings.btn.edit.toolbar">
             <de><![CDATA[Toolbar editieren]]></de>
@@ -4440,7 +4440,7 @@
             <de><![CDATA[Media-Einstellungen]]></de>
         </locale>
         <locale name="menu.settings.editor.text">
-            <de><![CDATA[WYSIWYG-Editor]]></de>
+            <de><![CDATA[Toolbar Verwaltung für den Inhaltseditor]]></de>
         </locale>
         <locale name="menu.settings.vhosts.text">
             <de><![CDATA[Virtual Hosts]]></de>
@@ -6356,6 +6356,12 @@
         </locale>
         <locale name="projects.project.site.select.btn.addTypes">
             <de><![CDATA[Seitentyp hinzufügen ]]></de>
+        </locale>
+        <locale name="packages.panel.category.systemcheck.execbutton">
+            <de><![CDATA[System Check ausführen]]></de>
+        </locale>
+        <locale name="packages.panel.category.systemcheck.textinfo">
+            <de><![CDATA[Dieser Vorgang kann einige Zeit in Anspruch nehmen.]]></de>
         </locale>
         <locale name="packages.panel.category.systemcheck.loader">
             <de><![CDATA[Der System Check läuft, dies kann bis zu 30 Sekunden dauern.]]></de>

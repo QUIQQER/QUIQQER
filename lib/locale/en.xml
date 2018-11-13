@@ -2284,7 +2284,10 @@
             <en><![CDATA[The permission will be permanently deleted.]]></en>
         </locale>
         <locale name="permissions.panel.welcome.message" html="true">
-            <en><![CDATA[            ]]></en>
+            <en><![CDATA[
+            <h1>Manage access privileges</h1>
+            Use the sidebar list to allow or deny users and groups access to specific pages, projects, or features.
+            ]]></en>
         </locale>
         <locale name="permissions.panel.window.add.title">
             <en><![CDATA[Add permission]]></en>
@@ -2377,7 +2380,7 @@
             <en><![CDATA[Start search]]></en>
         </locale>
         <locale name="editors.settings.title">
-            <en><![CDATA[WYSIWYG-Editor]]></en>
+            <en><![CDATA[Toolbar management for the content editor]]></en>
         </locale>
         <locale name="editors.settings.btn.edit.toolbar">
             <en><![CDATA[Edit the toolbar]]></en>
@@ -4303,7 +4306,7 @@
             <en><![CDATA[Media settings]]></en>
         </locale>
         <locale name="menu.settings.editor.text">
-            <en><![CDATA[WYSIWYG-Editor]]></en>
+            <en><![CDATA[Toolbar management for the content editor]]></en>
         </locale>
         <locale name="menu.settings.vhosts.text">
             <en><![CDATA[Virtual hosts]]></en>
@@ -6171,6 +6174,12 @@
         </locale>
         <locale name="projects.project.site.select.btn.addTypes">
             <en><![CDATA[Add a site type]]></en>
+        </locale>
+        <locale name="packages.panel.category.systemcheck.execbutton">
+            <en><![CDATA[Run system check]]></en>
+        </locale>
+        <locale name="packages.panel.category.systemcheck.textinfo">
+            <en><![CDATA[This process may take some time.]]></en>
         </locale>
         <locale name="packages.panel.category.systemcheck.loader">
             <en><![CDATA[The system check is running, this can take up to 30 seconds.]]></en>

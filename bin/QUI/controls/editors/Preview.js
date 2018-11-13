@@ -31,12 +31,13 @@ define('controls/editors/Preview', [
         initialize: function (options) {
             this.parent(options);
 
-            this.$Input   = null;
-            this.$Editor  = null;
+            this.$Input = null;
+            this.$Editor = null;
             this.$Project = null;
             this.$Preview = null;
 
             this.$loaded = false;
+            this.$cssFileCount = {};
 
             this.addEvents({
                 onImport: this.$onImport
@@ -65,7 +66,7 @@ define('controls/editors/Preview', [
 
             return this.$Elm;
         },
-        
+
         /**
          * event : on load
          */
@@ -91,6 +92,24 @@ define('controls/editors/Preview', [
          * @param {String} file
          */
         addCSSFile: function (file) {
+            // workaround if dom is not responsible
+            if (!this.$Elm.contentWindow.document.head) {
+                if (typeof this.$cssFileCount[file] === 'undefined') {
+                    this.$cssFileCount[file] = 0;
+                }
+
+                if (this.$cssFileCount[file] > 20) {
+                    return; // shit happens
+                }
+
+                this.$cssFileCount[file]++;
+
+                (function () {
+                    this.addCSSFile(file);
+                }).delay(100, this);
+                return;
+            }
+
             new Element('link', {
                 href: file,
                 rel : "stylesheet",

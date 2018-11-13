@@ -1,3 +1,15 @@
+1.2.7 (13.11.2018)
+
+    - fix: patch -> quiqqer/quiqqer#788 - The wrong project at the media popup
+
+1.2.6 (08.11.2018)
+
+    - fix: Wrong store url fixed
+
+1.2.5 (08.11.2018)
+
+    - fix: `+` is not an illegal character in an email.
+
 1.2.4 (30.10.2018)
 
     - refactor: Mail settings -> always show and set SSL/TLS security settings
