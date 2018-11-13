@@ -46,7 +46,7 @@ class Autoloader
 
         // exists quiqqer?
         if (!class_exists('\QUI', false)) {
-            require_once __DIR__ . '/QUI.php';
+            require_once __DIR__.'/QUI.php';
         }
 
         if ($classname == 'QUI') {
@@ -75,7 +75,7 @@ class Autoloader
                 return true;
             }
 
-            $file = USR_DIR . substr($classname, 9) . '.php';
+            $file = USR_DIR.substr($classname, 9).'.php';
             $file = str_replace('\\', '/', $file);
 
             if (file_exists($file)) {
@@ -93,52 +93,7 @@ class Autoloader
 
         // use now the composer loader
         if (!self::$ComposerLoader) {
-            if (!class_exists('\Composer\Autoload\ClassLoader')) {
-                require OPT_DIR . 'composer/ClassLoader.php';
-            }
-
-            if ($classname == 'Composer\Autoload\ClassLoader') {
-                return true;
-            }
-
-            self::$ComposerLoader = new \Composer\Autoload\ClassLoader();
-
-            // include paths
-            if (file_exists(OPT_DIR . 'composer/include_paths.php')) {
-                $includePaths = require OPT_DIR . 'composer/include_paths.php';
-
-                array_push($includePaths, get_include_path());
-                set_include_path(join(PATH_SEPARATOR, $includePaths));
-            }
-
-            // include files
-            if (!defined('QUIQQER_SETUP')) {
-                $files = require OPT_DIR . 'composer/autoload_files.php';
-
-                foreach ($files as $namespace => $path) {
-                    include $path;
-                }
-            }
-            
-            // namespaces
-            $map      = require OPT_DIR . 'composer/autoload_namespaces.php';
-            $classMap = require OPT_DIR . 'composer/autoload_classmap.php';
-            $psr4     = require OPT_DIR . 'composer/autoload_psr4.php';
-
-            // add lib to the namespace
-            self::$ComposerLoader->add('QUI', LIB_DIR);
-
-            foreach ($map as $namespace => $path) {
-                self::$ComposerLoader->add($namespace, $path);
-            }
-
-            foreach ($psr4 as $namespace => $path) {
-                self::$ComposerLoader->addPsr4($namespace, $path);
-            }
-
-            if ($classMap) {
-                self::$ComposerLoader->addClassMap($classMap);
-            }
+            self::$ComposerLoader = require dirname(dirname(dirname(dirname(__FILE__)))).'/autoload.php';
         }
 
         return self::$ComposerLoader->loadClass($classname);
