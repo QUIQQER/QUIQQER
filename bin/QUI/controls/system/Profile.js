@@ -3,14 +3,6 @@
  *
  * @module controls/system/Profile
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/windows/Confirm
- * @require qui/utils/Form
- * @require utils/Controls
- * @require Ajax
- * @require Locale
- * @require css!controls/system/Profile.css
  */
 define('controls/system/Profile', [
 
