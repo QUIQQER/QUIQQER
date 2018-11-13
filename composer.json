@@ -37,7 +37,7 @@
     "symfony/http-foundation": ">=2.3|3.*|4.2.*",
     "symfony/console": "~2.7",
     "html2text/html2text": "1.0.1",
-    "intervention/image": "2.2.*",
+    "intervention/image": "2.*",
     "t7systems/blowfish": "1.0.0",
     "pcsg/composer-assets": "^1.0.1",
     "dusank/knapsack": "8.*",
