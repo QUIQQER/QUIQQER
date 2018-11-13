@@ -48,6 +48,16 @@ define('controls/grid/Grid', [
              QUIContextItem, ControlUtils, QUILocale) {
     "use strict";
 
+    var Panel = null;
+
+    var resizeMeInThePanel = function () {
+        this.resize();
+
+        if (Panel) {
+            Panel.removeEvent('resize', resizeMeInThePanel);
+        }
+    };
+
     /**
      * @class controls/grid/Grid
      *
@@ -177,20 +187,14 @@ define('controls/grid/Grid', [
                 return;
             }
 
-            var Panel = QUI.Controls.getById(PanelNode.get('data-quiid'));
+            Panel = QUI.Controls.getById(PanelNode.get('data-quiid'));
 
             if (!Panel) {
                 return;
             }
 
-            var self = this;
-
-            var resizeMeInThePanel = function () {
-                self.resize();
-                Panel.removeEvent('resize', resizeMeInThePanel);
-            };
-
-            Panel.addEvent('resize', resizeMeInThePanel);
+            Panel.addEvent('resize', resizeMeInThePanel.bind(this));
+            Panel.addEvent('show', resizeMeInThePanel.bind(this));
 
             (function () {
                 Panel.removeEvent('resize', resizeMeInThePanel);
@@ -211,6 +215,21 @@ define('controls/grid/Grid', [
             });
 
             this.container.removeClass('omnigrid');
+
+            var PanelNode = this.container.getParent('.qui-panel');
+
+            if (!PanelNode) {
+                return;
+            }
+
+            var Panel = QUI.Controls.getById(PanelNode.get('data-quiid'));
+
+            if (!Panel) {
+                return;
+            }
+
+            Panel.addEvent('resize', resizeMeInThePanel);
+            Panel.addEvent('show', resizeMeInThePanel);
         },
 
         // API
@@ -1950,8 +1969,8 @@ define('controls/grid/Grid', [
                     new Element('div', {
                         'class': 'data-empty',
                         html   : '<div class="data-empty-cell">' +
-                        QUILocale.get('quiqqer/system', 'grid.is.empty') +
-                        '</div>'
+                            QUILocale.get('quiqqer/system', 'grid.is.empty') +
+                            '</div>'
                     }).inject(this.container.getElement('.bDiv'));
                 }
             } else {
