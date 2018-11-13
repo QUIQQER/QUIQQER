@@ -46,7 +46,7 @@ class Autoloader
 
         // exists quiqqer?
         if (!class_exists('\QUI', false)) {
-            require_once __DIR__ . '/QUI.php';
+            require_once __DIR__.'/QUI.php';
         }
 
         if ($classname == 'QUI') {
@@ -75,7 +75,7 @@ class Autoloader
                 return true;
             }
 
-            $file = USR_DIR . substr($classname, 9) . '.php';
+            $file = USR_DIR.substr($classname, 9).'.php';
             $file = str_replace('\\', '/', $file);
 
             if (file_exists($file)) {
@@ -94,7 +94,7 @@ class Autoloader
         // use now the composer loader
         if (!self::$ComposerLoader) {
             if (!class_exists('\Composer\Autoload\ClassLoader')) {
-                require OPT_DIR . 'composer/ClassLoader.php';
+                require OPT_DIR.'composer/ClassLoader.php';
             }
 
             if ($classname == 'Composer\Autoload\ClassLoader') {
@@ -104,8 +104,8 @@ class Autoloader
             self::$ComposerLoader = new \Composer\Autoload\ClassLoader();
 
             // include paths
-            if (file_exists(OPT_DIR . 'composer/include_paths.php')) {
-                $includePaths = require OPT_DIR . 'composer/include_paths.php';
+            if (file_exists(OPT_DIR.'composer/include_paths.php')) {
+                $includePaths = require OPT_DIR.'composer/include_paths.php';
 
                 array_push($includePaths, get_include_path());
                 set_include_path(join(PATH_SEPARATOR, $includePaths));
@@ -113,17 +113,17 @@ class Autoloader
 
             // include files
             if (!defined('QUIQQER_SETUP')) {
-                $files = require OPT_DIR . 'composer/autoload_files.php';
+                $includeFiles = require OPT_DIR.'composer/autoload_files.php';
 
-                foreach ($files as $namespace => $path) {
-                    include $path;
+                foreach ($includeFiles as $fileIdentifier => $file) {
+                    self::composerRequire($fileIdentifier, $file);
                 }
             }
-            
+
             // namespaces
-            $map      = require OPT_DIR . 'composer/autoload_namespaces.php';
-            $classMap = require OPT_DIR . 'composer/autoload_classmap.php';
-            $psr4     = require OPT_DIR . 'composer/autoload_psr4.php';
+            $map      = require OPT_DIR.'composer/autoload_namespaces.php';
+            $classMap = require OPT_DIR.'composer/autoload_classmap.php';
+            $psr4     = require OPT_DIR.'composer/autoload_psr4.php';
 
             // add lib to the namespace
             self::$ComposerLoader->add('QUI', LIB_DIR);
@@ -142,5 +142,17 @@ class Autoloader
         }
 
         return self::$ComposerLoader->loadClass($classname);
+    }
+
+    /**
+     * @param $fileIdentifier
+     * @param $file
+     */
+    protected static function composerRequire($fileIdentifier, $file)
+    {
+        if (empty($GLOBALS['__composer_autoload_files'][$fileIdentifier])) {
+            require $file;
+            $GLOBALS['__composer_autoload_files'][$fileIdentifier] = true;
+        }
     }
 }
