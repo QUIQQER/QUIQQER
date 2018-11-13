@@ -95,11 +95,11 @@ define('controls/projects/project/media/Popup', [
                             width    : '100%'
                         },
                         html  : '<div style="margin-bottom: 20px;">' +
-                        QUILocale.get(
-                            'quiqqer/system',
-                            'projects.project.site.media.popup.noProject.text'
-                        ) +
-                        '</div>'
+                            QUILocale.get(
+                                'quiqqer/system',
+                                'projects.project.site.media.popup.noProject.text'
+                            ) +
+                            '</div>'
                     }).inject(Content);
 
                     new ProjectSelect({
@@ -331,8 +331,14 @@ define('controls/projects/project/media/Popup', [
          * @param {Function} callback
          */
         $getDetails: function (imageData, callback) {
+            var project = this.getAttribute('project');
+
+            if (this.$Panel) {
+                project = this.$Panel.getMedia().getProject().getName();
+            }
+
             Ajax.get('ajax_media_details', callback, {
-                project: this.getAttribute('project'),
+                project: project,
                 fileid : imageData.id
             });
         }
