@@ -1502,9 +1502,9 @@ class Manager extends QUI\QDOM
 
         // workaround, because mustache create a symlink under some circumstances
         // so we will delete it
-        if (file_exists(OPT_DIR.'bin/mustache')) {
-            QUI::getTemp()->moveToTemp(OPT_DIR.'bin/mustache');
-        }
+//        if (file_exists(OPT_DIR.'bin/mustache')) {
+//            QUI::getTemp()->moveToTemp(OPT_DIR.'bin/mustache');
+//        }
 
         if ($mute === true) {
             $Composer->mute();
