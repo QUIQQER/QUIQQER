@@ -83,9 +83,9 @@ define('controls/users/Select', [
 
                     resolve(data);
                 }, {
-                    search: value,
-                    fields: false,
-                    params: JSON.decode({
+                    search : value,
+                    fields : false,
+                    params : JSON.decode({
                         limit: 10
                     })
                 });
