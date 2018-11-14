@@ -58,7 +58,9 @@ define('controls/users/SelectItem', [
                 });
             }.bind(this)).catch(function (err) {
                 console.error(err);
-            });
+
+                this.destroy();
+            }.bind(this));
         }
     });
 });
