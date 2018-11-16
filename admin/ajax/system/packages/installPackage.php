@@ -14,23 +14,25 @@ QUI::$Ajax->registerFunction(
 
         if ($server && is_array($server)) {
             foreach ($server as $s) {
-                $Packages->addServer($s['server'], array(
+                $Packages->addServer($s['server'], [
                     'type' => $s['type']
-                ));
+                ]);
             }
         }
 
         try {
             $Packages->install($packageName, $packageVersion);
         } catch (\Exception $Exception) {
+            QUI::getMessagesHandler()->addError($Exception->getMessage());
+
             return false;
         }
 
         return true;
     },
-    array('packageName', 'packageVersion', 'server'),
-    array(
+    ['packageName', 'packageVersion', 'server'],
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.update'
-    )
+    ]
 );
