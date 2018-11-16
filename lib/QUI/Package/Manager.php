@@ -605,6 +605,7 @@ class Manager extends QUI\QDOM
      * This method does not perform an update
      *
      * @param $version
+     *
      * @throws \UnexpectedValueException
      */
     public function setQuiqqerVersion($version)
@@ -1767,6 +1768,14 @@ class Manager extends QUI\QDOM
 
         $lockServerEnabled = QUI::conf("globals", "lockserver_enabled");
 
+        $memoryLimit = QUI\Utils\System::getMemoryLimit();
+        if (!$lockServerEnabled && $memoryLimit != -1 && $memoryLimit < 256 * 1024 * 1024) {
+            throw new QUI\Exception([
+                'quiqqer/quiqqer',
+                'message.online.update.RAM.not.enough'
+            ]);
+        }
+
         if (!$lockServerEnabled) {
             return $this->getComposer()->update();
         }
@@ -1776,7 +1785,10 @@ class Manager extends QUI\QDOM
         try {
             $lockContent = $LockClient->update($this->composer_json, $package);
         } catch (\Exception $Exception) {
-            return $this->getComposer()->update();
+            throw new QUI\Exception([
+                'quiqqer/lockclient',
+                'exception.lockserver.unavilable'
+            ]);
         }
 
         file_put_contents($this->composer_lock, $lockContent);
@@ -1817,7 +1829,15 @@ class Manager extends QUI\QDOM
             return $this->getComposer()->requirePackage($packages, $version);
         }
 
-        $lockServerEnabled = QUI::conf("globals", "lockserver_enabled");
+        $lockServerEnabled = QUI::conf('globals', 'lockserver_enabled');
+
+        $memoryLimit = QUI\Utils\System::getMemoryLimit();
+        if (!$lockServerEnabled && $memoryLimit != -1 && $memoryLimit < 256 * 1024 * 1024) {
+            throw new QUI\Exception(
+                'quiqqer/quiqqer',
+                'message.online.update.RAM.not.enough'
+            );
+        }
 
         if (!$lockServerEnabled) {
             return $this->getComposer()->requirePackage($packages, $version);
@@ -1828,7 +1848,10 @@ class Manager extends QUI\QDOM
         try {
             $lockContent = $LockClient->requirePackage($this->composer_json, $packages, $version);
         } catch (\Exception $Exception) {
-            return $this->getComposer()->requirePackage($packages, $version);
+            throw new QUI\Exception([
+                'quiqqer/lockclient',
+                'exception.lockserver.unavilable'
+            ]);
         }
 
         file_put_contents($this->composer_lock, $lockContent);
