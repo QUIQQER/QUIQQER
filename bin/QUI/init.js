@@ -97,6 +97,11 @@ require(requireList, function () {
 
     Locale.setCurrent(USER.lang);
 
+    // workaround, because the QUI framework has sometimes its own Locale :-/
+    require(['qui/Locale'], function(QUIsOwnLocale) {
+        QUIsOwnLocale.setCurrent(USER.lang);
+    });
+
     QUI.setAttributes({
         'control-loader-type' : 'line-scale',
         'control-loader-color': '#2f8fc8',

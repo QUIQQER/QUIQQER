@@ -22,7 +22,7 @@ class Site
      * @param \QUI\Interfaces\Projects\Site $Site
      * @param string $attribute
      */
-    public static function setRecursivAttribute(\QUI\Interfaces\Projects\Site $Site, $attribute)
+    public static function setRecursiveAttribute(\QUI\Interfaces\Projects\Site $Site, $attribute)
     {
         $value = $Site->getAttribute($attribute);
 
@@ -46,5 +46,16 @@ class Site
 
             $Parent = $Parent->getParent();
         }
+    }
+
+    /**
+     * @param \QUI\Interfaces\Projects\Site $Site
+     * @param $attribute
+     *
+     * @deprecated use setRecursiveAttribute
+     */
+    public static function setRecursivAttribute(\QUI\Interfaces\Projects\Site $Site, $attribute)
+    {
+        self::setRecursiveAttribute($Site, $attribute);
     }
 }

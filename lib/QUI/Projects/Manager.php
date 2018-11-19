@@ -271,7 +271,7 @@ class Manager
         $config = [
             "default_lang"             => "de",
             "langs"                    => "de",
-            "admin_mail"               => "support@pcsg.de",
+            "admin_mail"               => "",
             "template"                 => "",
             "layout"                   => "",
             "image_text"               => "0",
@@ -457,15 +457,17 @@ class Manager
     }
 
     /**
-     * Gibt alle Projektnamen zurück
+     * Return all projects as array list or object list
+     * Return the projects with its default language
      *
-     * @param boolean $asobject - Als Objekte bekommen, default = false
+     * if you want a complete project list with every project language, please use getProjectList()
      *
+     * @param bool $asObject - default = false, true = projects as objects
      * @return array
      *
      * @throws QUI\Exception
      */
-    public static function getProjects($asobject = false)
+    public static function getProjects($asObject = false)
     {
         $config = self::getConfig()->toArray();
         $list   = [];
@@ -482,7 +484,7 @@ class Manager
                     self::$Standard = $Project;
                 }
 
-                if ($asobject == true) {
+                if ($asObject == true) {
                     $list[] = $Project;
                 } else {
                     $list[] = $project;
@@ -496,6 +498,10 @@ class Manager
 
     /**
      * Return all projects as objects
+     * - it returns every project and every language
+     *
+     * if a project has multiple languages, getProjectList will return multiple projects
+     * eq: project exist in en,de,fr getProjectList will return Project(en, Project(de), Project(fr)
      *
      * @return array
      *
@@ -764,7 +770,7 @@ class Manager
         $Config->setSection($name, [
             'default_lang' => $lang,
             'langs'        => implode(',', $languages),
-            'admin_mail'   => 'support@pcsg.de',
+            'admin_mail'   => '',
             'template'     => $name,
             'image_text'   => '0',
             'keywords'     => '',
@@ -1061,7 +1067,8 @@ class Manager
         $project   = $Project->getName();
 
         if ($Project->getAttribute('template')) {
-            $result[]                                      = $Project->getAttribute('template');
+            $result[] = $Project->getAttribute('template');
+
             $templates[$Project->getAttribute('template')] = true;
         }
 
@@ -1155,7 +1162,11 @@ class Manager
             }
         }
 
-        QUI\Cache\Manager::set('qui/projects/', $list);
+        try {
+            QUI\Cache\Manager::set('qui/projects/', $list);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
 
         return $list;
     }
@@ -1178,19 +1189,18 @@ class Manager
             return [];
         }
 
-        $search = $params['search'];
-
         $result = [];
         $list   = self::getConfig()->toArray();
+        $search = $params['search'];
 
         foreach ($list as $project => $entry) {
             if (!empty($search) && strpos($project, $search) === false) {
                 continue;
             }
 
-            $langs = explode(',', $entry['langs']);
+            $languages = explode(',', $entry['langs']);
 
-            foreach ($langs as $lang) {
+            foreach ($languages as $lang) {
                 $result[] = [
                     'project' => $project,
                     'lang'    => $lang
