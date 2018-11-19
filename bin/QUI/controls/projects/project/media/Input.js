@@ -191,14 +191,7 @@ define('controls/projects/project/media/Input', [
                                 onSubmit: function (Popup, params) {
                                     self.$Input.value = params.url;
                                     self.fireEvent('change', [self, self.getValue()]);
-
-                                    if ("createEvent" in document) {
-                                        var evt = document.createEvent("HTMLEvents");
-                                        evt.initEvent("change", false, true);
-                                        self.$Input.dispatchEvent(evt);
-                                    } else {
-                                        self.$Input.fireEvent("onchange");
-                                    }
+                                    self.$change();
 
                                     self.$refreshPreview();
                                 }
@@ -291,6 +284,8 @@ define('controls/projects/project/media/Input', [
             this.$Input.value = '';
             this.$Path.set('html', '&nbsp;');
             this.fireEvent('change', [this, this.getValue()]);
+
+            this.$change();
             this.$refreshPreview();
         },
 
@@ -368,6 +363,19 @@ define('controls/projects/project/media/Input', [
                     width : 30
                 })
             });
+        },
+
+        /**
+         * trigger on change event
+         */
+        $change: function () {
+            if ("createEvent" in document) {
+                var evt = document.createEvent("HTMLEvents");
+                evt.initEvent("change", false, true);
+                this.$Input.dispatchEvent(evt);
+            } else {
+                this.$Input.fireEvent("onchange");
+            }
         },
 
         /**
