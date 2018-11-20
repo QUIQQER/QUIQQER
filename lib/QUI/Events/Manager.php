@@ -91,7 +91,7 @@ class Manager implements QUI\Interfaces\Events
      */
     public static function table()
     {
-        return QUI_DB_PRFX.'events';
+        return QUI::getDBTableName('events');
     }
 
     /**

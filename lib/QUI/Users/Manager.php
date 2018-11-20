@@ -72,7 +72,7 @@ class Manager
      */
     public static function table()
     {
-        return QUI_DB_PRFX.'users';
+        return QUI::getDBTableName('users');
     }
 
     /**
@@ -82,7 +82,7 @@ class Manager
      */
     public static function tableAddress()
     {
-        return QUI_DB_PRFX.'users_address';
+        return QUI::getDBTableName('users_address');
     }
 
     /**

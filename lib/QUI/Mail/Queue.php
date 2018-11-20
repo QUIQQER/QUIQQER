@@ -24,7 +24,7 @@ class Queue
      */
     public static function table()
     {
-        return QUI_DB_PRFX . 'mailqueue';
+        return QUI::getDBTableName('mailqueue');
     }
 
     /**

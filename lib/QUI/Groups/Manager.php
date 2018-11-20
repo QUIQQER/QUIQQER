@@ -62,7 +62,7 @@ class Manager extends QUI\QDOM
      */
     public static function table()
     {
-        return QUI_DB_PRFX.'groups';
+        return QUI::getDBTableName('groups');
     }
 
     /**
