@@ -1772,7 +1772,7 @@ class Manager extends QUI\QDOM
         if (!$lockServerEnabled && $memoryLimit != -1 && $memoryLimit < 256 * 1024 * 1024) {
             throw new QUI\Exception([
                 'quiqqer/quiqqer',
-                'message.online.update.RAM.not.enough'
+                'message.online.update.RAM.insufficient'
             ]);
         }
 
@@ -1785,7 +1785,7 @@ class Manager extends QUI\QDOM
         try {
             $lockContent = $LockClient->update($this->composer_json, $package);
         } catch (\Exception $Exception) {
-            throw new QUI\Exception([
+            throw new QUI\Lockclient\Exceptions\LockServerException([
                 'quiqqer/lockclient',
                 'exception.lockserver.unavilable'
             ]);
@@ -1833,10 +1833,10 @@ class Manager extends QUI\QDOM
 
         $memoryLimit = QUI\Utils\System::getMemoryLimit();
         if (!$lockServerEnabled && $memoryLimit != -1 && $memoryLimit < 256 * 1024 * 1024) {
-            throw new QUI\Exception(
+            throw new QUI\Exception([
                 'quiqqer/quiqqer',
-                'message.online.update.RAM.not.enough'
-            );
+                'message.online.update.RAM.insufficient'
+            ]);
         }
 
         if (!$lockServerEnabled) {
@@ -1848,7 +1848,7 @@ class Manager extends QUI\QDOM
         try {
             $lockContent = $LockClient->requirePackage($this->composer_json, $packages, $version);
         } catch (\Exception $Exception) {
-            throw new QUI\Exception([
+            throw new QUI\Lockclient\Exceptions\LockServerException([
                 'quiqqer/lockclient',
                 'exception.lockserver.unavilable'
             ]);

@@ -22,9 +22,11 @@ QUI::$Ajax->registerFunction(
 
         try {
             $Packages->install($packageName, $packageVersion);
-        } catch (\Exception $Exception) {
+        } catch (\QUI\Exception $Exception) {
             QUI::getMessagesHandler()->addError($Exception->getMessage());
 
+            return false;
+        } catch (\Exception $Exception) {
             return false;
         }
 
