@@ -1763,12 +1763,12 @@ class Manager extends QUI\QDOM
     protected function composerUpdateOrInstall($package)
     {
         $lockServerEnabled = QUI::conf('globals', 'lockserver_enabled');
-        $memoryLimit = QUI\Utils\System::getMemoryLimit();
-        
+        $memoryLimit       = QUI\Utils\System::getMemoryLimit();
+
         // Disable lockserver if a vcs repository is used
         // Lockserver can not handle VCS repositories ==> Check if local execution is possible or fail the operation
         if ($this->isVCSServerEnabled()) {
-            if ($memoryLimit > self::REQUIRED_MEMORY_VCS * 1024 * 1024) {
+            if ($memoryLimit >= self::REQUIRED_MEMORY_VCS * 1024 * 1024) {
                 return $this->getComposer()->update();
             }
 
@@ -1785,7 +1785,6 @@ class Manager extends QUI\QDOM
             return $this->getComposer()->update();
         }
 
-       
         if (!$lockServerEnabled && $memoryLimit != -1 && $memoryLimit < 256 * 1024 * 1024) {
             throw new QUI\Exception([
                 'quiqqer/quiqqer',
@@ -1837,15 +1836,14 @@ class Manager extends QUI\QDOM
         $memoryLimit       = QUI\Utils\System::getMemoryLimit();
         $lockServerEnabled = QUI::conf('globals', 'lockserver_enabled');
 
-        
         // Lockserver can not handle VCS repositories ==> Check if local execution is possible or fail the operation
         if ($this->isVCSServerEnabled()) {
-            if ($memoryLimit > self::REQUIRED_MEMORY_VCS * 1024 * 1024) {
+            if ($memoryLimit >= self::REQUIRED_MEMORY_VCS * 1024 * 1024) {
                 return $this->getComposer()->requirePackage($packages, $version);
             }
 
             $exceptionLocale = $lockServerEnabled ?
-                'message.online.update.RAM.insufficient.vcs' : 'message.online.update.RAM.insufficient.vcs.lock';
+                'message.online.update.RAM.insufficient.vcs.lock' : 'message.online.update.RAM.insufficient.vcs';
 
             throw new QUI\Exception([
                 'quiqqer/quiqqer',
@@ -1858,7 +1856,7 @@ class Manager extends QUI\QDOM
         if ($this->getComposer()->getMode() != QUI\Composer\Composer::MODE_WEB) {
             return $this->getComposer()->requirePackage($packages, $version);
         }
-        
+
         if (!$lockServerEnabled && $memoryLimit != -1 && $memoryLimit < self::REQUIRED_MEMORY * 1024 * 1024) {
             throw new QUI\Exception([
                 'quiqqer/quiqqer',
