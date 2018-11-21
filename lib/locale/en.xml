@@ -777,6 +777,14 @@
                 <![CDATA[Composer does not have enough memory available for this action. Please increase the memory limit for PHP or execute Composer in the command line]]>
             </en>
         </locale>
+        <locale name="message.online.update.RAM.insufficient.vcs">
+            <en>
+                <![CDATA[PHP does not have enough memory available to perform this action, while a VCS updateserver is enabled]]></en>
+        </locale>
+        <locale name="message.online.update.RAM.insufficient.vcs.lock">
+            <en>
+                <![CDATA[It is not possible to use the Lockserver, while a VCS updateserver is active and the system does not have enough memory available to peform this operation locally.]]></en>
+        </locale>
         <locale name="exception.console.execute.only.in.cli">
             <en><![CDATA[System tools can only be run in the CLI.]]></en>
         </locale>
