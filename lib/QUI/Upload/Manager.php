@@ -33,7 +33,7 @@ class Manager
      */
     public function __construct()
     {
-        $this->table = \QUI_DB_PRFX.'uploads';
+        $this->table = QUI::getDBTableName('uploads');
     }
 
     /**
