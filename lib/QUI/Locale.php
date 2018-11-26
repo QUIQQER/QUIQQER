@@ -564,7 +564,10 @@ class Locale
         System\Log::addWarning(
             QUI::getLocale()->get('quiqqer/quiqqer', 'message.translation.file.not.found', [
                 'file' => $file
-            ])
+            ]),
+            [
+                'file' => $file
+            ]
         );
 
         $this->gettext[$current][$group] = false;
