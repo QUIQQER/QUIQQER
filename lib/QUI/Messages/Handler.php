@@ -23,7 +23,7 @@ class Handler
      */
     public static function table()
     {
-        return QUI_DB_PRFX . 'messages';
+        return QUI::getDBTableName('messages');
     }
 
     /**

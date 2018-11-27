@@ -25,7 +25,7 @@ class Manager
      */
     public static function table()
     {
-        return QUI_DB_PRFX.'users_workspaces';
+        return QUI::getDBTableName('users_workspaces');
     }
 
     /**
