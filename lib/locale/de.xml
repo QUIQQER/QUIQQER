@@ -1034,6 +1034,9 @@
                 Es muss mindestens ein Super-User im System vorhanden sein.
             ]]></de>
         </locale>
+        <locale name="exception.user_cannot_delete_himself">
+            <de><![CDATA[Sie können Ihr eigenes Benutzerkonto nicht selbst löschen.]]></de>
+        </locale>
         <locale name="exception.user.one.active.user.must.exists">
             <de><![CDATA[
                 Der Benutzer kann nicht zerstört oder deaktiviert werden.

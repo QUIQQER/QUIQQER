@@ -1033,6 +1033,9 @@
                 There must be at least one active user in the system.
             ]]></en>
         </locale>
+        <locale name="exception.user_cannot_delete_himself">
+            <en><![CDATA[You cannot delete your own user account.]]></en>
+        </locale>
 
         <locale name="exception.site.linked.already.exists">
             <en><![CDATA[

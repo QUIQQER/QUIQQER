@@ -2010,6 +2010,12 @@ class User implements QUI\Interfaces\Users\User
             return;
         }
 
+        if (QUI::getUserBySession()->getId() === $this->getId()) {
+            throw new QUI\Users\Exception(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.user_cannot_delete_himself')
+            );
+        }
+
         if ($this->isSU()) {
             $suUsers = QUI::getUsers()->getUserIds([
                 'where' => [
