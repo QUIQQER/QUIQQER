@@ -207,7 +207,7 @@ define('controls/projects/project/site/Panel', [
                                 id: this.getSite().getId()
                             })
                         );
-                    });
+                    }.bind(this));
 
                     this.destroy();
                     return;
@@ -215,7 +215,6 @@ define('controls/projects/project/site/Panel', [
 
                 this.$delayTest++;
                 this.load();
-
             }).delay(200, this);
         },
 
