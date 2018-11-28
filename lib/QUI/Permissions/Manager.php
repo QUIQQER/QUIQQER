@@ -472,6 +472,16 @@ class Manager
                 continue;
             }
 
+            switch ($area) {
+                case 'user':
+                case 'groups':
+                    if ($params['area'] == 'global') {
+                        $result[$key] = $params;
+                        continue 2;
+                    }
+                    break;
+            }
+
             if (empty($params['area'])
                 && ($area == 'user' || $area == 'groups')
             ) {
