@@ -2,7 +2,7 @@
     "name": "quiqqer\/quiqqer",
     "type": "quiqqer-system",
     "description": "A modular based management system written in JavaScript and PHP",
-    "version": "quiqqer\/Lockclient#3",
+    "version": "dev-dev",
     "license": "GPL-3.0+",
     "authors": [
         {
