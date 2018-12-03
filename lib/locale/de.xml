@@ -775,6 +775,17 @@
             <code>[command]</code>
             ]]></de>
         </locale>
+        <locale name="message.online.update.RAM.insufficient">
+            <de>
+                <![CDATA[Für diese Aktion steht Composer nicht genug Arbeitsspeicher zur Verfügung. Bitte erhöhen Sie das Arbeitsspeicher Limit oder führen Sie Composer in der Konsole aus.]]>
+            </de>
+        </locale>
+        <locale name="message.online.update.RAM.insufficient.vcs">
+            <de><![CDATA[Es steht PHP nicht genug Arbeitsspeicher zur Verfügung, um Pakete mit angeschaltetem VCS Updateserver zu aktualisieren oder zu installieren.]]></de>
+        </locale>
+        <locale name="message.online.update.RAM.insufficient.vcs.lock">
+            <de><![CDATA[Der Lockserver kann nicht verwendet werden, wenn ein VCS Updateserver aktiviert ist und PHP steht nicht genug Arbeitsspeicher zur Verfügung, um die Operation lokal auszuführen.]]></de>
+        </locale>
         <locale name="exception.console.execute.only.in.cli">
             <de><![CDATA[System Tools können nur in der CLI ausgeführt werden.]]></de>
         </locale>
