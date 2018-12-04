@@ -1768,7 +1768,7 @@ class Manager extends QUI\QDOM
         // Disable lockserver if a vcs repository is used
         // Lockserver can not handle VCS repositories ==> Check if local execution is possible or fail the operation
         if ($this->isVCSServerEnabled()) {
-            if ($memoryLimit >= self::REQUIRED_MEMORY_VCS * 1024 * 1024) {
+            if ($memoryLimit >= self::REQUIRED_MEMORY_VCS * 1024 * 1024 || $memoryLimit === -1) {
                 return $this->getComposer()->update();
             }
 
@@ -1838,7 +1838,7 @@ class Manager extends QUI\QDOM
 
         // Lockserver can not handle VCS repositories ==> Check if local execution is possible or fail the operation
         if ($this->isVCSServerEnabled()) {
-            if ($memoryLimit >= self::REQUIRED_MEMORY_VCS * 1024 * 1024) {
+            if ($memoryLimit >= self::REQUIRED_MEMORY_VCS * 1024 * 1024 || $memoryLimit === -1) {
                 return $this->getComposer()->requirePackage($packages, $version);
             }
 
