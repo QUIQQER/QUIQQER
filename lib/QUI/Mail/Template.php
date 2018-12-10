@@ -22,14 +22,15 @@ class Template extends QUI\QDOM
      *
      * @param array $params
      */
-    public function __construct($params = array())
+    public function __construct($params = [])
     {
-        $this->setAttributes(array(
+        $this->setAttributes([
             'body'      => '',
             'Project'   => false,
             'TplHeader' => 'mails/header.html',
+            'TplBody'   => 'mails/body.html',
             'TplFooter' => 'mails/footer.html'
-        ));
+        ]);
 
         $this->setAttributes($params);
     }
@@ -43,10 +44,11 @@ class Template extends QUI\QDOM
     {
         $Engine = QUI::getTemplateManager()->getEngine();
         $Engine->assign($this->getAttributes());
+        $Engine->assign('mailBody', $this->getAttribute('body'));
 
         $header = $Engine->fetch($this->getHeaderTemplate());
+        $body   = $Engine->fetch($this->getBodyTemplate());
         $footer = $Engine->fetch($this->getFooterTemplate());
-        $body   = $this->getAttribute('body');
 
         return $header . $body . $footer;
     }
@@ -133,6 +135,38 @@ class Template extends QUI\QDOM
 
         // exit project template?
         $template   = $this->getAttribute('TplHeader');
+        $projectDir = USR_DIR . $Project->getName() . '/lib/';
+
+        if (file_exists($projectDir . $template)) {
+            return $projectDir . $template;
+        }
+
+        $tplPath = OPT_DIR . $Project->getAttribute('template') . '/';
+
+        // exist template in opt?
+        if (file_exists($tplPath . $template)) {
+            return $tplPath . $template;
+        }
+
+        return $standardTpl;
+    }
+
+    /**
+     * Return the body template path
+     *
+     * @return string
+     */
+    public function getBodyTemplate()
+    {
+        $Project     = $this->getProject();
+        $standardTpl = LIB_DIR . 'templates/mail/body.html';
+
+        if (!$Project) {
+            return $standardTpl;
+        }
+
+        // exit project template?
+        $template   = $this->getAttribute('TplBody');
         $projectDir = USR_DIR . $Project->getName() . '/lib/';
 
         if (file_exists($projectDir . $template)) {

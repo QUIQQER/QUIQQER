@@ -1,0 +1,53 @@
+{template_event name="quiqqer::quiqqer::mail::bodyBegin"}
+
+<!-- HEADER -->
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;table-layout: fixed; width: 100%; background: #000;">
+    <tr>
+        <td bgcolor="#f8f8f8" width="100%">
+            <div align="center" style="padding: 0px 15px 0px 15px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="500" class="wrapper">
+                    <!-- LOGO/PREHEADER TEXT -->
+                    <tr>
+                        <td style="padding: 30px 0px 30px 0px;" class="logo">
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="width: 100%;">
+                                <tr>
+                                    <td bgcolor="#f8f8f8" width="200" align="left"><a href="http://alistapart.com/article/can-email-be-responsive/" target="_blank">
+                                        <img alt="Logo" src="{image image=$Project->getMedia()->getLogoImage() height=40 onlysrc='true' host=1}" height="40" style="display: block; font-family: Helvetica, Arial, sans-serif; color: #666666; font-size: 16px; max-width: 100%; height: auto;" border="0">
+                                        </a>
+                                    </td>
+                                    <td bgcolor="#f8f8f8" width="300" align="right" class="mobile-hide">
+                                        <table border="0" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td align="right" style="font-size: 14px; font-family: Arial, sans-serif; color: #666666; text-decoration: none;">
+                                                    {locale group="quiqqer/system" var="templates.mail.body.header.social"}
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </td>
+    </tr>
+</table>
+
+{template_event name="quiqqer::quiqqer::mail::bodyAfterHeader"}
+
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <tr>
+        <td bgcolor="#ffffff" align="center" style="padding: 70px 15px 70px 15px;" class="section-padding">
+            <table border="0" cellpadding="0" cellspacing="0" width="500" class="responsive-table">
+                <tr>
+                    <td style="font-size: 16px; line-height: 25px; font-family: Helvetica, Arial, sans-serif; color: #666666;" class="no-padding">
+                        {$mailBody}
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+{template_event name="quiqqer::quiqqer::mail::bodyEnd"}
