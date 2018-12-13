@@ -817,4 +817,78 @@ class Utils
         /* @var $File \QUI\Projects\Media\Image */
         return sha1_file($File->getFullPath());
     }
+
+
+    /**
+     * Counts and returns the number of folders for a project.
+     *
+     * @param QUI\Projects\Project $Project
+     *
+     * @return int
+     */
+    public static function countFoldersForProject(QUI\Projects\Project $Project)
+    {
+        // TODO: implement countFoldersForProject() logic
+        return -1;
+    }
+
+
+    /**
+     * Counts and returns the number of files for a project.
+     *
+     * @param QUI\Projects\Project $Project
+     *
+     * @return int
+     */
+    public static function countFilesForProject(QUI\Projects\Project $Project)
+    {
+        // TODO: implement countFilesForProject() logic
+
+        return -1;
+    }
+
+
+    /**
+     * Returns the size of the given project's media folder in bytes
+     *
+     * @param QUI\Projects\Project $Project
+     *
+     * @return int
+     */
+    public static function getMediaFolderSizeForProject(QUI\Projects\Project $Project)
+    {
+        // TODO: implement getMediaFolderSizeForProject() logic
+
+        return -1;
+    }
+
+
+    /**
+     * Returns the size of the given project's media cache folder in bytes
+     *
+     * @param QUI\Projects\Project $Project
+     *
+     * @return int
+     */
+    public static function getMediaCacheFolderSizeForProject(QUI\Projects\Project $Project)
+    {
+        // TODO: implement getMediaCacheFolderSizeForProject() logic
+
+        return -1;
+    }
+
+
+    /**
+     * Counts and returns all the different types of files for project.
+     *
+     * @param QUI\Projects\Project $Project
+     *
+     * @return array - the array's keys are the file types and their values are their amounts
+     */
+    public static function countFiletypesForProject(QUI\Projects\Project $Project)
+    {
+        // TODO: implement countFiletypesForProject() logic
+        
+        return [];
+    }
 }
