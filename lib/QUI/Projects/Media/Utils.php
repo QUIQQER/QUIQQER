@@ -828,8 +828,25 @@ class Utils
      */
     public static function countFoldersForProject(QUI\Projects\Project $Project)
     {
-        // TODO: implement countFoldersForProject() logic
-        return -1;
+        $mediaTable = $Project->getMedia()->getTable();
+
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'count' => 'id',
+                'from'  => $mediaTable,
+                'where' => [
+                    'type' => 'folder'
+                ]
+            ]);
+        } catch (QUI\Exception $Exception) {
+            return 0;
+        }
+
+        if (isset($result[0])) {
+            return intval($result[0]);
+        }
+
+        return 0;
     }
 
 
@@ -888,7 +905,7 @@ class Utils
     public static function countFiletypesForProject(QUI\Projects\Project $Project)
     {
         // TODO: implement countFiletypesForProject() logic
-        
+
         return [];
     }
 }
