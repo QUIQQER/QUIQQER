@@ -906,9 +906,7 @@ class Utils
      */
     public static function getMediaCacheFolderSizeForProject(QUI\Projects\Project $Project)
     {
-        // TODO: implement getMediaCacheFolderSizeForProject() logic
-
-        return -1;
+        return QUI\Utils\System\File::getDirectorySize($Project->getMedia()->getFullCachePath());
     }
 
 
