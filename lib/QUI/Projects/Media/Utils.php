@@ -911,7 +911,7 @@ class Utils
 
 
     /**
-     * Counts and returns all the different types of files for project.
+     * Counts and returns all the different types of files for a given project.
      *
      * @param QUI\Projects\Project $Project
      *
@@ -919,8 +919,38 @@ class Utils
      */
     public static function countFiletypesForProject(QUI\Projects\Project $Project)
     {
-        // TODO: implement countFiletypesForProject() logic
+        $table = $Project->getMedia()->getTable();
 
-        return [];
+        $query = "
+        SELECT
+          (CASE
+             /* Count all 'image/%' mimetypes as image */
+             WHEN `mime_type` LIKE 'image/%' THEN 'image'
+             ELSE `mime_type` END
+          ) AS mime_type
+          , COUNT(id) AS count
+        FROM `{$table}`
+        WHERE `type` != 'folder'
+        GROUP BY
+          (CASE
+             /* Group all 'image/%' mimetypes as image */
+             WHEN `mime_type` LIKE 'image/%' THEN 'image'
+             ELSE `mime_type` END
+          )
+        ;
+        ";
+
+        try {
+            $result = QUI::getDataBase()->fetchSQL($query);
+        } catch (QUI\Exception $Exception) {
+            return [];
+        }
+
+        $return = [];
+        foreach ($result as $element) {
+            $return[$element['mime_type']] = intval($element['count']);
+        }
+
+        return $return;
     }
 }
