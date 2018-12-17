@@ -859,9 +859,28 @@ class Utils
      */
     public static function countFilesForProject(QUI\Projects\Project $Project)
     {
-        // TODO: implement countFilesForProject() logic
+        $mediaTable = $Project->getMedia()->getTable();
 
-        return -1;
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'count' => 'id',
+                'from'  => $mediaTable,
+                'where' => [
+                    'type' => [
+                        'type'  => 'NOT',
+                        'value' => 'folder'
+                    ]
+                ]
+            ]);
+        } catch (QUI\Exception $Exception) {
+            return 0;
+        }
+
+        if (isset($result[0])) {
+            return intval($result[0]);
+        }
+
+        return 0;
     }
 
 
