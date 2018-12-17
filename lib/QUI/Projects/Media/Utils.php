@@ -893,9 +893,7 @@ class Utils
      */
     public static function getMediaFolderSizeForProject(QUI\Projects\Project $Project)
     {
-        // TODO: implement getMediaFolderSizeForProject() logic
-
-        return -1;
+        return QUI\Utils\System\File::getDirectorySize($Project->getMedia()->getFullPath());
     }
 
 
