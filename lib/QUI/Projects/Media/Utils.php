@@ -829,4 +829,140 @@ class Utils
         /* @var $File \QUI\Projects\Media\Image */
         return sha1_file($File->getFullPath());
     }
+
+
+    /**
+     * Counts and returns the number of folders for a project.
+     *
+     * @param QUI\Projects\Project $Project
+     *
+     * @return int
+     */
+    public static function countFoldersForProject(QUI\Projects\Project $Project)
+    {
+        $mediaTable = $Project->getMedia()->getTable();
+
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'count' => 'id',
+                'from'  => $mediaTable,
+                'where' => [
+                    'type' => 'folder'
+                ]
+            ]);
+        } catch (QUI\Exception $Exception) {
+            return 0;
+        }
+
+        if (isset($result[0])) {
+            return intval($result[0]['id']);
+        }
+
+        return 0;
+    }
+
+
+    /**
+     * Counts and returns the number of files for a project.
+     *
+     * @param QUI\Projects\Project $Project
+     *
+     * @return int
+     */
+    public static function countFilesForProject(QUI\Projects\Project $Project)
+    {
+        $mediaTable = $Project->getMedia()->getTable();
+
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'count' => 'id',
+                'from'  => $mediaTable,
+                'where' => [
+                    'type' => [
+                        'type'  => 'NOT',
+                        'value' => 'folder'
+                    ]
+                ]
+            ]);
+        } catch (QUI\Exception $Exception) {
+            return 0;
+        }
+
+        if (isset($result[0])) {
+            return intval($result[0]['id']);
+        }
+
+        return 0;
+    }
+
+
+    /**
+     * Returns the size of the given project's media folder in bytes
+     *
+     * @param QUI\Projects\Project $Project
+     *
+     * @return int
+     */
+    public static function getMediaFolderSizeForProject(QUI\Projects\Project $Project)
+    {
+        return QUI\Utils\System\File::getDirectorySize($Project->getMedia()->getFullPath());
+    }
+
+
+    /**
+     * Returns the size of the given project's media cache folder in bytes
+     *
+     * @param QUI\Projects\Project $Project
+     *
+     * @return int
+     */
+    public static function getMediaCacheFolderSizeForProject(QUI\Projects\Project $Project)
+    {
+        return QUI\Utils\System\File::getDirectorySize($Project->getMedia()->getFullCachePath());
+    }
+
+
+    /**
+     * Counts and returns all the different types of files for a given project.
+     *
+     * @param QUI\Projects\Project $Project
+     *
+     * @return array - the array's keys are the file types and their values are their amounts
+     */
+    public static function countFiletypesForProject(QUI\Projects\Project $Project)
+    {
+        $table = $Project->getMedia()->getTable();
+
+        $query = "
+        SELECT
+          (CASE
+             /* Count all 'image/%' mimetypes as image */
+             WHEN `mime_type` LIKE 'image/%' THEN 'image'
+             ELSE `mime_type` END
+          ) AS mime_type
+          , COUNT(id) AS count
+        FROM `{$table}`
+        WHERE `type` != 'folder'
+        GROUP BY
+          (CASE
+             /* Group all 'image/%' mimetypes as image */
+             WHEN `mime_type` LIKE 'image/%' THEN 'image'
+             ELSE `mime_type` END
+          )
+        ;
+        ";
+
+        try {
+            $result = QUI::getDataBase()->fetchSQL($query);
+        } catch (QUI\Exception $Exception) {
+            return [];
+        }
+
+        $return = [];
+        foreach ($result as $element) {
+            $return[$element['mime_type']] = intval($element['count']);
+        }
+
+        return $return;
+    }
 }
