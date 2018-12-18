@@ -843,7 +843,7 @@ class Utils
         }
 
         if (isset($result[0])) {
-            return intval($result[0]);
+            return intval($result[0]['id']);
         }
 
         return 0;
@@ -877,7 +877,7 @@ class Utils
         }
 
         if (isset($result[0])) {
-            return intval($result[0]);
+            return intval($result[0]['id']);
         }
 
         return 0;
