@@ -23,7 +23,14 @@ class Utils
      * Prefix for the cache key where the size of the media folder is stored.
      * Should be followed by the project name when querying the cache.
      */
-    const CACHE_KEY_MEDIA_FOLDER_SIZE_PREFIX = "_media_folder_size_";
+    const CACHE_KEY_MEDIA_FOLDER_SIZE_PREFIX = "media_folder_size_";
+
+
+    /**
+     * Prefix for the cache key where the timestamp of the media folder size is stored.
+     * Should be followed by the project name when querying the cache.
+     */
+    const CACHE_KEY_TIMESTAMP_MEDIA_FOLDER_SIZE_PREFIX = "timestamp_media_folder_size_";
 
 
     /**
@@ -31,6 +38,14 @@ class Utils
      * Should be followed by the project name when querying the cache.
      */
     const CACHE_KEY_MEDIA_CACHE_FOLDER_SIZE_PREFIX = "media_cache_folder_size_";
+
+
+    /**
+     * Prefix for the cache key where the timestamp of the media cache folder size is stored.
+     * Should be followed by the project name when querying the cache.
+     */
+    const CACHE_KEY_TIMESTAMP_MEDIA_CACHE_FOLDER_SIZE_PREFIX = "timestamp_media_cache_folder_size_";
+
 
     /**
      * Returns the item array
@@ -937,6 +952,28 @@ class Utils
 
 
     /**
+     * Returns the timestamp when to media folder size was stored in cache for the given project.
+     * Returns null if there is no data in the cache.
+     *
+     * @param QUI\Projects\Project $Project
+     *
+     * @return int|null
+     */
+    public static function getMediaFolderSizeTimestampForProject(QUI\Projects\Project $Project)
+    {
+        try {
+            $timestamp = QUI\Cache\Manager::get(
+                self::CACHE_KEY_TIMESTAMP_MEDIA_FOLDER_SIZE_PREFIX . $Project->getName()
+            );
+        } catch (QUI\Cache\Exception $Exception) {
+            $timestamp = null;
+        }
+
+        return $timestamp;
+    }
+
+
+    /**
      * Calculates and returns the size of the media folder for a given project in bytes.
      * The result is also stored in cache by default. Use the doNotCache parameter to prevent this.
      *
@@ -957,6 +994,10 @@ class Utils
 
         try {
             QUI\Cache\Manager::set(self::CACHE_KEY_MEDIA_FOLDER_SIZE_PREFIX . $Project->getName(), $cacheSize);
+            QUI\Cache\Manager::set(
+                self::CACHE_KEY_TIMESTAMP_MEDIA_FOLDER_SIZE_PREFIX . $Project->getName(),
+                time()
+            );
         } catch (\Exception $Exception) {
             Log::writeException($Exception);
         }
@@ -993,6 +1034,28 @@ class Utils
 
 
     /**
+     * Returns the timestamp when to media cache folder size was stored in cache for the given project.
+     * Returns null if there is no data in the cache.
+     *
+     * @param QUI\Projects\Project $Project
+     *
+     * @return int|null
+     */
+    public static function getMediaCacheFolderSizeTimestampForProject(QUI\Projects\Project $Project)
+    {
+        try {
+            $timestamp = QUI\Cache\Manager::get(
+                self::CACHE_KEY_TIMESTAMP_MEDIA_CACHE_FOLDER_SIZE_PREFIX . $Project->getName()
+            );
+        } catch (QUI\Cache\Exception $Exception) {
+            $timestamp = null;
+        }
+
+        return $timestamp;
+    }
+
+
+    /**
      * Calculates and returns the size of the media cache folder for a given project in bytes.
      * The result is also stored in cache by default. Use the doNotCache parameter to prevent this.
      *
@@ -1014,7 +1077,14 @@ class Utils
         }
 
         try {
-            QUI\Cache\Manager::set(self::CACHE_KEY_MEDIA_CACHE_FOLDER_SIZE_PREFIX . $Project->getName(), $cacheSize);
+            QUI\Cache\Manager::set(
+                self::CACHE_KEY_MEDIA_CACHE_FOLDER_SIZE_PREFIX . $Project->getName(),
+                $cacheSize
+            );
+            QUI\Cache\Manager::set(
+                self::CACHE_KEY_TIMESTAMP_MEDIA_CACHE_FOLDER_SIZE_PREFIX . $Project->getName(),
+                time()
+            );
         } catch (\Exception $Exception) {
             Log::writeException($Exception);
         }
