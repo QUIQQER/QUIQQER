@@ -20,6 +20,18 @@ use QUI\Utils\StringHelper as StringUtils;
 class Utils
 {
     /**
+     * Key for the cache where the size of the media folder is stored.
+     *
+     */
+    const CACHE_KEY_MEDIA_FOLDER_SIZE = "media_folder_size";
+
+
+    /**
+     * Key for the cache where the size of the media cache folder is stored.
+     */
+    const CACHE_KEY_MEDIA_CACHE_FOLDER_SIZE = "media_cache_folder_size";
+
+    /**
      * Returns the item array
      * the array is specially adapted for the media center
      *
@@ -897,28 +909,116 @@ class Utils
 
 
     /**
-     * Returns the size of the given project's media folder in bytes
+     * Returns the size of the given project's media folder in bytes.
+     * By default the value is returned from cache.
+     * Only if you really need to get a freshly calculated result, you may set the force parameter to true.
+     * When using the force parameter expect timeouts since the calculation could take a lot of time.
      *
      * @param QUI\Projects\Project $Project
+     * @param boolean $force - Force a calculation of the media folder size. Values aren't returned from cache. Expect timeouts.
      *
      * @return int
      */
-    public static function getMediaFolderSizeForProject(QUI\Projects\Project $Project)
+    public static function getMediaFolderSizeForProject(QUI\Projects\Project $Project, $force = false)
     {
-        return QUI\Utils\System\File::getDirectorySize($Project->getMedia()->getFullPath());
+        if ($force) {
+            return self::calculateMediaFolderSizeForProject($Project);
+        }
+
+        try {
+            $cacheSize = QUI\Cache\Manager::get(self::CACHE_KEY_MEDIA_FOLDER_SIZE);
+        } catch (QUI\Cache\Exception $Exception) {
+            $cacheSize = self::calculateMediaFolderSizeForProject($Project);
+        }
+
+        return $cacheSize;
     }
 
 
     /**
-     * Returns the size of the given project's media cache folder in bytes
+     * Calculates and returns the size of the media folder for a given project in bytes.
+     * The result is also stored in cache by default. Use the doNotCache parameter to prevent this.
      *
-     * @param QUI\Projects\Project $Project
+     * This process may take a lot of time -> Expect timeouts!
+     *
+     * @param QUI\Projects\Project $Project - The project to calculate the media folder size for.
+     * @param boolean $doNotCache - Don't store the result in cache. Off by default.
      *
      * @return int
      */
-    public static function getMediaCacheFolderSizeForProject(QUI\Projects\Project $Project)
+    protected static function calculateMediaFolderSizeForProject(QUI\Projects\Project $Project, $doNotCache = false)
     {
-        return QUI\Utils\System\File::getDirectorySize($Project->getMedia()->getFullCachePath());
+        $cacheSize = QUI\Utils\System\File::getDirectorySize($Project->getMedia()->getFullPath());
+
+        if ($doNotCache) {
+            return $cacheSize;
+        }
+
+        try {
+            QUI\Cache\Manager::set(self::CACHE_KEY_MEDIA_FOLDER_SIZE, $cacheSize);
+        } catch (\Exception $Exception) {
+            Log::writeException($Exception);
+        }
+
+        return $cacheSize;
+    }
+
+
+    /**
+     * Returns the size of the given project's media cache folder in bytes.
+     * By default the value is returned from cache.
+     * Only if you really need to get a freshly calculated result, you may set the force parameter to true.
+     * When using the force parameter expect timeouts since the calculation could take a lot of time.
+     *
+     * @param QUI\Projects\Project $Project
+     * @param boolean $force - Force a calculation of the media folder size. Values aren't returned from cache. Expect timeouts.
+     *
+     * @return int
+     */
+    public static function getMediaCacheFolderSizeForProject(QUI\Projects\Project $Project, $force = false)
+    {
+        if ($force) {
+            return self::calculateMediaCacheFolderSizeForProject($Project);
+        }
+
+        try {
+            $cacheSize = QUI\Cache\Manager::get(self::CACHE_KEY_MEDIA_CACHE_FOLDER_SIZE);
+        } catch (QUI\Cache\Exception $Exception) {
+            $cacheSize = self::calculateMediaCacheFolderSizeForProject($Project);
+        }
+
+        return $cacheSize;
+    }
+
+
+    /**
+     * Calculates and returns the size of the media cache folder for a given project in bytes.
+     * The result is also stored in cache by default. Use the doNotCache parameter to prevent this.
+     *
+     * This process may take a lot of time -> Expect timeouts!
+     *
+     * @param QUI\Projects\Project $Project - The project to calculate the media folder size for.
+     * @param boolean $doNotCache - Don't store the result in cache. Off by default.
+     *
+     * @return int
+     */
+    protected static function calculateMediaCacheFolderSizeForProject(
+        QUI\Projects\Project $Project,
+        $doNotCache = false
+    ) {
+        $cacheSize = QUI\Utils\System\File::getDirectorySize($Project->getMedia()->getFullCachePath());
+
+        if ($doNotCache) {
+            return $cacheSize;
+        }
+
+        try {
+            QUI\Cache\Manager::set(self::CACHE_KEY_MEDIA_CACHE_FOLDER_SIZE, $cacheSize);
+        } catch (\Exception $Exception) {
+            Log::writeException($Exception);
+        }
+
+        return $cacheSize;
     }
 
 
