@@ -20,16 +20,17 @@ use QUI\Utils\StringHelper as StringUtils;
 class Utils
 {
     /**
-     * Key for the cache where the size of the media folder is stored.
-     *
+     * Prefix for the cache key where the size of the media folder is stored.
+     * Should be followed by the project name when querying the cache.
      */
-    const CACHE_KEY_MEDIA_FOLDER_SIZE = "media_folder_size";
+    const CACHE_KEY_MEDIA_FOLDER_SIZE_PREFIX = "_media_folder_size_";
 
 
     /**
-     * Key for the cache where the size of the media cache folder is stored.
+     * Prefix for the cache key where the size of the media cache folder is stored.
+     * Should be followed by the project name when querying the cache.
      */
-    const CACHE_KEY_MEDIA_CACHE_FOLDER_SIZE = "media_cache_folder_size";
+    const CACHE_KEY_MEDIA_CACHE_FOLDER_SIZE_PREFIX = "media_cache_folder_size_";
 
     /**
      * Returns the item array
@@ -926,7 +927,7 @@ class Utils
         }
 
         try {
-            $cacheSize = QUI\Cache\Manager::get(self::CACHE_KEY_MEDIA_FOLDER_SIZE);
+            $cacheSize = QUI\Cache\Manager::get(self::CACHE_KEY_MEDIA_FOLDER_SIZE_PREFIX . $Project->getName());
         } catch (QUI\Cache\Exception $Exception) {
             $cacheSize = self::calculateMediaFolderSizeForProject($Project);
         }
@@ -955,7 +956,7 @@ class Utils
         }
 
         try {
-            QUI\Cache\Manager::set(self::CACHE_KEY_MEDIA_FOLDER_SIZE, $cacheSize);
+            QUI\Cache\Manager::set(self::CACHE_KEY_MEDIA_FOLDER_SIZE_PREFIX . $Project->getName(), $cacheSize);
         } catch (\Exception $Exception) {
             Log::writeException($Exception);
         }
@@ -982,7 +983,7 @@ class Utils
         }
 
         try {
-            $cacheSize = QUI\Cache\Manager::get(self::CACHE_KEY_MEDIA_CACHE_FOLDER_SIZE);
+            $cacheSize = QUI\Cache\Manager::get(self::CACHE_KEY_MEDIA_CACHE_FOLDER_SIZE_PREFIX . $Project->getName());
         } catch (QUI\Cache\Exception $Exception) {
             $cacheSize = self::calculateMediaCacheFolderSizeForProject($Project);
         }
@@ -1013,7 +1014,7 @@ class Utils
         }
 
         try {
-            QUI\Cache\Manager::set(self::CACHE_KEY_MEDIA_CACHE_FOLDER_SIZE, $cacheSize);
+            QUI\Cache\Manager::set(self::CACHE_KEY_MEDIA_CACHE_FOLDER_SIZE_PREFIX . $Project->getName(), $cacheSize);
         } catch (\Exception $Exception) {
             Log::writeException($Exception);
         }
