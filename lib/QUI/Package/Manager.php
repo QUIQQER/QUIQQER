@@ -847,6 +847,20 @@ class Manager extends QUI\QDOM
         }
     }
 
+
+    /**
+     * Returns how many packages are installed.
+     *
+     * This is better than counting the result of getInstalled(), since this doesn't instantiates all packages as objects.
+     *
+     * @return int
+     */
+    public function countInstalledPackages()
+    {
+        return count($this->getList());
+    }
+
+
     /**
      * Return the installed packages
      *
