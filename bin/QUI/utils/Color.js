@@ -18,8 +18,28 @@ define('utils/Color', [], function () {
          * @link https://github.com/mrmrs/colors
          *
          * @licence MIT
+         *
+         * @typedef {Object} ColorPalette
+         * @property {string} aqua
+         * @property {string} black
+         * @property {string} blue
+         * @property {string} fuchsia
+         * @property {string} gray
+         * @property {string} green
+         * @property {string} lime
+         * @property {string} maroon
+         * @property {string} navy
+         * @property {string} olive
+         * @property {string} purple
+         * @property {string} red
+         * @property {string} silver
+         * @property {string} teal
+         * @property {string} white
+         * @property {string} yellow
+         *
+         * @type ColorPalette
          */
-        colorPalette: {
+        ColorPalette: {
             aqua   : "#7FDBFF",
             black  : "#111111",
             blue   : "#0074D9",
@@ -68,11 +88,22 @@ define('utils/Color', [], function () {
 
         /**
          * Returns a random color from the custom color pallet.
+         * Optionally an array of colors from the palette that should not be picked, can be passed.
+         *
+         * @param {array} [excludedColors] - Colors that should not be returned
          *
          * @return {String}
          */
-        getRandomHexColorFromPallet: function () {
-            var colors = Object.values(this.colorPalette);
+        getRandomHexColorFromPallet: function (excludedColors) {
+            var colors = Object.values(this.ColorPalette);
+
+            // Remove the excluded colors
+            if (excludedColors) {
+                excludedColors.forEach(function(excludedColor) {
+                    colors.splice(colors.indexOf(excludedColor), 1);
+                });
+            }
+
             return colors[Math.floor(Math.random() * colors.length)];
         },
 
@@ -82,20 +113,34 @@ define('utils/Color', [], function () {
          * The amount of colors to return can be passed as an argument.
          * If more colors are requested than there are in the pallet, some colors may appear multiple times.
          *
+         * Optionally an array of colors from the palette that should not be picked, can be passed.
+         *
          * Random picking taken from Bergi from {@link https://stackoverflow.com/a/19270021|Stack Overflow}
          *
          * @param {number} requestedColorsAmount
+         * @param {array} [excludedColors] - Colors that should not be returned
          *
          * @return {Array<String>}
          */
-        getRandomHexColorsFromPallet: function (requestedColorsAmount) {
-            var colors         = Object.values(this.colorPalette),
-                amountOfColors = colors.length,
+        getRandomHexColorsFromPallet: function (requestedColorsAmount, excludedColors) {
+            var colors         = Object.values(this.ColorPalette);
+
+            // Remove the excluded colors
+            if (excludedColors) {
+                excludedColors.forEach(function(excludedColor) {
+                    colors.splice(colors.indexOf(excludedColor), 1);
+                });
+            }
+
+            var amountOfColors = colors.length,
                 result         = [];
 
             if (requestedColorsAmount > amountOfColors) {
                 result = result.concat(
-                    this.getRandomHexColorsFromPallet(requestedColorsAmount - amountOfColors)
+                    this.getRandomHexColorsFromPallet(
+                        requestedColorsAmount - amountOfColors,
+                        excludedColors
+                    )
                 );
                 requestedColorsAmount = amountOfColors;
             }
@@ -122,7 +167,7 @@ define('utils/Color', [], function () {
          * @return {String}
          */
         getHexColorFromPallet: function (name) {
-            return this.colorPalette[name];
+            return this.ColorPalette[name];
         },
 
 
