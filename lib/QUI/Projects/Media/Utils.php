@@ -927,6 +927,7 @@ class Utils
     /**
      * Returns the size of the given project's media folder in bytes.
      * By default the value is returned from cache.
+     * If there is no value in cache, null is returned, unless you use the force parameter.
      * Only if you really need to get a freshly calculated result, you may set the force parameter to true.
      * When using the force parameter expect timeouts since the calculation could take a lot of time.
      *
@@ -942,12 +943,10 @@ class Utils
         }
 
         try {
-            $cacheSize = QUI\Cache\Manager::get(self::CACHE_KEY_MEDIA_FOLDER_SIZE_PREFIX . $Project->getName());
+            return QUI\Cache\Manager::get(self::CACHE_KEY_MEDIA_FOLDER_SIZE_PREFIX . $Project->getName());
         } catch (QUI\Cache\Exception $Exception) {
-            $cacheSize = self::calculateMediaFolderSizeForProject($Project);
+            return null;
         }
-
-        return $cacheSize;
     }
 
 
@@ -1009,6 +1008,7 @@ class Utils
     /**
      * Returns the size of the given project's media cache folder in bytes.
      * By default the value is returned from cache.
+     * If there is no value in cache, null is returned, unless you use the force parameter.
      * Only if you really need to get a freshly calculated result, you may set the force parameter to true.
      * When using the force parameter expect timeouts since the calculation could take a lot of time.
      *
@@ -1024,12 +1024,10 @@ class Utils
         }
 
         try {
-            $cacheSize = QUI\Cache\Manager::get(self::CACHE_KEY_MEDIA_CACHE_FOLDER_SIZE_PREFIX . $Project->getName());
+            return QUI\Cache\Manager::get(self::CACHE_KEY_MEDIA_CACHE_FOLDER_SIZE_PREFIX . $Project->getName());
         } catch (QUI\Cache\Exception $Exception) {
-            $cacheSize = self::calculateMediaCacheFolderSizeForProject($Project);
+            return null;
         }
-
-        return $cacheSize;
     }
 
 
