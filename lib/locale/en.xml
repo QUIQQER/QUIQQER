@@ -598,15 +598,69 @@
             <en><![CDATA[Default content]]></en>
         </locale>
 
+        <!-- region Time Units -->
+        <locale name="second">
+            <en><![CDATA[second]]></en>
+        </locale>
+        <locale name="seconds">
+            <en><![CDATA[seconds]]></en>
+        </locale>
+        <locale name="seconds.dative">
+            <en><![CDATA[seconds]]></en>
+        </locale>
+
+        <locale name="minute">
+            <en><![CDATA[minute]]></en>
+        </locale>
+        <locale name="minutes">
+            <en><![CDATA[minutes]]></en>
+        </locale>
+        <locale name="minutes.dative">
+            <en><![CDATA[minutes]]></en>
+        </locale>
+
+        <locale name="hour">
+            <en><![CDATA[hour]]></en>
+        </locale>
+        <locale name="hours">
+            <en><![CDATA[hours]]></en>
+        </locale>
+        <locale name="hours.dative">
+            <en><![CDATA[hours]]></en>
+        </locale>
+
         <locale name="day">
-            <en><![CDATA[Tag]]></en>
+            <en><![CDATA[day]]></en>
         </locale>
-        <locale name="year">
-            <en><![CDATA[Year]]></en>
+        <locale name="days">
+            <en><![CDATA[days]]></en>
         </locale>
+        <locale name="days.dative">
+            <en><![CDATA[days]]></en>
+        </locale>
+
         <locale name="month">
-            <en><![CDATA[Month]]></en>
+            <en><![CDATA[month]]></en>
         </locale>
+        <locale name="months">
+            <en><![CDATA[months]]></en>
+        </locale>
+        <locale name="months.dative">
+            <en><![CDATA[months]]></en>
+        </locale>
+
+        <locale name="year">
+            <en><![CDATA[year]]></en>
+        </locale>
+        <locale name="years">
+            <en><![CDATA[years]]></en>
+        </locale>
+        <locale name="years.dative">
+            <en><![CDATA[years]]></en>
+        </locale>
+        <!-- endregion -->
+
+        <!-- region Months -->
         <locale name="month.01">
             <en><![CDATA[January]]></en>
         </locale>
@@ -642,6 +696,11 @@
         </locale>
         <locale name="month.12">
             <en><![CDATA[December]]></en>
+        </locale>
+        <!-- endregion -->
+
+        <locale name="time.ago">
+            <en><![CDATA[[amount] [unit] ago]]></en>
         </locale>
 
         <locale name="exception.error">
@@ -1949,12 +2008,6 @@
         </locale>
         <locale name="login">
             <en><![CDATA[Login]]></en>
-        </locale>
-        <locale name="minute">
-            <en><![CDATA[Minute]]></en>
-        </locale>
-        <locale name="hour">
-            <en><![CDATA[Hour]]></en>
         </locale>
         <locale name="template.project.media.effect.header">
             <en><![CDATA[Image effects]]></en>
@@ -6136,9 +6189,6 @@
         </locale>
         <locale name="packages.panel.title">
             <en><![CDATA[System administration]]></en>
-        </locale>
-        <locale name="month">
-            <en><![CDATA[Month]]></en>
         </locale>
         <locale name="projects.project.panel.settings.btn.adminSettings">
             <en><![CDATA[Backend settings]]></en>
