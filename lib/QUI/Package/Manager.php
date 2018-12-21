@@ -42,6 +42,12 @@ class Manager extends QUI\QDOM
     /** @var int The minimum required memory_limit of PHP in megabytes, if the user added VCS repositories */
     const REQUIRED_MEMORY_VCS = 256;
 
+    /** @var string The key used to store the package folder size in cache */
+    const CACHE_KEY_PACKAGE_FOLDER_SIZE = "package_folder_size";
+
+    /** @var string The key used to store the package folder size in cache */
+    const CACHE_KEY_PACKAGE_FOLDER_SIZE_TIMESTAMP = "package_folder_size_timestamp";
+
     /**
      * Package Directory
      *
@@ -927,6 +933,75 @@ class Manager extends QUI\QDOM
         }
 
         return $this->packages[$package];
+    }
+
+    /**
+     * Returns the size of package folder in bytes.
+     * By default the value is returned from cache.
+     * If there is no value in cache, null is returned, unless you set the force parameter to true.
+     * Only if you really need to get a freshly calculated result, you may set the force parameter to true.
+     * When using the force parameter expect timeouts since the calculation could take a lot of time.
+     *
+     * @param boolean $force - Force a calculation of the package folder size. Values aren't returned from cache. Expect timeouts.
+     *
+     * @return int
+     */
+    public function getPackageFolderSize($force = false)
+    {
+        if ($force) {
+            return self::calculatePackageFolderSize();
+        }
+
+        try {
+            return QUI\Cache\Manager::get(self::CACHE_KEY_PACKAGE_FOLDER_SIZE);
+        } catch (QUI\Cache\Exception $Exception) {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the timestamp when the package folder size was stored in cache.
+     * Returns null if there is no data in the cache.
+     *
+     * @return int|null
+     */
+    public function getPackageFolderSizeTimestamp()
+    {
+        try {
+            $timestamp = QUI\Cache\Manager::get(self::CACHE_KEY_PACKAGE_FOLDER_SIZE_TIMESTAMP);
+        } catch (QUI\Cache\Exception $Exception) {
+            $timestamp = null;
+        }
+
+        return $timestamp;
+    }
+
+    /**
+     * Calculates and returns the size of the package folder in bytes.
+     * The result is also stored in cache by default. Set the doNotCache parameter to true to prevent this.
+     *
+     * This process may take a lot of time -> Expect timeouts!
+     *
+     * @param boolean $doNotCache - Don't store the result in cache. Off by default.
+     *
+     * @return int
+     */
+    protected function calculatePackageFolderSize($doNotCache = false)
+    {
+        $packageFolderSize = QUI\Utils\System\File::getDirectorySize($this->dir);
+
+        if ($doNotCache) {
+            return $packageFolderSize;
+        }
+
+        try {
+            QUI\Cache\Manager::set(self::CACHE_KEY_PACKAGE_FOLDER_SIZE, $packageFolderSize);
+            QUI\Cache\Manager::set(self::CACHE_KEY_PACKAGE_FOLDER_SIZE_TIMESTAMP, time());
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+
+        return $packageFolderSize;
     }
 
     /**
