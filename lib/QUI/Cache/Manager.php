@@ -573,4 +573,33 @@ class Manager
             QUI\System\Log::writeException($Exception);
         }
     }
+
+    /**
+     * Returns the size of the /var/cache/ folder in bytes.
+     * By default the value is returned from cache.
+     * If there is no value in cache, null is returned, unless you set the force parameter to true.
+     * Only if you really need to get a freshly calculated result, you may set the force parameter to true.
+     * When using the force parameter expect timeouts since the calculation could take a lot of time.
+     *
+     * @param boolean $force - Force a calculation of the cache folder's size. Values aren't returned from cache. Expect timeouts.
+     *
+     * @return int
+     */
+    public static function getCacheFolderSize($force = false)
+    {
+        $cacheFolder = VAR_DIR . "cache/";
+        return QUI\Utils\System\Folder::getFolderSize($cacheFolder, $force);
+    }
+
+    /**
+     * Returns the timestamp when the cache folder's size was stored in cache.
+     * Returns null if there is no data in the cache.
+     *
+     * @return int|null
+     */
+    public static function getCacheFolderSizeTimestamp()
+    {
+        $cacheFolder = VAR_DIR . "cache/";
+        return QUI\Utils\System\Folder::getFolderSizeTimestamp($cacheFolder);
+    }
 }
