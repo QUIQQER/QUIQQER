@@ -654,7 +654,7 @@ class Manager
             "title"       => "tinytext NULL",
             "short"       => "text NULL",
             "content"     => "longtext NULL",
-            "type"        => "varchar(32) DEFAULT NULL",
+            "type"        => "varchar(255) DEFAULT NULL",
             "active"      => "tinyint(1) NOT NULL DEFAULT 0",
             "deleted"     => "tinyint(1) NOT NULL DEFAULT 0",
             "c_date"      => "timestamp NULL DEFAULT NULL",
