@@ -355,8 +355,19 @@ define('controls/projects/project/Panel', [
                 self.Loader.show();
 
                 Projects.getList(function (result) {
-                    if (Object.getLength(result)) {
-                        for (var key in result) {
+                    var key;
+
+                    if (Object.getLength(result) === 1) {
+                        key = Object.keys(result)[0];
+
+                        self.setAttribute('project', key);
+                        self.setAttribute('lang', result[key].default_lang);
+
+                        self.openProject();
+                        self.Loader.hide();
+                        return;
+                    } else if (Object.getLength(result)) {
+                        for (key in result) {
                             if (!result.hasOwnProperty(key)) {
                                 continue;
                             }
