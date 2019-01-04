@@ -938,15 +938,7 @@ class Utils
      */
     public static function getMediaFolderSizeForProject(QUI\Projects\Project $Project, $force = false)
     {
-        if ($force) {
-            return self::calculateMediaFolderSizeForProject($Project);
-        }
-
-        try {
-            return QUI\Cache\Manager::get(self::CACHE_KEY_MEDIA_FOLDER_SIZE_PREFIX . $Project->getName());
-        } catch (QUI\Cache\Exception $Exception) {
-            return null;
-        }
+        return QUI\Utils\System\Folder::getFolderSize($Project->getMedia()->getFullPath(), $force);
     }
 
 
@@ -960,48 +952,7 @@ class Utils
      */
     public static function getMediaFolderSizeTimestampForProject(QUI\Projects\Project $Project)
     {
-        try {
-            $timestamp = QUI\Cache\Manager::get(
-                self::CACHE_KEY_TIMESTAMP_MEDIA_FOLDER_SIZE_PREFIX . $Project->getName()
-            );
-        } catch (QUI\Cache\Exception $Exception) {
-            $timestamp = null;
-        }
-
-        return $timestamp;
-    }
-
-
-    /**
-     * Calculates and returns the size of the media folder for a given project in bytes.
-     * The result is also stored in cache by default. Use the doNotCache parameter to prevent this.
-     *
-     * This process may take a lot of time -> Expect timeouts!
-     *
-     * @param QUI\Projects\Project $Project - The project to calculate the media folder size for.
-     * @param boolean $doNotCache - Don't store the result in cache. Off by default.
-     *
-     * @return int
-     */
-    protected static function calculateMediaFolderSizeForProject(QUI\Projects\Project $Project, $doNotCache = false)
-    {
-        $cacheSize = QUI\Utils\System\File::getDirectorySize($Project->getMedia()->getFullPath());
-
-        if ($doNotCache) {
-            return $cacheSize;
-        }
-
-        try {
-            QUI\Cache\Manager::set(self::CACHE_KEY_MEDIA_FOLDER_SIZE_PREFIX . $Project->getName(), $cacheSize);
-            QUI\Cache\Manager::set(
-                self::CACHE_KEY_TIMESTAMP_MEDIA_FOLDER_SIZE_PREFIX . $Project->getName(),
-                time()
-            );
-        } catch (\Exception $Exception) {
-            Log::writeException($Exception);
-        }
-
-        return $cacheSize;
+        return QUI\Utils\System\Folder::getFolderSizeTimestamp($Project->getMedia()->getFullPath());
     }
 
 
@@ -1019,15 +970,7 @@ class Utils
      */
     public static function getMediaCacheFolderSizeForProject(QUI\Projects\Project $Project, $force = false)
     {
-        if ($force) {
-            return self::calculateMediaCacheFolderSizeForProject($Project);
-        }
-
-        try {
-            return QUI\Cache\Manager::get(self::CACHE_KEY_MEDIA_CACHE_FOLDER_SIZE_PREFIX . $Project->getName());
-        } catch (QUI\Cache\Exception $Exception) {
-            return null;
-        }
+        return QUI\Utils\System\Folder::getFolderSize($Project->getMedia()->getFullCachePath(), $force);
     }
 
 
@@ -1041,53 +984,7 @@ class Utils
      */
     public static function getMediaCacheFolderSizeTimestampForProject(QUI\Projects\Project $Project)
     {
-        try {
-            $timestamp = QUI\Cache\Manager::get(
-                self::CACHE_KEY_TIMESTAMP_MEDIA_CACHE_FOLDER_SIZE_PREFIX . $Project->getName()
-            );
-        } catch (QUI\Cache\Exception $Exception) {
-            $timestamp = null;
-        }
-
-        return $timestamp;
-    }
-
-
-    /**
-     * Calculates and returns the size of the media cache folder for a given project in bytes.
-     * The result is also stored in cache by default. Use the doNotCache parameter to prevent this.
-     *
-     * This process may take a lot of time -> Expect timeouts!
-     *
-     * @param QUI\Projects\Project $Project - The project to calculate the media folder size for.
-     * @param boolean $doNotCache - Don't store the result in cache. Off by default.
-     *
-     * @return int
-     */
-    protected static function calculateMediaCacheFolderSizeForProject(
-        QUI\Projects\Project $Project,
-        $doNotCache = false
-    ) {
-        $cacheSize = QUI\Utils\System\File::getDirectorySize($Project->getMedia()->getFullCachePath());
-
-        if ($doNotCache) {
-            return $cacheSize;
-        }
-
-        try {
-            QUI\Cache\Manager::set(
-                self::CACHE_KEY_MEDIA_CACHE_FOLDER_SIZE_PREFIX . $Project->getName(),
-                $cacheSize
-            );
-            QUI\Cache\Manager::set(
-                self::CACHE_KEY_TIMESTAMP_MEDIA_CACHE_FOLDER_SIZE_PREFIX . $Project->getName(),
-                time()
-            );
-        } catch (\Exception $Exception) {
-            Log::writeException($Exception);
-        }
-
-        return $cacheSize;
+        return QUI\Utils\System\Folder::getFolderSizeTimestamp($Project->getMedia()->getFullCachePath());
     }
 
 
