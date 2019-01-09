@@ -37,6 +37,17 @@ class Manager extends QUI\QDOM
 {
     const CACHE_NAME_TYPES = 'qui/packages/types';
 
+    /** @var int The minimum required memory_limit in megabytes of PHP */
+    const REQUIRED_MEMORY = 128;
+    /** @var int The minimum required memory_limit of PHP in megabytes, if the user added VCS repositories */
+    const REQUIRED_MEMORY_VCS = 256;
+
+    /** @var string The key used to store the package folder size in cache */
+    const CACHE_KEY_PACKAGE_FOLDER_SIZE = "package_folder_size";
+
+    /** @var string The key used to store the package folder size in cache */
+    const CACHE_KEY_PACKAGE_FOLDER_SIZE_TIMESTAMP = "package_folder_size_timestamp";
+
     /**
      * Package Directory
      *
@@ -605,6 +616,7 @@ class Manager extends QUI\QDOM
      * This method does not perform an update
      *
      * @param $version
+     *
      * @throws \UnexpectedValueException
      */
     public function setQuiqqerVersion($version)
@@ -841,6 +853,20 @@ class Manager extends QUI\QDOM
         }
     }
 
+
+    /**
+     * Returns how many packages are installed.
+     *
+     * This is better than counting the result of getInstalled(), since this doesn't instantiates all packages as objects.
+     *
+     * @return int
+     */
+    public function countInstalledPackages()
+    {
+        return count($this->getList());
+    }
+
+
     /**
      * Return the installed packages
      *
@@ -907,6 +933,75 @@ class Manager extends QUI\QDOM
         }
 
         return $this->packages[$package];
+    }
+
+    /**
+     * Returns the size of package folder in bytes.
+     * By default the value is returned from cache.
+     * If there is no value in cache, null is returned, unless you set the force parameter to true.
+     * Only if you really need to get a freshly calculated result, you may set the force parameter to true.
+     * When using the force parameter expect timeouts since the calculation could take a lot of time.
+     *
+     * @param boolean $force - Force a calculation of the package folder size. Values aren't returned from cache. Expect timeouts.
+     *
+     * @return int
+     */
+    public function getPackageFolderSize($force = false)
+    {
+        if ($force) {
+            return self::calculatePackageFolderSize();
+        }
+
+        try {
+            return QUI\Cache\Manager::get(self::CACHE_KEY_PACKAGE_FOLDER_SIZE);
+        } catch (QUI\Cache\Exception $Exception) {
+            return null;
+        }
+    }
+
+    /**
+     * Returns the timestamp when the package folder size was stored in cache.
+     * Returns null if there is no data in the cache.
+     *
+     * @return int|null
+     */
+    public function getPackageFolderSizeTimestamp()
+    {
+        try {
+            $timestamp = QUI\Cache\Manager::get(self::CACHE_KEY_PACKAGE_FOLDER_SIZE_TIMESTAMP);
+        } catch (QUI\Cache\Exception $Exception) {
+            $timestamp = null;
+        }
+
+        return $timestamp;
+    }
+
+    /**
+     * Calculates and returns the size of the package folder in bytes.
+     * The result is also stored in cache by default. Set the doNotCache parameter to true to prevent this.
+     *
+     * This process may take a lot of time -> Expect timeouts!
+     *
+     * @param boolean $doNotCache - Don't store the result in cache. Off by default.
+     *
+     * @return int
+     */
+    protected function calculatePackageFolderSize($doNotCache = false)
+    {
+        $packageFolderSize = QUI\Utils\System\File::getDirectorySize($this->dir);
+
+        if ($doNotCache) {
+            return $packageFolderSize;
+        }
+
+        try {
+            QUI\Cache\Manager::set(self::CACHE_KEY_PACKAGE_FOLDER_SIZE, $packageFolderSize);
+            QUI\Cache\Manager::set(self::CACHE_KEY_PACKAGE_FOLDER_SIZE_TIMESTAMP, time());
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+
+        return $packageFolderSize;
     }
 
     /**
@@ -1464,28 +1559,12 @@ class Manager extends QUI\QDOM
     {
         $Composer = $this->getComposer();
 
-        // WEB MODE Check
-        // Wenn VCS Server eingestellt sind sollte mindestens 256M vorhanden sein.
-        // Ohne VCS mindestens 128M
-        $existsVCS = function ($Update) {
-            /* @var $Update self */
-            $servers = $Update->getServerList();
-
-            foreach ($servers as $server) {
-                if ($server['type'] === 'vcs') {
-                    return true;
-                }
-            }
-
-            return false;
-        };
-
-        $needledRAM = $existsVCS($this) ? '256M' : '128M';
+        $needledRAM = $this->isVCSServerEnabled() ? self::REQUIRED_MEMORY_VCS.'M' : self::REQUIRED_MEMORY.'M';
         $limit      = QUI\Utils\System::getMemoryLimit();
 
         if (php_sapi_name() != 'cli'
             && $limit != -1
-            && $existsVCS
+            && $this->isVCSServerEnabled()
             && QUIFile::getBytes($needledRAM) > $limit) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
@@ -1622,6 +1701,25 @@ class Manager extends QUI\QDOM
     }
 
     /**
+     * Checks if a VCS update server is configured and active.
+     * Returns true if at least one VCS server is active and configured. Returns false otherwise.
+     *
+     * @return bool
+     */
+    protected function isVCSServerEnabled()
+    {
+        $servers = $this->getServerList();
+
+        foreach ($servers as $server) {
+            if ($server['type'] === 'vcs' && $server['active']) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * XML helper
      */
 
@@ -1749,23 +1847,39 @@ class Manager extends QUI\QDOM
      * @param bool|string - (otional) The packagename which should get updated.
      *
      * @return string
+     * @throws QUI\Exception
      */
     protected function composerUpdateOrInstall($package)
     {
-        // Disable lockserver if a vcs repository is used
-        $repositories = $this->getServerList();
+        $lockServerEnabled = QUI::conf('globals', 'lockserver_enabled');
+        $memoryLimit       = QUI\Utils\System::getMemoryLimit();
 
-        foreach ($repositories as $repo) {
-            if ($repo['type'] === 'vcs') {
+        // Disable lockserver if a vcs repository is used
+        // Lockserver can not handle VCS repositories ==> Check if local execution is possible or fail the operation
+        if ($this->isVCSServerEnabled()) {
+            if ($memoryLimit >= self::REQUIRED_MEMORY_VCS * 1024 * 1024 || $memoryLimit === -1) {
                 return $this->getComposer()->update();
             }
+
+            $exceptionLocale = $lockServerEnabled ?
+                'message.online.update.RAM.insufficient.vcs' : 'message.online.update.RAM.insufficient.vcs.lock';
+
+            throw new QUI\Exception([
+                'quiqqer/quiqqer',
+                $exceptionLocale
+            ]);
         }
 
         if ($this->getComposer()->getMode() != QUI\Composer\Composer::MODE_WEB) {
             return $this->getComposer()->update();
         }
 
-        $lockServerEnabled = QUI::conf("globals", "lockserver_enabled");
+        if (!$lockServerEnabled && $memoryLimit != -1 && $memoryLimit < 256 * 1024 * 1024) {
+            throw new QUI\Exception([
+                'quiqqer/quiqqer',
+                'message.online.update.RAM.insufficient'
+            ]);
+        }
 
         if (!$lockServerEnabled) {
             return $this->getComposer()->update();
@@ -1776,7 +1890,10 @@ class Manager extends QUI\QDOM
         try {
             $lockContent = $LockClient->update($this->composer_json, $package);
         } catch (\Exception $Exception) {
-            return $this->getComposer()->update();
+            throw new QUI\Lockclient\Exceptions\LockServerException([
+                'quiqqer/lockclient',
+                'exception.lockserver.unavilable'
+            ]);
         }
 
         file_put_contents($this->composer_lock, $lockContent);
@@ -1804,31 +1921,50 @@ class Manager extends QUI\QDOM
      */
     protected function composerRequireOrInstall($packages, $version)
     {
-        // Disable lockserver if a vcs repository is used
-        $repositories = $this->getServerList();
 
-        foreach ($repositories as $repo) {
-            if ($repo['type'] === 'vcs') {
+        $memoryLimit       = QUI\Utils\System::getMemoryLimit();
+        $lockServerEnabled = QUI::conf('globals', 'lockserver_enabled');
+
+        // Lockserver can not handle VCS repositories ==> Check if local execution is possible or fail the operation
+        if ($this->isVCSServerEnabled()) {
+            if ($memoryLimit >= self::REQUIRED_MEMORY_VCS * 1024 * 1024 || $memoryLimit === -1) {
                 return $this->getComposer()->requirePackage($packages, $version);
             }
-        }
 
+            $exceptionLocale = $lockServerEnabled ?
+                'message.online.update.RAM.insufficient.vcs.lock' : 'message.online.update.RAM.insufficient.vcs';
+
+            throw new QUI\Exception([
+                'quiqqer/quiqqer',
+                $exceptionLocale
+            ]);
+        }
+        //
+        // NO VCS enabled -> continue normal routine
+        //
         if ($this->getComposer()->getMode() != QUI\Composer\Composer::MODE_WEB) {
             return $this->getComposer()->requirePackage($packages, $version);
         }
 
-        $lockServerEnabled = QUI::conf("globals", "lockserver_enabled");
+        if (!$lockServerEnabled && $memoryLimit != -1 && $memoryLimit < self::REQUIRED_MEMORY * 1024 * 1024) {
+            throw new QUI\Exception([
+                'quiqqer/quiqqer',
+                'message.online.update.RAM.insufficient'
+            ]);
+        }
 
         if (!$lockServerEnabled) {
             return $this->getComposer()->requirePackage($packages, $version);
         }
 
         $LockClient = new QUI\Lockclient\Lockclient();
-
         try {
             $lockContent = $LockClient->requirePackage($this->composer_json, $packages, $version);
         } catch (\Exception $Exception) {
-            return $this->getComposer()->requirePackage($packages, $version);
+            throw new QUI\Lockclient\Exceptions\LockServerException([
+                'quiqqer/lockclient',
+                'exception.lockserver.unavilable'
+            ]);
         }
 
         file_put_contents($this->composer_lock, $lockContent);

@@ -598,15 +598,69 @@
             <en><![CDATA[Default content]]></en>
         </locale>
 
+        <!-- region Time Units -->
+        <locale name="second">
+            <en><![CDATA[second]]></en>
+        </locale>
+        <locale name="seconds">
+            <en><![CDATA[seconds]]></en>
+        </locale>
+        <locale name="seconds.dative">
+            <en><![CDATA[seconds]]></en>
+        </locale>
+
+        <locale name="minute">
+            <en><![CDATA[minute]]></en>
+        </locale>
+        <locale name="minutes">
+            <en><![CDATA[minutes]]></en>
+        </locale>
+        <locale name="minutes.dative">
+            <en><![CDATA[minutes]]></en>
+        </locale>
+
+        <locale name="hour">
+            <en><![CDATA[hour]]></en>
+        </locale>
+        <locale name="hours">
+            <en><![CDATA[hours]]></en>
+        </locale>
+        <locale name="hours.dative">
+            <en><![CDATA[hours]]></en>
+        </locale>
+
         <locale name="day">
-            <en><![CDATA[Tag]]></en>
+            <en><![CDATA[day]]></en>
         </locale>
-        <locale name="year">
-            <en><![CDATA[Year]]></en>
+        <locale name="days">
+            <en><![CDATA[days]]></en>
         </locale>
+        <locale name="days.dative">
+            <en><![CDATA[days]]></en>
+        </locale>
+
         <locale name="month">
-            <en><![CDATA[Month]]></en>
+            <en><![CDATA[month]]></en>
         </locale>
+        <locale name="months">
+            <en><![CDATA[months]]></en>
+        </locale>
+        <locale name="months.dative">
+            <en><![CDATA[months]]></en>
+        </locale>
+
+        <locale name="year">
+            <en><![CDATA[year]]></en>
+        </locale>
+        <locale name="years">
+            <en><![CDATA[years]]></en>
+        </locale>
+        <locale name="years.dative">
+            <en><![CDATA[years]]></en>
+        </locale>
+        <!-- endregion -->
+
+        <!-- region Months -->
         <locale name="month.01">
             <en><![CDATA[January]]></en>
         </locale>
@@ -642,6 +696,11 @@
         </locale>
         <locale name="month.12">
             <en><![CDATA[December]]></en>
+        </locale>
+        <!-- endregion -->
+
+        <locale name="time.ago">
+            <en><![CDATA[[amount] [unit] ago]]></en>
         </locale>
 
         <locale name="exception.error">
@@ -771,6 +830,19 @@
             Please run the update in the CLI / Bash with the following command: <br />
             <code>[command]</code>
             ]]></en>
+        </locale>
+        <locale name="message.online.update.RAM.insufficient">
+            <en>
+                <![CDATA[Composer does not have enough memory available for this action. Please increase the memory limit for PHP or execute Composer in the command line]]>
+            </en>
+        </locale>
+        <locale name="message.online.update.RAM.insufficient.vcs">
+            <en>
+                <![CDATA[PHP does not have enough memory available to perform this action, while a VCS updateserver is enabled]]></en>
+        </locale>
+        <locale name="message.online.update.RAM.insufficient.vcs.lock">
+            <en>
+                <![CDATA[It is not possible to use the Lockserver, while a VCS updateserver is active and the system does not have enough memory available to peform this operation locally.]]></en>
         </locale>
         <locale name="exception.console.execute.only.in.cli">
             <en><![CDATA[System tools can only be run in the CLI.]]></en>
@@ -1032,6 +1104,9 @@
                 User cant be destroyed or deactivated.
                 There must be at least one active user in the system.
             ]]></en>
+        </locale>
+        <locale name="exception.user_cannot_delete_himself">
+            <en><![CDATA[You cannot delete your own user account.]]></en>
         </locale>
 
         <locale name="exception.site.linked.already.exists">
@@ -1933,12 +2008,6 @@
         </locale>
         <locale name="login">
             <en><![CDATA[Login]]></en>
-        </locale>
-        <locale name="minute">
-            <en><![CDATA[Minute]]></en>
-        </locale>
-        <locale name="hour">
-            <en><![CDATA[Hour]]></en>
         </locale>
         <locale name="template.project.media.effect.header">
             <en><![CDATA[Image effects]]></en>
@@ -5145,6 +5214,55 @@
         <locale name="templates.mail.footer.text" html="true">
             <en><![CDATA[&nbsp;]]></en>
         </locale>
+
+        <locale name="templates.mail.body.header.social" html="true">
+            <de><![CDATA[
+                 <a href="https://www.facebook.com/Quiqqer" target="_blank" rel="noreferrer" style="color: #666666; text-decoration: none; padding: 0 10px;">
+                    <img alt="QUIQQER on Facebook" src="https://www.quiqqer.com/media/cache/quiqqer/email/facebook.png" />
+                 </a>
+
+                 <a href="https://twitter.com/PCSG_DEV" target="_blank" rel="noreferrer" style="color: #666666; text-decoration: none; padding: 0 10px;">
+                     <img width="15" height="15" src="https://www.quiqqer.com/media/cache/quiqqer/email/twitter.png"
+                          alt="QUIQQER on Twitter">
+                 </a>
+
+                 <a href="https://dev.quiqqer.com/" target="_blank" rel="noreferrer" style="color: #666666; text-decoration: none; padding: 0 10px;">
+                     <img width="15" height="15" src="https://www.quiqqer.com/media/cache/quiqqer/email/gitlab.png"
+                          alt="QUIQQER on Gitlab">
+                 </a>
+
+                 <a href="https://discord.gg/tjaMEgv" target="_blank" rel="noreferrer" style="color: #666666; text-decoration: none; padding: 0 10px;">
+                     <img width="15" height="15" src="https://www.quiqqer.com/media/cache/quiqqer/email/discord.png"
+                          alt="QUIQQER on Discord">
+                 </a>
+             ]]></de>
+        </locale>
+        <locale name="templates.mail.body.footer.text" html="true">
+            <de><![CDATA[<p style="padding: 0; margin: 0;">&copy; [year]<br/>Visit <a href="https://www.quiqqer.com">QUIQQER</a> website</p>]]></de>
+        </locale>
+        <locale name="templates.mail.body.footer.social" html="true">
+            <de><![CDATA[
+                 <a href="https://www.facebook.com/Quiqqer" target="_blank" rel="noreferrer" style="color: #666666; text-decoration: none; padding: 0 10px;">
+                    <img alt="QUIQQER on Facebook" src="https://www.quiqqer.com/media/cache/quiqqer/email/facebook.png" />
+                 </a>
+
+                 <a href="https://twitter.com/PCSG_DEV" target="_blank" rel="noreferrer" style="color: #666666; text-decoration: none; padding: 0 10px;">
+                     <img width="15" height="15" src="https://www.quiqqer.com/media/cache/quiqqer/email/twitter.png"
+                          alt="QUIQQER on Twitter">
+                 </a>
+
+                 <a href="https://dev.quiqqer.com/" target="_blank" rel="noreferrer" style="color: #666666; text-decoration: none; padding: 0 10px;">
+                     <img width="15" height="15" src="https://www.quiqqer.com/media/cache/quiqqer/email/gitlab.png"
+                          alt="QUIQQER on Gitlab">
+                 </a>
+
+                 <a href="https://discord.gg/tjaMEgv" target="_blank" rel="noreferrer" style="color: #666666; text-decoration: none; padding: 0 10px;">
+                     <img width="15" height="15" src="https://www.quiqqer.com/media/cache/quiqqer/email/discord.png"
+                          alt="QUIQQER on Discord">
+                 </a>
+             ]]></de>
+        </locale>
+
         <locale name="projects.project.site.messages.lock">
             <en>
                 <![CDATA[This page is currently being edited by: [username]. Tha last login from [username] was at [lastlogin]]]></en>
@@ -6071,9 +6189,6 @@
         </locale>
         <locale name="packages.panel.title">
             <en><![CDATA[System administration]]></en>
-        </locale>
-        <locale name="month">
-            <en><![CDATA[Month]]></en>
         </locale>
         <locale name="projects.project.panel.settings.btn.adminSettings">
             <en><![CDATA[Backend settings]]></en>

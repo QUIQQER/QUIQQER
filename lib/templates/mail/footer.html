@@ -1,38 +1,31 @@
-                </td>
-            </tr>
-            <tr>
-                <td align="left">
-
-                    <table width="100%" border="0" cellspacing="0" cellpadding="0" style="padding: 10px;">
-                        <tr>
-                            <td class="footer" align="left">
-                                {locale group="quiqqer/system" var="templates.mail.footer.links"}
-                            </td>
-                        </tr>
-                    </table>
-
-                </td>
-            </tr>
-        </table>
-
-        </td>
-    </tr>
+{template_event name="quiqqer::quiqqer::mail::footerBegin"}
+<!-- FOOTER -->
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
     <tr>
-        <td align="center">
+        <td bgcolor="#f8f8f8" align="center">
+            <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+                <tr>
+                    <td style="padding: 20px 0px 20px 0px;">
+                        <table width="500" border="0" cellspacing="0" cellpadding="0" align="center" class="responsive-table">
+                            <tr>
+                                <td align="center" width="500" valign="middle" style="font-size: 12px; line-height: 18px; font-family: Helvetica, Arial, sans-serif; color:#666666; padding: 10px 0;">
+                                    <img alt="Logo" src="{image image=$Project->getMedia()->getLogoImage() height=30 onlysrc='true' host=1}" height="30" style="display: block; font-family: Helvetica, Arial, sans-serif; color: #666666; font-size: 16px; margin-bottom: 10px;" border="0">
+                                    {locale group="quiqqer/system" var="templates.mail.body.footer.text" year=$smarty.now|date_format:'%Y'}
+                                </td>
+                            </tr>
 
-        <table width="80%" cellspacing="0" cellpadding="0" class="container">
-        <tr>
-            <td align="center" class="permission">
-                <p>{locale group="quiqqer/system" var="templates.mail.footer.text"}</p>
-            </td>
-        </tr>
-        </table>
-
+                            <tr>
+                                <td align="center" valign="middle" width="500" style="font-size: 12px; line-height: 18px; font-family: Helvetica, Arial, sans-serif; color:#666666; padding: 10px 0;">
+                                    {locale group="quiqqer/system" var="templates.mail.body.footer.social" year=$smarty.now|date_format:'%Y'}
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
         </td>
     </tr>
 </table>
-
-<br /><br />
-
+{template_event name="quiqqer::quiqqer::mail::footerEnd"}
 </body>
 </html>

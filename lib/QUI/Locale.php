@@ -449,7 +449,10 @@ class Locale
     public function getByLang($lang, $group, $value = false, $replace = false)
     {
         if ($replace === false || empty($replace)) {
-            return $this->getHelper($group, $value, $lang);
+            $str = $this->getHelper($group, $value, $lang);
+            $str = str_replace('{\n}', PHP_EOL, $str);
+
+            return $str;
         }
 
         $str = $this->getHelper($group, $value, $lang);

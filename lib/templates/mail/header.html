@@ -1,237 +1,108 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
-
     <title>{locale group="quiqqer/system" var="templates.mail.header.title"}</title>
+    <!--
+        SALTED | A RESPONSIVE EMAIL TEMPLATE
+        =====================================
+        Based on code used and tested by Litmus (@litmusapp)
+        Originally developed by Kevin Mandeville (@KEVINgotbounce)
+        Cleaned up by Jason Rodriguez (@rodriguezcommaj)
+        Presented by A List Apart (@alistapart)
+        Email is surprisingly hard. While this has been thoroughly tested, your mileage may vary.
+        It's highly recommended that you test using a service like Litmus and your own devices.
+        Enjoy!
+     -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
     {literal}
-    <style>
-
-        body {
-            background-color: #fcfcfc;
-            font: 12px verdana, tahoma, arial, helvetica, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            width: 80%;
-            margin: 0 20px;
-            max-width: 1000px;
-        }
-
-        .body {
-            background-color: #ffffff;
-            width: 80%;
-            max-width: 1000px;
-        }
-
-        .title {
-            font-weight: bold;
-        }
-
-        @media only screen and (max-device-width: 480px) {
-            .body {
-                width: 800px;
+    <style type="text/css">
+        /* CLIENT-SPECIFIC STYLES */
+        #outlook a{padding:0;} /* Force Outlook to provide a "view in browser" message */
+        .ReadMsgBody{width:100%;} .ExternalClass{width:100%;} /* Force Hotmail to display emails at full width */
+        .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div {line-height: 100%;} /* Force Hotmail to display normal line spacing */
+        body, table, td, a{-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%;} /* Prevent WebKit and Windows mobile changing default text sizes */
+        table, td{mso-table-lspace:0pt; mso-table-rspace:0pt;} /* Remove spacing between tables in Outlook 2007 and up */
+        img{-ms-interpolation-mode:bicubic;} /* Allow smoother rendering of resized image in Internet Explorer */
+        /* RESET STYLES */
+        body{margin:0; padding:0;}
+        img{border:0; height:auto; line-height:100%; outline:none; text-decoration:none;}
+        table{border-collapse:collapse !important;}
+        body{height:100% !important; margin:0; padding:0; width:100% !important;}
+        /* iOS BLUE LINKS */
+        .appleBody a {color:#68440a; text-decoration: none;}
+        .appleFooter a {color:#999999; text-decoration: none;}
+        /* MOBILE STYLES */
+        @media screen and (max-width: 525px) {
+            /* ALLOWS FOR FLUID TABLES */
+            table[class="wrapper"]{
+                width:100% !important;
             }
-
-            .container {
-                width: 800px;
+            /* ADJUSTS LAYOUT OF LOGO IMAGE */
+            td[class="logo"]{
+                text-align: left;
+                padding: 20px 0 20px 0 !important;
             }
-        }
-
-        a img {
-            border: none;
-        }
-
-        a {
-            border: none;
-        }
-
-        td.permission {
-            padding: 30px 0 10px 0;
-        }
-
-        .permission {
-            font-family: 'Lucida Grande', sans-serif;
-            font-size: 10px;
-            color: #BCBCBC;
-            padding: 4px 0 4px 0;
-        }
-
-        .permission a {
-            color: #BCBCBC;
-        }
-
-        .permission p {
-            margin: 0 0 4px 0;
-        }
-
-        .header {
-            /*background-color: #353535;*/
-        }
-
-        .header h1 {
-            font-size: 32px;
-            font-weight: normal;
-            color: #bfbfbf;
-            display: inline;
-            text-align: left;
-            padding: 10px;
-        }
-
-        .date h3 {
-            font-size: 14px;
-            color: #bfbfbf;
-            font-weight: normal;
-            text-align: right;
-            display: inline;
-            font-style: italic;
-        }
-
-        td.sidebar {
-            padding: 22px 0 0 0;
-        }
-
-        .sidebar h2 {
-            font-size: 18px;
-            font-weight: bold;
-            color: #808080;
-            margin: 0 0 6px 4px;
-            padding: 0;
-            text-align: left;
-        }
-
-        .sidebar h2.issue {
-            color: #000000;
-            margin: 0 0 10px 10px;
-        }
-
-        .sidebar ul {
-            font-size: 12px;
-            color: #1D1D1B;
-            margin: 0 0 0 24px;
-            padding: 0;
-            text-align: left;
-        }
-
-        .sidebar ul a {
-            font-size: 12px;
-            color: #1D1D1B;
-        }
-
-        .sidebar ul li {
-            margin: 0 0 10px 0;
-        }
-
-        .sidebar p {
-            font-size: 11px;
-            color: #5f5f5f;
-            padding: 0;
-            margin: 0 0 10px 0;
-            text-align: left;
-        }
-
-        td.sidebg {
-            background-color: #f1f1f1;
-            padding: 10px 16px 10px 16px;
-        }
-
-        td.mainbar {
-            padding: 22px 14px 0 14px;
-            font: 12px verdana, tahoma, arial, helvetica, sans-serif;
-        }
-
-        .mainbar p {
-            font: 12px verdana, tahoma, arial, helvetica, sans-serif;
-            color: #333333;
-            margin: 0 0 10px 0;
-            text-align: left;
-        }
-
-        .mainbar td {
-            margin: 0;
-            padding: 0;
-            font: 12px verdana, tahoma, arial, helvetica, sans-serif;
-        }
-
-        .mainbar p.first {
-            margin-top: 10px;
-        }
-
-        .mainbar h1 {
-            font-size: 18px;
-            color: #1D1D1B;
-        }
-
-        .mainbar h2 {
-            font-size: 16px;
-            color: #333;
-            margin: 10px 0 16px 0;
-        }
-
-        .mainbar h2 a {
-            font-size: 16px;
-            color: #333;
-            text-decoration: none;
-            font-style: normal;
-        }
-
-        .mainbar h3,
-        .mainbar h3 a {
-            color: #555;
-        }
-
-        .mainbar a {
-            font-size: 13px;
-            color: #1D1D1B;
-        }
-
-        .mainbar a.center {
-            font-size: 12px;
-            text-align: center;
-            display: block;
-            color: #999999;
-            padding: 8px 0 12px 0;
-            text-decoration: none;
-        }
-
-        .mainbar img.inline {
-            border: 1px solid #dedede;
-            padding: 4px;
-        }
-
-        td.footer {
-            padding: 0 0 10px 0;
-            border-top: 2px solid #ededed;
-        }
-
-        .footer p {
-            color: #a1a1a1;
-            font-size: 11px;
-            margin: 0;
-            padding: 0;
-        }
-
-        .footer p.first {
-            margin: 14px 0 0 0;
-        }
-
-        .footer a {
-            font-size: 11px;
-            color: #1D1D1B;
+            td[class="logo"] img{
+                margin:0 auto!important;
+            }
+            /* USE THESE CLASSES TO HIDE CONTENT ON MOBILE */
+            td[class="mobile-hide"]{
+                display:none;}
+            img[class="mobile-hide"]{
+                display: none !important;
+            }
+            img[class="img-max"]{
+                max-width: 100% !important;
+                height:auto !important;
+            }
+            /* FULL-WIDTH TABLES */
+            table[class="responsive-table"]{
+                width:100%!important;
+            }
+            /* UTILITY CLASSES FOR ADJUSTING PADDING ON MOBILE */
+            td[class="padding"]{
+                padding: 10px 5% 15px 5% !important;
+            }
+            td[class="padding-copy"]{
+                padding: 10px 5% 10px 5% !important;
+                text-align: center;
+            }
+            td[class="padding-meta"]{
+                padding: 30px 5% 0px 5% !important;
+                text-align: center;
+            }
+            td[class="no-pad"]{
+                padding: 0 0 20px 0 !important;
+            }
+            td[class="no-padding"]{
+                padding: 0 !important;
+            }
+            td[class="section-padding"]{
+                padding: 50px 15px 50px 15px !important;
+            }
+            td[class="section-padding-bottom-image"]{
+                padding: 50px 15px 0 15px !important;
+            }
+            /* ADJUST BUTTONS ON MOBILE */
+            td[class="mobile-wrapper"]{
+                padding: 10px 5% 15px 5% !important;
+            }
+            table[class="mobile-button-container"]{
+                margin:0 auto;
+                width:100% !important;
+            }
+            a[class="mobile-button"]{
+                width:80% !important;
+                padding: 15px !important;
+                border: 0 !important;
+                font-size: 16px !important;
+            }
         }
     </style>
+
     {/literal}
+
+    {template_event name="quiqqer::quiqqer::mail::headerHeadEnd"}
 </head>
-<body>
-
-<br/>
-<br/>
-
-<table width="100%" cellspacing="0" cellpadding="0">
-    <tr>
-        <td align="center">
-            <table cellspacing="10" cellpadding="0" class="body">
-                <tr>
-                    <td valign="top" class="mainbar">
+<body style="margin: 0; padding: 0; width: 100%;">

@@ -20,6 +20,34 @@ use QUI\Utils\StringHelper as StringUtils;
 class Utils
 {
     /**
+     * Prefix for the cache key where the size of the media folder is stored.
+     * Should be followed by the project name when querying the cache.
+     */
+    const CACHE_KEY_MEDIA_FOLDER_SIZE_PREFIX = "media_folder_size_";
+
+
+    /**
+     * Prefix for the cache key where the timestamp of the media folder size is stored.
+     * Should be followed by the project name when querying the cache.
+     */
+    const CACHE_KEY_TIMESTAMP_MEDIA_FOLDER_SIZE_PREFIX = "timestamp_media_folder_size_";
+
+
+    /**
+     * Prefix for the cache key where the size of the media cache folder is stored.
+     * Should be followed by the project name when querying the cache.
+     */
+    const CACHE_KEY_MEDIA_CACHE_FOLDER_SIZE_PREFIX = "media_cache_folder_size_";
+
+
+    /**
+     * Prefix for the cache key where the timestamp of the media cache folder size is stored.
+     * Should be followed by the project name when querying the cache.
+     */
+    const CACHE_KEY_TIMESTAMP_MEDIA_CACHE_FOLDER_SIZE_PREFIX = "timestamp_media_cache_folder_size_";
+
+
+    /**
      * Returns the item array
      * the array is specially adapted for the media center
      *
@@ -33,7 +61,7 @@ class Utils
             /* @var $Item \QUI\Projects\Media\Folder */
             return [
                 'icon'          => 'fa fa-home',
-                'icon80x80'     => URL_BIN_DIR.'80x80/media.png',
+                'icon80x80'     => URL_BIN_DIR . '80x80/media.png',
                 'id'            => $Item->getId(),
                 'name'          => $Item->getAttribute('name'),
                 'title'         => $Item->getAttribute('title'),
@@ -54,7 +82,7 @@ class Utils
             /* @var $Item \QUI\Projects\Media\Folder */
             return [
                 'icon'          => 'fa fa-folder-o',
-                'icon80x80'     => URL_BIN_DIR.'80x80/extensions/folder.png',
+                'icon80x80'     => URL_BIN_DIR . '80x80/extensions/folder.png',
                 'id'            => $Item->getId(),
                 'name'          => $Item->getAttribute('name'),
                 'title'         => $Item->getAttribute('title'),
@@ -118,59 +146,71 @@ class Utils
         }
 
         $extensions['16x16'] = [
-            'folder' => URL_BIN_DIR.'16x16/extensions/folder.png',
-            'pdf'    => URL_BIN_DIR.'16x16/extensions/pdf.png',
+            'folder' => URL_BIN_DIR . '16x16/extensions/folder.png',
+            'pdf'    => URL_BIN_DIR . '16x16/extensions/pdf.png',
             // Images
-            'jpg'    => URL_BIN_DIR.'16x16/extensions/image.png',
-            'jpeg'   => URL_BIN_DIR.'16x16/extensions/image.png',
-            'gif'    => URL_BIN_DIR.'16x16/extensions/image.png',
-            'png'    => URL_BIN_DIR.'16x16/extensions/image.png',
+            'jpg'    => URL_BIN_DIR . '16x16/extensions/image.png',
+            'jpeg'   => URL_BIN_DIR . '16x16/extensions/image.png',
+            'gif'    => URL_BIN_DIR . '16x16/extensions/image.png',
+            'png'    => URL_BIN_DIR . '16x16/extensions/image.png',
             // Movie
-            'avi'    => URL_BIN_DIR.'16x16/extensions/film.png',
-            'mpeg'   => URL_BIN_DIR.'16x16/extensions/film.png',
-            'mpg'    => URL_BIN_DIR.'16x16/extensions/film.png',
+            'avi'    => URL_BIN_DIR . '16x16/extensions/film.png',
+            'mpeg'   => URL_BIN_DIR . '16x16/extensions/film.png',
+            'mpg'    => URL_BIN_DIR . '16x16/extensions/film.png',
             // Archiv
-            'tar'    => URL_BIN_DIR.'16x16/extensions/archive.png',
-            'rar'    => URL_BIN_DIR.'16x16/extensions/archive.png',
-            'zip'    => URL_BIN_DIR.'16x16/extensions/archive.png',
-            'gz'     => URL_BIN_DIR.'16x16/extensions/archive.png',
-            '7z'     => URL_BIN_DIR.'16x16/extensions/archive.png',
+            'tar'    => URL_BIN_DIR . '16x16/extensions/archive.png',
+            'rar'    => URL_BIN_DIR . '16x16/extensions/archive.png',
+            'zip'    => URL_BIN_DIR . '16x16/extensions/archive.png',
+            'gz'     => URL_BIN_DIR . '16x16/extensions/archive.png',
+            '7z'     => URL_BIN_DIR . '16x16/extensions/archive.png',
             //Office
 
             // Music
-            'mp3'    => URL_BIN_DIR.'16x16/extensions/sound.png',
-            'ogg'    => URL_BIN_DIR.'16x16/extensions/sound.png',
+            'mp3'    => URL_BIN_DIR . '16x16/extensions/sound.png',
+            'ogg'    => URL_BIN_DIR . '16x16/extensions/sound.png',
         ];
 
         $extensions['80x80'] = [
-            'folder' => URL_BIN_DIR.'80x80/extensions/folder.png',
-            'pdf'    => URL_BIN_DIR.'80x80/extensions/pdf.png',
+            'folder' => URL_BIN_DIR . '80x80/extensions/folder.png',
+            'pdf'    => URL_BIN_DIR . '80x80/extensions/pdf.png',
             // Images
-            'jpg'    => URL_BIN_DIR.'80x80/extensions/image.png',
-            'jpeg'   => URL_BIN_DIR.'80x80/extensions/image.png',
-            'gif'    => URL_BIN_DIR.'80x80/extensions/image.png',
-            'png'    => URL_BIN_DIR.'80x80/extensions/image.png',
+            'jpg'    => URL_BIN_DIR . '80x80/extensions/image.png',
+            'jpeg'   => URL_BIN_DIR . '80x80/extensions/image.png',
+            'gif'    => URL_BIN_DIR . '80x80/extensions/image.png',
+            'png'    => URL_BIN_DIR . '80x80/extensions/image.png',
             // Movie
-            'avi'    => URL_BIN_DIR.'80x80/extensions/film.png',
-            'mpeg'   => URL_BIN_DIR.'80x80/extensions/film.png',
-            'mpg'    => URL_BIN_DIR.'80x80/extensions/film.png',
+            'avi'    => URL_BIN_DIR . '80x80/extensions/film.png',
+            'mpeg'   => URL_BIN_DIR . '80x80/extensions/film.png',
+            'mpg'    => URL_BIN_DIR . '80x80/extensions/film.png',
             // Archiv
-            'tar'    => URL_BIN_DIR.'80x80/extensions/archive.png',
-            'rar'    => URL_BIN_DIR.'80x80/extensions/archive.png',
-            'zip'    => URL_BIN_DIR.'80x80/extensions/archive.png',
-            'gz'     => URL_BIN_DIR.'80x80/extensions/archive.png',
-            '7z'     => URL_BIN_DIR.'80x80/extensions/archive.png',
+            'tar'    => URL_BIN_DIR . '80x80/extensions/archive.png',
+            'rar'    => URL_BIN_DIR . '80x80/extensions/archive.png',
+            'zip'    => URL_BIN_DIR . '80x80/extensions/archive.png',
+            'gz'     => URL_BIN_DIR . '80x80/extensions/archive.png',
+            '7z'     => URL_BIN_DIR . '80x80/extensions/archive.png',
             //Office
 
             // Music
-            'mp3'    => URL_BIN_DIR.'80x80/extensions/sound.png',
+            'mp3'    => URL_BIN_DIR . '80x80/extensions/sound.png',
         ];
 
         if (isset($extensions[$size][$ext])) {
             return $extensions[$size][$ext];
         }
 
-        return URL_BIN_DIR.$size.'/extensions/empty.png';
+        return URL_BIN_DIR . $size . '/extensions/empty.png';
+    }
+
+    /**
+     * Return the fitting font awesome class
+     * @param \QUI\Projects\Media\Item $Item
+     * @return string
+     *
+     * @deprecated
+     */
+    public static function getFronAwesomIconByItem($Item)
+    {
+        return self::getFontAwesomeIconByItem($Item);
     }
 
     /**
@@ -178,7 +218,7 @@ class Utils
      * @param \QUI\Projects\Media\Item $Item
      * @return string
      */
-    public static function getFronAwesomIconByItem($Item)
+    public static function getFontAwesomeIconByItem($Item)
     {
         if (self::isImage($Item)) {
             return 'fa-file-photo-o';
@@ -340,7 +380,7 @@ class Utils
         $img = '<img ';
 
         foreach ($attributes as $key => $value) {
-            $img .= htmlspecialchars($key).'="'.htmlspecialchars($value).'" ';
+            $img .= htmlspecialchars($key) . '="' . htmlspecialchars($value) . '" ';
         }
 
         // responsive image
@@ -362,7 +402,7 @@ class Utils
 //            $img .= ' srcset="'. implode(",\n", $srcset) .'"';
 //        }
 
-        $img .= ' src="'.htmlspecialchars($src).'" />';
+        $img .= ' src="' . htmlspecialchars($src) . '" />';
 
         return $img;
     }
@@ -403,7 +443,7 @@ class Utils
         $id      = $params['id'];
         $project = $params['project'];
 
-        $cache = 'cache/links/'.$project.'/media/'.$id;
+        $cache = 'cache/links/' . $project . '/media/' . $id;
         $url   = '';
 
         // exist cache?
@@ -427,14 +467,14 @@ class Utils
                     'trace' => $Exception->getTrace()
                 ]);
 
-                return URL_DIR.$output;
+                return URL_DIR . $output;
             } catch (\Exception $Exception) {
                 Log::addDebug($Exception->getMessage(), [
                     'url'   => $output,
                     'trace' => $Exception->getTrace()
                 ]);
 
-                return URL_DIR.$output;
+                return URL_DIR . $output;
             }
         }
 
@@ -455,10 +495,10 @@ class Utils
                 $url_explode[1] = '';
             }
 
-            $url = $url_explode[0].'__'.$size['width'].'x'.$size['height'].'.'.$url_explode[1];
+            $url = $url_explode[0] . '__' . $size['width'] . 'x' . $size['height'] . '.' . $url_explode[1];
         }
 
-        if (!file_exists(CMS_DIR.$url)) {
+        if (!file_exists(CMS_DIR . $url)) {
             $Project = QUI::getProject($project);
             $Media   = $Project->getMedia();
             $Obj     = $Media->get((int)$id);
@@ -720,8 +760,8 @@ class Utils
             $lastpos_ul = strrpos($file_name, '__') + 2;
             $pos_dot    = strpos($file_name, '.', $lastpos_ul);
 
-            $file_name = substr($file_name, 0, ($lastpos_ul - 2)).
-                         substr($file_name, $pos_dot);
+            $file_name = substr($file_name, 0, ($lastpos_ul - 2)) .
+                substr($file_name, $pos_dot);
         }
 
         $parts[] = $file_name;
@@ -816,5 +856,179 @@ class Utils
     {
         /* @var $File \QUI\Projects\Media\Image */
         return sha1_file($File->getFullPath());
+    }
+
+
+    /**
+     * Counts and returns the number of folders for a project.
+     *
+     * @param QUI\Projects\Project $Project
+     *
+     * @return int
+     */
+    public static function countFoldersForProject(QUI\Projects\Project $Project)
+    {
+        $mediaTable = $Project->getMedia()->getTable();
+
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'count' => 'id',
+                'from'  => $mediaTable,
+                'where' => [
+                    'type' => 'folder'
+                ]
+            ]);
+        } catch (QUI\Exception $Exception) {
+            return 0;
+        }
+
+        if (isset($result[0])) {
+            return intval($result[0]['id']);
+        }
+
+        return 0;
+    }
+
+
+    /**
+     * Counts and returns the number of files for a project.
+     *
+     * @param QUI\Projects\Project $Project
+     *
+     * @return int
+     */
+    public static function countFilesForProject(QUI\Projects\Project $Project)
+    {
+        $mediaTable = $Project->getMedia()->getTable();
+
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'count' => 'id',
+                'from'  => $mediaTable,
+                'where' => [
+                    'type' => [
+                        'type'  => 'NOT',
+                        'value' => 'folder'
+                    ]
+                ]
+            ]);
+        } catch (QUI\Exception $Exception) {
+            return 0;
+        }
+
+        if (isset($result[0])) {
+            return intval($result[0]['id']);
+        }
+
+        return 0;
+    }
+
+
+    /**
+     * Returns the size of the given project's media folder in bytes.
+     * By default the value is returned from cache.
+     * If there is no value in cache, null is returned, unless you use the force parameter.
+     * Only if you really need to get a freshly calculated result, you may set the force parameter to true.
+     * When using the force parameter expect timeouts since the calculation could take a lot of time.
+     *
+     * @param QUI\Projects\Project $Project
+     * @param boolean $force - Force a calculation of the media folder size. Values aren't returned from cache. Expect timeouts.
+     *
+     * @return int
+     */
+    public static function getMediaFolderSizeForProject(QUI\Projects\Project $Project, $force = false)
+    {
+        return QUI\Utils\System\Folder::getFolderSize($Project->getMedia()->getFullPath(), $force);
+    }
+
+
+    /**
+     * Returns the timestamp when to media folder size was stored in cache for the given project.
+     * Returns null if there is no data in the cache.
+     *
+     * @param QUI\Projects\Project $Project
+     *
+     * @return int|null
+     */
+    public static function getMediaFolderSizeTimestampForProject(QUI\Projects\Project $Project)
+    {
+        return QUI\Utils\System\Folder::getFolderSizeTimestamp($Project->getMedia()->getFullPath());
+    }
+
+
+    /**
+     * Returns the size of the given project's media cache folder in bytes.
+     * By default the value is returned from cache.
+     * If there is no value in cache, null is returned, unless you use the force parameter.
+     * Only if you really need to get a freshly calculated result, you may set the force parameter to true.
+     * When using the force parameter expect timeouts since the calculation could take a lot of time.
+     *
+     * @param QUI\Projects\Project $Project
+     * @param boolean $force - Force a calculation of the media folder size. Values aren't returned from cache. Expect timeouts.
+     *
+     * @return int
+     */
+    public static function getMediaCacheFolderSizeForProject(QUI\Projects\Project $Project, $force = false)
+    {
+        return QUI\Utils\System\Folder::getFolderSize($Project->getMedia()->getFullCachePath(), $force);
+    }
+
+
+    /**
+     * Returns the timestamp when to media cache folder size was stored in cache for the given project.
+     * Returns null if there is no data in the cache.
+     *
+     * @param QUI\Projects\Project $Project
+     *
+     * @return int|null
+     */
+    public static function getMediaCacheFolderSizeTimestampForProject(QUI\Projects\Project $Project)
+    {
+        return QUI\Utils\System\Folder::getFolderSizeTimestamp($Project->getMedia()->getFullCachePath());
+    }
+
+
+    /**
+     * Counts and returns all the different types of files for a given project.
+     *
+     * @param QUI\Projects\Project $Project
+     *
+     * @return array - the array's keys are the file types and their values are their amounts
+     */
+    public static function countFiletypesForProject(QUI\Projects\Project $Project)
+    {
+        $table = $Project->getMedia()->getTable();
+
+        $query = "
+        SELECT
+          (CASE
+             /* Count all 'image/%' mimetypes as image */
+             WHEN `mime_type` LIKE 'image/%' THEN 'image'
+             ELSE `mime_type` END
+          ) AS mime_type
+          , COUNT(id) AS count
+        FROM `{$table}`
+        WHERE `type` != 'folder'
+        GROUP BY
+          (CASE
+             /* Group all 'image/%' mimetypes as image */
+             WHEN `mime_type` LIKE 'image/%' THEN 'image'
+             ELSE `mime_type` END
+          )
+        ;
+        ";
+
+        try {
+            $result = QUI::getDataBase()->fetchSQL($query);
+        } catch (QUI\Exception $Exception) {
+            return [];
+        }
+
+        $return = [];
+        foreach ($result as $element) {
+            $return[$element['mime_type']] = intval($element['count']);
+        }
+
+        return $return;
     }
 }
