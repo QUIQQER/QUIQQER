@@ -333,8 +333,11 @@
         <locale name="user.panel.userlanguage">
             <en><![CDATA[User language]]></en>
         </locale>
+        <locale name="user.panel.created">
+            <en><![CDATA[Created on]]></en>
+        </locale>
         <locale name="user.panel.lastChanged">
-            <en><![CDATA[Last changed at]]></en>
+            <en><![CDATA[Last modified on]]></en>
         </locale>
         <locale name="user.panel.lastLogin">
             <en><![CDATA[Last login]]></en>
