@@ -334,6 +334,9 @@
         <locale name="user.panel.userlanguage">
             <de><![CDATA[Benutzersprache]]></de>
         </locale>
+        <locale name="user.panel.created">
+            <de><![CDATA[Erstellt am]]></de>
+        </locale>
         <locale name="user.panel.lastChanged">
             <de><![CDATA[Zuletzte geändert am]]></de>
         </locale>
@@ -840,10 +843,12 @@
             </de>
         </locale>
         <locale name="message.online.update.RAM.insufficient.vcs">
-            <de><![CDATA[Es steht PHP nicht genug Arbeitsspeicher zur Verfügung, um Pakete mit angeschaltetem VCS Updateserver zu aktualisieren oder zu installieren.]]></de>
+            <de>
+                <![CDATA[Es steht PHP nicht genug Arbeitsspeicher zur Verfügung, um Pakete mit angeschaltetem VCS Updateserver zu aktualisieren oder zu installieren.]]></de>
         </locale>
         <locale name="message.online.update.RAM.insufficient.vcs.lock">
-            <de><![CDATA[Der Lockserver kann nicht verwendet werden, wenn ein VCS Updateserver aktiviert ist und PHP steht nicht genug Arbeitsspeicher zur Verfügung, um die Operation lokal auszuführen.]]></de>
+            <de>
+                <![CDATA[Der Lockserver kann nicht verwendet werden, wenn ein VCS Updateserver aktiviert ist und PHP steht nicht genug Arbeitsspeicher zur Verfügung, um die Operation lokal auszuführen.]]></de>
         </locale>
         <locale name="exception.console.execute.only.in.cli">
             <de><![CDATA[System Tools können nur in der CLI ausgeführt werden.]]></de>
@@ -5406,7 +5411,8 @@
              ]]></de>
         </locale>
         <locale name="templates.mail.body.footer.text" html="true">
-            <de><![CDATA[<p style="padding: 0; margin: 0;">&copy; [year]<br/><a href="https://www.quiqqer.de">QUIQQER</a> Website besuchen</p>]]></de>
+            <de>
+                <![CDATA[<p style="padding: 0; margin: 0;">&copy; [year]<br/><a href="https://www.quiqqer.de">QUIQQER</a> Website besuchen</p>]]></de>
         </locale>
         <locale name="templates.mail.body.footer.social" html="true">
             <de><![CDATA[

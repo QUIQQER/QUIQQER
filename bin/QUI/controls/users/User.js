@@ -316,8 +316,10 @@ define('controls/users/User', [
                 return ControlUtils.parse(self.getBody());
 
             }).then(function () {
-                var LastEdit    = self.getBody().getElement('[name="lastedit"]');
-                var LastVisit   = self.getBody().getElement('[name="lastvisit"]');
+                var Created   = self.getBody().getElement('[name="regdate"]');
+                var LastEdit  = self.getBody().getElement('[name="lastedit"]');
+                var LastVisit = self.getBody().getElement('[name="lastvisit"]');
+
                 var dateOptions = {
                     year  : 'numeric',
                     month : 'numeric',
@@ -327,6 +329,18 @@ define('controls/users/User', [
                     second: 'numeric',
                     hour12: false
                 };
+
+                if (Created && Created.value !== '' && parseInt(Created.value) !== 0) {
+                    try {
+                        Created.value = QUILocale.getDateTimeFormatter(dateOptions).format(
+                            new Date(Created.value * 1000)
+                        );
+                    } catch (e) {
+                        console.error(e);
+                    }
+                } else if (Created) {
+                    Created.value = '---';
+                }
 
                 if (LastEdit && LastEdit.value !== '' && parseInt(LastEdit.value) !== 0) {
                     try {
@@ -418,10 +432,10 @@ define('controls/users/User', [
                     if (!self.getUser().getAttribute('hasPassword')) {
                         new Element('tr', {
                             html: '<td colspan="2">' +
-                            '    <div class="content-message-error">' +
-                            QUILocale.get('quiqqer/quiqqer', 'message.user.has.no.password') +
-                            '    </div>' +
-                            '</td>'
+                                '    <div class="content-message-error">' +
+                                QUILocale.get('quiqqer/quiqqer', 'message.user.has.no.password') +
+                                '    </div>' +
+                                '</td>'
                         }).inject(Body.getElement('tbody'));
                     }
                 }
@@ -800,7 +814,7 @@ define('controls/users/User', [
                     this.Loader.hide();
                     return;
                 }
-console.log(User.isActive());
+                console.log(User.isActive());
                 if (User.isActive()) {
                     Button.on();
                     Button.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isActivate'));
@@ -816,7 +830,7 @@ console.log(User.isActive());
                     this.Loader.hide();
                     return;
                 }
-console.log(User.isActive());
+                console.log(User.isActive());
                 if (User.isActive()) {
                     Button.setSilentOn();
                     Button.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isActivate'));
