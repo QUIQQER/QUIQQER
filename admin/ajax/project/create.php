@@ -32,7 +32,7 @@ QUI::$Ajax->registerFunction(
             $Config->save();
         }
 
-        if ($params['demoData']) {
+        if (isset($params['demodata']) && $params['demodata']) {
             \QUI\Utils\Project::applyDemoDataToProject($Project, $template);
         }
 
