@@ -1,6 +1,7 @@
 /**
  * @module controls/users/Login
  *
+ * @event onLoad
  * @event onAuthBegin
  * @event onAuthNext
  * @event onSuccess
@@ -85,9 +86,13 @@ define('controls/users/Login', [
                 this.Loader.show();
             }
 
+            var self = this;
+
             QUIAjax.get('ajax_users_loginControl', function (result) {
-                this.$buildAuthenticator(result);
-            }.bind(this), {
+                self.$buildAuthenticator(result).then(function () {
+                    self.fireEvent('load', [self]);
+                });
+            }, {
                 isAdminLogin  : typeof QUIQQER_IS_ADMIN_LOGIN !== 'undefined' ? 1 : 0,
                 authenticators: JSON.encode(this.getAttribute('authenticators'))
             });
@@ -105,6 +110,7 @@ define('controls/users/Login', [
             }
 
             this.$refreshForm();
+            this.fireEvent('load', [this]);
         },
 
         /**
@@ -152,6 +158,7 @@ define('controls/users/Login', [
          * Build the authenticator from the ajax html
          *
          * @param {String} html
+         * @return {Promise}
          */
         $buildAuthenticator: function (html) {
             var Container = new Element('div', {
@@ -169,7 +176,8 @@ define('controls/users/Login', [
                 QUIAjax.post('ajax_user_logout', function () {
                     window.location.reload();
                 });
-                return;
+
+                return Promise.resolve();
             }
 
             forms.setStyle('opacity', 0);
@@ -189,7 +197,7 @@ define('controls/users/Login', [
                 Child.inject(forms[0]);
             });
 
-            QUI.parse(forms).then(function () {
+            return QUI.parse(forms).then(function () {
                 this.Loader.hide();
 
                 forms.setStyle('top', 20);
