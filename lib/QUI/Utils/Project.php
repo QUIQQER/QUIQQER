@@ -219,7 +219,6 @@ class Project
 
         $DemoData = new QUI\Demodata\DemoData();
         $DemoData->apply($Project, $demoDataArray);
-
     }
 
     /**
