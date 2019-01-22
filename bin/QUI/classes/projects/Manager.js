@@ -155,9 +155,10 @@ define('classes/projects/Manager', [
          * @param {String} project
          * @param {String} lang
          * @param {String} template
+         * @param demodata
          * @param {Function} [onfinish]
          */
-        createNewProject: function (project, lang, template, onfinish) {
+        createNewProject: function (project, lang, template, demodata, onfinish) {
             var self = this;
 
             this.$getList = null;
@@ -173,7 +174,8 @@ define('classes/projects/Manager', [
                 params: JSON.encode({
                     project : project,
                     lang    : lang,
-                    template: template
+                    template: template,
+                    demodata: demodata
                 })
             });
         },

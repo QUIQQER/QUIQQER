@@ -5072,6 +5072,9 @@
         <locale name="template.project.no.template">
             <de><![CDATA[Kein Template verwenden]]></de>
         </locale>
+        <locale name="demodata.project.label.template">
+            <de><![CDATA[Demodaten installieren]]></de>
+        </locale>
         <locale name="projects.project.site.no.permissions">
             <de><![CDATA[Sie besitzen keine Rechte diese Seite anzuzeigen]]></de>
         </locale>

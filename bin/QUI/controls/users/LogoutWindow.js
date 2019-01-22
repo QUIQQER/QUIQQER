@@ -4,10 +4,7 @@
  * @author www.pcsg.de (Henning Leutz)
  * @module controls/users/LogoutWindow
  *
- * @require qui/QUI
- * @require qui/controls/windows/Confirm
- * @require controls/users/Login
- * @require Locale
+ * @event onQuiqqerUserAuthLogout
  */
 define('controls/users/LogoutWindow', [
 
@@ -64,6 +61,8 @@ define('controls/users/LogoutWindow', [
             this.Loader.show();
 
             Ajax.post('ajax_users_logout', function () {
+                QUI.fireEvent('quiqqerUserAuthLogout');
+
                 if (window.location.hash !== '') {
                     window.location.reload();
                     return;
