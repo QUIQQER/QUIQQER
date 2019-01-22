@@ -7,11 +7,11 @@
  * @event onSuccess [self]
  * @event onUserLoginError [error, self]
  *
- * @event quiqqerUserAuthLoginLoad [self]
- * @event quiqqerUserAuthLoginUserLoginError [error, self]
- * @event quiqqerUserAuthLoginAuthBegin [self]
- * @event quiqqerUserAuthLoginSuccess [self]
- * @event quiqqerUserAuthNext [self]
+ * @event onQuiqqerUserAuthLoginLoad [self]
+ * @event onQuiqqerUserAuthLoginUserLoginError [error, self]
+ * @event onQuiqqerUserAuthLoginAuthBegin [self]
+ * @event onQuiqqerUserAuthLoginSuccess [self]
+ * @event onQuiqqerUserAuthNext [self]
  */
 define('controls/users/Login', [
 
