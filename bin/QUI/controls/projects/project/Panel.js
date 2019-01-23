@@ -334,6 +334,7 @@ define('controls/projects/project/Panel', [
                         }
 
                         self.createList();
+                        self.open();
                     }
                 }
             }).inject(this.getHeader(), 'top');
