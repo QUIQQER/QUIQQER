@@ -1959,6 +1959,9 @@
         <locale name="language">
             <de><![CDATA[Sprache]]></de>
         </locale>
+        <locale name="language.code">
+            <de><![CDATA[Sprachcode]]></de>
+        </locale>
         <locale name="languages">
             <de><![CDATA[Sprachen]]></de>
         </locale>

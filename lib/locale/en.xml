@@ -1936,6 +1936,9 @@
         <locale name="language">
             <en><![CDATA[Language]]></en>
         </locale>
+        <locale name="language.code">
+            <en><![CDATA[Language Code]]></en>
+        </locale>
         <locale name="languages">
             <en><![CDATA[Languages]]></en>
         </locale>
