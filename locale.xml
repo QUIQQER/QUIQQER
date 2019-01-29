@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <locales>
     <file file="/lib/locale/de.xml"/>
-    <file file="/lib/locale/de.languages.xml"/>
-
     <file file="/lib/locale/en.xml"/>
-    <file file="/lib/locale/en.languages.xml"/>
-
     <file file="/lib/locale/pl.xml"/>
 </locales>

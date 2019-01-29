@@ -68,7 +68,7 @@ define('controls/projects/project/Panel', [
                 name   : 'projects-panel',
                 project: false,
                 lang   : false,
-                icon   : false
+                icon   : 'fa fa-home'
             });
 
             this.parent(options);
@@ -79,18 +79,18 @@ define('controls/projects/project/Panel', [
                 title: Locale.get('quiqqer/system', 'projects.project.panel.title')
             });
 
-            this.$Map = null;
+            this.$Map         = null;
             this.$projectmaps = {};
-            this.$Filter = null;
-            this.$Button = null;
+            this.$Filter      = null;
+            this.$Button      = null;
 
-            this.$ProjectList = null;
+            this.$ProjectList      = null;
             this.$ProjectContainer = null;
-            this.$ProjectSearch = null;
-            this.$ProjectContent = null;
+            this.$ProjectSearch    = null;
+            this.$ProjectContent   = null;
 
             this.$LanguageSelect = null;
-            this.$MediaButton = null;
+            this.$MediaButton    = null;
 
             this.$__fx_run = false;
 
@@ -150,8 +150,6 @@ define('controls/projects/project/Panel', [
             var self    = this,
                 Content = this.getContent();
 
-            this.getElm().addClass('quiqqer-project-panel');
-
             Content.set(
                 'html',
 
@@ -165,9 +163,9 @@ define('controls/projects/project/Panel', [
             Content.setStyle('opacity', 0);
 
             this.$ProjectContainer = Content.getElement('.project-container');
-            this.$ProjectList = Content.getElement('.project-list');
-            this.$ProjectSearch = Content.getElement('.project-search');
-            this.$ProjectContent = Content.getElement('.project-content');
+            this.$ProjectList      = Content.getElement('.project-list');
+            this.$ProjectSearch    = Content.getElement('.project-search');
+            this.$ProjectContent   = Content.getElement('.project-content');
 
             this.$ProjectContainer.setStyles({
                 height: 'calc(100% - 40px)'
@@ -307,7 +305,7 @@ define('controls/projects/project/Panel', [
             // title button
             this.$Button = new QUIButton({
                 name  : 'projects',
-                icon  : 'fa fa-home',
+                image : 'fa fa-arrow-circle-left',
                 title : Locale.get('quiqqer/system', 'projects.project.panel.projectSelect'),
                 events: {
                     onClick: function (Btn, event) {
@@ -334,7 +332,6 @@ define('controls/projects/project/Panel', [
                         }
 
                         self.createList();
-                        self.open();
                     }
                 }
             }).inject(this.getHeader(), 'top');
@@ -342,7 +339,6 @@ define('controls/projects/project/Panel', [
             this.$Button.getElm().removeClass('qui-button');
             this.$Button.getElm().addClass('button');
             this.$Button.getElm().addClass('btn-blue');
-            this.$Button.getElm().addClass('quiqqer-project-panel-button-home');
         },
 
         /**
@@ -370,26 +366,24 @@ define('controls/projects/project/Panel', [
                         self.openProject();
                         self.Loader.hide();
                         return;
-                    } else {
-                        if (Object.getLength(result)) {
-                            for (key in result) {
-                                if (!result.hasOwnProperty(key)) {
-                                    continue;
-                                }
-
-                                if (result[key].standard !== "1") {
-                                    continue;
-                                }
-
-                                self.setAttribute('project', key);
-                                self.setAttribute('lang', result[key].default_lang);
-                                break;
+                    } else if (Object.getLength(result)) {
+                        for (key in result) {
+                            if (!result.hasOwnProperty(key)) {
+                                continue;
                             }
 
-                            self.openProject();
-                            self.Loader.hide();
-                            return;
+                            if (result[key].standard !== "1") {
+                                continue;
+                            }
+
+                            self.setAttribute('project', key);
+                            self.setAttribute('lang', result[key].default_lang);
+                            break;
                         }
+
+                        self.openProject();
+                        self.Loader.hide();
+                        return;
                     }
 
                     // no projects exists
@@ -682,7 +676,7 @@ define('controls/projects/project/Panel', [
                 onChildClick      : this.$openSitePanel,
                 onChildContextMenu: function (Item, MapItem, event) {
                     var title = MapItem.getAttribute('text') + ' - ' +
-                                MapItem.getAttribute('value');
+                        MapItem.getAttribute('value');
 
                     MapItem.getContextMenu().setTitle(title).setPosition(
                         event.page.x,

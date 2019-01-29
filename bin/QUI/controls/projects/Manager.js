@@ -270,7 +270,6 @@ define('controls/projects/Manager', [
                 Form.elements.project.value,
                 Form.elements.lang.value,
                 Form.elements.template.value,
-                Form.elements.demodata.value,
                 function (result) {
                     self.Loader.hide();
 

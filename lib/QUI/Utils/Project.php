@@ -7,7 +7,6 @@
 namespace QUI\Utils;
 
 use QUI;
-use QUI\Demodata\Parser\DemoDataParser;
 
 /**
  * Class Project
@@ -53,6 +52,7 @@ class Project
             $First->save();
         }
 
+
         // Search
         $searchType = 'quiqqer/sitetypes:types/search';
 
@@ -62,17 +62,17 @@ class Project
         } catch (QUI\Exception $Exception) {
         }
 
-        $search = $Project->getSitesIds([
-            'where' => [
+        $search = $Project->getSitesIds(array(
+            'where' => array(
                 'active' => -1,
                 'type'   => $searchType
-            ],
+            ),
             'limit' => 1
-        ]);
+        ));
 
         if (empty($search)) {
             try {
-                $searchId = $First->createChild([
+                $searchId = $First->createChild(array(
                     'name'  => self::parseForUrl(
                         'quiqqer/quiqqer',
                         'projects.defaultstructure.search.name',
@@ -83,7 +83,7 @@ class Project
                         'projects.defaultstructure.search.title',
                         $Project
                     )
-                ]);
+                ));
 
                 $Search = new QUI\Projects\Site\Edit($Project, $searchId);
                 $Search->setAttribute('type', $searchType);
@@ -94,18 +94,19 @@ class Project
             }
         }
 
+
         // Im print / legalnotes / Impressum
-        $legalNotes = $Project->getSitesIds([
-            'where' => [
+        $legalNotes = $Project->getSitesIds(array(
+            'where' => array(
                 'active' => -1,
                 'type'   => 'quiqqer/sitetypes:types/legalnotes'
-            ],
+            ),
             'limit' => 1
-        ]);
+        ));
 
         if (empty($legalNotes)) {
             try {
-                $legalNoteId = $First->createChild([
+                $legalNoteId = $First->createChild(array(
                     'name'  => self::parseForUrl(
                         'quiqqer/quiqqer',
                         'projects.defaultstructure.legalnotes.name',
@@ -116,7 +117,7 @@ class Project
                         'projects.defaultstructure.legalnotes.name',
                         $Project
                     )
-                ]);
+                ));
 
                 $Legal = new QUI\Projects\Site\Edit($Project, $legalNoteId);
                 $Legal->setAttribute('type', 'quiqqer/sitetypes:types/legalnotes');
@@ -128,17 +129,17 @@ class Project
         }
 
         // AGB / generalTermsAndConditions
-        $generalTermsAndConditions = $Project->getSitesIds([
-            'where' => [
+        $generalTermsAndConditions = $Project->getSitesIds(array(
+            'where' => array(
                 'active' => -1,
                 'type'   => 'quiqqer/sitetypes:types/generalTermsAndConditions'
-            ],
+            ),
             'limit' => 1
-        ]);
+        ));
 
         if (empty($generalTermsAndConditions)) {
             try {
-                $generalTermsAndConditionsId = $First->createChild([
+                $generalTermsAndConditionsId = $First->createChild(array(
                     'name'  => self::parseForUrl(
                         'quiqqer/quiqqer',
                         'projects.defaultstructure.generalTermsAndConditions.name',
@@ -149,7 +150,7 @@ class Project
                         'projects.defaultstructure.generalTermsAndConditions.name',
                         $Project
                     )
-                ]);
+                ));
 
                 $GTC = new QUI\Projects\Site\Edit($Project, $generalTermsAndConditionsId);
                 $GTC->setAttribute('type', 'quiqqer/sitetypes:types/generalTermsAndConditions');
@@ -160,18 +161,19 @@ class Project
             }
         }
 
+
         // Datenschutzerklärung / privacypolicy
-        $privacyPolicy = $Project->getSitesIds([
-            'where' => [
+        $privacyPolicy = $Project->getSitesIds(array(
+            'where' => array(
                 'active' => -1,
                 'type'   => 'quiqqer/sitetypes:types/privacypolicy'
-            ],
+            ),
             'limit' => 1
-        ]);
+        ));
 
         if (empty($privacyPolicy)) {
             try {
-                $privacyPolicyId = $First->createChild([
+                $privacyPolicyId = $First->createChild(array(
                     'name'  => self::parseForUrl(
                         'quiqqer/quiqqer',
                         'projects.defaultstructure.privacypolicy.name',
@@ -182,7 +184,7 @@ class Project
                         'projects.defaultstructure.privacypolicy.name',
                         $Project
                     )
-                ]);
+                ));
 
                 $Legal = new QUI\Projects\Site\Edit($Project, $privacyPolicyId);
                 $Legal->setAttribute('type', 'quiqqer/sitetypes:types/privacypolicy');
@@ -191,34 +193,6 @@ class Project
                 QUI\System\Log::writeException($Exception);
             }
         }
-    }
-
-    /**
-     * @param QUI\Projects\Project $Project
-     * @param $templateName
-     *
-     *
-     * @throws QUI\Exception
-     */
-    public static function applyDemoDataToProject(QUI\Projects\Project $Project, $templateName)
-    {
-        $TemplatePackage = QUI::getPackageManager()->getInstalledPackage($templateName);
-        $Parser          = new DemoDataParser();
-
-        $demoDataArray = [];
-        if (file_exists($TemplatePackage->getDir().'demodata.xml')) {
-            $demoDataArray = $Parser->parse($TemplatePackage->getDir().'demodata.xml');
-        }
-
-        if (empty($demoDataArray)) {
-            throw new QUI\Demodata\Exceptions\UnsupportedException([
-                'quiqqer/demodata',
-                'exception.template.unsupported'
-            ]);
-        }
-
-        $DemoData = new QUI\Demodata\DemoData();
-        $DemoData->apply($Project, $demoDataArray);
     }
 
     /**
@@ -248,7 +222,7 @@ class Project
      */
     public static function validateProjectName($projectName)
     {
-        $forbiddenSigns = [
+        $forbiddenSigns = array(
             '-',
             '.',
             ',',
@@ -268,21 +242,21 @@ class Project
             '=',
             '\'',
             '"'
-        ];
+        );
 
         if (preg_match("@[-.,:;#`!§$%&/?<>\=\'\" ]@", $projectName)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.project.not.allowed.signs',
-                    [
+                    array(
                         'signs' => implode(' ', $forbiddenSigns)
-                    ]
+                    )
                 ),
                 802
             );
         }
-
+        
         return true;
     }
 }

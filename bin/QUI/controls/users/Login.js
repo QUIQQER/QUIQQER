@@ -1,17 +1,12 @@
 /**
  * @module controls/users/Login
  *
- * @event onLoad [self]
- * @event onAuthBegin [self]
- * @event onAuthNext [self]
- * @event onSuccess [self]
- * @event onUserLoginError [error, self]
- *
- * @event onQuiqqerUserAuthLoginLoad [self]
- * @event onQuiqqerUserAuthLoginUserLoginError [error, self]
- * @event onQuiqqerUserAuthLoginAuthBegin [self]
- * @event onQuiqqerUserAuthLoginSuccess [self]
- * @event onQuiqqerUserAuthNext [self]
+ * @event onLoad
+ * @event onAuthBegin
+ * @event onAuthNext
+ * @event onSuccess
+ * @event onAuthNext
+ * @event onUserLoginError [error, this]
  */
 define('controls/users/Login', [
 
@@ -96,7 +91,6 @@ define('controls/users/Login', [
             QUIAjax.get('ajax_users_loginControl', function (result) {
                 self.$buildAuthenticator(result).then(function () {
                     self.fireEvent('load', [self]);
-                    QUI.fireEvent('quiqqerUserAuthLoginLoad', [self]);
                 });
             }, {
                 isAdminLogin  : typeof QUIQQER_IS_ADMIN_LOGIN !== 'undefined' ? 1 : 0,
@@ -117,7 +111,6 @@ define('controls/users/Login', [
 
             this.$refreshForm();
             this.fireEvent('load', [this]);
-            QUI.fireEvent('quiqqerUserAuthLoginLoad', [this]);
         },
 
         /**
@@ -149,7 +142,6 @@ define('controls/users/Login', [
 
                         this.auth(Target).catch(function (err) {
                             self.fireEvent('userLoginError', [err, self]);
-                            QUI.fireEvent('quiqqerUserAuthLoginUserLoginError', [err, self]);
                         });
                     }.bind(this)
                 }
@@ -233,7 +225,6 @@ define('controls/users/Login', [
             }
 
             this.fireEvent('authBegin', [this]);
-            QUI.fireEvent('quiqqerUserAuthLoginAuthBegin', [this]);
 
             return new Promise(function (resolve, reject) {
                 QUIAjax.post('ajax_users_login', function (result) {
@@ -242,7 +233,6 @@ define('controls/users/Login', [
                         window.QUIQQER_USER = result.user;
 
                         self.fireEvent('success', [self]);
-                        QUI.fireEvent('quiqqerUserAuthLoginSuccess', [self]);
                         resolve(self);
 
                         if (typeof self.getAttribute('onSuccess') === 'function') {
@@ -287,8 +277,7 @@ define('controls/users/Login', [
                     ),
                     onError      : function (e) {
                         self.Loader.hide();
-                        self.fireEvent('authNext', [self]);
-                        QUI.fireEvent('quiqqerUserAuthNext', [self]);
+                        self.fireEvent('authNext', [this]);
 
                         reject(e);
                     }

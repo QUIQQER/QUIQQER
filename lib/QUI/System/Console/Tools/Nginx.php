@@ -71,15 +71,19 @@ HEAD;
 
             $geoIPSettings = <<<GEO
 ### SET GEOIP Variables ###
-#fastcgi_param GEOIP_COUNTRY_CODE \$geoip2_data_country_code;
-#fastcgi_param GEOIP_COUNTRY_NAME \$geoip2_data_country_name;
-#fastcgi_param GEOIP_CITY_COUNTRY_CODE \$geoip2_data_city_country_code;
-#fastcgi_param GEOIP_CITY_COUNTRY_NAME \$geoip2_data_city_country_name;
-#fastcgi_param GEOIP_CITY \$geoip2_data_city_name;
-#fastcgi_param GEOIP_POSTAL_CODE \$geoip2_data_postal_code;
-#fastcgi_param GEOIP_CITY_CONTINENT_CODE \$geoip2_data_continent_code;
-#fastcgi_param GEOIP_LATITUDE \$geoip2_data_location_longitude;
-#fastcgi_param GEOIP_LONGITUDE \$geoip2_data_postal_code;
+#fastcgi_param GEOIP_COUNTRY_CODE \$geoip_country_code;
+#fastcgi_param GEOIP_COUNTRY_CODE3 \$geoip_country_code3;
+#fastcgi_param GEOIP_COUNTRY_NAME \$geoip_country_name;
+
+#fastcgi_param GEOIP_CITY_COUNTRY_CODE \$geoip_city_country_code;
+#fastcgi_param GEOIP_CITY_COUNTRY_CODE3 \$geoip_city_country_code3;
+#fastcgi_param GEOIP_CITY_COUNTRY_NAME \$geoip_city_country_name;
+#fastcgi_param GEOIP_REGION \$geoip_region;
+#fastcgi_param GEOIP_CITY \$geoip_city;
+#fastcgi_param GEOIP_POSTAL_CODE \$geoip_postal_code;
+#fastcgi_param GEOIP_CITY_CONTINENT_CODE \$geoip_city_continent_code;
+#fastcgi_param GEOIP_LATITUDE \$geoip_latitude;
+#fastcgi_param GEOIP_LONGITUDE \$geoip_longitude;
 GEO;
 
             file_put_contents($this->subConfDir."php.include", $geoIPSettings, FILE_APPEND);
