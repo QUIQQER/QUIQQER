@@ -36,6 +36,7 @@
 
 {template_event name="quiqqer::quiqqer::mail::bodyAfterHeader"}
 
+{if $mailBody}
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
     <tr>
         <td bgcolor="#ffffff" align="center" style="padding: 70px 15px 70px 15px;" class="section-padding">
@@ -49,5 +50,6 @@
         </td>
     </tr>
 </table>
+{/if}
 
 {template_event name="quiqqer::quiqqer::mail::bodyEnd"}
