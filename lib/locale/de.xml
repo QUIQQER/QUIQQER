@@ -193,6 +193,12 @@
         <locale name="projects.project.settings.panel.favicon">
             <de><![CDATA[Favicon]]></de>
         </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.imageLibrary">
+            <de><![CDATA[Verwendete Bildbibliothek]]></de>
+        </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.imageLibrary.auto">
+            <de><![CDATA[QUIQQER bestimmt welche Bibliothek verwendet wird.]]></de>
+        </locale>
         <locale name="projects.project.settings.panel.mediaSettings.createCacheOnSave">
             <de><![CDATA[Bildercache on the Fly erstellen.]]></de>
         </locale>
