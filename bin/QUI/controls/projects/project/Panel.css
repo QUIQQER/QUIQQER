@@ -65,3 +65,25 @@
     margin: 0 !important;
     width: 40px !important;
 }
+
+.quiqqer-project-panel .qui-panel-icon {
+    display: none;
+}
+
+.quiqqer-project-panel h2.qui-panel-title {
+    padding-left: 10px;
+}
+
+.quiqqer-project-panel-button-home {
+    width: 40px;
+}
+
+.quiqqer-project-panel-button-home .image-container {
+    float: left;
+    text-align: center;
+    width: 100%;
+}
+
+.quiqqer-project-panel-button-home .image-container span {
+    float: none;
+}
