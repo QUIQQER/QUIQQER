@@ -339,6 +339,8 @@ class Queue
 
             return true;
         } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+
             throw new QUI\Exception(
                 'Mail Error: ' . $Exception->getMessage(),
                 500

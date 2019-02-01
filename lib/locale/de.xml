@@ -193,6 +193,12 @@
         <locale name="projects.project.settings.panel.favicon">
             <de><![CDATA[Favicon]]></de>
         </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.imageLibrary">
+            <de><![CDATA[Verwendete Bildbibliothek]]></de>
+        </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.imageLibrary.auto">
+            <de><![CDATA[QUIQQER bestimmt welche Bibliothek verwendet wird.]]></de>
+        </locale>
         <locale name="projects.project.settings.panel.mediaSettings.createCacheOnSave">
             <de><![CDATA[Bildercache on the Fly erstellen.]]></de>
         </locale>
@@ -2109,7 +2115,7 @@
             <de><![CDATA[Der Ordner wurde erfolgreich gespeichert]]></de>
         </locale>
         <locale name="exception.permission.session.expired">
-            <de><![CDATA[Ihre Sitzung ist abgelaufen, bitte loggen Sie sich ein.]]></de>
+            <de><![CDATA[Ihre Sitzung ist abgelaufen, bitte loggen Sie sich erneut ein.]]></de>
         </locale>
         <locale name="exception.permission.no.admin">
             <de><![CDATA[Sie besitzen nicht die nötigen Rechte sich an der Administration anzumelden.]]></de>
@@ -4316,8 +4322,8 @@
         </locale>
         <locale name="exception.session.expired.from.other">
             <de><![CDATA[
-            Jemand hat sich auf einem anderen PC mit Ihrem Benutzernamen angemeldet,
-            Aus diesem Grund wurde Ihre Sitzung beendet. Bitte loggen Sie sich erneut ein.
+            Jemand hat sich von einem anderen PC aus mit Ihrem Account angemeldet,
+            aus diesem Grund wurde Ihre Sitzung beendet. Bitte loggen Sie sich erneut ein.
             ]]></de>
         </locale>
         <locale name="exception.permissions.exists">

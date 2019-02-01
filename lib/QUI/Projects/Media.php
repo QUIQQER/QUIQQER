@@ -212,7 +212,20 @@ class Media extends QUI\QDOM
      */
     public function getImageManager()
     {
-        if (class_exists('Imagick')) {
+        $Project = $this->getProject();
+        $library = $Project->getConfig('media_image_library');
+
+        switch ($library) {
+            case '':
+            case 'imagick':
+            case 'gd':
+                break;
+
+            default:
+                $library = '';
+        }
+
+        if (class_exists('Imagick') && ($library === '' || $library === 'imagick')) {
             return new ImageManager(['driver' => 'imagick']);
         }
 

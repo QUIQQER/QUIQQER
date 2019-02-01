@@ -5,19 +5,6 @@
  * @author www.pcsg.de (Henning Leutz)
  * @module controls/upload/File
  *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/contextmenu/Menu
- * @require qui/controls/contextmenu/Item
- * @require qui/controls/buttons/Button
- * @require qui/controls/utils/Progressbar
- * @require qui/controls/windows/Prompt
- * @require qui/controls/messages/Error
- * @require qui/utils/Math
- * @require qui/utils/Object
- * @require Ajax
- * @require Locale
- *
  * @fires onClick [this]
  * @fires onCancel [this]
  * @fires onComplete [this]
@@ -169,9 +156,9 @@ define('controls/upload/File', [
 
             this.$Elm = new Element('div', {
                 html   : '<div class="file-name">' + this.getFilename() + '</div>' +
-                '<div class="upload-time"></div>' +
-                '<div class="progress"></div>' +
-                '<div class="buttons"></div>',
+                    '<div class="upload-time"></div>' +
+                    '<div class="progress"></div>' +
+                    '<div class="buttons"></div>',
                 'class': 'upload-manager-file box smooth'
             });
 
@@ -200,8 +187,8 @@ define('controls/upload/File', [
 
             Buttons.set({
                 html  : '<form action="" method=""">' +
-                '<input type="file" name="files" value="upload" />' +
-                '</form>',
+                    '<input type="file" name="files" value="upload" />' +
+                    '</form>',
                 styles: {
                     'float': 'right',
                     clear  : 'both',
@@ -653,6 +640,11 @@ define('controls/upload/File', [
                     };
 
                     for (var i = 0, len = messages.length; i < len; i++) {
+                        // parse time for javascript date
+                        if ("time" in messages[i]) {
+                            messages[i].time = messages[i] * 1000;
+                        }
+
                         MH.parse(messages[i], send);
                     }
                 });
