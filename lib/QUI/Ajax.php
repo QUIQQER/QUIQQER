@@ -478,7 +478,7 @@ class Ajax extends QUI\QDOM
         } elseif ($class === 'QUI\\Permissions\\Exception') {
             QUI\System\Log::addInfo($Exception->getMessage());
         } else {
-            QUI\System\Log::writeException($Exception);
+            QUI\System\Log::writeDebugException($Exception);
         }
 
         $return['Exception']['attributes'] = $attributes;
