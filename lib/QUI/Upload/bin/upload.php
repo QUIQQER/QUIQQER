@@ -33,8 +33,8 @@ try {
         echo '<quiqqer>'.json_encode($result).'</quiqqer>';
     }
 } catch (QUI\Exception $Exception) {
-    QUI\System\Log::writeException($Exception);
+    QUI\System\Log::writeDebugException($Exception);
     $QUM->flushException($Exception);
 } catch (\Exception $Exception) {
-    QUI\System\Log::writeException($Exception);
+    QUI\System\Log::writeDebugException($Exception);
 }
