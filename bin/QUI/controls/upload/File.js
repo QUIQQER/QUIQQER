@@ -61,9 +61,11 @@ define('controls/upload/File', [
         ],
 
         options: {
-            phpfunc   : '',
-            phponstart: '', // (optional) php function which called before the upload starts
-            params    : {}
+            phpfunc     : '',
+            phponstart  : '', // (optional) php function which called before the upload starts
+            params      : {},
+            pauseAllowed: true,
+            contextMenu : true
         },
 
         $File    : false,
@@ -104,7 +106,7 @@ define('controls/upload/File', [
             this.$result      = null;
             this.$error       = false;
 
-
+            this.$ContextMenu  = null;
             this.$slice_method = 'slice';
 
             if ('mozSlice' in this.$File) {
@@ -155,19 +157,25 @@ define('controls/upload/File', [
             var self = this;
 
             this.$Elm = new Element('div', {
-                html   : '<div class="file-name">' + this.getFilename() + '</div>' +
+                html       : '<div class="file-name">' + this.getFilename() + '</div>' +
                     '<div class="upload-time"></div>' +
                     '<div class="progress"></div>' +
                     '<div class="buttons"></div>',
-                'class': 'upload-manager-file box smooth'
+                'class'    : 'upload-manager-file box smooth',
+                'data-file': this.getId()
             });
 
             this.$Elm.addEvents({
-                click      : function () {
+                click: function () {
                     self.fireEvent('click', [self]);
                 },
+
                 contextmenu: function (event) {
                     event.stop();
+
+                    if (!self.$ContextMenu) {
+                        return;
+                    }
 
                     self.$ContextMenu.setPosition(
                         event.page.x,
@@ -186,7 +194,7 @@ define('controls/upload/File', [
             var Buttons = this.$Elm.getElement('.buttons');
 
             Buttons.set({
-                html  : '<form action="" method=""">' +
+                html  : '<form action="" method="">' +
                     '<input type="file" name="files" value="upload" />' +
                     '</form>',
                 styles: {
@@ -276,28 +284,35 @@ define('controls/upload/File', [
             this.$PauseResume.inject(Buttons);
 
             // context menu
-            this.$ContextMenu = new QUIContextMenu({
-                title : this.getFilename(),
-                events: {
-                    blur: function (Menu) {
-                        Menu.hide();
-                    }
-                }
-            });
-
-            this.$ContextMenu.appendChild(
-                new QUIContextmenuItem({
-                    text  : Locale.get(lg, 'file.upload.remove'),
-                    File  : this,
+            if (this.getAttribute('contextMenu')) {
+                this.$ContextMenu = new QUIContextMenu({
+                    title : this.getFilename(),
                     events: {
-                        onClick: function (Item) {
-                            Item.getAttribute('File').getElm().destroy();
+                        blur: function (Menu) {
+                            Menu.hide();
                         }
                     }
-                })
-            );
+                });
 
-            this.$ContextMenu.inject(document.body);
+                this.$ContextMenu.appendChild(
+                    new QUIContextmenuItem({
+                        text  : Locale.get(lg, 'file.upload.remove'),
+                        File  : this,
+                        events: {
+                            onClick: function (Item) {
+                                Item.getAttribute('File').getElm().destroy();
+                            }
+                        }
+                    })
+                );
+
+                this.$ContextMenu.inject(document.body);
+            }
+
+            // no pause button
+            if (this.getAttribute('pauseAllowed') === false) {
+                this.$PauseResume.hide();
+            }
 
             // onerror, display it
             this.addEvent('onError', function (Exception, File) {

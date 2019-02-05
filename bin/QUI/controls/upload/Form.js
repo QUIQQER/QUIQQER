@@ -8,7 +8,7 @@
  *
  * @fires onAdd [this, File]
  * @fires onBegin [this]
- * @fires onCancel
+ * @fires onCancel [this, File]
  * @fires onComplete [this]
  * @fires onFinished [this]
  * @fires onSubmit [Array, this]
@@ -54,12 +54,15 @@ define('controls/upload/Form', [
             multiple    : false,  // are multiple uploads allowed?
             sendbutton  : false,  // insert a send button
             cancelbutton: false,  // insert a cancel button
-            styles      : false
+            styles      : false,
+            pauseAllowed: true,
+            contextMenu : true    // context menu for the file upload
         },
 
         Binds: [
             '$onFileUploadFinish',
             '$onFileUploadRefresh',
+            '$onFileUploadCancel',
             '$onError'
         ],
 
@@ -700,9 +703,13 @@ define('controls/upload/Form', [
 
                 UploadManager.addEvents({
                     onFileComplete     : self.$onFileUploadFinish,
+                    onFileCancel       : self.$onFileUploadCancel,
                     onFileUploadRefresh: self.$onFileUploadRefresh,
                     onError            : self.$onError
                 });
+
+                UploadManager.setAttribute('pauseAllowed', self.getAttribute('pauseAllowed'));
+                UploadManager.setAttribute('contextMenu', self.getAttribute('contextMenu'));
 
                 self.$Elm.set('html', '');
                 self.createInfo().inject(self.$Elm);
@@ -932,6 +939,11 @@ define('controls/upload/Form', [
          */
         $onFileUploadFinish: function () {
 
+        },
+
+        $onFileUploadCancel: function (UploadManager, File) {
+
+            this.fireEvent('cancel', [this, File]);
         },
 
         /**
