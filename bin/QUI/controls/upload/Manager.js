@@ -5,15 +5,7 @@
  * @module controls/upload/Manager
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/QUI
- * @require qui/controls/desktop/Panel
- * @require qui/controls/utils/Progressbar
- * @require qui/controls/windows/Alert
- * @require controls/upload/File
- * @require Ajax
- * @require Locale
- * @require css!controls/upload/Manager.css
- *
+ * @event onFileCancel [ {self}, {File} ]
  * @event onFileComplete [ {self}, {File} ]
  * @event onFileUploadRefresh [ {self}, {Number} percent ]
  */
@@ -55,7 +47,9 @@ define('controls/upload/Manager', [
         ],
 
         options: {
-            icon: 'fa fa-upload'
+            icon        : 'fa fa-upload',
+            pauseAllowed: true,
+            contextMenu : true
         },
 
         initialize: function (options) {
@@ -260,6 +254,43 @@ define('controls/upload/Manager', [
 
             this.$maxPercent = files.length * 100;
 
+            var onComplete = function (File) {
+                self.fireEvent('fileComplete', [self, File]);
+
+                if (File.getElm().getParent() === document.body) {
+                    (function () {
+                        moofx(File.getElm()).animate({
+                            opacity: 0
+                        }, {
+                            duration: 200,
+                            callback: function () {
+                                File.getElm().destroy();
+                            }
+                        });
+                    }).delay(1000);
+                }
+            };
+
+            var onRefresh = function (File, percent) {
+                self.$uploadPerCents[File.getId()] = percent;
+                self.$onFileUploadRefresh();
+            };
+
+            var onError = function (Exception) {
+                if ('error' in self.$events) {
+                    self.fireEvent('error', [Exception]);
+                    return;
+                }
+
+                QUI.getMessageHandler(function (MessageHandler) {
+                    MessageHandler.add(Exception);
+                });
+            };
+
+            var onCancel = function (File) {
+                self.fireEvent('fileCancel', [self, File]);
+            };
+
             for (i = 0, len = files.length; i < len; i++) {
                 file_params         = Object.clone(params);
                 file_params.extract = false;
@@ -275,42 +306,18 @@ define('controls/upload/Manager', [
                 }
 
                 var QUIFile = new UploadFile(files[i], {
-                    phpfunc: rf,
-                    params : file_params,
-                    events : events
+                    phpfunc     : rf,
+                    params      : file_params,
+                    events      : events,
+                    pauseAllowed: this.getAttribute('pauseAllowed'),
+                    contextMenu : this.getAttribute('contextMenu')
                 });
 
                 QUIFile.addEvents({
-                    onComplete: function (File) {
-                        self.fireEvent('fileComplete', [self, File]);
-
-                        if (File.getElm().getParent() == document.body) {
-                            (function () {
-                                moofx(File.getElm()).animate({
-                                    opacity: 0
-                                }, {
-                                    duration: 200,
-                                    callback: function () {
-                                        File.getElm().destroy();
-                                    }
-                                });
-                            }).delay(1000);
-                        }
-                    },
-                    onRefresh : function (File, percent) {
-                        self.$uploadPerCents[File.getId()] = percent;
-                        self.$onFileUploadRefresh();
-                    },
-                    onError   : function (Exception) {
-                        if ('error' in self.$events) {
-                            self.fireEvent('error', [Exception]);
-                            return;
-                        }
-
-                        QUI.getMessageHandler(function (MessageHandler) {
-                            MessageHandler.add(Exception);
-                        });
-                    }
+                    onComplete: onComplete,
+                    onRefresh : onRefresh,
+                    onError   : onError,
+                    onCancel  : onCancel
                 });
 
                 if (file_params.phponstart) {
