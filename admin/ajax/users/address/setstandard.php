@@ -17,6 +17,6 @@ QUI::$Ajax->registerFunction(
         $User->setAttribute('address', $Address->getId());
         $User->save();
     },
-    array('uid', 'aid'),
-    'Permission::checkSU'
+    ['uid', 'aid'],
+    ['Permission::checkAdminUser', 'quiqqer.admin.users.edit']
 );

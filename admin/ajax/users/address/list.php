@@ -12,7 +12,7 @@ QUI::$Ajax->registerFunction(
     function ($uid) {
         $User      = QUI::getUsers()->get((int)$uid);
         $addresses = $User->getAddressList();
-        $result    = array();
+        $result    = [];
 
         foreach ($addresses as $Address) {
             /* @var $Address \QUI\Users\Address */
@@ -20,12 +20,12 @@ QUI::$Ajax->registerFunction(
             $entry['id']   = $Address->getId();
             $entry['text'] = $Address->getText();
             $entry['uid']  = $User->getId();
-            
+
             $result[] = $entry;
         }
 
         return $result;
     },
-    array('uid'),
-    'Permission::checkSU'
+    ['uid'],
+    'Permission::checkAdminUser'
 );
