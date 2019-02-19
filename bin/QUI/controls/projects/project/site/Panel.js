@@ -1543,14 +1543,14 @@ define('controls/projects/project/site/Panel', [
                             return;
                         }
 
-                        hold    = true;
-                        lastPos = QUIElmUtils.getCursorPosition(event.target);
+                        hold = true;
                     },
 
                     keyup: function () {
                         var old = this.value;
 
-                        hold = false;
+                        lastPos = QUIElmUtils.getCursorPosition(event.target);
+                        hold    = false;
 
                         this.value = this.value.replace(reg, '');
                         this.value = this.value.replace(/ /g, QUIQQER.Rewrite.URL_SPACE_CHARACTER);

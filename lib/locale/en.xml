@@ -493,7 +493,7 @@
             <en><![CDATA[This forwarding already exists.]]></en>
         </locale>
         <locale name="exception.forwarding.not.found">
-            <en><![CDATA[This forwarding already exists.]]></en>
+            <en><![CDATA[This forwarding could not be found.]]></en>
         </locale>
         <locale name="exception.config.save.not.allowed">
             <en><![CDATA[You do not have the necessary permissions to save the configuration]]></en>

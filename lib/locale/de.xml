@@ -491,7 +491,7 @@
             <de><![CDATA[Diese Weiterleitung besteht bereits.]]></de>
         </locale>
         <locale name="exception.forwarding.not.found">
-            <de><![CDATA[Diese Weiterleitung besteht bereits.]]></de>
+            <de><![CDATA[Diese Weiterleitung konnte nicht gefunden werden.]]></de>
         </locale>
         <locale name="exception.config.save.not.allowed">
             <de><![CDATA[Sie besitzen nicht die nötigen Rechte um die Konfiguration zu speichern.]]></de>
