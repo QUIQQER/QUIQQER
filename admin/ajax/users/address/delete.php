@@ -16,6 +16,6 @@ QUI::$Ajax->registerFunction(
 
         $Address->delete();
     },
-    array('uid', 'aid'),
-    'Permission::checkSU'
+    ['uid', 'aid'],
+    ['Permission::checkAdminUser', 'quiqqer.admin.users.edit']
 );
