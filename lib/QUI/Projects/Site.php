@@ -1260,6 +1260,13 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function delete()
     {
+        $Project = $this->getProject();
+
+        QUI::getEvents()->fireEvent(
+            'siteDeleteBefore',
+            [$this->getId(), $Project]
+        );
+
         QUI::getRewrite()->unregisterPath($this);
 
         if ($this->getAttribute('id') == 1) {
@@ -1270,8 +1277,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         $children = $this->getChildrenIdsRecursive([
             'active' => '0&1'
         ]);
-
-        $Project = $this->getProject();
 
         foreach ($children as $childId) {
             try {
