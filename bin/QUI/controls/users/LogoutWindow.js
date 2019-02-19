@@ -63,7 +63,7 @@ define('controls/users/LogoutWindow', [
             Ajax.post('ajax_users_logout', function () {
                 QUI.fireEvent('quiqqerUserAuthLogout');
 
-                if (window.location.hash !== '') {
+                if (window.location.toString().indexOf('#') !== -1) {
                     window.location.reload();
                     return;
                 }
