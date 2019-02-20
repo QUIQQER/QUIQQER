@@ -952,6 +952,8 @@ class Rewrite
             return false;
         }
 
+        QUI::getEvents()->fireEvent('errorHeaderShowBefore', [$code, $url]);
+
         $Response = QUI::getGlobalResponse();
 
         $this->headerCode = $code;
@@ -1021,6 +1023,8 @@ class Rewrite
                 $Response->headers->set('Retry-After', 3600);
                 break;
         }
+
+        QUI::getEvents()->fireEvent('errorHeaderShowAfter', [$code, $url]);
 
         return true;
     }
