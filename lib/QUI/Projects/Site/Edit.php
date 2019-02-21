@@ -1073,6 +1073,8 @@ class Edit extends Site
         $children = $this->getChildrenIds();
 
         if (!in_array($pid, $children) && $pid != $this->getId()) {
+            QUI::getEvents()->fireEvent('siteMoveBefore', [$this, $this->getParent()->getId()]);
+
             QUI::getDataBase()->update(
                 $this->RELTABLE,
                 ['parent' => $Parent->getId()],
