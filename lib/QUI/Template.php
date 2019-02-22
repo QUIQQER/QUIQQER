@@ -667,6 +667,14 @@ class Template extends QUI\QDOM
             }
         }
 
+        // template logo
+        if ($Project->getConfig('logo')) {
+            $Engine->assign(
+                'projectLogo',
+                $Project->getMedia()->getLogoImage()->getSizeCacheUrl()
+            );
+        }
+
         // assign
         $Engine->assign([
             'Project'         => $Project,
