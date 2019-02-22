@@ -31,7 +31,7 @@ define('controls/projects/project/Settings', [
     'Ajax',
     'Locale',
     'utils/Controls',
-    'package/quiqqer/translator/bin/controls/Update',
+    'package/quiqqer/translator/bin/controls/Create',
 
     'css!controls/projects/project/Settings.css'
 
