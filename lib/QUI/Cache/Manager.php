@@ -505,7 +505,21 @@ class Manager
             );
         }
 
+        /**
+         * @todo
+         *
+         * Do not treat cache misses as missing cache items OR throw other
+         * Exception.
+         */
         if ($isMiss) {
+            QUI\System\Log::addDebug(
+                'Cache item "'.$name.'" is a miss. This means the item could not be reliably'
+                .' retrieved from the cache. This does NOT necessarily mean that the item is actually not cached.'
+                .' But QUIQQER currently handles all cache misses as a non-existing cache entry.'
+                .' This is behaviour will be fixed in the future. This message is for information'
+                .' purposes only.'
+            );
+
             throw new QUI\Cache\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
