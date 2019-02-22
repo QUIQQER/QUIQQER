@@ -11,7 +11,7 @@ QUI::$Ajax->registerFunction(
     'ajax_settings_category',
     function ($file, $category) {
         if (file_exists($file)) {
-            $files = array($file);
+            $files = [$file];
         } else {
             $files = json_decode($file, true);
         }
@@ -35,6 +35,6 @@ QUI::$Ajax->registerFunction(
 
         return $result;
     },
-    array('file', 'category'),
+    ['file', 'category'],
     'Permission::checkAdminUser'
 );

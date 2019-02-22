@@ -44,10 +44,12 @@ define('controls/cache/General', [
                         continue;
                     }
 
-                    if (handlers[i]) {
+                    if (parseInt(handlers[i])) {
                         CacheType.value = i;
                     }
                 }
+
+                console.warn(CacheType);
             }
         }
     });

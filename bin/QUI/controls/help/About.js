@@ -70,7 +70,8 @@ define('controls/help/About', [
             this.getContent().set('html', Mustache.render(template, {
                 version: QUIQQER_VERSION,
                 hash   : QUIQQER_HASH,
-                logo   : URL_BIN_DIR + 'quiqqer_logo.png'
+                logo   : URL_BIN_DIR + 'quiqqer_logo.png',
+                year   : new Date().getFullYear()
             }));
         }
     });

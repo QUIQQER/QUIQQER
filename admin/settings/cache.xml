@@ -107,6 +107,7 @@
                                 <locale group="quiqqer/system" var="quiqqer.settings.cache.handler.title"/>
                             </text>
 
+                            <option value="">---</option>
                             <option value="filesystem">
                                 <locale group="quiqqer/system" var="quiqqer.settings.cache.handler.filesystem"/>
                             </option>

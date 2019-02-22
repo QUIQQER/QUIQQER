@@ -67,8 +67,8 @@ QUI::$Ajax->registerFunction(
 
             $status = $Memcached->getStats();
 
-            if (!isset($status[$server . ":" . $port])
-                || $status[$server . ":" . $port]['pid'] <= 0
+            if (!isset($status[$server.":".$port])
+                || $status[$server.":".$port]['pid'] <= 0
             ) {
                 $errors++;
 
@@ -76,10 +76,10 @@ QUI::$Ajax->registerFunction(
                     QUI::getLocale()->get(
                         'quiqqer/system',
                         'message.session.auth.memcached.error',
-                        array(
+                        [
                             'server' => $server,
-                            'port' => $port
-                        )
+                            'port'   => $port
+                        ]
                     )
                 );
             }
@@ -94,6 +94,6 @@ QUI::$Ajax->registerFunction(
             );
         }
     },
-    array('data'),
+    ['data'],
     'Permission::checkAdminUser'
 );

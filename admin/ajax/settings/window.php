@@ -10,12 +10,12 @@ QUI::$Ajax->registerFunction(
     'ajax_settings_window',
     function ($file) {
         if (file_exists($file)) {
-            $files = array($file);
+            $files = [$file];
         } else {
             $files = json_decode($file, true);
         }
 
-        $cacheName = 'qui/admin/menu/windows/' . md5(json_encode($files));
+        $cacheName = 'qui/admin/menu/windows/'.md5(json_encode($files));
         $Settings  = QUI\Utils\XML\Settings::getInstance();
 
         try {
@@ -35,7 +35,7 @@ QUI::$Ajax->registerFunction(
         // category translation
         $categories = $result['categories'];
 
-        $result['categories'] = array();
+        $result['categories'] = [];
 
         foreach ($categories as $key => $category) {
             if (isset($category['title']) && is_array($category['title'])) {
@@ -59,6 +59,6 @@ QUI::$Ajax->registerFunction(
 
         return $result;
     },
-    array('file'),
+    ['file'],
     'Permission::checkAdminUser'
 );

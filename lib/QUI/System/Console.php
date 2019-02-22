@@ -805,6 +805,7 @@ class Console
     {
         $params  = $this->readArgv();
         $version = QUI::getPackageManager()->getVersion();
+        $year    = date('Y');
 
         $lastUpdate = QUI::getPackageManager()->getLastUpdateDate();
         $lastUpdate = QUI::getLocale()->formatDate($lastUpdate);
@@ -814,21 +815,31 @@ class Console
         }
 
         $str = '
-         _______          _________ _______  _______  _______  _______
-        (  ___  )|\     /|\__   __/(  ___  )(  ___  )(  ____ \(  ____ )
-        | (   ) || )   ( |   ) (   | (   ) || (   ) || (    \/| (    )|
-        | |   | || |   | |   | |   | |   | || |   | || (__    | (____)|
-        | |   | || |   | |   | |   | |   | || |   | ||  __)   |     __)
-        | | /\| || |   | |   | |   | | /\| || | /\| || (      | (\ (
-        | (_\ \ || (___) |___) (___| (_\ \ || (_\ \ || (____/\| ) \ \__
-        (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
+  _______          _________ _______  _______  _______  _______
+ (  ___  )|\     /|\__   __/(  ___  )(  ___  )(  ____ \(  ____ )
+ | (   ) || )   ( |   ) (   | (   ) || (   ) || (    \/| (    )|
+ | |   | || |   | |   | |   | |   | || |   | || (__    | (____)|
+ | |   | || |   | |   | |   | |   | || |   | ||  __)   |     __)
+ | | /\| || |   | |   | |   | | /\| || | /\| || (      | (\ (
+ | (_\ \ || (___) |___) (___| (_\ \ || (_\ \ || (____/\| ) \ \__
+ (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
 
 
-        Welcome to QUIQQER Version '.$version.' - Last Update: '.$lastUpdate.'
-
-        ';
+ Welcome to QUIQQER Version '.$version.' - Last Update: '.$lastUpdate.'
+';
 
         $this->message($str, 'green', 'white');
+        $this->clearMsg();
+
+        $licenceText = '
+ QUIQQER Copyright (C) '.$year.'  PCSG  - Computer & Internet Service OHG - www.pcsg.de
+ This program comes with ABSOLUTELY NO WARRANTY; for details type `php quiqqer.php licence`.
+ This is free software, and you are welcome to redistribute it under certain conditions; 
+ visit www.quiqqer.com for details.
+
+';
+
+        $this->message($licenceText, 'cyan', 'white');
         $this->clearMsg();
     }
 
