@@ -48,8 +48,6 @@ define('controls/cache/General', [
                         CacheType.value = i;
                     }
                 }
-
-                console.warn(CacheType);
             }
         }
     });
