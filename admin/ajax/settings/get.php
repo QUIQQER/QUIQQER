@@ -10,15 +10,15 @@ QUI::$Ajax->registerFunction(
     'ajax_settings_get',
     function ($file) {
         $files  = json_decode($file, true);
-        $config = array();
+        $config = [];
 
         if (is_string($files)) {
-            $files = array($files);
+            $files = [$files];
         }
 
         foreach ($files as $file) {
             if (!file_exists($file)) {
-                $file = CMS_DIR . $file;
+                $file = CMS_DIR.$file;
             }
 
             if (!file_exists($file)) {
@@ -34,6 +34,6 @@ QUI::$Ajax->registerFunction(
 
         return $config;
     },
-    array('file'),
+    ['file'],
     'Permission::checkAdminUser'
 );
