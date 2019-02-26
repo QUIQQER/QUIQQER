@@ -22,7 +22,7 @@ abstract class Tool extends QUI\QDOM
      *
      * @var array
      */
-    protected $paramsList = array();
+    protected $paramsList = [];
 
     /**
      * Console parameter, values of the parameter / arguments
@@ -93,12 +93,12 @@ abstract class Tool extends QUI\QDOM
         $short = false,
         $optional = false
     ) {
-        $this->paramsList[$name] = array(
+        $this->paramsList[$name] = [
             'param'       => $name,
             'description' => $description,
             'short'       => $short,
             'optional'    => (bool)$optional
-        );
+        ];
 
         return $this;
     }
@@ -159,11 +159,11 @@ abstract class Tool extends QUI\QDOM
         $maxLen = 0;
 
         foreach ($this->paramsList as $param) {
-            $command = '--' . ltrim($param['param'], '-');
+            $command = '--'.ltrim($param['param'], '-');
             $short   = '';
 
             if (isset($param['short']) && !empty($param['short'])) {
-                $short = ' (-' . ltrim($param['short'], '-') . ')';
+                $short = ' (-'.ltrim($param['short'], '-').')';
             }
 
             $strlen = strlen("{$command}{$short}");
@@ -175,11 +175,11 @@ abstract class Tool extends QUI\QDOM
 
         // output
         foreach ($this->paramsList as $param) {
-            $command = '--' . ltrim($param['param'], '-');
+            $command = '--'.ltrim($param['param'], '-');
             $short   = '';
 
             if (isset($param['short']) && !empty($param['short'])) {
-                $short = ' (-' . ltrim($param['short'], '-') . ')';
+                $short = ' (-'.ltrim($param['short'], '-').')';
             }
 
             $this->write($command, 'green');
@@ -231,8 +231,8 @@ abstract class Tool extends QUI\QDOM
             return $this->params[$name];
         }
 
-        if (isset($this->params['--' . $name])) {
-            return $this->params['--' . $name];
+        if (isset($this->params['--'.$name])) {
+            return $this->params['--'.$name];
         }
 
         // short argument?
@@ -244,7 +244,7 @@ abstract class Tool extends QUI\QDOM
             }
         }
 
-        $paramData = array();
+        $paramData = [];
 
         if (isset($this->paramsList[$name])) {
             $paramData = $this->paramsList[$name];
@@ -258,7 +258,7 @@ abstract class Tool extends QUI\QDOM
             $this->writeLn('Missing Argument', 'brown');
 
             $this->writeLn('');
-            $this->write('--' . $name . ': ', 'green');
+            $this->write('--'.$name.': ', 'green');
 
             $this->resetColor();
 
@@ -279,7 +279,7 @@ abstract class Tool extends QUI\QDOM
     }
 
     /**
-     * Execut the Tool
+     * Execute the Tool
      */
     public function execute()
     {

@@ -48,7 +48,8 @@ class Console
         'package',
         'permissions',
         'htaccess',
-        'nginx'
+        'nginx',
+        'licence'
     ];
 
     /**
@@ -613,8 +614,14 @@ class Console
                 $Tool = new QUI\System\Console\Tools\Htaccess();
                 $Tool->execute();
                 break;
+
             case 'nginx':
                 $Tool = new QUI\System\Console\Tools\Nginx();
+                $Tool->execute();
+                break;
+
+            case 'licence':
+                $Tool = new QUI\System\Console\Tools\Licence();
                 $Tool->execute();
                 break;
         }
