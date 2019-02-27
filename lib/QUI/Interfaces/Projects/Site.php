@@ -264,9 +264,10 @@ interface Site extends QUI\QDOMInterface
     public function getParentIdTree();
 
     /**
-     * Gibt das Parent Objekt zurück
+     * Gibt das Parent Objekt zurück.
+     * Wenn kein Parent Objekt existiert wird false zurückgegeben.
      *
-     * @return Site
+     * @return Site|false
      */
     public function getParent();
 
