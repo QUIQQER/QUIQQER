@@ -1248,6 +1248,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         // svg fix
         if ($fileinfo['mime_type'] == 'text/html'
             || $fileinfo['mime_type'] == 'text/plain'
+            || $fileinfo['mime_type'] == 'image/svg'
         ) {
             $content = file_get_contents($file);
 
