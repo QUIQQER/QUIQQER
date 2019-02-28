@@ -106,7 +106,7 @@ abstract class Factory extends QUI\Utils\Singleton
                 continue;
             }
 
-            if (isset($data[$attribute])) {
+            if (array_key_exists($attribute, $data)) {
                 $childData[$attribute] = $data[$attribute];
             } else {
                 $childData[$attribute] = '';
