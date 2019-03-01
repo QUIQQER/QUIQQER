@@ -1,5 +1,5 @@
 /**
- * QUI upload class for multible files
+ * QUI upload class for multiple files
  *
  * drag/drop upload script
  * add dragdrop Events to the elements
@@ -25,7 +25,7 @@ define('classes/request/Upload', [
     "use strict";
 
     /**
-     * QUI upload class for multible files
+     * QUI upload class for multiple files
      * add dragdrop Events to the elements
      *
      * @class classes/request/Upload

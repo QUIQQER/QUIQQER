@@ -40,6 +40,7 @@ class Project
      * Create the default structure for a specific project language
      *
      * @param QUI\Projects\Project $Project
+     * @throws QUI\Exception
      */
     protected static function createDefaultStructureForProjectLanguage(QUI\Projects\Project $Project)
     {
@@ -232,7 +233,14 @@ class Project
      */
     protected static function parseForUrl($group, $var, QUI\Projects\Project $Project)
     {
-        $str = QUI::getLocale()->getByLang($Project->getLang(), $group, $var);
+        // quiqqer/quiqqer#825
+        $language = $Project->getLang();
+
+        if (!QUI::getLocale()->exists($language)) {
+            $language = 'en';
+        }
+
+        $str = QUI::getLocale()->getByLang($language, $group, $var);
         $str = QUI\Projects\Site\Utils::clearUrl($str, $Project);
 
         return $str;

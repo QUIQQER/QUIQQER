@@ -335,7 +335,7 @@ define('controls/upload/Manager', [
                     if (Container) {
                         QUIFile.inject(Container, 'top');
                     } else {
-                        // @todo multible anzeige umsetzen
+                        // @todo multiple anzeige umsetzen
                         var Node = QUIFile.create();
 
                         Node.setStyles({

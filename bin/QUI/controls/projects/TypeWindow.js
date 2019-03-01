@@ -49,7 +49,7 @@ define('controls/projects/TypeWindow', [
         ],
 
         options: {
-            multible         : false,
+            multiple         : false,
             project          : false,
             pluginsSelectable: false,
 
@@ -183,7 +183,7 @@ define('controls/projects/TypeWindow', [
                 require(['controls/projects/TypeSitemap'], function (TyeSitemap) {
                     self.$Sitemap = new TyeSitemap({
                         project          : self.getAttribute('project'),
-                        multible         : self.getAttribute('multible'),
+                        multiple         : self.getAttribute('multiple'),
                         pluginsSelectable: self.getAttribute('pluginsSelectable'),
                         events           : {
                             onLoad: function () {
@@ -216,7 +216,7 @@ define('controls/projects/TypeWindow', [
                 require(['controls/projects/TypeDetails'], function (TypeDetails) {
                     self.$Sitemap = new TypeDetails({
                         project          : self.getAttribute('project'),
-                        multible         : self.getAttribute('multible'),
+                        multiple         : self.getAttribute('multiple'),
                         pluginsSelectable: self.getAttribute('pluginsSelectable'),
                         events           : {
                             onLoad: function () {

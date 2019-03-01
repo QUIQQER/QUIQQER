@@ -49,7 +49,7 @@ define('controls/projects/TypeSitemap', [
         Type   : 'controls/projects/TypeSitemap',
 
         options: {
-            multible         : false,
+            multiple         : false,
             project          : false,
             pluginsSelectable: false
         },
@@ -74,7 +74,7 @@ define('controls/projects/TypeSitemap', [
         create: function () {
             this.$Map = new QUISitemap({
                 name    : 'Type-Sitemap',
-                multible: this.getAttribute('multible')
+                multiple: this.getAttribute('multiple')
             });
 
             // Firstchild

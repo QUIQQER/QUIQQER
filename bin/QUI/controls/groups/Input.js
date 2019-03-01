@@ -46,7 +46,7 @@ define('controls/groups/Input', [
 
         options: {
             max     : false,
-            multible: true,
+            multiple: true,
             name    : '',
             styles  : false
         },
@@ -109,7 +109,7 @@ define('controls/groups/Input', [
                 events: {
                     onClick: function () {
                         new GroupSitemapWindow({
-                            multible: self.getAttribute('multible'),
+                            multiple: self.getAttribute('multiple'),
                             events  : {
                                 onSubmit: function (Window, values) {
                                     for (var i = 0, len = values.length; i < len; i++) {

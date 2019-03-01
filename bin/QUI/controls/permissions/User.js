@@ -78,7 +78,7 @@ define('controls/permissions/User', [
 
                             self.$Input = new Input({
                                 max     : 1,
-                                multible: false,
+                                multiple: false,
                                 styles  : {
                                     'float': 'none',
                                     margin : '0 auto',
@@ -94,8 +94,7 @@ define('controls/permissions/User', [
                                                 self.$Status.set(
                                                     'html',
                                                     QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
-                                                        name: '<span class="fa fa-user"></span>' +
-                                                        self.$Bind.getName()
+                                                        name: '<span class="fa fa-user"></span>' + self.$Bind.getName()
                                                     })
                                                 );
                                             } else {
@@ -104,7 +103,7 @@ define('controls/permissions/User', [
                                                         'html',
                                                         QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
                                                             name: '<span class="fa fa-user"></span>' +
-                                                            self.$Bind.getName()
+                                                                self.$Bind.getName()
                                                         })
                                                     );
                                                 });

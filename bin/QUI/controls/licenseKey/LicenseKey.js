@@ -72,7 +72,7 @@ define('controls/licenseKey/LicenseKey', [
 
             var self = this;
 
-            this.refresh().then(function() {
+            this.refresh().then(function () {
                 self.fireEvent('load');
             });
         },
@@ -115,7 +115,7 @@ define('controls/licenseKey/LicenseKey', [
 
             // license key upload
             var UploadForm = new QUIUploadForm({
-                multible    : false,
+                multiple    : false,
                 sendbutton  : true,
                 cancelbutton: true,
                 events      : {

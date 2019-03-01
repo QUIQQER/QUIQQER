@@ -566,7 +566,7 @@ define('utils/Controls', [
                         }
 
                         new ProjectInput({
-                            multible: false
+                            multiple: false
                         }, elements[i]).create();
                     }
 

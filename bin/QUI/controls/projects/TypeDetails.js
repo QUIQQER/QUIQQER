@@ -30,7 +30,7 @@ define('controls/projects/TypeDetails', [
         ],
 
         options: {
-            multible         : false,
+            multiple         : false,
             project          : false,
             pluginsSelectable: false
         },
@@ -127,12 +127,12 @@ define('controls/projects/TypeDetails', [
             var Entry = new Element('div', {
                 'class': 'qui-type-details-entry smooth',
                 html   : '<div class="qui-type-details-entry-icon">' +
-                         '<span class="fa fa-puzzle-piece"></span>' +
-                         '</div>' +
-                         '<div class="qui-type-details-entry-text">' +
-                         '<div class="qui-type-details-entry-title">' + data.title + '</div>' +
-                         '<div class="qui-type-details-entry-description">' + data.description + '</div>' +
-                         '</div>'
+                    '<span class="fa fa-puzzle-piece"></span>' +
+                    '</div>' +
+                    '<div class="qui-type-details-entry-text">' +
+                    '<div class="qui-type-details-entry-title">' + data.title + '</div>' +
+                    '<div class="qui-type-details-entry-description">' + data.description + '</div>' +
+                    '</div>'
             });
 
             var Icon = Entry.getElement('.qui-type-details-entry-icon');
@@ -273,9 +273,9 @@ define('controls/projects/TypeDetails', [
                 new Element('div', {
                     'class': 'qui-type-details-container-levelUp',
                     html   : '<span class="fa fa-level-up"></span>' +
-                             '<span class="qui-type-details-container-levelUp-text">' +
-                             'Plugins' +
-                             '</span>',
+                        '<span class="qui-type-details-container-levelUp-text">' +
+                        'Plugins' +
+                        '</span>',
                     events : {
                         click: self.$showPlugins
                     }
@@ -343,8 +343,8 @@ define('controls/projects/TypeDetails', [
                 return;
             }
 
-            // if no multible, we deselect all
-            if (!this.getAttribute('multible')) {
+            // if no multiple, we deselect all
+            if (!this.getAttribute('multiple')) {
                 this.$selected = {};
 
                 this.getElm()

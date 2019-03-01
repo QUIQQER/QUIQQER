@@ -47,7 +47,7 @@ define('controls/groups/Sitemap', [
         ],
 
         options: {
-            multible: false
+            multiple: false
         },
 
         $Map      : null,
@@ -73,7 +73,7 @@ define('controls/groups/Sitemap', [
 
             this.$Map = new QUISitemap({
                 name    : 'Group-Sitemap',
-                multible: this.getAttribute('multible')
+                multiple: this.getAttribute('multiple')
             });
 
             // Firstchild

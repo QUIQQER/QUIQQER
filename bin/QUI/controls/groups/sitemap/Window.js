@@ -106,7 +106,7 @@ define('controls/groups/sitemap/Window', [
                 }
 
                 this.$Map = new GroupSitemap({
-                    multible: this.getAttribute('multiple')
+                    multiple: this.getAttribute('multiple')
                 }).inject(SitemapBody);
 
                 self.Loader.hide();

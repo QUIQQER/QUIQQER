@@ -56,7 +56,7 @@ define('controls/usersAndGroups/Input', [
 
         options: {
             max     : false, // max entries
-            multible: true,  // select more than one entry?
+            multiple: true,  // select more than one entry?
             name    : '',    // string
             styles  : false, // object
             label   : false,  // text string or a <label> DOMNode Element

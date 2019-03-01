@@ -404,6 +404,17 @@ class Locale
     }
 
     /**
+     * Exists the language in the locale?
+     *
+     * @param {string} $language - language eq: de, en
+     * @return bool
+     */
+    public function existsLang($language)
+    {
+        return isset($this->langs[$language]);
+    }
+
+    /**
      * Get the translation
      *
      * @param string $group - Gruppe

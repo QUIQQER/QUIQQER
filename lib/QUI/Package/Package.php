@@ -17,7 +17,9 @@ use QUI\Utils\Text\XML;
  * @licence For copyright and license information, please view the /README.md
  *
  * @event  onPackageSetup [ this ]
+ * @event  packageInstallBefore [ this ]
  * @event  onPackageInstall [ this ]
+ * @event  onPackageInstallAfter [ this ]
  * @event  onPackageUninstall [ string PackageName ]
  */
 class Package extends QUI\QDOM
@@ -662,6 +664,8 @@ class Package extends QUI\QDOM
      */
     public function install()
     {
+        QUI::getEvents()->fireEvent('packageInstallBefore', [$this]);
+
         Update::importEvents(
             $this->getDir().'events.xml',
             $this->getName()
@@ -672,6 +676,8 @@ class Package extends QUI\QDOM
         if ($this->isQuiqqerPackage()) {
             $this->setup();
         }
+
+        QUI::getEvents()->fireEvent('packageInstallAfter', [$this]);
     }
 
     /**

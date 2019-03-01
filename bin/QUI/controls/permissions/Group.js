@@ -78,7 +78,7 @@ define('controls/permissions/Group', [
 
                             self.$Input = new Select({
                                 max     : 1,
-                                multible: false,
+                                multiple: false,
                                 styles  : {
                                     margin: '0 auto',
                                     width : 300
@@ -94,7 +94,7 @@ define('controls/permissions/Group', [
                                                     'html',
                                                     QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
                                                         name: '<span class="fa fa-group"></span>' +
-                                                              self.$Bind.getName()
+                                                            self.$Bind.getName()
                                                     })
                                                 );
                                             } else {
@@ -103,7 +103,7 @@ define('controls/permissions/Group', [
                                                         'html',
                                                         QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
                                                             name: '<span class="fa fa-group"></span>' +
-                                                                  self.$Bind.getName()
+                                                                self.$Bind.getName()
                                                         })
                                                     );
                                                 });
