@@ -397,6 +397,11 @@ class Manager
 
             $uploaddir = $this->getUserUploadDir();
             $filename  = $list['name'];
+
+            // cleanup file name
+            $filename = trim($filename);
+            $filename = trim($filename, '.');
+
             $file      = $uploaddir.$filename;
 
             if (!move_uploaded_file($list["tmp_name"], $file)) {
