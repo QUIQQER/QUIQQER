@@ -25,7 +25,7 @@ class Manager implements QUI\Interfaces\Events
      *
      * @var array
      */
-    protected $siteEvents = array();
+    protected $siteEvents = [];
 
     /**
      * @var Event
@@ -44,21 +44,30 @@ class Manager implements QUI\Interfaces\Events
                 $exists = QUI::getDataBase()->table()->exist(self::table());
 
                 QUI::$Conf->setValue('globals', 'eventsCreated', $exists);
-                QUI::$Conf->save();
+
+                try {
+                    QUI::$Conf->save();
+                } catch (QUi\Exception $Exception) {
+                    QUI\System\Log::writeDebugException($Exception);
+                }
 
                 if (!$exists) {
                     return;
                 }
             }
 
+            if (!QUI::$Conf->getValue('globals', 'eventsCreated')) {
+                return;
+            }
 
-            $list = QUI::getDataBase()->fetch(array(
+
+            $list = QUI::getDataBase()->fetch([
                 'from'  => self::table(),
-                'where' => array(
+                'where' => [
                     'sitetype' => null
-                ),
+                ],
                 'order' => 'priority ASC'
-            ));
+            ]);
 
             foreach ($list as $params) {
                 $this->Events->addEvent(
@@ -68,16 +77,16 @@ class Manager implements QUI\Interfaces\Events
                 );
             }
 
-            $list = QUI::getDataBase()->fetch(array(
+            $list = QUI::getDataBase()->fetch([
                 'from'  => self::table(),
-                'where' => array(
-                    'sitetype' => array(
+                'where' => [
+                    'sitetype' => [
                         'type'  => 'NOT',
                         'value' => null
-                    )
-                ),
+                    ]
+                ],
                 'order' => 'priority ASC'
-            ));
+            ]);
 
             $this->siteEvents = $list;
         } catch (QUI\Database\Exception $Exception) {
@@ -96,18 +105,20 @@ class Manager implements QUI\Interfaces\Events
 
     /**
      * create the event table
+     *
+     * @throws QUI\Exception
      */
     public static function setup()
     {
         $DBTable = QUI::getDataBase()->table();
 
-        $DBTable->addColumn(self::table(), array(
+        $DBTable->addColumn(self::table(), [
             'event'    => 'VARCHAR(255)',
             'callback' => 'TEXT NULL',
             'sitetype' => 'TEXT NULL',
             'package'  => 'TEXT NULL',
             'priority' => 'INT DEFAULT 0'
-        ));
+        ]);
 
         self::clear();
     }
@@ -116,6 +127,7 @@ class Manager implements QUI\Interfaces\Events
      * clear all events
      *
      * @param string|bool $package - name of the package, default = false => complete clear
+     * @throws QUI\Exception
      */
     public static function clear($package = false)
     {
@@ -127,9 +139,9 @@ class Manager implements QUI\Interfaces\Events
             return;
         }
 
-        QUI::getDataBase()->delete(self::table(), array(
+        QUI::getDataBase()->delete(self::table(), [
             'package' => $package
-        ));
+        ]);
     }
 
     /**
@@ -151,7 +163,7 @@ class Manager implements QUI\Interfaces\Events
      */
     public function getSiteListByType($type)
     {
-        $result = array();
+        $result = [];
 
         foreach ($this->siteEvents as $event) {
             if ($event['sitetype'] == $type) {
@@ -173,6 +185,8 @@ class Manager implements QUI\Interfaces\Events
      * @param string|callable $fn - The function to execute.
      * @param string $package - Name of the package
      * @param int $priority - Event priority
+     *
+     * @throws QUI\Exception
      */
     public function addEvent($event, $fn, $package = '', $priority = 0)
     {
@@ -182,12 +196,12 @@ class Manager implements QUI\Interfaces\Events
 
         // add the event to the db
         if (is_string($fn)) {
-            QUI::getDataBase()->insert(self::table(), array(
+            QUI::getDataBase()->insert(self::table(), [
                 'event'    => $event,
                 'callback' => $fn,
                 'package'  => $package,
                 'priority' => (int)$priority
-            ));
+            ]);
         }
 
         $this->Events->addEvent($event, $fn, (int)$priority);
@@ -202,6 +216,8 @@ class Manager implements QUI\Interfaces\Events
      * @param callable $fn - The function to execute.
      * @param string $siteType - type of the site
      * @param int $priority - Event priority
+     *
+     * @throws QUI\Exception
      */
     public function addSiteEvent($event, $fn, $siteType, $priority = 0)
     {
@@ -209,12 +225,12 @@ class Manager implements QUI\Interfaces\Events
             return;
         }
 
-        QUI::getDataBase()->insert(self::table(), array(
+        QUI::getDataBase()->insert(self::table(), [
             'event'    => $event,
             'callback' => $fn,
             'sitetype' => $siteType,
             'priority' => (int)$priority
-        ));
+        ]);
     }
 
     /**
@@ -234,34 +250,37 @@ class Manager implements QUI\Interfaces\Events
      * @param string $event - The type of event (e.g. 'complete').
      * @param callable|boolean $fn - (optional) The function to remove.
      * @param string $package - Name of the package
+     *
+     * @throws QUI\Exception
      */
     public function removeEvent($event, $fn = false, $package = '')
     {
         $this->Events->removeEvent($event, $fn);
 
         if ($fn === false) {
-            QUI::getDataBase()->delete(self::table(), array(
+            QUI::getDataBase()->delete(self::table(), [
                 'event' => $event
-            ));
+            ]);
         }
 
         if (is_string($fn)) {
-            QUI::getDataBase()->delete(self::table(), array(
+            QUI::getDataBase()->delete(self::table(), [
                 'event'    => $event,
                 'callback' => $fn,
                 'package'  => $package
-            ));
+            ]);
         }
     }
 
     /**
      * @param QUI\Package\Package $Package
+     * @throws QUI\Exception
      */
     public function removePackageEvents(QUI\Package\Package $Package)
     {
-        QUI::getDataBase()->delete(self::table(), array(
+        QUI::getDataBase()->delete(self::table(), [
             'package' => $Package->getName()
-        ));
+        ]);
     }
 
     /**
@@ -296,10 +315,10 @@ class Manager implements QUI\Interfaces\Events
         $fireArgs = $args;
 
         if (!is_array($fireArgs)) {
-            $fireArgs = array();
+            $fireArgs = [];
         }
 
-        $this->Events->fireEvent('onFireEvent', array($event, $fireArgs));
+        $this->Events->fireEvent('onFireEvent', [$event, $fireArgs]);
 
         return $this->Events->fireEvent($event, $fireArgs, $force);
     }

@@ -236,6 +236,9 @@ class Project
         // quiqqer/quiqqer#825
         $language = $Project->getLang();
 
+        // import
+        QUI::getLocale()->getByLang($language, $group, $var);
+
         if (!QUI::getLocale()->exists($language)) {
             // check if we can import it
             QUI::getLocale()->getByLang($language, $group, $var);
