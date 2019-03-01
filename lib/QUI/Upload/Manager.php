@@ -49,15 +49,15 @@ class Manager
      */
     public function setup()
     {
-        QUI::getDataBase()->table()->addColumn($this->table, array(
+        QUI::getDataBase()->table()->addColumn($this->table, [
             'file'   => 'varchar(255)',
             'user'   => 'int(11)',
             'params' => 'text'
-        ));
+        ]);
 
         QUI::getDataBase()->table()->setIndex(
             $this->table,
-            array('file', 'user')
+            ['file', 'user']
         );
     }
 
@@ -138,9 +138,9 @@ class Manager
      */
     public function flushException(QUI\Exception $Exception)
     {
-        $message = array(
+        $message = [
             'Exception' => $Exception->toArray()
-        );
+        ];
 
         echo '<quiqqer>'.json_encode($message).'</quiqqer>';
         ob_flush();
@@ -160,7 +160,7 @@ class Manager
 
         $filename = false;
         $filesize = 0;
-        $params   = array();
+        $params   = [];
         $onfinish = false;
 
         if (isset($_REQUEST['filename'])) {
@@ -206,6 +206,10 @@ class Manager
             return '';
         }
 
+        // cleanup file name
+        $filename = trim($filename);
+        $filename = trim($filename, '.');
+
         /**
          * html5 upload
          */
@@ -235,22 +239,22 @@ class Manager
         fclose($Handle);
 
         // upload finish?
-        $fileinfo = QUIFile::getInfo($tmp_name, array(
+        $fileinfo = QUIFile::getInfo($tmp_name, [
             'filesize' => true
-        ));
+        ]);
 
         $configMaxFileSize = QUI\Projects\Manager::get()->getConfig('media_maxUploadFileSize');
 
         if ($configMaxFileSize && (int)$fileinfo['filesize'] > $configMaxFileSize) {
             QUIFile::unlink($tmp_name);
 
-            throw new QUI\Exception(array(
+            throw new QUI\Exception([
                 'quiqqer/quiqqer',
                 'exception.media.upload.fileSize.is.to.big',
-                array(
+                [
                     'size' => QUI\Utils\System\File::formatSize($configMaxFileSize)
-                )
-            ));
+                ]
+            ]);
         }
 
         // finish? then upload to folder
@@ -274,12 +278,12 @@ class Manager
             $File->setAttribute('upload-dir', $uploaddir);
             $File->setAttribute('params', $Data->getAttribute('params'));
 
-            $result = array();
+            $result = [];
 
             if (!empty($onfinish)) {
-                $result = $this->callFunction($onfinish, array(
+                $result = $this->callFunction($onfinish, [
                     'File' => $File
-                ));
+                ]);
             }
 
             // delete the file from the database
@@ -314,7 +318,7 @@ class Manager
      * @return mixed
      * @throws \QUI\Exception
      */
-    protected function callFunction($function, $params = array())
+    protected function callFunction($function, $params = [])
     {
         if ($function === false) {
             return false;
@@ -337,9 +341,9 @@ class Manager
                 require_once $_rf_file;
             }
 
-            $_REQUEST = array_merge($_REQUEST, $params, array(
+            $_REQUEST = array_merge($_REQUEST, $params, [
                 '_rf' => '["'.$function.'"]'
-            ));
+            ]);
 
             return QUI::getAjax()->callRequestFunction($function, $_REQUEST);
         }
@@ -355,9 +359,9 @@ class Manager
                 require_once $_rf_file;
             }
 
-            $_REQUEST = array_merge($_REQUEST, $params, array(
+            $_REQUEST = array_merge($_REQUEST, $params, [
                 '_rf' => '["'.$function.'"]'
-            ));
+            ]);
 
             return QUI::getAjax()->callRequestFunction($function, $_REQUEST);
         }
@@ -397,9 +401,9 @@ class Manager
 
             if (!move_uploaded_file($list["tmp_name"], $file)) {
                 throw new QUI\Exception(
-                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.move', array(
+                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.move', [
                         'file' => $file
-                    ))
+                    ])
                 );
             }
 
@@ -417,9 +421,9 @@ class Manager
             $File->setAttribute('params', $params);
             $File->setAttribute('upload-dir', $uploaddir);
 
-            $this->callFunction($onfinish, array(
+            $this->callFunction($onfinish, [
                 'File' => $File
-            ));
+            ]);
 
             // delete the real file
             QUIFile::unlink($file);
@@ -435,9 +439,9 @@ class Manager
             $file      = $uploaddir.$filename;
 
             if (!move_uploaded_file($list["tmp_name"], $file)) {
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.move', array(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.move', [
                     'file' => $filename
-                ));
+                ]);
             }
 
             // extract if the the extract file is set
@@ -454,9 +458,9 @@ class Manager
             $File->setAttribute('params', $params);
             $File->setAttribute('upload-dir', $uploaddir);
 
-            $this->callFunction($onfinish, array(
+            $this->callFunction($onfinish, [
                 'File' => $File
-            ));
+            ]);
 
             // delete the real file
             QUIFile::unlink($file);
@@ -589,11 +593,11 @@ class Manager
             return;
         }
 
-        QUI::getDataBase()->insert($this->table, array(
+        QUI::getDataBase()->insert($this->table, [
             'file'   => $filename,
             'user'   => QUI::getUserBySession()->getId(),
             'params' => json_encode($params)
-        ));
+        ]);
     }
 
     /**
@@ -605,14 +609,14 @@ class Manager
      */
     protected function delete($filename)
     {
-        QUI::getDataBase()->exec(array(
+        QUI::getDataBase()->exec([
             'delete' => true,
             'from'   => $this->table,
-            'where'  => array(
+            'where'  => [
                 'user' => QUI::getUserBySession()->getId(),
                 'file' => $filename
-            )
-        ));
+            ]
+        ]);
 
         QUIFile::unlink(
             $this->getUserUploadDir().$filename
@@ -629,13 +633,13 @@ class Manager
      */
     protected function getFileData($filename)
     {
-        $db_result = QUI::getDataBase()->fetch(array(
+        $db_result = QUI::getDataBase()->fetch([
             'from'  => $this->table,
-            'where' => array(
+            'where' => [
                 'user' => QUI::getUserBySession()->getId(),
                 'file' => $filename
-            )
-        ));
+            ]
+        ]);
 
         if (!isset($db_result[0])) {
             throw new QUI\Exception(
@@ -675,11 +679,11 @@ class Manager
         $dir = $this->getDir().$User->getId().'/';
 
         if (!file_exists($dir) || !is_dir($dir)) {
-            return array();
+            return [];
         }
 
         $files  = QUIFile::readDir($dir);
-        $result = array();
+        $result = [];
 
         foreach ($files as $file) {
             try {
