@@ -1257,7 +1257,7 @@ define('controls/projects/project/media/Panel', [
                     paddingLeft    : 20
                 });
 
-                if (Child.mimetype.indexOf('svg') !== -1) {
+                if (Child.mimetype && Child.mimetype.indexOf('svg') !== -1) {
                     Elm.setStyle('background-size', 'contain');
                 }
 
