@@ -190,7 +190,7 @@ interface User
     public function setAttribute($key, $value);
 
     /**
-     * set multible attributes
+     * set multiple attributes
      *
      * @param array $attributes
      */

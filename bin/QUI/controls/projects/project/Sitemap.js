@@ -3,20 +3,7 @@
  *
  * @module controls/projects/project/Sitemap
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/controls/Control
- * @require qui/controls/sitemap/Map
- * @require qui/controls/sitemap/Item
- * @require qui/controls/contextmenu/Item
- * @require qui/controls/contextmenu/Separator
- * @require Projects
- * @require Ajax
- * @require Locale
- * @require Clipboard
- * @require utils/Site
- * @require css!controls/projects/project/Sitemap.css
  */
-
 define('controls/projects/project/Sitemap', [
 
     'qui/controls/Control',
@@ -83,15 +70,20 @@ define('controls/projects/project/Sitemap', [
             lang     : false,
             id       : false,
             media    : false, // show the media in the sitemap, too
-            multible : false
+            multible : false, // multiple selection true or false -> @deprecated
+            multiple : false  // multiple selection true or false
         },
 
         initialize: function (options) {
             this.parent(options);
 
+            if (this.getAttribute('multible')) {
+                this.setAttribute('multiple', this.getAttribute('multible'));
+            }
+
             this.$Elm = null;
             this.$Map = new QUISitemap({
-                multible: this.getAttribute('multible')
+                multiple: this.getAttribute('multiple')
             });
 
             this.$Map.setParent(this);

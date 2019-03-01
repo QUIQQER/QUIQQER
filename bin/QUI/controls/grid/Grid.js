@@ -1314,7 +1314,7 @@ define('controls/grid/Grid', [
         },
 
         /**
-         * Delete multible rows
+         * Delete multiple rows
          *
          * @param {Array} rowIds - list of the row ids
          */

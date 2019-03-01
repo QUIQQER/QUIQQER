@@ -219,7 +219,7 @@ define('classes/projects/Project', [
 
         /**
          * Set the config for a project
-         * You can set a single config parameter or multible parameters
+         * You can set a single config parameter or multiple parameters
          *
          * @param {Function} [callback]
          * @param {Object} [params] - one ore more params

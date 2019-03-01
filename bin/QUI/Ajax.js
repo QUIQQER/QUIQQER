@@ -1,6 +1,6 @@
 /**
  * Ajax request for QUIQQER
- * Ajax Manager, collect, exec multible requests
+ * Ajax Manager, collect, exec multiple requests
  *
  * @author www.pcsg.de (Henning Leutz)
  * @module Ajax

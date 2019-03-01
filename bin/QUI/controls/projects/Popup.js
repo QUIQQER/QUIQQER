@@ -49,7 +49,7 @@ define('controls/projects/Popup', [
             maxWidth            : 400,
             maxHeight           : 600,
             autoclose           : true,
-            multible            : false,  // select multible items
+            multiple            : false,  // select multiple items
             disableProjectSelect: false,  // Can the user change the projects?
             information         : false   // information text
         },
@@ -197,7 +197,7 @@ define('controls/projects/Popup', [
             this.$Map = new ProjectMap({
                 project : this.getAttribute('project'),
                 lang    : this.getAttribute('lang'),
-                multible: this.getAttribute('multible')
+                multiple: this.getAttribute('multiple')
             });
 
             this.$Map.inject(this.$Body);

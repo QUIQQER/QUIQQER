@@ -42,23 +42,23 @@ define('controls/projects/Input', [
      */
     return new Class({
 
-        Extends : QUIControl,
-        Type    : 'controls/projects/Input',
+        Extends: QUIControl,
+        Type   : 'controls/projects/Input',
 
-        Binds : [
+        Binds: [
             'close',
             'fireSearch',
             'refresh'
         ],
 
-        options : {
-            max      : false,
-            multible : true,
-            name     : '',
-            styles   : false
+        options: {
+            max     : false,
+            multiple: true,
+            name    : '',
+            styles  : false
         },
 
-        initialize : function (options, Input) {
+        initialize: function (options, Input) {
             this.parent(options);
 
             this.$search = false;
@@ -78,15 +78,15 @@ define('controls/projects/Input', [
          * @method controls/projects/Input#create
          * @return {HTMLElement} Main DOM-Node Element
          */
-        create : function () {
+        create: function () {
             this.$Elm = new Element('div', {
-                'class'      : 'projects-input',
-                'data-quiid' : this.getId()
+                'class'     : 'projects-input',
+                'data-quiid': this.getId()
             });
 
             if (!this.$Parent) {
                 this.$Parent = new Element('input', {
-                    name : this.getAttribute('name')
+                    name: this.getAttribute('name')
                 }).inject(this.$Elm);
 
             } else {
@@ -108,49 +108,49 @@ define('controls/projects/Input', [
             this.$Parent.set('type', 'hidden');
 
             this.$Input = new Element('input', {
-                'class' : 'projects-input-input box',
+                'class': 'projects-input-input box',
                 type   : 'text',
                 name   : this.$Parent.get('name') + '-search',
                 styles : {
-                    'background'  : 'url(' + URL_BIN_DIR + '10x10/search.png) no-repeat 4px center'
+                    'background': 'url(' + URL_BIN_DIR + '10x10/search.png) no-repeat 4px center'
                 },
                 events :
-                {
-                    keyup : function (event) {
-                        if (event.key === 'down') {
-                            this.down();
-                            return;
-                        }
+                    {
+                        keyup: function (event) {
+                            if (event.key === 'down') {
+                                this.down();
+                                return;
+                            }
 
-                        if (event.key === 'up') {
-                            this.up();
-                            return;
-                        }
+                            if (event.key === 'up') {
+                                this.up();
+                                return;
+                            }
 
-                        if (event.key === 'enter') {
-                            this.submit();
-                            return;
-                        }
+                            if (event.key === 'enter') {
+                                this.submit();
+                                return;
+                            }
 
-                        this.fireSearch();
-                    }.bind(this),
+                            this.fireSearch();
+                        }.bind(this),
 
-                    blur  : this.close,
-                    focus : this.fireSearch
-                }
+                        blur : this.close,
+                        focus: this.fireSearch
+                    }
             }).inject(this.$Parent, 'before');
 
 
             this.$DropDown = new Element('div.projects-input-dropdown', {
-                styles : {
-                    display : 'none',
-                    top  : this.$Input.getPosition().y + this.$Input.getSize().y,
-                    left : this.$Input.getPosition().x
+                styles: {
+                    display: 'none',
+                    top    : this.$Input.getPosition().y + this.$Input.getSize().y,
+                    left   : this.$Input.getPosition().x
                 }
             }).inject(document.body);
 
             this.$Container = new Element('div', {
-                'class' : 'projects-input-container'
+                'class': 'projects-input-container'
             }).inject(this.$Input, 'after');
 
             this.$Container.setStyle(
@@ -167,8 +167,8 @@ define('controls/projects/Input', [
             var values = JSON.decode(this.$Parent.value.toString());
 
             for (i = 0, len = values.length; i < len; i++) {
-                if ("project" in values[ i ] && "lang" in values[ i ]) {
-                    this.addProject(values[ i ].project, values[ i ].lang);
+                if ("project" in values[i] && "lang" in values[i]) {
+                    this.addProject(values[i].project, values[i].lang);
                 }
             }
 
@@ -181,7 +181,7 @@ define('controls/projects/Input', [
          * @param {Function} [callback] - optional, callback function on finish
          * @method controls/projects/Input#refresh
          */
-        refresh : function (callback) {
+        refresh: function (callback) {
             if (!this.$Container) {
                 if (typeof callback !== 'undefined') {
                     callback();
@@ -196,8 +196,8 @@ define('controls/projects/Input', [
 
             for (var i = 0, len = list.length; i < len; i++) {
                 data.push({
-                    project : list[i].get('data-project'),
-                    lang    : list[i].get('data-lang')
+                    project: list[i].get('data-project'),
+                    lang   : list[i].get('data-lang')
                 });
             }
 
@@ -213,15 +213,15 @@ define('controls/projects/Input', [
          *
          * @return {Array}
          */
-        getProjects : function () {
+        getProjects: function () {
             var i, len, Project;
             var result = [],
                 list   = this.$Container.getElements('.project-entry');
 
             for (i = 0, len = list.length; i < len; i++) {
                 Project = Projects.get(
-                    list[ i ].get('data-project'),
-                    list[ i ].get('data-lang')
+                    list[i].get('data-project'),
+                    list[i].get('data-lang')
                 );
 
                 result.push(Project);
@@ -235,16 +235,16 @@ define('controls/projects/Input', [
          *
          * @method controls/projects/Input#fireSearch
          */
-        fireSearch : function () {
+        fireSearch: function () {
             this.cancelSearch();
 
             this.$DropDown.set({
-                html   : '<img src="' + URL_BIN_DIR + 'images/loader.gif" />',
-                styles : {
-                    display : '',
-                    top     : this.$Input.getPosition().y + this.$Input.getSize().y,
-                    left    : this.$Input.getPosition().x,
-                    zIndex  : ElementUtils.getComputedZIndex(this.$Input)
+                html  : '<img src="' + URL_BIN_DIR + 'images/loader.gif" />',
+                styles: {
+                    display: '',
+                    top    : this.$Input.getPosition().y + this.$Input.getSize().y,
+                    left   : this.$Input.getPosition().x,
+                    zIndex : ElementUtils.getComputedZIndex(this.$Input)
                 }
             });
 
@@ -256,7 +256,7 @@ define('controls/projects/Input', [
          *
          * @method controls/projects/Input#cancelSearch
          */
-        cancelSearch : function () {
+        cancelSearch: function () {
             if (this.$search) {
                 clearTimeout(this.$search);
             }
@@ -267,7 +267,7 @@ define('controls/projects/Input', [
          *
          * @method controls/projects/Input#close
          */
-        close : function () {
+        close: function () {
             this.cancelSearch();
             this.$DropDown.setStyle('display', 'none');
             this.$Input.value = '';
@@ -280,15 +280,15 @@ define('controls/projects/Input', [
          * @param {String} project - Project name
          * @param {String} [lang] - optional, Project language
          */
-        addProject : function (project, lang) {
+        addProject: function (project, lang) {
             if (!project) {
                 return;
             }
 
             var Container = this.$Container;
 
-            if (this.getAttribute('multible') === false) {
-                // wenn multible = false
+            if (this.getAttribute('multiple') === false) {
+                // wenn multiple = false
                 // dann leeren und nur ein projekt zu lassen
                 this.$Container.set('html', '');
             }
@@ -307,20 +307,20 @@ define('controls/projects/Input', [
             var self = this;
 
             new ProjectEntry(project, lang, {
-                styles : {
-                    width : '100%'
+                styles: {
+                    width: '100%'
                 },
-                events :
-                {
-                    onDestroy : function () {
-                        (function () {
-                            self.refresh(function () {
-                                self.$Parent.fireEvent('change', [this]);
-                                self.fireEvent('change', [this]);
-                            });
-                        }).delay(250);
+                events:
+                    {
+                        onDestroy: function () {
+                            (function () {
+                                self.refresh(function () {
+                                    self.$Parent.fireEvent('change', [this]);
+                                    self.fireEvent('change', [this]);
+                                });
+                            }).delay(250);
+                        }
                     }
-                }
             }).inject(Container);
 
             this.fireEvent('add', [this, project, lang]);
@@ -336,7 +336,7 @@ define('controls/projects/Input', [
          *
          * @method controls/projects/Input#search
          */
-        search : function () {
+        search: function () {
             Ajax.get('ajax_project_search', function (result, Request) {
                 var i, len, nam, func_mousedown, func_mouseover;
 
@@ -349,12 +349,12 @@ define('controls/projects/Input', [
 
                 if (!data.length) {
                     new Element('div', {
-                        html   : Locale.get('quiqqer/system', 'projects.project.input.no.results'),
-                        styles : {
-                            'float' : 'left',
-                            'clear' : 'both',
-                            padding : 5,
-                            margin  : 5
+                        html  : Locale.get('quiqqer/system', 'projects.project.input.no.results'),
+                        styles: {
+                            'float': 'left',
+                            'clear': 'both',
+                            padding: 5,
+                            margin : 5
                         }
                     }).inject(DropDown);
 
@@ -377,38 +377,38 @@ define('controls/projects/Input', [
 
                 // create
                 for (i = 0, len = data.length; i < len; i++) {
-                    nam = data[ i ].project.toString().replace(
+                    nam = data[i].project.toString().replace(
                         new RegExp('(' + value + ')', 'gi'),
                         '<span class="mark">$1</span>'
                     );
 
                     new Element('div', {
-                        html    : nam + ' (' + data[ i ].lang + ')',
-                        'class' : 'box-sizing radius5',
-                        'data-project' : data[ i ].project,
-                        'data-lang'    : data[ i ].lang,
-                        styles : {
-                            'float' : 'left',
-                            'clear' : 'both',
-                            padding : 5,
-                            cursor  : 'pointer',
-                            width   : '100%'
+                        html          : nam + ' (' + data[i].lang + ')',
+                        'class'       : 'box-sizing radius5',
+                        'data-project': data[i].project,
+                        'data-lang'   : data[i].lang,
+                        styles        : {
+                            'float': 'left',
+                            'clear': 'both',
+                            padding: 5,
+                            cursor : 'pointer',
+                            width  : '100%'
                         },
-                        events :
-                        {
-                            mousedown : func_mousedown,
-                            mouseover : func_mouseover
-                        }
+                        events        :
+                            {
+                                mousedown: func_mousedown,
+                                mouseover: func_mouseover
+                            }
                     }).inject(DropDown);
                 }
             }, {
-                Elm    : this,
-                value  : this.$Input.value,
-                params : JSON.encode({
-                    order  : 'ASC',
-                    limit  : 5,
-                    page   : 1,
-                    search : this.$Input.value
+                Elm   : this,
+                value : this.$Input.value,
+                params: JSON.encode({
+                    order : 'ASC',
+                    limit : 5,
+                    page  : 1,
+                    search: this.$Input.value
                 })
             });
         },
@@ -419,7 +419,7 @@ define('controls/projects/Input', [
          * @method controls/projects/Input#up
          * @return {Object} this (controls/projects/Input)
          */
-        up : function () {
+        up: function () {
             if (!this.$DropDown) {
                 return this;
             }
@@ -448,7 +448,7 @@ define('controls/projects/Input', [
          * @method controls/projects/Input#down
          * @return {Object} this (controls/projects/Input)
          */
-        down : function () {
+        down: function () {
             if (!this.$DropDown) {
                 return this;
             }
@@ -478,7 +478,7 @@ define('controls/projects/Input', [
          *
          * @method controls/projects/Input#submit
          */
-        submit : function () {
+        submit: function () {
             if (!this.$DropDown) {
                 return;
             }
@@ -502,7 +502,7 @@ define('controls/projects/Input', [
          * @method controls/projects/Input#focus
          * @return {Object} this (controls/projects/Input)
          */
-        focus : function () {
+        focus: function () {
             if (this.$Input) {
                 this.$Input.focus();
             }

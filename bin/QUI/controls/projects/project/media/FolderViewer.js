@@ -108,7 +108,7 @@ define('controls/projects/project/media/FolderViewer', [
             this.$Elm.set({
                 'data-quiid': this.getId(),
                 html        : '<div class="qui-project-media-folderViewer-buttons"></div>' +
-                '<div class="qui-project-media-folderViewer-container"></div>'
+                    '<div class="qui-project-media-folderViewer-container"></div>'
             });
 
             this.Loader = new QUILoader().inject(this.$Elm);
@@ -367,7 +367,7 @@ define('controls/projects/project/media/FolderViewer', [
             this.openSheet(function (Content, Sheet) {
 
                 var Upload = new UploadForm({
-                    multible    : true,
+                    multiple    : true,
                     sendbutton  : true,
                     cancelbutton: true,
                     styles      : {
@@ -438,9 +438,9 @@ define('controls/projects/project/media/FolderViewer', [
             var Container = new Element('div', {
                 'class'     : 'qui-project-media-folderViewer-item',
                 html        : '<div class="qui-project-media-folderViewer-item-image"></div>' +
-                '<span class="qui-project-media-folderViewer-item-title">' +
-                imageData.name +
-                '</span>',
+                    '<span class="qui-project-media-folderViewer-item-title">' +
+                    imageData.name +
+                    '</span>',
                 alt         : imageData.name,
                 title       : imageData.name,
                 styles      : {
