@@ -1257,6 +1257,10 @@ define('controls/projects/project/media/Panel', [
                     paddingLeft    : 20
                 });
 
+                if (Child.mimetype.indexOf('svg') !== -1) {
+                    Elm.setStyle('background-size', 'contain');
+                }
+
                 if (Child.error) {
                     Elm.setStyles({
                         backgroundImage: 'url(' + URL_BIN_DIR + '48x48/file_broken.png)',

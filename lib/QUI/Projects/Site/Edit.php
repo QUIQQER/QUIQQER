@@ -791,6 +791,10 @@ class Edit extends Site
      *                        $params['limit']
      * @param boolean $recursiv Rekursiv alle Kinder IDs bekommen
      *
+     * @todo $recusiv parameter is not used and the interface defines it as a $load parameter
+     *
+     * @throws QUI\Exception
+     *
      * @return array|int
      */
     public function getChildren($params = [], $recursiv = false)
