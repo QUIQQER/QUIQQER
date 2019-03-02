@@ -40,7 +40,8 @@ class Manager implements QUI\Interfaces\Events
         $this->Events = new Event();
 
         try {
-            if (!QUI::$Conf->existValue('globals', 'eventsCreated')) {
+            if (!QUI::$Conf->existValue('globals', 'eventsCreated')
+                || !QUI::$Conf->getValue('globals', 'eventsCreated')) {
                 $exists = QUI::getDataBase()->table()->exist(self::table());
 
                 QUI::$Conf->setValue('globals', 'eventsCreated', $exists);
