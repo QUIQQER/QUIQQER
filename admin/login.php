@@ -537,7 +537,7 @@ foreach ($packages as $package) {
             QUILocale.setCurrent(lang);
 
             Select.appendChild(
-                QUILocale.get('quiqqer/system', 'language.' + lang),
+                QUILocale.get('quiqqer/quiqqer', 'language.' + lang),
                 lang,
                 URL_BIN_DIR + '16x16/flags/' + lang + '.png'
             );

@@ -719,7 +719,7 @@ define('controls/projects/project/Panel', [
 
                 langs.each(function (lng) {
                     self.$LanguageSelect.appendChild(
-                        Locale.get('quiqqer/system', 'language.' + lng),
+                        Locale.get('quiqqer/quiqqer', 'language.' + lng),
                         lng,
                         URL_BIN_DIR + '16x16/flags/' + lng + '.png'
                     );
