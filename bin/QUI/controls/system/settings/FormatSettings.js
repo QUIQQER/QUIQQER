@@ -76,7 +76,7 @@ define('controls/system/settings/FormatSettings', [
                         'class'    : 'quiqqer-formatsettings',
                         'data-lang': lang,
                         html       : Mustache.render(templateEntry, {
-                            title: QUILocale.get(lg, 'language.' + lang),
+                            title: QUILocale.get('quiqqer/quiqqer', 'language.' + lang),
                             flag : '<img src="' + URL_BIN_DIR + '16x16/flags/' + lang + '.png" />',
 
                             decimal_separator          : data['numberFormat.decimal_separator'],

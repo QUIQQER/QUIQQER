@@ -135,7 +135,7 @@ define('controls/system/AvailableLanguages', [
                            '<img src="' + URL_BIN_DIR + '16x16/flags/' + list[i] + '.png" />' +
                            '</span>';
 
-                    langtext = QUILocale.get('quiqqer/system', 'language.' + list[i]);
+                    langtext = QUILocale.get('quiqqer/quiqqer', 'language.' + list[i]);
                     name     = parentName + '.' + list[i];
 
                     new Element('label', {

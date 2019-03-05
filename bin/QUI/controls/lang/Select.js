@@ -125,7 +125,7 @@ define('controls/lang/Select', [
                 QUIAjax.get('ajax_system_getAvailableLanguages', function (languages) {
                     for (var i = 0, len = languages.length; i < len; i++) {
                         self.$Select.appendChild(
-                            QUILocale.get('quiqqer/system', 'language.' + languages[i]),
+                            QUILocale.get('quiqqer/quiqqer', 'language.' + languages[i]),
                             languages[i],
                             URL_BIN_DIR + '16x16/flags/' + languages[i] + '.png'
                         );
