@@ -27,9 +27,8 @@ QUI::$Ajax->registerFunction(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'packages.panel.category.systemcheck.checksum.cacheForThisPackageNotFound',
-                    [
-                        'cacheForThisPackage' => $packageName
-                    ])
+                    ['cacheForThisPackage' => $packageName]
+                )
             );
 
             return false;
@@ -37,7 +36,6 @@ QUI::$Ajax->registerFunction(
         }
 
         return $packages[$packageName];
-
     },
     ['packageName'],
     'Permission::checkSU'
