@@ -13,6 +13,6 @@ QUI::$Ajax->registerFunction(
                 return $key == $forwarding;
             });
     },
-    array('forwarding'),
+    ['forwarding'],
     'Permission::checkAdminUser'
 );

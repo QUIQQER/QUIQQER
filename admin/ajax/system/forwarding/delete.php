@@ -12,6 +12,6 @@ QUI::$Ajax->registerFunction(
             json_decode($from, true)
         );
     },
-    array('from'),
+    ['from'],
     'Permission::checkAdminUser'
 );
