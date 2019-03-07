@@ -17,10 +17,10 @@ QUI::$Ajax->registerFunction(
         $Engine = QUI::getTemplateManager()->getEngine(true);
 
         if (isset($package) && !empty($package)) {
-            $template = OPT_DIR . $package . '/' . str_replace('_', '/', $template) . '.html';
+            $template = OPT_DIR.$package.'/'.str_replace('_', '/', $template).'.html';
         } else {
-            $dir      = SYS_DIR . 'template/';
-            $template = $dir . str_replace('_', '/', $template) . '.html';
+            $dir      = SYS_DIR.'template/';
+            $template = $dir.str_replace('_', '/', $template).'.html';
         }
 
         if (!file_exists($template)) {
@@ -36,12 +36,13 @@ QUI::$Ajax->registerFunction(
             $params = json_decode($params, true);
         }
 
-        $Engine->assign(array(
+        $Engine->assign([
             'QUI'    => new QUI(),
             'params' => $params
-        ));
+        ]);
 
         return $Engine->fetch($template);
     },
-    array('template', 'package', 'params')
+    ['template', 'package', 'params'],
+    'Permission::checkAdminUser'
 );
