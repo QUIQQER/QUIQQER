@@ -10,7 +10,7 @@ QUI::$Ajax->registerFunction(
     function () {
         $Plugins = QUI::getPlugins();
         $list    = $Plugins->getInactivePlugins(true);
-        $result  = array();
+        $result  = [];
 
         foreach ($list as $Plugin) {
             $result[] = $Plugin->getAttributes();

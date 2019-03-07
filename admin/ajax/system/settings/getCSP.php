@@ -9,5 +9,5 @@ QUI::$Ajax->registerFunction(
         return QUI\System\CSP::getInstance()->getCSPDirectiveConfig();
     },
     false,
-    array('Permission::checkAdminUser')
+    ['Permission::checkAdminUser']
 );

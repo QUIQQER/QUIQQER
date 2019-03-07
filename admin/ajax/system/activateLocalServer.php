@@ -9,8 +9,8 @@ QUI::$Ajax->registerFunction(
         QUI::getPackageManager()->activateLocalServer();
     },
     false,
-    array(
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.update'
-    )
+    ]
 );

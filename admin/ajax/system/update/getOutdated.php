@@ -19,9 +19,9 @@ QUI::$Ajax->registerFunction(
 
         return QUI::getPackageManager()->getOutdated($force);
     },
-    array('force'),
-    array(
+    ['force'],
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.update'
-    )
+    ]
 );

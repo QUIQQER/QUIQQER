@@ -17,8 +17,8 @@ QUI::$Ajax->registerFunction(
 
         return $Package->getConfig()->toArray();
     },
-    array('package'),
-    array(
+    ['package'],
+    [
         'Permission::checkAdminUser'
-    )
+    ]
 );

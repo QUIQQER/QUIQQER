@@ -15,9 +15,9 @@ QUI::$Ajax->registerFunction(
             json_decode($params, true)
         );
     },
-    array('server', 'params'),
-    array(
+    ['server', 'params'],
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.update'
-    )
+    ]
 );

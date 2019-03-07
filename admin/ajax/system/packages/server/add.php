@@ -19,13 +19,13 @@ QUI::$Ajax->registerFunction(
             QUI::getLocale()->get(
                 'quiqqer/quiqqer',
                 'message.packages.server.add.successfully',
-                array('server' => $server)
+                ['server' => $server]
             )
         );
     },
-    array('server', 'params'),
-    array(
+    ['server', 'params'],
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.update'
-    )
+    ]
 );

@@ -20,9 +20,9 @@ QUI::$Ajax->registerFunction(
 
         QUI::getPackageManager()->installLocalPackage($packages);
     },
-    array('packages'),
-    array(
+    ['packages'],
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.update'
-    )
+    ]
 );

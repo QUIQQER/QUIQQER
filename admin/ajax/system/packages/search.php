@@ -13,9 +13,9 @@ QUI::$Ajax->registerFunction(
     function ($search) {
         return QUI::getPackageManager()->searchNewPackages($search);
     },
-    array('search'),
-    array(
+    ['search'],
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.update'
-    )
+    ]
 );

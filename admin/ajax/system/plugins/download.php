@@ -23,6 +23,6 @@ QUI::$Ajax->registerFunction(
             }
         });
     },
-    array('file'),
+    ['file'],
     'Permission::checkSU'
 );

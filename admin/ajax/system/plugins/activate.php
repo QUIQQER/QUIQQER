@@ -14,6 +14,6 @@ QUI::$Ajax->registerFunction(
         $Plugins->activate($Plugin);
         $Plugin->install();
     },
-    array('plugin'),
+    ['plugin'],
     'Permission::checkSU'
 );

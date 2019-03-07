@@ -9,11 +9,11 @@ QUI::$Ajax->registerFunction(
     'ajax_system_check',
     function () {
         $Engine = QUI::getTemplateManager()->getEngine();
-        $Engine->assign(array(
+        $Engine->assign([
             'checks' => QUI\System\Checks\Manager::standard()
-        ));
+        ]);
 
-        return $Engine->fetch(SYS_DIR . 'ajax/system/check.html');
+        return $Engine->fetch(SYS_DIR.'ajax/system/check.html');
     },
     false,
     'Permission::checkSU'
