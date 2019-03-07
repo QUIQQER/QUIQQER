@@ -73,15 +73,6 @@
             httpshost : {if strpos( $httpshost, 'https' ) !== false}'{$httpshost}'{else}false{/if}
         };
 
-        {assign var=userCountry value=$User->getCountry()}
-
-        var QUIQQER_USER = {
-            id   : '{$User->getId()}',
-            name : '{$User->getName()}',
-            lang : '{$User->getLang()}',
-            country: {if $userCountry}'{$userCountry->getCode()}'{else}false{/if}
-        };
-
         var QUIQQER_SITE = {
             id   : '{$Site->getId()}',
             type : '{$Site->getAttribute("type")}',
@@ -99,8 +90,17 @@
             var QUIQQER_LOGIN_FAILED = "{locale group="quiqqer/system" value="exception.login.fail"}";
             {/if}
         {/if}
-
     </script>
+    <script id="quiqqer-user-defined">
+        {assign var=userCountry value=$User->getCountry()}
+        var QUIQQER_USER = {
+            id   : {if $User->getId()}{$User->getId()}{else}0{/if},
+            name : '{$User->getName()}',
+                lang : '{$User->getLang()}',
+                country: {if $userCountry}'{$userCountry->getCode()}'{else}false{/if}
+            };
+    </script>
+
     <script async src="{$URL_BIN_DIR}QUI/polyfills/picturefill.min.js?lu={$lastUpdate}"></script>
     <!-- quiqqer-js-defined -->
 
