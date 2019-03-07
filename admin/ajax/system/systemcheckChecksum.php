@@ -32,7 +32,6 @@ QUI::$Ajax->registerFunction(
             );
 
             return false;
-
         }
 
         return $packages[$packageName];
