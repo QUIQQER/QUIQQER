@@ -12,6 +12,6 @@ QUI::$Ajax->registerFunction(
     function ($from, $target, $code) {
         QUI\System\Forwarding::create($from, $target, $code);
     },
-    array('from', 'target', 'code'),
+    ['from', 'target', 'code'],
     'Permission::checkAdminUser'
 );
