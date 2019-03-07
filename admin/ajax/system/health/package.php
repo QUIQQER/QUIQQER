@@ -10,6 +10,6 @@ QUI::$Ajax->registerFunction(
     function ($pkg) {
         return QUI\System\Checks\Health::packageCheck($pkg);
     },
-    array('pkg'),
+    ['pkg'],
     'Permission::checkSU'
 );

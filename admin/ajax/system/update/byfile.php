@@ -24,9 +24,9 @@ QUI::$Ajax->registerFunction(
             $File->getAttribute('filepath')
         );
     },
-    array('File'),
-    array(
+    ['File'],
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.update'
-    )
+    ]
 );

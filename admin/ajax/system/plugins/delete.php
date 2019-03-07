@@ -16,6 +16,6 @@ QUI::$Ajax->registerFunction(
             json_decode($params, true)
         );
     },
-    array('plugin', 'params'),
+    ['plugin', 'params'],
     'Permission::checkSU'
 );

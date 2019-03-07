@@ -40,13 +40,13 @@ QUI::$Ajax->registerFunction(
                 case "ssl":
                     $Mail->SMTPSecure = $params['SMTPSecure'];
 
-                    $Mail->SMTPOptions = array(
-                        'ssl' => array(
+                    $Mail->SMTPOptions = [
+                        'ssl' => [
                             'verify_peer'       => (int)$params['SMTPSecureSSL_verify_peer'],
                             'verify_peer_name'  => (int)$params['SMTPSecureSSL_verify_peer_name'],
                             'allow_self_signed' => (int)$params['SMTPSecureSSL_allow_self_signed']
-                        )
-                    );
+                        ]
+                    ];
                     break;
                 case "tls":
                     $Mail->SMTPSecure = $params['SMTPSecure'];
@@ -85,6 +85,6 @@ QUI::$Ajax->registerFunction(
             QUI::getLocale()->get('quiqqer/quiqqer', 'message.testmail.success')
         );
     },
-    array('params'),
+    ['params'],
     'Permission::checkSU'
 );

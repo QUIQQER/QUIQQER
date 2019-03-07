@@ -55,9 +55,9 @@ QUI::$Ajax->registerFunction(
                         break;
                 }
 
-                $html .= $Result->getStatusHumanReadable() . '"></span>';
-                $html .= '<span class="test-name">' . $Test->getName() . '</span>';
-                $html .= '<div class="' . $testMessageClass . '">';
+                $html .= $Result->getStatusHumanReadable().'"></span>';
+                $html .= '<span class="test-name">'.$Test->getName().'</span>';
+                $html .= '<div class="'.$testMessageClass.'">';
                 $html .= $Result->getMessage();
                 $html .= '</div>';
             }

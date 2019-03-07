@@ -12,36 +12,36 @@ QUI::$Ajax->registerFunction(
         $Package = QUI::getPackageManager()->getInstalledPackage($package);
 
         $composerData = $Package->getComposerData();
-        $lockData = $Package->getLock();
+        $lockData     = $Package->getLock();
 
-        $hashData = array();
+        $hashData = [];
         if (isset($lockData['dist']['reference'])) {
             $hashValue = $lockData['dist']['reference'];
-            $hashData  = array(
-                'hash' => array(
+            $hashData  = [
+                'hash' => [
                     'full'  => $hashValue,
                     'short' => substr($hashValue, 0, 8)
-                )
-            );
+                ]
+            ];
         }
 
 
-        $standardData = array(
+        $standardData = [
             'name'        => $Package->getName(),
             'title'       => $Package->getTitle(),
             'description' => $Package->getDescription(),
             'image'       => $Package->getImage(),
             'preview'     => $Package->getPreviewImages(),
-        );
+        ];
 
         // require sort
         ksort($composerData['require']);
 
         return array_merge($composerData, $standardData, $hashData);
     },
-    array('package'),
-    array(
+    ['package'],
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.update'
-    )
+    ]
 );

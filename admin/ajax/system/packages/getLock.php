@@ -13,9 +13,9 @@ QUI::$Ajax->registerFunction(
             ->getInstalledPackage($package)
             ->getLock();
     },
-    array('package'),
-    array(
+    ['package'],
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.update'
-    )
+    ]
 );

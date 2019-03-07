@@ -12,9 +12,9 @@ QUI::$Ajax->registerFunction(
     function ($server, $status) {
         QUI::getPackageManager()->setServerStatus($server, $status);
     },
-    array('server', 'status'),
-    array(
+    ['server', 'status'],
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.update'
-    )
+    ]
 );

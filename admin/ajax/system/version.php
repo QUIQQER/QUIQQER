@@ -11,8 +11,8 @@ QUI::$Ajax->registerFunction(
         return QUI::getPackageManager()->getVersion();
     },
     false,
-    array(
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.update'
-    )
+    ]
 );

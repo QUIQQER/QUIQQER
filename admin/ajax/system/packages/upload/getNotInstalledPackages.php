@@ -11,8 +11,8 @@ QUI::$Ajax->registerFunction(
         return QUI\Package\LocalServer::getInstance()->getNotInstalledPackage();
     },
     false,
-    array(
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.update'
-    )
+    ]
 );

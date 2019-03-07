@@ -8,9 +8,9 @@ QUI::$Ajax->registerFunction(
     function ($package) {
         QUI::getPackageManager()->update($package);
     },
-    array('package'),
-    array(
+    ['package'],
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.update'
-    )
+    ]
 );

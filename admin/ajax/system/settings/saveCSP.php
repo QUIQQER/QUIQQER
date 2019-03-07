@@ -15,6 +15,6 @@ QUI::$Ajax->registerFunction(
             $CSP->setCSPDirectiveToConfig($key, $value);
         }
     },
-    array('data'),
-    array('Permission::checkAdminUser')
+    ['data'],
+    ['Permission::checkAdminUser']
 );

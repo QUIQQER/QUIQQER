@@ -13,17 +13,17 @@ QUI::$Ajax->registerFunction(
         $Plugins = QUI::getPlugins();
 
         if ($tpltype == 'plugin') {
-            $Engine->assign(array(
+            $Engine->assign([
                 'plugins' => $Plugins->getAvailablePlugins(true)
-            ));
+            ]);
         }
 
-        $Engine->assign(array(
+        $Engine->assign([
             'tpltype' => $tpltype
-        ));
+        ]);
 
-        return $Engine->fetch(CMS_DIR . 'admin/ajax/system/update/template.html');
+        return $Engine->fetch(CMS_DIR.'admin/ajax/system/update/template.html');
     },
-    array('tpltype'),
+    ['tpltype'],
     'Permission::checkSU'
 );

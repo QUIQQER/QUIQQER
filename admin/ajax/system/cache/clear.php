@@ -11,7 +11,7 @@ QUI::$Ajax->registerFunction(
         $params = json_decode($params, true);
 
         if (isset($params['compile']) && $params['compile'] == 1) {
-            QUI\Utils\System\File::unlink(VAR_DIR . 'cache/compile');
+            QUI\Utils\System\File::unlink(VAR_DIR.'cache/compile');
         }
 
         if (isset($params['plugins']) && $params['plugins'] == 1) {
@@ -20,7 +20,7 @@ QUI::$Ajax->registerFunction(
 
         if (isset($params['templates']) && $params['templates'] == 1) {
             // @TODO: Ist das die richtige Funktion zum Löschen des Template Caches?
-            QUI\Utils\System\File::unlink(VAR_DIR . 'cache/templates');
+            QUI\Utils\System\File::unlink(VAR_DIR.'cache/templates');
         }
 
         if (isset($params['complete']) && $params['complete'] == 1) {
@@ -28,6 +28,6 @@ QUI::$Ajax->registerFunction(
             QUI\Plugins\Manager::clearCache();
         }
     },
-    array('params'),
+    ['params'],
     'Permission::checkSU'
 );

@@ -13,6 +13,6 @@ QUI::$Ajax->registerFunction(
 
         return $Update->getVersions($plugin);
     },
-    array('plugin'),
+    ['plugin'],
     'Permission::checkSU'
 );

@@ -11,11 +11,12 @@ QUI::$Ajax->registerFunction(
     function ($package) {
         if (isset($package) && !empty($package)) {
             QUI::getPackageManager()->setup($package);
+
             return;
         }
 
         QUI\Setup::all();
     },
-    array('package'),
+    ['package'],
     'Permission::checkSU'
 );

@@ -11,7 +11,7 @@ QUI::$Ajax->registerFunction(
         $Plugins = QUI::getPlugins();
         $list    = $Plugins->getAvailablePlugins(true);
 
-        $plugins = array();
+        $plugins = [];
 
         foreach ($list as $Plugin) {
             $plugins[] = $Plugin->getAttributes();
