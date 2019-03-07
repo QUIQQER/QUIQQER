@@ -17,13 +17,26 @@ QUI::$Ajax->registerFunction(
         $Engine = QUI::getTemplateManager()->getEngine(true);
 
         if (isset($package) && !empty($package)) {
+            QUI::getPackage($package); // check if package exists
+
             $template = OPT_DIR.$package.'/'.str_replace('_', '/', $template).'.html';
         } else {
             $dir      = SYS_DIR.'template/';
             $template = $dir.str_replace('_', '/', $template).'.html';
         }
 
-        if (!file_exists($template)) {
+        $template = realpath($template);
+
+        if (!$template || !file_exists($template)) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.template.not.found'
+                )
+            );
+        }
+
+        if (strpos($template, CMS_DIR) !== 0) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
