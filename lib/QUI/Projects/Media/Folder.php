@@ -10,6 +10,7 @@ use QUI;
 use QUI\Projects\Media\Utils as MediaUtils;
 use QUI\Utils\System\File as FileUtils;
 use QUI\Utils\StringHelper as StringUtils;
+use QUI\Utils\Security\Orthos;
 
 /**
  * A media folder
@@ -596,45 +597,47 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 $order = 'name';
         }
 
+        $table     = Orthos::cleanupDatabaseFieldName($table);
+        $table_rel = Orthos::cleanupDatabaseFieldName($table_rel);
+
+        $table_parent = $table_rel.'.`parent`';
+        $table_child  = $table_rel.'.`child`';
+
+        $table_id     = $table.'.`id`';
+        $table_delete = $table.'.`deleted`';
+        $table_type   = $table.'.`type`';
+        $table_cDate  = $table.'.`c_date`';
+        $table_name   = $table.'.`name`';
+
+        $parentId = $this->getId();
+
         switch ($order) {
             case 'id':
             case 'id ASC':
-                $order_by
-                    = 'find_in_set('.$table.'.type, \'folder\') DESC, '.$table
-                      .'.id';
+                $order_by = "find_in_set({$table_type}, 'folder') DESC, {$table_id}";
                 break;
 
             case 'id DESC':
-                $order_by
-                    = 'find_in_set('.$table.'.type, \'folder\') DESC, '.$table
-                      .'.id DESC';
+                $order_by = "find_in_set({$table_type}, 'folder') DESC, {$table_id} DESC";
                 break;
 
             case 'c_date':
             case 'c_date ASC':
-                $order_by
-                    = 'find_in_set('.$table.'.type, \'folder\') DESC, '.$table
-                      .'.c_date';
+                $order_by = "find_in_set({$table_type}, 'folder') DESC, {$table_cDate}";
                 break;
 
             case 'c_date DESC':
-                $order_by
-                    = 'find_in_set('.$table.'.type, \'folder\') DESC, '.$table
-                      .'.c_date DESC';
+                $order_by = "find_in_set({$table_type}, 'folder') DESC, {$table_cDate} DESC";
                 break;
 
             case 'name ASC':
-                $order_by
-                    = 'find_in_set('.$table.'.type, \'folder\') ASC, '.$table
-                      .'.name';
+                $order_by = "find_in_set({$table_type}, 'folder') ASC, {$table_name}";
                 break;
 
             default:
             case 'name':
             case 'name DESC':
-                $order_by
-                    = 'find_in_set('.$table.'.type, \'folder\') DESC, '.$table
-                      .'.name';
+                $order_by = "find_in_set({$table_type}, 'folder') DESC, {$table_name}";
                 break;
 
             case 'priority':
@@ -643,26 +646,58 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 $order_by = $order;
         }
 
+        $limit = '';
+
         if (isset($params['limit'])) {
-            $query['limit'] = $params['limit'];
+            $limitParams = explode(',', $params['limit']);
+
+            if (count($limitParams) === 2) {
+                $limitParams[0] = (int)$limitParams[0];
+                $limitParams[1] = (int)$limitParams[1];
+
+                $limit = "LIMIT {$limitParams[0]}, {$limitParams[1]}";
+            } else {
+                $limitParams[0] = (int)$limitParams[0];
+                $limit          = "LIMIT {$limitParams[0]}";
+            }
         }
 
-        $query = [
-            'select' => 'id',
-            'from'   => [
-                $table,
-                $table_rel
-            ],
-            'where'  => [
-                $table_rel.'.parent' => $this->getId(),
-                $table_rel.'.child'  => '`'.$table.'.id`',
-                $table.'.deleted'    => 0
-            ],
-            'order'  => $order_by
-        ];
+        $query = "
+        
+        SELECT id
+        FROM {$table}, {$table_rel}
+        WHERE
+            {$table_parent} = {$parentId} AND
+            {$table_child}  = {$table_id} AND
+            {$table_delete} = 0
+        ORDER BY
+            {$order_by} {$limit}
+        ;
+        ";
+
+//        $query = [
+//            'select' => 'id',
+//            'from'   => [
+//                $table,
+//                $table_rel
+//            ],
+//            'where'  => [
+//                $table_rel.'.parent' => $this->getId(),
+//                $table_rel.'.child'  => '`'.$table.'.id`',
+//                $table.'.deleted'    => 0
+//            ],
+//            'order'  => $order_by
+//        ];
 
 
-        $fetch  = QUI::getDataBase()->fetch($query);
+        try {
+            $fetch = QUI::getDataBase()->fetchSQL($query);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+
+            return [];
+        }
+
         $result = [];
 
         foreach ($fetch as $entry) {
