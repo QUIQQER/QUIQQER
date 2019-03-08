@@ -25,7 +25,7 @@ class Manager extends QUI\QDOM
      * loaded plugins
      * @var array
      */
-    protected $plugins = array();
+    protected $plugins = [];
 
     /**
      * plugin config
@@ -115,7 +115,7 @@ class Manager extends QUI\QDOM
     public function getAvailablePlugins($order = false, $onlynames = false)
     {
         $list   = QUI\Utils\System\File::readDir(OPT_DIR);
-        $result = array();
+        $result = [];
 
         foreach ($list as $dir) {
             if (!is_dir(OPT_DIR.$dir) || strpos($dir, '.') === 0) {
@@ -134,7 +134,7 @@ class Manager extends QUI\QDOM
             if ($onlynames) {
                 sort($result);
             } else {
-                $_result = array();
+                $_result = [];
 
                 foreach ($result as $Plugin) {
                     /* @var $Plugin QUI\Plugins\Plugin */
@@ -143,7 +143,7 @@ class Manager extends QUI\QDOM
                 }
 
                 ksort($_result);
-                $result = array();
+                $result = [];
 
                 foreach ($_result as $Plugin) {
                     $result[] = $Plugin;
@@ -166,7 +166,7 @@ class Manager extends QUI\QDOM
         /* @var $Config \QUI\Config */
         $list = $this->getAvailablePlugins($order);
 
-        $result = array();
+        $result = [];
 
         foreach ($list as $Plugin) {
             /* @var $Plugin QUI\Plugins\Plugin */
@@ -186,7 +186,7 @@ class Manager extends QUI\QDOM
      */
     public function getAvailableTypes($Project = false)
     {
-        $types     = array();
+        $types     = [];
         $installed = QUI::getPackageManager()->getInstalled();
 
         foreach ($installed as $package) {
@@ -201,13 +201,13 @@ class Manager extends QUI\QDOM
 
             foreach ($typeList as $Type) {
                 /* @var $Type \DOMElement */
-                $types[$name][] = array(
+                $types[$name][] = [
                     'type' => $name.':'.$Type->getAttribute('type'),
                     'icon' => $Type->getAttribute('icon'),
                     'text' => $this->getTypeName(
                         $name.':'.$Type->getAttribute('type')
                     )
-                );
+                ];
             }
         }
 
@@ -216,10 +216,10 @@ class Manager extends QUI\QDOM
         // standard to top
         $types = array_reverse($types, true);
 
-        $types['standard'] = array(
+        $types['standard'] = [
             'type' => 'standard',
             'icon' => 'fa fa-file-o'
-        );
+        ];
 
         $types = array_reverse($types, true);
 
@@ -529,7 +529,7 @@ class Manager extends QUI\QDOM
 
         /* @var $Type \DOMElement */
         $Type = $Types->item(0);
-        $data = array();
+        $data = [];
 
         if ($Type->getAttribute('icon')) {
             $data['icon'] = $Type->getAttribute('icon');
@@ -542,10 +542,10 @@ class Manager extends QUI\QDOM
         $loc = $Type->getElementsByTagName('locale');
 
         if ($loc->length) {
-            $data['locale'] = array(
+            $data['locale'] = [
                 'group' => $loc->item(0)->getAttribute('group'),
                 'var'   => $loc->item(0)->getAttribute('var')
-            );
+            ];
         }
 
         $data['value'] = trim($Type->nodeValue);
@@ -585,6 +585,6 @@ class Manager extends QUI\QDOM
      */
     public function getListOfGroupPlugins()
     {
-        return array();
+        return [];
     }
 }
