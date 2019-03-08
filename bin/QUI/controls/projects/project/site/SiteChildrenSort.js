@@ -3,20 +3,12 @@
  *
  * @module controls/projects/project/site/SiteChildrenSort
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/loader/Loader
- * @require controls/grid/Grid
- * @require Ajax
- * @require Locale
- * @require css!controls/projects/project/site/SiteChildrenSort.css
  */
-
 define('controls/projects/project/site/SiteChildrenSort', [
 
     'qui/QUI',
     'qui/controls/Control',
+    'qui/controls/buttons/Button',
     'qui/controls/loader/Loader',
     'controls/grid/Grid',
     'Ajax',
@@ -24,7 +16,7 @@ define('controls/projects/project/site/SiteChildrenSort', [
 
     'css!controls/projects/project/site/SiteChildrenSort.css'
 
-], function (QUI, QUIControl, QUILoader, Grid, Ajax, Locale) {
+], function (QUI, QUIControl, QUIButton, QUILoader, Grid, Ajax, Locale) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -38,6 +30,10 @@ define('controls/projects/project/site/SiteChildrenSort', [
             '$onInject',
             '$onResize'
         ],
+
+        options: {
+            buttons: true
+        },
 
         initialize: function (Site, options) {
             this.parent(options);
@@ -58,39 +54,46 @@ define('controls/projects/project/site/SiteChildrenSort', [
         /**
          * Create the DOMNode
          *
-         * @return {HTMLElement}
+         * @return {Element}
          */
         create: function () {
             var self = this;
 
             this.$Elm = new Element('div', {
                 'class': 'qui-project-children-sort box',
-                html   : '<label for="order-type">Sortierung</label>' +
-                         '<select name="order-type">' +
-                         '<option value="manuell">' + Locale.get(lg, 'manually') + '</option>' +
-                         '<option value="name ASC">' + Locale.get(lg, 'name_asc') + '</option>' +
-                         '<option value="name DESC">' + Locale.get(lg, 'name_desc') + '</option>' +
-                         '<option value="title ASC">' + Locale.get(lg, 'title_asc') + '</option>' +
-                         '<option value="title DESC">' + Locale.get(lg, 'title_desc') + '</option>' +
-
-                         '<option value="c_date ASC">' + Locale.get(lg, 'c_date_asc') + '</option>' +
-                         '<option value="c_date DESC">' + Locale.get(lg, 'c_date_desc') + '</option>' +
-                         '<option value="e_date ASC">' + Locale.get(lg, 'e_date_asc') + '</option>' +
-                         '<option value="e_date DESC">' + Locale.get(lg, 'e_date_desc') + '</option>' +
-
-                         '<option value="release_from ASC">' + Locale.get(lg, 'release_from_asc') + '</option>' +
-                         '<option value="release_from DESC">' + Locale.get(lg, 'release_from_desc') + '</option>' +
-                         '</select>' +
-                         '<div class="qui-project-children-sort-container"></div>'
+                html   : '' +
+                    '<div class="qui-project-children-sort-buttons qui-panel-buttons"></div>' +
+                    '<div class="qui-project-children-sort-body">' +
+                    '   <div class="qui-project-children-sort-container"></div>' +
+                    '</div>'
             });
 
             this.Loader.inject(this.$Elm);
 
+            // buttons
+            if (this.getAttribute('buttons')) {
+                var Buttons = this.$Elm.getElement('.qui-project-children-sort-buttons');
+
+                new QUIButton({
+                    name     : 'sortSave',
+                    textimage: 'fa fa-save',
+                    text     : Locale.get(lg, 'projects.project.site.childrensort.save'),
+                    events   : {
+                        onClick: function (Btn) {
+                            Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
+
+                            self.save(function () {
+                                Btn.setAttribute('textimage', 'fa fa-save');
+                            });
+                        }
+                    }
+                }).inject(Buttons);
+            }
+
+            // body
             this.$Container = this.$Elm.getElement(
                 '.qui-project-children-sort-container'
             );
-
-            this.$Select = this.$Elm.getElement('[name="order-type"]');
 
             this.$GridTable = new Grid(this.$Container, {
                 columnModel: [{
@@ -125,21 +128,6 @@ define('controls/projects/project/site/SiteChildrenSort', [
                     width    : 150
                 }],
                 buttons    : [{
-                    name     : 'sortSave',
-                    textimage: 'fa fa-save',
-                    text     : Locale.get(lg, 'projects.project.site.childrensort.save'),
-                    events   : {
-                        onClick: function (Btn) {
-                            Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
-
-                            self.save(function () {
-                                Btn.setAttribute('textimage', 'fa fa-save');
-                            });
-                        }
-                    }
-                }, {
-                    type: 'separator'
-                }, {
                     name     : 'up',
                     textimage: 'fa fa-angle-up',
                     text     : Locale.get(lg, 'up'),
@@ -159,6 +147,8 @@ define('controls/projects/project/site/SiteChildrenSort', [
                             self.$GridTable.movedown();
                         }
                     }
+                }, {
+                    type: 'separator'
                 }],
                 height     : 300,
                 pagination : true,
@@ -167,6 +157,27 @@ define('controls/projects/project/site/SiteChildrenSort', [
                 }
             });
 
+            // select
+            new Element('div', {
+                'class': 'qui-project-children-sort-field',
+                html   : '' +
+                    '<label>' +
+                    '   <span>' + Locale.get(lg, 'projects.project.site.childrensort.order_field') + '</span>' +
+                    '   <select name="order-type">' +
+                    '       <option value="manuell">' + Locale.get(lg, 'manually') + '</option>' +
+                    '       <option value="name ASC">' + Locale.get(lg, 'name_asc') + '</option>' +
+                    '       <option value="name DESC">' + Locale.get(lg, 'name_desc') + '</option>' +
+                    '       <option value="title ASC">' + Locale.get(lg, 'title_asc') + '</option>' +
+                    '       <option value="title DESC">' + Locale.get(lg, 'title_desc') + '</option>' +
+                    '       <option value="c_date ASC">' + Locale.get(lg, 'c_date_asc') + '</option>' +
+                    '       <option value="c_date DESC">' + Locale.get(lg, 'c_date_desc') + '</option>' +
+                    '       <option value="e_date ASC">' + Locale.get(lg, 'e_date_asc') + '</option>' +
+                    '       <option value="e_date DESC">' + Locale.get(lg, 'e_date_desc') + '</option>' +
+                    '       <option value="release_from ASC">' + Locale.get(lg, 'release_from_asc') + '</option>' +
+                    '       <option value="release_from DESC">' + Locale.get(lg, 'release_from_desc') + '</option>' +
+                    '   </select>' +
+                    '</label>'
+            }).inject(this.$GridTable.getElm().getElement('.tDiv'));
 
             this.$GridTable.addEvents({
                 click: function () {
@@ -176,7 +187,7 @@ define('controls/projects/project/site/SiteChildrenSort', [
                         return;
                     }
 
-                    if (self.$Select.value == 'manuell') {
+                    if (self.$Select.value === 'manuell') {
                         self.enableUpDownButtons();
                     } else {
                         self.disableUpDownButtons();
@@ -184,7 +195,7 @@ define('controls/projects/project/site/SiteChildrenSort', [
                 }
             });
 
-
+            this.$Select       = this.$Elm.getElement('[name="order-type"]');
             this.$Select.value = this.$Site.getAttribute('order_type');
 
             this.$Select.addEvent('change', function () {
@@ -256,8 +267,8 @@ define('controls/projects/project/site/SiteChildrenSort', [
                     continue;
                 }
 
-                if (Button.getAttribute('name') != 'up' &&
-                    Button.getAttribute('name') != 'down') {
+                if (Button.getAttribute('name') !== 'up' &&
+                    Button.getAttribute('name') !== 'down') {
                     continue;
                 }
 
@@ -279,8 +290,8 @@ define('controls/projects/project/site/SiteChildrenSort', [
                     continue;
                 }
 
-                if (Button.getAttribute('name') != 'up' &&
-                    Button.getAttribute('name') != 'down') {
+                if (Button.getAttribute('name') !== 'up' &&
+                    Button.getAttribute('name') !== 'down') {
                     continue;
                 }
 

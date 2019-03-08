@@ -617,12 +617,14 @@ define('controls/projects/project/site/Panel', [
                 Sort = false;
 
             var Sheets = this.createSheet({
-                title : Locale.get(lg, 'projects.project.site.panel.sort.title', {
+                icon   : 'fa fa-sort',
+                buttons: false,
+                title  : Locale.get(lg, 'projects.project.site.panel.sort.title', {
                     id   : Site.getId(),
                     title: Site.getAttribute('title'),
                     name : Site.getAttribute('name')
                 }),
-                events: {
+                events : {
                     onOpen: function (Sheet) {
                         require([
                             'controls/projects/project/site/SiteChildrenSort'
@@ -634,29 +636,29 @@ define('controls/projects/project/site/Panel', [
             });
 
             Sheets.clearButtons();
-
-            Sheets.addButton({
-                name     : 'sortSave',
-                textimage: 'fa fa-save',
-                text     : Locale.get(lg, 'projects.project.site.childrensort.save'),
-                events   : {
-                    onClick: function (Btn) {
-                        if (!Sort) {
-                            return;
-                        }
-
-                        Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
-
-                        Sort.save(function () {
-                            Btn.setAttribute('textimage', 'fa fa-save');
-
-                            Sheets.hide(function () {
-                                Sheets.destroy();
-                            });
-                        });
-                    }
-                }
-            });
+            //
+            // Sheets.addButton({
+            //     name     : 'sortSave',
+            //     textimage: 'fa fa-save',
+            //     text     : Locale.get(lg, 'projects.project.site.childrensort.save'),
+            //     events   : {
+            //         onClick: function (Btn) {
+            //             if (!Sort) {
+            //                 return;
+            //             }
+            //
+            //             Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
+            //
+            //             Sort.save(function () {
+            //                 Btn.setAttribute('textimage', 'fa fa-save');
+            //
+            //                 Sheets.hide(function () {
+            //                     Sheets.destroy();
+            //                 });
+            //             });
+            //         }
+            //     }
+            // });
 
             Sheets.show();
         },
