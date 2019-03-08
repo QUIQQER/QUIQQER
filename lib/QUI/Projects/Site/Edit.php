@@ -1089,41 +1089,60 @@ class Edit extends Site
     {
         $this->checkPermission('quiqqer.projects.site.edit');
 
-        $Project = $this->getProject();
-        $Parent  = $Project->get((int)$pid);// Prüfen ob das Parent existiert
-
+        $Project  = $this->getProject();
+        $Parent   = $Project->get((int)$pid);// Check whether the parent exists
         $children = $this->getChildrenIds();
 
-        if (!in_array($pid, $children) && $pid != $this->getId()) {
-            QUI::getEvents()->fireEvent('siteMoveBefore', [$this, $this->getParent()->getId()]);
-
-            QUI::getDataBase()->update(
-                $this->RELTABLE,
-                ['parent' => $Parent->getId()],
-                'child = '.$this->getId().' AND oparent IS NULL'
-            );
-
-            //$this->deleteTemp();
-            $this->deleteCache();
-
-            // remove internal parent ids
-            $this->parents_id = false;
-            $this->parent_id  = false;
-
-
-            $this->Events->fireEvent('move', [$this, $pid]);
-            QUI::getEvents()->fireEvent('siteMove', [$this, $pid]);
-
-            return true;
+        if (in_array($pid, $children) || $pid === $this->getId()) {
+            return false;
         }
 
-        return false;
+
+        QUI::getEvents()->fireEvent('siteMoveBefore', [$this, $this->getParent()->getId()]);
+
+        // get new order_field if manually sorting
+        if ($Parent->getAttribute('order_type') === ''
+            || $Parent->getAttribute('order_type') === 'manuell'
+            || !$Parent->getAttribute('order_type')) {
+            $LastChild = $Parent->lastChild(['active' => '0&1']);
+
+            if (!$LastChild) {
+                $this->setAttribute('order_field', 1);
+            } else {
+                $this->setAttribute(
+                    'order_field',
+                    (int)$LastChild->getAttribute('order_field') + 1
+                );
+            }
+
+            $this->save();
+        }
+
+
+        QUI::getDataBase()->update(
+            $this->RELTABLE,
+            ['parent' => $Parent->getId()],
+            'child = '.$this->getId().' AND oparent IS NULL'
+        );
+
+        //$this->deleteTemp();
+        $this->deleteCache();
+
+        // remove internal parent ids
+        $this->parents_id = false;
+        $this->parent_id  = false;
+
+
+        $this->Events->fireEvent('move', [$this, $pid]);
+        QUI::getEvents()->fireEvent('siteMove', [$this, $pid]);
+
+        return true;
     }
 
     /**
-     * Kopiert die Seite
+     * Copies the page
      *
-     * @param integer $pid - ID des Parents unter welches die Kopie eingehängt werden soll
+     * @param integer $pid - ID of the parent under which the copy is to be mounted
      * @param \QUI\Projects\Project|boolean $Project - (optional) Parent Project
      *
      * @return QUI\Projects\Site\Edit
