@@ -2748,6 +2748,9 @@
         <locale name="projects.project.site.childrensort.order_field">
             <de><![CDATA[Sortierungsfeld]]></de>
         </locale>
+        <locale name="projects.project.site.childrensort.order_type">
+            <de><![CDATA[Sortierungsart]]></de>
+        </locale>
         <locale name="projects.project.site.childrensort.save">
             <de><![CDATA[Sortierung speichern]]></de>
         </locale>

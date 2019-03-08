@@ -5,10 +5,33 @@
     float: left;
     height: 100%;
     overflow: auto;
-    padding: 20px;
     width: 100%;
 }
 
-.qui-project-children-sort-container {
-    margin-top: 20px;
+.qui-project-children-sort-body {
+    padding: 20px;
+}
+
+.qui-project-children-sort-buttons {
+    background: #e1e4e9;
+    height: 50px;
+    position: relative;
+    width: 100%;
+}
+
+.qui-project-children-sort-field {
+    float: left;
+    padding: 2px;
+}
+
+.qui-project-children-sort-field label {
+    float: left;
+}
+
+.qui-project-children-sort-field span {
+    font-size: 12px;
+    float: left;
+    line-height: 32px;
+    padding: 0 10px;
+    min-width: 100px;
 }
