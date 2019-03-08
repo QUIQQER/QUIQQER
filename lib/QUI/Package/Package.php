@@ -75,6 +75,8 @@ class Package extends QUI\QDOM
      * @param string $package - Name of the Package
      *
      * @throws \QUI\Exception
+     *
+     * @todo cache the plugin data
      */
     public function __construct($package)
     {

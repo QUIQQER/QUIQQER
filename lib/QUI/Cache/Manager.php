@@ -512,13 +512,16 @@ class Manager
          * Exception.
          */
         if ($isMiss) {
-            QUI\System\Log::addDebug(
-                'Cache item "'.$name.'" is a miss. This means the item could not be reliably'
-                .' retrieved from the cache. This does NOT necessarily mean that the item is actually not cached.'
-                .' But QUIQQER currently handles all cache misses as a non-existing cache entry.'
-                .' This is behaviour will be fixed in the future. This message is for information'
-                .' purposes only.'
-            );
+            //
+            // auskommentiert by hen, da diese vorgehensweise nicht optimal ist und server zugespamt werden
+            //
+//            QUI\System\Log::addDebug(
+//                'Cache item "'.$name.'" is a miss. This means the item could not be reliably'
+//                .' retrieved from the cache. This does NOT necessarily mean that the item is actually not cached.'
+//                .' But QUIQQER currently handles all cache misses as a non-existing cache entry.'
+//                .' This is behaviour will be fixed in the future. This message is for information'
+//                .' purposes only.'
+//            );
 
             throw new QUI\Cache\Exception(
                 QUI::getLocale()->get(
@@ -601,7 +604,8 @@ class Manager
      */
     public static function getCacheFolderSize($force = false)
     {
-        $cacheFolder = VAR_DIR . "cache/";
+        $cacheFolder = VAR_DIR."cache/";
+
         return QUI\Utils\System\Folder::getFolderSize($cacheFolder, $force);
     }
 
@@ -613,7 +617,8 @@ class Manager
      */
     public static function getCacheFolderSizeTimestamp()
     {
-        $cacheFolder = VAR_DIR . "cache/";
+        $cacheFolder = VAR_DIR."cache/";
+
         return QUI\Utils\System\Folder::getFolderSizeTimestamp($cacheFolder);
     }
 }
