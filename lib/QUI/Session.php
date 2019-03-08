@@ -79,9 +79,18 @@ class Session
             $this->lifetime = QUI::conf('session', 'max_life_time');
         }
 
+        $sessionName = QUI::conf('session', 'name');
+
+        if (!$sessionName) {
+            $sessionName = QUI\Utils\Security\Orthos::getPassword(5); // get random string
+
+            QUI::$Conf->set('session', 'name', $sessionName);
+            QUI::$Conf->save();
+        }
+
         $storageOptions = [
             'cookie_httponly' => true,
-            'name'            => 'qsess',
+            'name'            => $sessionName,
             'cookie_lifetime' => $this->lifetime,
             'gc_maxlifetime'  => $this->lifetime,
             'cookie_secure'   => QUI\Utils\System::isProtocolSecure()
