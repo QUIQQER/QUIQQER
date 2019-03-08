@@ -89,7 +89,10 @@ class Edit extends Site
     }
 
     /**
-     * Hohlt frisch die Daten aus der DB
+     * Fetch the data from the database
+     *
+     * @throws QUI\Exception
+     * @throws QUI\Database\Exception
      */
     public function refresh()
     {
@@ -296,6 +299,8 @@ class Edit extends Site
      * Zerstört die Seite
      * Die Seite wird komplett aus der DB gelöscht und auch alle Beziehungen
      * Funktioniert nur wenn die Seite gelöscht ist
+     *
+     * @throws QUI\Exception
      */
     public function destroy()
     {
@@ -706,6 +711,8 @@ class Edit extends Site
      * @param array $params
      *
      * @return array
+     *
+     * @throws QUI\Database\Exception
      */
     public function getChildrenIdsFromParentId($pid, $params = [])
     {
@@ -768,13 +775,13 @@ class Edit extends Site
                   `{$this->TABLE}`.`deleted` = 0
         ";
 
-        $PDO   = QUI::getDataBase()->getPDO();
-        $Stmnt = $PDO->prepare($query);
+        $PDO       = QUI::getDataBase()->getPDO();
+        $Statement = $PDO->prepare($query);
 
-        $Stmnt->bindValue(':name', $name, \PDO::PARAM_STR);
-        $Stmnt->execute();
+        $Statement->bindValue(':name', $name, \PDO::PARAM_STR);
+        $Statement->execute();
 
-        $result = $Stmnt->fetchAll(\PDO::FETCH_ASSOC);
+        $result = $Statement->fetchAll(\PDO::FETCH_ASSOC);
 
         if (!isset($result[0])) {
             return false;
@@ -853,6 +860,10 @@ class Edit extends Site
      * @param string $id - ID zu welcher verknüpft werden soll
      *
      * @return \PDOStatement
+     *
+     * @throws QUI\Exception
+     * @throws QUI\Database\Exception
+     * @throws QUI\Permissions\Exception
      */
     public function addLanguageLink($lang, $id)
     {
@@ -897,6 +908,10 @@ class Edit extends Site
      * @param string $lang
      *
      * @return \PDOStatement
+     *
+     * @throws QUI\Permissions\Exception
+     * @throws QUI\Database\Exception
+     * @throws QUI\Exception
      */
     public function removeLanguageLink($lang)
     {
@@ -1066,6 +1081,9 @@ class Edit extends Site
      * @param integer $pid - Parent ID
      *
      * @return boolean
+     *
+     * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
      */
     public function move($pid)
     {
@@ -1273,6 +1291,7 @@ class Edit extends Site
      * @param integer|boolean $all - (optional) Delete all linked sites and the original site
      * @param boolean $orig - (optional) Delete the original site, too
      *
+     * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
     public function deleteLinked($pid, $all = false, $orig = false)
@@ -1352,6 +1371,8 @@ class Edit extends Site
      * is the page currently edited from another user than me?
      *
      * @return bool|integer
+     *
+     * @throws QUI\Exception
      */
     public function isLockedFromOther()
     {
@@ -1389,6 +1410,8 @@ class Edit extends Site
      * is the page currently edited
      *
      * @return bool|string
+     *
+     * @throws QUI\Exception
      */
     public function isLocked()
     {
@@ -1403,6 +1426,8 @@ class Edit extends Site
      * Markiert nur wenn die Seite nicht markiert ist
      *
      * @return boolean - true if it worked, false if it not worked
+     *
+     * @throws QUI\Exception
      */
     public function lock()
     {
@@ -1430,6 +1455,8 @@ class Edit extends Site
 
     /**
      * Demarkiert die Seite, die Seite wird nicht mehr bearbeitet
+     *
+     * @throws QUI\Exception
      */
     protected function unlock()
     {
@@ -1443,6 +1470,7 @@ class Edit extends Site
      * Ein SuperUser kann eine Seite trotzdem demakieren wenn er möchte
      *
      * @todo eigenes recht dafür einführen
+     * @throws QUI\Exception
      */
     public function unlockWithRights()
     {
@@ -1451,6 +1479,7 @@ class Edit extends Site
 
     /**
      * Return the key for the lock file
+     *
      * @return string
      */
     protected function getLockKey()
@@ -1470,6 +1499,8 @@ class Edit extends Site
      * @param string $permission - name of the permission
      * @param User $User - User Object
      * @param boolean|\QUI\Users\User $EditUser
+     *
+     * @throws QUI\Exception
      */
     public function addUserToPermission(User $User, $permission, $EditUser = false)
     {
@@ -1482,6 +1513,8 @@ class Edit extends Site
      * @param Group $Group
      * @param string $permission
      * @param boolean|\QUI\Users\User $EditUser
+     *
+     * @throws QUI\Exception
      */
     public function addgroupToPermission(Group $Group, $permission, $EditUser = false)
     {
@@ -1494,6 +1527,8 @@ class Edit extends Site
      * @param string $permission - name of the permission
      * @param User $User - User Object#
      * @param boolean|\QUI\Users\User $EditUser
+     *
+     * @throws QUI\Exception
      */
     public function removeUserFromSitePermission(User $User, $permission, $EditUser = false)
     {
@@ -1506,6 +1541,8 @@ class Edit extends Site
      * @param Group $Group
      * @param string $permission - name of the permission
      * @param boolean|\QUI\Users\User $EditUser
+     *
+     * @throws QUI\Exception
      */
     public function removeGroupFromSitePermission(Group $Group, $permission, $EditUser = false)
     {
