@@ -24,7 +24,14 @@
     padding: 2px;
 }
 
+.qui-project-children-sort-field label {
+    float: left;
+}
+
 .qui-project-children-sort-field span {
     font-size: 12px;
+    float: left;
+    line-height: 32px;
     padding: 0 10px;
+    min-width: 100px;
 }

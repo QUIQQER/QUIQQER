@@ -97,6 +97,11 @@ define('controls/projects/project/site/SiteChildrenSort', [
 
             this.$GridTable = new Grid(this.$Container, {
                 columnModel: [{
+                    header   : Locale.get(lg, 'projects.project.site.childrensort.order_field'),
+                    dataIndex: 'order_field',
+                    dataType : 'node',
+                    width    : 100
+                }, {
                     header   : Locale.get(lg, 'id'),
                     dataIndex: 'id',
                     dataType : 'string',
@@ -121,35 +126,8 @@ define('controls/projects/project/site/SiteChildrenSort', [
                     dataIndex: 'e_date',
                     dataType : 'string',
                     width    : 150
-                }, {
-                    header   : Locale.get(lg, 'projects.project.site.childrensort.order_field'),
-                    dataIndex: 'order_field',
-                    dataType : 'string',
-                    width    : 150
                 }],
-                buttons    : [{
-                    name     : 'up',
-                    textimage: 'fa fa-angle-up',
-                    text     : Locale.get(lg, 'up'),
-                    disabled : true,
-                    events   : {
-                        onClick: function () {
-                            self.$GridTable.moveup();
-                        }
-                    }
-                }, {
-                    name     : 'down',
-                    textimage: 'fa fa-angle-down',
-                    text     : Locale.get(lg, 'down'),
-                    disabled : true,
-                    events   : {
-                        onClick: function () {
-                            self.$GridTable.movedown();
-                        }
-                    }
-                }, {
-                    type: 'separator'
-                }],
+                buttons    : [],
                 height     : 300,
                 pagination : true,
                 onrefresh  : function () {
@@ -162,7 +140,7 @@ define('controls/projects/project/site/SiteChildrenSort', [
                 'class': 'qui-project-children-sort-field',
                 html   : '' +
                     '<label>' +
-                    '   <span>' + Locale.get(lg, 'projects.project.site.childrensort.order_field') + '</span>' +
+                    '   <span>' + Locale.get(lg, 'projects.project.site.childrensort.order_type') + '</span>' +
                     '   <select name="order-type">' +
                     '       <option value="manuell">' + Locale.get(lg, 'manually') + '</option>' +
                     '       <option value="name ASC">' + Locale.get(lg, 'name_asc') + '</option>' +
@@ -179,28 +157,12 @@ define('controls/projects/project/site/SiteChildrenSort', [
                     '</label>'
             }).inject(this.$GridTable.getElm().getElement('.tDiv'));
 
-            this.$GridTable.addEvents({
-                click: function () {
-                    var sel = self.$GridTable.getSelectedIndices();
-
-                    if (!sel.length) {
-                        return;
-                    }
-
-                    if (self.$Select.value === 'manuell') {
-                        self.enableUpDownButtons();
-                    } else {
-                        self.disableUpDownButtons();
-                    }
-                }
-            });
-
             this.$Select       = this.$Elm.getElement('[name="order-type"]');
             this.$Select.value = this.$Site.getAttribute('order_type');
 
             this.$Select.addEvent('change', function () {
+                self.displayChildren();
                 self.$Site.setAttribute('order_type', this.value);
-                self.disableUpDownButtons();
             });
 
             this.displayChildren();
@@ -211,6 +173,8 @@ define('controls/projects/project/site/SiteChildrenSort', [
 
         /**
          * Display the children in the grid
+         *
+         * @return {Promise}
          */
         displayChildren: function () {
             this.Loader.show();
@@ -221,16 +185,31 @@ define('controls/projects/project/site/SiteChildrenSort', [
 
             var limit = ((page - 1) * perPage) + ',' + perPage;
 
-            this.$Site.getChildren({
+            return this.$Site.getChildren({
                 limit: limit
             }).then(function (result) {
-                var i, len, entry;
+                var i, len, entry, Order;
+
                 var data     = [],
                     children = result.children;
 
+                var type = self.$Select.value;
+
+                if (!type || type === '') {
+                    type = 'manuell';
+                }
 
                 for (i = 0, len = children.length; i < len; i++) {
                     entry = children[i];
+
+                    Order = new Element('input', {
+                        value   : entry.order_field,
+                        type    : type === 'manuell' ? 'number' : 'text',
+                        disabled: type !== 'manuell',
+                        styles  : {
+                            width: 'calc(100% - 5px)'
+                        }
+                    });
 
                     data.push({
                         id         : entry.id,
@@ -238,7 +217,7 @@ define('controls/projects/project/site/SiteChildrenSort', [
                         title      : entry.title,
                         e_date     : entry.e_date,
                         c_date     : entry.c_date,
-                        order_field: entry.order_field
+                        order_field: Order
                     });
                 }
 
@@ -254,71 +233,27 @@ define('controls/projects/project/site/SiteChildrenSort', [
         },
 
         /**
-         * Enable the up and down buttons
-         */
-        enableUpDownButtons: function () {
-            var buttons = this.$Container.getElements('button');
-
-            for (var i = 0, len = buttons.length; i < len; i++) {
-                var quiid  = buttons[i].get('data-quiid'),
-                    Button = QUI.Controls.getById(quiid);
-
-                if (!Button) {
-                    continue;
-                }
-
-                if (Button.getAttribute('name') !== 'up' &&
-                    Button.getAttribute('name') !== 'down') {
-                    continue;
-                }
-
-                Button.enable();
-            }
-        },
-
-        /**
-         * Disable the up and down buttons
-         */
-        disableUpDownButtons: function () {
-            var buttons = this.$Container.getElements('button');
-
-            for (var i = 0, len = buttons.length; i < len; i++) {
-                var quiid  = buttons[i].get('data-quiid'),
-                    Button = QUI.Controls.getById(quiid);
-
-                if (!Button) {
-                    continue;
-                }
-
-                if (Button.getAttribute('name') !== 'up' &&
-                    Button.getAttribute('name') !== 'down') {
-                    continue;
-                }
-
-                Button.disable();
-            }
-        },
-
-        /**
          * Save the actually sort of the children
          *
          * @param {Function} [callback] - (optional), callback function
+         * @return {Promise}
          */
         save: function (callback) {
             var self = this;
 
+            self.Loader.show();
+
             if (this.$Select.value !== 'manuell') {
                 this.$Site.setAttribute('order', this.$Select.value);
 
-                this.$Site.save(function () {
+                return this.$Site.save().then(function () {
                     if (typeof callback !== 'undefined') {
                         callback();
                     }
 
                     self.$Site.fireEvent('sortSave', [self.$Site]);
+                    self.Loader.hide();
                 });
-
-                return;
             }
 
             var Project = this.$Site.getProject(),
@@ -327,26 +262,39 @@ define('controls/projects/project/site/SiteChildrenSort', [
                 page    = this.$GridTable.options.page,
                 data    = this.$GridTable.getData();
 
+            var sorted = data.map(function (entry) {
+                return {
+                    id   : entry.id,
+                    order: parseInt(entry.order_field.value)
+                };
+            }).sort(function (a, b) {
+                return a.order - b.order;
+            });
 
-            for (var i = 0, len = data.length; i < len; i++) {
-                ids.push(data[i].id);
+            for (var i = 0, len = sorted.length; i < len; i++) {
+                ids.push(sorted[i].id);
             }
 
-            this.$Site.setAttribute('order', 'manuell');
+            self.$Site.setAttribute('order', 'manuell');
 
-            this.$Site.save(function () {
-                Ajax.post('ajax_site_children_sort', function () {
-                    if (typeof callback !== 'undefined') {
-                        callback();
-                    }
-
-                    self.$Site.fireEvent('sortSave', [self.$Site]);
-
-                }, {
-                    project: Project.encode(),
-                    ids    : JSON.encode(ids),
-                    start  : (page - 1) * perPage
+            return self.$Site.save().then(function () {
+                return new Promise(function (resolve, reject) {
+                    Ajax.post('ajax_site_children_sort', resolve, {
+                        project: Project.encode(),
+                        ids    : JSON.encode(ids),
+                        start  : (page - 1) * perPage,
+                        onError: reject
+                    });
                 });
+            }).then(function () {
+                return self.displayChildren();
+            }).then(function () {
+                if (typeof callback !== 'undefined') {
+                    callback();
+                }
+
+                self.$Site.fireEvent('sortSave', [self.$Site]);
+                self.Loader.hide();
             });
         },
 
