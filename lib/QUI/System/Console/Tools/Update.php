@@ -53,6 +53,13 @@ class Update extends QUI\System\Console\Tool
      */
     public function execute()
     {
+        // use php logging, because every update must be logged
+        error_log(
+            QUI::getLocale()->get('quiqqer/quiqqer', 'update.log.message.execute.console'),
+            0,
+            QUI\Update::getLogFile()
+        );
+
         $this->writeLn('- Starting Update:');
         $this->writeLn('');
 
@@ -69,11 +76,11 @@ class Update extends QUI\System\Console\Tool
         }
 
         if ($this->getArgument('setDevelopment')) {
-            $packageList = array();
+            $packageList = [];
 
-            $libraries = QUI::getPackageManager()->getInstalled(array(
+            $libraries = QUI::getPackageManager()->getInstalled([
                 'type' => 'quiqqer-library'
-            ));
+            ]);
 
             foreach ($libraries as $library) {
                 $packageList[$library['name']] = 'dev-dev';

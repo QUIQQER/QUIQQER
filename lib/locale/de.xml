@@ -1208,6 +1208,9 @@
         <locale name="exception.crud.child.not.found">
             <de><![CDATA[Der Eintrag konnte nicht gefunden werden.]]></de>
         </locale>
+        <locale name="update.log.message.execute.console">
+            <en><![CDATA[Update wird über die Konsole ausgeführt]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">
         <locale name="controls.email.select.email_invalid">

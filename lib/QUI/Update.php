@@ -654,4 +654,14 @@ class Update
             self::importLocale(trim($file));
         }
     }
+
+    /**
+     * Returns the current update log file
+     *
+     * @return string
+     */
+    public static function getLogFile()
+    {
+        return VAR_DIR.'log/error'.date('-Y-m-d').'.log';
+    }
 }
