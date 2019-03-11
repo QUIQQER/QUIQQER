@@ -194,9 +194,11 @@ define('controls/projects/Popup', [
                 this.$Map.destroy();
             }
 
+            var value = this.$Select.getValue().split(',');
+
             this.$Map = new ProjectMap({
-                project : this.getAttribute('project'),
-                lang    : this.getAttribute('lang'),
+                project : value[0],
+                lang    : value[1],
                 multiple: this.getAttribute('multiple')
             });
 
