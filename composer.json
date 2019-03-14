@@ -30,6 +30,12 @@
   ],
   "require": {
     "php": ">=5.3",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "ext-mbstring": "*",
+    "ext-openssl": "*",
+    "ext-xml": "*",
+    "ext-zip": "*",
     "composer\/composer": "1.5.*",
     "tedivm\/stash": "0.14.*",
     "robloach\/component-installer": "0.0.12",

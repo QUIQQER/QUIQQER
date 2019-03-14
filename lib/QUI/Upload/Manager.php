@@ -328,9 +328,9 @@ class Manager
             return $function();
         }
 
-        if (function_exists($function)) {
-            return call_user_func_array($function, $params);
-        }
+//        if (function_exists($function)) {
+//            return call_user_func_array($function, $params);
+//        }
 
         if (strpos($function, 'ajax_') === 0) {
             // if the function is a ajax_function

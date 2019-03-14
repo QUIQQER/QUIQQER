@@ -1016,7 +1016,7 @@ class Edit extends Site
         // something is wrong
         if ($newId == 0) {
             $max = $DataBase->fetch([
-                'select' => 'MAX(id)',
+                'select' => ['field' => 'id', 'function' => 'MAX'],
                 'from'   => $this->TABLE
             ]);
 

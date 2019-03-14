@@ -946,24 +946,22 @@ class User implements QUI\Interfaces\Users\User
      */
     public function setAttribute($key, $value)
     {
-        if (!$key || $key == 'id' || $key == 'password'
-            || $key == 'user_agent'
-        ) {
+        if (!$key || $key == 'id' || $key == 'password' || $key == 'user_agent') {
             return;
         }
 
         switch ($key) {
             case "su":
                 // only a super user can set a superuser
-                if (QUI::getUsers()->existsSession()
-                    && QUI::getUsers()->getUserBySession()->isSU()
-                ) {
+                if (QUI::getUsers()->existsSession() && QUI::getUsers()->getUserBySession()->isSU()) {
                     $this->su = (int)$value;
                 }
                 break;
 
             case "username":
             case "name":
+                $value = QUI::getUsers()->clearUsername($value);
+
                 // Falls der Name geändert wird muss geprüft werden das es diesen nicht schon gibt
                 Manager::checkUsernameSigns($value);
 
