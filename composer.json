@@ -31,7 +31,6 @@
   "require": {
     "php": ">=5.3",
     "ext-curl": "*",
-    "ext-intl": "*",
     "ext-json": "*",
     "ext-mbstring": "*",
     "ext-openssl": "*",
