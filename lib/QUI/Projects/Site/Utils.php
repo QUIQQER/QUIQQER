@@ -635,6 +635,32 @@ class Utils
     }
 
     /**
+     * Return a site by an url (relative url)
+     *
+     * @param Project $Project
+     * @param $link
+     * @return Projects\Site
+     *
+     * @throws QUI\Exception
+     */
+    public static function getSiteByUrl(Project $Project, $link)
+    {
+        $link  = str_replace('.html', '', $link);
+        $link  = trim($link);
+        $link  = trim($link, '/');
+        $parts = explode('/', $link);
+
+        $Site = $Project->firstChild();
+
+        foreach ($parts as $part) {
+            $id   = $Site->getChildIdByName($part);
+            $Site = $Project->get($id);
+        }
+
+        return $Site;
+    }
+
+    /**
      * Return sites from a site list
      * sitelist from controls/projects/project/site/Select
      *
