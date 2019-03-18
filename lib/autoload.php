@@ -51,6 +51,16 @@ function exception_error_handler($errno, $errstr, $errfile, $errline)
 
     $l = error_reporting();
 
+    if ($errno === E_DEPRECATED || $errno === E_USER_DEPRECATED) {
+        QUI\System\Log::addInfo('Deprecated: '.$errstr, [
+            'file' => $errfile,
+            'line' => $errline
+        ]);
+
+        return true;
+    }
+
+
     if ($l & $errno) {
         $exit = false;
 
@@ -83,7 +93,7 @@ function exception_error_handler($errno, $errstr, $errfile, $errline)
 
         $exception = new \ErrorException(
             $type.': '.$errstr,
-            0,
+            $errno,
             $errno,
             $errfile,
             $errline
@@ -91,7 +101,7 @@ function exception_error_handler($errno, $errstr, $errfile, $errline)
 
         if ($exit) {
             exception_handler($exception);
-            exit();
+            exit('Unknown Error in QUIQQER exception_error_handler()');
         }
 
         throw $exception;
