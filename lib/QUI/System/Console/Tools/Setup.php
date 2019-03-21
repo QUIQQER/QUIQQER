@@ -33,6 +33,19 @@ class Setup extends QUI\System\Console\Tool
      */
     public function execute()
     {
+        QUI\System\Log::write(
+            '====== EXECUTE SETUP ======',
+            QUI\System\Log::LEVEL_NOTICE,
+            [],
+            'setup',
+            true
+        );
+
+
+        ob_start();
+
+        $this->logBuffer();
+
         $PackageManager = QUI::getPackageManager();
         $quiqqer        = QUI::getPackageManager()->getPackage('quiqqer/quiqqer');
         $reference      = '';
@@ -61,16 +74,37 @@ class Setup extends QUI\System\Console\Tool
         $this->writeLn($data);
         $this->writeLn('');
 
-        $this->writeLn(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.setup.start.message')
-        );
+        $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.setup.start.message'));
+        $this->logBuffer();
 
         QUI\Setup::all();
 
-        $this->writeLn(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.setup.message.success')
-        );
+        $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.setup.message.success'));
+        $this->logBuffer();
 
         $this->writeLn('');
+        $this->logBuffer();
+    }
+
+    /**
+     * Log the output buffer to the setup log
+     */
+    protected function logBuffer()
+    {
+        $buffer = ob_get_contents();
+        $buffer = trim($buffer);
+
+        if (!empty($buffer)) {
+            QUI\System\Log::write(
+                $buffer,
+                QUI\System\Log::LEVEL_NOTICE,
+                [],
+                'setup',
+                true
+            );
+        }
+
+        flush();
+        ob_flush();
     }
 }

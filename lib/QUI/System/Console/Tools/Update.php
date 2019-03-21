@@ -16,7 +16,7 @@ use QUI;
 class Update extends QUI\System\Console\Tool
 {
     /**
-     * Konstruktor
+     * constructor
      */
     public function __construct()
     {
@@ -53,20 +53,20 @@ class Update extends QUI\System\Console\Tool
      */
     public function execute()
     {
-        // use php logging, because every update must be logged
-        error_log(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'update.log.message.execute.console'),
-            0,
-            QUI\Update::getLogFile()
-        );
+        $this->writeUpdateLog('====== EXECUTE UPDATE ======');
+        $this->writeUpdateLog(QUI::getLocale()->get('quiqqer/quiqqer', 'update.log.message.execute.console'));
+
+        ob_start();
 
         $this->writeLn('- Starting Update:');
         $this->writeLn('');
+        $this->logBuffer();
 
         $Packages = QUI::getPackageManager();
 
         if ($this->getArgument('set-date')) {
             QUI::getPackageManager()->setLastUpdateDate();
+            $this->logBuffer();
 
             return;
         }
@@ -101,6 +101,7 @@ class Update extends QUI\System\Console\Tool
             $this->writeLn('Prüfe nach Aktualisierungen...'); // #locale
             $this->writeLn();
             $this->writeLn();
+            $this->logBuffer();
 
             $packages      = $Packages->getOutdated(true);
             $nameLength    = 0;
@@ -112,6 +113,8 @@ class Update extends QUI\System\Console\Tool
                     'Ihr System ist aktuell. Es wurden keine Aktualisierungen gefunden',
                     'green'
                 );
+
+                $this->logBuffer();
 
                 return;
             }
@@ -138,9 +141,11 @@ class Update extends QUI\System\Console\Tool
                 );
 
                 $this->write($package['version'], 'cyan');
-
                 $this->writeLn();
+                $this->logBuffer();
             }
+
+            $this->logBuffer();
 
             return;
         }
@@ -152,6 +157,7 @@ class Update extends QUI\System\Console\Tool
 
             $this->writeLn('- Update was executed');
             $this->writeLn('- Generating Server files .htaccess and NGINX');
+            $this->logBuffer();
 
             $Httaccess = new Htaccess();
             $Httaccess->execute();
@@ -185,5 +191,52 @@ class Update extends QUI\System\Console\Tool
             $this->resetColor();
             $this->writeLn('');
         }
+
+        $this->logBuffer();
+    }
+
+    /**
+     * Write a log to the update file
+     *
+     * @param string $message
+     */
+    protected function writeUpdateLog($message)
+    {
+        QUI\System\Log::write(
+            $message,
+            QUI\System\Log::LEVEL_NOTICE,
+            [
+                'params' => [
+                    'clearCache'     => $this->getArgument('clearCache'),
+                    'setDevelopment' => $this->getArgument('setDevelopment'),
+                    'check'          => $this->getArgument('check'),
+                    'set-date'       => $this->getArgument('set-date')
+                ]
+            ],
+            'update',
+            true
+        );
+    }
+
+    /**
+     * Log the output buffer to the update log
+     */
+    protected function logBuffer()
+    {
+        $buffer = ob_get_contents();
+        $buffer = trim($buffer);
+
+        if (!empty($buffer)) {
+            QUI\System\Log::write(
+                $buffer,
+                QUI\System\Log::LEVEL_NOTICE,
+                [],
+                'update',
+                true
+            );
+        }
+
+        flush();
+        ob_flush();
     }
 }

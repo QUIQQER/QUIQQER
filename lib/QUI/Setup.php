@@ -26,6 +26,14 @@ class Setup
      */
     public static function all()
     {
+        QUI\System\Log::write(
+            'Execute Setup',
+            QUI\System\Log::LEVEL_NOTICE,
+            [],
+            'setup',
+            true
+        );
+
         QUI::getEvents()->fireEvent('setupAllBegin');
 
         // not at phpunit
