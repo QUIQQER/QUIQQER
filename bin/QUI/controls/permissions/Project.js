@@ -13,6 +13,8 @@ define('controls/permissions/Project', [
 ], function (Permission, QUIButton, QUILocale) {
     "use strict";
 
+    var lg = 'quiqqer/system';
+
     return new Class({
 
         Extends: Permission,
@@ -27,11 +29,31 @@ define('controls/permissions/Project', [
 
             if (typeOf(Project) === 'classes/projects/Project') {
                 this.$Bind = Project;
+                this.refresh();
             }
 
             this.addEvents({
                 onOpen: this.$onOpen
             });
+        },
+
+        /**
+         * Refresh the title
+         */
+        refresh: function () {
+            if (!this.$Bind) {
+                return;
+            }
+
+            var Panel = this.getAttribute('Panel'),
+                name  = this.$Bind.getName();
+
+            Panel.setAttribute(
+                'title',
+                QUILocale.get(lg, 'permissions.panel.title') + ' - ' + name
+            );
+
+            Panel.refresh();
         },
 
         /**
@@ -43,29 +65,16 @@ define('controls/permissions/Project', [
             var self = this;
 
             return new Promise(function (resolve, reject) {
-
                 require([
                     'controls/projects/SelectWindow',
                     'Projects'
                 ], function (Popup, Projects) {
-
                     new Popup({
                         langSelect: false,
                         events    : {
                             onSubmit: function (Popup, data) {
-
                                 self.$Bind = Projects.get(data.project, data.lang);
-
-                                var text = QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
-                                    name: '<span class="fa fa-home"></span>' + self.$Bind.getName()
-                                });
-
-                                self.$Status.set({
-                                    title: QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
-                                        name: self.$Bind.getName()
-                                    }),
-                                    html : text
-                                });
+                                self.refresh();
 
                                 resolve();
                             },
@@ -76,7 +85,6 @@ define('controls/permissions/Project', [
                         }
                     }).open();
                 });
-
             });
         },
 
@@ -93,16 +101,11 @@ define('controls/permissions/Project', [
                 },
                 events   : {
                     onClick: function (Btn) {
-
-                        Btn.setAttribute(
-                            'textimage',
-                            'fa fa-spinner fa-spin'
-                        );
+                        Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
                         this.save().then(function () {
                             Btn.setAttribute('textimage', 'fa fa-save');
                         });
-
                     }.bind(this)
                 }
             }).inject(this.$Buttons);

@@ -14,6 +14,8 @@ define('controls/permissions/Site', [
 ], function (Permission, QUIButton, QUIConfirm, QUILocale) {
     "use strict";
 
+    var lg = 'quiqqer/system';
+
     return new Class({
 
         Extends: Permission,
@@ -28,6 +30,7 @@ define('controls/permissions/Site', [
 
             if (typeOf(Site) === 'classes/projects/project/Site') {
                 this.$Bind = Site;
+                this.refresh();
             }
 
             this.addEvents({
@@ -35,6 +38,34 @@ define('controls/permissions/Site', [
             });
         },
 
+        /**
+         * Refresh the title
+         */
+        refresh: function () {
+            if (!this.$Bind) {
+                return;
+            }
+
+            if (!this.$Bind.isLoaded()) {
+                this.$Bind.load(function () {
+                    this.refresh();
+                }.bind(this));
+
+                return;
+            }
+
+            var Panel = this.getAttribute('Panel'),
+                name  = this.$Bind.getAttribute('name'),
+                id    = this.$Bind.getId();
+
+            Panel.setAttribute(
+                'title',
+                QUILocale.get(lg, 'permissions.panel.title') + ' - ' + name + ' (' + id + ')'
+            );
+
+            Panel.refresh();
+        },
+        
         /**
          * User select
          *
@@ -44,16 +75,13 @@ define('controls/permissions/Site', [
             var self = this;
 
             return new Promise(function (resolve, reject) {
-
                 require([
                     'controls/projects/Popup',
                     'Projects'
                 ], function (Popup, Projects) {
-
                     new Popup({
                         events: {
                             onSubmit: function (Popup, data) {
-
                                 var Project = Projects.get(data.project, data.lang);
 
                                 if (!data.ids.length) {
@@ -62,7 +90,7 @@ define('controls/permissions/Site', [
                                 }
 
                                 self.$Bind = Project.get(data.ids[0]);
-                                self.$loadStatus();
+                                self.refresh();
 
                                 resolve();
                             },
@@ -72,12 +100,10 @@ define('controls/permissions/Site', [
                             }
                         }
                     }).open();
-
                 }, function (err) {
                     console.error(err);
                     reject(err);
                 });
-
             });
         },
 
@@ -85,7 +111,6 @@ define('controls/permissions/Site', [
          * event on open
          */
         $onOpen: function () {
-
             new QUIButton({
                 title    : QUILocale.get('quiqqer/system', 'permission.control.btn.site.save.recursive'),
                 textimage: 'fa fa-reply-all',
@@ -121,42 +146,6 @@ define('controls/permissions/Site', [
                     }.bind(this)
                 }
             }).inject(this.$Buttons);
-
-            this.$loadStatus();
-        },
-
-        /**
-         * Load the title status
-         */
-        $loadStatus: function () {
-            if (!this.$Bind) {
-                return;
-            }
-
-            var self = this;
-
-            // set status title
-            if (self.$Bind.isLoaded()) {
-                self.$Status.set(
-                    'html',
-                    QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
-                        name: '<span class="fa fa-file-o"></span>' +
-                              self.$Bind.getAttribute('name') + '.html'
-                    })
-                );
-
-            } else {
-
-                self.$Bind.load(function () {
-                    self.$Status.set(
-                        'html',
-                        QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
-                            name: '<span class="fa fa-file-o"></span>' +
-                                  self.$Bind.getAttribute('name') + '.html'
-                        })
-                    );
-                });
-            }
         },
 
         /**
@@ -203,22 +192,16 @@ define('controls/permissions/Site', [
             var self = this;
 
             return new Promise(function (resolve, reject) {
-
                 require([
                     'Ajax',
                     'utils/permissions/Utils'
                 ], function (Ajax, PermUtils) {
-
                     var Site    = self.$Bind,
                         Project = Site.getProject();
 
                     self.save().then(function () {
-
                         PermUtils.Permissions.getSitePermissionList(Site).then(function (data) {
-
-                            Ajax.post('ajax_permissions_recursive', function () {
-                                resolve();
-                            }, {
+                            Ajax.post('ajax_permissions_recursive', resolve, {
                                 params     : JSON.encode({
                                     project: Project.getName(),
                                     lang   : Project.getLang(),
@@ -229,9 +212,7 @@ define('controls/permissions/Site', [
                                 onError    : reject
                             });
                         });
-
                     }).catch(reject);
-
                 }, reject);
             });
         }

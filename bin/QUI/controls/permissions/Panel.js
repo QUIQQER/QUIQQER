@@ -35,13 +35,14 @@ define('controls/permissions/Panel', [
         },
 
         initialize: function (options) {
+            this.parent(options);
+
             this.setAttribute(
                 'title',
                 QUILocale.get(lg, 'permissions.panel.title')
             );
 
             this.setAttribute('icon', 'fa fa-shield');
-            this.parent(options);
 
             this.$PermissionControl = null;
 
@@ -276,10 +277,9 @@ define('controls/permissions/Panel', [
                     }
 
                     require([needle], function (Permission) {
-
                         self.minimizeCategory().then(function () {
-
                             self.$PermissionControl = new Permission(Bind, {
+                                Panel : self,
                                 events: {
                                     onLoad     : resolve,
                                     onLoadError: reject
@@ -302,14 +302,10 @@ define('controls/permissions/Panel', [
          * @returns {Promise}
          */
         $closeLastPermissionControl: function () {
-            var Welcome = this.getContent().getElement(
-                '.controls-prmissions-panel-welcome'
-            );
+            var Welcome = this.getContent().getElement('.controls-prmissions-panel-welcome');
 
             if (Welcome) {
-
                 return new Promise(function (resolved) {
-
                     moofx(Welcome).animate({
                         left   : '-100%',
                         opacity: 0
@@ -324,28 +320,22 @@ define('controls/permissions/Panel', [
                             this.getContent().set('html');
 
                             resolved();
-
                         }.bind(this)
                     });
-
                 }.bind(this));
             }
 
             if (this.$PermissionControl) {
-
                 return this.$PermissionControl.close().then(function () {
                     this.$PermissionControl = null;
                     this.getContent().set('html');
                 }.bind(this));
-
             }
 
             return new Promise(function (resolved) {
-
                 this.$PermissionControl = null;
                 this.getContent().set('html');
                 resolved();
-
             }.bind(this));
         }
     });

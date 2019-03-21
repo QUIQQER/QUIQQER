@@ -32,6 +32,7 @@ define('controls/permissions/Group', [
 
             if (typeOf(Group) === 'classes/groups/Group') {
                 this.$Bind = Group;
+                this.refresh();
             }
 
             this.addEvents({
@@ -45,7 +46,35 @@ define('controls/permissions/Group', [
         },
 
         /**
-         * User select
+         * Refresh the title
+         */
+        refresh: function () {
+            if (!this.$Bind) {
+                return;
+            }
+
+            if (!this.$Bind.isLoaded()) {
+                this.$Bind.load().then(function () {
+                    this.refresh();
+                }.bind(this));
+
+                return;
+            }
+
+            var Panel = this.getAttribute('Panel'),
+                name  = this.$Bind.getName(),
+                id    = this.$Bind.getId();
+
+            Panel.setAttribute(
+                'title',
+                QUILocale.get(lg, 'permissions.panel.title') + ' - ' + name + ' (' + id + ')'
+            );
+
+            Panel.refresh();
+        },
+
+        /**
+         * Group select
          *
          * @returns {Promise}
          */
@@ -69,7 +98,6 @@ define('controls/permissions/Group', [
                     duration: 250,
                     equation: 'ease-in-out',
                     callback: function () {
-
                         require(['controls/groups/Select'], function (Select) {
                             Container.set(
                                 'html',
@@ -87,27 +115,7 @@ define('controls/permissions/Group', [
                                     onAddItem: function (GroupSearch, groupid) {
                                         require(['Groups'], function (Groups) {
                                             self.$Bind = Groups.get(groupid);
-
-                                            // set status title
-                                            if (self.$Bind.isLoaded()) {
-                                                self.$Status.set(
-                                                    'html',
-                                                    QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
-                                                        name: '<span class="fa fa-group"></span>' +
-                                                            self.$Bind.getName()
-                                                    })
-                                                );
-                                            } else {
-                                                self.$Bind.load().then(function () {
-                                                    self.$Status.set(
-                                                        'html',
-                                                        QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
-                                                            name: '<span class="fa fa-group"></span>' +
-                                                                self.$Bind.getName()
-                                                        })
-                                                    );
-                                                });
-                                            }
+                                            self.refresh();
 
                                             moofx(Container).animate({
                                                 left   : '-100%',
@@ -143,11 +151,7 @@ define('controls/permissions/Group', [
                 },
                 events   : {
                     onClick: function (Btn) {
-
-                        Btn.setAttribute(
-                            'textimage',
-                            'fa fa-spinner fa-spin'
-                        );
+                        Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
                         this.save().then(function () {
                             Btn.setAttribute('textimage', 'fa fa-save');
