@@ -1211,6 +1211,15 @@
         <locale name="exception.crud.child.not.found">
             <de><![CDATA[Der Eintrag konnte nicht gefunden werden.]]></de>
         </locale>
+        <locale name="user.settings.showNamesInSitemap">
+            <de><![CDATA[Seitennamen in der Sitemap anzeigen]]></de>
+        </locale>
+        <locale name="user.settings.showNamesInSitemap.description">
+            <de><![CDATA[
+                 Standardmäßig wird der Titel der einzelnen Seite in der Projekt Sitemap angezeigt.
+                 Möchtest du jedoch den Namen in der Sitemap angezeigt bekommen, kannst du dies hier ändern.
+            ]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">
         <locale name="controls.email.select.email_invalid">

@@ -3,6 +3,7 @@
 
     <attributes>
         <attribute>quiqqer.set.new.password</attribute>
+        <attribute>quiqqer.sitemap.showNames</attribute>
         <attribute>qui-bookmarks</attribute>
     </attributes>
 
