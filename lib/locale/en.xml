@@ -1202,6 +1202,15 @@
         <locale name="exception.crud.child.not.found">
             <en><![CDATA[The entry could not be found.]]></en>
         </locale>
+        <locale name="user.settings.showNamesInSitemap">
+            <en><![CDATA[Show site names in the sitemap]]></en>
+        </locale>
+        <locale name="user.settings.showNamesInSitemap.description">
+            <en><![CDATA[
+                 By default, the title of each site is displayed in the project sitemap.
+                 However, if you want the name to be displayed in the sitemap, you can change it here.
+            ]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->
         <locale name="controls.email.select.email_invalid">
