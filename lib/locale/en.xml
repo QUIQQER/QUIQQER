@@ -190,6 +190,9 @@
         <locale name="projects.project.settings.panel.logo">
             <en><![CDATA[Project logo]]></en>
         </locale>
+        <locale name="projects.project.settings.panel.mail.logo">
+            <en><![CDATA[Email logo]]></en>
+        </locale>
         <locale name="projects.project.settings.panel.favicon">
             <en><![CDATA[Favicon]]></en>
         </locale>
