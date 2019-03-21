@@ -13,10 +13,11 @@ define('controls/projects/project/site/Input', [
     'qui/controls/Control',
     'qui/controls/buttons/Button',
     'controls/projects/Popup',
+    'Locale',
 
     'css!controls/projects/project/site/Input.css'
 
-], function (QUIControl, QUIButton, ProjectPopup) {
+], function (QUIControl, QUIButton, ProjectPopup, QUILocale) {
     "use strict";
 
     /**
@@ -46,7 +47,7 @@ define('controls/projects/project/site/Input', [
         initialize: function (options, Input) {
             this.parent(options);
 
-            this.$Input = Input || null;
+            this.$Input      = Input || null;
             this.$SiteButton = null;
 
             this.addEvents({
@@ -119,8 +120,8 @@ define('controls/projects/project/site/Input', [
 
             new QUIButton({
                 icon  : 'fa fa-remove',
-                alt   : Locale.get('quiqqer/system', 'projects.project.site.input.clear'),
-                title : Locale.get('quiqqer/system', 'projects.project.site.input.clear'),
+                alt   : QUILocale.get('quiqqer/system', 'projects.project.site.input.clear'),
+                title : QUILocale.get('quiqqer/system', 'projects.project.site.input.clear'),
                 events: {
                     onClick: function () {
                         self.$Input.value = '';
@@ -154,6 +155,15 @@ define('controls/projects/project/site/Input', [
          */
         $onImport: function () {
             this.$Input = this.$Elm;
+
+            if (this.$Input.get('data-qui-options-external')) {
+                this.setAttribute('external', !!this.$Input.get('data-qui-options-external'));
+            }
+
+            if (this.$Input.get('data-qui-options-name')) {
+                this.setAttribute('name', this.$Input.get('data-qui-options-name'));
+            }
+
             this.create();
         }
     });

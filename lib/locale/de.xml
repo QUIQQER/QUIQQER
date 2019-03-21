@@ -190,6 +190,9 @@
         <locale name="projects.project.settings.panel.logo">
             <de><![CDATA[Projekt-Logo]]></de>
         </locale>
+        <locale name="projects.project.settings.panel.mail.logo">
+            <de><![CDATA[E-Mail-Logo]]></de>
+        </locale>
         <locale name="projects.project.settings.panel.favicon">
             <de><![CDATA[Favicon]]></de>
         </locale>
@@ -2856,7 +2859,7 @@
             <de><![CDATA[Sprachverknüpfung hinzufügen]]></de>
         </locale>
         <locale name="copy.site.in.lang">
-            <de><![CDATA[Inhalt kopieren und verknpüfung]]></de>
+            <de><![CDATA[Inhalt kopieren und verknüpfen]]></de>
         </locale>
         <locale name="projects.project.site.panel.linked.btn.delete">
             <de><![CDATA[Sprachverknüpfung löschen]]></de>

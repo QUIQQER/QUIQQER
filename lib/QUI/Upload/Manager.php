@@ -46,6 +46,8 @@ class Manager
 
     /**
      * Execute the setup and create the table for the upload manager
+     *
+     * @throws \QUI\Database\Exception
      */
     public function setup()
     {
@@ -328,9 +330,9 @@ class Manager
             return $function();
         }
 
-        if (function_exists($function)) {
-            return call_user_func_array($function, $params);
-        }
+//        if (function_exists($function)) {
+//            return call_user_func_array($function, $params);
+//        }
 
         if (strpos($function, 'ajax_') === 0) {
             // if the function is a ajax_function
@@ -402,7 +404,7 @@ class Manager
             $filename = trim($filename);
             $filename = trim($filename, '.');
 
-            $file      = $uploaddir.$filename;
+            $file = $uploaddir.$filename;
 
             if (!move_uploaded_file($list["tmp_name"], $file)) {
                 throw new QUI\Exception(
@@ -578,6 +580,8 @@ class Manager
      * Cancel the upload
      *
      * @param string $filename - the filename of the file
+     *
+     * @throws \QUI\Exception
      */
     public function cancel($filename)
     {
@@ -589,6 +593,8 @@ class Manager
      *
      * @param string $filename - filename
      * @param array $params - optional
+     *
+     * @throws \QUI\Exception
      */
     protected function add($filename, $params)
     {
@@ -667,12 +673,14 @@ class Manager
     }
 
     /**
-     * Get unfinish uploads from a specific user
+     * Get unfinished uploads from a specific user
      * so you can resume the upload
      *
      * @param \QUI\Users\User|boolean $User - optional, if false = the session user
      *
      * @return array
+     *
+     * @throws \QUI\Exception
      */
     public function getUnfinishedUploadsFromUser($User = false)
     {
