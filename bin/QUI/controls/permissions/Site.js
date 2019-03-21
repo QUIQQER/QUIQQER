@@ -65,7 +65,7 @@ define('controls/permissions/Site', [
 
             Panel.refresh();
         },
-        
+
         /**
          * User select
          *
@@ -185,6 +185,7 @@ define('controls/permissions/Site', [
         },
 
         /**
+         * Execute recursive permissions
          *
          * @returns {Promise}
          */
