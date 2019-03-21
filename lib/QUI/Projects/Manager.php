@@ -286,6 +286,7 @@ class Manager
             "media_createCacheOnSave"  => "1",
             "placeholder"              => "",
             "logo"                     => "",
+            "emailLogo"                => "",
             "favicon"                  => ""
         ];
 
