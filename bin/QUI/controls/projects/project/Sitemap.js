@@ -81,7 +81,9 @@ define('controls/projects/project/Sitemap', [
                 this.setAttribute('multiple', this.getAttribute('multible'));
             }
 
-            this.$Elm = null;
+            this.$Elm       = null;
+            this.$showNames = false;
+
             this.$Map = new QUISitemap({
                 multiple: this.getAttribute('multiple')
             });
@@ -167,62 +169,59 @@ define('controls/projects/project/Sitemap', [
 
             var self = this;
 
+            self.$loadUsersSettings().then(function () {
+                // if an specific id must be open
+                if (typeof self.$openids !== 'undefined' && self.$Map.firstChild()) {
+                    var First = this.$Map.firstChild();
 
-            // if an specific id must be open
-            if (typeof this.$openids !== 'undefined' && this.$Map.firstChild()) {
-                var First = this.$Map.firstChild();
+                    if (First.isOpen()) {
+                        self.fireEvent('openEnd', [First, self]);
+                        return;
+                    }
 
-                if (First.isOpen()) {
-                    this.fireEvent('openEnd', [First, this]);
+                    First.open();
                     return;
                 }
 
-                First.open();
-                return;
-            }
+                self.$Map.clearChildren();
 
+                if (self.getAttribute('id') === false) {
+                    self.$getFirstChild(function (result) {
+                        self.$Map.clearChildren();
 
-            this.$Map.clearChildren();
-
-            if (this.getAttribute('id') === false) {
-                this.$getFirstChild(function (result) {
-                    self.$Map.clearChildren();
-
-                    self.$addSitemapItem(
-                        self.$Map,
-                        self.$parseArrayToSitemapitem(result)
-                    );
-
-                    self.$Map.firstChild().open();
-
-                    // media
-                    if (self.getAttribute('media')) {
-                        self.$Map.appendChild(
-                            new QUISitemapItem({
-                                text    : Locale.get('quiqqer/system', 'projects.project.sitemap.media'),
-                                value   : 'media',
-                                icon    : 'fa fa-picture-o',
-                                dragable: true,
-                                events  : {
-                                    onClick: function () {
-                                        require(['controls/projects/project/Panel'], function (Panel) {
-                                            new Panel().openMediaPanel(
-                                                self.getAttribute('project')
-                                            );
-                                        });
-                                    }
-                                }
-                            })
+                        self.$addSitemapItem(
+                            self.$Map,
+                            self.$parseArrayToSitemapitem(result)
                         );
-                    }
-                });
 
-                return;
-            }
+                        self.$Map.firstChild().open();
 
-            this.$getSite(
-                this.getAttribute('id'),
-                function (result) {
+                        // media
+                        if (self.getAttribute('media')) {
+                            self.$Map.appendChild(
+                                new QUISitemapItem({
+                                    text    : Locale.get('quiqqer/system', 'projects.project.sitemap.media'),
+                                    value   : 'media',
+                                    icon    : 'fa fa-picture-o',
+                                    dragable: true,
+                                    events  : {
+                                        onClick: function () {
+                                            require(['controls/projects/project/Panel'], function (Panel) {
+                                                new Panel().openMediaPanel(
+                                                    self.getAttribute('project')
+                                                );
+                                            });
+                                        }
+                                    }
+                                })
+                            );
+                        }
+                    });
+
+                    return;
+                }
+
+                self.$getSite(self.getAttribute('id')).then(function (result) {
                     self.$Map.clearChildren();
 
                     self.$addSitemapItem(
@@ -231,8 +230,8 @@ define('controls/projects/project/Sitemap', [
                     );
 
                     self.$Map.firstChild().open();
-                }
-            );
+                });
+            });
         },
 
         /**
@@ -256,7 +255,6 @@ define('controls/projects/project/Sitemap', [
 
             // if not exist, search the path
             Ajax.get('ajax_site_path', function (result, Request) {
-
                 if (!result) {
                     return;
                 }
@@ -315,7 +313,6 @@ define('controls/projects/project/Sitemap', [
                 self.addEvent('onOpenEnd', open_event);
 
                 self.open();
-
             }, {
                 project: this.$Project.encode(),
                 id     : id
@@ -377,19 +374,25 @@ define('controls/projects/project/Sitemap', [
          *
          * @method controls/projects/project/Sitemap#$getSite
          * @param {integer} id - Seiten ID
-         * @param {Function} callback - call back function, if ajax is finish
+         * @param {Function} [callback] - call back function, if ajax is finish
          *
          * @private
          * @ignore
          */
         $getSite: function (id, callback) {
-            Ajax.get('ajax_site_get', function (result) {
-                if (typeof callback !== 'undefined') {
-                    callback(result);
-                }
-            }, {
-                project: this.$Project.encode(),
-                id     : id
+            var self = this;
+
+            return new Promise(function (resolve) {
+                Ajax.get('ajax_site_get', function (result) {
+                    if (typeof callback !== 'undefined') {
+                        callback(result);
+                    }
+
+                    resolve(result);
+                }, {
+                    project: self.$Project.encode(),
+                    id     : id
+                });
             });
         },
 
@@ -518,7 +521,7 @@ define('controls/projects/project/Sitemap', [
          *
          * @method controls/projects/project/Sitemap#$parseArrayToSitemapitem
          * @param {Array} result
-         * @param {Object} Itm - qui/controls/sitemap/Item
+         * @param {Object} [Itm] - qui/controls/sitemap/Item
          * @return {Object} qui/controls/sitemap/Item
          *
          * @param {{name:string}} result
@@ -555,8 +558,8 @@ define('controls/projects/project/Sitemap', [
             }
 
             if ("title" in result) {
-                attributes.text  = result.title;
-                attributes.title = result.title;
+                attributes.text  = this.$showNames ? result.name : result.title;
+                attributes.title = this.$showNames ? result.name : result.title;
             }
 
             attributes.icon = 'fa fa-file-o';
@@ -1149,6 +1152,33 @@ define('controls/projects/project/Sitemap', [
 
                 this.$Project.get(Parent.getAttribute('value')).load();
             }.bind(this));
+        },
+
+        /**
+         * Load the user settings
+         * eq: quiqqer.sitemap.showNames
+         *
+         * @return {Promise}
+         */
+        $loadUsersSettings: function () {
+            var self = this;
+
+            return new Promise(function (resolve) {
+                require(['Users'], function (Users) {
+                    var CurrentUser = Users.getUserBySession();
+
+                    if (CurrentUser.isLoaded()) {
+                        self.$showNames = CurrentUser.getAttribute('quiqqer.sitemap.showNames');
+                        resolve();
+                        return;
+                    }
+
+                    CurrentUser.load().then(function () {
+                        self.$showNames = CurrentUser.getAttribute('quiqqer.sitemap.showNames');
+                        resolve();
+                    });
+                });
+            });
         }
     });
 });

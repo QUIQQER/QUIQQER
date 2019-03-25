@@ -70,6 +70,12 @@
         <locale name="permission.quiqqer.admin.users._header">
             <en><![CDATA[Users]]></en>
         </locale>
+        <locale name="permission.quiqqer.users._header">
+            <en><![CDATA[Users]]></en>
+        </locale>
+        <locale name="permission.quiqqer.users.delete_self">
+            <en><![CDATA[Can delete his own user account]]></en>
+        </locale>
         <locale name="permission.quiqqer.projects.sites._header">
             <en><![CDATA[Sites]]></en>
         </locale>
@@ -1120,6 +1126,9 @@
         <locale name="exception.user_cannot_delete_himself">
             <en><![CDATA[You cannot delete your own user account.]]></en>
         </locale>
+        <locale name="exception.superuser_cannot_delete_himself">
+            <de><![CDATA[You as a Super User cannot delete your own user account.]]></de>
+        </locale>
 
         <locale name="exception.site.linked.already.exists">
             <en><![CDATA[
@@ -1201,6 +1210,15 @@
         </locale>
         <locale name="exception.crud.child.not.found">
             <en><![CDATA[The entry could not be found.]]></en>
+        </locale>
+        <locale name="user.settings.showNamesInSitemap">
+            <en><![CDATA[Show site names in the sitemap]]></en>
+        </locale>
+        <locale name="user.settings.showNamesInSitemap.description">
+            <en><![CDATA[
+                 By default, the title of each site is displayed in the project sitemap.
+                 However, if you want the name to be displayed in the sitemap, you can change it here.
+            ]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->

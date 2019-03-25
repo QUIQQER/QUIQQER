@@ -32,6 +32,7 @@ define('controls/permissions/User', [
 
             if (typeOf(User) === 'classes/users/User') {
                 this.$Bind = User;
+                this.refresh();
             }
 
             this.addEvents({
@@ -45,6 +46,34 @@ define('controls/permissions/User', [
         },
 
         /**
+         * Refresh the title
+         */
+        refresh: function () {
+            if (!this.$Bind) {
+                return;
+            }
+
+            if (!this.$Bind.isLoaded()) {
+                this.$Bind.load().then(function () {
+                    this.refresh();
+                }.bind(this));
+
+                return;
+            }
+
+            var Panel = this.getAttribute('Panel'),
+                name  = this.$Bind.getName(),
+                id    = this.$Bind.getId();
+
+            Panel.setAttribute(
+                'title',
+                QUILocale.get(lg, 'permissions.panel.title') + ' - ' + name + ' (' + id + ')'
+            );
+
+            Panel.refresh();
+        },
+
+        /**
          * User select
          *
          * @returns {Promise}
@@ -53,7 +82,6 @@ define('controls/permissions/User', [
             var self = this;
 
             return new Promise(function (resolve) {
-
                 var Container = new Element('div', {
                     'class': 'controls-permissions-select shadow',
                     styles : {
@@ -69,7 +97,6 @@ define('controls/permissions/User', [
                     duration: 250,
                     equation: 'ease-in-out',
                     callback: function () {
-
                         require(['controls/users/Input'], function (Input) {
                             Container.set(
                                 'html',
@@ -88,26 +115,7 @@ define('controls/permissions/User', [
                                     onAdd: function (UserSearch, userid) {
                                         require(['Users'], function (Users) {
                                             self.$Bind = Users.get(userid);
-
-                                            // set status title
-                                            if (self.$Bind.isLoaded()) {
-                                                self.$Status.set(
-                                                    'html',
-                                                    QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
-                                                        name: '<span class="fa fa-user"></span>' + self.$Bind.getName()
-                                                    })
-                                                );
-                                            } else {
-                                                self.$Bind.load().then(function () {
-                                                    self.$Status.set(
-                                                        'html',
-                                                        QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
-                                                            name: '<span class="fa fa-user"></span>' +
-                                                                self.$Bind.getName()
-                                                        })
-                                                    );
-                                                });
-                                            }
+                                            self.refresh();
 
                                             moofx(Container).animate({
                                                 left   : '-100%',
