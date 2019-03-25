@@ -70,6 +70,12 @@
         <locale name="permission.quiqqer.admin.users._header">
             <en><![CDATA[Users]]></en>
         </locale>
+        <locale name="permission.quiqqer.users._header">
+            <en><![CDATA[Users]]></en>
+        </locale>
+        <locale name="permission.quiqqer.users.delete_self">
+            <en><![CDATA[Can delete his own user account]]></en>
+        </locale>
         <locale name="permission.quiqqer.projects.sites._header">
             <en><![CDATA[Sites]]></en>
         </locale>
@@ -1119,6 +1125,9 @@
         </locale>
         <locale name="exception.user_cannot_delete_himself">
             <en><![CDATA[You cannot delete your own user account.]]></en>
+        </locale>
+        <locale name="exception.superuser_cannot_delete_himself">
+            <de><![CDATA[You as a Super User cannot delete your own user account.]]></de>
         </locale>
 
         <locale name="exception.site.linked.already.exists">
