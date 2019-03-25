@@ -2018,7 +2018,6 @@ class User implements QUI\Interfaces\Users\User
 
         // Check if user can delete himself
         if (QUI::getUserBySession()->getId() === $this->getId()) {
-            \QUI\System\Log::writeRecursive("CHECK SELF DELETE PERMISSION");
             $this->checkPermission('quiqqer.users.delete_self');
         }
 
