@@ -118,7 +118,7 @@ class Manager extends QUI\QDOM
         $result = [];
 
         foreach ($list as $dir) {
-            if (!is_dir(OPT_DIR.$dir) || strpos($dir, '.') === 0) {
+            if (!\is_dir(OPT_DIR.$dir) || \strpos($dir, '.') === 0) {
                 continue;
             }
 
@@ -132,7 +132,7 @@ class Manager extends QUI\QDOM
 
         if ($order) {
             if ($onlynames) {
-                sort($result);
+                \sort($result);
             } else {
                 $_result = [];
 
@@ -142,7 +142,7 @@ class Manager extends QUI\QDOM
                     $_result[$c['name']] = $Plugin;
                 }
 
-                ksort($_result);
+                \ksort($_result);
                 $result = [];
 
                 foreach ($_result as $Plugin) {
@@ -193,7 +193,7 @@ class Manager extends QUI\QDOM
             $name    = $package['name'];
             $siteXml = OPT_DIR.$name.'/site.xml';
 
-            if (!file_exists($siteXml)) {
+            if (!\file_exists($siteXml)) {
                 continue;
             }
 
@@ -211,17 +211,17 @@ class Manager extends QUI\QDOM
             }
         }
 
-        ksort($types);
+        \ksort($types);
 
         // standard to top
-        $types = array_reverse($types, true);
+        $types = \array_reverse($types, true);
 
         $types['standard'] = [
             'type' => 'standard',
             'icon' => 'fa fa-file-o'
         ];
 
-        $types = array_reverse($types, true);
+        $types = \array_reverse($types, true);
 
         return $types;
     }
@@ -276,13 +276,13 @@ class Manager extends QUI\QDOM
         }
 
         if (isset($attributes['_file_']) &&
-            !class_exists($class) &&
-            file_exists($attributes['_file_'])
+            !\class_exists($class) &&
+            \file_exists($attributes['_file_'])
         ) {
             require_once $attributes['_file_'];
         }
 
-        if (!class_exists($class)) {
+        if (!\class_exists($class)) {
             throw new QUI\Exception('Konnte Plugin '.$class.' nicht laden');
         }
 
@@ -325,27 +325,27 @@ class Manager extends QUI\QDOM
             return $Plugin;
         }
 
-        $dir = str_replace('Plugin_', '', $name);
-        $dir = explode('_', $dir);
+        $dir = \str_replace('Plugin_', '', $name);
+        $dir = \explode('_', $dir);
 
-        $last = end($dir);
-        $dir  = implode($dir, '/');
+        $last = \end($dir);
+        $dir  = \implode($dir, '/');
 
         // Pluginfile laden falls noch nicht getan
-        $f_plg = OPT_DIR.$dir.'/'.ucfirst($last).'.php';
+        $f_plg = OPT_DIR.$dir.'/'.\ucfirst($last).'.php';
 
-        if (!class_exists($class) && file_exists($f_plg)) {
+        if (!\class_exists($class) && \file_exists($f_plg)) {
             require_once $f_plg;
         }
 
-        if (!class_exists($class) &&
-            file_exists(OPT_DIR.$name.'/'.ucfirst($name).'.php')
+        if (!\class_exists($class) &&
+            \file_exists(OPT_DIR.$name.'/'.\ucfirst($name).'.php')
         ) {
-            $f_plg = OPT_DIR.$name.'/'.ucfirst($name).'.php';
+            $f_plg = OPT_DIR.$name.'/'.\ucfirst($name).'.php';
             require_once $f_plg;
         }
 
-        if (!class_exists($class)) {
+        if (!\class_exists($class)) {
             $class = '\\QUI\\Plugins\\Plugin';
         }
 
@@ -380,7 +380,7 @@ class Manager extends QUI\QDOM
      */
     public function existPlugin($plugin)
     {
-        if (is_dir(OPT_DIR.$plugin)) {
+        if (\is_dir(OPT_DIR.$plugin)) {
             return true;
         }
 
@@ -432,7 +432,7 @@ class Manager extends QUI\QDOM
     public function getPluginByType($type)
     {
         return $this->get(
-            str_replace('/', '_', $type),
+            \str_replace('/', '_', $type),
             $type
         );
     }
@@ -463,7 +463,7 @@ class Manager extends QUI\QDOM
             return $type;
         }
 
-        $value = explode(' ', $data['value']);
+        $value = \explode(' ', $data['value']);
 
         if (QUI::getLocale()->exists($value[0], $value[1])) {
             return QUI::getLocale()->get($value[0], $value[1]);
@@ -505,17 +505,17 @@ class Manager extends QUI\QDOM
         } catch (QUI\Cache\Exception $Exception) {
         }
 
-        if (strpos($type, ':') === false) {
+        if (\strpos($type, ':') === false) {
             return false;
         }
 
-        $explode = explode(':', $type);
+        $explode = \explode(':', $type);
         $package = $explode[0];
         $type    = $explode[1];
 
         $siteXml = OPT_DIR.$package.'/site.xml';
 
-        if (!file_exists($siteXml)) {
+        if (!\file_exists($siteXml)) {
             return false;
         }
 
@@ -548,7 +548,7 @@ class Manager extends QUI\QDOM
             ];
         }
 
-        $data['value'] = trim($Type->nodeValue);
+        $data['value'] = \trim($Type->nodeValue);
 
         QUI\Cache\Manager::set($cache, $data);
 

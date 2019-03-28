@@ -9,17 +9,17 @@
 QUI::$Ajax->registerFunction(
     'ajax_usersgroups_searchGrid',
     function ($search, $fields, $params) {
-        $fields = json_decode($fields, true);
-        $params = json_decode($params, true);
+        $fields = \json_decode($fields, true);
+        $params = \json_decode($params, true);
         $limit  = 20; // default
         $page   = 1;
 
-        if (!is_array($params)) {
-            $params = array();
+        if (!\is_array($params)) {
+            $params = [];
         }
 
-        if (!is_array($fields)) {
-            $fields = array(
+        if (!\is_array($fields)) {
+            $fields = [
                 'name'      => true,
                 'username'  => true,
                 'usergroup' => true,
@@ -36,15 +36,15 @@ QUI::$Ajax->registerFunction(
                 'avatar'    => true,
                 'lang'      => true,
                 'company'   => true
-            );
+            ];
         }
 
-        $searchParams = array(
+        $searchParams = [
             'searchUsers'  => true,
             'searchGroups' => true,
-            'users'        => array('select' => $fields),
-            'groups'       => array('select' => $fields)
-        );
+            'users'        => ['select' => $fields],
+            'groups'       => ['select' => $fields]
+        ];
 
         if (isset($params['limit'])) {
             $limit = (int)$params['limit'];
@@ -56,17 +56,17 @@ QUI::$Ajax->registerFunction(
 
         $searchResult = QUI\UsersGroups\Search::search($search, $searchParams);
 
-        $Grid = new QUI\Utils\Grid(array(
+        $Grid = new QUI\Utils\Grid([
             'max'  => $limit,
             'page' => $page
-        ));
+        ]);
 
         return $Grid->getResult(
-            array_merge($searchResult['groups'], $searchResult['users']),
+            \array_merge($searchResult['groups'], $searchResult['users']),
             $page,
             $limit
         );
     },
-    array('search', 'fields', 'params'),
+    ['search', 'fields', 'params'],
     'Permission::checkAdminUser'
 );

@@ -11,7 +11,7 @@ QUI::$Ajax->registerFunction(
     'ajax_groups_list',
     function ($params) {
         $Groups = QUI::getGroups();
-        $params = json_decode($params, true);
+        $params = \json_decode($params, true);
         $page   = 1;
         $limit  = 10;
 
@@ -42,12 +42,12 @@ QUI::$Ajax->registerFunction(
             }
         }
 
-        return array(
+        return [
             'total' => $Groups->count($params),
             'page'  => $page,
             'data'  => $search
-        );
+        ];
     },
-    array('params'),
+    ['params'],
     'Permission::checkAdminUser'
 );

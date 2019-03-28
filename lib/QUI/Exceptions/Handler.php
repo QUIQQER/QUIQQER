@@ -24,14 +24,14 @@ class Handler extends QUI\QDOM
      *
      * @var array
      */
-    protected $shutdowncallbacks = array();
+    protected $shutdowncallbacks = [];
 
     /**
      * constructor
      *
      * @param array $params
      */
-    public function __construct($params = array())
+    public function __construct($params = [])
     {
         // defaults
         $this->setAttribute('logdir', '');
@@ -60,7 +60,7 @@ class Handler extends QUI\QDOM
 
         $this->setAttributes($params);
 
-        register_shutdown_function(array($this, "callShutdown"));
+        \register_shutdown_function([$this, "callShutdown"]);
     }
 
     /**
@@ -75,25 +75,25 @@ class Handler extends QUI\QDOM
      */
     public function registerShutdown()
     {
-        $callback = func_get_args();
+        $callback = \func_get_args();
 
         if (empty($callback)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.qui.exceptions.handler.nocallback',
-                    array('function' => __FUNCTION__)
+                    ['function' => __FUNCTION__]
                 ),
                 E_USER_ERROR
             );
         }
 
-        if (!is_callable($callback[0])) {
+        if (!\is_callable($callback[0])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.lib.qui.exceptions.handler.invalid',
-                    array('function' => __FUNCTION__)
+                    ['function' => __FUNCTION__]
                 ),
                 E_USER_ERROR
             );
@@ -112,8 +112,8 @@ class Handler extends QUI\QDOM
         $callbacks = $this->shutdowncallbacks;
 
         foreach ($callbacks as $arguments) {
-            $callback = array_shift($arguments);
-            call_user_func_array($callback, $arguments);
+            $callback = \array_shift($arguments);
+            \call_user_func_array($callback, $arguments);
         }
     }
 
@@ -131,46 +131,46 @@ class Handler extends QUI\QDOM
         $errfile = '',
         $errline = ''
     ) {
-        if ($this->getAttribute('ERROR_' . $errno) == false) {
+        if ($this->getAttribute('ERROR_'.$errno) == false) {
             return;
         }
 
         $log = false;
 
         if ($this->getAttribute('logdir')) {
-            $log = $this->getAttribute('logdir') . 'error' . date('-Y-m-d') . '.log';
+            $log = $this->getAttribute('logdir').'error'.\date('-Y-m-d').'.log';
 
             // Log Verzeichnis erstellen
             QUI\Utils\System\File::mkdir($this->getAttribute('logdir'));
         }
 
-        if ($log && !file_exists($log)) {
-            file_put_contents($log, ' ');
+        if ($log && !\file_exists($log)) {
+            \file_put_contents($log, ' ');
         }
 
-        $err_msg = "\n\n==== Date: " . date('Y-m-d H:i:s')
-                   . " ============================================\n";
+        $err_msg = "\n\n==== Date: ".\date('Y-m-d H:i:s')
+                   ." ============================================\n";
 
         if ($this->getAttribute('show_request')) {
             if (isset($_SERVER['REQUEST_URI'])) {
-                $err_msg .= 'REQUEST URI: ' . $_SERVER['REQUEST_URI'] . "\n";
+                $err_msg .= 'REQUEST URI: '.$_SERVER['REQUEST_URI']."\n";
             }
 
             if (isset($_SERVER['HTTP_HOST'])) {
-                $err_msg .= 'HTTP_HOST: ' . $_SERVER['HTTP_HOST'] . "\n";
+                $err_msg .= 'HTTP_HOST: '.$_SERVER['HTTP_HOST']."\n";
             }
 
             if (isset($_SERVER['REMOTE_ADDR'])) {
-                $err_msg .= 'REMOTE_ADDR: ' . $_SERVER['REMOTE_ADDR'] . "\n";
+                $err_msg .= 'REMOTE_ADDR: '.$_SERVER['REMOTE_ADDR']."\n";
             }
 
             if (isset($_SERVER['HTTP_USER_AGENT'])) {
-                $err_msg .= 'HTTP_USER_AGENT: ' . $_SERVER['HTTP_USER_AGENT']
-                            . "\n";
+                $err_msg .= 'HTTP_USER_AGENT: '.$_SERVER['HTTP_USER_AGENT']
+                            ."\n";
             }
 
             if (isset($_REQUEST['_url'])) {
-                $err_msg .= '$_REQUEST[\'_url\']: ' . $_REQUEST['_url'] . "\n";
+                $err_msg .= '$_REQUEST[\'_url\']: '.$_REQUEST['_url']."\n";
             }
 
             unset($_REQUEST['REQUEST_URI']);
@@ -179,58 +179,63 @@ class Handler extends QUI\QDOM
             unset($_REQUEST['HTTP_USER_AGENT']);
             unset($_REQUEST['_url']);
 
-            $err_msg .= '$_REQUEST: ' . print_r($_REQUEST, true) . "\n\n";
+            $err_msg .= '$_REQUEST: '.\print_r($_REQUEST, true)."\n\n";
         }
 
-        $err_msg .= "\nMessage:\n" . $errstr . "\n";
+        $err_msg .= "\nMessage:\n".$errstr."\n";
 
         if ($errno) {
-            $err_msg .= "Error No: ERROR_" . $errno . "\n";
+            $err_msg .= "Error No: ERROR_".$errno."\n";
         }
 
         if ($errfile) {
-            $err_msg .= "Error File:" . $errfile . "\n";
+            $err_msg .= "Error File:".$errfile."\n";
         }
 
         if ($errline) {
-            $err_msg .= "Error Line:" . $errline . "\n";
+            $err_msg .= "Error Line:".$errline."\n";
         }
 
         // Nutzerdaten
         if (isset($_SERVER['SERVER_ADDR'])) {
-            $err_msg .= "IP: " . $_SERVER['SERVER_ADDR'] . "\n";
-            $err_msg .= "Host: " . gethostbyaddr($_SERVER['SERVER_ADDR']) . "\n";
+            $err_msg .= "IP: ".$_SERVER['SERVER_ADDR']."\n";
+            $err_msg .= "Host: ".\gethostbyaddr($_SERVER['SERVER_ADDR'])."\n";
         }
 
         // Backtrace
         if ($this->getAttribute('backtrace')) {
-            ob_start();
-            debug_print_backtrace();
-            $buffer = ob_get_contents();
-            ob_end_clean();
+            \ob_start();
+            \debug_print_backtrace();
+            $buffer = \ob_get_contents();
+            \ob_end_clean();
 
-            $err_msg .= "\n BACKTRACE\n\n" . $buffer . "\n";
+            $err_msg .= "\n BACKTRACE\n\n".$buffer."\n";
         }
 
 
-        if (defined('ERROR_SEND') && ERROR_SEND && defined('ERROR_MAIL')
+        if (\defined('ERROR_SEND')
+            && \defined('ERROR_MAIL')
+            && \class_exists('Mail')
+            && ERROR_SEND
             && ERROR_MAIL
-            && class_exists('Mail')
         ) {
-            \QUI::getMailManager()->send(
-                ERROR_MAIL,
-                \QUI::getLocale()->get(
-                    'quiqqer/system',
-                    'lib.qui.exceptions.handler.mail.subject',
-                    array(
-                        'host' => $_SERVER['HTTP_HOST'],
-                        'url'  => $_SERVER['REQUEST_URI']
-                    )
-                ),
-                $err_msg
-            );
+            try {
+                QUI::getMailManager()->send(
+                    ERROR_MAIL,
+                    QUI::getLocale()->get(
+                        'quiqqer/system',
+                        'lib.qui.exceptions.handler.mail.subject',
+                        [
+                            'host' => $_SERVER['HTTP_HOST'],
+                            'url'  => $_SERVER['REQUEST_URI']
+                        ]
+                    ),
+                    $err_msg
+                );
+            } catch (QUI\Exception $Exception) {
+            }
         }
 
-        error_log($err_msg, 3, $log);
+        \error_log($err_msg, 3, $log);
     }
 }

@@ -301,7 +301,7 @@ class Manager extends QUI\QDOM
      */
     public function isGroup($Group)
     {
-        if (!is_object($Group)) {
+        if (!\is_object($Group)) {
             return false;
         }
 
@@ -389,7 +389,7 @@ class Manager extends QUI\QDOM
         if (isset($params['order'])
             && isset($params['field'])
             && $params['field']
-            && in_array($params['field'], $allowOrderFields)
+            && \in_array($params['field'], $allowOrderFields)
         ) {
             $_fields['order'] = $params['field'].' '.$params['order'];
         }
@@ -411,7 +411,7 @@ class Manager extends QUI\QDOM
             ];
         } elseif (isset($params['search'])
                   && isset($params['searchSettings'])
-                  && is_array($params['searchSettings'])
+                  && \is_array($params['searchSettings'])
         ) {
             foreach ($params['searchSettings'] as $field) {
                 if (!isset($allowSearchFields[$field])) {

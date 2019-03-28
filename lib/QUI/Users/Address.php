@@ -73,13 +73,13 @@ class Address extends QUI\QDOM
             );
         }
 
-        $data = current($result);
+        $data = \current($result);
 
         unset($data['id']);
         unset($data['uid']);
 
         if (!empty($data['custom_data'])) {
-            $this->setCustomData(json_decode($data['custom_data'], true));
+            $this->setCustomData(\json_decode($data['custom_data'], true));
         }
 
         $this->setAttributes($data);
@@ -115,7 +115,7 @@ class Address extends QUI\QDOM
      */
     public function addPhone($phone)
     {
-        if (!is_array($phone)) {
+        if (!\is_array($phone)) {
             return;
         }
 
@@ -137,16 +137,14 @@ class Address extends QUI\QDOM
         $list = $this->getPhoneList();
 
         foreach ($list as $entry) {
-            if ($entry['type'] == $phone['type']
-                && $entry['no'] == $phone['no']
-            ) {
+            if ($entry['type'] == $phone['type'] && $entry['no'] == $phone['no']) {
                 return;
             }
         }
 
         $list[] = $phone;
 
-        $this->setAttribute('phone', json_encode($list));
+        $this->setAttribute('phone', \json_encode($list));
     }
 
     /**
@@ -159,7 +157,7 @@ class Address extends QUI\QDOM
     {
         $index = (int)$index;
 
-        if (!is_array($phone)) {
+        if (!\is_array($phone)) {
             $phone = [
                 'no'   => Orthos::clear($phone),
                 'type' => 'tel'
@@ -181,7 +179,7 @@ class Address extends QUI\QDOM
             'type' => Orthos::clear($phone['type'])
         ];
 
-        $this->setAttribute('phone', json_encode($list));
+        $this->setAttribute('phone', \json_encode($list));
     }
 
     /**
@@ -199,13 +197,13 @@ class Address extends QUI\QDOM
      */
     public function getPhoneList()
     {
-        if (is_array($this->getAttribute('phone'))) {
+        if (\is_array($this->getAttribute('phone'))) {
             return $this->getAttribute('phone');
         }
 
-        $result = json_decode($this->getAttribute('phone'), true);
+        $result = \json_decode($this->getAttribute('phone'), true);
 
-        if (is_array($result)) {
+        if (\is_array($result)) {
             return $result;
         }
 
@@ -280,13 +278,13 @@ class Address extends QUI\QDOM
 
         $list = $this->getMailList();
 
-        if (in_array($mail, $list)) {
+        if (\in_array($mail, $list)) {
             return;
         }
 
         $list[] = $mail;
 
-        $this->setAttribute('mail', json_encode($list));
+        $this->setAttribute('mail', \json_encode($list));
     }
 
     /**
@@ -321,7 +319,7 @@ class Address extends QUI\QDOM
 
         $list [$index] = $mail;
 
-        $this->setAttribute('mail', json_encode($list));
+        $this->setAttribute('mail', \json_encode($list));
     }
 
     /**
@@ -331,9 +329,9 @@ class Address extends QUI\QDOM
      */
     public function getMailList()
     {
-        $result = json_decode($this->getAttribute('mail'), true);
+        $result = \json_decode($this->getAttribute('mail'), true);
 
-        if (is_array($result)) {
+        if (\is_array($result)) {
             return $result;
         }
 
@@ -384,7 +382,7 @@ class Address extends QUI\QDOM
             return;
         }
 
-        if (is_null($PermissionUser)) {
+        if (\is_null($PermissionUser)) {
             $PermissionUser = QUI::getUserBySession();
         }
 
@@ -396,8 +394,8 @@ class Address extends QUI\QDOM
             QUI\System\Log::writeException($Exception);
         }
 
-        $mail  = json_encode($this->getMailList());
-        $phone = json_encode($this->getPhoneList());
+        $mail  = \json_encode($this->getMailList());
+        $phone = \json_encode($this->getPhoneList());
 
         QUI::getDataBase()->update(
             Manager::tableAddress(),
@@ -413,7 +411,7 @@ class Address extends QUI\QDOM
                 'country'     => Orthos::clear($this->getAttribute('country')),
                 'mail'        => $mail,
                 'phone'       => $phone,
-                'custom_data' => json_encode($this->getCustomData())
+                'custom_data' => \json_encode($this->getCustomData())
             ],
             [
                 'id' => $this->id
@@ -545,7 +543,7 @@ class Address extends QUI\QDOM
         }
 
         $result = "{$salutation} {$firstName} {$lastName}; {$street_no}; {$zip} {$city} {$country}";
-        $result = preg_replace('/[  ]{2,}/', ' ', $result);
+        $result = \preg_replace('/[  ]{2,}/', ' ', $result);
 
         return $result;
     }
@@ -584,7 +582,7 @@ class Address extends QUI\QDOM
         }
 
         $result = "{$salutation} {$firstName} {$lastName}";
-        $result = preg_replace('/[  ]{2,}/', ' ', $result);
+        $result = \preg_replace('/[  ]{2,}/', ' ', $result);
 
         return $result;
     }
@@ -598,15 +596,15 @@ class Address extends QUI\QDOM
      */
     public function setCustomDataEntry($key, $value)
     {
-        if (is_object($value)) {
+        if (\is_object($value)) {
             return;
         }
 
-        if (is_array($value)) {
+        if (\is_array($value)) {
             return;
         }
 
-        if (!is_numeric($value) && !is_string($value) && !is_bool($value)) {
+        if (!\is_numeric($value) && !\is_string($value) && !\is_bool($value)) {
             return;
         }
 
@@ -622,7 +620,7 @@ class Address extends QUI\QDOM
      */
     public function getCustomDataEntry($key)
     {
-        if (array_key_exists($key, $this->customData)) {
+        if (\array_key_exists($key, $this->customData)) {
             return $this->customData[$key];
         }
 
@@ -662,7 +660,7 @@ class Address extends QUI\QDOM
         $attributes       = $this->getAttributes();
         $attributes['id'] = $this->getId();
 
-        return json_encode($attributes);
+        return \json_encode($attributes);
     }
 
     /**
@@ -682,21 +680,21 @@ class Address extends QUI\QDOM
         $dataOther = $Address->getAttributes();
 
         // always ignore internal custom_data attribute
-        if (array_key_exists('custom_data', $dataThis)) {
+        if (\array_key_exists('custom_data', $dataThis)) {
             unset($dataThis['custom_data']);
         }
 
-        if (array_key_exists('custom_data', $dataOther)) {
+        if (\array_key_exists('custom_data', $dataOther)) {
             unset($dataOther['custom_data']);
         }
 
         // consider actual custom data
         if (!$compareCustomData) {
-            if (array_key_exists('customData', $dataThis)) {
+            if (\array_key_exists('customData', $dataThis)) {
                 unset($dataThis['customData']);
             }
 
-            if (array_key_exists('customData', $dataOther)) {
+            if (\array_key_exists('customData', $dataOther)) {
                 unset($dataOther['customData']);
             }
         }

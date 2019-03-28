@@ -9,14 +9,14 @@
 QUI::$Ajax->registerFunction(
     'ajax_groups_switchstatus',
     function ($gid) {
-        $gid = json_decode($gid, true);
+        $gid = \json_decode($gid, true);
 
-        if (!is_array($gid)) {
-            $gid = array($gid);
+        if (!\is_array($gid)) {
+            $gid = [$gid];
         }
 
         $Groups = QUI::getGroups();
-        $result = array();
+        $result = [];
 
         foreach ($gid as $_gid) {
             try {
@@ -40,6 +40,6 @@ QUI::$Ajax->registerFunction(
 
         return $result;
     },
-    array('gid'),
+    ['gid'],
     'Permission::checkSU'
 );

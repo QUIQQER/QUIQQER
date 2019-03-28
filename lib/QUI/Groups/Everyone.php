@@ -56,6 +56,7 @@ class Everyone extends QUI\Groups\Group
         }
 
         parent::setAttribute($key, $value);
+
         return $this;
     }
 
@@ -72,6 +73,9 @@ class Everyone extends QUI\Groups\Group
     /**
      * saves the group
      * All attributes are set in the database
+     *
+     * @throws QUI\Database\Exception
+     * @throws QUI\Exception
      */
     public function save()
     {
@@ -80,13 +84,13 @@ class Everyone extends QUI\Groups\Group
         // Felder bekommen
         QUI::getDataBase()->update(
             QUI\Groups\Manager::table(),
-            array(
+            [
                 'name'    => 'Everyone',
                 'toolbar' => $this->getAttribute('toolbar'),
-                'rights'  => json_encode($this->rights),
+                'rights'  => \json_encode($this->rights),
                 'active'  => 1
-            ),
-            array('id' => $this->getId())
+            ],
+            ['id' => $this->getId()]
         );
 
         $this->createCache();
@@ -155,7 +159,7 @@ class Everyone extends QUI\Groups\Group
      */
     public function getParentIds()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -175,9 +179,9 @@ class Everyone extends QUI\Groups\Group
      *
      * @return array
      */
-    public function getChildren($params = array())
+    public function getChildren($params = [])
     {
-        return array();
+        return [];
     }
 
     /**
@@ -188,9 +192,9 @@ class Everyone extends QUI\Groups\Group
      *
      * @return array
      */
-    public function getChildrenIds($recursiv = false, $params = array())
+    public function getChildrenIds($recursiv = false, $params = [])
     {
-        return array();
+        return [];
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 
-define('QUIQQER_SYSTEM', true);
+\define('QUIQQER_SYSTEM', true);
 require 'header.php';
 
 QUI::getEvents()->fireEvent('adminRequest');
@@ -152,10 +152,10 @@ if ($Avatar) {
 
         var QUIQQER_VERSION = "<?php echo QUI::getPackageManager()->getVersion(); ?>";
         var QUIQQER_HASH    = "<?php echo QUI::getPackageManager()->getHash(); ?>";
-        var QUIQQER_CONFIG  = <?php echo json_encode($config); ?>;
+        var QUIQQER_CONFIG  = <?php echo \json_encode($config); ?>;
 
         // standard project
-        var QUIQQER_PROJECT = <?php echo json_encode([
+        var QUIQQER_PROJECT = <?php echo \json_encode([
             'name' => $Project ? $Project->getName() : '',
             'lang' => $Project ? $Project->getLang() : ''
         ]); ?>;
@@ -219,7 +219,7 @@ if ($Avatar) {
 
     echo '<script type="text/javascript">';
     echo '/* <![CDATA[ */';
-    echo 'var QUIQQER_LOCALE = '.json_encode($locales, true);
+    echo 'var QUIQQER_LOCALE = '.\json_encode($locales, true);
     echo '/* ]]> */';
     echo '</script>';
 

@@ -128,7 +128,7 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
      */
     public function destroy($ids = [])
     {
-        if (!is_array($ids)) {
+        if (!\is_array($ids)) {
             return;
         }
 

@@ -24,10 +24,10 @@ class Tidy extends QUI\System\Test
     {
         parent::__construct();
 
-        $this->setAttributes(array(
+        $this->setAttributes([
             'title'       => 'Tidy',
             'description' => ''
-        ));
+        ]);
 
         $this->isRequired = self::TEST_IS_OPTIONAL;
     }
@@ -35,11 +35,11 @@ class Tidy extends QUI\System\Test
     /**
      * Check, if zlib available
      *
-     * @return self::STATUS_OK|self::STATUS_ERROR
+     * @return int self::STATUS_OK|self::STATUS_ERROR
      */
     public function execute()
     {
-        if (class_exists('tidy')) {
+        if (\class_exists('tidy')) {
             return self::STATUS_OK;
         }
 

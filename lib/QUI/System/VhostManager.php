@@ -32,14 +32,15 @@ class VhostManager
      * Return the config
      *
      * @return \QUI\Config
+     * @throws QUI\Exception
      */
     protected function getConfig()
     {
-        if (!file_exists(ETC_DIR . 'vhosts.ini.php')) {
-            file_put_contents(ETC_DIR . 'vhosts.ini.php', '');
+        if (!\file_exists(ETC_DIR.'vhosts.ini.php')) {
+            \file_put_contents(ETC_DIR.'vhosts.ini.php', '');
         }
 
-        $this->Config = new Config(ETC_DIR . 'vhosts.ini.php');
+        $this->Config = new Config(ETC_DIR.'vhosts.ini.php');
 
         return $this->Config;
     }
@@ -114,12 +115,12 @@ class VhostManager
      */
     public function addVhost($vhost)
     {
-        if (strpos($vhost, '://') !== false) {
-            $parts = explode('://', $vhost);
+        if (\strpos($vhost, '://') !== false) {
+            $parts = \explode('://', $vhost);
             $vhost = $parts[1];
         }
 
-        $vhost  = trim($vhost, '/');
+        $vhost  = \trim($vhost, '/');
         $Config = $this->getConfig();
 
         if ($Config->existValue($vhost)) {
@@ -131,7 +132,7 @@ class VhostManager
             );
         }
 
-        $Config->setSection($vhost, array());
+        $Config->setSection($vhost, []);
         $Config->save();
 
         $this->repair();
@@ -143,7 +144,7 @@ class VhostManager
      * Add or edit a vhost entry
      *
      * @param string $vhost - host name (eq: www.something.com)
-     * @param array  $data  - data of the host
+     * @param array $data - data of the host
      *
      * @throws \QUI\Exception
      */
@@ -161,7 +162,7 @@ class VhostManager
         }
 
         // daten prüfen
-        $result = array();
+        $result = [];
 
         foreach ($data as $key => $value) {
             $key = Orthos::clear($key);
@@ -306,7 +307,7 @@ class VhostManager
     public function getHostsByProject($projectName)
     {
         $config = $this->getList();
-        $list   = array();
+        $list   = [];
 
         foreach ($config as $host => $data) {
             if (!isset($data['project'])) {
@@ -349,27 +350,30 @@ class VhostManager
      */
     public function getRegisteredDomains($includeWWW = false)
     {
-        $domains = array();
+        $domains = [];
 
         // Get the host from the config
         $host      = QUI::conf("globals", "host");
-        $host      = str_replace("http://", "", $host);
-        $host      = str_replace("https://", "", $host);
-        $host      = rtrim($host, "/");
+        $host      = \str_replace("http://", "", $host);
+        $host      = \str_replace("https://", "", $host);
+        $host      = \rtrim($host, "/");
         $domains[] = $host;
 
         // Get the domains from the vhosts
         $vhosts = QUI::vhosts();
+
         foreach ($vhosts as $key => $data) {
             if (!isset($data['project']) || empty($data['project'])) {
                 continue;
             }
 
             $domains[] = $key;
+
             # Parse vhosts per language
             $projectName = $data['project'];
             $Project     = QUI::getProject($projectName);
             $langs       = $Project->getLanguages();
+
             foreach ($langs as $lang) {
                 if (isset($data[$lang]) && !empty($data[$lang])) {
                     $domains[] = $data[$lang];
@@ -384,11 +388,11 @@ class VhostManager
 
         if ($includeWWW) {
             foreach ($domains as $domain) {
-                $domains[] = "www." . $domain;
+                $domains[] = "www.".$domain;
             }
         }
 
-        $domains = array_unique($domains);
+        $domains = \array_unique($domains);
 
         return $domains;
     }

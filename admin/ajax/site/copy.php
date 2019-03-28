@@ -14,9 +14,9 @@ QUI::$Ajax->registerFunction(
     function ($project, $id, $newParent) {
         $Project   = QUI::getProjectManager()->decode($project);
         $Site      = new QUI\Projects\Site\Edit($Project, (int)$id);
-        $newParent = json_decode($newParent, true);
+        $newParent = \json_decode($newParent, true);
 
-        if (is_numeric($newParent)) {
+        if (\is_numeric($newParent)) {
             $ParentProject = $Project;
             $newParentId   = $newParent;
         } else {
@@ -31,6 +31,6 @@ QUI::$Ajax->registerFunction(
 
         return $NewSite->getId();
     },
-    array('project', 'id', 'newParent'),
+    ['project', 'id', 'newParent'],
     'Permission::checkAdminUser'
 );

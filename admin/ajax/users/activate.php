@@ -10,9 +10,9 @@
 QUI::$Ajax->registerFunction(
     'ajax_users_activate',
     function ($uid) {
-        $uid = json_decode($uid, true);
+        $uid = \json_decode($uid, true);
 
-        if (!is_array($uid)) {
+        if (!\is_array($uid)) {
             $uid = [$uid];
         }
 
@@ -46,13 +46,13 @@ QUI::$Ajax->registerFunction(
             }
         }
 
-        if (count($activated)) {
+        if (\count($activated)) {
             QUI::getMessagesHandler()->addSuccess(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'message.users.activated',
                     [
-                        'users' => implode(',', $activated)
+                        'users' => \implode(',', $activated)
                     ]
                 )
             );

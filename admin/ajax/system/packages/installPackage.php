@@ -10,9 +10,9 @@ QUI::$Ajax->registerFunction(
     'ajax_system_packages_installPackage',
     function ($packageName, $packageVersion, $server) {
         $Packages = QUI::getPackageManager();
-        $server   = json_decode($server, true);
+        $server   = \json_decode($server, true);
 
-        if ($server && is_array($server)) {
+        if ($server && \is_array($server)) {
             foreach ($server as $s) {
                 $Packages->addServer($s['server'], [
                     'type' => $s['type']

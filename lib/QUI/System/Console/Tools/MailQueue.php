@@ -5,6 +5,7 @@
  * @author hen
  *
  */
+
 namespace QUI\System\Console\Tools;
 
 use QUI;
@@ -23,7 +24,7 @@ class MailQueue extends QUI\System\Console\Tool
     public function __construct()
     {
         $this->setName('quiqqer:mailqueue')
-             ->setDescription('Functions for the mail queue');
+            ->setDescription('Functions for the mail queue');
     }
 
     /**
@@ -65,8 +66,8 @@ class MailQueue extends QUI\System\Console\Tool
                 $this->writeLn('====== Mail Queue ======');
 
                 foreach ($list as $entry) {
-                    $to = '';
-                    $mailTo = json_decode($entry['mailto'], true);
+                    $to     = '';
+                    $mailTo = \json_decode($entry['mailto'], true);
 
                     if (is_array($mailTo)) {
                         $to = key($mailTo);

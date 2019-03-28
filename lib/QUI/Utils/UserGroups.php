@@ -26,29 +26,29 @@ class UserGroups
      */
     public static function parseUsersGroupsString($str)
     {
-        $result = array(
-            'users'  => array(),
-            'groups' => array()
-        );
+        $result = [
+            'users'  => [],
+            'groups' => []
+        ];
 
-        if (!is_string($str)) {
+        if (!\is_string($str)) {
             return $result;
         }
 
         if (empty($str)) {
-            $ugs = array();
+            $ugs = [];
         } else {
-            $ugs = explode(',', $str);
+            $ugs = \explode(',', $str);
         }
 
         foreach ($ugs as $ug) {
-            if (strpos($ug, 'g') !== false) {
-                $result['groups'][] = (int)substr($ug, 1);
+            if (\strpos($ug, 'g') !== false) {
+                $result['groups'][] = (int)\substr($ug, 1);
                 continue;
             }
 
-            if (strpos($ug, 'u') !== false) {
-                $result['users'][] = (int)substr($ug, 1);
+            if (\strpos($ug, 'u') !== false) {
+                $result['users'][] = (int)\substr($ug, 1);
             }
         }
 
@@ -72,17 +72,17 @@ class UserGroups
             return $result;
         }
 
-        $list = array();
+        $list = [];
 
         foreach ($array['users'] as $uid) {
-            $list[] = 'u' . $uid;
+            $list[] = 'u'.$uid;
         }
 
         foreach ($array['groups'] as $gid) {
-            $list[] = 'g' . $gid;
+            $list[] = 'g'.$gid;
         }
 
-        return implode(',', $list);
+        return \implode(',', $list);
     }
 
     /**
@@ -93,21 +93,21 @@ class UserGroups
      */
     public static function getUserGroupStringFromUser(QUI\Interfaces\Users\User $User)
     {
-        $result = array();
+        $result = [];
         $groups = $User->getGroups();
 
-        if (!is_array($groups)) {
-            $groups = array();
+        if (!\is_array($groups)) {
+            $groups = [];
         }
 
-        $result[] = 'u' . $User->getId();
+        $result[] = 'u'.$User->getId();
 
         /* @var $Group QUI\Groups\Group */
         foreach ($groups as $Group) {
-            $result[] = 'g' . $Group->getId();
+            $result[] = 'g'.$Group->getId();
         }
 
-        return implode(',', $result);
+        return \implode(',', $result);
     }
 
     /**
@@ -120,7 +120,7 @@ class UserGroups
      */
     public static function isUserInUserGroupString(QUI\Interfaces\Users\User $User, $ugString)
     {
-        if (!is_string($ugString)) {
+        if (!\is_string($ugString)) {
             return false;
         }
 
@@ -134,7 +134,7 @@ class UserGroups
             }
         }
 
-        $userGroups = array_flip($User->getGroups(false));
+        $userGroups = \array_flip($User->getGroups(false));
 
         foreach ($groups as $gid) {
             if (isset($userGroups[$gid])) {
@@ -153,14 +153,14 @@ class UserGroups
      */
     public static function isUserGroupString($ugString)
     {
-        if (!is_string($ugString)) {
+        if (!\is_string($ugString)) {
             return false;
         }
 
-        $ugString = explode(',', $ugString);
+        $ugString = \explode(',', $ugString);
 
         foreach ($ugString as $entry) {
-            if (strpos($entry, 'g') === false && strpos($entry, 'u') === false) {
+            if (\strpos($entry, 'g') === false && \strpos($entry, 'u') === false) {
                 return false;
             }
         }

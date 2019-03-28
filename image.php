@@ -1,13 +1,13 @@
 <?php
 
-if (!defined('QUIQQER_SYSTEM')) {
-    define('QUIQQER_SYSTEM', true);
+if (!\defined('QUIQQER_SYSTEM')) {
+    \define('QUIQQER_SYSTEM', true);
 }
 
 require_once 'bootstrap.php';
 
 if (!isset($_REQUEST['project']) || !isset($_REQUEST['id'])) {
-    header("HTTP/1.0 404 Not Found");
+    \header("HTTP/1.0 404 Not Found");
     exit;
 }
 
@@ -21,17 +21,17 @@ use QUI\Projects\Media;
  */
 function getMimeType($file)
 {
-    if (!file_exists($file)) {
+    if (!\file_exists($file)) {
         return '';
     }
 
-    if (function_exists('mime_content_type')) { // PHP interne Funktionen
-        return mime_content_type($file);
+    if (\function_exists('mime_content_type')) { // PHP interne Funktionen
+        return \mime_content_type($file);
     }
 
-    if (function_exists('finfo_open') && function_exists('finfo_file')) { // PECL
-        $finfo = finfo_open(FILEINFO_MIME);
-        $part  = explode(';', finfo_file($finfo, $file));
+    if (\function_exists('finfo_open') && \function_exists('finfo_file')) { // PECL
+        $finfo = \finfo_open(FILEINFO_MIME);
+        $part  = \explode(';', \finfo_file($finfo, $file));
 
         return $part[0];
     }
@@ -47,7 +47,7 @@ try {
 
     if (Media\Utils::isFolder($File)) {
         QUI\Utils\System\File::send(
-            BIN_DIR . '16x16/folder.png'
+            BIN_DIR.'16x16/folder.png'
         );
         exit;
     }
@@ -58,8 +58,8 @@ try {
     $isAdmin = false;
 
     if (isset($_SERVER['HTTP_REFERER'])
-        && strpos($_SERVER['HTTP_REFERER'], $_SERVER['HTTP_HOST']) !== false
-        && strpos($_SERVER['HTTP_REFERER'], URL_SYS_DIR)
+        && \strpos($_SERVER['HTTP_REFERER'], $_SERVER['HTTP_HOST']) !== false
+        && \strpos($_SERVER['HTTP_REFERER'], URL_SYS_DIR)
     ) {
         $isAdmin = true;
     }
@@ -97,32 +97,32 @@ try {
         }
 
         // cache
-        $cacheDir = VAR_DIR . 'media/cache/admin/'
-                    . $Project->getName() . '/'
-                    . $Project->getLang() . '/';
+        $cacheDir = VAR_DIR.'media/cache/admin/'
+                    .$Project->getName().'/'
+                    .$Project->getLang().'/';
 
         QUI\Utils\System\File::mkdir($cacheDir);
 
         // filecache
-        $ext = pathinfo($File->getFullPath(), \PATHINFO_EXTENSION);
+        $ext = \pathinfo($File->getFullPath(), \PATHINFO_EXTENSION);
 
         if ($File->getAttribute('mime_type') == 'image/svg+xml') {
-            header('Content-type: image/svg+xml');
-            echo file_get_contents($File->getFullPath());
+            \header('Content-type: image/svg+xml');
+            echo \file_get_contents($File->getFullPath());
             exit;
         }
 
-        $cacheFile = $cacheDir . $File->getId()
-                     . '__' . $_REQUEST['maxheight'] . 'x'
-                     . $_REQUEST['maxwidth'] . '.' . $ext;
+        $cacheFile = $cacheDir.$File->getId()
+                     .'__'.$_REQUEST['maxheight'].'x'
+                     .$_REQUEST['maxwidth'].'.'.$ext;
 
         if (getMimeType($cacheFile) == 'image/svg+xml') {
-            header('Content-type: image/svg+xml');
-            echo file_get_contents($cacheFile);
+            \header('Content-type: image/svg+xml');
+            echo \file_get_contents($cacheFile);
             exit;
         }
 
-        if (file_exists($cacheFile)) {
+        if (\file_exists($cacheFile)) {
             $Image = $Media->getImageManager()->make($cacheFile);
             echo $Image->response();
             exit;
@@ -171,29 +171,29 @@ try {
     }
 
     if (!$image) {
-        $image = CMS_DIR . 'media/sites/' . $Project->getName() . '/' . $file;
+        $image = CMS_DIR.'media/sites/'.$Project->getName().'/'.$file;
     }
 
-    if (!file_exists($image)) {
-        header("HTTP/1.0 404 Not Found");
-        QUI\System\Log::addInfo('File not exist ' . $image);
+    if (!\file_exists($image)) {
+        \header("HTTP/1.0 404 Not Found");
+        QUI\System\Log::addInfo('File not exist '.$image);
         exit;
     }
 
-    header("Content-Type: " . $File->getAttribute('mime_type'));
-    header("Expires: " . gmdate("D, d M Y H:i:s") . " GMT");
-    header("Pragma: public");
-    header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-    header("Accept-Ranges: bytes");
-    header("Content-Size: " . filesize($image));
-    header("Content-Length: " . filesize($image));
-    header("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
-    header("Connection: Keep-Alive");
-    header("Content-Disposition: inline; filename=\"" . pathinfo($file, PATHINFO_BASENAME) . "\"");
+    \header("Content-Type: ".$File->getAttribute('mime_type'));
+    \header("Expires: ".\gmdate("D, d M Y H:i:s")." GMT");
+    \header("Pragma: public");
+    \header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+    \header("Accept-Ranges: bytes");
+    \header("Content-Size: ".\filesize($image));
+    \header("Content-Length: ".\filesize($image));
+    \header("Last-Modified: ".\gmdate("D, d M Y H:i:s")." GMT");
+    \header("Connection: Keep-Alive");
+    \header("Content-Disposition: inline; filename=\"".\pathinfo($file, PATHINFO_BASENAME)."\"");
 
-    $fo_image = fopen($image, "r");
-    $fr_image = fread($fo_image, filesize($image));
-    fclose($fo_image);
+    $fo_image = \fopen($image, "r");
+    $fr_image = \fread($fo_image, \filesize($image));
+    \fclose($fo_image);
 
     echo $fr_image;
     exit;
@@ -202,5 +202,5 @@ try {
 
 
 // wenn es das Bild nicht mehr gibt
-header("HTTP/1.0 404 Not Found");
+\header("HTTP/1.0 404 Not Found");
 exit;

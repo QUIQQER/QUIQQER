@@ -225,7 +225,7 @@ class Media extends QUI\QDOM
                 $library = '';
         }
 
-        if (class_exists('Imagick') && ($library === '' || $library === 'imagick')) {
+        if (\class_exists('Imagick') && ($library === '' || $library === 'imagick')) {
             return new ImageManager(['driver' => 'imagick']);
         }
 
@@ -290,7 +290,7 @@ class Media extends QUI\QDOM
                 'id'     => 1,
                 'name'   => 'Media',
                 'title'  => 'Media',
-                'c_date' => date('Y-m-d H:i:s'),
+                'c_date' => \date('Y-m-d H:i:s'),
                 'c_user' => QUI::getUserBySession()->getId(),
                 'type'   => 'folder'
             ]);
@@ -455,7 +455,7 @@ class Media extends QUI\QDOM
      */
     public function replace($id, $file)
     {
-        if (!file_exists($file)) {
+        if (!\file_exists($file)) {
             throw new QUI\Exception('File could not be found', 404);
         }
 
@@ -574,7 +574,7 @@ class Media extends QUI\QDOM
             ]
         );
 
-        if (is_array($result) && isset($result[0])) {
+        if (\is_array($result) && isset($result[0])) {
             return (int)$result[0]['parent'];
         }
 

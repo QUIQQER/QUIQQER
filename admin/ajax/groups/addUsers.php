@@ -10,7 +10,7 @@
 QUI::$Ajax->registerFunction(
     'ajax_groups_addUsers',
     function ($gid, $userIds) {
-        $userIds = json_decode($userIds, true);
+        $userIds = \json_decode($userIds, true);
         $Group   = QUI::getGroups()->get((int)$gid);
 
         foreach ($userIds as $userId) {
@@ -19,6 +19,6 @@ QUI::$Ajax->registerFunction(
             $User->save();
         }
     },
-    array('gid', 'userIds'),
+    ['gid', 'userIds'],
     'Permission::checkSU'
 );

@@ -60,8 +60,8 @@ foreach ($packages as $package) {
 
     echo '<script type="text/javascript">';
     echo '/* <![CDATA[ */';
-    echo 'var QUIQQER_LOCALE = '.json_encode($files, true).';';
-    echo 'var QUIQQER_LANGUAGES = '.json_encode($languages, true).';';
+    echo 'var QUIQQER_LOCALE = '.\json_encode($files, true).';';
+    echo 'var QUIQQER_LANGUAGES = '.\json_encode($languages, true).';';
     echo 'var QUIQQER_IS_ADMIN_LOGIN = true;';
     echo '/* ]]> */';
     echo '</script>';
@@ -502,7 +502,7 @@ foreach ($packages as $package) {
     <div class="login"></div>
 </div>
 
-<?php if (defined('LOGIN_FAILED')) { ?>
+<?php if (\defined('LOGIN_FAILED')) { ?>
     <script type="text/javascript">
         require(['qui/QUI'], function () {
             QUI.getMessageHandler().then(function (MH) {

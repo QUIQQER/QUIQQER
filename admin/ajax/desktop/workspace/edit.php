@@ -10,10 +10,10 @@ QUI::$Ajax->registerFunction(
     'ajax_desktop_workspace_edit',
     function ($id, $data) {
         $User = QUI::getUserBySession();
-        $data = json_decode($data, true);
+        $data = \json_decode($data, true);
 
         QUI\Workspace\Manager::saveWorkspace($User, $id, $data);
     },
-    array('id', 'data'),
+    ['id', 'data'],
     'Permission::checkUser'
 );

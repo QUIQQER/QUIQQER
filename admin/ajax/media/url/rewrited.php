@@ -15,9 +15,9 @@ QUI::$Ajax->registerFunction(
         }
 
         if (!isset($params)) {
-            $params = array();
+            $params = [];
         } else {
-            $params = json_decode($params, true);
+            $params = \json_decode($params, true);
         }
 
         try {
@@ -51,6 +51,6 @@ QUI::$Ajax->registerFunction(
 
         return $fileurl;
     },
-    array('fileurl', 'params'),
+    ['fileurl', 'params'],
     'Permission::checkAdminUser'
 );

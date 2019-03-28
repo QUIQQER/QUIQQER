@@ -10,14 +10,14 @@
 QUI::$Ajax->registerFunction(
     'ajax_project_create',
     function ($params) {
-        $params = json_decode($params, true);
+        $params = \json_decode($params, true);
 
         $Project = QUI\Projects\Manager::createProject(
             $params['project'],
             $params['lang']
         );
 
-        
+
         if (isset($params['template']) && !empty($params['template'])) {
             $Config = QUI::getProjectManager()->getConfig();
 

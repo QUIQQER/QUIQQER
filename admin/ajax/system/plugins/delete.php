@@ -13,7 +13,7 @@ QUI::$Ajax->registerFunction(
         $Plugin  = $Plugins->get($plugin);
 
         $Plugin->uninstall(
-            json_decode($params, true)
+            \json_decode($params, true)
         );
     },
     ['plugin', 'params'],

@@ -16,7 +16,7 @@ use QUI;
  */
 class Handler
 {
-    protected $messages = array();
+    protected $messages = [];
 
     /**
      * Return the message handler db table
@@ -31,13 +31,13 @@ class Handler
      */
     public static function setup()
     {
-        QUI::getDataBase()->table()->addColumn(self::table(), array(
+        QUI::getDataBase()->table()->addColumn(self::table(), [
             'uid'     => 'int(11)',
             'message' => 'text',
             'mtype'   => 'varchar(100)',
             'mcode'   => 'varchar(5)',
             'mtime'   => 'int(11)'
-        ));
+        ]);
     }
 
     /**
@@ -45,7 +45,7 @@ class Handler
      */
     public function clear()
     {
-        $this->messages = array();
+        $this->messages = [];
     }
 
     /**
@@ -63,55 +63,55 @@ class Handler
             return $result;
         }
 
-        $list = QUI::getDataBase()->fetch(array(
+        $list = QUI::getDataBase()->fetch([
             'from'  => self::table(),
-            'where' => array(
+            'where' => [
                 'uid' => $User->getId()
-            )
-        ));
+            ]
+        ]);
 
-        QUI::getDataBase()->delete(self::table(), array(
+        QUI::getDataBase()->delete(self::table(), [
             'uid' => $User->getId()
-        ));
+        ]);
 
         foreach ($list as $entry) {
             $str = $entry['message'];
 
             switch ($entry['mtype']) {
                 case 'QUI\\Messages\\Attention':
-                    $Message = new Attention(array(
+                    $Message = new Attention([
                         'message' => $str
-                    ));
+                    ]);
                     break;
 
                 case 'QUI\\Messages\\Error':
-                    $Message = new Error(array(
+                    $Message = new Error([
                         'message' => $str
-                    ));
+                    ]);
                     break;
 
                 case 'QUI\\Messages\\Information':
-                    $Message = new Information(array(
+                    $Message = new Information([
                         'message' => $str
-                    ));
+                    ]);
                     break;
 
                 case 'QUI\\Messages\\Success':
-                    $Message = new Success(array(
+                    $Message = new Success([
                         'message' => $str
-                    ));
+                    ]);
                     break;
 
                 default:
-                    $Message = new Message(array(
+                    $Message = new Message([
                         'message' => $str
-                    ));
+                    ]);
             }
 
             $result[] = $Message;
         }
 
-        $this->messages = array();
+        $this->messages = [];
 
         return $result;
     }
@@ -125,7 +125,7 @@ class Handler
      */
     public function getMessagesAsArray(QUI\Interfaces\Users\User $User)
     {
-        $result   = array();
+        $result   = [];
         $messages = $this->getNewMessages($User);
 
         /* @var $Message Message */
@@ -154,9 +154,9 @@ class Handler
     public function addAttention($str)
     {
         $this->addMessage(
-            new Attention(array(
+            new Attention([
                 'message' => $str
-            ))
+            ])
         );
     }
 
@@ -168,9 +168,9 @@ class Handler
     public function addError($str)
     {
         $this->addMessage(
-            new Error(array(
+            new Error([
                 'message' => $str
-            ))
+            ])
         );
     }
 
@@ -182,9 +182,9 @@ class Handler
     public function addInformation($str)
     {
         $this->addMessage(
-            new Information(array(
+            new Information([
                 'message' => $str
-            ))
+            ])
         );
     }
 
@@ -196,9 +196,9 @@ class Handler
     public function addSuccess($str)
     {
         $this->addMessage(
-            new Success(array(
+            new Success([
                 'message' => $str
-            ))
+            ])
         );
     }
 
@@ -216,13 +216,13 @@ class Handler
             return;
         }
 
-        QUI::getDataBase()->insert(self::table(), array(
+        QUI::getDataBase()->insert(self::table(), [
             'uid'     => $User->getId(),
             'message' => $Message->getMessage(),
             'mcode'   => (int)$Message->getCode(),
             'mtime'   => (int)$Message->getAttribute('time'),
             'mtype'   => $Message->getType()
-        ));
+        ]);
     }
 
     /**
@@ -235,9 +235,9 @@ class Handler
     {
         $this->sendMessage(
             $User,
-            new Attention(array(
+            new Attention([
                 'message' => $str
-            ))
+            ])
         );
     }
 
@@ -251,9 +251,9 @@ class Handler
     {
         $this->sendMessage(
             $User,
-            new Error(array(
+            new Error([
                 'message' => $str
-            ))
+            ])
         );
     }
 
@@ -267,9 +267,9 @@ class Handler
     {
         $this->sendMessage(
             $User,
-            new Information(array(
+            new Information([
                 'message' => $str
-            ))
+            ])
         );
     }
 
@@ -283,9 +283,9 @@ class Handler
     {
         $this->sendMessage(
             $User,
-            new Success(array(
+            new Success([
                 'message' => $str
-            ))
+            ])
         );
     }
 }

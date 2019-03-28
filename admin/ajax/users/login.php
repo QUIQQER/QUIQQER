@@ -16,7 +16,7 @@ QUI::$Ajax->registerFunction(
 
         QUI::getUsers()->authenticate(
             $authenticator,
-            json_decode($params, true)
+            \json_decode($params, true)
         );
 
         if ($globalauth) {

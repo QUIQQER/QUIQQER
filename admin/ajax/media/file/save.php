@@ -15,7 +15,7 @@ QUI::$Ajax->registerFunction(
         $Project    = QUI\Projects\Manager::getProject($project);
         $Media      = $Project->getMedia();
         $File       = $Media->get($fileid);
-        $attributes = json_decode($attributes, true);
+        $attributes = \json_decode($attributes, true);
 
         // rename check
         if (isset($attributes['name']) && $File->getAttribute('name') != $attributes['name']) {
@@ -51,6 +51,6 @@ QUI::$Ajax->registerFunction(
 
         return $File->getAttributes();
     },
-    array('project', 'fileid', 'attributes'),
+    ['project', 'fileid', 'attributes'],
     'Permission::checkAdminUser'
 );

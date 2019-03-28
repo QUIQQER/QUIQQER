@@ -10,13 +10,13 @@ QUI::$Ajax->registerFunction(
     'ajax_groups_search',
     function ($fields, $params) {
         $Groups = QUI::getGroups();
-        $params = json_decode($params, true);
-        $fields = json_decode($fields, true);
-        $query  = array();
+        $params = \json_decode($params, true);
+        $fields = \json_decode($fields, true);
+        $query  = [];
         $page   = 1;
 
-        if (!is_array($fields)) {
-            $fields = array();
+        if (!\is_array($fields)) {
+            $fields = [];
         }
 
         if (isset($params['order'])) {
@@ -28,10 +28,10 @@ QUI::$Ajax->registerFunction(
         }
 
         foreach ($fields as $field => $value) {
-            $query['where_or'][$field] = array(
+            $query['where_or'][$field] = [
                 'type'  => '%LIKE%',
                 'value' => $value
-            );
+            ];
         }
 
         $Grid = new QUI\Utils\Grid();
@@ -39,6 +39,6 @@ QUI::$Ajax->registerFunction(
 
         return $Grid->parseResult($Groups->search($query), $Groups->count($params));
     },
-    array('fields', 'params'),
+    ['fields', 'params'],
     'Permission::checkAdminUser'
 );

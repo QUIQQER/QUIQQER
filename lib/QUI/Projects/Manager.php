@@ -81,8 +81,8 @@ class Manager
         $Project      = $project;
         $handedParams = $params;
 
-        if (is_string($Project)
-            || get_class($Project) != Project::class
+        if (\is_string($Project)
+            || \get_class($Project) != Project::class
         ) {
             $Project = self::getProject($project);
         }
@@ -94,7 +94,7 @@ class Manager
             $Project
         );
 
-        if (!is_array($params)) {
+        if (!\is_array($params)) {
             $params = [];
         }
 
@@ -136,10 +136,10 @@ class Manager
         }
 
         // doppelte sprachen filtern
-        $languages = explode(',', $availableConfig['langs']);
-        $languages = array_unique($languages);
+        $languages = \explode(',', $availableConfig['langs']);
+        $languages = \array_unique($languages);
 
-        $availableConfig['langs'] = implode(',', $languages);
+        $availableConfig['langs'] = \implode(',', $languages);
 
         $Config->setSection($projectName, $availableConfig);
         $Config->save();
@@ -339,7 +339,7 @@ class Manager
         $Config = self::getConfig();
         $config = $Config->toArray();
 
-        return count($config);
+        return \count($config);
     }
 
     /**
@@ -353,8 +353,8 @@ class Manager
      */
     public static function decode($project)
     {
-        if (is_string($project)) {
-            $project = json_decode($project, true);
+        if (\is_string($project)) {
+            $project = \json_decode($project, true);
         }
 
         if (!isset($project['name']) || !$project['name']) {
@@ -514,7 +514,7 @@ class Manager
         $result = [];
 
         foreach ($config as $project => $conf) {
-            $langs = explode(',', trim($conf['langs']));
+            $langs = \explode(',', \trim($conf['langs']));
 
             foreach ($langs as $lang) {
                 if (isset(self::$projects[$project])
@@ -552,7 +552,7 @@ class Manager
 
         $config = self::getConfig()->toArray();
 
-        if (!count($config)) {
+        if (!\count($config)) {
             throw new QUI\Exception(
                 'No project exist'
             );
@@ -573,11 +573,11 @@ class Manager
                 'No standard project are set. Please define a standard projekt'
             );
 
-            $project = key($config);
+            $project = \key($config);
 
             self::$Standard = QUI\Projects\Manager::getProject(
                 $project,
-                $config[key($config)]['default_lang']
+                $config[\key($config)]['default_lang']
             );
         }
 
@@ -603,7 +603,7 @@ class Manager
             'quiqqer.projects.create'
         );
 
-        if (strlen($name) <= 2) {
+        if (\strlen($name) <= 2) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
@@ -613,7 +613,7 @@ class Manager
             );
         }
 
-        if (strlen($lang) != 2) {
+        if (\strlen($lang) != 2) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
@@ -685,7 +685,7 @@ class Manager
             "type"     => 'standard',
             "active"   => 1,
             "deleted"  => 0,
-            "c_date"   => date('Y-m-d H:i:s'),
+            "c_date"   => \date('Y-m-d H:i:s'),
             "c_user"   => QUI::getUserBySession()->getId(),
             "e_user"   => QUI::getUserBySession()->getId(),
             "nav_hide" => 0
@@ -732,7 +732,7 @@ class Manager
             "file"    => '',
             "active"  => 1,
             "deleted" => 0,
-            "c_date"  => date('Y-m-d H:i:s'),
+            "c_date"  => \date('Y-m-d H:i:s'),
             "c_user"  => QUI::getUserBySession()->getId(),
             "e_user"  => QUI::getUserBySession()->getId()
         ]);
@@ -748,29 +748,29 @@ class Manager
         /**
          * Languages
          */
-        if (!in_array($lang, $languages)) {
+        if (!\in_array($lang, $languages)) {
             $languages[] = $lang;
         }
 
-        $languages = array_filter($languages, function ($language) {
-            return strlen($language) === 2;
+        $languages = \array_filter($languages, function ($language) {
+            return \strlen($language) === 2;
         });
 
-        $languages = array_unique($languages);
+        $languages = \array_unique($languages);
 
 
         /**
          * Write the config
          */
-        if (!file_exists(CMS_DIR.'etc/projects.ini.php')) {
-            file_put_contents(CMS_DIR.'etc/projects.ini.php', '');
+        if (!\file_exists(CMS_DIR.'etc/projects.ini.php')) {
+            \file_put_contents(CMS_DIR.'etc/projects.ini.php', '');
         }
 
         $Config = self::getConfig();
 
         $Config->setSection($name, [
             'default_lang' => $lang,
-            'langs'        => implode(',', $languages),
+            'langs'        => \implode(',', $languages),
             'admin_mail'   => '',
             'template'     => $name,
             'image_text'   => '0',
@@ -783,7 +783,7 @@ class Manager
             'standard'     => '0'
         ]);
 
-        if (count($Config->toArray()) <= 1) {
+        if (\count($Config->toArray()) <= 1) {
             $Config->setValue($name, 'standard', 1);
         }
 
@@ -861,7 +861,7 @@ class Manager
             // search database tables
             $databaseXml = OPT_DIR.$package['name'].'/database.xml';
 
-            if (!file_exists($databaseXml)) {
+            if (!\file_exists($databaseXml)) {
                 continue;
             }
 
@@ -929,18 +929,18 @@ class Manager
 
         // File: etc/projects.ini.php
         $filename = ETC_DIR."projects.ini.php";
-        $content  = file_get_contents($filename);
+        $content  = \file_get_contents($filename);
 
-        $content = str_replace($oldName, $newName, $content);
-        file_put_contents($filename, $content);
+        $content = \str_replace($oldName, $newName, $content);
+        \file_put_contents($filename, $content);
 
 
         // File: etc/vhosts.ini.php
         $filename = ETC_DIR."vhosts.ini.php";
-        $content  = file_get_contents($filename);
+        $content  = \file_get_contents($filename);
 
-        $content = str_replace($oldName, $newName, $content);
-        file_put_contents($filename, $content);
+        $content = \str_replace($oldName, $newName, $content);
+        \file_put_contents($filename, $content);
 
 
         // ----------------------------- //
@@ -958,12 +958,12 @@ class Manager
         }
 
         foreach ($tables as $oldTableName) {
-            if (strpos($oldTableName."_", QUI_DB_PRFX.$oldName) === false) {
+            if (\strpos($oldTableName."_", QUI_DB_PRFX.$oldName) === false) {
                 continue;
             }
 
 
-            $newTableName = preg_replace(
+            $newTableName = \preg_replace(
                 "~^".QUI_DB_PRFX.$oldName."_~m",
                 QUI_DB_PRFX.$newName."_",
                 $oldTableName
@@ -988,8 +988,8 @@ class Manager
         $sourceDir = CMS_DIR."media/sites/".$oldName;
         $targetDir = CMS_DIR."media/sites/".$newName;
 
-        if (is_dir($sourceDir)) {
-            rename($sourceDir, $targetDir);
+        if (\is_dir($sourceDir)) {
+            \rename($sourceDir, $targetDir);
         }
 
         // ----------------------------- //
@@ -998,8 +998,8 @@ class Manager
         $sourceDir = USR_DIR.$oldName;
         $targetDir = USR_DIR.$newName;
 
-        if (is_dir($sourceDir)) {
-            rename($sourceDir, $targetDir);
+        if (\is_dir($sourceDir)) {
+            \rename($sourceDir, $targetDir);
         }
 
         // -----------------------------//
@@ -1011,8 +1011,8 @@ class Manager
         // ----------------------------- //
         //              Locale           //
         // ----------------------------- //
-        if (file_exists(VAR_DIR."locale/localefiles")) {
-            unlink(VAR_DIR."locale/localefiles");
+        if (\file_exists(VAR_DIR."locale/localefiles")) {
+            \unlink(VAR_DIR."locale/localefiles");
         }
 
 
@@ -1021,6 +1021,7 @@ class Manager
         $translationVar   = 'title';
 
         $translation = QUI\Translator::get($translationGroup, $translationVar);
+
         if (isset($translation[0])) {
             QUI\Translator::delete($translationGroup, $translationVar);
         }
@@ -1030,6 +1031,7 @@ class Manager
         $translationVar   = 'title';
 
         $translation = QUI\Translator::get($translationGroup, $translationVar);
+
         if (!isset($translation[0])) {
             try {
                 QUI\Translator::add($translationGroup, $translationVar);
@@ -1121,7 +1123,7 @@ class Manager
         $packages = QUI::getPackageManager()->getInstalled();
 
         $templates = self::getRelatedTemplates($Project);
-        $templates = array_flip($templates);
+        $templates = \array_flip($templates);
 
         // read template config
         foreach ($packages as $package) {
@@ -1135,7 +1137,7 @@ class Manager
 
             $file = OPT_DIR.$package['name'].'/settings.xml';
 
-            if (!file_exists($file)) {
+            if (!\file_exists($file)) {
                 continue;
             }
 
@@ -1152,7 +1154,7 @@ class Manager
         // direct - project settings
         $projectSettings = USR_DIR.$Project->getName().'/settings.xml';
 
-        if (file_exists($projectSettings)) {
+        if (\file_exists($projectSettings)) {
             $Dom  = XML::getDomFromXml($projectSettings);
             $Path = new \DOMXPath($Dom);
 
@@ -1195,11 +1197,11 @@ class Manager
         $search = $params['search'];
 
         foreach ($list as $project => $entry) {
-            if (!empty($search) && strpos($project, $search) === false) {
+            if (!empty($search) && \strpos($project, $search) === false) {
                 continue;
             }
 
-            $languages = explode(',', $entry['langs']);
+            $languages = \explode(',', $entry['langs']);
 
             foreach ($languages as $lang) {
                 $result[] = [

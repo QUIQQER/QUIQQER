@@ -25,15 +25,15 @@ class Helper
      */
     public static function parseAuthenticatorToPermission($authenticator, $permission = '')
     {
-        if (is_object($authenticator)) {
-            $authenticator = get_class($authenticator);
+        if (\is_object($authenticator)) {
+            $authenticator = \get_class($authenticator);
         }
 
         if (empty($permission)) {
-            return 'quiqqer.auth.' . str_replace('\\', '', $authenticator);
+            return 'quiqqer.auth.' . \str_replace('\\', '', $authenticator);
         }
 
-        return 'quiqqer.auth.' . str_replace('\\', '', $authenticator) . '.' . $permission;
+        return 'quiqqer.auth.' . \str_replace('\\', '', $authenticator) . '.' . $permission;
     }
 
     /**
@@ -52,8 +52,8 @@ class Helper
             );
         }
 
-        if (is_object($authenticator)) {
-            $authenticator = get_class($authenticator);
+        if (\is_object($authenticator)) {
+            $authenticator = \get_class($authenticator);
         }
 
         $permission = self::parseAuthenticatorToPermission($authenticator);

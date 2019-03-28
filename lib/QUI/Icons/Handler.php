@@ -3,6 +3,7 @@
 /**
  * This file contains QUI\Icons\Handler
  */
+
 namespace QUI\Icons;
 
 use QUI;
@@ -23,14 +24,14 @@ class Handler
     /**
      * @var array
      */
-    protected $list = array();
+    protected $list = [];
 
     /**
      * list of needed css files
      *
      * @var array
      */
-    protected $files = array();
+    protected $files = [];
 
     /**
      * return the global icon handler
@@ -39,7 +40,7 @@ class Handler
      */
     public static function getInstance()
     {
-        if (is_null(self::$Instance)) {
+        if (\is_null(self::$Instance)) {
             self::$Instance = new self();
         }
 
@@ -51,7 +52,7 @@ class Handler
      */
     public function __construct()
     {
-        QUI::getEvents()->fireEvent('onIconsInit', array($this));
+        QUI::getEvents()->fireEvent('onIconsInit', [$this]);
     }
 
     /**
@@ -87,7 +88,7 @@ class Handler
      */
     public function addIcon($iconClass)
     {
-        $this->list[] = trim($iconClass);
+        $this->list[] = \trim($iconClass);
     }
 
     /**
@@ -108,7 +109,7 @@ class Handler
      */
     public function isIcon($value)
     {
-        $classes = array_flip($this->list);
+        $classes = \array_flip($this->list);
 
         return isset($classes[$value]);
     }
@@ -134,6 +135,6 @@ class Handler
      */
     public function toJSON()
     {
-        return json_encode($this->toArray());
+        return \json_encode($this->toArray());
     }
 }

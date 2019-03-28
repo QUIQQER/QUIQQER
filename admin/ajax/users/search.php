@@ -10,7 +10,7 @@
 QUI::$Ajax->registerFunction(
     'ajax_users_search',
     function ($params) {
-        $params = json_decode($params, true);
+        $params = \json_decode($params, true);
 
         $Groups = QUI::getGroups();
         $Users  = QUI::getUsers();
@@ -23,9 +23,7 @@ QUI::$Ajax->registerFunction(
             $limit = $params['limit'];
         }
 
-        if (isset($params['field'])
-            && $params['field'] == 'activebtn'
-        ) {
+        if (isset($params['field']) && $params['field'] == 'activebtn') {
             $params['field'] = 'active';
         }
 
@@ -44,7 +42,7 @@ QUI::$Ajax->registerFunction(
                 continue;
             }
 
-            $usergroups = explode(',', trim($user['usergroup'], ','));
+            $usergroups = \explode(',', \trim($user['usergroup'], ','));
             $groupnames = '';
 
             foreach ($usergroups as $gid) {
@@ -59,10 +57,10 @@ QUI::$Ajax->registerFunction(
                 }
             }
 
-            $user['usergroup'] = trim($groupnames, ',');
+            $user['usergroup'] = \trim($groupnames, ',');
 
             if ($user['regdate'] != 0) {
-                $user['regdate'] = date('d.m.Y H:i:s', $user['regdate']);
+                $user['regdate'] = \date('d.m.Y H:i:s', $user['regdate']);
             }
 
             $result[] = $user;

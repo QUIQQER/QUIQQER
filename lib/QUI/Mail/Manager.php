@@ -37,11 +37,11 @@ class Manager
     {
         $Mailer = new Mailer();
 
-        $to = trim($to);
-        $to = explode(',', $to);
+        $to = \trim($to);
+        $to = \explode(',', $to);
 
         foreach ($to as $mail) {
-            $Mailer->addRecipient(trim($mail));
+            $Mailer->addRecipient(\trim($mail));
         }
 
         $Mailer->setSubject($subject);

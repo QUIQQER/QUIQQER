@@ -68,6 +68,8 @@ class EventHandler
      * Event: OnPackageUpdate
      *
      * @param Package\Package $Package
+     *
+     * @throws QUI\Exception
      */
     public static function onPackageUpdate(QUI\Package\Package $Package)
     {
@@ -78,7 +80,7 @@ class EventHandler
         // Check if htaccess or nginx need to be recreated
         $webServerType = QUI::conf("webserver", "type");
 
-        if (strpos($webServerType, 'apache') !== false) {
+        if (\strpos($webServerType, 'apache') !== false) {
             $HtAccess = new QUI\System\Console\Tools\Htaccess();
 
             if ($HtAccess->hasModifications()) {
@@ -109,6 +111,8 @@ class EventHandler
      * Set (default) package store URL in QUIQQER settings
      *
      * @return void
+     *
+     * @throws QUI\Exception
      */
     public static function setPackageStoreUrl()
     {
@@ -117,9 +121,9 @@ class EventHandler
         if (empty($packageStoreUrlConf)) {
             $packageStoreUrlConf = [];
         } else {
-            $packageStoreUrlConf = json_decode($packageStoreUrlConf, true);
+            $packageStoreUrlConf = \json_decode($packageStoreUrlConf, true);
 
-            if (empty($packageStoreUrlConf) || !is_array($packageStoreUrlConf)) {
+            if (empty($packageStoreUrlConf) || !\is_array($packageStoreUrlConf)) {
                 $packageStoreUrlConf = [];
             }
         }
@@ -140,7 +144,7 @@ class EventHandler
         }
 
         $Conf = QUI::getConfig('etc/conf.ini.php');
-        $Conf->set('packagestore', 'url', json_encode($packageStoreUrlConf));
+        $Conf->set('packagestore', 'url', \json_encode($packageStoreUrlConf));
         $Conf->save();
     }
 
@@ -171,10 +175,10 @@ class EventHandler
                 $failedLogins = 0;
             }
 
-            $User->setAttributes(array(
+            $User->setAttributes([
                 'failedLogins'     => ++$failedLogins,
-                'lastLoginAttempt' => date('Y-m-d H:i:s')
-            ));
+                'lastLoginAttempt' => \date('Y-m-d H:i:s')
+            ]);
 
             $User->save(QUI::getUsers()->getSystemUser());
         } catch (\Exception $Exception) {
@@ -203,6 +207,7 @@ class EventHandler
      * @return void
      *
      * @throws QUI\Users\Exception
+     * @throws \Exception
      */
     public static function onUserLoginStart($userId)
     {
@@ -224,15 +229,12 @@ class EventHandler
             return;
         }
 
-        $NextLoginAllowed = new \DateTime($lastLoginAttempt . ' +' . $failedLogins . ' second');
+        $NextLoginAllowed = new \DateTime($lastLoginAttempt.' +'.$failedLogins.' second');
         $Now              = new \DateTime();
 
         if ($Now < $NextLoginAllowed) {
             throw new QUI\Users\Exception(
-                array(
-                    'quiqqer/system',
-                    'exception.login.fail.login_locked'
-                ),
+                ['quiqqer/system', 'exception.login.fail.login_locked'],
                 404
             );
         }
@@ -247,10 +249,10 @@ class EventHandler
     public static function onUserLogin(QUI\Users\User $User)
     {
         try {
-            $User->setAttributes(array(
+            $User->setAttributes([
                 'failedLogins'     => 0,
                 'lastLoginAttempt' => false
-            ));
+            ]);
 
             $User->save(QUI::getUsers()->getSystemUser());
         } catch (\Exception $Exception) {

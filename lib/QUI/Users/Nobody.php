@@ -29,12 +29,20 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      */
     public function __construct()
     {
-        // nothing
+        $this->refresh();
     }
 
+    /**
+     * refresh the nobody object
+     * reads the data from the session
+     */
     public function refresh()
     {
-        // nothing to do
+        $attributes = QUI::getSession()->get('attributes');
+
+        if (!empty($attributes)) {
+            $this->setAttributes($attributes);
+        }
     }
 
     /**
@@ -172,7 +180,9 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      */
     public function save($ParentUser = false)
     {
-        return false;
+        QUI::getSession()->set('attributes', $this->getAttributes());
+
+        return true;
     }
 
     /**
@@ -352,7 +362,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      */
     public function getAddressList()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -496,10 +506,10 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
         $Everyone = new QUI\Groups\Everyone();
 
         if ($array == true) {
-            return array($Guest, $Everyone);
+            return [$Guest, $Everyone];
         }
 
-        return array($Guest->getId(), $Everyone->getId());
+        return [$Guest->getId(), $Everyone->getId()];
     }
 
     /**

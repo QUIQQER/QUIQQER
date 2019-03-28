@@ -24,10 +24,10 @@ class Json extends QUI\System\Test
     {
         parent::__construct();
 
-        $this->setAttributes(array(
+        $this->setAttributes([
             'title'       => 'json_decode and json_encode',
             'description' => ''
-        ));
+        ]);
 
         $this->isRequired = self::TEST_IS_REQUIRED;
     }
@@ -35,11 +35,11 @@ class Json extends QUI\System\Test
     /**
      * Check, if json_encode and json_decode available
      *
-     * @return self::STATUS_OK|self::STATUS_ERROR
+     * @return int self::STATUS_OK|self::STATUS_ERROR
      */
     public function execute()
     {
-        if (function_exists('json_decode') && function_exists('json_encode')) {
+        if (\function_exists('json_decode') && \function_exists('json_encode')) {
             return self::STATUS_OK;
         }
 

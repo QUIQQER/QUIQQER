@@ -11,7 +11,7 @@
 QUI::$Ajax->registerFunction(
     'ajax_project_sites_search',
     function ($project, $search, $params) {
-        $params  = json_decode($params, true);
+        $params  = \json_decode($params, true);
         $Project = QUI::getProjectManager()->decode($project);
 
         $sites  = $Project->search($search, $params['fields']);

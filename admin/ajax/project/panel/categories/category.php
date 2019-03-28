@@ -9,13 +9,13 @@
 QUI::$Ajax->registerFunction(
     'ajax_project_panel_categories_category',
     function ($file, $category) {
-        if (file_exists($file)) {
+        if (\file_exists($file)) {
             $files = [$file];
         } else {
-            $files = json_decode($file, true);
+            $files = \json_decode($file, true);
         }
 
-        $cacheName = 'qui/admin/menu/categories/'.md5(json_encode($files)).'/'.$category;
+        $cacheName = 'qui/admin/menu/categories/'.\md5(\json_encode($files)).'/'.$category;
         $Settings  = QUI\Utils\XML\Settings::getInstance();
         $Settings->setXMLPath('//quiqqer/project/settings/window');
 

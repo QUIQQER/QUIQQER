@@ -269,11 +269,11 @@ class Sites
 
         // site type tabs
         $type  = $Site->getAttribute('type');
-        $types = explode(':', $type);
+        $types = \explode(':', $type);
 
         $file = OPT_DIR.$types[0].'/site.xml';
 
-        if (file_exists($file)) {
+        if (\file_exists($file)) {
             $Dom  = XML::getDomFromXml($file);
             $Path = new \DOMXPath($Dom);
 
@@ -306,7 +306,7 @@ class Sites
 
             $file = OPT_DIR.$package['name'].'/site.xml';
 
-            if (!file_exists($file)) {
+            if (!\file_exists($file)) {
                 continue;
             }
 
@@ -329,7 +329,7 @@ class Sites
 
             $file = OPT_DIR.$package['name'].'/site.xml';
 
-            if (!file_exists($file)) {
+            if (!\file_exists($file)) {
                 continue;
             }
 
@@ -356,7 +356,7 @@ class Sites
 
             $file = OPT_DIR.$template['name'].'/site.xml';
 
-            if (!file_exists($file)) {
+            if (!\file_exists($file)) {
                 continue;
             }
 
@@ -443,7 +443,7 @@ class Sites
      * $params['fields'] - searchable fields
      * $params['count'] - true/false result as a count?
      *
-     * @return array
+     * @return array|int
      *
      * @throws QUI\Exception
      */
@@ -495,7 +495,7 @@ class Sites
         // fields
         if (isset($params['fields']) && !empty($params['fields'])) {
             $fields  = [];
-            $_fields = explode(',', $params['fields']);
+            $_fields = \explode(',', $params['fields']);
 
             foreach ($_fields as $field) {
                 switch ($field) {
@@ -542,18 +542,18 @@ class Sites
             foreach ($fields as $field) {
                 $where .= $field.' LIKE :search';
 
-                if ($field !== end($fields)) {
+                if ($field !== \end($fields)) {
                     $where .= ' OR ';
                 }
             }
 
             $query .= '(SELECT
                             "'.$table['project'].' ('.$table['lang'].')" as "project",
-                            '.implode(',', $selectList).'
+                            '.\implode(',', $selectList).'
                         FROM `'.$table['table'].'`
                         WHERE ('.$where.') AND deleted = 0) ';
 
-            if ($table !== end($tables)) {
+            if ($table !== \end($tables)) {
                 $query .= ' UNION ';
             }
         }
@@ -580,7 +580,7 @@ class Sites
         $result = $Stmt->fetchAll(\PDO::FETCH_ASSOC);
 
         if (isset($params['count'])) {
-            return count($result);
+            return \count($result);
         }
 
         return $result;

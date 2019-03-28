@@ -3,6 +3,7 @@
 /**
  * This file contains the \QUI\System\Console\Tools\CreateProject
  */
+
 namespace QUI\System\Console\Tools;
 
 use QUI;
@@ -59,7 +60,7 @@ class CreateProject extends QUI\System\Console\Tool
             $projectlangs = $this->readInput();
         }
 
-        $projectlangs = explode(',', $projectlangs);
+        $projectlangs = \explode(',', $projectlangs);
 
         // project standard language
         $projectlang = $this->getArgument('projectlang');
@@ -83,16 +84,17 @@ class CreateProject extends QUI\System\Console\Tool
                 $projectlang
             );
         } catch (QUI\Exception $Exception) {
-            $this->writeLn('Could not create project: ' . $Exception->getMessage());
+            $this->writeLn('Could not create project: '.$Exception->getMessage());
+
             return;
         }
 
-        QUI::getProjectManager()->setConfigForProject($projectname, array(
+        QUI::getProjectManager()->setConfigForProject($projectname, [
             'template' => $template,
-            'langs'    => implode(',', $projectlangs)
-        ));
+            'langs'    => \implode(',', $projectlangs)
+        ]);
 
-        $this->writeLn('Project ' . $projectname . ' successfuly created.');
+        $this->writeLn('Project '.$projectname.' successfuly created.');
         $this->writeLn('');
     }
 }

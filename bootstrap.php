@@ -15,14 +15,14 @@
  * it includes the header file
  */
 
-if (!defined('QUIQQER_SYSTEM')) {
+if (!\defined('QUIQQER_SYSTEM')) {
     exit;
 }
 
-if (!defined('ETC_DIR')) {
+if (!\defined('ETC_DIR')) {
     require_once 'quiqqer.php';
     exit;
 }
 
-require_once dirname(__FILE__).'/lib/autoload.php';
-require_once dirname(__FILE__).'/lib/header.php';
+require_once \dirname(__FILE__).'/lib/autoload.php';
+require_once \dirname(__FILE__).'/lib/header.php';

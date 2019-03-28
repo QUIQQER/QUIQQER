@@ -9,13 +9,13 @@
 QUI::$Ajax->registerFunction(
     'ajax_settings_window',
     function ($file) {
-        if (file_exists($file)) {
+        if (\file_exists($file)) {
             $files = [$file];
         } else {
-            $files = json_decode($file, true);
+            $files = \json_decode($file, true);
         }
 
-        $cacheName = 'qui/admin/menu/windows/'.md5(json_encode($files));
+        $cacheName = 'qui/admin/menu/windows/'.\md5(\json_encode($files));
         $Settings  = QUI\Utils\XML\Settings::getInstance();
 
         try {
@@ -38,7 +38,7 @@ QUI::$Ajax->registerFunction(
         $result['categories'] = [];
 
         foreach ($categories as $key => $category) {
-            if (isset($category['title']) && is_array($category['title'])) {
+            if (isset($category['title']) && \is_array($category['title'])) {
                 $category['text'] = QUI::getLocale()->get(
                     $category['title'][0],
                     $category['title'][1]

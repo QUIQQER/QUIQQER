@@ -37,7 +37,7 @@ class RestProvider implements QUI\REST\ProviderInterface
 
                 return $Response->withStatus(200)
                     ->withHeader('Content-Type', 'application/json')
-                    ->write(json_encode($Site->getAttributes()));
+                    ->write(\json_encode($Site->getAttributes()));
             }
         );
     }

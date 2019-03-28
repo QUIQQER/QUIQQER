@@ -16,7 +16,7 @@ QUI::$Ajax->registerFunction(
 
         // read template config
         foreach ($settingsXml as $file) {
-            if (!file_exists($file)) {
+            if (!\file_exists($file)) {
                 continue;
             }
 

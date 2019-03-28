@@ -12,9 +12,9 @@ use QUI\Config;
 QUI::$Ajax->registerFunction(
     'ajax_licenseKey_getAuthData',
     function () {
-        $licenseConfigFile = CMS_DIR . 'etc/license.ini.php';
+        $licenseConfigFile = CMS_DIR.'etc/license.ini.php';
 
-        if (!file_exists($licenseConfigFile)) {
+        if (!\file_exists($licenseConfigFile)) {
             return false;
         }
 
@@ -28,14 +28,14 @@ QUI::$Ajax->registerFunction(
         }
 
         $hash = $data['licenseHash'];
-        $hash = hex2bin($hash);
-        $hash = bin2hex(Encryption::decrypt($hash));
+        $hash = \hex2bin($hash);
+        $hash = \bin2hex(Encryption::decrypt($hash));
 
-        return array(
+        return [
             'licenseId'   => $data['id'],
             'licenseHash' => $hash
-        );
+        ];
     },
-    array(),
+    [],
     'Permission::checkAdminUser'
 );

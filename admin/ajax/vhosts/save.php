@@ -10,11 +10,11 @@
 QUI::$Ajax->registerFunction(
     'ajax_vhosts_save',
     function ($vhost, $data) {
-        $data = json_decode($data, true);
+        $data = \json_decode($data, true);
 
         $VhostManager = new QUI\System\VhostManager();
         $VhostManager->editVhost($vhost, $data);
     },
-    array('vhost', 'data'),
+    ['vhost', 'data'],
     'Permission::checkSU'
 );

@@ -20,12 +20,12 @@ class AlphabetSorting extends QUI\Control
      * constructor
      * @param array $attributes
      */
-    public function __construct($attributes = array())
+    public function __construct($attributes = [])
     {
         parent::__construct($attributes);
 
         $this->addCSSFile(
-            dirname(__FILE__) . '/AlphabetSorting.css'
+            \dirname(__FILE__).'/AlphabetSorting.css'
         );
 
         $this->setAttribute('class', 'quiqqer-alphabetSorting grid-100 grid-parent');
@@ -64,7 +64,7 @@ class AlphabetSorting extends QUI\Control
         }
 
         $attributes = $this->getAttributes();
-        $params     = array();
+        $params     = [];
 
         foreach ($attributes as $key => $value) {
             if ($key == 'class') {
@@ -80,19 +80,19 @@ class AlphabetSorting extends QUI\Control
             }
 
 
-            if (is_string($value) || is_int($value)) {
+            if (\is_string($value) || \is_int($value)) {
                 $params[$key] = $value;
             }
         }
 
-        $Engine->assign(array(
+        $Engine->assign([
             'active'    => $active,
             'urlParams' => $params,
             'anchor'    => $anchor,
             'Site'      => $Site,
             'Project'   => $Project
-        ));
+        ]);
 
-        return $Engine->fetch(dirname(__FILE__) . '/AlphabetSorting.html');
+        return $Engine->fetch(\dirname(__FILE__).'/AlphabetSorting.html');
     }
 }

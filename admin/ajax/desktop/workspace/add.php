@@ -9,7 +9,7 @@ QUI::$Ajax->registerFunction(
     'ajax_desktop_workspace_add',
     function ($data) {
         $User = QUI::getUserBySession();
-        $data = json_decode($data, true);
+        $data = \json_decode($data, true);
 
         QUI\Workspace\Manager::addWorkspace(
             $User,
@@ -19,6 +19,6 @@ QUI::$Ajax->registerFunction(
             $data['minWidth']
         );
     },
-    array('data'),
+    ['data'],
     'Permission::checkUser'
 );

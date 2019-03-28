@@ -66,7 +66,7 @@ abstract class Item extends QUI\QDOM
 
         $this->file = CMS_DIR.$this->Media->getPath().$this->getPath();
 
-        if (!file_exists($this->file)) {
+        if (!\file_exists($this->file)) {
             QUI::getMessagesHandler()->addAttention(
                 'File '.$this->file.' ('.$this->getId().') doesn\'t exist'
             );
@@ -83,9 +83,9 @@ abstract class Item extends QUI\QDOM
         );
 
         if (!empty($params['pathHistory'])) {
-            $pathHistory = json_decode($params['pathHistory'], true);
+            $pathHistory = \json_decode($params['pathHistory'], true);
 
-            if (is_array($pathHistory)) {
+            if (\is_array($pathHistory)) {
                 $this->pathHistory = $pathHistory;
             }
         }
@@ -133,7 +133,7 @@ abstract class Item extends QUI\QDOM
         $this->setAttribute('active', 1);
 
 
-        if (method_exists($this, 'deleteCache')) {
+        if (\method_exists($this, 'deleteCache')) {
             try {
                 $this->deleteCache();
             } catch (QUI\Exception $Exception) {
@@ -141,7 +141,7 @@ abstract class Item extends QUI\QDOM
             }
         }
 
-        if (method_exists($this, 'createCache')) {
+        if (\method_exists($this, 'createCache')) {
             try {
                 $this->createCache();
             } catch (QUI\Exception $Exception) {
@@ -168,7 +168,7 @@ abstract class Item extends QUI\QDOM
 
         $this->setAttribute('active', 0);
 
-        if (method_exists($this, 'deleteCache')) {
+        if (\method_exists($this, 'deleteCache')) {
             $this->deleteCache();
         }
 
@@ -190,7 +190,7 @@ abstract class Item extends QUI\QDOM
 
         $image_effects = $this->getEffects();
 
-        if (is_string($image_effects) || is_bool($image_effects)) {
+        if (\is_string($image_effects) || \is_bool($image_effects)) {
             $image_effects = [];
         }
 
@@ -219,10 +219,10 @@ abstract class Item extends QUI\QDOM
 
         // svg fix
         if ($this->getAttribute('mime_type') == 'text/html') {
-            $content = file_get_contents($this->getFullPath());
+            $content = \file_get_contents($this->getFullPath());
 
-            if (strpos($content, '<svg') !== false && strpos($content, '</svg>')) {
-                file_put_contents(
+            if (\strpos($content, '<svg') !== false && \strpos($content, '</svg>')) {
+                \file_put_contents(
                     $this->getFullPath(),
                     '<?xml version="1.0" encoding="UTF-8"?>'.
                     $content
@@ -238,11 +238,11 @@ abstract class Item extends QUI\QDOM
             }
         }
 
-        if (method_exists($this, 'deleteCache')) {
+        if (\method_exists($this, 'deleteCache')) {
             $this->deleteCache();
         }
 
-        if (method_exists($this, 'deleteAdminCache')) {
+        if (\method_exists($this, 'deleteAdminCache')) {
             $this->deleteAdminCache();
         }
 
@@ -261,9 +261,9 @@ abstract class Item extends QUI\QDOM
                 'short'         => $this->getAttribute('short'),
                 'order'         => $order,
                 'priority'      => (int)$this->getAttribute('priority'),
-                'image_effects' => json_encode($image_effects),
+                'image_effects' => \json_encode($image_effects),
                 'type'          => $type,
-                'pathHistory'   => json_encode($this->pathHistory)
+                'pathHistory'   => \json_encode($this->pathHistory)
             ],
             [
                 'id' => $this->getId()
@@ -274,7 +274,7 @@ abstract class Item extends QUI\QDOM
         $Project = $this->getProject();
 
         if ($Project->getConfig('media_createCacheOnSave')
-            && method_exists($this, 'createCache')
+            && \method_exists($this, 'createCache')
         ) {
             $this->createCache();
         }
@@ -307,7 +307,7 @@ abstract class Item extends QUI\QDOM
 
         $var_folder = VAR_DIR.'media/trash/'.$Media->getProject()->getName().'/';
 
-        if (!is_file($original)) {
+        if (!\is_file($original)) {
             QUI::getMessagesHandler()->addAttention(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
@@ -329,7 +329,7 @@ abstract class Item extends QUI\QDOM
         }
 
         // first, delete the cache
-        if (method_exists($this, 'deleteCache')) {
+        if (\method_exists($this, 'deleteCache')) {
             try {
                 $this->deleteCache();
             } catch (QUI\Exception $Exception) {
@@ -337,7 +337,7 @@ abstract class Item extends QUI\QDOM
             }
         }
 
-        if (method_exists($this, 'deleteAdminCache')) {
+        if (\method_exists($this, 'deleteAdminCache')) {
             try {
                 $this->deleteAdminCache();
             } catch (QUI\Exception $Exception) {
@@ -456,7 +456,7 @@ abstract class Item extends QUI\QDOM
      */
     public function rename($newname)
     {
-        $newname = trim($newname, "_ \t\n\r\0\x0B"); // Trim the default characters and underscores
+        $newname = \trim($newname, "_ \t\n\r\0\x0B"); // Trim the default characters and underscores
 
         $original  = $this->getFullPath();
         $extension = QUI\Utils\StringHelper::pathinfo($original, PATHINFO_EXTENSION);
@@ -474,7 +474,7 @@ abstract class Item extends QUI\QDOM
         }
 
         // throws the \QUI\Exception
-        $fileParts = explode('/', $new_file);
+        $fileParts = \explode('/', $new_file);
 
         foreach ($fileParts as $filePart) {
             Utils::checkMediaName($filePart);
@@ -498,11 +498,11 @@ abstract class Item extends QUI\QDOM
         }
 
 
-        if (method_exists($this, 'deleteCache')) {
+        if (\method_exists($this, 'deleteCache')) {
             $this->deleteCache();
         }
 
-        if (method_exists($this, 'deleteAdminCache')) {
+        if (\method_exists($this, 'deleteAdminCache')) {
             $this->deleteAdminCache();
         }
 
@@ -514,7 +514,7 @@ abstract class Item extends QUI\QDOM
             [
                 'name'        => $newname,
                 'file'        => $new_file,
-                'pathHistory' => json_encode($this->pathHistory)
+                'pathHistory' => \json_encode($this->pathHistory)
             ],
             [
                 'id' => $this->getId()
@@ -526,7 +526,7 @@ abstract class Item extends QUI\QDOM
 
         QUIFile::move($original, $new_full_file);
 
-        if (method_exists($this, 'createCache')) {
+        if (\method_exists($this, 'createCache')) {
             $this->createCache();
         }
 
@@ -577,7 +577,7 @@ abstract class Item extends QUI\QDOM
             $parents[] = $id;
         }
 
-        return array_reverse($parents);
+        return \array_reverse($parents);
     }
 
     /**
@@ -646,10 +646,10 @@ abstract class Item extends QUI\QDOM
     public function getPathinfo($options = false)
     {
         if (!$options) {
-            return pathinfo($this->getFullPath());
+            return \pathinfo($this->getFullPath());
         }
 
-        return pathinfo($this->getFullPath(), $options);
+        return \pathinfo($this->getFullPath(), $options);
     }
 
     /**
@@ -707,21 +707,21 @@ abstract class Item extends QUI\QDOM
 
         $Parent->getFullPath();
 
-        $new_path = str_replace(
+        $new_path = \str_replace(
             $Parent->getFullPath(),
             $Folder->getFullPath(),
             $this->getFullPath()
         );
 
-        $new_file = str_replace($this->getMedia()->getFullPath(), '', $new_path);
+        $new_file = \str_replace($this->getMedia()->getFullPath(), '', $new_path);
 
         // delete the file cache
         // @todo move the cache too
-        if (method_exists($this, 'deleteCache')) {
+        if (\method_exists($this, 'deleteCache')) {
             $this->deleteCache();
         }
 
-        if (method_exists($this, 'deleteAdminCache')) {
+        if (\method_exists($this, 'deleteAdminCache')) {
             $this->deleteAdminCache();
         }
 
@@ -810,17 +810,17 @@ abstract class Item extends QUI\QDOM
      */
     public function getEffects()
     {
-        if (is_array($this->effects)) {
+        if (\is_array($this->effects)) {
             return $this->effects;
         }
 
         $effects = $this->getAttribute('image_effects');
 
-        if (is_string($effects)) {
-            $effects = json_decode($effects, true);
+        if (\is_string($effects)) {
+            $effects = \json_decode($effects, true);
         }
 
-        if (is_array($effects)) {
+        if (\is_array($effects)) {
             $this->effects = $effects;
         } else {
             $this->effects = [];

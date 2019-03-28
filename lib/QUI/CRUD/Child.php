@@ -3,6 +3,7 @@
 /**
  * This file contains QUI\CRUD\Child
  */
+
 namespace QUI\CRUD;
 
 use QUI;
@@ -63,11 +64,11 @@ abstract class Child extends QUI\QDOM
      */
     public function refresh()
     {
-        $data = $this->Factory->getChildrenData(array(
-            'where' => array(
+        $data = $this->Factory->getChildrenData([
+            'where' => [
                 'id' => $this->getId()
-            )
-        ));
+            ]
+        ]);
 
         if (isset($data[0])) {
             $this->setAttributes($data[0]);
@@ -85,7 +86,7 @@ abstract class Child extends QUI\QDOM
 
         QUI::getDataBase()->delete(
             $this->Factory->getDataBaseTableName(),
-            array('id' => $this->getId())
+            ['id' => $this->getId()]
         );
 
 
@@ -102,7 +103,7 @@ abstract class Child extends QUI\QDOM
      */
     public function getAttribute($name)
     {
-        if (array_key_exists($name, $this->attributes)) {
+        if (\array_key_exists($name, $this->attributes)) {
             return $this->attributes[$name];
         }
 
@@ -120,10 +121,10 @@ abstract class Child extends QUI\QDOM
         $this->Events->fireEvent('updateBegin');
 
         $needles   = $this->Factory->getChildAttributes();
-        $savedData = array();
+        $savedData = [];
 
         foreach ($needles as $needle) {
-            if (!array_key_exists($needle, $this->attributes)) {
+            if (!\array_key_exists($needle, $this->attributes)) {
                 continue;
             }
 
@@ -133,7 +134,7 @@ abstract class Child extends QUI\QDOM
         QUI::getDataBase()->update(
             $this->Factory->getDataBaseTableName(),
             $savedData,
-            array('id' => $this->getId())
+            ['id' => $this->getId()]
         );
 
         $this->Events->fireEvent('saveEnd');

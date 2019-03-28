@@ -19,7 +19,7 @@ class CommandEvents
     /**
      * @var array
      */
-    protected static $packages = array();
+    protected static $packages = [];
 
     /**
      * Registered a package which has changed
@@ -29,7 +29,7 @@ class CommandEvents
     public static function registerPackageChange($packageName)
     {
         self::$packages[] = $packageName;
-        self::$packages   = array_unique(self::$packages);
+        self::$packages   = \array_unique(self::$packages);
     }
 
     /**
@@ -40,7 +40,7 @@ class CommandEvents
      */
     public static function preUpdate(Event $Event)
     {
-        self::$packages = array();
+        self::$packages = [];
     }
 
     /**
@@ -70,12 +70,12 @@ class CommandEvents
         $Composer = $Event->getComposer();
         $config   = $Composer->getConfig()->all();
 
-        if (!defined('CMS_DIR')) {
-            define('CMS_DIR', $config['config']['quiqqer-dir']);
+        if (!\defined('CMS_DIR')) {
+            \define('CMS_DIR', $config['config']['quiqqer-dir']);
         }
 
-        if (!defined('ETC_DIR')) {
-            define('ETC_DIR', $config['config']['quiqqer-dir'].'etc/');
+        if (!\defined('ETC_DIR')) {
+            \define('ETC_DIR', $config['config']['quiqqer-dir'].'etc/');
         }
 
         QUI::load();
