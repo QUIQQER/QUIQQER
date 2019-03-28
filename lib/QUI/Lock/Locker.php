@@ -131,9 +131,10 @@ class Locker
      * @param Package $Package
      * @param string $key
      * @param null|QUI\Interfaces\Users\User $User
+     * @param bool $considerUser (optional) - Consider a $key as NOT locked if it was created by the given $User [default: true]
      * @return false|mixed
      */
-    public static function isLocked(Package $Package, $key, $User = null)
+    public static function isLocked(Package $Package, $key, $User = null, $considerUser = true)
     {
         if (\is_null($User)) {
             $User = QUI::getUserBySession();
@@ -142,7 +143,7 @@ class Locker
         try {
             $uid = self::getStashData(self::getLockKey($Package, $key));
 
-            if ($User->getId() == $uid) {
+            if ($considerUser && $User->getId() == $uid) {
                 return false;
             }
 
