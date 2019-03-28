@@ -14,8 +14,6 @@
  */
 
 
-$microTime = microtime(true);
-
 \error_reporting(E_ALL);
 
 if (!\defined('QUIQQER_SYSTEM')) {
@@ -183,10 +181,6 @@ try {
         $content  = $Template->fetchSite($Site);
 
         Debug::marker('fetch Template');
-
-        echo microtime(true) - $microTime;
-        exit;
-
 
         $content = $Rewrite->outputFilter($content);
         $content = QUI\Control\Manager::setCSSToHead($content);
