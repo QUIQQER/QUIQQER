@@ -11,7 +11,7 @@ QUI::$Ajax->registerFunction(
     'ajax_site_children_sort',
     function ($project, $ids, $from) {
         $Project = QUI::getProjectManager()->decode($project);
-        $ids     = json_decode($ids, true);
+        $ids     = \json_decode($ids, true);
 
         $from = (int)$from;
 
@@ -29,9 +29,9 @@ QUI::$Ajax->registerFunction(
             QUI::getLocale()->get(
                 'quiqqer/system',
                 'message.site.save.sort.success',
-                array('ids' => implode(',', $ids))
+                ['ids' => \implode(',', $ids)]
             )
         );
     },
-    array('project', 'ids', 'from')
+    ['project', 'ids', 'from']
 );

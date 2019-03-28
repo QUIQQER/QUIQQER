@@ -3,26 +3,26 @@
 /**
  * This file contains the quiqqer access for the api, cron and console
  */
-if (!defined('CMS_DIR')) {
+if (!\defined('CMS_DIR')) {
     exit;
 }
 
-define('QUIQQER_SYSTEM', true);
-require dirname(dirname(dirname(__FILE__))) . '/header.php';
+\define('QUIQQER_SYSTEM', true);
+require \dirname(\dirname(\dirname(__FILE__))).'/header.php';
 
 // no console
-if (php_sapi_name() != 'cli') {
+if (\php_sapi_name() != 'cli') {
     exit;
 }
 
-$conf = ETC_DIR . 'conf.ini.php';
+$conf = ETC_DIR.'conf.ini.php';
 
-if (!file_exists($conf)) {
+if (!\file_exists($conf)) {
     exit(1);
 }
 
 // Console aufbauen
-define('QUIQQER_CONSOLE', true);
+\define('QUIQQER_CONSOLE', true);
 
 $Console = new \QUI\System\Console();
 $Console->start();

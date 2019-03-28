@@ -15,7 +15,7 @@
 
 define(
     'TCPDF_FILE',
-    dirname(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))))).'/tecnickcom/tcpdf/tcpdf.php'
+    \dirname(\dirname(\dirname(\dirname(\dirname(\dirname(\dirname(__FILE__))))))).'/tecnickcom/tcpdf/tcpdf.php'
 );
 
 /**
@@ -69,7 +69,7 @@ class OmnigridExport
 
     private function _pdf()
     {
-        if (!file_exists(TCPDF_FILE)) {
+        if (!\file_exists(TCPDF_FILE)) {
             echo "Package \"tecnickcom/tcpdf\" not found. Please install to use PDF export.";
             exit;
         }
@@ -79,7 +79,7 @@ class OmnigridExport
         $html   = '<table cellpadding="2" style="margin-top: 5mm;"> <tr style="background-color: #F2F4F7;">';
 
         foreach ($header as $field) {
-            $html .= '<th style="font-weight: bold;  font-size: 10;">'.htmlspecialchars($field['header']).'</th>';
+            $html .= '<th style="font-weight: bold;  font-size: 10;">'.\htmlspecialchars($field['header']).'</th>';
         }
 
         $html .= '</tr>';
@@ -104,7 +104,7 @@ class OmnigridExport
         $Pdf->SetCreator(PDF_CREATOR);
         $Pdf->SetAuthor("PCSG WWS");
         $Pdf->SetTitle("Grid Export");
-        $Pdf->SetSubject(date('dd.mm.yy'));
+        $Pdf->SetSubject(\date('dd.mm.yy'));
         $Pdf->SetKeywords('');
 
         //$Pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
@@ -137,7 +137,7 @@ class OmnigridExport
         $Pdf->writeHTML($html);
 
         $Pdf->lastPage();
-        $Pdf->Output('GRID_Export_'.date('d.m.Y').'.pdf', 'D');
+        $Pdf->Output('GRID_Export_'.\date('d.m.Y').'.pdf', 'D');
     }
 
     private function _csv()
@@ -147,8 +147,8 @@ class OmnigridExport
         $content = '';
 
         foreach ($header as $field) {
-            $content .= '"'.nl2br(preg_replace('/\r/', "\n",
-                    preg_replace('/[\t]/', '', htmlspecialchars($field['header'])))).'"';
+            $content .= '"'.\nl2br(\preg_replace('/\r/', "\n",
+                    \preg_replace('/[\t]/', '', \htmlspecialchars($field['header'])))).'"';
             $content .= ',';
         }
 
@@ -156,19 +156,19 @@ class OmnigridExport
 
         foreach ($data as $line) {
             foreach ($header as $field => $val) {
-                $content .= '"'.nl2br(preg_replace('/\r/', "\n",
-                        preg_replace('/[\t]/', '', htmlspecialchars($line[$field])))).'"';
+                $content .= '"'.\nl2br(\preg_replace('/\r/', "\n",
+                        \preg_replace('/[\t]/', '', \htmlspecialchars($line[$field])))).'"';
                 $content .= ',';
             }
 
             $content .= "\n";
         }
 
-        header("Content-Type: application/csv");
-        header("Content-Disposition: attachment; filename=\"CSV Export ".date("d.m.Y - H:i").".csv\"");
-        header("Content-Description: csv Export File");
-        header("Pragma: no-cache");
-        header("Expires: ".gmdate("D, d M Y H:i:s")." GMT");
+        \header("Content-Type: application/csv");
+        \header("Content-Disposition: attachment; filename=\"CSV Export ".\date("d.m.Y - H:i").".csv\"");
+        \header("Content-Description: csv Export File");
+        \header("Pragma: no-cache");
+        \header("Expires: ".\gmdate("D, d M Y H:i:s")." GMT");
 
         echo $content;
 
@@ -181,13 +181,13 @@ class OmnigridExport
             'data'   => $this->_data
         ];
 
-        header("Content-Type: application/json");
-        header("Content-Disposition: attachment; filename=\"JSON Export ".date("d.m.Y - H:i").".json\"");
-        header("Content-Description: Json Export File");
-        header("Pragma: no-cache");
-        header("Expires: ".gmdate("D, d M Y H:i:s")." GMT");
+        \header("Content-Type: application/json");
+        \header("Content-Disposition: attachment; filename=\"JSON Export ".\date("d.m.Y - H:i").".json\"");
+        \header("Content-Description: Json Export File");
+        \header("Pragma: no-cache");
+        \header("Expires: ".\gmdate("D, d M Y H:i:s")." GMT");
 
-        echo json_encode($content);
+        echo \json_encode($content);
     }
 
     static function genRandomString()
@@ -195,11 +195,11 @@ class OmnigridExport
         $length     = 20;
         $characters = '0123456789abcdefghijklmnopqrstuvwxyz';
         $string     = '';
-        $strl       = strlen($characters) - 1;
+        $strl       = \strlen($characters) - 1;
 
         for ($p = 0; $p < $length; $p++) {
 
-            $string .= $characters[mt_rand(0, $strl)];
+            $string .= $characters[\mt_rand(0, $strl)];
 
         }
 
@@ -208,7 +208,7 @@ class OmnigridExport
 
 }
 
-if (file_exists(TCPDF_FILE)) {
+if (\file_exists(TCPDF_FILE)) {
     require_once TCPDF_FILE;
 
     class OmnigridPDF extends TCPDF
@@ -221,7 +221,7 @@ if (file_exists(TCPDF_FILE)) {
         {
             $this->SetFont('dejavusansbi', 'B', 7);
             $this->Ln();
-            $this->Cell(145, 0, date('d.m.Y'), 0, 0, 'L');
+            $this->Cell(145, 0, \date('d.m.Y'), 0, 0, 'L');
             $this->Ln(5);
         }
 
@@ -239,7 +239,7 @@ if (file_exists(TCPDF_FILE)) {
 }
 
 
-session_start();
+\session_start();
 //formular erstellen
 if (!isset($_REQUEST['DataField'])) {
     $doctype = DOMImplementation::createDocumentType(
@@ -311,11 +311,11 @@ if (!isset($_REQUEST['RandomField'])
 
 $dataField = $_REQUEST['DataField'];
 
-if (get_magic_quotes_gpc()) {
+if (\get_magic_quotes_gpc()) {
     $dataField = stripslashes($dataField);
 }
 
-$data = json_decode($dataField, true);
+$data = \json_decode($dataField, true);
 
 if (!isset($data['type']) || !isset($data['data'])) {
     exit;

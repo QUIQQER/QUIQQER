@@ -12,7 +12,7 @@ class Pool
     /**
      * @var array
      */
-    protected $tasks = array();
+    protected $tasks = [];
 
     /**
      * Return all finished jobs
@@ -54,7 +54,7 @@ class Pool
      */
     public function count()
     {
-        return count($this->tasks);
+        return \count($this->tasks);
     }
 
     /**
@@ -64,7 +64,7 @@ class Pool
      */
     public function isRunning()
     {
-        $running = array();
+        $running = [];
 
         /* @var $Task \QUI\Threads\Worker */
         foreach ($this->tasks as $Task) {
@@ -73,6 +73,6 @@ class Pool
             }
         }
 
-        return count($running) ? true : false;
+        return \count($running) ? true : false;
     }
 }

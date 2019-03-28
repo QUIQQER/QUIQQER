@@ -10,9 +10,9 @@
 QUI::$Ajax->registerFunction(
     'ajax_users_switchstatus',
     function ($uid) {
-        $uid = json_decode($uid, true);
+        $uid = \json_decode($uid, true);
 
-        if (!is_array($uid)) {
+        if (!\is_array($uid)) {
             $uid = [$uid];
         }
 

@@ -197,7 +197,7 @@ class Session
             }
 
             return new MemcachedSessionHandler($Memcached);
-        } elseif ($sessionType == 'memcached' && !class_exists('Memcached')) {
+        } elseif ($sessionType == 'memcached' && !\class_exists('Memcached')) {
             Log::addWarning('Memcached not installed');
         }
 
@@ -224,7 +224,7 @@ class Session
             }
 
             return new MemcacheSessionHandler($Memcache);
-        } elseif ($sessionType == 'memcache' && !class_exists('Memcache')) {
+        } elseif ($sessionType == 'memcache' && !\class_exists('Memcache')) {
             Log::addWarning('Memcache not installed');
         }
 

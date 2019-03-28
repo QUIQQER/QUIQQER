@@ -9,26 +9,26 @@
 QUI::$Ajax->registerFunction(
     'ajax_settings_get',
     function ($file) {
-        $files  = json_decode($file, true);
+        $files  = \json_decode($file, true);
         $config = [];
 
-        if (is_string($files)) {
+        if (\is_string($files)) {
             $files = [$files];
         }
 
         foreach ($files as $file) {
-            if (!file_exists($file)) {
+            if (!\file_exists($file)) {
                 $file = CMS_DIR.$file;
             }
 
-            if (!file_exists($file)) {
+            if (!\file_exists($file)) {
                 continue;
             }
 
             $Config = QUI\Utils\Text\XML::getConfigFromXml($file, true);
 
             if ($Config) {
-                $config = array_merge_recursive($config, $Config->toArray());
+                $config = \array_merge_recursive($config, $Config->toArray());
             }
         }
 

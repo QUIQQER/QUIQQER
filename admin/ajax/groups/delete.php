@@ -9,10 +9,10 @@
 QUI::$Ajax->registerFunction(
     'ajax_groups_delete',
     function ($gids) {
-        $gids   = json_decode($gids, true);
+        $gids   = \json_decode($gids, true);
         $Groups = QUI::getGroups();
 
-        if (!is_array($gids)) {
+        if (!\is_array($gids)) {
             $gids = [$gids];
         }
 
@@ -36,7 +36,7 @@ QUI::$Ajax->registerFunction(
         }
 
         if (!empty($result)) {
-            if (count($result) === 1) {
+            if (\count($result) === 1) {
                 QUI::getMessagesHandler()->addSuccess(
                     QUI::getLocale()->get('quiqqer/quiqqer', 'message.group.deleted', [
                         'groupname' => $names[0],
@@ -46,20 +46,20 @@ QUI::$Ajax->registerFunction(
             } else {
                 QUI::getMessagesHandler()->addSuccess(
                     QUI::getLocale()->get('quiqqer/quiqqer', 'message.groups.deleted', [
-                        'groups' => implode(', ', $result)
+                        'groups' => \implode(', ', $result)
                     ])
                 );
             }
         }
 
         if (!$ExceptionStack->isEmpty()) {
-            $message = array_map(function ($Exception) {
+            $message = \array_map(function ($Exception) {
                 /* @var $Exception QUI\Exception */
                 return $Exception->getMessage();
             }, $ExceptionStack->getExceptionList());
 
             QUI::getMessagesHandler()->addAttention(
-                implode("<br>", $message)
+                \implode("<br>", $message)
             );
         }
 

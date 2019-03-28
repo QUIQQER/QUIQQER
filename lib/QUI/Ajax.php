@@ -189,7 +189,7 @@ class Ajax extends QUI\QDOM
     public function call()
     {
         if (!isset($_REQUEST['_rf'])
-            || !\is_string($_REQUEST['_rf']) && count($_REQUEST['_rf']) > 1
+            || !\is_string($_REQUEST['_rf']) && \count($_REQUEST['_rf']) > 1
         ) {
             return $this->writeException(
                 new QUI\Exception('Bad Request', 400)
@@ -399,7 +399,7 @@ class Ajax extends QUI\QDOM
             $data = $Exception->toArray();
         }
 
-        $attributes = array_filter($data, function ($v, $k) {
+        $attributes = \array_filter($data, function ($v, $k) {
             switch ($k) {
                 case 'message':
                 case 'code':

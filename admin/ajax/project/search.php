@@ -9,7 +9,7 @@
 QUI::$Ajax->registerFunction(
     'ajax_project_search',
     function ($params) {
-        $params = json_decode($params, true);
+        $params = \json_decode($params, true);
 
         return QUI\Utils\Grid::getResult(
             QUI\Projects\Manager::search($params),

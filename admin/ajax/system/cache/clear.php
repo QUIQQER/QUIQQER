@@ -8,7 +8,7 @@
 QUI::$Ajax->registerFunction(
     'ajax_system_cache_clear',
     function ($params) {
-        $params = json_decode($params, true);
+        $params = \json_decode($params, true);
 
         if (isset($params['compile']) && $params['compile'] == 1) {
             QUI\Utils\System\File::unlink(VAR_DIR.'cache/compile');

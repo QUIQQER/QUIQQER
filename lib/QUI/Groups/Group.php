@@ -857,7 +857,7 @@ class Group extends QUI\QDOM
      */
     public function hasChildren()
     {
-        return count($this->getChildren());
+        return \count($this->getChildren());
     }
 
     /**

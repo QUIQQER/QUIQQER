@@ -3,6 +3,7 @@
 /**
  * This file contains QUI\System\Header
  */
+
 namespace QUI\System;
 
 use QUI;
@@ -27,16 +28,16 @@ class Headers
      *
      * @var array
      */
-    protected $hsts = array(
+    protected $hsts = [
         'max-age'    => '31536000',
         'subdomains' => false,
         'preload'    => false
-    );
+    ];
 
     /**
      * @var array
      */
-    protected $csp = array();
+    protected $csp = [];
 
     /**
      * Headers constructor.
@@ -67,9 +68,9 @@ class Headers
         // default CSP
         $cspHeaders = QUI::conf('securityHeaders_csp');
 
-        if (!empty($cspHeaders) && is_array($cspHeaders)) {
+        if (!empty($cspHeaders) && \is_array($cspHeaders)) {
             foreach ($cspHeaders as $key => $values) {
-                $values = explode(' ', $values);
+                $values = \explode(' ', $values);
 
                 foreach ($values as $value) {
                     $this->cspAdd($value, $key);
@@ -101,9 +102,9 @@ class Headers
         // HTTP Strict Transport Security (HSTS)
         $Response->headers->set(
             'Strict-Transport-Security',
-            'max-age=' . $this->hsts['max-age']
-            . ($this->hsts['subdomains'] ? '; includeSubDomains' : '')
-            . ($this->hsts['preload'] ? '; preload' : '')
+            'max-age='.$this->hsts['max-age']
+            .($this->hsts['subdomains'] ? '; includeSubDomains' : '')
+            .($this->hsts['preload'] ? '; preload' : '')
         );
 
 
@@ -114,8 +115,8 @@ class Headers
 
 
         // create CSP header
-        $list = array();
-        $csp  = array();
+        $list = [];
+        $csp  = [];
 
         $cspSources    = CSP::getInstance()->getCSPSources();
         $cspDirectives = CSP::getInstance()->getCSPDirectives();
@@ -136,10 +137,10 @@ class Headers
         }
 
         foreach ($list as $directive => $entries) {
-            $csp[] = $directive . ' ' . implode(' ', $entries);
+            $csp[] = $directive.' '.\implode(' ', $entries);
         }
 
-        $Response->headers->set("Content-Security-Policy", implode('; ', $csp));
+        $Response->headers->set("Content-Security-Policy", \implode('; ', $csp));
     }
 
     /**
@@ -215,16 +216,16 @@ class Headers
         }
 
         // value cleanup
-        $value = str_replace(
-            array(';', '"', "'"),
+        $value = \str_replace(
+            [';', '"', "'"],
             '',
             $value
         );
 
-        $this->csp[] = array(
+        $this->csp[] = [
             'value'     => $value,
             'directive' => $directive
-        );
+        ];
     }
 
     /**
@@ -234,7 +235,7 @@ class Headers
      */
     public function cspRemove($cspValue)
     {
-        $new = array();
+        $new = [];
 
         foreach ($this->csp as $cspEntry) {
             if ($cspEntry['value'] != $cspValue) {

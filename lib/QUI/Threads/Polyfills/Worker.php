@@ -17,7 +17,7 @@ if (!extension_loaded("pthreads")) {
                 }
             }
 
-            return count($this->gc) + count($this->stack);
+            return \count($this->gc) + \count($this->stack);
         }
 
         public function collector(Collectable $collectable)
@@ -37,32 +37,31 @@ if (!extension_loaded("pthreads")) {
 
         public function unstack()
         {
-            return array_shift($this->stack);
+            return \array_shift($this->stack);
         }
 
         public function stack(Threaded $collectable)
         {
             $this->stack[] = $collectable;
             if ($this->isStarted()) {
-                $this->runCollectable(count($this->stack) - 1, $collectable);
+                $this->runCollectable(\count($this->stack) - 1, $collectable);
             }
         }
 
         public function run()
         {
             foreach ($this->stack as $idx => $collectable) {
-                $this
-                    ->runCollectable($idx, $collectable);
+                $this->runCollectable($idx, $collectable);
             }
         }
 
         private function runCollectable($idx, Collectable $collectable)
         {
             $collectable->worker = $this;
-            $collectable->state |= THREAD::RUNNING;
+            $collectable->state  |= THREAD::RUNNING;
             $collectable->run();
             $collectable->state &= ~THREAD::RUNNING;
-            $this->gc[] = $collectable;
+            $this->gc[]         = $collectable;
             unset($this->stack[$idx]);
         }
 

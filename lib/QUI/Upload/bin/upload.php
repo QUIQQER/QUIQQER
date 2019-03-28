@@ -5,9 +5,9 @@
  * if the browser supports no html5 upload
  */
 
-$dir = str_replace('quiqqer/quiqqer/lib/QUI/Upload/bin', '', dirname(__FILE__));
-define('QUIQQER_SYSTEM', true);
-define('QUIQQER_AJAX', true);
+$dir = \str_replace('quiqqer/quiqqer/lib/QUI/Upload/bin', '', \dirname(__FILE__));
+\define('QUIQQER_SYSTEM', true);
+\define('QUIQQER_AJAX', true);
 
 require_once $dir.'header.php';
 
@@ -30,7 +30,7 @@ try {
         }
 
         // maintenance flag
-        echo '<quiqqer>'.json_encode($result).'</quiqqer>';
+        echo '<quiqqer>'.\json_encode($result).'</quiqqer>';
     }
 } catch (QUI\Exception $Exception) {
     QUI\System\Log::writeDebugException($Exception);

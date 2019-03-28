@@ -11,7 +11,7 @@ QUI::$Ajax->registerFunction(
     'ajax_trash_restore',
     function ($project, $ids, $parentid) {
         $Project = QUI::getProjectManager()->decode($project);
-        $ids     = json_decode($ids, true);
+        $ids     = \json_decode($ids, true);
         $Trash   = $Project->getTrash();
 
         $Trash->restore($Project, $ids, $parentid);

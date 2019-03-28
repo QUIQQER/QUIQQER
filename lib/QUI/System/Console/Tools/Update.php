@@ -69,11 +69,11 @@ class Update extends QUI\System\Console\Tool
         }
 
         if ($this->getArgument('setDevelopment')) {
-            $packageList = array();
+            $packageList = [];
 
-            $libraries = QUI::getPackageManager()->getInstalled(array(
+            $libraries = QUI::getPackageManager()->getInstalled([
                 'type' => 'quiqqer-library'
-            ));
+            ]);
 
             foreach ($libraries as $library) {
                 $packageList[$library['name']] = 'dev-dev';
@@ -110,24 +110,24 @@ class Update extends QUI\System\Console\Tool
             }
 
             foreach ($packages as $package) {
-                if (strlen($package['package']) > $nameLength) {
-                    $nameLength = strlen($package['package']);
+                if (\strlen($package['package']) > $nameLength) {
+                    $nameLength = \strlen($package['package']);
                 }
 
-                if (strlen($package['oldVersion']) > $versionLength) {
-                    $versionLength = strlen($package['oldVersion']);
+                if (\strlen($package['oldVersion']) > $versionLength) {
+                    $versionLength = \strlen($package['oldVersion']);
                 }
             }
 
             foreach ($packages as $package) {
                 $this->write(
-                    str_pad($package['package'], $nameLength + 2, ' '),
+                    \str_pad($package['package'], $nameLength + 2, ' '),
                     'green'
                 );
 
                 $this->resetColor();
                 $this->write(
-                    str_pad($package['oldVersion'], $versionLength + 2, ' ').' -> '
+                    \str_pad($package['oldVersion'], $versionLength + 2, ' ').' -> '
                 );
 
                 $this->write($package['version'], 'cyan');

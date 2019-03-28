@@ -12,7 +12,7 @@ QUI::$Ajax->registerFunction(
     'ajax_users_save',
     function ($uid, $attributes) {
         $User       = QUI::getUsers()->get($uid);
-        $attributes = json_decode($attributes, true);
+        $attributes = \json_decode($attributes, true);
         $language   = $User->getAttribute('lang');
 
         foreach ($attributes as $key => $value) {

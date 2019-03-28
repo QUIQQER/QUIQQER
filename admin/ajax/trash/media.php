@@ -15,7 +15,7 @@ QUI::$Ajax->registerFunction(
         $Trash   = $Media->getTrash();
 
         return $Trash->getList(
-            json_decode($params, true)
+            \json_decode($params, true)
         );
     },
     ['project', 'params'],

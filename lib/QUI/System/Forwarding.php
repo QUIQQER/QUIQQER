@@ -5,7 +5,6 @@ namespace QUI\System;
 use QUI;
 use DusanKasan\Knapsack\Collection;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
@@ -84,7 +83,7 @@ class Forwarding
      */
     public static function delete($from)
     {
-        if (is_array($from)) {
+        if (\is_array($from)) {
             foreach ($from as $f) {
                 self::getConfg()->del($f);
             }
@@ -104,8 +103,8 @@ class Forwarding
      */
     public static function getConfg()
     {
-        if (!file_exists(CMS_DIR.'etc/forwarding.ini.php')) {
-            file_put_contents(CMS_DIR.'etc/forwarding.ini.php', '');
+        if (!\file_exists(CMS_DIR.'etc/forwarding.ini.php')) {
+            \file_put_contents(CMS_DIR.'etc/forwarding.ini.php', '');
         }
 
         return QUI::getConfig('etc/forwarding.ini.php');
@@ -154,8 +153,8 @@ class Forwarding
             self::redirect($list[$request]);
         }
 
-        if (isset($list[trim($request, '/')])) {
-            self::redirect($list[trim($request, '/')]);
+        if (isset($list[\trim($request, '/')])) {
+            self::redirect($list[\trim($request, '/')]);
         }
 
 

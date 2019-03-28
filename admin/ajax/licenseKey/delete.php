@@ -8,9 +8,9 @@
 QUI::$Ajax->registerFunction(
     'ajax_licenseKey_delete',
     function () {
-        $licenseConfigFile = CMS_DIR . 'etc/license.ini.php';
+        $licenseConfigFile = CMS_DIR.'etc/license.ini.php';
 
-        if (!file_exists($licenseConfigFile)) {
+        if (!\file_exists($licenseConfigFile)) {
             QUI::getMessagesHandler()->addError(
                 QUI::getLocale()->get(
                     'quiqqer/system',
@@ -21,7 +21,7 @@ QUI::$Ajax->registerFunction(
             return false;
         }
 
-        unlink($licenseConfigFile);
+        \unlink($licenseConfigFile);
 
         // re-create composer.json
         QUI::getPackageManager()->refreshServerList();
@@ -35,6 +35,6 @@ QUI::$Ajax->registerFunction(
 
         return true;
     },
-    array(),
+    [],
     'Permission::checkAdminUser'
 );

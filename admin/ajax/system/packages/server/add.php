@@ -12,7 +12,7 @@ QUI::$Ajax->registerFunction(
     function ($server, $params) {
         QUI::getPackageManager()->addServer(
             $server,
-            json_decode($params, true)
+            \json_decode($params, true)
         );
 
         QUI::getMessagesHandler()->addSuccess(

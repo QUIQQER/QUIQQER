@@ -12,13 +12,13 @@
 QUI::$Ajax->registerFunction(
     'ajax_media_activate',
     function ($project, $fileid) {
-        $fileid = json_decode($fileid, true);
+        $fileid = \json_decode($fileid, true);
 
         $Project = QUI\Projects\Manager::getProject($project);
         $Media   = $Project->getMedia();
 
-        if (is_array($fileid)) {
-            $result = array();
+        if (\is_array($fileid)) {
+            $result = [];
 
             foreach ($fileid as $id) {
                 try {
@@ -39,6 +39,6 @@ QUI::$Ajax->registerFunction(
 
         return $File->isActive();
     },
-    array('project', 'fileid'),
+    ['project', 'fileid'],
     'Permission::checkAdminUser'
 );

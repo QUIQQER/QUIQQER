@@ -520,7 +520,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         $params = $result[0];
 
-        if ($params['active'] != 1 && !defined('QUIQQER_PREVIEW')) {
+        if ($params['active'] != 1 && !\defined('QUIQQER_PREVIEW')) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',

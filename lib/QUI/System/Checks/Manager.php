@@ -137,7 +137,7 @@ class Manager
         }
 
         // ImageMagick Konsole
-        if (isset($im_console) && is_array($im_console) && count($im_console)) {
+        if (isset($im_console) && \is_array($im_console) && \count($im_console)) {
             $Image->setAttribute('error', 1);
             $image_check_msg .= '<p>[ OK ] Image Magick wird in der Konsole verwendet</p>';
         } else {

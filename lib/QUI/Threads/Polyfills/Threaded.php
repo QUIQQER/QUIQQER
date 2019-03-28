@@ -31,7 +31,7 @@ if (!extension_loaded("pthreads")) {
 
         public function count()
         {
-            return count($this->data);
+            return \count($this->data);
         }
 
         public function getIterator()
@@ -42,7 +42,7 @@ if (!extension_loaded("pthreads")) {
         public function __set($offset, $value)
         {
             if ($offset === null) {
-                $offset = count($this->data);
+                $offset = \count($this->data);
             }
 
             if (!$this instanceof Volatile) {
@@ -53,7 +53,7 @@ if (!extension_loaded("pthreads")) {
                 }
             }
 
-            if (is_array($value)) {
+            if (\is_array($value)) {
                 $safety = new Volatile();
                 $safety->merge($this->convertToVolatile($value));
                 $value = $safety;
@@ -84,21 +84,22 @@ if (!extension_loaded("pthreads")) {
 
         public function shift()
         {
-            return array_shift($this->data);
+            return \array_shift($this->data);
         }
 
         public function chunk($size)
         {
             $chunk = [];
-            while (count($chunk) < $size) {
+            while (\count($chunk) < $size) {
                 $chunk[] = $this->shift();
             }
+
             return $chunk;
         }
 
         public function pop()
         {
-            return array_pop($this->data);
+            return \array_pop($this->data);
         }
 
         public function merge($merge)
@@ -176,9 +177,9 @@ if (!extension_loaded("pthreads")) {
 
         private function convertToVolatile($value)
         {
-            if (is_array($value)) {
+            if (\is_array($value)) {
                 foreach ($value as $k => $v) {
-                    if (is_array($v)) {
+                    if (\is_array($v)) {
                         $value[$k] = new Volatile();
                         $value[$k]->merge(
                             $this->convertToVolatile($v)
@@ -186,6 +187,7 @@ if (!extension_loaded("pthreads")) {
                     }
                 }
             }
+
             return $value;
         }
 

@@ -802,7 +802,7 @@ class Project
             'limit'  => '1'
         ]);
 
-        if (isset($result[0]) && is_array($result)) {
+        if (isset($result[0]) && \is_array($result)) {
             return $result[0]['name'];
         }
 
@@ -1164,7 +1164,7 @@ class Project
 
         $s = $this->getSitesIds($params);
 
-        if (empty($s) || !is_array($s)) {
+        if (empty($s) || !\is_array($s)) {
             return [];
         }
 

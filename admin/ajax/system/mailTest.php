@@ -6,7 +6,7 @@
 QUI::$Ajax->registerFunction(
     'ajax_system_mailTest',
     function ($params) {
-        $params = json_decode($params, true);
+        $params = \json_decode($params, true);
         $Mail   = QUI::getMailManager()->getPHPMailer();
 
         $Mail->Mailer = 'mail';
@@ -70,7 +70,7 @@ QUI::$Ajax->registerFunction(
 
             $Mail->SMTPDebug   = 3;
             $Mail->Debugoutput = function ($str, $level) {
-                QUI\System\Log::writeRecursive(rtrim($str).PHP_EOL);
+                QUI\System\Log::writeRecursive(\rtrim($str).PHP_EOL);
             };
 
             $Mail->send();

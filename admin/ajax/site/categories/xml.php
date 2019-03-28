@@ -27,10 +27,10 @@ QUI::$Ajax->registerFunction(
         $Settings = QUI\Utils\XML\Settings::getInstance();
 
         // site type tabs
-        $types = explode(':', $type);
+        $types = \explode(':', $type);
         $file  = OPT_DIR.$types[0].'/site.xml';
 
-        if (file_exists($file)) {
+        if (\file_exists($file)) {
             try {
                 $Settings->setXMLPath(
                     "//site/types/type[@type='".$types[1]."']/tab[@name='".$category."']"
@@ -56,7 +56,7 @@ QUI::$Ajax->registerFunction(
         }
 
         $packages = QUI::getPackageManager()->getInstalled();
-        $files    = array();
+        $files    = [];
 
         foreach ($packages as $package) {
             // templates would be separated
@@ -70,12 +70,12 @@ QUI::$Ajax->registerFunction(
 
             $file = OPT_DIR.$package['name'].'/site.xml';
 
-            if (file_exists($file)) {
+            if (\file_exists($file)) {
                 $files[] = $file;
             }
         }
 
-        if (count($files)) {
+        if (\count($files)) {
             try {
                 $Settings->setXMLPath("//site/window/tab[@name='".$category."']");
 
@@ -103,6 +103,6 @@ QUI::$Ajax->registerFunction(
 
         return $result;
     },
-    array('project', 'id', 'category'),
+    ['project', 'id', 'category'],
     'Permission::checkAdminUser'
 );

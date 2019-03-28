@@ -13,7 +13,7 @@ QUI::$Ajax->registerFunction(
         $Media   = $Project->getMedia();
         $Trash   = $Media->getTrash();
 
-        $ids = json_decode($ids, true);
+        $ids = \json_decode($ids, true);
 
         foreach ($ids as $id) {
             $Trash->destroy($id);

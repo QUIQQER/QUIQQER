@@ -15,12 +15,12 @@ QUI::$Ajax->registerFunction(
         $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
 
         $childid = $Site->createChild(
-            json_decode($attributes, true)
+            \json_decode($attributes, true)
         );
 
         $Child = new QUI\Projects\Site\Edit($Project, $childid);
 
         return $Child->getAttributes();
     },
-    array('project', 'id', 'attributes')
+    ['project', 'id', 'attributes']
 );

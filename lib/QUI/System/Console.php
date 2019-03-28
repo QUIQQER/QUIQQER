@@ -191,7 +191,7 @@ class Console
             exit;
         }
 
-        if (is_null($this->User) || !$this->User->getId()) {
+        if (\is_null($this->User) || !$this->User->getId()) {
             $this->writeLn("Login incorrect\n\n", 'red');
             exit;
         }
@@ -249,7 +249,7 @@ class Console
 
             $Authenticator->cliAuthentication($this);
 
-            if (is_null($this->User)) {
+            if (\is_null($this->User)) {
                 $this->setArgument('username', $Authenticator->getUser()->getName());
                 $this->User = $Authenticator->getUser();
             }
@@ -298,7 +298,7 @@ class Console
         QUI::getDataBase()->update(
             $Users->table(),
             [
-                'lastvisit'  => time(),
+                'lastvisit'  => \time(),
                 'user_agent' => $userAgent,
                 'secHash'    => $Users->getSecHash()
             ],
@@ -326,8 +326,8 @@ class Console
 
         // Parameter auslesen
         foreach ($_SERVER['argv'] as $argv) {
-            if (strpos($argv, '=') !== false) {
-                $var = explode('=', $argv);
+            if (\strpos($argv, '=') !== false) {
+                $var = \explode('=', $argv);
 
                 if (isset($var[0]) && isset($var[1])) {
                     $params[$var[0]] = $var[1];
@@ -352,9 +352,9 @@ class Console
         }
 
         $args         = $this->readArgv();
-        $isSystemTool = key($args);
+        $isSystemTool = \key($args);
 
-        if (in_array($isSystemTool, $this->systemTools)) {
+        if (\in_array($isSystemTool, $this->systemTools)) {
             $this->setArgument('#system-tool', $isSystemTool);
 
             return $this->arguments;
@@ -376,7 +376,7 @@ class Console
      */
     public function setArgument($argument, $value)
     {
-        $argument = trim($argument, '-');
+        $argument = \trim($argument, '-');
 
         $this->arguments[$argument] = $value;
     }
@@ -390,7 +390,7 @@ class Console
      */
     public function getArgument($argument)
     {
-        $argument = trim($argument, '-');
+        $argument = \trim($argument, '-');
 
         if (isset($this->arguments[$argument])) {
             return $this->arguments[$argument];
@@ -413,7 +413,7 @@ class Console
 
         $tools = $this->get(true);
 
-        ksort($tools);
+        \ksort($tools);
 
         foreach ($tools as $Tool) {
             /* @var $Tool Console\Tool */
@@ -477,7 +477,7 @@ class Console
      */
     public function get($tool)
     {
-        if (isset($this->tools[$tool]) && is_object($this->tools[$tool])) {
+        if (isset($this->tools[$tool]) && \is_object($this->tools[$tool])) {
             return $this->tools[$tool];
         }
 
@@ -499,7 +499,7 @@ class Console
 
         if ($Tool = $this->get($this->getArgument('tool'))) {
             try {
-                if (is_array($Tool) || !$Tool) {
+                if (\is_array($Tool) || !$Tool) {
                     throw new QUI\Exception('Tool not found', 404);
                 }
 
@@ -527,14 +527,14 @@ class Console
      */
     protected function executeSystemTool()
     {
-        if (php_sapi_name() != 'cli') {
+        if (\php_sapi_name() != 'cli') {
             throw new QUI\Exception([
                 'quiqqer/quiqqer',
                 'exception.console.execute.only.in.cli'
             ]);
         }
 
-        define('SYSTEM_INTERN', true);
+        \define('SYSTEM_INTERN', true);
 
         QUI\Permissions\Permission::setUser(
             QUI::getUsers()->getSystemUser()
@@ -640,8 +640,8 @@ class Console
         $path  = LIB_DIR.'QUI/System/Console/Tools/';
         $files = QUI\Utils\System\File::readDir($path, true);
 
-        for ($i = 0, $len = count($files); $i < $len; $i++) {
-            if (!file_exists($path.$files[$i])) {
+        for ($i = 0, $len = \count($files); $i < $len; $i++) {
+            if (!\file_exists($path.$files[$i])) {
                 continue;
             }
 
@@ -657,11 +657,11 @@ class Console
         foreach ($plugins as $plugin) {
             $dir = OPT_DIR.$plugin['name'];
 
-            if (!file_exists($dir.'/console.xml')) {
+            if (!\file_exists($dir.'/console.xml')) {
                 continue;
             }
 
-            $tools = array_merge(
+            $tools = \array_merge(
                 $tools,
                 QUI\Utils\Text\XML::getConsoleToolsFromXml($dir.'/console.xml')
             );
@@ -674,11 +674,11 @@ class Console
         foreach ($projects as $project) {
             $dir = USR_DIR.$project;
 
-            if (!file_exists($dir.'/console.xml')) {
+            if (!\file_exists($dir.'/console.xml')) {
                 continue;
             }
 
-            $tools = array_merge(
+            $tools = \array_merge(
                 $tools,
                 QUI\Utils\Text\XML::getConsoleToolsFromXml($dir.'/console.xml')
             );
@@ -687,7 +687,7 @@ class Console
 
         // init tools
         foreach ($tools as $cls) {
-            if (!class_exists($cls)) {
+            if (!\class_exists($cls)) {
                 continue;
             }
 
@@ -713,19 +713,19 @@ class Console
      */
     protected function includeClasses($file, $dir)
     {
-        $file = Orthos::clearPath(realpath($dir.$file));
+        $file = Orthos::clearPath(\realpath($dir.$file));
 
-        if (!file_exists($file)) {
+        if (!\file_exists($file)) {
             throw new QUI\Exception('console tool not exists');
         }
 
         require_once $file;
 
-        $class = str_replace('.php', '', $file);
-        $class = explode(LIB_DIR, $class);
-        $class = str_replace('/', '\\', $class[1]);
+        $class = \str_replace('.php', '', $file);
+        $class = \explode(LIB_DIR, $class);
+        $class = \str_replace('/', '\\', $class[1]);
 
-        if (!class_exists($class)) {
+        if (!\class_exists($class)) {
             return;
         }
 
@@ -748,7 +748,7 @@ class Console
         $this->writeLn("Available System-Tools (Example: 'php quiqqer.php cron'): ");
 
         $systemTools = $this->systemTools;
-        ksort($systemTools);
+        \ksort($systemTools);
 
         foreach ($systemTools as $tool) {
             /* @var $Tool Console\Tool */
@@ -756,7 +756,7 @@ class Console
             $this->write($tool, 'green');
             $this->clearMsg();
 
-            for ($i = 0; $i < 20 - strlen($tool); $i++) {
+            for ($i = 0; $i < 20 - \strlen($tool); $i++) {
                 $this->write(" ");
             }
 
@@ -812,7 +812,7 @@ class Console
     {
         $params  = $this->readArgv();
         $version = QUI::getPackageManager()->getVersion();
-        $year    = date('Y');
+        $year    = \date('Y');
 
         $lastUpdate = QUI::getPackageManager()->getLastUpdateDate();
         $lastUpdate = QUI::getLocale()->formatDate($lastUpdate);
@@ -855,8 +855,8 @@ class Console
      */
     public function clear()
     {
-        array_map(function ($a) {
-            print chr($a);
+        \array_map(function ($a) {
+            print \chr($a);
         }, [27, 91, 72, 27, 91, 50, 74]);
     }
 
@@ -867,7 +867,7 @@ class Console
      */
     public function readInput()
     {
-        return trim(fgets(STDIN));
+        return \trim(\fgets(STDIN));
     }
 
     /**
@@ -968,7 +968,9 @@ class Console
             "quiqqer/quiqqer",
             "console.tool.passwordreset.prompt.username"
         ));
+
         $username = $this->readInput();
+
         try {
             $User = QUI::getUsers()->getUserByName($username);
         } catch (\Exception $Exception) {
@@ -994,7 +996,7 @@ class Console
             )
         );
 
-        $confirm = strtolower(trim($this->readInput()));
+        $confirm = \strtolower(\trim($this->readInput()));
 
         if ($confirm != "y") {
             exit;
@@ -1011,14 +1013,14 @@ class Console
             "yellow"
         );
 
-        $confirm = strtolower(trim($this->readInput()));
+        $confirm = \strtolower(\trim($this->readInput()));
 
         if ($confirm != "y") {
             exit;
         }
 
         // Change the password!
-        $password = Orthos::getPassword(rand(8, 14));
+        $password = Orthos::getPassword(\rand(8, 14));
         $User->setPassword($password, QUI::getUsers()->getSystemUser());
 
         $this->writeLn(

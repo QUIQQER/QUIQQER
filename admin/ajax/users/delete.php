@@ -11,9 +11,9 @@ QUI::$Ajax->registerFunction(
     'ajax_users_delete',
     function ($uid) {
         $Users = QUI::getUsers();
-        $uids  = json_decode($uid, true);
+        $uids  = \json_decode($uid, true);
 
-        if (!is_array($uids)) {
+        if (!\is_array($uids)) {
             $uids = [$uids];
         }
 
@@ -23,7 +23,7 @@ QUI::$Ajax->registerFunction(
 
         QUI::getMessagesHandler()->addInformation(
             QUI::getLocale()->get('quiqqer/quiqqer', 'message.user.deleted.successful', [
-                'ids' => implode(', ', $uids)
+                'ids' => \implode(', ', $uids)
             ])
         );
 

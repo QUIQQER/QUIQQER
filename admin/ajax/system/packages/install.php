@@ -8,7 +8,7 @@
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_install',
     function ($packages) {
-        QUI::getPackageManager()->install(json_decode($packages, true));
+        QUI::getPackageManager()->install(\json_decode($packages, true));
     },
     ['packages'],
     [

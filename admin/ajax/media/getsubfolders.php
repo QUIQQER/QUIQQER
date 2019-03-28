@@ -15,17 +15,17 @@ QUI::$Ajax->registerFunction(
         $Project = QUI\Projects\Manager::getProject($project);
         $Media   = $Project->getMedia();
         $File    = $Media->get($fileid);
-        $params  = json_decode($params, true);
+        $params  = \json_decode($params, true);
 
         if (!QUI\Projects\Media\Utils::isFolder($File)) {
-            throw new QUI\Exception(array(
+            throw new QUI\Exception([
                 'quiqqer/system',
                 'exception.media.not.a.folder'
-            ));
+            ]);
         }
 
         /* @var $File \QUI\Projects\Media\Folder */
-        $children = array();
+        $children = [];
         $folders  = $File->getFolders($params);
 
         // count
@@ -39,11 +39,11 @@ QUI::$Ajax->registerFunction(
             $children[] = QUI\Projects\Media\Utils::parseForMediaCenter($Child);
         }
 
-        return array(
+        return [
             'children' => $children,
             'count'    => $count
-        );
+        ];
     },
-    array('project', 'fileid', 'params'),
+    ['project', 'fileid', 'params'],
     'Permission::checkAdminUser'
 );

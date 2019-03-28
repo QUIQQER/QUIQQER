@@ -19,15 +19,15 @@ QUI::$Ajax->registerFunction(
         if (isset($package) && !empty($package)) {
             QUI::getPackage($package); // check if package exists
 
-            $template = OPT_DIR.$package.'/'.str_replace('_', '/', $template).'.html';
+            $template = OPT_DIR.$package.'/'.\str_replace('_', '/', $template).'.html';
         } else {
             $dir      = SYS_DIR.'template/';
-            $template = $dir.str_replace('_', '/', $template).'.html';
+            $template = $dir.\str_replace('_', '/', $template).'.html';
         }
 
-        $template = realpath($template);
+        $template = \realpath($template);
 
-        if (!$template || !file_exists($template)) {
+        if (!$template || !\file_exists($template)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
@@ -36,7 +36,7 @@ QUI::$Ajax->registerFunction(
             );
         }
 
-        if (strpos($template, CMS_DIR) !== 0) {
+        if (\strpos($template, CMS_DIR) !== 0) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
@@ -46,7 +46,7 @@ QUI::$Ajax->registerFunction(
         }
 
         if (!empty($params)) {
-            $params = json_decode($params, true);
+            $params = \json_decode($params, true);
         }
 
         $Engine->assign([

@@ -647,7 +647,7 @@ class Utils
     {
         $link  = \str_replace('.html', '', $link);
         $link  = \trim($link);
-        $link  = vtrim($link, '/');
+        $link  = \trim($link, '/');
         $parts = \explode('/', $link);
 
         $Site = $Project->firstChild();

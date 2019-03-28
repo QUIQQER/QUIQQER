@@ -1419,7 +1419,7 @@ class Manager
                 true
             );
 
-            if (is_array($userPermissions)) {
+            if (\is_array($userPermissions)) {
                 return $userPermissions;
             }
         }
