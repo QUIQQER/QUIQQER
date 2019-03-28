@@ -1981,6 +1981,7 @@ class User implements QUI\Interfaces\Users\User
      * Could the user be deleted?
      *
      * @throws QUI\Users\Exception
+     * @throws QUI\Exception
      */
     protected function canBeDeleted()
     {
@@ -1989,12 +1990,19 @@ class User implements QUI\Interfaces\Users\User
             return;
         }
 
-        if (QUI::getUserBySession()->getId() === $this->getId()) {
+        // SuperUser can only be deleted by other SuperUsers
+        if ($this->isSU()) {
             throw new QUI\Users\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.user_cannot_delete_himself')
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.superuser_cannot_delete_himself')
             );
         }
 
+        // Check if user can delete himself
+        if (QUI::getUserBySession()->getId() === $this->getId()) {
+            $this->checkPermission('quiqqer.users.delete_self');
+        }
+
+        // Check if user is the last SuperUser in the system
         if ($this->isSU()) {
             $suUsers = QUI::getUsers()->getUserIds([
                 'where' => [
