@@ -72,14 +72,14 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
 
         $extension = QUI\Utils\StringHelper::pathinfo($original, PATHINFO_EXTENSION);
 
-        if (!in_array($extension, $WHITE_LIST_EXTENSION)) {
+        if (!\in_array($extension, $WHITE_LIST_EXTENSION)) {
             QUIFile::unlink($cachefile);
 
             return $original;
         }
 
         // Nur wenn Extension in Whitelist ist dann Cache machen
-        if (file_exists($cachefile)) {
+        if (\file_exists($cachefile)) {
             return $cachefile;
         }
 
@@ -118,7 +118,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function generateMD5()
     {
-        if (!file_exists($this->getFullPath())) {
+        if (!\file_exists($this->getFullPath())) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/system', 'exception.file.not.found', [
                     'file' => $this->getAttribute('file')
@@ -127,7 +127,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
             );
         }
 
-        $md5 = md5_file($this->getFullPath());
+        $md5 = \md5_file($this->getFullPath());
 
         $this->setAttribute('md5hash', $md5);
 
@@ -145,7 +145,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function generateSHA1()
     {
-        if (!file_exists($this->getFullPath())) {
+        if (!\file_exists($this->getFullPath())) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/system', 'exception.file.not.found', [
                     'file' => $this->getAttribute('file')
@@ -154,7 +154,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
             );
         }
 
-        $sha1 = sha1_file($this->getFullPath());
+        $sha1 = \sha1_file($this->getFullPath());
 
         $this->setAttribute('sha1hash', $sha1);
 

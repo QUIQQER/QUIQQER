@@ -24,7 +24,7 @@ QUI::$Ajax->registerFunction(
         }
 
         /* @var $Folder \QUI\Projects\Media\Folder */
-        $ids = json_decode($ids, true);
+        $ids = \json_decode($ids, true);
 
         foreach ($ids as $id) {
             $Trash->restore($id, $Folder);

@@ -76,10 +76,10 @@ class Queue
     {
         $params = $Mail->toArray();
 
-        $params['mailto']  = json_encode($params['mailto']);
-        $params['replyto'] = json_encode($params['replyto']);
-        $params['cc']      = json_encode($params['cc']);
-        $params['bcc']     = json_encode($params['bcc']);
+        $params['mailto']  = \json_encode($params['mailto']);
+        $params['replyto'] = \json_encode($params['replyto']);
+        $params['cc']      = \json_encode($params['cc']);
+        $params['bcc']     = \json_encode($params['bcc']);
 
         $attachements = array();
 
@@ -94,13 +94,13 @@ class Queue
         $newMailId = QUI::getDataBase()->getPDO()->lastInsertId('id');
 
         // attachements
-        if (is_array($attachements)) {
+        if (\is_array($attachements)) {
             $mailQueueDir = self::getAttachmentDir($newMailId);
 
             File::mkdir($mailQueueDir);
 
             foreach ($attachements as $attachement) {
-                if (!file_exists($attachement)) {
+                if (!\file_exists($attachement)) {
                     continue;
                 }
 
@@ -246,14 +246,14 @@ class Queue
         try {
             $PhpMailer = QUI::getMailManager()->getPHPMailer();
 
-            $mailto  = json_decode($params['mailto'], true);
-            $replyto = json_decode($params['replyto'], true);
-            $cc      = json_decode($params['cc'], true);
-            $bcc     = json_decode($params['bcc'], true);
+            $mailto  = \json_decode($params['mailto'], true);
+            $replyto = \json_decode($params['replyto'], true);
+            $cc      = \json_decode($params['cc'], true);
+            $bcc     = \json_decode($params['bcc'], true);
 
             // mailto
             foreach ($mailto as $address) {
-                if (is_array($address)) {
+                if (\is_array($address)) {
                     $PhpMailer->addAddress($address[0], $address[1]);
                     continue;
                 }
@@ -262,7 +262,7 @@ class Queue
 
             // reply
             foreach ($replyto as $entry) {
-                if (is_array($entry)) {
+                if (\is_array($entry)) {
                     $PhpMailer->addAddress($entry[0], $entry[1]);
                     continue;
                 }
@@ -271,7 +271,7 @@ class Queue
 
             // cc
             foreach ($cc as $entry) {
-                if (is_array($entry)) {
+                if (\is_array($entry)) {
                     $PhpMailer->addAddress($entry[0], $entry[1]);
                     continue;
                 }
@@ -280,7 +280,7 @@ class Queue
 
             // bcc
             foreach ($bcc as $entry) {
-                if (is_array($entry)) {
+                if (\is_array($entry)) {
                     $PhpMailer->addAddress($entry[0], $entry[1]);
                     continue;
                 }
@@ -290,13 +290,13 @@ class Queue
             // exist attachements?
             $mailQueueDir = self::getAttachmentDir($params['id']);
 
-            if (is_dir($mailQueueDir)) {
+            if (\is_dir($mailQueueDir)) {
                 $files = File::readDir($mailQueueDir);
 
                 foreach ($files as $file) {
                     $file = $mailQueueDir . $file;
 
-                    if (!file_exists($file)) {
+                    if (!\file_exists($file)) {
                         continue;
                     }
 
@@ -329,7 +329,7 @@ class Queue
 
             $PhpMailer->send();
 
-            if (is_dir($mailQueueDir)) {
+            if (\is_dir($mailQueueDir)) {
                 File::deleteDir($mailQueueDir);
             }
 
@@ -386,18 +386,18 @@ class Queue
     protected function getMailsSentInLastHour()
     {
         $cacheFile = QUI::getPackage('quiqqer/quiqqer')->getVarDir() . 'mailqueue';
-        $time      = time();
+        $time      = \time();
 
-        if (!file_exists($cacheFile)) {
-            file_put_contents($cacheFile, "$time-0");
+        if (!\file_exists($cacheFile)) {
+            \file_put_contents($cacheFile, "$time-0");
             return 0;
         }
 
-        $mailsSent  = explode('-', file_get_contents($cacheFile));
+        $mailsSent  = \explode('-', \file_get_contents($cacheFile));
         $createTime = (int)$mailsSent[0];
 
-        if ((time() - $createTime) > 3600) {
-            file_put_contents($cacheFile, "$time-0");
+        if ((\time() - $createTime) > 3600) {
+            \file_put_contents($cacheFile, "$time-0");
             return 0;
         }
 
@@ -414,7 +414,7 @@ class Queue
         $cacheFile = QUI::getPackage('quiqqer/quiqqer')->getVarDir() . 'mailqueue';
         $mailsSent = $this->getMailsSentInLastHour();
 
-        $mailsSentCache = explode('-', file_get_contents($cacheFile));
-        file_put_contents($cacheFile, $mailsSentCache[0] . '-' . ($mailsSent + 1));
+        $mailsSentCache = \explode('-', \file_get_contents($cacheFile));
+        \file_put_contents($cacheFile, $mailsSentCache[0] . '-' . ($mailsSent + 1));
     }
 }

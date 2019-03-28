@@ -39,7 +39,7 @@ class Setup
         // not at phpunit
         if (!isset($_SERVER['argv'])
             || (isset($_SERVER['argv'][0])
-                && strpos($_SERVER['argv'][0], 'phpunit') === false)
+                && \strpos($_SERVER['argv'][0], 'phpunit') === false)
         ) {
             // nur Super User darf dies
             Permissions\Permission::checkSU(
@@ -144,7 +144,7 @@ class Setup
         // look at media trash
         $mediaTrash = VAR_DIR.'media/trash';
 
-        if (!is_dir($mediaTrash)) {
+        if (!\is_dir($mediaTrash)) {
             SystemFile::mkdir($mediaTrash);
 
             $folders = SystemFile::readDir(VAR_DIR.'media');
@@ -176,16 +176,16 @@ class Setup
 
         $str = "<?php require_once '".CMS_DIR."bootstrap.php'; ?>";
 
-        if (file_exists(USR_DIR.'header.php')) {
-            unlink(USR_DIR.'header.php');
+        if (\file_exists(USR_DIR.'header.php')) {
+            \unlink(USR_DIR.'header.php');
         }
 
-        if (file_exists(OPT_DIR.'header.php')) {
-            unlink(OPT_DIR.'header.php');
+        if (\file_exists(OPT_DIR.'header.php')) {
+            \unlink(OPT_DIR.'header.php');
         }
 
-        file_put_contents(USR_DIR.'header.php', $str);
-        file_put_contents(OPT_DIR.'header.php', $str);
+        \file_put_contents(USR_DIR.'header.php', $str);
+        \file_put_contents(OPT_DIR.'header.php', $str);
 
         QUI::getEvents()->fireEvent('setupMakeHeaderFilesEnd');
     }
@@ -232,7 +232,7 @@ class Setup
 
         $PackageManager->refreshServerList();
 
-        if (!is_array($setupOptions)) {
+        if (!\is_array($setupOptions)) {
             $setupOptions = [];
         }
 
@@ -252,7 +252,7 @@ class Setup
                 continue;
             }
 
-            if (!is_dir(OPT_DIR.'/'.$package)) {
+            if (!\is_dir(OPT_DIR.'/'.$package)) {
                 continue;
             }
 
@@ -325,7 +325,7 @@ class Setup
   * (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
   *
   * Generated File via QUIQQER
-  * Date: '.date('Y-m-d H:i:s').'
+  * Date: '.\date('Y-m-d H:i:s').'
   *
   */
 
@@ -359,7 +359,7 @@ if (file_exists(\$boot)) {
     require \$boot;
 }
 ";
-        file_put_contents($bootstrap, $bootstrapContent);
+        \file_put_contents($bootstrap, $bootstrapContent);
 
 
         // ajax.php
@@ -367,7 +367,7 @@ if (file_exists(\$boot)) {
                    "define('QUIQQER_SYSTEM',true);".
                    "require '{$OPT_DIR}quiqqer/quiqqer/ajax.php';\n";
 
-        file_put_contents($ajax, $content);
+        \file_put_contents($ajax, $content);
 
         // image.php
         $content = $fileHeader.
@@ -375,7 +375,7 @@ if (file_exists(\$boot)) {
                    "require dirname(__FILE__) .'/bootstrap.php';\n".
                    "require '{$OPT_DIR}quiqqer/quiqqer/image.php';\n";
 
-        file_put_contents($image, $content);
+        \file_put_contents($image, $content);
 
         // index.php
         $content = $fileHeader.
@@ -383,13 +383,13 @@ if (file_exists(\$boot)) {
                    "require dirname(__FILE__) .'/bootstrap.php';\n".
                    "require '{$OPT_DIR}quiqqer/quiqqer/index.php';\n";
 
-        file_put_contents($index, $content);
+        \file_put_contents($index, $content);
 
         // quiqqer.php
         $content = $fileHeader.
                    "define('CMS_DIR', '{$CMS_DIR}');\n".
                    "require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';\n";
 
-        file_put_contents($quiqqer, $content);
+        \file_put_contents($quiqqer, $content);
     }
 }

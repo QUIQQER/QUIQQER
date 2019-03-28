@@ -83,7 +83,7 @@ class Manager
             try {
                 self::$Config = QUI::getConfig('etc/cache.ini.php');
             } catch (QUI\Exception $Exception) {
-                file_put_contents(CMS_DIR.'etc/cache.ini.php', '');
+                \file_put_contents(CMS_DIR.'etc/cache.ini.php', '');
 
                 self::$Config = QUI::getConfig('etc/cache.ini.php');
             }
@@ -103,22 +103,22 @@ class Manager
     public static function getStash($key = '')
     {
         // pfad erstellen falls nicht erstellt ist
-        if (!is_dir(VAR_DIR.'cache/stack/')) {
+        if (!\is_dir(VAR_DIR.'cache/stack/')) {
             QUI\Utils\System\File::mkdir(VAR_DIR.'cache/stack/');
         }
 
-        if (!is_string($key)) {
+        if (!\is_string($key)) {
             throw new QUI\Exception('Cache: No String given', 405, [
                 'key' => $key
             ]);
         }
 
         if (!empty($key)) {
-            $key = md5(__FILE__).'/qui/'.$key;
+            $key = \md5(__FILE__).'/qui/'.$key;
         }
 
         if (empty($key)) {
-            $key = md5(__FILE__).'/qui/';
+            $key = \md5(__FILE__).'/qui/';
         }
 
         $key = QUI\Utils\StringHelper::replaceDblSlashes($key);
@@ -173,7 +173,7 @@ class Manager
             switch ($confHandler) {
                 case 'apc':
                     try {
-                        array_unshift($handlers, self::getDriver([], 'apc'));
+                        \array_unshift($handlers, self::getDriver([], 'apc'));
                     } catch (Stash\Exception\RuntimeException $Exception) {
                     }
 
@@ -197,7 +197,7 @@ class Manager
 
                 case 'memcache':
                     try {
-                        array_unshift($handlers, self::getDriver([], 'memcache'));
+                        \array_unshift($handlers, self::getDriver([], 'memcache'));
                     } catch (Stash\Exception\RuntimeException $Exception) {
                     }
 
@@ -257,12 +257,12 @@ class Manager
 
             case 'redis':
                 $conf = $Config->get('general', 'redis');
-                $conf = explode(',', $conf);
+                $conf = \explode(',', $conf);
 
                 $servers = [];
 
                 foreach ($conf as $server) {
-                    $servers[] = explode(':', $server);
+                    $servers[] = \explode(':', $server);
                 }
 
                 try {
@@ -335,11 +335,11 @@ class Manager
             'path' => VAR_DIR.'cache/stack/'
         ];
 
-        if (!empty($conf['path']) && is_dir($conf['path'])) {
+        if (!empty($conf['path']) && \is_dir($conf['path'])) {
             $params['path'] = $conf['path'];
         }
 
-        if (!empty($options['path']) && is_dir($options['path'])) {
+        if (!empty($options['path']) && \is_dir($options['path'])) {
             $params['path'] = $options['path'];
         }
 
@@ -385,7 +385,7 @@ class Manager
      */
     public static function getFileSystemCache()
     {
-        if (!is_null(self::$FileSystemStash)) {
+        if (!\is_null(self::$FileSystemStash)) {
             return self::$FileSystemStash;
         }
 
@@ -395,7 +395,7 @@ class Manager
             'path' => VAR_DIR.'cache/stack/'
         ];
 
-        if (!empty($conf['path']) && is_dir($conf['path'])) {
+        if (!empty($conf['path']) && \is_dir($conf['path'])) {
             $params['path'] = $conf['path'];
         }
 
@@ -427,7 +427,7 @@ class Manager
             $handlers = self::$handlers;
 
             foreach ($handlers as $Handler) {
-                if (get_class($Handler) == $type) {
+                if (\get_class($Handler) == $type) {
                     return $Handler;
                 }
             }
@@ -463,7 +463,7 @@ class Manager
             $Stash->expiresAt($time);
         }
 
-        if (is_numeric($time) || $time instanceof \DateInterval) {
+        if (\is_numeric($time) || $time instanceof \DateInterval) {
             $Stash->expiresAfter($time);
         }
 

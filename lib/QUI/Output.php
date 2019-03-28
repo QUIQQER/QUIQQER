@@ -53,21 +53,21 @@ class Output extends Singleton
     public function parse($content)
     {
         // rewrite image
-        $content = preg_replace_callback(
+        $content = \preg_replace_callback(
             '#<img([^>]*)>#i',
             [&$this, "images"],
             $content
         );
 
         // rewrite files
-        $content = preg_replace_callback(
+        $content = \preg_replace_callback(
             '#(href|src|value)="(image.php)\?([^"]*)"#',
             [&$this, "files"],
             $content
         );
 
         // rewrite links
-        $content = preg_replace_callback(
+        $content = \preg_replace_callback(
             '#(href|src|action|value|data\-.*)="(index.php)\?([^"]*)"#',
             [&$this, "links"],
             $content
@@ -75,7 +75,7 @@ class Output extends Singleton
 
         // search empty <a> links
         if ($this->settings['remove-deleted-links']) {
-            $content = preg_replace_callback(
+            $content = \preg_replace_callback(
                 '/<a[ ]*?>(.*?)<\/a>/ims',
                 [&$this, "cleanEmptyLinks"],
                 $content
@@ -117,8 +117,8 @@ class Output extends Singleton
             return $output[0];
         }
 
-        $output = str_replace('&amp;', '&', $output);   // &amp; fix
-        $output = str_replace('〈=', '&lang=', $output); // URL FIX
+        $output = \str_replace('&amp;', '&', $output);   // &amp; fix
+        $output = \str_replace('〈=', '&lang=', $output); // URL FIX
 
         $components = $output[3];
 
@@ -127,7 +127,7 @@ class Output extends Singleton
             return $output[1].'="'.$this->linkCache[$components].'"';
         }
 
-        $parseUrl = parse_url($output[2].'?'.$components);
+        $parseUrl = \parse_url($output[2].'?'.$components);
 
         if (!isset($parseUrl['query']) || empty($parseUrl['query'])) {
             return $output[0];
@@ -135,16 +135,16 @@ class Output extends Singleton
 
         $urlQuery = $parseUrl['query'];
 
-        if (strpos($urlQuery, 'project') === false
-            || strpos($urlQuery, 'lang') === false
-            || strpos($urlQuery, 'id') === false
+        if (\strpos($urlQuery, 'project') === false
+            || \strpos($urlQuery, 'lang') === false
+            || \strpos($urlQuery, 'id') === false
         ) {
             // no quiqqer url
             return $output[0];
         }
 
         // maybe a quiqqer url ?
-        parse_str($urlQuery, $urlQueryParams);
+        \parse_str($urlQuery, $urlQueryParams);
 
         try {
             $url    = $this->getSiteUrl($urlQueryParams);
@@ -179,7 +179,7 @@ class Output extends Singleton
      */
     protected function cleanEmptyLinks($output)
     {
-        if (strpos($output[0], 'href=') === false) {
+        if (\strpos($output[0], 'href=') === false) {
             return $output[1];
         }
 
@@ -222,10 +222,10 @@ class Output extends Singleton
             // is relative url from the system?
 
             if ($this->settings['use-system-image-paths']
-                && strpos($output[0], 'http') === false
+                && \strpos($output[0], 'http') === false
             ) {
                 // workaround for system paths, not optimal
-                $output[0] = str_replace(
+                $output[0] = \str_replace(
                     ' src="',
                     ' src="'.CMS_DIR,
                     $output[0]
@@ -241,7 +241,7 @@ class Output extends Singleton
             return $output[0];
         }
 
-        $src = str_replace('&amp;', '&', $att['src']);
+        $src = \str_replace('&amp;', '&', $att['src']);
 
         unset($att['src']);
 
@@ -260,7 +260,7 @@ class Output extends Singleton
 
         // workaround
         if ($this->settings['use-system-image-paths']) {
-            $html = str_replace(
+            $html = \str_replace(
                 ' src="',
                 ' src="'.CMS_DIR,
                 $html
@@ -286,7 +286,7 @@ class Output extends Singleton
         $id      = false;
 
         // Falls ein Objekt übergeben wird
-        if (isset($params['site']) && is_object($params['site'])) {
+        if (isset($params['site']) && \is_object($params['site'])) {
             /* @var $Project QUI\Projects\Project */
             /* @var $Site QUI\Projects\Site */
             $Site    = $params['site'];
@@ -428,7 +428,7 @@ class Output extends Singleton
         $url = URL_DIR.$url;
 
         $projectHost = $Project->getHost();
-        $projectHost = str_replace(['https://', 'http://'], '', $projectHost);
+        $projectHost = \str_replace(['https://', 'http://'], '', $projectHost);
 
         // falls host anders ist, dann muss dieser dran gehängt werden
         // damit kein doppelter content entsteht
@@ -450,17 +450,17 @@ class Output extends Singleton
      */
     protected function extendUrlWithParams($url, $params)
     {
-        if (!count($params)) {
+        if (!\count($params)) {
             return $url;
         }
 
         $separator = Rewrite::URL_PARAM_SEPARATOR;
         $getParams = [];
 
-        if (isset($params['_getParams']) && is_string($params['_getParams'])) {
-            parse_str($params['_getParams'], $getParams);
+        if (isset($params['_getParams']) && \is_string($params['_getParams'])) {
+            \parse_str($params['_getParams'], $getParams);
             unset($params['_getParams']);
-        } elseif (isset($params['_getParams']) && is_array($params['_getParams'])) {
+        } elseif (isset($params['_getParams']) && \is_array($params['_getParams'])) {
             $getParams = $params['_getParams'];
             unset($params['_getParams']);
         }
@@ -472,11 +472,11 @@ class Output extends Singleton
 
 
         $suffix = '';
-        $exp    = explode('.', $url);
+        $exp    = \explode('.', $url);
         $url    = $exp[0];
 
         foreach ($params as $param => $value) {
-            if (is_integer($param)) {
+            if (\is_integer($param)) {
                 $url .= $separator.$value;
                 continue;
             }
@@ -509,6 +509,6 @@ class Output extends Singleton
             return $url.$suffix;
         }
 
-        return $url.$suffix.'?'.http_build_query($getParams);
+        return $url.$suffix.'?'.\http_build_query($getParams);
     }
 }

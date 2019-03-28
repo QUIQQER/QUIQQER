@@ -84,7 +84,7 @@ class Guest extends QUI\Groups\Group
             array(
                 'name'    => 'Guest',
                 'toolbar' => $this->getAttribute('toolbar'),
-                'rights'  => json_encode($this->rights),
+                'rights'  => \json_encode($this->rights),
                 'active'  => 1
             ),
             array('id' => $this->getId())

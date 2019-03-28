@@ -140,8 +140,8 @@ class Event implements QUI\Interfaces\Events
     {
         $results = [];
 
-        if (strpos($event, 'on') !== 0) {
-            $event = 'on'.ucfirst($event);
+        if (\strpos($event, 'on') !== 0) {
+            $event = 'on'.\ucfirst($event);
         }
 
 
@@ -163,7 +163,7 @@ class Event implements QUI\Interfaces\Events
         $events = $this->events[$event];
 
         // sort
-        usort($events, function ($a, $b) {
+        \usort($events, function ($a, $b) {
             if ($a['priority'] == $b['priority']) {
                 return 0;
             }
@@ -176,28 +176,28 @@ class Event implements QUI\Interfaces\Events
             $fn = $data['callable'];
 
             try {
-                if (!is_string($fn)) {
+                if (!\is_string($fn)) {
                     if ($args === false) {
                         $fn();
                         continue;
                     }
 
-                    call_user_func_array($fn, $args);
+                    \call_user_func_array($fn, $args);
                     continue;
                 }
 
-                $fn = preg_replace('/[\\\\]{2,}/', '\\', $fn);
+                $fn = \preg_replace('/[\\\\]{2,}/', '\\', $fn);
 
                 if ($args === false) {
-                    $results[$fn] = call_user_func($fn);
+                    $results[$fn] = \call_user_func($fn);
                     continue;
                 }
 
-                $results[$fn] = call_user_func_array($fn, $args);
+                $results[$fn] = \call_user_func_array($fn, $args);
             } catch (QUI\Exception $Exception) {
                 $message = $Exception->getMessage();
 
-                if (is_string($fn)) {
+                if (\is_string($fn)) {
                     $message .= ' :: '.$fn;
                 }
 
@@ -211,7 +211,7 @@ class Event implements QUI\Interfaces\Events
             } catch (\Exception $Exception) {
                 $message = $Exception->getMessage();
 
-                if (is_string($fn)) {
+                if (\is_string($fn)) {
                     $message .= ' :: '.$fn;
                 }
 

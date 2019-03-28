@@ -22,7 +22,7 @@ QUI::$Ajax->registerFunction(
             );
         }
 
-        $priorities = json_decode($priorities, true);
+        $priorities = \json_decode($priorities, true);
 
         foreach ($priorities as $priority) {
             try {
@@ -33,6 +33,6 @@ QUI::$Ajax->registerFunction(
             }
         }
     },
-    array('project', 'folderId', 'priorities'),
+    ['project', 'folderId', 'priorities'],
     'Permission::checkAdminUser'
 );

@@ -17,8 +17,8 @@ QUI::$Ajax->registerFunction(
         $File    = $Media->get($folderid);
 
         /* @var $File \QUI\Projects\Media\Folder */
-        $params    = json_decode($params, true);
-        $children  = array();
+        $params    = \json_decode($params, true);
+        $children  = [];
         $_children = $File->getChildrenIds($params);
 
         $getUserName = function ($uid) {
@@ -41,12 +41,12 @@ QUI::$Ajax->registerFunction(
 
                 $children[] = $data;
             } catch (QUI\Exception $Exception) {
-                $params = array(
+                $params = [
                     'id'    => $id,
                     'name'  => $Exception->getAttribute('name'),
                     'title' => $Exception->getAttribute('title'),
                     'error' => true
-                );
+                ];
 
                 $children[] = $params;
             }
@@ -54,6 +54,6 @@ QUI::$Ajax->registerFunction(
 
         return $children;
     },
-    array('project', 'folderid', 'params'),
+    ['project', 'folderid', 'params'],
     'Permission::checkAdminUser'
 );

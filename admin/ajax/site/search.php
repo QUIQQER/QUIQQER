@@ -10,7 +10,7 @@
 QUI::$Ajax->registerFunction(
     'ajax_site_search',
     function ($search, $params) {
-        $params = json_decode($params, true);
+        $params = \json_decode($params, true);
         $page   = 1;
 
         if (isset($params['page']) && (int)$params['page']) {
@@ -22,12 +22,12 @@ QUI::$Ajax->registerFunction(
         $params['count'] = true;
         $total           = QUI\Projects\Sites::search($search, $params);
 
-        return array(
-            'data' => $data,
-            'page' => $page,
+        return [
+            'data'  => $data,
+            'page'  => $page,
             'total' => $total
-        );
+        ];
     },
-    array('search', 'params'),
+    ['search', 'params'],
     'Permission::checkAdminUser'
 );

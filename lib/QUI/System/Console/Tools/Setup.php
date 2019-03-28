@@ -64,12 +64,12 @@ class Setup extends QUI\System\Console\Tool
             )
         ]);
 
-        $data = explode('<br />', $data);
-        $data = array_map(function ($entry) {
-            return trim($entry);
+        $data = \explode('<br />', $data);
+        $data = \array_map(function ($entry) {
+            return \trim($entry);
         }, $data);
 
-        $data = implode("\n", $data);
+        $data = \implode("\n", $data);
 
         $this->writeLn($data);
         $this->writeLn('');

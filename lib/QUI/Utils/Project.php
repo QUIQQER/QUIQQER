@@ -207,7 +207,7 @@ class Project
         $Parser          = new DemoDataParser();
 
         $demoDataArray = [];
-        if (file_exists($TemplatePackage->getDir().'demodata.xml')) {
+        if (\file_exists($TemplatePackage->getDir().'demodata.xml')) {
             $demoDataArray = $Parser->parse($TemplatePackage->getDir().'demodata.xml');
         }
 
@@ -294,13 +294,13 @@ class Project
             '"'
         ];
 
-        if (preg_match("@[-.,:;#`!§$%&/?<>\=\'\" ]@", $projectName)) {
+        if (\preg_match("@[-.,:;#`!§$%&/?<>\=\'\" ]@", $projectName)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.project.not.allowed.signs',
                     [
-                        'signs' => implode(' ', $forbiddenSigns)
+                        'signs' => \implode(' ', $forbiddenSigns)
                     ]
                 ),
                 802

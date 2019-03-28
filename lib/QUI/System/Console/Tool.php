@@ -159,14 +159,14 @@ abstract class Tool extends QUI\QDOM
         $maxLen = 0;
 
         foreach ($this->paramsList as $param) {
-            $command = '--'.ltrim($param['param'], '-');
+            $command = '--'.\ltrim($param['param'], '-');
             $short   = '';
 
             if (isset($param['short']) && !empty($param['short'])) {
-                $short = ' (-'.ltrim($param['short'], '-').')';
+                $short = ' (-'.\ltrim($param['short'], '-').')';
             }
 
-            $strlen = strlen("{$command}{$short}");
+            $strlen = \strlen("{$command}{$short}");
 
             if ($strlen > $maxLen) {
                 $maxLen = $strlen;
@@ -175,11 +175,11 @@ abstract class Tool extends QUI\QDOM
 
         // output
         foreach ($this->paramsList as $param) {
-            $command = '--'.ltrim($param['param'], '-');
+            $command = '--'.\ltrim($param['param'], '-');
             $short   = '';
 
             if (isset($param['short']) && !empty($param['short'])) {
-                $short = ' (-'.ltrim($param['short'], '-').')';
+                $short = ' (-'.\ltrim($param['short'], '-').')';
             }
 
             $this->write($command, 'green');
@@ -188,9 +188,9 @@ abstract class Tool extends QUI\QDOM
             $this->write("{$short}");
 
             $this->write(
-                str_repeat(
+                \str_repeat(
                     ' ',
-                    $maxLen - strlen("{$command}{$short}") + 4
+                    $maxLen - \strlen("{$command}{$short}") + 4
                 )
             ); // spaces to the description
 
@@ -225,7 +225,7 @@ abstract class Tool extends QUI\QDOM
             return $this->params[$name];
         }
 
-        $name = ltrim($name, '-');
+        $name = \ltrim($name, '-');
 
         if (isset($this->params[$name])) {
             return $this->params[$name];
@@ -251,7 +251,7 @@ abstract class Tool extends QUI\QDOM
         }
 
         // if cli, read user input
-        if (php_sapi_name() == 'cli'
+        if (\php_sapi_name() == 'cli'
             && (isset($paramData['optional']) && !$paramData['optional'])
         ) {
             $this->writeLn('');

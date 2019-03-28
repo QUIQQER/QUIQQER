@@ -104,7 +104,7 @@ class Manager
             return 'groups';
         }
 
-        return $this->classToArea(get_class($Object));
+        return $this->classToArea(\get_class($Object));
     }
 
     /**
@@ -323,8 +323,8 @@ class Manager
             $DataBase->update(
                 self::table(),
                 [
-                    'title'        => trim($params['title']),
-                    'desc'         => trim($params['desc']),
+                    'title'        => \trim($params['title']),
+                    'desc'         => \trim($params['desc']),
                     'type'         => self::parseType($params['type']),
                     'area'         => self::parseArea($params['area']),
                     'src'          => $params['src'],
@@ -341,8 +341,8 @@ class Manager
         // if not exist, insert it
         $DataBase->insert(self::table(), [
             'name'         => $params['name'],
-            'title'        => trim($params['title']),
-            'desc'         => trim($params['desc']),
+            'title'        => \trim($params['title']),
+            'desc'         => \trim($params['desc']),
             'type'         => self::parseType($params['type']),
             'area'         => self::parseArea($params['area']),
             'src'          => $params['src'],
@@ -404,7 +404,7 @@ class Manager
     {
         $permissions = QUI\Utils\Text\XML::getPermissionsFromXml($xmlFile);
 
-        if (!count($permissions)) {
+        if (!\count($permissions)) {
             return;
         }
 
@@ -551,9 +551,9 @@ class Manager
             return $permissions;
         }
 
-        $obj_permissions = json_decode($data[0]['permissions'], true);
+        $obj_permissions = \json_decode($data[0]['permissions'], true);
 
-        if (!is_array($obj_permissions)) {
+        if (!\is_array($obj_permissions)) {
             $obj_permissions = [];
         }
 
@@ -612,9 +612,9 @@ class Manager
             return $permissions;
         }
 
-        $obj_permissions = json_decode($data[0]['permissions'], true);
+        $obj_permissions = \json_decode($data[0]['permissions'], true);
 
-        if (!is_array($obj_permissions)) {
+        if (!\is_array($obj_permissions)) {
             $obj_permissions = [];
         }
 
@@ -745,7 +745,7 @@ class Manager
         $data = [];
 
         if (isset($_data[0]) && isset($_data[0]['permissions'])) {
-            $data = json_decode($_data[0]['permissions'], true);
+            $data = \json_decode($_data[0]['permissions'], true);
         }
 
         foreach ($list as $permission => $params) {
@@ -783,7 +783,7 @@ class Manager
 
                 $DataBase->update(
                     $table2users,
-                    ['permissions' => json_encode($data)],
+                    ['permissions' => \json_encode($data)],
                     ['user_id' => $Obj->getId()]
                 );
 
@@ -806,7 +806,7 @@ class Manager
 
                 $DataBase->update(
                     $table2groups,
-                    ['permissions' => json_encode($data)],
+                    ['permissions' => \json_encode($data)],
                     ['group_id' => $Obj->getId()]
                 );
 
@@ -834,7 +834,7 @@ class Manager
 
                 $DataBase->update(
                     $table2media,
-                    ['permissions' => json_encode($data)],
+                    ['permissions' => \json_encode($data)],
                     [
                         'project' => $Project->getName(),
                         'lang'    => $Project->getLang(),
@@ -884,9 +884,9 @@ class Manager
 
             $Perm = $permissions[$permission];
 
-            if (is_string($Perm)) {
+            if (\is_string($Perm)) {
                 $permissionValue = $Perm;
-            } elseif (is_array($Perm)) {
+            } elseif (\is_array($Perm)) {
                 $permissionValues = [];
 
                 foreach ($Perm as $PermValue) {
@@ -902,7 +902,7 @@ class Manager
                     }
                 }
 
-                $permissionValue = implode(',', $permissionValues);
+                $permissionValue = \implode(',', $permissionValues);
             } elseif (QUI::getUsers()->isUser($Perm)) {
                 /* @var $Perm QUI\Users\User */
                 $permissionValue = 'u'.$Perm->getId();
@@ -1274,7 +1274,7 @@ class Manager
         }
 
         QUI\System\Log::addInfo(
-            'Permission Area '.get_class($Obj).' not found'
+            'Permission Area '.\get_class($Obj).' not found'
         );
 
         return '__NULL__';
@@ -1298,17 +1298,17 @@ class Manager
             case 'users_and_groups':
                 // u1234566775 <- user-id
                 // g1234566775 <- group-id
-                $val = preg_replace('/[^0-9,ug]/', '', $val);
+                $val = \preg_replace('/[^0-9,ug]/', '', $val);
                 break;
 
             case 'users':
             case 'groups':
-                $val = preg_replace('/[^0-9,]/', '', $val);
+                $val = \preg_replace('/[^0-9,]/', '', $val);
                 break;
 
             case 'user':
             case 'group':
-                $val = preg_replace('/[^0-9]/', '', $val);
+                $val = \preg_replace('/[^0-9]/', '', $val);
                 break;
 
             case 'array':
@@ -1374,7 +1374,7 @@ class Manager
                 if (isset($userPermissions[0])
                     && isset($userPermissions[0]['permissions'])
                 ) {
-                    $userPermissions = json_decode(
+                    $userPermissions = \json_decode(
                         $userPermissions[0]['permissions'],
                         true
                     );
@@ -1388,12 +1388,12 @@ class Manager
 
         // group permissions
         if ($ruleset) {
-            if (is_string($ruleset)
-                && method_exists('QUI\Permissions\PermissionOrder', $ruleset)
+            if (\is_string($ruleset)
+                && \method_exists('QUI\Permissions\PermissionOrder', $ruleset)
             ) {
                 $result = QUI\Permissions\PermissionOrder::$ruleset($permission, $usersAndGroups);
             } else {
-                if (is_callable($ruleset)) {
+                if (\is_callable($ruleset)) {
                 } else {
                     throw new QUI\Exception('Unknown ruleset [getUserPermission]');
                 }
@@ -1413,15 +1413,13 @@ class Manager
     {
         $userPermissions = $this->getData($User);
 
-        if (isset($userPermissions[0])
-            && isset($userPermissions[0]['permissions'])
-        ) {
-            $userPermissions = json_decode(
+        if (isset($userPermissions[0]) && isset($userPermissions[0]['permissions'])) {
+            $userPermissions = \json_decode(
                 $userPermissions[0]['permissions'],
                 true
             );
 
-            if (is_array($userPermissions)) {
+            if (\is_array($userPermissions)) {
                 return $userPermissions;
             }
         }
@@ -1462,7 +1460,7 @@ class Manager
 
                 case 'groups':
                     // kommasepariert und zahlen
-                    $val = preg_replace('/[^0-9,]/', '', $val);
+                    $val = \preg_replace('/[^0-9,]/', '', $val);
                     break;
 
                 case 'array':

@@ -10,7 +10,7 @@ QUI::$Ajax->registerFunction(
     'ajax_project_set_config',
     function ($project, $params) {
         $Project = QUI\Projects\Manager::getProject($project);
-        $params  = json_decode($params, true);
+        $params  = \json_decode($params, true);
 
         if (isset($params['project-custom-css'])) {
             $Project->setCustomCSS($params['project-custom-css']);

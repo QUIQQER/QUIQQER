@@ -12,8 +12,8 @@ QUI::$Ajax->registerFunction(
     'ajax_permissions_save',
     function ($params, $btype, $permissions) {
         $Manager     = QUI::getPermissionManager();
-        $permissions = json_decode($permissions, true);
-        $params      = json_decode($params, true);
+        $permissions = \json_decode($permissions, true);
+        $params      = \json_decode($params, true);
 
         switch ($btype) {
             case 'classes/users/User':

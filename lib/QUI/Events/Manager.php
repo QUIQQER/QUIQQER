@@ -191,12 +191,12 @@ class Manager implements QUI\Interfaces\Events
      */
     public function addEvent($event, $fn, $package = '', $priority = 0)
     {
-        if (!is_string($package)) {
+        if (!\is_string($package)) {
             $package = '';
         }
 
         // add the event to the db
-        if (is_string($fn)) {
+        if (\is_string($fn)) {
             QUI::getDataBase()->insert(self::table(), [
                 'event'    => $event,
                 'callback' => $fn,
@@ -222,7 +222,7 @@ class Manager implements QUI\Interfaces\Events
      */
     public function addSiteEvent($event, $fn, $siteType, $priority = 0)
     {
-        if (!is_string($fn)) {
+        if (!\is_string($fn)) {
             return;
         }
 
@@ -264,7 +264,7 @@ class Manager implements QUI\Interfaces\Events
             ]);
         }
 
-        if (is_string($fn)) {
+        if (\is_string($fn)) {
             QUI::getDataBase()->delete(self::table(), [
                 'event'    => $event,
                 'callback' => $fn,
@@ -315,7 +315,7 @@ class Manager implements QUI\Interfaces\Events
         // event onFireEvent
         $fireArgs = $args;
 
-        if (!is_array($fireArgs)) {
+        if (!\is_array($fireArgs)) {
             $fireArgs = [];
         }
 

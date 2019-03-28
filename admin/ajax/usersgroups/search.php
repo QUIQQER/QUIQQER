@@ -9,11 +9,11 @@
 QUI::$Ajax->registerFunction(
     'ajax_usersgroups_search',
     function ($search, $fields, $params) {
-        $fields = json_decode($fields, true);
-        $params = json_decode($params, true);
+        $fields = \json_decode($fields, true);
+        $params = \json_decode($params, true);
 
-        if (!is_array($fields)) {
-            $fields = array(
+        if (!\is_array($fields)) {
+            $fields = [
                 'name'      => true,
                 'username'  => true,
                 'usergroup' => true,
@@ -30,15 +30,15 @@ QUI::$Ajax->registerFunction(
                 'avatar'    => true,
                 'lang'      => true,
                 'company'   => true
-            );
+            ];
         }
 
-        $searchParams = array(
+        $searchParams = [
             'searchUsers'  => true,
             'searchGroups' => true,
-            'users'        => array('select' => $fields),
-            'groups'       => array('select' => $fields),
-        );
+            'users'        => ['select' => $fields],
+            'groups'       => ['select' => $fields],
+        ];
 
         if (isset($params['limit'])) {
             $searchParams['limit'] = (int)$params['limit'];
@@ -46,6 +46,6 @@ QUI::$Ajax->registerFunction(
 
         return QUI\UsersGroups\Search::search($search, $searchParams);
     },
-    array('search', 'fields', 'params'),
+    ['search', 'fields', 'params'],
     'Permission::checkAdminUser'
 );

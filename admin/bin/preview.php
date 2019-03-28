@@ -6,14 +6,14 @@
  * @author www.pcsg.de (Henning Leutz)
  */
 
-define('QUIQQER_SYSTEM', true);
-define('ETC_DIR', dirname(dirname(dirname(dirname(dirname(dirname(__FILE__)))))).'/etc/');
-define('QUIQQER_PREVIEW', true);
+\define('QUIQQER_SYSTEM', true);
+\define('ETC_DIR', \dirname(\dirname(\dirname(\dirname(\dirname(\dirname(__FILE__)))))).'/etc/');
+\define('QUIQQER_PREVIEW', true);
 
-require_once dirname(dirname(dirname(__FILE__))).'/bootstrap.php';
+require_once \dirname(\dirname(\dirname(__FILE__))).'/bootstrap.php';
 
 if (!QUI::getUserBySession()->canUseBackend()) {
-    header("HTTP/1.1 404 Not Found");
+    \header("HTTP/1.1 404 Not Found");
     exit;
 }
 
@@ -21,7 +21,7 @@ if (!isset($_POST['project']) ||
     !isset($_POST['lang']) &&
     !isset($_POST['id'])
 ) {
-    header("HTTP/1.1 404 Not Found");
+    \header("HTTP/1.1 404 Not Found");
     echo "Site not found";
     exit;
 }
@@ -42,11 +42,11 @@ if (isset($_POST['siteData']['type'])) {
 $Site->load();
 
 if (!isset($_POST['siteData'])) {
-    $_POST['siteData'] = array();
+    $_POST['siteData'] = [];
 }
 
 if (!isset($_POST['siteDataJSON'])) {
-    $_POST['siteDataJSON'] = array();
+    $_POST['siteDataJSON'] = [];
 }
 
 // site data
@@ -55,7 +55,7 @@ foreach ($_POST['siteData'] as $key => $value) {
 }
 
 foreach ($_POST['siteDataJSON'] as $key => $value) {
-    $Site->setAttribute($key, json_decode($value, true));
+    $Site->setAttribute($key, \json_decode($value, true));
 }
 
 $Template = QUI::getTemplateManager();
@@ -67,7 +67,7 @@ $content = $Output->parse($content);
 
 $_content = $content;
 
-QUI::getEvents()->fireEvent('requestOutput', array(&$_content));
+QUI::getEvents()->fireEvent('requestOutput', [&$_content]);
 
 $Response->headers->set("X-XSS-Protection", "0"); // <<<--- BAD
 $Response->setContent($content);

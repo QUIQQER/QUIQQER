@@ -13,7 +13,7 @@ QUI::$Ajax->registerFunction(
     function ($control, $params = false) {
         try {
             $Control = new $control();
-            $params  = json_decode($params, true);
+            $params  = \json_decode($params, true);
 
             /* @var $Control QUI\Control */
             if ($params) {
@@ -26,7 +26,7 @@ QUI::$Ajax->registerFunction(
             );
         }
 
-        if (!is_subclass_of($Control, '\QUI\Control')) {
+        if (!\is_subclass_of($Control, '\QUI\Control')) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/system', 'control.not.found'),
                 404
@@ -35,5 +35,5 @@ QUI::$Ajax->registerFunction(
 
         return $Control->create();
     },
-    array('control', 'params')
+    ['control', 'params']
 );

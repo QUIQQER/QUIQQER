@@ -26,12 +26,12 @@ QUI::$Ajax->registerFunction(
         /* @var $File QUI\QDOM */
         $file = $File->getAttribute('filepath');
 
-        if (!file_exists($file)) {
+        if (!\file_exists($file)) {
             return '';
         }
 
         return $Folder->uploadFile($file)->getAttributes();
     },
-    array('project', 'parentid', 'File'),
+    ['project', 'parentid', 'File'],
     'Permission::checkAdminUser'
 );

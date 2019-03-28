@@ -114,8 +114,8 @@ class Template extends QUI\QDOM
      */
     public static function getConfig()
     {
-        if (!file_exists(CMS_DIR.'etc/templates.ini.php')) {
-            file_put_contents(CMS_DIR.'etc/templates.ini.php', '');
+        if (!\file_exists(CMS_DIR.'etc/templates.ini.php')) {
+            \file_put_contents(CMS_DIR.'etc/templates.ini.php', '');
         }
 
         return QUI::getConfig('etc/templates.ini.php');
@@ -145,7 +145,7 @@ class Template extends QUI\QDOM
 
         /* @var $Engine QUI\Interfaces\Template\EngineInterface */
         $Engine     = new $this->engines[$engine]($admin);
-        $implements = class_implements($Engine);
+        $implements = \class_implements($Engine);
 
         if (!isset($implements['QUI\Interfaces\Template\EngineInterface'])) {
             throw new QUI\Exception(
@@ -397,7 +397,7 @@ class Template extends QUI\QDOM
         $template_tpl   = OPT_DIR.$projectTemplate.'/index.html';
         $template_index = OPT_DIR.$projectTemplate.'/index.php';
 
-        if ($template_tpl && file_exists($template_tpl)) {
+        if ($template_tpl && \file_exists($template_tpl)) {
             $tpl = $template_tpl;
 
             $Engine->assign([
@@ -406,7 +406,7 @@ class Template extends QUI\QDOM
             ]);
         }
 
-        if (file_exists($project_tpl)) {
+        if (\file_exists($project_tpl)) {
             $tpl = $project_tpl;
 
             $Engine->assign([
@@ -425,10 +425,10 @@ class Template extends QUI\QDOM
         */
 
         // scripts file (index.php)
-        if (file_exists($project_index)) {
+        if (\file_exists($project_index)) {
             include $project_index;
         } else {
-            if ($template_index && file_exists($template_index)) {
+            if ($template_index && \file_exists($template_index)) {
                 include $template_index;
             }
         }
@@ -439,7 +439,7 @@ class Template extends QUI\QDOM
         $projectScript = false;
 
         $siteType = $Site->getAttribute('type');
-        $siteType = explode(':', $siteType);
+        $siteType = \explode(':', $siteType);
 
         if (isset($siteType[0]) && isset($siteType[1])) {
             $package = $siteType[0];
@@ -459,7 +459,7 @@ class Template extends QUI\QDOM
 
         // includes
         if ($siteScript) {
-            $siteScript = Orthos::clearPath(realpath($siteScript));
+            $siteScript = Orthos::clearPath(\realpath($siteScript));
 
             if ($siteScript) {
                 include $siteScript;
@@ -467,7 +467,7 @@ class Template extends QUI\QDOM
         }
 
         if ($projectScript) {
-            $projectScript = Orthos::clearPath(realpath($projectScript));
+            $projectScript = Orthos::clearPath(\realpath($projectScript));
 
             if ($projectScript) {
                 include $projectScript;
@@ -486,7 +486,7 @@ class Template extends QUI\QDOM
             $footerExtend .= $_str;
         }
 
-        $result = str_replace('</body>', $footerExtend.'</body>', $result);
+        $result = \str_replace('</body>', $footerExtend.'</body>', $result);
 
 
         return $result;
@@ -524,7 +524,7 @@ class Template extends QUI\QDOM
                 if (!empty($prefix)) {
                     $this->setAttribute(
                         'site_title_prefix',
-                        htmlspecialchars($prefix).' '
+                        \htmlspecialchars($prefix).' '
                     );
                 }
             }
@@ -535,7 +535,7 @@ class Template extends QUI\QDOM
                 if (!empty($suffix)) {
                     $this->setAttribute(
                         'site_title_suffix',
-                        ' '.htmlspecialchars($suffix)
+                        ' '.\htmlspecialchars($suffix)
                     );
                 }
             }
@@ -548,7 +548,7 @@ class Template extends QUI\QDOM
         $title .= $this->getAttribute('site_title_suffix');
         $title .= $this->getAttribute('site_title');
 
-        return htmlspecialchars($title);
+        return \htmlspecialchars($title);
     }
 
     /**
@@ -567,7 +567,7 @@ class Template extends QUI\QDOM
         $Engine  = $this->getAttribute('Engine');
 
         $siteType = $Site->getAttribute('type');
-        $siteType = explode(':', $siteType);
+        $siteType = \explode(':', $siteType);
         $files    = [];
 
         if (isset($siteType[0]) && isset($siteType[1])) {
@@ -578,14 +578,14 @@ class Template extends QUI\QDOM
             $siteStyle  = OPT_DIR.$package.'/bin/'.$type.'.css';
             $siteScript = OPT_DIR.$package.'/bin/'.$type.'.js';
 
-            if (file_exists($siteStyle)) {
+            if (\file_exists($siteStyle)) {
                 $Engine->assign(
                     'siteStyle',
                     URL_OPT_DIR.$package.'/bin/'.$type.'.css'
                 );
             }
 
-            if (file_exists($siteScript)) {
+            if (\file_exists($siteScript)) {
                 $Engine->assign(
                     'siteScript',
                     URL_OPT_DIR.$package.'/bin/'.$type.'.js'
@@ -594,11 +594,11 @@ class Template extends QUI\QDOM
 
             $realSitePath = OPT_DIR.$package.'/'.$type.'.css';
 
-            if (file_exists($realSitePath)) {
+            if (\file_exists($realSitePath)) {
                 //$css = file_get_contents( $realSitePath );
 
                 $this->extendHeader(
-                    '<style>'.file_get_contents($realSitePath).'</style>'
+                    '<style>'.\file_get_contents($realSitePath).'</style>'
                 );
             }
         }
@@ -631,11 +631,11 @@ class Template extends QUI\QDOM
         $customCSS = $Project->getName().'/bin/custom.css';
         $customJS  = $Project->getName().'/bin/custom.js';
 
-        if (file_exists(USR_DIR.$customCSS)) {
+        if (\file_exists(USR_DIR.$customCSS)) {
             $headerExtend .= '<link rel="stylesheet" href="'.URL_USR_DIR.$customCSS.'" />';
         }
 
-        if (file_exists(USR_DIR.$customJS)) {
+        if (\file_exists(USR_DIR.$customJS)) {
             $headerExtend .= '<script src="'.URL_USR_DIR.$customJS.'"></script>';
         }
 
@@ -651,7 +651,7 @@ class Template extends QUI\QDOM
             if (!empty($prefix)) {
                 $this->setAttribute(
                     'site_title_prefix',
-                    htmlspecialchars($prefix).' '
+                    \htmlspecialchars($prefix).' '
                 );
             }
         }
@@ -662,7 +662,7 @@ class Template extends QUI\QDOM
             if (!empty($suffix)) {
                 $this->setAttribute(
                     'site_title_suffix',
-                    ' '.htmlspecialchars($suffix)
+                    ' '.\htmlspecialchars($suffix)
                 );
             }
         }
@@ -705,7 +705,7 @@ class Template extends QUI\QDOM
      */
     public function getLayout($params = [])
     {
-        if (is_array($params)) {
+        if (\is_array($params)) {
             $this->setAttributes($params);
         }
 
@@ -740,14 +740,14 @@ class Template extends QUI\QDOM
         $template = OPT_DIR.$Project->getAttribute('template');
         $siteXML  = $template.'/site.xml';
 
-        if (!$layout || !is_dir($template) && !file_exists($siteXML)) {
+        if (!$layout || !\is_dir($template) && !\file_exists($siteXML)) {
             return false;
         }
 
         $Layout     = QUI\Utils\Text\XML::getLayoutFromXml($siteXML, $layout);
         $layoutFile = $template.'/'.$layout.'.html';
 
-        if (!$Layout || !file_exists($layoutFile)) {
+        if (!$Layout || !\file_exists($layoutFile)) {
             return false;
         }
 
@@ -768,7 +768,7 @@ class Template extends QUI\QDOM
         /* @var $Site QUI\Projects\Site */
         /* @var $Engine QUI\Interfaces\Template\EngineInterface */
 
-        if (is_array($params)) {
+        if (\is_array($params)) {
             $this->setAttributes($params);
         }
 
@@ -779,7 +779,7 @@ class Template extends QUI\QDOM
         $template = LIB_DIR.'templates/standard.html';
 
         $siteType = $Site->getAttribute('type');
-        $siteType = explode(':', $siteType);
+        $siteType = \explode(':', $siteType);
 
         if (isset($siteType[0]) && isset($siteType[1])) {
             $package = $siteType[0];
@@ -789,21 +789,21 @@ class Template extends QUI\QDOM
             $siteTemplate = OPT_DIR.$package.'/'.$type.'.html';
             $siteStyle    = OPT_DIR.$package.'/bin/'.$type.'.css';
 
-            if (file_exists($siteStyle)) {
+            if (\file_exists($siteStyle)) {
                 $Engine->assign(
                     'siteStyle',
                     URL_OPT_DIR.$package.'/bin/'.$type.'.css'
                 );
             }
 
-            if (file_exists($siteTemplate)) {
+            if (\file_exists($siteTemplate)) {
                 $template = $siteTemplate;
             }
 
             // project template
             $projectTemplate = USR_DIR.$Project->getName().'/lib/'.$type.'.html';
 
-            if (file_exists($projectTemplate)) {
+            if (\file_exists($projectTemplate)) {
                 $template = $projectTemplate;
             }
         }
@@ -813,19 +813,19 @@ class Template extends QUI\QDOM
             $siteTemplate = OPT_DIR.$Project->getAttribute('template').'/standard.html';
             $siteStyle    = OPT_DIR.$Project->getAttribute('template').'/bin/standard.css';
 
-            if (file_exists($siteStyle)) {
+            if (\file_exists($siteStyle)) {
                 $Engine->assign(
                     'siteStyle',
                     URL_OPT_DIR.$Project->getAttribute('template').'/standard.css'
                 );
             }
 
-            if (file_exists($siteTemplate)) {
+            if (\file_exists($siteTemplate)) {
                 $template = $siteTemplate;
             }
         }
 
-        if (!file_exists($template)) {
+        if (!\file_exists($template)) {
             $template = LIB_DIR.'templates/standard.html';
         }
 

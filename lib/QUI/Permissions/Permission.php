@@ -35,7 +35,7 @@ class Permission
      */
     protected static function getUser()
     {
-        if (!is_null(self::$User)) {
+        if (!\is_null(self::$User)) {
             return self::$User;
         }
 
@@ -265,12 +265,12 @@ class Permission
 
             case 'group':
                 $group_ids = $User->getGroups(false);
-                $group_ids = explode(',', $group_ids);
+                $group_ids = \explode(',', $group_ids);
 
-                if (strpos($perm_value, 'g') !== false
-                    || strpos($perm_value, 'u') !== false
+                if (\strpos($perm_value, 'g') !== false
+                    || \strpos($perm_value, 'u') !== false
                 ) {
-                    $perm_value = (int)substr($perm_value, 1);
+                    $perm_value = (int)\substr($perm_value, 1);
                 }
 
                 foreach ($group_ids as $groupId) {
@@ -288,7 +288,7 @@ class Permission
                 break;
 
             case 'users':
-                $uids = explode(',', $perm_value);
+                $uids = \explode(',', $perm_value);
 
                 foreach ($uids as $uid) {
                     if ((int)$uid == $User->getId()) {
@@ -302,8 +302,8 @@ class Permission
                 // groups ids from the user
                 $group_ids = $User->getGroups(false);
 
-                if (!is_array($group_ids)) {
-                    $group_ids = explode(',', $group_ids);
+                if (!\is_array($group_ids)) {
+                    $group_ids = \explode(',', $group_ids);
                 }
 
 
@@ -313,17 +313,17 @@ class Permission
                     $user_group_ids[$gid] = true;
                 }
 
-                $ids = explode(',', $perm_value);
+                $ids = \explode(',', $perm_value);
 
                 foreach ($ids as $id) {
                     $real_id = $id;
                     $type    = 'g';
 
-                    if (strpos($id, 'g') !== false
-                        || strpos($id, 'u') !== false
+                    if (\strpos($id, 'g') !== false
+                        || \strpos($id, 'u') !== false
                     ) {
-                        $real_id = (int)substr($id, 1);
-                        $type    = substr($id, 0, 1);
+                        $real_id = (int)\substr($id, 1);
+                        $type    = \substr($id, 0, 1);
                     }
 
                     switch ($type) {
@@ -405,7 +405,7 @@ class Permission
             $UserToCheck = self::getUser();
         }
 
-        if (get_class($UserToCheck) !== 'QUI\\Users\\User') {
+        if (\get_class($UserToCheck) !== 'QUI\\Users\\User') {
             if (!$User) {
                 QUI::getUsers()->checkUserSession();
             }
@@ -493,10 +493,10 @@ class Permission
         $user     = 'u'.$User->getId();
 
         if (!empty($permissions[$permission])) {
-            $permList = explode(',', trim($permissions[$permission], ' ,'));
+            $permList = \explode(',', \trim($permissions[$permission], ' ,'));
         }
 
-        $flip = array_flip($permList);
+        $flip = \array_flip($permList);
 
         // user is in the permissions
         if (isset($flip[$user])) {
@@ -507,7 +507,7 @@ class Permission
 
         $Manager->setSitePermissions(
             $Site,
-            [$permission => implode(',', $permList)],
+            [$permission => \implode(',', $permList)],
             $EditUser
         );
 
@@ -547,10 +547,10 @@ class Permission
         $group    = 'g'.$Group->getId();
 
         if (!empty($permissions[$permission])) {
-            $permList = explode(',', trim($permissions[$permission], ' ,'));
+            $permList = \explode(',', \trim($permissions[$permission], ' ,'));
         }
 
-        $flip = array_flip($permList);
+        $flip = \array_flip($permList);
 
         // user is in the permissions
         if (isset($flip[$group])) {
@@ -562,7 +562,7 @@ class Permission
 
         $Manager->setSitePermissions(
             $Site,
-            [$permission => implode(',', $permList)],
+            [$permission => \implode(',', $permList)],
             $EditUser
         );
 
@@ -773,22 +773,22 @@ class Permission
         $group    = 'g'.$Group->getId();
 
         if (!empty($permissions[$permission])) {
-            $permList = explode(',', trim($permissions[$permission], ' ,'));
+            $permList = \explode(',', \trim($permissions[$permission], ' ,'));
         }
 
-        $flip = array_flip($permList);
+        $flip = \array_flip($permList);
 
         // user is in the permissions, than unset it
         if (isset($flip[$group])) {
             unset($flip[$group]);
         }
 
-        $permList = array_flip($flip);
+        $permList = \array_flip($flip);
 
 
         $Manager->setSitePermissions(
             $Site,
-            [$permission => implode(',', $permList)],
+            [$permission => \implode(',', $permList)],
             $EditUser
         );
 
@@ -828,22 +828,22 @@ class Permission
         $user     = 'u'.$User->getId();
 
         if (!empty($permissions[$permission])) {
-            $permList = explode(',', trim($permissions[$permission], ' ,'));
+            $permList = \explode(',', \trim($permissions[$permission], ' ,'));
         }
 
-        $flip = array_flip($permList);
+        $flip = \array_flip($permList);
 
         // user is in the permissions, than unset it
         if (isset($flip[$user])) {
             unset($flip[$user]);
         }
 
-        $permList = array_flip($flip);
+        $permList = \array_flip($flip);
 
 
         $Manager->setSitePermissions(
             $Site,
-            [$permission => implode(',', $permList)],
+            [$permission => \implode(',', $permList)],
             $EditUser
         );
 
@@ -886,10 +886,10 @@ class Permission
         $groups   = 'g'.$Group->getId();
 
         if (!empty($permissions[$permission])) {
-            $permList = explode(',', trim($permissions[$permission], ' ,'));
+            $permList = \explode(',', \trim($permissions[$permission], ' ,'));
         }
 
-        $flip = array_flip($permList);
+        $flip = \array_flip($permList);
 
         // user is in the permissions
         if (isset($flip[$groups])) {
@@ -900,7 +900,7 @@ class Permission
 
         $Manager->setProjectPermissions(
             $Project,
-            [$permission => implode(',', $permList)],
+            [$permission => \implode(',', $permList)],
             $EditUser
         );
 
@@ -937,10 +937,10 @@ class Permission
         $user     = 'u'.$User->getId();
 
         if (!empty($permissions[$permission])) {
-            $permList = explode(',', trim($permissions[$permission], ' ,'));
+            $permList = \explode(',', \trim($permissions[$permission], ' ,'));
         }
 
-        $flip = array_flip($permList);
+        $flip = \array_flip($permList);
 
         // user is in the permissions
         if (isset($flip[$user])) {
@@ -951,7 +951,7 @@ class Permission
 
         $Manager->setProjectPermissions(
             $Project,
-            [$permission => implode(',', $permList)],
+            [$permission => \implode(',', $permList)],
             $EditUser
         );
 
@@ -1084,22 +1084,22 @@ class Permission
         $user     = 'u'.$User->getId();
 
         if (!empty($permissions[$permission])) {
-            $permList = explode(',', trim($permissions[$permission], ' ,'));
+            $permList = \explode(',', \trim($permissions[$permission], ' ,'));
         }
 
-        $flip = array_flip($permList);
+        $flip = \array_flip($permList);
 
         // user is in the permissions, than unset it
         if (isset($flip[$user])) {
             unset($flip[$user]);
         }
 
-        $permList = array_flip($flip);
+        $permList = \array_flip($flip);
 
 
         $Manager->setProjectPermissions(
             $Project,
-            [$permission => implode(',', $permList)]
+            [$permission => \implode(',', $permList)]
         );
     }
 
@@ -1132,22 +1132,22 @@ class Permission
         $group    = 'g'.$Group->getId();
 
         if (!empty($permissions[$permission])) {
-            $permList = explode(',', trim($permissions[$permission], ' ,'));
+            $permList = \explode(',', \trim($permissions[$permission], ' ,'));
         }
 
-        $flip = array_flip($permList);
+        $flip = \array_flip($permList);
 
         // user is in the permissions, than unset it
         if (isset($flip[$group])) {
             unset($flip[$group]);
         }
 
-        $permList = array_flip($flip);
+        $permList = \array_flip($flip);
 
 
         $Manager->setProjectPermissions(
             $Project,
-            [$permission => implode(',', $permList)]
+            [$permission => \implode(',', $permList)]
         );
 
         return true;

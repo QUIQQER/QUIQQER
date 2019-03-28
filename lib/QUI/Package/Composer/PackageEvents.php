@@ -145,12 +145,12 @@ class PackageEvents
         $Composer = $Event->getComposer();
         $config   = $Composer->getConfig()->all();
 
-        if (!defined('CMS_DIR')) {
-            define('CMS_DIR', $config['config']['quiqqer-dir']);
+        if (!\defined('CMS_DIR')) {
+            \define('CMS_DIR', $config['config']['quiqqer-dir']);
         }
 
-        if (!defined('ETC_DIR')) {
-            define('ETC_DIR', $config['config']['quiqqer-dir'].'etc/');
+        if (!\defined('ETC_DIR')) {
+            \define('ETC_DIR', $config['config']['quiqqer-dir'].'etc/');
         }
 
         QUI::load();

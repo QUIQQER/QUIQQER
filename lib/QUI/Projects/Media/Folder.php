@@ -263,11 +263,11 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $new_path = $Parent->getPath().'/'.$newname;
 
         $new_path = StringUtils::replaceDblSlashes($new_path);
-        $new_path = ltrim($new_path, '/');
+        $new_path = \ltrim($new_path, '/');
 
         $old_path = StringUtils::replaceDblSlashes($old_path);
-        $old_path = rtrim($old_path, '/');
-        $old_path = ltrim($old_path, '/');
+        $old_path = \rtrim($old_path, '/');
+        $old_path = \ltrim($old_path, '/');
 
 
         // update children paths
@@ -445,7 +445,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $tempFolder = QUI::getTemp()->createFolder();
         $newZipFile = $tempFolder.$this->getAttribute('name').'.zip';
 
-        if (!class_exists('\ZipArchive')) {
+        if (!\class_exists('\ZipArchive')) {
             throw new QUI\Exception([
                 'quiqqer/quiqqer',
                 'exception.zip.extension.not.installed'
@@ -481,7 +481,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             }
 
             $filePath     = $File->getRealPath();
-            $relativePath = substr($filePath, strlen($path));
+            $relativePath = \substr($filePath, \strlen($path));
 
             $Zip->addFile($filePath, $relativePath);
         }
@@ -569,7 +569,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         // abwärtskompatibilität
-        if (is_string($params)) {
+        if (\is_string($params)) {
             $order  = $params;
             $params = [];
         }
@@ -649,9 +649,9 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $limit = '';
 
         if (isset($params['limit'])) {
-            $limitParams = explode(',', $params['limit']);
+            $limitParams = \explode(',', $params['limit']);
 
-            if (count($limitParams) === 2) {
+            if (\count($limitParams) === 2) {
                 $limitParams[0] = (int)$limitParams[0];
                 $limitParams[1] = (int)$limitParams[1];
 
@@ -919,7 +919,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             case 'priority ASC':
             case 'priority DESC':
                 // if priority, sort, that empty priority is the last
-                usort($result, function ($ImageA, $ImageB) {
+                \usort($result, function ($ImageA, $ImageB) {
                     /* @var $ImageA Image */
                     $a = $ImageA->getAttribute('priority');
                     /* @var $ImageB Image */
@@ -1162,13 +1162,13 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         MediaUtils::checkFolderName($foldername);
 
         // Whitespaces am Anfang und am Ende rausnehmen
-        $new_name = trim($foldername);
+        $new_name = \trim($foldername);
 
 
         $User = QUI::getUserBySession();
         $dir  = $this->Media->getFullPath().$this->getPath();
 
-        if (is_dir($dir.$new_name)) {
+        if (\is_dir($dir.$new_name)) {
             // prüfen ob dieser ordner schon als kind existiert
             // wenn nein, muss dieser ordner in der DB angelegt werden
 
@@ -1199,8 +1199,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             'type'      => 'folder',
             'file'      => $this->getAttribute('file').$new_name.'/',
             'alt'       => $new_name,
-            'c_date'    => date('Y-m-d h:i:s'),
-            'e_date'    => date('Y-m-d h:i:s'),
+            'c_date'    => \date('Y-m-d h:i:s'),
+            'e_date'    => \date('Y-m-d h:i:s'),
             'c_user'    => $User->getId(),
             'e_user'    => $User->getId(),
             'mime_type' => 'folder'
@@ -1213,7 +1213,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             'child'  => $id
         ]);
 
-        if (is_dir($dir.$new_name)) {
+        if (\is_dir($dir.$new_name)) {
             $Folder = $this->Media->get($id);
 
             $Folder->setEffects($this->getEffects());
@@ -1242,7 +1242,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function uploadFile($file, $options = self::FILE_OVERWRITE_NONE)
     {
-        if (!file_exists($file)) {
+        if (!\file_exists($file)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/system', 'exception.file.not.found', [
                     'file' => $file
@@ -1251,7 +1251,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             );
         }
 
-        if (is_dir($file)) {
+        if (\is_dir($file)) {
             return $this->uploadFolder($file);
         }
 
@@ -1261,7 +1261,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         // test if the image is readable
         if (MediaUtils::getMediaTypeByMimeType($fileinfo['mime_type']) === 'image'
-            && strpos($fileinfo['mime_type'], 'svg') === false
+            && \strpos($fileinfo['mime_type'], 'svg') === false
         ) {
             try {
                 $this->getMedia()->getImageManager()->make($file);
@@ -1278,17 +1278,17 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         // mb_strtolower hat folgenden Grund: file_exists beachtet Gross und Kleinschreibung im Unix Systemen
         // Daher sind die Namen im Mediabereich alle klein geschrieben damit es keine Doppelten Dateien geben kann
         // Test.jpg und test.jpg wären unterschiedliche Dateien bei Windows aber nicht
-        $filename = mb_strtolower($filename);
+        $filename = \mb_strtolower($filename);
 
         // svg fix
         if ($fileinfo['mime_type'] == 'text/html'
             || $fileinfo['mime_type'] == 'text/plain'
             || $fileinfo['mime_type'] == 'image/svg'
         ) {
-            $content = file_get_contents($file);
+            $content = \file_get_contents($file);
 
-            if (strpos($content, '<svg') !== false && strpos($content, '</svg>')) {
-                file_put_contents(
+            if (\strpos($content, '<svg') !== false && \strpos($content, '</svg>')) {
+                \file_put_contents(
                     $file,
                     '<?xml version="1.0" encoding="UTF-8"?>'.
                     $content
@@ -1304,10 +1304,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         $new_file = $this->getFullPath().'/'.$filename;
-        $new_file = str_replace("//", "/", $new_file);
+        $new_file = \str_replace("//", "/", $new_file);
 
         // overwrite the file
-        if (file_exists($new_file)) {
+        if (\file_exists($new_file)) {
             if ($options != self::FILE_OVERWRITE_DESTROY
                 && $options != self::FILE_OVERWRITE_TRUE
             ) {
@@ -1340,7 +1340,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                     ['file' => $new_file]
                 );
 
-                unlink($new_file);
+                \unlink($new_file);
             }
         }
 
@@ -1354,10 +1354,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $table_rel = $this->Media->getTable('relations');
 
         $new_file_info = FileUtils::getInfo($new_file);
-        $title         = str_replace('_', ' ', $new_file_info['filename']);
+        $title         = \str_replace('_', ' ', $new_file_info['filename']);
 
         if (empty($new_file_info['filename'])) {
-            $new_file_info['filename'] = time();
+            $new_file_info['filename'] = \time();
         }
 
         $filePath = $this->getAttribute('file').'/'.$new_file_info['basename'];
@@ -1385,8 +1385,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             'short'        => '',
             'file'         => $filePath,
             'alt'          => $title,
-            'c_date'       => date('Y-m-d h:i:s'),
-            'e_date'       => date('Y-m-d h:i:s'),
+            'c_date'       => \date('Y-m-d h:i:s'),
+            'e_date'       => \date('Y-m-d h:i:s'),
             'c_user'       => $User->getId(),
             'e_user'       => $User->getId(),
             'mime_type'    => $new_file_info['mime_type'],
@@ -1450,7 +1450,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         foreach ($ids as $id) {
             try {
-                set_time_limit(1);
+                \set_time_limit(1);
                 $Item = $Media->get($id);
 
                 if (MediaUtils::isFolder($Item) || MediaUtils::isImage($Item)) {
@@ -1478,7 +1478,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         foreach ($files as $file) {
             // subfolders
-            if (is_dir($path.'/'.$file)) {
+            if (\is_dir($path.'/'.$file)) {
                 $foldername = MediaUtils::stripFolderName($file);
 
                 try {

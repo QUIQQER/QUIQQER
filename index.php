@@ -13,21 +13,22 @@
  * @author www.pcsg.com (Henning Leutz)
  */
 
-error_reporting(E_ALL);
 
-if (!defined('QUIQQER_SYSTEM')) {
-    define('QUIQQER_SYSTEM', true);
+\error_reporting(E_ALL);
+
+if (!\defined('QUIQQER_SYSTEM')) {
+    \define('QUIQQER_SYSTEM', true);
 }
 
 // Mailto
 if (isset($_REQUEST['_url'])
-    && strpos($_REQUEST['_url'], '[mailto]') !== false
+    && \strpos($_REQUEST['_url'], '[mailto]') !== false
 ) {
-    $addr = str_replace('[mailto]', '', $_REQUEST['_url']);
-    list($user, $host) = explode("[at]", $addr);
+    $addr = \str_replace('[mailto]', '', $_REQUEST['_url']);
+    list($user, $host) = \explode("[at]", $addr);
 
     if (isset($user) && isset($host)) {
-        header("Location: mailto:".$user."@".$host);
+        \header("Location: mailto:".$user."@".$host);
         exit;
     }
 }
@@ -91,7 +92,7 @@ try {
         $Locale = QUI::getLocale();
     }
 
-    if (defined('LOGIN_FAILED')
+    if (\defined('LOGIN_FAILED')
         || isset($_POST['login'])
         || isset($_GET['logout'])
     ) {
@@ -132,7 +133,7 @@ try {
         $file  = LIB_DIR.'templates/maintenance.html';
         $pfile = USR_DIR.$Project->getName().'/lib/maintenance.html';
 
-        if (file_exists($pfile)) {
+        if (\file_exists($pfile)) {
             $file = $pfile;
         }
 
@@ -145,7 +146,7 @@ try {
     QUI::getEvents()->fireEvent('start');
     Debug::marker('objekte initialisiert');
 
-    $siteCachePath = $Site->getCachePath().'/'.md5(QUI::getRequest()->getRequestUri());
+    $siteCachePath = $Site->getCachePath().'/'.\md5(QUI::getRequest()->getRequestUri());
 
     // Check if user is allowed to view Site and set appropriate error code if not
     if ($Site instanceof QUI\Projects\Site\PermissionDenied) {
@@ -238,13 +239,13 @@ try {
     exit;
 } catch (\Exception $Exception) {
     // error ??
-    header('HTTP/1.1 503 Service Temporarily Unavailable');
-    header('Status: 503 Service Temporarily Unavailable');
+    \header('HTTP/1.1 503 Service Temporarily Unavailable');
+    \header('Status: 503 Service Temporarily Unavailable');
 
-    error_log($Exception->getTraceAsString());
-    error_log($Exception->getMessage());
+    \error_log($Exception->getTraceAsString());
+    \error_log($Exception->getMessage());
 
-    echo file_get_contents(
-        dirname(__FILE__).'/lib/templates/error.html'
+    echo \file_get_contents(
+        \dirname(__FILE__).'/lib/templates/error.html'
     );
 }

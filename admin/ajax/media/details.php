@@ -13,11 +13,11 @@ use QUI\Projects\Media\Utils;
 QUI::$Ajax->registerFunction(
     'ajax_media_details',
     function ($project, $fileid) {
-        $fileid  = json_decode($fileid, true);
+        $fileid  = \json_decode($fileid, true);
         $Project = QUI\Projects\Manager::getProject($project);
         $Media   = $Project->getMedia();
 
-        if (!is_array($fileid)) {
+        if (!\is_array($fileid)) {
             $File = $Media->get($fileid);
             $attr = $File->getAttributes();
 
@@ -49,7 +49,7 @@ QUI::$Ajax->registerFunction(
         }
 
 
-        $list = array();
+        $list = [];
 
         foreach ($fileid as $id) {
             $File = $Media->get($id);
@@ -75,6 +75,6 @@ QUI::$Ajax->registerFunction(
 
         return $list;
     },
-    array('project', 'fileid'),
+    ['project', 'fileid'],
     'Permission::checkAdminUser'
 );

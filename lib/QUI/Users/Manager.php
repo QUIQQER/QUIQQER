@@ -140,7 +140,7 @@ class Manager
         $dropSql = [];
 
         foreach ($columns as $column) {
-            if (strpos($column['Key_name'], 'uuid_') === 0) {
+            if (\strpos($column['Key_name'], 'uuid_') === 0) {
                 $dropSql[] = "ALTER TABLE `users` DROP INDEX `{$column['Key_name']}`;";
             }
         }
@@ -193,7 +193,7 @@ class Manager
      */
     public function isAuth($User)
     {
-        if (!is_object($User) || !$User->getId()) {
+        if (!\is_object($User) || !$User->getId()) {
             return false;
         }
 
@@ -220,11 +220,11 @@ class Manager
      */
     public function isUser($User)
     {
-        if (!is_object($User)) {
+        if (!\is_object($User)) {
             return false;
         }
 
-        if (get_class($User) === User::class) {
+        if (\get_class($User) === User::class) {
             return true;
         }
 
@@ -244,11 +244,11 @@ class Manager
      */
     public function isSystemUser($User)
     {
-        if (!is_object($User)) {
+        if (!\is_object($User)) {
             return false;
         }
 
-        if (get_class($User) === SystemUser::class) {
+        if (\get_class($User) === SystemUser::class) {
             return true;
         }
 
@@ -264,11 +264,11 @@ class Manager
      */
     public function isNobodyUser($User)
     {
-        if (!is_object($User)) {
+        if (!\is_object($User)) {
             return false;
         }
 
-        if (get_class($User) === Nobody::class) {
+        if (\get_class($User) === Nobody::class) {
             return true;
         }
 
@@ -354,7 +354,7 @@ class Manager
         QUI::getDataBase()->insert(self::table(), [
             'uuid'     => $uuid,
             'username' => $newName,
-            'regdate'  => time(),
+            'regdate'  => \time(),
             'lang'     => QUI::getLocale()->getCurrent()
         ]);
 
@@ -410,12 +410,10 @@ class Manager
      */
     public function countAllUsers()
     {
-        $result = QUI::getDataBase()->fetch(
-            [
-                'count' => 'count',
-                'from'  => self::table()
-            ]
-        );
+        $result = QUI::getDataBase()->fetch([
+            'count' => 'count',
+            'from'  => self::table()
+        ]);
 
         if (isset($result[0]) && isset($result[0]['count'])) {
             return $result[0]['count'];
@@ -434,12 +432,10 @@ class Manager
     public function getAllUsers($objects = false)
     {
         if ($objects == false) {
-            return QUI::getDataBase()->fetch(
-                [
-                    'from'  => self::table(),
-                    'order' => 'username'
-                ]
-            );
+            return QUI::getDataBase()->fetch([
+                'from'  => self::table(),
+                'order' => 'username'
+            ]);
         }
 
         $result = [];
@@ -463,13 +459,11 @@ class Manager
      */
     public function getAllUserIds()
     {
-        $result = QUI::getDataBase()->fetch(
-            [
-                'select' => 'id',
-                'from'   => self::table(),
-                'order'  => 'username'
-            ]
-        );
+        $result = QUI::getDataBase()->fetch([
+            'select' => 'id',
+            'from'   => self::table(),
+            'order'  => 'username'
+        ]);
 
         return $result;
     }
@@ -564,7 +558,7 @@ class Manager
             );
         }
 
-        if ($Session->get('auth-'.get_class($Authenticator))
+        if ($Session->get('auth-'.\get_class($Authenticator))
             && $Session->get('username')
             && $Session->get('uid')
         ) {
@@ -620,7 +614,7 @@ class Manager
         }
 
         $Session->set(
-            'auth-'.get_class($Authenticator),
+            'auth-'.\get_class($Authenticator),
             1
         );
 
@@ -638,9 +632,7 @@ class Manager
      */
     public function login($authData = [])
     {
-        if (QUI::getSession()->get('auth')
-            && QUI::getSession()->get('uid')
-        ) {
+        if (QUI::getSession()->get('auth') && QUI::getSession()->get('uid')) {
             $userId        = QUI::getSession()->get('uid');
             $this->Session = $this->get($userId);
 
@@ -648,12 +640,12 @@ class Manager
         }
 
         $Events  = QUI::getEvents();
-        $numArgs = func_num_args();
+        $numArgs = \func_num_args();
         $userId  = false;
 
         // old login -> v 1.0; fallback
         if ($numArgs == 2) {
-            $arguments = func_get_args();
+            $arguments = \func_get_args();
             $authData  = [
                 'username' => $arguments[0],
                 'password' => $arguments[1]
@@ -741,7 +733,7 @@ class Manager
 
         if ($userData[0]['expire']
             && $userData[0]['expire'] != '0000-00-00 00:00:00'
-            && strtotime($userData[0]['expire']) < time()
+            && \strtotime($userData[0]['expire']) < \time()
         ) {
             $Exception = new QUI\Users\Exception(
                 QUI::getLocale()->get('quiqqer/system', 'exception.login.expire', [
@@ -802,7 +794,7 @@ class Manager
         QUI::getDataBase()->update(
             self::table(),
             [
-                'lastvisit'  => time(),
+                'lastvisit'  => \time(),
                 'user_agent' => $userAgent,
                 'secHash'    => $this->getSecHash()
             ],
@@ -832,7 +824,7 @@ class Manager
 
         // chromeframe nicht mitaufnehmen -> bug
         if (isset($_SERVER['HTTP_USER_AGENT'])
-            && strpos($_SERVER['HTTP_USER_AGENT'], 'chromeframe') === false
+            && \strpos($_SERVER['HTTP_USER_AGENT'], 'chromeframe') === false
         ) {
             $useragent = $_SERVER['HTTP_USER_AGENT'];
         }
@@ -841,7 +833,7 @@ class Manager
         $secHashData[] = QUI\Utils\System::getClientIP();
         $secHashData[] = QUI::conf('globals', 'salt');
 
-        return md5(serialize($secHashData));
+        return \md5(\serialize($secHashData));
     }
 
     /**
@@ -851,11 +843,11 @@ class Manager
      */
     public function getUserBySession()
     {
-        if (defined('SYSTEM_INTERN')) {
+        if (\defined('SYSTEM_INTERN')) {
             return $this->getSystemUser();
         }
 
-        if (!is_null($this->Session)) {
+        if (!\is_null($this->Session)) {
             return $this->Session;
         }
 
@@ -888,7 +880,7 @@ class Manager
      */
     public function existsSession()
     {
-        return !is_null($this->Session);
+        return !\is_null($this->Session);
     }
 
     /**
@@ -906,7 +898,7 @@ class Manager
             $sessionData = $Session->getSymfonySession()->all();
 
             foreach ($sessionData as $key => $value) {
-                if (strpos($key, 'auth-') === 0) {
+                if (\strpos($key, 'auth-') === 0) {
                     $Session->remove($key);
                 }
             }
@@ -1033,7 +1025,7 @@ class Manager
      */
     public function get($id)
     {
-        if (is_numeric($id)) {
+        if (\is_numeric($id)) {
             if (!$id) {
                 return new Nobody();
             }
@@ -1148,16 +1140,14 @@ class Manager
             return false;
         }
 
-        $result = QUI::getDataBase()->fetch(
-            [
-                'select' => 'username',
-                'from'   => self::table(),
-                'where'  => [
-                    'username' => $username
-                ],
-                'limit'  => 1
-            ]
-        );
+        $result = QUI::getDataBase()->fetch([
+            'select' => 'username',
+            'from'   => self::table(),
+            'where'  => [
+                'username' => $username
+            ],
+            'limit'  => 1
+        ]);
 
         return isset($result[0]) ? true : false;
     }
@@ -1408,8 +1398,8 @@ class Manager
                     $query .= ' '.$field.' LIKE :search OR ';
                 }
 
-                if (substr($query, -3) == 'OR ') {
-                    $query = substr($query, 0, -3);
+                if (\substr($query, -3) == 'OR ') {
+                    $query = \substr($query, 0, -3);
                 }
 
                 $query .= ') ';
@@ -1417,7 +1407,7 @@ class Manager
 
 
             // empty where, no search possible
-            if (strpos($query, 'WHERE ()') !== false) {
+            if (\strpos($query, 'WHERE ()') !== false) {
                 return [];
             }
 
@@ -1429,7 +1419,7 @@ class Manager
 
 
             if ($filter_group) {
-                $groups = explode(',', $filter['filter_group']);
+                $groups = \explode(',', $filter['filter_group']);
 
                 foreach ($groups as $groupId) {
                     if ((int)$groupId > 0) {
@@ -1506,7 +1496,7 @@ class Manager
             $Statement->execute();
         } catch (\PDOException $Exception) {
             $message = $Exception->getMessage();
-            $message .= print_r($query, true);
+            $message .= \print_r($query, true);
 
             throw new QUI\Database\Exception(
                 $message,
@@ -1560,7 +1550,7 @@ class Manager
      */
     public static function clearUsername($username)
     {
-        return preg_replace('/[^a-zA-Z0-9-_äöüß@\.\+]/', '', $username);
+        return \preg_replace('/[^a-zA-Z0-9-_äöüß@\.\+]/', '', $username);
     }
 
     /**
@@ -1604,7 +1594,7 @@ class Manager
             $name    = $package['name'];
             $userXml = OPT_DIR.$name.'/user.xml';
 
-            if (!file_exists($userXml)) {
+            if (!\file_exists($userXml)) {
                 continue;
             }
 

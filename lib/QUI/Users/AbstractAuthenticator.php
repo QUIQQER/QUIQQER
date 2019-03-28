@@ -21,7 +21,6 @@ abstract class AbstractAuthenticator implements QUI\Users\AuthenticatorInterface
      * Return the ID of the user
      *
      * @return integer
-     * @throws QUI\Users\Exception
      */
     public function getUserId()
     {

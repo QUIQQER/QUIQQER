@@ -12,7 +12,7 @@
 QUI::$Ajax->registerFunction(
     'ajax_users_address_save',
     function ($uid, $aid, $data) {
-        $data = json_decode($data, true);
+        $data = \json_decode($data, true);
         $User = QUI::getUsers()->get((int)$uid);
 
         try {
@@ -24,13 +24,13 @@ QUI::$Ajax->registerFunction(
         $Address->clearMail();
         $Address->clearPhone();
 
-        if (isset($data['mails']) && is_array($data['mails'])) {
+        if (isset($data['mails']) && \is_array($data['mails'])) {
             foreach ($data['mails'] as $mail) {
                 $Address->addMail($mail);
             }
         }
 
-        if (isset($data['phone']) && is_array($data['phone'])) {
+        if (isset($data['phone']) && \is_array($data['phone'])) {
             foreach ($data['phone'] as $phone) {
                 $Address->addPhone($phone);
             }

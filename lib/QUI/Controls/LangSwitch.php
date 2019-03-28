@@ -28,7 +28,7 @@ class LangSwitch extends QUI\Bricks\Controls\LanguageSwitches\DropDown
         parent::__construct($attributes);
 
         QUI\System\Log::addNotice(
-            '\QUI\Controls\LangSwitch is deprecated. ' .
+            '\QUI\Controls\LangSwitch is deprecated. '.
             'Please use QUI\Bricks\Controls\LanguageSwitches\DropDown'
         );
     }

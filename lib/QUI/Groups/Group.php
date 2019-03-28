@@ -76,7 +76,7 @@ class Group extends QUI\QDOM
                 $this->rights = $cache['rights'];
             }
 
-            if (isset($cache['attributes']) && is_array($cache['attributes'])) {
+            if (isset($cache['attributes']) && \is_array($cache['attributes'])) {
                 foreach ($cache['attributes'] as $key => $value) {
                     $this->setAttribute($key, $value);
                 }
@@ -92,10 +92,7 @@ class Group extends QUI\QDOM
 
         if (!isset($result[0])) {
             throw new QUI\Exception(
-                [
-                    'quiqqer/system',
-                    'exception.lib.qui.group.doesnt.exist'
-                ],
+                ['quiqqer/system', 'exception.lib.qui.group.doesnt.exist'],
                 404
             );
         }
@@ -111,9 +108,9 @@ class Group extends QUI\QDOM
         if (isset($result[0]['extra'])) {
             $extraList = $this->getListOfExtraAttributes();
             $extras    = [];
-            $extraData = json_decode($result[0]['extra'], true);
+            $extraData = \json_decode($result[0]['extra'], true);
 
-            if (!is_array($extraData)) {
+            if (!\is_array($extraData)) {
                 $extraData = [];
             }
 
@@ -157,7 +154,7 @@ class Group extends QUI\QDOM
          * @param int $groupId
          */
         $deleteGidInUsers = function ($groupId) {
-            if (!is_int($groupId)) {
+            if (!\is_int($groupId)) {
                 return;
             }
 
@@ -250,11 +247,11 @@ class Group extends QUI\QDOM
             $plugin  = $entry['name'];
             $userXml = OPT_DIR.$plugin.'/group.xml';
 
-            if (!file_exists($userXml)) {
+            if (!\file_exists($userXml)) {
                 continue;
             }
 
-            $attributes = array_merge(
+            $attributes = \array_merge(
                 $attributes,
                 $this->readAttributesFromGroupXML($userXml)
             );
@@ -299,7 +296,7 @@ class Group extends QUI\QDOM
                 continue;
             }
 
-            $attributes[] = trim($Attribute->nodeValue);
+            $attributes[] = \trim($Attribute->nodeValue);
         }
 
         return $attributes;
@@ -386,9 +383,9 @@ class Group extends QUI\QDOM
         $toolbar          = '';
 
         if ($this->getAttribute('assigned_toolbar')) {
-            $toolbars = explode(',', $this->getAttribute('assigned_toolbar'));
+            $toolbars = \explode(',', $this->getAttribute('assigned_toolbar'));
 
-            $assignedToolbars = array_filter($toolbars, function ($toolbar) {
+            $assignedToolbars = \array_filter($toolbars, function ($toolbar) {
                 return QUI\Editor\Manager::existsToolbar($toolbar);
             });
 
@@ -407,8 +404,8 @@ class Group extends QUI\QDOM
             Manager::table(),
             [
                 'name'             => $this->getAttribute('name'),
-                'rights'           => json_encode($this->rights),
-                'extra'            => json_encode($extra),
+                'rights'           => \json_encode($this->rights),
+                'extra'            => \json_encode($extra),
                 'avatar'           => $avatar,
                 'assigned_toolbar' => $assignedToolbars,
                 'toolbar'          => $toolbar
@@ -582,7 +579,7 @@ class Group extends QUI\QDOM
         $children = $this->getChildrenIds(true);
 
         if (!empty($children)) {
-            $children = array_flip($children);
+            $children = \array_flip($children);
 
             if (isset($children[$NewParent->getId()])) {
                 throw new QUI\Groups\Exception(
@@ -755,7 +752,7 @@ class Group extends QUI\QDOM
     public function isParent($id, $recursiv = false)
     {
         if ($recursiv) {
-            if (in_array($id, $this->parentids)) {
+            if (\in_array($id, $this->parentids)) {
                 return true;
             }
 
@@ -860,7 +857,7 @@ class Group extends QUI\QDOM
      */
     public function hasChildren()
     {
-        return count($this->getChildren());
+        return \count($this->getChildren());
     }
 
     /**
@@ -880,7 +877,7 @@ class Group extends QUI\QDOM
             try {
                 $Child = $Groups->get($id);
 
-                $children[] = array_merge(
+                $children[] = \array_merge(
                     $Child->getAttributes(),
                     ['hasChildren' => $Child->hasChildren()]
                 );
@@ -989,8 +986,8 @@ class Group extends QUI\QDOM
         $newId  = false;
 
         while ($create) {
-            mt_srand(microtime(true) * 1000000);
-            $newId = mt_rand(10, 1000000000);
+            \mt_srand(\microtime(true) * 1000000);
+            $newId = \mt_rand(10, 1000000000);
 
             $result = QUI::getDataBase()->fetch([
                 'select' => 'id',

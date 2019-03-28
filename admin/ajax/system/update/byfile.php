@@ -11,7 +11,7 @@ QUI::$Ajax->registerFunction(
         /* @var $File \QUI\QDOM */
         $filepath = $File->getAttribute('filepath');
 
-        if (!file_exists($filepath) && !is_dir($filepath)) {
+        if (!\file_exists($filepath) && !\is_dir($filepath)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',

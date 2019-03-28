@@ -13,10 +13,10 @@ QUI::$Ajax->registerFunction(
         $Project = QUI::getProjectManager()->decode($project);
         $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
 
-        $linkedParams = json_decode($linkedParams, true);
+        $linkedParams = \json_decode($linkedParams, true);
 
         $Site->addLanguageLink($linkedParams['lang'], (int)$linkedParams['id']);
     },
-    array('project', 'id', 'linkedParams'),
+    ['project', 'id', 'linkedParams'],
     'Permission::checkAdminUser'
 );

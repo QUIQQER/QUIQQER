@@ -32,9 +32,9 @@ class Temp
      */
     public function __construct($tempfolder)
     {
-        $this->folder = rtrim($tempfolder, '/').'/';
+        $this->folder = \rtrim($tempfolder, '/').'/';
 
-        if (!is_dir($this->folder)) {
+        if (!\is_dir($this->folder)) {
             QUIFile::mkdir($this->folder);
         }
     }
@@ -53,20 +53,20 @@ class Temp
             $newFolder = $this->folder.$name.'/';
             $newFolder = Orthos::clearPath($newFolder);
 
-            if (is_dir($newFolder)) {
+            if (\is_dir($newFolder)) {
                 return $newFolder;
             }
 
             QUIFile::mkdir($this->folder);
             QUIFile::mkdir($newFolder);
 
-            if (!is_dir($newFolder)) {
+            if (!\is_dir($newFolder)) {
                 throw new QUI\Exception(
                     'Folder '.$newFolder.' could not be created'
                 );
             }
 
-            if (!realpath($newFolder)) {
+            if (!\realpath($newFolder)) {
                 throw new QUI\Exception(
                     'Folder '.$newFolder.' could not be created'
                 );
@@ -78,8 +78,8 @@ class Temp
 
         // create a var_dir temp folder
         do {
-            $folder = $this->folder.str_replace(array(' ', '.'), '', microtime()).'/';
-        } while (file_exists($folder));
+            $folder = $this->folder.\str_replace([' ', '.'], '', \microtime()).'/';
+        } while (\file_exists($folder));
 
         QUIFile::mkdir($folder);
 
@@ -91,7 +91,7 @@ class Temp
      */
     public function clear()
     {
-        if (system('rm -rf '.$this->folder)) {
+        if (\system('rm -rf '.$this->folder)) {
             QUIFile::mkdir($this->folder);
 
             return;
@@ -111,13 +111,13 @@ class Temp
      */
     public function moveToTemp($folder)
     {
-        if (!file_exists($folder)) {
+        if (!\file_exists($folder)) {
             return;
         }
 
         QUIFile::move(
             $folder,
-            self::createFolder().md5($folder)
+            self::createFolder().\md5($folder)
         );
     }
 }

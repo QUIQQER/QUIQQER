@@ -149,7 +149,7 @@ class Menu
             $files = QUI\Utils\System\File::readDir($dir);
 
             foreach ($files as $key => $file) {
-                $files[$key] = str_replace(CMS_DIR, '', $dir.$file);
+                $files[$key] = \str_replace(CMS_DIR, '', $dir.$file);
             }
         }
 
@@ -169,8 +169,8 @@ class Menu
 
             $setting_file = $Package->getXMLFile('settings.xml');
 
-            if (file_exists($setting_file)) {
-                $files[] = str_replace(CMS_DIR, '', $setting_file);
+            if (\file_exists($setting_file)) {
+                $files[] = \str_replace(CMS_DIR, '', $setting_file);
             }
         }
 
@@ -197,7 +197,7 @@ class Menu
                     $Item  = $windowList[$winName];
                     $files = $Item->getAttribute('qui-xml-file');
 
-                    if (!is_array($files)) {
+                    if (!\is_array($files)) {
                         $files = [$files];
                     }
 
@@ -272,7 +272,7 @@ class Menu
         }
 
         $menu = $Menu->toArray();
-        $menu = array_values($menu);
+        $menu = \array_values($menu);
 
         // sort
         foreach ($menu as $key => $item) {
@@ -379,7 +379,7 @@ class Menu
      */
     protected function sortItems($items)
     {
-        usort($items, [$this, 'sortByTitle']);
+        \usort($items, [$this, 'sortByTitle']);
 
         foreach ($items as $key => $item) {
             if (isset($item['items']) && !empty($item['items'])) {
@@ -407,6 +407,6 @@ class Menu
             return 1;
         }
 
-        return strcmp($a["text"], $b["text"]);
+        return \strcmp($a["text"], $b["text"]);
     }
 }

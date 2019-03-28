@@ -135,9 +135,9 @@ class Permissions extends QUI\System\Console\Tool
                 $perm['defaultValue'] = '';
             }
 
-            $title = explode(' ', $perm['title']);
+            $title = \explode(' ', $perm['title']);
 
-            if (count($title) === 2) {
+            if (\count($title) === 2) {
                 $title = QUI::getLocale()->get($title[0], $title[1]);
             }
 
@@ -193,9 +193,9 @@ class Permissions extends QUI\System\Console\Tool
             $value = $userPermissions[$permission];
             $perm  = $permissions[$permission];
 
-            $title = explode(' ', $perm['title']);
+            $title = \explode(' ', $perm['title']);
 
-            if (count($title) === 2) {
+            if (\count($title) === 2) {
                 $title = QUI::getLocale()->get($title[0], $title[1]);
             }
 
@@ -282,9 +282,9 @@ class Permissions extends QUI\System\Console\Tool
             $value = $groupPermissions[$permission];
             $perm  = $permissions[$permission];
 
-            $title = explode(' ', $perm['title']);
+            $title = \explode(' ', $perm['title']);
 
-            if (count($title) === 2) {
+            if (\count($title) === 2) {
                 $title = QUI::getLocale()->get($title[0], $title[1]);
             }
 

@@ -51,7 +51,7 @@ class Plugin extends QUI\QDOM
      */
     public function __toString()
     {
-        return get_class($this);
+        return \get_class($this);
     }
 
     /**
@@ -65,10 +65,10 @@ class Plugin extends QUI\QDOM
             return $this->Config;
         }
 
-        $iniFile = CMS_DIR . 'etc/plugins/' . $this->getAttribute('name') . '.ini.php';
+        $iniFile = CMS_DIR.'etc/plugins/'.$this->getAttribute('name').'.ini.php';
 
-        if (!file_exists($iniFile)) {
-            file_put_contents($iniFile, '');
+        if (!\file_exists($iniFile)) {
+            \file_put_contents($iniFile, '');
         }
 
         $this->Config = new QUI\Config($iniFile);
@@ -95,15 +95,15 @@ class Plugin extends QUI\QDOM
         $this->setupHelper();
 
         // Sprache einlesen
-        if (file_exists(OPT_DIR . $this->getAttribute('name') . '/locale.xml')) {
+        if (\file_exists(OPT_DIR.$this->getAttribute('name').'/locale.xml')) {
             QUI\Translator::import(
-                OPT_DIR . $this->getAttribute('name') . '/locale.xml'
+                OPT_DIR.$this->getAttribute('name').'/locale.xml'
             );
         }
 
         // Datenbank aufbauen
         XML::importDataBaseFromXml(
-            OPT_DIR . $this->getAttribute('name') . '/database.xml'
+            OPT_DIR.$this->getAttribute('name').'/database.xml'
         );
     }
 
@@ -115,7 +115,7 @@ class Plugin extends QUI\QDOM
      */
     protected function setupHelper()
     {
-        if (!method_exists($this, 'setup')) {
+        if (!\method_exists($this, 'setup')) {
             return;
         }
 
@@ -125,7 +125,7 @@ class Plugin extends QUI\QDOM
 
         foreach ($conf as $project => $entrys) {
             if (isset($entrys['langs'])) {
-                $langs = explode(',', $entrys['langs']);
+                $langs = \explode(',', $entrys['langs']);
 
                 foreach ($langs as $lang) {
                     try {
@@ -134,8 +134,8 @@ class Plugin extends QUI\QDOM
 
                         $this->setup($Project);
                     } catch (QUI\Exception $e) {
-                        $message = 'Project [' . $project . ', ' . $lang . '] ';
-                        $message .= 'Plugin [' . $this->getType() . '] ';
+                        $message = 'Project ['.$project.', '.$lang.'] ';
+                        $message .= 'Plugin ['.$this->getType().'] ';
                         $message .= $e->getMessage();
 
                         $error[] = $message;
@@ -145,7 +145,7 @@ class Plugin extends QUI\QDOM
         }
 
         if (isset($error)) {
-            throw new QUI\Exception(implode("\n", $error));
+            throw new QUI\Exception(\implode("\n", $error));
         }
     }
 
@@ -158,28 +158,30 @@ class Plugin extends QUI\QDOM
     public function uninstall($params)
     {
         // Datenbank aufbauen
-        $dbfields = array();
+        $dbfields = [];
         $Dom      = $this->getDbXml();
         $database = $Dom->getElementsByTagName('database');
         $projects = QUI\Projects\Manager::getConfig()->toArray();
         $DataBase = QUI::getDB();
 
-        $settings = array(
+        $settings = [
             'database' => isset($params['database']) && $params['database'] ? true : false
-        );
+        ];
 
-        if (method_exists($this, 'onUninstall')) {
+        if (\method_exists($this, 'onUninstall')) {
             $this->onUninstall();
         }
 
         if (!$database->length) {
             $this->uninstallFiles();
+
             return;
         }
 
         // Datenbank nicht löschen, nur Dateien
         if ($settings['database'] !== true) {
             $this->uninstallFiles();
+
             return;
         }
 
@@ -230,11 +232,11 @@ class Plugin extends QUI\QDOM
 
                 // Projekte durchgehen
                 foreach ($projects as $name => $params) {
-                    $langs = explode(',', $params['langs']);
+                    $langs = \explode(',', $params['langs']);
 
                     foreach ($langs as $lang) {
                         $DataBase->deleteTableFields(
-                            $name . '_' . $lang . '_' . $suffix,
+                            $name.'_'.$lang.'_'.$suffix,
                             $fields
                         );
                     }
@@ -264,25 +266,26 @@ class Plugin extends QUI\QDOM
             return false;
         }
 
-        if (!is_null($this->Admin)) {
+        if (!\is_null($this->Admin)) {
             return $this->Admin;
         }
 
-        if (!file_exists($this->getAttribute('admin'))) {
+        if (!\file_exists($this->getAttribute('admin'))) {
             return false;
         }
 
-        $class = 'Global_' . $this->getAttribute('name');
+        $class = 'Global_'.$this->getAttribute('name');
 
-        if (!class_exists($class)) {
+        if (!\class_exists($class)) {
             require_once $this->getAttribute('admin');
         }
 
-        if (!class_exists($class)) {
+        if (!\class_exists($class)) {
             return false;
         }
 
         $this->Admin = new $class();
+
         return $this->Admin;
     }
 
@@ -298,7 +301,7 @@ class Plugin extends QUI\QDOM
         }
 
         $dir  = $this->getAttribute('_folder_');
-        $file = $dir . 'User.php';
+        $file = $dir.'User.php';
 
         if (!file_exists($file)) {
             return false;
@@ -306,13 +309,14 @@ class Plugin extends QUI\QDOM
 
         require_once $file;
 
-        $class = 'UserExtend' . ucfirst($this->getAttribute('name'));
+        $class = 'UserExtend'.\ucfirst($this->getAttribute('name'));
 
         if (!class_exists($class)) {
             return false;
         }
 
         $this->User = new $class();
+
         return $this->User;
     }
 
@@ -387,6 +391,7 @@ class Plugin extends QUI\QDOM
         }
 
         $this->Config->set($section, $key, $value);
+
         return true;
     }
 
@@ -402,6 +407,7 @@ class Plugin extends QUI\QDOM
         }
 
         $this->Config->save();
+
         return true;
     }
 
@@ -455,7 +461,7 @@ class Plugin extends QUI\QDOM
         }
 
         // default
-        $Win->setAttribute('name', $this->getAttribute('name') . 'Window');
+        $Win->setAttribute('name', $this->getAttribute('name').'Window');
         $Win->setAttribute('plugin', $this->getAttribute('name'));
         $Win->setAttribute('onsubmit', '_pcsg.Plugins.Settings.save');
         $Win->setAttribute('config', $defaults);
@@ -563,12 +569,12 @@ class Plugin extends QUI\QDOM
                     foreach ($projects as $project) {
                         $Button->setAttribute(
                             'text',
-                            str_replace('{$project}', $project, $Button->getAttribute('text'))
+                            \str_replace('{$project}', $project, $Button->getAttribute('text'))
                         );
 
                         $Button->setAttribute(
                             'title',
-                            str_replace('{$project}', $project, $Button->getAttribute('title'))
+                            \str_replace('{$project}', $project, $Button->getAttribute('title'))
                         );
 
                         $Button->setAttribute('section', $project);
@@ -596,7 +602,7 @@ class Plugin extends QUI\QDOM
     public function getSettingsCategory($name)
     {
         return XML::getSettingCategoryFromXml(
-            OPT_DIR . $this->getAttribute('name') . '/settings.xml',
+            OPT_DIR.$this->getAttribute('name').'/settings.xml',
             $name
         );
     }
@@ -639,7 +645,7 @@ class Plugin extends QUI\QDOM
         if ($this->getUserPlugin()) {
             $UserPlugin = $this->getUserPlugin();
 
-            if (method_exists($UserPlugin, 'setTabs')) {
+            if (\method_exists($UserPlugin, 'setTabs')) {
                 $UserPlugin->setTabs($Tabbar, $User);
             }
         }
@@ -665,10 +671,10 @@ class Plugin extends QUI\QDOM
         $atts = $Dom->getElementsByTagName('attribute');
 
         if (!$atts->length) {
-            return array();
+            return [];
         }
 
-        $list = array();
+        $list = [];
 
         for ($a = 0; $a < $atts->length; $a++) {
             /* @var $Attr \DOMElement */
@@ -695,8 +701,9 @@ class Plugin extends QUI\QDOM
         if ($this->getUserPlugin()) {
             $AdminPlugin = $this->getUserPlugin();
 
-            if (method_exists($AdminPlugin, 'onSave')) {
+            if (\method_exists($AdminPlugin, 'onSave')) {
                 $AdminPlugin->onSave($User);
+
                 return;
             }
         }
@@ -734,8 +741,9 @@ class Plugin extends QUI\QDOM
         if ($this->getUserPlugin()) {
             $AdminPlugin = $this->getUserPlugin();
 
-            if (method_exists($AdminPlugin, 'onLoad')) {
+            if (\method_exists($AdminPlugin, 'onLoad')) {
                 $AdminPlugin->onLoad($User);
+
                 return;
             }
         }
@@ -760,7 +768,7 @@ class Plugin extends QUI\QDOM
      */
     public function getUrlDir()
     {
-        return str_replace(
+        return \str_replace(
             OPT_DIR,
             URL_OPT_DIR,
             $this->getDir()
@@ -784,7 +792,7 @@ class Plugin extends QUI\QDOM
      */
     public function getJS()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -794,7 +802,7 @@ class Plugin extends QUI\QDOM
      */
     public function getCSS()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -812,12 +820,12 @@ class Plugin extends QUI\QDOM
 
         $str = '<script type="text/javascript">
             _pcsg.MVC.define(
-                "plugin/' . $this->getAttribute('name') . '", ' .
-               (!empty($js) ? json_encode($js) : 'false') . ', ' .
-               (!empty($css) ? json_encode($css) : 'false') . ', ' .
-               'false, ' .
-               json_encode($this->getJsLangFiles())
-               . ');
+                "plugin/'.$this->getAttribute('name').'", '.
+               (!empty($js) ? \json_encode($js) : 'false').', '.
+               (!empty($css) ? \json_encode($css) : 'false').', '.
+               'false, '.
+               \json_encode($this->getJsLangFiles())
+               .');
         </script>';
 
         return $str;
@@ -835,70 +843,70 @@ class Plugin extends QUI\QDOM
         $js  = $this->getJS();
 
         // sprachdateien
-        $langdir = $this->getDir() . 'bin/lang/';
+        $langdir = $this->getDir().'bin/lang/';
 
-        if (file_exists($langdir) &&
-            is_dir($langdir)
+        if (\file_exists($langdir) &&
+            \is_dir($langdir)
         ) {
             /* @var $Users QUI\Users\Manager */
-            $file = $langdir . QUI::getLocale()->getCurrent() . '.js';
+            $file = $langdir.QUI::getLocale()->getCurrent().'.js';
 
-            if (file_exists($file)) {
-                array_unshift(
+            if (\file_exists($file)) {
+                \array_unshift(
                     $js,
-                    'order!' . $this->getUrlDir() . 'bin/lang/' . QUI::getLocale()->getCurrent() . '.js'
+                    'order!'.$this->getUrlDir().'bin/lang/'.QUI::getLocale()->getCurrent().'.js'
                 );
-                array_unshift($js, 'order!' . URL_BIN_DIR . 'js/ptools/locale/locale.js');
+                \array_unshift($js, 'order!'.URL_BIN_DIR.'js/ptools/locale/locale.js');
             }
         }
 
         if (empty($css)) {
-            $path = explode('/', $this->getDir());
-            array_pop($path);
-            array_pop($path);
+            $path = \explode('/', $this->getDir());
+            \array_pop($path);
+            \array_pop($path);
 
-            $path = implode('/', $path);
-            $file = $path . '/bin/style.css';
+            $path = \implode('/', $path);
+            $file = $path.'/bin/style.css';
 
-            if (file_exists($file)) {
-                $css[] = str_replace(OPT_DIR, URL_OPT_DIR, $file);
+            if (\file_exists($file)) {
+                $css[] = \str_replace(OPT_DIR, URL_OPT_DIR, $file);
             }
         }
 
         // Alle Dateien in Sachen Projekt prüfen
         if ($Project) {
-            $project_path = 'bin/' . $Project->getAttribute('template') . '/';
+            $project_path = 'bin/'.$Project->getAttribute('template').'/';
 
-            $_css = str_replace(URL_OPT_DIR, '', $css);
-            $_js  = str_replace(URL_OPT_DIR, '', $js);
+            $_css = \str_replace(URL_OPT_DIR, '', $css);
+            $_js  = \str_replace(URL_OPT_DIR, '', $js);
 
             // CSS Files
             foreach ($_css as $key => $value) {
-                if (file_exists(USR_DIR . $project_path . $value)) {
-                    $css[$key] = URL_USR_DIR . $project_path . $value;
+                if (\file_exists(USR_DIR.$project_path.$value)) {
+                    $css[$key] = URL_USR_DIR.$project_path.$value;
                 }
             }
 
             // CSS Plugin File
             // abwärtskompatibilität :-/ @todo : depricated
-            $css_plg = $project_path . str_replace(URL_OPT_DIR, '', $this->getUrlDir()) . 'style.css';
+            $css_plg = $project_path.\str_replace(URL_OPT_DIR, '', $this->getUrlDir()).'style.css';
 
-            if (file_exists(USR_DIR . $css_plg) && !in_array(URL_USR_DIR . $css_plg, $css)) {
-                $css[] = URL_USR_DIR . $css_plg;
+            if (\file_exists(USR_DIR.$css_plg) && !\in_array(URL_USR_DIR.$css_plg, $css)) {
+                $css[] = URL_USR_DIR.$css_plg;
             }
 
             // JS Files
             foreach ($js as $key => $value) {
-                if (file_exists(USR_DIR . $project_path . $value)) {
-                    $js[$key] = URL_USR_DIR . $project_path . $value;
+                if (\file_exists(USR_DIR.$project_path.$value)) {
+                    $js[$key] = URL_USR_DIR.$project_path.$value;
                 }
             }
         }
 
-        return array(
+        return [
             'js'  => $js,
             'css' => $css
-        );
+        ];
     }
 
     /**
@@ -908,21 +916,21 @@ class Plugin extends QUI\QDOM
      */
     public function getJsLangFiles()
     {
-        $langs   = array();
-        $langdir = $this->getDir() . 'bin/lang/';
+        $langs   = [];
+        $langdir = $this->getDir().'bin/lang/';
 
         $files = QUI\Utils\System\File::readDir($langdir);
 
         foreach ($files as $file) {
-            if (strpos($file, '.js') === false) {
+            if (\strpos($file, '.js') === false) {
                 continue;
             }
 
-            $file = explode('.js', $file);
+            $file = \explode('.js', $file);
 
             foreach ($file as $lang) {
-                if (strlen($lang) === 2) {
-                    $langs[$lang] = $this->getUrlDir() . 'bin/lang/' . $lang . '.js';
+                if (\strlen($lang) === 2) {
+                    $langs[$lang] = $this->getUrlDir().'bin/lang/'.$lang.'.js';
                 }
             }
         }
@@ -947,7 +955,7 @@ class Plugin extends QUI\QDOM
         }
 
         $this->SettingsDOM = XML::getDomFromXml(
-            OPT_DIR . $this->getAttribute('name') . '/settings.xml'
+            OPT_DIR.$this->getAttribute('name').'/settings.xml'
         );
 
         return $this->SettingsDOM;
@@ -966,7 +974,7 @@ class Plugin extends QUI\QDOM
         }
 
         $this->UserDOM = XML::getDomFromXml(
-            OPT_DIR . $this->getAttribute('name') . '/user.xml'
+            OPT_DIR.$this->getAttribute('name').'/user.xml'
         );
 
         return $this->UserDOM;
@@ -985,7 +993,7 @@ class Plugin extends QUI\QDOM
         }
 
         $this->DbDOM = XML::getDomFromXml(
-            OPT_DIR . $this->getAttribute('name') . '/database.xml'
+            OPT_DIR.$this->getAttribute('name').'/database.xml'
         );
 
         return $this->DbDOM;
@@ -1010,17 +1018,17 @@ class Plugin extends QUI\QDOM
         $projects = QUI\Projects\Manager::getProjects();
 
         if (!$settings->length) {
-            return array();
+            return [];
         }
 
         $configs = $settings->item(0)->getElementsByTagName('config');
 
         if (!$configs) {
-            return array();
+            return [];
         }
 
         $children = $configs->item(0)->childNodes;
-        $result   = array();
+        $result   = [];
 
         for ($i = 0; $i < $children->length; $i++) {
             $Param = $children->item($i);
@@ -1059,7 +1067,7 @@ class Plugin extends QUI\QDOM
      */
     protected function parseConfs($confs)
     {
-        $result = array();
+        $result = [];
 
         foreach ($confs as $Conf) {
             $type    = 'string';
@@ -1079,10 +1087,10 @@ class Plugin extends QUI\QDOM
                 $default = $defaults->item(0)->nodeValue;
             }
 
-            $result[$Conf->getAttribute('name')] = array(
+            $result[$Conf->getAttribute('name')] = [
                 'type'    => $type,
                 'default' => $default
-            );
+            ];
         }
 
         return $result;
@@ -1100,9 +1108,9 @@ class Plugin extends QUI\QDOM
         }
 
         // Init.d Pfad erstellen
-        QUI\Utils\System\File::mkdir(CMS_DIR . 'etc/plugins/');
+        QUI\Utils\System\File::mkdir(CMS_DIR.'etc/plugins/');
 
-        $iniFile = CMS_DIR . 'etc/plugins/' . $this->getAttribute('name') . '.ini.php';
+        $iniFile = CMS_DIR.'etc/plugins/'.$this->getAttribute('name').'.ini.php';
 
         $this->Config = new QUI\Config($iniFile);
 

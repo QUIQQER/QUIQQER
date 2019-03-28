@@ -102,8 +102,8 @@ class Manager
         </script>';
 
         echo $message;
-        ob_flush();
-        flush();
+        \ob_flush();
+        \flush();
     }
 
     /**
@@ -129,8 +129,8 @@ class Manager
         </script>';
 
         echo $message;
-        ob_flush();
-        flush();
+        \ob_flush();
+        \flush();
     }
 
     /**
@@ -144,9 +144,9 @@ class Manager
             'Exception' => $Exception->toArray()
         ];
 
-        echo '<quiqqer>'.json_encode($message).'</quiqqer>';
-        ob_flush();
-        flush();
+        echo '<quiqqer>'.\json_encode($message).'</quiqqer>';
+        \ob_flush();
+        \flush();
     }
 
     /**
@@ -174,7 +174,7 @@ class Manager
         }
 
         if (isset($_REQUEST['fileparams'])) {
-            $params = json_decode($_REQUEST['fileparams'], true);
+            $params = \json_decode($_REQUEST['fileparams'], true);
         }
 
         if (isset($_REQUEST['onfinish'])) {
@@ -209,14 +209,14 @@ class Manager
         }
 
         // cleanup file name
-        $filename = trim($filename);
-        $filename = trim($filename, '.');
+        $filename = \trim($filename);
+        $filename = \trim($filename, '.');
 
         /**
          * html5 upload
          */
         if (isset($_REQUEST['file'])) {
-            $file = json_decode($_REQUEST['file'], true);
+            $file = \json_decode($_REQUEST['file'], true);
         }
 
         if (isset($file) && isset($file['chunkstart']) && $file['chunkstart'] == 0) {
@@ -231,14 +231,14 @@ class Manager
         $tmp_name  = $uploaddir.$filename;
 
         /* PUT REQUEST */
-        $putdata = file_get_contents('php://input');
-        $Handle  = fopen($tmp_name, 'a');
+        $putdata = \file_get_contents('php://input');
+        $Handle  = \fopen($tmp_name, 'a');
 
         if ($Handle) {
-            fwrite($Handle, $putdata);
+            \fwrite($Handle, $putdata);
         }
 
-        fclose($Handle);
+        \fclose($Handle);
 
         // upload finish?
         $fileinfo = QUIFile::getInfo($tmp_name, [
@@ -326,7 +326,7 @@ class Manager
             return false;
         }
 
-        if (is_object($function) && get_class($function) === 'Closure') {
+        if (\is_object($function) && \get_class($function) === 'Closure') {
             return $function();
         }
 
@@ -334,34 +334,34 @@ class Manager
 //            return call_user_func_array($function, $params);
 //        }
 
-        if (strpos($function, 'ajax_') === 0) {
+        if (\strpos($function, 'ajax_') === 0) {
             // if the function is a ajax_function
-            $_rf_file = OPT_DIR.'quiqqer/quiqqer/admin/'.str_replace('_', '/', $function).'.php';
-            $_rf_file = Orthos::clearPath(realpath($_rf_file));
+            $_rf_file = OPT_DIR.'quiqqer/quiqqer/admin/'.\str_replace('_', '/', $function).'.php';
+            $_rf_file = Orthos::clearPath(\realpath($_rf_file));
 
-            if (file_exists($_rf_file)) {
+            if (\file_exists($_rf_file)) {
                 require_once $_rf_file;
             }
 
-            $_REQUEST = array_merge($_REQUEST, $params, [
+            $_REQUEST = \array_merge($_REQUEST, $params, [
                 '_rf' => '["'.$function.'"]'
             ]);
 
             return QUI::getAjax()->callRequestFunction($function, $_REQUEST);
         }
 
-        if (strpos($function, 'package_') === 0) {
+        if (\strpos($function, 'package_') === 0) {
             $dir  = OPT_DIR;
-            $file = substr(str_replace('_', '/', $function), 8).'.php';
+            $file = \substr(\str_replace('_', '/', $function), 8).'.php';
 
             $_rf_file = $dir.$file;
-            $_rf_file = Orthos::clearPath(realpath($_rf_file));
+            $_rf_file = Orthos::clearPath(\realpath($_rf_file));
 
-            if (file_exists($_rf_file)) {
+            if (\file_exists($_rf_file)) {
                 require_once $_rf_file;
             }
 
-            $_REQUEST = array_merge($_REQUEST, $params, [
+            $_REQUEST = \array_merge($_REQUEST, $params, [
                 '_rf' => '["'.$function.'"]'
             ]);
 
@@ -394,19 +394,19 @@ class Manager
 
         $list = $_FILES['files'];
 
-        if (!is_array($list['error'])) {
+        if (!\is_array($list['error'])) {
             $this->checkUpload($list['error']);
 
             $uploaddir = $this->getUserUploadDir();
             $filename  = $list['name'];
 
             // cleanup file name
-            $filename = trim($filename);
-            $filename = trim($filename, '.');
+            $filename = \trim($filename);
+            $filename = \trim($filename, '.');
 
             $file = $uploaddir.$filename;
 
-            if (!move_uploaded_file($list["tmp_name"], $file)) {
+            if (!\move_uploaded_file($list["tmp_name"], $file)) {
                 throw new QUI\Exception(
                     QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.move', [
                         'file' => $file
@@ -445,7 +445,7 @@ class Manager
             $filename  = $list['name'][$key];
             $file      = $uploaddir.$filename;
 
-            if (!move_uploaded_file($list["tmp_name"], $file)) {
+            if (!\move_uploaded_file($list["tmp_name"], $file)) {
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.move', [
                     'file' => $filename
                 ]);
@@ -600,14 +600,14 @@ class Manager
     {
         $file = $this->getUserUploadDir().$filename;
 
-        if (file_exists($file)) {
+        if (\file_exists($file)) {
             return;
         }
 
         QUI::getDataBase()->insert($this->table, [
             'file'   => $filename,
             'user'   => QUI::getUserBySession()->getId(),
-            'params' => json_encode($params)
+            'params' => \json_encode($params)
         ]);
     }
 
@@ -665,7 +665,7 @@ class Manager
         if ($File->getAttribute('params')) {
             $File->setAttribute(
                 'params',
-                json_decode($File->getAttribute('params'), true)
+                \json_decode($File->getAttribute('params'), true)
             );
         }
 
@@ -691,7 +691,7 @@ class Manager
         // read user upload dir
         $dir = $this->getDir().$User->getId().'/';
 
-        if (!file_exists($dir) || !is_dir($dir)) {
+        if (!\file_exists($dir) || !\is_dir($dir)) {
             return [];
         }
 
@@ -704,9 +704,9 @@ class Manager
                 $attributes = $File->getAttributes();
 
                 if (isset($attributes['params'])
-                    && is_string($attributes['params'])
+                    && \is_string($attributes['params'])
                 ) {
-                    $params    = json_decode($attributes['params'], true);
+                    $params    = \json_decode($attributes['params'], true);
                     $file_info = QUIFile::getInfo($dir.$file);
 
                     $params['file']['uploaded'] = $file_info['filesize'];

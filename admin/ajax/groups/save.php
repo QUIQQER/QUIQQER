@@ -13,8 +13,8 @@ QUI::$Ajax->registerFunction(
         $Groups = QUI::getGroups();
         $Group  = $Groups->get((int)$gid);
 
-        $attributes = json_decode($attributes, true);
-        $rights     = json_decode($rights, true);
+        $attributes = \json_decode($attributes, true);
+        $rights     = \json_decode($rights, true);
 
         $Group->setRights($rights);
         $Group->setAttributes($attributes);
@@ -33,12 +33,12 @@ QUI::$Ajax->registerFunction(
         }
 
         QUI::getMessagesHandler()->addSuccess(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'message.group.saved', array(
+            QUI::getLocale()->get('quiqqer/quiqqer', 'message.group.saved', [
                 'groupname' => $Group->getName(),
                 'id'        => $Group->getId()
-            ))
+            ])
         );
     },
-    array('gid', 'attributes', 'rights'),
+    ['gid', 'attributes', 'rights'],
     'Permission::checkSU'
 );

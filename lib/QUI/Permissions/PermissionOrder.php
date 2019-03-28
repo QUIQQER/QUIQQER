@@ -56,9 +56,7 @@ class PermissionOrder
             $Manager  = QUI::getPermissionManager();
             $permData = $Manager->getPermissionData($permission);
 
-            if (isset($permData['defaultvalue'])
-                && !empty($permData['defaultvalue'])
-            ) {
+            if (isset($permData['defaultvalue']) && !empty($permData['defaultvalue'])) {
                 return $permData['defaultvalue'];
             }
         }
@@ -156,8 +154,8 @@ class PermissionOrder
             }
 
             // falls integer ist
-            if (is_int($hasPermissionResult)) {
-                if (is_bool($result)) {
+            if (\is_int($hasPermissionResult)) {
+                if (\is_bool($result)) {
                     $result = 0;
                 }
 

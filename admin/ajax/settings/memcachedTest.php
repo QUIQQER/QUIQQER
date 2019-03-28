@@ -8,9 +8,9 @@
 QUI::$Ajax->registerFunction(
     'ajax_settings_memcachedTest',
     function ($data) {
-        $data = json_decode($data, true);
+        $data = \json_decode($data, true);
 
-        if (!class_exists('Memcached')) {
+        if (!\class_exists('Memcached')) {
             QUI::getMessagesHandler()->addError(
                 QUI::getLocale()->get(
                     'quiqqer/system',
@@ -21,7 +21,7 @@ QUI::$Ajax->registerFunction(
             return;
         }
 
-        if (!count($data)) {
+        if (!\count($data)) {
             QUI::getMessagesHandler()->addError(
                 QUI::getLocale()->get(
                     'quiqqer/system',
