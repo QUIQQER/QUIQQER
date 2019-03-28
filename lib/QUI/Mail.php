@@ -175,7 +175,7 @@ class Mail
      */
     public function send($mailconf)
     {
-        if (!is_array($mailconf)) {
+        if (!\is_array($mailconf)) {
             throw new QUI\Exception(
                 'Mail Error: send() Fehlender Paramater',
                 400
@@ -218,7 +218,7 @@ class Mail
             $IsHTML = $mailconf['IsHTML'];
         }
 
-        if (isset($mailconf['files']) && is_array($mailconf['files'])) {
+        if (isset($mailconf['files']) && \is_array($mailconf['files'])) {
             $files = $mailconf['files'];
         }
 
@@ -236,7 +236,7 @@ class Mail
             $this->Mail->isHTML(true);
         }
 
-        if (is_array($MailTo)) {
+        if (\is_array($MailTo)) {
             foreach ($MailTo as $mail) {
                 $this->Mail->addAddress($mail);
             }
@@ -245,11 +245,11 @@ class Mail
         }
 
         // Mail ReplyTo überschreiben
-        if (isset($MAILReplyTo) && is_array($MAILReplyTo)) {
+        if (isset($MAILReplyTo) && \is_array($MAILReplyTo)) {
             foreach ($MAILReplyTo as $mail) {
                 $this->Mail->addReplyTo($mail);
             }
-        } elseif (isset($MAILReplyTo) && is_string($MAILReplyTo)) {
+        } elseif (isset($MAILReplyTo) && \is_string($MAILReplyTo)) {
             $this->Mail->addReplyTo($MAILReplyTo);
         }
 
@@ -263,9 +263,9 @@ class Mail
         }
 
 
-        if (is_array($files)) {
+        if (\is_array($files)) {
             foreach ($files as $file) {
-                if (!file_exists($file)) {
+                if (!\file_exists($file)) {
                     continue;
                 }
 

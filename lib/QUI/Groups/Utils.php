@@ -49,7 +49,7 @@ class Utils
 
             $userXml = OPT_DIR . $entry['name'] . '/group.xml';
 
-            if (!file_exists($userXml)) {
+            if (!\file_exists($userXml)) {
                 continue;
             }
 
@@ -94,8 +94,8 @@ class Utils
         QUI::getTemplateManager()->assignGlobalParam('Group', $Group);
 
         // project
-        if (strpos($plugin, 'project.') !== false) {
-            $project = explode('project.', $plugin);
+        if (\strpos($plugin, 'project.') !== false) {
+            $project = \explode('project.', $plugin);
 
             return DOM::getTabHTML(
                 $tab,
@@ -105,7 +105,7 @@ class Utils
 
         // plugin
         try {
-            $plugin  = str_replace('plugin.', '', $plugin);
+            $plugin  = \str_replace('plugin.', '', $plugin);
             $Package = QUI::getPackage($plugin);
 
             return DOM::getTabHTML(

@@ -19,6 +19,8 @@ class PasswordResetVerification extends AbstractVerification
      *
      * @param string $identifier
      * @param array $additionalData
+     *
+     * @throws QUI\Exception
      */
     public function __construct($identifier, $additionalData = [])
     {
@@ -41,7 +43,7 @@ class PasswordResetVerification extends AbstractVerification
             $newPassword = QUI\Security\Password::generateRandom();
 
             // check if user has to set new password
-            if (boolval(QUI::conf('auth_settings', 'forceNewPasswordOnReset'))) {
+            if (\boolval(QUI::conf('auth_settings', 'forceNewPasswordOnReset'))) {
                 $User->setAttribute('quiqqer.set.new.password', true);
             }
 
@@ -124,7 +126,7 @@ class PasswordResetVerification extends AbstractVerification
             return false;
         }
 
-        $LoginSite = current($result);
+        $LoginSite = \current($result);
 
         return $LoginSite->getUrlRewritten([], [
             'password_reset' => '1'

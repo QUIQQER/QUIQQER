@@ -21,15 +21,15 @@ class Message extends QUI\QDOM
      *
      * @param array $params
      */
-    public function __construct($params = array())
+    public function __construct($params = [])
     {
         // defaults
-        $this->setAttributes(array(
+        $this->setAttributes([
             'message' => '',
             'code'    => '',
-            'time'    => time(),
-            'mtype'   => get_class($this)
-        ));
+            'time'    => \time(),
+            'mtype'   => \get_class($this)
+        ]);
 
         $this->setAttributes($params);
     }
@@ -61,6 +61,6 @@ class Message extends QUI\QDOM
      */
     public function getHash()
     {
-        return md5($this->getMessage());
+        return \md5($this->getMessage());
     }
 }

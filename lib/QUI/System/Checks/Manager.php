@@ -37,20 +37,20 @@ class Manager
          * -1 = MUSS vorhanden sein
          */
 
-        $need = array();
+        $need = [];
 
         // JSON Prüfung
         $JSON = new QUI\QDOM();
         $JSON->setAttribute('title', 'JSON Prüfung');
 
-        if (function_exists('json_decode') && function_exists('json_encode')) {
+        if (\function_exists('json_decode') && \function_exists('json_encode')) {
             $JSON->setAttribute('error', 1);
             $JSON->setAttribute('message', 'JSON ist verfügbar');
         } else {
             $JSON->setAttribute('error', -1);
             $JSON->setAttribute(
                 'message',
-                'Installieren / Aktivieren Sie bitte die PHP Erweiterung JSON.' .
+                'Installieren / Aktivieren Sie bitte die PHP Erweiterung JSON.'.
                 'Weitere Information finden Sie <a href="http://de3.php.net/manual/de/json.setup.php">hier</a>'
             );
         }
@@ -61,14 +61,14 @@ class Manager
         $ZLIB = new QUI\QDOM();
         $ZLIB->setAttribute('title', 'ZLIB Prüfung');
 
-        if (function_exists('gzcompress')) {
+        if (\function_exists('gzcompress')) {
             $ZLIB->setAttribute('error', 1);
             $ZLIB->setAttribute('message', 'ZLIB ist verfügbar');
         } else {
             $ZLIB->setAttribute('error', -1);
             $ZLIB->setAttribute(
                 'message',
-                'Installieren / Aktivieren Sie bitte die ZLIB Erweiterung JSON. ' .
+                'Installieren / Aktivieren Sie bitte die ZLIB Erweiterung JSON. '.
                 'Weitere Information finden Sie <a href="http://de3.php.net/manual/de/zlib.setup.php">hier</a>'
             );
         }
@@ -79,16 +79,16 @@ class Manager
         $Tidy = new QUI\QDOM();
         $Tidy->setAttribute('title', 'Tidy Prüfung');
 
-        if (class_exists('tidy')) {
+        if (\class_exists('tidy')) {
             $Tidy->setAttribute('error', 1);
             $Tidy->setAttribute('message', 'Tidy ist verfügbar');
         } else {
             $Tidy->setAttribute('error', 0);
             $Tidy->setAttribute(
                 'message',
-                'Tidy wird für das Cleanup des HTML Codes benötigt. ' .
-                'Es wird nicht vorrausgesetzt, jedoch empfehlen wir diese Erweiterung zu' .
-                'aktivieren. Mehr Informationen finden Sie ' .
+                'Tidy wird für das Cleanup des HTML Codes benötigt. '.
+                'Es wird nicht vorrausgesetzt, jedoch empfehlen wir diese Erweiterung zu'.
+                'aktivieren. Mehr Informationen finden Sie '.
                 '<a href="http://de3.php.net/manual/de/tidy.setup.php">hier</a>'
             );
         }
@@ -99,10 +99,10 @@ class Manager
         $APC = new QUI\QDOM();
         $APC->setAttribute('title', 'APC Cache Prüfung');
 
-        if (function_exists('apc_fetch') && function_exists('apc_store')) {
-            apc_store('system_check', 1);
+        if (\function_exists('apc_fetch') && \function_exists('apc_store')) {
+            \apc_store('system_check', 1);
 
-            if (apc_fetch('system_check') == 1) {
+            if (\apc_fetch('system_check') == 1) {
                 $APC->setAttribute('error', 1);
                 $APC->setAttribute('message', '');
             } else {
@@ -124,12 +124,12 @@ class Manager
 
         $image_check_msg = '';
 
-        if (!class_exists('Imagick')) {
-            exec(escapeshellcmd('convert'), $im_console);
+        if (!\class_exists('Imagick')) {
+            \exec(\escapeshellcmd('convert'), $im_console);
         }
 
         // ImageMagick PHP
-        if (class_exists('Imagick')) {
+        if (\class_exists('Imagick')) {
             $Image->setAttribute('error', 1);
             $image_check_msg .= '<p>[ OK ] Image Magick als PHP Erweiterung vorhanden</p>';
         } else {
@@ -145,7 +145,7 @@ class Manager
         }
 
         // GDLib PHP
-        if (function_exists('imagecopyresampled')) {
+        if (\function_exists('imagecopyresampled')) {
             $Image->setAttribute('error', 1);
             $image_check_msg .= '<p>[ OK ] GDLib Erweiterung</p>';
         } else {

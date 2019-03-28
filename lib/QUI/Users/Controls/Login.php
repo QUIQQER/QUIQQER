@@ -48,11 +48,11 @@ class Login extends Control
     {
         $authenticator = $this->next();
 
-        if (is_null($authenticator)) {
+        if (\is_null($authenticator)) {
             return '';
         }
 
-        if (!is_array($authenticator)) {
+        if (!\is_array($authenticator)) {
             $authenticator = [$authenticator];
         }
 
@@ -64,13 +64,13 @@ class Login extends Control
         }
 
         foreach ($authenticator as $k => $auth) {
-            if (!empty($exclusiveAuthenticators) && !in_array($auth, $exclusiveAuthenticators)) {
+            if (!empty($exclusiveAuthenticators) && !\in_array($auth, $exclusiveAuthenticators)) {
                 continue;
             }
 
-            $Control = forward_static_call([$auth, 'getLoginControl']);
+            $Control = \forward_static_call([$auth, 'getLoginControl']);
 
-            if (is_null($Control)) {
+            if (\is_null($Control)) {
                 continue;
             }
 
@@ -80,22 +80,26 @@ class Login extends Control
             ];
         }
 
-        $Engine = QUI::getTemplateManager()->getEngine();
+        try {
+            $Engine = QUI::getTemplateManager()->getEngine();
+        } catch (QUI\Exception $Exception) {
+            return '';
+        }
 
         $Engine->assign([
             'passwordReset'  => !empty($_REQUEST['password_reset']),
             'globalAuth'     => $this->isGlobalAuth,
             'authenticators' => $authenticators,
-            'count'          => count($authenticators) - 1
+            'count'          => \count($authenticators) - 1
         ]);
 
-        return $Engine->fetch(dirname(__FILE__) . '/Login.html');
+        return $Engine->fetch(\dirname(__FILE__).'/Login.html');
     }
 
     /**
      * Return the next Authenticator, if one exists
      *
-     * @return array|null
+     * @return array|string|null
      *
      * @throws QUI\Users\Exception
      */
@@ -106,7 +110,7 @@ class Login extends Control
 
         if (QUI::getSession()->get('auth-globals') != 1) {
             foreach ($authenticators as $auth) {
-                if (QUI::getSession()->get('auth-' . $auth) !== 1) {
+                if (QUI::getSession()->get('auth-'.$auth) !== 1) {
                     $globals[] = $auth;
                 }
             }
@@ -116,7 +120,7 @@ class Login extends Control
 
         if (!empty($globals)) {
             // sort globals (QUIQQER Login has to be first!)
-            usort($globals, function ($a, $b) {
+            \usort($globals, function ($a, $b) {
                 if ($a === QUI\Users\Auth\QUIQQER::class) {
                     return -1;
                 }
@@ -143,8 +147,8 @@ class Login extends Control
         $authenticators = $User->getAuthenticators();
 
         foreach ($authenticators as $Authenticator) {
-            if (QUI::getSession()->get('auth-' . get_class($Authenticator)) !== 1) {
-                return get_class($Authenticator);
+            if (QUI::getSession()->get('auth-'.\get_class($Authenticator)) !== 1) {
+                return \get_class($Authenticator);
             }
         }
 

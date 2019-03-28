@@ -20,14 +20,14 @@ class Breadcrumb extends QUI\Control
      * constructor
      * @param array $attributes
      */
-    public function __construct($attributes = array())
+    public function __construct($attributes = [])
     {
         // default options
-        $this->setAttributes(array(
+        $this->setAttributes([
             'class'         => 'quiqqer-breadcrumb',
             'controlHeight' => 40,
             'layout'        => 'slider'
-        ));
+        ]);
 
         parent::__construct($attributes);
     }
@@ -40,14 +40,14 @@ class Breadcrumb extends QUI\Control
     {
         $Engine = QUI::getTemplateManager()->getEngine();
 
-        $Engine->assign(array(
+        $Engine->assign([
             'this'    => $this,
             'Rewrite' => QUI::getRewrite()
-        ));
+        ]);
 
         $this->setAttribute(
             'height',
-            (int)$this->getAttribute('controlHeight') . 'px'
+            (int)$this->getAttribute('controlHeight').'px'
         );
 
         $this->setStyle('height', $this->getAttribute('controlHeight'));
@@ -73,8 +73,8 @@ class Breadcrumb extends QUI\Control
                 break;
         }
 
-        $this->addCSSFile(dirname(__FILE__) . $css);
+        $this->addCSSFile(\dirname(__FILE__).$css);
 
-        return $Engine->fetch(dirname(__FILE__) . $template);
+        return $Engine->fetch(\dirname(__FILE__).$template);
     }
 }

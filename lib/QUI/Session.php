@@ -96,14 +96,14 @@ class Session
             'cookie_secure'   => QUI\Utils\System::isProtocolSecure()
         ];
 
-        if (!class_exists('NativeSessionStorage')) {
+        if (!\class_exists('NativeSessionStorage')) {
             $fileNativeSessionStorage = $symfonyDir.'Session/Storage/NativeSessionStorage.php';
 
-            if (!file_exists($fileNativeSessionStorage)) {
+            if (!\file_exists($fileNativeSessionStorage)) {
                 $fileNativeSessionStorage = $symfonyDir.'Component/HttpFoundation/Session/Storage/NativeSessionStorage.php';
             }
 
-            if (!file_exists($fileNativeSessionStorage)) {
+            if (!\file_exists($fileNativeSessionStorage)) {
                 throw new \Exception(
                     'Session File not found '.$fileNativeSessionStorage
                 );
@@ -111,7 +111,7 @@ class Session
 
             include_once $fileNativeSessionStorage;
 
-            if (class_exists($classNativeSessionStorage)) {
+            if (\class_exists($classNativeSessionStorage)) {
                 $this->Storage = new $classNativeSessionStorage(
                     $storageOptions,
                     $this->getStorage()
@@ -124,20 +124,20 @@ class Session
             );
         }
 
-        if (!class_exists('NativeSessionStorage')) {
+        if (!\class_exists('NativeSessionStorage')) {
             $fileSession = $symfonyDir.'Session/Session.php';
 
-            if (!file_exists($fileSession)) {
+            if (!\file_exists($fileSession)) {
                 $fileSession = $symfonyDir.'Symfony/Component/HttpFoundation/Session/Session.php';
             }
 
-            if (!file_exists($fileSession)) {
+            if (!\file_exists($fileSession)) {
                 throw new \Exception('Session File not found '.$fileSession);
             }
 
             include_once $fileSession;
 
-            if (class_exists($classSession)) {
+            if (\class_exists($classSession)) {
                 $this->Session = new $classSession($this->Storage);
             }
         } else {
@@ -146,7 +146,7 @@ class Session
             );
         }
 
-        if (headers_sent()) {
+        if (\headers_sent()) {
             $this->Storage = new MockFileSessionStorage();
             $this->Session = new \Symfony\Component\HttpFoundation\Session\Session($this->Storage);
         }
@@ -177,14 +177,14 @@ class Session
 
 
         // memcached
-        if ($sessionType == 'memcached' && class_exists('Memcached')) {
+        if ($sessionType == 'memcached' && \class_exists('Memcached')) {
             $memcached_data = QUI::conf('session', 'memcached_data');
             $memcached_data = explode(';', $memcached_data);
 
             $Memcached = new \Memcached('quiqqer');
 
             foreach ($memcached_data as $serverData) {
-                $serverData = explode(':', $serverData);
+                $serverData = \explode(':', $serverData);
 
                 $server = $serverData[0];
                 $port   = 11211;
@@ -204,14 +204,14 @@ class Session
 
         // memcache
         // @deprecated
-        if ($sessionType == 'memcache' && class_exists('Memcache')) {
+        if ($sessionType == 'memcache' && \class_exists('Memcache')) {
             $memcache_data = QUI::conf('session', 'memcache_data');
-            $memcache_data = explode(';', $memcache_data);
+            $memcache_data = \explode(';', $memcache_data);
 
             $Memcache = new \Memcache();
 
             foreach ($memcache_data as $serverData) {
-                $serverData = explode(':', $serverData);
+                $serverData = \explode(':', $serverData);
 
                 $server = $serverData[0];
                 $port   = 11211;
@@ -259,7 +259,7 @@ class Session
             $MetaBag = $this->Session->getMetadataBag();
 
             // workaround for session refresh
-            if ($this->lifetime && $MetaBag->getLastUsed() + ($this->lifetime / 2) < time()) {
+            if ($this->lifetime && $MetaBag->getLastUsed() + ($this->lifetime / 2) < \time()) {
                 $this->refresh();
             }
 
@@ -341,7 +341,7 @@ class Session
             return $this->Session->getId();
         }
 
-        return md5(microtime()).QUI\Utils\Security\Orthos::getPassword();
+        return \md5(\microtime()).QUI\Utils\Security\Orthos::getPassword();
     }
 
     /**
@@ -355,7 +355,7 @@ class Session
             return false;
         }
 
-        $idle = time() - $this->Session->getMetadataBag()->getLastUsed();
+        $idle = \time() - $this->Session->getMetadataBag()->getLastUsed();
 
         if ($idle > $this->lifetime) {
             $this->Session->invalidate();
@@ -410,15 +410,17 @@ class Session
      */
     public function getLastRefreshFrom($sid)
     {
-        $result = QUI::getDataBase()->fetch(
-            [
+        try {
+            $result = QUI::getDataBase()->fetch([
                 'from'  => $this->table,
                 'where' => [
                     'session_id' => $sid
                 ],
                 'limit' => 1
-            ]
-        );
+            ]);
+        } catch (QUI\Database\Exception $Exception) {
+            return 0;
+        }
 
         if (!isset($result[0])) {
             return 0;
@@ -436,17 +438,19 @@ class Session
      */
     public function isUserOnline($uid)
     {
-        $result = QUI::getDataBase()->fetch(
-            [
+        try {
+            $result = QUI::getDataBase()->fetch([
                 'from'  => $this->table,
                 'where' => [
                     'uid' => (int)$uid
                 ],
                 'limit' => 1
-            ]
-        );
+            ]);
+        } catch (QUI\Database\Exception $Exception) {
+            return false;
+        }
 
-        return isset($result[0]) ? true : false;
+        return isset($result[0]);
     }
 
     /**

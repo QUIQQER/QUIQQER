@@ -82,10 +82,10 @@ class Trash implements QUI\Interfaces\Projects\Trash
 
             $data[$key]['path'] = '---';
 
-            $pathHistory = json_decode($entry['pathHistory'], true);
+            $pathHistory = \json_decode($entry['pathHistory'], true);
 
             if (!empty($pathHistory)) {
-                $data[$key]['path'] = end($pathHistory).'/';
+                $data[$key]['path'] = \end($pathHistory).'/';
             }
         }
 
@@ -156,7 +156,7 @@ class Trash implements QUI\Interfaces\Projects\Trash
     {
         $file = $this->getPath().$id;
 
-        if (!file_exists($file)) {
+        if (!\file_exists($file)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.trash.file.not.found', [
                     'id' => $id

@@ -20,12 +20,12 @@ class QUIQQERLogin extends Control
      * QUIQQERLogin constructor.
      * @param array $options
      */
-    public function __construct($options = array())
+    public function __construct($options = [])
     {
         parent::__construct($options);
 
         $this->addCSSClass('quiqqer-login-auth');
-        $this->addCSSFile(dirname(__FILE__) . '/QUIQQERLogin.css');
+        $this->addCSSFile(dirname(__FILE__).'/QUIQQERLogin.css');
 
         $this->setJavaScriptControl('controls/users/auth/QUIQQERLogin');
     }
@@ -35,24 +35,28 @@ class QUIQQERLogin extends Control
      */
     public function getBody()
     {
-        $Engine = QUI::getTemplateManager()->getEngine();
+        try {
+            $Engine = QUI::getTemplateManager()->getEngine();
+        } catch (QUI\Exception $Exception) {
+            return '';
+        }
 
         $showPasswordReset = false;
 
         if (QUI\Users\Auth\Handler::getInstance()->isQuiqqerVerificationPackageInstalled()) {
             if (!empty($_REQUEST['isAdminLogin']) || QUI::isBackend()) {
-                $showPasswordReset = boolval(QUI::conf('auth_settings', 'showResetPasswordBackend'));
+                $showPasswordReset = \boolval(QUI::conf('auth_settings', 'showResetPasswordBackend'));
             } else {
-                $showPasswordReset = boolval(QUI::conf('auth_settings', 'showResetPasswordFrontend'));
+                $showPasswordReset = \boolval(QUI::conf('auth_settings', 'showResetPasswordFrontend'));
             }
         }
 
-        $Engine->assign(array(
+        $Engine->assign([
             'usernameText'      => QUI::getLocale()->get('quiqqer/quiqqer', 'username'),
             'passwordText'      => QUI::getLocale()->get('quiqqer/quiqqer', 'password'),
             'showPasswordReset' => $showPasswordReset
-        ));
+        ]);
 
-        return $Engine->fetch(dirname(__FILE__) . '/QUIQQERLogin.html');
+        return $Engine->fetch(\dirname(__FILE__).'/QUIQQERLogin.html');
     }
 }

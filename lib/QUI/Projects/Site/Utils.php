@@ -38,14 +38,14 @@ class Utils
             );
         }
 
-        if (strlen($name) <= 2) {
+        if (\strlen($name) <= 2) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.url.2.signs'),
                 701
             );
         }
 
-        if (strlen($name) > 200) {
+        if (\strlen($name) > 200) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.url.200.signs'),
                 704
@@ -60,7 +60,7 @@ class Utils
         }
 
         // Prüfung des Namens - Sonderzeichen
-        if (preg_match($signs, $name)) {
+        if (\preg_match($signs, $name)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.url.wrong.signs', [
                     'name'  => $name,
@@ -84,7 +84,7 @@ class Utils
     public static function clearUrl($url, QUI\Projects\Project $Project)
     {
         // space separator
-        $url = str_replace(QUI\Rewrite::URL_SPACE_CHARACTER, ' ', $url);
+        $url = \str_replace(QUI\Rewrite::URL_SPACE_CHARACTER, ' ', $url);
 
         // clear
         $signs = [
@@ -114,11 +114,11 @@ class Utils
             '/'
         ];
 
-        $url = str_replace($signs, '', $url);
+        $url = \str_replace($signs, '', $url);
         //$url = preg_replace('[-.,:;#`!§$%&/?<>\=\'\"\@\_\]\[\+]', '', $url);
 
         // doppelte leerzeichen löschen
-        $url = preg_replace('/([ ]){2,}/', "$1", $url);
+        $url = \preg_replace('/([ ]){2,}/', "$1", $url);
 
         // @todo als event
         // URL Filter
@@ -126,17 +126,17 @@ class Utils
         $filter = USR_DIR.'lib/'.$name.'/url.filter.php';
         $func   = 'url_filter_'.$name;
 
-        $filter = Orthos::clearPath(realpath($filter));
+        $filter = Orthos::clearPath(\realpath($filter));
 
-        if (file_exists($filter)) {
+        if (\file_exists($filter)) {
             require_once $filter;
 
-            if (function_exists($func)) {
+            if (\function_exists($func)) {
                 $url = $func($url);
             }
         }
 
-        $url = str_replace(' ', QUI\Rewrite::URL_SPACE_CHARACTER, $url);
+        $url = \str_replace(' ', QUI\Rewrite::URL_SPACE_CHARACTER, $url);
 
         return $url;
     }
@@ -170,7 +170,7 @@ class Utils
         foreach ($dbXmlList as $package) {
             $file = OPT_DIR.$package.'/database.xml';
 
-            if (!file_exists($file)) {
+            if (!\file_exists($file)) {
                 continue;
             }
 
@@ -196,10 +196,10 @@ class Utils
                 $types = $Table->getAttribute('site-types');
 
                 if ($types) {
-                    $types = explode(',', $types);
+                    $types = \explode(',', $types);
                 }
 
-                if (!empty($types) && is_array($types)) {
+                if (!empty($types) && \is_array($types)) {
                     foreach ($types as $allowedType) {
                         if (!StringUtils::match($allowedType, $siteType)) {
                             continue 2;
@@ -274,10 +274,10 @@ class Utils
                 $types = $Table->getAttribute('site-types');
 
                 if ($types) {
-                    $types = explode(',', $types);
+                    $types = \explode(',', $types);
                 }
 
-                if (!empty($types) && is_array($types)) {
+                if (!empty($types) && \is_array($types)) {
                     foreach ($types as $allowedType) {
                         if (!StringUtils::match($allowedType, $siteType)) {
                             continue 2;
@@ -295,7 +295,7 @@ class Utils
 
                 for ($f = 0, $flen = $fields->length; $f < $flen; $f++) {
                     $Field     = $fields->item($f);
-                    $attribute = trim($Field->nodeValue);
+                    $attribute = \trim($Field->nodeValue);
 
                     $data[] = $attribute;
                 }
@@ -354,7 +354,7 @@ class Utils
         foreach ($siteXmlList as $package) {
             $file = OPT_DIR.$package.'/site.xml';
 
-            if (!file_exists($file)) {
+            if (!\file_exists($file)) {
                 continue;
             }
 
@@ -366,7 +366,7 @@ class Utils
             /* @var $Attribute \DOMElement */
             foreach ($attributes as $Attribute) {
                 $result[] = [
-                    'attribute' => trim($Attribute->nodeValue),
+                    'attribute' => \trim($Attribute->nodeValue),
                     'default'   => $Attribute->getAttribute('default')
                 ];
             }
@@ -374,7 +374,7 @@ class Utils
 
 
         // extra type attributes
-        $type = explode(':', $siteType);
+        $type = \explode(':', $siteType);
 
         if (isset($type[1])) {
             $expr
@@ -391,7 +391,7 @@ class Utils
             /* @var $Attribute \DOMElement */
             foreach ($attributes as $Attribute) {
                 $result[] = [
-                    'attribute' => trim($Attribute->nodeValue),
+                    'attribute' => \trim($Attribute->nodeValue),
                     'default'   => $Attribute->getAttribute('default')
                 ];
             }
@@ -434,7 +434,7 @@ class Utils
         foreach ($siteXmlList as $package) {
             $file = OPT_DIR.$package.'/site.xml';
 
-            if (!file_exists($file)) {
+            if (!\file_exists($file)) {
                 continue;
             }
 
@@ -449,11 +449,11 @@ class Utils
 
 
         // site type extra xml
-        $type    = explode(':', $Site->getAttribute('type'));
+        $type    = \explode(':', $Site->getAttribute('type'));
         $dir     = OPT_DIR.$type[0];
         $siteXML = $dir.'/site.xml';
 
-        if (file_exists($siteXML)) {
+        if (\file_exists($siteXML)) {
             $Dom  = XML::getDomFromXml($siteXML);
             $Path = new \DOMXPath($Dom);
 
@@ -498,13 +498,13 @@ class Utils
         }
 
         // site type extra xml
-        $type    = explode(':', $Site->getAttribute('type'));
+        $type    = \explode(':', $Site->getAttribute('type'));
         $dir     = OPT_DIR.$type[0];
         $siteXML = $dir.'/site.xml';
 
         $result = [];
 
-        if (file_exists($siteXML)) {
+        if (\file_exists($siteXML)) {
             $Dom  = XML::getDomFromXml($siteXML);
             $Path = new \DOMXPath($Dom);
 
@@ -539,7 +539,7 @@ class Utils
      */
     public static function isSiteObject($Site)
     {
-        switch (get_class($Site)) {
+        switch (\get_class($Site)) {
             case 'QUI\\Projects\\Site':
             case 'QUI\\Projects\\Site\\Edit':
             case 'QUI\\Projects\\Site\\OnlyDB':
@@ -562,19 +562,19 @@ class Utils
      */
     public static function isSiteLink($link)
     {
-        if (strpos($link, 'index.php') === false) {
+        if (\strpos($link, 'index.php') === false) {
             return false;
         }
 
-        if (strpos($link, 'project=') === false) {
+        if (\strpos($link, 'project=') === false) {
             return false;
         }
 
-        if (strpos($link, 'lang=') === false) {
+        if (\strpos($link, 'lang=') === false) {
             return false;
         }
 
-        if (strpos($link, 'id=') === false) {
+        if (\strpos($link, 'id=') === false) {
             return false;
         }
 
@@ -607,7 +607,7 @@ class Utils
             );
         }
 
-        $parseUrl = parse_url($link);
+        $parseUrl = \parse_url($link);
 
         if (!isset($parseUrl['query']) || empty($parseUrl['query'])) {
             throw new QUI\Exception(
@@ -624,7 +624,7 @@ class Utils
             );
         }
 
-        parse_str($parseUrl['query'], $urlQueryParams);
+        \parse_str($parseUrl['query'], $urlQueryParams);
 
         $Project = QUI::getProject(
             $urlQueryParams['project'],
@@ -645,10 +645,10 @@ class Utils
      */
     public static function getSiteByUrl(Project $Project, $link)
     {
-        $link  = str_replace('.html', '', $link);
-        $link  = trim($link);
-        $link  = trim($link, '/');
-        $parts = explode('/', $link);
+        $link  = \str_replace('.html', '', $link);
+        $link  = \trim($link);
+        $link  = vtrim($link, '/');
+        $parts = \explode('/', $link);
 
         $Site = $Project->firstChild();
 
@@ -690,10 +690,10 @@ class Utils
         // @todo eigener select, rückgabe dann wie in liste übergeben
 //        }
 
-        if (is_string($list)) {
-            $sitetypes = explode(';', $list);
+        if (\is_string($list)) {
+            $sitetypes = \explode(';', $list);
         } else {
-            if (is_array($list)) {
+            if (\is_array($list)) {
                 $sitetypes = $list;
             } else {
                 return [];
@@ -706,16 +706,16 @@ class Utils
         $where   = [];
 
         foreach ($sitetypes as $sitetypeEntry) {
-            if (is_numeric($sitetypeEntry)) {
+            if (\is_numeric($sitetypeEntry)) {
                 $ids[] = (int)$sitetypeEntry;
                 continue;
             }
 
-            if (strpos($sitetypeEntry, 'p') === 0
-                && strpos($sitetypeEntry, '/') === false
-                && strpos($sitetypeEntry, ':') === false
+            if (\strpos($sitetypeEntry, 'p') === 0
+                && \strpos($sitetypeEntry, '/') === false
+                && \strpos($sitetypeEntry, ':') === false
             ) {
-                $parents[] = str_replace('p', '', $sitetypeEntry);
+                $parents[] = \str_replace('p', '', $sitetypeEntry);
                 continue;
             }
 
@@ -738,7 +738,7 @@ class Utils
         }
 
         // parents are set
-        if (count($parents)) {
+        if (\count($parents)) {
             foreach ($parents as $parentId) {
                 try {
                     $Parent = $Project->get((int)$parentId);
@@ -747,12 +747,12 @@ class Utils
                         'order' => $order
                     ]);
 
-                    $ids = array_merge($ids, $children);
+                    $ids = \array_merge($ids, $children);
                 } catch (QUI\Exception $Exception) {
                 }
             }
 
-            if (!count($ids)) {
+            if (!\count($ids)) {
                 if (isset($params['count']) && $params['count']) {
                     return [['count' => 0]];
                 }
@@ -823,7 +823,7 @@ class Utils
             );
         }
 
-        $parseUrl = parse_url($link);
+        $parseUrl = \parse_url($link);
 
         if (!isset($parseUrl['query']) || empty($parseUrl['query'])) {
             throw new QUI\Exception(
@@ -841,7 +841,7 @@ class Utils
         }
 
         // html_entity_decode because -> &nbsp; in index.php links
-        parse_str(html_entity_decode($parseUrl['query']), $urlQueryParams);
+        \parse_str(\html_entity_decode($parseUrl['query']), $urlQueryParams);
 
         return QUI::getRewrite()->getOutput()->getSiteUrl($urlQueryParams);
     }

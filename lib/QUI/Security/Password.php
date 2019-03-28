@@ -22,7 +22,7 @@ class Password
      */
     public static function generateHash($password)
     {
-        return password_hash($password, PASSWORD_BCRYPT);
+        return \password_hash($password, PASSWORD_BCRYPT);
     }
 
     /**
@@ -34,6 +34,6 @@ class Password
     public static function generateRandom($characters = 10)
     {
         // @todo make use of random_int if QUIQQER becomes PHP 7 compatible
-        return mb_substr(bin2hex(openssl_random_pseudo_bytes(128)), 0, $characters);
+        return \mb_substr(\bin2hex(\openssl_random_pseudo_bytes(128)), 0, $characters);
     }
 }

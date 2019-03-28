@@ -60,7 +60,7 @@ class Canonical
             $httpsHost       = $Project->getVHost(true, true);
             $httpsHostExists = false;
 
-            if (strpos($httpsHost, 'https:') !== false) {
+            if (\strpos($httpsHost, 'https:') !== false) {
                 $httpsHostExists = true;
             }
 
@@ -83,12 +83,12 @@ class Canonical
             return '';
         }
 
-        $canonical = ltrim($this->Site->getCanonical(), '/');
+        $canonical = \ltrim($this->Site->getCanonical(), '/');
         $httpsHost = $Project->getVHost(true, true);
 
         $httpsHostExists = false;
 
-        if (strpos($httpsHost, 'https:') !== false) {
+        if (\strpos($httpsHost, 'https:') !== false) {
             $httpsHostExists = true;
         }
 
@@ -111,7 +111,7 @@ class Canonical
 
 
         // fix doppelter HOST im canonical https://dev.quiqqer.com/quiqqer/quiqqer/issues/574
-        if (strpos($canonical, 'https:') !== false || strpos($canonical, 'http:') !== false) {
+        if (\strpos($canonical, 'https:') !== false || \strpos($canonical, 'http:') !== false) {
             return $this->getLinkRel($canonical);
         }
 

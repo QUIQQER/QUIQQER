@@ -158,14 +158,14 @@ class Template extends QUI\QDOM
         $template   = $this->getAttribute('TplHeader');
         $projectDir = USR_DIR.$Project->getName().'/lib/';
 
-        if (file_exists($projectDir.$template)) {
+        if (\file_exists($projectDir.$template)) {
             return $projectDir.$template;
         }
 
         $tplPath = OPT_DIR.$Project->getAttribute('template').'/';
 
         // exist template in opt?
-        if (file_exists($tplPath.$template)) {
+        if (\file_exists($tplPath.$template)) {
             return $tplPath.$template;
         }
 
@@ -190,14 +190,14 @@ class Template extends QUI\QDOM
         $template   = $this->getAttribute('TplBody');
         $projectDir = USR_DIR.$Project->getName().'/lib/';
 
-        if (file_exists($projectDir.$template)) {
+        if (\file_exists($projectDir.$template)) {
             return $projectDir.$template;
         }
 
         $tplPath = OPT_DIR.$Project->getAttribute('template').'/';
 
         // exist template in opt?
-        if (file_exists($tplPath.$template)) {
+        if (\file_exists($tplPath.$template)) {
             return $tplPath.$template;
         }
 
@@ -222,14 +222,14 @@ class Template extends QUI\QDOM
         $template   = $this->getAttribute('TplFooter');
         $projectDir = USR_DIR.$Project->getName().'/lib/';
 
-        if (file_exists($projectDir.$template)) {
+        if (\file_exists($projectDir.$template)) {
             return $projectDir.$template;
         }
 
         $tplPath = OPT_DIR.$Project->getAttribute('template').'/';
 
         // exist template in opt?
-        if (file_exists($tplPath.$template)) {
+        if (\file_exists($tplPath.$template)) {
             return $tplPath.$template;
         }
 

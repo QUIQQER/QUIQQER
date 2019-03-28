@@ -37,7 +37,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @throws QUI\Exception
      */
     public function __construct(
-        $attributes = array(),
+        $attributes = [],
         QUI\Projects\Project $Project = null,
         QUI\Projects\Site $Parent = null
     ) {
@@ -46,7 +46,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         $this->setAttributes($attributes);
 
-        $needles = array('id', 'title', 'name', 'url');
+        $needles = ['id', 'title', 'name', 'url'];
 
         foreach ($needles as $needle) {
             if (!$this->getAttribute($needle)) {
@@ -84,7 +84,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function encode()
     {
-        return json_encode($this->getAttributes());
+        return \json_encode($this->getAttributes());
     }
 
     /**
@@ -97,7 +97,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     public function decode($params)
     {
         $this->setAttributes(
-            json_decode($params, true)
+            \json_decode($params, true)
         );
     }
 
@@ -138,7 +138,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getLangIds()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -164,9 +164,9 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @return array;
      */
-    public function getChildren($params = array(), $load = false)
+    public function getChildren($params = [], $load = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -191,7 +191,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function nextSiblings($no)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -216,7 +216,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function previousSiblings($no)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -226,7 +226,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @return QUI\Projects\Site | false
      */
-    public function firstChild($params = array())
+    public function firstChild($params = [])
     {
         return false;
     }
@@ -238,9 +238,9 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @return array
      */
-    public function getNavigation($params = array())
+    public function getNavigation($params = [])
     {
-        return array();
+        return [];
     }
 
     /**
@@ -254,9 +254,9 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     public function getChildIdByName($name)
     {
         throw new QUI\Exception(
-            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.child.by.name.not.found', array(
+            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.child.by.name.not.found', [
                 'name' => $name
-            )),
+            ]),
             705
         );
     }
@@ -287,9 +287,9 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @return array
      */
-    public function getChildrenIds($params = array())
+    public function getChildrenIds($params = [])
     {
-        return array();
+        return [];
     }
 
     /**
@@ -299,9 +299,9 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @return array
      */
-    public function getChildrenIdsRecursive($params = array())
+    public function getChildrenIdsRecursive($params = [])
     {
-        return array();
+        return [];
     }
 
     /**
@@ -334,7 +334,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @return string
      */
-    public function getUrl($params = array(), $rewrited = false)
+    public function getUrl($params = [], $rewrited = false)
     {
         return $this->getAttribute('url');
     }
@@ -347,7 +347,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @return string
      */
-    public function getUrlRewrited($params = array())
+    public function getUrlRewrited($params = [])
     {
         return $this->getAttribute('url');
     }
@@ -356,7 +356,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param array $params
      * @return mixed
      */
-    public function getUrlRewritten($params = array())
+    public function getUrlRewritten($params = [])
     {
         return $this->getAttribute('url');
     }
@@ -400,7 +400,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getParentIdTree()
     {
-        return array();
+        return [];
     }
 
     /**

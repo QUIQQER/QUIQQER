@@ -32,20 +32,20 @@ class Autoloader
      */
     public static function load($classname)
     {
-        if (class_exists($classname, false)) {
+        if (\class_exists($classname, false)) {
             return true;
         }
 
-        if (interface_exists($classname, false)) {
+        if (\interface_exists($classname, false)) {
             return true;
         }
 
-        if (function_exists($classname)) {
+        if (\function_exists($classname)) {
             return true;
         }
 
         // exists quiqqer?
-        if (!class_exists('\QUI', false)) {
+        if (!\class_exists('\QUI', false)) {
             require_once __DIR__.'/QUI.php';
         }
 
@@ -53,47 +53,47 @@ class Autoloader
             return true;
         }
 
-        if (class_exists($classname, false)) {
+        if (\class_exists($classname, false)) {
             return true;
         }
 
-        if (interface_exists($classname, false)) {
+        if (\interface_exists($classname, false)) {
             return true;
         }
 
-        if (function_exists($classname)) {
+        if (\function_exists($classname)) {
             return true;
         }
 
         // Projects
-        if (strpos($classname, 'Projects\\') === 0) {
-            if (class_exists($classname, false)) {
+        if (\strpos($classname, 'Projects\\') === 0) {
+            if (\class_exists($classname, false)) {
                 return true;
             }
 
-            if (interface_exists($classname, false)) {
+            if (\interface_exists($classname, false)) {
                 return true;
             }
 
-            $file = USR_DIR.substr($classname, 9).'.php';
-            $file = str_replace('\\', '/', $file);
+            $file = USR_DIR.\substr($classname, 9).'.php';
+            $file = \str_replace('\\', '/', $file);
 
-            if (file_exists($file)) {
+            if (\file_exists($file)) {
                 require_once $file;
             }
 
-            if (class_exists($classname, false)) {
+            if (\class_exists($classname, false)) {
                 return true;
             }
 
-            if (interface_exists($classname, false)) {
+            if (\interface_exists($classname, false)) {
                 return true;
             }
         }
 
         // use now the composer loader
         if (!self::$ComposerLoader) {
-            self::$ComposerLoader = require dirname(dirname(dirname(dirname(__FILE__)))).'/autoload.php';
+            self::$ComposerLoader = require \dirname(\dirname(\dirname(\dirname(__FILE__)))).'/autoload.php';
         }
 
         return self::$ComposerLoader->loadClass($classname);

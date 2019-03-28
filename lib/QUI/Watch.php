@@ -39,13 +39,13 @@ class Watch
         return QUI::getLocale()->get(
             'quiqqer/system',
             'watch.authenticatorLoginError',
-            array(
+            [
                 'userId'        => $userId ?: '-',
                 'username'      => $username,
                 'authenticator' => $authenticator,
                 'ipAddress'     => $_SERVER['REMOTE_ADDR'],
                 'userAgent'     => empty($_SERVER['HTTP_USER_AGENT']) ? '-' : $_SERVER['HTTP_USER_AGENT']
-            )
+            ]
         );
     }
 }

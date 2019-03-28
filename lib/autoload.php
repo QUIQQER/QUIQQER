@@ -12,7 +12,7 @@
  * @package quiqqer/quiqqer
  */
 
-require dirname(__FILE__).'/Autoloader.php';
+require \dirname(__FILE__).'/Autoloader.php';
 
 /**
  * Main QUIQQER Autoload function
@@ -22,7 +22,7 @@ require dirname(__FILE__).'/Autoloader.php';
  * @return boolean
  */
 
-spl_autoload_register(function ($className) {
+\spl_autoload_register(function ($className) {
     return \QUI\Autoloader::load($className);
 });
 
@@ -49,7 +49,7 @@ function exception_error_handler($errno, $errstr, $errfile, $errline)
         return true;
     }
 
-    $l = error_reporting();
+    $l = \error_reporting();
 
     if ($errno === E_DEPRECATED || $errno === E_USER_DEPRECATED) {
         QUI\System\Log::addInfo('Deprecated: '.$errstr, [
@@ -100,7 +100,7 @@ function exception_error_handler($errno, $errstr, $errfile, $errline)
         );
 
         if ($exit) {
-            exception_handler($exception);
+            \exception_handler($exception);
             exit('Unknown Error in QUIQQER exception_error_handler()');
         }
 

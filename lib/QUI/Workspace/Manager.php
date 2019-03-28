@@ -189,8 +189,8 @@ class Manager
         }
 
         if (isset($data['data'])) {
-            $data['data']      = json_decode($data['data'], true);
-            $workspace['data'] = json_encode($data['data']);
+            $data['data']      = \json_decode($data['data'], true);
+            $workspace['data'] = \json_encode($data['data']);
         }
 
         QUI::getDataBase()->update(self::table(), $workspace, [
@@ -245,13 +245,13 @@ class Manager
         }
 
         $panels   = [];
-        $xmlFiles = array_merge(
+        $xmlFiles = \array_merge(
             [SYS_DIR.'panels.xml'],
             QUI::getPackageManager()->getPackageXMLFiles('panels.xml')
         );
 
         foreach ($xmlFiles as $file) {
-            $panels = array_merge(
+            $panels = \array_merge(
                 $panels,
                 QUI\Utils\Text\XML::getPanelsFromXMLFile($file)
             );
@@ -273,7 +273,7 @@ class Manager
      */
     public static function getTwoColumnDefault()
     {
-        return file_get_contents(dirname(dirname(__FILE__)).'/Users/workspaces/twoColumns.js');
+        return \file_get_contents(\dirname(\dirname(__FILE__)).'/Users/workspaces/twoColumns.js');
     }
 
     /**
@@ -283,6 +283,6 @@ class Manager
      */
     public static function getThreeColumnDefault()
     {
-        return file_get_contents(dirname(dirname(__FILE__)).'/Users/workspaces/threeColumns.js');
+        return \file_get_contents(\dirname(\dirname(__FILE__)).'/Users/workspaces/threeColumns.js');
     }
 }

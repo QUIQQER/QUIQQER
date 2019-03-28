@@ -190,7 +190,7 @@ class Project
             );
         }
 
-        $this->langs = explode(',', $this->config['langs']);
+        $this->langs = \explode(',', $this->config['langs']);
 
         // Default Lang
         if (!isset($this->config['default_lang'])) {
@@ -207,7 +207,7 @@ class Project
 
         // Sprache
         if ($lang != false) {
-            if (!in_array($lang, $this->langs)) {
+            if (!\in_array($lang, $this->langs)) {
                 throw new QUI\Exception(
                     QUI::getLocale()->get(
                         'quiqqer/system',
@@ -301,7 +301,7 @@ class Project
      */
     public function __toString()
     {
-        return 'Object '.get_class($this).'('.$this->name.','.$this->lang.')';
+        return 'Object '.\get_class($this).'('.$this->name.','.$this->lang.')';
     }
 
     /**
@@ -319,7 +319,7 @@ class Project
      */
     public function toJSON()
     {
-        return json_encode($this->toArray());
+        return \json_encode($this->toArray());
     }
 
     /**
@@ -364,11 +364,11 @@ class Project
     {
         $languages = $this->getAttribute('langs');
 
-        if (is_string($languages)) {
-            $languages = explode(',', $languages);
+        if (\is_string($languages)) {
+            $languages = \explode(',', $languages);
         }
 
-        if (!is_array($languages)) {
+        if (!\is_array($languages)) {
             $languages = [];
         }
 
@@ -408,20 +408,20 @@ class Project
 
         $allowed = ['id', 'name', 'title', 'short', 'content'];
 
-        if (is_array($select)) {
+        if (\is_array($select)) {
             $where = ' WHERE (';
 
             foreach ($select as $field) {
-                if (!in_array($field, $allowed)) {
+                if (!\in_array($field, $allowed)) {
                     continue;
                 }
 
                 $where .= ' '.$field.' LIKE :search OR ';
             }
 
-            $where = substr($where, 0, -4).')';
+            $where = \substr($where, 0, -4).')';
 
-            if (strlen($where) < 6) {
+            if (\strlen($where) < 6) {
                 $where = ' WHERE name LIKE :search';
             }
         }
@@ -759,8 +759,8 @@ class Project
      */
     public function get($id)
     {
-        if ((defined('ADMIN') && ADMIN == 1)
-            || (defined('QUIQQER_CONSOLE') && QUIQQER_CONSOLE == 1)) {
+        if ((\defined('ADMIN') && ADMIN == 1)
+            || (\defined('QUIQQER_CONSOLE') && QUIQQER_CONSOLE == 1)) {
             return new Site\Edit($this, (int)$id);
         }
 
@@ -864,7 +864,7 @@ class Project
 
         $result   = [];
         $_resTemp = [];
-        $siteXMLs = array_unique($siteXMLs);
+        $siteXMLs = \array_unique($siteXMLs);
 
         foreach ($siteXMLs as $siteXML) {
             $layouts = XML::getLayoutsFromXml($siteXML);
@@ -896,12 +896,12 @@ class Project
                 }
 
                 if ($Layout->getAttribute('image')) {
-                    $path = dirname($siteXML);
-                    $path = str_replace(OPT_DIR, '', $path);
+                    $path = \dirname($siteXML);
+                    $path = \str_replace(OPT_DIR, '', $path);
 
                     $file = OPT_DIR.$path.'/'.$Layout->getAttribute('image');
 
-                    if (file_exists($file)) {
+                    if (\file_exists($file)) {
                         $data['image'] = URL_OPT_DIR.$path.'/'.$Layout->getAttribute('image');
                     }
                 }
@@ -939,9 +939,9 @@ class Project
             ];
         }
 
-        if (isset($params['where']) && is_array($params['where'])) {
-            $where = array_merge($where_1, $params['where']);
-        } elseif (isset($params['where']) && is_string($params['where'])) {
+        if (isset($params['where']) && \is_array($params['where'])) {
+            $where = \array_merge($where_1, $params['where']);
+        } elseif (isset($params['where']) && \is_string($params['where'])) {
             // @todo where als param string
             QUI\System\Log::addDebug(
                 'Project->getChildrenIdsFrom WIRD NICHT verwendet'.$params['where']
@@ -955,7 +955,7 @@ class Project
         $order = $this->TABLE.'.order_field';
 
         if (isset($params['order'])) {
-            if (strpos($params['order'], '.') !== false) {
+            if (\strpos($params['order'], '.') !== false) {
                 $order = $this->TABLE.'.'.$params['order'];
             } else {
                 $order = $params['order'];
@@ -1046,12 +1046,12 @@ class Project
         $pid = $this->getParentIdFrom($id);
 
         while ($pid != 1) {
-            array_push($ids, $pid);
+            \array_push($ids, $pid);
             $pid = $this->getParentIdFrom($pid);
         }
 
         if ($reverse) {
-            $ids = array_reverse($ids);
+            $ids = \array_reverse($ids);
         }
 
         return $ids;
@@ -1067,7 +1067,7 @@ class Project
      */
     public function getSitesIds($params = [])
     {
-        if (empty($params) || !is_array($params)) {
+        if (empty($params) || !\is_array($params)) {
             // Falls kein Query dann alle Seiten hohlen
             // @notice - Kann performancefressend sein
             return QUI::getDataBase()->fetch([
@@ -1090,18 +1090,18 @@ class Project
         }
 
         // Aktivflag abfragen
-        if (isset($sql['where']) && is_array($sql['where']) && !isset($sql['where']['active'])) {
+        if (isset($sql['where']) && \is_array($sql['where']) && !isset($sql['where']['active'])) {
             $sql['where']['active'] = 1;
         } elseif (isset($sql['where']['active']) && $sql['where']['active'] == -1) {
             unset($sql['where']['active']);
-        } elseif (isset($sql['where']) && is_string($sql['where'])) {
+        } elseif (isset($sql['where']) && \is_string($sql['where'])) {
             $sql['where'] .= ' AND active = 1';
         } elseif (!isset($sql['where']['active'])) {
             $sql['where']['active'] = 1;
         }
 
         // Deletedflag abfragen
-        if (isset($sql['where']) && is_array($sql['where'])
+        if (isset($sql['where']) && \is_array($sql['where'])
             && !isset($sql['where']['deleted'])
         ) {
             $sql['where']['deleted'] = 0;
@@ -1109,7 +1109,7 @@ class Project
                   && $sql['where']['deleted'] == -1
         ) {
             unset($sql['where']['deleted']);
-        } elseif (is_string($sql['where'])) {
+        } elseif (\is_string($sql['where'])) {
             $sql['where'] .= ' AND deleted = 0';
         } elseif (!isset($sql['where']['deleted'])) {
             $sql['where']['deleted'] = 0;
@@ -1310,7 +1310,7 @@ class Project
                     'name'      => 'start',
                     'title'     => 'Start',
                     'type'      => 'standard',
-                    'c_date'    => date('Y-m-d H:i:s'),
+                    'c_date'    => \date('Y-m-d H:i:s'),
                     'c_user'    => $User->getId(),
                     'c_user_ip' => QUI\Utils\System::getClientIP()
                 ]);
@@ -1435,7 +1435,7 @@ class Project
 
         QUI\Utils\System\File::mkfile($file);
 
-        if (!is_writable($file)) {
+        if (!\is_writable($file)) {
             throw new QUI\Exception([
                 'quiqqer/quiqqer',
                 'exception.custom.css.is.not.writeable',
@@ -1443,7 +1443,7 @@ class Project
             ]);
         }
 
-        file_put_contents($file, $css);
+        \file_put_contents($file, $css);
     }
 
     /**
@@ -1453,8 +1453,8 @@ class Project
      */
     public function getCustomCSS()
     {
-        if (file_exists(USR_DIR.$this->getName().'/bin/custom.css')) {
-            return file_get_contents(USR_DIR.$this->getName().'/bin/custom.css');
+        if (\file_exists(USR_DIR.$this->getName().'/bin/custom.css')) {
+            return \file_get_contents(USR_DIR.$this->getName().'/bin/custom.css');
         }
 
         return '';
@@ -1469,7 +1469,7 @@ class Project
     {
         try {
             return (int)QUI\Cache\Manager::get(
-                'projects/edate/'.md5($this->getName().'_'.$this->getLang())
+                'projects/edate/'.\md5($this->getName().'_'.$this->getLang())
             );
         } catch (QUI\Exception $Exception) {
         }
@@ -1536,18 +1536,18 @@ class Project
 
         // File: etc/projects.ini.php
         $filename = ETC_DIR."projects.ini.php";
-        $content  = file_get_contents($filename);
+        $content  = \file_get_contents($filename);
 
-        $content = str_replace($this->name, $newName, $content);
-        file_put_contents($filename, $content);
+        $content = \str_replace($this->name, $newName, $content);
+        \file_put_contents($filename, $content);
 
 
         // File: etc/vhosts.ini.php
         $filename = ETC_DIR."vhosts.ini.php";
-        $content  = file_get_contents($filename);
+        $content  = \file_get_contents($filename);
 
-        $content = str_replace($this->name, $newName, $content);
-        file_put_contents($filename, $content);
+        $content = \str_replace($this->name, $newName, $content);
+        \file_put_contents($filename, $content);
 
 
         // ----------------------------- //
@@ -1565,11 +1565,11 @@ class Project
         }
 
         foreach ($tables as $oldTableName) {
-            if (strpos($oldTableName."_", $this->name) === false) {
+            if (\strpos($oldTableName."_", $this->name) === false) {
                 continue;
             }
 
-            $newTableName = str_replace($this->name."_", $newName."_", $oldTableName);
+            $newTableName = \str_replace($this->name."_", $newName."_", $oldTableName);
 
             $sql  = "ALTER TABLE ".$oldTableName." RENAME ".$newTableName.";";
             $Stmt = \QUI::getDataBase()->getPDO()->prepare($sql);
@@ -1589,8 +1589,8 @@ class Project
         $sourceDir = CMS_DIR."media/sites/".$this->name;
         $targetDir = CMS_DIR."media/sites/".$newName;
 
-        if (is_dir($sourceDir)) {
-            rename($sourceDir, $targetDir);
+        if (\is_dir($sourceDir)) {
+            \rename($sourceDir, $targetDir);
         }
 
         // ----------------------------- //
@@ -1599,8 +1599,8 @@ class Project
         $sourceDir = USR_DIR.$this->name;
         $targetDir = USR_DIR.$newName;
 
-        if (is_dir($sourceDir)) {
-            rename($sourceDir, $targetDir);
+        if (\is_dir($sourceDir)) {
+            \rename($sourceDir, $targetDir);
         }
 
         // ----------------------------- //
@@ -1619,9 +1619,9 @@ class Project
         ]);
 
 
-        $this->TABLE        = str_replace($this->name."_", $newName."_", $this->TABLE);
-        $this->RELTABLE     = str_replace($this->name."_", $newName."_", $this->RELTABLE);
-        $this->RELLANGTABLE = str_replace($this->name."_", $newName."_", $this->RELLANGTABLE);
+        $this->TABLE        = \str_replace($this->name."_", $newName."_", $this->TABLE);
+        $this->RELTABLE     = \str_replace($this->name."_", $newName."_", $this->RELTABLE);
+        $this->RELLANGTABLE = \str_replace($this->name."_", $newName."_", $this->RELLANGTABLE);
 
         $this->name = $newName;
     }

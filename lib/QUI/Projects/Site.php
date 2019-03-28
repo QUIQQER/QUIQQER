@@ -201,7 +201,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
 
         // for admins there is no cache
-        if (defined('ADMIN') && ADMIN == 1) {
+        if (\defined('ADMIN') && ADMIN == 1) {
             return true;
         }
 
@@ -235,7 +235,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getEdit()
     {
-        if (get_class($this) == 'QUI\Projects\Site\Edit') {
+        if (\get_class($this) == 'QUI\Projects\Site\Edit') {
             /* @var QUI\Projects\Site\Edit $this */
             return $this;
         }
@@ -294,12 +294,12 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         // load type
         $type = $this->getAttribute('type');
 
-        if (strpos($type, ':') === false) {
+        if (\strpos($type, ':') === false) {
             return $this;
         }
 
         // site.xml
-        $explode = explode(':', $type);
+        $explode = \explode(':', $type);
         $package = $explode[0];
         $type    = $explode[1];
 
@@ -349,7 +349,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         $databaseXml = $dir.'database.xml';
 
         // database.xml
-        if (!file_exists($databaseXml)) {
+        if (!\file_exists($databaseXml)) {
             return;
         }
 
@@ -385,7 +385,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             $types = $Table->getAttribute('site-types');
 
             if ($types) {
-                $types = explode(',', $types);
+                $types = \explode(',', $types);
             }
 
             if (!empty($types)) {
@@ -405,7 +405,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
             // get data
             $tbl       = QUI::getDBTableName($project_name.'_'.$project_lang.'_'.$fields['suffix']);
-            $fieldList = array_keys($fields['fields']);
+            $fieldList = \array_keys($fields['fields']);
 
             $result = QUI::getDataBase()->fetch([
                 'select' => $fieldList,
@@ -417,7 +417,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             ]);
 
             // package.package.table.attribute
-            $attributePrfx = str_replace(
+            $attributePrfx = \str_replace(
                 '/',
                 '.',
                 $package.'.'.$fields['suffix']
@@ -456,7 +456,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         unset($att['project']);
 
-        return json_encode($att);
+        return \json_encode($att);
     }
 
     /**
@@ -468,7 +468,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function decode($params)
     {
-        $decode = json_decode($params, true);
+        $decode = \json_decode($params, true);
 
         if ($decode['active'] != 1) {
             throw new QUI\Exception('Site not exist', 705);
@@ -572,7 +572,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         }
 
         if (isset($result[0]['extra']) && !empty($result[0]['extra'])) {
-            $extra = json_decode($result[0]['extra'], true);
+            $extra = \json_decode($result[0]['extra'], true);
 
             foreach ($extra as $key => $value) {
                 $this->setAttribute($key, $value);
@@ -715,7 +715,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         $availableLanguages = $Project->getLanguages();
 
         // @todo don`t throw an exception, implement existsLanguage()
-        if ($lang && !in_array($lang, $availableLanguages)) {
+        if ($lang && !\in_array($lang, $availableLanguages)) {
             throw new QUI\Exception(
                 [
                     'quiqqer/system',
@@ -773,7 +773,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getChildren($params = [], $load = false)
     {
-        if (!is_array($params)) {
+        if (!\is_array($params)) {
             $params = [];
         }
 
@@ -886,7 +886,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                     try {
                         $result[] = $Project->get((int)$list[$key + $i]);
                     } catch (QUI\Exception $Exception) {
-                        if (defined('DEBUG_MODE')) {
+                        if (\defined('DEBUG_MODE')) {
                             QUI\System\Log::writeException($Exception);
                         }
                     }
@@ -948,7 +948,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                     try {
                         $result[] = $Project->get((int)$list[$key - $i]);
                     } catch (QUI\Exception $Exception) {
-                        if (defined('DEBUG_MODE')) {
+                        if (\defined('DEBUG_MODE')) {
                             QUI\System\Log::writeException($Exception);
                         }
                     }
@@ -969,7 +969,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function firstChild($params = [])
     {
-        if (!is_array($params)) {
+        if (!\is_array($params)) {
             $params = [];
         }
 
@@ -994,7 +994,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function lastChild($params = [])
     {
-        if (!is_array($params)) {
+        if (!\is_array($params)) {
             $params = [];
         }
 
@@ -1002,11 +1002,11 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         $result = $this->getChildrenIds($params);
 
-        if (!count($result)) {
+        if (!\count($result)) {
             return false;
         }
 
-        $last = array_pop($result);
+        $last = \array_pop($result);
 
         try {
             return $this->getProject()->get($last);
@@ -1027,7 +1027,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getNavigation($params = [])
     {
-        if (!is_array($params)) {
+        if (!\is_array($params)) {
             $params = [];
         }
 
@@ -1071,7 +1071,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 // sonst werden keine Seiten mehr gefunden
                 $this->TABLE.'.name'      => [
                     'type'  => 'LIKE',
-                    'value' => str_replace('-', '_', $name)
+                    'value' => \str_replace('-', '_', $name)
                 ]
             ],
             'limit' => 1
@@ -1289,7 +1289,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 $pids = $Edit->getParentIds();
 
                 foreach ($pids as $pid) {
-                    if (in_array($pid, $children)) {
+                    if (\in_array($pid, $children)) {
                         $Edit->deleteLinked($pid);
                         continue;
                     }
@@ -1365,7 +1365,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             'limit' => '1'
         ]);
 
-        return count($result) ? true : false;
+        return \count($result) ? true : false;
     }
 
     /**
@@ -1384,7 +1384,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
 //        $Rewrite = QUI::getRewrite();
 
-        if (!is_array($params)) {
+        if (!\is_array($params)) {
             $params = [];
         }
 
@@ -1403,11 +1403,11 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 continue;
             }
 
-            if (!is_string($value) && !is_numeric($value) && !is_bool($value)) {
+            if (!\is_string($value) && !\is_numeric($value) && !\is_bool($value)) {
                 continue;
             }
 
-            if (!is_string($param) && !is_numeric($param) && !is_bool($param)) {
+            if (!\is_string($param) && !\is_numeric($param) && !\is_bool($param)) {
                 continue;
             }
 
@@ -1416,12 +1416,12 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 
         if (!empty($getParams)) {
             foreach ($getParams as $key => $value) {
-                if (!is_string($value) && !is_numeric($value)) {
+                if (!\is_string($value) && !\is_numeric($value)) {
                     unset($getParams[$key]);
                 }
             }
 
-            $str .= '&_getParams='.urlencode(http_build_query($getParams));
+            $str .= '&_getParams='.\urlencode(\http_build_query($getParams));
         }
 
         return $str;
@@ -1458,7 +1458,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             // in rewrite zeile 1420 ->_extendUrlWidthPrams wird dies auch noch gemacht
             // somit kann ein url cache aufgebaut werden
             foreach ($params as $param => $value) {
-                if (is_integer($param)) {
+                if (\is_integer($param)) {
                     $url .= $separator.$value;
                     continue;
                 }
@@ -1467,7 +1467,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                     continue;
                 }
 
-                if (is_int($param)) {
+                if (\is_int($param)) {
                     $url .= $separator.$value;
                     continue;
                 }
@@ -1494,7 +1494,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 // Wenn parent nicht die Startseite ist, dann muss der Pfad generiert werden
                 $this->getUrlHelper($this->getId());
 
-                foreach (array_reverse($this->parents) as $parent) {
+                foreach (\array_reverse($this->parents) as $parent) {
                     $url .= QUI\Rewrite::replaceUrlSigns($parent, true).'/'; // URL auch Slash ersetzen
                 }
             }
@@ -1505,7 +1505,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         $url .= QUI\Rewrite::replaceUrlSigns($this->getAttribute('name'), true);
 
         foreach ($params as $param => $value) {
-            if (is_integer($param)) {
+            if (\is_integer($param)) {
                 $url .= $separator.$value;
                 continue;
             }
@@ -1514,7 +1514,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
                 continue;
             }
 
-            if (is_int($param)) {
+            if (\is_int($param)) {
                 $url .= $separator.$value;
                 continue;
             }
@@ -1532,7 +1532,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             return $result;
         }
 
-        return $result.'?'.http_build_query($getParams);
+        return $result.'?'.\http_build_query($getParams);
     }
 
     /**
@@ -1588,14 +1588,14 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     {
         $url = $this->getUrlRewritten($pathParams, $getParams);
 
-        if (mb_strpos($url, 'http://') !== false || mb_strpos($url, 'https://') !== false) {
+        if (\mb_strpos($url, 'http://') !== false || \mb_strpos($url, 'https://') !== false) {
             return $url;
         }
 
         $host = $this->getProject()->getVHost(true, true);
-        $host = rtrim($host, '/');
+        $host = \rtrim($host, '/');
 
-        $url = ltrim($url, '/');
+        $url = \ltrim($url, '/');
 
         return $host.URL_DIR.$url;
     }
@@ -1660,7 +1660,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             return [];
         }
 
-        if (is_array($this->parents_id)) {
+        if (\is_array($this->parents_id)) {
             return $this->parents_id;
         }
 
@@ -1718,7 +1718,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             }
         }
 
-        return array_reverse($parents);
+        return \array_reverse($parents);
     }
 
     /**
@@ -1768,7 +1768,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             }
         }
 
-        return array_reverse($parents);
+        return \array_reverse($parents);
     }
 
     /**

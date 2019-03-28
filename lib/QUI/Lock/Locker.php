@@ -30,7 +30,7 @@ class Locker
      */
     public static function lock(Package $Package, $key, $lifetime = false, $User = null)
     {
-        if (is_null($User)) {
+        if (\is_null($User)) {
             $User = QUI::getUserBySession();
         }
 
@@ -60,7 +60,7 @@ class Locker
      */
     public static function lockWithPermissions(Package $Package, $key, $permission = '', $User = null)
     {
-        if (is_null($User)) {
+        if (\is_null($User)) {
             $User = QUI::getUserBySession();
         }
 
@@ -100,7 +100,7 @@ class Locker
      */
     public static function unlockWithPermissions(Package $Package, $key, $permission = '', $User = null)
     {
-        if (is_null($User)) {
+        if (\is_null($User)) {
             $User = QUI::getUserBySession();
         }
 
@@ -135,7 +135,7 @@ class Locker
      */
     public static function isLocked(Package $Package, $key, $User = null)
     {
-        if (is_null($User)) {
+        if (\is_null($User)) {
             $User = QUI::getUserBySession();
         }
 
@@ -190,7 +190,7 @@ class Locker
             return 0;
         }
 
-        return time() - $Expire->getTimestamp();
+        return \time() - $Expire->getTimestamp();
     }
 
     /**
@@ -204,7 +204,7 @@ class Locker
      */
     protected static function getLockKey(Package $Package, $key)
     {
-        if (!is_string($key) || empty($key)) {
+        if (!\is_string($key) || empty($key)) {
             throw new QUI\Lock\Exception('Lock::lock() need a string as key');
         }
 

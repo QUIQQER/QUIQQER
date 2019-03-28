@@ -33,30 +33,30 @@ class Health
     public static function systemCheck()
     {
         $File = new QUI\Utils\System\File();
-        $md5  = CMS_DIR . 'checklist.md5';
+        $md5  = CMS_DIR.'checklist.md5';
 
-        $bin_dir = str_replace(CMS_DIR, '', BIN_DIR);
-        $lib_dir = str_replace(CMS_DIR, '', LIB_DIR);
-        $sys_dir = str_replace(CMS_DIR, '', SYS_DIR);
+        $bin_dir = \str_replace(CMS_DIR, '', BIN_DIR);
+        $lib_dir = \str_replace(CMS_DIR, '', LIB_DIR);
+        $sys_dir = \str_replace(CMS_DIR, '', SYS_DIR);
 
         $binList = $File->readDirRecursiv(BIN_DIR, true);
         $libList = $File->readDirRecursiv(LIB_DIR, true);
         $sysList = $File->readDirRecursiv(SYS_DIR, true);
 
         foreach ($binList as $key => $val) {
-            $binList[$key] = $bin_dir . $val;
+            $binList[$key] = $bin_dir.$val;
         }
 
         foreach ($libList as $key => $val) {
-            $libList[$key] = $lib_dir . $val;
+            $libList[$key] = $lib_dir.$val;
         }
 
         foreach ($sysList as $key => $val) {
-            $sysList[$key] = $sys_dir . $val;
+            $sysList[$key] = $sys_dir.$val;
         }
 
 
-        $list = array_merge($binList, $libList, $sysList);
+        $list = \array_merge($binList, $libList, $sysList);
 
         return self::checkArray($md5, $list, CMS_DIR);
     }
@@ -71,8 +71,8 @@ class Health
      */
     public static function packageCheck($plugin)
     {
-        $dir = OPT_DIR . $plugin;
-        $md5 = $dir . '/checklist.md5';
+        $dir = OPT_DIR.$plugin;
+        $md5 = $dir.'/checklist.md5';
 
         return self::check($md5, $dir);
     }
@@ -88,13 +88,13 @@ class Health
      */
     public static function check($md5Checkfile, $dir)
     {
-        if (!file_exists($md5Checkfile)) {
+        if (!\file_exists($md5Checkfile)) {
             throw new QUI\Exception(
                 'Checkfile not exist. Could not check the directory'
             );
         }
 
-        if (!is_dir($dir)) {
+        if (!\is_dir($dir)) {
             throw new QUI\Exception(
                 'Could not read directory.'
             );
@@ -117,16 +117,16 @@ class Health
      */
     public static function checkArray($md5Checkfile, $fileList, $dir)
     {
-        $md5Entries = file($md5Checkfile);
-        $md5List    = array();
+        $md5Entries = \file($md5Checkfile);
+        $md5List    = [];
 
-        $result = array();
+        $result = [];
 
         // explode the md5 list
         foreach ($md5Entries as $line) {
-            $parts = explode('  ', $line);
+            $parts = \explode('  ', $line);
 
-            $md5List[trim($parts[1])] = trim($parts[0]);
+            $md5List[\trim($parts[1])] = \trim($parts[0]);
         }
 
 
@@ -139,7 +139,7 @@ class Health
 
             $md5 = $md5List[$file];
 
-            if (md5_file($dir . $file) != $md5) {
+            if (\md5_file($dir.$file) != $md5) {
                 $result[$file] = self::STATUS_ERROR;
                 continue;
             }
@@ -155,7 +155,7 @@ class Health
             }
         }
 
-        asort($result);
+        \asort($result);
 
         return $result;
     }
@@ -168,9 +168,9 @@ class Health
     public static function checkWritable()
     {
         // check files
-        $md5hashFile = CMS_DIR . 'checklist.md5';
+        $md5hashFile = CMS_DIR.'checklist.md5';
 
-        if (!file_exists($md5hashFile)) {
+        if (!\file_exists($md5hashFile)) {
             throw new QUI\Exception(
                 \QUI::getLocale()->get(
                     'quiqqer/system',
@@ -179,14 +179,14 @@ class Health
             );
         }
 
-        $lines       = file($md5hashFile);
-        $notWritable = array();
+        $lines       = \file($md5hashFile);
+        $notWritable = [];
 
         foreach ($lines as $line) {
-            $line = explode(' ', $line);
+            $line = \explode(' ', $line);
 
-            if (!is_writable(CMS_DIR . $line[1])) {
-                $notWritable[] = CMS_DIR . $line[1];
+            if (!\is_writable(CMS_DIR.$line[1])) {
+                $notWritable[] = CMS_DIR.$line[1];
             }
         }
 
@@ -200,11 +200,11 @@ class Health
         }
 
         // check folders
-        $result = shell_exec('find ' . CMS_DIR . ' -not -path \'*/\.*\' -type d');
-        $lines  = explode("\n", trim($result));
+        $result = \shell_exec('find '.CMS_DIR.' -not -path \'*/\.*\' -type d');
+        $lines  = \explode("\n", \trim($result));
 
         foreach ($lines as $line) {
-            if (!is_writable($line)) {
+            if (!\is_writable($line)) {
                 $notWritable[] = $line;
             }
         }

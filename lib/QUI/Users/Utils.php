@@ -28,12 +28,12 @@ class Utils
      */
     public static function getUserToolbar($User)
     {
-        $TabBar = new QUI\Controls\Toolbar\Bar(array(
+        $TabBar = new QUI\Controls\Toolbar\Bar([
             'name' => 'UserToolbar'
-        ));
+        ]);
 
         DOM::addTabsToToolbar(
-            XML::getTabsFromXml(OPT_DIR . 'quiqqer/quiqqer/user.xml'),
+            XML::getTabsFromXml(OPT_DIR.'quiqqer/quiqqer/user.xml'),
             $TabBar,
             'quiqqer/quiqqer'
         );
@@ -52,9 +52,9 @@ class Utils
                 continue;
             }
 
-            $userXml = OPT_DIR . $entry['name'] . '/user.xml';
+            $userXml = OPT_DIR.$entry['name'].'/user.xml';
 
-            if (!file_exists($userXml)) {
+            if (!\file_exists($userXml)) {
                 continue;
             }
 
@@ -72,9 +72,9 @@ class Utils
 
         foreach ($projects as $project) {
             DOM::addTabsToToolbar(
-                XML::getTabsFromXml(USR_DIR . 'lib/' . $project . '/user.xml'),
+                XML::getTabsFromXml(USR_DIR.'lib/'.$project.'/user.xml'),
                 $TabBar,
-                'project.' . $project
+                'project.'.$project
             );
         }
 
@@ -101,7 +101,7 @@ class Utils
         QUI::getTemplateManager()->assignGlobalParam('User', $User);
 
         // authenticators
-        $userAuthenticators = array();
+        $userAuthenticators = [];
         $authenticators     = $AuthHandler->getAvailableAuthenticators();
 
         foreach ($authenticators as $authenticator) {
@@ -118,8 +118,8 @@ class Utils
 
 
         // project
-        if (strpos($plugin, 'project.') !== false) {
-            $project = explode('project.', $plugin);
+        if (\strpos($plugin, 'project.') !== false) {
+            $project = \explode('project.', $plugin);
 
             return DOM::getTabHTML(
                 $tab,
@@ -130,12 +130,12 @@ class Utils
 
         // plugin
         try {
-            $plugin  = str_replace('plugin.', '', $plugin);
+            $plugin  = \str_replace('plugin.', '', $plugin);
             $Package = QUI::getPackage($plugin);
 
             return DOM::getTabHTML(
                 $tab,
-                OPT_DIR . $Package->getName() . '/user.xml'
+                OPT_DIR.$Package->getName().'/user.xml'
             );
         } catch (QUI\Exception $Exception) {
         }
