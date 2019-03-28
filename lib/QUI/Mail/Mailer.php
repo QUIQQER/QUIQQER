@@ -95,7 +95,7 @@ class Mailer extends QUI\QDOM
         ]);
 
         try {
-            QUI::getEvents()->fireEvent('mailer', [$this]);;
+            QUI::getEvents()->fireEvent('mailer', [$this]);
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }

@@ -1,6 +1,6 @@
 <?php
-if (!extension_loaded("pthreads")) {
 
+if (!extension_loaded("pthreads")) {
     class Worker extends Thread
     {
         public function collect(Closure $collector = null)
@@ -69,5 +69,3 @@ if (!extension_loaded("pthreads")) {
         private $gc = [];
     }
 }
-
-

@@ -6,6 +6,8 @@
  * https://dev.quiqqer.com/quiqqer/quiqqer/issues/754
  */
 
+namespace QUI;
+
 /**
  * @author PCSG - Moritz
  * @package com.pcsg.extern.omnigrid
@@ -58,13 +60,11 @@ class OmnigridExport
             default:
                 $this->_json();
         }
-
     }
 
     private function _print()
     {
         $data = $this->_data;
-
     }
 
     private function _pdf()
@@ -98,7 +98,6 @@ class OmnigridExport
 
         $html .= '</table>';
 
-
         $Pdf = new OmnigridPDF('L', PDF_UNIT, PDF_PAGE_FORMAT, true);
 
         $Pdf->SetCreator(PDF_CREATOR);
@@ -129,7 +128,6 @@ class OmnigridExport
 
         //initialize document
 //		$Pdf->AliasNbPages();
-
 
         // add a page
         $Pdf->AddPage();
@@ -171,7 +169,6 @@ class OmnigridExport
         \header("Expires: ".\gmdate("D, d M Y H:i:s")." GMT");
 
         echo $content;
-
     }
 
     private function _json()
@@ -205,15 +202,13 @@ class OmnigridExport
 
         return $string;
     }
-
 }
 
 if (\file_exists(TCPDF_FILE)) {
     require_once TCPDF_FILE;
 
-    class OmnigridPDF extends TCPDF
+    class OmnigridPDF extends \TCPDF
     {
-
         var $_header = [];
 
         // Page header
@@ -240,15 +235,16 @@ if (\file_exists(TCPDF_FILE)) {
 
 
 \session_start();
+
 //formular erstellen
 if (!isset($_REQUEST['DataField'])) {
-    $doctype = DOMImplementation::createDocumentType(
+    $doctype = \DOMImplementation::createDocumentType(
         'html',
         '-//W3C//DTD XHTML 1.1//EN',
         'http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd'
     );
 
-    $doc = DOMImplementation::createDocument(
+    $doc = \DOMImplementation::createDocument(
         'http://www.w3.org/1999/xhtml',
         'html',
         $doctype

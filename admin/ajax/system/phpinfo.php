@@ -55,11 +55,9 @@ QUI::$Ajax->registerFunction(
                     $str .= "<td>$key</td>";
                     $str .= "<td>$val[0]</td>";
                     $str .= "<td>$val[1]</td>";
-
                 } elseif (is_string($key)) {
                     $str .= "<td>$key</td>";
                     $str .= "<td colspan=\"2\">$val</td>";
-
                 } else {
                     $str .= "<td colspan=\"3\">$val</td>";
                 }

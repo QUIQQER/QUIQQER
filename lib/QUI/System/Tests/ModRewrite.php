@@ -76,7 +76,6 @@ class ModRewrite extends QUI\System\Test
         try {
             $Project = QUI::getProjectManager()->getStandard();
             $host    = $Project->getHost();
-
         } catch (QUI\Exception $Exception) {
             return self::STATUS_ERROR;
         }
@@ -86,7 +85,6 @@ class ModRewrite extends QUI\System\Test
                 'http://'.$host.'/'.URL_SYS_DIR
                 .'/ajax.php?_rf=["ajax_system_modRewrite"]'
             );
-
         } catch (QUI\Exception $Exception) {
             return self::STATUS_ERROR;
         }

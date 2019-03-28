@@ -260,7 +260,6 @@ class QUI
 
         if (\file_exists($var_dir.'last_update')) {
             self::$last_up_date = \file_get_contents($var_dir.'last_update');
-
         } else {
             self::$last_up_date = \time();
         }
@@ -552,7 +551,6 @@ class QUI
         try {
             $vhosts       = self::getConfig('etc/vhosts.ini.php');
             self::$vhosts = $vhosts->toArray();
-
         } catch (\QUI\Exception $Exception) {
             self::$vhosts = [];
         }
