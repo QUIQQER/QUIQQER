@@ -154,6 +154,16 @@ class Edit extends Site
                 continue;
             }
 
+            // integer values
+            switch ($a_key) {
+                case 'active':
+                case 'deleted':
+                case 'id':
+                case 'nav_hide':
+                    $a_val = (int)$a_val;
+                    break;
+            }
+
             $this->setAttribute($a_key, $a_val);
         }
     }

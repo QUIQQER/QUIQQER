@@ -107,7 +107,7 @@ define('classes/projects/project/Site', [
                 Site.$loaded       = true;
 
                 if ("has_children" in result) {
-                    Site.$has_children = (result.has_children).toInt();
+                    Site.$has_children = parseInt(result.has_children);
                 }
 
                 if ("parentid" in result) {
@@ -234,7 +234,7 @@ define('classes/projects/project/Site', [
                 return 0;
             }
 
-            return (this.$has_children).toInt();
+            return parseInt(this.$has_children);
         },
 
         /**
@@ -264,7 +264,7 @@ define('classes/projects/project/Site', [
                         Child.setAttributes(children[i]);
 
                         if ("has_children" in children[i]) {
-                            Child.$has_children = (children[i].has_children).toInt();
+                            Child.$has_children = parseInt(children[i].has_children);
                         }
 
                         if ("parentid" in children[i]) {
@@ -318,7 +318,7 @@ define('classes/projects/project/Site', [
                     Site.setAttribute('active', 1);
                 }
 
-                Site.clearWorkingStorage();
+                //Site.clearWorkingStorage();
 
                 if (typeof onfinish === 'function') {
                     onfinish(result);
@@ -348,7 +348,7 @@ define('classes/projects/project/Site', [
                     Site.setAttribute('active', 0);
                 }
 
-                Site.clearWorkingStorage();
+                //Site.clearWorkingStorage();
 
                 if (typeof onfinish === 'function') {
                     onfinish(result);
@@ -385,12 +385,12 @@ define('classes/projects/project/Site', [
                     }
 
                     if (result) {
-                        Site.$has_children = (result.has_children).toInt() || false;
+                        Site.$has_children = parseInt(result.has_children) || false;
                         Site.$parentid     = (result.parentid).toInt() || false;
                         Site.$url          = result.url || '';
                     }
 
-                    Site.clearWorkingStorage();
+                    //Site.clearWorkingStorage();
 
                     // if status change, trigger events
                     if (Site.getAttribute('active') != status) {
@@ -708,8 +708,8 @@ define('classes/projects/project/Site', [
                 if (self.isLoaded()) {
                     Data = Promise.resolve();
                 } else {
-                    Data = new Promise(function (reslove) {
-                        self.load(reslove);
+                    Data = new Promise(function (resolve) {
+                        self.load(resolve);
                     });
                 }
 
