@@ -127,14 +127,23 @@ class Mailer extends QUI\QDOM
 
         // addresses
         foreach ($this->recipients as $email) {
+            if (empty($email)) {
+                continue;
+            }
+
             if (\is_array($email)) {
                 $PHPMailer->addAddress($email[0], $email[1]);
                 continue;
             }
+
             $PHPMailer->addAddress($email);
         }
 
         foreach ($this->reply as $email) {
+            if (empty($email)) {
+                continue;
+            }
+
             if (\is_array($email)) {
                 $PHPMailer->addReplyTo($email[0], $email[1]);
                 continue;
@@ -144,6 +153,10 @@ class Mailer extends QUI\QDOM
         }
 
         foreach ($this->cc as $email) {
+            if (empty($email)) {
+                continue;
+            }
+
             if (\is_array($email)) {
                 $PHPMailer->addCC($email[0], $email[1]);
                 continue;
@@ -153,6 +166,10 @@ class Mailer extends QUI\QDOM
         }
 
         foreach ($this->bcc as $email) {
+            if (empty($email)) {
+                continue;
+            }
+
             if (\is_array($email)) {
                 $PHPMailer->addBCC($email[0], $email[1]);
                 continue;
