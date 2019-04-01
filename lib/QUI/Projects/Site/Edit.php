@@ -427,14 +427,20 @@ class Edit extends Site
             );
         }
 
-        // check the name, unallowed signs?
-        $name = $this->getAttribute('name');
-
-        QUI\Projects\Site\Utils::checkName($name);
-
-
         /* @var $Project QUI\Projects\Project */
         $Project = $this->getProject();
+        $name    = $this->getAttribute('name');
+
+        if ($Project->getConfig('convertRomanLetters')) {
+            $name = QUI\Utils\Convert::convertRoman($name); // cleanup name
+        }
+
+        $name = \trim($name);
+
+
+        // check the name, if already exists
+        QUI\Projects\Site\Utils::checkName($name);
+
 
         // check if a name in the same level exists
         // observed linked sites
@@ -594,7 +600,7 @@ class Edit extends Site
         $update = QUI::getDataBase()->update(
             $this->TABLE,
             [
-                'name'          => \trim($this->getAttribute('name')),
+                'name'          => $name,
                 'title'         => \trim($this->getAttribute('title')),
                 'short'         => $this->getAttribute('short'),
                 'content'       => $this->getAttribute('content'),
@@ -715,14 +721,14 @@ class Edit extends Site
     /**
      * (non-PHPdoc)
      *
-     * @see Site::getChildrenIdsFromParentId()
-     *
      * @param integer $pid - Parent - ID
      * @param array $params
      *
      * @return array
      *
      * @throws QUI\Database\Exception
+     * @see Site::getChildrenIdsFromParentId()
+     *
      */
     public function getChildrenIdsFromParentId($pid, $params = [])
     {
@@ -808,11 +814,11 @@ class Edit extends Site
      *                        $params['limit']
      * @param boolean $recursiv Rekursiv alle Kinder IDs bekommen
      *
-     * @todo $recusiv parameter is not used and the interface defines it as a $load parameter
-     *
+     * @return array|int
      * @throws QUI\Exception
      *
-     * @return array|int
+     * @todo $recusiv parameter is not used and the interface defines it as a $load parameter
+     *
      */
     public function getChildren($params = [], $recursiv = false)
     {
@@ -1498,8 +1504,8 @@ class Edit extends Site
     /**
      * Ein SuperUser kann eine Seite trotzdem demakieren wenn er möchte
      *
-     * @todo eigenes recht dafür einführen
      * @throws QUI\Exception
+     * @todo eigenes recht dafür einführen
      */
     public function unlockWithRights()
     {
@@ -1601,8 +1607,8 @@ class Edit extends Site
      *
      * @param string $name
      *
-     * @throws \QUI\Exception
      * @return boolean
+     * @throws \QUI\Exception
      * @deprecated use \QUI\Projects\Site\Utils::checkName
      */
     public static function checkName($name)

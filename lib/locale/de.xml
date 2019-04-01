@@ -222,6 +222,15 @@
         <locale name="projects.project.settings.panel.defaultSitestructure">
             <de><![CDATA[Seitenstruktur]]></de>
         </locale>
+        <locale name="projects.project.settings.panel.convertRomanLetters">
+            <de><![CDATA[Romanische Zeichen konvertieren]]></de>
+        </locale>
+        <locale name="projects.project.settings.panel.convertRomanLetters.description">
+            <de><![CDATA[
+            Romanische Zeichen in ihre lateinisches Gegenstck konvertieren.
+            Umlaute wie ä ö ü werden somit zu ae, oe und ue.
+            ]]></de>
+        </locale>
         <locale name="projects.project.settings.panel.defaultSitestructure.button">
             <de><![CDATA[Standard Seitenstruktur anlegen]]></de>
         </locale>

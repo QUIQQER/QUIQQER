@@ -390,8 +390,6 @@ define('classes/projects/project/Site', [
                         Site.$url          = result.url || '';
                     }
 
-                    //Site.clearWorkingStorage();
-
                     // if status change, trigger events
                     if (Site.getAttribute('active') != status) {
                         if (Site.getAttribute('active') == 1) {

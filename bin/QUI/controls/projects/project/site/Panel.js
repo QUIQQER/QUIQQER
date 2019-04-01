@@ -1685,6 +1685,21 @@ define('controls/projects/project/site/Panel', [
          * event on site save
          */
         $onSiteSave: function () {
+            var Form = this.getBody().getElement('form');
+
+            if (Form) {
+                var attributes = this.getSite().getAttributes();
+                var NameInput  = this.getBody().getElement('input[name="site-name"]');
+
+                attributes['site-name'] = attributes.name;
+
+                QUIFormUtils.setDataToForm(attributes, Form);
+
+                if (NameInput) {
+                    NameInput.fireEvent('keyup');
+                }
+            }
+
             this.Loader.hide();
         },
 
