@@ -45,7 +45,7 @@ define('Ajax', [
     }
 
     var TRY_MAX   = 3;
-    var TRY_DELAY = 500;
+    var TRY_DELAY = 1000;
 
     return {
         $globalJSF : {}, // global javascript callback functions
