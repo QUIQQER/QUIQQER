@@ -31,6 +31,11 @@ define('Ajax', [
 ], function (QUI, QUIAjax, Utils, Locale) {
     "use strict";
 
+    // load message handling
+    QUI.getMessageHandler().catch(function () {
+        // nothing
+    });
+
     var apiPoint = '/ajax.php';
 
     if (typeof QUIQQER !== 'undefined' && "ajax" in QUIQQER) {
@@ -39,7 +44,7 @@ define('Ajax', [
         apiPoint = URL_SYS_DIR + 'ajax.php';
     }
 
-    var TRY_MAX   = 1;
+    var TRY_MAX   = 3;
     var TRY_DELAY = 500;
 
     return {
@@ -135,9 +140,10 @@ define('Ajax', [
                         }
                     },
 
-                    onError: function (Exception, Request) {
-                        var Response = null;
-                        var tries    = Request.getAttribute('REQUEST_TRIES') || 0;
+                    onError: function (Exception, Request, xhr) {
+                        var Response     = null,
+                            networkError = true,
+                            tries        = Request.getAttribute('REQUEST_TRIES') || 0;
 
                         if (typeof self.$onprogress[this] !== 'undefined') {
                             Response = self.$onprogress[this];
@@ -165,9 +171,15 @@ define('Ajax', [
 
                         Request.setAttribute('hasError', true);
 
-                        if (Request.getAttribute('showError')) {
+                        if (Exception.getMessage() === '') {
+                            Exception.setAttribute('message', Locale.get('quiqqer/quiqqer', 'exception.unknown.error'));
+                            Exception.setAttribute('code', 503);
+                            networkError = true;
+                        }
+
+                        if (Request.getAttribute('showError') || networkError) {
                             if (tries === TRY_MAX) {
-                                QUI.getMessageHandler(function (MessageHandler) {
+                                QUI.getMessageHandler().then(function (MessageHandler) {
                                     MessageHandler.addException(Exception);
                                 });
                             }
@@ -229,7 +241,7 @@ define('Ajax', [
                             (function () {
                                 options._rf = call;
                                 self.$onprogress[id].send(options);
-                            }).delay(TRY_DELAY);
+                            }).delay(TRY_DELAY * tries);
 
                             return;
                         }

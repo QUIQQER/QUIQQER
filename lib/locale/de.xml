@@ -741,6 +741,9 @@
             Legen Sie für sich Lesezeichen fest damit Sie Ihre oft genutzten Funtionen schnell erreichen.
             ]]></de>
         </locale>
+        <locale name="exception.unknown.error">
+            <de><![CDATA[Leider ist ein Fehler aufgetreten. Bitte versuche es später erneut.]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="php">
         <locale name="quiqqer.settings.auth.showResetPasswordBackend">

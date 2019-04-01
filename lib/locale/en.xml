@@ -741,6 +741,9 @@
             Use bookmarks to help you quickly reach your frequently used functions.
             ]]></en>
         </locale>
+        <locale name="exception.unknown.error">
+            <en><![CDATA[Unfortunately an error has occurred. Please try again later.]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
