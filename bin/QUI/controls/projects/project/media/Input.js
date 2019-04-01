@@ -379,13 +379,14 @@ define('controls/projects/project/media/Input', [
         },
 
         /**
-         *
+         * Open FontAwesome select popup.
          */
         $openCSSClassDialog: function () {
             new IconConfirm({
                 events: {
                     onSubmit: function (Win, selected) {
                         this.setValue(selected[0]);
+                        this.$change();
                     }.bind(this)
                 }
             }).open();
