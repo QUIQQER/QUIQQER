@@ -638,30 +638,6 @@ define('controls/projects/project/site/Panel', [
             });
 
             Sheets.clearButtons();
-            //
-            // Sheets.addButton({
-            //     name     : 'sortSave',
-            //     textimage: 'fa fa-save',
-            //     text     : Locale.get(lg, 'projects.project.site.childrensort.save'),
-            //     events   : {
-            //         onClick: function (Btn) {
-            //             if (!Sort) {
-            //                 return;
-            //             }
-            //
-            //             Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
-            //
-            //             Sort.save(function () {
-            //                 Btn.setAttribute('textimage', 'fa fa-save');
-            //
-            //                 Sheets.hide(function () {
-            //                     Sheets.destroy();
-            //                 });
-            //             });
-            //         }
-            //     }
-            // });
-
             Sheets.show();
         },
 
@@ -1430,6 +1406,7 @@ define('controls/projects/project/site/Panel', [
                 return;
             }
 
+            // storage cleanung, so that this can be properly compared
             var storageCleanup = function (storage) {
                 if (!storage) {
                     return '';
