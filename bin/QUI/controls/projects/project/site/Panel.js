@@ -756,7 +756,6 @@ define('controls/projects/project/site/Panel', [
                 Site = this.getSite();
 
             return new Promise(function (resolve, reject) {
-
                 if (typeof parentId === 'undefined') {
                     reject();
                     return;
