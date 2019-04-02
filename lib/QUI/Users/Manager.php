@@ -185,11 +185,11 @@ class Manager
     /**
      * Is the user authenticated
      *
-     * @todo muss noch fremde nutzer prüfen
-     *
      * @param QUI\Interfaces\Users\User $User
      *
      * @return boolean
+     * @todo muss noch fremde nutzer prüfen
+     *
      */
     public function isAuth($User)
     {
@@ -337,7 +337,7 @@ class Manager
             $i             = 0;
 
             while ($this->usernameExists($newName)) {
-                $newName = $newUserLocale.' ('.$i.')';
+                $newName = $newUserLocale . ' (' . $i . ')';
                 $i++;
             }
         }
@@ -558,7 +558,7 @@ class Manager
             );
         }
 
-        if ($Session->get('auth-'.\get_class($Authenticator))
+        if ($Session->get('auth-' . \get_class($Authenticator))
             && $Session->get('username')
             && $Session->get('uid')
         ) {
@@ -571,7 +571,7 @@ class Manager
             $Exception->setAttribute('reason', self::AUTH_ERROR_AUTH_ERROR);
 
             QUI\System\Log::write(
-                'Login failed: '.$username,
+                'Login failed: ' . $username,
                 QUI\System\Log::LEVEL_WARNING,
                 [],
                 'auth'
@@ -586,7 +586,7 @@ class Manager
             );
         } catch (\Exception $Exception) {
             QUI\System\Log::write(
-                'Login failed: '.$username,
+                'Login failed: ' . $username,
                 QUI\System\Log::LEVEL_WARNING,
                 [],
                 'auth'
@@ -614,7 +614,7 @@ class Manager
         }
 
         $Session->set(
-            'auth-'.\get_class($Authenticator),
+            'auth-' . \get_class($Authenticator),
             1
         );
 
@@ -814,8 +814,8 @@ class Manager
      * Generate a user-dependent security hash
      * There are different data use such as IP, User-Agent and the System-Salt
      *
-     * @todo   noch eine eindeutige möglichkeit der Identifizierung des Browser finden
      * @return string
+     * @todo   noch eine eindeutige möglichkeit der Identifizierung des Browser finden
      */
     public function getSecHash()
     {
@@ -1018,7 +1018,7 @@ class Manager
     /**
      * Get the user by id
      *
-     * @param  integer $id
+     * @param integer $id
      * @return QUI\Users\User|Nobody|SystemUser|false
      *
      * @throws QUI\Users\Exception
@@ -1057,8 +1057,8 @@ class Manager
      *
      * @param string $username - Username
      *
-     * @throws QUI\Users\Exception
      * @return QUI\Users\User
+     * @throws QUI\Users\Exception
      */
     public function getUserByName($username)
     {
@@ -1196,14 +1196,14 @@ class Manager
     }
 
     /**
-     * @deprecated
-     *
-     * Generates a hash of a password
-     *
      * @param string $pass
      * @param string $salt -> deprecated
      *
      * @return string
+     * @deprecated
+     *
+     * Generates a hash of a password
+     *
      */
     public static function genHash($pass, $salt = null)
     {
@@ -1265,12 +1265,12 @@ class Manager
     /**
      * Suche ausführen
      *
-     * @todo where params
-     *
-     * @param  array $params
+     * @param array $params
      * @return array|integer
      *
      * @throws QUI\Database\Exception
+     * @todo where params
+     *
      */
     protected function execSearch($params)
     {
@@ -1296,11 +1296,11 @@ class Manager
         /**
          * SELECT
          */
-        $query = 'SELECT * FROM '.self::table();
+        $query = 'SELECT * FROM ' . self::table();
         $binds = [];
 
         if (isset($params['count'])) {
-            $query = 'SELECT COUNT( id ) AS count FROM '.self::table();
+            $query = 'SELECT COUNT( id ) AS count FROM ' . self::table();
         }
 
         /**
@@ -1320,6 +1320,10 @@ class Manager
          * WHERE Search
          */
         if (isset($params['search']) && $params['search'] == true) {
+            if (empty($params['searchSettings'])) {
+                $params['searchSettings'] = [];
+            }
+
             if (!isset($params['searchSettings']['filter'])) {
                 $params['searchSettings']['filter'] = [];
             }
@@ -1380,7 +1384,7 @@ class Manager
                 $query .= ' WHERE 1=1 ';
             } else {
                 $query            .= ' WHERE (';
-                $binds[':search'] = '%'.$search.'%';
+                $binds[':search'] = '%' . $search . '%';
 
                 if (empty($search)) {
                     $binds[':search'] = '%';
@@ -1395,7 +1399,7 @@ class Manager
                         continue;
                     }
 
-                    $query .= ' '.$field.' LIKE :search OR ';
+                    $query .= ' ' . $field . ' LIKE :search OR ';
                 }
 
                 if (\substr($query, -3) == 'OR ') {
@@ -1423,8 +1427,8 @@ class Manager
 
                 foreach ($groups as $groupId) {
                     if ((int)$groupId > 0) {
-                        $query               .= ' AND usergroup LIKE :'.$groupId.' ';
-                        $binds[':'.$groupId] = '%'.(int)$groupId.'%';
+                        $query                 .= ' AND usergroup LIKE :' . $groupId . ' ';
+                        $binds[':' . $groupId] = '%' . (int)$groupId . '%';
                     }
                 }
             }
@@ -1432,8 +1436,8 @@ class Manager
             if ($filter_groups_exclude) {
                 foreach ($filter['filter_groups_exclude'] as $groupId) {
                     if ((int)$groupId > 0) {
-                        $query               .= ' AND usergroup NOT LIKE :'.$groupId.' ';
-                        $binds[':'.$groupId] = '%,'.(int)$groupId.',%';
+                        $query                 .= ' AND usergroup NOT LIKE :' . $groupId . ' ';
+                        $binds[':' . $groupId] = '%,' . (int)$groupId . ',%';
                     }
                 }
             }
@@ -1441,7 +1445,7 @@ class Manager
             if ($filter_regdate_first) {
                 $query              .= ' AND regdate >= :firstreg ';
                 $binds[':firstreg'] = QUI\Utils\Convert::convertMySqlDatetime(
-                    $filter['filter_regdate_first'].' 00:00:00'
+                    $filter['filter_regdate_first'] . ' 00:00:00'
                 );
             }
 
@@ -1449,7 +1453,7 @@ class Manager
             if ($filter_regdate_last) {
                 $query             .= " AND regdate <= :lastreg ";
                 $binds[':lastreg'] = QUI\Utils\Convert::convertMySqlDatetime(
-                    $filter['filter_regdate_last'].' 00:00:00'
+                    $filter['filter_regdate_last'] . ' 00:00:00'
                 );
             }
         }
@@ -1463,7 +1467,7 @@ class Manager
             && $params['field']
             && isset($allowOrderFields[$params['field']])
         ) {
-            $query .= ' ORDER BY '.$params['field'].' '.$params['order'];
+            $query .= ' ORDER BY ' . $params['field'] . ' ' . $params['order'];
         }
 
         /**
@@ -1478,7 +1482,7 @@ class Manager
                 $start = (int)$params['start'];
             }
 
-            $query .= ' LIMIT '.$start.', '.$max;
+            $query .= ' LIMIT ' . $start . ', ' . $max;
         }
 
         $Statement = $PDO->prepare($query);
@@ -1592,7 +1596,7 @@ class Manager
 
         foreach ($packages as $package) {
             $name    = $package['name'];
-            $userXml = OPT_DIR.$name.'/user.xml';
+            $userXml = OPT_DIR . $name . '/user.xml';
 
             if (!\file_exists($userXml)) {
                 continue;
@@ -1618,6 +1622,6 @@ class Manager
             'extend' => $extend
         ]);
 
-        return $Engine->fetch(SYS_DIR.'template/users/profile.html');
+        return $Engine->fetch(SYS_DIR . 'template/users/profile.html');
     }
 }
