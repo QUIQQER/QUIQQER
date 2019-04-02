@@ -24,6 +24,18 @@ use QUI\Utils\Text\XML;
  */
 class Package extends QUI\QDOM
 {
+    const CONSOLE_XML = 'console.xml';
+    const DATABASE_XML = 'database.xml';
+    const EVENTS_XML = 'events.xml';
+    const GROUP_XML = 'group.xml';
+    const LOCALE_XML = 'locale.xml';
+    const MENU_XML = 'menu.xml';
+    const PANELS_XML = 'panels.xml';
+    const SETTINGS_XML = 'settings.xml';
+    const SITE_XML = 'site.xml';
+    const USER_XML = 'user.xml';
+    const WIDGETS_XML = 'widgets.xml';
+
     /**
      * Name of the package
      *
@@ -420,7 +432,7 @@ class Package extends QUI\QDOM
      * @param string $name - e.g. "database.xml" / "package.xml" etc.
      * @return string|false - absolute file path or false if xml file does not exist
      */
-    public function getXMLFile($name)
+    public function getXMLFilePath($name)
     {
         $file = $this->getDir().$name;
 
@@ -429,6 +441,18 @@ class Package extends QUI\QDOM
         }
 
         return $file;
+    }
+
+    /**
+     * use getXMLFilePath()
+     *
+     * @param string $name - e.g. "database.xml" / "package.xml" etc.
+     * @return string|false - absolute file path or false if xml file does not exist
+     * @deprecated
+     */
+    public function getXMLFile($name)
+    {
+        return $this->getXMLFilePath($name);
     }
 
     /**

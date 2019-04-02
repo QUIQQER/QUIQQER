@@ -167,7 +167,7 @@ class Menu
                 continue;
             }
 
-            $setting_file = $Package->getXMLFile('settings.xml');
+            $setting_file = $Package->getXMLFilePath(QUI\Package\Package::SETTINGS_XML);
 
             if (\file_exists($setting_file)) {
                 $files[] = \str_replace(CMS_DIR, '', $setting_file);
@@ -258,7 +258,7 @@ class Menu
 
         foreach ($packages as $package) {
             $Package = QUI::getPackage($package['name']);
-            $menuXml = $Package->getXMLFile('menu.xml');
+            $menuXml = $Package->getXMLFilePath(QUI\Package\Package::MENU_XML);
 
             if (!$menuXml) {
                 continue;

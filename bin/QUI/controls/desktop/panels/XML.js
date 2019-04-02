@@ -4,16 +4,6 @@
  *
  * @author www.pcsg.de (Henning Leutz)
  * @module controls/desktop/panels/XML
- *
- * @require qui/QUI
- * @require qui/controls/desktop/Panel
- * @require qui/controls/buttons/Button
- * @require qui/controls/buttons/Separator
- * @require qui/utils/Object
- * @require Ajax
- * @require Locale
- * @require utils/Controls
- * @require css!controls/desktop/panels/XML.css
  */
 define('controls/desktop/panels/XML', [
 
@@ -217,7 +207,7 @@ define('controls/desktop/panels/XML', [
 
                 Body.set(
                     'html',
-                    '<form class="qui-xml-panel">' + result + '</form>'
+                    '<form class="qui-xml-panel" autocomplete="off">' + result + '</form>'
                 );
 
                 // set the form

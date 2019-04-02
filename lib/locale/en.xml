@@ -222,6 +222,15 @@
         <locale name="projects.project.settings.panel.defaultSitestructure">
             <en><![CDATA[Page structure]]></en>
         </locale>
+        <locale name="projects.project.settings.panel.convertRomanLetters">
+            <en><![CDATA[Convert Roman characters]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.convertRomanLetters.description">
+            <en><![CDATA[
+            Convert Roman characters into their Latin counterpart.
+            Umlauts like ä ö ü thus become ae, oe and ue.
+            ]]></en>
+        </locale>
         <locale name="projects.project.settings.panel.defaultSitestructure.button">
             <en><![CDATA[Create standard page structure]]></en>
         </locale>
@@ -731,6 +740,9 @@
             <en><![CDATA[
             Use bookmarks to help you quickly reach your frequently used functions.
             ]]></en>
+        </locale>
+        <locale name="exception.unknown.error">
+            <en><![CDATA[Unfortunately an error has occurred. Please try again later.]]></en>
         </locale>
     </groups>
 

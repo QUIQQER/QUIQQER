@@ -81,14 +81,33 @@ class Everyone extends QUI\Groups\Group
     {
         $this->rights = QUI::getPermissionManager()->getRightParamsFromGroup($this);
 
+        // check assigned toolbars
+        $assignedToolbars = '';
+        $toolbar          = '';
+
+        if ($this->getAttribute('assigned_toolbar')) {
+            $toolbars = \explode(',', $this->getAttribute('assigned_toolbar'));
+
+            $assignedToolbars = \array_filter($toolbars, function ($toolbar) {
+                return QUI\Editor\Manager::existsToolbar($toolbar);
+            });
+
+            $assignedToolbars = implode(',', $assignedToolbars);
+        }
+
+        if (QUI\Editor\Manager::existsToolbar($this->getAttribute('toolbar'))) {
+            $toolbar = $this->getAttribute('toolbar');
+        }
+
         // Felder bekommen
         QUI::getDataBase()->update(
             QUI\Groups\Manager::table(),
             [
-                'name'    => 'Everyone',
-                'toolbar' => $this->getAttribute('toolbar'),
-                'rights'  => \json_encode($this->rights),
-                'active'  => 1
+                'name'             => 'Everyone',
+                'rights'           => \json_encode($this->rights),
+                'active'           => 1,
+                'assigned_toolbar' => $assignedToolbars,
+                'toolbar'          => $toolbar
             ],
             ['id' => $this->getId()]
         );
