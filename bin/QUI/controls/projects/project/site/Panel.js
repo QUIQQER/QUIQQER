@@ -1041,7 +1041,7 @@ define('controls/projects/project/site/Panel', [
                                         events: {
                                             onClick: function (Btn, event) {
                                                 event.stop();
-                                                self.addLanguagLink();
+                                                self.addLanguageLink();
                                             }
                                         }
                                     }).inject(LinkinLangTable.getElement('th'));
@@ -1818,7 +1818,7 @@ define('controls/projects/project/site/Panel', [
         /**
          * Opens a project popup, so, an user can set a languag link
          */
-        addLanguagLink: function () {
+        addLanguageLink: function () {
             var self = this;
 
             require(['controls/projects/Popup'], function (ProjectPopup) {
