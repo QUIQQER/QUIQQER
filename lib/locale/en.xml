@@ -744,6 +744,9 @@
         <locale name="exception.unknown.error">
             <en><![CDATA[Unfortunately an error has occurred. Please try again later.]]></en>
         </locale>
+        <locale name="exception.network.error">
+            <de><![CDATA[Unfortunately a connection error occurred. Please try again later.]]></de>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">

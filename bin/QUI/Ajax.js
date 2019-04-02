@@ -47,6 +47,12 @@ define('Ajax', [
     var TRY_MAX   = 3;
     var TRY_DELAY = 1000;
 
+    if (typeof QUIQQER_CONFIG !== 'undefined' &&
+        typeof QUIQQER_CONFIG.globals !== 'undefined' &&
+        (QUIQQER_CONFIG.globals.debug_mode || QUIQQER_CONFIG.globals.development)) {
+        TRY_MAX = 0;
+    }
+
     return {
         $globalJSF : {}, // global javascript callback functions
         $onprogress: {},
@@ -140,7 +146,7 @@ define('Ajax', [
                         }
                     },
 
-                    onError: function (Exception, Request, xhr) {
+                    onError: function (Exception, Request) {
                         var Response     = null,
                             networkError = true,
                             tries        = Request.getAttribute('REQUEST_TRIES') || 0;
@@ -172,7 +178,7 @@ define('Ajax', [
                         Request.setAttribute('hasError', true);
 
                         if (Exception.getMessage() === '') {
-                            Exception.setAttribute('message', Locale.get('quiqqer/quiqqer', 'exception.unknown.error'));
+                            Exception.setAttribute('message', Locale.get('quiqqer/quiqqer', 'exception.network.error'));
                             Exception.setAttribute('code', 503);
                             networkError = true;
                         }
