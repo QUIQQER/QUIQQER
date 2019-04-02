@@ -970,7 +970,30 @@ define('controls/projects/project/site/Panel', [
 
                                 var LinkinTable     = Body.getElement('.site-linking'),
                                     LinkinLangTable = Body.getElement('.site-langs'),
-                                    Locked          = Body.getElement('[data-locked]');
+                                    Locked          = Body.getElement('[data-locked]'),
+                                    Title           = Body.getElement('[name="title"]')
+                                ;
+
+                                Title.addEvent('blur', function () {
+                                    if (Site.getId() === 1) {
+                                        return;
+                                    }
+
+                                    var attributes = Site.getAttributes();
+                                    var name       = attributes.name;
+                                    var title      = attributes.title;
+
+                                    if (this.value === title) {
+                                        return;
+                                    }
+
+                                    if (this.value === name) {
+                                        return;
+                                    }
+
+                                    self.$showTitleUrlAdjustment();
+                                });
+
 
                                 if (LinkinTable) {
                                     var openDeleteLink = function (Btn) {
@@ -1939,11 +1962,12 @@ define('controls/projects/project/site/Panel', [
                     lang: lang
                 }),
 
-                icon         : 'fa fa-copy',
-                texticon     : 'fa fa-copy',
-                autoclose    : false,
-                maxHeight    : 400,
-                maxWidth     : 600,
+                icon     : 'fa fa-copy',
+                texticon : 'fa fa-copy',
+                autoclose: false,
+                maxHeight: 400,
+                maxWidth : 600,
+
                 events       : {
                     onSubmit: function (Win) {
                         Win.Loader.show();
@@ -2087,6 +2111,32 @@ define('controls/projects/project/site/Panel', [
             }).then(function () {
                 this.$onCategoryEnter(this.getActiveCategory());
             }.bind(this));
+        },
+
+        /**
+         * Shows title url customization confirm window
+         */
+        $showTitleUrlAdjustment: function () {
+            var self = this;
+
+            new QUIConfirm({
+                icon       : 'fa fa-file-o',
+                texticon   : 'fa fa-file-o',
+                title      : Locale.get('quiqqer/quiqqer', 'window.title.url.customization'),
+                text       : Locale.get('quiqqer/quiqqer', 'window.title.url.customization.text'),
+                information: Locale.get('quiqqer/quiqqer', 'window.title.url.customization.information'),
+                maxHeight  : 400,
+                maxWidth   : 600,
+                events     : {
+                    onSubmit: function () {
+                        var Title = self.getBody().getElement('[name="title"]'),
+                            Name  = self.getBody().getElement('[name="site-name"]');
+
+                        Name.value = Title.value;
+                        Name.fireEvent('keyup');
+                    }
+                }
+            }).open();
         }
     });
 });

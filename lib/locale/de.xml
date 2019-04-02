@@ -1741,6 +1741,19 @@
         <locale name="panels.messages.title">
             <de><![CDATA[Nachrichten]]></de>
         </locale>
+
+        <locale name="window.title.url.customization">
+            <de><![CDATA[Title und Name sind unterschiedlich]]></de>
+        </locale>
+        <locale name="window.title.url.customization.text">
+            <de><![CDATA[Title und Name der Seite sind unterschiedlich]]></de>
+        </locale>
+        <locale name="window.title.url.customization.information">
+            <de><![CDATA[
+            Du hast den Title der Seite geändert und dadurch wäre der Name / URL unterschiedlich.
+            Soll der Name / URL angepasst werden?
+            ]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">
         <locale name="yes">
