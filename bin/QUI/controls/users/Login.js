@@ -382,23 +382,27 @@ define('controls/users/Login', [
             rule.setStyle('overflow', 'hidden');
             forms.setStyle('overflow', 'hidden');
 
-            moofx(rule).animate({
-                height : 0,
-                opacity: 0
-            }, {
-                callback: function () {
-                    rule.setStyle('display', 'none');
-                }
-            });
+            if (rule.length) {
+                moofx(rule).animate({
+                    height : 0,
+                    opacity: 0
+                }, {
+                    callback: function () {
+                        rule.setStyle('display', 'none');
+                    }
+                });
+            }
 
-            moofx(forms).animate({
-                height : 0,
-                opacity: 0
-            }, {
-                callback: function () {
-                    forms.setStyle('display', 'none');
-                }
-            });
+            if (forms.length) {
+                moofx(forms).animate({
+                    height : 0,
+                    opacity: 0
+                }, {
+                    callback: function () {
+                        forms.setStyle('display', 'none');
+                    }
+                });
+            }
         }
     });
 });
