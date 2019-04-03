@@ -445,29 +445,34 @@ class Manager
     /**
      * Put data into the cache
      *
+     * the cache is for making data accessible faster.
+     * set cache does not mean that the data was actually set.
+     * cache is volatile, so this means that the cache does not have to be exist right after the set.
+     *
      * @param string $name
      * @param mixed $data
      * @param \DateTimeInterface|int|\DateInterval|null $time Seconds, Interval or exact date at/after which the cache item expires.
      *                                                         If $time is null, the cache will try to use the default value,
      *                                                         if no default value is set, the maximum possible time for the used implementation will be used.
-     *
-     * @throws QUI\Exception
-     * @throws \Exception
      */
     public static function set($name, $data, $time = null)
     {
-        $Stash = self::getStash($name);
-        $Stash->set($data);
+        try {
+            $Stash = self::getStash($name);
+            $Stash->set($data);
 
-        if ($time instanceof \DateTimeInterface) {
-            $Stash->expiresAt($time);
+            if ($time instanceof \DateTimeInterface) {
+                $Stash->expiresAt($time);
+            }
+
+            if (\is_numeric($time) || $time instanceof \DateInterval) {
+                $Stash->expiresAfter($time);
+            }
+
+            $Stash->save();
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeDebugException($Exception);
         }
-
-        if (\is_numeric($time) || $time instanceof \DateInterval) {
-            $Stash->expiresAfter($time);
-        }
-
-        $Stash->save();
     }
 
     /**
