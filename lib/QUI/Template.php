@@ -62,6 +62,21 @@ class Template extends QUI\QDOM
     protected $typetpl = '';
 
     /**
+     * @var QUI\Package\Package
+     */
+    protected $TemplatePackage = null;
+
+    /**
+     * @var QUI\Package\Package
+     */
+    protected $TemplateParent = null;
+
+    /**
+     * @var null|QUI\Projects\Project
+     */
+    protected $Project = null;
+
+    /**
      * constructor
      */
     public function __construct()
@@ -304,6 +319,32 @@ class Template extends QUI\QDOM
     }
 
     /**
+     * Returns the url for a file
+     * - also considers template inheritance - template parent
+     *
+     * @param $path
+     * @return string
+     */
+    public function getTemplateUrl($path)
+    {
+        $template = $this->TemplatePackage->getName();
+        $absolute = OPT_DIR.$template.'/'.$path;
+
+        if (\file_exists($absolute)) {
+            return URL_OPT_DIR.$template.'/'.$path;
+        }
+
+        $template = $this->TemplateParent->getName();
+        $absolute = OPT_DIR.$template.'/'.$path;
+
+        if (\file_exists($absolute)) {
+            return URL_OPT_DIR.$template.'/'.$path;
+        }
+
+        return $path;
+    }
+
+    /**
      * Return a template output
      *
      * @param string $template - Path to a template
@@ -329,13 +370,28 @@ class Template extends QUI\QDOM
     {
         /* @var $Site QUI\Projects\Site */
         $Project = $Site->getProject();
+        $Engine  = $this->getEngine();
 
-        $Engine          = $this->getEngine();
-        $Users           = QUI::getUsers();
-        $Rewrite         = QUI::getRewrite();
-        $Locale          = QUI::getLocale();
-        $Template        = $this;
-        $projectTemplate = $Project->getAttribute('template');
+        $this->Project = $Project;
+
+        $Users    = QUI::getUsers();
+        $Rewrite  = QUI::getRewrite();
+        $Locale   = QUI::getLocale();
+        $Template = $this;
+
+        $projectTemplate   = $Project->getAttribute('template');
+        $hasTemplateParent = false;
+
+        try {
+            $this->TemplatePackage = QUI::getPackage($projectTemplate);
+            $hasTemplateParent     = $this->TemplatePackage->hasTemplateParent();
+
+            if ($hasTemplateParent) {
+                $this->TemplateParent = $this->TemplatePackage->getTemplateParent();
+            }
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeDebugException($Exception);
+        }
 
         $User = $Users->getUserBySession();
 
@@ -396,6 +452,14 @@ class Template extends QUI\QDOM
 
         $template_tpl   = OPT_DIR.$projectTemplate.'/index.html';
         $template_index = OPT_DIR.$projectTemplate.'/index.php';
+
+        if ($template_tpl && !\file_exists($template_tpl) && $hasTemplateParent) {
+            $template_tpl = OPT_DIR.$this->TemplateParent->getName().'/index.html';
+        }
+
+        if ($template_index && !\file_exists($template_index) && $hasTemplateParent) {
+            $template_index = OPT_DIR.$this->TemplateParent->getName().'/index.php';
+        }
 
         if ($template_tpl && \file_exists($template_tpl)) {
             $tpl = $template_tpl;

@@ -213,6 +213,40 @@ class Package extends QUI\QDOM
     }
 
     /**
+     * Return the template parent
+     * - if one is set
+     *
+     * @return bool|Package
+     */
+    public function getTemplateParent()
+    {
+        $packageData = $this->getPackageXMLData();
+
+        if (empty($packageData['template_parent'])) {
+            return false;
+        }
+
+        try {
+            return QUI::getPackage($packageData['template_parent']);
+        } catch (QUI\Exception $Exception) {
+            return false;
+        }
+    }
+
+    /**
+     * Has the package a template parent?
+     * If the package is a template, its possible that the template has a package
+     *
+     * @return bool
+     */
+    public function hasTemplateParent()
+    {
+        $parent = $this->getTemplateParent();
+
+        return !empty($parent);
+    }
+
+    /**
      * Return the var dir for the package
      * you can use the var dir for not accessible files
      *
@@ -724,8 +758,8 @@ class Package extends QUI\QDOM
      * Destroy the complete package / plugin
      * it destroy the database data, too
      *
-     * @todo implementieren
      * @throws QUI\Exception
+     * @todo implementieren
      */
     public function destroy()
     {
