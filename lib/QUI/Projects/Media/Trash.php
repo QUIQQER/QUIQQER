@@ -65,15 +65,19 @@ class Trash implements QUI\Interfaces\Projects\Trash
         ];
 
         // count
-        $count = QUI::getDataBase()->fetch([
-            'from'  => $this->Media->getTable(),
-            'count' => 'count',
-            'where' => [
-                'deleted' => 1
-            ]
-        ]);
+        try {
+            $count = QUI::getDataBase()->fetch([
+                'from'  => $this->Media->getTable(),
+                'count' => 'count',
+                'where' => [
+                    'deleted' => 1
+                ]
+            ]);
 
-        $data = QUI::getDataBase()->fetch($query);
+            $data = QUI::getDataBase()->fetch($query);
+        } catch (QUI\Database\Exception $Exception) {
+            return $Grid->parseResult([], 0);
+        }
 
         foreach ($data as $key => $entry) {
             $data[$key]['icon'] = Utils::getIconByExtension(
@@ -160,7 +164,8 @@ class Trash implements QUI\Interfaces\Projects\Trash
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.trash.file.not.found', [
                     'id' => $id
-                ])
+                ]),
+                ErrorCodes::FILE_IN_TRASH_NOT_FOUND
             );
         }
 
@@ -175,7 +180,8 @@ class Trash implements QUI\Interfaces\Projects\Trash
 
         if (!isset($data[0])) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.trash.file.not.found')
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.trash.file.not.found'),
+                ErrorCodes::FILE_IN_TRASH_NOT_FOUND
             );
         }
 

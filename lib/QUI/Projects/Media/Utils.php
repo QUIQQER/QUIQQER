@@ -251,11 +251,11 @@ class Utils
     /**
      * Return the media type by a file mime type
      *
-     * @example \QUI\Projects\Media\Utils::getMediaTypeByMimeType( 'image/jpeg' )
-     *
      * @param string $mime_type
      *
      * @return string file|image
+     * @example \QUI\Projects\Media\Utils::getMediaTypeByMimeType( 'image/jpeg' )
+     *
      */
     public static function getMediaTypeByMimeType($mime_type)
     {
@@ -280,13 +280,19 @@ class Utils
     public static function getImageByUrl($url)
     {
         if (self::isMediaUrl($url) === false) {
-            throw new QUI\Exception('Its not a QUIQQER image url');
+            throw new QUI\Exception(
+                'Its not a QUIQQER image url',
+                ErrorCodes::NOT_AN_IMAGE_URL
+            );
         }
 
         $Obj = self::getMediaItemByUrl($url);
 
         if (!self::isImage($Obj)) {
-            throw new QUI\Exception('Its not an image');
+            throw new QUI\Exception(
+                'Its not an image',
+                ErrorCodes::NOT_AN_IMAGE
+            );
         }
 
         /* @var $Obj QUI\Projects\Media\Image */
@@ -304,7 +310,10 @@ class Utils
     public static function getMediaItemByUrl($url)
     {
         if (self::isMediaUrl($url) === false) {
-            throw new QUI\Exception('Its not a QUIQQER item url');
+            throw new QUI\Exception(
+                'Its not a QUIQQER item url',
+                ErrorCodes::NOT_AN_ITEM_URL
+            );
         }
 
         // Parameter herrausfinden
@@ -374,7 +383,14 @@ class Utils
         }
 
         /* @var $Image \QUI\Projects\Media\Image */
-        $src = $Image->getSizeCacheUrl($width, $height);
+        try {
+            $src = $Image->getSizeCacheUrl($width, $height);
+        } catch (QUI\Exception $Exception) {
+            Log::writeException($Exception);
+
+            return '';
+        }
+
 
         // image string
         $img = '<img ';
@@ -547,7 +563,7 @@ class Utils
                     'exception.media.check.foldername.allowed.signs',
                     ['foldername' => $str]
                 ),
-                702
+                ErrorCodes::FOLDER_ILLEGAL_CHARACTERS
             );
         }
 
@@ -557,7 +573,7 @@ class Utils
                     'quiqqer/system',
                     'exception.media.check.name.allowed.underline'
                 ),
-                702
+                ErrorCodes::FOLDER_ILLEGAL_CHARACTERS
             );
         }
 
@@ -599,7 +615,7 @@ class Utils
                     'exception.media.check.name.allowed.signs',
                     ['filename' => $filename]
                 ),
-                702
+                ErrorCodes::FOLDER_ILLEGAL_CHARACTERS
             );
         }
 
@@ -610,7 +626,7 @@ class Utils
                     'quiqqer/system',
                     'exception.media.check.name.dots'
                 ),
-                702
+                ErrorCodes::FOLDER_ILLEGAL_CHARACTERS
             );
         }
 
@@ -620,7 +636,7 @@ class Utils
                     'quiqqer/system',
                     'exception.media.check.name.underline'
                 ),
-                702
+                ErrorCodes::FOLDER_ILLEGAL_CHARACTERS
             );
         }
     }
@@ -739,12 +755,18 @@ class Utils
         } elseif (\strpos($url, 'media/sites/') !== false) {
             $parts = \explode('media/sites/', $url);
         } else {
-            throw new QUI\Exception('File not found', 404);
+            throw new QUI\Exception(
+                'File not found',
+                ErrorCodes::FILE_NOT_FOUND
+            );
         }
 
 
         if (!isset($parts[1])) {
-            throw new QUI\Exception('File not found', 404);
+            throw new QUI\Exception(
+                'File not found',
+                ErrorCodes::FILE_NOT_FOUND
+            );
         }
 
         $parts   = \explode('/', $parts[1]);
@@ -800,7 +822,7 @@ class Utils
                     'exception.file.not.found',
                     ['file' => $fileid]
                 ),
-                404
+                ErrorCodes::FILE_NOT_FOUND
             );
         }
 
@@ -827,7 +849,7 @@ class Utils
                     'exception.media.file.already.exists',
                     ['filename' => $uploadparams['name']]
                 ),
-                403
+                ErrorCodes::FILE_ALREADY_EXISTS
             );
         }
     }
