@@ -445,6 +445,18 @@ class Template extends QUI\QDOM
                     && !empty($vhost['template'])
                 ) {
                     $projectTemplate = $vhost['template'];
+
+                    try {
+                        $this->TemplatePackage = QUI::getPackage($projectTemplate);
+                        $hasTemplateParent     = $this->TemplatePackage->hasTemplateParent();
+
+                        if ($hasTemplateParent) {
+                            $this->TemplateParent = $this->TemplatePackage->getTemplateParent();
+                        }
+                    } catch (QUI\Exception $Exception) {
+                        QUI\System\Log::writeDebugException($Exception);
+                    }
+
                     break;
                 }
             }
