@@ -21,8 +21,8 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * (non-PHPdoc)
      *
-     * @see \QUI\Interfaces\Projects\Media\File::createCache()
      * @throws QUI\Exception
+     * @see \QUI\Interfaces\Projects\Media\File::createCache()
      */
     public function createCache()
     {
@@ -98,8 +98,8 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * (non-PHPdoc)
      *
-     * @see \QUI\Interfaces\Projects\Media\File::deleteCache()
      * @throws QUI\Exception
+     * @see \QUI\Interfaces\Projects\Media\File::deleteCache()
      */
     public function deleteCache()
     {
@@ -123,7 +123,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
                 QUI::getLocale()->get('quiqqer/system', 'exception.file.not.found', [
                     'file' => $this->getAttribute('file')
                 ]),
-                404
+                ErrorCodes::FILE_NOT_FOUND
             );
         }
 
@@ -150,7 +150,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
                 QUI::getLocale()->get('quiqqer/system', 'exception.file.not.found', [
                     'file' => $this->getAttribute('file')
                 ]),
-                404
+                ErrorCodes::FILE_NOT_FOUND
             );
         }
 
