@@ -222,6 +222,15 @@
         <locale name="projects.project.settings.panel.defaultSitestructure">
             <en><![CDATA[Page structure]]></en>
         </locale>
+        <locale name="projects.project.settings.panel.convertRomanLetters">
+            <en><![CDATA[Convert Roman characters]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.convertRomanLetters.description">
+            <en><![CDATA[
+            Convert Roman characters into their Latin counterpart.
+            Umlauts like ä ö ü thus become ae, oe and ue.
+            ]]></en>
+        </locale>
         <locale name="projects.project.settings.panel.defaultSitestructure.button">
             <en><![CDATA[Create standard page structure]]></en>
         </locale>
@@ -731,6 +740,12 @@
             <en><![CDATA[
             Use bookmarks to help you quickly reach your frequently used functions.
             ]]></en>
+        </locale>
+        <locale name="exception.unknown.error">
+            <en><![CDATA[Unfortunately an error has occurred. Please try again later.]]></en>
+        </locale>
+        <locale name="exception.network.error">
+            <de><![CDATA[Unfortunately a connection error occurred. Please try again later.]]></de>
         </locale>
     </groups>
 
@@ -1705,6 +1720,19 @@
         </locale>
         <locale name="panels.messages.title">
             <en><![CDATA[Messages]]></en>
+        </locale>
+
+        <locale name="window.title.url.customization">
+            <en><![CDATA[Title and name are different]]></en>
+        </locale>
+        <locale name="window.title.url.customization.text">
+            <en><![CDATA[Title and name of the page are different]]></en>
+        </locale>
+        <locale name="window.title.url.customization.information">
+            <en><![CDATA[
+            You have changed the title of the page and so the name / URL would be different.
+            Should the name / URL be changed, too?
+            ]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">

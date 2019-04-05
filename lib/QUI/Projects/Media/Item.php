@@ -292,7 +292,7 @@ abstract class Item extends QUI\QDOM
         if ($this->isDeleted()) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.already.deleted'),
-                400
+                ErrorCodes::ALREADY_DELETED
             );
         }
 
@@ -320,11 +320,8 @@ abstract class Item extends QUI\QDOM
 
         if ($First->getFullPath() == $original) {
             throw new QUI\Exception(
-                [
-                    'quiqqer/quiqqer',
-                    'exception.delete.root.file'
-                ],
-                400
+                ['quiqqer/quiqqer', 'exception.delete.root.file'],
+                ErrorCodes::ROOT_FOLDER_CANT_DELETED
             );
         }
 
@@ -401,11 +398,17 @@ abstract class Item extends QUI\QDOM
     public function destroy()
     {
         if ($this->isActive()) {
-            throw new QUI\Exception('Only inactive files can be destroyed');
+            throw new QUI\Exception(
+                'Only inactive files can be destroyed',
+                ErrorCodes::FILE_CANT_DESTROYED
+            );
         }
 
         if (!$this->isDeleted()) {
-            throw new QUI\Exception('Only deleted files can be destroyed');
+            throw new QUI\Exception(
+                'Only deleted files can be destroyed',
+                ErrorCodes::FILE_CANT_DESTROYED
+            );
         }
 
         $Media = $this->Media;
@@ -485,7 +488,8 @@ abstract class Item extends QUI\QDOM
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.with.same.name.exists', [
                     'name' => $newname
-                ])
+                ]),
+                ErrorCodes::FILE_ALREADY_EXISTS
             );
         }
 
@@ -493,7 +497,8 @@ abstract class Item extends QUI\QDOM
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.with.same.name.exists', [
                     'name' => $newname
-                ])
+                ]),
+                ErrorCodes::FILE_ALREADY_EXISTS
             );
         }
 
@@ -698,7 +703,8 @@ abstract class Item extends QUI\QDOM
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.with.same.name.exists', [
                     'name' => $Folder->getAttribute('name')
-                ])
+                ]),
+                ErrorCodes::FILE_ALREADY_EXISTS
             );
         }
 

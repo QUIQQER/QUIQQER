@@ -607,17 +607,32 @@
                         <title>
                             <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.title"/>
                         </title>
+
+                        <input conf="username"
+                               type="text"
+                               style="display: none"
+                               label-style="display: none"
+                               row-style="display: none"
+                        />
+
+                        <input conf="password"
+                               type="password"
+                               style="display: none"
+                               label-style="display: none"
+                               row-style="display: none"
+                        />
+
                         <input conf="mail.SMTPAuth" type="checkbox">
                             <text>
                                 <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.activasion"/>
                             </text>
                         </input>
-                        <input conf="mail.SMTPUser" type="text">
+                        <input conf="mail.SMTPUser" type="text" autocomplete="mail.SMTPUser">
                             <text>
                                 <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.user"/>
                             </text>
                         </input>
-                        <input conf="mail.SMTPPass" type="password">
+                        <input conf="mail.SMTPPass" type="password" autocomplete="mail.SMTPPass">
                             <text>
                                 <locale group="quiqqer/system" var="quiqqer.settings.email.smtp.auth.password"/>
                             </text>

@@ -16,6 +16,6 @@ QUI::$Ajax->registerFunction(
 
         return QUI\Projects\Sites::getButtons($Site)->toArray();
     },
-    array('project', 'id'),
+    ['project', 'id'],
     'Permission::checkAdminUser'
 );

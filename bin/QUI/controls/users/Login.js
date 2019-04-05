@@ -35,7 +35,9 @@ define('controls/users/Login', [
         Binds: [
             '$onImport',
             '$onInject',
-            '$refreshForm'
+            '$refreshForm',
+            '$onShowPassword',
+            'onShowPasswordReset'
         ],
 
         options: {
@@ -46,6 +48,7 @@ define('controls/users/Login', [
 
         /**
          * construct
+         *
          * @param {Object} options
          */
         initialize: function (options) {
@@ -208,6 +211,19 @@ define('controls/users/Login', [
             return QUI.parse(forms).then(function () {
                 this.Loader.hide();
 
+                var Node = this.getElm().getElement('[data-qui="controls/users/auth/QUIQQERLogin"]');
+
+                if (Node && Node.get('data-quiid')) {
+                    var Control = QUI.Controls.getById(Node.get('data-quiid'));
+
+                    if (Control) {
+                        Control.addEvents({
+                            onShowPassword     : this.$onShowPassword,
+                            onShowPasswordReset: this.onShowPasswordReset
+                        });
+                    }
+                }
+
                 forms.setStyle('top', 20);
 
                 moofx(forms).animate({
@@ -294,6 +310,99 @@ define('controls/users/Login', [
                     }
                 });
             });
+        },
+
+        /**
+         * event: on show password
+         */
+        $onShowPassword: function () {
+            var i, len, height, Form, Rule;
+            var rule  = this.getElm().getElements('.quiqqer-login-or');
+            var forms = this.getElm().getElements('form').filter(function (form) {
+                return form.get('data-authenticator') !== 'QUI\\Users\\Auth\\QUIQQER';
+            });
+
+            rule.setStyle('display', null);
+
+            var done = function () {
+                this.setStyle('overflow', null);
+                this.setStyle('height', null);
+            };
+
+            for (i = 0, len = rule.length; i < len; i++) {
+                Rule   = rule[i];
+                height = Rule.measure(function () {
+                    return this.getSize();
+                }).y;
+
+                Rule.setStyle('overflow', null);
+
+                moofx(Rule).animate({
+                    height : height,
+                    opacity: 1
+                }, {
+                    duration: 250,
+                    callback: done.bind(Rule)
+                });
+            }
+
+            for (i = 0, len = forms.length; i < len; i++) {
+                Form = forms[i];
+
+                Form.setStyle('position', 'absolute');
+                Form.setStyle('visibility', 'hidden');
+                Form.setStyle('display', null);
+                Form.setStyle('height', null);
+
+                height = Form.getSize().y;
+
+                Form.setStyle('height', 0);
+                Form.setStyle('position', null);
+                Form.setStyle('visibility', null);
+
+                moofx(Form).animate({
+                    height : height,
+                    opacity: 1
+                }, {
+                    duration: 250,
+                    callback: done.bind(Form)
+                });
+            }
+        },
+
+        /**
+         * event: on show password reset
+         */
+        onShowPasswordReset: function () {
+            var rule  = this.getElm().getElements('.quiqqer-login-or');
+            var forms = this.getElm().getElements('form').filter(function (form) {
+                return form.get('data-authenticator') !== 'QUI\\Users\\Auth\\QUIQQER';
+            });
+
+            rule.setStyle('overflow', 'hidden');
+            forms.setStyle('overflow', 'hidden');
+
+            if (rule.length) {
+                moofx(rule).animate({
+                    height : 0,
+                    opacity: 0
+                }, {
+                    callback: function () {
+                        rule.setStyle('display', 'none');
+                    }
+                });
+            }
+
+            if (forms.length) {
+                moofx(forms).animate({
+                    height : 0,
+                    opacity: 0
+                }, {
+                    callback: function () {
+                        forms.setStyle('display', 'none');
+                    }
+                });
+            }
         }
     });
 });

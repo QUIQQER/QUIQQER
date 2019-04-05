@@ -68,6 +68,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * (non-PHPdoc)
      *
+     * @throws QUI\Exception
      * @see QUI\Interfaces\Projects\Media\File::createCache()
      */
     public function createCache()
@@ -82,6 +83,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @param string|boolean $maxheight - (optional)
      *
      * @return string
+     *
+     * @throws QUI\Exception
      */
     public function getSizeCachePath($maxwidth = false, $maxheight = false)
     {
@@ -132,24 +135,24 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
         if ($width || $height) {
             $part      = \explode('.', $file);
-            $cachefile = $cdir.$part[0].'__'.$width.'x'.$height.$extra.'.'.StringHelper::toLower(\end($part));
+            $cacheFile = $cdir.$part[0].'__'.$width.'x'.$height.$extra.'.'.StringHelper::toLower(\end($part));
 
             if (empty($height)) {
-                $cachefile = $cdir.$part[0].'__'.$width.$extra.'.'.StringHelper::toLower(\end($part));
+                $cacheFile = $cdir.$part[0].'__'.$width.$extra.'.'.StringHelper::toLower(\end($part));
             }
 
             if ($this->getAttribute('reflection')) {
-                $cachefile = $cdir.$part[0].'__'.$width.'x'.$height.$extra.'.png';
+                $cacheFile = $cdir.$part[0].'__'.$width.'x'.$height.$extra.'.png';
 
                 if (empty($height)) {
-                    $cachefile = $cdir.$part[0].'__'.$width.$extra.'.png';
+                    $cacheFile = $cdir.$part[0].'__'.$width.$extra.'.png';
                 }
             }
         } else {
-            $cachefile = $cdir.$file;
+            $cacheFile = $cdir.$file;
         }
 
-        return $cachefile;
+        return $cacheFile;
     }
 
     /**
@@ -159,6 +162,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @param string|boolean $maxheight - (optional) height
      *
      * @return string
+     *
+     * @throws QUI\Exception
      */
     public function getSizeCacheUrl($maxwidth = false, $maxheight = false)
     {
@@ -200,6 +205,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @param integer|boolean $maxheight
      *
      * @return string - Path to the file
+     *
+     * @throws QUI\Exception
      */
     public function createSizeCacheUrl($maxwidth = false, $maxheight = false)
     {
@@ -222,6 +229,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @param integer|boolean $maxheight
      *
      * @return string - Path to the file
+     *
+     * @throws QUI\Exception
      */
     public function createResizeCache($maxwidth = false, $maxheight = false)
     {
@@ -240,6 +249,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @param boolean|integer $maxheight - (optional)
      *
      * @return array - array('width' => 100, 'height' => 100)
+     *
+     * @throws QUI\Exception
      */
     public function getResizeSize($maxwidth = false, $maxheight = false)
     {
@@ -382,6 +393,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             }
 
             $Image->resize($width, $height, function ($Constraint) {
+                /* @var $Constraint \Intervention\Image\Constraint; */
                 $Constraint->aspectRatio();
                 $Constraint->upsize();
             });
@@ -457,6 +469,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                     $imageWidth  = $imageWidth * ($ratio / 100);
 
                     $WatermarkImage->resize($imageWidth, $imageHeight, function ($Constraint) {
+                        /* @var $Constraint \Intervention\Image\Constraint; */
                         $Constraint->aspectRatio();
                         $Constraint->upsize();
                     });
@@ -489,6 +502,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * (non-PHPdoc)
      *
+     * @throws QUI\Exception
      * @see QUI\Interfaces\Projects\Media\File::deleteCache()
      */
     public function deleteCache()
@@ -568,6 +582,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
                 $newWidth,
                 $newHeight,
                 function ($Constraint) {
+                    /* @var $Constraint \Intervention\Image\Constraint; */
                     $Constraint->aspectRatio();
                     $Constraint->upsize();
                 }
@@ -718,11 +733,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     {
         if (!\file_exists($this->getFullPath())) {
             throw new QUI\Exception(
-                QUI::getLocale()
-                    ->get('quiqqer/system', 'exception.file.not.found', [
-                        'file' => $this->getAttribute('file')
-                    ]),
-                404
+                QUI::getLocale()->get('quiqqer/system', 'exception.file.not.found', [
+                    'file' => $this->getAttribute('file')
+                ]),
+                ErrorCodes::FILE_NOT_FOUND
             );
         }
 
@@ -746,11 +760,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     {
         if (!\file_exists($this->getFullPath())) {
             throw new QUI\Exception(
-                QUI::getLocale()
-                    ->get('quiqqer/system', 'exception.file.not.found', [
-                        'file' => $this->getAttribute('file')
-                    ]),
-                404
+                QUI::getLocale()->get('quiqqer/system', 'exception.file.not.found', [
+                    'file' => $this->getAttribute('file')
+                ]),
+                ErrorCodes::FILE_NOT_FOUND
             );
         }
 
