@@ -5,7 +5,7 @@
  *
  * @param integer|string $uid
  * @param string $authenticator
- * @return string
+ *
  * @throws \QUI\Users\Exception
  */
 QUI::$Ajax->registerFunction(
@@ -22,9 +22,12 @@ QUI::$Ajax->registerFunction(
         }
 
         $Config = QUI::getConfig('etc/conf.ini.php');
-        $Config->del('auth');
 
-        foreach ($authenticators as $authenticator) {
+        $Config->del('auth');
+        $Config->del('auth_frontend');
+        $Config->del('auth_backend');
+
+        foreach ($authenticators as $authenticator => $range) {
             try {
                 // exist authenticator?
                 QUI\Users\Auth\Handler::getInstance()->getAuthenticator(
@@ -32,7 +35,16 @@ QUI::$Ajax->registerFunction(
                     $User->getUsername()
                 );
 
-                $Config->setValue('auth', $authenticator, 1);
+                if (!isset($range['frontend'])) {
+                    $range['frontend'] = 0;
+                }
+
+                if (!isset($range['backend'])) {
+                    $range['backend'] = 0;
+                }
+
+                $Config->setValue('auth_frontend', $authenticator, $range['frontend']);
+                $Config->setValue('auth_backend', $authenticator, $range['backend']);
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }
