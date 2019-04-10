@@ -1235,6 +1235,45 @@
         <locale name="exception.crud.child.not.found">
             <de><![CDATA[Der Eintrag konnte nicht gefunden werden.]]></de>
         </locale>
+
+        <locale name="update.log.message.execute.console">
+            <de><![CDATA[Update wird über die Konsole ausgeführt.]]></de>
+        </locale>
+        <locale name="update.log.message.update.via.console">
+            <de><![CDATA[Prüfe nach Aktualisierungen...]]></de>
+        </locale>
+        <locale name="update.message.start">
+            <de><![CDATA[- Starte Update:]]></de>
+        </locale>
+        <locale name="update.message.execute">
+            <de><![CDATA[- Die Aktualisierung wurde durchgeführt]]></de>
+        </locale>
+        <locale name="update.message.webserver">
+            <de><![CDATA[- Generiere Server dateien .htaccess und NGINX]]></de>
+        </locale>
+        <locale name="update.message.no.updates.available">
+            <de><![CDATA[Dein System ist aktuell. Es wurden keine Aktualisierungen gefunden.]]></de>
+        </locale>
+        <locale name="update.message.error">
+            <de>
+                <![CDATA[Wenn das Setup nicht richtig funktioniert hat, nutze bitte den folgenden Befehl für das Update:]]></de>
+        </locale>
+        <locale name="update.message.error.1">
+            <de><![CDATA[Etwas ist schief gelaufen]]></de>
+        </locale>
+        <locale name="console.update.clearCache">
+            <de><![CDATA[Leere vor dem Ausführen des Updates den gesamten Update-Cache.]]></de>
+        </locale>
+        <locale name="console.update.setDevelopment">
+            <de><![CDATA[QUIQQQER auf die Entwicklungsversion setzen.]]></de>
+        </locale>
+        <locale name="console.update.check">
+            <de><![CDATA[Überprüfe auf neue Updates.]]></de>
+        </locale>
+        <locale name="console.update.set-date">
+            <de><![CDATA[Aktualisiert nur das quiqqer Update-Datum.]]></de>
+        </locale>
+
         <locale name="user.settings.showNamesInSitemap">
             <de><![CDATA[Seitennamen in der Sitemap anzeigen]]></de>
         </locale>

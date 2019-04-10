@@ -87,9 +87,7 @@ class Log
             return;
         }
 
-        if (isset($_SERVER['REQUEST_URI'])
-            && !empty($_SERVER['REQUEST_URI'])
-        ) {
+        if (isset($_SERVER['REQUEST_URI']) && !empty($_SERVER['REQUEST_URI'])) {
             $context['request'] = HOST.$_SERVER['REQUEST_URI'];
         }
 
