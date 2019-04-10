@@ -178,6 +178,7 @@ class Update extends QUI\System\Console\Tool
             $Packages->getComposer()->unmute();
             $Packages->update(false, false);
 
+            $this->logBuffer();
             $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.execute'));
             $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.webserver'));
             $this->logBuffer();
