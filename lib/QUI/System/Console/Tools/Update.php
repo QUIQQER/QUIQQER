@@ -24,23 +24,23 @@ class Update extends QUI\System\Console\Tool
             ->setDescription('Update the quiqqer system and the quiqqer packages')
             ->addArgument(
                 'clearCache',
-                'Before execute the Update, clear the complete update cache.',
+                QUI::getLocale()->get('quiqqer/quiqqer', 'console.update.clearCache'),
                 false,
                 true
             )
             ->addArgument(
                 'setDevelopment',
-                'Set QUIQQER to the development version',
+                QUI::getLocale()->get('quiqqer/quiqqer', 'console.update.setDevelopment'),
                 false,
                 true
             )->addArgument(
                 'check',
-                'Checks for new updates',
+                QUI::getLocale()->get('quiqqer/quiqqer', 'console.update.check'),
                 false,
                 true
             )->addArgument(
                 'set-date',
-                'Updates only the quiqqer update-date',
+                QUI::getLocale()->get('quiqqer/quiqqer', 'console.update.set-date'),
                 false,
                 true
             );
@@ -195,12 +195,12 @@ class Update extends QUI\System\Console\Tool
             $this->write(' [error]', 'red');
             $this->writeLn('');
             $this->writeLn(
-                'Something went wrong::'.$Exception->getMessage(),
+                QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.error.1').'::'.$Exception->getMessage(),
                 'red'
             );
 
             $this->writeLn(
-                'If the setup didn\'t worked properly, please test the following command for the update:',
+                QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.error'),
                 'red'
             );
 

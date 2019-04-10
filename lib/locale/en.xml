@@ -1245,6 +1245,24 @@
         <locale name="update.message.no.updates.available">
             <en><![CDATA[Your system is up to date. No updates found.]]></en>
         </locale>
+        <locale name="update.message.error">
+            <en><![CDATA[If the setup didn't worked properly, please test the following command for the update:]]></en>
+        </locale>
+        <locale name="update.message.error.1">
+            <en><![CDATA[Something went wrong]]></en>
+        </locale>
+        <locale name="console.update.clearCache">
+            <en><![CDATA[Before execute the Update, clear the complete update cache.]]></en>
+        </locale>
+        <locale name="console.update.setDevelopment">
+            <en><![CDATA[Set QUIQQER to the development version.]]></en>
+        </locale>
+        <locale name="console.update.check">
+            <en><![CDATA[Checks for new updates.]]></en>
+        </locale>
+        <locale name="console.update.set-date">
+            <en><![CDATA[Updates only the quiqqer update-date.]]></en>
+        </locale>
 
         <locale name="user.settings.showNamesInSitemap">
             <en><![CDATA[Show site names in the sitemap]]></en>
