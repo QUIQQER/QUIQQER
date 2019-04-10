@@ -65,7 +65,7 @@ class Update extends QUI\System\Console\Tool
 
         // output events
         $Packages->getComposer()->addEvent('onOutput', function ($Composer, $output, $type) use ($self) {
-            $self->writeLn($output);
+            $self->write($output);
             $self->writeToLog($output);
         });
 
@@ -246,12 +246,12 @@ class Update extends QUI\System\Console\Tool
      */
     protected function logBuffer()
     {
-        $buffer = ob_get_contents();
-        $buffer = trim($buffer);
+        $buffer = \ob_get_contents();
+        $buffer = \trim($buffer);
         $this->writeToLog($buffer);
 
-        flush();
-        ob_flush();
+        @\flush();
+        @\ob_flush();
     }
 
     /**
@@ -265,12 +265,6 @@ class Update extends QUI\System\Console\Tool
             return;
         }
 
-        QUI\System\Log::write(
-            $buffer,
-            QUI\System\Log::LEVEL_NOTICE,
-            [],
-            'update',
-            true
-        );
+        \error_log($buffer, 3, VAR_DIR.'log/update.log');
     }
 }
