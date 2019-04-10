@@ -189,33 +189,35 @@ define('controls/projects/project/site/Panel', [
             this.refresh();
 
             if (this.getActiveCategory()) {
-                this.$onCategoryEnter(this.getActiveCategory());
-                return;
+                return this.$onCategoryEnter(this.getActiveCategory());
             }
 
             if (this.getCategoryBar().firstChild()) {
                 this.getCategoryBar().firstChild().click();
-                return;
+                return Promise.resolve();
             }
 
-            // if dom is not loaded, we wait 200ms
-            (function () {
-                if (this.$delayTest > 10) {
-                    QUI.getMessageHandler(function (MH) {
-                        MH.addError(
-                            Locale.get('quiqqer/quiqqer', 'exception.site.panel.error', {
-                                id: this.getSite().getId()
-                            })
-                        );
-                    }.bind(this));
+            return new Promise(function (resolve, reject) {
+                // if dom is not loaded, we wait 200ms
+                (function () {
+                    if (this.$delayTest > 10) {
+                        var errorMessage = Locale.get('quiqqer/quiqqer', 'exception.site.panel.error', {
+                            id: this.getSite().getId()
+                        });
 
-                    this.destroy();
-                    return;
-                }
+                        QUI.getMessageHandler(function (MH) {
+                            MH.addError(errorMessage);
+                        }.bind(this));
 
-                this.$delayTest++;
-                this.load();
-            }).delay(200, this);
+                        this.destroy();
+                        reject(errorMessage);
+                        return;
+                    }
+
+                    this.$delayTest++;
+                    this.load().then(resolve);
+                }).delay(200, this);
+            }.bind(this));
         },
 
         /**
@@ -636,30 +638,6 @@ define('controls/projects/project/site/Panel', [
             });
 
             Sheets.clearButtons();
-            //
-            // Sheets.addButton({
-            //     name     : 'sortSave',
-            //     textimage: 'fa fa-save',
-            //     text     : Locale.get(lg, 'projects.project.site.childrensort.save'),
-            //     events   : {
-            //         onClick: function (Btn) {
-            //             if (!Sort) {
-            //                 return;
-            //             }
-            //
-            //             Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
-            //
-            //             Sort.save(function () {
-            //                 Btn.setAttribute('textimage', 'fa fa-save');
-            //
-            //                 Sheets.hide(function () {
-            //                     Sheets.destroy();
-            //                 });
-            //             });
-            //         }
-            //     }
-            // });
-
             Sheets.show();
         },
 
@@ -684,7 +662,7 @@ define('controls/projects/project/site/Panel', [
                     );
                 }
 
-                self.load();
+                return self.load();
             }).catch(function (err) {
                 console.error(err);
                 self.Loader.hide();
@@ -754,7 +732,6 @@ define('controls/projects/project/site/Panel', [
                 Site = this.getSite();
 
             return new Promise(function (resolve, reject) {
-
                 if (typeof parentId === 'undefined') {
                     reject();
                     return;
@@ -993,7 +970,30 @@ define('controls/projects/project/site/Panel', [
 
                                 var LinkinTable     = Body.getElement('.site-linking'),
                                     LinkinLangTable = Body.getElement('.site-langs'),
-                                    Locked          = Body.getElement('[data-locked]');
+                                    Locked          = Body.getElement('[data-locked]'),
+                                    Title           = Body.getElement('[name="title"]')
+                                ;
+
+                                Title.addEvent('blur', function () {
+                                    if (Site.getId() === 1) {
+                                        return;
+                                    }
+
+                                    var attributes = Site.getAttributes();
+                                    var name       = attributes.name;
+                                    var title      = attributes.title;
+
+                                    if (this.value === title) {
+                                        return;
+                                    }
+
+                                    if (this.value === name) {
+                                        return;
+                                    }
+
+                                    self.$showTitleUrlAdjustment();
+                                });
+
 
                                 if (LinkinTable) {
                                     var openDeleteLink = function (Btn) {
@@ -1041,7 +1041,7 @@ define('controls/projects/project/site/Panel', [
                                         events: {
                                             onClick: function (Btn, event) {
                                                 event.stop();
-                                                self.addLanguagLink();
+                                                self.addLanguageLink();
                                             }
                                         }
                                     }).inject(LinkinLangTable.getElement('th'));
@@ -1352,12 +1352,7 @@ define('controls/projects/project/site/Panel', [
                 if (onunloadRequire) {
                     return new Promise(function (resolve) {
                         require([onunloadRequire], function () {
-                            // if (self.$CategoryControl) {
-                            //     self.$CategoryControl.destroy();
-                            //     self.$CategoryControl = null;
-                            // }
-
-                            eval(onunload + '( Category, self );');
+                            eval(onunload + '(Category, self);');
 
                             if (typeof callback === 'function') {
                                 callback();
@@ -1367,11 +1362,6 @@ define('controls/projects/project/site/Panel', [
                         }, resolve);
                     });
                 }
-
-                // if (self.$CategoryControl) {
-                //     self.$CategoryControl.destroy();
-                //     self.$CategoryControl = null;
-                // }
 
                 if (typeof callback === 'function') {
                     callback();
@@ -1434,57 +1424,81 @@ define('controls/projects/project/site/Panel', [
                 eval(Btn.getAttribute('_onclick') + '();');
             };
 
-            if (Btn.getAttribute('name') === 'status') {
-                var saving = function () {
-                    return new Promise(function (resolve) {
-                        // check if site must be saved
-                        if (!Site.hasWorkingStorage()) {
-                            evalButtonClick();
-                            return resolve();
-                        }
-
-
-                        new QUIConfirm({
-                            title        : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.title'),
-                            text         : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.text'),
-                            information  : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.information'),
-                            maxHeight    : 400,
-                            maxWidth     : 600,
-                            texticon     : 'fa fa-edit',
-                            icon         : 'fa fa-edit',
-                            ok_button    : {
-                                text: Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.button.ok')
-                            },
-                            cancel_button: {
-                                text: Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.button.cancel')
-                            },
-                            events       : {
-                                onSubmit: function () {
-                                    Site.save(function () {
-                                        evalButtonClick();
-                                        resolve();
-                                    });
-                                },
-
-                                onCancel: function () {
-                                    evalButtonClick();
-                                    resolve();
-                                }
-                            }
-                        }).open();
-                    });
-                };
-
-                Panel.$onCategoryLeave(Panel.getActiveCategory())
-                     .then(saving)
-                     .then(function () {
-                         Panel.$onCategoryEnter(Panel.getActiveCategory());
-                     });
-
+            if (Btn.getAttribute('name') !== 'status') {
+                evalButtonClick();
                 return;
             }
 
-            evalButtonClick();
+            // storage cleanung, so that this can be properly compared
+            var storageCleanup = function (storage) {
+                if (!storage) {
+                    return '';
+                }
+
+                if (typeof storage === 'string') {
+                    return storage;
+                }
+
+                if (typeof storage.release_to === 'undefined' ||
+                    storage.release_to === null) {
+                    storage.release_to = '';
+                }
+
+                if (typeof storage.has_children !== 'undefined') {
+                    storage.has_children = parseInt(storage.has_children);
+                }
+
+                if (typeof storage.__storageTime !== 'undefined') {
+                    delete storage.__storageTime;
+                }
+
+                return JSON.encode(storage);
+            };
+
+            var oldStorage = storageCleanup(Site.getWorkingStorage());
+
+            Panel.$onCategoryLeave(Panel.getActiveCategory()).then(function () {
+                return new Promise(function (resolve) {
+                    var currentStorage = storageCleanup(Site.getWorkingStorage());
+
+                    // check if site must be saved
+                    if (!oldStorage || oldStorage === currentStorage) {
+                        evalButtonClick();
+                        return resolve();
+                    }
+
+                    new QUIConfirm({
+                        title        : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.title'),
+                        text         : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.text'),
+                        information  : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.information'),
+                        maxHeight    : 400,
+                        maxWidth     : 600,
+                        texticon     : 'fa fa-edit',
+                        icon         : 'fa fa-edit',
+                        ok_button    : {
+                            text: Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.button.ok')
+                        },
+                        cancel_button: {
+                            text: Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.button.cancel')
+                        },
+                        events       : {
+                            onSubmit: function () {
+                                Site.save(function () {
+                                    evalButtonClick();
+                                    resolve();
+                                });
+                            },
+
+                            onCancel: function () {
+                                evalButtonClick();
+                                resolve();
+                            }
+                        }
+                    }).open();
+                });
+            }).then(function () {
+                Panel.$onCategoryEnter(Panel.getActiveCategory());
+            });
         },
 
         /**
@@ -1540,7 +1554,7 @@ define('controls/projects/project/site/Panel', [
             NameInput.set({
                 value : Site.getAttribute('name'),
                 events: {
-                    keydown: function (event) {
+                    keydown: function () {
                         if (hold) {
                             return;
                         }
@@ -1670,6 +1684,21 @@ define('controls/projects/project/site/Panel', [
          * event on site save
          */
         $onSiteSave: function () {
+            var Form = this.getBody().getElement('form');
+
+            if (Form) {
+                var attributes = this.getSite().getAttributes();
+                var NameInput  = this.getBody().getElement('input[name="site-name"]');
+
+                attributes['site-name'] = attributes.name;
+
+                QUIFormUtils.setDataToForm(attributes, Form);
+
+                if (NameInput) {
+                    NameInput.fireEvent('keyup');
+                }
+            }
+
             this.Loader.hide();
         },
 
@@ -1818,7 +1847,7 @@ define('controls/projects/project/site/Panel', [
         /**
          * Opens a project popup, so, an user can set a languag link
          */
-        addLanguagLink: function () {
+        addLanguageLink: function () {
             var self = this;
 
             require(['controls/projects/Popup'], function (ProjectPopup) {
@@ -1933,11 +1962,12 @@ define('controls/projects/project/site/Panel', [
                     lang: lang
                 }),
 
-                icon         : 'fa fa-copy',
-                texticon     : 'fa fa-copy',
-                autoclose    : false,
-                maxHeight    : 400,
-                maxWidth     : 600,
+                icon     : 'fa fa-copy',
+                texticon : 'fa fa-copy',
+                autoclose: false,
+                maxHeight: 400,
+                maxWidth : 600,
+
                 events       : {
                     onSubmit: function (Win) {
                         Win.Loader.show();
@@ -2081,6 +2111,32 @@ define('controls/projects/project/site/Panel', [
             }).then(function () {
                 this.$onCategoryEnter(this.getActiveCategory());
             }.bind(this));
+        },
+
+        /**
+         * Shows title url customization confirm window
+         */
+        $showTitleUrlAdjustment: function () {
+            var self = this;
+
+            new QUIConfirm({
+                icon       : 'fa fa-file-o',
+                texticon   : 'fa fa-file-o',
+                title      : Locale.get('quiqqer/quiqqer', 'window.title.url.customization'),
+                text       : Locale.get('quiqqer/quiqqer', 'window.title.url.customization.text'),
+                information: Locale.get('quiqqer/quiqqer', 'window.title.url.customization.information'),
+                maxHeight  : 400,
+                maxWidth   : 600,
+                events     : {
+                    onSubmit: function () {
+                        var Title = self.getBody().getElement('[name="title"]'),
+                            Name  = self.getBody().getElement('[name="site-name"]');
+
+                        Name.value = Title.value;
+                        Name.fireEvent('keyup');
+                    }
+                }
+            }).open();
         }
     });
 });

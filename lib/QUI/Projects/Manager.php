@@ -183,16 +183,16 @@ class Manager
          * @param Project $Project
          */
         $clearMediaCache = function ($config, $oldConfig, Project $Project) {
-            if (!isset($config["media_watermark"])
-                && !isset($config["media_watermark_position"])
-                && !isset($config["media_image_library"])
+            if (!isset($config['media_watermark'])
+                && !isset($config['media_watermark_position'])
+                && !isset($config['media_image_library'])
             ) {
                 return;
             }
 
-            if (isset($config["media_watermark"])
+            if (isset($config['media_watermark'])
                 && isset($oldConfig['media_watermark'])
-                && $config["media_watermark"] != $oldConfig['media_watermark']
+                && $config['media_watermark'] != $oldConfig['media_watermark']
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
@@ -200,9 +200,9 @@ class Manager
                 return;
             }
 
-            if (isset($config["media_watermark_ratio"])
+            if (isset($config['media_watermark_ratio'])
                 && isset($oldConfig['media_watermark_ratio'])
-                && $config["media_watermark_ratio"] != $oldConfig['media_watermark_ratio']
+                && $config['media_watermark_ratio'] != $oldConfig['media_watermark_ratio']
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
@@ -210,9 +210,9 @@ class Manager
                 return;
             }
 
-            if (isset($config["media_watermark_position"])
+            if (isset($config['media_watermark_position'])
                 && isset($oldConfig['media_watermark_position'])
-                && $config["media_watermark_position"] != $oldConfig['media_watermark_position']
+                && $config['media_watermark_position'] != $oldConfig['media_watermark_position']
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
@@ -220,9 +220,9 @@ class Manager
                 return;
             }
 
-            if (isset($config["media_image_library"])
+            if (isset($config['media_image_library'])
                 && isset($oldConfig['media_image_library'])
-                && $config["media_image_library"] != $oldConfig['media_image_library']
+                && $config['media_image_library'] != $oldConfig['media_image_library']
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
@@ -269,25 +269,26 @@ class Manager
         }
 
         $config = [
-            "default_lang"             => "de",
-            "langs"                    => "de",
-            "admin_mail"               => "",
-            "template"                 => "",
-            "layout"                   => "",
-            "image_text"               => "0",
-            "standard"                 => "1",
-            "adminSitemapMax"          => 20,
-            "media_watermark"          => "",
-            "media_watermark_position" => "",
-            "media_watermark_ratio"    => "",
-            "media_image_library"      => "",
-            "media_maxUploadSize"      => "",
-            "media_maxUploadFileSize"  => "",
-            "media_createCacheOnSave"  => "1",
-            "placeholder"              => "",
-            "logo"                     => "",
-            "emailLogo"                => "",
-            "favicon"                  => ""
+            'default_lang'             => 'de',
+            'langs'                    => 'de',
+            'admin_mail'               => '',
+            'template'                 => '',
+            'layout'                   => '',
+            'image_text'               => '0',
+            'standard'                 => '1',
+            'adminSitemapMax'          => 20,
+            'media_watermark'          => '',
+            'media_watermark_position' => '',
+            'media_watermark_ratio'    => '',
+            'media_image_library'      => '',
+            'media_maxUploadSize'      => '',
+            'media_maxUploadFileSize'  => '',
+            'media_createCacheOnSave'  => '1',
+            'placeholder'              => '',
+            'logo'                     => '',
+            'emailLogo'                => '',
+            'favicon'                  => '',
+            'convertRomanLetters'      => 0
         ];
 
         // settings.xml
@@ -297,7 +298,7 @@ class Manager
             $Dom  = XML::getDomFromXml($file);
             $Path = new \DOMXPath($Dom);
 
-            $settingsList = $Path->query("//project/settings");
+            $settingsList = $Path->query('//project/settings');
 
             for ($i = 0, $len = $settingsList->length; $i < $len; $i++) {
                 /* @var $Settings \DOMElement */
@@ -650,45 +651,45 @@ class Manager
         $table_site_rel = QUI_DB_PRFX.$name.'_'.$lang.'_sites_relations';
 
         $Table->addColumn($table_site, [
-            "id"          => "bigint(20) NOT NULL",
-            "name"        => "varchar(200) NOT NULL",
-            "title"       => "tinytext NULL",
-            "short"       => "text NULL",
-            "content"     => "longtext NULL",
-            "type"        => "varchar(255) DEFAULT NULL",
-            "active"      => "tinyint(1) NOT NULL DEFAULT 0",
-            "deleted"     => "tinyint(1) NOT NULL DEFAULT 0",
-            "c_date"      => "timestamp NULL DEFAULT NULL",
-            "e_date"      => "timestamp NOT NULL DEFAULT NOW() on update NOW()",
-            "c_user"      => "int(11) DEFAULT NULL",
-            "e_user"      => "int(11) DEFAULT NULL",
-            "nav_hide"    => "tinyint(1) NOT NULL DEFAULT 0",
-            "order_type"  => "varchar(100) NULL",
-            "order_field" => "bigint(20) NULL",
-            "extra"       => "text NULL",
+            'id'          => 'bigint(20) NOT NULL',
+            'name'        => 'varchar(200) NOT NULL',
+            'title'       => 'tinytext NULL',
+            'short'       => 'text NULL',
+            'content'     => 'longtext NULL',
+            'type'        => 'varchar(255) DEFAULT NULL',
+            'active'      => 'tinyint(1) NOT NULL DEFAULT 0',
+            'deleted'     => 'tinyint(1) NOT NULL DEFAULT 0',
+            'c_date'      => 'timestamp NULL DEFAULT NULL',
+            'e_date'      => 'timestamp NOT NULL DEFAULT NOW() on update NOW()',
+            'c_user'      => 'int(11) DEFAULT NULL',
+            'e_user'      => 'int(11) DEFAULT NULL',
+            'nav_hide'    => 'tinyint(1) NOT NULL DEFAULT 0',
+            'order_type'  => 'varchar(100) NULL',
+            'order_field' => 'bigint(20) NULL',
+            'extra'       => 'text NULL'
         ]);
 
         $Table->addColumn($table_site_rel, [
-            "parent" => "bigint(20) NOT NULL",
-            "child"  => "bigint(20) NOT NULL"
+            'parent' => 'bigint(20) NOT NULL',
+            'child'  => 'bigint(20) NOT NULL'
         ]);
 
         $Table->setAutoIncrement($table_site, 'id');
 
         // first site
         $DataBase->insert($table_site, [
-            "id"       => 1,
-            "name"     => 'Start',
-            "title"    => 'start',
-            "short"    => 'Shorttext',
-            "content"  => "<p>Welcome to my project</p>",
-            "type"     => 'standard',
-            "active"   => 1,
-            "deleted"  => 0,
-            "c_date"   => \date('Y-m-d H:i:s'),
-            "c_user"   => QUI::getUserBySession()->getId(),
-            "e_user"   => QUI::getUserBySession()->getId(),
-            "nav_hide" => 0
+            'id'       => 1,
+            'name'     => 'Start',
+            'title'    => 'start',
+            'short'    => 'Shorttext',
+            'content'  => '<p>Welcome to my project</p>',
+            'type'     => 'standard',
+            'active'   => 1,
+            'deleted'  => 0,
+            'c_date'   => \date('Y-m-d H:i:s'),
+            'c_user'   => QUI::getUserBySession()->getId(),
+            'e_user'   => QUI::getUserBySession()->getId(),
+            'nav_hide' => 0
         ]);
 
 
@@ -699,42 +700,42 @@ class Manager
         $table_media_rel = QUI_DB_PRFX.$name.'_media_relations';
 
         $Table->addColumn($table_media, [
-            "id"           => "bigint(20) NOT NULL",
-            "name"         => "varchar(200) NOT NULL",
-            "title"        => "tinytext NULL",
-            "short"        => "text NULL",
-            "type"         => "varchar(32) DEFAULT NULL",
-            "active"       => "tinyint(1) NOT NULL DEFAULT 0",
-            "deleted"      => "tinyint(1) NOT NULL DEFAULT 0",
-            "c_date"       => "timestamp NULL DEFAULT NULL",
-            "e_date"       => "timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP",
-            "c_user"       => "int(11) DEFAULT NULL",
-            "e_user"       => "int(11) DEFAULT NULL",
-            "file"         => "text NULL",
-            "alt"          => "text NULL",
-            "mime_type"    => "text NULL",
-            "image_height" => "int(6) default NULL",
-            "image_width"  => "int(6) default NULL"
+            'id'           => 'bigint(20) NOT NULL',
+            'name'         => 'varchar(200) NOT NULL',
+            'title'        => 'tinytext NULL',
+            'short'        => 'text NULL',
+            'type'         => 'varchar(32) DEFAULT NULL',
+            'active'       => 'tinyint(1) NOT NULL DEFAULT 0',
+            'deleted'      => 'tinyint(1) NOT NULL DEFAULT 0',
+            'c_date'       => 'timestamp NULL DEFAULT NULL',
+            'e_date'       => 'timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP',
+            'c_user'       => 'int(11) DEFAULT NULL',
+            'e_user'       => 'int(11) DEFAULT NULL',
+            'file'         => 'text NULL',
+            'alt'          => 'text NULL',
+            'mime_type'    => 'text NULL',
+            'image_height' => 'int(6) default NULL',
+            'image_width'  => 'int(6) default NULL'
         ]);
 
         $Table->addColumn($table_media_rel, [
-            "parent" => "bigint(20) NOT NULL",
-            "child"  => "bigint(20) NOT NULL"
+            'parent' => 'bigint(20) NOT NULL',
+            'child'  => 'bigint(20) NOT NULL'
         ]);
 
         // first folder
         $DataBase->insert($table_media, [
-            "id"      => 1,
-            "name"    => 'Start',
-            "title"   => 'start',
-            "short"   => 'Shorttext',
-            "type"    => 'folder',
-            "file"    => '',
-            "active"  => 1,
-            "deleted" => 0,
-            "c_date"  => \date('Y-m-d H:i:s'),
-            "c_user"  => QUI::getUserBySession()->getId(),
-            "e_user"  => QUI::getUserBySession()->getId()
+            'id'      => 1,
+            'name'    => 'Start',
+            'title'   => 'start',
+            'short'   => 'Shorttext',
+            'type'    => 'folder',
+            'file'    => '',
+            'active'  => 1,
+            'deleted' => 0,
+            'c_date'  => \date('Y-m-d H:i:s'),
+            'c_user'  => QUI::getUserBySession()->getId(),
+            'e_user'  => QUI::getUserBySession()->getId()
         ]);
 
 
@@ -928,7 +929,7 @@ class Manager
         // ----------------------------- //
 
         // File: etc/projects.ini.php
-        $filename = ETC_DIR."projects.ini.php";
+        $filename = ETC_DIR.'projects.ini.php';
         $content  = \file_get_contents($filename);
 
         $content = \str_replace($oldName, $newName, $content);
@@ -936,7 +937,7 @@ class Manager
 
 
         // File: etc/vhosts.ini.php
-        $filename = ETC_DIR."vhosts.ini.php";
+        $filename = ETC_DIR.'vhosts.ini.php';
         $content  = \file_get_contents($filename);
 
         $content = \str_replace($oldName, $newName, $content);
@@ -949,7 +950,7 @@ class Manager
 
         $tables = [];
 
-        $Stmt = \QUI::getDataBase()->getPDO()->prepare("SHOW TABLES;");
+        $Stmt = \QUI::getDataBase()->getPDO()->prepare('SHOW TABLES;');
         $Stmt->execute();
         $result = $Stmt->fetchAll();
 
@@ -958,10 +959,9 @@ class Manager
         }
 
         foreach ($tables as $oldTableName) {
-            if (\strpos($oldTableName."_", QUI_DB_PRFX.$oldName) === false) {
+            if (\strpos($oldTableName.'_', QUI_DB_PRFX.$oldName) === false) {
                 continue;
             }
-
 
             $newTableName = \preg_replace(
                 "~^".QUI_DB_PRFX.$oldName."_~m",
@@ -969,8 +969,7 @@ class Manager
                 $oldTableName
             );
 
-
-            $sql  = "ALTER TABLE ".$oldTableName." RENAME ".$newTableName.";";
+            $sql  = 'ALTER TABLE '.$oldTableName.' RENAME '.$newTableName.';';
             $Stmt = \QUI::getDataBase()->getPDO()->prepare($sql);
 
             try {
@@ -985,8 +984,8 @@ class Manager
         //              Media           //
         // ----------------------------- //
 
-        $sourceDir = CMS_DIR."media/sites/".$oldName;
-        $targetDir = CMS_DIR."media/sites/".$newName;
+        $sourceDir = CMS_DIR.'media/sites/'.$oldName;
+        $targetDir = CMS_DIR.'media/sites/'.$newName;
 
         if (\is_dir($sourceDir)) {
             \rename($sourceDir, $targetDir);
@@ -1011,8 +1010,8 @@ class Manager
         // ----------------------------- //
         //              Locale           //
         // ----------------------------- //
-        if (\file_exists(VAR_DIR."locale/localefiles")) {
-            \unlink(VAR_DIR."locale/localefiles");
+        if (\file_exists(VAR_DIR.'locale/localefiles')) {
+            \unlink(VAR_DIR.'locale/localefiles');
         }
 
 
@@ -1036,7 +1035,7 @@ class Manager
             try {
                 QUI\Translator::add($translationGroup, $translationVar);
             } catch (\Exception $Exception) {
-                QUI\System\Log::addError("Rename project: Could not add language variable ".$translationGroup."/".$translationVar.": ".$Exception->getMessage());
+                QUI\System\Log::addError('Rename project: Could not add language variable '.$translationGroup.'/'.$translationVar.': '.$Exception->getMessage());
             }
         }
 
@@ -1046,7 +1045,7 @@ class Manager
         //              Finish           //
         // ----------------------------- //
 
-        \QUI::getEvents()->fireEvent("projectRenamed", [
+        \QUI::getEvents()->fireEvent('projectRenamed', [
             $Project,
             $oldName,
             $newName
@@ -1144,7 +1143,7 @@ class Manager
             $Dom  = XML::getDomFromXml($file);
             $Path = new \DOMXPath($Dom);
 
-            $Settings = $Path->query("//quiqqer/project/settings");
+            $Settings = $Path->query('//quiqqer/project/settings');
 
             if ($Settings->length) {
                 $list[] = $file;
@@ -1158,7 +1157,7 @@ class Manager
             $Dom  = XML::getDomFromXml($projectSettings);
             $Path = new \DOMXPath($Dom);
 
-            $Settings = $Path->query("//quiqqer/project/settings");
+            $Settings = $Path->query('//quiqqer/project/settings');
 
             if ($Settings->length) {
                 $list[] = $projectSettings;

@@ -336,6 +336,7 @@ define('controls/users/User', [
                             new Date(Created.value * 1000)
                         );
                     } catch (e) {
+                        console.error('DEBUG:');
                         console.error(e);
                     }
                 } else if (Created) {
@@ -348,6 +349,7 @@ define('controls/users/User', [
                             new Date(LastEdit.value)
                         );
                     } catch (e) {
+                        console.error('DEBUG:');
                         console.error(e);
                     }
                 } else if (LastEdit) {
@@ -360,6 +362,7 @@ define('controls/users/User', [
                             new Date(LastVisit.value * 1000)
                         );
                     } catch (e) {
+                        console.error('DEBUG:');
                         console.error(e);
                     }
                 } else if (LastVisit) {

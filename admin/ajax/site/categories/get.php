@@ -33,6 +33,6 @@ QUI::$Ajax->registerFunction(
 
         return $result;
     },
-    array('project', 'id'),
+    ['project', 'id'],
     'Permission::checkAdminUser'
 );

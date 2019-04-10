@@ -796,10 +796,6 @@ class Rewrite
          * If a vhost wasn't found
          */
 
-        // Falls keine Projekt Parameter existieren wird das standard Projekt verwendet
-//        $Config = QUI\Projects\Manager::getConfig();
-//        $config = $Config->toArray();
-
         // wenn standard vhost nicht der gewünschte ist, dann 404
         $host = '';
 
@@ -812,16 +808,6 @@ class Rewrite
 
             return $this->project;
         }
-
-        // Standard Projekt verwenden wenn kein vhost existiert
-//        foreach ( $config as $p => $e )
-//        {
-//            if ( isset( $e['standard']) && $e['standard'] == 1 )
-//            {
-//                $pname = $p;
-//                break;
-//            }
-//        }
 
         try {
             $Project = QUI\Projects\Manager::get();
@@ -849,7 +835,7 @@ class Rewrite
     }
 
     /**
-     * Return the prject by the vhost, if a vhost exist
+     * Return the project by the vhost, if a vhost exist
      *
      * @return \QUI\Projects\Project|false
      */

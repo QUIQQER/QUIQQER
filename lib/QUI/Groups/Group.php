@@ -133,8 +133,8 @@ class Group extends QUI\QDOM
     /**
      * Deletes the group and sub-groups
      *
-     * @todo alle Beziehungen in den Seiten müssen neu gesetzt werden
      * @throws QUI\Exception
+     * @todo alle Beziehungen in den Seiten müssen neu gesetzt werden
      */
     public function delete()
     {
@@ -554,7 +554,7 @@ class Group extends QUI\QDOM
      */
     public function setParent($parentId)
     {
-        if ($this->getParent()->getId() == $parentId
+        if ($this->getParent() && $this->getParent()->getId() == $parentId
             || $this->getId() == $parentId
         ) {
             return;
@@ -1031,8 +1031,8 @@ class Group extends QUI\QDOM
     /**
      * creates the group cache
      *
-     * @ignore
      * @throws QUI\Exception
+     * @ignore
      */
     protected function createCache()
     {

@@ -18,6 +18,6 @@ QUI::$Ajax->registerFunction(
             QUI\Utils\DOM::getTabHTML($tab, $Site)
         );
     },
-    array('project', 'id', 'tab'),
+    ['project', 'id', 'tab'],
     'Permission::checkAdminUser'
 );

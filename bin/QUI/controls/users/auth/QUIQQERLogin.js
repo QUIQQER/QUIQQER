@@ -3,8 +3,12 @@
  *
  * Includes password reset functionality
  *
+ * @event showPassword [self]
+ * @event showPasswordReset [self]
+ *
  * @module controls/users/auth/QUIQQERLogin
  * @author Patrick Müller (www.pcsg.de)
+ * @author Henning Leutz (www.pcsg.de)
  */
 define('controls/users/auth/QUIQQERLogin', [
 
@@ -96,8 +100,7 @@ define('controls/users/auth/QUIQQERLogin', [
          * @return Promise
          */
         $showPasswordReset: function () {
-            var self              = this,
-                Container         = this.getElm(),
+            var Container         = this.getElm(),
                 PasswordContainer = Container.getElement('.quiqqer-auth-login-container'),
                 PasswordReset     = Container.getElement('.quiqqer-auth-login-passwordreset');
 
@@ -107,6 +110,8 @@ define('controls/users/auth/QUIQQERLogin', [
 
             PasswordContainer.setStyle('left', 0);
             PasswordContainer.setStyle('position', 'relative');
+
+            this.fireEvent('showPasswordReset', [this]);
 
             return new Promise(function (resolve) {
                 moofx(PasswordContainer).animate({
@@ -156,6 +161,8 @@ define('controls/users/auth/QUIQQERLogin', [
             if (!PasswordContainer) {
                 return Promise.resolve();
             }
+
+            this.fireEvent('showPassword', [this]);
 
             return new Promise(function (resolve) {
                 moofx(PasswordReset).animate({
@@ -231,7 +238,7 @@ define('controls/users/auth/QUIQQERLogin', [
                                     duration: 200,
                                     callback: function () {
                                         Message.destroy();
-                                        self.$showPassword().then(function() {
+                                        self.$showPassword().then(function () {
                                             EmailInput.value = '';
                                             EmailInput.setStyle('display', null);
                                         });

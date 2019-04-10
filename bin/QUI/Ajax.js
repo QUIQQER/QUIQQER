@@ -31,12 +31,26 @@ define('Ajax', [
 ], function (QUI, QUIAjax, Utils, Locale) {
     "use strict";
 
+    // load message handling
+    QUI.getMessageHandler().catch(function () {
+        // nothing
+    });
+
     var apiPoint = '/ajax.php';
 
     if (typeof QUIQQER !== 'undefined' && "ajax" in QUIQQER) {
         apiPoint = QUIQQER.ajax;
     } else if (typeof URL_SYS_DIR !== 'undefined') {
         apiPoint = URL_SYS_DIR + 'ajax.php';
+    }
+
+    var TRY_MAX   = 3;
+    var TRY_DELAY = 1000;
+
+    if (typeof QUIQQER_CONFIG !== 'undefined' &&
+        typeof QUIQQER_CONFIG.globals !== 'undefined' &&
+        (QUIQQER_CONFIG.globals.debug_mode || QUIQQER_CONFIG.globals.development)) {
+        TRY_MAX = 0;
     }
 
     return {
@@ -59,6 +73,7 @@ define('Ajax', [
          */
         request: function (call, method, callback, params) {
             // if sync, the browser freeze
+            var options;
             var self = this,
                 id   = String.uniqueID();
 
@@ -79,148 +94,175 @@ define('Ajax', [
                 params.project = JSON.encode(window.QUIQQER_PROJECT);
             }
 
-            this.$onprogress[id] = new QUIAjax(
-                // combine all params, so, they are available in the Request Object
-                Utils.combine(params, {
-                    callback : callback,
-                    method   : method,
-                    url      : this.$url,
-                    async    : true,
-                    showError: typeof params.showError !== 'undefined' ? params.showError : true,
-                    showLogin: typeof params.showLogin !== 'undefined' ? params.showLogin : true,
-                    events   : {
-                        onSuccess: function () {
-                            var args    = arguments;
-                            var Request = args[args.length - 1];
 
-                            if (Request.getAttribute('logout')) {
-                                return;
-                            }
+            // combine all params, so, they are available in the Request Object
+            options = Utils.combine(params, {
+                callback : callback,
+                method   : method,
+                url      : this.$url,
+                async    : true,
+                showError: typeof params.showError !== 'undefined' ? params.showError : true,
+                showLogin: typeof params.showLogin !== 'undefined' ? params.showLogin : true,
+                events   : {
+                    onSuccess: function () {
+                        var args    = arguments;
+                        var Request = args[args.length - 1];
 
-                            if (Request.getAttribute('hasError')) {
-                                return;
-                            }
+                        if (Request.getAttribute('logout')) {
+                            return;
+                        }
 
-                            if (this in self.$onprogress &&
-                                "$result" in self.$onprogress[this] &&
-                                self.$onprogress[this].$result.jsCallbacks
-                            ) {
-                                self.$triggerGlobalJavaScriptCallback(
-                                    self.$onprogress[this].$result.jsCallbacks,
-                                    self.$onprogress[this].$result
-                                );
-                            }
+                        if (Request.getAttribute('hasError')) {
+                            return;
+                        }
 
-                            QUI.fireEvent('ajaxResult', [self.$onprogress[this].$result]);
+                        if (this in self.$onprogress &&
+                            "$result" in self.$onprogress[this] &&
+                            self.$onprogress[this].$result.jsCallbacks
+                        ) {
+                            self.$triggerGlobalJavaScriptCallback(
+                                self.$onprogress[this].$result.jsCallbacks,
+                                self.$onprogress[this].$result
+                            );
+                        }
 
-                            // maintenance?
-                            if (this in self.$onprogress &&
-                                "$result" in self.$onprogress[this] &&
-                                "maintenance" in self.$onprogress[this].$result &&
-                                self.$onprogress[this].$result.maintenance
-                            ) {
-                                self.showMaintenanceMessage();
-                            }
+                        QUI.fireEvent('ajaxResult', [self.$onprogress[this].$result]);
 
-                            callback.apply(this, arguments);
-                        }.bind(id),
+                        // maintenance?
+                        if (this in self.$onprogress &&
+                            "$result" in self.$onprogress[this] &&
+                            "maintenance" in self.$onprogress[this].$result &&
+                            self.$onprogress[this].$result.maintenance
+                        ) {
+                            self.showMaintenanceMessage();
+                        }
 
-                        onCancel: function (Request) {
-                            if (Request.getAttribute('onCancel')) {
-                                return Request.getAttribute('onCancel')(Request);
-                            }
-                        },
+                        callback.apply(this, arguments);
+                    }.bind(id),
 
-                        onError: function (Exception, Request) {
-                            // maintenance?
-                            if (this in self.$onprogress &&
-                                "$result" in self.$onprogress[this] &&
-                                self.$onprogress[this].$result &&
-                                "maintenance" in self.$onprogress[this].$result &&
-                                self.$onprogress[this].$result.maintenance
-                            ) {
-                                self.showMaintenanceMessage();
-                            }
+                    onCancel: function (Request) {
+                        if (Request.getAttribute('onCancel')) {
+                            return Request.getAttribute('onCancel')(Request);
+                        }
+                    },
+
+                    onError: function (Exception, Request) {
+                        var Response     = null,
+                            networkError = true,
+                            tries        = Request.getAttribute('REQUEST_TRIES') || 0;
+
+                        if (typeof self.$onprogress[this] !== 'undefined') {
+                            Response = self.$onprogress[this];
+                        }
 
 
-                            if (this in self.$onprogress &&
-                                "$result" in self.$onprogress[this] &&
-                                self.$onprogress[this].$result &&
-                                self.$onprogress[this].$result.jsCallbacks
-                            ) {
-                                self.$triggerGlobalJavaScriptCallback(
-                                    self.$onprogress[this].$result.jsCallbacks,
-                                    self.$onprogress[this].$result
-                                );
-                            }
+                        // maintenance?
+                        if (Response &&
+                            "$result" in Response && Response.$result &&
+                            "maintenance" in Response.$result && Response.$result.maintenance
+                        ) {
+                            self.showMaintenanceMessage();
+                        }
 
-                            Request.setAttribute('hasError', true);
 
-                            if (Request.getAttribute('showError')) {
-                                QUI.getMessageHandler(function (MessageHandler) {
+                        if (Response &&
+                            "$result" in Response && Response.$result &&
+                            Response.$result.jsCallbacks
+                        ) {
+                            self.$triggerGlobalJavaScriptCallback(
+                                Response.$result.jsCallbacks,
+                                Response.$result
+                            );
+                        }
+
+                        Request.setAttribute('hasError', true);
+
+                        if (Exception.getMessage() === '') {
+                            Exception.setAttribute('message', Locale.get('quiqqer/quiqqer', 'exception.network.error'));
+                            Exception.setAttribute('code', 503);
+                            networkError = true;
+                        }
+
+                        if (Request.getAttribute('showError') || networkError) {
+                            if (tries === TRY_MAX) {
+                                QUI.getMessageHandler().then(function (MessageHandler) {
                                     MessageHandler.addException(Exception);
                                 });
                             }
+                        }
 
-                            if (Exception.getCode() === 401 &&
-                                Exception.getAttribute('type') === 'QUI\\Users\\Exception' &&
-                                Request.getAttribute('showLogin')
-                            ) {
-                                Request.setAttribute('logout', true);
+                        if (Exception.getCode() === 401 &&
+                            Exception.getAttribute('type') === 'QUI\\Users\\Exception' &&
+                            Request.getAttribute('showLogin')
+                        ) {
+                            Request.setAttribute('logout', true);
 
-                                if (self.$on401) {
-                                    if (typeof self.$on401 === 'function') {
-                                        self.$on401(Exception);
-                                    }
-                                    return;
+                            if (self.$on401) {
+                                if (typeof self.$on401 === 'function') {
+                                    self.$on401(Exception);
                                 }
 
-                                require(['controls/users/LoginWindow'], function (Login) {
-                                    new Login({
-                                        message: Exception.getMessage(),
-                                        events : {
-                                            onSuccess: function () {
-                                                self.request(call, method, callback, params);
-                                            }
-                                        }
-                                    }).open();
-                                });
-
                                 return;
                             }
 
-                            if ("QUIQQER" in window &&
-                                "inAdministration" in QUIQQER &&
-                                QUIQQER.inAdministration &&
-                                Exception.getCode() === 440
-                            ) {
-                                Request.setAttribute('logout', true);
-
-                                require(['controls/users/LoginWindow'], function (Login) {
-                                    new Login({
-                                        events: {
-                                            onSuccess: function () {
-                                                self.request(call, method, callback, params);
-                                            }
+                            require(['controls/users/LoginWindow'], function (Login) {
+                                new Login({
+                                    message: Exception.getMessage(),
+                                    events : {
+                                        onSuccess: function () {
+                                            self.request(call, method, callback, params);
                                         }
-                                    }).open();
-                                });
+                                    }
+                                }).open();
+                            });
 
-                                return;
-                            }
+                            return;
+                        }
 
+                        if ("QUIQQER" in window &&
+                            "inAdministration" in QUIQQER &&
+                            QUIQQER.inAdministration &&
+                            Exception.getCode() === 440
+                        ) {
+                            Request.setAttribute('logout', true);
 
-                            if (Request.getAttribute('onError')) {
-                                return Request.getAttribute('onError')(Exception, Request);
-                            }
+                            require(['controls/users/LoginWindow'], function (Login) {
+                                new Login({
+                                    events: {
+                                        onSuccess: function () {
+                                            self.request(call, method, callback, params);
+                                        }
+                                    }
+                                }).open();
+                            });
 
-                            QUI.triggerError(Exception, Request);
-                        }.bind(id)
-                    }
-                })
-            );
+                            return;
+                        }
 
-            this.$onprogress[id].send(params);
+                        // another try
+                        if (tries < TRY_MAX) {
+                            tries++;
+                            Request.setAttribute('REQUEST_TRIES', tries);
+
+                            (function () {
+                                options._rf = call;
+                                self.$onprogress[id].send(options);
+                            }).delay(TRY_DELAY * tries);
+
+                            return;
+                        }
+
+                        if (Request.getAttribute('onError')) {
+                            return Request.getAttribute('onError')(Exception, Request);
+                        }
+
+                        QUI.triggerError(Exception, Request);
+                    }.bind(id)
+                }
+            });
+
+            this.$onprogress[id] = new QUIAjax(options);
+            this.$onprogress[id].send(options);
 
             return this.$onprogress[id];
         },

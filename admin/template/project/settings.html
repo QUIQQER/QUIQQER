@@ -45,6 +45,17 @@
 
         <tr>
             <td>
+                <label class="field-container qui-project-settings-defaultSitestructure">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.defaultSitestructure"}
+                    </span>
+                    <span class="field-container-field field-container-field-no-padding create-default-structure"></span>
+                </label>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
                 <label class="field-container">
                     <span class="field-container-item">
                         {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.set.standard"}
@@ -58,14 +69,21 @@
 
         <tr>
             <td>
-                <label class="field-container qui-project-settings-defaultSitestructure">
+                <label class="field-container">
                     <span class="field-container-item">
-                        {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.defaultSitestructure"}
+                        {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.convertRomanLetters"}
                     </span>
-                    <span class="field-container-field field-container-field-no-padding create-default-structure"></span>
+                    <span class="field-container-field">
+                        <input type="checkbox" name="convertRomanLetters"/>
+                    </span>
                 </label>
+                <div class="field-container-item-desc">
+                    {locale group="quiqqer/quiqqer"
+                    var="projects.project.settings.panel.convertRomanLetters.description"}
+                </div>
             </td>
         </tr>
+
         </tbody>
     </table>
 

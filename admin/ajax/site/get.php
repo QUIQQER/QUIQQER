@@ -20,14 +20,14 @@ QUI::$Ajax->registerFunction(
             $Site->getAttribute('type')
         );
 
-        return array(
-            'modules' => QUI\Projects\Site\Utils::getAdminSiteModulesFromSite($Site),
-            'attributes' => $attributes,
+        return [
+            'modules'      => QUI\Projects\Site\Utils::getAdminSiteModulesFromSite($Site),
+            'attributes'   => $attributes,
             'has_children' => $Site->hasChildren(true),
-            'parentid' => $Site->getParentId(),
-            'url' => $Site->getUrlRewritten()
-        );
+            'parentid'     => $Site->getParentId(),
+            'url'          => $Site->getUrlRewritten()
+        ];
     },
-    array('project', 'id'),
+    ['project', 'id'],
     'Permission::checkAdminUser'
 );

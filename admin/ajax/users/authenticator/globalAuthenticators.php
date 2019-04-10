@@ -13,27 +13,30 @@ QUI::$Ajax->registerFunction(
         $Auth      = QUI\Users\Auth\Handler::getInstance();
         $available = $Auth->getAvailableAuthenticators();
 
-        $list = array();
+        $list = [];
 
         foreach ($available as $authenticator) {
             try {
                 $Authenticator = new $authenticator($User->getUsername());
 
                 /* @var $Authenticator \QUI\Users\AuthenticatorInterface */
-                $list[] = array(
+                $list[] = [
                     'title'         => $Authenticator->getTitle(),
                     'description'   => $Authenticator->getDescription(),
                     'authenticator' => $authenticator
-                );
+                ];
             } catch (\Exception $Exception) {
                 \QUI\System\Log::writeException($Exception);
             }
         }
 
-        return array(
-            'global'    => $Auth->getGlobalAuthenticators(),
+        return [
+            'global'    => [
+                'frontend' => $Auth->getGlobalAuthenticators(),
+                'backend'  => $Auth->getGlobalBackendAuthenticators()
+            ],
             'available' => $list
-        );
+        ];
     },
     false,
     'Permission::checkAdminUser'

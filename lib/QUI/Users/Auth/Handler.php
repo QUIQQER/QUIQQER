@@ -79,15 +79,43 @@ class Handler
     }
 
     /**
-     * Return all global active authenticators
+     * Return all global active authenticators for the frontend authentication
+     * - alias for getGlobalFrontendAuthenticators
      *
      * @return array
      */
     public function getGlobalAuthenticators()
     {
-        $config = QUI::conf('auth');
+        return $this->getGlobalFrontendAuthenticators();
+    }
 
-        if (empty($config)) {
+    /**
+     * Return all global active authenticators for the backend authentication
+     *
+     * @return array
+     */
+    public function getGlobalBackendAuthenticators()
+    {
+        return $this->getAuthenticatorFromConfig(QUI::conf('auth_backend'));
+    }
+
+    /**
+     * Return all global active authenticators for the frontend authentication
+     *
+     * @return array
+     */
+    public function getGlobalFrontendAuthenticators()
+    {
+        return $this->getAuthenticatorFromConfig(QUI::conf('auth_frontend'));
+    }
+
+    /**
+     * @param array $authenticators
+     * @return array
+     */
+    protected function getAuthenticatorFromConfig($authenticators = [])
+    {
+        if (empty($authenticators)) {
             return [
                 QUIQQER::class
             ];
@@ -98,7 +126,7 @@ class Handler
         $available = $this->getAvailableAuthenticators();
         $available = \array_flip($available);
 
-        foreach ($config as $authenticator => $status) {
+        foreach ($authenticators as $authenticator => $status) {
             if ($status != 1) {
                 continue;
             }
@@ -150,10 +178,7 @@ class Handler
         }
 
         throw new QUI\Users\Auth\Exception(
-            [
-                'quiqqer/system',
-                'exception.authenticator.not.found'
-            ],
+            ['quiqqer/system', 'exception.authenticator.not.found'],
             404
         );
     }
@@ -161,11 +186,17 @@ class Handler
     /**
      * Return all available authenticators
      *
-     * @todo cache
      * @return array
      */
     public function getAvailableAuthenticators()
     {
+        $cache = 'quiqqer/quiqqer/authenticator/available';
+
+        try {
+            return QUI\Cache\Manager::get($cache);
+        } catch (QUI\Exception $Exception) {
+        }
+
         $authList  = [];
         $list      = [];
         $installed = QUI::getPackageManager()->getInstalled();
@@ -198,6 +229,8 @@ class Handler
                 QUI\System\Log::writeException($Exception);
             }
         }
+
+        QUI\Cache\Manager::set($cache, $authList);
 
         return $authList;
     }
