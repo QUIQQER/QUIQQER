@@ -572,7 +572,7 @@ define('controls/projects/project/Sitemap', [
 
 
             if ("nav_hide" in result) {
-                if (result.nav_hide == '1') {
+                if (parseInt(result.nav_hide) === 1) {
                     Itm.addIcon(URL_BIN_DIR + '16x16/navigation_hidden.png');
                 } else {
                     Itm.removeIcon(URL_BIN_DIR + '16x16/navigation_hidden.png');
@@ -580,7 +580,7 @@ define('controls/projects/project/Sitemap', [
             }
 
             if ("linked" in result) {
-                if (result.linked == '1') {
+                if (parseInt(result.linked) === 1) {
                     Itm.setAttribute('linked', true);
                     Itm.addIcon(URL_BIN_DIR + '16x16/linked.png');
                 } else {
@@ -659,8 +659,6 @@ define('controls/projects/project/Sitemap', [
                     }
                 })
             ).appendChild(
-                new QUIContextmenuSeparator()
-            ).appendChild(
                 new QUIContextmenuItem({
                     disabled: true,
                     name    : 'paste',
@@ -681,6 +679,19 @@ define('controls/projects/project/Sitemap', [
                     events  : {
                         onClick: function () {
                             self.$linkSite(Itm);
+                        }
+                    }
+                })
+            ).appendChild(
+                new QUIContextmenuSeparator()
+            ).appendChild(
+                new QUIContextmenuItem({
+                    name  : 'open-in-website',
+                    text  : Locale.get('quiqqer/quiqqer', 'project.sitemap.open.in.window'),
+                    icon  : 'fa fa-external-link',
+                    events: {
+                        onClick: function (event) {
+                            self.$openSiteInWebsite(Itm);
                         }
                     }
                 })
@@ -901,7 +912,7 @@ define('controls/projects/project/Sitemap', [
 
             // move site
             if (data.copyType === 'cut') {
-                if (this.getAttribute('project') != Site.getProject().getName()) {
+                if (this.getAttribute('project') !== Site.getProject().getName()) {
                     return;
                 }
 
@@ -958,13 +969,25 @@ define('controls/projects/project/Sitemap', [
                 Site    = Project.get(data.id);
 
             Site.linked(NewParentItem.getAttribute('value'), function () {
-
                 if (!NewParentItem.isOpen()) {
                     NewParentItem.open();
                 } else {
                     self.$open(NewParentItem);
                 }
+            });
+        },
 
+        /**
+         * Opens the site in the website
+         *
+         * @param {Object} Item - qui/controls/sitemap/Item
+         */
+        $openSiteInWebsite: function (Item) {
+            Ajax.get('ajax_site_get', function (result) {
+                window.open(result.hostUrl);
+            }, {
+                project: this.$Project.encode(),
+                id     : Item.getAttribute('value')
             });
         },
 

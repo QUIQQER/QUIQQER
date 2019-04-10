@@ -1729,13 +1729,16 @@
         <locale name="control.project.sitemap.prev">
             <en><![CDATA[Back (right click for more options)]]></en>
         </locale>
-
         <locale name="control.server.button.add.text">
             <en><![CDATA[Add new server]]></en>
         </locale>
         <locale name="control.server.filter.placeholder">
             <en><![CDATA[Filter...]]></en>
         </locale>
+        <locale name="project.sitemap.open.in.window">
+            <en><![CDATA[Open page in web page]]></en>
+        </locale>
+
         <locale name="control.server.filter.submit">
             <en><![CDATA[Start search]]></en>
         </locale>

@@ -1753,6 +1753,9 @@
             <p>Welche Einträge der Seite sollen angezeigt werden?</p>
             ]]></de>
         </locale>
+        <locale name="project.sitemap.open.in.window">
+            <de><![CDATA[Seite in Webseite öffnen]]></de>
+        </locale>
 
         <locale name="control.server.button.add.text">
             <de><![CDATA[Neuen Server hinzufügen]]></de>
