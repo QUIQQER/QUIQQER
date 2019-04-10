@@ -179,15 +179,24 @@ class Update extends QUI\System\Console\Tool
             $Packages->update(false, false);
 
             $this->logBuffer();
-            $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.execute'));
-            $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.webserver'));
-            $this->logBuffer();
+            $wasExecuted = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.execute');
+            $webserver   = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.webserver');
+
+            $this->writeLn($wasExecuted);
+            $this->writeToLog($wasExecuted);
+
+            $this->writeLn($webserver);
+            $this->writeToLog($webserver);
 
             $Httaccess = new Htaccess();
             $Httaccess->execute();
 
             $Httaccess = new Nginx();
             $Httaccess->execute();
+
+            $this->writeToLog('');
+            $this->writeToLog('✔️');
+            $this->writeToLog('');
 
             // setup set the last update date
             QUI::getPackageManager()->setLastUpdateDate();
