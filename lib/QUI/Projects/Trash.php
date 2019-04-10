@@ -145,7 +145,8 @@ class Trash extends QUI\QDOM implements QUI\Interfaces\Projects\Trash
     {
         $ids = $this->Project->getSitesIds([
             'where' => [
-                'deleted' => 1
+                'deleted' => 1,
+                'active' => -1
             ]
         ]);
 
