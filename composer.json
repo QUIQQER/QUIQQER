@@ -43,7 +43,7 @@
     "dusank\/knapsack": "8.*",
     "league\/climate": "3.*",
     "ramsey\/uuid": "3.*",
-    "quiqqer\/composer": ">=1.3|dev-master|dev-dev",
+    "quiqqer\/composer": "1.*|dev-master|dev-dev",
     "quiqqer\/controls": "1.*|dev-master|dev-dev",
     "quiqqer\/dashboard": "1.*|dev-master|dev-dev",
     "quiqqer\/qui": ">=1|dev-master|dev-dev",
