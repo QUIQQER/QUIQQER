@@ -191,6 +191,7 @@ class Update extends QUI\System\Console\Tool
             // setup set the last update date
             QUI::getPackageManager()->setLastUpdateDate();
             QUI\Cache\Manager::clearAll();
+            $this->logBuffer();
         } catch (\Exception $Exception) {
             $this->write(' [error]', 'red');
             $this->writeLn('');
