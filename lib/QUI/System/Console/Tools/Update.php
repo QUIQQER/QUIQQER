@@ -265,6 +265,6 @@ class Update extends QUI\System\Console\Tool
             return;
         }
 
-        \error_log($buffer, 3, VAR_DIR.'log/update.log');
+        \error_log($buffer, 3, VAR_DIR.'log/update-'.\date('Y-m-d').'.log');
     }
 }
