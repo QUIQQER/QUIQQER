@@ -56,23 +56,38 @@ class Update extends QUI\System\Console\Tool
         $this->writeUpdateLog('====== EXECUTE UPDATE ======');
         $this->writeUpdateLog(QUI::getLocale()->get('quiqqer/quiqqer', 'update.log.message.execute.console'));
 
-        ob_start();
-
-        $this->writeLn('- Starting Update:');
+        $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.start'));
         $this->writeLn('');
         $this->logBuffer();
 
+        $self     = $this;
         $Packages = QUI::getPackageManager();
 
+        // output events
+        $Packages->getComposer()->addEvent('onOutput', function ($Composer, $output, $type) use ($self) {
+            $self->writeLn($output);
+            $self->writeToLog($output);
+        });
+
         if ($this->getArgument('set-date')) {
-            QUI::getPackageManager()->setLastUpdateDate();
-            $this->logBuffer();
+            try {
+                QUI::getPackageManager()->setLastUpdateDate();
+                $this->logBuffer();
+            } catch (QUI\Exception $Exception) {
+                $this->writeToLog('====== ERROR ======');
+                $this->writeToLog($Exception->getMessage());
+            }
 
             return;
         }
 
         if ($this->getArgument('clearCache')) {
-            $Packages->clearComposerCache();
+            try {
+                $Packages->clearComposerCache();
+            } catch (QUI\Exception $Exception) {
+                $this->writeToLog('====== ERROR ======');
+                $this->writeToLog($Exception->getMessage());
+            }
         }
 
         if ($this->getArgument('setDevelopment')) {
@@ -98,19 +113,27 @@ class Update extends QUI\System\Console\Tool
 
 
         if ($this->getArgument('check')) {
-            $this->writeLn('Prüfe nach Aktualisierungen...'); // #locale
+            $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'update.log.message.update.via.console'));
             $this->writeLn();
             $this->writeLn();
             $this->logBuffer();
 
-            $packages      = $Packages->getOutdated(true);
+            try {
+                $packages = $Packages->getOutdated(true);
+            } catch (\Exception $Exception) {
+                $this->writeToLog('====== ERROR ======');
+                $this->writeToLog($Exception->getMessage());
+
+                return;
+            }
+
             $nameLength    = 0;
             $versionLength = 0;
 
             // #locale
             if (empty($packages)) {
                 $this->writeLn(
-                    'Ihr System ist aktuell. Es wurden keine Aktualisierungen gefunden',
+                    QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.no.updates.available'),
                     'green'
                 );
 
@@ -155,8 +178,8 @@ class Update extends QUI\System\Console\Tool
             $Packages->getComposer()->unmute();
             $Packages->update(false, false);
 
-            $this->writeLn('- Update was executed');
-            $this->writeLn('- Generating Server files .htaccess and NGINX');
+            $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.execute'));
+            $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.webserver'));
             $this->logBuffer();
 
             $Httaccess = new Htaccess();
@@ -225,18 +248,29 @@ class Update extends QUI\System\Console\Tool
     {
         $buffer = ob_get_contents();
         $buffer = trim($buffer);
-
-        if (!empty($buffer)) {
-            QUI\System\Log::write(
-                $buffer,
-                QUI\System\Log::LEVEL_NOTICE,
-                [],
-                'update',
-                true
-            );
-        }
+        $this->writeToLog($buffer);
 
         flush();
         ob_flush();
+    }
+
+    /**
+     * Write buffer to the update log
+     *
+     * @param string $buffer
+     */
+    protected function writeToLog($buffer)
+    {
+        if (empty($buffer)) {
+            return;
+        }
+
+        QUI\System\Log::write(
+            $buffer,
+            QUI\System\Log::LEVEL_NOTICE,
+            [],
+            'update',
+            true
+        );
     }
 }

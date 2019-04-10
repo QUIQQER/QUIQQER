@@ -1226,10 +1226,26 @@
         <locale name="exception.crud.child.not.found">
             <en><![CDATA[The entry could not be found.]]></en>
         </locale>
-<<<<<<< HEAD
+
         <locale name="update.log.message.execute.console">
-            <en><![CDATA[Update is executed via the console]]></en>
-=======
+            <en><![CDATA[Update is executed via the console.]]></en>
+        </locale>
+        <locale name="update.log.message.update.via.console">
+            <en><![CDATA[Check for updates...]]></en>
+        </locale>
+        <locale name="update.message.start">
+            <en><![CDATA[- Starting Update:]]></en>
+        </locale>
+        <locale name="update.message.execute">
+            <en><![CDATA[- Update was executed]]></en>
+        </locale>
+        <locale name="update.message.webserver">
+            <en><![CDATA[- Generating Server files .htaccess and NGINX]]></en>
+        </locale>
+        <locale name="update.message.no.updates.available">
+            <en><![CDATA[Your system is up to date. No updates found.]]></en>
+        </locale>
+
         <locale name="user.settings.showNamesInSitemap">
             <en><![CDATA[Show site names in the sitemap]]></en>
         </locale>
@@ -1238,7 +1254,6 @@
                  By default, the title of each site is displayed in the project sitemap.
                  However, if you want the name to be displayed in the sitemap, you can change it here.
             ]]></en>
->>>>>>> dev
         </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->
