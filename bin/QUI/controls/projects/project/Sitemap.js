@@ -983,12 +983,11 @@ define('controls/projects/project/Sitemap', [
          * @param {Object} Item - qui/controls/sitemap/Item
          */
         $openSiteInWebsite: function (Item) {
-            Ajax.get('ajax_site_get', function (result) {
-                window.open(result.hostUrl);
-            }, {
-                project: this.$Project.encode(),
-                id     : Item.getAttribute('value')
-            });
+            SiteUtils.openSite(
+                this.$Project.getName(),
+                this.$Project.getLang(),
+                Item.getAttribute('value')
+            );
         },
 
         /**

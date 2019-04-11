@@ -32,29 +32,29 @@ define('utils/Site', [
          */
         notAllowedUrlSigns: function () {
             return {
-                '.': true,
-                ',': true,
-                ':': true,
-                ';': true,
-                '#': true,
-                '`': true,
-                '!': true,
-                '§': true,
-                '$': true,
-                '%': true,
-                '&': true,
-                '?': true,
-                '<': true,
-                '>': true,
-                '=': true,
+                '.' : true,
+                ',' : true,
+                ':' : true,
+                ';' : true,
+                '#' : true,
+                '`' : true,
+                '!' : true,
+                '§' : true,
+                '$' : true,
+                '%' : true,
+                '&' : true,
+                '?' : true,
+                '<' : true,
+                '>' : true,
+                '=' : true,
                 '\'': true,
-                '"': true,
-                '@': true,
-                '_': true,
-                ']': true,
-                '[': true,
-                '+': true,
-                '/': true
+                '"' : true,
+                '@' : true,
+                '_' : true,
+                ']' : true,
+                '[' : true,
+                '+' : true,
+                '/' : true
             };
         },
 
@@ -78,15 +78,38 @@ define('utils/Site', [
         },
 
         /**
+         * open the site in a new tab
+         *
+         * @param project
+         * @param lang
+         * @param id
+         */
+        openSite: function (project, lang, id) {
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_site_get', function (result) {
+                    window.open(result.hostUrl);
+                    resolve();
+                }, {
+                    project: JSON.encode({
+                        name: project,
+                        lang: lang
+                    }),
+                    id     : id,
+                    onError: reject
+                });
+            });
+        },
+
+        /**
          * Create a child site, opens the confirm window
          *
          * @param {Object} ParentSite - classes/projects/Site
          * @param {String} [value] - new name of the site, if no newname was passed, a window would be open
          */
         openCreateChild: function (ParentSite, value) {
-            var self = this,
-                lg = 'quiqqer/system',
-                Site = ParentSite,
+            var self    = this,
+                lg      = 'quiqqer/system',
+                Site    = ParentSite,
                 Project = Site.getProject();
 
             if (typeof value === 'undefined') {
@@ -106,27 +129,27 @@ define('utils/Site', [
             require(['qui/controls/windows/Prompt'], function (Prompt) {
 
                 new Prompt({
-                    title: Locale.get(lg, 'projects.project.site.panel.window.create.title'),
-                    text: Locale.get(lg, 'projects.project.site.panel.window.create.text'),
-                    titleicon: 'fa fa-file',
-                    icon: 'fa fa-file',
-                    information: Locale.get(lg, 'projects.project.site.panel.window.create.information', {
+                    title        : Locale.get(lg, 'projects.project.site.panel.window.create.title'),
+                    text         : Locale.get(lg, 'projects.project.site.panel.window.create.text'),
+                    titleicon    : 'fa fa-file',
+                    icon         : 'fa fa-file',
+                    information  : Locale.get(lg, 'projects.project.site.panel.window.create.information', {
                         name: Site.getAttribute('name'),
-                        id: Site.getId()
+                        id  : Site.getId()
                     }),
                     cancel_button: {
-                        text: Locale.get(lg, 'cancel'),
+                        text     : Locale.get(lg, 'cancel'),
                         textimage: 'fa fa-remove'
                     },
-                    ok_button: {
-                        text: Locale.get(lg, 'projects.project.site.panel.window.create.button.submit'),
+                    ok_button    : {
+                        text     : Locale.get(lg, 'projects.project.site.panel.window.create.button.submit'),
                         textimage: 'fa fa-file'
                     },
-                    maxWidth: 450,
-                    maxHeight: 300,
-                    value: value,
-                    autoclose: false,
-                    events: {
+                    maxWidth     : 450,
+                    maxHeight    : 300,
+                    value        : value,
+                    autoclose    : false,
+                    events       : {
                         onOpen: function (Win) {
                             ParentSite.fireEvent('openCreateChild', [Win, ParentSite]);
                             Win.resize();
@@ -155,22 +178,22 @@ define('utils/Site', [
 
                                         require(['qui/controls/windows/Confirm'], function (QUIConfirm) {
                                             new QUIConfirm({
-                                                title: Locale.get(lg, 'projects.project.site.panel.window.create.clear.title'),
-                                                text: Locale.get(lg, 'projects.project.site.panel.window.create.clear.text'),
-                                                icon: 'fa fa-warning',
-                                                maxWidth: 600,
-                                                maxHeight: 400,
-                                                autoclose: false,
+                                                title      : Locale.get(lg, 'projects.project.site.panel.window.create.clear.title'),
+                                                text       : Locale.get(lg, 'projects.project.site.panel.window.create.clear.text'),
+                                                icon       : 'fa fa-warning',
+                                                maxWidth   : 600,
+                                                maxHeight  : 400,
+                                                autoclose  : false,
                                                 information: Locale.get(lg, 'projects.project.site.panel.window.create.clear.information', {
                                                     newName: newName,
-                                                    value: value
+                                                    value  : value
                                                 }),
-                                                events: {
+                                                events     : {
                                                     onSubmit: function (Win) {
                                                         Win.Loader.show();
 
                                                         Site.createChild({
-                                                            name: newName,
+                                                            name : newName,
                                                             title: value
                                                         }, function (result) {
                                                             Win.close();
@@ -198,7 +221,7 @@ define('utils/Site', [
 
                                     }, {
                                         project: Project.encode(),
-                                        name: value
+                                        name   : value
                                     });
 
                                     return;

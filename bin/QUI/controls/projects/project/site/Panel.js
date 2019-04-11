@@ -67,6 +67,7 @@ define('controls/projects/project/site/Panel', [
             'openMedia',
             'openSort',
             'deleteLinked',
+            'openSiteInPopup',
 
             '$onCreate',
             '$onDestroy',
@@ -179,6 +180,20 @@ define('controls/projects/project/site/Panel', [
          */
         getSite: function () {
             return this.$Site;
+        },
+
+        /**
+         * Open the site in a popup
+         */
+        openSiteInPopup: function () {
+            var Site    = this.getSite(),
+                Project = Site.getProject();
+
+            SiteUtils.openSite(
+                Project.getName(),
+                Project.getLang(),
+                Site.getId()
+            );
         },
 
         /**
@@ -328,9 +343,7 @@ define('controls/projects/project/site/Panel', [
                     width              : 40
                 },
                 events: {
-                    onClick: function () {
-
-                    }
+                    onClick: this.openSiteInPopup
                 }
             }).inject(this.getHeader());
 
