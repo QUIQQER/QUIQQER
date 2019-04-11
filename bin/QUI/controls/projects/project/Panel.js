@@ -79,18 +79,18 @@ define('controls/projects/project/Panel', [
                 title: Locale.get('quiqqer/system', 'projects.project.panel.title')
             });
 
-            this.$Map = null;
+            this.$Map         = null;
             this.$projectmaps = {};
-            this.$Filter = null;
-            this.$Button = null;
+            this.$Filter      = null;
+            this.$Button      = null;
 
-            this.$ProjectList = null;
+            this.$ProjectList      = null;
             this.$ProjectContainer = null;
-            this.$ProjectSearch = null;
-            this.$ProjectContent = null;
+            this.$ProjectSearch    = null;
+            this.$ProjectContent   = null;
 
             this.$LanguageSelect = null;
-            this.$MediaButton = null;
+            this.$MediaButton    = null;
 
             this.$__fx_run = false;
 
@@ -165,9 +165,9 @@ define('controls/projects/project/Panel', [
             Content.setStyle('opacity', 0);
 
             this.$ProjectContainer = Content.getElement('.project-container');
-            this.$ProjectList = Content.getElement('.project-list');
-            this.$ProjectSearch = Content.getElement('.project-search');
-            this.$ProjectContent = Content.getElement('.project-content');
+            this.$ProjectList      = Content.getElement('.project-list');
+            this.$ProjectSearch    = Content.getElement('.project-search');
+            this.$ProjectContent   = Content.getElement('.project-content');
 
             this.$ProjectContainer.setStyles({
                 height: 'calc(100% - 40px)'
@@ -644,10 +644,11 @@ define('controls/projects/project/Panel', [
          * Opens the selected Project and create a Project Sitemap in the Panel
          *
          * @method controls/projects/project/Panel#openProject
+         * @return {Promise}
          */
         openProject: function () {
             if (this.$__fx_run) {
-                return;
+                return Promise.resolve();
             }
 
             this.$__fx_run = true;
@@ -682,7 +683,7 @@ define('controls/projects/project/Panel', [
                 onChildClick      : this.$openSitePanel,
                 onChildContextMenu: function (Item, MapItem, event) {
                     var title = MapItem.getAttribute('text') + ' - ' +
-                                MapItem.getAttribute('value');
+                        MapItem.getAttribute('value');
 
                     MapItem.getContextMenu().setTitle(title).setPosition(
                         event.page.x,
@@ -709,7 +710,7 @@ define('controls/projects/project/Panel', [
             this.$LanguageSelect.disable();
             this.$MediaButton.enable();
 
-            Project.getConfig(false, 'langs').then(function (langs) {
+            return Project.getConfig(false, 'langs').then(function (langs) {
                 langs = langs.split(',');
 
                 if (!langs.length) {
@@ -727,23 +728,25 @@ define('controls/projects/project/Panel', [
                     self.$LanguageSelect.enable();
                     self.$LanguageSelect.setValue(Project.getLang());
                 });
-            });
 
-            List.setStyle('boxShadow', '0 6px 20px 0 rgba(0, 0, 0, 0.19)');
+                List.setStyle('boxShadow', '0 6px 20px 0 rgba(0, 0, 0, 0.19)');
+            }).then(function () {
+                return new Promise(function (resolve) {
+                    moofx(List).animate({
+                        left   : List.getSize().x * -1,
+                        opacity: 0
+                    }, {
+                        equation: 'ease-out',
+                        duration: 300,
+                        callback: function () {
+                            Container.setStyle('overflow', null);
+                            List.setStyle('display', 'none');
 
-            moofx(List).animate({
-                left   : List.getSize().x * -1,
-                opacity: 0
-            }, {
-                equation: 'ease-out',
-                duration: 300,
-                callback: function () {
-                    Container.setStyle('overflow', null);
-                    List.setStyle('display', 'none');
-
-                    self.$Map.open();
-                    self.$__fx_run = false;
-                }
+                            self.$Map.open().then(resolve);
+                            self.$__fx_run = false;
+                        }
+                    });
+                });
             });
         },
 

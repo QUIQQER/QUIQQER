@@ -25,7 +25,8 @@ QUI::$Ajax->registerFunction(
             'attributes'   => $attributes,
             'has_children' => $Site->hasChildren(true),
             'parentid'     => $Site->getParentId(),
-            'url'          => $Site->getUrlRewritten()
+            'url'          => $Site->getUrlRewritten(),
+            'hostUrl'      => $Site->getUrlRewrittenWithHost()
         ];
     },
     ['project', 'id'],

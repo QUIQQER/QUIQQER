@@ -16,7 +16,7 @@ use QUI;
 class Update extends QUI\System\Console\Tool
 {
     /**
-     * Konstruktor
+     * constructor
      */
     public function __construct()
     {
@@ -24,23 +24,23 @@ class Update extends QUI\System\Console\Tool
             ->setDescription('Update the quiqqer system and the quiqqer packages')
             ->addArgument(
                 'clearCache',
-                'Before execute the Update, clear the complete update cache.',
+                QUI::getLocale()->get('quiqqer/quiqqer', 'console.update.clearCache'),
                 false,
                 true
             )
             ->addArgument(
                 'setDevelopment',
-                'Set QUIQQER to the development version',
+                QUI::getLocale()->get('quiqqer/quiqqer', 'console.update.setDevelopment'),
                 false,
                 true
             )->addArgument(
                 'check',
-                'Checks for new updates',
+                QUI::getLocale()->get('quiqqer/quiqqer', 'console.update.check'),
                 false,
                 true
             )->addArgument(
                 'set-date',
-                'Updates only the quiqqer update-date',
+                QUI::getLocale()->get('quiqqer/quiqqer', 'console.update.set-date'),
                 false,
                 true
             );
@@ -53,19 +53,41 @@ class Update extends QUI\System\Console\Tool
      */
     public function execute()
     {
-        $this->writeLn('- Starting Update:');
-        $this->writeLn('');
+        $this->writeUpdateLog('====== EXECUTE UPDATE ======');
+        $this->writeUpdateLog(QUI::getLocale()->get('quiqqer/quiqqer', 'update.log.message.execute.console'));
 
+        $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.start'));
+        $this->writeLn('');
+        $this->logBuffer();
+
+        $self     = $this;
         $Packages = QUI::getPackageManager();
 
+        // output events
+        $Packages->getComposer()->addEvent('onOutput', function ($Composer, $output, $type) use ($self) {
+            $self->write($output);
+            $self->writeToLog($output);
+        });
+
         if ($this->getArgument('set-date')) {
-            QUI::getPackageManager()->setLastUpdateDate();
+            try {
+                QUI::getPackageManager()->setLastUpdateDate();
+                $this->logBuffer();
+            } catch (QUI\Exception $Exception) {
+                $this->writeToLog('====== ERROR ======');
+                $this->writeToLog($Exception->getMessage());
+            }
 
             return;
         }
 
         if ($this->getArgument('clearCache')) {
-            $Packages->clearComposerCache();
+            try {
+                $Packages->clearComposerCache();
+            } catch (QUI\Exception $Exception) {
+                $this->writeToLog('====== ERROR ======');
+                $this->writeToLog($Exception->getMessage());
+            }
         }
 
         if ($this->getArgument('setDevelopment')) {
@@ -91,20 +113,31 @@ class Update extends QUI\System\Console\Tool
 
 
         if ($this->getArgument('check')) {
-            $this->writeLn('Prüfe nach Aktualisierungen...'); // #locale
+            $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'update.log.message.update.via.console'));
             $this->writeLn();
             $this->writeLn();
+            $this->logBuffer();
 
-            $packages      = $Packages->getOutdated(true);
+            try {
+                $packages = $Packages->getOutdated(true);
+            } catch (\Exception $Exception) {
+                $this->writeToLog('====== ERROR ======');
+                $this->writeToLog($Exception->getMessage());
+
+                return;
+            }
+
             $nameLength    = 0;
             $versionLength = 0;
 
             // #locale
             if (empty($packages)) {
                 $this->writeLn(
-                    'Ihr System ist aktuell. Es wurden keine Aktualisierungen gefunden',
+                    QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.no.updates.available'),
                     'green'
                 );
+
+                $this->logBuffer();
 
                 return;
             }
@@ -131,9 +164,11 @@ class Update extends QUI\System\Console\Tool
                 );
 
                 $this->write($package['version'], 'cyan');
-
                 $this->writeLn();
+                $this->logBuffer();
             }
+
+            $this->logBuffer();
 
             return;
         }
@@ -143,8 +178,15 @@ class Update extends QUI\System\Console\Tool
             $Packages->getComposer()->unmute();
             $Packages->update(false, false);
 
-            $this->writeLn('- Update was executed');
-            $this->writeLn('- Generating Server files .htaccess and NGINX');
+            $this->logBuffer();
+            $wasExecuted = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.execute');
+            $webserver   = QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.webserver');
+
+            $this->writeLn($wasExecuted);
+            $this->writeToLog($wasExecuted.PHP_EOL);
+
+            $this->writeLn($webserver);
+            $this->writeToLog($webserver.PHP_EOL);
 
             $Httaccess = new Htaccess();
             $Httaccess->execute();
@@ -152,19 +194,24 @@ class Update extends QUI\System\Console\Tool
             $Httaccess = new Nginx();
             $Httaccess->execute();
 
+            $this->writeToLog(PHP_EOL);
+            $this->writeToLog('✔️'.PHP_EOL);
+            $this->writeToLog(PHP_EOL);
+
             // setup set the last update date
             QUI::getPackageManager()->setLastUpdateDate();
             QUI\Cache\Manager::clearAll();
+            $this->logBuffer();
         } catch (\Exception $Exception) {
             $this->write(' [error]', 'red');
             $this->writeLn('');
             $this->writeLn(
-                'Something went wrong::'.$Exception->getMessage(),
+                QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.error.1').'::'.$Exception->getMessage(),
                 'red'
             );
 
             $this->writeLn(
-                'If the setup didn\'t worked properly, please test the following command for the update:',
+                QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.error'),
                 'red'
             );
 
@@ -178,5 +225,57 @@ class Update extends QUI\System\Console\Tool
             $this->resetColor();
             $this->writeLn('');
         }
+
+        $this->logBuffer();
+    }
+
+    /**
+     * Write a log to the update file
+     *
+     * @param string $message
+     */
+    protected function writeUpdateLog($message)
+    {
+        QUI\System\Log::write(
+            $message,
+            QUI\System\Log::LEVEL_NOTICE,
+            [
+                'params' => [
+                    'clearCache'     => $this->getArgument('clearCache'),
+                    'setDevelopment' => $this->getArgument('setDevelopment'),
+                    'check'          => $this->getArgument('check'),
+                    'set-date'       => $this->getArgument('set-date')
+                ]
+            ],
+            'update',
+            true
+        );
+    }
+
+    /**
+     * Log the output buffer to the update log
+     */
+    protected function logBuffer()
+    {
+        $buffer = \ob_get_contents();
+        $buffer = \trim($buffer);
+        $this->writeToLog($buffer);
+
+        @\flush();
+        @\ob_flush();
+    }
+
+    /**
+     * Write buffer to the update log
+     *
+     * @param string $buffer
+     */
+    protected function writeToLog($buffer)
+    {
+        if (empty($buffer)) {
+            return;
+        }
+
+        \error_log($buffer, 3, VAR_DIR.'log/update-'.\date('Y-m-d').'.log');
     }
 }

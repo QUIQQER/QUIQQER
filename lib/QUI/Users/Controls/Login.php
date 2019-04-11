@@ -105,8 +105,13 @@ class Login extends Control
      */
     public function next()
     {
-        $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalAuthenticators();
-        $globals        = [];
+        if (QUI::isFrontend()) {
+            $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalAuthenticators();
+        } else {
+            $authenticators = QUI\Users\Auth\Handler::getInstance()->getGlobalBackendAuthenticators();
+        }
+
+        $globals = [];
 
         if (QUI::getSession()->get('auth-globals') != 1) {
             foreach ($authenticators as $auth) {

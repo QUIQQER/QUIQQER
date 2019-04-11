@@ -67,6 +67,8 @@ define('controls/projects/project/site/Panel', [
             'openMedia',
             'openSort',
             'deleteLinked',
+            'openSiteInPopup',
+            'openSiteInStructure',
 
             '$onCreate',
             '$onDestroy',
@@ -95,6 +97,7 @@ define('controls/projects/project/site/Panel', [
             this.$CategoryControl = null;
             this.$Container       = null;
 
+            this.$ButtonOpenWebsite    = null;
             this.$PreviousCategory     = null;
             this.$editorPeriodicalSave = false; // delay for the wysiwyg editor, to save to the locale storage
 
@@ -181,12 +184,57 @@ define('controls/projects/project/site/Panel', [
         },
 
         /**
+         * Open the site in a popup
+         */
+        openSiteInPopup: function () {
+            var Site    = this.getSite(),
+                Project = Site.getProject();
+
+            SiteUtils.openSite(
+                Project.getName(),
+                Project.getLang(),
+                Site.getId()
+            );
+        },
+
+        /**
+         * Opens the site in the project panel
+         */
+        openSiteInStructure: function () {
+            var Panel;
+            var projectPanels = QUI.Controls.getByType('controls/projects/project/Panel');
+
+            var Site    = this.getSite(),
+                Project = Site.getProject();
+
+            for (var i = 0, len = projectPanels.length; i < len; i++) {
+                Panel = projectPanels[i];
+
+                if (Panel.getAttribute('project') === Project.getName() &&
+                    Panel.getAttribute('lang') === Project.getLang()) {
+                    Panel.openSite(Site.getId());
+                    continue;
+                }
+
+                Panel.setAttribute('project', Project.getName());
+                Panel.setAttribute('lang', Project.getLang());
+                Panel.openProject().then(function () {
+                    Panel.openSite(Site.getId());
+                });
+            }
+        },
+
+        /**
          * Load the site attributes to the panel
          *
          * @method controls/projects/project/site/Panel#load
          */
         load: function () {
             this.refresh();
+
+            if (this.getSite().getAttribute('active') && this.$ButtonOpenWebsite) {
+                this.$ButtonOpenWebsite.show();
+            }
 
             if (this.getActiveCategory()) {
                 return this.$onCategoryEnter(this.getActiveCategory());
@@ -316,7 +364,6 @@ define('controls/projects/project/site/Panel', [
                 }
             }).inject(this.getHeader());
 
-
             var self    = this,
                 Site    = this.getSite(),
                 Project = Site.getProject();
@@ -387,6 +434,23 @@ define('controls/projects/project/site/Panel', [
                     }
 
                     self.addCategory(Category);
+                }
+
+                self.$ButtonOpenWebsite = new QUIButton({
+                    textimage: 'fa fa-external-link',
+                    name     : 'sort',
+                    text     : Locale.get('quiqqer/quiqqer', 'project.sitemap.open.in.window'),
+                    title    : Locale.get('quiqqer/quiqqer', 'project.sitemap.open.in.window'),
+                    events   : {
+                        onClick: self.openSiteInPopup
+                    }
+                });
+
+                self.addButton(self.$ButtonOpenWebsite);
+                self.$ButtonOpenWebsite.hide();
+
+                if (Site.getAttribute('active')) {
+                    self.$ButtonOpenWebsite.show();
                 }
 
                 if (isLocked) {
@@ -971,8 +1035,13 @@ define('controls/projects/project/site/Panel', [
                                 var LinkinTable     = Body.getElement('.site-linking'),
                                     LinkinLangTable = Body.getElement('.site-langs'),
                                     Locked          = Body.getElement('[data-locked]'),
-                                    Title           = Body.getElement('[name="title"]')
+                                    Title           = Body.getElement('[name="title"]'),
+                                    OpenInStructure = Body.getElement('[name="open-in-structure"]')
                                 ;
+
+                                OpenInStructure.addEvent('click', self.openSiteInStructure);
+                                OpenInStructure.set('disabled', false);
+                                OpenInStructure.set('title', Locale.get('quiqqer/quiqqer', 'projects.project.site.panel.information.openInSiteStructure'));
 
                                 Title.addEvent('blur', function () {
                                     if (Site.getId() === 1) {
@@ -1502,7 +1571,7 @@ define('controls/projects/project/site/Panel', [
         },
 
         /**
-         *
+         * init the name input key events
          */
         $bindNameInputUrlFilter: function () {
             var Site = this.getSite(),
@@ -1706,6 +1775,8 @@ define('controls/projects/project/site/Panel', [
          * event : on {classes/projects/Site} activation
          */
         $onSiteActivate: function () {
+            this.$ButtonOpenWebsite.show();
+
             var Status = this.getButtons('status');
 
             if (!Status) {
@@ -1723,6 +1794,8 @@ define('controls/projects/project/site/Panel', [
          * event : on {classes/projects/Site} deactivation
          */
         $onSiteDeactivate: function () {
+            this.$ButtonOpenWebsite.hide();
+
             var Status = this.getButtons('status');
 
             if (!Status) {

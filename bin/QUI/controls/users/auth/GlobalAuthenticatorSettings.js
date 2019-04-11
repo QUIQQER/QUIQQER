@@ -1,9 +1,6 @@
 /**
  * @module controls/users/auth/GlobalAuthenticatorSettings
- *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require Ajax
+ * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/users/auth/GlobalAuthenticatorSettings', [
 
@@ -13,15 +10,16 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
     'Locale',
     'Mustache',
 
-    'text!controls/users/auth/GlobalAuthenticatorSettings.Row.html'
+    'text!controls/users/auth/GlobalAuthenticatorSettings.Row.html',
+    'text!controls/users/auth/GlobalAuthenticatorSettings.Header.html'
 
-], function (QUI, QUIControl, QUIAjax, QUILocale, Mustache, templateRow) {
+], function (QUI, QUIControl, QUIAjax, QUILocale, Mustache, templateRow, templateHeader) {
     "use strict";
 
     var lg = 'quiqqer/quiqqer';
 
     return new Class({
-        Type: 'controls/users/auth/GlobalAuthenticatorSettings',
+        Type   : 'controls/users/auth/GlobalAuthenticatorSettings',
         Extends: QUIControl,
 
         Binds: [
@@ -34,8 +32,7 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
             this.$rows = [];
 
             this.addEvents({
-                onImport: this.$onImport,
-                onRefresh: this.$onRefresh
+                onImport: this.$onImport
             });
         },
 
@@ -47,35 +44,58 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
 
             QUIAjax.get('ajax_users_authenticator_globalAuthenticators', function (result) {
                 var available = result.available,
-                    globals = result.global;
+                    globals   = result.global;
 
                 new Element('div', {
                     html: QUILocale.get(lg, 'quiqqer.settings.auth.global.desc')
                 }).inject(self.getElm(), 'after');
 
-                var i, r, len, rlen, NewRow;
+                var i, r, len, rLen, NewRow;
 
-                var Row = self.getElm().getParent('tr');
+                var Row  = self.getElm().getParent('tr');
                 var rows = [];
 
                 for (i = 0, len = available.length; i < len; i++) {
                     NewRow = new Element('tr', {
                         html: Mustache.render(templateRow, {
-                            title: available[i].title,
-                            description: available[i].description,
+                            title        : available[i].title,
+                            description  : available[i].description,
                             authenticator: available[i].authenticator
                         })
                     }).inject(Row, 'after');
 
                     rows.push(NewRow);
 
-                    NewRow.getElement('input').addEvent('change', self.$onChange);
+                    NewRow.getElements('input').addEvent('change', self.$onChange);
                 }
 
-                for (i = 0, len = globals.length; i < len; i++) {
-                    for (r = 0, rlen = rows.length; r < rlen; r++) {
-                        rows[r].getElements('[name="' + globals[i].escapeRegExp() + '"]')
-                               .set('checked', true);
+                new Element('tr', {
+                    html: Mustache.render(templateHeader, {})
+                }).inject(Row, 'after');
+
+                var condition;
+                var frontend = globals.frontend;
+                var backend  = globals.backend;
+
+                for (i = 0, len = frontend.length; i < len; i++) {
+                    for (r = 0, rLen = rows.length; r < rLen; r++) {
+                        condition = [];
+                        condition.push('[name="' + frontend[i].escapeRegExp() + '"]');
+                        condition.push('[value="frontend"]');
+                        condition = condition.join('');
+
+                        rows[r].getElements(condition).set('checked', true);
+                    }
+                }
+
+                for (i = 0, len = backend.length; i < len; i++) {
+                    for (r = 0, rLen = rows.length; r < rLen; r++) {
+                        condition = [];
+                        condition.push('[name="' + backend[i].escapeRegExp() + '"]');
+                        condition.push('[value="backend"]');
+                        condition = condition.join('');
+
+                        rows[r].getElements(condition).set('checked', true);
                     }
                 }
 
@@ -88,14 +108,28 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
          * event: on checkbox change
          */
         $onChange: function () {
-            var checked = this.$rows.filter(function (Row) {
-                return Row.getElement('input').checked;
-            }).map(function (Row) {
-                return Row.getElement('input').name;
+            var i, len, elm;
+            var inputs = this.$rows.map(function (Row) {
+                var nodes = Row.getElements('input');
+                return [nodes[0], nodes[1]];
             });
 
-            if (this.getElm().nodeName == 'INPUT') {
-                this.getElm().value = JSON.encode(checked);
+            inputs = inputs.flat();
+
+            var result = {};
+
+            for (i = 0, len = inputs.length; i < len; i++) {
+                elm = inputs[i];
+
+                if (typeof result[elm.name] === 'undefined') {
+                    result[elm.name] = {};
+                }
+
+                result[elm.name][elm.value] = elm.checked;
+            }
+
+            if (this.getElm().nodeName === 'INPUT') {
+                this.getElm().value = JSON.encode(result);
             }
         },
 
@@ -108,7 +142,7 @@ define('controls/users/auth/GlobalAuthenticatorSettings', [
             return new Promise(function (resolve, reject) {
                 QUIAjax.post('ajax_users_authenticator_save', resolve, {
                     authenticators: this.getElm().value,
-                    onError: reject
+                    onError       : reject
                 });
             }.bind(this));
         }
