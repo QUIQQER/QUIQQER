@@ -1736,7 +1736,7 @@
             <en><![CDATA[Filter...]]></en>
         </locale>
         <locale name="project.sitemap.open.in.window">
-            <en><![CDATA[Open page in web page]]></en>
+            <en><![CDATA[Open in website]]></en>
         </locale>
 
         <locale name="control.server.filter.submit">

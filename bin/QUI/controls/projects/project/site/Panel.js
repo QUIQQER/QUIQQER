@@ -204,6 +204,10 @@ define('controls/projects/project/site/Panel', [
         load: function () {
             this.refresh();
 
+            if (this.getSite().getAttribute('active') && this.$ButtonOpenWebsite) {
+                this.$ButtonOpenWebsite.show();
+            }
+
             if (this.getActiveCategory()) {
                 return this.$onCategoryEnter(this.getActiveCategory());
             }
@@ -332,24 +336,6 @@ define('controls/projects/project/site/Panel', [
                 }
             }).inject(this.getHeader());
 
-            this.$ButtonOpenWebsite = new QUIButton({
-                image : 'fa fa-external-link',
-                name  : 'sort',
-                alt   : Locale.get('quiqqer/quiqqer', 'project.sitemap.open.in.window'),
-                title : Locale.get('quiqqer/quiqqer', 'project.sitemap.open.in.window'),
-                styles: {
-                    'border-left-width': 1,
-                    'float'            : 'right',
-                    width              : 40
-                },
-                events: {
-                    onClick: this.openSiteInPopup
-                }
-            }).inject(this.getHeader());
-
-            this.$ButtonOpenWebsite.hide();
-
-
             var self    = this,
                 Site    = this.getSite(),
                 Project = Site.getProject();
@@ -421,6 +407,19 @@ define('controls/projects/project/site/Panel', [
 
                     self.addCategory(Category);
                 }
+
+                self.$ButtonOpenWebsite = new QUIButton({
+                    textimage: 'fa fa-external-link',
+                    name     : 'sort',
+                    text     : Locale.get('quiqqer/quiqqer', 'project.sitemap.open.in.window'),
+                    title    : Locale.get('quiqqer/quiqqer', 'project.sitemap.open.in.window'),
+                    events   : {
+                        onClick: self.openSiteInPopup
+                    }
+                });
+
+                self.addButton(self.$ButtonOpenWebsite);
+                self.$ButtonOpenWebsite.hide();
 
                 if (Site.getAttribute('active')) {
                     self.$ButtonOpenWebsite.show();

@@ -1754,7 +1754,7 @@
             ]]></de>
         </locale>
         <locale name="project.sitemap.open.in.window">
-            <de><![CDATA[Seite in Webseite öffnen]]></de>
+            <de><![CDATA[In Webseite öffnen]]></de>
         </locale>
 
         <locale name="control.server.button.add.text">
