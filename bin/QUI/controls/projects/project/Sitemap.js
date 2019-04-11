@@ -690,7 +690,7 @@ define('controls/projects/project/Sitemap', [
                     text  : Locale.get('quiqqer/quiqqer', 'project.sitemap.open.in.window'),
                     icon  : 'fa fa-external-link',
                     events: {
-                        onClick: function (event) {
+                        onClick: function () {
                             self.$openSiteInWebsite(Itm);
                         }
                     }

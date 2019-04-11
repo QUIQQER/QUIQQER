@@ -95,6 +95,7 @@ define('controls/projects/project/site/Panel', [
             this.$CategoryControl = null;
             this.$Container       = null;
 
+            this.$ButtonOpenWebsite    = null;
             this.$PreviousCategory     = null;
             this.$editorPeriodicalSave = false; // delay for the wysiwyg editor, to save to the locale storage
 
@@ -316,6 +317,25 @@ define('controls/projects/project/site/Panel', [
                 }
             }).inject(this.getHeader());
 
+            this.$ButtonOpenWebsite = new QUIButton({
+                image : 'fa fa-external-link',
+                name  : 'sort',
+                alt   : Locale.get('quiqqer/quiqqer', 'project.sitemap.open.in.window'),
+                title : Locale.get('quiqqer/quiqqer', 'project.sitemap.open.in.window'),
+                styles: {
+                    'border-left-width': 1,
+                    'float'            : 'right',
+                    width              : 40
+                },
+                events: {
+                    onClick: function () {
+
+                    }
+                }
+            }).inject(this.getHeader());
+
+            this.$ButtonOpenWebsite.hide();
+
 
             var self    = this,
                 Site    = this.getSite(),
@@ -387,6 +407,10 @@ define('controls/projects/project/site/Panel', [
                     }
 
                     self.addCategory(Category);
+                }
+
+                if (Site.getAttribute('active')) {
+                    self.$ButtonOpenWebsite.show();
                 }
 
                 if (isLocked) {
@@ -1502,7 +1526,7 @@ define('controls/projects/project/site/Panel', [
         },
 
         /**
-         *
+         * init the name input key events
          */
         $bindNameInputUrlFilter: function () {
             var Site = this.getSite(),
@@ -1706,6 +1730,8 @@ define('controls/projects/project/site/Panel', [
          * event : on {classes/projects/Site} activation
          */
         $onSiteActivate: function () {
+            this.$ButtonOpenWebsite.show();
+
             var Status = this.getButtons('status');
 
             if (!Status) {
@@ -1723,6 +1749,8 @@ define('controls/projects/project/site/Panel', [
          * event : on {classes/projects/Site} deactivation
          */
         $onSiteDeactivate: function () {
+            this.$ButtonOpenWebsite.hide();
+
             var Status = this.getButtons('status');
 
             if (!Status) {
