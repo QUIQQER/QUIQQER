@@ -4590,6 +4590,9 @@
         <locale name="projects.project.site.panel.information.nameUrl">
             <de><![CDATA[Name / URL]]></de>
         </locale>
+        <locale name="projects.project.site.panel.information.openInSiteStructure">
+            <de><![CDATA[In Seitenstruktur öffnen]]></de>
+        </locale>
         <locale name="projects.project.site.panel.information.title">
             <de><![CDATA[Titel]]></de>
         </locale>

@@ -68,6 +68,7 @@ define('controls/projects/project/site/Panel', [
             'openSort',
             'deleteLinked',
             'openSiteInPopup',
+            'openSiteInStructure',
 
             '$onCreate',
             '$onDestroy',
@@ -194,6 +195,33 @@ define('controls/projects/project/site/Panel', [
                 Project.getLang(),
                 Site.getId()
             );
+        },
+
+        /**
+         * Opens the site in the project panel
+         */
+        openSiteInStructure: function () {
+            var Panel;
+            var projectPanels = QUI.Controls.getByType('controls/projects/project/Panel');
+
+            var Site    = this.getSite(),
+                Project = Site.getProject();
+
+            for (var i = 0, len = projectPanels.length; i < len; i++) {
+                Panel = projectPanels[i];
+
+                if (Panel.getAttribute('project') === Project.getName() &&
+                    Panel.getAttribute('lang') === Project.getLang()) {
+                    Panel.openSite(Site.getId());
+                    continue;
+                }
+
+                Panel.setAttribute('project', Project.getName());
+                Panel.setAttribute('lang', Project.getLang());
+                Panel.openProject().then(function () {
+                    Panel.openSite(Site.getId());
+                });
+            }
         },
 
         /**
@@ -1007,8 +1035,13 @@ define('controls/projects/project/site/Panel', [
                                 var LinkinTable     = Body.getElement('.site-linking'),
                                     LinkinLangTable = Body.getElement('.site-langs'),
                                     Locked          = Body.getElement('[data-locked]'),
-                                    Title           = Body.getElement('[name="title"]')
+                                    Title           = Body.getElement('[name="title"]'),
+                                    OpenInStructure = Body.getElement('[name="open-in-structure"]')
                                 ;
+
+                                OpenInStructure.addEvent('click', self.openSiteInStructure);
+                                OpenInStructure.set('disabled', false);
+                                OpenInStructure.set('title', Locale.get('quiqqer/quiqqer', 'projects.project.site.panel.information.openInSiteStructure'));
 
                                 Title.addEvent('blur', function () {
                                     if (Site.getId() === 1) {

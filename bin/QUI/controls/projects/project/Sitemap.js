@@ -169,10 +169,10 @@ define('controls/projects/project/Sitemap', [
 
             var self = this;
 
-            self.$loadUsersSettings().then(function () {
+            return self.$loadUsersSettings().then(function () {
                 // if an specific id must be open
                 if (typeof self.$openids !== 'undefined' && self.$Map.firstChild()) {
-                    var First = this.$Map.firstChild();
+                    var First = self.$Map.firstChild();
 
                     if (First.isOpen()) {
                         self.fireEvent('openEnd', [First, self]);

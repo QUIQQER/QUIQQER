@@ -4424,6 +4424,9 @@
         <locale name="projects.project.site.panel.information.nameUrl">
             <en><![CDATA[Name / URL]]></en>
         </locale>
+        <locale name="projects.project.site.panel.information.openInSiteStructure">
+            <en><![CDATA[Open in page structure]]></en>
+        </locale>
         <locale name="projects.project.site.panel.information.title">
             <en><![CDATA[Title]]></en>
         </locale>
