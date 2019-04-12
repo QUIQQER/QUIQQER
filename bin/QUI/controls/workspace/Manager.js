@@ -535,62 +535,70 @@ define('controls/workspace/Manager', [
         $openWorkspaceListWindow: function () {
             var self = this;
 
-            new QUIWindow({
-                title    : Locale.get('quiqqer/quiqqer', 'window.workspaces.select.title'),
-                maxHeight: 200,
-                maxWidth : 500,
-                autoclose: false,
-                buttons  : false,
-                events   : {
-                    onOpen: function (Win) {
-                        var Body = Win.getContent().set(
-                            'html',
-                            Locale.get('quiqqer/quiqqer', 'window.workspaces.select.text') + '<select></select>'
-                        );
+            // workaround
+            require([
+                'css!' + URL_OPT_DIR + 'bin/qui/extend/elements.css',
+                'css!' + URL_OPT_DIR + 'bin/qui/extend/buttons.css',
+                'css!' + URL_OPT_DIR + 'bin/qui/extend/classes.css',
+                'css!' + URL_BIN_DIR + 'css/style.css'
+            ], function () {
+                new QUIWindow({
+                    title    : Locale.get('quiqqer/quiqqer', 'window.workspaces.select.title'),
+                    maxHeight: 200,
+                    maxWidth : 500,
+                    autoclose: false,
+                    buttons  : false,
+                    events   : {
+                        onOpen: function (Win) {
+                            var Body = Win.getContent().set(
+                                'html',
+                                Locale.get('quiqqer/quiqqer', 'window.workspaces.select.text') + '<select></select>'
+                            );
 
-                        var Select = Body.getElement('select');
+                            var Select = Body.getElement('select');
 
-                        Select.setStyles({
-                            display: 'block',
-                            margin : '10px auto',
-                            width  : 200
-                        });
+                            Select.setStyles({
+                                display: 'block',
+                                margin : '10px auto',
+                                width  : 200
+                            });
 
-                        Select.addEvents({
-                            change: function () {
-                                var value = this.value;
+                            Select.addEvents({
+                                change: function () {
+                                    var value = this.value;
 
-                                Win.Loader.show();
+                                    Win.Loader.show();
 
-                                Ajax.post('ajax_desktop_workspace_setStandard', function () {
-                                    self.$loadWorkspace(value);
-                                    Win.close();
-                                }, {
-                                    id: value
-                                });
+                                    Ajax.post('ajax_desktop_workspace_setStandard', function () {
+                                        self.$loadWorkspace(value);
+                                        Win.close();
+                                    }, {
+                                        id: value
+                                    });
+                                }
+                            });
+
+                            new Element('option', {
+                                html : '',
+                                value: ''
+                            }).inject(Select);
+
+                            for (var i in self.$spaces) {
+                                if (self.$spaces.hasOwnProperty(i)) {
+                                    new Element('option', {
+                                        html : self.$spaces[i].title,
+                                        value: self.$spaces[i].id
+                                    }).inject(Select);
+                                }
                             }
-                        });
+                        },
 
-                        new Element('option', {
-                            html : '',
-                            value: ''
-                        }).inject(Select);
-
-                        for (var i in self.$spaces) {
-                            if (self.$spaces.hasOwnProperty(i)) {
-                                new Element('option', {
-                                    html : self.$spaces[i].title,
-                                    value: self.$spaces[i].id
-                                }).inject(Select);
-                            }
+                        onCancel: function () {
+                            self.$useBestWorkspace();
                         }
-                    },
-
-                    onCancel: function () {
-                        self.$useBestWorkspace();
                     }
-                }
-            }).open();
+                }).open();
+            });
         },
 
         /**
