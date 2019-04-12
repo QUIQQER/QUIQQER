@@ -316,7 +316,7 @@ require(requireList, function () {
         require(['Menu']);
 
         /**
-         * If files were droped to quiqqer
+         * If files were dropped to quiqqer
          * dont show it
          */
         document.id(document.body).addEvents({
