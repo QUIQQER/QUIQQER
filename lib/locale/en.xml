@@ -322,10 +322,10 @@
             <en><![CDATA[Create]]></en>
         </locale>
         <locale name="isActivate">
-            <en><![CDATA[Is activate]]></en>
+            <en><![CDATA[Is activated]]></en>
         </locale>
         <locale name="isDeactivate">
-            <en><![CDATA[Is deactivate]]></en>
+            <en><![CDATA[Is deactivated]]></en>
         </locale>
         <locale name="user.panel.details">
             <en><![CDATA[Details]]></en>
