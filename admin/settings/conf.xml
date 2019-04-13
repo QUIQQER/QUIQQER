@@ -659,10 +659,10 @@
 
                         <input conf="auth_settings.showResetPasswordBackend" type="checkbox">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.auth.showResetPasswordBackend"/>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.auth.showResetPasswordBackend"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/system"
+                                <locale group="quiqqer/quiqqer"
                                         var="quiqqer.settings.auth.showResetPasswordBackend.description"/>
                             </description>
                         </input>
