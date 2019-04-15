@@ -48,6 +48,13 @@
         <locale name="packages.panel.category.systemcheck.checksum.cacheForThisPackageNotFound">
             <pl><![CDATA[Cache dla <strong>[cacheForThisPackage]</strong> nie zostal znaleziony.]]></pl>
         </locale>
+
+        <locale name="control.icons.confirm.filterIcons">
+            <pl><![CDATA[Szukaj ikony]]></pl>
+        </locale>
+        <locale name="control.icons.confirm.noResultsInfo">
+            <pl><![CDATA[Brak wyników dla szukanej frazy]]></pl>
+        </locale>
     </groups>
 
 </locales>

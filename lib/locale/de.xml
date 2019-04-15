@@ -1780,6 +1780,12 @@
         <locale name="control.icons.confirm.title">
             <de><![CDATA[Icon-Auswahl]]></de>
         </locale>
+        <locale name="control.icons.confirm.filterIcons">
+            <de><![CDATA[Icons durchsuchen]]></de>
+        </locale>
+        <locale name="control.icons.confirm.noResultsInfo">
+            <de><![CDATA[Es gibt keine Icons, die der Suchanfrage entsprechen]]></de>
+        </locale>
         <locale name="control.grid.menu.button">
             <de><![CDATA[Menü]]></de>
         </locale>
