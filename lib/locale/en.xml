@@ -1756,6 +1756,12 @@
         <locale name="control.icons.confirm.title">
             <en><![CDATA[Icon-Select]]></en>
         </locale>
+        <locale name="control.icons.confirm.filterIcons">
+            <en><![CDATA[Search icons]]></en>
+        </locale>
+        <locale name="control.icons.confirm.noResultsInfo">
+            <en><![CDATA[There are no icons that match the search query]]></en>
+        </locale>
         <locale name="control.grid.menu.button">
             <en><![CDATA[Menu]]></en>
         </locale>

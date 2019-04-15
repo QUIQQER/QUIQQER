@@ -1039,29 +1039,33 @@ define('controls/projects/project/site/Panel', [
                                     OpenInStructure = Body.getElement('[name="open-in-structure"]')
                                 ;
 
-                                OpenInStructure.addEvent('click', self.openSiteInStructure);
-                                OpenInStructure.set('disabled', false);
-                                OpenInStructure.set('title', Locale.get('quiqqer/quiqqer', 'projects.project.site.panel.information.openInSiteStructure'));
+                                if (OpenInStructure) {
+                                    OpenInStructure.addEvent('click', self.openSiteInStructure);
+                                    OpenInStructure.set('disabled', false);
+                                    OpenInStructure.set('title', Locale.get('quiqqer/quiqqer', 'projects.project.site.panel.information.openInSiteStructure'));
+                                }
 
-                                Title.addEvent('blur', function () {
-                                    if (Site.getId() === 1) {
-                                        return;
-                                    }
+                                if (Title) {
+                                    Title.addEvent('blur', function () {
+                                        if (Site.getId() === 1) {
+                                            return;
+                                        }
 
-                                    var attributes = Site.getAttributes();
-                                    var name       = attributes.name;
-                                    var title      = attributes.title;
+                                        var attributes = Site.getAttributes();
+                                        var name       = attributes.name;
+                                        var title      = attributes.title;
 
-                                    if (this.value === title) {
-                                        return;
-                                    }
+                                        if (this.value === title) {
+                                            return;
+                                        }
 
-                                    if (this.value === name) {
-                                        return;
-                                    }
+                                        if (this.value === name) {
+                                            return;
+                                        }
 
-                                    self.$showTitleUrlAdjustment();
-                                });
+                                        self.$showTitleUrlAdjustment();
+                                    });
+                                }
 
 
                                 if (LinkinTable) {
@@ -1631,7 +1635,11 @@ define('controls/projects/project/site/Panel', [
                         hold = true;
                     },
 
-                    keyup: function () {
+                    keyup: function (event) {
+                        if (typeof event === 'undefined') {
+                            return;
+                        }
+
                         var old = this.value;
 
                         lastPos = QUIElmUtils.getCursorPosition(event.target);
