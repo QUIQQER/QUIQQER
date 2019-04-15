@@ -33,6 +33,7 @@ $files = $Icons->getCSSFiles();
 
         .icons {
             width: 100%;
+            height: 100%;
         }
 
         .icons-entry {
@@ -72,6 +73,21 @@ $files = $Icons->getCSSFiles();
             background: rgba(0, 0, 0, 0.6);
             cursor: pointer;
             color: #fff;
+        }
+
+        .no-results-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+            justify-content: center;
+            opacity: 0;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .no-results-info .fa {
+            margin-top: 20px;
+            font-size: 40px;
         }
     </style>
 
