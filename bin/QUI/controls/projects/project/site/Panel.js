@@ -45,6 +45,16 @@ define('controls/projects/project/site/Panel', [
 
     var lg = 'quiqqer/system';
 
+    var cleanupUrl = function (value) {
+        var notAllowed = Object.keys(SiteUtils.notAllowedUrlSigns()).join('|'),
+            reg        = new RegExp('[' + notAllowed + ']', "g");
+
+        value = value.replace(reg, '');
+        value = value.replace(/ /g, QUIQQER.Rewrite.URL_SPACE_CHARACTER);
+
+        return value;
+    };
+
     /**
      * An SitePanel, opens the Site in an Apppanel
      *
@@ -1052,14 +1062,16 @@ define('controls/projects/project/site/Panel', [
                                         }
 
                                         var attributes = Site.getAttributes();
-                                        var name       = attributes.name;
-                                        var title      = attributes.title;
 
-                                        if (this.value === title) {
+                                        var name  = cleanupUrl(attributes.name);
+                                        var title = cleanupUrl(attributes.title);
+                                        var value = cleanupUrl(this.value);
+
+                                        if (value === title) {
                                             return;
                                         }
 
-                                        if (this.value === name) {
+                                        if (value === name) {
                                             return;
                                         }
 
@@ -1617,12 +1629,9 @@ define('controls/projects/project/site/Panel', [
             }).inject(UrlEditButton);
 
             // filter
-            var sitePath   = siteUrl.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '') + '/',
-                notAllowed = Object.keys(SiteUtils.notAllowedUrlSigns()).join('|'),
-                reg        = new RegExp('[' + notAllowed + ']', "g");
-
-            var lastPos = null,
-                hold    = false;
+            var sitePath = siteUrl.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '') + '/',
+                lastPos  = null,
+                hold     = false;
 
             NameInput.set({
                 value : Site.getAttribute('name'),
@@ -1636,19 +1645,16 @@ define('controls/projects/project/site/Panel', [
                     },
 
                     keyup: function (event) {
-                        if (typeof event === 'undefined') {
-                            return;
-                        }
-
                         var old = this.value;
 
-                        lastPos = QUIElmUtils.getCursorPosition(event.target);
-                        hold    = false;
+                        if (typeof event !== 'undefined') {
+                            lastPos = QUIElmUtils.getCursorPosition(event.target);
+                            hold    = false;
+                        }
 
-                        this.value = this.value.replace(reg, '');
-                        this.value = this.value.replace(/ /g, QUIQQER.Rewrite.URL_SPACE_CHARACTER);
+                        this.value = cleanupUrl(this.value);
 
-                        if (old !== this.value) {
+                        if (typeof event !== 'undefined' && old !== this.value) {
                             QUIElmUtils.setCursorPosition(this, lastPos - 1);
                         }
 
@@ -2198,24 +2204,41 @@ define('controls/projects/project/site/Panel', [
          * Shows title url customization confirm window
          */
         $showTitleUrlAdjustment: function () {
-            var self = this;
+            var self = this,
+                Site = this.getSite();
 
             new QUIConfirm({
-                icon       : 'fa fa-file-o',
-                texticon   : 'fa fa-file-o',
-                title      : Locale.get('quiqqer/quiqqer', 'window.title.url.customization'),
-                text       : Locale.get('quiqqer/quiqqer', 'window.title.url.customization.text'),
-                information: Locale.get('quiqqer/quiqqer', 'window.title.url.customization.information'),
-                maxHeight  : 400,
-                maxWidth   : 600,
-                events     : {
+                icon         : 'fa fa-file-o',
+                texticon     : 'fa fa-file-o',
+                title        : Locale.get('quiqqer/quiqqer', 'window.title.url.customization'),
+                text         : Locale.get('quiqqer/quiqqer', 'window.title.url.customization.text'),
+                information  : Locale.get('quiqqer/quiqqer', 'window.title.url.customization.information'),
+                maxHeight    : 400,
+                maxWidth     : 600,
+                events       : {
                     onSubmit: function () {
                         var Title = self.getBody().getElement('[name="title"]'),
                             Name  = self.getBody().getElement('[name="site-name"]');
 
-                        Name.value = Title.value;
+                        Name.value = cleanupUrl(Title.value);
                         Name.fireEvent('keyup');
+
+                        Site.setAttribute('name', Name.value);
+                        Site.setAttribute('title', Title.value);
+                    },
+                    onCancel: function () {
+                        var Title = self.getBody().getElement('[name="title"]'),
+                            Name  = self.getBody().getElement('[name="site-name"]');
+
+                        Site.setAttribute('name', Name.value);
+                        Site.setAttribute('title', Title.value);
                     }
+                },
+                ok_button    : {
+                    text: Locale.get('quiqqer/quiqqer', 'window.title.url.customization.button.ok')
+                },
+                cancel_button: {
+                    text: Locale.get('quiqqer/quiqqer', 'window.title.url.customization.button.cancel')
                 }
             }).open();
         }

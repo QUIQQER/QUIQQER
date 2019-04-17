@@ -1794,16 +1794,22 @@
         </locale>
 
         <locale name="window.title.url.customization">
-            <de><![CDATA[Title und Name sind unterschiedlich]]></de>
+            <de><![CDATA[Title und URL sind unterschiedlich]]></de>
         </locale>
         <locale name="window.title.url.customization.text">
-            <de><![CDATA[Title und Name der Seite sind unterschiedlich]]></de>
+            <de><![CDATA[Du hast den Title der Seite geändert. Soll die URL angepasst werden?]]></de>
         </locale>
         <locale name="window.title.url.customization.information">
             <de><![CDATA[
-            Du hast den Title der Seite geändert und dadurch wäre der Name / URL unterschiedlich.
-            Soll der Name / URL angepasst werden?
+            Du hast den Title der Seite geändert und dadurch unterscheidet sich die URL vom Titel.
+            Soll die URL an den Title angepasst werden?
             ]]></de>
+        </locale>
+        <locale name="window.title.url.customization.button.ok">
+            <de><![CDATA[URL anpassen]]></de>
+        </locale>
+        <locale name="window.title.url.customization.button.cancel">
+            <de><![CDATA[URL beibehalten]]></de>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">
@@ -4594,7 +4600,7 @@
             <de><![CDATA[Daten von Seite: #[id]]]></de>
         </locale>
         <locale name="projects.project.site.panel.information.nameUrl">
-            <de><![CDATA[Name / URL]]></de>
+            <de><![CDATA[URL]]></de>
         </locale>
         <locale name="projects.project.site.panel.information.openInSiteStructure">
             <de><![CDATA[In Seitenstruktur öffnen]]></de>
