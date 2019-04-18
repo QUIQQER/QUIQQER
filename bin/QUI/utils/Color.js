@@ -249,6 +249,44 @@ define('utils/Color', [], function () {
             }
 
             return {r: r, g: g, b: b};
+        },
+
+
+        /**
+         * Uses a string as an input, hashes it and calculates a hex color (#ABC123) from it.
+         *
+         * This is especially useful for charts.
+         * This makes it possible to generate a different color for each value which result is also repeatable.
+         * So the same values will always have the same colors.
+         *
+         * Adapted from Christian Sanchez on StackOverflow:
+         * @link https://stackoverflow.com/a/3426956/3002417
+         *
+         * @example Passing 'text/plain' as an input returns '#FF9436'.
+         *
+         * @param {string} string
+         *
+         * @return {string} Color in hex format with a prepended '#' (e.g. '#ABC123')
+         */
+        getHexColorByHashingString: function (string) {
+            function generateHash(str) {
+                var hash = 0;
+                for (var i = 0; i < str.length; i++) {
+                    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+                }
+                return hash;
+            }
+
+            function hashToRgb(i){
+                var c = (i & 0x00FFFFFF)
+                    .toString(16)
+                    .toUpperCase();
+
+                return "00000".substring(0, 6 - c.length) + c;
+
+            }
+
+            return '#' + hashToRgb(generateHash(string));
         }
     };
 });
