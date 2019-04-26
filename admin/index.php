@@ -39,6 +39,7 @@ if ($Avatar) {
 <!--[if (gte IE 9)|!(IE)]><!-->
 <html lang="<?php echo $User->getLang(); ?>"> <!--<![endif]-->
 <head>
+    <title>QUIQQER - <?php echo HOST ?></title>
 
     <link
             href="//fonts.googleapis.com/css?family=Open+Sans:400,700,400italic"
@@ -50,12 +51,11 @@ if ($Avatar) {
           content="width=device-width, initial-scale=1, minimum-scale=1,maximum-scale=1"
     />
 
+    <meta name="robots" content="noindex,nofollow"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-
-    <!-- HTML5
-        ================================================== -->
-
-    <title>QUIQQER - <?php echo HOST ?></title>
+    <meta name="description"
+          content="Modular design. Convenient backend  Fast implementation. The all around carefree Enterprise Content Management System."
+    />
 
     <link href="<?php echo URL_BIN_DIR; ?>images/Q.png" rel="shortcut icon" type="image/x-icon"/>
 
