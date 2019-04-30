@@ -31,9 +31,10 @@ define('controls/projects/Select', [
         Type   : 'controls/projects/Select',
 
         options: {
-            langSelect : true,
-            emptyselect: true,
-            icon       : 'fa fa-home'
+            langSelect   : true,
+            emptyselect  : true,
+            icon         : 'fa fa-home',
+            localeStorage: false // name for the locale storage, if this is set, the value is stored in the locale storage
         },
 
         initialize: function (options) {
@@ -50,13 +51,16 @@ define('controls/projects/Select', [
 
             this.$Elm = new Element('div');
 
+            var localStorageValue = QUI.Storage.get('dashboard-media-info-card-project-select');
+
             this.$Select = new QUISelect({
-                name  : 'projects-select',
-                events: {
+                name         : 'projects-select',
+                events       : {
                     onChange: function (value) {
                         self.fireEvent('change', [value, self]);
                     }
-                }
+                },
+                localeStorage: this.getAttribute('localeStorage')
             });
 
             this.$Select.inject(this.$Elm);
@@ -102,9 +106,17 @@ define('controls/projects/Select', [
                     }
                 }
 
-                self.$Select.setValue(
-                    self.$Select.firstChild().getAttribute('value')
-                );
+                var value = self.$Select.firstChild().getAttribute('value');
+
+                if (localStorageValue) {
+                    try {
+                        value = JSON.decode(localStorageValue);
+                    } catch (e) {
+                        value = self.$Select.firstChild().getAttribute('value');
+                    }
+                }
+
+                self.$Select.setValue(value);
 
                 self.fireEvent('load', [self]);
                 self.Loader.hide();
