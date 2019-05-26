@@ -321,7 +321,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $this->deleteCache();
 
         $this->setAttribute('name', $newname);
-        $this->setAttribute('file', $new_path);
+        $this->setAttribute('file', $new_path.'/');
 
         QUI::getEvents()->fireEvent('mediaRename', [$this]);
     }
