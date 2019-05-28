@@ -12,6 +12,7 @@ QUI::$Ajax->registerFunction(
     function ($params) {
         $params = \json_decode($params, true);
 
+        /** @var \QUI\Projects\Project $Project */
         $Project = QUI\Projects\Manager::createProject(
             $params['project'],
             $params['lang']
@@ -21,15 +22,12 @@ QUI::$Ajax->registerFunction(
         if (isset($params['template']) && !empty($params['template'])) {
             $Config = QUI::getProjectManager()->getConfig();
 
-            $installedTemplates = QUI::getPackageManager()->getInstalled([
-                'type' => 'quiqqer-template'
-            ]);
-
             $template = $params['template'];
             $template = \QUI\Utils\Security\Orthos::removeHTML($template);
             $template = \QUI\Utils\Security\Orthos::clearPath($template);
             $Config->set($Project->getName(), 'template', $template);
             $Config->save();
+            $Project->refresh();
         }
 
         if (isset($params['demodata']) && $params['demodata']) {
