@@ -108,7 +108,7 @@ define('controls/lang/Select', [
                 }
             }).inject(this.$Elm);
 
-            this.$buildSelect().then(function() {
+            this.$buildSelect().then(function () {
                 self.selectFirst();
             });
         },
@@ -122,22 +122,22 @@ define('controls/lang/Select', [
             var self = this;
 
             return new Promise(function (resolve, reject) {
-                QUIAjax.get('ajax_system_getAvailableLanguages', function (languages) {
-                    for (var i = 0, len = languages.length; i < len; i++) {
-                        self.$Select.appendChild(
-                            QUILocale.get('quiqqer/quiqqer', 'language.' + languages[i]),
-                            languages[i],
-                            URL_BIN_DIR + '16x16/flags/' + languages[i] + '.png'
-                        );
+                require(['QUIQQER'], function (QUIQQER) {
+                    QUIQQER.getAvailableLanguages().then(function (languages) {
+                        for (var i = 0, len = languages.length; i < len; i++) {
+                            self.$Select.appendChild(
+                                QUILocale.get('quiqqer/quiqqer', 'language.' + languages[i]),
+                                languages[i],
+                                URL_BIN_DIR + '16x16/flags/' + languages[i] + '.png'
+                            );
 
-                        if (self.$first === false) {
-                            self.$first = languages[i];
+                            if (self.$first === false) {
+                                self.$first = languages[i];
+                            }
                         }
-                    }
 
-                    resolve();
-                }, {
-                    onError: reject
+                        resolve();
+                    }).catch(reject);
                 });
             });
         },

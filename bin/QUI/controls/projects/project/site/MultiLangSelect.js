@@ -6,6 +6,7 @@
  */
 define('controls/projects/project/site/MultiLangSelect', [
 
+    'QUIQQER',
     'qui/QUI',
     'qui/controls/Control',
     'controls/projects/project/site/Input',
@@ -14,7 +15,7 @@ define('controls/projects/project/site/MultiLangSelect', [
     'Locale',
     'css!controls/projects/project/site/MultiLangSelect.css'
 
-], function (QUI, QUIControl, QUISiteInput, QUIAjax, QUILocale) {
+], function (QUIQQER, QUI, QUIControl, QUISiteInput, QUIAjax, QUILocale) {
     "use strict";
 
     return new Class({
@@ -78,7 +79,7 @@ define('controls/projects/project/site/MultiLangSelect', [
             this.$Input      = Elm;
             this.$Input.type = 'hidden';
 
-            QUIAjax.get('ajax_system_getAvailableLanguages', function (languages) {
+            QUIQQER.getAvailableLanguages().then(function (languages) {
                 var i, len, flag, lang, LangContainer, InputField;
                 var current = QUILocale.getCurrent(),
                     data    = [];
