@@ -14,6 +14,7 @@ define('controls/lang/InputMultiLang', [
     "use strict";
 
     return new Class({
+
         Extends: QUIControl,
         Type   : 'controls/lang/InputMultiLang',
 
@@ -29,6 +30,7 @@ define('controls/lang/InputMultiLang', [
             this.$Container = null;
             this.$Button    = null;
             this.$Input     = null;
+            this.$disabled  = false;
 
             this.addEvents({
                 onImport: this.$onImport,
@@ -169,7 +171,35 @@ define('controls/lang/InputMultiLang', [
 
                 self.$Button.addEvent('click', self.toggle);
                 self.refreshData();
+
+                if (self.$disabled) {
+                    self.disable();
+                }
             });
+        },
+
+        /**
+         * disable this control
+         */
+        disable: function () {
+            this.$disabled = true;
+
+            this.$Button.disabled = true;
+            this.$Button.setStyle('cursor', 'not-allowed');
+
+            this.$Container.getElements('input').set('disabled', true);
+        },
+
+        /**
+         * disable this control
+         */
+        enable: function () {
+            this.$disabled = false;
+
+            this.$Button.disabled = false;
+            this.$Button.setStyle('cursor', 'pointer');
+
+            this.$Container.getElements('input').set('disabled', false);
         },
 
         /**
@@ -225,6 +255,10 @@ define('controls/lang/InputMultiLang', [
          * Toggle the open status
          */
         toggle: function (event) {
+            if (this.$disabled) {
+                return;
+            }
+
             if (typeOf(event) === 'domevent') {
                 event.stop();
             }
@@ -240,6 +274,10 @@ define('controls/lang/InputMultiLang', [
          * shows all translation entries
          */
         open: function () {
+            if (this.$disabled) {
+                return;
+            }
+
             var self = this,
                 list = this.$Container.getElements(
                     '.quiqqer-inputmultilang-entry'
@@ -279,6 +317,10 @@ define('controls/lang/InputMultiLang', [
          * shows all translation entries
          */
         close: function () {
+            if (this.$disabled) {
+                return;
+            }
+
             var self = this,
                 list = this.$Container.getElements(
                     '.quiqqer-inputmultilang-entry'
