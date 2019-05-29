@@ -926,6 +926,11 @@ define('controls/grid/Grid', [
                 return;
             }
 
+            if (this.getAttribute('selectable') && !li.hasClass('selected')) {
+                event.control = true;
+                this.onRowClick(event);
+            }
+
             event.stop();
 
             this.fireEvent('contextMenu', {
