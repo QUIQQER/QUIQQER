@@ -203,12 +203,12 @@ class Manager
 
         $DBTable->addColumn($table2users, [
             'user_id'     => 'int(11) NOT NULL',
-            'permissions' => 'text'
+            'permissions' => 'MEDIUMTEXT'
         ]);
 
         $DBTable->addColumn($table2groups, [
             'group_id'    => 'int(11) NOT NULL',
-            'permissions' => 'text'
+            'permissions' => 'MEDIUMTEXT'
         ]);
 
         $DBTable->addColumn($table2sites, [

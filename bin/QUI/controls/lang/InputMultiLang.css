@@ -20,6 +20,10 @@
     width: 100%;
 }
 
+.quiqqer-inputmultilang-entry input:disabled {
+    cursor: not-allowed;
+}
+
 .quiqqer-inputmultilang-entry input {
     background-position: 5px center;
     background-repeat: no-repeat;

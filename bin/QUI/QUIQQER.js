@@ -6,6 +6,8 @@
 define('QUIQQER', ['Ajax', 'Packages'], function (QUIAjax, Packages) {
     "use strict";
 
+    var availableLanguages = [];
+
     return {
         /**
          * Return the current QUIQQER Version
@@ -35,7 +37,7 @@ define('QUIQQER', ['Ajax', 'Packages'], function (QUIAjax, Packages) {
          */
         isAuthenticated: function () {
             return new Promise(function (resolve, reject) {
-                QUIAjax.get('ajax_isAuth', function(User) {
+                QUIAjax.get('ajax_isAuth', function (User) {
                     if (!User.id) {
                         resolve(false);
                         return;
@@ -45,6 +47,24 @@ define('QUIQQER', ['Ajax', 'Packages'], function (QUIAjax, Packages) {
                     resolve(true);
                 }, {
                     onError: reject
+                });
+            });
+        },
+
+        /**
+         * Return the available languages
+         *
+         * @return {Promise}
+         */
+        getAvailableLanguages: function () {
+            if (availableLanguages.length) {
+                return Promise.resolve(availableLanguages);
+            }
+
+            return new Promise(function (resolve) {
+                QUIAjax.get('ajax_system_getAvailableLanguages', function (languages) {
+                    availableLanguages = languages;
+                    resolve(languages);
                 });
             });
         }

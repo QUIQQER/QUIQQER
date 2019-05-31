@@ -13,6 +13,7 @@
  */
 
 require \dirname(__FILE__).'/Autoloader.php';
+require \dirname(__FILE__).'/polyfills.php';
 
 /**
  * Main QUIQQER Autoload function
@@ -29,8 +30,6 @@ require \dirname(__FILE__).'/Autoloader.php';
 /**
  * Error Handler
  *
- * @author www.pcsg.de (Henning Leutz)
- *
  * @param integer $errno
  * @param string $errstr
  * @param string $errfile
@@ -38,6 +37,8 @@ require \dirname(__FILE__).'/Autoloader.php';
  *
  * @return boolean
  * @throws ErrorException
+ * @author www.pcsg.de (Henning Leutz)
+ *
  */
 function exception_error_handler($errno, $errstr, $errfile, $errline)
 {

@@ -27,8 +27,8 @@ class Utils
      *
      * @param string $name
      *
-     * @throws QUI\Exception
      * @return boolean
+     * @throws QUI\Exception
      */
     public static function checkName($name)
     {
@@ -74,14 +74,15 @@ class Utils
     }
 
     /**
-     * Säubert eine URL macht sie schön
+     * Clean a URL -> makes it beautiful
+     * unwanted signs will be converted or filtered
      *
      * @param string $url
-     * @param QUI\Projects\Project $Project - Project clear extension
+     * @param QUI\Projects\Project|null $Project - optional, Project clear extension
      *
      * @return string
      */
-    public static function clearUrl($url, QUI\Projects\Project $Project)
+    public static function clearUrl($url, QUI\Projects\Project $Project = null)
     {
         // space separator
         $url = \str_replace(QUI\Rewrite::URL_SPACE_CHARACTER, ' ', $url);
@@ -120,19 +121,20 @@ class Utils
         // doppelte leerzeichen löschen
         $url = \preg_replace('/([ ]){2,}/', "$1", $url);
 
-        // @todo als event
         // URL Filter
-        $name   = $Project->getAttribute('name');
-        $filter = USR_DIR.'lib/'.$name.'/url.filter.php';
-        $func   = 'url_filter_'.$name;
+        if ($Project !== null) {
+            $name   = $Project->getAttribute('name');
+            $filter = USR_DIR.'lib/'.$name.'/url.filter.php';
+            $func   = 'url_filter_'.$name;
 
-        $filter = Orthos::clearPath(\realpath($filter));
+            $filter = Orthos::clearPath(\realpath($filter));
 
-        if (\file_exists($filter)) {
-            require_once $filter;
+            if (\file_exists($filter)) {
+                require_once $filter;
 
-            if (\function_exists($func)) {
-                $url = $func($url);
+                if (\function_exists($func)) {
+                    $url = $func($url);
+                }
             }
         }
 
