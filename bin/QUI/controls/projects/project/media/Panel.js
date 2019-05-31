@@ -421,7 +421,7 @@ define('controls/projects/project/media/Panel', [
                 self.addButton(self.$Filter);
 
                 // show project select
-                if (self.getAttribute('isInPopup')) {
+                if (self.getAttribute('isInPopup') && self.getAttribute('breadcrumb')) {
                     var Breadcrumb = self.getElm().getElement('.qui-panel-breadcrumb');
 
                     require([
