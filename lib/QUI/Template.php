@@ -141,7 +141,7 @@ class Template extends QUI\QDOM
      *
      * if $admin=true, admin template plugins were loaded
      *
-     * @param boolean $admin - (optionsl) is the template for the admin or frontend? <- param depricated
+     * @param boolean $admin - (optional) is the template for the admin or frontend? <- param depricated
      *
      * @return QUI\Interfaces\Template\EngineInterface
      * @throws QUI\Exception
@@ -809,7 +809,7 @@ class Template extends QUI\QDOM
         $Project = $this->getAttribute('Project');
         $Site    = $this->getAttribute('Site');
 
-        QUI\Utils\Site::setRecursivAttribute($Site, 'layout');
+        QUI\Utils\Site::setRecursiveAttribute($Site, 'layout');
 
         $layout = $Site->getAttribute('layout');
 
