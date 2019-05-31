@@ -905,6 +905,10 @@ class Template extends QUI\QDOM
             $template = LIB_DIR.'templates/standard.html';
         }
 
+        $Engine->assign([
+            'template' => $template
+        ]);
+
         return $Engine->fetch($template);
     }
 }
