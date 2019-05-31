@@ -132,8 +132,8 @@ define('controls/system/AvailableLanguages', [
 
                 for (i = 0, len = list.length; i < len; i++) {
                     flag = '<span class="quiqqer-available-flag">' +
-                           '<img src="' + URL_BIN_DIR + '16x16/flags/' + list[i] + '.png" />' +
-                           '</span>';
+                        '<img src="' + URL_BIN_DIR + '16x16/flags/' + list[i] + '.png" />' +
+                        '</span>';
 
                     langtext = QUILocale.get('quiqqer/quiqqer', 'language.' + list[i]);
                     name     = parentName + '.' + list[i];
@@ -142,9 +142,9 @@ define('controls/system/AvailableLanguages', [
                         'class'    : 'quiqqer-available-languages-entry',
                         'data-lang': list[i],
                         html       : '<input type="text" name="' + name + '" placeholder="' + placeholder + '" />' +
-                                     '<span class="quiqqer-available-languages-entry-text">' +
-                                     flag + langtext +
-                                     '</span>'
+                            '<span class="quiqqer-available-languages-entry-text">' +
+                            flag + langtext +
+                            '</span>'
                     }).inject(self.getElm());
                 }
 
@@ -181,10 +181,13 @@ define('controls/system/AvailableLanguages', [
 
         /**
          * Return the available languages
+         *
          * @param {Function} callback
          */
         getAvailableLanguages: function (callback) {
-            QUIAjax.get('ajax_system_getAvailableLanguages', callback);
+            require(['QUIQQER'], function (QUIQQER) {
+                QUIQQER.getAvailableLanguages().then(callback);
+            });
         }
     });
 });
