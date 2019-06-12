@@ -1598,9 +1598,9 @@ class Manager extends QUI\QDOM
         $this->composerUpdateOrInstall($package);
 
         // composer optimize
-//        $Composer->dumpAutoload([
-//            '--optimize' => true
-//        ]);
+        $Composer->dumpAutoload([
+            '--optimize' => true
+        ]);
 
         if ($package) {
             $Package = self::getInstalledPackage($package);
