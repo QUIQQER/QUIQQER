@@ -1870,7 +1870,7 @@ class Manager extends QUI\QDOM
 
         if ($this->getComposer()->getMode() != QUI\Composer\Composer::MODE_WEB) {
             return $this->getComposer()->update([
-                '--no-autoloader' => false
+                '--no-autoloader' => true
             ]);
         }
 
@@ -1883,7 +1883,7 @@ class Manager extends QUI\QDOM
 
         if (!$lockServerEnabled) {
             return $this->getComposer()->update([
-                '--no-autoloader' => false
+                '--no-autoloader' => true
             ]);
         }
 
@@ -1910,7 +1910,7 @@ class Manager extends QUI\QDOM
         }
 
         return $this->getComposer()->install([
-            '--no-autoloader' => false
+            '--no-autoloader' => true
         ]);
     }
 
