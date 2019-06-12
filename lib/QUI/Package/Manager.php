@@ -1550,8 +1550,8 @@ class Manager extends QUI\QDOM
      *
      * @throws QUI\Exception
      *
-     * @todo if exception uncommited changes -> own error message
-     * @todo if exception uncommited changes -> interactive mode
+     * @todo if exception uncommitted changes -> own error message
+     * @todo if exception uncommitted changes -> interactive mode
      */
     public function update($package = false, $mute = true)
     {
@@ -1869,7 +1869,9 @@ class Manager extends QUI\QDOM
         }
 
         if ($this->getComposer()->getMode() != QUI\Composer\Composer::MODE_WEB) {
-            return $this->getComposer()->update();
+            return $this->getComposer()->update([
+                '--no-autoloader' => false
+            ]);
         }
 
         if (!$lockServerEnabled && $memoryLimit != -1 && $memoryLimit < 256 * 1024 * 1024) {
@@ -1880,7 +1882,9 @@ class Manager extends QUI\QDOM
         }
 
         if (!$lockServerEnabled) {
-            return $this->getComposer()->update();
+            return $this->getComposer()->update([
+                '--no-autoloader' => false
+            ]);
         }
 
         $LockClient = new QUI\Lockclient\Lockclient();
@@ -1905,7 +1909,9 @@ class Manager extends QUI\QDOM
             }
         }
 
-        return $this->getComposer()->install();
+        return $this->getComposer()->install([
+            '--no-autoloader' => false
+        ]);
     }
 
     /**
