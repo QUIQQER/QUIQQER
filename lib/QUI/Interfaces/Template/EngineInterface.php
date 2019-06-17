@@ -33,10 +33,25 @@ interface EngineInterface
     public function assign($var, $value = false);
 
     /**
-     * Return the value of a template variabel
+     * Return the value of a template variable
      *
      * @param string $variableName
      * @return mixed
      */
     public function getTemplateVariable($variableName);
+
+    /**
+     * Set a locale object to the engine
+     *
+     * @param \QUI\Locale $Locale
+     * @return mixed
+     */
+    public function setLocale(\QUI\Locale $Locale);
+
+    /**
+     * Return the engine locale object
+     *
+     * @return \QUI\Locale|null
+     */
+    public function getLocale();
 }
