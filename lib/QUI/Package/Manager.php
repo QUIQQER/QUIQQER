@@ -1550,8 +1550,8 @@ class Manager extends QUI\QDOM
      *
      * @throws QUI\Exception
      *
-     * @todo if exception uncommited changes -> own error message
-     * @todo if exception uncommited changes -> interactive mode
+     * @todo if exception uncommitted changes -> own error message
+     * @todo if exception uncommitted changes -> interactive mode
      */
     public function update($package = false, $mute = true)
     {
@@ -1852,11 +1852,15 @@ class Manager extends QUI\QDOM
         $lockServerEnabled = QUI::conf('globals', 'lockserver_enabled');
         $memoryLimit       = QUI\Utils\System::getMemoryLimit();
 
+        $updateOptions = [
+            '--no-autoloader' => true
+        ];
+
         // Disable lockserver if a vcs repository is used
         // Lockserver can not handle VCS repositories ==> Check if local execution is possible or fail the operation
         if ($this->isVCSServerEnabled()) {
             if ($memoryLimit >= self::REQUIRED_MEMORY_VCS * 1024 * 1024 || $memoryLimit === -1) {
-                return $this->getComposer()->update();
+                return $this->getComposer()->update($updateOptions);
             }
 
             $exceptionLocale = $lockServerEnabled ?
@@ -1869,7 +1873,7 @@ class Manager extends QUI\QDOM
         }
 
         if ($this->getComposer()->getMode() != QUI\Composer\Composer::MODE_WEB) {
-            return $this->getComposer()->update();
+            return $this->getComposer()->update($updateOptions);
         }
 
         if (!$lockServerEnabled && $memoryLimit != -1 && $memoryLimit < 256 * 1024 * 1024) {
@@ -1880,7 +1884,7 @@ class Manager extends QUI\QDOM
         }
 
         if (!$lockServerEnabled) {
-            return $this->getComposer()->update();
+            return $this->getComposer()->update($updateOptions);
         }
 
         $LockClient = new QUI\Lockclient\Lockclient();
@@ -1905,7 +1909,7 @@ class Manager extends QUI\QDOM
             }
         }
 
-        return $this->getComposer()->install();
+        return $this->getComposer()->install($updateOptions);
     }
 
     /**

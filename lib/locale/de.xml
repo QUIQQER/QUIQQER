@@ -4765,12 +4765,14 @@
             <de><![CDATA[Felder, die durchsucht werden]]></de>
         </locale>
         <locale name="exception.site.release.from.inFuture">
-            <de>
-                <![CDATA[Die Seite kann nicht aktiviert werden, da das Datum "Veröffentlichen von" in der Zukunft liegt.]]></de>
+            <de><![CDATA[
+            Die Seite kann nicht aktiviert werden, da das Datum "Veröffentlichen von" in der Zukunft liegt.
+            ]]></de>
         </locale>
         <locale name="exception.release.to.inPast">
-            <de>
-                <![CDATA[Die Seite kann nicht aktiviert werden, da das Datum "Veröffentlichen bis" in der Vergangenheit liegt.]]></de>
+            <de><![CDATA[
+            Die Seite kann nicht aktiviert werden, da das Datum "Veröffentlichen bis" in der Vergangenheit liegt.
+            ]]></de>
         </locale>
         <locale name="templates.mail.header.title">
             <de><![CDATA[]]></de>
