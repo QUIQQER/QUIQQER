@@ -510,12 +510,12 @@ class User implements QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      *
-     * @see QUI\Interfaces\Users\User::getPermission()
-     *
      * @param string $right
      * @param array|boolean $ruleset - optional, you can specific a ruleset, a rules = array with rights
      *
      * @return boolean
+     * @see QUI\Interfaces\Users\User::getPermission()
+     *
      */
     public function getPermission($right, $ruleset = false)
     {
@@ -601,7 +601,8 @@ class User implements QUI\Interfaces\Users\User
             return $this->lang;
         }
 
-        if (QUI::getSession()->get('quiqqer-user-language')) {
+        if ($this->getId() === QUI::getUserBySession()->getId()
+            && QUI::getSession()->get('quiqqer-user-language')) {
             $this->lang = QUI::getSession()->get('quiqqer-user-language');
 
             return $this->lang;
@@ -746,9 +747,9 @@ class User implements QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      *
+     * @param array|string $groups
      * @see QUI\Interfaces\Users\User::setGroups()
      *
-     * @param array|string $groups
      */
     public function setGroups($groups)
     {
@@ -814,11 +815,11 @@ class User implements QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      *
-     * @see QUI\Interfaces\Users\User::getGroups()
-     *
      * @param boolean $asObjects - returns the groups as objects (true) or as an array (false)
      *
      * @return array|bool
+     * @see QUI\Interfaces\Users\User::getGroups()
+     *
      */
     public function getGroups($asObjects = true)
     {
@@ -917,13 +918,13 @@ class User implements QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      *
-     * @see QUI\Interfaces\Users\User::setAttribute()
-     *
      * @param string $key
      * @param string|integer|array $value
      *
      * @return void
      * @throws QUI\Exception
+     * @see QUI\Interfaces\Users\User::setAttribute()
+     *
      */
     public function setAttribute($key, $value)
     {
@@ -1004,11 +1005,11 @@ class User implements QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      *
-     * @see QUI\Interfaces\Users\User::getAttribute()
-     *
      * @param string $var
      *
      * @return string|integer|array
+     * @see QUI\Interfaces\Users\User::getAttribute()
+     *
      */
     public function getAttribute($var)
     {
@@ -1061,9 +1062,9 @@ class User implements QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      *
+     * @return QUI\Projects\Media\Image|false
      * @see QUI\Interfaces\Users\User::getAvatar()
      *
-     * @return QUI\Projects\Media\Image|false
      */
     public function getAvatar()
     {
@@ -1164,12 +1165,12 @@ class User implements QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      *
-     * @see QUI\Interfaces\Users\User::setPassword()
-     *
      * @param string $new - new password
      * @param QUI\Interfaces\Users\User|boolean $ParentUser
      *
      * @throws QUI\Users\Exception
+     * @see QUI\Interfaces\Users\User::setPassword()
+     *
      */
     public function setPassword($new, $ParentUser = false)
     {
@@ -1216,12 +1217,12 @@ class User implements QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      *
-     * @see QUI\Interfaces\Users\User::checkPassword()
-     *
      * @param string $password - Password
      * @param boolean $encrypted - is the given password already encrypted?
      *
      * @return boolean
+     * @see QUI\Interfaces\Users\User::checkPassword()
+     *
      */
     public function checkPassword($password, $encrypted = false)
     {
@@ -1256,14 +1257,14 @@ class User implements QUI\Interfaces\Users\User
     }
 
     /**
-     * @see QUI\Interfaces\Users\User::activate()
-     *
      * @param string|boolean $code - activasion code [optional]
      * @param null|QUI\Interfaces\Users\User $ParentUser - optional, execution user
      *
      * @return boolean
      * @throws \QUI\Users\Exception
      * @throws \QUI\Permissions\Exception
+     * @see QUI\Interfaces\Users\User::activate()
+     *
      */
     public function activate($code = false, $ParentUser = null)
     {
@@ -1333,9 +1334,9 @@ class User implements QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      *
-     * @see QUI\Interfaces\Users\User::deactivate()
      * @param User $ParentUser (optional) - Executing User
      * @return bool
+     * @see QUI\Interfaces\Users\User::deactivate()
      */
     public function deactivate($ParentUser = null)
     {
@@ -1359,12 +1360,12 @@ class User implements QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      *
-     * @see QUI\Interfaces\Users\User::disable()
-     *
      * @param QUI\Interfaces\Users\User|boolean $ParentUser
      *
      * @return boolean
      * @throws QUI\Exception
+     * @see QUI\Interfaces\Users\User::disable()
+     *
      */
     public function disable($ParentUser = false)
     {
@@ -1418,12 +1419,12 @@ class User implements QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      *
-     * @see QUI\Interfaces\Users\User::save()
-     *
      * @param QUI\Interfaces\Users\User|boolean $ParentUser
      *
      * @return \PDOStatement
      * @throws QUI\Exception
+     * @see QUI\Interfaces\Users\User::save()
+     *
      */
     public function save($ParentUser = false)
     {
@@ -1962,8 +1963,8 @@ class User implements QUI\Interfaces\Users\User
      * Return the standard address from the user
      * If no standard address set, the first address will be returned
      *
-     * @throws QUI\Users\Exception
      * @return QUI\Users\Address|false
+     * @throws QUI\Users\Exception
      */
     public function getStandardAddress()
     {
