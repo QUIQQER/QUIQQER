@@ -35,7 +35,10 @@ QUI::$Ajax->registerFunction(
         // if language changed
         if ($User->getAttribute('lang') !== $language) {
             QUI\Cache\Manager::clear();
-            QUI::getSession()->set('quiqqer-user-language', false);
+
+            if ($User->getId() === QUI::getUserBySession()->getId()) {
+                QUI::getSession()->set('quiqqer-user-language', false);
+            }
         }
 
         QUI::getMessagesHandler()->addSuccess(
