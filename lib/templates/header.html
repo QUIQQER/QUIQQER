@@ -5,15 +5,15 @@
 
     {if $Template->getAttribute('html5') === false}
     <meta http-equiv="content-language" content="{$Project->getlang()}" />
-    <meta name="page-topic" content="{$Site->getAttribute('title')|escape:"html"}" />
+    <meta name="page-topic" content="{$Site->getAttribute('title')|escape:'html'}" />
 
     <meta name="date" content="{$Site->getAttribute('e_date')}" />
     <meta name="copyright" content="{$Project->getConfig('meta.copyright')}" />
     <meta name="publisher" content="{$Project->getConfig('meta.publisher')}" />
     {/if}
 
-    <meta name="description" content="{$Site->getAttribute('meta.description')|escape:"html"}" />
-    <meta name="keywords" content="{$Site->getAttribute('meta.keywords')|escape:"html"}" />
+    <meta name="description" content="{$Site->getAttribute('meta.description')|escape:'html'}" />
+    <meta name="keywords" content="{$Site->getAttribute('meta.keywords')|escape:'html'}" />
 
     {if $Locale->no_translation}
     <meta name="robots" content="noindex" />
@@ -96,9 +96,9 @@
         var QUIQQER_USER = {
             id   : {if $User->getId()}{$User->getId()}{else}0{/if},
             name : '{$User->getName()}',
-                lang : '{$User->getLang()}',
-                country: {if $userCountry}'{$userCountry->getCode()}'{else}false{/if}
-            };
+            lang : '{$User->getLang()}',
+            country: {if $userCountry}'{$userCountry->getCode()}'{else}false{/if}
+        };
     </script>
 
     <script async src="{$URL_BIN_DIR}QUI/polyfills/picturefill.min.js?lu={$lastUpdate|md5}"></script>
@@ -119,7 +119,7 @@
                 baseUrl : URL_DIR,
                 paths   : {
                     "assets"    : URL_OPT_DIR +'bin',
-                    "package"   : URL_OPT_DIR,
+                    "package"   : URL_OPT_DIR.replace(/\/+$/,''),
                     "locale"    : URL_VAR_DIR +'locale/bin',
                     "qui"       : URL_OPT_DIR +'bin/qui/qui',
                     "classes"   : URL_BIN_DIR +'QUI/classes',
