@@ -70,6 +70,13 @@ class Locale
      */
     protected $localeList = [];
 
+    /**
+     * Saves the current language of this Locale if setTemporaryCurrent is used.
+     *
+     * @var bool
+     */
+    protected $tempCurrent = false;
+
 
     /**
      * Locale tostring
@@ -79,6 +86,39 @@ class Locale
     public function __toString()
     {
         return 'Locale()';
+    }
+
+    /**
+     * Sets the current language of this locale to $lang.
+     *
+     * WARNING: It it STRONGLY advised to use resetCurrent() immediately after
+     * your use case. Changing the global current language longer than that may otherwise have
+     * unforeseeable consequences!
+     *
+     * @param string $lang
+     * @return void
+     */
+    public function setTemporaryCurrent(string $lang)
+    {
+        if (empty($this->tempCurrent)) {
+            $this->tempCurrent = $this->getCurrent();
+        }
+
+        $this->setCurrent($lang);
+    }
+
+    /**
+     * Resets the current language to the initial state. Useful only after setTemporaryCurrent()
+     * was used!
+     *
+     * @return void
+     */
+    public function resetCurrent()
+    {
+        if (!empty($this->tempCurrent)) {
+            $this->setCurrent($this->tempCurrent);
+            $this->tempCurrent = false;
+        }
     }
 
     /**
@@ -275,7 +315,7 @@ class Locale
     /**
      * Return the locale list for a language
      *
-     * @param  string $lang - Language code (de, en, fr ...)
+     * @param string $lang - Language code (de, en, fr ...)
      *
      * @return array
      */

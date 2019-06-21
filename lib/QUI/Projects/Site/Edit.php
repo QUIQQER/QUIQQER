@@ -191,7 +191,7 @@ class Edit extends Site
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
-                    'exception.release.from.inFuture'
+                    'exception.site.release.from.inFuture'
                 )
             );
         }

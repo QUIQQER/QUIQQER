@@ -463,6 +463,8 @@ class Console
             $this->clearMsg();
         }
 
+        \ob_end_clean();
+
         $this->writeLn('Would you like any other steps to do?');
 
         $this->readToolFromShell();

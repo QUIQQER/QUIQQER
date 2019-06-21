@@ -28,8 +28,8 @@ class Setup extends QUI\System\Console\Tool
     /**
      * (non-PHPdoc)
      *
-     * @see \QUI\System\Console\Tool::execute()
      * @throws QUI\Exception
+     * @see \QUI\System\Console\Tool::execute()
      */
     public function execute()
     {
@@ -42,7 +42,7 @@ class Setup extends QUI\System\Console\Tool
         );
 
 
-        ob_start();
+        \ob_start();
 
         $this->logBuffer();
 
@@ -91,8 +91,8 @@ class Setup extends QUI\System\Console\Tool
      */
     protected function logBuffer()
     {
-        $buffer = ob_get_contents();
-        $buffer = trim($buffer);
+        $buffer = \ob_get_contents();
+        $buffer = \trim($buffer);
 
         if (!empty($buffer)) {
             QUI\System\Log::write(
@@ -104,7 +104,7 @@ class Setup extends QUI\System\Console\Tool
             );
         }
 
-        flush();
-        ob_flush();
+        \flush();
+        \ob_flush();
     }
 }
