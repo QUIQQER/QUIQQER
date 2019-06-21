@@ -1,3 +1,20 @@
+
+1.2.11 (20.05.2019)
+
+    - fix: Missing getSiteByUrl() method added
+
+1.2.10 (07.05.2019)
+
+    - QVE-12-2019-3 to -11
+
+1.2.9 (30.01.2019)
+
+    - feat: quick feat because of imagemagick bug- it is now possible to specify in the media settings which image library to use
+
+1.2.8 (22.01.2019)
+
+    - fix: Mismatched anonymous define() module: function (UploadManager)
+
 1.2.7 (13.11.2018)
 
     - fix: patch -> quiqqer/quiqqer#788 - The wrong project at the media popup
