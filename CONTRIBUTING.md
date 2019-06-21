@@ -1,65 +1,60 @@
-Contributing to QUIQQER (english)
+Contribution Guide
 ======
 
-:+1::tada: First off, thanks for taking the time to contribute! :tada::+1:
-
-The following is a set of guidelines for contributing to QUIQQER and its packages, 
-which are hosted in the QUIQQER Organization on dev.quiqqer.com. These are just guidelines, 
-not rules, use your best judgment and feel free to propose changes to this document in a pull request.
-
-
-
-
-Leitfaden: Wie unterstütze ich QUIQQER - Contribution Guide (german)
-======
-
-:+1::tada: Als erstes, vielen dank das du dir die Zeit genommen hast um QUIQQER besser zu machen! :tada::+1:
-
-Das Folgende sind Richtlinien welche wir aufgestellt haben damit kein Durcheinander zustande kommt. 
-Diese Richtlinien zum Beitragen zu QUIQQER gelten für QUIQQER und seine Pakete. Es sind Richtlinien 
-und keine in Stein gemeiselten Regeln. Hast du ein Änderungswunsch an diesem Dokument sind wir jeder Zeit offen für 
-neue Vorschläge.
-
-
-Bug Report
+Guide: How to mix with QUIQQER - Contribution Guide
 ------
 
-Alle Fehler und Verbesserungswünsche (Featurerequests) werden gesammelt und unter dev.quiqqer.com aufgenommen. 
-Falls du einen Fehler findest, möchten wir dich bitten, diesen unter dev.quiqqer.com zu posten. 
-Bitte beschreibe den Fehler so exakt wie möglich, denn eine Fehlerbeschreibung mit 10 Wörtern hilft niemandem. 
-Ein Screenshot sagt oftmals mehr als 1000 Worte und auch Informationen wie Browser-Version helfen weiter.
-Zu wenige Informationen über einen Fehler gibt es nicht.
+Thank you for taking the time to make QUIQQER better.
 
-Kleinere Verbesserungswünsche können auch über dev.quiqqer.com gesendet werden. 
-Für größere, wie neue Module oder Plugins, bitten wir dich die Community zu verwenden (community.quiqqer.com).
-
-Oft ist es notwendig nach zu haken, um einen Fehler besser verstehen zu können. 
-Wir bitten dich daher deine Anfrage häufig zu kontrollieren. In der Regel antworten wir spätestens nach ein oder zwei 
-Werktagen. Es kann auch vorkommen, dass eine Antwort länger als eine Woche auf sich warten lässt, 
-dies bedeutet aber nicht, dass der Fehlerreport nicht beachtet wird. Wir bitten in diesen Fällen um etwas Geduld.
-
-Wenn auf eine Nachfrage unsererseits länger als 3 Monate nicht geantwortet wurde und dadurch der Fehler nicht 
-nachvollzogen werden konnte, wird dieser geschlossen. Mit stetigem Interesse deinerseits steigt auch unser Engagement.
+In order to keep it clear, we have established guidelines. They apply to QUIQQER and its extensions (packages). 
+The guidelines are not carved in stone. We are always open to your changes to this document. 
 
 
-Diskussionen über die Entwicklung von QUIQQER
+Report bugs and issues
 ------
 
-Diskussionen über neue Features und die Entwicklung, sowie über Hilfestellung bei der Nutzung von QUIQQER werden 
-bitte in der Community besprochen. 
+Every software has errors, including QUIQQER. Developers are also only human beings and so errors creep into the 
+program code. We collect all errors and improvement requests at https://dev.quiqqer.com/. If you have errors 
+or have any suggestions, please post them there. Please describe the error as exactly and in as much detail as possible. 
 
-Henning Leutz, Hauptmaintainer von QUIQQER, ist meistens zwischen 9 und 17 Uhr in der Community verfügbar. 
+A screenshot often says more than a thousand words. Information about the browser version can also help. 
+There is not too much information about an error.
 
-Die Communitysoftware basiert auf Mattermost (https://www.mattermost.org/), 
-hierzu gibt es viele Clients für fast jedes Betriebssystem.
+Often we will go back to you in order to better understand the respective error. 
+Therefore, please check your request frequently. As a rule, we will reply within one or two working days at the latest. 
+Sometimes we need a few more days. Please be patient then.
+
+Important, so that we can fully understand errors:
+Answer our questions. After three months without feedback, we close the error.
 
 
-Sicherheitslücken
-------
+Security vulnerabilities
+-------
 
-Sicherheitslücken werden sofort behoben. Bitte sende Sicherheitslücken direkt an support@pcsg.de.
+Security vulnerabilities will be resolved immediately. Please send security vulnerabilities directly to support@pcsg.de. 
+Describe exactly what it is about. Please explain how the vulnerability can be exploited. 
+
+You can also contact us in our Discord (https://discord.gg/tjWg4ZE).
 
 
-Coding Style
-------
-QUIQQER folgt dem PSR-2 Coding Standard und dem PSR-4 Autoloader Standard.
+For Developers
+-------
+
+If you want to help develop QUIQQER or even create your own module, have a look at our Discord (https://discord.gg/tjWg4ZE).
+
+Please try to stick to the coding standards as well. We use coding styles and other coding standards so that everyone 
+can develop quickly and worry-free. That makes it easier for everyone. 
+
+### Coding Style
+
+QUIQQER follows the PHP coding standard up to PSR-6 and uses JSHINT for JavaScript. Please stick to it as best you can. 
+
+### Develop on QUIQQER
+
+You want to develop directly at the core? That's great. But here we handle the standards extremely strictly, 
+because this is the heart of a huge ecosystem. We gladly accept Pull Requests. 
+
+Please submit all Pull Requests at >> https://dev.quiqqer.com/quiqqer/quiqqer <<. 
+Pull Requests under Github are not accepted.
+
+If you don't know how to start, we will be happy to help you. Just have a look at our Discord.
