@@ -69,7 +69,9 @@ Contribute & Support
 You would like to help but don't know how or where? We have written a Contribution Guide especially for you. 
 Here are all the steps in how and where you can help us. We are looking forward to you.
 
-[To the Contribution Guide](CONTRIBUTING)
+To the Contribution Guide:
+- [English](CONTRIBUTING.md)
+- [German](CONTRIBUTING-de.md)
 
 
 License

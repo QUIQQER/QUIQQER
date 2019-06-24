@@ -214,7 +214,7 @@ class Manager
     }
 
     /**
-     * Return the current driver
+     * Return the current cache driver.
      *
      * @param array $options - optional
      * @param string|boolean $driver - optional
@@ -378,7 +378,7 @@ class Manager
     }
 
     /**
-     * Explicitly get file system cache
+     * Returns explicitly the file system cache
      *
      * @return false|Stash\Pool
      * @deprecated use getDriver
@@ -443,11 +443,11 @@ class Manager
     }
 
     /**
-     * Put data into the cache
+     * Stores data into the cache.
      *
-     * the cache is for making data accessible faster.
-     * set cache does not mean that the data was actually set.
-     * cache is volatile, so this means that the cache does not have to be exist right after the set.
+     * Putting something in the cache does not guarantee that it's actually stored.
+     * This happens because of the cache's volatility.
+     * That means that data can get lost or removed from cache at any time.
      *
      * @param string $name
      * @param mixed $data
@@ -476,7 +476,8 @@ class Manager
     }
 
     /**
-     * Returns cache data
+     * Returns cached data.
+     * Throws an exception if no data is present in the cache for the given key.
      *
      * @param string $name
      *
@@ -541,9 +542,9 @@ class Manager
     }
 
     /**
-     * Clears the cache
+     * Clears all or only a given entry from the cache.
      *
-     * @param string|boolean $key - optional, falls kein Key übergeben wird, wird komplett geleert
+     * @param string|boolean $key - optional; if no key is given the whole cache is cleared
      */
     public static function clear($key = "")
     {
@@ -577,7 +578,7 @@ class Manager
     }
 
     /**
-     * Clears the complete quiqqer cache
+     * Clears the entire quiqqer cache.
      */
     public static function clearAll()
     {

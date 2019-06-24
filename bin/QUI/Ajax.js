@@ -239,6 +239,30 @@ define('Ajax', [
                             return;
                         }
 
+                        switch (Exception.getCode()) {
+                            // if server error, then test again
+                            case '':
+                            case 0:
+                            case 503:
+                            case 504:
+                            case 507:
+                            case 509:
+                            case 510:
+                                break;
+
+                            default:
+                                QUI.getMessageHandler().then(function (MessageHandler) {
+                                    MessageHandler.addException(Exception);
+                                });
+
+                                if (Request.getAttribute('onError')) {
+                                    return Request.getAttribute('onError')(Exception, Request);
+                                }
+
+                                QUI.triggerError(Exception, Request);
+                                return;
+                        }
+
                         // another try
                         if (tries < TRY_MAX) {
                             tries++;
