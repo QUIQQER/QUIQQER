@@ -48,7 +48,7 @@ define('Ajax', [
         TRY_MAX = 0;
     }
 
-    return {
+    var Ajax = {
         $globalJSF : {}, // global javascript callback functions
         $onprogress: {},
         $url       : apiPoint,
@@ -289,11 +289,11 @@ define('Ajax', [
 
             if (typeof events.ajaxLogin !== 'undefined') {
                 var eventResults = events.ajaxLogin.map(function (f) {
-                    return f();
+                    return f(Ajax, call, method, callback, params);
                 });
 
                 if (eventResults.indexOf(true) !== -1) {
-                    return;
+                    return true;
                 }
             }
 
@@ -498,4 +498,6 @@ define('Ajax', [
             return this.request(call, 'delete', callback, params);
         }
     };
+
+    return Ajax;
 });
