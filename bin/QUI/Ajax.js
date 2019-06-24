@@ -5,11 +5,6 @@
  * @author www.pcsg.de (Henning Leutz)
  * @module Ajax
  *
- * @require qui/QUI
- * @require qui/classes/request/Ajax
- * @require qui/utils/Object
- * @require Locale
- *
  * @example
 
  require(['Ajax'], function(Ajax)
@@ -205,16 +200,7 @@ define('Ajax', [
                                 return;
                             }
 
-                            require(['controls/users/LoginWindow'], function (Login) {
-                                new Login({
-                                    message: Exception.getMessage(),
-                                    events : {
-                                        onSuccess: function () {
-                                            self.request(call, method, callback, params);
-                                        }
-                                    }
-                                }).open();
-                            });
+                            self.$openLogin(call, method, callback, params);
 
                             return;
                         }
@@ -225,16 +211,7 @@ define('Ajax', [
                             Exception.getCode() === 440
                         ) {
                             Request.setAttribute('logout', true);
-
-                            require(['controls/users/LoginWindow'], function (Login) {
-                                new Login({
-                                    events: {
-                                        onSuccess: function () {
-                                            self.request(call, method, callback, params);
-                                        }
-                                    }
-                                }).open();
-                            });
+                            self.$openLogin(call, method, callback, params);
 
                             return;
                         }
@@ -289,6 +266,46 @@ define('Ajax', [
             this.$onprogress[id].send(options);
 
             return this.$onprogress[id];
+        },
+
+        /**
+         * Method to open the login
+         *
+         * API
+         * ------
+         * its possible to overwrite the Login:
+         * QUI.addEvent('onAjaxLogin', function() { return true; });
+         *
+         * @param call
+         * @param method
+         * @param callback
+         * @param params
+         */
+        $openLogin: function (call, method, callback, params) {
+            var self = this;
+
+            // check if events exists and login is overwritten
+            var events = QUI.$events;
+
+            if (typeof events.ajaxLogin !== 'undefined') {
+                var eventResults = events.ajaxLogin.map(function (f) {
+                    return f();
+                });
+
+                if (eventResults.indexOf(true) !== -1) {
+                    return;
+                }
+            }
+
+            require(['controls/users/LoginWindow'], function (Login) {
+                new Login({
+                    events: {
+                        onSuccess: function () {
+                            self.request(call, method, callback, params);
+                        }
+                    }
+                }).open();
+            });
         },
 
         /**
