@@ -1,3 +1,68 @@
+1.3 (24.07.2019)
+
+    Main Features
+
+    - New Dashboard
+    - Code performance
+    - Template inheritance
+
+    Features
+
+    - Show size of folders in properties
+    - Login Window can be overwritten
+    - Package constants introduced for reading XML files
+    - The search now also considers app short descriptions
+    - Show account creation date in Userinfo
+    - Filter for the FontAwesome icons
+    - Server errors are intercepted by the Ajax and sent again if necessary.
+
+    New Modules / Packages
+
+    - QUIQQER Dashboard
+    - QUIQQER Redirect
+
+    Fixes
+
+    - Security QVE Fixes
+        -> QVE-12-2019-1  - Everyone can edit redirects
+        -> QVE-12-2019-13 - .htaccess files can be uploaded
+        -> UploadManager allows everyone calling every php-function
+
+    - quiqqer/quiqqer#314 - Delete page -> No indicator for delete process
+    - quiqqer/quiqqer#368 - set vhost redirection and layout if the default project does not have a template
+    - quiqqer/quiqqer#477 - Group "Everyone" not selectable in rights management
+    - quiqqer/quiqqer#522 - Always open pages in sitemap when opening a page panel (in the backend)
+    - quiqqer/quiqqer#546 - Always the same message after activating pages
+    - quiqqer/quiqqer#550 - database.xml ignores '#' as default value
+    - quiqqer/quiqqer#551 - onPackageSetup Event fired multiple
+    - quiqqer/quiqqer#552 - Toolbars at "Everyone" are not applied
+    - quiqqer/quiqqer#702 - Login Control: Hide other authenticators if Password Reset is shown
+    - quiqqer/quiqqer#739 - JS Error when saving page titles (project settings)
+    - quiqqer/quiqqer#755 - Version of QUIQQER system in backend missing current versions
+    - quiqqer/quiqqer#759 - After fresh 1.2.0 installation many updates are available
+    - quiqqer/quiqqer#764 - Missing feedback when deleting indelible group
+    - quiqqer/quiqqer#767 - JS Error in login window QUIQQER if no language file available
+    - quiqqer/quiqqer#768 - Run Setup after new language is added to the project
+    - quiqqer/quiqqer#776 - Questions before system check is performed
+    - quiqqer/quiqqer#787 - Upload control: broken Buttons
+    - quiqqer/quiqqer#793 - Cursor jumps backwards on Site title edit
+    - quiqqer/quiqqer#804 - Can't change the caching type anymore
+    - quiqqer/quiqqer#806 - Invalid version string ""
+    - quiqqer/quiqqer#807 - Password field for email must not have autofill
+    - quiqqer/quiqqer#808 - If the system administration e-mail is empty, the mail sending does not work.
+    - quiqqer/quiqqer#813 - Select Standard Workspace Select Element is not displayed
+    - quiqqer/quiqqer#816 - Wrong language translations
+    - quiqqer/quiqqer#821 - Page Sorting - Show Title or Name Setting Option
+    - quiqqer/quiqqer#825 - Creating the default-site structures names sites "###"
+    - quiqqer/quiqqer#833 - Are the Thread classes still required?
+    - quiqqer/quiqqer#844 - Write update and setup logs to logfile
+    - quiqqer/quiqqer#850 - Internal server error in frontend by translations publishing
+    - quiqqer/quiqqer#854 - Only a part of the standard crons was created.
+    - quiqqer/quiqqer#857 - Missing and Wrong Language Variables
+    - quiqqer/quiqqer#863 - quiqqer:setup console command ends incorrectly
+    - quiqqer/quiqqer#865 - Dependency update fails
+    - quiqqer/quiqqer#871 - Remove request repetition
+
 
 1.2.11 (20.05.2019)
 
