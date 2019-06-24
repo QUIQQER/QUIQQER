@@ -241,6 +241,8 @@ define('Ajax', [
 
                         switch (Exception.getCode()) {
                             // if server error, then test again
+                            case '':
+                            case 0:
                             case 503:
                             case 504:
                             case 507:
