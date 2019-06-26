@@ -9,22 +9,21 @@
 QUI::$Ajax->registerFunction(
     'ajax_system_packages_get',
     function ($package) {
-        $Package = QUI::getPackageManager()->getInstalledPackage($package);
-
+        $Package      = QUI::getPackageManager()->getInstalledPackage($package);
         $composerData = $Package->getComposerData();
         $lockData     = $Package->getLock();
 
         $hashData = [];
+
         if (isset($lockData['dist']['reference'])) {
             $hashValue = $lockData['dist']['reference'];
             $hashData  = [
                 'hash' => [
                     'full'  => $hashValue,
-                    'short' => substr($hashValue, 0, 8)
+                    'short' => \substr($hashValue, 0, 8)
                 ]
             ];
         }
-
 
         $standardData = [
             'name'        => $Package->getName(),
@@ -35,9 +34,11 @@ QUI::$Ajax->registerFunction(
         ];
 
         // require sort
-        ksort($composerData['require']);
+        if (isset($composerData['require'])) {
+            \ksort($composerData['require']);
+        }
 
-        return array_merge($composerData, $standardData, $hashData);
+        return \array_merge($composerData, $standardData, $hashData);
     },
     ['package'],
     [
