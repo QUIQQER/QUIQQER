@@ -177,6 +177,7 @@ try {
         && $Site->getAttribute('nocache') != true
         && !QUI::getUsers()->isAuth(QUI::getUserBySession())
         && empty($query)
+        && $Rewrite->getHeaderCode() === 200
     ) {
         try {
             $cache_content = QUI\Cache\Manager::get($siteCachePath);
@@ -213,6 +214,7 @@ try {
         if ($Site->getAttribute('nocache') != true
             && !QUI::getUsers()->isAuth(QUI::getUserBySession())
             && empty($query)
+            && $Rewrite->getHeaderCode() === 200
         ) {
             try {
                 QUI\Cache\Manager::set($siteCachePath, $content);
