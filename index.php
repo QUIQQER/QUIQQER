@@ -43,6 +43,7 @@ try {
     require_once 'bootstrap.php';
 
     $Response = QUI::getGlobalResponse();
+    $Request  = QUI::getRequest();
 
     // UTF 8 Prüfung für umlaute in url
     if (isset($_REQUEST['_url'])) {
@@ -154,11 +155,28 @@ try {
         $Response->setStatusCode($statusCode);
     }
 
+    // url query check
+    // if url query exists, dont ask the cache and dont create the cache
+    // @todo collect get query lists and consider the query params
+    $query = $Request->getQueryString();
+
+    if (\is_string($query)) {
+        \parse_str($query, $query);
+    }
+
+    if (!\is_array($query)) {
+        $query = [];
+    }
+
+    if (isset($query['_url'])) {
+        unset($query['_url']);
+    }
 
     // if cache exists, and cache should also be used
     if (CACHE
         && $Site->getAttribute('nocache') != true
         && !QUI::getUsers()->isAuth(QUI::getUserBySession())
+        && empty($query)
     ) {
         try {
             $cache_content = QUI\Cache\Manager::get($siteCachePath);
@@ -194,6 +212,7 @@ try {
         // cachefile erstellen
         if ($Site->getAttribute('nocache') != true
             && !QUI::getUsers()->isAuth(QUI::getUserBySession())
+            && empty($query)
         ) {
             try {
                 QUI\Cache\Manager::set($siteCachePath, $content);
