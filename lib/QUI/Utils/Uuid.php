@@ -30,6 +30,10 @@ class Uuid
             );
         }
 
-        return $UUID->toString();
+        if (\method_exists($UUID, 'toString')) {
+            return $UUID->toString();
+        }
+
+        return (string)$UUID;
     }
 }

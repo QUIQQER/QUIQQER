@@ -140,7 +140,7 @@ class Console
     {
         // check locale
         $languages = QUI::availableLanguages();
-        $languages = array_flip($languages);
+        $languages = \array_flip($languages);
         $locale    = QUI::getLocale()->getCurrent();
 
         if (!isset($languages[$locale])) {

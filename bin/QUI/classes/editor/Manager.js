@@ -275,6 +275,11 @@ define('classes/editor/Manager', [
          * @return {Promise}
          */
         getProjectFiles: function (Project) {
+            if (!Project) {
+                console.error('Project is null');
+                return Promise.resolve([]);
+            }
+
             return new Promise(function (resolve, reject) {
                 Ajax.get('ajax_editor_get_projectFiles', resolve, {
                     project: Project.getName(),
