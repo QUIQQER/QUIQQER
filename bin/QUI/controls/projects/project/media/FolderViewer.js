@@ -151,7 +151,7 @@ define('controls/projects/project/media/FolderViewer', [
 
             this.$MediaOpen = new QUIButton({
                 icon  : 'fa fa-picture-o',
-                title : QUILocale.get(lg, 'projects.project.site.btn.preview.text'),
+                title : QUILocale.get(lg, 'projects.project.site.btn.open_in_media.text'),
                 styles: {
                     'float': 'right'
                 },
