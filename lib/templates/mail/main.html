@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="{$lang}">
+<head>
+    {template_event name="quiqqer::quiqqer::mail::beforeMeta"}
+        [[templateMeta]]
+    {template_event name="quiqqer::quiqqer::mail::afterMeta"}
+</head>
+
+<body style="margin: 0; padding: 0; width: 100%;">
+{template_event name="quiqqer::quiqqer::mail::beforeHeader"}
+    [[templateHeader]]
+{template_event name="quiqqer::quiqqer::mail::afterHeader"}
+
+{template_event name="quiqqer::quiqqer::mail::beforeBody"}
+    [[templateBody]]
+{template_event name="quiqqer::quiqqer::mail::afterBody"}
+
+{template_event name="quiqqer::quiqqer::mail::beforeFooter"}
+    [[templateFooter]]
+{template_event name="quiqqer::quiqqer::mail::afterFooter"}
+</body>
+</html>
