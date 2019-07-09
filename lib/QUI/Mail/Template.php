@@ -27,6 +27,8 @@ class Template extends QUI\QDOM
         $this->setAttributes([
             'body'      => '',
             'Project'   => false,
+            'TplMain'   => 'mails/main.html',
+            'TplMeta'   => 'mails/meta.html',
             'TplHeader' => 'mails/header.html',
             'TplBody'   => 'mails/body.html',
             'TplFooter' => 'mails/footer.html'
@@ -65,13 +67,30 @@ class Template extends QUI\QDOM
             $Logo = $Project->getMedia()->getLogoImage();
         }
 
-        $Engine->assign('Logo', $Logo);
+        $Engine->assign([
+            'Logo' => $Logo,
+            'lang' => $Project->getLang()
+        ]);
 
+        $main   = $Engine->fetch($this->getMainTemplate());
+        $meta   = $Engine->fetch($this->getMetaTemplate());
         $header = $Engine->fetch($this->getHeaderTemplate());
         $body   = $Engine->fetch($this->getBodyTemplate());
         $footer = $Engine->fetch($this->getFooterTemplate());
 
-        return $header.$body.$footer;
+        $mailBody = str_replace([
+            '[[templateMeta]]',
+            '[[templateHeader]]',
+            '[[templateBody]]',
+            '[[templateFooter]]'
+        ], [
+            $meta,
+            $header,
+            $body,
+            $footer
+        ], $main);
+
+        return $mailBody;
     }
 
     /**
@@ -94,6 +113,26 @@ class Template extends QUI\QDOM
     public function setProject(QUI\Projects\Project $Project)
     {
         $this->setAttribute('Project', $Project);
+    }
+
+    /**
+     * Set the main template
+     *
+     * @param string $template
+     */
+    public function setMainTemplate($template)
+    {
+        $this->setAttribute('TplMain', $template);
+    }
+
+    /**
+     * Set the meta template
+     *
+     * @param string $template
+     */
+    public function setMetaTemplate($template)
+    {
+        $this->setAttribute('TplMeta', $template);
     }
 
     /**
@@ -141,6 +180,70 @@ class Template extends QUI\QDOM
     }
 
     /**
+     * Return the meta template path
+     *
+     * @return string
+     */
+    public function getMainTemplate()
+    {
+        $Project     = $this->getProject();
+        $standardTpl = LIB_DIR . 'templates/mail/main.html';
+
+        if (!$Project) {
+            return $standardTpl;
+        }
+
+        // exit project template?
+        $template   = $this->getAttribute('TplMain');
+        $projectDir = USR_DIR . $Project->getName() . '/lib/';
+
+        if (\file_exists($projectDir . $template)) {
+            return $projectDir . $template;
+        }
+
+        $tplPath = OPT_DIR . $Project->getAttribute('template') . '/';
+
+        // exist template in opt?
+        if (\file_exists($tplPath . $template)) {
+            return $tplPath . $template;
+        }
+
+        return $standardTpl;
+    }
+
+    /**
+     * Return the meta template path
+     *
+     * @return string
+     */
+    public function getMetaTemplate()
+    {
+        $Project     = $this->getProject();
+        $standardTpl = LIB_DIR . 'templates/mail/meta.html';
+
+        if (!$Project) {
+            return $standardTpl;
+        }
+
+        // exit project template?
+        $template   = $this->getAttribute('TplMeta');
+        $projectDir = USR_DIR . $Project->getName() . '/lib/';
+
+        if (\file_exists($projectDir . $template)) {
+            return $projectDir . $template;
+        }
+
+        $tplPath = OPT_DIR . $Project->getAttribute('template') . '/';
+
+        // exist template in opt?
+        if (\file_exists($tplPath . $template)) {
+            return $tplPath . $template;
+        }
+
+        return $standardTpl;
+    }
+
+    /**
      * Return the header template path
      *
      * @return string
@@ -148,7 +251,7 @@ class Template extends QUI\QDOM
     public function getHeaderTemplate()
     {
         $Project     = $this->getProject();
-        $standardTpl = LIB_DIR.'templates/mail/header.html';
+        $standardTpl = LIB_DIR . 'templates/mail/header.html';
 
         if (!$Project) {
             return $standardTpl;
@@ -156,17 +259,17 @@ class Template extends QUI\QDOM
 
         // exit project template?
         $template   = $this->getAttribute('TplHeader');
-        $projectDir = USR_DIR.$Project->getName().'/lib/';
+        $projectDir = USR_DIR . $Project->getName() . '/lib/';
 
-        if (\file_exists($projectDir.$template)) {
-            return $projectDir.$template;
+        if (\file_exists($projectDir . $template)) {
+            return $projectDir . $template;
         }
 
-        $tplPath = OPT_DIR.$Project->getAttribute('template').'/';
+        $tplPath = OPT_DIR . $Project->getAttribute('template') . '/';
 
         // exist template in opt?
-        if (\file_exists($tplPath.$template)) {
-            return $tplPath.$template;
+        if (\file_exists($tplPath . $template)) {
+            return $tplPath . $template;
         }
 
         return $standardTpl;
@@ -180,7 +283,7 @@ class Template extends QUI\QDOM
     public function getBodyTemplate()
     {
         $Project     = $this->getProject();
-        $standardTpl = LIB_DIR.'templates/mail/body.html';
+        $standardTpl = LIB_DIR . 'templates/mail/body.html';
 
         if (!$Project) {
             return $standardTpl;
@@ -188,17 +291,17 @@ class Template extends QUI\QDOM
 
         // exit project template?
         $template   = $this->getAttribute('TplBody');
-        $projectDir = USR_DIR.$Project->getName().'/lib/';
+        $projectDir = USR_DIR . $Project->getName() . '/lib/';
 
-        if (\file_exists($projectDir.$template)) {
-            return $projectDir.$template;
+        if (\file_exists($projectDir . $template)) {
+            return $projectDir . $template;
         }
 
-        $tplPath = OPT_DIR.$Project->getAttribute('template').'/';
+        $tplPath = OPT_DIR . $Project->getAttribute('template') . '/';
 
         // exist template in opt?
-        if (\file_exists($tplPath.$template)) {
-            return $tplPath.$template;
+        if (\file_exists($tplPath . $template)) {
+            return $tplPath . $template;
         }
 
         return $standardTpl;
@@ -212,7 +315,7 @@ class Template extends QUI\QDOM
     public function getFooterTemplate()
     {
         $Project     = $this->getProject();
-        $standardTpl = LIB_DIR.'templates/mail/footer.html';
+        $standardTpl = LIB_DIR . 'templates/mail/footer.html';
 
         if (!$Project) {
             return $standardTpl;
@@ -220,17 +323,17 @@ class Template extends QUI\QDOM
 
         // exit project template?
         $template   = $this->getAttribute('TplFooter');
-        $projectDir = USR_DIR.$Project->getName().'/lib/';
+        $projectDir = USR_DIR . $Project->getName() . '/lib/';
 
-        if (\file_exists($projectDir.$template)) {
-            return $projectDir.$template;
+        if (\file_exists($projectDir . $template)) {
+            return $projectDir . $template;
         }
 
-        $tplPath = OPT_DIR.$Project->getAttribute('template').'/';
+        $tplPath = OPT_DIR . $Project->getAttribute('template') . '/';
 
         // exist template in opt?
-        if (\file_exists($tplPath.$template)) {
-            return $tplPath.$template;
+        if (\file_exists($tplPath . $template)) {
+            return $tplPath . $template;
         }
 
         return $standardTpl;
