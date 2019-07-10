@@ -322,6 +322,8 @@ define('classes/projects/project/Media', [
          * @return {Promise}
          */
         del: function (id, oncomplete, params) {
+            var self = this;
+
             return new Promise(function (resolve, reject) {
                 if (!id.length) {
                     if (typeof oncomplete === 'function') {
@@ -345,8 +347,8 @@ define('classes/projects/project/Media', [
 
                     resolve(false);
 
-                    delete this.$items[id];
-                    this.fireEvent('itemDeactivate', [this, id]);
+                    self.fireEvent('itemDeactivate', [self, self.$items[id]]);
+                    delete self.$items[id];
                 }, params);
             }.bind(this));
         },
