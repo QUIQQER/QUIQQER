@@ -61,6 +61,8 @@ abstract class Child extends QUI\QDOM
 
     /**
      * Load the data from the database
+     *
+     * @throws QUI\Database\Exception
      */
     public function refresh()
     {

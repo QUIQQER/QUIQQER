@@ -5042,6 +5042,9 @@
         <locale name="projects.project.site.btn.preview.text">
             <de><![CDATA[Vorschau]]></de>
         </locale>
+        <locale name="projects.project.site.btn.open_in_media.text">
+            <de><![CDATA[Im Mediabereich öffnen]]></de>
+        </locale>
         <locale name="projects.project.site.btn.activate.text">
             <de><![CDATA[Aktivieren]]></de>
         </locale>
