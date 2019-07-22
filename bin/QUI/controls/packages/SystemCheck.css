@@ -28,7 +28,8 @@
 }
 
 .qui-control-packages-systemcheck-resultcontainer .messages-message {
-    margin-top: 20px;
+    float: none;
+    margin-bottom: 20px;
 }
 
 /* check table */

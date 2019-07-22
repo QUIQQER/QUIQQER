@@ -13,6 +13,7 @@ define('controls/packages/SystemCheck', [
     'qui/controls/buttons/Button',
     'qui/controls/Control',
     'qui/controls/windows/Popup',
+    'qui/controls/windows/Confirm',
     'qui/controls/loader/Loader',
     'Ajax',
     'Locale',
@@ -20,7 +21,7 @@ define('controls/packages/SystemCheck', [
     'css!controls/packages/SystemCheck.css'
 
 
-], function (QUI, QUIButton, QUIControl, QUIPopup, QUILoader, QUIAjax, QUILocale) {
+], function (QUI, QUIButton, QUIControl, QUIPopup, QUIConfirm, QUILoader, QUIAjax, QUILocale) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -37,7 +38,8 @@ define('controls/packages/SystemCheck', [
             'openPHPInfoWindow',
             'getPHPInfo',
             '$packageClick',
-            'getChecksumForPackage'
+            'getChecksumForPackage',
+            'confirmSystemCheckExec'
         ],
 
         initialize: function (options) {
@@ -74,28 +76,7 @@ define('controls/packages/SystemCheck', [
 
             // title bar
             this.TitleBar = new Element('div', {
-                'class': 'qui-control-packages-systemcheck-title',
-                html   : '<span class="qui-control-packages-systemcheck-title-text">' +
-                    QUILocale.get(lg, 'packages.panel.category.systemcheck.title') + '</span>'
-            }).inject(this.$Elm);
-
-            // phpinfo button
-            new QUIButton({
-                name  : 'phpinfo',
-                text  : QUILocale.get(lg, 'packages.panel.category.systemcheck.phpinfo'),
-                events: {
-                    onClick: function () {
-                        self.openPHPInfoWindow();
-                    }
-                }
-            }).inject(this.TitleBar);
-
-            // system check result container
-            this.ResultContainer = new Element('div', {
-                'class' : 'qui-control-packages-systemcheck-resultcontainer',
-                html: "<div class='messages-message box message-information'>" +
-                    QUILocale.get(lg, 'packages.panel.category.systemcheck.textinfo') +
-                    "</div>"
+                'class': 'qui-control-packages-systemcheck-title'
             }).inject(this.$Elm);
 
             // system check button
@@ -103,14 +84,54 @@ define('controls/packages/SystemCheck', [
                 name  : 'Run System Check',
                 text  : QUILocale.get(lg, 'packages.panel.category.systemcheck.execbutton'),
                 events: {
-                    onClick: function () {
-                        self.execSystemCheck();
-                    }
+                    onClick: self.confirmSystemCheckExec
                 }
-            }).inject(this.ResultContainer, 'top');
+            }).inject(this.TitleBar);
+
+            // phpinfo button
+            new QUIButton({
+                name  : 'phpinfo',
+                text  : QUILocale.get(lg, 'packages.panel.category.systemcheck.phpinfo'),
+                events: {
+                    onClick: self.openPHPInfoWindow
+                }
+            }).inject(this.TitleBar);
+
+            // system check result container
+            this.ResultContainer = new Element('div', {
+                'class': 'qui-control-packages-systemcheck-resultcontainer',
+                html   : "<div class='messages-message box message-information'>" +
+                         QUILocale.get(lg, 'packages.panel.category.systemcheck.textinfo') +
+                         "</div>"
+            }).inject(this.$Elm);
+
+            this.getSystemCheckResultsFromCache().then(function (resultHtml) {
+                self.ResultContainer.innerHTML += resultHtml;
+            });
 
             self.fireEvent('load', [this]);
         },
+
+
+        /**
+         * Opens a confirm dialog to start the system check
+         */
+        confirmSystemCheckExec: function () {
+            new QUIConfirm({
+                icon: 'fa fa-info-circle',
+                texticon: false,
+                title      : QUILocale.get(lg, 'packages.panel.category.systemcheck.execbutton'),
+                information: QUILocale.get(lg, 'packages.panel.category.systemcheck.confirm.info'),
+                ok_button  : {
+                    text     : QUILocale.get(lg, 'packages.panel.category.systemcheck.confirm.button.ok.text'),
+                    textimage: 'fa fa-play'
+                },
+                events     : {
+                    onSubmit: this.execSystemCheck
+                }
+            }).open();
+        },
+
 
         /**
          * Execute system check and parse unknown packages
@@ -151,6 +172,18 @@ define('controls/packages/SystemCheck', [
                     self.ResultContainer.set('html', result);
                     resolve();
                 });
+            });
+        },
+
+
+        /**
+         * Returns a promise resolving with the test results from cache.
+         *
+         * @return {Promise}
+         */
+        getSystemCheckResultsFromCache: function () {
+            return new Promise(function (resolve) {
+                QUIAjax.get('ajax_system_systemcheckResultsFromCache', resolve);
             });
         },
 
