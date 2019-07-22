@@ -167,6 +167,25 @@
             <auto_increment>id</auto_increment>
         </table>
 
+        <table name="logins">
+            <!-- user id -->
+            <field type="INT(11)">uid</field>
+
+            <!-- IP-address (max length 45: https://stackoverflow.com/a/7477384) -->
+            <field type="VARCHAR(45)">ip</field>
+
+            <!-- date and time of the login (attempt) -->
+            <field type="DATETIME">date</field>
+
+            <!-- Login successful? Boolean -->
+            <field type="TINYINT(1)">successful</field>
+
+            <!-- Further user data like browser fingerprint or location -->
+            <field type="TEXT NULL">user_data</field>
+
+            <!-- Type of login (e.g. front-/back-end, CLI, CRON) -->
+            <field type="VARCHAR(20) NULL">type</field>
+        </table>
     </global>
 
     <projects>
