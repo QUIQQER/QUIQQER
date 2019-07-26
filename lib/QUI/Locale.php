@@ -220,18 +220,30 @@ class Locale
             $number = \floatval($number);
         }
 
-        //  numberFormat.decimal_separator
-        //  numberFormat.grouping_separator
-        //  numberFormat.numbering_system
+        $decimalSeparator  = self::get('quiqqer/quiqqer', 'numberFormat.decimal_separator');
+        $groupingSeparator = self::get('quiqqer/quiqqer', 'numberFormat.grouping_separator');
+        $decimalPattern    = self::get('quiqqer/quiqqer', 'numberFormat.decimal_pattern');
 
-        //  numberFormat.decimal_pattern
+        if (!empty($decimalSeparator)) {
+            $Formatter->setSymbol(\NumberFormatter::DECIMAL_SEPARATOR_SYMBOL, $groupingSeparator);
+        }
+
+        if (!empty($groupingSeparator)) {
+            $Formatter->setSymbol(\NumberFormatter::GROUPING_SEPARATOR_SYMBOL, $groupingSeparator);
+        }
+
+        if (!empty($decimalPattern)) {
+            $Formatter->setPattern($decimalPattern);
+        }
+
+        //  numberFormat.numbering_system
         //  numberFormat.percent_pattern
         //  numberFormat.currency_pattern
         //  numberFormat.accounting_currency_pattern
 
         //  "numbering_system": "latn",
-        //	"decimal_pattern": "#,##0.###",
-        //	"percent_pattern": "#,##0%",
+        //  "decimal_pattern": "#,##0.###",
+        //  "percent_pattern": "#,##0%",
 
         return $Formatter->format($number);
     }
