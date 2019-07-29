@@ -82,7 +82,12 @@ class Session
         $sessionName = QUI::conf('session', 'name');
 
         if (!$sessionName) {
-            $sessionName = \substr(\md5(\rand()), 0, 5); // generate a random session name (alphanumeric)
+            $alphabetAsValues = range('A', 'Z');
+            $alphabetAsKeys   = array_flip($alphabetAsValues);
+
+            $randomCharacters = array_rand($alphabetAsKeys, 5);
+
+            $sessionName = implode($randomCharacters);
 
             QUI::$Conf->set('session', 'name', $sessionName);
             QUI::$Conf->save();
