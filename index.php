@@ -64,6 +64,7 @@ try {
         );
 
         $Response->send();
+        QUI::getEvents()->fireEvent('responseSent', [$Response]);
         exit;
     }
 
@@ -140,6 +141,8 @@ try {
 
         $Response->setContent($Smarty->fetch($file));
         $Response->send();
+
+        QUI::getEvents()->fireEvent('responseSent', [$Response]);
         exit;
     }
 
@@ -185,9 +188,10 @@ try {
             $_content      = $content;
 
             QUI::getEvents()->fireEvent('requestOutput', [&$_content]);
-
             $Response->setContent($content);
             $Response->send();
+
+            QUI::getEvents()->fireEvent('responseSent', [$Response]);
             exit;
         } catch (\Exception $Exception) {
             Log::writeDebugException($Exception);
@@ -257,7 +261,8 @@ try {
 
     $Response->prepare(QUI::getRequest());
     $Response->send();
-    exit;
+
+    QUI::getEvents()->fireEvent('responseSent', [$Response]);
 } catch (\Exception $Exception) {
     // error ??
     \header('HTTP/1.1 503 Service Temporarily Unavailable');
