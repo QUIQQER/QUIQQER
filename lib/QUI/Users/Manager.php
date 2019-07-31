@@ -337,7 +337,7 @@ class Manager
             $i             = 0;
 
             while ($this->usernameExists($newName)) {
-                $newName = $newUserLocale . ' (' . $i . ')';
+                $newName = $newUserLocale.' ('.$i.')';
                 $i++;
             }
         }
@@ -558,7 +558,7 @@ class Manager
             );
         }
 
-        if ($Session->get('auth-' . \get_class($Authenticator))
+        if ($Session->get('auth-'.\get_class($Authenticator))
             && $Session->get('username')
             && $Session->get('uid')
         ) {
@@ -571,7 +571,7 @@ class Manager
             $Exception->setAttribute('reason', self::AUTH_ERROR_AUTH_ERROR);
 
             QUI\System\Log::write(
-                'Login failed: ' . $username,
+                'Login failed: '.$username,
                 QUI\System\Log::LEVEL_WARNING,
                 [],
                 'auth'
@@ -586,7 +586,7 @@ class Manager
             );
         } catch (\Exception $Exception) {
             QUI\System\Log::write(
-                'Login failed: ' . $username,
+                'Login failed: '.$username,
                 QUI\System\Log::LEVEL_WARNING,
                 [],
                 'auth'
@@ -614,7 +614,7 @@ class Manager
         }
 
         $Session->set(
-            'auth-' . \get_class($Authenticator),
+            'auth-'.\get_class($Authenticator),
             1
         );
 
@@ -1296,11 +1296,11 @@ class Manager
         /**
          * SELECT
          */
-        $query = 'SELECT * FROM ' . self::table();
+        $query = 'SELECT * FROM '.self::table();
         $binds = [];
 
         if (isset($params['count'])) {
-            $query = 'SELECT COUNT( id ) AS count FROM ' . self::table();
+            $query = 'SELECT COUNT( id ) AS count FROM '.self::table();
         }
 
         /**
@@ -1354,27 +1354,19 @@ class Manager
                 $filter_status = true;
             }
 
-            if (isset($filter['filter_group'])
-                && !empty($filter['filter_group'])
-            ) {
+            if (isset($filter['filter_group']) && !empty($filter['filter_group'])) {
                 $filter_group = true;
             }
 
-            if (isset($filter['filter_groups_exclude'])
-                && !empty($filter['filter_groups_exclude'])
-            ) {
+            if (isset($filter['filter_groups_exclude']) && !empty($filter['filter_groups_exclude'])) {
                 $filter_groups_exclude = true;
             }
 
-            if (isset($filter['filter_regdate_first'])
-                && !empty($filter['filter_regdate_first'])
-            ) {
+            if (isset($filter['filter_regdate_first']) && !empty($filter['filter_regdate_first'])) {
                 $filter_regdate_first = true;
             }
 
-            if (isset($filter['filter_regdate_last'])
-                && !empty($filter['filter_regdate_last'])
-            ) {
+            if (isset($filter['filter_regdate_last']) && !empty($filter['filter_regdate_last'])) {
                 $filter_regdate_last = true;
             }
 
@@ -1384,7 +1376,7 @@ class Manager
                 $query .= ' WHERE 1=1 ';
             } else {
                 $query            .= ' WHERE (';
-                $binds[':search'] = '%' . $search . '%';
+                $binds[':search'] = '%'.$search.'%';
 
                 if (empty($search)) {
                     $binds[':search'] = '%';
@@ -1399,7 +1391,7 @@ class Manager
                         continue;
                     }
 
-                    $query .= ' ' . $field . ' LIKE :search OR ';
+                    $query .= ' '.$field.' LIKE :search OR ';
                 }
 
                 if (\substr($query, -3) == 'OR ') {
@@ -1427,8 +1419,8 @@ class Manager
 
                 foreach ($groups as $groupId) {
                     if ((int)$groupId > 0) {
-                        $query                 .= ' AND usergroup LIKE :' . $groupId . ' ';
-                        $binds[':' . $groupId] = '%' . (int)$groupId . '%';
+                        $query               .= ' AND usergroup LIKE :'.$groupId.' ';
+                        $binds[':'.$groupId] = '%,'.(int)$groupId.',%';
                     }
                 }
             }
@@ -1436,8 +1428,8 @@ class Manager
             if ($filter_groups_exclude) {
                 foreach ($filter['filter_groups_exclude'] as $groupId) {
                     if ((int)$groupId > 0) {
-                        $query                 .= ' AND usergroup NOT LIKE :' . $groupId . ' ';
-                        $binds[':' . $groupId] = '%,' . (int)$groupId . ',%';
+                        $query               .= ' AND usergroup NOT LIKE :'.$groupId.' ';
+                        $binds[':'.$groupId] = '%,'.(int)$groupId.',%';
                     }
                 }
             }
@@ -1445,7 +1437,7 @@ class Manager
             if ($filter_regdate_first) {
                 $query              .= ' AND regdate >= :firstreg ';
                 $binds[':firstreg'] = QUI\Utils\Convert::convertMySqlDatetime(
-                    $filter['filter_regdate_first'] . ' 00:00:00'
+                    $filter['filter_regdate_first'].' 00:00:00'
                 );
             }
 
@@ -1453,7 +1445,7 @@ class Manager
             if ($filter_regdate_last) {
                 $query             .= " AND regdate <= :lastreg ";
                 $binds[':lastreg'] = QUI\Utils\Convert::convertMySqlDatetime(
-                    $filter['filter_regdate_last'] . ' 00:00:00'
+                    $filter['filter_regdate_last'].' 00:00:00'
                 );
             }
         }
@@ -1467,7 +1459,7 @@ class Manager
             && $params['field']
             && isset($allowOrderFields[$params['field']])
         ) {
-            $query .= ' ORDER BY ' . $params['field'] . ' ' . $params['order'];
+            $query .= ' ORDER BY '.$params['field'].' '.$params['order'];
         }
 
         /**
@@ -1482,7 +1474,7 @@ class Manager
                 $start = (int)$params['start'];
             }
 
-            $query .= ' LIMIT ' . $start . ', ' . $max;
+            $query .= ' LIMIT '.$start.', '.$max;
         }
 
         $Statement = $PDO->prepare($query);
@@ -1596,7 +1588,7 @@ class Manager
 
         foreach ($packages as $package) {
             $name    = $package['name'];
-            $userXml = OPT_DIR . $name . '/user.xml';
+            $userXml = OPT_DIR.$name.'/user.xml';
 
             if (!\file_exists($userXml)) {
                 continue;
@@ -1622,6 +1614,6 @@ class Manager
             'extend' => $extend
         ]);
 
-        return $Engine->fetch(SYS_DIR . 'template/users/profile.html');
+        return $Engine->fetch(SYS_DIR.'template/users/profile.html');
     }
 }
