@@ -5164,8 +5164,14 @@
         <locale name="packages.panel.category.systemcheck.execbutton">
             <de><![CDATA[System Check ausführen]]></de>
         </locale>
+        <locale name="packages.panel.category.systemcheck.confirm.info">
+            <de><![CDATA[Das Ausführen des System Checks kann bis zu 30 Sekunden dauern. Soll der System Check wirklich ausgeführt werden?]]></de>
+        </locale>
+        <locale name="packages.panel.category.systemcheck.confirm.button.ok.text">
+            <de><![CDATA[Ausführen]]></de>
+        </locale>
         <locale name="packages.panel.category.systemcheck.textinfo">
-            <de><![CDATA[Dieser Vorgang kann einige Zeit in Anspruch nehmen.]]></de>
+            <de><![CDATA[Die dargestellten Informationen sind bis zu einen Tag alt. Durch das Ausführen des System Checks (über den Button oben), werden die Daten aktualisiert.]]></de>
         </locale>
         <locale name="packages.panel.category.systemcheck.loader">
             <de><![CDATA[Der System Check läuft, dies kann bis zu 30 Sekunden dauern.]]></de>

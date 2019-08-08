@@ -30,7 +30,7 @@
   ],
   "require": {
     "php": ">=5.3",
-    "composer\/composer": "1.5.*",
+    "composer\/composer": "1.8.*",
     "tedivm\/stash": "0.14.*",
     "robloach\/component-installer": "0.0.12",
     "phpmailer\/phpmailer": "~6.0",
@@ -63,7 +63,7 @@
     "quiqqer\/meta": "1.*|dev-master|dev-dev",
     "quiqqer\/fontawesome": "*",
     "quiqqer\/backendsearch": "1.*|dev-master|dev-dev",
-    "quiqqer\/requirements": "2.*|dev-master|dev-dev",
+    "quiqqer\/requirements": ">2.0.2|dev-master|dev-dev",
     "quiqqer\/demodata": "^1.0|dev-master|dev-dev",
     "npm-asset\/intl": "1.*",
     "npm-asset\/nouislider": "*",

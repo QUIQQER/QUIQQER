@@ -7,7 +7,7 @@
  * @return String
  */
 QUI::$Ajax->registerFunction(
-    'ajax_system_systemcheck',
+    'ajax_system_systemcheckResultsFromCache',
     function () {
 
         if (!isset($_REQUEST['lang'])) {
@@ -20,7 +20,7 @@ QUI::$Ajax->registerFunction(
 
         $allTests = $Requirements->getTests();
 
-        return \QUI\Requirements\Utils::htmlFormatTestResults($allTests, false);
+        return \QUI\Requirements\Utils::htmlFormatTestResults($allTests);
     },
     false,
     'Permission::checkSU'

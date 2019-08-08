@@ -4977,8 +4977,14 @@
         <locale name="packages.panel.category.systemcheck.execbutton">
             <en><![CDATA[Run system check]]></en>
         </locale>
+        <locale name="packages.panel.category.systemcheck.confirm.info">
+            <en><![CDATA[Running the system check can take up to 30 seconds. Should the system check really be executed?]]></en>
+        </locale>
+        <locale name="packages.panel.category.systemcheck.confirm.button.ok.text">
+            <en><![CDATA[Run]]></en>
+        </locale>
         <locale name="packages.panel.category.systemcheck.textinfo">
-            <en><![CDATA[This process may take some time.]]></en>
+            <en><![CDATA[The displayed information are up to one day old. By running the system check (via the button above), the information is updated.]]></en>
         </locale>
         <locale name="packages.panel.category.systemcheck.loader">
             <en><![CDATA[The system check is running, this can take up to 30 seconds.]]></en>

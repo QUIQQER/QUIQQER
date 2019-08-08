@@ -57,6 +57,12 @@
     text-align: right !important;
 }
 
+.grid-align-center {
+    padding-left: 2px !important;
+    padding-right: 3px;
+    text-align: center !important;
+}
+
 .omnigrid div.bDiv .td [class^="fa-"],
 .omnigrid div.bDiv .td [class*=" fa-"],
 .omnigrid div.bDiv .td [class^="icon-"],

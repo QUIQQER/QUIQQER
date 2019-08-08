@@ -187,16 +187,22 @@ class Console
         try {
             $this->authenticate();
         } catch (QUI\Exception $Exception) {
-            $this->writeLn($Exception->getMessage()."\n\n", 'red');
+            QUI::getEvents()->fireEvent('userCliLoginError', [$this->getArgument('username'), $Exception]);
+
+            $this->writeLn($Exception->getMessage() . "\n\n", 'red');
             exit;
         }
 
         if (\is_null($this->User) || !$this->User->getId()) {
+            QUI::getEvents()->fireEvent('userCliLoginError', [$this->getArgument('username')]);
+
             $this->writeLn("Login incorrect\n\n", 'red');
             exit;
         }
 
         QUI\Permissions\Permission::setUser($this->User);
+
+        QUI::getEvents()->fireEvent('userCliLogin', [$this->User]);
 
         if (!QUI\Permissions\Permission::hasPermission('quiqqer.system.console')) {
             $this->writeLn("Missing rights to use the console\n\n", 'red');

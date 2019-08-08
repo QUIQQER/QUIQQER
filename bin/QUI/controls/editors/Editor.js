@@ -383,34 +383,18 @@ define('controls/editors/Editor', [
          * @param {Function} [callback] - callback function
          */
         getSettings: function (callback) {
-            var Project = this.$Project,
+            var project = null,
                 buttons = this.getAttribute('buttons');
 
+            if (this.$Project) {
+                project = this.$Project.getName();
+            }
+
+            if (project === null) {
+                project = Projects.Standard.getName();
+            }
+
             return new Promise(function (resolve, reject) {
-                if (!Project) {
-                    QUIAjax.get(['ajax_editor_get_toolbar'], function (toolbarData) {
-                        var data = {
-                            toolbar: toolbarData
-                        };
-
-                        if (buttons && "lines" in buttons) {
-                            data.toolbar.lines = buttons.lines;
-                        } else if (buttons) {
-                            data.toolbar.lines = buttons;
-                        }
-
-                        if (typeof callback === 'function') {
-                            callback(data);
-                        }
-
-                        resolve(data);
-                    }, {
-                        onError: reject
-                    });
-
-                    return;
-                }
-
                 // load css files
                 QUIAjax.get([
                     'ajax_editor_get_projectFiles',
@@ -430,7 +414,7 @@ define('controls/editors/Editor', [
 
                     resolve(projectData);
                 }, {
-                    project: Project.getName(),
+                    project: project,
                     onError: reject
                 });
             });

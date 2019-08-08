@@ -84,10 +84,7 @@ define('classes/users/Manager', [
          */
         getList: function (search, params) {
             return new Promise(function (resolve, reject) {
-                Ajax.get('ajax_users_search', function (result) {
-                    resolve(result);
-
-                }, ObjectUtils.combine(params, {
+                Ajax.get('ajax_users_search', resolve, ObjectUtils.combine(params, {
                     params : JSON.encode(search),
                     onError: reject
                 }));

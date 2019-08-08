@@ -2,14 +2,6 @@
  * @module controls/users/search/Search
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/buttons/Switch
- * @require Locale
- * @require Ajax
- * @require Users
- * @require controls/grid/Grid
- *
  * @event onDblClick [self]
  */
 define('controls/users/search/Search', [
