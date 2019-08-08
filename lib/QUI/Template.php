@@ -526,6 +526,13 @@ class Template extends QUI\QDOM
 
             // project template
             $projectScript = USR_DIR.'lib/'.$projectTemplate.'/'.$type.'.php';
+
+            // site template
+            $siteUsrScript = USR_DIR.$Project->getAttribute('name').'/lib/'.$package.'/'.$type.'.php';
+
+            if (\file_exists($siteUsrScript)) {
+                $siteScript = $siteUsrScript;
+            }
         }
 
         if ($siteType[0] == 'standard') {
