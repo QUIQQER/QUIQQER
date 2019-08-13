@@ -1095,8 +1095,25 @@ class Manager
             }
 
             $templates[$vhost['template']] = true;
-            $result[]                      = $vhost['template'];
+
+            $result[] = $vhost['template'];
         }
+
+        // search & consider inheritance template
+        foreach ($result as $template) {
+            try {
+                $Package = QUI::getPackage($template);
+                $Parent  = $Package->getTemplateParent();
+
+                if ($Parent) {
+                    $result[] = $Parent->getName();
+                }
+            } catch (QUI\Exception $Exception) {
+                // nothing
+            }
+        }
+
+        $result = \array_unique($result);
 
         return $result;
     }
@@ -1134,6 +1151,7 @@ class Manager
                 }
             }
 
+            // consider inheritance
             $file = OPT_DIR.$package['name'].'/settings.xml';
 
             if (!\file_exists($file)) {
