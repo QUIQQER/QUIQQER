@@ -141,7 +141,9 @@ define('controls/grid/Grid', [
             this.parent(options);
 
 
-            this.container  = typeOf(container) === 'string' ? document.id(container) : container;
+            this.container = typeOf(container) === 'string' ? document.id(container) : container;
+            this.$disabled = false;
+
             this._stopdrag  = false;
             this._dragtimer = false;
             this._mousedown = false;
@@ -3315,6 +3317,48 @@ define('controls/grid/Grid', [
                 this.Drag.destroy();
                 this.Drag = null;
             }
+        },
+
+        /**
+         * Disable this grid
+         */
+        disable: function () {
+            if (this.$disabled) {
+                return;
+            }
+
+            if (this.getElm().getElement('.grid-disabled')) {
+                return;
+            }
+
+            this.$disabled = true;
+
+            new Element('div', {
+                'class': 'grid-disabled'
+            }).inject(this.getElm());
+
+            this.getButtons().forEach(function (Button) {
+                Button.disabled();
+            });
+        },
+
+        /**
+         * Enable this grid
+         */
+        enable: function () {
+            if (this.$disabled === false) {
+                return;
+            }
+
+            this.$disabled = false;
+
+            if (this.getElm().getElement('.grid-disabled')) {
+                this.getElm().getElement('.grid-disabled').destroy();
+            }
+
+            this.getButtons().forEach(function (Button) {
+                Button.enabled();
+            });
         }
     });
 });
