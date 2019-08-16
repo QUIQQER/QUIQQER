@@ -439,14 +439,10 @@ class Package extends QUI\QDOM
             );
         }
 
-        if (!isset($this->composerData['version'])
-            || empty($this->composerData['version'])
-            || $this->composerData['version'] === '---') {
-            $lock = QUI::getPackageManager()->getPackageLock($this);
+        $lock = QUI::getPackageManager()->getPackageLock($this);
 
-            if (isset($lock['version'])) {
-                $this->composerData['version'] = $lock['version'];
-            }
+        if (isset($lock['version'])) {
+            $this->composerData['version'] = $lock['version'];
         }
 
         return [];
