@@ -110,10 +110,7 @@ class Package extends QUI\QDOM
             return;
         }
 
-        $this->composerData = \json_decode(
-            \file_get_contents($packageDir.'composer.json'),
-            true
-        );
+        $this->getComposerData();
 
         // ERROR
         if (!$this->composerData) {
@@ -420,6 +417,7 @@ class Package extends QUI\QDOM
             return $this->composerData;
         }
 
+
         if (\file_exists($this->packageDir.'composer.json')) {
             $this->composerData = \json_decode(
                 \file_get_contents($this->packageDir.'composer.json'),
@@ -439,6 +437,12 @@ class Package extends QUI\QDOM
                 \file_get_contents($this->packageDir.'bower.json'),
                 true
             );
+        }
+
+        $lock = QUI::getPackageManager()->getPackageLock($this);
+
+        if (isset($lock['version'])) {
+            $this->composerData['version'] = $lock['version'];
         }
 
         return [];

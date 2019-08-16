@@ -2,13 +2,6 @@
  * @module controls/packages/Package
  * @author www.pcsg.de (Henning Leutz)
  *
- * @requires qui/QUI
- * @requires qui/controls/Control
- * @requires Packages
- * @requires Mustache
- * @requires text!controls/packages/Package.html
- * @requires css!controls/packages/Package.css
- *
  * @event onLoad
  */
 define('controls/packages/Package', [
