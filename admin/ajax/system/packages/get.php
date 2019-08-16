@@ -30,7 +30,7 @@ QUI::$Ajax->registerFunction(
             'title'       => $Package->getTitle(),
             'description' => $Package->getDescription(),
             'image'       => $Package->getImage(),
-            'preview'     => $Package->getPreviewImages(),
+            'preview'     => $Package->getPreviewImages()
         ];
 
         // require sort
