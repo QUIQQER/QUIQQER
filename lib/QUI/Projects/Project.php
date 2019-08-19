@@ -854,6 +854,23 @@ class Project
             $template.'/site.xml'
         ];
 
+        // inheritance
+        try {
+            $Package = QUI::getPackage($this->getAttribute('template'));
+            $Parent  = $Package->getTemplateParent();
+            $siteXml = false;
+
+            if ($Parent) {
+                $siteXml = $Parent->getXMLFilePath('site.xml');
+            }
+
+            if ($siteXml) {
+                $siteXMLs[] = $siteXml;
+            }
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeDebugException($Exception);
+        }
+
         foreach ($vhostList as $vhost) {
             $hostData = $VHosts->getVhost($vhost);
 
@@ -1062,8 +1079,8 @@ class Project
      *
      * @param array $params
      *
-     * @todo Muss mal echt überarbeitet werden, bad code
      * @return array
+     * @todo Muss mal echt überarbeitet werden, bad code
      */
     public function getSitesIds($params = [])
     {

@@ -55,13 +55,6 @@ class Template extends QUI\QDOM
     protected $onLoadModules = [];
 
     /**
-     * site type tpl
-     *
-     * @var string
-     */
-    protected $typetpl = '';
-
-    /**
      * @var QUI\Package\Package
      */
     protected $TemplatePackage = null;
@@ -75,6 +68,13 @@ class Template extends QUI\QDOM
      * @var null|QUI\Projects\Project
      */
     protected $Project = null;
+
+    /**
+     * Project template list
+     *
+     * @var array
+     */
+    protected $templates = [];
 
     /**
      * constructor
@@ -792,18 +792,24 @@ class Template extends QUI\QDOM
             $this->setAttributes($params);
         }
 
-        $Project  = $this->getAttribute('Project');
-        $layout   = $this->getLayoutType();
-        $template = OPT_DIR.$Project->getAttribute('template');
+        $layout = $this->getLayoutType();
 
         if (!$layout) {
             return $this->getBody($params);
         }
 
-        $layoutFile = $template.'/'.$layout.'.html';
-        $Engine     = $this->getAttribute('Engine');
+        $Project   = $this->getAttribute('Project');
+        $templates = $this->getProjectTemplates($Project);
 
-        return $Engine->fetch($layoutFile);
+        foreach ($templates as $template) {
+            $layoutFile = OPT_DIR.$template.'/'.$layout.'.html';
+
+            if (\file_exists($layoutFile)) {
+                return $this->getAttribute('Engine')->fetch($layoutFile);
+            }
+        }
+
+        return '';
     }
 
     /**
@@ -818,23 +824,29 @@ class Template extends QUI\QDOM
 
         QUI\Utils\Site::setRecursiveAttribute($Site, 'layout');
 
-        $layout = $Site->getAttribute('layout');
+        $layout    = $Site->getAttribute('layout');
+        $templates = $this->getProjectTemplates($Project);
 
-        $template = OPT_DIR.$Project->getAttribute('template');
-        $siteXML  = $template.'/site.xml';
-
-        if (!$layout || !\is_dir($template) && !\file_exists($siteXML)) {
+        if (!$layout) {
             return false;
         }
 
-        $Layout     = QUI\Utils\Text\XML::getLayoutFromXml($siteXML, $layout);
-        $layoutFile = $template.'/'.$layout.'.html';
+        foreach ($templates as $template) {
+            $siteXML = OPT_DIR.$template.'/site.xml';
 
-        if (!$Layout || !\file_exists($layoutFile)) {
-            return false;
+            if (!\file_exists($siteXML)) {
+                continue;
+            }
+
+            $Layout     = QUI\Utils\Text\XML::getLayoutFromXml($siteXML, $layout);
+            $layoutFile = OPT_DIR.$template.'/'.$layout.'.html';
+
+            if ($Layout && \file_exists($layoutFile)) {
+                return $layout;
+            }
         }
 
-        return $layout;
+        return false;
     }
 
     /**
@@ -917,5 +929,49 @@ class Template extends QUI\QDOM
         ]);
 
         return $Engine->fetch($template);
+    }
+
+    /**
+     * Return all project templates which have a site.xml
+     * -> consider template inheritance
+     *
+     * @param QUI\Projects\Project $Project
+     * @return array
+     */
+    protected function getProjectTemplates($Project)
+    {
+        $name = $Project->getName();
+
+        if (isset($this->templates[$name])) {
+            return $this->templates[$name];
+        }
+
+        $templates = [];
+
+        $template = OPT_DIR.$Project->getAttribute('template');
+        $siteXML  = $template.'/site.xml';
+
+        if (\file_exists($siteXML)) {
+            $templates[] = $template;
+        }
+
+        try {
+            $Package = QUI::getPackage($Project->getAttribute('template'));
+            $Parent  = $Package->getTemplateParent();
+            $siteXML = $Parent->getXMLFilePath('site.xml');
+
+            if (\file_exists($siteXML)) {
+                $templates[] = $Parent->getName();
+            }
+        } catch (QUI\Exception $Exception) {
+        }
+
+        $this->templates[$name] = $templates;
+
+        if (empty($templates)) {
+            $this->templates[$name] = false;
+        }
+
+        return $this->templates[$name];
     }
 }
