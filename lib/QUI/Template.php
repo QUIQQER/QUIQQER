@@ -802,7 +802,7 @@ class Template extends QUI\QDOM
         $templates = $this->getProjectTemplates($Project);
 
         foreach ($templates as $template) {
-            $layoutFile = OPT_DIR.$template.'/'.$layout.'.html';
+            $layoutFile = $template.'/'.$layout.'.html';
 
             if (\file_exists($layoutFile)) {
                 return $this->getAttribute('Engine')->fetch($layoutFile);
@@ -832,14 +832,14 @@ class Template extends QUI\QDOM
         }
 
         foreach ($templates as $template) {
-            $siteXML = OPT_DIR.$template.'/site.xml';
+            $siteXML = $template.'/site.xml';
 
             if (!\file_exists($siteXML)) {
                 continue;
             }
 
             $Layout     = QUI\Utils\Text\XML::getLayoutFromXml($siteXML, $layout);
-            $layoutFile = OPT_DIR.$template.'/'.$layout.'.html';
+            $layoutFile = $template.'/'.$layout.'.html';
 
             if ($Layout && \file_exists($layoutFile)) {
                 return $layout;
@@ -958,10 +958,13 @@ class Template extends QUI\QDOM
         try {
             $Package = QUI::getPackage($Project->getAttribute('template'));
             $Parent  = $Package->getTemplateParent();
-            $siteXML = $Parent->getXMLFilePath('site.xml');
 
-            if (\file_exists($siteXML)) {
-                $templates[] = $Parent->getName();
+            if ($Parent) {
+                $siteXML = $Parent->getXMLFilePath('site.xml');
+
+                if (\file_exists($siteXML)) {
+                    $templates[] = $Parent->getName();
+                }
             }
         } catch (QUI\Exception $Exception) {
         }
