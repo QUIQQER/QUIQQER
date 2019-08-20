@@ -1,25 +1,26 @@
 
-.qui-type-window {
-
+.qui-window-popup-content {
+    display: flex;
+    flex-direction: column;
 }
-
-.qui-type-window-cc {
-    clear: both;
-    float: left;
-    height: calc( 100% - 40px );
-    overflow: auto;
-    width: 100%;
-}
-
 
 .qui-type-window-buttons {
     background: #e1e4e9;
     border-bottom: 1px solid #dedede;
-    clear: both;
-    float: left;
     height: 40px;
     width: 100%;
 }
+
+.qui-type-window-cc {
+    flex-grow: 1;
+    overflow: auto;
+    width: 100%;
+}
+
+.qui-type-window-info {
+    text-align: center;
+}
+
 
 .qui-type-window-buttons button {
     background: transparent;

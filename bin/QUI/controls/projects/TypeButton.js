@@ -3,11 +3,6 @@
  *
  * @module controls/projects/TypeButton
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/controls/Control
- * @require controls/projects/TypeWindow
- * @require qui/controls/buttons/Button
- * @require Locale
  */
 define('controls/projects/TypeButton', [
 

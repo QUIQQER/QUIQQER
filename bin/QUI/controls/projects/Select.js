@@ -4,12 +4,6 @@
  * @module controls/projects/Select
  * @author www.pcsg.de (Patrick Müller)
  *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/buttons/Select
- * @require qui/controls/loader/Loader
- * @require Projects
- *
  * @event onChange [ value, self ]
  * @event onLoad [ self ]
  */

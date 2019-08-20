@@ -6,10 +6,6 @@
  * @module controls/projects/SelectWindow
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/controls/windows/Confirm
- * @require controls/projects/Select
- * @require Locale
- *
  * @event onSubmit [ {this}, {Object} result ];
  */
 define('controls/projects/SelectWindow', [

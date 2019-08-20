@@ -3,11 +3,6 @@
  *
  * @module controls/projects/TypeInput
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/controls/Control
- * @require controls/projects/TypeButton
- * @require controls/projects/TypeWindow
- * @require Plugins
  */
 define('controls/projects/TypeInput', [
 
@@ -84,6 +79,14 @@ define('controls/projects/TypeInput', [
                     onSubmit: function (Btn, result) {
                         self.$Input.value = result;
                         self.loadTypeName();
+
+                        if ("createEvent" in document) {
+                            var evt = document.createEvent("HTMLEvents");
+                            evt.initEvent("change", false, true);
+                            self.$Input.dispatchEvent(evt);
+                        } else {
+                            self.$Input.fireEvent("onchange");
+                        }
                     }
                 }
             }).inject(this.$Elm);

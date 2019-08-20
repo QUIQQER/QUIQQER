@@ -7,15 +7,8 @@
  * @module controls/projects/TypeSitemap
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/controls/Control
- * @require qui/controls/sitemap/Map
- * @require qui/controls/sitemap/Item
- * @require Ajax
- * @require Locale
- *
  * @event onLoad [ self ]
  */
-
 define('controls/projects/TypeSitemap', [
 
     'qui/controls/Control',

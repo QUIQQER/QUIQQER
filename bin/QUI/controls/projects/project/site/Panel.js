@@ -1070,7 +1070,8 @@ define('controls/projects/project/site/Panel', [
                                     LinkinLangTable = Body.getElement('.site-langs'),
                                     Locked          = Body.getElement('[data-locked]'),
                                     Title           = Body.getElement('[name="title"]'),
-                                    OpenInStructure = Body.getElement('[name="open-in-structure"]')
+                                    OpenInStructure = Body.getElement('[name="open-in-structure"]'),
+                                    SiteType        = Body.getElement('[name="type"]')
                                 ;
 
                                 if (OpenInStructure) {
@@ -1078,6 +1079,14 @@ define('controls/projects/project/site/Panel', [
                                     OpenInStructure.set('disabled', false);
                                     OpenInStructure.set('title', Locale.get('quiqqer/quiqqer', 'projects.project.site.panel.information.openInSiteStructure'));
                                 }
+
+                                SiteType.addEvent('change', function () {
+                                    if (SiteType.value === Site.getAttribute('type')) {
+                                        return;
+                                    }
+
+                                    self.save();
+                                });
 
                                 if (Title) {
                                     Title.addEvent('blur', function () {

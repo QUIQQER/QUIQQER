@@ -4,19 +4,9 @@
  * @module controls/projects/Input
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/controls/Control
- * @require qui/controls/buttons/Button
- * @require qui/utils/Elements
- * @require controls/projects/project/Entry
- * @require Ajax
- * @require Locale
- * @require Projects
- * @require css!controls/projects/Input.css
- *
  * @event onAdd [ this, project, lang ]
  * @event onChange [ this ]
  */
-
 define('controls/projects/Input', [
 
     'qui/controls/Control',

@@ -1811,6 +1811,19 @@
         <locale name="window.title.url.customization.button.cancel">
             <de><![CDATA[URL beibehalten]]></de>
         </locale>
+
+        <locale name="projects.typewindow.title">
+            <de><![CDATA[Wähle einen Seitentypen aus]]></de>
+        </locale>
+        <locale name="projects.typewindow.btn.sitemapView">
+            <de><![CDATA[Sitemap-Anzeige]]></de>
+        </locale>
+        <locale name="projects.typewindow.btn.detailView">
+            <de><![CDATA[Detail-Anzeige]]></de>
+        </locale>
+        <locale name="projects.typewindow.info">
+            <de><![CDATA[Das Ändern des Seitentyps hat ein Speichern der Seite zur Folge.]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">
         <locale name="yes">
@@ -2676,15 +2689,6 @@
         </locale>
         <locale name="projects.project.manager.btn.create.project">
             <de><![CDATA[Projekt anlegen]]></de>
-        </locale>
-        <locale name="projects.typewindow.title">
-            <de><![CDATA[Wähle einen Seitentypen aus]]></de>
-        </locale>
-        <locale name="projects.typewindow.btn.sitemapView">
-            <de><![CDATA[Sitemap-Anzeige]]></de>
-        </locale>
-        <locale name="projects.typewindow.btn.detailView">
-            <de><![CDATA[Detail-Anzeige]]></de>
         </locale>
         <locale name="projects.project.panel.settings.btn.save">
             <de><![CDATA[Speichern]]></de>
@@ -5165,13 +5169,15 @@
             <de><![CDATA[System Check ausführen]]></de>
         </locale>
         <locale name="packages.panel.category.systemcheck.confirm.info">
-            <de><![CDATA[Das Ausführen des System Checks kann bis zu 30 Sekunden dauern. Soll der System Check wirklich ausgeführt werden?]]></de>
+            <de>
+                <![CDATA[Das Ausführen des System Checks kann bis zu 30 Sekunden dauern. Soll der System Check wirklich ausgeführt werden?]]></de>
         </locale>
         <locale name="packages.panel.category.systemcheck.confirm.button.ok.text">
             <de><![CDATA[Ausführen]]></de>
         </locale>
         <locale name="packages.panel.category.systemcheck.textinfo">
-            <de><![CDATA[Die dargestellten Informationen sind bis zu einen Tag alt. Durch das Ausführen des System Checks (über den Button oben), werden die Daten aktualisiert.]]></de>
+            <de>
+                <![CDATA[Die dargestellten Informationen sind bis zu einen Tag alt. Durch das Ausführen des System Checks (über den Button oben), werden die Daten aktualisiert.]]></de>
         </locale>
         <locale name="packages.panel.category.systemcheck.loader">
             <de><![CDATA[Der System Check läuft, dies kann bis zu 30 Sekunden dauern.]]></de>

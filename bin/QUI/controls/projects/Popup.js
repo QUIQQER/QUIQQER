@@ -7,16 +7,8 @@
  * @module controls/projects/Popup
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/controls/windows/Confirm
- * @require qui/controls/buttons/Select
- * @require Projects
- * @require Locale
- * @require controls/projects/project/Sitemap
- * @require css!controls/projects/Popup.css
- *
  * @event onSubmit [ {this}, {Object} result ];
  */
-
 define('controls/projects/Popup', [
 
     'qui/controls/windows/Confirm',

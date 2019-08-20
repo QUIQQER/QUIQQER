@@ -3,15 +3,6 @@
  *
  * @module controls/projects/Manager
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/controls/Control
- * @require qui/controls/buttons/Button
- * @require controls/projects/Settings
- * @require Projects
- * @require controls/grid/Grid
- * @require utils/Template
- * @require Locale
- * @require css!controls/projects/Manager.css
  */
 define('controls/projects/Manager', [
 

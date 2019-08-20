@@ -4,9 +4,7 @@
  *
  * @module controls/projects/TypeDetails
  * @author www.pcsg.de (Henning Leutz)
- *
  */
-
 define('controls/projects/TypeDetails', [
 
     'qui/QUI',

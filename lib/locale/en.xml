@@ -1787,6 +1787,19 @@
         <locale name="window.title.url.customization.button.cancel">
             <en><![CDATA[Keep the URL]]></en>
         </locale>
+
+        <locale name="projects.typewindow.title">
+            <en><![CDATA[Choose a site type]]></en>
+        </locale>
+        <locale name="projects.typewindow.btn.sitemapView">
+            <en><![CDATA[Sitemap view]]></en>
+        </locale>
+        <locale name="projects.typewindow.btn.detailView">
+            <en><![CDATA[Detail view]]></en>
+        </locale>
+        <locale name="projects.typewindow.info">
+            <en><![CDATA[Changing the page type results in saving the page.]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">
         <locale name="yes">
@@ -2618,15 +2631,6 @@
         </locale>
         <locale name="projects.project.manager.btn.create.project">
             <en><![CDATA[Create project]]></en>
-        </locale>
-        <locale name="projects.typewindow.title">
-            <en><![CDATA[Choose a site type]]></en>
-        </locale>
-        <locale name="projects.typewindow.btn.sitemapView">
-            <en><![CDATA[Sitemap view]]></en>
-        </locale>
-        <locale name="projects.typewindow.btn.detailView">
-            <en><![CDATA[Detail view]]></en>
         </locale>
         <locale name="projects.project.panel.settings.btn.save">
             <en><![CDATA[Save]]></en>
@@ -4978,13 +4982,15 @@
             <en><![CDATA[Run system check]]></en>
         </locale>
         <locale name="packages.panel.category.systemcheck.confirm.info">
-            <en><![CDATA[Running the system check can take up to 30 seconds. Should the system check really be executed?]]></en>
+            <en>
+                <![CDATA[Running the system check can take up to 30 seconds. Should the system check really be executed?]]></en>
         </locale>
         <locale name="packages.panel.category.systemcheck.confirm.button.ok.text">
             <en><![CDATA[Run]]></en>
         </locale>
         <locale name="packages.panel.category.systemcheck.textinfo">
-            <en><![CDATA[The displayed information are up to one day old. By running the system check (via the button above), the information is updated.]]></en>
+            <en>
+                <![CDATA[The displayed information are up to one day old. By running the system check (via the button above), the information is updated.]]></en>
         </locale>
         <locale name="packages.panel.category.systemcheck.loader">
             <en><![CDATA[The system check is running, this can take up to 30 seconds.]]></en>

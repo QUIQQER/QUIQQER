@@ -6,14 +6,7 @@
  *
  * @module controls/projects/TypeWindow
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/controls/windows/Confirm
- * @require qui/controls/sitemap/Map
- * @require qui/controls/sitemap/Item
- * @require controls/projects/TypeSitemap
- * @require Locale
  */
-
 define('controls/projects/TypeWindow', [
 
     'qui/controls/windows/Confirm',
@@ -43,7 +36,7 @@ define('controls/projects/TypeWindow', [
 
         Binds: [
             '$onCreate',
-            '$onOpenbegin',
+            '$onOpenBegin',
             'sitemapView',
             'detailsView'
         ],
@@ -53,14 +46,14 @@ define('controls/projects/TypeWindow', [
             project          : false,
             pluginsSelectable: false,
 
-            title    : QUILocale.get('quiqqer/system', 'projects.typewindow.title'),
+            title    : QUILocale.get('quiqqer/quiqqer', 'projects.typewindow.title'),
             icon     : 'fa fa-magic',
-            maxHeight: 500,
+            maxHeight: 600,
             maxWidth : 400,
             message  : false,
 
             cancel_button: {
-                text     : QUILocale.get('quiqqer/system', 'cancel'),
+                text     : QUILocale.get('quiqqer/quiqqer', 'cancel'),
                 textimage: 'fa fa-remove'
             },
             ok_button    : {
@@ -81,14 +74,14 @@ define('controls/projects/TypeWindow', [
 
             this.addEvents({
                 onOpen     : this.$onOpen,
-                onOpenBegin: this.$onOpenbegin
+                onOpenBegin: this.$onOpenBegin
             });
         },
 
         /**
          * Event : open begin
          */
-        $onOpenbegin: function () {
+        $onOpenBegin: function () {
             this.Loader.show();
         },
 
@@ -104,7 +97,10 @@ define('controls/projects/TypeWindow', [
                 'html',
 
                 '<div class="qui-type-window-buttons"></div>' +
-                '<div class="qui-type-window-cc"></div>'
+                '<div class="qui-type-window-cc"></div>' +
+                '<div class="qui-type-window-info messages-message message-information">' +
+                QUILocale.get('quiqqer/quiqqer', 'projects.typewindow.info') +
+                '</div>'
             );
 
             this.$Elm.addClass('qui-type-window');
@@ -119,7 +115,7 @@ define('controls/projects/TypeWindow', [
             this.$ShowSitemap = new QUIButton({
                 name     : 'sitemap',
                 textimage: 'fa fa-sitemap',
-                text     : QUILocale.get('quiqqer/system', 'projects.typewindow.btn.sitemapView'),
+                text     : QUILocale.get('quiqqer/quiqqer', 'projects.typewindow.btn.sitemapView'),
                 events   : {
                     click: this.sitemapView
                 }
@@ -128,7 +124,7 @@ define('controls/projects/TypeWindow', [
             this.$ShowDetails = new QUIButton({
                 name     : 'details',
                 textimage: 'fa fa-file-text',
-                text     : QUILocale.get('quiqqer/system', 'projects.typewindow.btn.detailView'),
+                text     : QUILocale.get('quiqqer/quiqqer', 'projects.typewindow.btn.detailView'),
                 events   : {
                     click: this.detailsView
                 }
@@ -137,7 +133,8 @@ define('controls/projects/TypeWindow', [
 
             if (this.getAttribute('message')) {
                 new Element('div', {
-                    html: this.getAttribute('message')
+                    'class': 'messages-message message-attention',
+                    html   : this.getAttribute('message')
                 }).inject(Content);
             }
 
