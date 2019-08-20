@@ -963,7 +963,7 @@ class Template extends QUI\QDOM
                 $siteXML = $Parent->getXMLFilePath('site.xml');
 
                 if (\file_exists($siteXML)) {
-                    $templates[] = $Parent->getName();
+                    $templates[] = OPT_DIR.$Parent->getName();
                 }
             }
         } catch (QUI\Exception $Exception) {
