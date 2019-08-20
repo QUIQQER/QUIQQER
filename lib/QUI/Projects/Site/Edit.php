@@ -1406,8 +1406,6 @@ class Edit extends Site
      * is the page currently edited from another user than me?
      *
      * @return bool|integer
-     *
-     * @throws QUI\Exception
      */
     public function isLockedFromOther()
     {
@@ -1421,10 +1419,16 @@ class Edit extends Site
             return false;
         }
 
-        $time = Locker::getLockTime(
-            QUI::getPackage('quiqqer/quiqqer'),
-            $this->getLockKey()
-        );
+        try {
+            $time = Locker::getLockTime(
+                QUI::getPackage('quiqqer/quiqqer'),
+                $this->getLockKey()
+            );
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+
+            return true;
+        }
 
         $max_life_time = QUI::conf('session', 'max_life_time');
 
@@ -1445,15 +1449,19 @@ class Edit extends Site
      * is the page currently edited
      *
      * @return bool|string
-     *
-     * @throws QUI\Exception
      */
     public function isLocked()
     {
-        return Locker::isLocked(
-            QUI::getPackage('quiqqer/quiqqer'),
-            $this->getLockKey()
-        );
+        try {
+            return Locker::isLocked(
+                QUI::getPackage('quiqqer/quiqqer'),
+                $this->getLockKey()
+            );
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+
+            return true;
+        }
     }
 
     /**
@@ -1490,15 +1498,17 @@ class Edit extends Site
 
     /**
      * Demarkiert die Seite, die Seite wird nicht mehr bearbeitet
-     *
-     * @throws QUI\Exception
      */
     protected function unlock()
     {
-        Locker::unlock(
-            QUI::getPackage('quiqqer/quiqqer'),
-            $this->getLockKey()
-        );
+        try {
+            Locker::unlock(
+                QUI::getPackage('quiqqer/quiqqer'),
+                $this->getLockKey()
+            );
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
     }
 
     /**

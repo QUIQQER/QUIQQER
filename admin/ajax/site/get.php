@@ -14,11 +14,8 @@ QUI::$Ajax->registerFunction(
         $Project = QUI::getProjectManager()->decode($project);
         $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
 
-        $attributes = $Site->getAttributes();
-
-        $attributes['icon'] = QUI::getPluginManager()->getIconByType(
-            $Site->getAttribute('type')
-        );
+        $attributes         = $Site->getAttributes();
+        $attributes['icon'] = QUI::getPackageManager()->getIconBySiteType($Site->getAttribute('type'));
 
         return [
             'modules'      => QUI\Projects\Site\Utils::getAdminSiteModulesFromSite($Site),

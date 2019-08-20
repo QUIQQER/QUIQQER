@@ -15,17 +15,16 @@ QUI::$Ajax->registerFunction(
         }
 
         if (isset($params['plugins']) && $params['plugins'] == 1) {
-            QUI\Plugins\Manager::clearCache();
+            QUI\Cache\Manager::clearAll();
         }
 
         if (isset($params['templates']) && $params['templates'] == 1) {
-            // @TODO: Ist das die richtige Funktion zum Löschen des Template Caches?
             QUI\Utils\System\File::unlink(VAR_DIR.'cache/templates');
+            QUI\Utils\System\File::unlink(VAR_DIR.'cache/compile');
         }
 
         if (isset($params['complete']) && $params['complete'] == 1) {
             QUI\Cache\Manager::clearAll();
-            QUI\Plugins\Manager::clearCache();
         }
     },
     ['params'],

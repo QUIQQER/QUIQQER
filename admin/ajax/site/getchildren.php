@@ -16,8 +16,8 @@ QUI::$Ajax->registerFunction(
         $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
         $params  = \json_decode($params, true);
 
-        $PluginManager = QUI::getPluginManager();
-        $attributes    = false;
+        $Packages   = QUI::getPackageManager();
+        $attributes = false;
 
         if (isset($params['attributes'])) {
             $attributes = \explode(',', $params['attributes']);
@@ -32,54 +32,52 @@ QUI::$Ajax->registerFunction(
             $children = $Site->getChildren();
         }
 
-        $childs = [];
+        $result = [];
 
         for ($i = 0, $len = \count($children); $i < $len; $i++) {
             $Child = $children[$i];
             /* @var $Child \QUI\Projects\Site\Edit */
 
             if (!$attributes) {
-                $childs[$i] = $Child->getAttributes();
+                $result[$i] = $Child->getAttributes();
             } else {
                 foreach ($attributes as $attribute) {
-                    $childs[$i][$attribute] = $Child->getAttribute($attribute);
+                    $result[$i][$attribute] = $Child->getAttribute($attribute);
                 }
             }
 
-            $childs[$i]['id'] = $Child->getId();
+            $result[$i]['id'] = $Child->getId();
 
             if (!$attributes || \in_array('has_children', $attributes)) {
-                $childs[$i]['has_children'] = $Child->hasChildren(true);
+                $result[$i]['has_children'] = $Child->hasChildren(true);
             }
 
             if (!$attributes || \in_array('config', $attributes)) {
-                $childs[$i]['config'] = $Child->conf; // old??
+                $result[$i]['config'] = $Child->conf; // old??
             }
 
             if ($Child->isLinked() && $Child->isLinked() != $Site->getId()) {
-                $childs[$i]['linked'] = 1;
+                $result[$i]['linked'] = 1;
             }
 
             // Projekt Objekt muss da nicht mit
-            if (isset($childs[$i]['project'])
-                && \is_object($childs[$i]['project'])
+            if (isset($result[$i]['project'])
+                && \is_object($result[$i]['project'])
             ) {
-                unset($childs[$i]['project']);
+                unset($result[$i]['project']);
             }
 
             // icon
             if (!$attributes || \in_array('icon', $attributes)) {
                 if ($Child->getAttribute('type') != 'standard') {
-                    $childs[$i]['icon'] = $PluginManager->getIconByType(
-                        $Child->getAttribute('type')
-                    );
+                    $result[$i]['icon'] = $Packages->getIconBySiteType($Child->getAttribute('type'));
                 }
             }
         }
 
         return [
             'count'    => $Site->hasChildren(true),
-            'children' => $childs
+            'children' => $result
         ];
     },
     ['project', 'id', 'params'],

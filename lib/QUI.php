@@ -117,13 +117,6 @@ class QUI
     public static $MailManager = null;
 
     /**
-     * QUI Pluginmanager, use \QUI::getPlugins();
-     *
-     * @var \QUI\Plugins\Manager
-     */
-    public static $Plugins = null;
-
-    /**
      * QUI Packagemanager, use \QUI::getPackageManager();
      *
      * @var \QUI\Package\Manager
@@ -215,7 +208,9 @@ class QUI
     public static $Template = null;
 
     /**
-     * Set all important pathes and load QUIQQER
+     * Set all important paths and load QUIQQER
+     *
+     * @throws QUI\Exception
      */
     public static function load()
     {
@@ -488,6 +483,8 @@ class QUI
 
     /**
      * Starts the Setup
+     *
+     * @throws QUI\Exception
      */
     public static function setup()
     {
@@ -613,9 +610,9 @@ class QUI
      *
      * @param string $file
      *
+     * @return \QUI\Config
      * @throws \QUI\Exception
      *
-     * @return \QUI\Config
      */
     public static function getConfig($file)
     {
@@ -728,9 +725,9 @@ class QUI
      * @param string|boolean $template - Project template (optional)
      *
      * @return \QUI\Projects\Project
+     * @throws QUI\Exception
      * @uses \QUI\Projects\Manager
      *
-     * @throws QUI\Exception
      */
     public static function getProject($project, $lang = false, $template = false)
     {
@@ -886,28 +883,6 @@ class QUI
         }
 
         return self::$ProjectManager;
-    }
-
-    /**
-     * @deprecated use \QUI::getPluginManager()
-     */
-    public static function getPlugins()
-    {
-        return self::getPluginManager();
-    }
-
-    /**
-     * Returns the plugins manager
-     *
-     * @return \QUI\Plugins\Manager
-     */
-    public static function getPluginManager()
-    {
-        if (self::$Plugins === null) {
-            self::$Plugins = new \QUI\Plugins\Manager();
-        }
-
-        return self::$Plugins;
     }
 
     /**

@@ -176,7 +176,6 @@ class Sites
             'name' => '_Tabbar'
         ]);
 
-
         // Wenn die Seite bearbeitet wird
         if ($Site->isLockedFromOther()) {
             $Tabbar->appendChild(
@@ -390,42 +389,6 @@ class Sites
         }
 
         return $Tab;
-    }
-
-    /**
-     * Returns all plugins that has the site
-     *
-     * @param \QUI\Projects\Site $Site
-     *
-     * @return array
-     *
-     * @todo schauen wegen admin bereich
-     * @deprecated
-     */
-    public static function getPlugins($Site)
-    {
-        // Globale requireds
-        $Project = $Site->getProject();
-        $Plugins = QUI::getPluginManager();
-
-        $types  = $Project->getTypes();
-        $result = [];
-
-        // Main Plugins
-        foreach ($types as $key => $type) {
-            $result[] = $Plugins->get($key);
-        }
-
-        // Seitentypen Einbindungen
-        if ($Site->getAttribute('type')
-            && $Site->getAttribute('type') != 'standard'
-        ) {
-            $result[] = $Plugins->getPluginByType(
-                $Site->getAttribute('type')
-            );
-        }
-
-        return $result;
     }
 
     /**
