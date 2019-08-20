@@ -958,10 +958,13 @@ class Template extends QUI\QDOM
         try {
             $Package = QUI::getPackage($Project->getAttribute('template'));
             $Parent  = $Package->getTemplateParent();
-            $siteXML = $Parent->getXMLFilePath('site.xml');
 
-            if (\file_exists($siteXML)) {
-                $templates[] = $Parent->getName();
+            if ($Parent) {
+                $siteXML = $Parent->getXMLFilePath('site.xml');
+
+                if (\file_exists($siteXML)) {
+                    $templates[] = $Parent->getName();
+                }
             }
         } catch (QUI\Exception $Exception) {
         }
