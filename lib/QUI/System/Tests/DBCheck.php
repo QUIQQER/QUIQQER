@@ -413,10 +413,8 @@ class DBCheck extends QUI\System\Test
             }
 
             if ($autoIncrement !== $isAutoIncrement) {
-                $should = $autoIncrement ? "AUTO_INCREMENT"
-                    : "not AUTO_INCREMENT";
-                $is     = $isAutoIncrement ? "AUTO_INCREMENT"
-                    : "not AUTO_INCREMENT";
+                $should = $autoIncrement ? "AUTO_INCREMENT" : "not AUTO_INCREMENT";
+                $is     = $isAutoIncrement ? "AUTO_INCREMENT" : "not AUTO_INCREMENT";
 
                 $this->addError(
                     $tbl,
@@ -429,23 +427,41 @@ class DBCheck extends QUI\System\Test
 
             /*** DATATYPE check ***/
             $isDatatype = $field['Type'];
+            $notNeeded  = [
+                'primary key',
+                'not null',
+                'null',
+                'auto_increment',
+                'unsigned'
+            ];
 
             // clear xml field data of already checked content
-            $fieldData = \str_replace(
-                [
-                    'primary key',
-                    'not null',
-                    'null',
-                    'auto_increment'
-                ],
-                '',
-                $fieldData
-            );
+            $fieldData  = \str_replace($notNeeded, '', $fieldData);
+            $isDatatype = \str_replace($notNeeded, '', $isDatatype);
 
-            $fieldData = \trim($fieldData);
+            if (\strpos($fieldData, 'default') !== false) {
+                $fieldData = \explode('default', $fieldData);
+                $fieldData = $fieldData[0];
+            }
+
+            $fieldData  = \trim($fieldData);
+            $isDatatype = \trim($isDatatype);
 
             // correct things like "varchar( 20 )" to "varchar(20)" to match the column information
             $fieldData = \preg_replace('#\(\D*(\d+)\D*\)#i', '($1)', $fieldData);
+
+            if ($fieldData === 'int'
+                || $fieldData === 'mediumint'
+                || $fieldData === 'smallint') {
+                // int(10) = int
+                if (\strpos($isDatatype, $fieldData.'(') !== false) {
+                    continue;
+                }
+            }
+
+            if ($fieldData === 'boolean' && $isDatatype === 'tinyint(1)') {
+                continue;
+            }
 
             if (\mb_strpos($fieldData, $isDatatype) === false) {
                 $this->addError(
