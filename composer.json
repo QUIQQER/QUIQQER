@@ -2,7 +2,7 @@
   "name": "quiqqer\/quiqqer",
   "type": "quiqqer-system",
   "description": "A modular based management system written in JavaScript and PHP",
-  "version": "dev-dev",
+  "version": "dev-master",
   "license": "GPL-3.0+",
   "authors": [
     {
@@ -71,7 +71,7 @@
     "npm-asset\/urijs": "1.*"
   },
   "require-dev": {
-    "mikey179\/vfsStream": "1.*",
+    "mikey179\/vfsstream": "1.*",
     "phpstan\/phpstan": ">=0.5"
   },
   "scripts": {

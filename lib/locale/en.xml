@@ -503,7 +503,7 @@
         </locale>
         <locale name="quiqqer.settings.auth.global.desc">
             <en><![CDATA[
-            Primary Authenticators are authentication methods which provide the user at the beginning of his Authentication.
+            Primary Authenticators are authentication methods which provide the user at the beginning of his Authentication.
             In addition, you can go over the permissions management for each group or user and set more factor authentication.
             ]]></en>
         </locale>
@@ -4969,7 +4969,7 @@
         <locale name="quiqqer.settings.general.permissions.description" html="true">
             <en><![CDATA[
             Use package rights if you want to provide multiple users with different rights. <br />
-            If no package rights are used, some functions in the system are more powerful.
+            If no package rights are used, some functions in the system are more powerful.
             ]]></en>
         </locale>
         <locale name="exception.no.permission">

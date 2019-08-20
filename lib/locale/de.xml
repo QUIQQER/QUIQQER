@@ -20,13 +20,13 @@
             <de><![CDATA[#,##0.###]]></de>
         </locale>
         <locale name="numberFormat.percent_pattern">
-            <de><![CDATA[#,##0 %]]></de>
+            <de><![CDATA[#,##0 %]]></de>
         </locale>
         <locale name="numberFormat.currency_pattern">
-            <de><![CDATA[#,##0.00 ¤]]></de>
+            <de><![CDATA[#,##0.00 ¤]]></de>
         </locale>
         <locale name="numberFormat.accounting_currency_pattern">
-            <de><![CDATA[#,##0.00 ¤]]></de>
+            <de><![CDATA[#,##0.00 ¤]]></de>
         </locale>
         <locale name="numberFormat.decimal_separator">
             <de><![CDATA[,]]></de>
@@ -5163,7 +5163,7 @@
             <de><![CDATA[Sie haben nicht die nötigen Rechte um diese Aktion durchzuführen]]></de>
         </locale>
         <locale name="projects.project.site.select.btn.addTypes">
-            <de><![CDATA[Seitentyp hinzufügen ]]></de>
+            <de><![CDATA[Seitentyp hinzufügen ]]></de>
         </locale>
         <locale name="packages.panel.category.systemcheck.execbutton">
             <de><![CDATA[System Check ausführen]]></de>

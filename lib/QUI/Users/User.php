@@ -1381,6 +1381,13 @@ class User implements QUI\Interfaces\Users\User
             $Address->delete();
         }
 
+        $addresses = $this->getAddressList();
+
+        /** @var Address $Address */
+        foreach ($addresses as $Address) {
+            $Address->delete();
+        }
+
         QUI::getDataBase()->update(
             Manager::table(),
             [
