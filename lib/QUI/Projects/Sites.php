@@ -79,13 +79,13 @@ class Sites
                 $Status->setAttributes([
                     'textimage' => 'fa fa-remove',
                     'text'      => QUI::getLocale()->get($gl, 'projects.project.site.btn.deactivate.text'),
-                    'onclick'   => 'Panel.getSite().deactivate'
+                    'onclick'   => 'Panel.deactivate'
                 ]);
             } else {
                 $Status->setAttributes([
                     'textimage' => 'fa fa-check',
                     'text'      => QUI::getLocale()->get($gl, 'projects.project.site.btn.activate.text'),
-                    'onclick'   => 'Panel.getSite().activate'
+                    'onclick'   => 'Panel.activate'
                 ]);
             }
 
@@ -186,8 +186,7 @@ class Sites
                         'quiqqer/system',
                         'projects.project.site.information'
                     ),
-                    'template' => SYS_DIR
-                                  .'template/site/information_norights.html',
+                    'template' => SYS_DIR.'template/site/information_norights.html',
                     'icon'     => URL_BIN_DIR.'16x16/page.png'
                 ])
             );
@@ -378,8 +377,8 @@ class Sites
      * @param string $tabname - Name of the Tab
      * @param Site\Edit $Site
      *
-     * @throws \QUI\Exception
      * @return \QUI\Controls\Toolbar\Tab|bool
+     * @throws \QUI\Exception
      */
     public static function getTab($tabname, $Site)
     {

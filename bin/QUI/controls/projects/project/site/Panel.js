@@ -79,6 +79,8 @@ define('controls/projects/project/site/Panel', [
             'deleteLinked',
             'openSiteInPopup',
             'openSiteInStructure',
+            'deactivate',
+            'activate',
 
             '$onCreate',
             '$onDestroy',
@@ -217,6 +219,10 @@ define('controls/projects/project/site/Panel', [
             var Site    = this.getSite(),
                 Project = Site.getProject();
 
+            var onOpen = function () {
+                Panel.openSite(Site.getId());
+            };
+
             for (var i = 0, len = projectPanels.length; i < len; i++) {
                 Panel = projectPanels[i];
 
@@ -228,9 +234,7 @@ define('controls/projects/project/site/Panel', [
 
                 Panel.setAttribute('project', Project.getName());
                 Panel.setAttribute('lang', Project.getLang());
-                Panel.openProject().then(function () {
-                    Panel.openSite(Site.getId());
-                });
+                Panel.openProject().then(onOpen);
             }
         },
 
@@ -793,6 +797,26 @@ define('controls/projects/project/site/Panel', [
                     }
                 }).open();
             });
+        },
+
+        /**
+         * Deactivate the site
+         */
+        deactivate: function () {
+            (function () {
+                this.Loader.show();
+                this.getSite().deactivate();
+            }).delay(100, this);
+        },
+
+        /**
+         * Activate the site
+         */
+        activate: function () {
+            (function () {
+                this.Loader.show();
+                this.getSite().activate();
+            }).delay(100, this);
         },
 
         /**
@@ -1794,14 +1818,17 @@ define('controls/projects/project/site/Panel', [
             var Status = this.getButtons('status');
 
             if (!Status) {
+                this.Loader.hide();
                 return;
             }
 
             Status.setAttributes({
                 'textimage': Status.getAttribute('dimage'),
                 'text'     : Status.getAttribute('dtext'),
-                '_onclick' : 'Panel.getSite().deactivate'
+                '_onclick' : 'Panel.deactivate'
             });
+
+            this.Loader.hide();
         },
 
         /**
@@ -1813,13 +1840,14 @@ define('controls/projects/project/site/Panel', [
             var Status = this.getButtons('status');
 
             if (!Status) {
+                this.Loader.hide();
                 return;
             }
 
             Status.setAttributes({
                 'textimage': Status.getAttribute('aimage'),
                 'text'     : Status.getAttribute('atext'),
-                '_onclick' : 'Panel.getSite().activate'
+                '_onclick' : 'Panel.activate'
             });
 
             this.Loader.hide();
