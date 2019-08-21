@@ -205,18 +205,6 @@ class Utils
      * Return the fitting font awesome class
      * @param \QUI\Projects\Media\Item $Item
      * @return string
-     *
-     * @deprecated
-     */
-    public static function getFronAwesomIconByItem($Item)
-    {
-        return self::getFontAwesomeIconByItem($Item);
-    }
-
-    /**
-     * Return the fitting font awesome class
-     * @param \QUI\Projects\Media\Item $Item
-     * @return string
      */
     public static function getFontAwesomeIconByItem($Item)
     {

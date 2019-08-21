@@ -381,7 +381,15 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $time = \ini_get('max_execution_time');
         \set_time_limit(1000);
 
-        $Image = $Media->getImageManager()->make($original);
+        try {
+            $Image = $Media->getImageManager()->make($original);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addDebug($Exception->getMessage());
+            File::copy($original, $cachefile);
+
+            return $cachefile;
+        }
+
 
         if ($width || $height) {
             if (!$width) {
@@ -560,8 +568,6 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @param integer $newHeight
      *
      * @return string - Path to the new Image
-     *
-     * @throws QUI\Exception
      */
     public function resize($newWidth = 0, $newHeight = 0)
     {
@@ -590,10 +596,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
             $Image->save($original);
         } catch (\Exception $Exception) {
-            throw new QUI\Exception(
-                $Exception->getMessage(),
-                $Exception->getCode()
-            );
+            QUI\System\Log::writeDebugException($Exception);
         }
 
         return $original;

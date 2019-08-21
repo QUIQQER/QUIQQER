@@ -128,7 +128,15 @@ try {
             exit;
         }
 
-        $Image = $Media->getImageManager()->make($File->getFullPath());
+        try {
+            $Image = $Media->getImageManager()->make($File->getFullPath());
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addDebug($Exception->getMessage());
+
+            QUI\Utils\System\File::fileHeader($File->getFullPath());
+            exit;
+        }
+
 
         if (isset($_REQUEST['noresize'])) {
             $Image->save($cacheFile);

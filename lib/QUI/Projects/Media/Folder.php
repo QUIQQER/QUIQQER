@@ -1290,12 +1290,18 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             try {
                 $this->getMedia()->getImageManager()->make($file);
             } catch (\Exception $Exception) {
-                QUI\System\Log::addError($Exception->getMessage());
+                $message = $Exception->getMessage();
 
-                throw new QUI\Exception(
-                    ['quiqqer/quiqqer', 'exception.image.upload.image.corrupted'],
-                    ErrorCodes::FILE_IMAGE_CORRUPT
-                );
+                // gd lib has some unsupported image types
+                // but we can go on
+                if (\strpos($message, 'Unsupported image type') === false) {
+                    QUI\System\Log::addError($Exception->getMessage());
+
+                    throw new QUI\Exception(
+                        ['quiqqer/quiqqer', 'exception.image.upload.image.corrupted'],
+                        ErrorCodes::FILE_IMAGE_CORRUPT
+                    );
+                }
             }
         }
 

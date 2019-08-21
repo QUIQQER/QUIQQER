@@ -349,6 +349,7 @@ define('controls/projects/project/media/Input', [
                     );
 
                 }, function () {
+                    console.log('error at: ', previewUrl);
                     self.$Preview
                         .getElements('.fa-spinner')
                         .removeClass('fa-spin')

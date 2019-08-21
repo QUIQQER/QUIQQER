@@ -225,9 +225,9 @@ class Media extends QUI\QDOM
                 $library = '';
         }
 
-        if (\class_exists('Imagick') && ($library === '' || $library === 'imagick')) {
-            return new ImageManager(['driver' => 'imagick']);
-        }
+//        if (\class_exists('Imagick') && ($library === '' || $library === 'imagick')) {
+//            return new ImageManager(['driver' => 'imagick']);
+//        }
 
         return new ImageManager(['driver' => 'gd']);
     }
