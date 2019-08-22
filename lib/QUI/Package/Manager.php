@@ -371,7 +371,9 @@ class Manager extends QUI\QDOM
         }
 
         try {
-            return QUI\Cache\Manager::get($cache);
+            $this->packageLock[$packageName] = QUI\Cache\Manager::get($cache);
+
+            return $this->packageLock[$packageName];
         } catch (QUI\Exception $Exception) {
         }
 
