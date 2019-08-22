@@ -44,6 +44,20 @@ class Package extends QUI\QDOM
     protected $name = '';
 
     /**
+     * Title of the package
+     *
+     * @var null
+     */
+    protected $title = null;
+
+    /**
+     * Description of the package
+     *
+     * @var null
+     */
+    protected $description = null;
+
+    /**
      * Directory of the package
      *
      * @var string
@@ -149,7 +163,7 @@ class Package extends QUI\QDOM
             return [];
         }
 
-        if (!\is_null($this->packageXML)) {
+        if ($this->packageXML !== null) {
             return $this->packageXML;
         }
 
@@ -275,19 +289,30 @@ class Package extends QUI\QDOM
      */
     public function getTitle()
     {
+        if ($this->title) {
+            return $this->title;
+        }
+
         $packageData = $this->getPackageXMLData();
 
         if (isset($packageData['title']) && !empty($packageData['title'])) {
-            return $packageData['title'];
+            $this->title = $packageData['title'];
+
+            return $this->title;
         }
 
         if ($this->isQuiqqerPackage()
             && QUI::getLocale()->exists($this->name, 'package.title')
         ) {
-            return QUI::getLocale()->get($this->name, 'package.title');
+            $this->title = QUI::getLocale()->get($this->name, 'package.title');
+
+            return $this->title;
         }
 
-        return $this->getName();
+
+        $this->title = $this->getName();
+
+        return $this->title;
     }
 
     /**
@@ -297,25 +322,38 @@ class Package extends QUI\QDOM
      */
     public function getDescription()
     {
+        if ($this->description) {
+            return $this->description;
+        }
+
         $packageData = $this->getPackageXMLData();
 
         if (isset($packageData['description'])) {
-            return $packageData['description'];
+            $this->description = $packageData['description'];
+
+            return $this->description;
         }
 
         if ($this->isQuiqqerPackage()
             && QUI::getLocale()->exists($this->name, 'package.description')
         ) {
-            return QUI::getLocale()->get($this->name, 'package.description');
+            $this->description = QUI::getLocale()->get($this->name, 'package.description');
+
+            return $this->description;
         }
 
         $composer = $this->getComposerData();
 
         if (isset($composer['description'])) {
-            return $composer['description'];
+            $this->description = $composer['description'];
+
+            return $this->description;
         }
 
-        return '';
+
+        $this->description = '';
+
+        return $this->description;
     }
 
     /**

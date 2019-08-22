@@ -177,6 +177,11 @@ class Manager extends QUI\QDOM
     protected $composerLock = null;
 
     /**
+     * @var array
+     */
+    protected $instanceCache = [];
+
+    /**
      * constructor
      *
      * @param array $attributes
@@ -897,6 +902,10 @@ class Manager extends QUI\QDOM
      */
     public function getInstalled($params = [])
     {
+        if (isset($this->instanceCache['getInstalled'])) {
+            return $this->instanceCache['getInstalled'];
+        }
+
         $list   = $this->getList();
         $result = $list;
 
@@ -935,6 +944,8 @@ class Manager extends QUI\QDOM
             } catch (QUI\Exception $Exception) {
             }
         }
+
+        $this->instanceCache['getInstalled'] = $result;
 
         return $result;
     }
