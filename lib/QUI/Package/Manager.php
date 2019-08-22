@@ -364,6 +364,12 @@ class Manager extends QUI\QDOM
     public function getPackageLock(Package $Package)
     {
         $packageName = $Package->getName();
+        $cache       = 'packages/lock/'.$packageName;
+
+        try {
+            return QUI\Cache\Manager::get($cache);
+        } catch (QUI\Exception $Exception) {
+        }
 
         if (isset($this->packageLock[$packageName])) {
             return $this->packageLock[$packageName];
@@ -379,12 +385,17 @@ class Manager extends QUI\QDOM
         foreach ($data['packages'] as $package) {
             if ($package['name'] === $packageName) {
                 $this->packageLock[$packageName] = $package;
-
-                return $package;
+                break;
             }
         }
 
-        return [];
+        if (!isset($this->packageLock[$packageName])) {
+            $this->packageLock[$packageName] = [];
+        }
+
+        QUI\Cache\Manager::set($cache, $this->packageLock[$packageName]);
+
+        return $this->packageLock[$packageName];
     }
 
     /**
