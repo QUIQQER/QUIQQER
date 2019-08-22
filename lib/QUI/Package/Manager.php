@@ -366,13 +366,13 @@ class Manager extends QUI\QDOM
         $packageName = $Package->getName();
         $cache       = 'packages/lock/'.$packageName;
 
+        if (isset($this->packageLock[$packageName])) {
+            return $this->packageLock[$packageName];
+        }
+
         try {
             return QUI\Cache\Manager::get($cache);
         } catch (QUI\Exception $Exception) {
-        }
-
-        if (isset($this->packageLock[$packageName])) {
-            return $this->packageLock[$packageName];
         }
 
         if ($this->composerLock) {
