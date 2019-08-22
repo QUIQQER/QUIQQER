@@ -162,6 +162,11 @@ class Manager extends QUI\QDOM
     protected $activeServers = [];
 
     /**
+     * @var null|object
+     */
+    protected $packageLock = null;
+
+    /**
      * constructor
      *
      * @param array $attributes
@@ -343,22 +348,22 @@ class Manager extends QUI\QDOM
      */
     public function getPackageLock(Package $Package)
     {
-        $data = \file_get_contents($this->composer_lock);
-        $data = \json_decode($data, true);
+        if ($this->packageLock) {
+            $data = $this->packageLock;
+        } else {
+            $data = \file_get_contents($this->composer_lock);
+            $data = \json_decode($data, true);
+        }
 
         $packageName = $Package->getName();
 
-        $package = \array_filter($data['packages'], function ($package) use ($packageName) {
-            return $package['name'] === $packageName;
-        });
-
-        if (empty($package)) {
-            return [];
+        foreach ($data['packages'] as $package) {
+            if ($package['name'] === $packageName) {
+                return $package;
+            }
         }
 
-        $package = \current($package);
-
-        return $package;
+        return [];
     }
 
     /**
