@@ -554,6 +554,10 @@ class Locale
             $current = $this->current;
         }
 
+        if (isset($this->langs[$current][$group][$value])) {
+            return $this->langs[$current][$group][$value];
+        }
+
         // auf gettext wenn vorhanden
         $GetText = $this->initGetText($group, $current);
 

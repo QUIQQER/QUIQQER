@@ -847,7 +847,7 @@ class Manager
             return $this->getSystemUser();
         }
 
-        if (!\is_null($this->Session)) {
+        if ($this->Session !== null) {
             return $this->Session;
         }
 
@@ -880,7 +880,7 @@ class Manager
      */
     public function existsSession()
     {
-        return !\is_null($this->Session);
+        return $this->Session !== null;
     }
 
     /**
