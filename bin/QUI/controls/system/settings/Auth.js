@@ -62,15 +62,17 @@ define('controls/system/settings/Auth', [
 
             this.$TypeSelect.addEvents({
                 change: function () {
-
                     self.resetDisplay();
 
                     switch (this.value) {
                         case 'memcached':
                             self.showMemcached();
                             break;
-                    }
 
+                        case 'redis':
+                            self.showRedis();
+                            break;
+                    }
                 }
             });
 
@@ -93,21 +95,22 @@ define('controls/system/settings/Auth', [
         showMemcached: function () {
             this.$Panel.Loader.show();
 
-            var self      = this,
-                Content   = this.$Panel.getContent(),
-                Container = new Element('div', {
-                    'class': 'auth-settings-container'
-                }).inject(Content);
+            var self    = this,
+                Content = this.$Panel.getContent();
 
+            var SessionInput = Content.getElement('[name="session.type"]'),
+                TableParent  = SessionInput.getParent('table');
+
+            var Container = new Element('div', {
+                'class': 'auth-settings-container'
+            }).inject(TableParent, 'after');
 
             Template.get('settings/auth/memcached').then(function (html) {
-
                 Container.set('html', html);
 
                 var Table  = Container.getElement('.auth-memcached-table'),
                     TBody  = Table.getElement('tbody'),
                     config = self.$Panel.$config;
-
 
                 if (!("session" in config)) {
                     self.$Panel.Loader.hide();
@@ -126,7 +129,6 @@ define('controls/system/settings/Auth', [
                 var data = config.session.memcached_data.split(';');
 
                 for (i = 0, len = data.length; i < len; i++) {
-
                     server = data[i].split(':');
                     Row    = self.$addMemcachedServer(server[0], server[1]);
 
@@ -163,6 +165,37 @@ define('controls/system/settings/Auth', [
         },
 
         /**
+         * SHows the simple redis settings - no redis cluster
+         */
+        showRedis: function () {
+            this.$Panel.Loader.show();
+
+            var self    = this,
+                Content = this.$Panel.getContent();
+
+            var SessionInput = Content.getElement('[name="session.type"]'),
+                TableParent  = SessionInput.getParent('table');
+
+            var Container = new Element('div', {
+                'class': 'auth-settings-container'
+            }).inject(TableParent, 'after');
+
+            Template.get('settings/auth/redis').then(function (html) {
+                var config = self.$Panel.$config,
+                    value  = '';
+
+                if (typeof config.session_redis !== 'undefined' &&
+                    typeof config.session_redis.server !== 'undefined') {
+                    value = config.session_redis.server;
+                }
+
+                Container.set('html', html);
+                Container.getElement('[name="session_redis.server"]').value = value;
+                self.$Panel.Loader.hide();
+            });
+        },
+
+        /**
          * Add a memcached server
          *
          * @param {String} [server] - Memcached Server
@@ -171,7 +204,7 @@ define('controls/system/settings/Auth', [
          * @return {HTMLTableRowElement|Boolean}
          */
         $addMemcachedServer: function (server, port) {
-            if (this.$TypeSelect.value != 'memcached') {
+            if (this.$TypeSelect.value !== 'memcached') {
                 return false;
             }
 
@@ -181,9 +214,13 @@ define('controls/system/settings/Auth', [
 
             var self = this;
             var Row  = new Element('tr', {
-                html: '<td><input type="text" name="server" /></td>' +
-                      '<td><input type="text" name="port" /></td>' +
-                      '<td></td>'
+                html: '<td  style="width:60%">' +
+                    '   <input type="text" name="server" placeholder="127.0.0.1" />' +
+                    '</td>' +
+                    '<td>' +
+                    '   <input type="text" name="port" placeholder="" />' +
+                    '</td>' +
+                    '<td style="text-align:right;"></td>'
             });
 
             var Server = Row.getElement('[name="server"]');
@@ -197,6 +234,9 @@ define('controls/system/settings/Auth', [
 
             new QUIButton({
                 icon  : 'fa fa-remove',
+                styles: {
+                    'float': 'none'
+                },
                 events: {
                     onClick: function () {
                         Row.destroy();

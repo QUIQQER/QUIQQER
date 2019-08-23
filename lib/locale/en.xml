@@ -4804,6 +4804,9 @@
         <locale name="quiqqer.settings.auth.memcached.header.port">
             <en><![CDATA[Port]]></en>
         </locale>
+        <locale name="quiqqer.settings.auth.redis.header">
+            <en><![CDATA[Redis]]></en>
+        </locale>
         <locale name="quiqqer.settings.email.smtp.auth.MAILFromText.description">
             <en><![CDATA[Name of the sender displayed to the recipient.]]></en>
         </locale>

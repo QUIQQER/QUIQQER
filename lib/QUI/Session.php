@@ -218,7 +218,8 @@ class Session
                 return new RedisSessionHandler($RedisCluster);
             }
 
-            if (!empty($redisServer)) {
+            if (!empty($redisServer) && !empty($redisServer['server'])) {
+                $redisServer = \explode(',', $redisServer['server']);
                 $redisServer = \array_values($redisServer);
 
                 return new RedisSessionHandler(

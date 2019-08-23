@@ -233,6 +233,12 @@
                 </locale>
             </section>
 
+            <section name="session_redis">
+                <conf name="server">
+                    <type><![CDATA[string]]></type>
+                </conf>
+            </section>
+
             <section name="error">
                 <conf name="mail">
                     <type><![CDATA[string]]></type>
