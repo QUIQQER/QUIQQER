@@ -739,6 +739,9 @@
                             <option value="memcached">
                                 <locale group="quiqqer/system" var="quiqqer.settings.auth.sessionType.memcached"/>
                             </option>
+                            <option value="redis">
+                                <locale group="quiqqer/system" var="quiqqer.settings.auth.sessionType.redis"/>
+                            </option>
                             <!--<option value="mongodb">
                                 <locale group="quiqqer/system" var="quiqqer.settings.auth.sessionType.mongodb" />
                             </option>-->

@@ -4789,6 +4789,9 @@
         <locale name="quiqqer.settings.auth.sessionType.memcached">
             <en><![CDATA[Via Memcached Server]]></en>
         </locale>
+        <locale name="quiqqer.settings.auth.sessionType.redis">
+            <en><![CDATA[Via Redis Server]]></en>
+        </locale>
         <locale name="quiqqer.settings.auth.sessionType.mongodb">
             <en><![CDATA[Via MongoDB]]></en>
         </locale>

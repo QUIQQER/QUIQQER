@@ -8,13 +8,14 @@ namespace QUI;
 
 use QUI;
 use QUI\System\Log;
-use Symfony\Component\HttpFoundation\Session\Storage\Handler\NullSessionHandler;
+
 use Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage;
 use Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage;
-use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcacheSessionHandler;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
+use Symfony\Component\HttpFoundation\Session\Storage\Handler\RedisSessionHandler;
 
 /**
  * Session handling for QUIQQER
@@ -84,16 +85,16 @@ class Session
         // If no session name set in the config, generate and set a 5 random character long name
         if (!$sessionName) {
             // Array with uppercase alphabet as values
-            $alphabetAsValues = range('A', 'Z');
+            $alphabetAsValues = \range('A', 'Z');
 
             // Array with uppercase alphabet as keys
-            $alphabetAsKeys   = array_flip($alphabetAsValues);
+            $alphabetAsKeys = \array_flip($alphabetAsValues);
 
             // Pick 5 random keys (characters) as an array from the alphabet-array
-            $randomCharacters = array_rand($alphabetAsKeys, 5);
+            $randomCharacters = \array_rand($alphabetAsKeys, 5);
 
             // Implode the array of characters to a string
-            $sessionName = implode($randomCharacters);
+            $sessionName = \implode($randomCharacters);
 
             QUI::$Conf->set('session', 'name', $sessionName);
             QUI::$Conf->save();
@@ -180,19 +181,62 @@ class Session
             case 'database':
             case 'memcached':
             case 'memcache':
+            case 'redis':
                 break;
 
             default:
                 return new NativeFileSessionHandler(VAR_DIR.'sessions');
         }
 
+        // redis sessions
+        if ($sessionType === 'redis' && \class_exists('RedisArray')) {
+            $redisServer  = QUI::conf('session_redis');
+            $redisCluster = QUI::conf('session_redis_cluster');
+
+            $RedisCluster = null;
+
+            if (!empty($redisCluster) && !empty($redisCluster['cluster']) && \class_exists('RedisArray')) {
+                $cluster     = \explode(',', $redisCluster['cluster']);
+                $timeout     = null;
+                $readTimeout = null;
+                $persistent  = false;
+
+                $cluster = \array_unique($cluster);
+
+                try {
+                    $RedisCluster = new \RedisCluster(
+                        'quiqqer-session',
+                        $cluster,
+                        $timeout,
+                        $readTimeout,
+                        $persistent
+                    );
+                } catch (\RedisClusterException $Exception) {
+                    Log::addAlert($Exception->getMessage());
+                }
+
+                return new RedisSessionHandler($RedisCluster);
+            }
+
+            if (!empty($redisServer)) {
+                $redisServer = \array_values($redisServer);
+
+                return new RedisSessionHandler(
+                    new \RedisArray($redisServer)
+                );
+            }
+
+            return new RedisSessionHandler(
+                new \RedisArray(['localhost'])
+            );
+        }
 
         // memcached
         if ($sessionType == 'memcached' && \class_exists('Memcached')) {
             $memcached_data = QUI::conf('session', 'memcached_data');
-            $memcached_data = explode(';', $memcached_data);
+            $memcached_data = \explode(';', $memcached_data);
 
-            $Memcached = new \Memcached('quiqqer');
+            $Memcached = new \Memcached('quiqqer-session');
 
             foreach ($memcached_data as $serverData) {
                 $serverData = \explode(':', $serverData);

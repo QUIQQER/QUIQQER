@@ -50,6 +50,11 @@ function exception_error_handler($errno, $errstr, $errfile, $errline)
         return true;
     }
 
+    if (\strpos($errstr, 'session_regenerate_id()') !== false
+        || \strpos($errstr, 'session_destroy()') !== false) {
+        return true;
+    }
+
     $l = \error_reporting();
 
     if ($errno === E_DEPRECATED || $errno === E_USER_DEPRECATED) {
