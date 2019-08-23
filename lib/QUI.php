@@ -110,6 +110,13 @@ class QUI
     public static $Locale = null;
 
     /**
+     * QUI default Locale Object
+     *
+     * @var \QUI\Locale
+     */
+    protected static $SystemLocale = null;
+
+    /**
      * QUI Mail Manager
      *
      * @var \QUI\Mail\Manager
@@ -824,6 +831,27 @@ class QUI
                     self::$Locale->setCurrent($language);
                 }
             }
+        }
+
+        return self::$Locale;
+    }
+
+    /**
+     * Return the QUIQQER default language locale
+     *
+     * @return \QUI\Locale
+     */
+    public static function getSystemLocale()
+    {
+        if (self::$SystemLocale !== null) {
+            return self::$SystemLocale;
+        }
+
+        self::$Locale = new \QUI\Locale();
+        $language     = self::conf('globals', 'standardLanguage');
+
+        if (!empty($language)) {
+            self::$Locale->setCurrent($language);
         }
 
         return self::$Locale;
