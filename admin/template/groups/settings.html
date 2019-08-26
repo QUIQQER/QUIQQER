@@ -1,63 +1,97 @@
-
-<table class="data-table">
-<thead>
+<table class="data-table data-table-flexbox">
+    <thead>
     <tr>
-        <th colspan="2">Status</th>
+        <th>
+            {locale group="quiqqer/quiqqer" var="user.panel.details"}
+        </th>
     </tr>
-</thead>
-<tbody>
-    <tr class="{cycle values="odd,even"}">
-        <td style="width: 30px">
-            <input type="radio" name="active" value="1" class="noborder" />
-        </td>
+    </thead>
+
+    <tbody>
+    <tr>
         <td>
-            <label for="active">
-                Aktiviert
+            <label class="field-container">
+                <span class="field-container-item">
+                    {locale group="quiqqer/system" var="group_id"}
+                </span>
+                <input type="text"
+                       name="id"
+                       value=""
+                       disabled="disabled"
+                       class="field-container-field"
+                />
             </label>
         </td>
     </tr>
-    <tr class="{cycle values="odd,even"}">
+    <tr>
         <td>
-            <input type="radio" name="active" value="0" class="noborder" />
-        </td>
-        <td>
-            <label for="active">
-                Deaktiviert
+            <label class="field-container">
+                <span class="field-container-item">
+                    {locale group="quiqqer/system" var="groupname"}
+                </span>
+                <input type="text"
+                       name="name"
+                       value=""
+                       class="field-container-field"
+                />
             </label>
         </td>
     </tr>
-</tbody>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {locale group="quiqqer/system" var="description"}
+                </span>
+                <textarea name="description"
+                          class="field-container-field"
+                          rows="4" cols="50"
+                ></textarea>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    Elterngruppe
+                </span>
+                <input name="parent" data-qui="controls/groups/Select" data-qui-options-max="1"/>
+            </label>
+        </td>
+    </tr>
+    </tbody>
 </table>
 
-
-<table class="data-table">
-<thead>
+<table class="data-table data-table-flexbox">
+    <thead>
     <tr>
-        <th colspan="2">Information</th>
+        <th>
+            {locale group="quiqqer/quiqqer" var="user.toolbar.title"}
+        </th>
     </tr>
-</thead>
-<tbody>
-    <tr class="{cycle values="odd,even"}">
-        <td style="width: 150px;">{t}Gruppen-ID{/t}</td>
+    </thead>
+
+    <tbody>
+    <tr>
         <td>
-            <input type="text" name="id" value="" />
+            <label class="field-container">
+                <span class="field-container-item">
+                    {locale group="quiqqer/system" var="toolbar"}
+                </span>
+                <select name="toolbar" class="field-container-field"></select>
+            </label>
         </td>
     </tr>
-    <tr class="{cycle values="odd,even"}">
-        <td>{t}Name{/t}</td>
+    <tr>
         <td>
-            <input type="text" name="name" value="" />
+            <label class="field-container">
+                <span class="field-container-item">
+                    {locale group="quiqqer/quiqqer" var="user.panel.assignedToolbars"}
+                </span>
+                <input type="text" name="assigned_toolbar" value="" data-qui="controls/editors/toolbars/Select"/>
+            </label>
         </td>
     </tr>
-    <tr class="{cycle values="odd,even"}">
-        <td>{t}Zugang zum Adminbereich{/t}</td>
-        <td>
-            <input type="checkbox" name="admin" class="noborder" /> Ja
-        </td>
-    </tr>
-    <tr class="{cycle values="odd,even"}">
-        <td>{t}Toolbar{/t}</td>
-        <td class="toolbar-listing"></td>
-    </tr>
-</tbody>
+    </tbody>
 </table>

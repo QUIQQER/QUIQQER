@@ -5,8 +5,8 @@
 }
 
 .qui-media-folder-details textarea {
-	height: 200px;
-	padding: 10px;
+    height: 200px;
+    padding: 10px;
     width: 100%;
 }
 
@@ -15,10 +15,9 @@
 }
 
 .qui-media-folder-details td:first-child {
-	min-width: 100px;
+    min-width: 100px;
     width: 30%;
 }
-
 
 .qui-media-folder-details input[name="blur"],
 .qui-media-folder-details input[name="brightness"],
@@ -32,4 +31,15 @@
 .qui-media-folder-details input[name="contrastDisplay"] {
     padding: 5px;
     width: 30px;
+}
+
+.project-media-priority-image {
+    min-height: 20px;
+    text-align: center;
+}
+
+.project-media-priority-image img {
+    display: block;
+    float: none !important;
+    margin: 0 auto !important;
 }

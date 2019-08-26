@@ -3,21 +3,8 @@
 .qui-workspace-manager {
     float: left;
     height: 100%;
+    overflow: hidden;
     width: 100%;
-}
-
-.qui-workspace-manager-window label {
-    cursor: pointer;
-    width: 100px !important;
-}
-
-.qui-workspace-manager-window input {
-    width: 100%;
-}
-
-.qui-workspace-manager-window td:first-child {
-    padding-top: 15px;
-    width: 100px;
 }
 
 /** window - panel liste
@@ -45,6 +32,8 @@
 
 .qui-controls-workspace-panelList-panel p {
     clear: none;
+    float: left;
+    width: calc(100% - 80px);
 }
 
 .qui-controls-workspace-panelList-panel-icon {

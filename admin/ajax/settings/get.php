@@ -3,27 +3,37 @@
 /**
  * Return config params from a xml file
  *
- * @param String $file
- * @return Array
+ * @param string $file
+ * @return array
  */
-
-function ajax_settings_get($file)
-{
-    if ( !file_exists( $file ) ) {
-        return array();
-    }
-
-    $Config = \QUI\Utils\XML::getConfigFromXml( $file );
-
-    if ( !$Config ) {
-        return array();
-    }
-
-    return $Config->toArray();
-}
-
-\QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_settings_get',
-    array( 'file' ),
+    function ($file) {
+        $files  = \json_decode($file, true);
+        $config = [];
+
+        if (\is_string($files)) {
+            $files = [$files];
+        }
+
+        foreach ($files as $file) {
+            if (!\file_exists($file)) {
+                $file = CMS_DIR.$file;
+            }
+
+            if (!\file_exists($file)) {
+                continue;
+            }
+
+            $Config = QUI\Utils\Text\XML::getConfigFromXml($file, true);
+
+            if ($Config) {
+                $config = \array_merge_recursive($config, $Config->toArray());
+            }
+        }
+
+        return $config;
+    },
+    ['file'],
     'Permission::checkAdminUser'
 );

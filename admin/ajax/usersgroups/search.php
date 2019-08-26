@@ -3,47 +3,49 @@
 /**
  * Search groups
  *
- * @param String $params
- * @return Array
+ * @param string $params
+ * @return array
  */
-function ajax_usersgroups_search($params)
-{
-    $dir = dirname(dirname(__FILE__));
-
-    require_once $dir.'/users/search.php';
-    require_once $dir.'/groups/search.php';
-
-    // users
-    $users = ajax_users_search($params);
-
-    // groups
-    $params = json_decode($params, true);
-
-    if (isset($params['searchSettings'])
-        && isset($params['searchSettings']['userSearchString'])
-    ) {
-        $params['search'] = $params['searchSettings']['userSearchString'];
-    }
-
-    $groups = ajax_groups_search(
-        json_encode($params)
-    );
-
-    // combine results
-    $result = array(
-        'page'  => $users['page'],
-        'total' => $users['total'] + $groups['total'],
-        'data'  => array_merge(
-            $users['data'],
-            $groups['data']
-        )
-    );
-
-    return $result;
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_usersgroups_search',
-    array('params'),
+    function ($search, $fields, $params) {
+        $fields = \json_decode($fields, true);
+        $params = \json_decode($params, true);
+
+        if (!\is_array($fields)) {
+            $fields = [
+                'name'      => true,
+                'username'  => true,
+                'usergroup' => true,
+                'email'     => true,
+                'active'    => true,
+                'regdate'   => true,
+                'su'        => true,
+                'expire'    => true,
+                'lastedit'  => true,
+                'firstname' => true,
+                'lastname'  => true,
+                'usertitle' => true,
+                'birthday'  => true,
+                'avatar'    => true,
+                'lang'      => true,
+                'company'   => true
+            ];
+        }
+
+        $searchParams = [
+            'searchUsers'  => true,
+            'searchGroups' => true,
+            'users'        => ['select' => $fields],
+            'groups'       => ['select' => $fields],
+        ];
+
+        if (isset($params['limit'])) {
+            $searchParams['limit'] = (int)$params['limit'];
+        }
+
+        return QUI\UsersGroups\Search::search($search, $searchParams);
+    },
+    ['search', 'fields', 'params'],
     'Permission::checkAdminUser'
 );

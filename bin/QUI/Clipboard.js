@@ -1,4 +1,3 @@
-
 /**
  * A mini Clipboard for QUI
  * You can save text data eq for copy and paste a sitemap item
@@ -8,22 +7,19 @@
  * @module Clipboard
  * @author www.pcsg.de (Henning Leutz)
  */
-
-define(function()
-{
+define(function () {
     "use strict";
 
     return {
 
-        $data : null,
+        $data: null,
 
         /**
          * set data to the clipboard
          *
          * @param {String|Object|Array} data
          */
-        set : function(data)
-        {
+        set: function (data) {
             this.$data = data;
         },
 
@@ -32,16 +28,14 @@ define(function()
          *
          * @return {String|Object|Array}
          */
-        get : function()
-        {
+        get: function () {
             return this.$data;
         },
 
         /**
          * Clear the data in the clipboard
          */
-        clear : function()
-        {
+        clear: function () {
             this.$data = null;
         }
     };

@@ -1,0 +1,29 @@
+.qui-control-packages-phpinfo {
+    height: 100%;
+    overflow: auto;
+    padding: 20px;
+    width: 100%;
+}
+
+.qui-control-packages-phpinfo-container table {
+    width: 100%;
+}
+
+.qui-control-packages-phpinfo-container table td {
+    hyphens: auto;
+    overflow-wrap: break-word;
+    word-break: break-all;
+    word-wrap: break-word;
+
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+}
+
+.qui-control-packages-phpinfo-container table tr td:first-child {
+    width: 200px;
+}
+
+.qui-control-packages-phpinfo-container table td[colspan="2"] {
+    width: calc(100% - 200px);
+}

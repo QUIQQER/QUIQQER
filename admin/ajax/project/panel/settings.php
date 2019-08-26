@@ -3,24 +3,22 @@
 /**
  * Return the project settings template
  *
- * @param String $project - JSON Project Data
- * @return String
+ * @param string $project - JSON Project Data
+ * @return string
  */
-function ajax_project_panel_settings($project)
-{
-    $Engine  = QUI::getTemplateManager()->getEngine( true );
-    $Project = QUI::getProjectManager()->decode( $project );
-
-    $Engine->assign(array(
-        'QUI'     => new \QUI(),
-        'Project' => $Project
-    ));
-
-    return $Engine->fetch( SYS_DIR .'template/project/settings.html' );
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_project_panel_settings',
-    array( 'project' ),
+    function ($project) {
+        $Engine  = QUI::getTemplateManager()->getEngine(true);
+        $Project = QUI::getProjectManager()->decode($project);
+
+        $Engine->assign([
+            'QUI'     => new QUI(),
+            'Project' => $Project
+        ]);
+
+        return $Engine->fetch(SYS_DIR.'template/project/settings.html');
+    },
+    ['project'],
     'Permission::checkAdminUser'
 );

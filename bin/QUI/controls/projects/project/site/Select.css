@@ -43,9 +43,9 @@
     text-decoration: none;
 }
 
-.control-site-select-entry .icon-file,
-.control-site-select-entry .icon-file-alt,
-.control-site-select-entry .icon-magic {
+.control-site-select-entry .fa-file,
+.control-site-select-entry .fa-file-alt,
+.control-site-select-entry .fa-magic {
     float: left;
     line-height: 20px;
     margin-right: 5px;

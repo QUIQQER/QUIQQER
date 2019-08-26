@@ -1,10 +1,10 @@
-
 /**
  * Project settings panel
  *
  * @module controls/projects/project/Settings
  * @author www.pcsg.de (Henning Leutz)
  *
+ * @require qui/QUI
  * @require qui/controls/desktop/Panel
  * @require qui/controls/buttons/Button
  * @require qui/controls/windows/Confirm
@@ -15,9 +15,9 @@
  * @require Ajax
  * @require Locale
  * @require utils/Controls
+ * @require package/quiqqer/translator/bin/controls/VariableTranslation
  * @require css!controls/projects/project/Settings.css
  */
-
 define('controls/projects/project/Settings', [
 
     'qui/QUI',
@@ -31,23 +31,22 @@ define('controls/projects/project/Settings', [
     'Ajax',
     'Locale',
     'utils/Controls',
+    'package/quiqqer/translator/bin/controls/Create',
 
     'css!controls/projects/project/Settings.css'
 
-], function(
-    QUI,
-    QUIPanel,
-    QUIButton,
-    QUIConfirm,
-    QUIFormUtils,
-    UtilsTemplate,
-    LangPopup,
-    Projects,
-    Ajax,
-    Locale,
-    ControlUtils
-)
-{
+], function (QUI,
+             QUIPanel,
+             QUIButton,
+             QUIConfirm,
+             QUIFormUtils,
+             UtilsTemplate,
+             LangPopup,
+             Projects,
+             Ajax,
+             Locale,
+             ControlUtils,
+             Translation) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -64,14 +63,15 @@ define('controls/projects/project/Settings', [
      */
     return new Class({
 
-        Extends : QUIPanel,
-        Type    : 'controls/projects/project/Settings',
+        Extends: QUIPanel,
+        Type   : 'controls/projects/project/Settings',
 
-        Binds : [
+        Binds: [
             '$onCreate',
             '$onResize',
             '$onCategoryEnter',
             '$onCategoryLeave',
+            '$openCreatePageStructureDialog',
 
             'save',
             'del',
@@ -82,30 +82,33 @@ define('controls/projects/project/Settings', [
             'openMediaSettings'
         ],
 
-        options : {
-            project : ''
+        options: {
+            project : '',
+            category: false // open category on settings panel load
         },
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize: function (options) {
+            this.parent(options);
 
-            if ( !this.getAttribute( 'project' ) && "attributes" in options ) {
-                this.parent( options.attributes );
+            if (!this.getAttribute('project') && "attributes" in options) {
+                this.parent(options.attributes);
             }
 
             // defaults
             this.$Project = Projects.get(
-                this.getAttribute( 'project' )
+                this.getAttribute('project')
             );
 
-            this.$config = {};
+            this.$Prefix = null;
+            this.$Suffix = null;
+
+            this.$config   = {};
+            this.$defaults = {};
 
             this.addEvents({
-                onCreate        : this.$onCreate,
-                onResize        : this.$onResize,
-                onCategoryEnter : this.$onCategoryEnter,
-                onCategoryLeave : this.$onCategoryLeave
+                onCreate       : this.$onCreate,
+                onResize       : this.$onResize,
+                onCategoryEnter: this.$onCategoryEnter
             });
         },
 
@@ -115,8 +118,7 @@ define('controls/projects/project/Settings', [
          * @method controls/projects/project/Settings#getProject
          * @return {Object} classes/projects/Project -  Project of the Panel
          */
-        getProject : function()
-        {
+        getProject: function () {
             return this.$Project;
         },
 
@@ -125,179 +127,209 @@ define('controls/projects/project/Settings', [
          *
          * @method controls/projects/project/Settings#$onCreate
          */
-        $onCreate : function()
-        {
+        $onCreate: function () {
             var self = this;
 
             this.Loader.show();
-            this.getContent().addClass( 'qui-project-settings' );
+            this.getContent().addClass('qui-project-settings');
 
             this.addButton({
-                text : Locale.get( lg, 'projects.project.panel.settings.btn.save' ),
-                textimage : 'icon-save',
-                events : {
-                    onClick : this.save
+                name     : 'save',
+                text     : Locale.get(lg, 'projects.project.panel.settings.btn.save'),
+                textimage: 'fa fa-save',
+                events   : {
+                    onClick: this.save
                 }
             });
 
             this.addButton({
-                text : Locale.get( lg, 'projects.project.panel.settings.btn.remove' ),
-                textimage : 'icon-remove',
-                events : {
-                    onClick : this.del
+                name     : 'remove',
+                text     : Locale.get(lg, 'projects.project.panel.settings.btn.remove'),
+                textimage: 'fa fa-remove',
+                events   : {
+                    onClick: this.del
                 }
             });
 
             this.addCategory({
-                name : 'settings',
-                text : Locale.get( lg, 'projects.project.panel.settings.btn.settings' ),
-                icon : 'icon-gear',
-                events : {
-                    onClick : this.openSettings
+                name  : 'settings',
+                text  : Locale.get(lg, 'projects.project.panel.settings.btn.settings'),
+                icon  : 'fa fa-gear',
+                events: {
+                    onClick: this.openSettings
                 }
             });
 
             this.addCategory({
-                name : 'adminSettings',
-                text : Locale.get( lg, 'projects.project.panel.settings.btn.adminSettings' ),
-                icon : 'icon-gear',
-                events : {
-                    onClick : this.openAdminSettings
+                name  : 'adminSettings',
+                text  : Locale.get(lg, 'projects.project.panel.settings.btn.adminSettings'),
+                icon  : 'fa fa-gear',
+                events: {
+                    onClick: this.openAdminSettings
                 }
             });
 
             this.addCategory({
-                name : 'mediaSettings',
-                text : Locale.get( lg, 'projects.project.panel.settings.btn.media' ),
-                icon : 'icon-picture',
-                events : {
-                    onClick : this.openMediaSettings
+                name  : 'mediaSettings',
+                text  : Locale.get(lg, 'projects.project.panel.settings.btn.media'),
+                icon  : 'fa fa-picture-o',
+                events: {
+                    onClick: this.openMediaSettings
                 }
             });
 
             this.addCategory({
-                name : 'customCSS',
-                text : Locale.get( lg, 'projects.project.panel.settings.btn.customCSS' ),
-                icon : 'icon-css3',
-                events : {
-                    onClick : this.openCustomCSS
+                name  : 'customCSS',
+                text  : Locale.get(lg, 'projects.project.panel.settings.btn.customCSS'),
+                icon  : 'fa fa-css3',
+                events: {
+                    onClick: this.openCustomCSS
                 }
             });
 
+            this.$Container = new Element('div', {
+                styles: {
+                    left    : 0,
+                    height  : '100%',
+                    padding : 10,
+                    position: 'absolute',
+                    top     : 0,
+                    width   : '100%'
+                }
+            }).inject(this.getBody());
 
-            Ajax.get('ajax_project_panel_categories_get', function(list)
-            {
-                for ( var i = 0, len = list.length; i < len; i++) {
-                    self.addCategory( list[ i ] );
+            this.getBody().setStyles({
+                position: 'relative'
+            });
+
+
+            Ajax.get('ajax_project_panel_categories_get', function (list) {
+                for (var i = 0, len = list.length; i < len; i++) {
+                    self.addCategory(list[i]);
                 }
 
                 self.refresh();
 
             }, {
-                project : this.getProject().encode()
+                project: this.getProject().encode()
             });
-
-
-//            this.addCategory({
-//                name   : 'watersign',
-//                text   : 'Wasserzeichen',
-//                icon   : 'fa fa-picture-o',
-//                events : {
-//                    onClick : this.openWatersign
-//                }
-//            });
-
         },
 
         /**
          * Refresh the project data
          */
-        refresh : function()
-        {
+        refresh: function () {
             this.parent();
             this.Loader.show();
 
             var self = this;
 
-            this.getProject().getConfig(function(result)
-            {
+            Promise.all([
+                this.getProject().getConfig(),
+                this.getProject().getDefaults()
+            ]).then(function (result) {
+
                 self.setAttributes({
-                    name  : 'projects-panel',
-                    icon  : 'icon-home',
-                    title : self.getProject().getName()
+                    name : 'projects-panel',
+                    icon : 'fa fa-home',
+                    title: self.getProject().getTitle()
                 });
 
-                self.$Title.set( 'html', self.getAttribute('title') );
-                self.$config = result;
+                self.$Title.set('html', self.getAttribute('title'));
+
+                self.$config   = result[0];
+                self.$defaults = result[1];
+
+                self.Loader.hide();
+
+                if (self.getAttribute('category')) {
+                    var Wanted = self.getCategoryBar().getElement(
+                        self.getAttribute('category')
+                    );
+
+                    if (Wanted) {
+                        Wanted.click();
+                        return;
+                    }
+                }
 
                 self.getCategoryBar().firstChild().click();
-                self.Loader.hide();
             });
         },
 
         /**
          * Save the project settings
+         *
+         * @return {Promise}
          */
-        save : function()
-        {
+        save: function () {
             var self = this;
 
             this.Loader.show();
-            this.$onCategoryLeave();
+            this.$onCategoryLeave(false);
 
-            // clear config for projects
-            var name = this.getProject().getName();
+            var Project  = this.getProject(),
+                name     = Project.getName(),
+                loadHide = function () {
+                    self.Loader.hide();
+                };
 
-            for ( var project in Projects.$projects )
-            {
-                if ( !Projects.$projects.hasOwnProperty( project ) ) {
+            for (var project in Projects.$projects) {
+                if (!Projects.$projects.hasOwnProperty(project)) {
                     continue;
                 }
 
-                if ( project.match( name +'-' ) )
-                {
-                    if ( "$config" in Projects.$projects[ project ] ) {
-                        Projects.$projects[ project ].$config = false;
+                if (project.match(name + '-')) {
+                    if ("$config" in Projects.$projects[project]) {
+                        Projects.$projects[project].$config = false;
                     }
                 }
             }
 
-            this.getProject().setConfig(function() {
-                self.Loader.hide();
-            }, this.$config);
+
+            var promises = [Project.setConfig(this.$config)];
+
+            if (this.$Suffix) {
+                promises.push(
+                    this.$Suffix.save()
+                );
+            }
+
+            if (this.$Prefix) {
+                promises.push(
+                    this.$Prefix.save()
+                );
+            }
+
+            return Promise.all(promises).then(loadHide).catch(loadHide);
         },
 
         /**
          * Opens the delete dialog
          */
-        del : function()
-        {
+        del: function () {
             var self = this;
 
             new QUIConfirm({
-                icon  : 'fa fa-exclamation-circle icon-exclamation-sign',
-                title : Locale.get( lg, 'projects.project.project.delete.window.title' ),
-                text  : Locale.get( lg, 'projects.project.project.delete.window.text' ),
-                texticon : 'fa fa-exclamation-circle icon-exclamation-sign',
-                information : Locale.get( lg, 'projects.project.project.delete.window.information' ),
-                maxWidth: 450,
-                maxHeight: 300,
-                events :
-                {
-                    onSubmit : function()
-                    {
+                icon       : 'fa fa-exclamation-circle',
+                title      : Locale.get(lg, 'projects.project.project.delete.window.title'),
+                text       : Locale.get(lg, 'projects.project.project.delete.window.text'),
+                texticon   : 'fa fa-exclamation-circle',
+                information: Locale.get(lg, 'projects.project.project.delete.window.information'),
+                maxWidth   : 450,
+                maxHeight  : 300,
+                events     : {
+                    onSubmit: function () {
                         new QUIConfirm({
-                            icon  : 'fa fa-exclamation-circle icon-exclamation-sign',
-                            title : Locale.get( lg, 'projects.project.project.delete.window.title' ),
-                            text  : Locale.get( lg, 'projects.project.project.delete.window.text.2' ),
-                            texticon : 'fa fa-exclamation-circle icon-exclamation-sign',
-                            maxWidth: 450,
+                            icon     : 'fa fa-exclamation-circle',
+                            title    : Locale.get(lg, 'projects.project.project.delete.window.title'),
+                            text     : Locale.get(lg, 'projects.project.project.delete.window.text.2'),
+                            texticon : 'fa fa-exclamation-circle',
+                            maxWidth : 450,
                             maxHeight: 300,
-                            events :
-                            {
-                                onSubmit : function()
-                                {
-                                    Projects.deleteProject(self.$Project.getName(), function() {
+                            events   : {
+                                onSubmit: function () {
+                                    Projects.deleteProject(self.$Project.getName(), function () {
                                         self.destroy();
                                     });
                                 }
@@ -312,80 +344,114 @@ define('controls/projects/project/Settings', [
          * Opens the Settings
          *
          * @method controls/projects/project/Settings#openSettings
+         *
+         * @return {Promise}
          */
-        openSettings : function()
-        {
-            this.Loader.show();
-
+        openSettings: function () {
             var self = this,
-                Body = this.getBody();
+                Body = this.$Container;
 
-            Ajax.get('ajax_project_panel_settings', function(result)
-            {
-                Body.set( 'html', result );
+            return new Promise(function (resolve) {
 
-                // set data
-                var Form     = Body.getElement( 'Form' ),
-                    Standard = Form.elements.default_lang,
-                    Template = Form.elements.template,
-                    Langs    = Form.elements.langs,
+                self.$hideBody().then(function () {
 
-                    langs = self.$config.langs.split( ',' );
+                    Ajax.get('ajax_project_panel_settings', function (result) {
+                        Body.set('html', result);
 
-                for ( var i = 0, len = langs.length; i < len; i++ )
-                {
-                    new Element('option', {
-                        html  : langs[ i ],
-                        value : langs[ i ]
-                    }).inject( Standard );
+                        // set data
+                        var Form     = Body.getElement('Form'),
+                            Standard = Form.elements.default_lang,
+                            Template = Form.elements.template,
+                            Langs    = Form.elements.langs,
 
-                    new Element('option', {
-                        html  : langs[ i ],
-                        value : langs[ i ]
-                    }).inject( Langs );
-                }
+                            langs    = self.$config.langs.split(',');
 
-                new QUIButton({
-                    text : Locale.get( lg, 'projects.project.panel.btn.addlanguage' ),
-                    textimage : 'icon-plus',
-                    styles : {
-                        width : 200,
-                        clear : 'both'
-                    },
-                    events :
-                    {
-                        onClick : function()
-                        {
-                            new LangPopup({
-                                events : {
-                                    onSubmit : function(value) {
-                                        self.addLangToProject( value[0] );
-                                    }
+                        for (var i = 0, len = langs.length; i < len; i++) {
+                            new Element('option', {
+                                html : langs[i],
+                                value: langs[i]
+                            }).inject(Standard);
+
+                            new Element('option', {
+                                html : langs[i],
+                                value: langs[i]
+                            }).inject(Langs);
+                        }
+
+                        // prefix
+                        self.$Prefix = new Translation({
+                            'group'  : 'project/' + self.$Project.getName(),
+                            'var'    : 'template.prefix',
+                            'type'   : 'php,js',
+                            'package': 'quiqqer/quiqqer'
+                        }).inject(
+                            Body.getElement('.prefix-settings-container')
+                        );
+
+                        // suffix
+                        self.$Suffix = new Translation({
+                            'group'  : 'project/' + self.$Project.getName(),
+                            'var'    : 'template.suffix',
+                            'type'   : 'php,js',
+                            'package': 'quiqqer/quiqqer'
+                        }).inject(
+                            Body.getElement('.suffix-settings-container')
+                        );
+
+                        new QUIButton({
+                            text     : Locale.get(lg, 'projects.project.panel.btn.addlanguage'),
+                            textimage: 'fa fa-plus',
+                            styles   : {
+                                width: '100%',
+                                clear: 'both'
+                            },
+                            events   : {
+                                onClick: function () {
+                                    new LangPopup({
+                                        events: {
+                                            onSubmit: function (value) {
+                                                self.addLangToProject(value[0]);
+                                            }
+                                        }
+                                    }).open();
                                 }
-                            }).open();
-                        }
-                    }
-                }).inject( Langs, 'after' );
+                            }
+                        }).inject(Langs, 'after');
 
 
-                Standard.value = self.$config.default_lang;
-                Template.value = self.$config.template;
+                        Standard.value = self.$config.default_lang;
+                        Template.value = self.$config.template;
 
-                QUIFormUtils.setDataToForm(self.$config, Form);
+                        new QUIButton({
+                            text  : Locale.get('quiqqer/quiqqer', 'projects.project.settings.panel.defaultSitestructure.button'),
+                            styles: {
+                                width: '100%'
+                            },
+                            events: {
+                                onClick: self.$openCreatePageStructureDialog
+                            }
+                        }).inject(Form.getElement('.create-default-structure'));
 
-                ControlUtils.parse(Body).then(function() {
 
-                    QUI.Controls.getControlsInElement(Body).each(function(Control) {
-                        if ("setProject" in Control) {
-                            Control.setProject(self.$Project);
-                        }
+                        QUIFormUtils.setDataToForm(self.$config, Form);
+
+                        Promise.all([
+                            QUI.parse(Body),
+                            ControlUtils.parse(Body)
+                        ]).then(function () {
+                            QUI.Controls.getControlsInElement(Body).each(function (Control) {
+                                if ("setProject" in Control) {
+                                    Control.setProject(self.$Project);
+                                }
+                            });
+
+                            return self.$showBody();
+                        }).then(resolve);
+                    }, {
+                        project: self.getProject().encode()
                     });
 
-                    self.Loader.hide();
                 });
-
-            }, {
-                project : this.getProject().encode()
             });
         },
 
@@ -393,61 +459,68 @@ define('controls/projects/project/Settings', [
          * Opens the Settings for the administration
          *
          * @method controls/projects/project/Settings#openAdminSettings
+         *
+         * @return {Promise}
          */
-        openAdminSettings : function()
-        {
-            this.Loader.show();
+        openAdminSettings: function () {
+            return new Promise(function (resolve) {
 
-            var self = this,
-                Body = this.getBody();
+                var self = this,
+                    Body = this.$Container;
 
-            UtilsTemplate.get('project/settingsAdmin', function(result)
-            {
-                Body.set( 'html', result );
+                this.$onCategoryLeave().then(function () {
 
-                QUIFormUtils.setDataToForm( self.$config, Body.getElement( 'Form' ) );
+                    UtilsTemplate.get('project/settingsAdmin', function (result) {
+                        Body.set('html', result);
 
-                self.Loader.hide();
-            });
+                        QUIFormUtils.setDataToForm(self.$config, Body.getElement('Form'));
+
+                        self.$showBody().then(resolve);
+                    });
+                });
+
+            }.bind(this));
         },
 
         /**
          * Open Custom CSS
+         *
+         * @return {Promise}
          */
-        openCustomCSS : function()
-        {
-            this.Loader.show();
-
+        openCustomCSS: function () {
             var self = this;
 
-            this.getBody().set( 'html', '<form></form>' );
+            return this.$onCategoryLeave().then(function () {
 
-            require([
-                'controls/projects/project/settings/CustomCSS'
-            ], function(CustomCSS)
-            {
-                var css  = false,
-                    Form = self.getBody().getElement( 'form' );
+                return new Promise(function (resolve) {
+                    self.$Container.set('html', '<form></form>');
 
-                if ( "project-custom-css" in self.$config ) {
-                    css = self.$config[ "project-custom-css" ];
-                }
+                    require([
+                        'controls/projects/project/settings/CustomCSS'
+                    ], function (CustomCSS) {
+                        var css  = false,
+                            Form = self.getBody().getElement('form');
 
-                new CustomCSS({
-                    Project : self.getProject(),
-                    css     : css,
-                    events  :
-                    {
-                        onLoad : function() {
-                            self.Loader.hide();
+                        if ("project-custom-css" in self.$config) {
+                            css = self.$config["project-custom-css"];
                         }
-                    }
-                }).inject( Form );
 
-                Form.setStyles({
-                    'float' : 'left',
-                    height  : '100%',
-                    width   : '100%'
+                        new CustomCSS({
+                            Project: self.getProject(),
+                            css    : css,
+                            events : {
+                                onLoad: function () {
+                                    self.$showBody().then(resolve);
+                                }
+                            }
+                        }).inject(Form);
+
+                        Form.setStyles({
+                            'float': 'left',
+                            height : '100%',
+                            width  : '100%'
+                        });
+                    });
                 });
             });
         },
@@ -456,30 +529,34 @@ define('controls/projects/project/Settings', [
          * Opens the Media Settings
          *
          * @method controls/projects/project/Settings#openMediaSettings
+         *
+         * @return {Promise}
          */
-        openMediaSettings : function()
-        {
-            this.Loader.show();
+        openMediaSettings: function () {
+            return this.$onCategoryLeave().then(function () {
+                var self      = this,
+                    Container = this.$Container;
 
-            var self = this,
-                Body = this.getBody();
+                Container.set('html', '');
 
-            Body.set( 'html', '' );
+                return new Promise(function (resolve) {
 
-            require([
-                'controls/projects/project/settings/Media'
-            ], function(MediaSettings)
-            {
-                new MediaSettings({
-                    config : self.$config,
-                    Project : self.$Project,
-                    events : {
-                        onLoad : function() {
-                            self.Loader.hide();
-                        }
-                    }
-                }).inject( Body );
-            });
+                    require([
+                        'controls/projects/project/settings/Media'
+                    ], function (MediaSettings) {
+                        new MediaSettings({
+                            config : self.$config,
+                            Project: self.$Project,
+                            events : {
+                                onLoad: function () {
+                                    self.$showBody().then(resolve);
+                                }
+                            }
+                        }).inject(Container);
+                    });
+
+                });
+            }.bind(this));
         },
 
         /**
@@ -487,42 +564,62 @@ define('controls/projects/project/Settings', [
          *
          * @method controls/projects/project/Settings#$onResize
          */
-        $onResize : function()
-        {
+        $onResize: function () {
 
         },
 
         /**
          * unload the category and set the values into the config
+         *
+         * @param {Boolean} [noHide] - hide effect, default = true
+         * @return {Promise}
          */
-        $onCategoryLeave : function()
-        {
+        $onCategoryLeave: function (noHide) {
             var Content = this.getContent(),
-                Form    = Content.getElement( 'form' );
+                Form    = Content.getElement('form');
 
-            if ( !Form ) {
-                return;
+            if (!Form) {
+                return Promise.resolve();
             }
 
-            var data = QUIFormUtils.getFormData( Form );
+            if (typeof noHide === 'undefined') {
+                noHide = true;
+            }
 
-            for ( var i in data )
-            {
-                if ( data.hasOwnProperty( i ) ) {
-                    this.$config[ i ] = data[ i ];
+
+            if (this.$Prefix && noHide) {
+                this.$Prefix.destroy();
+                this.$Prefix = null;
+            }
+
+            if (this.$Suffix && noHide) {
+                this.$Suffix.destroy();
+                this.$Suffix = null;
+            }
+
+            var data = QUIFormUtils.getFormData(Form);
+
+            for (var i in data) {
+                if (data.hasOwnProperty(i)) {
+                    this.$config[i] = data[i];
                 }
             }
 
             // exist langs?
-            if ( typeof Form.elements.langs !== 'undefined' )
-            {
+            if (typeof Form.elements.langs !== 'undefined') {
                 var Langs = Form.elements.langs,
-                    langs = Langs.getElements('option').map(function(Elm) {
-                    return Elm.value;
-                });
+                    langs = Langs.getElements('option').map(function (Elm) {
+                        return Elm.value;
+                    });
 
                 this.$config.langs = langs.join(',');
             }
+
+            if (noHide === false) {
+                return Promise.resolve();
+            }
+
+            return this.$hideBody();
         },
 
         /**
@@ -530,23 +627,23 @@ define('controls/projects/project/Settings', [
          *
          * @param {String} lang
          */
-        addLangToProject : function(lang)
-        {
+        addLangToProject: function (lang) {
             var self = this;
 
             self.Loader.show();
 
-            this.$Project.getConfig(function(config)
-            {
-                var langs = config.langs.split( ',' );
-                langs.push( lang );
+            this.$Project.getConfig(function (config) {
+                var langs = config.langs.split(',');
+                langs.push(lang);
 
-                self.$Project.setConfig(function()
-                {
+                self.$Project.setConfig({
+                    langs: langs.join(',')
+                }).then(function () {
                     // self.Loader.hide();
                     self.refresh();
-                }, {
-                    langs : langs.join( ',' )
+                }).catch(function () {
+                    // self.Loader.hide();
+                    self.refresh();
                 });
             });
         },
@@ -556,70 +653,175 @@ define('controls/projects/project/Settings', [
          *
          * @param {Object} Panel - qui/controls/desktop/Panel
          * @param {Object} Category - qui/controls/buttons/Button
+         *
+         * @return {Promise}
          */
-        $onCategoryEnter : function(Panel, Category)
-        {
+        $onCategoryEnter: function (Panel, Category) {
             var self = this,
-                name = Category.getAttribute( 'name' );
+                name = Category.getAttribute('name');
 
-            switch ( name )
-            {
+            switch (name) {
                 case "settings":
                 case "adminSettings":
                 case "customCSS":
                 case "mediaSettings":
-                    return;
+                    return Promise.resolve(1);
             }
 
-            this.Loader.show();
-            this.getBody().set( 'html', '' );
+            this.$onCategoryLeave().then(function () {
+                this.$Container.set('html', '');
 
-            Ajax.get('ajax_settings_category', function(result)
-            {
-                var Body = self.getBody();
+                return new Promise(function (resolve) {
 
-                if ( !result ) {
-                    result = '';
-                }
+                    Ajax.get('ajax_project_panel_categories_category', function (result) {
+                        var Body = self.$Container;
 
-                Body.set( 'html', '<form>'+ result +'</form>' );
-                Body.getElements('tr td:first-child').addClass( 'first' );
+                        if (!result) {
+                            result = '';
+                        }
 
-                var Form = Body.getElement( 'form' );
+                        Body.set('html', '<form>' + result + '</form>');
+                        Body.getElements('tr td:first-child').addClass('first');
 
-                Form.name = Category.getAttribute( 'name' );
-                Form.addEvent('submit', function(event) {
-                    event.stop();
+                        var Form = Body.getElement('form');
+
+                        Form.name = Category.getAttribute('name');
+                        Form.addEvent('submit', function (event) {
+                            event.stop();
+                        });
+
+                        // set data to the form
+                        QUIFormUtils.setDataToForm(self.$config, Form);
+
+                        Form.getElements('input').each(function (Input) {
+                            var name = Input.get('name');
+                            if (name in self.$defaults) {
+                                Input.set('data-qui-options-defaultcolor', self.$defaults[name]);
+                            }
+                        });
+
+                        Promise.all([
+                            QUI.parse(Body),
+                            ControlUtils.parse(Body)
+                        ]).then(function () {
+                            var i, len, Control;
+                            var quiids = Body.getElements('[data-quiid]');
+
+                            for (i = 0, len = quiids.length; i < len; i++) {
+                                Control = QUI.Controls.getById(quiids[i].get('data-quiid'));
+
+                                if (!Control) {
+                                    continue;
+                                }
+
+                                if (typeOf(Control.setProject) === 'function') {
+                                    Control.setProject(self.getProject());
+                                }
+                            }
+
+                            self.$showBody().then(resolve);
+                        });
+
+                    }, {
+                        file    : Category.getAttribute('file'),
+                        category: Category.getAttribute('name')
+                    });
+
                 });
+            }.bind(this));
+        },
 
-                // set data to the form
-                QUIFormUtils.setDataToForm( self.$config, Form );
+        /**
+         * open the dialog for default page structure creation
+         *
+         * @param {Object} Btn
+         */
+        $openCreatePageStructureDialog: function (Btn) {
+            var self              = this;
+            var defaultButtonText = Locale.get(
+                'quiqqer/quiqqer',
+                'projects.project.settings.panel.defaultSitestructure.button'
+            );
 
-                ControlUtils.parse( Body ).then(function()
-                {
-                    var i, len, Control;
-                    var quiids = Body.getElements( '[data-quiid]' );
+            if (Btn) {
+                Btn.setAttribute('text', '<span class="fa fa-spinner fa-spin"></span>');
+            }
 
-                    for ( i = 0, len = quiids.length; i < len; i++ )
-                    {
-                        Control = QUI.Controls.getById( quiids[ i ].get('data-quiid') );
+            new QUIConfirm({
+                icon       : 'fa fa-sitemap',
+                texticon   : 'fa fa-sitemap',
+                title      : Locale.get('quiqqer/quiqqer', 'projects.project.settings.panel.defaultSitestructure.win.title'),
+                text       : Locale.get('quiqqer/quiqqer', 'projects.project.settings.panel.defaultSitestructure.win.text'),
+                information: Locale.get('quiqqer/quiqqer', 'projects.project.settings.panel.defaultSitestructure.win.information'),
+                maxHeight  : 300,
+                maxWidth   : 600,
+                autoclose  : false,
+                events     : {
+                    onSubmit: function (Win) {
+                        Win.Loader.show();
 
-                        if ( !Control ) {
-                            continue;
-                        }
+                        Ajax.post('ajax_project_createDefaultStructure', function () {
+                            if (Btn) {
+                                Btn.setAttribute('text', '<span class="fa fa-check"></span>');
 
-                        if ( typeOf( Control.setProject ) == 'function' ) {
-                            Control.setProject( self.getProject() );
-                        }
+                                (function () {
+                                    Btn.setAttribute('text', defaultButtonText);
+                                }).delay(2000);
+                            }
+
+                            Win.close();
+                        }, {
+                            project: self.getProject().encode(),
+                            onError: function () {
+                                Btn.setAttribute('text', defaultButtonText);
+                            }
+                        });
+                    },
+
+                    onCancel: function () {
+                        Btn.setAttribute('text', defaultButtonText);
                     }
+                }
+            }).open();
+        },
 
-                    self.Loader.hide();
+        /**
+         * Hide the body
+         *
+         * @returns {Promise}
+         */
+        $hideBody: function () {
+            return new Promise(function (resolve) {
+                moofx(this.$Container).animate({
+                    opacity: 0,
+                    top    : -50
+                }, {
+                    duration: 200,
+                    callback: resolve
                 });
+            }.bind(this));
+        },
 
+        /**
+         * Show the body
+         *
+         * @returns {Promise}
+         */
+        $showBody: function () {
+            var Body = this.$Container;
 
-            }, {
-                file     : Category.getAttribute( 'file' ),
-                category : Category.getAttribute( 'name' )
+            Body.setStyles({
+                top: -50
+            });
+
+            return new Promise(function (resolve) {
+                moofx(Body).animate({
+                    opacity: 1,
+                    top    : 0
+                }, {
+                    duration: 200,
+                    callback: resolve
+                });
             });
         }
     });

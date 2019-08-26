@@ -3,6 +3,7 @@
 .control-editors-configurator {
     float: left;
     height: 100%;
+    overflow: auto;
     padding: 20px;
     width: 100%;
 }
@@ -27,7 +28,7 @@
 
 .control-editors-configurator-toolbar {
     float: left;
-    height: 400px;
+    height: calc(100% - 200px);
     margin: 0;
     overflow: auto;
     padding: 10px;

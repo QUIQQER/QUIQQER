@@ -23,14 +23,14 @@ class Media extends QUI\QDOM
      *
      * @var \QUI\Projects\Project
      */
-    protected $_Project;
+    protected $Project;
 
     /**
      * internal child cache
      *
      * @var array
      */
-    protected $_children = array();
+    protected $children = [];
 
     /**
      * constructor
@@ -39,7 +39,7 @@ class Media extends QUI\QDOM
      */
     public function __construct(Project $Project)
     {
-        $this->_Project = $Project;
+        $this->Project = $Project;
     }
 
     /**
@@ -49,7 +49,7 @@ class Media extends QUI\QDOM
      */
     public function getProject()
     {
-        return $this->_Project;
+        return $this->Project;
     }
 
     /**
@@ -57,7 +57,7 @@ class Media extends QUI\QDOM
      * Here are all files located
      * (without the CMS_DIR)
      *
-     * @return String - path to the directory, relative to the system
+     * @return string - path to the directory, relative to the system
      */
     public function getPath()
     {
@@ -69,7 +69,7 @@ class Media extends QUI\QDOM
      * Here are all files located
      * (with the CMS_DIR)
      *
-     * @return String - path to the directory
+     * @return string - path to the directory
      */
     public function getFullPath()
     {
@@ -79,7 +79,7 @@ class Media extends QUI\QDOM
     /**
      * Return the cache directory from the media
      *
-     * @return String - path to the directory, relative to the system
+     * @return string - path to the directory, relative to the system
      */
     public function getCacheDir()
     {
@@ -90,7 +90,7 @@ class Media extends QUI\QDOM
      * Return the complete cache path from the media
      * (with the CMS_DIR)
      *
-     * @return String - path to the directory, relative to the system
+     * @return string - path to the directory, relative to the system
      */
     public function getFullCachePath()
     {
@@ -100,17 +100,17 @@ class Media extends QUI\QDOM
     /**
      * Return the DataBase table name
      *
-     * @param String|Bool $type - (optional) standard=false; other options: relations
+     * @param string|boolean $type - (optional) standard=false; other options: relations
      *
      * @return string
      */
     public function getTable($type = false)
     {
         if ($type == 'relations') {
-            return $this->_Project->getAttribute('name').'_media_relations';
+            return QUI::getDBTableName($this->Project->getAttribute('name').'_media_relations');
         }
 
-        return $this->_Project->getAttribute('name').'_media';
+        return QUI::getDBTableName($this->Project->getAttribute('name').'_media');
     }
 
     /**
@@ -123,20 +123,86 @@ class Media extends QUI\QDOM
         $Project = $this->getProject();
 
         if ($Project->getConfig('placeholder')) {
-
             try {
                 $Image = QUI\Projects\Media\Utils::getImageByUrl(
                     $Project->getConfig('placeholder')
                 );
 
                 return $Image->getUrl(true);
-
             } catch (QUI\Exception $Exception) {
-
             }
         }
 
         return URL_BIN_DIR.'images/Q.png';
+    }
+
+    /**
+     * Return the Placeholder of the media
+     *
+     * @return QUI\Projects\Media\Image|false
+     */
+    public function getPlaceholderImage()
+    {
+        $Project = $this->getProject();
+
+        if ($Project->getConfig('placeholder')) {
+            try {
+                $Image = QUI\Projects\Media\Utils::getImageByUrl(
+                    $Project->getConfig('placeholder')
+                );
+
+                return $Image;
+            } catch (QUI\Exception $Exception) {
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Return the Logo of the media / project
+     *
+     * @return string
+     */
+    public function getLogo()
+    {
+        $Project = $this->getProject();
+
+        if ($Project->getConfig('logo')) {
+            try {
+                $Image = QUI\Projects\Media\Utils::getImageByUrl(
+                    $Project->getConfig('logo')
+                );
+
+                return $Image->getUrl(true);
+            } catch (QUI\Exception $Exception) {
+            }
+        }
+
+        return $this->getPlaceholder();
+    }
+
+    /**
+     * Return the Logo image object of the media
+     *
+     * @return QUI\Projects\Media\Image|string
+     */
+    public function getLogoImage()
+    {
+        $Project = $this->getProject();
+
+        if ($Project->getConfig('logo')) {
+            try {
+                $Image = QUI\Projects\Media\Utils::getImageByUrl(
+                    $Project->getConfig('logo')
+                );
+
+                return $Image;
+            } catch (QUI\Exception $Exception) {
+            }
+        }
+
+        return $this->getPlaceholderImage();
     }
 
     /**
@@ -146,32 +212,48 @@ class Media extends QUI\QDOM
      */
     public function getImageManager()
     {
-        if (class_exists('Imagick')) {
-            return new ImageManager(array('driver' => 'imagick'));
+        $Project = $this->getProject();
+        $library = $Project->getConfig('media_image_library');
+
+        switch ($library) {
+            case '':
+            case 'imagick':
+            case 'gd':
+                break;
+
+            default:
+                $library = '';
         }
 
-        return new ImageManager(array('driver' => 'gd'));
+//        if (\class_exists('Imagick') && ($library === '' || $library === 'imagick')) {
+//            return new ImageManager(['driver' => 'imagick']);
+//        }
+
+        return new ImageManager(['driver' => 'gd']);
     }
 
     /**
      * Setup for a media table
+     *
+     * @throws QUI\Exception
+     * @throws QUI\Database\Exception
      */
     public function setup()
     {
         /**
          * Media Center
          */
-        $table = $this->getTable();
-
+        $table    = $this->getTable();
         $DataBase = QUI::getDataBase();
-        $DataBase->Table()->appendFields($table, array(
+
+        $DataBase->table()->addColumn($table, [
             'id'            => 'bigint(20) NOT NULL',
             'name'          => 'varchar(200) NOT NULL',
             'title'         => 'tinytext',
             'short'         => 'text',
             'type'          => 'varchar(32) default NULL',
-            'active'        => 'tinyint(1) NOT NULL',
-            'deleted'       => 'tinyint(1) NOT NULL',
+            'active'        => 'tinyint(1) NOT NULL DEFAULT 0',
+            'deleted'       => 'tinyint(1) NOT NULL DEFAULT 0',
             'c_date'        => 'timestamp NULL default NULL',
             'e_date'        => 'timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP',
             'file'          => 'text',
@@ -188,51 +270,51 @@ class Media extends QUI\QDOM
             'sha1hash'      => 'varchar(40)',
             'priority'      => 'int(6) default NULL',
             'order'         => 'varchar(32) default NULL',
-        ));
+            'pathHistory'   => 'text'
+        ]);
 
-        $DataBase->Table()->setIndex($table, 'id');
-        $DataBase->Table()->setAutoIncrement($table, 'id');
+        $DataBase->table()->setIndex($table, 'id');
+        $DataBase->table()->setAutoIncrement($table, 'id');
 
         // create first site -> id 1 if not exist
-        $firstChildResult = $DataBase->fetch(array(
+        $firstChildResult = $DataBase->fetch([
             'from'  => $table,
-            'where' => array(
+            'where' => [
                 'id' => 1
-            ),
+            ],
             'limit' => 1
-        ));
+        ]);
 
         if (!isset($firstChildResult[0])) {
-            $DataBase->insert($table, array(
+            $DataBase->insert($table, [
                 'id'     => 1,
                 'name'   => 'Media',
                 'title'  => 'Media',
-                'c_date' => date('Y-m-d H:i:s'),
+                'c_date' => \date('Y-m-d H:i:s'),
                 'c_user' => QUI::getUserBySession()->getId(),
                 'type'   => 'folder'
-            ));
-
+            ]);
         } else {
             // check if id 1 is a folder, id 1 MUST BE a folder
             if ($firstChildResult[0]['type'] != 'folder') {
-                $DataBase->update($table, array(
-                    'type' => 'folder'
-                ), array(
-                    'id' => 1
-                ));
+                $DataBase->update(
+                    $table,
+                    ['type' => 'folder'],
+                    ['id' => 1]
+                );
             }
         }
 
         // Media Relations
         $table = $this->getTable('relations');
 
-        $DataBase->Table()->appendFields($table, array(
+        $DataBase->table()->addColumn($table, [
             'parent' => 'bigint(20) NOT NULL',
             'child'  => 'bigint(20) NOT NULL'
-        ));
+        ]);
 
-        $DataBase->Table()->setIndex($table, 'parent');
-        $DataBase->Table()->setIndex($table, 'child');
+        $DataBase->table()->setIndex($table, 'parent');
+        $DataBase->table()->setIndex($table, 'child');
     }
 
     /**
@@ -241,6 +323,8 @@ class Media extends QUI\QDOM
 
     /**
      * Delete the complete media cache
+     *
+     * @throws QUI\Exception
      */
     public function clearCache()
     {
@@ -253,7 +337,9 @@ class Media extends QUI\QDOM
     /**
      * Return the first child in the media
      *
-     * @return \QUI\Projects\Media\Folder
+     * @return QUI\Projects\Media\Folder
+     *
+     * @throws QUI\Exception
      */
     public function firstChild()
     {
@@ -263,40 +349,40 @@ class Media extends QUI\QDOM
     /**
      * Return a media object
      *
-     * @param Integer $id - media id
+     * @param integer $id - media id
      *
-     * @return \QUI\Projects\Media\Item|\QUI\Projects\Media\Image|\QUI\Projects\Media\File
+     * @return \QUI\Projects\Media\Item|\QUI\Projects\Media\Image|\QUI\Projects\Media\File|\QUI\Projects\Media\Folder
      * @throws \QUI\Exception
      */
     public function get($id)
     {
         $id = (int)$id;
 
-        if (isset($this->_children[$id])) {
-            return $this->_children[$id];
+        if (isset($this->children[$id])) {
+            return $this->children[$id];
         }
 
         // If the RAM is full objects was once empty
         if (QUI\Utils\System::memUsageToHigh()) {
-            $this->_children = array();
+            $this->children = [];
         }
 
-        $result = QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch([
             'from'  => $this->getTable(),
-            'where' => array(
+            'where' => [
                 'id' => $id
-            ),
+            ],
             'limit' => 1
-        ));
+        ]);
 
         if (!isset($result[0])) {
             throw new QUI\Exception('ID '.$id.' not found', 404);
         }
 
 
-        $this->_children[$id] = $this->_parseResultToItem($result[0]);
+        $this->children[$id] = $this->parseResultToItem($result[0]);
 
-        return $this->_children[$id];
+        return $this->children[$id];
     }
 
     /**
@@ -306,13 +392,13 @@ class Media extends QUI\QDOM
      *
      * @return array id list
      */
-    public function getChildrenIds($params = array())
+    public function getChildrenIds($params = [])
     {
         $params['select'] = 'id';
-        $params['from'] = $this->getTable();
+        $params['from']   = $this->getTable();
 
         $result = QUI::getDataBase()->fetch($params);
-        $ids = array();
+        $ids    = [];
 
         foreach ($result as $entry) {
             $ids[] = $entry['id'];
@@ -324,30 +410,32 @@ class Media extends QUI\QDOM
     /**
      * Return a file from its file oath
      *
-     * @param String $filepath
+     * @param string $filepath
      *
      * @return QUI\Interfaces\Projects\Media\File
      * @throws QUI\Exception
      */
     public function getChildByPath($filepath)
     {
-        $table = $this->getTable();
+        $table     = $this->getTable();
         $table_rel = $this->getTable('relations');
 
-        $result = QUI::getDataBase()->fetch(array(
-            'select' => array(
-                $table.'.id'
-            ),
-            'from'   => array(
-                $table,
-                $table_rel
-            ),
-            'where'  => array(
-                $table.'.deleted' => 0,
-                $table.'.file'    => $filepath
-            ),
-            'limit'  => 1
-        ));
+        $result = QUI::getDataBase()->fetch(
+            [
+                'select' => [
+                    $table.'.id'
+                ],
+                'from'   => [
+                    $table,
+                    $table_rel
+                ],
+                'where'  => [
+                    $table.'.deleted' => 0,
+                    $table.'.file'    => $filepath
+                ],
+                'limit'  => 1
+            ]
+        );
 
         if (!isset($result[0])) {
             throw new QUI\Exception('File '.$filepath.' not found', 404);
@@ -359,27 +447,27 @@ class Media extends QUI\QDOM
     /**
      * Replace a file with another
      *
-     * @param Integer $id
-     * @param String  $file - Path to the new file
+     * @param integer $id
+     * @param string $file - Path to the new file
      *
      * @return QUI\Interfaces\Projects\Media\File
      * @throws \QUI\Exception
      */
     public function replace($id, $file)
     {
-        if (!file_exists($file)) {
+        if (!\file_exists($file)) {
             throw new QUI\Exception('File could not be found', 404);
         }
 
         // use direct db not the objects, because
         // if file is not ok you can replace the file though
-        $result = QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch([
             'from'  => $this->getTable(),
-            'where' => array(
+            'where' => [
                 'id' => $id
-            ),
+            ],
             'limit' => 1
-        ));
+        ]);
 
 
         if (!isset($result[0])) {
@@ -426,17 +514,16 @@ class Media extends QUI\QDOM
         }
 
         if ($data['name'] != $name) {
-            $new_file = $Parent->getPath().$name;
+            $new_file  = $Parent->getPath().$name;
             $real_file = $Parent->getFullPath().$name;
-
         } else {
-            $new_file = $result[0]['file'];
+            $new_file  = $result[0]['file'];
             $real_file = $this->getFullPath().$result[0]['file'];
         }
 
         QUI::getDataBase()->update(
             $this->getTable(),
-            array(
+            [
                 'file'         => $new_file,
                 'name'         => $name,
                 'mime_type'    => $info['mime_type'],
@@ -445,14 +532,14 @@ class Media extends QUI\QDOM
                 'type'         => QUI\Projects\Media\Utils::getMediaTypeByMimeType(
                     $info['mime_type']
                 )
-            ),
-            array('id' => $id)
+            ],
+            ['id' => $id]
         );
 
         QUI\Utils\System\File::move($file, $real_file);
 
-        if (isset($this->_children[$id])) {
-            unset($this->_children[$id]);
+        if (isset($this->children[$id])) {
+            unset($this->children[$id]);
         }
 
         $File = $this->get($id);
@@ -464,9 +551,9 @@ class Media extends QUI\QDOM
     /**
      * Return the parent id
      *
-     * @param Integer $id
+     * @param integer $id
      *
-     * @return Integer|false
+     * @return integer|false
      */
     public function getParentIdFrom($id)
     {
@@ -476,16 +563,18 @@ class Media extends QUI\QDOM
             return false;
         }
 
-        $result = QUI::getDataBase()->fetch(array(
-            'select' => 'parent',
-            'from'   => $this->getTable('relations'),
-            'where'  => array(
-                'child' => $id
-            ),
-            'limit'  => 1
-        ));
+        $result = QUI::getDataBase()->fetch(
+            [
+                'select' => 'parent',
+                'from'   => $this->getTable('relations'),
+                'where'  => [
+                    'child' => $id
+                ],
+                'limit'  => 1
+            ]
+        );
 
-        if (is_array($result) && isset($result[0])) {
+        if (\is_array($result) && isset($result[0])) {
             return (int)$result[0]['parent'];
         }
 
@@ -509,7 +598,7 @@ class Media extends QUI\QDOM
      *
      * @return \QUI\Projects\Media\Item
      */
-    public function _parseResultToItem($result)
+    public function parseResultToItem($result)
     {
         switch ($result['type']) {
             case "image":

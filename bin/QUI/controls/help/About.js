@@ -1,58 +1,78 @@
 /**
  * Help Window
  *
+ * @module controls/help/About
  * @author www.pcsg.de (Henning Leutz)
  */
-
 define('controls/help/About', [
 
-    'qui/controls/windows/Popup'
+    'qui/controls/windows/Popup',
+    'Locale',
+    'Mustache',
 
-], function(Popup)
-{
+    'text!controls/help/About.de.html',
+    'text!controls/help/About.en.html',
+
+    'css!controls/help/About.css'
+
+], function (QUIPopup, QUILocale, Mustache, templateDe, templateEn) {
     "use strict";
 
     return new Class({
 
-        Extends : Popup,
-        Type    : 'controls/help/About',
+        Extends: QUIPopup,
+        Type   : 'controls/help/About',
 
-        Binds : [
-            '$onOpen'
+        Binds: [
+            '$onOpen',
+            '$onCreate'
         ],
 
-        options : {
-            maxHeight : 350,
-            title     : 'About'
+        options: {
+            maxHeight      : 400,
+            maxWidth       : 600,
+            title          : QUILocale.get('quiqqer/system', 'menu.help.about.text'),
+            closeButtonText: QUILocale.get('quiqqer/system', 'close')
         },
 
-        initialize : function(options)
-        {
-            this.parent( options );
-            this.addEvent( 'onOpen', this.$onOpen );
+        initialize: function (options) {
+            this.parent(options);
+            this.addEvents({
+                onOpen  : this.$onOpen,
+                onCreate: this.$onCreate
+            });
         },
 
-        $onOpen : function()
-        {
-            // #locale
-            this.getContent().set(
-                'html',
+        /**
+         * event: on create
+         */
+        $onCreate: function () {
+            this.$Buttons.getElement('button').removeClass('btn-red');
+        },
 
-                '<div style="text-align: center; margin-top: 30px;">' +
-                    '<h2>QUIQQER Management System</h2>' +
-                    '<p><a href="http://www.quiqqer.com" target="_blank">www.quiqqer.com</a></p>' +
-                    '<br />' +
-                    'Version: ' + QUIQQER_VERSION +
-                    '<br />' +
-                    '<p>' +
-                        'Copyright ' +
-                        '<a href="http://www.pcsg.de" target="_blank">' +
-                            'http://www.pcsg.de' +
-                        '</a>' +
-                    '</p>' +
-                    '<p>Author: Henning Leutz & Moritz Scholz</p>' +
-                '</div>'
-            );
+        /**
+         * event: on open
+         */
+        $onOpen: function () {
+            var template;
+
+            this.getContent().addClass('quiqqer-about-window');
+
+            switch (QUILocale.getCurrent()) {
+                case 'de':
+                    template = templateDe;
+                    break;
+
+                default:
+                    template = templateEn;
+            }
+
+            this.getContent().set('html', Mustache.render(template, {
+                version: QUIQQER_VERSION,
+                hash   : QUIQQER_HASH,
+                logo   : URL_BIN_DIR + 'quiqqer_logo.png',
+                year   : new Date().getFullYear()
+            }));
         }
     });
 });

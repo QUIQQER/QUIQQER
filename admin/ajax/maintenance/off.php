@@ -3,15 +3,13 @@
 /**
  * switches the maintenance wff
  */
-function ajax_maintenance_off()
-{
-    $Config = \QUI::getConfig('etc/conf.ini.php');
-    $Config->setValue('globals','maintenance', 0);
-    $Config->save();
-}
-
-\QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_maintenance_off',
+    function () {
+        $Config = QUI::getConfig('etc/conf.ini.php');
+        $Config->setValue('globals', 'maintenance', 0);
+        $Config->save();
+    },
     false,
     'Permission::checkSU'
 );

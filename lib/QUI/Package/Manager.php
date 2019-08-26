@@ -6,11 +6,6 @@
 
 namespace QUI\Package;
 
-// Use the Composer classes
-if (!defined('STDIN')) {
-    define('STDIN', fopen("php://stdin", "r"));
-}
-
 if (!defined('JSON_UNESCAPED_SLASHES')) {
     define('JSON_UNESCAPED_SLASHES', 64);
 }
@@ -23,18 +18,7 @@ if (!defined('JSON_UNESCAPED_UNICODE')) {
     define('JSON_UNESCAPED_UNICODE', 256);
 }
 
-
-use Composer\Console\Application;
-use Composer\Package\Package;
-use QUI\Utils\System\File;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Event\ConsoleTerminateEvent;
-use Symfony\Component\Console\ConsoleEvents;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Formatter\OutputFormatterInterface;
-
 use QUI;
-use QUI\Utils\XML as XML;
 use QUI\Utils\System\File as QUIFile;
 
 /**
@@ -45,89 +29,109 @@ use QUI\Utils\System\File as QUIFile;
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
- * @event   onOutput [ String $message ]
+ * @event   onOutput [ string $message ]
+ *
+ * @todo php composer.phar config github-oauth.github.com KEY
  */
 class Manager extends QUI\QDOM
 {
     const CACHE_NAME_TYPES = 'qui/packages/types';
 
+    /** @var int The minimum required memory_limit in megabytes of PHP */
+    const REQUIRED_MEMORY = 128;
+    /** @var int The minimum required memory_limit of PHP in megabytes, if the user added VCS repositories */
+    const REQUIRED_MEMORY_VCS = 256;
+
+    /** @var string The key used to store the package folder size in cache */
+    const CACHE_KEY_PACKAGE_FOLDER_SIZE = "package_folder_size";
+
+    /** @var string The key used to store the package folder size in cache */
+    const CACHE_KEY_PACKAGE_FOLDER_SIZE_TIMESTAMP = "package_folder_size_timestamp";
+
     /**
      * Package Directory
      *
-     * @var String
+     * @var string
      */
-    protected $_dir;
+    protected $dir;
 
     /**
      * VAR Directory for composer
      * eq: here are the cache and the quiqqer composer.json file
      *
-     * @var String
+     * @var string
      */
-    protected $_vardir;
+    protected $vardir;
 
     /**
      * Path to the composer.json file
      *
-     * @var String
+     * @var string
      */
-    protected $_composer_json;
+    protected $composer_json;
 
     /**
      * Path to the composer.lock file
      *
-     * @var String
+     * @var string
      */
-    protected $_composer_lock;
+    protected $composer_lock;
 
     /**
      * exec command to the composer.phar file
      *
-     * @var String
+     * @var string
      */
-    protected $_composer_exec;
+    protected $composer_exec;
 
     /**
      * Packaglist - installed packages
      *
-     * @var Array
+     * @var array
      */
-    protected $_list = false;
+    protected $list = false;
 
     /**
      * Can composer execute via bash? shell?
      *
-     * @var Bool
+     * @var boolean
      */
-    protected $_exec = false;
+    protected $exec = false;
 
     /**
      * temporary require packages
      *
-     * @var Array
+     * @var array
      */
-    protected $_require = array();
+    protected $require = [];
 
     /**
      * QUIQQER Version ->getVersion()
      *
-     * @var String
+     * @var string
      */
-    protected $_version = null;
+    protected $version = null;
+
+    /**
+     * QUIQQER Version ->getHash()
+     *
+     * @var string
+     */
+    protected $hash = null;
 
     /**
      * List of packages objects
      *
-     * @var Array
+     * @var array
      */
-    protected $_packages = array();
+    protected $packages = [];
 
     /**
-     * Composer Application
+     * List of installed packages flags
      *
-     * @var Application
+     * @var array
      */
-    protected $_Application;
+    protected $installed = [];
 
     /**
      * internal event manager
@@ -137,39 +141,87 @@ class Manager extends QUI\QDOM
     public $Events;
 
     /**
+     * internal event manager
+     *
+     * @var QUI\Composer\Composer
+     */
+    public $Composer;
+
+    /**
      * Path to the local repository
      *
-     * @var String
+     * @var string
      */
-    protected $_localRepository;
+    protected $localRepository;
 
     /**
      * active servers - use as temp for local repo using
      *
      * @var array
      */
-    protected $_activeServers = array();
+    protected $activeServers = [];
+
+    /**
+     * composer lock for the specific package
+     * - index array [package] => lock data
+     *
+     * @var array
+     */
+    protected $packageLock = [];
+
+    /**
+     * composer.lock data for the current instance
+     *
+     * @var array
+     */
+    protected $composerLock = null;
+
+    /**
+     * @var array
+     */
+    protected $instanceCache = [];
 
     /**
      * constructor
      *
      * @param array $attributes
      */
-    public function __construct($attributes = array())
+    public function __construct($attributes = [])
     {
         // defaults
-        $this->setAttributes(array(
+        $this->setAttributes([
             '--prefer-dist' => true
-        ));
+        ]);
 
-        $this->_dir = OPT_DIR; // CMS_DIR .'packages/';
-        $this->_vardir = VAR_DIR.'composer/';
+        $this->dir    = OPT_DIR; // CMS_DIR .'packages/';
+        $this->vardir = VAR_DIR.'composer/';
 
-        $this->_composer_json = $this->_vardir.'composer.json';
-        $this->_composer_lock = $this->_vardir.'composer.lock';
+        $this->composer_json = $this->vardir.'composer.json';
+        $this->composer_lock = $this->vardir.'composer.lock';
 
-        $this->Events = new QUI\Events\Manager();
+        $this->Composer = null;
+        $this->Events   = new QUI\Events\Manager();
         $this->setAttributes($attributes);
+    }
+
+    /**
+     * Return the internal composer object
+     *
+     * @return null|QUI\Composer\Composer
+     */
+    public function getComposer()
+    {
+        if (\is_null($this->Composer)) {
+            $this->Composer = new QUI\Composer\Composer($this->vardir);
+
+            if (\php_sapi_name() != 'cli') {
+                $this->Composer->setMode(QUI\Composer\Composer::MODE_WEB);
+            } else {
+                $this->Composer->setMode(QUI\Composer\Composer::MODE_CLI);
+            }
+        }
+
+        return $this->Composer;
     }
 
     /**
@@ -177,24 +229,46 @@ class Manager extends QUI\QDOM
      *
      * @return array
      */
-    static function getPackageTypes()
+    public static function getPackageTypes()
     {
-        return array(
+        return [
             'quiqqer-library', // deprecated
             'quiqqer-plugin',
             'quiqqer-module',
-            'quiqqer-template'
-        );
+            'quiqqer-template',
+            'quiqqer-application'
+        ];
     }
 
     /**
      * Return the last update date
      *
      * @return integer
+     *
+     * @throws QUI\Exception
      */
     public function getLastUpdateDate()
     {
-        return (int)$this->_getUpdateConf()->get('quiqqer', 'lastUpdate');
+        return (int)$this->getUpdateConf()->get('quiqqer', 'lastUpdate');
+    }
+
+    /**
+     * Return the last update date
+     *
+     * @return integer
+     *
+     * @throws QUI\Exception
+     */
+    public function getLastUpdateCheckDate()
+    {
+        $lastCheck  = (int)$this->getUpdateConf()->get('quiqqer', 'lastUpdateCheck');
+        $lastUpdate = $this->getLastUpdateDate();
+
+        if ($lastUpdate > $lastCheck) {
+            $lastCheck = $lastUpdate;
+        }
+
+        return $lastCheck;
     }
 
     /**
@@ -204,106 +278,258 @@ class Manager extends QUI\QDOM
      */
     public function setLastUpdateDate()
     {
-        $Last = $this->_getUpdateConf();
-        $Last->set('quiqqer', 'lastUpdate', time());
+        $Last = $this->getUpdateConf();
+        $Last->set('quiqqer', 'lastUpdate', \time());
         $Last->save();
     }
 
     /**
-     * Return the Composer Application
+     * Set the last update date to now
      *
-     * @return \Composer\Console\Application
+     * @throws QUI\Exception
      */
-    protected function _getApplication()
+    public function setLastUpdateCheckDate()
     {
-        if ($this->_Application) {
-            return $this->_Application;
-        }
-
-        // Create the application and run it with the commands
-        $this->_Application = new Application();
-        $this->_Application->setAutoExit(false);
-
-        QUI\Utils\System\File::mkdir($this->_vardir);
-
-        putenv("COMPOSER_HOME=".$this->_vardir);
-
-        return $this->_Application;
+        $Last = $this->getUpdateConf();
+        $Last->set('quiqqer', 'lastUpdateCheck', \time());
+        $Last->save();
     }
 
     /**
      * Return the version from the composer json
      *
-     * @return String
+     * @return string
      */
     public function getVersion()
     {
-        if ($this->_version) {
-            return $this->_version;
+        if ($this->version) {
+            return $this->version;
         }
 
-        if (!file_exists($this->_composer_json)) {
+        if (!\file_exists($this->composer_json)) {
             return '';
         }
 
-        $data = file_get_contents($this->_composer_json);
-        $data = json_decode($data, true);
+        $data = \file_get_contents($this->composer_lock);
+        $data = \json_decode($data, true);
 
-        if (isset($data['require']['quiqqer/quiqqer'])) {
-            $this->_version = $data['require']['quiqqer/quiqqer'];
+        $package = \array_filter($data['packages'], function ($package) {
+            return $package['name'] === 'quiqqer/quiqqer';
+        });
 
-        } else {
-            $this->_version = $data['version'];
+        $package       = \current($package);
+        $this->version = $package['version'];
+
+        return $this->version;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHash()
+    {
+        if ($this->hash) {
+            return $this->hash;
         }
 
-        return $this->_version;
+        if (!\file_exists($this->composer_json)) {
+            return '';
+        }
+
+        $this->hash = '';
+
+        $data = \file_get_contents($this->composer_lock);
+        $data = \json_decode($data, true);
+
+        $package = \array_filter($data['packages'], function ($package) {
+            return $package['name'] === 'quiqqer/quiqqer';
+        });
+
+        $package = \current($package);
+
+        if (!empty($package['source']['reference'])) {
+            $this->hash = $package['source']['reference'];
+        }
+
+        return $this->hash;
+    }
+
+    /**
+     * Return the lock data from the package
+     *
+     * @param Package $Package
+     *
+     * @return array
+     */
+    public function getPackageLock(Package $Package)
+    {
+        $packageName = $Package->getName();
+        $cache       = 'packages/lock/'.$packageName;
+
+        if (isset($this->packageLock[$packageName])) {
+            return $this->packageLock[$packageName];
+        }
+
+        try {
+            $this->packageLock[$packageName] = QUI\Cache\Manager::get($cache);
+
+            return $this->packageLock[$packageName];
+        } catch (QUI\Exception $Exception) {
+        }
+
+        if ($this->composerLock) {
+            $data = $this->composerLock;
+        } else {
+            $data = \file_get_contents($this->composer_lock);
+            $data = \json_decode($data, true);
+        }
+
+        foreach ($data['packages'] as $package) {
+            if ($package['name'] === $packageName) {
+                $this->packageLock[$packageName] = $package;
+                break;
+            }
+        }
+
+        if (!isset($this->packageLock[$packageName])) {
+            $this->packageLock[$packageName] = [];
+        }
+
+        QUI\Cache\Manager::set($cache, $this->packageLock[$packageName]);
+
+        return $this->packageLock[$packageName];
     }
 
     /**
      * Checks if the composer.json exists
      * if not, the system will try to create the composer.json (with all installed packages)
      */
-    protected function _checkComposer()
+    protected function checkComposer()
     {
-        if (file_exists($this->_composer_json)) {
+        if (\file_exists($this->composer_json)) {
             return;
         }
 
-        $this->_createComposerJSON();
+        $this->createComposerJSON();
     }
 
     /**
      * Create the composer.json file for the system
+     *
+     * @param array $packages - add packages to the composer json
      */
-    protected function _createComposerJSON()
+    protected function createComposerJSON($packages = [])
     {
-        if (file_exists($this->_composer_json)) {
-            $composerJson
-                = json_decode(file_get_contents($this->_composer_json));
+        if (\file_exists($this->composer_json)) {
+            $composerJson = \json_decode(
+                \file_get_contents($this->composer_json)
+            );
         } else {
-            $template = file_get_contents(
-                dirname(__FILE__).'/composer.tpl'
+            $template = \file_get_contents(
+                \dirname(__FILE__).'/composer.tpl'
             );
 
-            $composerJson = json_decode($template);
+            $composerJson = \json_decode($template);
         }
 
         // config
-        $composerJson->config = array(
-            "vendor-dir"    => OPT_DIR,
-            "cache-dir"     => $this->_vardir,
-            "component-dir" => OPT_DIR.'bin',
-            "quiqqer-dir"   => CMS_DIR
-        );
+        $composerJson->config = [
+            "vendor-dir"        => OPT_DIR,
+            "cache-dir"         => $this->vardir,
+            "component-dir"     => OPT_DIR.'bin',
+            "quiqqer-dir"       => CMS_DIR,
+            "secure-http"       => false,
+            "preferred-install" => 'dist'
+        ];
 
+        if (!isset($composerJson->config)) {
+            $composerJson->config['minimum-stability'] = 'stable';
+        }
+
+        if (DEVELOPMENT) {
+            $composerJson->config['minimum-stability'] = 'dev';
+            $composerJson->config['preferred-install'] = 'source';
+        }
+
+        $composerJson->extra = [
+            "asset-installer-paths"  => [
+                "npm-asset-library"   => OPT_DIR.'bin',
+                "bower-asset-library" => OPT_DIR.'bin'
+            ],
+            "asset-registry-options" => [
+                "npm"              => false,
+                "bower"            => false,
+                "npm-searchable"   => false,
+                "bower-searchable" => false
+            ]
+        ];
+
+        // composer events scripts
+        $composerEvents = [
+            // command events
+            'pre-update-cmd'         => [
+                'QUI\\Package\\Composer\\CommandEvents::preUpdate'
+            ],
+            'post-update-cmd'        => [
+                'QUI\\Package\\Composer\\CommandEvents::postUpdate'
+            ],
+            // package events
+            'pre-package-install'    => [
+                'QUI\\Package\\Composer\\PackageEvents::prePackageInstall'
+            ],
+            'post-package-install'   => [
+                'QUI\\Package\\Composer\\PackageEvents::postPackageInstall'
+            ],
+            'pre-package-update'     => [
+                'QUI\\Package\\Composer\\PackageEvents::prePackageUpdate'
+            ],
+            'post-package-update'    => [
+                'QUI\\Package\\Composer\\PackageEvents::postPackageUpdate'
+            ],
+            'pre-package-uninstall'  => [
+                'QUI\\Package\\Composer\\PackageEvents::prePackageUninstall'
+            ],
+            'post-package-uninstall' => [
+                'QUI\\Package\\Composer\\PackageEvents::postPackageUninstall'
+            ]
+        ];
+
+        if (empty($composerJson->scripts)) {
+            $composerJson->scripts = (object)[];
+        }
+
+        foreach ($composerEvents as $composerEvent => $events) {
+            if (empty($composerJson->scripts->{$composerEvent})) {
+                $composerJson->scripts->{$composerEvent} = [];
+            }
+
+            if (!\is_array($composerJson->scripts->{$composerEvent})) {
+                $composerJson->scripts->{$composerEvent} = [];
+            }
+
+            $eventList = \array_unique(\array_merge(
+                $events,
+                $composerJson->scripts->{$composerEvent}
+            ));
+
+            $composerJson->scripts->{$composerEvent} = \array_values($eventList);
+        }
 
         // make the repository list
-        $servers = $this->getServerList();
-        $repositories = array();
+        $servers      = $this->getServerList();
+        $repositories = [];
+        $npmServer    = [];
 
         foreach ($servers as $server => $params) {
-
             if ($server == 'packagist') {
+                continue;
+            }
+
+            if ($server == 'bower') {
+                continue;
+            }
+
+            if ($server == 'npm') {
                 continue;
             }
 
@@ -311,55 +537,177 @@ class Manager extends QUI\QDOM
                 continue;
             }
 
-            $repositories[] = array(
+            if ($params['type'] === 'npm') {
+                $npmHostName             = \parse_url($server, \PHP_URL_HOST);
+                $npmServer[$npmHostName] = $server;
+                continue;
+            }
+
+            $repositories[] = [
                 'type' => $params['type'],
                 'url'  => $server
-            );
+            ];
         }
 
-        if (isset($servers['packagist'])
-            && $servers['packagist']['active'] == 0
-        ) {
-            $repositories[] = array(
+        if (isset($servers['packagist']) && $servers['packagist']['active'] == 0) {
+            $repositories[] = [
                 'packagist' => false
-            );
+            ];
+        }
+
+        // license information
+        $licenseConfigFile = CMS_DIR.'etc/license.ini.php';
+
+        if (\file_exists($licenseConfigFile)) {
+            try {
+                $LicenseConfig    = new QUI\Config($licenseConfigFile);
+                $data             = $LicenseConfig->getSection('license');
+                $licenseServerUrl = QUI::conf('license', 'url');
+
+                if (!empty($data['id'])
+                    && !empty($data['licenseHash'])
+                    && !empty($licenseServerUrl)
+                ) {
+                    $hash = \bin2hex(QUI\Security\Encryption::decrypt(\hex2bin($data['licenseHash'])));
+
+                    $repositories[] = [
+                        'type'    => 'composer',
+                        'url'     => $licenseServerUrl,
+                        'options' => [
+                            'http' => [
+                                'header' => [
+                                    'licenseid: '.$data['id'],
+                                    'licensehash: '.$hash,
+                                    'clientdata: '.\bin2hex(\json_encode($this->getLicenseClientData()))
+                                ]
+                            ]
+                        ]
+                    ];
+                }
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeDebugException($Exception);
+            }
+        }
+
+        if (isset($servers['npm']) && $servers['npm']['active'] == 1) {
+            $composerJson->extra["asset-registry-options"]["npm"]            = true;
+            $composerJson->extra["asset-registry-options"]["npm-searchable"] = true;
+        }
+
+        if (isset($servers['bower']) && $servers['bower']['active'] == 1) {
+            $composerJson->extra["asset-registry-options"]["bower"]            = true;
+            $composerJson->extra["asset-registry-options"]["bower-searchable"] = true;
         }
 
         $composerJson->repositories = $repositories;
 
+        // add npm server
+        if (!empty($npmServer)) {
+            $composerJson->extra['asset-custom-npm-registries'] = $npmServer;
+        }
 
         // standard require
         if (empty($composerJson->require)) {
-            $list = $this->_getList();
+            $list = $this->getList();
 
             // must have
-            $require = array();
-            $require["php"] = ">=5.3.2";
+            $require                    = [];
+            $require["php"]             = ">=5.5";
             $require["quiqqer/quiqqer"] = "dev-master";
 
             foreach ($list as $package) {
                 $require[$package['name']] = $package['version'];
             }
 
-            ksort($require);
+            \ksort($require);
 
             $composerJson->require = $require;
         }
 
+        if (!empty($packages)) {
+            foreach ($packages as $package => $version) {
+                try {
+                    $this->getInstalledPackage($package);
+
+                    $Parser = new \Composer\Semver\VersionParser();
+                    $Parser->normalize(\str_replace('*', '0', $version)); // workaround, normalize cant check 1.*
+
+                    $composerJson->require[$package] = $version;
+                } catch (\Exception $Exception) {
+                    QUI\System\Log::addError($Exception->getMessage());
+                }
+            }
+        }
+
+        if ($this->version) {
+            $composerJson->require->{"quiqqer/quiqqer"} = $this->version;
+        }
 
         // save
-        file_put_contents($this->_composer_json, json_encode(
+        \file_put_contents($this->composer_json, \json_encode(
             $composerJson,
             \JSON_PRETTY_PRINT
         ));
     }
 
     /**
+     * Set a quiqqer version to the composer file
+     * This method does not perform an update
+     *
+     * @param $version
+     *
+     * @throws \UnexpectedValueException
+     */
+    public function setQuiqqerVersion($version)
+    {
+        $Parser = new \Composer\Semver\VersionParser();
+        $Parser->normalize(\str_replace('*', '0', $version)); // workaround, normalize cant check 1.*
+
+        $this->version = $version;
+        $this->createComposerJSON();
+    }
+
+    /**
+     * Set the version to packages or a package
+     * This method does not perform an update
+     *
+     * @param array|string $packages - list of packages or package name
+     * @param string $version - wanted version
+     *
+     * @throws \UnexpectedValueException
+     */
+    public function setPackageVersion($packages, $version)
+    {
+        if (!\is_array($packages)) {
+            $packages = [$packages];
+        }
+
+        $list = [];
+
+        $Parser = new \Composer\Semver\VersionParser();
+        $Parser->normalize(\str_replace('*', '0', $version)); // workaround, normalize cant check 1.*
+
+        foreach ($packages as $package) {
+            try {
+                $this->getInstalledPackage($package);
+
+                $list[$package] = $version;
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeDebugException($Exception);
+            }
+        }
+
+        $this->createComposerJSON($packages);
+    }
+
+    /**
      * Creates a backup from the composer.json file
+     *
+     * @throws QUI\Exception
      */
     public function createComposerBackup()
     {
-        if (!file_exists($this->_composer_json)) {
+        if (!\file_exists($this->composer_json)) {
             throw new QUI\Exception(
                 'Composer File not found'
             );
@@ -369,26 +717,24 @@ class Manager extends QUI\QDOM
 
         QUIFile::mkdir($backupDir);
 
-        $date = date('Y-m-d__H-i-s');
+        $date = \date('Y-m-d__H-i-s');
 
         $composerJson = $backupDir.'composer_'.$date.'.json';
         $composerLock = $backupDir.'composer_'.$date.'.lock';
 
-        if (file_exists($composerJson) || file_exists($composerLock)) {
-
+        if (\file_exists($composerJson) || \file_exists($composerLock)) {
             $count = 1;
 
             while (true) {
-
                 $composerJson = "{$backupDir}composer_{$date}_({$count}).json";
                 $composerLock = "{$backupDir}composer_{$date}_({$count}).lock";
 
-                if (file_exists($composerJson)) {
+                if (\file_exists($composerJson)) {
                     $count++;
                     continue;
                 }
 
-                if (file_exists($composerJson)) {
+                if (\file_exists($composerJson)) {
                     $count++;
                     continue;
                 }
@@ -397,17 +743,21 @@ class Manager extends QUI\QDOM
             }
         }
 
-        QUIFile::copy($this->_composer_json, $composerJson);
-        QUIFile::copy($this->_composer_lock, $composerLock);
+        QUIFile::copy($this->composer_json, $composerJson);
+        QUIFile::copy($this->composer_lock, $composerLock);
     }
 
     /**
      * Clear the complete composer cache
+     *
+     * @throws QUI\Exception
      */
     public function clearComposerCache()
     {
-        QUI::getTemp()->moveToTemp($this->_vardir.'repo/');
-        QUI::getTemp()->moveToTemp($this->_vardir.'files/');
+        QUI::getTemp()->moveToTemp($this->vardir.'repo/');
+        QUI::getTemp()->moveToTemp($this->vardir.'files/');
+
+        $this->getComposer()->clearCache();
     }
 
     /**
@@ -417,14 +767,14 @@ class Manager extends QUI\QDOM
     /**
      * Return the composer array
      *
-     * @return Array
+     * @return array
      */
-    protected function _getComposerJSON()
+    protected function getComposerJSON()
     {
-        $this->_checkComposer();
+        $this->checkComposer();
 
-        $json = file_get_contents($this->_composer_json);
-        $result = json_decode($json, true);
+        $json   = \file_get_contents($this->composer_json);
+        $result = \json_decode($json, true);
 
         return $result;
     }
@@ -433,35 +783,33 @@ class Manager extends QUI\QDOM
      * internal get list method
      * return all installed packages and create the internal package list cache
      *
-     * @return Array
+     * @return array
      */
-    protected function _getList()
+    protected function getList()
     {
-        if ($this->_list) {
-            return $this->_list;
+        if ($this->list) {
+            return $this->list;
         }
 
         try {
-            $this->_list = QUI\Cache\Manager::get(self::CACHE_NAME_TYPES);
+            $this->list = QUI\Cache\Manager::get(self::CACHE_NAME_TYPES);
 
-            return $this->_list;
-
+            return $this->list;
         } catch (QUI\Exception $Exception) {
-
         }
 
-        $installed_file = $this->_dir.'composer/installed.json';
+        $installed_file = $this->dir.'composer/installed.json';
 
-        if (!file_exists($installed_file)) {
-            return array();
+        if (!\file_exists($installed_file)) {
+            return [];
         }
 
-        $data = file_get_contents($installed_file);
-        $list = json_decode($data, true);
+        $data = \file_get_contents($installed_file);
+        $list = \json_decode($data, true);
 
-        $result = array();
+        $result = [];
 
-        if (is_array($list)) {
+        if (\is_array($list)) {
             foreach ($list as $entry) {
                 if (!isset($entry['type'])) {
                     $result[] = $entry;
@@ -475,27 +823,31 @@ class Manager extends QUI\QDOM
 
                 $path = OPT_DIR.$entry['name'].'/';
 
-                if (file_exists($path.'settings.xml')) {
+                if (\file_exists($path.'settings.xml')) {
                     $entry['_settings'] = 1;
                 }
 
-                if (file_exists($path.'permissions.xml')) {
+                if (\file_exists($path.'permissions.xml')) {
                     $entry['_permissions'] = 1;
                 }
 
-                if (file_exists($path.'database.xml')) {
+                if (\file_exists($path.'database.xml')) {
                     $entry['_database'] = 1;
                 }
 
                 $result[] = $entry;
             }
 
-            $this->_list = $result;
+            $this->list = $result;
         }
 
-        QUI\Cache\Manager::set(self::CACHE_NAME_TYPES, $this->_list);
+        try {
+            QUI\Cache\Manager::set(self::CACHE_NAME_TYPES, $this->list);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
 
-        return $this->_list;
+        return $this->list;
     }
 
     /**
@@ -504,68 +856,74 @@ class Manager extends QUI\QDOM
      *
      * this method correct it
      */
-    protected function _refreshInstalledList()
+    protected function refreshInstalledList()
     {
-        $installed_file = $this->_dir.'composer/installed.json';
+        $installed_file = $this->dir.'composer/installed.json';
 
-        if (!file_exists($installed_file)) {
+        if (!\file_exists($installed_file)) {
             return;
         }
 
-
-        $data = file_get_contents($installed_file);
-        $list = json_decode($data, true);
+        $data = \file_get_contents($installed_file);
+        $list = \json_decode($data, true);
 
         foreach ($list as $key => $entry) {
-            $cf = $this->_dir.$entry['name'].'/composer.json';
+            $cf = $this->dir.$entry['name'].'/composer.json';
 
-            if (!file_exists($cf)) {
+            if (!\file_exists($cf)) {
                 continue;
             }
 
-            $data = json_decode(file_get_contents($cf), true);
+            $data = \json_decode(\file_get_contents($cf), true);
 
-            if (!is_array($data)) {
+            if (!\is_array($data)) {
                 continue;
             }
 
             if (!isset($data['version'])) {
                 continue;
             }
-
-            /*
-            $list[ $key ]['version'] = $data['version'];
-
-            // is that right?
-            $list[ $key ]["version_normalized"] = str_replace(
-                array('x', '*'),
-                9999999,
-                $data['version']
-            );
-            */
         }
 
-        $this->_list = array();
+        $this->list = [];
 
-        if (is_array($list)) {
-            $this->_list = $list;
+        if (\is_array($list)) {
+            $this->list = $list;
         }
     }
+
+
+    /**
+     * Returns how many packages are installed.
+     *
+     * This is better than counting the result of getInstalled(), since this doesn't instantiates all packages as objects.
+     *
+     * @return int
+     */
+    public function countInstalledPackages()
+    {
+        return \count($this->getList());
+    }
+
 
     /**
      * Return the installed packages
      *
-     * @param Array $params - [optional] search / limit params
+     * @param array $params - [optional] search / limit params
      *
-     * @return Array
+     * @return array
      */
-    public function getInstalled($params = array())
+    public function getInstalled($params = [])
     {
-        $list = $this->_getList();
+        if (isset($this->instanceCache['getInstalled'])) {
+            return $this->instanceCache['getInstalled'];
+        }
+
+        $list   = $this->getList();
         $result = $list;
 
         if (isset($params['type'])) {
-            $result = array();
+            $result = [];
 
             foreach ($list as $package) {
                 if (!isset($package['type'])) {
@@ -584,10 +942,23 @@ class Manager extends QUI\QDOM
 
         if (isset($params['limit']) && isset($params['page'])) {
             $limit = (int)$params['limit'];
-            $page = (int)$params['page'];
+            $page  = (int)$params['page'];
 
-            return QUI\Utils\Grid::getResult($result, $page, $limit);
+            $result = QUI\Utils\Grid::getResult($result, $page, $limit);
         }
+
+        foreach ($result as $key => $package) {
+            try {
+                $Package = $this->getInstalledPackage($package['name']);
+
+                $result[$key]['title']       = $Package->getTitle();
+                $result[$key]['description'] = $Package->getDescription();
+                $result[$key]['image']       = $Package->getImage();
+            } catch (QUI\Exception $Exception) {
+            }
+        }
+
+        $this->instanceCache['getInstalled'] = $result;
 
         return $result;
     }
@@ -595,193 +966,161 @@ class Manager extends QUI\QDOM
     /**
      * Return a package object
      *
-     * @param String $package - name of the package
+     * @param string $package - name of the package
      *
      * @return QUI\Package\Package
      * @throws QUI\Exception
      */
     public function getInstalledPackage($package)
     {
-        if (!isset($this->_packages[$package])) {
-            $this->_packages[$package] = new QUI\Package\Package($package);
+        if (!isset($this->packages[$package])) {
+            $this->packages[$package] = new QUI\Package\Package($package);
         }
 
-        return $this->_packages[$package];
+        return $this->packages[$package];
     }
 
     /**
-     * Install Package
+     * Returns the size of package folder in bytes.
+     * By default the value is returned from cache.
+     * If there is no value in cache, null is returned, unless you set the force parameter to true.
+     * Only if you really need to get a freshly calculated result, you may set the force parameter to true.
+     * When using the force parameter expect timeouts since the calculation could take a lot of time.
      *
-     * @param String      $package - name of the package
-     * @param String|bool $version - (optional) version of the package default = dev-master
+     * @param boolean $force - Force a calculation of the package folder size. Values aren't returned from cache. Expect timeouts.
+     *
+     * @return int
      */
-    public function install($package, $version = false)
+    public function getPackageFolderSize($force = false)
     {
-        QUI\System\Log::addDebug(
-            'Install package '.$package.' with Lock Client'
-        );
-
-        $this->createComposerBackup();
-        $this->_checkComposer();
+        if ($force) {
+            return self::calculatePackageFolderSize();
+        }
 
         try {
+            return QUI\Cache\Manager::get(self::CACHE_KEY_PACKAGE_FOLDER_SIZE);
+        } catch (QUI\Cache\Exception $Exception) {
+            return null;
+        }
+    }
 
-            // update lock file via lock server
-            $lockData = $this->_getLockClient()->requires($package, $version);
-
-            // update composer.lock
-            file_put_contents($this->_composer_lock, $lockData);
-
-            // add package to composer.json
-            $composer = json_decode(
-                file_get_contents($this->_composer_json),
-                true
-            );
-
-            if (!isset($composer['require'][$package])) {
-                $composer['require'][$package] = $version ? $version : '*';
-
-                file_put_contents(
-                    $this->_composer_json,
-                    json_encode($composer, \JSON_PRETTY_PRINT)
-                );
-            }
-
-            QUI\System\Log::addDebug('Execute install command');
-
-            $this->_execComposer('install', array(
-                '--no-progress' => true,
-                '--no-ansi'     => true
-            ));
-
-        } catch (QUI\Exception $Exception) {
-
-            QUI\System\Log::addDebug('LOCK Server Error');
-            QUI\System\Log::addDebug($Exception->getMessage());
-
-            $this->installWithoutLockClient($package, $version);
-
-            return;
+    /**
+     * Returns the timestamp when the package folder size was stored in cache.
+     * Returns null if there is no data in the cache.
+     *
+     * @return int|null
+     */
+    public function getPackageFolderSizeTimestamp()
+    {
+        try {
+            $timestamp = QUI\Cache\Manager::get(self::CACHE_KEY_PACKAGE_FOLDER_SIZE_TIMESTAMP);
+        } catch (QUI\Cache\Exception $Exception) {
+            $timestamp = null;
         }
 
-        $this->getInstalledPackage($package)->install();
+        return $timestamp;
+    }
 
-        // execute setup of all packages
-        $this->setup($package);
+    /**
+     * Calculates and returns the size of the package folder in bytes.
+     * The result is also stored in cache by default. Set the doNotCache parameter to true to prevent this.
+     *
+     * This process may take a lot of time -> Expect timeouts!
+     *
+     * @param boolean $doNotCache - Don't store the result in cache. Off by default.
+     *
+     * @return int
+     */
+    protected function calculatePackageFolderSize($doNotCache = false)
+    {
+        $packageFolderSize = QUI\Utils\System\File::getDirectorySize($this->dir);
+
+        if ($doNotCache) {
+            return $packageFolderSize;
+        }
+
+        try {
+            QUI\Cache\Manager::set(self::CACHE_KEY_PACKAGE_FOLDER_SIZE, $packageFolderSize);
+            QUI\Cache\Manager::set(self::CACHE_KEY_PACKAGE_FOLDER_SIZE_TIMESTAMP, \time());
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+
+        return $packageFolderSize;
     }
 
     /**
      * Install Package
      *
-     * @param String      $package - name of the package
-     * @param String|bool $version - (optional) version of the package
+     * @param string|array $packages - name of the package, or list of paackages
+     * @param string|boolean $version - (optional) version of the package default = dev-master
      */
-    public function installWithoutLockClient($package, $version = false)
+    public function install($packages, $version = false)
     {
         QUI\System\Log::addDebug(
-            'Install package '.$package.' without Lock Client'
+            'Install package '.\print_r($packages, true).' -> install'
         );
 
-        if ($version) {
+        QUI\Cache\Manager::clearAll();
 
-            $this->_execComposer('require', array(
-                'packages' => array(
-                    $package.':'.$version
-                )
-            ));
+        $this->composerRequireOrInstall($packages, $version);
+    }
 
-        } else {
-
-            $this->_execComposer('require', array(
-                'packages' => $package
-            ));
+    /**
+     * Returns whether the package is installed or not
+     *
+     * Please use this method to check the installation status and not ->getInstalledPackage()
+     * This method use an internal caching
+     *
+     * @param string $packageName
+     *
+     * @return bool
+     */
+    public function isInstalled($packageName)
+    {
+        if (isset($this->installed[$packageName])) {
+            return $this->installed[$packageName];
         }
 
-        $this->getInstalledPackage($package)->install();
+        try {
+            $this->getInstalledPackage($packageName);
 
-        // execute setup of all packages
-        $this->setup($package);
+            $this->installed[$packageName] = true;
+        } catch (QUI\Exception $Exception) {
+            $this->installed[$packageName] = false;
+        }
+
+        return $this->installed[$packageName];
     }
 
     /**
      * Install only a local package
      *
-     * @param  string $package - name of the package
-     * @param bool    $version - (optional) version of the package
+     * @param string|array $packages - name of the package
+     * @param boolean $version - (optional) version of the package
+     *
+     * @throws QUI\Exception
      */
-    public function installLocalPackage($package, $version = false)
+    public function installLocalPackage($packages, $version = false)
     {
         QUI\System\Log::addDebug(
-            'Install package '.$package.' without Lock Client'
+            'Install package '.\print_r($packages, true).' -> installLocalPackage'
         );
 
-        $this->_useOnlyLocalRepository();
+        $this->useOnlyLocalRepository();
+        $this->getComposer()->requirePackage($packages, $version);
+        $this->resetRepositories();
 
-        $this->installWithoutLockClient($package, $version);
-
-        $this->_resetRepositories();
-    }
-
-    /**
-     * Add a Package to the composer json
-     *
-     * @param String|Array $package - name of the package
-     * @param String|bool  $version - (optional) version of the package
-     */
-    public function setPackage($package, $version = false)
-    {
-        if (!$version) {
-            $version = 'dev-master';
-        }
-
-        $json = $this->_getComposerJSON();
-        $quiqqer = false;
-
-        if (is_array($package)) {
-            foreach ($package as $pkg) {
-                $json['require'][$pkg] = $version;
-
-                if ($pkg == 'quiqer/quiqqer') {
-                    $quiqqer = true;
-                }
-            }
-
-        } else {
-            $json['require'][$package] = $version;
-
-            if ($package == 'quiqer/quiqqer') {
-                $quiqqer = true;
-            }
-        }
-
-
-        // minimum-stability
-        if ($quiqqer && $version == 'dev-dev') {
-            $json['minimum-stability'] = 'dev';
-
-        } else {
-            if ($quiqqer) {
-                $json['minimum-stability'] = 'stable';
-            }
-        }
-
-
-        $json = json_encode($json, \JSON_PRETTY_PRINT);
-
-        if (file_exists($this->_composer_json)) {
-            unlink($this->_composer_json);
-        }
-
-        file_put_contents($this->_composer_json, $json);
+        $this->setup($packages);
     }
 
     /**
      * Return the params of an installed package
      * If you want the Package Object, you should use getInstalledPackage
      *
-     * @param String $package
+     * @param string $package
      *
-     * @return Array
+     * @return array
      */
     public function getPackage($package)
     {
@@ -789,13 +1128,12 @@ class Manager extends QUI\QDOM
 
         try {
             return QUI\Cache\Manager::get($cache);
-
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addDebug($Exception->getMessage());
         }
 
-        $list = $this->_getList();
-        $result = array();
+        $list   = $this->getList();
+        $result = [];
 
         foreach ($list as $pkg) {
             if (!isset($pkg['name'])) {
@@ -804,7 +1142,7 @@ class Manager extends QUI\QDOM
 
             if ($pkg['name'] == $package) {
                 $pkg['dependencies'] = $this->getDependencies($package);
-                $result = $pkg;
+                $result              = $pkg;
                 break;
             }
         }
@@ -815,11 +1153,15 @@ class Manager extends QUI\QDOM
             $result['versions'] = $showData['versions'];
         }
 
-        if (isset($showData['require'])) {
-            $result['require'] = $showData['require'];
+        if (isset($showData['require '])) {
+            $result['require '] = $showData['require '];
         }
 
-        QUI\Cache\Manager::set($cache, $result, 3600);
+        try {
+            QUI\Cache\Manager::set($cache, $result, 3600);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
 
         return $result;
     }
@@ -827,21 +1169,21 @@ class Manager extends QUI\QDOM
     /**
      * Return the dependencies of a package
      *
-     * @param String $package - package name
+     * @param string $package - package name
      *
      * @return array - list of dependencies
      */
     public function getDependencies($package)
     {
-        $list = $this->_getList();
-        $result = array();
+        $list   = $this->getList();
+        $result = [];
 
         foreach ($list as $pkg) {
-            if (!isset($pkg['require']) || empty($pkg['require'])) {
+            if (!isset($pkg['require ']) || empty($pkg['require '])) {
                 continue;
             }
 
-            if (isset($pkg['require'][$package])) {
+            if (isset($pkg['require '][$package])) {
                 $result[] = $pkg['name'];
             }
         }
@@ -850,11 +1192,12 @@ class Manager extends QUI\QDOM
     }
 
     /**
-     * Return package details
+     * Return package details, via composer
+     * If you want a local package, please use getInstalledPackage() and use the Package instead
      *
-     * @param String $package
+     * @param string $package - Name of the package eq: quiqqer/quiqqer
      *
-     * @return Array
+     * @return array
      */
     public function show($package)
     {
@@ -862,35 +1205,30 @@ class Manager extends QUI\QDOM
 
         try {
             return QUI\Cache\Manager::get($cache);
-
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addDebug($Exception->getMessage());
         }
 
-        $this->_checkComposer();
+        $this->checkComposer();
 
-        $result = array();
-
-        $show = $this->_execComposer('show', array(
-            'package' => $package
-        ), true);
+        $result = [];
+        $show   = $this->getComposer()->show($package);
 
         foreach ($show as $k => $line) {
-
-            if (strpos($line, '<info>') === false) {
+            if (\strpos($line, ' < info>') === false) {
                 continue;
             }
 
-            if (strpos($line, ':') === false) {
+            if (\strpos($line, ':') === false) {
                 continue;
             }
 
-            $line = explode(':', $line);
-            $key = trim(strip_tags($line[0]));
-            $value = trim(strip_tags($line[1]));
+            $line  = \explode(':', $line);
+            $key   = \trim(\strip_tags($line[0]));
+            $value = \trim(\strip_tags($line[1]));
 
             if ($key == 'versions') {
-                $value = array_map('trim', explode(',', $value));
+                $value = \array_map('trim', \explode(',', $value));
             }
 
             if ($key == 'descrip.') {
@@ -898,8 +1236,8 @@ class Manager extends QUI\QDOM
             }
 
             if ($line == 'requires') {
-                $_temp = $show;
-                $result['require'] = array_slice($_temp, $k + 1);
+                $_temp              = $show;
+                $result['require '] = \array_slice($_temp, $k + 1);
 
                 continue;
             }
@@ -907,32 +1245,51 @@ class Manager extends QUI\QDOM
             $result[$key] = $value;
         }
 
-        QUI\Cache\Manager::set($cache, $result, 3600);
+        try {
+            QUI\Cache\Manager::set($cache, $result, 3600);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
 
         return $result;
     }
 
     /**
-     * Search a string in the repository
+     * Search a string in the repositories
      *
-     * @param String $str - search string
+     * @param string $search - search string
      *
-     * @return Array
+     * @return array
      */
-    public function searchPackage($str)
+    public function searchPackages($search)
     {
-        $result = array();
-        $str = QUI\Utils\Security\Orthos::clearShell($str);
+        return $this->getComposer()->search(
+            QUI\Utils\Security\Orthos::clearShell($search)
+        );
+    }
 
-        $list = $this->_execComposer('search', array(
-            'tokens' => array($str)
-        ));
+    /**
+     * Search a string in the repositories
+     * Returns only not installed packages
+     *
+     * @param string $search - search string
+     *
+     * @return array
+     */
+    public function searchNewPackages($search)
+    {
+        $result   = [];
+        $packages = $this->searchPackages($search);
 
-        foreach ($list as $entry) {
-            $expl = explode(' ', $entry, 2);
+        $installed = \array_map(function ($entry) {
+            return $entry['name'];
+        }, $this->getList());
 
-            if (isset($expl[0]) && isset($expl[1])) {
-                $result[$expl[0]] = $expl[1];
+        $installed = \array_flip($installed);
+
+        foreach ($packages as $package => $description) {
+            if (!isset($installed[$package])) {
+                $result[$package] = $description;
             }
         }
 
@@ -942,18 +1299,24 @@ class Manager extends QUI\QDOM
     /**
      * Execute a setup for a package
      *
-     * @param String $package
+     * @param string|array $packages
+     * @param array $setupOptions - optional, setup package options
      */
-    public function setup($package)
+    public function setup($packages, $setupOptions = [])
     {
         QUIFile::mkdir(CMS_DIR.'etc/plugins/');
 
-        try {
-            $Package = $this->getInstalledPackage($package);
-            $Package->setup();
+        if (!\is_array($packages)) {
+            $packages = [$packages];
+        }
 
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::addWarning($Exception->getMessage());
+        foreach ($packages as $package) {
+            try {
+                $Package = $this->getInstalledPackage($package);
+                $Package->setup($setupOptions);
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeException($Exception, QUI\System\Log::LEVEL_WARNING);
+            }
         }
     }
 
@@ -966,35 +1329,53 @@ class Manager extends QUI\QDOM
      */
     public function refreshServerList()
     {
-        $this->_createComposerJSON();
+        $this->createComposerJSON();
     }
 
     /**
      * Return the server list
      *
-     * @return Array
+     * @return array
      */
     public function getServerList()
     {
         try {
-            return QUI::getConfig('etc/source.list.ini.php')->toArray();
+            $servers = QUI::getConfig('etc/source.list.ini.php')->toArray();
 
+            if (!isset($servers['npm'])) {
+                $servers['npm']['active'] = false;
+            }
+
+            if (!isset($servers['bower'])) {
+                $servers['bower']['active'] = false;
+            }
+
+            // default types
+            $servers['packagist']['type'] = 'composer';
+            $servers['bower']['type']     = 'bower';
+            $servers['npm']['type']       = 'npm';
+
+            return $servers;
         } catch (QUI\Exception $Exception) {
-
         }
 
-        return array();
+        return [];
     }
 
     /**
      * Activate or Deactivate a server
      *
-     * @param String $server - Server, IP, Host
-     * @param Bool   $status - 1 = active, 0 = disabled
-     * @param Bool   $backup - Optional (default=true, create a backup, false = create no backup
+     * @param string $server - Server, IP, Host
+     * @param boolean $status - 1 = active, 0 = disabled
+     * @param boolean $backup - Optional (default=true, create a backup, false = create no backup
+     *
+     * @throws QUI\Exception
      */
-    public function setServerStatus($server, $status, $backup = true)
-    {
+    public function setServerStatus(
+        $server,
+        $status,
+        $backup = true
+    ) {
         $Config = QUI::getConfig('etc/source.list.ini.php');
         $status = (bool)$status ? 1 : 0;
 
@@ -1005,22 +1386,24 @@ class Manager extends QUI\QDOM
             $this->createComposerBackup();
         }
 
-        $this->_createComposerJSON();
+        $this->createComposerJSON();
     }
 
     /**
      * Add a server to the update-server list
      *
-     * @param String $server - Server, IP, Host
-     * @param Array  $params - Server Parameter
+     * @param string $server - Server, IP, Host
+     * @param array $params - Server Parameter
+     *
+     * @throws QUI\Exception
      */
-    public function addServer($server, $params = array())
+    public function addServer($server, $params = [])
     {
         if (empty($server)) {
             return;
         }
 
-        if (!is_array($params)) {
+        if (!\is_array($params)) {
             return;
         }
 
@@ -1036,7 +1419,10 @@ class Manager extends QUI\QDOM
                 case "pear":
                 case "package":
                 case "artifact":
+                case "npm":
+                case "bower":
                     $Config->setValue($server, 'type', $params['type']);
+                    $Config->setValue($server, 'active', 1);
                     break;
             }
         }
@@ -1047,15 +1433,62 @@ class Manager extends QUI\QDOM
     }
 
     /**
+     * Edit server from the update-server list
+     *
+     * @param string $server - Server, IP, Host
+     * @param array $params - Server Parameter
+     *
+     * @throws QUI\Exception
+     */
+    public function editServer($server, $params = [])
+    {
+        if (empty($server)) {
+            return;
+        }
+
+        if (!\is_array($params)) {
+            return;
+        }
+
+        $Config = QUI::getConfig('etc/source.list.ini.php');
+
+        // rename server
+        if (isset($params['server']) && $server != $params['server']) {
+            $this->addServer($params['server'], $Config->getSection($server));
+            $this->removeServer($server);
+            $server = $params['server'];
+        }
+
+        if (isset($params['type'])) {
+            switch ($params['type']) {
+                case "composer":
+                case "vcs":
+                case "pear":
+                case "package":
+                case "artifact":
+                case "npm":
+                case "bower":
+                    $Config->setValue($server, 'type', $params['type']);
+                    break;
+            }
+        }
+
+        $Config->save();
+        $this->refreshServerList();
+    }
+
+    /**
      * Remove a Server completly from the update-server list
      *
-     * @param String|Array $server
+     * @param string|array $server
+     *
+     * @throws QUI\Exception
      */
     public function removeServer($server)
     {
         $Config = QUI::getConfig('etc/source.list.ini.php');
 
-        if (is_array($server)) {
+        if (\is_array($server)) {
             foreach ($server as $entry) {
                 $Config->del($entry);
             }
@@ -1075,252 +1508,208 @@ class Manager extends QUI\QDOM
 
     /**
      * Check for updates
-     *
-     * @throws \QUI\Exception
      */
     public function checkUpdates()
     {
-        $this->_checkComposer();
+        $this->checkComposer();
 
-        $packages = array();
+        return $this->getComposer()->updatesAvailable(false);
+    }
+
+    /**
+     * Check for updates
+     *
+     * @param bool $force - if force is true -> database / cache output from the last check wouldn't be checked
+     *
+     * @return array
+     *
+     * @throws \QUI\Exception
+     * @throws \Exception
+     */
+    public function getOutdated($force = false)
+    {
+        if (!\is_bool($force)) {
+            $force = false;
+        }
+
+        $this->checkComposer();
+        $this->setLastUpdateCheckDate();
+
+        if ($force === false) {
+            // get last database check
+            $result = QUI::getDataBase()->fetch([
+                'from'  => QUI::getDBTableName('updateChecks'),
+                'where' => [
+                    'result' => [
+                        'type'  => 'NOT',
+                        'value' => ''
+                    ],
+                    'date'   => [
+                        'type'  => '>=',
+                        'value' => $this->getLastUpdateDate()
+                    ]
+                ]
+            ]);
+
+            if (!empty($result)) {
+                $result = \json_decode($result[0]['result'], true);
+
+                if (!empty($result)) {
+                    \usort($result, function ($a, $b) {
+                        return \strcmp($a["package"], $b["package"]);
+                    });
+
+                    return $result;
+                }
+            }
+        }
 
         try {
+            $output = $this->getOutdatedPackages();
 
-            $LockClient = $this->_getLockClient();
+            \usort($output, function ($a, $b) {
+                return \strcmp($a["package"], $b["package"]);
+            });
 
-            return $LockClient->dryUpdate();
+            QUI::getDataBase()->insert(QUI::getDBTableName('updateChecks'), [
+                'date'   => \time(),
+                'result' => \json_encode($output)
+            ]);
+        } catch (QUI\Composer\Exception $Exception) {
+            QUI::getDataBase()->insert(QUI::getDBTableName('updateChecks'), [
+                'date'  => \time(),
+                'error' => \json_encode($Exception->toArray())
+            ]);
 
-        } catch (QUI\Exception $Exception) {
-
+            throw $Exception;
         }
 
-
-        // error at lock server
-        $result = $this->_execComposer('update', array(
-            '--dry-run' => true
-        ));
-
-
-        QUI\System\Log::addDebug(print_r($result, true));
-
-        foreach ($result as $line) {
-
-            if (strpos($line, '-') === false
-                || strpos($line, '/') === false
-                || strpos($line, '(') === false
-            ) {
-                continue;
-            }
-
-            if (strpos($line, 'Installing') !== false) {
-                preg_match('#Installing ([^ ]*) #i', $line, $package);
-
-            } else {
-                preg_match('#Updating ([^ ]*) #i', $line, $package);
-            }
-
-            preg_match_all('#\(([^\)]*)\)#', $line, $versions);
-
-            if (isset($package[1])) {
-                $package = $package[1];
-            }
-
-            $from = '';
-            $to = '';
-
-            if (isset($versions[1])) {
-
-                if (isset($versions[1][0])) {
-                    $from = $versions[1][0];
-                    $to = $versions[1][0]; // if "to" isn't set
-                }
-
-                if (isset($versions[1][1])) {
-                    $to = $versions[1][1];
-                }
-            }
-
-            $packages[] = array(
-                'package' => $package,
-                'from'    => $from,
-                'to'      => $to
-            );
-        }
-
-        return $packages;
+        return $output;
     }
 
     /**
      * Update a package or the entire system
      *
-     * @param string|bool $package - optional, package name, if false, it updates the complete system
+     * @param string|boolean $package - optional, package name, if false, it updates the complete system
+     * @param bool $mute -mute option for the composer output
      *
      * @throws QUI\Exception
      *
-     * @todo if exception uncommited changes -> own error message
-     * @todo if exception uncommited changes -> interactive mode
+     * @todo if exception uncommitted changes -> own error message
+     * @todo if exception uncommitted changes -> interactive mode
      */
-    public function update($package = false)
+    public function update($package = false, $mute = true)
     {
+        $Composer = $this->getComposer();
+
+        $needledRAM = $this->isVCSServerEnabled() ? self::REQUIRED_MEMORY_VCS.'M' : self::REQUIRED_MEMORY.'M';
+        $limit      = QUI\Utils\System::getMemoryLimit();
+
+        if (\php_sapi_name() != 'cli'
+            && $limit != -1
+            && $this->isVCSServerEnabled()
+            && QUIFile::getBytes($needledRAM) > $limit) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'message.online.update.RAM.not.enough',
+                    [
+                        'command' => 'php quiqqer.php update'
+                    ]
+                )
+            );
+        }
+
         $this->createComposerBackup();
 
+        // workaround, because mustache create a symlink under some circumstances
+        // so we will delete it
+//        if (file_exists(OPT_DIR.'bin/mustache')) {
+//            QUI::getTemp()->moveToTemp(OPT_DIR.'bin/mustache');
+//        }
 
-        if (is_string($package) && empty($package)) {
+        if ($mute === true) {
+            $Composer->mute();
+        }
+
+        if (\is_string($package) && empty($package)) {
             $package = false;
         }
 
-        if (!is_string($package) && !is_bool($package)) {
+        if (!\is_string($package) && !\is_bool($package)) {
             $package = false;
         }
 
-
-        try {
-
-            QUI\System\Log::addDebug('LOCK Server used');
-
-            $lockData = $this->_getLockClient()->update($package);
-
-            // update composer.lock
-            file_put_contents($this->_composer_lock, $lockData);
-
-            QUI\System\Log::addDebug('LOCK Server done');
-
-            $output = $this->_execComposer('install', array(
-                '--no-progress' => true,
-                '--no-ansi'     => true
-            ));
-
-        } catch (QUI\Exception $Exception) {
-
-            QUI\System\Log::addDebug('LOCK Server Error');
-            QUI\System\Log::addDebug($Exception->getMessage());
-
-            if ($package) {
-                $output = $this->_execComposer('update', array(
-                    'packages'      => array($package),
-                    '--no-progress' => true,
-                    '--no-ansi'     => true
-                ));
-
-            } else {
-                $output = $this->_execComposer('update', array(
-                    '--no-progress' => true,
-                    '--no-ansi'     => true
-                ));
-            }
-        }
-
-
-        // exception?
-        foreach ($output as $key => $msg) {
-
-            if (!is_string($package)) {
-                continue;
-            }
-
-            $msg = trim($msg);
-
-            // if not installed
-            if (strpos($msg, $package) !== false
-                && strpos($msg, 'not installed') !== false
-            ) {
-                $this->install($package);
-            }
-
-            if (strpos($msg, 'Exception')) {
-                throw new QUI\Exception(
-                    $output[$key + 1]
-                );
-            }
-        }
-
-        QUI\System\Log::addDebug(implode("\n", $output));
+        $this->composerUpdateOrInstall($package);
 
         // composer optimize
-        $optimize = $this->_execComposer('dump-autoload', array(
+        $Composer->dumpAutoload([
             '--optimize' => true
-        ));
+        ]);
+
+        if ($package) {
+            $Package = self::getInstalledPackage($package);
+            $Package->setup();
+        } else {
+            QUI\Setup::all();
+        }
 
         // set last update
-        $Last = $this->_getUpdateConf();
-        $Last->set('quiqqer', 'lastUpdate', time());
+        $Last = $this->getUpdateConf();
+        $Last->set('quiqqer', 'lastUpdate', \time());
         $Last->save();
-
-        QUI\System\Log::addDebug(implode("\n", $optimize));
     }
 
     /**
      * Returns the update config object
      *
      * @return QUI\Config
+     *
+     * @throws QUI\Exception
      */
-    protected function _getUpdateConf()
+    protected function getUpdateConf()
     {
         // set last update
-        if (!file_exists(CMS_DIR.'etc/last_update.ini.php')) {
-            file_put_contents(CMS_DIR.'etc/last_update.ini.php', '');
+        if (!\file_exists(CMS_DIR.'etc/last_update.ini.php')) {
+            \file_put_contents(CMS_DIR.'etc/last_update.ini.php', '');
         }
 
         return new QUI\Config(CMS_DIR.'etc/last_update.ini.php');
     }
 
     /**
-     * Return the lock client with the settings
-     *
-     * @return QUI\Lockserver\Client
-     */
-    protected function _getLockClient()
-    {
-        return new QUI\Lockserver\Client(array(
-            'composerJsonFile' => $this->_composer_json,
-            'composerLockFile' => $this->_composer_lock
-        ));
-    }
-
-    /**
-     * activate the locale repository,
-     * if the repository is not in the server list, the repository would be added
-     */
-    public function activateLocalServer()
-    {
-        $serverDir = $this->_getUploadPackageDir();
-
-        $this->addServer($serverDir, array(
-            "type" => "artifact"
-        ));
-
-        $this->setServerStatus($serverDir, 1);
-    }
-
-    /**
      * Update a package or the entire system from a package archive
      *
-     * @param String|Boolean $package - Name of the package
+     * @param string|boolean $package - Name of the package
      *
      * @throws QUI\Exception
      */
     public function updateWithLocalRepository($package = false)
     {
-        // backup
         $this->createComposerBackup();
-        $this->_useOnlyLocalRepository();
+        $this->useOnlyLocalRepository();
 
-        // execute update
-        $this->update($package);
+        try {
+            $this->update($package);
+            $this->resetRepositories();
+        } catch (QUI\Exception $Exception) {
+            $this->resetRepositories();
+            LocalServer::getInstance()->activate();
 
-        $this->_resetRepositories();
+            throw $Exception;
+        }
     }
 
     /**
      * use only the local repository
      *
-     * @return array
+     * @throws QUI\Exception
      */
-    protected function _useOnlyLocalRepository()
+    protected function useOnlyLocalRepository()
     {
         // deactivate active servers
-        $activeServers = array();
-        $serverList = $this->getServerList();
+        $activeServers = [];
+        $serverList    = $this->getServerList();
 
         foreach ($serverList as $server => $data) {
             if ($data['active'] == 1) {
@@ -1333,107 +1722,45 @@ class Manager extends QUI\QDOM
         }
 
         // activate local repos
-        $this->activateLocalServer();
-        $this->_createComposerJSON();
+        LocalServer::getInstance()->activate();
 
-        $this->_activeServers = $activeServers;
+        $this->createComposerJSON();
+        $this->activeServers = $activeServers;
     }
 
     /**
      * reset the repositories after only local repo using
+     *
+     * @throws QUI\Exception
      */
-    protected function _resetRepositories()
+    protected function resetRepositories()
     {
         // activate active servers
-        foreach ($this->_activeServers as $server) {
+        foreach ($this->activeServers as $server) {
             $this->setServerStatus($server, 1, false);
         }
 
-        $this->_createComposerJSON();
+        $this->createComposerJSON();
     }
 
     /**
-     * Execute a composer command
+     * Checks if a VCS update server is configured and active.
+     * Returns true if at least one VCS server is active and configured. Returns false otherwise.
      *
-     * @param string $command  - composer command
-     * @param array  $params   - composer argument params
-     * @param bool   $showInfo - standard = false; shows messages with <info> or not
-     *
-     * @return array - result list
+     * @return bool
      */
-    protected function _execComposer(
-        $command,
-        $params = array(),
-        $showInfo = false
-    ) {
-        // composer output, some warnings that composer/cache is not empty
-        try {
-            QUI::getTemp()->moveToTemp($this->_vardir.'cache');
+    protected function isVCSServerEnabled()
+    {
+        $servers = $this->getServerList();
 
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::addInfo($Exception->getMessage());
-        }
-
-        if (!isset($params['--working-dir'])) {
-            $params['--working-dir'] = $this->_vardir;
-        }
-
-        if ($command == 'update' || $command == 'install') {
-            if ($this->getAttribute('--prefer-dist')) {
-                $params['--prefer-dist'] = true;
+        foreach ($servers as $server) {
+            if ($server['type'] === 'vcs' && $server['active']) {
+                return true;
             }
         }
 
-
-        $params = array_merge(array(
-            'command' => $command
-        ), $params);
-
-        $Input = new ArrayInput($params);
-        $Output = new QUI\Package\Output();
-
-        // output events
-        $PackageManager = $this;
-
-        $Output->Events->addEvent('onOutput',
-            function ($message) use ($PackageManager) {
-                $PackageManager->Events->fireEvent('output', array($message));
-            });
-
-        QUI\System\Log::addDebug(print_r($params, true));
-
-        // run application
-        $this->_getApplication()->run($Input, $Output);
-        QUI\Cache\Manager::clear(self::CACHE_NAME_TYPES);
-
-        $messages = $Output->getMessages();
-        $result = array();
-
-        foreach ($messages as $entry) {
-
-            if (empty($entry)) {
-                continue;
-            }
-
-            if (strpos($entry, '<error>') !== false) {
-                preg_match("#<error>(.*?)</error>#si", $entry, $match);
-
-                QUI::getMessagesHandler()->addError($match[0]);
-                continue;
-            }
-
-            if ($showInfo === false && strpos($entry, '<info>') !== false) {
-                continue;
-            }
-
-            $result[] = $entry;
-        }
-
-        QUI\System\Log::addDebug(print_r($result, true));
-
-        return $result;
+        return false;
     }
-
 
     /**
      * XML helper
@@ -1443,34 +1770,37 @@ class Manager extends QUI\QDOM
      * Return all packages which includes a site.xml
      *
      * @return array
+     * @todo move to an API XML Handler
      */
     public function getPackageSiteXmlList()
     {
         try {
             return QUI\Cache\Manager::get('qui/packages/list/haveSiteXml');
-
         } catch (QUI\Exception $Exception) {
-
         }
 
         $packages = $this->getInstalled();
-        $result = array();
+        $result   = [];
 
         foreach ($packages as $package) {
-            if (!is_dir(OPT_DIR.$package['name'])) {
+            if (!\is_dir(OPT_DIR.$package['name'])) {
                 continue;
             }
 
             $file = OPT_DIR.$package['name'].'/site.xml';
 
-            if (!file_exists($file)) {
+            if (!\file_exists($file)) {
                 continue;
             }
 
             $result[] = $package['name'];
         }
 
-        QUI\Cache\Manager::set('qui/packages/list/haveSiteXml', $result);
+        try {
+            QUI\Cache\Manager::set('qui/packages/list/haveSiteXml', $result);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
 
         return $result;
     }
@@ -1479,140 +1809,481 @@ class Manager extends QUI\QDOM
      * Return all packages which includes a site.xml
      *
      * @return array
+     * @todo move to an API XML Handler
      */
     public function getPackageDatabaseXmlList()
     {
         try {
             return QUI\Cache\Manager::get('qui/packages/list/haveDatabaseXml');
-
         } catch (QUI\Exception $Exception) {
-
         }
 
         $packages = $this->getInstalled();
-        $result = array();
+        $result   = [];
 
         foreach ($packages as $package) {
             $file = OPT_DIR.$package['name'].'/database.xml';
 
-            if (!file_exists($file)) {
+            if (!\file_exists($file)) {
                 continue;
             }
 
             $result[] = $package['name'];
         }
 
-        QUI\Cache\Manager::set('qui/packages/list/haveDatabaseXml', $result);
+        try {
+            QUI\Cache\Manager::set('qui/packages/list/haveDatabaseXml', $result);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
 
         return $result;
     }
 
     /**
-     * @return mixed|String
+     * Get specific XML file of all packages that provide it
+     *
+     * @param string $name - e.g. "database.xml" / "package.xml" etc.
+     *
+     * @return array - absolute file paths
      */
-    protected function _getUploadPackageDir()
+    public function getPackageXMLFiles($name)
     {
-        $updatePath = QUI::conf('update', 'updatePath');
+        // @todo cache
 
-        if (!empty($updatePath) && is_dir($updatePath)) {
-            return rtrim($updatePath, '/').'/';
+        $packages = $this->getInstalled();
+        $result   = [];
+
+        foreach ($packages as $package) {
+            $file = OPT_DIR.$package['name'].'/'.$name;
+
+            if (!\file_exists($file)) {
+                continue;
+            }
+
+            $result[] = $file;
         }
 
-        return QUI::getTemp()->createFolder('quiqqerUpdate');
+        return $result;
     }
 
     /**
-     * Upload a archiv file to the local quiqqer repository
-     *
-     * @param String $file - Path to the package archive file
-     *
-     * @throws QUI\Exception
-     */
-    public function uploadPackage($file)
-    {
-        $dir = $this->_getUploadPackageDir();
-
-        if (!is_dir($dir)) {
-            throw new QUI\Exception('Local Repository not exist');
-        }
-
-        if (!file_exists($file)) {
-            throw new QUI\Exception('Archiv file not found');
-        }
-
-        $fileInfos = QUIFile::getInfo($file, array(
-            'filesize'  => true,
-            'mime_type' => true,
-            'pathinfo'  => true
-        ));
-
-        $tempFile = $dir.'/'.$fileInfos['basename'];
-
-        if (file_exists($tempFile)) {
-            unlink($tempFile);
-        }
-
-        QUIFile::move($file, $tempFile);
-    }
-
-    /**
-     * Read the locale repository and search installable packages
+     * Get extra client data for composer license server header
      *
      * @return array
      */
-    public function readLocalRepository()
+    protected function getLicenseClientData()
     {
-        $dir = $this->_getUploadPackageDir();
+        return [
+            'phpVersion'     => \phpversion(),
+            'quiqqerHost'    => QUI::conf('globals', 'host'),
+            'quiqqerCmsDir'  => QUI::conf('globals', 'cms_dir'),
+            'quiqqerVersion' => QUI::version()
+        ];
+    }
 
-        if (!is_dir($dir)) {
-            return array();
+    /**
+     * This will try to retieve the lock file from the lockserver, if the lockserver is enabled.
+     * If a Lockfile has been generated by the lockserver composer will use it and execute an install.
+     * If the lockserver is disabled or not available composer will issue an usual update command.
+     *
+     * @param bool|string - (otional) The packagename which should get updated.
+     *
+     * @return string
+     * @throws QUI\Exception
+     */
+    protected function composerUpdateOrInstall($package)
+    {
+        $lockServerEnabled = QUI::conf('globals', 'lockserver_enabled');
+        $memoryLimit       = QUI\Utils\System::getMemoryLimit();
+
+        $updateOptions = [
+            '--no-autoloader' => true
+        ];
+
+        // Disable lockserver if a vcs repository is used
+        // Lockserver can not handle VCS repositories ==> Check if local execution is possible or fail the operation
+        if ($this->isVCSServerEnabled()) {
+            if ($memoryLimit >= self::REQUIRED_MEMORY_VCS * 1024 * 1024 || $memoryLimit === -1) {
+                return $this->getComposer()->update($updateOptions);
+            }
+
+            $exceptionLocale = $lockServerEnabled ?
+                'message.online.update.RAM.insufficient.vcs' : 'message.online.update.RAM.insufficient.vcs.lock';
+
+            throw new QUI\Exception([
+                'quiqqer/quiqqer',
+                $exceptionLocale
+            ]);
         }
 
-        $files = File::readDir($dir);
-        $result = array();
+        if ($this->getComposer()->getMode() != QUI\Composer\Composer::MODE_WEB) {
+            return $this->getComposer()->update($updateOptions);
+        }
 
-        chdir($dir);
+        if (!$lockServerEnabled && $memoryLimit != -1 && $memoryLimit < 256 * 1024 * 1024) {
+            throw new QUI\Exception([
+                'quiqqer/quiqqer',
+                'message.online.update.RAM.insufficient'
+            ]);
+        }
 
-        foreach ($files as $package) {
+        if (!$lockServerEnabled) {
+            return $this->getComposer()->update($updateOptions);
+        }
 
+        $LockClient = new QUI\Lockclient\Lockclient();
+
+        try {
+            $lockContent = $LockClient->update($this->composer_json, $package);
+        } catch (\Exception $Exception) {
+            throw new QUI\Lockclient\Exceptions\LockServerException([
+                'quiqqer/lockclient',
+                'exception.lockserver.unavilable'
+            ]);
+        }
+
+        \file_put_contents($this->composer_lock, $lockContent);
+
+        // Workaround to avoid composer shenanigans with sym links
+        if (\file_exists(OPT_DIR.'bin/mustache')) {
             try {
-                $composerJson = file_get_contents(
-                    "zip://{$package}#composer.json"
-                );
+                QUI::getTemp()->moveToTemp(OPT_DIR.'bin/mustache');
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeDebugException($Exception);
+            }
+        }
 
-            } catch (\Exception $Exception) {
+        return $this->getComposer()->install($updateOptions);
+    }
 
-                // maybe gitlab package?
-                try {
-                    $packageName = pathinfo($package);
-                    $composerJson = file_get_contents(
-                        "zip://{$package}#{$packageName['filename']}/composer.json"
-                    );
+    /**
+     * This will check if the Lockserver is enabled and available.
+     * The package will be required or added to the lockfile and installed.
+     *
+     * @param $packages
+     * @param $version
+     *
+     * @return string
+     *
+     * @throws QUI\Exception
+     */
+    protected function composerRequireOrInstall($packages, $version)
+    {
+        $memoryLimit       = QUI\Utils\System::getMemoryLimit();
+        $lockServerEnabled = QUI::conf('globals', 'lockserver_enabled');
 
-                } catch (\Exception $Exception) {
-
-                    QUI\System\Log::addDebug($Exception->getMessage());
-                    continue;
-                }
+        // Lockserver can not handle VCS repositories ==> Check if local execution is possible or fail the operation
+        if ($this->isVCSServerEnabled()) {
+            if ($memoryLimit >= self::REQUIRED_MEMORY_VCS * 1024 * 1024 || $memoryLimit === -1) {
+                return $this->getComposer()->requirePackage($packages, $version);
             }
 
-            if (empty($composerJson)) {
+            $exceptionLocale = $lockServerEnabled ?
+                'message.online.update.RAM.insufficient.vcs.lock' : 'message.online.update.RAM.insufficient.vcs';
+
+            throw new QUI\Exception([
+                'quiqqer/quiqqer',
+                $exceptionLocale
+            ]);
+        }
+        //
+        // NO VCS enabled -> continue normal routine
+        //
+        if ($this->getComposer()->getMode() != QUI\Composer\Composer::MODE_WEB) {
+            return $this->getComposer()->requirePackage($packages, $version);
+        }
+
+        if (!$lockServerEnabled && $memoryLimit != -1 && $memoryLimit < self::REQUIRED_MEMORY * 1024 * 1024) {
+            throw new QUI\Exception([
+                'quiqqer/quiqqer',
+                'message.online.update.RAM.insufficient'
+            ]);
+        }
+
+        if (!$lockServerEnabled) {
+            return $this->getComposer()->requirePackage($packages, $version);
+        }
+
+        $LockClient = new QUI\Lockclient\Lockclient();
+        try {
+            $lockContent = $LockClient->requirePackage($this->composer_json, $packages, $version);
+        } catch (\Exception $Exception) {
+            throw new QUI\Lockclient\Exceptions\LockServerException([
+                'quiqqer/lockclient',
+                'exception.lockserver.unavilable'
+            ]);
+        }
+
+        \file_put_contents($this->composer_lock, $lockContent);
+
+        // Workaround to avoid composer shenanigans with sym links
+        if (\file_exists(OPT_DIR.'bin/mustache')) {
+            try {
+                QUI::getTemp()->moveToTemp(OPT_DIR.'bin/mustache');
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeDebugException($Exception);
+            }
+        }
+
+        return $this->getComposer()->install();
+    }
+
+    /**
+     * Gets a list of outdated packages.
+     * Returns an array in the format:
+     * array(
+     *   'package' => "vendor/package,
+     *   'version' => "dev-master def567",
+     *   'oldVersion' => "dev-master abc1234"
+     *  );
+     *
+     * @return array
+     * @throws QUI\Composer\Exception
+     * @throws \Exception
+     */
+    protected function getOutdatedPackages()
+    {
+        $repositories = $this->getServerList();
+
+        foreach ($repositories as $repo) {
+            if ($repo['type'] === 'vcs') {
+                return $this->getComposer()->getOutdatedPackages();
+            }
+        }
+
+        if ($this->getComposer()->getMode() != QUI\Composer\Composer::MODE_WEB) {
+            return $this->getComposer()->getOutdatedPackages();
+        }
+
+        $lockServerEnabled = QUI::conf("globals", "lockserver_enabled");
+
+        if (!$lockServerEnabled) {
+            return $this->getComposer()->getOutdatedPackages();
+        }
+
+        // use the lockserver to get the outdated packages
+        $LockClient  = new QUI\Lockclient\Lockclient();
+        $result      = [];
+        $constraints = [];
+
+        $outdatedPackages = $LockClient->getOutdated();
+
+        foreach ($outdatedPackages as $outdatedPackage) {
+            $packageName = $outdatedPackage['package'];
+            $requiredBy  = $this->getComposer()->why($packageName);
+
+            foreach ($requiredBy as $requiredByPackage) {
+                $constraints[$packageName][] = $requiredByPackage['constraint'];
+            }
+        }
+
+        $onlyStable = true;
+
+        if (\file_exists(VAR_DIR."composer/composer.json")) {
+            $composerJsonContent = \file_get_contents(VAR_DIR."composer/composer.json");
+            $composerJsonData    = \json_decode($composerJsonContent, true);
+
+            if (isset($composerJsonData['minimum-stability']) && $composerJsonData['minimum-stability'] != "stable") {
+                $onlyStable = false;
+            }
+        }
+
+        $latestVersions = $LockClient->getLatestVersionInContraints($constraints, $onlyStable);
+
+        foreach ($outdatedPackages as $outdatedPackage) {
+            $packageName    = $outdatedPackage['package'];
+            $currentVersion = $outdatedPackage['version'];
+
+            if (!isset($latestVersions[$packageName])) {
                 continue;
             }
 
-            $composerJson = json_decode($composerJson, true);
+            $newVersion = $latestVersions[$packageName];
 
-            if (!isset($composerJson['name'])) {
+            if (\ltrim($currentVersion, 'vV') == \ltrim($newVersion, 'vV')) {
                 continue;
             }
 
-            if (is_dir(OPT_DIR.$composerJson['name'])) {
-                continue;
-            }
-
-            $result[] = $composerJson;
+            $result[] = [
+                'package'    => $packageName,
+                'version'    => $newVersion,
+                'oldVersion' => $currentVersion
+            ];
         }
 
         return $result;
     }
+
+    //region sitetypes
+
+
+    /**
+     * Gibt alle Seitentypen zurück die verfügbar sind
+     *
+     * @param \QUI\Projects\Project|boolean $Project - optional
+     * @return array
+     */
+    public function getAvailableSiteTypes($Project = false)
+    {
+        $types     = [];
+        $installed = $this->getInstalled();
+
+        foreach ($installed as $package) {
+            $name    = $package['name'];
+            $siteXml = OPT_DIR.$name.'/site.xml';
+
+            if (!\file_exists($siteXml)) {
+                continue;
+            }
+
+            $typeList = QUI\Utils\Text\XML::getTypesFromXml($siteXml);
+
+            foreach ($typeList as $Type) {
+                /* @var $Type \DOMElement */
+                $types[$name][] = [
+                    'type' => $name.':'.$Type->getAttribute('type'),
+                    'icon' => $Type->getAttribute('icon'),
+                    'text' => $this->getSiteTypeName(
+                        $name.':'.$Type->getAttribute('type')
+                    )
+                ];
+            }
+        }
+
+        \ksort($types);
+
+        // standard to top
+        $types = \array_reverse($types, true);
+
+        $types['standard'] = [
+            'type' => 'standard',
+            'icon' => 'fa fa-file-o'
+        ];
+
+        $types = \array_reverse($types, true);
+
+        return $types;
+    }
+
+
+    /**
+     * Get the full Type name
+     *
+     * @param string $type - site type
+     * @return string
+     */
+    public function getSiteTypeName($type)
+    {
+        if ($type == 'standard' || empty($type)) {
+            return QUI::getLocale()->get('quiqqer/quiqqer', 'site.type.standard');
+        }
+
+        // \QUI\System\Log::write( $type );
+        $data = $this->getSiteXMLDataByType($type);
+
+        if (isset($data['locale'])) {
+            return QUI::getLocale()->get(
+                $data['locale']['group'],
+                $data['locale']['var']
+            );
+        }
+
+        if (!isset($data['value']) || empty($data['value'])) {
+            return $type;
+        }
+
+        $value = \explode(' ', $data['value']);
+
+        if (QUI::getLocale()->exists($value[0], $value[1])) {
+            return QUI::getLocale()->get($value[0], $value[1]);
+        }
+
+        return $type;
+    }
+
+    /**
+     * Return the type icon
+     *
+     * @param string $type
+     * @return string
+     */
+    public function getIconBySiteType($type)
+    {
+        $data = $this->getSiteXMLDataByType($type);
+
+        if (isset($data['icon'])) {
+            return $data['icon'];
+        }
+
+        return '';
+    }
+
+    /**
+     * Return the data for a type from its site.xml
+     * https://dev.quiqqer.com/quiqqer/quiqqer/wikis/Site-Xml
+     *
+     * @param string $type
+     * @return boolean|array
+     */
+    protected function getSiteXMLDataByType($type)
+    {
+        $cache = 'packages/xml/data/'.$type;
+
+        try {
+            return QUI\Cache\Manager::get($cache);
+        } catch (QUI\Cache\Exception $Exception) {
+        }
+
+        if (\strpos($type, ':') === false) {
+            return false;
+        }
+
+        $explode = \explode(':', $type);
+        $package = $explode[0];
+        $type    = $explode[1];
+
+        $siteXml = OPT_DIR.$package.'/site.xml';
+
+        if (!\file_exists($siteXml)) {
+            return false;
+        }
+
+        $Dom   = QUI\Utils\Text\XML::getDomFromXml($siteXml);
+        $XPath = new \DOMXPath($Dom);
+        $Types = $XPath->query('//type[@type="'.$type.'"]');
+
+        if (!$Types->length) {
+            return false;
+        }
+
+        /* @var $Type \DOMElement */
+        $Type = $Types->item(0);
+        $data = [];
+
+        if ($Type->getAttribute('icon')) {
+            $data['icon'] = $Type->getAttribute('icon');
+        }
+
+        if ($Type->getAttribute('extend')) {
+            $data['extend'] = $Type->getAttribute('extend');
+        }
+
+        $loc = $Type->getElementsByTagName('locale');
+
+        if ($loc->length) {
+            $data['locale'] = [
+                'group' => $loc->item(0)->getAttribute('group'),
+                'var'   => $loc->item(0)->getAttribute('var')
+            ];
+        }
+
+        $data['value'] = \trim($Type->nodeValue);
+
+        QUI\Cache\Manager::set($cache, $data);
+
+        return $data;
+    }
+
+    //endregion
 }

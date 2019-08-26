@@ -21,11 +21,12 @@ class Security
     /**
      * Verschlüsselung auf Basis des QUIQQER Salt
      *
-     * @param String $str
+     * @param string $str
      *
-     * @return String
+     * @return string
+     * @deprecated
      */
-    static function encrypt($str)
+    public static function encrypt($str)
     {
         if (empty($str)) {
             return '';
@@ -39,11 +40,12 @@ class Security
     /**
      * Entschlüsselung auf Basis des CMS Salt
      *
-     * @param String $str
+     * @param string $str
      *
-     * @return String
+     * @return string
+     * @deprecated
      */
-    static function decrypt($str)
+    public static function decrypt($str)
     {
         if (empty($str)) {
             return '';
@@ -57,31 +59,31 @@ class Security
     /**
      * Encrypted a password base64
      *
-     * @param String  $pass   - String to encrpyted
-     * @param Integer $switch - where to split
+     * @param string  $pass   - string to encrpyted
+     * @param integer $switch - where to split
      *
-     * @return String
+     * @return string
      */
-    static function b64encrypt($pass, $switch = 3)
+    public static function b64encrypt($pass, $switch = 3)
     {
         // Passwort drehn
-        $newpass = substr($pass, $switch).substr($pass, 0, $switch);
+        $newpass = \substr($pass, $switch).\substr($pass, 0, $switch);
 
-        return base64_encode($newpass);
+        return \base64_encode($newpass);
     }
 
     /**
      * Decrypt a base64 password
      *
-     * @param String  $pass   - String to decrypt
-     * @param Integer $switch - where to split
+     * @param string  $pass   - string to decrypt
+     * @param integer $switch - where to split
      *
-     * @return String
+     * @return string
      */
-    static function b64decrypt($pass, $switch = 3)
+    public static function b64decrypt($pass, $switch = 3)
     {
-        $newpass = base64_decode($pass);
+        $newpass = \base64_decode($pass);
 
-        return substr($newpass, -$switch).substr($newpass, 0, -$switch);
+        return \substr($newpass, -$switch).\substr($newpass, 0, -$switch);
     }
 }

@@ -3,29 +3,36 @@
 /**
  * Return the tabs / categories
  *
- * @param String $project
- * @param String $id
- * @return Array
+ * @param string $project
+ * @param string $id
+ * @return array
  */
-function ajax_site_categories_get($project, $id)
-{
-    $Project = \QUI::getProjectManager()->decode( $project );
-    $Site    = new \QUI\Projects\Site\Edit( $Project, (int)$id );
-
-    $Tabbar   = \QUI\Projects\Sites::getTabs( $Site );
-    $children = $Tabbar->getChildren();
-
-    $result = array();
-
-    foreach ( $children as $Itm ) {
-        $result[] = $Itm->getAttributes();
-    }
-
-    return $result;
-}
-
-\QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_site_categories_get',
-    array('project', 'id'),
+    function ($project, $id) {
+        $Project = QUI::getProjectManager()->decode($project);
+        $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
+
+        $TabBar   = QUI\Projects\Sites::getTabs($Site);
+        $children = $TabBar->getChildren();
+        $result   = [];
+        $names    = [];
+
+        /* @var $Itm QUI\Controls\Toolbar\Tab */
+        foreach ($children as $Itm) {
+            $name = $Itm->getAttribute('name');
+
+            // filter duplicate
+            if (isset($names[$name])) {
+                continue;
+            }
+
+            $result[]     = $Itm->getAttributes();
+            $names[$name] = true;
+        }
+
+        return $result;
+    },
+    ['project', 'id'],
     'Permission::checkAdminUser'
 );

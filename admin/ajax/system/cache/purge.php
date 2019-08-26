@@ -3,9 +3,11 @@
 /**
  * cache purging
  */
-function ajax_system_cache_purge()
-{
-    \QUI\Cache\Manager::purge();
-}
-
-\QUI::$Ajax->register('ajax_system_cache_purge', false, 'Permission::checkSU');
+QUI::$Ajax->registerFunction(
+    'ajax_system_cache_purge',
+    function () {
+        QUI\Cache\Manager::purge();
+    },
+    false,
+    'Permission::checkSU'
+);

@@ -3,30 +3,16 @@
 /**
  * Check for updates
  *
- * @return Array
+ * @return array
  */
-function ajax_system_update_check()
-{
-    $updates = \QUI::getPackageManager()->checkUpdates();
-
-    if ( !count( $updates ) )
-    {
-        \QUI::getMessagesHandler()->addInformation(
-            \QUI::getLocale()->get(
-                'quiqqer/system',
-                'message.packages.no.updates.available'
-            )
-        );
-    }
-
-    return $updates;
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_system_update_check',
+    function () {
+        return QUI::getPackageManager()->checkUpdates();
+    },
     false,
-    array(
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.update'
-    )
+    ]
 );

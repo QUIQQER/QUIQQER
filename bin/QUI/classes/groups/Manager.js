@@ -1,4 +1,3 @@
-
 /**
  * Group Manager (Model)
  *
@@ -15,16 +14,14 @@
  * @event onDelete [this, gids]
  * @event onRefresh [this, Group]
  */
-
-define([
+define('classes/groups/Manager', [
 
     'qui/classes/DOM',
     'classes/groups/Group',
     'Ajax',
     'qui/utils/Object'
 
-], function(QDOM, Group, Ajax, Utils)
-{
+], function (QDOM, Group, Ajax, Utils) {
     "use strict";
 
     /**
@@ -35,10 +32,10 @@ define([
      */
     return new Class({
 
-        Extends : QDOM,
-        Type    : 'classes/groups/Manager',
+        Extends: QDOM,
+        Type   : 'classes/groups/Manager',
 
-        $groups : {},
+        $groups: {},
 
         /**
          * Return a group
@@ -46,13 +43,12 @@ define([
          * @method classes/groups/Manager#get
          * @return {Object} Group - classes/groups/Group
          */
-        get : function(gid)
-        {
-            if ( typeof this.$groups[ gid ] === 'undefined' ) {
-                this.$groups[ gid ] = new Group( gid );
+        get: function (gid) {
+            if (typeof this.$groups[gid] === 'undefined') {
+                this.$groups[gid] = new Group(gid);
             }
 
-            return this.$groups[ gid ];
+            return this.$groups[gid];
         },
 
         /**
@@ -62,20 +58,53 @@ define([
          * @param {Object} search       - search options
          * @param {Function} [onfinish] - (optional), callback function
          * @param {Object} [params]     - (optional), extra params
+         * @return {Promise}
          */
-        getList : function(search, onfinish, params)
-        {
+        getList: function (search, params, onfinish) {
             params = Utils.combine(params, {
-                params   : JSON.encode( search ),
-                onfinish : onfinish
+                params: JSON.encode(search)
             });
 
-            Ajax.get('ajax_groups_search', function(result, Request)
-            {
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                    Request.getAttribute( 'onfinish' )( result, Request );
-                }
-            }, params);
+            return new Promise(function (resolve) {
+                Ajax.get('ajax_groups_list', function (result) {
+                    if (typeof onfinish === 'function') {
+                        onfinish(result);
+                    }
+
+                    resolve(result);
+                }, params);
+            });
+        },
+
+        /**
+         * Search groups
+         *
+         * @returns {Promise}
+         *
+         * @example
+         *
+         * Groups.search({
+         *     order: 'ASC',
+         *     limit: 5
+         * }, {
+         *     id  : value,
+         *     name: value
+         * }).then(function (result) {
+         *
+         *
+         * });
+         */
+        search: function (params, fields) {
+            params = params || {};
+            fields = fields || {};
+
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_groups_search', resolve, {
+                    onError: reject,
+                    fields : JSON.encode(fields),
+                    params : JSON.encode(params)
+                });
+            });
         },
 
         /**
@@ -83,44 +112,37 @@ define([
          *
          * @method classes/groups/Manager#switchStatus
          * @param {Array|Number} gid    - search options
-         * @param {Function} [onfinish] - (optional), callback function
          * @param {Object} [params]     - (optional), extra params
+         * @param {Function} [onfinish] - (optional), callback function
          */
-        switchStatus : function(gid, onfinish, params)
-        {
-            params = Utils.combine(params, {
-                Groups   : this,
-                gid      : JSON.encode( gid ),
-                onfinish : onfinish
-            });
+        switchStatus: function (gid, params, onfinish) {
+            params     = params || {};
+            params.gid = JSON.encode(gid);
 
-            Ajax.post('ajax_groups_switchstatus', function(result, Request)
-            {
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                    Request.getAttribute( 'onfinish' )( result, Request );
-                }
+            return new Promise(function (resolve) {
+                Ajax.post('ajax_groups_switchstatus', function (result) {
 
-                var Groups = Request.getAttribute( 'Groups' );
+                    // groups refresh if the object exist
+                    for (var id in result) {
+                        if (!result.hasOwnProperty(id)) {
+                            continue;
+                        }
 
-                // groups refresh if the object exist
-                for ( var id in result )
-                {
-                    if ( !result.hasOwnProperty( id ) ) {
-                        continue;
+                        if (this.$groups[id]) {
+                            this.$groups[id].setAttribute('active', parseInt(result[id]));
+                        }
                     }
 
-                    if ( Groups.$groups[ id ] )
-                    {
-                        Groups.$groups[ id ].setAttribute(
-                            'active',
-                            ( result[id] ).toInt()
-                        );
+                    this.fireEvent('switchStatus', [this, result]);
+
+                    if (typeof onfinish === 'function') {
+                        onfinish(result);
                     }
-                }
 
-                Groups.fireEvent( 'switchStatus', [ Groups, result, Request ] );
+                    resolve(result);
 
-            }, params);
+                }.bind(this), params);
+            }.bind(this));
         },
 
         /**
@@ -128,89 +150,77 @@ define([
          *
          * @method classes/groups/Manager#activate
          * @param {Array|Number} gid - group id
-         * @param {Function} onfinish - callback function after activasion
          * @param {Object} params     - callback parameter
+         * @param {Function} onfinish - callback function after activasion
+         * @return {Promise}
          */
-        activate : function(gid, onfinish, params)
-        {
-            params = Utils.combine(params, {
-                Groups   : this,
-                gid      : JSON.encode( gid ),
-                onfinish : onfinish
-            });
+        activate: function (gid, params, onfinish) {
+            params     = params || {};
+            params.gid = JSON.encode(gid);
 
-            Ajax.post('ajax_groups_activate', function(result, Request)
-            {
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                    Request.getAttribute( 'onfinish' )( result, Request );
-                }
+            return new Promise(function (resolve) {
 
-                var Groups = Request.getAttribute( 'Groups' );
+                Ajax.post('ajax_groups_activate', function (result) {
+                    // groups refresh if the object exist
+                    for (var id in result) {
+                        if (!result.hasOwnProperty(id)) {
+                            continue;
+                        }
 
-                // groups refresh if the object exist
-                for ( var id in result )
-                {
-                    if ( !result.hasOwnProperty( id ) ) {
-                        continue;
+                        if (this.$groups[id]) {
+                            this.$groups[id].setAttribute('active', parseInt(result[id]));
+                        }
                     }
 
-                    if ( Groups.$groups[ id ] )
-                    {
-                        Groups.$groups[ id ].setAttribute(
-                            'active',
-                            ( result[id] ).toInt()
-                        );
+                    this.fireEvent('activate', [this, result]);
+
+                    if (typeof onfinish === 'function') {
+                        onfinish(result);
                     }
-                }
 
-                Groups.fireEvent( 'activate', [ Groups, result, Request ] );
+                    resolve(result);
 
-            }, params);
+                }.bind(this), params);
+
+            }.bind(this));
         },
 
         /**
          * Dectivate a group
          *
          * @method classes/groups/Manager#deactivate
-         * @param {Array|Number} gid - group id
-         * @param {Function} onfinish - callback function after activasion
+         * @param {Array|Number} gids - group id
          * @param {Object} params     - callback parameter
+         * @param {Function} onfinish - callback function after activasion
          */
-        deactivate : function(gid, onfinish, params)
-        {
-            params = Utils.combine(params, {
-                Groups   : this,
-                gid      : JSON.encode( gid ),
-                onfinish : onfinish
-            });
+        deactivate: function (gids, params, onfinish) {
+            params     = params || {};
+            params.gid = JSON.encode(gids);
 
-            Ajax.post('ajax_groups_deactivate', function(result, Request)
-            {
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                    Request.getAttribute( 'onfinish' )( result, Request );
-                }
+            return new Promise(function (resolve) {
+                Ajax.post('ajax_groups_deactivate', function (result) {
 
-                var Groups = Request.getAttribute( 'Groups' );
+                    // groups refresh if the object exist
+                    for (var id in result) {
+                        if (!result.hasOwnProperty(id)) {
+                            continue;
+                        }
 
-                // groups refresh if the object exist
-                for ( var id in result )
-                {
-                    if ( !result.hasOwnProperty( id ) ) {
-                        continue;
+                        if (this.$groups[id]) {
+                            this.$groups[id].setAttribute('active', parseInt(result[id]));
+                        }
                     }
 
-                    if ( Groups.$groups[ id ] )
-                    {
-                        Groups.$groups[ id ].setAttribute(
-                            'active',
-                            ( result[id] ).toInt()
-                        );
+                    if (typeof onfinish === 'function') {
+                        onfinish(result);
                     }
-                }
 
-                Groups.fireEvent( 'deactivate', [ Groups, result, Request ] );
+                    this.fireEvent('deactivate', [this, result]);
 
-            }, params);
+                    resolve();
+
+                }.bind(this), params);
+            }.bind(this));
         },
 
         /**
@@ -219,23 +229,25 @@ define([
          * @method classes/groups/Manager#createGroup
          * @param {String} groupname  - Name of the group
          * @param {Number} parentid  - ID of the parent group
-         * @param {Function} [onfinish] - (optional), callback function
          * @param {Object} [params]     - (optional), extra params
+         * @param {Function} [onfinish] - (optional), callback function
+         * @return {Promise}
          */
-        createGroup : function(groupname, parentid, onfinish, params)
-        {
+        createGroup: function (groupname, parentid, params, onfinish) {
             params = Utils.combine(params, {
-                groupname : groupname,
-                pid       : parentid,
-                onfinish  : onfinish
+                groupname: groupname,
+                pid      : parentid
             });
 
-            Ajax.post('ajax_groups_create', function(result, Request)
-            {
-                if ( Request.getAttribute('onfinish') ) {
-                    Request.getAttribute('onfinish')( result, Request );
-                }
-            }, params);
+            return new Promise(function (resolve) {
+                Ajax.post('ajax_groups_create', function (result) {
+                    if (typeof onfinish === 'function') {
+                        onfinish(result);
+                    }
+
+                    resolve(result);
+                }, params);
+            });
         },
 
         /**
@@ -245,32 +257,63 @@ define([
          * @param {Array} gids - Group-IDs
          * @param {Function} [onfinish] - (optional), callback function
          * @param {Object} [params]     - (optional), extra params
+         * @return {Promise}
          */
-        deleteGroups : function(gids, onfinish, params)
-        {
-            params = Utils.combine(params, {
-                gids     : JSON.encode( gids ),
-                onfinish : onfinish,
-                Groups   : this
-            });
+        deleteGroups: function (gids, params, onfinish) {
+            params      = params || {};
+            params.gids = JSON.encode(gids);
 
-            Ajax.post('ajax_groups_delete', function(result, Request)
-            {
-                var Groups = Request.getAttribute( 'Groups' );
+            return new Promise(function (resolve) {
 
-                for ( var i = 0, len = gids.length; i < len; i++ )
-                {
-                    if ( typeof Groups.$groups[ gids[ i ] ] !== 'undefined' ) {
-                        delete Groups.$groups[ gids[ i ] ];
+                Ajax.post('ajax_groups_delete', function (result) {
+                    for (var i = 0, len = result.length; i < len; i++) {
+                        if (typeof this.$groups[gids[i]] !== 'undefined') {
+                            delete this.$groups[gids[i]];
+                        }
                     }
-                }
 
-                Groups.fireEvent( 'delete', [ this, gids ] );
+                    this.fireEvent('delete', [this, gids]);
 
-                if ( Request.getAttribute( 'onfinish' ) ) {
-                    Request.getAttribute( 'onfinish' )( gids, Request );
-                }
-            }, params);
+                    if (typeof onfinish === 'function') {
+                        onfinish(gids);
+                    }
+
+                    resolve(gids);
+
+                }.bind(this), params);
+            }.bind(this));
+        },
+
+        /**
+         * Add user(s) to a group
+         *
+         * @param {number} gid - Group ID
+         * @param {array} userIds - IDs of users that shall be added to the group
+         * @returns {Promise}
+         */
+        addUsers: function (gid, userIds) {
+            return new Promise(function (resolve) {
+                Ajax.post('ajax_groups_addUsers', resolve, {
+                    gid    : gid,
+                    userIds: JSON.encode(userIds)
+                });
+            });
+        },
+
+        /**
+         * Remove user(s) form a group
+         *
+         * @param {number} gid - Group ID
+         * @param {array} userIds - IDs of users that shall be removed from the group
+         * @returns {Promise}
+         */
+        removeUsers: function (gid, userIds) {
+            return new Promise(function (resolve) {
+                Ajax.post('ajax_groups_removeUsers', resolve, {
+                    gid    : gid,
+                    userIds: JSON.encode(userIds)
+                });
+            });
         },
 
         /**
@@ -279,9 +322,8 @@ define([
          * @method classes/groups/Manager#refreshGroup
          * @param {Object} Group - classes/groups/Group
          */
-        refreshGroup : function(Group)
-        {
-            this.fireEvent( 'refresh', [ this, Group ] );
+        refreshGroup: function (Group) {
+            this.fireEvent('refresh', [this, Group]);
         }
     });
 });

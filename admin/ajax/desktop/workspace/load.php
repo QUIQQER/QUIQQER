@@ -3,17 +3,15 @@
 /**
  * Return current workspace
  */
-function ajax_desktop_workspace_load()
-{
-    $list = \QUI\Workspace\Manager::getWorkspacesByUser(
-        \QUI::getUserBySession()
-    );
-
-    return $list;
-}
-
-\QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_desktop_workspace_load',
+    function () {
+        $list = QUI\Workspace\Manager::getWorkspacesByUser(
+            QUI::getUserBySession()
+        );
+
+        return $list;
+    },
     false,
     'Permission::checkUser'
 );

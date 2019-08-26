@@ -17,8 +17,7 @@ define('classes/editor/Manager', [
     'qui/classes/DOM',
     'Ajax'
 
-], function(QUI, QDOM, Ajax)
-{
+], function (QUI, QDOM, Ajax) {
     "use strict";
 
     /**
@@ -29,15 +28,12 @@ define('classes/editor/Manager', [
      */
     return new Class({
 
-        Extends : QDOM,
-        Type    : 'classes/editor/Manager',
+        Extends: QDOM,
+        Type   : 'classes/editor/Manager',
 
-        options : {
+        options: {},
 
-        },
-
-        initialize : function()
-        {
+        initialize: function () {
             this.$config    = null;
             this.$editors   = {};
             this.$instances = {};
@@ -52,9 +48,9 @@ define('classes/editor/Manager', [
          * @method classes/editor/Manager#register
          *
 
-@example
+         @example
 
-Manager.register('package/ckeditor4', {
+         Manager.register('package/ckeditor4', {
     events : {},
     methods : {}
 });
@@ -63,9 +59,8 @@ Manager.register('package/ckeditor4', {
          * @param {String} name
          * @param {Object} onload_params - Editor parameters, see example
          */
-        register : function(name, onload_params)
-        {
-            this.$editors[ name ] = onload_params;
+        register: function (name, onload_params) {
+            this.$editors[name] = onload_params;
         },
 
         /**
@@ -76,9 +71,8 @@ Manager.register('package/ckeditor4', {
          *
          * @ignore
          */
-        $registerEditor : function(Instance)
-        {
-            this.$instances[ Instance.getId() ] = Instance;
+        $registerEditor: function (Instance) {
+            this.$instances[Instance.getId()] = Instance;
         },
 
         /**
@@ -86,47 +80,61 @@ Manager.register('package/ckeditor4', {
          *
          * @method classes/editor/Manager#getEditor
          *
-         * @param {String|null} name - Editor parameters name, like ckeditor3, if null,
-         * @param {Function} func    - Callback function, if editor is loaded,
-         *                             the Parameter of the function is an {controls/editors/Editor} Instance
+         * @param {String|null} [name]   - Editor parameters name, like ckeditor3, if null,
+         * @param {Function} [callback]  - Callback function, if editor is loaded,
+         *                                 the Parameter of the function is an {controls/editors/Editor} Instance
+         * @return {Promise}
          */
-        getEditor : function(name, func)
-        {
+        getEditor: function (name, callback) {
             var self = this;
 
             name = name || null;
 
-            // use the standard editor
-            if ( name === null )
-            {
-                this.getConfig(function()
-                {
-                    self.getEditor(
-                        self.$config.settings.standard,
-                        func
-                    );
-                });
+            return new Promise(function (resolve) {
 
-                return;
-            }
+                // use the standard editor
+                if (name === null) {
+                    self.getConfig().then(function () {
+                        return self.getEditor(self.$config.settings.standard);
+                    }).then(function (Editor) {
 
-            if ( typeof this.$editors[ name ] !== 'undefined' )
-            {
-                var Editor = new this.$editors[ name ]( this );
+                        if (typeof callback === 'function') {
+                            callback(Editor);
+                        }
 
-                this.$registerEditor( Editor );
+                        resolve(Editor);
+                    });
 
-                func( Editor );
+                    return;
+                }
 
-                return;
-            }
 
-            this.getConfig(function()
-            {
-                require([ self.$config.editors[ name ] ], function(Editor)
-                {
-                    self.$editors[ name ] = Editor;
-                    self.getEditor( name, func );
+                if (name in self.$editors) {
+                    var Editor = new self.$editors[name](self);
+
+                    self.$registerEditor(Editor);
+
+                    if (typeof callback === 'function') {
+                        callback(Editor);
+                    }
+
+                    resolve(Editor);
+                    return;
+                }
+
+
+                self.getConfig().then(function () {
+                    require([self.$config.editors[name]], function (Editor) {
+                        self.$editors[name] = Editor;
+
+                        self.getEditor(name).then(function (Editor) {
+                            if (typeof callback === 'function') {
+                                callback(Editor);
+                            }
+
+                            resolve(Editor);
+                        });
+                    });
                 });
             });
         },
@@ -137,38 +145,44 @@ Manager.register('package/ckeditor4', {
          * @method classes/editor/Manager#destroyEditor
          * @param {Object} Editor (controls/editors/Editor)
          */
-        destroyEditor : function(Editor)
-        {
+        destroyEditor: function (Editor) {
             var id = Editor.getId();
 
-            if ( typeof this.$instances[ id ] !== 'undefined' ) {
-                delete this.$instances[ id ];
+            if (typeof this.$instances[id] !== 'undefined') {
+                delete this.$instances[id];
             }
 
-            QUI.Controls.destroy( Editor );
+            QUI.Controls.destroy(Editor);
         },
 
         /**
          * Get the main Editor config
          *
          * @method classes/editor/Manager#getConfig
-         * @param {Function} callback - Callback function
+         * @param {Function} [callback] - Callback function
+         * @return {Promise}
          */
-        getConfig : function(callback)
-        {
-            if ( this.$config ) {
-                return callback( this.$config );
-            }
-
+        getConfig: function (callback) {
             var self = this;
 
-            Ajax.get( 'ajax_editor_get_config', function(result)
-            {
-                self.$config = result;
+            return new Promise(function (resolve) {
+                if (self.$config) {
+                    if (typeof callback === 'function') {
+                        callback(self.$config);
+                    }
 
-                if ( typeof callback === 'function' ) {
-                    callback( result );
+                    return resolve(self.$config);
                 }
+
+                Ajax.get('ajax_editor_get_config', function (result) {
+                    self.$config = result;
+
+                    if (typeof callback === 'function') {
+                        callback(self.$config);
+                    }
+
+                    resolve(self.$config);
+                });
             });
         },
 
@@ -176,22 +190,102 @@ Manager.register('package/ckeditor4', {
          * Get the toolbar for the user
          *
          * @method classes/editor/Manager#getToolbars
-         * @param {Function} callback - Callback function
+         * @param {Function} [callback] - Callback function
+         * @return {Promise}
          */
-        getToolbar : function(callback)
-        {
-            Ajax.get( 'ajax_editor_get_toolbar', callback );
+        getToolbar: function (callback) {
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_editor_get_toolbar', function (result) {
+                    if (typeof callback === 'function') {
+                        callback(result);
+                    }
+
+                    resolve(result);
+                }, {
+                    onError: reject
+                });
+            });
         },
 
         /**
          * Get all available toolbar
          *
          * @method classes/editor/Manager#getToolbars
-         * @param {Function} callback - Callback function
+         * @param {Function} [callback] - Callback function
+         * @return {Promise}
          */
-        getToolbars : function(callback)
-        {
-            Ajax.get( 'ajax_editor_get_toolbars', callback );
+        getToolbars: function (callback) {
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_editor_get_toolbars', function (result) {
+                    if (typeof callback === 'function') {
+                        callback(result);
+                    }
+
+                    resolve(result);
+                }, {
+                    onError: reject
+                });
+            });
+        },
+
+        /**
+         * Get all available toolbar
+         *
+         * @method classes/editor/Manager#getToolbars
+         * @param {Number|String} uid - User-ID
+         * @param {String} [assignedToolbars] - user assigned toolbars
+         * @return {Promise}
+         */
+        getToolbarsFromUser: function (uid, assignedToolbars) {
+            assignedToolbars = assignedToolbars || '';
+
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_editor_get_toolbarsFromUser', resolve, {
+                    onError         : reject,
+                    uid             : uid,
+                    assignedToolbars: assignedToolbars
+                });
+            });
+        },
+
+        /**
+         * Get all available toolbar from a group
+         *
+         * @method classes/editor/Manager#getToolbars
+         * @param {Number|String} gid - Group-ID
+         * @param {String} [assignedToolbars] - user assigned toolbars
+         * @return {Promise}
+         */
+        getToolbarsFromGroup: function (gid, assignedToolbars) {
+            assignedToolbars = assignedToolbars || '';
+
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_editor_get_toolbarsFromGroup', resolve, {
+                    onError         : reject,
+                    gid             : gid,
+                    assignedToolbars: assignedToolbars
+                });
+            });
+        },
+
+        /**
+         * Get the project editor files
+         *
+         * @param {Object} Project - Project object
+         * @return {Promise}
+         */
+        getProjectFiles: function (Project) {
+            if (!Project) {
+                console.error('Project is null');
+                return Promise.resolve([]);
+            }
+
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_editor_get_projectFiles', resolve, {
+                    project: Project.getName(),
+                    onError: reject
+                });
+            });
         }
     });
 });

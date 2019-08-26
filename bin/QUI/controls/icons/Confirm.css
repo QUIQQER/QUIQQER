@@ -1,0 +1,26 @@
+.window-iconSelect-searchContainer {
+    margin: 0 auto;
+    padding: 10px 0;
+    width: 300px;
+    position: relative;
+}
+
+.window-iconSelect-search-prefix {
+    height: 100%;
+    left: 0;
+    opacity: 0.4;
+    padding: 7px 0;
+    position: absolute;
+    text-align: center;
+    top: calc(50% - 15px);
+    width: 30px;
+}
+
+.window-iconSelect-search {
+    padding-left: 30px;
+    width: 100%;
+}
+
+.window-iconSelect-search:focus + .window-iconSelect-search-prefix {
+    opacity: 1;
+}

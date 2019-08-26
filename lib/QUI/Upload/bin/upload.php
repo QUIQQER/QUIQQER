@@ -5,18 +5,36 @@
  * if the browser supports no html5 upload
  */
 
-$dir = str_replace('quiqqer/quiqqer/lib/QUI/Upload/bin', '', dirname(__FILE__));
+$dir = \str_replace('quiqqer/quiqqer/lib/QUI/Upload/bin', '', \dirname(__FILE__));
+\define('QUIQQER_SYSTEM', true);
+\define('QUIQQER_AJAX', true);
 
 require_once $dir.'header.php';
 
-$QUM = new \QUI\Upload\Manager();
-
 try {
-    $QUM->init();
+    $QUM = new QUI\Upload\Manager();
+    QUI::getAjax();
 
-} catch (\QUI\Exception $Exception) {
+    $uploadResult = $QUM->init();
 
-    \QUI\System\Log::writeException($Exception);
+    if (!empty($uploadResult)) {
+        $result = [
+            'result'      => $uploadResult,
+            'maintenance' => QUI::conf('globals', 'maintenance') ? 1 : 0
+        ];
 
-    $QUM->flushMessage($Exception->toArray());
+        if (QUI::getMessagesHandler()) {
+            $result['message_handler'] = QUI::getMessagesHandler()->getMessagesAsArray(
+                QUI::getUserBySession()
+            );
+        }
+
+        // maintenance flag
+        echo '<quiqqer>'.\json_encode($result).'</quiqqer>';
+    }
+} catch (QUI\Exception $Exception) {
+    QUI\System\Log::writeDebugException($Exception);
+    $QUM->flushException($Exception);
+} catch (\Exception $Exception) {
+    QUI\System\Log::writeDebugException($Exception);
 }

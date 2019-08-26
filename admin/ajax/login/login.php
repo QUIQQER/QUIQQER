@@ -5,16 +5,15 @@
  *
  * @param string $username - name of the user / email of the user
  * @param string $password - password
- * @return Array
+ * @return array
+ * @deprecated
  */
-function ajax_login_login($username, $password)
-{
-    \QUI::getUsers()->login($username, $password);
-
-    return \QUI::getUserBySession()->getAttributes();
-}
-
-\QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_login_login',
-    array('username', 'password')
+    function ($username, $password) {
+        QUI::getUsers()->login($username, $password);
+
+        return QUI::getUserBySession()->getAttributes();
+    },
+    ['username', 'password']
 );

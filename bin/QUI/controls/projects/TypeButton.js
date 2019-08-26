@@ -1,14 +1,9 @@
 /**
  * The type button opens a type window for the project
  *
- * @author www.pcsg.de (Henning Leutz)
- *
- * @requires controls/Control
- * @requires controls/projects/TypeWindow
- *
  * @module controls/projects/TypeButton
+ * @author www.pcsg.de (Henning Leutz)
  */
-
 define('controls/projects/TypeButton', [
 
     'qui/controls/Control',
@@ -16,8 +11,7 @@ define('controls/projects/TypeButton', [
     'qui/controls/buttons/Button',
     'Locale'
 
-], function(QUIControl, TypeWindow, QUIButton, Locale)
-{
+], function (QUIControl, TypeWindow, QUIButton, Locale) {
     "use strict";
 
     /**
@@ -32,16 +26,15 @@ define('controls/projects/TypeButton', [
      */
     return new Class({
 
-        Extends : QUIControl,
-        Type    : 'controls/projects/TypeButton',
+        Extends: QUIControl,
+        Type   : 'controls/projects/TypeButton',
 
-        options : {
-            project : false
+        options: {
+            project: false
         },
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize: function (options) {
+            this.parent(options);
 
             this.$Button = null;
             this.$Elm    = null;
@@ -53,32 +46,27 @@ define('controls/projects/TypeButton', [
          * @method controls/projects/TypeButton#create
          * @return {HTMLElement}
          */
-        create : function()
-        {
+        create: function () {
             var self = this;
 
             this.$Button = new QUIButton({
-                name   : 'project-types',
-                image  : 'icon-magic',
-                alt    : Locale.get( 'quiqqer/system', 'projects.typebutton.title' ),
-                title  : Locale.get( 'quiqqer/system', 'projects.typebutton.title' ),
-                events :
-                {
-                    click : function()
-                    {
+                name  : 'project-types',
+                image : 'fa fa-magic',
+                alt   : Locale.get('quiqqer/system', 'projects.typebutton.title'),
+                title : Locale.get('quiqqer/system', 'projects.typebutton.title'),
+                events: {
+                    click: function () {
                         new TypeWindow({
-                            project : self.getAttribute('project'),
-                            events  :
-                            {
-                                onSubmit : function(Win, result)
-                                {
-                                    if ( result[0] ) {
-                                        self.fireEvent( 'submit', [ self, result[0] ] );
+                            project: self.getAttribute('project'),
+                            events : {
+                                onSubmit: function (Win, result) {
+                                    if (result[0]) {
+                                        self.fireEvent('submit', [self, result[0]]);
                                     }
                                 },
 
-                                onCancel : function() {
-                                    self.fireEvent( 'cancel' );
+                                onCancel: function () {
+                                    self.fireEvent('cancel');
                                 }
                             }
                         }).open();
@@ -87,7 +75,7 @@ define('controls/projects/TypeButton', [
             });
 
             this.$Elm = this.$Button.create();
-            this.$Elm.set( 'data-quiid', this.getId() );
+            this.$Elm.set('data-quiid', this.getId());
 
             return this.$Elm;
         }

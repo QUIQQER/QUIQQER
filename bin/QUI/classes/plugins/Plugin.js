@@ -6,8 +6,7 @@ define('classes/plugins/Plugin', [
 
     'qui/classes/DOM'
 
-], function(DOM)
-{
+], function (DOM) {
     "use strict";
 
     return new Class({
@@ -15,9 +14,8 @@ define('classes/plugins/Plugin', [
         Extends : DOM,
         Type    : 'classes/plugins/Plugin',
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize : function (options) {
+            this.parent(options);
         }
 
     });

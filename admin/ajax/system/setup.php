@@ -3,21 +3,20 @@
 /**
  * System Setup ausführen
  *
- * @return String
+ * @param string $package - optional, Name of a package; no name = full setup
+ * @return string
  */
-function ajax_system_setup($package)
-{
-    if (isset($package) && !empty($package)) {
-        QUI::getPackageManager()->setup($package);
-
-        return;
-    }
-
-    QUI\Setup::all();
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_system_setup',
-    array('package'),
+    function ($package) {
+        if (isset($package) && !empty($package)) {
+            QUI::getPackageManager()->setup($package);
+
+            return;
+        }
+
+        QUI\Setup::all();
+    },
+    ['package'],
     'Permission::checkSU'
 );

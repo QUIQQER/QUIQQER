@@ -1,0 +1,164 @@
+.qui-control-packages-search-form {
+    background: #f1f1f1;
+    float: left;
+    padding: 20px;
+    width: 100%;
+}
+
+.qui-control-packages-search-form-searchtitle {
+    display: none;
+}
+
+.qui-control-packages-search-form-search label {
+    float: left;
+    padding-bottom: 10px;
+    width: calc(100% - 100px);
+}
+
+.qui-control-packages-search-form [type="search"] {
+    width: 100%;
+}
+
+.qui-control-packages-search-form [type="submit"] {
+    cursor: pointer;
+    width: 100px;
+}
+
+.qui-control-packages-search-form-search,
+.qui-control-packages-search-form-settings {
+    border: none;
+    clear: both;
+    float: left;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.qui-control-packages-search-form-settings label,
+.qui-control-packages-search-form-settings span,
+.qui-control-packages-search-form-settings input {
+    float: left;
+}
+
+.qui-control-packages-search-form-settings label {
+    padding-right: 20px;
+}
+
+.qui-control-packages-search,
+.qui-controls-packages-search-content {
+    height: 100%;
+    width: 100%;
+}
+
+.qui-control-packages-search-iframe {
+    border: 0;
+    float: left;
+    height: calc(100% - 30px);
+    width: 100%;
+}
+
+.qui-controls-packages-search-toggle {
+    color: #fcfeff;
+    float: left;
+    font-size: 15px;
+    height: 30px;
+    line-height: 26px;
+    text-align: center;
+    width: 100%;
+}
+
+.qui-controls-packages-search-toggle-active {
+    background-color: #0081b4 !important;
+}
+
+.qui-controls-packages-search-toggle > div:hover {
+    cursor: pointer;
+    background-color: #0081b4;
+}
+
+.qui-controls-packages-search-toggle-packagestore,
+.qui-controls-packages-search-toggle-othersources {
+    background-color: #2f8fc6;
+    height: 100%;
+    float: left;
+    width: 40%;
+}
+
+.qui-controls-packages-search-toggle-upload {
+    background-color: #2f8fc6;
+    height: 100%;
+    float: left;
+    width: 20%;
+}
+
+.qui-controls-packages-search-othersources-search {
+    background-color: #dedede;
+    float: left;
+    padding: 10px;
+    width: 100%;
+}
+
+.qui-controls-packages-search-othersources-search > label > span {
+    width: 100%;
+}
+
+.qui-controls-packages-search-othersources-search > label > input {
+    margin-top: 10px;
+    width: 100%;
+}
+
+/** Terms of use
+ ================================================== */
+
+.quiqqer-packages-search-termsofuse {
+    background: rgba(255, 255, 255, 1.0);
+    height: 100%;
+    left: 0;
+    padding: 20px;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 10;
+}
+
+.quiqqer-packages-search-termsOfUse-container {
+    float: left;
+    height: calc(100% - 100px);
+    overflow: auto;
+    width: 100%;
+}
+
+.quiqqer-packages-search-termsOfUse-container h2 {
+    margin: 20px 0 10px;
+}
+
+.quiqqer-packages-search-termsOfUse-container p {
+    margin: 0 0 10px;
+}
+
+.quiqqer-packages-search-termsOfUse-container .bold {
+    font-weight: bold;
+}
+
+.quiqqer-packages-search-termsOfUse-button {
+    text-align: center;
+    width: 100%;
+}
+
+.quiqqer-packages-search-termsOfUse-button button {
+    display: inline-block;
+    float: none;
+    margin-top: 10px;
+}
+
+.quiqqer-packages-search-buttons {
+    background: #e1e4e9;
+    height: 50px;
+    position: relative;
+    width: 100%;
+}
+
+.quiqqer-packages-search-container {
+    height: calc(100% - 50px);
+    position: relative;
+}

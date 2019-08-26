@@ -5,8 +5,8 @@
 }
 
 .qui-media-file-details textarea {
-	height: 200px;
-	padding: 10px;
+    height: 200px;
+    padding: 10px;
     width: 100%;
 }
 
@@ -15,10 +15,9 @@
 }
 
 .qui-media-file-details td:first-child {
-	min-width: 100px;
+    min-width: 100px;
     width: 30%;
 }
-
 
 .qui-media-file-details input[name="blur"],
 .qui-media-file-details input[name="brightness"],
@@ -32,4 +31,8 @@
 .qui-media-file-details input[name="contrastDisplay"] {
     padding: 5px;
     width: 30px;
+}
+
+.preview-frame {
+    position: relative;
 }

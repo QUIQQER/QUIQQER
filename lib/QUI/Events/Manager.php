@@ -23,111 +23,150 @@ class Manager implements QUI\Interfaces\Events
     /**
      * Site Events
      *
-     * @var Array
+     * @var array
      */
-    protected $_siteEvents = array();
+    protected $siteEvents = [];
+
+    /**
+     * @var Event
+     */
+    protected $Events;
 
     /**
      * construct
      */
     public function __construct()
     {
-        $this->_Events = new Event();
+        $this->Events = new Event();
 
         try {
-            if (!QUI::getDataBase()->Table()->exist(self::Table())) {
+            if (!QUI::$Conf->existValue('globals', 'eventsCreated')
+                || !QUI::$Conf->getValue('globals', 'eventsCreated')) {
+                $exists = QUI::getDataBase()->table()->exist(self::table());
+
+                QUI::$Conf->setValue('globals', 'eventsCreated', $exists);
+
+                try {
+                    QUI::$Conf->save();
+                } catch (QUi\Exception $Exception) {
+                    QUI\System\Log::writeDebugException($Exception);
+                }
+
+                if (!$exists) {
+                    return;
+                }
+            }
+
+            if (!QUI::$Conf->getValue('globals', 'eventsCreated')) {
                 return;
             }
 
-            $list = QUI::getDataBase()->fetch(array(
-                'from'  => self::Table(),
-                'where' => array(
+
+            $list = QUI::getDataBase()->fetch([
+                'from'  => self::table(),
+                'where' => [
                     'sitetype' => null
-                )
-            ));
+                ],
+                'order' => 'priority ASC'
+            ]);
 
             foreach ($list as $params) {
-                $this->_Events->addEvent(
+                $this->Events->addEvent(
                     $params['event'],
-                    $params['callback']
+                    $params['callback'],
+                    isset($params['priority']) ? $params['priority'] : 0
                 );
             }
 
-            $list = QUI::getDataBase()->fetch(array(
-                'from'  => self::Table(),
-                'where' => array(
-                    'sitetype' => array(
+            $list = QUI::getDataBase()->fetch([
+                'from'  => self::table(),
+                'where' => [
+                    'sitetype' => [
                         'type'  => 'NOT',
                         'value' => null
-                    )
-                )
-            ));
+                    ]
+                ],
+                'order' => 'priority ASC'
+            ]);
 
-            $this->_siteEvents = $list;
-
+            $this->siteEvents = $list;
         } catch (QUI\Database\Exception $Exception) {
-
         }
     }
 
     /**
      * Return the events db table name
      *
-     * @return String
+     * @return string
      */
-    static function Table()
+    public static function table()
     {
-        return QUI_DB_PRFX.'events';
+        return QUI::getDBTableName('events');
     }
 
     /**
      * create the event table
+     *
+     * @throws QUI\Exception
      */
-    static function setup()
+    public static function setup()
     {
-        $DBTable = QUI::getDataBase()->Table();
+        $DBTable = QUI::getDataBase()->table();
 
-        $DBTable->appendFields(self::Table(), array(
-            'event'    => 'varchar(200)',
-            'callback' => 'text',
-            'sitetype' => 'text'
-        ));
+        $DBTable->addColumn(self::table(), [
+            'event'    => 'VARCHAR(255)',
+            'callback' => 'TEXT NULL',
+            'sitetype' => 'TEXT NULL',
+            'package'  => 'TEXT NULL',
+            'priority' => 'INT DEFAULT 0'
+        ]);
 
         self::clear();
     }
 
     /**
      * clear all events
+     *
+     * @param string|bool $package - name of the package, default = false => complete clear
+     * @throws QUI\Exception
      */
-    static function clear()
+    public static function clear($package = false)
     {
-        QUI::getDataBase()->Table()->truncate(
-            self::Table()
-        );
+        if (empty($package) || !is_string($package)) {
+            QUI::getDataBase()->table()->truncate(
+                self::table()
+            );
+
+            return;
+        }
+
+        QUI::getDataBase()->delete(self::table(), [
+            'package' => $package
+        ]);
     }
 
     /**
      * Return a complete list of registered events
      *
-     * @return Array
+     * @return array
      */
     public function getList()
     {
-        return $this->_Events->getList();
+        return $this->Events->getList();
     }
 
     /**
      * Return a complete list of registered events for a specific site type
      *
-     * @param String $type
+     * @param string $type
      *
-     * @return Array
+     * @return array
      */
     public function getSiteListByType($type)
     {
-        $result = array();
+        $result = [];
 
-        foreach ($this->_siteEvents as $event) {
+        foreach ($this->siteEvents as $event) {
             if ($event['sitetype'] == $type) {
                 $result[] = $type;
             }
@@ -143,20 +182,30 @@ class Manager implements QUI\Interfaces\Events
      *
      * @example $EventManager->addEvent('myEvent', function() { });
      *
-     * @param String   $event - The type of event (e.g. 'complete').
-     * @param callback $fn    - The function to execute.
+     * @param string $event - The type of event (e.g. 'complete').
+     * @param string|callable $fn - The function to execute.
+     * @param string $package - Name of the package
+     * @param int $priority - Event priority
+     *
+     * @throws QUI\Exception
      */
-    public function addEvent($event, $fn)
+    public function addEvent($event, $fn, $package = '', $priority = 0)
     {
-        // add the event to the db
-        if (is_string($fn)) {
-            QUI::getDataBase()->insert(self::Table(), array(
-                'event'    => $event,
-                'callback' => $fn
-            ));
+        if (!\is_string($package)) {
+            $package = '';
         }
 
-        $this->_Events->addEvent($event, $fn);
+        // add the event to the db
+        if (\is_string($fn)) {
+            QUI::getDataBase()->insert(self::table(), [
+                'event'    => $event,
+                'callback' => $fn,
+                'package'  => $package,
+                'priority' => (int)$priority
+            ]);
+        }
+
+        $this->Events->addEvent($event, $fn, (int)$priority);
     }
 
     /**
@@ -164,21 +213,25 @@ class Manager implements QUI\Interfaces\Events
      *
      * @example $EventManager->addEvent('onSave', '\Namespace\Class::exec', 'quiqqer/blog:blog/entry' });
      *
-     * @param String   $event    - The type of event (e.g. 'complete').
-     * @param callback $fn       - The function to execute.
-     * @param String   $sitetype - type of the site
+     * @param string $event - The type of event (e.g. 'complete').
+     * @param callable $fn - The function to execute.
+     * @param string $siteType - type of the site
+     * @param int $priority - Event priority
+     *
+     * @throws QUI\Exception
      */
-    public function addSiteEvent($event, $fn, $sitetype)
+    public function addSiteEvent($event, $fn, $siteType, $priority = 0)
     {
-        if (!is_string($fn)) {
+        if (!\is_string($fn)) {
             return;
         }
 
-        QUI::getDataBase()->insert(self::Table(), array(
+        QUI::getDataBase()->insert(self::table(), [
             'event'    => $event,
             'callback' => $fn,
-            'sitetype' => $sitetype
-        ));
+            'sitetype' => $siteType,
+            'priority' => (int)$priority
+        ]);
     }
 
     /**
@@ -188,32 +241,47 @@ class Manager implements QUI\Interfaces\Events
      */
     public function addEvents(array $events)
     {
-        $this->_Events->addEvents($events);
+        $this->Events->addEvents($events);
     }
 
     /**
      * Removes an event from the stack of events
      * It remove the events from the database, too.
      *
-     * @param String        $event - The type of event (e.g. 'complete').
-     * @param callback|bool $fn    - (optional) The function to remove.
+     * @param string $event - The type of event (e.g. 'complete').
+     * @param callable|boolean $fn - (optional) The function to remove.
+     * @param string $package - Name of the package
+     *
+     * @throws QUI\Exception
      */
-    public function removeEvent($event, $fn = false)
+    public function removeEvent($event, $fn = false, $package = '')
     {
-        $this->_Events->removeEvent($event, $fn);
+        $this->Events->removeEvent($event, $fn);
 
         if ($fn === false) {
-            QUI::getDataBase()->delete(self::Table(), array(
+            QUI::getDataBase()->delete(self::table(), [
                 'event' => $event
-            ));
+            ]);
         }
 
-        if (is_string($fn)) {
-            QUI::getDataBase()->delete(self::Table(), array(
+        if (\is_string($fn)) {
+            QUI::getDataBase()->delete(self::table(), [
                 'event'    => $event,
-                'callback' => $fn
-            ));
+                'callback' => $fn,
+                'package'  => $package
+            ]);
         }
+    }
+
+    /**
+     * @param QUI\Package\Package $Package
+     * @throws QUI\Exception
+     */
+    public function removePackageEvents(QUI\Package\Package $Package)
+    {
+        QUI::getDataBase()->delete(self::table(), [
+            'package' => $Package->getName()
+        ]);
     }
 
     /**
@@ -225,7 +293,7 @@ class Manager implements QUI\Interfaces\Events
      */
     public function removeEvents(array $events)
     {
-        $this->_Events->removeEvents($events);
+        $this->Events->removeEvents($events);
     }
 
     /**
@@ -233,19 +301,26 @@ class Manager implements QUI\Interfaces\Events
      *
      * @see \QUI\Interfaces\Events::fireEvent()
      *
-     * @param string     $event - The type of event (e.g. 'onComplete').
-     * @param array|bool $args  - (optional) the argument(s) to pass to the function.
+     * @param string $event - The type of event (e.g. 'onComplete').
+     * @param array|boolean $args - (optional) the argument(s) to pass to the function.
      *                          The arguments must be in an array.
+     * @param boolean $force - (optional) no recursion check, optional, default = false
+     * @return array
+     *
+     * @throws QUI\Exception
+     * @throws QUI\ExceptionStack
      */
-    public function fireEvent($event, $args = false)
+    public function fireEvent($event, $args = false, $force = false)
     {
-        $this->_Events->fireEvent($event, $args);
-
         // event onFireEvent
-        if (!is_array($args)) {
-            $args = array();
+        $fireArgs = $args;
+
+        if (!\is_array($fireArgs)) {
+            $fireArgs = [];
         }
 
-        $this->_Events->fireEvent('onFireEvent', array($event, $args));
+        $this->Events->fireEvent('onFireEvent', [$event, $fireArgs]);
+
+        return $this->Events->fireEvent($event, $fireArgs, $force);
     }
 }

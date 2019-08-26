@@ -1,23 +1,9 @@
-
 /**
  * Displays a Site in a Panel
  *
  * @module controls/projects/project/site/Panel
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/controls/desktop/Panel
- * @require Projects
- * @require Ajax
- * @require classes/projects/project/Site
- * @require qui/controls/buttons/Button
- * @require qui/utils/Form
- * @require utils/Controls
- * @require utils/Panels
- * @require utils/Site
- * @require Locale
- * @require css!controls/projects/project/site/Panel.css
  */
-
 define('controls/projects/project/site/Panel', [
 
     'qui/QUI',
@@ -32,27 +18,42 @@ define('controls/projects/project/site/Panel', [
     'utils/Panels',
     'utils/Site',
     'Locale',
+    'Users',
+    'Mustache',
 
+    'text!controls/projects/project/site/Panel.restore.html',
     'css!controls/projects/project/site/Panel.css'
 
-], function()
-{
+], function () {
     "use strict";
 
-    var QUI          = arguments[ 0 ],
-        QUIPanel     = arguments[ 1 ],
-        Projects     = arguments[ 2 ],
-        Ajax         = arguments[ 3 ],
-        QUIButton    = arguments[ 4 ],
-        QUIConfirm   = arguments[ 5 ],
-        QUIFormUtils = arguments[ 6 ],
-        QUIElmUtils  = arguments[ 7 ],
-        ControlUtils = arguments[ 8 ],
-        PanelUtils   = arguments[ 9 ],
-        SiteUtils    = arguments[ 10 ],
-        Locale       = arguments[ 11 ];
+    var QUI             = arguments[0],
+        QUIPanel        = arguments[1],
+        Projects        = arguments[2],
+        Ajax            = arguments[3],
+        QUIButton       = arguments[4],
+        QUIConfirm      = arguments[5],
+        QUIFormUtils    = arguments[6],
+        QUIElmUtils     = arguments[7],
+        ControlUtils    = arguments[8],
+        PanelUtils      = arguments[9],
+        SiteUtils       = arguments[10],
+        Locale          = arguments[11],
+        Users           = arguments[12],
+        Mustache        = arguments[13],
+        templateRestore = arguments[14];
 
     var lg = 'quiqqer/system';
+
+    var cleanupUrl = function (value) {
+        var notAllowed = Object.keys(SiteUtils.notAllowedUrlSigns()).join('|'),
+            reg        = new RegExp('[' + notAllowed + ']', "g");
+
+        value = value.replace(reg, '');
+        value = value.replace(/ /g, QUIQQER.Rewrite.URL_SPACE_CHARACTER);
+
+        return value;
+    };
 
     /**
      * An SitePanel, opens the Site in an Apppanel
@@ -66,15 +67,20 @@ define('controls/projects/project/site/Panel', [
      */
     return new Class({
 
-        Extends : QUIPanel,
-        Type    : 'controls/projects/project/site/Panel',
+        Extends: QUIPanel,
+        Type   : 'controls/projects/project/site/Panel',
 
-        Binds : [
+        Binds: [
             'load',
             'createNewChild',
             'openPermissions',
             'openMedia',
             'openSort',
+            'deleteLinked',
+            'openSiteInPopup',
+            'openSiteInStructure',
+            'deactivate',
+            'activate',
 
             '$onCreate',
             '$onDestroy',
@@ -82,7 +88,6 @@ define('controls/projects/project/site/Panel', [
             '$onInject',
             '$onCategoryEnter',
             '$onCategoryLeave',
-            '$onEditorLoad',
             '$onEditorDestroy',
             '$onPanelButtonClick',
             '$onLogin',
@@ -93,53 +98,50 @@ define('controls/projects/project/site/Panel', [
             '$onSiteDelete'
         ],
 
-        options : {
-            id            : 'projects-site-panel',
-            container     : false,
-            editorPeriode : 2000
+        options: {
+            id           : 'projects-site-panel',
+            container    : false,
+            editorPeriode: 2000
         },
 
-        initialize : function(Site, options)
-        {
+        initialize: function (Site, options) {
             this.$Site            = null;
             this.$CategoryControl = null;
+            this.$Container       = null;
 
+            this.$ButtonOpenWebsite    = null;
+            this.$PreviousCategory     = null;
             this.$editorPeriodicalSave = false; // delay for the wysiwyg editor, to save to the locale storage
 
-            if ( typeOf( Site ) === 'classes/projects/project/Site' )
-            {
+            if (typeOf(Site) === 'classes/projects/project/Site') {
                 var Project = Site.getProject(),
-
-                    id = 'panel-'+
-                         Project.getName() +'-'+
-                         Project.getLang() +'-'+
-                         Site.getId();
+                    id      = 'panel-' +
+                        Project.getName() + '-' +
+                        Project.getLang() + '-' +
+                        Site.getId();
 
                 // default id
-                this.setAttribute( 'id', id );
-                this.setAttribute( 'name', id );
+                this.setAttribute('id', id);
+                this.setAttribute('name', id);
 
                 this.$Site = Site;
-
-            } else
-            {
+            } else {
                 // serialize data
-                if ( typeof Site.attributes !== 'undefined' &&
-                     typeof Site.project !== 'undefined' &&
-                     typeof Site.lang !== 'undefined' &&
-                     typeof Site.id !== 'undefined' )
-                {
-                    this.unserialize( Site );
+                if (typeof Site.attributes !== 'undefined' &&
+                    typeof Site.project !== 'undefined' &&
+                    typeof Site.lang !== 'undefined' &&
+                    typeof Site.id !== 'undefined') {
+                    this.unserialize(Site);
                 }
             }
 
-            this.parent( options );
+            this.parent(options);
 
             this.addEvents({
-                onCreate  : this.$onCreate,
-                onResize  : this.$onResize,
-                onDestroy : this.$onDestroy,
-                onInject  : this.$onInject
+                onCreate : this.$onCreate,
+                onResize : this.$onResize,
+                onDestroy: this.$onDestroy,
+                onInject : this.$onInject
             });
         },
 
@@ -149,17 +151,16 @@ define('controls/projects/project/site/Panel', [
          * @method controls/projects/project/site/Panel#serialize
          * @return {Object} data
          */
-        serialize : function()
-        {
+        serialize: function () {
             var Site    = this.getSite(),
                 Project = Site.getProject();
 
             return {
-                attributes : this.getAttributes(),
-                id         : this.getSite().getId(),
-                lang       : Project.getLang(),
-                project    : Project.getName(),
-                type       : this.getType()
+                attributes: this.getAttributes(),
+                id        : this.getSite().getId(),
+                lang      : Project.getLang(),
+                project   : Project.getName(),
+                type      : this.getType()
             };
         },
 
@@ -170,16 +171,15 @@ define('controls/projects/project/site/Panel', [
          * @param {Object} data
          * @return {Object} this (controls/projects/project/site/Panel)
          */
-        unserialize : function(data)
-        {
-            this.setAttributes( data.attributes );
+        unserialize: function (data) {
+            this.setAttributes(data.attributes);
 
             var Project = Projects.get(
                 data.project,
                 data.lang
             );
 
-            this.$Site      = Project.get( data.id );
+            this.$Site      = Project.get(data.id);
             this.$delayTest = 0;
 
             return this;
@@ -191,9 +191,51 @@ define('controls/projects/project/site/Panel', [
          * @method controls/projects/project/site/Panel#getSite
          * @return {Object} classes/projects/Site
          */
-        getSite : function()
-        {
+        getSite: function () {
             return this.$Site;
+        },
+
+        /**
+         * Open the site in a popup
+         */
+        openSiteInPopup: function () {
+            var Site    = this.getSite(),
+                Project = Site.getProject();
+
+            SiteUtils.openSite(
+                Project.getName(),
+                Project.getLang(),
+                Site.getId()
+            );
+        },
+
+        /**
+         * Opens the site in the project panel
+         */
+        openSiteInStructure: function () {
+            var Panel;
+            var projectPanels = QUI.Controls.getByType('controls/projects/project/Panel');
+
+            var Site    = this.getSite(),
+                Project = Site.getProject();
+
+            var onOpen = function () {
+                Panel.openSite(Site.getId());
+            };
+
+            for (var i = 0, len = projectPanels.length; i < len; i++) {
+                Panel = projectPanels[i];
+
+                if (Panel.getAttribute('project') === Project.getName() &&
+                    Panel.getAttribute('lang') === Project.getLang()) {
+                    Panel.openSite(Site.getId());
+                    continue;
+                }
+
+                Panel.setAttribute('project', Project.getName());
+                Panel.setAttribute('lang', Project.getLang());
+                Panel.openProject().then(onOpen);
+            }
         },
 
         /**
@@ -201,69 +243,68 @@ define('controls/projects/project/site/Panel', [
          *
          * @method controls/projects/project/site/Panel#load
          */
-        load : function()
-        {
+        load: function () {
             this.refresh();
 
-            if ( this.getActiveCategory() )
-            {
-                this.$onCategoryEnter( this.getActiveCategory() );
-                return;
+            if (this.getSite().getAttribute('active') && this.$ButtonOpenWebsite) {
+                this.$ButtonOpenWebsite.show();
             }
 
-            if ( this.getCategoryBar().firstChild() )
-            {
+            if (this.getActiveCategory()) {
+                return this.$onCategoryEnter(this.getActiveCategory());
+            }
+
+            if (this.getCategoryBar().firstChild()) {
                 this.getCategoryBar().firstChild().click();
-                return;
+                return Promise.resolve();
             }
 
-            // if dom is not loaded, we wait 200ms
-            (function()
-            {
-                if ( this.$delayTest > 10 )
-                {
-                    QUI.getMessageHandler(function(MH)
-                    {
-                        MH.addError(
-                            'Seitenpanel mit der Seiten ID #'+ this.getSite().getId() +
-                            ' konnte nicht geladen werden. Das Panel wurde wieder geschlossen'
-                        ); // #locale
-                    });
+            return new Promise(function (resolve, reject) {
+                // if dom is not loaded, we wait 200ms
+                (function () {
+                    if (this.$delayTest > 10) {
+                        var errorMessage = Locale.get('quiqqer/quiqqer', 'exception.site.panel.error', {
+                            id: this.getSite().getId()
+                        });
 
-                    this.destroy();
-                    return;
-                }
+                        QUI.getMessageHandler(function (MH) {
+                            MH.addError(errorMessage);
+                        }.bind(this));
 
-                this.$delayTest++;
-                this.load();
+                        this.destroy();
+                        reject(errorMessage);
+                        return;
+                    }
 
-            }).delay( 200, this );
+                    this.$delayTest++;
+                    this.load().then(resolve);
+                }).delay(200, this);
+            }.bind(this));
         },
 
         /**
          * Refresh the site panel
          */
-        refresh : function()
-        {
+        refresh: function () {
             var title, description;
 
             var Site    = this.getSite(),
                 Project = Site.getProject();
 
-            title = Site.getAttribute( 'title') +' ('+ Site.getId() +')';
+            title = Site.getAttribute('title') + ' (' + Site.getId() + ')';
 
-            description = Site.getAttribute( 'name' ) +' - '+
-                          Site.getId() +' - ' +
-                          Project.getName();
+            description = Site.getAttribute('name') + ' - ' +
+                Site.getId() + ' - ' +
+                Project.getName();
 
-            if ( Site.getId() != 1 ) {
-                description = description +' - '+ Site.getUrl();
+            if (Site.getId() !== 1) {
+                description = description + ' - ' + Site.getUrl();
             }
 
             this.setAttributes({
-                title       : title,
-                description : description,
-                icon        : URL_BIN_DIR +'16x16/flags/'+ Project.getLang() +'.png'
+                title      : title,
+                description: description,
+                icon       : URL_BIN_DIR + '16x16/flags/' + Project.getLang() + '.png'
             });
 
             this.parent();
@@ -274,57 +315,68 @@ define('controls/projects/project/site/Panel', [
          *
          * @method controls/projects/project/site/Panel#$onCreate
          */
-        $onCreate : function()
-        {
+        $onCreate: function () {
             this.Loader.show();
 
-            window.addEvent( 'login', this.$onLogin );
+            window.addEvent('login', this.$onLogin);
+
+            this.$Container = new Element('div', {
+                styles: {
+                    height  : '100%',
+                    position: 'relative',
+                    width   : '100%'
+                }
+            }).inject(this.getContent());
+
+            this.getContent().setStyle('position', 'relative');
 
 
             // permissions
             new QUIButton({
-                image  : 'icon-shield fa fa-shield',
-                alt    : Locale.get( lg, 'projects.project.site.panel.btn.permissions' ),
-                title  : Locale.get( lg, 'projects.project.site.panel.btn.permissions' ),
-                styles : {
+                image : 'fa fa-shield',
+                name  : 'permissions',
+                alt   : Locale.get(lg, 'projects.project.site.panel.btn.permissions'),
+                title : Locale.get(lg, 'projects.project.site.panel.btn.permissions'),
+                styles: {
                     'border-left-width' : 1,
-                    'border-right-width' : 1,
-                    'float' : 'right',
-                    width : 40
+                    'border-right-width': 1,
+                    'float'             : 'right',
+                    width               : 40
                 },
-                events : {
-                    onClick : this.openPermissions
+                events: {
+                    onClick: this.openPermissions
                 }
-            }).inject( this.getHeader() );
+            }).inject(this.getHeader());
 
             new QUIButton({
-                image  : 'fa fa-picture-o icon-picture',
-                alt    : Locale.get( lg, 'projects.project.site.panel.btn.media' ),
-                title  : Locale.get( lg, 'projects.project.site.panel.btn.media' ),
-                styles : {
-                    'border-left-width' : 1,
-                    'float' : 'right',
-                    width : 40
+                image : 'fa fa-picture-o',
+                name  : 'media',
+                alt   : Locale.get(lg, 'projects.project.site.panel.btn.media'),
+                title : Locale.get(lg, 'projects.project.site.panel.btn.media'),
+                styles: {
+                    'border-left-width': 1,
+                    'float'            : 'right',
+                    width              : 40
                 },
-                events : {
-                    onClick : this.openMedia
+                events: {
+                    onClick: this.openMedia
                 }
-            }).inject( this.getHeader() );
+            }).inject(this.getHeader());
 
             new QUIButton({
-                image  : 'icon-sort',
-                alt    : Locale.get( lg, 'projects.project.site.panel.btn.sort' ),
-                title  : Locale.get( lg, 'projects.project.site.panel.btn.sort' ),
-                styles : {
-                    'border-left-width' : 1,
-                    'float' : 'right',
-                    width : 40
+                image : 'fa fa-sort',
+                name  : 'sort',
+                alt   : Locale.get(lg, 'projects.project.site.panel.btn.sort'),
+                title : Locale.get(lg, 'projects.project.site.panel.btn.sort'),
+                styles: {
+                    'border-left-width': 1,
+                    'float'            : 'right',
+                    width              : 40
                 },
-                events : {
-                    onClick : this.openSort
+                events: {
+                    onClick: this.openSort
                 }
-            }).inject( this.getHeader() );
-
+            }).inject(this.getHeader());
 
             var self    = this,
                 Site    = this.getSite(),
@@ -335,190 +387,253 @@ define('controls/projects/project/site/Panel', [
                 'ajax_site_buttons_get',
                 'ajax_site_isLockedFromOther',
                 'ajax_site_lock'
-            ], function(categories, buttons, isLocked)
-            {
+            ], function (categories, buttons, isLocked) {
                 var i, ev, fn, len, data, events, category, Category;
 
-                for ( i = 0, len = buttons.length; i < len; i++ )
-                {
-                    data = buttons[ i ];
+                for (i = 0, len = buttons.length; i < len; i++) {
+                    data = buttons[i];
 
-                    if ( data.onclick )
-                    {
+                    if (data.onclick) {
                         data._onclick = data.onclick;
                         delete data.onclick;
 
                         data.events = {
-                            onClick : self.$onPanelButtonClick
+                            onClick: self.$onPanelButtonClick
                         };
                     }
 
-                    if ( data.name === '_Del' || data.name === '_New' )
-                    {
+                    if (data.name === 'delete' || data.name === 'new') {
                         data.styles = {
-                            'float' : 'right',
-                            width : 40
+                            'float': 'right',
+                            width  : 40
                         };
                     }
 
-                    self.addButton( data );
+                    self.addButton(data);
                 }
 
-                var Save = self.getButtonBar().getChildren( '_Save' );
+                var Save = self.getButtonBar().getChildren('save');
 
-                if ( Save ) {
-                    Save.getElm().addClass( 'qui-site-button-save' );
+                if (Save) {
+                    Save.getElm().addClass('qui-site-button-save');
                 }
 
 
-                for ( i = 0, len = categories.length; i < len; i++ )
-                {
+                for (i = 0, len = categories.length; i < len; i++) {
                     events   = {};
-                    category = categories[ i ];
+                    category = categories[i];
 
-                    if ( typeOf( category.events ) === 'object' )
-                    {
+                    if (typeOf(category.events) === 'object') {
                         events = category.events;
                         delete category.events;
                     }
 
-                    Category = new QUIButton( category );
+                    Category = new QUIButton(category);
 
                     Category.addEvents({
-                        onActive : self.$onCategoryEnter
+                        onActive: self.$onCategoryEnter
                     });
 
-                    for ( ev in events  )
-                    {
-                        if ( !events.hasOwnProperty( ev ) ) {
+                    for (ev in events) {
+                        if (!events.hasOwnProperty(ev)) {
                             continue;
                         }
 
-                        try
-                        {
-                            eval( 'fn = '+ events[ ev ] );
+                        try {
+                            eval('fn = ' + events[ev]);
 
-                            Category.addEvent( ev, fn );
-
-                        } catch ( e ) {}
+                            Category.addEvent(ev, fn);
+                        } catch (e) {
+                        }
                     }
 
-                    self.addCategory( Category );
+                    self.addCategory(Category);
                 }
 
-                if ( isLocked ) {
+                self.$ButtonOpenWebsite = new QUIButton({
+                    textimage: 'fa fa-external-link',
+                    name     : 'sort',
+                    text     : Locale.get('quiqqer/quiqqer', 'project.sitemap.open.in.window'),
+                    title    : Locale.get('quiqqer/quiqqer', 'project.sitemap.open.in.window'),
+                    events   : {
+                        onClick: self.openSiteInPopup
+                    }
+                });
+
+                self.addButton(self.$ButtonOpenWebsite);
+                self.$ButtonOpenWebsite.hide();
+
+                if (Site.getAttribute('active')) {
+                    self.$ButtonOpenWebsite.show();
+                }
+
+                if (isLocked) {
                     self.setLocked();
                 }
 
             }, {
-                project : Project.encode(),
-                id      : Site.getId()
+                project: Project.encode(),
+                id     : Site.getId()
             });
         },
 
         /**
          * event : on inject
          */
-        $onInject : function()
-        {
+        $onInject: function () {
             var Site = this.getSite();
 
             Site.addEvents({
-                onLoad       : this.load,
-                onActivate   : this.$onSiteActivate,
-                onDeactivate : this.$onSiteDeactivate,
-                onSave       : this.$onSiteSave,
-                onDelete     : this.$onSiteDelete
+                onLoad      : this.load,
+                onActivate  : this.$onSiteActivate,
+                onDeactivate: this.$onSiteDeactivate,
+                onSave      : this.$onSiteSave,
+                onDelete    : this.$onSiteDelete
             });
 
-            if ( !Site.hasWorkingStorage() )
-            {
+            this.Loader.show();
+
+            if (!Site.hasWorkingStorage()) {
                 Site.load();
                 return;
             }
 
-
             var self = this;
 
-            this.Loader.show();
+            Site.hasWorkingStorageChanges().then(function (hasStorage) {
+                if (hasStorage === false) {
+                    Site.load();
+                    return;
+                }
 
-            var Sheet = this.createSheet({
-                title : 'Wiederherstellung der Seite #'+ Site.getId()
-            });
+                var EditUser = Users.get(Site.getAttribute('e_user'));
 
-            Sheet.getContent().set(
-                'html',
+                if (EditUser.isLoaded()) {
+                    return Promise.resolve(EditUser);
+                }
 
-                '<div class="qui-panel-dataRestore">' +
-                    '<p>Es wurden nicht gespeicherte Daten der Seite #'+ Site.getId() +' gefunden.</p>'+
-                    '<p>Sollen die Daten wieder hergestellt werden?</p>' +
-                '</div>' // #locale
-            );
+                return EditUser.load().then(function () {
+                    return Promise.resolve(EditUser);
+                });
+            }).then(function (EditUser) {
+                if (!EditUser) {
+                    Site.load();
+                    return;
+                }
 
-            Sheet.clearButtons();
+                var Sheet = self.createSheet({
+                    icon : 'fa fa-window-restore',
+                    title: Locale.get('quiqqer/quiqqer', 'panel.site.restore.title', {
+                        id: Site.getId()
+                    })
+                });
 
-            Sheet.addButton({
-                text   : 'Daten verwerfen',  // #locale
-                events :
-                {
-                    onClick : function()
-                    {
-                        Sheet.hide(function() {
-                            Sheet.destroy();
-                        });
 
-                        Site.clearWorkingStorage();
-                        Site.load(function() {
+                var StorageTime = null;
+                var storageDate = '---';
+                var storage     = Site.getWorkingStorage();
+                var EditDate    = new Date(Site.getAttribute('e_date'));
+
+                if ("__storageTime" in storage) {
+                    StorageTime = new Date(storage.__storageTime);
+                    storageDate = StorageTime.toLocaleDateString([], {
+                        hour  : '2-digit',
+                        minute: '2-digit'
+                    });
+                }
+
+                var localeParams = {
+                    id          : Site.getId(),
+                    title       : Site.getAttribute('title'),
+                    editUser    : EditUser.getName(),
+                    editUsername: EditUser.getUsername(),
+                    editDate    : EditDate.toLocaleDateString([], {
+                        hour  : '2-digit',
+                        minute: '2-digit'
+                    }),
+                    localeDate  : storageDate
+                };
+
+                var text = Locale.get(
+                    'quiqqer/quiqqer',
+                    'panel.site.restore.message.local.newer',
+                    localeParams
+                );
+
+                if (StorageTime && EditDate > StorageTime) {
+                    text = Locale.get(
+                        'quiqqer/quiqqer',
+                        'panel.site.restore.message.online.newer',
+                        localeParams
+                    );
+                }
+
+                Sheet.getContent().set('html', Mustache.render(templateRestore, {
+                    id  : Site.getId(),
+                    text: text
+                }));
+
+                Sheet.clearButtons();
+
+                Sheet.addButton({
+                    text  : Locale.get('quiqqer/quiqqer', 'panel.site.restore.button.cancel'),
+                    events: {
+                        onClick: function () {
+                            Sheet.hide(function () {
+                                Sheet.destroy();
+                            });
+
+                            Site.clearWorkingStorage();
                             self.load();
-                        });
+                        }
                     }
-                }
-            });
+                });
 
-            Sheet.addButton({
-                text   : 'Daten übernehmen', // #locale
-                events :
-                {
-                    onClick : function()
-                    {
-                        Sheet.hide(function() {
-                            Sheet.destroy();
-                        });
+                Sheet.addButton({
+                    text  : Locale.get('quiqqer/quiqqer', 'panel.site.restore.button.restore'),
+                    events: {
+                        onClick: function () {
+                            Sheet.hide(function () {
+                                Sheet.destroy();
+                            });
 
-                        Site.restoreWorkingStorage();
-                        Site.clearWorkingStorage();
-                        self.load();
+                            Site.setAttributes(storage);
+                            Site.clearWorkingStorage();
+                            self.load();
+                        }
                     }
-                }
-            });
+                });
 
-            Sheet.show(function() {
-                self.Loader.hide();
+                Sheet.show(function () {
+                    self.Loader.hide();
+                });
             });
         },
 
         /**
          * event : on destroy
          */
-        $onDestroy : function()
-        {
+        $onDestroy: function () {
             var Site    = this.getSite(),
                 Project = Site.getProject();
 
-            Site.removeEvent( 'onLoad', this.load );
-            Site.removeEvent( 'onActivate', this.$onSiteActivate );
-            Site.removeEvent( 'onDeactivate', this.$onSiteDeactivate );
-            Site.removeEvent( 'onSave', this.$onSiteSave );
-            Site.removeEvent( 'onDelete', this.$onSiteDelete );
+            Site.removeEvent('onLoad', this.load);
+            Site.removeEvent('onActivate', this.$onSiteActivate);
+            Site.removeEvent('onDeactivate', this.$onSiteDeactivate);
+            Site.removeEvent('onSave', this.$onSiteSave);
+            Site.removeEvent('onDelete', this.$onSiteDelete);
 
             Site.clearWorkingStorage();
 
-            window.removeEvent( 'login', this.$onLogin );
+            window.removeEvent('login', this.$onLogin);
 
-            Ajax.get(['ajax_site_unlock'], false, {
-                project : Project.encode(),
-                id      : Site.getId()
-            });
+            // only unlock if the site was not locked from another user
+            if (!this.$Container.getElement('[data-locked]')) {
+                Ajax.get(['ajax_site_unlock'], false, {
+                    project: Project.encode(),
+                    id     : Site.getId()
+                });
+            }
         },
 
         /**
@@ -526,17 +641,15 @@ define('controls/projects/project/site/Panel', [
          *
          * @method controls/projects/project/site/Panel#$onResize
          */
-        $onResize : function()
-        {
-            if ( this.$CategoryControl )
-            {
-                if ( "resize" in this.$CategoryControl ) {
+        $onResize: function () {
+            if (this.$CategoryControl) {
+                if ("resize" in this.$CategoryControl) {
                     this.$CategoryControl.resize();
                 }
             }
 
-            if ( this.getAttribute( 'Editor' ) ) {
-                this.getAttribute( 'Editor').resize();
+            if (this.getAttribute('Editor')) {
+                this.getAttribute('Editor').resize();
             }
         },
 
@@ -545,13 +658,11 @@ define('controls/projects/project/site/Panel', [
          *
          * @method controls/projects/project/site/Panel#openPermissions
          */
-        openPermissions : function()
-        {
+        openPermissions: function () {
             var Parent = this.getParent(),
                 Site   = this.getSite();
 
-            require(['controls/permissions/Panel'], function(PermPanel)
-            {
+            require(['controls/permissions/Panel'], function (PermPanel) {
                 Parent.appendChild(
                     new PermPanel({
                         Object: Site
@@ -565,15 +676,14 @@ define('controls/projects/project/site/Panel', [
          *
          * @method controls/projects/project/site/Panel#openMedia
          */
-        openMedia : function()
-        {
+        openMedia: function () {
             var Parent  = this.getParent(),
                 Site    = this.getSite(),
                 Project = Site.getProject(),
                 Media   = Project.getMedia();
 
-            require([ 'controls/projects/project/media/Panel' ], function(Panel) {
-                Parent.appendChild( new Panel( Media ) );
+            require(['controls/projects/project/media/Panel'], function (Panel) {
+                Parent.appendChild(new Panel(Media));
             });
         },
 
@@ -582,58 +692,30 @@ define('controls/projects/project/site/Panel', [
          *
          * @method controls/projects/project/site/Panel#openSort
          */
-        openSort : function()
-        {
+        openSort: function () {
             var Site = this.getSite(),
                 Sort = false;
 
             var Sheets = this.createSheet({
-                title : Locale.get( lg, 'projects.project.site.panel.sort.title', {
-                    id    : Site.getId(),
-                    title : Site.getAttribute('title'),
-                    name  : Site.getAttribute('name')
+                icon   : 'fa fa-sort',
+                buttons: false,
+                title  : Locale.get(lg, 'projects.project.site.panel.sort.title', {
+                    id   : Site.getId(),
+                    title: Site.getAttribute('title'),
+                    name : Site.getAttribute('name')
                 }),
-                events :
-                {
-                    onOpen : function(Sheet)
-                    {
+                events : {
+                    onOpen: function (Sheet) {
                         require([
                             'controls/projects/project/site/SiteChildrenSort'
-                        ], function(SiteSort) {
-                            Sort = new SiteSort( Site ).inject( Sheet.getContent() );
+                        ], function (SiteSort) {
+                            Sort = new SiteSort(Site).inject(Sheet.getContent());
                         });
                     }
                 }
             });
 
             Sheets.clearButtons();
-
-            Sheets.addButton({
-                name      : 'sortSave',
-                textimage : 'icon-save',
-                text      : Locale.get( lg, 'projects.project.site.childrensort.save' ),
-                events    :
-                {
-                    onClick : function(Btn)
-                    {
-                        if ( !Sort ) {
-                            return;
-                        }
-
-                        Btn.setAttribute( 'textimage', 'icon-refresh icon-spin' );
-
-                        Sort.save(function()
-                        {
-                            Btn.setAttribute( 'textimage', 'icon-save' );
-
-                            Sheets.hide(function() {
-                                Sheets.destroy();
-                            });
-                        });
-                    }
-                }
-            });
-
             Sheets.show();
         },
 
@@ -642,61 +724,175 @@ define('controls/projects/project/site/Panel', [
          *
          * @method controls/projects/project/site/Panel#openPermissions
          */
-        save : function()
-        {
+        save: function () {
             var self = this;
 
-            this.$onCategoryLeave( this.getActiveCategory(), function()
-            {
-                self.getSite().save(function()
-                {
-                    // refresh data
-                    var Form = self.getContent().getElement( 'form' );
+            this.$onCategoryLeave(this.getActiveCategory()).then(function () {
+                return self.getSite().save();
+            }).then(function () {
+                // refresh data
+                var Form = self.$Container.getElement('form');
 
-                    if ( Form )
-                    {
-                        QUIFormUtils.setDataToForm(
-                            self.getSite().getAttributes(),
-                            Form
-                        );
-                    }
+                if (Form) {
+                    QUIFormUtils.setDataToForm(
+                        self.getSite().getAttributes(),
+                        Form
+                    );
+                }
 
-                    self.load();
-                });
+                return self.load();
+            }).catch(function (err) {
+                console.error(err);
+                self.Loader.hide();
             });
         },
 
         /**
-         * opens the delet dialog
+         * opens the site delete dialog
          */
-        del : function()
-        {
+        del: function () {
             var Site = this.getSite();
 
-            require(['qui/controls/windows/Confirm'], function(Confirm)
-            {
+            require(['qui/controls/windows/Confirm'], function (Confirm) {
                 new Confirm({
-                    title     : Locale.get( lg, 'projects.project.site.panel.window.delete.title' ),
-                    titleicon : 'fa fa-trash-o icon-trash',
-                    text : Locale.get( lg, 'projects.project.site.panel.window.delete.text', {
-                        id    : Site.getId(),
-                        url   : Site.getAttribute( 'name' ) +'.html',
-                        name  : Site.getAttribute( 'name' ),
-                        title : Site.getAttribute( 'title' )
+                    title        : Locale.get(lg, 'projects.project.site.panel.window.delete.title', {
+                        id: Site.getId()
                     }),
-                    information : Locale.get( lg, 'projects.project.site.panel.window.delete.information', {
-                        id    : Site.getId(),
-                        url   : Site.getAttribute( 'name' ) +'.html',
-                        name  : Site.getAttribute( 'name' ),
-                        title : Site.getAttribute( 'title' )
+                    icon         : 'fa fa-trash-o',
+                    text         : Locale.get(lg, 'projects.project.site.panel.window.delete.text', {
+                        id   : Site.getId(),
+                        url  : Site.getAttribute('name') + QUIQQER.Rewrite.SUFFIX,
+                        name : Site.getAttribute('name'),
+                        title: Site.getAttribute('title')
                     }),
-                    height : 200,
-                    events : {
-                        onSubmit : function() {
-                            Site.del();
+                    texticon     : 'fa fa-trash-o',
+                    information  : Locale.get(lg, 'projects.project.site.panel.window.delete.information', {
+                        id   : Site.getId(),
+                        url  : Site.getAttribute('name') + QUIQQER.Rewrite.SUFFIX,
+                        name : Site.getAttribute('name'),
+                        title: Site.getAttribute('title')
+                    }),
+                    maxHeight    : 400,
+                    maxWidth     : 600,
+                    autoclose    : false,
+                    cancel_button: {
+                        text     : Locale.get(lg, 'cancel'),
+                        textimage: 'fa fa-remove'
+                    },
+                    ok_button    : {
+                        text     : Locale.get(lg, 'projects.project.site.panel.window.delete.button'),
+                        textimage: 'fa fa-trash-o'
+                    },
+
+                    events: {
+                        onSubmit: function (Win) {
+                            Win.Loader.show();
+
+                            Site.del().then(function () {
+                                Win.close();
+                            }).catch(function () {
+                                Win.Loader.hide();
+                            });
                         }
                     }
                 }).open();
+            });
+        },
+
+        /**
+         * Deactivate the site
+         */
+        deactivate: function () {
+            (function () {
+                this.Loader.show();
+                this.getSite().deactivate();
+            }).delay(100, this);
+        },
+
+        /**
+         * Activate the site
+         */
+        activate: function () {
+            (function () {
+                this.Loader.show();
+                this.getSite().activate();
+            }).delay(100, this);
+        },
+
+        /**
+         * Opens the delete Linked dialog
+         *
+         * @param {Number} parentId - Parent ID
+         * @return {Promise}
+         */
+        deleteLinked: function (parentId) {
+            var self = this,
+                Site = this.getSite();
+
+            return new Promise(function (resolve, reject) {
+                if (typeof parentId === 'undefined') {
+                    reject();
+                    return;
+                }
+
+                Site.getLinkedPath(parentId).then(function (path) {
+                    require(['qui/controls/windows/Confirm'], function (Confirm) {
+                        new Confirm({
+                            title      : Locale.get(lg, 'projects.project.site.panel.window.deleteLinked.title', {
+                                id      : Site.getId(),
+                                parentId: parentId,
+                                path    : path
+                            }),
+                            icon       : 'fa fa-trash-o',
+                            text       : Locale.get(lg, 'projects.project.site.panel.window.deleteLinked.text', {
+                                id      : Site.getId(),
+                                url     : Site.getAttribute('name') + QUIQQER.Rewrite.SUFFIX,
+                                name    : Site.getAttribute('name'),
+                                title   : Site.getAttribute('title'),
+                                parentId: parentId,
+                                path    : path
+                            }),
+                            texticon   : 'fa fa-trash-o',
+                            information: Locale.get(lg, 'projects.project.site.panel.window.deleteLinked.information', {
+                                id      : Site.getId(),
+                                url     : Site.getAttribute('name') + QUIQQER.Rewrite.SUFFIX,
+                                name    : Site.getAttribute('name'),
+                                title   : Site.getAttribute('title'),
+                                parentId: parentId,
+                                path    : path
+                            }),
+                            maxHeight  : 400,
+                            maxWidth   : 600,
+                            autoclose  : false,
+
+                            cancel_button: {
+                                text     : Locale.get(lg, 'cancel'),
+                                textimage: 'fa fa-remove'
+                            },
+                            ok_button    : {
+                                text     : Locale.get(lg, 'projects.project.site.panel.window.deleteLinked.button'),
+                                textimage: 'fa fa-trash-o'
+                            },
+
+                            events: {
+                                onSubmit: function (Win) {
+                                    Win.Loader.show();
+
+                                    Site.unlink(parentId, false).then(function () {
+                                        self.load();
+                                        Win.close();
+                                        resolve();
+                                    }).catch(function () {
+                                        Win.Loader.hide();
+                                        reject();
+                                    });
+                                },
+                                onCancel: resolve
+                            }
+                        }).open();
+                    });
+
+                });
             });
         },
 
@@ -708,9 +904,8 @@ define('controls/projects/project/site/Panel', [
          * @param {String} [value] - [optional, if no newname was passed,
          *         a window would be open]
          */
-        createNewChild : function(value)
-        {
-            SiteUtils.openCreateChild( this.getSite(), value );
+        createNewChild: function (value) {
+            SiteUtils.openCreateChild(this.getSite(), value);
         },
 
         /**
@@ -722,231 +917,364 @@ define('controls/projects/project/site/Panel', [
          * @fires onSiteTabLoad
          *
          * @param {Object} Category - qui/controls/toolbar/Button
+         * @return {Promise}
          */
-        $onCategoryEnter : function(Category)
-        {
+        $onCategoryEnter: function (Category) {
+            var self = this;
+
+            if (Category === this.getActiveCategory()) {
+                this.Loader.hide();
+                return Promise.resolve();
+            }
+
+            var setProject = function () {
+                // set the project to the controls
+                var i, len, Control;
+
+                var Site    = self.getSite(),
+                    Project = Site.getProject(),
+                    Form    = self.getBody().getElement('form'),
+                    quiids  = Form.getElements('[data-quiid]');
+
+                for (i = 0, len = quiids.length; i < len; i++) {
+
+                    Control = QUI.Controls.getById(
+                        quiids[i].get('data-quiid')
+                    );
+
+                    if (!Control) {
+                        continue;
+                    }
+
+                    if (typeOf(Control.setProject) === 'function') {
+                        Control.setProject(Project);
+                    }
+
+                    Control.setAttribute('Site', self.getSite());
+                }
+
+                return self.$categoryOnLoad(Category);
+            };
+
             this.Loader.show();
 
-            if ( this.getActiveCategory() ) {
-                this.$onCategoryLeave( this.getActiveCategory() );
-            }
-
-            if ( Category.getAttribute( 'name' ) == 'content' )
-            {
-                this.loadEditor(
-                    this.getSite().getAttribute( 'content' )
-                );
-
-                return;
-            }
-
-            if ( Category.getAttribute( 'type' ) == 'wysiwyg' )
-            {
-                this.loadEditor(
-                    this.getSite().getAttribute(
-                        Category.getAttribute( 'name' )
-                    )
-                );
-
-                return;
-            }
-
-            if ( !Category.getAttribute( 'template' ) )
-            {
-                this.getContent().set( 'html', '' );
-                this.$categoryOnLoad( Category );
-
-                QUI.parse( Category );
-                return;
-            }
-
-            var self    = this,
-                Site    = this.getSite(),
-                Project = Site.getProject();
-
-            Ajax.get([
-                'ajax_site_categories_template',
-                'ajax_site_lock'
-            ], function(result)
-            {
-                var Body = self.getContent();
-
-                if ( !result )
-                {
-                    Body.set( 'html', '' );
-                    self.$categoryOnLoad( Category );
-
-                    return;
+            return this.$onCategoryLeaveHide().then(function () {
+                return self.$onCategoryLeave(self.$PreviousCategory);
+            }).then(function () {
+                // cleanup controls
+                if (self.getAttribute('Editor')) {
+                    self.getAttribute('Editor').destroy();
                 }
 
-                var Form;
-
-                Body.set( 'html', '<form class="qui-site-data">'+ result +'</form>' );
-
-                Form = Body.getElement( 'form' );
-                Form.addEvent('submit', function(event) {
-                    event.stop();
-                });
-
-                // set to the media inputs the right project
-                Body.getElements( '.media-image,.media-folder' ).each(function(Elm) {
-                    Elm.set( 'data-project', Project.getName() );
-                });
-
-                // minimize setting tables
-                if ( Category.getAttribute( 'name' ) == 'settings' )
-                {
-                    Body.getElements( '.data-table:not(.site-data)' )
-                        .addClass( 'data-table-closed' );
+                if (self.$CategoryControl) {
+                    self.$CategoryControl.destroy();
+                    self.$CategoryControl = null;
                 }
 
-                // set data
-                QUIFormUtils.setDataToForm( Site.getAttributes(), Form );
+                // create content
+                self.$PreviousCategory = Category;
 
-                // information tab
-                if ( Category.getAttribute( 'name' ) === 'information' )
-                {
-                    self.$bindNameInputUrlFilter();
+                if (Category.getAttribute('name') === 'content') {
+                    return this.loadEditor(
+                        this.getSite().getAttribute('content')
+                    );
+                }
+
+                if (Category.getAttribute('type') === 'wysiwyg') {
+                    return this.loadEditor(
+                        this.getSite().getAttribute(
+                            Category.getAttribute('name')
+                        )
+                    );
+                }
+
+                if (Category.getAttribute('type') === 'xml') {
+                    this.$Container.set('html', '');
+
+                    return this.$getCategoryFromXml(Category.getAttribute('name')).then(function (result) {
+                        var Form = new Element('form', {
+                            html: result
+                        }).inject(self.$Container);
+
+                        QUIFormUtils.setDataToForm(self.getSite().getAttributes(), Form);
+
+                        return QUI.parse(Form).then(setProject);
+                    });
+                }
+
+                if (!Category.getAttribute('template')) {
+                    this.$Container.set('html', '');
+                    this.$categoryOnLoad(Category);
+
+                    return QUI.parse(this.$Container);
+                }
+
+                var Site    = self.getSite(),
+                    Project = Site.getProject();
+
+                return new Promise(function (resolve) {
+                    Ajax.get([
+                        'ajax_site_categories_template',
+                        'ajax_site_lock'
+                    ], function (result) {
+                        var Body = self.$Container;
+
+                        if (!result) {
+                            Body.set('html', '');
+                            self.$categoryOnLoad(Category).then(resolve);
+                            return;
+                        }
+
+                        Body.set('html', '<form class="qui-site-data">' + result + '</form>');
+
+                        var Form = Body.getElement('form');
+
+                        Form.addEvent('submit', function (event) {
+                            event.stop();
+                        });
+
+                        // set to the media inputs the right project
+                        Body.getElements('.media-image,.media-folder').each(function (Elm) {
+                            Elm.set('data-project', Project.getName());
+                        });
+
+                        // minimize setting tables
+                        if (Category.getAttribute('name') === 'settings') {
+                            Body.getElements('.data-table:not(.site-data)')
+                                .addClass('data-table-closed');
+                        }
+
+                        // search editor controls
+                        if (Category.getAttribute('name') === 'settings') {
+                            var Editors = Body.getElements('[data-qui="controls/editors/Editor"]');
+
+                            if (Editors.length) {
+                                Editors.set('data-qui', null);
+                                console.error('Please don\'t include controls/editors/Editor in Settings.');
+                            }
+                        }
 
 
-                    // site linking
-                    var i, len, Row, LastCell;
+                        // set data
+                        QUIFormUtils.setDataToForm(Site.getAttributes(), Form);
 
-                    var LinkinLangTable = Body.getElement( '.site-langs'),
-                        Locked          = Body.getElement( '[data-locked]' );
+                        ControlUtils.parse(Form).then(function () {
+                            // information tab
+                            if (Category.getAttribute('name') === 'information') {
+                                self.$bindNameInputUrlFilter();
 
-                    if ( LinkinLangTable )
-                    {
-                        var rowList = LinkinLangTable.getElements( 'tbody tr' );
+                                // site linking
+                                var i, len, Row;
 
-                        new QUIButton({
-                            text   : Locale.get( lg, 'projects.project.site.panel.linked.btn.add' ),
-                            styles : {
-                                position: 'absolute',
-                                right : 5,
-                                top : 5
-                            },
-                            events :
-                            {
-                                onClick : function() {
-                                    self.addLanguagLink();
+                                var LinkinTable     = Body.getElement('.site-linking'),
+                                    LinkinLangTable = Body.getElement('.site-langs'),
+                                    Locked          = Body.getElement('[data-locked]'),
+                                    Title           = Body.getElement('[name="title"]'),
+                                    OpenInStructure = Body.getElement('[name="open-in-structure"]'),
+                                    SiteType        = Body.getElement('[name="type"]')
+                                ;
+
+                                if (OpenInStructure) {
+                                    OpenInStructure.addEvent('click', self.openSiteInStructure);
+                                    OpenInStructure.set('disabled', false);
+                                    OpenInStructure.set('title', Locale.get('quiqqer/quiqqer', 'projects.project.site.panel.information.openInSiteStructure'));
                                 }
-                            }
-                        }).inject( LinkinLangTable.getElement( 'th' ) );
+
+                                SiteType.addEvent('change', function () {
+                                    if (SiteType.value === Site.getAttribute('type')) {
+                                        return;
+                                    }
+
+                                    self.save();
+                                });
+
+                                if (Title) {
+                                    Title.addEvent('blur', function () {
+                                        if (Site.getId() === 1) {
+                                            return;
+                                        }
+
+                                        var attributes = Site.getAttributes();
+
+                                        var name  = cleanupUrl(attributes.name);
+                                        var title = cleanupUrl(attributes.title);
+                                        var value = cleanupUrl(this.value);
+
+                                        if (value === title) {
+                                            return;
+                                        }
+
+                                        if (value === name) {
+                                            return;
+                                        }
+
+                                        self.$showTitleUrlAdjustment();
+                                    });
+                                }
 
 
-                        for ( i = 0, len = rowList.length; i < len; i++ )
-                        {
-                            Row = rowList[ i ];
+                                if (LinkinTable) {
+                                    var openDeleteLink = function (Btn) {
+                                        Btn.setAttribute('icon', 'fa fa-spinner fa-spin');
 
-                            if ( !Row.get( 'data-id' ).toInt() ) {
-                                continue;
-                            }
+                                        self.deleteLinked(
+                                            Btn.getElm().getParent().get('data-parentid')
+                                        ).then(function () {
+                                            Btn.setAttribute('icon', 'fa fa-trash');
+                                        }, function () {
+                                            Btn.setAttribute('icon', 'fa fa-trash');
+                                        });
+                                    };
 
-                            LastCell = rowList[ i ].getLast();
+                                    LinkinTable.getElements('.site-linking-entry-button').each(function (Node) {
+                                        Node.set('html', '');
 
+                                        new QUIButton({
+                                            name  : 'delete-linking',
+                                            icon  : 'fa fa-trash',
+                                            title : Locale.get(lg, 'projects.project.site.panel.window.deleteLinked.button'),
+                                            styles: {
+                                                width: 50
+                                            },
+                                            events: {
+                                                onClick: openDeleteLink
+                                            }
+                                        }).inject(Node);
+                                    });
+                                }
 
-                            new QUIButton({
-                                icon   : 'fa fa-file-o icon-file-alt',
-                                alt    : Locale.get( lg, 'open.site' ),
-                                title  : Locale.get( lg, 'open.site' ),
-                                lang   : Row.get( 'data-lang' ),
-                                siteId : Row.get( 'data-id' ),
-                                styles : {
-                                    'float' : 'right'
-                                },
-                                events :
-                                {
-                                    onClick : function(Btn)
-                                    {
+                                if (LinkinLangTable) {
+                                    var Buttons,
+                                        rowList = LinkinLangTable.getElements('tbody tr');
+
+                                    new QUIButton({
+                                        name  : 'add-linking',
+                                        text  : Locale.get(lg, 'projects.project.site.panel.linked.btn.add'),
+                                        styles: {
+                                            position: 'absolute',
+                                            right   : 5,
+                                            top     : 5,
+                                            zIndex  : 1
+                                        },
+                                        events: {
+                                            onClick: function (Btn, event) {
+                                                event.stop();
+                                                self.addLanguageLink();
+                                            }
+                                        }
+                                    }).inject(LinkinLangTable.getElement('th'));
+
+                                    // helper functions
+                                    var copyLinking = function (Btn) {
+                                        self.copySiteToLang(
+                                            Btn.getAttribute('lang')
+                                        );
+                                    };
+
+                                    var openSite = function (Btn) {
                                         PanelUtils.openSitePanel(
                                             Project.getName(),
-                                            Btn.getAttribute( 'lang' ),
-                                            Btn.getAttribute( 'siteId' )
+                                            Btn.getAttribute('lang'),
+                                            Btn.getAttribute('siteId')
                                         );
+                                    };
+
+                                    var removeLinking = function (Btn) {
+                                        self.removeLanguageLink(
+                                            Btn.getAttribute('lang'),
+                                            Btn.getAttribute('siteId')
+                                        );
+                                    };
+
+                                    for (i = 0, len = rowList.length; i < len; i++) {
+                                        Row     = rowList[i];
+                                        Buttons = rowList[i].getElement('.site-lang-entry-button');
+
+                                        if (!Row.get('data-id').toInt()) {
+                                            // seite in sprache kopieren und sprach verknüpfung anlegen
+                                            new QUIButton({
+                                                name  : 'copy-linking',
+                                                icon  : 'fa fa-copy',
+                                                alt   : Locale.get(lg, 'copy.site.in.lang'),
+                                                title : Locale.get(lg, 'copy.site.in.lang'),
+                                                lang  : Row.get('data-lang'),
+                                                events: {
+                                                    onClick: copyLinking
+                                                },
+                                                styles: {
+                                                    width: 50
+                                                }
+                                            }).inject(Buttons);
+
+                                            continue;
+                                        }
+
+                                        new QUIButton({
+                                            name  : 'open-site',
+                                            icon  : 'fa fa-file-o',
+                                            alt   : Locale.get(lg, 'open.site'),
+                                            title : Locale.get(lg, 'open.site'),
+                                            lang  : Row.get('data-lang'),
+                                            siteId: Row.get('data-id'),
+                                            styles: {
+                                                width: 50
+                                            },
+                                            events: {
+                                                onClick: openSite
+                                            }
+                                        }).inject(Buttons);
+
+                                        new QUIButton({
+                                            name  : 'remove-linking',
+                                            icon  : 'fa fa-remove',
+                                            alt   : Locale.get(lg, 'projects.project.site.panel.linked.btn.delete'),
+                                            title : Locale.get(lg, 'projects.project.site.panel.linked.btn.delete'),
+                                            lang  : Row.get('data-lang'),
+                                            siteId: Row.get('data-id'),
+                                            styles: {
+                                                width: 50
+                                            },
+                                            events: {
+                                                onClick: removeLinking
+                                            }
+                                        }).inject(Buttons);
                                     }
                                 }
-                            }).inject( LastCell );
-
-                            new QUIButton({
-                                icon   : 'icon-remove',
-                                alt    : Locale.get( lg, 'projects.project.site.panel.linked.btn.delete' ),
-                                title  : Locale.get( lg, 'projects.project.site.panel.linked.btn.delete' ),
-                                lang   : Row.get( 'data-lang' ),
-                                siteId : Row.get( 'data-id' ),
-                                styles : {
-                                    'float' : 'right'
-                                },
-                                events :
-                                {
-                                    onClick : function(Btn)
-                                    {
-                                        self.removeLanguagLink(
-                                            Btn.getAttribute( 'lang' ),
-                                            Btn.getAttribute( 'siteId' )
-                                        );
-                                    }
-                                }
-                            }).inject( LastCell );
-                        }
-                    }
 
 
-                    // locked
-                    if ( Locked && USER.isSU )
-                    {
-                        new QUIButton({
-                            text   : 'Trotzdem freischalten', // #locale
-                            styles : {
-                                clear   : 'both',
-                                display : 'block',
-                                'float' : 'none',
-                                margin  : '10px auto',
-                                width   : 200
-                            },
-                            events :
-                            {
-                                onClick : function() {
-                                    self.unlockSite();
+                                // locked
+                                if (Locked && USER.isSU) {
+                                    new QUIButton({
+                                        name  : 'unlock',
+                                        text  : Locale.get(lg, 'projects.project.site.panel.unlock'),
+                                        styles: {
+                                            clear  : 'both',
+                                            display: 'block',
+                                            'float': 'none',
+                                            margin : '10px auto',
+                                            width  : 200
+                                        },
+                                        events: {
+                                            onClick: function () {
+                                                self.unlockSite();
+                                            }
+                                        }
+                                    }).inject(Locked);
                                 }
                             }
-                        }).inject( Locked );
-                    }
-                }
 
-                ControlUtils.parse(Form, function()
-                {
-                    QUI.parse(Form, function()
-                    {
-                        // set the project to the controls
-                        var i, len, Control;
-                        var quiids = Form.getElements( '[data-quiid]' );
-
-                        for ( i = 0, len = quiids.length; i < len; i++ )
-                        {
-                            Control = QUI.Controls.getById( quiids[ i ].get('data-quiid') );
-
-                            if ( !Control ) {
-                                continue;
-                            }
-
-                            if ( typeOf( Control.setProject ) == 'function' ) {
-                                Control.setProject( Project );
-                            }
-
-                            Control.setAttribute( 'Site', self.getSite() );
-                        }
-
+                            QUI.parse(Form).then(setProject).then(resolve);
+                        }).catch(function (error) {
+                            console.error(error);
+                        });
+                    }, {
+                        id     : Site.getId(),
+                        project: Project.encode(),
+                        tab    : Category.getAttribute('name')
                     });
                 });
-
-
-                self.$categoryOnLoad( Category );
-
-            }, {
-                id      : Site.getId(),
-                project : Project.encode(),
-                tab     : Category.getAttribute( 'name' )
+            }.bind(this)).then(function () {
+                return self.$onCategoryEntryShow();
             });
         },
 
@@ -955,198 +1283,249 @@ define('controls/projects/project/site/Panel', [
          *
          * @method controls/projects/project/site/Panel#$categoryOnLoad
          * @param {Object} Category - qui/controls/buttons/Button
+         * @return {Promise}
          */
-        $categoryOnLoad : function(Category)
-        {
-            var self = this,
+        $categoryOnLoad: function (Category) {
+            var self          = this,
+                onloadRequire = Category.getAttribute('onload_require'),
+                onload        = Category.getAttribute('onload');
 
-                onloadRequire = Category.getAttribute( 'onload_require' ),
-                onload        = Category.getAttribute( 'onload' );
+            return new Promise(function (resolve) {
+                if (onloadRequire) {
 
-            if ( onloadRequire )
-            {
-                require([ onloadRequire ], function(Plugin)
-                {
-                    if ( onload )
-                    {
-                        eval( onload +'( Category, self );' );
-                        return;
-                    }
-
-                    var type = typeOf( Plugin );
-
-                    if ( type === 'function' )
-                    {
-                        type( Category, self );
-                        return;
-                    }
-
-                    if ( type === 'class' )
-                    {
-                        self.$CategoryControl = new Plugin({
-                            Site : self.getSite()
-                        });
-
-                        if ( QUI.Controls.isControl( self.$CategoryControl ) )
-                        {
-                            self.$CategoryControl.inject( self.getContent() );
-                            self.$CategoryControl.setParent( self );
-
-                            self.Loader.hide();
+                    require([onloadRequire], function (Plugin) {
+                        if (onload) {
+                            eval(onload + '( Category, self );');
+                            resolve();
+                            return;
                         }
-                    }
+
+                        var type = typeOf(Plugin);
+
+                        if (type === 'function') {
+                            type(Category, self);
+                            resolve();
+                            return;
+                        }
+
+                        if (type === 'class') {
+                            self.$CategoryControl = new Plugin({
+                                Site : self.getSite(),
+                                Panel: self
+                            });
+
+                            if (QUI.Controls.isControl(self.$CategoryControl)) {
+                                self.$CategoryControl.inject(self.$Container);
+                                self.$CategoryControl.setParent(self);
+                            }
+                        }
+
+                        resolve();
+                    }, resolve);
+
+                    return;
+                }
+
+                if (onload) {
+                    eval(onload + '(Category, self);');
+                    return resolve();
+                }
+
+                resolve();
+            });
+        },
+
+        /**
+         * Return the html from a xml category
+         *
+         * @return {Promise}
+         */
+        $getCategoryFromXml: function (name) {
+            var Site    = this.getSite(),
+                Project = Site.getProject();
+
+            return new Promise(function (resolve) {
+                Ajax.get('ajax_site_categories_xml', resolve, {
+                    project : Project.encode(),
+                    id      : Site.getId(),
+                    category: name
                 });
-
-                return;
-            }
-
-            if ( onload )
-            {
-                eval( onload +'( Category, self );' );
-                return;
-            }
-
-            this.Loader.hide();
+            });
         },
 
         /**
          * The site tab leave event
+         * Unload the category
          *
          * @method controls/projects/project/site/Panel#$tabLeave
          * @fires onSiteTabUnLoad
          *
-         * @param {Object} Category - qui/controls/buttons/Button
+         * @param {Object} [Category] - qui/controls/buttons/Button
          * @param {Function} [callback] - (optional) callback function
+         * @return {Promise}
          */
-        $onCategoryLeave : function(Category, callback)
-        {
+        $onCategoryLeave: function (Category, callback) {
             this.Loader.show();
 
-            var Site  = this.getSite(),
-                Body  = this.getBody();
+            var Site = this.getSite(),
+                Body = this.$Container;
 
+            if (typeof Category === 'undefined' || !Category) {
+                return Promise.resolve();
+            }
 
             // main content
-            if ( Category.getAttribute( 'name' ) === 'content' )
-            {
+            if (Category.getAttribute('name') === 'content') {
+                if (!this.getAttribute('Editor')) {
+                    return Promise.resolve();
+                }
+
                 Site.setAttribute(
                     'content',
-                    this.getAttribute( 'Editor' ).getContent()
+                    this.getAttribute('Editor').getContent()
                 );
 
                 this.$clearEditorPeriodicalSave();
 
-                if ( typeof callback === 'function' ) {
+                if (typeof callback === 'function') {
                     callback();
                 }
 
-                return;
+                return Promise.resolve();
+                //self.getAttribute('Editor').destroy();
             }
 
             // wysiwyg type
-            if ( Category.getAttribute( 'type' ) == 'wysiwyg' )
-            {
+            if (Category.getAttribute('type') === 'wysiwyg') {
+                if (!this.getAttribute('Editor')) {
+                    return Promise.resolve();
+                }
+
                 Site.setAttribute(
-                    Category.getAttribute( 'name' ),
-                    this.getAttribute( 'Editor' ).getContent()
+                    Category.getAttribute('name'),
+                    this.getAttribute('Editor').getContent()
                 );
 
                 this.$clearEditorPeriodicalSave();
 
-                if ( typeof callback === 'function' ) {
+                if (typeof callback === 'function') {
                     callback();
                 }
 
-                return;
+                return Promise.resolve();
             }
 
             // form unload
-            if ( !Body.getElement( 'form' ) )
-            {
-                if ( this.$CategoryControl )
-                {
-                    this.$CategoryControl.destroy();
-                    this.$CategoryControl = null;
-                }
-
-                if ( typeof callback === 'function' ) {
-                    callback();
-                }
-
-                return;
+            if (this.$CategoryControl && "unload" in this.$CategoryControl) {
+                this.$CategoryControl.unload();
             }
 
-            var Form     = Body.getElement( 'form' ),
-                elements = Form.elements;
-
-            // information tab
-            if ( Category.getAttribute( 'name' ) === 'information' )
-            {
-                Site.setAttribute( 'name', elements['site-name'].value );
-                Site.setAttribute( 'title', elements.title.value );
-                Site.setAttribute( 'short', elements.short.value );
-                Site.setAttribute( 'nav_hide', elements.nav_hide.checked );
-                Site.setAttribute( 'type', elements.type.value );
-
-                if ( typeof elements.layout !== 'undefined' ) {
-                    Site.setAttribute( 'layout', elements.layout.value );
-                }
-
-                if ( typeof callback === 'function' ) {
-                    callback();
-                }
-
-                return;
-            }
-
-            // unload params
-            var FormData = QUIFormUtils.getFormData( Form );
-
-            for ( var key in FormData )
-            {
-                if ( key === '' ) {
-                    continue;
-                }
-
-                if ( FormData.hasOwnProperty( key ) ) {
-                    Site.setAttribute( key, FormData[ key ] );
-                }
-            }
-
-
-            var self            = this,
-                onunloadRequire = Category.getAttribute( 'onunload_require' ),
-                onunload        = Category.getAttribute( 'onunload' );
-
-            if ( onunloadRequire )
-            {
-                require([ onunloadRequire ], function()
-                {
-                    if ( self.$CategoryControl )
-                    {
-                        self.$CategoryControl.destroy();
-                        self.$CategoryControl = null;
-                    }
-
-
-                    eval( onunload +'( Category, self );' );
-
-                    if ( typeof callback === 'function' ) {
+            if (!Body.getElement('form')) {
+                return Promise.resolve().then(function () {
+                    if (typeof callback === 'function') {
                         callback();
                     }
                 });
             }
 
+            var Form     = Body.getElement('form'),
+                elements = Form.elements;
 
-            if ( this.$CategoryControl )
-            {
-                this.$CategoryControl.destroy();
-                this.$CategoryControl = null;
+            // information tab
+            if (Category.getAttribute('name') === 'information') {
+                Site.setAttribute('name', elements['site-name'].value);
+                Site.setAttribute('title', elements.title.value);
+                Site.setAttribute('short', elements.short.value);
+                Site.setAttribute('nav_hide', elements.nav_hide.checked);
+                Site.setAttribute('type', elements.type.value);
+
+                if (typeof elements.layout !== 'undefined') {
+                    Site.setAttribute('layout', elements.layout.value);
+                }
+
+                if (typeof callback === 'function') {
+                    callback();
+                }
+
+                return Promise.resolve();
             }
 
-            if ( typeof callback === 'function' ) {
-                callback();
+            // unload params
+            var FormData = QUIFormUtils.getFormData(Form);
+
+            for (var key in FormData) {
+                if (key === '') {
+                    continue;
+                }
+
+                if (FormData.hasOwnProperty(key)) {
+                    Site.setAttribute(key, FormData[key]);
+                }
             }
+
+            var onunloadRequire = Category.getAttribute('onunload_require'),
+                onunload        = Category.getAttribute('onunload');
+
+            return Promise.resolve().then(function () {
+                if (onunloadRequire) {
+                    return new Promise(function (resolve) {
+                        require([onunloadRequire], function () {
+                            eval(onunload + '(Category, self);');
+
+                            if (typeof callback === 'function') {
+                                callback();
+                            }
+
+                            resolve();
+                        }, resolve);
+                    });
+                }
+
+                if (typeof callback === 'function') {
+                    callback();
+                }
+            });
+        },
+
+        /**
+         * Helper to hide body
+         *
+         * @return {Promise}
+         */
+        $onCategoryLeaveHide: function () {
+            var self = this;
+
+            return new Promise(function (resolve) {
+                moofx(self.$Container).animate({
+                    opacity: 0,
+                    top    : -20
+                }, {
+                    duration: 250,
+                    callback: resolve
+                });
+            });
+        },
+
+        /**
+         * Helper to hide body
+         *
+         * @return {Promise}
+         */
+        $onCategoryEntryShow: function () {
+            var self = this;
+
+            return new Promise(function (resolve) {
+                moofx(self.$Container).animate({
+                    opacity: 1,
+                    top    : 0
+                }, {
+                    duration: 250,
+                    callback: function () {
+                        self.Loader.hide();
+                        resolve();
+                    }
+                });
+            });
         },
 
         /**
@@ -1155,109 +1534,174 @@ define('controls/projects/project/site/Panel', [
          * @method controls/projects/project/site/Panel#$onPanelButtonClick
          * @param {Object} Btn - qui/controls/buttons/Button
          */
-        $onPanelButtonClick : function(Btn)
-        {
+        $onPanelButtonClick: function (Btn) {
             var Panel = this,
-                Site  = Panel.getSite(); // maybe in eval
+                Site  = Panel.getSite();
 
-            if ( Btn.getAttribute( 'name' ) === 'status' )
-            {
-                this.$onCategoryLeave( this.getActiveCategory(), function()
-                {
+            var evalButtonClick = function () {
+                eval(Btn.getAttribute('_onclick') + '();');
+            };
+
+            if (Btn.getAttribute('name') !== 'status') {
+                evalButtonClick();
+                return;
+            }
+
+            // storage cleanung, so that this can be properly compared
+            var storageCleanup = function (storage) {
+                if (!storage) {
+                    return '';
+                }
+
+                if (typeof storage === 'string') {
+                    return storage;
+                }
+
+                if (typeof storage.release_to === 'undefined' ||
+                    storage.release_to === null) {
+                    storage.release_to = '';
+                }
+
+                if (typeof storage.has_children !== 'undefined') {
+                    storage.has_children = parseInt(storage.has_children);
+                }
+
+                if (typeof storage.__storageTime !== 'undefined') {
+                    delete storage.__storageTime;
+                }
+
+                return JSON.encode(storage);
+            };
+
+            var oldStorage = storageCleanup(Site.getWorkingStorage());
+
+            Panel.$onCategoryLeave(Panel.getActiveCategory()).then(function () {
+                return new Promise(function (resolve) {
+                    var currentStorage = storageCleanup(Site.getWorkingStorage());
+
                     // check if site must be saved
-                    if ( !Site.hasWorkingStorage() )
-                    {
-                        eval( Btn.getAttribute( '_onclick' ) +'();' );
-                        return;
+                    if (!oldStorage || oldStorage === currentStorage) {
+                        evalButtonClick();
+                        return resolve();
                     }
 
-                    // #locale
                     new QUIConfirm({
-                        title   : 'Die Seite besitzt Änderungen', // #locale
-                        content : 'Die Seite besitzt Änderungen.<br />Möchten Sie diese Änderungen auch speichern?', // #locale
-                        maxHeight : 200,
-                        maxWidth  : 500,
-                        ok_button : {
-                            text : 'Änderungen auch speichern' // #locale
+                        title        : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.title'),
+                        text         : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.text'),
+                        information  : Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.information'),
+                        maxHeight    : 400,
+                        maxWidth     : 600,
+                        texticon     : 'fa fa-edit',
+                        icon         : 'fa fa-edit',
+                        ok_button    : {
+                            text: Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.button.ok')
                         },
-                        cancel_button : {
-                            text : 'Status nur ändern' // #locale
+                        cancel_button: {
+                            text: Locale.get('quiqqer/quiqqer', 'site.window.siteChangesExists.button.cancel')
                         },
-                        events :
-                        {
-                            onSubmit : function()
-                            {
-                                Site.save(function() {
-                                    eval( Btn.getAttribute( '_onclick' ) +'();' );
+                        events       : {
+                            onSubmit: function () {
+                                Site.save(function () {
+                                    evalButtonClick();
+                                    resolve();
                                 });
                             },
 
-                            onCancel : function() {
-                                eval( Btn.getAttribute( '_onclick' ) +'();' );
+                            onCancel: function () {
+                                evalButtonClick();
+                                resolve();
                             }
                         }
                     }).open();
                 });
-
-                return;
-            }
-
-            eval( Btn.getAttribute( '_onclick' ) +'();' );
+            }).then(function () {
+                Panel.$onCategoryEnter(Panel.getActiveCategory());
+            });
         },
 
         /**
-         *
+         * init the name input key events
          */
-        $bindNameInputUrlFilter : function()
-        {
+        $bindNameInputUrlFilter: function () {
             var Site = this.getSite(),
-                Body = this.getContent();
+                Body = this.$Container;
 
-            var NameInput  = Body.getElements( 'input[name="site-name"]' ),
-                UrlDisplay = Body.getElements( '.site-url-display' ),
-                siteUrl    = Site.getUrl();
+            var NameInput     = Body.getElement('input[name="site-name"]'),
+                UrlDisplay    = Body.getElement('.site-url-display'),
+                UrlEditButton = Body.getElement('.site-url-display-edit'),
+                siteUrl       = Site.getUrl();
 
-            if ( Site.getId() != 1 ) {
-                UrlDisplay.set( 'html', Site.getUrl() );
+            if (!NameInput) {
+                return;
             }
 
-            // filter
-            var sitePath   = siteUrl.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '') +'/',
-                notAllowed = Object.keys( SiteUtils.notAllowedUrlSigns() ).join('|'),
-                reg        = new RegExp( '['+ notAllowed +']', "g" );
+            if (Site.getId() !== 1) {
+                UrlDisplay.set('html', Site.getUrl());
+            }
 
-            var lastPos = null;
+            new QUIButton({
+                icon  : 'fa fa-edit',
+                styles: {
+                    width: 50
+                },
+                events: {
+                    onClick: function (Btn) {
+                        if (Btn.isActive()) {
+                            NameInput.setStyle('display', 'none');
+                            UrlDisplay.removeClass('site-url-display-active');
+                            Btn.setNormal();
+                            return;
+                        }
+
+                        NameInput.setStyle('display', null);
+                        NameInput.focus();
+                        UrlDisplay.addClass('site-url-display-active');
+                        Btn.setActive();
+                    }
+                }
+            }).inject(UrlEditButton);
+
+            // filter
+            var sitePath = siteUrl.replace(/\\/g, '/').replace(/\/[^\/]*\/?$/, '') + '/',
+                lastPos  = null,
+                hold     = false;
 
             NameInput.set({
-                value  : Site.getAttribute( 'name' ),
-                events :
-                {
-                    keydown : function(event) {
-                        lastPos = QUIElmUtils.getCursorPosition( event.target );
+                value : Site.getAttribute('name'),
+                events: {
+                    keydown: function () {
+                        if (hold) {
+                            return;
+                        }
+
+                        hold = true;
                     },
 
-                    keyup : function()
-                    {
+                    keyup: function (event) {
                         var old = this.value;
 
-                        this.value = this.value.replace( reg, '' );
-                        this.value = this.value.replace( / /g, QUIQQER.Rewrite.URL_SPACE_CHARACTER );
-
-                        if ( old != this.value ) {
-                            QUIElmUtils.setCursorPosition( this, lastPos );
+                        if (typeof event !== 'undefined') {
+                            lastPos = QUIElmUtils.getCursorPosition(event.target);
+                            hold    = false;
                         }
 
-                        if ( Site.getId() != 1 ) {
-                            UrlDisplay.set('html', sitePath + this.value + '.html');
+                        this.value = cleanupUrl(this.value);
+
+                        if (typeof event !== 'undefined' && old !== this.value) {
+                            QUIElmUtils.setCursorPosition(this, lastPos - 1);
+                        }
+
+                        if (Site.getId() !== 1) {
+                            UrlDisplay.set('html', sitePath + this.value + QUIQQER.Rewrite.SUFFIX);
                         }
                     },
 
-                    blur : function() {
-                        this.fireEvent( 'keyup' );
+                    blur: function () {
+                        this.fireEvent('keyup');
                     },
 
-                    focus : function() {
-                        this.fireEvent( 'keyup' );
+                    focus: function () {
+                        this.fireEvent('keyup');
                     }
                 }
             });
@@ -1266,14 +1710,12 @@ define('controls/projects/project/site/Panel', [
         /**
          * Disable the buttons, if the site is locked
          */
-        setLocked : function()
-        {
+        setLocked: function () {
             var buttons = this.getButtons();
 
-            for ( var i = 0, len = buttons.length; i < len; i++ )
-            {
-                if ( "disable" in buttons[ i ] ) {
-                    buttons[ i ].disable();
+            for (var i = 0, len = buttons.length; i < len; i++) {
+                if ("disable" in buttons[i]) {
+                    buttons[i].disable();
                 }
             }
         },
@@ -1281,14 +1723,12 @@ define('controls/projects/project/site/Panel', [
         /**
          * Enable the buttons, if the site is unlocked
          */
-        setUnlocked : function()
-        {
+        setUnlocked: function () {
             var buttons = this.getButtons();
 
-            for ( var i = 0, len = buttons.length; i < len; i++ )
-            {
-                if ( "enable" in buttons[ i ] ) {
-                    buttons[ i ].enable();
+            for (var i = 0, len = buttons.length; i < len; i++) {
+                if ("enable" in buttons[i]) {
+                    buttons[i].enable();
                 }
             }
         },
@@ -1296,14 +1736,13 @@ define('controls/projects/project/site/Panel', [
         /**
          * unlock the site, only if the user has the permission
          */
-        unlockSite : function()
-        {
+        unlockSite: function () {
             var self = this,
                 Site = this.getSite();
 
             this.Loader.show();
 
-            Site.unlock(function() {
+            Site.unlock(function () {
                 self.$destroyRefresh();
             });
         },
@@ -1313,14 +1752,12 @@ define('controls/projects/project/site/Panel', [
          *
          * @private
          */
-        $destroyRefresh : function()
-        {
+        $destroyRefresh: function () {
             var self    = this,
                 Site    = this.getSite(),
                 Project = Site.getProject();
 
-            require(['utils/Panels'], function(Utils)
-            {
+            require(['utils/Panels'], function (Utils) {
                 self.destroy();
 
                 Utils.openSitePanel(
@@ -1334,27 +1771,25 @@ define('controls/projects/project/site/Panel', [
         /**
          * event : on login
          */
-        $onLogin : function()
-        {
+        $onLogin: function () {
             var Active = this.getActiveCategory(),
-                Task   = this.getAttribute( 'Task' );
+                Task   = this.getAttribute('Task');
 
             // if task exists, check if task is active
-            if ( Task &&
-                 typeOf( Task ) === 'qui/controls/taskbar/Task' &&
-                 Task.isActive() === false
+            if (Task &&
+                typeOf(Task) === 'qui/controls/taskbar/Task' &&
+                Task.isActive() === false
             ) {
                 return;
             }
 
             // no active category? something is wrong, so reload the panel
-            if ( !Active )
-            {
+            if (!Active) {
                 this.$destroyRefresh();
                 return;
             }
 
-            this.$onCategoryEnter( this.getActiveCategory() );
+            this.$onCategoryEnter(this.getActiveCategory());
         },
 
         /**
@@ -1364,26 +1799,42 @@ define('controls/projects/project/site/Panel', [
         /**
          * event on site save
          */
-        $onSiteSave : function(Site)
-        {
+        $onSiteSave: function () {
+            var Form = this.getBody().getElement('form');
+
+            if (Form) {
+                var attributes = this.getSite().getAttributes();
+                var NameInput  = this.getBody().getElement('input[name="site-name"]');
+
+                attributes['site-name'] = attributes.name;
+
+                QUIFormUtils.setDataToForm(attributes, Form);
+
+                if (NameInput) {
+                    NameInput.fireEvent('keyup');
+                }
+            }
+
             this.Loader.hide();
         },
 
         /**
          * event : on {classes/projects/Site} activation
          */
-        $onSiteActivate : function()
-        {
-            var Status = this.getButtons( 'status' );
+        $onSiteActivate: function () {
+            this.$ButtonOpenWebsite.show();
 
-            if ( !Status ) {
+            var Status = this.getButtons('status');
+
+            if (!Status) {
+                this.Loader.hide();
                 return;
             }
 
             Status.setAttributes({
-                'textimage' : Status.getAttribute( 'dimage' ),
-                'text'      : Status.getAttribute( 'dtext' ),
-                '_onclick'  : 'Panel.getSite().deactivate'
+                'textimage': Status.getAttribute('dimage'),
+                'text'     : Status.getAttribute('dtext'),
+                '_onclick' : 'Panel.deactivate'
             });
 
             this.Loader.hide();
@@ -1392,18 +1843,20 @@ define('controls/projects/project/site/Panel', [
         /**
          * event : on {classes/projects/Site} deactivation
          */
-        $onSiteDeactivate : function()
-        {
-            var Status = this.getButtons( 'status' );
+        $onSiteDeactivate: function () {
+            this.$ButtonOpenWebsite.hide();
 
-            if ( !Status ) {
+            var Status = this.getButtons('status');
+
+            if (!Status) {
+                this.Loader.hide();
                 return;
             }
 
             Status.setAttributes({
-                'textimage' : Status.getAttribute( 'aimage' ),
-                'text'      : Status.getAttribute( 'atext' ),
-                '_onclick'  : 'Panel.getSite().activate'
+                'textimage': Status.getAttribute('aimage'),
+                'text'     : Status.getAttribute('atext'),
+                '_onclick' : 'Panel.activate'
             });
 
             this.Loader.hide();
@@ -1412,8 +1865,7 @@ define('controls/projects/project/site/Panel', [
         /**
          * event : on {classes/projects/Site} delete
          */
-        $onSiteDelete : function()
-        {
+        $onSiteDelete: function () {
             this.destroy();
         },
 
@@ -1426,54 +1878,43 @@ define('controls/projects/project/site/Panel', [
          *
          * @method controls/projects/project/site/Panel#loadEditor
          * @param {String} content - content of the editor
+         * @return {Promise}
          */
-        loadEditor : function(content)
-        {
+        loadEditor: function (content) {
             var self = this,
-                Body = this.getBody();
+                Body = this.$Container;
 
-            Body.set( 'html', '' );
+            Body.set('html', '');
+            Body.setStyle('opacity', 0);
 
-            require(['Editors'], function(Editors)
-            {
-                Editors.getEditor(null, function(Editor)
-                {
-                    var Site    = self.getSite(),
-                        Project = Site.getProject();
+            return new Promise(function (resolve) {
+                require(['Editors'], function (Editors) {
+                    Editors.getEditor().then(function (Editor) {
+                        var Site    = self.getSite(),
+                            Project = Site.getProject();
 
-                    self.setAttribute( 'Editor', Editor );
+                        self.setAttribute('Editor', Editor);
 
-                    // draw the editor
-                    Editor.setAttribute( 'Panel', self );
-                    Editor.setAttribute( 'name', Site.getId() );
-                    Editor.setAttribute( 'showLoader', false );
-                    Editor.setProject( Project );
-                    Editor.addEvent( 'onDestroy', self.$onEditorDestroy );
+                        // draw the editor
+                        Editor.setAttribute('Panel', self);
+                        Editor.setAttribute('name', Site.getId());
+                        Editor.setAttribute('showLoader', false);
+                        Editor.setProject(Project);
+                        Editor.addEvent('onDestroy', self.$onEditorDestroy);
 
-                    // set the site content
-                    if ( typeof content === 'undefined' || !content ) {
-                        content = '';
-                    }
+                        // set the site content
+                        if (typeof content === 'undefined' || !content) {
+                            content = '';
+                        }
 
-                    Editor.addEvent( 'onLoaded', self.$onEditorLoad );
+                        Editor.addEvent('onLoaded', resolve);
+                        Editor.inject(Body);
+                        Editor.setContent(content);
 
-                    Editor.inject( Body );
-                    Editor.setContent( content );
-
-                    self.$startEditorPeriodicalSave();
+                        self.$startEditorPeriodicalSave();
+                    });
                 });
             });
-        },
-
-        /**
-         * event: on editor load
-         * if the editor is finished
-         *
-         * @method controls/projects/project/site/Panel#$onEditorLoad
-         */
-        $onEditorLoad : function()
-        {
-            this.Loader.hide();
         },
 
         /**
@@ -1482,52 +1923,47 @@ define('controls/projects/project/site/Panel', [
          *
          * @method controls/projects/project/site/Panel#$onEditorDestroy
          */
-        $onEditorDestroy : function()
-        {
-            this.setAttribute( 'Editor', false );
+        $onEditorDestroy: function () {
+            this.setAttribute('Editor', false);
         },
 
         /**
          * Start the periodical editor save
          */
-        $startEditorPeriodicalSave : function()
-        {
-            if ( this.$editorPeriodicalSave ) {
+        $startEditorPeriodicalSave: function () {
+            if (this.$editorPeriodicalSave) {
                 this.$clearEditorPeriodicalSave();
             }
 
-            var Category  = this.getActiveCategory(),
+            var self      = this,
+                Category  = this.getActiveCategory(),
                 attribute = false;
 
-            if ( Category.getAttribute( 'name' ) === 'content' ) {
+            if (Category.getAttribute('name') === 'content') {
                 attribute = 'content';
             }
 
-            if ( Category.getAttribute( 'type' ) == 'wysiwyg' ) {
+            if (Category.getAttribute('type') === 'wysiwyg') {
                 attribute = Category.getAttribute('name');
             }
 
-            this.$editorPeriodicalSave = (function(attr)
-            {
-                var Editor = this.getAttribute('Editor');
+            this.$editorPeriodicalSave = (function (attr) {
+                var Editor = self.getAttribute('Editor');
 
-                if ( !Editor ) {
+                if (!Editor) {
                     return;
                 }
 
-                this.getSite().setAttribute( attr, Editor.getContent() );
-
-            }).periodical( this.getAttribute('editorPeriode'), this, [ attribute ] );
+                self.getSite().setAttribute(attr, Editor.getContent());
+            }).periodical(this.getAttribute('editorPeriode'), this, [attribute]);
         },
 
         /**
          * clear / stop the periodical editor save
          */
-        $clearEditorPeriodicalSave : function()
-        {
-            if ( this.$editorPeriodicalSave )
-            {
-                clearInterval( this.$editorPeriodicalSave );
+        $clearEditorPeriodicalSave: function () {
+            if (this.$editorPeriodicalSave) {
+                clearInterval(this.$editorPeriodicalSave);
                 this.$editorPeriodicalSave = false;
             }
         },
@@ -1535,45 +1971,46 @@ define('controls/projects/project/site/Panel', [
         /**
          * Opens a project popup, so, an user can set a languag link
          */
-        addLanguagLink : function()
-        {
+        addLanguageLink: function () {
             var self = this;
 
-            require(['controls/projects/Popup'], function(ProjectPopup)
-            {
+            require(['controls/projects/Popup'], function (ProjectPopup) {
                 var Site    = self.getSite(),
                     Project = Site.getProject();
 
-                Project.getConfig(function(config)
-                {
+                Project.getConfig(function (config) {
                     var langs = config.langs,
                         lang  = Project.getLang();
 
-                    langs = langs.replace( lang, '' )
-                                 .replace( ',,', '' )
-                                 .replace( /^,|,$/g, '' );
+                    langs = langs.split(',');
 
+                    var needles = [];
+
+                    for (var i = 0, len = langs.length; i < len; i++) {
+                        if (langs[i] !== lang) {
+                            needles.push(langs[i]);
+                        }
+                    }
 
                     new ProjectPopup({
-                        project : Project.getName(),
-                        langs   : langs.split(','),
-                        events  :
-                        {
-                            onSubmit : function(Popup, result)
-                            {
+                        project: Project.getName(),
+                        langs  : needles,
+                        events : {
+                            onSubmit: function (Popup, result) {
                                 Popup.Loader.show();
 
-                                Ajax.post('ajax_site_language_add', function()
-                                {
-                                    Popup.close();
-
-                                    self.load();
+                                Ajax.post('ajax_site_language_add', function () {
+                                    self.$ActiveCat = null;
+                                    self.getSite().load(function () {
+                                        Popup.close();
+                                        self.load();
+                                    });
                                 }, {
-                                    project : Project.encode(),
-                                    id      : Site.getId(),
-                                    linkedParams : JSON.encode({
-                                        lang : result.lang,
-                                        id   : result.ids[ 0 ]
+                                    project     : Project.encode(),
+                                    id          : Site.getId(),
+                                    linkedParams: JSON.encode({
+                                        lang: result.lang,
+                                        id  : result.ids[0]
                                     })
                                 });
                             }
@@ -1589,106 +2026,258 @@ define('controls/projects/project/site/Panel', [
          * @param {String} lang - lang of the language link
          * @param {String} id - Site-ID of the language link
          */
-        removeLanguagLink : function(lang, id)
-        {
+        removeLanguageLink: function (lang, id) {
             var self = this;
 
-            require(['qui/controls/windows/Confirm'], function(QUIConfirm)
-            {
-                var Site    = self.getSite(),
-                    Project = Site.getProject();
+            var Site    = self.getSite(),
+                Project = Site.getProject();
 
-                new QUIConfirm({
-                    title  : Locale.get( lg, 'projects.project.site.panel.linked.window.delete.title' ),
-                    icon   : 'icon-remove',
-                    text   : Locale.get( lg, 'projects.project.site.panel.linked.window.delete.text' ),
-                    events :
-                    {
-                        onSubmit : function(Confirm)
-                        {
-                            Confirm.Loader.show();
+            new QUIConfirm({
+                title    : Locale.get(lg, 'projects.project.site.panel.linked.window.delete.title'),
+                icon     : 'fa fa-remove',
+                text     : Locale.get(lg, 'projects.project.site.panel.linked.window.delete.text'),
+                maxHeight: 300,
+                maxWidth : 450,
+                events   : {
+                    onSubmit: function (Confirm) {
+                        Confirm.Loader.show();
 
-                            Ajax.post('ajax_site_language_remove', function()
-                            {
+                        Ajax.post('ajax_site_language_remove', function () {
+                            self.$ActiveCat = null;
+                            self.getSite().load(function () {
                                 Confirm.close();
-
                                 self.load();
-                            }, {
-                                project : Project.encode(),
-                                id      : Site.getId(),
-                                linkedParams : JSON.encode({
-                                    lang : lang,
-                                    id   : id
-                                })
                             });
-                        }
+                        }, {
+                            project     : Project.encode(),
+                            id          : Site.getId(),
+                            linkedParams: JSON.encode({
+                                lang: lang,
+                                id  : id
+                            })
+                        });
                     }
-                }).open();
-            });
+                }
+            }).open();
+
+        },
+
+        /**
+         * Copy site to another language and set the language link
+         *
+         * @param {String} lang
+         */
+        copySiteToLang: function (lang) {
+            if (!this.$Site) {
+                return;
+            }
+
+            var self    = this,
+                Project = this.$Site.getProject();
+
+            new QUIConfirm({
+                title      : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.title', {
+                    lang: lang
+                }),
+                text       : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.text', {
+                    lang: lang
+                }),
+                information: Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.information', {
+                    lang: lang
+                }),
+
+                icon     : 'fa fa-copy',
+                texticon : 'fa fa-copy',
+                autoclose: false,
+                maxHeight: 400,
+                maxWidth : 600,
+
+                events       : {
+                    onSubmit: function (Win) {
+                        Win.Loader.show();
+
+                        require(['controls/projects/Popup'], function (ProjectPopup) {
+                            Win.close();
+
+                            new ProjectPopup({
+                                project             : Project.getName(),
+                                lang                : lang,
+                                disableProjectSelect: true,
+                                events              : {
+                                    onSubmit: function (Popup, result) {
+
+                                        Popup.Loader.show();
+
+                                        self.$Site.copy({
+                                            parentId: result.ids[0],
+                                            project : {
+                                                name: Project.getName(),
+                                                lang: lang
+                                            }
+                                        }).then(function (newChildId) {
+                                            Ajax.post('ajax_site_language_add', function () {
+                                                self.$ActiveCat = null;
+                                                self.getSite().load(function () {
+                                                    Popup.close();
+                                                    self.load();
+                                                });
+                                            }, {
+                                                project     : Project.encode(),
+                                                id          : self.$Site.getId(),
+                                                linkedParams: JSON.encode({
+                                                    lang: lang,
+                                                    id  : newChildId
+                                                })
+                                            });
+
+                                        });
+                                    }
+                                }
+                            }).open();
+                        });
+                    }
+                },
+                cancel_button: {
+                    text     : Locale.get(lg, 'cancel'),
+                    textimage: 'fa fa-remove'
+                },
+                ok_button    : {
+                    text     : Locale.get(lg, 'projects.project.site.panel.copySiteToLink.window.submit'),
+                    textimage: 'fa fa-check'
+                }
+            }).open();
+
+            //this.$Site;
         },
 
         /**
          * Open the preview window
          */
-        openPreview : function()
-        {
+        openPreview: function () {
             var self = this;
 
             this.Loader.show();
 
-            this.$onCategoryLeave(this.getActiveCategory(), function()
-            {
+            return this.$onCategoryLeave(this.getActiveCategory()).then(function () {
                 var Site    = self.getSite(),
                     Project = Site.getProject();
 
                 var Form = new Element('form', {
-                    method : 'POST',
-                    action : URL_SYS_DIR +'bin/preview.php',
-                    target : '_blank'
+                    method: 'POST',
+                    action: URL_SYS_DIR + 'bin/preview.php',
+                    target: '_blank'
                 });
 
                 var attributes = Site.getAttributes();
 
                 new Element('input', {
-                    type  : 'hidden',
-                    value : Project.getName(),
-                    name  : 'project'
-                }).inject( Form );
+                    type : 'hidden',
+                    value: Project.getName(),
+                    name : 'project'
+                }).inject(Form);
 
                 new Element('input', {
-                    type  : 'hidden',
-                    value :  Project.getLang(),
-                    name  : 'lang'
-                }).inject( Form );
+                    type : 'hidden',
+                    value: Project.getLang(),
+                    name : 'lang'
+                }).inject(Form);
 
                 new Element('input', {
-                    type  : 'hidden',
-                    value : Site.getId(),
-                    name  : 'id'
-                }).inject( Form );
+                    type : 'hidden',
+                    value: Site.getId(),
+                    name : 'id'
+                }).inject(Form);
 
 
-                for ( var key in attributes )
-                {
-                    if ( attributes.hasOwnProperty( key ) )
-                    {
-                        new Element('input', {
-                            type  : 'hidden',
-                            value : attributes[ key ],
-                            name  : 'siteData['+ key +']'
-                        }).inject( Form );
+                var val, to;
+
+                for (var key in attributes) {
+
+                    if (!attributes.hasOwnProperty(key)) {
+                        continue;
                     }
+
+                    if (!attributes[key]) {
+                        continue;
+                    }
+
+                    to  = typeOf(attributes[key]);
+                    val = attributes[key];
+
+                    if (to !== 'string' && to !== 'number') {
+                        val = JSON.encode(val);
+
+                        new Element('input', {
+                            type : 'hidden',
+                            value: val,
+                            name : 'siteDataJSON[' + key + ']'
+                        }).inject(Form);
+
+                        continue;
+                    }
+
+                    new Element('input', {
+                        type : 'hidden',
+                        value: val,
+                        name : 'siteData[' + key + ']'
+                    }).inject(Form);
+
                 }
 
-                Form.inject( document.body );
+                Form.inject(document.body);
                 Form.submit();
 
                 self.Loader.hide();
 
-                (function() {
+                (function () {
                     Form.destroy();
-                }).delay( 1000 );
-            });
+                }).delay(1000);
+            }).then(function () {
+                this.$onCategoryEnter(this.getActiveCategory());
+            }.bind(this));
+        },
+
+        /**
+         * Shows title url customization confirm window
+         */
+        $showTitleUrlAdjustment: function () {
+            var self = this,
+                Site = this.getSite();
+
+            new QUIConfirm({
+                icon         : 'fa fa-file-o',
+                texticon     : 'fa fa-file-o',
+                title        : Locale.get('quiqqer/quiqqer', 'window.title.url.customization'),
+                text         : Locale.get('quiqqer/quiqqer', 'window.title.url.customization.text'),
+                information  : Locale.get('quiqqer/quiqqer', 'window.title.url.customization.information'),
+                maxHeight    : 400,
+                maxWidth     : 600,
+                events       : {
+                    onSubmit: function () {
+                        var Title = self.getBody().getElement('[name="title"]'),
+                            Name  = self.getBody().getElement('[name="site-name"]');
+
+                        Name.value = cleanupUrl(Title.value);
+                        Name.fireEvent('keyup');
+
+                        Site.setAttribute('name', Name.value);
+                        Site.setAttribute('title', Title.value);
+                    },
+                    onCancel: function () {
+                        var Title = self.getBody().getElement('[name="title"]'),
+                            Name  = self.getBody().getElement('[name="site-name"]');
+
+                        Site.setAttribute('name', Name.value);
+                        Site.setAttribute('title', Title.value);
+                    }
+                },
+                ok_button    : {
+                    text: Locale.get('quiqqer/quiqqer', 'window.title.url.customization.button.ok')
+                },
+                cancel_button: {
+                    text: Locale.get('quiqqer/quiqqer', 'window.title.url.customization.button.cancel')
+                }
+            }).open();
         }
     });
 });

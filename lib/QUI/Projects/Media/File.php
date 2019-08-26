@@ -21,6 +21,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * (non-PHPdoc)
      *
+     * @throws QUI\Exception
      * @see \QUI\Interfaces\Projects\Media\File::createCache()
      */
     public function createCache()
@@ -29,7 +30,7 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
             return false;
         }
 
-        $WHITE_LIST_EXTENSION = array(
+        $WHITE_LIST_EXTENSION = [
             'pdf',
             'txt',
             'xml',
@@ -57,28 +58,28 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
             'tgz',
             'ace',
             'psd'
-        );
+        ];
 
-        $Media = $this->_Media;
+        $Media = $this->Media;
         /* @var $Media \QUI\Projects\Media */
 
         $mdir = CMS_DIR.$Media->getPath();
         $cdir = CMS_DIR.$Media->getCacheDir();
         $file = $this->getAttribute('file');
 
-        $original = $mdir.$file;
+        $original  = $mdir.$file;
         $cachefile = $cdir.$file;
 
-        $extension = QUI\Utils\String::pathinfo($original, PATHINFO_EXTENSION);
+        $extension = QUI\Utils\StringHelper::pathinfo($original, PATHINFO_EXTENSION);
 
-        if (!in_array($extension, $WHITE_LIST_EXTENSION)) {
+        if (!\in_array($extension, $WHITE_LIST_EXTENSION)) {
             QUIFile::unlink($cachefile);
 
             return $original;
         }
 
         // Nur wenn Extension in Whitelist ist dann Cache machen
-        if (file_exists($cachefile)) {
+        if (\file_exists($cachefile)) {
             return $cachefile;
         }
 
@@ -87,7 +88,6 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
 
         try {
             QUIFile::copy($original, $cachefile);
-
         } catch (QUI\Exception $Exception) {
             // nothing
         }
@@ -98,11 +98,12 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * (non-PHPdoc)
      *
+     * @throws QUI\Exception
      * @see \QUI\Interfaces\Projects\Media\File::deleteCache()
      */
     public function deleteCache()
     {
-        $Media = $this->_Media;
+        $Media = $this->Media;
 
         $cdir = CMS_DIR.$Media->getCacheDir();
         $file = $this->getAttribute('file');
@@ -112,53 +113,55 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
 
     /**
      * Generate the MD5 file hash and set it to the Database and to the Object
+     *
+     * @throws QUI\Exception
      */
     public function generateMD5()
     {
-        if (!file_exists($this->getFullPath())) {
+        if (!\file_exists($this->getFullPath())) {
             throw new QUI\Exception(
-                QUI::getLocale()
-                   ->get('quiqqer/system', 'exception.file.not.found', array(
-                       'file' => $this->getAttribute('file')
-                   )),
-                404
+                QUI::getLocale()->get('quiqqer/system', 'exception.file.not.found', [
+                    'file' => $this->getAttribute('file')
+                ]),
+                ErrorCodes::FILE_NOT_FOUND
             );
         }
 
-        $md5 = md5_file($this->getFullPath());
+        $md5 = \md5_file($this->getFullPath());
 
         $this->setAttribute('md5hash', $md5);
 
         QUI::getDataBase()->update(
-            $this->_Media->getTable(),
-            array('md5hash' => $md5),
-            array('id' => $this->getId())
+            $this->Media->getTable(),
+            ['md5hash' => $md5],
+            ['id' => $this->getId()]
         );
     }
 
     /**
      * Generate the SHA1 file hash and set it to the Database and to the Object
+     *
+     * @throws QUI\Exception
      */
     public function generateSHA1()
     {
-        if (!file_exists($this->getFullPath())) {
+        if (!\file_exists($this->getFullPath())) {
             throw new QUI\Exception(
-                QUI::getLocale()
-                   ->get('quiqqer/system', 'exception.file.not.found', array(
-                       'file' => $this->getAttribute('file')
-                   )),
-                404
+                QUI::getLocale()->get('quiqqer/system', 'exception.file.not.found', [
+                    'file' => $this->getAttribute('file')
+                ]),
+                ErrorCodes::FILE_NOT_FOUND
             );
         }
 
-        $sha1 = sha1_file($this->getFullPath());
+        $sha1 = \sha1_file($this->getFullPath());
 
         $this->setAttribute('sha1hash', $sha1);
 
-        \QUI::getDataBase()->update(
-            $this->_Media->getTable(),
-            array('sha1hash' => $sha1),
-            array('id' => $this->getId())
+        QUI::getDataBase()->update(
+            $this->Media->getTable(),
+            ['sha1hash' => $sha1],
+            ['id' => $this->getId()]
         );
     }
 }

@@ -6,8 +6,7 @@ define('controls/projects/project/site/siteSettings', [
 
     'qui/QUI'
 
-], function(QUI)
-{
+], function (QUI) {
     "use strict";
 
     return {
@@ -18,8 +17,7 @@ define('controls/projects/project/site/siteSettings', [
          * @param {qui/controls/buttons/Button} Category
          * @param {qui/controls/desktop/Panel} Panel
          */
-        onload : function(Category, Panel)
-        {
+        onload : function (Category, Panel) {
 
 
             Panel.Loader.hide();
@@ -31,8 +29,7 @@ define('controls/projects/project/site/siteSettings', [
          * @param {qui/controls/buttons/Button} Category
          * @param {qui/controls/desktop/Panel} Panel
          */
-        onunload : function(Category, Panel)
-        {
+        onunload : function (Category, Panel) {
 
         }
     };

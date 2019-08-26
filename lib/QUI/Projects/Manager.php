@@ -7,20 +7,20 @@
 namespace QUI\Projects;
 
 use QUI;
-use QUI\Rights\Permission;
+use QUI\Permissions\Permission;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\DOM;
-
+use QUI\Utils\Text\XML;
 
 /**
  * The Project Manager
  * The main object to get a project
  *
- * @author     www.pcsg.de (Henning Leutz)
- * @licence    For copyright and license information, please view the /README.md
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  *
- * @event      onProjectConfigSave [ String project, Array config ]
- * @event      onCreateProject [ String \QUI\Projects\Project ]
+ * @event onProjectConfigSave [ string project, Array config ]
+ * @event onCreateProject [ string \QUI\Projects\Project ]
  *
  * @errorcodes 8xx Project Errors -> Look at Project.php
  */
@@ -31,131 +31,168 @@ class Manager
      *
      * @var \QUI\Config
      */
-    static $Config = null;
+    public static $Config = null;
 
     /**
      * laoded projects
      *
      * @var array
      */
-    static $projects = array();
+    public static $projects = [];
 
     /**
      * standard project
      *
      * @var \QUI\Projects\Project
      */
-    static $Standard = null;
+    public static $Standard = null;
 
     /**
      * projects.ini
      *
      * @return \QUI\Config
+     *
+     * @throws QUI\Exception
      */
-    static function getConfig()
+    public static function getConfig()
     {
         return QUI::getConfig('etc/projects.ini');
     }
 
     /**
+     * Clearing / cleanup the manager
+     */
+    public static function cleanup()
+    {
+        self::$projects = [];
+    }
+
+    /**
      * set configuration for a project
      *
-     * @param String $project
-     * @param Array  $params
+     * @param string $project
+     * @param array $params
+     *
+     * @throws QUI\Exception
+     * @throws \Exception
      */
-    static function setConfigForProject($project, $params)
+    public static function setConfigForProject($project, $params = [])
     {
-        $Project = self::getProject($project);
+        $Project      = $project;
+        $handedParams = $params;
+
+        if (\is_string($Project)
+            || \get_class($Project) != Project::class
+        ) {
+            $Project = self::getProject($project);
+        }
+
+        $projectName = $Project->getName();
 
         Permission::checkProjectPermission(
             'quiqqer.projects.setconfig',
             $Project
         );
 
-        $Config = self::getConfig();
+        if (!\is_array($params)) {
+            $params = [];
+        }
+
+        $Config   = self::getConfig();
         $projects = $Config->toArray();
 
         // $config
-        $config = self::getProjectConfigList($Project);
-        $old_config = $config;
+        $availableConfig = self::getProjectConfigList($Project);
+        $projectConfig   = [];
 
-        if (isset($projects[$project])) {
-            $old_config = $projects[$project];
+        if (isset($projects[$projectName])) {
+            $projectConfig = $projects[$projectName];
         }
 
-        // generate new config for the project
-        foreach ($config as $key => $value) {
-
-            if (!isset($old_config[$key])) {
+        // merge current config and available config
+        foreach ($availableConfig as $key => $value) {
+            if (!isset($projectConfig[$key])) {
                 continue;
             }
 
-            if (isset($params[$key])) {
+            $str = Orthos::removeHTML($projectConfig[$key]);
+            $str = Orthos::clearPath($str);
+
+            $availableConfig[$key] = $str;
+        }
+
+        // merge params config with available / current config
+        if (!empty($params)) {
+            foreach ($availableConfig as $key => $value) {
+                if (!isset($params[$key])) {
+                    continue;
+                }
+
                 $str = Orthos::removeHTML($params[$key]);
                 $str = Orthos::clearPath($str);
 
-                $config[$key] = $str;
-                continue;
+                $availableConfig[$key] = $str;
             }
-
-            $str = Orthos::removeHTML($value);
-            $str = Orthos::clearPath($str);
-
-            $config[$key] = $str;
         }
 
         // doppelte sprachen filtern
-        $langs = explode(',', $config['langs']);
-        $langs = array_unique($langs);
+        $languages = \explode(',', $availableConfig['langs']);
+        $languages = \array_unique($languages);
 
-        $config['langs'] = implode(',', $langs);
+        $availableConfig['langs'] = \implode(',', $languages);
 
-        $Config->setSection($project, $config);
+        $Config->setSection($projectName, $availableConfig);
         $Config->save();
 
-        QUI::getEvents()
-           ->fireEvent('projectConfigSave', array($project, $config));
+
+        QUI::getEvents()->fireEvent('projectConfigSave', [
+            $projectName,
+            $availableConfig,
+            $params
+        ]);
 
         // remove the project from the temp
-        if (self::$projects[$project]) {
-            unset(self::$projects[$project]);
+        if (self::$projects[$projectName]) {
+            unset(self::$projects[$projectName]);
         }
 
         // execute the project setup
-        $Project = self::getProject($project);
-        $Project->setup();
+        $Project = self::getProject($projectName);
+
+        // if language config has changed,
+        // we need to execute a complete project setup
+        // quiqqer/quiqqer#768
+        // quiqqer/quiqqer#767
+        if (isset($handedParams['langs']) &&
+            isset($projectConfig['langs']) &&
+            $handedParams['langs'] !== $projectConfig['langs']) {
+            $Project->setup();
+            QUI\Translator::create();
+        } else {
+            $Project->setup([
+                'executePackagesSetup' => false
+            ]);
+        }
 
         /**
          * clear media cache
          * eq: if watermark settings changed
          *
-         * @param Array   $config
-         * @param Array   $old_config
+         * @param array $config
+         * @param array $oldConfig
          * @param Project $Project
          */
-        function clearMediaCache($config, $old_config, Project $Project)
-        {
-            if (!isset($config["media_watermark"])
-                && !isset($config["media_watermark_position"])
-                && !isset($config["media_image_library"])
+        $clearMediaCache = function ($config, $oldConfig, Project $Project) {
+            if (!isset($config['media_watermark'])
+                && !isset($config['media_watermark_position'])
+                && !isset($config['media_image_library'])
             ) {
                 return;
             }
 
-            if (isset($config["media_watermark"])
-                && isset($old_config['media_watermark'])
-                && $config["media_watermark"] != $old_config['media_watermark']
-            ) {
-                // clear cache
-                $Project->getMedia()->clearCache();
-
-                return;
-            }
-
-            if (isset($config["media_watermark_position"])
-                && isset($old_config['media_watermark_position'])
-                && $config["media_watermark_position"]
-                != $old_config['media_watermark_position']
+            if (isset($config['media_watermark'])
+                && isset($oldConfig['media_watermark'])
+                && $config['media_watermark'] != $oldConfig['media_watermark']
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
@@ -163,30 +200,49 @@ class Manager
                 return;
             }
 
-            if (isset($config["media_image_library"])
-                && isset($old_config['media_image_library'])
-                && $config["media_image_library"]
-                != $old_config['media_image_library']
+            if (isset($config['media_watermark_ratio'])
+                && isset($oldConfig['media_watermark_ratio'])
+                && $config['media_watermark_ratio'] != $oldConfig['media_watermark_ratio']
             ) {
                 // clear cache
                 $Project->getMedia()->clearCache();
 
                 return;
             }
-        }
 
-        clearMediaCache($config, $old_config, $Project);
+            if (isset($config['media_watermark_position'])
+                && isset($oldConfig['media_watermark_position'])
+                && $config['media_watermark_position'] != $oldConfig['media_watermark_position']
+            ) {
+                // clear cache
+                $Project->getMedia()->clearCache();
+
+                return;
+            }
+
+            if (isset($config['media_image_library'])
+                && isset($oldConfig['media_image_library'])
+                && $config['media_image_library'] != $oldConfig['media_image_library']
+            ) {
+                // clear cache
+                $Project->getMedia()->clearCache();
+
+                return;
+            }
+        };
+
+        $clearMediaCache($availableConfig, $projectConfig, $Project);
 
         // if this project should be the standard,
         // all other projects are not
-        if (!isset($config['standard']) || $config['standard'] != 1) {
+        if (!isset($availableConfig['standard']) || $availableConfig['standard'] != 1) {
             return;
         }
 
         $projects = $Config->toArray();
 
         foreach ($projects as $_project => $settings) {
-            if ($_project != $project) {
+            if ($_project != $projectName) {
                 $Config->setValue($_project, 'standard', 0);
             }
         }
@@ -199,43 +255,50 @@ class Manager
      *
      * @param \QUI\Projects\Project $Project
      *
-     * @return Array
+     * @return array
+     *
+     * @throws QUI\Exception
      */
-    static function getProjectConfigList(QUI\Projects\Project $Project)
+    public static function getProjectConfigList(QUI\Projects\Project $Project)
     {
         $cache = 'qui/projects/'.$Project->getName().'/configList';
 
         try {
             return QUI\Cache\Manager::get($cache);
-
         } catch (QUI\Exception $Exception) {
-
         }
 
-        $config = array(
-            "default_lang"             => "de",
-            "langs"                    => "de",
-            "admin_mail"               => "support@pcsg.de",
-            "template"                 => "",
-            "layout"                   => "",
-            "image_text"               => "0",
-            "standard"                 => "1",
-            "adminSitemapMax"          => 20,
-            "media_watermark"          => "",
-            "media_watermark_position" => "",
-            "media_image_library"      => "",
-            "media_maxUploadSize"      => "",
-            "placeholder"              => ""
-        );
+        $config = [
+            'default_lang'             => 'de',
+            'langs'                    => 'de',
+            'admin_mail'               => '',
+            'template'                 => '',
+            'layout'                   => '',
+            'image_text'               => '0',
+            'standard'                 => '1',
+            'adminSitemapMax'          => 20,
+            'media_watermark'          => '',
+            'media_watermark_position' => '',
+            'media_watermark_ratio'    => '',
+            'media_image_library'      => '',
+            'media_maxUploadSize'      => '',
+            'media_maxUploadFileSize'  => '',
+            'media_createCacheOnSave'  => '1',
+            'placeholder'              => '',
+            'logo'                     => '',
+            'emailLogo'                => '',
+            'favicon'                  => '',
+            'convertRomanLetters'      => 0
+        ];
 
         // settings.xml
         $settingsXml = self::getRelatedSettingsXML($Project);
 
         foreach ($settingsXml as $file) {
-            $Dom = QUI\Utils\XML::getDomFromXml($file);
+            $Dom  = XML::getDomFromXml($file);
             $Path = new \DOMXPath($Dom);
 
-            $settingsList = $Path->query("//project/settings");
+            $settingsList = $Path->query('//project/settings');
 
             for ($i = 0, $len = $settingsList->length; $i < $len; $i++) {
                 /* @var $Settings \DOMElement */
@@ -253,8 +316,7 @@ class Manager
                         $config[$settingsName.$section.'.'.$key] = '';
 
                         if (isset($param['default'])) {
-                            $config[$settingsName.$section.'.'.$key]
-                                = $param['default'];
+                            $config[$settingsName.$section.'.'.$key] = $param['default'];
                         }
                     }
                 }
@@ -269,32 +331,34 @@ class Manager
     /**
      * Return the projects count
      *
-     * @return Integer
+     * @return integer
+     *
+     * @throws QUI\Exception
      */
-    static function count()
+    public static function count()
     {
         $Config = self::getConfig();
         $config = $Config->toArray();
 
-        return count($config);
+        return \count($config);
     }
 
     /**
      * Decode project data
      * Decode a project json string to a Project or decode a project array to a Project
      *
-     * @param String|Array $project - project data
+     * @param string|array $project - project data
      *
      * @return \QUI\Projects\Project
      * @throws \QUI\Exception
      */
-    static function decode($project)
+    public static function decode($project)
     {
-        if (is_string($project)) {
-            $project = json_decode($project, true);
+        if (\is_string($project)) {
+            $project = \json_decode($project, true);
         }
 
-        if (!isset($project['name'])) {
+        if (!isset($project['name']) || !$project['name']) {
             throw new QUI\Exception(
                 'Could not decode project data'
             );
@@ -302,7 +366,7 @@ class Manager
 
         $projectName = $project['name'];
         $projectLang = false;
-        $projectTpl = false;
+        $projectTpl  = false;
 
         if (isset($project['lang'])) {
             $projectLang = $project['lang'];
@@ -321,7 +385,7 @@ class Manager
      * @return Project
      * @throws \QUI\Exception
      */
-    static function get()
+    public static function get()
     {
         $Rewrite = QUI::getRewrite();
 
@@ -351,13 +415,15 @@ class Manager
     /**
      * Returns a project
      *
-     * @param String      $project  - Project name
-     * @param String|Bool $lang     - Project lang, optional (if not set, the standard language used)
-     * @param String|Bool $template - used template, optional (if not set, the standard templaed used)
+     * @param string $project - Project name
+     * @param string|boolean $lang - Project lang, optional (if not set, the standard language used)
+     * @param string|boolean $template - used template, optional (if not set, the standard templaed used)
      *
      * @return \QUI\Projects\Project
+     *
+     * @throws QUI\Exception
      */
-    static function getProject($project, $lang = false, $template = false)
+    public static function getProject($project, $lang = false, $template = false)
     {
         if ($lang == false && isset(self::$projects[$project])
             && isset(self::$projects[$project]['_standard'])
@@ -373,13 +439,12 @@ class Manager
 
         // Wenn der RAM zu voll wird, Objekte mal leeren
         if (QUI\Utils\System::memUsageToHigh()) {
-            self::$projects = array();
+            self::$projects = [];
         }
 
 
         if ($lang === false) {
-            self::$projects[$project]['_standard']
-                = new QUI\Projects\Project($project);
+            self::$projects[$project]['_standard'] = new QUI\Projects\Project($project);
 
             return self::$projects[$project]['_standard'];
         }
@@ -394,16 +459,20 @@ class Manager
     }
 
     /**
-     * Gibt alle Projektnamen zurück
+     * Return all projects as array list or object list
+     * Return the projects with its default language
      *
-     * @param Bool $asobject - Als Objekte bekommen, default = false
+     * if you want a complete project list with every project language, please use getProjectList()
      *
-     * @return Array
+     * @param bool $asObject - default = false, true = projects as objects
+     * @return array
+     *
+     * @throws QUI\Exception
      */
-    static function getProjects($asobject = false)
+    public static function getProjects($asObject = false)
     {
         $config = self::getConfig()->toArray();
-        $list = array();
+        $list   = [];
 
         foreach ($config as $project => $conf) {
             try {
@@ -417,18 +486,57 @@ class Manager
                     self::$Standard = $Project;
                 }
 
-                if ($asobject == true) {
+                if ($asObject == true) {
                     $list[] = $Project;
                 } else {
                     $list[] = $project;
                 }
-
             } catch (QUI\Exception $Exception) {
-
             }
         }
 
         return $list;
+    }
+
+    /**
+     * Return all projects as objects
+     * - it returns every project and every language
+     *
+     * if a project has multiple languages, getProjectList will return multiple projects
+     * eq: project exist in en,de,fr getProjectList will return Project(en, Project(de), Project(fr)
+     *
+     * @return array
+     *
+     * @throws QUI\Exception
+     */
+    public static function getProjectList()
+    {
+        $config = self::getConfig()->toArray();
+        $result = [];
+
+        foreach ($config as $project => $conf) {
+            $langs = \explode(',', \trim($conf['langs']));
+
+            foreach ($langs as $lang) {
+                if (isset(self::$projects[$project])
+                    && isset(self::$projects[$project][$lang])
+                ) {
+                    $result[] = self::$projects[$project][$lang];
+                    continue;
+                }
+
+                try {
+                    $result[] = self::getProject(
+                        $project,
+                        $lang,
+                        $conf['template']
+                    );
+                } catch (QUI\Exception $Exception) {
+                }
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -437,15 +545,15 @@ class Manager
      * @return \QUI\Projects\Project
      * @throws QUI\Exception
      */
-    static function getStandard()
+    public static function getStandard()
     {
-        if (!is_null(self::$Standard)) {
+        if (self::$Standard !== null) {
             return self::$Standard;
         }
 
         $config = self::getConfig()->toArray();
 
-        if (!count($config)) {
+        if (!\count($config)) {
             throw new QUI\Exception(
                 'No project exist'
             );
@@ -461,16 +569,16 @@ class Manager
             }
         }
 
-        if (is_null(self::$Standard)) {
+        if (self::$Standard === null) {
             QUI\System\Log::addAlert(
                 'No standard project are set. Please define a standard projekt'
             );
 
-            $project = key($config);
+            $project = \key($config);
 
             self::$Standard = QUI\Projects\Manager::getProject(
                 $project,
-                $config[key($config)]['default_lang']
+                $config[\key($config)]['default_lang']
             );
         }
 
@@ -480,21 +588,23 @@ class Manager
     /**
      * Create a new project
      *
-     * @param String $name - Project name
-     * @param String $lang - Project lang
+     * @param string $name - Project name
+     * @param string $lang - Project lang
+     * @param array $languages - optional, additional languages
      *
      * @return \QUI\Projects\Project
      * @throws \QUI\Exception
+     * @throws \Exception
      *
      * @todo noch einmal anschauen und übersichtlicher schreiben
      */
-    static function createProject($name, $lang)
+    public static function createProject($name, $lang, $languages = [])
     {
         Permission::checkPermission(
             'quiqqer.projects.create'
         );
 
-        if (strlen($name) <= 2) {
+        if (\strlen($name) <= 2) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
@@ -504,7 +614,7 @@ class Manager
             );
         }
 
-        if (strlen($lang) != 2) {
+        if (\strlen($lang) != 2) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
@@ -514,40 +624,7 @@ class Manager
             );
         }
 
-        $not_allowed_signs = array(
-            '-',
-            '.',
-            ',',
-            ':',
-            ';',
-            '#',
-            '`',
-            '!',
-            '§',
-            '$',
-            '%',
-            '&',
-            '/',
-            '?',
-            '<',
-            '>',
-            '=',
-            '\'',
-            '"'
-        );
-
-        if (preg_match("@[-.,:;#`!§$%&/?<>\=\'\" ]@", $name)) {
-            throw new QUI\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/system',
-                    'exception.project.not.allowed.signs',
-                    array(
-                        'signs' => implode(' ', $not_allowed_signs)
-                    )
-                ),
-                802
-            );
-        }
+        QUI\Utils\Project::validateProjectName($name);
 
         $projects = self::getProjects();
 
@@ -564,104 +641,102 @@ class Manager
         $name = QUI\Utils\Security\Orthos::clear($name);
 
         $DataBase = QUI::getDataBase();
-        $Table = $DataBase->Table();
+        $Table    = $DataBase->table();
 
 
         /**
          * Sites and sites relation
          */
-        $table_site = QUI_DB_PRFX.$name.'_'.$lang.'_sites';
+        $table_site     = QUI_DB_PRFX.$name.'_'.$lang.'_sites';
         $table_site_rel = QUI_DB_PRFX.$name.'_'.$lang.'_sites_relations';
 
-        $Table->appendFields($table_site, array(
-            "id"          => "bigint(20) NOT NULL",
-            "name"        => "varchar(200) NOT NULL",
-            "title"       => "tinytext",
-            "short"       => "text",
-            "content"     => "longtext",
-            "type"        => "varchar(32) default NULL",
-            "active"      => "tinyint(1) NOT NULL",
-            "deleted"     => "tinyint(1) NOT NULL",
-            "c_date"      => "timestamp NULL default NULL",
-            "e_date"      => "timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP",
-            "c_user"      => "int(11) default NULL",
-            "e_user"      => "int(11) default NULL",
-            "nav_hide"    => "tinyint(1) NOT NULL",
-            "order_type"  => "varchar(100) default NULL",
-            "order_field" => "bigint(20) default NULL",
-            "extra"       => "text default NULL",
-        ));
+        $Table->addColumn($table_site, [
+            'id'          => 'bigint(20) NOT NULL',
+            'name'        => 'varchar(200) NOT NULL',
+            'title'       => 'tinytext NULL',
+            'short'       => 'text NULL',
+            'content'     => 'longtext NULL',
+            'type'        => 'varchar(255) DEFAULT NULL',
+            'active'      => 'tinyint(1) NOT NULL DEFAULT 0',
+            'deleted'     => 'tinyint(1) NOT NULL DEFAULT 0',
+            'c_date'      => 'timestamp NULL DEFAULT NULL',
+            'e_date'      => 'timestamp NOT NULL DEFAULT NOW() on update NOW()',
+            'c_user'      => 'int(11) DEFAULT NULL',
+            'e_user'      => 'int(11) DEFAULT NULL',
+            'nav_hide'    => 'tinyint(1) NOT NULL DEFAULT 0',
+            'order_type'  => 'varchar(100) NULL',
+            'order_field' => 'bigint(20) NULL',
+            'extra'       => 'text NULL'
+        ]);
 
-        $Table->appendFields($table_site_rel, array(
-            "parent" => "bigint(20) NOT NULL",
-            "child"  => "bigint(20) NOT NULL"
-        ));
+        $Table->addColumn($table_site_rel, [
+            'parent' => 'bigint(20) NOT NULL',
+            'child'  => 'bigint(20) NOT NULL'
+        ]);
 
         $Table->setAutoIncrement($table_site, 'id');
 
         // first site
-        $DataBase->insert($table_site, array(
-            "id"          => 1,
-            "name"        => 'Start',
-            "title"       => 'start',
-            "short"       => 'Shorttext',
-            "content"     => "<p>Welcome to my project</p>",
-            "type"        => 'standard',
-            "active"      => 1,
-            "deleted"     => 0,
-            "c_date"      => date('Y-m-d H:i:s'),
-            "c_user"      => QUI::getUserBySession()->getId(),
-            "e_user"      => QUI::getUserBySession()->getId(),
-            "nav_hide"    => '',
-            "order_type"  => "",
-            "order_field" => ""
-        ));
+        $DataBase->insert($table_site, [
+            'id'       => 1,
+            'name'     => 'Start',
+            'title'    => 'start',
+            'short'    => 'Shorttext',
+            'content'  => '<p>Welcome to my project</p>',
+            'type'     => 'standard',
+            'active'   => 1,
+            'deleted'  => 0,
+            'c_date'   => \date('Y-m-d H:i:s'),
+            'c_user'   => QUI::getUserBySession()->getId(),
+            'e_user'   => QUI::getUserBySession()->getId(),
+            'nav_hide' => 0
+        ]);
 
 
         /**
          * Media and media relation
          */
-        $table_media = QUI_DB_PRFX.$name.'_media';
+        $table_media     = QUI_DB_PRFX.$name.'_media';
         $table_media_rel = QUI_DB_PRFX.$name.'_media_relations';
 
-        $Table->appendFields($table_media, array(
-            "id"           => "bigint(20) NOT NULL",
-            "name"         => "varchar(200) NOT NULL",
-            "title"        => "tinytext",
-            "short"        => "text",
-            "type"         => "varchar(32) default NULL",
-            "active"       => "tinyint(1) NOT NULL",
-            "deleted"      => "tinyint(1) NOT NULL",
-            "c_date"       => "timestamp NULL default NULL",
-            "e_date"       => "timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP",
-            "c_user"       => "int(11) default NULL",
-            "e_user"       => "int(11) default NULL",
-            "file"         => "text",
-            "alt"          => "text",
-            "mime_type"    => "text",
-            "image_height" => "int(6) default NULL",
-            "image_width"  => "int(6) default NULL"
-        ));
+        $Table->addColumn($table_media, [
+            'id'           => 'bigint(20) NOT NULL',
+            'name'         => 'varchar(200) NOT NULL',
+            'title'        => 'tinytext NULL',
+            'short'        => 'text NULL',
+            'type'         => 'varchar(32) DEFAULT NULL',
+            'active'       => 'tinyint(1) NOT NULL DEFAULT 0',
+            'deleted'      => 'tinyint(1) NOT NULL DEFAULT 0',
+            'c_date'       => 'timestamp NULL DEFAULT NULL',
+            'e_date'       => 'timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP',
+            'c_user'       => 'int(11) DEFAULT NULL',
+            'e_user'       => 'int(11) DEFAULT NULL',
+            'file'         => 'text NULL',
+            'alt'          => 'text NULL',
+            'mime_type'    => 'text NULL',
+            'image_height' => 'int(6) default NULL',
+            'image_width'  => 'int(6) default NULL'
+        ]);
 
-        $Table->appendFields($table_media_rel, array(
-            "parent" => "bigint(20) NOT NULL",
-            "child"  => "bigint(20) NOT NULL"
-        ));
+        $Table->addColumn($table_media_rel, [
+            'parent' => 'bigint(20) NOT NULL',
+            'child'  => 'bigint(20) NOT NULL'
+        ]);
 
         // first folder
-        $DataBase->insert($table_media, array(
-            "id"      => 1,
-            "name"    => 'Start',
-            "title"   => 'start',
-            "short"   => 'Shorttext',
-            "type"    => 'folder',
-            "file"    => '',
-            "active"  => 1,
-            "deleted" => 0,
-            "c_date"  => date('Y-m-d H:i:s'),
-            "c_user"  => QUI::getUserBySession()->getId(),
-            "e_user"  => QUI::getUserBySession()->getId()
-        ));
+        $DataBase->insert($table_media, [
+            'id'      => 1,
+            'name'    => 'Start',
+            'title'   => 'start',
+            'short'   => 'Shorttext',
+            'type'    => 'folder',
+            'file'    => '',
+            'active'  => 1,
+            'deleted' => 0,
+            'c_date'  => \date('Y-m-d H:i:s'),
+            'c_user'  => QUI::getUserBySession()->getId(),
+            'e_user'  => QUI::getUserBySession()->getId()
+        ]);
 
 
         /**
@@ -672,18 +747,32 @@ class Manager
 
 
         /**
+         * Languages
+         */
+        if (!\in_array($lang, $languages)) {
+            $languages[] = $lang;
+        }
+
+        $languages = \array_filter($languages, function ($language) {
+            return \strlen($language) === 2;
+        });
+
+        $languages = \array_unique($languages);
+
+
+        /**
          * Write the config
          */
-        if (!file_exists(CMS_DIR.'etc/projects.ini.php')) {
-            file_put_contents(CMS_DIR.'etc/projects.ini.php', '');
+        if (!\file_exists(CMS_DIR.'etc/projects.ini.php')) {
+            \file_put_contents(CMS_DIR.'etc/projects.ini.php', '');
         }
 
         $Config = self::getConfig();
 
-        $Config->setSection($name, array(
+        $Config->setSection($name, [
             'default_lang' => $lang,
-            'langs'        => $lang,
-            'admin_mail'   => 'support@pcsg.de',
+            'langs'        => \implode(',', $languages),
+            'admin_mail'   => '',
             'template'     => $name,
             'image_text'   => '0',
             'keywords'     => '',
@@ -693,26 +782,24 @@ class Manager
             'publisher'    => '',
             'copyright'    => '',
             'standard'     => '0'
-        ));
+        ]);
 
-        if (count($Config->toArray()) == 1) {
-            $Config->setSection($name, 'standard', 1);
+        if (\count($Config->toArray()) <= 1) {
+            $Config->setValue($name, 'standard', 1);
         }
 
         $Config->save();
 
-        // Projekt setup
+        // Project setup
         $Project = self::getProject($name);
+        $Project->refresh();
         $Project->setup();
 
         // Package / Plugin Setup
-        QUI::getPluginManager()->setup($Project);
-
-        // Projekt Cache löschen
-        QUI\Cache\Manager::clear('QUI::config');
+        QUI\Setup::executeEachPackageSetup();
 
         // project create event
-        QUI::getEvents()->fireEvent('createProject', array($Project));
+        QUI::getEvents()->fireEvent('createProject', [$Project]);
 
         return $Project;
     }
@@ -721,28 +808,43 @@ class Manager
      * Delete a project
      *
      * @param \QUI\Projects\Project $Project
+     *
+     * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
      */
-    static function deleteProject(QUI\Projects\Project $Project)
+    public static function deleteProject(QUI\Projects\Project $Project)
     {
         Permission::checkProjectPermission(
             'quiqqer.projects.destroy',
             $Project
         );
 
+        // If only one project exists it should not be deleted (no existing projects cause errors)
+        if (self::count() < 2) {
+            throw new QUI\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.project.delete.last'
+                )
+            );
+        }
+
         $project = $Project->getName();
-        $langs = $Project->getAttribute('langs');
+        $langs   = $Project->getAttribute('langs');
 
         $DataBase = QUI::getDataBase();
-        $Table = $DataBase->Table();
+        $Table    = $DataBase->table();
 
         // delete site tables for all languages
         foreach ($langs as $lang) {
-            $table_site = QUI::getDBTableName($project.'_'.$lang.'_sites');
-            $table_site_rel = QUI::getDBTableName($project.'_'.$lang
-                .'_sites_relations');
-            $table_multi = QUI::getDBTableName($project.'_multilingual');
+            $table_site     = QUI::getDBTableName($project.'_'.$lang.'_sites');
+            $table_site_rel = QUI::getDBTableName(
+                $project.'_'.$lang
+                .'_sites_relations'
+            );
+            $table_multi    = QUI::getDBTableName($project.'_multilingual');
 
-            $table_media = QUI::getDBTableName($project.'_media');
+            $table_media     = QUI::getDBTableName($project.'_media');
             $table_media_rel = QUI::getDBTableName($project.'_media_relations');
 
 
@@ -760,11 +862,11 @@ class Manager
             // search database tables
             $databaseXml = OPT_DIR.$package['name'].'/database.xml';
 
-            if (!file_exists($databaseXml)) {
+            if (!\file_exists($databaseXml)) {
                 continue;
             }
 
-            $dbfields = QUI\Utils\XML::getDataBaseFromXml($databaseXml);
+            $dbfields = XML::getDataBaseFromXml($databaseXml);
 
             if (!isset($dbfields['projects'])) {
                 continue;
@@ -784,17 +886,17 @@ class Manager
 
         // delete projects permissions
         QUI::getDataBase()->delete(
-            QUI::getDBTableName(QUI\Rights\Manager::TABLE).'2projects',
-            array(
+            QUI::getDBTableName(QUI\Permissions\Manager::TABLE).'2projects',
+            [
                 'project' => $project
-            )
+            ]
         );
 
         QUI::getDataBase()->delete(
-            QUI::getDBTableName(QUI\Rights\Manager::TABLE).'2sites',
-            array(
+            QUI::getDBTableName(QUI\Permissions\Manager::TABLE).'2sites',
+            [
                 'project' => $project
-            )
+            ]
         );
 
         // config schreiben
@@ -806,7 +908,150 @@ class Manager
 
 
         // project create event
-        QUI::getEvents()->fireEvent('deleteProject', array($project));
+        QUI::getEvents()->fireEvent('deleteProject', [$project]);
+    }
+
+    /**
+     * Renames the given project
+     *
+     * @param string $oldName - The projects current name
+     * @param string $newName - The new name for the project
+     *
+     * @throws QUI\Exception
+     */
+    public static function rename($oldName, $newName)
+    {
+        QUI\Utils\Project::validateProjectName($newName);
+
+        $Project = self::getProject($oldName);
+        // ----------------------------- //
+        //              Config           //
+        // ----------------------------- //
+
+        // File: etc/projects.ini.php
+        $filename = ETC_DIR.'projects.ini.php';
+        $content  = \file_get_contents($filename);
+
+        $content = \str_replace($oldName, $newName, $content);
+        \file_put_contents($filename, $content);
+
+
+        // File: etc/vhosts.ini.php
+        $filename = ETC_DIR.'vhosts.ini.php';
+        $content  = \file_get_contents($filename);
+
+        $content = \str_replace($oldName, $newName, $content);
+        \file_put_contents($filename, $content);
+
+
+        // ----------------------------- //
+        //            Database           //
+        // ----------------------------- //
+
+        $tables = [];
+
+        $Stmt = \QUI::getDataBase()->getPDO()->prepare('SHOW TABLES;');
+        $Stmt->execute();
+        $result = $Stmt->fetchAll();
+
+        foreach ($result as $row) {
+            $tables[] = $row[0];
+        }
+
+        foreach ($tables as $oldTableName) {
+            if (\strpos($oldTableName.'_', QUI_DB_PRFX.$oldName) === false) {
+                continue;
+            }
+
+            $newTableName = \preg_replace(
+                "~^".QUI_DB_PRFX.$oldName."_~m",
+                QUI_DB_PRFX.$newName."_",
+                $oldTableName
+            );
+
+            $sql  = 'ALTER TABLE '.$oldTableName.' RENAME '.$newTableName.';';
+            $Stmt = \QUI::getDataBase()->getPDO()->prepare($sql);
+
+            try {
+                $Stmt->execute();
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeRecursive("Could not rename Table '".$oldTableName."': ".$Exception->getMessage());
+            }
+        }
+
+
+        // ----------------------------- //
+        //              Media           //
+        // ----------------------------- //
+
+        $sourceDir = CMS_DIR.'media/sites/'.$oldName;
+        $targetDir = CMS_DIR.'media/sites/'.$newName;
+
+        if (\is_dir($sourceDir)) {
+            \rename($sourceDir, $targetDir);
+        }
+
+        // ----------------------------- //
+        //              USR           //
+        // ----------------------------- //
+        $sourceDir = USR_DIR.$oldName;
+        $targetDir = USR_DIR.$newName;
+
+        if (\is_dir($sourceDir)) {
+            \rename($sourceDir, $targetDir);
+        }
+
+        // -----------------------------//
+        //              Cache           //
+        // -----------------------------//
+        QUI\Cache\Manager::clearAll();
+
+
+        // ----------------------------- //
+        //              Locale           //
+        // ----------------------------- //
+        if (\file_exists(VAR_DIR.'locale/localefiles')) {
+            \unlink(VAR_DIR.'locale/localefiles');
+        }
+
+
+        // Remove old translation
+        $translationGroup = 'project/'.$oldName;
+        $translationVar   = 'title';
+
+        $translation = QUI\Translator::get($translationGroup, $translationVar);
+
+        if (isset($translation[0])) {
+            QUI\Translator::delete($translationGroup, $translationVar);
+        }
+
+
+        $translationGroup = 'project/'.$newName;
+        $translationVar   = 'title';
+
+        $translation = QUI\Translator::get($translationGroup, $translationVar);
+
+        if (!isset($translation[0])) {
+            try {
+                QUI\Translator::add($translationGroup, $translationVar);
+            } catch (\Exception $Exception) {
+                QUI\System\Log::addError('Rename project: Could not add language variable '.$translationGroup.'/'.$translationVar.': '.$Exception->getMessage());
+            }
+        }
+
+        QUI\Translator::create();
+
+        // ----------------------------- //
+        //              Finish           //
+        // ----------------------------- //
+
+        \QUI::getEvents()->fireEvent('projectRenamed', [
+            $Project,
+            $oldName,
+            $newName
+        ]);
+
+        unset(self::$projects[$oldName]);
     }
 
     /**
@@ -815,16 +1060,17 @@ class Manager
      *
      * @param \QUI\Projects\Project $Project
      *
-     * @return Array
+     * @return array
      */
-    static function getRelatedTemplates(QUI\Projects\Project $Project)
+    public static function getRelatedTemplates(QUI\Projects\Project $Project)
     {
-        $result = array();
-        $templates = array();
-        $project = $Project->getName();
+        $result    = [];
+        $templates = [];
+        $project   = $Project->getName();
 
         if ($Project->getAttribute('template')) {
             $result[] = $Project->getAttribute('template');
+
             $templates[$Project->getAttribute('template')] = true;
         }
 
@@ -849,8 +1095,25 @@ class Manager
             }
 
             $templates[$vhost['template']] = true;
+
             $result[] = $vhost['template'];
         }
+
+        // search & consider inheritance template
+        foreach ($result as $template) {
+            try {
+                $Package = QUI::getPackage($template);
+                $Parent  = $Package->getTemplateParent();
+
+                if ($Parent) {
+                    $result[] = $Parent->getName();
+                }
+            } catch (QUI\Exception $Exception) {
+                // nothing
+            }
+        }
+
+        $result = \array_unique($result);
 
         return $result;
     }
@@ -861,24 +1124,22 @@ class Manager
      *
      * @param \QUI\Projects\Project $Project
      *
-     * @return Array
+     * @return array
      */
-    static function getRelatedSettingsXML(QUI\Projects\Project $Project)
+    public static function getRelatedSettingsXML(QUI\Projects\Project $Project)
     {
         $cache = 'qui/projects/'.$Project->getName().'/relatedSettingsXml';
 
         try {
             return QUI\Cache\Manager::get($cache);
-
         } catch (QUI\Exception $Exception) {
-
         }
 
-        $list = array();
+        $list     = [];
         $packages = QUI::getPackageManager()->getInstalled();
 
         $templates = self::getRelatedTemplates($Project);
-        $templates = array_flip($templates);
+        $templates = \array_flip($templates);
 
         // read template config
         foreach ($packages as $package) {
@@ -890,16 +1151,17 @@ class Manager
                 }
             }
 
+            // consider inheritance
             $file = OPT_DIR.$package['name'].'/settings.xml';
 
-            if (!file_exists($file)) {
+            if (!\file_exists($file)) {
                 continue;
             }
 
-            $Dom = QUI\Utils\XML::getDomFromXml($file);
+            $Dom  = XML::getDomFromXml($file);
             $Path = new \DOMXPath($Dom);
 
-            $Settings = $Path->query("//quiqqer/project/settings");
+            $Settings = $Path->query('//quiqqer/project/settings');
 
             if ($Settings->length) {
                 $list[] = $file;
@@ -909,19 +1171,22 @@ class Manager
         // direct - project settings
         $projectSettings = USR_DIR.$Project->getName().'/settings.xml';
 
-        if (file_exists($projectSettings)) {
-            $Dom = QUI\Utils\XML::getDomFromXml($projectSettings);
+        if (\file_exists($projectSettings)) {
+            $Dom  = XML::getDomFromXml($projectSettings);
             $Path = new \DOMXPath($Dom);
 
-            $Settings = $Path->query("//quiqqer/project/settings");
+            $Settings = $Path->query('//quiqqer/project/settings');
 
             if ($Settings->length) {
                 $list[] = $projectSettings;
             }
         }
 
-
-        QUI\Cache\Manager::set('qui/projects/', $list);
+        try {
+            QUI\Cache\Manager::set('qui/projects/', $list);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
 
         return $list;
     }
@@ -929,36 +1194,37 @@ class Manager
     /**
      * Search a project
      *
-     * @param Array $params - Search params
+     * @param array $params - Search params
      *                      'search' => 'search string',
      *                      'limit'  => 5,
      *                      'page'   => 1
      *
-     * @return Array
+     * @return array
+     *
+     * @throws QUI\Exception
      */
-    static function search($params)
+    public static function search($params)
     {
         if (!isset($params['search'])) {
-            return array();
+            return [];
         }
 
+        $result = [];
+        $list   = self::getConfig()->toArray();
         $search = $params['search'];
 
-        $result = array();
-        $list = self::getConfig()->toArray();
-
         foreach ($list as $project => $entry) {
-            if (!empty($search) && strpos($project, $search) === false) {
+            if (!empty($search) && \strpos($project, $search) === false) {
                 continue;
             }
 
-            $langs = explode(',', $entry['langs']);
+            $languages = \explode(',', $entry['langs']);
 
-            foreach ($langs as $lang) {
-                $result[] = array(
+            foreach ($languages as $lang) {
+                $result[] = [
                     'project' => $project,
                     'lang'    => $lang
-                );
+                ];
             }
         }
 

@@ -3,6 +3,7 @@
 /**
  * File contains QUI\Projects\Site\Virtual
  */
+
 namespace QUI\Projects\Site;
 
 use QUI;
@@ -19,33 +20,33 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * @var null|QUI\Projects\Site
      */
-    protected $_Parent = null;
+    protected $Parent = null;
 
     /**
      * Project
      *
      * @var null
      */
-    protected $_Project = null;
+    protected $Project = null;
 
     /**
-     * @param array                $attributes
+     * @param array $attributes
      * @param QUI\Projects\Project $Project
-     * @param QUI\Projects\Site    $Parent
+     * @param QUI\Projects\Site $Parent
      *
      * @throws QUI\Exception
      */
     public function __construct(
-        $attributes = array(),
-        QUI\Projects\Project $Project,
+        $attributes = [],
+        QUI\Projects\Project $Project = null,
         QUI\Projects\Site $Parent = null
     ) {
-        $this->_Project = $Project;
-        $this->_Parent = $Parent;
+        $this->Project = $Project;
+        $this->Parent  = $Parent;
 
         $this->setAttributes($attributes);
 
-        $needles = array('id', 'title', 'name', 'url');
+        $needles = ['id', 'title', 'name', 'url'];
 
         foreach ($needles as $needle) {
             if (!$this->getAttribute($needle)) {
@@ -61,13 +62,13 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getProject()
     {
-        return $this->_Project;
+        return $this->Project;
     }
 
     /**
      * Lädt die Plugins der Seite
      *
-     * @param String|bool $plugin - Plugin welches geladen werden soll, optional, ansonsten werden alle geladen
+     * @param string|boolean $plugin - Plugin welches geladen werden soll, optional, ansonsten werden alle geladen
      *
      * @return Virtual
      */
@@ -79,24 +80,24 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Serialisierungsdaten
      *
-     * @return String
+     * @return string
      */
     public function encode()
     {
-        return json_encode($this->getAttributes());
+        return \json_encode($this->getAttributes());
     }
 
     /**
      * Setzt JSON Parameter
      *
-     * @param String $params - JSON encoded string
+     * @param string $params - JSON encoded string
      *
      * @throws QUI\Exception
      */
     public function decode($params)
     {
         $this->setAttributes(
-            json_decode($params, true)
+            \json_decode($params, true)
         );
     }
 
@@ -110,7 +111,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Prüft ob es eine Verknüpfung ist
      *
-     * @return Bool|Integer
+     * @return boolean|integer
      */
     public function isLinked()
     {
@@ -120,10 +121,10 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Prüft ob es die Seite auch in einer anderen Sprache gibt
      *
-     * @param String $lang
-     * @param Bool   $check_only_active - check only active pages
+     * @param string $lang
+     * @param boolean $check_only_active - check only active pages
      *
-     * @return Bool
+     * @return boolean
      */
     public function existLang($lang, $check_only_active = true)
     {
@@ -133,20 +134,20 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Gibt die IDs von Sprachverknüpfungen zurück
      *
-     * @return Array
+     * @return array
      */
     public function getLangIds()
     {
-        return array();
+        return [];
     }
 
     /**
      * Return the ID of the site,
      * or the ID of the sibling (linked) site of another languager
      *
-     * @param String|bool $lang - optional, if it is set, then the language of the wanted linked sibling site
+     * @param string|boolean $lang - optional, if it is set, then the language of the wanted linked sibling site
      *
-     * @return Integer
+     * @return integer
      */
     public function getId($lang = false)
     {
@@ -159,13 +160,13 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param array $params - Parameter für die Childrenausgabe
      *                      $params['where']
      *                      $params['limit']
-     * @param Bool  $load   - Legt fest ob die Kinder die Plugins laden sollen
+     * @param boolean $load - Legt fest ob die Kinder die Plugins laden sollen
      *
-     * @return Array;
+     * @return array;
      */
-    public function getChildren($params = array(), $load = false)
+    public function getChildren($params = [], $load = false)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -176,19 +177,21 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function nextSibling()
     {
-        throw new QUI\Exception('Die Seite besitzt keine nächstfolgende Seite');
+        throw new QUI\Exception(
+            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.no.next.sibling')
+        );
     }
 
     /**
      * Die nächsten x Kinder
      *
-     * @param Integer $no
+     * @param integer $no
      *
-     * @return Array
+     * @return array
      */
     public function nextSiblings($no)
     {
-        return array();
+        return [];
     }
 
     /**
@@ -199,29 +202,31 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function previousSibling()
     {
-        throw new QUI\Exception('Die Seite besitzt keine vorhergehenden Seite');
+        throw new QUI\Exception(
+            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.no.previous.sibling')
+        );
     }
 
     /**
      * Die x vorhergehenden Geschwister
      *
-     * @param Integer $no
+     * @param integer $no
      *
-     * @return Array
+     * @return array
      */
     public function previousSiblings($no)
     {
-        return array();
+        return [];
     }
 
     /**
      * Gibt das erste Kind der Seite zurück
      *
-     * @param Array $params
+     * @param array $params
      *
      * @return QUI\Projects\Site | false
      */
-    public function firstChild($params = array())
+    public function firstChild($params = [])
     {
         return false;
     }
@@ -233,52 +238,58 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @return array
      */
-    public function getNavigation($params = array())
+    public function getNavigation($params = [])
     {
-        return array();
+        return [];
     }
 
     /**
      * Gibt ein Kind zurück welches den Namen hat
      *
-     * @param String $name
+     * @param string $name
      *
-     * @return Integer
+     * @return integer
      * @throws QUI\Exception
      */
     public function getChildIdByName($name)
     {
         throw new QUI\Exception(
-            'No Child found with name '.$name, 705
+            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.child.by.name.not.found', [
+                'name' => $name
+            ]),
+            705
         );
     }
 
     /**
      * Return a children by id
      *
-     * @param Integer $id
+     * @param integer $id
      *
      * @return QUI\Projects\Site
      * @throws QUI\Exception
      */
     public function getChild($id)
     {
-        throw new QUI\Exception('Child not found', 705);
+        throw new QUI\Exception(
+            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.site.child.not.found'),
+            705
+        );
     }
 
     /**
      * Gibt die ID's der Kinder zurück
      * Wenn nur die ID's verwendet werden sollte dies vor getChildren verwendet werden
      *
-     * @param Array $params Parameter für die Childrenausgabe
+     * @param array $params Parameter für die Childrenausgabe
      *                      $params['where']
      *                      $params['limit']
      *
-     * @return Array
+     * @return array
      */
-    public function getChildrenIds($params = array())
+    public function getChildrenIds($params = [])
     {
-        return array();
+        return [];
     }
 
     /**
@@ -288,17 +299,17 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      *
      * @return array
      */
-    public function getChildrenIdsRecursive($params = array())
+    public function getChildrenIdsRecursive($params = [])
     {
-        return array();
+        return [];
     }
 
     /**
      * Gibt zurück ob Site Kinder besitzt
      *
-     * @param Bool $navhide - if navhide == false, navhide must be 0
+     * @param boolean $navhide - if navhide == false, navhide must be 0
      *
-     * @return Integer - Anzahl der Kinder
+     * @return integer - Anzahl der Kinder
      */
     public function hasChildren($navhide = false)
     {
@@ -321,9 +332,9 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * @param $params
      * @param $rewrited
      *
-     * @return String
+     * @return string
      */
-    public function getUrl($params = array(), $rewrited = false)
+    public function getUrl($params = [], $rewrited = false)
     {
         return $this->getAttribute('url');
     }
@@ -332,11 +343,20 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * Gibt eine sprechenden URL zurück
      * DB Abfragen werden gemacht - Hier auf Performance achten
      *
-     * @param Array $params - Parameter welche an die URL angehängt werden
+     * @param array $params - Parameter welche an die URL angehängt werden
      *
-     * @return String
+     * @return string
      */
-    public function getUrlRewrited($params = array())
+    public function getUrlRewrited($params = [])
+    {
+        return $this->getAttribute('url');
+    }
+
+    /**
+     * @param array $params
+     * @return mixed
+     */
+    public function getUrlRewritten($params = [])
     {
         return $this->getAttribute('url');
     }
@@ -344,15 +364,15 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Return the Parent id from the site object
      *
-     * @return Integer
+     * @return integer
      */
     public function getParentId()
     {
-        if (!$this->_Parent) {
+        if (!$this->Parent) {
             return 1;
         }
 
-        return $this->_Parent->getId();
+        return $this->Parent->getId();
     }
 
     /**
@@ -363,11 +383,11 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      * ->Parent
      * ->Parent
      *
-     * @return Array
+     * @return array
      */
     public function getParentIds()
     {
-        $parents = $this->getParent()->getParentIds();
+        $parents   = $this->getParent()->getParentIds();
         $parents[] = $this->getParent()->getId();
 
         return $parents;
@@ -376,11 +396,11 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Return the Parent ID List
      *
-     * @return Array
+     * @return array
      */
     public function getParentIdTree()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -390,22 +410,22 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getParent()
     {
-        if (!$this->_Parent) {
-            return $this->_Project->firstChild();
+        if (!$this->Parent) {
+            return $this->Project->firstChild();
         }
 
-        return $this->_Parent;
+        return $this->Parent;
     }
 
     /**
      * Gibt alle rekursive Parents als Objekte zurück
      * Site->Parent->ParentParent->ParentParentParent
      *
-     * @return Array
+     * @return array
      */
     public function getParents()
     {
-        $parents = $this->getParent()->getParents();
+        $parents   = $this->getParent()->getParents();
         $parents[] = $this->getParent();
 
         return $parents;
@@ -432,7 +452,7 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Canonical URL - Um doppelte Inhalt zu vermeiden
      *
-     * @return String
+     * @return string
      */
     public function getCanonical()
     {
@@ -454,12 +474,12 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     }
 
     /**
-     * Shortcut for QUI\Rights\Permission::hasSitePermission
+     * Shortcut for QUI\Permissions\Permission::hasSitePermission
      *
-     * @param string              $permission - name of the permission
-     * @param QUI\Users\User|Bool $User       - optional
+     * @param string $permission - name of the permission
+     * @param QUI\Users\User|boolean $User - optional
      *
-     * @return Bool|Integer
+     * @return boolean|integer
      */
     public function hasPermission($permission, $User = false)
     {
@@ -467,15 +487,14 @@ class Virtual extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     }
 
     /**
-     * Shortcut for QUI\Rights\Permission::checkSitePermission
+     * Shortcut for QUI\Permissions\Permission::checkSitePermission
      *
-     * @param string              $permission - name of the permission
-     * @param QUI\Users\User|Bool $User       - optional
+     * @param string $permission - name of the permission
+     * @param QUI\Users\User|boolean $User - optional
      *
      * @throws QUI\Exception
      */
     public function checkPermission($permission, $User = false)
     {
-
     }
 }

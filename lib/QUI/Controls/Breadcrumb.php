@@ -14,22 +14,22 @@ use QUI;
  * @author www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
  */
-
 class Breadcrumb extends QUI\Control
 {
     /**
      * constructor
-     * @param Array $attributes
+     * @param array $attributes
      */
-    public function __construct($attributes = array())
+    public function __construct($attributes = [])
     {
-        parent::setAttributes( $attributes );
+        // default options
+        $this->setAttributes([
+            'class'         => 'quiqqer-breadcrumb',
+            'controlHeight' => 40,
+            'layout'        => 'slider'
+        ]);
 
-        $this->addCSSFile(
-            dirname(__FILE__) . '/Breadcrumb.css'
-        );
-
-        $this->setAttribute( 'class', 'quiqqer-breadcrumb grid-100 grid-parent' );
+        parent::__construct($attributes);
     }
 
     /**
@@ -40,10 +40,45 @@ class Breadcrumb extends QUI\Control
     {
         $Engine = QUI::getTemplateManager()->getEngine();
 
-        $Engine->assign(array(
+        $Engine->assign([
+            'this'    => $this,
             'Rewrite' => QUI::getRewrite()
-        ));
+        ]);
 
-        return $Engine->fetch( dirname( __FILE__ ) .'/Breadcrumb.html' );
+        $this->setAttribute(
+            'height',
+            (int)$this->getAttribute('controlHeight').'px'
+        );
+
+        $this->setStyle('height', $this->getAttribute('controlHeight'));
+
+        $layout = strtolower($this->getAttribute('layout'));
+
+        switch ($layout) {
+            default:
+            case 'slider':
+                $template = '/Breadcrumb.Slider.html';
+                $css      = '/Breadcrumb.Slider.css';
+
+                $this->setAttribute(
+                    'data-qui',
+                    'package/quiqqer/quiqqer/bin/Controls/BreadcrumbSlider'
+                );
+                break;
+
+            case 'dropdown':
+                $template = '/Breadcrumb.DropDown.html';
+                $css      = '/Breadcrumb.DropDown.css';
+
+                $this->setAttribute(
+                    'data-qui',
+                    'package/quiqqer/quiqqer/bin/Controls/BreadcrumbDropDown'
+                );
+                break;
+        }
+
+        $this->addCSSFile(\dirname(__FILE__).$css);
+
+        return $Engine->fetch(\dirname(__FILE__).$template);
     }
 }

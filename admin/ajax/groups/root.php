@@ -3,15 +3,19 @@
 /**
  * Return the root ID
  *
- * @return Integer
+ * @return integer
  */
-function ajax_groups_root()
-{
-	require_once 'get.php';
+QUI::$Ajax->registerFunction(
+    'ajax_groups_root',
+    function () {
+        require_once 'get.php';
 
-    return ajax_groups_get(
-        (int)QUI::conf('globals', 'root')
-    );
-}
+        $result = QUI::$Ajax->callRequestFunction('ajax_groups_get', array(
+            'gid' => (int)QUI::conf('globals', 'root')
+        ));
 
-\QUI::$Ajax->register('ajax_groups_root', false, 'Permission::checkSU');
+        return $result['result'];
+    },
+    false,
+    'Permission::checkAdminUser'
+);

@@ -1,4 +1,3 @@
-
 /* Daten Tabelle
  ======================================================= */
 
@@ -15,8 +14,12 @@
     text-align: left;
 
     -webkit-box-sizing: border-box;
-       -moz-box-sizing: border-box;
-            box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.data-table__noborder {
+    border: 0;
 }
 
 .data-table {
@@ -48,7 +51,24 @@
 
 .data-table-toggle {
     float: left;
-    margin-right: 10px;
+    text-align: center;
+    width: 34px;
+}
+
+.data-table-no-toggle th {
+    cursor: default !important;
+}
+
+.data-table-no-toggle .data-table-toggle {
+    display: none;
+}
+
+.data-table-text {
+    float: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: calc(100% - 34px);
 }
 
 .data-table th h1,
@@ -86,6 +106,10 @@
     width: 150px;
 }
 
+.data-table td label.field-container {
+    width: 100%;
+}
+
 .data-table .qui-users-and-groups label,
 .data-table td label.hasCheckbox {
     width: 100% !important;
@@ -103,4 +127,81 @@
 
 .data-table-closed .qui-button {
     display: none;
+}
+
+/** flexbox tables */
+
+.data-table-flexbox thead tr {
+    /*display: block;*/
+}
+
+.data-table-flexbox thead,
+.data-table-flexbox th {
+    background-color: #dedede;
+    color: #666;
+    /*float: left;*/
+    width: 100%;
+}
+
+.data-table-flexbox tbody,
+.data-table-flexbox thead {
+    display: table;
+}
+
+.data-table-flexbox .odd {
+    background: none;
+}
+
+.data-table-flexbox .qui-elements-select {
+    flex: 1;
+    width: inherit;
+}
+
+.data-table-flexbox .field-container-field > .qui-elements-select {
+    flex: none;
+    width: 100%;
+}
+
+.field-container > .qui-elements-select {
+    border: 1px solid #dedede;
+    border-left: 0;
+    flex: 1;
+    float: none;
+    max-width: none;
+    padding: 0;
+}
+
+.field-container > .qui-elements-select > button {
+    border-radius: 0;
+    border-left: 1px solid #dedede;
+    box-shadow: none;
+    height: 100%;
+}
+
+.field-container > .qui-elements-select-multiple > button {
+    height: auto;
+}
+
+.field-container .qui-elements-select-list {
+    border: none;
+    border-bottom: 1px solid #dedede;
+}
+
+.field-container .qui-elements-select-list-search {
+    border: none;
+}
+
+.field-container .qui-elements-select-multiple .qui-elements-select-list-search {
+    border-top: 1px solid #dedede;
+}
+
+.field-container-item-help {
+    cursor: help;
+    display: inline-block;
+    float: right;
+}
+
+.field-container-item-help:before {
+    font: normal normal 300 14px/1 FontAwesome;
+    content: "\f128";
 }

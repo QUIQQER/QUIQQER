@@ -17,8 +17,7 @@ define('controls/projects/project/Entry', [
 
     'css!controls/projects/project/Entry.css'
 
-], function(QUIControl, Projects, Locale)
-{
+], function (QUIControl, Projects, Locale) {
     "use strict";
 
     /**
@@ -34,24 +33,23 @@ define('controls/projects/project/Entry', [
      */
     return new Class({
 
-        Extends : QUIControl,
-        Type    : 'controls/projects/project/Entry',
+        Extends: QUIControl,
+        Type   : 'controls/projects/project/Entry',
 
-        Binds : [
+        Binds: [
             '$onProjectUpdate',
             '$onInject',
             '$onDestroy'
         ],
 
-        options : {
-            styles : false
+        options: {
+            styles: false
         },
 
-        initialize : function(project, lang, options)
-        {
-            this.parent( options );
+        initialize: function (project, lang, options) {
+            this.parent(options);
 
-            this.$Project = Projects.get( project, lang );
+            this.$Project = Projects.get(project, lang);
 
             this.$Elm      = null;
             this.$Close    = null;
@@ -60,8 +58,8 @@ define('controls/projects/project/Entry', [
             this.$IconSpan = null;
 
             this.addEvents({
-                onDestroy : this.$onDestroy,
-                onInject  : this.$onInject
+                onDestroy: this.$onDestroy,
+                onInject : this.$onInject
             });
         },
 
@@ -71,8 +69,7 @@ define('controls/projects/project/Entry', [
          * @method controls/projects/project/Entry#getProject
          * @return {Object} Binded Project - classes/projects/Project
          */
-        getProject : function()
-        {
+        getProject: function () {
             return this.$Project;
         },
 
@@ -82,59 +79,57 @@ define('controls/projects/project/Entry', [
          * @method controls/projects/project/Entry#create
          * @return {HTMLElement} Main DOM-Node Element
          */
-        create : function()
-        {
+        create: function () {
             var self = this;
 
             this.$Elm = new Element('div', {
-                'class'        : 'project-entry',
-                'data-project' : this.getProject().getName(),
-                'data-lang'    : this.getProject().getLang(),
+                'class'       : 'project-entry',
+                'data-project': this.getProject().getName(),
+                'data-lang'   : this.getProject().getLang(),
 
-                html : '<div class="project-entry-icon">' +
-                           '<span class="icon-home"></span>' +
-                       '</div>' +
-                       '<div class="project-entry-text"></div>' +
-                       '<div class="project-entry-close">' +
-                           '<span class="icon-remove"></span>' +
-                       '</div>',
-                events :
-                {
-                    mouseover : function() {
-                        this.addClass( 'hover' );
+                html  : '<div class="project-entry-icon">' +
+                        '<span class="fa fa-home"></span>' +
+                        '</div>' +
+                        '<div class="project-entry-text"></div>' +
+                        '<div class="project-entry-close">' +
+                        '<span class="fa fa-remove"></span>' +
+                        '</div>',
+                events: {
+                    mouseover: function () {
+                        this.addClass('hover');
                     },
-                    mouseout : function() {
-                        this.removeClass( 'hover' );
+                    mouseout : function () {
+                        this.removeClass('hover');
                     }
                 }
             });
 
-            if ( this.getAttribute( 'styles' ) ) {
-                this.$Elm.setStyles( this.getAttribute( 'styles' ) );
+            if (this.getAttribute('styles')) {
+                this.$Elm.setStyles(this.getAttribute('styles'));
             }
 
-            this.$Close = this.$Elm.getElement( '.project-entry-close' );
-            this.$Icon  = this.$Elm.getElement( '.project-entry-icon' );
-            this.$Text  = this.$Elm.getElement( '.project-entry-text' );
+            this.$Close = this.$Elm.getElement('.project-entry-close');
+            this.$Icon  = this.$Elm.getElement('.project-entry-icon');
+            this.$Text  = this.$Elm.getElement('.project-entry-text');
 
-            this.$IconSpan = this.$Icon.getElement( 'span' );
+            this.$IconSpan = this.$Icon.getElement('span');
 
-            this.$Close.addEvent('click', function() {
+            this.$Close.addEvent('click', function () {
                 self.destroy();
             });
 
             this.$Close.set({
-                alt : Locale.get(
+                alt  : Locale.get(
                     'quiqqer/system',
                     'projects.project.panel.entry.delete.project'
                 ),
-                title : Locale.get(
+                title: Locale.get(
                     'quiqqer/system',
                     'projects.project.panel.entry.delete.project'
                 )
             });
 
-            this.getProject().addEvent( 'onRefresh', this.$onProjectUpdate );
+            this.getProject().addEvent('onRefresh', this.$onProjectUpdate);
             this.refresh();
 
             return this.$Elm;
@@ -143,9 +138,8 @@ define('controls/projects/project/Entry', [
         /**
          * event : on inject
          */
-        $onInject : function()
-        {
-            if ( this.getAttribute( 'styles' ) && this.getAttribute( 'styles' ).width ) {
+        $onInject: function () {
+            if (this.getAttribute('styles') && this.getAttribute('styles').width) {
                 return;
             }
 
@@ -155,9 +149,9 @@ define('controls/projects/project/Entry', [
 
 
             this.$Elm.setStyles({
-                width : ( iconWidth ).toInt() +
-                        ( textWidth ).toInt() +
-                        ( closeWidth ).toInt()
+                width: (iconWidth).toInt() +
+                       (textWidth).toInt() +
+                       (closeWidth).toInt()
             });
         },
 
@@ -166,9 +160,8 @@ define('controls/projects/project/Entry', [
          *
          * @method controls/projects/project/Entry#$onDestroy
          */
-        $onDestroy : function()
-        {
-            this.getProject().removeEvent( 'refresh', this.$onProjectUpdate );
+        $onDestroy: function () {
+            this.getProject().removeEvent('refresh', this.$onProjectUpdate);
         },
 
         /**
@@ -177,14 +170,12 @@ define('controls/projects/project/Entry', [
          * @method controls/projects/project/Entry#refresh
          * @return {Object} this (controls/projects/project/Entry)
          */
-        refresh : function()
-        {
-            this.$IconSpan.removeClass( 'icon-home' );
-            this.$IconSpan.addClass( 'icon-spinner icon-spin' );
+        refresh: function () {
+            this.$IconSpan.removeClass('fa-home');
+            this.$IconSpan.addClass('fa fa-spinner fa-spin');
 
-            if ( this.getProject().getName() )
-            {
-                this.$onProjectUpdate( this.getProject() );
+            if (this.getProject().getName()) {
+                this.$onProjectUpdate(this.getProject());
 
                 return this;
             }
@@ -201,20 +192,19 @@ define('controls/projects/project/Entry', [
          * @param {classes/projects/Project} Project
          * @return {Object} this (controls/projects/project/Entry)
          */
-        $onProjectUpdate : function(Project)
-        {
-            if ( !this.$Elm ) {
+        $onProjectUpdate: function (Project) {
+            if (!this.$Elm) {
                 return this;
             }
 
             this.$Text.set(
                 'html',
-                Project.getName() +' ('+ Project.getLang() +')'
+                Project.getName() + ' (' + Project.getLang() + ')'
             );
 
-            this.$IconSpan.addClass( 'icon-home' );
-            this.$IconSpan.removeClass( 'icon-spinner' );
-            this.$IconSpan.removeClass( 'icon-spin' );
+            this.$IconSpan.addClass('fa-home');
+            this.$IconSpan.removeClass('fa-spinner');
+            this.$IconSpan.removeClass('fa-spin');
 
             this.$onInject();
 

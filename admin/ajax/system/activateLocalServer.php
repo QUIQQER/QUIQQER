@@ -3,16 +3,14 @@
 /**
  * Activate the local repository
  */
-function ajax_system_activateLocalServer()
-{
-    QUI::getPackageManager()->activateLocalServer();
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_system_activateLocalServer',
+    function () {
+        QUI::getPackageManager()->activateLocalServer();
+    },
     false,
-    array(
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.update'
-    )
+    ]
 );

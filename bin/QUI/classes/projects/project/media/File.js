@@ -12,8 +12,7 @@ define('classes/projects/project/media/File', [
 
     'classes/projects/project/media/Item'
 
-], function(MediaItem)
-{
+], function (MediaItem) {
     "use strict";
 
     /**

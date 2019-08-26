@@ -1,27 +1,17 @@
-
 /**
  * Media for a Project
  *
  * @module classes/projects/project/Media
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/classes/DOM
- * @require qui/utils/Object
- * @require Ajax
- * @require classes/projects/project/media/Image
- * @require classes/projects/project/media/File
- * @require classes/projects/project/media/Folder
- * @require classes/projects/project/media/Trash
- *
  * @event onItemRename [ self, Item ]
  * @event onItemRefresh [ self, Item ]
  * @event onItemSave [ self, Item ]
- * @event onItemDelete [ self, Item ]
- * @event onItemActivate [ self, Item ]
- * @event onItemDeactivate [ self, Item ]
+ * @event onItemDelete [ self, Item|id ]
+ * @event onItemActivate [ self, Item|id ]
+ * @event onItemDeactivate [ self, Item|id ]
  * @event onItemRename [ self, Item ]
  */
-
 define('classes/projects/project/Media', [
 
     'qui/classes/DOM',
@@ -33,8 +23,7 @@ define('classes/projects/project/Media', [
     'classes/projects/project/media/Folder',
     'classes/projects/project/media/Trash'
 
-], function(DOM, ObjectUtils, Ajax, MediaImage, MediaFile, MediaFolder, MediaTrash)
-{
+], function (DOM, ObjectUtils, Ajax, MediaImage, MediaFile, MediaFolder, MediaTrash) {
     "use strict";
 
     /**
@@ -46,11 +35,10 @@ define('classes/projects/project/Media', [
      */
     return new Class({
 
-        Extends : DOM,
-        Type    : 'classes/projects/project/Media',
+        Extends: DOM,
+        Type   : 'classes/projects/project/Media',
 
-        initialize : function(Project)
-        {
+        initialize: function (Project) {
             this.$Project = Project;
             this.$Panel   = null;
             this.$items   = {};
@@ -62,8 +50,7 @@ define('classes/projects/project/Media', [
          * @method classes/projects/project/Media#getProject
          * @return {Object} classes/projects/Project
          */
-        getProject : function()
-        {
+        getProject: function () {
             return this.$Project;
         },
 
@@ -73,9 +60,8 @@ define('classes/projects/project/Media', [
          * @method classes/projects/project/Media#getTrash
          * @return {Object} classes/projects/project/media/Trash
          */
-        getTrash : function()
-        {
-            return new MediaTrash( this );
+        getTrash: function () {
+            return new MediaTrash(this);
         },
 
         /**
@@ -86,22 +72,18 @@ define('classes/projects/project/Media', [
          * @param {Number|Array} id       - ID of the file or an id list
          * @param {Function|Array} params - Item params or a callback function
          *
-         * @return {Object} Promise
+         * @return {Promise}
          */
-        get : function(id, params)
-        {
+        get: function (id, params) {
             var self = this;
 
-            return new Promise(function(resolve, reject)
-            {
+            return new Promise(function (resolve, reject) {
                 // id list
-                if (typeOf(id) == 'array')
-                {
+                if (typeOf(id) === 'array') {
                     var i, len, itemId;
                     var result = [];
 
-                    for (i = 0, len = id.length; i < len; i++)
-                    {
+                    for (i = 0, len = id.length; i < len; i++) {
                         itemId = id[i];
 
                         if (self.$items[itemId]) {
@@ -109,8 +91,7 @@ define('classes/projects/project/Media', [
                         }
                     }
 
-                    if (result.length === len)
-                    {
+                    if (result.length === len) {
                         if (typeOf(params) === 'function') {
                             params(result);
                         }
@@ -121,8 +102,7 @@ define('classes/projects/project/Media', [
                 }
 
                 // one id
-                if (id in self.$items)
-                {
+                if (id in self.$items) {
                     if (typeOf(params) === 'function') {
                         params(self.$items[id]);
                     }
@@ -136,18 +116,14 @@ define('classes/projects/project/Media', [
                     return;
                 }
 
-                Ajax.get('ajax_media_details', function(result)
-                {
+                Ajax.get('ajax_media_details', function (result) {
                     var children = self.$parseResultToItem(result);
 
-                    if (typeOf(children) == 'array')
-                    {
+                    if (typeOf(children) === 'array') {
                         for (var i = 0, len = children.length; i < len; i++) {
                             self.$items[children[i].getId()] = children[i];
                         }
-
-                    } else
-                    {
+                    } else {
                         self.$items[children.getId()] = children;
                     }
 
@@ -156,13 +132,11 @@ define('classes/projects/project/Media', [
                     }
 
                     resolve(children);
-
                 }, {
-                    fileid  : JSON.encode(id),
-                    project : self.getProject().getName(),
-                    onError : function(Exception)
-                    {
-                        reject( Exception );
+                    fileid : JSON.encode(id),
+                    project: self.getProject().getName(),
+                    onError: function (Exception) {
+                        reject(Exception);
                     }
                 });
             });
@@ -176,27 +150,23 @@ define('classes/projects/project/Media', [
          * @param {Number|Array} id  - ID of the file or an id list
          * @param {Function} [onfinish] - (optional), callback function
          *
-         * @return {Object} Promise
+         * @return {Promise}
          */
-        getData : function(id, onfinish)
-        {
+        getData: function (id, onfinish) {
             var self = this;
 
-            return new Promise(function(resolve, reject)
-            {
-                Ajax.get('ajax_media_details', function(result)
-                {
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_media_details', function (result) {
                     if (typeOf(onfinish) === 'function') {
                         onfinish(result);
                     }
 
                     resolve(result);
                 }, {
-                    fileid  : JSON.encode(id),
-                    project : self.getProject().getName(),
-                    onError : function(Exception)
-                    {
-                        reject( Exception );
+                    fileid : JSON.encode(id),
+                    project: self.getProject().getName(),
+                    onError: function (Exception) {
+                        reject(Exception);
                     }
                 });
             });
@@ -206,10 +176,9 @@ define('classes/projects/project/Media', [
          * get the first child of the media
          *
          * @method classes/projects/project/Media#get
-         * @return {Object} Promise
+         * @return {Promise}
          */
-        firstChild : function(callback)
-        {
+        firstChild: function (callback) {
             return this.get(1, callback);
         },
 
@@ -223,21 +192,18 @@ define('classes/projects/project/Media', [
          * @param {Function} onfinish - callback function after the upload is finish
          *                              onfinish( {controls/upload/File} )
          *
-         * @return Promise
+         * @return {Promise}
          */
-        replace : function(childid, File, onfinish)
-        {
-            return new Promise(function(resolve, reject)
-            {
+        replace: function (childid, File, onfinish) {
+            return new Promise(function (resolve, reject) {
                 // upload file
-                require(['UploadManager'], function(UploadManager)
-                {
+                require(['UploadManager'], function (UploadManager) {
                     UploadManager.uploadFiles([File], 'ajax_media_replace', {
-                        project    : this.getProject().getName(),
-                        fileid     : childid,
-                        phponstart : 'ajax_media_checkreplace',
-                        events     : {
-                            onComplete : function() {
+                        project   : this.getProject().getName(),
+                        fileid    : childid,
+                        phponstart: 'ajax_media_checkreplace',
+                        events    : {
+                            onComplete: function () {
                                 if (typeof onfinish === 'function') {
                                     onfinish();
                                 }
@@ -259,29 +225,31 @@ define('classes/projects/project/Media', [
          * @param {Function} [oncomplete] - (optional), callback Function
          * @param {Object} [params]       - (optional), parameters that are linked to the request object
          *
-         * @return Promise
+         * @return {Promise}
          */
-        activate : function(id, oncomplete, params)
-        {
-            return new Promise(function(resolve, reject)
-            {
+        activate: function (id, oncomplete, params) {
+            return new Promise(function (resolve, reject) {
                 params = ObjectUtils.combine(params, {
-                    project : this.getProject().getName(),
-                    fileid  : JSON.encode( id ),
-                    onError : reject
+                    project: this.getProject().getName(),
+                    fileid : JSON.encode(id),
+                    onError: reject
                 });
 
-                Ajax.post('ajax_media_activate', function(result)
-                {
+                Ajax.post('ajax_media_activate', function (result) {
                     if (typeOf(id) !== 'array') {
                         if (typeof this.$items[id] !== 'undefined') {
                             this.$items[id].setAttribute('active', result);
+                            this.fireEvent('itemActivate', [this, this.$items[id]]);
+                        } else {
+                            this.fireEvent('itemActivate', [this, id]);
                         }
-                    } else
-                    {
-                        id.each(function(id) {
+                    } else {
+                        id.each(function (id) {
                             if (id in this.$items) {
                                 this.$items[id].setAttribute('active', result[id]);
+                                this.fireEvent('itemActivate', [this, this.$items[id]]);
+                            } else {
+                                this.fireEvent('itemActivate', [this, id]);
                             }
                         }.bind(this));
                     }
@@ -291,7 +259,6 @@ define('classes/projects/project/Media', [
                     }
 
                     resolve(result);
-
                 }.bind(this), params);
             }.bind(this));
         },
@@ -305,29 +272,31 @@ define('classes/projects/project/Media', [
          * @param {Function} [oncomplete] - (optional), callback Function
          * @param {Object} [params]       - (optional), parameters that are linked to the request object
          *
-         * @return Promise
+         * @return {Promise}
          */
-        deactivate : function(id, oncomplete, params)
-        {
-            return new Promise(function(resolve, reject)
-            {
+        deactivate: function (id, oncomplete, params) {
+            return new Promise(function (resolve, reject) {
                 params = ObjectUtils.combine(params, {
-                    project : this.getProject().getName(),
-                    fileid  : JSON.encode(id),
-                    onError : reject
+                    project: this.getProject().getName(),
+                    fileid : JSON.encode(id),
+                    onError: reject
                 });
 
-                Ajax.post('ajax_media_deactivate', function (result)
-                {
+                Ajax.post('ajax_media_deactivate', function (result) {
                     if (typeOf(id) !== 'array') {
                         if (typeof this.$items[id] !== 'undefined') {
                             this.$items[id].setAttribute('active', result);
+                            this.fireEvent('itemDeactivate', [this, this.$items[id]]);
+                        } else {
+                            this.fireEvent('itemDeactivate', [this, id]);
                         }
-                    } else
-                    {
-                        id.each(function(id) {
+                    } else {
+                        id.each(function (id) {
                             if (id in this.$items) {
                                 this.$items[id].setAttribute('active', result[id]);
+                                this.fireEvent('itemDeactivate', [this, this.$items[id]]);
+                            } else {
+                                this.fireEvent('itemDeactivate', [this, id]);
                             }
                         }.bind(this));
                     }
@@ -337,9 +306,7 @@ define('classes/projects/project/Media', [
                     }
 
                     resolve(result);
-
                 }.bind(this), params);
-
             }.bind(this));
         },
 
@@ -352,12 +319,12 @@ define('classes/projects/project/Media', [
          * @param {Function} [oncomplete] - (optional), callback Function
          * @param {Object} [params]       - (optional), parameters that are linked to the request object
          *
-         * @return Promise
+         * @return {Promise}
          */
-        del : function(id, oncomplete, params)
-        {
-            return new Promise(function(resolve, reject)
-            {
+        del: function (id, oncomplete, params) {
+            var self = this;
+
+            return new Promise(function (resolve, reject) {
                 if (!id.length) {
                     if (typeof oncomplete === 'function') {
                         oncomplete(false);
@@ -369,19 +336,20 @@ define('classes/projects/project/Media', [
 
                 params = ObjectUtils.combine(params, {
                     project: this.getProject().getName(),
-                    fileid: JSON.encode(id),
+                    fileid : JSON.encode(id),
                     onError: reject
                 });
 
-                Ajax.post('ajax_media_delete', function (result)
-                {
+                Ajax.post('ajax_media_delete', function (result) {
                     if (typeof oncomplete === 'function') {
                         oncomplete(result);
                     }
 
                     resolve(false);
-                }, params);
 
+                    self.fireEvent('itemDeactivate', [self, self.$items[id]]);
+                    delete self.$items[id];
+                }, params);
             }.bind(this));
         },
 
@@ -390,18 +358,15 @@ define('classes/projects/project/Media', [
          *
          * @return {Object|Array} classes/projects/project/media/Item
          */
-        $parseResultToItem : function(result)
-        {
+        $parseResultToItem: function (result) {
             if (!result) {
                 return [];
             }
 
-            if (typeOf(result) == 'array' && result.length)
-            {
+            if (typeOf(result) === 'array' && result.length) {
                 var list = [];
 
-                for (var i = 0, len = result.length; i < len; i++)
-                {
+                for (var i = 0, len = result.length; i < len; i++) {
                     list.push(
                         this.$parseResultToItem(result[i])
                     );
@@ -417,39 +382,38 @@ define('classes/projects/project/Media', [
             var Item;
             var self = this;
 
-            switch (result.type)
-            {
+            switch (result.type) {
                 case "image":
                     Item = new MediaImage(result, this);
-                break;
+                    break;
 
                 case "folder":
                     Item = new MediaFolder(result, this);
-                break;
+                    break;
 
                 default:
                     Item = new MediaFile(result, this);
-                break;
+                    break;
             }
 
             Item.addEvents({
-                onRename : function(Item) {
+                onRename    : function (Item) {
                     self.fireEvent('itemRename', [self, Item]);
                 },
-                onActivate : function(Item) {
+                onActivate  : function (Item) {
                     self.fireEvent('itemActivate', [self, Item]);
                 },
-                onDeactivate : function(Item) {
+                onDeactivate: function (Item) {
                     self.fireEvent('itemDeactivate', [self, Item]);
                 },
-                onRefresh : function(Item) {
+                onRefresh   : function (Item) {
                     self.fireEvent('itemRefresh', [self, Item]);
                 },
-                onSave : function(Item) {
+                onSave      : function (Item) {
                     self.fireEvent('itemSave', [self, Item]);
                 },
-                onDelete : function(Item) {
-                    self.fireEvent('itemDelete', [self, Item]);
+                onDelete    : function (Item) {
+                    self.fireEvent('itemDelete', [self, Item.getId()]);
                 }
             });
 

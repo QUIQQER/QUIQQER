@@ -3,16 +3,14 @@
 /**
  * Update the system with the local server
  */
-function ajax_system_updateWithLocalServer()
-{
-    QUI::getPackageManager()->updateWithLocalRepository();
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_system_updateWithLocalServer',
+    function () {
+        QUI::getPackageManager()->updateWithLocalRepository();
+    },
     false,
-    array(
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.update'
-    )
+    ]
 );

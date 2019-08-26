@@ -1,0 +1,96 @@
+
+/** breadcrumb
+ * ========================================================== */
+
+.quiqqer-breadcrumb a {
+    color: #8a8a8a;
+    padding: 0;
+}
+
+.quiqqer-breadcrumb a:hover .quiqqer-breadcrumb-link-text {
+    text-decoration: underline;
+}
+
+.quiqqer-breadcrumb-title {
+    display: inline-flex;
+}
+
+.quiqqer-breadcrumb ul {
+    margin: 0 0 0 15px;
+    display: inline-flex;
+}
+
+.quiqqer-breadcrumb ul li {
+    display: inline;
+    margin-right: 15px;
+    overflow: hidden;
+    padding-left: 0;
+    position: relative;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.quiqqer-breadcrumb ul li:last-child {
+    margin-right: 0;
+}
+
+.quiqqer-breadcrumb .fa {
+    margin-right: 15px;
+}
+
+.quiqqer-breadcrumb-container {
+    overflow: hidden;
+    position: relative;
+    white-space: nowrap;
+    display: block;
+    -webkit-transition: 0.3s all ease-in-out;
+    -moz-transition: 0.3s all ease-in-out;
+    -ms-transition: 0.3s all ease-in-out;
+    -o-transition: 0.3s all ease-in-out;
+    transition: 0.3s all ease-in-out;
+}
+
+.fa.quiqqer-breadcrumb-link-icon {
+    cursor: pointer;
+    margin-right: 0;
+    display: none;
+    line-height: inherit;
+    font-size: 2em;
+    position: absolute;
+    right: 0;
+    width: 40px;
+    text-align: center;
+}
+
+/* mobile
+ no fix point - JS calculate */
+
+
+.quiqqer-breadcrumb.quiqqer-breadcrumb-mobile ul {
+    bottom: 0;
+    display: block;
+    margin: 0;
+    position: absolute;
+    width: 100%;
+}
+
+.quiqqer-breadcrumb.quiqqer-breadcrumb-mobile ul li {
+    border-bottom: 1px solid #eee;
+    display: block;
+    margin: 0;
+    padding-left: 0;
+    padding-right: 10px;
+}
+
+.quiqqer-breadcrumb.quiqqer-breadcrumb-mobile ul li:last-child {
+    border-bottom: none;
+    padding-right: 40px;
+}
+
+.quiqqer-breadcrumb.quiqqer-breadcrumb-mobile .fa.quiqqer-breadcrumb-link-icon {
+    display: inline;
+}
+
+.quiqqer-breadcrumb.quiqqer-breadcrumb-mobile .quiqqer-breadcrumb-list-element:after {
+    display: inline;
+}

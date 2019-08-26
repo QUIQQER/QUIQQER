@@ -1,4 +1,3 @@
-
 /**
  * A QUIQQER Nobody User
  *
@@ -18,8 +17,7 @@ define('classes/users/Nobody', [
     'qui/classes/DOM',
     'classes/users/User'
 
-], function(QUI, DOM, User)
-{
+], function (QUI, DOM, User) {
     "use strict";
 
     /**
@@ -32,13 +30,12 @@ define('classes/users/Nobody', [
      */
     return new Class({
 
-        Extends : User,
-        Type    : 'classes/users/Nobody',
+        Extends: User,
+        Type   : 'classes/users/Nobody',
 
-        attributes : {}, // user attributes
+        attributes: {}, // user attributes
 
-        initialize : function()
-        {
+        initialize: function () {
             this.$uid    = 0;
             this.$extras = {};
             this.$loaded = true;
@@ -50,8 +47,7 @@ define('classes/users/Nobody', [
          * @method classes/users/Nobody#getId
          * @return {Number} User-ID
          */
-        getId : function()
-        {
+        getId: function () {
             return 0;
         },
 
@@ -61,8 +57,7 @@ define('classes/users/Nobody', [
          * @method classes/users/Nobody#getName
          * @return {String} Username
          */
-        getName : function()
-        {
+        getName: function () {
             return 'nobody';
         },
 
@@ -72,27 +67,27 @@ define('classes/users/Nobody', [
          * @method classes/users/Nobody#load
          * @param {Function} [onfinish] - (optional), callback
          */
-        load: function(onfinish)
-        {
+        load: function (onfinish) {
             var self = this;
 
-            if ( typeof onfinish !== 'undefined' ) {
-                onfinish( this );
+            if (typeof onfinish !== 'undefined') {
+                onfinish(this);
             }
 
-            this.fireEvent( 'refresh', [ this ] );
+            this.fireEvent('refresh', [this]);
 
-            require(['Users'], function(Users) {
-                Users.onRefreshUser( self );
+            require(['Users'], function (Users) {
+                Users.onRefreshUser(self);
             });
+
+            return Promise.resolve();
         },
 
         /**
          * Nobody is always loaded
          * @return {Boolean}
          */
-        isLoaded : function()
-        {
+        isLoaded: function () {
             return true;
         },
 
@@ -101,8 +96,7 @@ define('classes/users/Nobody', [
          *
          * @method classes/users/Nobody#save
          */
-        save : function()
-        {
+        save: function () {
 
         },
 
@@ -112,9 +106,8 @@ define('classes/users/Nobody', [
          * @method classes/users/Nobody#activate
          * @param {Function} [onfinish] - (optional), callback function, calls if activation is finish
          */
-        activate : function(onfinish)
-        {
-            if ( typeof onfinish !== 'undefined' ) {
+        activate: function (onfinish) {
+            if (typeof onfinish !== 'undefined') {
                 onfinish();
             }
         },
@@ -124,9 +117,8 @@ define('classes/users/Nobody', [
          * @method classes/users/Nobody#deactivate
          * @param {Function} [onfinish] - (optional), callback function, calls if deactivation is finish
          */
-        deactivate : function(onfinish)
-        {
-            if ( typeof onfinish !== 'undefined' ) {
+        deactivate: function (onfinish) {
+            if (typeof onfinish !== 'undefined') {
                 onfinish();
             }
         },
@@ -135,8 +127,7 @@ define('classes/users/Nobody', [
          * Do nothing, method overwrite
          * @method classes/users/Nobody#deactivate
          */
-        savePassword : function()
-        {
+        savePassword: function () {
 
         },
 
@@ -145,8 +136,7 @@ define('classes/users/Nobody', [
          *
          * @return {Number} 0, 1, -1
          */
-        isActive : function()
-        {
+        isActive: function () {
             return 1;
         }
     });

@@ -30,52 +30,52 @@ class Mailer extends QUI\QDOM
     /**
      * list of recipients
      *
-     * @var Array
+     * @var array
      */
-    protected $_recipients = array();
+    protected $recipients = [];
 
     /**
      * list of reply
      *
-     * @var Array
+     * @var array
      */
-    protected $_reply = array();
+    protected $reply = [];
 
     /**
      * list of cc
      *
-     * @var Array
+     * @var array
      */
-    protected $_cc = array();
+    protected $cc = [];
 
     /**
      * list of bcc
      *
-     * @var Array
+     * @var array
      */
-    protected $_bcc = array();
+    protected $bcc = [];
 
     /**
      * list of attachments
      *
-     * @var Array
+     * @var array
      */
-    protected $_attachments = array();
+    protected $attachments = [];
 
     /**
      * constructor
      *
      * @param array $attributes
      */
-    public function __construct($attributes = array())
+    public function __construct($attributes = [])
     {
-        $config = \QUI::conf('mail');
+        $config = QUI::conf('mail');
 
         // default
-        $this->setAttributes(array(
+        $this->setAttributes([
             'html'    => true,
-            'Project' => \QUI::getProjectManager()->get()
-        ));
+            'Project' => QUI::getProjectManager()->get()
+        ]);
 
         if (isset($config['MAILFrom'])) {
             $this->setFrom($config['MAILFrom']);
@@ -90,9 +90,15 @@ class Mailer extends QUI\QDOM
         $this->setAttributes($attributes);
 
         // html mail template
-        $this->Template = new Template(array(
+        $this->Template = new Template([
             'Project' => $this->getAttribute('Project')
-        ));
+        ]);
+
+        try {
+            QUI::getEvents()->fireEvent('mailer', [$this]);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
     }
 
     /**
@@ -105,89 +111,148 @@ class Mailer extends QUI\QDOM
         $PHPMailer = QUI::getMailManager()->getPHPMailer();
 
         $PHPMailer->Subject = $this->getAttribute('subject');
-        $PHPMailer->Body = $this->Template->getHTML();
+        $PHPMailer->Body    = $this->Template->getHTML();
+
+        try {
+            QUI::getEvents()->fireEvent('mailerSendBegin', [$this, $PHPMailer]);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
 
         // html ?
         if ($this->getAttribute('html')) {
-            $Html2Text = new Html2Text($PHPMailer->Body);
+            $Html2Text          = new Html2Text($PHPMailer->Body);
             $PHPMailer->AltBody = $Html2Text->get_text();
         }
 
         // addresses
-        foreach ($this->_recipients as $email) {
+        foreach ($this->recipients as $email) {
+            if (empty($email)) {
+                continue;
+            }
+
+            if (\is_array($email)) {
+                $PHPMailer->addAddress($email[0], $email[1]);
+                continue;
+            }
+
             $PHPMailer->addAddress($email);
         }
 
-        foreach ($this->_reply as $email) {
+        foreach ($this->reply as $email) {
+            if (empty($email)) {
+                continue;
+            }
+
+            if (\is_array($email)) {
+                $PHPMailer->addReplyTo($email[0], $email[1]);
+                continue;
+            }
+
             $PHPMailer->addReplyTo($email);
         }
 
-        foreach ($this->_cc as $email) {
+        foreach ($this->cc as $email) {
+            if (empty($email)) {
+                continue;
+            }
+
+            if (\is_array($email)) {
+                $PHPMailer->addCC($email[0], $email[1]);
+                continue;
+            }
+
             $PHPMailer->addCC($email);
         }
 
-        foreach ($this->_bcc as $email) {
+        foreach ($this->bcc as $email) {
+            if (empty($email)) {
+                continue;
+            }
+
+            if (\is_array($email)) {
+                $PHPMailer->addBCC($email[0], $email[1]);
+                continue;
+            }
+
             $PHPMailer->addBCC($email);
         }
 
         // attachments
-        foreach ($this->_attachments as $file) {
-            if (!file_exists($file)) {
+        foreach ($this->attachments as $file) {
+            if (!\file_exists($file)) {
                 continue;
             }
 
-            $infos = QUI\Utils\System\File::getInfo($file);
+            $info = QUI\Utils\System\File::getInfo($file);
 
-            if (!isset($infos['mime_type'])) {
-                $infos['mime_type'] = 'application/octet-stream';
+            if (!isset($info['mime_type'])) {
+                $info['mime_type'] = 'application/octet-stream';
             }
 
-            $PHPMailer->addAttachment($file, $infos['basename'], 'base64',
-                $infos['mime_type']);
+            try {
+                $PHPMailer->addAttachment(
+                    $file,
+                    $info['basename'],
+                    'base64',
+                    $info['mime_type']
+                );
+            } catch (\PHPMailer\PHPMailer\Exception $Exception) {
+                throw new QUI\Exception(
+                    $Exception->getMessage(),
+                    $Exception->getCode()
+                );
+            }
         }
 
+        try {
+            QUI::getEvents()->fireEvent('mailerSend', [$this, $PHPMailer]);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
 
         // with mail queue?
         if (QUI::conf('mail', 'queue')) {
             $Queue = new Queue();
-            $id = $Queue->addToQueue($this);
+            $id    = $Queue->addToQueue($this);
 
             $Queue->sendById($id);
 
             return true;
         }
 
-
         // no mail queue
-        if ($PHPMailer->Send()) {
-            return true;
-        }
+        try {
+            $PHPMailer->send();
 
-        throw new QUI\Exception(
-            'Mail Error: '.$PHPMailer->ErrorInfo
-        );
+            return true;
+        } catch (\Exception $Exception) {
+            throw new QUI\Exception(
+                'Mail Error: '.$Exception->getMessage()
+            );
+        }
     }
 
     /**
      * Mail params to array
      *
-     * @return Array
+     * @return array
      */
     public function toArray()
     {
-        return array(
+        return [
             'subject'      => $this->getAttribute('subject'),
             'body'         => $this->Template->getHTML(),
             'text'         => $this->Template->getText(),
             'from'         => $this->getAttribute('from'),
             'fromName'     => $this->getAttribute('fromName'),
             'ishtml'       => (bool)$this->getAttribute('html') ? 1 : 0,
-            'mailto'       => $this->_recipients,
-            'replyto'      => $this->_reply,
-            'cc'           => $this->_cc,
-            'bcc'          => $this->_bcc,
-            'attachements' => $this->_attachments
-        );
+            'mailto'       => $this->recipients,
+            'replyto'      => $this->reply,
+            'cc'           => $this->cc,
+            'bcc'          => $this->bcc,
+            'attachements' => $this->attachments
+        ];
     }
 
     /**
@@ -197,7 +262,7 @@ class Mailer extends QUI\QDOM
     /**
      * Set the from mail
      *
-     * @param String $from - mail@domain.net
+     * @param string $from - mail@domain.net
      */
     public function setFrom($from)
     {
@@ -207,7 +272,7 @@ class Mailer extends QUI\QDOM
     /**
      * Set the from name for the mail
      *
-     * @param String $fromName - Firstname Lastname
+     * @param string $fromName - Firstname Lastname
      */
     public function setFromName($fromName)
     {
@@ -217,7 +282,7 @@ class Mailer extends QUI\QDOM
     /**
      * Set the mail subject
      *
-     * @param String $subject
+     * @param string $subject
      */
     public function setSubject($subject)
     {
@@ -227,7 +292,7 @@ class Mailer extends QUI\QDOM
     /**
      * set the html flag, is html mail or not
      *
-     * @param Bool $html - is the mail a html mail or not?
+     * @param boolean $html - is the mail a html mail or not?
      */
     public function setHTML($html)
     {
@@ -237,7 +302,7 @@ class Mailer extends QUI\QDOM
     /**
      * Set the body
      *
-     * @param String $html
+     * @param string $html
      */
     public function setBody($html)
     {
@@ -262,77 +327,97 @@ class Mailer extends QUI\QDOM
     /**
      * Add an recipient
      *
-     * @param String $email - E-Mail
+     * @param string $email - E-Mail
+     * @param string|boolean $name - E-Mail Name
      */
-    public function addRecipient($email)
+    public function addRecipient($email, $name = false)
     {
-        $email = trim($email);
-        $email = explode(',', $email);
+        $email = \trim($email);
+        $email = \explode(',', $email);
 
         foreach ($email as $mail) {
-            $this->_recipients[] = $mail;
+            if ($name) {
+                $this->recipients[] = [$mail, $name];
+                continue;
+            }
+            $this->recipients[] = $mail;
         }
     }
 
     /**
      * Add reply to address
      *
-     * @param String $email - E-Mail
+     * @param string $email - E-Mail
+     * @param string|boolean $name - E-Mail Name
      */
-    public function addReplyTo($email)
+    public function addReplyTo($email, $name = false)
     {
-        $email = trim($email);
-        $email = explode(',', $email);
+        $email = \trim($email);
+        $email = \explode(',', $email);
 
         foreach ($email as $mail) {
-            $this->_reply[] = $mail;
+            if ($name) {
+                $this->reply[] = [$mail, $name];
+                continue;
+            }
+            $this->reply[] = $mail;
         }
     }
 
     /**
      * Add cc address
      *
-     * @param String $email - E-Mail
+     * @param string $email - E-Mail
+     * @param string|boolean $name - E-Mail Name
      */
-    public function addCC($email)
+    public function addCC($email, $name = false)
     {
-        $email = trim($email);
-        $email = explode(',', $email);
+        $email = \trim($email);
+        $email = \explode(',', $email);
 
         foreach ($email as $mail) {
-            $this->_cc[] = $mail;
+            if ($name) {
+                $this->cc[] = [$mail, $name];
+                continue;
+            }
+            $this->cc[] = $mail;
         }
     }
 
     /**
      * Add bcc address
      *
-     * @param String $email - E-Mail
+     * @param string $email - E-Mail
+     * @param string|boolean $name - E-Mail Name
      */
-    public function addBCC($email)
+    public function addBCC($email, $name = false)
     {
-        $email = trim($email);
-        $email = explode(',', $email);
+        $email = \trim($email);
+        $email = \explode(',', $email);
 
         foreach ($email as $mail) {
-            $this->_bcc[] = $mail;
+            if ($name) {
+                $this->bcc[] = [$mail, $name];
+                continue;
+            }
+            $this->bcc[] = $mail;
         }
     }
 
     /**
      * Add a file to the mail
      *
-     * @param String $file - path to the file
+     * @param string $file - path to the file
      *
-     * @return Bool
+     * @return boolean
      */
     public function addAttachment($file)
     {
-        if (!file_exists($file)) {
+        if (!\file_exists($file)) {
             return false;
         }
 
-        $this->_attachments[] = $file;
+        $this->attachments[] = $file;
 
         return true;
     }
@@ -340,13 +425,13 @@ class Mailer extends QUI\QDOM
     /**
      * Add a files to the mail
      *
-     * @param Array|String $files   - array with file paths eq:
+     * @param array|string $files - array with file paths eq:
      *                              addAttachments( array('path/file1.end', 'path/file2.end') )
      *                              addAttachments( 'path/file1.end' )
      */
     public function addAttachments($files)
     {
-        if (!is_array($files)) {
+        if (!\is_array($files)) {
             $this->addAttachment($files);
 
             return;

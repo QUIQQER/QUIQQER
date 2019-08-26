@@ -1,15 +1,21 @@
-
 /**
  * control utils - helper for all controls
  *
  * @module utils/Controls
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require polyfills/Promise
+ * @require qui/utils/Elements
+ * @require qui/lib/polyfills/Promise
  */
 
-define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
-{
+define('utils/Controls', [
+
+    'qui/QUI',
+    'qui/utils/Elements',
+    'Locale',
+    'qui/lib/polyfills/Promise'
+
+], function (QUI, ElementUtils, QUILocale) {
     "use strict";
 
     return {
@@ -21,24 +27,21 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
          *
          * @return Promise
          */
-        parse: function(Elm, callback)
-        {
+        parse: function (Elm, callback) {
             var Form = false;
 
-            if ( Elm.nodeName == 'FORM' ) {
+            if (Elm.nodeName === 'FORM') {
                 Form = Elm;
             }
 
-            if ( !Form ) {
+            if (!Form) {
                 Form = Elm.getElement('form');
             }
 
-            if ( Form )
-            {
+            if (Form) {
                 // ist that good?
-                Form.addEvent('submit', function(event)
-                {
-                    if ( typeOf( event ) === 'domevent' ) {
+                Form.addEvent('submit', function (event) {
+                    if (typeOf(event) === 'domevent') {
                         event.stop();
                     }
                 });
@@ -47,68 +50,78 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
             var needles = [];
 
             // Button
-            if ( Elm.getElement('.btn-button') ) {
-                needles.push( this.parseButtons( Elm ) );
+            if (Elm.getElement('.btn-button')) {
+                needles.push(this.parseButtons(Elm));
             }
 
-            // Date
-            if ( Elm.getElement('input[type="date"],input[type="datetime"]') ) {
-                needles.push( this.parseDate( Elm ) );
+            // Date, only if date and datetime from the browser is not supported
+            if (!ElementUtils.isInputTypeSupported('date') && Elm.getElement('input[type="date"]')) {
+                needles.push(this.parseDate(Elm, 'input[type="date"]'));
             }
+
+            if (!ElementUtils.isInputTypeSupported('datetime') && Elm.getElement('input[type="datetime"]')) {
+                needles.push(this.parseDate(Elm, 'input[type="datetime"]'));
+            }
+
+            // color
+            if (Elm.getElement('input[type="color"]')) {
+                needles.push(this.parseColor(Elm));
+            }
+
 
             // Groups
-            if ( Elm.getElement('input.groups,input.group') ) {
-                needles.push( this.parseGroups( Elm ) );
+            if (Elm.getElement('input.groups,input.group')) {
+                needles.push(this.parseGroups(Elm));
             }
 
             // Media Types
-            if ( Elm.getElement('input.media-image,input.media-folder') ) {
-                needles.push( this.parseMediaInput( Elm ) );
+            if (Elm.getElement('input.media-image,input.media-folder')) {
+                needles.push(this.parseMediaInput(Elm));
             }
 
             // User And Groups
-            if ( Elm.getElement('input.users_and_groups') ) {
-                needles.push( this.parseUserAndGroups( Elm ) );
+            if (Elm.getElement('input.users_and_groups')) {
+                needles.push(this.parseUserAndGroups(Elm));
             }
 
             // User And Groups
-            if ( Elm.getElement('input.user') ) {
-                needles.push( this.parseUser( Elm ) );
+            if (Elm.getElement('input.user')) {
+                needles.push(this.parseUser(Elm));
             }
 
             // projects
-            if ( Elm.getElement('input.project') ) {
-                needles.push( this.parseProject( Elm ) );
+            if (Elm.getElement('input.project')) {
+                needles.push(this.parseProject(Elm));
             }
 
             // Project Types
-            if ( Elm.getElement('input.project-types') ) {
-                needles.push( this.parseProjectTypes( Elm ) );
+            if (Elm.getElement('input.project-types')) {
+                needles.push(this.parseProjectTypes(Elm));
             }
 
             // project site
-            if ( Elm.getElement('input.project-site') ) {
-                needles.push( this.parseProjectSite( Elm ) );
+            if (Elm.getElement('input.project-site')) {
+                needles.push(this.parseProjectSite(Elm));
             }
 
             // data table
-            if ( Elm.getElement('.data-table') ) {
-                needles.push( this.parseDataTables( Elm )  );
+            if (Elm.getElement('.data-table')) {
+                needles.push(this.parseDataTables(Elm));
             }
 
-            return new Promise(function(resolve, reject)
-            {
-                Promise.all( needles ).done(function()
-                {
-                    if ( typeof callback === 'function' ) {
+            if (!needles.length) {
+                return Promise.resolve();
+            }
+
+            return new Promise(function (resolve, reject) {
+                Promise.all(needles).then(function () {
+                    if (typeof callback === 'function') {
                         callback();
                     }
 
                     resolve();
 
-                }, function() {
-                    reject();
-                });
+                }).catch(reject);
             });
         },
 
@@ -118,34 +131,57 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
          * @param {HTMLElement} Elm - parent node, this element in which is searched for
          * @return Promise
          */
-        parseButtons: function(Elm)
-        {
-            return new Promise(function (resolve, reject)
-            {
-                require(['qui/controls/buttons/Button'], function (QUIButton)
-                {
+        parseButtons: function (Elm) {
+            return new Promise(function (resolve, reject) {
+                require(['qui/controls/buttons/Button'], function (QUIButton) {
                     // buttons
                     var i, len, Child, elements;
 
                     elements = Elm.getElements('.btn-button');
 
-                    for (i = 0, len = elements.length; i < len; i++)
-                    {
+                    for (i = 0, len = elements.length; i < len; i++) {
+                        if (elements[i].get('data-quiid')) {
+                            continue;
+                        }
+
                         Child = elements[i];
 
                         new QUIButton({
-                            text  : Child.get('data-text'),
-                            image : Child.get('data-image'),
-                            click : Child.get('data-click')
+                            text : Child.get('data-text'),
+                            image: Child.get('data-image'),
+                            click: Child.get('data-click')
                         }).inject(Child);
                     }
 
                     resolve();
 
-                }, function()
-                {
-                    reject();
-                });
+                }, reject);
+            });
+        },
+
+        /**
+         *
+         * @param Elm
+         * @returns {*}
+         */
+        parseColor: function (Elm) {
+            return new Promise(function (resolve, reject) {
+                require(['qui/controls/elements/ColorPicker'], function (QUIColorPicker) {
+
+                    var i, len;
+                    var elements = Elm.getElements('input[type="color"]');
+
+                    for (i = 0, len = elements.length; i < len; i++) {
+                        if (elements[i].get('data-quiid')) {
+                            continue;
+                        }
+
+                        new QUIColorPicker().imports(elements[i]);
+                    }
+
+                    resolve();
+
+                }, reject);
             });
         },
 
@@ -155,67 +191,73 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
          * @param {HTMLElement} Elm - parent node, this element in which is searched for
          * @return Promise
          */
-        parseDataTables: function(Elm)
-        {
-            return new Promise(function(resolve)
-            {
-                var i, len, Header;
+        parseDataTables: function (Elm) {
+            return new Promise(function (resolve) {
+                var i, len, Header, TableText;
                 var theaders = Elm.getElements('.data-table tr ^ th');
 
-                var dataTableOpen = function()
-                {
-                    var Table  = this.getParent( 'table' ),
-                        TBody  = Table.getElement( 'tbody' ),
-                        Toggle = Table.getElement( '.data-table-toggle' );
+                var dataTableOpen = function () {
+                    var Table  = this.getParent('table'),
+                        TBody  = Table.getElement('tbody'),
+                        Toggle = Table.getElement('.data-table-toggle');
 
-                    Toggle.set( 'html', '<span class="icon-minus"></span>' );
+                    if (Table.hasClass('data-table-no-toggle')) {
+                        return;
+                    }
 
-                    moofx( Table ).animate({
+                    Toggle.set('html', '<span class="fa fa-minus"></span>');
+
+                    moofx(Table).animate({
                         height: Table.getScrollSize().y
                     }, {
                         equation: 'ease-out',
                         duration: 250,
-                        callback: function ()
-                        {
+                        callback: function () {
                             Table.setStyles({
-                                display  : null,
-                                overflow : null
+                                display : null,
+                                overflow: null
                             });
 
-                            moofx( TBody ).animate({
-                                opacity : 1
+                            moofx(TBody).animate({
+                                opacity: 1
                             }, {
-                                duration : 250,
-                                callback : function() {
-                                    Table.removeClass( 'data-table-closed' );
+                                duration: 250,
+                                callback: function () {
+                                    Table.removeClass('data-table-closed');
                                 }
                             });
                         }
                     });
                 };
 
-                var dataTableClose = function()
-                {
-                    var Table  = this.getParent( 'table' ),
-                        THead  = Table.getElement( 'thead' ),
-                        TBody  = Table.getElement( 'tbody' ),
-                        Toggle = Table.getElement( '.data-table-toggle' );
+                var dataTableClose = function () {
+                    var Table  = this.getParent('table'),
+                        THead  = Table.getElement('thead'),
+                        TBody  = Table.getElement('tbody'),
+                        Toggle = Table.getElement('.data-table-toggle');
 
-                    Toggle.set( 'html', '<span class="icon-plus"></span>' );
-                    Table.addClass( 'data-table-closed' );
+                    if (Table.hasClass('data-table-no-toggle')) {
+                        return;
+                    }
 
-                    moofx( TBody ).animate({
-                        opacity : 0
+                    Toggle.set('html', '<span class="fa fa-plus"></span>');
+                    Table.addClass('data-table-closed');
+
+                    moofx(TBody).animate({
+                        opacity: 0
                     }, {
-                        duration : 250,
-                        callback : function()
-                        {
+                        duration: 250,
+                        callback: function () {
                             Table.setStyles({
-                                display  : 'block',
-                                overflow : 'hidden'
+                                display : 'block',
+                                overflow: 'hidden'
                             });
 
-                            moofx( Table ).animate({
+                            if (!THead) {
+                                return;
+                            }
+
+                            moofx(Table).animate({
                                 height: THead.getSize().y
                             }, {
                                 equation: 'ease-out',
@@ -225,30 +267,37 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
                     });
                 };
 
-                var dataTableClick = function()
-                {
+                var dataTableClick = function () {
                     var Table  = this.getParent('table'),
                         Toggle = Table.getElement('.data-table-toggle');
 
-                    if (Toggle.getElement('.icon-minus')) {
+                    if (Toggle.getElement('.fa-minus')) {
                         dataTableClose.call(this);
                     } else {
                         dataTableOpen.call(this);
                     }
                 };
 
-                for ( i = 0, len = theaders.length; i < len; i++ )
-                {
+                for (i = 0, len = theaders.length; i < len; i++) {
                     Header = theaders[i];
 
                     Header.addEvent('click', dataTableClick);
                     Header.setStyle('cursor', 'pointer');
 
+                    TableText = new Element('div', {
+                        'class': 'data-table-text',
+                        html   : Header.get('html')
+                    });
+
+                    Header.set('html', '');
+
                     new Element('div', {
                         'class': 'data-table-toggle',
-                        html: '<span class="icon-minus"></span>',
-                        styles: {}
+                        html   : '<span class="fa fa-minus"></span>',
+                        styles : {}
                     }).inject(Header, 'top');
+
+                    TableText.inject(Header);
 
                     if (Header.getParent('table').hasClass('data-table-closed')) {
                         dataTableClick.call(Header);
@@ -260,8 +309,8 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
                     '.data-table label [type="checkbox"]'
                 );
 
-                for ( i = 0, len = checkboxList.length; i < len; i++ ) {
-                    checkboxList[ i ].getParent('label').addClass( 'hasCheckbox' );
+                for (i = 0, len = checkboxList.length; i < len; i++) {
+                    checkboxList[i].getParent('label').addClass('hasCheckbox');
                 }
 
 
@@ -273,102 +322,102 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
          * Search all input[type="date"] and make a control
          *
          * @param {HTMLElement} Elm - parent node, this element in which is searched for
+         * @param {String} search - query
          * @return Promise
          */
-        parseDate: function(Elm)
-        {
-            return new Promise(function(resolve, reject)
-            {
+        parseDate: function (Elm, search) {
+            return new Promise(function (resolve, reject) {
                 require([
 
-                    'package/quiqqer/calendar/bin/Calendar',
+                    'package/quiqqer/calendar-controls/bin/Calendar',
                     'qui/controls/buttons/Button',
                     'qui/utils/Elements'
 
-                ], function (DatePicker, QUIButton, ElementUtils)
-                {
-                    var i, len, elements, datetime,
-                        Child, Parent, Picker;
+                ], function (DatePicker, QUIButton, ElementUtils) {
+                    var i, len, htmlStr, elements, datetime, fieldcontainer,
+                        Child, Cancel, Parent, Picker;
 
-                    elements = Elm.getElements('input[type="date"],input[type="datetime"]');
+                    elements = Elm.getElements(search);
+
+                    var onSelect = function (UserDate, elmList) {
+                        if (typeOf(elmList) === 'array') {
+                            for (var i = 0, len = elmList.length; i < len; i++) {
+                                if (elmList[i].get('data-type') === 'date') {
+                                    elmList[i].value = UserDate.format('%Y-%m-%d');
+                                } else {
+                                    elmList[i].value = UserDate.format('db');
+                                }
+                            }
+                        } else if (typeOf(elmList) === 'element') {
+                            if (elmList.get('data-type') === 'date') {
+                                elmList.value = UserDate.format('%Y-%m-%d');
+                            } else {
+                                elmList.value = UserDate.format('db');
+                            }
+                        }
+                    };
 
                     // Date Buttons
-                    for ( i = 0, len = elements.length; i < len; i++ )
-                    {
-                        Child    = elements[i];
-                        Parent   = new Element('div', {
-                            styles : {
-                                'float' : 'left'
-                            }
-                        }).wraps(Child);
-                        datetime = Parent.getElement('input[type="datetime"]') ? true : false;
+                    for (i = 0, len = elements.length; i < len; i++) {
+                        if (elements[i].get('data-quiid')) {
+                            continue;
+                        }
 
-                        if ( datetime )
-                        {
+                        Child          = elements[i];
+                        fieldcontainer = false;
+
+                        if (Child.getParent().hasClass('field-container') ||
+                            Child.getParent().hasClass('field-container-field')) {
+                            fieldcontainer = true;
+                            Parent         = Child;
+
+                            Parent.getParents('.field-container-field')
+                                  .addClass('field-container-field-no-padding');
+                        } else {
+                            Parent = new Element('div', {
+                                'class': 'date-input',
+                                styles : {
+                                    'float': 'left'
+                                }
+                            }).wraps(Child);
+                        }
+
+                        htmlStr = new Element('div').adopt(
+                            Child.cloneNode(true)
+                        ).innerHTML;
+
+                        datetime = htmlStr.indexOf('datetime');
+
+                        if (datetime !== -1) {
                             Child.placeholder = 'YYYY-MM-DD HH:MM:SS';
                             Child.set('data-type', 'datetime');
-
-                        } else
-                        {
+                        } else {
                             Child.placeholder = 'YYYY-MM-DD';
                             Child.set('data-type', 'date');
                         }
 
-
                         Child.autocomplete = 'off';
 
-                        Child.setStyles({
-                            'float': 'left',
-                            'cursor': 'pointer'
-                        });
-
                         Picker = new DatePicker(Child, {
-                            timePicker: datetime ? true : false,
-                            datetime: datetime,
+                            timePicker    : !!datetime,
+                            datetime      : datetime,
                             positionOffset: {
                                 x: 5,
                                 y: 0
                             },
-                            pickerClass: 'datepicker_dashboard',
-                            onSelect: function (UserDate, elmList)
-                            {
-                                var i, len;
-
-                                if ( typeOf(elmList) === 'array' )
-                                {
-                                    for ( i = 0, len = elmList.length; i < len; i++ )
-                                    {
-                                        if ( elmList[i].get('data-type') == 'date' )
-                                        {
-                                            elmList[i].value = UserDate.format('%Y-%m-%d');
-                                        } else
-                                        {
-                                            elmList[i].value = UserDate.format('db');
-                                        }
-                                    }
-
-                                } else if (typeOf(elmList) === 'element')
-                                {
-                                    if (elmList.get('data-type') == 'date')
-                                    {
-                                        elmList.value = UserDate.format('%Y-%m-%d');
-                                    } else
-                                    {
-                                        elmList.value = UserDate.format('db');
-                                    }
-                                }
-                            }
+                            pickerClass   : 'datepicker_dashboard',
+                            onSelect      : onSelect
                         });
 
                         Picker.picker.setStyles({
                             zIndex: ElementUtils.getComputedZIndex(Child)
                         });
 
-                        new QUIButton({
-                            image: 'icon-remove',
-                            alt: 'Datum leeren', // #locale
-                            title: 'Datum leeren', // #locale
-                            Input: Child,
+                        Cancel = new QUIButton({
+                            image : 'fa fa-remove',
+                            alt   : QUILocale.get('quiqqer/quiqqer', 'control.date.button.alt'),
+                            title : QUILocale.get('quiqqer/quiqqer', 'control.date.button.title'),
+                            Input : Child,
                             events: {
                                 onClick: function (Btn) {
                                     Btn.getAttribute('Input').value = '';
@@ -378,25 +427,31 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
                                 top: 1
                             }
                         }).inject(Child.getParent());
+
+                        if (fieldcontainer) {
+                            Cancel.getElm()
+                                  .addClass('field-container-item')
+                                  .setStyles({
+                                      border   : '1px solid rgba(147, 128, 108, 0.25)',
+                                      boxShadow: 'none',
+                                      top      : 0,
+                                      width    : 50
+                                  });
+                        }
                     }
 
                     resolve();
 
-                }, function ()
-                {
-                    require(['qui/QUI'], function (QUI)
-                    {
-                        QUI.getMessageHandler(function (MH)
-                        {
-                            // #locale
+                }, function (err) {
+                    require(['qui/QUI'], function (QUI) {
+                        QUI.getMessageHandler(function (MH) {
                             MH.addAttention(
-                                'Das Kalender Packet konnte nicht gefunden werden.' +
-                                'Bitte installieren Sie quiqqer/calendar'
+                                QUILocale.get('quiqqer/quiqqer', 'control.date.missing.package')
                             );
                         });
                     });
 
-                    reject();
+                    reject(err);
                 });
             });
         },
@@ -407,26 +462,24 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
          * @param {HTMLElement} Elm - parent node, this element in which is searched for
          * @return Promise
          */
-        parseGroups: function(Elm)
-        {
-            return new Promise(function(resolve, reject)
-            {
-                require(['controls/groups/Input'], function(GroupInput)
-                {
+        parseGroups: function (Elm) {
+            return new Promise(function (resolve, reject) {
+                require(['controls/groups/Input'], function (GroupInput) {
                     var i, len, elements;
 
-                    elements = Elm.getElements( 'input.groups,input.group' );
+                    elements = Elm.getElements('input.groups,input.group');
 
-                    for ( i = 0, len = elements.length; i < len; i++ ) {
-                        new GroupInput( null, elements[ i ] ).create();
+                    for (i = 0, len = elements.length; i < len; i++) {
+                        if (elements[i].get('data-quiid')) {
+                            continue;
+                        }
+
+                        new GroupInput(null, elements[i]).create();
                     }
 
                     resolve();
 
-                }, function()
-                {
-                    reject();
-                });
+                }, reject);
             });
         },
 
@@ -436,36 +489,61 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
          * @param {HTMLElement} Elm - parent node, this element in which is searched for
          * @return Promise
          */
-        parseMediaInput: function(Elm)
-        {
-            return new Promise(function(resolve, reject)
-            {
-                require(['controls/projects/project/media/Input'], function(ProjectMediaInput)
-                {
-                    var i, len;
-                    var mediaImages = Elm.getElements('input.media-image'),
+        parseMediaInput: function (Elm) {
+            return new Promise(function (resolve, reject) {
+                require(['controls/projects/project/media/Input'], function (ProjectMediaInput) {
+
+                    var i, len, selectableTypes, selectableMimeTypes,
+                        mediaImages = Elm.getElements('input.media-image'),
                         mediaFolder = Elm.getElements('input.media-folder');
 
-                    for ( i = 0, len = mediaImages.length; i < len; i++ )
-                    {
+                    for (i = 0, len = mediaImages.length; i < len; i++) {
+                        if (mediaImages[i].get('data-quiid')) {
+                            continue;
+                        }
+
+                        selectableTypes     = mediaImages[i].get('data-qui-options-selectable_types');
+                        selectableMimeTypes = mediaImages[i].get('data-qui-options-selectable_mimetypes');
+
+                        // mimetypes
+                        if (selectableMimeTypes && selectableMimeTypes !== '') {
+                            selectableMimeTypes = selectableMimeTypes.split(',');
+                        }
+
+                        if (!selectableMimeTypes || !selectableMimeTypes.length) {
+                            selectableMimeTypes = ['*'];
+                        }
+
+                        // types
+                        if (selectableTypes && selectableTypes !== '') {
+                            selectableTypes = selectableTypes.split(',');
+                        }
+
+                        if (!selectableTypes || !selectableTypes.length) {
+                            selectableTypes = ['image', 'file'];
+                        }
+
                         new ProjectMediaInput({
-                            selectable_types : [ 'image', 'file' ]
-                        }, mediaImages[ i ] ).create();
+                            selectable_types    : ['image', 'file'],
+                            selectable_mimetypes: selectableMimeTypes,
+                            cssclasses          : mediaImages[i].get('data-qui-options-cssclasses')
+                        }, mediaImages[i]).create();
                     }
 
-                    for ( i = 0, len = mediaFolder.length; i < len; i++ )
-                    {
+                    for (i = 0, len = mediaFolder.length; i < len; i++) {
+                        if (mediaFolder[i].get('data-quiid')) {
+                            continue;
+                        }
+
                         new ProjectMediaInput({
-                            selectable_types : [ 'folder' ]
-                        }, mediaFolder[ i ] ).create();
+                            selectable_types: ['folder'],
+                            cssclasses      : mediaFolder[i].get('data-qui-options-cssclasses')
+                        }, mediaFolder[i]).create();
                     }
 
                     resolve();
 
-                }, function()
-                {
-                    reject();
-                });
+                }, reject);
             });
         },
 
@@ -475,29 +553,26 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
          * @param {HTMLElement} Elm - parent node, this element in which is searched for
          * @return Promise
          */
-        parseProject: function(Elm)
-        {
-            return new Promise(function(resolve, reject)
-            {
-                require(['controls/projects/Input'], function (ProjectInput)
-                {
+        parseProject: function (Elm) {
+            return new Promise(function (resolve, reject) {
+                require(['controls/projects/Input'], function (ProjectInput) {
                     var i, len, elements;
 
                     elements = Elm.getElements('input.project');
 
-                    for ( i = 0, len = elements.length; i < len; i++ )
-                    {
+                    for (i = 0, len = elements.length; i < len; i++) {
+                        if (elements[i].get('data-quiid')) {
+                            continue;
+                        }
+
                         new ProjectInput({
-                            multible: false
-                        }, elements[ i ] ).create();
+                            multiple: false
+                        }, elements[i]).create();
                     }
 
                     resolve();
 
-                }, function()
-                {
-                    reject();
-                });
+                }, reject);
             });
         },
 
@@ -507,26 +582,24 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
          * @param {HTMLElement} Elm - parent node, this element in which is searched for
          * @return Promise
          */
-        parseProjectTypes: function(Elm)
-        {
-            return new Promise(function(resolve, reject)
-            {
-                require(['controls/projects/TypeInput'], function(TypeInput)
-                {
+        parseProjectTypes: function (Elm) {
+            return new Promise(function (resolve, reject) {
+                require(['controls/projects/TypeInput'], function (TypeInput) {
                     var i, len, elements;
 
                     elements = Elm.getElements('input.project-types');
 
-                    for ( i = 0, len = elements.length; i < len; i++ ) {
-                        new TypeInput( null, elements[ i ] ).create();
+                    for (i = 0, len = elements.length; i < len; i++) {
+                        if (elements[i].get('data-quiid')) {
+                            continue;
+                        }
+
+                        new TypeInput(null, elements[i]).create();
                     }
 
                     resolve();
 
-                }, function()
-                {
-                    reject();
-                });
+                }, reject);
             });
         },
 
@@ -536,26 +609,24 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
          * @param {HTMLElement} Elm - parent node, this element in which is searched for
          * @return Promise
          */
-        parseProjectSite: function(Elm)
-        {
-            return new Promise(function(resolve, reject)
-            {
-                require(['controls/projects/project/site/Input'], function(SiteInput)
-                {
+        parseProjectSite: function (Elm) {
+            return new Promise(function (resolve, reject) {
+                require(['controls/projects/project/site/Input'], function (SiteInput) {
                     var i, len, elements;
 
                     elements = Elm.getElements('input.project-site');
 
-                    for ( i = 0, len = elements.length; i < len; i++ ) {
-                        new SiteInput( null, elements[ i ] ).create();
+                    for (i = 0, len = elements.length; i < len; i++) {
+                        if (elements[i].get('data-quiid')) {
+                            continue;
+                        }
+
+                        new SiteInput(null, elements[i]).create();
                     }
 
                     resolve();
 
-                }, function()
-                {
-                    reject();
-                });
+                }, reject);
             });
         },
 
@@ -565,25 +636,24 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
          * @param {HTMLElement} Elm - parent node, this element in which is searched for
          * @return Promise
          */
-        parseUserAndGroups: function(Elm)
-        {
-            return new Promise(function(resolve, reject)
-            {
-                require(['controls/usersAndGroups/Input'], function(UserAndGroup)
-                {
+        parseUserAndGroups: function (Elm) {
+            return new Promise(function (resolve, reject) {
+                require(['controls/usersAndGroups/Select'], function (UserAndGroup) {
                     var elements, Label, Control;
 
                     elements = Elm.getElements('.users_and_groups');
 
-                    for ( var i = 0, len = elements.length; i < len; i++ )
-                    {
-                        Control = new UserAndGroup( null, elements[ i ] );
+                    for (var i = 0, len = elements.length; i < len; i++) {
+                        if (elements[i].get('data-quiid')) {
+                            continue;
+                        }
 
-                        if ( elements[ i ].id )
-                        {
-                            Label = document.getElement( 'label[for="' + elements[ i ].id + '"]' );
+                        Control = new UserAndGroup(null, elements[i]);
 
-                            if ( Label ) {
+                        if (elements[i].id) {
+                            Label = document.getElement('label[for="' + elements[i].id + '"]');
+
+                            if (Label) {
                                 Control.setAttribute('label', Label);
                             }
                         }
@@ -593,10 +663,7 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
 
                     resolve();
 
-                }, function()
-                {
-                    reject();
-                });
+                }, reject);
             });
         },
 
@@ -606,18 +673,18 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
          * @param {HTMLElement} Elm - parent node, this element in which is searched for
          * @return Promise
          */
-        parseUser: function(Elm)
-        {
-            return new Promise(function (resolve, reject)
-            {
-                require(['controls/users/Input'], function(UserInput)
-                {
+        parseUser: function (Elm) {
+            return new Promise(function (resolve, reject) {
+                require(['controls/users/Input'], function (UserInput) {
                     var i, len, elements, Label, Control;
 
                     elements = Elm.getElements('.user');
 
-                    for ( i = 0, len = elements.length; i < len; i++ )
-                    {
+                    for (i = 0, len = elements.length; i < len; i++) {
+                        if (elements[i].get('data-quiid')) {
+                            continue;
+                        }
+
                         Control = new UserInput({
                             max: 1
                         }, elements[i]);
@@ -635,8 +702,36 @@ define('utils/Controls', ['qui/lib/polyfills/Promise'], function()
 
                     resolve();
 
-                }, function()
-                {
+                }, reject);
+            });
+        },
+
+        /**
+         * Get a control from a DOMElement
+         *
+         * @param {HTMLElement} Elm
+         * @return {Promise}
+         */
+        getControlByElement: function (Elm) {
+            if (!Elm) {
+                return Promise.reject("Element not found.");
+            }
+
+            var quiId = Elm.getProperty('data-quiid');
+
+            if (quiId) {
+                return Promise.resolve(QUI.Controls.getById(quiId));
+            }
+
+            return new Promise(function (resolve, reject) {
+                Elm.addEvent('load', function () {
+                    var quiId = Elm.getProperty('data-quiid');
+
+                    if (quiId) {
+                        resolve(QUI.Controls.getById(quiId));
+                        return;
+                    }
+
                     reject();
                 });
             });

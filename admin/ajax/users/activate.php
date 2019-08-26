@@ -3,44 +3,63 @@
 /**
  * Benutzer aktivieren
  *
- * @param {JSON Integer|JSON Array} $uid
+ * @param integer|array|string $uid
  *
- * @return Array
+ * @return array
  */
-function ajax_users_activate($uid)
-{
-    $uid = json_decode($uid, true);
-
-    if (!is_array($uid)) {
-        $uid = array($uid);
-    }
-
-    $Users = QUI::getUsers();
-    $result = array();
-
-    foreach ($uid as $_uid) {
-        try {
-            $User = $Users->get($_uid);
-            $User->activate();
-
-            $result[$_uid] = $User->isActive() ? 1 : 0;
-
-        } catch (QUI\Exception $Exception) {
-            $result[$_uid] = 0;
-
-            QUI::getMessagesHandler()->addError(
-                $Exception->getMessage()
-            );
-
-            continue;
-        }
-    }
-
-    return $result;
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_users_activate',
-    array('uid'),
-    'Permission::checkSU'
+    function ($uid) {
+        $uid = \json_decode($uid, true);
+
+        if (!\is_array($uid)) {
+            $uid = [$uid];
+        }
+
+        $Users     = QUI::getUsers();
+        $result    = [];
+        $activated = [];
+
+        foreach ($uid as $_uid) {
+            try {
+                $User = $Users->get($_uid);
+            } catch (QUI\Exception $Exception) {
+                continue;
+            }
+
+            try {
+                $User->activate();
+
+                $result[$_uid] = $User->isActive() ? 1 : 0;
+
+                if ($User->isActive()) {
+                    $activated[] = $User->getId();
+                }
+            } catch (QUI\Exception $Exception) {
+                $result[$_uid] = $User->isActive() ? 1 : 0;
+
+                QUI::getMessagesHandler()->addError(
+                    $Exception->getMessage()
+                );
+
+                continue;
+            }
+        }
+
+        if (\count($activated)) {
+            QUI::getMessagesHandler()->addSuccess(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'message.users.activated',
+                    [
+                        'users' => \implode(',', $activated)
+                    ]
+                )
+            );
+        }
+
+        return $result;
+    },
+    ['uid'],
+    'Permission::checkAdminUser'
 );

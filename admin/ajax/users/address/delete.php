@@ -3,21 +3,19 @@
 /**
  * Delete a address
  *
- * @param Integer|String $uid - id of the user
- * @param Integer|String $aid - id of the address
+ * @param integer|string $uid - id of the user
+ * @param integer|string $aid - id of the address
  *
- * @return Array
+ * @return array
  */
-function ajax_users_address_delete($uid, $aid)
-{
-    $User = QUI::getUsers()->get((int)$uid);
-    $Address = $User->getAddress((int)$aid);
-
-    $Address->delete();
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_users_address_delete',
-    array('uid', 'aid'),
-    'Permission::checkSU'
+    function ($uid, $aid) {
+        $User    = QUI::getUsers()->get((int)$uid);
+        $Address = $User->getAddress((int)$aid);
+
+        $Address->delete();
+    },
+    ['uid', 'aid'],
+    ['Permission::checkAdminUser', 'quiqqer.admin.users.edit']
 );

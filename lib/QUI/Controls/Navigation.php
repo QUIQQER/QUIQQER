@@ -20,24 +20,27 @@ class Navigation extends QUI\Control
     /**
      * constructor
      *
-     * @param Array $attributes
+     * @param array $attributes
      */
-    public function __construct($attributes = array())
+    public function __construct($attributes = [])
     {
         // defaults values
-        $this->setAttributes(array(
-            'startId'  => 1, // id or site link
-            'homelink' => false,
-            'levels'   => false
-        ));
+        $this->setAttributes([
+            'startId'   => 1, // id or site link
+            'homeLink'  => false,
+            'levels'    => false,
+            'homeIcon'  => 'fa-home',
+            'listIcon'  => 'fa-angle-right',
+            'levelIcon' => 'fa-angle-double-down'
+        ]);
 
-        parent::setAttributes($attributes);
+        parent::__construct($attributes);
 
         $this->addCSSFile(
-            dirname(__FILE__).'/Navigation.css'
+            \dirname(__FILE__).'/Navigation.css'
         );
 
-        $this->setAttribute('class', 'quiqqer-navigation grid-100 grid-parent');
+        $this->setAttribute('class', 'quiqqer-navigation grid-100');
     }
 
     /**
@@ -47,8 +50,8 @@ class Navigation extends QUI\Control
      */
     public function getBody()
     {
-        $Engine = QUI::getTemplateManager()->getEngine();
-        $Project = $this->_getProject();
+        $Engine   = QUI::getTemplateManager()->getEngine();
+        $Project  = $this->getProject();
         $activeId = false;
 
         // start
@@ -57,11 +60,9 @@ class Navigation extends QUI\Control
 
             if (Utils::isSiteLink($startId)) {
                 $Site = Utils::getSiteByLink($startId);
-
             } else {
                 $Site = $Project->get((int)$startId);
             }
-
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addWarning($Exception->getMessage());
 
@@ -82,16 +83,21 @@ class Navigation extends QUI\Control
             $levels = false;
         }
 
-        $Engine->assign(array(
+        $Engine->assign([
             'this'        => $this,
-            'Project'     => $this->_getProject(),
+            'Project'     => $this->getProject(),
             'Site'        => $Site,
-            'navTemplate' => dirname(__FILE__).'/Navigation.html',
+            'homeLink'    => $homeLink = $this->getAttribute('homeLink'),
             'activeId'    => $activeId,
-            'levels'      => $levels
-        ));
+            'navTemplate' => \dirname(__FILE__).'/Navigation.html',
+            'levels'      => $levels,
+            'Rewrite'     => QUI::getRewrite(),
+            'homeIcon'    => $homeIcon = $this->getAttribute('homeIcon'),
+            'listIcon'    => $listIcon = $this->getAttribute('listIcon'),
+            'levelIcon'   => $levelIcon = $this->getAttribute('levelIcon')
+        ]);
 
-        $html = $Engine->fetch(dirname(__FILE__).'/Navigation.html');
+        $html = $Engine->fetch(\dirname(__FILE__).'/Navigation.html');
         $html = '<nav>'.$html.'</nav>';
 
         return $html;

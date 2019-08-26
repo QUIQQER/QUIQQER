@@ -3,44 +3,63 @@
 /**
  * Benutzer deaktivieren
  *
- * @param {JSON Integer|JSON Array} $uid
+ * @param integer|array|string $uid
  *
- * @return Array
+ * @return array
  */
-function ajax_users_deactivate($uid)
-{
-    $uid = json_decode($uid, true);
-
-    if (!is_array($uid)) {
-        $uid = array($uid);
-    }
-
-    $Users = QUI::getUsers();
-    $result = array();
-
-    foreach ($uid as $_uid) {
-        try {
-            $User = $Users->get($_uid);
-            $User->deactivate();
-
-            $result[$_uid] = $User->isActive() ? 1 : 0;
-
-        } catch (QUI\Exception $Exception) {
-            $result[$_uid] = 0;
-
-            QUI::getMessagesHandler()->addError(
-                $Exception->getMessage()
-            );
-
-            continue;
-        }
-    }
-
-    return $result;
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_users_deactivate',
-    array('uid'),
-    'Permission::checkSU'
+    function ($uid) {
+        $uid = \json_decode($uid, true);
+
+        if (!\is_array($uid)) {
+            $uid = [$uid];
+        }
+
+        $Users       = QUI::getUsers();
+        $result      = [];
+        $deactivated = [];
+
+        foreach ($uid as $_uid) {
+            try {
+                $User = $Users->get($_uid);
+            } catch (QUI\Exception $Exception) {
+                continue;
+            }
+
+            try {
+                $User->deactivate();
+
+                $result[$_uid] = $User->isActive() ? 1 : 0;
+
+                if (!$User->isActive()) {
+                    $deactivated[] = $User->getId();
+                }
+            } catch (QUI\Exception $Exception) {
+                $result[$_uid] = $User->isActive() ? 1 : 0;
+
+                QUI::getMessagesHandler()->addError(
+                    $Exception->getMessage()
+                );
+
+                continue;
+            }
+        }
+
+        if (\count($deactivated)) {
+            QUI::getMessagesHandler()->addSuccess(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'message.users.deactivated',
+                    [
+                        'users' => \implode(',', $deactivated)
+                    ]
+                )
+            );
+        }
+
+        return $result;
+    },
+    ['uid'],
+    'Permission::checkAdminUser'
 );

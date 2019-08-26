@@ -19,45 +19,72 @@ use QUI\Utils\System\File as SystemFile;
 class Setup
 {
     /**
-     * Excute the QUIQQER Setup
+     * Execute the QUIQQER Setup
+     *
+     * @throws QUI\Exception
+     * @throws QUI\ExceptionStack
      */
-    static function all()
+    public static function all()
     {
+        QUI\System\Log::write(
+            'Execute Setup',
+            QUI\System\Log::LEVEL_NOTICE,
+            [],
+            'setup',
+            true
+        );
+
+        QUI::getEvents()->fireEvent('setupAllBegin');
+
         // not at phpunit
         if (!isset($_SERVER['argv'])
             || (isset($_SERVER['argv'][0])
-                && strpos($_SERVER['argv'][0], 'phpunit') === false)
+                && \strpos($_SERVER['argv'][0], 'phpunit') === false)
         ) {
             // nur Super User darf dies
-            Rights\Permission::checkSU();
+            Permissions\Permission::checkSU(
+                QUI::getUserBySession()
+            );
         }
 
         QUI::getSession()->setup();
 
-        // create dirs
-        SystemFile::mkdir(USR_DIR);
-        SystemFile::mkdir(OPT_DIR);
-        SystemFile::mkdir(VAR_DIR);
-
+        self::makeDirectories();
         self::generateFileLinks();
+        self::executeMainSystemSetup();
+        self::executeCommunicationSetup();
+        self::makeHeaderFiles();
+        self::executeEachProjectSetup();
+        self::executeEachPackageSetup();
+        self::importPermissions();
+        self::finish();
 
-        // mail queue setup
-        Mail\Queue::setup();
+        QUI::getEvents()->fireEvent('setupAllEnd');
+    }
 
-        // Gruppen erstellen
-        QUI::getGroups()->setup();
+    /**
+     * Execute the main System Setup
+     *
+     * - Permissions
+     * - Groups
+     * - Users
+     * - Workspace
+     *
+     * @throws QUI\Exception
+     * @throws QUI\ExceptionStack
+     */
+    public static function executeMainSystemSetup()
+    {
+        QUI::getEvents()->fireEvent('setupMainSystemBegin');
 
         // Rechte setup
         QUI::getPermissionManager()->setup();
 
+        // Gruppen erstellen
+        QUI::getGroups()->setup();
+
         // Benutzer erstellen
         QUI::getUsers()->setup();
-
-        // Cron Setup
-        QUI::getMessagesHandler()->setup();
-
-        // Events Setup
-        Events\Manager::setup();
 
         // workspaces
         Workspace\Manager::setup();
@@ -66,47 +93,157 @@ class Setup
         $UploadManager = new Upload\Manager();
         $UploadManager->setup();
 
-        /**
-         * header dateien
-         */
+        QUI::getEvents()->fireEvent('setupMainSystemEnd');
+    }
+
+    /**
+     * Execute the setup of the main communication classes
+     *
+     * - Mail
+     * - Messages
+     * - Editor
+     * - Events
+     *
+     * @throws QUI\Exception
+     * @throws QUI\ExceptionStack
+     */
+    public static function executeCommunicationSetup()
+    {
+        QUI::getEvents()->fireEvent('setupCommunicationBegin');
+
+        // mail queue setup
+        Mail\Queue::setup();
+
+        // Cron Setup
+        QUI::getMessagesHandler()->setup();
+
+        // WYSIWYG
+        QUI\Editor\Manager::setup();
+
+        // Events Setup
+        Events\Manager::setup();
+
+        QUI::getEvents()->fireEvent('setupCommunicationEnd');
+    }
+
+    /**
+     * Create the default directories for QUIQQER
+     *
+     * @throws QUI\Exception
+     * @throws QUI\ExceptionStack
+     */
+    public static function makeDirectories()
+    {
+        QUI::getEvents()->fireEvent('setupMakeDirectoriesBegin');
+
+        // create dirs
+        SystemFile::mkdir(USR_DIR);
+        SystemFile::mkdir(OPT_DIR);
+        SystemFile::mkdir(VAR_DIR);
+
+        // look at media trash
+        $mediaTrash = VAR_DIR.'media/trash';
+
+        if (!\is_dir($mediaTrash)) {
+            SystemFile::mkdir($mediaTrash);
+
+            $folders = SystemFile::readDir(VAR_DIR.'media');
+
+            foreach ($folders as $folder) {
+                if ($folder === 'trash') {
+                    continue;
+                }
+
+                SystemFile::move(
+                    VAR_DIR.'media/'.$folder,
+                    $mediaTrash.'/'.$folder
+                );
+            }
+        }
+
+        QUI::getEvents()->fireEvent('setupMakeDirectoriesEnd');
+    }
+
+    /**
+     * Create the header files
+     *
+     * @throws QUI\Exception
+     * @throws QUI\ExceptionStack
+     */
+    public static function makeHeaderFiles()
+    {
+        QUI::getEvents()->fireEvent('setupMakeHeaderFilesBegin');
+
         $str = "<?php require_once '".CMS_DIR."bootstrap.php'; ?>";
 
-        if (file_exists(USR_DIR.'header.php')) {
-            unlink(USR_DIR.'header.php');
+        if (\file_exists(USR_DIR.'header.php')) {
+            \unlink(USR_DIR.'header.php');
         }
 
-        if (file_exists(OPT_DIR.'header.php')) {
-            unlink(OPT_DIR.'header.php');
+        if (\file_exists(OPT_DIR.'header.php')) {
+            \unlink(OPT_DIR.'header.php');
         }
 
-        file_put_contents(USR_DIR.'header.php', $str);
-        file_put_contents(OPT_DIR.'header.php', $str);
+        \file_put_contents(USR_DIR.'header.php', $str);
+        \file_put_contents(OPT_DIR.'header.php', $str);
 
-        /**
-         * Project Setup
-         */
+        QUI::getEvents()->fireEvent('setupMakeHeaderFilesEnd');
+    }
+
+    /**
+     * Execute for each project the setup
+     *
+     * @param array $setupOptions - options for the package setup [executePackageSetup]
+     *
+     * @throws QUI\Exception
+     */
+    public static function executeEachProjectSetup($setupOptions = [])
+    {
         $projects = Projects\Manager::getProjects(true);
 
-        foreach ($projects as $Project) {
-            /* @var $Project \QUI\Projects\Project */
-            $Project->setup();
-
-            // Plugin Setup
-            QUI::getPlugins()->setup($Project);
-
-            // Media Setup
-            // $Project->getMedia()->setup();
+        if (!isset($setupOptions['executePackagesSetup'])) {
+            $setupOptions['executePackagesSetup'] = false;
         }
 
-        /**
-         * composer setup
-         */
+        /* @var $Project \QUI\Projects\Project */
+        foreach ($projects as $Project) {
+            try {
+                $Project->setup($setupOptions);
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
+            }
+        }
+    }
+
+    /**
+     * Execute for each package the setup
+     *
+     * @param array $setupOptions - options for the package setup
+     *
+     * @throws QUI\Exception
+     * @throws QUI\ExceptionStack
+     */
+    public static function executeEachPackageSetup($setupOptions = [])
+    {
+        QUI::getEvents()->fireEvent('setupPackageSetupBegin');
+
         $PackageManager = QUI::getPackageManager();
-        $packages = SystemFile::readDir(OPT_DIR);
+        $packages       = SystemFile::readDir(OPT_DIR);
+
+        $PackageManager->refreshServerList();
+
+        if (!\is_array($setupOptions)) {
+            $setupOptions = [];
+        }
+
+        if (!isset($setupOptions['localePublish'])) {
+            $setupOptions['localePublish'] = false;
+        }
+
+        QUI\Cache\Manager::$noClearing = true;
 
         // first we need all databases
         foreach ($packages as $package) {
-
             if ($package == 'composer') {
                 continue;
             }
@@ -115,30 +252,43 @@ class Setup
                 continue;
             }
 
-            if (!is_dir(OPT_DIR.'/'.$package)) {
+            if (!\is_dir(OPT_DIR.'/'.$package)) {
                 continue;
             }
 
-            $package_dir = OPT_DIR.'/'.$package;
-            $list = SystemFile::readDir($package_dir);
+            $list = SystemFile::readDir(OPT_DIR.'/'.$package);
 
-            foreach ($list as $sub) {
-                $PackageManager->setup($package.'/'.$sub);
+            foreach ($list as $key => $sub) {
+                $packageName = $package.'/'.$sub;
+                $PackageManager->setup($packageName, $setupOptions);
             }
         }
 
-        // generate translations
-        Update::importAllLocaleXMLs();
-        Translator::create();
+        QUI\Cache\Manager::$noClearing = false;
+        QUI\Cache\Manager::clearAll();
 
-        // generate menu
-        Update::importAllMenuXMLs();
+        QUI::getEvents()->fireEvent('setupPackageSetupEnd');
+    }
 
-        // import permissions
-        Update::importAllPermissionsXMLs();
+    /**
+     * Import all important permissions
+     */
+    public static function importPermissions()
+    {
+        QUI\Permissions\Manager::importPermissionsForGroups();
+    }
 
-        Rights\Manager::importPermissionsForGroups();
-
+    /**
+     * Finish the setup
+     *
+     * - set last update
+     * - clear the cache
+     *
+     * @throws QUI\Exception
+     */
+    public static function finish()
+    {
+        QUI\Translator::create();
 
         // setup set the last update date
         QUI::getPackageManager()->setLastUpdateDate();
@@ -151,7 +301,7 @@ class Setup
      * Generate the main files,
      * the main link only to the internal quiqqer/quiqqer files
      */
-    static function generateFileLinks()
+    public static function generateFileLinks()
     {
         $fileHeader
             = '<?php
@@ -175,17 +325,19 @@ class Setup
   * (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
   *
   * Generated File via QUIQQER
-  * Date: '.date('Y-m-d H:i:s').'
+  * Date: '.\date('Y-m-d H:i:s').'
   *
   */
 
 ';
 
         $OPT_DIR = OPT_DIR;
+        $CMS_DIR = CMS_DIR;
 
-        $image = CMS_DIR.'image.php';
-        $index = CMS_DIR.'index.php';
-        $quiqqer = CMS_DIR.'quiqqer.php';
+        $ajax      = CMS_DIR.'ajax.php';
+        $image     = CMS_DIR.'image.php';
+        $index     = CMS_DIR.'index.php';
+        $quiqqer   = CMS_DIR.'quiqqer.php';
         $bootstrap = CMS_DIR.'bootstrap.php';
 
         // bootstrap
@@ -207,32 +359,37 @@ if (file_exists(\$boot)) {
     require \$boot;
 }
 ";
-        file_put_contents($bootstrap, $bootstrapContent);
+        \file_put_contents($bootstrap, $bootstrapContent);
 
 
-        // rest
-        file_put_contents(
-            $image,
+        // ajax.php
+        $content = $fileHeader.
+                   "define('QUIQQER_SYSTEM',true);".
+                   "require '{$OPT_DIR}quiqqer/quiqqer/ajax.php';\n";
 
-            $fileHeader.
-            "require 'bootstrap.php';\n".
-            "require '{$OPT_DIR}quiqqer/quiqqer/image.php';"
-        );
+        \file_put_contents($ajax, $content);
 
-        file_put_contents(
-            $index,
+        // image.php
+        $content = $fileHeader.
+                   "define('QUIQQER_SYSTEM',true);".
+                   "require dirname(__FILE__) .'/bootstrap.php';\n".
+                   "require '{$OPT_DIR}quiqqer/quiqqer/image.php';\n";
 
-            $fileHeader.
-            "require 'bootstrap.php';\n".
-            "require '{$OPT_DIR}quiqqer/quiqqer/index.php';"
-        );
+        \file_put_contents($image, $content);
 
-        file_put_contents(
-            $quiqqer,
+        // index.php
+        $content = $fileHeader.
+                   "define('QUIQQER_SYSTEM',true);".
+                   "require dirname(__FILE__) .'/bootstrap.php';\n".
+                   "require '{$OPT_DIR}quiqqer/quiqqer/index.php';\n";
 
-            $fileHeader.
-            "require 'bootstrap.php';\n".
-            "require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';"
-        );
+        \file_put_contents($index, $content);
+
+        // quiqqer.php
+        $content = $fileHeader.
+                   "define('CMS_DIR', '{$CMS_DIR}');\n".
+                   "require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';\n";
+
+        \file_put_contents($quiqqer, $content);
     }
 }

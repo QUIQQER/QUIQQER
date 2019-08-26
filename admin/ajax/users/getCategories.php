@@ -3,22 +3,19 @@
 /**
  * Gibt die Button für den Benutzer zurück
  *
- * @param String / Integer $uid
+ * @param string / Integer $uid
  *
- * @return Array
+ * @return array
  */
-function ajax_users_getCategories($uid)
-{
-    $Users = QUI::getUsers();
-    $User = $Users->get((int)$uid);
-
-    $Toolbar = QUI\Users\Utils::getUserToolbar($User);
-
-    return $Toolbar->toArray();
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_users_getCategories',
-    array('uid'),
-    'Permission::checkSU'
+    function ($uid) {
+        $Users   = QUI::getUsers();
+        $User    = $Users->get((int)$uid);
+        $Toolbar = QUI\Users\Utils::getUserToolbar($User);
+
+        return $Toolbar->toArray();
+    },
+    ['uid'],
+    'Permission::checkAdminUser'
 );

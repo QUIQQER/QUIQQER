@@ -5,23 +5,21 @@
  *
  * @param $permission - permission
  */
-function ajax_permissions_delete($permission)
-{
-    \QUI::getPermissionManager()->deletePermission( $permission );
-
-    \QUI::getMessagesHandler()->addSuccess(
-        \QUI::getLocale()->get(
-            'quiqqer/system',
-            'permissions.message.delete.success'
-        )
-    );
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_permissions_delete',
-    array( 'permission' ),
-    array(
+    function ($permission) {
+        QUI::getPermissionManager()->deletePermission($permission);
+
+        QUI::getMessagesHandler()->addSuccess(
+            QUI::getLocale()->get(
+                'quiqqer/system',
+                'permissions.message.delete.success'
+            )
+        );
+    },
+    ['permission'],
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.permissions'
-    )
+    ]
 );

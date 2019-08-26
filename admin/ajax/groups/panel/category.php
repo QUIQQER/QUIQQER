@@ -9,13 +9,11 @@
  *
  * @return string
  */
-function ajax_groups_panel_category($gid, $plugin, $tab)
-{
-    return \QUI\Groups\Utils::getTab( $gid, $plugin, $tab );
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_groups_panel_category',
+    function ($gid, $plugin, $tab) {
+        return QUI\Groups\Utils::getTab($gid, $plugin, $tab);
+    },
     array('gid', 'plugin', 'tab'),
     'Permission::checkSU'
 );

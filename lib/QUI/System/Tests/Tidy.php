@@ -22,22 +22,24 @@ class Tidy extends QUI\System\Test
      */
     public function __construct()
     {
-        $this->setAttributes(array(
+        parent::__construct();
+
+        $this->setAttributes([
             'title'       => 'Tidy',
             'description' => ''
-        ));
+        ]);
 
-        $this->_isRequired = self::TEST_IS_OPTIONAL;
+        $this->isRequired = self::TEST_IS_OPTIONAL;
     }
 
     /**
      * Check, if zlib available
      *
-     * @return self::STATUS_OK|self::STATUS_ERROR
+     * @return int self::STATUS_OK|self::STATUS_ERROR
      */
     public function execute()
     {
-        if (class_exists('tidy')) {
+        if (\class_exists('tidy')) {
             return self::STATUS_OK;
         }
 

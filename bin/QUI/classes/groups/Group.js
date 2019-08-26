@@ -1,4 +1,3 @@
-
 /**
  * Group (Model)
  *
@@ -13,15 +12,13 @@
  * @event onActivate [ {classes/groups/Group} ]
  * @event onDeactivate [ {classes/groups/Group} ]
  */
-
-define([
+define('classes/groups/Group', [
 
     'qui/classes/DOM',
-    'Ajax',
-    'qui/utils/Object'
+    'qui/utils/Object',
+    'Ajax'
 
-], function(DOM, Ajax, ObjectUtils)
-{
+], function (DOM, ObjectUtils, Ajax) {
     "use strict";
 
     /**
@@ -33,14 +30,13 @@ define([
      */
     return new Class({
 
-        Extends : DOM,
-        Type    : 'classes/groups/Group',
+        Extends: DOM,
+        Type   : 'classes/groups/Group',
 
-        attributes : {}, // group attributes
+        attributes: {}, // group attributes
 
-        initialize : function(gid)
-        {
-            this.$gid = gid;
+        initialize: function (gid) {
+            this.$gid    = parseInt(gid);
             this.$loaded = false;
         },
 
@@ -50,8 +46,7 @@ define([
          * @method classes/groups/Group#getId
          * @return {Number} Group-ID
          */
-        getId : function()
-        {
+        getId: function () {
             return this.$gid;
         },
 
@@ -61,8 +56,7 @@ define([
          * @method classes/groups/Group#getName
          * @return {String} Groupname
          */
-        getName : function()
-        {
+        getName: function () {
             return this.getAttribute('name');
         },
 
@@ -71,16 +65,13 @@ define([
          *
          * @method classes/groups/Group#load
          * @param {Function} [onfinish] - (optional), callback
-         * @return Promise
+         * @return {Promise}
          */
-        load: function(onfinish)
-        {
+        load: function (onfinish) {
             var self = this;
 
-            return new Promise(function(resolve, reject) {
-
-                Ajax.get('ajax_groups_get', function(result)
-                {
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_groups_get', function (result) {
                     self.setAttributes(result);
                     self.$loaded = true;
 
@@ -92,10 +83,36 @@ define([
 
                     self.fireEvent('refresh', [self]);
                 }, {
-                    gid : self.getId(),
-                    onError : reject
+                    gid    : self.getId(),
+                    onError: reject
                 });
             });
+        },
+
+        /**
+         * Activate the group
+         *
+         * @returns {Promise}
+         */
+        activate: function () {
+            return new Promise(function (resolve) {
+                require(['Groups'], function (Groups) {
+                    return Groups.activate(this.getId()).then(resolve);
+                }.bind(this));
+            }.bind(this));
+        },
+
+        /**
+         * Deactivate the group
+         *
+         * @returns {Promise}
+         */
+        deactivate: function () {
+            return new Promise(function (resolve) {
+                require(['Groups'], function (Groups) {
+                    return Groups.deactivate(this.getId()).then(resolve);
+                }.bind(this));
+            }.bind(this));
         },
 
         /**
@@ -103,8 +120,7 @@ define([
          *
          * @return {Boolean}
          */
-        isLoaded : function()
-        {
+        isLoaded: function () {
             return this.$loaded;
         },
 
@@ -114,19 +130,22 @@ define([
          * @method classes/groups/Group#load
          * @param {Function} [onfinish] - (optional), callback
          * @param {Object} [params] - (optional), binded params at the request
+         * @return {Promise}
          */
-        getChildren : function(onfinish, params)
-        {
-            params = ObjectUtils.combine(params, {
-                gid : this.getId()
-            });
+        getChildren: function (onfinish, params) {
+            return new Promise(function (resolve) {
+                params = ObjectUtils.combine(params, {
+                    gid: this.getId()
+                });
 
-            Ajax.get('ajax_groups_children', function(result, Request)
-            {
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( result, Request );
-                }
-            }, params);
+                Ajax.get('ajax_groups_children', function (result) {
+                    if (typeof onfinish !== 'undefined') {
+                        onfinish(result);
+                    }
+
+                    resolve(result);
+                }, params);
+            }.bind(this));
         },
 
         /**
@@ -135,30 +154,32 @@ define([
          * @method classes/groups/Group#save
          * @param {Function} [onfinish] - (optional), callback
          * @param {Object} [params] - (optional), binded params at the request
+         * @return {Promise}
          */
-        save : function(onfinish, params)
-        {
+        save: function (onfinish, params) {
             var self = this;
 
             params = ObjectUtils.combine(params, {
-                gid        : this.getId(),
-                attributes : JSON.encode( this.getAttributes() ),
-                rights     : '[]' //JSON.encode( this.getRights() )
+                gid       : this.getId(),
+                attributes: JSON.encode(this.getAttributes()),
+                rights    : '[]' //JSON.encode( this.getRights() )
             });
 
-            Ajax.post('ajax_groups_save', function(result, Request)
-            {
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( self, Request );
-                }
+            return new Promise(function (resolve) {
+                Ajax.post('ajax_groups_save', function () {
+                    if (typeof onfinish !== 'undefined') {
+                        onfinish(self);
+                    }
 
-                self.fireEvent( 'refresh', [ self ] );
+                    resolve(self);
 
-                require(['Groups'], function(Groups) {
-                    Groups.refreshGroup( self );
-                });
+                    self.fireEvent('refresh', [self]);
 
-            }, params);
+                    require(['Groups'], function (Groups) {
+                        Groups.refreshGroup(self);
+                    });
+                }, params);
+            });
         },
 
         /**
@@ -167,9 +188,8 @@ define([
          * @method classes/groups/Group#isActive
          * @return {Boolean} true or false
          */
-        isActive : function()
-        {
-            return ( this.getAttribute( 'active' ) ).toInt() ? true : false;
+        isActive: function () {
+            return !!(this.getAttribute('active')).toInt();
         },
 
         /**
@@ -180,26 +200,30 @@ define([
          *         the return of the function: {Array}
          * @param {Object} limits - limit params (limit, page, field, order)
          *
-         * @return {Object} this (classes/groups/Group)
+         * @return {Promise}
          */
-        getUsers : function(onfinish, limits)
-        {
+        getUsers: function (onfinish, limits) {
+            var self   = this;
             var params = {
-                limit : limits.limit || 50,
-                page  : limits.page  || 1,
-                field : limits.field || 'name',
-                order : limits.order || 'DESC'
+                limit: limits.limit || 50,
+                page : limits.page || 1,
+                field: limits.field || 'name',
+                order: limits.order || 'DESC'
             };
 
-            Ajax.get('ajax_groups_users', function(result, Request)
-            {
-                onfinish( result, Request );
-            }, {
-                gid    : this.getId(),
-                params : JSON.encode( params )
-            });
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_groups_users', function (result, Request) {
+                    if (typeof onfinish !== 'undefined') {
+                        onfinish(result, Request);
+                    }
 
-            return this;
+                    resolve(self, result);
+                }, {
+                    gid    : self.getId(),
+                    params : JSON.encode(params),
+                    onError: reject
+                });
+            });
         },
 
         /**
@@ -216,9 +240,8 @@ define([
          * @param {Object|String|Number|Array} v - value
          * @return {Object} this (classes/groups/Group)
          */
-        setAttribute : function(k, v)
-        {
-            this.attributes[ k ] = v;
+        setAttribute: function (k, v) {
+            this.attributes[k] = v;
             return this;
         },
 
@@ -235,14 +258,12 @@ define([
          *   attr2 : []
          * })
          */
-        setAttributes : function(attributes)
-        {
+        setAttributes: function (attributes) {
             attributes = attributes || {};
 
-            for ( var k in attributes )
-            {
-                if ( attributes.hasOwnProperty( k ) ) {
-                    this.setAttribute( k, attributes[ k ] );
+            for (var k in attributes) {
+                if (attributes.hasOwnProperty(k)) {
+                    this.setAttribute(k, attributes[k]);
                 }
             }
 
@@ -257,10 +278,9 @@ define([
          * @param {Object} k - Object width attributes
          * @return {Boolean|Number|Object|Array|String} wanted attribute
          */
-        getAttribute : function(k)
-        {
-            if ( typeof this.attributes[ k ] !== 'undefined' ) {
-                return this.attributes[ k ];
+        getAttribute: function (k) {
+            if (typeof this.attributes[k] !== 'undefined') {
+                return this.attributes[k];
             }
 
             return false;
@@ -272,8 +292,7 @@ define([
          * @method classes/groups/Group#getAttributes
          * @return {Object} all attributes
          */
-        getAttributes : function()
-        {
+        getAttributes: function () {
             return this.attributes;
         },
 
@@ -284,9 +303,8 @@ define([
          * @param {String} k - wanted attribute
          * @return {Boolean} true | false
          */
-        existAttribute : function(k)
-        {
-            return typeof this.attributes[ k ] !== 'undefined';
+        existAttribute: function (k) {
+            return typeof this.attributes[k] !== 'undefined';
         }
     });
 });

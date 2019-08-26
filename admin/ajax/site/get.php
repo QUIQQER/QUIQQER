@@ -3,33 +3,29 @@
 /**
  * Return the site data
  *
- * @param String $project
- * @param String $id
+ * @param string $project
+ * @param string $id
  *
- * @return Array
+ * @return array
  */
-function ajax_site_get($project, $id)
-{
-    $Project = QUI::getProjectManager()->decode($project);
-    $Site = new QUI\Projects\Site\Edit($Project, (int)$id);
-
-    $attributes = $Site->getAttributes();
-
-    $attributes['icon'] = QUI::getPluginManager()->getIconByType(
-        $Site->getAttribute('type')
-    );
-
-    return array(
-        'modules'      => QUI\Projects\Site\Utils::getAdminSiteModulesFromSite($Site),
-        'attributes'   => $attributes,
-        'has_children' => $Site->hasChildren(true),
-        'parentid'     => $Site->getParentId(),
-        'url'          => URL_DIR.$Site->getUrlRewrited()
-    );
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_site_get',
-    array('project', 'id'),
+    function ($project, $id) {
+        $Project = QUI::getProjectManager()->decode($project);
+        $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
+
+        $attributes         = $Site->getAttributes();
+        $attributes['icon'] = QUI::getPackageManager()->getIconBySiteType($Site->getAttribute('type'));
+
+        return [
+            'modules'      => QUI\Projects\Site\Utils::getAdminSiteModulesFromSite($Site),
+            'attributes'   => $attributes,
+            'has_children' => $Site->hasChildren(true),
+            'parentid'     => $Site->getParentId(),
+            'url'          => $Site->getUrlRewritten(),
+            'hostUrl'      => $Site->getUrlRewrittenWithHost()
+        ];
+    },
+    ['project', 'id'],
     'Permission::checkAdminUser'
 );

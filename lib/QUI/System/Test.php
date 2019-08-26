@@ -26,7 +26,7 @@ abstract class Test extends QUI\QDOM implements QUI\Interfaces\System\Test
     /**
      * @var int
      */
-    protected $_isRequired = self::TEST_IS_REQUIRED;
+    protected $isRequired = self::TEST_IS_REQUIRED;
 
     /**
      * Constructor
@@ -46,7 +46,7 @@ abstract class Test extends QUI\QDOM implements QUI\Interfaces\System\Test
      */
     public function isRequired()
     {
-        return ($this->_isRequired == self::TEST_IS_REQUIRED);
+        return ($this->isRequired == self::TEST_IS_REQUIRED);
     }
 
     /**
@@ -56,7 +56,7 @@ abstract class Test extends QUI\QDOM implements QUI\Interfaces\System\Test
      */
     public function isOptional()
     {
-        return ($this->_isRequired == self::TEST_IS_OPTIONAL);
+        return ($this->isRequired == self::TEST_IS_OPTIONAL);
     }
 
     /**

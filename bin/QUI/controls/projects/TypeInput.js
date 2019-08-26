@@ -1,14 +1,8 @@
-
 /**
  * The type input set the type control to an input field
  *
  * @module controls/projects/TypeInput
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/controls/Control
- * @require controls/projects/TypeButton
- * @require controls/projects/TypeWindow
- * @require Plugins
  */
 define('controls/projects/TypeInput', [
 
@@ -16,10 +10,11 @@ define('controls/projects/TypeInput', [
     'controls/projects/TypeButton',
     'controls/projects/TypeWindow',
     'Plugins',
+    'Locale',
+
     'css!controls/projects/TypeInput.css'
 
-], function(QUIControl, TypeButton, TypeWindow, Plugins)
-{
+], function (QUIControl, TypeButton, TypeWindow, Plugins, QUILocale) {
     "use strict";
 
     /**
@@ -35,17 +30,16 @@ define('controls/projects/TypeInput', [
      */
     return new Class({
 
-        Extends : QUIControl,
-        Type    : 'controls/projects/TypeInput',
+        Extends: QUIControl,
+        Type   : 'controls/projects/TypeInput',
 
-        options : {
-            project : false,
-            name    : ''
+        options: {
+            project: false,
+            name   : ''
         },
 
-        initialize : function(options, Input)
-        {
-            this.parent( options );
+        initialize: function (options, Input) {
+            this.parent(options);
 
             this.$Input = Input || null;
             this.$Elm   = null;
@@ -60,42 +54,51 @@ define('controls/projects/TypeInput', [
          * @method controls/projects/TypeInput#create
          * @return {HTMLElement}
          */
-        create : function()
-        {
-            if ( !this.$Input )
-            {
+        create: function () {
+            var self = this;
+
+            if (!this.$Input) {
                 this.$Input = new Element('input', {
-                    name : this.getAttribute( 'name' )
+                    name: this.getAttribute('name')
                 });
             }
-
-            var self = this;
 
             this.$Input.type = 'hidden';
 
             this.$Elm = new Element('div', {
-                'class'      : 'qui-projects-type-input',
-                'data-quiid' : this.getId()
+                'class'     : 'qui-projects-type-input',
+                'data-quiid': this.getId()
             });
 
-            this.$Elm.wraps( this.$Input );
+            this.$Elm.wraps(this.$Input);
 
             // create the type button
             this.$TypeButton = new TypeButton({
-                project : this.getAttribute( 'project' ),
-                events  :
-                {
-                    onSubmit : function(Btn, result)
-                    {
+                project: this.getAttribute('project'),
+                events : {
+                    onSubmit: function (Btn, result) {
                         self.$Input.value = result;
                         self.loadTypeName();
+
+                        if ("createEvent" in document) {
+                            var evt = document.createEvent("HTMLEvents");
+                            evt.initEvent("change", false, true);
+                            self.$Input.dispatchEvent(evt);
+                        } else {
+                            self.$Input.fireEvent("onchange");
+                        }
                     }
                 }
-            }).inject( this.$Elm ) ;
-
+            }).inject(this.$Elm);
 
             this.$Text = new Element('div.qui-projects-type-input-text');
-            this.$Text.inject( this.$Elm );
+            this.$Text.inject(this.$Elm);
+
+            if (this.$Input.hasClass('field-container-field')) {
+                this.$Input.removeClass('field-container-field');
+                this.$Elm.addClass('field-container-field');
+                this.$TypeButton.getElm().inject(this.$Text, 'after');
+            }
 
             // load the user type name
             this.loadTypeName();
@@ -108,12 +111,11 @@ define('controls/projects/TypeInput', [
          *
          * @param {Object} Project - classes/projects/Project
          */
-        setProject : function(Project)
-        {
-            this.setAttribute( 'project', Project.getName() );
+        setProject: function (Project) {
+            this.setAttribute('project', Project.getName());
 
-            if ( this.$TypeButton ) {
-                this.$TypeButton.setAttribute( 'project', Project.getName() );
+            if (this.$TypeButton) {
+                this.$TypeButton.setAttribute('project', Project.getName());
             }
         },
 
@@ -122,32 +124,38 @@ define('controls/projects/TypeInput', [
          *
          * @method controls/projects/TypeInput#loadTypeName
          */
-        loadTypeName : function()
-        {
+        loadTypeName: function () {
             var self = this;
 
             this.$Text.set({
-                html  : '<span class="icon-spinner icon-spin"></span>',
-                title : '...'
+                html : '<span class="fa fa-spinner fa-spin"></span>',
+                title: '...'
             });
 
-            Plugins.getTypeName(this.$Input.value, function(result)
-            {
-                if ( self.$Text )
-                {
+            var value = this.$Input.value;
+
+
+            if (!value || value === '' || value === 'standard') {
+                self.$Text.set({
+                    html : QUILocale.get('quiqqer/quiqqer', 'site.type.standard'),
+                    title: QUILocale.get('quiqqer/quiqqer', 'site.type.standard')
+                });
+                return;
+            }
+
+            Plugins.getTypeName(value, function (result) {
+                if (self.$Text) {
                     self.$Text.set({
-                        html  : result,
-                        title : result
+                        html : result,
+                        title: result
                     });
                 }
             }, {
-                onError : function()
-                {
-                    if ( self.$Text )
-                    {
+                onError: function () {
+                    if (self.$Text) {
                         self.$Text.set({
-                            html  : '<span style="color: red">#unknown</span>',
-                            title : null
+                            html : '<span style="color: red">#unknown</span>',
+                            title: null
                         });
                     }
                 }

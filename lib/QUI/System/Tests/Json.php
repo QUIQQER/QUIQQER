@@ -22,22 +22,24 @@ class Json extends QUI\System\Test
      */
     public function __construct()
     {
-        $this->setAttributes(array(
+        parent::__construct();
+
+        $this->setAttributes([
             'title'       => 'json_decode and json_encode',
             'description' => ''
-        ));
+        ]);
 
-        $this->_isRequired = self::TEST_IS_REQUIRED;
+        $this->isRequired = self::TEST_IS_REQUIRED;
     }
 
     /**
      * Check, if json_encode and json_decode available
      *
-     * @return self::STATUS_OK|self::STATUS_ERROR
+     * @return int self::STATUS_OK|self::STATUS_ERROR
      */
     public function execute()
     {
-        if (function_exists('json_decode') && function_exists('json_encode')) {
+        if (\function_exists('json_decode') && \function_exists('json_encode')) {
             return self::STATUS_OK;
         }
 

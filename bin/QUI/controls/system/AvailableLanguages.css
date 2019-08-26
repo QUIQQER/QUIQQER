@@ -1,6 +1,6 @@
 
 .quiqqer-available-languages-entry {
-    border-bottom: 1px solid rgba( 0, 0, 0, 0.1 );
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     clear: both;
     float: left;
     padding: 10px 0;
@@ -15,4 +15,33 @@
 .quiqqer-available-flag {
     float: left;
     padding: 0 10px 0 0;
+}
+
+.field-container .quiqqer-availableLanguages {
+    border-top: 1px solid rgba(147, 128, 108, 0.25);
+    border-right: 1px solid rgba(147, 128, 108, 0.25);
+    flex: 1;
+}
+
+.field-container .quiqqer-available-languages-entry {
+    border: 1px solid #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    padding: 0;
+}
+
+.field-container .quiqqer-available-languages-entry:hover {
+    border: 1px solid #a4a9ae;
+}
+
+.field-container .quiqqer-available-languages-entry-text {
+    border-right: 1px solid rgba(147, 128, 108, 0.25);
+    line-height: 30px;
+    padding: 0 10px;
+    width: 150px;
+}
+
+.field-container .quiqqer-available-languages-entry input {
+    border: 0;
+    width: calc(100% - 150px);
 }

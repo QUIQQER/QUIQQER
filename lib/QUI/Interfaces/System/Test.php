@@ -14,17 +14,17 @@ namespace QUI\Interfaces\System;
 interface Test
 {
     /**
-     * @return \QUI\System\Tests\Test::STATUS_OK|\QUI\System\Tests\Test::STATUS_ERROR
+     * @return \QUI\System\Test::STATUS_OK|\QUI\System\Tests\Test::STATUS_ERROR
      */
     public function execute();
 
     /**
-     * @return Bool
+     * @return boolean
      */
     public function isRequired();
 
     /**
-     * @return Bool
+     * @return boolean
      */
     public function isOptional();
 

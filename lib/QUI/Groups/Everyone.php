@@ -21,19 +21,17 @@ class Everyone extends QUI\Groups\Group
      */
     public function __construct()
     {
-        parent::__construct(1);
+        parent::__construct(Manager::EVERYONE_ID);
     }
 
     /**
      * Deletes the group and sub-groups
      *
-     * @todo alle Beziehungen in den Seiten müssen neu gesetzt werden
-     * @return Bool
+     * @return boolean
      * @throws \QUI\Exception
      */
     public function delete()
     {
-        // Rootgruppe kann nicht gelöscht werden
         throw new QUI\Exception(
             QUI::getLocale()->get(
                 'quiqqer/system',
@@ -46,53 +44,75 @@ class Everyone extends QUI\Groups\Group
      * set a group attribute
      * ID cannot be set
      *
-     * @param String                    $key   - Attribute name
-     * @param String|Bool|Integer|array $value - value
+     * @param string $key - Attribute name
+     * @param string|boolean|integer|array $value - value
      *
-     * @return Bool
+     * @return Everyone
      */
     public function setAttribute($key, $value)
     {
         if ($key == 'id') {
-            return false;
+            return $this;
         }
 
-        return parent::setAttribute($key, $value);
+        parent::setAttribute($key, $value);
+
+        return $this;
     }
 
     /**
      * Returns the Group-ID
      *
-     * @return Integer
+     * @return integer
      */
     public function getId()
     {
-        return 1;
+        return Manager::EVERYONE_ID;
     }
 
     /**
      * saves the group
      * All attributes are set in the database
+     *
+     * @throws QUI\Database\Exception
+     * @throws QUI\Exception
      */
     public function save()
     {
-        $this->_rights = QUI::getPermissionManager()
-                            ->getRightParamsFromGroup($this);
+        $this->rights = QUI::getPermissionManager()->getRightParamsFromGroup($this);
+
+        // check assigned toolbars
+        $assignedToolbars = '';
+        $toolbar          = '';
+
+        if ($this->getAttribute('assigned_toolbar')) {
+            $toolbars = \explode(',', $this->getAttribute('assigned_toolbar'));
+
+            $assignedToolbars = \array_filter($toolbars, function ($toolbar) {
+                return QUI\Editor\Manager::existsToolbar($toolbar);
+            });
+
+            $assignedToolbars = implode(',', $assignedToolbars);
+        }
+
+        if (QUI\Editor\Manager::existsToolbar($this->getAttribute('toolbar'))) {
+            $toolbar = $this->getAttribute('toolbar');
+        }
 
         // Felder bekommen
         QUI::getDataBase()->update(
-            QUI\Groups\Manager::Table(),
-            array(
-                'name'    => $this->getAttribute('name'),
-                'toolbar' => $this->getAttribute('toolbar'),
-                'admin'   => $this->_rootid == $this->getId() ? 1
-                    : (int)$this->getAttribute('admin'),
-                'rights'  => json_encode($this->_rights)
-            ),
-            array('id' => $this->getId())
+            QUI\Groups\Manager::table(),
+            [
+                'name'             => 'Everyone',
+                'rights'           => \json_encode($this->rights),
+                'active'           => 1,
+                'assigned_toolbar' => $assignedToolbars,
+                'toolbar'          => $toolbar
+            ],
+            ['id' => $this->getId()]
         );
 
-        $this->_createCache();
+        $this->createCache();
     }
 
     /**
@@ -100,7 +120,6 @@ class Everyone extends QUI\Groups\Group
      */
     public function activate()
     {
-
     }
 
     /**
@@ -119,7 +138,7 @@ class Everyone extends QUI\Groups\Group
     /**
      * Is the group active?
      *
-     * @return Bool
+     * @return boolean
      */
     public function isActive()
     {
@@ -129,10 +148,10 @@ class Everyone extends QUI\Groups\Group
     /**
      * Checks if the ID is from a parent group
      *
-     * @param Integer $id       - ID from parent
-     * @param Bool    $recursiv - checks recursive or not
+     * @param integer $id - ID from parent
+     * @param boolean $recursiv - checks recursive or not
      *
-     * @return Bool
+     * @return boolean
      */
     public function isParent($id, $recursiv = false)
     {
@@ -142,14 +161,14 @@ class Everyone extends QUI\Groups\Group
     /**
      * return the parent group
      *
-     * @param Bool $obj - Parent Objekt (true) oder Parent-ID (false) -> (optional = true)
+     * @param boolean $obj - Parent Objekt (true) oder Parent-ID (false) -> (optional = true)
      *
-     * @return Object|Integer|false
+     * @return object|integer|false
      * @throws \QUI\Exception
      */
     public function getParent($obj = true)
     {
-
+        return false;
     }
 
     /**
@@ -159,13 +178,13 @@ class Everyone extends QUI\Groups\Group
      */
     public function getParentIds()
     {
-
+        return [];
     }
 
     /**
      * Have the group subgroups?
      *
-     * @return Integer
+     * @return integer
      */
     public function hasChildren()
     {
@@ -175,37 +194,38 @@ class Everyone extends QUI\Groups\Group
     /**
      * Returns the sub groups
      *
-     * @param Array $params - Where Parameter
+     * @param array $params - Where Parameter
      *
-     * @return Array
+     * @return array
      */
-    public function getChildren($params = array())
+    public function getChildren($params = [])
     {
-        return array();
+        return [];
     }
 
     /**
      * return the subgroup ids
      *
-     * @param Bool $recursiv - recursiv true / false
-     * @param      $params   - SQL Params (limit, order)
+     * @param boolean $recursiv - recursiv true / false
+     * @param      $params - SQL Params (limit, order)
      *
-     * @return Array
+     * @return array
      */
-    public function getChildrenIds($recursiv = false, $params = array())
+    public function getChildrenIds($recursiv = false, $params = [])
     {
-        return array();
+        return [];
     }
 
     /**
      * Create a subgroup
      *
-     * @param String $name - name of the subgroup
+     * @param string $name - name of the subgroup
+     * @param QUI\Interfaces\Users\User $ParentUser - (optional), Parent User, which create the user
      *
      * @return \QUI\Groups\Manager
      * @throws QUI\Exception
      */
-    public function createChild($name)
+    public function createChild($name, $ParentUser = null)
     {
         throw new QUI\Exception(
             QUI::getLocale()->get(

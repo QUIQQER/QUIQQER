@@ -22,61 +22,60 @@ class ModRewrite extends QUI\System\Test
      */
     public function __construct()
     {
-        $this->setAttributes(array(
+        parent::__construct();
+
+        $this->setAttributes([
             'title'       => 'Apache mod_rewrite installed',
             'description' => ''
-        ));
+        ]);
 
-        $this->_isRequired = self::TEST_IS_REQUIRED;
+        $this->isRequired = self::TEST_IS_REQUIRED;
     }
 
     /**
      * Check, if mod rewrite is enabled
      *
-     * @return self::STATUS_OK|self::STATUS_ERROR
+     * @return int self::STATUS_OK|self::STATUS_ERROR
      */
     public function execute()
     {
         // quiqqer check
-        if (array_key_exists('HTTP_MOD_REWRITE', $_SERVER)) {
+        if (\array_key_exists('HTTP_MOD_REWRITE', $_SERVER)) {
             return self::STATUS_OK;
         }
 
-        if (getenv('HTTP_MOD_REWRITE') == 'On') {
+        if (\getenv('HTTP_MOD_REWRITE') == 'On') {
             return self::STATUS_OK;
         }
 
         // test with apache modules
-        if (function_exists('apache_get_modules')
-            && in_array('mod_rewrite', apache_get_modules())
-        ) {
+        if (\function_exists('apache_get_modules') && \in_array('mod_rewrite', \apache_get_modules())) {
             return self::STATUS_OK;
         }
 
         // phpinfo test
-        ob_start();
-        phpinfo();
-        $phpinfo = ob_get_contents();
-        ob_end_clean();
+        \ob_start();
+        \phpinfo();
+        $phpinfo = \ob_get_contents();
+        \ob_end_clean();
 
-        if (strpos('mod_rewrite', $phpinfo) !== false) {
+        if (\strpos('mod_rewrite', $phpinfo) !== false) {
             return self::STATUS_OK;
         }
 
-        return $this->_checkViaHTTP();
+        return $this->checkViaHTTP();
     }
 
     /**
      * makes a http request and check, if the mod rewrite works
      *
-     * @return self::STATUS_OK|self::STATUS_ERROR
+     * @return int self::STATUS_OK|self::STATUS_ERROR
      */
-    protected function _checkViaHTTP()
+    protected function checkViaHTTP()
     {
         try {
             $Project = QUI::getProjectManager()->getStandard();
-            $host = $Project->getHost();
-
+            $host    = $Project->getHost();
         } catch (QUI\Exception $Exception) {
             return self::STATUS_ERROR;
         }
@@ -86,21 +85,20 @@ class ModRewrite extends QUI\System\Test
                 'http://'.$host.'/'.URL_SYS_DIR
                 .'/ajax.php?_rf=["ajax_system_modRewrite"]'
             );
-
         } catch (QUI\Exception $Exception) {
             return self::STATUS_ERROR;
         }
 
 
-        if (strpos($result, '<quiqqer>') === false) {
+        if (\strpos($result, '<quiqqer>') === false) {
             return self::STATUS_ERROR;
         }
 
         $start = 9;
-        $end = strpos($result, '</quiqqer>');
+        $end   = \strpos($result, '</quiqqer>');
 
-        $quiqqer = substr($result, $start, $end - $start);
-        $quiqqer = json_decode($quiqqer, true);
+        $quiqqer = \substr($result, $start, $end - $start);
+        $quiqqer = \json_decode($quiqqer, true);
 
         if (!isset($quiqqer['ajax_system_modRewrite'])) {
             return self::STATUS_ERROR;

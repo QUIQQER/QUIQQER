@@ -1,13 +1,8 @@
-
 /**
  * Permission for an user
  *
  * @module controls/permissions/User
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require controls/permissions/Permission
- * @require qui/controls/buttons/Button
- * @require Locale
  */
 define('controls/permissions/User', [
 
@@ -15,8 +10,7 @@ define('controls/permissions/User', [
     'qui/controls/buttons/Button',
     'Locale'
 
-], function(Permission, QUIButton, QUILocale)
-{
+], function (Permission, QUIButton, QUILocale) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -25,25 +19,25 @@ define('controls/permissions/User', [
     return new Class({
 
         Extends: Permission,
-        Type: 'controls/permissions/User',
+        Type   : 'controls/permissions/User',
 
-        Binds : [
+        Binds: [
             '$onOpen'
         ],
 
-        initialize : function(User, options)
-        {
+        initialize: function (User, options) {
             this.parent(User, options);
 
             this.$Select = null;
 
             if (typeOf(User) === 'classes/users/User') {
                 this.$Bind = User;
+                this.refresh();
             }
 
             this.addEvents({
-                onOpen : this.$onOpen,
-                onDestroy : function() {
+                onOpen   : this.$onOpen,
+                onDestroy: function () {
                     if (this.$Input) {
                         this.$Input.destroy();
                     }
@@ -52,83 +46,84 @@ define('controls/permissions/User', [
         },
 
         /**
+         * Refresh the title
+         */
+        refresh: function () {
+            if (!this.$Bind) {
+                return;
+            }
+
+            if (!this.$Bind.isLoaded()) {
+                this.$Bind.load().then(function () {
+                    this.refresh();
+                }.bind(this));
+
+                return;
+            }
+
+            var Panel = this.getAttribute('Panel'),
+                name  = this.$Bind.getName(),
+                id    = this.$Bind.getId();
+
+            Panel.setAttribute(
+                'title',
+                QUILocale.get(lg, 'permissions.panel.title') + ' - ' + name + ' (' + id + ')'
+            );
+
+            Panel.refresh();
+        },
+
+        /**
          * User select
          *
          * @returns {Promise}
          */
-        $openBindSelect : function()
-        {
+        $openBindSelect: function () {
             var self = this;
 
-            return new Promise(function(resolve) {
-
+            return new Promise(function (resolve) {
                 var Container = new Element('div', {
-                    'class' : 'controls-permissions-select shadow',
+                    'class': 'controls-permissions-select shadow',
                     styles : {
-                        left: '-100%',
-                        opacity : 0
+                        left   : '-100%',
+                        opacity: 0
                     }
                 }).inject(self.getElm());
 
                 moofx(Container).animate({
-                    left    : 0,
-                    opacity : 1
+                    left   : 0,
+                    opacity: 1
                 }, {
-                    duration : 250,
-                    equation : 'ease-in-out',
-                    callback : function() {
-
-                        require(['controls/users/Input'], function(Input)
-                        {
+                    duration: 250,
+                    equation: 'ease-in-out',
+                    callback: function () {
+                        require(['controls/users/Input'], function (Input) {
                             Container.set(
                                 'html',
-                                '<h2>'+ QUILocale.get(lg, 'permissions.panel.select.user.title') +'</h2>'
+                                '<h2>' + QUILocale.get(lg, 'permissions.panel.select.user.title') + '</h2>'
                             );
 
                             self.$Input = new Input({
-                                max      : 1,
-                                multible : false,
-                                styles   : {
-                                    'float' : 'none',
+                                max     : 1,
+                                multiple: false,
+                                styles  : {
+                                    'float': 'none',
                                     margin : '0 auto',
                                     width  : 200
                                 },
-                                events :
-                                {
-                                    onAdd : function(UserSearch, userid)
-                                    {
-                                        require(['Users'], function(Users)
-                                        {
+                                events  : {
+                                    onAdd: function (UserSearch, userid) {
+                                        require(['Users'], function (Users) {
                                             self.$Bind = Users.get(userid);
-
-                                            // set status title
-                                            if (self.$Bind.isLoaded()) {
-                                                self.$Status.set(
-                                                    'html',
-                                                    QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
-                                                        name : '<span class="fa icon-user"></span>'+
-                                                               self.$Bind.getName()
-                                                    })
-                                                );
-                                            } else {
-                                                self.$Bind.load().then(function() {
-                                                    self.$Status.set(
-                                                        'html',
-                                                        QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
-                                                            name : '<span class="fa icon-user"></span>'+
-                                                                   self.$Bind.getName()
-                                                        })
-                                                    );
-                                                });
-                                            }
+                                            self.refresh();
 
                                             moofx(Container).animate({
-                                                left : '-100%',
-                                                opacity : 0
+                                                left   : '-100%',
+                                                opacity: 0
                                             }, {
-                                                duration : 250,
-                                                equation : 'cubic-bezier(.42,.4,.46,1.29)',
-                                                callback : function() {
+                                                duration: 250,
+                                                equation: 'cubic-bezier(.42,.4,.46,1.29)',
+                                                callback: function () {
                                                     Container.destroy();
                                                     resolve();
                                                 }
@@ -146,25 +141,24 @@ define('controls/permissions/User', [
         /**
          * event on open
          */
-        $onOpen : function()
-        {
+        $onOpen: function () {
             new QUIButton({
-                text : QUILocale.get('quiqqer/system', 'permission.control.btn.user.save'),
-                title : QUILocale.get('quiqqer/system', 'permission.control.btn.user.save'),
-                textimage : 'icon-save',
-                styles : {
-                    'float' : 'right'
+                text     : QUILocale.get('quiqqer/system', 'permission.control.btn.user.save'),
+                title    : QUILocale.get('quiqqer/system', 'permission.control.btn.user.save'),
+                textimage: 'fa fa-save',
+                styles   : {
+                    'float': 'right'
                 },
-                events : {
-                    onClick : function(Btn) {
+                events   : {
+                    onClick: function (Btn) {
 
                         Btn.setAttribute(
                             'textimage',
-                            'icon-spinner icon-spin fa fa-spinner fa-spin'
+                            'fa fa-spinner fa-spin'
                         );
 
-                        this.save().then(function() {
-                            Btn.setAttribute('textimage', 'icon-save');
+                        this.save().then(function () {
+                            Btn.setAttribute('textimage', 'fa fa-save');
                         });
 
                     }.bind(this)

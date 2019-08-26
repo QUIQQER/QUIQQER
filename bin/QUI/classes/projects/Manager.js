@@ -1,27 +1,20 @@
-
 /**
  * The Project Manager
  *
  * @module classes/projects/Manager
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/classes/DOM
- * @require classes/projects/Project
- * @require Ajax
- *
  * @event onCreate
  * @event onDelete
  * @event onProjectSave -> triggerd via project
  */
-
 define('classes/projects/Manager', [
 
     'qui/classes/DOM',
     'classes/projects/Project',
     'Ajax'
 
-], function(QDOM, Project, Ajax)
-{
+], function (QDOM, Project, Ajax) {
     "use strict";
 
     /**
@@ -31,25 +24,24 @@ define('classes/projects/Manager', [
      */
     return new Class({
 
-        Extends : QDOM,
-        Type    : 'classes/projects/Manager',
+        Extends: QDOM,
+        Type   : 'classes/projects/Manager',
 
-        $Project  : false,
-        $projects : {},
+        $Project : false,
+        $projects: {},
+        $getList : null, // internal project cache
 
         /**
          * Standard project
          * @namespace
          */
-        Standard :
-        {
+        Standard: {
             /**
              * Return the lang of the standard project
              *
              * @returns {String}
              */
-            getLang : function()
-            {
+            getLang: function () {
                 return QUIQQER_PROJECT.lang;
             },
 
@@ -58,8 +50,7 @@ define('classes/projects/Manager', [
              *
              * @returns {String}
              */
-            getName : function()
-            {
+            getName: function () {
                 return QUIQQER_PROJECT.name;
             }
         },
@@ -73,36 +64,33 @@ define('classes/projects/Manager', [
          *
          * @return {Object} classes/projects/Project
          */
-        get : function(name, lang)
-        {
-            if ( typeof name === 'undefined' || !name )
-            {
-                if ( typeof lang === 'undefined' ) {
+        get: function (name, lang) {
+            if (typeof name === 'undefined' || !name) {
+                if (typeof lang === 'undefined') {
                     lang = this.getLang();
                 }
 
 
-                if ( this.$Project === null )
-                {
+                if (this.$Project === null) {
                     this.$Project = new Project({
-                        name : this.getName(),
-                        lang : lang
+                        name: this.getName(),
+                        lang: lang
                     });
                 }
 
                 return this.$Project;
             }
 
-            if ( this.$projects[ name +'-'+ lang ] ) {
-                return this.$projects[ name +'-'+ lang ];
+            if (this.$projects[name + '-' + lang]) {
+                return this.$projects[name + '-' + lang];
             }
 
-            this.$projects[ name +'-'+ lang ] = new Project({
-                name : name,
-                lang : lang
+            this.$projects[name + '-' + lang] = new Project({
+                name: name,
+                lang: lang
             });
 
-            return this.$projects[ name +'-'+ lang ];
+            return this.$projects[name + '-' + lang];
         },
 
         /**
@@ -111,10 +99,9 @@ define('classes/projects/Manager', [
          *
          * @returns {String}
          */
-        getLang : function()
-        {
-            if ( this.$Project ) {
-                return this.$Project.getAttribute( 'lang' );
+        getLang: function () {
+            if (this.$Project) {
+                return this.$Project.getAttribute('lang');
             }
 
             return QUIQQER_PROJECT.lang;
@@ -126,9 +113,8 @@ define('classes/projects/Manager', [
          *
          * @returns {String}
          */
-        getName : function()
-        {
-            if ( this.$Project ) {
+        getName: function () {
+            if (this.$Project) {
                 return this.$Project.getName();
             }
 
@@ -138,15 +124,29 @@ define('classes/projects/Manager', [
         /**
          * Return the project list
          *
-         * @param {Function} onfinish - callback function
-         * @param {Object} params - request params
+         * @param {Function} [onFinish] - callback function
+         * @return {Promise}
          */
-        getList : function(onfinish, params)
-        {
-            Ajax.get('ajax_project_getlist', function(result, Ajax)
-            {
-                onfinish( result, Ajax );
-            }, params || {});
+        getList: function (onFinish) {
+            if (this.$getList) {
+                if (typeOf(onFinish) === 'function') {
+                    onFinish(this.$getList);
+                }
+
+                return Promise.resolve(this.$getList);
+            }
+
+            return new Promise(function (resolve) {
+                Ajax.get('ajax_project_getlist', function (result) {
+                    this.$getList = result;
+
+                    if (typeOf(onFinish) === 'function') {
+                        onFinish(result);
+                    }
+
+                    resolve(result);
+                }.bind(this));
+            }.bind(this));
         },
 
         /**
@@ -155,24 +155,27 @@ define('classes/projects/Manager', [
          * @param {String} project
          * @param {String} lang
          * @param {String} template
+         * @param demodata
          * @param {Function} [onfinish]
          */
-        createNewProject : function(project, lang, template, onfinish)
-        {
+        createNewProject: function (project, lang, template, demodata, onfinish) {
             var self = this;
 
-            Ajax.post('ajax_project_create', function(result)
-            {
-                if ( typeof onfinish !== 'undefined' ) {
-                    onfinish( result );
+            this.$getList = null;
+
+            Ajax.post('ajax_project_create', function (result) {
+
+                if (typeof onfinish !== 'undefined') {
+                    onfinish(result);
                 }
 
-                self.fireEvent( 'create', [ project, lang ] );
+                self.fireEvent('create', [project, lang]);
             }, {
-                params : JSON.encode({
-                    project  : project,
-                    lang     : lang,
-                    template : template
+                params: JSON.encode({
+                    project : project,
+                    lang    : lang,
+                    template: template,
+                    demodata: demodata
                 })
             });
         },
@@ -183,34 +186,33 @@ define('classes/projects/Manager', [
          * @param {String} project - name of the project
          * @param {Function} [callback] - callback function
          */
-        deleteProject : function(project, callback)
-        {
+        deleteProject: function (project, callback) {
             var self    = this,
-                Project = this.get( project );
+                Project = this.get(project);
 
-            Ajax.post('ajax_project_delete', function()
-            {
+            this.$getList = null;
+
+            Ajax.post('ajax_project_delete', function () {
                 var list = {};
 
-                for ( var pro in self.$projects )
-                {
-                    if ( !self.$projects.hasOwnProperty(pro) ) {
+                for (var pro in self.$projects) {
+                    if (!self.$projects.hasOwnProperty(pro)) {
                         continue;
                     }
 
-                    if ( !pro.contains( project +'-') ) {
-                        list[ pro ] = self.$projects[ pro ];
+                    if (!pro.contains(project + '-')) {
+                        list[pro] = self.$projects[pro];
                     }
                 }
 
                 self.$projects = list;
-                self.fireEvent( 'delete', [ project ] );
+                self.fireEvent('delete', [project]);
 
-                if ( typeof callback === 'function' ) {
+                if (typeof callback === 'function') {
                     callback();
                 }
             }, {
-                project : Project.encode()
+                project: Project.encode()
             });
         }
     });

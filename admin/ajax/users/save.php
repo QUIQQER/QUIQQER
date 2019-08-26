@@ -3,44 +3,53 @@
 /**
  * Benutzer speichern
  *
- * @param Int    $uid        - Benutzer-ID
- * @param String $attributes - JSON String of Attributes
+ * @param integer $uid - Benutzer-ID
+ * @param string $attributes - JSON String of Attributes
  *
- * @return Bool
+ * @return boolean
  */
-function ajax_users_save($uid, $attributes)
-{
-    $User = QUI::getUsers()->get($uid);
-    $attributes = json_decode($attributes, true);
-
-    foreach ($attributes as $key => $value) {
-        $User->setAttribute($key, $value);
-    }
-
-    // aktivieren / deaktivieren
-    if (isset($attributes['active'])) {
-        if ((int)$attributes['active'] === 1) {
-            if (!$User->isActive()) {
-                $User->activate();
-            }
-
-        } else {
-            $User->deactivate();
-        }
-    }
-
-    $User->save();
-
-    QUI::getMessagesHandler()->addInformation(
-        'Der Benutzer '.$User->getName().' ('.$User->getId()
-        .') wurde erfolgreich gespeichert'
-    ); // #locale
-
-    return true;
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_users_save',
-    array('uid', 'attributes'),
-    'Permission::checkSU'
+    function ($uid, $attributes) {
+        $User       = QUI::getUsers()->get($uid);
+        $attributes = \json_decode($attributes, true);
+        $language   = $User->getAttribute('lang');
+
+        foreach ($attributes as $key => $value) {
+            $User->setAttribute($key, $value);
+        }
+
+        // aktivieren / deaktivieren
+        if (isset($attributes['active'])) {
+            if ((int)$attributes['active'] === 1) {
+                if (!$User->isActive()) {
+                    $User->activate();
+                }
+            } else {
+                $User->deactivate();
+            }
+        }
+
+        $User->save();
+
+        // if language changed
+        if ($User->getAttribute('lang') !== $language) {
+            QUI\Cache\Manager::clear();
+
+            if ($User->getId() === QUI::getUserBySession()->getId()) {
+                QUI::getSession()->set('quiqqer-user-language', false);
+            }
+        }
+
+        QUI::getMessagesHandler()->addSuccess(
+            QUI::getLocale()->get('quiqqer/quiqqer', 'message.user.saved', [
+                'username' => $User->getName(),
+                'id'       => $User->getId()
+            ])
+        );
+
+        return $User->getAttributes();
+    },
+    ['uid', 'attributes'],
+    'Permission::checkAdminUser'
 );

@@ -26,7 +26,7 @@ interface Events
      * Adds an event to the Class instance's event stack.
      *
      * @param string $event - The type of event (e.g. 'complete').
-     * @param callback $fn - The function to execute.
+     * @param callable $fn - Function which should be executed
      */
     public function addEvent($event, $fn);
 
@@ -41,9 +41,9 @@ interface Events
      * Removes an event from the stack of events of the Class instance.
      *
      * @param string $event - The type of event (e.g. 'complete').
-     * @param callback $fn - (optional) The function to remove.
+     * @param callable|bool $fn - (optional) Function which should be removed
      */
-    public function removeEvent($event, $fn=false);
+    public function removeEvent($event, $fn = false);
 
     /**
      * Removes all events of the given type from the stack of events of a Class instance.
@@ -57,8 +57,8 @@ interface Events
      * Fires all events of the specified type in the Class instance.
      *
      * @param string $event - The type of event (e.g. 'onComplete').
-     * @param array|bool $args   - (optional) the argument(s) to pass to the function.
+     * @param array|bool $args - (optional) the argument(s) to pass to the function.
      *                        The arguments must be in an array.
      */
-    public function fireEvent($event, $args=false);
+    public function fireEvent($event, $args = false);
 }

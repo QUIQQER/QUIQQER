@@ -15,7 +15,7 @@ interface Patch
     /**
      * Execute the patch
      *
-     * @return Bool
+     * @return boolean
      */
     public function execute();
 
@@ -23,7 +23,7 @@ interface Patch
     /**
      * Return the minimum version for the patch
      *
-     * @return String
+     * @return string
      */
     public function minimumVersion();
 }

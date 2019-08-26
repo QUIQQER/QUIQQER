@@ -6,32 +6,39 @@
  * @param string $params - json array
  * @return array
  */
-function ajax_groups_search($params)
-{
-    $Groups = \QUI::getGroups();
-    $params = json_decode( $params, true );
-    $page   = 1;
-	$limit  = 10;
+QUI::$Ajax->registerFunction(
+    'ajax_groups_search',
+    function ($fields, $params) {
+        $Groups = QUI::getGroups();
+        $params = \json_decode($params, true);
+        $fields = \json_decode($fields, true);
+        $query  = [];
+        $page   = 1;
 
-	$params['start'] = 0;
+        if (!\is_array($fields)) {
+            $fields = [];
+        }
 
-	if ( isset( $params['limit'] ) ) {
-		$limit = $params['limit'];
-	}
+        if (isset($params['order'])) {
+            $query['order'] = $params['order'];
+        }
 
-	if ( isset( $params['page'] ) )
-	{
-		$page = (int)$params['page'];
-		$params['start'] = ($page-1) * $limit;
-	}
+        if (isset($params['limit'])) {
+            $query['limit'] = $params['limit'];
+        }
 
-	$search = $Groups->search( $params );
+        foreach ($fields as $field => $value) {
+            $query['where_or'][$field] = [
+                'type'  => '%LIKE%',
+                'value' => $value
+            ];
+        }
 
-	return array(
-		'total' => $Groups->count( $params ),
-		'page'  => $page,
-		'data'  => $search
-	);
-}
+        $Grid = new QUI\Utils\Grid();
+        $Grid->setAttribute('page', $page);
 
-\QUI::$Ajax->register( 'ajax_groups_search', array('params'), 'Permission::checkAdminUser' );
+        return $Grid->parseResult($Groups->search($query), $Groups->count($params));
+    },
+    ['fields', 'params'],
+    'Permission::checkAdminUser'
+);

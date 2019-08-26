@@ -1,60 +1,60 @@
 <form name="settings_project">
-	<table class="setting">
-	<tr>
-		<td style="width: 140px">Standard Sprache</td>
-		<td id="settings_project_default_lang"></td>
-	</tr>
+    <table class="setting">
+        <tr>
+            <td style="width: 140px">Standard Sprache</td>
+            <td id="settings_project_default_lang"></td>
+        </tr>
 
-	<tr>
-		<td>Verfügbare Sprachen</td>
-		<td id="settings_project_langs"></td>
-	</tr>
-	<tr>
-		<td>Administrations E-Mail</td>
-		<td><input type="text" name="admin_mail" value="" class="w100" /></td>
-	</tr>
-	<tr>
-		<td>Template</td>
-		<td>
-		<select name="template" class="w100">
-			<option value="">Bitte auswählen</option>
+        <tr>
+            <td>Verfügbare Sprachen</td>
+            <td id="settings_project_langs"></td>
+        </tr>
+        <tr>
+            <td>Administrations E-Mail</td>
+            <td><input type="text" name="admin_mail" value="" class="w100"/></td>
+        </tr>
+        <tr>
+            <td>Template</td>
+            <td>
+                <select name="template" class="w100">
+                    <option value="">Bitte auswählen</option>
 
-		</select>
-		</td>
-	</tr>
-	<tr>
-		<td>Sitemap Anzeige Typ</td>
-		<td>
-		<select name="sitemapDisplayTyp" class="w100">
-			<option value="name"> Seiten Name</option>
-			<option value="title"> Seiten Title</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Sitemap Anzeige Typ</td>
+            <td>
+                <select name="sitemapDisplayTyp" class="w100">
+                    <option value="name"> Seiten Name</option>
+                    <option value="title"> Seiten Title</option>
 
-		</select>
-		</td>
-	</tr>
-	</table>
-
-
-{title text="Archiveinträge"}
-
-	<table class="setting">
-	<tr>
-		<td style="width: 140px">Anzahl der Einträge</td>
-		<td><input type="text" name="archive" value="" class="w100" /></td>
-	</tr>
-	</table>
+                </select>
+            </td>
+        </tr>
+    </table>
 
 
-{title text="Blätterfunktion"}
+    {title text="Archiveinträge"}
 
-	<table class="setting">
-	<tr>
-		<td style="width: 140px">Anzahl der Einträge in der Sitemap</td>
-		<td><input type="text" name="sheets" value="" class="w100" /></td>
-	</tr>
-	</table>
+    <table class="setting">
+        <tr>
+            <td style="width: 140px">Anzahl der Einträge</td>
+            <td><input type="text" name="archive" value="" class="w100"/></td>
+        </tr>
+    </table>
 
-	<input type="hidden" name="default_lang" value="" class="w100" />
-	<input type="hidden" name="langs" value="" class="w100" />
+
+    {title text="Blätterfunktion"}
+
+    <table class="setting">
+        <tr>
+            <td style="width: 140px">Anzahl der Einträge in der Sitemap</td>
+            <td><input type="text" name="sheets" value="" class="w100"/></td>
+        </tr>
+    </table>
+
+    <input type="hidden" name="default_lang" value="" class="w100"/>
+    <input type="hidden" name="langs" value="" class="w100"/>
 
 </form>

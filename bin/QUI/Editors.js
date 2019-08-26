@@ -1,17 +1,22 @@
-
 /**
  * Global Editor manager
  * define: QUI.Editors
  *
  * @module Editors
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
+ * @require classes/editor/Manager
  */
+define('Editors', [
 
-define(['classes/editor/Manager'], function(Editors)
-{
+    'qui/QUI',
+    'classes/editor/Manager'
+
+], function (QUI, Editors) {
     "use strict";
 
-    if ( typeof QUI.Editors !== 'undefined' ) {
+    if (typeof QUI.Editors !== 'undefined') {
         return QUI.Editors;
     }
 

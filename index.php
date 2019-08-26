@@ -1,26 +1,37 @@
 <?php
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 /**
+ *  _______          _________ _______  _______  _______  _______
+ * (  ___  )|\     /|\__   __/(  ___  )(  ___  )(  ____ \(  ____ )
+ * | (   ) || )   ( |   ) (   | (   ) || (   ) || (    \/| (    )|
+ * | |   | || |   | |   | |   | |   | || |   | || (__    | (____)|
+ * | |   | || |   | |   | |   | |   | || |   | ||  __)   |     __)
+ * | | /\| || |   | |   | |   | | /\| || | /\| || (      | (\ (
+ * | (_\ \ || (___) |___) (___| (_\ \ || (_\ \ || (____/\| ) \ \__
+ * (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
+ *
  * @author www.pcsg.com (Henning Leutz)
  */
 
+
+\error_reporting(E_ALL);
+
+if (!\defined('QUIQQER_SYSTEM')) {
+    \define('QUIQQER_SYSTEM', true);
+}
+
 // Mailto
 if (isset($_REQUEST['_url'])
-    && strpos($_REQUEST['_url'], '[mailto]') !== false
+    && \strpos($_REQUEST['_url'], '[mailto]') !== false
 ) {
-    $addr = str_replace('[mailto]', '', $_REQUEST['_url']);
-    list($user, $host) = explode("[at]", $addr);
+    $addr = \str_replace('[mailto]', '', $_REQUEST['_url']);
+    list($user, $host) = \explode("[at]", $addr);
 
     if (isset($user) && isset($host)) {
-        header("Location: mailto:".$user."@".$host);
+        \header("Location: mailto:".$user."@".$host);
         exit;
     }
 }
-
-require_once 'bootstrap.php';
 
 use \Symfony\Component\HttpFoundation\Response;
 
@@ -28,183 +39,239 @@ use QUI\Utils\System\Debug;
 use QUI\Utils\Security\Orthos;
 use QUI\System\Log;
 
-$Response = QUI::getGlobalResponse();
-$Engine = QUI::getTemplateManager()->getEngine();
+try {
+    require_once 'bootstrap.php';
 
-// UTF 8 Prüfung für umlaute in url
-if (isset($_REQUEST['_url'])) {
-    $_REQUEST['_url'] = QUI\Utils\String::toUTF8($_REQUEST['_url']);
-}
+    $Response = QUI::getGlobalResponse();
+    $Request  = QUI::getRequest();
 
-//\QUI\Utils\System\Debug::$run = true;
-Debug::marker('index start');
+    // UTF 8 Prüfung für umlaute in url
+    if (isset($_REQUEST['_url'])) {
+        $_REQUEST['_url'] = QUI\Utils\StringHelper::toUTF8($_REQUEST['_url']);
+    }
 
-// check if one projects exists
-if (!QUI::getProjectManager()->count()) {
+    //\QUI\Utils\System\Debug::$run = true;
+    Debug::marker('index start');
 
-    $Response->setStatusCode(Response::HTTP_NOT_FOUND);
+    // check if one projects exists
+    if (!QUI::getProjectManager()->count()) {
+        $Response->setStatusCode(Response::HTTP_NOT_FOUND);
 
-    $Response->setContent(
-        '<div style="text-align: center; margin-top: 100px;">
-            <img src="'.URL_BIN_DIR.'quiqqer_logo.png" style="max-width: 100%;" />
-        </div>'
+        $Response->setContent(
+            '<div style="text-align: center; margin-top: 100px;">
+                <img src="'.URL_BIN_DIR.'quiqqer_logo.png" style="max-width: 100%;" />
+            </div>'
+        );
+
+        $Response->send();
+        QUI::getEvents()->fireEvent('responseSent', [$Response]);
+        exit;
+    }
+
+    // start
+    $Rewrite = QUI::getRewrite();
+    $Rewrite->exec();
+
+    QUI::getLocale()->setCurrent(
+        $Rewrite->getProject()->getLang()
     );
 
-    $Response->send();
-    exit;
-}
 
-// start
-$Rewrite = QUI::getRewrite();
-$Rewrite->exec();
-
-QUI::getLocale()->setCurrent(
-    $Rewrite->getProject()->getLang()
-);
-
-
-// sprache ausschalten
-if (isset($_REQUEST['lang']) && $_REQUEST['lang'] == 'false') {
-    $Response->headers->set('X-Robots-Tag', 'noindex, nofollow');
-    QUI::getLocale()->no_translation = true;
-}
-
-$Project = $Rewrite->getProject();
-$Site = $Rewrite->getSite();
-
-$Site->load();
-
-if (isset($Locale)) {
-    unset($Locale);
-    $Locale = QUI::getLocale();
-}
-
-/**
- * Referal System
- */
-
-if (isset($_REQUEST['ref'])) {
-    QUI::getSession()->set('ref', Orthos::clear($_REQUEST['ref']));
-}
-
-/**
- * Wartungsarbeiten
- */
-if (QUI::conf('globals', 'maintenance')
-    && !(QUI::getUserBySession()->getId()
-        && QUI::getUserBySession()->isSu())
-) {
-    $Response->setStatusCode(Response::HTTP_SERVICE_UNAVAILABLE);
-    $Response->headers->set('X-Powered-By', '');
-    $Response->headers->set('Retry-After', 3600);
-
-    $Smarty = QUI::getTemplateManager()->getEngine();
-
-    $Smarty->assign(array(
-        'Project'     => $Project,
-        'URL_DIR'     => URL_DIR,
-        'URL_BIN_DIR' => URL_BIN_DIR,
-        'URL_LIB_DIR' => URL_LIB_DIR,
-        'URL_VAR_DIR' => URL_VAR_DIR,
-        'URL_OPT_DIR' => URL_OPT_DIR,
-        'URL_USR_DIR' => URL_USR_DIR,
-        'URL_TPL_DIR' => URL_USR_DIR.$Project->getName().'/',
-        'TPL_DIR'     => OPT_DIR.$Project->getName().'/',
-    ));
-
-    $file = SYS_DIR.'template/maintenance.html';
-    $pfile = USR_DIR.$Project->getName().'/lib/maintenance.html';
-
-    if (file_exists($pfile)) {
-        $file = $pfile;
+    // switch off language
+    if (isset($_REQUEST['lang']) && $_REQUEST['lang'] == 'false') {
+        $Response->headers->set('X-Robots-Tag', 'noindex, nofollow');
+        QUI::getLocale()->no_translation = true;
     }
 
-    $Response->setContent($Smarty->fetch($file));
-    $Response->send();
-    exit;
-}
+    $Project = $Rewrite->getProject();
+    $Site    = $Rewrite->getSite();
+    $Engine  = QUI::getTemplateManager()->getEngine();
 
+    $Site->load();
 
-// Prüfen ob es ein Cachefile gibt damit alles andere übersprungen werden kann
-$site_cache_dir = VAR_DIR.'cache/sites/';
-$project_cache_dir = $site_cache_dir.$Project->getAttribute('name').'/';
-$site_cache_file
-    = $project_cache_dir.$Site->getId().'_'.$Project->getAttribute('name').'_'
-    .$Project->getAttribute('lang');
-
-// Event onstart
-QUI::getEvents()->fireEvent('start');
-
-Debug::marker('objekte initialisiert');
-
-// Wenn es ein Cache gibt und die Seite auch gecached werden soll
-if (CACHE && file_exists($site_cache_file)
-    && $Site->getAttribute('nocache') != true
-) {
-    $cache_content = file_get_contents($site_cache_file);
-    $_content = $Rewrite->outputFilter($cache_content);
-
-    $Response->setContent($content);
-    $Response->send();
-    exit;
-}
-
-/**
- * Template Content generieren
- */
-try {
-    $Template = new QUI\Template();
-    $content = $Template->fetchTemplate($Site);
-
-    Debug::marker('fetch Template');
-
-    // cachefile erstellen
-    if ($Site->getAttribute('nocache') != true) {
-        QUI\Utils\System\File::mkdir($site_cache_dir
-            .$Project->getAttribute('name').'/');
-
-        file_put_contents($site_cache_file, $content);
+    if (isset($Locale)) {
+        unset($Locale);
+        $Locale = QUI::getLocale();
     }
 
-    $content = $Rewrite->outputFilter($content);
-    $content = QUI\Control\Manager::setCSSToHead($content);
-    Debug::marker('output done');
-
-    $Response->setContent($content);
-    Debug::marker('content done');
-
-    if (Debug::$run) {
-        Log(Debug::output());
+    if (\defined('LOGIN_FAILED')
+        || isset($_POST['login'])
+        || isset($_GET['logout'])
+    ) {
+        $Site->setAttribute('nocache', true);
     }
 
+    /**
+     * Referral System
+     */
+    if (isset($_REQUEST['ref'])) {
+        QUI::getSession()->set('ref', Orthos::clear($_REQUEST['ref']));
+    }
 
-} catch (QUI\Exception $Exception) {
-
-    if ($Exception->getCode() == 404) {
-        $Response->setStatusCode(Response::HTTP_NOT_FOUND);
-    } else {
+    /**
+     * maintenance work
+     */
+    if (QUI::conf('globals', 'maintenance')
+        && !(QUI::getUserBySession()->getId() && QUI::getUserBySession()->isSU())
+    ) {
         $Response->setStatusCode(Response::HTTP_SERVICE_UNAVAILABLE);
+        $Response->headers->set('X-Powered-By', '');
+        $Response->headers->set('Retry-After', 3600);
+
+        $Smarty = QUI::getTemplateManager()->getEngine();
+
+        $Smarty->assign([
+            'Project'     => $Project,
+            'URL_DIR'     => URL_DIR,
+            'URL_BIN_DIR' => URL_BIN_DIR,
+            'URL_LIB_DIR' => URL_LIB_DIR,
+            'URL_VAR_DIR' => URL_VAR_DIR,
+            'URL_OPT_DIR' => URL_OPT_DIR,
+            'URL_USR_DIR' => URL_USR_DIR,
+            'URL_TPL_DIR' => URL_USR_DIR.$Project->getName().'/',
+            'TPL_DIR'     => OPT_DIR.$Project->getName().'/',
+        ]);
+
+        $file  = LIB_DIR.'templates/maintenance.html';
+        $pfile = USR_DIR.$Project->getName().'/lib/maintenance.html';
+
+        if (\file_exists($pfile)) {
+            $file = $pfile;
+        }
+
+        $Response->setContent($Smarty->fetch($file));
+        $Response->send();
+
+        QUI::getEvents()->fireEvent('responseSent', [$Response]);
+        exit;
     }
 
+    // Event onstart
+    QUI::getEvents()->fireEvent('start');
+    Debug::marker('objekte initialisiert');
 
-    Log::addError($Exception->getMessage());
+    $siteCachePath = $Site->getCachePath().'/'.\md5(QUI::getRequest()->getRequestUri());
 
-    $Template = new QUI\Template();
+    // Check if user is allowed to view Site and set appropriate error code if not
+    if ($Site instanceof QUI\Projects\Site\PermissionDenied) {
+        $statusCode = (int)QUI::conf('globals', 'sitePermissionDeniedErrorCode');
+        $Response->setStatusCode($statusCode);
+    }
 
+    // url query check
+    // if url query exists, dont ask the cache and dont create the cache
+    // @todo collect get query lists and consider the query params
+    $query = $Request->getQueryString();
+
+    if (\is_string($query)) {
+        \parse_str($query, $query);
+    }
+
+    if (!\is_array($query)) {
+        $query = [];
+    }
+
+    if (isset($query['_url'])) {
+        unset($query['_url']);
+    }
+
+    // if cache exists, and cache should also be used
+    if (CACHE
+        && $Site->getAttribute('nocache') != true
+        && !QUI::getUsers()->isAuth(QUI::getUserBySession())
+        && empty($query)
+        && $Rewrite->getHeaderCode() === 200
+    ) {
+        try {
+            $cache_content = QUI\Cache\Manager::get($siteCachePath);
+            $content       = $Rewrite->outputFilter($cache_content);
+            $_content      = $content;
+
+            QUI::getEvents()->fireEvent('requestOutput', [&$_content]);
+            $Response->setContent($content);
+            $Response->send();
+
+            QUI::getEvents()->fireEvent('responseSent', [$Response]);
+            exit;
+        } catch (\Exception $Exception) {
+            Log::writeDebugException($Exception);
+        }
+    }
+
+    // Template Content generating
     try {
-        $content = $Template->fetchTemplate($Rewrite->getErrorSite());
+        $Template = new QUI\Template();
+        $content  = $Template->fetchSite($Site);
 
-    } catch (\QUI\Exception $Exception) {
-        $content = $Template->fetchTemplate($Project->firstChild());
+        Debug::marker('fetch Template');
+
+        $content = $Rewrite->outputFilter($content);
+        $content = QUI\Control\Manager::setCSSToHead($content);
+        Debug::marker('output done');
+
+        QUI::getEvents()->fireEvent('requestOutput', [&$content]);
+
+        $Response->setContent($content);
+        Debug::marker('content done');
+
+        // cachefile erstellen
+        if ($Site->getAttribute('nocache') != true
+            && !QUI::getUsers()->isAuth(QUI::getUserBySession())
+            && empty($query)
+            && $Rewrite->getHeaderCode() === 200
+        ) {
+            try {
+                QUI\Cache\Manager::set($siteCachePath, $content);
+            } catch (\Exception $Exception) {
+                Log::writeDebugException($Exception);
+            }
+        }
+
+        if (Debug::$run) {
+            Log::writeRecursive(Debug::output());
+        }
+
+        QUI::getSession()->set(
+            'CURRENT_LANG',
+            QUI::getLocale()->getCurrent()
+        );
+    } catch (QUI\Exception $Exception) {
+        if ($Exception->getCode() == 404) {
+            $Response->setStatusCode(Response::HTTP_NOT_FOUND);
+        } else {
+            $Response->setStatusCode(Response::HTTP_SERVICE_UNAVAILABLE);
+        }
+
+
+        Log::writeException($Exception, Log::LEVEL_ERROR);
+
+        $Template = new QUI\Template();
+
+        try {
+            $content = $Template->fetchSite($Rewrite->getErrorSite());
+        } catch (QUI\Exception $Exception) {
+            $content = $Template->fetchSite($Project->firstChild());
+        }
+
+        $content = $Rewrite->outputFilter($content);
+        $content = QUI\Control\Manager::setCSSToHead($content);
+
+        $Response->setContent($content);
     }
 
+    $Response->prepare(QUI::getRequest());
+    $Response->send();
 
-    $content = $Rewrite->outputFilter($content);
-    $content = QUI\Control\Manager::setCSSToHead($content);
+    QUI::getEvents()->fireEvent('responseSent', [$Response]);
+} catch (\Exception $Exception) {
+    // error ??
+    \header('HTTP/1.1 503 Service Temporarily Unavailable');
+    \header('Status: 503 Service Temporarily Unavailable');
 
-    $Response->setContent($content);
+    \error_log($Exception->getTraceAsString());
+    \error_log($Exception->getMessage());
+
+    echo \file_get_contents(
+        \dirname(__FILE__).'/lib/templates/error.html'
+    );
 }
-
-$Response->prepare(QUI::getRequest());
-$Response->send();
-exit;

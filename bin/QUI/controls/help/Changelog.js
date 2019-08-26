@@ -9,47 +9,39 @@ define('controls/help/Changelog', [
     'qui/controls/windows/Popup',
     'Ajax'
 
-], function(Popup, Ajax)
-{
+], function (Popup, Ajax) {
     "use strict";
 
     return new Class({
 
-        Extends : Popup,
-        Type    : 'controls/help/Changelog',
+        Extends: Popup,
+        Type   : 'controls/help/Changelog',
 
-        Binds : [
+        Binds: [
             '$onOpen'
         ],
 
-        options : {
-            maxHeight : 350,
-            title     : 'Changelog'
+        options: {
+            title    : 'Changelog',
+            maxHeight: 800,
+            maxWidth : 600
         },
 
-        initialize : function(options)
-        {
-            this.parent( options );
-            this.addEvent( 'onOpen', this.$onOpen );
+        initialize: function (options) {
+            this.parent(options);
+            this.addEvent('onOpen', this.$onOpen);
         },
 
-        $onOpen : function()
-        {
+        $onOpen: function () {
             var self = this;
 
             this.Loader.show();
 
-            Ajax.get('ajax_system_changelog', function(result, Request)
-            {
-                self.getContent().set(
-                    'html',
-                    '<pre><code>'+ result +'</code></pre>'
-                );
+            Ajax.get('ajax_system_changelog', function (result) {
+                var Content = self.getContent();
 
-                self.getContent().getElement( 'pre' ).setStyles({
-                    height     : 190,
-                    whiteSpace : 'pre-wrap'
-                });
+                Content.set('html', '<pre><code></code></pre>');
+                Content.getElement('code').set('html', result);
 
                 self.Loader.hide();
             });

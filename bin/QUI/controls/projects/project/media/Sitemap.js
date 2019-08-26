@@ -9,16 +9,17 @@
  * @require qui/controls/sitemap/Item
  * @require Ajax
  */
-
 define('controls/projects/project/media/Sitemap', [
 
     'qui/controls/Control',
     'qui/controls/sitemap/Map',
     'qui/controls/sitemap/Item',
-    'Ajax'
+    'qui/controls/windows/Confirm',
+    'Ajax',
+    'Locale',
+    'Projects'
 
-], function(QUIControl, QUISitemap, QUISitemapItem, Ajax)
-{
+], function (QUIControl, QUISitemap, QUISitemapItem, QUIConfirm, Ajax, QUILocale, Projects) {
     "use strict";
 
     /**
@@ -36,22 +37,33 @@ define('controls/projects/project/media/Sitemap', [
      */
     return new Class({
 
-        Extends : QUIControl,
+        Extends: QUIControl,
+        Type   : 'controls/projects/project/media/Sitemap',
 
-        options : {
-            name      : 'projects-media-sitemap',
-            container : false,
-            project   : false,
-            lang      : false,
-            id        : false
+        Binds: [
+            '$onInject',
+            '$loadChildren',
+            '$openSitemapItemSheetsWindow'
+        ],
+
+        options: {
+            name     : 'projects-media-sitemap',
+            container: false,
+            project  : false,
+            lang     : false,
+            id       : false,
+            limit    : false
         },
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize: function (options) {
+            this.parent(options);
 
             this.$Elm = null;
             this.$Map = new QUISitemap();
+
+            this.addEvents({
+                onInject: this.$onInject
+            });
         },
 
         /**
@@ -61,8 +73,7 @@ define('controls/projects/project/media/Sitemap', [
          *
          * @return {Object} qui/controls/sitemap/Map
          */
-        getMap : function()
-        {
+        getMap: function () {
             return this.$Map;
         },
 
@@ -73,11 +84,17 @@ define('controls/projects/project/media/Sitemap', [
          *
          * @return {HTMLElement}
          */
-        create : function()
-        {
+        create: function () {
             this.$Elm = this.$Map.create();
 
             return this.$Elm;
+        },
+
+        /**
+         * event : on inject
+         */
+        $onInject: function () {
+            this.open();
         },
 
         /**
@@ -85,30 +102,41 @@ define('controls/projects/project/media/Sitemap', [
          *
          * @method controls/projects/project/media/Sitemap#open
          */
-        open : function()
-        {
-            if ( !this.$Elm ) {
+        open: function () {
+            if (!this.$Elm) {
                 return;
             }
 
-            var self = this;
+            var self    = this,
+                id      = this.getAttribute('id') || 1,
+                Project = Projects.get(
+                    this.getAttribute('project'),
+                    this.getAttribute('lang')
+                );
 
             this.$Map.clearChildren();
 
-            this.$getItem(
-                this.getAttribute('id') || 1,
-                function(result)
-                {
+            Project.getConfig(function (config) {
+                // limits
+                var projectLimit = 10;
+
+                if ("adminSitemapMax" in config) {
+                    projectLimit = parseInt(config.adminSitemapMax);
+                }
+
+                self.setAttribute('limit', projectLimit);
+
+                self.getItem(id).then(function (result) {
                     self.$Map.clearChildren();
 
                     self.$addSitemapItem(
                         self.$Map,
-                        self.$parseArrayToSitemapitem( result )
+                        self.$parseArrayToSitemapitem(result)
                     );
 
                     self.$Map.firstChild().open();
-                }
-            );
+                });
+            });
         },
 
         /**
@@ -119,17 +147,14 @@ define('controls/projects/project/media/Sitemap', [
          * @method controls/projects/project/media/Sitemap#selectChildrenByValue
          * @param {Number} fileid
          */
-        selectFolder : function(fileid)
-        {
-            var list = this.getChildrenByValue( fileid );
+        selectFolder: function (fileid) {
+            var list = this.getChildrenByValue(fileid);
 
-            if ( list.length )
-            {
-                list.each(function(Itm)
-                {
+            if (list.length) {
+                list.each(function (Itm) {
                     Itm.select();
 
-                    if ( !Itm.isOpen() ) {
+                    if (!Itm.isOpen()) {
                         Itm.open();
                     }
                 });
@@ -141,12 +166,11 @@ define('controls/projects/project/media/Sitemap', [
          *
          * @method controls/projects/project/media/Sitemap#selectChildrenByValue
          */
-        selectChildrenByValue : function(value)
-        {
-            var items = this.$Map.getChildrenByValue( value );
+        selectChildrenByValue: function (value) {
+            var items = this.$Map.getChildrenByValue(value);
 
-            for ( var i = 0, len = items.length; i < len; i++ ) {
-                items[ i ].select();
+            for (var i = 0, len = items.length; i < len; i++) {
+                items[i].select();
             }
         },
 
@@ -158,9 +182,8 @@ define('controls/projects/project/media/Sitemap', [
          * @param {String|Number} value
          * @return {Array}
          */
-        getChildrenByValue : function(value)
-        {
-            return this.$Map.getChildrenByValue( value );
+        getChildrenByValue: function (value) {
+            return this.$Map.getChildrenByValue(value);
         },
 
         /**
@@ -169,29 +192,33 @@ define('controls/projects/project/media/Sitemap', [
          * @method controls/projects/project/media/Sitemap#getSelectedChildren
          * @return {Array}
          */
-        getSelectedChildren : function()
-        {
+        getSelectedChildren: function () {
             return this.$Map.getSelectedChildren();
         },
 
         /**
          * Get the attributes from a media item
          *
-         * @method controls/projects/project/media/Sitemap#$getSite
+         * @method controls/projects/project/media/Sitemap#getItem
          *
          * @param {Number} id - Item ID
-         * @param {Function} callback - call back function, if ajax is finish
-         *
-         * @private
-         * @ignore
+         * @param {Function} [callback] - call back function, if ajax is finish
+         * @return {Promise}
          */
-        $getItem : function(id, callback)
-        {
-            Ajax.get('ajax_media_get', callback, {
-                project : this.getAttribute('project'),
-                lang    : this.getAttribute('lang'),
-                fileid  : id
-            });
+        getItem: function (id, callback) {
+            return new Promise(function (resolve, reject) {
+                Ajax.get('ajax_media_get', function (result) {
+                    if (typeof callback === 'function') {
+                        callback(result);
+                    }
+
+                    resolve(result);
+                }, {
+                    project: this.getAttribute('project'),
+                    fileid : id,
+                    onError: reject
+                });
+            }.bind(this));
         },
 
         /**
@@ -205,91 +232,142 @@ define('controls/projects/project/media/Sitemap', [
          * @private
          * @ignore
          */
-        $parseArrayToSitemapitem : function(result)
-        {
+        $parseArrayToSitemapitem: function (result) {
             var Itm;
-            var file = result.file || result;
+
+            var self = this,
+                file = result.file || result;
 
             Itm = new QUISitemapItem({
-                name        : file.name,
-                index       : file.id,
-                value       : file.id,
-                text        : file.name,
-                icon        : file.icon,
-                type        : file.type,
-                Control     : this,
-                hasChildren : file.hasSubfolders || false,
-
-                events :
-                {
-                    onOpen : function(Item)
-                    {
-                        var Control  = Item.getAttribute('Control'),
-                            children = Item.getAttribute('children');
-
-                        Control.fireEvent( 'openBegin', [ Item, Control ] );
-
-                        Item.clearChildren();
-
-                        /*
-                        if (children)
-                        {
-                            for (var i = 0, len = children.length; i < len; i++)
-                            {
-                                Control.$addSitemapItem(
-                                    Item,
-                                    Control.$parseArrayToSitemapitem({
-                                        file : children[i]
-                                    })
-                                );
-                            };
-
-                            return;
-                        };
-                        */
-
-                        // if children are false
-                        Ajax.get('ajax_media_getsubfolders', function(result, Request)
-                        {
-                            var i, len;
-
-                            var Control = Request.getAttribute('Control'),
-                                Parent  = Request.getAttribute('Item');
-
-                            for (i = 0, len = result.length; i < len; i++)
-                            {
-                                Control.$addSitemapItem(
-                                    Parent,
-                                    Control.$parseArrayToSitemapitem( result[i] )
-                                );
-                            }
-
-                            Control.fireEvent('openEnd', [Parent, Control]);
-
-                        }, {
-                            project : Control.getAttribute('project'),
-                            lang    : Control.getAttribute('lang'),
-                            fileid  : Item.getAttribute('value'),
-                            Item    : Item,
-                            Control : Control
-                        });
-                    },
-
-                    onClick : function(Itm)
-                    {
-                        Itm.getAttribute('Control').fireEvent('itemClick', [
-                            Itm,
-                            Itm.getAttribute('Control')
-                        ]);
+                name       : file.name,
+                index      : file.id,
+                value      : file.id,
+                text       : file.name,
+                icon       : file.icon,
+                type       : file.type,
+                hasChildren: file.hasSubfolders || false,
+                events     : {
+                    onOpen : this.$loadChildren,
+                    onClick: function (Itm) {
+                        self.fireEvent('itemClick', [Itm, self]);
                     }
                 }
             });
 
-            if ( file.active === false ) {
+            if (file.active === false) {
                 Itm.deactivate();
             }
 
             return Itm;
+        },
+
+        /**
+         *
+         * @param Item
+         * @returns {Object} qui/controls/sitemap/Item
+         */
+        $loadChildren: function (Item) {
+            var self = this;
+
+            return new Promise(function (resolve, reject) {
+                var limitStart   = Item.getAttribute('limitStart'),
+                    projectLimit = self.getAttribute('limit');
+
+                if (limitStart === false) {
+                    limitStart = -1;
+                }
+
+                var start = (limitStart + 1) * projectLimit;
+
+                Item.addIcon('fa fa-spinner fa-spin');
+                Item.removeIcon(Item.getAttribute('icon'));
+
+                self.fireEvent('openBegin', [Item, self]);
+
+                // if children are false
+                Ajax.get('ajax_media_getsubfolders', function (result) {
+                    var count    = (result.count).toInt(),
+                        end      = start + projectLimit,
+                        sheets   = (count / projectLimit).ceil(),
+                        children = result.children;
+
+                    Item.setAttribute('hasChildren', count);
+                    Item.clearChildren();
+
+                    if (start > 0) {
+                        Item.appendChild(
+                            new QUISitemapItem({
+                                icon       : 'fa fa-level-up',
+                                text       : '...',
+                                title      : QUILocale.get('quiqqer/quiqqer', 'control.project.sitemap.prev'),
+                                contextmenu: false,
+                                sheets     : sheets,
+                                Item       : Item,
+                                events     : {
+                                    onClick : function () {
+                                        Item.setAttribute('limitStart', limitStart - 1);
+                                        self.$loadChildren(Item);
+                                    },
+                                    onInject: function (Me) {
+                                        Me.getElm().addEvent('contextmenu', function (event) {
+                                            event.stop();
+                                            self.$openSitemapItemSheetsWindow(Me);
+                                        });
+                                    }
+                                }
+                            })
+                        );
+                    }
+
+                    for (var i = 0, len = children.length; i < len; i++) {
+                        self.$addSitemapItem(
+                            Item,
+                            self.$parseArrayToSitemapitem(children[i])
+                        );
+                    }
+
+                    if (end < count) {
+                        Item.appendChild(
+                            new QUISitemapItem({
+                                icon       : 'fa fa-level-down',
+                                text       : '...',
+                                title      : QUILocale.get('quiqqer/quiqqer', 'control.project.sitemap.next'),
+                                contextmenu: false,
+                                sheets     : sheets,
+                                Item       : Item,
+                                events     : {
+                                    onClick : function () {
+                                        Item.setAttribute('limitStart', limitStart + 1);
+                                        self.$loadChildren(Item);
+                                    },
+                                    onInject: function (Me) {
+                                        Me.getElm().addEvent('contextmenu', function (event) {
+                                            event.stop();
+                                            self.$openSitemapItemSheetsWindow(Me);
+                                        });
+                                    }
+                                }
+                            })
+                        );
+                    }
+
+                    Item.removeIcon('fa-spinner');
+                    Item.addIcon(Item.getAttribute('icon'));
+
+                    self.fireEvent('openEnd', [Item, self]);
+
+                    resolve();
+                }, {
+                    project: self.getAttribute('project'),
+                    lang   : self.getAttribute('lang'),
+                    fileid : Item.getAttribute('value'),
+                    params : JSON.encode({
+                        limit: start + ',' + projectLimit
+                    }),
+                    onError: reject
+                });
+            });
+
         },
 
         /**
@@ -304,14 +382,68 @@ define('controls/projects/project/media/Sitemap', [
          * @private
          * @ignore
          */
-        $addSitemapItem : function(Parent, Child)
-        {
-            if ( Child.getAttribute('type') !== 'folder' ) {
+        $addSitemapItem: function (Parent, Child) {
+            if (Child.getAttribute('type') !== 'folder') {
                 return;
             }
 
-            Child.setAttribute('Control', this);
-            Parent.appendChild( Child );
+            Parent.appendChild(Child);
+        },
+
+        /**
+         * Opens the sheet window for an item
+         *
+         * @ignore
+         * @private
+         * @param Item
+         */
+        $openSitemapItemSheetsWindow: function (Item) {
+            if (!Item.getAttribute('sheets')) {
+                return;
+            }
+
+            var self     = this,
+                sheets   = (Item.getAttribute('sheets')).toInt(),
+                Select   = new Element('select'),
+                SiteItem = Item.getAttribute('Item');
+
+            for (var i = 0, len = sheets; i < len; i++) {
+                new Element('option', {
+                    html : 'Blatt ' + (i + 1),
+                    value: i
+                }).inject(Select);
+            }
+
+            if (SiteItem.getAttribute('limitStart') !== false) {
+                Select.value = (SiteItem.getAttribute('limitStart')).toInt() + 1;
+            }
+
+
+            new QUIConfirm({
+                title    : 'Blätterfunktion',
+                maxHeight: 300,
+                maxWidth : 500,
+                events   : {
+                    onOpen: function (Win) {
+                        var Content = Win.getContent();
+
+                        Content.set({
+                            html   : '<p>Welche Unterordner des Ordnrs sollen angezeigt werden?</p>',
+                            'class': 'qui-projects-sitemap-sheetsWindow'
+                        });
+
+                        Select.inject(Content);
+                    },
+
+                    onSubmit: function (Win) {
+                        var Select = Win.getContent().getElement('select'),
+                            sheet  = (Select.value).toInt();
+
+                        SiteItem.setAttribute('limitStart', sheet - 1);
+                        self.$loadChildren(SiteItem);
+                    }
+                }
+            }).open();
         }
     });
 });

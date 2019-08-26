@@ -3,35 +3,54 @@
 /**
  * Return the rewrited url from an image.php url
  *
- * @param String $fileurl - image.php string
+ * @param string $fileurl - image.php string
  *
- * @return String
+ * @return string
  */
-function ajax_media_url_rewrited($fileurl)
-{
-    if (QUI\Projects\Media\Utils::isMediaUrl($fileurl) === false) {
-        return $fileurl;
-    }
-
-    try {
-        $File = QUI\Projects\Media\Utils::getImageByUrl($fileurl);
-        $url = $File->getUrl(true);
-
-        if (empty($url)) {
-            return $File->getUrl();
+QUI::$Ajax->registerFunction(
+    'ajax_media_url_rewrited',
+    function ($fileurl, $params) {
+        if (QUI\Projects\Media\Utils::isMediaUrl($fileurl) === false) {
+            return $fileurl;
         }
 
-        return $url;
+        if (!isset($params)) {
+            $params = [];
+        } else {
+            $params = \json_decode($params, true);
+        }
 
-    } catch (QUI\Exception $Exception) {
+        try {
+            $File   = QUI\Projects\Media\Utils::getImageByUrl($fileurl);
+            $width  = false;
+            $height = false;
 
-    }
+            if (isset($params['width'])) {
+                $width = $params['width'];
+            }
 
-    return $fileurl;
-}
+            if (isset($params['height'])) {
+                $height = $params['height'];
+            }
 
-QUI::$Ajax->register(
-    'ajax_media_url_rewrited',
-    array('fileurl'),
+            $url = $File->getSizeCacheUrl($width, $height);
+
+            if (!empty($url)) {
+                return $url;
+            }
+
+            $url = $File->getUrl(true);
+
+            if (empty($url)) {
+                return $File->getUrl();
+            }
+
+            return $url;
+        } catch (QUI\Exception $Exception) {
+        }
+
+        return $fileurl;
+    },
+    ['fileurl', 'params'],
     'Permission::checkAdminUser'
 );

@@ -3,19 +3,20 @@
 /**
  * Return a wanted toolbar
  *
- * @param String / Integer $uid
+ * @param string / Integer $uid
  *
- * @return Array
+ * @return array
  */
-function ajax_editor_get_toolbar($toolbar)
-{
-    if (isset($toolbar) && !empty($toolbar)) {
-        return QUI\Editor\Manager::parseXmlFileToArray(
-            QUI\Editor\Manager::getToolbarsPath().$toolbar
-        );
-    }
+QUI::$Ajax->registerFunction(
+    'ajax_editor_get_toolbar',
+    function ($toolbar) {
+        if (isset($toolbar) && !empty($toolbar)) {
+            return QUI\Editor\Manager::parseXmlFileToArray(
+                QUI\Editor\Manager::getToolbarsPath() . $toolbar
+            );
+        }
 
-    return QUI\Editor\Manager::getToolbarButtonsFromUser();
-}
-
-QUI::$Ajax->register('ajax_editor_get_toolbar', array('toolbar'));
+        return QUI\Editor\Manager::getToolbarButtonsFromUser();
+    },
+    array('toolbar')
+);

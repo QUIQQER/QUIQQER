@@ -21,7 +21,7 @@ class Canonical
      *
      * @var \QUI\Projects\Site
      */
-    protected $_Site;
+    protected $Site;
 
     /**
      * construct
@@ -30,31 +30,44 @@ class Canonical
      */
     public function __construct($Site)
     {
-        $this->_Site = $Site;
+        $this->Site = $Site;
     }
 
     /**
      * Return the meta tag, if it is allowed
      *
-     * @return String
+     * @return string
+     * @throws QUI\Exception
      */
     public function output()
     {
-        $Site = $this->_Site;
+        $Site    = $this->Site;
         $Project = $Site->getProject();
 
-        if ($this->_Site->getId() === 1) {
-            $httpsHost = $Project->getVHost(true, true);
+        // host check
+        if (isset($_SERVER['HTTP_HOST'])) {
+            $requestHost         = $_SERVER['HTTP_HOST'];
+            $hostWithoutProtocol = $Project->getVHost(false, true);
+            $httpsHost           = $Project->getVHost(true, true);
+
+            if ($requestHost != $hostWithoutProtocol) {
+                return $this->getLinkRel($httpsHost.$this->Site->getCanonical());
+            }
+        }
+
+
+        if ($this->Site->getId() === 1) {
+            $httpsHost       = $Project->getVHost(true, true);
             $httpsHostExists = false;
 
-            if (strpos($httpsHost, 'https:') !== false) {
+            if (\strpos($httpsHost, 'https:') !== false) {
                 $httpsHostExists = true;
             }
 
             if ($httpsHostExists
                 && QUI\Utils\System::isProtocolSecure() === false
             ) {
-                return $this->_getLinkRel($httpsHost.URL_DIR);
+                return $this->getLinkRel($httpsHost.$this->Site->getCanonical());
             }
 
             return '';
@@ -70,12 +83,12 @@ class Canonical
             return '';
         }
 
-        $canonical = ltrim($this->_Site->getCanonical(), '/');
+        $canonical = \ltrim($this->Site->getCanonical(), '/');
         $httpsHost = $Project->getVHost(true, true);
 
         $httpsHostExists = false;
 
-        if (strpos($httpsHost, 'https:') !== false) {
+        if (\strpos($httpsHost, 'https:') !== false) {
             $httpsHostExists = true;
         }
 
@@ -85,7 +98,7 @@ class Canonical
             if ($httpsHostExists
                 && QUI\Utils\System::isProtocolSecure() === false
             ) {
-                return $this->_getLinkRel($httpsHost.URL_DIR.$requestUrl);
+                return $this->getLinkRel($httpsHost.URL_DIR.$requestUrl);
             }
 
             return '';
@@ -96,19 +109,24 @@ class Canonical
             return '';
         }
 
-        return $this->_getLinkRel($httpsHost.URL_DIR.$canonical);
+
+        // fix doppelter HOST im canonical https://dev.quiqqer.com/quiqqer/quiqqer/issues/574
+        if (\strpos($canonical, 'https:') !== false || \strpos($canonical, 'http:') !== false) {
+            return $this->getLinkRel($canonical);
+        }
+
+        return $this->getLinkRel($httpsHost.URL_DIR.$canonical);
     }
 
     /**
      * Return <link rel="canonical"> tag
      *
-     * @param String $url - href link
+     * @param string $url - href link
      *
      * @return string
      */
-    protected function _getLinkRel($url)
+    protected function getLinkRel($url)
     {
         return '<link rel="canonical" href="'.$url.'" />';
     }
-
 }

@@ -1,0 +1,22 @@
+
+.quiqqer-packages-upload-uploadedList-listBtn {
+    background: transparent !important;
+    border: none;
+    box-shadow: none;
+    cursor: pointer;
+    float: right;
+    font-size: 16px;
+    height: 40px;
+    line-height: 40px;
+    position: absolute;
+    right: 40px;
+    text-align: center;
+    top: 0;
+    width: 40px;
+}
+
+.quiqqer-packages-upload-uploadedList-listBtn.qui-button-active,
+.quiqqer-packages-upload-uploadedList-listBtn:hover {
+    background: #c3c3c3 !important;
+    color: #222;
+}

@@ -5,62 +5,173 @@
 
         <table name="users">
             <field type="INT(11) NOT NULL">id</field>
+            <field type="VARCHAR(50) NOT NULL">uuid</field>
             <field type="VARCHAR(50) NOT NULL DEFAULT ''">username</field>
-            <field type="VARCHAR(50) NOT NULL DEFAULT ''">password</field>
-            <field type="TEXT NOT NULL DEFAULT ''">usergroup</field>
+            <field type="VARCHAR(255) NOT NULL DEFAULT ''">password</field>
+            <field type="TEXT NULL">usergroup</field>
             <field type="VARCHAR(50) DEFAULT NULL">email</field>
             <field type="INT(1) NOT NULL DEFAULT '0'">active</field>
             <field type="INT(11) NOT NULL DEFAULT '0'">regdate</field>
             <field type="INT(11) NOT NULL DEFAULT '0'">lastvisit</field>
-            <field type="TINYINT(1) NOT NULL">su</field>
-            <field type="TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00'">expire</field>
-            <field type="TIMESTAMP NOT NULL DEFAULT '0000-00-00 00:00:00'">lastedit</field>
-            <field type="TEXT NOT NULL">user_agent</field>
+            <field type="TINYINT(1) NOT NULL DEFAULT 0">su</field>
+            <field type="DATETIME NULL DEFAULT NULL">expire</field>
+            <field type="DATETIME NULL DEFAULT NULL">lastedit</field>
+            <field type="TEXT NULL">user_agent</field>
             <field type="VARCHAR(40) DEFAULT NULL">firstname</field>
             <field type="VARCHAR(40) DEFAULT NULL">lastname</field>
             <field type="VARCHAR(40) DEFAULT NULL">usertitle</field>
-            <field type="VARCHAR(12) DEFAULT NULL">birthday</field>
-            <field type="TEXT DEFAULT NULL">avatar</field>
-            <field type="TEXT DEFAULT NULL">extra</field>
+            <field type="INT(1) NOT NULL DEFAULT '0'">company</field>
+            <field type="DATE NULL DEFAULT NULL">birthday</field>
+            <field type="TEXT NULL">avatar</field>
+            <field type="TEXT NULL">extra</field>
             <field type="VARCHAR(2) DEFAULT NULL">lang</field>
             <field type="INT(11) DEFAULT NULL">address</field>
-            <field type="TEXT(32) DEFAULT NULL">secHash</field>
+            <field type="TEXT(32) NULL">secHash</field>
+            <field type="TEXT NULL">toolbar</field>
+            <field type="TEXT NULL">assigned_toolbar</field>
+            <field type="VARCHAR(200) NULL">referal</field>
+            <field type="VARCHAR(20) NULL">activation</field>
+            <field type="VARCHAR(5) NULL">shortcuts</field>
+            <field type="TEXT NULL">authenticator</field>
+            <field type="VARCHAR(50) NOT NULL">uuid</field>
+            <field type="DATETIME NULL DEFAULT NULL">lastLoginAttempt</field>
+            <field type="SMALLINT UNSIGNED NOT NULL DEFAULT '0'">failedLogins</field>
 
             <primary>id</primary>
             <index>username,password</index>
             <auto_increment>id</auto_increment>
         </table>
 
-        <table name="groups">
+
+        <table name="users_workspaces">
             <field type="INT(11) NOT NULL">id</field>
-            <field type="VARCHAR(50) NOT NULL">name</field>
-            <field type="TINYINT(2) NOT NULL">admin</field>
-            <field type="INT(11) NOT NULL">parent</field>
-            <field type="TINYINT(1) NOT NULL">active</field>
-            <field type="VARCHAR(128)">toolbar</field>
+            <field type="INT(11) NOT NULL">uid</field>
+            <field type="TEXT NULL">title</field>
+            <field type="LONGTEXT NULL">data</field>
+            <field type="INT(11) DEFAULT 0">minHeight</field>
+            <field type="INT(11) DEFAULT 0">minWidth</field>
+            <field type="INT(1) DEFAULT 0">standard</field>
+
+            <primary>id</primary>
+            <auto_increment>id</auto_increment>
+        </table>
+
+        <table name="groups">
+            <field type="INT(11) NOT NULL DEFAULT 0">id</field>
+            <field type="VARCHAR(50) NOT NULL DEFAULT ''">name</field>
+            <field type="INT(11) NOT NULL DEFAULT 0">parent</field>
+            <field type="TINYINT(1) NOT NULL DEFAULT '0'">active</field>
+            <field type="VARCHAR(128) DEFAULT ''">toolbar</field>
+            <field type="TEXT NULL">assigned_toolbar</field>
+            <field type="TEXT NULL">avatar</field>
+            <field type="TEXT NULL">extra</field>
+            <field type="TEXT NULL">rights</field>
 
             <primary>id</primary>
             <index>parent</index>
         </table>
 
+        <table name="permissions">
+            <field type="VARCHAR(100) NOT NULL DEFAULT ''">name</field>
+            <field type="VARCHAR(20) NOT NULL DEFAULT ''">type</field>
+            <field type="VARCHAR(20) NOT NULL DEFAULT ''">area</field>
+            <field type="VARCHAR(255) NULL">title</field>
+            <field type="TEXT NULL">desc</field>
+            <field type="VARCHAR(200) NULL">src</field>
+            <field type="TEXT NULL">defaultvalue</field>
+
+            <primary>name</primary>
+            <index>name</index>
+        </table>
+
+        <table name="permissions2users">
+            <field type="INT(11) NOT NULL DEFAULT 0">user_id</field>
+            <field type="MEDIUMTEXT NULL">permissions</field>
+
+            <primary>user_id</primary>
+        </table>
+
         <table name="permissions2groups">
-            <field type="INT(11) NOT NULL">group_id</field>
-            <field type="TEXT">permissions</field>
+            <field type="INT(11) NOT NULL DEFAULT 0">group_id</field>
+            <field type="MEDIUMTEXT NULL">permissions</field>
+
+            <primary>group_id</primary>
+        </table>
+
+        <table name="permissions2sites">
+            <field type="VARCHAR(200) NOT NULL DEFAULT ''">project</field>
+            <field type="VARCHAR(2) NOT NULL DEFAULT ''">lang</field>
+            <field type="INT(20) NULL">id</field>
+            <field type="VARCHAR(100) NULL">permission</field>
+            <field type="TEXT NULL">value</field>
+
+            <primary>project,lang,id,permission</primary>
+        </table>
+
+        <table name="permissions2projects">
+            <field type="VARCHAR(200) NOT NULL DEFAULT ''">project</field>
+            <field type="VARCHAR(2) NOT NULL DEFAULT ''">lang</field>
+            <field type="VARCHAR(100) NULL">permission</field>
+            <field type="TEXT NULL">value</field>
+
+            <primary>project,lang,permission</primary>
+        </table>
+
+        <table name="permissions2media">
+            <field type="VARCHAR(200) NOT NULL DEFAULT ''">project</field>
+            <field type="VARCHAR(2) DEFAULT ''">lang</field>
+            <field type="INT(20) DEFAULT NULL">id</field>
+            <field type="VARCHAR(100) NULL">permission</field>
+            <field type="TEXT NULL">value</field>
+
+            <primary>project,lang,id,permission</primary>
         </table>
 
         <table name="sessions">
-            <field type="VARCHAR(255) NOT NULL">session_id</field>
-            <field type="TEXT NOT NULL">session_value</field>
-            <field type="INT(11) NOT NULL">session_time</field>
-            <field type="INT(11) NOT NULL">session_lifetime</field>
+            <field type="VARCHAR(255) NOT NULL DEFAULT ''">session_id</field>
+            <field type="TEXT NULL ">session_value</field>
+            <field type="INT(11) NOT NULL DEFAULT 0">session_time</field>
+            <field type="INT(11) NOT NULL DEFAULT 0">session_lifetime</field>
 
             <primary>session_id</primary>
         </table>
+
+        <table name="updateChecks">
+            <field type="INT(11) NOT NULL">id</field>
+            <field type="INT(11) NULL">date</field>
+            <field type="TEXT NULL">result</field>
+            <field type="TEXT NULL">error</field>
+
+            <primary>id</primary>
+            <auto_increment>id</auto_increment>
+        </table>
+
+        <!-- Addresses -->
+        <table name="users_address">
+            <field type="INT(11) NOT NULL">id</field>
+            <field type="INT(11) NOT NULL">uid</field>
+            <field type="VARCHAR(10)">salutation</field>
+            <field type="VARCHAR(40)">firstname</field>
+            <field type="VARCHAR(40)">lastname</field>
+            <field type="TEXT NULL">phone</field>
+            <field type="TEXT NULL">mail</field>
+            <field type="VARCHAR(100)">company</field>
+            <field type="TEXT NULL">delivery</field>
+            <field type="TEXT NULL">street_no</field>
+            <field type="TEXT NULL">zip</field>
+            <field type="TEXT NULL">city</field>
+            <field type="TEXT NULL">country</field>
+            <field type="TEXT NULL">custom_data</field>
+
+            <primary>id</primary>
+            <auto_increment>id</auto_increment>
+        </table>
+
     </global>
 
     <projects>
         <table name="paths" no-auto-update="1">
-            <field type="TEXT NOT NULL">path</field>
+            <field type="TEXT NULL">path</field>
         </table>
     </projects>
 

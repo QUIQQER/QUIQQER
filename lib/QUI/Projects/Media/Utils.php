@@ -8,8 +8,7 @@ namespace QUI\Projects\Media;
 
 use QUI;
 use QUI\System\Log;
-use QUI\Utils\String as StringUtils;
-
+use QUI\Utils\StringHelper as StringUtils;
 
 /**
  * Helper for the Media Center Manager
@@ -21,6 +20,34 @@ use QUI\Utils\String as StringUtils;
 class Utils
 {
     /**
+     * Prefix for the cache key where the size of the media folder is stored.
+     * Should be followed by the project name when querying the cache.
+     */
+    const CACHE_KEY_MEDIA_FOLDER_SIZE_PREFIX = "media_folder_size_";
+
+
+    /**
+     * Prefix for the cache key where the timestamp of the media folder size is stored.
+     * Should be followed by the project name when querying the cache.
+     */
+    const CACHE_KEY_TIMESTAMP_MEDIA_FOLDER_SIZE_PREFIX = "timestamp_media_folder_size_";
+
+
+    /**
+     * Prefix for the cache key where the size of the media cache folder is stored.
+     * Should be followed by the project name when querying the cache.
+     */
+    const CACHE_KEY_MEDIA_CACHE_FOLDER_SIZE_PREFIX = "media_cache_folder_size_";
+
+
+    /**
+     * Prefix for the cache key where the timestamp of the media cache folder size is stored.
+     * Should be followed by the project name when querying the cache.
+     */
+    const CACHE_KEY_TIMESTAMP_MEDIA_CACHE_FOLDER_SIZE_PREFIX = "timestamp_media_cache_folder_size_";
+
+
+    /**
      * Returns the item array
      * the array is specially adapted for the media center
      *
@@ -28,12 +55,12 @@ class Utils
      *
      * @return array
      */
-    static function parseForMediaCenter($Item)
+    public static function parseForMediaCenter($Item)
     {
         if ($Item->getId() === 1) {
             /* @var $Item \QUI\Projects\Media\Folder */
-            return array(
-                'icon'          => 'fa fa-home icon-home',
+            return [
+                'icon'          => 'fa fa-home',
                 'icon80x80'     => URL_BIN_DIR.'80x80/media.png',
                 'id'            => $Item->getId(),
                 'name'          => $Item->getAttribute('name'),
@@ -44,14 +71,17 @@ class Utils
                 'hasSubfolders' => $Item->hasSubFolders(),
                 'active'        => true,
                 'e_date'        => $Item->getAttribute('e_date'),
+                'e_user'        => $Item->getAttribute('e_user'),
+                'c_date'        => $Item->getAttribute('c_date'),
+                'c_user'        => $Item->getAttribute('c_user'),
                 'priority'      => $Item->getAttribute('priority')
-            );
+            ];
         }
 
-        if ($Item->getType() == 'QUI\\Projects\\Media\\Folder') {
+        if ($Item->getType() == QUI\Projects\Media\Folder::class) {
             /* @var $Item \QUI\Projects\Media\Folder */
-            return array(
-                'icon'          => 'fa fa-folder-o icon-folder-close-alt',
+            return [
+                'icon'          => 'fa fa-folder-o',
                 'icon80x80'     => URL_BIN_DIR.'80x80/extensions/folder.png',
                 'id'            => $Item->getId(),
                 'name'          => $Item->getAttribute('name'),
@@ -59,31 +89,36 @@ class Utils
                 'short'         => $Item->getAttribute('short'),
                 'type'          => 'folder',
                 'hasChildren'   => $Item->hasChildren(),
-                'hasSubfolders' => $Item->hasSubfolders(),
+                'hasSubfolders' => $Item->hasSubFolders(),
                 'active'        => $Item->isActive(),
                 'e_date'        => $Item->getAttribute('e_date'),
+                'e_user'        => $Item->getAttribute('e_user'),
+                'c_date'        => $Item->getAttribute('c_date'),
+                'c_user'        => $Item->getAttribute('c_user'),
                 'priority'      => $Item->getAttribute('priority')
-            );
+            ];
         }
 
 
         $extension = self::getExtension($Item->getAttribute('file'));
 
-        $result = array(
+        $result = [
             'icon'      => self::getIconByExtension($extension),
             'icon80x80' => self::getIconByExtension($extension, '80x80'),
             'id'        => $Item->getId(),
             'name'      => $Item->getAttribute('name'),
             'title'     => $Item->getAttribute('title'),
             'short'     => $Item->getAttribute('short'),
-            'type'      => $Item->getType() === 'QUI\\Projects\\Media\\Image'
-                ? 'image' : 'file',
+            'type'      => $Item->getType() === QUI\Projects\Media\Image::class ? 'image' : 'file',
             'url'       => $Item->getUrl(),
             'active'    => $Item->isActive(),
             'e_date'    => $Item->getAttribute('e_date'),
+            'e_user'    => $Item->getAttribute('e_user'),
+            'c_date'    => $Item->getAttribute('c_date'),
+            'c_user'    => $Item->getAttribute('c_user'),
             'mimetype'  => $Item->getAttribute('mime_type'),
             'priority'  => $Item->getAttribute('priority')
-        );
+        ];
 
         return $result;
     }
@@ -91,14 +126,14 @@ class Utils
     /**
      * Returns a suitable icon of a certain extension
      *
-     * @param String $ext  - extenstion
-     * @param String $size - 16x16, 80x80 (default = 16x16); optional
+     * @param string $ext - extenstion
+     * @param string $size - 16x16, 80x80 (default = 16x16); optional
      *
-     * @return String - Icon url
+     * @return string - Icon url
      *
      * @todo icons in config auslagern, somit einfacher erweiterbar
      */
-    static function getIconByExtension($ext, $size = '16x16')
+    public static function getIconByExtension($ext, $size = '16x16')
     {
         switch ($size) {
             case '16x16':
@@ -110,7 +145,7 @@ class Utils
                 $size = '16x16';
         }
 
-        $extensions['16x16'] = array(
+        $extensions['16x16'] = [
             'folder' => URL_BIN_DIR.'16x16/extensions/folder.png',
             'pdf'    => URL_BIN_DIR.'16x16/extensions/pdf.png',
             // Images
@@ -133,9 +168,9 @@ class Utils
             // Music
             'mp3'    => URL_BIN_DIR.'16x16/extensions/sound.png',
             'ogg'    => URL_BIN_DIR.'16x16/extensions/sound.png',
-        );
+        ];
 
-        $extensions['80x80'] = array(
+        $extensions['80x80'] = [
             'folder' => URL_BIN_DIR.'80x80/extensions/folder.png',
             'pdf'    => URL_BIN_DIR.'80x80/extensions/pdf.png',
             // Images
@@ -157,7 +192,7 @@ class Utils
 
             // Music
             'mp3'    => URL_BIN_DIR.'80x80/extensions/sound.png',
-        );
+        ];
 
         if (isset($extensions[$size][$ext])) {
             return $extensions[$size][$ext];
@@ -167,16 +202,36 @@ class Utils
     }
 
     /**
+     * Return the fitting font awesome class
+     * @param \QUI\Projects\Media\Item $Item
+     * @return string
+     */
+    public static function getFontAwesomeIconByItem($Item)
+    {
+        if (self::isImage($Item)) {
+            return 'fa-file-photo-o';
+        }
+
+        $extension = self::getExtension($Item->getAttribute('file'));
+
+        if ($extension == 'pdf') {
+            return 'fa-file-pdf-o';
+        }
+
+        return 'fa-file-o';
+    }
+
+    /**
      * Return the extension of a file
      *
-     * @param String $filename - filename
+     * @param string $filename - filename
      *
-     * @return String
+     * @return string
      */
-    static function getExtension($filename)
+    public static function getExtension($filename)
     {
-        $explode = explode('.', $filename);
-        $last = array_pop($explode);
+        $explode = \explode('.', $filename);
+        $last    = \array_pop($explode);
 
         return $last;
     }
@@ -184,16 +239,16 @@ class Utils
     /**
      * Return the media type by a file mime type
      *
+     * @param string $mime_type
+     *
+     * @return string file|image
      * @example \QUI\Projects\Media\Utils::getMediaTypeByMimeType( 'image/jpeg' )
      *
-     * @param String $mime_type
-     *
-     * @return String file|image
      */
-    static function getMediaTypeByMimeType($mime_type)
+    public static function getMediaTypeByMimeType($mime_type)
     {
-        if (strpos($mime_type, 'image/') !== false
-            && strpos($mime_type, 'vnd.adobe') === false
+        if (\strpos($mime_type, 'image/') !== false
+            && \strpos($mime_type, 'vnd.adobe') === false
         ) {
             return 'image';
         }
@@ -205,46 +260,56 @@ class Utils
      * Return the media image
      * If it is no image, its throws an exception
      *
-     * @param String $url - image.php? url
+     * @param string $url - image.php? url
      *
      * @return QUI\Projects\Media\Image
      * @throws QUI\Exception
      */
-    static function getImageByUrl($url)
+    public static function getImageByUrl($url)
     {
         if (self::isMediaUrl($url) === false) {
-            throw new QUI\Exception('Its not a QUIQQER image url');
+            throw new QUI\Exception(
+                'Its not a QUIQQER image url',
+                ErrorCodes::NOT_AN_IMAGE_URL
+            );
         }
 
         $Obj = self::getMediaItemByUrl($url);
 
         if (!self::isImage($Obj)) {
-            throw new QUI\Exception('Its not an image');
+            throw new QUI\Exception(
+                'Its not an image',
+                ErrorCodes::NOT_AN_IMAGE
+            );
         }
 
+        /* @var $Obj QUI\Projects\Media\Image */
         return $Obj;
     }
 
     /**
      * Return the media image, file, folder
      *
-     * @param String $url - image.php? url
+     * @param string $url - image.php? url
      *
      * @return QUI\Projects\Media\Item
      * @throws QUI\Exception
      */
-    static function getMediaItemByUrl($url)
+    public static function getMediaItemByUrl($url)
     {
         if (self::isMediaUrl($url) === false) {
-            throw new QUI\Exception('Its not a QUIQQER image url');
+            throw new QUI\Exception(
+                'Its not a QUIQQER item url',
+                ErrorCodes::NOT_AN_ITEM_URL
+            );
         }
 
         // Parameter herrausfinden
         $params = StringUtils::getUrlAttributes($url);
 
         $Project = QUI::getProject($params['project']);
-        $Media = $Project->getMedia();
-        $Obj = $Media->get((int)$params['id']);
+        $Media   = $Project->getMedia();
+        $Obj     = $Media->get((int)$params['id']);
 
         /* @var $Obj QUI\Projects\Media\File */
 
@@ -255,14 +320,14 @@ class Utils
      * Return <img /> from image attributes
      * considered responsive images, too
      *
-     * @param String $src
-     * @param Array  $attributes
+     * @param string $src
+     * @param array $attributes
      *
-     * @return String
+     * @return string
      */
-    static function getImageHTML($src, $attributes = array())
+    public static function getImageHTML($src, $attributes = [])
     {
-        $width = false;
+        $width  = false;
         $height = false;
 
         if (isset($attributes['style'])) {
@@ -277,21 +342,19 @@ class Utils
             if (isset($style['height'])) {
                 $height = $style['height'];
             }
-
         } elseif (isset($attributes['width'])) {
             $width = $attributes['width'];
-
         } elseif (isset($attributes['height'])) {
             $height = $attributes['height'];
         }
 
-        if (strpos($width, '%') !== false) {
+        if (\strpos($width, '%') !== false) {
             $width = false;
         } else {
             $width = (int)$width;
         }
 
-        if (strpos($height, '%') !== false) {
+        if (\strpos($height, '%') !== false) {
             $height = false;
         } else {
             $height = (int)$height;
@@ -299,7 +362,6 @@ class Utils
 
         try {
             $Image = self::getImageByUrl($src);
-
         } catch (QUI\Exception $Exception) {
             return '';
         }
@@ -308,26 +370,25 @@ class Utils
             return '';
         }
 
-        if ($width) {
-            $width = QUI\Utils\Math::ceilUp($width, 100);
-        }
-
-        if ($height) {
-            $height = QUI\Utils\Math::ceilUp($height, 100);
-        }
-
         /* @var $Image \QUI\Projects\Media\Image */
-        $src = $Image->getSizeCacheUrl($width, $height);
+        try {
+            $src = $Image->getSizeCacheUrl($width, $height);
+        } catch (QUI\Exception $Exception) {
+            Log::writeException($Exception);
+
+            return '';
+        }
+
 
         // image string
         $img = '<img ';
 
         foreach ($attributes as $key => $value) {
-            $img .= $key.'="'.$value.'" ';
+            $img .= \htmlspecialchars($key).'="'.\htmlspecialchars($value).'" ';
         }
 
         // responsive image
-        $imageWidth = $Image->getWidth();
+//        $imageWidth = $Image->getWidth();
 
 //        if ( $imageWidth )
 //        {
@@ -345,54 +406,77 @@ class Utils
 //            $img .= ' srcset="'. implode(",\n", $srcset) .'"';
 //        }
 
-        $img .= ' src="'.$src.'" />';
+        $img .= ' src="'.\htmlspecialchars($src).'" />';
 
         return $img;
     }
 
     /**
-     * Return the rewrited url from a image.php? url
+     * @param $output
+     * @param array $size
+     * @return string
      *
-     * @param String $output
-     * @param Array  $size
+     * @throws QUI\Exception
      *
-     * @return String
+     * @deprecated use getRewrittenUrl
      */
-    static function getRewritedUrl($output, $size = array())
+    public static function getRewritedUrl($output, $size = [])
+    {
+        return self::getRewrittenUrl($output, $size);
+    }
+
+    /**
+     * Return the rewritten url from a image.php? url
+     *
+     * @param string $output
+     * @param array $size
+     *
+     * @return string
+     *
+     * @throws QUI\Exception
+     */
+    public static function getRewrittenUrl($output, $size = [])
     {
         if (self::isMediaUrl($output) === false) {
             return $output;
         }
 
-        // Parameter herrausfinden
+        // detect parameters
         $params = StringUtils::getUrlAttributes($output);
 
-        $id = $params['id'];
+        $id      = $params['id'];
         $project = $params['project'];
 
         $cache = 'cache/links/'.$project.'/media/'.$id;
-        $url = '';
+        $url   = '';
 
         // exist cache?
         try {
             $url = QUI\Cache\Manager::get($cache);
-
         } catch (QUI\Cache\Exception $Exception) {
-
+            Log::writeDebugException($Exception);
         }
 
         if (empty($url)) {
             try {
-                $Obj = self::getImageByUrl($output);
+                $Obj = self::getMediaItemByUrl($output);
                 $url = $Obj->getUrl(true);
 
+                if (!self::isImage($Obj)) {
+                    return $url;
+                }
             } catch (QUI\Exception $Exception) {
-                Log::writeException($Exception);
+                Log::addDebug($Exception->getMessage(), [
+                    'url'   => $output,
+                    'trace' => $Exception->getTrace()
+                ]);
 
                 return URL_DIR.$output;
-
             } catch (\Exception $Exception) {
-                Log::writeException($Exception);
+                Log::addDebug($Exception->getMessage(), [
+                    'url'   => $output,
+                    'trace' => $Exception->getTrace()
+                ]);
 
                 return URL_DIR.$output;
             }
@@ -400,8 +484,8 @@ class Utils
 
 
         // Falls Grösse mit eingebaut wurde diese mit einbauen
-        if (count($size)) {
-            $url_explode = explode('.', $url);
+        if (\count($size)) {
+            $url_explode = \explode('.', $url);
 
             if (!isset($size['height'])) {
                 $size['height'] = '';
@@ -415,14 +499,13 @@ class Utils
                 $url_explode[1] = '';
             }
 
-            $url = $url_explode[0].'__'.$size['width'].'x'.$size['height'].'.'
-                .$url_explode[1];
+            $url = $url_explode[0].'__'.$size['width'].'x'.$size['height'].'.'.$url_explode[1];
         }
 
-        if (!file_exists(CMS_DIR.$url)) {
+        if (!\file_exists(CMS_DIR.$url)) {
             $Project = QUI::getProject($project);
-            $Media = $Project->getMedia();
-            $Obj = $Media->get((int)$id);
+            $Media   = $Project->getMedia();
+            $Obj     = $Media->get((int)$id);
 
             if ($Obj->getType() == 'IMAGE') {
                 if (!isset($size['width'])) {
@@ -433,10 +516,17 @@ class Utils
                     $size['height'] = false;
                 }
 
-                $Obj->createSizeCache($size['width'], $size['height']);
+                $result = $Obj->createSizeCache($size['width'], $size['height']);
 
+                if ($result) {
+                    $url = $result;
+                }
             } else {
-                $Obj->createCache();
+                $result = $Obj->createCache();
+
+                if ($result) {
+                    $url = $result;
+                }
             }
         }
 
@@ -446,32 +536,32 @@ class Utils
     /**
      * checks if the string can be used for a media folder name
      *
-     * @param String $str - foldername
+     * @param string $str - foldername
      *
-     * @return Bool
+     * @return boolean
      * @throws QUI\Exception
      */
-    static function checkFolderName($str)
+    public static function checkFolderName($str)
     {
         // Prüfung des Namens - Sonderzeichen
-        if (preg_match('/[^0-9_a-zA-Z \-]/', $str)) {
+        if (\preg_match('/[^0-9_a-zA-Z \-]/', $str)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.media.check.foldername.allowed.signs',
-                    array('foldername' => $str)
+                    ['foldername' => $str]
                 ),
-                702
+                ErrorCodes::FOLDER_ILLEGAL_CHARACTERS
             );
         }
 
-        if (strpos($str, '__') !== false) {
+        if (\strpos($str, '__') !== false) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.media.check.name.allowed.underline'
                 ),
-                702
+                ErrorCodes::FOLDER_ILLEGAL_CHARACTERS
             );
         }
 
@@ -481,23 +571,17 @@ class Utils
     /**
      * Deletes characters which are not allowed for folders
      *
-     * @param String $str - Folder name
+     * @param string $str - Folder name
      *
-     * @return String
+     * @return string
      */
-    static function stripFolderName($str)
+    public static function stripFolderName($str)
     {
-        $str = preg_replace('/[^0-9a-zA-Z\-]/', '_', $str);
-
-        // Umlaute
-        $str = str_replace(
-            array('ä', 'ö', 'ü'),
-            array('ar', 'oe', 'ue'),
-            $str
-        );
+        $str = QUI\Utils\Convert::convertRoman($str);
+        $str = \preg_replace('/[^0-9a-zA-Z\-]/', '_', $str);
 
         // clean double _
-        $str = preg_replace('/[_]{2,}/', "_", $str);
+        $str = \preg_replace('/[_]{2,}/', "_", $str);
 
         return $str;
     }
@@ -505,42 +589,42 @@ class Utils
     /**
      * checks if the string can be used for a media item
      *
-     * @param String $filename - the complete filename: my_file.jpg
+     * @param string $filename - the complete filename: my_file.jpg
      *
      * @throws QUI\Exception
      */
-    static function checkMediaName($filename)
+    public static function checkMediaName($filename)
     {
         // Prüfung des Namens - Sonderzeichen
-        if (preg_match('/[^0-9_a-zA-Z \-.]/', $filename)) {
+        if (\preg_match('/[^0-9_a-zA-Z \-.]/', $filename)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.media.check.name.allowed.signs',
-                    array('filename' => $filename)
+                    ['filename' => $filename]
                 ),
-                702
+                ErrorCodes::FOLDER_ILLEGAL_CHARACTERS
             );
         }
 
         // mehr als zwei punkte
-        if (substr_count($filename, '.') > 1) {
+        if (\substr_count($filename, '.') > 1) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.media.check.name.dots'
                 ),
-                702
+                ErrorCodes::FOLDER_ILLEGAL_CHARACTERS
             );
         }
 
-        if (strpos($filename, '__') !== false) {
+        if (\strpos($filename, '__') !== false) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.media.check.name.underline'
                 ),
-                702
+                ErrorCodes::FOLDER_ILLEGAL_CHARACTERS
             );
         }
     }
@@ -548,27 +632,27 @@ class Utils
     /**
      * Deletes characters which are not allowed in the media center
      *
-     * @param String $str
+     * @param string $str
      *
-     * @return String
+     * @return string
      */
-    static function stripMediaName($str)
+    public static function stripMediaName($str)
     {
-        $str = preg_replace('/[^0-9a-zA-Z\.\-]/', '_', $str);
-
         // Umlaute
-        $str = str_replace(
-            array('ä', 'ö', 'ü'),
-            array('ar', 'oe', 'ue'),
+        $str = \str_replace(
+            ['ä', 'ö', 'ü'],
+            ['ae', 'oe', 'ue'],
             $str
         );
 
+        $str = \preg_replace('/[^0-9a-zA-Z\.\-]/', '_', $str);
+
         // delete the dots but not the last dot
-        $str = str_replace('.', '_', $str);
-        $str = QUI\Utils\String::replaceLast('_', '.', $str);
+        $str = \str_replace('.', '_', $str);
+        $str = StringUtils::replaceLast('_', '.', $str);
 
         // FIX
-        $str = preg_replace('/[_]{2,}/', "_", $str);
+        $str = \preg_replace('/[_]{2,}/', "_", $str);
 
         return $str;
     }
@@ -580,21 +664,21 @@ class Utils
     /**
      * Is the variable a folder object?
      *
-     * @param String|Bool|Object $Unknown
+     * @param string|boolean|object $Unknown
      *
-     * @return Bool
+     * @return boolean
      */
-    static function isFolder($Unknown)
+    public static function isFolder($Unknown)
     {
-        if (!is_object($Unknown)) {
+        if (!\is_object($Unknown)) {
             return false;
         }
 
-        if (!method_exists($Unknown, 'getType')) {
+        if (!\method_exists($Unknown, 'getType')) {
             return false;
         }
 
-        if ($Unknown->getType() === 'QUI\\Projects\\Media\\Folder') {
+        if ($Unknown->getType() === QUI\Projects\Media\Folder::class) {
             return true;
         }
 
@@ -604,21 +688,21 @@ class Utils
     /**
      * Is the variable a image object?
      *
-     * @param String|Bool|Object $Unknown
+     * @param string|boolean|object $Unknown
      *
-     * @return Bool
+     * @return boolean
      */
-    static function isImage($Unknown)
+    public static function isImage($Unknown)
     {
-        if (!is_object($Unknown)) {
+        if (!\is_object($Unknown)) {
             return false;
         }
 
-        if (!method_exists($Unknown, 'getType')) {
+        if (!\method_exists($Unknown, 'getType')) {
             return false;
         }
 
-        if ($Unknown->getType() === 'QUI\\Projects\\Media\\Image') {
+        if ($Unknown->getType() === QUI\Projects\Media\Image::class) {
             return true;
         }
 
@@ -628,15 +712,15 @@ class Utils
     /**
      * Is the URL a media url?
      *
-     * @param String $url
+     * @param string $url
      *
-     * @return Bool
+     * @return boolean
      */
-    static function isMediaUrl($url)
+    public static function isMediaUrl($url)
     {
-        if (strpos($url, 'image.php') !== false
-            && strpos($url, 'project=') !== false
-            && strpos($url, 'id=') !== false
+        if (\strpos($url, 'image.php') !== false
+            && \strpos($url, 'project=') !== false
+            && \strpos($url, 'id=') !== false
         ) {
             return true;
         }
@@ -647,73 +731,86 @@ class Utils
     /**
      * Returns a media item by an url
      *
-     * @param String $url
+     * @param string $url - cache url, or real path of the file
      *
-     * @return \QUI\Projects\Media\Item
+     * @return \QUI\Interfaces\Projects\Media\File
      * @throws QUI\Exception
      */
-    static function getElement($url)
+    public static function getElement($url)
     {
-        $parts = explode('media/cache/', $url);
-
-        if (!isset($parts[1])) {
-            throw new QUI\Exception('File not found', 404);
+        if (\strpos($url, 'media/cache/') !== false) {
+            $parts = \explode('media/cache/', $url);
+        } elseif (\strpos($url, 'media/sites/') !== false) {
+            $parts = \explode('media/sites/', $url);
+        } else {
+            throw new QUI\Exception(
+                'File not found',
+                ErrorCodes::FILE_NOT_FOUND
+            );
         }
 
-        $parts = explode('/', $parts[1]);
-        $project = array_shift($parts);
 
-        $Project = \QUI::getProject($project);
-        $Media = $Project->getMedia();
+        if (!isset($parts[1])) {
+            throw new QUI\Exception(
+                'File not found',
+                ErrorCodes::FILE_NOT_FOUND
+            );
+        }
+
+        $parts   = \explode('/', $parts[1]);
+        $project = \array_shift($parts);
+
+        $Project = QUI::getProject($project);
+        $Media   = $Project->getMedia();
 
         // if the element (image) is resized resize
-        $file_name = array_pop($parts);
+        $file_name = \array_pop($parts);
 
-        if (strpos($file_name, '__') !== false) {
-            $lastpos_ul = strrpos($file_name, '__') + 2;
-            $pos_dot = strpos($file_name, '.', $lastpos_ul);
+        if (\strpos($file_name, '__') !== false) {
+            $lastpos_ul = \strrpos($file_name, '__') + 2;
+            $pos_dot    = \strpos($file_name, '.', $lastpos_ul);
 
-            $file_name = substr($file_name, 0, ($lastpos_ul - 2)).
-                substr($file_name, $pos_dot);
+            $file_name = \substr($file_name, 0, ($lastpos_ul - 2)).
+                         \substr($file_name, $pos_dot);
         }
 
         $parts[] = $file_name;
 
-        return $Media->getChildByPath(implode('/', $parts));
+        return $Media->getChildByPath(\implode('/', $parts));
     }
 
     /**
      * Check the upload params if a replacement can do
      *
      * @param QUI\Projects\Media $Media
-     * @param Integer            $fileid       - The File which will be replaced
-     * @param Array              $uploadparams - Array with file information array('name' => '', 'type' => '')
+     * @param integer $fileid - The File which will be replaced
+     * @param array $uploadparams - Array with file information array('name' => '', 'type' => '')
      *
      * @throws QUI\Exception
      */
-    static function checkReplace(
+    public static function checkReplace(
         QUI\Projects\Media $Media,
         $fileid,
         $uploadparams
     ) {
         $fileid = (int)$fileid;
 
-        $result = \QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch([
             'from'  => $Media->getTable(),
-            'where' => array(
+            'where' => [
                 'id' => $fileid
-            ),
+            ],
             'limit' => 1
-        ));
+        ]);
 
         if (!isset($result[0])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'exception.file.not.found',
-                    array('file' => $fileid)
+                    ['file' => $fileid]
                 ),
-                404
+                ErrorCodes::FILE_NOT_FOUND
             );
         }
 
@@ -738,9 +835,9 @@ class Utils
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'exception.media.file.already.exists',
-                    array('filename' => $uploadparams['name'])
+                    ['filename' => $uploadparams['name']]
                 ),
-                403
+                ErrorCodes::FILE_ALREADY_EXISTS
             );
         }
     }
@@ -750,12 +847,12 @@ class Utils
      *
      * @param \QUI\Projects\Media\File|\QUI\Projects\Media\Image $File
      *
-     * @return String
+     * @return string
      */
-    static function generateMD5($File)
+    public static function generateMD5($File)
     {
         /* @var $File \QUI\Projects\Media\Image */
-        return md5_file($File->getFullPath());
+        return \md5_file($File->getFullPath());
     }
 
     /**
@@ -763,11 +860,180 @@ class Utils
      *
      * @param \QUI\Projects\Media\File|\QUI\Projects\Media\Image $File
      *
-     * @return String
+     * @return string
      */
-    static function generateSHA1($File)
+    public static function generateSHA1($File)
     {
         /* @var $File \QUI\Projects\Media\Image */
-        return sha1_file($File->getFullPath());
+        return \sha1_file($File->getFullPath());
+    }
+
+    /**
+     * Counts and returns the number of folders for a project.
+     *
+     * @param QUI\Projects\Project $Project
+     *
+     * @return int
+     */
+    public static function countFoldersForProject(QUI\Projects\Project $Project)
+    {
+        $mediaTable = $Project->getMedia()->getTable();
+
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'count' => 'id',
+                'from'  => $mediaTable,
+                'where' => [
+                    'type' => 'folder'
+                ]
+            ]);
+        } catch (QUI\Exception $Exception) {
+            return 0;
+        }
+
+        if (isset($result[0])) {
+            return \intval($result[0]['id']);
+        }
+
+        return 0;
+    }
+
+
+    /**
+     * Counts and returns the number of files for a project.
+     *
+     * @param QUI\Projects\Project $Project
+     *
+     * @return int
+     */
+    public static function countFilesForProject(QUI\Projects\Project $Project)
+    {
+        $mediaTable = $Project->getMedia()->getTable();
+
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'count' => 'id',
+                'from'  => $mediaTable,
+                'where' => [
+                    'type' => [
+                        'type'  => 'NOT',
+                        'value' => 'folder'
+                    ]
+                ]
+            ]);
+        } catch (QUI\Exception $Exception) {
+            return 0;
+        }
+
+        if (isset($result[0])) {
+            return \intval($result[0]['id']);
+        }
+
+        return 0;
+    }
+
+    /**
+     * Returns the size of the given project's media folder in bytes.
+     * By default the value is returned from cache.
+     * If there is no value in cache, null is returned, unless you use the force parameter.
+     * Only if you really need to get a freshly calculated result, you may set the force parameter to true.
+     * When using the force parameter expect timeouts since the calculation could take a lot of time.
+     *
+     * @param QUI\Projects\Project $Project
+     * @param boolean $force - Force a calculation of the media folder size. Values aren't returned from cache. Expect timeouts.
+     *
+     * @return int
+     */
+    public static function getMediaFolderSizeForProject(QUI\Projects\Project $Project, $force = false)
+    {
+        return QUI\Utils\System\Folder::getFolderSize($Project->getMedia()->getFullPath(), $force);
+    }
+
+    /**
+     * Returns the timestamp when to media folder size was stored in cache for the given project.
+     * Returns null if there is no data in the cache.
+     *
+     * @param QUI\Projects\Project $Project
+     *
+     * @return int|null
+     */
+    public static function getMediaFolderSizeTimestampForProject(QUI\Projects\Project $Project)
+    {
+        return QUI\Utils\System\Folder::getFolderSizeTimestamp($Project->getMedia()->getFullPath());
+    }
+
+    /**
+     * Returns the size of the given project's media cache folder in bytes.
+     * By default the value is returned from cache.
+     * If there is no value in cache, null is returned, unless you use the force parameter.
+     * Only if you really need to get a freshly calculated result, you may set the force parameter to true.
+     * When using the force parameter expect timeouts since the calculation could take a lot of time.
+     *
+     * @param QUI\Projects\Project $Project
+     * @param boolean $force - Force a calculation of the media folder size. Values aren't returned from cache. Expect timeouts.
+     *
+     * @return int
+     */
+    public static function getMediaCacheFolderSizeForProject(QUI\Projects\Project $Project, $force = false)
+    {
+        return QUI\Utils\System\Folder::getFolderSize($Project->getMedia()->getFullCachePath(), $force);
+    }
+
+    /**
+     * Returns the timestamp when to media cache folder size was stored in cache for the given project.
+     * Returns null if there is no data in the cache.
+     *
+     * @param QUI\Projects\Project $Project
+     *
+     * @return int|null
+     */
+    public static function getMediaCacheFolderSizeTimestampForProject(QUI\Projects\Project $Project)
+    {
+        return QUI\Utils\System\Folder::getFolderSizeTimestamp($Project->getMedia()->getFullCachePath());
+    }
+
+    /**
+     * Counts and returns all the different types of files for a given project.
+     *
+     * @param QUI\Projects\Project $Project
+     *
+     * @return array - the array's keys are the file types and their values are their amounts
+     */
+    public static function countFiletypesForProject(QUI\Projects\Project $Project)
+    {
+        $table = $Project->getMedia()->getTable();
+
+        $query = "
+        SELECT
+          (CASE
+             /* Count all 'image/%' mimetypes as image */
+             WHEN `mime_type` LIKE 'image/%' THEN 'image'
+             ELSE `mime_type` END
+          ) AS mime_type
+          , COUNT(id) AS count
+        FROM `{$table}`
+        WHERE `type` != 'folder'
+        GROUP BY
+          (CASE
+             /* Group all 'image/%' mimetypes as image */
+             WHEN `mime_type` LIKE 'image/%' THEN 'image'
+             ELSE `mime_type` END
+          )
+        ;
+        ";
+
+        try {
+            $result = QUI::getDataBase()->fetchSQL($query);
+        } catch (QUI\Exception $Exception) {
+            return [];
+        }
+
+        $return = [];
+
+        foreach ($result as $element) {
+            $return[$element['mime_type']] = \intval($element['count']);
+        }
+
+        return $return;
     }
 }

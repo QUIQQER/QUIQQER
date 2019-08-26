@@ -6,13 +6,15 @@
  * @param integer $gid
  * @return array
  */
-function ajax_groups_children($gid)
-{
-	$Groups   = \QUI::getGroups();
-	$Group    = $Groups->get($gid);
-	$children = $Group->getChildren();
+QUI::$Ajax->registerFunction(
+    'ajax_groups_children',
+    function ($gid) {
+        $Groups   = QUI::getGroups();
+        $Group    = $Groups->get($gid);
+        $children = $Group->getChildren();
 
-	return $children;
-}
-
-\QUI::$Ajax->register('ajax_groups_children', array('gid'), 'Permission::checkSU');
+        return $children;
+    },
+    array('gid'),
+    'Permission::checkAdminUser'
+);

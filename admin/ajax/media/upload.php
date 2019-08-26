@@ -3,36 +3,35 @@
 /**
  * Upload a file
  *
- * @param String         $project - Name of the project
- * @param Integer|String $parentid
- * @param \QUI\QDOM      $File
+ * @param string $project - Name of the project
+ * @param integer|string $parentid
+ * @param \QUI\QDOM $File
  *
  * @throws \QUI\Exception
  */
-function ajax_media_upload($project, $parentid, $File)
-{
-    $Project = QUI\Projects\Manager::getProject($project);
-    $Media = $Project->getMedia();
-    $Folder = $Media->get((int)$parentid);
-
-    if ($Folder->getType() != 'QUI\\Projects\\Media\\Folder') {
-        throw new QUI\Exception(
-            'The parent id is not a folder. You can only upload files to folders'
-        );
-    }
-
-    /* @var $Folder QUI\Projects\Media\Folder */
-    $file = $File->getAttribute('filepath');
-
-    if (!file_exists($file)) {
-        return;
-    }
-
-    $Folder->uploadFile($file);
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_media_upload',
-    array('project', 'parentid', 'File'),
+    function ($project, $parentid, $File) {
+        $Project = QUI\Projects\Manager::getProject($project);
+        $Media   = $Project->getMedia();
+        $Folder  = $Media->get((int)$parentid);
+
+        if ($Folder->getType() != 'QUI\\Projects\\Media\\Folder') {
+            throw new QUI\Exception(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.upload.is.no.folder')
+            );
+        }
+
+        /* @var $Folder QUI\Projects\Media\Folder */
+        /* @var $File QUI\QDOM */
+        $file = $File->getAttribute('filepath');
+
+        if (!\file_exists($file)) {
+            return '';
+        }
+
+        return $Folder->uploadFile($file)->getAttributes();
+    },
+    ['project', 'parentid', 'File'],
     'Permission::checkAdminUser'
 );

@@ -8,7 +8,7 @@ namespace QUI\Groups;
 
 use QUI;
 use QUI\Utils\DOM;
-use QUI\Utils\XML;
+use QUI\Utils\Text\XML;
 
 /**
  * Helper for groups
@@ -23,45 +23,55 @@ class Utils
      * JavaScript Buttons / Tabs for a group
      *
      * @param \QUI\Groups\Group $Group
-     *
      * @return \QUI\Controls\Toolbar\Bar
      */
-    static function getGroupToolbar($Group)
+    public static function getGroupToolbar($Group)
     {
         $Tabbar = new QUI\Controls\Toolbar\Bar(array(
             'name' => 'UserToolbar'
         ));
 
         DOM::addTabsToToolbar(
-            XML::getTabsFromXml(SYS_DIR.'groups.xml'),
+            XML::getTabsFromXml(OPT_DIR . 'quiqqer/quiqqer/group.xml'),
             $Tabbar,
-            'pcsg'
+            'quiqqer/quiqqer'
         );
 
-        // @todo load plugin / project / package extensions
+        /**
+         * user extention from plugins
+         */
+        $list = QUI::getPackageManager()->getInstalled();
 
-
-        // Projekt Tabs
-        /*
-        $projects = \QUI\Projects\Manager::getProjects( true );
-
-        foreach ( $projects as $Project )
-        {
-            $rights = \QUI::getRights()->getProjectRights( $Project );
-
-            if ( empty( $rights ) ) {
+        foreach ($list as $entry) {
+            if ($entry['name'] == 'quiqqer/quiqqer') {
                 continue;
             }
 
-            $Tabbar->appendChild(
-                new Controls_Toolbar_Tab(array(
-                    'name'    => 'project_'. $Project->getAttribute('name'),
-                    'project' => $Project->getAttribute('name'),
-                    'text'    => $Project->getAttribute('name') .' Rechte'
-                ))
+            $userXml = OPT_DIR . $entry['name'] . '/group.xml';
+
+            if (!\file_exists($userXml)) {
+                continue;
+            }
+
+            DOM::addTabsToToolbar(
+                XML::getTabsFromXml($userXml),
+                $Tabbar,
+                $entry['name']
             );
         }
-        */
+
+        /**
+         * user extension from projects
+         */
+        $projects = QUI\Projects\Manager::getProjects();
+
+        foreach ($projects as $project) {
+            DOM::addTabsToToolbar(
+                XML::getTabsFromXml(USR_DIR . 'lib/' . $project . '/group.xml'),
+                $Tabbar,
+                'project.' . $project
+            );
+        }
 
         return $Tabbar;
     }
@@ -69,48 +79,41 @@ class Utils
     /**
      * Tab contents of a group Tab / Button
      *
-     * @param Integer $gid    - Group ID
-     * @param String  $plugin - Plugin
-     * @param String  $tab    - Tabname
+     * @param integer $gid - Group ID
+     * @param string $plugin - Plugin
+     * @param string $tab - Tabname
      *
-     * @return String
+     * @return string
      */
-    static function getTab($gid, $plugin, $tab)
+    public static function getTab($gid, $plugin, $tab)
     {
         $Groups = QUI::getGroups();
-        $Group = $Groups->get($gid);
-        $Engine = QUI::getTemplateManager()->getEngine(true);
+        $Group  = $Groups->get($gid);
 
-        $Engine->assign(array(
-            'Group' => $Group
-        ));
+        // assign group as global var
+        QUI::getTemplateManager()->assignGlobalParam('Group', $Group);
 
-        // System
-        if ($plugin === 'pcsg') {
+        // project
+        if (\strpos($plugin, 'project.') !== false) {
+            $project = \explode('project.', $plugin);
+
             return DOM::getTabHTML(
-                $tab, SYS_DIR.'groups.xml'
+                $tab,
+                QUI::getProject($project[1])
             );
         }
 
-        /*
-        if ( strpos($tab, 'project_') !== false )
-        {
-            $tab     = explode( 'project_', $tab );
-            $Project = \QUI\Projects\Manager::getProject( $tab[1] );
-            $file    = USR_DIR .'lib/'. $Project->getAttribute('name') .'/rights.xml';
+        // plugin
+        try {
+            $plugin  = \str_replace('plugin.', '', $plugin);
+            $Package = QUI::getPackage($plugin);
 
-            $Engine = \QUI::getTemplateManager()->getEngine( true );
-            $rights = QUI_Rights_Parser::getGroups(
-                QUI_Rights_Parser::parse( $file )
+            return DOM::getTabHTML(
+                $tab,
+                OPT_DIR . $Package->getName() . '/group.xml'
             );
-
-            $Engine->assign(array(
-                'rights' => $rights
-            ));
-
-            return $Engine->fetch( SYS_DIR .'template/groups/extend.html' );
+        } catch (QUI\Exception $Exception) {
         }
-        */
 
         return '';
     }

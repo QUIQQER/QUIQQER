@@ -1,0 +1,46 @@
+<table class="data-table data-table-flexbox">
+    <tr>
+        <td>
+            <label class="field-container hasCheckbox">
+                <div class="field-container-item" title="">
+                    {{titleValue}}
+                </div>
+                <input name="value" required="required" type="text" class="field-container-field"/>
+            </label>
+            <div style="clear: both;">
+                <div style="float: left; padding: 5px; width: 200px;">
+                    {{textVariableListing}}
+                </div>
+                <div class="predefined-values" style="padding: 5px;">
+                    <a href="#">none</a>,
+                    <a href="#">self</a>,
+                    <a href="#">strict-dynamic</a>,
+                    <a href="#">unsafe-inline</a>,
+                    <a href="#">unsafe-eval</a>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <div class="field-container-item" title="">
+                    {{titleDirective}}
+                </div>
+                <select name="directive" class="field-container-field">
+                    <option value="base-uri">base-uri</option>
+                    <option value="child-src">child-src</option>
+                    <option value="connect-src">connect-src</option>
+                    <option value="default-src">default-src</option>
+                    <option value="font-src">font-src</option>
+                    <option value="form-action">form-action</option>
+                    <option value="image-src">img-src</option>
+                    <option value="script-src">script-src</option>
+                    <option value="style-src">style-src</option>
+                    <option value="object-src">object-src</option>
+                    <option value="report-uri">report-uri</option>
+                </select>
+            </label>
+        </td>
+    </tr>
+</table>

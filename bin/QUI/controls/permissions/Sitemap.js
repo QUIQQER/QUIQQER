@@ -1,17 +1,8 @@
-
 /**
  * Permissions Sitemap
  *
  * @module controls/permissions/Panel
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/sitemap/Map
- * @require qui/controls/sitemap/Item
- * @require qui/utils/Object
- * @require utils/permissions/Utils
- * @require Locale
  *
  * @event itemClick [Item, value]
  */
@@ -25,15 +16,14 @@ define('controls/permissions/Sitemap', [
     'utils/permissions/Utils',
     'Locale'
 
-], function(QUI, QUIControl, QUISitemap, QUISitemapItem, ObjectUtils, PermissionUtils, QUILocale)
-{
+], function (QUI, QUIControl, QUISitemap, QUISitemapItem, ObjectUtils, PermissionUtils, QUILocale) {
     "use strict";
 
 
     return new Class({
 
         Extends: QUIControl,
-        Type: 'controls/permissions/Sitemap',
+        Type   : 'controls/permissions/Sitemap',
 
         Binds: [
             '$onInject',
@@ -41,15 +31,14 @@ define('controls/permissions/Sitemap', [
             '$createMap'
         ],
 
-        initialize: function(Object, options)
-        {
+        initialize: function (Object, options) {
             this.parent(options);
 
             this.$Map  = null;
             this.$Bind = Object || false;
 
             this.addEvents({
-                onInject : this.$onInject
+                onInject: this.$onInject
             });
         },
 
@@ -58,15 +47,14 @@ define('controls/permissions/Sitemap', [
          *
          * @return {HTMLDivElement}
          */
-        create : function()
-        {
+        create: function () {
             this.$Elm = new Element('div', {
-                'class' : 'controls-permissions-sitemap'
+                'class': 'controls-permissions-sitemap'
             });
 
             this.$Map = new QUISitemap({
-                styles : {
-                    margin : '20px 10px'
+                styles: {
+                    margin: '20px 10px'
                 }
             });
 
@@ -78,17 +66,16 @@ define('controls/permissions/Sitemap', [
         /**
          * refresh the map
          */
-        refresh : function()
-        {
+        refresh: function () {
             this.$Map.clearChildren();
 
             this.$Map.appendChild(
                 new QUISitemapItem({
-                    text   : 'Rechte',
-                    icon   : 'icon-gears',
-                    value  : '',
-                    events : {
-                        onClick : this.$onItemClick
+                    text  : 'Rechte',
+                    icon  : 'fa fa-gears',
+                    value : '',
+                    events: {
+                        onClick: this.$onItemClick
                     }
                 })
             );
@@ -115,14 +102,16 @@ define('controls/permissions/Sitemap', [
                 case 'qui/classes/DOM':
                     Permissions.getList().then(this.$createMap);
                     break;
+
+                default:
+                    console.error(typeOf(this.$Bind));
             }
         },
 
         /**
          * event : on inject
          */
-        $onInject : function()
-        {
+        $onInject: function () {
             this.refresh();
         },
 
@@ -131,22 +120,20 @@ define('controls/permissions/Sitemap', [
          *
          * @param {Object} permissions - list of permissions
          */
-        $createMap : function(permissions)
-        {
+        $createMap: function (permissions) {
             var arr, permission;
             var permissionList = {};
 
-            for (permission in permissions)
-            {
+            for (permission in permissions) {
                 if (!permissions.hasOwnProperty(permission)) {
                     continue;
                 }
 
-                arr = permission.split( '.' );
+                arr = permission.split('.');
                 arr.pop(); // drop the last element
 
                 if (arr.length) {
-                    ObjectUtils.namespace(arr.join( '.' ), permissionList);
+                    ObjectUtils.namespace(arr.join('.'), permissionList);
                 }
             }
 
@@ -157,8 +144,14 @@ define('controls/permissions/Sitemap', [
             );
 
             //this.$Map.openAll();
-            this.$Map.firstChild().click();
-            this.$Map.firstChild().open();
+            var FirstChild = this.$Map.firstChild();
+
+            // FirstChild.click();
+            FirstChild.open();
+
+            if (FirstChild.firstChild()) {
+                FirstChild.firstChild().click();
+            }
         },
 
         /**
@@ -168,29 +161,25 @@ define('controls/permissions/Sitemap', [
          * @param {String} name
          * @param {Object} params
          */
-        $appendSitemapItemTo : function(Parent, name, params)
-        {
+        $appendSitemapItemTo: function (Parent, name, params) {
             var i, len, text, right, Item, permission;
 
             var groups = QUILocale.getGroups(),
                 list   = [];
 
 
-            for (right in params)
-            {
+            for (right in params) {
                 if (!params.hasOwnProperty(right)) {
                     continue;
                 }
 
-                if (name.length)
-                {
-                    permission = name +'.'+ right;
-                } else
-                {
+                if (name.length) {
+                    permission = name + '.' + right;
+                } else {
                     permission = right;
                 }
 
-                text = 'permission.'+permission+'._header';
+                text = 'permission.' + permission + '._header';
 
                 if (QUILocale.exists('quiqqer/quiqqer', text)) {
                     text = QUILocale.get('quiqqer/quiqqer', text);
@@ -206,26 +195,33 @@ define('controls/permissions/Sitemap', [
                 }
 
                 list.push({
-                    translation : text,
-                    permission  : permission,
-                    right       : right
+                    translation: text,
+                    permission : permission,
+                    right      : right
                 });
             }
 
 
             // sort list
-            list.sort(function(a, b) {
-                return a.translation > b.translation;
+            list.sort(function (a, b) {
+                if (a.translation > b.translation) {
+                    return 1;
+                }
+
+                if (a.translation < b.translation) {
+                    return -1;
+                }
+
+                return 0;
             });
 
-            for (i = 0, len = list.length; i < len; i++)
-            {
+            for (i = 0, len = list.length; i < len; i++) {
                 Item = new QUISitemapItem({
-                    icon  : 'icon-gears',
+                    icon  : 'fa fa-gears',
                     value : list[i].permission,
                     text  : list[i].translation,
-                    events : {
-                        onClick : this.$onItemClick
+                    events: {
+                        onClick: this.$onItemClick
                     }
                 });
 
@@ -245,8 +241,7 @@ define('controls/permissions/Sitemap', [
          *
          * @param {Object} Item - qui/controls/sitemap/Item
          */
-        $onItemClick : function(Item)
-        {
+        $onItemClick: function (Item) {
             this.fireEvent('itemClick', [
                 Item,
                 Item.getAttribute('permission')

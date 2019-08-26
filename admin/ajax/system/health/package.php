@@ -5,13 +5,11 @@
  *
  * @return String
  */
-function ajax_system_health_package($pkg)
-{
-    return \QUI\System\Checks\Health::packageCheck( $pkg );
-}
-
-\QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_system_health_package',
-    array('pkg'),
+    function ($pkg) {
+        return QUI\System\Checks\Health::packageCheck($pkg);
+    },
+    ['pkg'],
     'Permission::checkSU'
 );

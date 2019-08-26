@@ -1,16 +1,21 @@
-
 /**
  * Global User Manager object
  *
  * @module Users
  * @author www.pcsg.de (Henning Leutz)
+ *
+ * @require qui/QUI
+ * @require classes/users/Manager
  */
+define('Users', [
 
-define(['classes/users/Manager'], function(Users)
-{
+    'qui/QUI',
+    'classes/users/Manager'
+
+], function (QUI, Users) {
     "use strict";
 
-    if ( typeof QUI.Users !== 'undefined' ) {
+    if (typeof QUI.Users !== 'undefined') {
         return QUI.Users;
     }
 

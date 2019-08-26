@@ -1,18 +1,21 @@
-
+/*
 .qui-xml-panel input,
 .qui-xml-panel select {
     float: left;
-    margin-right: 10px;
 }
 
-.qui-xml-panel select {
-    width: 150px;
+.qui-xml-panel select,
+.qui-xml-panel input[type="text"],
+.qui-xml-panel input[type="password"],
+.qui-xml-panel input[type="number"],
+.qui-xml-panel input[type="email"] {
+    width: 240px;
 }
 
-.qui-xml-panel p {
-    width: 100%;
-}
-
+/*.qui-xml-panel select {*/
+/*width: 150px;*/
+/*}*/
+/*
 .qui-xml-panel label {
     cursor: pointer;
     margin-top: 5px;
@@ -22,9 +25,22 @@
     width: 90%;
 }
 
-.qui-xml-panel .description {
-    clear: both;
-    float: left;
-    font-style: italic;
-    margin: 10px 0 0 5px;
+.qui-xml-panel-row {
+    width: 100%;
 }
+
+.qui-xml-panel-row td {
+    width: 100%;
+}
+
+.qui-xml-panel-row-item {
+    float: left;
+    width: 100%
+}
+
+.qui-xml-panel-row-item.description {
+    clear: none;
+    margin-top: 10px;
+    width: 100%
+}
+*/

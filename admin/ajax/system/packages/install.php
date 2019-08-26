@@ -5,26 +5,14 @@
  *
  * @param string|array $packages - Name of the package
  */
-function ajax_system_packages_install($packages)
-{
-    $json = json_decode($packages, true);
-
-    if ($json && is_array($json)) {
-        foreach ($json as $pkg => $version) {
-            QUI::getPackageManager()->install($pkg, $version);
-        }
-
-        return;
-    }
-
-    QUI::getPackageManager()->install($packages);
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_system_packages_install',
-    array('packages'),
-    array(
+    function ($packages) {
+        QUI::getPackageManager()->install(\json_decode($packages, true));
+    },
+    ['packages'],
+    [
         'Permission::checkAdminUser',
         'quiqqer.system.update'
-    )
+    ]
 );

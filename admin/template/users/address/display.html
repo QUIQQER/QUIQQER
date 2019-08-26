@@ -8,37 +8,46 @@
 {assign var=city value=$Address->getAttribute('city')}
 {assign var=country value=$Address->getAttribute('country')}
 
+{if empty($firstname) && isset($User)}
+    {assign var=firstname value=$User->getAttribute('firstname')}
+{/if}
+
 {if !$firstname}
-    {assign var=firstname value="---"}
+    {assign var=firstname value=""}
+{/if}
+
+
+{if empty($lastname) && isset($User)}
+    {assign var=lastname value=$User->getAttribute('lastname')}
 {/if}
 
 {if !$lastname}
-    {assign var=lastname value="---"}
+    {assign var=lastname value=""}
 {/if}
 
 
 {if !$street_no}
-    {assign var=street_no value="---"}
+    {assign var=street_no value=""}
 {/if}
 
 {if !$zip}
-    {assign var=zip value="---"}
+    {assign var=zip value=""}
 {/if}
 
 {if !$city}
-    {assign var=city value="---"}
+    {assign var=city value=""}
 {/if}
 
 {if !$country}
-    {assign var=country value="---"}
+    {assign var=country value=""}
 {/if}
 
-<address class="grid-100 vcard">
+<address class="vcard">
 
     <div class="adr">
         {if $Address->getAttribute('company')}
         <div class="company">
-            Firma<br />
+            {locale group="quiqqer/system" var="company"}<br />
             {$Address->getAttribute('company')}
         </div>
         {/if}
@@ -46,39 +55,54 @@
         <div class="salutation">{$salutation} {$firstname} {$lastname}</div>
 
         <div class="street-address">{$street_no}</div>
-        <div class="locality">{$city}</div >
-        <div class="postal-code">{$country} - {$zip}</div >
+        {if !empty($country)}
+        <div class="locality">{$zip} {$city}</div>
+        <div class="postal-code">{$country}</div>
+        {else}
+        <div class="locality">
+            <span class="postal-code">{$zip}</span>
+            {$city}
+        </div>
+        {/if}
 
         {if $Address->getAttribute('company') &&
             $Countries->existsCountryCode( $Address->getAttribute('company') )
         }
             {assign var=Country value=$Address->getCountry()}
             {if $Country->getCountry()}
-            <div class="country-name">{$Country->getName()}</div>
+                <div class="country-name">{$Country->getName()}</div>
             {/if}
         {/if}
     </div>
 
-    {assign var=maillist value=$Address->getMailList()}
-    {assign var=phonelist value=$Address->getPhoneList()}
 
-    {foreach from=$maillist item=mail}
-    <div class="mail">
-        <span class="icon icon-envelope"></span>
-        {$mail}
-    </div>
-    {/foreach}
+    {if $options['mail']}
+        {assign var=maillist value=$Address->getMailList()}
 
-    {foreach from=$phonelist item=phone}
-        <div class="{$phone.type}">
-            {assign var="cssclass" value="phone"}
-            {if $phone.type == 'mobile'}
-                {assign var="cssclass" value="mobile-phone"}
+        {foreach from=$maillist item=mail}
+        <div class="mail">
+            <span class="fa fa-envelope"></span>
+            {$mail}
+        </div>
+        {/foreach}
+    {/if}
+
+
+    {if $options['tel']}
+        {assign var=phonelist value=$Address->getPhoneList()}
+
+        {foreach from=$phonelist item=phone}
+            {if $phone.no !== ''}
+            <div class="{$phone.type}">
+                {assign var="cssclass" value="phone"}
+                {if $phone.type == 'mobile'}
+                    {assign var="cssclass" value="mobile-phone"}
+                {/if}
+
+                <span class="fa fa-{$cssclass}"></span>
+                {$phone.no}
+            </div>
             {/if}
-
-            <span class="icon icon-{$cssclass}"></span>
-            {$phone.no}
-        </p>
-    {/foreach}
-
+        {/foreach}
+    {/if}
 </address>

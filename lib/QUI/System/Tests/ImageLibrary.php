@@ -22,30 +22,32 @@ class ImageLibrary extends QUI\System\Test
      */
     public function __construct()
     {
-        $this->setAttributes(array(
+        parent::__construct();
+
+        $this->setAttributes([
             'title'       => 'Image Libraries',
             'description' => ''
-        ));
+        ]);
 
-        $this->_isRequired = self::TEST_IS_REQUIRED;
+        $this->isRequired = self::TEST_IS_REQUIRED;
     }
 
     /**
      * Check, if json_encode and json_decode available
      *
-     * @return self::STATUS_OK|self::STATUS_ERROR
+     * @return int self::STATUS_OK|self::STATUS_ERROR
      */
     public function execute()
     {
-        $libraries = array();
+        $libraries = [];
 
         // ImageMagick PHP
-        if (class_exists('Imagick')) {
+        if (\class_exists('Imagick')) {
             $libraries[] = 'PHP Image Magick';
         }
 
         // GD Lib
-        if (function_exists('imagecopyresampled')) {
+        if (\function_exists('imagecopyresampled')) {
             $libraries[] = 'GD Lib';
         }
 
@@ -55,7 +57,7 @@ class ImageLibrary extends QUI\System\Test
 
         $this->setAttribute(
             'title',
-            'Image Libraries ('.implode(', ', $libraries).')'
+            'Image Libraries ('.\implode(', ', $libraries).')'
         );
 
         return self::STATUS_OK;

@@ -35,38 +35,35 @@ define('controls/system/VHostServerCode', [
 
     'css!controls/system/VHostServerCode.css'
 
-], function(
-    QUI, QUIControl, QUILoader, QUIButton, FormUtils,
-    ProjectPopup, ControlUtils, StringUtils, Ajax, Locale
-) {
+], function (QUI, QUIControl, QUILoader, QUIButton, FormUtils,
+             ProjectPopup, ControlUtils, StringUtils, Ajax, Locale) {
     "use strict";
 
     var lg = 'quiqqer/system';
 
     return new Class({
 
-        Extends : QUIControl,
-        Type    : 'controls/system/VHosts',
+        Extends: QUIControl,
+        Type   : 'controls/system/VHosts',
 
-        Binds : [
+        Binds: [
             '$onInject'
         ],
 
-        options : {
-            host : false,
-            data : {}
+        options: {
+            host: false,
+            data: {}
         },
 
-        initialize : function(options)
-        {
-            this.parent( options );
+        initialize: function (options) {
+            this.parent(options);
 
             this.$Elm = null;
 
             this.Loader = new QUILoader();
 
             this.addEvents({
-                onInject : this.$onInject
+                onInject: this.$onInject
             });
         },
 
@@ -75,13 +72,12 @@ define('controls/system/VHostServerCode', [
          *
          * @return {HTMLElement}
          */
-        create : function()
-        {
+        create: function () {
             this.$Elm = new Element('div', {
-                'class' : 'control-system-vhostServerCode box'
+                'class': 'control-system-vhostServerCode box'
             });
 
-            this.Loader.inject( this.$Elm );
+            this.Loader.inject(this.$Elm);
 
             this.$InputProject = null;
             this.$InputLang    = null;
@@ -93,15 +89,13 @@ define('controls/system/VHostServerCode', [
         /**
          * event : on inject
          */
-        $onInject : function()
-        {
+        $onInject: function () {
             var self = this;
 
             this.Loader.show();
 
-            Ajax.get(['ajax_vhosts_get'], function(vhostData)
-            {
-                vhostData.host = self.getAttribute( 'host' );
+            Ajax.get(['ajax_vhosts_get'], function (vhostData) {
+                vhostData.host = self.getAttribute('host');
 
 
                 self.$Elm.set(
@@ -110,113 +104,109 @@ define('controls/system/VHostServerCode', [
                     '<form action="">' +
                     '<table class="data-table">' +
                     '<thead>' +
-                        '<tr>' +
-                            '<th colspan="2">' +
-                                Locale.get( lg, 'system.vhost.table.hostdata' ) +
-                            '</th>' +
-                        '</th>' +
+                    '<tr>' +
+                    '<th colspan="2">' +
+                    Locale.get(lg, 'system.vhost.table.hostdata') +
+                    '</th>' +
+                    '</th>' +
                     '</thead>' +
                     '<tbody>' +
-                        '<tr class="odd">' +
-                            '<td style="width: 150px;">' +
-                                '<label for="">' +
-                                    Locale.get( lg, 'system.vhost.label.domain' ) +
-                                '</label>' +
-                            '</td>' +
-                            '<td>' +
-                                '<input type="text" name="host" disabled="disabled" />' +
-                            '</td>' +
-                        '</tr>' +
+                    '<tr class="odd">' +
+                    '<td style="width: 150px;">' +
+                    '<label for="">' +
+                    Locale.get(lg, 'system.vhost.label.domain') +
+                    '</label>' +
+                    '</td>' +
+                    '<td>' +
+                    '<input type="text" name="host" disabled="disabled" />' +
+                    '</td>' +
+                    '</tr>' +
 
-                        '<tr class="even">' +
-                            '<td style="width: 150px;">' +
-                                '<label for="">' +
-                                    Locale.get( lg, 'project' ) +
-                                '</label>' +
-                            '</td>' +
-                            '<td>' +
-                                '<input type="text" name="project" />' +
-                            '</td>' +
-                        '</tr>' +
+                    '<tr class="even">' +
+                    '<td style="width: 150px;">' +
+                    '<label for="">' +
+                    Locale.get(lg, 'project') +
+                    '</label>' +
+                    '</td>' +
+                    '<td>' +
+                    '<input type="text" name="project" />' +
+                    '</td>' +
+                    '</tr>' +
 
-                        '<tr class="odd">' +
-                            '<td style="width: 150px;">' +
-                                '<label for="">'+
-                                    Locale.get( lg, 'language' ) +
-                                '</label>' +
-                            '</td>' +
-                            '<td>' +
-                                '<input type="text" name="lang" />' +
-                            '</td>' +
-                        '</tr>' +
+                    '<tr class="odd">' +
+                    '<td style="width: 150px;">' +
+                    '<label for="">' +
+                    Locale.get(lg, 'language') +
+                    '</label>' +
+                    '</td>' +
+                    '<td>' +
+                    '<input type="text" name="lang" />' +
+                    '</td>' +
+                    '</tr>' +
 
-                        '<tr class="even">' +
-                            '<td style="width: 150px;">' +
-                                '<label for="">' +
-                                    Locale.get( lg, 'site_id' ) +
-                                '</label>' +
-                            '</td>' +
-                            '<td>' +
-                                '<input type="text" name="id" />' +
-                            '</td>' +
-                        '</tr>' +
+                    '<tr class="even">' +
+                    '<td style="width: 150px;">' +
+                    '<label for="">' +
+                    Locale.get(lg, 'site_id') +
+                    '</label>' +
+                    '</td>' +
+                    '<td>' +
+                    '<input type="text" name="id" />' +
+                    '</td>' +
+                    '</tr>' +
 
-                        '<tr class="odd">' +
-                            '<td style="width: 150px;"></td>' +
-                            '<td class="control-system-vhostServerCode-siteBtn"></td>' +
-                        '</tr>' +
+                    '<tr class="odd">' +
+                    '<td style="width: 150px;"></td>' +
+                    '<td class="control-system-vhostServerCode-siteBtn"></td>' +
+                    '</tr>' +
 
                     '</tbody>' +
                     '</table>' +
                     '</form>'
                 );
 
-                self.$InputProject = self.$Elm.getElement( '[name="project"]' );
-                self.$InputLang    = self.$Elm.getElement( '[name="lang"]' );
-                self.$InputId      = self.$Elm.getElement( '[name="id"]' );
+                self.$InputProject = self.$Elm.getElement('[name="project"]');
+                self.$InputLang    = self.$Elm.getElement('[name="lang"]');
+                self.$InputId      = self.$Elm.getElement('[name="id"]');
 
                 // create controls
-                ControlUtils.parse( self.$Elm );
+                ControlUtils.parse(self.$Elm);
 
                 FormUtils.setDataToForm(
                     vhostData,
-                    self.$Elm.getElement( 'form' )
+                    self.$Elm.getElement('form')
                 );
 
                 // site button
                 var SiteButton = new QUIButton({
-                    textimage : 'fa fa-file-o icon-file-alt',
-                    text : 'Seite auswählen',
-                    events :
-                    {
-                        onClick : function()
-                        {
+                    textimage: 'fa fa-file-o',
+                    text     : 'Seite auswählen',
+                    events   : {
+                        onClick: function () {
                             new ProjectPopup({
-                                events :
-                                {
-                                    onSubmit : function(Popup, params)
-                                    {
+                                events: {
+                                    onSubmit: function (Popup, params) {
                                         self.$InputProject.value = params.project;
                                         self.$InputLang.value    = params.lang;
-                                        self.$InputId.value      = params.ids[ 0 ];
+                                        self.$InputId.value      = params.ids[0];
                                     }
                                 }
                             }).open();
                         }
                     }
                 }).inject(
-                    self.$Elm.getElement( '.control-system-vhostServerCode-siteBtn' )
+                    self.$Elm.getElement('.control-system-vhostServerCode-siteBtn')
                 );
 
-                self.$InputProject.addEvent('focus', function() {
+                self.$InputProject.addEvent('focus', function () {
                     SiteButton.click();
                 });
 
-                self.$InputLang.addEvent('focus', function() {
+                self.$InputLang.addEvent('focus', function () {
                     SiteButton.click();
                 });
 
-                self.$InputId.addEvent('focus', function() {
+                self.$InputId.addEvent('focus', function () {
                     SiteButton.click();
                 });
 
@@ -224,7 +214,7 @@ define('controls/system/VHostServerCode', [
                 self.Loader.show();
 
             }, {
-                vhost : this.getAttribute( 'host' )
+                vhost: this.getAttribute('host')
             });
         },
 
@@ -233,23 +223,21 @@ define('controls/system/VHostServerCode', [
          *
          * @param {Function} [callback] - (optional), callback function after saving
          */
-        save : function(callback)
-        {
+        save: function (callback) {
             var self = this;
 
             this.Loader.show();
 
-            Ajax.post('ajax_vhosts_save', function()
-            {
-                if ( typeof callback !== 'undefined' ) {
+            Ajax.post('ajax_vhosts_save', function () {
+                if (typeof callback !== 'undefined') {
                     callback();
                 }
             }, {
-                vhost : this.getAttribute( 'host' ),
-                data  : JSON.encode({
-                    project : self.$InputProject.value,
-                    lang    : self.$InputLang.value,
-                    id      : self.$InputId.value
+                vhost: this.getAttribute('host'),
+                data : JSON.encode({
+                    project: self.$InputProject.value,
+                    lang   : self.$InputLang.value,
+                    id     : self.$InputId.value
                 })
             });
         }

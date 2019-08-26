@@ -3,17 +3,14 @@
 /**
  * Returns not finished uploads for resume
  *
- * @return Array
+ * @return array
  */
-function ajax_uploads_unfinished()
-{
-    $UploadManager = new \QUI\Upload\Manager();
-
-    return $UploadManager->getUnfinishedUploadsFromUser();
-}
-
-\QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_uploads_unfinished',
+    function () {
+        $UploadManager = new QUI\Upload\Manager();
+        return $UploadManager->getUnfinishedUploadsFromUser();
+    },
     false,
     'Permission::checkAdminUser'
 );

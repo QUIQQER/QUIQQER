@@ -6,14 +6,12 @@
  *
  * @throws \QUI\Exception
  */
-function ajax_downloadTest()
-{
-    sleep(2);
-    QUI\Utils\System\File::downloadHeader(OPT_DIR.'quiqqer/quiqqer/README.md');
-}
-
-QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_downloadTest',
+    function () {
+        sleep(2);
+        QUI\Utils\System\File::downloadHeader(OPT_DIR . 'quiqqer/quiqqer/README.md');
+    },
     false,
     'Permission::checkAdminUser'
 );

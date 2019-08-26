@@ -1,0 +1,14 @@
+.qui-projects-settings-file-format {
+    float: left;
+}
+
+.qui-projects-settings-file-format-display {
+    border-top: 1px solid rgba(147, 128, 108, 0.25);
+    clear: both;
+    padding: 5px 8px;
+    width: 100%;
+}
+
+.qui-projects-settings-file-format input {
+    width: 100%;
+}

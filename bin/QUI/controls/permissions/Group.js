@@ -1,4 +1,3 @@
-
 /**
  * Permissions for a Group
  *
@@ -14,8 +13,7 @@ define('controls/permissions/Group', [
     'qui/controls/buttons/Button',
     'Locale'
 
-], function(Permission, QUIButton, QUILocale)
-{
+], function (Permission, QUIButton, QUILocale) {
     "use strict";
 
     var lg = 'quiqqer/system';
@@ -23,23 +21,23 @@ define('controls/permissions/Group', [
     return new Class({
 
         Extends: Permission,
-        Type: 'controls/permissions/Group',
+        Type   : 'controls/permissions/Group',
 
-        Binds : [
+        Binds: [
             '$onOpen'
         ],
 
-        initialize : function(Group, options)
-        {
+        initialize: function (Group, options) {
             this.parent(Group, options);
 
-            if (typeOf(Group) === 'classes/users/Group') {
+            if (typeOf(Group) === 'classes/groups/Group') {
                 this.$Bind = Group;
+                this.refresh();
             }
 
             this.addEvents({
-                onOpen : this.$onOpen,
-                onDestroy : function() {
+                onOpen   : this.$onOpen,
+                onDestroy: function () {
                     if (this.$Input) {
                         this.$Input.destroy();
                     }
@@ -48,82 +46,84 @@ define('controls/permissions/Group', [
         },
 
         /**
-         * User select
+         * Refresh the title
+         */
+        refresh: function () {
+            if (!this.$Bind) {
+                return;
+            }
+
+            if (!this.$Bind.isLoaded()) {
+                this.$Bind.load().then(function () {
+                    this.refresh();
+                }.bind(this));
+
+                return;
+            }
+
+            var Panel = this.getAttribute('Panel'),
+                name  = this.$Bind.getName(),
+                id    = this.$Bind.getId();
+
+            Panel.setAttribute(
+                'title',
+                QUILocale.get(lg, 'permissions.panel.title') + ' - ' + name + ' (' + id + ')'
+            );
+
+            Panel.refresh();
+        },
+
+        /**
+         * Group select
          *
          * @returns {Promise}
          */
-        $openBindSelect : function()
-        {
+        $openBindSelect: function () {
             var self = this;
 
-            return new Promise(function(resolve) {
+            return new Promise(function (resolve) {
 
                 var Container = new Element('div', {
-                    'class' : 'controls-permissions-select shadow',
+                    'class': 'controls-permissions-select shadow',
                     styles : {
-                        left: '-100%',
-                        opacity : 0
+                        left   : '-100%',
+                        opacity: 0
                     }
                 }).inject(self.getElm());
 
                 moofx(Container).animate({
-                    left    : 0,
-                    opacity : 1
+                    left   : 0,
+                    opacity: 1
                 }, {
-                    duration : 250,
-                    equation : 'ease-in-out',
-                    callback : function() {
-
-                        require(['controls/groups/Input'], function(Input)
-                        {
+                    duration: 250,
+                    equation: 'ease-in-out',
+                    callback: function () {
+                        require(['controls/groups/Select'], function (Select) {
                             Container.set(
                                 'html',
-                                '<h2>'+ QUILocale.get(lg, 'permissions.panel.select.group.title') +'</h2>'
+                                '<h2>' + QUILocale.get(lg, 'permissions.panel.select.group.title') + '</h2>'
                             );
 
-                            self.$Input = new Input({
-                                max      : 1,
-                                multible : false,
-                                styles   : {
-                                    margin : '0 auto',
-                                    width  : 200
+                            self.$Input = new Select({
+                                max     : 1,
+                                multiple: false,
+                                styles  : {
+                                    margin: '0 auto',
+                                    width : 300
                                 },
-                                events :
-                                {
-                                    onAdd : function(GroupSearch, groupid)
-                                    {
-                                        require(['Groups'], function(Groups)
-                                        {
+                                events  : {
+                                    onAddItem: function (GroupSearch, groupid) {
+                                        require(['Groups'], function (Groups) {
                                             self.$Bind = Groups.get(groupid);
-
-                                            // set status title
-                                            if (self.$Bind.isLoaded()) {
-                                                self.$Status.set(
-                                                    'html',
-                                                    QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
-                                                        name : '<span class="fa icon-group"></span>'+
-                                                               self.$Bind.getName()
-                                                    })
-                                                );
-                                            } else {
-                                                self.$Bind.load().then(function() {
-                                                    self.$Status.set(
-                                                        'html',
-                                                        QUILocale.get('quiqqer/system', 'permission.control.edit.title', {
-                                                            name : '<span class="fa icon-group"></span>'+
-                                                                   self.$Bind.getName()
-                                                        })
-                                                    );
-                                                });
-                                            }
+                                            self.refresh();
 
                                             moofx(Container).animate({
-                                                left : '-100%',
-                                                opacity : 0
+                                                left   : '-100%',
+                                                opacity: 0
                                             }, {
-                                                duration : 250,
-                                                equation : 'cubic-bezier(.42,.4,.46,1.29)',
-                                                callback : function() {
+                                                duration: 250,
+                                                equation: 'cubic-bezier(.42,.4,.46,1.29)',
+                                                callback: function () {
                                                     Container.destroy();
                                                     resolve();
                                                 }
@@ -141,25 +141,20 @@ define('controls/permissions/Group', [
         /**
          * event on open
          */
-        $onOpen : function()
-        {
+        $onOpen: function () {
             new QUIButton({
-                text : QUILocale.get('quiqqer/system', 'permission.control.btn.group.save'),
-                title : QUILocale.get('quiqqer/system', 'permission.control.btn.group.save'),
-                textimage : 'icon-save',
-                styles : {
-                    'float' : 'right'
+                text     : QUILocale.get('quiqqer/system', 'permission.control.btn.group.save'),
+                title    : QUILocale.get('quiqqer/system', 'permission.control.btn.group.save'),
+                textimage: 'fa fa-save',
+                styles   : {
+                    'float': 'right'
                 },
-                events : {
-                    onClick : function(Btn) {
+                events   : {
+                    onClick: function (Btn) {
+                        Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
-                        Btn.setAttribute(
-                            'textimage',
-                            'icon-spinner icon-spin fa fa-spinner fa-spin'
-                        );
-
-                        this.save().then(function() {
-                            Btn.setAttribute('textimage', 'icon-save');
+                        this.save().then(function () {
+                            Btn.setAttribute('textimage', 'fa fa-save');
                         });
 
                     }.bind(this)

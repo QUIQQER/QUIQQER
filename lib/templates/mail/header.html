@@ -1,227 +1,32 @@
-<html>
-<head>
-   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-   <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;" />
-
-   <title>{locale group="quiqqer/system" var="templates.mail.header.title"}</title>
-   {literal}
-   <style>
-
-        body {
-           background-color: #005186;
-           font: 12px verdana,tahoma,arial,helvetica, sans-serif;
-           margin: 0;
-           padding: 0;
-        }
-
-        .container {
-            width: 80%;
-            margin: 0 20px;
-            max-width: 1000px;
-        }
-
-        .body {
-           background-color: #ffffff;
-           width: 80%;
-           max-width: 1000px;
-        }
-
-        @media only screen and (max-device-width: 480px)
-        {
-            .body { width: 800px; }
-            .container { width: 800px; }
-        }
-
-        a img {
-           border: none;
-        }
-
-        a {
-           border: none;
-        }
-
-        td.permission {
-           padding: 30px 0 10px 0;
-        }
-
-        .permission {
-           font-family: 'Lucida Grande';
-           font-size: 10px;
-           color: #BCBCBC;
-           padding: 4px 0 4px 0;
-        }
-
-        .permission a {
-           color: #BCBCBC;
-        }
-
-        .permission p {
-           margin: 0 0 4px 0;
-        }
-
-        .header {
-           /*background-color: #353535;*/
-        }
-
-        .header h1 {
-            font-size: 32px;
-            font-weight: normal;
-            color: #bfbfbf;
-            display: inline;
-            text-align: left;
-            padding: 10px;
-        }
-
-        .date h3 {
-            font-size: 14px;
-            color: #bfbfbf;
-            font-weight: normal;
-            text-align: right;
-            display: inline;
-            font-style: italic;
-        }
-
-        td.sidebar {
-            padding: 22px 0 0 0;
-        }
-
-        .sidebar h2 {
-           font-size: 18px;
-           font-weight: bold;
-           color: #808080;
-           margin: 0 0 6px 4px;
-           padding: 0;
-           text-align: left;
-        }
-
-        .sidebar h2.issue {
-           color: #000000;
-           margin: 0 0 10px 10px;
-        }
-
-        .sidebar ul {
-           font-size: 12px;
-           color: #2679b9;
-           margin: 0 0 0 24px;
-           padding: 0;
-           text-align: left;
-        }
-
-        .sidebar ul a {
-            font-size: 12px;
-            color: #2679b9;
-        }
-        .sidebar ul li {
-            margin: 0 0 10px 0;
-        }
-        .sidebar p {
-           font-size: 11px;
-           color: #5f5f5f;
-           padding: 0;
-           margin: 0 0 10px 0;
-           text-align: left;
-        }
-
-        td.sidebg {
-           background-color: #f1f1f1;
-           padding: 10px 16px 10px 16px;
-        }
-
-        td.mainbar {
-            padding: 22px 14px 0 14px;
-            font: 12px verdana,tahoma,arial,helvetica, sans-serif;
-        }
-
-        .mainbar p {
-            font: 12px verdana,tahoma,arial,helvetica, sans-serif;
-            color: #333333;
-            margin: 0 0 10px 0;
-            text-align: left;
-        }
-
-        .mainbar td {
-            margin: 0;
-            padding: 0;
-            font: 12px verdana,tahoma,arial,helvetica, sans-serif;
-        }
-
-        .mainbar p.first {
-            margin-top: 10px;
-        }
-
-        .mainbar h1 {
-            font-size: 18px;
-            color: #004F87;
-        }
-
-        .mainbar h2 {
-            font-size: 16px;
-            color: #333;
-            margin: 10px 0 16px 0;
-        }
-
-        .mainbar h2 a {
-            font-size: 16px;
-            color: #333;
-            text-decoration: none;
-            font-style: normal;
-        }
-
-        .mainbar h3,
-        .mainbar h3 a {
-            color: #555;
-        }
-
-        .mainbar a {
-            font-size: 13px;
-            color: #2679b9;
-        }
-
-        .mainbar a.center {
-            font-size: 12px;
-            text-align: center;
-            display: block;
-            color: #999999;
-            padding: 8px 0 12px 0;
-            text-decoration: none;
-        }
-
-        .mainbar img.inline {
-            border: 1px solid #dedede;
-            padding: 4px;
-        }
-
-        td.footer {
-            padding: 0 0 10px 0;
-            border-top: 2px solid #ededed;
-        }
-
-        .footer p {
-            color: #a1a1a1;
-            font-size: 11px;
-            margin: 0;
-            padding: 0;
-        }
-
-        .footer p.first {
-            margin: 14px 0 0 0;
-        }
-
-        .footer a {
-            font-size: 11px;
-            color: #2679b9;
-        }
-   </style>
-    {/literal}
-</head>
-<body>
-
-<br />
-<br />
-
-<table width="100%" cellspacing="0" cellpadding="0">
-   <tr>
-      <td align="center">
-         <table cellspacing="10" cellpadding="0" class="body">
-            <tr>
-               <td valign="top" class="mainbar">
+<!-- HEADER -->
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border-collapse: collapse;table-layout: fixed; width: 100%; background: #000;">
+    <tr>
+        <td bgcolor="#f8f8f8" width="100%">
+            <div align="center" style="padding: 0px 15px 0px 15px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="500" class="wrapper">
+                    <!-- LOGO/PREHEADER TEXT -->
+                    <tr>
+                        <td style="padding: 30px 0px 30px 0px;" class="logo">
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="width: 100%;">
+                                <tr>
+                                    <td bgcolor="#f8f8f8" width="200" align="left">
+                                        <img alt="Logo" src="{image image=$Logo height=40 onlysrc='true' host=1}" height="40" style="display: block; font-family: Helvetica, Arial, sans-serif; color: #666666; font-size: 16px; max-width: 100%; height: auto;" border="0">
+                                    </td>
+                                    <td bgcolor="#f8f8f8" width="300" align="right" class="mobile-hide">
+                                        <table border="0" cellpadding="0" cellspacing="0">
+                                            <tr>
+                                                <td align="right" style="font-size: 14px; font-family: Arial, sans-serif; color: #666666; text-decoration: none;">
+                                                    {locale group="quiqqer/system" var="templates.mail.body.header.social"}
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </td>
+    </tr>
+</table>

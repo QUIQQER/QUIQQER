@@ -12,13 +12,13 @@ use Html2Text\Html2Text;
 /**
  * E-Mail
  *
- * @author   www.pcsg.de (Moritz Scholz)
- * @author   www.pcsg.de (Henning Leutz)
- * @licence  For copyright and license information, please view the /README.md
+ * @author  www.pcsg.de (Moritz Scholz)
+ * @author  www.pcsg.de (Henning Leutz)
+ * @licence For copyright and license information, please view the /README.md
  *
  * @requires phpmailer/phpmailer
  *
- * @example  $Mail = new \QUI\Mail(array(
+ * @example $Mail = new \QUI\Mail(array(
  * 'MAILFrom'     => $MAILFrom,
  * 'MAILFromText' => $MAILFromText,
  * 'MAILReplyTo'  => $MAILReplyTo
@@ -30,7 +30,7 @@ use Html2Text\Html2Text;
  * 'Body'    => $Body,
  * 'IsHTML'  => true
  * ));
- * @example  $Mail->send(array(
+ * @example $Mail->send(array(
  * 'MailTo'  => $MailTo,
  * 'Subject' => $Subject,
  * 'Body'    => $Body,
@@ -46,14 +46,14 @@ class Mail
      *
      * @var array
      */
-    private $_config;
+    private $config;
 
     /**
      * internal PHPMailer object
      *
      * @var \PHPMailer
      */
-    private $_mail;
+    private $Mail;
 
     /**
      * Mail template
@@ -66,7 +66,7 @@ class Mail
      * constructor
      * The E-Mail class uses the internal QUIQQER config settings
      *
-     * @param Array|bool $config - (optional) array(
+     * @param array|boolean $config - (optional) array(
      *                           'IsSMTP',
      *                           'SMTPServer',
      *                           'SMTPAuth',
@@ -79,14 +79,14 @@ class Mail
      */
     public function __construct($config = false)
     {
-        \QUI::getErrorHandler()->setAttribute('ERROR_8192', false);
+        QUI::getErrorHandler()->setAttribute('ERROR_8192', false);
 
         //require_once LIB_DIR .'extern/phpmail/class.phpmailer.php';
 
         // Standard Config setzen
-        $mailconf = \QUI::conf('mail');
+        $mailconf = QUI::conf('mail');
 
-        $this->_config = array(
+        $this->config = array(
             'IsSMTP'       => $mailconf['SMTP'],
             'SMTPServer'   => $mailconf['SMTPServer'],
             'SMTPAuth'     => $mailconf['SMTPAuth'],
@@ -101,61 +101,61 @@ class Mail
         // Übergebene Config übernehmen
         if ($config != false) {
             if (isset($config['IsSMTP'])) {
-                $this->_config['IsSMTP'] = $config['IsSMTP'];
+                $this->config['IsSMTP'] = $config['IsSMTP'];
             }
 
             if (isset($config['SMTPServer'])) {
-                $this->_config['SMTPServer'] = $config['SMTPServer'];
+                $this->config['SMTPServer'] = $config['SMTPServer'];
             }
 
             if (isset($config['SMTPAuth'])) {
-                $this->_config['SMTPAuth'] = $config['SMTPAuth'];
+                $this->config['SMTPAuth'] = $config['SMTPAuth'];
             }
 
             if (isset($config['SMTPUser'])) {
-                $this->_config['SMTPUser'] = $config['SMTPUser'];
+                $this->config['SMTPUser'] = $config['SMTPUser'];
             }
 
             if (isset($config['SMTPPass'])) {
-                $this->_config['SMTPPass'] = $config['SMTPPass'];
+                $this->config['SMTPPass'] = $config['SMTPPass'];
             }
 
             if (isset($config['MAILFrom'])) {
-                $this->_config['MAILFrom'] = $config['MAILFrom'];
+                $this->config['MAILFrom'] = $config['MAILFrom'];
             }
 
             if (isset($config['MAILFromText'])) {
-                $this->_config['MAILFromText'] = $config['MAILFromText'];
+                $this->config['MAILFromText'] = $config['MAILFromText'];
             }
 
             if (isset($config['MAILReplyTo'])) {
-                $this->_config['MAILReplyTo'] = $config['MAILReplyTo'];
+                $this->config['MAILReplyTo'] = $config['MAILReplyTo'];
             }
 
             if (isset($config['CharSet'])) {
-                $this->_config['CharSet'] = $config['CharSet'];
+                $this->config['CharSet'] = $config['CharSet'];
             }
         }
 
         // Mail Klasse laden und einstellungen übergeben
-        $this->_mail = new \PHPMailer();
+        $this->Mail = new \PHPMailer();
 
-        if ($this->_config['IsSMTP'] == true) {
-            //$this->_mail->IsSMTP();
-            $this->_mail->Mailer = 'smtp';
-            $this->_mail->Host = $this->_config['SMTPServer'];
-            $this->_mail->SMTPAuth = $this->_config['SMTPAuth'];
-            $this->_mail->Username = $this->_config['SMTPUser'];
-            $this->_mail->Password = $this->_config['SMTPPass'];
+        if ($this->config['IsSMTP'] == true) {
+            //$this->mail->IsSMTP();
+            $this->Mail->Mailer   = 'smtp';
+            $this->Mail->Host     = $this->config['SMTPServer'];
+            $this->Mail->SMTPAuth = $this->config['SMTPAuth'];
+            $this->Mail->Username = $this->config['SMTPUser'];
+            $this->Mail->Password = $this->config['SMTPPass'];
         }
 
-        $this->_mail->From = $this->_config['MAILFrom'];
-        $this->_mail->FromName = $this->_config['MAILFromText'];
-        $this->_mail->CharSet = $this->_config['CharSet'];
+        $this->Mail->From     = $this->config['MAILFrom'];
+        $this->Mail->FromName = $this->config['MAILFromText'];
+        $this->Mail->CharSet  = $this->config['CharSet'];
 
-        //$this->_mail->SetLanguage( 'de', LIB_DIR .'extern/phpmail/language/' );
+        //$this->mail->SetLanguage( 'de', LIB_DIR .'extern/phpmail/language/' );
 
-        \QUI::getErrorHandler()->setAttribute('ERROR_8192', true);
+        QUI::getErrorHandler()->setAttribute('ERROR_8192', true);
     }
 
     /**
@@ -168,35 +168,43 @@ class Mail
      *        'files'    => array('datei1', 'datei2', 'datei3')
      * ));
      *
-     * @param Array $mailconf
+     * @param array $mailconf
      *
      * @return true
      * @throws QUI\Exception
      */
     public function send($mailconf)
     {
-        if (!is_array($mailconf)) {
-            throw new QUI\Exception('Mail Error: send() Fehlender Paramater',
-                400);
+        if (!\is_array($mailconf)) {
+            throw new QUI\Exception(
+                'Mail Error: send() Fehlender Paramater',
+                400
+            );
         }
 
         if (!isset($mailconf['MailTo'])) {
-            throw new QUI\Exception('Mail Error: send() Fehlender Paramater MailTo',
-                400);
+            throw new QUI\Exception(
+                'Mail Error: send() Fehlender Paramater MailTo',
+                400
+            );
         }
 
         if (!isset($mailconf['Subject'])) {
-            throw new QUI\Exception('Mail Error: send() Fehlender Paramater Subject',
-                400);
+            throw new QUI\Exception(
+                'Mail Error: send() Fehlender Paramater Subject',
+                400
+            );
         }
 
         if (!isset($mailconf['Body'])) {
-            throw new QUI\Exception('Mail Error: send() Fehlender Paramater Body',
-                400);
+            throw new QUI\Exception(
+                'Mail Error: send() Fehlender Paramater Body',
+                400
+            );
         }
 
-        $Body = $mailconf['Body'];
-        $MailTo = $mailconf['MailTo'];
+        $Body    = $mailconf['Body'];
+        $MailTo  = $mailconf['MailTo'];
         $Subject = $mailconf['Subject'];
 
         if (isset($mailconf['MAILReplyTo'])) {
@@ -204,60 +212,60 @@ class Mail
         }
 
         $IsHTML = false;
-        $files = false;
+        $files  = false;
 
         if (isset($mailconf['IsHTML'])) {
             $IsHTML = $mailconf['IsHTML'];
         }
 
-        if (isset($mailconf['files']) && is_array($mailconf['files'])) {
+        if (isset($mailconf['files']) && \is_array($mailconf['files'])) {
             $files = $mailconf['files'];
         }
 
         if (DEBUG_MODE) {
-            $this->_mail->AddCC(\QUI::conf('mail', 'admin_mail'));
+            $this->Mail->addCC(QUI::conf('mail', 'admin_mail'));
         }
 
-        if (\QUI::conf('mail', 'bccToAdmin')) {
-            $this->_mail->AddBCC(\QUI::conf('mail', 'admin_mail'));
+        if (QUI::conf('mail', 'bccToAdmin')) {
+            $this->Mail->addCC(QUI::conf('mail', 'admin_mail'));
         }
 
-        \QUI::getErrorHandler()->setAttribute('ERROR_8192', false);
+        QUI::getErrorHandler()->setAttribute('ERROR_8192', false);
 
         if ($IsHTML) {
-            $this->_mail->IsHTML(true);
+            $this->Mail->isHTML(true);
         }
 
-        if (is_array($MailTo)) {
+        if (\is_array($MailTo)) {
             foreach ($MailTo as $mail) {
-                $this->_mail->AddAddress($mail);
+                $this->Mail->addAddress($mail);
             }
         } else {
-            $this->_mail->AddAddress($MailTo);
+            $this->Mail->addAddress($MailTo);
         }
 
         // Mail ReplyTo überschreiben
-        if (isset($MAILReplyTo) && is_array($MAILReplyTo)) {
+        if (isset($MAILReplyTo) && \is_array($MAILReplyTo)) {
             foreach ($MAILReplyTo as $mail) {
-                $this->_mail->AddReplyTo($mail);
+                $this->Mail->addReplyTo($mail);
             }
-        } elseif (isset($MAILReplyTo) && is_string($MAILReplyTo)) {
-            $this->_mail->AddReplyTo($MAILReplyTo);
+        } elseif (isset($MAILReplyTo) && \is_string($MAILReplyTo)) {
+            $this->Mail->addReplyTo($MAILReplyTo);
         }
 
         // Mail From überschreiben
         if (isset($mailconf['MAILFrom'])) {
-            $this->_mail->From = $mailconf['MAILFrom'];
+            $this->Mail->From = $mailconf['MAILFrom'];
         }
 
         if (isset($mailconf['MAILFromText'])) {
-            $this->_mail->FromName = $mailconf['MAILFromText'];
+            $this->Mail->FromName = $mailconf['MAILFromText'];
         }
 
 
-        if (is_array($files)) {
+        if (\is_array($files)) {
             foreach ($files as $file) {
-                if (!file_exists($file)) {
+                if (!\file_exists($file)) {
                     continue;
                 }
 
@@ -267,24 +275,28 @@ class Mail
                     $infos['mime_type'] = 'application/octet-stream';
                 }
 
-                $this->_mail->AddAttachment($file, '', 'base64',
-                    $infos['mime_type']);
+                $this->Mail->addAttachment(
+                    $file,
+                    '',
+                    'base64',
+                    $infos['mime_type']
+                );
             }
         }
 
-        $this->_mail->Subject = $Subject;
-        $this->_mail->Body = $Body;
+        $this->Mail->Subject = $Subject;
+        $this->Mail->Body    = $Body;
 
         if ($IsHTML) {
             $Html2Text = new Html2Text($Body);
 
-            $this->_mail->AltBody = $Html2Text->get_text();
+            $this->Mail->AltBody = $Html2Text->get_text();
         }
 
         // with mail queue?
         if (QUI::conf('mail', 'queue')) {
             $Queue = new Mail\Queue();
-            $id = $Queue->addToQueue($this);
+            $id    = $Queue->addToQueue($this);
 
             $Queue->sendById($id);
 
@@ -292,7 +304,7 @@ class Mail
         }
 
 
-        if ($this->_mail->Send()) {
+        if ($this->Mail->send()) {
             QUI::getErrorHandler()->setAttribute('ERROR_8192', true);
 
             return true;
@@ -301,7 +313,7 @@ class Mail
         QUI::getErrorHandler()->setAttribute('ERROR_8192', true);
 
         throw new QUI\Exception(
-            'Mail Error: '.$this->_mail->ErrorInfo,
+            'Mail Error: ' . $this->Mail->ErrorInfo,
             500
         );
     }
@@ -313,34 +325,34 @@ class Mail
      */
     public function getPHPMailer()
     {
-        return $this->_mail;
+        return $this->Mail;
     }
 
     /**
      * Mail params to array
      *
-     * @return Array
+     * @return array
      */
     public function toArray()
     {
         $IsHTML = true;
 
-        if ($this->_mail->ContentType === 'text/plain') {
+        if ($this->Mail->ContentType === 'text/plain') {
             $IsHTML = false;
         }
 
         return array(
-            'subject'      => $this->_mail->Subject,
-            'body'         => $this->_mail->Body,
-            'text'         => $this->_mail->AltBody,
-            'from'         => $this->_mail->From,
-            'fromName'     => $this->_mail->FromName,
+            'subject'      => $this->Mail->Subject,
+            'body'         => $this->Mail->Body,
+            'text'         => $this->Mail->AltBody,
+            'from'         => $this->Mail->From,
+            'fromName'     => $this->Mail->FromName,
             'ishtml'       => $IsHTML ? 1 : 0,
-            'mailto'       => $this->_mail->getAllRecipientAddresses(),
-            'replyto'      => $this->_mail->getReplyToAddresses(),
-            'cc'           => $this->_mail->getCcAddresses(),
-            'bcc'          => $this->_mail->getBccAddresses(),
-            'attachements' => $this->_mail->getAttachments()
+            'mailto'       => $this->Mail->getAllRecipientAddresses(),
+            'replyto'      => $this->Mail->getReplyToAddresses(),
+            'cc'           => $this->Mail->getCcAddresses(),
+            'bcc'          => $this->Mail->getBccAddresses(),
+            'attachements' => $this->Mail->getAttachments()
         );
     }
 }

@@ -5,38 +5,40 @@
  *
  * @param integer $gid - Group-ID
  * @param string $attributes - Attributes, json array
- * @param string $rights     - Rights, json array
+ * @param string $rights - Rights, json array
  */
-function ajax_groups_save($gid, $attributes, $rights)
-{
-    $Groups = \QUI::getGroups();
-    $Group  = $Groups->get( (int)$gid );
+QUI::$Ajax->registerFunction(
+    'ajax_groups_save',
+    function ($gid, $attributes, $rights) {
+        $Groups = QUI::getGroups();
+        $Group  = $Groups->get((int)$gid);
 
-    $attributes = json_decode( $attributes, true);
-    $rights     = json_decode( $rights, true );
+        $attributes = \json_decode($attributes, true);
+        $rights     = \json_decode($rights, true);
 
-    $Group->setRights( $rights );
-    $Group->setAttributes( $attributes );
-    $Group->save();
+        $Group->setRights($rights);
+        $Group->setAttributes($attributes);
+        $Group->save();
 
-    if ( isset( $attributes['active'] ) )
-    {
-        if ( $attributes['active'] == 1 )
-        {
-            $Group->activate();
-        } else
-        {
-            $Group->deactivate();
+        if (isset($attributes['parent'])) {
+            $Group->setParent($attributes['parent']);
         }
-    }
 
-    \QUI::getMessagesHandler()->addSuccess(
-        'Die Gruppe '. $Group->getAttribute('name') .' wurde erfolgreich gespeichert'
-    );
-}
+        if (isset($attributes['active'])) {
+            if ($attributes['active'] == 1) {
+                $Group->activate();
+            } else {
+                $Group->deactivate();
+            }
+        }
 
-\QUI::$Ajax->register(
-	'ajax_groups_save',
-    array( 'gid', 'attributes', 'rights' ),
+        QUI::getMessagesHandler()->addSuccess(
+            QUI::getLocale()->get('quiqqer/quiqqer', 'message.group.saved', [
+                'groupname' => $Group->getName(),
+                'id'        => $Group->getId()
+            ])
+        );
+    },
+    ['gid', 'attributes', 'rights'],
     'Permission::checkSU'
 );

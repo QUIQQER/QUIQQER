@@ -1,5 +1,8 @@
 
-
 .auth-memcached-table tfoot {
     border-top: 2px solid #dedede;
+}
+
+.auth-memcached-table tbody input {
+    width: 100%;
 }

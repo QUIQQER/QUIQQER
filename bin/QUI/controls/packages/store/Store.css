@@ -1,0 +1,12 @@
+.quiqqer-store {
+    float: left;
+    height: 100%;
+    width: 100%;
+}
+
+.quiqqer-store iframe {
+    border: none;
+    float: left;
+    height: 100%;
+    width: 100%;
+}

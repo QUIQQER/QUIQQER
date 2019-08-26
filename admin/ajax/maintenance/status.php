@@ -5,14 +5,11 @@
  *
  * @return Bool
  */
-
-function ajax_maintenance_status()
-{
-    return \QUI::conf('globals','maintenance');
-}
-
-\QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_maintenance_status',
+    function () {
+        return QUI::conf('globals', 'maintenance');
+    },
     false,
     'Permission::checkAdminUser'
 );

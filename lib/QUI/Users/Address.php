@@ -22,75 +22,100 @@ class Address extends QUI\QDOM
      *
      * @var QUI\Users\User
      */
-    protected $_User = null;
+    protected $User = null;
 
     /**
      * Address-ID
      *
-     * @var Integer
+     * @var integer
      */
-    protected $_id = false;
+    protected $id = false;
+
+    /**
+     * Custom address data
+     *
+     * @var array
+     */
+    protected $customData = [];
 
     /**
      * constructor
      *
      * @param QUI\Users\User $User - User
-     * @param Integer        $id   - Address id
+     * @param integer $id - Address id
      *
-     * @throws QUI\Exception
+     * @throws \QUI\Users\Exception
      */
     public function __construct(User $User, $id)
     {
-        $result = QUI::getDataBase()->fetch(array(
-            'from'  => Manager::TableAddress(),
-            'where' => array(
+        $result = QUI::getDataBase()->fetch([
+            'from'  => Manager::tableAddress(),
+            'where' => [
                 'id'  => (int)$id,
                 'uid' => $User->getId()
-            ),
+            ],
             'limit' => '1'
-        ));
+        ]);
 
-        $this->_User = $User;
-        $this->_id = (int)$id;
+        $this->User = $User;
+        $this->id   = (int)$id;
 
         if (!isset($result[0])) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'system',
-                    'exception.lib.user.address.not.found'
+                    'quiqqer/quiqqer',
+                    'exception.lib.user.address.not.found',
+                    [
+                        'addressId' => (int)$id,
+                        'userId'    => $User->getId()
+                    ]
                 )
             );
         }
 
-        unset($result[0]['id']);
-        unset($result[0]['uid']);
+        $data = \current($result);
 
-        $this->setAttributes($result[0]);
+        unset($data['id']);
+        unset($data['uid']);
+
+        if (!empty($data['custom_data'])) {
+            $this->setCustomData(\json_decode($data['custom_data'], true));
+        }
+
+        $this->setAttributes($data);
     }
 
     /**
-     * ID der Addresse
+     * Return the ID of the address
      *
-     * @return Integer
+     * @return integer
      */
     public function getId()
     {
-        return $this->_id;
+        return $this->id;
     }
 
     /**
-     * Telefon Nummer hinzufügen
+     * @return User
+     */
+    public function getUser()
+    {
+        return $this->User;
+    }
+
+    /**
+     * Add an phone number
      *
-     * @param Array $phone
+     * @param array $phone
      *
      * @example addPhone(array(
-     *        'no'   => '555 29 29',
-     *      'type' => 'tel'
-     * ))
+     *     'no'   => '555 29 29',
+     *     'type' => 'tel'
+     * ));
      */
     public function addPhone($phone)
     {
-        if (!is_array($phone)) {
+        if (!\is_array($phone)) {
             return;
         }
 
@@ -112,30 +137,31 @@ class Address extends QUI\QDOM
         $list = $this->getPhoneList();
 
         foreach ($list as $entry) {
-            if ($entry['type'] == $phone['type']
-                && $entry['no'] == $phone['no']
-            ) {
+            if ($entry['type'] == $phone['type'] && $entry['no'] == $phone['no']) {
                 return;
             }
         }
 
         $list[] = $phone;
 
-        $this->setAttribute('phone', json_encode($list));
+        $this->setAttribute('phone', \json_encode($list));
     }
 
     /**
-     * Editier ein bestehenden Eintrag
+     * Edit an existing entry
      *
      * @param integer $index
-     * @param string  $phone
+     * @param array|string $phone - [no => '+0049 929292', 'type' => 'fax'] or '+0049 929292'
      */
     public function editPhone($index, $phone)
     {
         $index = (int)$index;
 
-        if (!is_array($phone)) {
-            return;
+        if (!\is_array($phone)) {
+            $phone = [
+                'no'   => Orthos::clear($phone),
+                'type' => 'tel'
+            ];
         }
 
         if (!isset($phone['no'])) {
@@ -148,50 +174,101 @@ class Address extends QUI\QDOM
 
         $list = $this->getPhoneList();
 
-        $list[$index] = $phone;
+        $list[$index] = [
+            'no'   => Orthos::clear($phone['no']),
+            'type' => Orthos::clear($phone['type'])
+        ];
 
-        $this->setAttribute('phone', json_encode($list));
+        $this->setAttribute('phone', \json_encode($list));
     }
 
     /**
-     * Löscht die Phoneliste
+     * Delete the complete phone list
      */
     public function clearPhone()
     {
-        $this->setAttribute('phone', array());
+        $this->setAttribute('phone', []);
     }
 
     /**
-     * Telefon Liste
+     * Return the complete phone list
      *
-     * @return Array
+     * @return array
      */
     public function getPhoneList()
     {
-        if (is_array($this->getAttribute('phone'))) {
+        if (\is_array($this->getAttribute('phone'))) {
             return $this->getAttribute('phone');
         }
 
-        $result = json_decode($this->getAttribute('phone'), true);
+        $result = \json_decode($this->getAttribute('phone'), true);
 
-        if (is_array($result)) {
+        if (\is_array($result)) {
             return $result;
         }
 
-        return array();
+        return [];
     }
 
     /**
-     * Add a EMail address
+     * Return the first telephone number
+     *
+     * @return string
+     */
+    public function getPhone()
+    {
+        $list = $this->getPhoneList();
+
+        if (empty($list)) {
+            return '';
+        }
+
+        foreach ($list as $entry) {
+            if ($entry['type'] !== 'tel') {
+                continue;
+            }
+
+            return $entry['no'];
+        }
+
+        return '';
+    }
+
+    /**
+     * Return the first fax number
+     *
+     * @return string
+     */
+    public function getFax()
+    {
+        $list = $this->getPhoneList();
+
+        if (empty($list)) {
+            return '';
+        }
+
+        foreach ($list as $entry) {
+            if ($entry['type'] !== 'fax') {
+                continue;
+            }
+
+            return $entry['no'];
+        }
+
+        return '';
+    }
+
+    /**
+     * Add an Email address
      *
      * @param string $mail - new mail address
      *
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      */
     public function addMail($mail)
     {
         if (Orthos::checkMailSyntax($mail) == false) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'system',
                     'exception.lib.user.address.mail.wrong.syntax'
@@ -201,13 +278,13 @@ class Address extends QUI\QDOM
 
         $list = $this->getMailList();
 
-        if (in_array($mail, $list)) {
+        if (\in_array($mail, $list)) {
             return;
         }
 
         $list[] = $mail;
 
-        $this->setAttribute('mail', json_encode($list));
+        $this->setAttribute('mail', \json_encode($list));
     }
 
     /**
@@ -219,17 +296,17 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * E-Mail Eintrag editieren
+     * Edit an Email Entry
      *
      * @param integer $index - index of the mail
-     * @param string  $mail  - E-Mail (eq: my@mail.com)
+     * @param string $mail - E-Mail (eq: my@mail.com)
      *
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      */
     public function editMail($index, $mail)
     {
         if (Orthos::checkMailSyntax($mail) == false) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'system',
                     'exception.lib.user.address.mail.wrong.syntax'
@@ -238,39 +315,39 @@ class Address extends QUI\QDOM
         }
 
         $index = (int)$index;
-        $list = $this->getMailList();
+        $list  = $this->getMailList();
 
         $list [$index] = $mail;
 
-        $this->setAttribute('mail', json_encode($list));
+        $this->setAttribute('mail', \json_encode($list));
     }
 
     /**
-     * E-Mail Liste
+     * Return the Email list
      *
-     * @return Array
+     * @return array
      */
     public function getMailList()
     {
-        $result = json_decode($this->getAttribute('mail'), true);
+        $result = \json_decode($this->getAttribute('mail'), true);
 
-        if (is_array($result)) {
+        if (\is_array($result)) {
             return $result;
         }
 
-        return array();
+        return [];
     }
 
     /**
-     * Länder bekommen
+     * Return the address country
      *
      * @return QUI\Countries\Country
-     * @throws QUI\Exception
+     * @throws QUI\Users\Exception
      */
     public function getCountry()
     {
         if ($this->getAttribute('country') === false) {
-            throw new QUI\Exception(
+            throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
                     'system',
                     'exception.lib.user.address.no.country'
@@ -282,12 +359,10 @@ class Address extends QUI\QDOM
             return QUI\Countries\Manager::get(
                 $this->getAttribute('country')
             );
-
         } catch (QUI\Exception $Exception) {
-
         }
 
-        throw new QUI\Exception(
+        throw new QUI\Users\Exception(
             QUI::getLocale()->get(
                 'system',
                 'exception.lib.user.address.no.country'
@@ -296,79 +371,347 @@ class Address extends QUI\QDOM
     }
 
     /**
-     * Addresse speichern
+     * Saves the address
+     *
+     * @param null|QUI\Interfaces\Users\User $PermissionUser
+     * @throws QUI\Permissions\Exception
      */
-    public function save()
+    public function save($PermissionUser = null)
     {
-        $mail = json_encode($this->getMailList());
-        $phone = json_encode($this->getPhoneList());
+        if (!$this->getUser()) {
+            return;
+        }
+
+        if (\is_null($PermissionUser)) {
+            $PermissionUser = QUI::getUserBySession();
+        }
+
+        $this->getUser()->checkEditPermission($PermissionUser);
+
+        try {
+            QUI::getEvents()->fireEvent('userAddressSaveBegin', [$this, $this->getUser()]);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+
+        $mail  = \json_encode($this->getMailList());
+        $phone = \json_encode($this->getPhoneList());
 
         QUI::getDataBase()->update(
-            Manager::TableAddress(),
-            array(
-                'salutation' => Orthos::clear($this->getAttribute('salutation')),
-                'firstname'  => Orthos::clear($this->getAttribute('firstname')),
-                'lastname'   => Orthos::clear($this->getAttribute('lastname')),
-                'company'    => Orthos::clear($this->getAttribute('company')),
-                'delivery'   => Orthos::clear($this->getAttribute('delivery')),
-                'street_no'  => Orthos::clear($this->getAttribute('street_no')),
-                'zip'        => Orthos::clear($this->getAttribute('zip')),
-                'city'       => Orthos::clear($this->getAttribute('city')),
-                'country'    => Orthos::clear($this->getAttribute('country')),
-                'mail'       => $mail,
-                'phone'      => $phone
-            ), array(
-                'id' => $this->_id
-            )
+            Manager::tableAddress(),
+            [
+                'salutation'  => Orthos::clear($this->getAttribute('salutation')),
+                'firstname'   => Orthos::clear($this->getAttribute('firstname')),
+                'lastname'    => Orthos::clear($this->getAttribute('lastname')),
+                'company'     => Orthos::clear($this->getAttribute('company')),
+                'delivery'    => Orthos::clear($this->getAttribute('delivery')),
+                'street_no'   => Orthos::clear($this->getAttribute('street_no')),
+                'zip'         => Orthos::clear($this->getAttribute('zip')),
+                'city'        => Orthos::clear($this->getAttribute('city')),
+                'country'     => Orthos::clear($this->getAttribute('country')),
+                'mail'        => $mail,
+                'phone'       => $phone,
+                'custom_data' => \json_encode($this->getCustomData())
+            ],
+            [
+                'id' => $this->id
+            ]
         );
+
+        try {
+            QUI::getEvents()->fireEvent('userAddressSave', [$this, $this->getUser()]);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
     }
 
     /**
-     * Löscht den Eintrag
+     * Delete the address
+     *
+     * @throws QUI\Exception
      */
     public function delete()
     {
-        QUI::getDataBase()->exec(array(
+        QUI::getDataBase()->exec([
             'delete' => true,
-            'from'   => Manager::TableAddress(),
-            'where'  => array(
+            'from'   => Manager::tableAddress(),
+            'where'  => [
                 'id'  => $this->getId(),
-                'uid' => $this->_User->getId()
-            )
-        ));
+                'uid' => $this->User->getId()
+            ]
+        ]);
     }
 
     /**
-     * Adressen display
+     * Return the address as HTML display
      *
-     * @param Bool $active - Setzt den Eintrag auf checked (optional)
-     *
-     * @return String - HTML <address>
+     * @param array $options - options ['mail' => true, 'tel' => true]
+     * @return string - HTML <address>
      */
-    public function getDisplay($active = false)
+    public function getDisplay($options = [])
     {
-        $Engine = QUI::getTemplateManager()->getEngine(true);
+        try {
+            $Engine = QUI::getTemplateManager()->getEngine(true);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeDebugException($Exception);
 
-        $Engine->assign(array(
-            'User'      => $this->_User,
+            return '';
+        }
+
+        // defaults
+        if (!isset($options['tel'])) {
+            $options['tel'] = true;
+        }
+
+        if (!isset($options['mail'])) {
+            $options['mail'] = true;
+        }
+
+
+        $Engine->assign([
+            'User'      => $this->User,
             'Address'   => $this,
-            'active'    => $active,
-            'Countries' => new QUI\Countries\Manager()
-        ));
+            'Countries' => new QUI\Countries\Manager(),
+            'options'   => $options
+        ]);
 
         return $Engine->fetch(SYS_DIR.'template/users/address/display.html');
     }
 
     /**
-     * Addresse als JSON String
+     * Alias for getDisplay
      *
-     * @return String
+     * @param array $options - options
+     * @return string
+     */
+    public function render($options = [])
+    {
+        return $this->getDisplay($options);
+    }
+
+    /**
+     * @return string
+     */
+    public function getText()
+    {
+        $User = $this->User;
+
+        $salutation = $this->getAttribute('salutation');
+        $firstName  = $this->getAttribute('firstname');
+        $lastName   = $this->getAttribute('lastname');
+
+        $street_no = $this->getAttribute('street_no');
+        $zip       = $this->getAttribute('zip');
+        $city      = $this->getAttribute('city');
+        $country   = $this->getAttribute('country');
+
+        if (empty($firstName)) {
+            $firstName = $User->getAttribute('firstname');
+        }
+
+        if (!$firstName) {
+            $firstName = '';
+        }
+
+        if (empty($lastName)) {
+            $lastName = $User->getAttribute('lastname');
+        }
+
+        if (!$lastName) {
+            $lastName = '';
+        }
+
+
+        if (!$salutation) {
+            $salutation = '';
+        }
+
+        if (!$street_no) {
+            $street_no = '';
+        }
+
+        if (!$zip) {
+            $zip = '';
+        }
+
+        if (!$city) {
+            $city = '';
+        }
+
+        if (!$country) {
+            $country = '';
+        }
+
+        $result = "{$salutation} {$firstName} {$lastName}; {$street_no}; {$zip} {$city} {$country}";
+        $result = \preg_replace('/[  ]{2,}/', ' ', $result);
+
+        return $result;
+    }
+
+    /**
+     * Return the main name of the address
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        $User = $this->User;
+
+        $salutation = $this->getAttribute('salutation');
+        $firstName  = $this->getAttribute('firstname');
+        $lastName   = $this->getAttribute('lastname');
+
+        if (empty($firstName)) {
+            $firstName = $User->getAttribute('firstname');
+        }
+
+        if (!$firstName) {
+            $firstName = '';
+        }
+
+        if (empty($lastName)) {
+            $lastName = $User->getAttribute('lastname');
+        }
+
+        if (!$lastName) {
+            $lastName = '';
+        }
+
+        if (!$salutation) {
+            $salutation = '';
+        }
+
+        $result = "{$salutation} {$firstName} {$lastName}";
+        $result = \preg_replace('/[  ]{2,}/', ' ', $result);
+
+        return $result;
+    }
+
+    /**
+     * Set custom data entry
+     *
+     * @param string $key
+     * @param integer|float|double|bool|string $value
+     * @return void
+     */
+    public function setCustomDataEntry($key, $value)
+    {
+        if (\is_object($value)) {
+            return;
+        }
+
+        if (\is_array($value)) {
+            return;
+        }
+
+        if (!\is_numeric($value) && !\is_string($value) && !\is_bool($value)) {
+            return;
+        }
+
+        $this->customData[$key] = $value;
+        $this->setAttribute('customData', $this->customData);
+    }
+
+    /**
+     * Get custom data entry
+     *
+     * @param string $key
+     * @return mixed|null - Null if no entry set
+     */
+    public function getCustomDataEntry($key)
+    {
+        if (\array_key_exists($key, $this->customData)) {
+            return $this->customData[$key];
+        }
+
+        return null;
+    }
+
+    /**
+     * Set multiple custom data entries
+     *
+     * @param array $entries
+     * @return void
+     */
+    public function setCustomData($entries)
+    {
+        foreach ($entries as $k => $v) {
+            $this->setCustomDataEntry($k, $v);
+        }
+    }
+
+    /**
+     * Get all custom data entries
+     *
+     * @return array
+     */
+    public function getCustomData()
+    {
+        return $this->customData;
+    }
+
+    /**
+     * Return the address as json
+     *
+     * @return string
      */
     public function toJSON()
     {
-        $attributes = $this->getAttributes();
+        $attributes       = $this->getAttributes();
         $attributes['id'] = $this->getId();
 
-        return json_encode($attributes);
+        return \json_encode($attributes);
+    }
+
+    /**
+     * Check if this address equals another address
+     *
+     * @param Address $Address
+     * @param bool $compareCustomData (optional) - Consider custom data on comparison [default: false]
+     * @return bool
+     */
+    public function equals(Address $Address, $compareCustomData = false)
+    {
+        if ($this->getId() === $Address->getId()) {
+            return false;
+        }
+
+        $dataThis  = $this->getAttributes();
+        $dataOther = $Address->getAttributes();
+
+        // always ignore internal custom_data attribute
+        if (\array_key_exists('custom_data', $dataThis)) {
+            unset($dataThis['custom_data']);
+        }
+
+        if (\array_key_exists('custom_data', $dataOther)) {
+            unset($dataOther['custom_data']);
+        }
+
+        // consider actual custom data
+        if (!$compareCustomData) {
+            if (\array_key_exists('customData', $dataThis)) {
+                unset($dataThis['customData']);
+            }
+
+            if (\array_key_exists('customData', $dataOther)) {
+                unset($dataOther['customData']);
+            }
+        }
+
+        // ignore empty fields
+        foreach ($dataThis as $k => $v) {
+            if (empty($v)) {
+                unset($dataThis[$k]);
+            }
+        }
+
+        foreach ($dataOther as $k => $v) {
+            if (empty($v)) {
+                unset($dataOther[$k]);
+            }
+        }
+
+        return $dataThis == $dataOther;
     }
 }

@@ -1,17 +1,8 @@
-
 /**
  * Image input
  *
  * @module controls/projects/project/media/Input
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/controls/Control
- * @require qui/controls/buttons/Button
- * @require qui/utils/String
- * @require controls/projects/project/media/Popup
- * @require Ajax
- * @require Locale
- * @require css!controls/projects/project/media/Input.css
  *
  * @event onChange [ {self}, {String} ]
  */
@@ -19,6 +10,7 @@ define('controls/projects/project/media/Input', [
 
     'qui/controls/Control',
     'qui/controls/buttons/Button',
+    'controls/icons/Confirm',
     'qui/utils/String',
     'controls/projects/project/media/Popup',
     'Projects',
@@ -27,8 +19,7 @@ define('controls/projects/project/media/Input', [
 
     'css!controls/projects/project/media/Input.css'
 
-], function(QUIControl, QUIButton, QUIStringUtils, MediaPopup, Projects, Ajax, Locale)
-{
+], function (QUIControl, QUIButton, IconConfirm, QUIStringUtils, MediaPopup, Projects, Ajax, Locale) {
     "use strict";
 
     /**
@@ -41,28 +32,40 @@ define('controls/projects/project/media/Input', [
      */
     return new Class({
 
-        Extends : QUIControl,
-        Type    : 'controls/projects/project/media/Input',
+        Extends: QUIControl,
+        Type   : 'controls/projects/project/media/Input',
 
-        Binds : [
-            '$onCreate'
+        Binds: [
+            '$onInject',
+            '$openCSSClassDialog'
         ],
 
-        options : {
-            name   : '',
-            styles : false,
+        options: {
+            name  : '',
+            styles: false,
 
-            selectable_types     : false,   // you can specified which types are selectable
-            selectable_mimetypes : false  	// you can specified which mime types are selectable
+            fileid              : false,
+            breadcrumb          : true,     // you can specified if the breadcrumb is shown or not
+            selectable_types    : false,    // you can specified which types are selectable
+            selectable_mimetypes: false,    // you can specified which mime types are selectable
+            cssclasses          : false     // css classes can be selected
         },
 
-        initialize : function(options, Input)
-        {
+        initialize: function (options, Input) {
             this.parent(options);
 
-            this.$Input   = Input || null;
+            this.$Input = Input || null;
+
+            this.$Path    = null;
             this.$Preview = null;
             this.$Project = null;
+
+            this.$CSSButton   = null;
+            this.$MediaButton = null;
+
+            this.addEvents({
+                onImport: this.$onImport
+            });
         },
 
         /**
@@ -70,9 +73,8 @@ define('controls/projects/project/media/Input', [
          *
          * @param {Object} Project - classes/projects/project
          */
-        setProject : function(Project)
-        {
-            if (typeOf(Project) == 'string') {
+        setProject: function (Project) {
+            if (typeOf(Project) === 'string') {
                 Project = Projects.get(Project);
             }
 
@@ -86,25 +88,21 @@ define('controls/projects/project/media/Input', [
         /**
          * Create the DOMNode
          *
-         * @return {HTMLElement}
+         * @return {HTMLElement|Element}
          */
-        create : function()
-        {
+        create: function () {
             var self = this;
 
             this.$Elm = new Element('div', {
-                'class'      : 'qui-controls-project-media-input box',
-                'data-quiid' : this.getId()
+                'class'     : 'qui-controls-project-media-input box',
+                'data-quiid': this.getId()
             });
 
-            if (!this.$Input)
-            {
+            if (!this.$Input) {
                 this.$Input = new Element('input', {
-                    name : this.getAttribute('name')
+                    name: this.getAttribute('name')
                 }).inject(this.$Elm);
-
-            } else
-            {
+            } else {
                 this.$Elm.wraps(this.$Input);
             }
 
@@ -112,33 +110,45 @@ define('controls/projects/project/media/Input', [
                 this.$Elm.setStyles(this.getAttribute('styles'));
             }
 
+            this.$Input.set('data-quiid', this.getId());
+
             this.$Input.setStyles({
-                display : 'none'
+                display: 'none'
+            });
+
+            this.$Input.addEvent('change', function () {
+                self.setValue(this.value);
             });
 
             if (this.$Input.value !== '') {
-
                 var urlParams = QUIStringUtils.getUrlParams(this.$Input.value);
 
-                if ( "project" in urlParams ) {
+                if ("project" in urlParams) {
                     this.setProject(urlParams.project);
                 }
             }
 
-
             // preview
             this.$Preview = new Element('div', {
-                'class' : 'qui-controls-project-media-input-preview'
-            }).inject( this.$Elm );
+                html   : '&nbsp;',
+                'class': 'qui-controls-project-media-input-preview'
+            }).inject(this.$Elm);
+
+            this.$Path = new Element('div', {
+                html   : '&nbsp;',
+                'class': 'qui-controls-project-media-input-path'
+            }).inject(this.$Elm);
 
             this.$MediaButton = new QUIButton({
-                icon   : 'fa fa-picture-o icon-picture',
-                alt    : Locale.get('quiqqer/system', 'projects.project.site.media.input.select.alt'),
-                title  : Locale.get('quiqqer/system', 'projects.project.site.media.input.select.title'),
-                events :
-                {
-                    onClick : function()
-                    {
+                name  : 'media-input-image-select',
+                icon  : 'fa fa-picture-o',
+                alt   : Locale.get('quiqqer/system', 'projects.project.site.media.input.select.alt'),
+                title : Locale.get('quiqqer/system', 'projects.project.site.media.input.select.title'),
+                styles: {
+                    width: 50
+                },
+                events: {
+                    onClick: function () {
                         var value   = self.$Input.value,
                             project = '',
                             fileid  = false;
@@ -148,19 +158,18 @@ define('controls/projects/project/media/Input', [
                         }
 
                         if (typeOf(self.$Project) === 'string') {
-                            self.$Project = Projects.get( self.$Project );
+                            self.$Project = Projects.get(self.$Project);
                         }
 
                         if (self.$Project && "getName" in self.$Project) {
                             project = self.$Project.getName();
                         }
 
-                        if (value !== '')
-                        {
+                        if (value !== '') {
                             var urlParams = QUIStringUtils.getUrlParams(value);
 
                             if ("id" in urlParams) {
-                                fileid  = urlParams.id;
+                                fileid = urlParams.id;
                             }
 
                             if ("project" in urlParams) {
@@ -168,40 +177,65 @@ define('controls/projects/project/media/Input', [
                             }
                         }
 
+                        if (!fileid) {
+                            fileid = self.getAttribute('fileid');
+                        }
+
                         new MediaPopup({
-                            project : project,
-                            fileid  : fileid,
-                            selectable_types     : self.getAttribute( 'selectable_types' ),
-                            selectable_mimetypes : self.getAttribute( 'selectable_mimetypes' ),
-                            events :
-                            {
-                                onSubmit : function(Popup, params)
-                                {
+                            project             : project,
+                            fileid              : fileid,
+                            breadcrumb          : self.getAttribute('breadcrumb'),
+                            selectable_types    : self.getAttribute('selectable_types'),
+                            selectable_mimetypes: self.getAttribute('selectable_mimetypes'),
+                            events              : {
+                                onSubmit: function (Popup, params) {
                                     self.$Input.value = params.url;
                                     self.fireEvent('change', [self, self.getValue()]);
+                                    self.$change();
+
                                     self.$refreshPreview();
                                 }
                             }
                         }).open();
                     }
                 }
-            }).inject( this.$Elm );
+            }).inject(this.$Elm);
+
+            if (this.getAttribute('cssclasses')) {
+                this.$CSSButton = new QUIButton({
+                    name  : 'media-input-css-select',
+                    icon  : 'fa fa-css3',
+                    alt   : Locale.get('quiqqer/system', 'projects.project.site.media.input.cssclass.alt'),
+                    title : Locale.get('quiqqer/system', 'projects.project.site.media.input.cssclass.title'),
+                    styles: {
+                        width: 50
+                    },
+                    events: {
+                        onClick: this.$openCSSClassDialog
+                    }
+                }).inject(this.$Elm);
+            } else {
+                this.$Path.setStyle('width', 'calc(100% - 130px)');
+            }
 
             new QUIButton({
-                icon   : 'icon-remove',
-                alt    : Locale.get('quiqqer/system', 'projects.project.site.media.input.clear.alt'),
-                title  : Locale.get('quiqqer/system', 'projects.project.site.media.input.clear.alt'),
-                events :
-                {
-                    onClick : function() {
+                name  : 'media-input-clear',
+                icon  : 'fa fa-remove',
+                alt   : Locale.get('quiqqer/system', 'projects.project.site.media.input.clear.alt'),
+                title : Locale.get('quiqqer/system', 'projects.project.site.media.input.clear.alt'),
+                styles: {
+                    width: 50
+                },
+                events: {
+                    onClick: function () {
                         self.clear();
                     }
                 }
-            }).inject( this.$Elm );
+            }).inject(this.$Elm);
 
 
             this.$Input.addEvents({
-                focus : function() {
+                focus: function () {
                     self.$MediaButton.click();
                 }
             });
@@ -212,13 +246,20 @@ define('controls/projects/project/media/Input', [
         },
 
         /**
+         * event: on import
+         */
+        $onImport: function () {
+            this.$Input = this.getElm();
+            this.create();
+        },
+
+        /**
          * Return the value (URL of the selected file)
          * eq: image.php?****
          *
          * @return {String}
          */
-        getValue : function()
-        {
+        getValue: function () {
             return this.$Input ? this.$Input.value : '';
         },
 
@@ -228,12 +269,10 @@ define('controls/projects/project/media/Input', [
          *
          * @param {String} str - image.php string
          */
-        setValue : function(str)
-        {
-            if (str.toString().match('image.php')) {
-                this.$Input.value = str.toString();
-            }
+        setValue: function (str) {
+            str = str || '';
 
+            this.$Input.value = str.toString();
             this.fireEvent('change', [this, this.getValue()]);
             this.$refreshPreview();
         },
@@ -241,65 +280,117 @@ define('controls/projects/project/media/Input', [
         /**
          * Clear the value
          */
-        clear : function()
-        {
+        clear: function () {
             this.$Input.value = '';
+            this.$Path.set('html', '&nbsp;');
             this.fireEvent('change', [this, this.getValue()]);
+
+            this.$change();
             this.$refreshPreview();
         },
 
         /**
          * refresh the preview
          */
-        $refreshPreview : function()
-        {
+        $refreshPreview: function () {
             var value = this.$Input.value;
 
-            if (value === '' || value == '0')
-            {
-                this.$Preview.setStyle( 'background', null );
+            if (value === '' || value === '0') {
+                this.$Preview.setStyle('background', null);
+                this.$Preview.getElements('.qui-controls-project-media-input-preview-icon').destroy();
                 return;
             }
 
-            this.$Preview.getElements('.icon-refresh').destroy();
-            this.$Preview.getElements('.icon-warning-sign').destroy();
+            this.$Preview.getElements('.qui-controls-project-media-input-preview-icon').destroy();
+            this.$Preview.getElements('.fa-spinner').destroy();
+            this.$Preview.getElements('.fa-warning').destroy();
+
+            if (!value.match('image.php')) {
+                var Span = new Element('span', {
+                    'class': 'qui-controls-project-media-input-preview-icon'
+                }).inject(this.$Preview);
+
+                Span.addClass(value);
+                return;
+            }
 
             // loader image
             var MiniLoader = new Element('div', {
-                'class' : 'icon-refresh icon-spin',
-                styles  : {
-                    fontSize  : 18,
-                    height    : 20,
-                    left      : 4,
-                    position  : 'relative',
-                    textAlign : 'center',
-                    top       : 4,
-                    width     : 20
+                'class': 'fa fa-spinner fa-spin',
+                styles : {
+                    fontSize : 18,
+                    height   : 20,
+                    left     : 4,
+                    position : 'relative',
+                    textAlign: 'center',
+                    top      : 4,
+                    width    : 20
                 }
             }).inject(this.$Preview);
 
-            var self = this,
-                previewUrl = value;
+            var self = this;
 
-            if (value.substr(0, 10) == 'image.php?') {
-                previewUrl = URL_DIR + value +'&maxwidth=30&maxheight=30&quiadmin=1';
-            }
+            Ajax.get([
+                'ajax_media_url_rewrited',
+                'ajax_media_url_getPath'
+            ], function (result, path) {
+                var previewUrl = (URL_DIR + result).replace('//', '/');
 
-            // load the image
-            Asset.image(previewUrl, {
-                onLoad : function()
-                {
+                self.$Path.set('html', path);
+                self.$Path.set('title', path);
+
+                // load the image
+                require(['image!' + previewUrl], function () {
                     MiniLoader.destroy();
-                    self.$Preview.setStyle( 'background', 'url('+ previewUrl +') no-repeat center center' );
-                },
-                onError : function()
-                {
-                    self.$Preview.getElements( '.icon-refresh' )
-                        .removeClass( 'icon-refresh' )
-                        .removeClass( 'icon-spin' )
-                        .addClass( 'icon-warning-sign' );
-                }
+
+                    self.$Preview.setStyle(
+                        'background',
+                        'url(' + previewUrl + ') no-repeat center center'
+                    );
+
+                }, function () {
+                    console.log('error at: ', previewUrl);
+                    self.$Preview
+                        .getElements('.fa-spinner')
+                        .removeClass('fa-spin')
+                        .removeClass('fa-spinner')
+                        .addClass('fa-warning');
+                });
+
+            }, {
+                fileurl: value,
+                params : JSON.encode({
+                    height: 30,
+                    width : 30
+                })
             });
+        },
+
+        /**
+         * trigger on change event
+         */
+        $change: function () {
+            if ("createEvent" in document) {
+                var evt = document.createEvent("HTMLEvents");
+                evt.initEvent("change", false, true);
+                this.$Input.dispatchEvent(evt);
+            } else {
+                this.$Input.fireEvent("onchange");
+            }
+        },
+
+        /**
+         * Open FontAwesome select popup.
+         */
+        $openCSSClassDialog: function () {
+            new IconConfirm({
+                events: {
+                    onSubmit: function (Win, selected) {
+                        this.setValue(selected[0]);
+                        this.$change();
+                    }.bind(this)
+                }
+            }).open();
         }
     });
 });

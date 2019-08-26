@@ -4,13 +4,12 @@
  * Has the user the permission?
  *
  * @param $permission - name of the permission
+ * @param $ruleset
  */
-function ajax_permissions_session_getPermission($permission, $ruleset)
-{
-    return \QUI::getUserBySession()->getPermission( $permission, $ruleset );
-}
-
-\QUI::$Ajax->register(
+QUI::$Ajax->registerFunction(
     'ajax_permissions_session_getPermission',
-    array( 'permission', 'ruleset' )
+    function ($permission, $ruleset) {
+        return QUI::getUserBySession()->getPermission($permission, $ruleset);
+    },
+    array('permission', 'ruleset')
 );

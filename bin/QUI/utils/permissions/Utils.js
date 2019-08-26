@@ -6,24 +6,23 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * @require Locale
+ * @require classes/permissions/Permissions
  * @require css!utils/permissions/Utils.css
  */
-
 define('utils/permissions/Utils', [
 
     'Locale',
     'classes/permissions/Permissions',
     'css!utils/permissions/Utils.css'
 
-], function(QUILocale, Permissions)
-{
+], function (QUILocale, Permissions) {
     "use strict";
 
     var Perm = new Permissions();
 
     return {
 
-        Permissions : Perm,
+        Permissions: Perm,
 
         /**
          * Parse a permission param to a DOMNode
@@ -31,26 +30,25 @@ define('utils/permissions/Utils', [
          * @param {Object} params
          * @return {HTMLElement}
          */
-        parse : function(params)
-        {
+        parse: function (params) {
             if (!params.hasOwnProperty('name')) {
                 return new Element('div');
             }
 
             var title      = params.title.split(' '),
-                permission = params.name;
+                permission = params.name,
 
-            var Entry = new Element('div.qui-permission-entry');
+                Entry      = new Element('div.qui-permission-entry'),
 
-            var Input = new Element('input.right', {
-                type : 'text',
-                name : permission,
-                id   : 'perm-'+ permission,
+                Input      = new Element('input.right', {
+                    type: 'text',
+                    name: permission,
+                    id  : 'perm-' + permission,
 
-                'data-area' : params.area
-            });
+                    'data-area': params.area
+                });
 
-            Input.addClass( params.type );
+            Input.addClass(params.type);
 
             if (params.type == 'bool') {
                 Input.type = 'checkbox';
@@ -64,15 +62,14 @@ define('utils/permissions/Utils', [
 
 
             var Label = new Element('label', {
-                'for' : 'perm-'+ name,
-                html  : text
+                'for': 'perm-' + name,
+                html : text
             });
 
-            Input.inject( Entry );
-            Label.inject( Entry );
+            Input.inject(Entry);
+            Label.inject(Entry);
 
-            if ("desc" in params)
-            {
+            if ("desc" in params) {
                 var desc = params.desc.split(' ');
 
                 if (QUILocale.exists(desc[0], desc[1])) {

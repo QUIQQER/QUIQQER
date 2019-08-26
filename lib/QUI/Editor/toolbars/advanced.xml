@@ -1,0 +1,93 @@
+<toolbar>
+    <line>
+        <group>
+            <button>Source</button>
+            <button>Templates</button>
+        </group>
+
+        <group>
+            <button>Cut</button>
+            <button>Copy</button>
+            <separator/>
+            <button>Paste</button>
+            <button>PasteText</button>
+            <button>PasteFromWord</button>
+            <separator/>
+            <button>Undo</button>
+            <button>Redo</button>
+        </group>
+
+        <group>
+            <button>Find</button>
+            <button>Replace</button>
+            <separator/>
+            <button>Scayt</button>
+        </group>
+    </line>
+
+    <line>
+        <group>
+            <button>Bold</button>
+            <button>Italic</button>
+            <button>Underline</button>
+            <button>Strike</button>
+            <button>Subscript</button>
+            <button>Superscript</button>
+            <saparator/>
+            <button>RemoveFormat</button>
+        </group>
+
+        <group>
+            <button>NumberedList</button>
+            <button>BulletedList</button>
+            <separator/>
+            <button>Outdent</button>
+            <button>Indent</button>
+            <separator/>
+            <button>JustifyLeft</button>
+            <button>JustifyCenter</button>
+            <button>JustifyRight</button>
+            <button>JustifyBlock</button>
+            <separator/>
+            <button>Blockquote</button>
+            <button>CreateDiv</button>
+            <button>HorizontalRule</button>
+            <button>PageBreak</button>
+            <button>SpecialChar</button>
+        </group>
+
+        <group>
+            <button>Iframe</button>
+            <button>Html5video</button>
+            <button>Youtube</button>
+            <button>pre</button>
+            <button>ShowBlocks</button>
+            <button>SpecialChar</button>
+            <separator />
+            <button>Table</button>
+        </group>
+    </line>
+
+    <line>
+        <group>
+            <button>Styles</button>
+            <button>Format</button>
+            <button>Font</button>
+            <button>FontSize</button>
+        </group>
+
+        <group>
+            <button>TextColor</button>
+            <button>BGColor</button>
+        </group>
+
+        <group>
+            <button>Link</button>
+            <button>Unlink</button>
+            <button>Anchor</button>
+            <separator/>
+            <button>Image</button>
+            <button>FontAwesome</button>
+        </group>
+    </line>
+</toolbar>

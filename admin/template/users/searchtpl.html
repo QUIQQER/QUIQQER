@@ -1,134 +1,160 @@
-
 <form name="user-search" class="user-search-form" method="post">
-
-    <div class="user-search-table-input box">
-        <table class="data-table">
-           <thead>
-                <tr>
-                    <th>Suche nach:</th>
-                </tr>
-           </thead>
-           <tbody>
-               <tr class="odd">
-                   <td>
-                       <input
-                            type="text"
-                            value=""
-                            name="search"
-                            class="user-search-form-field"
-                            placeholder="Suche nach..."
-                       />
-                   </td>
-               </tr>
-           </tbody>
-        </table>
-    </div>
-
-    <div class="user-search-table-searchin box">
-        <table class="data-table">
+    <table class="data-table data-table-flexbox">
         <thead>
-            <tr>
-                <th colspan="2">
-                    Suche in:
-                </th>
-            </tr>
+        <tr>
+            <th>
+                {locale group="quiqqer/quiqqer" var="user.panel.search.title"}
+            </th>
+        </tr>
         </thead>
         <tbody>
-            <tr class="{cycle values="odd,even"}">
-                <td style="width: 30px;">
-                    <input type="checkbox" checked="checked" value="" name="uid" />
-                </td>
-                <td>
-                    <label for="uid">Benutzer-ID</label>
-                </td>
-            </tr>
-
-            <tr class="{cycle values="odd,even"}">
-                <td>
-                    <input type="checkbox" value="" checked="checked" name="username" />
-                </td>
-                <td>
-                    <label for="username">Benutzername</label>
-                </td>
-            </tr>
-
-            <tr class="{cycle values="odd,even"}">
-                <td>
-                    <input type="checkbox" value="" checked="checked" name="email" />
-                </td>
-                <td>
-                    <label for="email">E-Mail</label>
-                </td>
-            </tr>
-
-            <tr class="{cycle values="odd,even"}">
-                <td>
-                    <input type="checkbox" value="" checked="checked" name="firstname" />
-                </td>
-                <td>
-                    <label for="firstname">Vorname</label>
-                </td>
-            </tr>
-
-            <tr class="{cycle values="odd,even"}">
-                <td>
-                    <input type="checkbox" value="" checked="checked" name="lastname" />
-                </td>
-                <td>
-                    <label for="lastname">Nachname</label>
-                </td>
-            </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <input type="text"
+                           value=""
+                           name="search"
+                           class="user-search-form-field field-container-field"
+                           placeholder="{locale group="quiqqer/quiqqer" var="user.panel.search.placeholder"}"
+                    />
+                </label>
+            </td>
+        </tr>
         </tbody>
-        </table>
-    </div>
+    </table>
 
-    <div class="user-search-filter user-search-table-filter box">
-        <table class="data-table">
+    <table class="data-table data-table-flexbox">
         <thead>
-            <tr>
-                <th colspan="3">
-                    Filter:
-                </th>
-            </tr>
+        <tr>
+            <th>
+                {locale group="quiqqer/quiqqer" var="user.panel.search.in.title"}
+            </th>
+        </tr>
         </thead>
         <tbody>
-            <tr class="{cycle values="odd,even" reset=true}">
-                <td class="user-search-filter-c1">
-                    <label for="filter_status">Status</label>
-                </td>
-                <td class="user-search-filter-c2">
-                    <select name="filter_status">
-                        <option value="all">Alle</option>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/system" var="user_id"}
+                    </span>
+                    <span class="field-container-field">
+                        <input type="checkbox" checked="checked" value="" name="uid"/>
+                    </span>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/system" var="username"}
+                    </span>
+                    <span class="field-container-field">
+                        <input type="checkbox" checked="checked" value="" name="username"/>
+                    </span>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/system" var="email"}
+                    </span>
+                    <span class="field-container-field">
+                        <input type="checkbox" checked="checked" value="" name="email"/>
+                    </span>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/system" var="firstname"}
+                    </span>
+                    <span class="field-container-field">
+                        <input type="checkbox" checked="checked" value="" name="firstname"/>
+                    </span>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/system" var="lastname"}
+                    </span>
+                    <span class="field-container-field">
+                        <input type="checkbox" checked="checked" value="" name="lastname"/>
+                    </span>
+                </label>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="data-table data-table-flexbox">
+        <thead>
+        <tr>
+            <th>
+                {locale group="quiqqer/quiqqer" var="user.panel.search.filter.title"}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/system" var="status"}
+                    </span>
+                    <select name="filter_status" class="field-container-field">
+                        <option value="all" selected="selected">Alle</option>
                         <option value="1">Aktiviert</option>
                         <option value="0">Deaktiviert</option>
                         <option value="-1">Gelöscht</option>
                     </select>
-                </td>
-                <td class="user-search-filter-c3">&nbsp;</td>
-            </tr>
-            <tr class="{cycle values="odd,even"}">
-                <td class="user-search-filter-c1">
-                    <label for="filter_group">Gruppen</label>
-                </td>
-                <td class="user-search-filter-c2"><input type="hidden" name="filter_group" value="" class="groups" /></td>
-                <td class="user-search-filter-c3">&nbsp;</td>
-            </tr>
-            <tr class="{cycle values="odd,even"}">
-                <td class="user-search-filter-c1">
-                    <label for="filter_regdate_first">Erstellt ab</label>
-                </td>
-                <td class="user-search-filter-c2"><input type="date" name="filter_regdate_first" value="" /></td>
-                <td class="user-search-filter-c3">&nbsp;</td>
-            </tr>
-            <tr class="{cycle values="odd,even"}">
-                <td class="user-search-filter-c1">
-                    <label for="filter_regdate_last">Erstellt bis</label>
-                </td>
-                <td class="user-search-filter-c2"><input type="date" name="filter_regdate_last" value="" /></td>
-                <td class="user-search-filter-c3">&nbsp;</td>
-            </tr>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="user.panel.search.filter.regdate.first"}
+                    </span>
+                    <input type="date" name="filter_regdate_first" value="" class="field-container-field"/>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="user.panel.search.filter.regdate.last"}
+                    </span>
+                    <input type="date" name="filter_regdate_last" value="" class="field-container-field"/>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/system" var="groups"}
+                    </span>
+                    <input type="hidden"
+                           name="filter_group"
+                           value=""
+                           class="field-container-field"
+                           data-qui="controls/groups/Select"
+                    />
+                </label>
+            </td>
+        </tr>
         </tbody>
-        </table>
-    </div>
+    </table>
 
 </form>

@@ -7,6 +7,7 @@
 namespace QUI\Users;
 
 use QUI;
+use QUI\ERP\Currency\Handler as Currencies;
 
 /**
  * The standard user
@@ -19,11 +20,29 @@ use QUI;
 class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
 {
     /**
+     * @var null
+     */
+    protected $Locale = null;
+
+    /**
      * constructor
      */
     public function __construct()
     {
-        $this->setAttribute('username', 'nobody');
+        $this->refresh();
+    }
+
+    /**
+     * refresh the nobody object
+     * reads the data from the session
+     */
+    public function refresh()
+    {
+        $attributes = QUI::getSession()->get('attributes');
+
+        if (!empty($attributes)) {
+            $this->setAttributes($attributes);
+        }
     }
 
     /**
@@ -37,11 +56,35 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     }
 
     /**
-     * (non-PHPdoc)
-     *
-     * @see \QUI\Interfaces\Users\User::isAdmin()
+     * @param int $groupId
+     * @return mixed
+     */
+    public function isInGroup($groupId)
+    {
+        return in_array($groupId, $this->getGroups(false));
+    }
+
+    /**
+     * @deprecated
      */
     public function isAdmin()
+    {
+        return $this->canUseBackend();
+    }
+
+    /**
+     * Nobody is no company
+     * @return false
+     */
+    public function isCompany()
+    {
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canUseBackend()
     {
         return false;
     }
@@ -91,7 +134,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::activate()
      *
-     * @param String $code - activasion code [optional]
+     * @param string $code - activasion code [optional]
      *
      * @return bool
      */
@@ -137,7 +180,9 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      */
     public function save($ParentUser = false)
     {
-        return false;
+        QUI::getSession()->set('attributes', $this->getAttributes());
+
+        return true;
     }
 
     /**
@@ -157,15 +202,47 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @param array $params
      *
-     * @throws \QUI\Exception
+     * @throws \QUI\Users\Exception
      * @ignore
      */
     public function addAddress($params)
     {
-        throw new QUI\Exception(
-            QUI::getLocale(
+        throw new QUI\Users\Exception(
+            QUI::getLocale()->get(
                 'system',
                 'exception.lib.user.nobody.add.address'
+            )
+        );
+    }
+
+    /**
+     * Nobody can't be added to the group
+     *
+     * @param int $groupId
+     * @throws Exception
+     */
+    public function addToGroup($groupId)
+    {
+        throw new QUI\Users\Exception(
+            QUI::getLocale()->get(
+                'system',
+                'exception.lib.user.nobody.add.to.group'
+            )
+        );
+    }
+
+    /**
+     * Nobody can't be added to the group
+     *
+     * @param int $Group
+     * @throws Exception
+     */
+    public function removeGroup($Group)
+    {
+        throw new QUI\Users\Exception(
+            QUI::getLocale()->get(
+                'system',
+                'exception.lib.user.nobody.remove.group'
             )
         );
     }
@@ -189,7 +266,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::getType()
      *
-     * @return String
+     * @return string
      */
     public function getType()
     {
@@ -211,13 +288,25 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      *
+     * @see \QUI\Interfaces\Users\User::getUniqueId()
+     *
+     * @return false
+     */
+    public function getUniqueId()
+    {
+        return false;
+    }
+
+    /**
+     * (non-PHPdoc)
+     *
      * @see \QUI\Interfaces\Users\User::getName()
      *
-     * @return String
+     * @return string
      */
     public function getName()
     {
-        return $this->getUsername();
+        return QUI::getLocale()->get('quiqqer/quiqqer', 'nobody.name');
     }
 
     /**
@@ -225,21 +314,21 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::getUsername()
      *
-     * @return String
+     * @return string
      */
     public function getUsername()
     {
-        return $this->getAttribute('username');
+        return QUI::getLocale()->get('quiqqer/quiqqer', 'nobody.username');
     }
 
     /**
      * Return the user lang
      *
-     * @return String
+     * @return string
      */
     public function getLang()
     {
-        return \QUI::getLocale()->getCurrent();
+        return self::getLocale()->getCurrent();
     }
 
     /**
@@ -249,7 +338,19 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      */
     public function getLocale()
     {
-        return \QUI::getLocale();
+        if ($this->Locale) {
+            return $this->Locale;
+        }
+
+        $this->Locale = new QUI\Locale();
+
+        if (QUI::getSession()->get('CURRENT_LANG')) {
+            $this->Locale->setCurrent(QUI::getSession()->get('CURRENT_LANG'));
+        } else {
+            $this->Locale->setCurrent(QUI::getLocale()->getCurrent());
+        }
+
+        return $this->Locale;
     }
 
     /**
@@ -261,7 +362,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      */
     public function getAddressList()
     {
-        return array();
+        return [];
     }
 
     /**
@@ -269,14 +370,18 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      * \QUI\Users\Nobody cannot have a address
      *
      * @param integer $id
+     * @return void
      *
-     * @throws \QUI\Exception
+     * @throws \QUI\Users\Exception
      * @ignore
      */
     public function getAddress($id)
     {
-        throw new QUI\Exception(
-            QUI::getLocale('system', 'exception.lib.user.nobody.get.address')
+        throw new QUI\Users\Exception(
+            QUI::getLocale()->get(
+                'quiqqer/quiqqer',
+                'exception.lib.user.nobody.get.address'
+            )
         );
     }
 
@@ -288,13 +393,33 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      */
     public function getCountry()
     {
+        if (QUI::getSession()->get('country')) {
+            try {
+                return QUI\Countries\Manager::get(
+                    QUI::getSession()->get('country')
+                );
+            } catch (QUI\Exception $Exception) {
+            }
+        }
+
         // apache
         if (isset($_SERVER["GEOIP_COUNTRY_CODE"])) {
             try {
+                QUI::getSession()->set('country', $_SERVER["GEOIP_COUNTRY_CODE"]);
+
                 return QUI\Countries\Manager::get($_SERVER["GEOIP_COUNTRY_CODE"]);
-
             } catch (QUI\Exception $Exception) {
+            }
+        }
 
+        if (QUI::conf('globals', 'defaultCountry')) {
+            try {
+                QUI::getSession()->set('country', QUI::conf('globals', 'defaultCountry'));
+
+                return QUI\Countries\Manager::get(
+                    QUI::conf('globals', 'defaultCountry')
+                );
+            } catch (QUI\Exception $Exception) {
             }
         }
 
@@ -311,7 +436,7 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
         if (QUI::getSession()->get('currency')) {
             $currency = QUI::getSession()->get('currency');
 
-            if (QUI\Currency::existCurrency($currency)) {
+            if (Currencies::existCurrency($currency)) {
                 return $currency;
             }
         }
@@ -321,12 +446,12 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
         if ($Country) {
             $currency = $Country->getCurrencyCode();
 
-            if (QUI\Currency::existCurrency($currency)) {
+            if (Currencies::existCurrency($currency)) {
                 return $currency;
             }
         }
 
-        return QUI\Currency::getDefaultCurrency();
+        return Currencies::getDefaultCurrency();
     }
 
     /**
@@ -371,13 +496,20 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::getGroups()
      *
-     * @param Bool $array - returns the groups as objects (true) or as an array (false)
+     * @param boolean $array - returns the groups as objects (true) or as an array (false)
      *
-     * @return bool
+     * @return array
      */
     public function getGroups($array = true)
     {
-        return false;
+        $Guest    = new QUI\Groups\Guest();
+        $Everyone = new QUI\Groups\Everyone();
+
+        if ($array == true) {
+            return [$Guest, $Everyone];
+        }
+
+        return [$Guest->getId(), $Everyone->getId()];
     }
 
     /**
@@ -385,13 +517,28 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::getAvatar()
      *
-     * @param Bool $url - get the avatar with the complete url string
-     *
-     * @return bool
+     * @return \QUI\Projects\Media\Image|false
      */
-    public function getAvatar($url = false)
+    public function getAvatar()
     {
-        return false;
+        $Project = QUI::getProjectManager()->getStandard();
+        $Media   = $Project->getMedia();
+
+        return $Media->getPlaceholderImage();
+    }
+
+    /**
+     * Exists the permission in the user permissions
+     *
+     * @param string $permission
+     *
+     * @return boolean|string
+     */
+    public function hasPermission($permission)
+    {
+        $list = QUI::getPermissionManager()->getUserPermissionData($this);
+
+        return isset($list[$permission]) ? $list[$permission] : false;
     }
 
     /**
@@ -399,45 +546,25 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::getPermission()
      *
-     * @param String $right
-     * @param array  $ruleset - optional, you can specific a ruleset, a rules = array with rights
+     * @param string $right
+     * @param array|boolean $ruleset - optional, you can specific a ruleset, a rules = array with rights
      *
-     * @return bool
+     * @return boolean
      *
      */
     public function getPermission($right, $ruleset = false)
     {
-        // @todo "Jeder" Gruppe muss im System vorhanden sein
-        return false;
+        return QUI::getPermissionManager()->getUserPermission($this, $right, $ruleset);
     }
 
     /**
-     * (non-PHPdoc)
+     * not usable, nobody is always a company
      *
-     * @see \QUI\Interfaces\Users\User::setExtra()
-     *
-     * @param String               $field
-     * @param String|Integer|array $value
-     *
-     * @return bool
+     * @param bool $status
      */
-    public function setExtra($field, $value)
+    public function setCompanyStatus($status = false)
     {
-        return false;
-    }
-
-    /**
-     * (non-PHPdoc)
-     *
-     * @see \QUI\Interfaces\Users\User::loadExtra()
-     *
-     * @param \QUI\Projects\Project $Project
-     *
-     * @return bool
-     */
-    public function loadExtra(QUI\Projects\Project $Project)
-    {
-        return false;
+        return;
     }
 
     /**
@@ -445,8 +572,8 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::setPassword()
      *
-     * @param String               $new - new password
-     * @param \QUI\Users\User|bool $ParentUser
+     * @param string $new - new password
+     * @param \QUI\Users\User|boolean $ParentUser
      *
      * @return bool
      */
@@ -460,8 +587,8 @@ class Nobody extends QUI\QDOM implements QUI\Interfaces\Users\User
      *
      * @see \QUI\Interfaces\Users\User::checkPassword()
      *
-     * @param String $pass      - Password
-     * @param Bool   $encrypted - is the given password already encrypted?
+     * @param string $pass - Password
+     * @param boolean $encrypted - is the given password already encrypted?
      *
      * @return false
      */

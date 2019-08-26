@@ -22,9 +22,9 @@ interface Trash
     /**
      * Return the trash list
      *
-     * @param Array $params - \QUI\Utils\Grid params
+     * @param array $params - \QUI\Utils\Grid params
      *
-     * @return Array
+     * @return array
      */
     public function getList($params = array());
 }
