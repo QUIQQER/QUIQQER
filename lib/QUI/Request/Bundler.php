@@ -3,6 +3,7 @@
 /**
  * This file contains \QUI\Request\Bundler
  */
+
 namespace QUI\Request;
 
 use QUI;
@@ -21,7 +22,15 @@ class Bundler
      *
      * @var array
      */
-    protected $_includes = array();
+    protected $includes = [];
+
+    /**
+     * Bundler constructor.
+     */
+    public function __construct()
+    {
+        QUI::getAjax();
+    }
 
     /**
      * Read the $_REQUEST and create the response
@@ -32,101 +41,72 @@ class Bundler
             return '';
         }
 
-        $result = array();
+        $result   = [];
         $requests = $_REQUEST['quiqqerBundle'];
 
         foreach ($requests as $request) {
             try {
-                $result[$request['rid']] = $this->_parseRequest($request);
-
+                $result[$request['rid']] = $this->parseRequest($request);
             } catch (\Exception $Exception) {
-                $result[$request['rid']]['Exception'] = array(
+                $result[$request['rid']]['Exception'] = [
                     'message' => $Exception->getMessage(),
                     'code'    => $Exception->getCode()
-                );
+                ];
             }
         }
 
-        return json_encode($result);
+        return \json_encode($result);
     }
 
     /**
      *
      * @param array $request
      *
-     * @return string
+     * @return array
      * @throws QUI\Exception
      */
-    protected function _parseRequest($request)
+    protected function parseRequest($request)
     {
         if (!isset($request['request'])) {
             throw new QUI\Exception('Bad Request', 400);
         }
 
+        foreach ($request['params'] as $k => $value) {
+            $request['params'][$k] = \json_decode($value, true);
+        }
+
         $function = $request['request'];
 
-        $this->_includesPackage($function, $request);
-        $this->_includesProject($function, $request);
-        $this->_includes($function);
-
-        QUI\Ajax::checkPermissions($function);
-
-
-        // Params
-        $params = array();
-
-        foreach (QUI\Ajax::$_functions[$function] as $var) {
-
-            if (!isset($_REQUEST[$var])) {
-                $params[$var] = '';
-                continue;
-            }
-
-            $value = $_REQUEST[$var];
-
-            if (is_object($value)) {
-                $params[$var] = $value;
-                continue;
-            }
-
-            $value = urldecode($value);
-
-            if (get_magic_quotes_gpc()) {
-                $params[$var] = stripslashes($value);
-            } else {
-                $params[$var] = $value;
-            }
+        if (!\is_array($function)) {
+            $function = [$function];
         }
 
-        // execute
-        $result = call_user_func_array($function, $params);
+        $result = [
+            'maintenance' => QUI::conf('globals', 'maintenance') ? 1 : 0,
+            'jsCallbacks' => [] // @todo
+        ];
 
-
-        // json errors?
-        if (function_exists('json_last_error')) {
-
-            switch (json_last_error()) {
-                case JSON_ERROR_NONE:
-                    break;
-
-                case JSON_ERROR_DEPTH:
-                case JSON_ERROR_STATE_MISMATCH:
-                case JSON_ERROR_CTRL_CHAR:
-                case JSON_ERROR_SYNTAX:
-                case JSON_ERROR_UTF8:
-                default:
-                    QUI\System\Log::write(
-                        'JSON Error: '.json_last_error()
-                        .' :: '.print_r($result, true),
-                        'error'
-                    );
-                    break;
-            }
+        if (QUI::getMessagesHandler()) {
+            $result['message_handler'] = QUI::getMessagesHandler()->getMessagesAsArray(
+                QUI::getUserBySession()
+            );
         }
 
-        // session close -> performance
-        QUI::getSession()->getSymfonySession()->save();
+        foreach ($function as $fun) {
+            $this->includes($fun);
+            $this->includesPackage($fun, $request);
+            $this->includesProject($fun, $request);
 
+            QUI::getAjax()::checkPermissions($fun);
+
+            $data = QUI::getAjax()->callRequestFunction($fun, $request['params']);
+
+            // session close -> performance
+            QUI::getSession()->getSymfonySession()->save();
+
+            // maintenance flag
+            $result[$fun] = $data;
+        }
 
         return $result;
     }
@@ -136,98 +116,138 @@ class Bundler
      *
      * @param string $function - name of the function
      */
-    protected function _includes($function)
+    protected function includes($function)
     {
-        if (isset($this->_includes[$function])) {
+        if (\is_array($function)) {
+            foreach ($function as $f) {
+                $this->includes($f);
+            }
+
             return;
         }
 
-        $dir = dirname(__FILE__).'/';
-
-        $file = $dir.str_replace('_', '/', $function).'.php';
-        $file = Orthos::clearPath($file);
-        $file = realpath($file);
-
-        if (strpos($file, $dir) !== false && file_exists($file)) {
-            require_once $file;
+        if (isset($this->includes[$function])) {
+            return;
         }
 
-        $this->_includes[$function] = $file;
+        // admin ajax
+        $file = OPT_DIR.'quiqqer/quiqqer/admin/'.\str_replace('_', '/', $function).'.php';
+        $file = Orthos::clearPath($file);
+        $file = \realpath($file);
+
+        $dir = OPT_DIR.'quiqqer/quiqqer/admin/';
+
+        if (\strpos($file, $dir) !== false && \file_exists($file)) {
+            require_once $file;
+
+            $this->includes[$function] = $file;
+
+            return;
+        }
+
+
+        $file = CMS_DIR.\str_replace('_', '/', $function).'.php';
+        $file = Orthos::clearPath($file);
+        $file = \realpath($file);
+
+        if (\strpos($file, CMS_DIR) !== false && \file_exists($file)) {
+            require_once $file;
+
+            $this->includes[$function] = $file;
+
+            return;
+        }
     }
 
     /**
      * Include package files
      *
      * @param string $function - name of the function
-     * @param array  $request  - Request data
+     * @param array $request - Request data
      */
-    protected function _includesPackage($function, $request)
+    protected function includesPackage($function, $request)
     {
-        if (isset($request['package'])) {
+        if (!isset($request['params']['package'])) {
             return;
         }
 
-        if (isset($this->_includes[$function])) {
+        if (\is_array($function)) {
+            foreach ($function as $f) {
+                $this->includesPackage($f, $request);
+            }
+
             return;
         }
 
-        $package = $request['package'];
-        $dir = OPT_DIR;
+        if (isset($this->includes[$function])) {
+            return;
+        }
 
-        $firstpart = 'package_'.str_replace('/', '_', $package);
-        $ending = str_replace($firstpart, '', $function);
+        $package = $request['params']['package'];
+        $dir     = OPT_DIR;
 
-        $file = $dir.$package.str_replace('_', '/', $ending).'.php';
+        $firstpart = 'package_'.\str_replace('/', '_', $package);
+        $ending    = \str_replace($firstpart, '', $function);
+
+        $file = $dir.$package.\str_replace('_', '/', $ending).'.php';
         $file = Orthos::clearPath($file);
-        $file = realpath($file);
+        $file = \realpath($file);
 
-        if (strpos($file, $dir) !== false && file_exists($file)) {
+        if (\strpos($file, $dir) !== false && \file_exists($file)) {
             require_once $file;
         }
 
-        $this->_includes[$function] = $file;
+        $this->includes[$function] = $file;
     }
 
     /**
      * Include projects files
      *
      * @param string $function - name of the function
-     * @param array  $request  - Request data
+     * @param array $request - Request data
+     *
+     * @throws QUI\Exception
      */
-    protected function _includesProject($function, $request)
+    protected function includesProject($function, $request)
     {
-        if (!isset($request['project'])) {
+        if (!isset($request['params']['project'])) {
             return;
         }
 
-        if (isset($this->_includes[$function])) {
+        if (\is_array($function)) {
+            foreach ($function as $f) {
+                $this->includesProject($f, $request);
+            }
+
+            return;
+        }
+
+        if (isset($this->includes[$function])) {
             return;
         }
 
         try {
-            $Project = QUI::getProjectManager()->decode($request['project']);
-
+            $Project = QUI::getProjectManager()->decode($request['params']['project']);
         } catch (QUI\Exception $Exception) {
             $Project = QUI::getProjectManager()->getProject(
-                $request['project']
+                $request['params']['project']
             );
         }
 
         $projectDir = USR_DIR.$Project->getName();
-        $firstpart = 'project_'.$Project->getName().'_';
+        $firstpart  = 'project_'.$Project->getName().'_';
 
-        $file = str_replace($firstpart, '', $function);
-        $file = $projectDir.'/lib/'.str_replace('_', '/', $file).'.php';
+        $file = \str_replace($firstpart, '', $function);
+        $file = $projectDir.'/lib/'.\str_replace('_', '/', $file).'.php';
         $file = Orthos::clearPath($file);
-        $file = realpath($file);
+        $file = \realpath($file);
 
         $dir = $projectDir.'/lib/';
 
-        if (strpos($file, $dir) !== false && file_exists($file)) {
+        if (\strpos($file, $dir) !== false && \file_exists($file)) {
             require_once $file;
         }
 
-        $this->_includes[$function] = $file;
+        $this->includes[$function] = $file;
     }
-
 }

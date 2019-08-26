@@ -14,7 +14,7 @@ if ($User->getId() && $User->getLang()) {
 }
 
 // language
-if (isset($_REQUEST['lang']) && strlen($_REQUEST['lang']) === 2) {
+if (isset($_REQUEST['lang']) && \strlen($_REQUEST['lang']) === 2) {
     QUI::getLocale()->setCurrent($_REQUEST['lang']);
 }
 

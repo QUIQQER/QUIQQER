@@ -1,4 +1,3 @@
-
 /**
  * Ajax Bundler
  *
@@ -14,29 +13,27 @@ define('classes/request/Bundler', [
     'qui/QUI',
     'qui/classes/DOM'
 
-], function(QUI, QUIDom)
-{
+], function (QUI, QUIDom) {
     "use strict";
 
     return new Class({
 
-        Extends : QUIDom,
-        Type : 'classes/request/Bundler',
+        Extends: QUIDom,
+        Type   : 'classes/request/Bundler',
 
-        initialize : function(options)
-        {
+        initialize: function (options) {
             this.setAttributes({
-                timeframe : 500,
-                requestTimeout : 10000
+                timeframe     : 100,
+                requestTimeout: 10000
             });
 
             this.parent(options);
 
             this.$stack = {
-                get  : [],
-                post : [],
-                put  : [],
-                del  : []
+                get : [],
+                post: [],
+                put : [],
+                del : []
             };
 
             this.$delay = false;
@@ -54,8 +51,7 @@ define('classes/request/Bundler', [
          *
          * @return Promise
          */
-        get : function(request, params)
-        {
+        get: function (request, params) {
             return this.$addCall('get', request, params);
         },
 
@@ -67,8 +63,7 @@ define('classes/request/Bundler', [
          *
          * @return Promise
          */
-        post : function(request, params)
-        {
+        post: function (request, params) {
             return this.$addCall('post', request, params);
         },
 
@@ -80,8 +75,7 @@ define('classes/request/Bundler', [
          *
          * @return Promise
          */
-        put : function(request, params)
-        {
+        put: function (request, params) {
             return this.$addCall('put', request, params);
         },
 
@@ -93,11 +87,9 @@ define('classes/request/Bundler', [
          *
          * @return Promise
          */
-        del : function(request, params)
-        {
+        del: function (request, params) {
             return this.$addCall('del', request, params);
         },
-
 
         /**
          * Methods
@@ -111,36 +103,33 @@ define('classes/request/Bundler', [
          * @param {Object} params - parameter
          * @returns {Promise|Boolean}
          */
-        $addCall : function(method, request, params)
-        {
+        $addCall: function (method, request, params) {
             if (!(method in this.$stack)) {
                 return false;
             }
 
-            return new Promise(function(resolve, reject)
-            {
+            return new Promise(function (resolve, reject) {
                 this.$stack[method].push({
-                    request : request,
-                    params  : params,
-                    resolve : resolve,
-                    reject  : reject
+                    request: request,
+                    params : params,
+                    resolve: resolve,
+                    reject : reject,
+                    rid    : String.uniqueID()
                 });
 
                 this.$start();
-
             }.bind(this));
         },
 
         /**
          * start the delay
          */
-        $start : function()
-        {
+        $start: function () {
             if (this.$delay) {
                 return;
             }
 
-            this.$delay = (function() {
+            this.$delay = (function () {
                 this.execute();
                 this.$delay = false;
             }).delay(this.getAttribute('timeframe'), this);
@@ -149,8 +138,7 @@ define('classes/request/Bundler', [
         /**
          * Execute the stack and set the calls back
          */
-        execute : function()
-        {
+        execute: function () {
             var Get  = this.$stack.get;
             var Post = this.$stack.post;
             var Put  = this.$stack.put;
@@ -184,41 +172,35 @@ define('classes/request/Bundler', [
          * @param {String} method - get, post, put, delete
          * @param {Object} Params - request params
          */
-        $request : function(method, Params)
-        {
-            var R = new Request({
-                url     : URL_SYS_DIR +'ajaxBundler.php',
-                method  : method || 'post',
-                async   : true,
-                timeout : this.getAttribute('requestTimeout'),
+        $request: function (method, Params) {
+            var requestData = this.$parseStackForSend(Params);
 
-                onProgress : function() {
+            var R = new Request({
+                url    : URL_DIR + 'ajaxBundler.php',
+                method : method || 'post',
+                async  : true,
+                timeout: this.getAttribute('requestTimeout'),
+
+                onProgress: function () {
                     this.fireEvent('requestProgress', [this]);
                 }.bind(this),
 
-                onComplete : function() {
+                onComplete: function () {
                     this.fireEvent('requestComplete', [this]);
                 }.bind(this),
 
-                onSuccess : function(responseText)
-                {
-                    this.$parseResponse( responseText );
-
-                    for (var i = 0, len = Params.length; i < len; i++)
-                    {
-                        Params[i].resolve( Params[i].params );
-                    }
-
+                onSuccess: function (responseText) {
+                    this.$parseSuccessResponse(responseText, Params, requestData);
                 }.bind(this),
 
-                onCancel : function() {
+                onCancel: function () {
                     this.fireEvent('requestCancel', [this]);
                 }.bind(this)
             });
 
             R.send(
                 Object.toQueryString({
-                    quiqqerBundle : this.$parseStackForSend(Params)
+                    quiqqerBundle: requestData
                 })
             );
 
@@ -231,20 +213,17 @@ define('classes/request/Bundler', [
          * @param {Array} stack
          * @returns {Array}
          */
-        $parseStackForSend : function(stack)
-        {
+        $parseStackForSend: function (stack) {
             var i, k, p, len, stackEntry, stackParams, type_of;
             var result = [];
 
             for (i = 0, len = stack.length; i < len; i++) {
-
-                stackEntry = stack[i];
+                stackEntry  = stack[i];
                 stackParams = {};
 
                 p = stackEntry.params;
 
                 for (k in p) {
-
                     if (!p.hasOwnProperty(k)) {
                         continue;
                     }
@@ -255,10 +234,9 @@ define('classes/request/Bundler', [
 
                     type_of = typeOf(p[k]);
 
-                    if (type_of != 'string' &&
-                        type_of != 'number' &&
-                        type_of != 'array')
-                    {
+                    if (type_of !== 'string' &&
+                        type_of !== 'number' &&
+                        type_of !== 'array') {
                         continue;
                     }
 
@@ -266,9 +244,9 @@ define('classes/request/Bundler', [
                 }
 
                 result.push({
-                    request : stackEntry.request,
-                    rid     : String.uniqueID(),
-                    params  : stackParams
+                    request: stackEntry.request,
+                    rid    : stackEntry.rid,
+                    params : stackParams
                 });
             }
 
@@ -277,13 +255,46 @@ define('classes/request/Bundler', [
 
         /**
          *
-         * @param responseText
+         * @param {String} responseText
+         * @param {Object} Params
+         * @param {Object} requestData
          */
-        $parseResponse : function(responseText)
-        {
+        $parseSuccessResponse: function (responseText, Params, requestData) {
+            var k, data, result, entryData, entryResult;
 
-            console.info(responseText);
+            try {
+                result = JSON.decode(responseText);
+            } catch (e) {
+                console.error(e);
+                return;
+            }
 
+            var getDataByRID = function (data, id) {
+                for (var i = 0, len = data.length; i < len; i++) {
+                    if (data[i].rid === id) {
+                        return data[i];
+                    }
+                }
+
+                return false;
+            };
+
+            for (k in result) {
+                if (!result.hasOwnProperty(k)) {
+                    continue;
+                }
+
+                data        = getDataByRID(requestData, k);
+                entryData   = getDataByRID(Params, k);
+                entryResult = result[k];
+
+                entryData.resolve(entryResult);
+
+                // console.log('#################');
+                // console.log(entryData);
+                // console.log(result);
+                // console.log('#################');
+            }
         }
     });
 });

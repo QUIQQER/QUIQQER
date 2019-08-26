@@ -20,10 +20,11 @@ define('Ajax', [
 
     'qui/QUI',
     'qui/classes/request/Ajax',
+    'classes/request/Bundler',
     'qui/utils/Object',
     'Locale'
 
-], function (QUI, QUIAjax, Utils, Locale) {
+], function (QUI, QUIAjax, Bundler, Utils, Locale) {
     "use strict";
 
     // load message handling
@@ -31,7 +32,8 @@ define('Ajax', [
         // nothing
     });
 
-    var apiPoint = '/ajax.php';
+    var apiPoint    = '/ajax.php';
+    var AjaxBundler = new Bundler();
 
     if (typeof QUIQQER !== 'undefined' && "ajax" in QUIQQER) {
         apiPoint = QUIQQER.ajax;
@@ -49,6 +51,7 @@ define('Ajax', [
     }
 
     var Ajax = {
+
         $globalJSF : {}, // global javascript callback functions
         $onprogress: {},
         $url       : apiPoint,
@@ -263,7 +266,62 @@ define('Ajax', [
             });
 
             this.$onprogress[id] = new QUIAjax(options);
-            this.$onprogress[id].send(options);
+
+            if (typeof options.bundle !== 'undefined' && options.bundle === false) {
+                this.$onprogress[id].send(options);
+
+                return this.$onprogress[id];
+            }
+
+            // bundle the request
+            var Done;
+
+            switch (method) {
+                case 'put':
+                    Done = AjaxBundler.put(call, options);
+                    break;
+
+                case 'del':
+                    Done = AjaxBundler.del(call, options);
+                    break;
+
+                default:
+                case 'get':
+                case 'post':
+                    Done = AjaxBundler.post(call, options);
+                    break;
+            }
+
+            Done.then(function (result) {
+                this.$result = result;
+
+                if (typeOf(call) !== 'array') {
+                    this.fireEvent('success', [
+                        this.$result[call].result,
+                        this
+                    ]);
+
+                    return;
+                }
+
+                var params = [];
+
+                for (var i = 0, len = call.length; i < len; i++) {
+                    if (typeof this.$result[call[i]] !== 'undefined' &&
+                        typeof this.$result[call[i]].result !== 'undefined') {
+                        params.push(this.$result[call[i]].result);
+                    }
+                }
+
+                params.push(this);
+
+                this.fireEvent('success', params);
+
+                // this.fireEvent('error', [
+                //     this.$result.Exception,
+                //     this
+                // ]);
+            }.bind(this.$onprogress[id]));
 
             return this.$onprogress[id];
         },
@@ -471,7 +529,15 @@ define('Ajax', [
         },
 
         /**
+         * Send a PUT Request
          *
+         * @method Ajax#get
+         *
+         * @param {String|Array} call - PHP function
+         * @param {Function} callback - Callback function if the Request is finish
+         * @param {Object} [params]   - PHP parameter (optional)
+         *
+         * @return {Ajax}
          */
         put: function (call, callback, params) {
             // chrome cache get request, so we must extend the request
@@ -485,7 +551,15 @@ define('Ajax', [
         },
 
         /**
+         * Send a DELETE Request
          *
+         * @method Ajax#get
+         *
+         * @param {String|Array} call - PHP function
+         * @param {Function} callback - Callback function if the Request is finish
+         * @param {Object} [params]   - PHP parameter (optional)
+         *
+         * @return {Ajax}
          */
         del: function (call, callback, params) {
             // chrome cache get request, so we must extend the request
