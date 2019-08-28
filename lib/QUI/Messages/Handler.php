@@ -31,13 +31,17 @@ class Handler
      */
     public static function setup()
     {
-        QUI::getDataBase()->table()->addColumn(self::table(), [
-            'uid'     => 'int(11)',
-            'message' => 'text',
-            'mtype'   => 'varchar(100)',
-            'mcode'   => 'varchar(5)',
-            'mtime'   => 'int(11)'
-        ]);
+        try {
+            QUI::getDataBase()->table()->addColumn(self::table(), [
+                'uid'     => 'int(11)',
+                'message' => 'text',
+                'mtype'   => 'varchar(100)',
+                'mcode'   => 'varchar(5)',
+                'mtime'   => 'int(11)'
+            ]);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
     }
 
     /**
@@ -63,16 +67,22 @@ class Handler
             return $result;
         }
 
-        $list = QUI::getDataBase()->fetch([
-            'from'  => self::table(),
-            'where' => [
-                'uid' => $User->getId()
-            ]
-        ]);
+        try {
+            $list = QUI::getDataBase()->fetch([
+                'from'  => self::table(),
+                'where' => [
+                    'uid' => $User->getId()
+                ]
+            ]);
 
-        QUI::getDataBase()->delete(self::table(), [
-            'uid' => $User->getId()
-        ]);
+            QUI::getDataBase()->delete(self::table(), [
+                'uid' => $User->getId()
+            ]);
+        } catch (QUI\DataBase\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+
+            return [];
+        }
 
         foreach ($list as $entry) {
             $str = $entry['message'];
@@ -216,13 +226,17 @@ class Handler
             return;
         }
 
-        QUI::getDataBase()->insert(self::table(), [
-            'uid'     => $User->getId(),
-            'message' => $Message->getMessage(),
-            'mcode'   => (int)$Message->getCode(),
-            'mtime'   => (int)$Message->getAttribute('time'),
-            'mtype'   => $Message->getType()
-        ]);
+        try {
+            QUI::getDataBase()->insert(self::table(), [
+                'uid'     => $User->getId(),
+                'message' => $Message->getMessage(),
+                'mcode'   => (int)$Message->getCode(),
+                'mtime'   => (int)$Message->getAttribute('time'),
+                'mtype'   => $Message->getType()
+            ]);
+        } catch (QUI\DataBase\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
     }
 
     /**

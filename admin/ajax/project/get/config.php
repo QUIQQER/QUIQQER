@@ -12,7 +12,7 @@ QUI::$Ajax->registerFunction(
     function ($project, $param) {
         $Project = QUI\Projects\Manager::getProject($project);
 
-        if (isset($param)) {
+        if (!empty($param)) {
             return $Project->getConfig($param);
         }
 

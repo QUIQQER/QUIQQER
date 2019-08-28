@@ -20,10 +20,11 @@ define('Ajax', [
 
     'qui/QUI',
     'qui/classes/request/Ajax',
+    'classes/request/Bundler',
     'qui/utils/Object',
     'Locale'
 
-], function (QUI, QUIAjax, Utils, Locale) {
+], function (QUI, QUIAjax, Bundler, Utils, Locale) {
     "use strict";
 
     // load message handling
@@ -31,7 +32,8 @@ define('Ajax', [
         // nothing
     });
 
-    var apiPoint = '/ajax.php';
+    var apiPoint    = '/ajax.php';
+    var AjaxBundler = new Bundler();
 
     if (typeof QUIQQER !== 'undefined' && "ajax" in QUIQQER) {
         apiPoint = QUIQQER.ajax;
@@ -49,6 +51,7 @@ define('Ajax', [
     }
 
     var Ajax = {
+
         $globalJSF : {}, // global javascript callback functions
         $onprogress: {},
         $url       : apiPoint,
@@ -263,7 +266,44 @@ define('Ajax', [
             });
 
             this.$onprogress[id] = new QUIAjax(options);
-            this.$onprogress[id].send(options);
+
+            var useBundler = true;
+
+            if (typeof QUIQQER_CONFIG.globals.no_ajax_bundler !== 'undefined') {
+                useBundler = !parseInt(QUIQQER_CONFIG.globals.no_ajax_bundler);
+            }
+
+            if (useBundler === false || typeof options.bundle !== 'undefined' && options.bundle === false) {
+                this.$onprogress[id].send(options);
+
+                return this.$onprogress[id];
+            }
+
+            // bundle the request
+            var Done;
+
+            switch (method) {
+                case 'put':
+                    Done = AjaxBundler.put(call, options);
+                    break;
+
+                case 'del':
+                    Done = AjaxBundler.del(call, options);
+                    break;
+
+                default:
+                case 'get':
+                case 'post':
+                    Done = AjaxBundler.post(call, options);
+                    break;
+            }
+
+            Done.then(function (result) {
+                var Request = self.$onprogress[this];
+
+                Request.$result = result;
+                Request.$parseResult();
+            }.bind(id));
 
             return this.$onprogress[id];
         },
@@ -471,7 +511,15 @@ define('Ajax', [
         },
 
         /**
+         * Send a PUT Request
          *
+         * @method Ajax#get
+         *
+         * @param {String|Array} call - PHP function
+         * @param {Function} callback - Callback function if the Request is finish
+         * @param {Object} [params]   - PHP parameter (optional)
+         *
+         * @return {Ajax}
          */
         put: function (call, callback, params) {
             // chrome cache get request, so we must extend the request
@@ -485,7 +533,15 @@ define('Ajax', [
         },
 
         /**
+         * Send a DELETE Request
          *
+         * @method Ajax#get
+         *
+         * @param {String|Array} call - PHP function
+         * @param {Function} callback - Callback function if the Request is finish
+         * @param {Object} [params]   - PHP parameter (optional)
+         *
+         * @return {Ajax}
          */
         del: function (call, callback, params) {
             // chrome cache get request, so we must extend the request

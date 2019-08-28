@@ -3864,6 +3864,13 @@
         <locale name="quiqqer.settings.general.dev.development">
             <en><![CDATA[Development mode (for developers)]]></en>
         </locale>
+        <locale name="quiqqer.settings.general.dev.no_ajax_bundler">
+            <en><![CDATA[Do not use Ajax bundlers]]></en>
+        </locale>
+        <locale name="quiqqer.settings.general.dev.no_ajax_bundler.decription">
+            <en><![CDATA[By bundling the Ajax requests, less Ajax requests are sent to the server.]]></en>
+        </locale>
+
         <locale name="quiqqer.settings.general.updates.title">
             <en><![CDATA[Updates]]></en>
         </locale>
