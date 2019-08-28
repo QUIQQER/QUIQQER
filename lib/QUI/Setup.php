@@ -333,12 +333,14 @@ class Setup
 
         $OPT_DIR = OPT_DIR;
         $CMS_DIR = CMS_DIR;
+        $SYS_DIR = SYS_DIR;
 
-        $ajax      = CMS_DIR.'ajax.php';
-        $image     = CMS_DIR.'image.php';
-        $index     = CMS_DIR.'index.php';
-        $quiqqer   = CMS_DIR.'quiqqer.php';
-        $bootstrap = CMS_DIR.'bootstrap.php';
+        $ajax        = CMS_DIR.'ajax.php';
+        $ajaxBundler = CMS_DIR.'ajaxBundler.php';
+        $image       = CMS_DIR.'image.php';
+        $index       = CMS_DIR.'index.php';
+        $quiqqer     = CMS_DIR.'quiqqer.php';
+        $bootstrap   = CMS_DIR.'bootstrap.php';
 
         // bootstrap
         $bootstrapContent = $fileHeader."
@@ -368,6 +370,13 @@ if (file_exists(\$boot)) {
                    "require '{$OPT_DIR}quiqqer/quiqqer/ajax.php';\n";
 
         \file_put_contents($ajax, $content);
+
+        // ajaxBundler.php
+        $content = $fileHeader.
+                   "define('QUIQQER_SYSTEM',true);".
+                   "require '{$SYS_DIR}ajaxBundler.php';\n";
+
+        \file_put_contents($ajaxBundler, $content);
 
         // image.php
         $content = $fileHeader.
