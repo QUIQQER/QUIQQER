@@ -31,13 +31,17 @@ class Handler
      */
     public static function setup()
     {
-        QUI::getDataBase()->table()->addColumn(self::table(), [
-            'uid'     => 'int(11)',
-            'message' => 'text',
-            'mtype'   => 'varchar(100)',
-            'mcode'   => 'varchar(5)',
-            'mtime'   => 'int(11)'
-        ]);
+        try {
+            QUI::getDataBase()->table()->addColumn(self::table(), [
+                'uid'     => 'int(11)',
+                'message' => 'text',
+                'mtype'   => 'varchar(100)',
+                'mcode'   => 'varchar(5)',
+                'mtime'   => 'int(11)'
+            ]);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
     }
 
     /**
