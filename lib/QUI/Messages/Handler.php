@@ -231,7 +231,7 @@ class Handler
                 'mtype'   => $Message->getType()
             ]);
         } catch (QUI\DataBase\Exception $Exception) {
-            QUI\System\Log::writeException($Exception);;
+            QUI\System\Log::writeException($Exception);
         }
     }
 
