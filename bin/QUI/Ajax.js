@@ -267,7 +267,13 @@ define('Ajax', [
 
             this.$onprogress[id] = new QUIAjax(options);
 
-            if (typeof options.bundle !== 'undefined' && options.bundle === false) {
+            var useBundler = true;
+
+            if (typeof QUIQQER_CONFIG.globals.no_ajax_bundler !== 'undefined') {
+                useBundler = !parseInt(QUIQQER_CONFIG.globals.no_ajax_bundler);
+            }
+
+            if (useBundler === false || typeof options.bundle !== 'undefined' && options.bundle === false) {
                 this.$onprogress[id].send(options);
 
                 return this.$onprogress[id];
