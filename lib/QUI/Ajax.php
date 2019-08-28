@@ -134,6 +134,26 @@ class Ajax extends QUI\QDOM
     }
 
     /**
+     * Return all registered functions
+     *
+     * @return array
+     */
+    public static function getRegisteredFunctions()
+    {
+        return self::$functions;
+    }
+
+    /**
+     * Return all callable functions
+     *
+     * @return array
+     */
+    public static function getRegisteredCallables()
+    {
+        return self::$callables;
+    }
+
+    /**
      * Checks the rights if a function has a checkPermissions routine
      *
      * @param string|callback $reg_function
@@ -315,9 +335,11 @@ class Ajax extends QUI\QDOM
                 continue;
             }
 
+            $value = '';
+
             if ($values && isset($values[$var])) {
                 $value = $values[$var];
-            } else {
+            } elseif (isset($_REQUEST[$var])) {
                 $value = $_REQUEST[$var];
             }
 
