@@ -86,12 +86,6 @@ class Bundler
             'jsCallbacks' => [] // @todo
         ];
 
-        if (QUI::getMessagesHandler()) {
-            $result['message_handler'] = QUI::getMessagesHandler()->getMessagesAsArray(
-                QUI::getUserBySession()
-            );
-        }
-
         foreach ($function as $fun) {
             $this->includes($fun);
             $this->includesPackage($fun, $request);
@@ -106,6 +100,15 @@ class Bundler
 
             // maintenance flag
             $result[$fun] = $data;
+        }
+
+        // messages
+        $MessageHandler = QUI::getMessagesHandler();
+
+        if ($MessageHandler) {
+            $result['message_handler'] = $MessageHandler->getMessagesAsArray(QUI::getUserBySession());
+
+            $MessageHandler->clear();
         }
 
         return $result;

@@ -293,35 +293,11 @@ define('Ajax', [
             }
 
             Done.then(function (result) {
-                this.$result = result;
+                var Request = self.$onprogress[this];
 
-                if (typeOf(call) !== 'array') {
-                    this.fireEvent('success', [
-                        this.$result[call].result,
-                        this
-                    ]);
-
-                    return;
-                }
-
-                var params = [];
-
-                for (var i = 0, len = call.length; i < len; i++) {
-                    if (typeof this.$result[call[i]] !== 'undefined' &&
-                        typeof this.$result[call[i]].result !== 'undefined') {
-                        params.push(this.$result[call[i]].result);
-                    }
-                }
-
-                params.push(this);
-
-                this.fireEvent('success', params);
-
-                // this.fireEvent('error', [
-                //     this.$result.Exception,
-                //     this
-                // ]);
-            }.bind(this.$onprogress[id]));
+                Request.$result = result;
+                Request.$parseResult();
+            }.bind(id));
 
             return this.$onprogress[id];
         },

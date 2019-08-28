@@ -190,7 +190,7 @@ define('classes/request/Bundler', [
                 }.bind(this),
 
                 onSuccess: function (responseText) {
-                    this.$parseSuccessResponse(responseText, Params, requestData);
+                    this.$parseResponse(responseText, Params, requestData);
                 }.bind(this),
 
                 onCancel: function () {
@@ -259,7 +259,7 @@ define('classes/request/Bundler', [
          * @param {Object} Params
          * @param {Object} requestData
          */
-        $parseSuccessResponse: function (responseText, Params, requestData) {
+        $parseResponse: function (responseText, Params, requestData) {
             var k, data, result, entryData, entryResult;
 
             try {
@@ -289,11 +289,6 @@ define('classes/request/Bundler', [
                 entryResult = result[k];
 
                 entryData.resolve(entryResult);
-
-                // console.log('#################');
-                // console.log(entryData);
-                // console.log(result);
-                // console.log('#################');
             }
         }
     });
