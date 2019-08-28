@@ -269,7 +269,9 @@ define('Ajax', [
 
             var useBundler = true;
 
-            if (typeof QUIQQER_CONFIG.globals.no_ajax_bundler !== 'undefined') {
+            if (typeof QUIQQER_CONFIG !== 'undefined' &&
+                typeof QUIQQER_CONFIG.globals !== 'undefined' &&
+                typeof QUIQQER_CONFIG.globals.no_ajax_bundler !== 'undefined') {
                 useBundler = !parseInt(QUIQQER_CONFIG.globals.no_ajax_bundler);
             }
 
