@@ -275,6 +275,10 @@ define('Ajax', [
                 useBundler = !parseInt(QUIQQER_CONFIG.globals.no_ajax_bundler);
             }
 
+            if (typeof QUIQQER_FRONTEND !== 'undefined' && QUIQQER_FRONTEND) {
+                useBundler = false;
+            }
+
             if (useBundler === false || typeof options.bundle !== 'undefined' && options.bundle === false) {
                 this.$onprogress[id].send(options);
 
