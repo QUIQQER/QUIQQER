@@ -2355,7 +2355,7 @@ define('controls/grid/Grid', [
 
                     var Item = new QUIContextItem({
                         text  : Btn.getAttribute('text'),
-                        icon  : Btn.getAttribute('image') || Btn.getAttribute('textimage'),
+                        icon  : Btn.getAttribute('icon') || Btn.getAttribute('textimage') || Btn.getAttribute('image'),
                         events: {
                             onClick: itemClick.bind(Btn)
                         }
