@@ -4,18 +4,24 @@ if (!isset($_REQUEST['quiid'])) {
     exit;
 }
 
-define('QUIQQER_SYSTEM', true);
+\define('QUIQQER_SYSTEM', true);
 
-require dirname(dirname(dirname(dirname(dirname(dirname(dirname(__FILE__))))))) . '/header.php';
+$dir = \dirname(\dirname(\dirname(\dirname(\dirname(\dirname(\dirname(__FILE__)))))));
+
+require $dir.'/header.php';
 
 $Icons = new QUI\Icons\Handler();
 
 $icons = $Icons->toArray();
 $files = $Icons->getCSSFiles();
 
+\header_remove('X-Frame-Options');
+\header('X-Frame-Options: SAMEORIGIN');
+
 ?>
-<html>
+<html lang="en">
 <head>
+    <title>Icon List</title>
 
     <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-core.js"></script>
     <script src="<?php echo URL_OPT_DIR; ?>bin/qui/qui/lib/mootools-more.js"></script>
