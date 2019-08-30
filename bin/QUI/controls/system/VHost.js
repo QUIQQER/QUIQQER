@@ -5,20 +5,7 @@
  *
  * @module controls/system/VHost
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/loader/Loader
- * @require qui/utils/Form
- * @require controls/grid/Grid
- * @require utils/Controls
- * @require qui/utils/String
- * @require Ajax
- * @require Locale
- * @require Projects
- * @require css!controls/system/VHost.css
  */
-
 define('controls/system/VHost', [
 
     'qui/QUI',

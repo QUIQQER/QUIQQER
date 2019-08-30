@@ -4,21 +4,7 @@
  *
  * @module controls/system/VHostServerCode
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/loader/Loader
- * @require qui/controls/buttons/Button
- * @require qui/utils/Form
- * @require controls/projects/Popup
- * @require utils/Controls
- * @require qui/utils/String
- * @require Ajax
- * @require Locale
- * @require Projects
- * @require css!controls/system/VHostServerCode.css
  */
-
 define('controls/system/VHostServerCode', [
 
     'qui/QUI',

@@ -3,14 +3,6 @@
  *
  * @module controls/system/settings/Auth
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/buttons/Button
- * @require utils/Template
- * @require Ajax
- * @require Locale
- * @require css!controls/system/settings/Auth.css
  */
 define('controls/system/settings/Auth', [
 

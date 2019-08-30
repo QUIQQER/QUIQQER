@@ -5,10 +5,6 @@
  *
  * @module controls/system/settings/FormatSettings
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require Ajax
  */
 define('controls/system/settings/FormatSettings', [
 

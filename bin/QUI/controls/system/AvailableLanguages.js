@@ -4,13 +4,6 @@
  *
  * @module controls/system/AvailableLanguages
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/loader/Loader
- * @require Ajax
- * @require Locale
- * @require css!controls/system/AvailableLanguages.css
  */
 define('controls/system/AvailableLanguages', [
 

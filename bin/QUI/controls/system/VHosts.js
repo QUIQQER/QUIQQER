@@ -3,18 +3,7 @@
  *
  * @module controls/system/VHosts
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/desktop/Panel
- * @require qui/controls/windows/Prompt
- * @require qui/controls/windows/Confirm
- * @require controls/grid/Grid
- * @require controls/system/VHost
- * @require controls/system/VHostServerCode
- * @require Ajax
- * @require Locale
  */
-
 define('controls/system/VHosts', [
 
     'qui/QUI',

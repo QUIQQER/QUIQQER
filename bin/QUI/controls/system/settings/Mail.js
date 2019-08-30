@@ -3,10 +3,6 @@
  *
  * @module controls/system/settings/Mail
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require Ajax
  */
 define('controls/system/settings/Mail', [
 

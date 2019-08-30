@@ -3,11 +3,6 @@
  *
  * @module controls/system/settings/Config
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/windows/Confirm
- * @require Ajax
  */
 define('controls/system/settings/Config', [
 

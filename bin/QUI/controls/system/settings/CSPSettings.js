@@ -3,11 +3,6 @@
  *
  * Config / Settings Control for CSP Settings
  * Content Security Policy
- *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require controls/grid/Grid
- * @require Locale
  */
 define('controls/system/settings/CSPSettings', [
 
