@@ -25,7 +25,8 @@ define('controls/system/settings/Auth', [
 
         Binds: [
             '$onImport',
-            '$updateMemcachedData'
+            '$updateMemcachedData',
+            'redisCheck'
         ],
 
         initialize: function (Panel) {
@@ -35,6 +36,7 @@ define('controls/system/settings/Auth', [
             this.$MemcachedTable = null;
             this.$MemcachedTbody = null;
             this.$MemcachedTest  = null;
+            this.$RedisCheck     = null;
 
             this.addEvents({
                 onImport: this.$onImport
@@ -183,6 +185,14 @@ define('controls/system/settings/Auth', [
 
                 Container.set('html', html);
                 Container.getElement('[name="session_redis.server"]').value = value;
+
+                self.$RedisCheck = new QUIButton({
+                    text  : QUILocale.get('quiqqer/quiqqer', 'quiqqer.settings.cache.redis.check.button'),
+                    events: {
+                        onClick: self.redisCheck
+                    }
+                }).inject(Container.getElement('label'));
+
                 self.$Panel.Loader.hide();
             });
         },
@@ -241,6 +251,36 @@ define('controls/system/settings/Auth', [
             Row.inject(this.$MemcachedTbody);
 
             return Row;
+        },
+
+        /**
+         *
+         */
+        redisCheck: function () {
+            var self = this;
+
+            this.$RedisCheck.setAttribute('text', '<span class="fa fa-spinner fa-spin"></span>');
+
+            Ajax.get('ajax_system_cache_redisCheck', function (result) {
+                self.$RedisCheck.setAttribute(
+                    'text',
+                    QUILocale.get('quiqqer/quiqqer', 'quiqqer.settings.cache.redis.check.button')
+                );
+
+                var message = result.message;
+                var status  = result.status;
+
+                QUI.getMessageHandler().then(function (MH) {
+                    if (status) {
+                        MH.addSuccess(message);
+                        return;
+                    }
+
+                    MH.addError(message);
+                });
+            }, {
+                server: this.getElm().querySelector('[name="session_redis.server"]').value
+            });
         },
 
         /**
