@@ -254,7 +254,7 @@ define('controls/system/settings/Auth', [
         },
 
         /**
-         *
+         * Check redis server
          */
         redisCheck: function () {
             var self = this;
