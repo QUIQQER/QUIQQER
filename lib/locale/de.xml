@@ -1290,6 +1290,17 @@
         <locale name="quiqqer.settings.cache.redis.server">
             <de><![CDATA[Redis server]]></de>
         </locale>
+        <locale name="message.redis.ok">
+            <de><![CDATA[Redis ist für den Einsatz bereit.]]></de>
+        </locale>
+        <locale name="message.redis.connection.ok">
+            <de><![CDATA[Verbindung zum Redis Server konnte erfolgreich hergestellt werden.]]></de>
+        </locale>
+        <locale name="message.redis.classes.missing">
+            <de><![CDATA[
+            Leider kann Redis nicht verwendet werden. Bitte installiere die php redis Erweiterung (php-redis)
+            ]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">
         <locale name="controls.email.select.email_invalid">
@@ -1830,6 +1841,9 @@
         </locale>
         <locale name="projects.typewindow.info">
             <de><![CDATA[Das Ändern des Seitentyps hat ein Speichern der Seite zur Folge.]]></de>
+        </locale>
+        <locale name="quiqqer.settings.cache.redis.check.button">
+            <de><![CDATA[Redis Server prüfen]]></de>
         </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">

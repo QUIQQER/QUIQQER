@@ -7,9 +7,12 @@
 define('controls/cache/General', [
 
     'qui/QUI',
-    'qui/controls/Control'
+    'qui/controls/Control',
+    'qui/controls/buttons/Button',
+    'Ajax',
+    'Locale'
 
-], function (QUI, QUIControl) {
+], function (QUI, QUIControl, QUIButton, QUIAjax, QUILocale) {
     "use strict";
 
     return new Class({
@@ -19,11 +22,13 @@ define('controls/cache/General', [
 
         Binds: [
             '$onImport',
-            '$onTypeChange'
+            '$onTypeChange',
+            'redisCheck'
         ],
 
         initialize: function (Settings) {
-            this.$Settings = Settings;
+            this.$Settings   = Settings;
+            this.$RedisCheck = null;
 
             this.addEvents({
                 onImport: this.$onImport
@@ -36,10 +41,12 @@ define('controls/cache/General', [
         $onImport: function () {
             var i, len, Table;
 
-            var Elm       = this.getElm(),
-                CacheType = Elm.querySelector('[name="general.cacheType"]'),
-                data      = this.$Settings.serialize();
+            var Elm        = this.getElm(),
+                CacheType  = Elm.querySelector('[name="general.cacheType"]'),
+                RedisTable = Elm.querySelector('[name="general.redis"]').getParent('table'),
+                data       = this.$Settings.serialize();
 
+            // default setting check
             if (typeof data.config.handlers !== 'undefined') {
                 var handlers = data.config.handlers;
 
@@ -54,6 +61,7 @@ define('controls/cache/General', [
                 }
             }
 
+            // type changing
             CacheType.addEventListener('change', this.$onTypeChange);
 
             // table handling
@@ -70,6 +78,16 @@ define('controls/cache/General', [
             }
 
             this.$onTypeChange();
+
+            // redis check
+            this.$RedisCheck = new QUIButton({
+                text  : QUILocale.get('quiqqer/quiqqer', 'quiqqer.settings.cache.redis.check.button'),
+                events: {
+                    onClick: this.redisCheck
+                }
+            }).inject(
+                RedisTable.getElement('tbody label')
+            );
         },
 
         /**
@@ -106,6 +124,36 @@ define('controls/cache/General', [
                     FileTable.setStyle('display', null);
                     break;
             }
+        },
+
+        /**
+         * Check redis server
+         */
+        redisCheck: function () {
+            var self = this;
+
+            this.$RedisCheck.setAttribute('text', '<span class="fa fa-spinner fa-spin"></span>');
+
+            QUIAjax.get('ajax_system_cache_redisCheck', function (result) {
+                self.$RedisCheck.setAttribute(
+                    'text',
+                    QUILocale.get('quiqqer/quiqqer', 'quiqqer.settings.cache.redis.check.button')
+                );
+
+                var message = result.message;
+                var status  = result.status;
+
+                QUI.getMessageHandler().then(function (MH) {
+                    if (status) {
+                        MH.addSuccess(message);
+                        return;
+                    }
+
+                    MH.addError(message);
+                });
+            }, {
+                server: this.getElm().querySelector('[name="general.redis"]').value
+            });
         }
     });
 });
