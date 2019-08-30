@@ -1273,6 +1273,13 @@
                  However, if you want the name to be displayed in the sitemap, you can change it here.
             ]]></en>
         </locale>
+
+        <locale name="quiqqer.settings.cache.redis.title">
+            <en><![CDATA[Redis settings]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.redis.server">
+            <en><![CDATA[Redis server]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->
         <locale name="controls.email.select.email_invalid">

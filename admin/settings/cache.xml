@@ -123,6 +123,18 @@
                         </select>
                     </settings>
 
+                    <settings title="redis" name="redis">
+                        <title>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.redis.title"/>
+                        </title>
+
+                        <input conf="general.redis" type="text" placeholder="localhost">
+                            <text>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.redis.server"/>
+                            </text>
+                        </input>
+                    </settings>
+
                     <settings title="apc" name="apc">
                         <title>
                             <locale group="quiqqer/system" var="quiqqer.settings.cache.apc.title"/>
@@ -140,7 +152,6 @@
                             </text>
                         </input>
                     </settings>
-
 
                     <settings title="memcache" name="memcache">
                         <title>
@@ -192,7 +203,6 @@
                         </input>
                     </settings>
                 </category>
-
 
                 <category name="management" require="controls/cache/Settings">
                     <title>

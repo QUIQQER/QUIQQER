@@ -1283,6 +1283,13 @@
                  Möchtest du jedoch den Namen in der Sitemap angezeigt bekommen, kannst du dies hier ändern.
             ]]></de>
         </locale>
+
+        <locale name="quiqqer.settings.cache.redis.title">
+            <de><![CDATA[Redis Einstellungen]]></de>
+        </locale>
+        <locale name="quiqqer.settings.cache.redis.server">
+            <de><![CDATA[Redis server]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">
         <locale name="controls.email.select.email_invalid">
