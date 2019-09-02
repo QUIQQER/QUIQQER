@@ -12,6 +12,7 @@ if (!isset($_REQUEST['project']) || !isset($_REQUEST['id'])) {
 }
 
 use QUI\Projects\Media;
+use QUI\Utils\System\File;
 
 /**
  * return mime_type of a file
@@ -123,31 +124,36 @@ try {
         }
 
         if (\file_exists($cacheFile)) {
-            $Image = $Media->getImageManager()->make($cacheFile);
-            echo $Image->response();
+            QUI\Utils\System\File::fileHeader($cacheFile);
             exit;
         }
 
-        $Image = $Media->getImageManager()->make($File->getFullPath());
+        try {
+            $Image = $Media->getImageManager()->make($File->getFullPath());
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addDebug($Exception->getMessage());
+
+            QUI\Utils\System\File::fileHeader($File->getFullPath());
+            exit;
+        }
+
 
         if (isset($_REQUEST['noresize'])) {
             $Image->save($cacheFile);
+        } else {
+            $Image->resize(
+                $_REQUEST['maxwidth'],
+                $_REQUEST['maxheight'],
+                function ($Constraint) {
+                    $Constraint->aspectRatio();
+                    $Constraint->upsize();
+                }
+            );
 
-            echo $Image->response();
-            exit;
+            $Image->save($cacheFile);
         }
 
-        echo $Image->resize(
-            $_REQUEST['maxwidth'],
-            $_REQUEST['maxheight'],
-            function ($Constraint) {
-                $Constraint->aspectRatio();
-                $Constraint->upsize();
-            }
-        )->response();
-
-        $Image->save($cacheFile);
-
+        QUI\Utils\System\File::fileHeader($cacheFile);
         exit;
     }
 
