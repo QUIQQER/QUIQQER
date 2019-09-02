@@ -110,6 +110,13 @@ class QUI
     public static $Locale = null;
 
     /**
+     * QUI default Locale Object
+     *
+     * @var \QUI\Locale
+     */
+    protected static $SystemLocale = null;
+
+    /**
      * QUI Mail Manager
      *
      * @var \QUI\Mail\Manager
@@ -613,9 +620,9 @@ class QUI
      *
      * @param string $file
      *
+     * @return \QUI\Config
      * @throws \QUI\Exception
      *
-     * @return \QUI\Config
      */
     public static function getConfig($file)
     {
@@ -728,9 +735,9 @@ class QUI
      * @param string|boolean $template - Project template (optional)
      *
      * @return \QUI\Projects\Project
+     * @throws QUI\Exception
      * @uses \QUI\Projects\Manager
      *
-     * @throws QUI\Exception
      */
     public static function getProject($project, $lang = false, $template = false)
     {
@@ -827,6 +834,27 @@ class QUI
                     self::$Locale->setCurrent($language);
                 }
             }
+        }
+
+        return self::$Locale;
+    }
+
+    /**
+     * Return the QUIQQER default language locale
+     *
+     * @return \QUI\Locale
+     */
+    public static function getSystemLocale()
+    {
+        if (self::$SystemLocale !== null) {
+            return self::$SystemLocale;
+        }
+
+        self::$Locale = new \QUI\Locale();
+        $language     = self::conf('globals', 'standardLanguage');
+
+        if (!empty($language)) {
+            self::$Locale->setCurrent($language);
         }
 
         return self::$Locale;
