@@ -81,12 +81,24 @@ class Session
 
         $sessionName = QUI::conf('session', 'name');
 
+        // If no session name set in the config, generate and set a 5 random character long name
         if (!$sessionName) {
-            $sessionName = QUI\Utils\Security\Orthos::getPassword(5); // get random string
+            // Array with uppercase alphabet as values
+            $alphabetAsValues = \range('A', 'Z');
+
+            // Array with uppercase alphabet as keys
+            $alphabetAsKeys = \array_flip($alphabetAsValues);
+
+            // Pick 5 random keys (characters) as an array from the alphabet-array
+            $randomCharacters = \array_rand($alphabetAsKeys, 5);
+
+            // Implode the array of characters to a string
+            $sessionName = \implode($randomCharacters);
 
             QUI::$Conf->set('session', 'name', $sessionName);
             QUI::$Conf->save();
         }
+
 
         $storageOptions = [
             'cookie_httponly' => true,
