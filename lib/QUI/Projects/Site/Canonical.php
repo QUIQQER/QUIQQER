@@ -44,6 +44,9 @@ class Canonical
         $Site    = $this->Site;
         $Project = $Site->getProject();
 
+        $siteUrl = $this->Site->getCanonical();
+        $siteUrl = $this->removeHost($siteUrl);
+
         // host check
         if (isset($_SERVER['HTTP_HOST'])) {
             $requestHost         = $_SERVER['HTTP_HOST'];
@@ -51,7 +54,7 @@ class Canonical
             $httpsHost           = $Project->getVHost(true, true);
 
             if ($requestHost != $hostWithoutProtocol) {
-                return $this->getLinkRel($httpsHost.$this->Site->getCanonical());
+                return $this->getLinkRel($httpsHost.$siteUrl);
             }
         }
 
@@ -67,7 +70,7 @@ class Canonical
             if ($httpsHostExists
                 && QUI\Utils\System::isProtocolSecure() === false
             ) {
-                return $this->getLinkRel($httpsHost.$this->Site->getCanonical());
+                return $this->getLinkRel($httpsHost.$siteUrl);
             }
 
             return '';
@@ -116,6 +119,15 @@ class Canonical
         }
 
         return $this->getLinkRel($httpsHost.URL_DIR.$canonical);
+    }
+
+    /**
+     * @param $url
+     * @return mixed
+     */
+    protected function removeHost($url)
+    {
+        return \parse_url($url, PHP_URL_PATH);
     }
 
     /**
