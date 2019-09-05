@@ -37,6 +37,12 @@ define('classes/packages/StoreApi', [
          * @param {String} version - package version
          */
         installPackage: function (pkg, version) {
+            // If a non-dev version is installed, always install latest version of the chosen
+            // major version.
+            if (version.indexOf("dev-") === -1) {
+                version = version.split('.')[0] + '.*';
+            }
+
             return Packages.installPackage(pkg, version);
         },
 
@@ -45,8 +51,8 @@ define('classes/packages/StoreApi', [
          *
          * @return {Promise}
          */
-        getLicenseAuthData: function() {
-            return new Promise(function(resolve, reject) {
+        getLicenseAuthData: function () {
+            return new Promise(function (resolve, reject) {
                 QUIAjax.get('ajax_licenseKey_getAuthData', resolve, {
                     onError: reject
                 });
@@ -58,8 +64,8 @@ define('classes/packages/StoreApi', [
          *
          * @return {Promise}
          */
-        getMaxExecutionTime: function() {
-            return new Promise(function(resolve, reject) {
+        getMaxExecutionTime: function () {
+            return new Promise(function (resolve, reject) {
                 QUIAjax.get('ajax_packagestore_getMaxExecutionTime', resolve, {
                     onError: reject
                 });
@@ -71,7 +77,7 @@ define('classes/packages/StoreApi', [
          *
          * @return {Promise}
          */
-        getQuiqqerVersion: function() {
+        getQuiqqerVersion: function () {
             if (typeof QUIQQER_VERSION === 'undefined') {
                 return Promise.resolve(false);
             }
