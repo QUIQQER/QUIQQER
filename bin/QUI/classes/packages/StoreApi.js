@@ -54,6 +54,19 @@ define('classes/packages/StoreApi', [
         },
 
         /**
+         * Get PHP max_execution_time setting
+         *
+         * @return {Promise}
+         */
+        getMaxExecutionTime: function() {
+            return new Promise(function(resolve, reject) {
+                QUIAjax.get('ajax_packagestore_getMaxExecutionTime', resolve, {
+                    onError: reject
+                });
+            });
+        },
+
+        /**
          * Get QUIQQER Version of current system
          *
          * @return {Promise}
