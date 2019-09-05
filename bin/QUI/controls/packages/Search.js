@@ -177,24 +177,37 @@ define('controls/packages/Search', [
                 return;
             }
 
+            var params     = Data.params || [];
+            var identifier = Data.func + params.join('-'); // request identifier
+
             // init request
             if (Data.func === 'init') {
-                frameWindow.postMessage(true, '*');
+                frameWindow.postMessage({
+                    result    : true,
+                    identifier: identifier
+                }, '*');
                 return;
             }
 
             if (typeof this.$StoreApi[Data.func] === 'undefined') {
-                frameWindow.postMessage(null, '*');
+                frameWindow.postMessage({
+                    result    : null,
+                    identifier: identifier
+                }, '*');
                 return;
             }
 
             // regular request
-            var params = Data.params || [];
-
             this.$StoreApi[Data.func].apply(this.$StoreApi, params).then(function (result) {
-                frameWindow.postMessage(result, '*');
+                frameWindow.postMessage({
+                    result    : result,
+                    identifier: identifier
+                }, '*');
             }, function () {
-                frameWindow.postMessage(null, '*');
+                frameWindow.postMessage({
+                    result    : null,
+                    identifier: identifier
+                }, '*');
             });
         },
 
