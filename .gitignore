@@ -3,3 +3,4 @@ etc/
 media/
 var/
 .htaccess
+!ajax/media/
