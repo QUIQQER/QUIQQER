@@ -23,6 +23,7 @@ define('controls/projects/project/media/Panel', [
     'Locale',
     'utils/Media',
     'Projects',
+    'qui/controls/loader/Loader',
 
     'css!controls/projects/project/media/Panel.css'
 
@@ -67,7 +68,11 @@ define('controls/projects/project/media/Panel', [
             '$itemEvent',
             '$onFilter',
             'unselectItems',
-            '$onContextMenu'
+            '$onContextMenu',
+            '$loadPagination',
+            '$onPaginationChange',
+            '$onPaginationLimitChange',
+            '$unloadPagination'
         ],
 
         options: {
@@ -83,7 +88,7 @@ define('controls/projects/project/media/Panel', [
 
             field: 'name',
             order: 'ASC',
-            limit: 20,
+            limit: 25,
             page : 1,
 
             selectable          : false,    // is the media in the selectable mode (for popup or image inserts)
@@ -117,12 +122,23 @@ define('controls/projects/project/media/Panel', [
             this.setAttribute('icon', 'fa fa-picture-o');
             this.parent(options);
 
+            this.$limitOptions = [10, 25, 50, 100, 250];
+
             this.$Map    = null;
             this.$Media  = Media || null;
             this.$File   = null;
             this.$Filter = null;
 
-            this.$children = [];
+            this.$Pagination          = null;
+            this.$PaginationContainer = null;
+
+
+            this.$children = {
+                data : [],
+                page : 1,
+                total: 0
+            };
+
             this.$selected = [];
 
             this.$DOMEvents        = new PanelDOMEvents(this);
@@ -546,6 +562,9 @@ define('controls/projects/project/media/Panel', [
 
             this.setAttribute('startid', fileid);
 
+            // Reset pagination
+            this.$Pagination = null;
+
             return new Promise(function (resolve) {
 
                 // get the file object
@@ -581,11 +600,13 @@ define('controls/projects/project/media/Panel', [
                     }
 
                     self.setAttribute('fileid', MediaFile.getId());
+                    self.$CurrentFolder = MediaFile;
 
                     // load children
                     MediaFile.getChildren(function (children) {
                         self.$children = children;
-                        self.$view(children);
+
+                        self.setAttribute('total', children.total);
 
                         // load breadcrumb
                         self.$File.getBreadcrumb(function (result) {
@@ -598,9 +619,14 @@ define('controls/projects/project/media/Panel', [
 
                             resolve();
                             self.Loader.hide();
+                            self.$view(children);
                         });
                     }, {
-                        order: self.getAttribute('field') + ' ' + self.getAttribute('order')
+                        sortOn : self.getAttribute('field'),
+                        sortBy : self.getAttribute('order'),
+                        perPage: self.getAttribute('limit'),
+                        page   : self.getAttribute('page'),
+                        order  : self.getAttribute('field') + ' ' + self.getAttribute('order')
                     });
                 }).catch(function () {
                     self.openID(1).then(resolve);
@@ -1041,6 +1067,10 @@ define('controls/projects/project/media/Panel', [
                     'class': 'qui-media-content box smooth'
                 });
 
+                this.$PaginationContainer = new Element('div', {
+                    'class': 'qui-media-pagination'
+                }).inject(Body);
+
                 MediaBody.inject(Body);
             }
 
@@ -1059,15 +1089,21 @@ define('controls/projects/project/media/Panel', [
 
             switch (this.getAttribute('view')) {
                 case 'details':
+                    MediaBody.removeClass('qui-media-content__with-pagination');
+                    self.$unloadPagination();
                     droplist = this.$viewDetails(children, MediaBody);
                     break;
 
                 case 'preview':
+                    MediaBody.addClass('qui-media-content__with-pagination');
+                    self.$loadPagination();
                     droplist = this.$viewPreview(children, MediaBody);
                     break;
 
                 default:
                 case 'symbols':
+                    MediaBody.addClass('qui-media-content__with-pagination');
+                    self.$loadPagination();
                     droplist = this.$viewSymbols(children, MediaBody);
             }
 
@@ -1125,11 +1161,11 @@ define('controls/projects/project/media/Panel', [
          * list the children as symbol icons
          *
          * @method controls/projects/project/media/Panel#$viewSymbols
-         * @params {Array} children
+         * @params {Object} Result
          * @params {HTMLElement} Container - Parent Container for the DOMNodes
          * @return {Array} the drop-upload-list
          */
-        $viewSymbols: function (children, Container) {
+        $viewSymbols: function (Result, Container) {
             var i, len, Elm, Child;
 
             var droplist = [],
@@ -1138,6 +1174,16 @@ define('controls/projects/project/media/Panel', [
                 project  = Project.getName();
 
             this.$Filter.setStyle('display', null);
+
+            var showBrokenFileMsg = function (File) {
+                QUI.getMessageHandler(function (MH) {
+                    MH.addError(
+                        'File is broken #' + File.id + ' ' + File.name
+                    );
+                });
+            };
+
+            var children = Result.data;
 
             for (i = 0, len = children.length; i < len; i++) {
                 if (i === 0 && children[i].name === '..') {
@@ -1184,11 +1230,7 @@ define('controls/projects/project/media/Panel', [
                         paddingLeft    : 20
                     });
 
-                    QUI.getMessageHandler(function (MH) {
-                        MH.addError(
-                            'File is broken #' + Child.id + ' ' + Child.name
-                        );
-                    });
+                    showBrokenFileMsg(Child);
                 } else {
                     Elm.setStyles({
                         backgroundImage: 'url(' + Child.icon80x80 + ')',
@@ -1207,11 +1249,11 @@ define('controls/projects/project/media/Panel', [
          * preview for images
          *
          * @method controls/projects/project/media/Panel#$viewSymbols
-         * @params {Array} children
+         * @params {Object} Result
          * @params {HTMLElement} Container - Parent Container for the DOMNodes
          * @return {Array} the drop-upload-list
          */
-        $viewPreview: function (children, Container) {
+        $viewPreview: function (Result, Container) {
             var i, len, url, Child, Elm;
 
             var droplist = [],
@@ -1220,6 +1262,8 @@ define('controls/projects/project/media/Panel', [
                 project  = Project.getName();
 
             this.$Filter.setStyle('display', null);
+
+            var children = Result.data;
 
             for (i = 0, len = children.length; i < len; i++) {
                 if (i === 0 && children[i].name === '..') {
@@ -1390,11 +1434,11 @@ define('controls/projects/project/media/Panel', [
          *
          * @method controls/projects/project/media/Panel#$viewDetails
          *
-         * @params {Array} children
+         * @params {Object} Result
          * @params {DOMNode} Container - Parent Container for the DOMNodes
          * @return {Array} the drop-upload-list
          */
-        $viewDetails: function (children, Container) {
+        $viewDetails: function (Result, Container) {
             Container.set('html', '');
 
             var self          = this,
@@ -1448,9 +1492,10 @@ define('controls/projects/project/media/Panel', [
                     width    : 150
                 }],
 
-                pagination       : false,
+                pagination       : true,
                 filterInput      : true,
                 perPage          : this.getAttribute('limit'),
+                perPageOptions   : this.$limitOptions,
                 page             : this.getAttribute('page'),
                 sortOn           : this.getAttribute('field'),
                 sortBy           : this.getAttribute('order'),
@@ -1505,6 +1550,8 @@ define('controls/projects/project/media/Panel', [
                 }
             });
 
+            var children = Result.data;
+
             if (children[0] && children[0].name !== '..') {
                 var breadcrumb_list = Array.clone(
                     this.getBreadcrumb().getChildren()
@@ -1527,9 +1574,10 @@ define('controls/projects/project/media/Panel', [
                 }
             }
 
-            Grid.setData({
-                data: children
-            });
+            Result.data = children;
+
+            Grid.setData(Result);
+            Grid.resize();
 
             return [];
         },
@@ -2285,6 +2333,101 @@ define('controls/projects/project/media/Panel', [
                     Child.setStyle('display', 'none');
                 }
             }.delay(100);
+        },
+
+        /**
+         * onChange event of Pagination control
+         *
+         * @param {Object} PaginationCtrl
+         * @param {Object} Sheet
+         * @param {Object} Query
+         */
+        $onPaginationChange: function (PaginationCtrl, Sheet, Query) {
+            this.setAttribute('page', Query.page);
+            this.refresh();
+        },
+
+        /**
+         * onChange event of Pagination limit select
+         *
+         * @param {DOMEvent} event
+         */
+        $onPaginationLimitChange: function (event) {
+            var total        = this.getAttribute('total');
+            var limit        = event.target.value;
+            var newPageCount = Math.ceil(total / limit);
+
+            this.setAttribute('limit', limit);
+
+            this.$Pagination.setPageCount(newPageCount);
+        },
+
+        /**
+         * @return {void}
+         */
+        $loadPagination: function () {
+            if (this.$Pagination) {
+                return;
+            }
+
+            if (!this.getAttribute('total')) {
+                return;
+            }
+
+            var self = this;
+
+            this.Loader.show();
+
+            Ajax.get('ajax_media_folder_getPagination', function (paginationHtml) {
+                self.$PaginationContainer.set('html', paginationHtml);
+                self.$PaginationContainer.removeClass('qui-media-pagination__hidden');
+
+                var LimitSelect = new Element('select', {
+                    'class': 'qui-media-pagination-limit',
+                    events : {
+                        change: self.$onPaginationLimitChange
+                    }
+                }).inject(self.$PaginationContainer, 'top');
+
+                var currentLimit = self.getAttribute('limit');
+
+                for (var i = 0, len = self.$limitOptions.length; i < len; i++) {
+                    var limitOption = self.$limitOptions[i];
+
+                    new Element('option', {
+                        value   : limitOption,
+                        html    : limitOption,
+                        selected: limitOption == currentLimit ? 'selected' : ''
+                    }).inject(LimitSelect);
+                }
+
+                QUI.parse(self.$PaginationContainer).then(function () {
+                    self.$Pagination = QUI.Controls.getById(
+                        self.$PaginationContainer.getElement(
+                            'div[data-qui="package/quiqqer/controls/bin/navigating/Pagination"]'
+                        ).get('data-quiid')
+                    );
+
+                    self.$Pagination.addEvent('onChange', self.$onPaginationChange);
+                    self.Loader.hide();
+                });
+            }, {
+                'package' : 'quiqqer/quiqqer',
+                attributes: JSON.encode({
+                    limit  : self.getAttribute('limit'),
+                    sheet  : self.getAttribute('page'),
+                    count  : self.getAttribute('total'),
+                    useAjax: true
+                })
+            });
+        },
+
+        /**
+         * Unload / hide pagination
+         */
+        $unloadPagination: function() {
+            this.$Pagination = null;
+            this.$PaginationContainer.addClass('qui-media-pagination__hidden');
         }
     });
 });

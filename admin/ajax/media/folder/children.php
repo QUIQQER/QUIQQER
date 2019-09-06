@@ -1,5 +1,8 @@
 <?php
 
+use QUI\Utils\Grid;
+use QUI\Utils\Security\Orthos;
+
 /**
  * Return the children of a media folder
  *
@@ -17,7 +20,10 @@ QUI::$Ajax->registerFunction(
         $File    = $Media->get($folderid);
 
         /* @var $File \QUI\Projects\Media\Folder */
-        $params    = \json_decode($params, true);
+        $Grid   = new Grid($params);
+        $params = Orthos::clearArray(\json_decode($params, true));
+        $params = $Grid->parseDBParams($params);
+
         $children  = [];
         $_children = $File->getChildrenIds($params);
 
@@ -41,18 +47,24 @@ QUI::$Ajax->registerFunction(
 
                 $children[] = $data;
             } catch (QUI\Exception $Exception) {
-                $params = [
+                $child = [
                     'id'    => $id,
                     'name'  => $Exception->getAttribute('name'),
                     'title' => $Exception->getAttribute('title'),
                     'error' => true
                 ];
 
-                $children[] = $params;
+                $children[] = $child;
             }
         }
 
-        return $children;
+        // Set count parameter to get total count of results
+        $params['count'] = true;
+
+        return $Grid->parseResult(
+            $children,
+            $File->getChildrenIds($params)
+        );
     },
     ['project', 'folderid', 'params'],
     'Permission::checkAdminUser'

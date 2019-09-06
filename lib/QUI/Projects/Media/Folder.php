@@ -564,7 +564,9 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @param array $params - [optional] db query fields
      *
-     * @return array
+     * If $params['count'] = true is set, then the total number of search results is returned!
+     *
+     * @return array|int
      */
     public function getChildrenIds($params = [])
     {
@@ -658,9 +660,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 $order_by = $order;
         }
 
-        $limit = '';
+        $limit          = '';
+        $isCountRequest = !empty($params['count']);
 
-        if (isset($params['limit'])) {
+        if (!$isCountRequest && isset($params['limit'])) {
             $limitParams = \explode(',', $params['limit']);
 
             if (\count($limitParams) === 2) {
@@ -693,6 +696,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             QUI\System\Log::writeException($Exception);
 
             return [];
+        }
+
+        if ($isCountRequest) {
+            return \count($fetch);
         }
 
         $result = [];

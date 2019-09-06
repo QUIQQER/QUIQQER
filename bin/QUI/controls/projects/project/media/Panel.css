@@ -7,6 +7,10 @@
     border: 4px dashed transparent;
 }
 
+.qui-media-content__with-pagination {
+    height: calc(100% - 50px) !important;
+}
+
 .qui-media-content-ondragdrop {
     /*background-color: #CFF09E;*/
     border: 4px dashed #666;
@@ -129,3 +133,51 @@
     margin: 10px 10px 0 10px;
 }
 
+/** Pagination
+ ================================================ */
+.qui-media-pagination {
+    width: 95%;
+    /* background-color: red; */
+    height: 60px;
+    bottom: 0;
+    position: absolute;
+    /*display: flex;*/
+    padding: 10px 0 0 20px;
+}
+
+.qui-media-pagination__hidden {
+    display: none;
+}
+
+.qui-media-pagination-limit {
+    float: left;
+    height: 32px;
+    margin: 0 10px 0 0;
+}
+
+.quiqqer-sheets-desktop,
+.qui-media-pagination .quiqqer-pagination {
+    clear: none !important;
+    float: left;
+    width: calc(100% - 75px) !important;
+}
+
+.qui-media-pagination .quiqqer-sheets-sheet {
+    width: 30px;
+}
+
+.qui-media-pagination .quiqqer-sheets-desktop {
+    margin: 0 !important;
+}
+
+.qui-media-pagination .quiqqer-sheets-desktop a {
+    color: #212527;
+}
+
+.qui-media-pagination .quiqqer-sheets-desktop-current {
+    color: #efefef !important;
+}
+
+.qui-media-pagination .quiqqer-sheets-desktop a:hover {
+    color: #a4a4a4;
+}
