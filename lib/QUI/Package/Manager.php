@@ -911,12 +911,24 @@ class Manager extends QUI\QDOM
      *
      * @param array $params - [optional] search / limit params
      *
+     * params are deprecated
+     *
      * @return array
      */
     public function getInstalled($params = [])
     {
         if (isset($this->instanceCache['getInstalled'])) {
             return $this->instanceCache['getInstalled'];
+        }
+
+        $cache = 'quiqqer/quiqqer/packages/getInstalled';
+
+        try {
+            $this->instanceCache['getInstalled'] = QUI\Cache\Manager::get($cache);
+
+            return $this->instanceCache['getInstalled'];
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeDebugException($Exception);
         }
 
         $list   = $this->getList();
@@ -930,9 +942,7 @@ class Manager extends QUI\QDOM
                     continue;
                 }
 
-                if (!empty($params['type'])
-                    && $params['type'] != $package['type']
-                ) {
+                if (!empty($params['type']) && $params['type'] != $package['type']) {
                     continue;
                 }
 
@@ -959,6 +969,8 @@ class Manager extends QUI\QDOM
         }
 
         $this->instanceCache['getInstalled'] = $result;
+
+        QUI\Cache\Manager::set($cache, $this->instanceCache['getInstalled']);
 
         return $result;
     }

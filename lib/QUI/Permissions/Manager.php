@@ -37,6 +37,13 @@ class Manager
     protected $dataCache = [];
 
     /**
+     * internal ram cache for permissions
+     *
+     * @var array
+     */
+    protected $permissionsCache = [];
+
+    /**
      * constructor
      * load the available rights
      */
@@ -357,6 +364,7 @@ class Manager
      *
      * @param string $permission - name of the permission
      *
+     * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
     public function deletePermission($permission)
@@ -531,6 +539,12 @@ class Manager
                 break;
         }
 
+        $cache = $this->getDataCacheId($Obj);
+
+        if (isset($this->permissionsCache[$cache])) {
+            return $this->permissionsCache[$cache];
+        }
+
         $permissions = [];
 
         $data  = $this->getData($Obj);
@@ -548,6 +562,8 @@ class Manager
         }
 
         if (!isset($data[0])) {
+            $this->permissionsCache[$cache] = $permissions;
+
             return $permissions;
         }
 
@@ -565,6 +581,8 @@ class Manager
                 $permissions[$obj_permission] = $value;
             }
         }
+
+        $this->permissionsCache[$cache] = $permissions;
 
         return $permissions;
     }
@@ -844,11 +862,15 @@ class Manager
                 break;
         }
 
-        unset($this->dataCache[$this->getDataCacheId($Obj)]);
+        $cacheId = $this->getDataCacheId($Obj);
 
+        unset($this->dataCache[$cacheId]);
+
+        if (isset($this->permissionsCache[$cacheId])) {
+            unset($this->permissionsCache[$cacheId]);
+        }
 
         QUI\Cache\Manager::clear('qui/admin/menu/');
-
         QUI::getEvents()->fireEvent('permissionsSet', [$Obj, $permissions]);
     }
 
@@ -929,7 +951,13 @@ class Manager
             $this->setSitePermission($Site, $permission, $value);
         }
 
-        unset($this->dataCache[$this->getDataCacheId($Site)]);
+
+        $cacheId = $this->getDataCacheId($Site);
+        unset($this->dataCache[$cacheId]);
+
+        if (isset($this->permissionsCache[$cacheId])) {
+            unset($this->permissionsCache[$cacheId]);
+        }
     }
 
     /**
@@ -957,7 +985,14 @@ class Manager
             ]
         );
 
-        unset($this->dataCache[$this->getDataCacheId($Site)]);
+
+        $cacheId = $this->getDataCacheId($Site);
+
+        unset($this->dataCache[$cacheId]);
+
+        if (isset($this->permissionsCache[$cacheId])) {
+            unset($this->permissionsCache[$cacheId]);
+        }
     }
 
     /**
@@ -1006,7 +1041,14 @@ class Manager
             'id'      => $Site->getId()
         ]);
 
-        unset($this->dataCache[$this->getDataCacheId($Site)]);
+
+        $cacheId = $this->getDataCacheId($Site);
+
+        unset($this->dataCache[$cacheId]);
+
+        if (isset($this->permissionsCache[$cacheId])) {
+            unset($this->permissionsCache[$cacheId]);
+        }
     }
 
     /**
@@ -1055,7 +1097,14 @@ class Manager
             $this->setProjectPermission($Project, $permission, $value);
         }
 
-        unset($this->dataCache[$this->getDataCacheId($Project)]);
+
+        $cacheId = $this->getDataCacheId($Project);
+
+        unset($this->dataCache[$cacheId]);
+
+        if (isset($this->permissionsCache[$cacheId])) {
+            unset($this->permissionsCache[$cacheId]);
+        }
     }
 
     /**
@@ -1080,7 +1129,14 @@ class Manager
             ]
         );
 
-        unset($this->dataCache[$this->getDataCacheId($Project)]);
+
+        $cacheId = $this->getDataCacheId($Project);
+
+        unset($this->dataCache[$cacheId]);
+
+        if (isset($this->permissionsCache[$cacheId])) {
+            unset($this->permissionsCache[$cacheId]);
+        }
     }
 
     /**
@@ -1431,11 +1487,11 @@ class Manager
      * Rechte Array einer Gruppe aus den Attributen erstellen
      * Wird zum Beispiel zum Speichern einer Gruppe verwendet
      *
-     * @todo das muss vielleicht überdacht werden
-     *
      * @param QUI\Groups\Group $Group
      *
      * @return array
+     * @todo das muss vielleicht überdacht werden
+     *
      */
     public function getRightParamsFromGroup(Group $Group)
     {

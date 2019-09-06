@@ -455,6 +455,16 @@ class Package extends QUI\QDOM
             return $this->composerData;
         }
 
+        $cache = 'quiqqer/package/'.$this->name.'/composerData';
+
+        try {
+            $this->composerData = QUI\Cache\Manager::get($cache);
+
+            return $this->composerData;
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeDebugException($Exception);
+        }
+
 
         if (\file_exists($this->packageDir.'composer.json')) {
             $this->composerData = \json_decode(
@@ -483,7 +493,9 @@ class Package extends QUI\QDOM
             $this->composerData['version'] = $lock['version'];
         }
 
-        return [];
+        QUI\Cache\Manager::set($cache, $this->composerData);
+
+        return $this->composerData;
     }
 
     /**
