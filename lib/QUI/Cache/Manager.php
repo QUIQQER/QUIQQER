@@ -265,6 +265,17 @@ class Manager
                     $servers[] = \explode(':', $server);
                 }
 
+                // check if empty
+                if (empty($servers)) {
+                    $servers[] = 'localhost';
+                }
+
+                foreach ($servers as $key => $server) {
+                    if (empty($server)) {
+                        $servers[$key] = 'localhost';
+                    }
+                }
+
                 try {
                     return new Stash\Driver\Redis([
                         'servers' => $servers
