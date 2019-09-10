@@ -81,7 +81,7 @@ class Package extends QUI\QDOM
      *
      * @var string
      */
-    protected $configPath = '';
+    protected $configPath = null;
 
     /**
      * Package Config
@@ -96,13 +96,16 @@ class Package extends QUI\QDOM
     protected $isQuiqqerPackage = false;
 
     /**
+     * @var bool
+     */
+    protected $readPackageInfo = false;
+
+    /**
      * constructor
      *
      * @param string $package - Name of the Package
      *
      * @throws \QUI\Exception
-     *
-     * @todo cache the plugin data
      */
     public function __construct($package)
     {
@@ -118,9 +121,21 @@ class Package extends QUI\QDOM
 
         $this->packageDir = $packageDir;
         $this->name       = $package;
+    }
+
+    /**
+     * read the package data
+     */
+    protected function readPackageData()
+    {
+        if ($this->readPackageInfo) {
+            return;
+        }
 
         // no composer.json, no real package
-        if (!\file_exists($packageDir.'composer.json')) {
+        if (!\file_exists($this->packageDir.'composer.json')) {
+            $this->readPackageInfo = true;
+
             return;
         }
 
@@ -131,18 +146,21 @@ class Package extends QUI\QDOM
             QUI\System\Log::addCritical(
                 'Package composer.json has some errors: '.\json_last_error_msg(),
                 [
-                    'package'    => $package,
-                    'packageDir' => $packageDir
+                    'package'    => $this->name,
+                    'packageDir' => $this->packageDir
                 ]
             );
         }
 
-
         if (!isset($this->composerData['type'])) {
+            $this->readPackageInfo = true;
+
             return;
         }
 
         if (\strpos($this->composerData['type'], 'quiqqer-') === false) {
+            $this->readPackageInfo = true;
+
             return;
         }
 
@@ -150,6 +168,9 @@ class Package extends QUI\QDOM
         $this->configPath       = CMS_DIR.'etc/plugins/'.$this->getName().'.ini.php';
 
         QUI\Utils\System\File::mkfile($this->configPath);
+
+
+        $this->readPackageInfo = true;
     }
 
     /**
@@ -423,6 +444,14 @@ class Package extends QUI\QDOM
      */
     public function getConfig()
     {
+        if ($this->configPath === null) {
+            $configFile = CMS_DIR.'etc/plugins/'.$this->getName().'.ini.php';
+
+            if (\file_exists($configFile)) {
+                $this->configPath = $configFile;
+            }
+        }
+
         if (empty($this->configPath)) {
             return false;
         }
@@ -575,6 +604,8 @@ class Package extends QUI\QDOM
      */
     public function setup($params = [])
     {
+        $this->readPackageData();
+
         QUI::getEvents()->fireEvent('packageSetupBegin', [$this]);
 
         // options
@@ -768,6 +799,8 @@ class Package extends QUI\QDOM
      */
     public function isQuiqqerPackage()
     {
+        $this->readPackageData();
+
         return $this->isQuiqqerPackage;
     }
 
@@ -778,6 +811,8 @@ class Package extends QUI\QDOM
      */
     public function install()
     {
+        $this->readPackageData();
+
         QUI::getEvents()->fireEvent('packageInstallBefore', [$this]);
 
         Update::importEvents(
