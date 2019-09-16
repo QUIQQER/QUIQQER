@@ -1280,6 +1280,14 @@
         <locale name="quiqqer.settings.cache.redis.server">
             <en><![CDATA[Redis server]]></en>
         </locale>
+        <locale name="quiqqer.settings.cache.redis.server.description" html="true">
+            <en><![CDATA[
+            Please note our Wiki entry:
+            <a href="https://dev.quiqqer.com/quiqqer/quiqqer/wikis/caching/redis" target="_blank">
+                QUIQQER Redis Caching
+            </a>
+            ]]></en>
+        </locale>
         <locale name="message.redis.ok">
             <en><![CDATA[Redis is ready for action.]]></en>
         </locale>

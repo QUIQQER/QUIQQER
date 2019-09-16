@@ -132,6 +132,9 @@
                             <text>
                                 <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.redis.server"/>
                             </text>
+                            <description>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.redis.server.description"/>
+                            </description>
                         </input>
                     </settings>
 
