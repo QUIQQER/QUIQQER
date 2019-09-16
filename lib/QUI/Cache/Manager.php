@@ -483,6 +483,7 @@ class Manager
             $Stash->save();
         } catch (\Exception $Exception) {
             QUI\System\Log::writeDebugException($Exception);
+            QUI\System\Log::addError($Exception->getMessage());
         }
     }
 
