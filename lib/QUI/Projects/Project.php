@@ -124,6 +124,11 @@ class Project
     protected $cache_files = [];
 
     /**
+     * @var null
+     */
+    protected $Media = null;
+
+    /**
      * Konstruktor eines Projektes
      *
      * @param string $name - Name of the Project
@@ -836,7 +841,11 @@ class Project
      */
     public function getMedia()
     {
-        return new QUI\Projects\Media($this);
+        if ($this->Media === null) {
+            $this->Media = new QUI\Projects\Media($this);
+        }
+
+        return $this->Media;
     }
 
     /**
