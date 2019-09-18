@@ -277,7 +277,7 @@ class Manager
                 }
 
                 try {
-                    return new Stash\Driver\Redis([
+                    return new QuiqqerRedisDriver([
                         'servers' => $servers
                     ]);
                 } catch (Stash\Exception\RuntimeException $Exception) {
