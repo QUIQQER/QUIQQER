@@ -146,7 +146,8 @@ abstract class Factory extends QUI\Utils\Singleton
             'from'  => $this->getDataBaseTableName(),
             'where' => [
                 'id' => $id
-            ]
+            ],
+            'limit' => 1
         ]);
 
         if (!isset($result[0])) {
@@ -177,8 +178,8 @@ abstract class Factory extends QUI\Utils\Singleton
     public function getChildren($queryParams = [])
     {
         $result = [];
-        $data   = $this->getChildrenData($queryParams);
 
+        $data       = $this->getChildrenData($queryParams);
         $childClass = $this->getChildClass();
 
         foreach ($data as $entry) {
