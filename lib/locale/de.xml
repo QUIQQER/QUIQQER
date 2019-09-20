@@ -4662,6 +4662,9 @@
         <locale name="projects.project.site.panel.information.edited">
             <de><![CDATA[geändert am]]></de>
         </locale>
+        <locale name="projects.project.site.panel.information.openInSiteStructure">
+            <de><![CDATA[In der Projekt Sitemap öffnen]]></de>
+        </locale>
         <locale name="projects.project.site.panel.extras.title">
             <de><![CDATA[Extras]]></de>
         </locale>

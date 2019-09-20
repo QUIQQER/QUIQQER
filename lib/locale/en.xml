@@ -4497,6 +4497,9 @@
         <locale name="projects.project.site.panel.information.edited">
             <en><![CDATA[edited on]]></en>
         </locale>
+        <locale name="projects.project.site.panel.information.openInSiteStructure">
+            <en><![CDATA[Open in the project Sitemap]]></en>
+        </locale>
         <locale name="projects.project.site.panel.extras.title">
             <en><![CDATA[Extras]]></en>
         </locale>
