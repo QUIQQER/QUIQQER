@@ -1853,6 +1853,9 @@
         <locale name="quiqqer.settings.cache.redis.check.button">
             <de><![CDATA[Redis Server prüfen]]></de>
         </locale>
+        <locale name="projects.project.site.panel.information.openInSiteStructure">
+            <de><![CDATA[In der Projekt Sitemap öffnen]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/system" datatype="js,php">
         <locale name="yes">
