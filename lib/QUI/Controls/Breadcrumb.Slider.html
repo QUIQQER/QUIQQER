@@ -1,4 +1,3 @@
-
 <div class="quiqqer-breadcrumb-wrapper">
     <div class="quiqqer-breadcrumb-container">
         <span class="quiqqer-breadcrumb-title">
@@ -7,7 +6,8 @@
 
         <ul class="fa-ul quiqqer-breadcrumb-list"
             itemscope itemtype="http://schema.org/BreadcrumbList"
-            style="height: {$this->getAttribute('height')};">
+            style="height: {$this->getAttribute('height')};"
+        >
             {assign var=Path value=$Rewrite->getPath()}
             {assign var=Project value=$Rewrite->getProject()}
             {assign var=Site value=$Rewrite->getSite()}
@@ -18,28 +18,31 @@
             <li itemprop="itemListElement" itemscope
                 itemtype="http://schema.org/ListItem">
                 <a href="{url site=$First}"
-                   title="{$First->getAttribute('title')|escape:"html"}"
+                   title="{$First->getAttribute('title')|escape:'html'}"
                    itemprop="item"
                 >
                     <span class="fa fa-angle-right"></span>
                     <span itemprop="name">{$First->getAttribute('title')}</span>
                 </a>
+                <meta itemprop="position" content="1">
             </li>
             {/if}
 
             {foreach from=$Path key=i item=Crumb}
             <li itemprop="itemListElement" itemscope
                 class="quiqqer-breadcrumb-list-element"
-                itemtype="http://schema.org/ListItem">
+                itemtype="http://schema.org/ListItem"
+            >
                 <a href="{url site=$Crumb}"
                    class="quiqqer-breadcrumb-link"
-                   title="{$Crumb->getAttribute('title')|escape:"html"}"
+                   title="{$Crumb->getAttribute('title')|escape:'html'}"
                    itemprop="item"
                 >
                     <span class="fa fa-angle-right breadcrumb-list-element-icon"></span>
                     <span class="quiqqer-breadcrumb-link-text"
                           itemprop="name">{$Crumb->getAttribute('title')}</span>
                 </a>
+                <meta itemprop="position" content="{$i + 1}">
             </li>
             {/foreach}
         </ul>
