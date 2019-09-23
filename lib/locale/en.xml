@@ -837,6 +837,9 @@
         <locale name="projects.project.settings.panel.publisher.image">
             <en><![CDATA[Logo / Image]]></en>
         </locale>
+        <locale name="projects.project.settings.panel.publisher.url">
+            <en><![CDATA[Url of the Website]]></en>
+        </locale>
         <locale name="projects.project.settings.panel.publisher.company">
             <en><![CDATA[Company]]></en>
         </locale>
