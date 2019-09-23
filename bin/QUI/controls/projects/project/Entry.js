@@ -2,11 +2,8 @@
  * A projects field / display
  * the display updates itself
  *
+ * @module controls/projects/project/Entry
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/controls/Control
- * @require Projects
- * @require Locale
  */
 
 define('controls/projects/project/Entry', [
@@ -88,12 +85,12 @@ define('controls/projects/project/Entry', [
                 'data-lang'   : this.getProject().getLang(),
 
                 html  : '<div class="project-entry-icon">' +
-                        '<span class="fa fa-home"></span>' +
-                        '</div>' +
-                        '<div class="project-entry-text"></div>' +
-                        '<div class="project-entry-close">' +
-                        '<span class="fa fa-remove"></span>' +
-                        '</div>',
+                    '<span class="fa fa-home"></span>' +
+                    '</div>' +
+                    '<div class="project-entry-text"></div>' +
+                    '<div class="project-entry-close">' +
+                    '<span class="fa fa-remove"></span>' +
+                    '</div>',
                 events: {
                     mouseover: function () {
                         this.addClass('hover');
@@ -150,8 +147,8 @@ define('controls/projects/project/Entry', [
 
             this.$Elm.setStyles({
                 width: (iconWidth).toInt() +
-                       (textWidth).toInt() +
-                       (closeWidth).toInt()
+                    (textWidth).toInt() +
+                    (closeWidth).toInt()
             });
         },
 

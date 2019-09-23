@@ -3,20 +3,6 @@
  *
  * @module controls/projects/project/Settings
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require qui/QUI
- * @require qui/controls/desktop/Panel
- * @require qui/controls/buttons/Button
- * @require qui/controls/windows/Confirm
- * @require qui/utils/Form
- * @require utils/Template
- * @require controls/lang/Popup
- * @require Projects
- * @require Ajax
- * @require Locale
- * @require utils/Controls
- * @require package/quiqqer/translator/bin/controls/VariableTranslation
- * @require css!controls/projects/project/Settings.css
  */
 define('controls/projects/project/Settings', [
 

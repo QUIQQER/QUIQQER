@@ -83,7 +83,56 @@
                 </div>
             </td>
         </tr>
+        </tbody>
+    </table>
 
+    <table class="data-table data-table-flexbox">
+        <thead>
+        <tr>
+            <th>
+                {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.publisher.header"}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.publisher"}
+                    </span>
+                    <input type="text" name="publisher" class="field-container-field"/>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.publisher.image"}
+                    </span>
+                    <input type="text" name="publisher_image" class="field-container-field media-image"/>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.publisher.type"}
+                    </span>
+                    <select name="publisher_type" class="field-container-field">
+                        <option value="organization">
+                            {locale group="quiqqer/quiqqer"
+                            var="projects.project.settings.panel.publisher.organization"}
+                        </option>
+                        <option value="person">
+                            {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.publisher.person"}
+                        </option>
+                    </select>
+                </label>
+            </td>
+        </tr>
         </tbody>
     </table>
 

@@ -781,7 +781,7 @@
             <en><![CDATA[Period of validity in <b>minutes</b> for the link to confirm password reset.]]></en>
         </locale>
         <locale name="projects.project.settings.panel.settings.title">
-            <en><![CDATA[Projects]]></en>
+            <en><![CDATA[General Project Settings]]></en>
         </locale>
         <locale name="projects.project.settings.panel.language.default">
             <en><![CDATA[Default language]]></en>
@@ -818,6 +818,30 @@
         </locale>
         <locale name="projects.project.settings.panel.suffix">
             <en><![CDATA[Suffix]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.publisher.header">
+            <en><![CDATA[Publisher settings]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.publisher">
+            <en><![CDATA[Publisher]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.publisher.description">
+            <en><![CDATA[
+            Default setting for the Publisher property. The Publisher is required for some editorial texts.
+            As for example for blogs or news entries.
+            ]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.publisher.type">
+            <en><![CDATA[Publisher type]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.publisher.image">
+            <en><![CDATA[Logo / Image]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.publisher.company">
+            <en><![CDATA[Company]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.publisher.organization">
+            <en><![CDATA[Organization]]></en>
         </locale>
         <locale name="projects.defaultstructure.search.title">
             <en><![CDATA[Search]]></en>
