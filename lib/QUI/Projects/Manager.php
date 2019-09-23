@@ -289,7 +289,8 @@ class Manager
             'convertRomanLetters'      => 0,
             'publisher'                => '',
             'publisher_type'           => '',
-            'publisher_image'          => ''
+            'publisher_image'          => '',
+            'publisher_url'            => ''
         ];
 
         // settings.xml
