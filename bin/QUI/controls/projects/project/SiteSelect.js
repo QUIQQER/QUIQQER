@@ -3,10 +3,7 @@
  * For each project language the user can select a site
  *
  * @module controls/projects/project/SiteSelect
- *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require css!controls/projects/project/SiteSelect.css
+ * @author www.pcsg.de (Henning Leutz)
  */
 define('controls/projects/project/SiteSelect', [
 

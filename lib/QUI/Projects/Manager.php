@@ -81,9 +81,7 @@ class Manager
         $Project      = $project;
         $handedParams = $params;
 
-        if (\is_string($Project)
-            || \get_class($Project) != Project::class
-        ) {
+        if (\is_string($Project) || \get_class($Project) != Project::class) {
             $Project = self::getProject($project);
         }
 
@@ -288,7 +286,10 @@ class Manager
             'logo'                     => '',
             'emailLogo'                => '',
             'favicon'                  => '',
-            'convertRomanLetters'      => 0
+            'convertRomanLetters'      => 0,
+            'publisher'                => '',
+            'publisher_type'           => '',
+            'publisher_image'          => ''
         ];
 
         // settings.xml

@@ -783,7 +783,7 @@
             ]]></de>
         </locale>
         <locale name="projects.project.settings.panel.settings.title">
-            <de><![CDATA[Projekte]]></de>
+            <de><![CDATA[Allgemeine Projekt Einstellungen]]></de>
         </locale>
         <locale name="projects.project.settings.panel.language.default">
             <de><![CDATA[Standard Sprache]]></de>
@@ -820,6 +820,30 @@
         </locale>
         <locale name="projects.project.settings.panel.suffix">
             <de><![CDATA[Suffix]]></de>
+        </locale>
+        <locale name="projects.project.settings.panel.publisher.header">
+            <de><![CDATA[Publisher Einstellungen]]></de>
+        </locale>
+        <locale name="projects.project.settings.panel.publisher">
+            <de><![CDATA[Publisher]]></de>
+        </locale>
+        <locale name="projects.project.settings.panel.publisher.description">
+            <de><![CDATA[
+            Standard Einstellung für die Publisher Eigenschaft. Der Publisher wird für einige redaktionelle Texte benötigt.
+            Wie zum Beispiel für Blogs oder News Einträge.
+            ]]></de>
+        </locale>
+        <locale name="projects.project.settings.panel.publisher.type">
+            <de><![CDATA[Publisher Art]]></de>
+        </locale>
+        <locale name="projects.project.settings.panel.publisher.image">
+            <de><![CDATA[Logo / Bild]]></de>
+        </locale>
+        <locale name="projects.project.settings.panel.publisher.company">
+            <de><![CDATA[Firma]]></de>
+        </locale>
+        <locale name="projects.project.settings.panel.publisher.organization">
+            <de><![CDATA[Organization]]></de>
         </locale>
         <locale name="projects.defaultstructure.search.title">
             <de><![CDATA[Suche]]></de>
