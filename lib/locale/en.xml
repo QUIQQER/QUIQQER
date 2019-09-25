@@ -846,6 +846,9 @@
         <locale name="projects.project.settings.panel.publisher.organization">
             <en><![CDATA[Organization]]></en>
         </locale>
+        <locale name="projects.project.settings.panel.publisher.person">
+            <en><![CDATA[Person]]></en>
+        </locale>
         <locale name="projects.defaultstructure.search.title">
             <en><![CDATA[Search]]></en>
         </locale>
