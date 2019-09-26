@@ -399,9 +399,11 @@ define('controls/upload/File', [
 
             // set upload start time
             if (!this.$upload_time) {
-                var Now = new Date();
+                var Now     = new Date();
+                var minutes = ('0' + Now.getMinutes()).slice(-2);
+                var hours   = ('0' + Now.getHours()).slice(-2);
 
-                this.$upload_time = Now.getHours() + ':' + Now.getMinutes();
+                this.$upload_time = hours + ':' + minutes;
 
                 if (this.$Elm) {
                     this.$Elm
