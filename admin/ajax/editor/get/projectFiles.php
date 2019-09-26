@@ -12,16 +12,15 @@ QUI::$Ajax->registerFunction(
     function ($project) {
         try {
             $Project = QUI::getProject($project);
-
         } catch (QUI\Exception $Exception) {
-            return array(
-                'cssFiles' => '',
-                'bodyId' => '',
+            return [
+                'cssFiles'  => '',
+                'bodyId'    => '',
                 'bodyClass' => ''
-            );
+            ];
         }
 
         return QUI\Editor\Manager::getSettings($Project);
     },
-    array('project')
+    ['project']
 );

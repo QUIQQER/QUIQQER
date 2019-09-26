@@ -7,8 +7,6 @@
  * @module controls/editors/Editor
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/controls/Control
- *
  * @event onInit [ {self} ]
  * @event onDraw [ {self} ]
  * @event onDestroy[ {self} ]
@@ -63,7 +61,6 @@ define('controls/editors/Editor', [
         },
 
         initialize: function (Manager, options) {
-
             this.$Manager = Manager;
             this.$Elm     = null;
             this.$Input   = null;
@@ -136,7 +133,7 @@ define('controls/editors/Editor', [
         load: function (callback) {
             var self = this;
 
-            this.getSettings(function (data) {
+            this.getSettings().then(function (data) {
                 self.setAttribute('bodyId', data.bodyId);
                 self.setAttribute('bodyClass', data.bodyClass);
 
@@ -381,6 +378,7 @@ define('controls/editors/Editor', [
          * Get the settings
          *
          * @param {Function} [callback] - callback function
+         * @return {Promise}
          */
         getSettings: function (callback) {
             var project = null,
