@@ -14,6 +14,9 @@ use QUI\Utils\Security\Orthos as Orthos;
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
+ *
+ * available options
+ * - template -> set an own address template
  */
 class Address extends QUI\QDOM
 {
@@ -48,14 +51,30 @@ class Address extends QUI\QDOM
      */
     public function __construct(User $User, $id)
     {
-        $result = QUI::getDataBase()->fetch([
-            'from'  => Manager::tableAddress(),
-            'where' => [
-                'id'  => (int)$id,
-                'uid' => $User->getId()
-            ],
-            'limit' => '1'
-        ]);
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'from'  => Manager::tableAddress(),
+                'where' => [
+                    'id'  => (int)$id,
+                    'uid' => $User->getId()
+                ],
+                'limit' => '1'
+            ]);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::writeDebugException($Exception);
+            QUI\System\Log::addWarning($Exception->getMessage());
+
+            throw new QUI\Users\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/quiqqer',
+                    'exception.lib.user.address.not.found',
+                    [
+                        'addressId' => (int)$id,
+                        'userId'    => $User->getId()
+                    ]
+                )
+            );
+        }
 
         $this->User = $User;
         $this->id   = (int)$id;
@@ -474,6 +493,12 @@ class Address extends QUI\QDOM
             'Countries' => new QUI\Countries\Manager(),
             'options'   => $options
         ]);
+
+        $template = $this->getAttribute('template');
+
+        if (\file_exists($template)) {
+            return $Engine->fetch($template);
+        }
 
         return $Engine->fetch(SYS_DIR.'template/users/address/display.html');
     }
