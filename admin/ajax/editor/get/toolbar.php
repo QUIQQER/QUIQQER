@@ -12,11 +12,11 @@ QUI::$Ajax->registerFunction(
     function ($toolbar) {
         if (isset($toolbar) && !empty($toolbar)) {
             return QUI\Editor\Manager::parseXmlFileToArray(
-                QUI\Editor\Manager::getToolbarsPath() . $toolbar
+                QUI\Editor\Manager::getToolbarsPath().$toolbar
             );
         }
 
         return QUI\Editor\Manager::getToolbarButtonsFromUser();
     },
-    array('toolbar')
+    ['toolbar']
 );

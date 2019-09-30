@@ -44,6 +44,9 @@ class Manager
 
     /**
      * Setup
+     *
+     * @throws QUI\Exception
+     * @throws QUI\DataBase\Exception
      */
     public static function setup()
     {
@@ -143,6 +146,8 @@ class Manager
      * Return the main editor manager (wyiswyg) config object
      *
      * @return QUI\Config
+     *
+     * @throws QUI\Exception
      */
     public static function getConf()
     {
@@ -157,6 +162,8 @@ class Manager
      * Return all settings of the manager
      *
      * @return array
+     *
+     * @throws QUI\Exception
      */
     public static function getConfig()
     {
@@ -172,6 +179,8 @@ class Manager
      *
      * @param string $name - name of the editor
      * @param string $package - js modul/package name
+     *
+     * @throws QUI\Exception
      */
     public static function registerEditor($name, $package)
     {
@@ -386,7 +395,18 @@ class Manager
         $templates = [];
 
         if ($Project->getAttribute('template')) {
-            $templates[] = OPT_DIR.$Project->getAttribute('template').'/settings.xml';
+            try {
+                $Package     = QUI::getPackage($Project->getAttribute('template'));
+                $templates[] = OPT_DIR.$Package->getName().'/settings.xml';
+
+                $TemplateParent = $Package->getTemplateParent();
+
+                if ($TemplateParent) {
+                    $templates[] = OPT_DIR.$TemplateParent->getName().'/settings.xml';
+                }
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeDebugException($Exception);
+            }
         }
 
         // project vhosts
@@ -516,7 +536,6 @@ class Manager
 
         return $result;
     }
-
 
     /**
      * Return the available styles
@@ -688,9 +707,14 @@ class Manager
             }
         }
 
+        try {
+            $Config  = self::getConf();
+            $toolbar = $Config->get('toolbars', 'standard');
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addWarning($Exception->getMessage());
 
-        $Config  = self::getConf();
-        $toolbar = $Config->get('toolbars', 'standard');
+            return [];
+        }
 
         // standard
         if ($toolbar === false) {
@@ -829,11 +853,11 @@ class Manager
     /**
      * Cleanup HTML
      *
-     * @uses Tidy, if enabled
-     *
      * @param string $html
      *
      * @return string
+     * @uses Tidy, if enabled
+     *
      */
     public function cleanHTML($html)
     {

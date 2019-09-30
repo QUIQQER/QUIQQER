@@ -15,6 +15,6 @@ QUI::$Ajax->registerFunction(
 
         return QUI\Editor\Manager::getToolbarsFromGroup($Group);
     },
-    array('uid', 'assignedToolbars'),
+    ['uid', 'assignedToolbars'],
     'Permission::checkAdminUser'
 );
