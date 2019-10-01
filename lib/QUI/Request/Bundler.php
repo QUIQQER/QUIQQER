@@ -50,7 +50,8 @@ class Bundler
             } catch (\Exception $Exception) {
                 $result[$request['rid']]['Exception'] = [
                     'message' => $Exception->getMessage(),
-                    'code'    => $Exception->getCode()
+                    'code'    => $Exception->getCode(),
+                    'type'    => \get_class($Exception)
                 ];
             }
         }
