@@ -153,6 +153,9 @@ define('Ajax', [
                             Response = self.$onprogress[this];
                         }
 
+                        var requestCallback = function () {
+                            callback.apply(this, arguments);
+                        }.bind(this);
 
                         // maintenance?
                         if (Response &&
@@ -203,7 +206,7 @@ define('Ajax', [
                                 return;
                             }
 
-                            self.$openLogin(call, method, callback, params);
+                            self.$openLogin(call, method, requestCallback, params);
 
                             return;
                         }
@@ -214,7 +217,7 @@ define('Ajax', [
                             Exception.getCode() === 440
                         ) {
                             Request.setAttribute('logout', true);
-                            self.$openLogin(call, method, callback, params);
+                            self.$openLogin(call, method, requestCallback, params);
 
                             return;
                         }
