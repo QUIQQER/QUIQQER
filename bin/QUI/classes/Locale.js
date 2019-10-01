@@ -158,6 +158,28 @@ define('classes/Locale', needle, function (QUILocale) {
             } catch (e) {
                 return window.Intl.DateTimeFormat(locale);
             }
+        },
+
+        /**
+         * Return a locale which represent the system locale (not the user locale)
+         *
+         * @return {Promise}
+         */
+        getSystemLocale: function () {
+            var standardLanguage = QUIQQER_CONFIG.globals.standardLanguage || false;
+
+            return new Promise(function (resolve) {
+                require(['classes/Locale'], function (Locale) {
+                    if (!standardLanguage) {
+                        return resolve(new Locale());
+                    }
+
+                    var L = new Locale();
+                    L.setCurrent(standardLanguage);
+
+                    resolve(L);
+                });
+            });
         }
     });
 });
