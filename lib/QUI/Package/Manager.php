@@ -917,27 +917,47 @@ class Manager extends QUI\QDOM
      */
     public function getInstalled($params = [])
     {
-        if (isset($this->instanceCache['getInstalled'])) {
-            return $this->instanceCache['getInstalled'];
-        }
-
         $cache = 'quiqqer/quiqqer/packages/getInstalled';
 
-        try {
-            $this->instanceCache['getInstalled'] = QUI\Cache\Manager::get($cache);
+        if (isset($this->instanceCache['getInstalled'])) {
+            $installed = $this->instanceCache['getInstalled'];
+        } else {
+            try {
+                $installed                           = QUI\Cache\Manager::get($cache);
+                $this->instanceCache['getInstalled'] = $installed;
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::writeDebugException($Exception);
 
-            return $this->instanceCache['getInstalled'];
-        } catch (QUI\Exception $Exception) {
-            QUI\System\Log::writeDebugException($Exception);
+                // create cache
+                $list      = $this->getList();
+                $installed = [];
+
+                foreach ($list as $key => $package) {
+                    try {
+                        $Package = $this->getInstalledPackage($package['name']);
+
+                        $package['title']       = $Package->getTitle();
+                        $package['description'] = $Package->getDescription();
+                        $package['image']       = $Package->getImage();
+
+                        $installed[] = $package;
+                    } catch (QUI\Exception $Exception) {
+                    }
+                }
+
+                $this->instanceCache['getInstalled'] = $installed;
+                QUI\Cache\Manager::set($cache, $installed);
+            }
         }
 
-        $list   = $this->getList();
-        $result = $list;
+        if (empty($params)) {
+            return $installed;
+        }
+
+        $filtered = [];
 
         if (isset($params['type'])) {
-            $result = [];
-
-            foreach ($list as $package) {
+            foreach ($installed as $package) {
                 if (!isset($package['type'])) {
                     continue;
                 }
@@ -946,33 +966,20 @@ class Manager extends QUI\QDOM
                     continue;
                 }
 
-                $result[] = $package;
+                $filtered[] = $package;
             }
+        } else {
+            $filtered = $installed;
         }
 
         if (isset($params['limit']) && isset($params['page'])) {
             $limit = (int)$params['limit'];
             $page  = (int)$params['page'];
 
-            $result = QUI\Utils\Grid::getResult($result, $page, $limit);
+            $filtered = QUI\Utils\Grid::getResult($filtered, $page, $limit);
         }
 
-        foreach ($result as $key => $package) {
-            try {
-                $Package = $this->getInstalledPackage($package['name']);
-
-                $result[$key]['title']       = $Package->getTitle();
-                $result[$key]['description'] = $Package->getDescription();
-                $result[$key]['image']       = $Package->getImage();
-            } catch (QUI\Exception $Exception) {
-            }
-        }
-
-        $this->instanceCache['getInstalled'] = $result;
-
-        QUI\Cache\Manager::set($cache, $this->instanceCache['getInstalled']);
-
-        return $result;
+        return $filtered;
     }
 
     /**
