@@ -200,7 +200,8 @@ define('classes/request/Bundler', [
 
             R.send(
                 Object.toQueryString({
-                    quiqqerBundle: requestData
+                    quiqqerBundle: requestData,
+                    _FRONTEND    : window.QUIQQER_FRONTEND || 0
                 })
             );
 
