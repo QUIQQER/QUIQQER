@@ -105,6 +105,7 @@ define('controls/projects/project/site/Panel', [
         },
 
         initialize: function (Site, options) {
+            this.$built           = false;
             this.$Site            = null;
             this.$CategoryControl = null;
             this.$Container       = null;
@@ -377,103 +378,119 @@ define('controls/projects/project/site/Panel', [
                     onClick: this.openSort
                 }
             }).inject(this.getHeader());
+        },
+
+        /**
+         * build the categories and so on
+         *
+         * @return {Promise}
+         */
+        $buildPanel: function () {
+            if (this.$built) {
+                return Promise.resolve();
+            }
 
             var self    = this,
                 Site    = this.getSite(),
                 Project = Site.getProject();
 
-            Ajax.get([
-                'ajax_site_categories_get',
-                'ajax_site_buttons_get',
-                'ajax_site_isLockedFromOther',
-                'ajax_site_lock'
-            ], function (categories, buttons, isLocked) {
-                var i, ev, fn, len, data, events, category, Category;
+            return new Promise(function (resolve) {
+                Ajax.get([
+                    'ajax_site_categories_get',
+                    'ajax_site_buttons_get',
+                    'ajax_site_isLockedFromOther',
+                    'ajax_site_lock'
+                ], function (categories, buttons, isLocked) {
+                    var i, ev, fn, len, data, events, category, Category;
 
-                for (i = 0, len = buttons.length; i < len; i++) {
-                    data = buttons[i];
+                    self.$built = true;
 
-                    if (data.onclick) {
-                        data._onclick = data.onclick;
-                        delete data.onclick;
+                    for (i = 0, len = buttons.length; i < len; i++) {
+                        data = buttons[i];
 
-                        data.events = {
-                            onClick: self.$onPanelButtonClick
-                        };
+                        if (data.onclick) {
+                            data._onclick = data.onclick;
+                            delete data.onclick;
+
+                            data.events = {
+                                onClick: self.$onPanelButtonClick
+                            };
+                        }
+
+                        if (data.name === 'delete' || data.name === 'new') {
+                            data.styles = {
+                                'float': 'right',
+                                width  : 40
+                            };
+                        }
+
+                        self.addButton(data);
                     }
 
-                    if (data.name === 'delete' || data.name === 'new') {
-                        data.styles = {
-                            'float': 'right',
-                            width  : 40
-                        };
+                    var Save = self.getButtonBar().getChildren('save');
+
+                    if (Save) {
+                        Save.getElm().addClass('qui-site-button-save');
                     }
 
-                    self.addButton(data);
-                }
 
-                var Save = self.getButtonBar().getChildren('save');
+                    for (i = 0, len = categories.length; i < len; i++) {
+                        events   = {};
+                        category = categories[i];
 
-                if (Save) {
-                    Save.getElm().addClass('qui-site-button-save');
-                }
+                        if (typeOf(category.events) === 'object') {
+                            events = category.events;
+                            delete category.events;
+                        }
 
+                        Category = new QUIButton(category);
 
-                for (i = 0, len = categories.length; i < len; i++) {
-                    events   = {};
-                    category = categories[i];
+                        Category.addEvents({
+                            onActive: self.$onCategoryEnter
+                        });
 
-                    if (typeOf(category.events) === 'object') {
-                        events = category.events;
-                        delete category.events;
+                        for (ev in events) {
+                            if (!events.hasOwnProperty(ev)) {
+                                continue;
+                            }
+
+                            try {
+                                eval('fn = ' + events[ev]);
+
+                                Category.addEvent(ev, fn);
+                            } catch (e) {
+                            }
+                        }
+
+                        self.addCategory(Category);
                     }
 
-                    Category = new QUIButton(category);
-
-                    Category.addEvents({
-                        onActive: self.$onCategoryEnter
+                    self.$ButtonOpenWebsite = new QUIButton({
+                        textimage: 'fa fa-external-link',
+                        name     : 'sort',
+                        text     : Locale.get('quiqqer/quiqqer', 'project.sitemap.open.in.window'),
+                        title    : Locale.get('quiqqer/quiqqer', 'project.sitemap.open.in.window'),
+                        events   : {
+                            onClick: self.openSiteInPopup
+                        }
                     });
 
-                    for (ev in events) {
-                        if (!events.hasOwnProperty(ev)) {
-                            continue;
-                        }
+                    self.addButton(self.$ButtonOpenWebsite);
+                    self.$ButtonOpenWebsite.hide();
 
-                        try {
-                            eval('fn = ' + events[ev]);
-
-                            Category.addEvent(ev, fn);
-                        } catch (e) {
-                        }
+                    if (Site.getAttribute('active')) {
+                        self.$ButtonOpenWebsite.show();
                     }
 
-                    self.addCategory(Category);
-                }
-
-                self.$ButtonOpenWebsite = new QUIButton({
-                    textimage: 'fa fa-external-link',
-                    name     : 'sort',
-                    text     : Locale.get('quiqqer/quiqqer', 'project.sitemap.open.in.window'),
-                    title    : Locale.get('quiqqer/quiqqer', 'project.sitemap.open.in.window'),
-                    events   : {
-                        onClick: self.openSiteInPopup
+                    if (isLocked) {
+                        self.setLocked();
                     }
+
+                    resolve();
+                }, {
+                    project: Project.encode(),
+                    id     : Site.getId()
                 });
-
-                self.addButton(self.$ButtonOpenWebsite);
-                self.$ButtonOpenWebsite.hide();
-
-                if (Site.getAttribute('active')) {
-                    self.$ButtonOpenWebsite.show();
-                }
-
-                if (isLocked) {
-                    self.setLocked();
-                }
-
-            }, {
-                project: Project.encode(),
-                id     : Site.getId()
             });
         },
 
@@ -494,13 +511,18 @@ define('controls/projects/project/site/Panel', [
             this.Loader.show();
 
             if (!Site.hasWorkingStorage()) {
-                Site.load();
+                this.$buildPanel().then(function () {
+                    Site.load();
+                });
+
                 return;
             }
 
             var self = this;
 
-            Site.hasWorkingStorageChanges().then(function (hasStorage) {
+            this.$buildPanel().then(function () {
+                return Site.hasWorkingStorageChanges();
+            }).then(function (hasStorage) {
                 if (hasStorage === false) {
                     Site.load();
                     return;
