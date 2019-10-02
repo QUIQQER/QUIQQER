@@ -55,13 +55,14 @@
         <div class="street-address">{$street_no}</div>
         {if !empty($country)}
         <div class="locality">
-            <div class="postal-code">{$country}</div>
-            {$zip} {$city}
+            <span class="postal-country">{$country}-</span>
+            <span class="postal-code">{$zip}</span>
+            <span class="postal-city">{$city}</span>
         </div>
         {else}
         <div class="locality">
             <span class="postal-code">{$zip}</span>
-            {$city}
+            <span class="postal-city">{$city}</span>
         </div>
         {/if}
 
