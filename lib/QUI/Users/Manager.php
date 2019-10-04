@@ -152,7 +152,7 @@ class Manager
                     $Stmt = $DataBase->getPDO()->prepare($sql);
                     $Stmt->execute();
                 }
-            } catch (QUI\Exception $Exception) {
+            } catch (\Exception $Exception) {
                 QUI\System\Log::writeRecursive($dropSql);
                 QUI\System\Log::writeException($Exception);
             }
@@ -410,10 +410,16 @@ class Manager
      */
     public function countAllUsers()
     {
-        $result = QUI::getDataBase()->fetch([
-            'count' => 'count',
-            'from'  => self::table()
-        ]);
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'count' => 'count',
+                'from'  => self::table()
+            ]);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+
+            return 0;
+        }
 
         if (isset($result[0]) && isset($result[0]['count'])) {
             return $result[0]['count'];
@@ -432,10 +438,16 @@ class Manager
     public function getAllUsers($objects = false)
     {
         if ($objects == false) {
-            return QUI::getDataBase()->fetch([
-                'from'  => self::table(),
-                'order' => 'username'
-            ]);
+            try {
+                return QUI::getDataBase()->fetch([
+                    'from'  => self::table(),
+                    'order' => 'username'
+                ]);
+            } catch (QUi\Exception $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
+
+                return [];
+            }
         }
 
         $result = [];
@@ -459,11 +471,17 @@ class Manager
      */
     public function getAllUserIds()
     {
-        $result = QUI::getDataBase()->fetch([
-            'select' => 'id',
-            'from'   => self::table(),
-            'order'  => 'username'
-        ]);
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'select' => 'id',
+                'from'   => self::table(),
+                'order'  => 'username'
+            ]);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+
+            return [];
+        }
 
         return $result;
     }
@@ -508,7 +526,13 @@ class Manager
         $params['select'] = 'id';
         $params['from']   = self::table();
 
-        return QUI::getDataBase()->fetch($params);
+        try {
+            return QUI::getDataBase()->fetch($params);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
+
+        return [];
     }
 
     /**
@@ -1062,14 +1086,26 @@ class Manager
      */
     public function getUserByName($username)
     {
-        $result = QUI::getDataBase()->fetch([
-            'select' => 'id',
-            'from'   => self::table(),
-            'where'  => [
-                'username' => $username
-            ],
-            'limit'  => 1
-        ]);
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'select' => 'id',
+                'from'   => self::table(),
+                'where'  => [
+                    'username' => $username
+                ],
+                'limit'  => 1
+            ]);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+
+            throw new QUI\Users\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.lib.user.user.not.found'
+                ),
+                404
+            );
+        }
 
         if (!isset($result[0])) {
             throw new QUI\Users\Exception(
@@ -1094,14 +1130,26 @@ class Manager
      */
     public function getUserByMail($email)
     {
-        $result = QUI::getDataBase()->fetch([
-            'select' => 'id',
-            'from'   => self::table(),
-            'where'  => [
-                'email' => $email
-            ],
-            'limit'  => 1
-        ]);
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'select' => 'id',
+                'from'   => self::table(),
+                'where'  => [
+                    'email' => $email
+                ],
+                'limit'  => 1
+            ]);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+
+            throw new QUI\Users\Exception(
+                QUI::getLocale()->get(
+                    'quiqqer/system',
+                    'exception.lib.user.user.not.found'
+                ),
+                404
+            );
+        }
 
         if (!isset($result[0])) {
             throw new QUI\Users\Exception(
@@ -1140,14 +1188,20 @@ class Manager
             return false;
         }
 
-        $result = QUI::getDataBase()->fetch([
-            'select' => 'username',
-            'from'   => self::table(),
-            'where'  => [
-                'username' => $username
-            ],
-            'limit'  => 1
-        ]);
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'select' => 'username',
+                'from'   => self::table(),
+                'where'  => [
+                    'username' => $username
+                ],
+                'limit'  => 1
+            ]);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+
+            return false;
+        }
 
         return isset($result[0]) ? true : false;
     }
@@ -1183,14 +1237,20 @@ class Manager
      */
     public function emailExists($email)
     {
-        $result = QUI::getDataBase()->fetch([
-            'select' => 'email',
-            'from'   => self::table(),
-            'where'  => [
-                'email' => $email
-            ],
-            'limit'  => 1
-        ]);
+        try {
+            $result = QUI::getDataBase()->fetch([
+                'select' => 'email',
+                'from'   => self::table(),
+                'where'  => [
+                    'email' => $email
+                ],
+                'limit'  => 1
+            ]);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception);
+
+            return false;
+        }
 
         return isset($result[0]) ? true : false;
     }

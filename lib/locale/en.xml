@@ -745,7 +745,13 @@
             <en><![CDATA[Unfortunately an error has occurred. Please try again later.]]></en>
         </locale>
         <locale name="exception.network.error">
-            <de><![CDATA[Unfortunately a connection error occurred. Please try again later.]]></de>
+            <en><![CDATA[Unfortunately a connection error occurred. Please try again later.]]></en>
+        </locale>
+        <locale name="exception.user.save.mail.exists">
+            <en><![CDATA[
+                The user could not be saved. The user's e-mail address is already being used by another user.
+                Since e-mail login is activated, users cannot receive the same e-mail address.
+            ]]></en>
         </locale>
     </groups>
 
@@ -1172,7 +1178,7 @@
             <en><![CDATA[You cannot delete your own user account.]]></en>
         </locale>
         <locale name="exception.superuser_cannot_delete_himself">
-            <de><![CDATA[You as a Super User cannot delete your own user account.]]></de>
+            <en><![CDATA[You as a Super User cannot delete your own user account.]]></en>
         </locale>
 
         <locale name="exception.site.linked.already.exists">
@@ -4686,7 +4692,7 @@
         </locale>
 
         <locale name="templates.mail.body.header.social" html="true">
-            <de><![CDATA[
+            <en><![CDATA[
                  <a href="https://www.facebook.com/Quiqqer" target="_blank" rel="noreferrer" style="color: #666666; text-decoration: none; padding: 0 10px;">
                     <img alt="QUIQQER on Facebook" src="https://www.quiqqer.com/media/cache/quiqqer/email/facebook.png" />
                  </a>
@@ -4705,14 +4711,14 @@
                      <img width="15" height="15" src="https://www.quiqqer.com/media/cache/quiqqer/email/discord.png"
                           alt="QUIQQER on Discord">
                  </a>
-             ]]></de>
+             ]]></en>
         </locale>
         <locale name="templates.mail.body.footer.text" html="true">
-            <de>
-                <![CDATA[<p style="padding: 0; margin: 0;">&copy; [year]<br/>Visit <a href="https://www.quiqqer.com">QUIQQER</a> website</p>]]></de>
+            <en>
+                <![CDATA[<p style="padding: 0; margin: 0;">&copy; [year]<br/>Visit <a href="https://www.quiqqer.com">QUIQQER</a> website</p>]]></en>
         </locale>
         <locale name="templates.mail.body.footer.social" html="true">
-            <de><![CDATA[
+            <en><![CDATA[
                  <a href="https://www.facebook.com/Quiqqer" target="_blank" rel="noreferrer" style="color: #666666; text-decoration: none; padding: 0 10px;">
                     <img alt="QUIQQER on Facebook" src="https://www.quiqqer.com/media/cache/quiqqer/email/facebook.png" />
                  </a>
@@ -4731,7 +4737,7 @@
                      <img width="15" height="15" src="https://www.quiqqer.com/media/cache/quiqqer/email/discord.png"
                           alt="QUIQQER on Discord">
                  </a>
-             ]]></de>
+             ]]></en>
         </locale>
 
         <locale name="projects.project.site.messages.lock">
