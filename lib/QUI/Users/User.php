@@ -1564,7 +1564,7 @@ class User implements QUI\Interfaces\Users\User
     protected function checkUerMail()
     {
         // check if duplicated emails are exists
-        if ($this->getAttribute('email') && QUI::conf('globals', 'emaillogin')) {
+        try {
             $found = QUI::getDataBase()->fetch([
                 'from'  => Manager::table(),
                 'where' => [
@@ -1576,12 +1576,18 @@ class User implements QUI\Interfaces\Users\User
                 ],
                 'limit' => 1
             ]);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
 
-            if (isset($found[0])) {
-                throw new QUI\Users\Exception(
-                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.user.save.mail.exists')
-                );
-            }
+            throw new QUI\Users\Exception(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.user.save.mail.exists')
+            );
+        }
+
+        if (isset($found[0])) {
+            throw new QUI\Users\Exception(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.user.save.mail.exists')
+            );
         }
     }
 
