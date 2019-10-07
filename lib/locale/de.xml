@@ -1339,6 +1339,13 @@
             Leider kann Redis nicht verwendet werden. Bitte installiere die php redis Erweiterung (php-redis)
             ]]></de>
         </locale>
+        <locale name="exception.user.save.mail.exists">
+            <de><![CDATA[
+                Der Benutzer konnte leider nicht gespeichert werden.
+                Die E-Mail Adresse des Benutzers wird schon von einem anderen Benutzer verwendet.
+                Da E-Mail Login aktiviert ist, können Benutzer nicht die selbe E-Mail Addresse erhalten.
+            ]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">
         <locale name="controls.email.select.email_invalid">

@@ -3034,10 +3034,7 @@ define('controls/grid/Grid', [
                 header      = columnModel.header;
                 dataIndex   = columnModel.dataIndex;
 
-                if (columnModel.hidden ||
-                    columnModel.showNotInExport ||
-                    columnModel.dataType === 'button' ||
-                    columnModel.dataType === 'checkbox') {
+                if (this.exportable(columnModel) === false) {
                     continue;
                 }
 
@@ -3112,9 +3109,7 @@ define('controls/grid/Grid', [
                 header      = columnModel.header;
                 dataIndex   = columnModel.dataIndex;
 
-                if (columnModel.hidden ||
-                    columnModel.dataType === 'button' ||
-                    columnModel.dataType === 'checkbox') {
+                if (this.exportable(columnModel) === false) {
                     continue;
                 }
 
@@ -3148,6 +3143,29 @@ define('controls/grid/Grid', [
             document.getElement('.exportSelectDiv').destroy();
 
             return data;
+        },
+
+        /**
+         *
+         * @param columnModel
+         * @return {boolean}
+         */
+        exportable: function (columnModel) {
+            if (typeof columnModel.export !== 'undefined' && columnModel.export === false) {
+                return false;
+            }
+
+            if (columnModel.hidden && typeof columnModel.export !== 'undefined' && columnModel.export) {
+                return true;
+            }
+
+            if (columnModel.hidden ||
+                columnModel.dataType === 'button' ||
+                columnModel.dataType === 'checkbox') {
+                return false;
+            }
+
+            return true;
         },
 
         exportGrid: function (type) {

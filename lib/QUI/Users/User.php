@@ -1261,8 +1261,10 @@ class User implements QUI\Interfaces\Users\User
      * @param null|QUI\Interfaces\Users\User $ParentUser - optional, execution user
      *
      * @return boolean
+     *
      * @throws \QUI\Users\Exception
      * @throws \QUI\Permissions\Exception
+     *
      * @see QUI\Interfaces\Users\User::activate()
      *
      */
@@ -1290,6 +1292,8 @@ class User implements QUI\Interfaces\Users\User
                 )
             );
         }
+
+        $this->checkUerMail();
 
         $groups = $this->getGroups(false);
 
@@ -1514,6 +1518,9 @@ class User implements QUI\Interfaces\Users\User
             $birthday = null;
         }
 
+        // check if duplicated emails are exists
+        $this->checkUerMail();
+
 
         // saving
         $result = QUI::getDataBase()->update(
@@ -1552,17 +1559,46 @@ class User implements QUI\Interfaces\Users\User
     }
 
     /**
+     * @throws QUI\Users\Exception
+     */
+    protected function checkUerMail()
+    {
+        // check if duplicated emails are exists
+        try {
+            $found = QUI::getDataBase()->fetch([
+                'from'  => Manager::table(),
+                'where' => [
+                    'email' => $this->getAttribute('email'),
+                    'id'    => [
+                        'value' => $this->getId(),
+                        'type'  => 'NOT'
+                    ]
+                ],
+                'limit' => 1
+            ]);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+
+            throw new QUI\Users\Exception(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.user.save.mail.exists')
+            );
+        }
+
+        if (isset($found[0])) {
+            throw new QUI\Users\Exception(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.user.save.mail.exists')
+            );
+        }
+    }
+
+    /**
      * (non-PHPdoc)
      *
      * @see QUI\Interfaces\Users\User::isSU()
      */
     public function isSU()
     {
-        if ($this->su == true) {
-            return true;
-        }
-
-        return false;
+        return $this->su === true;
     }
 
     /**
