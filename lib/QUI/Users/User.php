@@ -1521,6 +1521,27 @@ class User implements QUI\Interfaces\Users\User
         // check if duplicated emails are exists
         $this->checkUerMail();
 
+        // check if su exists
+        // check if one super user exists
+        if (!$this->isSU()) {
+            $superUsers = QUI::getUsers()->getUsers([
+                'where' => [
+                    'su' => 1,
+                    'id' => [
+                        'type'  => 'NOT',
+                        'value' => $this->getId()
+                    ]
+                ],
+                'limit' => 1
+            ]);
+
+            if (!isset($superUsers[0])) {
+                throw new QUI\Users\Exception(
+                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.user.save.one.superuser.must.exists')
+                );
+            }
+        }
+
 
         // saving
         $result = QUI::getDataBase()->update(

@@ -1165,7 +1165,13 @@
 
         <locale name="exception.user.one.superuser.must.exists">
             <de><![CDATA[
-                Der Benutzer kann nicht zerstört oder deaktiviert werden.
+                Der Benutzer kann nicht gelöscht oder deaktiviert werden.
+                Es muss mindestens ein Super-User im System vorhanden sein.
+            ]]></de>
+        </locale>
+        <locale name="exception.user.save.one.superuser.must.exists">
+            <de><![CDATA[
+                Der Benutzer kann nicht gespeichert werden.
                 Es muss mindestens ein Super-User im System vorhanden sein.
             ]]></de>
         </locale>
