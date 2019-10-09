@@ -936,7 +936,11 @@ class User implements QUI\Interfaces\Users\User
             case "su":
                 // only a super user can set a superuser
                 if (QUI::getUsers()->existsSession() && QUI::getUsers()->getUserBySession()->isSU()) {
-                    $this->su = (bool)$value;
+                    if (\is_numeric($value)) {
+                        $this->su = !!(int)$value;
+                    } else {
+                        $this->su = (bool)$value;
+                    }
                 }
                 break;
 
