@@ -119,6 +119,16 @@ form.qui-site-data {
     width: 100%;
 }
 
+form.qui-site-data .message {
+    padding: 10px;
+}
+
+form.qui-site-data .message-attention {
+    color: #7d6608;
+    background-color: #fcf3cf;
+    border: 1px solid #fbeebc;
+}
+
 .qui-site-data .data-table p {
     width: 100%;
 }

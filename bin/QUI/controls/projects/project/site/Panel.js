@@ -1102,13 +1102,15 @@ define('controls/projects/project/site/Panel', [
                                     OpenInStructure.set('title', Locale.get('quiqqer/quiqqer', 'projects.project.site.panel.information.openInSiteStructure'));
                                 }
 
-                                SiteType.addEvent('change', function () {
-                                    if (SiteType.value === Site.getAttribute('type')) {
-                                        return;
-                                    }
+                                if (SiteType) {
+                                    SiteType.addEvent('change', function () {
+                                        if (SiteType.value === Site.getAttribute('type')) {
+                                            return;
+                                        }
 
-                                    self.save();
-                                });
+                                        self.save();
+                                    });
+                                }
 
                                 if (Title) {
                                     Title.addEvent('blur', function () {
