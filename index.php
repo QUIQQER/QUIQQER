@@ -13,7 +13,6 @@
  * @author www.pcsg.com (Henning Leutz)
  */
 
-
 \error_reporting(E_ALL);
 
 if (!\defined('QUIQQER_SYSTEM')) {
