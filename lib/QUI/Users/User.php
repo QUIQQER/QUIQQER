@@ -1293,7 +1293,7 @@ class User implements QUI\Interfaces\Users\User
             );
         }
 
-        $this->checkUerMail();
+        $this->checkUserMail();
 
         $groups = $this->getGroups(false);
 
@@ -1519,7 +1519,7 @@ class User implements QUI\Interfaces\Users\User
         }
 
         // check if duplicated emails are exists
-        $this->checkUerMail();
+        $this->checkUserMail();
 
         // check if su exists
         // check if one super user exists
@@ -1582,21 +1582,25 @@ class User implements QUI\Interfaces\Users\User
     /**
      * @throws QUI\Users\Exception
      */
-    protected function checkUerMail()
+    protected function checkUserMail()
     {
         // check if duplicated emails are exists
         try {
-            $found = QUI::getDataBase()->fetch([
-                'from'  => Manager::table(),
-                'where' => [
-                    'email' => $this->getAttribute('email'),
-                    'id'    => [
-                        'value' => $this->getId(),
-                        'type'  => 'NOT'
-                    ]
-                ],
-                'limit' => 1
-            ]);
+            $email = $this->getAttribute('email');
+
+            if (!empty($email)) {
+                $found = QUI::getDataBase()->fetch([
+                    'from'  => Manager::table(),
+                    'where' => [
+                        'email' => $email,
+                        'id'    => [
+                            'value' => $this->getId(),
+                            'type'  => 'NOT'
+                        ]
+                    ],
+                    'limit' => 1
+                ]);
+            }
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
 
