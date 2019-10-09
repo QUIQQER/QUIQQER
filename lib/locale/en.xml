@@ -1168,6 +1168,11 @@
                 There must be at least one super-user in the system.
             ]]></en>
         </locale>
+        <locale name="exception.user.save.one.superuser.must.exists">
+            <en><![CDATA[
+                User cant be saved. There must be at least one super-user in the system.
+            ]]></en>
+        </locale>
         <locale name="exception.user.one.active.user.must.exists">
             <en><![CDATA[
                 User cant be destroyed or deactivated.
