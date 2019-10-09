@@ -462,7 +462,12 @@ class Ajax extends QUI\QDOM
                     $FirstException = $list[0];
                     // method nicht mit ausgeben
                     $message = $FirstException->getMessage();
-                    $message = \mb_substr($message, 0, \mb_strripos($message, ' :: '));
+                    $end     = \mb_strripos($message, ' :: ');
+
+                    if ($end) {
+                        $message = \mb_substr($message, 0, $end);
+                    }
+
 
                     $return['Exception']['message'] = $message;
                     $return['Exception']['code']    = $FirstException->getCode();
