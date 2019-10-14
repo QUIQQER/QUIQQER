@@ -57,6 +57,7 @@
     "quiqqer\/utils": ">=1.9|dev-master|dev-dev",
     "quiqqer\/cron": "1.*|dev-master|dev-dev",
     "quiqqer\/log": "1.*|dev-master|dev-dev",
+    "quiqqer/login-logger": "1.*|dev-master|dev-dev",
     "quiqqer\/diashow": ">=0.9|dev-master|dev-dev",
     "quiqqer\/lockclient": "1.*|dev-master|dev-dev",
     "quiqqer\/messages": "1.*|dev-master|dev-dev",
