@@ -421,6 +421,7 @@
         <locale name="exception.everonye.group.cannot.be.deleted">
             <de><![CDATA[Die Jeder Gruppe kann nicht gelöscht werden.]]></de>
         </locale>
+
     </groups>
     <groups name="quiqqer/system" datatype="js">
         <locale name="controls.users.auth.quiqqerlogin.send_mail_success">
