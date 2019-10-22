@@ -43,7 +43,7 @@ define('controls/grid/Grid', [
     'Locale',
 
     'css!controls/grid/Grid.css'
-
+    
 ], function (QUI, QUIControl, QUIButton, QUISeparator, QUIContextMenu,
              QUIContextItem, ControlUtils, QUILocale) {
     "use strict";
@@ -57,6 +57,9 @@ define('controls/grid/Grid', [
             Panel.removeEvent('resize', resizeMeInThePanel);
         }
     };
+
+    // workaround for css loading
+    require(['css!controls/grid/Grid.css']);
 
     /**
      * @class controls/grid/Grid
