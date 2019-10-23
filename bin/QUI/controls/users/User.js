@@ -817,7 +817,7 @@ define('controls/users/User', [
                     this.Loader.hide();
                     return;
                 }
-                console.log(User.isActive());
+
                 if (User.isActive()) {
                     Button.on();
                     Button.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isActivate'));
