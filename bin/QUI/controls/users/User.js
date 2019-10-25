@@ -833,7 +833,7 @@ define('controls/users/User', [
                     this.Loader.hide();
                     return;
                 }
-                console.log(User.isActive());
+
                 if (User.isActive()) {
                     Button.setSilentOn();
                     Button.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'isActivate'));

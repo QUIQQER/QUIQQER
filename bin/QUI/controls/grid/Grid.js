@@ -43,7 +43,7 @@ define('controls/grid/Grid', [
     'Locale',
 
     'css!controls/grid/Grid.css'
-    
+
 ], function (QUI, QUIControl, QUIButton, QUISeparator, QUIContextMenu,
              QUIContextItem, ControlUtils, QUILocale) {
     "use strict";
@@ -3359,7 +3359,7 @@ define('controls/grid/Grid', [
             }).inject(this.getElm());
 
             this.getButtons().forEach(function (Button) {
-                Button.disabled();
+                Button.disable();
             });
         },
 
