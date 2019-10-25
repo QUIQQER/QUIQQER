@@ -321,7 +321,7 @@ define('classes/users/Manager', [
          * @return {Promise}
          */
         saveUser: function (User, params, onfinish) {
-            return new Promise(function (resolve) {
+            return new Promise(function (resolve, reject) {
                 var self       = this,
                     attributes = User.getAttributes();
 
@@ -338,7 +338,8 @@ define('classes/users/Manager', [
                 // attributes.extra = User.getExtras();
                 params = ObjectUtils.combine(params, {
                     uid       : User.getId(),
-                    attributes: JSON.encode(attributes)
+                    attributes: JSON.encode(attributes),
+                    onError   : reject
                 });
 
                 Ajax.post('ajax_users_save', function (result, Request) {
