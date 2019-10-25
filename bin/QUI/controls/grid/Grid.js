@@ -3378,7 +3378,7 @@ define('controls/grid/Grid', [
             }
 
             this.getButtons().forEach(function (Button) {
-                Button.enabled();
+                Button.enable();
             });
         }
     });
