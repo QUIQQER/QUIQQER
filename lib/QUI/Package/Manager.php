@@ -1000,6 +1000,23 @@ class Manager extends QUI\QDOM
     }
 
     /**
+     * Return all packages with the current versions
+     *
+     * @return array
+     */
+    public function getInstalledVersions()
+    {
+        $result   = [];
+        $packages = $this->getInstalled();
+
+        foreach ($packages as $package) {
+            $result[$package['name']] = $package['version'];
+        }
+
+        return $result;
+    }
+
+    /**
      * Returns the size of package folder in bytes.
      * By default the value is returned from cache.
      * If there is no value in cache, null is returned, unless you set the force parameter to true.
