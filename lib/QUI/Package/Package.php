@@ -213,6 +213,16 @@ class Package extends QUI\QDOM
     }
 
     /**
+     * Return the cache name for this package
+     *
+     * @return string
+     */
+    public function getCacheName()
+    {
+        return 'quiqqer/package/'.$this->getName();
+    }
+
+    /**
      * Return all providers
      *
      * @param string|bool $providerName - optional, Name of the wanted providers
@@ -484,7 +494,7 @@ class Package extends QUI\QDOM
             return $this->composerData;
         }
 
-        $cache = 'quiqqer/package/'.$this->name.'/composerData';
+        $cache = $this->getCacheName().'/composerData';
 
         try {
             $this->composerData = QUI\Cache\Manager::get($cache);

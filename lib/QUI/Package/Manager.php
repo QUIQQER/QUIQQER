@@ -364,11 +364,12 @@ class Manager extends QUI\QDOM
     public function getPackageLock(Package $Package)
     {
         $packageName = $Package->getName();
-        $cache       = 'quiqqer/packages/lock/'.$packageName;
 
         if (isset($this->packageLock[$packageName])) {
             return $this->packageLock[$packageName];
         }
+
+        $cache = $Package->getCacheName().'lock/';
 
         try {
             $this->packageLock[$packageName] = QUI\Cache\Manager::get($cache);
