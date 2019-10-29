@@ -78,13 +78,6 @@ class Manager extends QUI\QDOM
     protected $composer_lock;
 
     /**
-     * exec command to the composer.phar file
-     *
-     * @var string
-     */
-    protected $composer_exec;
-
-    /**
      * Packaglist - installed packages
      *
      * @var array
@@ -146,13 +139,6 @@ class Manager extends QUI\QDOM
      * @var QUI\Composer\Composer
      */
     public $Composer;
-
-    /**
-     * Path to the local repository
-     *
-     * @var string
-     */
-    protected $localRepository;
 
     /**
      * active servers - use as temp for local repo using
@@ -893,7 +879,6 @@ class Manager extends QUI\QDOM
         }
     }
 
-
     /**
      * Returns how many packages are installed.
      *
@@ -905,7 +890,6 @@ class Manager extends QUI\QDOM
     {
         return \count($this->getList());
     }
-
 
     /**
      * Return the installed packages
@@ -1070,7 +1054,7 @@ class Manager extends QUI\QDOM
      */
     protected function calculatePackageFolderSize($doNotCache = false)
     {
-        $packageFolderSize = QUI\Utils\System\File::getDirectorySize($this->dir);
+        $packageFolderSize = QUI\Utils\System\Folder::getFolderSize($this->dir);
 
         if ($doNotCache) {
             return $packageFolderSize;
@@ -1091,6 +1075,9 @@ class Manager extends QUI\QDOM
      *
      * @param string|array $packages - name of the package, or list of paackages
      * @param string|boolean $version - (optional) version of the package default = dev-master
+     *
+     * @throws QUI\Exception
+     * @throws QUI\Lockclient\Exceptions\LockServerException
      */
     public function install($packages, $version = false)
     {
@@ -1631,6 +1618,7 @@ class Manager extends QUI\QDOM
      * @param bool $mute -mute option for the composer output
      *
      * @throws QUI\Exception
+     * @throws QUI\Lockclient\Exceptions\LockServerException
      *
      * @todo if exception uncommitted changes -> own error message
      * @todo if exception uncommitted changes -> interactive mode
@@ -1720,6 +1708,7 @@ class Manager extends QUI\QDOM
      * @param string|boolean $package - Name of the package
      *
      * @throws QUI\Exception
+     * @throws QUI\Lockclient\Exceptions\LockServerException
      */
     public function updateWithLocalRepository($package = false)
     {
@@ -1729,6 +1718,11 @@ class Manager extends QUI\QDOM
         try {
             $this->update($package);
             $this->resetRepositories();
+        } catch (QUI\Lockclient\Exceptions\LockServerException $Exception) {
+            $this->resetRepositories();
+            LocalServer::getInstance()->activate();
+
+            throw $Exception;
         } catch (QUI\Exception $Exception) {
             $this->resetRepositories();
             LocalServer::getInstance()->activate();
@@ -1929,7 +1923,9 @@ class Manager extends QUI\QDOM
      * @param bool|string - (otional) The packagename which should get updated.
      *
      * @return string
+     *
      * @throws QUI\Exception
+     * @throws QUI\Lockclient\Exceptions\LockServerException
      */
     protected function composerUpdateOrInstall($package)
     {
@@ -2006,6 +2002,7 @@ class Manager extends QUI\QDOM
      * @return string
      *
      * @throws QUI\Exception
+     * @throws QUI\Lockclient\Exceptions\LockServerException
      */
     protected function composerRequireOrInstall($packages, $version)
     {
@@ -2154,11 +2151,10 @@ class Manager extends QUI\QDOM
         return $result;
     }
 
-    //region sitetypes
-
+    //region site types
 
     /**
-     * Gibt alle Seitentypen zurück die verfügbar sind
+     * Returns all site types that are available
      *
      * @param \QUI\Projects\Project|boolean $Project - optional
      * @return array
