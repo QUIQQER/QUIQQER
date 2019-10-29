@@ -194,14 +194,14 @@
 
                     <settings title="filesystem" name="filesystem">
                         <title>
-                            <locale group="quiqqer/system" var="quiqqer.settings.filesystem.title"/>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.filesystem.title"/>
                         </title>
                         <input conf="filesystem.path" type="text">
                             <text>
-                                <locale group="quiqqer/system" var="quiqqer.settings.filesystem.path"/>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.filesystem.path"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/system" var="quiqqer.settings.filesystem.path.description"/>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.filesystem.path.description"/>
                             </description>
                         </input>
                     </settings>
@@ -209,29 +209,31 @@
 
                 <category name="management" require="controls/cache/Settings">
                     <title>
-                        <locale group="quiqqer/system" var="quiqqer.settings.cache.management.title"/>
+                        <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.management.title"/>
                     </title>
                     <text>
-                        <locale group="quiqqer/system" var="quiqqer.settings.cache.management.text"/>
+                        <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.management.text"/>
                     </text>
                     <icon>fa fa-paint-brush</icon>
 
-                    <settings title="clearCache" name="clearCache">
+                    <settings title="clearCompleteCache" name="clearCompleteCache">
                         <title>
-                            <locale group="quiqqer/system" var="quiqqer.settings.cache.clear.title"/>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.clear.title"/>
                         </title>
-                        <input conf="clearCompleteCache" type="button" label="false"/>
-                        <input conf="clearSystemCache" type="button" label="false"/>
-                        <input conf="clearPluginCache" type="button" label="false"/>
-                        <input conf="clearTemplateCache" type="button" label="false"/>
                     </settings>
 
                     <settings title="purgeCache" name="purgeCache">
                         <title>
-                            <locale group="quiqqer/system" var="quiqqer.settings.cache.purge.title"/>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.purge.title"/>
                         </title>
-                        <input conf="purgeCache" type="button" label="false"/>
                     </settings>
+                    
+                    <settings title="clearQuiqqerCache" name="clearQuiqqerCache">
+                        <title>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.quiqqer.title"/>
+                        </title>
+                    </settings>
+
                 </category>
 
             </categories>

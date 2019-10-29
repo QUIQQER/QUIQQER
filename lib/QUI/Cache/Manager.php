@@ -553,6 +553,93 @@ class Manager
         return $data;
     }
 
+    // region clearing
+
+    /**
+     * Clears the settings cache
+     * - /settings/
+     */
+    public static function clearSettingsCache()
+    {
+        self::clear('settings');
+    }
+
+    /**
+     * Clears the complete quiqqer cache
+     * - /quiqqer/
+     */
+    public static function clearCompleteQuiqqerCache()
+    {
+        self::clear('quiqqer');
+    }
+
+    /**
+     * Clears the projects cache
+     * - /quiqqer/projects/
+     */
+    public static function clearProjectsCache()
+    {
+        self::clear('quiqqer/projects/');
+    }
+
+    /**
+     * Clears the project cache
+     * - /quiqqer/projects/projectName
+     *
+     * @param string $projectName - name of the project
+     */
+    public static function clearProjectCache($projectName)
+    {
+        self::clear('quiqqer/projects/'.$projectName);
+    }
+
+    /**
+     * Clears the groups cache
+     * - /quiqqer/groups/
+     */
+    public static function clearGroupsCache()
+    {
+        self::clear('quiqqer/groups/');
+    }
+
+    /**
+     * Clears the users cache
+     * - /quiqqer/users/
+     */
+    public static function clearUsersCache()
+    {
+        self::clear('quiqqer/users/');
+    }
+
+    /**
+     * Clears the permissions cache
+     * - /quiqqer/permissions/
+     */
+    public static function clearPermissionsCache()
+    {
+        self::clear('quiqqer/permissions/');
+    }
+
+    /**
+     * Clears the packages cache
+     * - /quiqqer/packages/
+     */
+    public static function clearPackagesCache()
+    {
+        self::clear('quiqqer/packages/');
+    }
+
+    /**
+     * Clears the package cache
+     * - /quiqqer/package/packageName
+     *
+     * @param string $packageName - Name of the package
+     */
+    public static function clearPackageCache($packageName)
+    {
+        self::clear('quiqqer/package/'.$packageName);
+    }
+
     /**
      * Clears all or only a given entry from the cache.
      *
@@ -608,6 +695,8 @@ class Manager
             QUI\System\Log::writeException($Exception);
         }
     }
+
+    //endregion
 
     /**
      * Returns the size of the /var/cache/ folder in bytes.
