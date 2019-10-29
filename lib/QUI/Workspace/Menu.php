@@ -354,7 +354,7 @@ class Menu
     protected function getCacheName()
     {
         $User  = QUI::getUserBySession();
-        $cache = 'qui/admin/menu/'.$User->getId().'/'.$User->getLang();
+        $cache = 'settings/backend-menu/'.$User->getId().'/'.$User->getLang();
 
         return $cache;
     }

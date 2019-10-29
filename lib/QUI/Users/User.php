@@ -1794,8 +1794,10 @@ class User implements QUI\Interfaces\Users\User
      */
     protected function getListOfExtraAttributes()
     {
+        $cache = 'quiqqer/users/user-extra-attributes';
+
         try {
-            return QUI\Cache\Manager::get('user/plugin-attribute-list');
+            return QUI\Cache\Manager::get($cache);
         } catch (QUI\Exception $Exception) {
         }
 
@@ -1816,7 +1818,7 @@ class User implements QUI\Interfaces\Users\User
             );
         }
 
-        QUI\Cache\Manager::set('user/plugin-attribute-list', $attributes);
+        QUI\Cache\Manager::set($cache, $attributes);
 
         return $attributes;
     }
@@ -1831,7 +1833,7 @@ class User implements QUI\Interfaces\Users\User
      */
     protected function readAttributesFromUserXML($file)
     {
-        $cache = 'user/plugin-xml-attributes-'.\md5($file);
+        $cache = 'quiqqer/users/user-extra-attributes/'.\md5($file);
 
         try {
             return QUI\Cache\Manager::get($cache);

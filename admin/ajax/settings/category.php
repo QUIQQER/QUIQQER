@@ -16,7 +16,7 @@ QUI::$Ajax->registerFunction(
             $files = \json_decode($file, true);
         }
 
-        $cacheName = 'qui/admin/menu/categories/'.\md5(\json_encode($files)).'/'.$category;
+        $cacheName = 'quiqqer/package/quiqqer/quiqqer/menu/categories/'.\md5(\json_encode($files)).'/'.$category;
 
         try {
             $result = QUI\Cache\Manager::get($cacheName);

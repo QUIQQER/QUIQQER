@@ -235,8 +235,10 @@ class Group extends QUI\QDOM
      */
     protected function getListOfExtraAttributes()
     {
+        $cache = 'quiqqer/groups/plugin-attribute-list';
+
         try {
-            return QUI\Cache\Manager::get('group/plugin-attribute-list');
+            return QUI\Cache\Manager::get($cache);
         } catch (QUI\Exception $Exception) {
         }
 
@@ -257,7 +259,7 @@ class Group extends QUI\QDOM
             );
         }
 
-        QUI\Cache\Manager::set('group/plugin-attribute-list', $attributes);
+        QUI\Cache\Manager::set($cache, $attributes);
 
         return $attributes;
     }
@@ -1037,7 +1039,7 @@ class Group extends QUI\QDOM
     protected function createCache()
     {
         // Cache aufbauen
-        QUI\Cache\Manager::set('qui/groups/group/'.$this->getId(), [
+        QUI\Cache\Manager::set('quiqqer/groups/group/'.$this->getId(), [
             'parentids'  => $this->getParentIds(),
             'attributes' => $this->getAttributes(),
             'rights'     => $this->rights

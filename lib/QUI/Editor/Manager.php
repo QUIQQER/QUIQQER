@@ -350,7 +350,7 @@ class Manager
     public static function getSettings(QUI\Projects\Project $Project)
     {
         $project   = $Project->getName();
-        $cacheName = $Project->getName().'/'.$Project->getLang().'/wysiwyg/settings';
+        $cacheName = $Project->getCachePath().'/wysiwyg-settings';
 
         try {
             return QUI\Cache\Manager::get($cacheName);
@@ -739,7 +739,7 @@ class Manager
      */
     public static function parseXmlFileToArray($file)
     {
-        $cache = 'editor/xml/file/'.\md5($file);
+        $cache = 'settings/editor/xml/'.\md5($file);
 
         try {
             return QUI\Cache\Manager::get($cache);

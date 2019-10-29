@@ -596,7 +596,7 @@ class Manager
      */
     public function getCompletePermissionList($Obj)
     {
-        $cache = $this->getDataCacheId($Obj).'/complete';
+        $cache = 'quiqqer/permissions/'.$this->getDataCacheId($Obj).'/complete';
 
         try {
             return QUI\Cache\Manager::get($cache);

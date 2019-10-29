@@ -259,7 +259,7 @@ class Manager
      */
     public static function getProjectConfigList(QUI\Projects\Project $Project)
     {
-        $cache = 'qui/projects/'.$Project->getName().'/configList';
+        $cache = $Project->getCachePath().'/configList';
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -1130,7 +1130,7 @@ class Manager
      */
     public static function getRelatedSettingsXML(QUI\Projects\Project $Project)
     {
-        $cache = 'qui/projects/'.$Project->getName().'/relatedSettingsXml';
+        $cache = $Project->getCachePath().'/relatedSettingsXml';
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -1185,7 +1185,7 @@ class Manager
         }
 
         try {
-            QUI\Cache\Manager::set('qui/projects/', $list);
+            QUI\Cache\Manager::set($cache, $list);
         } catch (\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
         }

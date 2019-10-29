@@ -35,7 +35,7 @@ use QUI\Utils\System\File as QUIFile;
  */
 class Manager extends QUI\QDOM
 {
-    const CACHE_NAME_TYPES = 'qui/packages/types';
+    const CACHE_NAME_TYPES = 'quiqqer/packages/types';
 
     /** @var int The minimum required memory_limit in megabytes of PHP */
     const REQUIRED_MEMORY = 128;
@@ -43,10 +43,10 @@ class Manager extends QUI\QDOM
     const REQUIRED_MEMORY_VCS = 256;
 
     /** @var string The key used to store the package folder size in cache */
-    const CACHE_KEY_PACKAGE_FOLDER_SIZE = "package_folder_size";
+    const CACHE_KEY_PACKAGE_FOLDER_SIZE = "quiqqer/packages/package_folder_size";
 
     /** @var string The key used to store the package folder size in cache */
-    const CACHE_KEY_PACKAGE_FOLDER_SIZE_TIMESTAMP = "package_folder_size_timestamp";
+    const CACHE_KEY_PACKAGE_FOLDER_SIZE_TIMESTAMP = "quiqqer/packages/package_folder_size_timestamp";
 
     /**
      * Package Directory
@@ -364,7 +364,7 @@ class Manager extends QUI\QDOM
     public function getPackageLock(Package $Package)
     {
         $packageName = $Package->getName();
-        $cache       = 'packages/lock/'.$packageName;
+        $cache       = 'quiqqer/packages/lock/'.$packageName;
 
         if (isset($this->packageLock[$packageName])) {
             return $this->packageLock[$packageName];
@@ -917,7 +917,7 @@ class Manager extends QUI\QDOM
      */
     public function getInstalled($params = [])
     {
-        $cache = 'quiqqer/quiqqer/packages/getInstalled';
+        $cache = 'quiqqer/packages/getInstalled';
 
         if (isset($this->instanceCache['getInstalled'])) {
             $installed = $this->instanceCache['getInstalled'];
@@ -1160,7 +1160,7 @@ class Manager extends QUI\QDOM
      */
     public function getPackage($package)
     {
-        $cache = 'packages/cache/info/'.$package;
+        $cache = 'quiqqer/packages/quiqqer/quiqqer/cache-info/'.$package;
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -1237,7 +1237,7 @@ class Manager extends QUI\QDOM
      */
     public function show($package)
     {
-        $cache = 'packages/cache/show/'.$package;
+        $cache = 'quiqqer/packages/quiqqer/quiqqer/cache-show/'.$package;
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -1806,12 +1806,13 @@ class Manager extends QUI\QDOM
      * Return all packages which includes a site.xml
      *
      * @return array
-     * @todo move to an API XML Handler
      */
     public function getPackageSiteXmlList()
     {
+        $cache = 'quiqqer/packages/list-haveSiteXml';
+
         try {
-            return QUI\Cache\Manager::get('qui/packages/list/haveSiteXml');
+            return QUI\Cache\Manager::get($cache);
         } catch (QUI\Exception $Exception) {
         }
 
@@ -1833,7 +1834,7 @@ class Manager extends QUI\QDOM
         }
 
         try {
-            QUI\Cache\Manager::set('qui/packages/list/haveSiteXml', $result);
+            QUI\Cache\Manager::set($cache, $result);
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
@@ -1845,12 +1846,13 @@ class Manager extends QUI\QDOM
      * Return all packages which includes a site.xml
      *
      * @return array
-     * @todo move to an API XML Handler
      */
     public function getPackageDatabaseXmlList()
     {
+        $cache = 'quiqqer/packages/list-haveDatabaseXml';
+
         try {
-            return QUI\Cache\Manager::get('qui/packages/list/haveDatabaseXml');
+            return QUI\Cache\Manager::get($cache);
         } catch (QUI\Exception $Exception) {
         }
 
@@ -1868,7 +1870,7 @@ class Manager extends QUI\QDOM
         }
 
         try {
-            QUI\Cache\Manager::set('qui/packages/list/haveDatabaseXml', $result);
+            QUI\Cache\Manager::set($cache, $result);
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
@@ -2264,7 +2266,7 @@ class Manager extends QUI\QDOM
      */
     protected function getSiteXMLDataByType($type)
     {
-        $cache = 'packages/xml/data/'.$type;
+        $cache = 'quiqqer/packages/xml-data/'.$type;
 
         try {
             return QUI\Cache\Manager::get($cache);
