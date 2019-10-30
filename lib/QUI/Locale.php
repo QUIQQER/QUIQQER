@@ -748,11 +748,15 @@ class Locale
      * Parse a locale string and translate it
      * a locale strings looks like: [group] var.var.var
      *
-     * @param $title
+     * @param string|array $title
      * @return string
      */
     public function parseLocaleString($title)
     {
+        if (\is_array($title)) {
+            return $this->parseLocaleArray($title);
+        }
+
         if (!$this->isLocaleString($title)) {
             return $title;
         }
