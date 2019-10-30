@@ -251,7 +251,7 @@ define('Ajax', [
                         }
 
                         // another try
-                        if (tries < TRY_MAX) {
+                        if (tries < TRY_MAX && networkError) {
                             tries++;
                             Request.setAttribute('REQUEST_TRIES', tries);
 
