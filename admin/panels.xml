@@ -7,10 +7,10 @@
         <panel require="controls/projects/project/Panel">
             <image>fa fa-home</image>
             <title>
-                <locale group="quiqqer/system" var="panels.project.title"/>
+                <locale group="quiqqer/quiqqer" var="panels.project.title"/>
             </title>
             <text>
-                <locale group="quiqqer/system" var="panels.project.description"/>
+                <locale group="quiqqer/quiqqer" var="panels.project.description"/>
             </text>
         </panel>
 
@@ -29,10 +29,10 @@
         <panel require="UploadManager">
             <image>fa fa-upload</image>
             <title>
-                <locale group="quiqqer/system" var="panels.upload.title"/>
+                <locale group="quiqqer/quiqqer" var="panels.upload.title"/>
             </title>
             <text>
-                <locale group="quiqqer/system" var="panels.upload.description"/>
+                <locale group="quiqqer/quiqqer" var="panels.upload.description"/>
             </text>
         </panel>
 
@@ -40,10 +40,10 @@
         <panel require="qui/controls/messages/Panel">
             <image>fa fa-bullhorn</image>
             <title>
-                <locale group="quiqqer/system" var="panels.messages.title"/>
+                <locale group="quiqqer/quiqqer" var="panels.messages.title"/>
             </title>
             <text>
-                <locale group="quiqqer/system" var="panels.messages.description"/>
+                <locale group="quiqqer/quiqqer" var="panels.messages.description"/>
             </text>
         </panel>
 
@@ -51,10 +51,10 @@
         <panel require="qui/controls/desktop/Tasks">
             <image>fa fa-tasks</image>
             <title>
-                <locale group="quiqqer/system" var="panels.tasks.title"/>
+                <locale group="quiqqer/quiqqer" var="panels.tasks.title"/>
             </title>
             <text>
-                <locale group="quiqqer/system" var="panels.tasks.description"/>
+                <locale group="quiqqer/quiqqer" var="panels.tasks.description"/>
             </text>
         </panel>
 

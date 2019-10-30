@@ -12,7 +12,7 @@
 
             {locale
                 username=$MarcateUser->getName()
-                group="quiqqer/system"
+                group="quiqqer/quiqqer"
                 var="projects.project.site.messages.lock"
                 lastlogin=$lastlogin
             }
@@ -23,7 +23,7 @@
 {if $Site->hasPermission( 'quiqqer.projects.site.edit' ) === false}
     <div class="message box-sizing message-attention" style="margin-bottom: 20px; padding-left: 20px;">
         <span class="msg">
-            {t}quiqqer/system projects.project.site.no.edit.permissions{/t}
+            {t}quiqqer/quiqqer projects.project.site.no.edit.permissions{/t}
         </span>
     </div>
 {/if}
@@ -33,26 +33,26 @@
 <thead>
     <tr>
         <th colspan="2">
-            {t id=$Site->getId()}quiqqer/system projects.project.site.panel.information.title{/t}
+            {t id=$Site->getId()}quiqqer/quiqqer projects.project.site.panel.information.title{/t}
         </th>
     </tr>
 </thead>
 <tbody>
     <tr class="{cycle values="odd,even"}">
         <td>
-            {t}quiqqer/system projects.project.site.panel.information.nameUrl{/t}
+            {t}quiqqer/quiqqer projects.project.site.panel.information.nameUrl{/t}
         </td>
         <td>{$Site->getAttribute('name')}.html</td>
     </tr>
     <tr class="{cycle values="odd,even"}">
         <td>
-            {t}quiqqer/system projects.project.site.panel.information.title{/t}
+            {t}quiqqer/quiqqer projects.project.site.panel.information.title{/t}
         </td>
         <td>{$Site->getAttribute('title')}</td>
     </tr>
     <tr class="{cycle values="odd,even"}">
         <td>
-            {t}quiqqer/system projects.project.site.panel.information.short{/t}
+            {t}quiqqer/quiqqer projects.project.site.panel.information.short{/t}
         </td>
         <td>
             {$Site->getAttribute('short')}
@@ -60,7 +60,7 @@
     </tr>
     <tr class="{cycle values="odd,even"}">
         <td>
-            {t}quiqqer/system projects.project.site.panel.information.type{/t}
+            {t}quiqqer/quiqqer projects.project.site.panel.information.type{/t}
         </td>
         <td>
             {$Site->getAttribute('type')}
@@ -73,7 +73,7 @@
 <thead>
     <tr>
         <th colspan="4">
-            {t}quiqqer/system projects.project.site.panel.information.date{/t}
+            {t}quiqqer/quiqqer projects.project.site.panel.information.date{/t}
         </th>
     </tr>
 </thead>
@@ -81,11 +81,11 @@
 <tbody>
 <tr class="{cycle values="odd,even"}">
     <td>
-        {t}quiqqer/system projects.project.site.panel.information.created{/t}
+        {t}quiqqer/quiqqer projects.project.site.panel.information.created{/t}
     </td>
     <td>{$Site->getAttribute('c_date')}</td>
     <td>
-        {t}quiqqer/system from{/t}
+        {t}quiqqer/quiqqer from{/t}
     </td>
     <td>
         {user var=c_user id=$Site->getAttribute('c_user')}
@@ -96,11 +96,11 @@
 </tr>
 <tr class="{cycle values="odd,even"}">
     <td>
-        {t}quiqqer/system projects.project.site.panel.information.edited{/t}
+        {t}quiqqer/quiqqer projects.project.site.panel.information.edited{/t}
     </td>
     <td>{$Site->getAttribute('e_date')}</td>
     <td>
-        {t}quiqqer/system from{/t}
+        {t}quiqqer/quiqqer from{/t}
     </td>
     <td>
         {user var=e_user id=$Site->getAttribute('e_user')}
@@ -116,7 +116,7 @@
 <thead>
     <tr>
         <th colspan="3">
-            {t}quiqqer/system projects.project.site.panel.extras.title{/t}
+            {t}quiqqer/quiqqer projects.project.site.panel.extras.title{/t}
         </th>
     </tr>
 </thead>
@@ -129,7 +129,7 @@
         <td>
             <img src="{$smarty.const.URL_BIN_DIR}16x16/navigation_hidden.png" />
             <span>
-                {t}quiqqer/system projects.project.site.panel.extras.nav_hide{/t}
+                {t}quiqqer/quiqqer projects.project.site.panel.extras.nav_hide{/t}
             </span>
         </td>
     </tr>

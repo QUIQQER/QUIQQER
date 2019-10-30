@@ -2,19 +2,19 @@
 <menu>
 
     <item parent="/" name="quiqqer">
-        <locale group="quiqqer/system" var="menu.quiqqer.text"/>
+        <locale group="quiqqer/quiqqer" var="menu.quiqqer.text"/>
     </item>
     <item parent="/" name="apps">
-        <locale group="quiqqer/system" var="menu.apps.text"/>
+        <locale group="quiqqer/quiqqer" var="menu.apps.text"/>
     </item>
     <item parent="/" name="extras">
-        <locale group="quiqqer/system" var="menu.goto.text"/>
+        <locale group="quiqqer/quiqqer" var="menu.goto.text"/>
     </item>
     <item parent="/" name="settings">
-        <locale group="quiqqer/system" var="menu.settings.text"/>
+        <locale group="quiqqer/quiqqer" var="menu.settings.text"/>
     </item>
     <item parent="/" name="profile">
-        <locale group="quiqqer/system" var="menu.profile.text"/>
+        <locale group="quiqqer/quiqqer" var="menu.profile.text"/>
     </item>
 
     <!-- QUIQQER Menu -->
@@ -23,17 +23,17 @@
           icon="URL_BIN_DIR/16x16/quiqqer.png"
           require="controls/help/About"
     >
-        <locale group="quiqqer/system" var="menu.help.about.text"/>
+        <locale group="quiqqer/quiqqer" var="menu.help.about.text"/>
     </item>
 
     <item parent="/quiqqer/"
           name="changelog"
           icon="URL_BIN_DIR/16x16/quiqqer.png"
           require="controls/help/Changelog"
-          group="quiqqer/system"
+          group="quiqqer/quiqqer"
           var="menu.help.changelog.text"
     >
-        <locale group="quiqqer/system" var="menu.help.changelog.text"/>
+        <locale group="quiqqer/quiqqer" var="menu.help.changelog.text"/>
     </item>
 
     <!-- Plugins und Packages -->
@@ -42,7 +42,7 @@
           icon="URL_BIN_DIR/16x16/quiqqer.png"
           require="controls/packages/Panel"
     >
-        <locale group="quiqqer/system" var="menu.extras.packages.text"/>
+        <locale group="quiqqer/quiqqer" var="menu.extras.packages.text"/>
     </item>
 
 
@@ -52,7 +52,7 @@
           icon="fa fa-search"
           require="controls/projects/project/site/Search"
     >
-        <locale group="quiqqer/system" var="menu.file.search.text"/>
+        <locale group="quiqqer/quiqqer" var="menu.file.search.text"/>
     </item>
 
     <!-- goto -->
@@ -62,14 +62,14 @@
           icon="fa fa-home"
           require="controls/projects/Manager"
     >
-        <locale group="quiqqer/system" var="menu.extras.projects.text"/>
+        <locale group="quiqqer/quiqqer" var="menu.extras.projects.text"/>
     </item>
     <!-- Zugriffsrechte bearbeiten -->
     <item parent="/extras/"
           name="rights"
           icon="fa fa-unlock-alt"
     >
-        <locale group="quiqqer/system" var="menu.extras.rights.text"/>
+        <locale group="quiqqer/quiqqer" var="menu.extras.rights.text"/>
     </item>
     <!-- Benutzer -->
     <item parent="/extras/rights/"
@@ -77,7 +77,7 @@
           icon="fa fa-user"
           require="controls/users/Panel"
     >
-        <locale group="quiqqer/system" var="menu.extras.users.text"/>
+        <locale group="quiqqer/quiqqer" var="menu.extras.users.text"/>
     </item>
     <!-- Gruppen -->
     <item parent="/extras/rights/"
@@ -85,7 +85,7 @@
           icon="fa fa-group"
           require="controls/groups/Panel"
     >
-        <locale group="quiqqer/system" var="menu.extras.groups.text"/>
+        <locale group="quiqqer/quiqqer" var="menu.extras.groups.text"/>
     </item>
     <!-- Zugriffsrechte bearbeiten -->
     <item parent="/extras/rights/"
@@ -93,7 +93,7 @@
           icon="fa fa-shield"
           require="controls/permissions/Panel"
     >
-        <locale group="quiqqer/system" var="menu.extras.permissions.text"/>
+        <locale group="quiqqer/quiqqer" var="menu.extras.permissions.text"/>
     </item>
 
 
@@ -103,7 +103,7 @@
           icon="fa fa-trash-o"
           require="controls/trash/Panel"
     >
-        <locale group="quiqqer/system" var="menu.extras.trash.text"/>
+        <locale group="quiqqer/quiqqer" var="menu.extras.trash.text"/>
     </item>
 
     <!-- Settings -->
@@ -111,14 +111,14 @@
           name="quiqqer"
           icon="URL_BIN_DIR/16x16/quiqqer.png"
     >
-        <locale group="quiqqer/system" var="menu.settings.quiqqer.text"/>
+        <locale group="quiqqer/quiqqer" var="menu.settings.quiqqer.text"/>
     </item>
     <item parent="/settings/quiqqer/"
           name="media"
           icon="fa fa-font"
           require="controls/editors/Settings"
     >
-        <locale group="quiqqer/system" var="menu.settings.editor.text"/>
+        <locale group="quiqqer/quiqqer" var="menu.settings.editor.text"/>
     </item>
 
     <item parent="/settings/quiqqer/"
@@ -126,7 +126,7 @@
           icon="fa fa-location-arrow"
           require="controls/system/VHosts"
     >
-        <locale group="quiqqer/system" var="menu.settings.vhosts.text"/>
+        <locale group="quiqqer/quiqqer" var="menu.settings.vhosts.text"/>
     </item>
 
     <item parent="/settings/quiqqer/"
@@ -142,7 +142,7 @@
           name="projects"
           icon="fa fa-home"
     >
-        <locale group="quiqqer/system" var="menu.settings.projects.text"/>
+        <locale group="quiqqer/quiqqer" var="menu.settings.projects.text"/>
     </item>
 
     <!-- Profil -->
@@ -151,14 +151,14 @@
           icon="fa fa-user"
           require="controls/system/Profile"
     >
-        <locale group="quiqqer/system" var="menu.profile.userProfile.text"/>
+        <locale group="quiqqer/quiqqer" var="menu.profile.userProfile.text"/>
     </item>
     <item parent="/profile/"
           name="userPassword"
           icon="fa fa-key"
           require="controls/users/password/Window"
     >
-        <locale group="quiqqer/system" var="menu.profile.userPassword.text"/>
+        <locale group="quiqqer/quiqqer" var="menu.profile.userPassword.text"/>
     </item>
 
 
@@ -167,7 +167,7 @@
           name="workspaces"
           icon="fa fa-laptop"
     >
-        <locale group="quiqqer/system" var="menu.profile.workspace.text"/>
+        <locale group="quiqqer/quiqqer" var="menu.profile.workspace.text"/>
     </item>
 
 </menu>
