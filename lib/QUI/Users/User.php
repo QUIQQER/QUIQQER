@@ -24,6 +24,7 @@ use QUI\Users\Auth;
  * @event   onUserDisable [ \QUI\Users\User ]
  * @event   onUserActivate [ \QUI\Users\User ]
  * @event   onUserDeactivate [ \QUI\Users\User ]
+ * @event   onUserExtraAttributes [ \QUI\Users\User ]
  */
 class User implements QUI\Interfaces\Users\User
 {
@@ -237,11 +238,7 @@ class User implements QUI\Interfaces\Users\User
         }
 
         if (isset($data[0]['usergroup'])) {
-            try {
-                $this->setGroups($data[0]['usergroup']);
-            } catch (QUI\Exception $Exception) {
-                // nohting
-            }
+            $this->setGroups($data[0]['usergroup']);
 
             unset($data[0]['usergroup']);
         }
@@ -281,7 +278,6 @@ class User implements QUI\Interfaces\Users\User
         }
 
 
-        // Extras are deprected - we need an api
         if (isset($data[0]['extra'])) {
             $extraList = $this->getListOfExtraAttributes();
             $extras    = [];
@@ -1816,6 +1812,12 @@ class User implements QUI\Interfaces\Users\User
                 $attributes,
                 $this->readAttributesFromUserXML($userXml)
             );
+        }
+
+        try {
+            QUI::getEvents()->fireEvent('userExtraAttributes', [$this, &$attributes]);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
         }
 
         QUI\Cache\Manager::set($cache, $attributes);
