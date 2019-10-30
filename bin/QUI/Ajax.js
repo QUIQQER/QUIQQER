@@ -149,6 +149,10 @@ define('Ajax', [
                             networkError = true,
                             tries        = Request.getAttribute('REQUEST_TRIES') || 0;
 
+                        if (typeof Exception.getAttribute !== 'undefined' && Exception.getAttribute('type')) {
+                            networkError = false;
+                        }
+
                         if (typeof self.$onprogress[this] !== 'undefined') {
                             Response = self.$onprogress[this];
                         }
