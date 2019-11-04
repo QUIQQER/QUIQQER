@@ -4,12 +4,6 @@
  * @module controls/groups/Select
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/QUI
- * @require qui/controls/elements/Select
- * @require Locale
- * @require Groups
- * @require css!controls/groups/Select.css
- *
  * @event onAddGroup [ this, id ]
  * @event onChange [ this ]
  */

@@ -6,15 +6,6 @@
  * @author www.pcsg.de (Henning Leutz)
  *
  * @event onSaved [ {self} ]
- *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/loader/Loader
- * @require qui/controls/windows/Confirm
- * @require controls/grid/Grid
- * @require Ajax
- * @require Locale
- * @require css!controls/users/Address.css
  */
 define('controls/users/Address', [
 

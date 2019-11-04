@@ -5,11 +5,6 @@
  * @module controls/users/Entry
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/controls/Control
- * @require Users
- * @require Locale
- * @require css!controls/users/Entry.css
- *
  * @event onLoad [self, User]
  * @event onError [self, uid]
  */

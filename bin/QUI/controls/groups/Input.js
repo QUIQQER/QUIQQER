@@ -4,12 +4,9 @@
  * @module controls/groups/Input
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require controls/Control
- * @require controls/buttons/Button
- * @require controls/groups/Entry
- * @require controls/groups/sitemap/Window
- *
  * @event onAdd [this, groupid]
+ *
+ * @deprecated use controls/groups/Select
  */
 define('controls/groups/Input', [
 
@@ -41,7 +38,8 @@ define('controls/groups/Input', [
         Binds: [
             'close',
             'fireSearch',
-            'update'
+            'update',
+            '$onImport'
         ],
 
         options: {
@@ -65,6 +63,7 @@ define('controls/groups/Input', [
             this.$Parent = Input || null;
 
             this.addEvents({
+                onImport : this.$onImport,
                 onDestroy: function () {
                     if (this.$DropDown) {
                         this.$DropDown.destroy();
@@ -121,6 +120,7 @@ define('controls/groups/Input', [
                     }
                 }
             }).inject(this.$Parent, 'before');
+
 
             this.$Input = new Element('input', {
                 type  : 'text',
@@ -192,6 +192,15 @@ define('controls/groups/Input', [
             }
 
             return this.$Elm;
+        },
+
+        /**
+         * event: on import
+         */
+        $onImport: function () {
+            this.$Parent = this.getElm();
+
+            this.create();
         },
 
         /**
