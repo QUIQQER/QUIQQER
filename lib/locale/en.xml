@@ -2535,6 +2535,9 @@
         <locale name="quiqqer.settings.cache.clear.complete">
             <en><![CDATA[Clear complete cache]]></en>
         </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer">
+            <en><![CDATA[Clear complete QUIQQER cache]]></en>
+        </locale>
         <locale name="quiqqer.settings.cache.clear.compile">
             <en><![CDATA[Clear system-cache]]></en>
         </locale>
@@ -2749,10 +2752,10 @@
             <en><![CDATA[Cache Management]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.clear.title">
-            <en><![CDATA[Clean caches...]]></en>
+            <en><![CDATA[Clean caches]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.purge.title">
-            <en><![CDATA[Purge cache...]]></en>
+            <en><![CDATA[Purge cache]]></en>
         </locale>
         <locale name="quiqqer.settings.general.template.title">
             <en><![CDATA[Template engine settings]]></en>

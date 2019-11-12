@@ -24,6 +24,7 @@ use QUI\Users\Auth;
  * @event   onUserDisable [ \QUI\Users\User ]
  * @event   onUserActivate [ \QUI\Users\User ]
  * @event   onUserDeactivate [ \QUI\Users\User ]
+ * @event   onUserExtraAttributes [ \QUI\Users\User ]
  */
 class User implements QUI\Interfaces\Users\User
 {
@@ -237,11 +238,7 @@ class User implements QUI\Interfaces\Users\User
         }
 
         if (isset($data[0]['usergroup'])) {
-            try {
-                $this->setGroups($data[0]['usergroup']);
-            } catch (QUI\Exception $Exception) {
-                // nohting
-            }
+            $this->setGroups($data[0]['usergroup']);
 
             unset($data[0]['usergroup']);
         }
@@ -281,7 +278,6 @@ class User implements QUI\Interfaces\Users\User
         }
 
 
-        // Extras are deprected - we need an api
         if (isset($data[0]['extra'])) {
             $extraList = $this->getListOfExtraAttributes();
             $extras    = [];
@@ -1794,8 +1790,10 @@ class User implements QUI\Interfaces\Users\User
      */
     protected function getListOfExtraAttributes()
     {
+        $cache = 'quiqqer/users/user-extra-attributes';
+
         try {
-            return QUI\Cache\Manager::get('user/plugin-attribute-list');
+            return QUI\Cache\Manager::get($cache);
         } catch (QUI\Exception $Exception) {
         }
 
@@ -1816,7 +1814,13 @@ class User implements QUI\Interfaces\Users\User
             );
         }
 
-        QUI\Cache\Manager::set('user/plugin-attribute-list', $attributes);
+        try {
+            QUI::getEvents()->fireEvent('userExtraAttributes', [$this, &$attributes]);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
+
+        QUI\Cache\Manager::set($cache, $attributes);
 
         return $attributes;
     }
@@ -1831,7 +1835,7 @@ class User implements QUI\Interfaces\Users\User
      */
     protected function readAttributesFromUserXML($file)
     {
-        $cache = 'user/plugin-xml-attributes-'.\md5($file);
+        $cache = 'quiqqer/users/user-extra-attributes/'.\md5($file);
 
         try {
             return QUI\Cache\Manager::get($cache);

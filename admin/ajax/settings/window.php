@@ -15,7 +15,7 @@ QUI::$Ajax->registerFunction(
             $files = \json_decode($file, true);
         }
 
-        $cacheName = 'qui/admin/menu/windows/'.\md5(\json_encode($files));
+        $cacheName = 'quiqqer/package/quiqqer/quiqqer/menu/windows/'.\md5(\json_encode($files));
         $Settings  = QUI\Utils\XML\Settings::getInstance();
 
         try {

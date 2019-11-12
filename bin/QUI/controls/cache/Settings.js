@@ -10,12 +10,14 @@ define('controls/cache/Settings', [
     'qui/controls/Control',
     'qui/controls/buttons/Button',
     'Ajax',
-    'Locale'
+    'Locale',
+
+    'css!controls/cache/Settings.css'
 
 ], function (QUI, QUIControl, QUIButton, Ajax, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg = 'quiqqer/quiqqer';
 
     return new Class({
 
@@ -40,7 +42,24 @@ define('controls/cache/Settings', [
         $onImport: function () {
             var self = this;
 
-            var ClearCompleteCacheButton = new QUIButton({
+            var tables           = this.getElm().getElements('table'),
+                ClearCacheBody   = new Element('div.quiqqer-settings-cache-container').inject(
+                    tables[0].getElement('tbody')
+                ),
+                QuiqqerCacheBody = new Element('div.quiqqer-settings-cache-container').inject(
+                    tables[2].getElement('tbody')
+                ),
+                PurgeCacheBody   = new Element('div.quiqqer-settings-cache-container').inject(
+                    tables[1].getElement('tbody')
+                );
+
+            tables.addClass('quiqqer-settings-cache-table');
+            ClearCacheBody.addClass('quiqqer-settings-cache-tbody');
+            QuiqqerCacheBody.addClass('quiqqer-settings-cache-tbody');
+            PurgeCacheBody.addClass('quiqqer-settings-cache-tbody');
+
+            // complete
+            new QUIButton({
                 text     : QUILocale.get(lg, 'quiqqer.settings.cache.clear.complete'),
                 textimage: 'fa fa-trash-o',
                 events   : {
@@ -55,61 +74,72 @@ define('controls/cache/Settings', [
                         );
                     }
                 }
-            }).replaces(this.$Elm.getElement('[name="clearCompleteCache"]'));
+            }).inject(ClearCacheBody);
 
-            var ClearSystemCacheButton = new QUIButton({
-                text     : QUILocale.get(lg, 'quiqqer.settings.cache.clear.compile'),
-                textimage: 'fa fa-server',
+
+            // QUIQQER
+            new QUIButton({
+                text     : QUILocale.get(lg, 'quiqqer.settings.cache.clear.quiqqer'),
+                textimage: URL_BIN_DIR + '16x16/quiqqer.png',
                 events   : {
                     onClick: function (Btn) {
                         Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
 
                         self.clear(
-                            {compile: true},
+                            {quiqqer: true},
                             function () {
-                                Btn.setAttribute('textimage', 'fa fa-server');
+                                Btn.setAttribute('textimage', URL_BIN_DIR + '16x16/quiqqer.png');
                             }
                         );
                     }
                 }
-            }).replaces(this.$Elm.getElement('[name="clearSystemCache"]'));
+            }).inject(QuiqqerCacheBody);
 
-            var ClearPluginCacheButton = new QUIButton({
-                text     : QUILocale.get(lg, 'quiqqer.settings.cache.clear.plugins'),
-                textimage: 'fa fa-gift',
-                events   : {
-                    onClick: function (Btn) {
-                        Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
+            var quiqqerButtons = [{
+                name: 'quiqqer-projects',
+                icon: 'fa fa-home'
+            }, {
+                name: 'quiqqer-groups',
+                icon: 'fa fa-group'
+            }, {
+                name: 'quiqqer-users',
+                icon: 'fa fa-user'
+            }, {
+                name: 'quiqqer-permissions',
+                icon: 'fa fa-shield'
+            }, {
+                name: 'quiqqer-packages',
+                icon: 'fa fa-puzzle-piece'
+            }];
 
-                        self.clear(
-                            {plugins: true},
-                            function () {
-                                Btn.setAttribute('textimage', 'fa fa-gift');
-                            }
-                        );
+            var btnClick = function (Btn) {
+                Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
+
+                var icon    = Btn.getAttribute('data').icon;
+                var name    = Btn.getAttribute('data').name;
+                var options = {};
+
+                options[name] = true;
+
+                self.clear(options, function () {
+                    Btn.setAttribute('textimage', icon);
+                });
+            };
+
+            for (var i = 0, len = quiqqerButtons.length; i < len; i++) {
+                new QUIButton({
+                    text     : QUILocale.get(lg, 'quiqqer.settings.cache.clear.quiqqer-' + quiqqerButtons[i].name),
+                    textimage: quiqqerButtons[i].icon,
+                    data     : quiqqerButtons[i],
+                    events   : {
+                        onClick: btnClick
                     }
-                }
-            }).replaces(this.$Elm.getElement('[name="clearPluginCache"]'));
-
-            var ClearTemplateCacheButton = new QUIButton({
-                text     : QUILocale.get(lg, 'quiqqer.settings.cache.clear.templates'),
-                textimage: 'fa fa-file-text',
-                events   : {
-                    onClick: function (Btn) {
-                        Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
-
-                        self.clear(
-                            {templates: true},
-                            function () {
-                                Btn.setAttribute('textimage', 'fa fa-file-text');
-                            }
-                        );
-                    }
-                }
-            }).replaces(this.$Elm.getElement('[name="clearTemplateCache"]'));
+                }).inject(QuiqqerCacheBody);
+            }
 
 
-            var PurgeCacheButton = new QUIButton({
+            // purge
+            new QUIButton({
                 text     : QUILocale.get(lg, 'quiqqer.settings.cache.purge.button'),
                 textimage: 'fa fa-paint-brush',
                 events   : {
@@ -121,14 +151,7 @@ define('controls/cache/Settings', [
                         });
                     }
                 }
-            }).replaces(this.$Elm.getElement('[name="purgeCache"]'));
-
-            ClearCompleteCacheButton.getElm().addClass('field-container-field');
-            ClearSystemCacheButton.getElm().addClass('field-container-field');
-            ClearPluginCacheButton.getElm().addClass('field-container-field');
-            ClearTemplateCacheButton.getElm().addClass('field-container-field');
-
-            PurgeCacheButton.getElm().addClass('field-container-field');
+            }).inject(PurgeCacheBody);
         },
 
 

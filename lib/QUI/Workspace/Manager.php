@@ -113,12 +113,12 @@ class Manager
     /**
      * Return a workspace by its id
      *
-     * @throws \QUI\Exception
-     *
      * @param integer $id - id of the workspace
      * @param \QUI\Users\User $User
      *
      * @return array
+     * @throws \QUI\Exception
+     *
      */
     public static function getWorkspaceById($id, $User)
     {
@@ -237,7 +237,7 @@ class Manager
      */
     public static function getAvailablePanels()
     {
-        $cache = 'quiqqer/panels/list';
+        $cache = 'quiqqer/package/quiqqer/quiqqer/available-panels';
 
         try {
             return QUI\Cache\Manager::get($cache);

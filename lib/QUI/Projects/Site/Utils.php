@@ -152,11 +152,8 @@ class Utils
      */
     public static function getDataBaseXMLListForSite($Site)
     {
-        $Project  = $Site->getProject();
-        $name     = $Project->getName();
-        $lang     = $Project->getLang();
         $siteType = $Site->getAttribute('type');
-        $cache    = "site/dbxml/project/{$name}-{$lang}/type/{$siteType}";
+        $cache    = $Site->getCachePath().'/xml-database-list/'.$siteType;
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -165,9 +162,6 @@ class Utils
 
         $dbXmlList = QUI::getPackageManager()->getPackageDatabaseXmlList();
         $result    = [];
-
-        $siteType = $Site->getAttribute('type');
-
 
         foreach ($dbXmlList as $package) {
             $file = OPT_DIR.$package.'/database.xml';
@@ -237,18 +231,18 @@ class Utils
      */
     public static function getDataListForSite($Site)
     {
-        $dbXmlList = self::getDataBaseXMLListForSite($Site);
-
-        $Project  = $Site->getProject();
-        $name     = $Project->getName();
-        $lang     = $Project->getLang();
         $siteType = $Site->getAttribute('type');
-        $cache    = "site/datalist/project/{$name}-{$lang}/type/{$siteType}";
+        $cache    = $Site->getCachePath().'/xml-database-tables/'.$siteType;
 
         try {
             return QUI\Cache\Manager::get($cache);
         } catch (QUI\Exception $Exception) {
         }
+
+        $dbXmlList = self::getDataBaseXMLListForSite($Site);
+        $Project   = $Site->getProject();
+        $name      = $Project->getName();
+        $lang      = $Project->getLang();
 
         $result = [];
 
@@ -334,13 +328,8 @@ class Utils
      */
     public static function getExtraAttributeListForSite($Site)
     {
-        $Project  = $Site->getProject();
-        $name     = $Project->getName();
-        $lang     = $Project->getLang();
         $siteType = $Site->getAttribute('type');
-
-        $cache
-            = "site/site-attribute-list/project/{$name}-{$lang}/type/{$siteType}";
+        $cache    = $Site->getCachePath().'/xml-database-attributes/'.$siteType;
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -417,11 +406,8 @@ class Utils
      */
     public static function getExtraSettingsForSite($Site)
     {
-        $Project  = $Site->getProject();
-        $name     = $Project->getName();
-        $lang     = $Project->getLang();
         $siteType = $Site->getAttribute('type');
-        $cache    = "site/site-extra-settings/project/{$name}-{$lang}/type/{$siteType}";
+        $cache    = $Site->getCachePath().'/xml-database-settings/'.$siteType;
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -487,12 +473,8 @@ class Utils
      */
     public static function getAdminSiteModulesFromSite($Site)
     {
-        $Project  = $Site->getProject();
-        $name     = $Project->getName();
-        $lang     = $Project->getLang();
         $siteType = $Site->getAttribute('type');
-
-        $cache = "site/site-extra-settings/project/{$name}-{$lang}/adminModules/{$siteType}";
+        $cache    = $Site->getCachePath().'/xml-admin-modules/'.$siteType;
 
         try {
             return QUI\Cache\Manager::get($cache);

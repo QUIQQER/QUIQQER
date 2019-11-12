@@ -45,7 +45,10 @@ class Utils
         /**
          * user extension from plugins
          */
-        $list = QUI::getPackageManager()->getInstalled();
+
+        // tabs xml
+        $list         = QUI::getPackageManager()->getInstalled();
+        $userXmlFiles = [];
 
         foreach ($list as $entry) {
             if ($entry['name'] == 'quiqqer/quiqqer') {
@@ -58,10 +61,32 @@ class Utils
                 continue;
             }
 
+            $userXmlFiles[] = $userXml;
+
             DOM::addTabsToToolbar(
                 XML::getTabsFromXml($userXml),
                 $TabBar,
                 $entry['name']
+            );
+        }
+
+        // category xml
+        $Settings = QUI\Utils\XML\Settings::getInstance();
+        $Settings->setXMLPath('//user/window');
+
+        $result     = $Settings->getPanel($userXmlFiles);
+        $categories = $result['categories']->toArray();
+
+        foreach ($categories as $category) {
+            $TabBar->appendChild(
+                new QUI\Controls\Toolbar\Tab([
+                    'name'    => $category['name'],
+                    'text'    => QUI::getLocale()->parseLocaleString($category['title']),
+                    'image'   => $category['icon'],
+                    'wysiwyg' => false,
+                    'type'    => 'xml',
+                    'plugin'  => $category['file']
+                ])
             );
         }
 
@@ -89,7 +114,10 @@ class Utils
      * @param string $tab
      *
      * @return string
-     * @deprecated
+     *
+     * @throws QUI\Exception
+     *
+     * @todo kick <tab> as xml in user.xml
      */
     public static function getTab($uid, $plugin, $tab)
     {
@@ -116,6 +144,14 @@ class Utils
         QUI::getTemplateManager()->assignGlobalParam('authenticators', $authenticators);
         QUI::getTemplateManager()->assignGlobalParam('userAuthenticators', $userAuthenticators);
 
+        // <category>
+        if (\file_exists($plugin)) {
+            $Settings = QUI\Utils\XML\Settings::getInstance();
+            $Settings->setXMLPath('//user/window');
+
+            return $Settings->getCategoriesHtml([$plugin], $tab);
+        }
+
 
         // project
         if (\strpos($plugin, 'project.') !== false) {
@@ -139,6 +175,7 @@ class Utils
             );
         } catch (QUI\Exception $Exception) {
         }
+
 
         return '';
     }

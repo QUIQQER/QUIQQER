@@ -4,18 +4,10 @@
  * @module controls/users/Input
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/buttons/Button
- * @require controls/users/Entry
- * @require Ajax
- * @require Locale
- * @require css!controls/users/Input.css
- *
  * @event onAdd [ {this}, {String} userid ]
  * @event onChange [ {this} ]
  *
- * @deprecated
+ * @deprecated controls/users/Select
  */
 define('controls/users/Input', [
 

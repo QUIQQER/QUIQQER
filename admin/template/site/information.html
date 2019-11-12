@@ -2,7 +2,7 @@
     <thead>
     <tr>
         <th>
-            {locale group="quiqqer/system" var="projects.project.site.panel.information.header" id=$Site->getId()}
+            {locale group="quiqqer/quiqqer" var="projects.project.site.panel.information.header" id=$Site->getId()}
         </th>
     </tr>
     </thead>
@@ -11,7 +11,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/system" var="projects.project.site.panel.information.title"}
+                    {locale group="quiqqer/quiqqer" var="projects.project.site.panel.information.title"}
                 </span>
 
                 <input name="title" value="" class="field-container-field"/>
@@ -30,7 +30,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/system" var="projects.project.site.panel.information.nameUrl"}
+                    {locale group="quiqqer/quiqqer" var="projects.project.site.panel.information.nameUrl"}
                 </span>
                 <span class="field-container-field field-container-field-no-padding">
                     <span class="site-url-display-container">
@@ -46,7 +46,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/system" var="projects.project.site.panel.information.short"}
+                    {locale group="quiqqer/quiqqer" var="projects.project.site.panel.information.short"}
                 </span>
                 <textarea class="site-short field-container-field" name="short"></textarea>
             </label>
@@ -56,7 +56,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/system" var="projects.project.site.panel.information.type"}
+                    {locale group="quiqqer/quiqqer" var="projects.project.site.panel.information.type"}
                 </span>
                 <input name="type" value="" class="project-types field-container-field"/>
             </label>
@@ -69,7 +69,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/system" var="projects.project.site.panel.information.layout"}
+                    {locale group="quiqqer/quiqqer" var="projects.project.site.panel.information.layout"}
                 </span>
 
                 <select name="layout" class="field-container-field">
@@ -92,7 +92,7 @@
     <thead>
     <tr>
         <th>
-            {locale group="quiqqer/system" var="projects.project.site.panel.extras.title"}
+            {locale group="quiqqer/quiqqer" var="projects.project.site.panel.extras.title"}
         </th>
     </tr>
     </thead>
@@ -103,12 +103,12 @@
 
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/system" var="projects.project.site.panel.extras.nav_hide"}
+                    {locale group="quiqqer/quiqqer" var="projects.project.site.panel.extras.nav_hide"}
                 </span>
                 <span class="field-container-field">
                     <input type="checkbox" name="nav_hide" class="noborder"/>
                     <img src="{$smarty.const.URL_BIN_DIR}16x16/navigation_hidden.png" class="nav-hide-image"/>
-                    {locale group="quiqqer/system" var="projects.project.site.panel.extras.nav_hide.description"}
+                    {locale group="quiqqer/quiqqer" var="projects.project.site.panel.extras.nav_hide.description"}
                 </span>
             </label>
         </td>
@@ -126,7 +126,7 @@
     <thead>
     <tr>
         <th>
-            {locale group="quiqqer/system" var="projects.project.site.panel.langlinking"}
+            {locale group="quiqqer/quiqqer" var="projects.project.site.panel.langlinking"}
         </th>
     </tr>
     </thead>
@@ -142,7 +142,7 @@
                 {if $entry}
                 {site id=$entry project=$Project->getName() lang=$lang attribute=name} ( {$entry} )
                 {else}
-                {locale group="quiqqer/system" var="projects.project.site.panel.langlinking.notexist" lang=$lang}
+                {locale group="quiqqer/quiqqer" var="projects.project.site.panel.langlinking.notexist" lang=$lang}
                 {/if}
             </div>
             <div class="site-lang-entry-button"></div>
@@ -158,7 +158,7 @@
     <thead>
     <tr>
         <th>
-            {locale group="quiqqer/system" var="projects.project.site.panel.linking"}
+            {locale group="quiqqer/quiqqer" var="projects.project.site.panel.linking"}
         </th>
     </tr>
     </thead>
@@ -191,7 +191,7 @@
     {else}
     <tr>
         <td>
-            {locale group="quiqqer/system" var="projects.project.site.panel.linking.notexist"}
+            {locale group="quiqqer/quiqqer" var="projects.project.site.panel.linking.notexist"}
         </td>
     </tr>
     {/if}
@@ -203,7 +203,7 @@
     <thead>
     <tr>
         <th>
-            {locale group="quiqqer/system" var="projects.project.site.panel.information.date"}
+            {locale group="quiqqer/quiqqer" var="projects.project.site.panel.information.date"}
         </th>
     </tr>
     </thead>
@@ -213,7 +213,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/system" var="projects.project.site.panel.information.created"}
+                    {locale group="quiqqer/quiqqer" var="projects.project.site.panel.information.created"}
                 </span>
                 <input name="c_date" class="field-container-field" disabled/>
             </label>
@@ -223,7 +223,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/system" var="from"}
+                    {locale group="quiqqer/quiqqer" var="from"}
                 </span>
                 <input name="c_user" class="user field-container-field" disabled/>
             </label>
@@ -233,7 +233,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/system" var="user_ip_adress"}
+                    {locale group="quiqqer/quiqqer" var="user_ip_adress"}
                 </span>
                 <input name="c_user_ip" class="field-container-field" disabled/>
             </label>
@@ -243,7 +243,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/system" var="projects.project.site.panel.information.edited"}
+                    {locale group="quiqqer/quiqqer" var="projects.project.site.panel.information.edited"}
                 </span>
                 <input name="e_date" class="field-container-field" disabled/>
             </label>
@@ -253,7 +253,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/system" var="from"}
+                    {locale group="quiqqer/quiqqer" var="from"}
                 </span>
                 <input name="e_user" class="user field-container-field" disabled/>
             </label>
@@ -263,7 +263,7 @@
         <td>
             <label class="field-container">
                 <span class="field-container-item">
-                    {locale group="quiqqer/system" var="user_ip_adress"}
+                    {locale group="quiqqer/quiqqer" var="user_ip_adress"}
                 </span>
                 <input name="e_user_ip" class="field-container-field" disabled/>
             </label>

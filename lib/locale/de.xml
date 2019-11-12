@@ -2606,6 +2606,30 @@
         <locale name="quiqqer.settings.cache.clear.complete">
             <de><![CDATA[Kompletten Cache leeren]]></de>
         </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer">
+            <de><![CDATA[Kompletten QUIQQER Cache leeren]]></de>
+        </locale>
+
+        <locale name="quiqqer.settings.cache.quiqqer.title">
+            <de><![CDATA[QUIQQER System Cache]]></de>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-projects">
+            <de><![CDATA[QUIQQER Projekt Cache leeren]]></de>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-groups">
+            <de><![CDATA[QUIQQER Gruppen Cache leeren]]></de>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-users">
+            <de><![CDATA[QUIQQER Benutzer Cache leeren]]></de>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-permissions">
+            <de><![CDATA[QUIQQER Permission Cache leeren]]></de>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-packages">
+            <de><![CDATA[QUIQQER Packages Cache leeren]]></de>
+        </locale>
+
+
         <locale name="quiqqer.settings.cache.clear.compile">
             <de><![CDATA[System-Cache leeren]]></de>
         </locale>
@@ -2857,10 +2881,10 @@
             <de><![CDATA[Cache Management]]></de>
         </locale>
         <locale name="quiqqer.settings.cache.clear.title">
-            <de><![CDATA[Caches leeren...]]></de>
+            <de><![CDATA[Caches leeren]]></de>
         </locale>
         <locale name="quiqqer.settings.cache.purge.title">
-            <de><![CDATA[Cache säubern...]]></de>
+            <de><![CDATA[Cache säubern]]></de>
         </locale>
         <locale name="quiqqer.settings.general.template.title">
             <de><![CDATA[Template-Engine Einstellungen]]></de>

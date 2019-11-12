@@ -1,0 +1,34 @@
+.quiqqer-settings-cache-table {
+    clear: none;
+    max-width: 320px;
+    margin-right: 20px;
+}
+
+.quiqqer-settings-cache-container {
+    display: inline-block;
+    margin: 10px;
+}
+
+.quiqqer-settings-cache-container button {
+    clear: both;
+    margin: 0 0 10px 0;
+    min-width: 300px;
+    text-align: left;
+}
+
+.quiqqer-settings-cache-container button .qui-button-text-image {
+    text-align: center;
+    width: 24px;
+}
+
+.quiqqer-settings-cache-container button img.qui-button-text-image {
+    margin-left: 3px;
+    margin-right: 4px;
+    margin-top: 7px;
+    padding: 0;
+    width: 16px;
+}
+
+.quiqqer-settings-cache-container button:last-child {
+    margin: 0;
+}

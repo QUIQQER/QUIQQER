@@ -1254,9 +1254,9 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     /**
      * Setzt das delete Flag
      *
+     * @throws QUI\Exception
      * @todo move to Site/Edit
      *
-     * @throws QUI\Exception
      */
     public function delete()
     {
@@ -1561,14 +1561,14 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     }
 
     /**
-     * @deprecated use getUrlRewritten
-     *
      * @param array $pathParams - Parameter welche in den namen der seite eingefügt werden
      * @param array $getParams - Parameter welche an die URL angehängt werden
      *
      * @return string
      *
      * @throws QUI\Exception
+     * @deprecated use getUrlRewritten
+     *
      */
     public function getUrlRewrited($pathParams = [], $getParams = [])
     {
@@ -1905,7 +1905,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     public function createCache()
     {
         try {
-            QUI\Cache\Manager::set($this->getCacheName(), $this->encode());
+            QUI\Cache\Manager::set($this->getCachePath(), $this->encode());
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }

@@ -687,7 +687,7 @@ class Project
      */
     public static function getProjectCachePath($projectName)
     {
-        return 'qui/projects/'.$projectName;
+        return 'quiqqer/projects/'.$projectName;
     }
 
     /**
@@ -1435,7 +1435,7 @@ class Project
     {
         try {
             QUI\Cache\Manager::set(
-                'projects/edate/'.md5($this->getName().'_'.$this->getLang()),
+                $this->getEDateCacheName(),
                 (int)$date
             );
         } catch (\Exception $Exception) {
@@ -1494,13 +1494,16 @@ class Project
     public function getLastEditDate()
     {
         try {
-            return (int)QUI\Cache\Manager::get(
-                'projects/edate/'.\md5($this->getName().'_'.$this->getLang())
-            );
+            return (int)QUI\Cache\Manager::get($this->getEDateCacheName());
         } catch (QUI\Exception $Exception) {
         }
 
         return 0;
+    }
+
+    protected function getEDateCacheName()
+    {
+        return $this->getCachePath().'/edate/';
     }
 
     /**

@@ -129,9 +129,9 @@ class Package extends QUI\System\Console\Tool
             ]
         ]);
 
-        $Climate->usage(array(
+        $Climate->usage([
             'quiqqer.php package'
-        ));
+        ]);
         exit;
     }
 
@@ -140,19 +140,17 @@ class Package extends QUI\System\Console\Tool
      */
     protected function showList()
     {
-        $installed = QUI::getPackageManager()->getInstalled();
+        $installed = QUI::getPackageManager()->getInstalledVersions();
 
-        usort($installed, function ($a, $b) {
-            return strcmp($a['name'], $b['name']);
-        });
+        \ksort($installed);
 
         $data = [];
 
-        foreach ($installed as $package) {
-            $data[] = array(
-                'name'    => $package['name'],
-                'version' => $package['version']
-            );
+        foreach ($installed as $package => $version) {
+            $data[] = [
+                'name'    => $package,
+                'version' => $version
+            ];
         }
 
         $this->writeLn();
@@ -177,14 +175,14 @@ class Package extends QUI\System\Console\Tool
             $Climate->out('');
 
             $composer = $Package->getComposerData();
-            $data     = array();
+            $data     = [];
 
             foreach ($composer as $key => $entry) {
-                if (is_array($entry)) {
+                if (\is_array($entry)) {
                     continue;
                 }
 
-                $data[] = array($key, $entry);
+                $data[] = [$key, $entry];
             }
 
 
@@ -274,7 +272,7 @@ class Package extends QUI\System\Console\Tool
                 QUI::getLocale()->get(
                     'quiqqer/quiqqer',
                     'console.tool.package.message.install.execute',
-                    array('package' => $package)
+                    ['package' => $package]
                 )
             );
 

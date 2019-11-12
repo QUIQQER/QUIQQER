@@ -102,7 +102,7 @@ QUI::$Ajax->registerFunction(
 
             $webserverConfig = QUI::conf("webserver", "type");
 
-            if ($webserverConfig !== false && is_string($webserverConfig)
+            if ($webserverConfig !== false && \is_string($webserverConfig)
                 && \strpos($webserverConfig, "apache") !== false) {
                 continue;
             }

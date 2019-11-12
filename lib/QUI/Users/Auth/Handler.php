@@ -190,7 +190,7 @@ class Handler
      */
     public function getAvailableAuthenticators()
     {
-        $cache = 'quiqqer/quiqqer/authenticator/available';
+        $cache = 'quiqqer/permissions/authenticator/available';
 
         try {
             return QUI\Cache\Manager::get($cache);

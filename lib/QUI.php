@@ -847,14 +847,14 @@ class QUI
             return self::$SystemLocale;
         }
 
-        self::$Locale = new \QUI\Locale();
-        $language     = self::conf('globals', 'standardLanguage');
+        self::$SystemLocale = new QUI\Locale();
+        $language           = self::conf('globals', 'standardLanguage');
 
         if (!empty($language)) {
-            self::$Locale->setCurrent($language);
+            self::$SystemLocale->setCurrent($language);
         }
 
-        return self::$Locale;
+        return self::$SystemLocale;
     }
 
     /**
