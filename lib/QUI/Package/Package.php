@@ -31,6 +31,7 @@ class Package extends QUI\QDOM
     const LOCALE_XML = 'locale.xml';
     const MENU_XML = 'menu.xml';
     const PANELS_XML = 'panels.xml';
+    const PERMISSIONS_XML = 'permissions.xml';
     const SETTINGS_XML = 'settings.xml';
     const SITE_XML = 'site.xml';
     const USER_XML = 'user.xml';
@@ -704,19 +705,19 @@ class Package extends QUI\QDOM
         }
 
         // xml
-        Update::importDatabase($dir.'database.xml');
+        Update::importDatabase($dir.self::DATABASE_XML);
         Update::importTemplateEngines($dir.'engines.xml');
         Update::importEditors($dir.'wysiwyg.xml');
 
         QUI::getPermissionManager()->deletePermissionsFromPackage($this);
 
-        Update::importPermissions($dir.'permissions.xml', $this->getName());
-        Update::importMenu($dir.'menu.xml');
+        Update::importPermissions($dir.self::PERMISSIONS_XML, $this->getName());
+        Update::importMenu($dir.self::MENU_XML);
 
         // events
         QUI\Events\Manager::clear($this->getName());
-        Update::importEvents($dir.'events.xml', $this->getName());
-        Update::importSiteEvents($dir.'site.xml');
+        Update::importEvents($dir.self::EVENTS_XML, $this->getName());
+        Update::importSiteEvents($dir.self::SITE_XML);
 
         // locale
         if ($optionLocaleImport) {
@@ -729,7 +730,7 @@ class Package extends QUI\QDOM
 
 
         // settings
-        if (!\file_exists($dir.'settings.xml')) {
+        if (!\file_exists($dir.self::SETTINGS_XML)) {
             QUI::getEvents()->fireEvent('packageSetup', [$this]);
             QUI\Cache\Manager::clearAll();
 
@@ -738,8 +739,7 @@ class Package extends QUI\QDOM
             return;
         }
 
-        // $defaults = XML::getConfigParamsFromXml( $dir .'settings.xml' );
-        $Config = XML::getConfigFromXml($dir.'settings.xml');
+        $Config = XML::getConfigFromXml($dir.self::SETTINGS_XML);
 
         if ($Config) {
             $Config->save();
@@ -760,8 +760,8 @@ class Package extends QUI\QDOM
 
         try {
             $groups   = [];
-            $files    = [$dir.'locale.xml'];
-            $Dom      = XML::getDomFromXml($dir.'locale.xml');
+            $files    = [$dir.self::LOCALE_XM];
+            $Dom      = XML::getDomFromXml($dir.self::LOCALE_XML);
             $FileList = $Dom->getElementsByTagName('file');
 
             if ($FileList->length) {
@@ -826,7 +826,7 @@ class Package extends QUI\QDOM
         QUI::getEvents()->fireEvent('packageInstallBefore', [$this]);
 
         Update::importEvents(
-            $this->getDir().'events.xml',
+            $this->getDir().self::EVENTS_XML,
             $this->getName()
         );
 
