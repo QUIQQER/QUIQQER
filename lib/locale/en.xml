@@ -424,7 +424,7 @@
             <en><![CDATA[Show passwords]]></en>
         </locale>
         <locale name="user.panel.password.old">
-            <en><![CDATA[Old password]]></en>
+            <en><![CDATA[Current password]]></en>
         </locale>
         <locale name="user.panel.personalData">
             <en><![CDATA[personal data / Adresses]]></en>

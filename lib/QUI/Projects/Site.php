@@ -306,7 +306,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         $this->type    = $type;
         $this->package = $package;
 
-        $siteXml = OPT_DIR.$package.'/site.xml';
+        $siteXml = OPT_DIR.$package.'/'.QUI\Package\Package::SITE_XML;
 
         $Dom   = QUI\Utils\Text\XML::getDomFromXml($siteXml);
         $XPath = new \DOMXPath($Dom);
