@@ -290,11 +290,21 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         $this->Events->fireEvent('load', [$this]);
         QUI::getEvents()->fireEvent('siteLoad', [$this]);
 
+        $attributes = QUI\Projects\Site\Utils::getExtraAttributeListForSite($this);
 
         // load type
         $type = $this->getAttribute('type');
 
         if (\strpos($type, ':') === false) {
+            // set defaults
+            foreach ($attributes as $attribute) {
+                $attr = $attribute['attribute'];
+
+                if ($this->existsAttribute($attr) === false) {
+                    $this->setAttribute($attr, $attribute['default']);
+                }
+            }
+
             return $this;
         }
 
@@ -313,22 +323,20 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         $Types = $XPath->query('//type[@type="'.$type.'"]');
 
         /* @var $Type \DOMElement */
-        $Type   = $Types->item(0);
-        $extend = false;
+        $Type = $Types->item(0);
 
-        if ($Type) {
-            $extend = $Type->getAttribute('extend');
+        if ($Type && $Type->hasAttribute('cache') && (int)$Type->getAttribute('cache') === 0) {
+            $this->setAttribute('nocache', 1);
+        }
 
-            if ($Type->hasAttribute('cache') && (int)$Type->getAttribute('cache') === 0) {
-                $this->setAttribute('nocache', 1);
+        // set defaults
+        foreach ($attributes as $attribute) {
+            $attr = $attribute['attribute'];
+
+            if ($this->existsAttribute($attr) === false) {
+                $this->setAttribute($attr, $attribute['default']);
             }
         }
-
-        if ($extend) {
-            $this->extend  = $extend;
-            $this->Extends = new $extend(); // @todo check if can be deleted
-        }
-
 
         return $this;
     }
@@ -441,7 +449,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
     }
 
     /**
-     * Serialisierungsdaten
+     * serialize
      *
      * @return string
      */
@@ -452,7 +460,6 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
 //         $att['extra']         = $this->_extra;
         $att['linked_parent'] = $this->LINKED_PARENT;
         $att['_type']         = $this->type;
-        $att['_extend']       = $this->extend;
 
         unset($att['project']);
 
