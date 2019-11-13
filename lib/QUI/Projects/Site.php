@@ -309,24 +309,37 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         }
 
         // site.xml
-        $explode = \explode(':', $type);
-        $package = $explode[0];
-        $type    = $explode[1];
+        if (!$this->existsAttribute('nocache')) {
+            $explode = \explode(':', $type);
+            $package = $explode[0];
+            $type    = $explode[1];
 
-        $this->type    = $type;
-        $this->package = $package;
+            $this->type    = $type;
+            $this->package = $package;
 
-        $siteXml = OPT_DIR.$package.'/'.QUI\Package\Package::SITE_XML;
+            $cacheName = 'quiqqer/package/quiqqer/quiqqer/type/'.\md5($type).'/nocache';
 
-        $Dom   = QUI\Utils\Text\XML::getDomFromXml($siteXml);
-        $XPath = new \DOMXPath($Dom);
-        $Types = $XPath->query('//type[@type="'.$type.'"]');
+            try {
+                $noCache = QUI\Cache\Manager::get($cacheName);
+            } catch (QUI\Exception $Exception) {
+                $noCache = 0;
+                $siteXml = OPT_DIR.$package.'/'.QUI\Package\Package::SITE_XML;
 
-        /* @var $Type \DOMElement */
-        $Type = $Types->item(0);
+                $Dom   = QUI\Utils\Text\XML::getDomFromXml($siteXml);
+                $XPath = new \DOMXPath($Dom);
+                $Types = $XPath->query('//type[@type="'.$type.'"]');
 
-        if ($Type && $Type->hasAttribute('cache') && (int)$Type->getAttribute('cache') === 0) {
-            $this->setAttribute('nocache', 1);
+                /* @var $Type \DOMElement */
+                $Type = $Types->item(0);
+
+                if ($Type && $Type->hasAttribute('cache') && (int)$Type->getAttribute('cache') === 0) {
+                    $noCache = 1;
+                }
+
+                QUI\Cache\Manager::set($cacheName, $noCache);
+            }
+
+            $this->setAttribute('nocache', $noCache);
         }
 
         // set defaults
