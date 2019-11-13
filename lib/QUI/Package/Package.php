@@ -760,7 +760,7 @@ class Package extends QUI\QDOM
 
         try {
             $groups   = [];
-            $files    = [$dir.self::LOCALE_XM];
+            $files    = [$dir.self::LOCALE_XML];
             $Dom      = XML::getDomFromXml($dir.self::LOCALE_XML);
             $FileList = $Dom->getElementsByTagName('file');
 
