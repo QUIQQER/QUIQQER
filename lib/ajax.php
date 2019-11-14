@@ -98,5 +98,9 @@ if (isset($_REQUEST['project'])) {
     }
 }
 
-echo QUI::getAjax()->call();
+$result = QUI::getAjax()->call();
+
+// destroy current ob output, so ajax will be no longer destroyed
+\ob_clean();
+echo $result;
 exit;
