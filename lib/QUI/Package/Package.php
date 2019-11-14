@@ -224,6 +224,16 @@ class Package extends QUI\QDOM
     }
 
     /**
+     * Alias for getCacheName()
+     *
+     * @return string
+     */
+    public function getCachePath()
+    {
+        return $this->getCacheName();
+    }
+
+    /**
      * Return all providers
      *
      * @param string|bool $providerName - optional, Name of the wanted providers
