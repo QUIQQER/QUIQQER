@@ -255,7 +255,9 @@ define('controls/projects/project/media/FolderViewer', [
                 self.$Folder = Item;
                 self.$ButtonsUpload.enable();
 
-                Item.getChildren(function (items) {
+                Item.getChildren(function (Result) {
+                    var items = Result.data;
+
                     self.$Container.set('html', '');
 
                     var files = 0;
