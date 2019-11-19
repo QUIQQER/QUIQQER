@@ -635,6 +635,20 @@ define('controls/workspace/Manager', [
                 return;
             }
 
+            // Send the beacon
+            if (typeof navigator.sendBeacon !== 'undefined') {
+                var data = {
+                    _rf      : JSON.encode(['ajax_desktop_workspace_save']),
+                    data     : JSON.encode(workspace),
+                    id       : this.getAttribute('workspaceId'),
+                    _FRONTEND: 0
+                };
+
+                data = Object.toQueryString(data);
+                navigator.sendBeacon(Ajax.$url + '?beacon=1', data);
+                return;
+            }
+
             Ajax.syncRequest('ajax_desktop_workspace_save', 'post', {
                 data: JSON.encode(workspace),
                 id  : this.getAttribute('workspaceId')

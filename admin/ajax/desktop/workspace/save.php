@@ -11,10 +11,10 @@ QUI::$Ajax->registerFunction(
     function ($id, $data) {
         $User = QUI::getUserBySession();
 
-        QUI\Workspace\Manager::saveWorkspace($User, $id, array(
+        QUI\Workspace\Manager::saveWorkspace($User, $id, [
             'data' => $data
-        ));
+        ]);
     },
-    array('id', 'data'),
+    ['id', 'data'],
     'Permission::checkUser'
 );

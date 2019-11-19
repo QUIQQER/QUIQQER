@@ -416,26 +416,31 @@ class Address extends QUI\QDOM
         $mail  = \json_encode($this->getMailList());
         $phone = \json_encode($this->getPhoneList());
 
-        QUI::getDataBase()->update(
-            Manager::tableAddress(),
-            [
-                'salutation'  => Orthos::clear($this->getAttribute('salutation')),
-                'firstname'   => Orthos::clear($this->getAttribute('firstname')),
-                'lastname'    => Orthos::clear($this->getAttribute('lastname')),
-                'company'     => Orthos::clear($this->getAttribute('company')),
-                'delivery'    => Orthos::clear($this->getAttribute('delivery')),
-                'street_no'   => Orthos::clear($this->getAttribute('street_no')),
-                'zip'         => Orthos::clear($this->getAttribute('zip')),
-                'city'        => Orthos::clear($this->getAttribute('city')),
-                'country'     => Orthos::clear($this->getAttribute('country')),
-                'mail'        => $mail,
-                'phone'       => $phone,
-                'custom_data' => \json_encode($this->getCustomData())
-            ],
-            [
-                'id' => $this->id
-            ]
-        );
+        try {
+            QUI::getDataBase()->update(
+                Manager::tableAddress(),
+                [
+                    'salutation'  => Orthos::clear($this->getAttribute('salutation')),
+                    'firstname'   => Orthos::clear($this->getAttribute('firstname')),
+                    'lastname'    => Orthos::clear($this->getAttribute('lastname')),
+                    'company'     => Orthos::clear($this->getAttribute('company')),
+                    'delivery'    => Orthos::clear($this->getAttribute('delivery')),
+                    'street_no'   => Orthos::clear($this->getAttribute('street_no')),
+                    'zip'         => Orthos::clear($this->getAttribute('zip')),
+                    'city'        => Orthos::clear($this->getAttribute('city')),
+                    'country'     => Orthos::clear($this->getAttribute('country')),
+                    'mail'        => $mail,
+                    'phone'       => $phone,
+                    'custom_data' => \json_encode($this->getCustomData())
+                ],
+                [
+                    'id' => $this->id
+                ]
+            );
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+            QUI\System\Log::writeDebugException($Exception);
+        }
 
         try {
             QUI::getEvents()->fireEvent('userAddressSave', [$this, $this->getUser()]);
