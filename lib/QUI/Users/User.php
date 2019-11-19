@@ -1519,7 +1519,9 @@ class User implements QUI\Interfaces\Users\User
         }
 
         // check if duplicated emails are exists
-        $this->checkUserMail();
+        if (QUI::conf('globals', 'emaillogin')) {
+            $this->checkUserMail();
+        }
 
         // check if su exists
         // check if one super user exists
