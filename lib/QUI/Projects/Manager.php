@@ -281,6 +281,7 @@ class Manager
             'media_image_library'      => '',
             'media_maxUploadSize'      => '',
             'media_maxUploadFileSize'  => '',
+            'media_maxImageCacheSize'  => '',
             'media_createCacheOnSave'  => '1',
             'placeholder'              => '',
             'logo'                     => '',
