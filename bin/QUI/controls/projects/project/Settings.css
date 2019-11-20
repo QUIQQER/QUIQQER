@@ -12,6 +12,7 @@
     box-shadow: none;
 }
 
+.qui-project-media-settings [name="media_maxImageCacheSize"],
 .qui-project-media-settings [name="media_maxUploadSize"],
 .qui-project-media-settings [name="media_watermark_ratio"] {
     border: none;

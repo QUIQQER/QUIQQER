@@ -7,6 +7,7 @@
 namespace QUI\Projects\Media;
 
 use QUI;
+use QUI\Projects\Media;
 use QUI\Utils\StringHelper;
 use QUI\Utils\System\File;
 
@@ -19,6 +20,40 @@ use QUI\Utils\System\File;
  */
 class Image extends Item implements QUI\Interfaces\Projects\Media\File
 {
+    /**
+     * Max image width & width for image cache creation
+     *
+     * @var int
+     */
+    protected $IMAGE_MAX_SIZE = 1200;
+
+    /**
+     * Image constructor.
+     *
+     * @param $params
+     * @param Media $Media
+     */
+    public function __construct($params, Media $Media)
+    {
+        parent::__construct($params, $Media);
+
+        // read config
+        $maxUploadImageSize = $this->getProject()->getConfig('media_maxUploadSize');
+        $maxImageCacheSize  = $this->getProject()->getConfig('media_maxImageCacheSize');
+
+        if (!empty($maxUploadImageSize)) {
+            $this->IMAGE_MAX_SIZE = (int)$maxUploadImageSize;
+        }
+
+        if (!empty($maxImageCacheSize)) {
+            $this->IMAGE_MAX_SIZE = (int)$maxImageCacheSize;
+        }
+
+        if (empty($this->IMAGE_MAX_SIZE)) {
+            $this->IMAGE_MAX_SIZE = 4000;
+        }
+    }
+
     /**
      * Return the real with of the image
      *
@@ -102,12 +137,12 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
 
-        if ($maxwidth > 1200) {
-            $maxwidth = 1200;
+        if ($maxwidth > $this->IMAGE_MAX_SIZE) {
+            $maxwidth = $this->IMAGE_MAX_SIZE;
         }
 
-        if ($maxheight > 1200) {
-            $maxheight = 1200;
+        if ($maxheight > $this->IMAGE_MAX_SIZE) {
+            $maxheight = $this->IMAGE_MAX_SIZE;
         }
 
         $extra  = '';
@@ -331,6 +366,14 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     {
         if (!$this->getAttribute('active')) {
             return false;
+        }
+
+        if ($width > $this->IMAGE_MAX_SIZE) {
+            $width = $this->IMAGE_MAX_SIZE;
+        }
+
+        if ($height > $this->IMAGE_MAX_SIZE) {
+            $height = $this->IMAGE_MAX_SIZE;
         }
 
         $Media     = $this->Media;

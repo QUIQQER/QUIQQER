@@ -297,9 +297,19 @@
         </locale>
         <locale name="projects.project.settings.panel.mediaSettings.maxUploadFileSize.description" html="true">
             <en><![CDATA[
-            Only images smaller than the specified value are allowed to be uploaded.
+            Images that are larger than the specified value are automatically reduced to this size when uploaded.
             ]]></en>
         </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.maxImageCacheSize">
+            <en><![CDATA[Maximum cache image size]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.maxImageCacheSize.description">
+            <en><![CDATA[
+             In order not to overload the storage space on the server,
+             the maximum size of a cache image can be limited by this setting. (default: 4000px)
+            ]]></en>
+        </locale>
+
         <locale name="projects.project.settings.panel.defaultSitestructure">
             <en><![CDATA[Page structure]]></en>
         </locale>
@@ -3821,6 +3831,9 @@
         </locale>
         <locale name="projects.project.settings.panel.mediaSettings.title">
             <en><![CDATA[Media settings]]></en>
+        </locale>
+        <locale name="projects.project.settings.panel.mediaSettings.upload.title">
+            <en><![CDATA[Media upload settings]]></en>
         </locale>
         <locale name="projects.project.settings.panel.mediaSettings.watermark">
             <en><![CDATA[Global watermark]]></en>

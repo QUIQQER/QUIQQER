@@ -53,21 +53,45 @@
             <td>
                 <label class="field-container">
                     <span class="field-container-item">
-                    {locale
-                        group="quiqqer/quiqqer"
-                        var="projects.project.settings.panel.mediaSettings.maxUploadSize"
-                    }
+                        {locale group="quiqqer/quiqqer"
+                        var="projects.project.settings.panel.mediaSettings.maxImageCacheSize"}
+                    </span>
+                    <span class="field-container-field field-container-field-no-padding">
+                        <input type="number" name="media_maxImageCacheSize"/>
+                        <span style="line-height: 30px; padding-left: 10px;">px</span>
+                    </span>
+                </label>
+                <div class="field-container-item-desc">
+                    {locale group="quiqqer/quiqqer"
+                    var="projects.project.settings.panel.mediaSettings.maxImageCacheSize.description"}
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="data-table data-table-flexbox">
+        <thead>
+        <tr>
+            <th>
+                {locale group="quiqqer/quiqqer" var="projects.project.settings.panel.mediaSettings.upload.title"}
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                    {locale group="quiqqer/quiqqer"
+                    var="projects.project.settings.panel.mediaSettings.maxUploadSize"}
                     </span>
                     <span class="field-container-field field-container-field-no-padding">
                         <input type="number" name="media_maxUploadSize"/>
                         <span style="line-height: 30px; padding-left: 10px;">px</span>
                     </span>
                 </label>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="description-no-padding">
+                <div class="field-container-item-desc">
                     {locale group="quiqqer/quiqqer"
                     var="projects.project.settings.panel.mediaSettings.maxUploadSize.description"}
                 </div>
@@ -77,10 +101,8 @@
             <td>
                 <label class="field-container">
                     <span class="field-container-item">
-                        {locale
-                            group="quiqqer/quiqqer"
-                            var="projects.project.settings.panel.mediaSettings.maxUploadFileSize"
-                        }
+                        {locale group="quiqqer/quiqqer"
+                        var="projects.project.settings.panel.mediaSettings.maxUploadFileSize"}
                     </span>
                     <span class="field-container-field field-container-field-no-padding">
                         <input type="number"
@@ -91,15 +113,9 @@
                         <span style="line-height: 30px; padding-left: 10px;"> Byte</span>
                     </span>
                 </label>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="description-no-padding">
-                    {locale
-                    group="quiqqer/quiqqer"
-                    var="projects.project.settings.panel.mediaSettings.maxUploadFileSize.description"
-                    }
+                <div class="field-container-item-desc">
+                    {locale group="quiqqer/quiqqer"
+                    var="projects.project.settings.panel.mediaSettings.maxUploadFileSize.description"}
                 </div>
             </td>
         </tr>
@@ -187,11 +203,7 @@
                         <span style="line-height: 30px; padding-left: 10px;">%</span>
                     </span>
                 </label>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <div class="description-no-padding">
+                <div class="field-container-item-desc">
                     {locale
                     group="quiqqer/quiqqer"
                     var="projects.project.settings.panel.mediaSettings.watermark.description"
