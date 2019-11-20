@@ -334,11 +334,13 @@ class Template extends QUI\QDOM
             return URL_OPT_DIR.$template.'/'.$path;
         }
 
-        $template = $this->TemplateParent->getName();
-        $absolute = OPT_DIR.$template.'/'.$path;
+        if ($this->TemplateParent) {
+            $template = $this->TemplateParent->getName();
+            $absolute = OPT_DIR.$template.'/'.$path;
 
-        if (\file_exists($absolute)) {
-            return URL_OPT_DIR.$template.'/'.$path;
+            if (\file_exists($absolute)) {
+                return URL_OPT_DIR.$template.'/'.$path;
+            }
         }
 
         return $path;
