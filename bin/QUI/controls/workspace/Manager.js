@@ -347,7 +347,13 @@ define('controls/workspace/Manager', [
             this.save();
             this.Workspace.clear();
 
-            var data = JSON.decode(this.$spaces[id].data);
+            var data = null;
+
+            try {
+                data = JSON.decode(this.$spaces[id].data);
+            } catch (e) {
+            }
+
 
             if (!data) {
                 this.$loadDefault2Column(this.Workspace);
