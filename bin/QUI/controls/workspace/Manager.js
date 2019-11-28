@@ -409,11 +409,14 @@ define('controls/workspace/Manager', [
             this.$minWidth  = workspace.minWidth;
             this.$minHeight = workspace.minHeight;
 
-            var data;
+            var data = null;
 
             try {
                 data = JSON.decode(workspace.data);
             } catch (e) {
+            }
+
+            if (!data) {
                 QUI.getMessageHandler().then(function (MH) {
                     MH.addError(Locale.get('quiqqer/quiqqer', 'message.error.in.workspace'));
                 });
@@ -1318,117 +1321,125 @@ define('controls/workspace/Manager', [
                         }).inject(Content, 'top');
 
                         var EditGrid = new Grid(GridContainer, {
-                            columnModel      : [{
-                                dataIndex: 'id',
-                                dataType : 'Integer',
-                                hidden   : true
-                            }, {
-                                header   : Locale.get('quiqqer/system', 'title'),
-                                dataIndex: 'title',
-                                dataType : 'string',
-                                width    : 200,
-                                editable : true
-                            }, {
-                                header   : Locale.get('quiqqer/quiqqer', 'window.workspaces.width'),
-                                dataIndex: 'minWidth',
-                                dataType : 'string',
-                                width    : 100,
-                                editable : true
-                            }, {
-                                header   : Locale.get('quiqqer/quiqqer', 'window.workspaces.height'),
-                                dataIndex: 'minHeight',
-                                dataType : 'string',
-                                width    : 100,
-                                editable : true
-                            }],
-                            buttons          : [{
-                                name     : 'add',
-                                title    : Locale.get('quiqqer/quiqqer', 'window.workspaces.add'),
-                                text     : Locale.get('quiqqer/quiqqer', 'add'),
-                                textimage: 'fa fa-plus',
-                                events   : {
-                                    onClick: function () {
-                                        Win.close();
-                                        self.openCreateWindow();
-                                    }
+                            columnModel      : [
+                                {
+                                    dataIndex: 'id',
+                                    dataType : 'Integer',
+                                    hidden   : true
+                                }, {
+                                    header   : Locale.get('quiqqer/system', 'title'),
+                                    dataIndex: 'title',
+                                    dataType : 'string',
+                                    width    : 200,
+                                    editable : true
+                                }, {
+                                    header   : Locale.get('quiqqer/quiqqer', 'window.workspaces.width'),
+                                    dataIndex: 'minWidth',
+                                    dataType : 'string',
+                                    width    : 100,
+                                    editable : true
+                                }, {
+                                    header   : Locale.get('quiqqer/quiqqer', 'window.workspaces.height'),
+                                    dataIndex: 'minHeight',
+                                    dataType : 'string',
+                                    width    : 100,
+                                    editable : true
                                 }
-                            }, {
-                                type: 'separator'
-                            }, {
-                                name     : 'delete',
-                                title    : Locale.get('quiqqer/quiqqer', 'window.workspaces.delete'),
-                                text     : Locale.get('quiqqer/system', 'delete'),
-                                textimage: 'fa fa-trash-o',
-                                disabled : true,
-                                events   : {
-                                    onClick: function (Btn) {
-                                        // delete selected workspaces
-                                        var Grid = Btn.getAttribute('Grid'),
-                                            data = Grid.getSelectedData(),
-                                            ids  = [];
-
-                                        for (var i = 0, len = data.length; i < len; i++) {
-                                            ids.push(data[i].id);
+                            ],
+                            buttons          : [
+                                {
+                                    name     : 'add',
+                                    title    : Locale.get('quiqqer/quiqqer', 'window.workspaces.add'),
+                                    text     : Locale.get('quiqqer/quiqqer', 'add'),
+                                    textimage: 'fa fa-plus',
+                                    events   : {
+                                        onClick: function () {
+                                            Win.close();
+                                            self.openCreateWindow();
                                         }
+                                    }
+                                }, {
+                                    type: 'separator'
+                                }, {
+                                    name     : 'delete',
+                                    title    : Locale.get('quiqqer/quiqqer', 'window.workspaces.delete'),
+                                    text     : Locale.get('quiqqer/system', 'delete'),
+                                    textimage: 'fa fa-trash-o',
+                                    disabled : true,
+                                    events   : {
+                                        onClick: function (Btn) {
+                                            // delete selected workspaces
+                                            var Grid = Btn.getAttribute('Grid'),
+                                                data = Grid.getSelectedData(),
+                                                ids  = [];
 
-                                        Win.close();
-
-                                        new QUIConfirm({
-                                            name       : 'delete',
-                                            icon       : 'fa fa-trash-o',
-                                            title      : Locale.get('quiqqer/quiqqer', 'window.workspaces.delete.title'),
-                                            text       : Locale.get('quiqqer/quiqqer', 'window.workspaces.delete.text'),
-                                            information: Locale.get('quiqqer/quiqqer', 'window.workspaces.delete.information', {
-                                                ids: ids.join(',')
-                                            }),
-                                            ok_button  : {
-                                                text     : Locale.get('quiqqer/system', 'delete'),
-                                                textimage: 'fa fa-trash'
-                                            },
-                                            texticon   : 'fa fa-trash-o',
-                                            maxWidth   : 450,
-                                            maxHeight  : 300,
-                                            autoclose  : false,
-                                            events     : {
-                                                onCancel: function () {
-                                                    self.openWorkspaceEdit();
-                                                },
-                                                onSubmit: function (Win) {
-                                                    Win.Loader.show();
-
-                                                    self.del(ids, function () {
-                                                        self.load(function () {
-                                                            Win.close();
-
-                                                            self.openWorkspaceEdit();
-                                                        });
-                                                    });
-                                                }
+                                            for (var i = 0, len = data.length; i < len; i++) {
+                                                ids.push(data[i].id);
                                             }
-                                        }).open();
-                                    }
-                                }
-                            }, {
-                                name  : '',
-                                text  : Locale.get('quiqqer/quiqqer', 'workspace.fixed'),
-                                styles: {
-                                    'float': 'right'
-                                },
-                                events: {
-                                    onClick: function (Btn) {
-                                        if (self.Workspace.$fixed) {
-                                            self.unfix();
-                                            Btn.setAttribute('text', Locale.get('quiqqer/quiqqer', 'workspace.flexible'));
-                                            Btn.setAttribute('status', 0);
-                                            return;
-                                        }
 
-                                        self.fix();
-                                        Btn.setAttribute('text', Locale.get('quiqqer/quiqqer', 'workspace.fixed'));
-                                        Btn.setAttribute('status', 1);
+                                            Win.close();
+
+                                            new QUIConfirm({
+                                                name       : 'delete',
+                                                icon       : 'fa fa-trash-o',
+                                                title      : Locale.get('quiqqer/quiqqer',
+                                                    'window.workspaces.delete.title'),
+                                                text       : Locale.get('quiqqer/quiqqer',
+                                                    'window.workspaces.delete.text'),
+                                                information: Locale.get('quiqqer/quiqqer',
+                                                    'window.workspaces.delete.information', {
+                                                        ids: ids.join(',')
+                                                    }),
+                                                ok_button  : {
+                                                    text     : Locale.get('quiqqer/system', 'delete'),
+                                                    textimage: 'fa fa-trash'
+                                                },
+                                                texticon   : 'fa fa-trash-o',
+                                                maxWidth   : 450,
+                                                maxHeight  : 300,
+                                                autoclose  : false,
+                                                events     : {
+                                                    onCancel: function () {
+                                                        self.openWorkspaceEdit();
+                                                    },
+                                                    onSubmit: function (Win) {
+                                                        Win.Loader.show();
+
+                                                        self.del(ids, function () {
+                                                            self.load(function () {
+                                                                Win.close();
+
+                                                                self.openWorkspaceEdit();
+                                                            });
+                                                        });
+                                                    }
+                                                }
+                                            }).open();
+                                        }
+                                    }
+                                }, {
+                                    name  : '',
+                                    text  : Locale.get('quiqqer/quiqqer', 'workspace.fixed'),
+                                    styles: {
+                                        'float': 'right'
+                                    },
+                                    events: {
+                                        onClick: function (Btn) {
+                                            if (self.Workspace.$fixed) {
+                                                self.unfix();
+                                                Btn.setAttribute('text',
+                                                    Locale.get('quiqqer/quiqqer', 'workspace.flexible'));
+                                                Btn.setAttribute('status', 0);
+                                                return;
+                                            }
+
+                                            self.fix();
+                                            Btn.setAttribute('text', Locale.get('quiqqer/quiqqer', 'workspace.fixed'));
+                                            Btn.setAttribute('status', 1);
+                                        }
                                     }
                                 }
-                            }],
+                            ],
                             showHeader       : true,
                             sortHeader       : true,
                             width            : size.x - 40,
