@@ -1183,6 +1183,10 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
             }
         }
 
+        if ($params['order'] === 'manuell') {
+            $params['order'] = 'order_field';
+        }
+
         return $this->getProject()->getChildrenIdsFrom(
             $this->getId(),
             $params
