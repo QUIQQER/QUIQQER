@@ -659,6 +659,7 @@ define('controls/workspace/Manager', [
 
                 data = Object.toQueryString(data);
                 navigator.sendBeacon(Ajax.$url + '?beacon=1', data);
+
                 return;
             }
 
