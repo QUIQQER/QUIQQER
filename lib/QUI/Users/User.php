@@ -317,6 +317,25 @@ class User implements QUI\Interfaces\Users\User
             }
         }
 
+        try {
+            if ($this->getAttribute('firstname') === '' || $this->getAttribute('firstname') === false) {
+                $Address = $this->getStandardAddress();
+                $this->setAttribute('firstname', $Address->getAttribute('firstname'));
+            }
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addDebug($Exception->getMessage());
+        }
+
+        try {
+            if ($this->getAttribute('lastname') === '' || $this->getAttribute('lastname') === false) {
+                $Address = $this->getStandardAddress();
+                $this->setAttribute('lastname', $Address->getAttribute('lastname'));
+            }
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addDebug($Exception->getMessage());
+        }
+
+
         // Event
         QUI::getEvents()->fireEvent('userLoad', [$this]);
     }
