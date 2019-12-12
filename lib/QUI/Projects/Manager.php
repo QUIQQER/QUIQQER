@@ -126,10 +126,18 @@ class Manager
                     continue;
                 }
 
-                $str = Orthos::removeHTML($params[$key]);
-                $str = Orthos::clearPath($str);
+                $setValue = $params[$key];
 
-                $availableConfig[$key] = $str;
+                if (!\is_string($setValue) && !\is_bool($setValue) && !\is_numeric($setValue)) {
+                    continue;
+                }
+
+                if (\is_string($setValue)) {
+                    $setValue = Orthos::removeHTML($setValue);
+                    $setValue = Orthos::clearPath($setValue);
+                }
+
+                $availableConfig[$key] = $setValue;
             }
         }
 
