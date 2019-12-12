@@ -14,10 +14,18 @@ QUI::$Ajax->registerFunction(
             QUI::getSession()->remove('inAuthentication');
         }
 
-        QUI::getUsers()->authenticate(
-            $authenticator,
-            \json_decode($params, true)
-        );
+        try {
+            QUI::getUsers()->authenticate(
+                $authenticator,
+                \json_decode($params, true)
+            );
+        } catch (QUI\Exception $Exception) {
+            throw new QUI\Users\UserAuthException(
+                $Exception->getMessage(),
+                $Exception->getCode()
+            );
+        }
+
 
         if ($globalauth) {
             QUI::getSession()->set('auth-globals', 1);

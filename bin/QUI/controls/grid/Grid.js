@@ -1175,6 +1175,24 @@ define('controls/grid/Grid', [
             return buttons;
         },
 
+        /**
+         * Return a wanted button by its name
+         *
+         * @param name
+         * @return {null|*}
+         */
+        getButton: function (name) {
+            var buttons = this.getButtons();
+
+            for (var i = 0, len = buttons.length; i < len; i++) {
+                if (buttons[i].getAttribute('name') === name) {
+                    return buttons[i];
+                }
+            }
+
+            return null;
+        },
+
         dataLoader: function () {
             this.setAttribute('page', 1);
             this.onLoadData({

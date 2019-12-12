@@ -539,43 +539,59 @@ class Address extends QUI\QDOM
             $firstName = $User->getAttribute('firstname');
         }
 
-        if (!$firstName) {
-            $firstName = '';
-        }
-
         if (empty($lastName)) {
             $lastName = $User->getAttribute('lastname');
         }
 
-        if (!$lastName) {
-            $lastName = '';
+        // build parts
+        $part = [0 => [], 1 => [], 2 => []];
+
+        if (!empty($salutation)) {
+            $part[0][] = $salutation;
         }
 
-
-        if (!$salutation) {
-            $salutation = '';
+        if (!empty($firstName)) {
+            $part[0][] = $firstName;
         }
 
-        if (!$street_no) {
-            $street_no = '';
+        if (!empty($lastName)) {
+            $part[0][] = $lastName;
         }
 
-        if (!$zip) {
-            $zip = '';
+        if (!empty($street_no)) {
+            $part[1][] = $street_no;
         }
 
-        if (!$city) {
-            $city = '';
+        if (!empty($zip)) {
+            $part[2][] = $zip;
         }
 
-        if (!$country) {
-            $country = '';
+        if (!empty($city)) {
+            $part[2][] = $city;
         }
 
-        $result = "{$salutation} {$firstName} {$lastName}; {$street_no}; {$zip} {$city} {$country}";
-        $result = \preg_replace('/[  ]{2,}/', ' ', $result);
+        if (!empty($country)) {
+            $part[2][] = $country;
+        }
 
-        return $result;
+        // build parts
+        $part[0] = \trim(\implode(' ', $part[0]));
+        $part[1] = \trim(\implode(' ', $part[1]));
+        $part[2] = \trim(\implode(' ', $part[2]));
+
+        if (empty($part[2])) {
+            unset($part[2]);
+        }
+
+        if (empty($part[1])) {
+            unset($part[1]);
+        }
+
+        if (empty($part[0])) {
+            unset($part[0]);
+        }
+
+        return \implode($part, '; ');
     }
 
     /**

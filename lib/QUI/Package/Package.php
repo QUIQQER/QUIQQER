@@ -117,7 +117,10 @@ class Package extends QUI\QDOM
         }
 
         if (!\is_dir($packageDir)) {
-            throw new QUI\Exception('Package not exists', 404);
+            $packageDir = \htmlspecialchars($packageDir);
+            QUI\System\Log::addError('Package not exists ['.$packageDir.']');
+
+            throw new QUI\Exception('Package not exists ['.$packageDir.']', 404);
         }
 
         $this->packageDir = $packageDir;
