@@ -1,95 +1,95 @@
 {
-  "name": "quiqqer\/quiqqer",
-  "type": "quiqqer-system",
-  "description": "A modular based management system written in JavaScript and PHP",
-  "license": "GPL-3.0+",
-  "authors": [
-    {
-      "name": "Henning Leutz",
-      "email": "leutz@pcsg.de",
-      "homepage": "http:\/\/www.pcsg.de",
-      "role": "Developer"
-    },
-    {
-      "name": "Moritz Scholz",
-      "email": "scholz@pcsg.de",
-      "homepage": "http:\/\/www.pcsg.de",
-      "role": "Developer"
-    }
-  ],
-  "support": {
-    "email": "support@pcsg.de",
-    "url": "http:\/\/www.quiqqer.com"
-  },
-  "repositories": [
-    {
-      "type": "composer",
-      "url": "https:\/\/update.quiqqer.com"
-    }
-  ],
-  "require": {
-    "php": ">=5.3",
-    "composer\/composer": "1.8.*",
-    "tedivm\/stash": "0.15.*",
-    "robloach\/component-installer": "0.0.12",
-    "phpmailer\/phpmailer": "~6.0",
-    "symfony\/http-foundation": ">=2.3|3.*|4.2.*",
-    "symfony\/console": "~2.7",
-    "html2text\/html2text": "1.0.1",
-    "intervention\/image": "2.*",
-    "t7systems\/blowfish": "1.0.0",
-    "pcsg\/composer-assets": "^1.0.1",
-    "dusank\/knapsack": "8.*",
-    "league\/climate": "3.*",
-    "ramsey\/uuid": "3.*",
-    "quiqqer\/composer": ">=1.4.2|dev-master|dev-dev",
-    "quiqqer\/controls": "^1.1.1|dev-master|dev-dev",
-    "quiqqer\/dashboard": "1.*|dev-master|dev-dev",
-    "quiqqer\/qui": ">=1|dev-master|dev-dev",
-    "quiqqer\/qui-php": ">=0.12|dev-master|dev-dev",
-    "quiqqer\/smarty3": "1.*|dev-master|dev-dev",
-    "quiqqer\/ckeditor4": "2.*|1.*|dev-master|dev-dev",
-    "quiqqer\/calendar-controls": "1.*|dev-master|dev-dev",
-    "quiqqer\/countries": "1.*|dev-master|dev-dev",
-    "quiqqer\/colorpicker": ">=1.1|dev-master|dev-dev",
-    "quiqqer\/translator": "1.*|dev-master|dev-dev",
-    "quiqqer\/utils": ">=1.9|dev-master|dev-dev",
-    "quiqqer\/cron": "1.*|dev-master|dev-dev",
-    "quiqqer\/log": "1.*|dev-master|dev-dev",
-    "quiqqer\/login-logger": "1.*|dev-master|dev-dev",
-    "quiqqer\/diashow": ">=0.9|dev-master|dev-dev",
-    "quiqqer\/lockclient": "1.*|dev-master|dev-dev",
-    "quiqqer\/messages": "1.*|dev-master|dev-dev",
-    "quiqqer\/meta": "1.*|dev-master|dev-dev",
-    "quiqqer\/fontawesome": "*",
-    "quiqqer\/backendsearch": "1.*|dev-master|dev-dev",
-    "quiqqer\/requirements": ">2.0.2|dev-master|dev-dev",
-    "quiqqer\/demodata": "^1.0|dev-master|dev-dev",
-    "npm-asset\/intl": "1.*",
-    "npm-asset\/nouislider": "*",
-    "npm-asset\/mustache": "2.*",
-    "npm-asset\/urijs": "1.*"
-  },
-  "require-dev": {
-    "mikey179\/vfsstream": "1.*",
-    "phpstan\/phpstan": ">=0.5"
-  },
-  "scripts": {
-    "post-install-cmd": [
-      "QUI\\Update::onInstall"
+    "name": "quiqqer\/quiqqer",
+    "type": "quiqqer-system",
+    "description": "A modular based management system written in JavaScript and PHP",
+    "license": "GPL-3.0+",
+    "authors": [
+        {
+            "name": "Henning Leutz",
+            "email": "leutz@pcsg.de",
+            "homepage": "http:\/\/www.pcsg.de",
+            "role": "Developer"
+        },
+        {
+            "name": "Moritz Scholz",
+            "email": "scholz@pcsg.de",
+            "homepage": "http:\/\/www.pcsg.de",
+            "role": "Developer"
+        }
     ],
-    "post-update-cmd": [
-      "QUI\\Update::onUpdate"
-    ]
-  },
-  "autoload": {
-    "psr-0": {
-      "QUI": "lib\/"
+    "support": {
+        "email": "support@pcsg.de",
+        "url": "http:\/\/www.quiqqer.com"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https:\/\/update.quiqqer.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3",
+        "composer\/composer": "1.8.*",
+        "tedivm\/stash": "0.15.*",
+        "robloach\/component-installer": "0.0.12",
+        "phpmailer\/phpmailer": "~6.0",
+        "symfony\/http-foundation": ">=2.3|3.*|4.2.*",
+        "symfony\/console": "~2.7",
+        "html2text\/html2text": "1.0.1",
+        "intervention\/image": "2.*",
+        "t7systems\/blowfish": "1.0.0",
+        "pcsg\/composer-assets": "^1.0.1",
+        "dusank\/knapsack": "8.*",
+        "league\/climate": "3.*",
+        "ramsey\/uuid": "3.*",
+        "quiqqer\/composer": ">=1.4.2|dev-master|dev-dev",
+        "quiqqer\/controls": "^1.1.1|dev-master|dev-dev",
+        "quiqqer\/dashboard": "1.*|dev-master|dev-dev",
+        "quiqqer\/qui": ">=1|dev-master|dev-dev",
+        "quiqqer\/qui-php": ">=0.12|dev-master|dev-dev",
+        "quiqqer\/smarty3": "1.*|dev-master|dev-dev",
+        "quiqqer\/ckeditor4": "2.*|1.*|dev-master|dev-dev",
+        "quiqqer\/calendar-controls": "1.*|dev-master|dev-dev",
+        "quiqqer\/countries": "1.*|dev-master|dev-dev",
+        "quiqqer\/colorpicker": ">=1.1|dev-master|dev-dev",
+        "quiqqer\/translator": "1.*|dev-master|dev-dev",
+        "quiqqer\/utils": ">=1.9|dev-master|dev-dev",
+        "quiqqer\/cron": "1.*|dev-master|dev-dev",
+        "quiqqer\/log": "1.*|dev-master|dev-dev",
+        "quiqqer\/login-logger": "1.*|dev-master|dev-dev",
+        "quiqqer\/diashow": ">=0.9|dev-master|dev-dev",
+        "quiqqer\/lockclient": "1.*|dev-master|dev-dev",
+        "quiqqer\/messages": "1.*|dev-master|dev-dev",
+        "quiqqer\/meta": "1.*|dev-master|dev-dev",
+        "quiqqer\/fontawesome": "*",
+        "quiqqer\/backendsearch": "1.*|dev-master|dev-dev",
+        "quiqqer\/requirements": ">2.0.2|dev-master|dev-dev",
+        "quiqqer\/demodata": "^1.0|dev-master|dev-dev",
+        "npm-asset\/intl": "1.*",
+        "npm-asset\/nouislider": "*",
+        "npm-asset\/mustache": "2.*",
+        "npm-asset\/urijs": "1.*"
+    },
+    "require-dev": {
+        "mikey179\/vfsstream": "1.*",
+        "phpstan\/phpstan": ">=0.5"
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "QUI\\Update::onInstall"
+        ],
+        "post-update-cmd": [
+            "QUI\\Update::onUpdate"
+        ]
+    },
+    "autoload": {
+        "psr-0": {
+            "QUI": "lib\/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "QUI\\Tests\\": "tests\/QUI\/"
+        }
     }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "QUI\\Tests\\": "tests\/QUI\/"
-    }
-  }
 }
