@@ -238,9 +238,11 @@ define('Ajax', [
                                 break;
 
                             default:
-                                QUI.getMessageHandler().then(function (MessageHandler) {
-                                    MessageHandler.addException(Exception);
-                                });
+                                if (Request.getAttribute('showError') !== false) {
+                                    QUI.getMessageHandler().then(function (MessageHandler) {
+                                        MessageHandler.addException(Exception);
+                                    });
+                                }
 
                                 if (Request.getAttribute('onError')) {
                                     return Request.getAttribute('onError')(Exception, Request);
