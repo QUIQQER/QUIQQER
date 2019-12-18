@@ -486,6 +486,20 @@ div.pGroup {
 
 /* **** Section Table **** */
 
+.section caption {
+    text-align: center;
+    font: bold 16px arial, helvetica, sans-serif;
+    background: transparent;
+    padding: 6px 4px 8px 0;
+    color: #CC00FF;
+    text-transform: uppercase;
+}
+
+/*
+
+macht mehr kaputt als ganz
+
+
 .section table {
     border-collapse: collapse;
     border: 0 solid;
@@ -494,15 +508,6 @@ div.pGroup {
     background: #f6f6f6;
     text-align: left;
     width: 100%;
-}
-
-.section caption {
-    text-align: center;
-    font: bold 16px arial, helvetica, sans-serif;
-    background: transparent;
-    padding: 6px 4px 8px 0;
-    color: #CC00FF;
-    text-transform: uppercase;
 }
 
 .section thead, .section tfoot {
@@ -525,7 +530,7 @@ div.pGroup {
     text-decoration: none;
 }
 
-.section tbody tr:hover {
+.section tbody > tr:hover {
     background: #D9E6F4 !important;
 }
 
@@ -553,6 +558,7 @@ div.pGroup {
 .section tbody th {
     padding: 5px;
 }
+*/
 
 /* export */
 .exportSelectDiv {
