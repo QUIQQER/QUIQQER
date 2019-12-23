@@ -29,7 +29,8 @@ define('classes/packages/Manager', [
         initialize: function (options) {
             this.parent(options);
 
-            this.$packages = {};
+            this.$packages  = {};
+            this.$installed = {};
         },
 
         /**
@@ -532,6 +533,37 @@ define('classes/packages/Manager', [
                     showError: false,
                     onError  : reject
                 });
+            });
+        },
+
+        /**
+         * Is the wanted package installed?
+         *
+         * @param {String} pkg - name of the package
+         *
+         * @return {Promise}
+         */
+        isInstalled: function (pkg) {
+            if (typeof this.$installed[pkg] !== 'undefined') {
+                return Promise.resolve(this.$installed[pkg]);
+            }
+
+            if (typeof this.$packages[pkg] !== 'undefined') {
+                this.$installed[pkg] = true;
+
+                return Promise.resolve(!!this.$packages[pkg]);
+            }
+
+            var self = this;
+
+            return this.getPackage(pkg).then(function () {
+                self.$installed[pkg] = true;
+
+                return true;
+            }).catch(function () {
+                self.$installed[pkg] = false;
+
+                return false;
             });
         },
 

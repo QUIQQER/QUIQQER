@@ -838,7 +838,7 @@
         <locale name="exception.user.save.mail.exists">
             <en><![CDATA[
                 The user could not be saved. The user's e-mail address is already being used by another user.
-                Since e-mail login is activated, users cannot receive the same e-mail address.
+                As long as e-mail login is activated, users cannot have the same e-mail address.
             ]]></en>
         </locale>
 

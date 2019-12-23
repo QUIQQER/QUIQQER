@@ -16,15 +16,15 @@
 }
 
 .omnigrid div.hDiv {
-    background: #fafafa url("omnigrid/fhbg.gif") repeat-x bottom;
+    background: #FAFAFA;
     position: relative;
-    border: 1px solid #ccc;
-    border-bottom: 0;
+    border: 1px solid #E2E8F0;
+    border-bottom: 2px solid #E2E8F0;
     overflow: hidden;
 }
 
 .omnigrid div.bDiv {
-    border: 1px solid #ccc;
+    border: 1px solid #E2E8F0;
     border-top: 0;
     background: #fff;
     overflow: auto;
@@ -76,7 +76,7 @@
 
 .omnigrid div.hDiv div.th {
     line-height: 24px;
-    border-bottom: 1px solid #CCC;
+    border-bottom: 1px solid #E2E8F0;
 }
 
 .omnigrid div.bDiv .td {
@@ -198,14 +198,14 @@
 /* ************************************** */
 /* ************** Toolbar *************** */
 /* ************************************** */
-.omnigrid div.tDiv {
-    background: #fafafa url("omnigrid/bg.gif") repeat-x top;
-    position: relative;
-    border: 1px solid #ccc;
-    border-bottom: 0;
-    overflow: hidden;
 
+.omnigrid div.tDiv {
+    background: #EFEFEF;
+    border: 1px solid #E2E8F0;
+    border-bottom: 0;
     height: 25px;
+    overflow: hidden;
+    position: relative;
 }
 
 .omnigrid div.fbutton {
@@ -229,7 +229,7 @@
 
 .omnigrid div.fbutton.fbOver {
     padding: 0;
-    border: 1px solid #ccc;
+    border: 1px solid #E2E8F0;
 }
 
 .omnigrid div.fbutton.fbOver div {
@@ -243,7 +243,7 @@
 .omnigrid div.btnseparator {
     float: left;
     height: 22px;
-    border-left: 1px solid #ccc;
+    border-left: 1px solid #E2E8F0;
     border-right: 1px solid #fff;
     margin: 2px;
 }
@@ -316,8 +316,8 @@
 /* ************************************** */
 
 .omnigrid div.pDiv {
-    background: url("omnigrid/wbg.gif") repeat-x 0 -1px;
-    border: 1px solid #ccc;
+    background: #EFEFEF;
+    border: 1px solid #E2E8F0;
     border-top: 0;
     line-height: 20px;
     overflow: hidden;
@@ -325,8 +325,6 @@
 }
 
 .omnigrid div.pDiv div.pDiv2 {
-    margin: 2px;
-    margin-left: -2px;
     float: left;
     width: 1024px;
 }
@@ -375,13 +373,10 @@ div.pGroup {
 }
 
 .omnigrid div.pDiv div.pButton {
-    float: left;
-    width: 16px;
-    height: 16px;
     border: 0;
     cursor: pointer;
-    overflow: hidden;
-    margin-top: 4px;
+    float: left;
+    line-height: 24px;
 }
 
 .omnigrid div.pDiv div.pButton:hover,
@@ -393,7 +388,7 @@ div.pGroup {
 .omnigrid2 div.pDiv div.pButton.pBtnOver {
     width: 14px;
     height: 14px;
-    border: 1px solid #ccc;
+    border: 1px solid #E2E8F0;
     cursor: pointer;
 }
 
@@ -401,24 +396,62 @@ div.pGroup {
     background: url("omnigrid/magnifier.png") no-repeat center;
 }
 
-.omnigrid .pFirst {
-    background: url("omnigrid/first.gif") no-repeat;
+.omnigrid .pFirst,
+.omnigrid .pPrev,
+.omnigrid .pNext,
+.omnigrid .pLast,
+.omnigrid .pReload,
+.omnigrid .pExport {
+    color: #A0AEC0;
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    text-align: center;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    width: 32px;
+}
+
+
+.omnigrid .pFirst:hover,
+.omnigrid .pPrev:hover,
+.omnigrid .pNext:hover,
+.omnigrid .pLast:hover,
+.omnigrid .pReload:hover,
+.omnigrid .pExport:hover {
+    color: #4A5568;
+}
+
+.omnigrid .pFirst:after {
+    content: "\f048";
+    /*background: url("omnigrid/first.gif") no-repeat;*/
 }
 
 .omnigrid .pPrev {
-    background: url("omnigrid/prev.gif") no-repeat;
+    -ms-filter: "progid:DXImageTransform.Microsoft.BasicImage(rotation=2)";
+    -webkit-transform: rotate(180deg);
+    -ms-transform: rotate(180deg);
+    transform: rotate(180deg);
 }
 
-.omnigrid .pNext {
-    background: url("omnigrid/next.gif") no-repeat;
+.omnigrid .pPrev:after {
+    content: "\f04b";
+    /*background: url("omnigrid/prev.gif") no-repeat;*/
 }
 
-.omnigrid .pLast {
-    background: url("omnigrid/last.gif") no-repeat;
+.omnigrid .pNext:after {
+    content: "\f04b";
+    /*background: url("omnigrid/next.gif") no-repeat;*/
 }
 
-.omnigrid .pReload {
-    background: url("omnigrid/refresh.gif") no-repeat;
+.omnigrid .pLast:after {
+    content: "\f051";
+    /*background: url("omnigrid/last.gif") no-repeat;*/
+}
+
+.omnigrid .pReload:after {
+    content: "\f021";
+    /*background: url("omnigrid/refresh.gif") no-repeat;*/
 }
 
 .omnigrid .pExport {
@@ -437,7 +470,7 @@ div.pGroup {
 
     width: 16px;
     height: 16px;
-    border: 1px solid #ccc;
+    border: 1px solid #E2E8F0;
     cursor: pointer;
     float: left;
 }
@@ -447,7 +480,7 @@ div.pGroup {
 
     width: 16px;
     height: 16px;
-    border: 1px solid #ccc;
+    border: 1px solid #E2E8F0;
     cursor: pointer;
     float: left;
     margin-top: 3px;
@@ -486,6 +519,20 @@ div.pGroup {
 
 /* **** Section Table **** */
 
+.section caption {
+    text-align: center;
+    font: bold 16px arial, helvetica, sans-serif;
+    background: transparent;
+    padding: 6px 4px 8px 0;
+    color: #CC00FF;
+    text-transform: uppercase;
+}
+
+/*
+
+macht mehr kaputt als ganz
+
+
 .section table {
     border-collapse: collapse;
     border: 0 solid;
@@ -494,15 +541,6 @@ div.pGroup {
     background: #f6f6f6;
     text-align: left;
     width: 100%;
-}
-
-.section caption {
-    text-align: center;
-    font: bold 16px arial, helvetica, sans-serif;
-    background: transparent;
-    padding: 6px 4px 8px 0;
-    color: #CC00FF;
-    text-transform: uppercase;
 }
 
 .section thead, .section tfoot {
@@ -525,7 +563,7 @@ div.pGroup {
     text-decoration: none;
 }
 
-.section tbody tr:hover {
+.section tbody > tr:hover {
     background: #D9E6F4 !important;
 }
 
@@ -553,6 +591,7 @@ div.pGroup {
 .section tbody th {
     padding: 5px;
 }
+*/
 
 /* export */
 .exportSelectDiv {

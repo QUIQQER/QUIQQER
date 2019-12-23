@@ -1397,7 +1397,8 @@ class User implements QUI\Interfaces\Users\User
 
         QUI::getEvents()->fireEvent('userDisable', [$this]);
 
-        $addresses = $this->getAddressList();
+        $SessionUser = QUI::getUserBySession();
+        $addresses   = $this->getAddressList();
 
         /** @var Address $Address */
         foreach ($addresses as $Address) {
@@ -1435,6 +1436,18 @@ class User implements QUI\Interfaces\Users\User
         );
 
         $this->logout();
+
+        QUI\System\Log::write(
+            'User disabled.',
+            QUI\System\Log::LEVEL_INFO,
+            [
+                'deletedUserId'   => $this->getId(),
+                'deletedUsername' => $this->getUsername(),
+                'executeUserId'   => $SessionUser->getId(),
+                'executeUsername' => $SessionUser->getUsername()
+            ],
+            'user'
+        );
 
         return true;
     }
@@ -1743,6 +1756,8 @@ class User implements QUI\Interfaces\Users\User
      */
     public function delete()
     {
+        $SessionUser = QUI::getUserBySession();
+
         $this->canBeDeleted();
 
         // Pluginerweiterungen - onDelete Event
@@ -1754,6 +1769,18 @@ class User implements QUI\Interfaces\Users\User
         );
 
         $this->logout();
+
+        QUI\System\Log::write(
+            'User deleted.',
+            QUI\System\Log::LEVEL_INFO,
+            [
+                'deletedUserId'   => $this->getId(),
+                'deletedUsername' => $this->getUsername(),
+                'executeUserId'   => $SessionUser->getId(),
+                'executeUsername' => $SessionUser->getUsername()
+            ],
+            'user'
+        );
 
         return true;
     }
