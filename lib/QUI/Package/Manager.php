@@ -1102,16 +1102,8 @@ class Manager extends QUI\QDOM
      */
     public function isInstalled($packageName)
     {
-        if (isset($this->installed[$packageName])) {
-            return $this->installed[$packageName];
-        }
-
-        try {
-            $this->getInstalledPackage($packageName);
-
-            $this->installed[$packageName] = true;
-        } catch (QUI\Exception $Exception) {
-            $this->installed[$packageName] = false;
+        if (!isset($this->installed[$packageName])) {
+            $this->installed[$packageName] = \is_dir(OPT_DIR.$packageName);
         }
 
         return $this->installed[$packageName];
