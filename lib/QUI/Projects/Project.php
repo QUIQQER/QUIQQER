@@ -1106,8 +1106,10 @@ class Project
             ]);
         }
 
+        $order = 'order_field';
+
         if (isset($params['order'])) {
-            switch ($this->getAttribute('order_type')) {
+            switch ($params['order']) {
                 case 'name ASC':
                 case 'name DESC':
                 case 'title ASC':
@@ -1118,18 +1120,17 @@ class Project
                 case 'd_date DESC':
                 case 'release_from ASC':
                 case 'release_from DESC':
-                    $params['order'] = $this->getAttribute('order_type');
+                    $order = $params['order'];
                     break;
 
                 case 'manuell':
                 default:
-                    $params['order'] = 'order_field';
+                    $order = 'order_field';
                     break;
             }
         }
 
-
-
+        $params['order'] = $order;
 
         $sql = [
             'select' => 'id',
