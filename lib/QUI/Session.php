@@ -105,7 +105,8 @@ class Session
             'name'            => $sessionName,
             'cookie_lifetime' => $this->lifetime,
             'gc_maxlifetime'  => $this->lifetime,
-            'cookie_secure'   => QUI\Utils\System::isProtocolSecure()
+            'cookie_secure'   => QUI\Utils\System::isProtocolSecure(),
+            //'cookie_samesite' => 'strict'
         ];
 
         if (!\class_exists('NativeSessionStorage')) {
