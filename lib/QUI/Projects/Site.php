@@ -1161,30 +1161,30 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function getChildrenIds($params = [])
     {
-        if (!isset($params['order'])) {
-            switch ($this->getAttribute('order_type')) {
-                case 'name ASC':
-                case 'name DESC':
-                case 'title ASC':
-                case 'title DESC':
-                case 'c_date ASC':
-                case 'c_date DESC':
-                case 'd_date ASC':
-                case 'd_date DESC':
-                case 'release_from ASC':
-                case 'release_from DESC':
-                    $params['order'] = $this->getAttribute('order_type');
-                    break;
+        $order = $this->getAttribute('order_type');
 
-                case 'manuell':
-                default:
-                    $params['order'] = 'order_field';
-                    break;
-            }
+        if (isset($params['order'])) {
+            $order = $params['order'];
         }
 
-        if ($params['order'] === 'manuell') {
-            $params['order'] = 'order_field';
+        switch ($order) {
+            case 'name ASC':
+            case 'name DESC':
+            case 'title ASC':
+            case 'title DESC':
+            case 'c_date ASC':
+            case 'c_date DESC':
+            case 'd_date ASC':
+            case 'd_date DESC':
+            case 'release_from ASC':
+            case 'release_from DESC':
+                $params['order'] = $order;
+                break;
+
+            case 'manuell':
+            default:
+                $params['order'] = 'order_field';
+                break;
         }
 
         return $this->getProject()->getChildrenIdsFrom(
