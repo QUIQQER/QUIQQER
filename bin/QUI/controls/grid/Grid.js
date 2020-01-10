@@ -2242,13 +2242,15 @@ define('controls/grid/Grid', [
 
                 if (str === '') {
                     div.set('html', '&nbsp;');
-                } else {
+                } else if (columnModel.dataType === 'html') {
                     div.set('html', str);
+                } else {
+                    div.set('text', str);
                 }
 
                 var Toggle = false;
 
-                if (firstvisible == c && o.accordion && o.showtoggleicon) {
+                if (firstvisible === c && o.accordion && o.showtoggleicon) {
                     Toggle = new Element('div.toggleicon', {
                         title : o.toggleiconTitle,
                         events: {
