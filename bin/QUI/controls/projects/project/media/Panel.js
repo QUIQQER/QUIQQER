@@ -2358,6 +2358,7 @@ define('controls/projects/project/media/Panel', [
             var newPageCount = Math.ceil(total / limit);
 
             this.setAttribute('limit', limit);
+            localStorage.setItem('quiqqer-media-pagination-limit', limit);
 
             this.$Pagination.setPageCount(newPageCount);
         },
@@ -2389,7 +2390,16 @@ define('controls/projects/project/media/Panel', [
                     }
                 }).inject(self.$PaginationContainer, 'top');
 
-                var currentLimit = self.getAttribute('limit');
+                var currentLimit = localStorage.getItem('quiqqer-media-pagination-limit');
+
+                if (!currentLimit) {
+                    currentLimit = self.getAttribute('limit');
+                }
+
+                var total        = self.getAttribute('total');
+                var newPageCount = Math.ceil(total / currentLimit);
+
+                self.setAttribute('limit', currentLimit);
 
                 for (var i = 0, len = self.$limitOptions.length; i < len; i++) {
                     var limitOption = self.$limitOptions[i];
@@ -2408,6 +2418,9 @@ define('controls/projects/project/media/Panel', [
                         ).get('data-quiid')
                     );
 
+                    self.$Pagination.setPageCount(newPageCount);
+                    LimitSelect.value = currentLimit;
+
                     self.$Pagination.addEvent('onChange', self.$onPaginationChange);
                     self.Loader.hide();
                 });
@@ -2425,7 +2438,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * Unload / hide pagination
          */
-        $unloadPagination: function() {
+        $unloadPagination: function () {
             this.$Pagination = null;
             this.$PaginationContainer.addClass('qui-media-pagination__hidden');
         }
