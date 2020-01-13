@@ -61,7 +61,6 @@ define('controls/projects/project/media/FolderViewer', [
             'openUpload',
             'openInMedia',
             'openFolder',
-            '$onCreate',
             '$onInject',
             '$onDrop'
         ],
@@ -93,7 +92,6 @@ define('controls/projects/project/media/FolderViewer', [
             this.$Folder = null;
 
             this.addEvents({
-                onCreate: this.$onCreate,
                 onInject: this.$onInject
             });
         },

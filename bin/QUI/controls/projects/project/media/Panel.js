@@ -2396,6 +2396,8 @@ define('controls/projects/project/media/Panel', [
                     currentLimit = self.getAttribute('limit');
                 }
 
+                var refreshPagination = self.getAttribute('limit') !== currentLimit;
+
                 var total        = self.getAttribute('total');
                 var newPageCount = Math.ceil(total / currentLimit);
 
@@ -2412,17 +2414,25 @@ define('controls/projects/project/media/Panel', [
                 }
 
                 QUI.parse(self.$PaginationContainer).then(function () {
-                    self.$Pagination = QUI.Controls.getById(
-                        self.$PaginationContainer.getElement(
-                            'div[data-qui="package/quiqqer/controls/bin/navigating/Pagination"]'
-                        ).get('data-quiid')
-                    );
+                    require(['utils/Controls'], function (QUIControlUtils) {
+                        QUIControlUtils.getControlByElement(
+                            self.$PaginationContainer.getElement(
+                                'div[data-qui="package/quiqqer/controls/bin/navigating/Pagination"]'
+                            )
+                        ).then(function (PaginationControl) {
+                            self.$Pagination = PaginationControl;
 
-                    self.$Pagination.setPageCount(newPageCount);
-                    LimitSelect.value = currentLimit;
+                            self.$Pagination.setPageCount(newPageCount);
+                            LimitSelect.value = currentLimit;
 
-                    self.$Pagination.addEvent('onChange', self.$onPaginationChange);
-                    self.Loader.hide();
+                            self.$Pagination.addEvent('onChange', self.$onPaginationChange);
+                            self.Loader.hide();
+
+                            if (refreshPagination) {
+                                self.refresh();
+                            }
+                        });
+                    });
                 });
             }, {
                 'package' : 'quiqqer/quiqqer',
