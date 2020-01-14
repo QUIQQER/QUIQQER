@@ -16,7 +16,17 @@ QUI::$Ajax->registerFunction(
         $from = (int)$from;
 
         foreach ($ids as $id) {
-            $from  = $from + 1;
+            $from = $from + 1;
+
+            QUI::getDataBase()->update(
+                $Project->table(),
+                ['order_field' => $from],
+                ['id' => $id]
+            );
+
+
+            continue;
+
             $Child = $Project->get($id);
 
             $Child->setAttribute('order_field', $from);
