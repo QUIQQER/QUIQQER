@@ -277,14 +277,13 @@ define('controls/projects/project/site/SiteChildrenSort', [
 
             self.$Site.setAttribute('order', 'manuell');
 
-            return self.$Site.save().then(function () {
-                return new Promise(function (resolve, reject) {
-                    Ajax.post('ajax_site_children_sort', resolve, {
-                        project: Project.encode(),
-                        ids    : JSON.encode(ids),
-                        start  : (page - 1) * perPage,
-                        onError: reject
-                    });
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_site_children_sort', resolve, {
+                    project: Project.encode(),
+                    parent : self.$Site.getId(),
+                    ids    : JSON.encode(ids),
+                    start  : (page - 1) * perPage,
+                    onError: reject
                 });
             }).then(function () {
                 return self.displayChildren();
@@ -294,6 +293,11 @@ define('controls/projects/project/site/SiteChildrenSort', [
                 }
 
                 self.$Site.fireEvent('sortSave', [self.$Site]);
+                self.$Site.getProject().fireEvent(
+                    'siteSortSave',
+                    [self.$Site.getProject(), self.$Site]
+                );
+
                 self.Loader.hide();
             });
         },
