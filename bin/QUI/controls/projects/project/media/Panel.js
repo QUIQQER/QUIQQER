@@ -2358,6 +2358,7 @@ define('controls/projects/project/media/Panel', [
             var newPageCount = Math.ceil(total / limit);
 
             this.setAttribute('limit', limit);
+            localStorage.setItem('quiqqer-media-pagination-limit', limit);
 
             this.$Pagination.setPageCount(newPageCount);
         },
@@ -2389,7 +2390,18 @@ define('controls/projects/project/media/Panel', [
                     }
                 }).inject(self.$PaginationContainer, 'top');
 
-                var currentLimit = self.getAttribute('limit');
+                var currentLimit = localStorage.getItem('quiqqer-media-pagination-limit');
+
+                if (!currentLimit) {
+                    currentLimit = self.getAttribute('limit');
+                }
+
+                var refreshPagination = self.getAttribute('limit') !== currentLimit;
+
+                var total        = self.getAttribute('total');
+                var newPageCount = Math.ceil(total / currentLimit);
+
+                self.setAttribute('limit', currentLimit);
 
                 for (var i = 0, len = self.$limitOptions.length; i < len; i++) {
                     var limitOption = self.$limitOptions[i];
@@ -2402,14 +2414,25 @@ define('controls/projects/project/media/Panel', [
                 }
 
                 QUI.parse(self.$PaginationContainer).then(function () {
-                    self.$Pagination = QUI.Controls.getById(
-                        self.$PaginationContainer.getElement(
-                            'div[data-qui="package/quiqqer/controls/bin/navigating/Pagination"]'
-                        ).get('data-quiid')
-                    );
+                    require(['utils/Controls'], function (QUIControlUtils) {
+                        QUIControlUtils.getControlByElement(
+                            self.$PaginationContainer.getElement(
+                                'div[data-qui="package/quiqqer/controls/bin/navigating/Pagination"]'
+                            )
+                        ).then(function (PaginationControl) {
+                            self.$Pagination = PaginationControl;
 
-                    self.$Pagination.addEvent('onChange', self.$onPaginationChange);
-                    self.Loader.hide();
+                            self.$Pagination.setPageCount(newPageCount);
+                            LimitSelect.value = currentLimit;
+
+                            self.$Pagination.addEvent('onChange', self.$onPaginationChange);
+                            self.Loader.hide();
+
+                            if (refreshPagination) {
+                                self.refresh();
+                            }
+                        });
+                    });
                 });
             }, {
                 'package' : 'quiqqer/quiqqer',
@@ -2425,7 +2448,7 @@ define('controls/projects/project/media/Panel', [
         /**
          * Unload / hide pagination
          */
-        $unloadPagination: function() {
+        $unloadPagination: function () {
             this.$Pagination = null;
             this.$PaginationContainer.addClass('qui-media-pagination__hidden');
         }
