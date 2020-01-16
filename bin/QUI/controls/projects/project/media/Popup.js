@@ -47,6 +47,8 @@ define('controls/projects/project/media/Popup', [
                 id: this.getAttribute('fileid') || 1
             };
 
+            this.$created = false;
+
             this.addEvents({
                 onCreate: this.$onCreate,
                 onOpen  : this.$onOpen,
@@ -62,6 +64,12 @@ define('controls/projects/project/media/Popup', [
          * event : on create
          */
         $onCreate: function () {
+            if (this.$created) {
+                return;
+            }
+
+            this.$created = true;
+
             this.Loader.show();
 
             var Media, Project, Content;

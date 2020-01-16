@@ -1012,7 +1012,7 @@ class Project
 
         foreach ($result as $entry) {
             if (isset($entry['id'])) {
-                $ids[] = $entry['id'];
+                $ids[] = (int)$entry['id'];
             }
         }
 

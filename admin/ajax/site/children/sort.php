@@ -9,19 +9,32 @@
  */
 QUI::$Ajax->registerFunction(
     'ajax_site_children_sort',
-    function ($project, $ids, $from) {
+    function ($project, $parent, $ids, $from) {
         $Project = QUI::getProjectManager()->decode($project);
         $ids     = \json_decode($ids, true);
+        $from    = (int)$from;
 
-        $from = (int)$from;
+        // check permission
+        $Parent = $Project->get($parent);
+        $Parent->checkPermission('quiqqer.projects.site.edit');
+
+        $childrenIds = $Parent->getChildrenIds();
 
         foreach ($ids as $id) {
-            $from  = $from + 1;
-            $Child = $Project->get($id);
+            $from = $from + 1;
 
-            $Child->setAttribute('order_field', $from);
-            $Child->save();
+            if (!\in_array($id, $childrenIds)) {
+                continue;
+            }
+
+            QUI::getDataBase()->update(
+                $Project->table(),
+                ['order_field' => $from],
+                ['id' => $id]
+            );
         }
+
+        $Parent->save();
 
         QUI::getMessagesHandler()->clear();
 
@@ -33,5 +46,5 @@ QUI::$Ajax->registerFunction(
             )
         );
     },
-    ['project', 'ids', 'from']
+    ['project', 'parent', 'ids', 'from']
 );
