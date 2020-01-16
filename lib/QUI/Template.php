@@ -347,16 +347,31 @@ class Template extends QUI\QDOM
     }
 
     /**
+     * Get absolute path to current template package
+     *
+     * @return string
+     */
+    public function getTemplatePath()
+    {
+        $template = $this->TemplatePackage->getName();
+        return OPT_DIR.$template.'/';
+    }
+
+    /**
      * Return a template output
      *
      * @param string $template - Path to a template
+     * @param array $params (optional) - Engine params
      * @return string
      *
      * @throws QUI\Exception
      */
-    public function fetchTemplate($template)
+    public function fetchTemplate($template, $params = [])
     {
-        return $this->getEngine()->fetch($template);
+        $Engine = $this->getEngine();
+        $Engine->assign($params);
+
+        return $Engine->fetch($template);
     }
 
     /**
