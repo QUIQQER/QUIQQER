@@ -4137,6 +4137,18 @@
         <locale name="menu.help.about.text">
             <de><![CDATA[Über QUIQQER]]></de>
         </locale>
+        <locale name="media.item.hide">
+            <de><![CDATA[Verstecken]]></de>
+        </locale>
+        <locale name="media.item.visible">
+            <de><![CDATA[hervorbringen]]></de>
+        </locale>
+        <locale name="media.items.hide">
+            <de><![CDATA[Alle verstecken]]></de>
+        </locale>
+        <locale name="media.items.visible">
+            <de><![CDATA[Alle hervorbringen]]></de>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">

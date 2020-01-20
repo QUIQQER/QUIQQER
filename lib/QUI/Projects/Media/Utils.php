@@ -74,7 +74,8 @@ class Utils
                 'e_user'        => $Item->getAttribute('e_user'),
                 'c_date'        => $Item->getAttribute('c_date'),
                 'c_user'        => $Item->getAttribute('c_user'),
-                'priority'      => $Item->getAttribute('priority')
+                'priority'      => $Item->getAttribute('priority'),
+                'isHidden'      => $Item->isHidden()
             ];
         }
 
@@ -95,7 +96,8 @@ class Utils
                 'e_user'        => $Item->getAttribute('e_user'),
                 'c_date'        => $Item->getAttribute('c_date'),
                 'c_user'        => $Item->getAttribute('c_user'),
-                'priority'      => $Item->getAttribute('priority')
+                'priority'      => $Item->getAttribute('priority'),
+                'isHidden'      => $Item->isHidden()
             ];
         }
 
@@ -117,7 +119,8 @@ class Utils
             'c_date'    => $Item->getAttribute('c_date'),
             'c_user'    => $Item->getAttribute('c_user'),
             'mimetype'  => $Item->getAttribute('mime_type'),
-            'priority'  => $Item->getAttribute('priority')
+            'priority'  => $Item->getAttribute('priority'),
+            'isHidden'  => $Item->isHidden()
         ];
 
         return $result;

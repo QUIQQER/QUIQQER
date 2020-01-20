@@ -3958,6 +3958,18 @@
         <locale name="menu.help.about.text">
             <en><![CDATA[About QUIQQER]]></en>
         </locale>
+        <locale name="media.item.hide">
+            <en><![CDATA[Hide]]></en>
+        </locale>
+        <locale name="media.item.visible">
+            <en><![CDATA[Show]]></en>
+        </locale>
+        <locale name="media.items.hide">
+            <en><![CDATA[Hide all]]></en>
+        </locale>
+        <locale name="media.items.visible">
+            <en><![CDATA[Show all]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">

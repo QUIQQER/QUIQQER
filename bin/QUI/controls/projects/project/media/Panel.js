@@ -1191,7 +1191,7 @@ define('controls/projects/project/media/Panel', [
                 }
 
                 Child = children[i];
-
+                console.log(Child);
                 Elm = new Element('div', {
                     'data-id'      : Child.id,
                     'data-project' : project,
@@ -1199,6 +1199,7 @@ define('controls/projects/project/media/Panel', [
                     'data-active'  : Child.active ? 1 : 0,
                     'data-error'   : Child.error ? 1 : 0,
                     'data-mimetype': Child.mimetype,
+                    'data-hidden'  : Child.isHidden ? 1 : 0,
 
                     'class': 'qui-media-item box smooth',
                     html   : '<span class="title">' + Child.name + '</span>',
@@ -1279,6 +1280,7 @@ define('controls/projects/project/media/Panel', [
                     'data-active'  : Child.active ? 1 : 0,
                     'data-error'   : Child.error ? 1 : 0,
                     'data-mimetype': Child.mimetype,
+                    'data-hidden'  : Child.isHidden ? 1 : 0,
 
                     'class': 'qui-media-item box smooth',
                     html   : '<span class="title">' + Child.name + '</span>',
