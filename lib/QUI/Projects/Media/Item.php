@@ -263,7 +263,8 @@ abstract class Item extends QUI\QDOM
                 'priority'      => (int)$this->getAttribute('priority'),
                 'image_effects' => \json_encode($image_effects),
                 'type'          => $type,
-                'pathHistory'   => \json_encode($this->pathHistory)
+                'pathHistory'   => \json_encode($this->pathHistory),
+                'hidden'        => $this->isHidden() ? 1 : 0
             ],
             [
                 'id' => $this->getId()
@@ -804,10 +805,7 @@ abstract class Item extends QUI\QDOM
         return $this->getMedia()->getProject();
     }
 
-
-    /**
-     * Effect methods
-     */
+    // region Effect methods
 
     /**
      * Return the effects of the item
@@ -857,4 +855,36 @@ abstract class Item extends QUI\QDOM
     {
         $this->effects = $effects;
     }
+
+    //endregion
+
+    //region hidden
+
+    /**
+     * Is the media item hidden?
+     *
+     * @return bool
+     */
+    public function isHidden()
+    {
+        return (bool)$this->getAttribute('hidden');
+    }
+
+    /**
+     * Set the media item to hidden
+     */
+    public function setHidden()
+    {
+        $this->setAttribute('hidden', true);
+    }
+
+    /**
+     * Set the media item from hidden to visible
+     */
+    public function setVisible()
+    {
+        $this->setAttribute('hidden', false);
+    }
+
+    //endregion
 }

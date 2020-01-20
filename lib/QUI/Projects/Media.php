@@ -270,11 +270,26 @@ class Media extends QUI\QDOM
             'sha1hash'      => 'varchar(40)',
             'priority'      => 'int(6) default NULL',
             'order'         => 'varchar(32) default NULL',
-            'pathHistory'   => 'text'
+            'pathHistory'   => 'text',
+            'hidden'        => 'int(1) default 0'
         ]);
 
+        $DataBase->table()->setPrimaryKey($table, 'id');
         $DataBase->table()->setIndex($table, 'id');
         $DataBase->table()->setAutoIncrement($table, 'id');
+
+        $DataBase->table()->setIndex($table, 'name');
+        $DataBase->table()->setIndex($table, 'type');
+        $DataBase->table()->setIndex($table, 'active');
+        $DataBase->table()->setIndex($table, 'deleted');
+        $DataBase->table()->setIndex($table, 'c_date');
+        $DataBase->table()->setIndex($table, 'e_date');
+        $DataBase->table()->setIndex($table, 'c_user');
+        $DataBase->table()->setIndex($table, 'e_user');
+        $DataBase->table()->setIndex($table, 'md5hash');
+        $DataBase->table()->setIndex($table, 'sha1hash');
+        $DataBase->table()->setIndex($table, 'order');
+        $DataBase->table()->setIndex($table, 'hidden');
 
         // create first site -> id 1 if not exist
         $firstChildResult = $DataBase->fetch([
