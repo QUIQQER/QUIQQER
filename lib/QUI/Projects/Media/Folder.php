@@ -677,6 +677,17 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             }
         }
 
+        // hidden query
+        $hiddenQuery = '';
+
+        if (isset($params['where']) && isset($params['where']['hidden'])) {
+            if ($params['where']['hidden'] === 0) {
+                $hiddenQuery = ' AND hidden = 0';
+            } elseif ($params['where']['hidden'] === 1) {
+                $hiddenQuery = ' AND hidden = 1';
+            }
+        }
+
         $query = "
         
         SELECT id
@@ -685,6 +696,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             {$table_parent} = {$parentId} AND
             {$table_child}  = {$table_id} AND
             {$table_delete} = 0
+            {$hiddenQuery}
         ORDER BY
             {$order_by} {$limit}
         ;

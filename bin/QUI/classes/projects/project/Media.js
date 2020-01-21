@@ -434,6 +434,7 @@ define('classes/projects/project/Media', [
                     resolve(result);
 
                     self.fireEvent('itemsHide', [self, ids]);
+                    self.refresh();
                 }, {
                     project: self.getProject().getName(),
                     ids    : JSON.encode(ids),
@@ -455,6 +456,7 @@ define('classes/projects/project/Media', [
                     resolve(result);
 
                     self.fireEvent('itemsVisible', [self, ids]);
+                    self.refresh();
                 }, {
                     project: self.getProject().getName(),
                     ids    : JSON.encode(ids),

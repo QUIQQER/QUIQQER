@@ -4149,6 +4149,12 @@
         <locale name="media.items.visible">
             <de><![CDATA[Alle hervorbringen]]></de>
         </locale>
+        <locale name="media.panel.view.hiddenItems.show">
+            <de><![CDATA[Versteckte Dateien anzeigen]]></de>
+        </locale>
+        <locale name="media.panel.view.hiddenItems.hide">
+            <de><![CDATA[Versteckte Dateien verbergen]]></de>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">

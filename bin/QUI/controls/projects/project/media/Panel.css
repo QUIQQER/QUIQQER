@@ -84,6 +84,14 @@
     width: 100%;
 }
 
+.qui-media-item-hidden__show {
+    opacity: 0.4;
+}
+
+.qui-media-item-hidden__hide {
+    display: none;
+}
+
 .qui-media-file-delete ul li {
     clear: both;
 }

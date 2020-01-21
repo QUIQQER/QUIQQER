@@ -30,7 +30,8 @@ define('controls/projects/project/media/Panel', [
 ], function () {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg                = 'quiqqer/system';
+    var HIDE_HIDDEN_FILES = 1; // 1 = hide all hidden files, 0 = show all hidden files
 
     var QUI              = arguments[0],
         QUIPanel         = arguments[1],
@@ -340,10 +341,33 @@ define('controls/projects/project/media/Panel', [
                     new ContextmenuItem({
                         name  : 'preview',
                         text  : Locale.get(lg, 'projects.project.site.media.panel.btn.view.preview'),
-                        icon  : 'fa fa-eye',
+                        icon  : 'fa fa-file-image-o',
                         events: {
                             onMouseDown: function (Item) {
                                 View.change(Item);
+                            }
+                        }
+                    })
+                ).appendChild(
+                    new QUISeparator()
+                ).appendChild(
+                    new ContextmenuItem({
+                        name  : 'hiddenView',
+                        text  : Locale.get('quiqqer/quiqqer', 'media.panel.view.hiddenItems.show'),
+                        icon  : 'fa fa-eye',
+                        events: {
+                            onMouseDown: function (Item) {
+                                HIDE_HIDDEN_FILES = !HIDE_HIDDEN_FILES;
+
+                                if (HIDE_HIDDEN_FILES) {
+                                    Item.setAttribute('text', Locale.get('quiqqer/quiqqer', 'media.panel.view.hiddenItems.show'));
+                                    Item.setAttribute('icon', 'fa fa-eye');
+                                } else {
+                                    Item.setAttribute('text', Locale.get('quiqqer/quiqqer', 'media.panel.view.hiddenItems.hide'));
+                                    Item.setAttribute('icon', 'fa fa-eye-slash');
+                                }
+
+                                self.refresh();
                             }
                         }
                     })
@@ -581,9 +605,7 @@ define('controls/projects/project/media/Panel', [
                     // if the MediaFile is no Folder
                     if (MediaFile.getType() !== 'classes/projects/project/media/Folder') {
 
-                        require([
-                            'controls/projects/project/media/FilePanel'
-                        ], function (FilePanel) {
+                        require(['controls/projects/project/media/FilePanel'], function (FilePanel) {
                             new FilePanel(MediaFile).inject(
                                 self.getParent()
                             );
@@ -622,11 +644,12 @@ define('controls/projects/project/media/Panel', [
                             self.$view(children);
                         });
                     }, {
-                        sortOn : self.getAttribute('field'),
-                        sortBy : self.getAttribute('order'),
-                        perPage: self.getAttribute('limit'),
-                        page   : self.getAttribute('page'),
-                        order  : self.getAttribute('field') + ' ' + self.getAttribute('order')
+                        sortOn         : self.getAttribute('field'),
+                        sortBy         : self.getAttribute('order'),
+                        perPage        : self.getAttribute('limit'),
+                        page           : self.getAttribute('page'),
+                        order          : self.getAttribute('field') + ' ' + self.getAttribute('order'),
+                        showHiddenFiles: !HIDE_HIDDEN_FILES
                     });
                 }).catch(function () {
                     self.openID(1).then(resolve);
@@ -1191,7 +1214,7 @@ define('controls/projects/project/media/Panel', [
                 }
 
                 Child = children[i];
-                console.log(Child);
+
                 Elm = new Element('div', {
                     'data-id'      : Child.id,
                     'data-project' : project,
@@ -1215,9 +1238,15 @@ define('controls/projects/project/media/Panel', [
                     }
                 });
 
-                // if ( Child.type === 'folder' ) {
+                if (Child.isHidden) {
+                    if (HIDE_HIDDEN_FILES) {
+                        Elm.addClass('qui-media-item-hidden__hide');
+                    } else {
+                        Elm.addClass('qui-media-item-hidden__show');
+                    }
+                }
+
                 droplist.push(Elm);
-                // }
 
                 if (Child.active) {
                     Elm.addClass('qmi-active');
@@ -1295,6 +1324,14 @@ define('controls/projects/project/media/Panel', [
                         contextmenu: this.$PanelContextMenu.show.bind(this.$PanelContextMenu)
                     }
                 });
+
+                if (Child.isHidden) {
+                    if (HIDE_HIDDEN_FILES) {
+                        Elm.addClass('qui-media-item-hidden__hide');
+                    } else {
+                        Elm.addClass('qui-media-item-hidden__show');
+                    }
+                }
 
                 droplist.push(Elm);
 
