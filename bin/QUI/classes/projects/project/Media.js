@@ -11,6 +11,8 @@
  * @event onItemActivate [ self, Item|id ]
  * @event onItemDeactivate [ self, Item|id ]
  * @event onItemRename [ self, Item ]
+ * @event onItemsHide [ self, ids ]
+ * @event onItemsShow [ self, ids ]
  */
 define('classes/projects/project/Media', [
 
@@ -434,7 +436,6 @@ define('classes/projects/project/Media', [
                     resolve(result);
 
                     self.fireEvent('itemsHide', [self, ids]);
-                    self.refresh();
                 }, {
                     project: self.getProject().getName(),
                     ids    : JSON.encode(ids),
@@ -456,7 +457,6 @@ define('classes/projects/project/Media', [
                     resolve(result);
 
                     self.fireEvent('itemsVisible', [self, ids]);
-                    self.refresh();
                 }, {
                     project: self.getProject().getName(),
                     ids    : JSON.encode(ids),

@@ -15,7 +15,7 @@ QUI::$Ajax->registerFunction(
         $File    = $Media->get($fileid);
 
         $parents    = $File->getParents();
-        $breadcrumb = array();
+        $breadcrumb = [];
 
         // create breadcrumb data
         foreach ($parents as $Parent) {
@@ -26,6 +26,6 @@ QUI::$Ajax->registerFunction(
 
         return $breadcrumb;
     },
-    array('project', 'fileid'),
+    ['project', 'fileid'],
     'Permission::checkAdminUser'
 );

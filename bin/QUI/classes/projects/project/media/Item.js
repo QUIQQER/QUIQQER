@@ -10,10 +10,6 @@
  * @event onActivate [ {self} ]
  * @event onDeactivate [ {self} ]
  * @event onRename [ {self} ]
- *
- * @require qui/classes/DOM
- * @require Ajax
- * @require qui/utils/Object
  */
 
 define('classes/projects/project/media/Item', [
@@ -67,7 +63,8 @@ define('classes/projects/project/media/Item', [
             mime_type   : '',
             image_height: '',
             image_width : '',
-            cache_url   : ''
+            cache_url   : '',
+            hidden      : 0
         },
 
         initialize: function (params, Media) {

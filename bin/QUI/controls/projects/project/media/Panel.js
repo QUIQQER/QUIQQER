@@ -67,6 +67,7 @@ define('controls/projects/project/media/Panel', [
             '$onCreate',
             '$viewOnDrop',
             '$itemEvent',
+            '$itemHideStatusChange',
             '$onFilter',
             'unselectItems',
             '$onContextMenu',
@@ -155,6 +156,8 @@ define('controls/projects/project/media/Panel', [
                     this.$Media.removeEvent('onItemRefresh', this.$itemEvent);
                     this.$Media.removeEvent('onItemSave', this.$itemEvent);
                     this.$Media.removeEvent('onItemDelete', this.$itemEvent);
+                    this.$Media.removeEvent('onItemsHide', this.$itemHideStatusChange);
+                    this.$Media.removeEvent('onItemsVisible', this.$itemHideStatusChange);
                 }.bind(this)
             });
 
@@ -166,7 +169,9 @@ define('controls/projects/project/media/Panel', [
                     onItemDeactivate: this.$itemEvent,
                     onItemRefresh   : this.$itemEvent,
                     onItemSave      : this.$itemEvent,
-                    onItemDelete    : this.$itemEvent
+                    onItemDelete    : this.$itemEvent,
+                    onItemsHide     : this.$itemHideStatusChange,
+                    onItemsVisible  : this.$itemHideStatusChange
                 });
             }
         },
@@ -205,7 +210,9 @@ define('controls/projects/project/media/Panel', [
                 onItemDeactivate: this.$itemEvent,
                 onItemRefresh   : this.$itemEvent,
                 onItemSave      : this.$itemEvent,
-                onItemDelete    : this.$itemEvent
+                onItemDelete    : this.$itemEvent,
+                onItemsHide     : this.$itemHideStatusChange,
+                onItemsVisible  : this.$itemHideStatusChange
             });
 
             return this;
@@ -2291,6 +2298,16 @@ define('controls/projects/project/media/Panel', [
          * @param {Object} Item - qui/classes/projects/media/Item
          */
         $itemEvent: function (Media, Item) {
+            var i, len;
+
+            if (typeOf(Item) === 'array') {
+                for (i = 0, len = Item.length; i < len; i++) {
+                    this.$itemEvent(Media, Item[i]);
+                }
+
+                return;
+            }
+
             if (typeOf(Item) === 'string' || typeOf(Item) === 'number') {
                 var self = this;
                 Media.get(Item).then(function (File) {
@@ -2327,10 +2344,10 @@ define('controls/projects/project/media/Panel', [
 
             Node.getElement('span').set('html', Item.getAttribute('name'));
 
-            var itemId = Item.getId();
+            var itemId = parseInt(Item.getId());
 
-            for (var i = 0, len = this.$children.length; i < len; i++) {
-                if (this.$children[i].id != itemId) {
+            for (i = 0, len = this.$children.length; i < len; i++) {
+                if (parseInt(this.$children[i].id) !== itemId) {
                     continue;
                 }
 
@@ -2342,6 +2359,13 @@ define('controls/projects/project/media/Panel', [
                 this.$children[i].title    = Item.getAttribute('title');
                 break;
             }
+        },
+
+        /**
+         * event: item hide status change
+         */
+        $itemHideStatusChange: function () {
+            this.refresh();
         },
 
         /**

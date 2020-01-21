@@ -61,6 +61,12 @@ abstract class Item extends QUI\QDOM
      */
     public function __construct($params, Media $Media)
     {
+        $params['id']       = (int)$params['id'];
+        $params['hidden']   = (int)$params['hidden'];
+        $params['active']   = (int)$params['active'];
+        $params['priority'] = (int)$params['priority'];
+
+
         $this->Media = $Media;
         $this->setAttributes($params);
 
