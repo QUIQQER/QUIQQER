@@ -208,67 +208,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 sels = [DOMNode];
             }
 
-            var getIds = function (nodes) {
-                return nodes.map(function (elm) {
-                    return parseInt(elm.get('data-id'));
-                });
-            };
-
-            if (sels.length === 1) {
-                var isHidden = parseInt(sels[0].get('data-hidden'));
-
-                Menu.appendChild(
-                    new QUIContextmenuItem({
-                        name    : 'hide',
-                        text    : isHidden ? QUILocale.get('quiqqer/quiqqer', 'media.item.visible') : QUILocale.get('quiqqer/quiqqer', 'media.item.hide'),
-                        icon    : isHidden ? 'fa fa-eye' : 'fa fa-eye-slash',
-                        isHidden: isHidden,
-                        events  : {
-                            onMouseDown: function (Itm) {
-                                if (parseInt(Itm.getAttribute('isHidden'))) {
-                                    self.getPanel().getMedia().setVisible(
-                                        getIds(sels)
-                                    );
-                                } else {
-                                    self.getPanel().getMedia().setHidden(
-                                        getIds(sels)
-                                    );
-                                }
-                            }
-                        }
-                    })
-                );
-            } else {
-                Menu.appendChild(
-                    new QUIContextmenuItem({
-                        name  : 'hide',
-                        text  : QUILocale.get('quiqqer/quiqqer', 'media.items.hide'),
-                        icon  : 'fa fa-eye-slash',
-                        events: {
-                            onMouseDown: function () {
-                                self.getPanel().getMedia().setHidden(
-                                    getIds(sels)
-                                );
-                            }
-                        }
-                    })
-                );
-
-                Menu.appendChild(
-                    new QUIContextmenuItem({
-                        name  : 'visible',
-                        text  : QUILocale.get('quiqqer/quiqqer', 'media.items.visible'),
-                        icon  : 'fa fa-eye',
-                        events: {
-                            onMouseDown: function () {
-                                self.getPanel().getMedia().setVisible(
-                                    getIds(sels)
-                                );
-                            }
-                        }
-                    })
-                );
-            }
+            this.addHiddenMenu(Menu, sels);
 
             Menu.appendChild(
                 new QUIContextmenuItem({
@@ -575,7 +515,15 @@ define('classes/projects/project/media/panel/ContextMenu', [
 
             Menu.appendChild(
                 new QUIContextmenuSeparator()
-            ).appendChild(
+            );
+
+            if (!sels.length) {
+                sels = [DOMNode];
+            }
+
+            this.addHiddenMenu(Menu, sels);
+
+            Menu.appendChild(
                 new QUIContextmenuItem({
                     name  : 'rename',
                     text  : QUILocale.get('quiqqer/quiqqer', 'rename'),
@@ -851,6 +799,78 @@ define('classes/projects/project/media/panel/ContextMenu', [
             );
 
             return Deactivate;
+        },
+
+        /**
+         * add hide menu
+         *
+         * @param Menu
+         * @param sels
+         */
+        addHiddenMenu: function (Menu, sels) {
+            var self = this;
+
+            var getIds = function (nodes) {
+                return nodes.map(function (elm) {
+                    return parseInt(elm.get('data-id'));
+                });
+            };
+
+            if (sels.length === 1) {
+                var isHidden = parseInt(sels[0].get('data-hidden'));
+
+                Menu.appendChild(
+                    new QUIContextmenuItem({
+                        name    : 'hide',
+                        text    : isHidden ? QUILocale.get('quiqqer/quiqqer', 'media.item.visible') : QUILocale.get('quiqqer/quiqqer', 'media.item.hide'),
+                        icon    : isHidden ? 'fa fa-eye' : 'fa fa-eye-slash',
+                        isHidden: isHidden,
+                        events  : {
+                            onMouseDown: function (Itm) {
+                                if (parseInt(Itm.getAttribute('isHidden'))) {
+                                    self.getPanel().getMedia().setVisible(
+                                        getIds(sels)
+                                    );
+                                } else {
+                                    self.getPanel().getMedia().setHidden(
+                                        getIds(sels)
+                                    );
+                                }
+                            }
+                        }
+                    })
+                );
+            } else {
+                Menu.appendChild(
+                    new QUIContextmenuItem({
+                        name  : 'hide',
+                        text  : QUILocale.get('quiqqer/quiqqer', 'media.items.hide'),
+                        icon  : 'fa fa-eye-slash',
+                        events: {
+                            onMouseDown: function () {
+                                self.getPanel().getMedia().setHidden(
+                                    getIds(sels)
+                                );
+                            }
+                        }
+                    })
+                );
+
+                Menu.appendChild(
+                    new QUIContextmenuItem({
+                        name  : 'visible',
+                        text  : QUILocale.get('quiqqer/quiqqer', 'media.items.visible'),
+                        icon  : 'fa fa-eye',
+                        events: {
+                            onMouseDown: function () {
+                                self.getPanel().getMedia().setVisible(
+                                    getIds(sels)
+                                );
+                            }
+                        }
+                    })
+                );
+            }
         }
     });
 });
