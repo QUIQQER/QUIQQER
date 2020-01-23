@@ -1205,5 +1205,4 @@ class Permission
 
         return self::checkPermissionList($permissions, $perm, $User);
     }
-
 }
