@@ -1085,6 +1085,10 @@ class Manager
         if (isset($this->permissionsCache[$cacheId])) {
             unset($this->permissionsCache[$cacheId]);
         }
+
+        if (\method_exists($MediaItem, 'deleteCache')) {
+            $MediaItem->deleteCache();
+        }
     }
 
     /**
