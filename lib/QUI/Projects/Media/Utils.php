@@ -324,6 +324,52 @@ class Utils
      */
     public static function getImageHTML($src, $attributes = [])
     {
+        $src = self::getImageSource($src, $attributes);
+
+        if (empty($src)) {
+            return '';
+        }
+
+        // image string
+        $img = '<img ';
+
+        foreach ($attributes as $key => $value) {
+            $img .= \htmlspecialchars($key).'="'.\htmlspecialchars($value).'" ';
+        }
+
+        // responsive image
+//        $imageWidth = $Image->getWidth();
+
+//        if ( $imageWidth )
+//        {
+//            $end   = $imageWidth > 1000 ? 1000 : $imageWidth;
+//            $start = 100;
+//
+//            $srcset = array();
+//
+//            for ( ; $start < $end; $start += 100 ) {
+//                $srcset[] = $Image->getSizeCacheUrl( $start ) ." {$start}w";
+//            }
+//
+//            // not optimal, but maybe we found a better solution
+//            $img .= ' sizes="(max-width: 30em) 100vw, (max-width: 50em) 50vw, calc(33vw - 100px)"';
+//            $img .= ' srcset="'. implode(",\n", $srcset) .'"';
+//        }
+
+        $img .= ' src="'.\htmlspecialchars($src).'" />';
+
+        return $img;
+    }
+
+    /**
+     * Return only the source for an <img /> tag from image attributes
+     *
+     * @param $src
+     * @param array $attributes
+     * @return string
+     */
+    public static function getImageSource($src, $attributes = [])
+    {
         $width  = false;
         $height = false;
 
@@ -367,7 +413,7 @@ class Utils
             return '';
         }
 
-        /* @var $Image \QUI\Projects\Media\Image */
+        /* @var $Image QUI\Projects\Media\Image */
         try {
             $src = $Image->getSizeCacheUrl($width, $height);
         } catch (QUI\Exception $Exception) {
@@ -376,36 +422,7 @@ class Utils
             return '';
         }
 
-
-        // image string
-        $img = '<img ';
-
-        foreach ($attributes as $key => $value) {
-            $img .= \htmlspecialchars($key).'="'.\htmlspecialchars($value).'" ';
-        }
-
-        // responsive image
-//        $imageWidth = $Image->getWidth();
-
-//        if ( $imageWidth )
-//        {
-//            $end   = $imageWidth > 1000 ? 1000 : $imageWidth;
-//            $start = 100;
-//
-//            $srcset = array();
-//
-//            for ( ; $start < $end; $start += 100 ) {
-//                $srcset[] = $Image->getSizeCacheUrl( $start ) ." {$start}w";
-//            }
-//
-//            // not optimal, but maybe we found a better solution
-//            $img .= ' sizes="(max-width: 30em) 100vw, (max-width: 50em) 50vw, calc(33vw - 100px)"';
-//            $img .= ' srcset="'. implode(",\n", $srcset) .'"';
-//        }
-
-        $img .= ' src="'.\htmlspecialchars($src).'" />';
-
-        return $img;
+        return $src;
     }
 
     /**

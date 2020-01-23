@@ -32,6 +32,11 @@ class Output extends Singleton
     protected $imageCache = [];
 
     /**
+     * @var array
+     */
+    protected $imageUrlCache = [];
+
+    /**
      * internal lifetime link cache
      *
      * @var array
@@ -59,6 +64,12 @@ class Output extends Singleton
             $content
         );
 
+        $content = \preg_replace_callback(
+            '#(data\-image|data\-href|data\-link)="(image.php)\?([^"]*)"#',
+            [&$this, "dataImages"],
+            $content
+        );
+
         // rewrite files
         $content = \preg_replace_callback(
             '#(href|src|value)="(image.php)\?([^"]*)"#',
@@ -68,7 +79,13 @@ class Output extends Singleton
 
         // rewrite links
         $content = \preg_replace_callback(
-            '#(href|src|action|value|data\-.*)="(index.php)\?([^"]*)"#',
+            '#(data\-href|data\-link)="(index.php)\?([^"]*)"#',
+            [&$this, "dataLinks"],
+            $content
+        );
+
+        $content = \preg_replace_callback(
+            '#(href|src|action|value)="(index.php)\?([^"]*)"#',
             [&$this, "links"],
             $content
         );
@@ -102,6 +119,19 @@ class Output extends Singleton
     public function setSetting($setting, $value)
     {
         $this->settings[$setting] = $value;
+    }
+
+    /**
+     * @param $output
+     * @return string
+     */
+    protected function dataLinks($output)
+    {
+        if ($output[2] !== 'index.php') {
+            return $output[0];
+        }
+
+        return $this->links($output);
     }
 
     /**
@@ -270,6 +300,66 @@ class Output extends Singleton
         $this->imageCache[$img] = $html;
 
         return $this->imageCache[$img];
+    }
+
+    /**
+     * @param $output
+     * @return mixed|string
+     */
+    protected function dataImages($output)
+    {
+        $output = \str_replace('&amp;', '&', $output);   // &amp; fix
+        $output = \str_replace('〈=', '&lang=', $output); // URL FIX
+
+        $components = $output[3];
+
+
+        // Falls in der eigenen Sammlung schon vorhanden
+        if (isset($this->imageUrlCache[$components])) {
+            return $output[1].'="'.$this->imageUrlCache[$components].'"';
+        }
+
+        $parseUrl = \parse_url($output[2].'?'.$components);
+
+        if (!isset($parseUrl['query']) || empty($parseUrl['query'])) {
+            return $output[0];
+        }
+
+        $urlQuery = $parseUrl['query'];
+
+        // check no quiqqer url
+        if (\strpos($urlQuery, 'project') === false || \strpos($urlQuery, 'id') === false) {
+            return $output[0];
+        }
+
+        try {
+            $MediaItem = MediaUtils::getMediaItemByUrl('image.php?'.$components);
+        } catch (QUI\Exception $Exception) {
+            return '';
+        }
+
+        if (MediaUtils::isImage($MediaItem)) {
+            $attributes = StringUtils::getUrlAttributes('?'.$components);
+
+            if (isset($attributes['maxwidth'])) {
+                $attributes['width'] = $attributes['maxwidth'];
+            }
+
+            if (isset($attributes['maxheight'])) {
+                $attributes['height'] = $attributes['maxheight'];
+            }
+
+            $source = MediaUtils::getImageSource(
+                'image.php?'.$components,
+                $attributes
+            );
+        } else {
+            $source = $MediaItem->getUrl(true);
+        }
+
+        $this->imageUrlCache[$components] = $source;
+
+        return $output[1].'="'.$source.'"';
     }
 
     /**
