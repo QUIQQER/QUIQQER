@@ -68,8 +68,6 @@ define('controls/projects/project/media/Popup', [
                 return;
             }
 
-            this.$created = true;
-
             this.Loader.show();
 
             var Media, Project, Content;
@@ -85,7 +83,6 @@ define('controls/projects/project/media/Popup', [
                     var length = Object.getLength(result);
 
                     if (length === 1) {
-
                         self.setAttribute('project', Object.keys(result)[0]);
                         self.$onCreate();
 
@@ -211,6 +208,8 @@ define('controls/projects/project/media/Popup', [
                 fileid : this.getAttribute('fileid'),
                 project: Project.getName()
             });
+
+            this.$created = true;
         },
 
         /**
