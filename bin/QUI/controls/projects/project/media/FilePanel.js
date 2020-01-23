@@ -421,22 +421,23 @@ define('controls/projects/project/media/FilePanel', [
             this.getButtonBar().clear();
 
             // permissions
-            new QUIButton({
-                image : 'fa fa-shield',
-                name  : 'permissions',
-                alt   : Locale.get('quiqqer/quiqqer', 'projects.project.site.media.filePanel.permissions'),
-                title : Locale.get('quiqqer/quiqqer', 'projects.project.site.media.filePanel.permissions'),
-                styles: {
-                    'border-left-width' : 1,
-                    'border-right-width': 1,
-                    'float'             : 'right',
-                    width               : 40
-                },
-                events: {
-                    onClick: this.openPermissions
-                }
-            }).inject(this.getHeader());
-
+            if (parseInt(QUIQQER_CONFIG.permissions.media)) {
+                new QUIButton({
+                    image : 'fa fa-shield',
+                    name  : 'permissions',
+                    alt   : Locale.get('quiqqer/quiqqer', 'projects.project.site.media.filePanel.permissions'),
+                    title : Locale.get('quiqqer/quiqqer', 'projects.project.site.media.filePanel.permissions'),
+                    styles: {
+                        'border-left-width' : 1,
+                        'border-right-width': 1,
+                        'float'             : 'right',
+                        width               : 40
+                    },
+                    events: {
+                        onClick: this.openPermissions
+                    }
+                }).inject(this.getHeader());
+            }
 
             this.addButton(
                 new QUIButton({

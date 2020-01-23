@@ -195,7 +195,7 @@ abstract class Item extends QUI\QDOM
     public function save()
     {
         // permission check
-        if (!$this->hasPermission('quiqqer.projects.media.view')) {
+        if (Media::useMediaPermissions()) {
             if (\method_exists($this, 'deleteCache')) {
                 $this->deleteCache();
             }

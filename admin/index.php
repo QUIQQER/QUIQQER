@@ -9,9 +9,10 @@ QUI::getEvents()->fireEvent('adminRequest');
 $qui_path   = URL_OPT_DIR.'bin/qui/';
 $qui_extend = URL_OPT_DIR.'bin/qui/extend/';
 
-$config            = [];
-$config['globals'] = QUI::conf('globals');
-$config['gui']     = QUI::conf('gui');
+$config                = [];
+$config['globals']     = QUI::conf('globals');
+$config['gui']         = QUI::conf('gui');
+$config['permissions'] = QUI::conf('permissions');
 
 $Project = null;
 
