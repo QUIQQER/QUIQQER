@@ -233,10 +233,9 @@ class Utils
      */
     public static function getExtension($filename)
     {
-        $explode = \explode('.', $filename);
-        $last    = \array_pop($explode);
-
-        return $last;
+        return \array_pop(
+            \explode('.', $filename)
+        );
     }
 
     /**
@@ -307,16 +306,11 @@ class Utils
             );
         }
 
-        // Parameter herrausfinden
-        $params = StringUtils::getUrlAttributes($url);
-
+        $params  = StringUtils::getUrlAttributes($url);
         $Project = QUI::getProject($params['project']);
         $Media   = $Project->getMedia();
-        $Obj     = $Media->get((int)$params['id']);
 
-        /* @var $Obj QUI\Projects\Media\File */
-
-        return $Obj;
+        return $Media->get((int)$params['id']);
     }
 
     /**
