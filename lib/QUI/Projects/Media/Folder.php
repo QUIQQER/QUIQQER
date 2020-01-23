@@ -1164,14 +1164,14 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             return true;
         }
 
-        $cache_dir = CMS_DIR.$this->Media->getCacheDir().$this->getAttribute('file');
+        $cacheDir = CMS_DIR.$this->Media->getCacheDir().$this->getAttribute('file');
 
-        if (FileUtils::mkdir($cache_dir)) {
+        if (FileUtils::mkdir($cacheDir)) {
             return true;
         }
 
         throw new QUI\Exception(
-            'createCache() Error; Could not create Folder '.$cache_dir,
+            'createCache() Error; Could not create Folder '.$cacheDir,
             ErrorCodes::FOLDER_CACHE_CREATION_MKDIR_ERROR
         );
     }
@@ -1282,9 +1282,15 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @return QUI\Projects\Media\Item
      * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
      */
     public function uploadFile($file, $options = self::FILE_OVERWRITE_NONE)
     {
+        QUI\Permissions\Permission::checkPermission(
+            'quiqqer.projects.media.upload'
+        );
+
+
         if (!\file_exists($file)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/system', 'exception.file.not.found', [

@@ -123,6 +123,9 @@ abstract class Item extends QUI\QDOM
      */
     public function activate()
     {
+        $this->checkPermission('quiqqer.projects.media.edit');
+
+
         try {
             // activate the parents, otherwise the file is not accessible
             $this->getParent()->activate();
@@ -166,6 +169,8 @@ abstract class Item extends QUI\QDOM
      */
     public function deactivate()
     {
+        $this->checkPermission('quiqqer.projects.media.edit');
+
         QUI::getDataBase()->update(
             $this->Media->getTable(),
             ['active' => 0],
@@ -189,6 +194,17 @@ abstract class Item extends QUI\QDOM
      */
     public function save()
     {
+        // permission check
+        if (!$this->hasPermission('quiqqer.projects.media.view')) {
+            if (\method_exists($this, 'deleteCache')) {
+                $this->deleteCache();
+            }
+        }
+
+        $this->checkPermission('quiqqer.projects.media.edit');
+
+
+        // save logic
         QUI::getEvents()->fireEvent('mediaSaveBegin', [$this]);
 
         // Rename the file, if necessary
@@ -296,6 +312,9 @@ abstract class Item extends QUI\QDOM
      */
     public function delete()
     {
+        $this->checkPermission('quiqqer.projects.media.del');
+
+
         if ($this->isDeleted()) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.already.deleted'),
@@ -404,6 +423,9 @@ abstract class Item extends QUI\QDOM
      */
     public function destroy()
     {
+        $this->checkPermission('quiqqer.projects.media.del');
+
+
         if ($this->isActive()) {
             throw new QUI\Exception(
                 'Only inactive files can be destroyed',
@@ -466,6 +488,9 @@ abstract class Item extends QUI\QDOM
      */
     public function rename($newname)
     {
+        $this->checkPermission('quiqqer.projects.media.edit');
+
+
         $newname = \trim($newname, "_ \t\n\r\0\x0B"); // Trim the default characters and underscores
 
         $original  = $this->getFullPath();
@@ -705,6 +730,9 @@ abstract class Item extends QUI\QDOM
      */
     public function moveTo(Folder $Folder)
     {
+        $this->checkPermission('quiqqer.projects.media.edit');
+
+
         // check if a child with the same name exist
         if ($Folder->fileWithNameExists($this->getAttribute('name'))) {
             throw new QUI\Exception(
@@ -783,6 +811,8 @@ abstract class Item extends QUI\QDOM
      */
     public function copyTo(Folder $Folder)
     {
+        $this->checkPermission('quiqqer.projects.media.edit');
+
         $File = $Folder->uploadFile($this->getFullPath());
 
         $File->setAttribute('title', $this->getAttribute('title'));
@@ -907,6 +937,16 @@ abstract class Item extends QUI\QDOM
      */
     public function hasPermission($permission, $User = false)
     {
+        // @todo check media permission
+
+
+        $Manager  = QUI::getPermissionManager();
+        $permList = $Manager->getMediaPermissions($this);
+
+        if (isset($permList[$permission]) && $permList[$permission] === false) {
+            return true;
+        }
+
         return QUI\Permissions\Permission::hasMediaPermission(
             $permission,
             $this,

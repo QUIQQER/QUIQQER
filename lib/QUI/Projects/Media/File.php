@@ -30,6 +30,11 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
             return false;
         }
 
+        if (!$this->hasPermission('quiqqer.projects.media.view')) {
+            return false;
+        }
+
+
         $WHITE_LIST_EXTENSION = [
             'pdf',
             'txt',
@@ -68,31 +73,39 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
         $file = $this->getAttribute('file');
 
         $original  = $mdir.$file;
-        $cachefile = $cdir.$file;
+        $cacheFile = $cdir.$file;
+
+
+        // @todo check permissions media flag
+        if ($this->hasPermission('quiqqer.projects.media.view') &&
+            $this->hasPermission('quiqqer.projects.media.view', QUI::getUsers()->getNobody()) === false) {
+            return $original;
+        }
+
 
         $extension = QUI\Utils\StringHelper::pathinfo($original, PATHINFO_EXTENSION);
 
         if (!\in_array($extension, $WHITE_LIST_EXTENSION)) {
-            QUIFile::unlink($cachefile);
+            QUIFile::unlink($cacheFile);
 
             return $original;
         }
 
         // Nur wenn Extension in Whitelist ist dann Cache machen
-        if (\file_exists($cachefile)) {
-            return $cachefile;
+        if (\file_exists($cacheFile)) {
+            return $cacheFile;
         }
 
         // Cachefolder erstellen
-        $this->getParent()->createCache();
+        QUIFile::mkdir(\dirname($cacheFile));
 
         try {
-            QUIFile::copy($original, $cachefile);
+            QUIFile::copy($original, $cacheFile);
         } catch (QUI\Exception $Exception) {
             // nothing
         }
 
-        return $cachefile;
+        return $cacheFile;
     }
 
     /**

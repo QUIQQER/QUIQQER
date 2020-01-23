@@ -755,7 +755,7 @@ class Utils
      *
      * @param string $url - cache url, or real path of the file
      *
-     * @return \QUI\Interfaces\Projects\Media\File
+     * @return Item
      * @throws QUI\Exception
      */
     public static function getElement($url)

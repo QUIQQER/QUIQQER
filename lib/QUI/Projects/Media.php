@@ -147,11 +147,9 @@ class Media extends QUI\QDOM
 
         if ($Project->getConfig('placeholder')) {
             try {
-                $Image = QUI\Projects\Media\Utils::getImageByUrl(
+                return QUI\Projects\Media\Utils::getImageByUrl(
                     $Project->getConfig('placeholder')
                 );
-
-                return $Image;
             } catch (QUI\Exception $Exception) {
             }
         }
@@ -193,11 +191,9 @@ class Media extends QUI\QDOM
 
         if ($Project->getConfig('logo')) {
             try {
-                $Image = QUI\Projects\Media\Utils::getImageByUrl(
+                return QUI\Projects\Media\Utils::getImageByUrl(
                     $Project->getConfig('logo')
                 );
-
-                return $Image;
             } catch (QUI\Exception $Exception) {
             }
         }
@@ -412,8 +408,15 @@ class Media extends QUI\QDOM
         $params['select'] = 'id';
         $params['from']   = $this->getTable();
 
-        $result = QUI::getDataBase()->fetch($params);
-        $ids    = [];
+        try {
+            $result = QUI::getDataBase()->fetch($params);
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addDebug($Exception->getMessage());
+
+            return [];
+        }
+
+        $ids = [];
 
         foreach ($result as $entry) {
             $ids[] = $entry['id'];
@@ -427,7 +430,7 @@ class Media extends QUI\QDOM
      *
      * @param string $filepath
      *
-     * @return QUI\Interfaces\Projects\Media\File
+     * @return QUI\Projects\Media\Item
      * @throws QUI\Exception
      */
     public function getChildByPath($filepath)
@@ -578,16 +581,18 @@ class Media extends QUI\QDOM
             return false;
         }
 
-        $result = QUI::getDataBase()->fetch(
-            [
+        try {
+            $result = QUI::getDataBase()->fetch([
                 'select' => 'parent',
                 'from'   => $this->getTable('relations'),
                 'where'  => [
                     'child' => $id
                 ],
                 'limit'  => 1
-            ]
-        );
+            ]);
+        } catch (QUI\Exception $Exception) {
+            return false;
+        }
 
         if (\is_array($result) && isset($result[0])) {
             return (int)$result[0]['parent'];

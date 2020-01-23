@@ -381,11 +381,16 @@ class Rewrite
                         $height = (int)$part_size[1];
                     }
                 }
+
+                if (!$Item->hasPermission('quiqqer.projects.media.view')) {
+                    $Item = false;
+                }
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::addDebug($Exception->getMessage());
 
                 $imageNotError = true;
             }
+
 
             if ($Item === false || $imageNotError) {
                 $Redirect = new RedirectResponse(
@@ -1250,7 +1255,7 @@ class Rewrite
     public function outputMail($output)
     {
         if (isset($output[3]) && \strpos($output[3], '@') !== false) {
-            list($user, $domain) = \explode("@", $output[3]);
+            [$user, $domain] = \explode("@", $output[3]);
 
             return 'href="'.URL_DIR.'[mailto]'.$user.'[at]'.$domain.'" target="mail_protection"';
         }
