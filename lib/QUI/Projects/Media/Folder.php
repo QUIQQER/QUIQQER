@@ -7,6 +7,7 @@
 namespace QUI\Projects\Media;
 
 use QUI;
+use QUI\Projects\Media;
 use QUI\Projects\Media\Utils as MediaUtils;
 use QUI\Utils\System\File as FileUtils;
 use QUI\Utils\StringHelper as StringUtils;
@@ -1286,10 +1287,11 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function uploadFile($file, $options = self::FILE_OVERWRITE_NONE)
     {
-        QUI\Permissions\Permission::checkPermission(
-            'quiqqer.projects.media.upload'
-        );
-
+        if (Media::useMediaPermissions()) {
+            QUI\Permissions\Permission::checkPermission(
+                'quiqqer.projects.media.upload'
+            );
+        }
 
         if (!\file_exists($file)) {
             throw new QUI\Exception(

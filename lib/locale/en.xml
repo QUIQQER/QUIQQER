@@ -3896,6 +3896,15 @@
             If no package rights are used, some functions in the system are more powerful.
             ]]></en>
         </locale>
+        <locale name="quiqqer.settings.general.permissions.media">
+            <en><![CDATA[Use media rights]]></en>
+        </locale>
+        <locale name="quiqqer.settings.general.permissions.media.description">
+            <en><![CDATA[
+                Use media permissions if you want to assign different rights to files in the media.<br />
+                If no media permissions are used, some functions in the system perform better.
+            ]]></en>
+        </locale>
         <locale name="exception.no.permission">
             <en><![CDATA[You have not the necessary rights to perform this action.]]></en>
         </locale>

@@ -317,6 +317,10 @@
                     <type><![CDATA[bool]]></type>
                     <defaultvalue>0</defaultvalue>
                 </conf>
+                <conf name="media">
+                    <type><![CDATA[bool]]></type>
+                    <defaultvalue>0</defaultvalue>
+                </conf>
             </section>
 
             <section name="packagestore">
@@ -383,6 +387,15 @@
                             <description>
                                 <locale group="quiqqer/quiqqer"
                                         var="quiqqer.settings.general.permissions.description"/>
+                            </description>
+                        </input>
+                        <input conf="permissions.media" type="checkbox">
+                            <text>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.general.permissions.media"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.general.permissions.media.description"/>
                             </description>
                         </input>
                         <select conf="globals.sitePermissionDeniedErrorCode">

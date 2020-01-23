@@ -937,7 +937,9 @@ abstract class Item extends QUI\QDOM
      */
     public function hasPermission($permission, $User = false)
     {
-        // @todo check media permission
+        if (Media::useMediaPermissions() === false) {
+            return true;
+        }
 
 
         $Manager  = QUI::getPermissionManager();
@@ -964,6 +966,10 @@ abstract class Item extends QUI\QDOM
      */
     public function checkPermission($permission, $User = false)
     {
+        if (Media::useMediaPermissions() === false) {
+            return;
+        }
+
         QUI\Permissions\Permission::checkMediaPermission(
             $permission,
             $this,

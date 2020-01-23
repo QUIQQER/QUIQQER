@@ -33,6 +33,11 @@ class Media extends QUI\QDOM
     protected $children = [];
 
     /**
+     * @var null
+     */
+    protected static $mediaPermissions = null;
+
+    /**
      * constructor
      *
      * @param \QUI\Projects\Project $Project
@@ -40,6 +45,24 @@ class Media extends QUI\QDOM
     public function __construct(Project $Project)
     {
         $this->Project = $Project;
+    }
+
+    /**
+     * Use media permissions? Media permissions are available?
+     *
+     * @return bool
+     */
+    public static function useMediaPermissions()
+    {
+        if (self::$mediaPermissions === null) {
+            $mediaPermissions = QUI::conf('permissions', 'media');
+            $mediaPermissions = (int)$mediaPermissions;
+            $mediaPermissions = (bool)$mediaPermissions;
+
+            self::$mediaPermissions = $mediaPermissions;
+        }
+
+        return self::$mediaPermissions;
     }
 
     /**

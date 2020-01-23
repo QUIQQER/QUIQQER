@@ -4069,12 +4069,21 @@
         </locale>
         <locale name="quiqqer.settings.general.permissions.description">
             <de><![CDATA[
-                Nutzen Sie Paketrechte wenn Sie mehrere Benutzer mit unterschiedlichen Rechten versehen möchten.<br />
+                Nutze Paketrechte wenn Du mehrere Benutzer mit unterschiedlichen Rechten versehen möchtest.<br />
                 Wenn keine Paketrechte verwendet werden, sind einige Funktionen im System performanter.
             ]]></de>
         </locale>
+        <locale name="quiqqer.settings.general.permissions.media">
+            <de><![CDATA[Mediarechte verwenden]]></de>
+        </locale>
+        <locale name="quiqqer.settings.general.permissions.media.description">
+            <de><![CDATA[
+                Nutze Mediarechte wenn Du Dateien im Media-Bereich mit unterschiedlichen Rechten versehen möchtest.<br />
+                Wenn keine Mediarechte verwendet werden, sind einige Funktionen im System performanter.
+            ]]></de>
+        </locale>
         <locale name="exception.no.permission">
-            <de><![CDATA[Sie haben nicht die nötigen Rechte um diese Aktion durchzuführen]]></de>
+            <de><![CDATA[Du hast nicht die nötigen Rechte um diese Aktion durchzuführen]]></de>
         </locale>
         <locale name="projects.project.site.select.btn.addTypes">
             <de><![CDATA[Seitentyp hinzufügen ]]></de>

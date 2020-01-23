@@ -233,9 +233,9 @@ class Utils
      */
     public static function getExtension($filename)
     {
-        return \array_pop(
-            \explode('.', $filename)
-        );
+        $explode = \explode('.', $filename);
+
+        return \array_pop($explode);
     }
 
     /**
@@ -913,7 +913,6 @@ class Utils
 
         return 0;
     }
-
 
     /**
      * Counts and returns the number of files for a project.

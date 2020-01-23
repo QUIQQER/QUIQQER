@@ -61,6 +61,8 @@ QUI::$Ajax->registerFunction(
                 ];
 
                 $children[] = $child;
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
             }
         }
 

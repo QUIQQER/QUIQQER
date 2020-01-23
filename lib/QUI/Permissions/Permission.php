@@ -7,6 +7,7 @@
 namespace QUI\Permissions;
 
 use QUI;
+use QUI\Projects\Media;
 use QUI\Projects\Project;
 use QUI\Users\User;
 use QUI\Groups\Group;
@@ -1166,6 +1167,10 @@ class Permission
      */
     public static function hasMediaPermission($perm, $MediaItem, $User = false)
     {
+        if (Media::useMediaPermissions() === false) {
+            return true;
+        }
+
         try {
             return self::checkMediaPermission($perm, $MediaItem, $User);
         } catch (QUI\Exception $Exception) {
@@ -1187,6 +1192,10 @@ class Permission
      */
     public static function checkMediaPermission($perm, $MediaItem, $User = false)
     {
+        if (Media::useMediaPermissions() === false) {
+            return true;
+        }
+
         if (!$User) {
             $User = self::getUser();
         }
