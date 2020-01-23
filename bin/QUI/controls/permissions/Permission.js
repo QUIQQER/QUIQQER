@@ -67,10 +67,10 @@ define('controls/permissions/Permission', [
             this.$Elm = new Element('div', {
                 'class': 'controls-permissions-permission',
                 html   : '<div class="controls-permissions-permission-buttons"></div>' +
-                '<div class="controls-permissions-permission-map"></div>' +
-                '<div class="controls-permissions-permission-content">' +
-                '<div class="controls-permissions-permission-content-sheet"></div>' +
-                '</div>'
+                    '<div class="controls-permissions-permission-map"></div>' +
+                    '<div class="controls-permissions-permission-content">' +
+                    '<div class="controls-permissions-permission-content-sheet"></div>' +
+                    '</div>'
             });
 
             this.$MapContainer     = this.$Elm.getElement('.controls-permissions-permission-map');
@@ -183,7 +183,6 @@ define('controls/permissions/Permission', [
                 if (!self.$Bind) {
                     self.$openBindSelect().then(function () {
                         return self.open();
-
                     }.bind(self)).catch(function () {
                         reject();
                     });
@@ -357,9 +356,9 @@ define('controls/permissions/Permission', [
                             this.$tableCache[perm.permission] = new Element('table', {
                                 'class': 'data-table',
                                 html   : '<thead>' +
-                                '<tr><th>' + perm.translation + '</th></tr>' +
-                                '</thead>' +
-                                '<tbody></tbody>'
+                                    '<tr><th>' + perm.translation + '</th></tr>' +
+                                    '</thead>' +
+                                    '<tbody></tbody>'
                             }).inject(this.$ContentSheet);
                         }
 
@@ -404,7 +403,6 @@ define('controls/permissions/Permission', [
                             list = this.$ContentSheet.getElements('input');
 
                             for (i = 0, len = list.length; i < len; i++) {
-
                                 Elm = list[i];
 
                                 if (!(Elm.name in permissions)) {
@@ -473,7 +471,7 @@ define('controls/permissions/Permission', [
                 this.$tableCache[tableRightId] = new Element('table', {
                     'class': 'data-table',
                     html   : '<thead><tr><th>' + header + '</th></tr></thead>' +
-                    '<tbody></tbody>'
+                        '<tbody></tbody>'
                 }).inject(this.$ContentSheet);
             }
 

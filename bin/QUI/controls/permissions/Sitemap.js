@@ -99,6 +99,13 @@ define('controls/permissions/Sitemap', [
                     Permissions.getSitePermissionList(this.$Bind).then(this.$createMap);
                     break;
 
+                case 'classes/projects/project/media/File':
+                case 'classes/projects/project/media/Folder':
+                case 'classes/projects/project/media/Image':
+                case 'classes/projects/project/media/Item':
+                    Permissions.getMediaPermissionList(this.$Bind).then(this.$createMap);
+                    break;
+
                 case 'qui/classes/DOM':
                     Permissions.getList().then(this.$createMap);
                     break;

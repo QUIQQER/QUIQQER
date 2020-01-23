@@ -119,12 +119,11 @@
 
         <table name="permissions2media">
             <field type="VARCHAR(200) NOT NULL DEFAULT ''">project</field>
-            <field type="VARCHAR(2) DEFAULT ''">lang</field>
             <field type="INT(20) DEFAULT NULL">id</field>
             <field type="VARCHAR(100) NULL">permission</field>
             <field type="TEXT NULL">value</field>
 
-            <primary>project,lang,id,permission</primary>
+            <primary>project,id,permission</primary>
         </table>
 
         <table name="sessions">

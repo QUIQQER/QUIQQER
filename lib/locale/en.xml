@@ -1630,6 +1630,9 @@
         <locale name="projects.project.site.media.filePanel.window.delete.information">
             <en><![CDATA[Are you sure you want to delete the file [file]?]]></en>
         </locale>
+        <locale name="projects.project.site.media.filePanel.permissions">
+            <en><![CDATA[Set media permissions]]></en>
+        </locale>
         <locale name="projects.project.site.media.manager.title">
             <en><![CDATA[Media Manager]]></en>
         </locale>
@@ -3969,6 +3972,28 @@
         </locale>
         <locale name="media.items.visible">
             <en><![CDATA[Show all]]></en>
+        </locale>
+        <locale name="media.panel.view.hiddenItems.show">
+            <en><![CDATA[Show hidden files]]></en>
+        </locale>
+        <locale name="media.panel.view.hiddenItems.hide">
+            <en><![CDATA[Hide hidden files]]></en>
+        </locale>
+
+        <locale name="permission.quiqqer.projects.media._header">
+            <en><![CDATA[Media permissions]]></en>
+        </locale>
+        <locale name="permission.quiqqer.projects.media.view">
+            <en><![CDATA[Is allowed to see the file / folder]]></en>
+        </locale>
+        <locale name="permission.quiqqer.projects.media.upload">
+            <en><![CDATA[Is allowed to upload files]]></en>
+        </locale>
+        <locale name="permission.quiqqer.projects.media.del">
+            <en><![CDATA[Is allowed to delete the file / folder]]></en>
+        </locale>
+        <locale name="permission.quiqqer.projects.media.edit">
+            <en><![CDATA[Is allowed to edit the file / folder]]></en>
         </locale>
     </groups>
 

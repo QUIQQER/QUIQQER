@@ -71,6 +71,7 @@ define('classes/projects/project/media/Item', [
             this.$Media   = Media;
             this.$Panel   = null;
             this.$effects = null;
+            this.$loaded  = false;
 
             this.parent(params);
         },
@@ -86,12 +87,22 @@ define('classes/projects/project/media/Item', [
 
             return this.getMedia().getData(this.getId()).then(function (result) {
                 self.setAttributes(result);
+                self.$loaded = true;
                 self.fireEvent('refresh', [self]);
 
                 if (typeOf(oncomplete) === 'function') {
                     oncomplete(self);
                 }
             });
+        },
+
+        /**
+         * Is the file loaded? data are loaded?
+         *
+         * @return {boolean}
+         */
+        isLoaded: function () {
+            return this.$loaded;
         },
 
         /**

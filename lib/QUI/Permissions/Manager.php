@@ -235,11 +235,14 @@ class Manager
 
         $DBTable->addColumn($table2media, [
             'project'    => 'varchar(200) NOT NULL',
-            'lang'       => 'varchar(2)',
             'id'         => 'bigint(20)',
             'permission' => 'text',
             'value'      => 'text'
         ]);
+
+        if ($DBTable->existColumnInTable($table2media, 'lang')) {
+            $DBTable->deleteColumn($table2media, 'lang');
+        }
     }
 
     /**
@@ -537,6 +540,10 @@ class Manager
             case 'site':
                 return $this->getSitePermissions($Obj);
                 break;
+
+            case 'media':
+                return $this->getMediaPermissions($Obj);
+                break;
         }
 
         $cache = $this->getDataCacheId($Obj);
@@ -708,6 +715,35 @@ class Manager
     }
 
     /**
+     * Return the permissions from a media item
+     *
+     * @param $MediaItem
+     * @return array
+     */
+    public function getMediaPermissions($MediaItem)
+    {
+        if (QUI\Projects\Media\Utils::isItem($MediaItem) === false) {
+            return [];
+        }
+
+
+        $data  = $this->getData($MediaItem);
+        $_list = $this->getPermissionList('media');
+
+        $permissions = [];
+
+        foreach ($_list as $permission => $params) {
+            $permissions[$permission] = false;
+        }
+
+        foreach ($data as $permission => $value) {
+            $permissions[$permission] = $value;
+        }
+
+        return $permissions;
+    }
+
+    /**
      * Set the permissions for an object
      *
      * @param QUI\Users\User|QUI\Groups\Group|
@@ -742,6 +778,11 @@ class Manager
 
             case 'site':
                 $this->setSitePermissions($Obj, $permissions, $EditUser);
+
+                return;
+
+            case 'media':
+                $this->setMediaPermissions($Obj, $permissions, $EditUser);
 
                 return;
 
@@ -953,6 +994,92 @@ class Manager
 
 
         $cacheId = $this->getDataCacheId($Site);
+        unset($this->dataCache[$cacheId]);
+
+        if (isset($this->permissionsCache[$cacheId])) {
+            unset($this->permissionsCache[$cacheId]);
+        }
+    }
+
+    /**
+     * Set the permissions for a site object
+     *
+     * @param QUI\Projects\Media\Item $MediaItem
+     * @param array $permissions - Array of permissions
+     * @param boolean|QUI\Users\User $EditUser - Edit user
+     *
+     * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
+     */
+    public function setMediaPermissions($MediaItem, $permissions, $EditUser = false)
+    {
+        if (QUI\Projects\Media\Utils::isItem($MediaItem) === false) {
+            return;
+        }
+
+        $MediaItem->checkPermission('quiqqer.projects.media.set_permissions', $EditUser);
+        $MediaItem->checkPermission('quiqqer.project.media.edit', $EditUser);
+
+        $_data = $this->getData($MediaItem);
+
+        $data = [];
+        $list = $this->getPermissionList('media');
+
+        // look at permission list and cleanup the values
+        foreach ($list as $permission => $params) {
+            if (!isset($permissions[$permission])) {
+                continue;
+            }
+
+            $Perm = $permissions[$permission];
+
+            if (\is_string($Perm)) {
+                $permissionValue = $Perm;
+            } elseif (\is_array($Perm)) {
+                $permissionValues = [];
+
+                foreach ($Perm as $PermValue) {
+                    if (QUI::getUsers()->isUser($PermValue)) {
+                        /* @var $PermValue QUI\Users\User */
+                        $permissionValues[] = 'u'.$PermValue->getId();
+                        continue;
+                    }
+
+                    if (QUI::getGroups()->isGroup($PermValue)) {
+                        /* @var $PermValue QUI\Groups\Group */
+                        $permissionValues[] = 'g'.$PermValue->getId();
+                    }
+                }
+
+                $permissionValue = \implode(',', $permissionValues);
+            } elseif (QUI::getUsers()->isUser($Perm)) {
+                /* @var $Perm QUI\Users\User */
+                $permissionValue = 'u'.$Perm->getId();
+            } elseif (QUI::getGroups()->isGroup($Perm)) {
+                /* @var $Perm QUI\Groups\Group */
+                $permissionValue = 'g'.$Perm->getId();
+            } else {
+                continue;
+            }
+
+            $data[$permission] = $this->cleanValue(
+                $params['type'],
+                $permissionValue
+            );
+        }
+
+        // set add permissions
+        foreach ($data as $permission => $value) {
+            if (!isset($_data[$permission])) {
+                $this->addMediaPermission($MediaItem, $permission, $value);
+                continue;
+            }
+
+            $this->setMediaPermission($MediaItem, $permission, $value);
+        }
+
+
+        $cacheId = $this->getDataCacheId($MediaItem);
         unset($this->dataCache[$cacheId]);
 
         if (isset($this->permissionsCache[$cacheId])) {
@@ -1261,18 +1388,24 @@ class Manager
         }
 
         if ($area === 'media') {
-            /* @var $Obj QUI\Interfaces\Projects\Media\File */
+            /* @var $Obj QUI\Projects\Media\Item */
             /* @var $Project QUI\Projects\Project */
-            $Project = $Obj->getProject();
+            $Media   = $Obj->getMedia();
+            $Project = $Media->getProject();
 
-            $result = $DataBase->fetch([
+            $data = $DataBase->fetch([
                 'from'  => $table.'2media',
                 'where' => [
                     'project' => $Project->getName(),
-                    'lang'    => $Project->getLang(),
                     'id'      => $Obj->getId()
                 ]
             ]);
+
+            $result = [];
+
+            foreach ($data as $entry) {
+                $result[$entry['permission']] = $entry['value'];
+            }
 
             $this->dataCache[$cache] = $result;
 
@@ -1537,4 +1670,98 @@ class Manager
 
         return $result;
     }
+
+    // region media
+
+    /**
+     * Updates the permission entry for the media entry
+     *
+     * @param QUI\Projects\Media\Item $MediaItem
+     * @param string $permission
+     * @param string|integer $value
+     *
+     * @throws QUI\Exception
+     */
+    protected function setMediaPermission($MediaItem, $permission, $value)
+    {
+        $Media   = $MediaItem->getMedia();
+        $Project = $Media->getProject();
+        $table   = self::table();
+
+        QUI::getDataBase()->update(
+            $table.'2media',
+            ['value' => $value],
+            [
+                'project'    => $Project->getName(),
+                'id'         => $MediaItem->getId(),
+                'permission' => $permission
+            ]
+        );
+
+
+        $cacheId = $this->getDataCacheId($MediaItem);
+
+        unset($this->dataCache[$cacheId]);
+
+        if (isset($this->permissionsCache[$cacheId])) {
+            unset($this->permissionsCache[$cacheId]);
+        }
+    }
+
+    /**
+     * Add a new permission entry for site
+     *
+     * @param QUI\Projects\Media\Item $MediaItem
+     * @param string $permission
+     * @param string|integer $value
+     *
+     * @throws QUI\Exception
+     */
+    protected function addMediaPermission($MediaItem, $permission, $value)
+    {
+        $Media   = $MediaItem->getMedia();
+        $Project = $Media->getProject();
+        $table   = self::table();
+
+        QUI::getDataBase()->insert($table.'2media', [
+            'project'    => $Project->getName(),
+            'id'         => $MediaItem->getId(),
+            'permission' => $permission,
+            'value'      => $value
+        ]);
+    }
+
+    /**
+     * Remove all permissions from the site
+     *
+     * @param QUI\Projects\Media\Item $MediaItem
+     * @param boolean|\QUI\Users\User $EditUser
+     *
+     * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
+     */
+    public function removeMediaPermissions($MediaItem, $EditUser = false)
+    {
+        $MediaItem->checkPermission('quiqqer.projects.media.edit', $EditUser);
+
+        $Media   = $MediaItem->getMedia();
+        $Project = $Media->getProject();
+        $table   = self::table();
+
+        QUI::getDataBase()->delete($table.'2media', [
+            'project' => $Project->getName(),
+            'id'      => $MediaItem->getId()
+        ]);
+
+
+        $cacheId = $this->getDataCacheId($MediaItem);
+
+        unset($this->dataCache[$cacheId]);
+
+        if (isset($this->permissionsCache[$cacheId])) {
+            unset($this->permissionsCache[$cacheId]);
+        }
+    }
+
+    //endregion
 }

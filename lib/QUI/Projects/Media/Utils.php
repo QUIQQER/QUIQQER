@@ -713,6 +713,25 @@ class Utils
     }
 
     /**
+     * Is the object a media item
+     *
+     * @param $Unknown
+     * @return bool
+     */
+    public static function isItem($Unknown)
+    {
+        if (!\is_object($Unknown)) {
+            return false;
+        }
+
+        if (!\method_exists($Unknown, 'getType')) {
+            return false;
+        }
+
+        return $Unknown instanceof Item;
+    }
+
+    /**
      * Is the URL a media url?
      *
      * @param string $url

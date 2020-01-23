@@ -119,4 +119,12 @@
     <!-- Editor permissions -->
     <permission name="quiqqer.editors.toolbar.delete" type="bool"/>
 
+
+    <!-- File permissions -->
+    <permission name="quiqqer.projects.media.set_permissions" type="bool"/>
+    <permission name="quiqqer.projects.media.view" type="users_and_groups" area="media"/>
+    <permission name="quiqqer.projects.media.edit" type="users_and_groups" area="media"/>
+    <permission name="quiqqer.projects.media.del" type="users_and_groups" area="media"/>
+    <permission name="quiqqer.projects.media.upload" type="users_and_groups" area="media"/>
+
 </permissions>

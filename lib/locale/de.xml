@@ -1658,6 +1658,9 @@
         <locale name="projects.project.site.media.filePanel.window.delete.information">
             <de><![CDATA[Möchten Sie die Datei [file] wirklich löschen?]]></de>
         </locale>
+        <locale name="projects.project.site.media.filePanel.permissions">
+            <de><![CDATA[Media-Zugriffsrechte einstellen]]></de>
+        </locale>
         <locale name="projects.project.site.media.manager.title">
             <de><![CDATA[Mediaverwaltung]]></de>
         </locale>
@@ -4154,6 +4157,22 @@
         </locale>
         <locale name="media.panel.view.hiddenItems.hide">
             <de><![CDATA[Versteckte Dateien verbergen]]></de>
+        </locale>
+
+        <locale name="permission.quiqqer.projects.media._header">
+            <de><![CDATA[Media Rechte]]></de>
+        </locale>
+        <locale name="permission.quiqqer.projects.media.view">
+            <de><![CDATA[Darf die Datei / den Ordner sehen]]></de>
+        </locale>
+        <locale name="permission.quiqqer.projects.media.upload">
+            <de><![CDATA[Darf Dateien hochladen]]></de>
+        </locale>
+        <locale name="permission.quiqqer.projects.media.del">
+            <de><![CDATA[Darf die Datei / den Ordner löschen]]></de>
+        </locale>
+        <locale name="permission.quiqqer.projects.media.edit">
+            <de><![CDATA[Darf die Datei / den Ordner bearbeiten]]></de>
         </locale>
     </groups>
 

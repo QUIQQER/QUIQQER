@@ -893,4 +893,43 @@ abstract class Item extends QUI\QDOM
     }
 
     //endregion
+
+    //region permissions
+
+
+    /**
+     * Shortcut for QUI\Permissions\Permission::hasSitePermission
+     *
+     * @param string $permission - name of the permission
+     * @param QUI\Users\User|boolean $User - optional
+     *
+     * @return boolean|integer
+     */
+    public function hasPermission($permission, $User = false)
+    {
+        return QUI\Permissions\Permission::hasMediaPermission(
+            $permission,
+            $this,
+            $User
+        );
+    }
+
+    /**
+     * Shortcut for QUI\Permissions\Permission::checkSitePermission
+     *
+     * @param string $permission - name of the permission
+     * @param QUI\Users\User|boolean $User - optional
+     *
+     * @throws QUI\Permissions\Exception
+     */
+    public function checkPermission($permission, $User = false)
+    {
+        QUI\Permissions\Permission::checkMediaPermission(
+            $permission,
+            $this,
+            $User
+        );
+    }
+
+    //endregion
 }
