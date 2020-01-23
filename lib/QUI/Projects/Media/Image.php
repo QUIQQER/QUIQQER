@@ -129,7 +129,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $cacheDir = CMS_DIR.$Media->getCacheDir();
         $file     = $this->getAttribute('file');
 
-        // @todo check media permission flag
+
         if ($this->hasPermission('quiqqer.projects.media.view') &&
             $this->hasPermission('quiqqer.projects.media.view', QUI::getUsers()->getNobody()) === false) {
             $cacheDir = VAR_DIR.'media/cache/permissions/'.$this->getProject()->getAttribute('name').'/';
@@ -366,8 +366,9 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @param integer|boolean $width - (optional)
      * @param integer|boolean $height - (optional)
      *
-     * @return string - URL to the cachefile
+     * @return string - URL to the cache file
      *
+     * @throws QUI\Permissions\Exception
      * @throws QUI\Exception
      */
     public function createSizeCache($width = false, $height = false)
@@ -376,10 +377,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             return false;
         }
 
-        // @todo use media permissions flag
-        if (!$this->hasPermission('quiqqer.projects.media.view')) {
-            return false;
-        }
+        $this->checkPermission('quiqqer.projects.media.view');
+
 
         if ($width > $this->IMAGE_MAX_SIZE) {
             $width = $this->IMAGE_MAX_SIZE;

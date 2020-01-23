@@ -970,6 +970,14 @@ abstract class Item extends QUI\QDOM
             return;
         }
 
+
+        $Manager  = QUI::getPermissionManager();
+        $permList = $Manager->getMediaPermissions($this);
+
+        if (empty($permList[$permission])) {
+            return;
+        }
+
         QUI\Permissions\Permission::checkMediaPermission(
             $permission,
             $this,

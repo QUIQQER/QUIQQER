@@ -381,10 +381,6 @@ class Rewrite
                         $height = (int)$part_size[1];
                     }
                 }
-
-                if (!$Item->hasPermission('quiqqer.projects.media.view')) {
-                    $Item = false;
-                }
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::addDebug($Exception->getMessage());
 
@@ -414,6 +410,11 @@ class Rewrite
 
                 try {
                     $file = $Item->createSizeCache($width, $height);
+                } catch (QUI\Permissions\Exception $Exception) {
+                    \http_response_code(Response::HTTP_FORBIDDEN);
+
+                    $file = OPT_DIR.'quiqqer/quiqqer/bin/images/deny.svg';
+                    $Item->setAttribute('mime_type', 'image/svg+xml');
                 } catch (QUI\Exception $Exception) {
                     QUI\System\Log::writeException($Exception);
                 }
@@ -421,11 +422,17 @@ class Rewrite
                 try {
                     /* @var $Item \QUI\Projects\Media\File */
                     $file = $Item->createCache();
+                } catch (QUI\Permissions\Exception $Exception) {
+                    \http_response_code(Response::HTTP_FORBIDDEN);
+
+                    $file = OPT_DIR.'quiqqer/quiqqer/bin/images/deny.svg';
+                    $Item->setAttribute('mime_type', 'image/svg+xml');
                 } catch (QUI\Exception $Exception) {
                     QUI\System\Log::writeException($Exception);
                 }
             }
 
+            // @todo consider permissions denied -> show permission denied image
             if (!isset($file) || !\file_exists($file)) {
                 $Redirect = new RedirectResponse(
                     $this->getErrorSite()->getUrlRewritten()
