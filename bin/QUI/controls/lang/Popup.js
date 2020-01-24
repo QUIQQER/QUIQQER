@@ -4,12 +4,6 @@
  * @module controls/lang/Popup
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/controls/windows/Confirm
- * @require qui/controls/buttons/Button
- * @require Locale
- * @require controls/grid/Grid
- * @require css!controls/lang/Popup.css
- *
  * @event onSubmit [ {Array}, {this} ]
  */
 define('controls/lang/Popup', [
@@ -39,7 +33,7 @@ define('controls/lang/Popup', [
         ],
 
         options: {
-            title    : Locale.get('quiqqer/system', 'lang.popup.title'),
+            title    : Locale.get('quiqqer/quiqqer', 'lang.popup.title'),
             maxHeight: 600,
             maxWidth : 500,
             autoclose: false
@@ -98,12 +92,12 @@ define('controls/lang/Popup', [
 
             this.$Grid = new Grid(GridContainer, {
                 columnModel: [{
-                    header   : Locale.get('quiqqer/system', 'language.code'),
+                    header   : Locale.get('quiqqer/quiqqer', 'language.code'),
                     dataIndex: 'lang',
                     dataType : 'string',
                     width    : 100
                 }, {
-                    header   : Locale.get('quiqqer/system', 'language'),
+                    header   : Locale.get('quiqqer/quiqqer', 'language'),
                     dataIndex: 'text',
                     dataType : 'string',
                     width    : 250
