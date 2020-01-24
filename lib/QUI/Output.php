@@ -65,7 +65,7 @@ class Output extends Singleton
         );
 
         $content = \preg_replace_callback(
-            '#(data\-image|data\-href|data\-link)="(image.php)\?([^"]*)"#',
+            '#(data\-image|data\-href|data\-link|data\-src)="(image.php)\?([^"]*)"#',
             [&$this, "dataImages"],
             $content
         );
@@ -282,6 +282,11 @@ class Output extends Singleton
                 $att['alt']      = $Image->getAttribute('alt') ? $Image->getAttribute('alt') : '';
                 $att['title']    = $Image->getAttribute('title') ? $Image->getAttribute('title') : '';
                 $att['data-src'] = $Image->getSizeCacheUrl();
+
+                if ($Image->hasViewPermissionSet()) {
+                    $src             = $Image->getUrl();
+                    $att['data-src'] = $Image->getUrl();
+                }
             } catch (QUI\Exception $Exception) {
             }
         }
@@ -336,6 +341,10 @@ class Output extends Singleton
             $MediaItem = MediaUtils::getMediaItemByUrl('image.php?'.$components);
         } catch (QUI\Exception $Exception) {
             return '';
+        }
+
+        if ($MediaItem->hasViewPermissionSet()) {
+            return $output[1].'="'.URL_DIR.$MediaItem->getUrl().'"';
         }
 
         if (MediaUtils::isImage($MediaItem)) {

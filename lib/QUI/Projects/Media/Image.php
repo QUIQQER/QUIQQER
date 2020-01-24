@@ -213,6 +213,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         $cachePath = $this->getSizeCachePath($maxwidth, $maxheight);
         $cacheUrl  = \str_replace(CMS_DIR, URL_DIR, $cachePath);
 
+        if ($this->hasViewPermissionSet()) {
+            $cacheUrl = URL_DIR.$this->getUrl();
+        }
+
         if (!\preg_match('/[^a-zA-Z0-9_\-.\/]/i', $cacheUrl)) {
             return $cacheUrl;
         }

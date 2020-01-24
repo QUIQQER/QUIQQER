@@ -416,6 +416,10 @@ class Utils
         /* @var $Image QUI\Projects\Media\Image */
         try {
             $src = $Image->getSizeCacheUrl($width, $height);
+
+            if ($Image->hasViewPermissionSet()) {
+                $src = URL_DIR.$Image->getUrl();
+            }
         } catch (QUI\Exception $Exception) {
             Log::writeException($Exception);
 

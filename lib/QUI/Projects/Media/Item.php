@@ -926,6 +926,33 @@ abstract class Item extends QUI\QDOM
 
     //region permissions
 
+    /**
+     * Are permissions set for this item?
+     *
+     * @param $permission
+     * @return bool
+     */
+    public function hasPermissionsSet($permission)
+    {
+        if (Media::useMediaPermissions() === false) {
+            return false;
+        }
+
+        $Manager  = QUI::getPermissionManager();
+        $permList = $Manager->getMediaPermissions($this);
+
+        return !empty($permList[$permission]);
+    }
+
+    /**
+     * Are view permissions set for this item?
+     *
+     * @return bool
+     */
+    public function hasViewPermissionSet()
+    {
+        return $this->hasPermissionsSet('quiqqer.projects.media.view');
+    }
 
     /**
      * Shortcut for QUI\Permissions\Permission::hasSitePermission
