@@ -201,7 +201,8 @@ define('controls/projects/project/media/Panel', [
             var Project = Projects.get(data.project);
 
             this.setAttributes(data.attributes);
-            this.$Media = Project.getMedia();
+            this.$Media  = Project.getMedia();
+            this.$loaded = false;
 
             // media events
             this.$Media.addEvents({
@@ -256,13 +257,17 @@ define('controls/projects/project/media/Panel', [
          */
         $onCreate: function () {
             this.Loader.show();
-
+            
             // blur event
             var self = this,
                 Body = this.getContent();
 
             Body.addEvent('click', this.unselectItems);
             Body.addEvent('contextmenu', this.$onContextMenu);
+
+            var loaded = function () {
+                self.$loaded = true;
+            };
 
             // buttons
             require([
@@ -471,9 +476,7 @@ define('controls/projects/project/media/Panel', [
                 if (self.getAttribute('isInPopup') && self.getAttribute('breadcrumb')) {
                     var Breadcrumb = self.getElm().getElement('.qui-panel-breadcrumb');
 
-                    require([
-                        'controls/projects/Select'
-                    ], function (ProjectSelect) {
+                    require(['controls/projects/Select'], function (ProjectSelect) {
                         self.getBreadcrumb().getElm().setStyles({
                             clear: 'none'
                         });
@@ -496,12 +499,13 @@ define('controls/projects/project/media/Panel', [
                             events     : {
                                 onChange: function (value) {
                                     if (self.$Media && self.$Media.getProject() &&
-                                        self.$Media.getProject() === value) {
+                                        self.$Media.getProject().getName() === value) {
                                         return;
                                     }
 
                                     var Project = Projects.get(value);
                                     self.$Media = Project.getMedia();
+
                                     self.openID(1);
                                 }
                             }
@@ -597,7 +601,6 @@ define('controls/projects/project/media/Panel', [
             this.$Pagination = null;
 
             return new Promise(function (resolve) {
-
                 // get the file object
                 self.getMedia().get(fileid).then(function (MediaFile) {
                     // set media image to the panel
@@ -611,7 +614,6 @@ define('controls/projects/project/media/Panel', [
 
                     // if the MediaFile is no Folder
                     if (MediaFile.getType() !== 'classes/projects/project/media/Folder') {
-
                         require(['controls/projects/project/media/FilePanel'], function (FilePanel) {
                             new FilePanel(MediaFile).inject(
                                 self.getParent()
@@ -658,7 +660,8 @@ define('controls/projects/project/media/Panel', [
                         order          : self.getAttribute('field') + ' ' + self.getAttribute('order'),
                         showHiddenFiles: !HIDE_HIDDEN_FILES
                     });
-                }).catch(function () {
+                }).catch(function (err) {
+                    console.log(err);
                     self.openID(1).then(resolve);
                 });
             });
