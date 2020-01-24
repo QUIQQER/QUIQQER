@@ -201,8 +201,7 @@ define('controls/projects/project/media/Panel', [
             var Project = Projects.get(data.project);
 
             this.setAttributes(data.attributes);
-            this.$Media  = Project.getMedia();
-            this.$loaded = false;
+            this.$Media = Project.getMedia();
 
             // media events
             this.$Media.addEvents({
@@ -257,17 +256,13 @@ define('controls/projects/project/media/Panel', [
          */
         $onCreate: function () {
             this.Loader.show();
-            
+
             // blur event
             var self = this,
                 Body = this.getContent();
 
             Body.addEvent('click', this.unselectItems);
             Body.addEvent('contextmenu', this.$onContextMenu);
-
-            var loaded = function () {
-                self.$loaded = true;
-            };
 
             // buttons
             require([
