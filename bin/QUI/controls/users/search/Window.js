@@ -54,6 +54,7 @@ define('controls/users/search/Window', [
             var Content = this.getContent();
 
             Content.set('html', '');
+            Content.setStyle('padding', 0);
 
             this.$Search = new UserSearch({
                 search        : this.getAttribute('search'),
