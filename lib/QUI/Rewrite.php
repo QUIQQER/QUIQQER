@@ -898,9 +898,11 @@ class Rewrite
             $this->project = $Project;
             $this->Output->setProject($Project);
 
-            QUI::getLocale()->setCurrent(
-                $Project->getAttribute('lang')
-            );
+            if (!defined('QUIQQER_AJAX')) {
+                QUI::getLocale()->setCurrent(
+                    $Project->getAttribute('lang')
+                );
+            }
 
             return $Project;
         }
