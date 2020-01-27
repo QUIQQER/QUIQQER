@@ -23,8 +23,9 @@ define('controls/users/search/Window', [
         ],
 
         options: {
-            maxHeight     : 600,
-            maxWidth      : 800,
+            maxWidth      : 1200,
+            maxHeight     : 800,
+            editable      : false,
             autoclose     : true,
             searchSettings: false,
             search        : true
@@ -57,6 +58,7 @@ define('controls/users/search/Window', [
             this.$Search = new UserSearch({
                 search        : this.getAttribute('search'),
                 searchSettings: this.getAttribute('searchSettings'),
+                editable      : this.getAttribute('editable'),
                 events        : {
                     onDblClick: this.submit
                 }

@@ -35,7 +35,8 @@ define('controls/users/search/Search', [
             limit         : 20,
             page          : 1,
             search        : false,
-            searchSettings: {}
+            searchSettings: {},
+            editable      : true
         },
 
         initialize: function (options) {
@@ -185,6 +186,8 @@ define('controls/users/search/Search', [
         $parseDataForGrid: function (data) {
             var i, len, entry;
 
+            var editable = this.getAttribute('editable');
+
             for (i = 0, len = data.data.length; i < len; i++) {
                 entry = data.data[i];
 
@@ -195,12 +198,24 @@ define('controls/users/search/Search', [
                     continue;
                 }
 
-                data.data[i].status = new QUISwitch({
-                    status: entry.active === 1,
-                    uid   : entry.id,
-                    title : entry.active ? this.active_text : this.deactive_text,
-                    events: {
-                        onChange: this.$onSwitchStatusChange
+                if (editable) {
+                    data.data[i].status = new QUISwitch({
+                        status: entry.active === 1,
+                        uid   : entry.id,
+                        title : entry.active ? this.active_text : this.deactive_text,
+                        events: {
+                            onChange: this.$onSwitchStatusChange
+                        }
+                    });
+
+                    continue;
+                }
+
+                data.data[i].status = new Element('div', {
+                    class : entry.active ? 'fa fa-check' : 'fa fa-minus',
+                    styles: {
+                        textAlign: 'center',
+                        width    : 'calc(100% - 5px)'
                     }
                 });
             }
