@@ -24,6 +24,11 @@ class Canonical
     protected $Site;
 
     /**
+     * @var bool
+     */
+    protected $considerGetParams = false;
+
+    /**
      * construct
      *
      * @param \QUI\Projects\Site $Site
@@ -108,7 +113,7 @@ class Canonical
         }
 
         // canonical and request the same? than no output
-        if ($httpsHost.URL_DIR.$requestUrl == $canonical) {
+        if ($httpsHost.URL_DIR.$requestUrl == $canonical && $this->considerGetParams === false) {
             return '';
         }
 
@@ -140,5 +145,21 @@ class Canonical
     protected function getLinkRel($url)
     {
         return '<link rel="canonical" href="'.$url.'" />';
+    }
+
+    /**
+     * Consider get Parameter at the canonical request check
+     */
+    public function considerGetParameterOn()
+    {
+        $this->considerGetParams = true;
+    }
+
+    /**
+     * Get parameters are not considered at the request check
+     */
+    public function considerGetParameterOff()
+    {
+        $this->considerGetParams = false;
     }
 }
