@@ -438,7 +438,7 @@ class Edit extends Site
         $name = \trim($name);
 
 
-        // check the name, if already exists
+        // checks if the name is conform and allowed to use
         QUI\Projects\Site\Utils::checkName($name);
 
 
