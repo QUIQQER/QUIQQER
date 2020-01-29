@@ -41,12 +41,7 @@ class QUIQQER extends AbstractAuthenticator
      */
     public function __construct($username = '')
     {
-        $username = Orthos::clear($username);
-
-        if (\function_exists('get_magic_quotes_gpc') && !\get_magic_quotes_gpc()) {
-            $username = \addslashes($username);
-        }
-
+        $username       = Orthos::clear($username);
         $this->username = $username;
     }
 
