@@ -35,12 +35,11 @@ class Tests extends QUI\System\Console\Tool
         QUI::getErrorHandler()->registerShutdown(function () {
             $last_error = \error_get_last();
 
-            if ($last_error['type'] === E_ERROR) {
+            if ($last_error && $last_error['type'] === E_ERROR) {
                 $this->writeLn("");
 
                 $this->writeLn(
-                    $last_error['message'].' at line '.$last_error['line']
-                    .' :: '.$last_error['file'],
+                    $last_error['message'].' at line '.$last_error['line'].' :: '.$last_error['file'],
                     'red'
                 );
 
