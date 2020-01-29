@@ -101,8 +101,8 @@
         <table name="permissions2sites">
             <field type="VARCHAR(200) NOT NULL DEFAULT ''">project</field>
             <field type="VARCHAR(2) NOT NULL DEFAULT ''">lang</field>
-            <field type="INT(20) NULL">id</field>
-            <field type="VARCHAR(100) NULL">permission</field>
+            <field type="INT(20) NOT NULL">id</field>
+            <field type="VARCHAR(100) NOT NULL">permission</field>
             <field type="TEXT NULL">value</field>
 
             <primary>project,lang,id,permission</primary>
@@ -111,7 +111,7 @@
         <table name="permissions2projects">
             <field type="VARCHAR(200) NOT NULL DEFAULT ''">project</field>
             <field type="VARCHAR(2) NOT NULL DEFAULT ''">lang</field>
-            <field type="VARCHAR(100) NULL">permission</field>
+            <field type="VARCHAR(100) NOT NULL">permission</field>
             <field type="TEXT NULL">value</field>
 
             <primary>project,lang,permission</primary>
@@ -119,8 +119,8 @@
 
         <table name="permissions2media">
             <field type="VARCHAR(200) NOT NULL DEFAULT ''">project</field>
-            <field type="INT(20) DEFAULT NULL">id</field>
-            <field type="VARCHAR(100) NULL">permission</field>
+            <field type="INT(20) NOT NULL">id</field>
+            <field type="VARCHAR(100) NOT NULL">permission</field>
             <field type="TEXT NULL">value</field>
 
             <primary>project,id,permission</primary>
