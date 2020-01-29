@@ -4012,6 +4012,13 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="permission.quiqqer.projects.media.edit">
             <en><![CDATA[Is allowed to edit the file / folder]]></en>
         </locale>
+
+        <locale name="exception.upload.error">
+            <de><![CDATA[
+            An error occurred while uploading the file.
+            Please check your network connection.
+            ]]></de>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">

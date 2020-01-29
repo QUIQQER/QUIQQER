@@ -4189,6 +4189,13 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         <locale name="permission.quiqqer.projects.media.edit">
             <de><![CDATA[Darf die Datei / den Ordner bearbeiten]]></de>
         </locale>
+
+        <locale name="exception.upload.error">
+            <de><![CDATA[
+            Beim Upload der Datei ist ein Fehler aufgetretten.
+            Bitte überprüfen Deine Netzwerkverbindung.
+            ]]></de>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
