@@ -3210,8 +3210,14 @@
             <de><![CDATA[Template wurde nicht gefunden.]]></de>
         </locale>
         <locale name="exception.system.health.not.writable">
+        <de><![CDATA[
+                Bitte überprüfen Sie Ihre Dateirechte. Einige Dateien und oder Ordner sind nicht beschreibbar.
+        ]]></de>
+        <locale name="exception.system.health.checklist.md5.not.found">
             <de><![CDATA[
-                Bitte überprüfen Sie Ihre Dateirechte. Einige Dateien und oder Ordner sind nicht beschreibbar.]]></de>
+Die MD5 Summen Datei wurde nicht gefunden. Daher kann der Zustand des Systems nicht geprüft werden.
+Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Summen Datei.
+        ]]></de>
         </locale>
         <locale name="exception.contact.params.empty">
             <de><![CDATA[Kontakt E-mail konnte nicht versendet werden. Bitte füllen Sie alle Pflichtfelder aus.]]></de>

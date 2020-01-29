@@ -3075,6 +3075,12 @@
         <locale name="exception.system.health.not.writable">
             <en><![CDATA[Please check your file permissions. Some Folders or Files are not writable.]]></en>
         </locale>
+        <locale name="exception.system.health.checklist.md5.not.found">
+            <en><![CDATA[
+The MD5 summary file was not found. Therefore the state of the system cannot be checked.
+Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
+            ]]></en>
+        </locale>
         <locale name="exception.contact.params.empty">
             <en><![CDATA[Contact E-mail could not be sent. Please complete all required fields.]]></en>
         </locale>
@@ -3086,7 +3092,9 @@
         </locale>
         <locale name="exception.contact.send.mail">
             <en><![CDATA[
-                <p>Sorry, cour contact E-mail could not be sent.</p>                <p>Please try again at a later.</p>]]></en>
+                <p>Sorry, cour contact E-mail could not be sent.</p>
+                <p>Please try again at a later.</p>
+            ]]></en>
         </locale>
         <locale name="message.password.save.success">
             <en><![CDATA[The password has been successfully saved.]]></en>
