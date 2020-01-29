@@ -26,7 +26,7 @@
             <field type="TEXT NULL">extra</field>
             <field type="VARCHAR(2) DEFAULT NULL">lang</field>
             <field type="INT(11) DEFAULT NULL">address</field>
-            <field type="TEXT(32) NULL">secHash</field>
+            <field type="TINYTEXT NULL">secHash</field>
             <field type="TEXT NULL">toolbar</field>
             <field type="TEXT NULL">assigned_toolbar</field>
             <field type="VARCHAR(200) NULL">referal</field>
