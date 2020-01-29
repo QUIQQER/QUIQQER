@@ -3,10 +3,6 @@
  *
  * @module classes/projects/project/media/Folder
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require classes/projects/project/media/Item
- * @require Ajax
- * @require UploadManager
  */
 define('classes/projects/project/media/Folder', [
 
@@ -75,14 +71,12 @@ define('classes/projects/project/media/Folder', [
                     }
 
                     resolve(result);
-
                 }, {
                     project : this.getMedia().getProject().getName(),
                     folderid: this.getId(),
                     params  : JSON.encode(params),
                     onError : reject
                 });
-
             }.bind(this));
         },
 

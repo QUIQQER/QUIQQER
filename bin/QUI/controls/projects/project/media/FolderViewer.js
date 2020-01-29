@@ -44,7 +44,8 @@ define('controls/projects/project/media/FolderViewer', [
              QUIAjax) {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg                = 'quiqqer/system';
+    var HIDE_HIDDEN_FILES = 1; // 1 = hide all hidden files, 0 = show all hidden files
 
     return new Class({
 
@@ -60,7 +61,9 @@ define('controls/projects/project/media/FolderViewer', [
             '$onInject',
             '$onDestroy',
             '$onDrop',
-            '$onContextMenu'
+            '$onContextMenu',
+            '$itemEvent',
+            '$itemHideStatusChange'
         ],
 
         options: {
@@ -96,6 +99,34 @@ define('controls/projects/project/media/FolderViewer', [
                 onInject : this.$onInject,
                 onDestroy: this.$onDestroy
             });
+
+
+            if (!this.getAttribute('project') && this.getAttribute('folderUrl')) {
+                var folderUrl = this.getAttribute('folderUrl'),
+                    params    = QUIStringUtils.getUrlParams(folderUrl);
+
+                if ("project" in params) {
+                    this.setAttribute('project', params.project);
+                }
+
+                if ("id" in params) {
+                    this.setAttribute('folderId', params.id);
+                }
+            }
+
+            var Project = Projects.get(this.getAttribute('project')),
+                Media   = Project.getMedia();
+
+            Media.addEvents({
+                onItemRename    : this.$itemEvent,
+                onItemActivate  : this.$itemEvent,
+                onItemDeactivate: this.$itemEvent,
+                onItemRefresh   : this.$itemEvent,
+                onItemSave      : this.$itemEvent,
+                onItemDelete    : this.$itemEvent,
+                onItemsHide     : this.$itemHideStatusChange,
+                onItemsVisible  : this.$itemHideStatusChange
+            });
         },
 
         /**
@@ -107,7 +138,8 @@ define('controls/projects/project/media/FolderViewer', [
 
             this.$Elm.set({
                 'data-quiid': this.getId(),
-                html        : '<div class="qui-project-media-folderViewer-buttons"></div>' +
+                html        : '' +
+                    '<div class="qui-project-media-folderViewer-buttons"></div>' +
                     '<div class="qui-project-media-folderViewer-container"></div>'
             });
 
@@ -123,6 +155,7 @@ define('controls/projects/project/media/FolderViewer', [
                 text     : QUILocale.get(lg, 'projects.project.media.folderviewer.btn.diashow'),
                 title    : QUILocale.get(lg, 'projects.project.media.folderviewer.btn.diashow'),
                 textimage: 'fa fa-play',
+                name     : 'diashow',
                 events   : {
                     onClick: this.diashow
                 },
@@ -135,17 +168,62 @@ define('controls/projects/project/media/FolderViewer', [
                 text     : QUILocale.get(lg, 'projects.project.site.media.panel.btn.upload'),
                 title    : QUILocale.get(lg, 'projects.project.site.media.panel.btn.upload'),
                 textimage: 'fa fa-upload',
+                name     : 'upload',
                 events   : {
                     click: this.openUpload
                 },
                 disabled : true
             }).inject(this.$Buttons);
 
+            this.$MediaSettings = new QUIButton({
+                name      : 'settings',
+                menuCorner: 'topRight',
+                icon      : 'fa fa-gear',
+                styles    : {
+                    'float': 'right',
+                    width  : 50
+                }
+            }).inject(this.$Buttons);
+
+            this.$MediaSettings.getContextMenu(function (Menu) {
+                Menu.addEvent('onShow', function () {
+                    var pos   = Menu.getElm().getPosition();
+                    var width = Menu.getElm().getSize().x;
+
+                    var newMenuPos = this.$MediaSettings.getElm().getPosition().x - width + 60;
+
+                    Menu.setPosition(newMenuPos, pos.y);
+                }.bind(this));
+            }.bind(this));
+
+            this.$MediaSettings.appendChild({
+                name  : 'hiddenView',
+                text  : QUILocale.get('quiqqer/quiqqer', 'media.panel.view.hiddenItems.show'),
+                icon  : 'fa fa-eye',
+                events: {
+                    onMouseDown: function (Item) {
+                        HIDE_HIDDEN_FILES = !HIDE_HIDDEN_FILES;
+
+                        if (HIDE_HIDDEN_FILES) {
+                            Item.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'media.panel.view.hiddenItems.show'));
+                            Item.setAttribute('icon', 'fa fa-eye');
+                        } else {
+                            Item.setAttribute('text', QUILocale.get('quiqqer/quiqqer', 'media.panel.view.hiddenItems.hide'));
+                            Item.setAttribute('icon', 'fa fa-eye-slash');
+                        }
+
+                        this.refresh();
+                    }.bind(this)
+                }
+            });
+
             this.$MediaFolder = new QUIButton({
+                name  : 'folder-properties',
                 icon  : 'fa fa-folder',
                 title : QUILocale.get(lg, 'properties'),
                 styles: {
-                    'float': 'right'
+                    'float': 'right',
+                    width  : 50
                 },
                 events: {
                     onClick: this.openFolder
@@ -153,10 +231,12 @@ define('controls/projects/project/media/FolderViewer', [
             }).inject(this.$Buttons);
 
             this.$MediaOpen = new QUIButton({
+                name  : 'open-folder',
                 icon  : 'fa fa-picture-o',
                 title : QUILocale.get(lg, 'projects.project.site.btn.open_in_media.text'),
                 styles: {
-                    'float': 'right'
+                    'float': 'right',
+                    width  : 50
                 },
                 events: {
                     onClick: this.openInMedia
@@ -168,7 +248,6 @@ define('controls/projects/project/media/FolderViewer', [
 
             // Upload events
             new RequestUpload([this.$Container], {
-
                 onDragenter: function (event, Elm) {
                     if (!Elm.hasClass('qui-project-media-folderViewer-container')) {
                         Elm = Elm.getParent('qui-project-media-folderViewer-container');
@@ -181,20 +260,17 @@ define('controls/projects/project/media/FolderViewer', [
                     Elm.addClass('qui-media-drag');
                     event.stop();
                 },
-
                 onDragleave: function (event, Elm) {
                     if (Elm.hasClass('qui-project-media-folderViewer-container')) {
                         Elm.removeClass('qui-media-drag');
                     }
                 },
-
-                onDragend: function (event, Elm) {
+                onDragend  : function (event, Elm) {
                     if (Elm.hasClass('qui-project-media-folderViewer-container')) {
                         Elm.removeClass('qui-media-drag');
                     }
                 },
-
-                onDrop: this.$onDrop
+                onDrop     : this.$onDrop
             });
 
             return this.$Elm;
@@ -211,7 +287,21 @@ define('controls/projects/project/media/FolderViewer', [
          * event: on destroy
          */
         $onDestroy: function () {
-            this.$ContextMenu.destroy();
+            if (this.$ContextMenu) {
+                this.$ContextMenu.destroy();
+            }
+
+            var Project = Projects.get(this.getAttribute('project')),
+                Media   = Project.getMedia();
+
+            Media.removeEvent('onItemRename', this.$itemEvent);
+            Media.removeEvent('onItemActivate', this.$itemEvent);
+            Media.removeEvent('onItemDeactivate', this.$itemEvent);
+            Media.removeEvent('onItemRefresh', this.$itemEvent);
+            Media.removeEvent('onItemSave', this.$itemEvent);
+            Media.removeEvent('onItemDelete', this.$itemEvent);
+            Media.removeEvent('onItemsHide', this.$itemHideStatusChange);
+            Media.removeEvent('onItemsVisible', this.$itemHideStatusChange);
         },
 
         /**
@@ -265,7 +355,9 @@ define('controls/projects/project/media/FolderViewer', [
                 self.$Folder = Item;
                 self.$ButtonsUpload.enable();
 
-                Item.getChildren(function (Result) {
+                Item.getChildren(false, {
+                    showHiddenFiles: !HIDE_HIDDEN_FILES
+                }).then(function (Result) {
                     var items = Result.data;
 
                     self.$Container.set('html', '');
@@ -482,6 +574,14 @@ define('controls/projects/project/media/FolderViewer', [
                 Container.addClass('qui-project-media-folderViewer-item-active');
             } else {
                 Container.addClass('qui-project-media-folderViewer-item-inactive');
+            }
+
+            if (imageData.isHidden) {
+                if (HIDE_HIDDEN_FILES) {
+                    Container.addClass('qui-media-item-hidden__hide');
+                } else {
+                    Container.addClass('qui-media-item-hidden__show');
+                }
             }
 
             var IC = Container.getElement(
@@ -919,8 +1019,22 @@ define('controls/projects/project/media/FolderViewer', [
             this.getMedia().get(fileid, function (File) {
                 File.download();
             });
-        }
+        },
 
         //endregion
+
+        /**
+         * event: media item change
+         */
+        $itemEvent: function () {
+            this.refresh();
+        },
+
+        /**
+         * event: media item hidden status change
+         */
+        $itemHideStatusChange: function () {
+            this.refresh();
+        }
     });
 });
