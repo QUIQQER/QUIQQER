@@ -87,8 +87,8 @@ class Console
         'light_green'  => '1;32',
         'cyan'         => '0;36',
         'light_cyan'   => '1;36',
-        'red'          => '0;31',
-        'light_red'    => '1;31',
+        'red'          => '1;31',
+        'light_red'    => '2;31',
         'purple'       => '0;35',
         'light_purple' => '1;35',
         'brown'        => '0;33',
@@ -149,11 +149,12 @@ class Console
             } elseif (isset($languages['de'])) {
                 QUI::getLocale()->setCurrent('de');
             } else {
-                QUI::getLocale()->setCurrent(key($languages));
+                QUI::getLocale()->setCurrent(\key($languages));
             }
         }
 
         $this->title();
+
 
         if (!isset($_SERVER['HTTP_HOST'])) {
             $_SERVER['HTTP_HOST'] = '';
@@ -165,6 +166,36 @@ class Console
         }
 
         $params = $this->getArguments();
+
+        // check execute permissions with process user
+        $ignorePermCheck = $this->getArgument('ignore-file-permissions');
+        $processUser     = \posix_getpwuid(\posix_geteuid());
+        $processUser     = $processUser['name'];
+
+        $owner = \fileowner(__FILE__);
+        $owner = \posix_getpwuid($owner);
+        $owner = $owner['name'];
+
+        if (!$ignorePermCheck && $owner !== $processUser) {
+            $this->write(
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.console.execute.user', [
+                    'user'  => $processUser,
+                    'owner' => $owner,
+                ]),
+                'red'
+            );
+
+            $this->clearMsg();
+            $this->writeLn('');
+            $this->writeLn('');
+            $this->write(QUI::getLocale()->get('quiqqer/quiqqer', 'console.execute-user.question'));
+
+            $input = $this->readInput();
+
+            if ($input !== 'yes') {
+                exit;
+            }
+        }
 
         if (isset($params['#system-tool'])) {
             $this->executeSystemTool();
@@ -189,7 +220,7 @@ class Console
         } catch (QUI\Exception $Exception) {
             QUI::getEvents()->fireEvent('userCliLoginError', [$this->getArgument('username'), $Exception]);
 
-            $this->writeLn($Exception->getMessage() . "\n\n", 'red');
+            $this->writeLn($Exception->getMessage()."\n\n", 'red');
             exit;
         }
 

@@ -841,6 +841,18 @@
                 As long as e-mail login is activated, users cannot have the same e-mail address.
             ]]></en>
         </locale>
+        <locale name="exception.console.execute.user">
+            <en><![CDATA[
+The QUIQQER console is executed with the [user] user. This user is not the owner ([owner]) of the QUIQQER system.
+If you continue to run the console with this user, you may experience serious permissions problems on the file system at the QUIQQER system.
+
+Confirm with 'yes' to continue running the QUIQQER console or abort with any other input.
+You can also ignore the console user permissions check with '--ignore-file-permissions'.
+            ]]></en>
+        </locale>
+        <locale name="console.execute-user.question">
+            <en><![CDATA[Continue anyway? [yes / ANY KEY] :]]></en>
+        </locale>
 
         <locale name="user_id">
             <en><![CDATA[User ID]]></en>
@@ -3535,7 +3547,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="exception.release.to.inPast">
             <en><![CDATA[The page can not be activated because the date "release until" is in the past.]]></en>
         </locale>
-        <locale name="templates.mail.header.title"></locale>
+        <locale name="templates.mail.header.title">
+            <en><![CDATA[]]></en>
+        </locale>
         <locale name="templates.mail.footer.links">
             <en><![CDATA[&nbsp;]]></en>
         </locale>

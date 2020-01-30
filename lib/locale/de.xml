@@ -4803,6 +4803,18 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
                 Da E-Mail Login aktiviert ist, können Benutzer nicht die selbe E-Mail Addresse erhalten.
             ]]></de>
         </locale>
+        <locale name="exception.console.execute.user">
+            <de><![CDATA[
+Die QUIQQER Konsole wird mit dem [user] Benutzer ausgeführt. Dieser Benutzer ist nicht der Besitzer des QUIQQER Systems.
+Wenn du die Konsole weiter mit diesem Benutzer ausführst, kann dies zu schwerwiegenden Rechteproblemen auf dem Dateisystem im QUIQQER System führen.
+
+Mit 'yes' bestätigst du die weitere Ausführung der QUIQQER Konsole or breche mit jeder anderen Eingabe ab.
+Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permissions' ignorieren.
+            ]]></de>
+        </locale>
+        <locale name="console.execute-user.question">
+            <de><![CDATA[Trotzdem fortführen? [yes / BELIEBIGE EINGABE] :]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">
         <locale name="controls.email.select.email_invalid">
