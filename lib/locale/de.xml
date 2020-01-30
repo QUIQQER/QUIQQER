@@ -3210,9 +3210,10 @@
             <de><![CDATA[Template wurde nicht gefunden.]]></de>
         </locale>
         <locale name="exception.system.health.not.writable">
-        <de><![CDATA[
+            <de><![CDATA[
                 Bitte überprüfen Sie Ihre Dateirechte. Einige Dateien und oder Ordner sind nicht beschreibbar.
         ]]></de>
+        </locale>
         <locale name="exception.system.health.checklist.md5.not.found">
             <de><![CDATA[
 Die MD5 Summen Datei wurde nicht gefunden. Daher kann der Zustand des Systems nicht geprüft werden.
