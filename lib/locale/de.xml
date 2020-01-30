@@ -3211,8 +3211,8 @@
         </locale>
         <locale name="exception.system.health.not.writable">
             <de><![CDATA[
-                Bitte überprüfen Sie Ihre Dateirechte. Einige Dateien und oder Ordner sind nicht beschreibbar.
-        ]]></de>
+                    Bitte überprüfen Sie Ihre Dateirechte. Einige Dateien und oder Ordner sind nicht beschreibbar.
+            ]]></de>
         </locale>
         <locale name="exception.system.health.checklist.md5.not.found">
             <de><![CDATA[

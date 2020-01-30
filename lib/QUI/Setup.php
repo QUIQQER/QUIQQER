@@ -341,6 +341,7 @@ class Setup
         $index       = CMS_DIR.'index.php';
         $quiqqer     = CMS_DIR.'quiqqer.php';
         $bootstrap   = CMS_DIR.'bootstrap.php';
+        $console     = CMS_DIR.'console';
 
         // bootstrap
         $bootstrapContent = $fileHeader."
@@ -400,5 +401,14 @@ if (file_exists(\$boot)) {
                    "require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';\n";
 
         \file_put_contents($quiqqer, $content);
+
+        // console
+        $content = "
+            #!/usr/bin/env php(VERSION)
+            
+        ";
+
+        \file_put_contents($console, $content);
+        \system("chmod +x {$console}");
     }
 }
