@@ -4815,6 +4815,19 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         <locale name="console.execute-user.question">
             <de><![CDATA[Trotzdem fortführen? [yes / BELIEBIGE EINGABE] :]]></de>
         </locale>
+
+        <locale name="console.systemtool.permissions">
+            <de><![CDATA[Permission Tool für die Konsole - Permission Explorer]]></de>
+        </locale>
+        <locale name="console.systemtool.htaccess">
+            <de><![CDATA[HTACCESS Datei Generierung]]></de>
+        </locale>
+        <locale name="console.systemtool.nginx">
+            <de><![CDATA[NGINX Config Generierung]]></de>
+        </locale>
+        <locale name="console.systemtool.licence">
+            <de><![CDATA[Zeigt die QUIQQER Lizenz]]></de>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">
         <locale name="controls.email.select.email_invalid">

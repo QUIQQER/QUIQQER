@@ -4620,6 +4620,19 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
             Unfortunately, Redis cannot be used. Please install the php redis extension (php-redis)
             ]]></en>
         </locale>
+
+        <locale name="console.systemtool.permissions">
+            <en><![CDATA[Permission Tool for the console - Permission Explorer]]></en>
+        </locale>
+        <locale name="console.systemtool.htaccess">
+            <en><![CDATA[HTACCESS File generation]]></en>
+        </locale>
+        <locale name="console.systemtool.nginx">
+            <en><![CDATA[NGINX Config generation]]></en>
+        </locale>
+        <locale name="console.systemtool.licence">
+            <en><![CDATA[Shows the QUIQQER License]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->
         <locale name="controls.email.select.email_invalid">

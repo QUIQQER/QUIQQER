@@ -9,7 +9,7 @@ namespace QUI\System\Console\Tools;
 use QUI;
 
 /**
- * Execute the system setup
+ * Generate the system htaccess file
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
