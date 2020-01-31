@@ -404,7 +404,10 @@ if (file_exists(\$boot)) {
 
         // console
         $phpCommand = QUI::conf('globals', 'phpCommand');
-        $phpCommand = \escapeshellarg($phpCommand);
+
+        if (empty($phpCommand)) {
+            $phpCommand = 'php';
+        }
 
         $content = "#!/usr/bin/env {$phpCommand}\n".
                    $fileHeader.
