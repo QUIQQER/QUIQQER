@@ -2792,7 +2792,7 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             <en><![CDATA[Smarty compile check]]></en>
         </locale>
         <locale name="quiqqer.settings.general.dev.title">
-            <en><![CDATA[Developer settings]]></en>
+            <en><![CDATA[Settings for developers and system administrators]]></en>
         </locale>
         <locale name="quiqqer.settings.general.dev.maintenance">
             <en><![CDATA[Activate Maintenance]]></en>
@@ -2806,8 +2806,17 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="quiqqer.settings.general.dev.no_ajax_bundler">
             <en><![CDATA[Do not use Ajax bundlers]]></en>
         </locale>
-        <locale name="quiqqer.settings.general.dev.no_ajax_bundler.decription">
+        <locale name="quiqqer.settings.general.dev.no_ajax_bundler.description">
             <en><![CDATA[By bundling the Ajax requests, less Ajax requests are sent to the server.]]></en>
+        </locale>
+        <locale name="quiqqer.settings.general.dev.phpCommand">
+            <en><![CDATA[CLI PHP Command]]></en>
+        </locale>
+        <locale name="quiqqer.settings.general.dev.phpCommand.description">
+            <en><![CDATA[
+                Determines the PHP command for the PHP binary.
+                This command is needed for the CLI if QUIQQER needs to execute a PHP command.
+            ]]></en>
         </locale>
         <locale name="quiqqer.settings.general.updates.title">
             <en><![CDATA[Updates]]></en>

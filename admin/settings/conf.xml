@@ -107,6 +107,11 @@
                     <type><![CDATA[bool]]></type>
                     <defaultvalue>0</defaultvalue>
                 </conf>
+
+                <conf name="phpCommand">
+                    <type><![CDATA[string]]></type>
+                    <defaultvalue>php</defaultvalue>
+                </conf>
             </section>
 
             <section name="auth_settings">
@@ -455,6 +460,16 @@
                             <description>
                                 <locale group="quiqqer/quiqqer"
                                         var="quiqqer.settings.general.dev.no_ajax_bundler.description"
+                                />
+                            </description>
+                        </input>
+                        <input conf="globals.phpCommand">
+                            <text>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.general.dev.phpCommand"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.general.dev.phpCommand.description"
                                 />
                             </description>
                         </input>
@@ -810,7 +825,8 @@
                         </title>
                         <input conf="globals.standardLanguage" type="string" data-qui="controls/lang/Select">
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.general.globals.standardLanguage"/>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.general.globals.standardLanguage"/>
                             </text>
                         </input>
                     </settings>
@@ -922,7 +938,8 @@
 
                         <input conf="securityHeaders_hsts.subdomains" type="checkbox">
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.security_headers.hsts.subdomains"/>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.security_headers.hsts.subdomains"/>
                             </text>
                             <description>
                                 <locale group="quiqqer/quiqqer"

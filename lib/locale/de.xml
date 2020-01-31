@@ -2909,7 +2909,7 @@
             <de><![CDATA[Smarty Compile Prüfung]]></de>
         </locale>
         <locale name="quiqqer.settings.general.dev.title">
-            <de><![CDATA[Einstellungen für Entwickler]]></de>
+            <de><![CDATA[Einstellungen für Entwickler und Systemadministratoren]]></de>
         </locale>
         <locale name="quiqqer.settings.general.dev.maintenance">
             <de><![CDATA[Wartungsarbeiten atkivieren]]></de>
@@ -2925,6 +2925,15 @@
         </locale>
         <locale name="quiqqer.settings.general.dev.no_ajax_bundler.description">
             <de><![CDATA[Durch das Bündeln der Ajax Requests werden weniger Requests an den Server gesendet.]]></de>
+        </locale>
+        <locale name="quiqqer.settings.general.dev.phpCommand">
+            <de><![CDATA[CLI PHP Command]]></de>
+        </locale>
+        <locale name="quiqqer.settings.general.dev.phpCommand.description">
+            <de><![CDATA[
+                Bestimmt den PHP Command für die PHP Binary.
+                Dieser Command wird für die CLI benötigt falls QUIQQER einen PHP Befehl ausführen muss.
+            ]]></de>
         </locale>
         <locale name="quiqqer.settings.general.updates.title">
             <de><![CDATA[Aktualisierung]]></de>

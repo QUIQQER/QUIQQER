@@ -403,7 +403,10 @@ if (file_exists(\$boot)) {
         \file_put_contents($quiqqer, $content);
 
         // console
-        $content = "#!/usr/bin/env php\n".
+        $phpCommand = QUI::conf('globals', 'phpCommand');
+        $phpCommand = \escapeshellarg($phpCommand);
+
+        $content = "#!/usr/bin/env {$phpCommand}\n".
                    $fileHeader.
                    "define('CMS_DIR', '{$CMS_DIR}');\n".
                    "require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';\n";
