@@ -516,13 +516,18 @@ class Manager
      * if a project has multiple languages, getProjectList will return multiple projects
      * eq: project exist in en,de,fr getProjectList will return Project(en, Project(de), Project(fr)
      *
-     * @return array
-     *
-     * @throws QUI\Exception
+     * @return QUI\Projects\Project[]
      */
     public static function getProjectList()
     {
-        $config = self::getConfig()->toArray();
+        try {
+            $config = self::getConfig()->toArray();
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addWarning($Exception->getMessage());
+
+            return [];
+        }
+
         $result = [];
 
         foreach ($config as $project => $conf) {
