@@ -214,6 +214,9 @@ class Console
             $this->displaySystemTools();
         }
 
+        if (!$this->getArgument('--login') && !$this->getArgument('--username')) {
+            return;
+        }
 
         try {
             $this->authenticate();
@@ -818,21 +821,18 @@ class Console
         $this->writeLn();
         $this->writeLn(" Call");
         $this->writeLn(
-            " php quiqqer.php --username=[USERNAME] --password=[PASSWORD] --tool=[TOOLNAME] [--PARAMS]",
+            " php quiqqer.php [--PARAMS]",
             'red'
         );
 
         $this->clearMsg();
         $this->writeLn("");
-        $this->writeLn(" Required arguments");
+        $this->writeLn(" Optional arguments");
+        $this->writeLn(" --help			This help text");
 
         $this->writeLn(" --username		Username", 'red');
         $this->writeLn(" --password		Password to login", 'red');
 
-        $this->clearMsg();
-        $this->writeLn("");
-        $this->writeLn(" Optional arguments");
-        $this->writeLn(" --help			This help text");
         $this->writeLn(" --listtools		Lists the available console tools");
         $this->writeLn(" 			Only with the correct login");
 
