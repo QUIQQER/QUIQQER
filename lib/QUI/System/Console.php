@@ -6,6 +6,7 @@
 
 namespace QUI\System;
 
+use League\CLImate\CLImate;
 use QUI;
 use QUI\Utils\Security\Orthos;
 
@@ -223,7 +224,7 @@ class Console
         } catch (QUI\Exception $Exception) {
             QUI::getEvents()->fireEvent('userCliLoginError', [$this->getArgument('username'), $Exception]);
 
-            $this->writeLn($Exception->getMessage()."\n\n", 'red');
+            $this->writeLn($Exception->getMessage() . "\n\n", 'red');
             exit;
         }
 
@@ -254,7 +255,7 @@ class Console
             $tools = $this->get(true);
 
             foreach ($tools as $tool => $obj) {
-                $this->writeLn(" - ".$tool."\n");
+                $this->writeLn(" - " . $tool . "\n");
             }
         }
 
@@ -446,28 +447,34 @@ class Console
     {
         $this->clearMsg();
 
+        $Climate = new CLImate();
+        $Climate->cyan()->out("Available Tools");
+        $Climate->cyan()->out("===============");
 
-        // tools
-        $this->writeLn();
-        $this->writeLn("Available Tools");
-
+        // build tools
         $tools = $this->get(true);
-
         \ksort($tools);
+
+        $data = [
+            ['           Command', 'Description'],
+            ['           -------', '-----------'],
+            ['', '']
+        ];
 
         foreach ($tools as $Tool) {
             /* @var $Tool Console\Tool */
-            $this->writeLn(" - ");
-            $this->write($Tool->getName(), 'green');
-
-            $this->clearMsg();
-            $this->write("\t\t");
-            $this->write($Tool->getDescription());
+            $data[] = [
+                "\033[" . $this->colors['green'] . "m" . $Tool->getName() . "\033[0m",
+                $Tool->getDescription()
+            ];
         }
 
-        $this->writeLn("");
-        $this->writeLn("Please select a tool from the list");
-        $this->writeLn("Tool: ");
+        $Climate->out('');
+        $Climate->columns($data);
+
+        $Climate->out('');
+        $Climate->out('Please select a tool from the list');
+        $Climate->inline("Tool: ");
 
         $tool = $this->readInput();
         $Exec = false;
@@ -585,14 +592,14 @@ class Console
         switch ($this->getArgument('#system-tool')) {
             case 'clear-all':
                 QUI\Cache\Manager::clearAll();
-                QUI::getTemp()->moveToTemp(VAR_DIR.'cache');
-                QUI::getTemp()->moveToTemp(VAR_DIR.'sessions');
+                QUI::getTemp()->moveToTemp(VAR_DIR . 'cache');
+                QUI::getTemp()->moveToTemp(VAR_DIR . 'sessions');
                 QUI::getTemp()->clear();
                 break;
 
             case 'clear-cache':
                 QUI\Cache\Manager::clearAll();
-                QUI::getTemp()->moveToTemp(VAR_DIR.'cache');
+                QUI::getTemp()->moveToTemp(VAR_DIR . 'cache');
                 break;
 
             case 'clear-tmp':
@@ -600,11 +607,11 @@ class Console
                 break;
 
             case 'clear-sessions':
-                QUI::getTemp()->moveToTemp(VAR_DIR.'sessions');
+                QUI::getTemp()->moveToTemp(VAR_DIR . 'sessions');
                 break;
 
             case 'clear-lock':
-                QUI::getTemp()->moveToTemp(VAR_DIR.'lock');
+                QUI::getTemp()->moveToTemp(VAR_DIR . 'lock');
                 break;
 
             case 'cron':
@@ -679,11 +686,11 @@ class Console
     private function read()
     {
         // Standard Konsoletools
-        $path  = LIB_DIR.'QUI/System/Console/Tools/';
+        $path  = LIB_DIR . 'QUI/System/Console/Tools/';
         $files = QUI\Utils\System\File::readDir($path, true);
 
         for ($i = 0, $len = \count($files); $i < $len; $i++) {
-            if (!\file_exists($path.$files[$i])) {
+            if (!\file_exists($path . $files[$i])) {
                 continue;
             }
 
@@ -697,15 +704,15 @@ class Console
         $tools = [];
 
         foreach ($plugins as $plugin) {
-            $dir = OPT_DIR.$plugin['name'];
+            $dir = OPT_DIR . $plugin['name'];
 
-            if (!\file_exists($dir.'/console.xml')) {
+            if (!\file_exists($dir . '/console.xml')) {
                 continue;
             }
 
             $tools = \array_merge(
                 $tools,
-                QUI\Utils\Text\XML::getConsoleToolsFromXml($dir.'/console.xml')
+                QUI\Utils\Text\XML::getConsoleToolsFromXml($dir . '/console.xml')
             );
         }
 
@@ -714,15 +721,15 @@ class Console
         $projects       = $ProjectManager->getProjects();
 
         foreach ($projects as $project) {
-            $dir = USR_DIR.$project;
+            $dir = USR_DIR . $project;
 
-            if (!\file_exists($dir.'/console.xml')) {
+            if (!\file_exists($dir . '/console.xml')) {
                 continue;
             }
 
             $tools = \array_merge(
                 $tools,
-                QUI\Utils\Text\XML::getConsoleToolsFromXml($dir.'/console.xml')
+                QUI\Utils\Text\XML::getConsoleToolsFromXml($dir . '/console.xml')
             );
         }
 
@@ -755,7 +762,7 @@ class Console
      */
     protected function includeClasses($file, $dir)
     {
-        $file = Orthos::clearPath(\realpath($dir.$file));
+        $file = Orthos::clearPath(\realpath($dir . $file));
 
         if (!\file_exists($file)) {
             throw new QUI\Exception('console tool not exists');
@@ -803,7 +810,7 @@ class Console
             }
 
             $this->write("- ");
-            $this->write(QUI::getLocale()->get('quiqqer/quiqqer', 'console.systemtool.'.$tool));
+            $this->write(QUI::getLocale()->get('quiqqer/quiqqer', 'console.systemtool.' . $tool));
         }
 
         $this->write("\n\n");
@@ -871,14 +878,14 @@ class Console
  (____\/_)(_______)\_______/(____\/_)(____\/_)(_______/|/   \__/
 
 
- Welcome to QUIQQER Version '.$version.' - Last Update: '.$lastUpdate.'
+ Welcome to QUIQQER Version ' . $version . ' - Last Update: ' . $lastUpdate . '
 ';
 
         $this->message($str, 'green', 'white');
         $this->clearMsg();
 
         $licenceText = '
- QUIQQER Copyright (C) '.$year.'  PCSG  - Computer & Internet Service OHG - www.pcsg.de
+ QUIQQER Copyright (C) ' . $year . '  PCSG  - Computer & Internet Service OHG - www.pcsg.de
  This program comes with ABSOLUTELY NO WARRANTY; for details type `php quiqqer.php licence`.
  This is free software, and you are welcome to redistribute it under certain conditions; 
  visit www.quiqqer.com for details.
@@ -918,7 +925,7 @@ class Console
      */
     public function writeLn($msg = '', $color = false, $bg = false)
     {
-        $this->message("\n".$msg, $color, $bg);
+        $this->message("\n" . $msg, $color, $bg);
     }
 
     /**
@@ -951,11 +958,11 @@ class Console
         }
 
         if (isset($this->colors[$this->current_color])) {
-            echo "\033[".$this->colors[$this->current_color]."m";
+            echo "\033[" . $this->colors[$this->current_color] . "m";
         }
 
         if (isset($this->bg[$this->current_bg])) {
-            echo "\033[".$this->bg[$this->current_bg]."m";
+            echo "\033[" . $this->bg[$this->current_bg] . "m";
         }
 
         echo $msg;
