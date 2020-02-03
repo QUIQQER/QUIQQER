@@ -329,7 +329,7 @@ class Manager extends QUI\QDOM
         $dir = \explode('_', $dir);
 
         $last = \end($dir);
-        $dir  = \implode($dir, '/');
+        $dir  = \implode('/', $dir);
 
         // Pluginfile laden falls noch nicht getan
         $f_plg = OPT_DIR.$dir.'/'.\ucfirst($last).'.php';
