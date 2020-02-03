@@ -314,7 +314,7 @@ class Utils
     }
 
     /**
-     * Return <img /> from image attributes
+     * Return <picture><img /></picture> from image attributes
      * considered responsive images, too
      *
      * @param string $src
@@ -337,28 +337,36 @@ class Utils
             $img .= \htmlspecialchars($key).'="'.\htmlspecialchars($value).'" ';
         }
 
-        // responsive image
-//        $imageWidth = $Image->getWidth();
-
-//        if ( $imageWidth )
-//        {
-//            $end   = $imageWidth > 1000 ? 1000 : $imageWidth;
-//            $start = 100;
-//
-//            $srcset = array();
-//
-//            for ( ; $start < $end; $start += 100 ) {
-//                $srcset[] = $Image->getSizeCacheUrl( $start ) ." {$start}w";
-//            }
-//
-//            // not optimal, but maybe we found a better solution
-//            $img .= ' sizes="(max-width: 30em) 100vw, (max-width: 50em) 50vw, calc(33vw - 100px)"';
-//            $img .= ' srcset="'. implode(",\n", $srcset) .'"';
-//        }
-
         $img .= ' src="'.\htmlspecialchars($src).'" />';
 
-        return $img;
+        // build picture source sets
+        $srcset = '';
+
+        try {
+            $Image      = Utils::getElement($src);
+            $imageWidth = $Image->getWidth();
+
+            if ($imageWidth) {
+                $end   = $imageWidth > 1000 ? 1000 : $imageWidth;
+                $start = 100;
+                $sets  = [];
+
+                for (; $start < $end; $start += 100) {
+                    $sets[] = [
+                        'src'   => \htmlspecialchars($Image->getSizeCacheUrl($start)),
+                        'media' => '(max-width: '.$start.'px)'
+                    ];
+                }
+
+                foreach ($sets as $set) {
+                    $srcset .= '<source media="'.$set['media'].'" srcset="'.$set['src'].'">';
+                }
+            }
+        } catch (QUI\Exception $Exception) {
+            Log::addDebug($Exception->getMessage());
+        }
+
+        return '<picture>'.$srcset.$img.'</picture>';
     }
 
     /**

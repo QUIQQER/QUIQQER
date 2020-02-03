@@ -249,6 +249,9 @@ class Output extends Singleton
         }
 
         if (!MediaUtils::isMediaUrl($img)) {
+            // @todo consider cache urls
+
+
             // is relative url from the system?
 
             if ($this->settings['use-system-image-paths']
