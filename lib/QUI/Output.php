@@ -70,6 +70,19 @@ class Output extends Singleton
             $content
         );
 
+        // find images without picture tag
+        $content = \preg_replace_callback(
+            '#[?s]<([^>]*)>([\s])*<(img|source).*?<\/\1>#is',
+            [&$this, "checkPictureTag"],
+            $content
+        );
+
+        $content = \preg_replace_callback(
+            '#<([^>]*) ([^>]*)>([\s])*<(img|source).*?<\/\1>#s',
+            [&$this, "checkPictureTag"],
+            $content
+        );
+
         // rewrite files
         $content = \preg_replace_callback(
             '#(href|src|value)="(image.php)\?([^"]*)"#',
@@ -242,18 +255,15 @@ class Output extends Singleton
     protected function images($output)
     {
         $img = $output[0];
+        $att = StringUtils::getHTMLAttributes($img);
 
         // Falls in der eigenen Sammlung schon vorhanden
         if (isset($this->imageCache[$img])) {
             return $this->imageCache[$img];
         }
 
-        if (!MediaUtils::isMediaUrl($img)) {
-            // @todo consider cache urls
-
-
+        if (!MediaUtils::isMediaUrl($att['src']) && \strpos($att['src'], 'media/cache') === false) {
             // is relative url from the system?
-
             if ($this->settings['use-system-image-paths']
                 && \strpos($output[0], 'http') === false
             ) {
@@ -268,8 +278,6 @@ class Output extends Singleton
             return $output[0];
         }
 
-        $att = StringUtils::getHTMLAttributes($img);
-
         if (!isset($att['src'])) {
             return $output[0];
         }
@@ -277,6 +285,14 @@ class Output extends Singleton
         $src = \str_replace('&amp;', '&', $att['src']);
 
         unset($att['src']);
+
+        if (\strpos($src, 'media/cache') !== false) {
+            try {
+                $Image = MediaUtils::getElement($src);
+                $src   = $Image->getUrl();
+            } catch (QUI\Exception $Exception) {
+            }
+        }
 
         if (!isset($att['alt']) || !isset($att['title'])) {
             try {
@@ -372,6 +388,31 @@ class Output extends Singleton
         $this->imageUrlCache[$components] = $source;
 
         return $output[1].'="'.$source.'"';
+    }
+
+    /**
+     * @param $output
+     * @return mixed
+     */
+    protected function checkPictureTag($output)
+    {
+        $html = $output[0];
+
+        if (\strpos($html, '<picture>') !== false) {
+            return $html;
+        }
+
+        // find image
+        $html = \str_replace("\n", ' ', $html);
+        $html = \preg_replace('!\s+!', ' ', $html);
+
+        $html = \preg_replace_callback(
+            '#<img([^>]*)>#i',
+            [&$this, "images"],
+            $html
+        );
+
+        return $html;
     }
 
     /**
