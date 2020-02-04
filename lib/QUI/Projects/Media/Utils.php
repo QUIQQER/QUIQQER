@@ -330,6 +330,22 @@ class Utils
             return '';
         }
 
+        $parts     = \explode('/', $src);
+        $cacheName = 'quiqqer/projects/'.$parts[3].'/picture-'.\md5($src.serialize($attributes));
+
+        try {
+            return QUI\Cache\Manager::get($cacheName);
+        } catch (QUi\Exception $Exception) {
+            Log::addDebug($Exception->getMessage());
+        }
+
+        try {
+            QUI::getEvents()->fireEvent('mediaCreateImageHtmlBegin', [$src, $attributes]);
+        } catch (QUI\Exception $Exception) {
+            Log::addDebug($Exception->getMessage());
+        }
+
+
         // image string
         $img = '<img ';
 
@@ -354,19 +370,31 @@ class Utils
                 for (; $start < $end; $start += 100) {
                     $sets[] = [
                         'src'   => \htmlspecialchars($Image->getSizeCacheUrl($start)),
-                        'media' => '(max-width: '.$start.'px)'
+                        'media' => '(max-width: '.$start.'px)',
+                        'type'  => $Image->getAttribute('mime_type')
                     ];
                 }
 
                 foreach ($sets as $set) {
-                    $srcset .= '<source media="'.$set['media'].'" srcset="'.$set['src'].'">';
+                    $srcset .= '<source media="'.$set['media'].'" srcset="'.$set['src'].'" type="'.$set['type'].'">';
                 }
             }
         } catch (QUI\Exception $Exception) {
             Log::addDebug($Exception->getMessage());
         }
 
-        return '<picture>'.$srcset.$img.'</picture>';
+
+        $picture = '<picture>'.$srcset.$img.'</picture>';
+
+        try {
+            QUI::getEvents()->fireEvent('mediaCreateImageHtml', [&$picture]);
+        } catch (QUI\Exception $Exception) {
+            Log::addDebug($Exception->getMessage());
+        }
+
+        QUI\Cache\Manager::set($cacheName, $picture);
+
+        return $picture;
     }
 
     /**
