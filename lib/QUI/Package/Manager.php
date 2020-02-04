@@ -955,6 +955,23 @@ class Manager extends QUI\QDOM
     }
 
     /**
+     * Return all packages with the current versions
+     *
+     * @return array
+     */
+    public function getInstalledVersions()
+    {
+        $result   = [];
+        $packages = $this->getInstalled();
+
+        foreach ($packages as $package) {
+            $result[$package['name']] = $package['version'];
+        }
+
+        return $result;
+    }
+
+    /**
      * Returns the size of package folder in bytes.
      * By default the value is returned from cache.
      * If there is no value in cache, null is returned, unless you set the force parameter to true.
@@ -2094,4 +2111,175 @@ class Manager extends QUI\QDOM
 
         return $result;
     }
+
+    //region site types
+
+    /**
+     * Returns all site types that are available
+     *
+     * @param \QUI\Projects\Project|boolean $Project - optional
+     * @return array
+     */
+    public function getAvailableSiteTypes($Project = false)
+    {
+        $types     = [];
+        $installed = $this->getInstalled();
+
+        foreach ($installed as $package) {
+            $name    = $package['name'];
+            $siteXml = OPT_DIR.$name.'/site.xml';
+
+            if (!\file_exists($siteXml)) {
+                continue;
+            }
+
+            $typeList = QUI\Utils\Text\XML::getTypesFromXml($siteXml);
+
+            foreach ($typeList as $Type) {
+                /* @var $Type \DOMElement */
+                $types[$name][] = [
+                    'type' => $name.':'.$Type->getAttribute('type'),
+                    'icon' => $Type->getAttribute('icon'),
+                    'text' => $this->getSiteTypeName(
+                        $name.':'.$Type->getAttribute('type')
+                    )
+                ];
+            }
+        }
+
+        \ksort($types);
+
+        // standard to top
+        $types = \array_reverse($types, true);
+
+        $types['standard'] = [
+            'type' => 'standard',
+            'icon' => 'fa fa-file-o'
+        ];
+
+        $types = \array_reverse($types, true);
+
+        return $types;
+    }
+
+
+    /**
+     * Get the full Type name
+     *
+     * @param string $type - site type
+     * @return string
+     */
+    public function getSiteTypeName($type)
+    {
+        if ($type == 'standard' || empty($type)) {
+            return QUI::getLocale()->get('quiqqer/quiqqer', 'site.type.standard');
+        }
+
+        // \QUI\System\Log::write( $type );
+        $data = $this->getSiteXMLDataByType($type);
+
+        if (isset($data['locale'])) {
+            return QUI::getLocale()->get(
+                $data['locale']['group'],
+                $data['locale']['var']
+            );
+        }
+
+        if (!isset($data['value']) || empty($data['value'])) {
+            return $type;
+        }
+
+        $value = \explode(' ', $data['value']);
+
+        if (QUI::getLocale()->exists($value[0], $value[1])) {
+            return QUI::getLocale()->get($value[0], $value[1]);
+        }
+
+        return $type;
+    }
+
+    /**
+     * Return the type icon
+     *
+     * @param string $type
+     * @return string
+     */
+    public function getIconBySiteType($type)
+    {
+        $data = $this->getSiteXMLDataByType($type);
+
+        if (isset($data['icon'])) {
+            return $data['icon'];
+        }
+
+        return '';
+    }
+
+    /**
+     * Return the data for a type from its site.xml
+     * https://dev.quiqqer.com/quiqqer/quiqqer/wikis/Site-Xml
+     *
+     * @param string $type
+     * @return boolean|array
+     */
+    protected function getSiteXMLDataByType($type)
+    {
+        $cache = 'quiqqer/packages/xml-data/'.$type;
+
+        try {
+            return QUI\Cache\Manager::get($cache);
+        } catch (QUI\Cache\Exception $Exception) {
+        }
+
+        if (\strpos($type, ':') === false) {
+            return false;
+        }
+
+        $explode = \explode(':', $type);
+        $package = $explode[0];
+        $type    = $explode[1];
+
+        $siteXml = OPT_DIR.$package.'/site.xml';
+
+        if (!\file_exists($siteXml)) {
+            return false;
+        }
+
+        $Dom   = QUI\Utils\Text\XML::getDomFromXml($siteXml);
+        $XPath = new \DOMXPath($Dom);
+        $Types = $XPath->query('//type[@type="'.$type.'"]');
+
+        if (!$Types->length) {
+            return false;
+        }
+
+        /* @var $Type \DOMElement */
+        $Type = $Types->item(0);
+        $data = [];
+
+        if ($Type->getAttribute('icon')) {
+            $data['icon'] = $Type->getAttribute('icon');
+        }
+
+        if ($Type->getAttribute('extend')) {
+            $data['extend'] = $Type->getAttribute('extend');
+        }
+
+        $loc = $Type->getElementsByTagName('locale');
+
+        if ($loc->length) {
+            $data['locale'] = [
+                'group' => $loc->item(0)->getAttribute('group'),
+                'var'   => $loc->item(0)->getAttribute('var')
+            ];
+        }
+
+        $data['value'] = \trim($Type->nodeValue);
+
+        QUI\Cache\Manager::set($cache, $data);
+
+        return $data;
+    }
+
+    //endregion
 }
