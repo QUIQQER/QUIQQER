@@ -389,6 +389,8 @@ class Rewrite
 
 
             if ($Item === false || $imageNotError) {
+                QUI::getEvents()->fireEvent('onRequestImageNotFound', [$_REQUEST['_url']]);
+
                 $Redirect = new RedirectResponse(
                     $this->getErrorSite()->getUrlRewritten()
                 );
