@@ -363,7 +363,9 @@ class Utils
             $imageWidth = $Image->getWidth();
 
             if ($imageWidth) {
-                $end   = $imageWidth > 1000 ? 1000 : $imageWidth;
+                $end = $imageWidth > 1000 ? 1000 : $imageWidth;
+                $end = (int)$end;
+
                 $start = 100;
                 $sets  = [];
 
@@ -375,8 +377,23 @@ class Utils
                     ];
                 }
 
+                // last one is the original
+                $sets[] = [
+                    'src'   => \htmlspecialchars($Image->getSizeCacheUrl()),
+                    'media' => '',
+                    'type'  => $Image->getAttribute('mime_type')
+                ];
+
+
                 foreach ($sets as $set) {
-                    $srcset .= '<source media="'.$set['media'].'" srcset="'.$set['src'].'" type="'.$set['type'].'">';
+                    $media = '';
+
+                    // last item doesn't need
+                    if (!empty($set['media'])) {
+                        $media = ' media="'.$set['media'].'"';
+                    }
+
+                    $srcset .= '<source '.$media.' srcset="'.$set['src'].'" type="'.$set['type'].'">';
                 }
             }
         } catch (QUI\Exception $Exception) {
