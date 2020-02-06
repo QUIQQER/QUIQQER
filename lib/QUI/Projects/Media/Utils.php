@@ -46,6 +46,10 @@ class Utils
      */
     const CACHE_KEY_TIMESTAMP_MEDIA_CACHE_FOLDER_SIZE_PREFIX = "timestamp_media_cache_folder_size_";
 
+    /**
+     * @var array
+     */
+    protected static $urlItemCache = [];
 
     /**
      * Returns the item array
@@ -306,11 +310,17 @@ class Utils
             );
         }
 
+        if (isset(self::$urlItemCache[$url])) {
+            return self::$urlItemCache[$url];
+        }
+
         $params  = StringUtils::getUrlAttributes($url);
         $Project = QUI::getProject($params['project']);
         $Media   = $Project->getMedia();
 
-        return $Media->get((int)$params['id']);
+        self::$urlItemCache[$url] = $Media->get((int)$params['id']);
+
+        return self::$urlItemCache[$url];
     }
 
     /**
@@ -411,13 +421,6 @@ class Utils
             QUI::getEvents()->fireEvent('mediaCreateImageHtml', [&$picture]);
         } catch (QUI\Exception $Exception) {
             Log::addDebug($Exception->getMessage());
-        }
-
-        if (strpos($srcset, 'quiqqer-startpage') !== false) {
-            Log::writeRecursive([
-                'p'    => $picture,
-                'attr' => $attributes
-            ], Log::LEVEL_ERROR);
         }
 
 

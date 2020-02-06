@@ -22,12 +22,14 @@ class Output extends Singleton
 {
     /**
      * Current output project
+     *
      * @var null|QUI\Projects\Project
      */
     protected $Project = null;
 
     /**
      * internal lifetime image cache
+     *
      * @var array
      */
     protected $imageCache = [];
@@ -94,7 +96,6 @@ class Output extends Singleton
             );
         }
 
-
         if (empty($content)) {
             return $content;
         }
@@ -109,12 +110,12 @@ class Output extends Singleton
             $withDocumentOutput = true;
         }
 
-
         // picture elements
         \libxml_use_internal_errors(true);
         $Dom = new \DOMDocument();
         $Dom->loadHTML($content);
         \libxml_clear_errors();
+
 
         $images = $Dom->getElementsByTagName('img');
 
@@ -143,6 +144,7 @@ class Output extends Singleton
             return null;
         };
 
+
         foreach ($images as $Image) {
             /* @var $Parent \DOMElement */
             $Parent = $Image->parentNode;
@@ -153,7 +155,8 @@ class Output extends Singleton
             }
 
             $image = $nodeContent($Image);
-            $html  = \preg_replace_callback(
+
+            $html = \preg_replace_callback(
                 '#<img([^>]*)>#i',
                 [&$this, "images"],
                 $image
@@ -170,6 +173,7 @@ class Output extends Singleton
                 $Parent->replaceChild($Picture, $Image);
             }
         }
+
 
         if ($withDocumentOutput) {
             return $Dom->saveHTML();
