@@ -95,11 +95,22 @@ class Output extends Singleton
         }
 
 
-        // picture elements
         if (empty($content)) {
             return $content;
         }
 
+        if (\strpos($content, '<img') === false) {
+            return $content;
+        }
+
+        $withDocumentOutput = false;
+
+        if (\strpos($content, '<html') === false && \strpos($content, '<body') === false) {
+            $withDocumentOutput = true;
+        }
+
+
+        // picture elements
         \libxml_use_internal_errors(true);
         $Dom = new \DOMDocument();
         $Dom->loadHTML($content);
@@ -160,9 +171,15 @@ class Output extends Singleton
             }
         }
 
-        $content = $Dom->saveHTML();
+        if ($withDocumentOutput) {
+            return $Dom->saveHTML();
+        }
 
-        return $content;
+
+        $Body = $Dom->getElementsByTagName('body')[0];
+
+        return implode(array_map([$Body->ownerDocument, "saveHTML"],
+            iterator_to_array($Body->childNodes)));
     }
 
     /**
