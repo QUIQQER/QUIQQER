@@ -359,7 +359,12 @@ class Utils
         $srcset = '';
 
         try {
-            $Image      = Utils::getElement($src);
+            $Image = Utils::getElement($src);
+
+            if (!self::isImage($Image)) {
+                return '';
+            }
+
             $imageWidth = $Image->getWidth();
 
             if ($imageWidth) {
@@ -400,13 +405,36 @@ class Utils
             Log::addDebug($Exception->getMessage());
         }
 
-
         $picture = '<picture>'.$srcset.$img.'</picture>';
 
         try {
             QUI::getEvents()->fireEvent('mediaCreateImageHtml', [&$picture]);
         } catch (QUI\Exception $Exception) {
             Log::addDebug($Exception->getMessage());
+        }
+
+        if (strpos($srcset, 'quiqqer-startpage') !== false) {
+            Log::writeRecursive([
+                'p'    => $picture,
+                'attr' => $attributes
+            ], Log::LEVEL_ERROR);
+        }
+
+
+        if (!empty($attributes['height']) || !empty($attributes['width'])) {
+            $pictureStyle = '<picture style="';
+
+            if (!empty($attributes['height'])) {
+                $pictureStyle .= 'height: '.$attributes['height'].'px;';
+            }
+
+            if (!empty($attributes['width'])) {
+                $pictureStyle .= 'width: '.$attributes['width'].'px;';
+            }
+
+            $pictureStyle .= '">';
+
+            $picture = \str_replace('<picture>', $pictureStyle, $picture);
         }
 
         QUI\Cache\Manager::set($cacheName, $picture);

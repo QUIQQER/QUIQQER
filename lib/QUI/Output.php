@@ -11,6 +11,7 @@ use QUI\Utils\Singleton;
 
 use QUI\Utils\StringHelper as StringUtils;
 use QUI\Projects\Media\Utils as MediaUtils;
+use QUI\Utils\Text\XML;
 
 /**
  * Class Output
@@ -59,27 +60,8 @@ class Output extends Singleton
     {
         // rewrite image
         $content = \preg_replace_callback(
-            '#<img([^>]*)>#i',
-            [&$this, "images"],
-            $content
-        );
-
-        $content = \preg_replace_callback(
-            '#(data\-image|data\-href|data\-link|data\-src)="(image.php)\?([^"]*)"#',
+            '#(src|data\-image|data\-href|data\-link|data\-src)="(image.php)\?([^"]*)"#',
             [&$this, "dataImages"],
-            $content
-        );
-
-        // find images without picture tag
-        $content = \preg_replace_callback(
-            '#[?s]<([^>]*)>([\s])*<(img|source).*?<\/\1>#is',
-            [&$this, "checkPictureTag"],
-            $content
-        );
-
-        $content = \preg_replace_callback(
-            '#<([^>]*) ([^>]*)>([\s])*<(img|source).*?<\/\1>#s',
-            [&$this, "checkPictureTag"],
             $content
         );
 
@@ -111,6 +93,66 @@ class Output extends Singleton
                 $content
             );
         }
+
+
+        // picture elements
+        \libxml_use_internal_errors(true);
+        $Dom = new \DOMDocument();
+        $Dom->loadHTML($content);
+        \libxml_clear_errors();
+
+        $images = $Dom->getElementsByTagName('img');
+
+        $nodeContent = function ($n) {
+            /* @var $n \DOMElement */
+            $d = new \DOMDocument();
+            $b = $d->importNode($n->cloneNode(true), true);
+            $d->appendChild($b);
+
+            return $d->saveHTML();
+        };
+
+        $getPicture = function ($html) {
+            $d = new \DOMDocument();
+            $d->loadHTML($html);
+            $p = $d->getElementsByTagName('picture');
+
+            if ($p->length) {
+                return $p[0];
+            }
+
+            return null;
+        };
+
+        foreach ($images as $Image) {
+            /* @var $Parent \DOMElement */
+            $Parent = $Image->parentNode;
+            $parent = $Parent->nodeName;
+
+            if ($parent === 'picture') {
+                continue;
+            }
+
+            $image = $nodeContent($Image);
+            $html  = \preg_replace_callback(
+                '#<img([^>]*)>#i',
+                [&$this, "images"],
+                $image
+            );
+
+            if (\strpos($html, '<picture') === false) {
+                continue;
+            }
+
+            $Picture = $getPicture($html);
+
+            if ($Picture) {
+                $Picture = $Dom->importNode($Picture, true);
+                $Parent->replaceChild($Picture, $Image);
+            }
+        }
+
+        $content = $Dom->saveHTML();
 
         return $content;
     }
@@ -398,7 +440,7 @@ class Output extends Singleton
     {
         $html = $output[0];
 
-        if (\strpos($html, '<picture>') !== false) {
+        if (\strpos($html, '</picture>') !== false) {
             return $html;
         }
 
