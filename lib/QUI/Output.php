@@ -96,6 +96,10 @@ class Output extends Singleton
 
 
         // picture elements
+        if (empty($content)) {
+            return $content;
+        }
+
         \libxml_use_internal_errors(true);
         $Dom = new \DOMDocument();
         $Dom->loadHTML($content);
@@ -113,6 +117,10 @@ class Output extends Singleton
         };
 
         $getPicture = function ($html) {
+            if (empty($html)) {
+                return null;
+            }
+
             $d = new \DOMDocument();
             $d->loadHTML($html);
             $p = $d->getElementsByTagName('picture');
