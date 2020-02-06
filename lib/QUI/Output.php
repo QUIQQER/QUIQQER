@@ -105,7 +105,7 @@ class Output extends Singleton
 
         $withDocumentOutput = false;
 
-        if (\strpos($content, '<html') === false && \strpos($content, '<body') === false) {
+        if (\strpos($content, '<html') !== false && \strpos($content, '<body') !== false) {
             $withDocumentOutput = true;
         }
 
