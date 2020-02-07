@@ -361,6 +361,11 @@ class Output extends Singleton
 
         unset($att['src']);
 
+        QUI\System\Log::writeRecursive([
+            '1',
+            microtime(true)
+        ], QUI\System\Log::LEVEL_ERROR);
+
         if (\strpos($src, 'media/cache') !== false) {
             try {
                 $fileData = MediaUtils::getRealFileDataFromCacheUrl($src);
@@ -383,6 +388,11 @@ class Output extends Singleton
             }
         }
 
+        QUI\System\Log::writeRecursive([
+            '2',
+            microtime(true)
+        ], QUI\System\Log::LEVEL_ERROR);
+
         if (!isset($att['alt']) || !isset($att['title'])) {
             try {
                 $Image = MediaUtils::getImageByUrl($src);
@@ -399,7 +409,17 @@ class Output extends Singleton
             }
         }
 
+        QUI\System\Log::writeRecursive([
+            '3',
+            microtime(true)
+        ], QUI\System\Log::LEVEL_ERROR);
+
         $html = MediaUtils::getImageHTML($src, $att);
+
+        QUI\System\Log::writeRecursive([
+            '4',
+            microtime(true)
+        ], QUI\System\Log::LEVEL_ERROR);
 
         // workaround
         if ($this->settings['use-system-image-paths']) {
