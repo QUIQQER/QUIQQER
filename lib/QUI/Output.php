@@ -358,15 +358,9 @@ class Output extends Singleton
         }
 
         $src = \str_replace('&amp;', '&', $att['src']);
+        $src = \urldecode($src);
 
         unset($att['src']);
-
-        $start = microtime(true);
-
-        QUI\System\Log::writeRecursive([
-            '1',
-            $start
-        ], QUI\System\Log::LEVEL_ERROR);
 
         if (\strpos($src, 'media/cache') !== false) {
             try {
@@ -375,11 +369,6 @@ class Output extends Singleton
                 $src = QUI\Cache\Manager::get(
                     'media/cache/'.$fileData['project'].'/indexSrcCache/'.\md5($fileData['filePath'])
                 );
-
-
-                QUI\System\Log::writeRecursive([
-                    '1->1'
-                ], QUI\System\Log::LEVEL_ERROR);
             } catch (QUI\Exception $Exception) {
                 try {
                     $Image   = MediaUtils::getElement($src);
@@ -394,12 +383,6 @@ class Output extends Singleton
                 }
             }
         }
-
-        QUI\System\Log::writeRecursive([
-            '2',
-            (microtime(true) - $start),
-            $src
-        ], QUI\System\Log::LEVEL_ERROR);
 
         if (!isset($att['alt']) || !isset($att['title'])) {
             try {
@@ -417,21 +400,7 @@ class Output extends Singleton
             }
         }
 
-        QUI\System\Log::writeRecursive([
-            '3',
-            (microtime(true) - $start)
-        ], QUI\System\Log::LEVEL_ERROR);
-
         $html = MediaUtils::getImageHTML($src, $att);
-
-        QUI\System\Log::writeRecursive([
-            '4',
-            (microtime(true) - $start)
-        ], QUI\System\Log::LEVEL_ERROR);
-
-        QUI\System\Log::writeRecursive([
-            '======================='
-        ], QUI\System\Log::LEVEL_ERROR);
 
         // workaround
         if ($this->settings['use-system-image-paths']) {
