@@ -167,7 +167,7 @@
 .qui-media-pagination .quiqqer-pagination {
     clear: none !important;
     float: left;
-    width: calc(100% - 75px) !important;
+    width: calc(100% - 80px) !important;
 }
 
 .qui-media-pagination .quiqqer-sheets-sheet {

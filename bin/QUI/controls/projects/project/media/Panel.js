@@ -124,7 +124,7 @@ define('controls/projects/project/media/Panel', [
             this.setAttribute('icon', 'fa fa-picture-o');
             this.parent(options);
 
-            this.$limitOptions = [10, 25, 50, 100, 250];
+            this.$limitOptions = [10, 25, 50, 100, 250, 500, 1000, 2000, 5000];
 
             this.$Map    = null;
             this.$Media  = Media || null;
