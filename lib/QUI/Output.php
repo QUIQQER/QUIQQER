@@ -373,8 +373,13 @@ class Output extends Singleton
                 $fileData = MediaUtils::getRealFileDataFromCacheUrl($src);
 
                 $src = QUI\Cache\Manager::get(
-                    'media/cache/'.$fileData['project'].'/indexSrcCache/'.md5($fileData['filePath'])
+                    'media/cache/'.$fileData['project'].'/indexSrcCache/'.\md5($fileData['filePath'])
                 );
+
+
+                QUI\System\Log::writeRecursive([
+                    '1->1'
+                ], QUI\System\Log::LEVEL_ERROR);
             } catch (QUI\Exception $Exception) {
                 try {
                     $Image   = MediaUtils::getElement($src);
@@ -392,7 +397,8 @@ class Output extends Singleton
 
         QUI\System\Log::writeRecursive([
             '2',
-            (microtime(true) - $start) / 60
+            (microtime(true) - $start),
+            $src
         ], QUI\System\Log::LEVEL_ERROR);
 
         if (!isset($att['alt']) || !isset($att['title'])) {
@@ -413,14 +419,14 @@ class Output extends Singleton
 
         QUI\System\Log::writeRecursive([
             '3',
-            (microtime(true) - $start) / 60
+            (microtime(true) - $start)
         ], QUI\System\Log::LEVEL_ERROR);
 
         $html = MediaUtils::getImageHTML($src, $att);
 
         QUI\System\Log::writeRecursive([
             '4',
-            (microtime(true) - $start) / 60
+            (microtime(true) - $start)
         ], QUI\System\Log::LEVEL_ERROR);
 
         QUI\System\Log::writeRecursive([
