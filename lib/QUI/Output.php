@@ -392,6 +392,8 @@ class Output extends Singleton
             } catch (QUI\Exception $Exception) {
             }
         }
+        
+        QUI\System\Log::writeRecursive(['done 5', microtime(true)], QUI\System\Log::LEVEL_ERROR);
 
         $html = MediaUtils::getImageHTML($src, $att);
 
