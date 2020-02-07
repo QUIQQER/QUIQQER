@@ -162,6 +162,8 @@ class Output extends Singleton
                 $image
             );
 
+            $html = $image;
+
             if (\strpos($html, '<picture') === false) {
                 continue;
             }
@@ -327,11 +329,15 @@ class Output extends Singleton
      */
     protected function images($output)
     {
+        QUI\System\Log::writeRecursive([1, microtime(true)], QUI\System\Log::LEVEL_ERROR);
+
         $img = $output[0];
         $att = StringUtils::getHTMLAttributes($img);
 
         // Falls in der eigenen Sammlung schon vorhanden
         if (isset($this->imageCache[$img])) {
+            QUI\System\Log::writeRecursive(['done 1', microtime(true)], QUI\System\Log::LEVEL_ERROR);
+
             return $this->imageCache[$img];
         }
 
@@ -348,16 +354,26 @@ class Output extends Singleton
                 );
             }
 
+            QUI\System\Log::writeRecursive(['done 2', microtime(true)], QUI\System\Log::LEVEL_ERROR);
+
             return $output[0];
         }
 
         if (!isset($att['src'])) {
+            QUI\System\Log::writeRecursive(['done 3', microtime(true)], QUI\System\Log::LEVEL_ERROR);
+
             return $output[0];
         }
 
         $src = \str_replace('&amp;', '&', $att['src']);
 
         unset($att['src']);
+
+        QUI\System\Log::writeRecursive([
+            'done 4 -> ',
+            microtime(true),
+            $src
+        ], QUI\System\Log::LEVEL_ERROR);
 
         if (\strpos($src, 'media/cache') !== false) {
             try {
@@ -366,6 +382,8 @@ class Output extends Singleton
             } catch (QUI\Exception $Exception) {
             }
         }
+
+        QUI\System\Log::writeRecursive(['done 4', microtime(true)], QUI\System\Log::LEVEL_ERROR);
 
         if (!isset($att['alt']) || !isset($att['title'])) {
             try {
@@ -383,6 +401,8 @@ class Output extends Singleton
             }
         }
 
+        QUI\System\Log::writeRecursive(['done 5', microtime(true)], QUI\System\Log::LEVEL_ERROR);
+
         $html = MediaUtils::getImageHTML($src, $att);
 
         // workaround
@@ -395,6 +415,8 @@ class Output extends Singleton
         }
 
         $this->imageCache[$img] = $html;
+
+        QUI\System\Log::writeRecursive(['done 6', microtime(true)], QUI\System\Log::LEVEL_ERROR);
 
         return $this->imageCache[$img];
     }

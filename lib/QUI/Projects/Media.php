@@ -458,31 +458,39 @@ class Media extends QUI\QDOM
      */
     public function getChildByPath($filepath)
     {
-        $table     = $this->getTable();
-        $table_rel = $this->getTable('relations');
+        $cache = $this->getCacheDir().'filePathIds/'.md5($filepath);
 
-        $result = QUI::getDataBase()->fetch(
-            [
-                'select' => [
-                    $table.'.id'
-                ],
-                'from'   => [
-                    $table,
-                    $table_rel
-                ],
-                'where'  => [
-                    $table.'.deleted' => 0,
-                    $table.'.file'    => $filepath
-                ],
-                'limit'  => 1
-            ]
-        );
+        try {
+            $id = (int)QUI\Cache\Manager::get($cache);
+        } catch (QUI\Exception $Exception) {
+            $table     = $this->getTable();
+            $table_rel = $this->getTable('relations');
 
-        if (!isset($result[0])) {
-            throw new QUI\Exception('File '.$filepath.' not found', 404);
+            $result = QUI::getDataBase()->fetch(
+                [
+                    'select' => [
+                        $table.'.id'
+                    ],
+                    'from'   => [
+                        $table,
+                        $table_rel
+                    ],
+                    'where'  => [
+                        $table.'.deleted' => 0,
+                        $table.'.file'    => $filepath
+                    ],
+                    'limit'  => 1
+                ]
+            );
+
+            if (!isset($result[0])) {
+                throw new QUI\Exception('File '.$filepath.' not found', 404);
+            }
+
+            $id = (int)$result[0]['id'];
         }
 
-        return $this->get((int)$result[0]['id']);
+        return $this->get($id);
     }
 
     /**

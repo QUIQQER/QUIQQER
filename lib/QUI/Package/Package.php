@@ -184,12 +184,14 @@ class Package extends QUI\QDOM
      */
     protected function getPackageXMLData()
     {
-        if (!$this->isQuiqqerPackage()) {
-            return [];
-        }
-
         if ($this->packageXML !== null) {
             return $this->packageXML;
+        }
+
+        if (!$this->isQuiqqerPackage()) {
+            $this->packageXML = [];
+
+            return [];
         }
 
         $packageXML = $this->packageDir.'/package.xml';

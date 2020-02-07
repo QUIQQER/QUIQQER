@@ -893,35 +893,10 @@ class Manager extends QUI\QDOM
      *
      * @return array
      */
-    public function getInstalled($params = [])
+    public function getInstalled()
     {
         $list   = $this->getList();
         $result = $list;
-
-        if (isset($params['type'])) {
-            $result = [];
-
-            foreach ($list as $package) {
-                if (!isset($package['type'])) {
-                    continue;
-                }
-
-                if (!empty($params['type'])
-                    && $params['type'] != $package['type']
-                ) {
-                    continue;
-                }
-
-                $result[] = $package;
-            }
-        }
-
-        if (isset($params['limit']) && isset($params['page'])) {
-            $limit = (int)$params['limit'];
-            $page  = (int)$params['page'];
-
-            $result = QUI\Utils\Grid::getResult($result, $page, $limit);
-        }
 
         foreach ($result as $key => $package) {
             try {
@@ -936,6 +911,39 @@ class Manager extends QUI\QDOM
 
         return $result;
     }
+
+    /**
+     * @param array $params
+     */
+    public function searchInstalledPackages($params = [])
+    {
+        $list = $this->getList();
+
+        if (isset($params['type'])) {
+            $result = [];
+
+            foreach ($list as $package) {
+                if (!isset($package['type'])) {
+                    continue;
+                }
+
+                if (!empty($params['type']) && $params['type'] != $package['type']) {
+                    continue;
+                }
+
+                $result[] = $package;
+            }
+        }
+
+        if (isset($params['limit']) && isset($params['page'])) {
+            $limit = (int)$params['limit'];
+            $page  = (int)$params['page'];
+
+            $result = QUI\Utils\Grid::getResult($result, $page, $limit);
+        }
+
+    }
+
 
     /**
      * Return a package object

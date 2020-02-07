@@ -302,6 +302,11 @@ abstract class Item extends QUI\QDOM
             $this->createCache();
         }
 
+        // id cache via filepath
+        $cache = $this->getMedia()->getCacheDir().'filePathIds/'.md5($this->getAttribute('file'));
+        QUI\Cache\Manager::set($cache, $this->getId());
+
+
         QUI::getEvents()->fireEvent('mediaSave', [$this]);
     }
 

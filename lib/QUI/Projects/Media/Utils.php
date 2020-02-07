@@ -384,7 +384,8 @@ class Utils
                 $start = 100;
                 $sets  = [];
 
-                for (; $start < $end; $start += 100) {
+                // @todo setting
+                for (; $start < $end; $start += 200) {
                     $sets[] = [
                         'src'   => \htmlspecialchars($Image->getSizeCacheUrl($start)),
                         'media' => '(max-width: '.$start.'px)',
@@ -885,19 +886,20 @@ class Utils
         $Media   = $Project->getMedia();
 
         // if the element (image) is resized resize
-        $file_name = \array_pop($parts);
+        $fileName = \array_pop($parts);
 
-        if (\strpos($file_name, '__') !== false) {
-            $lastpos_ul = \strrpos($file_name, '__') + 2;
-            $pos_dot    = \strpos($file_name, '.', $lastpos_ul);
+        if (\strpos($fileName, '__') !== false) {
+            $lastpos_ul = \strrpos($fileName, '__') + 2;
+            $pos_dot    = \strpos($fileName, '.', $lastpos_ul);
 
-            $file_name = \substr($file_name, 0, ($lastpos_ul - 2)).
-                         \substr($file_name, $pos_dot);
+            $fileName = \substr($fileName, 0, ($lastpos_ul - 2)).
+                        \substr($fileName, $pos_dot);
         }
 
-        $parts[] = $file_name;
+        $parts[]   = $fileName;
+        $filePaths = \implode('/', $parts);
 
-        return $Media->getChildByPath(\implode('/', $parts));
+        return $Media->getChildByPath($filePaths);
     }
 
     /**

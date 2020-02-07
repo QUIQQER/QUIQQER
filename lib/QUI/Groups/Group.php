@@ -235,73 +235,7 @@ class Group extends QUI\QDOM
      */
     protected function getListOfExtraAttributes()
     {
-        $cache = 'quiqqer/groups/plugin-attribute-list';
-
-        try {
-            return QUI\Cache\Manager::get($cache);
-        } catch (QUI\Exception $Exception) {
-        }
-
-        $list       = QUI::getPackageManager()->getInstalled();
-        $attributes = [];
-
-        foreach ($list as $entry) {
-            $plugin  = $entry['name'];
-            $userXml = OPT_DIR.$plugin.'/group.xml';
-
-            if (!\file_exists($userXml)) {
-                continue;
-            }
-
-            $attributes = \array_merge(
-                $attributes,
-                $this->readAttributesFromGroupXML($userXml)
-            );
-        }
-
-        QUI\Cache\Manager::set($cache, $attributes);
-
-        return $attributes;
-    }
-
-    /**
-     * Read an user.xml and return the attributes,
-     * if some extra attributes defined
-     *
-     * @param string $file
-     *
-     * @return array
-     */
-    protected function readAttributesFromGroupXML($file)
-    {
-        $Dom  = QUI\Utils\Text\XML::getDomFromXml($file);
-        $Attr = $Dom->getElementsByTagName('attributes');
-
-        if (!$Attr->length) {
-            return [];
-        }
-
-        /* @var $Attributes \DOMElement */
-        $Attributes = $Attr->item(0);
-        $list       = $Attributes->getElementsByTagName('attribute');
-
-        if (!$list->length) {
-            return [];
-        }
-
-        $attributes = [];
-
-        for ($c = 0; $c < $list->length; $c++) {
-            $Attribute = $list->item($c);
-
-            if ($Attribute->nodeName == '#text') {
-                continue;
-            }
-
-            $attributes[] = \trim($Attribute->nodeValue);
-        }
-
-        return $attributes;
+        return Manager::getListOfExtraAttributes();
     }
 
     /**
