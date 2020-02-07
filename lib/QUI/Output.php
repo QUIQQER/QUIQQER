@@ -361,9 +361,11 @@ class Output extends Singleton
 
         unset($att['src']);
 
+        $start = microtime(true);
+
         QUI\System\Log::writeRecursive([
             '1',
-            microtime(true)
+            $start
         ], QUI\System\Log::LEVEL_ERROR);
 
         if (\strpos($src, 'media/cache') !== false) {
@@ -390,7 +392,7 @@ class Output extends Singleton
 
         QUI\System\Log::writeRecursive([
             '2',
-            microtime(true)
+            (microtime(true) - $start) / 60
         ], QUI\System\Log::LEVEL_ERROR);
 
         if (!isset($att['alt']) || !isset($att['title'])) {
@@ -411,14 +413,18 @@ class Output extends Singleton
 
         QUI\System\Log::writeRecursive([
             '3',
-            microtime(true)
+            (microtime(true) - $start) / 60
         ], QUI\System\Log::LEVEL_ERROR);
 
         $html = MediaUtils::getImageHTML($src, $att);
 
         QUI\System\Log::writeRecursive([
             '4',
-            microtime(true)
+            (microtime(true) - $start) / 60
+        ], QUI\System\Log::LEVEL_ERROR);
+
+        QUI\System\Log::writeRecursive([
+            '======================='
         ], QUI\System\Log::LEVEL_ERROR);
 
         // workaround
