@@ -361,21 +361,26 @@ class Output extends Singleton
 
         unset($att['src']);
 
-        QUI\System\Log::writeRecursive([
-            'done 4 -> ',
-            microtime(true),
-            $src
-        ], QUI\System\Log::LEVEL_ERROR);
-
         if (\strpos($src, 'media/cache') !== false) {
             try {
-                $Image = MediaUtils::getElement($src);
-                $src   = $Image->getUrl();
+                $parts   = \explode('media/cache/', $src);
+                $parts   = \explode('/', $parts[1]);
+                $project = \array_shift($parts);
+                $src     = QUI\Cache\Manager::get('media/cache/'.$project.'/indexSrcCache/'.md5($src));
             } catch (QUI\Exception $Exception) {
+                try {
+                    $Image   = MediaUtils::getElement($src);
+                    $src     = $Image->getUrl();
+                    $project = $Image->getProject()->getName();
+
+                    QUI\Cache\Manager::set(
+                        'media/cache/'.$project.'/indexSrcCache/'.md5($src),
+                        $src
+                    );
+                } catch (QUI\Exception $Exception) {
+                }
             }
         }
-
-        QUI\System\Log::writeRecursive(['done 4', microtime(true)], QUI\System\Log::LEVEL_ERROR);
 
         if (!isset($att['alt']) || !isset($att['title'])) {
             try {
@@ -392,8 +397,6 @@ class Output extends Singleton
             } catch (QUI\Exception $Exception) {
             }
         }
-        
-        QUI\System\Log::writeRecursive(['done 5', microtime(true)], QUI\System\Log::LEVEL_ERROR);
 
         $html = MediaUtils::getImageHTML($src, $att);
 

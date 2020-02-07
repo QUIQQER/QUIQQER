@@ -879,11 +879,6 @@ class Utils
             );
         }
 
-        QUI\System\Log::writeRecursive([
-            'getElement start ',
-            microtime(true),
-        ], QUI\System\Log::LEVEL_ERROR);
-
         $parts   = \explode('/', $parts[1]);
         $project = \array_shift($parts);
 
@@ -903,11 +898,6 @@ class Utils
 
         $parts[]   = $fileName;
         $filePaths = \implode('/', $parts);
-
-        QUI\System\Log::writeRecursive([
-            'getElement start mysql',
-            microtime(true),
-        ], QUI\System\Log::LEVEL_ERROR);
 
         return $Media->getChildByPath($filePaths);
     }
