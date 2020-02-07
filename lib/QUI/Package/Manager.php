@@ -889,8 +889,6 @@ class Manager extends QUI\QDOM
     /**
      * Return the installed packages
      *
-     * @param array $params - [optional] search / limit params
-     *
      * @return array
      */
     public function getInstalled()
@@ -913,15 +911,17 @@ class Manager extends QUI\QDOM
     }
 
     /**
+     * Return the installed packages, but filtered
+     *
      * @param array $params
+     * @return array
      */
     public function searchInstalledPackages($params = [])
     {
-        $list = $this->getList();
+        $list   = $this->getList();
+        $result = [];
 
         if (isset($params['type'])) {
-            $result = [];
-
             foreach ($list as $package) {
                 if (!isset($package['type'])) {
                     continue;
@@ -942,6 +942,7 @@ class Manager extends QUI\QDOM
             $result = QUI\Utils\Grid::getResult($result, $page, $limit);
         }
 
+        return $result;
     }
 
 
