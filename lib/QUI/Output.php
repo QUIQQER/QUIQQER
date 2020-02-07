@@ -329,15 +329,11 @@ class Output extends Singleton
      */
     protected function images($output)
     {
-        QUI\System\Log::writeRecursive([1, microtime(true)], QUI\System\Log::LEVEL_ERROR);
-
         $img = $output[0];
         $att = StringUtils::getHTMLAttributes($img);
 
         // Falls in der eigenen Sammlung schon vorhanden
         if (isset($this->imageCache[$img])) {
-            QUI\System\Log::writeRecursive(['done 1', microtime(true)], QUI\System\Log::LEVEL_ERROR);
-
             return $this->imageCache[$img];
         }
 
@@ -354,14 +350,10 @@ class Output extends Singleton
                 );
             }
 
-            QUI\System\Log::writeRecursive(['done 2', microtime(true)], QUI\System\Log::LEVEL_ERROR);
-
             return $output[0];
         }
 
         if (!isset($att['src'])) {
-            QUI\System\Log::writeRecursive(['done 3', microtime(true)], QUI\System\Log::LEVEL_ERROR);
-
             return $output[0];
         }
 
@@ -401,8 +393,6 @@ class Output extends Singleton
             }
         }
 
-        QUI\System\Log::writeRecursive(['done 5', microtime(true)], QUI\System\Log::LEVEL_ERROR);
-
         $html = MediaUtils::getImageHTML($src, $att);
 
         // workaround
@@ -415,8 +405,6 @@ class Output extends Singleton
         }
 
         $this->imageCache[$img] = $html;
-
-        QUI\System\Log::writeRecursive(['done 6', microtime(true)], QUI\System\Log::LEVEL_ERROR);
 
         return $this->imageCache[$img];
     }
