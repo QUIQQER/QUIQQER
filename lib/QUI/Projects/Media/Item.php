@@ -51,7 +51,7 @@ abstract class Item extends QUI\QDOM
     /**
      * @var array
      */
-    protected $pathHistory = [];
+    protected $pathHistory = null;
 
     /**
      * constructor
@@ -65,7 +65,6 @@ abstract class Item extends QUI\QDOM
         $params['hidden']   = (int)$params['hidden'];
         $params['active']   = (int)$params['active'];
         $params['priority'] = (int)$params['priority'];
-
 
         $this->Media = $Media;
         $this->setAttributes($params);
@@ -87,18 +86,6 @@ abstract class Item extends QUI\QDOM
             'cache_url',
             URL_DIR.$this->Media->getCacheDir().$this->getPath()
         );
-
-        if (!empty($params['pathHistory'])) {
-            $pathHistory = \json_decode($params['pathHistory'], true);
-
-            if (\is_array($pathHistory)) {
-                $this->pathHistory = $pathHistory;
-            }
-        }
-
-        if (empty($this->pathHistory)) {
-            $this->pathHistory[] = $this->getPath();
-        }
     }
 
     /**
@@ -285,7 +272,7 @@ abstract class Item extends QUI\QDOM
                 'priority'      => (int)$this->getAttribute('priority'),
                 'image_effects' => \json_encode($image_effects),
                 'type'          => $type,
-                'pathHistory'   => \json_encode($this->pathHistory),
+                'pathHistory'   => \json_encode($this->getPathHistory()),
                 'hidden'        => $this->isHidden() ? 1 : 0
             ],
             [
@@ -549,14 +536,14 @@ abstract class Item extends QUI\QDOM
         }
 
 
-        $this->pathHistory[] = $new_file;
+        $this->addToPathHistory($new_file);
 
         QUI::getDataBase()->update(
             $this->Media->getTable(),
             [
                 'name'        => $newname,
                 'file'        => $new_file,
-                'pathHistory' => \json_encode($this->pathHistory)
+                'pathHistory' => \json_encode($this->getPathHistory())
             ],
             [
                 'id' => $this->getId()
@@ -1015,6 +1002,46 @@ abstract class Item extends QUI\QDOM
             $this,
             $User
         );
+    }
+
+    //endregion
+
+    //region path history
+
+    /**
+     * @return array
+     */
+    public function getPathHistory()
+    {
+        if ($this->pathHistory !== null) {
+            return $this->pathHistory;
+        }
+
+        $pathHistory = $this->getAttribute('pathHistory');
+
+        if (!empty($pathHistory)) {
+            $pathHistory = \json_decode($pathHistory, true);
+
+            if (\is_array($pathHistory)) {
+                $this->pathHistory = $pathHistory;
+            }
+        }
+
+        if (empty($this->pathHistory)) {
+            $this->pathHistory[] = $this->getPath();
+        }
+
+        return $this->pathHistory;
+    }
+
+    /**
+     * @param string $path
+     */
+    public function addToPathHistory($path)
+    {
+        $this->getPathHistory();
+
+        $this->pathHistory[] = $path;
     }
 
     //endregion
