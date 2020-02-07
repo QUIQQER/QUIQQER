@@ -363,10 +363,11 @@ class Output extends Singleton
 
         if (\strpos($src, 'media/cache') !== false) {
             try {
-                $parts   = \explode('media/cache/', $src);
-                $parts   = \explode('/', $parts[1]);
-                $project = \array_shift($parts);
-                $src     = QUI\Cache\Manager::get('media/cache/'.$project.'/indexSrcCache/'.md5($src));
+                $fileData = MediaUtils::getRealFileDataFromCacheUrl($src);
+
+                $src = QUI\Cache\Manager::get(
+                    'media/cache/'.$fileData['project'].'/indexSrcCache/'.md5($fileData['filePath'])
+                );
             } catch (QUI\Exception $Exception) {
                 try {
                     $Image   = MediaUtils::getElement($src);
@@ -374,7 +375,7 @@ class Output extends Singleton
                     $project = $Image->getProject()->getName();
 
                     QUI\Cache\Manager::set(
-                        'media/cache/'.$project.'/indexSrcCache/'.md5($src),
+                        'media/cache/'.$project.'/indexSrcCache/'.md5($Image->getAttribute('file')),
                         $src
                     );
                 } catch (QUI\Exception $Exception) {

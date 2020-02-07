@@ -860,6 +860,21 @@ class Utils
      */
     public static function getElement($url)
     {
+        $filePath = self::getRealFileDataFromCacheUrl($url);
+        $Project  = QUI::getProject($filePath['project']);
+        $Media    = $Project->getMedia();
+
+        return $Media->getChildByPath($filePath['filePath']);
+    }
+
+    /**
+     * @param $url
+     * @return array
+     *
+     * @throws QUI\Exception
+     */
+    public static function getRealFileDataFromCacheUrl($url)
+    {
         if (\strpos($url, 'media/cache/') !== false) {
             $parts = \explode('media/cache/', $url);
         } elseif (\strpos($url, 'media/sites/') !== false) {
@@ -871,7 +886,6 @@ class Utils
             );
         }
 
-
         if (!isset($parts[1])) {
             throw new QUI\Exception(
                 'File not found',
@@ -881,9 +895,6 @@ class Utils
 
         $parts   = \explode('/', $parts[1]);
         $project = \array_shift($parts);
-
-        $Project = QUI::getProject($project);
-        $Media   = $Project->getMedia();
 
         // if the element (image) is resized resize
         $fileName = \array_pop($parts);
@@ -899,7 +910,10 @@ class Utils
         $parts[]   = $fileName;
         $filePaths = \implode('/', $parts);
 
-        return $Media->getChildByPath($filePaths);
+        return [
+            'project'  => $project,
+            'filePath' => $filePaths
+        ];
     }
 
     /**

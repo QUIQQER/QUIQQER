@@ -289,10 +289,20 @@ abstract class Item extends QUI\QDOM
             $this->createCache();
         }
 
-        // id cache via filepath
-        $cache = $this->getMedia()->getCacheDir().'filePathIds/'.md5($this->getAttribute('file'));
-        QUI\Cache\Manager::set($cache, $this->getId());
+        // build frontend cache
+        $Media   = $this->getMedia();
+        $Project = $Media->getProject();
 
+        // id cache via filepath
+        QUI\Cache\Manager::set(
+            $Media->getCacheDir().'filePathIds/'.md5($this->getAttribute('file')),
+            $this->getId()
+        );
+
+        QUI\Cache\Manager::set(
+            'media/cache/'.$Project->getName().'/indexSrcCache/'.md5($this->getAttribute('file')),
+            $this->getUrl()
+        );
 
         QUI::getEvents()->fireEvent('mediaSave', [$this]);
     }
