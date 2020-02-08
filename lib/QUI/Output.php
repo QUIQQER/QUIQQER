@@ -162,8 +162,6 @@ class Output extends Singleton
                 $image
             );
 
-            $html = $image;
-
             if (\strpos($html, '<picture') === false) {
                 continue;
             }
