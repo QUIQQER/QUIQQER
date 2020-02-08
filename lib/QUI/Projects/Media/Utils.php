@@ -949,8 +949,7 @@ class Utils
         QUI\Projects\Media $Media,
         $fileid,
         $uploadparams
-    )
-    {
+    ) {
         $fileid = (int)$fileid;
 
         $result = QUI::getDataBase()->fetch([
