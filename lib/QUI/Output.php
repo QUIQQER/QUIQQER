@@ -153,6 +153,10 @@ class Output extends Singleton
             if ($parent === 'picture') {
                 continue;
             }
+            
+            if ($parent === 'source') {
+                continue;
+            }
 
             $image = $nodeContent($Image);
 
