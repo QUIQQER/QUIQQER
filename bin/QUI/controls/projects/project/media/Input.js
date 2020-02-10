@@ -177,6 +177,10 @@ define('controls/projects/project/media/Input', [
                             }
                         }
 
+                        if (project === '') {
+                            project = QUIQQER_PROJECT.name;
+                        }
+
                         if (!fileid) {
                             fileid = self.getAttribute('fileid');
                         }
