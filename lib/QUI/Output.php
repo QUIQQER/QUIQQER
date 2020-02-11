@@ -144,17 +144,28 @@ class Output extends Singleton
             return null;
         };
 
+        $isInPicture = function (\DOMElement $Image) {
+            $Parent = $Image->parentNode;
+
+            while ($Parent) {
+                $parent = $Parent->nodeName;
+                $Parent = $Parent->parentNode;
+
+                if ($parent === 'body') {
+                    return false;
+                }
+
+                if ($parent === 'picture') {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+
 
         foreach ($images as $Image) {
-            /* @var $Parent \DOMElement */
-            $Parent = $Image->parentNode;
-            $parent = $Parent->nodeName;
-
-            if ($parent === 'picture') {
-                continue;
-            }
-            
-            if ($parent === 'source') {
+            if ($isInPicture($Image)) {
                 continue;
             }
 
@@ -166,15 +177,11 @@ class Output extends Singleton
                 $image
             );
 
-            if (\strpos($html, '<picture') === false) {
-                continue;
-            }
-
             $Picture = $getPicture($html);
 
             if ($Picture) {
                 $Picture = $Dom->importNode($Picture, true);
-                $Parent->replaceChild($Picture, $Image);
+                $Image->parentNode->replaceChild($Picture, $Image);
             }
         }
 

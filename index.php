@@ -24,7 +24,7 @@ if (isset($_REQUEST['_url'])
     && \strpos($_REQUEST['_url'], '[mailto]') !== false
 ) {
     $addr = \str_replace('[mailto]', '', $_REQUEST['_url']);
-    list($user, $host) = \explode("[at]", $addr);
+    [$user, $host] = \explode("[at]", $addr);
 
     if (isset($user) && isset($host)) {
         \header("Location: mailto:".$user."@".$host);
@@ -184,9 +184,8 @@ try {
         try {
             $cache_content = QUI\Cache\Manager::get($siteCachePath);
             $content       = $Rewrite->outputFilter($cache_content);
-            $_content      = $content;
 
-            QUI::getEvents()->fireEvent('requestOutput', [&$_content]);
+            QUI::getEvents()->fireEvent('requestOutput', [&$content]);
             $Response->setContent($content);
             $Response->send();
 

@@ -429,7 +429,7 @@ class Utils
                         $media = ' media="' . $set['media'] . '"';
                     }
 
-                    $srcset .= '<source ' . $media . ' srcset="' . $set['src'] . '" type="' . $set['type'] . '">';
+                    $srcset .= '<source ' . $media . ' srcset="' . $set['src'] . '" type="' . $set['type'] . '" />';
                 }
             }
         } catch (QUI\Exception $Exception) {
