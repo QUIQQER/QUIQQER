@@ -84,6 +84,10 @@ try {
 
     $Project = $Rewrite->getProject();
     $Site    = $Rewrite->getSite();
+
+    QUI::getTemplateManager()->assignGlobalParam('Project', $Project);
+    QUI::getTemplateManager()->assignGlobalParam('Site', $Site);
+
     $Engine  = QUI::getTemplateManager()->getEngine();
 
     $Site->load();
