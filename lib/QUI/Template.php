@@ -170,6 +170,8 @@ class Template extends QUI\QDOM
 
         $Engine->assign('__TEMPLATE__', $this);
 
+        QUI::getTemplateManager()->assignGlobalParam('Project', QUI::getRewrite()->getProject());
+
         if (!empty($this->assigned)) {
             $Engine->assign($this->assigned);
         }
