@@ -7,7 +7,10 @@
 namespace QUI\Projects\Media;
 
 use QUI;
+use QUI\Groups\Group;
+use QUI\Permissions\Permission;
 use QUI\Projects\Media;
+use QUI\Users\User;
 use QUI\Utils\System\File as QUIFile;
 
 /**
@@ -1013,6 +1016,64 @@ abstract class Item extends QUI\QDOM
             $User
         );
     }
+    
+    /**
+     * Add an user to the permission
+     *
+     * @param string $permission - name of the permission
+     * @param User $User - User Object
+     * @param boolean|\QUI\Users\User $EditUser
+     *
+     * @throws QUI\Exception
+     */
+    public function addUserToPermission(User $User, $permission, $EditUser = false)
+    {
+        Permission::addUserToMediaPermission($User, $this, $permission, $EditUser);
+    }
+
+    /**
+     * add an group to the permission
+     *
+     * @param Group $Group
+     * @param string $permission
+     * @param boolean|\QUI\Users\User $EditUser
+     *
+     * @throws QUI\Exception
+     */
+    public function addGroupToPermission(Group $Group, $permission, $EditUser = false)
+    {
+        Permission::addGroupToMediaPermission($Group, $this, $permission, $EditUser);
+    }
+
+    /**
+     * Remove an user from the permission
+     *
+     * @param string $permission - name of the permission
+     * @param User $User - User Object#
+     * @param boolean|\QUI\Users\User $EditUser
+     *
+     * @throws QUI\Exception
+     */
+    public function removeUserFromSitePermission(User $User, $permission, $EditUser = false)
+    {
+        Permission::removeUserFromMediaPermission($User, $this, $permission, $EditUser);
+    }
+
+    /**
+     * Remove a group from the permission
+     *
+     * @param Group $Group
+     * @param string $permission - name of the permission
+     * @param boolean|\QUI\Users\User $EditUser
+     *
+     * @throws QUI\Exception
+     */
+    public function removeGroupFromSitePermission(Group $Group, $permission, $EditUser = false)
+    {
+        Permission::removeGroupFromMediaPermission($Group, $this, $permission, $EditUser);
+    }
+
+
 
     //endregion
 

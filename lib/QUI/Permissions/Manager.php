@@ -753,7 +753,6 @@ class Manager
      *
      * @throws QUI\Exception
      *
-     * @todo  permissions for media
      * @todo  permissions for project
      */
     public function setPermissions($Obj, $permissions, $EditUser = false)

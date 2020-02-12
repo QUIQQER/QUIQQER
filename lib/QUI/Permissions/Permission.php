@@ -1214,4 +1214,231 @@ class Permission
 
         return self::checkPermissionList($permissions, $perm, $User);
     }
+
+
+    /**
+     * Remove a group from the permission
+     *
+     * @param Group $Group
+     * @param Media\Item $MediaItem
+     * @param string $permission
+     * @param boolean|\QUI\Users\User $EditUser
+     *
+     * @return bool
+     *
+     * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
+     */
+    public static function removeGroupFromMediaPermission(
+        Group $Group,
+        $MediaItem,
+        $permission,
+        $EditUser = false
+    ) {
+        if (!QUI\Projects\Media\Utils::isItem($MediaItem)) {
+            return false;
+        }
+
+        $MediaItem->checkPermission('quiqqer.projects.media.set_permissions', $EditUser);
+        $MediaItem->checkPermission('quiqqer.projects.media.edit', $EditUser);
+
+        $Manager     = QUI::getPermissionManager();
+        $permissions = $Manager->getMediaPermissions($MediaItem);
+
+        if (!isset($permissions[$permission])) {
+            return false;
+        }
+
+        $permList = [];
+        $group    = 'g'.$Group->getId();
+
+        if (!empty($permissions[$permission])) {
+            $permList = \explode(',', \trim($permissions[$permission], ' ,'));
+        }
+
+        $flip = \array_flip($permList);
+
+        // user is in the permissions, than unset it
+        if (isset($flip[$group])) {
+            unset($flip[$group]);
+        }
+
+        $permList = \array_flip($flip);
+
+
+        $Manager->setMediaPermissions(
+            $MediaItem,
+            [$permission => \implode(',', $permList)],
+            $EditUser
+        );
+
+        return true;
+    }
+
+    /**
+     * Remove an user from the permission
+     *
+     * @param \QUI\Users\User $User
+     * @param Media\Item $MediaItem
+     * @param string $permission
+     * @param boolean|\QUI\Users\User $EditUser
+     *
+     * @return bool
+     *
+     * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
+     */
+    public static function removeUserFromMediaPermission(User $User, $MediaItem, $permission, $EditUser = false)
+    {
+        if (!QUI\Projects\Media\Utils::isItem($MediaItem)) {
+            return false;
+        }
+
+        $MediaItem->checkPermission('quiqqer.projects.media.set_permissions', $EditUser);
+        $MediaItem->checkPermission('quiqqer.projects.media.edit', $EditUser);
+
+        $Manager     = QUI::getPermissionManager();
+        $permissions = $Manager->getMediaPermissions($MediaItem);
+
+        if (!isset($permissions[$permission])) {
+            return false;
+        }
+
+        $permList = [];
+        $user     = 'u'.$User->getId();
+
+        if (!empty($permissions[$permission])) {
+            $permList = \explode(',', \trim($permissions[$permission], ' ,'));
+        }
+
+        $flip = \array_flip($permList);
+
+        // user is in the permissions, than unset it
+        if (isset($flip[$user])) {
+            unset($flip[$user]);
+        }
+
+        $permList = \array_flip($flip);
+
+
+        $Manager->setMediaPermissions(
+            $MediaItem,
+            [$permission => \implode(',', $permList)],
+            $EditUser
+        );
+
+        return true;
+    }
+
+
+    /**
+     * Add a group to the permission
+     *
+     * @param \QUI\Groups\Group $Group
+     * @param Media\Item $MediaItem
+     * @param string $permission - name of the permission
+     * @param boolean|\QUI\Users\User $EditUser
+     *
+     * @return bool
+     *
+     * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
+     */
+    public static function addGroupToMediaPermission(Group $Group, $MediaItem, $permission, $EditUser)
+    {
+        if (!QUI\Projects\Media\Utils::isItem($MediaItem)) {
+            return false;
+        }
+
+        $MediaItem->checkPermission('quiqqer.projects.media.set_permissions', $EditUser);
+        $MediaItem->checkPermission('quiqqer.projects.media.edit', $EditUser);
+
+        $Manager     = QUI::getPermissionManager();
+        $permissions = $Manager->getMediaPermissions($MediaItem);
+
+        if (!isset($permissions[$permission])) {
+            return false;
+        }
+
+        $permList = [];
+        $group    = 'g'.$Group->getId();
+
+        if (!empty($permissions[$permission])) {
+            $permList = \explode(',', \trim($permissions[$permission], ' ,'));
+        }
+
+        $flip = \array_flip($permList);
+
+        // user is in the permissions
+        if (isset($flip[$group])) {
+            return true;
+        }
+
+        $permList[] = $group;
+
+
+        $Manager->setMediaPermissions(
+            $MediaItem,
+            [$permission => \implode(',', $permList)],
+            $EditUser
+        );
+
+        return true;
+    }
+
+    /**
+     * Add an user to the permission
+     *
+     * @param \QUI\Users\User $User
+     * @param Media\Item $MediaItem
+     * @param string $permission - name of the permission
+     * @param boolean|\QUI\Users\User $EditUser
+     *
+     * @return bool
+     *
+     * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
+     */
+    public static function addUserToMediaPermission(User $User, $MediaItem, $permission, $EditUser = false)
+    {
+        if (!QUI\Projects\Media\Utils::isItem($MediaItem)) {
+            return false;
+        }
+
+        $MediaItem->checkPermission('quiqqer.projects.media.set_permissions', $EditUser);
+        $MediaItem->checkPermission('quiqqer.projects.media.edit', $EditUser);
+
+        $Manager     = QUI::getPermissionManager();
+        $permissions = $Manager->getMediaPermissions($MediaItem);
+
+        if (!isset($permissions[$permission])) {
+            return false;
+        }
+
+        $permList = [];
+        $user     = 'u'.$User->getId();
+
+        if (!empty($permissions[$permission])) {
+            $permList = \explode(',', \trim($permissions[$permission], ' ,'));
+        }
+
+        $flip = \array_flip($permList);
+
+        // user is in the permissions
+        if (isset($flip[$user])) {
+            return true;
+        }
+
+        $permList[] = $user;
+
+        $Manager->setMediaPermissions(
+            $MediaItem,
+            [$permission => \implode(',', $permList)],
+            $EditUser
+        );
+
+        return true;
+    }
+
+    //endregion
 }
