@@ -10,10 +10,6 @@
  * @event onActivate [ {self} ]
  * @event onDeactivate [ {self} ]
  * @event onRename [ {self} ]
- *
- * @require qui/classes/DOM
- * @require Ajax
- * @require qui/utils/Object
  */
 
 define('classes/projects/project/media/Item', [
@@ -67,13 +63,15 @@ define('classes/projects/project/media/Item', [
             mime_type   : '',
             image_height: '',
             image_width : '',
-            cache_url   : ''
+            cache_url   : '',
+            hidden      : 0
         },
 
         initialize: function (params, Media) {
             this.$Media   = Media;
             this.$Panel   = null;
             this.$effects = null;
+            this.$loaded  = false;
 
             this.parent(params);
         },
@@ -89,12 +87,22 @@ define('classes/projects/project/media/Item', [
 
             return this.getMedia().getData(this.getId()).then(function (result) {
                 self.setAttributes(result);
+                self.$loaded = true;
                 self.fireEvent('refresh', [self]);
 
                 if (typeOf(oncomplete) === 'function') {
                     oncomplete(self);
                 }
             });
+        },
+
+        /**
+         * Is the file loaded? data are loaded?
+         *
+         * @return {boolean}
+         */
+        isLoaded: function () {
+            return this.$loaded;
         },
 
         /**

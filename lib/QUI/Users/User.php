@@ -812,7 +812,7 @@ class User implements QUI\Interfaces\Users\User
                 }
             }
 
-            $this->groups = ','.\implode($aTmp, ',').',';
+            $this->groups = ','.\implode(',', $aTmp).',';
 
             return;
         }

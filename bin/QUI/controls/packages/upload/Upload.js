@@ -183,14 +183,19 @@ define('controls/packages/upload/Upload', [
                             }
                         }).inject(self.$Elm);
 
-                        var i, len, title;
+                        var i, len, title, version;
 
                         for (i = 0, len = packages.length; i < len; i++) {
-                            title = packages[i].title || packages[i].name;
+                            title   = packages[i].title || packages[i].name;
+                            version = packages[i].version;
+
+                            title = title + ' (' + version + ')';
 
                             new Element('div', {
                                 'class': 'qui-packages-upload-notInstalled-package',
-                                html   : '<input type="checkbox" name="' + packages[i].name + '" /> ' + title
+                                html   : '<input type="checkbox" ' +
+                                    'name="' + packages[i].name + '" ' +
+                                    'data-version="' + version + '" /> ' + title
                             }).inject(Container);
                         }
 
@@ -203,9 +208,15 @@ define('controls/packages/upload/Upload', [
                             },
                             events: {
                                 onClick: function () {
-                                    self.$install(
-                                        Container.getElements('input:checked').get('name')
-                                    ).then(resolve);
+                                    var checked = Container.getElements('input:checked');
+                                    var results = checked.map(function (Checkbox) {
+                                        return {
+                                            name   : Checkbox.get('name'),
+                                            version: Checkbox.get('data-version')
+                                        };
+                                    });
+
+                                    self.$install(results).then(resolve);
                                 }
                             }
                         }).inject(Container);
@@ -247,7 +258,12 @@ define('controls/packages/upload/Upload', [
                     var list = {};
 
                     for (var i = 0, len = packages.length; i < len; i++) {
-                        list[packages[i]] = false;
+                        if (typeof packages[i].name === 'undefined') {
+                            list[packages[i]] = false;
+                            continue;
+                        }
+
+                        list[packages[i].name] = packages[i].version;
                     }
 
                     Packages.installLocalPackages(list).then(resolve);

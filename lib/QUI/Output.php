@@ -11,6 +11,7 @@ use QUI\Utils\Singleton;
 
 use QUI\Utils\StringHelper as StringUtils;
 use QUI\Projects\Media\Utils as MediaUtils;
+use QUI\Utils\Text\XML;
 
 /**
  * Class Output
@@ -21,15 +22,22 @@ class Output extends Singleton
 {
     /**
      * Current output project
+     *
      * @var null|QUI\Projects\Project
      */
     protected $Project = null;
 
     /**
      * internal lifetime image cache
+     *
      * @var array
      */
     protected $imageCache = [];
+
+    /**
+     * @var array
+     */
+    protected $imageUrlCache = [];
 
     /**
      * internal lifetime link cache
@@ -54,8 +62,8 @@ class Output extends Singleton
     {
         // rewrite image
         $content = \preg_replace_callback(
-            '#<img([^>]*)>#i',
-            [&$this, "images"],
+            '#(src|data\-image|data\-href|data\-link|data\-src)="(image.php)\?([^"]*)"#',
+            [&$this, "dataImages"],
             $content
         );
 
@@ -68,7 +76,13 @@ class Output extends Singleton
 
         // rewrite links
         $content = \preg_replace_callback(
-            '#(href|src|action|value|data\-.*)="(index.php)\?([^"]*)"#',
+            '#(data\-href|data\-link)="(index.php)\?([^"]*)"#',
+            [&$this, "dataLinks"],
+            $content
+        );
+
+        $content = \preg_replace_callback(
+            '#(href|src|action|value)="(index.php)\?([^"]*)"#',
             [&$this, "links"],
             $content
         );
@@ -82,7 +96,107 @@ class Output extends Singleton
             );
         }
 
-        return $content;
+        if (empty($content)) {
+            return $content;
+        }
+
+        if (\strpos($content, '<img') === false) {
+            return $content;
+        }
+
+        $withDocumentOutput = false;
+
+        if (\strpos($content, '<html') !== false && \strpos($content, '<body') !== false) {
+            $withDocumentOutput = true;
+        }
+
+        // picture elements
+        \libxml_use_internal_errors(true);
+        $Dom = new \DOMDocument();
+        $Dom->loadHTML($content);
+        \libxml_clear_errors();
+
+
+        $images = $Dom->getElementsByTagName('img');
+
+        $nodeContent = function ($n) {
+            /* @var $n \DOMElement */
+            $d = new \DOMDocument();
+            $b = $d->importNode($n->cloneNode(true), true);
+            $d->appendChild($b);
+
+            return $d->saveHTML();
+        };
+
+        $getPicture = function ($html) {
+            if (empty($html)) {
+                return null;
+            }
+
+            $d = new \DOMDocument();
+            $d->loadHTML($html);
+            $p = $d->getElementsByTagName('picture');
+
+            if ($p->length) {
+                return $p[0];
+            }
+
+            return null;
+        };
+
+        $isInPicture = function (\DOMElement $Image) {
+            $Parent = $Image->parentNode;
+
+            while ($Parent) {
+                $parent = $Parent->nodeName;
+                $Parent = $Parent->parentNode;
+
+                if ($parent === 'body') {
+                    return false;
+                }
+
+                if ($parent === 'picture') {
+                    return true;
+                }
+            }
+
+            return false;
+        };
+
+
+        foreach ($images as $Image) {
+            if ($isInPicture($Image)) {
+                continue;
+            }
+
+            $image = $nodeContent($Image);
+
+            $html = \preg_replace_callback(
+                '#<img([^>]*)>#i',
+                [&$this, "images"],
+                $image
+            );
+
+            $Picture = $getPicture($html);
+
+            if ($Picture) {
+                $Picture = $Dom->importNode($Picture, true);
+                $Image->parentNode->replaceChild($Picture, $Image);
+            }
+        }
+
+
+        if ($withDocumentOutput) {
+            return $Dom->saveHTML();
+        }
+
+
+        $Body = $Dom->getElementsByTagName('body')[0];
+
+        return \implode(\array_map(
+            [$Body->ownerDocument, "saveHTML"],
+            \iterator_to_array($Body->childNodes)
+        ));
     }
 
     /**
@@ -102,6 +216,19 @@ class Output extends Singleton
     public function setSetting($setting, $value)
     {
         $this->settings[$setting] = $value;
+    }
+
+    /**
+     * @param $output
+     * @return string
+     */
+    protected function dataLinks($output)
+    {
+        if ($output[2] !== 'index.php') {
+            return $output[0];
+        }
+
+        return $this->links($output);
     }
 
     /**
@@ -212,15 +339,15 @@ class Output extends Singleton
     protected function images($output)
     {
         $img = $output[0];
+        $att = StringUtils::getHTMLAttributes($img);
 
         // Falls in der eigenen Sammlung schon vorhanden
         if (isset($this->imageCache[$img])) {
             return $this->imageCache[$img];
         }
 
-        if (!MediaUtils::isMediaUrl($img)) {
+        if (!MediaUtils::isMediaUrl($att['src']) && \strpos($att['src'], 'media/cache') === false) {
             // is relative url from the system?
-
             if ($this->settings['use-system-image-paths']
                 && \strpos($output[0], 'http') === false
             ) {
@@ -235,15 +362,36 @@ class Output extends Singleton
             return $output[0];
         }
 
-        $att = StringUtils::getHTMLAttributes($img);
-
         if (!isset($att['src'])) {
             return $output[0];
         }
 
         $src = \str_replace('&amp;', '&', $att['src']);
+        $src = \urldecode($src);
 
         unset($att['src']);
+
+        if (\strpos($src, 'media/cache') !== false) {
+            try {
+                $fileData = MediaUtils::getRealFileDataFromCacheUrl($src);
+
+                $src = QUI\Cache\Manager::get(
+                    'media/cache/'.$fileData['project'].'/indexSrcCache/'.\md5($fileData['filePath'])
+                );
+            } catch (QUI\Exception $Exception) {
+                try {
+                    $Image   = MediaUtils::getElement($src);
+                    $src     = $Image->getUrl();
+                    $project = $Image->getProject()->getName();
+
+                    QUI\Cache\Manager::set(
+                        'media/cache/'.$project.'/indexSrcCache/'.md5($Image->getAttribute('file')),
+                        $src
+                    );
+                } catch (QUI\Exception $Exception) {
+                }
+            }
+        }
 
         if (!isset($att['alt']) || !isset($att['title'])) {
             try {
@@ -252,6 +400,11 @@ class Output extends Singleton
                 $att['alt']      = $Image->getAttribute('alt') ? $Image->getAttribute('alt') : '';
                 $att['title']    = $Image->getAttribute('title') ? $Image->getAttribute('title') : '';
                 $att['data-src'] = $Image->getSizeCacheUrl();
+
+                if ($Image->hasViewPermissionSet()) {
+                    $src             = $Image->getUrl();
+                    $att['data-src'] = $Image->getUrl();
+                }
             } catch (QUI\Exception $Exception) {
             }
         }
@@ -270,6 +423,95 @@ class Output extends Singleton
         $this->imageCache[$img] = $html;
 
         return $this->imageCache[$img];
+    }
+
+    /**
+     * @param $output
+     * @return mixed|string
+     */
+    protected function dataImages($output)
+    {
+        $output = \str_replace('&amp;', '&', $output);   // &amp; fix
+        $output = \str_replace('〈=', '&lang=', $output); // URL FIX
+
+        $components = $output[3];
+
+
+        // Falls in der eigenen Sammlung schon vorhanden
+        if (isset($this->imageUrlCache[$components])) {
+            return $output[1].'="'.$this->imageUrlCache[$components].'"';
+        }
+
+        $parseUrl = \parse_url($output[2].'?'.$components);
+
+        if (!isset($parseUrl['query']) || empty($parseUrl['query'])) {
+            return $output[0];
+        }
+
+        $urlQuery = $parseUrl['query'];
+
+        // check no quiqqer url
+        if (\strpos($urlQuery, 'project') === false || \strpos($urlQuery, 'id') === false) {
+            return $output[0];
+        }
+
+        try {
+            $MediaItem = MediaUtils::getMediaItemByUrl('image.php?'.$components);
+        } catch (QUI\Exception $Exception) {
+            return '';
+        }
+
+        if ($MediaItem->hasViewPermissionSet()) {
+            return $output[1].'="'.URL_DIR.$MediaItem->getUrl().'"';
+        }
+
+        if (MediaUtils::isImage($MediaItem)) {
+            $attributes = StringUtils::getUrlAttributes('?'.$components);
+
+            if (isset($attributes['maxwidth'])) {
+                $attributes['width'] = $attributes['maxwidth'];
+            }
+
+            if (isset($attributes['maxheight'])) {
+                $attributes['height'] = $attributes['maxheight'];
+            }
+
+            $source = MediaUtils::getImageSource(
+                'image.php?'.$components,
+                $attributes
+            );
+        } else {
+            $source = $MediaItem->getUrl(true);
+        }
+
+        $this->imageUrlCache[$components] = $source;
+
+        return $output[1].'="'.$source.'"';
+    }
+
+    /**
+     * @param $output
+     * @return mixed
+     */
+    protected function checkPictureTag($output)
+    {
+        $html = $output[0];
+
+        if (\strpos($html, '</picture>') !== false) {
+            return $html;
+        }
+
+        // find image
+        $html = \str_replace("\n", ' ', $html);
+        $html = \preg_replace('!\s+!', ' ', $html);
+
+        $html = \preg_replace_callback(
+            '#<img([^>]*)>#i',
+            [&$this, "images"],
+            $html
+        );
+
+        return $html;
     }
 
     /**

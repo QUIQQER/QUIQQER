@@ -37,6 +37,15 @@ QUI::$Ajax->registerFunction(
                 $Bind    = $Project->get($params['id']);
                 break;
 
+            case 'classes/projects/project/media/File':
+            case 'classes/projects/project/media/Folder':
+            case 'classes/projects/project/media/Image':
+            case 'classes/projects/project/media/Item':
+                $Project = QUI::getProject($params['project']);
+                $Media   = $Project->getMedia();
+                $Bind    = $Media->get($params['id']);
+                break;
+
             default:
                 throw new QUI\Exception(
                     'Cannot find permissions for Object'

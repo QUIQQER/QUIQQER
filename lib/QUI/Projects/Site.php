@@ -271,20 +271,35 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
      */
     public function load($plugin = false)
     {
-        $this->loadFlag = true;
+        $this->loadFlag          = true;
+        $cacheDbPackageCacheName = $this->getCachePath().'/dbPackageFiles';
 
-        $PackageManager = QUI::getPackageManager();
-        $packages       = $PackageManager->getInstalled();
+        try {
+            $dbCache = QUI\Cache\Manager::get($cacheDbPackageCacheName);
+        } catch (QUI\Exception $Exception) {
+            $dbCache = [];
 
-        foreach ($packages as $package) {
-            if ($plugin && $plugin != $package['name']) {
-                continue;
+            $PackageManager = QUI::getPackageManager();
+            $packages       = $PackageManager->getInstalled();
+
+            foreach ($packages as $package) {
+                if ($plugin && $plugin != $package['name']) {
+                    continue;
+                }
+
+                $dbCache[] = [
+                    'dir'  => OPT_DIR.$package['name'].'/',
+                    'name' => $package['name']
+                ];
             }
 
-            $dir = OPT_DIR.$package['name'].'/';
-
-            $this->loadDatabases($dir, $package['name']);
+            QUI\Cache\Manager::set($cacheDbPackageCacheName, $dbCache);
         }
+
+        foreach ($dbCache as $dbEntry) {
+            $this->loadDatabases($dbEntry['dir'], $dbEntry['name']);
+        }
+
 
         // onLoad event
         $this->Events->fireEvent('load', [$this]);

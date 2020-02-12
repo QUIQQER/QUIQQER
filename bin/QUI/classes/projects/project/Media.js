@@ -11,6 +11,8 @@
  * @event onItemActivate [ self, Item|id ]
  * @event onItemDeactivate [ self, Item|id ]
  * @event onItemRename [ self, Item ]
+ * @event onItemsHide [ self, ids ]
+ * @event onItemsShow [ self, ids ]
  */
 define('classes/projects/project/Media', [
 
@@ -418,6 +420,49 @@ define('classes/projects/project/Media', [
             });
 
             return Item;
+        },
+
+
+        /**
+         * set the file to hidden
+         *
+         * @return {Promise}
+         */
+        setHidden: function (ids) {
+            var self = this;
+
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_media_hide', function (result) {
+                    resolve(result);
+
+                    self.fireEvent('itemsHide', [self, ids]);
+                }, {
+                    project: self.getProject().getName(),
+                    ids    : JSON.encode(ids),
+                    onError: reject
+                });
+            });
+        },
+
+        /**
+         * set the file to hidden
+         *
+         * @return {Promise}
+         */
+        setVisible: function (ids) {
+            var self = this;
+
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_media_visible', function (result) {
+                    resolve(result);
+
+                    self.fireEvent('itemsVisible', [self, ids]);
+                }, {
+                    project: self.getProject().getName(),
+                    ids    : JSON.encode(ids),
+                    onError: reject
+                });
+            });
         }
     });
 });

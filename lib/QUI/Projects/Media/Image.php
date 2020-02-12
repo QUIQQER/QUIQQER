@@ -6,6 +6,7 @@
 
 namespace QUI\Projects\Media;
 
+use Assetic\Util\FilesystemUtils;
 use QUI;
 use QUI\Projects\Media;
 use QUI\Utils\StringHelper;
@@ -114,39 +115,46 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * Return the image path
      *
-     * @param string|boolean $maxwidth - (optional)
-     * @param string|boolean $maxheight - (optional)
+     * @param string|boolean $maxWidth - (optional)
+     * @param string|boolean $maxHeight - (optional)
      *
      * @return string
      *
      * @throws QUI\Exception
      */
-    public function getSizeCachePath($maxwidth = false, $maxheight = false)
+    public function getSizeCachePath($maxWidth = false, $maxHeight = false)
     {
         $Media = $this->Media;
         /* @var $Media QUI\Projects\Media */
-        $cdir = CMS_DIR.$Media->getCacheDir();
-        $file = $this->getAttribute('file');
+        $cacheDir = CMS_DIR.$Media->getCacheDir();
+        $file     = $this->getAttribute('file');
+
+
+        if ($this->hasPermission('quiqqer.projects.media.view') &&
+            $this->hasPermission('quiqqer.projects.media.view', QUI::getUsers()->getNobody()) === false) {
+            $cacheDir = VAR_DIR.'media/cache/permissions/'.$this->getProject()->getAttribute('name').'/';
+        }
+
 
         if ($this->getAttribute('mime_type') == 'image/svg+xml') {
-            return $cdir.$file;
+            return $cacheDir.$file;
         }
 
-        if (!$maxwidth && !$maxheight) {
-            return $cdir.$file;
+        if (!$maxWidth && !$maxHeight) {
+            return $cacheDir.$file;
         }
 
 
-        if ($maxwidth > $this->IMAGE_MAX_SIZE) {
-            $maxwidth = $this->IMAGE_MAX_SIZE;
+        if ($maxWidth > $this->IMAGE_MAX_SIZE) {
+            $maxWidth = $this->IMAGE_MAX_SIZE;
         }
 
-        if ($maxheight > $this->IMAGE_MAX_SIZE) {
-            $maxheight = $this->IMAGE_MAX_SIZE;
+        if ($maxHeight > $this->IMAGE_MAX_SIZE) {
+            $maxHeight = $this->IMAGE_MAX_SIZE;
         }
 
         $extra  = '';
-        $params = $this->getResizeSize($maxwidth, $maxheight);
+        $params = $this->getResizeSize($maxWidth, $maxHeight);
 
         if ($params['height'] > $params['width']) {
             $tempParams = $this->getResizeSize(
@@ -170,21 +178,21 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
         if ($width || $height) {
             $part      = \explode('.', $file);
-            $cacheFile = $cdir.$part[0].'__'.$width.'x'.$height.$extra.'.'.StringHelper::toLower(\end($part));
+            $cacheFile = $cacheDir.$part[0].'__'.$width.'x'.$height.$extra.'.'.StringHelper::toLower(\end($part));
 
             if (empty($height)) {
-                $cacheFile = $cdir.$part[0].'__'.$width.$extra.'.'.StringHelper::toLower(\end($part));
+                $cacheFile = $cacheDir.$part[0].'__'.$width.$extra.'.'.StringHelper::toLower(\end($part));
             }
 
             if ($this->getAttribute('reflection')) {
-                $cacheFile = $cdir.$part[0].'__'.$width.'x'.$height.$extra.'.png';
+                $cacheFile = $cacheDir.$part[0].'__'.$width.'x'.$height.$extra.'.png';
 
                 if (empty($height)) {
-                    $cacheFile = $cdir.$part[0].'__'.$width.$extra.'.png';
+                    $cacheFile = $cacheDir.$part[0].'__'.$width.$extra.'.png';
                 }
             }
         } else {
-            $cacheFile = $cdir.$file;
+            $cacheFile = $cacheDir.$file;
         }
 
         return $cacheFile;
@@ -204,6 +212,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     {
         $cachePath = $this->getSizeCachePath($maxwidth, $maxheight);
         $cacheUrl  = \str_replace(CMS_DIR, URL_DIR, $cachePath);
+
+        if ($this->hasViewPermissionSet()) {
+            $cacheUrl = URL_DIR.$this->getUrl();
+        }
 
         if (!\preg_match('/[^a-zA-Z0-9_\-.\/]/i', $cacheUrl)) {
             return $cacheUrl;
@@ -252,7 +264,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             $params['height']
         );
 
-        $cacheUrl = str_replace(CMS_DIR, URL_DIR, $cacheUrl);
+        $cacheUrl = \str_replace(CMS_DIR, URL_DIR, $cacheUrl);
 
         return $cacheUrl;
     }
@@ -358,8 +370,9 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @param integer|boolean $width - (optional)
      * @param integer|boolean $height - (optional)
      *
-     * @return string - URL to the cachefile
+     * @return string - URL to the cache file
      *
+     * @throws QUI\Permissions\Exception
      * @throws QUI\Exception
      */
     public function createSizeCache($width = false, $height = false)
@@ -367,6 +380,9 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         if (!$this->getAttribute('active')) {
             return false;
         }
+
+        $this->checkPermission('quiqqer.projects.media.view');
+
 
         if ($width > $this->IMAGE_MAX_SIZE) {
             $width = $this->IMAGE_MAX_SIZE;
@@ -378,35 +394,34 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
 
         $Media     = $this->Media;
         $original  = $this->getFullPath();
-        $cachefile = $this->getSizeCachePath($width, $height);
+        $cacheFile = $this->getSizeCachePath($width, $height);
 
-        if (\file_exists($cachefile)) {
-            return $cachefile;
+        if (\file_exists($cacheFile)) {
+            return $cacheFile;
         }
 
-        if ($this->getAttribute('mime_type') == 'image/svg+xml') {
-            File::copy($original, $cachefile);
+        // create cache folder
+        File::mkdir(\dirname($cacheFile));
 
-            return $cachefile;
+        if ($this->getAttribute('mime_type') == 'image/svg+xml') {
+            File::copy($original, $cacheFile);
+
+            return $cacheFile;
         }
 
         // quiqqer/quiqqer#782
         if ($this->getAttribute('mime_type') == 'image/gif' && $this->isAnimated()) {
-            File::copy($original, $cachefile);
+            File::copy($original, $cacheFile);
 
-            return $cachefile;
+            return $cacheFile;
         }
-
-        // Cachefolder erstellen
-        $this->getParent()->createCache();
 
         $effects = $this->getEffects();
 
-
         if ($width === false && $height === false && empty($effects)) {
-            File::copy($original, $cachefile);
+            File::copy($original, $cacheFile);
 
-            return $cachefile;
+            return $cacheFile;
         }
 
 
@@ -428,9 +443,9 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
             $Image = $Media->getImageManager()->make($original);
         } catch (\Exception $Exception) {
             QUI\System\Log::addDebug($Exception->getMessage());
-            File::copy($original, $cachefile);
+            File::copy($original, $cacheFile);
 
-            return $cachefile;
+            return $cacheFile;
         }
 
 
@@ -537,17 +552,17 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         // create folders
-        File::mkdir(\dirname($cachefile));
+        File::mkdir(\dirname($cacheFile));
 
         // save cache image
-        $Image->save($cachefile);
+        $Image->save($cacheFile);
 
         // reset to the normal limit
         \set_time_limit($time);
 
         QUI::getEvents()->fireEvent('mediaCreateSizeCache', [$this, $Image]);
 
-        return $cachefile;
+        return $cacheFile;
     }
 
     /**
@@ -611,6 +626,8 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      * @param integer $newHeight
      *
      * @return string - Path to the new Image
+     *
+     * @throws QUI\Permissions\Exception
      */
     public function resize($newWidth = 0, $newHeight = 0)
     {

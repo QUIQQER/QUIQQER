@@ -27,6 +27,7 @@ define('controls/permissions/Panel', [
             'openGroupPermissions',
             'openSitePermissions',
             'openProjectPermissions',
+            'openMediaPermissions',
             'openEditPermissions'
         ],
 
@@ -101,6 +102,16 @@ define('controls/permissions/Panel', [
             });
 
             this.addCategory({
+                name  : 'media',
+                text  : QUILocale.get(lg, 'permissions.panel.btn.select.media'),
+                title : QUILocale.get(lg, 'permissions.panel.btn.select.media'),
+                icon  : 'fa fa-picture-o',
+                events: {
+                    onClick: this.openMediaPermissions
+                }
+            });
+
+            this.addCategory({
                 name  : 'edit',
                 text  : QUILocale.get(lg, 'permissions.panel.btn.select.manage'),
                 title : QUILocale.get(lg, 'permissions.panel.btn.select.manage'),
@@ -127,10 +138,18 @@ define('controls/permissions/Panel', [
 
                     case 'classes/projects/project/Site':
                         return this.openSitePermissions(this.getAttribute('Object'));
+
+                    case 'classes/projects/project/media/File':
+                    case 'classes/projects/project/media/Folder':
+                    case 'classes/projects/project/media/Image':
+                    case 'classes/projects/project/media/Item':
+                        return this.openMediaPermissions(this.getAttribute('Object'));
                 }
             }
 
-            this.openWelcomeMessage();
+            this.openWelcomeMessage().catch(function (err) {
+                console.error(err);
+            });
         },
 
         /**
@@ -213,6 +232,15 @@ define('controls/permissions/Panel', [
         },
 
         /**
+         * Permission of a project
+         *
+         * @param {Object} [Media] - classes/projects/Media
+         */
+        openMediaPermissions: function (Media) {
+            this.$openPermissionControl(Media, 'media');
+        },
+
+        /**
          * Permission edit
          */
         openEditPermissions: function () {
@@ -265,6 +293,11 @@ define('controls/permissions/Panel', [
                         case 'edit':
                             Button = Bar.getChildren('edit');
                             needle = 'controls/permissions/Edit';
+                            break;
+
+                        case 'media':
+                            Button = Bar.getChildren('media');
+                            needle = 'controls/permissions/Media';
                             break;
                     }
 

@@ -261,18 +261,19 @@ define('controls/projects/Manager', [
                 Form.elements.project.value,
                 Form.elements.lang.value,
                 Form.elements.template.value,
-              Form.elements.demodata.checked,
-                function (result) {
-                    self.Loader.hide();
+                Form.elements.demodata.checked
+            ).then(function (result) {
+                self.Loader.hide();
 
-                    if (!result) {
-                        return;
-                    }
-
-                    self.openList();
-                    self.openProjectSettings(result);
+                if (!result) {
+                    return;
                 }
-            );
+
+                self.openList();
+                self.openProjectSettings(result);
+            }).catch(function () {
+                self.Loader.hide();
+            });
         },
 
         /**

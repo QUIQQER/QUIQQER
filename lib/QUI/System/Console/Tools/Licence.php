@@ -31,7 +31,7 @@ class Licence extends QUI\System\Console\Tool
      */
     public function execute()
     {
-        $licenceFile = OPT_DIR.'quiqqer/quiqqer/LICENCE';
+        $licenceFile = OPT_DIR . 'quiqqer/quiqqer/LICENSE';
         $content     = file_get_contents($licenceFile);
 
         echo $content;

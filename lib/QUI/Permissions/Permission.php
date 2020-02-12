@@ -7,6 +7,7 @@
 namespace QUI\Permissions;
 
 use QUI;
+use QUI\Projects\Media;
 use QUI\Projects\Project;
 use QUI\Users\User;
 use QUI\Groups\Group;
@@ -1151,5 +1152,66 @@ class Permission
         );
 
         return true;
+    }
+
+    //region media permissions
+
+    /**
+     * has the User the permission for the media item?
+     *
+     * @param string $perm
+     * @param \QUI\Projects\Media\Item $MediaItem
+     * @param \QUI\Users\User|boolean $User - optional
+     *
+     * @return bool
+     */
+    public static function hasMediaPermission($perm, $MediaItem, $User = false)
+    {
+        if (Media::useMediaPermissions() === false) {
+            return true;
+        }
+
+        try {
+            return self::checkMediaPermission($perm, $MediaItem, $User);
+        } catch (QUI\Exception $Exception) {
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if the User have the permission of the Site
+     *
+     * @param string $perm
+     * @param QUI\Projects\Media\Item $MediaItem
+     * @param \QUI\Users\User|boolean $User - optional
+     *
+     * @return boolean
+     *
+     * @throws \QUI\Permissions\Exception
+     */
+    public static function checkMediaPermission($perm, $MediaItem, $User = false)
+    {
+        if (Media::useMediaPermissions() === false) {
+            return true;
+        }
+
+        if (!$User) {
+            $User = self::getUser();
+        }
+
+        if ($User->isSU()) {
+            return true;
+        }
+
+        if (QUI::getUsers()->isSystemUser($User)) {
+            return true;
+        }
+
+
+        $Manager     = QUI::getPermissionManager();
+        $permissions = $Manager->getMediaPermissions($MediaItem);
+
+        return self::checkPermissionList($permissions, $perm, $User);
     }
 }

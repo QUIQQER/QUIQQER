@@ -841,6 +841,18 @@
                 As long as e-mail login is activated, users cannot have the same e-mail address.
             ]]></en>
         </locale>
+        <locale name="exception.console.execute.user">
+            <en><![CDATA[
+The QUIQQER console is executed with the [user] user. This user is not the owner ([owner]) of the QUIQQER system.
+If you continue to run the console with this user, you may experience serious permissions problems on the file system at the QUIQQER system.
+
+Confirm with 'yes' to continue running the QUIQQER console or abort with any other input.
+You can also ignore the console user permissions check with '--ignore-file-permissions'.
+            ]]></en>
+        </locale>
+        <locale name="console.execute-user.question">
+            <en><![CDATA[Continue anyway? [yes / ANY KEY] :]]></en>
+        </locale>
 
         <locale name="user_id">
             <en><![CDATA[User ID]]></en>
@@ -1629,6 +1641,9 @@
         </locale>
         <locale name="projects.project.site.media.filePanel.window.delete.information">
             <en><![CDATA[Are you sure you want to delete the file [file]?]]></en>
+        </locale>
+        <locale name="projects.project.site.media.filePanel.permissions">
+            <en><![CDATA[Set media permissions]]></en>
         </locale>
         <locale name="projects.project.site.media.manager.title">
             <en><![CDATA[Media Manager]]></en>
@@ -2777,7 +2792,7 @@
             <en><![CDATA[Smarty compile check]]></en>
         </locale>
         <locale name="quiqqer.settings.general.dev.title">
-            <en><![CDATA[Developer settings]]></en>
+            <en><![CDATA[Settings for developers and system administrators]]></en>
         </locale>
         <locale name="quiqqer.settings.general.dev.maintenance">
             <en><![CDATA[Activate Maintenance]]></en>
@@ -2791,8 +2806,17 @@
         <locale name="quiqqer.settings.general.dev.no_ajax_bundler">
             <en><![CDATA[Do not use Ajax bundlers]]></en>
         </locale>
-        <locale name="quiqqer.settings.general.dev.no_ajax_bundler.decription">
+        <locale name="quiqqer.settings.general.dev.no_ajax_bundler.description">
             <en><![CDATA[By bundling the Ajax requests, less Ajax requests are sent to the server.]]></en>
+        </locale>
+        <locale name="quiqqer.settings.general.dev.phpCommand">
+            <en><![CDATA[CLI PHP Command]]></en>
+        </locale>
+        <locale name="quiqqer.settings.general.dev.phpCommand.description">
+            <en><![CDATA[
+                Determines the PHP command for the PHP binary.
+                This command is needed for the CLI if QUIQQER needs to execute a PHP command.
+            ]]></en>
         </locale>
         <locale name="quiqqer.settings.general.updates.title">
             <en><![CDATA[Updates]]></en>
@@ -3072,6 +3096,12 @@
         <locale name="exception.system.health.not.writable">
             <en><![CDATA[Please check your file permissions. Some Folders or Files are not writable.]]></en>
         </locale>
+        <locale name="exception.system.health.checklist.md5.not.found">
+            <en><![CDATA[
+The MD5 summary file was not found. Therefore the state of the system cannot be checked.
+Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
+            ]]></en>
+        </locale>
         <locale name="exception.contact.params.empty">
             <en><![CDATA[Contact E-mail could not be sent. Please complete all required fields.]]></en>
         </locale>
@@ -3083,7 +3113,9 @@
         </locale>
         <locale name="exception.contact.send.mail">
             <en><![CDATA[
-                <p>Sorry, cour contact E-mail could not be sent.</p>                <p>Please try again at a later.</p>]]></en>
+                <p>Sorry, cour contact E-mail could not be sent.</p>
+                <p>Please try again at a later.</p>
+            ]]></en>
         </locale>
         <locale name="message.password.save.success">
             <en><![CDATA[The password has been successfully saved.]]></en>
@@ -3524,7 +3556,9 @@
         <locale name="exception.release.to.inPast">
             <en><![CDATA[The page can not be activated because the date "release until" is in the past.]]></en>
         </locale>
-        <locale name="templates.mail.header.title"></locale>
+        <locale name="templates.mail.header.title">
+            <en><![CDATA[]]></en>
+        </locale>
         <locale name="templates.mail.footer.links">
             <en><![CDATA[&nbsp;]]></en>
         </locale>
@@ -3893,6 +3927,15 @@
             If no package rights are used, some functions in the system are more powerful.
             ]]></en>
         </locale>
+        <locale name="quiqqer.settings.general.permissions.media">
+            <en><![CDATA[Use media rights]]></en>
+        </locale>
+        <locale name="quiqqer.settings.general.permissions.media.description">
+            <en><![CDATA[
+                Use media permissions if you want to assign different rights to files in the media.<br />
+                If no media permissions are used, some functions in the system perform better.
+            ]]></en>
+        </locale>
         <locale name="exception.no.permission">
             <en><![CDATA[You have not the necessary rights to perform this action.]]></en>
         </locale>
@@ -3957,6 +4000,47 @@
         </locale>
         <locale name="menu.help.about.text">
             <en><![CDATA[About QUIQQER]]></en>
+        </locale>
+        <locale name="media.item.hide">
+            <en><![CDATA[Hide]]></en>
+        </locale>
+        <locale name="media.item.visible">
+            <en><![CDATA[Show]]></en>
+        </locale>
+        <locale name="media.items.hide">
+            <en><![CDATA[Hide all]]></en>
+        </locale>
+        <locale name="media.items.visible">
+            <en><![CDATA[Show all]]></en>
+        </locale>
+        <locale name="media.panel.view.hiddenItems.show">
+            <en><![CDATA[Show hidden files]]></en>
+        </locale>
+        <locale name="media.panel.view.hiddenItems.hide">
+            <en><![CDATA[Hide hidden files]]></en>
+        </locale>
+
+        <locale name="permission.quiqqer.projects.media._header">
+            <en><![CDATA[Media permissions]]></en>
+        </locale>
+        <locale name="permission.quiqqer.projects.media.view">
+            <en><![CDATA[Is allowed to see the file / folder]]></en>
+        </locale>
+        <locale name="permission.quiqqer.projects.media.upload">
+            <en><![CDATA[Is allowed to upload files]]></en>
+        </locale>
+        <locale name="permission.quiqqer.projects.media.del">
+            <en><![CDATA[Is allowed to delete the file / folder]]></en>
+        </locale>
+        <locale name="permission.quiqqer.projects.media.edit">
+            <en><![CDATA[Is allowed to edit the file / folder]]></en>
+        </locale>
+
+        <locale name="exception.upload.error">
+            <de><![CDATA[
+            An error occurred while uploading the file.
+            Please check your network connection.
+            ]]></de>
         </locale>
     </groups>
 
@@ -4544,6 +4628,19 @@
             <en><![CDATA[
             Unfortunately, Redis cannot be used. Please install the php redis extension (php-redis)
             ]]></en>
+        </locale>
+
+        <locale name="console.systemtool.permissions">
+            <en><![CDATA[Permission Tool for the console - Permission Explorer]]></en>
+        </locale>
+        <locale name="console.systemtool.htaccess">
+            <en><![CDATA[HTACCESS File generation]]></en>
+        </locale>
+        <locale name="console.systemtool.nginx">
+            <en><![CDATA[NGINX Config generation]]></en>
+        </locale>
+        <locale name="console.systemtool.licence">
+            <en><![CDATA[Shows the QUIQQER License]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->

@@ -1,0 +1,94 @@
+.user-search-control {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+}
+
+/** header / search / filter
+ =============================== */
+
+.user-search-control-form {
+    background: #e1e4e9;
+    clear: both;
+    padding: 20px;
+    width: 100%;
+}
+
+.user-search-control-form [name="customer-search"] {
+    float: left;
+    width: calc(100% - 100px);
+}
+
+.user-search-control-form [name="add"] {
+    margin-right: 10px;
+}
+
+.user-search-control-form [name="filter"] {
+    display: inline-block;
+    float: initial;
+    margin-left: 10px;
+}
+
+.user-search-control-form [name="search"] {
+    float: left;
+    width: 280px;
+}
+
+.user-search-control-form [name="submit"] {
+    border: none;
+}
+
+.user-search-control-form-filter {
+    background: #eff0f3;
+    clear: both;
+    display: block;
+    margin-top: 20px;
+    padding: 10px;
+    width: 100%;
+}
+
+.user-search-control-form-filter section {
+    display: inline-block;
+    width: 100%;
+}
+
+.user-search-control-form-filter input {
+    padding: 2px;
+    font-size: 12px;
+}
+
+.user-search-control-form-filter .title {
+    display: inline-block;
+    padding-bottom: 5px;
+    width: 100%;
+}
+
+.user-search-control-form-filter section + section {
+    margin-top: 20px;
+}
+
+.user-search-control-form-filter-checks label {
+    float: left;
+    width: 25%;
+}
+
+.user-search-control-form-filter-specs label {
+    float: left;
+    width: 25%;
+}
+
+/** header / search / filter
+ =============================== */
+
+.user-search-control-result {
+    clear: both;
+    flex-grow: 1;
+    overflow: hidden;
+    padding: 20px;
+    width: 100%;
+}

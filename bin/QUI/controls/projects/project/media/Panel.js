@@ -30,7 +30,8 @@ define('controls/projects/project/media/Panel', [
 ], function () {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg                = 'quiqqer/system';
+    var HIDE_HIDDEN_FILES = 1; // 1 = hide all hidden files, 0 = show all hidden files
 
     var QUI              = arguments[0],
         QUIPanel         = arguments[1],
@@ -66,6 +67,7 @@ define('controls/projects/project/media/Panel', [
             '$onCreate',
             '$viewOnDrop',
             '$itemEvent',
+            '$itemHideStatusChange',
             '$onFilter',
             'unselectItems',
             '$onContextMenu',
@@ -87,7 +89,7 @@ define('controls/projects/project/media/Panel', [
             icon : '',
 
             field: 'name',
-            order: 'ASC',
+            order: 'DESC',
             limit: 25,
             page : 1,
 
@@ -154,6 +156,8 @@ define('controls/projects/project/media/Panel', [
                     this.$Media.removeEvent('onItemRefresh', this.$itemEvent);
                     this.$Media.removeEvent('onItemSave', this.$itemEvent);
                     this.$Media.removeEvent('onItemDelete', this.$itemEvent);
+                    this.$Media.removeEvent('onItemsHide', this.$itemHideStatusChange);
+                    this.$Media.removeEvent('onItemsVisible', this.$itemHideStatusChange);
                 }.bind(this)
             });
 
@@ -165,7 +169,9 @@ define('controls/projects/project/media/Panel', [
                     onItemDeactivate: this.$itemEvent,
                     onItemRefresh   : this.$itemEvent,
                     onItemSave      : this.$itemEvent,
-                    onItemDelete    : this.$itemEvent
+                    onItemDelete    : this.$itemEvent,
+                    onItemsHide     : this.$itemHideStatusChange,
+                    onItemsVisible  : this.$itemHideStatusChange
                 });
             }
         },
@@ -204,7 +210,9 @@ define('controls/projects/project/media/Panel', [
                 onItemDeactivate: this.$itemEvent,
                 onItemRefresh   : this.$itemEvent,
                 onItemSave      : this.$itemEvent,
-                onItemDelete    : this.$itemEvent
+                onItemDelete    : this.$itemEvent,
+                onItemsHide     : this.$itemHideStatusChange,
+                onItemsVisible  : this.$itemHideStatusChange
             });
 
             return this;
@@ -340,10 +348,33 @@ define('controls/projects/project/media/Panel', [
                     new ContextmenuItem({
                         name  : 'preview',
                         text  : Locale.get(lg, 'projects.project.site.media.panel.btn.view.preview'),
-                        icon  : 'fa fa-eye',
+                        icon  : 'fa fa-file-image-o',
                         events: {
                             onMouseDown: function (Item) {
                                 View.change(Item);
+                            }
+                        }
+                    })
+                ).appendChild(
+                    new QUISeparator()
+                ).appendChild(
+                    new ContextmenuItem({
+                        name  : 'hiddenView',
+                        text  : Locale.get('quiqqer/quiqqer', 'media.panel.view.hiddenItems.show'),
+                        icon  : 'fa fa-eye',
+                        events: {
+                            onMouseDown: function (Item) {
+                                HIDE_HIDDEN_FILES = !HIDE_HIDDEN_FILES;
+
+                                if (HIDE_HIDDEN_FILES) {
+                                    Item.setAttribute('text', Locale.get('quiqqer/quiqqer', 'media.panel.view.hiddenItems.show'));
+                                    Item.setAttribute('icon', 'fa fa-eye');
+                                } else {
+                                    Item.setAttribute('text', Locale.get('quiqqer/quiqqer', 'media.panel.view.hiddenItems.hide'));
+                                    Item.setAttribute('icon', 'fa fa-eye-slash');
+                                }
+
+                                self.refresh();
                             }
                         }
                     })
@@ -440,9 +471,7 @@ define('controls/projects/project/media/Panel', [
                 if (self.getAttribute('isInPopup') && self.getAttribute('breadcrumb')) {
                     var Breadcrumb = self.getElm().getElement('.qui-panel-breadcrumb');
 
-                    require([
-                        'controls/projects/Select'
-                    ], function (ProjectSelect) {
+                    require(['controls/projects/Select'], function (ProjectSelect) {
                         self.getBreadcrumb().getElm().setStyles({
                             clear: 'none'
                         });
@@ -465,12 +494,13 @@ define('controls/projects/project/media/Panel', [
                             events     : {
                                 onChange: function (value) {
                                     if (self.$Media && self.$Media.getProject() &&
-                                        self.$Media.getProject() === value) {
+                                        self.$Media.getProject().getName() === value) {
                                         return;
                                     }
 
                                     var Project = Projects.get(value);
                                     self.$Media = Project.getMedia();
+
                                     self.openID(1);
                                 }
                             }
@@ -566,7 +596,6 @@ define('controls/projects/project/media/Panel', [
             this.$Pagination = null;
 
             return new Promise(function (resolve) {
-
                 // get the file object
                 self.getMedia().get(fileid).then(function (MediaFile) {
                     // set media image to the panel
@@ -580,10 +609,7 @@ define('controls/projects/project/media/Panel', [
 
                     // if the MediaFile is no Folder
                     if (MediaFile.getType() !== 'classes/projects/project/media/Folder') {
-
-                        require([
-                            'controls/projects/project/media/FilePanel'
-                        ], function (FilePanel) {
+                        require(['controls/projects/project/media/FilePanel'], function (FilePanel) {
                             new FilePanel(MediaFile).inject(
                                 self.getParent()
                             );
@@ -622,13 +648,15 @@ define('controls/projects/project/media/Panel', [
                             self.$view(children);
                         });
                     }, {
-                        sortOn : self.getAttribute('field'),
-                        sortBy : self.getAttribute('order'),
-                        perPage: self.getAttribute('limit'),
-                        page   : self.getAttribute('page'),
-                        order  : self.getAttribute('field') + ' ' + self.getAttribute('order')
+                        sortOn         : self.getAttribute('field'),
+                        sortBy         : self.getAttribute('order'),
+                        perPage        : self.getAttribute('limit'),
+                        page           : self.getAttribute('page'),
+                        order          : self.getAttribute('field') + ' ' + self.getAttribute('order'),
+                        showHiddenFiles: !HIDE_HIDDEN_FILES
                     });
-                }).catch(function () {
+                }).catch(function (err) {
+                    console.log(err);
                     self.openID(1).then(resolve);
                 });
             });
@@ -1199,6 +1227,7 @@ define('controls/projects/project/media/Panel', [
                     'data-active'  : Child.active ? 1 : 0,
                     'data-error'   : Child.error ? 1 : 0,
                     'data-mimetype': Child.mimetype,
+                    'data-hidden'  : Child.isHidden ? 1 : 0,
 
                     'class': 'qui-media-item box smooth',
                     html   : '<span class="title">' + Child.name + '</span>',
@@ -1214,9 +1243,15 @@ define('controls/projects/project/media/Panel', [
                     }
                 });
 
-                // if ( Child.type === 'folder' ) {
+                if (Child.isHidden) {
+                    if (HIDE_HIDDEN_FILES) {
+                        Elm.addClass('qui-media-item-hidden__hide');
+                    } else {
+                        Elm.addClass('qui-media-item-hidden__show');
+                    }
+                }
+
                 droplist.push(Elm);
-                // }
 
                 if (Child.active) {
                     Elm.addClass('qmi-active');
@@ -1279,6 +1314,7 @@ define('controls/projects/project/media/Panel', [
                     'data-active'  : Child.active ? 1 : 0,
                     'data-error'   : Child.error ? 1 : 0,
                     'data-mimetype': Child.mimetype,
+                    'data-hidden'  : Child.isHidden ? 1 : 0,
 
                     'class': 'qui-media-item box smooth',
                     html   : '<span class="title">' + Child.name + '</span>',
@@ -1293,6 +1329,14 @@ define('controls/projects/project/media/Panel', [
                         contextmenu: this.$PanelContextMenu.show.bind(this.$PanelContextMenu)
                     }
                 });
+
+                if (Child.isHidden) {
+                    if (HIDE_HIDDEN_FILES) {
+                        Elm.addClass('qui-media-item-hidden__hide');
+                    } else {
+                        Elm.addClass('qui-media-item-hidden__show');
+                    }
+                }
 
                 droplist.push(Elm);
 
@@ -2252,6 +2296,16 @@ define('controls/projects/project/media/Panel', [
          * @param {Object} Item - qui/classes/projects/media/Item
          */
         $itemEvent: function (Media, Item) {
+            var i, len;
+
+            if (typeOf(Item) === 'array') {
+                for (i = 0, len = Item.length; i < len; i++) {
+                    this.$itemEvent(Media, Item[i]);
+                }
+
+                return;
+            }
+
             if (typeOf(Item) === 'string' || typeOf(Item) === 'number') {
                 var self = this;
                 Media.get(Item).then(function (File) {
@@ -2288,10 +2342,10 @@ define('controls/projects/project/media/Panel', [
 
             Node.getElement('span').set('html', Item.getAttribute('name'));
 
-            var itemId = Item.getId();
+            var itemId = parseInt(Item.getId());
 
-            for (var i = 0, len = this.$children.length; i < len; i++) {
-                if (this.$children[i].id != itemId) {
+            for (i = 0, len = this.$children.length; i < len; i++) {
+                if (parseInt(this.$children[i].id) !== itemId) {
                     continue;
                 }
 
@@ -2303,6 +2357,13 @@ define('controls/projects/project/media/Panel', [
                 this.$children[i].title    = Item.getAttribute('title');
                 break;
             }
+        },
+
+        /**
+         * event: item hide status change
+         */
+        $itemHideStatusChange: function () {
+            this.refresh();
         },
 
         /**

@@ -7,6 +7,7 @@
 namespace QUI\Projects\Media;
 
 use QUI;
+use QUI\Projects\Media;
 use QUI\Projects\Media\Utils as MediaUtils;
 use QUI\Utils\System\File as FileUtils;
 use QUI\Utils\StringHelper as StringUtils;
@@ -677,6 +678,17 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             }
         }
 
+        // hidden query
+        $hiddenQuery = '';
+
+        if (isset($params['where']) && isset($params['where']['hidden'])) {
+            if ($params['where']['hidden'] === 0) {
+                $hiddenQuery = ' AND hidden = 0';
+            } elseif ($params['where']['hidden'] === 1) {
+                $hiddenQuery = ' AND hidden = 1';
+            }
+        }
+
         $query = "
         
         SELECT id
@@ -685,6 +697,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             {$table_parent} = {$parentId} AND
             {$table_child}  = {$table_id} AND
             {$table_delete} = 0
+            {$hiddenQuery}
         ORDER BY
             {$order_by} {$limit}
         ;
@@ -1043,7 +1056,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
-     * Return a file from the folder by name
+     * Return a file from the folder by its name
      *
      * @param string $filename
      *
@@ -1052,10 +1065,27 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function getChildByName($filename)
     {
+        $children = $this->getChildrenByName($filename, 1);
+
+        return $children[0];
+    }
+
+    /**
+     * Return all children with the wanted name
+     *
+     * @param $filename
+     * @param bool $limit
+     * @return array
+     *
+     * @throws QUI\Database\Exception
+     * @throws QUI\Exception
+     */
+    public function getChildrenByName($filename, $limit = false)
+    {
         $table     = $this->Media->getTable();
         $table_rel = $this->Media->getTable('relations');
 
-        $result = QUI::getDataBase()->fetch([
+        $query = [
             'select' => [
                 $table.'.id'
             ],
@@ -1068,11 +1098,16 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 $table_rel.'.child'  => '`'.$table.'.id`',
                 $table.'.deleted'    => 0,
                 $table.'.name'       => $filename
-            ],
-            'limit'  => 1
-        ]);
+            ]
+        ];
 
-        if (!isset($result[0])) {
+        if ($limit) {
+            $query['limit'] = $limit;
+        }
+
+        $dbResult = QUI::getDataBase()->fetch($query);
+
+        if (!isset($dbResult[0])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.not.found.NAME', [
                     'file' => $filename
@@ -1081,7 +1116,13 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             );
         }
 
-        return $this->Media->get((int)$result[0]['id']);
+        $result = [];
+
+        foreach ($dbResult as $entry) {
+            $result[] = $this->Media->get((int)$entry['id']);
+        }
+
+        return $result;
     }
 
     /**
@@ -1152,14 +1193,14 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             return true;
         }
 
-        $cache_dir = CMS_DIR.$this->Media->getCacheDir().$this->getAttribute('file');
+        $cacheDir = CMS_DIR.$this->Media->getCacheDir().$this->getAttribute('file');
 
-        if (FileUtils::mkdir($cache_dir)) {
+        if (FileUtils::mkdir($cacheDir)) {
             return true;
         }
 
         throw new QUI\Exception(
-            'createCache() Error; Could not create Folder '.$cache_dir,
+            'createCache() Error; Could not create Folder '.$cacheDir,
             ErrorCodes::FOLDER_CACHE_CREATION_MKDIR_ERROR
         );
     }
@@ -1270,9 +1311,16 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      *
      * @return QUI\Projects\Media\Item
      * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
      */
     public function uploadFile($file, $options = self::FILE_OVERWRITE_NONE)
     {
+        if (Media::useMediaPermissions()) {
+            QUI\Permissions\Permission::checkPermission(
+                'quiqqer.projects.media.upload'
+            );
+        }
+
         if (!\file_exists($file)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/system', 'exception.file.not.found', [

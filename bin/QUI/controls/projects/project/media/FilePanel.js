@@ -29,7 +29,7 @@ define('controls/projects/project/media/FilePanel', [
 ], function () {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg = 'quiqqer/quiqqer';
 
     var QUI                = arguments[0],
         QUIPanel           = arguments[1],
@@ -69,6 +69,7 @@ define('controls/projects/project/media/FilePanel', [
             'openDetails',
             'openImageEffects',
             'openPreview',
+            'openPermissions',
             'refresh',
             '$onInject',
             '$unloadCategory',
@@ -300,9 +301,10 @@ define('controls/projects/project/media/FilePanel', [
             this.$unloadCategory();
 
             var File = this.getFile();
+
             File.save(function () {
                 // Update the (maybe truncated) filename
-                var NameInput = self.getContent().getElement('input[name=file_name]');
+                var NameInput   = self.getContent().getElement('input[name=file_name]');
                 NameInput.value = File.getAttribute('name');
 
                 self.Loader.hide();
@@ -418,6 +420,25 @@ define('controls/projects/project/media/FilePanel', [
 
             this.getButtonBar().clear();
 
+            // permissions
+            if (parseInt(QUIQQER_CONFIG.permissions.media)) {
+                new QUIButton({
+                    image : 'fa fa-shield',
+                    name  : 'permissions',
+                    alt   : Locale.get('quiqqer/quiqqer', 'projects.project.site.media.filePanel.permissions'),
+                    title : Locale.get('quiqqer/quiqqer', 'projects.project.site.media.filePanel.permissions'),
+                    styles: {
+                        'border-left-width' : 1,
+                        'border-right-width': 1,
+                        'float'             : 'right',
+                        width               : 40
+                    },
+                    events: {
+                        onClick: this.openPermissions
+                    }
+                }).inject(this.getHeader());
+            }
+
             this.addButton(
                 new QUIButton({
                     name     : 'save',
@@ -509,7 +530,7 @@ define('controls/projects/project/media/FilePanel', [
             this.addCategory(this.$ButtonDetails);
 
             // image
-            if (this.$File.getType() != 'classes/projects/project/media/Image') {
+            if (this.$File.getType() !== 'classes/projects/project/media/Image') {
                 return;
             }
 
@@ -1001,6 +1022,22 @@ define('controls/projects/project/media/FilePanel', [
                 'text',
                 Locale.get(lg, 'projects.project.site.media.filePanel.btn.activate.text')
             );
+        },
+
+        /**
+         * Open the permissions
+         */
+        openPermissions: function () {
+            var Parent = this.getParent(),
+                File   = this.$File;
+
+            require(['controls/permissions/Panel'], function (PermPanel) {
+                Parent.appendChild(
+                    new PermPanel({
+                        Object: File
+                    })
+                );
+            });
         }
     });
 });

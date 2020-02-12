@@ -60,6 +60,10 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 Elm = Elm.getParent('div');
             }
 
+            if (Elm.getParent('.qui-project-media-folderViewer-item')) {
+                Elm = Elm.getParent('.qui-project-media-folderViewer-item');
+            }
+
             if (Elm.get('data-type') === 'folder') {
                 Menu = this.getFolderMenu(Elm);
             } else {
@@ -116,8 +120,9 @@ define('classes/projects/project/media/panel/ContextMenu', [
 
             Menu.clearChildren();
 
+            var isFolderViewer = DOMNode.hasClass('qui-project-media-folderViewer-item');
 
-            if (DOMNode.get('data-active').toInt() === 0) {
+            if (parseInt(DOMNode.get('data-active')) === 0) {
                 Menu.appendChild(
                     this.getActivateItem(DOMNode)
                 );
@@ -204,6 +209,12 @@ define('classes/projects/project/media/panel/ContextMenu', [
 
             Menu.appendChild(new QUIContextmenuSeparator());
 
+            if (!sels.length) {
+                sels = [DOMNode];
+            }
+
+            this.addHiddenMenu(Menu, sels);
+
             Menu.appendChild(
                 new QUIContextmenuItem({
                     name  : 'rename',
@@ -239,7 +250,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
             );
 
             // if no error, you can download the file
-            if (!DOMNode.get('data-error').toInt()) {
+            if (!parseInt(DOMNode.get('data-error'))) {
                 Menu.appendChild(
                     new QUIContextmenuItem({
                         name  : 'download',
@@ -262,27 +273,28 @@ define('classes/projects/project/media/panel/ContextMenu', [
 
             Menu.appendChild(new QUIContextmenuSeparator());
 
-            Menu.appendChild(
-                new QUIContextmenuItem({
-                    name  : 'select-all',
-                    text  : QUILocale.get(lg, 'projects.project.panel.media.contextMenu.markAll'),
-                    icon  : 'fa fa-hand-grab-o',
-                    events: {
-                        onMouseDown: function () {
-                            Content.getElements('.qui-media-item').each(function (Item) {
-                                Item.addClass('selected');
-                                Panel.$selected.push(Item);
-                            });
+            if (!isFolderViewer) {
+                Menu.appendChild(
+                    new QUIContextmenuItem({
+                        name  : 'select-all',
+                        text  : QUILocale.get(lg, 'projects.project.panel.media.contextMenu.markAll'),
+                        icon  : 'fa fa-hand-grab-o',
+                        events: {
+                            onMouseDown: function () {
+                                Content.getElements('.qui-media-item').each(function (Item) {
+                                    Item.addClass('selected');
+                                    Panel.$selected.push(Item);
+                                });
+                            }
                         }
-                    }
-                })
-            );
+                    })
+                );
 
-            Menu.appendChild(new QUIContextmenuSeparator());
+                Menu.appendChild(new QUIContextmenuSeparator());
+                Menu.appendChild(Move);
+            }
 
-            Menu.appendChild(new QUIContextmenuSeparator())
-                .appendChild(Move)
-                .appendChild(Trash);
+            Menu.appendChild(Trash);
 
             return Menu;
         },
@@ -509,7 +521,15 @@ define('classes/projects/project/media/panel/ContextMenu', [
 
             Menu.appendChild(
                 new QUIContextmenuSeparator()
-            ).appendChild(
+            );
+
+            if (!sels.length) {
+                sels = [DOMNode];
+            }
+
+            this.addHiddenMenu(Menu, sels);
+
+            Menu.appendChild(
                 new QUIContextmenuItem({
                     name  : 'rename',
                     text  : QUILocale.get('quiqqer/quiqqer', 'rename'),
@@ -785,6 +805,78 @@ define('classes/projects/project/media/panel/ContextMenu', [
             );
 
             return Deactivate;
+        },
+
+        /**
+         * add hide menu
+         *
+         * @param Menu
+         * @param sels
+         */
+        addHiddenMenu: function (Menu, sels) {
+            var self = this;
+
+            var getIds = function (nodes) {
+                return nodes.map(function (elm) {
+                    return parseInt(elm.get('data-id'));
+                });
+            };
+
+            if (sels.length === 1) {
+                var isHidden = parseInt(sels[0].get('data-hidden'));
+
+                Menu.appendChild(
+                    new QUIContextmenuItem({
+                        name    : 'hide',
+                        text    : isHidden ? QUILocale.get('quiqqer/quiqqer', 'media.item.visible') : QUILocale.get('quiqqer/quiqqer', 'media.item.hide'),
+                        icon    : isHidden ? 'fa fa-eye' : 'fa fa-eye-slash',
+                        isHidden: isHidden,
+                        events  : {
+                            onMouseDown: function (Itm) {
+                                if (parseInt(Itm.getAttribute('isHidden'))) {
+                                    self.getPanel().getMedia().setVisible(
+                                        getIds(sels)
+                                    );
+                                } else {
+                                    self.getPanel().getMedia().setHidden(
+                                        getIds(sels)
+                                    );
+                                }
+                            }
+                        }
+                    })
+                );
+            } else {
+                Menu.appendChild(
+                    new QUIContextmenuItem({
+                        name  : 'hide',
+                        text  : QUILocale.get('quiqqer/quiqqer', 'media.items.hide'),
+                        icon  : 'fa fa-eye-slash',
+                        events: {
+                            onMouseDown: function () {
+                                self.getPanel().getMedia().setHidden(
+                                    getIds(sels)
+                                );
+                            }
+                        }
+                    })
+                );
+
+                Menu.appendChild(
+                    new QUIContextmenuItem({
+                        name  : 'visible',
+                        text  : QUILocale.get('quiqqer/quiqqer', 'media.items.visible'),
+                        icon  : 'fa fa-eye',
+                        events: {
+                            onMouseDown: function () {
+                                self.getPanel().getMedia().setVisible(
+                                    getIds(sels)
+                                );
+                            }
+                        }
+                    })
+                );
+            }
         }
     });
 });

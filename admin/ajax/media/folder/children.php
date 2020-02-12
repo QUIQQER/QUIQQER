@@ -22,9 +22,15 @@ QUI::$Ajax->registerFunction(
         /* @var $File \QUI\Projects\Media\Folder */
         $Grid   = new Grid($params);
         $params = Orthos::clearArray(\json_decode($params, true));
-        $params = $Grid->parseDBParams($params);
 
-        $children  = [];
+        $children        = [];
+        $showHiddenFiles = !empty($params['showHiddenFiles']) && $params['showHiddenFiles'];
+        $params          = $Grid->parseDBParams($params);
+
+        if ($showHiddenFiles === false) {
+            $params['where']['hidden'] = 0;
+        }
+
         $_children = $File->getChildrenIds($params);
 
         $getUserName = function ($uid) {
@@ -55,6 +61,8 @@ QUI::$Ajax->registerFunction(
                 ];
 
                 $children[] = $child;
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
             }
         }
 

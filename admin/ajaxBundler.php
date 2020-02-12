@@ -26,6 +26,14 @@ if ($User->getId() && $User->getLang()) {
 // language
 if (isset($_REQUEST['lang']) && \strlen($_REQUEST['lang']) === 2) {
     QUI::getLocale()->setCurrent($_REQUEST['lang']);
+} elseif (isset($_REQUEST['quiqqerBundle'])
+          && isset($_REQUEST['quiqqerBundle'][0])
+          && isset($_REQUEST['quiqqerBundle'][0]['params'])
+          && isset($_REQUEST['quiqqerBundle'][0]['params']['lang'])
+) {
+    $language = \json_decode($_REQUEST['quiqqerBundle'][0]['params']['lang']);
+
+    QUI::getLocale()->setCurrent($_REQUEST['quiqqerBundle'][0]['params']['lang']);
 }
 
 // request

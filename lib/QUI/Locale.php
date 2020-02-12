@@ -128,9 +128,7 @@ class Locale
      */
     public function setCurrent($lang)
     {
-        $lang = \preg_replace('/[^a-zA-Z_]/', '', $lang);
-
-        $this->current = $lang;
+        $this->current = \preg_replace('/[^a-zA-Z_]/', '', $lang);
     }
 
     /**

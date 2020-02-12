@@ -387,7 +387,10 @@ class Rewrite
                 $imageNotError = true;
             }
 
+
             if ($Item === false || $imageNotError) {
+                QUI::getEvents()->fireEvent('onRequestImageNotFound', [$_REQUEST['_url']]);
+
                 $Redirect = new RedirectResponse(
                     $this->getErrorSite()->getUrlRewritten()
                 );
@@ -409,6 +412,11 @@ class Rewrite
 
                 try {
                     $file = $Item->createSizeCache($width, $height);
+                } catch (QUI\Permissions\Exception $Exception) {
+                    \http_response_code(Response::HTTP_FORBIDDEN);
+
+                    $file = OPT_DIR.'quiqqer/quiqqer/bin/images/deny.svg';
+                    $Item->setAttribute('mime_type', 'image/svg+xml');
                 } catch (QUI\Exception $Exception) {
                     QUI\System\Log::writeException($Exception);
                 }
@@ -416,11 +424,17 @@ class Rewrite
                 try {
                     /* @var $Item \QUI\Projects\Media\File */
                     $file = $Item->createCache();
+                } catch (QUI\Permissions\Exception $Exception) {
+                    \http_response_code(Response::HTTP_FORBIDDEN);
+
+                    $file = OPT_DIR.'quiqqer/quiqqer/bin/images/deny.svg';
+                    $Item->setAttribute('mime_type', 'image/svg+xml');
                 } catch (QUI\Exception $Exception) {
                     QUI\System\Log::writeException($Exception);
                 }
             }
 
+            // @todo consider permissions denied -> show permission denied image
             if (!isset($file) || !\file_exists($file)) {
                 $Redirect = new RedirectResponse(
                     $this->getErrorSite()->getUrlRewritten()
@@ -886,9 +900,11 @@ class Rewrite
             $this->project = $Project;
             $this->Output->setProject($Project);
 
-            QUI::getLocale()->setCurrent(
-                $Project->getAttribute('lang')
-            );
+            if (!defined('QUIQQER_AJAX')) {
+                QUI::getLocale()->setCurrent(
+                    $Project->getAttribute('lang')
+                );
+            }
 
             return $Project;
         }
@@ -1250,7 +1266,7 @@ class Rewrite
     public function outputMail($output)
     {
         if (isset($output[3]) && \strpos($output[3], '@') !== false) {
-            list($user, $domain) = \explode("@", $output[3]);
+            [$user, $domain] = \explode("@", $output[3]);
 
             return 'href="'.URL_DIR.'[mailto]'.$user.'[at]'.$domain.'" target="mail_protection"';
         }

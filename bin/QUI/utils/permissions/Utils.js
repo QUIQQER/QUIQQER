@@ -37,9 +37,7 @@ define('utils/permissions/Utils', [
 
             var title      = params.title.split(' '),
                 permission = params.name,
-
                 Entry      = new Element('div.qui-permission-entry'),
-
                 Input      = new Element('input.right', {
                     type: 'text',
                     name: permission,
@@ -50,13 +48,13 @@ define('utils/permissions/Utils', [
 
             Input.addClass(params.type);
 
-            if (params.type == 'bool') {
+            if (params.type === 'bool') {
                 Input.type = 'checkbox';
             }
 
             var text = title[0];
 
-            if (title.length == 2) {
+            if (title.length === 2) {
                 text = QUILocale.get(title[0], title[1]);
             }
 

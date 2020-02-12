@@ -50,6 +50,7 @@ define('controls/projects/project/media/FolderPanel', [
             'openDetails',
             'openEffects',
             'openPriorityOrder',
+            'openPermissions',
             'executeEffectsRecursive',
             '$refreshImageEffectFrame',
             '$onFolderRefresh'
@@ -592,6 +593,23 @@ define('controls/projects/project/media/FolderPanel', [
 
             this.getButtonBar().clear();
 
+            // permissions
+            new QUIButton({
+                image : 'fa fa-shield',
+                name  : 'permissions',
+                alt   : Locale.get('quiqqer/quiqqer', 'projects.project.site.media.filePanel.permissions'),
+                title : Locale.get('quiqqer/quiqqer', 'projects.project.site.media.filePanel.permissions'),
+                styles: {
+                    'border-left-width' : 1,
+                    'border-right-width': 1,
+                    'float'             : 'right',
+                    width               : 40
+                },
+                events: {
+                    onClick: this.openPermissions
+                }
+            }).inject(this.getHeader());
+
             this.addButton(
                 new QUIButton({
                     text     : Locale.get(lg, 'projects.project.site.media.filePanel.btn.save.text'),
@@ -733,6 +751,22 @@ define('controls/projects/project/media/FolderPanel', [
 
                 this.$Folder.setAttribute(i, data[i]);
             }
+        },
+
+        /**
+         * Open the permissions
+         */
+        openPermissions: function () {
+            var Parent = this.getParent(),
+                File   = this.$File;
+
+            require(['controls/permissions/Panel'], function (PermPanel) {
+                Parent.appendChild(
+                    new PermPanel({
+                        Object: File
+                    })
+                );
+            });
         }
     });
 });
