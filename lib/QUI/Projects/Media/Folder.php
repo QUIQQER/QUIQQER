@@ -1056,7 +1056,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
-     * Return a file from the folder by name
+     * Return a file from the folder by its name
      *
      * @param string $filename
      *
@@ -1065,10 +1065,27 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function getChildByName($filename)
     {
+        $children = $this->getChildrenByName($filename, 1);
+
+        return $children[0];
+    }
+
+    /**
+     * Return all children with the wanted name
+     *
+     * @param $filename
+     * @param bool $limit
+     * @return array
+     *
+     * @throws QUI\Database\Exception
+     * @throws QUI\Exception
+     */
+    public function getChildrenByName($filename, $limit = false)
+    {
         $table     = $this->Media->getTable();
         $table_rel = $this->Media->getTable('relations');
 
-        $result = QUI::getDataBase()->fetch([
+        $query = [
             'select' => [
                 $table.'.id'
             ],
@@ -1081,11 +1098,16 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 $table_rel.'.child'  => '`'.$table.'.id`',
                 $table.'.deleted'    => 0,
                 $table.'.name'       => $filename
-            ],
-            'limit'  => 1
-        ]);
+            ]
+        ];
 
-        if (!isset($result[0])) {
+        if ($limit) {
+            $query['limit'] = $limit;
+        }
+
+        $dbResult = QUI::getDataBase()->fetch($query);
+
+        if (!isset($dbResult[0])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.not.found.NAME', [
                     'file' => $filename
@@ -1094,7 +1116,14 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             );
         }
 
-        return $this->Media->get((int)$result[0]['id']);
+        $result = [];
+
+        foreach ($dbResult as $entry) {
+            $result[] = $this->Media->get((int)$entry['id']);
+        }
+
+        return $result;
+
     }
 
     /**

@@ -31,7 +31,7 @@ QUI::$Ajax->registerFunction(
         $File->setAttributes($attributes);
         $File->save();
 
-        QUI::getMessagesHandler()->clear();
+        //QUI::getMessagesHandler()->clear();
 
         if (QUI\Projects\Media\Utils::isFolder($File)) {
             QUI::getMessagesHandler()->addSuccess(
