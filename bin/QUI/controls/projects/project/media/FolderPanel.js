@@ -758,12 +758,12 @@ define('controls/projects/project/media/FolderPanel', [
          */
         openPermissions: function () {
             var Parent = this.getParent(),
-                File   = this.$File;
+                Folder = this.$Folder;
 
             require(['controls/permissions/Panel'], function (PermPanel) {
                 Parent.appendChild(
                     new PermPanel({
-                        Object: File
+                        Object: Folder
                     })
                 );
             });
