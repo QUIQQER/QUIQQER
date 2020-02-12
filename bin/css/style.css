@@ -107,6 +107,14 @@ h4 {
     border-color: #666;
 }
 
+.console {
+    white-space: normal;
+    background: #232627;
+    padding: 10px;
+    color: #fcfcfc;
+    font-family: monospace;
+}
+
 /** logo, title
  * ====================================================== */
 
