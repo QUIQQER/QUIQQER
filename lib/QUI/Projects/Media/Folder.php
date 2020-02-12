@@ -1123,7 +1123,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         return $result;
-
     }
 
     /**
