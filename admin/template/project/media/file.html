@@ -1,96 +1,183 @@
 <div class="qui-media-file-details">
-    <table class="data-table">
-    <thead>
+    <table class="data-table data-table-flexbox site-data">
+        <thead>
         <tr>
-            <th colspan="2">
-                {t}quiqqer/quiqqer template.project.media.file.header{/t}
+            <th>
+                {locale group="quiqqer/quiqqer" var="template.project.media.file.header"}
             </th>
         </tr>
-    </thead>
+        </thead>
 
-    <tbody>
-        <tr class="{cycle values="odd,even" reset="true"}">
-            <td>{t}quiqqer/quiqqer name{/t}</td>
-            <td><input type="text" name="file_name" value="" /></td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td>{t}quiqqer/quiqqer title{/t}</td>
-            <td><input type="text" name="file_title" value="" /></td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td>{t}quiqqer/quiqqer template.project.media.file.alttext{/t}</td>
-            <td><input type="text" name="file_alt" value="" /></td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td>{t}quiqqer/quiqqer priority{/t}</td>
-            <td><input type="number" name="file_priority" value="" /></td>
-        </tr>
-    </tbody>
-    </table>
-
-    <table class="data-table">
-    <thead>
+        <tbody>
         <tr>
-            <th>{t}quiqqer/quiqqer description{/t}</th>
-        </tr>
-    </thead>
-
-    <tbody>
-        <tr class="{cycle values="odd,even" reset=true}">
             <td>
-                <textarea name="file_short" class="box"></textarea>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="name"}
+                    </span>
+                    <input type="text" name="file_name" class="field-container-field"/>
+                </label>
             </td>
         </tr>
-    </tbody>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="title"}
+                    </span>
+                    <input type="text"
+                           name="file_title"
+                           class="field-container-field"
+                           data-qui="controls/lang/InputMultiLang"
+                    />
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="template.project.media.file.alttext"}
+                    </span>
+                    <input type="text"
+                           name="file_alt"
+                           class="field-container-field"
+                           data-qui="controls/lang/InputMultiLang"
+                    />
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="priority"}
+                    </span>
+                    <input type="number" name="file_priority" class="field-container-field"/>
+                </label>
+            </td>
+        </tr>
+        </tbody>
     </table>
 
-
-    <table class="data-table">
-    <thead>
+    <table class="data-table data-table-flexbox site-data">
+        <thead>
         <tr>
-            <th colspan="2">
-                {t}quiqqer/quiqqer template.project.media.file.header{/t}
+            <th>{locale group="quiqqer/quiqqer" var="description"}</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr>
+            <td>
+                <label class="field-container qui-media-file-details-short">
+                    <textarea name="file_short" data-qui="controls/lang/ContentMultiLang"></textarea>
+                </label>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="data-table data-table-flexbox site-data">
+        <thead>
+        <tr>
+            <th>
+                {locale group="quiqqer/quiqqer" var="template.project.media.file.header"}
             </th>
         </tr>
-    </thead>
-    <tbody>
-        <tr class="{cycle values="odd,even" reset="true"}">
-            <td>{t}quiqqer/quiqqer id{/t}</td>
-            <td><input type="text" name="file_id" disabled="disabled" value="" /></td>
+        </thead>
+        <tbody>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="id"}
+                    </span>
+                    <input type="text" name="file_id" disabled="disabled" class="field-container-field"/>
+                </label>
+            </td>
         </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td>{t}quiqqer/quiqqer file{/t}</td>
-            <td><input type="text" name="file_file" disabled="disabled" value="" /></td>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="file"}
+                    </span>
+                    <input type="text" name="file_file" disabled="disabled" class="field-container-field"/>
+                </label>
+            </td>
         </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td>{t}quiqqer/quiqqer template.project.media.file.path{/t}</td>
-            <td><input type="text" name="file_url" disabled="disabled" value="" /></td>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="template.project.media.file.path"}
+                    </span>
+                    <input type="text" name="file_url" disabled="disabled" class="field-container-field"/>
+                </label>
+            </td>
         </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td>{t}quiqqer/quiqqer type{/t}</td>
-            <td><input type="text" name="file_type" disabled="disabled" value="" /></td>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="type"}
+                    </span>
+                    <input type="text" name="file_type" disabled="disabled" class="field-container-field"/>
+                </label>
+            </td>
         </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td>{t}quiqqer/quiqqer size{/t}</td>
-            <td><input type="text" name="file_size" disabled="disabled" value="" /></td>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="size"}
+                    </span>
+                    <input type="text" name="file_size" disabled="disabled" class="field-container-field"/>
+                </label>
+            </td>
         </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td>{t}quiqqer/quiqqer template.project.media.file.lastedit{/t}</td>
-            <td><input type="text" name="file_edate" disabled="disabled" value="" /></td>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="template.project.media.file.lastedit"}
+                    </span>
+                    <input type="text" name="file_edate" disabled="disabled" class="field-container-field"/>
+                </label>
+            </td>
         </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td>{t}quiqqer/quiqqer template.project.media.file.dimension{/t}</td>
-            <td><input type="text" name="file_dimension" disabled="disabled" value="" /></td>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        {locale group="quiqqer/quiqqer" var="template.project.media.file.dimension"}
+                    </span>
+                    <input type="text" name="file_dimension" disabled="disabled" class="field-container-field"/>
+                </label>
+            </td>
         </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td>MD5 Hash</td>
-            <td><input type="text" name="file_md5" disabled="disabled" value="" /></td>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        MD5 Hash
+                    </span>
+                    <input type="text" name="file_md5" disabled="disabled" class="field-container-field"/>
+                </label>
+            </td>
         </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td>SHA1 Hash</td>
-            <td><input type="text" name="file_sha1" disabled="disabled" value="" /></td>
+        <tr>
+            <td>
+                <label class="field-container">
+                    <span class="field-container-item">
+                        SHA1 Hash
+                    </span>
+                    <input type="text" name="file_sha1" disabled="disabled" class="field-container-field"/>
+                </label>
+            </td>
         </tr>
-    </tbody>
+        </tbody>
     </table>
 
 </div>

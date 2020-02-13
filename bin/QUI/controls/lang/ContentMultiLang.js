@@ -4,13 +4,6 @@
  * @module controls/lang/ContentMultiLang
  * @author www.pcsg.de (Henning Leutz)
  * @author www.pcsg.de (Patrick Müller)
- *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require qui/controls/loader/Loader
- * @require controls/lang/Select
- * @require Editors
- * @require css!controls/lang/ContentMultiLang.css
  */
 define('controls/lang/ContentMultiLang', [
 
@@ -75,7 +68,7 @@ define('controls/lang/ContentMultiLang', [
             this.$Elm = new Element('div', {
                 'class': 'field-container-field quiqqer-lang-contentmultilang',
                 'html' : '<div class="quiqqer-lang-contentmultilang-langselect"></div>' +
-                '<div class="quiqqer-lang-contentmultilang-content"></div>',
+                    '<div class="quiqqer-lang-contentmultilang-content"></div>',
                 styles : {
                     minHeight: 300
                 }
@@ -154,8 +147,13 @@ define('controls/lang/ContentMultiLang', [
          * event : on import
          */
         $onImport: function () {
-            this.$Input      = this.getElm();
-            this.$Input.type = 'hidden';
+            this.$Input = this.getElm();
+
+            if (this.$Input.nodeName === 'TEXTAREA') {
+                this.$Input.setStyle('display', 'none');
+            } else {
+                this.$Input.type = 'hidden';
+            }
 
             this.create().wraps(this.$Input);
             this.$onInject();

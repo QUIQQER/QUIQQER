@@ -36,3 +36,8 @@
 .preview-frame {
     position: relative;
 }
+
+.qui-media-file-details-short .quiqqer-lang-contentmultilang {
+    border: 0;
+    padding: 0;
+}

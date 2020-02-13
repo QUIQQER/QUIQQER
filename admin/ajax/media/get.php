@@ -16,9 +16,9 @@ QUI::$Ajax->registerFunction(
         $File    = $Media->get($fileid);
 
         $parents    = $File->getParents();
-        $breadcrumb = array();
-        $children   = array();
-        $_children  = array();
+        $breadcrumb = [];
+        $children   = [];
+        $_children  = [];
 
         if ($File->getType() === 'QUI\\Projects\\Media\\Folder') {
             $_children = $File->getChildren();
@@ -37,12 +37,12 @@ QUI::$Ajax->registerFunction(
         }
 
 
-        return array(
-            'file' => QUI\Projects\Media\Utils::parseForMediaCenter($File),
+        return [
+            'file'       => QUI\Projects\Media\Utils::parseForMediaCenter($File),
             'breadcrumb' => $breadcrumb,
-            'children' => $children
-        );
+            'children'   => $children
+        ];
     },
-    array('project', 'fileid'),
+    ['project', 'fileid'],
     'Permission::checkAdminUser'
 );
