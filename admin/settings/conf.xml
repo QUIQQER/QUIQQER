@@ -422,7 +422,7 @@
                         <title>
                             <locale group="quiqqer/quiqqer" var="quiqqer.settings.general.template.title"/>
                         </title>
-                        <input conf="template.engine" type="text">
+                        <input conf="template.engine" type="text" disabled="disabled">
                             <text>
                                 <locale group="quiqqer/quiqqer" var="quiqqer.settings.general.template.use"/>
                             </text>
