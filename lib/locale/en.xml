@@ -16,6 +16,9 @@
         <locale name="title">
             <en><![CDATA[Title]]></en>
         </locale>
+        <locale name="extension">
+            <en><![CDATA[Extension]]></en>
+        </locale>
         <locale name="workingtitle">
             <en><![CDATA[Working title]]></en>
         </locale>

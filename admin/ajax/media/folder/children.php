@@ -54,10 +54,11 @@ QUI::$Ajax->registerFunction(
                 $children[] = $data;
             } catch (QUI\Exception $Exception) {
                 $child = [
-                    'id'    => $id,
-                    'name'  => $Exception->getAttribute('name'),
-                    'title' => $Exception->getAttribute('title'),
-                    'error' => true
+                    'id'        => $id,
+                    'name'      => $Exception->getAttribute('name'),
+                    'title'     => $Exception->getAttribute('title'),
+                    'extension' => '',
+                    'error'     => true
                 ];
 
                 $children[] = $child;

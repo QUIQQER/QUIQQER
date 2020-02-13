@@ -30,7 +30,7 @@ define('controls/projects/project/media/Panel', [
 ], function () {
     "use strict";
 
-    var lg                = 'quiqqer/system';
+    var lg                = 'quiqqer/quiqqer';
     var HIDE_HIDDEN_FILES = 1; // 1 = hide all hidden files, 0 = show all hidden files
 
     var QUI              = arguments[0],
@@ -1229,10 +1229,10 @@ define('controls/projects/project/media/Panel', [
                     'data-mimetype': Child.mimetype,
                     'data-hidden'  : Child.isHidden ? 1 : 0,
 
-                    'class': 'qui-media-item box smooth',
+                    'class': 'qui-media-item smooth',
                     html   : '<span class="title">' + Child.name + '</span>',
-                    alt    : Child.name,
-                    title  : Child.name,
+                    alt    : Child.name + '.' + Child.extension,
+                    title  : Child.name + '.' + Child.extension,
 
                     events: {
                         click      : this.$viewSymbolClick.bind(this),
@@ -1318,8 +1318,8 @@ define('controls/projects/project/media/Panel', [
 
                     'class': 'qui-media-item box smooth',
                     html   : '<span class="title">' + Child.name + '</span>',
-                    alt    : Child.name,
-                    title  : Child.name,
+                    alt    : Child.name + '.' + Child.extension,
+                    title  : Child.name + '.' + Child.extension,
 
                     events: {
                         click      : this.$viewSymbolClick.bind(this),
@@ -1493,7 +1493,6 @@ define('controls/projects/project/media/Panel', [
             this.$Filter.setStyle('display', 'none');
 
             var Grid = new GridControl(GridContainer, {
-
                 columnModel: [{
                     header   : '&nbsp;',
                     dataIndex: 'icon',
@@ -1514,6 +1513,11 @@ define('controls/projects/project/media/Panel', [
                     dataIndex: 'title',
                     dataType : 'string',
                     width    : 150
+                }, {
+                    header   : Locale.get(lg, 'extension'),
+                    dataIndex: 'extension',
+                    dataType : 'string',
+                    width    : 80
                 }, {
                     header   : Locale.get(lg, 'c_date'),
                     dataIndex: 'c_date',

@@ -456,7 +456,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
             Menu.appendChild(
                 new QUIContextmenuItem({
                     name  : 'copy-files',
-                    text  : QUILocale.get('lg', 'projects.project.panel.media.contextMenu.copyLocation'),
+                    text  : QUILocale.get(lg, 'projects.project.panel.media.contextMenu.copyLocation'),
                     icon  : 'fa fa-copy',
                     events: {
                         onMouseDown: function (Item, event) {
