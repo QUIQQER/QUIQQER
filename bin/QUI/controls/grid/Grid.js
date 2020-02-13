@@ -1258,6 +1258,7 @@ define('controls/grid/Grid', [
             }
 
             this.reset();
+            this.filerData();
             this.hideLoader();
         },
 
