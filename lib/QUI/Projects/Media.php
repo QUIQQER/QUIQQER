@@ -349,6 +349,59 @@ class Media extends QUI\QDOM
 
         $DataBase->table()->setIndex($table, 'parent');
         $DataBase->table()->setIndex($table, 'child');
+
+        // multilingual patch
+
+        $table = $this->getTable();
+
+        // check if patch needed
+        $result = QUI::getDataBase()->fetch([
+            'from'  => $table,
+            'where' => [
+                'id' => 1
+            ]
+        ]);
+
+        $title = $result[0]['title'];
+        $title = \json_decode($title, true);
+
+        if (\is_array($title)) {
+            return;
+        }
+
+        // patch is needed
+        $result = QUI::getDataBase()->fetch([
+            'from' => $table
+        ]);
+
+        $languages = QUI::availableLanguages();
+
+        $updateEntry = function ($type, $data, $table) use ($languages) {
+            $value     = $data[$type];
+            $valueJSON = \json_decode($value, true);
+
+            if (\is_array($valueJSON)) {
+                return;
+            }
+
+            $newData = [];
+
+            foreach ($languages as $language) {
+                $newData[$language] = $value;
+            }
+
+            QUI::getDataBase()->update($table, [
+                $type => \json_encode($newData)
+            ], [
+                'id' => $data['id']
+            ]);
+        };
+
+        foreach ($result as $entry) {
+            $updateEntry('title', $entry, $table);
+            $updateEntry('short', $entry, $table);
+            $updateEntry('alt', $entry, $table);
+        }
     }
 
     /**

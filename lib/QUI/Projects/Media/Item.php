@@ -808,12 +808,8 @@ abstract class Item extends QUI\QDOM
         // update file path
         QUI::getDataBase()->update(
             $this->Media->getTable(),
-            [
-                'file' => $new_file
-            ],
-            [
-                'id' => $this->getId()
-            ]
+            ['file' => $new_file],
+            ['id' => $this->getId()]
         );
 
         // set the new parent relationship
