@@ -20,3 +20,20 @@ if (!function_exists('array_key_first')) {
         return null;
     }
 }
+
+if (!function_exists("array_key_last")) {
+    /**
+     * https://www.php.net/manual/de/function.array-key-last.php#123016
+     *
+     * @param $array
+     * @return mixed|null
+     */
+    function array_key_last($array)
+    {
+        if (!\is_array($array) || empty($array)) {
+            return null;
+        }
+
+        return \array_keys($array)[\count($array) - 1];
+    }
+}
