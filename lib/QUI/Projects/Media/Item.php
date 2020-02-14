@@ -926,6 +926,8 @@ abstract class Item extends QUI\QDOM
             && $name !== 'description'
             && $name !== 'alt') {
             parent::setAttribute($name, $val);
+
+            return;
         }
 
         // Multilingual attribute
@@ -947,12 +949,11 @@ abstract class Item extends QUI\QDOM
         }
 
         // value is a string, so we need to look deeper
-        $val = \json_decode($val, true);
+        $val     = \json_decode($val, true);
+        $current = QUI::getLocale()->getCurrent();
 
         if (!$val) {
-            foreach ($languages as $language) {
-                $result[$language] = $val;
-            }
+            $result[$current] = $val;
         } else {
             foreach ($languages as $language) {
                 if (isset($val[$language])) {
