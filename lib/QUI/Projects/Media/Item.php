@@ -217,6 +217,10 @@ abstract class Item extends QUI\QDOM
         $current = $Locale->getCurrent();
 
         if (isset($this->title[$current])) {
+            if (empty($this->title[$current])) {
+                return '';
+            }
+
             return $this->title[$current];
         }
 
@@ -250,6 +254,10 @@ abstract class Item extends QUI\QDOM
         $current = $Locale->getCurrent();
 
         if (isset($this->description[$current])) {
+            if (empty($this->description[$current])) {
+                return '';
+            }
+
             return $this->description[$current];
         }
 
@@ -271,6 +279,10 @@ abstract class Item extends QUI\QDOM
         $current = $Locale->getCurrent();
 
         if (isset($this->alt[$current])) {
+            if (empty($this->alt[$current])) {
+                return '';
+            }
+
             return $this->alt[$current];
         }
 
