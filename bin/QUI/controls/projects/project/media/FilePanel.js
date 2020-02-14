@@ -579,7 +579,7 @@ define('controls/projects/project/media/FilePanel', [
 
             var data = FormUtils.getFormData(Form),
                 File = this.getFile();
-
+            console.log(data);
             for (var i in data) {
                 if (!data.hasOwnProperty(i)) {
                     return;
@@ -592,26 +592,25 @@ define('controls/projects/project/media/FilePanel', [
                     continue;
                 }
 
-
                 if ("file_name" === i) {
                     File.setAttribute('name', data[i]);
-                }
-
-                if ("file_title" === i) {
-                    File.setAttribute('title', data[i]);
-                }
-
-                if ("file_alt" === i) {
-                    File.setAttribute('alt', data[i]);
-                }
-
-                if ("file_short" === i) {
-                    File.setAttribute('short', data[i]);
                 }
 
                 if ("file_priority" === i) {
                     File.setAttribute('priority', data[i]);
                 }
+            }
+
+            if (typeof Form.elements.file_title !== 'undefined') {
+                File.setAttribute('title', Form.elements.file_title.value);
+            }
+
+            if (typeof Form.elements.file_short !== 'undefined') {
+                File.setAttribute('short', Form.elements.file_short.value);
+            }
+
+            if (typeof Form.elements.file_alt !== 'undefined') {
+                File.setAttribute('alt', Form.elements.file_alt.value);
             }
         },
 
@@ -641,12 +640,17 @@ define('controls/projects/project/media/FilePanel', [
             Template.get('project_media_file', function (result) {
                 var Body = self.getContent();
 
-                Body.set(
-                    'html',
-                    '<form>' + result + '</form>'
-                );
+                Body.set('html', '<form>' + result + '</form>');
 
-                ControlUtils.parse(Body.getElement('form'), function () {
+                var Form = Body.getElement('form');
+
+                Form.elements.file_title.value = File.getAttribute('title');
+                Form.elements.file_alt.value   = File.getAttribute('alt');
+                Form.elements.file_short.value = File.getAttribute('short');
+
+                ControlUtils.parse(Form).then(function () {
+                    return QUI.parse(Form);
+                }).then(function () {
                     var dimension = '';
 
                     if (File.getAttribute('image_width') &&
@@ -660,9 +664,6 @@ define('controls/projects/project/media/FilePanel', [
                     FormUtils.setDataToForm({
                             file_id       : File.getId(),
                             file_name     : File.getAttribute('name'),
-                            file_title    : File.getAttribute('title'),
-                            file_alt      : File.getAttribute('alt'),
-                            file_short    : File.getAttribute('short'),
                             file_file     : File.getAttribute('file'),
                             file_path     : File.getAttribute('path'),
                             file_type     : File.getAttribute('type'),
@@ -676,7 +677,7 @@ define('controls/projects/project/media/FilePanel', [
                             ),
                             file_priority : File.getAttribute('priority')
                         },
-                        Body.getElement('form')
+                        Form
                     );
 
                     MediaUtils.bindCheckMediaName(

@@ -1194,7 +1194,7 @@ define('controls/projects/project/media/Panel', [
          * @return {Array} the drop-upload-list
          */
         $viewSymbols: function (Result, Container) {
-            var i, len, Elm, Child;
+            var i, len, ext, Elm, Child;
 
             var droplist = [],
                 Media    = this.$Media,
@@ -1219,6 +1219,11 @@ define('controls/projects/project/media/Panel', [
                 }
 
                 Child = children[i];
+                ext   = '';
+
+                if (Child.extension !== '') {
+                    ext = '.' + Child.extension;
+                }
 
                 Elm = new Element('div', {
                     'data-id'      : Child.id,
@@ -1231,8 +1236,8 @@ define('controls/projects/project/media/Panel', [
 
                     'class': 'qui-media-item smooth',
                     html   : '<span class="title">' + Child.name + '</span>',
-                    alt    : Child.name + '.' + Child.extension,
-                    title  : Child.name + '.' + Child.extension,
+                    alt    : Child.name + ext,
+                    title  : Child.name + ext,
 
                     events: {
                         click      : this.$viewSymbolClick.bind(this),
@@ -1289,7 +1294,7 @@ define('controls/projects/project/media/Panel', [
          * @return {Array} the drop-upload-list
          */
         $viewPreview: function (Result, Container) {
-            var i, len, url, Child, Elm;
+            var i, len, url, ext, Child, Elm;
 
             var droplist = [],
                 Media    = this.$Media,
@@ -1306,6 +1311,12 @@ define('controls/projects/project/media/Panel', [
                 }
 
                 Child = children[i];
+                ext   = '';
+
+                if (Child.extension !== '') {
+                    ext = '.' + Child.extension;
+                }
+
 
                 Elm = new Element('div', {
                     'data-id'      : Child.id,
@@ -1318,8 +1329,8 @@ define('controls/projects/project/media/Panel', [
 
                     'class': 'qui-media-item box smooth',
                     html   : '<span class="title">' + Child.name + '</span>',
-                    alt    : Child.name + '.' + Child.extension,
-                    title  : Child.name + '.' + Child.extension,
+                    alt    : Child.name + ext,
+                    title  : Child.name + ext,
 
                     events: {
                         click      : this.$viewSymbolClick.bind(this),

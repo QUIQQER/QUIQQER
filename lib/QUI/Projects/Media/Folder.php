@@ -231,15 +231,15 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * (non-PHPdoc)
      *
-     * @param string $newname - new name for the folder
+     * @param string $newName - new name for the folder
      *
      * @throws QUI\Exception
      * @see QUI\Projects\Media\Item::rename()
      *
      */
-    public function rename($newname)
+    public function rename($newName)
     {
-        if (empty($newname)) {
+        if (empty($newName)) {
             throw new QUI\Exception(
                 ['quiqqer/quiqqer', 'exception.media.folder.name.invalid'],
                 ErrorCodes::FOLDER_NAME_INVALID
@@ -254,17 +254,17 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         // filter illegal characters
-        $Parent  = $this->getParent();
-        $newname = Utils::stripFolderName($newname);
+        $Parent   = $this->getParent();
+        $newName  = Utils::stripFolderName($newName);
 
         // rename
-        if ($newname == $this->getAttribute('name')) {
+        if ($newName == $this->getAttribute('name')) {
             return;
         }
 
 
         // check if a folder with the new name exist
-        if ($Parent->childWithNameExists($newname)) {
+        if ($Parent->childWithNameExists($newName)) {
             throw new QUI\Exception(
                 ['quiqqer/quiqqer', 'exception.media.folder.with.same.name.exists'],
                 ErrorCodes::FOLDER_ALREADY_EXISTS
@@ -273,7 +273,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         $PDO      = QUI::getDataBase()->getPDO();
         $old_path = $this->getPath().'/';
-        $new_path = $Parent->getPath().'/'.$newname;
+        $new_path = $Parent->getPath().'/'.$newName;
 
         $new_path = StringUtils::replaceDblSlashes($new_path);
         $new_path = \ltrim($new_path, '/');
@@ -299,14 +299,14 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $title = $this->getAttribute('title');
 
         if ($title == $this->getAttribute('name')) {
-            $title = $newname;
+            $title = $newName;
         }
 
         // update me
         QUI::getDataBase()->update(
             $this->Media->getTable(),
             [
-                'name'  => $newname,
+                'name'  => $newName,
                 'file'  => StringUtils::replaceDblSlashes($new_path.'/'),
                 'title' => $title
             ],
@@ -321,7 +321,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         // @todo rename cache instead of delete
         $this->deleteCache();
 
-        $this->setAttribute('name', $newname);
+        $this->setAttribute('name', $newName);
         $this->setAttribute('file', $new_path.'/');
 
         QUI::getEvents()->fireEvent('mediaRename', [$this]);

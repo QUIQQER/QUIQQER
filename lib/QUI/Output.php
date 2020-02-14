@@ -397,8 +397,8 @@ class Output extends Singleton
             try {
                 $Image = MediaUtils::getImageByUrl($src);
 
-                $att['alt']      = $Image->getAttribute('alt') ? $Image->getAttribute('alt') : '';
-                $att['title']    = $Image->getAttribute('title') ? $Image->getAttribute('title') : '';
+                $att['alt']      = $Image->getAlt();
+                $att['title']    = $Image->getTitle();
                 $att['data-src'] = $Image->getSizeCacheUrl();
 
                 if ($Image->hasViewPermissionSet()) {

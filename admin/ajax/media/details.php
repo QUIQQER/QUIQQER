@@ -59,7 +59,6 @@ QUI::$Ajax->registerFunction(
                 continue;
             }
 
-
             $attributes = $File->getAttributes();
 
             if (!$attributes['image_width']) {

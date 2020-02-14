@@ -341,6 +341,10 @@ class Utils
             return '';
         }
 
+        if (\strpos($src, 'image.php') !== false) {
+            return '';
+        }
+
         $parts     = \explode('/', $src);
         $cacheName = 'quiqqer/projects/'.$parts[3].'/picture-'.\md5($src.serialize($attributes));
 

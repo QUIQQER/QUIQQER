@@ -942,8 +942,20 @@ define('controls/users/User', [
                 this.getUser().savePassword(Pass1.value, Pass2.value).then(function () {
                     this.Loader.hide();
                     resolve();
-                }.bind(this));
+                }.bind(this)).catch(function (err) {
+                    QUI.getMessageHandler().then(function (MH) {
+                        if (typeOf(err) === 'string') {
+                            MH.addError(err);
+                            return;
+                        }
 
+                        if (typeof err.getMessage === 'function') {
+                            MH.addError(err.getMessage());
+                        }
+                    });
+
+                    this.Loader.hide();
+                }.bind(this));
             }.bind(this));
         },
 

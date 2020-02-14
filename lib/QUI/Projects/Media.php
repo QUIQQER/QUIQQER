@@ -268,15 +268,15 @@ class Media extends QUI\QDOM
         $DataBase->table()->addColumn($table, [
             'id'            => 'bigint(20) NOT NULL',
             'name'          => 'varchar(200) NOT NULL',
-            'title'         => 'tinytext',
+            'title'         => 'text',
             'short'         => 'text',
+            'alt'           => 'text',
             'type'          => 'varchar(32) default NULL',
             'active'        => 'tinyint(1) NOT NULL DEFAULT 0',
             'deleted'       => 'tinyint(1) NOT NULL DEFAULT 0',
             'c_date'        => 'timestamp NULL default NULL',
             'e_date'        => 'timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP',
             'file'          => 'text',
-            'alt'           => 'text',
             'mime_type'     => 'text',
             'image_height'  => 'int(6) default NULL',
             'image_width'   => 'int(6) default NULL',
@@ -349,6 +349,59 @@ class Media extends QUI\QDOM
 
         $DataBase->table()->setIndex($table, 'parent');
         $DataBase->table()->setIndex($table, 'child');
+
+        // multilingual patch
+
+        $table = $this->getTable();
+
+        // check if patch needed
+        $result = QUI::getDataBase()->fetch([
+            'from'  => $table,
+            'where' => [
+                'id' => 1
+            ]
+        ]);
+
+        $title = $result[0]['title'];
+        $title = \json_decode($title, true);
+
+        if (\is_array($title)) {
+            return;
+        }
+
+        // patch is needed
+        $result = QUI::getDataBase()->fetch([
+            'from' => $table
+        ]);
+
+        $languages = QUI::availableLanguages();
+
+        $updateEntry = function ($type, $data, $table) use ($languages) {
+            $value     = $data[$type];
+            $valueJSON = \json_decode($value, true);
+
+            if (\is_array($valueJSON)) {
+                return;
+            }
+
+            $newData = [];
+
+            foreach ($languages as $language) {
+                $newData[$language] = $value;
+            }
+
+            QUI::getDataBase()->update($table, [
+                $type => \json_encode($newData)
+            ], [
+                'id' => $data['id']
+            ]);
+        };
+
+        foreach ($result as $entry) {
+            $updateEntry('title', $entry, $table);
+            $updateEntry('short', $entry, $table);
+            $updateEntry('alt', $entry, $table);
+        }
     }
 
     /**
