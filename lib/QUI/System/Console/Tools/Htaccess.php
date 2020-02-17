@@ -295,6 +295,7 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}image\.php$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}index\.php$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}ajax\.php$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}ajaxBundler\.php$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}([^/]*)$
 
