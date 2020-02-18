@@ -72,7 +72,7 @@
   },
   "require-dev": {
     "mikey179\/vfsstream": "1.*",
-    "phpstan\/phpstan": ">=0.5"
+    "phpstan\/phpstan": ">=0.12"
   },
   "scripts": {
     "post-install-cmd": [
