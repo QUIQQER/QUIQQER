@@ -70,10 +70,6 @@
     "npm-asset\/mustache": "2.*",
     "npm-asset\/urijs": "1.*"
   },
-  "require-dev": {
-    "mikey179\/vfsstream": "1.*",
-    "phpstan\/phpstan": ">=0.12"
-  },
   "scripts": {
     "post-install-cmd": [
       "QUI\\Update::onInstall"
