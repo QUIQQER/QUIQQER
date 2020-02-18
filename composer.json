@@ -29,12 +29,12 @@
   ],
   "require": {
     "php": ">=5.3",
-    "composer\/composer": "1.8.*",
+    "composer\/composer": "1.10.*",
     "tedivm\/stash": "0.15.*",
     "robloach\/component-installer": "0.0.12",
     "phpmailer\/phpmailer": "~6.0",
     "symfony\/http-foundation": ">=2.3|3.*|4.2.*",
-    "symfony\/console": "~2.7",
+    "symfony\/console": "4.*",
     "html2text\/html2text": "1.0.1",
     "intervention\/image": "2.*",
     "t7systems\/blowfish": "1.0.0",
@@ -69,10 +69,6 @@
     "npm-asset\/nouislider": "*",
     "npm-asset\/mustache": "2.*",
     "npm-asset\/urijs": "1.*"
-  },
-  "require-dev": {
-    "mikey179\/vfsstream": "1.*",
-    "phpstan\/phpstan": ">=0.5"
   },
   "scripts": {
     "post-install-cmd": [
