@@ -15,6 +15,7 @@
     - quiqqer/quiqqer#927 - ZIP Upload from packages -> considered dev-master and dev-dev
     - quiqqer/quiqqer#947 - Improve image serving
     - namerobot/namerobot#100 - added more pagination page size options for Media panel
+    - quiqqer/quiqqer#953 - Change title -> Adjust URL
 
     - New rewrite request event -> onRequestImageNotFound
     - Project and Site are globaly available in Smarty Templazes
@@ -30,6 +31,7 @@
     fix: path history removed from constructor (media)
     fix: performance issue -> urldecode problem solved
     fix: fallback for empty project in controls/projects/project/media/Input
+
 
     refactor: added new createImageHtml Events; consider mime_type for source element
 
