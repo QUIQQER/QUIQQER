@@ -113,7 +113,7 @@ class Output extends Singleton
         // picture elements
         \libxml_use_internal_errors(true);
         $Dom = new \DOMDocument();
-        $Dom->loadHTML($content);
+        $Dom->loadHTML('<?xml encoding="utf-8" ?>'.$content);
         \libxml_clear_errors();
 
 
