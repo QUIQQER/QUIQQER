@@ -390,14 +390,14 @@ class Utils
             if (isset($attributes['style']) && \strpos($attributes['style'], 'width') !== false) {
                 $style = StringUtils::splitStyleAttributes($attributes['style']);
 
-                if (isset($style['width'])) {
+                if (isset($style['width']) && \strpos($style['width'], '%') === false) {
                     $maxWidth = (int)$style['width'];
                 }
             }
 
 
             if ($imageWidth) {
-                $end = $imageWidth > $maxWidth ? $maxWidth : $imageWidth;
+                $end = $maxWidth && $imageWidth > $maxWidth ? $maxWidth : $imageWidth;
                 $end = (int)$end;
 
                 $start = 100;
