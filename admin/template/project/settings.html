@@ -168,7 +168,7 @@
                         </option>
                         {assign var=PM value=$QUI->getPackageManager()}
                         {array var=params type="quiqqer-template"}
-                        {assign var=templates value=$PM->getInstalled($params)}
+                        {assign var=templates value=$PM->searchInstalledPackages($params)}
 
                         {foreach from=$templates item=tpl}
                         <option value="{$tpl.name}">{$tpl.name}</option>
@@ -192,7 +192,7 @@
                     >
                         {assign var=PM value=$QUI->getPackageManager()}
                         {array var=params type="quiqqer-template"}
-                        {assign var=templates value=$PM->getInstalled( $params )}
+                        {assign var=templates value=$PM->searchInstalledPackages( $params )}
 
                         {foreach from=$templates item=tpl}
                         <option value="{$tpl.name}">{$tpl.name}</option>
