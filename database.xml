@@ -6,10 +6,10 @@
         <table name="users">
             <field type="INT(11) NOT NULL">id</field>
             <field type="VARCHAR(50) NOT NULL">uuid</field>
-            <field type="VARCHAR(50) NOT NULL DEFAULT ''">username</field>
+            <field type="VARCHAR(255) NOT NULL DEFAULT ''">username</field>
             <field type="VARCHAR(255) NOT NULL DEFAULT ''">password</field>
             <field type="TEXT NULL">usergroup</field>
-            <field type="VARCHAR(50) DEFAULT NULL">email</field>
+            <field type="VARCHAR(255) DEFAULT NULL">email</field>
             <field type="INT(1) NOT NULL DEFAULT '0'">active</field>
             <field type="INT(11) NOT NULL DEFAULT '0'">regdate</field>
             <field type="INT(11) NOT NULL DEFAULT '0'">lastvisit</field>
