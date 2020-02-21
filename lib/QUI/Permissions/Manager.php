@@ -420,8 +420,11 @@ class Manager
         }
 
         foreach ($permissions as $permission) {
-            $permission['src']          = $src;
-            $permission['defaultvalue'] = '';
+            $permission['src'] = $src;
+
+            if (!isset($permission['defaultvalue'])) {
+                $permission['defaultvalue'] = '';
+            }
 
             if (isset($permission['default'])) {
                 $permission['defaultvalue'] = $permission['default'];
