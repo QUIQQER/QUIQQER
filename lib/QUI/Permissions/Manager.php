@@ -420,8 +420,11 @@ class Manager
         }
 
         foreach ($permissions as $permission) {
-            $permission['src']          = $src;
-            $permission['defaultvalue'] = '';
+            $permission['src'] = $src;
+
+            if (!isset($permission['defaultvalue'])) {
+                $permission['defaultvalue'] = '';
+            }
 
             if (isset($permission['default'])) {
                 $permission['defaultvalue'] = $permission['default'];
@@ -631,6 +634,10 @@ class Manager
 
         foreach ($_list as $permission => $params) {
             $permissions[$permission] = false;
+
+            if (isset($params['defaultvalue'])) {
+                $permissions[$permission] = $params['defaultvalue'];
+            }
         }
 
         if (!isset($data[0])) {
@@ -911,6 +918,8 @@ class Manager
         }
 
         QUI\Cache\Manager::clear('qui/admin/menu/');
+        QUI\Cache\Manager::clear('quiqqer/permissions/'.$this->getDataCacheId($Obj));
+
         QUI::getEvents()->fireEvent('permissionsSet', [$Obj, $permissions]);
     }
 
