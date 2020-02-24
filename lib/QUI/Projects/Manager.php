@@ -486,6 +486,10 @@ class Manager
         $list   = [];
 
         foreach ($config as $project => $conf) {
+            if (!isset($conf['default_lang'])) {
+                $conf['default_lang'] = 'en';
+            }
+            
             try {
                 $Project = self::getProject(
                     $project,
