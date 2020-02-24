@@ -346,6 +346,10 @@ class Output extends Singleton
             return $this->imageCache[$img];
         }
 
+        if (!isset($att['src'])) {
+            return $output[0];
+        }
+
         if (!MediaUtils::isMediaUrl($att['src']) && \strpos($att['src'], 'media/cache') === false) {
             // is relative url from the system?
             if ($this->settings['use-system-image-paths']
@@ -359,10 +363,6 @@ class Output extends Singleton
                 );
             }
 
-            return $output[0];
-        }
-
-        if (!isset($att['src'])) {
             return $output[0];
         }
 
