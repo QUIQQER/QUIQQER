@@ -854,6 +854,10 @@ class Template extends QUI\QDOM
             return false;
         }
 
+        if (!is_array($templates)) {
+            $templates = [];
+        }
+
         foreach ($templates as $template) {
             $siteXML = $template.'/site.xml';
 
