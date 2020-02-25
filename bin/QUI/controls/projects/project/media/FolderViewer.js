@@ -44,7 +44,7 @@ define('controls/projects/project/media/FolderViewer', [
              QUIAjax) {
     "use strict";
 
-    var lg                = 'quiqqer/system';
+    var lg                = 'quiqqer/quiqqer';
     var HIDE_HIDDEN_FILES = 1; // 1 = hide all hidden files, 0 = show all hidden files
 
     return new Class({
@@ -312,7 +312,8 @@ define('controls/projects/project/media/FolderViewer', [
          * refresh the folder viewer
          */
         refresh: function () {
-            if (!this.getAttribute('project') && this.getAttribute('folderUrl')) {
+            if (!this.getAttribute('project') && this.getAttribute('folderUrl') ||
+                !this.getAttribute('folderId') && this.getAttribute('folderUrl')) {
                 var folderUrl = this.getAttribute('folderUrl'),
                     params    = QUIStringUtils.getUrlParams(folderUrl);
 
@@ -337,7 +338,9 @@ define('controls/projects/project/media/FolderViewer', [
                 Media   = Project.getMedia();
 
             if (!this.getAttribute('folderId')) {
-                return this.showCreateFolder();
+                return this.showCreateFolder().then(function () {
+                    self.Loader.hide();
+                });
             }
 
             Media.get(this.getAttribute('folderId')).then(function (Item) {
@@ -729,14 +732,24 @@ define('controls/projects/project/media/FolderViewer', [
 
         /**
          * Show the create folder dialog
+         *
+         * @return {Promise}
          */
         showCreateFolder: function () {
             var self = this;
+
+            if (self.getElm().getElement('.folder-missing-container')) {
+                return Promise.resolve();
+            }
 
             return new Promise(function (resolve, reject) {
                 require(['controls/projects/project/media/CreateFolder'], function (CreateFolder) {
                     self.$Buttons.setStyle('display', 'none');
                     self.$Container.setStyle('display', 'none');
+
+                    if (self.getElm().getElement('.folder-missing-container')) {
+                        return resolve();
+                    }
 
                     var Container = new Element('div', {
                         'class': 'create-folder-container',
