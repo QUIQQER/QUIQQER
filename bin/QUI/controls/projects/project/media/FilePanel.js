@@ -579,7 +579,7 @@ define('controls/projects/project/media/FilePanel', [
 
             var data = FormUtils.getFormData(Form),
                 File = this.getFile();
-            console.log(data);
+
             for (var i in data) {
                 if (!data.hasOwnProperty(i)) {
                     return;
