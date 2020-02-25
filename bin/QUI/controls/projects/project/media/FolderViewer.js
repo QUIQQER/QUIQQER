@@ -44,7 +44,7 @@ define('controls/projects/project/media/FolderViewer', [
              QUIAjax) {
     "use strict";
 
-    var lg                = 'quiqqer/system';
+    var lg                = 'quiqqer/quiqqer';
     var HIDE_HIDDEN_FILES = 1; // 1 = hide all hidden files, 0 = show all hidden files
 
     return new Class({
@@ -312,7 +312,8 @@ define('controls/projects/project/media/FolderViewer', [
          * refresh the folder viewer
          */
         refresh: function () {
-            if (!this.getAttribute('project') && this.getAttribute('folderUrl')) {
+            if (!this.getAttribute('project') && this.getAttribute('folderUrl') ||
+                !this.getAttribute('folderId') && this.getAttribute('folderUrl')) {
                 var folderUrl = this.getAttribute('folderUrl'),
                     params    = QUIStringUtils.getUrlParams(folderUrl);
 
@@ -336,7 +337,13 @@ define('controls/projects/project/media/FolderViewer', [
                 Project = Projects.get(this.getAttribute('project')),
                 Media   = Project.getMedia();
 
-            Media.get(this.getAttribute('folderId')).done(function (Item) {
+            if (!this.getAttribute('folderId')) {
+                return this.showCreateFolder().then(function () {
+                    self.Loader.hide();
+                });
+            }
+
+            Media.get(this.getAttribute('folderId')).then(function (Item) {
                 var allowedTypes = self.getAttribute('filetype');
 
                 if (typeOf(Item) !== 'classes/projects/project/media/Folder') {
@@ -409,6 +416,9 @@ define('controls/projects/project/media/FolderViewer', [
 
                     self.Loader.hide();
                 });
+            }).catch(function (err) {
+                console.error('debug error', err);
+                return self.showCreateFolder();
             });
         },
 
@@ -722,15 +732,24 @@ define('controls/projects/project/media/FolderViewer', [
 
         /**
          * Show the create folder dialog
+         *
+         * @return {Promise}
          */
         showCreateFolder: function () {
             var self = this;
 
+            if (self.getElm().getElement('.folder-missing-container')) {
+                return Promise.resolve();
+            }
+
             return new Promise(function (resolve, reject) {
                 require(['controls/projects/project/media/CreateFolder'], function (CreateFolder) {
-
                     self.$Buttons.setStyle('display', 'none');
                     self.$Container.setStyle('display', 'none');
+
+                    if (self.getElm().getElement('.folder-missing-container')) {
+                        return resolve();
+                    }
 
                     var Container = new Element('div', {
                         'class': 'create-folder-container',
@@ -748,7 +767,7 @@ define('controls/projects/project/media/FolderViewer', [
                     }).inject(self.getElm());
 
                     new QUIButton({
-                        text  : 'Neuen Mediaordner anlegen', // #locale
+                        text  : QUILocale.get(lg, 'projects.project.media.folderviewer.createNewFolderButton'),
                         styles: {
                             'float'  : 'none',
                             marginTop: 10
@@ -769,7 +788,6 @@ define('controls/projects/project/media/FolderViewer', [
                     }).inject(Container);
 
                     resolve();
-
                 }, reject);
             });
         },

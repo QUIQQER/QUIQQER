@@ -318,18 +318,15 @@ define('controls/projects/project/media/CreateFolder', [
                     }
 
                     Folder.createFolder(newTitle).then(function (result) {
-
                         self.close().then(function () {
                             self.fireEvent('submit', [self, result]);
                             resolve(result);
                         });
-
                     }).catch(function (err) {
                         self.Loader.hide();
                         return reject(err);
                     });
                 });
-
             }.bind(this));
         },
 
