@@ -2473,6 +2473,9 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="projects.project.media.folderviewer.empty">
             <en><![CDATA[There are no images in this folder.]]></en>
         </locale>
+        <locale name="projects.project.media.folderviewer.createNewFolderButton">
+            <de><![CDATA[Create new media folder]]></de>
+        </locale>
         <locale name="projects.project.media.fileviewer.empty">
             <en><![CDATA[There are no files in this folder.]]></en>
         </locale>

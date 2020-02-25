@@ -336,7 +336,11 @@ define('controls/projects/project/media/FolderViewer', [
                 Project = Projects.get(this.getAttribute('project')),
                 Media   = Project.getMedia();
 
-            Media.get(this.getAttribute('folderId')).done(function (Item) {
+            if (!this.getAttribute('folderId')) {
+                return this.showCreateFolder();
+            }
+
+            Media.get(this.getAttribute('folderId')).then(function (Item) {
                 var allowedTypes = self.getAttribute('filetype');
 
                 if (typeOf(Item) !== 'classes/projects/project/media/Folder') {
@@ -409,6 +413,9 @@ define('controls/projects/project/media/FolderViewer', [
 
                     self.Loader.hide();
                 });
+            }).catch(function (err) {
+                console.error('debug error', err);
+                return self.showCreateFolder();
             });
         },
 
@@ -728,7 +735,6 @@ define('controls/projects/project/media/FolderViewer', [
 
             return new Promise(function (resolve, reject) {
                 require(['controls/projects/project/media/CreateFolder'], function (CreateFolder) {
-
                     self.$Buttons.setStyle('display', 'none');
                     self.$Container.setStyle('display', 'none');
 
@@ -748,7 +754,7 @@ define('controls/projects/project/media/FolderViewer', [
                     }).inject(self.getElm());
 
                     new QUIButton({
-                        text  : 'Neuen Mediaordner anlegen', // #locale
+                        text  : QUILocale.get(lg, 'projects.project.media.folderviewer.createNewFolderButton'),
                         styles: {
                             'float'  : 'none',
                             marginTop: 10
@@ -769,7 +775,6 @@ define('controls/projects/project/media/FolderViewer', [
                     }).inject(Container);
 
                     resolve();
-
                 }, reject);
             });
         },
