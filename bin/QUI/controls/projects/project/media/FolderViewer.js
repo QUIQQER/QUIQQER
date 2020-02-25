@@ -114,8 +114,12 @@ define('controls/projects/project/media/FolderViewer', [
                 }
             }
 
-            var Project = Projects.get(this.getAttribute('project')),
-                Media   = Project.getMedia();
+            if (!this.getAttribute('project')) {
+                this.setAttribute('project', QUIQQER_PROJECT.name);
+            }
+
+            var Project = Projects.get(this.getAttribute('project'));
+            var Media   = Project.getMedia();
 
             Media.addEvents({
                 onItemRename    : this.$itemEvent,
