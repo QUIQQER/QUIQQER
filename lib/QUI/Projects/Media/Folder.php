@@ -652,7 +652,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             default:
             case 'name':
             case 'name DESC':
-                $order_by = "find_in_set({$table_type}, 'folder') DESC, {$table_name}";
+                $order_by = "find_in_set({$table_type}, 'folder') DESC, {$table_name} DESC";
                 break;
 
             case 'priority':

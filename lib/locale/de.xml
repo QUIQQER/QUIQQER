@@ -2527,6 +2527,9 @@
         <locale name="projects.project.media.folderviewer.empty">
             <de><![CDATA[Es befinden sich keine Bilder in diesem Ordner.]]></de>
         </locale>
+        <locale name="projects.project.media.folderviewer.createNewFolderButton">
+            <de><![CDATA[Neuen Mediaordner anlegen]]></de>
+        </locale>
         <locale name="projects.project.media.fileviewer.empty">
             <de><![CDATA[Es befinden sich keine Dateien in diesem Ordner.]]></de>
         </locale>
