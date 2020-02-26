@@ -149,6 +149,11 @@ define('controls/projects/project/media/Panel', [
             this.addEvents({
                 onCreate : this.$onCreate,
                 onResize : this.$onResize,
+                onShow   : function () {
+                    if (this.$Pagination) {
+                        this.$Pagination.$redraw();
+                    }
+                }.bind(this),
                 onDestroy: function () {
                     this.$Media.removeEvent('onItemRename', this.$itemEvent);
                     this.$Media.removeEvent('onItemActivate', this.$itemEvent);
