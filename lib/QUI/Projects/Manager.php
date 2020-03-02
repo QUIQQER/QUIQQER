@@ -1024,7 +1024,7 @@ class Manager
         // -----------------------------//
         //              Cache           //
         // -----------------------------//
-        QUI\Cache\Manager::clearAll();
+        QUI\Cache\Manager::clearCompleteQuiqqerCache();
 
 
         // ----------------------------- //

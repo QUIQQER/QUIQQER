@@ -37,7 +37,7 @@ class Console
      * @var array
      */
     private $systemTools = [
-        'clear-all',
+        'clear-all-quiqqer-cache',
         'clear-cache',
         'clear-tmp',
         'clear-sessions',
@@ -590,15 +590,15 @@ class Console
         );
 
         switch ($this->getArgument('#system-tool')) {
-            case 'clear-all':
+            case 'clear-all-quiqqer-cache':
                 QUI\Cache\Manager::clearAll();
                 QUI::getTemp()->moveToTemp(VAR_DIR . 'cache');
                 QUI::getTemp()->moveToTemp(VAR_DIR . 'sessions');
-                QUI::getTemp()->clear();
+                QUI\Cache\Manager::clearCompleteQuiqqerCache();
                 break;
 
             case 'clear-cache':
-                QUI\Cache\Manager::clearAll();
+                QUI\Cache\Manager::clearCompleteQuiqqerCache();
                 QUI::getTemp()->moveToTemp(VAR_DIR . 'cache');
                 break;
 
