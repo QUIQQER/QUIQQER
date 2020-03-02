@@ -752,6 +752,7 @@ abstract class Item extends QUI\QDOM
             [
                 'name'        => $newName,
                 'file'        => $new_file,
+                'pathHash'    => \md5($new_file),
                 'pathHistory' => \json_encode($this->getPathHistory())
             ],
             [
@@ -820,7 +821,10 @@ abstract class Item extends QUI\QDOM
         // update file path
         QUI::getDataBase()->update(
             $this->Media->getTable(),
-            ['file' => $new_file],
+            [
+                'file'     => $new_file,
+                'pathHash' => \md5($new_file)
+            ],
             ['id' => $this->getId()]
         );
 
