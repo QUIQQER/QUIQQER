@@ -1665,7 +1665,7 @@ class Project
         // ----------------------------- //
         //              Cache           //
         // ----------------------------- //
-        QUI\Cache\Manager::clearAll();
+        QUI\Cache\Manager::clearCompleteQuiqqerCache();
 
         // ----------------------------- //
         //              Finish           //

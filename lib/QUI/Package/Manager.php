@@ -1061,7 +1061,7 @@ class Manager extends QUI\QDOM
             'Install package '.\print_r($packages, true).' -> install'
         );
 
-        QUI\Cache\Manager::clearAll();
+        QUI\Cache\Manager::clearCompleteQuiqqerCache();
 
         $this->composerRequireOrInstall($packages, $version);
     }
