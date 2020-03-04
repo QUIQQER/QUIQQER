@@ -89,7 +89,7 @@ define('controls/projects/project/media/Panel', [
             icon : '',
 
             field: 'name',
-            order: 'DESC',
+            order: 'ASC',
             limit: 25,
             page : 1,
 
