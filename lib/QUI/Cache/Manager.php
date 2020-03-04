@@ -139,15 +139,17 @@ class Manager
             }
         }
 
+        if (self::$handlers === null) {
+            self::$handlers = self::getHandlers();
+        }
+
         $Handler = new Stash\Driver\Composite([
-            'drivers' => self::getHandlers()
+            'drivers' => self::$handlers
         ]);
 
-        $Stash = new Stash\Pool($Handler);
-
-        self::$Stash    = $Stash;
-        self::$handlers = self::getHandlers();
-
+        $Stash       = new Stash\Pool($Handler);
+        self::$Stash = $Stash;
+        
         return self::$Stash->getItem($key);
     }
 
@@ -261,18 +263,24 @@ class Manager
 
                 $servers = [];
 
-                foreach ($conf as $server) {
-                    $servers[] = \explode(':', $server);
+                if (\is_array($conf) && !empty($conf[0])) {
+                    foreach ($conf as $server) {
+                        $servers[] = \explode(':', $server);
+                    }
                 }
 
                 // check if empty
                 if (empty($servers)) {
-                    $servers[] = 'localhost';
+                    $servers[] = ['localhost'];
                 }
 
-                foreach ($servers as $key => $server) {
-                    if (empty($server)) {
-                        $servers[$key] = 'localhost';
+                foreach ($servers as $key => $params) {
+                    if (!isset($params[$key][0])) {
+                        continue;
+                    }
+
+                    if (empty($params[$key][0][0])) {
+                        $params[$key][0][$key] = 'localhost';
                     }
                 }
 
