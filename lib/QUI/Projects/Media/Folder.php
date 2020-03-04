@@ -656,7 +656,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 break;
 
             case 'name ASC':
-                $order_by = "find_in_set({$table_type}, 'folder') ASC, {$table_name}";
+                $order_by = "find_in_set({$table_type}, 'folder') DESC, {$table_name}";
                 break;
 
             default:

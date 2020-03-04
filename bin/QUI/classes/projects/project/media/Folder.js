@@ -62,6 +62,7 @@ define('classes/projects/project/media/Folder', [
          * @return Promise
          */
         getChildren: function (oncomplete, params) {
+            console.log(params);
             return new Promise(function (resolve, reject) {
                 params = params || {};
 

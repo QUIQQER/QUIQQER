@@ -13,11 +13,12 @@ define('controls/projects/project/site/Input', [
     'qui/controls/Control',
     'qui/controls/buttons/Button',
     'controls/projects/Popup',
+    'qui/utils/String',
     'Locale',
 
     'css!controls/projects/project/site/Input.css'
 
-], function (QUIControl, QUIButton, ProjectPopup, QUILocale) {
+], function (QUIControl, QUIButton, ProjectPopup, StringUtils, QUILocale) {
     "use strict";
 
     /**
@@ -39,6 +40,8 @@ define('controls/projects/project/site/Input', [
         ],
 
         options: {
+            project : false,
+            lang    : false,
             name    : '',
             styles  : false,
             external: false // external sites allowed?
@@ -92,14 +95,31 @@ define('controls/projects/project/site/Input', [
                 this.$Input.setStyle('cursor', 'pointer');
             }
 
-            var self = this;
+            var self    = this,
+                value   = this.$Input.value,
+                project = self.getAttribute('project'),
+                lang    = self.getAttribute('lang');
+
+            if (value !== '' && value.indexOf('index.php?') !== -1) {
+                var values = StringUtils.getUrlParams(value);
+
+                if (typeof values.project !== 'undefined' && values.project !== '') {
+                    project = values.project;
+                }
+
+                if (typeof values.lang !== 'undefined' && values.lang !== '') {
+                    project = values.lang;
+                }
+            }
 
             this.$SiteButton = new QUIButton({
                 icon  : 'fa fa-file-o',
                 events: {
                     onClick: function () {
                         new ProjectPopup({
-                            events: {
+                            project: project,
+                            lang   : lang,
+                            events : {
                                 onSubmit: function (Popup, params) {
                                     self.$Input.value = params.urls[0];
                                     self.fireEvent('select', [params.urls[0], self]);
