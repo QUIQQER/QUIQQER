@@ -3948,6 +3948,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="projects.project.site.select.btn.addTypes">
             <en><![CDATA[Add a site type]]></en>
         </locale>
+        <locale name="packages.panel.category.system">
+            <en><![CDATA[System Check]]></en>
+        </locale>
         <locale name="packages.panel.category.systemcheck.execbutton">
             <en><![CDATA[Run system check]]></en>
         </locale>
