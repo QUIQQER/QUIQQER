@@ -62,7 +62,6 @@ define('classes/projects/project/media/Folder', [
          * @return Promise
          */
         getChildren: function (oncomplete, params) {
-            console.log(params);
             return new Promise(function (resolve, reject) {
                 params = params || {};
 
@@ -136,14 +135,17 @@ define('classes/projects/project/media/Folder', [
             });
 
             // create a iframe
-            if (!document.id('download-frame')) {
+            var Frame = document.id('download-frame');
+
+            if (!Frame) {
                 new Element('iframe#download-frame', {
+                    src   : url,
                     styles: {
                         position: 'absolute',
                         width   : 100,
                         height  : 100,
-                        left    : -400,
-                        top     : -400
+                        left    : 0,
+                        top     : 0
                     },
                     events: {
                         load: function () {
@@ -151,9 +153,11 @@ define('classes/projects/project/media/Folder', [
                         }
                     }
                 }).inject(document.body);
+
+                return;
             }
 
-            document.id('download-frame').set('src', url);
+            Frame.set('src', url);
         },
 
         /**
