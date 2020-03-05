@@ -13,10 +13,24 @@ QUI::$Ajax->registerFunction(
         $Project = QUI::getProjectManager()->decode($project);
         $Site    = new QUI\Projects\Site\Edit($Project, (int)$id);
 
-        $Site->activate();
+        try {
+            $Site->activate();
+        } catch (QUI\Exception $Exception) {
+            switch ($Exception->getCode()) {
+                case 1119:
+                case 1120:
+                    QUI::getMessagesHandler()->addAttention(
+                        $Exception->getMessage()
+                    );
+                    break;
+
+                default:
+                    throw $Exception;
+            }
+        }
 
         return $Site->getAttribute('active') ? 1 : 0;
     },
-    array('project', 'id'),
+    ['project', 'id'],
     'Permission::checkAdminUser'
 );

@@ -192,7 +192,8 @@ class Edit extends Site
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.site.release.from.inFuture'
-                )
+                ),
+                1119
             );
         }
 
@@ -207,7 +208,8 @@ class Edit extends Site
                 QUI::getLocale()->get(
                     'quiqqer/system',
                     'exception.release.to.inPast'
-                )
+                ),
+                1120
             );
         }
     }

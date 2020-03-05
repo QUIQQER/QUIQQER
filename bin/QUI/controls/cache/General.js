@@ -144,6 +144,11 @@ define('controls/cache/General', [
                 var status  = result.status;
 
                 QUI.getMessageHandler().then(function (MH) {
+                    if (status === -1) {
+                        MH.addError(message);
+                        return;
+                    }
+
                     if (status) {
                         MH.addSuccess(message);
                         return;

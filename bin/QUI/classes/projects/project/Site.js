@@ -318,14 +318,14 @@ define('classes/projects/project/Site', [
                     Site.setAttribute('active', 1);
                 }
 
-                //Site.clearWorkingStorage();
-
                 if (typeof onfinish === 'function') {
                     onfinish(result);
                 }
 
                 if (result) {
                     Site.fireEvent('activate', [Site]);
+                } else {
+                    Site.fireEvent('deactivate', [Site]);
                 }
 
             }, this.ajaxParams());
@@ -348,14 +348,14 @@ define('classes/projects/project/Site', [
                     Site.setAttribute('active', 0);
                 }
 
-                //Site.clearWorkingStorage();
-
                 if (typeof onfinish === 'function') {
                     onfinish(result);
                 }
 
                 if (result === 0) {
                     Site.fireEvent('deactivate', [Site]);
+                } else {
+                    Site.fireEvent('activate', [Site]);
                 }
 
             }, this.ajaxParams());
