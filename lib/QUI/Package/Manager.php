@@ -35,18 +35,25 @@ use QUI\Utils\System\File as QUIFile;
  */
 class Manager extends QUI\QDOM
 {
-    const CACHE_NAME_TYPES = 'qui/packages/types';
+    const CACHE_NAME_TYPES = 'quiqqer/packages/types';
 
     /** @var int The minimum required memory_limit in megabytes of PHP */
     const REQUIRED_MEMORY = 128;
+
     /** @var int The minimum required memory_limit of PHP in megabytes, if the user added VCS repositories */
     const REQUIRED_MEMORY_VCS = 256;
 
     /** @var string The key used to store the package folder size in cache */
-    const CACHE_KEY_PACKAGE_FOLDER_SIZE = "package_folder_size";
+    const CACHE_KEY_PACKAGE_FOLDER_SIZE = "quiqqer/packages/package_folder_size";
 
     /** @var string The key used to store the package folder size in cache */
-    const CACHE_KEY_PACKAGE_FOLDER_SIZE_TIMESTAMP = "package_folder_size_timestamp";
+    const CACHE_KEY_PACKAGE_FOLDER_SIZE_TIMESTAMP = "quiqqer/packages/package_folder_size_timestamp";
+
+    /** @var string The key used to store the packages with site xml files */
+    const CACHE_SITE_XML_LIST = 'quiqqer/packages/list/haveSiteXml';
+
+    /** @var string The key used to store the packages with database xml files */
+    const CACHE_DB_XML_LIST = 'quiqqer/packages/list/haveDatabaseXml';
 
     /**
      * Package Directory
@@ -752,11 +759,9 @@ class Manager extends QUI\QDOM
     protected function getComposerJSON()
     {
         $this->checkComposer();
+        $json = \file_get_contents($this->composer_json);
 
-        $json   = \file_get_contents($this->composer_json);
-        $result = \json_decode($json, true);
-
-        return $result;
+        return \json_decode($json, true);
     }
 
     /**
@@ -872,7 +877,6 @@ class Manager extends QUI\QDOM
         }
     }
 
-
     /**
      * Returns how many packages are installed.
      *
@@ -884,7 +888,6 @@ class Manager extends QUI\QDOM
     {
         return \count($this->getList());
     }
-
 
     /**
      * Return the installed packages
@@ -1033,7 +1036,7 @@ class Manager extends QUI\QDOM
      */
     protected function calculatePackageFolderSize($doNotCache = false)
     {
-        $packageFolderSize = QUI\Utils\System\File::getDirectorySize($this->dir);
+        $packageFolderSize = QUI\Utils\System\Folder::getFolderSize($this->dir, true);
 
         if ($doNotCache) {
             return $packageFolderSize;
@@ -1054,6 +1057,9 @@ class Manager extends QUI\QDOM
      *
      * @param string|array $packages - name of the package, or list of paackages
      * @param string|boolean $version - (optional) version of the package default = dev-master
+     *
+     * @throws QUI\Exception
+     * @throws QUI\Lockclient\Exceptions\LockServerException
      */
     public function install($packages, $version = false)
     {
@@ -1600,6 +1606,7 @@ class Manager extends QUI\QDOM
      * @param bool $mute -mute option for the composer output
      *
      * @throws QUI\Exception
+     * @throws QUI\Lockclient\Exceptions\LockServerException
      *
      * @todo if exception uncommitted changes -> own error message
      * @todo if exception uncommitted changes -> interactive mode
@@ -1781,7 +1788,7 @@ class Manager extends QUI\QDOM
     public function getPackageSiteXmlList()
     {
         try {
-            return QUI\Cache\Manager::get('qui/packages/list/haveSiteXml');
+            return QUI\Cache\Manager::get(self::CACHE_SITE_XML_LIST);
         } catch (QUI\Exception $Exception) {
         }
 
@@ -1803,7 +1810,7 @@ class Manager extends QUI\QDOM
         }
 
         try {
-            QUI\Cache\Manager::set('qui/packages/list/haveSiteXml', $result);
+            QUI\Cache\Manager::set(self::CACHE_SITE_XML_LIST, $result);
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
@@ -1820,7 +1827,7 @@ class Manager extends QUI\QDOM
     public function getPackageDatabaseXmlList()
     {
         try {
-            return QUI\Cache\Manager::get('qui/packages/list/haveDatabaseXml');
+            return QUI\Cache\Manager::get(self::CACHE_DB_XML_LIST);
         } catch (QUI\Exception $Exception) {
         }
 
@@ -1838,7 +1845,7 @@ class Manager extends QUI\QDOM
         }
 
         try {
-            QUI\Cache\Manager::set('qui/packages/list/haveDatabaseXml', $result);
+            QUI\Cache\Manager::set(self::CACHE_DB_XML_LIST, $result);
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
@@ -1896,7 +1903,9 @@ class Manager extends QUI\QDOM
      * @param bool|string - (otional) The packagename which should get updated.
      *
      * @return string
+     *
      * @throws QUI\Exception
+     * @throws QUI\Lockclient\Exceptions\LockServerException
      */
     protected function composerUpdateOrInstall($package)
     {
@@ -1973,6 +1982,7 @@ class Manager extends QUI\QDOM
      * @return string
      *
      * @throws QUI\Exception
+     * @throws QUI\Lockclient\Exceptions\LockServerException
      */
     protected function composerRequireOrInstall($packages, $version)
     {
