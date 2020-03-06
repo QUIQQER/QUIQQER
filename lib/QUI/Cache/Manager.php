@@ -149,7 +149,7 @@ class Manager
 
         $Stash       = new Stash\Pool($Handler);
         self::$Stash = $Stash;
-        
+
         return self::$Stash->getItem($key);
     }
 
@@ -589,6 +589,13 @@ class Manager
         try {
             QUI::getEvents()->fireEvent('clearCompleteQuiqqerCache');
         } catch (\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
+
+
+        try {
+            QUI\Utils\System\File::unlink(VAR_DIR.'cache/compile');
+        } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
         }
     }
