@@ -1752,13 +1752,17 @@ class User implements QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      *
+     * @throws QUI\Permissions\Exception
+     * @throws QUI\Users\Exception
+     * @throws QUI\Exception
+     *
      * @see QUI\Interfaces\Users\User::delete()
      */
     public function delete()
     {
         $SessionUser = QUI::getUserBySession();
 
-        $this->canBeDeleted();
+        $this->checkDeletePermission();
 
         // Pluginerweiterungen - onDelete Event
         QUI::getEvents()->fireEvent('userDelete', [$this]);
@@ -1825,6 +1829,54 @@ class User implements QUI\Interfaces\Users\User
             QUI::getLocale()->get(
                 'quiqqer/system',
                 'exception.lib.user.no.edit.rights'
+            )
+        );
+    }
+
+    /**
+     * Checks the delete permissions
+     * Can the user be deleted by the current user?
+     *
+     * @param QUI\Users\User|boolean $ParentUser
+     *
+     * @return boolean - true
+     *
+     * @throws QUI\Permissions\Exception
+     * @throws QUI\Exception
+     */
+    public function checkDeletePermission($ParentUser = false)
+    {
+        $this->canBeDeleted();
+
+        $Users       = QUI::getUsers();
+        $SessionUser = $Users->getUserBySession();
+
+        if ($ParentUser && $ParentUser->getType() == SystemUser::class) {
+            return true;
+        }
+
+        if ($SessionUser->isSU()) {
+            return true;
+        }
+
+        if ($SessionUser->getId() == $this->getId()) {
+            return true;
+        }
+
+        $hasPermission = QUI\Permissions\Permission::hasPermission(
+            'quiqqer.admin.users.delete',
+            $SessionUser
+        );
+
+        if ($hasPermission) {
+            return true;
+        }
+
+
+        throw new QUI\Permissions\Exception(
+            QUI::getLocale()->get(
+                'quiqqer/system',
+                'exception.lib.user.no.delete.permission'
             )
         );
     }
@@ -2105,6 +2157,8 @@ class User implements QUI\Interfaces\Users\User
     /**
      * Could the user be deleted?
      *
+     * @return bool
+     *
      * @throws QUI\Users\Exception
      * @throws QUI\Exception
      */
@@ -2112,11 +2166,17 @@ class User implements QUI\Interfaces\Users\User
     {
         // wenn benutzer deaktiviert ist, fällt die prüfung weg, da er bereits deaktiviert ist
         if (!$this->isActive()) {
-            return;
+            return true;
+        }
+
+        $SessionUser = QUI::getUserBySession();
+
+        if (QUI::getUsers()->isSystemUser($SessionUser)) {
+            return true;
         }
 
         // SuperUser can only be deleted by other SuperUsers
-        if ($this->isSU()) {
+        if (!$SessionUser->isSU() && $this->isSU()) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.superuser_cannot_delete_himself')
             );
@@ -2133,7 +2193,8 @@ class User implements QUI\Interfaces\Users\User
                 'where' => [
                     'active' => 1,
                     'su'     => 1
-                ]
+                ],
+                'limit' => 2
             ]);
 
             if (\count($suUsers) <= 1) {
@@ -2148,7 +2209,8 @@ class User implements QUI\Interfaces\Users\User
         $activeUsers = QUI::getUsers()->getUserIds([
             'where' => [
                 'active' => 1
-            ]
+            ],
+            'limit' => 2
         ]);
 
         if (\count($activeUsers) <= 1) {
@@ -2156,5 +2218,7 @@ class User implements QUI\Interfaces\Users\User
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.user.one.active.user.must.exists')
             );
         }
+
+        return true;
     }
 }

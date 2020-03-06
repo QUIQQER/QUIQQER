@@ -3307,7 +3307,10 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             ]]></de>
         </locale>
         <locale name="exception.lib.user.no.edit.rights">
-            <de><![CDATA[Sie haben keine Berechtigung diesen Benutzer zu editieren]]></de>
+            <de><![CDATA[Sie haben keine Berechtigung diesen Benutzer zu editieren.]]></de>
+        </locale>
+        <locale name="exception.lib.user.no.delete.permission">
+            <de><![CDATA[Sie haben keine Berechtigung diesen Benutzer zu löschen.]]></de>
         </locale>
         <locale name="exception.lib.user.address.mail.wrong.syntax">
             <de><![CDATA[E-Mail Syntax ist nicht korrekt]]></de>

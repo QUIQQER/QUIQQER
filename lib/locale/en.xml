@@ -3175,6 +3175,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="exception.lib.user.no.edit.rights">
             <en><![CDATA[You have no permission to edit this user]]></en>
         </locale>
+        <locale name="exception.lib.user.no.delete.permission">
+            <en><![CDATA[You have no permission to delete this user]]></en>
+        </locale>
         <locale name="exception.lib.user.address.mail.wrong.syntax">
             <en><![CDATA[EMail syntax is incorrect]]></en>
         </locale>
