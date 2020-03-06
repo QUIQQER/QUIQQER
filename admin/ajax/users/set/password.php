@@ -26,6 +26,6 @@ QUI::$Ajax->registerFunction(
 
         $User->setPassword($pw1);
     },
-    array('uid', 'pw1', 'pw2', 'params'),
-    'Permission::checkSU'
+    ['uid', 'pw1', 'pw2', 'params'],
+    'Permission::checkAdminUser'
 );
