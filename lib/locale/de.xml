@@ -2527,6 +2527,9 @@
         <locale name="projects.project.media.folderviewer.empty">
             <de><![CDATA[Es befinden sich keine Bilder in diesem Ordner.]]></de>
         </locale>
+        <locale name="projects.project.media.folderviewer.createNewFolderButton">
+            <de><![CDATA[Neuen Mediaordner anlegen]]></de>
+        </locale>
         <locale name="projects.project.media.fileviewer.empty">
             <de><![CDATA[Es befinden sich keine Dateien in diesem Ordner.]]></de>
         </locale>
@@ -4106,6 +4109,9 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         </locale>
         <locale name="projects.project.site.select.btn.addTypes">
             <de><![CDATA[Seitentyp hinzufügen ]]></de>
+        </locale>
+        <locale name="packages.panel.category.system">
+            <de><![CDATA[System Check]]></de>
         </locale>
         <locale name="packages.panel.category.systemcheck.execbutton">
             <de><![CDATA[System Check ausführen]]></de>

@@ -290,7 +290,8 @@ class Media extends QUI\QDOM
             'priority'      => 'int(6) default NULL',
             'order'         => 'varchar(32) default NULL',
             'pathHistory'   => 'text',
-            'hidden'        => 'int(1) default 0'
+            'hidden'        => 'int(1) default 0',
+            'pathHash'      => 'varchar(32) NOT NULL',
         ]);
 
         $DataBase->table()->setPrimaryKey($table, 'id');
@@ -301,14 +302,31 @@ class Media extends QUI\QDOM
         $DataBase->table()->setIndex($table, 'type');
         $DataBase->table()->setIndex($table, 'active');
         $DataBase->table()->setIndex($table, 'deleted');
-        $DataBase->table()->setIndex($table, 'c_date');
         $DataBase->table()->setIndex($table, 'e_date');
-        $DataBase->table()->setIndex($table, 'c_user');
-        $DataBase->table()->setIndex($table, 'e_user');
-        $DataBase->table()->setIndex($table, 'md5hash');
-        $DataBase->table()->setIndex($table, 'sha1hash');
         $DataBase->table()->setIndex($table, 'order');
         $DataBase->table()->setIndex($table, 'hidden');
+        $DataBase->table()->setIndex($table, 'pathHash');
+
+        try {
+            $DataBase->fetchSQL('UPDATE '.$table.' SET pathHash = MD5(file)');
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+
+        // remove index (patch)
+        $removeIndex = ['c_date', 'c_user', 'e_user', 'md5hash', 'sha1hash'];
+
+        foreach ($removeIndex as $index) {
+            if ($DataBase->table()->issetIndex($table, $index)) {
+                try {
+                    $DataBase->fetchSQL(
+                        'ALTER TABLE `'.$table.'` DROP INDEX `'.$index.'`;'
+                    );
+                } catch (\Exception $Exception) {
+                    QUI\System\Log::writeException($Exception);
+                }
+            }
+        }
 
         // create first site -> id 1 if not exist
         $firstChildResult = $DataBase->fetch([
@@ -516,25 +534,17 @@ class Media extends QUI\QDOM
         try {
             $id = (int)QUI\Cache\Manager::get($cache);
         } catch (QUI\Exception $Exception) {
-            $table     = $this->getTable();
-            $table_rel = $this->getTable('relations');
+            $table = $this->getTable();
 
-            $result = QUI::getDataBase()->fetch(
-                [
-                    'select' => [
-                        $table.'.id'
-                    ],
-                    'from'   => [
-                        $table,
-                        $table_rel
-                    ],
-                    'where'  => [
-                        $table.'.deleted' => 0,
-                        $table.'.file'    => $filepath
-                    ],
-                    'limit'  => 1
-                ]
-            );
+            $result = QUI::getDataBase()->fetch([
+                'select' => [$table.'.id'],
+                'from'   => [$table],
+                'where'  => [
+                    $table.'.deleted' => 0,
+                    $table.'.file'    => $filepath
+                ],
+                'limit'  => 1
+            ]);
 
             if (!isset($result[0])) {
                 throw new QUI\Exception('File '.$filepath.' not found', 404);

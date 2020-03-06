@@ -2473,6 +2473,9 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="projects.project.media.folderviewer.empty">
             <en><![CDATA[There are no images in this folder.]]></en>
         </locale>
+        <locale name="projects.project.media.folderviewer.createNewFolderButton">
+            <de><![CDATA[Create new media folder]]></de>
+        </locale>
         <locale name="projects.project.media.fileviewer.empty">
             <en><![CDATA[There are no files in this folder.]]></en>
         </locale>
@@ -3944,6 +3947,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         </locale>
         <locale name="projects.project.site.select.btn.addTypes">
             <en><![CDATA[Add a site type]]></en>
+        </locale>
+        <locale name="packages.panel.category.system">
+            <en><![CDATA[System Check]]></en>
         </locale>
         <locale name="packages.panel.category.systemcheck.execbutton">
             <en><![CDATA[Run system check]]></en>

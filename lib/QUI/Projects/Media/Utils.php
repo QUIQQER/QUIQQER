@@ -365,7 +365,10 @@ class Utils
         $img = '<img ';
 
         foreach ($attributes as $key => $value) {
-            $img .= \htmlspecialchars($key).'="'.\htmlspecialchars($value).'" ';
+            $value = \htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
+            $value = \htmlentities($value);
+
+            $img .= \htmlspecialchars($key).'="'.$value.'" ';
         }
 
         $img .= ' src="'.\htmlspecialchars($src).'" />';

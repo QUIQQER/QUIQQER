@@ -29,7 +29,7 @@
     }
   ],
   "require": {
-    "php": ">=5.3",
+    "php": ">=7.2",
     "composer\/composer": "^1.9.0",
     "tedivm\/stash": "0.15.*",
     "robloach\/component-installer": "0.0.12",

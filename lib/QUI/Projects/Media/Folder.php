@@ -254,8 +254,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         }
 
         // filter illegal characters
-        $Parent   = $this->getParent();
-        $newName  = Utils::stripFolderName($newName);
+        $Parent  = $this->getParent();
+        $newName = Utils::stripFolderName($newName);
 
         // rename
         if ($newName == $this->getAttribute('name')) {
@@ -302,13 +302,17 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             $title = $newName;
         }
 
+        $file    = StringUtils::replaceDblSlashes($new_path.'/');
+        $md5File = md5($file);
+
         // update me
         QUI::getDataBase()->update(
             $this->Media->getTable(),
             [
-                'name'  => $newName,
-                'file'  => StringUtils::replaceDblSlashes($new_path.'/'),
-                'title' => $title
+                'name'     => $newName,
+                'file'     => $file,
+                'title'    => $title,
+                'pathHash' => $md5File
             ],
             ['id' => $this->getId()]
         );
@@ -375,9 +379,15 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $Statement->execute();
 
         // update me
+        $file = StringUtils::replaceDblSlashes($new_path.'/');
+
+
         QUI::getDataBase()->update(
             $this->Media->getTable(),
-            ['file' => StringUtils::replaceDblSlashes($new_path.'/')],
+            [
+                'file'     => $file,
+                'pathHash' => \md5($file)
+            ],
             ['id' => $this->getId()]
         );
 
@@ -646,13 +656,13 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 break;
 
             case 'name ASC':
-                $order_by = "find_in_set({$table_type}, 'folder') ASC, {$table_name}";
+                $order_by = "find_in_set({$table_type}, 'folder') DESC, {$table_name}";
                 break;
 
             default:
             case 'name':
             case 'name DESC':
-                $order_by = "find_in_set({$table_type}, 'folder') DESC, {$table_name}";
+                $order_by = "find_in_set({$table_type}, 'folder') DESC, {$table_name} DESC";
                 break;
 
             case 'priority':
@@ -871,6 +881,11 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             $dbQuery['where']['active'] = $params['active'];
         } else {
             $dbQuery['where']['active'] = 1;
+        }
+
+        if (isset($params['where']['file'])) {
+            $params['where']['pathHash'] = \md5($params['where']['file']);
+            unset($params['where']['file']);
         }
 
         if (isset($params['count'])) {
@@ -1264,12 +1279,15 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $table_rel = $this->Media->getTable('relations');
 
         // In die DB legen
+        $file = $this->getAttribute('file').$new_name.'/';
+
         QUI::getDataBase()->insert($table, [
             'name'      => $new_name,
             'title'     => $new_name,
             'short'     => $new_name,
             'type'      => 'folder',
-            'file'      => $this->getAttribute('file').$new_name.'/',
+            'file'      => $file,
+            'pathHash'  => \md5($file),
             'alt'       => $new_name,
             'c_date'    => \date('Y-m-d h:i:s'),
             'e_date'    => \date('Y-m-d h:i:s'),
@@ -1470,6 +1488,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             'title'        => $title,
             'short'        => '',
             'file'         => $filePath,
+            'pathHash'     => \md5($filePath),
             'alt'          => $title,
             'c_date'       => \date('Y-m-d h:i:s'),
             'e_date'       => \date('Y-m-d h:i:s'),

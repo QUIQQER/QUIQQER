@@ -265,7 +265,7 @@ class Setup
         }
 
         QUI\Cache\Manager::$noClearing = false;
-        QUI\Cache\Manager::clearAll();
+        QUI\Cache\Manager::clearCompleteQuiqqerCache();
 
         QUI::getEvents()->fireEvent('setupPackageSetupEnd');
     }
@@ -294,7 +294,7 @@ class Setup
         QUI::getPackageManager()->setLastUpdateDate();
 
         // clear cache
-        Cache\Manager::clearAll();
+        QUI\Cache\Manager::clearCompleteQuiqqerCache();
     }
 
     /**

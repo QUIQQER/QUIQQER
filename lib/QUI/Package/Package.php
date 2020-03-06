@@ -745,7 +745,7 @@ class Package extends QUI\QDOM
         // settings
         if (!\file_exists($dir.self::SETTINGS_XML)) {
             QUI::getEvents()->fireEvent('packageSetup', [$this]);
-            QUI\Cache\Manager::clearAll();
+            QUI\Cache\Manager::clearCompleteQuiqqerCache();
 
             QUI::getEvents()->fireEvent('packageSetupEnd', [$this]);
 
@@ -760,7 +760,7 @@ class Package extends QUI\QDOM
 
         QUI::getEvents()->fireEvent('packageSetup', [$this]);
 
-        QUI\Cache\Manager::clearAll();
+        QUI\Cache\Manager::clearCompleteQuiqqerCache();
         QUI::getEvents()->fireEvent('packageSetupEnd', [$this]);
     }
 

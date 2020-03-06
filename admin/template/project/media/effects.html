@@ -1,57 +1,89 @@
-<table class="data-table">
+<table class="data-table data-table-flexbox">
     <thead>
     <tr>
-        <th colspan="2">
+        <th>
             {t}quiqqer/quiqqer template.project.media.effect.header{/t}
         </th>
     </tr>
     </thead>
 
     <tbody>
-        <tr class="{cycle values="odd,even" reset="true"}">
-            <td>{t}quiqqer/quiqqer media.blur{/t}</td>
-            <td class="effect-blur"></td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td>{t}quiqqer/quiqqer media.brightness{/t}</td>
-            <td class="effect-brightness"></td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td>{t}quiqqer/quiqqer media.contrast{/t}</td>
-        <td class="effect-contrast"></td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td>{t}quiqqer/quiqqer media.greyscale{/t}</td>
-            <td>
-                <input type="checkbox" name="effect-greyscale" value="" />
-            </td>
-        </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {t}quiqqer/quiqqer media.blur{/t}
+                </span>
+                <span class="effect-blur field-container-field"></span>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {t}quiqqer/quiqqer media.brightness{/t}
+                </span>
+                <span class="effect-brightness field-container-field"></span>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {t}quiqqer/quiqqer media.contrast{/t}
+                </span>
+                <span class="effect-contrast field-container-field"></span>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {t}quiqqer/quiqqer media.greyscale{/t}
+                </span>
+                <span class="field-container-field">
+                    <input type="checkbox" name="effect-greyscale" value=""/>
+                </span>
+            </label>
+        </td>
+    </tr>
     </tbody>
 </table>
 
-<table class="data-table">
+<table class="data-table data-table-flexbox">
     <thead>
     <tr>
-        <th colspan="2">
+        <th>
             {t}quiqqer/quiqqer template.project.media.watermark.header{/t}
         </th>
     </tr>
     </thead>
     <tbody>
-        <tr class="{cycle values="odd,even"}">
-            <td>
-                {t}quiqqer/quiqqer media.watermark{/t}
-            </td>
-            <td class="effect-watermark">
-                <input type="hidden" name="effect-watermark" value="" />
-            </td>
-        </tr>
-        <tr class="{cycle values="odd,even"}">
-            <td>
-                {t}quiqqer/quiqqer media.watermark.position{/t}
-            </td>
-            <td class="effect-watermark-position">
-                <select name="effect-watermark_position" style="width: 130px">
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {t}quiqqer/quiqqer media.watermark{/t}
+                </span>
+                <span class="effect-watermark field-container-field">
+                    <input type="hidden" class="effect-watermark" name="effect-watermark" value=""/>
+                </span>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {t}quiqqer/quiqqer media.watermark.position{/t}
+                </span>
+
+                <select class="effect-watermark-position field-container-field"
+                        name="effect-watermark_position"
+                >
                     <option value=""></option>
                     <option value="top-left">
                         {t}quiqqer/quiqqer watermark.position.top.left{/t}
@@ -81,29 +113,40 @@
                         {t}quiqqer/quiqqer watermark.position.bottom.right{/t}
                     </option>
                 </select>
-            </td>
-        </tr>
-        <tr class="{cycle values="odd,even"} effect-watermark_ratio">
-            <td>
-                {t}quiqqer/quiqqer projects.project.settings.panel.mediaSettings.watermark.ratio{/t}
-            </td>
-            <td class="effect-watermark-ratio">
-                <input name="effect-watermark_ratio" type="number" style="width: 130px" />
-                <span style="line-height: 30px; padding-left: 10px;">%</span>
-            </td>
-        </tr>
-        <tr class="{cycle values="odd,even"} effect-watermark-row" style="display: none">
-            <td>
-                {t}quiqqer/quiqqer media.watermark{/t}
-            </td>
-            <td class="effect-watermark-cell"></td>
-        </tr>
 
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {t}quiqqer/quiqqer projects.project.settings.panel.mediaSettings.watermark.ratio{/t}
+                </span>
+                <input name="effect-watermark_ratio"
+                       class="effect-watermark-ratio field-container-field"
+                       type="number"
+                />
+                <span class="field-container-item"
+                      style="width: 50px; text-align: center">%</span>
+            </label>
+        </td>
+    </tr>
+    <tr class="effect-watermark-row">
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">
+                    {t}quiqqer/quiqqer media.watermark{/t}
+                </span>
+                <span class="effect-watermark-cell"></span>
+            </label>
+        </td>
+    </tr>
     </tbody>
 </table>
 
 
-<table class="data-table">
+<table class="data-table data-table-flexbox">
     <thead>
     <tr>
         <th>
@@ -113,9 +156,8 @@
     </thead>
 
     <tbody>
-        <tr class="{cycle values="odd,even" reset="true"}">
-            <td class="preview-frame"></td>
-        </tr>
+    <tr>
+        <td class="preview-frame"></td>
+    </tr>
     </tbody>
-    </table>
 </table>
