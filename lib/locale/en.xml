@@ -217,6 +217,9 @@
         <locale name="permission.quiqqer.admin.users.create">
             <en><![CDATA[Is allowed to create users.]]></en>
         </locale>
+        <locale name="permission.quiqqer.admin.users.delete">
+            <en><![CDATA[Is allowed to delete users.]]></en>
+        </locale>
         <locale name="permission.quiqqer.projects.create">
             <en><![CDATA[Is allowed to create projects.]]></en>
         </locale>
