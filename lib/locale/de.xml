@@ -324,7 +324,7 @@
         </locale>
         <locale name="projects.project.settings.panel.convertRomanLetters.description">
             <de><![CDATA[
-            Romanische Zeichen in ihre lateinisches Gegenstck konvertieren.
+            Romanische Zeichen in ihre lateinisches Gegenstück konvertieren.
             Umlaute wie ä ö ü werden somit zu ae, oe und ue.
             ]]></de>
         </locale>
