@@ -113,7 +113,13 @@ class Output extends Singleton
         // picture elements
         \libxml_use_internal_errors(true);
         $Dom = new \DOMDocument();
-        $Dom->loadHTML('<?xml encoding="utf-8" ?>'.$content);
+
+        if (\strpos($content, '<body') === false) {
+            $Dom->loadHTML('<?xml encoding="utf-8" ?><html><body>'.$content.'</body></html>');
+        } else {
+            $Dom->loadHTML('<?xml encoding="utf-8" ?>'.$content);
+        }
+
         \libxml_clear_errors();
 
 
@@ -192,11 +198,14 @@ class Output extends Singleton
 
 
         $Body = $Dom->getElementsByTagName('body')[0];
+        $Head = $Dom->getElementsByTagName('header')[0];
 
-        return \implode(\array_map(
+        $result = \implode(\array_map(
             [$Body->ownerDocument, "saveHTML"],
             \iterator_to_array($Body->childNodes)
         ));
+
+        return $result;
     }
 
     /**
