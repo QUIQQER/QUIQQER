@@ -2572,6 +2572,26 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="quiqqer.settings.cache.clear.quiqqer">
             <en><![CDATA[Clear complete QUIQQER cache]]></en>
         </locale>
+
+        <locale name="quiqqer.settings.cache.quiqqer.title">
+            <en><![CDATA[QUIQQER System Cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-projects">
+            <en><![CDATA[Clear QUIQQER project cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-groups">
+            <en><![CDATA[Clear QUIQQER group cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-users">
+            <en><![CDATA[Clear QUIQQER user cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-permissions">
+            <en><![CDATA[Clear QUIQQER permission cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-packages">
+            <en><![CDATA[Clear QUIQQER packages cache]]></en>
+        </locale>
+        
         <locale name="quiqqer.settings.cache.clear.compile">
             <en><![CDATA[Clear system-cache]]></en>
         </locale>
