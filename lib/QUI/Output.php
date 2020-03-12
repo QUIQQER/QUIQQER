@@ -196,16 +196,12 @@ class Output extends Singleton
             return $Dom->saveHTML();
         }
 
-
         $Body = $Dom->getElementsByTagName('body')[0];
-        $Head = $Dom->getElementsByTagName('header')[0];
 
-        $result = \implode(\array_map(
+        return \implode(\array_map(
             [$Body->ownerDocument, "saveHTML"],
             \iterator_to_array($Body->childNodes)
         ));
-
-        return $result;
     }
 
     /**
