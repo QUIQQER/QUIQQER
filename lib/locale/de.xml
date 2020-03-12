@@ -2628,6 +2628,17 @@
         <locale name="quiqqer.settings.cache.clear.complete">
             <de><![CDATA[Kompletten Cache leeren]]></de>
         </locale>
+        <locale name="quiqqer.settings.cache.clear.complete.confirm.information">
+            <de><![CDATA[Durch das Leeren des kompletten QUIQQER Caches können ggf. größere Datenmengen gelöscht werden, deren Neuerstellung eine längere Zeit benötigt. Dies kann dazu führen, dass Ihre Website in diesem Zeitraum erheblich langsamer ist.]]></de>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.complete.confirm.text">
+            <de><![CDATA[Sind Sie sicher, dass der komplette QUIQQER Cache gelöscht werden soll?]]></de>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.complete.confirm.submit">
+            <de><![CDATA[Jetzt kompletten QUIQQER Cache löschen]]></de>
+        </locale>
+
+
         <locale name="quiqqer.settings.cache.clear.quiqqer">
             <de><![CDATA[Kompletten QUIQQER Cache leeren]]></de>
         </locale>
