@@ -23,7 +23,7 @@ QUI::$Ajax->registerFunction(
             $attributes = \explode(',', $params['attributes']);
         }
 
-        // forerst kein limit
+        // vorerst kein limit
         if (isset($params['limit']) && $params['limit']) {
             $children = $Site->getChildren([
                 'limit' => $params['limit']
