@@ -10,7 +10,9 @@ use QUI;
 
 /**
  * Class Encryption
+ *
  * @package QUI
+ * @todo verschiedenen Verschlüsselungsmethoden mit Fallback
  */
 class Encryption
 {
@@ -59,6 +61,8 @@ class Encryption
      *
      * @param string $data
      * @return string
+     *
+     * @throws \Exception
      */
     public static function decrypt($data)
     {
@@ -70,12 +74,36 @@ class Encryption
             self::encrypt('');
         }
 
-        $iv = $Config->getValue('openssl', 'iv');
-        $iv = \hex2bin($iv);
-
+        $iv   = $Config->getValue('openssl', 'iv');
+        $iv   = \hex2bin($iv);
         $data = \openssl_decrypt($data, 'aes-256-cbc', $salt, 0, $iv);
-        $data = \substr($data, -$sl).\substr($data, 0, -$sl);
 
-        return $data;
+        if ($data !== false) {
+            return \substr($data, -$sl).\substr($data, 0, -$sl);
+        }
+
+        if (\strpos($iv, ',') === false) {
+            $Exception = new \Exception('Could not decrypt');
+            QUI\System\Log::writeException($Exception);
+            throw $Exception;
+        }
+
+        /**
+         * multi key support
+         */
+        $ivs = \explode(',', $iv);
+
+        foreach ($ivs as $iv) {
+            $iv   = \hex2bin($iv);
+            $data = \openssl_decrypt($data, 'aes-256-cbc', $salt, 0, $iv);
+
+            if ($data !== false) {
+                return \substr($data, -$sl).\substr($data, 0, -$sl);
+            }
+        }
+
+        $Exception = new \Exception('Could not decrypt');
+        QUI\System\Log::writeException($Exception);
+        throw $Exception;
     }
 }
