@@ -73,6 +73,11 @@ QUI::$Ajax->registerFunction(
                 if (isset($params['openssl'])) {
                     unset($params['openssl']);
                 }
+
+                // overwrite database settings is not allowed
+                if (isset($params['db'])) {
+                    unset($params['db']);
+                }
             }
 
             QUI\Utils\Text\XML::setConfigFromXml($file, $params);
