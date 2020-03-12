@@ -74,12 +74,17 @@ class Encryption
             self::encrypt('');
         }
 
-        $iv   = $Config->getValue('openssl', 'iv');
-        $iv   = \hex2bin($iv);
-        $data = \openssl_decrypt($data, 'aes-256-cbc', $salt, 0, $iv);
+        try {
+            $iv   = $Config->getValue('openssl', 'iv');
+            $iv   = \hex2bin($iv);
+            $data = \openssl_decrypt($data, 'aes-256-cbc', $salt, 0, $iv);
 
-        if ($data !== false) {
-            return \substr($data, -$sl).\substr($data, 0, -$sl);
+            if ($data !== false) {
+                return \substr($data, -$sl).\substr($data, 0, -$sl);
+            }
+        } catch (\Exception $Exception) {
+            // nothing
+            QUI\System\Log::addDebug($Exception->getMessage());
         }
 
         if (\strpos($iv, ',') === false) {
