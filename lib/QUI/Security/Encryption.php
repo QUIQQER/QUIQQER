@@ -66,9 +66,14 @@ class Encryption
      */
     public static function decrypt($data)
     {
-        $Config = QUI::getConfig('etc/conf.ini.php');
-        $salt   = $Config->getValue('globals', 'salt');
-        $sl     = $Config->getValue('globals', 'saltlength');
+        if (empty($data)) {
+            return $data;
+        }
+
+        $Config    = QUI::getConfig('etc/conf.ini.php');
+        $salt      = $Config->getValue('globals', 'salt');
+        $sl        = $Config->getValue('globals', 'saltlength');
+        $givenDate = $data;
 
         if (!$Config->getValue('openssl', 'iv')) {
             self::encrypt('');
@@ -91,25 +96,40 @@ class Encryption
         if (\strpos($iv, ',') === false) {
             $Exception = new \Exception('Could not decrypt');
             QUI\System\Log::writeException($Exception);
-            throw $Exception;
+            QUI\System\Log::writeRecursive([
+                'decryptData'   => $givenDate,
+                'decryptResult' => $data
+            ]);
+
+            return $data;
         }
 
         /**
          * multi key support
          */
-        $ivs = \explode(',', $iv);
+        $ivs = \explode(',', trim($iv));
 
         foreach ($ivs as $iv) {
-            $iv   = \hex2bin($iv);
-            $data = \openssl_decrypt($data, 'aes-256-cbc', $salt, 0, $iv);
+            try {
+                $iv   = \hex2bin($iv);
+                $data = \openssl_decrypt($data, 'aes-256-cbc', $salt, 0, $iv);
 
-            if ($data !== false) {
-                return \substr($data, -$sl).\substr($data, 0, -$sl);
+                if ($data !== false) {
+                    return \substr($data, -$sl).\substr($data, 0, -$sl);
+                }
+            } catch (\Exception $Exception) {
+                QUI\System\Log::writeException($Exception);
             }
         }
 
         $Exception = new \Exception('Could not decrypt');
+
         QUI\System\Log::writeException($Exception);
+        QUI\System\Log::writeRecursive([
+            'decryptData'   => $givenDate,
+            'decryptResult' => $data
+        ]);
+
         throw $Exception;
     }
 }
