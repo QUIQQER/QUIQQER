@@ -109,9 +109,17 @@ class Mailer extends QUI\QDOM
     public function send()
     {
         $PHPMailer = QUI::getMailManager()->getPHPMailer();
+        $html      = $this->Template->getHTML();
+
+        // remove picture elements
+        $html = \preg_replace('#<picture([^>]*)>#i', '', $html);
+        $html = \preg_replace('#<source([^>]*)>#i', '', $html);
+
+        $html = str_replace('</picture>', '', $html);
+
 
         $PHPMailer->Subject = $this->getAttribute('subject');
-        $PHPMailer->Body    = $this->Template->getHTML();
+        $PHPMailer->Body    = $html;
 
         try {
             QUI::getEvents()->fireEvent('mailerSendBegin', [$this, $PHPMailer]);
