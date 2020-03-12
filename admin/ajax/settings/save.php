@@ -68,6 +68,13 @@ QUI::$Ajax->registerFunction(
                 }
             }
 
+            if (\strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') !== false) {
+                // overwrite openssl settings is not allowed
+                if (isset($params['openssl'])) {
+                    unset($params['openssl']);
+                }
+            }
+
             QUI\Utils\Text\XML::setConfigFromXml($file, $params);
 
             QUI::getMessagesHandler()->addSuccess(
