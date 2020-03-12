@@ -2591,7 +2591,7 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-packages">
             <en><![CDATA[Clear QUIQQER packages cache]]></en>
         </locale>
-        
+
         <locale name="quiqqer.settings.cache.clear.compile">
             <en><![CDATA[Clear system-cache]]></en>
         </locale>
@@ -4072,10 +4072,16 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         </locale>
 
         <locale name="exception.upload.error">
-            <de><![CDATA[
+            <en><![CDATA[
             An error occurred while uploading the file.
             Please check your network connection.
-            ]]></de>
+            ]]></en>
+        </locale>
+        <locale name="message.missing.admin.mail">
+            <en><![CDATA[
+            Note: Please set up an adminmail.
+            QUIQQER can inform you about any errors.
+            ]]></en>
         </locale>
     </groups>
 

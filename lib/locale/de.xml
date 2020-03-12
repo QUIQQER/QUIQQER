@@ -4221,6 +4221,12 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             Bitte überprüfen Deine Netzwerkverbindung.
             ]]></de>
         </locale>
+        <locale name="message.missing.admin.mail">
+            <de><![CDATA[
+            Hinweis: Bitte stelle eine Adminmail ein.
+            Bei etwaigen Fehlern kann QUIQQER darüber informieren.
+            ]]></de>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
