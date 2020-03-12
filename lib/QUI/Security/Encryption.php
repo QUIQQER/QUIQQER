@@ -74,8 +74,9 @@ class Encryption
             self::encrypt('');
         }
 
+        $iv = $Config->getValue('openssl', 'iv');
+
         try {
-            $iv   = $Config->getValue('openssl', 'iv');
             $iv   = \hex2bin($iv);
             $data = \openssl_decrypt($data, 'aes-256-cbc', $salt, 0, $iv);
 
