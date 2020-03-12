@@ -48,6 +48,10 @@ class Encryption
 
             QUI::getConfig('etc/conf.ini.php')->save();
         } else {
+            if (\strpos($iv, ',') !== false) {
+                $iv = \explode(',', trim($iv))[0];
+            }
+
             $iv = \hex2bin($iv);
         }
 
@@ -73,7 +77,7 @@ class Encryption
         $Config    = QUI::getConfig('etc/conf.ini.php');
         $salt      = $Config->getValue('globals', 'salt');
         $sl        = $Config->getValue('globals', 'saltlength');
-        $givenDate = $data;
+        $givenData = $data;
 
         if (!$Config->getValue('openssl', 'iv')) {
             self::encrypt('');
@@ -81,38 +85,19 @@ class Encryption
 
         $iv = $Config->getValue('openssl', 'iv');
 
-        try {
-            $iv   = \hex2bin($iv);
-            $data = \openssl_decrypt($data, 'aes-256-cbc', $salt, 0, $iv);
-
-            if ($data !== false) {
-                return \substr($data, -$sl).\substr($data, 0, -$sl);
-            }
-        } catch (\Exception $Exception) {
-            // nothing
-            QUI\System\Log::addDebug($Exception->getMessage());
-        }
-
-        if (\strpos($iv, ',') === false) {
-            $Exception = new \Exception('Could not decrypt');
-            QUI\System\Log::writeException($Exception);
-            QUI\System\Log::writeRecursive([
-                'decryptData'   => $givenDate,
-                'decryptResult' => $data
-            ]);
-
-            return $data;
-        }
-
         /**
          * multi key support
          */
-        $ivs = \explode(',', trim($iv));
+        if (\strpos($iv, ',') !== false) {
+            $ivs = \explode(',', trim($iv));
+        } else {
+            $ivs[] = trim($iv);
+        }
 
         foreach ($ivs as $iv) {
             try {
-                $iv   = \hex2bin($iv);
-                $data = \openssl_decrypt($data, 'aes-256-cbc', $salt, 0, $iv);
+                $iv   = @\hex2bin($iv);
+                $data = \openssl_decrypt($givenData, 'aes-256-cbc', $salt, 0, $iv);
 
                 if ($data !== false) {
                     return \substr($data, -$sl).\substr($data, 0, -$sl);
@@ -122,14 +107,6 @@ class Encryption
             }
         }
 
-        $Exception = new \Exception('Could not decrypt');
-
-        QUI\System\Log::writeException($Exception);
-        QUI\System\Log::writeRecursive([
-            'decryptData'   => $givenDate,
-            'decryptResult' => $data
-        ]);
-
-        throw $Exception;
+        return $givenData;
     }
 }
