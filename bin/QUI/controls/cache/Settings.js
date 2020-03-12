@@ -9,12 +9,14 @@ define('controls/cache/Settings', [
     'qui/QUI',
     'qui/controls/Control',
     'qui/controls/buttons/Button',
+    'qui/controls/windows/Confirm',
+
     'Ajax',
     'Locale',
 
     'css!controls/cache/Settings.css'
 
-], function (QUI, QUIControl, QUIButton, Ajax, QUILocale) {
+], function (QUI, QUIControl, QUIButton, QUIConfirm, Ajax, QUILocale) {
     "use strict";
 
     var lg = 'quiqqer/quiqqer';
@@ -25,7 +27,8 @@ define('controls/cache/Settings', [
         Type   : 'controls/cache/Settings',
 
         Binds: [
-            '$onImport'
+            '$onImport',
+            '$confirmCacheClearDialog'
         ],
 
         initialize: function (Settings) {
@@ -63,16 +66,7 @@ define('controls/cache/Settings', [
                 text     : QUILocale.get(lg, 'quiqqer.settings.cache.clear.complete'),
                 textimage: 'fa fa-trash-o',
                 events   : {
-                    onClick: function (Btn) {
-                        Btn.setAttribute('textimage', 'fa fa-spinner fa-spin');
-
-                        self.clear(
-                            {complete: true},
-                            function () {
-                                Btn.setAttribute('textimage', 'fa fa-trash-o');
-                            }
-                        );
-                    }
+                    onClick: this.$confirmCacheClearDialog
                 }
             }).inject(ClearCacheBody);
 
@@ -154,6 +148,50 @@ define('controls/cache/Settings', [
             }).inject(PurgeCacheBody);
         },
 
+        /**
+         * Confirm the clearing of the complete QUIQQER cache
+         */
+        $confirmCacheClearDialog: function () {
+            var self = this;
+
+            new QUIConfirm({
+                maxHeight: 300,
+                maxWidth : 700,
+                autoclose: false,
+
+                information: QUILocale.get(lg, 'quiqqer.settings.cache.clear.complete.confirm.information'),
+                title      : QUILocale.get(lg, 'quiqqer.settings.cache.clear.complete'),
+                texticon   : 'fa fa-exclamation-triangle',
+                text       : QUILocale.get(lg, 'quiqqer.settings.cache.clear.complete.confirm.text'),
+                icon       : 'fa fa-trash-o',
+
+                cancel_button: {
+                    text     : QUILocale.get(lg, 'cancel'),
+                    textimage: 'icon-remove fa fa-remove'
+                },
+                ok_button    : {
+                    'class:' : 'btn btn-red',
+                    text     : QUILocale.get(lg, 'quiqqer.settings.cache.clear.complete.confirm.submit'),
+                    textimage: 'icon-ok fa fa-trash-o'
+                },
+                events       : {
+                    onOpen  : function (Win) {
+                        Win.getButton('submit').getElm().addClass('btn-red');
+                    },
+                    onSubmit: function (Win) {
+                        Win.Loader.show();
+
+                        self.clear(
+                            {complete: true},
+                            function () {
+                                Win.close();
+                            }
+                        );
+                    }
+                }
+
+            }).open();
+        },
 
         /**
          * Clear the cache
