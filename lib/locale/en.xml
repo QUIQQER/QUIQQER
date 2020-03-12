@@ -1047,10 +1047,10 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             <en><![CDATA[Company]]></en>
         </locale>
         <locale name="message.clear.cache.successful">
-            <en><![CDATA[Cache successful cleared.]]></en>
+            <en><![CDATA[Cache cleared successfully.]]></en>
         </locale>
         <locale name="message.clear.cache.purged">
-            <en><![CDATA[Cache successful purged.]]></en>
+            <en><![CDATA[Cache purged successfully.]]></en>
         </locale>
         <locale name="message.unknown.root.group">
             <en><![CDATA[Unknown ROOT group. Please contact an administrator.]]></en>
@@ -2571,6 +2571,15 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         </locale>
         <locale name="quiqqer.settings.cache.clear.quiqqer">
             <en><![CDATA[Clear complete QUIQQER cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.complete.confirm.information">
+            <en><![CDATA[By clearing the entire QUIQQER cache, larger amounts of data can be deleted, whose re-creation may require a longer time. This can cause your website to be considerably slower during this period.]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.complete.confirm.text">
+            <en><![CDATA[Are you sure you want to clear the entire QUIQQER cache?]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.complete.confirm.submit">
+            <en><![CDATA[Clear complete QUIQQER cache now]]></en>
         </locale>
 
         <locale name="quiqqer.settings.cache.quiqqer.title">
