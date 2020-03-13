@@ -419,7 +419,7 @@
                             <option value="404">404 - Not Found</option>
                         </select>
 
-                        <input type="hidden" conf="globals.nonce" />
+                        <input type="hidden" conf="globals.nonce" label="false" />
                     </settings>
 
                     <settings title="templateengine" name="templateengine">
