@@ -2629,7 +2629,8 @@
             <de><![CDATA[Kompletten Cache leeren]]></de>
         </locale>
         <locale name="quiqqer.settings.cache.clear.complete.confirm.information">
-            <de><![CDATA[Durch das Leeren des kompletten QUIQQER Caches können ggf. größere Datenmengen gelöscht werden, deren Neuerstellung eine längere Zeit benötigt. Dies kann dazu führen, dass Ihre Website in diesem Zeitraum erheblich langsamer ist.]]></de>
+            <de>
+                <![CDATA[Durch das Leeren des kompletten QUIQQER Caches können ggf. größere Datenmengen gelöscht werden, deren Neuerstellung eine längere Zeit benötigt. Dies kann dazu führen, dass Ihre Website in diesem Zeitraum erheblich langsamer ist.]]></de>
         </locale>
         <locale name="quiqqer.settings.cache.clear.complete.confirm.text">
             <de><![CDATA[Sind Sie sicher, dass der komplette QUIQQER Cache gelöscht werden soll?]]></de>
@@ -4234,8 +4235,8 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         </locale>
         <locale name="message.missing.admin.mail">
             <de><![CDATA[
-            Hinweis: Bitte stelle eine Adminmail ein.
-            Bei etwaigen Fehlern kann QUIQQER darüber informieren.
+            Hinweis: Bitte stelle eine Administrations-E-Mail ein unter Einstellungen -> System -> E-Mail.
+            So kann QUIQQER dich bei Fehlern informieren.
             ]]></de>
         </locale>
     </groups>

@@ -516,6 +516,28 @@ class QUI
     }
 
     /**
+     * @return array
+     */
+    public static function backendGuiConfigs()
+    {
+        $config                = [];
+        $config['globals']     = QUI::conf('globals');
+        $config['gui']         = QUI::conf('gui');
+        $config['permissions'] = QUI::conf('permissions');
+
+        unset($config['globals']['salt']);
+        unset($config['globals']['saltlength']);
+        unset($config['globals']['rootuser']);
+
+        unset($config['globals']['cms_dir']);
+        unset($config['globals']['var_dir']);
+        unset($config['globals']['usr_dir']);
+        unset($config['globals']['opt_dir']);
+
+        return $config;
+    }
+
+    /**
      * Returns all available languages
      *
      * @return array
