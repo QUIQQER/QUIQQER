@@ -217,6 +217,9 @@
         <locale name="permission.quiqqer.admin.users.create">
             <de><![CDATA[Darf Benutzer anlegen.]]></de>
         </locale>
+        <locale name="permission.quiqqer.admin.users.delete">
+            <de><![CDATA[Darf Benutzer löschen.]]></de>
+        </locale>
         <locale name="permission.quiqqer.projects.create">
             <de><![CDATA[Darf Projekte anlegen.]]></de>
         </locale>
@@ -321,7 +324,7 @@
         </locale>
         <locale name="projects.project.settings.panel.convertRomanLetters.description">
             <de><![CDATA[
-            Romanische Zeichen in ihre lateinisches Gegenstck konvertieren.
+            Romanische Zeichen in ihre lateinisches Gegenstück konvertieren.
             Umlaute wie ä ö ü werden somit zu ae, oe und ue.
             ]]></de>
         </locale>
@@ -2625,6 +2628,18 @@
         <locale name="quiqqer.settings.cache.clear.complete">
             <de><![CDATA[Kompletten Cache leeren]]></de>
         </locale>
+        <locale name="quiqqer.settings.cache.clear.complete.confirm.information">
+            <de>
+                <![CDATA[Durch das Leeren des kompletten QUIQQER Caches können ggf. größere Datenmengen gelöscht werden, deren Neuerstellung eine längere Zeit benötigt. Dies kann dazu führen, dass Ihre Website in diesem Zeitraum erheblich langsamer ist.]]></de>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.complete.confirm.text">
+            <de><![CDATA[Sind Sie sicher, dass der komplette QUIQQER Cache gelöscht werden soll?]]></de>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.complete.confirm.submit">
+            <de><![CDATA[Jetzt kompletten QUIQQER Cache löschen]]></de>
+        </locale>
+
+
         <locale name="quiqqer.settings.cache.clear.quiqqer">
             <de><![CDATA[Kompletten QUIQQER Cache leeren]]></de>
         </locale>
@@ -3307,7 +3322,10 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             ]]></de>
         </locale>
         <locale name="exception.lib.user.no.edit.rights">
-            <de><![CDATA[Sie haben keine Berechtigung diesen Benutzer zu editieren]]></de>
+            <de><![CDATA[Sie haben keine Berechtigung diesen Benutzer zu editieren.]]></de>
+        </locale>
+        <locale name="exception.lib.user.no.delete.permission">
+            <de><![CDATA[Sie haben keine Berechtigung diesen Benutzer zu löschen.]]></de>
         </locale>
         <locale name="exception.lib.user.address.mail.wrong.syntax">
             <de><![CDATA[E-Mail Syntax ist nicht korrekt]]></de>
@@ -4213,6 +4231,12 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             <de><![CDATA[
             Beim Upload der Datei ist ein Fehler aufgetretten.
             Bitte überprüfen Deine Netzwerkverbindung.
+            ]]></de>
+        </locale>
+        <locale name="message.missing.admin.mail">
+            <de><![CDATA[
+            Hinweis: Bitte stelle eine Administrations-E-Mail ein unter Einstellungen -> System -> E-Mail.
+            So kann QUIQQER dich bei Fehlern informieren.
             ]]></de>
         </locale>
     </groups>

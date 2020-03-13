@@ -566,6 +566,7 @@ class Edit extends Site
         $order_type = 'manuell';
 
         switch ($this->getAttribute('order_type')) {
+            case 'manual':
             case 'manuell':
             case 'name ASC':
             case 'name DESC':
@@ -840,6 +841,7 @@ class Edit extends Site
                     $params['order'] = $this->getAttribute('order_type');
                     break;
 
+                case 'manual':
                 case 'manuell':
                 default:
                     $params['order'] = 'order_field';
@@ -1121,6 +1123,7 @@ class Edit extends Site
         // get new order_field if manually sorting
         if ($Parent->getAttribute('order_type') === ''
             || $Parent->getAttribute('order_type') === 'manuell'
+            || $Parent->getAttribute('order_type') === 'manual'
             || !$Parent->getAttribute('order_type')) {
             $LastChild = $Parent->lastChild(['active' => '0&1']);
 

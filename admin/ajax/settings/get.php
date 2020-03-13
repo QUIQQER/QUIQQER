@@ -30,10 +30,36 @@ QUI::$Ajax->registerFunction(
             if ($Config) {
                 $config = \array_merge_recursive($config, $Config->toArray());
             }
+
+            // hidden fields
+            // dont show this in the frontend
+            if (\strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') !== false) {
+                unset($config['db']);
+                unset($config['openssl']);
+                unset($config['globals']['salt']);
+                unset($config['globals']['saltlength']);
+
+                unset($config['globals']['cms_dir']);
+                unset($config['globals']['var_dir']);
+                unset($config['globals']['usr_dir']);
+                unset($config['globals']['opt_dir']);
+
+                unset($config['globals']['rootuser']);
+                unset($config['globals']['root']);
+
+                if (empty($config['globals']['nonce'])) {
+                    $nonce = \QUI\Security\Password::generateRandom(10);
+
+                    $Config->setValue('globals', 'nonce', $nonce);
+                    $Config->save();
+
+                    $config['globals']['nonce'] = $nonce;
+                }
+            }
         }
 
         return $config;
     },
     ['file'],
-    'Permission::checkAdminUser'
+    'Permission::checkSU'
 );

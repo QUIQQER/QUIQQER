@@ -217,6 +217,9 @@
         <locale name="permission.quiqqer.admin.users.create">
             <en><![CDATA[Is allowed to create users.]]></en>
         </locale>
+        <locale name="permission.quiqqer.admin.users.delete">
+            <en><![CDATA[Is allowed to delete users.]]></en>
+        </locale>
         <locale name="permission.quiqqer.projects.create">
             <en><![CDATA[Is allowed to create projects.]]></en>
         </locale>
@@ -1044,10 +1047,10 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             <en><![CDATA[Company]]></en>
         </locale>
         <locale name="message.clear.cache.successful">
-            <en><![CDATA[Cache successful cleared.]]></en>
+            <en><![CDATA[Cache cleared successfully.]]></en>
         </locale>
         <locale name="message.clear.cache.purged">
-            <en><![CDATA[Cache successful purged.]]></en>
+            <en><![CDATA[Cache purged successfully.]]></en>
         </locale>
         <locale name="message.unknown.root.group">
             <en><![CDATA[Unknown ROOT group. Please contact an administrator.]]></en>
@@ -2569,6 +2572,35 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="quiqqer.settings.cache.clear.quiqqer">
             <en><![CDATA[Clear complete QUIQQER cache]]></en>
         </locale>
+        <locale name="quiqqer.settings.cache.clear.complete.confirm.information">
+            <en><![CDATA[By clearing the entire QUIQQER cache, larger amounts of data can be deleted, whose re-creation may require a longer time. This can cause your website to be considerably slower during this period.]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.complete.confirm.text">
+            <en><![CDATA[Are you sure you want to clear the entire QUIQQER cache?]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.complete.confirm.submit">
+            <en><![CDATA[Clear complete QUIQQER cache now]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.cache.quiqqer.title">
+            <en><![CDATA[QUIQQER System Cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-projects">
+            <en><![CDATA[Clear QUIQQER project cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-groups">
+            <en><![CDATA[Clear QUIQQER group cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-users">
+            <en><![CDATA[Clear QUIQQER user cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-permissions">
+            <en><![CDATA[Clear QUIQQER permission cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-packages">
+            <en><![CDATA[Clear QUIQQER packages cache]]></en>
+        </locale>
+
         <locale name="quiqqer.settings.cache.clear.compile">
             <en><![CDATA[Clear system-cache]]></en>
         </locale>
@@ -3174,6 +3206,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         </locale>
         <locale name="exception.lib.user.no.edit.rights">
             <en><![CDATA[You have no permission to edit this user]]></en>
+        </locale>
+        <locale name="exception.lib.user.no.delete.permission">
+            <en><![CDATA[You have no permission to delete this user]]></en>
         </locale>
         <locale name="exception.lib.user.address.mail.wrong.syntax">
             <en><![CDATA[EMail syntax is incorrect]]></en>
@@ -4046,10 +4081,16 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         </locale>
 
         <locale name="exception.upload.error">
-            <de><![CDATA[
+            <en><![CDATA[
             An error occurred while uploading the file.
             Please check your network connection.
-            ]]></de>
+            ]]></en>
+        </locale>
+        <locale name="message.missing.admin.mail">
+            <en><![CDATA[
+            Note: Please set an administration e-mail under Settings -> System -> E-Mail.
+            On this way QUIQQER can inform you about errors.
+            ]]></en>
         </locale>
     </groups>
 
