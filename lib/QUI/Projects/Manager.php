@@ -755,7 +755,8 @@ class Manager
             'deleted' => 0,
             'c_date'  => \date('Y-m-d H:i:s'),
             'c_user'  => QUI::getUserBySession()->getId(),
-            'e_user'  => QUI::getUserBySession()->getId()
+            'e_user'  => QUI::getUserBySession()->getId(),
+            'pathHash' => md5('')
         ]);
 
 
