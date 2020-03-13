@@ -4088,8 +4088,8 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         </locale>
         <locale name="message.missing.admin.mail">
             <en><![CDATA[
-            Note: Please set up an adminmail.
-            QUIQQER can inform you about any errors.
+            Note: Please set an administration e-mail under Settings -> System -> E-Mail.
+            On this way QUIQQER can inform you about errors.
             ]]></en>
         </locale>
     </groups>

@@ -112,6 +112,9 @@
                     <type><![CDATA[string]]></type>
                     <defaultvalue>php</defaultvalue>
                 </conf>
+                <conf name="nonce">
+                    <type><![CDATA[string]]></type>
+                </conf>
             </section>
 
             <section name="auth_settings">
@@ -416,6 +419,7 @@
                             <option value="404">404 - Not Found</option>
                         </select>
 
+                        <input type="hidden" conf="globals.nonce" />
                     </settings>
 
                     <settings title="templateengine" name="templateengine">
