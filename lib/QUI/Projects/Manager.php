@@ -735,7 +735,8 @@ class Manager
             'alt'          => 'text NULL',
             'mime_type'    => 'text NULL',
             'image_height' => 'int(6) default NULL',
-            'image_width'  => 'int(6) default NULL'
+            'image_width'  => 'int(6) default NULL',
+            'pathHash'     => 'varchar(32) NOT NULL'
         ]);
 
         $Table->addColumn($table_media_rel, [
