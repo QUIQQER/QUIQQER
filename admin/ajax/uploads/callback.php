@@ -14,6 +14,8 @@ QUI::$Ajax->registerFunction(
             return;
         }
 
+        QUI\Permissions\Permission::checkPermission('quiqqer.frontend.upload');
+
         $Callable = new $callable();
 
         if ($Callable instanceof QUI\Upload\Form) {

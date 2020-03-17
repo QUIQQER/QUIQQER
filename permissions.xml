@@ -56,6 +56,9 @@
     </permission>
 
     <!-- Project User / group permissions  -->
+    <permission name="quiqqer.frontend.upload" type="bool">
+        <defaultvalue>1</defaultvalue>
+    </permission>
 
     <!-- Darf Projekte anlegen -->
     <permission name="quiqqer.projects.create" type="bool"/>
@@ -121,7 +124,6 @@
 
     <!-- Editor permissions -->
     <permission name="quiqqer.editors.toolbar.delete" type="bool"/>
-
 
     <!-- File permissions -->
     <permission name="quiqqer.projects.media.set_permissions" type="bool"/>

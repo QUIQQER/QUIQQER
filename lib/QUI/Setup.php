@@ -89,10 +89,6 @@ class Setup
         // workspaces
         Workspace\Manager::setup();
 
-        // Upload Manager
-        $UploadManager = new Upload\Manager();
-        $UploadManager->setup();
-
         QUI::getEvents()->fireEvent('setupMainSystemEnd');
     }
 
