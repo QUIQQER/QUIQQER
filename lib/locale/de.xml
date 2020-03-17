@@ -277,6 +277,12 @@
         <locale name="permission.quiqqer.editors.toolbar.delete">
             <de><![CDATA[Darf Editor Toolbars löschen]]></de>
         </locale>
+        <locale name="permission.quiqqer.frontend._header">
+            <de><![CDATA[Frontend]]></de>
+        </locale>
+        <locale name="permission.quiqqer.frontend.upload">
+            <de><![CDATA[Darf Dateien im Frontend hochladen.]]></de>
+        </locale>
         <locale name="projects.project.settings.panel.placeholder">
             <de><![CDATA[Platzhalterbild]]></de>
         </locale>

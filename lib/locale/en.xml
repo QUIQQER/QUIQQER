@@ -277,6 +277,12 @@
         <locale name="permission.quiqqer.editors.toolbar.delete">
             <en><![CDATA[Is allowed to delete editor toolbars.]]></en>
         </locale>
+        <locale name="permission.quiqqer.frontend._header">
+            <en><![CDATA[Frontend]]></en>
+        </locale>
+        <locale name="permission.quiqqer.frontend.upload">
+            <en><![CDATA[May upload files in the frontend.]]></en>
+        </locale>
         <locale name="projects.project.settings.panel.placeholder">
             <en><![CDATA[Placeholder image]]></en>
         </locale>
@@ -2573,7 +2579,8 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             <en><![CDATA[Clear complete QUIQQER cache]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.clear.complete.confirm.information">
-            <en><![CDATA[By clearing the entire QUIQQER cache, larger amounts of data can be deleted, whose re-creation may require a longer time. This can cause your website to be considerably slower during this period.]]></en>
+            <en>
+                <![CDATA[By clearing the entire QUIQQER cache, larger amounts of data can be deleted, whose re-creation may require a longer time. This can cause your website to be considerably slower during this period.]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.clear.complete.confirm.text">
             <en><![CDATA[Are you sure you want to clear the entire QUIQQER cache?]]></en>
