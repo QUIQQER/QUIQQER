@@ -558,10 +558,8 @@ class Manager
 
         $this->checkUserPermissions($User);
 
-        $id = $User->getId();
-
         // for nobody we use the session id
-        if (!$id) {
+        if (!$User->getId()) {
             $Session = QUI::getSession();
             $uuid    = $Session->get('uuid');
 
@@ -571,6 +569,8 @@ class Manager
             }
 
             $id = $uuid;
+        } else {
+            $id = $User->getUniqueId();
         }
 
         return $this->getDir().$id.'/';

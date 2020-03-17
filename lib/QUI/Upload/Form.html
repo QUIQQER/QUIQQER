@@ -1,0 +1,73 @@
+<div class="form-upload-{$id}"></div>
+
+<script>
+    (function () {
+        require(['qui/QUI', 'controls/upload/Form'], function (QUI, UploadForm) {
+            var maxFileSize      = {$maxFileSize};
+            var allowedFileTypes = {$allowedFileTypes};
+
+            var Form = new UploadForm({
+                contextMenu: {$contextMenu},
+                multiple   : {$multiple},
+                sendbutton : {$sendbutton},
+                uploads    : {$uploads},
+                Drops      : [],
+                hasFile    : {$hasFile},
+                deleteFile : {$deleteFile},
+                events     : {
+                    onFinished: function (Form) {
+                        console.log('done', arguments);
+                    },
+
+                    onError: function (Form, Message) {
+                        QUI.getMessageHandler().then(function (MH) {
+                            MH.addError(Message.getMessage());
+                        });
+                    },
+
+                    onAdd: function (Control, File) {
+                        if (typeof FileReader === 'undefined') {
+                            return;
+                        }
+
+                        if (!maxFileSize === false && File.size > maxFileSize) {
+                            return false;
+                        }
+
+                        var isAllowed = function (type) {
+                            if (!allowedFileTypes.length) {
+                                return true;
+                            }
+
+                            for (var i = 0; i < allowedFileTypes.length; i++) {
+                                if (type === allowedFileTypes[i]) {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        };
+
+                        if (!isAllowed(File.type)) {
+                            var files = Control.getElm().getElements(
+                                '.controls-upload-form-fileinfo'
+                            );
+
+                            files = files.filter(function (F) {
+                                return F.get('text').trim() === File.name;
+                            });
+
+                            files[0].getParent().getElement('button').click();
+                        }
+                    }
+                }
+            });
+
+            Form.setParam('onfinish', 'ajax_uploads_callback');
+            Form.setParam('package', 'quiqqer/quiqqer');
+            Form.setParam('callable', '{$callable}');
+
+            Form.inject(document.getElement('.form-upload-{$id}'));
+        });
+    })();
+</script>
