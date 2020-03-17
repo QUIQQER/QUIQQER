@@ -308,7 +308,7 @@ class Media extends QUI\QDOM
         $DataBase->table()->setIndex($table, 'pathHash');
 
         try {
-            $DataBase->fetchSQL('UPDATE '.$table.' SET pathHash = MD5(file)');
+            $DataBase->execSQL('UPDATE '.$table.' SET pathHash = MD5(file)');
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
