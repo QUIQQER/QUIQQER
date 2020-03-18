@@ -34,7 +34,7 @@ define('controls/upload/Form', [
 ], function (QUI, QUIControl, QUIProgressbar, QUIButton, MediaUtils, Upload, Locale) {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg = 'quiqqer/quiqqer';
 
     /**
      * @class controls/upload/Form
@@ -56,7 +56,11 @@ define('controls/upload/Form', [
             cancelbutton: false,  // insert a cancel button
             styles      : false,
             pauseAllowed: true,
-            contextMenu : true    // context menu for the file upload
+            contextMenu : true, // context menu for the file upload
+
+            // look
+            typeOfLook    : 'DragDrop',    // DragDrop, Icon, Single
+            typeOfLookIcon: 'fa fa-upload' // works only with typeOfLook: Icon
         },
 
         Binds: [
@@ -138,6 +142,11 @@ define('controls/upload/Form', [
                     }
                 }
             });
+
+            if (this.getAttribute('typeOfLook') === 'Icon' ||
+                this.getAttribute('typeOfLook') === 'Single') {
+                this.setAttribute('maxuploads', 1);
+            }
         },
 
         /**
@@ -239,6 +248,9 @@ define('controls/upload/Form', [
             this.$Buttons = this.$Elm.getElement('.controls-upload-buttons');
             this.$BgText  = this.$Elm.getElement('.controls-upload-bg-text');
             this.$Info    = this.$Elm.getElement('.controls-upload-info');
+
+            this.$createIconView();
+            this.$createSingleView();
 
             this.$Frame = new Element('iframe', {
                 name  : 'upload' + this.getId(),
@@ -363,7 +375,187 @@ define('controls/upload/Form', [
 
             this.refreshDisplay();
 
+            if (this.getAttribute('typeOfLook') === 'Icon') {
+                //this.$Form.setStyle('display', 'none');
+            }
+
             return this.$Elm;
+        },
+
+        /**
+         * Create the icon view
+         */
+        $createIconView: function () {
+            if (this.getAttribute('typeOfLook') !== 'Icon') {
+                return;
+            }
+
+            this.$Buttons.setStyle('display', 'none');
+            this.$BgText.setStyle('display', 'none');
+            this.$Info.setStyle('display', 'none');
+
+            var IconForm = new Element('form', {
+                'class'      : 'controls-upload-form-icon',
+                action       : "",
+                acceptCharset: "utf-8",
+                enctype      : "multipart/form-data",
+                html         : '<input type="file" />'
+            }).inject(this.$Elm);
+
+            var self       = this;
+            var UploadIcon = new Element('span').inject(IconForm);
+            var Input      = IconForm.getElement('input');
+
+            UploadIcon.addClass('controls-upload-icon');
+            UploadIcon.addClass(this.getAttribute('typeOfLookIcon'));
+            UploadIcon.addEvent('click', function (e) {
+                e.stop();
+
+                if (e.target.nodeName === 'INPUT') {
+                    return;
+                }
+
+                require(['qui/utils/Elements'], function (ElementUtils) {
+                    ElementUtils.simulateEvent(
+                        IconForm.getElement('input'),
+                        'click'
+                    );
+                });
+            });
+
+            new Element('button', {
+                'class': 'controls-upload-form-submit',
+                html   : '' +
+                    '<span class="fa fa-arrow-circle-o-right"></span>' +
+                    '<span>' +
+                    Locale.get(lg, 'control.upload.icon.submit') +
+                    '</span>',
+                events : {
+                    click: function (e) {
+                        e.stop();
+
+                        if (!Input.files.length) {
+                            return;
+                        }
+
+                        self.$files = Input.files;
+                        self.submit();
+                    }
+                }
+            }).inject(IconForm);
+
+            this.$Elm.addClass('controls-upload-form--icon');
+            this.$Elm.setStyle('height', null);
+        },
+
+        /**
+         *
+         */
+        $createSingleView: function () {
+            if (this.getAttribute('typeOfLook') !== 'Single') {
+                return;
+            }
+
+            this.$Buttons.setStyle('display', 'none');
+            this.$BgText.setStyle('display', 'none');
+            this.$Info.setStyle('display', 'none');
+
+            this.$Elm.addClass('controls-upload-form--single');
+            this.$Elm.setStyle('height', null);
+
+            var IconForm = new Element('form', {
+                'class'      : 'controls-upload-form-single',
+                action       : "",
+                acceptCharset: "utf-8",
+                enctype      : "multipart/form-data",
+                html         : '<input type="file" />'
+            }).inject(this.$Elm);
+
+            var self  = this;
+            var Input = IconForm.getElement('input');
+
+            Input.addEvent('change', function () {
+                if (!Input.files.length) {
+                    return;
+                }
+
+                switch (Input.files[0].type) {
+                    case 'image/jpeg':
+                    case 'image/jpg':
+                    case 'image/png':
+                    case 'image/gif':
+                        self.$imagePreview(Input.files[0]);
+                        break;
+
+                    default:
+                        self.getElm().getElement(
+                            '.controls-upload-form-single-container-preview'
+                        ).setStyle('background-image', '');
+                }
+
+                IconForm.getElement(
+                    '.controls-upload-form-single-container-select'
+                ).set('html', Input.files[0].name);
+            });
+
+            new Element('div', {
+                'class': 'controls-upload-form-single-container',
+                html   : '' +
+                    '<div class="controls-upload-form-single-container-preview"></div>' +
+                    '<div class="controls-upload-form-single-container-select"></div>',
+                events : {
+                    click: function (e) {
+                        e.stop();
+
+                        if (e.target.nodeName === 'INPUT') {
+                            return;
+                        }
+
+                        require(['qui/utils/Elements'], function (ElementUtils) {
+                            ElementUtils.simulateEvent(Input, 'click');
+                        });
+                    }
+                }
+            }).inject(IconForm);
+
+            new Element('button', {
+                'class': 'controls-upload-form-submit',
+                html   : '' +
+                    '<span class="fa fa-arrow-circle-o-right"></span>' +
+                    '<span>' +
+                    Locale.get(lg, 'control.upload.icon.submit') +
+                    '</span>',
+                events : {
+                    click: function (e) {
+                        e.stop();
+
+                        if (!Input.files.length) {
+                            return;
+                        }
+
+                        self.$files = Input.files;
+                        self.submit();
+                    }
+                }
+            }).inject(IconForm);
+        },
+
+        /**
+         *
+         * @param file
+         */
+        $imagePreview: function (file) {
+            // preview
+            var reader  = new FileReader();
+            var Preview = this.getElm().getElement(
+                '.controls-upload-form-single-container-preview'
+            );
+
+            reader.onload = function (e) {
+                Preview.setStyle('background-image', 'url("' + e.target.result + '")');
+            };
+
+            reader.readAsDataURL(file);
         },
 
         /**
@@ -470,7 +662,7 @@ define('controls/upload/Form', [
                 events : {
                     click: function (event) {
                         event.stop();
-
+                        console.log('div focus');
                         var Target = event.target;
 
                         if (!Target.hasClass('.qui-form-upload')) {
@@ -494,7 +686,7 @@ define('controls/upload/Form', [
                     onClick: function (Btn) {
                         var Container = Btn.getAttribute('Container');
                         var fid       = Slick.uidOf(Input);
-
+                        console.log('remove');
                         if (self.$files[fid]) {
                             delete self.$files[fid];
                         }
@@ -598,6 +790,9 @@ define('controls/upload/Form', [
 
                 if (Button) {
                     Button.click();
+                } else {
+                    // put it to the end
+                    emptyUploads[i].inject(emptyUploads[i].getParent());
                 }
             }
         },

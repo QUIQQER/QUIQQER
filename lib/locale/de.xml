@@ -5420,6 +5420,9 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         <locale name="projects.project.site.panel.information.openInSiteStructure">
             <de><![CDATA[In der Projekt Sitemap öffnen]]></de>
         </locale>
+        <locale name="control.upload.icon.submit">
+            <de><![CDATA[Hochladen]]></de>
+        </locale>
     </groups>
 
     <groups name="quiqqer/controls" datatype="php,js">

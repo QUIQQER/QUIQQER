@@ -28,7 +28,10 @@ class Form extends QUI\QDOM
             'deleteFile'  => true,
 
             'allowedFileTypes' => false, // eq: ['image/jpeg', 'image/png']
-            'maxFileSize'      => false  // eq: 20000000 = 20mb
+            'maxFileSize'      => false, // eq: 20000000 = 20mb
+
+            'typeOfLook'     => 'DragDrop', // DragDrop, Icon, Single
+            'typeOfLookIcon' => 'fa fa-upload'
         ]);
 
         parent::setAttributes($params);
@@ -41,6 +44,19 @@ class Form extends QUI\QDOM
     {
         $Engine = QUI::getTemplateManager()->getEngine();
 
+        switch ($this->getAttribute('typeOfLook')) {
+            case 'DragDrop':
+            case 'Icon':
+            case 'Single':
+                $typeOfLook = $this->getAttribute('typeOfLook');
+                break;
+
+            default:
+                $typeOfLook = 'DragDrop';
+                break;
+        }
+
+
         $Engine->assign([
             'this'        => $this,
             'id'          => QUI\Utils\Uuid::get(),
@@ -50,7 +66,8 @@ class Form extends QUI\QDOM
             'sendbutton'  => $this->phpBool2JsBool(\boolval($this->getAttribute('sendbutton'))),
             'hasFile'     => $this->phpBool2JsBool(\boolval($this->getAttribute('hasFile'))),
             'deleteFile'  => $this->phpBool2JsBool(\boolval($this->getAttribute('deleteFile'))),
-            'callable'    => \str_replace('\\', '\\\\', $this->getType())
+            'callable'    => \str_replace('\\', '\\\\', $this->getType()),
+            'typeOfLook'  => $typeOfLook
         ]);
 
         $maxFileSize      = $this->getAttribute('maxFileSize');
