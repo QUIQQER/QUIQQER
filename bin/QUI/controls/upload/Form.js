@@ -493,6 +493,8 @@ define('controls/upload/Form', [
                         ).setStyle('background-image', '');
                 }
 
+                IconForm.getElement('button').disabled = false;
+
                 IconForm.getElement(
                     '.controls-upload-form-single-container-select'
                 ).set('html', Input.files[0].name);
@@ -502,7 +504,11 @@ define('controls/upload/Form', [
                 'class': 'controls-upload-form-single-container',
                 html   : '' +
                     '<div class="controls-upload-form-single-container-preview"></div>' +
-                    '<div class="controls-upload-form-single-container-select"></div>',
+                    '<div class="controls-upload-form-single-container-select">' +
+                    '   <span class="controls-upload-form-single-container-select-placeholder">' +
+                    Locale.get(lg, 'control.upload.placeholder') +
+                    '   </span>' +
+                    '</div>',
                 events : {
                     click: function (e) {
                         e.stop();
@@ -519,13 +525,14 @@ define('controls/upload/Form', [
             }).inject(IconForm);
 
             new Element('button', {
-                'class': 'controls-upload-form-submit',
-                html   : '' +
+                disabled: true,
+                'class' : 'controls-upload-form-submit',
+                html    : '' +
                     '<span class="fa fa-arrow-circle-o-right"></span>' +
                     '<span>' +
                     Locale.get(lg, 'control.upload.icon.submit') +
                     '</span>',
-                events : {
+                events  : {
                     click: function (e) {
                         e.stop();
 
@@ -662,7 +669,7 @@ define('controls/upload/Form', [
                 events : {
                     click: function (event) {
                         event.stop();
-                        console.log('div focus');
+
                         var Target = event.target;
 
                         if (!Target.hasClass('.qui-form-upload')) {
@@ -686,7 +693,7 @@ define('controls/upload/Form', [
                     onClick: function (Btn) {
                         var Container = Btn.getAttribute('Container');
                         var fid       = Slick.uidOf(Input);
-                        console.log('remove');
+
                         if (self.$files[fid]) {
                             delete self.$files[fid];
                         }

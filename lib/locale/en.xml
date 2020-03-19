@@ -5235,6 +5235,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="control.upload.icon.submit">
             <en><![CDATA[Upload]]></en>
         </locale>
+        <locale name="control.upload.placeholder">
+            <en><![CDATA[Please select a file...]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/controls" datatype="php,js">
         <locale name="package.title">

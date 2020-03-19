@@ -5423,6 +5423,9 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         <locale name="control.upload.icon.submit">
             <de><![CDATA[Hochladen]]></de>
         </locale>
+        <locale name="control.upload.placeholder">
+            <de><![CDATA[Bitte wähle eine Datei aus...]]></de>
+        </locale>
     </groups>
 
     <groups name="quiqqer/controls" datatype="php,js">
