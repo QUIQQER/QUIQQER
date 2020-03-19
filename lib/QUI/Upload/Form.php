@@ -27,12 +27,20 @@ class Form extends QUI\QDOM
             'hasFile'     => false,
             'deleteFile'  => true,
 
-            'allowedFileTypes' => false, // eq: ['image/jpeg', 'image/png']
-            'maxFileSize'      => false, // eq: 20000000 = 20mb
+            'allowedFileTypes'  => false, // eq: ['image/jpeg', 'image/png']
+            'allowedFileEnding' => false, // eq: ['.gif', '.jpg']
+            'maxFileSize'       => false, // eq: 20000000 = 20mb
 
             'typeOfLook'     => 'DragDrop', // DragDrop, Icon, Single
             'typeOfLookIcon' => 'fa fa-upload'
         ]);
+
+        // set default allowed file types
+        // @todo
+
+
+        // set default allowed file endings
+        // @todo
 
         parent::setAttributes($params);
     }

@@ -10,6 +10,7 @@ use QUI;
 use QUI\Utils\System\File as QUIFile;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\System\File;
+use QUI\Permissions\Permission;
 
 /**
  * Upload Manager
@@ -211,7 +212,13 @@ class Manager
             'filesize' => true
         ]);
 
-        $configMaxFileSize = QUI\Projects\Manager::get()->getConfig('media_maxUploadFileSize');
+
+        $configMaxFileSize = Permission::getPermission('quiqqer.upload.maxFileUploadSize');
+
+        if (QUI\Projects\Manager::get()->getConfig('media_maxUploadFileSize')) {
+            $configMaxFileSize = QUI\Projects\Manager::get()->getConfig('media_maxUploadFileSize');
+        }
+
 
         if ($configMaxFileSize && (int)$fileinfo['filesize'] > $configMaxFileSize) {
             QUIFile::unlink($tmp_name);
@@ -220,7 +227,8 @@ class Manager
                 'quiqqer/quiqqer',
                 'exception.media.upload.fileSize.is.to.big',
                 [
-                    'size' => QUI\Utils\System\File::formatSize($configMaxFileSize)
+                    'size' => QUI\Utils\System\File::formatSize($configMaxFileSize),
+                    'file' => $filename
                 ]
             ]);
         }

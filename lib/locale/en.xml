@@ -617,7 +617,13 @@
             <en><![CDATA[You do not have the necessary permissions to save the configuration]]></en>
         </locale>
         <locale name="exception.media.upload.fileSize.is.to.big">
-            <en><![CDATA[The file is unfortunately too big. The maximum upload size for a file is [size]]]></en>
+            <en><![CDATA[The file [file] is unfortunately too big. The maximum upload size for a file is [size]]]></en>
+        </locale>
+        <locale name="exception.media.upload.fileType.not.allowed">
+            <de><![CDATA[
+            Unfortunately, the file type of the [file] file is not allowed.
+            Please use only the following file types: [filetypes]
+            ]]></de>
         </locale>
         <locale name="exception.media.move.is.no.folder">
             <en><![CDATA[Please select a folder to move the files.]]></en>
@@ -1467,6 +1473,9 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         </locale>
         <locale name="permissions.panel.btn.select.project">
             <en><![CDATA[For a project]]></en>
+        </locale>
+        <locale name="permissions.panel.btn.select.media">
+            <en><![CDATA[For a media area]]></en>
         </locale>
         <locale name="permissions.panel.btn.select.manage">
             <en><![CDATA[Permission management only]]></en>
@@ -4099,6 +4108,44 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
             On this way QUIQQER can inform you about errors.
             ]]></en>
         </locale>
+
+
+        <locale name="permission.quiqqer.upload._header">
+            <en><![CDATA[Upload]]></en>
+        </locale>
+        <locale name="permission.quiqqer.upload.maxUploadCount">
+            <en><![CDATA[Max. uploads]]></en>
+        </locale>
+        <locale name="permission.quiqqer.upload.maxUploadCount.description">
+            <en><![CDATA[
+            ]]></en>
+        </locale>
+        <locale name="permission.quiqqer.upload.maxFileUploadSize">
+            <en><![CDATA[Max. Size of an upload]]></en>
+        </locale>
+        <locale name="permission.quiqqer.upload.maxFileUploadSize.description">
+            <en><![CDATA[
+            Defines the maximum size of a file during an upload process.
+            ]]></en>
+        </locale>
+        <locale name="permission.quiqqer.upload.allowedTypes">
+            <en><![CDATA[Allowed file types]]></en>
+        </locale>
+        <locale name="permission.quiqqer.upload.allowedTypes.description">
+            <en><![CDATA[
+            Please enter the ALLOWED file types separated by commas. Additionally you can use wildcards.
+            Example: images/*,application/*
+            ]]></en>
+        </locale>
+        <locale name="permission.quiqqer.upload.allowedEndings">
+            <en><![CDATA[Allowed file extensions]]></en>
+        </locale>
+        <locale name="permission.quiqqer.upload.allowedEndings.description">
+            <en><![CDATA[
+            Please enter the ALLOWED file extension separated by commas. Additionally you can use wildcards.
+            Example: .gif, .jpg, .jpeg, .pdf
+            ]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -4132,6 +4179,7 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="quiqqer.settings.auth.passwordResetLinkValidTime.description" html="true">
             <en><![CDATA[Period of validity in <b>minutes</b> for the link to confirm password reset.]]></en>
         </locale>
+
         <locale name="projects.project.settings.panel.settings.title">
             <en><![CDATA[General Project Settings]]></en>
         </locale>

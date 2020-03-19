@@ -304,6 +304,8 @@ class Manager
      *                            defaultvalue =>
      *                            src =>
      *                            )
+     *
+     * @throws QUI\Database\Exception
      */
     public function addPermission($params)
     {
@@ -430,7 +432,11 @@ class Manager
                 $permission['defaultvalue'] = $permission['default'];
             }
 
-            $this->addPermission($permission);
+            try {
+                $this->addPermission($permission);
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
+            }
         }
     }
 
@@ -527,7 +533,7 @@ class Manager
      * Return the current permissions from a group, user, site, project or media
      * Returns the set permissions
      *
-     * @param QUI\Groups\Group|QUI\Users\User|QUI\Projects\Project|QUI\Projects\Site $Obj
+     * @param QUI\Groups\Group|QUI\Interfaces\Users\User|QUI\Projects\Project|QUI\Projects\Site $Obj
      *
      * @return array
      */
@@ -1517,7 +1523,6 @@ class Manager
                 break;
 
             case 'string':
-                $val = Orthos::clearMySQL($val);
                 break;
 
             default:

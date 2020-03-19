@@ -98,11 +98,11 @@ define('controls/upload/File', [
 
             this.$is_paused   = false;
             this.$file_size   = this.$File.size;
-            this.$chunk_size  = (1024 * 100);
+            this.$chunk_size  = (1024 * 256); // 256kb
             this.$range_start = 0;
             this.$range_end   = this.$chunk_size;
             this.$upload_time = null;
-            this.$execute     = true; // false if no excute of the update routine
+            this.$execute     = true; // false if no execute of the update routine
             this.$result      = null;
             this.$error       = false;
 

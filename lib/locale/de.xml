@@ -615,7 +615,14 @@
             <de><![CDATA[Sie besitzen nicht die nötigen Rechte um die Konfiguration zu speichern.]]></de>
         </locale>
         <locale name="exception.media.upload.fileSize.is.to.big">
-            <de><![CDATA[Die Datei ist leider zu gross. Die maximale Uploadgröße ist einer Datei beträgt [size]]]></de>
+            <de>
+                <![CDATA[Die Datei [file] ist leider zu gross. Die maximale Uploadgröße einer Datei beträgt [size]]]></de>
+        </locale>
+        <locale name="exception.media.upload.fileType.not.allowed">
+            <de><![CDATA[
+            Der Dateityp der Datei [file] ist leider nicht erlaubt.
+            Bitte nutze nur folgende Dateitypen: [filetypes]
+            ]]></de>
         </locale>
         <locale name="exception.media.move.is.no.folder">
             <de><![CDATA[Bitte wählen Sie einen Ordner aus um die Dateien zu verschieben.]]></de>
@@ -1483,6 +1490,9 @@
         </locale>
         <locale name="permissions.panel.btn.select.project">
             <de><![CDATA[Für ein Projekt]]></de>
+        </locale>
+        <locale name="permissions.panel.btn.select.media">
+            <de><![CDATA[Für den Mediabereich]]></de>
         </locale>
         <locale name="permissions.panel.btn.select.manage">
             <de><![CDATA[Rechte verwalten]]></de>
@@ -4245,6 +4255,46 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             So kann QUIQQER dich bei Fehlern informieren.
             ]]></de>
         </locale>
+
+
+        <locale name="permission.quiqqer.upload._header">
+            <de><![CDATA[Upload]]></de>
+        </locale>
+        <locale name="permission.quiqqer.upload.maxUploadCount">
+            <de><![CDATA[Max. Grösse eines Upload-Vorgangs]]></de>
+        </locale>
+        <locale name="permission.quiqqer.upload.maxUploadCount.description">
+            <de><![CDATA[
+            Legt die maximale Grösse eines Upload-Vorgangs fest.
+            Hier zählen alle Dateien die während eines Upload-Vorgangs hochgeladen werden, zusammen.
+            ]]></de>
+        </locale>
+        <locale name="permission.quiqqer.upload.maxFileUploadSize">
+            <de><![CDATA[Max. Dateigröße bei einem Upload]]></de>
+        </locale>
+        <locale name="permission.quiqqer.upload.maxFileUploadSize.description">
+            <de><![CDATA[
+            Legt die maximale Grösse einer Datei während eines Upload-Vorgangs fest.
+            ]]></de>
+        </locale>
+        <locale name="permission.quiqqer.upload.allowedTypes">
+            <de><![CDATA[Erlaubte Dateiarten]]></de>
+        </locale>
+        <locale name="permission.quiqqer.upload.allowedTypes.description">
+            <de><![CDATA[
+            Bitte gebe die erlaubten Dateiarten kommasepariert an. Zusätzlich können Wildcards verwenden werdet.
+            Beispiel: images/*,application/*
+            ]]></de>
+        </locale>
+        <locale name="permission.quiqqer.upload.allowedEndings">
+            <de><![CDATA[Erlaubte Dateiendungen]]></de>
+        </locale>
+        <locale name="permission.quiqqer.upload.allowedEndings.description">
+            <de><![CDATA[
+            Bitte gebe die erlaubten Dateiendung kommasepariert an. Zusätzlich können Wildcards verwenden werdet.
+            Beispiel: .gif,.jpg,.jpeg,.pdf
+            ]]></de>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -4281,6 +4331,7 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             Gültigkeitsdauer in <b>Minuten</b> für den Link zur Bestätigung des Zurücksetzens des Passworts.
             ]]></de>
         </locale>
+
         <locale name="projects.project.settings.panel.settings.title">
             <de><![CDATA[Allgemeine Projekt Einstellungen]]></de>
         </locale>

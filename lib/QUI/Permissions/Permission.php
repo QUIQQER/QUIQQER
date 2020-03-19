@@ -719,6 +719,32 @@ class Permission
     }
 
     /**
+     * Return a permission of the user
+     * - can be user for string permissions
+     *
+     * @param string $perm
+     * @param QUI\Interfaces\Users\User|null $User
+     *
+     * @return mixed|boolean
+     */
+    public static function getPermission($perm, $User = null)
+    {
+        if ($User === null) {
+            $User = self::getUser();
+        }
+
+        $Manager     = QUI::getPermissionManager();
+        $permissions = $Manager->getPermissions($User);
+
+        // first check user permission
+        if (isset($permissions[$perm]) && !empty($permissions[$perm])) {
+            return $permissions[$perm];
+        }
+
+        return isset($permissions[$perm]) ? $permissions[$perm] : false;
+    }
+
+    /**
      * has the User the permission at the site?
      *
      * @param string $perm

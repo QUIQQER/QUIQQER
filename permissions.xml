@@ -60,6 +60,15 @@
         <defaultvalue>1</defaultvalue>
     </permission>
 
+    <permission name="quiqqer.upload.maxUploadCount" type="int">
+        <defaultvalue>10</defaultvalue>
+    </permission>
+    <permission name="quiqqer.upload.maxFileUploadSize" type="int">
+        <defaultvalue>10000</defaultvalue>
+    </permission>
+    <permission name="quiqqer.upload.allowedTypes" type="string"/>
+    <permission name="quiqqer.upload.allowedEndings" type="string"/>
+
     <!-- Darf Projekte anlegen -->
     <permission name="quiqqer.projects.create" type="bool"/>
 
