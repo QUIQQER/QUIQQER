@@ -21,7 +21,7 @@ class Form extends QUI\QDOM
     {
         // defaults
         $this->setAttributes([
-            'name'        => '', // @todo input field name
+            'name'        => 'test-upload',
             'contextMenu' => true,
             'multiple'    => true,
             'sendbutton'  => true,
@@ -80,6 +80,7 @@ class Form extends QUI\QDOM
 
         $Engine->assign([
             'this'        => $this,
+            'name'        => $this->getAttribute('name'),
             'id'          => QUI\Utils\Uuid::get(),
             'uploads'     => \intval($this->getAttribute('uploads')),
             'contextMenu' => $this->phpBool2JsBool(\boolval($this->getAttribute('contextMenu'))),
