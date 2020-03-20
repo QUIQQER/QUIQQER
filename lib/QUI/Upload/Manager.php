@@ -158,6 +158,16 @@ class Manager
             $_REQUEST['extract'] = QUI\Utils\BoolHelper::JSBool($_REQUEST['extract']);
         }
 
+        $UploadForm = null;
+
+        if (isset($_REQUEST['callable']) && \class_exists($_REQUEST['callable'])) {
+            $Instance = new $_REQUEST['callable']();
+
+            if ($Instance instanceof Form) {
+                $UploadForm = $Instance;
+            }
+        }
+
         // check file count
         $configMaxFileCount = Permission::getPermission(
             'quiqqer.upload.maxUploadCount'
@@ -176,7 +186,7 @@ class Manager
             }
         }
 
-        // check mime type
+        // check mime type and file endings
         $configAllowedTypes = Permission::getPermission(
             'quiqqer.upload.allowedTypes'
         );
@@ -184,6 +194,12 @@ class Manager
         $configAllowedEndings = Permission::getPermission(
             'quiqqer.upload.allowedEndings'
         );
+
+        if ($UploadForm) {
+            $configAllowedTypes   = $UploadForm->getAttribute('allowedFileTypes');
+            $configAllowedEndings = $UploadForm->getAttribute('allowedFileEnding');
+        }
+
 
         if ($this->checkFnMatch($configAllowedTypes, $fileType) === false) {
             throw new QUI\Exception([

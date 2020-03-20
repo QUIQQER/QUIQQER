@@ -3,6 +3,7 @@
 namespace QUI\Upload;
 
 use QUI;
+use QUI\Permissions\Permission;
 
 /**
  * Class Form
@@ -20,6 +21,7 @@ class Form extends QUI\QDOM
     {
         // defaults
         $this->setAttributes([
+            'name'        => '', // @todo input field name
             'contextMenu' => true,
             'multiple'    => true,
             'sendbutton'  => true,
@@ -36,11 +38,22 @@ class Form extends QUI\QDOM
         ]);
 
         // set default allowed file types
-        // @todo
+        if (!isset($params['allowedFileTypes'])) {
+            $allowedTypes = Permission::getPermission(
+                'quiqqer.upload.allowedTypes'
+            );
 
+            $this->setAttribute('allowedFileTypes', $allowedTypes);
+        }
 
         // set default allowed file endings
-        // @todo
+        if (!isset($params['allowedFileEnding'])) {
+            $allowedEndings = Permission::getPermission(
+                'quiqqer.upload.allowedEndings'
+            );
+
+            $this->setAttribute('allowedFileEnding', $allowedEndings);
+        }
 
         parent::setAttributes($params);
     }
