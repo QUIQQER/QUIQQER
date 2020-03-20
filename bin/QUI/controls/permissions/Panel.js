@@ -322,7 +322,6 @@ define('controls/permissions/Panel', [
                         });
                     });
                 });
-
             }).catch(function () {
                 self.openWelcomeMessage();
             });
