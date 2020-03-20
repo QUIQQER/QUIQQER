@@ -128,16 +128,22 @@ class Manager
         QUIFile::mkdir($this->getUserUploadDir());
 
         $filename = false;
-        $filesize = 0;
+        $fileSize = 0;
+        $fileType = false;
+
         $params   = [];
         $onfinish = false;
+
+        if (isset($_REQUEST['filetype'])) {
+            $fileType = $_REQUEST['filetype'];
+        }
 
         if (isset($_REQUEST['filename'])) {
             $filename = $_REQUEST['filename'];
         }
 
         if (isset($_REQUEST['filesize'])) {
-            $filesize = (int)$_REQUEST['filesize'];
+            $fileSize = (int)$_REQUEST['filesize'];
         }
 
         if (isset($_REQUEST['fileparams'])) {
@@ -152,6 +158,47 @@ class Manager
             $_REQUEST['extract'] = QUI\Utils\BoolHelper::JSBool($_REQUEST['extract']);
         }
 
+        // check file count
+        $configMaxFileCount = Permission::getPermission(
+            'quiqqer.upload.maxUploadCount'
+        );
+
+        if ($configMaxFileCount) {
+            $userDir = $this->getUserUploadDir();
+            $files   = File::readDir($userDir);
+            $count   = \count($files) / 2;
+
+            if ($count + 1 >= $configMaxFileCount) {
+                throw new QUI\Permissions\Exception([
+                    'quiqqer/quiqqer',
+                    'exception.upload.count.limit'
+                ]);
+            }
+        }
+
+        // check mime type
+        $configAllowedTypes = Permission::getPermission(
+            'quiqqer.upload.allowedTypes'
+        );
+
+        $configAllowedEndings = Permission::getPermission(
+            'quiqqer.upload.allowedEndings'
+        );
+
+        if ($this->checkFnMatch($configAllowedTypes, $fileType) === false) {
+            throw new QUI\Exception([
+                'quiqqer/quiqqer',
+                'exception.upload.not.allowed.mimetype'
+            ]);
+        }
+
+        if ($this->checkFnMatch($configAllowedEndings, $filename) === false) {
+            throw new QUI\Exception([
+                'quiqqer/quiqqer',
+                'exception.upload.not.allowed.ending'
+            ]);
+        }
+
         /**
          * no html5 upload
          */
@@ -164,13 +211,13 @@ class Manager
                 return '';
             }
 
-            $uploadid = 0;
+            $uploadId = 0;
 
             if (isset($_REQUEST['uploadid'])) {
-                $uploadid = $_REQUEST['uploadid'];
+                $uploadId = $_REQUEST['uploadid'];
             }
 
-            $this->flushAction('UploadManager.isFinish("'.$uploadid.'")');
+            $this->flushAction('UploadManager.isFinish("'.$uploadId.'")');
 
             return '';
         }
@@ -215,8 +262,8 @@ class Manager
 
         $configMaxFileSize = Permission::getPermission('quiqqer.upload.maxFileUploadSize');
 
-        if (QUI\Projects\Manager::get()->getConfig('media_maxUploadFileSize')) {
-            $configMaxFileSize = QUI\Projects\Manager::get()->getConfig('media_maxUploadFileSize');
+        if ((int)QUI\Projects\Manager::get()->getConfig('media_maxUploadFileSize')) {
+            $configMaxFileSize = (int)QUI\Projects\Manager::get()->getConfig('media_maxUploadFileSize');
         }
 
 
@@ -234,7 +281,7 @@ class Manager
         }
 
         // finish? then upload to folder
-        if ((int)$fileinfo['filesize'] == $filesize) {
+        if ((int)$fileinfo['filesize'] == $fileSize) {
             // extract if the the extract file is set
             if (isset($_REQUEST['extract']) && $_REQUEST['extract']) {
                 $File = $this->extract($tmp_name);
@@ -283,6 +330,30 @@ class Manager
         }
 
         return '';
+    }
+
+    /**
+     * @param $values
+     * @param $str
+     *
+     * @return bool
+     */
+    protected function checkFnMatch($values, $str)
+    {
+        if (empty($configAllowedTypes)) {
+            return true;
+        }
+
+        $configAllowedTypes = \explode(',', $configAllowedTypes);
+        $fileType           = $_REQUEST['filetype'];
+
+        foreach ($configAllowedTypes as $type) {
+            if (\fnmatch($type, $fileType)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

@@ -4261,11 +4261,11 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             <de><![CDATA[Upload]]></de>
         </locale>
         <locale name="permission.quiqqer.upload.maxUploadCount">
-            <de><![CDATA[Max. Grösse eines Upload-Vorgangs]]></de>
+            <de><![CDATA[Upload Dateien Limit pro Nutzer]]></de>
         </locale>
         <locale name="permission.quiqqer.upload.maxUploadCount.description">
             <de><![CDATA[
-            Legt die maximale Grösse eines Upload-Vorgangs fest.
+            Legt die maximale Anzahl an Uploads für den Benutzer fest.
             Hier zählen alle Dateien die während eines Upload-Vorgangs hochgeladen werden, zusammen.
             ]]></de>
         </locale>
@@ -4926,6 +4926,15 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         </locale>
         <locale name="console.systemtool.licence">
             <de><![CDATA[Zeigt die QUIQQER Lizenz]]></de>
+        </locale>
+        <locale name="exception.upload.count.limit">
+            <de><![CDATA[Leider darfst keine weiteren Dateien mehr hochladen.]]></de>
+        </locale>
+        <locale name="exception.upload.not.allowed.mimetype">
+            <de><![CDATA[Diese Datei darfst du leider nicht hochladen.]]></de>
+        </locale>
+        <locale name="exception.upload.not.allowed.ending">
+            <de><![CDATA[Diese Datei darfst du leider nicht hochladen.]]></de>
         </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">

@@ -4747,6 +4747,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="console.systemtool.licence">
             <en><![CDATA[Shows the QUIQQER License]]></en>
         </locale>
+        <locale name="exception.upload.count.limit">
+            <en><![CDATA[Unfortunately you are not allowed to upload any more files.]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->
         <locale name="controls.email.select.email_invalid">
