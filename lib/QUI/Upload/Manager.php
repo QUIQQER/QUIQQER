@@ -349,22 +349,21 @@ class Manager
     }
 
     /**
-     * @param $values
-     * @param $str
+     * @param string $values
+     * @param string $str
      *
      * @return bool
      */
     protected function checkFnMatch($values, $str)
     {
-        if (empty($configAllowedTypes)) {
+        if (empty($values)) {
             return true;
         }
 
-        $configAllowedTypes = \explode(',', $configAllowedTypes);
-        $fileType           = $_REQUEST['filetype'];
+        $values = \explode(',', $values);
 
-        foreach ($configAllowedTypes as $type) {
-            if (\fnmatch($type, $fileType)) {
+        foreach ($values as $type) {
+            if (\fnmatch($type, $str)) {
                 return true;
             }
         }
