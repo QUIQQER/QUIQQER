@@ -578,14 +578,16 @@ class Manager
     /**
      * @param null $User
      * @throws QUI\Permissions\Exception
-     *
-     * @todo add permission -> permission.xml
      */
     protected function checkUserPermissions($User = null)
     {
         $SessionUser = QUI::getUserBySession();
 
         if ($SessionUser->isSU()) {
+            return;
+        }
+
+        if (QUI::getUsers()->isSystemUser($User)) {
             return;
         }
 
