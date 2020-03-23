@@ -422,7 +422,7 @@ class Utils
                     $media = '(max-width: '.$start.'px)';
 
                     if ($maxHeight) {
-                        $media = '(max-width: '.$start.'px; max-height: '.$maxHeight.')';
+                        $media = '(max-width: '.$start.'px; max-height: '.$maxHeight.'px)';
                     }
 
                     $imageUrl = $Image->getSizeCacheUrl($start, $maxHeight);
