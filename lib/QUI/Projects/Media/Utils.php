@@ -385,19 +385,27 @@ class Utils
 
             $imageWidth = $Image->getWidth();
             $maxWidth   = false;
+            $maxHeight  = false;
 
             if (isset($attributes['width'])) {
                 $maxWidth = (int)$attributes['width'];
             }
 
-            if (isset($attributes['style']) && \strpos($attributes['style'], 'width') !== false) {
+            if (isset($attributes['height'])) {
+                $maxHeight = (int)$attributes['height'];
+            }
+
+            if (isset($attributes['style'])) {
                 $style = StringUtils::splitStyleAttributes($attributes['style']);
 
                 if (isset($style['width']) && \strpos($style['width'], '%') === false) {
                     $maxWidth = (int)$style['width'];
                 }
-            }
 
+                if (isset($style['height']) && \strpos($style['height'], '%') === false) {
+                    $maxHeight = (int)$style['height'];
+                }
+            }
 
             if ($imageWidth) {
                 $end = $maxWidth && $imageWidth > $maxWidth ? $maxWidth : $imageWidth;
@@ -408,17 +416,32 @@ class Utils
 
                 // @todo setting
                 $batchSize = 200;
+                $duplicate = [];
 
                 for (; $start < $end + $batchSize; $start += $batchSize) {
+                    $media = '(max-width: '.$start.'px)';
+
+                    if ($maxHeight) {
+                        $media = '(max-width: '.$start.'px; max-height: '.$maxHeight.')';
+                    }
+
+                    $imageUrl = $Image->getSizeCacheUrl($start, $maxHeight);
+
+                    if (isset($duplicate[$imageUrl])) {
+                        continue;
+                    }
+
+                    $duplicate[$imageUrl] = true;
+
                     $sets[] = [
-                        'src'   => \htmlspecialchars($Image->getSizeCacheUrl($start)),
-                        'media' => '(max-width: '.$start.'px)',
+                        'src'   => \htmlspecialchars($imageUrl),
+                        'media' => $media,
                         'type'  => $Image->getAttribute('mime_type')
                     ];
                 }
 
                 // last one is the original
-                if ($maxWidth) {
+                if ($maxWidth || $maxHeight) {
                     $sets[\array_key_last($sets)]['media'] = '';
                 } else {
                     $sets[] = [
