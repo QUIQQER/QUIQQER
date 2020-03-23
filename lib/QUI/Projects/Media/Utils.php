@@ -330,11 +330,15 @@ class Utils
      *
      * @param string $src
      * @param array $attributes
+     * @param bool $withHost
      *
      * @return string
      */
-    public static function getImageHTML($src, $attributes = [])
-    {
+    public static function getImageHTML(
+        $src,
+        $attributes = [],
+        $withHost = false
+    ) {
         $src = self::getImageSource($src, $attributes);
 
         if (empty($src)) {
@@ -345,8 +349,13 @@ class Utils
             return '';
         }
 
-        $parts     = \explode('/', $src);
-        $cacheName = 'quiqqer/projects/'.$parts[3].'/picture-'.\md5($src.serialize($attributes));
+        $parts = \explode('/', $src);
+
+        $cacheName = 'quiqqer/projects/'.$parts[3].'/picture-'.\md5(serialize([
+                'attributes' => $attributes,
+                'src'        => $src,
+                'withHost'   => $withHost
+            ]));
 
         try {
             return QUI\Cache\Manager::get($cacheName);
@@ -361,26 +370,19 @@ class Utils
         }
 
 
-        // image string
-        $img = '<img ';
-
-        foreach ($attributes as $key => $value) {
-            $value = \htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
-            $value = \htmlentities($value);
-
-            $img .= \htmlspecialchars($key).'="'.$value.'" ';
-        }
-
-        $img .= ' src="'.\htmlspecialchars($src).'" />';
-
         // build picture source sets
         $srcset = '';
+        $host   = '';
 
         try {
             $Image = Utils::getElement($src);
 
             if (!self::isImage($Image)) {
                 return '';
+            }
+
+            if ($withHost) {
+                $host = $Image->getMedia()->getProject()->getVHost(true, true);
             }
 
             $imageWidth = $Image->getWidth();
@@ -460,13 +462,27 @@ class Utils
                         $media = ' media="'.$set['media'].'"';
                     }
 
-                    $srcset .= '<source '.$media.' srcset="'.$set['src'].'" type="'.$set['type'].'" />';
+                    $srcset .= '<source '.$media.' srcset="'.$host.$set['src'].'" type="'.$set['type'].'" />';
                 }
             }
         } catch (QUI\Exception $Exception) {
             Log::addDebug($Exception->getMessage());
         }
 
+        // image string
+        $img = '<img ';
+
+        foreach ($attributes as $key => $value) {
+            $value = \htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
+            $value = \htmlentities($value);
+
+            $img .= \htmlspecialchars($key).'="'.$value.'" ';
+        }
+
+        $img .= ' src="'.$host.\htmlspecialchars($src).'" />';
+
+
+        // picture html
         $picture = '<picture>'.$srcset.$img.'</picture>';
 
         try {
