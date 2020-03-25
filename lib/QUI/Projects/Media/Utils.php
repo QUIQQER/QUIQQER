@@ -473,6 +473,12 @@ class Utils
         $img = '<img ';
 
         foreach ($attributes as $key => $value) {
+            if (is_array($value) && $key === 'alt') {
+                $value = $Image->getAlt();
+            } elseif (!is_string($value)) {
+                continue;
+            }
+
             $value = \htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
             $value = \htmlentities($value);
 

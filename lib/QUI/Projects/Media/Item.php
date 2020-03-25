@@ -268,7 +268,7 @@ abstract class Item extends QUI\QDOM
      * Return the alt text
      *
      * @param null|QUI\Locale $Locale
-     * @return mixed
+     * @return string
      */
     public function getAlt($Locale = null)
     {
@@ -286,7 +286,14 @@ abstract class Item extends QUI\QDOM
             return $this->alt[$current];
         }
 
-        return \reset($this->alt);
+        \reset($this->alt);
+        $result = \current($this->alt);
+
+        if (empty($result)) {
+            return '';
+        }
+
+        return $result;
     }
 
     //endregion
