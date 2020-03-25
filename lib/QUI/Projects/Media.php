@@ -38,6 +38,16 @@ class Media extends QUI\QDOM
     protected static $mediaPermissions = null;
 
     /**
+     * This flag indicates if the creation of media item/folder cache is disabled
+     * when createCache() is called.
+     *
+     * This should only be set to true if a lot of media items are created (e.g. in a mass import).
+     *
+     * @var bool
+     */
+    public static $globalDisableMediaCacheCreation = false;
+
+    /**
      * constructor
      *
      * @param \QUI\Projects\Project $Project

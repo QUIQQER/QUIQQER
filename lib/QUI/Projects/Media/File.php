@@ -7,6 +7,7 @@
 namespace QUI\Projects\Media;
 
 use QUI;
+use QUI\Projects\Media;
 use QUI\Utils\System\File as QUIFile;
 
 /**
@@ -28,6 +29,10 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function createCache()
     {
+        if (Media::$globalDisableMediaCacheCreation) {
+            return false;
+        }
+
         if (!$this->getAttribute('active')) {
             return false;
         }
