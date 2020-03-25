@@ -1204,6 +1204,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function createCache()
     {
+        if (Media::$globalDisableMediaCacheCreation) {
+            return false;
+        }
+
         if (!$this->getAttribute('active')) {
             return true;
         }
