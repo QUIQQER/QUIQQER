@@ -97,3 +97,108 @@
     background-color: #2F8FC6;
     color: #fff;
 }
+
+/** icon design
+ ================================== */
+
+.controls-upload-form--icon {
+    border: 1px solid #dedede;
+    display: inline-block;
+    width: initial;
+}
+
+.controls-upload-form--icon form {
+    border: none;
+    padding: 0;
+}
+
+.controls-upload-form--icon form input {
+    display: none;
+}
+
+.controls-upload-form--icon .controls-upload-icon {
+    cursor: pointer;
+    font-size: 24px;
+    padding: 20px;
+    text-align: center;
+    width: 100%;
+}
+
+.controls-upload-form-submit {
+    cursor: pointer;
+    font-size: 12px;
+    text-align: center;
+    width: 100%;
+}
+
+.controls-upload-form-submit span {
+    padding: 0 5px;
+}
+
+
+/** single design
+ ================================== */
+
+.controls-upload-form--single {
+    max-width: 400px;
+    width: 100%;
+}
+
+.controls-upload-form--single form {
+    border: none;
+    padding: 0;
+}
+
+.controls-upload-form-single {
+    display: flex;
+}
+
+.controls-upload-form-single input {
+    display: none;
+}
+
+.controls-upload-form-single-container {
+    display: flex;
+    width: calc(100% - 130px);
+}
+
+.controls-upload-form-single-container-preview {
+    background-color: rgba(0, 0, 0, 0.2);
+    background-position: center;
+    background-size: cover;
+
+    display: inline-block;
+    height: 30px;
+    overflow: hidden;
+    width: 30px;
+}
+
+.controls-upload-form-single-container-preview img {
+    max-width: 100%;
+}
+
+.controls-upload-form-single-container-select-placeholder {
+    color: #bebebe;
+}
+
+.controls-upload-form-single-container-select {
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    overflow: hidden;
+    padding: 0 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: calc(100% - 30px);
+}
+
+.controls-upload-form-single-container-select:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.controls-upload-form--single .controls-upload-form-submit {
+    display: inline-block;
+    width: 130px;
+}

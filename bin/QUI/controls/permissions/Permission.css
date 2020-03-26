@@ -134,3 +134,7 @@
     width: calc(100% - 20px);
     white-space: nowrap;
 }
+
+.qui-permission-entry input[type="text"] {
+    width: 100%;
+}

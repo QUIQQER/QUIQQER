@@ -277,6 +277,12 @@
         <locale name="permission.quiqqer.editors.toolbar.delete">
             <en><![CDATA[Is allowed to delete editor toolbars.]]></en>
         </locale>
+        <locale name="permission.quiqqer.frontend._header">
+            <en><![CDATA[Frontend]]></en>
+        </locale>
+        <locale name="permission.quiqqer.frontend.upload">
+            <en><![CDATA[May upload files in the frontend.]]></en>
+        </locale>
         <locale name="projects.project.settings.panel.placeholder">
             <en><![CDATA[Placeholder image]]></en>
         </locale>
@@ -611,7 +617,13 @@
             <en><![CDATA[You do not have the necessary permissions to save the configuration]]></en>
         </locale>
         <locale name="exception.media.upload.fileSize.is.to.big">
-            <en><![CDATA[The file is unfortunately too big. The maximum upload size for a file is [size]]]></en>
+            <en><![CDATA[The file [file] is unfortunately too big. The maximum upload size for a file is [size]]]></en>
+        </locale>
+        <locale name="exception.media.upload.fileType.not.allowed">
+            <de><![CDATA[
+            Unfortunately, the file type of the [file] file is not allowed.
+            Please use only the following file types: [filetypes]
+            ]]></de>
         </locale>
         <locale name="exception.media.move.is.no.folder">
             <en><![CDATA[Please select a folder to move the files.]]></en>
@@ -1461,6 +1473,9 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         </locale>
         <locale name="permissions.panel.btn.select.project">
             <en><![CDATA[For a project]]></en>
+        </locale>
+        <locale name="permissions.panel.btn.select.media">
+            <en><![CDATA[For a media area]]></en>
         </locale>
         <locale name="permissions.panel.btn.select.manage">
             <en><![CDATA[Permission management only]]></en>
@@ -2573,7 +2588,8 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             <en><![CDATA[Clear complete QUIQQER cache]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.clear.complete.confirm.information">
-            <en><![CDATA[By clearing the entire QUIQQER cache, larger amounts of data can be deleted, whose re-creation may require a longer time. This can cause your website to be considerably slower during this period.]]></en>
+            <en>
+                <![CDATA[By clearing the entire QUIQQER cache, larger amounts of data can be deleted, whose re-creation may require a longer time. This can cause your website to be considerably slower during this period.]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.clear.complete.confirm.text">
             <en><![CDATA[Are you sure you want to clear the entire QUIQQER cache?]]></en>
@@ -4092,6 +4108,44 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
             On this way QUIQQER can inform you about errors.
             ]]></en>
         </locale>
+
+
+        <locale name="permission.quiqqer.upload._header">
+            <en><![CDATA[Upload]]></en>
+        </locale>
+        <locale name="permission.quiqqer.upload.maxUploadCount">
+            <en><![CDATA[Max. uploads]]></en>
+        </locale>
+        <locale name="permission.quiqqer.upload.maxUploadCount.description">
+            <en><![CDATA[
+            ]]></en>
+        </locale>
+        <locale name="permission.quiqqer.upload.maxFileUploadSize">
+            <en><![CDATA[Max. Size of an upload]]></en>
+        </locale>
+        <locale name="permission.quiqqer.upload.maxFileUploadSize.description">
+            <en><![CDATA[
+            Defines the maximum size of a file during an upload process.
+            ]]></en>
+        </locale>
+        <locale name="permission.quiqqer.upload.allowedTypes">
+            <en><![CDATA[Allowed file types]]></en>
+        </locale>
+        <locale name="permission.quiqqer.upload.allowedTypes.description">
+            <en><![CDATA[
+            Please enter the ALLOWED file types separated by commas. Additionally you can use wildcards.
+            Example: images/*,application/*
+            ]]></en>
+        </locale>
+        <locale name="permission.quiqqer.upload.allowedEndings">
+            <en><![CDATA[Allowed file extensions]]></en>
+        </locale>
+        <locale name="permission.quiqqer.upload.allowedEndings.description">
+            <en><![CDATA[
+            Please enter the ALLOWED file extension separated by commas. Additionally you can use wildcards.
+            Example: .gif, .jpg, .jpeg, .pdf
+            ]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -4125,6 +4179,7 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="quiqqer.settings.auth.passwordResetLinkValidTime.description" html="true">
             <en><![CDATA[Period of validity in <b>minutes</b> for the link to confirm password reset.]]></en>
         </locale>
+
         <locale name="projects.project.settings.panel.settings.title">
             <en><![CDATA[General Project Settings]]></en>
         </locale>
@@ -4692,6 +4747,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="console.systemtool.licence">
             <en><![CDATA[Shows the QUIQQER License]]></en>
         </locale>
+        <locale name="exception.upload.count.limit">
+            <en><![CDATA[Unfortunately you are not allowed to upload any more files.]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->
         <locale name="controls.email.select.email_invalid">
@@ -5224,6 +5282,12 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         </locale>
         <locale name="projects.project.site.panel.information.openInSiteStructure">
             <en><![CDATA[Open in the project Sitemap]]></en>
+        </locale>
+        <locale name="control.upload.icon.submit">
+            <en><![CDATA[Upload]]></en>
+        </locale>
+        <locale name="control.upload.placeholder">
+            <en><![CDATA[Please select a file...]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/controls" datatype="php,js">

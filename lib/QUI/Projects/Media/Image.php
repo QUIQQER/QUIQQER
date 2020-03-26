@@ -109,6 +109,10 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function createCache()
     {
+        if (Media::$globalDisableMediaCacheCreation) {
+            return false;
+        }
+
         return $this->createSizeCache();
     }
 

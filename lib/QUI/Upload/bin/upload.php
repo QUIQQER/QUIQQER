@@ -12,6 +12,8 @@ $dir = \str_replace('quiqqer/quiqqer/lib/QUI/Upload/bin', '', \dirname(__FILE__)
 require_once $dir.'header.php';
 
 try {
+    QUI\Permissions\Permission::checkPermission('quiqqer.frontend.upload');
+
     $QUM = new QUI\Upload\Manager();
     QUI::getAjax();
 
