@@ -39,6 +39,7 @@ class Manager extends QUI\QDOM
 
     /** @var int The minimum required memory_limit in megabytes of PHP */
     const REQUIRED_MEMORY = 128;
+
     /** @var int The minimum required memory_limit of PHP in megabytes, if the user added VCS repositories */
     const REQUIRED_MEMORY_VCS = 256;
 
@@ -47,6 +48,12 @@ class Manager extends QUI\QDOM
 
     /** @var string The key used to store the package folder size in cache */
     const CACHE_KEY_PACKAGE_FOLDER_SIZE_TIMESTAMP = "quiqqer/packages/package_folder_size_timestamp";
+
+    /** @var string The key used to store the packages with site xml files */
+    const CACHE_SITE_XML_LIST = 'quiqqer/packages/list/haveSiteXml';
+
+    /** @var string The key used to store the packages with database xml files */
+    const CACHE_DB_XML_LIST = 'quiqqer/packages/list/haveDatabaseXml';
 
     /**
      * Package Directory
@@ -76,6 +83,13 @@ class Manager extends QUI\QDOM
      * @var string
      */
     protected $composer_lock;
+
+    /**
+     * exec command to the composer.phar file
+     *
+     * @var string
+     */
+    protected $composer_exec;
 
     /**
      * Packaglist - installed packages
@@ -141,31 +155,18 @@ class Manager extends QUI\QDOM
     public $Composer;
 
     /**
+     * Path to the local repository
+     *
+     * @var string
+     */
+    protected $localRepository;
+
+    /**
      * active servers - use as temp for local repo using
      *
      * @var array
      */
     protected $activeServers = [];
-
-    /**
-     * composer lock for the specific package
-     * - index array [package] => lock data
-     *
-     * @var array
-     */
-    protected $packageLock = [];
-
-    /**
-     * composer.lock data for the current instance
-     *
-     * @var array
-     */
-    protected $composerLock = null;
-
-    /**
-     * @var array
-     */
-    protected $instanceCache = [];
 
     /**
      * constructor
@@ -349,42 +350,22 @@ class Manager extends QUI\QDOM
      */
     public function getPackageLock(Package $Package)
     {
+        $data = \file_get_contents($this->composer_lock);
+        $data = \json_decode($data, true);
+
         $packageName = $Package->getName();
 
-        if (isset($this->packageLock[$packageName])) {
-            return $this->packageLock[$packageName];
+        $package = \array_filter($data['packages'], function ($package) use ($packageName) {
+            return $package['name'] === $packageName;
+        });
+
+        if (empty($package)) {
+            return [];
         }
 
-        $cache = $Package->getCacheName().'lock/';
+        $package = \current($package);
 
-        try {
-            $this->packageLock[$packageName] = QUI\Cache\Manager::get($cache);
-
-            return $this->packageLock[$packageName];
-        } catch (QUI\Exception $Exception) {
-        }
-
-        if ($this->composerLock) {
-            $data = $this->composerLock;
-        } else {
-            $data = \file_get_contents($this->composer_lock);
-            $data = \json_decode($data, true);
-        }
-
-        foreach ($data['packages'] as $package) {
-            if ($package['name'] === $packageName) {
-                $this->packageLock[$packageName] = $package;
-                break;
-            }
-        }
-
-        if (!isset($this->packageLock[$packageName])) {
-            $this->packageLock[$packageName] = [];
-        }
-
-        QUI\Cache\Manager::set($cache, $this->packageLock[$packageName]);
-
-        return $this->packageLock[$packageName];
+        return $package;
     }
 
     /**
@@ -527,6 +508,25 @@ class Manager extends QUI\QDOM
             if ($params['type'] === 'npm') {
                 $npmHostName             = \parse_url($server, \PHP_URL_HOST);
                 $npmServer[$npmHostName] = $server;
+                continue;
+            }
+
+            if ($params['type'] === 'package') {
+                if (!file_exists($server)) {
+                    continue;
+                }
+
+                $repositories[] = [
+                    'type'    => $params['type'],
+                    'package' => [
+                        "name"    => $params['name'],
+                        "version" => $params['version'],
+                        "dist"    => [
+                            "url"  => $server,
+                            "type" => "zip"
+                        ]
+                    ]
+                ];
                 continue;
             }
 
@@ -759,11 +759,9 @@ class Manager extends QUI\QDOM
     protected function getComposerJSON()
     {
         $this->checkComposer();
+        $json = \file_get_contents($this->composer_json);
 
-        $json   = \file_get_contents($this->composer_json);
-        $result = \json_decode($json, true);
-
-        return $result;
+        return \json_decode($json, true);
     }
 
     /**
@@ -894,55 +892,40 @@ class Manager extends QUI\QDOM
     /**
      * Return the installed packages
      *
-     * @param array $params - [optional] search / limit params
-     *
-     * params are deprecated
-     *
      * @return array
      */
-    public function getInstalled($params = [])
+    public function getInstalled()
     {
-        $cache = 'quiqqer/packages/getInstalled';
+        $list   = $this->getList();
+        $result = $list;
 
-        if (isset($this->instanceCache['getInstalled'])) {
-            $installed = $this->instanceCache['getInstalled'];
-        } else {
+        foreach ($result as $key => $package) {
             try {
-                $installed                           = QUI\Cache\Manager::get($cache);
-                $this->instanceCache['getInstalled'] = $installed;
+                $Package = $this->getInstalledPackage($package['name']);
+
+                $result[$key]['title']       = $Package->getTitle();
+                $result[$key]['description'] = $Package->getDescription();
+                $result[$key]['image']       = $Package->getImage();
             } catch (QUI\Exception $Exception) {
-                QUI\System\Log::writeDebugException($Exception);
-
-                // create cache
-                $list      = $this->getList();
-                $installed = [];
-
-                foreach ($list as $key => $package) {
-                    try {
-                        $Package = $this->getInstalledPackage($package['name']);
-
-                        $package['title']       = $Package->getTitle();
-                        $package['description'] = $Package->getDescription();
-                        $package['image']       = $Package->getImage();
-
-                        $installed[] = $package;
-                    } catch (QUI\Exception $Exception) {
-                    }
-                }
-
-                $this->instanceCache['getInstalled'] = $installed;
-                QUI\Cache\Manager::set($cache, $installed);
             }
         }
 
-        if (empty($params)) {
-            return $installed;
-        }
+        return $result;
+    }
 
-        $filtered = [];
+    /**
+     * Return the installed packages, but filtered
+     *
+     * @param array $params
+     * @return array
+     */
+    public function searchInstalledPackages($params = [])
+    {
+        $list   = $this->getList();
+        $result = [];
 
         if (isset($params['type'])) {
-            foreach ($installed as $package) {
+            foreach ($list as $package) {
                 if (!isset($package['type'])) {
                     continue;
                 }
@@ -951,21 +934,20 @@ class Manager extends QUI\QDOM
                     continue;
                 }
 
-                $filtered[] = $package;
+                $result[] = $package;
             }
-        } else {
-            $filtered = $installed;
         }
 
         if (isset($params['limit']) && isset($params['page'])) {
             $limit = (int)$params['limit'];
             $page  = (int)$params['page'];
 
-            $filtered = QUI\Utils\Grid::getResult($filtered, $page, $limit);
+            $result = QUI\Utils\Grid::getResult($result, $page, $limit);
         }
 
-        return $filtered;
+        return $result;
     }
+
 
     /**
      * Return a package object
@@ -1054,7 +1036,7 @@ class Manager extends QUI\QDOM
      */
     protected function calculatePackageFolderSize($doNotCache = false)
     {
-        $packageFolderSize = QUI\Utils\System\Folder::getFolderSize($this->dir);
+        $packageFolderSize = QUI\Utils\System\Folder::getFolderSize($this->dir, true);
 
         if ($doNotCache) {
             return $packageFolderSize;
@@ -1085,7 +1067,7 @@ class Manager extends QUI\QDOM
             'Install package '.\print_r($packages, true).' -> install'
         );
 
-        QUI\Cache\Manager::clearAll();
+        QUI\Cache\Manager::clearCompleteQuiqqerCache();
 
         $this->composerRequireOrInstall($packages, $version);
     }
@@ -1102,8 +1084,16 @@ class Manager extends QUI\QDOM
      */
     public function isInstalled($packageName)
     {
-        if (!isset($this->installed[$packageName])) {
-            $this->installed[$packageName] = \is_dir(OPT_DIR.$packageName);
+        if (isset($this->installed[$packageName])) {
+            return $this->installed[$packageName];
+        }
+
+        try {
+            $this->getInstalledPackage($packageName);
+
+            $this->installed[$packageName] = true;
+        } catch (QUI\Exception $Exception) {
+            $this->installed[$packageName] = false;
         }
 
         return $this->installed[$packageName];
@@ -1140,7 +1130,7 @@ class Manager extends QUI\QDOM
      */
     public function getPackage($package)
     {
-        $cache = 'quiqqer/packages/quiqqer/quiqqer/cache-info/'.$package;
+        $cache = 'packages/cache/info/'.$package;
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -1217,7 +1207,7 @@ class Manager extends QUI\QDOM
      */
     public function show($package)
     {
-        $cache = 'quiqqer/packages/quiqqer/quiqqer/cache-show/'.$package;
+        $cache = 'packages/cache/show/'.$package;
 
         try {
             return QUI\Cache\Manager::get($cache);
@@ -1433,12 +1423,18 @@ class Manager extends QUI\QDOM
                 case "composer":
                 case "vcs":
                 case "pear":
-                case "package":
                 case "artifact":
                 case "npm":
                 case "bower":
                     $Config->setValue($server, 'type', $params['type']);
                     $Config->setValue($server, 'active', 1);
+                    break;
+
+                case "package":
+                    $Config->setValue($server, 'active', 1);
+                    $Config->setValue($server, 'type', $params['type']);
+                    $Config->setValue($server, 'name', $params['name']);
+                    $Config->setValue($server, 'version', $params['version']);
                     break;
             }
         }
@@ -1700,7 +1696,6 @@ class Manager extends QUI\QDOM
      * @param string|boolean $package - Name of the package
      *
      * @throws QUI\Exception
-     * @throws QUI\Lockclient\Exceptions\LockServerException
      */
     public function updateWithLocalRepository($package = false)
     {
@@ -1710,11 +1705,6 @@ class Manager extends QUI\QDOM
         try {
             $this->update($package);
             $this->resetRepositories();
-        } catch (QUI\Lockclient\Exceptions\LockServerException $Exception) {
-            $this->resetRepositories();
-            LocalServer::getInstance()->activate();
-
-            throw $Exception;
         } catch (QUI\Exception $Exception) {
             $this->resetRepositories();
             LocalServer::getInstance()->activate();
@@ -1793,13 +1783,12 @@ class Manager extends QUI\QDOM
      * Return all packages which includes a site.xml
      *
      * @return array
+     * @todo move to an API XML Handler
      */
     public function getPackageSiteXmlList()
     {
-        $cache = 'quiqqer/packages/list-haveSiteXml';
-
         try {
-            return QUI\Cache\Manager::get($cache);
+            return QUI\Cache\Manager::get(self::CACHE_SITE_XML_LIST);
         } catch (QUI\Exception $Exception) {
         }
 
@@ -1821,7 +1810,7 @@ class Manager extends QUI\QDOM
         }
 
         try {
-            QUI\Cache\Manager::set($cache, $result);
+            QUI\Cache\Manager::set(self::CACHE_SITE_XML_LIST, $result);
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
@@ -1833,13 +1822,12 @@ class Manager extends QUI\QDOM
      * Return all packages which includes a site.xml
      *
      * @return array
+     * @todo move to an API XML Handler
      */
     public function getPackageDatabaseXmlList()
     {
-        $cache = 'quiqqer/packages/list-haveDatabaseXml';
-
         try {
-            return QUI\Cache\Manager::get($cache);
+            return QUI\Cache\Manager::get(self::CACHE_DB_XML_LIST);
         } catch (QUI\Exception $Exception) {
         }
 
@@ -1857,7 +1845,7 @@ class Manager extends QUI\QDOM
         }
 
         try {
-            QUI\Cache\Manager::set($cache, $result);
+            QUI\Cache\Manager::set(self::CACHE_DB_XML_LIST, $result);
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }

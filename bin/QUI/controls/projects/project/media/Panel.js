@@ -30,7 +30,7 @@ define('controls/projects/project/media/Panel', [
 ], function () {
     "use strict";
 
-    var lg                = 'quiqqer/system';
+    var lg                = 'quiqqer/quiqqer';
     var HIDE_HIDDEN_FILES = 1; // 1 = hide all hidden files, 0 = show all hidden files
 
     var QUI              = arguments[0],
@@ -89,7 +89,7 @@ define('controls/projects/project/media/Panel', [
             icon : '',
 
             field: 'name',
-            order: 'DESC',
+            order: 'ASC',
             limit: 25,
             page : 1,
 
@@ -124,7 +124,7 @@ define('controls/projects/project/media/Panel', [
             this.setAttribute('icon', 'fa fa-picture-o');
             this.parent(options);
 
-            this.$limitOptions = [10, 25, 50, 100, 250];
+            this.$limitOptions = [10, 25, 50, 100, 250, 500, 1000, 2000, 5000];
 
             this.$Map    = null;
             this.$Media  = Media || null;
@@ -149,6 +149,11 @@ define('controls/projects/project/media/Panel', [
             this.addEvents({
                 onCreate : this.$onCreate,
                 onResize : this.$onResize,
+                onShow   : function () {
+                    if (this.$Pagination) {
+                        this.$Pagination.$redraw();
+                    }
+                }.bind(this),
                 onDestroy: function () {
                     this.$Media.removeEvent('onItemRename', this.$itemEvent);
                     this.$Media.removeEvent('onItemActivate', this.$itemEvent);
@@ -471,9 +476,7 @@ define('controls/projects/project/media/Panel', [
                 if (self.getAttribute('isInPopup') && self.getAttribute('breadcrumb')) {
                     var Breadcrumb = self.getElm().getElement('.qui-panel-breadcrumb');
 
-                    require([
-                        'controls/projects/Select'
-                    ], function (ProjectSelect) {
+                    require(['controls/projects/Select'], function (ProjectSelect) {
                         self.getBreadcrumb().getElm().setStyles({
                             clear: 'none'
                         });
@@ -496,12 +499,13 @@ define('controls/projects/project/media/Panel', [
                             events     : {
                                 onChange: function (value) {
                                     if (self.$Media && self.$Media.getProject() &&
-                                        self.$Media.getProject() === value) {
+                                        self.$Media.getProject().getName() === value) {
                                         return;
                                     }
 
                                     var Project = Projects.get(value);
                                     self.$Media = Project.getMedia();
+
                                     self.openID(1);
                                 }
                             }
@@ -597,7 +601,6 @@ define('controls/projects/project/media/Panel', [
             this.$Pagination = null;
 
             return new Promise(function (resolve) {
-
                 // get the file object
                 self.getMedia().get(fileid).then(function (MediaFile) {
                     // set media image to the panel
@@ -611,7 +614,6 @@ define('controls/projects/project/media/Panel', [
 
                     // if the MediaFile is no Folder
                     if (MediaFile.getType() !== 'classes/projects/project/media/Folder') {
-
                         require(['controls/projects/project/media/FilePanel'], function (FilePanel) {
                             new FilePanel(MediaFile).inject(
                                 self.getParent()
@@ -658,7 +660,8 @@ define('controls/projects/project/media/Panel', [
                         order          : self.getAttribute('field') + ' ' + self.getAttribute('order'),
                         showHiddenFiles: !HIDE_HIDDEN_FILES
                     });
-                }).catch(function () {
+                }).catch(function (err) {
+                    console.log(err);
                     self.openID(1).then(resolve);
                 });
             });
@@ -1196,7 +1199,7 @@ define('controls/projects/project/media/Panel', [
          * @return {Array} the drop-upload-list
          */
         $viewSymbols: function (Result, Container) {
-            var i, len, Elm, Child;
+            var i, len, ext, Elm, Child;
 
             var droplist = [],
                 Media    = this.$Media,
@@ -1221,6 +1224,11 @@ define('controls/projects/project/media/Panel', [
                 }
 
                 Child = children[i];
+                ext   = '';
+
+                if (Child.extension !== '') {
+                    ext = '.' + Child.extension;
+                }
 
                 Elm = new Element('div', {
                     'data-id'      : Child.id,
@@ -1231,10 +1239,10 @@ define('controls/projects/project/media/Panel', [
                     'data-mimetype': Child.mimetype,
                     'data-hidden'  : Child.isHidden ? 1 : 0,
 
-                    'class': 'qui-media-item box smooth',
+                    'class': 'qui-media-item smooth',
                     html   : '<span class="title">' + Child.name + '</span>',
-                    alt    : Child.name,
-                    title  : Child.name,
+                    alt    : Child.name + ext,
+                    title  : Child.name + ext,
 
                     events: {
                         click      : this.$viewSymbolClick.bind(this),
@@ -1291,7 +1299,7 @@ define('controls/projects/project/media/Panel', [
          * @return {Array} the drop-upload-list
          */
         $viewPreview: function (Result, Container) {
-            var i, len, url, Child, Elm;
+            var i, len, url, ext, Child, Elm;
 
             var droplist = [],
                 Media    = this.$Media,
@@ -1308,6 +1316,12 @@ define('controls/projects/project/media/Panel', [
                 }
 
                 Child = children[i];
+                ext   = '';
+
+                if (Child.extension !== '') {
+                    ext = '.' + Child.extension;
+                }
+
 
                 Elm = new Element('div', {
                     'data-id'      : Child.id,
@@ -1320,8 +1334,8 @@ define('controls/projects/project/media/Panel', [
 
                     'class': 'qui-media-item box smooth',
                     html   : '<span class="title">' + Child.name + '</span>',
-                    alt    : Child.name,
-                    title  : Child.name,
+                    alt    : Child.name + ext,
+                    title  : Child.name + ext,
 
                     events: {
                         click      : this.$viewSymbolClick.bind(this),
@@ -1495,7 +1509,6 @@ define('controls/projects/project/media/Panel', [
             this.$Filter.setStyle('display', 'none');
 
             var Grid = new GridControl(GridContainer, {
-
                 columnModel: [{
                     header   : '&nbsp;',
                     dataIndex: 'icon',
@@ -1516,6 +1529,11 @@ define('controls/projects/project/media/Panel', [
                     dataIndex: 'title',
                     dataType : 'string',
                     width    : 150
+                }, {
+                    header   : Locale.get(lg, 'extension'),
+                    dataIndex: 'extension',
+                    dataType : 'string',
+                    width    : 80
                 }, {
                     header   : Locale.get(lg, 'c_date'),
                     dataIndex: 'c_date',

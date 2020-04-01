@@ -279,11 +279,12 @@ define('controls/projects/project/site/SiteChildrenSort', [
 
             return new Promise(function (resolve, reject) {
                 Ajax.post('ajax_site_children_sort', resolve, {
-                    project: Project.encode(),
-                    parent : self.$Site.getId(),
-                    ids    : JSON.encode(ids),
-                    start  : (page - 1) * perPage,
-                    onError: reject
+                    project : Project.encode(),
+                    parent  : self.$Site.getId(),
+                    ids     : JSON.encode(ids),
+                    start   : (page - 1) * perPage,
+                    sortType: 'manuell',
+                    onError : reject
                 });
             }).then(function () {
                 return self.displayChildren();

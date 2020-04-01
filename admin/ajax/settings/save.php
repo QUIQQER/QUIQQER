@@ -68,6 +68,32 @@ QUI::$Ajax->registerFunction(
                 }
             }
 
+            if (\strpos($file, 'quiqqer/quiqqer/admin/settings/conf.xml') !== false) {
+                // overwrite openssl settings is not allowed
+                if (isset($params['openssl'])) {
+                    unset($params['openssl']);
+                }
+
+                // overwrite database settings is not allowed
+                if (isset($params['db'])) {
+                    unset($params['db']);
+                }
+
+                // nonce check
+                if (empty($params['globals']['nonce'])) {
+                    throw new QUI\Exception('Could not save QUIQQER config');
+                }
+
+                $currentNonce = $params['globals']['nonce'];
+                $oldNonce     = QUI::conf('globals', 'nonce');
+
+                if ($currentNonce !== $oldNonce) {
+                    throw new QUI\Exception('Could not save QUIQQER config');
+                }
+
+                unset($params['globals']['nonce']);
+            }
+
             QUI\Utils\Text\XML::setConfigFromXml($file, $params);
 
             QUI::getMessagesHandler()->addSuccess(

@@ -58,11 +58,7 @@ class RedisCheck extends QUI\System\Test
         }
 
         if (empty($server)) {
-            if ($message) {
-                return QUI::getLocale()->get('quiqqer/quiqqer', 'message.redis.ok');
-            }
-
-            return self::STATUS_OK;
+            $server = 'localhost';
         }
 
         try {

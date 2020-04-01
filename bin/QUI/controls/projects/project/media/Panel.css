@@ -161,13 +161,14 @@
     float: left;
     height: 32px;
     margin: 0 10px 0 0;
+    width: 65px;
 }
 
 .quiqqer-sheets-desktop,
 .qui-media-pagination .quiqqer-pagination {
     clear: none !important;
     float: left;
-    width: calc(100% - 75px) !important;
+    width: calc(100% - 80px) !important;
 }
 
 .qui-media-pagination .quiqqer-sheets-sheet {

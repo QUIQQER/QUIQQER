@@ -115,7 +115,7 @@ class Defaults extends QUI\System\Console\Tool
         $this->resetColor();
         $this->writeLn('');
 
-        QUI\Cache\Manager::clearAll();
+        QUI\Cache\Manager::clearCompleteQuiqqerCache();
 
         // start a complete setup
         // QUI::setup();

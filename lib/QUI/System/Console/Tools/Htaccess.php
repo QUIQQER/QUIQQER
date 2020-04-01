@@ -9,7 +9,7 @@ namespace QUI\System\Console\Tools;
 use QUI;
 
 /**
- * Execute the system setup
+ * Generate the system htaccess file
  *
  * @author  www.pcsg.de (Henning Leutz)
  * @licence For copyright and license information, please view the /README.md
@@ -295,6 +295,7 @@ class Htaccess extends QUI\System\Console\Tool
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}image\.php$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}index\.php$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}ajax\.php$
+    RewriteCond %{REQUEST_URI} !^{$URL_DIR}ajaxBundler\.php$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}$
     RewriteCond %{REQUEST_URI} !^{$URL_DIR}([^/]*)$
 

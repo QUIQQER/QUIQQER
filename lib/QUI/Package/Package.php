@@ -118,8 +118,6 @@ class Package extends QUI\QDOM
 
         if (!\is_dir($packageDir)) {
             $package = \htmlspecialchars($package);
-            QUI\System\Log::addError('Package not exists ['.$package.']');
-
             throw new QUI\Exception('Package not exists ['.$package.']', 404);
         }
 
@@ -184,12 +182,14 @@ class Package extends QUI\QDOM
      */
     protected function getPackageXMLData()
     {
-        if (!$this->isQuiqqerPackage()) {
-            return [];
-        }
-
         if ($this->packageXML !== null) {
             return $this->packageXML;
+        }
+
+        if (!$this->isQuiqqerPackage()) {
+            $this->packageXML = [];
+
+            return [];
         }
 
         $packageXML = $this->packageDir.'/package.xml';
@@ -745,7 +745,7 @@ class Package extends QUI\QDOM
         // settings
         if (!\file_exists($dir.self::SETTINGS_XML)) {
             QUI::getEvents()->fireEvent('packageSetup', [$this]);
-            QUI\Cache\Manager::clearAll();
+            QUI\Cache\Manager::clearCompleteQuiqqerCache();
 
             QUI::getEvents()->fireEvent('packageSetupEnd', [$this]);
 
@@ -760,7 +760,7 @@ class Package extends QUI\QDOM
 
         QUI::getEvents()->fireEvent('packageSetup', [$this]);
 
-        QUI\Cache\Manager::clearAll();
+        QUI\Cache\Manager::clearCompleteQuiqqerCache();
         QUI::getEvents()->fireEvent('packageSetupEnd', [$this]);
     }
 

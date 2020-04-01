@@ -10,7 +10,7 @@ if (!isset($_REQUEST['id']) || !isset($_REQUEST['project'])) {
 $dir = \str_replace('quiqqer/quiqqer/lib/QUI/Projects/Media/bin', '', \dirname(__FILE__));
 \define('QUIQQER_SYSTEM', true);
 
-require_once $dir . '/header.php';
+require_once $dir.'/header.php';
 
 $Project = QUI::getProject($_REQUEST['project']);
 $Media   = $Project->getMedia();
@@ -110,5 +110,11 @@ $Image->resize(400, 400, function ($Constraint) {
     $Constraint->upsize();
 });
 
-echo $Image->response();
+
+$file = VAR_DIR.'tmp/'.$File->getId().'.'.\pathinfo($File->getFullPath())['extension'];
+$Image->save($file);
+
+QUI\Utils\System\File::fileHeader($file);
+
+//echo $Image->response();
 exit;

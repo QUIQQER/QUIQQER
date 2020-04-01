@@ -120,7 +120,7 @@ class DBCheck extends QUI\System\Test
             $projects = QUI::getProjectManager()->getProjects(true);
 
             $langTables   = []; // language dependant tables
-            $noLangTables = []; // language independant tables
+            $noLangTables = []; // language independent tables
 
             foreach ($content['projects'] as $info) {
                 $checkData = $this->extractTableData($info);
@@ -132,7 +132,7 @@ class DBCheck extends QUI\System\Test
                 }
             }
 
-            // first check language independant project tables
+            // first check language independent project tables
             if (!empty($noLangTables)) {
                 foreach ($projects as $Project) {
                     foreach ($langTables as $tblData) {
@@ -150,7 +150,7 @@ class DBCheck extends QUI\System\Test
                 }
             }
 
-            // check language dependant project tables
+            // check language dependent project tables
             if (!empty($langTables)) {
                 foreach ($projects as $Project) {
                     /* @var $Project \QUI\Projects\Project */
@@ -279,6 +279,7 @@ class DBCheck extends QUI\System\Test
         // xml data
         $tbl         = $tblData['table'];
         $primaryKeys = $tblData['primaryKeys'];
+        $indices     = $tblData['indices'];
         $autoInc     = $tblData['auto_inc'];
         $fields      = $tblData['fields'];
 
@@ -294,11 +295,11 @@ class DBCheck extends QUI\System\Test
             return;
         }
 
-        if (empty($primaryKeys)) {
+        if (empty($primaryKeys) && empty($indices)) {
             $this->addError(
                 $tbl,
                 $table,
-                "No PRIMARY KEY -> ".
+                "No PRIMARY KEY AND NO INDICES-> ".
                 "Table \"$table\" has no PRIMARY KEY."
             );
         }
@@ -379,7 +380,7 @@ class DBCheck extends QUI\System\Test
                 $nullable = false;
             }
 
-            // check if column in datase is nullable
+            // check if column in database is nullable
             $isNullable = true;
 
             if ($field['Null'] === 'NO') {

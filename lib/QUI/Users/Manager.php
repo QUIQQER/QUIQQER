@@ -1400,6 +1400,19 @@ class Manager
             $filter = $params['searchSettings']['filter'];
             $fields = $params['searchSettings']['fields'];
 
+            // cleanup fields
+            foreach ($fields as $field => $val) {
+                $fields[$field] = (int)$val;
+
+                if (!$fields[$field]) {
+                    unset($fields[$field]);
+                }
+            }
+
+            if (empty($fields)) {
+                $fields = $allowOrderFields;
+            }
+
             $filter_status         = false;
             $filter_group          = false;
             $filter_groups_exclude = false;

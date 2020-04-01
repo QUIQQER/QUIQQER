@@ -153,6 +153,16 @@ class PackageEvents
             \define('ETC_DIR', $config['config']['quiqqer-dir'].'etc/');
         }
 
+        if (\php_sapi_name() === 'cli') {
+            if (!defined('SYSTEM_INTERN')) {
+                \define('SYSTEM_INTERN', true);
+            }
+
+            QUI\Permissions\Permission::setUser(
+                QUI::getUsers()->getSystemUser()
+            );
+        }
+
         QUI::load();
     }
 }

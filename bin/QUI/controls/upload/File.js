@@ -41,7 +41,7 @@ define('controls/upload/File', [
         MessageError       = arguments[7],
         MathUtils          = arguments[8],
         ObjectUtils        = arguments[9],
-        Locale             = arguments[11];
+        QUILocale          = arguments[11];
 
 
     /**
@@ -87,7 +87,7 @@ define('controls/upload/File', [
 
                 QUI.getMessageHandler(function (MessageHandler) {
                     MessageHandler.addError(
-                        Locale.get(lg, 'file.message.corrupt.file')
+                        QUILocale.get(lg, 'file.message.corrupt.file')
                     );
                 });
 
@@ -98,11 +98,11 @@ define('controls/upload/File', [
 
             this.$is_paused   = false;
             this.$file_size   = this.$File.size;
-            this.$chunk_size  = (1024 * 100);
+            this.$chunk_size  = (1024 * 256); // 256kb
             this.$range_start = 0;
             this.$range_end   = this.$chunk_size;
             this.$upload_time = null;
-            this.$execute     = true; // false if no excute of the update routine
+            this.$execute     = true; // false if no execute of the update routine
             this.$result      = null;
             this.$error       = false;
 
@@ -119,6 +119,29 @@ define('controls/upload/File', [
             this.$Request.onload = function () {
                 self.upload();
             };
+
+            this.$errors = 0;
+
+            // on error -> ProgressEvent
+            this.$Request.onerror = function () {
+                this.pause();
+
+                // test in view seconds again
+                if (this.$errors === 0) {
+                    setTimeout(function () {
+                        this.resume();
+                    }.bind(this), 4000);
+
+                    this.$errors++;
+                    return;
+                }
+
+                this.$errors++;
+
+                QUI.getMessage().then(function (MH) {
+                    MH.addError(QUILocale.get('quiqqer/quiqqer', 'exception.upload.error'));
+                });
+            }.bind(this);
 
             // check server answer
             this.$Request.onreadystatechange = function () {
@@ -237,9 +260,9 @@ define('controls/upload/File', [
 
                         new QUIConfirm({
                             name       : 'cancel-upload-window',
-                            title      : Locale.get(lg, 'file.upload.cancel.title'),
-                            text       : Locale.get(lg, 'file.upload.cancel.title'),
-                            information: Locale.get(lg, 'file.upload.cancel.information', {
+                            title      : QUILocale.get(lg, 'file.upload.cancel.title'),
+                            text       : QUILocale.get(lg, 'file.upload.cancel.title'),
+                            information: QUILocale.get(lg, 'file.upload.cancel.information', {
                                 file: self.getFilename()
                             }),
                             maxWidth   : 640,
@@ -260,7 +283,7 @@ define('controls/upload/File', [
 
             this.$PauseResume = new QUIButton({
                 name   : 'continue-upload',
-                text   : Locale.get(lg, 'pause'),
+                text   : QUILocale.get(lg, 'pause'),
                 Control: this,
                 events : {
                     onClick: function () {
@@ -277,7 +300,7 @@ define('controls/upload/File', [
             });
 
             if (this.$is_paused) {
-                this.$PauseResume.setAttribute('text', Locale.get(lg, 'resume'));
+                this.$PauseResume.setAttribute('text', QUILocale.get(lg, 'resume'));
             }
 
             this.$Cancel.inject(Buttons);
@@ -296,7 +319,7 @@ define('controls/upload/File', [
 
                 this.$ContextMenu.appendChild(
                     new QUIContextmenuItem({
-                        text  : Locale.get(lg, 'file.upload.remove'),
+                        text  : QUILocale.get(lg, 'file.upload.remove'),
                         File  : this,
                         events: {
                             onClick: function (Item) {
@@ -563,7 +586,7 @@ define('controls/upload/File', [
                 });
 
             if (typeof params.lang === 'undefined') {
-                params.lang = Locale.getCurrent();
+                params.lang = QUILocale.getCurrent();
             }
 
             // $project, $parentid, $file, $data
@@ -583,7 +606,11 @@ define('controls/upload/File', [
                 );
             }
 
-            this.$Request.send(data);
+            try {
+                this.$Request.send(data);
+            } catch (e) {
+                // catch errors via onerror
+            }
 
 
             // Update our ranges

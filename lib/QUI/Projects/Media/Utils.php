@@ -46,6 +46,10 @@ class Utils
      */
     const CACHE_KEY_TIMESTAMP_MEDIA_CACHE_FOLDER_SIZE_PREFIX = "timestamp_media_cache_folder_size_";
 
+    /**
+     * @var array
+     */
+    protected static $urlItemCache = [];
 
     /**
      * Returns the item array
@@ -62,6 +66,7 @@ class Utils
             return [
                 'icon'          => 'fa fa-home',
                 'icon80x80'     => URL_BIN_DIR.'80x80/media.png',
+                'extension'     => '',
                 'id'            => $Item->getId(),
                 'name'          => $Item->getAttribute('name'),
                 'title'         => $Item->getAttribute('title'),
@@ -84,6 +89,7 @@ class Utils
             return [
                 'icon'          => 'fa fa-folder-o',
                 'icon80x80'     => URL_BIN_DIR.'80x80/extensions/folder.png',
+                'extension'     => '',
                 'id'            => $Item->getId(),
                 'name'          => $Item->getAttribute('name'),
                 'title'         => $Item->getAttribute('title'),
@@ -104,9 +110,10 @@ class Utils
 
         $extension = self::getExtension($Item->getAttribute('file'));
 
-        $result = [
+        return [
             'icon'      => self::getIconByExtension($extension),
             'icon80x80' => self::getIconByExtension($extension, '80x80'),
+            'extension' => $extension,
             'id'        => $Item->getId(),
             'name'      => $Item->getAttribute('name'),
             'title'     => $Item->getAttribute('title'),
@@ -122,8 +129,6 @@ class Utils
             'priority'  => $Item->getAttribute('priority'),
             'isHidden'  => $Item->isHidden()
         ];
-
-        return $result;
     }
 
     /**
@@ -306,23 +311,222 @@ class Utils
             );
         }
 
+        if (isset(self::$urlItemCache[$url])) {
+            return self::$urlItemCache[$url];
+        }
+
         $params  = StringUtils::getUrlAttributes($url);
         $Project = QUI::getProject($params['project']);
         $Media   = $Project->getMedia();
 
-        return $Media->get((int)$params['id']);
+        self::$urlItemCache[$url] = $Media->get((int)$params['id']);
+
+        return self::$urlItemCache[$url];
     }
 
     /**
-     * Return <img /> from image attributes
+     * Return <picture><img /></picture> from image attributes
      * considered responsive images, too
      *
      * @param string $src
      * @param array $attributes
+     * @param bool $withHost
      *
      * @return string
      */
-    public static function getImageHTML($src, $attributes = [])
+    public static function getImageHTML(
+        $src,
+        $attributes = [],
+        $withHost = false
+    ) {
+        $src = self::getImageSource($src, $attributes);
+
+        if (empty($src)) {
+            return '';
+        }
+
+        if (\strpos($src, 'image.php') !== false) {
+            return '';
+        }
+
+        $parts = \explode('/', $src);
+
+        $cacheName = 'quiqqer/projects/'.$parts[3].'/picture-'.\md5(serialize([
+                'attributes' => $attributes,
+                'src'        => $src,
+                'withHost'   => $withHost
+            ]));
+
+        try {
+            return QUI\Cache\Manager::get($cacheName);
+        } catch (QUi\Exception $Exception) {
+            Log::addDebug($Exception->getMessage());
+        }
+
+        try {
+            QUI::getEvents()->fireEvent('mediaCreateImageHtmlBegin', [$src, $attributes]);
+        } catch (QUI\Exception $Exception) {
+            Log::addDebug($Exception->getMessage());
+        }
+
+
+        // build picture source sets
+        $srcset = '';
+        $host   = '';
+
+        try {
+            $Image = Utils::getElement($src);
+
+            if (!self::isImage($Image)) {
+                return '';
+            }
+
+            if ($withHost) {
+                $host = $Image->getMedia()->getProject()->getVHost(true, true);
+            }
+
+            $imageWidth = $Image->getWidth();
+            $maxWidth   = false;
+            $maxHeight  = false;
+
+            if (isset($attributes['width'])) {
+                $maxWidth = (int)$attributes['width'];
+            }
+
+            if (isset($attributes['height'])) {
+                $maxHeight = (int)$attributes['height'];
+            }
+
+            if (isset($attributes['style'])) {
+                $style = StringUtils::splitStyleAttributes($attributes['style']);
+
+                if (isset($style['width']) && \strpos($style['width'], '%') === false) {
+                    $maxWidth = (int)$style['width'];
+                }
+
+                if (isset($style['height']) && \strpos($style['height'], '%') === false) {
+                    $maxHeight = (int)$style['height'];
+                }
+            }
+
+            if ($imageWidth) {
+                $end = $maxWidth && $imageWidth > $maxWidth ? $maxWidth : $imageWidth;
+                $end = (int)$end;
+
+                $start = 100;
+                $sets  = [];
+
+                // @todo setting
+                $batchSize = 200;
+                $duplicate = [];
+
+                for (; $start < $end + $batchSize; $start += $batchSize) {
+                    $media = '(max-width: '.$start.'px)';
+
+                    if ($maxHeight) {
+                        $media = '(max-width: '.$start.'px; max-height: '.$maxHeight.'px)';
+                    }
+
+                    $imageUrl = $Image->getSizeCacheUrl($start, $maxHeight);
+
+                    if (isset($duplicate[$imageUrl])) {
+                        continue;
+                    }
+
+                    $duplicate[$imageUrl] = true;
+
+                    $sets[] = [
+                        'src'   => \htmlspecialchars($imageUrl),
+                        'media' => $media,
+                        'type'  => $Image->getAttribute('mime_type')
+                    ];
+                }
+
+                // last one is the original
+                if ($maxWidth || $maxHeight) {
+                    $sets[\array_key_last($sets)]['media'] = '';
+                } else {
+                    $sets[] = [
+                        'src'   => \htmlspecialchars($Image->getSizeCacheUrl()),
+                        'media' => '',
+                        'type'  => $Image->getAttribute('mime_type')
+                    ];
+                }
+
+
+                foreach ($sets as $set) {
+                    $media = '';
+
+                    // last item doesn't need
+                    if (!empty($set['media'])) {
+                        $media = ' media="'.$set['media'].'"';
+                    }
+
+                    $srcset .= '<source '.$media.' srcset="'.$host.$set['src'].'" type="'.$set['type'].'" />';
+                }
+            }
+        } catch (QUI\Exception $Exception) {
+            Log::addDebug($Exception->getMessage());
+        }
+
+        // image string
+        $img = '<img ';
+
+        foreach ($attributes as $key => $value) {
+            if (is_array($value) && $key === 'alt') {
+                $value = $Image->getAlt();
+            } elseif (!is_string($value)) {
+                continue;
+            }
+
+            $value = \htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
+            $value = \htmlentities($value);
+
+            $img .= \htmlspecialchars($key).'="'.$value.'" ';
+        }
+
+        $img .= ' src="'.$host.\htmlspecialchars($src).'" />';
+
+
+        // picture html
+        $picture = '<picture>'.$srcset.$img.'</picture>';
+
+        try {
+            QUI::getEvents()->fireEvent('mediaCreateImageHtml', [&$picture]);
+        } catch (QUI\Exception $Exception) {
+            Log::addDebug($Exception->getMessage());
+        }
+
+
+        if (!empty($attributes['height']) || !empty($attributes['width'])) {
+            $pictureStyle = '<picture style="';
+
+            if (!empty($attributes['height'])) {
+                $pictureStyle .= 'height: '.$attributes['height'].'px;';
+            }
+
+            if (!empty($attributes['width'])) {
+                $pictureStyle .= 'width: '.$attributes['width'].'px;';
+            }
+
+            $pictureStyle .= '">';
+
+            $picture = \str_replace('<picture>', $pictureStyle, $picture);
+        }
+
+        QUI\Cache\Manager::set($cacheName, $picture);
+
+        return $picture;
+    }
+
+    /**
+     * Return only the source for an <img /> tag from image attributes
+     *
+     * @param $src
+     * @param array $attributes
+     * @return string
+     */
+    public static function getImageSource($src, $attributes = [])
     {
         $width  = false;
         $height = false;
@@ -367,45 +571,20 @@ class Utils
             return '';
         }
 
-        /* @var $Image \QUI\Projects\Media\Image */
+        /* @var $Image QUI\Projects\Media\Image */
         try {
             $src = $Image->getSizeCacheUrl($width, $height);
+
+            if ($Image->hasViewPermissionSet()) {
+                $src = URL_DIR.$Image->getUrl();
+            }
         } catch (QUI\Exception $Exception) {
             Log::writeException($Exception);
 
             return '';
         }
 
-
-        // image string
-        $img = '<img ';
-
-        foreach ($attributes as $key => $value) {
-            $img .= \htmlspecialchars($key).'="'.\htmlspecialchars($value).'" ';
-        }
-
-        // responsive image
-//        $imageWidth = $Image->getWidth();
-
-//        if ( $imageWidth )
-//        {
-//            $end   = $imageWidth > 1000 ? 1000 : $imageWidth;
-//            $start = 100;
-//
-//            $srcset = array();
-//
-//            for ( ; $start < $end; $start += 100 ) {
-//                $srcset[] = $Image->getSizeCacheUrl( $start ) ." {$start}w";
-//            }
-//
-//            // not optimal, but maybe we found a better solution
-//            $img .= ' sizes="(max-width: 30em) 100vw, (max-width: 50em) 50vw, calc(33vw - 100px)"';
-//            $img .= ' srcset="'. implode(",\n", $srcset) .'"';
-//        }
-
-        $img .= ' src="'.\htmlspecialchars($src).'" />';
-
-        return $img;
+        return $src;
     }
 
     /**
@@ -754,6 +933,21 @@ class Utils
      */
     public static function getElement($url)
     {
+        $filePath = self::getRealFileDataFromCacheUrl($url);
+        $Project  = QUI::getProject($filePath['project']);
+        $Media    = $Project->getMedia();
+
+        return $Media->getChildByPath($filePath['filePath']);
+    }
+
+    /**
+     * @param $url
+     * @return array
+     *
+     * @throws QUI\Exception
+     */
+    public static function getRealFileDataFromCacheUrl($url)
+    {
         if (\strpos($url, 'media/cache/') !== false) {
             $parts = \explode('media/cache/', $url);
         } elseif (\strpos($url, 'media/sites/') !== false) {
@@ -765,7 +959,6 @@ class Utils
             );
         }
 
-
         if (!isset($parts[1])) {
             throw new QUI\Exception(
                 'File not found',
@@ -776,23 +969,24 @@ class Utils
         $parts   = \explode('/', $parts[1]);
         $project = \array_shift($parts);
 
-        $Project = QUI::getProject($project);
-        $Media   = $Project->getMedia();
-
         // if the element (image) is resized resize
-        $file_name = \array_pop($parts);
+        $fileName = \array_pop($parts);
 
-        if (\strpos($file_name, '__') !== false) {
-            $lastpos_ul = \strrpos($file_name, '__') + 2;
-            $pos_dot    = \strpos($file_name, '.', $lastpos_ul);
+        if (\strpos($fileName, '__') !== false) {
+            $lastpos_ul = \strrpos($fileName, '__') + 2;
+            $pos_dot    = \strpos($fileName, '.', $lastpos_ul);
 
-            $file_name = \substr($file_name, 0, ($lastpos_ul - 2)).
-                         \substr($file_name, $pos_dot);
+            $fileName = \substr($fileName, 0, ($lastpos_ul - 2)).
+                        \substr($fileName, $pos_dot);
         }
 
-        $parts[] = $file_name;
+        $parts[]   = $fileName;
+        $filePaths = \implode('/', $parts);
 
-        return $Media->getChildByPath(\implode('/', $parts));
+        return [
+            'project'  => $project,
+            'filePath' => $filePaths
+        ];
     }
 
     /**

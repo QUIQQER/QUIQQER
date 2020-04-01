@@ -256,6 +256,7 @@ define('controls/projects/project/media/FolderPanel', [
                 Body = this.getContent();
 
             Body.set('html', '');
+            Body.setStyle('opacity', 0);
 
             this.Loader.show();
 
@@ -290,7 +291,9 @@ define('controls/projects/project/media/FolderPanel', [
                     }
                 }).inject(Order, 'after');
 
-                self.$Folder.getSize().then(function (bytes) {
+                QUI.parse().then(Form).then(function () {
+                    return self.$Folder.getSize();
+                }).then(function (bytes) {
                     var value;
                     var sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
 
@@ -308,6 +311,10 @@ define('controls/projects/project/media/FolderPanel', [
                     self.Loader.hide();
                 }).catch(function () {
                     self.Loader.hide();
+                }).then(function () {
+                    moofx(Body).animate({
+                        opacity: 1
+                    });
                 });
             });
         },
@@ -758,12 +765,12 @@ define('controls/projects/project/media/FolderPanel', [
          */
         openPermissions: function () {
             var Parent = this.getParent(),
-                File   = this.$File;
+                Folder = this.$Folder;
 
             require(['controls/permissions/Panel'], function (PermPanel) {
                 Parent.appendChild(
                     new PermPanel({
-                        Object: File
+                        Object: Folder
                     })
                 );
             });

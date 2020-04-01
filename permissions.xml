@@ -47,12 +47,27 @@
     <!-- Darf Benutzer anlegen -->
     <permission name="quiqqer.admin.users.create" type="bool"/>
 
+    <!-- Darf Benutzer löschen -->
+    <permission name="quiqqer.admin.users.delete" type="bool"/>
+
     <!-- Darf Benutzer anlegen -->
     <permission name="quiqqer.users.delete_self" type="bool">
         <defaultvalue>1</defaultvalue>
     </permission>
 
     <!-- Project User / group permissions  -->
+    <permission name="quiqqer.frontend.upload" type="bool">
+        <defaultvalue>1</defaultvalue>
+    </permission>
+
+    <permission name="quiqqer.upload.maxUploadCount" type="int">
+        <defaultvalue>10</defaultvalue>
+    </permission>
+    <permission name="quiqqer.upload.maxFileUploadSize" type="int">
+        <defaultvalue>10000000</defaultvalue>
+    </permission>
+    <permission name="quiqqer.upload.allowedTypes" type="string"/>
+    <permission name="quiqqer.upload.allowedEndings" type="string"/>
 
     <!-- Darf Projekte anlegen -->
     <permission name="quiqqer.projects.create" type="bool"/>
@@ -118,7 +133,6 @@
 
     <!-- Editor permissions -->
     <permission name="quiqqer.editors.toolbar.delete" type="bool"/>
-
 
     <!-- File permissions -->
     <permission name="quiqqer.projects.media.set_permissions" type="bool"/>

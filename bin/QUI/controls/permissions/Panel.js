@@ -13,8 +13,7 @@ define('controls/permissions/Panel', [
 ], function (QUI, QUIPanel, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/system';
-
+    var lg = 'quiqqer/quiqqer';
 
     return new Class({
 
@@ -323,7 +322,6 @@ define('controls/permissions/Panel', [
                         });
                     });
                 });
-
             }).catch(function () {
                 self.openWelcomeMessage();
             });

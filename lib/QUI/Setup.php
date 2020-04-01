@@ -89,10 +89,6 @@ class Setup
         // workspaces
         Workspace\Manager::setup();
 
-        // Upload Manager
-        $UploadManager = new Upload\Manager();
-        $UploadManager->setup();
-
         QUI::getEvents()->fireEvent('setupMainSystemEnd');
     }
 
@@ -160,6 +156,8 @@ class Setup
                 );
             }
         }
+
+        QUI\Cache\LongTimeCache::setup();
 
         QUI::getEvents()->fireEvent('setupMakeDirectoriesEnd');
     }
@@ -265,7 +263,7 @@ class Setup
         }
 
         QUI\Cache\Manager::$noClearing = false;
-        QUI\Cache\Manager::clearAll();
+        QUI\Cache\Manager::clearCompleteQuiqqerCache();
 
         QUI::getEvents()->fireEvent('setupPackageSetupEnd');
     }
@@ -294,7 +292,7 @@ class Setup
         QUI::getPackageManager()->setLastUpdateDate();
 
         // clear cache
-        Cache\Manager::clearAll();
+        QUI\Cache\Manager::clearCompleteQuiqqerCache();
     }
 
     /**
@@ -341,6 +339,7 @@ class Setup
         $index       = CMS_DIR.'index.php';
         $quiqqer     = CMS_DIR.'quiqqer.php';
         $bootstrap   = CMS_DIR.'bootstrap.php';
+        $console     = CMS_DIR.'console';
 
         // bootstrap
         $bootstrapContent = $fileHeader."
@@ -400,5 +399,20 @@ if (file_exists(\$boot)) {
                    "require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';\n";
 
         \file_put_contents($quiqqer, $content);
+
+        // console
+        $phpCommand = QUI::conf('globals', 'phpCommand');
+
+        if (empty($phpCommand)) {
+            $phpCommand = 'php';
+        }
+
+        $content = "#!/usr/bin/env {$phpCommand}\n".
+                   $fileHeader.
+                   "define('CMS_DIR', '{$CMS_DIR}');\n".
+                   "require '{$OPT_DIR}quiqqer/quiqqer/quiqqer.php';\n";
+
+        \file_put_contents($console, $content);
+        \system("chmod +x {$console}");
     }
 }

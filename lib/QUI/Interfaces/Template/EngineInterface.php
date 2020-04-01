@@ -6,6 +6,8 @@
 
 namespace QUI\Interfaces\Template;
 
+use QUI\Projects\Site\Canonical;
+
 /**
  * Interface of a template engine
  *
@@ -39,6 +41,13 @@ interface EngineInterface
      * @return mixed
      */
     public function getTemplateVariable($variableName);
+
+    /**
+     * Return the current template canonical object
+     *
+     * @return Canonical
+     */
+    public function getCanonical();
 
     /**
      * Set a locale object to the engine

@@ -304,6 +304,8 @@ class Manager
      *                            defaultvalue =>
      *                            src =>
      *                            )
+     *
+     * @throws QUI\Database\Exception
      */
     public function addPermission($params)
     {
@@ -420,14 +422,21 @@ class Manager
         }
 
         foreach ($permissions as $permission) {
-            $permission['src']          = $src;
-            $permission['defaultvalue'] = '';
+            $permission['src'] = $src;
+
+            if (!isset($permission['defaultvalue'])) {
+                $permission['defaultvalue'] = '';
+            }
 
             if (isset($permission['default'])) {
                 $permission['defaultvalue'] = $permission['default'];
             }
 
-            $this->addPermission($permission);
+            try {
+                $this->addPermission($permission);
+            } catch (QUI\Exception $Exception) {
+                QUI\System\Log::addError($Exception->getMessage());
+            }
         }
     }
 
@@ -524,7 +533,7 @@ class Manager
      * Return the current permissions from a group, user, site, project or media
      * Returns the set permissions
      *
-     * @param QUI\Groups\Group|QUI\Users\User|QUI\Projects\Project|QUI\Projects\Site $Obj
+     * @param QUI\Groups\Group|QUI\Interfaces\Users\User|QUI\Projects\Project|QUI\Projects\Site $Obj
      *
      * @return array
      */
@@ -631,6 +640,10 @@ class Manager
 
         foreach ($_list as $permission => $params) {
             $permissions[$permission] = false;
+
+            if (isset($params['defaultvalue'])) {
+                $permissions[$permission] = $params['defaultvalue'];
+            }
         }
 
         if (!isset($data[0])) {
@@ -753,7 +766,6 @@ class Manager
      *
      * @throws QUI\Exception
      *
-     * @todo  permissions for media
      * @todo  permissions for project
      */
     public function setPermissions($Obj, $permissions, $EditUser = false)
@@ -912,6 +924,8 @@ class Manager
         }
 
         QUI\Cache\Manager::clear('qui/admin/menu/');
+        QUI\Cache\Manager::clear('quiqqer/permissions/'.$this->getDataCacheId($Obj));
+
         QUI::getEvents()->fireEvent('permissionsSet', [$Obj, $permissions]);
     }
 
@@ -1084,6 +1098,10 @@ class Manager
 
         if (isset($this->permissionsCache[$cacheId])) {
             unset($this->permissionsCache[$cacheId]);
+        }
+
+        if (\method_exists($MediaItem, 'deleteCache')) {
+            $MediaItem->deleteCache();
         }
     }
 
@@ -1505,7 +1523,6 @@ class Manager
                 break;
 
             case 'string':
-                $val = Orthos::clearMySQL($val);
                 break;
 
             default:

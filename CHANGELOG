@@ -1,3 +1,54 @@
+1.4.0 (24.02.2020)
+
+    Main Features
+
+    - Images are delivered as picture elements <picture>
+        - New picture output API
+        - WebP Conversion via quiqqer/cache possible
+    - Media is multilingual
+    - Media Files and Folders has permissions
+    - New server backend console
+    - The look of the grid has been updated
+
+    Features
+
+    - quiqqer/quiqqer#927 - ZIP Upload from packages -> considered dev-master and dev-dev
+    - quiqqer/quiqqer#947 - Improve image serving
+    - namerobot/namerobot#100 - added more pagination page size options for Media panel
+    - quiqqer/quiqqer#953 - Change title -> Adjust URL
+
+    - New rewrite request event -> onRequestImageNotFound
+    - Project and Site are globaly available in Smarty Templazes
+    - Implement new method getChildrenByName; useful for duplicated names in media folders
+    - Console css class added (for frontend console output)
+    - Grid -> consider filter, if setData is executed (refresh bug)
+    - Media: the file extension is visible now
+    - PHP Fatal error: Uncaught Error: Call to undefined function array_key_last()
+
+    Fixes
+
+    fix: deleted missing methods included
+    fix: path history removed from constructor (media)
+    fix: performance issue -> urldecode problem solved
+    fix: fallback for empty project in controls/projects/project/media/Input
+
+
+    refactor: added new createImageHtml Events; consider mime_type for source element
+
+1.3.3 (02.02.2020)
+
+    - fix: Deprecation Notice: implode(): Passing glue string after array is deprecated
+
+1.3.2 (21.09.19)
+
+    - fix: breadcrumb meta position
+
+1.3.1 (02.09.19)
+
+    - fix: session name problem fix included to 1.3.1
+    - fix: workaround for intervention header output error -> https://dev.quiqqer.com/quiqqer/quiqqer/commit/d0ced1063417c465bdd69289497d32d075c623e3
+    - fix: getSystemLocale Method
+
 1.3 (24.07.2019)
 
     Main Features

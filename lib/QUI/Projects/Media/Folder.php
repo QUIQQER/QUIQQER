@@ -231,15 +231,15 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * (non-PHPdoc)
      *
-     * @param string $newname - new name for the folder
+     * @param string $newName - new name for the folder
      *
      * @throws QUI\Exception
      * @see QUI\Projects\Media\Item::rename()
      *
      */
-    public function rename($newname)
+    public function rename($newName)
     {
-        if (empty($newname)) {
+        if (empty($newName)) {
             throw new QUI\Exception(
                 ['quiqqer/quiqqer', 'exception.media.folder.name.invalid'],
                 ErrorCodes::FOLDER_NAME_INVALID
@@ -255,16 +255,16 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         // filter illegal characters
         $Parent  = $this->getParent();
-        $newname = Utils::stripFolderName($newname);
+        $newName = Utils::stripFolderName($newName);
 
         // rename
-        if ($newname == $this->getAttribute('name')) {
+        if ($newName == $this->getAttribute('name')) {
             return;
         }
 
 
         // check if a folder with the new name exist
-        if ($Parent->childWithNameExists($newname)) {
+        if ($Parent->childWithNameExists($newName)) {
             throw new QUI\Exception(
                 ['quiqqer/quiqqer', 'exception.media.folder.with.same.name.exists'],
                 ErrorCodes::FOLDER_ALREADY_EXISTS
@@ -273,7 +273,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         $PDO      = QUI::getDataBase()->getPDO();
         $old_path = $this->getPath().'/';
-        $new_path = $Parent->getPath().'/'.$newname;
+        $new_path = $Parent->getPath().'/'.$newName;
 
         $new_path = StringUtils::replaceDblSlashes($new_path);
         $new_path = \ltrim($new_path, '/');
@@ -299,16 +299,20 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $title = $this->getAttribute('title');
 
         if ($title == $this->getAttribute('name')) {
-            $title = $newname;
+            $title = $newName;
         }
+
+        $file    = StringUtils::replaceDblSlashes($new_path.'/');
+        $md5File = md5($file);
 
         // update me
         QUI::getDataBase()->update(
             $this->Media->getTable(),
             [
-                'name'  => $newname,
-                'file'  => StringUtils::replaceDblSlashes($new_path.'/'),
-                'title' => $title
+                'name'     => $newName,
+                'file'     => $file,
+                'title'    => $title,
+                'pathHash' => $md5File
             ],
             ['id' => $this->getId()]
         );
@@ -321,7 +325,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         // @todo rename cache instead of delete
         $this->deleteCache();
 
-        $this->setAttribute('name', $newname);
+        $this->setAttribute('name', $newName);
         $this->setAttribute('file', $new_path.'/');
 
         QUI::getEvents()->fireEvent('mediaRename', [$this]);
@@ -375,9 +379,15 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $Statement->execute();
 
         // update me
+        $file = StringUtils::replaceDblSlashes($new_path.'/');
+
+
         QUI::getDataBase()->update(
             $this->Media->getTable(),
-            ['file' => StringUtils::replaceDblSlashes($new_path.'/')],
+            [
+                'file'     => $file,
+                'pathHash' => \md5($file)
+            ],
             ['id' => $this->getId()]
         );
 
@@ -646,13 +656,13 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 break;
 
             case 'name ASC':
-                $order_by = "find_in_set({$table_type}, 'folder') ASC, {$table_name}";
+                $order_by = "find_in_set({$table_type}, 'folder') DESC, {$table_name}";
                 break;
 
             default:
             case 'name':
             case 'name DESC':
-                $order_by = "find_in_set({$table_type}, 'folder') DESC, {$table_name}";
+                $order_by = "find_in_set({$table_type}, 'folder') DESC, {$table_name} DESC";
                 break;
 
             case 'priority':
@@ -873,6 +883,11 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             $dbQuery['where']['active'] = 1;
         }
 
+        if (isset($params['where']['file'])) {
+            $params['where']['pathHash'] = \md5($params['where']['file']);
+            unset($params['where']['file']);
+        }
+
         if (isset($params['count'])) {
             $dbQuery['count'] = 'count';
 
@@ -1056,7 +1071,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     }
 
     /**
-     * Return a file from the folder by name
+     * Return a file from the folder by its name
      *
      * @param string $filename
      *
@@ -1065,10 +1080,27 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function getChildByName($filename)
     {
+        $children = $this->getChildrenByName($filename, 1);
+
+        return $children[0];
+    }
+
+    /**
+     * Return all children with the wanted name
+     *
+     * @param $filename
+     * @param bool $limit
+     * @return array
+     *
+     * @throws QUI\Database\Exception
+     * @throws QUI\Exception
+     */
+    public function getChildrenByName($filename, $limit = false)
+    {
         $table     = $this->Media->getTable();
         $table_rel = $this->Media->getTable('relations');
 
-        $result = QUI::getDataBase()->fetch([
+        $query = [
             'select' => [
                 $table.'.id'
             ],
@@ -1081,11 +1113,16 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 $table_rel.'.child'  => '`'.$table.'.id`',
                 $table.'.deleted'    => 0,
                 $table.'.name'       => $filename
-            ],
-            'limit'  => 1
-        ]);
+            ]
+        ];
 
-        if (!isset($result[0])) {
+        if ($limit) {
+            $query['limit'] = $limit;
+        }
+
+        $dbResult = QUI::getDataBase()->fetch($query);
+
+        if (!isset($dbResult[0])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.not.found.NAME', [
                     'file' => $filename
@@ -1094,7 +1131,13 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             );
         }
 
-        return $this->Media->get((int)$result[0]['id']);
+        $result = [];
+
+        foreach ($dbResult as $entry) {
+            $result[] = $this->Media->get((int)$entry['id']);
+        }
+
+        return $result;
     }
 
     /**
@@ -1161,6 +1204,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      */
     public function createCache()
     {
+        if (Media::$globalDisableMediaCacheCreation) {
+            return false;
+        }
+
         if (!$this->getAttribute('active')) {
             return true;
         }
@@ -1236,12 +1283,15 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $table_rel = $this->Media->getTable('relations');
 
         // In die DB legen
+        $file = $this->getAttribute('file').$new_name.'/';
+
         QUI::getDataBase()->insert($table, [
             'name'      => $new_name,
             'title'     => $new_name,
             'short'     => $new_name,
             'type'      => 'folder',
-            'file'      => $this->getAttribute('file').$new_name.'/',
+            'file'      => $file,
+            'pathHash'  => \md5($file),
             'alt'       => $new_name,
             'c_date'    => \date('Y-m-d h:i:s'),
             'e_date'    => \date('Y-m-d h:i:s'),
@@ -1442,6 +1492,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             'title'        => $title,
             'short'        => '',
             'file'         => $filePath,
+            'pathHash'     => \md5($filePath),
             'alt'          => $title,
             'c_date'       => \date('Y-m-d h:i:s'),
             'e_date'       => \date('Y-m-d h:i:s'),

@@ -10,6 +10,7 @@ use QUI;
 use QUI\Utils\System\File as QUIFile;
 use QUI\Utils\Security\Orthos;
 use QUI\Utils\System\File;
+use QUI\Permissions\Permission;
 
 /**
  * Upload Manager
@@ -22,45 +23,11 @@ use QUI\Utils\System\File;
 class Manager
 {
     /**
-     * DataBase table name
-     *
-     * @var string
-     */
-    protected $table = 'uploads';
-
-    /**
-     * constructor
-     */
-    public function __construct()
-    {
-        $this->table = QUI::getDBTableName('uploads');
-    }
-
-    /**
      * Return the main upload dir
      */
     public function getDir()
     {
         return VAR_DIR.'uploads/';
-    }
-
-    /**
-     * Execute the setup and create the table for the upload manager
-     *
-     * @throws \QUI\Database\Exception
-     */
-    public function setup()
-    {
-        QUI::getDataBase()->table()->addColumn($this->table, [
-            'file'   => 'varchar(255)',
-            'user'   => 'int(11)',
-            'params' => 'text'
-        ]);
-
-        QUI::getDataBase()->table()->setIndex(
-            $this->table,
-            ['file', 'user']
-        );
     }
 
     /**
@@ -161,16 +128,22 @@ class Manager
         QUIFile::mkdir($this->getUserUploadDir());
 
         $filename = false;
-        $filesize = 0;
+        $fileSize = 0;
+        $fileType = false;
+
         $params   = [];
         $onfinish = false;
+
+        if (isset($_REQUEST['filetype'])) {
+            $fileType = $_REQUEST['filetype'];
+        }
 
         if (isset($_REQUEST['filename'])) {
             $filename = $_REQUEST['filename'];
         }
 
         if (isset($_REQUEST['filesize'])) {
-            $filesize = (int)$_REQUEST['filesize'];
+            $fileSize = (int)$_REQUEST['filesize'];
         }
 
         if (isset($_REQUEST['fileparams'])) {
@@ -185,6 +158,63 @@ class Manager
             $_REQUEST['extract'] = QUI\Utils\BoolHelper::JSBool($_REQUEST['extract']);
         }
 
+        $UploadForm = null;
+
+        if (isset($_REQUEST['callable']) && \class_exists($_REQUEST['callable'])) {
+            $Instance = new $_REQUEST['callable']();
+
+            if ($Instance instanceof Form) {
+                $UploadForm = $Instance;
+            }
+        }
+
+        // check file count
+        $configMaxFileCount = Permission::getPermission(
+            'quiqqer.upload.maxUploadCount'
+        );
+
+        if ($configMaxFileCount) {
+            $userDir = $this->getUserUploadDir();
+            $files   = File::readDir($userDir);
+            $count   = \count($files) / 2;
+
+            if ($count + 1 >= $configMaxFileCount) {
+                throw new QUI\Permissions\Exception([
+                    'quiqqer/quiqqer',
+                    'exception.upload.count.limit'
+                ]);
+            }
+        }
+
+        // check mime type and file endings
+        $configAllowedTypes = Permission::getPermission(
+            'quiqqer.upload.allowedTypes'
+        );
+
+        $configAllowedEndings = Permission::getPermission(
+            'quiqqer.upload.allowedEndings'
+        );
+
+        if ($UploadForm) {
+            $configAllowedTypes   = $UploadForm->getAttribute('allowedFileTypes');
+            $configAllowedEndings = $UploadForm->getAttribute('allowedFileEnding');
+        }
+
+
+        if ($this->checkFnMatch($configAllowedTypes, $fileType) === false) {
+            throw new QUI\Exception([
+                'quiqqer/quiqqer',
+                'exception.upload.not.allowed.mimetype'
+            ]);
+        }
+
+        if ($this->checkFnMatch($configAllowedEndings, $filename) === false) {
+            throw new QUI\Exception([
+                'quiqqer/quiqqer',
+                'exception.upload.not.allowed.ending'
+            ]);
+        }
+
         /**
          * no html5 upload
          */
@@ -197,13 +227,13 @@ class Manager
                 return '';
             }
 
-            $uploadid = 0;
+            $uploadId = 0;
 
             if (isset($_REQUEST['uploadid'])) {
-                $uploadid = $_REQUEST['uploadid'];
+                $uploadId = $_REQUEST['uploadid'];
             }
 
-            $this->flushAction('UploadManager.isFinish("'.$uploadid.'")');
+            $this->flushAction('UploadManager.isFinish("'.$uploadId.'")');
 
             return '';
         }
@@ -245,7 +275,13 @@ class Manager
             'filesize' => true
         ]);
 
-        $configMaxFileSize = QUI\Projects\Manager::get()->getConfig('media_maxUploadFileSize');
+
+        $configMaxFileSize = Permission::getPermission('quiqqer.upload.maxFileUploadSize');
+
+        if ((int)QUI\Projects\Manager::get()->getConfig('media_maxUploadFileSize')) {
+            $configMaxFileSize = (int)QUI\Projects\Manager::get()->getConfig('media_maxUploadFileSize');
+        }
+
 
         if ($configMaxFileSize && (int)$fileinfo['filesize'] > $configMaxFileSize) {
             QUIFile::unlink($tmp_name);
@@ -254,13 +290,14 @@ class Manager
                 'quiqqer/quiqqer',
                 'exception.media.upload.fileSize.is.to.big',
                 [
-                    'size' => QUI\Utils\System\File::formatSize($configMaxFileSize)
+                    'size' => QUI\Utils\System\File::formatSize($configMaxFileSize),
+                    'file' => $filename
                 ]
             ]);
         }
 
         // finish? then upload to folder
-        if ((int)$fileinfo['filesize'] == $filesize) {
+        if ((int)$fileinfo['filesize'] == $fileSize) {
             // extract if the the extract file is set
             if (isset($_REQUEST['extract']) && $_REQUEST['extract']) {
                 $File = $this->extract($tmp_name);
@@ -312,6 +349,29 @@ class Manager
     }
 
     /**
+     * @param string $values
+     * @param string $str
+     *
+     * @return bool
+     */
+    protected function checkFnMatch($values, $str)
+    {
+        if (empty($values)) {
+            return true;
+        }
+
+        $values = \explode(',', $values);
+
+        foreach ($values as $type) {
+            if (\fnmatch($type, $str)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * call a function
      *
      * @param string|callback $function - Function
@@ -329,10 +389,6 @@ class Manager
         if (\is_object($function) && \get_class($function) === 'Closure') {
             return $function();
         }
-
-//        if (function_exists($function)) {
-//            return call_user_func_array($function, $params);
-//        }
 
         if (\strpos($function, 'ajax_') === 0) {
             // if the function is a ajax_function
@@ -520,13 +576,41 @@ class Manager
     }
 
     /**
+     * @param null $User
+     * @throws QUI\Permissions\Exception
+     */
+    protected function checkUserPermissions($User = null)
+    {
+        $SessionUser = QUI::getUserBySession();
+
+        if ($SessionUser->isSU()) {
+            return;
+        }
+
+        if (QUI::getUsers()->isSystemUser($User)) {
+            return;
+        }
+
+        if (!$User) {
+            $User = QUI::getUserBySession();
+        }
+
+        if ($SessionUser->getId() !== $User->getId()) {
+            throw new QUI\Permissions\Exception([
+                'quiqqer/quiqqer',
+                'exceptions.upload.no.permissions.'
+            ]);
+        }
+    }
+
+    /**
      * Extract the Archiv
      *
      * @param string $filename
      *
-     * @throws \QUI\Exception
      * @return \QUI\QDOM
      *
+     * @throws \QUI\Exception
      * @todo more archive types
      */
     protected function extract($filename)
@@ -559,6 +643,8 @@ class Manager
      * @param \QUI\Users\User|boolean $User - optional, standard is the session user
      *
      * @return string
+     *
+     * @throws QUI\Permissions\Exception
      */
     protected function getUserUploadDir($User = false)
     {
@@ -566,11 +652,21 @@ class Manager
             $User = QUI::getUserBySession();
         }
 
-        $id = $User->getId();
+        $this->checkUserPermissions($User);
 
         // for nobody we use the session id
-        if (!$id) {
-            $id = QUI::getSession()->getId();
+        if (!$User->getId()) {
+            $Session = QUI::getSession();
+            $uuid    = $Session->get('uuid');
+
+            if (!$uuid) {
+                $uuid = QUI\Utils\Uuid::get();
+                $Session->set('uuid', $uuid);
+            }
+
+            $id = $uuid;
+        } else {
+            $id = $User->getUniqueId();
         }
 
         return $this->getDir().$id.'/';
@@ -598,17 +694,17 @@ class Manager
      */
     protected function add($filename, $params)
     {
-        $file = $this->getUserUploadDir().$filename;
+        $conf = $this->getUserUploadDir().$filename.'.json';
 
-        if (\file_exists($file)) {
+        if (\file_exists($conf)) {
             return;
         }
 
-        QUI::getDataBase()->insert($this->table, [
+        \file_put_contents($conf, \json_encode([
             'file'   => $filename,
             'user'   => QUI::getUserBySession()->getId(),
-            'params' => \json_encode($params)
-        ]);
+            'params' => $params
+        ]));
     }
 
     /**
@@ -620,18 +716,11 @@ class Manager
      */
     protected function delete($filename)
     {
-        QUI::getDataBase()->exec([
-            'delete' => true,
-            'from'   => $this->table,
-            'where'  => [
-                'user' => QUI::getUserBySession()->getId(),
-                'file' => $filename
-            ]
-        ]);
+        $file = $this->getUserUploadDir().$filename;
+        $conf = $this->getUserUploadDir().$filename.'.json';
 
-        QUIFile::unlink(
-            $this->getUserUploadDir().$filename
-        );
+        QUIFile::unlink($file);
+        QUIFile::unlink($conf);
     }
 
     /**
@@ -644,30 +733,22 @@ class Manager
      */
     protected function getFileData($filename)
     {
-        $db_result = QUI::getDataBase()->fetch([
-            'from'  => $this->table,
-            'where' => [
-                'user' => QUI::getUserBySession()->getId(),
-                'file' => $filename
-            ]
-        ]);
+        $conf = $this->getUserUploadDir().$filename.'.json';
 
-        if (!isset($db_result[0])) {
+        if (!\file_exists($conf)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.not.found'),
                 404
             );
         }
 
-        $File = new QUI\QDOM();
-        $File->setAttributes($db_result[0]);
+        $data = \json_decode(
+            \file_get_contents($conf),
+            true
+        );
 
-        if ($File->getAttribute('params')) {
-            $File->setAttribute(
-                'params',
-                \json_decode($File->getAttribute('params'), true)
-            );
-        }
+        $File = new QUI\QDOM();
+        $File->setAttributes($data);
 
         return $File;
     }
@@ -688,8 +769,11 @@ class Manager
             $User = QUI::getUserBySession();
         }
 
+        $this->checkUserPermissions($User);
+
+
         // read user upload dir
-        $dir = $this->getDir().$User->getId().'/';
+        $dir = $this->getUserUploadDir($User);
 
         if (!\file_exists($dir) || !\is_dir($dir)) {
             return [];
@@ -703,10 +787,8 @@ class Manager
                 $File       = $this->getFileData($file);
                 $attributes = $File->getAttributes();
 
-                if (isset($attributes['params'])
-                    && \is_string($attributes['params'])
-                ) {
-                    $params    = \json_decode($attributes['params'], true);
+                if (isset($attributes['params'])) {
+                    $params    = $attributes['params'];
                     $file_info = QUIFile::getInfo($dir.$file);
 
                     $params['file']['uploaded'] = $file_info['filesize'];

@@ -139,14 +139,16 @@ class Manager
             }
         }
 
+        if (self::$handlers === null) {
+            self::$handlers = self::getHandlers();
+        }
+
         $Handler = new Stash\Driver\Composite([
-            'drivers' => self::getHandlers()
+            'drivers' => self::$handlers
         ]);
 
-        $Stash = new Stash\Pool($Handler);
-
-        self::$Stash    = $Stash;
-        self::$handlers = self::getHandlers();
+        $Stash       = new Stash\Pool($Handler);
+        self::$Stash = $Stash;
 
         return self::$Stash->getItem($key);
     }
@@ -261,18 +263,24 @@ class Manager
 
                 $servers = [];
 
-                foreach ($conf as $server) {
-                    $servers[] = \explode(':', $server);
+                if (\is_array($conf) && !empty($conf[0])) {
+                    foreach ($conf as $server) {
+                        $servers[] = \explode(':', $server);
+                    }
                 }
 
                 // check if empty
                 if (empty($servers)) {
-                    $servers[] = 'localhost';
+                    $servers[] = ['localhost'];
                 }
 
-                foreach ($servers as $key => $server) {
-                    if (empty($server)) {
-                        $servers[$key] = 'localhost';
+                foreach ($servers as $key => $params) {
+                    if (!isset($params[$key][0])) {
+                        continue;
+                    }
+
+                    if (empty($params[$key][0][0])) {
+                        $params[$key][0][$key] = 'localhost';
                     }
                 }
 
@@ -562,6 +570,12 @@ class Manager
     public static function clearSettingsCache()
     {
         self::clear('settings');
+
+        try {
+            QUI::getEvents()->fireEvent('clearSettingsCache');
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
     }
 
     /**
@@ -571,6 +585,19 @@ class Manager
     public static function clearCompleteQuiqqerCache()
     {
         self::clear('quiqqer');
+
+        try {
+            QUI::getEvents()->fireEvent('clearCompleteQuiqqerCache');
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
+
+
+        try {
+            QUI\Utils\System\File::unlink(VAR_DIR.'cache/compile');
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
     }
 
     /**
@@ -580,6 +607,12 @@ class Manager
     public static function clearProjectsCache()
     {
         self::clear('quiqqer/projects/');
+
+        try {
+            QUI::getEvents()->fireEvent('clearProjectsCache');
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
     }
 
     /**
@@ -591,6 +624,12 @@ class Manager
     public static function clearProjectCache($projectName)
     {
         self::clear('quiqqer/projects/'.$projectName);
+
+        try {
+            QUI::getEvents()->fireEvent('clearProjectCache', [$projectName]);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
     }
 
     /**
@@ -600,6 +639,12 @@ class Manager
     public static function clearGroupsCache()
     {
         self::clear('quiqqer/groups/');
+
+        try {
+            QUI::getEvents()->fireEvent('clearGroupsCache');
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
     }
 
     /**
@@ -609,6 +654,12 @@ class Manager
     public static function clearUsersCache()
     {
         self::clear('quiqqer/users/');
+
+        try {
+            QUI::getEvents()->fireEvent('clearUsersCache');
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
     }
 
     /**
@@ -618,6 +669,12 @@ class Manager
     public static function clearPermissionsCache()
     {
         self::clear('quiqqer/permissions/');
+
+        try {
+            QUI::getEvents()->fireEvent('clearPermissionsCache');
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
     }
 
     /**
@@ -627,6 +684,12 @@ class Manager
     public static function clearPackagesCache()
     {
         self::clear('quiqqer/packages/');
+
+        try {
+            QUI::getEvents()->fireEvent('clearPackagesCache');
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
     }
 
     /**
@@ -638,6 +701,12 @@ class Manager
     public static function clearPackageCache($packageName)
     {
         self::clear('quiqqer/package/'.$packageName);
+
+        try {
+            QUI::getEvents()->fireEvent('clearPackageCache', [$packageName]);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
     }
 
     /**

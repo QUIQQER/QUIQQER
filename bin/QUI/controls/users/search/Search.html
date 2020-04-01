@@ -1,0 +1,65 @@
+<form name="user-search-control-form" class="user-search-control-form">
+
+    <label style="display: inline-block; float: left;">
+        <input type="text" name="search" placeholder="Benutzer durchsuchen...">
+        <input type="submit" name="submit" value="Search" class="qui-button">
+    </label>
+
+    <button class="qui-button" name="filter">
+        <span class="fa fa-filter"></span>
+    </button>
+
+    <div class="user-search-control-form-filter" style="display: none">
+        <section class="user-search-control-form-filter-checks">
+            <span class="title">Felder bei der Suche beachten</span>
+
+            <label>
+                <input type="checkbox" name="userId">
+                <span>{{textUserId}}</span>
+            </label>
+
+            <label>
+                <input type="checkbox" name="username">
+                <span>{{textUsername}}</span>
+            </label>
+
+            <label>
+                <input type="checkbox" name="firstname">
+                <span>{{textFirstname}}</span>
+            </label>
+
+            <label>
+                <input type="checkbox" name="lastname">
+                <span>{{textLastname}}</span>
+            </label>
+
+            <label>
+                <input type="checkbox" name="email">
+                <span>{{textEmail}}</span>
+            </label>
+
+            <label>
+                <input type="checkbox" name="group">
+                <span>{{textGroup}}</span>
+            </label>
+        </section>
+
+        <section class="user-search-control-form-filter-specs">
+            <span class="title">{{textCDate}}</span>
+
+            <label>
+                <span>{{textFrom}}</span>
+                <input type="date" name="registration-from">
+            </label>
+
+            <label>
+                <span>{{textTo}}</span>
+                <input type="date" name="registration-to">
+            </label>
+        </section>
+    </div>
+
+</form>
+<div class="user-search-control-result">
+    <div class="user-search-control-result-container"></div>
+</div>

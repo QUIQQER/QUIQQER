@@ -87,6 +87,45 @@ class LocalServer extends QUI\Utils\Singleton
         }
 
         File::move($file, $serverDir.$filename);
+
+        // add master / dev version as repository
+        $version = false;
+
+        if (\strpos($filename, '-dev-master-') !== false) {
+            $version = 'dev-master';
+        } elseif (\strpos($filename, '-dev-dev-') !== false) {
+            $version = 'dev-dev';
+        }
+
+        if (!$version) {
+            return;
+        }
+
+        $Zip = new \ZipArchive();
+
+        if (!$Zip->open($serverDir.$filename)) {
+            return;
+        }
+
+        $composerJson = $Zip->getFromName('composer.json');
+        $composerJson = \json_decode($composerJson, true);
+
+        if (empty($composerJson['version'])) {
+            $composerJson['version'] = $version;
+
+            $Zip->addFromString('composer.json', \json_encode($composerJson, \JSON_PRETTY_PRINT));
+        }
+
+        $Zip->close();
+
+        QUI::getPackageManager()->addServer(
+            $serverDir.$filename,
+            [
+                'type'    => 'package',
+                'name'    => $composerJson['name'],
+                'version' => $version
+            ]
+        );
     }
 
     /**
@@ -137,6 +176,13 @@ class LocalServer extends QUI\Utils\Singleton
 
             if (\is_dir(OPT_DIR.$composerJson['name'])) {
                 continue;
+            }
+
+            // consider dev master versions
+            if (!isset($composerJson['version']) && \strpos($package, '-dev-master-') !== false) {
+                $composerJson['version'] = 'dev-master';
+            } elseif (!isset($composerJson['version']) && \strpos($package, '-dev-dev-') !== false) {
+                $composerJson['version'] = 'dev-dev';
             }
 
             $result[] = $composerJson;

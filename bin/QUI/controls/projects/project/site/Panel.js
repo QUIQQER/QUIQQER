@@ -1132,6 +1132,10 @@ define('controls/projects/project/site/Panel', [
                                             return;
                                         }
 
+                                        if (Site.isActive()) {
+                                            return;
+                                        }
+                                        
                                         self.$showTitleUrlAdjustment();
                                     });
                                 }

@@ -7,6 +7,7 @@
 namespace QUI\Projects\Media;
 
 use QUI;
+use QUI\Projects\Media;
 
 /**
  * Class ExternalImage
@@ -147,6 +148,10 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
      */
     public function createCache()
     {
+        if (Media::$globalDisableMediaCacheCreation) {
+            return false;
+        }
+
         return $this->createSizeCache();
     }
 

@@ -7,6 +7,7 @@
 namespace QUI\Projects\Media;
 
 use QUI;
+use QUI\Projects\Media;
 use QUI\Utils\System\File as QUIFile;
 
 /**
@@ -22,17 +23,21 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
      * (non-PHPdoc)
      *
      * @throws QUI\Exception
+     * @throws QUI\Permissions\Exception
+     *
      * @see \QUI\Interfaces\Projects\Media\File::createCache()
      */
     public function createCache()
     {
+        if (Media::$globalDisableMediaCacheCreation) {
+            return false;
+        }
+
         if (!$this->getAttribute('active')) {
             return false;
         }
 
-        if (!$this->hasPermission('quiqqer.projects.media.view')) {
-            return false;
-        }
+        $this->checkPermission('quiqqer.projects.media.view');
 
 
         $WHITE_LIST_EXTENSION = [
@@ -76,7 +81,6 @@ class File extends Item implements QUI\Interfaces\Projects\Media\File
         $cacheFile = $cdir.$file;
 
 
-        // @todo check permissions media flag
         if ($this->hasPermission('quiqqer.projects.media.view') &&
             $this->hasPermission('quiqqer.projects.media.view', QUI::getUsers()->getNobody()) === false) {
             return $original;

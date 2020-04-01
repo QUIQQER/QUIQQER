@@ -16,6 +16,9 @@
         <locale name="title">
             <en><![CDATA[Title]]></en>
         </locale>
+        <locale name="extension">
+            <en><![CDATA[Extension]]></en>
+        </locale>
         <locale name="workingtitle">
             <en><![CDATA[Working title]]></en>
         </locale>
@@ -214,6 +217,9 @@
         <locale name="permission.quiqqer.admin.users.create">
             <en><![CDATA[Is allowed to create users.]]></en>
         </locale>
+        <locale name="permission.quiqqer.admin.users.delete">
+            <en><![CDATA[Is allowed to delete users.]]></en>
+        </locale>
         <locale name="permission.quiqqer.projects.create">
             <en><![CDATA[Is allowed to create projects.]]></en>
         </locale>
@@ -270,6 +276,12 @@
         </locale>
         <locale name="permission.quiqqer.editors.toolbar.delete">
             <en><![CDATA[Is allowed to delete editor toolbars.]]></en>
+        </locale>
+        <locale name="permission.quiqqer.frontend._header">
+            <en><![CDATA[Frontend]]></en>
+        </locale>
+        <locale name="permission.quiqqer.frontend.upload">
+            <en><![CDATA[May upload files in the frontend.]]></en>
         </locale>
         <locale name="projects.project.settings.panel.placeholder">
             <en><![CDATA[Placeholder image]]></en>
@@ -605,7 +617,13 @@
             <en><![CDATA[You do not have the necessary permissions to save the configuration]]></en>
         </locale>
         <locale name="exception.media.upload.fileSize.is.to.big">
-            <en><![CDATA[The file is unfortunately too big. The maximum upload size for a file is [size]]]></en>
+            <en><![CDATA[The file [file] is unfortunately too big. The maximum upload size for a file is [size]]]></en>
+        </locale>
+        <locale name="exception.media.upload.fileType.not.allowed">
+            <de><![CDATA[
+            Unfortunately, the file type of the [file] file is not allowed.
+            Please use only the following file types: [filetypes]
+            ]]></de>
         </locale>
         <locale name="exception.media.move.is.no.folder">
             <en><![CDATA[Please select a folder to move the files.]]></en>
@@ -841,6 +859,18 @@
                 As long as e-mail login is activated, users cannot have the same e-mail address.
             ]]></en>
         </locale>
+        <locale name="exception.console.execute.user">
+            <en><![CDATA[
+The QUIQQER console is executed with the [user] user. This user is not the owner ([owner]) of the QUIQQER system.
+If you continue to run the console with this user, you may experience serious permissions problems on the file system at the QUIQQER system.
+
+Confirm with 'yes' to continue running the QUIQQER console or abort with any other input.
+You can also ignore the console user permissions check with '--ignore-file-permissions'.
+            ]]></en>
+        </locale>
+        <locale name="console.execute-user.question">
+            <en><![CDATA[Continue anyway? [yes / ANY KEY] :]]></en>
+        </locale>
 
         <locale name="user_id">
             <en><![CDATA[User ID]]></en>
@@ -1029,10 +1059,10 @@
             <en><![CDATA[Company]]></en>
         </locale>
         <locale name="message.clear.cache.successful">
-            <en><![CDATA[Cache successful cleared.]]></en>
+            <en><![CDATA[Cache cleared successfully.]]></en>
         </locale>
         <locale name="message.clear.cache.purged">
-            <en><![CDATA[Cache successful purged.]]></en>
+            <en><![CDATA[Cache purged successfully.]]></en>
         </locale>
         <locale name="message.unknown.root.group">
             <en><![CDATA[Unknown ROOT group. Please contact an administrator.]]></en>
@@ -1443,6 +1473,9 @@
         </locale>
         <locale name="permissions.panel.btn.select.project">
             <en><![CDATA[For a project]]></en>
+        </locale>
+        <locale name="permissions.panel.btn.select.media">
+            <en><![CDATA[For a media area]]></en>
         </locale>
         <locale name="permissions.panel.btn.select.manage">
             <en><![CDATA[Permission management only]]></en>
@@ -2458,6 +2491,9 @@
         <locale name="projects.project.media.folderviewer.empty">
             <en><![CDATA[There are no images in this folder.]]></en>
         </locale>
+        <locale name="projects.project.media.folderviewer.createNewFolderButton">
+            <de><![CDATA[Create new media folder]]></de>
+        </locale>
         <locale name="projects.project.media.fileviewer.empty">
             <en><![CDATA[There are no files in this folder.]]></en>
         </locale>
@@ -2551,6 +2587,99 @@
         <locale name="quiqqer.settings.cache.clear.quiqqer">
             <en><![CDATA[Clear complete QUIQQER cache]]></en>
         </locale>
+        <locale name="quiqqer.settings.cache.clear.complete.confirm.information">
+            <en>
+                <![CDATA[By clearing the entire QUIQQER cache, larger amounts of data can be deleted, whose re-creation may require a longer time. This can cause your website to be considerably slower during this period.]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.complete.confirm.text">
+            <en><![CDATA[Are you sure you want to clear the entire QUIQQER cache?]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.complete.confirm.submit">
+            <en><![CDATA[Clear complete QUIQQER cache now]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.cache.longtime.title">
+            <en><![CDATA[Long time cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.longtime.text">
+            <en><![CDATA[Long time cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longtime.title">
+            <en><![CDATA[Long time cache]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.longtime.file">
+            <en><![CDATA[File system]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longtime.mongo">
+            <en><![CDATA[Mongo-DB]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longtime.redis">
+            <en><![CDATA[Redis]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.longtime.cache">
+            <en><![CDATA[Type of long-time cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longtime.cache.description">
+            <en><![CDATA[
+            Define how your long-time cache should be stored.
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.redis.title">
+            <en><![CDATA[Long time Cache mit Redis Server]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.redis.server">
+            <en><![CDATA[Redis Server]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.redis.server.description" html="true">
+            <en><![CDATA[
+            Please note our Wiki entry:
+            <a href="https://dev.quiqqer.com/quiqqer/quiqqer/wikis/caching/redis" target="_blank">
+                QUIQQER Redis Caching
+            </a>
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.file.title">
+            <en><![CDATA[Long time cache with the file system]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.file.path">
+            <en><![CDATA[File system path]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.file.path.description">
+            <en><![CDATA[
+            If no path is specified, a cache/longtime/ directory is created in the standard VAR folder.
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.mongo.title">
+            <en><![CDATA[Long time cache with a Mongo DB]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.mongo.server">
+            <en><![CDATA[MongoDB Server]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.mongo_collection.server">
+            <en><![CDATA[MongoDB Collection]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.cache.quiqqer.title">
+            <en><![CDATA[QUIQQER System Cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-projects">
+            <en><![CDATA[Clear QUIQQER project cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-groups">
+            <en><![CDATA[Clear QUIQQER group cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-users">
+            <en><![CDATA[Clear QUIQQER user cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-permissions">
+            <en><![CDATA[Clear QUIQQER permission cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-packages">
+            <en><![CDATA[Clear QUIQQER packages cache]]></en>
+        </locale>
+
         <locale name="quiqqer.settings.cache.clear.compile">
             <en><![CDATA[Clear system-cache]]></en>
         </locale>
@@ -2568,7 +2697,10 @@
         </locale>
         <locale name="workspace.toolarge.window.text">
             <en><![CDATA[
-                            <h1>The workspace is too large</h1>            <p>The workspace is unfortunately too big for your browser window. Please choose an appropriate workspace.</p>            <h2>Available matching workspaces:</h2>            ]]></en>
+                <h1>The workspace is too large</h1>
+                <p>The workspace is unfortunately too big for your browser window. Please choose an appropriate workspace.</p>
+                <h2>Available matching workspaces:</h2>
+            ]]></en>
         </locale>
         <locale name="workspace.toolarge.window.noWorkspaces.text">
             <en><![CDATA[
@@ -2780,7 +2912,7 @@
             <en><![CDATA[Smarty compile check]]></en>
         </locale>
         <locale name="quiqqer.settings.general.dev.title">
-            <en><![CDATA[Developer settings]]></en>
+            <en><![CDATA[Settings for developers and system administrators]]></en>
         </locale>
         <locale name="quiqqer.settings.general.dev.maintenance">
             <en><![CDATA[Activate Maintenance]]></en>
@@ -2794,8 +2926,17 @@
         <locale name="quiqqer.settings.general.dev.no_ajax_bundler">
             <en><![CDATA[Do not use Ajax bundlers]]></en>
         </locale>
-        <locale name="quiqqer.settings.general.dev.no_ajax_bundler.decription">
+        <locale name="quiqqer.settings.general.dev.no_ajax_bundler.description">
             <en><![CDATA[By bundling the Ajax requests, less Ajax requests are sent to the server.]]></en>
+        </locale>
+        <locale name="quiqqer.settings.general.dev.phpCommand">
+            <en><![CDATA[CLI PHP Command]]></en>
+        </locale>
+        <locale name="quiqqer.settings.general.dev.phpCommand.description">
+            <en><![CDATA[
+                Determines the PHP command for the PHP binary.
+                This command is needed for the CLI if QUIQQER needs to execute a PHP command.
+            ]]></en>
         </locale>
         <locale name="quiqqer.settings.general.updates.title">
             <en><![CDATA[Updates]]></en>
@@ -3075,6 +3216,12 @@
         <locale name="exception.system.health.not.writable">
             <en><![CDATA[Please check your file permissions. Some Folders or Files are not writable.]]></en>
         </locale>
+        <locale name="exception.system.health.checklist.md5.not.found">
+            <en><![CDATA[
+The MD5 summary file was not found. Therefore the state of the system cannot be checked.
+Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
+            ]]></en>
+        </locale>
         <locale name="exception.contact.params.empty">
             <en><![CDATA[Contact E-mail could not be sent. Please complete all required fields.]]></en>
         </locale>
@@ -3086,7 +3233,9 @@
         </locale>
         <locale name="exception.contact.send.mail">
             <en><![CDATA[
-                <p>Sorry, cour contact E-mail could not be sent.</p>                <p>Please try again at a later.</p>]]></en>
+                <p>Sorry, cour contact E-mail could not be sent.</p>
+                <p>Please try again at a later.</p>
+            ]]></en>
         </locale>
         <locale name="message.password.save.success">
             <en><![CDATA[The password has been successfully saved.]]></en>
@@ -3139,6 +3288,9 @@
         </locale>
         <locale name="exception.lib.user.no.edit.rights">
             <en><![CDATA[You have no permission to edit this user]]></en>
+        </locale>
+        <locale name="exception.lib.user.no.delete.permission">
+            <en><![CDATA[You have no permission to delete this user]]></en>
         </locale>
         <locale name="exception.lib.user.address.mail.wrong.syntax">
             <en><![CDATA[EMail syntax is incorrect]]></en>
@@ -3527,7 +3679,9 @@
         <locale name="exception.release.to.inPast">
             <en><![CDATA[The page can not be activated because the date "release until" is in the past.]]></en>
         </locale>
-        <locale name="templates.mail.header.title"></locale>
+        <locale name="templates.mail.header.title">
+            <en><![CDATA[]]></en>
+        </locale>
         <locale name="templates.mail.footer.links">
             <en><![CDATA[&nbsp;]]></en>
         </locale>
@@ -3911,6 +4065,9 @@
         <locale name="projects.project.site.select.btn.addTypes">
             <en><![CDATA[Add a site type]]></en>
         </locale>
+        <locale name="packages.panel.category.system">
+            <en><![CDATA[System Check]]></en>
+        </locale>
         <locale name="packages.panel.category.systemcheck.execbutton">
             <en><![CDATA[Run system check]]></en>
         </locale>
@@ -4004,6 +4161,57 @@
         <locale name="permission.quiqqer.projects.media.edit">
             <en><![CDATA[Is allowed to edit the file / folder]]></en>
         </locale>
+
+        <locale name="exception.upload.error">
+            <en><![CDATA[
+            An error occurred while uploading the file.
+            Please check your network connection.
+            ]]></en>
+        </locale>
+        <locale name="message.missing.admin.mail">
+            <en><![CDATA[
+            Note: Please set an administration e-mail under Settings -> System -> E-Mail.
+            On this way QUIQQER can inform you about errors.
+            ]]></en>
+        </locale>
+
+
+        <locale name="permission.quiqqer.upload._header">
+            <en><![CDATA[Upload]]></en>
+        </locale>
+        <locale name="permission.quiqqer.upload.maxUploadCount">
+            <en><![CDATA[Max. uploads]]></en>
+        </locale>
+        <locale name="permission.quiqqer.upload.maxUploadCount.description">
+            <en><![CDATA[
+            ]]></en>
+        </locale>
+        <locale name="permission.quiqqer.upload.maxFileUploadSize">
+            <en><![CDATA[Max. Size of an upload]]></en>
+        </locale>
+        <locale name="permission.quiqqer.upload.maxFileUploadSize.description">
+            <en><![CDATA[
+            Defines the maximum size of a file during an upload process.
+            ]]></en>
+        </locale>
+        <locale name="permission.quiqqer.upload.allowedTypes">
+            <en><![CDATA[Allowed file types]]></en>
+        </locale>
+        <locale name="permission.quiqqer.upload.allowedTypes.description">
+            <en><![CDATA[
+            Please enter the ALLOWED file types separated by commas. Additionally you can use wildcards.
+            Example: images/*,application/*
+            ]]></en>
+        </locale>
+        <locale name="permission.quiqqer.upload.allowedEndings">
+            <en><![CDATA[Allowed file extensions]]></en>
+        </locale>
+        <locale name="permission.quiqqer.upload.allowedEndings.description">
+            <en><![CDATA[
+            Please enter the ALLOWED file extension separated by commas. Additionally you can use wildcards.
+            Example: .gif, .jpg, .jpeg, .pdf
+            ]]></en>
+        </locale>
     </groups>
 
     <groups name="quiqqer/quiqqer" datatype="php">
@@ -4037,6 +4245,7 @@
         <locale name="quiqqer.settings.auth.passwordResetLinkValidTime.description" html="true">
             <en><![CDATA[Period of validity in <b>minutes</b> for the link to confirm password reset.]]></en>
         </locale>
+
         <locale name="projects.project.settings.panel.settings.title">
             <en><![CDATA[General Project Settings]]></en>
         </locale>
@@ -4591,6 +4800,22 @@
             Unfortunately, Redis cannot be used. Please install the php redis extension (php-redis)
             ]]></en>
         </locale>
+
+        <locale name="console.systemtool.permissions">
+            <en><![CDATA[Permission Tool for the console - Permission Explorer]]></en>
+        </locale>
+        <locale name="console.systemtool.htaccess">
+            <en><![CDATA[HTACCESS File generation]]></en>
+        </locale>
+        <locale name="console.systemtool.nginx">
+            <en><![CDATA[NGINX Config generation]]></en>
+        </locale>
+        <locale name="console.systemtool.licence">
+            <en><![CDATA[Shows the QUIQQER License]]></en>
+        </locale>
+        <locale name="exception.upload.count.limit">
+            <en><![CDATA[Unfortunately you are not allowed to upload any more files.]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->
         <locale name="controls.email.select.email_invalid">
@@ -5123,6 +5348,12 @@
         </locale>
         <locale name="projects.project.site.panel.information.openInSiteStructure">
             <en><![CDATA[Open in the project Sitemap]]></en>
+        </locale>
+        <locale name="control.upload.icon.submit">
+            <en><![CDATA[Upload]]></en>
+        </locale>
+        <locale name="control.upload.placeholder">
+            <en><![CDATA[Please select a file...]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/controls" datatype="php,js">

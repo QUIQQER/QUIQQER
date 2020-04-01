@@ -32,6 +32,15 @@
     padding: 0 10px;
 }
 
+.qui-project-media-folderViewer-buttons button {
+    border-left: 1px solid #cccfd5;
+}
+
+.qui-project-media-folderViewer-buttons button[name="open-folder"],
+.qui-project-media-folderViewer-buttons button[name="upload"] {
+    border-left: 0;
+}
+
 .qui-project-media-folderViewer-buttons button.qui-button-active {
     background: none repeat scroll 0 0 #c3c3c3 !important;
     color: #222;

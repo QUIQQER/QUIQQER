@@ -168,6 +168,10 @@ class Template extends QUI\QDOM
             );
         }
 
+        $Engine->assign('__TEMPLATE__', $this);
+
+        QUI::getTemplateManager()->assignGlobalParam('Project', QUI::getRewrite()->getProject());
+
         if (!empty($this->assigned)) {
             $Engine->assign($this->assigned);
         }
@@ -354,6 +358,7 @@ class Template extends QUI\QDOM
     public function getTemplatePath()
     {
         $template = $this->TemplatePackage->getName();
+
         return OPT_DIR.$template.'/';
     }
 
@@ -431,7 +436,8 @@ class Template extends QUI\QDOM
             'Site'        => $Site,
             'Project'     => $Project,
             'Rewrite'     => $Rewrite,
-            'lastUpdate'  => QUI::getPackageManager()->getLastUpdateDate()
+            'lastUpdate'  => QUI::getPackageManager()->getLastUpdateDate(),
+            'Canonical'   => new QUI\Projects\Site\Canonical($Site)
         ]);
 
         /**
@@ -784,7 +790,7 @@ class Template extends QUI\QDOM
             'loadModuleFiles' => $this->onLoadModules,
             'headerExtend'    => $headerExtend,
             'ControlManager'  => new QUI\Control\Manager(),
-            'Canonical'       => new QUI\Projects\Site\Canonical($Site),
+            'Canonical'       => $Engine->getCanonical(),
             'lastUpdate'      => QUI::getPackageManager()->getLastUpdateDate()
         ]);
 
@@ -846,6 +852,10 @@ class Template extends QUI\QDOM
 
         if (!$layout) {
             return false;
+        }
+
+        if (!is_array($templates)) {
+            $templates = [];
         }
 
         foreach ($templates as $template) {

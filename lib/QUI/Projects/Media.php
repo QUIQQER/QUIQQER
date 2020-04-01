@@ -38,6 +38,16 @@ class Media extends QUI\QDOM
     protected static $mediaPermissions = null;
 
     /**
+     * This flag indicates if the creation of media item/folder cache is disabled
+     * when createCache() is called.
+     *
+     * This should only be set to true if a lot of media items are created (e.g. in a mass import).
+     *
+     * @var bool
+     */
+    public static $globalDisableMediaCacheCreation = false;
+
+    /**
      * constructor
      *
      * @param \QUI\Projects\Project $Project
@@ -268,15 +278,15 @@ class Media extends QUI\QDOM
         $DataBase->table()->addColumn($table, [
             'id'            => 'bigint(20) NOT NULL',
             'name'          => 'varchar(200) NOT NULL',
-            'title'         => 'tinytext',
+            'title'         => 'text',
             'short'         => 'text',
+            'alt'           => 'text',
             'type'          => 'varchar(32) default NULL',
             'active'        => 'tinyint(1) NOT NULL DEFAULT 0',
             'deleted'       => 'tinyint(1) NOT NULL DEFAULT 0',
             'c_date'        => 'timestamp NULL default NULL',
             'e_date'        => 'timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP',
             'file'          => 'text',
-            'alt'           => 'text',
             'mime_type'     => 'text',
             'image_height'  => 'int(6) default NULL',
             'image_width'   => 'int(6) default NULL',
@@ -290,7 +300,8 @@ class Media extends QUI\QDOM
             'priority'      => 'int(6) default NULL',
             'order'         => 'varchar(32) default NULL',
             'pathHistory'   => 'text',
-            'hidden'        => 'int(1) default 0'
+            'hidden'        => 'int(1) default 0',
+            'pathHash'      => 'varchar(32) NOT NULL',
         ]);
 
         $DataBase->table()->setPrimaryKey($table, 'id');
@@ -301,14 +312,31 @@ class Media extends QUI\QDOM
         $DataBase->table()->setIndex($table, 'type');
         $DataBase->table()->setIndex($table, 'active');
         $DataBase->table()->setIndex($table, 'deleted');
-        $DataBase->table()->setIndex($table, 'c_date');
         $DataBase->table()->setIndex($table, 'e_date');
-        $DataBase->table()->setIndex($table, 'c_user');
-        $DataBase->table()->setIndex($table, 'e_user');
-        $DataBase->table()->setIndex($table, 'md5hash');
-        $DataBase->table()->setIndex($table, 'sha1hash');
         $DataBase->table()->setIndex($table, 'order');
         $DataBase->table()->setIndex($table, 'hidden');
+        $DataBase->table()->setIndex($table, 'pathHash');
+
+        try {
+            $DataBase->execSQL('UPDATE '.$table.' SET pathHash = MD5(file)');
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+
+        // remove index (patch)
+        $removeIndex = ['c_date', 'c_user', 'e_user', 'md5hash', 'sha1hash'];
+
+        foreach ($removeIndex as $index) {
+            if ($DataBase->table()->issetIndex($table, $index)) {
+                try {
+                    $DataBase->fetchSQL(
+                        'ALTER TABLE `'.$table.'` DROP INDEX `'.$index.'`;'
+                    );
+                } catch (\Exception $Exception) {
+                    QUI\System\Log::writeException($Exception);
+                }
+            }
+        }
 
         // create first site -> id 1 if not exist
         $firstChildResult = $DataBase->fetch([
@@ -349,6 +377,59 @@ class Media extends QUI\QDOM
 
         $DataBase->table()->setIndex($table, 'parent');
         $DataBase->table()->setIndex($table, 'child');
+
+        // multilingual patch
+
+        $table = $this->getTable();
+
+        // check if patch needed
+        $result = QUI::getDataBase()->fetch([
+            'from'  => $table,
+            'where' => [
+                'id' => 1
+            ]
+        ]);
+
+        $title = $result[0]['title'];
+        $title = \json_decode($title, true);
+
+        if (\is_array($title)) {
+            return;
+        }
+
+        // patch is needed
+        $result = QUI::getDataBase()->fetch([
+            'from' => $table
+        ]);
+
+        $languages = QUI::availableLanguages();
+
+        $updateEntry = function ($type, $data, $table) use ($languages) {
+            $value     = $data[$type];
+            $valueJSON = \json_decode($value, true);
+
+            if (\is_array($valueJSON)) {
+                return;
+            }
+
+            $newData = [];
+
+            foreach ($languages as $language) {
+                $newData[$language] = $value;
+            }
+
+            QUI::getDataBase()->update($table, [
+                $type => \json_encode($newData)
+            ], [
+                'id' => $data['id']
+            ]);
+        };
+
+        foreach ($result as $entry) {
+            $updateEntry('title', $entry, $table);
+            $updateEntry('short', $entry, $table);
+            $updateEntry('alt', $entry, $table);
+        }
     }
 
     /**
@@ -458,31 +539,31 @@ class Media extends QUI\QDOM
      */
     public function getChildByPath($filepath)
     {
-        $table     = $this->getTable();
-        $table_rel = $this->getTable('relations');
+        $cache = $this->getCacheDir().'filePathIds/'.md5($filepath);
 
-        $result = QUI::getDataBase()->fetch(
-            [
-                'select' => [
-                    $table.'.id'
-                ],
-                'from'   => [
-                    $table,
-                    $table_rel
-                ],
+        try {
+            $id = (int)QUI\Cache\Manager::get($cache);
+        } catch (QUI\Exception $Exception) {
+            $table = $this->getTable();
+
+            $result = QUI::getDataBase()->fetch([
+                'select' => [$table.'.id'],
+                'from'   => [$table],
                 'where'  => [
                     $table.'.deleted' => 0,
                     $table.'.file'    => $filepath
                 ],
                 'limit'  => 1
-            ]
-        );
+            ]);
 
-        if (!isset($result[0])) {
-            throw new QUI\Exception('File '.$filepath.' not found', 404);
+            if (!isset($result[0])) {
+                throw new QUI\Exception('File '.$filepath.' not found', 404);
+            }
+
+            $id = (int)$result[0]['id'];
         }
 
-        return $this->get((int)$result[0]['id']);
+        return $this->get($id);
     }
 
     /**

@@ -55,6 +55,8 @@ class Manager extends QUI\QDOM
      */
     protected $adminjsfiles = [];
 
+    protected static $getListOfExtraAttributes = null;
+
     /**
      * Return the db table for the groups
      *
@@ -63,6 +65,88 @@ class Manager extends QUI\QDOM
     public static function table()
     {
         return QUI::getDBTableName('groups');
+    }
+
+    /**
+     * @return array|bool|object|string|null
+     */
+    public static function getListOfExtraAttributes()
+    {
+        if (self::$getListOfExtraAttributes !== null) {
+            return self::$getListOfExtraAttributes;
+        }
+
+        $cache = 'quiqqer/groups/plugin-attribute-list';
+
+        try {
+            self::$getListOfExtraAttributes = QUI\Cache\Manager::get($cache);
+
+            return self::$getListOfExtraAttributes;
+        } catch (QUI\Exception $Exception) {
+        }
+
+        $list       = QUI::getPackageManager()->getInstalled();
+        $attributes = [];
+
+        foreach ($list as $entry) {
+            $plugin  = $entry['name'];
+            $userXml = OPT_DIR.$plugin.'/group.xml';
+
+            if (!\file_exists($userXml)) {
+                continue;
+            }
+
+            $attributes = \array_merge(
+                $attributes,
+                self::readAttributesFromGroupXML($userXml)
+            );
+        }
+
+        self::$getListOfExtraAttributes = $attributes;
+
+        QUI\Cache\Manager::set($cache, $attributes);
+
+        return $attributes;
+    }
+
+    /**
+     * Read an user.xml and return the attributes,
+     * if some extra attributes defined
+     *
+     * @param string $file
+     *
+     * @return array
+     */
+    protected static function readAttributesFromGroupXML($file)
+    {
+        $Dom  = QUI\Utils\Text\XML::getDomFromXml($file);
+        $Attr = $Dom->getElementsByTagName('attributes');
+
+        if (!$Attr->length) {
+            return [];
+        }
+
+        /* @var $Attributes \DOMElement */
+        $Attributes = $Attr->item(0);
+        $list       = $Attributes->getElementsByTagName('attribute');
+
+        if (!$list->length) {
+            return [];
+        }
+
+        $attributes = [];
+
+        for ($c = 0; $c < $list->length; $c++) {
+            $Attribute = $list->item($c);
+
+            if ($Attribute->nodeName == '#text') {
+                continue;
+            }
+
+            $attributes[] = \trim($Attribute->nodeValue);
+        }
+
+        return $attributes;
     }
 
     /**

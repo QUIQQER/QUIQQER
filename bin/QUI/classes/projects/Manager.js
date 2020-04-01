@@ -163,20 +163,24 @@ define('classes/projects/Manager', [
 
             this.$getList = null;
 
-            Ajax.post('ajax_project_create', function (result) {
+            return new Promise(function (resolve, reject) {
+                Ajax.post('ajax_project_create', function (result) {
+                    if (typeof onfinish !== 'undefined') {
+                        onfinish(result);
+                    }
 
-                if (typeof onfinish !== 'undefined') {
-                    onfinish(result);
-                }
+                    resolve(result);
 
-                self.fireEvent('create', [project, lang]);
-            }, {
-                params: JSON.encode({
-                    project : project,
-                    lang    : lang,
-                    template: template,
-                    demodata: demodata
-                })
+                    self.fireEvent('create', [project, lang]);
+                }, {
+                    params : JSON.encode({
+                        project : project,
+                        lang    : lang,
+                        template: template,
+                        demodata: demodata
+                    }),
+                    onError: reject
+                });
             });
         },
 

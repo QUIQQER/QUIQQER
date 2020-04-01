@@ -3,10 +3,6 @@
  *
  * @module classes/projects/project/media/Folder
  * @author www.pcsg.de (Henning Leutz)
- *
- * @require classes/projects/project/media/Item
- * @require Ajax
- * @require UploadManager
  */
 define('classes/projects/project/media/Folder', [
 
@@ -75,14 +71,12 @@ define('classes/projects/project/media/Folder', [
                     }
 
                     resolve(result);
-
                 }, {
                     project : this.getMedia().getProject().getName(),
                     folderid: this.getId(),
                     params  : JSON.encode(params),
                     onError : reject
                 });
-
             }.bind(this));
         },
 
@@ -141,14 +135,17 @@ define('classes/projects/project/media/Folder', [
             });
 
             // create a iframe
-            if (!document.id('download-frame')) {
+            var Frame = document.id('download-frame');
+
+            if (!Frame) {
                 new Element('iframe#download-frame', {
+                    src   : url,
                     styles: {
                         position: 'absolute',
                         width   : 100,
                         height  : 100,
-                        left    : -400,
-                        top     : -400
+                        left    : 0,
+                        top     : 0
                     },
                     events: {
                         load: function () {
@@ -156,9 +153,11 @@ define('classes/projects/project/media/Folder', [
                         }
                     }
                 }).inject(document.body);
+
+                return;
             }
 
-            document.id('download-frame').set('src', url);
+            Frame.set('src', url);
         },
 
         /**

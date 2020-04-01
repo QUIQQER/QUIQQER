@@ -40,6 +40,21 @@ class Headers
     protected $csp = [];
 
     /**
+     * @var bool
+     */
+    protected $xFrameOptions = false;
+
+    /**
+     * @var bool
+     */
+    protected $xContentTypeOptions = "nosniff";
+
+    /**
+     * @var bool
+     */
+    protected $xXSSProtection = "1; mode=block";
+
+    /**
      * Headers constructor.
      *
      * @param Response $Response
@@ -63,6 +78,18 @@ class Headers
 
         if (QUI::conf('securityHeaders_hsts', 'preload')) {
             $this->hstsPreload(true);
+        }
+
+        if (QUI::conf('securityHeaders', 'xFrameOptions')) {
+            $this->xFrameOptions = QUI::conf('securityHeaders', 'xFrameOptions');
+        }
+
+        if (QUI::conf('securityHeaders', 'xContentTypeOptions')) {
+            $this->xContentTypeOptions = QUI::conf('securityHeaders', 'xContentTypeOptions');
+        }
+
+        if (QUI::conf('securityHeaders', 'xXSSProtection')) {
+            $this->xXSSProtection = QUI::conf('securityHeaders', 'xXSSProtection');
         }
 
         // default CSP
@@ -107,12 +134,12 @@ class Headers
             .($this->hsts['preload'] ? '; preload' : '')
         );
 
+        $Response->headers->set("X-Content-Type-Options", $this->xContentTypeOptions);
+        $Response->headers->set("X-XSS-Protection", $this->xXSSProtection);
 
-        // @todo variable
-        $Response->headers->set("X-Content-Type-Options", "nosniff");
-        $Response->headers->set("X-XSS-Protection", "1; mode=block");
-//        $Response->headers->set("X-Frame-Options", "SAMEORIGIN");
-
+        if ($this->xFrameOptions) {
+            $Response->headers->set("X-Frame-Options", $this->xFrameOptions);
+        }
 
         // create CSP header
         $list = [];

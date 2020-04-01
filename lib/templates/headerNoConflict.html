@@ -216,6 +216,14 @@
             });
         };
 
+        // workaround for slower pcs
+        whenQuiLoaded().then(function () {
+            require(['qui/QUI'], function (QUI) {
+                QUI.parse(document.body);
+            });
+        });
+
+
         var ready = function () {
             "use strict";
 
