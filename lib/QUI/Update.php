@@ -215,6 +215,12 @@ class Update
                     $package_dir.'/'.$sub.'/events.xml',
                     $package.'/'.$sub
                 );
+
+                try {
+                    $Package = QUI::getPackage($package_dir.'/'.$sub);
+                    $Package->clearCache();
+                } catch (QUI\Exception $Exception) {
+                }
             }
         }
 

@@ -9,6 +9,7 @@ namespace QUI\Package;
 use QUI;
 use QUI\Update;
 use QUI\Utils\Text\XML;
+use QUI\Cache\LongTimeCache;
 
 /**
  * An installed package
@@ -511,7 +512,7 @@ class Package extends QUI\QDOM
         $cache = $this->getCacheName().'/composerData';
 
         try {
-            $this->composerData = QUI\Cache\Manager::get($cache);
+            $this->composerData = LongTimeCache::get($cache);
 
             return $this->composerData;
         } catch (QUI\Exception $Exception) {
@@ -546,9 +547,17 @@ class Package extends QUI\QDOM
             $this->composerData['version'] = $lock['version'];
         }
 
-        QUI\Cache\Manager::set($cache, $this->composerData);
+        LongTimeCache::set($cache, $this->composerData);
 
         return $this->composerData;
+    }
+
+    /**
+     * Clears the package cache
+     */
+    public function clearCache()
+    {
+        LongTimeCache::clear($this->getCacheName());
     }
 
     /**
@@ -745,8 +754,6 @@ class Package extends QUI\QDOM
         // settings
         if (!\file_exists($dir.self::SETTINGS_XML)) {
             QUI::getEvents()->fireEvent('packageSetup', [$this]);
-            QUI\Cache\Manager::clearCompleteQuiqqerCache();
-
             QUI::getEvents()->fireEvent('packageSetupEnd', [$this]);
 
             return;
@@ -759,8 +766,6 @@ class Package extends QUI\QDOM
         }
 
         QUI::getEvents()->fireEvent('packageSetup', [$this]);
-
-        QUI\Cache\Manager::clearCompleteQuiqqerCache();
         QUI::getEvents()->fireEvent('packageSetupEnd', [$this]);
     }
 
