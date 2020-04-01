@@ -251,7 +251,7 @@ class LongTimeCache
     /**
      * @return string
      */
-    protected static function fileSystemPath()
+    public static function fileSystemPath()
     {
         return VAR_DIR.'cache/longtime/';
     }
