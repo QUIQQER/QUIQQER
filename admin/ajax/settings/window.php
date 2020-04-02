@@ -23,8 +23,8 @@ QUI::$Ajax->registerFunction(
         } catch (QUI\Exception $Exception) {
             $windowName = false;
 
-            if (is_array($files) &&
-                in_array('packages/quiqqer/quiqqer/admin/settings/cache.xml', $files)) {
+            if (\is_array($files) &&
+                \in_array('packages/quiqqer/quiqqer/admin/settings/cache.xml', $files)) {
                 $windowName = 'quiqqer-cache';
             }
 
