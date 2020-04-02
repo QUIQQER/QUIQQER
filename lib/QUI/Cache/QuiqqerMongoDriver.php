@@ -20,7 +20,7 @@ use Stash\Exception\InvalidArgumentException;
 class QuiqqerMongoDriver extends AbstractDriver
 {
     /**
-     * @var \MongoCollection|\MongoDB\Collection
+     * @var \MongoDB\Driver\Manager
      */
     private $collection;
 
@@ -44,7 +44,7 @@ class QuiqqerMongoDriver extends AbstractDriver
 
         if ($doc) {
             return [
-                'data'       => unserialize($doc['data']),
+                'data'       => \unserialize($doc['data']),
                 'expiration' => $doc['expiration']
             ];
         }
@@ -139,7 +139,7 @@ class QuiqqerMongoDriver extends AbstractDriver
         return [
             'mongo'      => null,
             'database'   => null,
-            'collection' => 'stash.store'
+            'collection' => 'quiqqer.store'
         ];
     }
 
@@ -155,24 +155,16 @@ class QuiqqerMongoDriver extends AbstractDriver
     {
         $options += $this->getDefaultOptions();
 
+        /* @var $client \MongoDB\Driver\Manager */
         $client = $options['mongo'];
 
-        if (!($client instanceof \MongoClient ||
-              $client instanceof \Mongo ||
-              $client instanceof \MongoDB\Client)) {
+        if (!($client instanceof \MongoDB\Driver\Manager)) {
             throw new \InvalidArgumentException(
-                'MongoClient, Mongo or MongoDB\Client instance required'
+                'MongoDB\Driver\Manager instance required'
             );
         }
 
-        $db         = $options['database'];
-        $collection = $options['collection'];
-
-        if ($db === null) {
-            throw new \InvalidArgumentException("A database is required.");
-        }
-
-        $this->collection = $client->selectCollection($db, $collection);
+        $this->collection = $client->col;
     }
 
     /**
@@ -180,8 +172,7 @@ class QuiqqerMongoDriver extends AbstractDriver
      */
     public static function isAvailable()
     {
-        return class_exists('\MongoDB\Client', false) ||
-               class_exists('\MongoClient', false);
+        return class_exists('\MongoDB\Driver\Manager', false);
     }
 
     /**

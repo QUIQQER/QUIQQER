@@ -206,16 +206,20 @@ class LongTimeCache
                 $database   = 'local';
                 $collection = 'quiqqer.store';
 
-                if (isset($conf['mongo_database'])) {
+                if (!empty($conf['mongo_database'])) {
                     $database = $conf['mongo_database'];
                 }
 
-                if (isset($conf['mongo_collection'])) {
+                if (!empty($conf['mongo_collection'])) {
                     $collection = $conf['mongo_collection'];
                 }
 
+                if (\strpos($database, 'mongodb://') === false) {
+                    $database = 'mongodb://'.$database;
+                }
+
                 self::$Driver = new QuiqqerMongoDriver([
-                    'mongo'      => new \MongoClient(),
+                    'mongo'      => new \MongoDB\Driver\Manager($database),
                     'database'   => $database,
                     'collection' => $collection
                 ]);
