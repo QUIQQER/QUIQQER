@@ -90,7 +90,7 @@
 
         </config>
 
-        <window menu-parent="/settings/quiqqer/">
+        <window name="quiqqer-cache" menu-parent="/settings/quiqqer/">
             <title>
                 <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache"/>
             </title>
@@ -270,7 +270,8 @@
                                 <locale group="quiqqer/quiqqer" var="quiqqer.settings.longTimeCache.redis.server"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.longTimeCache.redis.server.description"/>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.longTimeCache.redis.server.description"/>
                             </description>
                         </input>
                     </settings>
@@ -285,7 +286,8 @@
                                 <locale group="quiqqer/quiqqer" var="quiqqer.settings.longTimeCache.file.path"/>
                             </text>
                             <description>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.longTimeCache.file.path.description"/>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.longTimeCache.file.path.description"/>
                             </description>
                         </input>
                     </settings>
@@ -303,7 +305,8 @@
 
                         <input conf="longtime.mongo_collection" type="text" placeholder="quiqqer.store">
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.longTimeCache.mongo_collection.server"/>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.longTimeCache.mongo_collection.server"/>
                             </text>
                         </input>
                     </settings>

@@ -21,8 +21,22 @@ QUI::$Ajax->registerFunction(
         try {
             $result = QUI\Cache\Manager::get($cacheName);
         } catch (QUI\Exception $Exception) {
-            $result = $Settings->getPanel($files);
+            $windowName = false;
 
+            if (is_array($files) &&
+                in_array('packages/quiqqer/quiqqer/admin/settings/cache.xml', $files)) {
+                $windowName = 'quiqqer-cache';
+            }
+
+            if (!empty($windowName) && $windowName !== 'qui-desktop-panel') {
+                $Settings->setXMLPath('//quiqqer/settings/window[@name="'.$windowName.'"]');
+            } else {
+                $Settings->setXMLPath('//quiqqer/settings/window');
+            }
+
+            $result = $Settings->getPanel($files, $windowName);
+
+            $result['name']       = $windowName;
             $result['categories'] = $result['categories']->toArray();
 
             foreach ($result['categories'] as $key => $category) {

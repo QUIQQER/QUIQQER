@@ -165,7 +165,6 @@ define('controls/desktop/panels/XML', [
                     self.addButton(buttons[i]);
                 }
 
-
                 self.setAttributes(result);
                 self.refresh();
 
@@ -197,6 +196,12 @@ define('controls/desktop/panels/XML', [
             var self = this;
 
             this.Loader.show();
+
+            var file = Category.getAttribute('file');
+
+            if (!file || file === '') {
+                file = this.$file;
+            }
 
             Ajax.get('ajax_settings_category', function (result) {
                 var Body = self.getBody();
@@ -312,8 +317,9 @@ define('controls/desktop/panels/XML', [
                 });
 
             }, {
-                file    : JSON.encode(this.$file),
-                category: Category.getAttribute('name')
+                file      : JSON.encode(file),
+                category  : Category.getAttribute('name'),
+                windowName: this.getAttribute('name')
             });
         },
 

@@ -5,11 +5,12 @@
  *
  * @param array $file - list of xml files
  * @param $category
+ * @param $windowName
  * @return String
  */
 QUI::$Ajax->registerFunction(
     'ajax_settings_category',
-    function ($file, $category) {
+    function ($file, $category, $windowName) {
         if (\file_exists($file)) {
             $files = [$file];
         } else {
@@ -22,7 +23,12 @@ QUI::$Ajax->registerFunction(
             $result = QUI\Cache\Manager::get($cacheName);
         } catch (QUI\Exception $Exception) {
             $Settings = QUI\Utils\XML\Settings::getInstance();
-            $Settings->setXMLPath('//quiqqer/settings/window');
+
+            if (!empty($windowName) && $windowName !== 'qui-desktop-panel') {
+                $Settings->setXMLPath('//quiqqer/settings/window[@name="'.$windowName.'"]');
+            } else {
+                $Settings->setXMLPath('//quiqqer/settings/window');
+            }
 
             try {
                 $result = $Settings->getCategoriesHtml($files, $category);
@@ -35,6 +41,6 @@ QUI::$Ajax->registerFunction(
 
         return $result;
     },
-    ['file', 'category'],
+    ['file', 'category', 'windowName'],
     'Permission::checkAdminUser'
 );
