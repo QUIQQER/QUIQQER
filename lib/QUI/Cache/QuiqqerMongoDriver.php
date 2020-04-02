@@ -6,6 +6,7 @@
 
 namespace QUI\Cache;
 
+use MongoDB\Collection;
 use QUI;
 
 use Stash\Driver\AbstractDriver;
@@ -20,7 +21,7 @@ use Stash\Exception\InvalidArgumentException;
 class QuiqqerMongoDriver extends AbstractDriver
 {
     /**
-     * @var \MongoDB\Driver\Manager
+     * @var \MongoDB\Collection
      */
     private $collection;
 
@@ -30,7 +31,7 @@ class QuiqqerMongoDriver extends AbstractDriver
      */
     private static function mapKey($key)
     {
-        return implode('/', $key);
+        return \implode('/', $key);
     }
 
     /**
@@ -71,17 +72,6 @@ class QuiqqerMongoDriver extends AbstractDriver
                 // replaceOne in high-throughput environments where race
                 // conditions can occur
             }
-        } else {
-            try {
-                $this->collection->save([
-                    '_id'        => self::mapKey($key),
-                    'data'       => serialize($data),
-                    'expiration' => $expiration
-                ]);
-            } catch (\MongoDuplicateKeyException $ignored) {
-                // Because it's Mongo, we might have had this problem because
-                // of a cache stampede
-            }
         }
 
         return true;
@@ -104,10 +94,6 @@ class QuiqqerMongoDriver extends AbstractDriver
             $this->collection->deleteMany([
                 '_id' => new \MongoDB\BSON\Regex($preg, '')
             ]);
-        } else {
-            $this->collection->remove([
-                '_id' => new \MongoRegex($preg)
-            ], ['multiple' => true]);
         }
 
         return true;
@@ -122,10 +108,6 @@ class QuiqqerMongoDriver extends AbstractDriver
             $this->collection->deleteMany([
                 'expiration' => ['$lte' => time()]
             ]);
-        } else {
-            $this->collection->remove([
-                'expiration' => ['$lte' => time()]
-            ], ['multiple' => true]);
         }
 
         return true;
@@ -137,7 +119,7 @@ class QuiqqerMongoDriver extends AbstractDriver
     public function getDefaultOptions()
     {
         return [
-            'mongo'      => null,
+            'mongo'      => 'quiqqer',
             'database'   => null,
             'collection' => 'quiqqer.store'
         ];
@@ -155,16 +137,23 @@ class QuiqqerMongoDriver extends AbstractDriver
     {
         $options += $this->getDefaultOptions();
 
-        /* @var $client \MongoDB\Driver\Manager */
-        $client = $options['mongo'];
+        /* @var $client \MongoDB\Client */
+        $Client = $options['mongo'];
 
-        if (!($client instanceof \MongoDB\Driver\Manager)) {
+        if (!($Client instanceof \MongoDB\Client)) {
             throw new \InvalidArgumentException(
                 'MongoDB\Driver\Manager instance required'
             );
         }
 
-        $this->collection = $client->col;
+        if (empty($options['database'])) {
+            throw new \InvalidArgumentException("A database is required.");
+        }
+
+        $this->collection = $Client->selectCollection(
+            $options['database'],
+            $options['collection']
+        );
     }
 
     /**
@@ -172,7 +161,7 @@ class QuiqqerMongoDriver extends AbstractDriver
      */
     public static function isAvailable()
     {
-        return class_exists('\MongoDB\Driver\Manager', false);
+        return \class_exists('\MongoDB\Client', false);
     }
 
     /**

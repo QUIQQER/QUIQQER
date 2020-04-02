@@ -203,9 +203,10 @@ class LongTimeCache
 
             case 'mongo':
                 $conf       = $Config->get('longtime');
-                $database   = 'local';
-                $collection = 'quiqqer.store';
+                $database   = 'localhost';
+                $collection = \md5(__FILE__);
 
+                // database server
                 if (!empty($conf['mongo_database'])) {
                     $database = $conf['mongo_database'];
                 }
@@ -219,7 +220,7 @@ class LongTimeCache
                 }
 
                 self::$Driver = new QuiqqerMongoDriver([
-                    'mongo'      => new \MongoDB\Driver\Manager($database),
+                    'mongo'      => new \MongoDB\Client($database),
                     'database'   => $database,
                     'collection' => $collection
                 ]);
