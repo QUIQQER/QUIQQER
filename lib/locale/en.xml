@@ -2599,13 +2599,13 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         </locale>
 
         <locale name="quiqqer.settings.cache.longtime.title">
-            <en><![CDATA[Long time cache]]></en>
+            <en><![CDATA[Long term cache]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.longtime.text">
-            <en><![CDATA[Long time cache]]></en>
+            <en><![CDATA[Long term cache]]></en>
         </locale>
         <locale name="quiqqer.settings.longtime.title">
-            <en><![CDATA[Long time cache]]></en>
+            <en><![CDATA[Long term cache]]></en>
         </locale>
 
         <locale name="quiqqer.settings.longtime.file">
@@ -2619,15 +2619,15 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         </locale>
 
         <locale name="quiqqer.settings.longtime.cache">
-            <en><![CDATA[Type of long-time cache]]></en>
+            <en><![CDATA[Type of long term cache]]></en>
         </locale>
         <locale name="quiqqer.settings.longtime.cache.description">
             <en><![CDATA[
-            Define how your long-time cache should be stored.
+            Define how your long term cache should be stored.
             ]]></en>
         </locale>
         <locale name="quiqqer.settings.longTimeCache.redis.title">
-            <en><![CDATA[Long time Cache mit Redis Server]]></en>
+            <en><![CDATA[Long term Cache mit Redis Server]]></en>
         </locale>
         <locale name="quiqqer.settings.longTimeCache.redis.server">
             <en><![CDATA[Redis Server]]></en>
@@ -2641,7 +2641,7 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             ]]></en>
         </locale>
         <locale name="quiqqer.settings.longTimeCache.file.title">
-            <en><![CDATA[Long time cache with the file system]]></en>
+            <en><![CDATA[Long term cache with the file system]]></en>
         </locale>
         <locale name="quiqqer.settings.longTimeCache.file.path">
             <en><![CDATA[File system path]]></en>
@@ -2652,7 +2652,7 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             ]]></en>
         </locale>
         <locale name="quiqqer.settings.longTimeCache.mongo.title">
-            <en><![CDATA[Long time cache with a Mongo DB]]></en>
+            <en><![CDATA[Long term cache with a Mongo DB]]></en>
         </locale>
         <locale name="quiqqer.settings.longTimeCache.mongo.server">
             <en><![CDATA[MongoDB Server]]></en>
