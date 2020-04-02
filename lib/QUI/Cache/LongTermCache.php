@@ -10,7 +10,7 @@ use Stash;
  *
  * @package QUI\Cache
  */
-class LongTimeCache
+class LongTermCache
 {
     /**
      * @var null

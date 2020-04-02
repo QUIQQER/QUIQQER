@@ -777,7 +777,7 @@ class Manager extends QUI\QDOM
         }
 
         try {
-            $this->list = QUI\Cache\LongTimeCache::get(self::CACHE_NAME_TYPES);
+            $this->list = QUI\Cache\LongTermCache::get(self::CACHE_NAME_TYPES);
 
             return $this->list;
         } catch (QUI\Exception $Exception) {
@@ -827,7 +827,7 @@ class Manager extends QUI\QDOM
         }
 
         try {
-            QUI\Cache\LongTimeCache::set(self::CACHE_NAME_TYPES, $this->list);
+            QUI\Cache\LongTermCache::set(self::CACHE_NAME_TYPES, $this->list);
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
@@ -1001,7 +1001,7 @@ class Manager extends QUI\QDOM
         }
 
         try {
-            return QUI\Cache\LongTimeCache::get(self::CACHE_KEY_PACKAGE_FOLDER_SIZE);
+            return QUI\Cache\LongTermCache::get(self::CACHE_KEY_PACKAGE_FOLDER_SIZE);
         } catch (QUI\Cache\Exception $Exception) {
             return null;
         }
@@ -1016,7 +1016,7 @@ class Manager extends QUI\QDOM
     public function getPackageFolderSizeTimestamp()
     {
         try {
-            $timestamp = QUI\Cache\LongTimeCache::get(self::CACHE_KEY_PACKAGE_FOLDER_SIZE_TIMESTAMP);
+            $timestamp = QUI\Cache\LongTermCache::get(self::CACHE_KEY_PACKAGE_FOLDER_SIZE_TIMESTAMP);
         } catch (QUI\Cache\Exception $Exception) {
             $timestamp = null;
         }
@@ -1043,8 +1043,8 @@ class Manager extends QUI\QDOM
         }
 
         try {
-            QUI\Cache\LongTimeCache::set(self::CACHE_KEY_PACKAGE_FOLDER_SIZE, $packageFolderSize);
-            QUI\Cache\LongTimeCache::set(self::CACHE_KEY_PACKAGE_FOLDER_SIZE_TIMESTAMP, \time());
+            QUI\Cache\LongTermCache::set(self::CACHE_KEY_PACKAGE_FOLDER_SIZE, $packageFolderSize);
+            QUI\Cache\LongTermCache::set(self::CACHE_KEY_PACKAGE_FOLDER_SIZE_TIMESTAMP, \time());
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
@@ -1133,7 +1133,7 @@ class Manager extends QUI\QDOM
         $cache = 'packages/cache/info/'.$package;
 
         try {
-            return QUI\Cache\LongTimeCache::get($cache);
+            return QUI\Cache\LongTermCache::get($cache);
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addDebug($Exception->getMessage());
         }
@@ -1164,7 +1164,7 @@ class Manager extends QUI\QDOM
         }
 
         try {
-            QUI\Cache\LongTimeCache::set($cache, $result, 3600);
+            QUI\Cache\LongTermCache::set($cache, $result, 3600);
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
@@ -1210,7 +1210,7 @@ class Manager extends QUI\QDOM
         $cache = 'packages/cache/show/'.$package;
 
         try {
-            return QUI\Cache\LongTimeCache::get($cache);
+            return QUI\Cache\LongTermCache::get($cache);
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addDebug($Exception->getMessage());
         }
@@ -1252,7 +1252,7 @@ class Manager extends QUI\QDOM
         }
 
         try {
-            QUI\Cache\LongTimeCache::set($cache, $result, 3600);
+            QUI\Cache\LongTermCache::set($cache, $result, 3600);
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
@@ -1788,7 +1788,7 @@ class Manager extends QUI\QDOM
     public function getPackageSiteXmlList()
     {
         try {
-            return QUI\Cache\LongTimeCache::get(self::CACHE_SITE_XML_LIST);
+            return QUI\Cache\LongTermCache::get(self::CACHE_SITE_XML_LIST);
         } catch (QUI\Exception $Exception) {
         }
 
@@ -1810,7 +1810,7 @@ class Manager extends QUI\QDOM
         }
 
         try {
-            QUI\Cache\LongTimeCache::set(self::CACHE_SITE_XML_LIST, $result);
+            QUI\Cache\LongTermCache::set(self::CACHE_SITE_XML_LIST, $result);
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
@@ -1827,7 +1827,7 @@ class Manager extends QUI\QDOM
     public function getPackageDatabaseXmlList()
     {
         try {
-            return QUI\Cache\LongTimeCache::get(self::CACHE_DB_XML_LIST);
+            return QUI\Cache\LongTermCache::get(self::CACHE_DB_XML_LIST);
         } catch (QUI\Exception $Exception) {
         }
 
@@ -1845,7 +1845,7 @@ class Manager extends QUI\QDOM
         }
 
         try {
-            QUI\Cache\LongTimeCache::set(self::CACHE_DB_XML_LIST, $result);
+            QUI\Cache\LongTermCache::set(self::CACHE_DB_XML_LIST, $result);
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
@@ -2246,7 +2246,7 @@ class Manager extends QUI\QDOM
         $cache = 'quiqqer/packages/xml-data/'.$type;
 
         try {
-            return QUI\Cache\LongTimeCache::get($cache);
+            return QUI\Cache\LongTermCache::get($cache);
         } catch (QUI\Cache\Exception $Exception) {
         }
 
@@ -2295,7 +2295,7 @@ class Manager extends QUI\QDOM
 
         $data['value'] = \trim($Type->nodeValue);
 
-        QUI\Cache\LongTimeCache::set($cache, $data);
+        QUI\Cache\LongTermCache::set($cache, $data);
 
         return $data;
     }

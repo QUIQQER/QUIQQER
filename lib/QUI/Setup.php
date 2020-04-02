@@ -157,7 +157,7 @@ class Setup
             }
         }
 
-        QUI\Cache\LongTimeCache::setup();
+        QUI\Cache\LongTermCache::setup();
 
         QUI::getEvents()->fireEvent('setupMakeDirectoriesEnd');
     }

@@ -812,7 +812,7 @@ class Manager
         }
 
         try {
-            LongTimeCache::clear($key);
+            LongTermCache::clear($key);
 
             QUI::getEvents()->fireEvent('longTimeCacheClear', [$key]);
         } catch (\Exception $Exception) {
@@ -835,7 +835,7 @@ class Manager
 
 
         try {
-            QUI\Utils\System\File::unlink(LongTimeCache::fileSystemPath());
+            QUI\Utils\System\File::unlink(LongTermCache::fileSystemPath());
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError($Exception->getMessage());
         }
