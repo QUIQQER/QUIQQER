@@ -69,9 +69,28 @@
                     <type><![CDATA[string]]></type>
                 </conf>
             </section>
+
+            <section name="longtime">
+                <conf name="type">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="mongo_database">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="mongo_collection">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="file_path">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="redis_server">
+                    <type><![CDATA[string]]></type>
+                </conf>
+            </section>
+
         </config>
 
-        <window menu-parent="/settings/quiqqer/">
+        <window name="quiqqer-cache" menu-parent="/settings/quiqqer/">
             <title>
                 <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache"/>
             </title>
@@ -205,6 +224,93 @@
                             </description>
                         </input>
                     </settings>
+                </category>
+
+                <category name="longtime" require="controls/cache/LongTime">
+                    <title>
+                        <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.longtime.title"/>
+                    </title>
+                    <text>
+                        <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.longtime.text"/>
+                    </text>
+                    <icon>fa fa-cogs</icon>
+
+                    <settings title="longtime" name="longtime">
+                        <title>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.longtime.title"/>
+                        </title>
+
+                        <select conf="longtime.type">
+                            <text>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.longtime.cache"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.longtime.cache.description"/>
+                            </description>
+
+                            <option value="file">
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.longtime.file"/>
+                            </option>
+                            <option value="mongo">
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.longtime.mongo"/>
+                            </option>
+                            <option value="redis">
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.longtime.redis"/>
+                            </option>
+                        </select>
+                    </settings>
+
+                    <settings title="longtime-redis" name="longtime-redis">
+                        <title>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.longTimeCache.redis.title"/>
+                        </title>
+
+                        <input conf="longtime.redis_server" type="text" placeholder="localhost">
+                            <text>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.longTimeCache.redis.server"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.longTimeCache.redis.server.description"/>
+                            </description>
+                        </input>
+                    </settings>
+
+                    <settings title="longtime-file" name="longtime-file">
+                        <title>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.longTimeCache.file.title"/>
+                        </title>
+
+                        <input conf="longtime.file_path" type="text">
+                            <text>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.longTimeCache.file.path"/>
+                            </text>
+                            <description>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.longTimeCache.file.path.description"/>
+                            </description>
+                        </input>
+                    </settings>
+
+                    <settings title="longtime-mongo" name="longtime-mongo">
+                        <title>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.longTimeCache.mongo.title"/>
+                        </title>
+
+                        <input conf="longtime.mongo_database" type="text" placeholder="local">
+                            <text>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.longTimeCache.mongo.server"/>
+                            </text>
+                        </input>
+
+                        <input conf="longtime.mongo_collection" type="text" placeholder="quiqqer.store">
+                            <text>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.longTimeCache.mongo_collection.server"/>
+                            </text>
+                        </input>
+                    </settings>
+
                 </category>
 
                 <category name="management" require="controls/cache/Settings">

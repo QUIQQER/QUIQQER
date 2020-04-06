@@ -2655,6 +2655,68 @@
             <de><![CDATA[Jetzt kompletten QUIQQER Cache löschen]]></de>
         </locale>
 
+        <locale name="quiqqer.settings.cache.longtime.title">
+            <de><![CDATA[Langzeitcache]]></de>
+        </locale>
+        <locale name="quiqqer.settings.cache.longtime.text">
+            <de><![CDATA[Langzeitcache]]></de>
+        </locale>
+        <locale name="quiqqer.settings.longtime.title">
+            <de><![CDATA[Langzeitcache]]></de>
+        </locale>
+
+        <locale name="quiqqer.settings.longtime.file">
+            <de><![CDATA[Dateisystem]]></de>
+        </locale>
+        <locale name="quiqqer.settings.longtime.mongo">
+            <de><![CDATA[Mongo-DB]]></de>
+        </locale>
+        <locale name="quiqqer.settings.longtime.redis">
+            <de><![CDATA[Redis]]></de>
+        </locale>
+
+        <locale name="quiqqer.settings.longtime.cache">
+            <de><![CDATA[Art des Langzeitcaches]]></de>
+        </locale>
+        <locale name="quiqqer.settings.longtime.cache.description">
+            <de><![CDATA[
+            Bestimme, wie dein Langzeitcache gespeichert werden soll.
+            ]]></de>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.redis.title">
+            <de><![CDATA[Langzeitcache mit Redis Server]]></de>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.redis.server">
+            <de><![CDATA[Redis Server]]></de>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.redis.server.description" html="true">
+            <de><![CDATA[
+            Bitte beachte unseren Wiki Eintrag:
+            <a href="https://dev.quiqqer.com/quiqqer/quiqqer/wikis/caching/redis" target="_blank">
+                QUIQQER Redis Caching
+            </a>
+            ]]></de>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.file.title">
+            <de><![CDATA[Langzeitcache mit dem Dateisystem]]></de>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.file.path">
+            <de><![CDATA[Dateisystempfad]]></de>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.file.path.description">
+            <de><![CDATA[
+            Falls kein Pfad angegeben wurde, wird im standard VAR Ordner ein cache/longtime/ Verzeichnis angelegt.
+            ]]></de>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.mongo.title">
+            <de><![CDATA[Langzeitcache mit einer Mongo-DB]]></de>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.mongo.server">
+            <de><![CDATA[MongoDB Server]]></de>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.mongo_collection.server">
+            <de><![CDATA[MongoDB Collection]]></de>
+        </locale>
 
         <locale name="quiqqer.settings.cache.clear.quiqqer">
             <de><![CDATA[Kompletten QUIQQER Cache leeren]]></de>
@@ -5485,6 +5547,22 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         </locale>
         <locale name="control.upload.placeholder">
             <de><![CDATA[Bitte wähle eine Datei aus...]]></de>
+        </locale>
+
+        <locale name="window.long.term.cache.clear.title">
+            <de><![CDATA[Langzeitcache löschen!]]></de>
+        </locale>
+        <locale name="window.long.term.cache.clear.text">
+            <de><![CDATA[Langzeitcache wirklich löschen?]]></de>
+        </locale>
+        <locale name="window.long.term.cache.clear.information">
+            <de><![CDATA[
+            Der komplette Langzeitcache wird unwiderruflich gelöscht und muss sich danach wieder aufbauen.
+            Der Aufbau des Caches kann unter Umständen mehrere Tage benötigen.
+            ]]></de>
+        </locale>
+        <locale name="message.long.term.cache.clear.success">
+            <de><![CDATA[Der Langzeitcache wurde erfolgreich gelöscht.]]></de>
         </locale>
     </groups>
 

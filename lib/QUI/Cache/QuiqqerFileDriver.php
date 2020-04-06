@@ -9,7 +9,7 @@ namespace QUI\Cache;
 use QUI;
 
 /**
- * Class FileDriver
+ * Class QuiqqerFileDriver
  *
  * @package QUI\Cache
  */

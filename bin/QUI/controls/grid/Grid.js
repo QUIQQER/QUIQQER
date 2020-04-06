@@ -1025,10 +1025,10 @@ define('controls/grid/Grid', [
 
             if (this.getAttribute('showtoggleicon') && li.getElement('.toggleicon')) {
                 li.getElement('.toggleicon')
-                  .setStyle(
-                      'background-position',
-                      section.getStyle('display') === 'block' ? '-16px 0' : '0 0'
-                  );
+                    .setStyle(
+                        'background-position',
+                        section.getStyle('display') === 'block' ? '-16px 0' : '0 0'
+                    );
             }
 
             this.lastsection = section;
@@ -3002,10 +3002,21 @@ define('controls/grid/Grid', [
                         continue;
                     }
 
-                    if (typeof dat[cml.dataIndex] !== 'undefined' &&
-                        typeOf(dat[cml.dataIndex]) !== 'function' &&
-                        dat[cml.dataIndex] !== null &&
-                        dat[cml.dataIndex].toString().toLowerCase().indexOf(key) > -1) {
+                    if (typeof dat[cml.dataIndex] === 'undefined' ||
+                        typeOf(dat[cml.dataIndex]) === 'function' ||
+                        dat[cml.dataIndex] === null) {
+                        continue;
+                    }
+
+                    var haystack;
+
+                    if (typeof dat[cml.dataIndex] === 'object' && 'innerHTML' in dat[cml.dataIndex]) {
+                        haystack = dat[cml.dataIndex].innerHTML.toLowerCase();
+                    } else {
+                        haystack = dat[cml.dataIndex].toString().toLowerCase();
+                    }
+
+                    if (haystack.indexOf(key) > -1) {
                         el.removeClass(filterHideCls);
                         this.unSelectRow(el);
                         break;

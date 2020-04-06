@@ -215,6 +215,12 @@ class Update
                     $package_dir.'/'.$sub.'/events.xml',
                     $package.'/'.$sub
                 );
+
+                try {
+                    $Package = QUI::getPackage($package_dir.'/'.$sub);
+                    $Package->clearCache();
+                } catch (QUI\Exception $Exception) {
+                }
             }
         }
 
@@ -236,6 +242,7 @@ class Update
             $IO->write('QUIQQER Setup finish');
         } else {
             QUI\Cache\Manager::clearCompleteQuiqqerCache();
+            QUI\Cache\Manager::longTimeCacheClearCompleteQuiqqer();
             $IO->write('Maybe some Databases or Plugins need a setup. Please log in and execute the setup.');
         }
     }

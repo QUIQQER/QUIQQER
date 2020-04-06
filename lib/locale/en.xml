@@ -2598,6 +2598,69 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             <en><![CDATA[Clear complete QUIQQER cache now]]></en>
         </locale>
 
+        <locale name="quiqqer.settings.cache.longtime.title">
+            <en><![CDATA[Long term cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.longtime.text">
+            <en><![CDATA[Long term cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longtime.title">
+            <en><![CDATA[Long term cache]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.longtime.file">
+            <en><![CDATA[File system]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longtime.mongo">
+            <en><![CDATA[Mongo-DB]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longtime.redis">
+            <en><![CDATA[Redis]]></en>
+        </locale>
+
+        <locale name="quiqqer.settings.longtime.cache">
+            <en><![CDATA[Type of long term cache]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longtime.cache.description">
+            <en><![CDATA[
+            Define how your long term cache should be stored.
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.redis.title">
+            <en><![CDATA[Long term Cache mit Redis Server]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.redis.server">
+            <en><![CDATA[Redis Server]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.redis.server.description" html="true">
+            <en><![CDATA[
+            Please note our Wiki entry:
+            <a href="https://dev.quiqqer.com/quiqqer/quiqqer/wikis/caching/redis" target="_blank">
+                QUIQQER Redis Caching
+            </a>
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.file.title">
+            <en><![CDATA[Long term cache with the file system]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.file.path">
+            <en><![CDATA[File system path]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.file.path.description">
+            <en><![CDATA[
+            If no path is specified, a cache/longtime/ directory is created in the standard VAR folder.
+            ]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.mongo.title">
+            <en><![CDATA[Long term cache with a Mongo DB]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.mongo.server">
+            <en><![CDATA[MongoDB Server]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.mongo_collection.server">
+            <en><![CDATA[MongoDB Collection]]></en>
+        </locale>
+
         <locale name="quiqqer.settings.cache.quiqqer.title">
             <en><![CDATA[QUIQQER System Cache]]></en>
         </locale>
@@ -2634,7 +2697,10 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         </locale>
         <locale name="workspace.toolarge.window.text">
             <en><![CDATA[
-                            <h1>The workspace is too large</h1>            <p>The workspace is unfortunately too big for your browser window. Please choose an appropriate workspace.</p>            <h2>Available matching workspaces:</h2>            ]]></en>
+                <h1>The workspace is too large</h1>
+                <p>The workspace is unfortunately too big for your browser window. Please choose an appropriate workspace.</p>
+                <h2>Available matching workspaces:</h2>
+            ]]></en>
         </locale>
         <locale name="workspace.toolarge.window.noWorkspaces.text">
             <en><![CDATA[
@@ -5288,6 +5354,23 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         </locale>
         <locale name="control.upload.placeholder">
             <en><![CDATA[Please select a file...]]></en>
+        </locale>
+
+
+        <locale name="window.long.term.cache.clear.title">
+            <en><![CDATA[Delete long-term cache!]]></en>
+        </locale>
+        <locale name="window.long.term.cache.clear.text">
+            <en><![CDATA[Delete long-term cache?]]></en>
+        </locale>
+        <locale name="window.long.term.cache.clear.information">
+            <en><![CDATA[
+            The complete long-term cache is irrevocably deleted and must be rebuilt afterwards.
+            It may take several days to rebuild the cache.
+            ]]></en>
+        </locale>
+        <locale name="message.long.term.cache.clear.success">
+            <en><![CDATA[The long-term cache was successfully deleted.]]></en>
         </locale>
     </groups>
     <groups name="quiqqer/controls" datatype="php,js">

@@ -797,4 +797,49 @@ class Manager
 
         return QUI\Utils\System\Folder::getFolderSizeTimestamp($cacheFolder);
     }
+
+    //region longtime
+
+    /**
+     * Clears all or only a given entry from the longtime cache.
+     *
+     * @param string|boolean $key - optional; if no key is given the whole cache is cleared
+     */
+    public static function longTimeCacheClear($key = "")
+    {
+        if (self::$noClearing) {
+            return;
+        }
+
+        try {
+            LongTermCache::clear($key);
+
+            QUI::getEvents()->fireEvent('longTimeCacheClear', [$key]);
+        } catch (\Exception $Exception) {
+            QUI\System\Log::writeException($Exception);
+        }
+    }
+
+    /**
+     * clear the complete quiqqer long time cache
+     */
+    public static function longTimeCacheClearCompleteQuiqqer()
+    {
+        self::longTimeCacheClear('quiqqer');
+
+        try {
+            QUI::getEvents()->fireEvent('longTimeCacheClearCompleteQuiqqerCache');
+        } catch (\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
+
+
+        try {
+            QUI\Utils\System\File::unlink(LongTermCache::fileSystemPath());
+        } catch (QUI\Exception $Exception) {
+            QUI\System\Log::addError($Exception->getMessage());
+        }
+    }
+
+    //endregion
 }
