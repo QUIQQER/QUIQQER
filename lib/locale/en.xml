@@ -5355,6 +5355,23 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="control.upload.placeholder">
             <en><![CDATA[Please select a file...]]></en>
         </locale>
+
+
+        <locale name="window.long.term.cache.clear.title">
+            <en><![CDATA[Delete long-term cache!]]></en>
+        </locale>
+        <locale name="window.long.term.cache.clear.text">
+            <en><![CDATA[Delete long-term cache?]]></en>
+        </locale>
+        <locale name="window.long.term.cache.clear.information">
+            <en><![CDATA[
+            The complete long-term cache is irrevocably deleted and must be rebuilt afterwards.
+            It may take several days to rebuild the cache.
+            ]]></en>
+        </locale>
+        <locale name="message.long.term.cache.clear.success">
+            <en><![CDATA[The long-term cache was successfully deleted.]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/controls" datatype="php,js">
         <locale name="package.title">

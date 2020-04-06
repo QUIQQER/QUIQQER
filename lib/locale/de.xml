@@ -5548,6 +5548,22 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
         <locale name="control.upload.placeholder">
             <de><![CDATA[Bitte wähle eine Datei aus...]]></de>
         </locale>
+
+        <locale name="window.long.term.cache.clear.title">
+            <de><![CDATA[Langzeitcache löschen!]]></de>
+        </locale>
+        <locale name="window.long.term.cache.clear.text">
+            <de><![CDATA[Langzeitcache wirklich löschen?]]></de>
+        </locale>
+        <locale name="window.long.term.cache.clear.information">
+            <de><![CDATA[
+            Der komplette Langzeitcache wird unwiderruflich gelöscht und muss sich danach wieder aufbauen.
+            Der Aufbau des Caches kann unter Umständen mehrere Tage benötigen.
+            ]]></de>
+        </locale>
+        <locale name="message.long.term.cache.clear.success">
+            <de><![CDATA[Der Langzeitcache wurde erfolgreich gelöscht.]]></de>
+        </locale>
     </groups>
 
     <groups name="quiqqer/controls" datatype="php,js">

@@ -53,6 +53,10 @@ QUI::$Ajax->registerFunction(
         if (isset($params['quiqqer-packages']) && $params['quiqqer-packages'] == 1) {
             QUI\Cache\Manager::clearPackagesCache();
         }
+
+        if (isset($params['longterm']) && $params['longterm'] == 1) {
+            QUI\Cache\LongTermCache::clear();
+        }
     },
     ['params'],
     'Permission::checkSU'

@@ -9,11 +9,14 @@ define('controls/cache/LongTime', [
     'qui/QUI',
     'qui/controls/Control',
     'qui/controls/buttons/Button',
+    'qui/controls/windows/Confirm',
     'Ajax',
     'Locale'
 
-], function (QUI, QUIControl, QUIButton, QUIAjax, QUILocale) {
+], function (QUI, QUIControl, QUIButton, QUIConfirm, QUIAjax, QUILocale) {
     "use strict";
+
+    var lg = 'quiqqer/quiqqer';
 
     return new Class({
 
@@ -23,7 +26,8 @@ define('controls/cache/LongTime', [
         Binds: [
             '$onImport',
             '$onTypeChange',
-            'redisCheck'
+            'redisCheck',
+            'killLongTimeCache'
         ],
 
         initialize: function (Settings) {
@@ -57,6 +61,18 @@ define('controls/cache/LongTime', [
                 Table.setStyle('display', 'none');
             }
 
+            new Element('button', {
+                type  : 'buttons',
+                class : 'qui-button',
+                html  : 'Kompletten Langzeitcache leeren',
+                styles: {
+                    'float'     : 'right',
+                    marginBottom: 20
+                },
+                events: {
+                    click: this.killLongTimeCache
+                }
+            }).inject(this.getElm().getElement('table'), 'after');
 
             // type changing
             CacheType.addEventListener('change', this.$onTypeChange);
@@ -136,6 +152,39 @@ define('controls/cache/LongTime', [
             }, {
                 server: this.getElm().querySelector('[name="longtime.redis_server"]').value
             });
+        },
+
+        /**
+         * Opens the kill time cache window
+         */
+        killLongTimeCache: function () {
+            new QUIConfirm({
+                maxHeight  : 300,
+                maxWidth   : 600,
+                icon       : 'fa fa-ban',
+                texticon   : 'fa fa-ban',
+                title      : QUILocale.get(lg, 'window.long.term.cache.clear.title'),
+                information: QUILocale.get(lg, 'window.long.term.cache.clear.information'),
+                text       : QUILocale.get(lg, 'window.long.term.cache.clear.text'),
+                events     : {
+                    onSubmit: function (Win) {
+                        Win.Loader.show();
+
+                        QUIAjax.post('ajax_system_cache_clear', function () {
+                            Win.Loader.hide();
+                            Win.close();
+
+                            QUI.getMessageHandler().then(function (MH) {
+                                MH.addSuccess(
+                                    QUILocale.get(lg, 'message.long.term.cache.clear.success')
+                                );
+                            });
+                        }, {
+                            longterm: 1
+                        });
+                    }
+                }
+            }).open();
         }
     });
 });
