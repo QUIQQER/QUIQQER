@@ -79,6 +79,10 @@ define('controls/upload/Form', [
          * @fires onChange [FileList, this]
          */
         initialize: function (options) {
+            if (typeof options === 'undefined') {
+                options = {};
+            }
+
             if (typeof options.params !== 'undefined') {
                 this.setParams(options.params);
             }
