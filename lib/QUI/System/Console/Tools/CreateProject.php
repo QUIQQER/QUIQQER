@@ -108,7 +108,6 @@ class CreateProject extends QUI\System\Console\Tool
 
                 if (!isset($composerData['type']) ||
                     $composerData['type'] !== 'quiqqer-template') {
-
                     $this->writeLn('This template doesn \'t exists!', 'red');
                     $this->resetColor();
                     $this->writeLn('', '');
@@ -124,7 +123,7 @@ class CreateProject extends QUI\System\Console\Tool
 
         // demodata
         $this->write('Should demo data be used? [Y/n] :');
-        $demoData = true;
+        $demoData    = true;
         $useDemoData = $this->readInput();
 
         if ($useDemoData === 'n') {
