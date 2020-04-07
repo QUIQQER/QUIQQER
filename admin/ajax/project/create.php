@@ -26,14 +26,14 @@ QUI::$Ajax->registerFunction(
             ]);
 
             $template = $params['template'];
-            $template = \QUI\Utils\Security\Orthos::removeHTML($template);
-            $template = \QUI\Utils\Security\Orthos::clearPath($template);
+            $template = QUI\Utils\Security\Orthos::removeHTML($template);
+            $template = QUI\Utils\Security\Orthos::clearPath($template);
             $Config->set($Project->getName(), 'template', $template);
             $Config->save();
         }
 
-        if (isset($params['demodata']) && $params['demodata']) {
-            \QUI\Utils\Project::applyDemoDataToProject($Project, $template);
+        if (isset($params['demodata']) && $params['demodata'] && isset($template)) {
+            QUI\Utils\Project::applyDemoDataToProject($Project, $template);
         }
 
         return $Project->getName();
