@@ -20,7 +20,7 @@ QUI::$Ajax->registerFunction(
         if (isset($params['template']) && !empty($params['template'])) {
             $Config = QUI::getProjectManager()->getConfig();
 
-            $installedTemplates = QUI::getPackageManager()->getInstalled([
+            $installedTemplates = QUI::getPackageManager()->searchInstalledPackages([
                 'type' => 'quiqqer-template'
             ]);
 
