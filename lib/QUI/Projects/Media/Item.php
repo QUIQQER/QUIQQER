@@ -224,7 +224,14 @@ abstract class Item extends QUI\QDOM
             return $this->title[$current];
         }
 
-        return \reset($this->title);
+        \reset($this->title);
+        $current = \current($this->title);
+        
+        if (empty($current)) {
+            return '';
+        }
+
+        return $current;
     }
 
     /**
@@ -261,7 +268,14 @@ abstract class Item extends QUI\QDOM
             return $this->description[$current];
         }
 
-        return \reset($this->description);
+        \reset($this->description);
+        $current = \current($this->description);
+
+        if (empty($current)) {
+            return '';
+        }
+
+        return $current;
     }
 
     /**
