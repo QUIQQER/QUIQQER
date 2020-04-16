@@ -57,6 +57,10 @@ class PackageEvents
                 ]
             );
         }
+
+        QUI\Cache\Manager::clearPackagesCache();
+        QUI\Cache\Manager::clearSettingsCache();
+        QUI\Cache\Manager::clearCompleteQuiqqerCache();
     }
 
     /**
@@ -97,6 +101,10 @@ class PackageEvents
                 ]
             );
         }
+
+        QUI\Cache\Manager::clearPackagesCache();
+        QUI\Cache\Manager::clearSettingsCache();
+        QUI\Cache\Manager::clearCompleteQuiqqerCache();
     }
 
     /**
@@ -126,6 +134,10 @@ class PackageEvents
                 ]
             );
         }
+
+        QUI\Cache\Manager::clearPackagesCache();
+        QUI\Cache\Manager::clearSettingsCache();
+        QUI\Cache\Manager::clearCompleteQuiqqerCache();
     }
 
     /**

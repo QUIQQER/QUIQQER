@@ -854,9 +854,6 @@ class Package extends QUI\QDOM
             $this->setup();
         }
 
-        QUI\Cache\Manager::clearSettingsCache();
-        QUI\Cache\Manager::clearCompleteQuiqqerCache();
-
         QUI::getEvents()->fireEvent('packageInstallAfter', [$this]);
     }
 
