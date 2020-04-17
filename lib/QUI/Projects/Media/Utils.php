@@ -479,8 +479,11 @@ class Utils
                 continue;
             }
 
-            $value = \ForceUTF8\Encoding::toUTF8($value);
-            $img   .= \htmlspecialchars($key).'="'.$value.'" ';
+            if ($key === 'alt' || $key === 'title') {
+                $value = \ForceUTF8\Encoding::toUTF8($value);
+            }
+
+            $img .= \htmlspecialchars($key).'="'.$value.'" ';
         }
 
         $img .= ' src="'.$host.\htmlspecialchars($src).'" />';
