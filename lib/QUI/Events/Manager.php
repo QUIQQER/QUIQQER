@@ -74,7 +74,8 @@ class Manager implements QUI\Interfaces\Events
                 $this->Events->addEvent(
                     $params['event'],
                     $params['callback'],
-                    isset($params['priority']) ? $params['priority'] : 0
+                    isset($params['priority']) ? $params['priority'] : 0,
+                    isset($params['package']) ? $params['package'] : ''
                 );
             }
 
@@ -180,14 +181,14 @@ class Manager implements QUI\Interfaces\Events
      * If $fn is a string, the event would be save in the database
      * if you want to register events for the runtime, please use lambda function
      *
-     * @example $EventManager->addEvent('myEvent', function() { });
-     *
      * @param string $event - The type of event (e.g. 'complete').
      * @param string|callable $fn - The function to execute.
      * @param string $package - Name of the package
      * @param int $priority - Event priority
      *
      * @throws QUI\Exception
+     * @example $EventManager->addEvent('myEvent', function() { });
+     *
      */
     public function addEvent($event, $fn, $package = '', $priority = 0)
     {
@@ -211,14 +212,14 @@ class Manager implements QUI\Interfaces\Events
     /**
      * Adds an site event entry
      *
-     * @example $EventManager->addEvent('onSave', '\Namespace\Class::exec', 'quiqqer/blog:blog/entry' });
-     *
      * @param string $event - The type of event (e.g. 'complete').
      * @param callable $fn - The function to execute.
      * @param string $siteType - type of the site
      * @param int $priority - Event priority
      *
      * @throws QUI\Exception
+     * @example $EventManager->addEvent('onSave', '\Namespace\Class::exec', 'quiqqer/blog:blog/entry' });
+     *
      */
     public function addSiteEvent($event, $fn, $siteType, $priority = 0)
     {
@@ -299,8 +300,6 @@ class Manager implements QUI\Interfaces\Events
     /**
      * (non-PHPdoc)
      *
-     * @see \QUI\Interfaces\Events::fireEvent()
-     *
      * @param string $event - The type of event (e.g. 'onComplete').
      * @param array|boolean $args - (optional) the argument(s) to pass to the function.
      *                          The arguments must be in an array.
@@ -309,6 +308,8 @@ class Manager implements QUI\Interfaces\Events
      *
      * @throws QUI\Exception
      * @throws QUI\ExceptionStack
+     * @see \QUI\Interfaces\Events::fireEvent()
+     *
      */
     public function fireEvent($event, $args = false, $force = false)
     {
@@ -323,4 +324,27 @@ class Manager implements QUI\Interfaces\Events
 
         return $this->Events->fireEvent($event, $fireArgs, $force);
     }
+
+
+    //region ignore
+
+    /**
+     * sets which package names should be ignored at a fire event
+     *
+     * @param $packageName
+     */
+    public function ignore($packageName)
+    {
+        $this->Events->ignore($packageName);
+    }
+
+    /**
+     * Resets the ignore list
+     */
+    public function clearIgnore()
+    {
+        $this->Events->clearIgnore();
+    }
+
+    //endregion
 }

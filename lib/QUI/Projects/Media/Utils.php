@@ -479,10 +479,8 @@ class Utils
                 continue;
             }
 
-            $value = \htmlspecialchars($value, ENT_COMPAT, 'UTF-8');
-            $value = \htmlentities($value);
-
-            $img .= \htmlspecialchars($key).'="'.$value.'" ';
+            $value = \ForceUTF8\Encoding::toUTF8($value);
+            $img   .= \htmlspecialchars($key).'="'.$value.'" ';
         }
 
         $img .= ' src="'.$host.\htmlspecialchars($src).'" />';

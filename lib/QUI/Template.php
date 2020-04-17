@@ -363,6 +363,14 @@ class Template extends QUI\QDOM
     }
 
     /**
+     * @return Package\Package|null
+     */
+    public function getTemplatePackage()
+    {
+        return $this->TemplatePackage;
+    }
+
+    /**
      * Return a template output
      *
      * @param string $template - Path to a template
