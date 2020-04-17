@@ -112,12 +112,13 @@ class Output extends Singleton
 
         // picture elements
         \libxml_use_internal_errors(true);
-        $Dom = new \DOMDocument();
+        $Dom  = new \DOMDocument();
+        $meta = '<?xml encoding="utf-8" ?>';
 
         if (\strpos($content, '<body') === false) {
-            $Dom->loadHTML('<?xml encoding="utf-8" ?><html><body>'.$content.'</body></html>');
+            $Dom->loadHTML($meta.'<html><body>'.$content.'</body></html>');
         } else {
-            $Dom->loadHTML('<?xml encoding="utf-8" ?>'.$content);
+            $Dom->loadHTML($meta.$content);
         }
 
         \libxml_clear_errors();
@@ -140,7 +141,15 @@ class Output extends Singleton
             }
 
             $d = new \DOMDocument();
-            $d->loadHTML($html);
+
+            $d->loadHTML(
+                \mb_convert_encoding(
+                    $html,
+                    'HTML-ENTITIES',
+                    'UTF-8'
+                )
+            );
+
             $p = $d->getElementsByTagName('picture');
 
             if ($p->length) {
