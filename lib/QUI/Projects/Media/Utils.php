@@ -479,7 +479,7 @@ class Utils
                 continue;
             }
 
-            $value = \ForceUTF8\Encoding::toUTF8($value, ENT_COMPAT, 'UTF-8');
+            $value = \ForceUTF8\Encoding::toUTF8($value);
             $img   .= \htmlspecialchars($key).'="'.$value.'" ';
         }
 
