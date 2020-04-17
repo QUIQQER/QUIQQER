@@ -30,6 +30,11 @@ class Event implements QUI\Interfaces\Events
     protected $currentRunning = [];
 
     /**
+     * @var array
+     */
+    protected $ignore = [];
+
+    /**
      * (non-PHPdoc)
      *
      * @see \QUI\Interfaces\Events::getList()
@@ -42,13 +47,15 @@ class Event implements QUI\Interfaces\Events
     /**
      * (non-PHPdoc)
      *
-     * @see \QUI\Interfaces\Events::addEvent()
-     *
      * @param string $event - The type of event (e.g. 'complete').
      * @param callable $fn - The function to execute.
      * @param int $priority - optional, Priority of the event
+     * @param string $package - optional, name of the package
+     *
+     * @see \QUI\Interfaces\Events::addEvent()
+     *
      */
-    public function addEvent($event, $fn, $priority = 0)
+    public function addEvent($event, $fn, $priority = 0, $package = '')
     {
         if (!isset($this->events[$event])) {
             $this->events[$event] = [];
@@ -63,20 +70,26 @@ class Event implements QUI\Interfaces\Events
 
         $this->events[$event][] = [
             'callable' => $fn,
-            'priority' => $priority
+            'priority' => $priority,
+            'package'  => $package
         ];
     }
 
     /**
      * (non-PHPdoc)
      *
+     * @param array $events
      * @see \QUI\Interfaces\Events::addEvents()
      *
-     * @param array $events
      */
     public function addEvents(array $events)
     {
         foreach ($events as $event => $fn) {
+            if (\is_array($fn)) {
+                $this->addEvent($event, $fn[0], $fn[1], $fn[2]);
+                continue;
+            }
+
             $this->addEvent($event, $fn);
         }
     }
@@ -84,10 +97,10 @@ class Event implements QUI\Interfaces\Events
     /**
      * (non-PHPdoc)
      *
-     * @see \QUI\Interfaces\Events::removeEvent()
-     *
      * @param string $event - The type of event (e.g. 'complete').
      * @param callable|boolean $fn - (optional) The function to remove.
+     * @see \QUI\Interfaces\Events::removeEvent()
+     *
      */
     public function removeEvent($event, $fn = false)
     {
@@ -111,9 +124,9 @@ class Event implements QUI\Interfaces\Events
     /**
      * (non-PHPdoc)
      *
+     * @param array $events - (optional) If not passed removes all events of all types.
      * @see \QUI\Interfaces\Events::removeEvents()
      *
-     * @param array $events - (optional) If not passed removes all events of all types.
      */
     public function removeEvents(array $events)
     {
@@ -125,8 +138,6 @@ class Event implements QUI\Interfaces\Events
     /**
      * (non-PHPdoc)
      *
-     * @see \QUI\Interfaces\Events::fireEvent()
-     *
      * @param string $event - The type of event (e.g. 'onComplete').
      * @param array|boolean $args - (optional) the argument(s) to pass to the function.
      *                            The arguments must be in an array.
@@ -135,6 +146,8 @@ class Event implements QUI\Interfaces\Events
      * @return array - Event results, assoziative array
      *
      * @throws QUI\ExceptionStack
+     * @see \QUI\Interfaces\Events::fireEvent()
+     *
      */
     public function fireEvent($event, $args = false, $force = false)
     {
@@ -173,7 +186,12 @@ class Event implements QUI\Interfaces\Events
 
         // execute events
         foreach ($events as $data) {
-            $fn = $data['callable'];
+            $fn  = $data['callable'];
+            $pkg = $data['package'];
+
+            if (isset($this->ignore[$pkg])) {
+                continue;
+            }
 
             try {
                 if (!\is_string($fn)) {
@@ -233,4 +251,26 @@ class Event implements QUI\Interfaces\Events
 
         return $results;
     }
+
+    //region ignore
+
+    /**
+     * sets which package names should be ignored at a fire event
+     *
+     * @param $packageName
+     */
+    public function ignore($packageName)
+    {
+        $this->ignore[$packageName] = true;
+    }
+
+    /**
+     * Resets the ignore list
+     */
+    public function clearIgnore()
+    {
+        $this->ignore = [];
+    }
+
+    //endregion
 }
