@@ -46,7 +46,7 @@
     "quiqqer\/composer": ">=1.4.2|dev-master|dev-dev",
     "quiqqer\/controls": "^1.1.1|dev-master|dev-dev",
     "quiqqer\/dashboard": "1.*|dev-master|dev-dev",
-    "quiqqer\/qui": ">=1|dev-master|dev-dev",
+    "quiqqer\/qui": ">=1|dev-master|dev-dev|dev-mootools16",
     "quiqqer\/qui-php": ">=0.12|dev-master|dev-dev",
     "quiqqer\/smarty3": "1.*|dev-master|dev-dev",
     "quiqqer\/ckeditor4": "2.*|1.*|dev-master|dev-dev",
