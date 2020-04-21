@@ -855,6 +855,14 @@ class QUI
             }
         }
 
+        if (self::$Locale->getCurrent() === '') {
+            $language = self::conf('globals', 'standardLanguage');
+
+            if (!empty($language)) {
+                self::$Locale->setCurrent($language);
+            }
+        }
+
         return self::$Locale;
     }
 
