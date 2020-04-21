@@ -296,6 +296,11 @@ define('controls/workspace/Manager', [
          * @param {Object} Column - qui/controls/desktop/Column, Parent Column
          */
         appendControlToColumn: function (panelRequire, Column) {
+            if (!panelRequire) {
+                console.error('empty appendControlToColumn');
+                return;
+            }
+
             require([panelRequire], function (Cls) {
                 if (QUI.Controls.isControl(Cls)) {
                     Column.appendChild(Cls);
@@ -303,6 +308,11 @@ define('controls/workspace/Manager', [
                 }
 
                 Column.appendChild(new Cls());
+            }, function (err) {
+                console.error({
+                    err         : err,
+                    panelRequire: panelRequire
+                });
             });
         },
 
@@ -1244,8 +1254,8 @@ define('controls/workspace/Manager', [
                         var click = function (event) {
                             var Target = event.target;
 
-                            if (Target.nodeName !== 'div') {
-                                Target = Target.getParent('div');
+                            if (!Target.hasClass('qui-controls-workspace-panelList-panel')) {
+                                Target = Target.getParent('.qui-controls-workspace-panelList-panel');
                             }
 
                             self.appendControlToColumn(

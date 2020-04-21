@@ -829,7 +829,7 @@ class Rewrite
             $Project = false;
         }
 
-        if ($Project && is_object($Project)) {
+        if ($Project && \is_object($Project)) {
             $this->project = $Project;
 
             return $this->project;
