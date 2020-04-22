@@ -3344,6 +3344,7 @@ define('controls/grid/Grid', [
                 }.bind(this)
 
             }).start({
+                target: this.getElm(),
                 page: {
                     x: mx,
                     y: my

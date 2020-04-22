@@ -2096,7 +2096,8 @@ define('controls/projects/project/media/Panel', [
                 }
 
             }).start({
-                page: {
+                target: Elm,
+                page  : {
                     x: mx,
                     y: my
                 }
