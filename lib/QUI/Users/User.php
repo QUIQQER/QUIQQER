@@ -1752,17 +1752,21 @@ class User implements QUI\Interfaces\Users\User
     /**
      * (non-PHPdoc)
      *
+     * @param QUI\Interfaces\Users\User $PermissionUser (optional)
+     * @return true
+     *
      * @throws QUI\Permissions\Exception
-     * @throws QUI\Users\Exception
      * @throws QUI\Exception
      *
      * @see QUI\Interfaces\Users\User::delete()
      */
-    public function delete()
+    public function delete($PermissionUser = null)
     {
-        $SessionUser = QUI::getUserBySession();
+        if (empty($PermissionUser)) {
+            $PermissionUser = QUI::getUserBySession();
+        }
 
-        $this->checkDeletePermission();
+        $this->checkDeletePermission($PermissionUser);
 
         // Pluginerweiterungen - onDelete Event
         QUI::getEvents()->fireEvent('userDelete', [$this]);
@@ -1780,8 +1784,8 @@ class User implements QUI\Interfaces\Users\User
             [
                 'deletedUserId'   => $this->getId(),
                 'deletedUsername' => $this->getUsername(),
-                'executeUserId'   => $SessionUser->getId(),
-                'executeUsername' => $SessionUser->getUsername()
+                'executeUserId'   => $PermissionUser->getId(),
+                'executeUsername' => $PermissionUser->getUsername()
             ],
             'user'
         );
