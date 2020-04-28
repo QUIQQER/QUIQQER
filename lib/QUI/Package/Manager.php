@@ -441,6 +441,9 @@ class Manager extends QUI\QDOM
             'post-update-cmd'        => [
                 'QUI\\Package\\Composer\\CommandEvents::postUpdate'
             ],
+            'pre-command-run' => [
+                'QUI\\Package\\Composer\\CommandEvents::preCommandRun'
+            ],
             // package events
             'pre-package-install'    => [
                 'QUI\\Package\\Composer\\PackageEvents::prePackageInstall'
