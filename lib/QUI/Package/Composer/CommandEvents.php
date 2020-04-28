@@ -101,6 +101,10 @@ class CommandEvents
      */
     public static function preCommandRun(PreCommandRunEvent $Event)
     {
+        if (\php_sapi_name() !== 'cli') {
+            return;
+        }
+
         $command = $Event->getCommand();
 
         if ($command !== 'require' && $command !== "remove") {
