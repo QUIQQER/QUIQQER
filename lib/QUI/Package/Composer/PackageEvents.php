@@ -58,8 +58,6 @@ class PackageEvents
             );
         }
 
-        QUI\System\Log::writeRecursive('postPackageInstall -----------------');
-
         QUI\Cache\Manager::clearPackagesCache();
         QUI\Cache\Manager::clearSettingsCache();
         QUI\Cache\Manager::clearCompleteQuiqqerCache();
@@ -137,8 +135,6 @@ class PackageEvents
             );
         }
 
-        QUI\System\Log::writeRecursive('prePackageUninstall -----------------');
-
         QUI\Cache\Manager::clearPackagesCache();
         QUI\Cache\Manager::clearSettingsCache();
         QUI\Cache\Manager::clearCompleteQuiqqerCache();
@@ -151,8 +147,6 @@ class PackageEvents
      */
     public static function postPackageUninstall(PackageEvent $Event)
     {
-        QUI\System\Log::writeRecursive('postPackageUninstall -----------------');
-
         QUI\Cache\Manager::clearPackagesCache();
         QUI\Cache\Manager::clearSettingsCache();
         QUI\Cache\Manager::clearCompleteQuiqqerCache();
