@@ -696,7 +696,7 @@ define('controls/users/Panel', [
                 return;
             }
 
-            if (Switch.getStatus() === false) {
+            if (!Switch.getStatus()) {
                 new QUIConfirm({
                     title      : QUILocale.get(lg, 'users.panel.deactivate.window.title'),
                     text       : QUILocale.get(lg, 'users.panel.deactivate.window.text', {
