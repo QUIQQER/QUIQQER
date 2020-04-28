@@ -110,6 +110,10 @@ define('controls/menu/Manager', [
                 Menu   = document.getElement('.qui-menu-container'),
                 letter = USER.name.substr(0, 1);
 
+            if (!self.$Profile) {
+                return;
+            }
+
             var ContextMenu = self.$Profile.getContextMenu();
 
             ContextMenu.addEvent('blur', function () {
