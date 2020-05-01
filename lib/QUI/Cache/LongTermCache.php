@@ -219,8 +219,17 @@ class LongTermCache
                     $database = 'mongodb://'.$database;
                 }
 
+                if (!empty($conf['mongo_username']) && !empty($conf['mongo_password'])) {
+                    $Client = new \MongoDB\Client($database, [
+                        "username" => $conf['mongo_username'],
+                        "password" => $conf['mongo_password']
+                    ]);
+                } else {
+                    $Client = new \MongoDB\Client($database);
+                }
+
                 self::$Driver = new QuiqqerMongoDriver([
-                    'mongo'      => new \MongoDB\Client($database),
+                    'mongo'      => $Client,
                     'database'   => $database,
                     'collection' => $collection
                 ]);

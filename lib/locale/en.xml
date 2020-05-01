@@ -2657,6 +2657,12 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="quiqqer.settings.longTimeCache.mongo.server">
             <en><![CDATA[MongoDB Server]]></en>
         </locale>
+        <locale name="quiqqer.settings.longTimeCache.mongo.username">
+            <en><![CDATA[MongoDB Username]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.mongo.password">
+            <en><![CDATA[MongoDB Password]]></en>
+        </locale>
         <locale name="quiqqer.settings.longTimeCache.mongo_collection.server">
             <en><![CDATA[MongoDB Collection]]></en>
         </locale>

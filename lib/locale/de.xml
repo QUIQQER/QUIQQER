@@ -2714,6 +2714,12 @@
         <locale name="quiqqer.settings.longTimeCache.mongo.server">
             <de><![CDATA[MongoDB Server]]></de>
         </locale>
+        <locale name="quiqqer.settings.longTimeCache.mongo.username">
+            <de><![CDATA[MongoDB Bentzername]]></de>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.mongo.password">
+            <de><![CDATA[MongoDB Passwort]]></de>
+        </locale>
         <locale name="quiqqer.settings.longTimeCache.mongo_collection.server">
             <de><![CDATA[MongoDB Collection]]></de>
         </locale>

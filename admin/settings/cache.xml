@@ -80,6 +80,12 @@
                 <conf name="mongo_collection">
                     <type><![CDATA[string]]></type>
                 </conf>
+                <conf name="mongo_username">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="mongo_password">
+                    <type><![CDATA[string]]></type>
+                </conf>
                 <conf name="file_path">
                     <type><![CDATA[string]]></type>
                 </conf>
@@ -307,6 +313,20 @@
                             <text>
                                 <locale group="quiqqer/quiqqer"
                                         var="quiqqer.settings.longTimeCache.mongo_collection.server"/>
+                            </text>
+                        </input>
+
+                        <input conf="longtime.mongo_username" type="text">
+                            <text>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.longTimeCache.mongo.username"/>
+                            </text>
+                        </input>
+
+                        <input conf="longtime.mongo_password" type="text">
+                            <text>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.longTimeCache.mongo.password"/>
                             </text>
                         </input>
                     </settings>
