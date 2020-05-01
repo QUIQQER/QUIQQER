@@ -348,6 +348,18 @@ define('classes/projects/project/media/panel/ContextMenu', [
                 return;
             }
 
+            var id, ids;
+
+            // check if its the same id
+            if (typeOf(Element) === 'element') {
+                ids = Element.get('data-ids').split(',');
+                id  = Droppable.get('data-id');
+
+                if (ids.length === 1 && ids[0] === id) {
+                    return;
+                }
+            }
+
             var self  = this,
                 Menu  = this.getPanel().getContextMenu(),
                 title = Droppable.get('title'),
@@ -449,8 +461,8 @@ define('classes/projects/project/media/panel/ContextMenu', [
             }
 
 
-            var ids = Element.get('data-ids').split(','),
-                id  = Droppable.get('data-id');
+            ids = Element.get('data-ids').split(',');
+            id  = Droppable.get('data-id');
 
             // show choices
             Menu.appendChild(
