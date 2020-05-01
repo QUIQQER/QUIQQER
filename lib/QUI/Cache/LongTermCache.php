@@ -202,37 +202,45 @@ class LongTermCache
                 break;
 
             case 'mongo':
-                $conf       = $Config->get('longtime');
-                $database   = 'localhost';
-                $collection = \md5(__FILE__);
-
-                // database server
-                if (!empty($conf['mongo_database'])) {
-                    $database = $conf['mongo_database'];
-                }
-
-                if (!empty($conf['mongo_collection'])) {
-                    $collection = $conf['mongo_collection'];
-                }
-
-                if (\strpos($database, 'mongodb://') === false) {
-                    $database = 'mongodb://'.$database;
-                }
-
-                if (!empty($conf['mongo_username']) && !empty($conf['mongo_password'])) {
-                    $Client = new \MongoDB\Client($database, [
-                        "username" => $conf['mongo_username'],
-                        "password" => $conf['mongo_password']
-                    ]);
+                if (!class_exists('\MongoDB\Client')) {
+                    QUI\System\Log::write(
+                        'Mongo DB Driver not found. 
+                        Please install MongoDB\Client (php MongoDB extension) or don\'t use MongoDB as long term cache',
+                        QUI\System\Log::LEVEL_ALERT
+                    );
                 } else {
-                    $Client = new \MongoDB\Client($database);
-                }
+                    $conf       = $Config->get('longtime');
+                    $database   = 'localhost';
+                    $collection = \md5(__FILE__);
 
-                self::$Driver = new QuiqqerMongoDriver([
-                    'mongo'      => $Client,
-                    'database'   => $database,
-                    'collection' => $collection
-                ]);
+                    // database server
+                    if (!empty($conf['mongo_database'])) {
+                        $database = $conf['mongo_database'];
+                    }
+
+                    if (!empty($conf['mongo_collection'])) {
+                        $collection = $conf['mongo_collection'];
+                    }
+
+                    if (\strpos($database, 'mongodb://') === false) {
+                        $database = 'mongodb://'.$database;
+                    }
+
+                    if (!empty($conf['mongo_username']) && !empty($conf['mongo_password'])) {
+                        $Client = new \MongoDB\Client($database, [
+                            "username" => $conf['mongo_username'],
+                            "password" => $conf['mongo_password']
+                        ]);
+                    } else {
+                        $Client = new \MongoDB\Client($database);
+                    }
+
+                    self::$Driver = new QuiqqerMongoDriver([
+                        'mongo'      => $Client,
+                        'database'   => $database,
+                        'collection' => $collection
+                    ]);
+                }
 
                 break;
         }
