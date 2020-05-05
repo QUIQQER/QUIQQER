@@ -2714,6 +2714,9 @@
         <locale name="quiqqer.settings.longTimeCache.mongo.server">
             <de><![CDATA[MongoDB Server]]></de>
         </locale>
+        <locale name="quiqqer.settings.longTimeCache.mongo.database">
+            <de><![CDATA[MongoDB Datenbank]]></de>
+        </locale>
         <locale name="quiqqer.settings.longTimeCache.mongo.username">
             <de><![CDATA[MongoDB Bentzername]]></de>
         </locale>

@@ -210,10 +210,15 @@ class LongTermCache
                     );
                 } else {
                     $conf       = $Config->get('longtime');
-                    $database   = 'localhost';
+                    $host       = 'localhost';
+                    $database   = 'local';
                     $collection = \md5(__FILE__);
 
                     // database server
+                    if (!empty($conf['mongo_host'])) {
+                        $host = $conf['mongo_host'];
+                    }
+
                     if (!empty($conf['mongo_database'])) {
                         $database = $conf['mongo_database'];
                     }
@@ -222,17 +227,17 @@ class LongTermCache
                         $collection = $conf['mongo_collection'];
                     }
 
-                    if (\strpos($database, 'mongodb://') === false) {
-                        $database = 'mongodb://'.$database;
+                    if (\strpos($host, 'mongodb://') === false) {
+                        $host = 'mongodb://'.$host;
                     }
 
                     if (!empty($conf['mongo_username']) && !empty($conf['mongo_password'])) {
-                        $Client = new \MongoDB\Client($database, [
+                        $Client = new \MongoDB\Client($host, [
                             "username" => $conf['mongo_username'],
                             "password" => $conf['mongo_password']
                         ]);
                     } else {
-                        $Client = new \MongoDB\Client($database);
+                        $Client = new \MongoDB\Client($host);
                     }
 
                     self::$Driver = new QuiqqerMongoDriver([

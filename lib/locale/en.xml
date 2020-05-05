@@ -2654,6 +2654,9 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="quiqqer.settings.longTimeCache.mongo.title">
             <en><![CDATA[Long term cache with a Mongo DB]]></en>
         </locale>
+        <locale name="quiqqer.settings.longTimeCache.mongo.database">
+            <en><![CDATA[MongoDB Database]]></en>
+        </locale>
         <locale name="quiqqer.settings.longTimeCache.mongo.server">
             <en><![CDATA[MongoDB Server]]></en>
         </locale>

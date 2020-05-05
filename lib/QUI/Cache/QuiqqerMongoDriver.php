@@ -120,7 +120,7 @@ class QuiqqerMongoDriver extends AbstractDriver
     {
         return [
             'mongo'      => 'quiqqer',
-            'database'   => null,
+            'database'   => 'local',
             'collection' => 'quiqqer.store'
         ];
     }

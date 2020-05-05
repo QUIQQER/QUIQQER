@@ -74,6 +74,9 @@
                 <conf name="type">
                     <type><![CDATA[string]]></type>
                 </conf>
+                <conf name="mongo_host">
+                    <type><![CDATA[string]]></type>
+                </conf>
                 <conf name="mongo_database">
                     <type><![CDATA[string]]></type>
                 </conf>
@@ -303,9 +306,14 @@
                             <locale group="quiqqer/quiqqer" var="quiqqer.settings.longTimeCache.mongo.title"/>
                         </title>
 
-                        <input conf="longtime.mongo_database" type="text" placeholder="local">
+                        <input conf="longtime.mongo_host" type="text" placeholder="localhost">
                             <text>
                                 <locale group="quiqqer/quiqqer" var="quiqqer.settings.longTimeCache.mongo.server"/>
+                            </text>
+                        </input>
+                        <input conf="longtime.mongo_database" type="text" placeholder="local">
+                            <text>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.longTimeCache.mongo.database"/>
                             </text>
                         </input>
 
