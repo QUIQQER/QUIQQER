@@ -2669,7 +2669,7 @@
             <de><![CDATA[Dateisystem]]></de>
         </locale>
         <locale name="quiqqer.settings.longtime.mongo">
-            <de><![CDATA[Mongo-DB]]></de>
+            <de><![CDATA[MongoDB]]></de>
         </locale>
         <locale name="quiqqer.settings.longtime.redis">
             <de><![CDATA[Redis]]></de>
@@ -2709,22 +2709,22 @@
             ]]></de>
         </locale>
         <locale name="quiqqer.settings.longTimeCache.mongo.title">
-            <de><![CDATA[Langzeitcache mit einer Mongo-DB]]></de>
+            <de><![CDATA[Langzeitcache mit einer MongoDB]]></de>
         </locale>
         <locale name="quiqqer.settings.longTimeCache.mongo.server">
-            <de><![CDATA[MongoDB Server]]></de>
+            <de><![CDATA[Server]]></de>
         </locale>
         <locale name="quiqqer.settings.longTimeCache.mongo.database">
-            <de><![CDATA[MongoDB Datenbank]]></de>
+            <de><![CDATA[Datenbank]]></de>
         </locale>
         <locale name="quiqqer.settings.longTimeCache.mongo.username">
-            <de><![CDATA[MongoDB Bentzername]]></de>
+            <de><![CDATA[Bentzername]]></de>
         </locale>
         <locale name="quiqqer.settings.longTimeCache.mongo.password">
-            <de><![CDATA[MongoDB Passwort]]></de>
+            <de><![CDATA[Passwort]]></de>
         </locale>
         <locale name="quiqqer.settings.longTimeCache.mongo_collection.server">
-            <de><![CDATA[MongoDB Collection]]></de>
+            <de><![CDATA[Collection]]></de>
         </locale>
 
         <locale name="quiqqer.settings.cache.clear.quiqqer">
@@ -3191,6 +3191,9 @@
         <locale name="quiqqer.settings.cache.handler.filesystem">
             <de><![CDATA[Dateisystem]]></de>
         </locale>
+        <locale name="quiqqer.settings.cache.handler.mongo">
+            <de><![CDATA[MongoDB]]></de>
+        </locale>
         <locale name="quiqqer.settings.cache.handler.apc">
             <de><![CDATA[APC]]></de>
         </locale>
@@ -3250,6 +3253,25 @@
             Falls kein Pfad angegeben wurde, wird im standard VAR Ordner ein cache/stack/ Verzeichnis angelegt
             ]]></de>
         </locale>
+        <locale name="quiqqer.settings.mongo.title">
+            <de><![CDATA[MongoDB Cache Einstellungen]]></de>
+        </locale>
+        <locale name="quiqqer.settings.mongo.server">
+            <de><![CDATA[Server]]></de>
+        </locale>
+        <locale name="quiqqer.settings.mongo.database">
+            <de><![CDATA[Datenbank]]></de>
+        </locale>
+        <locale name="quiqqer.settings.mongo.collection">
+            <de><![CDATA[Collection Name]]></de>
+        </locale>
+        <locale name="quiqqer.settings.mongo.username">
+            <de><![CDATA[Benutzername]]></de>
+        </locale>
+        <locale name="quiqqer.settings.mongo.password">
+            <de><![CDATA[Passwort]]></de>
+        </locale>
+
         <locale name="quiqqer.settings.gui">
             <de><![CDATA[Oberfläche (GUI)]]></de>
         </locale>

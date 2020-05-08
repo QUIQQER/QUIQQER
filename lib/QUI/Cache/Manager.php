@@ -204,6 +204,14 @@ class Manager
                     }
 
                     break;
+
+                case 'mongo':
+                    try {
+                        \array_unshift($handlers, self::getDriver([], 'mongo'));
+                    } catch (Stash\Exception\RuntimeException $Exception) {
+                    }
+
+                    break;
             }
         }
 
@@ -343,6 +351,54 @@ class Manager
                 try {
                     return new Stash\Driver\Memcache($defaults);
                 } catch (Stash\Exception\RuntimeException $Exception) {
+                }
+
+                break;
+
+            case 'mongo':
+                if (!class_exists('\MongoDB\Client')) {
+                    QUI\System\Log::write(
+                        'Mongo DB Driver not found. 
+                        Please install MongoDB\Client (php MongoDB extension) or don\'t use MongoDB as long term cache',
+                        QUI\System\Log::LEVEL_ALERT
+                    );
+                } else {
+                    $conf       = $Config->get('mongo');
+                    $host       = 'localhost';
+                    $database   = 'local';
+                    $collection = 'quiqqer.cache';
+
+                    // database server
+                    if (!empty($conf['host'])) {
+                        $host = $conf['host'];
+                    }
+
+                    if (!empty($conf['database'])) {
+                        $database = $conf['database'];
+                    }
+
+                    if (!empty($conf['collection'])) {
+                        $collection = $conf['collection'];
+                    }
+
+                    if (\strpos($host, 'mongodb://') === false) {
+                        $host = 'mongodb://'.$host;
+                    }
+
+                    if (!empty($conf['username']) && !empty($conf['password'])) {
+                        $Client = new \MongoDB\Client($host, [
+                            "username" => $conf['username'],
+                            "password" => $conf['password']
+                        ]);
+                    } else {
+                        $Client = new \MongoDB\Client($host);
+                    }
+
+                    return new QuiqqerMongoDriver([
+                        'mongo'      => $Client,
+                        'database'   => $database,
+                        'collection' => $collection
+                    ]);
                 }
 
                 break;

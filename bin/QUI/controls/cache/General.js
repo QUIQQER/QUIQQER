@@ -99,12 +99,14 @@ define('controls/cache/General', [
                 RedisTable = Elm.querySelector('[name="general.redis"]').getParent('table'),
                 APCTable   = Elm.querySelector('[name="apc.namespace"]').getParent('table'),
                 MemTable   = Elm.querySelector('[name="memcache.servers"]').getParent('table'),
+                MongoTable = Elm.querySelector('[name="mongo.host"]').getParent('table'),
                 FileTable  = Elm.querySelector('[name="filesystem.path"]').getParent('table');
 
             RedisTable.setStyle('display', 'none');
             APCTable.setStyle('display', 'none');
             MemTable.setStyle('display', 'none');
             FileTable.setStyle('display', 'none');
+            MongoTable.setStyle('display', 'none');
 
             switch (CacheType.value) {
                 case 'apc':
@@ -117,6 +119,10 @@ define('controls/cache/General', [
 
                 case 'redis':
                     RedisTable.setStyle('display', null);
+                    break;
+
+                case 'mongo':
+                    MongoTable.setStyle('display', null);
                     break;
 
                 default:

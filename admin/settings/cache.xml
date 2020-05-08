@@ -27,6 +27,9 @@
                 <conf name="redis">
                     <type><![CDATA[bool]]></type>
                 </conf>
+                <conf name="mongo">
+                    <type><![CDATA[bool]]></type>
+                </conf>
             </section>
 
             <section name="apc">
@@ -148,6 +151,9 @@
                             <option value="redis">
                                 <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.handler.redis"/>
                             </option>
+                            <option value="mongo">
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.handler.mongo"/>
+                            </option>
                         </select>
                     </settings>
 
@@ -231,6 +237,38 @@
                             <description>
                                 <locale group="quiqqer/quiqqer" var="quiqqer.settings.filesystem.path.description"/>
                             </description>
+                        </input>
+                    </settings>
+
+                    <settings title="mongo" name="mongo">
+                        <title>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.mongo.title"/>
+                        </title>
+
+                        <input conf="mongo.host" type="text" placeholder="localhost">
+                            <text>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.mongo.server"/>
+                            </text>
+                        </input>
+                        <input conf="mongo.database" type="text" placeholder="local">
+                            <text>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.mongo.database"/>
+                            </text>
+                        </input>
+                        <input conf="mongo.collection" type="text" placeholder="quiqqer.cache">
+                            <text>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.mongo.collection"/>
+                            </text>
+                        </input>
+                        <input conf="mongo.username" type="text">
+                            <text>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.mongo.username"/>
+                            </text>
+                        </input>
+                        <input conf="mongo.password" type="text">
+                            <text>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.mongo.password"/>
+                            </text>
                         </input>
                     </settings>
                 </category>

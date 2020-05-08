@@ -57,7 +57,8 @@ QUI::$Ajax->registerFunction(
                         'apc',
                         'filesystem',
                         'redis',
-                        'memcache'
+                        'memcache',
+                        'mongo'
                     ], 0);
 
                     if (isset($params['handlers'][$cacheType])) {
