@@ -212,7 +212,7 @@ class LongTermCache
                     $conf       = $Config->get('longtime');
                     $host       = 'localhost';
                     $database   = 'local';
-                    $collection = \md5(__FILE__);
+                    $collection = 'quiqqer.longterm';
 
                     // database server
                     if (!empty($conf['mongo_host'])) {
