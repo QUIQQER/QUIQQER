@@ -3271,6 +3271,21 @@
         <locale name="quiqqer.settings.mongo.password">
             <de><![CDATA[Passwort]]></de>
         </locale>
+        <locale name="message.quiqqer.mongo.missing">
+            <de><![CDATA[
+            MongoDB ist nicht verfügbar für dein System. Bitte installiere das mongodb/mongodb Paket und
+            zusätzlich die PHP MongoDB Erweiterung (https://www.php.net/manual/de/mongodb.setup.php).
+            ]]></de>
+        </locale>
+        <locale name="message.quiqqer.mongo.button">
+            <de><![CDATA[MongoDB Daten testen]]></de>
+        </locale>
+        <locale name="message.quiqqer.mongo.success">
+            <de><![CDATA[MongoDB konnte erfolgreich genutzt werden]]></de>
+        </locale>
+        <locale name="message.quiqqer.mongo.error">
+            <de><![CDATA[Ein Fehler ist aufgetreten. Daten konnten nicht in die MongoDB gespeichert werden.]]></de>
+        </locale>
 
         <locale name="quiqqer.settings.gui">
             <de><![CDATA[Oberfläche (GUI)]]></de>

@@ -2687,7 +2687,21 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="quiqqer.settings.mongo.password">
             <en><![CDATA[Password]]></en>
         </locale>
-
+        <locale name="message.quiqqer.mongo.missing">
+            <en><![CDATA[
+            MongoDB is not available for your system. Please install the mongodb/mongodb package
+            and additionally the PHP MongoDB extension (https://www.php.net/manual/de/mongodb.setup.php).
+            ]]></en>
+        </locale>
+        <locale name="message.quiqqer.mongo.button">
+            <en><![CDATA[Testing MongoDB data]]></en>
+        </locale>
+        <locale name="message.quiqqer.mongo.success">
+            <en><![CDATA[MongoDB could be used successfully]]></en>
+        </locale>
+        <locale name="message.quiqqer.mongo.error">
+            <en><![CDATA[An error has occurred. Data could not be saved to the MongoDB.]]></en>
+        </locale>
 
         <locale name="quiqqer.settings.cache.quiqqer.title">
             <en><![CDATA[QUIQQER System Cache]]></en>

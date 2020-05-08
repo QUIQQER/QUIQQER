@@ -356,10 +356,11 @@ class Manager
                 break;
 
             case 'mongo':
-                if (!class_exists('\MongoDB\Client')) {
+                if (!\class_exists('\MongoDB\Client')) {
                     QUI\System\Log::write(
                         'Mongo DB Driver not found. 
-                        Please install MongoDB\Client (php MongoDB extension) or don\'t use MongoDB as long term cache',
+                        Please install MongoDB\Client (php MongoDB extension) and the mongodb/mongodb package.
+                        Otherwise don\'t use MongoDB as caching method',
                         QUI\System\Log::LEVEL_ALERT
                     );
                 } else {
