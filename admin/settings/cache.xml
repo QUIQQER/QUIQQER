@@ -27,6 +27,9 @@
                 <conf name="redis">
                     <type><![CDATA[bool]]></type>
                 </conf>
+                <conf name="mongo">
+                    <type><![CDATA[bool]]></type>
+                </conf>
             </section>
 
             <section name="apc">
@@ -74,10 +77,19 @@
                 <conf name="type">
                     <type><![CDATA[string]]></type>
                 </conf>
+                <conf name="mongo_host">
+                    <type><![CDATA[string]]></type>
+                </conf>
                 <conf name="mongo_database">
                     <type><![CDATA[string]]></type>
                 </conf>
                 <conf name="mongo_collection">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="mongo_username">
+                    <type><![CDATA[string]]></type>
+                </conf>
+                <conf name="mongo_password">
                     <type><![CDATA[string]]></type>
                 </conf>
                 <conf name="file_path">
@@ -138,6 +150,9 @@
                             </option>
                             <option value="redis">
                                 <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.handler.redis"/>
+                            </option>
+                            <option value="mongo">
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.cache.handler.mongo"/>
                             </option>
                         </select>
                     </settings>
@@ -224,6 +239,38 @@
                             </description>
                         </input>
                     </settings>
+
+                    <settings title="mongo" name="mongo">
+                        <title>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.mongo.title"/>
+                        </title>
+
+                        <input conf="mongo.host" type="text" placeholder="localhost">
+                            <text>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.mongo.server"/>
+                            </text>
+                        </input>
+                        <input conf="mongo.database" type="text" placeholder="local">
+                            <text>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.mongo.database"/>
+                            </text>
+                        </input>
+                        <input conf="mongo.collection" type="text" placeholder="quiqqer.cache">
+                            <text>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.mongo.collection"/>
+                            </text>
+                        </input>
+                        <input conf="mongo.username" type="text">
+                            <text>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.mongo.username"/>
+                            </text>
+                        </input>
+                        <input conf="mongo.password" type="text">
+                            <text>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.mongo.password"/>
+                            </text>
+                        </input>
+                    </settings>
                 </category>
 
                 <category name="longtime" require="controls/cache/LongTime">
@@ -297,9 +344,14 @@
                             <locale group="quiqqer/quiqqer" var="quiqqer.settings.longTimeCache.mongo.title"/>
                         </title>
 
-                        <input conf="longtime.mongo_database" type="text" placeholder="local">
+                        <input conf="longtime.mongo_host" type="text" placeholder="localhost">
                             <text>
                                 <locale group="quiqqer/quiqqer" var="quiqqer.settings.longTimeCache.mongo.server"/>
+                            </text>
+                        </input>
+                        <input conf="longtime.mongo_database" type="text" placeholder="local">
+                            <text>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.longTimeCache.mongo.database"/>
                             </text>
                         </input>
 
@@ -307,6 +359,20 @@
                             <text>
                                 <locale group="quiqqer/quiqqer"
                                         var="quiqqer.settings.longTimeCache.mongo_collection.server"/>
+                            </text>
+                        </input>
+
+                        <input conf="longtime.mongo_username" type="text">
+                            <text>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.longTimeCache.mongo.username"/>
+                            </text>
+                        </input>
+
+                        <input conf="longtime.mongo_password" type="text">
+                            <text>
+                                <locale group="quiqqer/quiqqer"
+                                        var="quiqqer.settings.longTimeCache.mongo.password"/>
                             </text>
                         </input>
                     </settings>

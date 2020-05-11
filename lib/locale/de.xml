@@ -2669,7 +2669,7 @@
             <de><![CDATA[Dateisystem]]></de>
         </locale>
         <locale name="quiqqer.settings.longtime.mongo">
-            <de><![CDATA[Mongo-DB]]></de>
+            <de><![CDATA[MongoDB]]></de>
         </locale>
         <locale name="quiqqer.settings.longtime.redis">
             <de><![CDATA[Redis]]></de>
@@ -2709,13 +2709,22 @@
             ]]></de>
         </locale>
         <locale name="quiqqer.settings.longTimeCache.mongo.title">
-            <de><![CDATA[Langzeitcache mit einer Mongo-DB]]></de>
+            <de><![CDATA[Langzeitcache mit einer MongoDB]]></de>
         </locale>
         <locale name="quiqqer.settings.longTimeCache.mongo.server">
-            <de><![CDATA[MongoDB Server]]></de>
+            <de><![CDATA[Server]]></de>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.mongo.database">
+            <de><![CDATA[Datenbank]]></de>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.mongo.username">
+            <de><![CDATA[Bentzername]]></de>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.mongo.password">
+            <de><![CDATA[Passwort]]></de>
         </locale>
         <locale name="quiqqer.settings.longTimeCache.mongo_collection.server">
-            <de><![CDATA[MongoDB Collection]]></de>
+            <de><![CDATA[Collection]]></de>
         </locale>
 
         <locale name="quiqqer.settings.cache.clear.quiqqer">
@@ -3182,6 +3191,9 @@
         <locale name="quiqqer.settings.cache.handler.filesystem">
             <de><![CDATA[Dateisystem]]></de>
         </locale>
+        <locale name="quiqqer.settings.cache.handler.mongo">
+            <de><![CDATA[MongoDB]]></de>
+        </locale>
         <locale name="quiqqer.settings.cache.handler.apc">
             <de><![CDATA[APC]]></de>
         </locale>
@@ -3241,6 +3253,40 @@
             Falls kein Pfad angegeben wurde, wird im standard VAR Ordner ein cache/stack/ Verzeichnis angelegt
             ]]></de>
         </locale>
+        <locale name="quiqqer.settings.mongo.title">
+            <de><![CDATA[MongoDB Cache Einstellungen]]></de>
+        </locale>
+        <locale name="quiqqer.settings.mongo.server">
+            <de><![CDATA[Server]]></de>
+        </locale>
+        <locale name="quiqqer.settings.mongo.database">
+            <de><![CDATA[Datenbank]]></de>
+        </locale>
+        <locale name="quiqqer.settings.mongo.collection">
+            <de><![CDATA[Collection Name]]></de>
+        </locale>
+        <locale name="quiqqer.settings.mongo.username">
+            <de><![CDATA[Benutzername]]></de>
+        </locale>
+        <locale name="quiqqer.settings.mongo.password">
+            <de><![CDATA[Passwort]]></de>
+        </locale>
+        <locale name="message.quiqqer.mongo.missing">
+            <de><![CDATA[
+            MongoDB ist nicht verfügbar für dein System. Bitte installiere das mongodb/mongodb Paket und
+            zusätzlich die PHP MongoDB Erweiterung (https://www.php.net/manual/de/mongodb.setup.php).
+            ]]></de>
+        </locale>
+        <locale name="message.quiqqer.mongo.button">
+            <de><![CDATA[MongoDB Daten testen]]></de>
+        </locale>
+        <locale name="message.quiqqer.mongo.success">
+            <de><![CDATA[MongoDB konnte erfolgreich genutzt werden]]></de>
+        </locale>
+        <locale name="message.quiqqer.mongo.error">
+            <de><![CDATA[Ein Fehler ist aufgetreten. Daten konnten nicht in die MongoDB gespeichert werden.]]></de>
+        </locale>
+
         <locale name="quiqqer.settings.gui">
             <de><![CDATA[Oberfläche (GUI)]]></de>
         </locale>

@@ -2612,7 +2612,7 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             <en><![CDATA[File system]]></en>
         </locale>
         <locale name="quiqqer.settings.longtime.mongo">
-            <en><![CDATA[Mongo-DB]]></en>
+            <en><![CDATA[MongoDB]]></en>
         </locale>
         <locale name="quiqqer.settings.longtime.redis">
             <en><![CDATA[Redis]]></en>
@@ -2654,11 +2654,53 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="quiqqer.settings.longTimeCache.mongo.title">
             <en><![CDATA[Long term cache with a Mongo DB]]></en>
         </locale>
+        <locale name="quiqqer.settings.longTimeCache.mongo.database">
+            <en><![CDATA[Database]]></en>
+        </locale>
         <locale name="quiqqer.settings.longTimeCache.mongo.server">
-            <en><![CDATA[MongoDB Server]]></en>
+            <en><![CDATA[Server]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.mongo.username">
+            <en><![CDATA[Username]]></en>
+        </locale>
+        <locale name="quiqqer.settings.longTimeCache.mongo.password">
+            <en><![CDATA[Password]]></en>
         </locale>
         <locale name="quiqqer.settings.longTimeCache.mongo_collection.server">
-            <en><![CDATA[MongoDB Collection]]></en>
+            <en><![CDATA[Collection]]></en>
+        </locale>
+        <locale name="quiqqer.settings.mongo.title">
+            <en><![CDATA[MongoDB Cache settings]]></en>
+        </locale>
+        <locale name="quiqqer.settings.mongo.server">
+            <en><![CDATA[Server]]></en>
+        </locale>
+        <locale name="quiqqer.settings.mongo.database">
+            <en><![CDATA[Database]]></en>
+        </locale>
+        <locale name="quiqqer.settings.mongo.collection">
+            <en><![CDATA[Collection name]]></en>
+        </locale>
+        <locale name="quiqqer.settings.mongo.username">
+            <en><![CDATA[Username]]></en>
+        </locale>
+        <locale name="quiqqer.settings.mongo.password">
+            <en><![CDATA[Password]]></en>
+        </locale>
+        <locale name="message.quiqqer.mongo.missing">
+            <en><![CDATA[
+            MongoDB is not available for your system. Please install the mongodb/mongodb package
+            and additionally the PHP MongoDB extension (https://www.php.net/manual/de/mongodb.setup.php).
+            ]]></en>
+        </locale>
+        <locale name="message.quiqqer.mongo.button">
+            <en><![CDATA[Testing MongoDB data]]></en>
+        </locale>
+        <locale name="message.quiqqer.mongo.success">
+            <en><![CDATA[MongoDB could be used successfully]]></en>
+        </locale>
+        <locale name="message.quiqqer.mongo.error">
+            <en><![CDATA[An error has occurred. Data could not be saved to the MongoDB.]]></en>
         </locale>
 
         <locale name="quiqqer.settings.cache.quiqqer.title">
@@ -3083,6 +3125,9 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         </locale>
         <locale name="quiqqer.settings.cache.handler.filesystem">
             <en><![CDATA[Filesystem]]></en>
+        </locale>
+        <locale name="quiqqer.settings.cache.handler.mongo">
+            <en><![CDATA[MongoDB]]></en>
         </locale>
         <locale name="quiqqer.settings.cache.handler.apc">
             <en><![CDATA[APC]]></en>

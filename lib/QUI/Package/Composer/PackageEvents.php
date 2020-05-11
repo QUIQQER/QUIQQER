@@ -147,6 +147,9 @@ class PackageEvents
      */
     public static function postPackageUninstall(PackageEvent $Event)
     {
+        QUI\Cache\Manager::clearPackagesCache();
+        QUI\Cache\Manager::clearSettingsCache();
+        QUI\Cache\Manager::clearCompleteQuiqqerCache();
     }
 
     /**

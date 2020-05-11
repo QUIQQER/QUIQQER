@@ -93,7 +93,8 @@ define('controls/cache/LongTime', [
          * event: on type change
          */
         $onTypeChange: function () {
-            var Elm        = this.getElm(),
+            var self       = this,
+                Elm        = this.getElm(),
                 CacheType  = Elm.querySelector('[name="longtime.type"]'),
                 RedisTable = Elm.querySelector('[name="longtime.redis_server"]').getParent('table'),
                 FileTable  = Elm.querySelector('[name="longtime.file_path"]').getParent('table'),
@@ -106,6 +107,54 @@ define('controls/cache/LongTime', [
             switch (CacheType.value) {
                 case 'mongo':
                     MongoTable.setStyle('display', null);
+                    CacheType.disabled = true;
+
+                    // availability check
+                    this.checkMongoAvailability().then(function (availability) {
+                        CacheType.disabled = false;
+                        MongoTable.getElements('.mongo-error-message').destroy();
+                        MongoTable.getElements('.mongo-check-button').destroy();
+
+                        if (!availability) {
+                            var RowMessage = new Element('tr', {
+                                'class': 'mongo-error-message',
+                                html   : '<td>' +
+                                    '<div class="messages-message message-error">' +
+                                    QUILocale.get('quiqqer/quiqqer', 'message.quiqqer.mongo.missing') +
+                                    '</div>' +
+                                    '</td>'
+                            });
+
+                            RowMessage.inject(
+                                MongoTable.getElement('tbody'),
+                                'top'
+                            );
+
+                            return;
+                        }
+
+                        new Element('tr', {
+                            'class': 'mongo-check-button',
+                            html   : '<td>' +
+                                '<button class="qui-button" style="float: right">' +
+                                QUILocale.get('quiqqer/quiqqer', 'message.quiqqer.mongo.button') +
+                                '</button>' +
+                                '</td>'
+                        }).inject(MongoTable.getElement('tbody'));
+
+                        var Button = MongoTable.getElement('button');
+
+                        Button.addEvent('click', function () {
+                            Button.disabled = true;
+                            Button.set('html', '<span class="fa fa-spinner fa-spin"></span>');
+
+                            self.checkMongoDB().then(function () {
+                                Button.disabled = false;
+                                Button.set('html', QUILocale.get('quiqqer/quiqqer', 'message.quiqqer.mongo.button'));
+                            });
+                        });
+                    });
+
                     break;
 
                 case 'redis':
@@ -185,6 +234,43 @@ define('controls/cache/LongTime', [
                     }
                 }
             }).open();
+        },
+
+        /**
+         * Checks, if mongoDB can be used
+         *
+         * @return {Promise}
+         */
+        checkMongoAvailability: function () {
+            return new Promise(function (resolve) {
+                QUIAjax.get('ajax_system_cache_mongoAvailable', resolve);
+            });
+        },
+
+        /**
+         * Checks, if mongoDB can be used
+         *
+         * @return {Promise}
+         */
+        checkMongoDB: function () {
+            var Elm  = this.getElm(),
+                Form = Elm.querySelector('[name="longtime.mongo_host"]').getParent('form');
+
+            var collection = 'quiqqer.store';
+
+            if (Form.elements['longtime.mongo_collection'].value !== '') {
+                collection = Form.elements['longtime.mongo_collection'].value;
+            }
+
+            return new Promise(function (resolve) {
+                QUIAjax.get('ajax_system_cache_mongoCheck', resolve, {
+                    'host'      : Form.elements['longtime.mongo_host'].value,
+                    'database'  : Form.elements['longtime.mongo_database'].value,
+                    'collection': collection,
+                    'username'  : Form.elements['longtime.mongo_username'].value,
+                    'password'  : Form.elements['longtime.mongo_password'].value
+                });
+            });
         }
     });
 });

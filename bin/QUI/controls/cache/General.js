@@ -94,17 +94,20 @@ define('controls/cache/General', [
          * event: on type change
          */
         $onTypeChange: function () {
-            var Elm        = this.getElm(),
+            var self       = this,
+                Elm        = this.getElm(),
                 CacheType  = Elm.querySelector('[name="general.cacheType"]'),
                 RedisTable = Elm.querySelector('[name="general.redis"]').getParent('table'),
                 APCTable   = Elm.querySelector('[name="apc.namespace"]').getParent('table'),
                 MemTable   = Elm.querySelector('[name="memcache.servers"]').getParent('table'),
+                MongoTable = Elm.querySelector('[name="mongo.host"]').getParent('table'),
                 FileTable  = Elm.querySelector('[name="filesystem.path"]').getParent('table');
 
             RedisTable.setStyle('display', 'none');
             APCTable.setStyle('display', 'none');
             MemTable.setStyle('display', 'none');
             FileTable.setStyle('display', 'none');
+            MongoTable.setStyle('display', 'none');
 
             switch (CacheType.value) {
                 case 'apc':
@@ -117,6 +120,58 @@ define('controls/cache/General', [
 
                 case 'redis':
                     RedisTable.setStyle('display', null);
+                    break;
+
+                case 'mongo':
+                    MongoTable.setStyle('display', null);
+                    CacheType.disabled = true;
+
+                    // availability check
+                    this.checkMongoAvailability().then(function (availability) {
+                        CacheType.disabled = false;
+                        MongoTable.getElements('.mongo-error-message').destroy();
+                        MongoTable.getElements('.mongo-check-button').destroy();
+
+                        if (!availability) {
+                            var RowMessage = new Element('tr', {
+                                'class': 'mongo-error-message',
+                                html   : '<td>' +
+                                    '<div class="messages-message message-error">' +
+                                    QUILocale.get('quiqqer/quiqqer', 'message.quiqqer.mongo.missing') +
+                                    '</div>' +
+                                    '</td>'
+                            });
+
+                            RowMessage.inject(
+                                MongoTable.getElement('tbody'),
+                                'top'
+                            );
+
+                            return;
+                        }
+
+                        new Element('tr', {
+                            'class': 'mongo-check-button',
+                            html   : '<td>' +
+                                '<button class="qui-button" style="float: right">' +
+                                QUILocale.get('quiqqer/quiqqer', 'message.quiqqer.mongo.button') +
+                                '</button>' +
+                                '</td>'
+                        }).inject(MongoTable.getElement('tbody'));
+
+                        var Button = MongoTable.getElement('button');
+
+                        Button.addEvent('click', function () {
+                            Button.disabled = true;
+                            Button.set('html', '<span class="fa fa-spinner fa-spin"></span>');
+
+                            self.checkMongoDB().then(function () {
+                                Button.disabled = false;
+                                Button.set('html', QUILocale.get('quiqqer/quiqqer', 'message.quiqqer.mongo.button'));
+                            });
+                        });
+                    });
+
                     break;
 
                 default:
@@ -158,6 +213,37 @@ define('controls/cache/General', [
                 });
             }, {
                 server: this.getElm().querySelector('[name="general.redis"]').value
+            });
+        },
+
+        /**
+         * Checks, if mongoDB can be used
+         *
+         * @return {Promise}
+         */
+        checkMongoAvailability: function () {
+            return new Promise(function (resolve) {
+                QUIAjax.get('ajax_system_cache_mongoAvailable', resolve);
+            });
+        },
+
+        /**
+         * Checks, if mongoDB can be used
+         *
+         * @return {Promise}
+         */
+        checkMongoDB: function () {
+            var Elm  = this.getElm(),
+                Form = Elm.querySelector('[name="mongo.host"]').getParent('form');
+
+            return new Promise(function (resolve) {
+                QUIAjax.get('ajax_system_cache_mongoCheck', resolve, {
+                    'host'      : Form.elements['mongo.host'].value,
+                    'database'  : Form.elements['mongo.database'].value,
+                    'collection': Form.elements['mongo.collection'].value,
+                    'username'  : Form.elements['mongo.username'].value,
+                    'password'  : Form.elements['mongo.password'].value
+                });
             });
         }
     });

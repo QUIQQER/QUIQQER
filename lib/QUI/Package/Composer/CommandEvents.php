@@ -6,8 +6,9 @@
 
 namespace QUI\Package\Composer;
 
-use QUI;
+use Composer\Plugin\PreCommandRunEvent;
 use Composer\Script\Event;
+use QUI;
 
 /**
  * Class CommandEvents
@@ -89,5 +90,33 @@ class CommandEvents
         }
 
         QUI::load();
+    }
+
+    /**
+     * Called before every composer command.
+     * Using the commands require or remove causes cache inconsistencies.
+     * Therefore we tell the user how to prevent this.
+     *
+     * @param PreCommandRunEvent $Event
+     */
+    public static function preCommandRun(PreCommandRunEvent $Event)
+    {
+        if (\php_sapi_name() !== 'cli') {
+            return;
+        }
+
+        $command = $Event->getCommand();
+
+        if ($command !== 'require' && $command !== "remove") {
+            return;
+        }
+
+        echo PHP_EOL;
+
+        echo 'WARNING:' . PHP_EOL;
+        echo "Using the '{$command}' command might cause cache inconsistencies." . PHP_EOL;
+        echo "If the QUIQQER menu bar disappears, clear the cache." . PHP_EOL;
+        echo 'You should edit the composer.json directly and then execute a composer update.' . PHP_EOL;
+        echo PHP_EOL;
     }
 }
