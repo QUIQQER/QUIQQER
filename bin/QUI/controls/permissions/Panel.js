@@ -8,7 +8,9 @@ define('controls/permissions/Panel', [
 
     'qui/QUI',
     'qui/controls/desktop/Panel',
-    'Locale'
+    'Locale',
+
+    'css!controls/permissions/Panel.css'
 
 ], function (QUI, QUIPanel, QUILocale) {
     "use strict";
@@ -22,6 +24,7 @@ define('controls/permissions/Panel', [
 
         Binds: [
             '$onCreate',
+            '$onShow',
             'openUserPermissions',
             'openGroupPermissions',
             'openSitePermissions',
@@ -43,11 +46,11 @@ define('controls/permissions/Panel', [
             );
 
             this.setAttribute('icon', 'fa fa-shield');
-
             this.$PermissionControl = null;
 
             this.addEvents({
                 onCreate : this.$onCreate,
+                onShow   : this.$onShow,
                 onDestroy: function () {
                     if (this.$PermissionControl) {
                         this.$PermissionControl.destroy();
@@ -123,7 +126,12 @@ define('controls/permissions/Panel', [
             this.getContent().setStyles({
                 padding: 0
             });
+        },
 
+        /**
+         * event: on open
+         */
+        $onShow: function () {
             if (this.getAttribute('Object')) {
                 switch (typeOf(this.getAttribute('Object'))) {
                     case 'classes/users/User':
@@ -146,13 +154,15 @@ define('controls/permissions/Panel', [
                 }
             }
 
-            this.openWelcomeMessage().catch(function (err) {
-                console.error(err);
-            });
+            (function () {
+                this.openWelcomeMessage().catch(function (err) {
+                    console.error(err);
+                });
+            }).delay(200, this);
         },
 
         /**
-         * Shows the welcom message and close all permissions contrls
+         * Shows the welcome message and close all permissions controls
          *
          * @returns {Promise}
          */
@@ -162,25 +172,22 @@ define('controls/permissions/Panel', [
             return new Promise(function (resolve) {
                 self.$closeLastPermissionControl().then(function () {
                     var Container = new Element('div', {
-                        'class': 'controls-prmissions-panel-welcome',
-                        html   : QUILocale.get(lg, 'permissions.panel.welcome.message'),
-                        styles : {
-                            left    : '-100',
-                            opacity : 0,
-                            padding : 20,
-                            position: 'absolute',
-                            top     : 0
-                        }
+                        'class': 'controls-permissions-panel-welcome',
+                        html   : QUILocale.get(lg, 'permissions.panel.welcome.message')
                     }).inject(self.getContent());
 
+                    new Element('img', {
+                        src   : URL_OPT_DIR + 'quiqqer/quiqqer/bin/images/QMan/security.svg',
+                        styles: {
+                            width: 250
+                        }
+                    }).inject(Container);
+
                     moofx(Container).animate({
-                        left   : 0,
                         opacity: 1
                     }, {
                         duration: 250,
-                        equation: 'ease-in-out',
                         callback: function () {
-
                             self.getCategoryBar()
                                 .getChildren()
                                 .each(function (Category) {
@@ -262,7 +269,6 @@ define('controls/permissions/Panel', [
 
             self.$closeLastPermissionControl().then(function () {
                 return new Promise(function (resolve, reject) {
-
                     self.Loader.show();
 
                     var Button = false,
@@ -323,7 +329,9 @@ define('controls/permissions/Panel', [
                     });
                 });
             }).catch(function () {
-                self.openWelcomeMessage();
+                self.openWelcomeMessage().catch(function (e) {
+                    console.error(e);
+                });
             });
         },
 
@@ -338,13 +346,10 @@ define('controls/permissions/Panel', [
             if (Welcome) {
                 return new Promise(function (resolved) {
                     moofx(Welcome).animate({
-                        left   : '-100%',
                         opacity: 0
                     }, {
                         duration: 250,
-                        equation: 'ease-in-out',
                         callback: function () {
-
                             Welcome.destroy();
 
                             this.$PermissionControl = null;

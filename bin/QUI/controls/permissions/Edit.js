@@ -46,7 +46,7 @@ define('controls/permissions/Edit', [
 
                 this.$Status.set(
                     'html',
-                    QUILocale.get('quiqqer/system', 'permission.control.editcreate.title')
+                    QUILocale.get('quiqqer/quiqqer', 'permission.control.editcreate.title')
                 );
 
                 resolve();
@@ -59,8 +59,8 @@ define('controls/permissions/Edit', [
          */
         $onOpen: function () {
             new QUIButton({
-                text     : QUILocale.get('quiqqer/system', 'permission.control.btn.add.permission'),
-                title    : QUILocale.get('quiqqer/system', 'permission.control.btn.add.permission'),
+                text     : QUILocale.get('quiqqer/quiqqer', 'permission.control.btn.add.permission'),
+                title    : QUILocale.get('quiqqer/quiqqer', 'permission.control.btn.add.permission'),
                 textimage: 'fa fa-plus',
                 styles   : {
                     'float': 'right'
@@ -78,10 +78,10 @@ define('controls/permissions/Edit', [
             var self = this;
 
             new QUIPrompt({
-                title      : QUILocale.get('quiqqer/system', 'permissions.panel.window.add.title'),
+                title      : QUILocale.get('quiqqer/quiqqer', 'permissions.panel.window.add.title'),
                 icon       : 'fa fa-add',
-                text       : QUILocale.get('quiqqer/system', 'permissions.panel.window.add.text'),
-                information: QUILocale.get('quiqqer/system', 'permissions.panel.window.add.information'),
+                text       : QUILocale.get('quiqqer/quiqqer', 'permissions.panel.window.add.text'),
+                information: QUILocale.get('quiqqer/quiqqer', 'permissions.panel.window.add.information'),
                 autoclose  : false,
                 maxWidth   : 600,
                 maxHeight  : 400,
@@ -101,16 +101,16 @@ define('controls/permissions/Edit', [
                         var Area = new Element('select', {
                             name  : 'area',
                             html  : '<option value="">' +
-                                    QUILocale.get('quiqqer/system', 'permissions.panel.window.add.select.user') +
-                                    '</option>' +
-                                    '<option value="site">' +
-                                    QUILocale.get('quiqqer/system', 'permissions.panel.window.add.select.site') +
-                                    '</option>' +
-                                    '<option value="project">' +
-                                    QUILocale.get('quiqqer/system', 'permissions.panel.window.add.select.project') +
-                                    '</option>',
+                                QUILocale.get('quiqqer/quiqqer', 'permissions.panel.window.add.select.user') +
+                                '</option>' +
+                                '<option value="site">' +
+                                QUILocale.get('quiqqer/quiqqer', 'permissions.panel.window.add.select.site') +
+                                '</option>' +
+                                '<option value="project">' +
+                                QUILocale.get('quiqqer/quiqqer', 'permissions.panel.window.add.select.project') +
+                                '</option>',
                             //                                   '<option value="media">'+
-                            //                                       QUILocale.get('quiqqer/system', 'permissions.panel.window.add.select.media') +
+                            //                                       QUILocale.get('quiqqer/quiqqer', 'permissions.panel.window.add.select.media') +
                             //                                   '</option>',
                             styles: {
                                 width : 190,
@@ -121,13 +121,13 @@ define('controls/permissions/Edit', [
                         new Element('select', {
                             name  : 'type',
                             html  : '<option value="bool" selected="selected">bool</option>' +
-                                    '<option value="string">string</option>' +
-                                    '<option value="int">int</option>' +
-                                    '<option value="group">group</option>' +
-                                    '<option value="groups">groups</option>' +
-                                    '<option value="user">user</option>' +
-                                    '<option value="users">users</option>' +
-                                    '<option value="array">array</option>',
+                                '<option value="string">string</option>' +
+                                '<option value="int">int</option>' +
+                                '<option value="group">group</option>' +
+                                '<option value="groups">groups</option>' +
+                                '<option value="user">user</option>' +
+                                '<option value="users">users</option>' +
+                                '<option value="array">array</option>',
                             styles: {
                                 width : 100,
                                 margin: '10px 0 0 0'

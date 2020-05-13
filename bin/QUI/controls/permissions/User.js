@@ -13,7 +13,7 @@ define('controls/permissions/User', [
 ], function (Permission, QUIButton, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg = 'quiqqer/quiqqer';
 
 
     return new Class({
@@ -83,7 +83,7 @@ define('controls/permissions/User', [
 
             return new Promise(function (resolve) {
                 var Container = new Element('div', {
-                    'class': 'controls-permissions-select shadow',
+                    'class': 'controls-permissions-select',
                     styles : {
                         left   : '-100%',
                         opacity: 0
@@ -97,24 +97,32 @@ define('controls/permissions/User', [
                     duration: 250,
                     equation: 'ease-in-out',
                     callback: function () {
-                        require(['controls/users/Input'], function (Input) {
+                        require(['controls/users/Select'], function (Select) {
                             Container.set(
                                 'html',
-                                '<h2>' + QUILocale.get(lg, 'permissions.panel.select.user.title') + '</h2>'
+                                '<span class="controls-permissions-panel-headerIcon fa fa-user"></span>' +
+                                '<h2>' + QUILocale.get(lg, 'permissions.panel.select.user.title') + '</h2>' +
+                                QUILocale.get(lg, 'permissions.panel.select.user.description')
                             );
 
-                            self.$Input = new Input({
+                            var size  = Container.getSize(),
+                                width = Math.round(size.x / 3);
+
+                            if (width < 500) {
+                                width = 500;
+                            }
+
+                            self.$Input = new Select({
                                 max     : 1,
                                 multiple: false,
                                 styles  : {
-                                    'float': 'none',
-                                    margin : '0 auto',
-                                    width  : 200
+                                    marginTop: 40,
+                                    width    : width
                                 },
                                 events  : {
-                                    onAdd: function (UserSearch, userid) {
+                                    onChange: function (Instance) {
                                         require(['Users'], function (Users) {
-                                            self.$Bind = Users.get(userid);
+                                            self.$Bind = Users.get(Instance.getValue());
                                             self.refresh();
 
                                             moofx(Container).animate({
@@ -131,7 +139,7 @@ define('controls/permissions/User', [
                                         });
                                     }
                                 }
-                            }).inject(Container).focus();
+                            }).inject(Container);
                         });
                     }
                 });
@@ -143,8 +151,8 @@ define('controls/permissions/User', [
          */
         $onOpen: function () {
             new QUIButton({
-                text     : QUILocale.get('quiqqer/system', 'permission.control.btn.user.save'),
-                title    : QUILocale.get('quiqqer/system', 'permission.control.btn.user.save'),
+                text     : QUILocale.get('quiqqer/quiqqer', 'permission.control.btn.user.save'),
+                title    : QUILocale.get('quiqqer/quiqqer', 'permission.control.btn.user.save'),
                 textimage: 'fa fa-save',
                 styles   : {
                     'float': 'right'

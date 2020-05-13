@@ -1,0 +1,24 @@
+.controls-permissions-panel-welcome {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: center;
+    opacity: 0;
+    padding: 20px;
+    width: 100%;
+}
+
+.controls-permissions-panel-welcome img {
+    margin-top: 20px;
+}
+
+.controls-permissions-select .quiqqer-user-select .qui-elements-select-list {
+    display: none;
+}
+
+.controls-permissions-panel-headerIcon {
+    color: #efefef;
+    font-size: 120px;
+    margin-bottom: 40px;
+}

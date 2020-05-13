@@ -27,8 +27,7 @@ define('controls/permissions/Permission', [
 ], function (QUI, QUIControl, QUIButton, QUIConfirm, QUIObjectUtils, PermissionMap, ControlUtils, PermissionUtils, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/system';
-
+    var lg = 'quiqqer/quiqqer';
 
     return new Class({
 
@@ -133,14 +132,12 @@ define('controls/permissions/Permission', [
                             opacity: 0
                         }, {
                             duration: duration,
-                            equation: 'cubic-bezier(.42,.4,.46,1.29)',
                             callback: function () {
                                 moofx(self.$MapContainer).animate({
                                     opacity: 0,
-                                    left   : '-100%'
+                                    left   : '-10%'
                                 }, {
                                     duration: duration,
-                                    equation: 'cubic-bezier(.42,.4,.46,1.29)',
                                     callback: function () {
 
                                         if (!SelectSheet) {
@@ -150,10 +147,9 @@ define('controls/permissions/Permission', [
 
                                         moofx(SelectSheet).animate({
                                             opacity: 0,
-                                            left   : '-100%'
+                                            left   : '-10%'
                                         }, {
                                             duration: 250,
-                                            equation: 'ease-in-out',
                                             callback: function () {
                                                 SelectSheet.destroy();
                                                 response();
@@ -179,7 +175,6 @@ define('controls/permissions/Permission', [
             var self = this;
 
             return new Promise(function (response, reject) {
-
                 if (!self.$Bind) {
                     self.$openBindSelect().then(function () {
                         return self.open();
@@ -211,14 +206,12 @@ define('controls/permissions/Permission', [
                     width  : 240
                 }, {
                     duration: 250,
-                    equation: 'cubic-bezier(.42,.4,.46,1.29)',
                     callback: function () {
                         moofx(self.$ContentContainer).animate({
                             left   : 0,
                             opacity: 1
                         }, {
                             duration: 250,
-                            equation: 'cubic-bezier(.42,.4,.46,1.29)',
                             callback: function () {
                                 moofx(self.$Buttons).animate({
                                     opacity: 1
@@ -543,11 +536,11 @@ define('controls/permissions/Permission', [
             new QUIConfirm({
                 maxWidth   : 450,
                 maxHeight  : 300,
-                title      : QUILocale.get('quiqqer/system', 'permissions.panel.window.delete.title'),
-                text       : QUILocale.get('quiqqer/system', 'permissions.panel.window.delete.text', {
+                title      : QUILocale.get('quiqqer/quiqqer', 'permissions.panel.window.delete.title'),
+                text       : QUILocale.get('quiqqer/quiqqer', 'permissions.panel.window.delete.text', {
                     right: permission
                 }),
-                information: QUILocale.get('quiqqer/system', 'permissions.panel.window.delete.information', {
+                information: QUILocale.get('quiqqer/quiqqer', 'permissions.panel.window.delete.information', {
                     right: permission
                 }),
                 autoclose  : false,

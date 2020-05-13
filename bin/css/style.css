@@ -78,22 +78,26 @@ address .icon {
 }
 
 h1 {
-    font-size: 26px;
+    font-size: 34px;
+    font-weight: normal;
     margin: 0 0 20px;
 }
 
 h2 {
-    font-size: 24px;
+    font-size: 28px;
+    font-weight: normal;
     margin: 0 0 18px;
 }
 
 h3 {
-    font-size: 22px;
+    font-size: 24px;
+    font-weight: normal;
     margin: 0 0 16px;
 }
 
 h4 {
     font-size: 20px;
+    font-weight: normal;
     margin: 0 0 14px;
 }
 
