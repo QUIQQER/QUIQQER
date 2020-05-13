@@ -1493,7 +1493,7 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             <en><![CDATA[For which group want you to set the permissions?]]></en>
         </locale>
         <locale name="permissions.panel.select.group.description" html="true">
-            <de><![CDATA[Please select a group to set the access rights for this group.]]></de>
+            <en><![CDATA[Please select a group to set the access rights for this group.]]></en>
         </locale>
         <locale name="permissions.panel.select.user.title">
             <en><![CDATA[For which user want you to set the permissions?]]></en>
