@@ -106,17 +106,25 @@ define('controls/upload/File', [
             this.$result      = null;
             this.$error       = false;
 
-            this.$ContextMenu  = null;
-            this.$slice_method = 'slice';
+            this.$ContextMenu    = null;
+            this.$slice_method   = 'slice';
+            this.$__updateRanges = null;
 
             if ('mozSlice' in this.$File) {
                 this.$slice_method = 'mozSlice';
-            } else if ('webkitSlice' in this.$File) {
-                this.$slice_method = 'webkitSlice';
+            } else {
+                if ('webkitSlice' in this.$File) {
+                    this.$slice_method = 'webkitSlice';
+                }
             }
 
             this.$Request        = new XMLHttpRequest();
             this.$Request.onload = function () {
+                if (self.$__updateRanges) {
+                    self.$__updateRanges();
+                    self.$__updateRanges = null;
+                }
+
                 self.upload();
             };
 
@@ -612,21 +620,24 @@ define('controls/upload/File', [
                 // catch errors via onerror
             }
 
+            // workaround because send is no promise :(
+            // @todo change / refactor to fetch()
+            this.$__updateRanges = function () {
+                // Update our ranges
+                this.$range_start = this.$range_end;
+                this.$range_end   = this.$range_start + this.$chunk_size;
 
-            // Update our ranges
-            this.$range_start = this.$range_end;
-            this.$range_end   = this.$range_start + this.$chunk_size;
+                if (this.$range_end > this.$file_size) {
+                    this.$range_end = this.$file_size;
+                }
 
-            if (this.$range_end > this.$file_size) {
-                this.$range_end = this.$file_size;
-            }
+                if (this.$range_start > this.$file_size) {
+                    this.$range_start = this.$file_size;
+                }
 
-            if (this.$range_start > this.$file_size) {
-                this.$range_start = this.$file_size;
-            }
-
-            // set status
-            this.refresh();
+                // set status
+                this.refresh();
+            };
         },
 
         /**
