@@ -1171,7 +1171,7 @@ define('controls/projects/project/media/Panel', [
             if (!files.length) {
                 return;
             }
-console.log('$viewOnDrop');
+            console.log('$viewOnDrop');
             if (Elm.hasClass('qui-media-content')) {
                 this.$PanelContextMenu.showDragDropMenu(files, Elm, event);
                 return;
@@ -2328,10 +2328,14 @@ console.log('$viewOnDrop');
             }
 
             if (typeOf(Item) === 'string' || typeOf(Item) === 'number') {
-                var self = this;
                 Media.get(Item).then(function (File) {
-                    self.$itemEvent(Media, File);
-                });
+                    this.$itemEvent(Media, File);
+                }.bind(this));
+
+                return;
+            }
+
+            if (!Item) {
                 return;
             }
 
