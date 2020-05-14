@@ -202,6 +202,60 @@ class Address extends QUI\QDOM
     }
 
     /**
+     * @param $number
+     */
+    public function editMobile($number)
+    {
+        $list   = $this->getPhoneList();
+        $edited = false;
+
+        foreach ($list as $key => $entry) {
+            if ($entry['type'] !== 'mobile') {
+                continue;
+            }
+
+            $list[$key]['no'] = $number;
+            $edited           = true;
+        }
+
+        if ($edited === false) {
+            $list[] = [
+                'type' => 'mobile',
+                'no'   => $number
+            ];
+        }
+
+        $this->setAttribute('phone', \json_encode($list));
+    }
+
+    /**
+     * @param $number
+     */
+    public function editFax($number)
+    {
+        $list   = $this->getPhoneList();
+        $edited = false;
+
+        foreach ($list as $key => $entry) {
+            if ($entry['type'] !== 'fax') {
+                continue;
+            }
+
+            $list[$key]['no'] = $number;
+            $edited           = true;
+        }
+
+        if ($edited === false) {
+            $list[] = [
+                'type' => 'fax',
+                'no'   => $number
+            ];
+        }
+
+        $this->setAttribute('phone', \json_encode($list));
+    }
+
+    /**
      * Delete the complete phone list
      */
     public function clearPhone()
@@ -244,6 +298,30 @@ class Address extends QUI\QDOM
 
         foreach ($list as $entry) {
             if ($entry['type'] !== 'tel') {
+                continue;
+            }
+
+            return $entry['no'];
+        }
+
+        return '';
+    }
+
+    /**
+     * Return the first telephone number
+     *
+     * @return string
+     */
+    public function getMobile()
+    {
+        $list = $this->getPhoneList();
+
+        if (empty($list)) {
+            return '';
+        }
+
+        foreach ($list as $entry) {
+            if ($entry['type'] !== 'mobile') {
                 continue;
             }
 
@@ -591,7 +669,7 @@ class Address extends QUI\QDOM
             unset($part[0]);
         }
 
-        return \implode($part, '; ');
+        return \implode('; ', $part);
     }
 
     /**
