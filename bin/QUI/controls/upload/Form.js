@@ -109,9 +109,10 @@ define('controls/upload/Form', [
             this.$BgText     = null;
             this.$SendButton = null;
 
-            this.$enabled = true;
-            this.$files   = {};
-            this.$params  = {};
+            this.$enabled  = true;
+            this.$files    = {};
+            this.$params   = {};
+            this.$finished = false;
 
             this.$Progress = null;
             this.$Info     = null;
@@ -733,6 +734,7 @@ define('controls/upload/Form', [
 
                         Container.destroy();
 
+                        self.$finished = false;
                         self.fireEvent('inputDestroy');
                         self.refreshDisplay();
                     }
@@ -776,6 +778,8 @@ define('controls/upload/Form', [
             if (Input === false) {
                 return;
             }
+
+            this.$finished = false;
 
             this.$files[Slick.uidOf(Input)] = File;
 
@@ -974,6 +978,11 @@ define('controls/upload/Form', [
 
             this.fireEvent('complete', [this, File, result]);
 
+            // already triggered
+            if (this.$finished) {
+                return;
+            }
+
             require(['UploadManager'], function (UploadManager) {
                 var files = UploadManager.$files;
 
@@ -984,6 +993,7 @@ define('controls/upload/Form', [
                 }
 
                 this.fireEvent('finished', [this]);
+                this.$finished = true;
             }.bind(this));
         },
 
@@ -1170,8 +1180,11 @@ define('controls/upload/Form', [
 
         },
 
+        /**
+         * @param UploadManager
+         * @param File
+         */
         $onFileUploadCancel: function (UploadManager, File) {
-
             this.fireEvent('cancel', [this, File]);
         },
 
@@ -1206,7 +1219,8 @@ define('controls/upload/Form', [
                         var Old = self.getElm();
 
                         Old.set('html', '');
-                        self.$files = {};
+                        self.$files    = {};
+                        self.$finished = false;
                         self.create().replaces(Old);
                     }
                 }
