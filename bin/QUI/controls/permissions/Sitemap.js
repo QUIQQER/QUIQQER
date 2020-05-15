@@ -28,7 +28,8 @@ define('controls/permissions/Sitemap', [
         Binds: [
             '$onInject',
             '$onItemClick',
-            '$createMap'
+            '$createMap',
+            '$onItemOpen'
         ],
 
         initialize: function (Object, options) {
@@ -71,7 +72,7 @@ define('controls/permissions/Sitemap', [
 
             this.$Map.appendChild(
                 new QUISitemapItem({
-                    text  : 'Rechte',
+                    text  : 'Rechte', // #locale
                     icon  : 'fa fa-gears',
                     value : '',
                     events: {
@@ -128,8 +129,13 @@ define('controls/permissions/Sitemap', [
          * @param {Object} permissions - list of permissions
          */
         $createMap: function (permissions) {
-            var arr, permission;
-            var permissionList = {};
+            var i, len, arr, parent, permission, startParent;
+            var permissionList = {
+                items : {},
+                length: 0
+            };
+
+            parent = permissionList;
 
             for (permission in permissions) {
                 if (!permissions.hasOwnProperty(permission)) {
@@ -139,10 +145,25 @@ define('controls/permissions/Sitemap', [
                 arr = permission.split('.');
                 arr.pop(); // drop the last element
 
-                if (arr.length) {
-                    ObjectUtils.namespace(arr.join('.'), permissionList);
+                startParent = parent;
+
+                for (i = 0, len = arr.length; i < len; i++) {
+                    if (typeof parent.items[arr[i]] === 'undefined') {
+                        parent.items[arr[i]] = {
+                            items : {},
+                            length: 0
+                        };
+                    }
+
+                    parent.length = Object.getLength(parent.items);
+                    parent        = parent.items[arr[i]];
                 }
+
+                parent        = startParent;
+                parent.length = Object.getLength(parent.items);
             }
+
+            this.$permissionsList = permissionList;
 
             this.$appendSitemapItemTo(
                 this.$Map.firstChild(),
@@ -169,19 +190,123 @@ define('controls/permissions/Sitemap', [
          * @param {Object} params
          */
         $appendSitemapItemTo: function (Parent, name, params) {
-            var i, len, text, right, Item, permission;
+            if (!params.length) {
+                return;
+            }
 
-            var groups = QUILocale.getGroups(),
-                list   = [];
+            var list = this.$parseItemEntries(params, name);
 
+            for (var i = 0, len = list.length; i < len; i++) {
+                Parent.appendChild(
+                    new QUISitemapItem({
+                        icon       : 'fa fa-gears',
+                        value      : list[i].permission,
+                        text       : list[i].translation,
+                        hasChildren: list[i].hasChildren,
+                        events     : {
+                            onClick: this.$onItemClick,
+                            onOpen : this.$onItemOpen
+                        }
+                    })
+                );
+            }
+        },
 
-            for (right in params) {
-                if (!params.hasOwnProperty(right)) {
+        /**
+         * event : item on click
+         *
+         * @param {Object} Item - qui/controls/sitemap/Item
+         */
+        $onItemClick: function (Item) {
+            this.fireEvent('itemClick', [
+                Item,
+                Item.getAttribute('permission')
+            ]);
+        },
+
+        /**
+         * event: item on open
+         */
+        $onItemOpen: function (Item) {
+            var children = Item.getChildren();
+
+            if (children.length) {
+                return;
+            }
+
+            var i, len, perm, parent;
+            var permission = Item.getAttribute('value'),
+                items      = this.$permissionsList.items;
+
+            permission = permission.split('.');
+            parent     = items;
+
+            for (i = 0, len = permission.length; i < len; i++) {
+                perm = permission[i];
+
+                // first entry
+                if (typeof parent[perm] !== 'undefined') {
+                    parent = parent[perm];
                     continue;
                 }
 
-                if (name.length) {
-                    permission = name + '.' + right;
+                if (typeof parent.items[perm] !== 'undefined') {
+                    parent = parent.items[perm];
+                    continue;
+                }
+
+                // break up
+                return;
+            }
+
+            if (!parent || !parent.length) {
+                return;
+            }
+
+            var list = this.$parseItemEntries(
+                parent,
+                Item.getAttribute('value')
+            );
+
+            for (i = 0, len = list.length; i < len; i++) {
+                Item.appendChild(
+                    new QUISitemapItem({
+                        icon       : 'fa fa-gears',
+                        value      : list[i].permission,
+                        text       : list[i].translation,
+                        hasChildren: list[i].hasChildren,
+                        events     : {
+                            onClick: this.$onItemClick,
+                            onOpen : this.$onItemOpen
+                        }
+                    })
+                );
+            }
+        },
+
+        /**
+         * parse entries to sorted entries by its locale translation
+         *
+         * @param params
+         * @param permissionName
+         * @return {[]}
+         */
+        $parseItemEntries: function (params, permissionName) {
+            var i, len, text, right, permission, permissionEntry;
+
+            var groups = QUILocale.getGroups(),
+                list   = [],
+                items  = params.items;
+
+            for (right in items) {
+                if (!items.hasOwnProperty(right)) {
+                    continue;
+                }
+
+                permissionEntry = items[right];
+
+                if (permissionName.length) {
+                    permission = permissionName + '.' + right;
                 } else {
                     permission = right;
                 }
@@ -190,9 +315,7 @@ define('controls/permissions/Sitemap', [
 
                 if (QUILocale.exists('quiqqer/quiqqer', text)) {
                     text = QUILocale.get('quiqqer/quiqqer', text);
-
                 } else {
-
                     for (i = 0, len = groups.length; i < len; i++) {
                         if (QUILocale.exists(groups[i], text)) {
                             text = QUILocale.get(groups[i], text);
@@ -204,10 +327,10 @@ define('controls/permissions/Sitemap', [
                 list.push({
                     translation: text,
                     permission : permission,
-                    right      : right
+                    right      : right,
+                    hasChildren: permissionEntry.length
                 });
             }
-
 
             // sort list
             list.sort(function (a, b) {
@@ -222,37 +345,7 @@ define('controls/permissions/Sitemap', [
                 return 0;
             });
 
-            for (i = 0, len = list.length; i < len; i++) {
-                Item = new QUISitemapItem({
-                    icon  : 'fa fa-gears',
-                    value : list[i].permission,
-                    text  : list[i].translation,
-                    events: {
-                        onClick: this.$onItemClick
-                    }
-                });
-
-                Parent.appendChild(Item);
-
-                this.$appendSitemapItemTo(
-                    Item,
-                    list[i].permission,
-                    params[list[i].right]
-                );
-            }
-
-        },
-
-        /**
-         * event : item on click
-         *
-         * @param {Object} Item - qui/controls/sitemap/Item
-         */
-        $onItemClick: function (Item) {
-            this.fireEvent('itemClick', [
-                Item,
-                Item.getAttribute('permission')
-            ]);
+            return list;
         }
     });
 });

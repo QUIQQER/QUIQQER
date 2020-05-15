@@ -1450,11 +1450,12 @@
         <locale name="permissions.panel.window.delete.information">
             <de><![CDATA[Das Zugriffsrecht wird unwiderruflich gelöscht]]></de>
         </locale>
-        <locale name="permissions.panel.welcome.message">
+        <locale name="permissions.panel.welcome.message" html="true">
             <de><![CDATA[
-            <h1>Zugriffsrechte verwalten</h1>
-            Verwenden Sie die nebenstehende Liste, um Benutzern und Gruppen den Zugriff auf bestimmte Seiten,
-            Projekte oder Funktionen zu gestatten bzw. zu verweigern.
+            <h1>Willkommen in der Zugriffsverwaltung.</h1>
+            <p>Hier kannst du Rechte für verschiedene Benutzer, Gruppen oder andere Funktionen einstellen.</p>
+            <p>In der linken Kategorieleiste (nebenstehende Liste) findest du die verschiedenen
+            Hauptgruppierungen in der alle Zugriffsrechte unterteilt sind.</p>
             ]]></de>
         </locale>
         <locale name="permissions.panel.window.add.title">
@@ -1507,16 +1508,26 @@
             <de><![CDATA[Für wen möchten Sie die Zugriffsrechte setzen?]]></de>
         </locale>
         <locale name="permissions.panel.select.group.title">
-            <de><![CDATA[Für welche Gruppe möchten Sie die Zugriffsrechte setzen?]]></de>
+            <de><![CDATA[Für welche Gruppe möchtest Du die Zugriffsrechte setzen?]]></de>
+        </locale>
+        <locale name="permissions.panel.select.group.description" html="true">
+            <de><![CDATA[
+                Wähle bitte eine Gruppe aus um für diese Gruppe die Zugriffsrechte einstellen zu können.
+            ]]></de>
         </locale>
         <locale name="permissions.panel.select.user.title">
-            <de><![CDATA[Für welchen Benutzer möchten Sie die Zugriffsrechte setzen?]]></de>
+            <de><![CDATA[Für welchen Benutzer möchtest Du die Zugriffsrechte setzen?]]></de>
+        </locale>
+        <locale name="permissions.panel.select.user.description" html="true">
+            <de><![CDATA[
+                Wähle bitte einen Benutzer aus um für diesen Benutzer die Zugriffsrechte einstellen zu können.
+            ]]></de>
         </locale>
         <locale name="permissions.panel.select.project.title">
-            <de><![CDATA[Für welches Projekt möchten Sie die Zugriffsrechte setzen?]]></de>
+            <de><![CDATA[Für welches Projekt möchtest Du die Zugriffsrechte setzen?]]></de>
         </locale>
         <locale name="permissions.panel.select.site.title">
-            <de><![CDATA[Für welche Seite möchten Sie die Zugriffsrechte setzen?]]></de>
+            <de><![CDATA[Für welche Seite möchtest Du die Zugriffsrechte setzen?]]></de>
         </locale>
         <locale name="logs.panel.title">
             <de><![CDATA[Log-Manager]]></de>

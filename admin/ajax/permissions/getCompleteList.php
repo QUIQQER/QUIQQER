@@ -40,9 +40,7 @@ QUI::$Ajax->registerFunction(
                 break;
         }
 
-        $result = $Manager->getCompletePermissionList($Bind);
-
-        return $result;
+        return $Manager->getCompletePermissionList($Bind);
     },
     ['params', 'btype'],
     [

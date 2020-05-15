@@ -62,8 +62,12 @@
 }
 
 .controls-permissions-select {
+    align-items: center;
     background: #fff;
+    display: flex;
+    flex-direction: column;
     height: 100%;
+    justify-content: center;
     left: 0;
     padding: 20px;
     position: absolute;

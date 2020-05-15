@@ -94,8 +94,6 @@ define('controls/upload/File', [
                 return;
             }
 
-            var self = this;
-
             this.$is_paused   = false;
             this.$file_size   = this.$File.size;
             this.$chunk_size  = (1024 * 256); // 256kb
@@ -105,50 +103,18 @@ define('controls/upload/File', [
             this.$execute     = true; // false if no execute of the update routine
             this.$result      = null;
             this.$error       = false;
+            this.$errors      = 0;
 
             this.$ContextMenu  = null;
             this.$slice_method = 'slice';
 
             if ('mozSlice' in this.$File) {
                 this.$slice_method = 'mozSlice';
-            } else if ('webkitSlice' in this.$File) {
-                this.$slice_method = 'webkitSlice';
+            } else {
+                if ('webkitSlice' in this.$File) {
+                    this.$slice_method = 'webkitSlice';
+                }
             }
-
-            this.$Request        = new XMLHttpRequest();
-            this.$Request.onload = function () {
-                self.upload();
-            };
-
-            this.$errors = 0;
-
-            // on error -> ProgressEvent
-            this.$Request.onerror = function () {
-                this.pause();
-
-                // test in view seconds again
-                if (this.$errors === 0) {
-                    setTimeout(function () {
-                        this.resume();
-                    }.bind(this), 4000);
-
-                    this.$errors++;
-                    return;
-                }
-
-                this.$errors++;
-
-                QUI.getMessage().then(function (MH) {
-                    MH.addError(QUILocale.get('quiqqer/quiqqer', 'exception.upload.error'));
-                });
-            }.bind(this);
-
-            // check server answer
-            this.$Request.onreadystatechange = function () {
-                if (self.$Request.readyState === 4) {
-                    self.$parseResult(self.$Request.responseText);
-                }
-            };
 
             this.parent(options);
 
@@ -174,7 +140,7 @@ define('controls/upload/File', [
          * Create the DOMNode
          *
          * @method controls/upload/File#create
-         * @return {HTMLElement}
+         * @return {Element}
          */
         create: function () {
             var self = this;
@@ -252,7 +218,7 @@ define('controls/upload/File', [
 
             this.$Cancel = new QUIButton({
                 name   : 'cancel-upload',
-                text   : 'abbrechen',
+                text   : QUILocale.get(lg, 'cancel'),
                 Control: this,
                 events : {
                     onClick: function () {
@@ -270,10 +236,6 @@ define('controls/upload/File', [
                             events     : {
                                 onSubmit: function () {
                                     self.cancel();
-                                },
-
-                                onCancel: function () {
-                                    //Win.getAttribute('Control').resume();
                                 }
                             }
                         }).open();
@@ -406,16 +368,6 @@ define('controls/upload/File', [
                 return;
             }
 
-            //if (this.$File.type === '' || !this.$File.type) {
-            //    QUI.getMessageHandler(function (MessageHandler) {
-            //        MessageHandler.addError(
-            //            Locale.get(lg, 'file.upload.unknown.filetype')
-            //        );
-            //    });
-            //
-            //    return;
-            //}
-
             if (this.$is_paused) {
                 return;
             }
@@ -487,7 +439,7 @@ define('controls/upload/File', [
          * @method controls/upload/File#resume
          */
         resume: function () {
-            if (this.$File instanceof File === false) {
+            if (!(this.$File instanceof File)) {
                 var Upload = this.getElm().getElement('input[type="file"]');
 
                 if (Upload) {
@@ -566,67 +518,78 @@ define('controls/upload/File', [
             }
 
             // the file part
-            var data   = this.$File[this.$slice_method](
+            var data = this.$File[this.$slice_method](
                 this.$range_start,
                 this.$range_end
-                ),
+            );
 
-                // extra params for ajax function
-                params = ObjectUtils.combine((this.getAttribute('params') || {}), {
-                    file    : JSON.encode({
-                        uploadstart: this.$upload_time,
-                        chunksize  : this.$chunk_size,
-                        chunkstart : this.$range_start
-                    }),
-                    onfinish: this.getAttribute('phpfunc'),
-                    onstart : this.getAttribute('phponstart'),
-                    filesize: this.$file_size,
-                    filename: this.getFilename(),
-                    filetype: this.$File.type
-                });
+            // extra params for ajax function
+            var params = ObjectUtils.combine((this.getAttribute('params') || {}), {
+                file    : JSON.encode({
+                    uploadstart: this.$upload_time,
+                    chunksize  : this.$chunk_size,
+                    chunkstart : this.$range_start
+                }),
+                onfinish: this.getAttribute('phpfunc'),
+                onstart : this.getAttribute('phponstart'),
+                filesize: this.$file_size,
+                filename: this.getFilename(),
+                filetype: this.$File.type
+            });
 
             if (typeof params.lang === 'undefined') {
                 params.lang = QUILocale.getCurrent();
             }
 
             // $project, $parentid, $file, $data
-            var url = URL_LIB_DIR + 'QUI/Upload/bin/upload.php?';
-            url     = url + Object.toQueryString(params);
+            var url = URL_LIB_DIR + 'QUI/Upload/bin/upload.php?' + Object.toQueryString(params);
 
-            this.$Request.open('PUT', url, true);
+            fetch(url, {
+                method : 'PUT',
+                cache  : 'no-cache',
+                headers: {
+                    'Content-Type' : 'application/octet-stream',
+                    'Content-Range': 'bytes ' + this.$range_start + '-' + this.$range_end + '/' + this.$file_size
+                },
+                body   : data
+            }).then(function (response) {
+                this.$range_start = this.$range_end;
+                this.$range_end   = this.$range_start + this.$chunk_size;
 
-            if (!!this.$Request.overrideMimeType) {
-                this.$Request.overrideMimeType('application/octet-stream');
-            }
+                if (this.$range_end > this.$file_size) {
+                    this.$range_end = this.$file_size;
+                }
 
-            if (this.$range_start !== 0) {
-                this.$Request.setRequestHeader(
-                    'Content-Range',
-                    'bytes ' + this.$range_start + '-' + this.$range_end + '/' + this.$file_size
-                );
-            }
+                if (this.$range_start > this.$file_size) {
+                    this.$range_start = this.$file_size;
+                }
 
-            try {
-                this.$Request.send(data);
-            } catch (e) {
-                // catch errors via onerror
-            }
+                response.text().then(function (text) {
+                    this.$parseResult(text);
+                }.bind(this));
 
+                this.refresh();
+                this.upload();
+            }.bind(this)).catch(function (err) {
+                console.error('Information about the upload error: ', err);
 
-            // Update our ranges
-            this.$range_start = this.$range_end;
-            this.$range_end   = this.$range_start + this.$chunk_size;
+                this.pause();
+                // test in view seconds again
+                if (this.$errors === 0) {
+                    setTimeout(function () {
+                        this.resume();
+                    }.bind(this), 4000);
 
-            if (this.$range_end > this.$file_size) {
-                this.$range_end = this.$file_size;
-            }
+                    this.$errors++;
+                    return;
+                }
 
-            if (this.$range_start > this.$file_size) {
-                this.$range_start = this.$file_size;
-            }
+                this.$errors++;
 
-            // set status
-            this.refresh();
+                QUI.getMessage().then(function (MH) {
+                    MH.addError(QUILocale.get('quiqqer/quiqqer', 'exception.upload.error'));
+                });
+            }.bind(this));
         },
 
         /**

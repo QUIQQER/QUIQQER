@@ -16,7 +16,7 @@ define('controls/permissions/Group', [
 ], function (Permission, QUIButton, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg = 'quiqqer/quiqqer';
 
     return new Class({
 
@@ -101,15 +101,24 @@ define('controls/permissions/Group', [
                         require(['controls/groups/Select'], function (Select) {
                             Container.set(
                                 'html',
-                                '<h2>' + QUILocale.get(lg, 'permissions.panel.select.group.title') + '</h2>'
+                                '<span class="controls-permissions-panel-headerIcon fa fa-users"></span>' +
+                                '<h2>' + QUILocale.get(lg, 'permissions.panel.select.group.title') + '</h2>' +
+                                QUILocale.get(lg, 'permissions.panel.select.group.description')
                             );
+
+                            var size  = Container.getSize(),
+                                width = Math.round(size.x / 3);
+
+                            if (width < 500) {
+                                width = 500;
+                            }
 
                             self.$Input = new Select({
                                 max     : 1,
                                 multiple: false,
                                 styles  : {
-                                    margin: '0 auto',
-                                    width : 300
+                                    marginTop: 40,
+                                    width    : width
                                 },
                                 events  : {
                                     onAddItem: function (GroupSearch, groupid) {
@@ -143,8 +152,8 @@ define('controls/permissions/Group', [
          */
         $onOpen: function () {
             new QUIButton({
-                text     : QUILocale.get('quiqqer/system', 'permission.control.btn.group.save'),
-                title    : QUILocale.get('quiqqer/system', 'permission.control.btn.group.save'),
+                text     : QUILocale.get('quiqqer/quiqqer', 'permission.control.btn.group.save'),
+                title    : QUILocale.get('quiqqer/quiqqer', 'permission.control.btn.group.save'),
                 textimage: 'fa fa-save',
                 styles   : {
                     'float': 'right'
