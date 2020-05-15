@@ -36,7 +36,7 @@ define('controls/upload/Manager', [
     return new Class({
 
         Extends: QUIPanel,
-        Type: 'controls/upload/Manager',
+        Type   : 'controls/upload/Manager',
 
         Binds: [
             '$onCreate',
@@ -47,19 +47,19 @@ define('controls/upload/Manager', [
         ],
 
         options: {
-            icon: 'fa fa-upload',
+            icon        : 'fa fa-upload',
             pauseAllowed: true,
-            contextMenu: true
+            contextMenu : true
         },
 
         initialize: function (options) {
             this.parent(options);
 
-            this.$files = [];
+            this.$files     = [];
             this.$container = null;
-            this.$uploads = {};
+            this.$uploads   = {};
 
-            this.$maxPercent = 0;
+            this.$maxPercent     = 0;
             this.$uploadPerCents = {};
 
             this.$Container = null;
@@ -79,8 +79,8 @@ define('controls/upload/Manager', [
             }).inject(this.getContent());
 
             this.addButton({
-                icon: 'fa fa-trash',
-                title: Locale.get(lg, 'upload.manager.clear'),
+                icon  : 'fa fa-trash',
+                title : Locale.get(lg, 'upload.manager.clear'),
                 styles: {
                     'float': 'right'
                 },
@@ -219,10 +219,10 @@ define('controls/upload/Manager', [
 
                 // ask for extraction
                 new QUIAlert({
-                    title: Locale.get(lg, 'upload.manager.message.archivfile.title'),
-                    content: Locale.get(lg, 'upload.manager.message.archivfile.text') + '<br />' + list,
+                    title          : Locale.get(lg, 'upload.manager.message.archivfile.title'),
+                    content        : Locale.get(lg, 'upload.manager.message.archivfile.text') + '<br />' + list,
                     closeButtonText: Locale.get(lg, 'upload.manager.message.archivfile.btn.start'),
-                    events: {
+                    events         : {
                         onClose: function (Win) {
                             var i, len;
 
@@ -311,7 +311,7 @@ define('controls/upload/Manager', [
             };
 
             for (i = 0, len = files.length; i < len; i++) {
-                file_params = Object.clone(params);
+                file_params         = Object.clone(params);
                 file_params.extract = false;
 
                 if (extract && extract[files[i].name]) {
@@ -325,18 +325,18 @@ define('controls/upload/Manager', [
                 }
 
                 var QUIFile = new UploadFile(files[i], {
-                    phpfunc: rf,
-                    params: file_params,
-                    events: events,
+                    phpfunc     : rf,
+                    params      : file_params,
+                    events      : events,
                     pauseAllowed: this.getAttribute('pauseAllowed'),
-                    contextMenu: this.getAttribute('contextMenu')
+                    contextMenu : this.getAttribute('contextMenu')
                 });
 
                 QUIFile.addEvents({
                     onComplete: onComplete,
-                    onRefresh: onRefresh,
-                    onError: onError,
-                    onCancel: onCancel
+                    onRefresh : onRefresh,
+                    onError   : onError,
+                    onCancel  : onCancel
                 });
 
                 if (file_params.phponstart) {
@@ -359,13 +359,13 @@ define('controls/upload/Manager', [
 
                         Node.setStyles({
                             background: '#fff',
-                            border: '1px solid #f1f1f1',
-                            bottom: 10,
-                            boxShadow: '0 0 10px rgba(0, 0, 0, 0.3)',
-                            position: 'absolute',
-                            right: 10,
-                            width: 300,
-                            zIndex: 1000
+                            border    : '1px solid #f1f1f1',
+                            bottom    : 10,
+                            boxShadow : '0 0 10px rgba(0, 0, 0, 0.3)',
+                            position  : 'absolute',
+                            right     : 10,
+                            width     : 300,
+                            zIndex    : 1000
                         });
 
                         Node.inject(document.body);
@@ -444,10 +444,10 @@ define('controls/upload/Manager', [
 
                     QUIFile = new UploadFile(params.file, {
                         phpfunc: params.phpfunc,
-                        params: params,
-                        events: {
+                        params : params,
+                        events : {
                             onComplete: func_oncomplete,
-                            onCancel: func_oncancel
+                            onCancel  : func_oncancel
                         }
                     });
 

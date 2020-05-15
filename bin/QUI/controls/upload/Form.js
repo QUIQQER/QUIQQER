@@ -25,13 +25,14 @@ define('controls/upload/Form', [
     'qui/controls/Control',
     'qui/controls/utils/Progressbar',
     'qui/controls/buttons/Button',
+    'qui/controls/loader/Loader',
     'utils/Media',
     'classes/request/Upload',
     'Locale',
 
     'css!controls/upload/Form.css'
 
-], function (QUI, QUIControl, QUIProgressbar, QUIButton, MediaUtils, Upload, Locale) {
+], function (QUI, QUIControl, QUIProgressbar, QUIButton, QUILoader, MediaUtils, Upload, Locale) {
     "use strict";
 
     var lg         = 'quiqqer/quiqqer';
@@ -255,6 +256,8 @@ define('controls/upload/Form', [
                     height: 140
                 }
             });
+
+            this.$Loader = new QUILoader().inject(this.$Elm);
 
             this.$Buttons = this.$Elm.getElement('.controls-upload-buttons');
             this.$BgText  = this.$Elm.getElement('.controls-upload-bg-text');
@@ -913,6 +916,7 @@ define('controls/upload/Form', [
                 return;
             }
 
+            this.$Loader.show();
             this.fireEvent('submit', [this.getFiles(), this]);
 
             // send to upload manager
@@ -992,6 +996,7 @@ define('controls/upload/Form', [
                     }
                 }
 
+                this.$Loader.hide();
                 this.fireEvent('finished', [this]);
                 this.$finished = true;
             }.bind(this));
