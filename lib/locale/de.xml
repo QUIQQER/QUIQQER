@@ -309,7 +309,7 @@
         </locale>
         <locale name="projects.project.settings.panel.mediaSettings.maxUploadFileSize.description" html="true">
             <de><![CDATA[
-            Bilder, die grösser als der angegebene Wert sind, werden beim Upload automatisch auf diese Größe verkleinert.
+            Bilder, die grösser als der angegebene Wert sind, werden beim Upload blockiert.
             ]]></de>
         </locale>
         <locale name="projects.project.settings.panel.mediaSettings.maxImageCacheSize">

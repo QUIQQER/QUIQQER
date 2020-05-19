@@ -25,13 +25,14 @@ define('controls/upload/Form', [
     'qui/controls/Control',
     'qui/controls/utils/Progressbar',
     'qui/controls/buttons/Button',
+    'qui/controls/loader/Loader',
     'utils/Media',
     'classes/request/Upload',
     'Locale',
 
     'css!controls/upload/Form.css'
 
-], function (QUI, QUIControl, QUIProgressbar, QUIButton, MediaUtils, Upload, Locale) {
+], function (QUI, QUIControl, QUIProgressbar, QUIButton, QUILoader, MediaUtils, Upload, Locale) {
     "use strict";
 
     var lg         = 'quiqqer/quiqqer';
@@ -69,7 +70,8 @@ define('controls/upload/Form', [
             '$onFileUploadFinish',
             '$onFileUploadRefresh',
             '$onFileUploadCancel',
-            '$onError'
+            '$onError',
+            '$onInject'
         ],
 
         /**
@@ -118,6 +120,7 @@ define('controls/upload/Form', [
             this.$Info     = null;
 
             this.addEvents({
+                onInject : this.$onInject,
                 onDestroy: function () {
                     if (self.$Form) {
                         self.$Form.destroy();
@@ -256,6 +259,8 @@ define('controls/upload/Form', [
                 }
             });
 
+            this.Loader = new QUILoader().inject(this.$Elm);
+
             this.$Buttons = this.$Elm.getElement('.controls-upload-buttons');
             this.$BgText  = this.$Elm.getElement('.controls-upload-bg-text');
             this.$Info    = this.$Elm.getElement('.controls-upload-info');
@@ -387,6 +392,24 @@ define('controls/upload/Form', [
             this.refreshDisplay();
 
             return this.$Elm;
+        },
+
+        /**
+         * event: on inject
+         */
+        $onInject: function () {
+            this.resize();
+        },
+
+        /**
+         * resize the form
+         */
+        resize: function () {
+            var buttonsHeight = this.$Buttons.getSize().y;
+            var inforHeight   = this.$Info.getSize().y;
+            var height        = buttonsHeight + inforHeight;
+
+            this.$Form.setStyle('height', 'calc(100% - ' + height + 'px)');
         },
 
         /**
@@ -913,6 +936,7 @@ define('controls/upload/Form', [
                 return;
             }
 
+            this.Loader.show();
             this.fireEvent('submit', [this.getFiles(), this]);
 
             // send to upload manager
@@ -992,6 +1016,7 @@ define('controls/upload/Form', [
                     }
                 }
 
+                this.Loader.hide();
                 this.fireEvent('finished', [this]);
                 this.$finished = true;
             }.bind(this));

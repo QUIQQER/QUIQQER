@@ -26,6 +26,24 @@ class QuiqqerMongoDriver extends AbstractDriver
     private $collection;
 
     /**
+     * QuiqqerMongoDriver constructor.
+     * @param array $options
+     */
+    public function __construct(array $options = [])
+    {
+        parent::__construct($options);
+
+        // workaround for mongo auto loading, // load mongo functions
+        if (!\function_exists('\MongoDB\is_in_transaction')) {
+            $file = OPT_DIR.'mongodb/mongodb/src/functions.php';
+
+            if (\file_exists($file)) {
+                require $file;
+            }
+        }
+    }
+
+    /**
      * @param array $key
      * @return string
      */
@@ -64,7 +82,7 @@ class QuiqqerMongoDriver extends AbstractDriver
             try {
                 $this->collection->replaceOne(['_id' => $id], [
                     '_id'        => $id,
-                    'data'       => serialize($data),
+                    'data'       => \serialize($data),
                     'expiration' => $expiration
                 ], ['upsert' => true]);
             } catch (\MongoDB\Driver\Exception\BulkWriteException $ignored) {

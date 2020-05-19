@@ -104,6 +104,7 @@ define('controls/upload/File', [
             this.$result      = null;
             this.$error       = false;
             this.$errors      = 0;
+            this.$uploaded    = false;
 
             this.$ContextMenu  = null;
             this.$slice_method = 'slice';
@@ -409,6 +410,7 @@ define('controls/upload/File', [
                 }
 
                 if (this.$error === false) {
+                    this.$uploaded = true;
                     this.fireEvent('complete', [this, this.$result]);
                 }
 
@@ -498,7 +500,7 @@ define('controls/upload/File', [
          * @return {Boolean}
          */
         isFinished: function () {
-            return this.$range_end === this.$file_size;
+            return this.$uploaded;
         },
 
         /**
@@ -566,10 +568,10 @@ define('controls/upload/File', [
 
                 response.text().then(function (text) {
                     this.$parseResult(text);
-                }.bind(this));
 
-                this.refresh();
-                this.upload();
+                    this.refresh();
+                    this.upload();
+                }.bind(this));
             }.bind(this)).catch(function (err) {
                 console.error('Information about the upload error: ', err);
 
