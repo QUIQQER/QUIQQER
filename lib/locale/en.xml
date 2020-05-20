@@ -3739,7 +3739,7 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="templates.mail.footer.text">
             <en><![CDATA[&nbsp;]]></en>
         </locale>
-        <locale name="templates.mail.body.header.social">
+        <locale name="templates.mail.body.header.social" html="true">
             <en><![CDATA[
                  <a href="https://www.facebook.com/Quiqqer" target="_blank" rel="noreferrer" style="color: #666666; text-decoration: none; padding: 0 10px;">
                     <img alt="QUIQQER on Facebook" src="https://www.quiqqer.com/media/cache/quiqqer/email/facebook.png" />
