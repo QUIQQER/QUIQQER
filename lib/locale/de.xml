@@ -3896,11 +3896,11 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
                  </a>
              ]]></de>
         </locale>
-        <locale name="templates.mail.body.footer.text">
+        <locale name="templates.mail.body.footer.text" html="true">
             <de><![CDATA[
                 <p style="padding: 0; margin: 0;">&copy; [year]<br/><a href="https://www.quiqqer.de">QUIQQER</a> Website besuchen</p>]]></de>
         </locale>
-        <locale name="templates.mail.body.footer.social">
+        <locale name="templates.mail.body.footer.social" html="true"
             <de><![CDATA[
                  <a href="https://www.facebook.com/Quiqqer" target="_blank" rel="noreferrer" style="color: #666666; text-decoration: none; padding: 0 10px;">
                     <img alt="QUIQQER auf Facebook" src="https://www.quiqqer.com/media/cache/quiqqer/email/facebook.png" />
