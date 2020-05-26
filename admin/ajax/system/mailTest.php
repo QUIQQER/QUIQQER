@@ -56,7 +56,13 @@ QUI::$Ajax->registerFunction(
 
         // debug output
         try {
-            $Mail->addAddress(QUI::conf('mail', 'admin_mail'));
+            $recipients = QUI::conf('mail', 'admin_mail');
+            $recipients = \trim($recipients);
+            $recipients = \explode(',', $recipients);
+
+            foreach ($recipients as $recipient) {
+                $Mail->addAddress($recipient);
+            }
 
             $Mail->Subject = QUI::getLocale()->get(
                 'quiqqer/quiqqer',

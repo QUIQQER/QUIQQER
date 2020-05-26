@@ -254,7 +254,20 @@ define('controls/upload/Manager', [
 
             this.$maxPercent = files.length * 100;
 
+            var cleanupFiles = function(File) {
+                var newFileList = [];
+
+                for (var i = 0, len = self.$files.length; i < len; i++) {
+                    if (self.$files[i].$File !== File.$File) {
+                        newFileList.push(self.$files[i]);
+                    }
+                }
+
+                self.$files = newFileList;
+            };
+
             var onComplete = function (File) {
+                cleanupFiles(File);
                 self.fireEvent('fileComplete', [self, File]);
 
                 if (File.getElm().getParent() === document.body) {
@@ -277,15 +290,7 @@ define('controls/upload/Manager', [
             };
 
             var onError = function (Exception, File) {
-                var newFileList = [];
-
-                for (var i = 0, len = self.$files.length; i < len; i++) {
-                    if (self.$files[i].$File !== File.$File) {
-                        newFileList.push(self.$files);
-                    }
-                }
-
-                self.$files = newFileList;
+                cleanupFiles(File);
 
                 if ('error' in self.$events) {
                     self.fireEvent('error', [Exception]);
@@ -298,15 +303,7 @@ define('controls/upload/Manager', [
             };
 
             var onCancel = function (File) {
-                var newFileList = [];
-
-                for (var i = 0, len = self.$files.length; i < len; i++) {
-                    if (self.$files[i].$File !== File.$File) {
-                        newFileList.push(self.$files);
-                    }
-                }
-
-                self.$files = newFileList;
+                cleanupFiles(File);
                 self.fireEvent('fileCancel', [self, File]);
             };
 
