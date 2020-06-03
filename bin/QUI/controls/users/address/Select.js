@@ -2,10 +2,7 @@
  * @module controls/users/address/Select
  * @author www.pcsg.de (Henning Leutz)
  *
- * @require qui/QUI
- * @require qui/controls/Control
- * @require Ajax
- * @require Users
+ * @event onLoad [self]
  */
 define('controls/users/address/Select', [
 
@@ -18,6 +15,7 @@ define('controls/users/address/Select', [
     "use strict";
 
     return new Class({
+
         Extends: QUIControl,
         Type   : 'controls/users/address/Select',
 
@@ -118,9 +116,11 @@ define('controls/users/address/Select', [
             }
 
             if (!Users.isUser(this.$User)) {
+                this.fireEvent('load', [this]);
                 return;
             }
 
+            var self = this;
 
             QUIAjax.get('ajax_users_address_list', function (result) {
                 var i, len, text, entry;
@@ -128,25 +128,30 @@ define('controls/users/address/Select', [
                 new Element('option', {
                     html : '',
                     value: ''
-                }).inject(this.$Elm);
+                }).inject(self.$Elm);
 
                 for (i = 0, len = result.length; i < len; i++) {
                     entry = result[i];
-                    text  = entry.id + ': ' + entry.street_no + ',' + entry.zip + ' ' + entry.city;
+
+                    text = entry.id + ': ' +
+                        entry.street_no + ',' +
+                        entry.zip + ' ' + entry.city + ', ' +
+                        entry.country;
 
                     new Element('option', {
                         html : text,
                         value: entry.id
-                    }).inject(this.$Elm);
+                    }).inject(self.$Elm);
                 }
 
-                this.$Elm.disabled = false;
+                self.$Elm.disabled = false;
 
-                if (this.$value) {
-                    this.setValue(this.$value);
+                if (self.$value) {
+                    self.setValue(self.$value);
                 }
 
-            }.bind(this), {
+                self.fireEvent('load', [self]);
+            }, {
                 uid: this.$User.getId()
             });
         }
