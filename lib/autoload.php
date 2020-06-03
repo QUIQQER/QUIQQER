@@ -97,8 +97,12 @@ function exception_error_handler($errno, $errstr, $errfile, $errline)
                 break;
         }
 
+        $errorMessage = $type.': '.$errstr;
+        $errorMessage .= PHP_EOL.'File: '.$errfile;
+        $errorMessage .= PHP_EOL.'Line:'.$errline;
+
         $exception = new \ErrorException(
-            $type.': '.$errstr,
+            $errorMessage,
             $errno,
             $errno,
             $errfile,
