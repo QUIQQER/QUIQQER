@@ -3855,6 +3855,12 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="quiqqer.settings.language_settings">
             <en><![CDATA[Language settings]]></en>
         </locale>
+        <locale name="quiqqer.settings.country_settings">
+            <en><![CDATA[Country settings]]></en>
+        </locale>
+        <locale name="quiqqer.settings.country.title">
+            <en><![CDATA[Country settings]]></en>
+        </locale>
         <locale name="quiqqer.settings.date_formats.title">
             <en><![CDATA[Global date format]]></en>
         </locale>

@@ -873,7 +873,24 @@
                     </settings>
                 </category>
 
-                <category name="gui" index="5">
+                <category name="country_settings" index="5">
+                    <text>
+                        <locale group="quiqqer/quiqqer" var="quiqqer.settings.country_settings"/>
+                    </text>
+                    <icon>fa fa-globe</icon>
+
+                    <settings title="country" name="country">
+                        <title>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.country.title"/>
+                        </title>
+
+                        <input label="false" type="hidden"
+                               data-qui="package/quiqqer/countries/bin/controls/backend/Settings"
+                        />
+                    </settings>
+                </category>
+
+                <category name="gui" index="6">
                     <text>
                         <locale group="quiqqer/quiqqer" var="quiqqer.settings.gui"/>
                     </text>
@@ -906,7 +923,7 @@
                     </settings>
                 </category>
 
-                <category name="security_headers" index="5">
+                <category name="security_headers" index="7">
                     <text>
                         <locale group="quiqqer/quiqqer" var="quiqqer.settings.security_headers"/>
                     </text>
