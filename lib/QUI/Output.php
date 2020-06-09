@@ -96,6 +96,20 @@ class Output extends Singleton
             );
         }
 
+        // search css files
+        $content = \preg_replace_callback(
+            '#<link([^>]*)>#',
+            [&$this, "cssLinkHref"],
+            $content
+        );
+
+        // search css files
+        $content = \preg_replace_callback(
+            '#<script([^>]*)>#',
+            [&$this, "scripts"],
+            $content
+        );
+
         if (empty($content)) {
             return $content;
         }
@@ -526,6 +540,92 @@ class Output extends Singleton
         );
 
         return $html;
+    }
+
+    /**
+     * Parse `<link` html nodes
+     *
+     * @param array $output
+     * @return string
+     */
+    protected function cssLinkHref($output)
+    {
+        $html = $output[0];
+        $att  = StringUtils::getHTMLAttributes($html);
+
+        if (!isset($att['href'])) {
+            return $html;
+        }
+
+        if (\strpos($att['href'], '?lu=') !== false) {
+            return $html;
+        }
+
+        $lu   = \md5(QUI::$last_up_date);
+        $file = CMS_DIR.ltrim($att['href'], '/');
+
+        // check if css file is project custom css
+        if (strpos($att['href'], 'custom.css') !== false && \file_exists($file)) {
+            $lu = \md5(filemtime($file));
+        }
+
+        if (\strpos($att['href'], '?') === false) {
+            $att['href'] .= '?lu='.$lu;
+        } else {
+            $att['href'] .= '&lu='.$lu;
+        }
+
+        $result = '<link ';
+
+        foreach ($att as $k => $v) {
+            $result .= $k.'="'.$v.'" ';
+        }
+
+        $result .= '/>';
+
+        return $result;
+    }
+
+    /**
+     * @param $output
+     * @return string
+     */
+    protected function scripts($output)
+    {
+        $html = $output[0];
+        $att  = StringUtils::getHTMLAttributes($html);
+
+        if (!isset($att['src'])) {
+            return $html;
+        }
+
+        if (\strpos($att['src'], '?lu=') !== false) {
+            return $html;
+        }
+
+        $lu   = \md5(QUI::$last_up_date);
+        $file = CMS_DIR.ltrim($att['src'], '/');
+
+        // check if css file is project custom css
+        if (strpos($att['src'], 'custom.js') !== false && \file_exists($file)) {
+            $lu = \md5(filemtime($file));
+        }
+
+        if (\strpos($att['src'], '?') === false) {
+            $att['src'] .= '?lu='.$lu;
+        } else {
+            $att['src'] .= '&lu='.$lu;
+        }
+
+        $result = '<script ';
+
+        foreach ($att as $k => $v) {
+            $result .= $k.'="'.$v.'" ';
+        }
+
+        $result .= '>';
+
+        return $result;
     }
 
     /**
