@@ -121,24 +121,30 @@ define('controls/lang/Select', [
         $buildSelect: function () {
             var self = this;
 
-            return new Promise(function (resolve, reject) {
-                require(['QUIQQER'], function (QUIQQER) {
-                    QUIQQER.getAvailableLanguages().then(function (languages) {
-                        for (var i = 0, len = languages.length; i < len; i++) {
-                            self.$Select.appendChild(
-                                QUILocale.get('quiqqer/quiqqer', 'language.' + languages[i]),
-                                languages[i],
-                                URL_BIN_DIR + '16x16/flags/' + languages[i] + '.png'
-                            );
+            var Prom;
 
-                            if (self.$first === false) {
-                                self.$first = languages[i];
-                            }
-                        }
-
-                        resolve();
-                    }).catch(reject);
+            if (typeof QUIQQER_FRONTEND !== 'undefined' && QUIQQER_PROJECT) {
+                Prom = Promise.resolve(QUIQQER_PROJECT.languages.split(','));
+            } else {
+                Prom = new Promise(function (resolve, reject) {
+                    require(['QUIQQER'], function (QUIQQER) {
+                        QUIQQER.getAvailableLanguages(resolve).catch(reject);
+                    });
                 });
+            }
+
+            return Prom.then(function (languages) {
+                for (var i = 0, len = languages.length; i < len; i++) {
+                    self.$Select.appendChild(
+                        QUILocale.get('quiqqer/quiqqer', 'language.' + languages[i]),
+                        languages[i],
+                        URL_BIN_DIR + '16x16/flags/' + languages[i] + '.png'
+                    );
+
+                    if (self.$first === false) {
+                        self.$first = languages[i];
+                    }
+                }
             });
         },
 

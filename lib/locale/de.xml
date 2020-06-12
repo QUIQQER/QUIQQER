@@ -2760,8 +2760,6 @@
         <locale name="quiqqer.settings.cache.clear.quiqqer-quiqqer-packages">
             <de><![CDATA[QUIQQER Packages Cache leeren]]></de>
         </locale>
-
-
         <locale name="quiqqer.settings.cache.clear.compile">
             <de><![CDATA[System-Cache leeren]]></de>
         </locale>
@@ -3993,6 +3991,12 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         </locale>
         <locale name="quiqqer.settings.language_settings">
             <de><![CDATA[Sprach-Einstellungen]]></de>
+        </locale>
+        <locale name="quiqqer.settings.country_settings">
+            <de><![CDATA[Länder-Einstellungen]]></de>
+        </locale>
+        <locale name="quiqqer.settings.country.title">
+            <de><![CDATA[Länder-Einstellungen]]></de>
         </locale>
         <locale name="quiqqer.settings.date_formats.title">
             <de><![CDATA[Globales Datumsformat]]></de>
