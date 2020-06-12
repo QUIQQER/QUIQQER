@@ -68,7 +68,7 @@
         var QUIQQER_PROJECT = {
             name      : '{$Project->getName()}',
             lang      : '{$Project->getLang()}',
-            languages : '{$Project->getAttribute('langs')|implode:','}',
+            languages : '{$languages}',
             logo      : '{if isset($projectLogo)}{$projectLogo}{/if}',
             template  : '{$Project->getAttribute("template")|escape:"html"}',
             httpshost : {if strpos( $httpshost, 'https' ) !== false}'{$httpshost}'{else}false{/if}

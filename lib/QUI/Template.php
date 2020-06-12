@@ -799,7 +799,8 @@ class Template extends QUI\QDOM
             'headerExtend'    => $headerExtend,
             'ControlManager'  => new QUI\Control\Manager(),
             'Canonical'       => $Engine->getCanonical(),
-            'lastUpdate'      => QUI::getPackageManager()->getLastUpdateDate()
+            'lastUpdate'      => QUI::getPackageManager()->getLastUpdateDate(),
+            'languages'       => implode(',', $Project->getLanguages())
         ]);
 
         if ($this->getAttribute('noConflict')) {

@@ -985,6 +985,11 @@ class User implements QUI\Interfaces\Users\User
                 }
                 break;
 
+            case "lang":
+                $this->lang           = $value;
+                $this->settings[$key] = $value;
+                break;
+
             default:
                 $this->settings[$key] = $value;
                 break;

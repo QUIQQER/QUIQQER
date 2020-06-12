@@ -123,8 +123,8 @@ define('controls/lang/Select', [
 
             var Prom;
 
-            if (typeof QUIQQER_FRONTEND === 'undefined' && QUIQQER_PROJECT) {
-                Prom = Promise.resolve(QUIQQER_PROJECT.languages.join(','));
+            if (typeof QUIQQER_FRONTEND !== 'undefined' && QUIQQER_PROJECT) {
+                Prom = Promise.resolve(QUIQQER_PROJECT.languages.split(','));
             } else {
                 Prom = new Promise(function (resolve, reject) {
                     require(['QUIQQER'], function (QUIQQER) {
