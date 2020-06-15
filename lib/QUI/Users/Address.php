@@ -494,19 +494,27 @@ class Address extends QUI\QDOM
         $mail  = \json_encode($this->getMailList());
         $phone = \json_encode($this->getPhoneList());
 
+        $cleanupAttributes = function ($str) {
+            $str = Orthos::removeHTML($str);
+            $str = Orthos::clearFormRequest($str);
+            $str = Orthos::clearPath($str);
+
+            return $str;
+        };
+
         try {
             QUI::getDataBase()->update(
                 Manager::tableAddress(),
                 [
-                    'salutation'  => Orthos::clear($this->getAttribute('salutation')),
-                    'firstname'   => Orthos::clear($this->getAttribute('firstname')),
-                    'lastname'    => Orthos::clear($this->getAttribute('lastname')),
-                    'company'     => Orthos::clear($this->getAttribute('company')),
-                    'delivery'    => Orthos::clear($this->getAttribute('delivery')),
-                    'street_no'   => Orthos::clear($this->getAttribute('street_no')),
-                    'zip'         => Orthos::clear($this->getAttribute('zip')),
-                    'city'        => Orthos::clear($this->getAttribute('city')),
-                    'country'     => Orthos::clear($this->getAttribute('country')),
+                    'salutation'  => $cleanupAttributes($this->getAttribute('salutation')),
+                    'firstname'   => $cleanupAttributes($this->getAttribute('firstname')),
+                    'lastname'    => $cleanupAttributes($this->getAttribute('lastname')),
+                    'company'     => $cleanupAttributes($this->getAttribute('company')),
+                    'delivery'    => $cleanupAttributes($this->getAttribute('delivery')),
+                    'street_no'   => $cleanupAttributes($this->getAttribute('street_no')),
+                    'zip'         => $cleanupAttributes($this->getAttribute('zip')),
+                    'city'        => $cleanupAttributes($this->getAttribute('city')),
+                    'country'     => $cleanupAttributes($this->getAttribute('country')),
                     'mail'        => $mail,
                     'phone'       => $phone,
                     'custom_data' => \json_encode($this->getCustomData())

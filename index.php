@@ -33,6 +33,7 @@ if (isset($_REQUEST['_url'])
 }
 
 use \Symfony\Component\HttpFoundation\Response;
+use \Symfony\Component\HttpFoundation\RedirectResponse;
 
 use QUI\Utils\System\Debug;
 use QUI\Utils\Security\Orthos;
@@ -41,6 +42,15 @@ use QUI\System\Log;
 try {
     require_once 'bootstrap.php';
 
+    if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'index.php') !== false) {
+        $Redirect = new RedirectResponse(URL_DIR);
+        $Redirect->setStatusCode(Response::HTTP_SEE_OTHER);
+
+        echo $Redirect->getContent();
+        $Redirect->send();
+        exit;
+    }
+    
     $Response = QUI::getGlobalResponse();
     $Request  = QUI::getRequest();
 
@@ -88,7 +98,7 @@ try {
     QUI::getTemplateManager()->assignGlobalParam('Project', $Project);
     QUI::getTemplateManager()->assignGlobalParam('Site', $Site);
 
-    $Engine  = QUI::getTemplateManager()->getEngine();
+    $Engine = QUI::getTemplateManager()->getEngine();
 
     $Site->load();
 
