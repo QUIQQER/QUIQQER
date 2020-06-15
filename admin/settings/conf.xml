@@ -95,6 +95,9 @@
                     <type><![CDATA[string]]></type>
                     <defaultvalue>en</defaultvalue>
                 </conf>
+                <conf name="country">
+                    <type><![CDATA[string]]></type>
+                </conf>
                 <conf name="htmlSuffix">
                     <type><![CDATA[bool]]></type>
                     <defaultvalue>0</defaultvalue>
@@ -879,9 +882,23 @@
                     </text>
                     <icon>fa fa-globe</icon>
 
-                    <settings title="country" name="country">
+                    <settings>
                         <title>
                             <locale group="quiqqer/quiqqer" var="quiqqer.settings.country.title"/>
+                        </title>
+
+                        <input conf="globals.country" name="country"
+                               data-qui="package/quiqqer/countries/bin/controls/Select"
+                        >
+                            <text>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.country.title"/>
+                            </text>
+                        </input>
+                    </settings>
+
+                    <settings title="country" name="country">
+                        <title>
+                            <locale group="quiqqer/quiqqer" var="quiqqer.settings.available.countries.title"/>
                         </title>
 
                         <input label="false" type="hidden"
