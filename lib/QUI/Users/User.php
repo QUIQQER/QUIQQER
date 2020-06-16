@@ -725,12 +725,19 @@ class User implements QUI\Interfaces\Users\User
     public function getCountry()
     {
         try {
+            $Address = $this->getCurrentAddress();
+
+            if ($Address instanceof Address) {
+                return $Address->getCountry();
+            }
+        } catch (QUI\Exception $Exception) {
+        }
+
+        try {
             $Standard = $this->getStandardAddress();
 
             if ($Standard) {
-                $Country = $Standard->getCountry();
-
-                return $Country;
+                return $Standard->getCountry();
             }
         } catch (QUI\Exception $Exception) {
         }
@@ -2161,6 +2168,24 @@ class User implements QUI\Interfaces\Users\User
         throw new QUI\Users\Exception(
             QUI::getLocale()->get('quiqqer/system', 'exception.user.no.address.exists')
         );
+    }
+
+    /**
+     * Return the current instance address
+     * -> Standard Address, Delivery Address or Invoice Address
+     *
+     * @return Address
+     * @throws Exception
+     */
+    public function getCurrentAddress()
+    {
+        $CurrentAddress = $this->getAttribute('CurrentAddress');
+
+        if ($CurrentAddress instanceof Address) {
+            return $CurrentAddress;
+        }
+
+        return $this->getStandardAddress();
     }
 
     /**
