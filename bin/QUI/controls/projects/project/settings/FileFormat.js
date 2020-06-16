@@ -45,6 +45,23 @@ define('controls/projects/project/settings/FileFormat', [
                 'class': 'qui-projects-settings-file-format'
             }).wraps(this.$Input);
 
+            if (this.$Elm.getParent('.field-container') &&
+                !this.$Elm.getParent().hasClass('.field-container-field')) {
+                new Element('span', {
+                    'class': 'field-container-field field-container-field-no-padding'
+                }).wraps(this.$Elm);
+
+                if (!this.$Elm.getNext()) {
+                    new Element('span', {
+                        'html': 'Byte',
+                        styles: {
+                            lineHeight : 30,
+                            paddingLeft: 10
+                        }
+                    }).inject(this.$Elm, 'after');
+                }
+            }
+
             this.$Display = new Element('div', {
                 'class': 'qui-projects-settings-file-format-display'
             }).inject(this.$Elm);
