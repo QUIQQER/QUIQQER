@@ -4879,6 +4879,12 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="exception.upload.count.limit">
             <en><![CDATA[Unfortunately you are not allowed to upload any more files.]]></en>
         </locale>
+        <locale name="exception.upload.not.allowed.mimetype">
+            <en><![CDATA[Unfortunately you are not allowed to upload this file.]]></en>
+        </locale>
+        <locale name="exception.upload.not.allowed.ending">
+            <en><![CDATA[Unfortunately you are not allowed to upload this file.]]></en>
+        </locale>
     </groups>
     <groups name="quiqqer/quiqqer" datatype="js">        <!-- Control: controls/email/Select -->
         <locale name="controls.email.select.email_invalid">

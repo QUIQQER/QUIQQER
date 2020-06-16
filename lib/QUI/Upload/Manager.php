@@ -198,6 +198,14 @@ class Manager
         if ($UploadForm) {
             $configAllowedTypes   = $UploadForm->getAttribute('allowedFileTypes');
             $configAllowedEndings = $UploadForm->getAttribute('allowedFileEnding');
+
+            if (\is_array($configAllowedTypes)) {
+                $configAllowedTypes = \implode(',', $configAllowedTypes);
+            }
+
+            if (\is_array($configAllowedEndings)) {
+                $configAllowedEndings = \implode(',', $configAllowedEndings);
+            }
         }
 
 
