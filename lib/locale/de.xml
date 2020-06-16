@@ -3996,7 +3996,13 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             <de><![CDATA[Länder-Einstellungen]]></de>
         </locale>
         <locale name="quiqqer.settings.country.title">
-            <de><![CDATA[Länder-Einstellungen]]></de>
+            <de><![CDATA[Land Einstellungen]]></de>
+        </locale>
+        <locale name="quiqqer.settings.country.default.title">
+            <en><![CDATA[Standard Land]]></en>
+        </locale>
+        <locale name="quiqqer.settings.available.countries.title">
+            <de><![CDATA[Verfügbare Länder]]></de>
         </locale>
         <locale name="quiqqer.settings.date_formats.title">
             <de><![CDATA[Globales Datumsformat]]></de>
