@@ -557,6 +557,10 @@ class Output extends Singleton
             return $html;
         }
 
+        if (isset($att['rel']) && $att['rel'] === 'alternate') {
+            return $html;
+        }
+
         if (\strpos($att['href'], '?lu=') !== false) {
             return $html;
         }
