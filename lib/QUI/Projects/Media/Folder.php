@@ -47,11 +47,15 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * (non-PHPdoc)
      *
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
+     *
      * @throws QUI\Exception
      * @see QUI\Interfaces\Projects\Media\File::activate()
      */
-    public function activate()
+    public function activate($PermissionUser = null)
     {
+        $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
+
         QUI::getDataBase()->update(
             $this->Media->getTable(),
             ['active' => 1],
@@ -60,14 +64,14 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         $this->setAttribute('active', 1);
 
-        // activate resursive to the top
+        // activate recursive to the top
         $Media       = $this->Media;
         $parents_ids = $this->getParentIds();
 
         foreach ($parents_ids as $id) {
             try {
                 $Item = $Media->get($id);
-                $Item->activate();
+                $Item->activate($PermissionUser);
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }
@@ -82,14 +86,18 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * (non-PHPdoc)
      *
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
+     *
      * @throws QUI\Exception
      * @see QUI\Interfaces\Projects\Media\File::deactivate()
      */
-    public function deactivate()
+    public function deactivate($PermissionUser = null)
     {
         if ($this->isActive() === false) {
             return;
         }
+
+        $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
 
         QUI::getDataBase()->update(
             $this->Media->getTable(),
@@ -106,7 +114,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         foreach ($ids as $id) {
             try {
                 $Item = $Media->get($id);
-                $Item->deactivate();
+                $Item->deactivate($PermissionUser);
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
             }
@@ -120,12 +128,16 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * (non-PHPdoc)
      *
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
+     *
      * @throws QUI\Exception
      * @see QUI\Projects\Media\Item::delete()
-     *
      */
-    public function delete()
+    public function delete($PermissionUser = null)
     {
+        $this->checkPermission('quiqqer.projects.media.del', $PermissionUser);
+
+
         if ($this->isDeleted()) {
             throw new QUI\Exception(
                 'Folder is already deleted',
@@ -151,7 +163,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 $File = $this->Media->get($id);
 
                 if (MediaUtils::isFolder($File) === false) {
-                    $File->delete();
+                    $File->delete($PermissionUser);
                 }
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::writeException($Exception);
@@ -205,9 +217,10 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     /**
      * (non-PHPdoc)
      *
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
      * @see QUI\Projects\Media\Item::destroy()
      */
-    public function destroy()
+    public function destroy($PermissionUser = null)
     {
         // nothing
         // folders are not in the trash
@@ -232,12 +245,13 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * (non-PHPdoc)
      *
      * @param string $newName - new name for the folder
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
      *
      * @throws QUI\Exception
      * @see QUI\Projects\Media\Item::rename()
      *
      */
-    public function rename($newName)
+    public function rename($newName, $PermissionUser = null)
     {
         if (empty($newName)) {
             throw new QUI\Exception(
@@ -335,12 +349,13 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * (non-PHPdoc)
      *
      * @param QUI\Projects\Media\Folder $Folder
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
      *
      * @throws QUI\Exception
      * @see QUI\Projects\Media\Item::moveTo()
      *
      */
-    public function moveTo(QUI\Projects\Media\Folder $Folder)
+    public function moveTo(QUI\Projects\Media\Folder $Folder, $PermissionUser = null)
     {
         $Parent = $this->getParent();
 
@@ -417,13 +432,14 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      * (non-PHPdoc)
      *
      * @param QUI\Projects\Media\Folder $Folder
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
      *
      * @return QUI\Projects\Media\Folder
      * @throws QUI\Exception
      * @see QUI\Projects\Media\Item::copyTo()
      *
      */
-    public function copyTo(QUI\Projects\Media\Folder $Folder)
+    public function copyTo(QUI\Projects\Media\Folder $Folder, $PermissionUser = null)
     {
         if ($Folder->childWithNameExists($this->getAttribute('name'))) {
             throw new QUI\Exception(
@@ -1330,16 +1346,19 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      *                           self::FILE_OVERWRITE_NONE
      *                           self::FILE_OVERWRITE_FILE
      *                           self::FILE_OVERWRITE_DESTROY
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
      *
      * @return QUI\Projects\Media\Item
+     *
      * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
-    public function uploadFile($file, $options = self::FILE_OVERWRITE_NONE)
+    public function uploadFile($file, $options = self::FILE_OVERWRITE_NONE, $PermissionUser = null)
     {
         if (Media::useMediaPermissions()) {
             QUI\Permissions\Permission::checkPermission(
-                'quiqqer.projects.media.upload'
+                'quiqqer.projects.media.upload',
+                $PermissionUser
             );
         }
 

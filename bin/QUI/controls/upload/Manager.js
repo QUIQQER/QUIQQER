@@ -254,7 +254,7 @@ define('controls/upload/Manager', [
 
             this.$maxPercent = files.length * 100;
 
-            var cleanupFiles = function(File) {
+            var cleanupFiles = function (File) {
                 var newFileList = [];
 
                 for (var i = 0, len = self.$files.length; i < len; i++) {

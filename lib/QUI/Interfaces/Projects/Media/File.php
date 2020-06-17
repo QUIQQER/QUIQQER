@@ -71,23 +71,26 @@ interface File
     /**
      * Activate the file
      *
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
      * @throws \QUI\Exception
      */
-    public function activate();
+    public function activate($PermissionUser = null);
 
     /**
      * Deactivate the file
      *
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
      * @throws \QUI\Exception
      */
-    public function deactivate();
+    public function deactivate($PermissionUser = null);
 
     /**
      * Delete the file, file is in trash
      *
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
      * @throws \QUI\Exception
      */
-    public function delete();
+    public function delete($PermissionUser = null);
 
     /**
      * Save the file with all its attributes to the Database

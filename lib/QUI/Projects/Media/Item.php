@@ -226,7 +226,7 @@ abstract class Item extends QUI\QDOM
 
         \reset($this->title);
         $current = \current($this->title);
-        
+
         if (empty($current)) {
             return '';
         }
@@ -318,16 +318,17 @@ abstract class Item extends QUI\QDOM
      * Activate the file
      * The file is now public
      *
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
+     *
      * @throws QUI\Exception
      */
-    public function activate()
+    public function activate($PermissionUser = null)
     {
-        $this->checkPermission('quiqqer.projects.media.edit');
-
+        $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
 
         try {
             // activate the parents, otherwise the file is not accessible
-            $this->getParent()->activate();
+            $this->getParent()->activate($PermissionUser);
         } catch (QUI\Exception $Exception) {
             // has no parent
         }
@@ -344,7 +345,7 @@ abstract class Item extends QUI\QDOM
         if (\method_exists($this, 'deleteCache')) {
             try {
                 $this->deleteCache();
-            } catch (QUI\Exception $Exception) {
+            } catch (\Exception $Exception) {
                 QUI\System\Log::addNotice($Exception->getMessage());
             }
         }
@@ -352,7 +353,7 @@ abstract class Item extends QUI\QDOM
         if (\method_exists($this, 'createCache')) {
             try {
                 $this->createCache();
-            } catch (QUI\Exception $Exception) {
+            } catch (\Exception $Exception) {
                 QUI\System\Log::addNotice($Exception->getMessage());
             }
         }
@@ -364,11 +365,13 @@ abstract class Item extends QUI\QDOM
      * Deactivate the file
      * the file is no longer public
      *
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
+     *
      * @throws QUI\Exception
      */
-    public function deactivate()
+    public function deactivate($PermissionUser = null)
     {
-        $this->checkPermission('quiqqer.projects.media.edit');
+        $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
 
         QUI::getDataBase()->update(
             $this->Media->getTable(),
@@ -389,9 +392,11 @@ abstract class Item extends QUI\QDOM
      * Save the file to the database
      * The id attribute can not be overwritten
      *
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
+     *
      * @throws QUI\Exception
      */
-    public function save()
+    public function save($PermissionUser = null)
     {
         // permission check
         if (Media::useMediaPermissions()) {
@@ -400,7 +405,7 @@ abstract class Item extends QUI\QDOM
             }
         }
 
-        $this->checkPermission('quiqqer.projects.media.edit');
+        $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
 
 
         // save logic
@@ -550,11 +555,12 @@ abstract class Item extends QUI\QDOM
     /**
      * Delete the file and move it to the trash
      *
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
      * @throws QUI\Exception
      */
-    public function delete()
+    public function delete($PermissionUser = null)
     {
-        $this->checkPermission('quiqqer.projects.media.del');
+        $this->checkPermission('quiqqer.projects.media.del', $PermissionUser);
 
 
         if ($this->isDeleted()) {
@@ -597,7 +603,7 @@ abstract class Item extends QUI\QDOM
         if (\method_exists($this, 'deleteCache')) {
             try {
                 $this->deleteCache();
-            } catch (QUI\Exception $Exception) {
+            } catch (\Exception $Exception) {
                 QUI\System\Log::addWarning($Exception->getMessage());
             }
         }
@@ -605,7 +611,7 @@ abstract class Item extends QUI\QDOM
         if (\method_exists($this, 'deleteAdminCache')) {
             try {
                 $this->deleteAdminCache();
-            } catch (QUI\Exception $Exception) {
+            } catch (\Exception $Exception) {
                 QUI\System\Log::addWarning($Exception->getMessage());
             }
         }
@@ -661,11 +667,12 @@ abstract class Item extends QUI\QDOM
     /**
      * Destroy the File complete from the DataBase and from the Filesystem
      *
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
      * @throws QUI\Exception
      */
-    public function destroy()
+    public function destroy($PermissionUser = null)
     {
-        $this->checkPermission('quiqqer.projects.media.del');
+        $this->checkPermission('quiqqer.projects.media.del', $PermissionUser);
 
 
         if ($this->isActive()) {
@@ -705,12 +712,13 @@ abstract class Item extends QUI\QDOM
      * Rename the File
      *
      * @param string $newName - The new name what the file get
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
      *
      * @throws \QUI\Exception
      */
-    public function rename($newName)
+    public function rename($newName, $PermissionUser = null)
     {
-        $this->checkPermission('quiqqer.projects.media.edit');
+        $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
 
 
         $newName = \trim($newName, "_ \t\n\r\0\x0B"); // Trim the default characters and underscores
@@ -797,12 +805,13 @@ abstract class Item extends QUI\QDOM
      * move the item to another folder
      *
      * @param \QUI\Projects\Media\Folder $Folder - the new folder of the file
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
      *
      * @throws QUI\Exception
      */
-    public function moveTo(Folder $Folder)
+    public function moveTo(Folder $Folder, $PermissionUser = null)
     {
-        $this->checkPermission('quiqqer.projects.media.edit');
+        $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
 
 
         // check if a child with the same name exist
@@ -875,14 +884,15 @@ abstract class Item extends QUI\QDOM
      * copy the item to another folder
      *
      * @param \QUI\Projects\Media\Folder $Folder
+     * @param QUI\Interfaces\Users\User|null $PermissionUser
      *
      * @return \QUI\Projects\Media\Item - The new file
      *
      * @throws QUI\Exception
      */
-    public function copyTo(Folder $Folder)
+    public function copyTo(Folder $Folder, $PermissionUser = null)
     {
-        $this->checkPermission('quiqqer.projects.media.edit');
+        $this->checkPermission('quiqqer.projects.media.edit', $PermissionUser);
 
         $File = $Folder->uploadFile($this->getFullPath());
 

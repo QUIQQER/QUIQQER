@@ -5057,7 +5057,7 @@ Du kannst die Benutzerrechteprüfung der Konsole auch mit '--ignore-file-permiss
             <de><![CDATA[Zeigt die QUIQQER Lizenz]]></de>
         </locale>
         <locale name="exception.upload.count.limit">
-            <de><![CDATA[Leider darfst keine weiteren Dateien mehr hochladen.]]></de>
+            <de><![CDATA[Leider darfst du keine weiteren Dateien mehr hochladen.]]></de>
         </locale>
         <locale name="exception.upload.not.allowed.mimetype">
             <de><![CDATA[Diese Datei darfst du leider nicht hochladen.]]></de>

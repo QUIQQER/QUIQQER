@@ -12,3 +12,9 @@
 .qui-projects-settings-file-format input {
     width: 100%;
 }
+
+.field-container-field .qui-projects-settings-file-format input {
+    border-bottom: 0;
+    border-left: 0;
+    border-top: 0;
+}
