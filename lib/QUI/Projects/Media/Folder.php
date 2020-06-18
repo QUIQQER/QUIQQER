@@ -1615,7 +1615,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                     $NewFolder = $this->createFolder($foldername);
                 }
 
-                $this->uploadFolder($path.'/'.$file, $NewFolder);
+                $NewFolder->uploadFolder($path.'/'.$file);
                 continue;
             }
 
