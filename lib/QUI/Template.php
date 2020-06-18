@@ -800,7 +800,8 @@ class Template extends QUI\QDOM
             'ControlManager'  => new QUI\Control\Manager(),
             'Canonical'       => $Engine->getCanonical(),
             'lastUpdate'      => QUI::getPackageManager()->getLastUpdateDate(),
-            'languages'       => implode(',', $Project->getLanguages())
+            'languages'       => \implode(',', $Project->getLanguages()),
+            'systemCountry'   => QUI::conf('globals', 'country')
         ]);
 
         if ($this->getAttribute('noConflict')) {
