@@ -557,7 +557,11 @@ class Output extends Singleton
             return $html;
         }
 
-        if (isset($att['rel']) && $att['rel'] === 'alternate') {
+        if (!isset($att['rel'])) {
+            return $html;
+        }
+
+        if (\strtolower($att['rel']) !== 'stylesheet') {
             return $html;
         }
 
