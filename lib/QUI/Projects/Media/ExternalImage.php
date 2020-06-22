@@ -230,9 +230,7 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
      * @param integer|boolean $width - (optional)
      * @param integer|boolean $height - (optional)
      *
-     * @return string - URL to the cachefile
-     *
-     * @throws QUI\Exception
+     * @return string - URL to the cache file
      */
     public function createSizeCache($width = false, $height = false)
     {
@@ -246,8 +244,6 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
      * @param integer $newHeight
      *
      * @return string - Path to the new Image
-     *
-     * @throws QUI\Exception
      */
     public function resize($newWidth = 0, $newHeight = 0)
     {
@@ -287,25 +283,31 @@ class ExternalImage implements QUI\Interfaces\Projects\Media\File
     //region placeholder methods
 
     /**
-     * placeholder - do nothing
+     * Placeholder - do nothing
+     *
+     * @param null $PermissionUser
      */
-    public function activate()
+    public function activate($PermissionUser = null)
     {
         // do nothing
     }
 
     /**
      * placeholder - do nothing
+     *
+     * @param null $PermissionUser
      */
-    public function deactivate()
+    public function deactivate($PermissionUser = null)
     {
         // do nothing
     }
 
     /**
      * placeholder - do nothing
+     *
+     * @param null $PermissionUser
      */
-    public function delete()
+    public function delete($PermissionUser = null)
     {
         // do nothing
     }
