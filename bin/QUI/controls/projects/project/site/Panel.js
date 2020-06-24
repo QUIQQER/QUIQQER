@@ -959,7 +959,6 @@ define('controls/projects/project/site/Panel', [
                     quiids  = Form.getElements('[data-quiid]');
 
                 for (i = 0, len = quiids.length; i < len; i++) {
-
                     Control = QUI.Controls.getById(
                         quiids[i].get('data-quiid')
                     );
@@ -1135,7 +1134,7 @@ define('controls/projects/project/site/Panel', [
                                         if (Site.isActive()) {
                                             return;
                                         }
-                                        
+
                                         self.$showTitleUrlAdjustment();
                                     });
                                 }
@@ -1320,10 +1319,9 @@ define('controls/projects/project/site/Panel', [
 
             return new Promise(function (resolve) {
                 if (onloadRequire) {
-
                     require([onloadRequire], function (Plugin) {
                         if (onload) {
-                            eval(onload + '( Category, self );');
+                            eval(onload + '(Category, self);');
                             resolve();
                             return;
                         }
