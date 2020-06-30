@@ -3130,6 +3130,15 @@
         <locale name="quiqqer.settings.email.smtp.auth.MAILReplyTo.description">
             <de><![CDATA[E-Mail-Adresse, an welche die Antwort gesendet werden soll.]]></de>
         </locale>
+        <locale name="quiqqer.settings.email.logging">
+            <de><![CDATA[Mail Logging]]></de>
+        </locale>
+        <locale name="quiqqer.settings.email.logging.description">
+            <de><![CDATA[Der komplette Mail Versand wird von QUIQQER geloggt]]></de>
+        </locale>
+        <locale name="quiqqer.settings.email.smtp.debug">
+            <de><![CDATA[SMTP Debug Level]]></de>
+        </locale>
         <locale name="quiqqer.settings.auth">
             <de><![CDATA[Authentifizierung]]></de>
         </locale>

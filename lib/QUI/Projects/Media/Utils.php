@@ -499,20 +499,12 @@ class Utils
         }
 
 
-        if (!empty($attributes['height']) || !empty($attributes['width'])) {
-            $pictureStyle = '<picture style="';
-
-            if (!empty($attributes['height'])) {
-                $pictureStyle .= 'height: '.$attributes['height'].'px;';
-            }
-
-            if (!empty($attributes['width'])) {
-                $pictureStyle .= 'width: '.$attributes['width'].'px;';
-            }
-
-            $pictureStyle .= '">';
-
-            $picture = \str_replace('<picture>', $pictureStyle, $picture);
+        if (!empty($attributes['style'])) {
+            $picture = \str_replace(
+                '<picture>',
+                '<picture style="' . $attributes['style'] . '">',
+                $picture
+            );
         }
 
         QUI\Cache\Manager::set($cacheName, $picture);

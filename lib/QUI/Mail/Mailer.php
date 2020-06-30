@@ -231,10 +231,16 @@ class Mailer extends QUI\QDOM
 
         // no mail queue
         try {
+            Log::logSend($PHPMailer);
+
             $PHPMailer->send();
+
+            Log::logDone($PHPMailer);
 
             return true;
         } catch (\Exception $Exception) {
+            Log::logException($Exception);
+
             throw new QUI\Exception(
                 'Mail Error: '.$Exception->getMessage()
             );
