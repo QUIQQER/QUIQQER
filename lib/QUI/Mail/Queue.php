@@ -34,7 +34,7 @@ class Queue
     {
         $Table = QUI::getDataBase()->table();
 
-        $Table->addColumn(self::table(), array(
+        $Table->addColumn(self::table(), [
             'id'           => 'int(11) NOT NULL',
             'subject'      => 'varchar(1000)',
             'body'         => 'text',
@@ -47,7 +47,7 @@ class Queue
             'cc'           => 'text',
             'bcc'          => 'text',
             'attachements' => 'text'
-        ));
+        ]);
 
         $Table->setPrimaryKey(self::table(), 'id');
         $Table->setAutoIncrement(self::table(), 'id');
@@ -62,7 +62,7 @@ class Queue
      */
     public static function getAttachmentDir($mailId)
     {
-        return VAR_DIR . 'mailQueue/' . (int)$mailId . '/';
+        return VAR_DIR.'mailQueue/'.(int)$mailId.'/';
     }
 
     /**
@@ -81,7 +81,7 @@ class Queue
         $params['cc']      = \json_encode($params['cc']);
         $params['bcc']     = \json_encode($params['bcc']);
 
-        $attachements = array();
+        $attachements = [];
 
         if (isset($params['attachements'])) {
             $attachements = $params['attachements'];
@@ -106,7 +106,7 @@ class Queue
 
                 $infos = File::getInfo($attachement);
 
-                File::copy($attachement, $mailQueueDir . $infos['basename']);
+                File::copy($attachement, $mailQueueDir.$infos['basename']);
             }
         }
 
@@ -120,10 +120,10 @@ class Queue
      */
     public function send()
     {
-        $params = QUI::getDataBase()->fetch(array(
+        $params = QUI::getDataBase()->fetch([
             'from'  => self::table(),
             'limit' => 1
-        ));
+        ]);
 
         if (!isset($params[0])) {
             return true;
@@ -134,16 +134,16 @@ class Queue
 
             // successful send
             if ($send) {
-                QUI::getDataBase()->delete(self::table(), array(
+                QUI::getDataBase()->delete(self::table(), [
                     'id' => $params[0]['id']
-                ));
+                ]);
 
                 return true;
             }
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError(
                 $Exception->getMessage(),
-                array('trace' => $Exception->getTraceAsString()),
+                ['trace' => $Exception->getTraceAsString()],
                 'mail_queue'
             );
         }
@@ -158,10 +158,10 @@ class Queue
      */
     public function sendAll()
     {
-        $result = QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch([
             'select' => 'id',
             'from'   => self::table()
-        ));
+        ]);
 
         foreach ($result as $row) {
             try {
@@ -169,7 +169,7 @@ class Queue
             } catch (QUI\Exception $Exception) {
                 QUI\System\Log::addError(
                     $Exception->getMessage(),
-                    array('trace' => $Exception->getTraceAsString()),
+                    ['trace' => $Exception->getTraceAsString()],
                     'mail_queue'
                 );
             }
@@ -186,13 +186,13 @@ class Queue
      */
     public function sendById($id)
     {
-        $params = QUI::getDataBase()->fetch(array(
+        $params = QUI::getDataBase()->fetch([
             'from'  => self::table(),
-            'where' => array(
+            'where' => [
                 'id' => (int)$id
-            ),
+            ],
             'limit' => 1
-        ));
+        ]);
 
         if (!isset($params[0])) {
             throw new QUI\Exception(
@@ -210,16 +210,16 @@ class Queue
 
             // successful send
             if ($send) {
-                QUI::getDataBase()->delete(self::table(), array(
+                QUI::getDataBase()->delete(self::table(), [
                     'id' => $params[0]['id']
-                ));
+                ]);
 
                 return true;
             }
         } catch (QUI\Exception $Exception) {
             QUI\System\Log::addError(
                 $Exception->getMessage(),
-                array('trace' => $Exception->getTraceAsString()),
+                ['trace' => $Exception->getTraceAsString()],
                 'mail_queue'
             );
         }
@@ -257,6 +257,7 @@ class Queue
                     $PhpMailer->addAddress($address[0], $address[1]);
                     continue;
                 }
+
                 $PhpMailer->addAddress($address);
             }
 
@@ -266,6 +267,7 @@ class Queue
                     $PhpMailer->addAddress($entry[0], $entry[1]);
                     continue;
                 }
+
                 $PhpMailer->addReplyTo($entry);
             }
 
@@ -275,6 +277,7 @@ class Queue
                     $PhpMailer->addAddress($entry[0], $entry[1]);
                     continue;
                 }
+
                 $PhpMailer->addCC($entry);
             }
 
@@ -284,6 +287,7 @@ class Queue
                     $PhpMailer->addAddress($entry[0], $entry[1]);
                     continue;
                 }
+
                 $PhpMailer->addBCC($entry);
             }
 
@@ -294,7 +298,7 @@ class Queue
                 $files = File::readDir($mailQueueDir);
 
                 foreach ($files as $file) {
-                    $file = $mailQueueDir . $file;
+                    $file = $mailQueueDir.$file;
 
                     if (!\file_exists($file)) {
                         continue;
@@ -327,6 +331,8 @@ class Queue
             $PhpMailer->Subject  = $params['subject'];
             $PhpMailer->Body     = $params['body'];
 
+            Log::logSend($PhpMailer);
+
             $PhpMailer->send();
 
             if (\is_dir($mailQueueDir)) {
@@ -340,9 +346,10 @@ class Queue
             return true;
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
+            Log::logException($Exception);
 
             throw new QUI\Exception(
-                'Mail Error: ' . $Exception->getMessage(),
+                'Mail Error: '.$Exception->getMessage(),
                 500
             );
         }
@@ -355,13 +362,13 @@ class Queue
      */
     public function count()
     {
-        $result = QUI::getDataBase()->fetch(array(
+        $result = QUI::getDataBase()->fetch([
             'from'  => self::table(),
-            'count' => array(
+            'count' => [
                 'select' => 'id',
                 'as'     => 'count'
-            )
-        ));
+            ]
+        ]);
 
         return $result[0]['count'];
     }
@@ -373,9 +380,9 @@ class Queue
      */
     public function getList()
     {
-        return QUI::getDataBase()->fetch(array(
+        return QUI::getDataBase()->fetch([
             'from' => self::table()
-        ));
+        ]);
     }
 
     /**
@@ -385,11 +392,12 @@ class Queue
      */
     protected function getMailsSentInLastHour()
     {
-        $cacheFile = QUI::getPackage('quiqqer/quiqqer')->getVarDir() . 'mailqueue';
+        $cacheFile = QUI::getPackage('quiqqer/quiqqer')->getVarDir().'mailqueue';
         $time      = \time();
 
         if (!\file_exists($cacheFile)) {
             \file_put_contents($cacheFile, "$time-0");
+
             return 0;
         }
 
@@ -398,6 +406,7 @@ class Queue
 
         if ((\time() - $createTime) > 3600) {
             \file_put_contents($cacheFile, "$time-0");
+
             return 0;
         }
 
@@ -411,10 +420,10 @@ class Queue
      */
     protected function increaseMailsSent()
     {
-        $cacheFile = QUI::getPackage('quiqqer/quiqqer')->getVarDir() . 'mailqueue';
+        $cacheFile = QUI::getPackage('quiqqer/quiqqer')->getVarDir().'mailqueue';
         $mailsSent = $this->getMailsSentInLastHour();
 
         $mailsSentCache = \explode('-', \file_get_contents($cacheFile));
-        \file_put_contents($cacheFile, $mailsSentCache[0] . '-' . ($mailsSent + 1));
+        \file_put_contents($cacheFile, $mailsSentCache[0].'-'.($mailsSent + 1));
     }
 }

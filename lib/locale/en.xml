@@ -3064,6 +3064,15 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="quiqqer.settings.email.smtp.auth.MAILReplyTo.description">
             <en><![CDATA[Mail address to which the reply should be sent.]]></en>
         </locale>
+        <locale name="quiqqer.settings.email.logging">
+            <en><![CDATA[Mail logging]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.smtp.debug">
+            <en><![CDATA[SMTP Debug Level]]></en>
+        </locale>
+        <locale name="quiqqer.settings.email.logging.description">
+            <en><![CDATA[The complete mail delivery is logged by QUIQQER]]></en>
+        </locale>
         <locale name="quiqqer.settings.auth">
             <en><![CDATA[Authentication]]></en>
         </locale>

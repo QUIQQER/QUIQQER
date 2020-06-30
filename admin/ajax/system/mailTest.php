@@ -77,10 +77,15 @@ QUI::$Ajax->registerFunction(
             $Mail->SMTPDebug   = 3;
             $Mail->Debugoutput = function ($str, $level) {
                 QUI\System\Log::writeRecursive(\rtrim($str).PHP_EOL);
+                QUI\Mail\Log::write(\rtrim($str));
             };
 
+            QUI\Mail\Log::logSend($Mail);
             $Mail->send();
+            QUI\Mail\Log::logDone($Mail);
         } catch (\Exception $Exception) {
+            QUI\Mail\Log::logException($Exception);
+
             throw new QUI\Exception(
                 $Exception->getMessage(),
                 $Exception->getCode()
