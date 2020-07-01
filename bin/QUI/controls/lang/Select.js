@@ -128,7 +128,7 @@ define('controls/lang/Select', [
             } else {
                 Prom = new Promise(function (resolve, reject) {
                     require(['QUIQQER'], function (QUIQQER) {
-                        QUIQQER.getAvailableLanguages(resolve).catch(reject);
+                        QUIQQER.getAvailableLanguages().then(resolve).catch(reject);
                     });
                 });
             }

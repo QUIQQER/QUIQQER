@@ -330,7 +330,7 @@
         </locale>
         <locale name="projects.project.settings.panel.convertRomanLetters.description">
             <de><![CDATA[
-            Romanische Zeichen in ihre lateinisches Gegenstck konvertieren.
+            Romanische Zeichen in ihre lateinisches Gegenstück konvertieren.
             Umlaute wie ä ö ü werden somit zu ae, oe und ue.
             ]]></de>
         </locale>
@@ -4008,7 +4008,7 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             <de><![CDATA[Land Einstellungen]]></de>
         </locale>
         <locale name="quiqqer.settings.country.default.title">
-            <en><![CDATA[Standard Land]]></en>
+            <de><![CDATA[Standard Land]]></de>
         </locale>
         <locale name="quiqqer.settings.available.countries.title">
             <de><![CDATA[Verfügbare Länder]]></de>

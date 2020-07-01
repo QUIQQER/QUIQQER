@@ -912,7 +912,7 @@
                                data-qui="package/quiqqer/countries/bin/controls/Select"
                         >
                             <text>
-                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.country.title"/>
+                                <locale group="quiqqer/quiqqer" var="quiqqer.settings.country.default.title"/>
                             </text>
                         </input>
                     </settings>
