@@ -128,12 +128,13 @@ define('controls/lang/Select', [
             } else {
                 Prom = new Promise(function (resolve, reject) {
                     require(['QUIQQER'], function (QUIQQER) {
-                        QUIQQER.getAvailableLanguages(resolve).catch(reject);
+                        QUIQQER.getAvailableLanguages().then(resolve).catch(reject);
                     });
                 });
             }
 
             return Prom.then(function (languages) {
+                console.log(languages);
                 for (var i = 0, len = languages.length; i < len; i++) {
                     self.$Select.appendChild(
                         QUILocale.get('quiqqer/quiqqer', 'language.' + languages[i]),
