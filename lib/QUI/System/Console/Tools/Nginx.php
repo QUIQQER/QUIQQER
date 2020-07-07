@@ -25,6 +25,7 @@ class Nginx extends QUI\System\Console\Tool
      */
     public function __construct()
     {
+        $this->systemTool = true;
         $this->setName('quiqqer:nginx')
             ->setDescription('Generate the nginx.conf File.');
 

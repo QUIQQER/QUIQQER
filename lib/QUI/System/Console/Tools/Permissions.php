@@ -22,6 +22,8 @@ class Permissions extends QUI\System\Console\Tool
      */
     public function __construct()
     {
+        $this->systemTool = true;
+
         $this->setName('quiqqer:package')
             ->setDescription('Permission explorer')
             ->addArgument(
@@ -53,8 +55,8 @@ class Permissions extends QUI\System\Console\Tool
     /**
      * (non-PHPdoc)
      *
-     * @see \QUI\System\Console\Tool::execute()
      * @throws \Exception
+     * @see \QUI\System\Console\Tool::execute()
      */
     public function execute()
     {

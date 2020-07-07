@@ -21,6 +21,8 @@ class Htaccess extends QUI\System\Console\Tool
      */
     public function __construct()
     {
+        $this->systemTool = true;
+
         $this->setName('quiqqer:htaccess')
             ->setDescription('Generate the htaccess File.');
     }
@@ -96,7 +98,7 @@ class Htaccess extends QUI\System\Console\Tool
 # Date: '.\date('Y-m-d H:i:s').'
 #
 # Command to create new htaccess:
-# php quiqqer.php --username="" --password="" --tool=quiqqer:htaccess
+# ./console --tool=quiqqer:htaccess
 #
 # How do I customize the .htaccess file:
 # https://dev.quiqqer.com/quiqqer/quiqqer/wikis/htaccess

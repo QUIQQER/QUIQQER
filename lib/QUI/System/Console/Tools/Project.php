@@ -1,7 +1,8 @@
 <?php
 
+
 /**
- * This file contains the \QUI\System\Console\Tools\CreateProject
+ * This file contains the \QUI\System\Console\Tools\Project
  */
 
 namespace QUI\System\Console\Tools;
@@ -9,33 +10,46 @@ namespace QUI\System\Console\Tools;
 use QUI;
 
 /**
- * Create a new Project in the quiqqer console
+ * Class Project
  *
- * @author  www.pcsg.de (Henning Leutz)
- * @licence For copyright and license information, please view the /README.md
+ * @package QUI\System\Console\Tools
  */
-class CreateProject extends QUI\System\Console\Tool
+class Project extends QUI\System\Console\Tool
 {
     /**
      * Konstruktor
      */
     public function __construct()
     {
-        $this->setName('quiqqer:create-project')
-            ->setDescription('Create a new project')
-            ->addArgument('projectname', 'Name of the project', 'p', true)
+        $this->systemTool = true;
+
+        $this->setName('quiqqer:project')
+            ->setDescription('Project management')
             ->addArgument(
-                'projectlangs',
-                'Langs of the project (comma separated)',
-                'l',
+                'create',
+                'Create a new project',
+                'c',
                 true
             )
             ->addArgument(
-                'template',
-                'Standard template of the project',
-                false,
+                'delete',
+                'Delete a project',
+                'd',
                 true
-            );
+            )
+            ->addArgument('projectname', 'Name of the project', 'p', true);
+
+        $this->addExample(
+            './console quiqqer:project create --projectname="test" --projectlangs="de,en"'
+        );
+
+        $this->addExample(
+            './console quiqqer:project create --projectname="test" --projectlangs="de,en" --template="quiqqer/template-businesspro"'
+        );
+
+        $this->addExample(
+            './console quiqqer:project delete --projectname="test"'
+        );
     }
 
     /**
@@ -44,6 +58,27 @@ class CreateProject extends QUI\System\Console\Tool
      * @see \QUI\System\Console\Tool::execute()
      */
     public function execute()
+    {
+        $create = $this->getArgument('create');
+        $delete = $this->getArgument('delete');
+
+        if ($create) {
+            $this->createProject();
+
+            return;
+        }
+
+        if ($delete) {
+            $this->deleteProject();
+
+            return;
+        }
+    }
+
+    /**
+     * Create a new project
+     */
+    protected function createProject()
     {
         // project name
         $projectName = $this->getArgument('projectname');
@@ -155,5 +190,69 @@ class CreateProject extends QUI\System\Console\Tool
 
         $this->writeLn('Project '.$projectName.' successfuly created.');
         $this->writeLn('');
+    }
+
+    /**
+     * Delete a project
+     */
+    protected function deleteProject()
+    {
+        $this->writeLnLocale("console.tool.project.delete.warning.header", "yellow");
+        $this->writeLnLocale("console.tool.project.delete.warning", "white");
+        $this->writeLn("");
+        $this->writeLnLocale("console.tool.project.delete.prompt.projectname.info", "cyan");
+
+        foreach (QUI::getProjectManager()->getProjects() as $projectName) {
+            $this->writeLn(" * ".$projectName);
+        }
+
+        $this->writeLn();
+        $this->writeLnLocale("console.tool.project.delete.prompt.projectname", "light_cyan");
+        $projectName = $this->readInput();
+
+        try {
+            $Project = QUI::getProject($projectName);
+        } catch (\Exception $Exception) {
+            $this->writeLnLocale("console.tool.project.delete.project.not.found", "light_red");
+            $this->writeLn("");
+            exit;
+        }
+
+        // Check if this project is the only one
+        if (QUI::getProjectManager()->count() == 1) {
+            $this->writeLnLocale("console.tool.project.delete.project.delete.last.project", "light_red");
+            $this->writeLn("");
+            exit;
+        }
+
+        // Confirm project deletion
+        $this->writeLnLocale("console.tool.project.delete.prompt.warning.confirm", "yellow");
+        $this->writeLnLocale("console.tool.project.delete.prompt.projectname.confirm", "light_cyan");
+        $confirm = $this->readInput();
+
+        if ($confirm != $projectName) {
+            $this->writeLnLocale("console.tool.project.delete.error.confirm.mismatch", "light_red");
+            $this->writeLn("");
+            exit;
+        }
+
+        QUI::getProjectManager()->deleteProject($Project);
+
+        $this->writeLnLocale("console.tool.project.delete.success.finished", "light_green");
+        $this->writeLn("");
+    }
+
+    /**
+     * Prints a line to the output while using a locale variable of the 'quiqqer/quiqqer' group
+     *
+     * @param $locale
+     * @param bool $color
+     * @param bool $background
+     */
+    protected function writeLnLocale($locale, $color = false, $background = false)
+    {
+        $text = QUI::getLocale()->get("quiqqer/quiqqer", $locale);
+
+        $this->writeLn($text, $color, $background);
     }
 }

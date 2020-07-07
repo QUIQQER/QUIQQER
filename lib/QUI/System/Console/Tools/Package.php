@@ -23,6 +23,8 @@ class Package extends QUI\System\Console\Tool
      */
     public function __construct()
     {
+        $this->systemTool = true;
+
         $this->setName('quiqqer:package')
             ->setDescription('Package management')
             ->addArgument(
