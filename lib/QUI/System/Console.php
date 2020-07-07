@@ -43,7 +43,8 @@ class Console
         'clear-sessions',
         'clear-lock',
         'cron',
-        'password-reset'
+        'password-reset',
+        'setup'
     ];
 
     /**
@@ -685,6 +686,10 @@ class Console
                 }
 
                 $this->passwordReset();
+                break;
+
+            case 'setup':
+                $this->setArgument('#system-tool', 'quiqqer:setup');
                 break;
         }
 
