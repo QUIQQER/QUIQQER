@@ -1346,19 +1346,23 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
      *                           self::FILE_OVERWRITE_NONE
      *                           self::FILE_OVERWRITE_FILE
      *                           self::FILE_OVERWRITE_DESTROY
-     * @param QUI\Interfaces\Users\User|null $PermissionUser
+     * @param QUI\Interfaces\Users\User|null $EditUser
      *
      * @return QUI\Projects\Media\Item
      *
      * @throws QUI\Exception
      * @throws QUI\Permissions\Exception
      */
-    public function uploadFile($file, $options = self::FILE_OVERWRITE_NONE, $PermissionUser = null)
+    public function uploadFile($file, $options = self::FILE_OVERWRITE_NONE, $EditUser = null)
     {
+        if (empty($EditUser)) {
+            $EditUser = QUI::getUserBySession();
+        }
+
         if (Media::useMediaPermissions()) {
             QUI\Permissions\Permission::checkPermission(
                 'quiqqer.projects.media.upload',
-                $PermissionUser
+                $EditUser
             );
         }
 
@@ -1476,7 +1480,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
 
         // create the database entry
-        $User      = QUI::getUserBySession();
         $table     = $this->Media->getTable();
         $table_rel = $this->Media->getTable('relations');
 
@@ -1515,8 +1518,8 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             'alt'          => $title,
             'c_date'       => \date('Y-m-d h:i:s'),
             'e_date'       => \date('Y-m-d h:i:s'),
-            'c_user'       => $User->getId(),
-            'e_user'       => $User->getId(),
+            'c_user'       => $EditUser->getId(),
+            'e_user'       => $EditUser->getId(),
             'mime_type'    => $new_file_info['mime_type'],
             'image_width'  => $imageWidth,
             'image_height' => $imageHeight,
