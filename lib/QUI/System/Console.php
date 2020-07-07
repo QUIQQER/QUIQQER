@@ -43,8 +43,7 @@ class Console
         'clear-sessions',
         'clear-lock',
         'cron',
-        'password-reset',
-        'setup'
+        'password-reset'
     ];
 
     /**
@@ -694,6 +693,14 @@ class Console
 
             case 'update':
                 $this->setArgument('#system-tool', 'quiqqer:update');
+                break;
+
+            case 'htaccess':
+                $this->setArgument('#system-tool', 'quiqqer:htaccess');
+                break;
+
+            case 'licence':
+                $this->setArgument('#system-tool', 'quiqqer:licence');
                 break;
         }
 
