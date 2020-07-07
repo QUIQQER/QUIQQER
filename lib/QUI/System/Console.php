@@ -43,7 +43,11 @@ class Console
         'clear-sessions',
         'clear-lock',
         'cron',
-        'password-reset'
+        'password-reset',
+        'setup',
+        'update',
+        'licence',
+        'htaccess'
     ];
 
     /**
@@ -173,7 +177,7 @@ class Console
 
         $systemTools = \array_unique($systemTools);
 
-        \ksort($systemTools);
+        \sort($systemTools);
         $this->systemTools = $systemTools;
 
 
