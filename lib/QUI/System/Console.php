@@ -691,6 +691,10 @@ class Console
             case 'setup':
                 $this->setArgument('#system-tool', 'quiqqer:setup');
                 break;
+
+            case 'update':
+                $this->setArgument('#system-tool', 'quiqqer:update');
+                break;
         }
 
         $Tool = $this->get($this->getArgument('#system-tool'));
