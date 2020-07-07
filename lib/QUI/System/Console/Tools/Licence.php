@@ -21,6 +21,7 @@ class Licence extends QUI\System\Console\Tool
      */
     public function __construct()
     {
+        $this->systemTool = true;
         $this->setName('quiqqer:licence')->setDescription('Show the licence information');
     }
 
@@ -31,7 +32,7 @@ class Licence extends QUI\System\Console\Tool
      */
     public function execute()
     {
-        $licenceFile = OPT_DIR . 'quiqqer/quiqqer/LICENSE';
+        $licenceFile = OPT_DIR.'quiqqer/quiqqer/LICENSE';
         $content     = file_get_contents($licenceFile);
 
         echo $content;

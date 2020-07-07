@@ -6,6 +6,7 @@
 
 namespace QUI\System\Console;
 
+use League\CLImate\CLImate;
 use QUI;
 
 /**
@@ -30,6 +31,16 @@ abstract class Tool extends QUI\QDOM
      * @var array
      */
     protected $params;
+
+    /**
+     * @var array
+     */
+    protected $examples = [];
+
+    /**
+     * @var bool
+     */
+    protected $systemTool = false;
 
     /**
      * Set the name of the Tool
@@ -119,6 +130,14 @@ abstract class Tool extends QUI\QDOM
     }
 
     /**
+     * @param $example
+     */
+    public function addExample($example)
+    {
+        $this->examples[] = $example;
+    }
+
+    /**
      * Return the name of the Tool
      *
      * @return string|boolean
@@ -152,59 +171,55 @@ abstract class Tool extends QUI\QDOM
         $this->writeLn($this->getAttribute('name'), 'purple');
         $this->writeLn();
 
-        $this->writeLn('Arguments:', 'brown');
-        $this->writeLn();
-
-        // space calc
-        $maxLen = 0;
-
-        foreach ($this->paramsList as $param) {
-            $command = '--'.\ltrim($param['param'], '-');
-            $short   = '';
-
-            if (isset($param['short']) && !empty($param['short'])) {
-                $short = ' (-'.\ltrim($param['short'], '-').')';
-            }
-
-            $strlen = \strlen("{$command}{$short}");
-
-            if ($strlen > $maxLen) {
-                $maxLen = $strlen;
-            }
-        }
-
-        // output
-        foreach ($this->paramsList as $param) {
-            $command = '--'.\ltrim($param['param'], '-');
-            $short   = '';
-
-            if (isset($param['short']) && !empty($param['short'])) {
-                $short = ' (-'.\ltrim($param['short'], '-').')';
-            }
-
-            $this->write($command, 'green');
-
+        if (\count($this->examples)) {
+            $this->writeLn('Examples:', 'brown');
             $this->resetColor();
-            $this->write("{$short}");
 
-            $this->write(
-                \str_repeat(
-                    ' ',
-                    $maxLen - \strlen("{$command}{$short}") + 4
-                )
-            ); // spaces to the description
-
-            $this->write("{$param['description']}");
-
-            if ($param['optional']) {
-                $this->write(" (optional)", "dark_gray");
+            foreach ($this->examples as $example) {
+                $this->writeLn('- '.$example);
             }
 
-            $this->resetColor();
             $this->writeLn();
         }
 
+        $this->writeLn('Arguments:', 'brown');
+
+        if (empty($this->paramsList)) {
+            $this->resetColor();
+            $this->writeLn('No arguments');
+            $this->writeLn();
+            $this->writeLn();
+
+            return $this;
+        }
+
+
         $this->writeLn();
+
+        $Climate = new CLImate();
+        $data    = [];
+
+        foreach ($this->paramsList as $param) {
+            $argv        = '--'.\ltrim($param['param'], '-');
+            $description = '';
+
+            if (isset($param['short']) && !empty($param['short'])) {
+                $argv .= ' (-'.\ltrim($param['short'], '-').')';
+            }
+
+            if (isset($param['description']) && !empty($param['description'])) {
+                $description .= $param['description'];
+            }
+
+            if (isset($param['optional']) && !empty($param['optional'])) {
+                $description .= ' (optional)';
+            }
+
+            $data[] = [$argv, $description];
+        }
+
+        $Climate->columns($data);
+        $Climate->out('');
 
         return $this;
     }
@@ -347,5 +362,16 @@ abstract class Tool extends QUI\QDOM
         if ($this->getAttribute('parent')) {
             $this->getAttribute('parent')->clearMsg();
         }
+    }
+
+    /**
+     * Is this tool a system tool?
+     * system tools can be executed without a user
+     *
+     * @return bool
+     */
+    public function isSystemTool()
+    {
+        return $this->systemTool;
     }
 }

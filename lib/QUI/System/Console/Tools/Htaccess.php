@@ -21,6 +21,8 @@ class Htaccess extends QUI\System\Console\Tool
      */
     public function __construct()
     {
+        $this->systemTool = true;
+
         $this->setName('quiqqer:htaccess')
             ->setDescription('Generate the htaccess File.');
     }

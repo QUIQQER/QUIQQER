@@ -21,6 +21,8 @@ class Setup extends QUI\System\Console\Tool
      */
     public function __construct()
     {
+        $this->systemTool = true;
+
         $this->setName('quiqqer:setup')
             ->setDescription('Execute the setup from quiqqer');
     }
