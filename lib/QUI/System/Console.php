@@ -838,7 +838,7 @@ class Console
         $systemTools = $this->systemTools;
 
         $Climate = new CLImate();
-        $Climate->blue()->out("Available System-Tools (Example: 'php quiqqer.php COMMAND'):");
+        $Climate->blue()->out("Available System-Tools (Example: './console COMMAND'):");
         $Climate->blue()->out("=============================================================");
 
         $data = [
@@ -884,7 +884,7 @@ class Console
 
         $this->writeLn(" Call");
         $this->writeLn(
-            " php quiqqer.php [--PARAMS]",
+            " ./console [--PARAMS]",
             'red'
         );
 
@@ -945,7 +945,7 @@ class Console
 
         $licenceText = '
  QUIQQER Copyright (C) '.$year.'  PCSG  - Computer & Internet Service OHG - www.pcsg.de
- This program comes with ABSOLUTELY NO WARRANTY; for details type `php quiqqer.php licence`.
+ This program comes with ABSOLUTELY NO WARRANTY; for details type `./console licence`.
  This is free software, and you are welcome to redistribute it under certain conditions; 
  visit www.quiqqer.com for details.
 

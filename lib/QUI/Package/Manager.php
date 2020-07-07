@@ -1630,7 +1630,7 @@ class Manager extends QUI\QDOM
                     'quiqqer/quiqqer',
                     'message.online.update.RAM.not.enough',
                     [
-                        'command' => 'php quiqqer.php update'
+                        'command' => './console update'
                     ]
                 )
             );
