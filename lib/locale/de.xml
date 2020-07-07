@@ -4604,8 +4604,11 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         <locale name="console.systemtool.clear-all">
             <de><![CDATA[Leert alle variablen Daten (Cache, Temp, Sessions, Lock)]]></de>
         </locale>
+        <locale name="console.systemtool.clear-all-quiqqer-cache">
+            <de><![CDATA[Leert den KOMPLETTEN Cache.]]></de>
+        </locale>
         <locale name="console.systemtool.clear-cache">
-            <de><![CDATA[Leert den kompletten Cache]]></de>
+            <de><![CDATA[Leert den QUIQQER Cache]]></de>
         </locale>
         <locale name="console.systemtool.clear-tmp">
             <de><![CDATA[Leert das Temp Verzeichnis]]></de>
