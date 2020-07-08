@@ -24,7 +24,7 @@ class Permissions extends QUI\System\Console\Tool
     {
         $this->systemTool = true;
 
-        $this->setName('quiqqer:package')
+        $this->setName('quiqqer:permissions')
             ->setDescription('Permission explorer')
             ->addArgument(
                 'help',
