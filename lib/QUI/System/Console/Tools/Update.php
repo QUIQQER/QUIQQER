@@ -58,6 +58,8 @@ class Update extends QUI\System\Console\Tool
         $this->writeUpdateLog('====== EXECUTE UPDATE ======');
         $this->writeUpdateLog(QUI::getLocale()->get('quiqqer/quiqqer', 'update.log.message.execute.console'));
 
+        Cleanup::clearComposer();
+
         $this->writeLn(QUI::getLocale()->get('quiqqer/quiqqer', 'update.message.start'));
         $this->writeLn('');
         $this->logBuffer();
