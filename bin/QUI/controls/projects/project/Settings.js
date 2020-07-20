@@ -195,7 +195,6 @@ define('controls/projects/project/Settings', [
                 }
 
                 self.refresh();
-
             }, {
                 project: this.getProject().encode()
             });
@@ -338,9 +337,12 @@ define('controls/projects/project/Settings', [
                 Body = this.$Container;
 
             return new Promise(function (resolve) {
-
                 self.$hideBody().then(function () {
-
+                    return Promise.all([
+                        self.$getLocaleData('project/' + self.$Project.getName(), 'template.prefix', 'quiqqer/quiqqer'),
+                        self.$getLocaleData('project/' + self.$Project.getName(), 'template.suffix', 'quiqqer/quiqqer')
+                    ]);
+                }).then(function (localeData) {
                     Ajax.get('ajax_project_panel_settings', function (result) {
                         Body.set('html', result);
 
@@ -363,13 +365,14 @@ define('controls/projects/project/Settings', [
                                 value: langs[i]
                             }).inject(Langs);
                         }
-
+                        
                         // prefix
                         self.$Prefix = new Translation({
                             'group'  : 'project/' + self.$Project.getName(),
                             'var'    : 'template.prefix',
                             'type'   : 'php,js',
-                            'package': 'quiqqer/quiqqer'
+                            'package': 'quiqqer/quiqqer',
+                            'data'   : localeData[0]
                         }).inject(
                             Body.getElement('.prefix-settings-container')
                         );
@@ -379,7 +382,8 @@ define('controls/projects/project/Settings', [
                             'group'  : 'project/' + self.$Project.getName(),
                             'var'    : 'template.suffix',
                             'type'   : 'php,js',
-                            'package': 'quiqqer/quiqqer'
+                            'package': 'quiqqer/quiqqer',
+                            'data'   : localeData[0]
                         }).inject(
                             Body.getElement('.suffix-settings-container')
                         );
@@ -436,7 +440,6 @@ define('controls/projects/project/Settings', [
                     }, {
                         project: self.getProject().encode()
                     });
-
                 });
             });
         },
@@ -450,12 +453,10 @@ define('controls/projects/project/Settings', [
          */
         openAdminSettings: function () {
             return new Promise(function (resolve) {
-
                 var self = this,
                     Body = this.$Container;
 
                 this.$onCategoryLeave().then(function () {
-
                     UtilsTemplate.get('project/settingsAdmin', function (result) {
                         Body.set('html', result);
 
@@ -464,7 +465,6 @@ define('controls/projects/project/Settings', [
                         self.$showBody().then(resolve);
                     });
                 });
-
             }.bind(this));
         },
 
@@ -477,13 +477,10 @@ define('controls/projects/project/Settings', [
             var self = this;
 
             return this.$onCategoryLeave().then(function () {
-
                 return new Promise(function (resolve) {
                     self.$Container.set('html', '<form></form>');
 
-                    require([
-                        'controls/projects/project/settings/CustomCSS'
-                    ], function (CustomCSS) {
+                    require(['controls/projects/project/settings/CustomCSS'], function (CustomCSS) {
                         var css  = false,
                             Form = self.getBody().getElement('form');
 
@@ -526,10 +523,7 @@ define('controls/projects/project/Settings', [
                 Container.set('html', '');
 
                 return new Promise(function (resolve) {
-
-                    require([
-                        'controls/projects/project/settings/Media'
-                    ], function (MediaSettings) {
+                    require(['controls/projects/project/settings/Media'], function (MediaSettings) {
                         new MediaSettings({
                             config : self.$config,
                             Project: self.$Project,
@@ -540,7 +534,6 @@ define('controls/projects/project/Settings', [
                             }
                         }).inject(Container);
                     });
-
                 });
             }.bind(this));
         },
@@ -658,7 +651,6 @@ define('controls/projects/project/Settings', [
                 this.$Container.set('html', '');
 
                 return new Promise(function (resolve) {
-
                     Ajax.get('ajax_project_panel_categories_category', function (result) {
                         var Body = self.$Container;
 
@@ -707,12 +699,10 @@ define('controls/projects/project/Settings', [
 
                             self.$showBody().then(resolve);
                         });
-
                     }, {
                         file    : Category.getAttribute('file'),
                         category: Category.getAttribute('name')
                     });
-
                 });
             }.bind(this));
         },
@@ -723,7 +713,8 @@ define('controls/projects/project/Settings', [
          * @param {Object} Btn
          */
         $openCreatePageStructureDialog: function (Btn) {
-            var self              = this;
+            var self = this;
+
             var defaultButtonText = Locale.get(
                 'quiqqer/quiqqer',
                 'projects.project.settings.panel.defaultSitestructure.button'
@@ -807,6 +798,23 @@ define('controls/projects/project/Settings', [
                 }, {
                     duration: 200,
                     callback: resolve
+                });
+            });
+        },
+
+        /**
+         * @param group
+         * @param v
+         * @param p
+         * @return {Promise}
+         */
+        $getLocaleData: function (group, v, p) {
+            return new Promise(function (resolve) {
+                Ajax.get('package_quiqqer_translator_ajax_getVarData', resolve, {
+                    'package': 'quiqqer/translator',
+                    'group'  : group,
+                    'var'    : v,
+                    'pkg'    : p
                 });
             });
         }
