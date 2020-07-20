@@ -52,6 +52,14 @@ define('controls/projects/project/site/Panel', [
         value = value.replace(reg, '');
         value = value.replace(/ /g, QUIQQER.Rewrite.URL_SPACE_CHARACTER);
 
+        // quiqqer/quiqqer#980 --- to -
+        value = value.replace(
+            new RegExp(
+                QUIQQER.Rewrite.URL_SPACE_CHARACTER + QUIQQER.Rewrite.URL_SPACE_CHARACTER + '+', "g"
+            ),
+            QUIQQER.Rewrite.URL_SPACE_CHARACTER
+        );
+
         return value;
     };
 
