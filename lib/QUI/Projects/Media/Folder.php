@@ -1511,7 +1511,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         QUI::getDataBase()->insert($table, [
             'name'         => $new_file_info['filename'],
-            'title'        => $title,
             'short'        => '',
             'file'         => $filePath,
             'pathHash'     => \md5($filePath),
@@ -1537,6 +1536,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $File = $this->Media->get($id);
         $File->generateMD5();
         $File->generateSHA1();
+        $File->setTitle($title);
 
         $maxSize = $this->getProject()->getConfig('media_maxUploadSize');
 
