@@ -1514,7 +1514,6 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
             'short'        => '',
             'file'         => $filePath,
             'pathHash'     => \md5($filePath),
-            'alt'          => $title,
             'c_date'       => \date('Y-m-d h:i:s'),
             'e_date'       => \date('Y-m-d h:i:s'),
             'c_user'       => $EditUser->getId(),
@@ -1537,6 +1536,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
         $File->generateMD5();
         $File->generateSHA1();
         $File->setTitle($title);
+        $File->setAlt($title);
 
         $maxSize = $this->getProject()->getConfig('media_maxUploadSize');
 
