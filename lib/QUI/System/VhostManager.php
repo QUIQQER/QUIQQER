@@ -171,21 +171,34 @@ class VhostManager
         }
 
         if (!isset($result["project"])) {
-            throw new QUI\Exception(
-                QUI::getLocale()->get(
-                    'quiqqer/quiqqer',
-                    'exception.vhost.missing.data.project'
-                )
-            );
+            throw new QUI\Exception([
+                'quiqqer/quiqqer',
+                'exception.vhost.missing.data.project'
+            ]);
         }
 
         if (!isset($result["project"])) {
-            throw new QUI\Exception(
-                QUI::getLocale()->get(
+            throw new QUI\Exception([
+                'quiqqer/quiqqer',
+                'exception.vhost.missing.data.lang'
+            ]);
+        }
+
+        // host already exist - quiqqer/quiqqer#752
+        $config = $Config->toArray();
+
+        foreach ($config as $h => $d) {
+            if ($h === $vhost) {
+                continue;
+            }
+
+            if ($d['project'] === $result['project']
+                && $d['lang'] === $result['lang']) {
+                throw new QUI\Exception([
                     'quiqqer/quiqqer',
-                    'exception.vhost.missing.data.lang'
-                )
-            );
+                    'exception.vhost.same.host.already.exists'
+                ]);
+            }
         }
 
 
@@ -344,7 +357,7 @@ class VhostManager
     /**
      * Gets all domains which are registered in the system(config + VHost)
      *
-     * @param  bool $includeWWW - (optional) Should www. domains be added?
+     * @param bool $includeWWW - (optional) Should www. domains be added?
      *
      * @return array
      */

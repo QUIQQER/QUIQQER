@@ -4532,6 +4532,9 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
         <locale name="exception.vhost.missing.data.lang">
             <en><![CDATA[Missing data: language]]></en>
         </locale>
+        <locale name="exception.vhost.same.host.already.exists">
+            <en><![CDATA[Missing data: language]]></en>
+        </locale>
         <locale name="console.tool.passwordreset.header">
             <en><![CDATA[Password reset]]></en>
         </locale>

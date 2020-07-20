@@ -4685,6 +4685,9 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
         <locale name="exception.vhost.missing.data.lang">
             <de><![CDATA[Fehlende Angabe: Sprache]]></de>
         </locale>
+        <locale name="exception.vhost.same.host.already.exists">
+            <de><![CDATA[A VHost with the same host data already exists.]]></de>
+        </locale>
         <locale name="console.tool.passwordreset.header">
             <de><![CDATA[Password zurücksetzen]]></de>
         </locale>
