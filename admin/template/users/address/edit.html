@@ -1,93 +1,97 @@
-
 <form name="add-address" class="box">
-    <input type="hidden" name="address-id" value="" />
+    <input type="hidden" name="address-id" value=""/>
 
     <div class="grid-50">
-        <table class="data-table">
+        <table class="data-table data-table-flexbox">
             <thead>
-               <tr>
-                   <th>
-                       Daten
-                   </th>
-               </tr>
+            <tr>
+                <th>{locale group="quiqqer/quiqqer" var="data"}</th>
+            </tr>
             </thead>
             <tbody>
-                <tr class="{cycle values="odd,even"}">
-                    <td>
-                        Firma
-                    </td>
-                    <td>
-                        <input type="text" name="address-company" value="" />
-                    </td>
-                </tr>
-                <tr class="{cycle values="odd,even"}">
-                    <td>
-                        Anrede
-                    </td>
-                    <td>
-                        <input type="text" name="address-salutation" value="" />
-                    </td>
-                </tr>
-                <tr class="{cycle values="odd,even"}">
-                    <td>
-                        Vorname
-                    </td>
-                    <td>
-                        <input type="text" name="address-firstname" value="" />
-                    </td>
-                </tr>
-                <tr class="{cycle values="odd,even"}">
-                    <td>
-                        Nachname
-                    </td>
-                    <td>
-                        <input type="text" name="address-lastname" value="" />
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    <label class="field-container">
+                        <span class="field-container-item">{locale group="quiqqer/quiqqer" var="default.address"}</span>
+                        <span class="field-container-field">
+                            <input type="checkbox" name="address-standard" value=""/>
+                        </span>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="field-container">
+                        <span class="field-container-item">{locale group="quiqqer/quiqqer" var="company"}</span>
+                        <input type="text" name="address-company" value="" class="field-container-field"/>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="field-container">
+                        <span class="field-container-item">{locale group="quiqqer/quiqqer" var="salutation"}</span>
+                        <input type="text" name="address-salutation" value="" class="field-container-field"/>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="field-container">
+                        <span class="field-container-item">{locale group="quiqqer/quiqqer" var="firstname"}</span>
+                        <input type="text" name="address-firstname" value="" class="field-container-field"/>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="field-container">
+                        <span class="field-container-item">{locale group="quiqqer/quiqqer" var="lastname"}</span>
+                        <input type="text" name="address-lastname" value="" class="field-container-field"/>
+                    </label>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>
 
     <div class="grid-50">
-        <table class="data-table">
+        <table class="data-table data-table-flexbox">
             <thead>
-               <tr>
-                   <th colspan="2">
-                       Anschrift
-                   </th>
-               </tr>
+            <tr>
+                <th>{locale group="quiqqer/quiqqer" var="address"}</th>
+            </tr>
             </thead>
             <tbody>
-                <tr class="{cycle values="odd,even"}">
-                    <td>
-                        Strasse / Nr.
-                    </td>
-                    <td>
-                        <input type="text" name="address-street_no" value="" />
-                    </td>
-                </tr>
-                <tr class="{cycle values="odd,even"}">
-                    <td>
-                        PLZ
-                    </td>
-                    <td>
-                        <input type="text" name="address-zip" value="" />
-                    </td>
-                </tr>
-                <tr class="{cycle values="odd,even"}">
-                    <td>
-                        Ort
-                    </td>
-                    <td>
-                        <input type="text" name="address-city" value="" />
-                    </td>
-                </tr>
-                <tr class="{cycle values="odd,even"}">
-                    <td>
-                        Land
-                    </td>
-                    <td>
-                        <select name="address-country" style="width: 200px;">
+            <tr>
+                <td>
+                    <label class="field-container">
+                        <span class="field-container-item">{locale group="quiqqer/quiqqer" var="street"}</span>
+                        <input type="text" name="address-street_no" value="" class="field-container-field"/>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="field-container">
+                        <span class="field-container-item">{locale group="quiqqer/quiqqer" var="zip"}</span>
+                        <input type="text" name="address-zip" value="" class="field-container-field"/>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="field-container">
+                        <span class="field-container-item">{locale group="quiqqer/quiqqer" var="city"}</span>
+                        <input type="text" name="address-city" value="" class="field-container-field"/>
+                    </label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label class="field-container">
+                        <span class="field-container-item">{locale group="quiqqer/quiqqer" var="country"}</span>
+                        <select name="address-country" class="field-container-field">
                             <option value=""></option>
                             {foreach from=$countrys item=Country}
                             <option value="{$Country->getCode()}">
@@ -95,46 +99,43 @@
                             </option>
                             {/foreach}
                         </select>
-                    </td>
-                </tr>
+                    </label>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>
 
     <div class="grid-100">
-        <table class="data-table">
+        <table class="data-table data-table-flexbox">
             <thead>
-               <tr>
-                   <th>
-                       Telefon / Fax / Handy
-                   </th>
-               </tr>
+            <tr>
+                <th>{locale group="quiqqer/quiqqer" var="users.address.phone.title"}</th>
+            </tr>
             </thead>
             <tbody>
-                <tr class="{cycle values="odd,even" reset="true"}">
-                    <td>
-                        <div class="user-address-edit-tel"></div>
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    <div class="user-address-edit-tel"></div>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>
 
     <div class="grid-100">
-        <table class="data-table">
+        <table class="data-table data-table-flexbox">
             <thead>
-               <tr>
-                   <th>
-                       E-Mail
-                   </th>
-               </tr>
+            <tr>
+                <th>{locale group="quiqqer/quiqqer" var="email"}</th>
+            </tr>
             </thead>
             <tbody>
-                <tr class="{cycle values="odd,even" reset="true"}">
-                    <td>
-                        <div class="user-address-edit-mail"></div>
-                    </td>
-                </tr>
+            <tr>
+                <td>
+                    <div class="user-address-edit-mail"></div>
+                </td>
+            </tr>
             </tbody>
         </table>
     </div>

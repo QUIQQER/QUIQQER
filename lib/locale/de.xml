@@ -869,6 +869,9 @@
         <locale name="address">
             <de><![CDATA[Anschrift]]></de>
         </locale>
+        <locale name="default.address">
+            <de><![CDATA[Standard Adresse]]></de>
+        </locale>
         <locale name="company">
             <de><![CDATA[Firma]]></de>
         </locale>
@@ -2401,6 +2404,9 @@
             <de><![CDATA[Markierte E-Mail löschen]]></de>
         </locale>
         <locale name="users.address.phone.window.title">
+            <de><![CDATA[Telefon / Fax / Handy]]></de>
+        </locale>
+        <locale name="users.address.phone.title">
             <de><![CDATA[Telefon / Fax / Handy]]></de>
         </locale>
         <locale name="users.address.phone.window.text">

@@ -887,6 +887,9 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="address">
             <en><![CDATA[Address]]></en>
         </locale>
+        <locale name="default.address">
+            <en><![CDATA[Default Address]]></en>
+        </locale>
         <locale name="company">
             <en><![CDATA[Company]]></en>
         </locale>
@@ -2353,6 +2356,9 @@ You can also ignore the console user permissions check with '--ignore-file-permi
             <en><![CDATA[Delete marked email]]></en>
         </locale>
         <locale name="users.address.phone.window.title">
+            <en><![CDATA[Telephone / Fax / Mobile]]></en>
+        </locale>
+        <locale name="users.address.phone.title">
             <en><![CDATA[Telephone / Fax / Mobile]]></en>
         </locale>
         <locale name="users.address.phone.window.text">
