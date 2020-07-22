@@ -5,7 +5,7 @@
  * @module controls/users/Address
  * @author www.pcsg.de (Henning Leutz)
  *
- * @event onSaved [ {self} ]
+ * @event onSaved [self]
  */
 define('controls/users/Address', [
 
@@ -101,6 +101,7 @@ define('controls/users/Address', [
                 self.$Zip        = Elm.getElement('[name="address-zip"]');
                 self.$City       = Elm.getElement('[name="address-city"]');
                 self.$Country    = Elm.getElement('[name="address-country"]');
+                self.$Standard   = Elm.getElement('[name="address-standard"]');
 
                 self.$Company.value    = data.company;
                 self.$Salutation.value = data.salutation;
@@ -110,6 +111,7 @@ define('controls/users/Address', [
                 self.$Zip.value        = data.zip;
                 self.$City.value       = data.city;
                 self.$Country.value    = data.country;
+                self.$Standard.checked = !!data.default;
 
                 // tel fax handy grid
                 self.$PhoneGrid = new Grid(Elm.getElement('.user-address-edit-tel'), {
@@ -170,7 +172,7 @@ define('controls/users/Address', [
 
                         if (!sels) {
                             buttons.each(function (Btn) {
-                                if (Btn.getAttribute('name') != 'add') {
+                                if (Btn.getAttribute('name') !== 'add') {
                                     Btn.disable();
                                 }
                             });
@@ -244,7 +246,7 @@ define('controls/users/Address', [
 
                         if (!sels) {
                             buttons.each(function (Btn) {
-                                if (Btn.getAttribute('name') != 'add') {
+                                if (Btn.getAttribute('name') !== 'add') {
                                     Btn.disable();
                                 }
                             });
@@ -408,13 +410,13 @@ define('controls/users/Address', [
                 icon       : 'fa fa-phone',
                 text       : Locale.get(lg, 'users.address.phone.window.text'),
                 information: '<form style="text-align: center; width: 100%">' +
-                             '<input type="text" name="number" value="" placeholder="" />' +
-                             '<select name="type">' +
-                             '<option value="tel">' + Locale.get(lg, 'tel') + '</option>' +
-                             '<option value="fax">' + Locale.get(lg, 'fax') + '</option>' +
-                             '<option value="mobile">' + Locale.get(lg, 'mobile') + '</option>' +
-                             '</select>' +
-                             '</form>',
+                    '<input type="text" name="number" value="" placeholder="" />' +
+                    '<select name="type">' +
+                    '   <option value="tel">' + Locale.get(lg, 'tel') + '</option>' +
+                    '   <option value="fax">' + Locale.get(lg, 'fax') + '</option>' +
+                    '   <option value="mobile">' + Locale.get(lg, 'mobile') + '</option>' +
+                    '</select>' +
+                    '</form>',
                 maxWidth   : 600,
                 events     : {
                     onOpen: function (Win) {
@@ -509,8 +511,8 @@ define('controls/users/Address', [
                 icon       : 'fa fa-envelope-o',
                 text       : Locale.get(lg, 'users.address.email.window.text'),
                 information: '<form style="text-align: center; width: 100%">' +
-                             '<input type="text" name="email" value="" placeholder="" />' +
-                             '</form>',
+                    '<input type="text" name="email" value="" placeholder="" />' +
+                    '</form>',
                 maxWidth   : 600,
                 events     : {
                     onOpen: function (Win) {

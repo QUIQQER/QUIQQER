@@ -37,10 +37,18 @@ QUI::$Ajax->registerFunction(
             $uid = (int)$result[0]['uid'];
         }
 
-        $User    = QUI::getUsers()->get((int)$uid);
-        $Address = $User->getAddress((int)$aid);
+        $User     = QUI::getUsers()->get((int)$uid);
+        $Address  = $User->getAddress((int)$aid);
+        $address  = $Address->getAttributes();
+        $Standard = $User->getStandardAddress();
 
-        return $Address->getAttributes();
+        if ($Standard && $Standard->getId() == $Address->getId()) {
+            $address['default'] = 1;
+        } else {
+            $address['default'] = 0;
+        }
+
+        return $address;
     },
     ['uid', 'aid'],
     'Permission::checkAdminUser'

@@ -1,48 +1,61 @@
-
-<table class="data-table">
+<table class="data-table data-table-flexbox">
     <thead>
-        <tr>
-            <th colspan="2">
-                Persönliche Daten
-            </th>
-        </tr>
+    <tr>
+        <th>
+            Persönliche Daten
+        </th>
+    </tr>
     </thead>
     <tbody>
-        <tr class="{cycle values="odd,even"}">
-            <td style="width: 80px">Vorname</td>
-            <td><input type="text" name="firstname" value="" /></td>
-        </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">Vorname</span>
+                <input type="text" name="firstname" value="" class="field-container-field"/>
+            </label>
+        </td>
+    </tr>
 
-        <tr class="{cycle values="odd,even"}">
-            <td>Nachname</td>
-            <td><input type="text" name="lastname" /></td>
-        </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">Nachname</span>
+                <input type="text" name="lastname" class="field-container-field"/>
+            </label>
+        </td>
+    </tr>
 
-        <tr class="{cycle values="odd,even"}">
-            <td>Geburtstag</td>
-            <td><input type="date" name="birthday" /></td>
-        </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">Geburtstag</span>
+                <input type="date" name="birthday" class="field-container-field"/>
+            </label>
+        </td>
+    </tr>
 
-        <tr class="{cycle values="odd,even"}">
-            <td>Kürzel</td>
-            <td><input type="text" name="shortcuts" /></td>
-        </tr>
+    <tr>
+        <td>
+            <label class="field-container">
+                <span class="field-container-item">Kürzel</span>
+                <input type="text" name="shortcuts" class="field-container-field"/>
+            </label>
+        </td>
+    </tr>
     </tbody>
 </table>
 
-<table class="data-table">
+<table class="data-table data-table-flexbox">
     <thead>
-        <tr>
-            <th colspan="2">
-                Adressen
-            </th>
-        </tr>
+    <tr>
+        <th>Adressen</th>
+    </tr>
     </thead>
     <tbody>
-        <tr class="{cycle values="odd,even"}">
-            <td>
-                <div class="address-list"></div>
-            </td>
-        </tr>
+    <tr>
+        <td>
+            <div class="address-list"></div>
+        </td>
+    </tr>
     </tbody>
 </table>

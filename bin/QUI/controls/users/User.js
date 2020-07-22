@@ -1004,6 +1004,11 @@ define('controls/users/User', [
 
             this.$AddressGrid = new Grid(AddressList, {
                 columnModel: [{
+                    header   : '&nbsp;',
+                    dataIndex: 'default',
+                    dataType : 'node',
+                    width    : 40
+                }, {
                     header   : QUILocale.get(lg, 'id'),
                     dataIndex: 'id',
                     dataType : 'string',
@@ -1110,7 +1115,7 @@ define('controls/users/User', [
 
                     if (!sels) {
                         buttons.each(function (Btn) {
-                            if (Btn.getAttribute('name') != 'add') {
+                            if (Btn.getAttribute('name') !== 'add') {
                                 Btn.disable();
                             }
                         });
@@ -1145,6 +1150,18 @@ define('controls/users/User', [
             var self = this;
 
             QUIAjax.get('ajax_users_address_list', function (result) {
+                for (var i = 0, len = result.length; i < len; i++) {
+                    if (result[i].default) {
+                        result[i].default = new Element('span', {
+                            'class': 'fa fa-check'
+                        });
+                    } else {
+                        result[i].default = new Element('span', {
+                            html: '&nbsp;'
+                        });
+                    }
+                }
+
                 self.$AddressGrid.setData({
                     data: result
                 });
