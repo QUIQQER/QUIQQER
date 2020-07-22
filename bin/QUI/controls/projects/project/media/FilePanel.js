@@ -661,7 +661,8 @@ define('controls/projects/project/media/FilePanel', [
                     }
 
                     // set data to form
-                    FormUtils.setDataToForm({
+                    FormUtils.setDataToForm(
+                        {
                             file_id       : File.getId(),
                             file_name     : File.getAttribute('name'),
                             file_file     : File.getAttribute('file'),
@@ -701,6 +702,22 @@ define('controls/projects/project/media/FilePanel', [
                         Body.getElement('input[name="file_url"]'),
                         'after'
                     );
+
+                    Body.getElements('[data-qui="controls/lang/InputMultiLang"]').forEach(function (Node) {
+                        var Instance = QUI.Controls.getById(Node.get('data-quiid'));
+
+                        if (!Instance) {
+                            return;
+                        }
+
+                        if (Instance.isLoaded()) {
+                            Instance.open();
+                        } else {
+                            Instance.addEvent('load', function () {
+                                Instance.open();
+                            });
+                        }
+                    });
 
                     self.Loader.hide();
                 });

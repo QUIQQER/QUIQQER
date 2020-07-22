@@ -32,6 +32,7 @@ define('controls/lang/InputMultiLang', [
             this.$Button    = null;
             this.$Input     = null;
             this.$disabled  = false;
+            this.$loaded    = false;
 
             this.addEvents({
                 onImport: this.$onImport,
@@ -177,6 +178,9 @@ define('controls/lang/InputMultiLang', [
                 if (self.$disabled) {
                     self.disable();
                 }
+
+                self.$loaded = true;
+                self.fireEvent('load', [self]);
             });
         },
 
@@ -202,6 +206,10 @@ define('controls/lang/InputMultiLang', [
             this.$Button.setStyle('cursor', 'pointer');
 
             this.$Elm.getElements('input').set('disabled', false);
+        },
+
+        isLoaded: function () {
+            return this.$loaded;
         },
 
         /**
