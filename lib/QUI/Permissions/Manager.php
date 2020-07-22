@@ -924,6 +924,7 @@ class Manager
         }
 
         QUI\Cache\Manager::clear('qui/admin/menu/');
+        QUI\Cache\Manager::clear('settings/backend-menu/');
         QUI\Cache\Manager::clear('quiqqer/permissions/'.$this->getDataCacheId($Obj));
 
         QUI::getEvents()->fireEvent('permissionsSet', [$Obj, $permissions]);
