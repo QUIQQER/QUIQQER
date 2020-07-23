@@ -2,7 +2,7 @@
     <thead>
     <tr>
         <th>
-            Persönliche Daten
+            {locale group="quiqqer/quiqqer" var="user.panel.personal"}
         </th>
     </tr>
     </thead>
@@ -10,34 +10,33 @@
     <tr>
         <td>
             <label class="field-container">
-                <span class="field-container-item">Vorname</span>
+                <span class="field-container-item">{locale group="quiqqer/quiqqer" var="firstname"}</span>
                 <input type="text" name="firstname" value="" class="field-container-field"/>
             </label>
         </td>
     </tr>
-
     <tr>
         <td>
             <label class="field-container">
-                <span class="field-container-item">Nachname</span>
+                <span class="field-container-item">{locale group="quiqqer/quiqqer" var="lastname"}</span>
                 <input type="text" name="lastname" class="field-container-field"/>
             </label>
         </td>
     </tr>
-
     <tr>
         <td>
             <label class="field-container">
-                <span class="field-container-item">Geburtstag</span>
+                <span class="field-container-item">{locale group="quiqqer/quiqqer" var="birthday"}</span>
                 <input type="date" name="birthday" class="field-container-field"/>
             </label>
         </td>
     </tr>
-
     <tr>
         <td>
             <label class="field-container">
-                <span class="field-container-item">Kürzel</span>
+                <span class="field-container-item">
+                    {locale group="quiqqer/quiqqer" var="abbreviation"}
+                </span>
                 <input type="text" name="shortcuts" class="field-container-field"/>
             </label>
         </td>
@@ -48,7 +47,7 @@
 <table class="data-table data-table-flexbox">
     <thead>
     <tr>
-        <th>Adressen</th>
+        <th>{locale group="quiqqer/quiqqer" var="addresses"}</th>
     </tr>
     </thead>
     <tbody>
