@@ -91,6 +91,15 @@
         <locale name="lastname">
             <de><![CDATA[Nachname]]></de>
         </locale>
+        <locale name="abbreviation">
+            <de><![CDATA[Kürzel]]></de>
+        </locale>
+        <locale name="address">
+            <de><![CDATA[Adresse]]></de>
+        </locale>
+        <locale name="addresses">
+            <de><![CDATA[Adressen]]></de>
+        </locale>
         <locale name="package.title">
             <de><![CDATA[QUIQQER - Core]]></de>
         </locale>
@@ -451,6 +460,9 @@
         </locale>
         <locale name="user.panel.personalData">
             <de><![CDATA[Persönliche Daten / Adressen]]></de>
+        </locale>
+        <locale name="user.panel.personal">
+            <de><![CDATA[Persönliche Daten]]></de>
         </locale>
         <locale name="user.panel.avatar">
             <de><![CDATA[Benutzerbild]]></de>

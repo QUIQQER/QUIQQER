@@ -88,8 +88,17 @@
         <locale name="firstname">
             <en><![CDATA[Firstname]]></en>
         </locale>
+        <locale name="abbreviation">
+            <en><![CDATA[Abbreviation]]></en>
+        </locale>
         <locale name="lastname">
             <en><![CDATA[Lastname]]></en>
+        </locale>
+        <locale name="address">
+            <en><![CDATA[Address]]></en>
+        </locale>
+        <locale name="addresses">
+            <en><![CDATA[Addresses]]></en>
         </locale>
         <locale name="package.title">
             <en><![CDATA[QUIQQER - Core]]></en>
@@ -449,7 +458,10 @@
             <en><![CDATA[Current password]]></en>
         </locale>
         <locale name="user.panel.personalData">
-            <en><![CDATA[personal data / Adresses]]></en>
+            <en><![CDATA[Personal data / Adresses]]></en>
+        </locale>
+        <locale name="user.panel.personal">
+            <en><![CDATA[Personal data]]></en>
         </locale>
         <locale name="user.panel.avatar">
             <en><![CDATA[User Avatar]]></en>
