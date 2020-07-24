@@ -383,7 +383,7 @@ define('controls/projects/project/Settings', [
                             'var'    : 'template.suffix',
                             'type'   : 'php,js',
                             'package': 'quiqqer/quiqqer',
-                            'data'   : localeData[0]
+                            'data'   : localeData[1]
                         }).inject(
                             Body.getElement('.suffix-settings-container')
                         );
