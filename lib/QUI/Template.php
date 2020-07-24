@@ -619,7 +619,8 @@ class Template extends QUI\QDOM
         $Site    = $this->getAttribute('Site');
         $Project = $this->getAttribute('Project');
 
-        if ($Site->getAttribute('quiqqer.meta.site.title')) {
+        if ($Site->getAttribute('quiqqer.meta.site.title') &&
+            $Site->getAttribute('quiqqer.meta.site.title') !== '') {
             QUI::getEvents()->fireEvent('templateGetSiteTitle', [$this, $Site]);
 
             return $Site->getAttribute('meta.seotitle');
