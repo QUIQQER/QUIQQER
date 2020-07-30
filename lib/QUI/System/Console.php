@@ -163,9 +163,13 @@ class Console
             exit;
         }
 
-        // read system tools
+        // read argv params
+        $params     = $this->getArguments();
+        $this->argv = $params;
+
         $this->read();
 
+        // read system tools
         $tools       = $this->get(true);
         $systemTools = $this->systemTools;
 
@@ -179,11 +183,6 @@ class Console
 
         \sort($systemTools);
         $this->systemTools = $systemTools;
-
-
-        // read argv params
-        $params     = $this->getArguments();
-        $this->argv = $params;
 
         // check execute permissions with process user
         $ignorePermCheck = $this->getArgument('ignore-file-permissions');
