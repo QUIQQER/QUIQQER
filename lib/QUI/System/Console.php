@@ -184,6 +184,13 @@ class Console
         \sort($systemTools);
         $this->systemTools = $systemTools;
 
+        $args         = $this->readArgv();
+        $isSystemTool = \key($args);
+
+        if (\in_array($isSystemTool, $this->systemTools)) {
+            $this->setArgument('#system-tool', $isSystemTool);
+        }
+
         // check execute permissions with process user
         $ignorePermCheck = $this->getArgument('ignore-file-permissions');
         $processUser     = \posix_getpwuid(\posix_geteuid());
@@ -214,7 +221,7 @@ class Console
             }
         }
 
-        if (isset($params['#system-tool'])) {
+        if ($this->getArgument('#system-tool')) {
             $this->executeSystemTool();
             exit;
         }
@@ -405,12 +412,7 @@ class Console
             return $this->arguments;
         }
 
-        $args         = $this->readArgv();
-        $isSystemTool = \key($args);
-
-        if (\in_array($isSystemTool, $this->systemTools)) {
-            $this->setArgument('#system-tool', $isSystemTool);
-        }
+        $args = $this->readArgv();
 
         foreach ($args as $arg => $value) {
             $this->setArgument($arg, $value);
