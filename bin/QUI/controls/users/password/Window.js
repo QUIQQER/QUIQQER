@@ -104,13 +104,34 @@ define('controls/users/password/Window', [
          * Submit the new password
          */
         submit: function () {
+            var self = this;
+
             this.Loader.show();
             this.$Password.save().then(function () {
                 this.close();
                 this.fireEvent('success', [this]);
-            }.bind(this)).catch(function () {
+            }.bind(this)).catch(function (e) {
                 this.Loader.hide();
                 this.fireEvent('error', [this]);
+
+                var Message,
+                    Content = self.getContent();
+
+                Message = Content.getElement('.qui-controls-user-password-window-message');
+
+                if (Message) {
+                    Message.html = e.getMessage();
+                } else {
+                    Message = new Element('div', {
+                        'class': 'qui-controls-user-password-window-message',
+                        html   : e.getMessage()
+                    }).inject(Content);
+                }
+
+                Content.setStyles({
+                    paddingTop: Message.getSize().y + 20
+                });
+
             }.bind(this));
         }
     });
