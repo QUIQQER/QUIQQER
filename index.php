@@ -50,7 +50,7 @@ try {
         $Redirect->send();
         exit;
     }
-    
+
     $Response = QUI::getGlobalResponse();
     $Request  = QUI::getRequest();
 
@@ -199,6 +199,10 @@ try {
             $cache_content = QUI\Cache\Manager::get($siteCachePath);
             $content       = $Rewrite->outputFilter($cache_content);
 
+            if (empty($content)) {
+                throw new QUI\Exception('Empty content at '.$Site->getId());
+            }
+
             QUI::getEvents()->fireEvent('requestOutput', [&$content]);
             $Response->setContent($content);
             $Response->send();
@@ -222,6 +226,10 @@ try {
         Debug::marker('output done');
 
         QUI::getEvents()->fireEvent('requestOutput', [&$content]);
+
+        if (empty($content)) {
+            throw new QUI\Exception('Empty content at '.$Site->getId());
+        }
 
         $Response->setContent($content);
         Debug::marker('content done');
