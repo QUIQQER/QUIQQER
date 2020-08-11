@@ -203,10 +203,11 @@ define('controls/packages/Search', [
                     result    : result,
                     identifier: identifier
                 }, '*');
-            }, function () {
+            }, function (e) {
                 frameWindow.postMessage({
-                    result    : null,
-                    identifier: identifier
+                    result      : null,
+                    identifier  : identifier,
+                    errorMessage: e.getMessage()
                 }, '*');
             });
         },
