@@ -181,6 +181,14 @@ class EventHandler
             ]);
 
             $User->save(QUI::getUsers()->getSystemUser());
+        } catch (QUI\Users\Exception $Exception) {
+            // Log wrong username in auth.log
+            QUI\System\Log::write(
+                $Exception->getMessage(),
+                QUI\System\Log::LEVEL_WARNING,
+                [],
+                'auth'
+            );
         } catch (\Exception $Exception) {
             QUI\System\Log::writeException($Exception);
         }
