@@ -9,5 +9,4 @@ namespace QUI\Package;
  */
 class PackageInstallException extends \QUI\Exception
 {
-
 }
