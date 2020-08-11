@@ -9,6 +9,7 @@ namespace QUI\System;
 use League\CLImate\CLImate;
 use QUI;
 use QUI\Utils\Security\Orthos;
+use function DusanKasan\Knapsack\keys;
 
 /**
  * The QUIQQER Console
@@ -29,6 +30,11 @@ class Console
      * @var array
      */
     private $tools = [];
+
+    /**
+     * @var array All available tools, but grouped
+     */
+    private $groupedTools = [];
 
     /**
      * List of system tools
@@ -238,7 +244,14 @@ class Console
             $this->help();
         }
 
-        if (!$this->getArgument('--login') && !$this->getArgument('--username')) {
+        if (!$this->getArgument('--login')
+            && !$this->getArgument('--username')
+            && !$this->getArgument('--listtools')
+        ) {
+            if (!empty($args)) {
+                $this->displayToolsForGroups(\key($args));
+            }
+
             return;
         }
 
@@ -269,14 +282,7 @@ class Console
         }
 
         if (isset($params['listtools'])) {
-            $this->title();
-            $this->writeLn("Tools\n");
-
-            $tools = $this->get(true);
-
-            foreach ($tools as $tool => $obj) {
-                $this->writeLn(" - ".$tool."\n");
-            }
+            $this->help();
         }
 
         if (!isset($params['tool']) && !isset($params['listtools'])) {
@@ -736,6 +742,8 @@ class Console
 
     /**
      * Read all tools and include it
+     *
+     * @return array
      */
     private function read()
     {
@@ -810,6 +818,23 @@ class Console
 
             $this->tools[$Tool->getName()] = $Tool;
         }
+
+        // grouping
+        $groups = [];
+
+        foreach ($this->tools as $name => $Tool) {
+            if (strpos($name, ':') === false) {
+                continue;
+            }
+
+            $name = explode(':', $name);
+
+            $groups[$name[0]][$name[1]] = $Tool;
+        }
+
+        $this->groupedTools = $groups;
+
+        return $this->tools;
     }
 
     /**
@@ -859,7 +884,7 @@ class Console
         $systemTools = $this->systemTools;
 
         $Climate = new CLImate();
-        $Climate->blue()->out("Available System-Tools (Example: './console COMMAND'):");
+        $Climate->blue()->out("Available System-Tools");
         $Climate->blue()->out("=============================================================");
 
         $data = [
@@ -901,13 +926,10 @@ class Console
         $this->clearMsg();
         $this->getArguments();
 
-        $systemTool = $this->getArgument('#system-tool');
-
         $this->writeLn(" Call");
-        $this->writeLn(
-            " ./console [--PARAMS]",
-            'red'
-        );
+        $this->writeLn(" ./console [--PARAMS]", 'red');
+        $this->writeLn(" ./console [group:tool]", 'orange');
+        $this->writeLn(" ./console [group] [tool]", 'orange');
 
         $this->clearMsg();
         $this->writeLn("");
@@ -917,14 +939,21 @@ class Console
         $this->writeLn(" --username		Username", 'red');
         $this->writeLn(" --password		Password to login", 'red');
 
-        $this->writeLn(" --listtools		Lists the available console tools");
-        $this->writeLn(" 			Only with the correct login");
+        $this->writeLn(" --listtools		Lists all available tools, including those that require a login");
 
         $this->writeLn();
         $this->writeLn();
         $this->writeLn();
 
         $this->displaySystemTools();
+
+        $Climate = new CLImate();
+        $Climate->white()->out("Command Groups");
+        $Climate->white()->out("-------------");
+        $Climate->white()->out('');
+
+        $groups = \array_keys($this->groupedTools);
+        $Climate->white()->out(\implode(', ', $groups));
 
         $this->writeLn($msg);
         exit;
@@ -1069,6 +1098,46 @@ class Console
         echo "\033[0m";
     }
 
+    protected function displayToolsForGroups($group)
+    {
+        if (empty($this->groupedTools[$group])) {
+            $this->writeLn('No tools found!', 'red');
+
+            return;
+        }
+
+        $tools = $this->groupedTools[$group];
+
+        $Climate = new CLImate();
+        $Climate->blue()->out("Available Tools for ".$group);
+        $Climate->blue()->out("=============================================================");
+
+        $data = [
+            ['           Short Command', 'Command', 'Description'],
+            ['           -------------', '-------', '-----------'],
+            ['', '']
+        ];
+
+        foreach ($tools as $Tool) {
+            /* @var $Tool Console\Tool */
+            $name        = $Tool->getName();
+            $description = $Tool->getDescription();
+
+            $parts   = \explode(':', $name);
+            $command = ':'.$parts[1];
+
+
+            $data[] = [
+                "\033[".$this->colors['green']."m".$command."\033[0m",
+                $name,
+                trim($description)
+            ];
+        }
+
+        $Climate->out('');
+        $Climate->columns($data);
+        $Climate->out('');
+    }
 
     /**
      * Initiates a password reset
