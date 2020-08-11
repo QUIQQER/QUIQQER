@@ -235,7 +235,7 @@ class Console
 
         // system tools
         if (empty($params)) {
-            $this->displaySystemTools();
+            $this->help();
         }
 
         if (!$this->getArgument('--login') && !$this->getArgument('--username')) {
