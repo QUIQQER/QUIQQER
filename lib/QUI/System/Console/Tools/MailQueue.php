@@ -78,6 +78,9 @@ class MailQueue extends QUI\System\Console\Tool
 
                 $this->writeLn('');
                 break;
+
+            default:
+                $this->outputHelp();
         }
     }
 }

@@ -40,7 +40,7 @@ abstract class Tool extends QUI\QDOM
     /**
      * @var bool
      */
-    protected $systemTool = false;
+    protected $systemTool = true;
 
     /**
      * Set the name of the Tool

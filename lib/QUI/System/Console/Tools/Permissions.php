@@ -83,6 +83,8 @@ class Permissions extends QUI\System\Console\Tool
 
             return;
         }
+
+        $this->outputHelp();
     }
 
     /**

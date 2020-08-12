@@ -67,7 +67,7 @@ class Package extends QUI\System\Console\Tool
     public function execute()
     {
         if ($this->getArgument('help')) {
-            $this->showHelp();
+            $this->outputHelp();
 
             return;
         }
@@ -95,46 +95,8 @@ class Package extends QUI\System\Console\Tool
 
             return;
         }
-    }
 
-    /**
-     * Prints the help
-     */
-    protected function showHelp()
-    {
-        $this->writeLn();
-
-        $Climate = new CLImate();
-
-        $Climate->arguments->add([
-            'help'    => [
-                'longPrefix'  => 'help',
-                'description' => QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.help.description'),
-                'noValue'     => true
-            ],
-            'list'    => [
-                'longPrefix'  => 'list',
-                'description' => QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.installed.description'),
-                'noValue'     => true
-            ],
-            'setup'   => [
-                'longPrefix'  => 'setup',
-                'description' => QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.setup.description')
-            ],
-            'install' => [
-                'longPrefix'  => 'install',
-                'description' => QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.install.description')
-            ],
-            'show'    => [
-                'longPrefix'  => 'show',
-                'description' => QUI::getLocale()->get('quiqqer/quiqqer', 'console.tool.package.show.description')
-            ]
-        ]);
-
-        $Climate->usage([
-            'quiqqer.php package'
-        ]);
-        exit;
+        $this->outputHelp();
     }
 
     /**

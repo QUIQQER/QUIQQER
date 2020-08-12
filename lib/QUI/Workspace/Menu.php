@@ -27,16 +27,20 @@ class Menu
     public function getMenu()
     {
         try {
-            return QUI\Cache\Manager::get(
+            $cache = QUI\Cache\Manager::get(
                 $this->getCacheName()
             );
+
+            if (!empty($cache)) {
+                return $cache;
+            }
         } catch (QUI\Exception $Exception) {
         }
 
         try {
             return $this->createMenu();
         } catch (QUI\Exception $Exception) {
-            QUI\System\Log::writeDebugException($Exception);
+            QUI\System\Log::writeException($Exception);
         }
 
         return [];
@@ -157,7 +161,11 @@ class Menu
         $packages = QUI::getPackageManager()->getInstalled();
 
         foreach ($packages as $package) {
-            $Package = QUI::getPackage($package['name']);
+            try {
+                $Package = QUI::getPackage($package['name']);
+            } catch (QUI\Exception $Exception) {
+                continue;
+            }
 
             if (!$Package->isQuiqqerPackage()) {
                 continue;
@@ -257,7 +265,12 @@ class Menu
         $packages = QUI::getPackageManager()->getInstalled();
 
         foreach ($packages as $package) {
-            $Package = QUI::getPackage($package['name']);
+            try {
+                $Package = QUI::getPackage($package['name']);
+            } catch (QUI\Exception $Exception) {
+                continue;
+            }
+
             $menuXml = $Package->getXMLFilePath(QUI\Package\Package::MENU_XML);
 
             if (!$menuXml) {

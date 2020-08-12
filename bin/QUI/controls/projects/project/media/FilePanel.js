@@ -305,7 +305,10 @@ define('controls/projects/project/media/FilePanel', [
             File.save(function () {
                 // Update the (maybe truncated) filename
                 var NameInput   = self.getContent().getElement('input[name=file_name]');
-                NameInput.value = File.getAttribute('name');
+
+                if (NameInput) {
+                    NameInput.value = File.getAttribute('name');
+                }
 
                 self.Loader.hide();
             }).catch(function (Exception) {
@@ -786,6 +789,7 @@ define('controls/projects/project/media/FilePanel', [
 
                 var WatermarkPosition = Content.getElement('[name="effect-watermark_position"]'),
                     Watermark         = Content.getElement('.effect-watermark'),
+                    WatermarkRatio    = Content.getElement('[name="effect-watermark_ratio"]'),
                     WatermarkCell     = Content.getElement('.effect-watermark-cell'),
                     WatermarkRow      = Content.getElement('.effect-watermark-row');
 
@@ -818,6 +822,10 @@ define('controls/projects/project/media/FilePanel', [
 
                 if (!("watermark_position" in Effects)) {
                     Effects.watermark_position = false;
+                }
+
+                if (!("watermark_ratio" in Effects)) {
+                    Effects.watermark_ratio = false;
                 }
 
                 new Element('input', {
@@ -886,6 +894,8 @@ define('controls/projects/project/media/FilePanel', [
                 WatermarkPosition.value = Effects.watermark_position || '';
                 WatermarkPosition.addEvent('change', self.$refreshImageEffectFrame);
 
+                WatermarkRatio.value = Effects.watermark_ratio || '';
+                WatermarkRatio.addEvent('change', self.$refreshImageEffectFrame);
 
                 // watermark
                 var Select = new QUISelect({

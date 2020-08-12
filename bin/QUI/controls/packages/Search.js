@@ -64,8 +64,8 @@ define('controls/packages/Search', [
             this.$Content    = null;
             this.$Panel      = null;
 
-            this.$StoreApi = new StoreApi();
-            this.$Store    = null;
+            window.$StoreApi = new StoreApi();
+            this.$Store      = null;
 
             this.$StoreButton   = null;
             this.$PackageButton = null;
@@ -157,61 +157,6 @@ define('controls/packages/Search', [
         },
 
         /**
-         * Event controller for StoreApi
-         *
-         * @param {Object} event
-         */
-        $storeApiController: function (event) {
-            if (!this.$Store) {
-                return;
-            }
-
-            if (!this.$Store.getFrame()) {
-                return;
-            }
-
-            var Data        = event.data,
-                frameWindow = this.$Store.getFrame().contentWindow;
-
-            if (!frameWindow) {
-                return;
-            }
-
-            var params     = Data.params || [];
-            var identifier = Data.func + params.join('-'); // request identifier
-
-            // init request
-            if (Data.func === 'init') {
-                frameWindow.postMessage({
-                    result    : true,
-                    identifier: identifier
-                }, '*');
-                return;
-            }
-
-            if (typeof this.$StoreApi[Data.func] === 'undefined') {
-                frameWindow.postMessage({
-                    result    : null,
-                    identifier: identifier
-                }, '*');
-                return;
-            }
-
-            // regular request
-            this.$StoreApi[Data.func].apply(this.$StoreApi, params).then(function (result) {
-                frameWindow.postMessage({
-                    result    : result,
-                    identifier: identifier
-                }, '*');
-            }, function () {
-                frameWindow.postMessage({
-                    result    : null,
-                    identifier: identifier
-                }, '*');
-            });
-        },
-
-        /**
          * Show the package store
          */
         openStore: function () {
@@ -221,13 +166,66 @@ define('controls/packages/Search', [
 
             require(['controls/packages/store/Store'], function (Store) {
                 self.$Container.set('html', '');
-                self.$Store = new Store().inject(self.$Container);
+                self.$Store   = new Store().inject(self.$Container);
+                window.$Store = self.$Store;
             });
 
-            if (!this.$storeApiEventRegistered) {
-                window.addEventListener('message', this.$storeApiController);
-                this.$storeApiEventRegistered = true;
+            if ("$storeApiController" in window) {
+                return;
             }
+
+            window.$storeApiController = function (event) {
+                if (!window.$Store) {
+                    return;
+                }
+
+                if (!window.$Store.getFrame()) {
+                    return;
+                }
+
+                var Data        = event.data,
+                    frameWindow = window.$Store.getFrame().contentWindow;
+
+                if (!frameWindow) {
+                    return;
+                }
+
+                var params     = Data.params || [];
+                var identifier = Data.func + params.join('-'); // request identifier
+
+                // init request
+                if (Data.func === 'init') {
+                    frameWindow.postMessage({
+                        result    : true,
+                        identifier: identifier
+                    }, '*');
+                    return;
+                }
+
+                if (typeof this.$StoreApi[Data.func] === 'undefined') {
+                    frameWindow.postMessage({
+                        result    : null,
+                        identifier: identifier
+                    }, '*');
+                    return;
+                }
+
+                // regular request
+                window.$StoreApi[Data.func].apply(window.$StoreApi, params).then(function (result) {
+                    frameWindow.postMessage({
+                        result    : result,
+                        identifier: identifier
+                    }, '*');
+                }, function (e) {
+                    frameWindow.postMessage({
+                        result      : null,
+                        identifier  : identifier,
+                        errorMessage: e.getMessage()
+                    }, '*');
+                });
+            };
+
+            window.addEventListener('message', window.$storeApiController);
         },
 
         /**
