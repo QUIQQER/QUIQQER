@@ -441,7 +441,7 @@ class Manager extends QUI\QDOM
             'post-update-cmd'        => [
                 'QUI\\Package\\Composer\\CommandEvents::postUpdate'
             ],
-            'pre-command-run' => [
+            'pre-command-run'        => [
                 'QUI\\Package\\Composer\\CommandEvents::preCommandRun'
             ],
             // package events
@@ -1984,28 +1984,20 @@ class Manager extends QUI\QDOM
      *
      * @return string
      *
-     * @throws QUI\Exception
+     * @throws PackageInstallException
      * @throws QUI\Lockclient\Exceptions\LockServerException
      */
     protected function composerRequireOrInstall($packages, $version)
     {
-        $memoryLimit       = QUI\Utils\System::getMemoryLimit();
+        $this->checkComposerInstallRequirements();
+
         $lockServerEnabled = QUI::conf('globals', 'lockserver_enabled');
 
         // Lockserver can not handle VCS repositories ==> Check if local execution is possible or fail the operation
         if ($this->isVCSServerEnabled()) {
-            if ($memoryLimit >= self::REQUIRED_MEMORY_VCS * 1024 * 1024 || $memoryLimit === -1) {
-                return $this->getComposer()->requirePackage($packages, $version);
-            }
-
-            $exceptionLocale = $lockServerEnabled ?
-                'message.online.update.RAM.insufficient.vcs.lock' : 'message.online.update.RAM.insufficient.vcs';
-
-            throw new QUI\Exception([
-                'quiqqer/quiqqer',
-                $exceptionLocale
-            ]);
+            return $this->getComposer()->requirePackage($packages, $version);
         }
+
         //
         // NO VCS enabled -> continue normal routine
         //
@@ -2013,18 +2005,12 @@ class Manager extends QUI\QDOM
             return $this->getComposer()->requirePackage($packages, $version);
         }
 
-        if (!$lockServerEnabled && $memoryLimit != -1 && $memoryLimit < self::REQUIRED_MEMORY * 1024 * 1024) {
-            throw new QUI\Exception([
-                'quiqqer/quiqqer',
-                'message.online.update.RAM.insufficient'
-            ]);
-        }
-
         if (!$lockServerEnabled) {
             return $this->getComposer()->requirePackage($packages, $version);
         }
 
         $LockClient = new QUI\Lockclient\Lockclient();
+
         try {
             $lockContent = $LockClient->requirePackage($this->composer_json, $packages, $version);
         } catch (\Exception $Exception) {
@@ -2046,6 +2032,47 @@ class Manager extends QUI\QDOM
         }
 
         return $this->getComposer()->install();
+    }
+
+    /**
+     * Check if package install requirements are met
+     *
+     * @return void
+     * @throws PackageInstallException
+     */
+    protected function checkComposerInstallRequirements()
+    {
+        $memoryLimit       = QUI\Utils\System::getMemoryLimit();
+        $lockServerEnabled = QUI::conf('globals', 'lockserver_enabled');
+
+        // Lockserver can not handle VCS repositories ==> Check if local execution is possible or fail the operation
+        if ($this->isVCSServerEnabled()) {
+            if ($memoryLimit >= self::REQUIRED_MEMORY_VCS * 1024 * 1024 || $memoryLimit === -1) {
+                return;
+            }
+
+            $exceptionLocale = $lockServerEnabled ?
+                'message.online.update.RAM.insufficient.vcs.lock' : 'message.online.update.RAM.insufficient.vcs';
+
+            throw new PackageInstallException([
+                'quiqqer/quiqqer',
+                $exceptionLocale
+            ]);
+        }
+
+        //
+        // NO VCS enabled -> continue normal routine
+        //
+        if ($this->getComposer()->getMode() != QUI\Composer\Composer::MODE_WEB) {
+            return;
+        }
+
+        if (!$lockServerEnabled && $memoryLimit != -1 && $memoryLimit < self::REQUIRED_MEMORY * 1024 * 1024) {
+            throw new PackageInstallException([
+                'quiqqer/quiqqer',
+                'message.online.update.RAM.insufficient'
+            ]);
+        }
     }
 
     /**
