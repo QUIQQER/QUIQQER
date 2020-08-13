@@ -4860,6 +4860,38 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             <de><![CDATA[Die Benutzer [users] wurden erfolgreich deaktiviert.]]></de>
         </locale>
 
+        <!-- region Update-Server Console Tool -->
+        <locale name="console.tool.updateserver.add.description">
+            <de><![CDATA[Verwaltet die Liste der Update-Server.]]></de>
+        </locale>
+        <locale name="console.tool.updateserver.help">
+            <de><![CDATA[Keine Argumente übergeben - Ausführung beendet. Gültige Argumente sind 'add' und 'remove'.]]></de>
+        </locale>
+
+        <locale name="console.tool.updateserver.add.description">
+            <de><![CDATA[Fügt den angegeben Server zur Liste der Update-Server hinzu.]]></de>
+        </locale>
+        <locale name="console.tool.updateserver.add.server.missing">
+            <de><![CDATA[Kein Server zum Hinzufügen angegeben. Übergebe einen Server mit Hilfe eines Gleichheitszeichens nach dem 'add'-Parameter.]]></de>
+        </locale>
+        <locale name="console.tool.updateserver.add.type.missing">
+            <de><![CDATA[Kein Server-Typ angegeben - es wird 'vcs' verwendet. Ein Typ kann mittels des 'type'-Parameters spezifiziert werden.]]></de>
+        </locale>
+        <locale name="console.tool.updateserver.add.success">
+            <de><![CDATA[Der Update-Server wurde erfolgreich hinzugefügt.]]></de>
+        </locale>
+
+        <locale name="console.tool.updateserver.remove.description">
+            <de><![CDATA[Entfernt den angegeben Server aus der Liste der Update-Server.]]></de>
+        </locale>
+        <locale name="console.tool.updateserver.remove.server.missing">
+            <de><![CDATA[Kein Server zum Entfernen angegeben. Übergebe einen Server mit Hilfe eines Gleichheitszeichens nach dem 'remove'-Parameter.]]></de>
+        </locale>
+        <locale name="console.tool.updateserver.remove.success">
+            <de><![CDATA[Der Update-Server wurde erfolgreich entfernt.]]></de>
+        </locale>
+        <!-- endregion -->
+
         <locale name="exception.site.url.missing.title">
             <de><![CDATA[Bitte gebe einen Titel ein.]]></de>
         </locale>

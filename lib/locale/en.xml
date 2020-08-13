@@ -4702,6 +4702,37 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
             <en><![CDATA[The users [users] have been deactivated successfully.]]></en>
         </locale>
 
+        <!-- region Update-Server Console Tool -->
+        <locale name="console.tool.updateserver.add.description">
+            <de><![CDATA[Manages the list of update-servers.]]></de>
+        </locale>
+        <locale name="console.tool.updateserver.help">
+            <en><![CDATA[No arguments passed, exiting. Valid arguments are 'add' and 'remove'.]]></en>
+        </locale>
+
+        <locale name="console.tool.updateserver.add.description">
+            <en><![CDATA[Adds the given server to the list of update servers.]]></en>
+        </locale>
+        <locale name="console.tool.updateserver.add.server.missing">
+            <en><![CDATA[No server to add specified. Pass it via an equal sign after the 'add'-parameter.]]></en>
+        </locale>
+        <locale name="console.tool.updateserver.add.type.missing">
+            <en><![CDATA[No server type specified - assuming 'vcs'. You can pass a type via the 'type'-parameter.]]></en>
+        </locale>
+        <locale name="console.tool.updateserver.add.success">
+            <en><![CDATA[The update server was successfully added.]]></en>
+        </locale>
+
+        <locale name="console.tool.updateserver.remove.description">
+            <en><![CDATA[Adds the given server to the list of update servers.]]></en>
+        </locale>
+        <locale name="console.tool.updateserver.remove.server.missing">
+            <en><![CDATA[No server to remove specified. Pass it via an equal sign after the 'remove'-parameter.]]></en>
+        </locale>
+        <locale name="console.tool.updateserver.remove.success">
+            <en><![CDATA[The update server was successfully removed.]]></en>
+        </locale>
+        <!-- endregion -->
 
         <locale name="exception.site.url.missing.title">
             <en><![CDATA[Bitte gebe einen Titel ein.]]></en>
