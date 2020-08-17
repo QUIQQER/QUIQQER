@@ -525,8 +525,10 @@ define('controls/upload/File', [
                 this.$range_end
             );
 
+            var FileParams = this.getAttribute('params');
+
             // extra params for ajax function
-            var params = ObjectUtils.combine((this.getAttribute('params') || {}), {
+            var UploadParams = {
                 file    : JSON.encode({
                     uploadstart: this.$upload_time,
                     chunksize  : this.$chunk_size,
@@ -537,14 +539,30 @@ define('controls/upload/File', [
                 filesize: this.$file_size,
                 filename: this.getFilename(),
                 filetype: this.$File.type
-            });
+            };
 
-            if (typeof params.lang === 'undefined') {
-                params.lang = QUILocale.getCurrent();
+            if (typeof FileParams.extract !== 'undefined') {
+                if (FileParams.extract) {
+                    UploadParams.extract = 1;
+                }
+            }
+
+            if (typeof FileParams.callable !== 'undefined') {
+                UploadParams.callable = FileParams.callable;
+            }
+
+            if (typeof FileParams.package !== 'undefined') {
+                UploadParams.package = FileParams.package;
+            }
+
+            UploadParams.fileparams = JSON.encode(FileParams);
+
+            if (typeof UploadParams.lang === 'undefined') {
+                UploadParams.lang = QUILocale.getCurrent();
             }
 
             // $project, $parentid, $file, $data
-            var url = URL_LIB_DIR + 'QUI/Upload/bin/upload.php?' + Object.toQueryString(params);
+            var url = URL_LIB_DIR + 'QUI/Upload/bin/upload.php?' + Object.toQueryString(UploadParams);
 
             fetch(url, {
                 method : 'PUT',
