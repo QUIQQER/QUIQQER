@@ -524,7 +524,10 @@
             <en><![CDATA[You must change your password. Please enter a new password.]]></en>
         </locale>
         <locale name="exception.user.oldPassword.is.wrong">
-            <en><![CDATA[The old password is incorrect]]></en>
+            <en><![CDATA[The old password is incorrec.t]]></en>
+        </locale>
+        <locale name="exception.user.no.address.exists">
+            <en><![CDATA[Unfortunately the user does not have an address.]]></en>
         </locale>
         <locale name="user.settings.setNewPassword">
             <en><![CDATA[Renew password]]></en>

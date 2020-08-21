@@ -1588,6 +1588,14 @@ class User implements QUI\Interfaces\Users\User
             }
         }
 
+        if ($this->getAttribute('email')) {
+            try {
+                $Address = $this->getStandardAddress();
+                $Address->editMail(0, $this->getAttribute('email'));
+            } catch (QUI\Exception $Exception) {
+            }
+        }
+
 
         // saving
         $result = QUI::getDataBase()->update(
@@ -2166,7 +2174,7 @@ class User implements QUI\Interfaces\Users\User
         }
 
         throw new QUI\Users\Exception(
-            QUI::getLocale()->get('quiqqer/system', 'exception.user.no.address.exists')
+            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.user.no.address.exists')
         );
     }
 

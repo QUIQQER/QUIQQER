@@ -527,6 +527,9 @@
         <locale name="exception.user.oldPassword.is.wrong">
             <de><![CDATA[Das alte Passwort ist nicht korrekt.]]></de>
         </locale>
+        <locale name="exception.user.no.address.exists">
+            <de><![CDATA[Der Benutzer besitzt leider keine Adresse.]]></de>
+        </locale>
         <locale name="user.settings.setNewPassword">
             <de><![CDATA[Passwort erneuern]]></de>
         </locale>
