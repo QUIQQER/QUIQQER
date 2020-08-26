@@ -567,7 +567,7 @@ class Manager
         if (self::getConfig()->get('general', 'nocache')) {
             throw new QUI\Cache\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.lib.cache.manager.not.exist'
                 ),
                 404
@@ -581,7 +581,7 @@ class Manager
         } catch (\Exception $Exception) {
             throw new QUI\Cache\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.lib.cache.manager.not.exist'
                 ),
                 404
@@ -608,7 +608,7 @@ class Manager
 
             throw new QUI\Cache\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.lib.cache.manager.not.exist'
                 ),
                 404

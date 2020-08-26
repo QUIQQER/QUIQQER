@@ -13,6 +13,9 @@
         <locale name="language.ach">
             <en><![CDATA[Acoli]]></en>
         </locale>
+        <locale name="language.ad">
+            <en><![CDATA[Andorra]]></en>
+        </locale>
         <locale name="language.ada">
             <en><![CDATA[Adangme]]></en>
         </locale>

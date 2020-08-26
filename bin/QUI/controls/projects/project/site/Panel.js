@@ -43,7 +43,7 @@ define('controls/projects/project/site/Panel', [
         Mustache        = arguments[13],
         templateRestore = arguments[14];
 
-    var lg = 'quiqqer/system';
+    var lg = 'quiqqer/quiqqer';
 
     var cleanupUrl = function (value) {
         var notAllowed = Object.keys(SiteUtils.notAllowedUrlSigns()).join('|'),

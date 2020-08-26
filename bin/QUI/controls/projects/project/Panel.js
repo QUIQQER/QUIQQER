@@ -76,7 +76,7 @@ define('controls/projects/project/Panel', [
             // must be after this.parent(), because locale must be set
             // and maybe the title comes from the serialize cache
             this.setAttributes({
-                title: Locale.get('quiqqer/system', 'projects.project.panel.title')
+                title: Locale.get('quiqqer/quiqqer', 'projects.project.panel.title')
             });
 
             this.$Map         = null;
@@ -120,7 +120,7 @@ define('controls/projects/project/Panel', [
             // must be after this.parent(), because locale must be set
             // and maybe the title comes from the serialize cache
             this.setAttributes({
-                title: Locale.get('quiqqer/system', 'projects.project.panel.title')
+                title: Locale.get('quiqqer/quiqqer', 'projects.project.panel.title')
             });
         },
 
@@ -179,7 +179,7 @@ define('controls/projects/project/Panel', [
 
             // language select
             this.$LanguageSelect = new QUISelect({
-                title : Locale.get('quiqqer/system', 'projects.project.panel.languageSwitch'),
+                title : Locale.get('quiqqer/quiqqer', 'projects.project.panel.languageSwitch'),
                 styles: {
                     width: 100
                 },
@@ -199,7 +199,7 @@ define('controls/projects/project/Panel', [
 
             this.$MediaButton = new QUIButton({
                 textimage: 'fa fa-picture-o',
-                text     : Locale.get('quiqqer/system', 'projects.project.panel.media'),
+                text     : Locale.get('quiqqer/quiqqer', 'projects.project.panel.media'),
                 styles   : {
                     'float': 'right'
                 },
@@ -265,8 +265,8 @@ define('controls/projects/project/Panel', [
             // site search
             new QUIButton({
                 icon  : 'fa fa-search',
-                title : Locale.get('quiqqer/system', 'projects.project.panel.open.search'),
-                alt   : Locale.get('quiqqer/system', 'projects.project.panel.open.search'),
+                title : Locale.get('quiqqer/quiqqer', 'projects.project.panel.open.search'),
+                alt   : Locale.get('quiqqer/quiqqer', 'projects.project.panel.open.search'),
                 events: {
                     onClick: function () {
                         require([
@@ -308,7 +308,7 @@ define('controls/projects/project/Panel', [
             this.$Button = new QUIButton({
                 name  : 'projects',
                 icon  : 'fa fa-home',
-                title : Locale.get('quiqqer/system', 'projects.project.panel.projectSelect'),
+                title : Locale.get('quiqqer/quiqqer', 'projects.project.panel.projectSelect'),
                 events: {
                     onClick: function (Btn, event) {
                         if (typeof event !== 'undefined') {
@@ -395,11 +395,11 @@ define('controls/projects/project/Panel', [
                     // no projects exists
                     var Body = self.getBody();
 
-                    Body.set('html', Locale.get('quiqqer/system', 'projects.project.panel.message.no.project'));
+                    Body.set('html', Locale.get('quiqqer/quiqqer', 'projects.project.panel.message.no.project'));
 
                     new QUIButton({
                         textimage: 'fa fa-home',
-                        text     : Locale.get('quiqqer/system', 'projects.project.panel.create'),
+                        text     : Locale.get('quiqqer/quiqqer', 'projects.project.panel.create'),
                         events   : {
                             onClick: function () {
                                 var PM = new ProjectManager();
@@ -469,7 +469,7 @@ define('controls/projects/project/Panel', [
             this.$MediaButton.disable();
 
             this.setAttributes({
-                title: Locale.get('quiqqer/system', 'projects.project.panel.title')
+                title: Locale.get('quiqqer/quiqqer', 'projects.project.panel.title')
             });
 
             this.refresh();
@@ -579,7 +579,7 @@ define('controls/projects/project/Panel', [
                     // Media
                     Project.appendChild(
                         new QUISitemapItem({
-                            text   : Locale.get('quiqqer/system', 'projects.project.panel.media'),
+                            text   : Locale.get('quiqqer/quiqqer', 'projects.project.panel.media'),
                             icon   : 'fa fa-picture-o',
                             project: i,
                             events : {
@@ -591,7 +591,7 @@ define('controls/projects/project/Panel', [
                     // Trash
                     Project.appendChild(
                         new QUISitemapItem({
-                            text   : Locale.get('quiqqer/system', 'projects.project.panel.tash'),
+                            text   : Locale.get('quiqqer/quiqqer', 'projects.project.panel.tash'),
                             icon   : 'fa fa-trash-o',
                             project: i,
                             events : {
@@ -603,7 +603,7 @@ define('controls/projects/project/Panel', [
                     // Settings
                     Project.appendChild(
                         new QUISitemapItem({
-                            text   : Locale.get('quiqqer/system', 'projects.project.panel.settings'),
+                            text   : Locale.get('quiqqer/quiqqer', 'projects.project.panel.settings'),
                             icon   : 'fa fa-gears',
                             project: i,
                             events : {

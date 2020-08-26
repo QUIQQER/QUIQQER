@@ -20,7 +20,7 @@ define('controls/trash/Panel', [
 ], function () {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg = 'quiqqer/quiqqer';
 
     var QUIPanel     = arguments[1],
         QUISelect    = arguments[2],

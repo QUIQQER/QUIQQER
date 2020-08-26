@@ -87,7 +87,7 @@ class QUIQQER extends AbstractAuthenticator
     {
         if (!\is_string($this->username) || empty($this->username)) {
             throw new QUI\Users\Exception(
-                ['quiqqer/system', 'exception.login.fail.wrong.username.input'],
+                ['quiqqer/quiqqer', 'exception.login.fail.wrong.username.input'],
                 401
             );
         }
@@ -98,14 +98,14 @@ class QUIQQER extends AbstractAuthenticator
 
         if (empty($password)) {
             throw new QUI\Users\Exception(
-                ['quiqqer/system', 'exception.login.fail.wrong.password.input'],
+                ['quiqqer/quiqqer', 'exception.login.fail.wrong.password.input'],
                 401
             );
         }
 
         if (!\is_string($password) || empty($password)) {
             throw new QUI\Users\Exception(
-                ['quiqqer/system', 'exception.login.fail.wrong.password.input'],
+                ['quiqqer/quiqqer', 'exception.login.fail.wrong.password.input'],
                 401
             );
         }
@@ -124,7 +124,7 @@ class QUIQQER extends AbstractAuthenticator
             || empty($userData[0]['password'])
         ) {
             throw new QUI\Users\Exception(
-                ['quiqqer/system', 'exception.login.fail'],
+                ['quiqqer/quiqqer', 'exception.login.fail'],
                 401
             );
         }
@@ -140,7 +140,7 @@ class QUIQQER extends AbstractAuthenticator
 
             if ($actualPasswordHash !== $passwordHash) {
                 throw new QUI\Users\Exception(
-                    ['quiqqer/system', 'exception.login.fail'],
+                    ['quiqqer/quiqqer', 'exception.login.fail'],
                     401
                 );
             }
@@ -201,7 +201,7 @@ class QUIQQER extends AbstractAuthenticator
                 $User = QUI::getUsers()->getUserByName($this->username);
             } catch (QUI\Exception $Exception) {
                 throw new QUI\Users\Exception(
-                    ['quiqqer/system', 'exception.login.fail.user.not.found'],
+                    ['quiqqer/quiqqer', 'exception.login.fail.user.not.found'],
                     404
                 );
             }

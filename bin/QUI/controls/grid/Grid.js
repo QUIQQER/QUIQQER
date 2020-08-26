@@ -1998,7 +1998,7 @@ define('controls/grid/Grid', [
                     new Element('div', {
                         'class': 'data-empty',
                         html   : '<div class="data-empty-cell">' +
-                            QUILocale.get('quiqqer/system', 'grid.is.empty') +
+                            QUILocale.get('quiqqer/quiqqer', 'grid.is.empty') +
                             '</div>'
                     }).inject(this.container.getElement('.bDiv'));
                 }

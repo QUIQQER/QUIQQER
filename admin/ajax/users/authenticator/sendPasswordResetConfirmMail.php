@@ -28,7 +28,7 @@ QUI::$Ajax->registerFunction(
             QUI\System\Log::writeException($Exception);
 
             throw new QUI\Users\Auth\Exception(array(
-                'quiqqer/system',
+                'quiqqer/quiqqer',
                 'exception.user.auth.send_password_reset_mail_error'
             ));
         }

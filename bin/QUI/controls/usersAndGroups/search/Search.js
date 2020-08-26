@@ -31,7 +31,7 @@ define('controls/usersAndGroups/search/Search', [
 ], function (QUI, QUIControl, QUIButton, QUISwitch, QUILocale, QUIAjax, Users, Grid) {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg = 'quiqqer/quiqqer';
 
     return new Class({
         Extends: QUIControl,

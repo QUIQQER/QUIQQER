@@ -36,14 +36,14 @@ QUI::$Ajax->registerFunction(
         if (QUI\Projects\Media\Utils::isFolder($File)) {
             QUI::getMessagesHandler()->addSuccess(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'projects.project.site.media.folderPanel.message.save.success'
                 )
             );
         } else {
             QUI::getMessagesHandler()->addSuccess(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'projects.project.site.media.filePanel.message.save.success'
                 )
             );

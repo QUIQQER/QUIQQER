@@ -35,7 +35,7 @@ define('controls/projects/project/Settings', [
              Translation) {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg = 'quiqqer/quiqqer';
 
     /**
      * The Project settings panel

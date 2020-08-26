@@ -140,8 +140,8 @@ define('controls/projects/project/site/Input', [
 
             new QUIButton({
                 icon  : 'fa fa-remove',
-                alt   : QUILocale.get('quiqqer/system', 'projects.project.site.input.clear'),
-                title : QUILocale.get('quiqqer/system', 'projects.project.site.input.clear'),
+                alt   : QUILocale.get('quiqqer/quiqqer', 'projects.project.site.input.clear'),
+                title : QUILocale.get('quiqqer/quiqqer', 'projects.project.site.input.clear'),
                 events: {
                     onClick: function () {
                         self.$Input.value = '';

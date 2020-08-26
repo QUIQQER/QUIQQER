@@ -13,7 +13,7 @@ QUI::$Ajax->registerFunction(
         if (!\file_exists($licenseConfigFile)) {
             QUI::getMessagesHandler()->addError(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'message.ajax.licenseKey.delete.error'
                 )
             );
@@ -28,7 +28,7 @@ QUI::$Ajax->registerFunction(
 
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(
-                'quiqqer/system',
+                'quiqqer/quiqqer',
                 'message.ajax.licenseKey.delete.success'
             )
         );

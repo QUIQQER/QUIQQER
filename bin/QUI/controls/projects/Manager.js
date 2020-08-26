@@ -19,7 +19,7 @@ define('controls/projects/Manager', [
 ], function (QUIPanel, QUIButton, ProjectSettings, Projects, Grid, UtilsTemplate, Locale) {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg = 'quiqqer/quiqqer';
 
     /**
      * @class controls/projects/Manager

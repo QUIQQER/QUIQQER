@@ -48,7 +48,7 @@ define('controls/projects/SelectWindow', [
          */
         $onOpen: function () {
             this.setAttributes({
-                title: QUILocale.get('quiqqer/system', 'projects.project.windowselect.title'),
+                title: QUILocale.get('quiqqer/quiqqer', 'projects.project.windowselect.title'),
                 icon : 'fa fa-home'
             });
 
@@ -59,7 +59,7 @@ define('controls/projects/SelectWindow', [
             Content.set('html', '');
 
             new Element('div', {
-                html: QUILocale.get('quiqqer/system', 'projects.project.windowselect.text')
+                html: QUILocale.get('quiqqer/quiqqer', 'projects.project.windowselect.text')
             }).inject(Content);
 
             this.$Select = new ProjectSelect({

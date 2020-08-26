@@ -579,7 +579,7 @@ class Utils
         if (!self::isSiteLink($link)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.site.not.found'
                 ),
                 705,
@@ -596,7 +596,7 @@ class Utils
         if (!isset($parseUrl['query']) || empty($parseUrl['query'])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.site.not.found'
                 ),
                 705,
@@ -795,7 +795,7 @@ class Utils
         if (!self::isSiteLink($link)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.site.not.found'
                 ),
                 705,
@@ -812,7 +812,7 @@ class Utils
         if (!isset($parseUrl['query']) || empty($parseUrl['query'])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.site.not.found'
                 ),
                 705,

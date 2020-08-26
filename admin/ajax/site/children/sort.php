@@ -45,7 +45,7 @@ QUI::$Ajax->registerFunction(
 
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(
-                'quiqqer/system',
+                'quiqqer/quiqqer',
                 'message.site.save.sort.success',
                 ['ids' => \implode(',', $ids)]
             )

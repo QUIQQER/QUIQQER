@@ -366,7 +366,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         if ($Folder->childWithNameExists($this->getAttribute('name'))) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/system', 'exception.media.folder.already.exists', [
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.folder.already.exists', [
                     'name' => $this->getAttribute('name')
                 ]),
                 ErrorCodes::FOLDER_ALREADY_EXISTS
@@ -443,7 +443,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
     {
         if ($Folder->childWithNameExists($this->getAttribute('name'))) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/system', 'exception.media.folder.already.exists', [
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.folder.already.exists', [
                     'name' => $this->getAttribute('name')
                 ]),
                 ErrorCodes::FOLDER_ALREADY_EXISTS
@@ -1368,7 +1368,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
 
         if (!\file_exists($file)) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/system', 'exception.file.not.found', [
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.file.not.found', [
                     'file' => $file
                 ]),
                 ErrorCodes::FILE_NOT_FOUND
@@ -1443,7 +1443,7 @@ class Folder extends Item implements QUI\Interfaces\Projects\Media\File
                 && $options != self::FILE_OVERWRITE_TRUE
             ) {
                 throw new QUI\Exception(
-                    QUI::getLocale()->get('quiqqer/system', 'exception.media.file.already.exists', [
+                    QUI::getLocale()->get('quiqqer/quiqqer', 'exception.media.file.already.exists', [
                         'filename' => $filename
                     ]),
                     ErrorCodes::FILE_ALREADY_EXISTS

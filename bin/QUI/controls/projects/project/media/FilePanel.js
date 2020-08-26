@@ -221,7 +221,7 @@ define('controls/projects/project/media/FilePanel', [
                 var Project = Projects.get(this.getAttribute('project'));
 
                 this.$Media = Project.getMedia();
-                this.$Media.get(this.getAttribute('fileId')).done(function (File) {
+                this.$Media.get(this.getAttribute('fileId')).then(function (File) {
                     self.$File = File;
                     self.load(callback);
                 });
@@ -304,7 +304,7 @@ define('controls/projects/project/media/FilePanel', [
 
             File.save(function () {
                 // Update the (maybe truncated) filename
-                var NameInput   = self.getContent().getElement('input[name=file_name]');
+                var NameInput = self.getContent().getElement('input[name=file_name]');
 
                 if (NameInput) {
                     NameInput.value = File.getAttribute('name');
@@ -329,15 +329,15 @@ define('controls/projects/project/media/FilePanel', [
                 icon    : 'fa fa-trash-o',
                 texticon: 'fa fa-trash-o',
 
-                title: Locale.get('quiqqer/system', 'projects.project.site.media.filePanel.window.delete.title', {
+                title: Locale.get('quiqqer/quiqqer', 'projects.project.site.media.filePanel.window.delete.title', {
                     file: this.$File.getAttribute('file')
                 }),
 
-                text: Locale.get('quiqqer/system', 'projects.project.site.media.filePanel.window.delete.text', {
+                text: Locale.get('quiqqer/quiqqer', 'projects.project.site.media.filePanel.window.delete.text', {
                     file: this.$File.getAttribute('file')
                 }),
 
-                information: Locale.get('quiqqer/system', 'projects.project.site.media.filePanel.window.delete.information', {
+                information: Locale.get('quiqqer/quiqqer', 'projects.project.site.media.filePanel.window.delete.information', {
                     file: this.$File.getAttribute('file')
                 }),
 
@@ -407,7 +407,7 @@ define('controls/projects/project/media/FilePanel', [
             this.$DOMEvents.replace(
                 new Element('div', {
                     'data-id': this.$File.getId(),
-                    title    : this.$File.getAttribute('title')
+                    title    : this.$File.getTitle()
                 })
             );
         },

@@ -716,7 +716,7 @@ class Utils
         if (\preg_match('/[^0-9_a-zA-Z \-]/', $str)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.media.check.foldername.allowed.signs',
                     ['foldername' => $str]
                 ),
@@ -727,7 +727,7 @@ class Utils
         if (\strpos($str, '__') !== false) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.media.check.name.allowed.underline'
                 ),
                 ErrorCodes::FOLDER_ILLEGAL_CHARACTERS
@@ -768,7 +768,7 @@ class Utils
         if (\preg_match('/[^0-9_a-zA-Z \-.]/', $filename)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.media.check.name.allowed.signs',
                     ['filename' => $filename]
                 ),
@@ -780,7 +780,7 @@ class Utils
         if (\substr_count($filename, '.') > 1) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.media.check.name.dots'
                 ),
                 ErrorCodes::FOLDER_ILLEGAL_CHARACTERS
@@ -790,7 +790,7 @@ class Utils
         if (\strpos($filename, '__') !== false) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.media.check.name.underline'
                 ),
                 ErrorCodes::FOLDER_ILLEGAL_CHARACTERS

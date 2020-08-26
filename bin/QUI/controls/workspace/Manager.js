@@ -1161,7 +1161,7 @@ define('controls/workspace/Manager', [
                             id            : id,
                             size          : size,
                             title         : Locale.get('quiqqer/quiqqer', 'window.workspaces.create.header.title'),
-                            labelTitle    : Locale.get('quiqqer/system', 'title'),
+                            labelTitle    : Locale.get('quiqqer/quiqqer', 'title'),
                             labelCols     : Locale.get('quiqqer/quiqqer', 'window.workspaces.create.cols'),
                             titleUsage    : Locale.get('quiqqer/quiqqer', 'window.workspaces.create.usage'),
                             labelMinWidth : Locale.get('quiqqer/quiqqer', 'window.workspaces.create.usage.minWidth'),
@@ -1338,7 +1338,7 @@ define('controls/workspace/Manager', [
                                     dataType : 'Integer',
                                     hidden   : true
                                 }, {
-                                    header   : Locale.get('quiqqer/system', 'title'),
+                                    header   : Locale.get('quiqqer/quiqqer', 'title'),
                                     dataIndex: 'title',
                                     dataType : 'string',
                                     width    : 200,
@@ -1374,7 +1374,7 @@ define('controls/workspace/Manager', [
                                 }, {
                                     name     : 'delete',
                                     title    : Locale.get('quiqqer/quiqqer', 'window.workspaces.delete'),
-                                    text     : Locale.get('quiqqer/system', 'delete'),
+                                    text     : Locale.get('quiqqer/quiqqer', 'delete'),
                                     textimage: 'fa fa-trash-o',
                                     disabled : true,
                                     events   : {
@@ -1402,7 +1402,7 @@ define('controls/workspace/Manager', [
                                                         ids: ids.join(',')
                                                     }),
                                                 ok_button  : {
-                                                    text     : Locale.get('quiqqer/system', 'delete'),
+                                                    text     : Locale.get('quiqqer/quiqqer', 'delete'),
                                                     textimage: 'fa fa-trash'
                                                 },
                                                 texticon   : 'fa fa-trash-o',
@@ -1532,17 +1532,17 @@ define('controls/workspace/Manager', [
 
 
             new QUIConfirm({
-                title        : Locale.get('quiqqer/system', 'workspace.toolarge.window.title'),
+                title        : Locale.get('quiqqer/quiqqer', 'workspace.toolarge.window.title'),
                 autoclose    : false,
                 maxWidth     : 600,
                 maxHeight    : 400,
                 texticon     : false,
                 cancel_button: {
-                    text     : Locale.get('quiqqer/system', 'cancel'),
+                    text     : Locale.get('quiqqer/quiqqer', 'cancel'),
                     textimage: 'fa fa-remove'
                 },
                 ok_button    : {
-                    text     : Locale.get('quiqqer/system', 'ok'),
+                    text     : Locale.get('quiqqer/quiqqer', 'ok'),
                     textimage: 'fa fa-check'
                 },
                 events       : {
@@ -1556,7 +1556,7 @@ define('controls/workspace/Manager', [
                         Content.set(
                             'html',
 
-                            Locale.get('quiqqer/system', 'workspace.toolarge.window.text') +
+                            Locale.get('quiqqer/quiqqer', 'workspace.toolarge.window.text') +
                             '<select></select>'
                         );
 
@@ -1593,7 +1593,7 @@ define('controls/workspace/Manager', [
                         // no workspaces available
                         Content.set(
                             'html',
-                            Locale.get('quiqqer/system', 'workspace.toolarge.window.noWorkspaces.text')
+                            Locale.get('quiqqer/quiqqer', 'workspace.toolarge.window.noWorkspaces.text')
                         );
                     },
 

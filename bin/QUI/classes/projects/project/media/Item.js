@@ -16,9 +16,10 @@ define('classes/projects/project/media/Item', [
 
     'qui/classes/DOM',
     'Ajax',
+    'Locale',
     'qui/utils/Object'
 
-], function (DOM, Ajax, Utils) {
+], function (DOM, Ajax, QUILocale, Utils) {
     "use strict";
 
     /**
@@ -123,6 +124,40 @@ define('classes/projects/project/media/Item', [
          */
         getId: function () {
             return this.getAttribute('id');
+        },
+
+        /**
+         * Return the title of the file
+         *
+         * @param [CustomLocale] - locale of the title
+         * @return {string}
+         */
+        getTitle: function (CustomLocale) {
+            if (typeof CustomLocale === 'undefined') {
+                CustomLocale = QUILocale;
+            }
+
+            var locale = CustomLocale.getCurrent();
+            var title  = this.getAttribute('title');
+
+            try {
+                title = this.getAttribute('title');
+                title = JSON.decode(title);
+
+                if (typeof title[locale] !== 'undefined') {
+                    title = title[locale];
+                } else if (typeof title.en !== 'undefined') {
+                    title = title.en;
+                } else if (typeOf(title) === 'object') {
+                    title = title[Object.keys(title)[0]];
+                } else {
+                    title = this.getAttribute('title');
+                }
+            } catch (e) {
+                title = this.getAttribute('title');
+            }
+
+            return title;
         },
 
         /**

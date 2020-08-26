@@ -15,7 +15,7 @@ define('classes/projects/project/media/panel/ContextMenu', [
 ], function (QUI, QUIContextmenuItem, QUIContextmenuSeparator, QUIElementUtil, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg = 'quiqqer/quiqqer';
 
     /**
      * @class classes/projects/project/media/panel/ContextMenu

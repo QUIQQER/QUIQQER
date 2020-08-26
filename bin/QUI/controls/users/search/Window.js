@@ -33,7 +33,7 @@ define('controls/users/search/Window', [
 
         initialize: function (options) {
             this.setAttributes({
-                title: QUILocale.get('quiqqer/system', 'users.panel.search.title'),
+                title: QUILocale.get('quiqqer/quiqqer', 'users.panel.search.title'),
                 icon : 'fa fa-users'
             });
 

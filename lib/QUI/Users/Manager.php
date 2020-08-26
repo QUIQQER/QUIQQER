@@ -324,7 +324,7 @@ class Manager
             if ($this->usernameExists($username)) {
                 throw new QUI\Users\Exception(
                     QUI::getLocale()->get(
-                        'quiqqer/system',
+                        'quiqqer/quiqqer',
                         'exception.lib.user.exist'
                     )
                 );
@@ -617,7 +617,7 @@ class Manager
             );
 
             throw new QUI\Users\UserAuthException(
-                ['quiqqer/system', 'exception.login.fail'],
+                ['quiqqer/quiqqer', 'exception.login.fail'],
                 401
             );
         }
@@ -705,7 +705,7 @@ class Manager
 
         if (QUI::getUsers()->isNobodyUser($User)) {
             $Exception = new QUI\Users\Exception(
-                ['quiqqer/system', 'exception.login.fail.user.not.found'],
+                ['quiqqer/quiqqer', 'exception.login.fail.user.not.found'],
                 404
             );
 
@@ -730,7 +730,7 @@ class Manager
 
         if (!isset($userData[0])) {
             $Exception = new QUI\Users\Exception(
-                ['quiqqer/system', 'exception.login.fail.user.not.found'],
+                ['quiqqer/quiqqer', 'exception.login.fail.user.not.found'],
                 404
             );
 
@@ -743,7 +743,7 @@ class Manager
 
         if ($userData[0]['active'] != 1) {
             $Exception = new QUI\Users\Exception(
-                ['quiqqer/system', 'exception.login.fail.user_not_active'],
+                ['quiqqer/quiqqer', 'exception.login.fail.user_not_active'],
                 401
             );
 
@@ -760,7 +760,7 @@ class Manager
             && \strtotime($userData[0]['expire']) < \time()
         ) {
             $Exception = new QUI\Users\Exception(
-                QUI::getLocale()->get('quiqqer/system', 'exception.login.expire', [
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.login.expire', [
                     'expire' => $userData[0]['expire']
                 ])
             );
@@ -793,7 +793,7 @@ class Manager
 
         if ($activeGroupExists === false) {
             $Exception = new QUI\Users\Exception(
-                ['quiqqer/system', 'exception.login.fail'],
+                ['quiqqer/quiqqer', 'exception.login.fail'],
                 401
             );
 
@@ -933,7 +933,7 @@ class Manager
 
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.permission.session.expired'
                 ),
                 401
@@ -948,7 +948,7 @@ class Manager
             if ($Session->get('expired.from.other')) {
                 throw new QUI\Users\Exception(
                     QUI::getLocale()->get(
-                        'quiqqer/system',
+                        'quiqqer/quiqqer',
                         'exception.session.expired.from.other'
                     ),
                     401
@@ -957,7 +957,7 @@ class Manager
 
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.permission.session.expired'
                 ),
                 401
@@ -976,7 +976,7 @@ class Manager
 
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.user.inactive'
                 ),
                 401
@@ -999,7 +999,7 @@ class Manager
         }
 
         $message = $User->getLocale()->get(
-            'quiqqer/system',
+            'quiqqer/quiqqer',
             'exception.session.expired.from.other'
         );
 
@@ -1100,7 +1100,7 @@ class Manager
 
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.lib.user.user.not.found'
                 ),
                 404
@@ -1110,7 +1110,7 @@ class Manager
         if (!isset($result[0])) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.lib.user.user.not.found'
                 ),
                 404
@@ -1144,7 +1144,7 @@ class Manager
 
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.lib.user.user.not.found'
                 ),
                 404
@@ -1154,7 +1154,7 @@ class Manager
         if (!isset($result[0])) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.lib.user.user.not.found'
                 ),
                 404
@@ -1634,7 +1634,7 @@ class Manager
     {
         if ($username != self::clearUsername($username)) {
             throw new QUI\Users\Exception(
-                QUI::getLocale()->get('quiqqer/system', 'exception.lib.user.illegal.signs')
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.lib.user.illegal.signs')
             );
         }
 

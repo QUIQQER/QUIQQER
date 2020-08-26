@@ -197,7 +197,7 @@ define('controls/users/Login', [
             for (var i = 1, len = forms.length; i < len; i++) {
                 new Element('div', {
                     'class': 'quiqqer-login-or',
-                    html   : '<span>' + QUILocale.get('quiqqer/system', 'controls.users.auth.login.or') + '</span>'
+                    html   : '<span>' + QUILocale.get('quiqqer/quiqqer', 'controls.users.auth.login.or') + '</span>'
                 }).inject(forms[i], 'before');
             }
 

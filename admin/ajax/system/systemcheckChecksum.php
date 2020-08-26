@@ -14,7 +14,7 @@ QUI::$Ajax->registerFunction(
 
         if (!\file_exists($cacheFile)) {
             QUI::getMessagesHandler()->addError(
-                QUI::getLocale()->get('quiqqer/system', 'packages.panel.category.systemcheck.checksum.fileNotFound')
+                QUI::getLocale()->get('quiqqer/quiqqer', 'packages.panel.category.systemcheck.checksum.fileNotFound')
             );
 
             return false;
@@ -25,7 +25,7 @@ QUI::$Ajax->registerFunction(
         if (!isset($packages[$packageName])) {
             QUI::getMessagesHandler()->addError(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'packages.panel.category.systemcheck.checksum.cacheForThisPackageNotFound',
                     ['cacheForThisPackage' => $packageName]
                 )

@@ -800,7 +800,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     {
         if (!\file_exists($this->getFullPath())) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/system', 'exception.file.not.found', [
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.file.not.found', [
                     'file' => $this->getAttribute('file')
                 ]),
                 ErrorCodes::FILE_NOT_FOUND
@@ -827,7 +827,7 @@ class Image extends Item implements QUI\Interfaces\Projects\Media\File
     {
         if (!\file_exists($this->getFullPath())) {
             throw new QUI\Exception(
-                QUI::getLocale()->get('quiqqer/system', 'exception.file.not.found', [
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.file.not.found', [
                     'file' => $this->getAttribute('file')
                 ]),
                 ErrorCodes::FILE_NOT_FOUND

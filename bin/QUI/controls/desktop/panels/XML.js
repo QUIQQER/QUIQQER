@@ -139,7 +139,7 @@ define('controls/desktop/panels/XML', [
                 // load buttons
                 self.addButton({
                     name     : 'save',
-                    text     : QUILocale.get('quiqqer/system', 'desktop.panels.xml.btn.save'),
+                    text     : QUILocale.get('quiqqer/quiqqer', 'desktop.panels.xml.btn.save'),
                     textimage: 'fa fa-save',
                     events   : {
                         onClick: self.save
@@ -148,7 +148,7 @@ define('controls/desktop/panels/XML', [
 
                 self.addButton({
                     name     : 'reload',
-                    text     : QUILocale.get('quiqqer/system', 'desktop.panels.xml.btn.cancel'),
+                    text     : QUILocale.get('quiqqer/quiqqer', 'desktop.panels.xml.btn.cancel'),
                     textimage: 'fa fa-ban',
                     events   : {
                         onClick: self.$onCreate

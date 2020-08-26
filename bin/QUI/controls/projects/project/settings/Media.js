@@ -20,7 +20,7 @@ define('controls/projects/project/settings/Media', [
 ], function (QUI, QUIControl, QUIButton, QUILoader, QUIFormUtils, UtilsTemplate, UtilsControls, QUIAjax, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg = 'quiqqer/quiqqer';
 
     return new Class({
 

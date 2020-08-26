@@ -42,9 +42,9 @@ define('controls/groups/sitemap/Window', [
             multible   : false,
             multiple   : false,
             message    : false,
-            title      : QUILocale.get('quiqqer/system', 'groups.sitemap.window.title'),
-            text       : QUILocale.get('quiqqer/system', 'groups.sitemap.window.title'),
-            information: QUILocale.get('quiqqer/system', 'groups.sitemap.window.information'),
+            title      : QUILocale.get('quiqqer/quiqqer', 'groups.sitemap.window.title'),
+            text       : QUILocale.get('quiqqer/quiqqer', 'groups.sitemap.window.title'),
+            information: QUILocale.get('quiqqer/quiqqer', 'groups.sitemap.window.information'),
             texticon   : false,
             icon       : 'fa fa-group',
             maxHeight  : 600,
@@ -77,7 +77,7 @@ define('controls/groups/sitemap/Window', [
                 if (!hasPermission) {
                     QUI.getMessageHandler().then(function (MH) {
                         MH.addError(
-                            QUILocale.get('quiqqer/system', 'exception.no.permission')
+                            QUILocale.get('quiqqer/quiqqer', 'exception.no.permission')
                         );
                     });
 

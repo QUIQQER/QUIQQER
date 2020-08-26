@@ -627,7 +627,7 @@ class Manager
         if (\strlen($name) <= 2) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.project.longer.two.signs'
                 ),
                 801
@@ -637,7 +637,7 @@ class Manager
         if (\strlen($lang) != 2) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.project.lang.not.two.signs'
                 ),
                 801
@@ -651,7 +651,7 @@ class Manager
         if (isset($projects[$name])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.project.not.allowed.signs'
                 ),
                 802
@@ -845,7 +845,7 @@ class Manager
         if (self::count() < 2) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.project.delete.last'
                 )
             );

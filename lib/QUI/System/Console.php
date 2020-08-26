@@ -324,14 +324,14 @@ class Console
 
         if (!QUI::getUsers()->isUser($this->User)) {
             throw new QUI\Users\Exception(
-                ['quiqqer/system', 'exception.login.fail'],
+                ['quiqqer/quiqqer', 'exception.login.fail'],
                 401
             );
         }
 
         if (QUI::getUsers()->isNobodyUser($this->User)) {
             throw new QUI\Users\Exception(
-                ['quiqqer/system', 'exception.login.fail'],
+                ['quiqqer/quiqqer', 'exception.login.fail'],
                 401
             );
         }

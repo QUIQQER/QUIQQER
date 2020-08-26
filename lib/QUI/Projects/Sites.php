@@ -34,7 +34,7 @@ class Sites
             'name' => '_Toolbar'
         ]);
 
-        $gl = 'quiqqer/system';
+        $gl = 'quiqqer/quiqqer';
 
         $Toolbar->appendChild(
             new Button([
@@ -182,7 +182,7 @@ class Sites
                 new Toolbar\Tab([
                     'name'     => 'information',
                     'text'     => \QUI::getLocale()->get(
-                        'quiqqer/system',
+                        'quiqqer/quiqqer',
                         'projects.project.site.information'
                     ),
                     'template' => SYS_DIR.'template/site/information_norights.html',
@@ -201,7 +201,7 @@ class Sites
                 new Toolbar\Tab([
                     'name'     => 'information',
                     'text'     => QUI::getLocale()->get(
-                        'quiqqer/system',
+                        'quiqqer/quiqqer',
                         'projects.project.site.information'
                     ),
                     'template' => SYS_DIR.'template/site/information.html',
@@ -213,7 +213,7 @@ class Sites
                 new Toolbar\Tab([
                     'name'     => 'information',
                     'text'     => QUI::getLocale()->get(
-                        'quiqqer/system',
+                        'quiqqer/quiqqer',
                         'projects.project.site.information'
                     ),
                     'template' => SYS_DIR.'template/site/noview.html',
@@ -228,7 +228,7 @@ class Sites
                 new Toolbar\Tab([
                     'name'     => 'information',
                     'text'     => QUI::getLocale()->get(
-                        'quiqqer/system',
+                        'quiqqer/quiqqer',
                         'projects.project.site.information'
                     ),
                     'template' => SYS_DIR
@@ -245,7 +245,7 @@ class Sites
             new Toolbar\Tab([
                 'name' => 'content',
                 'text' => QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'projects.project.site.content'
                 ),
                 'icon' => 'fa fa-file-text-o'
@@ -257,7 +257,7 @@ class Sites
             new Toolbar\Tab([
                 'name'     => 'settings',
                 'text'     => \QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'projects.project.site.settings'
                 ),
                 'icon'     => 'fa fa-cog',

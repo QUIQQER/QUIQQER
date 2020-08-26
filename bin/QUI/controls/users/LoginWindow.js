@@ -35,7 +35,7 @@ define('controls/users/LoginWindow', [
         ],
 
         options: {
-            title    : Locale.get('quiqqer/system', 'login.title'),
+            title    : Locale.get('quiqqer/quiqqer', 'login.title'),
             icon     : 'fa fa-sign-in',
             maxHeight: 400,
             maxWidth : 400,

@@ -340,7 +340,7 @@ define('controls/groups/Input', [
 
                 if (!data || !data.length) {
                     new Element('div', {
-                        html  : Locale.get('quiqqer/system', 'groups.input.no.results'),
+                        html  : Locale.get('quiqqer/quiqqer', 'groups.input.no.results'),
                         styles: {
                             'float': 'left',
                             'clear': 'both',

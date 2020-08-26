@@ -18,7 +18,7 @@ QUI::$Ajax->registerFunction(
         if ($pw1 != $pw2) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.lib.user.wrong.passwords'
                 )
             );

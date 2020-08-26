@@ -16,7 +16,7 @@ define('controls/packages/Panel', [
 ], function (QUI, QUIPanel, QUIButton, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg = 'quiqqer/quiqqer';
 
     /**
      * @class controls/packages/Panel

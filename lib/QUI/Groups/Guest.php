@@ -34,7 +34,7 @@ class Guest extends QUI\Groups\Group
     {
         throw new QUI\Exception(
             QUI::getLocale()->get(
-                'quiqqer/system',
+                'quiqqer/quiqqer',
                 'exception.guest.group.cannot.be.deleted'
             )
         );
@@ -107,7 +107,7 @@ class Guest extends QUI\Groups\Group
     {
         throw new QUI\Exception(
             QUI::getLocale()->get(
-                'quiqqer/system',
+                'quiqqer/quiqqer',
                 'exception.guest.group.cannot.be.deactivated'
             )
         );
@@ -207,7 +207,7 @@ class Guest extends QUI\Groups\Group
     {
         throw new QUI\Exception(
             QUI::getLocale()->get(
-                'quiqqer/system',
+                'quiqqer/quiqqer',
                 'exception.cannot.create.children'
             )
         );

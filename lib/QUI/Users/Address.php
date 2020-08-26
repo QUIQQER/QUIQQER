@@ -367,7 +367,7 @@ class Address extends QUI\QDOM
         if (Orthos::checkMailSyntax($mail) == false) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'system',
+                    'quiqqer/quiqqer',
                     'exception.lib.user.address.mail.wrong.syntax'
                 )
             );
@@ -405,7 +405,7 @@ class Address extends QUI\QDOM
         if (Orthos::checkMailSyntax($mail) == false) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'system',
+                    'quiqqer/quiqqer',
                     'exception.lib.user.address.mail.wrong.syntax'
                 )
             );
@@ -414,7 +414,7 @@ class Address extends QUI\QDOM
         $index = (int)$index;
         $list  = $this->getMailList();
 
-        $list [$index] = $mail;
+        $list[$index] = $mail;
 
         $this->setAttribute('mail', \json_encode($list));
     }
@@ -446,7 +446,7 @@ class Address extends QUI\QDOM
         if ($this->getAttribute('country') === false) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'system',
+                    'quiqqer/quiqqer',
                     'exception.lib.user.address.no.country'
                 )
             );
@@ -461,7 +461,7 @@ class Address extends QUI\QDOM
 
         throw new QUI\Users\Exception(
             QUI::getLocale()->get(
-                'system',
+                'quiqqer/quiqqer',
                 'exception.lib.user.address.no.country'
             )
         );

@@ -126,7 +126,7 @@ class VhostManager
         if ($Config->existValue($vhost)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.vhost.exist'
                 )
             );

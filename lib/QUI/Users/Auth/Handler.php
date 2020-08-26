@@ -178,7 +178,7 @@ class Handler
         }
 
         throw new QUI\Users\Auth\Exception(
-            ['quiqqer/system', 'exception.authenticator.not.found'],
+            ['quiqqer/quiqqer', 'exception.authenticator.not.found'],
             404
         );
     }
@@ -247,7 +247,7 @@ class Handler
     {
         if (!$this->isQuiqqerVerificationPackageInstalled()) {
             throw new QUI\Exception([
-                'quiqqer/system',
+                'quiqqer/quiqqer',
                 'exception.user.auth.handler.verification_package_not_installed'
             ]);
         }
@@ -268,7 +268,7 @@ class Handler
         $confirmLink = QUI\Verification\Verifier::startVerification($PasswordResetVerification, true);
 
         $L      = QUI::getLocale();
-        $lg     = 'quiqqer/system';
+        $lg     = 'quiqqer/quiqqer';
         $tplDir = QUI::getPackage('quiqqer/quiqqer')->getDir().'lib/templates/mail/auth/';
 
         $Mailer = new QUI\Mail\Mailer();

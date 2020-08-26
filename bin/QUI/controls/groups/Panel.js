@@ -25,7 +25,7 @@ define('controls/groups/Panel', [
 ], function () {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg = 'quiqqer/quiqqer';
 
     var QUI                = arguments[0],
         Panel              = arguments[1],

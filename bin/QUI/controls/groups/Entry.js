@@ -75,8 +75,8 @@ define('controls/groups/Entry', [
 
             Close.addEvent('click', this.destroy);
             Close.set({
-                alt  : Locale.get('quiqqer/system', 'groups.entry.btn.remove'),
-                title: Locale.get('quiqqer/system', 'groups.entry.btn.remove')
+                alt  : Locale.get('quiqqer/quiqqer', 'groups.entry.btn.remove'),
+                title: Locale.get('quiqqer/quiqqer', 'groups.entry.btn.remove')
             });
 
             this.$Group.addEvent('onRefresh', this.$onGroupUpdate);

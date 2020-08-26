@@ -47,7 +47,7 @@ class Helper
     {
         if (!QUI::getUsers()->isUser($User)) {
             throw new QUI\Permissions\Exception(
-                QUI::getLocale()->get('quiqqer/system', 'exception.no.permission'),
+                QUI::getLocale()->get('quiqqer/quiqqer', 'exception.no.permission'),
                 403
             );
         }

@@ -184,7 +184,7 @@ define('controls/upload/Form', [
         setParams: function (params) {
             for (var n in params) {
                 if (params.hasOwnProperty(n)) {
-                    this.addParam(n, params[n]);
+                    this.setParam(n, params[n]);
                 }
             }
         },

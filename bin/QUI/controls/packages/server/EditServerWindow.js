@@ -45,7 +45,7 @@ define('controls/packages/server/EditServerWindow', [
             maxWidth : 400,
             autoclose: false,
             ok_button: {
-                text     : QUILocale.get('quiqqer/system', 'edit'),
+                text     : QUILocale.get('quiqqer/quiqqer', 'edit'),
                 textimage: 'fa fa-server'
             },
             server   : false

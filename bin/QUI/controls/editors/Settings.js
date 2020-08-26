@@ -36,7 +36,7 @@ define('controls/editors/Settings', [
         ],
 
         options: {
-            title: Locale.get('quiqqer/system', 'editors.settings.title'),
+            title: Locale.get('quiqqer/quiqqer', 'editors.settings.title'),
             icon : 'fa fa-font'
         },
 
@@ -58,12 +58,12 @@ define('controls/editors/Settings', [
         $onCreate: function () {
             var self = this;
 
-            this.setAttribute('title', Locale.get('quiqqer/system', 'editors.settings.title'));
+            this.setAttribute('title', Locale.get('quiqqer/quiqqer', 'editors.settings.title'));
 
             this.addButton({
                 name     : 'toolbarAdd',
                 text     : Locale.get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'editors.settings.btn.add.toolbar'
                 ),
                 textimage: 'fa fa-plus',
@@ -79,7 +79,7 @@ define('controls/editors/Settings', [
             this.addButton({
                 name     : 'toolbarEdit',
                 text     : Locale.get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'editors.settings.btn.edit.toolbar'
                 ),
                 textimage: 'fa fa-edit',
@@ -92,7 +92,7 @@ define('controls/editors/Settings', [
             this.addButton({
                 name     : 'toolbarDelete',
                 text     : Locale.get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'editors.settings.btn.delete.toolbar'
                 ),
                 textimage: 'fa fa-trash-o',
@@ -121,7 +121,7 @@ define('controls/editors/Settings', [
             this.$Grid = new Grid(Container, {
                 columnModel: [{
                     header   : Locale.get(
-                        'quiqqer/system',
+                        'quiqqer/quiqqer',
                         'editors.settings.table.toolbar.name'
                     ),
                     dataIndex: 'toolbar',
@@ -239,7 +239,7 @@ define('controls/editors/Settings', [
         editToolbar: function (toolbar) {
             this.createSheet({
                 title : Locale.get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'editors.settings.editsheet.title',
                     {toolbar: toolbar}
                 ),
@@ -257,7 +257,7 @@ define('controls/editors/Settings', [
 
                             Sheet.addButton({
                                 text     : Locale.get(
-                                    'quiqqer/system',
+                                    'quiqqer/quiqqer',
                                     'editors.settings.editsheet.btn.save'
                                 ),
                                 textimage: 'fa fa-save',
@@ -321,11 +321,11 @@ define('controls/editors/Settings', [
 
             new QUIConfirm({
                 title    : Locale.get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'editors.settings.delete.window.title'
                 ),
                 text     : Locale.get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'editors.settings.delete.window.text',
                     {toolbar: toolbar}
                 ),
@@ -355,11 +355,11 @@ define('controls/editors/Settings', [
                 icon       : 'fa fa-plus',
                 titleicon  : 'fa fa-plus',
                 title      : Locale.get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'editors.settings.add.window.title'
                 ),
                 information: Locale.get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'editors.settings.add.window.text'
                 ),
                 events     : {

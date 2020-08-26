@@ -80,8 +80,8 @@ define('controls/users/Entry', [
             });
 
             Close.set({
-                alt  : Locale.get('quiqqer/system', 'users.entry.user.remove'),
-                title: Locale.get('quiqqer/system', 'users.entry.user.remove')
+                alt  : Locale.get('quiqqer/quiqqer', 'users.entry.user.remove'),
+                title: Locale.get('quiqqer/quiqqer', 'users.entry.user.remove')
             });
 
             this.$User.addEvent('onRefresh', this.$onUserUpdate);

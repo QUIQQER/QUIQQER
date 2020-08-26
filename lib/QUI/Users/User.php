@@ -177,7 +177,7 @@ class User implements QUI\Interfaces\Users\User
             if (!$id || $id <= 10) {
                 throw new QUI\Users\Exception(
                     QUI::getLocale()->get(
-                        'quiqqer/system',
+                        'quiqqer/quiqqer',
                         'exception.lib.user.wrong.uid'
                     ),
                     404
@@ -220,7 +220,7 @@ class User implements QUI\Interfaces\Users\User
         if (!isset($data[0])) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.lib.user.not.found'
                 ),
                 404
@@ -381,21 +381,21 @@ class User implements QUI\Interfaces\Users\User
 
         if (!isset($available[$authenticator])) {
             throw new QUI\Users\Exception(
-                ['quiqqer/system', 'exception.authenticator.not.found'],
+                ['quiqqer/quiqqer', 'exception.authenticator.not.found'],
                 404
             );
         }
 
         if (!\in_array($authenticator, $this->authenticator)) {
             throw new QUI\Users\Exception(
-                ['quiqqer/system', 'exception.authenticator.not.found'],
+                ['quiqqer/quiqqer', 'exception.authenticator.not.found'],
                 404
             );
         }
 
         if (!Auth\Helper::hasUserPermissionToUseAuthenticator($this, $authenticator)) {
             throw new QUI\Users\Exception(
-                ['quiqqer/system', 'exception.authenticator.not.found'],
+                ['quiqqer/quiqqer', 'exception.authenticator.not.found'],
                 404
             );
         }
@@ -417,14 +417,14 @@ class User implements QUI\Interfaces\Users\User
 
         if (!isset($available[$authenticator])) {
             throw new QUI\Users\Exception(
-                ['quiqqer/system', 'exception.authenticator.not.found'],
+                ['quiqqer/quiqqer', 'exception.authenticator.not.found'],
                 404
             );
         }
 
         if (!Auth\Helper::hasUserPermissionToUseAuthenticator($this, $authenticator)) {
             throw new QUI\Users\Exception(
-                ['quiqqer/system', 'exception.authenticator.not.found'],
+                ['quiqqer/quiqqer', 'exception.authenticator.not.found'],
                 404
             );
         }
@@ -463,7 +463,7 @@ class User implements QUI\Interfaces\Users\User
         if (!isset($available[$authenticator])) {
             throw new QUI\Users\Exception(
                 [
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.authenticator.not.found'
                 ],
                 404
@@ -1165,7 +1165,7 @@ class User implements QUI\Interfaces\Users\User
         if (empty($newPassword) || empty($oldPassword)) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.lib.user.empty.password'
                 )
             );
@@ -1210,7 +1210,7 @@ class User implements QUI\Interfaces\Users\User
         if (empty($new)) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.lib.user.empty.password'
                 )
             );
@@ -1222,7 +1222,7 @@ class User implements QUI\Interfaces\Users\User
 
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(
-                'quiqqer/system',
+                'quiqqer/quiqqer',
                 'message.password.save.success'
             )
         );
@@ -1309,7 +1309,7 @@ class User implements QUI\Interfaces\Users\User
         if ($this->isActive()) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.lib.user.activasion.user.is.activated'
                 )
             );
@@ -1318,7 +1318,7 @@ class User implements QUI\Interfaces\Users\User
         if ($code && $code != $this->getAttribute('activation')) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.lib.user.activation.wrong.code'
                 )
             );
@@ -1331,7 +1331,7 @@ class User implements QUI\Interfaces\Users\User
         if (empty($groups)) {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.lib.user.activation.no.groups'
                 )
             );
@@ -1340,7 +1340,7 @@ class User implements QUI\Interfaces\Users\User
         if ($this->password == '') {
             throw new QUI\Users\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.lib.user.activation.no.password'
                 )
             );
@@ -1585,6 +1585,14 @@ class User implements QUI\Interfaces\Users\User
                 throw new QUI\Users\Exception(
                     QUI::getLocale()->get('quiqqer/quiqqer', 'exception.user.save.one.superuser.must.exists')
                 );
+            }
+        }
+
+        if ($this->getAttribute('email')) {
+            try {
+                $Address = $this->getStandardAddress();
+                $Address->editMail(0, $this->getAttribute('email'));
+            } catch (QUI\Exception $Exception) {
             }
         }
 
@@ -1843,7 +1851,7 @@ class User implements QUI\Interfaces\Users\User
 
         throw new QUI\Permissions\Exception(
             QUI::getLocale()->get(
-                'quiqqer/system',
+                'quiqqer/quiqqer',
                 'exception.lib.user.no.edit.rights'
             )
         );
@@ -1891,7 +1899,7 @@ class User implements QUI\Interfaces\Users\User
 
         throw new QUI\Permissions\Exception(
             QUI::getLocale()->get(
-                'quiqqer/system',
+                'quiqqer/quiqqer',
                 'exception.lib.user.no.delete.permission'
             )
         );
@@ -2166,7 +2174,7 @@ class User implements QUI\Interfaces\Users\User
         }
 
         throw new QUI\Users\Exception(
-            QUI::getLocale()->get('quiqqer/system', 'exception.user.no.address.exists')
+            QUI::getLocale()->get('quiqqer/quiqqer', 'exception.user.no.address.exists')
         );
     }
 

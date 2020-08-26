@@ -402,7 +402,7 @@ foreach ($packages as $package) {
                     'qui/QUI',
                     'utils/Session',
                     'Locale',
-                    'locale/quiqqer/system/' + lang
+                    'locale/quiqqer/quiqqer/' + lang
                 ], function (QUI, Session, QUILocale) {
                     QUILocale.setCurrent(lang);
                     Session.set('quiqqer-user-language', lang);
@@ -465,7 +465,7 @@ foreach ($packages as $package) {
                         QUI.getMessageHandler().then(function (MH) {
                             MH.addError(
                                 QUILocale.get(
-                                    'quiqqer/system',
+                                    'quiqqer/quiqqer',
                                     'exception.permission.no.admin'
                                 )
                             );
@@ -517,7 +517,7 @@ foreach ($packages as $package) {
         needle         = ['qui/controls/buttons/Select', 'Locale'];
 
     for (var i = 0, len = QUIQQER_LANGUAGES.length; i < len; i++) {
-        needle.push('locale/quiqqer/system/' + QUIQQER_LANGUAGES[i]);
+        needle.push('locale/quiqqer/quiqqer/' + QUIQQER_LANGUAGES[i]);
     }
 
     require(needle, function (QUISelect, QUILocale) {
@@ -536,8 +536,15 @@ foreach ($packages as $package) {
             lang = QUIQQER_LANGUAGES[i];
             QUILocale.setCurrent(lang);
 
+            var text = QUILocale.get('quiqqer/quiqqer', 'language.' + lang);
+
+            if (!QUILocale.exists('quiqqer/quiqqer', 'language.' + lang)) {
+                QUILocale.setCurrent('en');
+                text = QUILocale.get('quiqqer/quiqqer', 'language.' + lang);
+            }
+
             Select.appendChild(
-                QUILocale.get('quiqqer/quiqqer', 'language.' + lang),
+                text,
                 lang,
                 URL_BIN_DIR + '16x16/flags/' + lang + '.png'
             );
@@ -545,6 +552,8 @@ foreach ($packages as $package) {
 
         QUILocale.setCurrent(current);
         Select.setValue(getCurrentLanguage());
+    }, function () {
+
     });
 </script>
 

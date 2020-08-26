@@ -66,7 +66,7 @@ define('controls/projects/project/media/Priority', [
             this.$Grid = new Grid(this.$Elm, {
                 buttons    : [{
                     text  : QUILocale.get(
-                        'quiqqer/system',
+                        'quiqqer/quiqqer',
                         'projects.project.site.media.priority.btn.save'
                     ),
                     events: {
@@ -79,17 +79,17 @@ define('controls/projects/project/media/Priority', [
                     dataType : 'node',
                     width    : 100
                 }, {
-                    header   : QUILocale.get('quiqqer/system', 'id'),
+                    header   : QUILocale.get('quiqqer/quiqqer', 'id'),
                     dataIndex: 'id',
                     dataType : 'integer',
                     width    : 50
                 }, {
-                    header   : QUILocale.get('quiqqer/system', 'name'),
+                    header   : QUILocale.get('quiqqer/quiqqer', 'name'),
                     dataIndex: 'name',
                     dataType : 'string',
                     width    : 300
                 }, {
-                    header   : QUILocale.get('quiqqer/system', 'title'),
+                    header   : QUILocale.get('quiqqer/quiqqer', 'title'),
                     dataIndex: 'title',
                     dataType : 'string',
                     width    : 300

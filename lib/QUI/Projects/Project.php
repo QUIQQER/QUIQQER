@@ -173,7 +173,7 @@ class Project
         if (!isset($config[$name])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.project.not.found',
                     ['name' => $name]
                 ),
@@ -188,7 +188,7 @@ class Project
         if (!isset($this->config['langs'])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.project.has.no.langs'
                 ),
                 803
@@ -201,7 +201,7 @@ class Project
         if (!isset($this->config['default_lang'])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.project.lang.no.default'
                 ),
                 805
@@ -215,7 +215,7 @@ class Project
             if (!\in_array($lang, $this->langs)) {
                 throw new QUI\Exception(
                     QUI::getLocale()->get(
-                        'quiqqer/system',
+                        'quiqqer/quiqqer',
                         'exception.project.lang.not.found',
                         [
                             'lang' => $lang
@@ -231,7 +231,7 @@ class Project
             if (!isset($this->config['default_lang'])) {
                 throw new QUI\Exception(
                     QUI::getLocale()->get(
-                        'quiqqer/system',
+                        'quiqqer/quiqqer',
                         'exception.project.lang.no.default'
                     ),
                     805
