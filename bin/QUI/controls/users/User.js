@@ -26,7 +26,7 @@ define('controls/users/User', [
              FormUtils, ControlUtils, Users, QUIAjax, QUILocale, Editors) {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg = 'quiqqer/quiqqer';
 
     /**
      * @class controls/users/User

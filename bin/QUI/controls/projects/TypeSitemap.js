@@ -75,8 +75,8 @@ define('controls/projects/TypeSitemap', [
                 name       : 1,
                 index      : 1,
                 value      : 1,
-                text       : Locale.get('quiqqer/system', 'projects.typesitemap.firstChild'),
-                alt        : Locale.get('quiqqer/system', 'projects.typesitemap.firstChild'),
+                text       : Locale.get('quiqqer/quiqqer', 'projects.typesitemap.firstChild'),
+                alt        : Locale.get('quiqqer/quiqqer', 'projects.typesitemap.firstChild'),
                 icon       : 'fa fa-magic',
                 hasChildren: false
             });
@@ -118,7 +118,7 @@ define('controls/projects/TypeSitemap', [
                 if (typeOf(result) === 'array') {
                     First.setAttribute(
                         'text',
-                        Locale.get('quiqqer/system', 'projects.typesitemap.message.no.types')
+                        Locale.get('quiqqer/quiqqer', 'projects.typesitemap.message.no.types')
                     );
 
                     self.fireEvent('load', [self]);

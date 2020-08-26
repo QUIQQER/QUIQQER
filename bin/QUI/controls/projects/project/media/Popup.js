@@ -32,7 +32,7 @@ define('controls/projects/project/media/Popup', [
         options: {
             project             : false,
             fileid              : false,
-            closeButtonText     : QUILocale.get('quiqqer/system', 'cancel'),
+            closeButtonText     : QUILocale.get('quiqqer/quiqqer', 'cancel'),
             breadcrumb          : true,
             selectable          : true,
             selectable_types    : false,   // you can specified which types are selectable
@@ -101,7 +101,7 @@ define('controls/projects/project/media/Popup', [
                         },
                         html  : '<div style="margin-bottom: 20px;">' +
                             QUILocale.get(
-                                'quiqqer/system',
+                                'quiqqer/quiqqer',
                                 'projects.project.site.media.popup.noProject.text'
                             ) +
                             '</div>'
@@ -146,7 +146,7 @@ define('controls/projects/project/media/Popup', [
 
             this.addButton(
                 new QUIButton({
-                    text     : QUILocale.get('quiqqer/system', 'accept'),
+                    text     : QUILocale.get('quiqqer/quiqqer', 'accept'),
                     textimage: 'fa fa-check',
                     events   : {
                         onClick: function () {
@@ -231,9 +231,9 @@ define('controls/projects/project/media/Popup', [
             this.close();
 
             var Confirm = new QUIConfirm({
-                title      : QUILocale.get('quiqqer/system', 'projects.project.site.media.popup.window.activate.title'),
-                text       : QUILocale.get('quiqqer/system', 'projects.project.site.media.popup.window.activate.text'),
-                information: QUILocale.get('quiqqer/system', 'projects.project.site.media.popup.window.activate.information'),
+                title      : QUILocale.get('quiqqer/quiqqer', 'projects.project.site.media.popup.window.activate.title'),
+                text       : QUILocale.get('quiqqer/quiqqer', 'projects.project.site.media.popup.window.activate.text'),
+                information: QUILocale.get('quiqqer/quiqqer', 'projects.project.site.media.popup.window.activate.information'),
                 autoclose  : false,
                 events     : {
                     onCancel: function () {

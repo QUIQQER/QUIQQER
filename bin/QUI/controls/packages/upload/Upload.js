@@ -222,7 +222,7 @@ define('controls/packages/upload/Upload', [
                         }).inject(Container);
 
                         new QUIButton({
-                            text  : QUILocale.get('quiqqer/system', 'cancel'),
+                            text  : QUILocale.get('quiqqer/quiqqer', 'cancel'),
                             events: {
                                 onClick: resolve
                             }

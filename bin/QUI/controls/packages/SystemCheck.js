@@ -24,7 +24,7 @@ define('controls/packages/SystemCheck', [
 ], function (QUI, QUIButton, QUIControl, QUIPopup, QUIConfirm, QUILoader, QUIAjax, QUILocale) {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg = 'quiqqer/quiqqer';
 
     return new Class({
 

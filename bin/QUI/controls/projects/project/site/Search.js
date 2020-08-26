@@ -30,7 +30,7 @@ define('controls/projects/project/site/Search', [
 ], function (QUI, QUIPanel, QUIButton, Grid, SitePanel, Projects, Ajax, Locale) {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg = 'quiqqer/quiqqer';
 
     return new Class({
 

@@ -92,7 +92,7 @@ class Group extends QUI\QDOM
 
         if (!isset($result[0])) {
             throw new QUI\Exception(
-                ['quiqqer/system', 'exception.lib.qui.group.doesnt.exist'],
+                ['quiqqer/quiqqer', 'exception.lib.qui.group.doesnt.exist'],
                 404
             );
         }
@@ -141,7 +141,7 @@ class Group extends QUI\QDOM
         // Rootgruppe kann nicht gelöscht werden
         if ((int)QUI::conf('globals', 'root') === $this->getId()) {
             throw new QUI\Exception([
-                'quiqqer/system',
+                'quiqqer/quiqqer',
                 'exception.lib.qui.group.root.delete'
             ]);
         }
@@ -470,7 +470,7 @@ class Group extends QUI\QDOM
 
         if (!$User->isSU()) {
             throw new QUI\Exception([
-                'quiqqer/system',
+                'quiqqer/quiqqer',
                 'exception.lib.qui.group.no.edit.permissions'
             ]);
         }
@@ -625,7 +625,7 @@ class Group extends QUI\QDOM
         if (!isset($result[0])) {
             throw new QUI\Exception(
                 [
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.lib.qui.group.user.not.found'
                 ],
                 404

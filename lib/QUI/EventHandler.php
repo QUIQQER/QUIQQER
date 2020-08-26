@@ -242,7 +242,7 @@ class EventHandler
 
         if ($Now < $NextLoginAllowed) {
             throw new QUI\Users\Exception(
-                ['quiqqer/system', 'exception.login.fail.login_locked'],
+                ['quiqqer/quiqqer', 'exception.login.fail.login_locked'],
                 404
             );
         }

@@ -418,7 +418,7 @@
         <locale name="exception.guest.group.cannot.be.deleted">
             <de><![CDATA[Die Gast Gruppe kann nicht gelöscht werden.]]></de>
         </locale>
-        <locale name="exception.everonye.group.cannot.be.deleted">
+        <locale name="exception.everyone.group.cannot.be.deleted">
             <de><![CDATA[Die Jeder Gruppe kann nicht gelöscht werden.]]></de>
         </locale>
 

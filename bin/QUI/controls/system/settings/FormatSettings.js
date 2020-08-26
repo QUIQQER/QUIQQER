@@ -21,7 +21,7 @@ define('controls/system/settings/FormatSettings', [
 ], function (QUI, QUIControl, QUIAjax, QUILocale, Mustache, Translate, templateEntry) {
     "use strict";
 
-    var lg         = 'quiqqer/system';
+    var lg         = 'quiqqer/quiqqer';
     var Translator = new Translate();
 
     return new Class({

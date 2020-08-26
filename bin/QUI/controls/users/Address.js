@@ -22,7 +22,7 @@ define('controls/users/Address', [
 ], function (QUI, QUIControl, QUILoader, QUIConfirm, Grid, Ajax, Locale) {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg = 'quiqqer/quiqqer';
 
 
     return new Class({

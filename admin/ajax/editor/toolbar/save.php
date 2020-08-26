@@ -13,7 +13,7 @@ QUI::$Ajax->registerFunction(
 
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(
-                'quiqqer/system',
+                'quiqqer/quiqqer',
                 'message.editor.toolbar.save.success'
             )
         );

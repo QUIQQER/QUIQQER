@@ -298,7 +298,7 @@ class Project
         if (\preg_match("@[-.,:;#`!§$%&/?<>\=\'\" ]@", $projectName)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.project.not.allowed.signs',
                     [
                         'signs' => \implode(' ', $forbiddenSigns)

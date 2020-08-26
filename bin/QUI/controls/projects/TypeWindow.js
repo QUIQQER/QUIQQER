@@ -57,7 +57,7 @@ define('controls/projects/TypeWindow', [
                 textimage: 'fa fa-remove'
             },
             ok_button    : {
-                text     : QUILocale.get('quiqqer/system', 'ok'),
+                text     : QUILocale.get('quiqqer/quiqqer', 'ok'),
                 textimage: 'fa fa-check'
             }
         },

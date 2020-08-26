@@ -115,7 +115,7 @@ define('controls/editors/toolbars/Window', [
             this.$Grid = new Grid(Container, {
                 columnModel: [{
                     header   : QUILocale.get(
-                        'quiqqer/system',
+                        'quiqqer/quiqqer',
                         'editors.settings.table.toolbar.name'
                     ),
                     dataIndex: 'toolbar',

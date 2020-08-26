@@ -134,7 +134,7 @@ class Manager
         if (!isset($result[0])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.workspace.not.found'
                 ),
                 404

@@ -195,10 +195,10 @@ define('controls/projects/TypeDetails', [
                         continue;
                     }
 
-                    if (i == 'standard') {
+                    if (i === 'standard') {
                         Child = self.$createEntry({
-                            title      : QUILocale.get('quiqqer/system', 'standard.title'),
-                            description: QUILocale.get('quiqqer/system', 'standard.description'),
+                            title      : QUILocale.get('quiqqer/quiqqer', 'standard.title'),
+                            description: QUILocale.get('quiqqer/quiqqer', 'standard.description'),
                             sitetype   : i
                         });
 

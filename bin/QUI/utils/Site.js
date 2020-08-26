@@ -108,7 +108,7 @@ define('utils/Site', [
          */
         openCreateChild: function (ParentSite, value) {
             var self    = this,
-                lg      = 'quiqqer/system',
+                lg      = 'quiqqer/quiqqer',
                 Site    = ParentSite,
                 Project = Site.getProject();
 

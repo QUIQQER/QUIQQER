@@ -25,7 +25,7 @@ define('controls/users/Panel', [
 ], function () {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg = 'quiqqer/quiqqer';
 
     var QUI          = arguments[0],
         Panel        = arguments[1],
@@ -496,7 +496,7 @@ define('controls/users/Panel', [
                             if (!hasPermission) {
                                 QUI.getMessageHandler().then(function (MH) {
                                     MH.addError(
-                                        QUILocale.get('quiqqer/system', 'exception.no.permission')
+                                        QUILocale.get('quiqqer/quiqqer', 'exception.no.permission')
                                     );
                                 });
 

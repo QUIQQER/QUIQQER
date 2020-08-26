@@ -541,7 +541,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         if (!isset($result[0])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.site.not.found'
                 ),
                 705,
@@ -558,7 +558,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         if ($params['active'] != 1 && !\defined('QUIQQER_PREVIEW')) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.site.not.found'
                 ),
                 705,
@@ -573,7 +573,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         if ($params['deleted'] == 1) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.site.not.found'
                 ),
                 705,
@@ -753,7 +753,7 @@ class Site extends QUI\QDOM implements QUI\Interfaces\Projects\Site
         if ($lang && !\in_array($lang, $availableLanguages)) {
             throw new QUI\Exception(
                 [
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.project.lang.not.found',
                     ['lang' => $lang]
                 ],

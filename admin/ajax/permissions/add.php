@@ -19,7 +19,7 @@ QUI::$Ajax->registerFunction(
         if (isset($permissions[$permission])) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.permissions.exists'
                 )
             );

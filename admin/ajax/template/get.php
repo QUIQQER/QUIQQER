@@ -30,7 +30,7 @@ QUI::$Ajax->registerFunction(
         if (!$template || !\file_exists($template)) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.template.not.found'
                 )
             );
@@ -39,7 +39,7 @@ QUI::$Ajax->registerFunction(
         if (\strpos($template, CMS_DIR) !== 0) {
             throw new QUI\Exception(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'exception.template.not.found'
                 )
             );

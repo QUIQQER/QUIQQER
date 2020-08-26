@@ -12,7 +12,7 @@ QUI::$Ajax->registerFunction(
 
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()->get(
-                'quiqqer/system',
+                'quiqqer/quiqqer',
                 'permissions.message.delete.success'
             )
         );

@@ -45,7 +45,7 @@ define('controls/packages/server/AddServerWindow', [
             maxWidth : 400,
             autoclose: false,
             ok_button: {
-                text     : QUILocale.get('quiqqer/system', 'add'),
+                text     : QUILocale.get('quiqqer/quiqqer', 'add'),
                 textimage: 'fa fa-server'
             }
         },

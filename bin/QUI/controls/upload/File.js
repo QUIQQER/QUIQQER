@@ -29,7 +29,7 @@ define('controls/upload/File', [
 ], function () {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg = 'quiqqer/quiqqer';
 
     var QUI                = arguments[0],
         QUIControl         = arguments[1],

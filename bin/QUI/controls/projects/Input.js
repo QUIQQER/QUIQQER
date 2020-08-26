@@ -339,7 +339,7 @@ define('controls/projects/Input', [
 
                 if (!data.length) {
                     new Element('div', {
-                        html  : Locale.get('quiqqer/system', 'projects.project.input.no.results'),
+                        html  : Locale.get('quiqqer/quiqqer', 'projects.project.input.no.results'),
                         styles: {
                             'float': 'left',
                             'clear': 'both',

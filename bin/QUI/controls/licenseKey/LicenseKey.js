@@ -36,7 +36,7 @@ define('controls/licenseKey/LicenseKey', [
              QUILocale, QUIAjax, Mustache, template) {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg = 'quiqqer/quiqqer';
 
     return new Class({
 

@@ -28,7 +28,7 @@ QUI::$Ajax->registerFunction(
 
                     QUI::getMessagesHandler()->addSuccess(
                         QUI::getLocale()->get(
-                            'quiqqer/system',
+                            'quiqqer/quiqqer',
                             'message.user.deactivate'
                         )
                     );
@@ -37,7 +37,7 @@ QUI::$Ajax->registerFunction(
 
                     QUI::getMessagesHandler()->addSuccess(
                         QUI::getLocale()->get(
-                            'quiqqer/system',
+                            'quiqqer/quiqqer',
                             'message.user.activate'
                         )
                     );

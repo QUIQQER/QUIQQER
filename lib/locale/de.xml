@@ -1180,7 +1180,7 @@
         <locale name="exception.guest.group.cannot.be.deleted">
             <de><![CDATA[Die Gast Gruppe kann nicht gelöscht werden.]]></de>
         </locale>
-        <locale name="exception.everonye.group.cannot.be.deleted">
+        <locale name="exception.everyone.group.cannot.be.deleted">
             <de><![CDATA[Die Jeder Gruppe kann nicht gelöscht werden.]]></de>
         </locale>
         <locale name="controls.users.auth.quiqqerlogin.send_mail_success">
@@ -4868,17 +4868,20 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             <de><![CDATA[Verwaltet die Liste der Update-Server.]]></de>
         </locale>
         <locale name="console.tool.updateserver.help">
-            <de><![CDATA[Keine Argumente übergeben - Ausführung beendet. Gültige Argumente sind 'add' und 'remove'.]]></de>
+            <de>
+                <![CDATA[Keine Argumente übergeben - Ausführung beendet. Gültige Argumente sind 'add' und 'remove'.]]></de>
         </locale>
 
         <locale name="console.tool.updateserver.add.description">
             <de><![CDATA[Fügt den angegeben Server zur Liste der Update-Server hinzu.]]></de>
         </locale>
         <locale name="console.tool.updateserver.add.server.missing">
-            <de><![CDATA[Kein Server zum Hinzufügen angegeben. Übergebe einen Server mit Hilfe eines Gleichheitszeichens nach dem 'add'-Parameter.]]></de>
+            <de>
+                <![CDATA[Kein Server zum Hinzufügen angegeben. Übergebe einen Server mit Hilfe eines Gleichheitszeichens nach dem 'add'-Parameter.]]></de>
         </locale>
         <locale name="console.tool.updateserver.add.type.missing">
-            <de><![CDATA[Kein Server-Typ angegeben - es wird 'vcs' verwendet. Ein Typ kann mittels des 'type'-Parameters spezifiziert werden.]]></de>
+            <de>
+                <![CDATA[Kein Server-Typ angegeben - es wird 'vcs' verwendet. Ein Typ kann mittels des 'type'-Parameters spezifiziert werden.]]></de>
         </locale>
         <locale name="console.tool.updateserver.add.success">
             <de><![CDATA[Der Update-Server wurde erfolgreich hinzugefügt.]]></de>
@@ -4888,7 +4891,8 @@ Hinweis: Wenn QUIQQER als GIT Repository installiert ist, existiert keine MD5 Su
             <de><![CDATA[Entfernt den angegeben Server aus der Liste der Update-Server.]]></de>
         </locale>
         <locale name="console.tool.updateserver.remove.server.missing">
-            <de><![CDATA[Kein Server zum Entfernen angegeben. Übergebe einen Server mit Hilfe eines Gleichheitszeichens nach dem 'remove'-Parameter.]]></de>
+            <de>
+                <![CDATA[Kein Server zum Entfernen angegeben. Übergebe einen Server mit Hilfe eines Gleichheitszeichens nach dem 'remove'-Parameter.]]></de>
         </locale>
         <locale name="console.tool.updateserver.remove.success">
             <de><![CDATA[Der Update-Server wurde erfolgreich entfernt.]]></de>

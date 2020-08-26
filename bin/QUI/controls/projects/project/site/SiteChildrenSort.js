@@ -19,7 +19,7 @@ define('controls/projects/project/site/SiteChildrenSort', [
 ], function (QUI, QUIControl, QUIButton, QUILoader, Grid, Ajax, Locale) {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg = 'quiqqer/quiqqer';
 
     return new Class({
 

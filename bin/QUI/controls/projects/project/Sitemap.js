@@ -200,7 +200,7 @@ define('controls/projects/project/Sitemap', [
                         if (self.getAttribute('media')) {
                             self.$Map.appendChild(
                                 new QUISitemapItem({
-                                    text    : Locale.get('quiqqer/system', 'projects.project.sitemap.media'),
+                                    text    : Locale.get('quiqqer/quiqqer', 'projects.project.sitemap.media'),
                                     value   : 'media',
                                     icon    : 'fa fa-picture-o',
                                     dragable: true,
@@ -451,7 +451,7 @@ define('controls/projects/project/Sitemap', [
                             new QUISitemapItem({
                                 icon       : 'fa fa-level-up',
                                 text       : '...',
-                                title      : Locale.get('quiqqer/system', 'control.project.sitemap.prev'),
+                                title      : Locale.get('quiqqer/quiqqer', 'control.project.sitemap.prev'),
                                 contextmenu: false,
                                 sheets     : sheets,
                                 Item       : Item,
@@ -610,7 +610,7 @@ define('controls/projects/project/Sitemap', [
             ContextMenu.clearChildren().appendChild(
                 new QUIContextmenuItem({
                     name  : 'create-new-site',
-                    text  : Locale.get('quiqqer/system', 'projects.project.site.btn.new.text'),
+                    text  : Locale.get('quiqqer/quiqqer', 'projects.project.site.btn.new.text'),
                     icon  : 'fa fa-file-text',
                     events: {
                         onClick: function () {
@@ -627,7 +627,7 @@ define('controls/projects/project/Sitemap', [
             ).appendChild(
                 new QUIContextmenuItem({
                     name  : 'copy',
-                    text  : Locale.get('quiqqer/system', 'copy'),
+                    text  : Locale.get('quiqqer/quiqqer', 'copy'),
                     icon  : 'fa fa-copy',
                     events: {
                         onClick: function () {
@@ -644,7 +644,7 @@ define('controls/projects/project/Sitemap', [
             ).appendChild(
                 new QUIContextmenuItem({
                     name  : 'cut',
-                    text  : Locale.get('quiqqer/system', 'cut'),
+                    text  : Locale.get('quiqqer/quiqqer', 'cut'),
                     icon  : 'fa fa-cut',
                     events: {
                         onClick: function () {
@@ -662,7 +662,7 @@ define('controls/projects/project/Sitemap', [
                 new QUIContextmenuItem({
                     disabled: true,
                     name    : 'paste',
-                    text    : Locale.get('quiqqer/system', 'paste'),
+                    text    : Locale.get('quiqqer/quiqqer', 'paste'),
                     icon    : 'fa fa-paste',
                     events  : {
                         onClick: function () {
@@ -674,7 +674,7 @@ define('controls/projects/project/Sitemap', [
                 new QUIContextmenuItem({
                     disabled: true,
                     name    : 'linked-paste',
-                    text    : Locale.get('quiqqer/system', 'linked.paste'),
+                    text    : Locale.get('quiqqer/quiqqer', 'linked.paste'),
                     icon    : 'fa fa-paste',
                     events  : {
                         onClick: function () {
@@ -701,8 +701,8 @@ define('controls/projects/project/Sitemap', [
                 new QUIContextmenuItem({
                     name  : 'de-activate-site',
                     text  : active ?
-                        Locale.get('quiqqer/system', 'projects.project.site.btn.deactivate.text') :
-                        Locale.get('quiqqer/system', 'projects.project.site.btn.activate.text'),
+                        Locale.get('quiqqer/quiqqer', 'projects.project.site.btn.deactivate.text') :
+                        Locale.get('quiqqer/quiqqer', 'projects.project.site.btn.activate.text'),
                     icon  : active ? 'fa fa-remove' : 'fa fa-ok',
                     events: {
                         onClick: function () {
@@ -758,11 +758,11 @@ define('controls/projects/project/Sitemap', [
                         '#' + data.id + '';
 
                     Paste.setAttribute(
-                        'text', Locale.get('quiqqer/system', 'paste') + dataString
+                        'text', Locale.get('quiqqer/quiqqer', 'paste') + dataString
                     );
 
                     Linked.setAttribute(
-                        'text', Locale.get('quiqqer/system', 'linked.paste') + dataString
+                        'text', Locale.get('quiqqer/quiqqer', 'linked.paste') + dataString
                     );
 
                     Paste.enable();

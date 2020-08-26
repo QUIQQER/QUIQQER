@@ -89,7 +89,7 @@ class PasswordResetVerification extends AbstractVerification
     public function getSuccessMessage()
     {
         return QUI::getLocale()->get(
-            'quiqqer/system',
+            'quiqqer/quiqqer',
             'users.auth.passwordresetverification.success'
         );
     }
@@ -103,7 +103,7 @@ class PasswordResetVerification extends AbstractVerification
     public function getErrorMessage($reason)
     {
         return QUI::getLocale()->get(
-            'quiqqer/system',
+            'quiqqer/quiqqer',
             'users.auth.passwordresetverification.error'
         );
     }
@@ -159,7 +159,7 @@ class PasswordResetVerification extends AbstractVerification
         }
 
         $L      = QUI::getLocale();
-        $lg     = 'quiqqer/system';
+        $lg     = 'quiqqer/quiqqer';
         $tplDir = QUI::getPackage('quiqqer/quiqqer')->getDir().'lib/templates/mail/auth/';
 
         $Mailer = new QUI\Mail\Mailer();

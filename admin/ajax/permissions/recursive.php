@@ -57,7 +57,7 @@ QUI::$Ajax->registerFunction(
         if (!$errors) {
             QUI::getMessagesHandler()->addSuccess(
                 QUI::getLocale()->get(
-                    'quiqqer/system',
+                    'quiqqer/quiqqer',
                     'permissions.message.save.success'
                 )
             );

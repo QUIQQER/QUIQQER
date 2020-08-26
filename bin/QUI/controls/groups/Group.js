@@ -24,7 +24,7 @@ define('controls/groups/Group', [
              Grid, Groups, Ajax, Editors, QUILocale, FormUtils, ControlUtils) {
     "use strict";
 
-    var lg = 'quiqqer/system';
+    var lg = 'quiqqer/quiqqer';
 
     /**
      * @class controls/groups/Group
@@ -867,12 +867,12 @@ define('controls/groups/Group', [
             ], function (QUIConfirm) {
                 new QUIConfirm({
                     autoclose: true,
-                    title    : QUILocale.get('quiqqer/system', 'controls.group.deleteusers.confirm.title'),
+                    title    : QUILocale.get('quiqqer/quiqqer', 'controls.group.deleteusers.confirm.title'),
                     texticon : 'fa fa-user-times',
                     icon     : 'fa fa-user-times',
 
                     information: QUILocale.get(
-                        'quiqqer/system',
+                        'quiqqer/quiqqer',
                         'controls.group.deleteusers.confirm.info', {
                             groupId  : self.$Group.getId(),
                             groupName: self.$Group.getName(),

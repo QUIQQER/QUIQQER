@@ -32,7 +32,7 @@ define('controls/users/password/Window', [
 
         options: {
             icon      : 'fa fa-key',
-            title     : QUILocale.get('quiqqer/system', 'menu.profile.userPassword.text'),
+            title     : QUILocale.get('quiqqer/quiqqer', 'menu.profile.userPassword.text'),
             maxHeight : 470,
             maxWidth  : 340,
             uid       : false,
@@ -40,7 +40,7 @@ define('controls/users/password/Window', [
             message   : false,
             mustChange: false,
             ok_button : {
-                text     : QUILocale.get('quiqqer/system', 'accept'),
+                text     : QUILocale.get('quiqqer/quiqqer', 'accept'),
                 textimage: 'fa fa-check'
             }
         },

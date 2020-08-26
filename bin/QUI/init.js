@@ -106,14 +106,14 @@ require(requireList, function () {
         'control-loader-type' : 'line-scale',
         'control-loader-color': '#2f8fc8',
 
-        'control-desktop-panel-sheet-closetext': Locale.get('quiqqer/system', 'close'),
-        'control-windows-popup-closetext'      : Locale.get('quiqqer/system', 'close'),
-        'control-windows-confirm-canceltext'   : Locale.get('quiqqer/system', 'cancel'),
-        'control-windows-confirm-submittext'   : Locale.get('quiqqer/system', 'accept'),
-        'control-windows-prompt-canceltext'    : Locale.get('quiqqer/system', 'cancel'),
-        'control-windows-prompt-submittext'    : Locale.get('quiqqer/system', 'accept'),
-        'control-windows-submit-canceltext'    : Locale.get('quiqqer/system', 'cancel'),
-        'control-windows-submit-submittext'    : Locale.get('quiqqer/system', 'accept'),
+        'control-desktop-panel-sheet-closetext': Locale.get('quiqqer/quiqqer', 'close'),
+        'control-windows-popup-closetext'      : Locale.get('quiqqer/quiqqer', 'close'),
+        'control-windows-confirm-canceltext'   : Locale.get('quiqqer/quiqqer', 'cancel'),
+        'control-windows-confirm-submittext'   : Locale.get('quiqqer/quiqqer', 'accept'),
+        'control-windows-prompt-canceltext'    : Locale.get('quiqqer/quiqqer', 'cancel'),
+        'control-windows-prompt-submittext'    : Locale.get('quiqqer/quiqqer', 'accept'),
+        'control-windows-submit-canceltext'    : Locale.get('quiqqer/quiqqer', 'cancel'),
+        'control-windows-submit-submittext'    : Locale.get('quiqqer/quiqqer', 'accept'),
 
         'control-task-panel-limit'        : 50,
         'control-task-panel-limit-message': Locale.get('quiqqer/quiqqer', 'message.to.much.tasks')

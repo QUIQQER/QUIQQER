@@ -9,13 +9,13 @@
                             <tr>
                                 <td align="center" width="500" valign="middle" style="font-size: 12px; line-height: 18px; font-family: Helvetica, Arial, sans-serif; color:#666666; padding: 10px 0;">
                                     <img alt="Logo" src="{image image=$Project->getMedia()->getLogoImage() height=30 onlysrc='true' host=1}" height="30" style="display: block; font-family: Helvetica, Arial, sans-serif; color: #666666; font-size: 16px; margin-bottom: 10px;" border="0">
-                                    {locale group="quiqqer/system" var="templates.mail.body.footer.text" year=$smarty.now|date_format:'%Y'}
+                                    {locale group="quiqqer/quiqqer" var="templates.mail.body.footer.text" year=$smarty.now|date_format:'%Y'}
                                 </td>
                             </tr>
 
                             <tr>
                                 <td align="center" valign="middle" width="500" style="font-size: 12px; line-height: 18px; font-family: Helvetica, Arial, sans-serif; color:#666666; padding: 10px 0;">
-                                    {locale group="quiqqer/system" var="templates.mail.body.footer.social" year=$smarty.now|date_format:'%Y'}
+                                    {locale group="quiqqer/quiqqer" var="templates.mail.body.footer.social" year=$smarty.now|date_format:'%Y'}
                                 </td>
                             </tr>
                         </table>

@@ -45,7 +45,7 @@ define('controls/packages/server/DeleteServerWindow', [
             maxWidth : 400,
             autoclose: false,
             ok_button: {
-                text     : QUILocale.get('quiqqer/system', 'delete'),
+                text     : QUILocale.get('quiqqer/quiqqer', 'delete'),
                 textimage: 'fa fa-trash'
             },
             server   : false

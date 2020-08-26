@@ -27,7 +27,7 @@ QUI::$Ajax->registerFunction(
 
         QUI::getMessagesHandler()->addSuccess(
             QUI::getLocale()
-                ->get('quiqqer/system', 'message.folder.effects.resursive,success')
+                ->get('quiqqer/quiqqer', 'message.folder.effects.resursive,success')
         );
     },
     array('project', 'folderId'),

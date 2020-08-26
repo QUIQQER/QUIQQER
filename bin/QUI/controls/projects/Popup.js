@@ -37,7 +37,7 @@ define('controls/projects/Popup', [
             lang                : false,
             langs               : false,
             icon                : 'fa fa-home',
-            title               : Locale.get('quiqqer/system', 'projects'),
+            title               : Locale.get('quiqqer/quiqqer', 'projects'),
             maxWidth            : 400,
             maxHeight           : 600,
             autoclose           : true,

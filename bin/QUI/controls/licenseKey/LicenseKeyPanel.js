@@ -32,7 +32,7 @@ define('controls/licenseKey/LicenseKeyPanel', [
         ],
 
         options: {
-            title: QUILocale.get('quiqqer/system', 'controls.licensekeypanel.title')
+            title: QUILocale.get('quiqqer/quiqqer', 'controls.licensekeypanel.title')
         },
 
         initialize: function (options) {
