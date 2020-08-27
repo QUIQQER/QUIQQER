@@ -164,6 +164,7 @@
 
             <primary>id</primary>
             <auto_increment>id</auto_increment>
+            <index>uid</index>
         </table>
 
     </global>
