@@ -1597,7 +1597,7 @@ class Project
         $filename = ETC_DIR."projects.ini.php";
         $content  = \file_get_contents($filename);
 
-        $content = \str_replace($this->name, $newName, $content);
+        $content = \str_replace('['.$this->name.']', '['.$newName.']', $content);
         \file_put_contents($filename, $content);
 
 
