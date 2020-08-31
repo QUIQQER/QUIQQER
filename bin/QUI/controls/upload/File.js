@@ -528,7 +528,7 @@ define('controls/upload/File', [
             var FileParams = this.getAttribute('params');
 
             // extra params for ajax function
-            var UploadParams = {
+            var UploadParams = ObjectUtils.combine((FileParams || {}), {
                 file    : JSON.encode({
                     uploadstart: this.$upload_time,
                     chunksize  : this.$chunk_size,
@@ -539,7 +539,7 @@ define('controls/upload/File', [
                 filesize: this.$file_size,
                 filename: this.getFilename(),
                 filetype: this.$File.type
-            };
+            });
 
             if (typeof FileParams.extract !== 'undefined') {
                 if (FileParams.extract) {

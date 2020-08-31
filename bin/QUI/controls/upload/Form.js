@@ -167,7 +167,7 @@ define('controls/upload/Form', [
          * Add a param to the param list
          * This param would be send with the form
          *
-         * @method controls/upload/Form#addParam
+         * @method controls/upload/Form#setParam
          *
          * @param {String} param         - param name
          * @param {String|Number|Boolean} value - param value
