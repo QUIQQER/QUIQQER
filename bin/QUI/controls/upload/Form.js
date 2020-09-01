@@ -457,26 +457,28 @@ define('controls/upload/Form', [
                 });
             });
 
-            new Element('button', {
-                'class': 'controls-upload-form-submit',
-                html   : '' +
-                    '<span class="fa fa-arrow-circle-o-right"></span>' +
-                    '<span>' +
-                    Locale.get(lg, 'control.upload.icon.submit') +
-                    '</span>',
-                events : {
-                    click: function (e) {
-                        e.stop();
+            if (this.getAttribute('sendbutton')) {
+                new Element('button', {
+                    'class': 'controls-upload-form-submit',
+                    html   : '' +
+                        '<span class="fa fa-arrow-circle-o-right"></span>' +
+                        '<span>' +
+                        Locale.get(lg, 'control.upload.icon.submit') +
+                        '</span>',
+                    events : {
+                        click: function (e) {
+                            e.stop();
 
-                        if (!Input.files.length) {
-                            return;
+                            if (!Input.files.length) {
+                                return;
+                            }
+
+                            self.$files = Input.files;
+                            self.submit();
                         }
-
-                        self.$files = Input.files;
-                        self.submit();
                     }
-                }
-            }).inject(IconForm);
+                }).inject(IconForm);
+            }
 
             this.$Elm.addClass('controls-upload-form--icon');
             this.$Elm.setStyle('height', null);
@@ -531,7 +533,11 @@ define('controls/upload/Form', [
                         ).setStyle('background-image', '');
                 }
 
-                IconForm.getElement('button').disabled = false;
+                var SubmitBtn = IconForm.getElement('button');
+
+                if (SubmitBtn) {
+                    SubmitBtn.disabled = false;
+                }
 
                 IconForm.getElement(
                     '.controls-upload-form-single-container-select'
@@ -561,6 +567,10 @@ define('controls/upload/Form', [
                     }
                 }
             }).inject(IconForm);
+
+            if (!this.getAttribute('sendbutton')) {
+                return;
+            }
 
             new Element('button', {
                 disabled: true,
