@@ -606,8 +606,9 @@ define('controls/upload/File', [
 
                 this.$errors++;
 
-                QUI.getMessage().then(function (MH) {
+                QUI.getMessageHandler().then(function (MH) {
                     MH.addError(QUILocale.get('quiqqer/quiqqer', 'exception.upload.error'));
+                    console.error(err);
                 });
             }.bind(this));
         },
