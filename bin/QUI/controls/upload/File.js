@@ -527,6 +527,8 @@ define('controls/upload/File', [
 
             var FileParams = this.getAttribute('params');
 
+            FileParams = Object.assign({}, FileParams); // workaround, otherwise always duplicates itself
+
             // extra params for ajax function
             var UploadParams = ObjectUtils.combine((FileParams || {}), {
                 file    : JSON.encode({
