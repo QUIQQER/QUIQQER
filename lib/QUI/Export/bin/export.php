@@ -6,6 +6,16 @@ $dir = \str_replace('quiqqer/quiqqer/lib/QUI/Export/bin', '', \dirname(__FILE__)
 
 require_once $dir.'header.php';
 
+try {
+    QUI\Permissions\Permission::checkAdminUser(QUI::getUserBySession());
+} catch (QUI\Exception $Exception) {
+    QUI::getGlobalResponse()->setStatusCode($Exception->getMessage());
+    QUI::getGlobalResponse()->setContent(\json_encode($Exception->toArray()));
+    QUI::getGlobalResponse()->send();
+    exit;
+}
+
+
 $body = file_get_contents('php://input');
 $body = \json_decode($body, true);
 
@@ -19,6 +29,17 @@ if (!$body
 
 $type      = 'csv';
 $enclosure = "\x1f";
+
+if (isset($body['type'])) {
+    switch ($body['type']) {
+        case 'csv':
+        case 'json':
+        case 'xml':
+        case 'xls':
+            $type = $body['type'];
+            break;
+    }
+}
 
 // header
 $header = [];
@@ -50,6 +71,13 @@ foreach ($body['data']['data'] as $key => $entry) {
     $data[] = $entry;
 }
 
+// name
+$name = 'export';
+
+if (isset($body['name'])) {
+    $name = $body['name'];
+}
+
 // export
 try {
     $Writer = League\Csv\Writer::createFromFileObject(new \SplTempFileObject());
@@ -61,17 +89,17 @@ try {
     $Writer->insertOne($header);
 
     if ($type === 'xml') {
-        $filename = 'export.xml';
+        $filename = $name.'.xml';
 
         $Writer->insertAll($data);
         $Reader = League\Csv\Reader::createFromString($Writer->getContent());
         $Dom    = (new League\Csv\XMLConverter())->convert($Reader);
         $output = $Dom->saveXML();
     } elseif ($type === 'json') {
-        $filename = 'export.json';
+        $filename = $name.'.json';
         $output   = \json_encode($data);
     } else {
-        $filename = 'export.csv';
+        $filename = $name.'.csv';
 
         $Writer->insertAll($data);
 

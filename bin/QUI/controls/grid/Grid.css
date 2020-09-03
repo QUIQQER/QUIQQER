@@ -459,11 +459,6 @@ div.pGroup {
     /*background: url("omnigrid/export.png") no-repeat;*/
 }
 
-.omnigrid .pReload.loading {
-    background: url("omnigrid/load.gif") no-repeat;
-    background-position: 0 0 !important;
-}
-
 .omnigrid .pSelectAll {
     background: url("omnigrid/selAll.png") no-repeat;
     margin-right: 2px;
@@ -500,10 +495,15 @@ div.pGroup {
 }
 
 .omnigrid .elementloader {
-    width: 16px;
-    height: 16px;
-    background: url("omnigrid/load.gif") no-repeat;
+    align-items: center;
+    display: flex;
+    font-size: 3rem;
+    height: 100%;
+    justify-content: center;
+    left: 0;
     position: absolute;
+    top: 0;
+    width: 100%;
 }
 
 /* *************************************** */

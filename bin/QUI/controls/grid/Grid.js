@@ -112,6 +112,7 @@ define('controls/grid/Grid', [
             dataProvider  : null,
 
             //export
+            exportName    : false,
             exportData    : false,
             exportTypes   : {
                 pdf  : true,
@@ -1364,19 +1365,15 @@ define('controls/grid/Grid', [
         },
 
         hideWhiteOverflow: function () {
-            var gBlock, pReload;
+            var gBlock;
 
             if ((gBlock = this.container.getElement('.gBlock'))) {
                 gBlock.dispose();
             }
-
-            if ((pReload = this.container.getElement('div.pDiv .pReload'))) {
-                pReload.removeClass('loading');
-            }
         },
 
         showWhiteOverflow: function () {
-            var pReload, gBlock;
+            var gBlock;
             var container = this.container;
 
             // white overflow & loader
@@ -1390,27 +1387,13 @@ define('controls/grid/Grid', [
                     top       : 0,
                     left      : 0,
                     zIndex    : 999,
-                    opacity   : 0.5,
-                    filter    : 'alpha(opacity=50)',
-                    background: 'white none repeat scroll 0% 0%;',
-
-                    '-moz-background-clip'         : '-moz-initial',
-                    '-moz-background-origin'       : '-moz-initial',
-                    '-moz-background-inline-policy': '-moz-initial'
+                    background: 'rgba(255, 255, 255, 0.5)',
+                    width     : '100%',
+                    height    : '100%'
                 }
             });
 
-            gBlock.setStyles({
-                width : this.getAttribute('width'),
-                height: this.getAttribute('height') - 1,
-                top   : 0
-            });
-
             container.appendChild(gBlock);
-
-            if ((pReload = container.getElement('div.pDiv .pReload'))) {
-                pReload.addClass('loading');
-            }
         },
 
         showLoader: function () {
@@ -1421,13 +1404,8 @@ define('controls/grid/Grid', [
             this.showWhiteOverflow();
 
             this.loader = new Element('div.elementloader', {
-                styles: {
-                    top : this.options.height / 2 - 16,
-                    left: this.options.width / 2
-                }
-            });
-
-            this.loader.inject(this.container);
+                html: '<span class="fa fa-circle-o-notch fa-spin"></span>'
+            }).inject(this.container);
         },
 
         hideLoader: function () {
@@ -3238,11 +3216,12 @@ define('controls/grid/Grid', [
         },
 
         exportGrid: function (type) {
-            var self      = this,
-                data      = this.setExportData(),
-                exportUrl = this.getAttribute('exportBinUrl');
-            console.log(data);
-            console.log(exportUrl);
+            var self       = this,
+                data       = this.setExportData(),
+                exportUrl  = this.getAttribute('exportBinUrl'),
+                exportName = this.getAttribute('exportName')
+            ;
+
             if (this.getAttribute('exportRenderer')) {
                 this.getAttribute('exportRenderer')({
                     Grid: this,
@@ -3255,7 +3234,8 @@ define('controls/grid/Grid', [
 
             var tempData = {
                 data: data,
-                type: type
+                type: type,
+                name: exportName
             };
 
             if (type !== 'print') {
@@ -3269,10 +3249,21 @@ define('controls/grid/Grid', [
                     },
                     body   : JSON.stringify(tempData)
                 }).then(function (Response) {
-                    return Response.blob();
-                }).then(function (blob) {
-                    self.hideLoader();
-                    download(blob);
+                    var Headers = Response.headers;
+
+                    var filename = Headers.get('Content-Disposition');
+                    var start    = filename.indexOf('filename="') + ('filename="').length;
+                    var end      = filename.indexOf('"', start);
+
+                    filename = filename.substr(start, end - start);
+
+                    return Response.blob().then(function (blob) {
+                        require([URL_OPT_DIR + 'bin/downloadjs/download'], function (download) {
+                            self.hideLoader();
+
+                            download(blob, filename, Headers.get('Content-Type'));
+                        });
+                    });
                 }).catch(function (e) {
                     self.hideLoader();
 
