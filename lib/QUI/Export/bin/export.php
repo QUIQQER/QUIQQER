@@ -15,7 +15,6 @@ try {
     $Writer->setEnclosure($enclosure);
 
     if ($type === 'xml') {
-
     }
 
     $output = $Writer->__toString();
@@ -30,7 +29,6 @@ try {
 
     echo $output;
     exit;
-
 } catch (QUI\Exception $Exception) {
     QUI\System\Log::writeDebugException($Exception);
 } catch (\Exception $Exception) {
