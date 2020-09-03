@@ -2781,6 +2781,24 @@ You can also ignore the console user permissions check with '--ignore-file-permi
         <locale name="grid.is.empty">
             <en><![CDATA[The table contains no data]]></en>
         </locale>
+        <locale name="grid.export.button.title">
+            <en><![CDATA[Export the data]]></en>
+        </locale>
+        <locale name="grid.export.type.csv">
+            <en><![CDATA[CSV]]></en>
+        </locale>
+        <locale name="grid.export.type.xls">
+            <en><![CDATA[Excel]]></en>
+        </locale>
+        <locale name="grid.export.type.pdf">
+            <en><![CDATA[PDF]]></en>
+        </locale>
+        <locale name="grid.export.type.json">
+            <en><![CDATA[JSON]]></en>
+        </locale>
+        <locale name="grid.export.type.print">
+            <en><![CDATA[Print]]></en>
+        </locale>
         <locale name="controls.group.table.btns.adduser">
             <en><![CDATA[Add user(s)]]></en>
         </locale>
@@ -4720,7 +4738,8 @@ Note: If QUIQQER is installed as GIT repository, no MD5 summary file exists.
             <en><![CDATA[No server to add specified. Pass it via an equal sign after the 'add'-parameter.]]></en>
         </locale>
         <locale name="console.tool.updateserver.add.type.missing">
-            <en><![CDATA[No server type specified - assuming 'vcs'. You can pass a type via the 'type'-parameter.]]></en>
+            <en>
+                <![CDATA[No server type specified - assuming 'vcs'. You can pass a type via the 'type'-parameter.]]></en>
         </locale>
         <locale name="console.tool.updateserver.add.success">
             <en><![CDATA[The update server was successfully added.]]></en>

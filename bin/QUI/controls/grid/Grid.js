@@ -114,12 +114,13 @@ define('controls/grid/Grid', [
             //export
             exportData    : false,
             exportTypes   : {
-                pdf : 'PDF',
-                csv : 'CSV',
-                json: 'JSON'
+                pdf  : true,
+                csv  : true,
+                json : true,
+                print: false
             }, // {print : 'Drucken', pdf : 'PDF', csv : 'CSV', json : 'JSON'},
             exportRenderer: null, // function(data){data.type data.data data.Grid}
-            exportBinUrl  : URL_OPT_DIR + 'quiqqer/quiqqer/bin/QUI/controls/grid/omnigrid/',
+            exportBinUrl  : URL_OPT_DIR + 'quiqqer/quiqqer/lib/QUI/Export/bin/export.php',
 
             // drag & Drop
             dragdrop         : false,
@@ -1025,10 +1026,10 @@ define('controls/grid/Grid', [
 
             if (this.getAttribute('showtoggleicon') && li.getElement('.toggleicon')) {
                 li.getElement('.toggleicon')
-                    .setStyle(
-                        'background-position',
-                        section.getStyle('display') === 'block' ? '-16px 0' : '0 0'
-                    );
+                  .setStyle(
+                      'background-position',
+                      section.getStyle('display') === 'block' ? '-16px 0' : '0 0'
+                  );
             }
 
             this.lastsection = section;
@@ -2627,7 +2628,8 @@ define('controls/grid/Grid', [
                             h = h + '<option value="' + options.perPageOptions[optIdx] + '">' + options.perPageOptions[optIdx] + '</option>';
                         } else {
                             setDefaultPerPage = true;
-                            h                 = h + '<option selected="selected" value="' + options.perPageOptions[optIdx] + '">' + options.perPageOptions[optIdx] + '</option>';
+
+                            h = h + '<option selected="selected" value="' + options.perPageOptions[optIdx] + '">' + options.perPageOptions[optIdx] + '</option>';
                         }
                     }
 
@@ -2670,7 +2672,11 @@ define('controls/grid/Grid', [
                 }
 
                 if (options.exportData) {
-                    h = h + '<div class="btnseparator"></div><div class="pGroup"><div class="pExport pButton" title="Drucken / Exportieren"></div></div>';
+                    h = h + '<div class="btnseparator"></div>' +
+                        '<div class="pGroup">' +
+                        '   <div class="pExport pButton" title="' + QUILocale.get('quiqqer/quiqqer', 'grid.export.button.title') + '">' +
+                        '   </div>' +
+                        '</div>';
                 }
 
                 pDiv2.innerHTML = h;
@@ -3099,18 +3105,46 @@ define('controls/grid/Grid', [
                 );
             };
 
-            for (var exportType in options.exportTypes) {
-                if (!options.exportTypes.hasOwnProperty(exportType)) {
+            var fileImage,
+                types = options.exportTypes;
+
+            for (var exportType in types) {
+                if (!types.hasOwnProperty(exportType)) {
                     continue;
+                }
+
+                if (!exportType) {
+                    continue;
+                }
+
+                switch (exportType) {
+                    case 'csv':
+                        fileImage = 'fa fa-text-o';
+                        break;
+
+                    case 'json':
+                        fileImage = 'fa fa-code-o';
+                        break;
+
+                    case 'xls':
+                        fileImage = 'fa fa-excel-o';
+                        break;
+
+                    case 'pdf':
+                        fileImage = 'fa fa-pdf-o';
+                        break;
+
+                    default:
+                        fileImage = 'fa fa-file';
                 }
 
                 new QUIButton({
                     name      : exportType,
-                    text      : options.exportTypes[exportType],
+                    text      : QUILocale.get('quiqqer/quiqqer', 'grid.export.type.' + exportType),
                     events    : {
                         click: func_export_btn_click
                     },
-                    textimage : options.exportBinUrl + exportType + '.png',
+                    textimage : fileImage,
                     Grid      : this,
                     exportType: exportType
                 }).inject(exportBarDiv);
@@ -3205,8 +3239,9 @@ define('controls/grid/Grid', [
 
         exportGrid: function (type) {
             var data      = this.setExportData(),
-                exportUrl = this.getAttribute('exportBinUrl') + 'export.php';
-
+                exportUrl = this.getAttribute('exportBinUrl');
+console.log(data);
+console.log(exportUrl);
             if (this.getAttribute('exportRenderer')) {
                 this.getAttribute('exportRenderer')({
                     Grid: this,
@@ -3345,7 +3380,7 @@ define('controls/grid/Grid', [
 
             }).start({
                 target: this.getElm(),
-                page: {
+                page  : {
                     x: mx,
                     y: my
                 }

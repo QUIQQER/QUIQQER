@@ -43,6 +43,7 @@
     "league\/climate": "3.*",
     "ramsey\/uuid": "3.*",
     "neitanod/forceutf8": "*",
+    "league/csv": "9.*",
     "quiqqer\/composer": ">=1.4.2|dev-master|dev-dev",
     "quiqqer\/controls": "^1.1.1|dev-master|dev-dev",
     "quiqqer\/dashboard": "1.*|dev-master|dev-dev",

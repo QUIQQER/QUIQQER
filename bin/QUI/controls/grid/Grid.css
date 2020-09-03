@@ -454,8 +454,9 @@ div.pGroup {
     /*background: url("omnigrid/refresh.gif") no-repeat;*/
 }
 
-.omnigrid .pExport {
-    background: url("omnigrid/export.png") no-repeat;
+.omnigrid .pExport:after {
+    content: "\f019";
+    /*background: url("omnigrid/export.png") no-repeat;*/
 }
 
 .omnigrid .pReload.loading {
