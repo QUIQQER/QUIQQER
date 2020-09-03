@@ -70,7 +70,8 @@
     "npm-asset\/intl": "1.*",
     "npm-asset\/nouislider": "*",
     "npm-asset\/mustache": "2.*",
-    "npm-asset\/urijs": "1.*"
+    "npm-asset\/urijs": "1.*",
+    "npm-asset\/downloadjs": "1.*"
   },
   "scripts": {
     "post-install-cmd": [

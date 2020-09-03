@@ -3238,10 +3238,11 @@ define('controls/grid/Grid', [
         },
 
         exportGrid: function (type) {
-            var data      = this.setExportData(),
+            var self      = this,
+                data      = this.setExportData(),
                 exportUrl = this.getAttribute('exportBinUrl');
-console.log(data);
-console.log(exportUrl);
+            console.log(data);
+            console.log(exportUrl);
             if (this.getAttribute('exportRenderer')) {
                 this.getAttribute('exportRenderer')({
                     Grid: this,
@@ -3258,22 +3259,27 @@ console.log(exportUrl);
             };
 
             if (type !== 'print') {
-                new Element('input#exportDataField', {
-                    name  : 'data',
-                    value : JSON.encode(tempData),
-                    styles: {
-                        display: 'none'
-                    }
-                }).inject(this.container);
+                this.showLoader();
 
-                new Element('iframe.exportFrame', {
-                    src        : exportUrl,
-                    id         : 'gridExportFrame',
-                    frameborder: '0',
-                    scrolling  : 'auto'
-                }).inject(this.container);
+                fetch(exportUrl, {
+                    method : 'POST',
+                    headers: {
+                        'Accept'      : 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body   : JSON.stringify(tempData)
+                }).then(function (Response) {
+                    return Response.blob();
+                }).then(function (blob) {
+                    self.hideLoader();
+                    download(blob);
+                }).catch(function (e) {
+                    self.hideLoader();
 
-                setTimeout('document.id(\'exportDataField\').destroy(); document.id(\'gridExportFrame\').destroy();', 10000);
+                    console.error(e);
+                });
+
+                return;
             }
 
             // @todo print funktion bauen
