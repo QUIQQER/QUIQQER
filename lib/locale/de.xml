@@ -2814,6 +2814,24 @@
         <locale name="grid.is.empty">
             <de><![CDATA[Die Tabelle enthält keine Daten]]></de>
         </locale>
+        <locale name="grid.export.button.title">
+            <de><![CDATA[Daten exportieren]]></de>
+        </locale>
+        <locale name="grid.export.type.csv">
+            <de><![CDATA[CSV]]></de>
+        </locale>
+        <locale name="grid.export.type.xls">
+            <de><![CDATA[Excel]]></de>
+        </locale>
+        <locale name="grid.export.type.pdf">
+            <de><![CDATA[PDF]]></de>
+        </locale>
+        <locale name="grid.export.type.json">
+            <de><![CDATA[JSON]]></de>
+        </locale>
+        <locale name="grid.export.type.print">
+            <de><![CDATA[Drucken]]></de>
+        </locale>
         <locale name="controls.group.table.btns.adduser">
             <de><![CDATA[Benutzer hinzufügen]]></de>
         </locale>

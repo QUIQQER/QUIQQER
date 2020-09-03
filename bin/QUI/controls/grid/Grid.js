@@ -112,14 +112,16 @@ define('controls/grid/Grid', [
             dataProvider  : null,
 
             //export
+            exportName    : false,
             exportData    : false,
             exportTypes   : {
-                pdf : 'PDF',
-                csv : 'CSV',
-                json: 'JSON'
+                pdf  : true,
+                csv  : true,
+                json : true,
+                print: false
             }, // {print : 'Drucken', pdf : 'PDF', csv : 'CSV', json : 'JSON'},
             exportRenderer: null, // function(data){data.type data.data data.Grid}
-            exportBinUrl  : URL_OPT_DIR + 'quiqqer/quiqqer/bin/QUI/controls/grid/omnigrid/',
+            exportBinUrl  : URL_OPT_DIR + 'quiqqer/quiqqer/lib/QUI/Export/bin/export.php',
 
             // drag & Drop
             dragdrop         : false,
@@ -1025,10 +1027,10 @@ define('controls/grid/Grid', [
 
             if (this.getAttribute('showtoggleicon') && li.getElement('.toggleicon')) {
                 li.getElement('.toggleicon')
-                    .setStyle(
-                        'background-position',
-                        section.getStyle('display') === 'block' ? '-16px 0' : '0 0'
-                    );
+                  .setStyle(
+                      'background-position',
+                      section.getStyle('display') === 'block' ? '-16px 0' : '0 0'
+                  );
             }
 
             this.lastsection = section;
@@ -1363,19 +1365,15 @@ define('controls/grid/Grid', [
         },
 
         hideWhiteOverflow: function () {
-            var gBlock, pReload;
+            var gBlock;
 
             if ((gBlock = this.container.getElement('.gBlock'))) {
                 gBlock.dispose();
             }
-
-            if ((pReload = this.container.getElement('div.pDiv .pReload'))) {
-                pReload.removeClass('loading');
-            }
         },
 
         showWhiteOverflow: function () {
-            var pReload, gBlock;
+            var gBlock;
             var container = this.container;
 
             // white overflow & loader
@@ -1389,27 +1387,13 @@ define('controls/grid/Grid', [
                     top       : 0,
                     left      : 0,
                     zIndex    : 999,
-                    opacity   : 0.5,
-                    filter    : 'alpha(opacity=50)',
-                    background: 'white none repeat scroll 0% 0%;',
-
-                    '-moz-background-clip'         : '-moz-initial',
-                    '-moz-background-origin'       : '-moz-initial',
-                    '-moz-background-inline-policy': '-moz-initial'
+                    background: 'rgba(255, 255, 255, 0.5)',
+                    width     : '100%',
+                    height    : '100%'
                 }
             });
 
-            gBlock.setStyles({
-                width : this.getAttribute('width'),
-                height: this.getAttribute('height') - 1,
-                top   : 0
-            });
-
             container.appendChild(gBlock);
-
-            if ((pReload = container.getElement('div.pDiv .pReload'))) {
-                pReload.addClass('loading');
-            }
         },
 
         showLoader: function () {
@@ -1420,13 +1404,8 @@ define('controls/grid/Grid', [
             this.showWhiteOverflow();
 
             this.loader = new Element('div.elementloader', {
-                styles: {
-                    top : this.options.height / 2 - 16,
-                    left: this.options.width / 2
-                }
-            });
-
-            this.loader.inject(this.container);
+                html: '<span class="fa fa-circle-o-notch fa-spin"></span>'
+            }).inject(this.container);
         },
 
         hideLoader: function () {
@@ -2627,7 +2606,8 @@ define('controls/grid/Grid', [
                             h = h + '<option value="' + options.perPageOptions[optIdx] + '">' + options.perPageOptions[optIdx] + '</option>';
                         } else {
                             setDefaultPerPage = true;
-                            h                 = h + '<option selected="selected" value="' + options.perPageOptions[optIdx] + '">' + options.perPageOptions[optIdx] + '</option>';
+
+                            h = h + '<option selected="selected" value="' + options.perPageOptions[optIdx] + '">' + options.perPageOptions[optIdx] + '</option>';
                         }
                     }
 
@@ -2670,7 +2650,11 @@ define('controls/grid/Grid', [
                 }
 
                 if (options.exportData) {
-                    h = h + '<div class="btnseparator"></div><div class="pGroup"><div class="pExport pButton" title="Drucken / Exportieren"></div></div>';
+                    h = h + '<div class="btnseparator"></div>' +
+                        '<div class="pGroup">' +
+                        '   <div class="pExport pButton" title="' + QUILocale.get('quiqqer/quiqqer', 'grid.export.button.title') + '">' +
+                        '   </div>' +
+                        '</div>';
                 }
 
                 pDiv2.innerHTML = h;
@@ -3099,18 +3083,46 @@ define('controls/grid/Grid', [
                 );
             };
 
-            for (var exportType in options.exportTypes) {
-                if (!options.exportTypes.hasOwnProperty(exportType)) {
+            var fileImage,
+                types = options.exportTypes;
+
+            for (var exportType in types) {
+                if (!types.hasOwnProperty(exportType)) {
                     continue;
+                }
+
+                if (!exportType) {
+                    continue;
+                }
+
+                switch (exportType) {
+                    case 'csv':
+                        fileImage = 'fa fa-text-o';
+                        break;
+
+                    case 'json':
+                        fileImage = 'fa fa-code-o';
+                        break;
+
+                    case 'xls':
+                        fileImage = 'fa fa-excel-o';
+                        break;
+
+                    case 'pdf':
+                        fileImage = 'fa fa-pdf-o';
+                        break;
+
+                    default:
+                        fileImage = 'fa fa-file';
                 }
 
                 new QUIButton({
                     name      : exportType,
-                    text      : options.exportTypes[exportType],
+                    text      : QUILocale.get('quiqqer/quiqqer', 'grid.export.type.' + exportType),
                     events    : {
                         click: func_export_btn_click
                     },
-                    textimage : options.exportBinUrl + exportType + '.png',
+                    textimage : fileImage,
                     Grid      : this,
                     exportType: exportType
                 }).inject(exportBarDiv);
@@ -3204,8 +3216,11 @@ define('controls/grid/Grid', [
         },
 
         exportGrid: function (type) {
-            var data      = this.setExportData(),
-                exportUrl = this.getAttribute('exportBinUrl') + 'export.php';
+            var self       = this,
+                data       = this.setExportData(),
+                exportUrl  = this.getAttribute('exportBinUrl'),
+                exportName = this.getAttribute('exportName')
+            ;
 
             if (this.getAttribute('exportRenderer')) {
                 this.getAttribute('exportRenderer')({
@@ -3219,26 +3234,43 @@ define('controls/grid/Grid', [
 
             var tempData = {
                 data: data,
-                type: type
+                type: type,
+                name: exportName
             };
 
             if (type !== 'print') {
-                new Element('input#exportDataField', {
-                    name  : 'data',
-                    value : JSON.encode(tempData),
-                    styles: {
-                        display: 'none'
-                    }
-                }).inject(this.container);
+                this.showLoader();
 
-                new Element('iframe.exportFrame', {
-                    src        : exportUrl,
-                    id         : 'gridExportFrame',
-                    frameborder: '0',
-                    scrolling  : 'auto'
-                }).inject(this.container);
+                fetch(exportUrl, {
+                    method : 'POST',
+                    headers: {
+                        'Accept'      : 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body   : JSON.stringify(tempData)
+                }).then(function (Response) {
+                    var Headers = Response.headers;
 
-                setTimeout('document.id(\'exportDataField\').destroy(); document.id(\'gridExportFrame\').destroy();', 10000);
+                    var filename = Headers.get('Content-Disposition');
+                    var start    = filename.indexOf('filename="') + ('filename="').length;
+                    var end      = filename.indexOf('"', start);
+
+                    filename = filename.substr(start, end - start);
+
+                    return Response.blob().then(function (blob) {
+                        require([URL_OPT_DIR + 'bin/downloadjs/download'], function (download) {
+                            self.hideLoader();
+
+                            download(blob, filename, Headers.get('Content-Type'));
+                        });
+                    });
+                }).catch(function (e) {
+                    self.hideLoader();
+
+                    console.error(e);
+                });
+
+                return;
             }
 
             // @todo print funktion bauen
@@ -3345,7 +3377,7 @@ define('controls/grid/Grid', [
 
             }).start({
                 target: this.getElm(),
-                page: {
+                page  : {
                     x: mx,
                     y: my
                 }
