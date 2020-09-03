@@ -74,7 +74,7 @@ foreach ($body['data']['data'] as $key => $entry) {
 // name
 $name = 'export';
 
-if (isset($body['name'])) {
+if (!empty($body['name'])) {
     $name = $body['name'];
 }
 
